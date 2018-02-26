@@ -75,6 +75,28 @@ $fields_poller_edit = array(
 	),
 	'spacer1' => array(
 		'method' => 'spacer',
+		'friendly_name' => __('Collection Settings'),
+	),
+	'processes' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Processes'),
+		'description' => __('The number of Data Collector processes to use to spawn.'),
+		'value' => '|arg1:processes|',
+		'size' => '10',
+		'default' => read_config_option('concurrent_processes'),
+		'max_length' => '4'
+	),
+	'threads' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Threads'),
+		'description' => __('The number of Spine Threads to use per Data Collector process.'),
+		'value' => '|arg1:threads|',
+		'size' => '10',
+		'default' => read_config_option('max_threads'),
+		'max_length' => '4'
+	),
+	'spacer2' => array(
+		'method' => 'spacer',
 		'friendly_name' => __('Remote Database Connection'),
 	),
 	'dbhost' => array(
@@ -181,16 +203,24 @@ switch (get_request_var('action')) {
 
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
-		$save['id']           = get_filter_request_var('id');
-		$save['name']         = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['hostname']     = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
-		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
-		$save['dbdefault']    = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
-		$save['dbhost']       = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
-		$save['dbuser']       = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
-		$save['dbpass']       = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
-		$save['dbport']       = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
-		$save['dbssl']        = isset_request_var('dbssl') ? 'on':'';
+		$save['id']        = get_filter_request_var('id');
+
+		// Common data
+		$save['name']      = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['hostname']  = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
+		$save['notes']     = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+
+		// Process settings
+		$save['processes'] = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
+		$save['threads']   = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+
+		// Database settings
+		$save['dbdefault'] = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
+		$save['dbhost']    = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
+		$save['dbuser']    = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
+		$save['dbpass']    = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
+		$save['dbport']    = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
+		$save['dbssl']     = isset_request_var('dbssl') ? 'on':'';
 
 		if (!is_error_message()) {
 			$poller_id = sql_save($save, 'poller');
@@ -263,7 +293,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$pollers .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
+			$pollers .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($matches[1]))) . '</li>';
 			$poller_array[$i] = $matches[1];
 
 			$i++;
@@ -347,8 +377,12 @@ function poller_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$poller = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', htmlspecialchars($poller['name']));
+		$poller = db_fetch_row_prepared('SELECT *
+			FROM poller
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		$header_label = __('Site [edit: %s]', html_escape($poller['name']));
 	} else {
 		$header_label = __('Site [new]');
 	}
@@ -528,7 +562,7 @@ function pollers() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -613,7 +647,9 @@ function pollers() {
 		'id'          => array('display' => __('ID'),             'align' => 'right',  'sort' => 'ASC',  'tip' => __('The unique id associated with this Data Collector.')),
 		'hostname'    => array('display' => __('Hostname'),       'align' => 'right',  'sort' => 'ASC',  'tip' => __('The Hostname where the Data Collector is running.')),
 		'status'      => array('display' => __('Status'),         'align' => 'center', 'sort' => 'DESC', 'tip' => __('The Status of this Data Collector.')),
+		'nosort0'   => array('display' => __('Proc/Threads'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The Number of Poller Processes and Threads for this Data Collector.')),
 		'total_time'  => array('display' => __('Polling Time'),   'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last data collection time for this Data Collector.')),
+		'nosort1'     => array('display' => __('Avg/Max'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The Average and Maximum Collector timings for this Data Collector.')),
 		'hosts'       => array('display' => __('Devices'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of Devices associated with this Data Collector.')),
 		'snmp'        => array('display' => __('SNMP Gets'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of SNMP gets associated with this Collector.')),
 		'script'      => array('display' => __('Scripts'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of script calls associated with this Data Collector.')),
@@ -638,12 +674,16 @@ function pollers() {
 				$poller['status'] = 3;
 			}
 
+			$mma = round($poller['avg_time'], 2) . '/' .  round($poller['max_time'], 2);
+
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
 			form_selectable_cell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
+			form_selectable_cell($poller['processes'] . '/' . $poller['threads'], $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
+			form_selectable_cell($mma, $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['hosts'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['snmp'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['script'], '-1'), $poller['id'], '', 'right');

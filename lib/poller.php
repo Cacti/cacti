@@ -343,7 +343,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDtool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
-  @arg $remainder - don't use LIMIT if TRUE */
+  @arg $remainder - don't use LIMIT if true */
 function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	global $config, $debug;
 

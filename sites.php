@@ -266,7 +266,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$site_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
+			$site_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
 			$site_array[$i] = $matches[1];
 
 			$i++;
@@ -324,7 +324,7 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', htmlspecialchars($site['name']));
+		$header_label = __('Site [edit: %s]', html_escape($site['name']));
 	} else {
 		$header_label = __('Site [new]');
 	}
@@ -409,7 +409,7 @@ function sites() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>

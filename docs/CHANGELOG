@@ -1,7 +1,17 @@
 Cacti CHANGELOG
 
-1.2.0
+1.2
+-feature#122: Support a Site Branch Type
+-feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
+-feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
+-issue#1097: When copying template user, enable that user, also template users should be disabled by default
+-issue#1174: Disable drag and drop when tree is not in edit mode
+-issue: Move Graph removal function to Graph API
+-feature: Make Graph and Data Source suggested naming more efficient
+-feature: Make tree editing responive
+-feature: Add support for DDERIVE and DCOUNTER to Cacti
 
 1.1.36
 -issue#934: Template names missing in graph management list
@@ -147,7 +157,6 @@ Cacti CHANGELOG
 -issue#1161: Graph View regex's are not preserved during automatic page refresh
 -issue#1162: Error messages are not display when editing a user
 -issue#1166: Default language was not correctly set when editing a user
--issue#1182: Support noAuthNoPriv for SNMPv3 in Cacti
 -issue: basename function undefined during upgrade to 1.0.x
 -issue: Storage API and translations required for Change password function
 -issue: ALTER IGNORE still throws an error when attempting to drop the primary key

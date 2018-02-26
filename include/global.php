@@ -170,6 +170,10 @@ if (!isset($resource_path)) {
 	$config['resource_path'] = $resource_path;
 }
 
+if (isset($input_whitelist)) {
+	$config['input_whitelist'] = $input_whitelist;
+}
+
 /* colors */
 $colors['dark_outline'] = '454E53';
 $colors['dark_bar'] = 'AEB4B7';
@@ -239,7 +243,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 }
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
-	$boost_records = db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id);
+	$boost_records = db_fetch_cell('SELECT COUNT(*)
+		FROM poller_output_boost', '', true, $local_db_cnn_id);
+
 	if ($boost_records > 0) {
 		$config['connection'] = 'recovery';
 	}
@@ -354,9 +360,9 @@ include_once($config['library_path'] . '/api_automation.php');
 if ($config['is_web']) {
 	function csrf_startup() {
 		global $config;
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/csrf/csrf-magic.js');
+		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
 	}
-	include_once($config['include_path'] . '/csrf/csrf-magic.php');
+	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 
 	if (isset_request_var('newtheme')) {
 		unset($_SESSION['selected_theme']);

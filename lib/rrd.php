@@ -27,7 +27,7 @@ define('MAX_FETCH_CACHE_SIZE', 5);
 
 if (read_config_option('storage_location')) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
-	set_include_path($config['include_path'] . '/phpseclib/');
+	set_include_path($config['include_path'] . '/vendor/phpseclib/');
 	include_once('Math/BigInteger.php');
 	include_once('Crypt/Base.php');
 	include_once('Crypt/Hash.php');
@@ -1142,6 +1142,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if (!is_graph_allowed($local_graph_id, $user)) {
 			return 'GRAPH ACCESS DENIED';
 		}
+	}
+
+	if (getenv('LANG') == '') {
+		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.utf8');
 	}
 
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */

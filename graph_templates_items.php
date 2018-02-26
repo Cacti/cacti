@@ -402,7 +402,7 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __('Graph Template Items [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
@@ -463,7 +463,7 @@ function item_edit() {
 
 		if (sizeof($graph_item_input_fields) > 0) {
 			foreach ($graph_item_input_fields as $field) {
-				$form_array[$field['column_name']]['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
+				$form_array[$field['column_name']]['friendly_name'] .= " [<a href='" . html_escape('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
 			}
 		}
 	}

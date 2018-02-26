@@ -1194,6 +1194,18 @@ function ds() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
+<<<<<<< HEAD
+		strURL  = 'data_sources.php';
+		strURL += '?host_id=' + $('#host_id').val();
+		strURL += '&site_id=' + $('#site_id').val();
+		strURL += '&rfilter=' + $('#rfilter').val();
+		strURL += '&rows=' + $('#rows').val();
+		strURL += '&status=' + $('#status').val();
+		strURL += '&profile=' + $('#profile').val();
+		strURL += '&orphans=' + $('#orphans').val();
+		strURL += '&template_id=' + $('#template_id').val();
+		strURL += '&header=false';
+=======
 		strURL  = 'data_sources.php' +
 			'?host_id=' + $('#host_id').val() +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
@@ -1203,6 +1215,7 @@ function ds() {
 			'&orphans=' + $('#orphans').val() +
 			'&template_id=' + $('#template_id').val() +
 			'&header=false';
+>>>>>>> refs/remotes/origin/develop
 		loadPageNoHeader(strURL);
 	}
 

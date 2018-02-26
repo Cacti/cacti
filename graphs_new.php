@@ -359,13 +359,13 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				WHERE id = ?',
 				array($graph_template_id));
 
-			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmlspecialchars($graph_template['graph_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', htmlspecialchars($graph_template_name)), false));
+			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template_name)), false));
 
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates)) {
 				foreach ($data_templates as $data_template) {
-					array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', htmlspecialchars($data_template['data_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
+					array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 
 					$data_template_items = db_fetch_assoc_prepared('SELECT
 						data_template_rrd.*
@@ -375,7 +375,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 						array($data_template['data_template_id']));
 
 					array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-					array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', htmlspecialchars($data_template['data_template_name'])), false, false, $snmp_query_id));
+					array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', html_escape($data_template['data_template_name'])), false, false, $snmp_query_id));
 				}
 			}
 
@@ -460,8 +460,8 @@ function graphs() {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
 
 		if (sizeof($host)) {
-			$header =  __('New Graphs for [ %s ]', htmlspecialchars($host['description']) . ' (' . htmlspecialchars($host['hostname']) . ') ' .
-			(!empty($host['host_template_id']) ? htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
+			$header =  __('New Graphs for [ %s ]', html_escape($host['description']) . ' (' . html_escape($host['hostname']) . ') ' .
+			(!empty($host['host_template_id']) ? html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
 		} else {
 			$header =  __('New Graphs for [ All Devices ]');
 			$host['id'] = -1;
@@ -585,7 +585,7 @@ function graphs() {
 								<?php
 								if (sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
-										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
 								}
 								?>
@@ -595,8 +595,8 @@ function graphs() {
 				</table>
 			</td>
 			<td class='textInfo right'>
-				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . get_request_var('host_id'));?>'><?php print __('Edit this Device');?></a><br>
-				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
+				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . get_request_var('host_id'));?>'><?php print __('Edit this Device');?></a><br>
+				<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 				<?php api_plugin_hook('graphs_new_top_links'); ?>
 			</td>
 		</tr>
@@ -928,7 +928,7 @@ function graphs() {
 						}
 
 						if (!sizeof($snmp_query_indexes)) {
-							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . htmlspecialchars('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . "</td></tr>\n";
+							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . "</td></tr>\n";
 						} else {
 							print "<tr class='tableHeader'>
 									$html_dq_header
