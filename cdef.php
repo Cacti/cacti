@@ -441,66 +441,85 @@ function item_edit() {
 		$current_type = '1';
 	}
 
-	form_alternate_row();?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('CDEF Item Type');?></span><br>
-			<?php print __('Choose what type of CDEF item this is.');?>
-		</td>
-		<td>
-			<select id='type_select'>
-				<?php
-				foreach ($cdef_item_types as $var => $val) {
-					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
-				}
-				?>
-			</select>
-            <script type='text/javascript'>
-			$(function() {
-				$('#type_select').unbind().change(function() {
-					strURL  = 'cdef.php?action=item_edit';
-					strURL += '&id=' + $('#id').val();
-					strURL += '&cdef_id=' + $('#cdef_id').val();
-					strURL += '&type_select=' + $('#type_select').val();
-					strURL += '&header=false';
-					loadPageNoHeader(strURL);
-				});
-			});
-            </script>
-		</td>
-	</tr>
-	<?php form_alternate_row();?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('CDEF Item Value');?></span><br>
-			<?php print __('Enter a value for this CDEF item.');?>
-		</td>
-		<td>
-			<?php
-			switch ($current_type) {
-			case '1':
-				form_dropdown('value', $cdef_functions, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '2':
-				form_dropdown('value', $cdef_operators, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '4':
-				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '5':
-				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef WHERE system=0 ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '6':
-				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', isset_request_var('id') ? get_request_var('id') : '0');
-				break;
-			}
-			?>
-		</td>
-	</tr>
-	<?php
+	$form_cdef = array(
+		'type_select' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('CDEF Item Type'),
+			'description'   => __('Choose what type of CDEF item this is.'),
+			'value'         => $current_type,
+			'array'         => $cdef_item_types
+		),
+		'value' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('CDEF Item Value'),
+			'description'   => __('Enter a value for this CDEF item.'),
+			'value'         => $cdef['value']
+		),
+		'id' => array(
+			'method'        => 'hidden',
+			'value'         => isset_request_var('id') ?  get_request_var('id') : '0',
+		),
+		'type' => array(
+			'method'        => 'hidden',
+			'value'         => $current_type
+		),
+		'cdef_id' => array(
+			'method'        => 'hidden',
+			'value'         => get_request_var('cdef_id')
+		),
+		'save_component_item' => array(
+			'method'        => 'hidden',
+			'value'         => '1'
+		)
+	);
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('type', $current_type, '');
-	form_hidden_box('cdef_id', get_request_var('cdef_id'), '');
-	form_hidden_box('save_component_item', '1', '');
+	switch ($current_type) {
+	case '1':
+		$form_cdef['value']['array'] = $cdef_functions;
+
+		break;
+	case '2':
+		$form_cdef['value']['array'] = $cdef_operators;
+
+		break;
+	case '4':
+		$form_cdef['value']['array'] = $custom_data_source_types;
+
+		break;
+	case '5':
+		$form_cdef['value']['method'] = 'drop_sql';
+		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE system=0 ORDER BY name';
+
+		break;
+	case '6':
+		$form_cdef['value']['method']     = 'textbox';
+		$form_cdef['value']['max_length'] = '255';
+		$form_cdef['value']['size']       = '30';
+
+		break;
+	}
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($form_cdef, (isset($cdef) ? $cdef : array()))
+		)
+	);
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#type_select').unbind().change(function() {
+			strURL  = 'cdef.php?action=item_edit';
+			strURL += '&id=' + $('#id').val();
+			strURL += '&cdef_id=' + $('#cdef_id').val();
+			strURL += '&type_select=' + $('#type_select').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		});
+	});
+	</script>
+	<?php
 
 	html_end_box();
 

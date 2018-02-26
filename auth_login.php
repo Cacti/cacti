@@ -47,7 +47,7 @@ if (read_config_option('auth_method') == '2') {
 		/* No user - Bad juju! */
 		$username = '';
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
-		auth_display_custom_error_message( __('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.') );
+		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
 		exit;
 	}
 } else {
@@ -110,8 +110,8 @@ if (get_nfilter_request_var('action') == 'login') {
 
 			$username = htmlspecialchars($username);
 
-			auth_display_custom_error_message( __('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username) );
-
+			display_custom_error_message(__('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username));
+			header('Location: index.php?header=false');
 			exit;
 		}
 
@@ -228,10 +228,9 @@ if (get_nfilter_request_var('action') == 'login') {
 			$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 		} else {
 			/* error */
+			display_custom_error_message(__('Template user %s does not exist.', read_config_option('user_template')));
 			cacti_log("LOGIN: Template user '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
-
-			auth_display_custom_error_message( __('Template user %s does not exist.', read_config_option('user_template')) );
-
+			header('Location: index.php?header=false');
 			exit;
 		}
 	}
@@ -251,10 +250,9 @@ if (get_nfilter_request_var('action') == 'login') {
 			$guest_user = true;
 		} else {
 			/* error */
-			auth_display_custom_error_message( __('Guest user %s does not exist.', read_config_option('guest_user')) );
-
+			display_custom_error_message(__('Guest user %s does not exist.', read_config_option('guest_user')));
 			cacti_log("LOGIN: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
-
+			header('Location: index.php?header=false');
 			exit;
 		}
 	}
@@ -288,7 +286,8 @@ if (get_nfilter_request_var('action') == 'login') {
 		$user_enabled = $user['enabled'];
 		if ($user_enabled != 'on') {
 			/* Display error */
-			auth_display_custom_error_message( __('Access Denied, user account disabled.') );
+			display_custom_error_message(__('Access Denied, user account disabled.'));
+			header('Location: index.php?header=false');
 			exit;
 		}
 
@@ -378,8 +377,9 @@ if (get_nfilter_request_var('action') == 'login') {
 	} else {
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */
-			auth_display_custom_error_message( __('Access Denied, please contact you Cacti Administrator.') );
+			display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
 			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
+			header('Location: index.php');
 			exit;
 		} else {
 			/* BAD username/password builtin and LDAP */
@@ -389,8 +389,9 @@ if (get_nfilter_request_var('action') == 'login') {
 }
 
 /* auth_display_custom_error_message - displays a custom error message to the browser that looks like
-     the pre-defined error messages
-   @arg $message - the actual text of the error message to display */
+   the pre-defined error messages
+   @arg $message - the actual text of the error message to display
+*/
 function auth_display_custom_error_message($message) {
 	global $config;
 
@@ -404,7 +405,7 @@ function auth_display_custom_error_message($message) {
 	html_common_header(__('Cacti'));
 	print "</head>\n";
 	print "<body>\n<br><br>\n";
-	display_custom_error_message($message);
+	print $message . "\n";
 	print "</body>\n</html>\n";
 }
 
@@ -453,8 +454,9 @@ function domains_login_process() {
 						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
 					} else {
 						/* error */
+						display_custom_error_message(__('Template user %s does not exist.', $template_username));
 						cacti_log("LOGIN: Template user '" . $template_username . "' does not exist.", false, 'AUTH');
-						auth_display_custom_error_message( __('Template user %s does not exist.', $template_username) );
+						header('Location: index.php?header=false');
 						exit;
 					}
 				}

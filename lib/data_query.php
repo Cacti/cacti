@@ -72,7 +72,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config['library_path'] . '/api_data_source.php');
 	include_once($config['library_path'] . '/utility.php');
 
-	query_debug_timer_offset('data_query', "Running data query [$snmp_query_id].");
+	query_debug_timer_offset('data_query', __('Running data query [%s].', $snmp_query_id));
 
 	$type_id = db_fetch_cell_prepared('SELECT data_input.type_id
 		FROM snmp_query
@@ -81,7 +81,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		WHERE snmp_query.id = ?', array($snmp_query_id));
 
 	if (isset($input_types[$type_id])) {
-		query_debug_timer_offset('data_query', "Found type = '" . $type_id . "' [" . $input_types[$type_id] . "].");
+		query_debug_timer_offset('data_query', __('Found type = \'%s\' [%s].', $type_id, $input_types[$type_id]));
 	}
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
@@ -103,14 +103,14 @@ function run_data_query($host_id, $snmp_query_id) {
 		if (isset($arguments['result']) && $arguments['result'] !== false) {
 			$result = $arguments['result'];
 		} else {
-			query_debug_timer_offset('data_query', "Unknown type = '$type_id'");
+			query_debug_timer_offset('data_query', __('Unknown type = \'%s\'.', $type_id));
 			unset($result);
 		}
 	}
 
 	/* update the sort cache */
 	update_data_query_sort_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', 'Update data query sort cache complete');
+	query_debug_timer_offset('data_query', __('Update data query sort cache complete'));
 
 	/* recalculate/change sort order */
 	$data_queries = db_fetch_assoc_prepared('SELECT dl.host_id, dl.snmp_query_id,
@@ -140,34 +140,34 @@ function run_data_query($host_id, $snmp_query_id) {
 			update_snmp_index_order($data_query);
 		}
 	}
-	query_debug_timer_offset('data_query', 'Updated data query index ordering');
+	query_debug_timer_offset('data_query', __('Updated data query index ordering'));
 
 	/* update the auto reindex cache */
 	update_reindex_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', 'Update re-index cache complete');
+	query_debug_timer_offset('data_query', __('Update re-index cache complete'));
 
 	/* update the the 'local' data query cache */
 	update_data_query_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', 'Update data query cache complete');
+	query_debug_timer_offset('data_query', __('Update data query cache complete'));
 
 	/* update the poller cache */
 	update_poller_cache_from_query($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', 'Update poller cache from query complete');
+	query_debug_timer_offset('data_query', __('Update poller cache from query complete'));
 
 	if ($config['poller_id'] == 1) {
 		/* perform any automation on reindex */
 		automation_execute_data_query($host_id, $snmp_query_id);
-		query_debug_timer_offset('data_query', 'Automation execute data query complete');
+		query_debug_timer_offset('data_query', __('Automation execute data query complete'));
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
-		query_debug_timer_offset('data_query', 'Plugin hooks complete');
+		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
 	} else {
 		if ($config['connection'] == 'online') {
 			automation_execute_data_query($host_id, $snmp_query_id);
-			query_debug_timer_offset('data_query', 'Automation execute data query complete');
+			query_debug_timer_offset('data_query', __('Automation execute data query complete'));
 
 			api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
-			query_debug_timer_offset('data_query', 'Plugin hooks complete');
+			query_debug_timer_offset('data_query', __('Plugin hooks complete'));
 		}
 
 		if (!isset($_SESSION)) {
@@ -186,6 +186,47 @@ function run_data_query($host_id, $snmp_query_id) {
 	return (isset($result) ? $result : true);
 }
 
+function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
+	$change_data_input = false;
+
+	if ($previous_input_id != $new_input_id) {
+		$change_data_input = true;
+	}
+
+	$data_templates = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT data_template_id
+			FROM data_local
+			WHERE snmp_query_id = ?',
+			array($snmp_query_id)),
+		'data_template_id', 'data_template_id'
+	);
+
+	if (sizeof($data_templates)) {
+		// Look for messed up templates
+		$data_inputs = db_fetch_assoc('SELECT DISTINCT data_input_id
+			FROM data_template_data
+			WHERE data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')');
+
+		if (sizeof($data_inputs) > 1) {
+			$change_data_input = true;
+		} elseif (sizeof($data_inputs) && $new_input_id != '' && $data_inputs[0]['data_input_id'] != $new_input_id) {
+			$change_data_input = true;
+		}
+
+		if ($change_data_input) {
+			if (sizeof($data_templates)) {
+				db_execute_prepared('UPDATE data_template_data
+					SET data_input_id = ?
+					WHERE data_input_id = ?
+					AND data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')',
+					array($new_input_id, $previous_input_id));
+
+				push_out_data_input_method($new_input_id);
+			}
+		}
+	}
+}
+
 function get_data_query_array($snmp_query_id) {
 	global $config, $data_query_xml_arrays;
 
@@ -200,11 +241,11 @@ function get_data_query_array($snmp_query_id) {
 		$xml_file_path = str_replace($search, $replace, $xml_file_path);
 
 		if (!file_exists($xml_file_path)) {
-			query_debug_timer_offset('data_query', "Could not find data query XML file at '$xml_file_path'");
+			query_debug_timer_offset('data_query', __('Could not find data query XML file at \'%s\'', $xml_file_path));
 			return array();
 		}
 
-		query_debug_timer_offset('data_query', "Found data query XML file at '$xml_file_path'");
+		query_debug_timer_offset('data_query', __('Found data query XML file at \'%s\'', $xml_file_path));
 
 		$data = implode('',file($xml_file_path));
 
@@ -252,9 +293,9 @@ function query_script_host($host_id, $snmp_query_id) {
 		}
 	} else {
 		if (isset($script_queries['script_server'])) {
-			query_debug_timer_offset('data_query', "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not supported");
+			query_debug_timer_offset('data_query', __('&lt;arg_num_indexes&gt; missing in XML file, \'Index Count Changed\' not supported'));
 		} else {
-			query_debug_timer_offset('data_query', "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated by counting arg_index entries");
+			query_debug_timer_offset('data_query', __('&lt;arg_num_indexes&gt; missing in XML file, \'Index Count Changed\' emulated by counting arg_index entries'));
 		}
 	}
 
@@ -331,7 +372,7 @@ function query_debug_timer_offset($section, $message) {
 	$total = $cur_time - $query_debug_start;
 	$query_debug_timer = $cur_time;
 
-	debug_log_insert($section, 'Total: ' . round($total, 2) . ', Delta: ' . round($delta, 2) . ', ' . $message);
+	debug_log_insert($section, __('Total: %f, Delta: %f, %s', round($total, 2), round($delta, 2), $message));
 
 	return $delta;
 }
@@ -346,7 +387,7 @@ function query_debug_timer_stop($section, $message) {
 	unset($query_debug_timer);
 	unset($query_debug_start);
 
-	debug_log_insert($section, 'Total: ' . round($total, 2) . ', Delta: ' . round($delta, 2) . ', ' . $message);
+	debug_log_insert($section, __('Total: %f, Delta: %f, %s', round($total, 2), round($delta, 2), $message));
 
 	return $delta;
 }
@@ -366,7 +407,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
 	if (!sizeof($host) || $host['hostname'] == '') {
-		query_debug_timer_offset('data_query', __('Invalid host_id: %s',$host_id));
+		query_debug_timer_offset('data_query', __('Invalid host_id: %s', $host_id));
 		return false;
 	}
 
@@ -1097,7 +1138,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 		}
 	}
 
-	query_debug_timer_offset('data_query', 'Update data source data query cache complete');
+	query_debug_timer_offset('data_query', __('Update data source data query cache complete'));
 }
 
 /* update_graph_data_query_cache - updates the local data query cache for a particular
@@ -1464,7 +1505,7 @@ function verify_index_order($raw_xml) {
 
 	/* invalid xml check */
 	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
-		query_debug_timer_offset('data_query', 'Error parsing XML file into an array.');
+		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
 

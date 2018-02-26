@@ -118,18 +118,28 @@ function form_save() {
 		get_filter_request_var('id');
 		get_filter_request_var('data_input_id');
 
-		$save['id'] = get_request_var('id');
-		$save['hash'] = get_hash_data_query(get_nfilter_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['xml_path'] = form_input_validate(get_nfilter_request_var('xml_path'), 'xml_path', '', false, 3);
+		$save['id']            = get_request_var('id');
+		$save['hash']          = get_hash_data_query(get_nfilter_request_var('id'));
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['description']   = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['xml_path']      = form_input_validate(get_nfilter_request_var('xml_path'), 'xml_path', '', false, 3);
 		$save['data_input_id'] = get_request_var('data_input_id');
+
+		// Detect changing input id
+		if (!empty($save['id'])) {
+			$previous_input_id = db_fetch_cell_prepared('SELECT data_input_id
+				FROM snmp_query
+				WHERE id = ?',
+				array($save['id']));
+		}
 
 		if (!is_error_message()) {
 			$snmp_query_id = sql_save($save, 'snmp_query');
 
 			if ($snmp_query_id) {
 				raise_message(1);
+
+				data_query_update_input_method($snmp_query_id, $previous_input_id, $save['data_input_id']);
 
 				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 			} else {
@@ -432,10 +442,10 @@ function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name)
 	if ($bad_seq > 0 || $dup_seq > 0) {
 		// resequence the list so it has no gaps, and 0 values will appear at the top
 		// since thats where they would have been displayed
-		db_execute_prepared("SET @seq = 0; 
-			UPDATE $table 
-			SET sequence = (@seq:=@seq+1) 
-			WHERE field_name = ? 
+		db_execute_prepared("SET @seq = 0;
+			UPDATE $table
+			SET sequence = (@seq:=@seq+1)
+			WHERE field_name = ?
 			AND snmp_query_graph_id = ?
 			ORDER BY sequence, id;",
 			array($field_name, $snmp_query_graph_id));
@@ -521,15 +531,15 @@ function data_query_item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$snmp_query_item = db_fetch_row_prepared('SELECT * 
-			FROM snmp_query_graph 
-			WHERE id = ?', 
+		$snmp_query_item = db_fetch_row_prepared('SELECT *
+			FROM snmp_query_graph
+			WHERE id = ?',
 			array(get_request_var('id')));
 	}
 
-	$snmp_query   = db_fetch_row_prepared('SELECT name, xml_path 
-		FROM snmp_query 
-		WHERE id = ?', 
+	$snmp_query   = db_fetch_row_prepared('SELECT name, xml_path
+		FROM snmp_query
+		WHERE id = ?',
 		array(get_request_var('snmp_query_id')));
 
 	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
@@ -572,80 +582,80 @@ function data_query_item_edit() {
 
 		$i = 0;
 		if (sizeof($data_templates)) {
-		foreach ($data_templates as $data_template) {
-			print "<tr class='tableHeader'>
-					<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
-				</tr>';
+			foreach ($data_templates as $data_template) {
+				print "<tr class='tableHeader'>
+						<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
+					</tr>';
 
-			$data_template_rrds = db_fetch_assoc_prepared('SELECT
-				dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
-				FROM data_template_rrd AS dtr
-				LEFT JOIN snmp_query_graph_rrd AS sqgr
-				ON sqgr.data_template_rrd_id = dtr.id
-				AND sqgr.snmp_query_graph_id = ?
-				AND sqgr.data_template_id = ?
-				WHERE dtr.data_template_id = ?
-				AND dtr.local_data_id = 0
-				ORDER BY dtr.data_source_name',
-				array(get_request_var('id'), $data_template['id'], $data_template['id']));
+				$data_template_rrds = db_fetch_assoc_prepared('SELECT
+					dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
+					FROM data_template_rrd AS dtr
+					LEFT JOIN snmp_query_graph_rrd AS sqgr
+					ON sqgr.data_template_rrd_id = dtr.id
+					AND sqgr.snmp_query_graph_id = ?
+					AND sqgr.data_template_id = ?
+					WHERE dtr.data_template_id = ?
+					AND dtr.local_data_id = 0
+					ORDER BY dtr.data_source_name',
+					array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
-			$i = 0;
-			if (sizeof($data_template_rrds)) {
-			foreach ($data_template_rrds as $data_template_rrd) {
-				if (empty($data_template_rrd['snmp_query_graph_id'])) {
-					$old_value = '';
-				} else {
-					$old_value = 'on';
-				}
+				$i = 0;
+				if (sizeof($data_template_rrds)) {
+					foreach ($data_template_rrds as $data_template_rrd) {
+						if (empty($data_template_rrd['snmp_query_graph_id'])) {
+							$old_value = '';
+						} else {
+							$old_value = 'on';
+						}
 
-				form_alternate_row();
-				?>
-					<td>
-						<table>
-							<tr>
-								<td style='width:200px;'>
-									<?php print __('Data Source');?>
-								</td>
-								<td style='width:200px;'>
-									<?php print $data_template_rrd['data_source_name'];?>
-								</td>
-								<td>
-									<?php
-									$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
-									$xml_outputs = array();
+						form_alternate_row();
+						?>
+						<td>
+							<table>
+								<tr>
+									<td style='width:200px;'>
+										<?php print __('Data Source');?>
+									</td>
+									<td style='width:200px;'>
+										<?php print $data_template_rrd['data_source_name'];?>
+									</td>
+									<td>
+										<?php
+										$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
+										$xml_outputs  = array();
 
-									if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
-										foreach ($snmp_queries['fields'] as $field_name => $field_array) {
-											if ($field_array['direction'] == 'output' || $field_array['direction'] == 'input-output') {
-												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+										if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
+											foreach ($snmp_queries['fields'] as $field_name => $field_array) {
+												if ($field_array['direction'] == 'output' || $field_array['direction'] == 'input-output') {
+													$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+												}
 											}
 										}
-									}
 
-									form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
-								</td>
-								<td class='right'>
-									<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
-								</td>
-							</tr>
-						</table>
-					</td>
-				<?php
-				form_end_row();
+										form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
+									</td>
+									<td class='right'>
+										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<?php
+						form_end_row();
+					}
+				}
 			}
-			}
-		}
 		}
 
 		html_end_box();
 
-		html_start_box( __('Suggested Values - Graphs'), '100%', '', '3', 'center', '');
+		html_start_box(__('Suggested Values - Graphs'), '100%', '', '3', 'center', '');
 
 		/* suggested values for graphs templates */
 		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
 			FROM snmp_query_graph_sv
 			WHERE snmp_query_graph_id = ?
-			ORDER BY field_name, sequence', 
+			ORDER BY field_name, sequence',
 			array(get_request_var('id')));
 
 		html_header(array(

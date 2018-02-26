@@ -548,6 +548,7 @@ function update_resource_cache($poller_id = 1) {
 		'resource' => array('recursive' => true,  'path' => $rpath),
 		'lib'      => array('recursive' => true,  'path' => $mpath . '/lib'),
 		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
+		'install'  => array('recursive' => true,  'path' => $mpath . '/install'),
 		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
 		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
 		'images'   => array('recursive' => true,  'path' => $mpath . '/images'),
@@ -646,17 +647,17 @@ function update_resource_cache($poller_id = 1) {
 		if (sizeof($cache)) {
 			foreach($cache as $item) {
 				if (!file_exists($item['path'])) {
-					db_execute_prepared('DELETE FROM poller_resource_cache 
-						WHERE path = ?', 
+					db_execute_prepared('DELETE FROM poller_resource_cache
+						WHERE path = ?',
 						array($item['path']));
 				}
 			}
 		}
 	} elseif ($poller_id > 1) {
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
-		$plugin_paths = db_fetch_assoc('SELECT resource_type, path 
-			FROM poller_resource_cache 
-			WHERE path LIKE "plugins/%" 
+		$plugin_paths = db_fetch_assoc('SELECT resource_type, path
+			FROM poller_resource_cache
+			WHERE path LIKE "plugins/%"
 			GROUP BY resource_type');
 
 		if (sizeof($plugin_paths)) {
@@ -828,9 +829,9 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum 
-			FROM poller_resource_cache 
-			WHERE resource_type = ?', 
+		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum
+			FROM poller_resource_cache
+			WHERE resource_type = ?',
 			array($type));
 
 		if (sizeof($entries)) {
@@ -958,9 +959,9 @@ function replicate_out($remote_poller_id = 1) {
 	global $config;
 
 	if ($config['poller_id'] == 1) {
-		$cinfo = db_fetch_row_prepared('SELECT * 
-			FROM poller 
-			WHERE id = ?', 
+		$cinfo = db_fetch_row_prepared('SELECT *
+			FROM poller
+			WHERE id = ?',
 			array($remote_poller_id));
 
 		if (!sizeof($cinfo)) {

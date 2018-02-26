@@ -2729,7 +2729,7 @@ class SSH2
                 return false;
             }
 
-            $response = $this->_get_binary_packet(true);
+            $response = $this->_get_binary_packet();
             if ($response === false) {
                 user_error('Connection closed by server');
                 return false;
@@ -3211,7 +3211,7 @@ class SSH2
      * @return string
      * @access private
      */
-    function _get_binary_packet($filter_channel_packets = false)
+    function _get_binary_packet($skip_channel_filter = false)
     {
         if (!is_resource($this->fsock) || feof($this->fsock)) {
             user_error('Connection closed prematurely');
@@ -3301,7 +3301,7 @@ class SSH2
             $this->last_packet = $current;
         }
 
-        return $this->_filter($payload, $filter_channel_packets);
+        return $this->_filter($payload, $skip_channel_filter);
     }
 
     /**
@@ -3313,7 +3313,7 @@ class SSH2
      * @return string
      * @access private
      */
-    function _filter($payload, $filter_channel_packets)
+    function _filter($payload, $skip_channel_filter)
     {
         switch (ord($payload[0])) {
             case NET_SSH2_MSG_DISCONNECT:
@@ -3326,7 +3326,7 @@ class SSH2
                 $this->bitmap = 0;
                 return false;
             case NET_SSH2_MSG_IGNORE:
-                $payload = $this->_get_binary_packet();
+                $payload = $this->_get_binary_packet($skip_channel_filter);
                 break;
             case NET_SSH2_MSG_DEBUG:
                 $this->_string_shift($payload, 2);
@@ -3335,17 +3335,18 @@ class SSH2
                 }
                 extract(unpack('Nlength', $this->_string_shift($payload, 4)));
                 $this->errors[] = 'SSH_MSG_DEBUG: ' . utf8_decode($this->_string_shift($payload, $length));
-                $payload = $this->_get_binary_packet();
+                $payload = $this->_get_binary_packet($skip_channel_filter);
                 break;
             case NET_SSH2_MSG_UNIMPLEMENTED:
                 return false;
             case NET_SSH2_MSG_KEXINIT:
                 if ($this->session_id !== false) {
+                    $this->send_kex_first = false;
                     if (!$this->_key_exchange($payload)) {
                         $this->bitmap = 0;
                         return false;
                     }
-                    $payload = $this->_get_binary_packet();
+                    $payload = $this->_get_binary_packet($skip_channel_filter);
                 }
         }
 
@@ -3368,10 +3369,10 @@ class SSH2
                 case NET_SSH2_MSG_CHANNEL_REQUEST:
                 case NET_SSH2_MSG_CHANNEL_CLOSE:
                 case NET_SSH2_MSG_CHANNEL_EOF:
-                    if ($filter_channel_packets) {
+                    if (!$skip_channel_filter && !empty($this->server_channels)) {
                         $this->binary_packet_buffer = $payload;
                         $this->_get_channel_packet(true);
-                        $payload = $this->_get_binary_packet(true);
+                        $payload = $this->_get_binary_packet();
                     }
                     break;
                 case NET_SSH2_MSG_GLOBAL_REQUEST: // see http://tools.ietf.org/html/rfc4254#section-4
@@ -3385,7 +3386,7 @@ class SSH2
                         return $this->_disconnect(NET_SSH2_DISCONNECT_BY_APPLICATION);
                     }
 
-                    $payload = $this->_get_binary_packet();
+                    $payload = $this->_get_binary_packet($skip_channel_filter);
                     break;
                 case NET_SSH2_MSG_CHANNEL_OPEN: // see http://tools.ietf.org/html/rfc4254#section-5.1
                     $this->_string_shift($payload, 1);
@@ -3448,7 +3449,7 @@ class SSH2
                                 return $this->_disconnect(NET_SSH2_DISCONNECT_BY_APPLICATION);
                             }
                     }
-                    $payload = $this->_get_binary_packet();
+                    $payload = $this->_get_binary_packet($skip_channel_filter);
                     break;
                 case NET_SSH2_MSG_CHANNEL_WINDOW_ADJUST:
                     $this->_string_shift($payload, 1);
@@ -3459,7 +3460,7 @@ class SSH2
                     extract(unpack('Nwindow_size', $this->_string_shift($payload, 4)));
                     $this->window_size_client_to_server[$channel]+= $window_size;
 
-                    $payload = ($this->bitmap & self::MASK_WINDOW_ADJUST) ? true : $this->_get_binary_packet();
+                    $payload = ($this->bitmap & self::MASK_WINDOW_ADJUST) ? true : $this->_get_binary_packet($skip_channel_filter);
             }
         }
 
@@ -3581,7 +3582,7 @@ class SSH2
                     $this->curTimeout-= $elapsed;
                 }
 
-                $response = $this->_get_binary_packet();
+                $response = $this->_get_binary_packet(true);
                 if ($response === false) {
                     user_error('Connection closed by server');
                     return false;
@@ -3620,6 +3621,82 @@ class SSH2
                         return false;
                     }
                     $this->window_size_server_to_client[$channel]+= $this->window_size;
+                }
+
+                switch ($type) {
+                    case NET_SSH2_MSG_CHANNEL_EXTENDED_DATA:
+                        /*
+                        if ($client_channel == NET_SSH2_CHANNEL_EXEC) {
+                            $this->_send_channel_packet($client_channel, chr(0));
+                        }
+                        */
+                        // currently, there's only one possible value for $data_type_code: NET_SSH2_EXTENDED_DATA_STDERR
+                        if (strlen($response) < 8) {
+                            return false;
+                        }
+                        extract(unpack('Ndata_type_code/Nlength', $this->_string_shift($response, 8)));
+                        $data = $this->_string_shift($response, $length);
+                        $this->stdErrorLog.= $data;
+                        if ($skip_extended || $this->quiet_mode) {
+                            continue 2;
+                        }
+                        if ($client_channel == $channel && $this->channel_status[$channel] == NET_SSH2_MSG_CHANNEL_DATA) {
+                            return $data;
+                        }
+                        if (!isset($this->channel_buffers[$channel])) {
+                            $this->channel_buffers[$channel] = array();
+                        }
+                        $this->channel_buffers[$channel][] = $data;
+
+                        continue 2;
+                    case NET_SSH2_MSG_CHANNEL_REQUEST:
+                        if ($this->channel_status[$channel] == NET_SSH2_MSG_CHANNEL_CLOSE) {
+                            continue 2;
+                        }
+                        if (strlen($response) < 4) {
+                            return false;
+                        }
+                        extract(unpack('Nlength', $this->_string_shift($response, 4)));
+                        $value = $this->_string_shift($response, $length);
+                        switch ($value) {
+                            case 'exit-signal':
+                                $this->_string_shift($response, 1);
+                                if (strlen($response) < 4) {
+                                    return false;
+                                }
+                                extract(unpack('Nlength', $this->_string_shift($response, 4)));
+                                $this->errors[] = 'SSH_MSG_CHANNEL_REQUEST (exit-signal): ' . $this->_string_shift($response, $length);
+                                $this->_string_shift($response, 1);
+                                if (strlen($response) < 4) {
+                                    return false;
+                                }
+                                extract(unpack('Nlength', $this->_string_shift($response, 4)));
+                                if ($length) {
+                                    $this->errors[count($this->errors)].= "\r\n" . $this->_string_shift($response, $length);
+                                }
+
+                                $this->_send_binary_packet(pack('CN', NET_SSH2_MSG_CHANNEL_EOF, $this->server_channels[$client_channel]));
+                                $this->_send_binary_packet(pack('CN', NET_SSH2_MSG_CHANNEL_CLOSE, $this->server_channels[$channel]));
+
+                                $this->channel_status[$channel] = NET_SSH2_MSG_CHANNEL_EOF;
+
+                                continue 3;
+                            case 'exit-status':
+                                if (strlen($response) < 5) {
+                                    return false;
+                                }
+                                extract(unpack('Cfalse/Nexit_status', $this->_string_shift($response, 5)));
+                                $this->exit_status = $exit_status;
+
+                                // "The client MAY ignore these messages."
+                                // -- http://tools.ietf.org/html/rfc4254#section-6.10
+
+                                continue 3;
+                            default:
+                                // "Some systems may not implement signals, in which case they SHOULD ignore this message."
+                                //  -- http://tools.ietf.org/html/rfc4254#section-6.9
+                                continue 3;
+                        }
                 }
 
                 switch ($this->channel_status[$channel]) {
@@ -3703,76 +3780,6 @@ class SSH2
                         $this->channel_buffers[$channel] = array();
                     }
                     $this->channel_buffers[$channel][] = $data;
-                    break;
-                case NET_SSH2_MSG_CHANNEL_EXTENDED_DATA:
-                    /*
-                    if ($client_channel == self::CHANNEL_EXEC) {
-                        $this->_send_channel_packet($client_channel, chr(0));
-                    }
-                    */
-                    // currently, there's only one possible value for $data_type_code: NET_SSH2_EXTENDED_DATA_STDERR
-                    if (strlen($response) < 8) {
-                        return false;
-                    }
-                    extract(unpack('Ndata_type_code/Nlength', $this->_string_shift($response, 8)));
-                    $data = $this->_string_shift($response, $length);
-                    $this->stdErrorLog.= $data;
-                    if ($skip_extended || $this->quiet_mode) {
-                        break;
-                    }
-                    if ($client_channel == $channel) {
-                        return $data;
-                    }
-                    if (!isset($this->channel_buffers[$channel])) {
-                        $this->channel_buffers[$channel] = array();
-                    }
-                    $this->channel_buffers[$channel][] = $data;
-                    break;
-                case NET_SSH2_MSG_CHANNEL_REQUEST:
-                    if (strlen($response) < 4) {
-                        return false;
-                    }
-                    extract(unpack('Nlength', $this->_string_shift($response, 4)));
-                    $value = $this->_string_shift($response, $length);
-                    switch ($value) {
-                        case 'exit-signal':
-                            $this->_string_shift($response, 1);
-                            if (strlen($response) < 4) {
-                                return false;
-                            }
-                            extract(unpack('Nlength', $this->_string_shift($response, 4)));
-                            $this->errors[] = 'SSH_MSG_CHANNEL_REQUEST (exit-signal): ' . $this->_string_shift($response, $length);
-                            $this->_string_shift($response, 1);
-                            if (strlen($response) < 4) {
-                                return false;
-                            }
-                            extract(unpack('Nlength', $this->_string_shift($response, 4)));
-                            if ($length) {
-                                $this->errors[count($this->errors)].= "\r\n" . $this->_string_shift($response, $length);
-                            }
-
-                            $this->_send_binary_packet(pack('CN', NET_SSH2_MSG_CHANNEL_EOF, $this->server_channels[$client_channel]));
-                            $this->_send_binary_packet(pack('CN', NET_SSH2_MSG_CHANNEL_CLOSE, $this->server_channels[$channel]));
-
-                            $this->channel_status[$channel] = NET_SSH2_MSG_CHANNEL_EOF;
-
-                            break;
-                        case 'exit-status':
-                            if (strlen($response) < 5) {
-                                return false;
-                            }
-                            extract(unpack('Cfalse/Nexit_status', $this->_string_shift($response, 5)));
-                            $this->exit_status = $exit_status;
-
-                            // "The client MAY ignore these messages."
-                            // -- http://tools.ietf.org/html/rfc4254#section-6.10
-
-                            break;
-                        default:
-                            // "Some systems may not implement signals, in which case they SHOULD ignore this message."
-                            //  -- http://tools.ietf.org/html/rfc4254#section-6.9
-                            break;
-                    }
                     break;
                 case NET_SSH2_MSG_CHANNEL_CLOSE:
                     $this->curTimeout = 0;

@@ -105,7 +105,7 @@ function api_networks_cancel($network_id){
 		array($network_id));
 }
 
-function api_networks_discover($network_id) {
+function api_networks_discover($network_id, $discover_debug) {
 	global $config;
 
 	$enabled   = db_fetch_cell_prepared('SELECT enabled
@@ -131,8 +131,10 @@ function api_networks_discover($network_id) {
 	if ($enabled == 'on') {
 		if (!$running) {
 			if ($config['poller_id'] == $poller_id) {
-				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force");
+				$args_debug = ($discover_debug) ? ' --debug' : '';
+				exec_background(read_config_option('path_php_binary'), '-q ' . read_config_option('path_webroot') . "/poller_automation.php --network=$network_id --force" . $args_debug);
 			} else {
+				$args_debug = ($discover_debug) ? '&debug=true' : '';
 				$hostname = db_fetch_cell_prepared('SELECT hostname
 					FROM poller
 					WHERE id = ?',
@@ -140,7 +142,7 @@ function api_networks_discover($network_id) {
 
 				$fgc_contextoption = get_default_contextoption(5);
 				$fgc_context       = stream_context_create($fgc_contextoption);
-				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id, false, $fgc_context);
+				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
 		} else {
 			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
@@ -288,8 +290,10 @@ function form_actions() {
 					api_networks_disable($item);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { /* run now */
+				$discover_debug = isset_request_var('discover_debug');
+
 				foreach($selected_items as $item) {
-					api_networks_discover($item);
+					api_networks_discover($item, $discover_debug);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
 				foreach($selected_items as $item) {
@@ -353,6 +357,8 @@ function form_actions() {
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to discover the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
+				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
+				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . "</label></p>
 			</td>
 		</tr>\n";
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */

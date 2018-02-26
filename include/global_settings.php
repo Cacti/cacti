@@ -35,24 +35,23 @@ $dir->close();
 
 /* tab information */
 $tabs = array(
-	'general' => __('General'),
-	'path' => __('Paths'),
-	'snmp' => __('Device Defaults'),
-	'poller' => __('Poller'),
-	'storage' => __('Data Storage'),
-	'visual' => __('Visual'),
+	'general'        => __('General'),
+	'path'           => __('Paths'),
+	'snmp'           => __('Device Defaults'),
+	'poller'         => __('Poller'),
+	'data'           => __('Data'),
+	'visual'         => __('Visual'),
 	'authentication' => __('Authentication'),
-	'dsstats' => __('Data Source Statistics'),
-	'boost' => __('Performance'),
-	'spikes' => __('Spikes'),
-	'mail' => __('Mail/Reporting/DNS'));
+	'boost'          => __('Performance'),
+	'spikes'         => __('Spikes'),
+	'mail'           => __('Mail/Reporting/DNS'));
 
 $tabs_graphs = array(
-	'general' => __('General Settings'),
-	'timespan' => __('Time Spanning/Shifting'),
+	'general'   => __('General Settings'),
+	'timespan'  => __('Time Spanning/Shifting'),
 	'thumbnail' => __('Graph Thumbnail Settings'),
-	'tree' => __('Tree Settings'),
-	'fonts' => __('Graph Fonts'));
+	'tree'      => __('Tree Settings'),
+	'fonts'     => __('Graph Fonts'));
 
 $spikekill_templates = array_rekey(db_fetch_assoc('SELECT DISTINCT gt.id, gt.name
 	FROM graph_templates AS gt
@@ -144,7 +143,7 @@ $settings = array(
 			),
 		'path_cactilog' => array(
 			'friendly_name' => __('Cacti Log Path'),
-			'description' => __('The path to your Cacti log file (if blank, defaults to <path_cacti>/log/cacti.log)'),
+			'description' => __('The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)'),
 			'method' => 'filepath',
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255'
@@ -194,20 +193,20 @@ $settings = array(
 			),
 		'rrd_autoclean' => array(
 			'friendly_name' => __('RRDfile Auto Clean'),
-			'description' => __('Automatically Delete, Archive, or Delete RRDfiles when removed from Cacti'),
+			'description' => __('Automatically archive or delete RRDfiles when their corresponding Data Sources are removed from Cacti'),
 			'method' => 'checkbox',
 			'default' => ''
  			),
 		'rrd_autoclean_method' => array(
 			'friendly_name' => __('RRDfile Auto Clean Method'),
-			'description' => __('The method used to Clean RRDfiles from Cacti after their deletion.'),
+			'description' => __('The method used to Clean RRDfiles from Cacti after their Data Sources are deleted.'),
 			'method' => 'drop_array',
 			'array' => array('1' => 'Delete', '3' => 'Archive'),
 			'default' => '1'
  			),
 		'rrd_archive' => array(
 			'friendly_name' => __('Archive directory'),
-			'description' => __('This is the directory where RRDfiles are <strong>moved</strong> for <strong>Archive</strong>'),
+			'description' => __('This is the directory where RRDfiles are <strong>moved</strong> for archiving'),
 			'method' => 'dirpath',
 			'default' => $config['base_path'] . '/rra/archive/',
 			'max_length' => 255,
@@ -345,7 +344,7 @@ $settings = array(
             'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
             'method' => 'drop_array',
-            'default' => 'en',
+            'default' => 'en-US',
             'array' => get_installed_locales()
             ),
         'i18n_auto_detection' => array(
@@ -454,6 +453,14 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
+		'default_template' => array(
+			'friendly_name' => __('Template'),
+			'description' => __('The default Device Template all new Devices.'),
+			'method' => 'drop_sql',
+			'default' => '1',
+			'none_value' => __('None'),
+			'sql' => 'SELECT id, name FROM host_template ORDER BY name',
+			),
 		'default_site' => array(
 			'friendly_name' => __('Site'),
 			'description' => __('The default Site for all new Devices.'),
@@ -491,28 +498,28 @@ $settings = array(
 			),
 		'snmp_version' => array(
 			'friendly_name' => __('Version'),
-			'description' => __('Default SNMP version for all new hosts.'),
+			'description' => __('Default SNMP version for all new Devices.'),
 			'method' => 'drop_array',
 			'default' => '2',
 			'array' => $snmp_versions,
 			),
 		'snmp_community' => array(
 			'friendly_name' => __('Community'),
-			'description' => __('Default SNMP read community for all new hosts.'),
+			'description' => __('Default SNMP read community for all new Devices.'),
 			'method' => 'textbox',
 			'default' => 'public',
 			'max_length' => '100',
 			),
 		'snmp_security_level' => array(
 			'friendly_name' => __('Security Level'),
-			'description' => __('The SNMP v3 Security Level.'),
+			'description' => __('Default SNMP v3 Security Level for all new Devices.'),
 			'method' => 'drop_array',
 			'default' => 'authPriv',
 			'array' => $snmp_security_levels,
 			),
 		'snmp_username' => array(
-			'friendly_name' => __('Username (v3)'),
-			'description' => __('The SNMP v3 Username for polling hosts.'),
+			'friendly_name' => __('Auth User (v3)'),
+			'description' => __('Default SNMP v3 Authorization User for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '',
 			'max_length' => '100',
@@ -520,13 +527,13 @@ $settings = array(
 		'snmp_auth_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Auth Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Authorization Protocol.'),
+			'description' => __('Default SNMPv3 Authorization Protocol for all new Devices.'),
 			'default' => 'MD5',
 			'array' => $snmp_auth_protocols,
 			),
 		'snmp_password' => array(
-			'friendly_name' => __('Password (v3)'),
-			'description' => __('The SNMP v3 Password for polling hosts.'),
+			'friendly_name' => __('Auth Passphrase (v3)'),
+			'description' => __('Default SNMP v3 Authorization Passphrase for all new Devices.'),
 			'method' => 'textbox_password',
 			'default' => '',
 			'max_length' => '100',
@@ -534,21 +541,21 @@ $settings = array(
 		'snmp_priv_protocol' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Privacy Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Protocol.'),
+			'description' => __('Default SNMPv3 Privacy Protocol for all new Devices.'),
 			'default' => 'DES',
 			'array' => $snmp_priv_protocols,
 			),
 		'snmp_priv_passphrase' => array(
 			'method' => 'textbox',
-			'friendly_name' => __('Privacy Passphrase (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+			'friendly_name' => __('Privacy Passphrase (v3).'),
+			'description' => __('Default SNMPv3 Privacy Passphrase for all new Devices.'),
 			'default' => '',
 			'max_length' => '200'
 			),
 		'snmp_context' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Context (v3)'),
-			'description' => __('Enter the SNMP v3 context to use for this device.'),
+			'description' => __('Enter the SNMP v3 Context for all new Devices.'),
 			'value' => '|arg1:snmp_context|',
 			'default' => '',
 			'max_length' => '64',
@@ -557,7 +564,7 @@ $settings = array(
 		'snmp_engine_id' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('SNMP Engine ID (v3)'),
-			'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+			'description' => __('Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
 			'value' => '|arg1:snmp_engine_id|',
 			'default' => '',
 			'max_length' => '64',
@@ -565,7 +572,7 @@ $settings = array(
 			),
 		'snmp_port' => array(
 			'friendly_name' => __('Port Number'),
-			'description' => __('Default UDP port to be used for SNMP Calls.  Typically, 161.'),
+			'description' => __('Default UDP Port for all new Devices.  Typically 161.'),
 			'method' => 'textbox',
 			'default' => '161',
 			'max_length' => '10',
@@ -573,7 +580,7 @@ $settings = array(
 			),
 		'snmp_timeout' => array(
 			'friendly_name' => __('Timeout'),
-			'description' => __('Default SNMP timeout in milli-seconds.'),
+			'description' => __('Default SNMP timeout in milli-seconds for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '500',
 			'max_length' => '10',
@@ -581,7 +588,7 @@ $settings = array(
 			),
 		'snmp_retries' => array(
 			'friendly_name' => __('Retries'),
-			'description' => __('The number of times the SNMP poller will attempt to reach the host before failing.'),
+			'description' => __('Default SNMP retries for all new Devices.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => '10',
@@ -594,21 +601,21 @@ $settings = array(
 			),
 		'availability_method' => array(
 			'friendly_name' => __('Downed Device Detection'),
-			'description' => __('The method Cacti will use to determine if a host is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>'),
+			'description' => __('Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a Device is available for polling.  <br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</i>'),
 			'method' => 'drop_array',
 			'default' => AVAIL_SNMP,
 			'array' => $availability_options,
 			),
 		'ping_method' => array(
 			'friendly_name' => __('Ping Type'),
-			'description' => __('The type of ping packet to send.  <br><i>NOTE: ICMP requires that the Cacti Service ID have root privileges in UNIX/Linux.</i>'),
+			'description' => __('Default Ping type for all new Devices.</i>'),
 			'method' => 'drop_array',
 			'default' => PING_UDP,
 			'array' => $ping_methods,
 			),
 		'ping_port' => array(
 			'friendly_name' => __('Ping Port'),
-			'description' => __('When choosing either TCP or UDP Ping, which port should be checked for availability of the host prior to polling.'),
+			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a port not reachable error to determine if the Device is up or not.'),
 			'method' => 'textbox',
 			'default' => '23',
 			'max_length' => '10',
@@ -616,7 +623,7 @@ $settings = array(
 			),
 		'ping_timeout' => array(
 			'friendly_name' => __('Ping Timeout Value'),
-			'description' => __('The timeout value to use for host ICMP and UDP pinging.  This host SNMP timeout value applies for SNMP pings.'),
+			'description' => __('Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SMMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows.'),
 			'method' => 'textbox',
 			'default' => '400',
 			'max_length' => '10',
@@ -624,7 +631,7 @@ $settings = array(
 			),
 		'ping_retries' => array(
 			'friendly_name' => __('Ping Retry Count'),
-			'description' => __('The number of times Cacti will attempt to ping a host before failing.'),
+			'description' => __('The number of times Cacti will attempt to ping a Device before marking it as down.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
@@ -637,7 +644,7 @@ $settings = array(
 			),
 		'ping_failure_count' => array(
 			'friendly_name' => __('Failure Count'),
-			'description' => __('The number of polling intervals a host must be down before logging an error and reporting host as down.'),
+			'description' => __('The number of polling intervals a Device must be down before logging an error and reporting Device as down.'),
 			'method' => 'textbox',
 			'default' => '2',
 			'max_length' => '10',
@@ -645,7 +652,7 @@ $settings = array(
 			),
 		'ping_recovery_count' => array(
 			'friendly_name' => __('Recovery Count'),
-			'description' => __('The number of polling intervals a host must remain up before returning host to an up status and issuing a notice.'),
+			'description' => __('The number of polling intervals a Device must remain up before returning Device to an up status and issuing a notice.'),
 			'method' => 'textbox',
 			'default' => '3',
 			'max_length' => '10',
@@ -973,7 +980,7 @@ $settings = array(
 			),
 		'spine_log_level' => array(
 			'friendly_name' => __('Invalid Data Logging'),
-			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per host; and \'None\', which does not provide error counts.'),
+			'description' => __('How would you like Spine output errors logged?  The options are: \'Detailed\' which is similar to cmd.php logging; \'Summary\' which provides the number of output errors per Device; and \'None\', which does not provide error counts.'),
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
@@ -1310,7 +1317,7 @@ $settings = array(
 			'default' => 'http://' . gethostname()
 			),
 		'settings_email_header' => array(
-			'friendly_name' => __('Emailing Options<div id="emailtest" class="emailtest textSubHeaderDark">Send a Test Email</div>'),
+			'friendly_name' => __('Emailing Options<div id="emailtest" class="emailtest">Send a Test Email</div>'),
 			'method' => 'spacer',
 			),
 		'settings_test_email' => array(
@@ -1473,57 +1480,6 @@ $settings = array(
 			),
 		),
 	'dsstats' => array(
-		'dsstats_hq_header' => array(
-			'friendly_name' => __('Data Sources Statistics'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'dsstats_enable' => array(
-			'friendly_name' => __('Enable Data Source Statistics Collection'),
-			'description' => __('Should Data Source Statistics be collected for this Cacti system?'),
-			'method' => 'checkbox',
-			'default' => ''
-			),
-		'dsstats_daily_interval' => array(
-			'friendly_name' => __('Daily Update Frequency'),
-			'description' => __('How frequent should Daily Stats be updated?'),
-			'default' => '60',
-			'method' => 'drop_array',
-			'array' => $dsstats_refresh_interval
-			),
-		'dsstats_hourly_duration' => array(
-			'friendly_name' => __('Hourly Average Window'),
-			'description' => __('The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables'),
-			'default' => '60',
-			'method' => 'drop_array',
-			'array' => $dsstats_hourly_avg
-			),
-		'dsstats_major_update_time' => array(
-			'friendly_name' => __('Maintenance Time'),
-			'description' => __('What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]'),
-			'method' => 'textbox',
-			'default' => '12:00am',
-			'max_length' => '20',
-			'size' => '10'
-			),
-		'dsstats_poller_mem_limit' => array(
-			'friendly_name' => __('Memory Limit for Data Source Statistics Data Collector'),
-			'description' => __('The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller'),
-			'method' => 'drop_array',
-			'default' => '1024',
-			'array' => $dsstats_max_memory
-			),
-		'dsstats_debug_header' => array(
-			'friendly_name' => __('Debugging'),
-			'method' => 'spacer',
-			'collapsible' => 'true',
-			),
-		'dsstats_partial_retrieve' => array(
-			'friendly_name' => __('Enable Partial Reference Data Retrieve'),
-			'description' => __('If using a large system, it may be beneficial for you to only gather data as needed during Cacti poller passes.  If you check this box, Data Source Statistics will gather data this way.'),
-			'method' => 'checkbox',
-			'default' => ''
-			)
 		),
 	'boost' => array(
 		'boost_hq_header' => array(
@@ -1625,9 +1581,49 @@ $settings = array(
 			'max_length' => '255'
 			)
 		),
-	'storage' => array(
-		'general_header' => array(
-			'friendly_name' => __('General'),
+	'data' => array(
+		'dsstats_hq_header' => array(
+			'friendly_name' => __('Data Sources Statistics'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'dsstats_enable' => array(
+			'friendly_name' => __('Enable Data Source Statistics Collection'),
+			'description' => __('Should Data Source Statistics be collected for this Cacti system?'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
+		'dsstats_daily_interval' => array(
+			'friendly_name' => __('Daily Update Frequency'),
+			'description' => __('How frequent should Daily Stats be updated?'),
+			'default' => '60',
+			'method' => 'drop_array',
+			'array' => $dsstats_refresh_interval
+			),
+		'dsstats_hourly_duration' => array(
+			'friendly_name' => __('Hourly Average Window'),
+			'description' => __('The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too high can result in very large memory tables'),
+			'default' => '60',
+			'method' => 'drop_array',
+			'array' => $dsstats_hourly_avg
+			),
+		'dsstats_major_update_time' => array(
+			'friendly_name' => __('Maintenance Time'),
+			'description' => __('What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]'),
+			'method' => 'textbox',
+			'default' => '12:00am',
+			'max_length' => '20',
+			'size' => '10'
+			),
+		'dsstats_poller_mem_limit' => array(
+			'friendly_name' => __('Memory Limit for Data Source Statistics Data Collector'),
+			'description' => __('The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller'),
+			'method' => 'drop_array',
+			'default' => '1024',
+			'array' => $dsstats_max_memory
+			),
+		'storage_header' => array(
+			'friendly_name' => __('Data Storage Settings'),
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
@@ -1639,8 +1635,8 @@ $settings = array(
 			'array' => array ( __('Local'), __('RRDtool Proxy Server') ),
 			),
 		'extended_paths' => array(
-			'friendly_name' => __('Structured RRD Path (/host_id/local_data_id.rrd)'),
-			'description' => __('Use a separate subfolder for each hosts RRD files.'),
+			'friendly_name' => __('Structured RRD Paths'),
+			'description' => __('Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd.'),
 			'method' => 'checkbox'
 			),
 		'rrdp_header' => array(

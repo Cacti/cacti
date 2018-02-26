@@ -402,58 +402,76 @@ function vdef_item_edit() {
 		$current_type = CVDEF_ITEM_TYPE_FUNCTION;
 	}
 
-	form_alternate_row();
-	print '<td style="width:50%"><span class="textEditTitle">' . __('VDEF Item Type') . '</span><br>' . __('Choose what type of VDEF item this is.') .'</td>';
-	?>
-		<td>
-			<select id='type_select'>
-				<?php
-				foreach ($vdef_item_types as $var => $val) {
-					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
-				}
-				?>
-			</select>
-			<script type='text/javascript'>
-			$(function() {
-				$('#type_select').unbind().change(function() {
-					strURL = 'vdef.php?action=item_edit';
-					strURL += '&header=false';
-					strURL += '&id=<?php print get_request_var('id');?>';
-					strURL += '&vdef_id=<?php print get_request_var('vdef_id');?>';
-					strURL += '&type_select='+$('#type_select').val();
-					loadPageNoHeader(strURL);
-				});
-			});
-			</script>
-		</td>
-	<?php
-	form_end_row();
+	$form_vdef = array(
+		'type_select' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('VDEF Item Type'),
+			'description'   => __('Choose what type of VDEF item this is.'),
+			'value'         => $current_type,
+			'array'         => $vdef_item_types
+		),
+		'value' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('VDEF Item Value'),
+			'description'   => __('Enter a value for this VDEF item.'),
+			'value'         => $vdef['value']
+		),
+		'id' => array(
+			'method'        => 'hidden',
+			'value'         => isset_request_var('id') ?  get_request_var('id') : '0',
+		),
+		'type' => array(
+			'method'        => 'hidden',
+			'value'         => $current_type
+		),
+		'vdef_id' => array(
+			'method'        => 'hidden',
+			'value'         => get_request_var('vdef_id')
+		),
+		'save_component_item' => array(
+			'method'        => 'hidden',
+			'value'         => '1'
+		)
+	);
 
-	form_alternate_row();
-	print '<td style="width:50%;"><span class="textEditTitle">' . __('VDEF Item Value') . '</span><br>' . __('Enter a value for this VDEF item.') . '</td>';
-	?>
-		<td>
-			<?php
-			switch ($current_type) {
-			case '1':
-				form_dropdown('value', $vdef_functions, '', '', (isset($vdef['value']) ? $vdef['value'] : ''), '', '');
-				break;
-			case '4':
-				form_dropdown('value', $custom_vdef_data_source_types, '', '', (isset($vdef['value']) ? $vdef['value'] : ''), '', '');
-				break;
-			case '6':
-				form_text_box('value', (isset($vdef['value']) ? $vdef['value'] : ''), '', '255', 30, 'text', (isset_request_var('id') ? get_request_var('id') : '0'));
-				break;
-			}
-			?>
-		</td>
-	<?php
-	form_end_row();
+	switch ($current_type) {
+	case '1':
+		$form_vdef['value']['array'] = $vdef_functions;
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('type', $current_type, '');
-	form_hidden_box('vdef_id', get_request_var('vdef_id'), '');
-	form_hidden_box('save_component_item', '1', '');
+		break;
+	case '4':
+		$form_vdef['value']['array'] = $custom_vdef_data_source_types;
+
+		break;
+	case '6':
+		$form_vdef['value']['method']     = 'textbox';
+		$form_vdef['value']['max_length'] = '255';
+		$form_vdef['value']['size']       = '30';
+
+		break;
+	}
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($form_vdef, (isset($vdef) ? $vdef : array()))
+		)
+	);
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#type_select').unbind().change(function() {
+			strURL  = 'vdef.php?action=item_edit';
+			strURL += '&id=' + $('#id').val();
+			strURL += '&vdef_id=' + $('#vdef_id').val();
+			strURL += '&type_select=' + $('#type_select').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		});
+	});
+	</script>
+	<?php
 
 	html_end_box();
 

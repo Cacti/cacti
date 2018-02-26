@@ -78,7 +78,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>\n";
 		if ($add_text != '' && !is_array($add_text)) {
-			print "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
+			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
 				if (sizeof($add_text)) {
@@ -107,7 +107,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 							$title = $add_label;
 						}
 
-						print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
@@ -1908,6 +1908,10 @@ function html_spikekill_js() {
 			}
 		});
 
+		$('span.spikekill').children().contextmenu(function() {
+			return false;
+		});
+
 		$('span.spikekill').unbind().click(function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
@@ -2064,13 +2068,13 @@ function html_common_header($title, $selectedTheme = '') {
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css'); 
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css'); 
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css'); 
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/font-awesome.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');

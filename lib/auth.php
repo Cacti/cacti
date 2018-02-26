@@ -67,7 +67,8 @@ function set_auth_cookie($user) {
 	db_execute_prepared('REPLACE INTO user_auth_cache
 		(user_id, hostname, last_update, token)
 		VALUES
-		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
+		(?, ?, NOW(), ?);',
+		array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
 
 	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 }
@@ -110,6 +111,7 @@ function check_auth_cookie() {
 							(?, ?, 2, ?, NOW())',
 							array($user, $user_info['id'], $_SERVER['REMOTE_ADDR'])
 						);
+
 						return $user_info['id'];
 					}
 				}
@@ -167,6 +169,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		} else {
 			/* User already exists, duplicate users are bad */
 			raise_message(19);
+
 			return false;
 		}
 	} else {
@@ -1127,7 +1130,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	return $graphs;
 }
 
-function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
+function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -1681,37 +1684,40 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 }
 
 function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
-	$templates = get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id);
+	$templates = array_rekey(get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id), 'id', 'name');
 
 	if (!sizeof($templates)) {
 		return array();
 	}
 
-	$new_templates = array();
-	$sql_where     = ($sql_where != '' ? ' AND ' : '') . $sql_where;
-
-	foreach ($templates as $key => $t) {
-		$dqg = db_fetch_assoc_prepared("SELECT DISTINCT sqg.id, name
-			FROM snmp_query_graph AS sqg
-			INNER JOIN graph_local AS gl
-			ON gl.snmp_query_graph_id=sqg.id
-			WHERE sqg.graph_template_id = ?
-			$sql_where
-			ORDER BY name",
-			array($t['id'])
-		);
-
-		if (sizeof($dqg)) {
-			unset($templates[$key]);
-			foreach ($dqg as $t) {
-				$new_templates[] = array('id' => 'dq_' . $t['id'], 'name' => $t['name']);
-			}
-		} else {
-			$new_templates[] = array('id' => 'cg_' . $t['id'], 'name' => $t['name']);
-		}
+	if ($sql_where != '') {
+		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
+	} else {
+		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
 	}
 
-	return $new_templates;
+	if ($limit != '') {
+		$sql_limit = 'LIMIT ' . $limit;
+	} else {
+		$sql_limit = '';
+	}
+
+	$sql_order = 'ORDER BY ' . $order_by;
+
+	$templates = db_fetch_assoc("SELECT DISTINCT
+		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
+		IF(snmp_query_graph_id=0, gt.name, sqg.name) AS name
+		FROM graph_local AS gl
+		INNER JOIN graph_templates AS gt
+		ON gt.id=gl.graph_template_id
+		LEFT JOIN snmp_query_graph AS sqg
+		ON gl.snmp_query_graph_id=sqg.id
+		AND gl.graph_template_id=sqg.graph_template_id
+		$sql_where
+		$sql_order
+		$sql_limit");
+
+	return $templates;
 }
 
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
@@ -1825,6 +1831,7 @@ function secpass_login_process($username) {
 				AND realm = 0
 				AND enabled = 'on'",
 				array($username));
+
 			if (isset($user['username'])) {
 				$unlock = intval(read_config_option('secpass_unlocktime'));
 				if ($unlock > 1440) {
@@ -1835,6 +1842,7 @@ function secpass_login_process($username) {
 				$secs_fail = time() - $user['lastfail'];
 
 				cacti_log('DEBUG: User \'' . $username . '\' secs_fail = ' . $secs_fail . ', secs_unlock = ' . $secs_unlock, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 				if ($unlock > 0 && ($secs_fail > $secs_unlock)) {
 					db_execute_prepared("UPDATE user_auth
 						SET lastfail = 0, failed_attempts = 0, locked = ''
@@ -1842,16 +1850,18 @@ function secpass_login_process($username) {
 						AND realm = 0
 						AND enabled = 'on'",
 						array($username));
+
 					$user['failed_attempts'] = $user['lastfail'] = 0;
 					$user['locked'] = '';
 				}
 
 				$valid_pass = compat_password_verify($p, $user['password']);
-				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,false,'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				if (!$valid_pass) {
 					$failed = intval($user['failed_attempts']) + 1;
 					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
+
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
 							SET locked = 'on'
@@ -1859,9 +1869,12 @@ function secpass_login_process($username) {
 							AND realm = 0
 							AND enabled = 'on'",
 							array($username));
+
 						$user['locked'] = 'on';
 					}
+
 					$user['lastfail'] = time();
+
 					db_execute_prepared("UPDATE user_auth
 						SET lastfail = ?, failed_attempts = ?
 						WHERE username = ?
@@ -1870,13 +1883,17 @@ function secpass_login_process($username) {
 						array($user['lastfail'], $failed, $username));
 
 					if ($user['locked'] != '') {
-						auth_display_custom_error_message('This account has been locked.');
+						display_custom_error_message(__('This account has been locked.'));
+						header('Location: index.php?header=false');
 						exit;
 					}
+
 					return false;
 				}
+
 				if ($user['locked'] != '') {
-					auth_display_custom_error_message('This account has been locked.');
+					display_custom_error_message(__('This account has been locked.'));
+					header('Location: index.php?header=false');
 					exit;
 				}
 			}
@@ -1886,14 +1903,19 @@ function secpass_login_process($username) {
 	// Check if old password doesn't meet specifications and must be changed
 	if (read_config_option('secpass_forceold') == 'on') {
 		$p = get_nfilter_request_var('login_password');
-		if (secpass_check_pass($p) != 'ok') {
+		$message = secpass_check_pass($p);
+
+		if ($message != 'ok') {
 			db_execute_prepared("UPDATE user_auth
 				SET must_change_password = 'on'
 				WHERE username = ?
 				AND realm = 0
 				AND enabled = 'on'",
 				array($username));
-			return true;
+
+			display_custom_error_message($message);
+			header('Location: index.php?header=false');
+			exit;
 		}
 	}
 
@@ -1906,6 +1928,7 @@ function secpass_login_process($username) {
 			AND enabled = 'on'",
 			array(time(), $username));
 	}
+
 	return true;
 }
 
@@ -1958,8 +1981,9 @@ function secpass_check_history($id, $p) {
 
 		if (!empty($passes)) {
 			foreach ($passes as $hash) {
-				if (compat_password_verify($p, $hash))
+				if (compat_password_verify($p, $hash)) {
 					return false;
+				}
 			}
 		}
 	}
@@ -2000,7 +2024,11 @@ function rsa_check_keypair() {
    @arg $user_id - (int) the id of the current user
    @returns - null */
 function reset_group_perms($group_id) {
-	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id FROM user_auth_group_members WHERE group_id = ?', array($group_id)), 'user_id', 'user_id');
+	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
+		FROM user_auth_group_members
+		WHERE group_id = ?',
+		array($group_id)), 'user_id', 'user_id');
+
 	if (sizeof($users)) {
 		db_execute('UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1

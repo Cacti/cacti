@@ -52,7 +52,7 @@ function rrdtool_set_language($lang = -1) {
 	$prev_lang = getenv('LANG');
 
 	if ($lang == -1) {
-		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.UTF-8');
+		putenv('LANG=' . CACTI_LOCALE . '.UTF-8');
 	} else {
 		putenv('LANG=en_EN.UTF-8');
 	}
@@ -3398,7 +3398,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	} else {
 		foreach($strings as $string) {
 			if (trim($string) != '') {
-				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
+				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $text_color)) {
 					cacti_log('Text overlay failed');
 				}
 				$ypos -= ($font_size + $padding);

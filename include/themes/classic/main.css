@@ -512,6 +512,7 @@ label {
 	display:block;
 	float:right;
 	text-align:right;
+	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
@@ -1477,6 +1478,8 @@ legend {
 	width: 100%;
 	height: 16px;
 	margin-top: auto;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .navBarNavigationNext i.ui-icon {
