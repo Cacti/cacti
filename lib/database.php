@@ -70,12 +70,12 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$cnn_id->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
 			$bad_modes = array(
-				'STRICT_TRANS_TABLES', 
-				'STRICT_ALL_TABLES', 
-				'TRADITIONAL', 
-				'NO_ZERO_DATE', 
-				'NO_ZERO_IN_DATE', 
-				'ONLY_FULL_GROUP_BY', 
+				'STRICT_TRANS_TABLES',
+				'STRICT_ALL_TABLES',
+				'TRADITIONAL',
+				'NO_ZERO_DATE',
+				'NO_ZERO_IN_DATE',
+				'ONLY_FULL_GROUP_BY',
 				'NO_AUTO_VALUE_ON_ZERO'
 			);
 

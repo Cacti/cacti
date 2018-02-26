@@ -3629,7 +3629,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config;
 
-	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
 
 	// Set the to information
 	if ($to == '') {
@@ -3919,7 +3919,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
-	include_once($config['include_path'] . '/phpmailer/PHPMailerAutoload.php');
+	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
 
 	//Create a new SMTP instance
 	$smtp = new SMTP;
@@ -5127,6 +5127,10 @@ function get_nonsystem_data_input($data_input_id) {
 	return $diid;
 }
 
+function get_rrdtool_version() {
+	return str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
+}
+
 function get_md5_hash($path) {
 	if (!isset($_SESSION['md5_' . $path]) || !strlen($_SESSION['md5_' . $path])) {
 		$md5 = db_fetch_cell_prepared('SELECT md5sum
@@ -5155,3 +5159,4 @@ function get_md5_include_css($path) {
 
 	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
+

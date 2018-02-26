@@ -22,18 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
-function do_hook ($name) {
+function do_hook($name) {
 	$data = func_get_args();
-	$data = api_plugin_hook ($name, $data);
+	$data = api_plugin_hook($name, $data);
 	return $data;
 }
 
 function do_hook_function($name,$parm=NULL) {
-	return api_plugin_hook_function ($name, $parm);
+	return api_plugin_hook_function($name, $parm);
 }
 
-function api_user_realm_auth ($filename = '') {
-	return api_plugin_user_realm_auth ($filename);
+function api_user_realm_auth($filename = '') {
+	return api_plugin_user_realm_auth($filename);
 }
 
 /**
@@ -41,8 +41,9 @@ function api_user_realm_auth ($filename = '') {
  * @param string $name Name of hook to fire
  * @return mixed $data
  */
-function api_plugin_hook ($name) {
+function api_plugin_hook($name) {
 	global $config, $plugin_hooks, $plugins_integrated;
+
 	$args = func_get_args();
 	$ret = '';
 
@@ -81,7 +82,7 @@ function api_plugin_hook ($name) {
 	return $args;
 }
 
-function api_plugin_hook_function ($name, $parm = NULL) {
+function api_plugin_hook_function($name, $parm = NULL) {
 	global $config, $plugin_hooks, $plugins_integrated;
 
 	$ret = $parm;
@@ -130,8 +131,14 @@ function api_plugin_run_plugin_hook($hook, $plugin, $function, $args) {
 
 		$required_capabilities = array(
 			// Poller related
+			'poller_top'               => array('remote_collect'), // Poller Top
 			'poller_bottom'            => array('remote_collect'), // Poller execution, api_plugin_hook
 			'update_host_status'       => array('remote_collect'), // Processing poller output, api_plugin_hook
+			'poller_output'            => array('remote_collect'), // Poller output activities
+			'poller_command_args'      => array('remote_collect'), // Command line arguments
+			'cacti_stats_update'       => array('remote_collect'), // Updating statistics
+			'poller_finishing'         => array('remote_collect'), // Poller post processing
+			'poller_exiting'           => array('remote_collect'), // Poller exception handling
 
 			// GUI Related
 			'page_head'                => array('online_view', 'offline_view'), // Navigation, api_plugin_hook
@@ -251,7 +258,10 @@ function api_plugin_get_dependencies($plugin) {
 }
 
 function api_plugin_installed($plugin) {
-	$plugin_data = db_fetch_row_prepared('SELECT directory, status FROM plugin_config WHERE directory = ?', array($plugin));
+	$plugin_data = db_fetch_row_prepared('SELECT directory, status
+		FROM plugin_config
+		WHERE directory = ?',
+		array($plugin));
 
 	if (sizeof($plugin_data)) {
 		if ($plugin_data['status'] >= 1) {
@@ -338,7 +348,7 @@ function api_plugin_status_run($hook, $required_capabilities, $plugin_capabiliti
 	return false;
 }
 
-function api_plugin_db_table_create ($plugin, $table, $data) {
+function api_plugin_db_table_create($plugin, $table, $data) {
 	global $config;
 
 	include_once($config['library_path'] . '/database.php');
@@ -410,7 +420,7 @@ function api_plugin_db_table_create ($plugin, $table, $data) {
 	}
 }
 
-function api_plugin_db_changes_remove ($plugin) {
+function api_plugin_db_changes_remove($plugin) {
 	$tables = db_fetch_assoc_prepared("SELECT `table`
 		FROM plugin_db_changes
 		WHERE plugin = ?
@@ -474,7 +484,7 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 }
 
-function api_plugin_install ($plugin) {
+function api_plugin_install($plugin) {
 	global $config;
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
@@ -523,7 +533,10 @@ function api_plugin_install ($plugin) {
 		$version = $info['version'];
 	}
 
-	db_execute_prepared('INSERT INTO plugin_config (directory, name, author, webpage, version) VALUES (?, ?, ?, ?, ?)', array($plugin, $name, $author, $webpage, $version));
+	db_execute_prepared('INSERT INTO plugin_config
+		(directory, name, author, webpage, version)
+		VALUES (?, ?, ?, ?, ?)',
+		array($plugin, $name, $author, $webpage, $version));
 
 	$function = 'plugin_' . $plugin . '_install';
 	if (function_exists($function)){
@@ -539,7 +552,7 @@ function api_plugin_install ($plugin) {
 	}
 }
 
-function api_plugin_uninstall ($plugin) {
+function api_plugin_uninstall($plugin) {
 	global $config;
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 	// Run the Plugin's Uninstall Function first
@@ -563,28 +576,28 @@ function api_plugin_check_config ($plugin) {
 	return true;
 }
 
-function api_plugin_enable ($plugin) {
-	$ready = api_plugin_check_config ($plugin);
+function api_plugin_enable($plugin) {
+	$ready = api_plugin_check_config($plugin);
 	if ($ready) {
-		api_plugin_enable_hooks ($plugin);
+		api_plugin_enable_hooks($plugin);
 		db_execute_prepared('UPDATE plugin_config SET status = 1 WHERE directory = ?', array($plugin));
 	}
 }
 
-function api_plugin_is_enabled ($plugin) {
+function api_plugin_is_enabled($plugin) {
 	$status = db_fetch_cell_prepared('SELECT status FROM plugin_config WHERE directory = ?', array($plugin), false);
 	if ($status == '1')
 		return true;
 	return false;
 }
 
-function api_plugin_disable ($plugin) {
-	api_plugin_disable_hooks ($plugin);
+function api_plugin_disable($plugin) {
+	api_plugin_disable_hooks($plugin);
 	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
 }
 
-function api_plugin_disable_all ($plugin) {
-	api_plugin_disable_hooks_all ($plugin);
+function api_plugin_disable_all($plugin) {
+	api_plugin_disable_hooks_all($plugin);
 	db_execute_prepared('UPDATE plugin_config SET status = 4 WHERE directory = ?', array($plugin));
 }
 
@@ -612,7 +625,7 @@ function api_plugin_movedown($plugin) {
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 }
 
-function api_plugin_register_hook ($plugin, $hook, $function, $file) {
+function api_plugin_register_hook($plugin, $hook, $function, $file) {
 	$exists = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_hooks
 		WHERE name = ?
@@ -635,20 +648,20 @@ function api_plugin_register_hook ($plugin, $hook, $function, $file) {
 	}
 }
 
-function api_plugin_remove_hooks ($plugin) {
+function api_plugin_remove_hooks($plugin) {
 	db_execute_prepared('DELETE FROM plugin_hooks
 		WHERE name = ?',
 		array($plugin));
 }
 
-function api_plugin_enable_hooks ($plugin) {
+function api_plugin_enable_hooks($plugin) {
 	db_execute_prepared('UPDATE plugin_hooks
 		SET status = 1
 		WHERE name = ?',
 		array($plugin));
 }
 
-function api_plugin_disable_hooks ($plugin) {
+function api_plugin_disable_hooks($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks
 		SET status = 0
 		WHERE name = ?
@@ -658,14 +671,14 @@ function api_plugin_disable_hooks ($plugin) {
 		array($plugin));
 }
 
-function api_plugin_disable_hooks_all ($plugin) {
+function api_plugin_disable_hooks_all($plugin) {
 	db_execute_prepared("UPDATE plugin_hooks
 		SET status = 0
 		WHERE name = ?",
 		array($plugin));
 }
 
-function api_plugin_register_realm ($plugin, $file, $display, $admin = true) {
+function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$exists = db_fetch_cell_prepared('SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?
@@ -713,7 +726,7 @@ function api_plugin_register_realm ($plugin, $file, $display, $admin = true) {
 	}
 }
 
-function api_plugin_remove_realms ($plugin) {
+function api_plugin_remove_realms($plugin) {
 	$realms = db_fetch_assoc_prepared('SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?',
@@ -735,7 +748,7 @@ function api_plugin_remove_realms ($plugin) {
 			array($plugin));
 }
 
-function api_plugin_load_realms () {
+function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 	$plugin_realms = db_fetch_assoc('SELECT * FROM plugin_realms ORDER BY plugin, display', false);
 	if (count($plugin_realms)) {
@@ -749,7 +762,7 @@ function api_plugin_load_realms () {
 	}
 }
 
-function api_plugin_user_realm_auth ($filename = '') {
+function api_plugin_user_realm_auth($filename = '') {
 	global $user_auth_realm_filenames;
 	/* list all realms that this user has access to */
 
@@ -762,17 +775,17 @@ function api_plugin_user_realm_auth ($filename = '') {
 	return false;
 }
 
-function plugin_config_arrays () {
+function plugin_config_arrays() {
 	global $config, $menu;
 
 	if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 		$menu[__('Configuration')]['plugins.php'] = __('Plugin Management');
 	}
 
-	api_plugin_load_realms ();
+	api_plugin_load_realms();
 }
 
-function plugin_draw_navigation_text ($nav) {
+function plugin_draw_navigation_text($nav) {
 	$nav['plugins.php:'] = array('title' => __('Plugin Management'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
 }

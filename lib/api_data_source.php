@@ -275,24 +275,30 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		AND field_name = 'name'
 		ORDER BY sequence", array($snmp_query_graph_id, $data_local['data_template_id']));
 
-	$suggested_values_data = array();
-	if (sizeof($suggested_values) > 0) {
+	if (sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
-			if(!isset($suggested_values_data[$suggested_value['field_name']])) {
- 				$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
-					$data_local['snmp_query_id'], $data_local['snmp_index'],
-					read_config_option('max_data_query_field_length'));
+			$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
+				$data_local['snmp_query_id'], $data_local['snmp_index'],
+				read_config_option('max_data_query_field_length'));
 
-				/* if there are no '|query' characters, all of the substitutions were successful */
-				if (!substr_count($subs_string, '|query')) {
+			/* if there are no '|query' characters, all of the substitutions were successful */
+			if (!substr_count($subs_string, '|query')) {
+				if (db_column_exists('data_template_data', $suggested_value['field_name'])) {
 					db_execute_prepared('UPDATE data_template_data
 						SET ' . $suggested_value['field_name'] . ' = ?
 						WHERE local_data_id = ?',
 						array($suggested_value['text'], $local_data_id));
-
-					/* once we find a working value for that very field, stop */
-					$suggested_values_data[$suggested_value['field_name']] = true;
+				} elseif (db_column_exists('data_template_rrd', $suggested_value['field_name'])) {
+					db_execute_prepared('UPDATE data_template_rrd
+						SET ' . $suggested_value['field_name'] . ' = ?
+						WHERE local_data_id = ?',
+						array($suggested_value['text'], $local_data_id));
+				} else {
+					cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
 				}
+
+				/* once we find a working value for that very field, stop */
+				break;
 			}
 		}
 	}

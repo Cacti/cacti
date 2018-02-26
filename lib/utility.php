@@ -29,7 +29,9 @@
 function update_replication_crc($poller_id, $variable) {
 	$hash = hash('ripemd160', date('Y-m-d H:i:s') . rand() . $poller_id);
 
-	db_execute_prepared("REPLACE INTO settings SET value = ?, name='$variable" . ($poller_id > 0 ? "_" . "$poller_id'":"'"), array($hash));
+	db_execute_prepared("REPLACE INTO settings
+		SET value = ?, name='$variable" . ($poller_id > 0 ? "_" . "$poller_id'":"'"),
+		array($hash));
 }
 
 function repopulate_poller_cache() {
@@ -59,9 +61,9 @@ function repopulate_poller_cache() {
 
 	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
 	if (sizeof($poller_ids)) {
-	foreach($poller_ids as $poller_id) {
-		api_data_source_cache_crc_update($poller_id);
-	}
+		foreach ($poller_ids as $poller_id) {
+			api_data_source_cache_crc_update($poller_id);
+		}
 	}
 
 	/* update the field mappings for the poller */
@@ -113,7 +115,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 	);
 
 	if (sizeof($poller_ids)) {
-		foreach($poller_ids as $poller_id) {
+		foreach ($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
 		}
 	}
@@ -144,6 +146,11 @@ function update_poller_cache($data_source, $commit = false) {
 		array($data_source['id']));
 
 	if (sizeof($data_input)) {
+		// Check whitelist for input validation
+		if (!data_input_whitelist_check($data_input['id'])) {
+			return $poller_items;
+		}
+
 		/* we have to perform some additional sql queries if this is a 'query' */
 		if (($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) ||
 			($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) ||
@@ -176,7 +183,7 @@ function update_poller_cache($data_source, $commit = false) {
 				if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (function_exists('proc_open'))) {
 					$action = POLLER_ACTION_SCRIPT_PHP;
 					$script_path = get_full_script_path($data_source['id']);
-				}else if (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
+				} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_PHP_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 					$action = POLLER_ACTION_SCRIPT;
 					$script_path = read_config_option('path_php_binary') . ' -q ' . get_full_script_path($data_source['id']);
 				} else {
@@ -203,7 +210,7 @@ function update_poller_cache($data_source, $commit = false) {
 				}
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], array(), $data_source['id'], $data_input['rrd_step'], $action, $data_source_item_name, 1, $script_path);
-			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
+			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP) { /* snmp */
 				/* get the host override fields */
 				$data_template_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_template_id
 					FROM data_template_data
@@ -236,7 +243,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-					foreach($data_template_fields as $key => $value) {
+					foreach ($data_template_fields as $key => $value) {
 						if (!isset($host_fields[$key])) {
 							$host_fields[$key] = $value;
 						}
@@ -252,7 +259,7 @@ function update_poller_cache($data_source, $commit = false) {
 					array($data_source['id']));
 
 				$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($data_template_rrd_id), 1, (isset($host_fields['snmp_oid']) ? $host_fields['snmp_oid'] : ''));
-			}else if ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
+			} elseif ($data_input['type_id'] == DATA_INPUT_TYPE_SNMP_QUERY) { /* snmp query */
 				$snmp_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
@@ -287,7 +294,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-						foreach($data_template_fields as $key => $value) {
+						foreach ($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
@@ -312,7 +319,7 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 					}
 				}
-			}else if (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
+			} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_SCRIPT_QUERY) || ($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER)) { /* script query */
 				$script_queries = get_data_query_array($data_source['snmp_query_id']);
 
 				/* get the host override fields */
@@ -347,7 +354,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-						foreach($data_template_fields as $key => $value) {
+						foreach ($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
@@ -372,7 +379,7 @@ function update_poller_cache($data_source, $commit = false) {
 								}
 
 								$script_path = get_script_query_path(trim($prepend . ' ' . $script_queries['arg_get'] . ' ' . $identifier . ' ' . $data_source['snmp_index']), $script_queries['script_path'] . ' ' . $script_queries['script_function'], $data_source['host_id']);
-							}else if (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
+							} elseif (($data_input['type_id'] == DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER) && (!function_exists('proc_open'))) {
 								$action = POLLER_ACTION_SCRIPT;
 
 								$prepend = '';
@@ -428,20 +435,22 @@ function update_poller_cache($data_source, $commit = false) {
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' data_local.*
-		FROM data_local
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*
+		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
 			FROM data_template_data
 			WHERE data_input_id = ?
 			AND local_data_id > 0
-		) AS data_template_data ON data_template_data.local_data_id = data_local.id', array($data_input_id));
+		) AS dtd
+		ON dtd.local_data_id = dl.id',
+		array($data_input_id));
 
 	$poller_items = array();
 	$_my_local_data_ids = array();
 
 	if (sizeof($data_sources)) {
-		foreach($data_sources as $data_source) {
+		foreach ($data_sources as $data_source) {
 			$_my_local_data_ids[] = $data_source['id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
@@ -459,17 +468,9 @@ function push_out_data_input_method($data_input_id) {
  */
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
-	$ids = array();
+	$ids = '';
 	if (sizeof($local_data_ids)) {
-		$count = 0;
-		foreach($local_data_ids as $id) {
-			if ($count == 0) {
-				$ids = $id;
-			} else {
-				$ids .= ', ' . $id;
-			}
-			$count++;
-		}
+		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
 			db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
@@ -505,7 +506,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	$buffer       = '';
 
 	if (sizeof($poller_items)) {
-		foreach($poller_items as $record) {
+		foreach ($poller_items as $record) {
 			/* take care of invalid entries */
 			if ($record == '') {
 				continue;
@@ -581,8 +582,10 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where .= ' AND dtd.data_template_id=' . $data_template_id;
 	}
 
-	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id, dtd.data_input_id, dtd.local_data_id,
-		dtd.local_data_template_data_id, dl.host_id, dl.snmp_query_id, dl.snmp_index
+	$data_sources = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . " dtd.id,
+		dtd.data_input_id, dtd.local_data_id,
+		dtd.local_data_template_data_id, dl.host_id,
+		dl.snmp_query_id, dl.snmp_index
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
@@ -656,6 +659,70 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		array($host_id));
 
 	api_data_source_cache_crc_update($poller_id);
+}
+
+function data_input_whitelist_check($data_input_id) {
+	global $config;
+
+	static $data_input_whitelist = null;
+	static $validated_input_ids  = null;
+	static $notified = array();
+
+	// no whitelist file defined, everything whitelisted
+	if (!isset($config['input_whitelist'])) {
+		return true;
+	}
+
+	// whitelist is configured but does not exist, means nothing whitelisted
+	if (!file_exists($config['input_whitelist'])) {
+		return false;
+	}
+
+	// load whitelist, but only once within process execution
+	if ($data_input_whitelist == null) {
+		$data_input_ids = array_rekey(
+			db_fetch_assoc('SELECT * FROM data_input'),
+			'hash', array('id', 'name', 'input_string')
+		);
+
+		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+		if ($data_input_whitelist === null) {
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+			return true;
+		}
+
+		if (sizeof($data_input_ids)) {
+			foreach ($data_input_ids as $hash => $id) {
+				if ($id['input_string'] != '') {
+					if (isset($data_input_whitelist[$hash])) {
+						if ($data_input_whitelist[$hash] == $id['input_string']) {
+							$validated_input_ids[$id['id']] = true;
+						} else {
+							cacti_log('ERROR: Whitelist entry failed validation for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Data Collection will not run.  Run CLI command input_whitelist.php --audit and --update to remediate.');
+							$validated_input_ids[$id['id']] = false;
+						}
+					} else {
+						cacti_log('WARNING: Whitelist entry missing for Data Input: ' . $id['name'] . '[ ' . $id['id'] . ' ].  Run CLI command input_whitelist.php --update to remediate.');
+						$validated_input_ids[$id['id']] = true;
+					}
+				} else {
+					$validated_input_ids[$id['id']] = true;
+				}
+			}
+		}
+	}
+
+	if (isset($validated_input_ids[$data_input_id])) {
+		if ($validated_input_ids[$data_input_id] == true) {
+			return true;
+		} else {
+			cacti_log('WARNING: Data Input ' . $data_input_id . ' failing validation check.');
+			$notified[$data_input_id] = true;
+			return false;
+		}
+	} else {
+		return true;
+	}
 }
 
 function utilities_get_mysql_recommendations() {
@@ -859,7 +926,7 @@ function utilities_get_mysql_recommendations() {
 	print "</tr>\n";
 	print "</thead>\n";
 
-	foreach($recommendations as $name => $r) {
+	foreach ($recommendations as $name => $r) {
 		if (isset($variables[$name])) {
 			$class = '';
 
@@ -1013,7 +1080,7 @@ function utilities_get_system_memory() {
 		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
 		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
 		if (sizeof($memInfo)) {
-			foreach($memInfo as $key => $values) {
+			foreach ($memInfo as $key => $values) {
 				$memInfo[$key] = $values[1];
 			}
 		}
@@ -1031,7 +1098,7 @@ function utilities_get_system_memory() {
 
 		if ($file != '') {
 			$data = explode("\n", file_get_contents($file));
-			foreach($data as $l) {
+			foreach ($data as $l) {
 				if (trim($l) != '') {
 					list($key, $val) = explode(':', $l);
 					$val = trim($val, " kBb\r\n");
@@ -1045,7 +1112,7 @@ function utilities_get_system_memory() {
 
 			exec('/usr/bin/free', $output, $exit_code);
 			if ($exit_code == 0) {
-				foreach($output as $line) {
+				foreach ($output as $line) {
 					$parts = preg_split('/\s+/', $line);
 					switch ($parts[0]) {
 					case 'Mem:':

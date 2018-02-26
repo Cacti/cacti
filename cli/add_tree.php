@@ -47,6 +47,7 @@ if (sizeof($parms)) {
 	$treeId     = 0;   # When creating a node, it has to go in a tree
 	$nodeType   = '';  # Should be 'header', 'graph' or 'host' when creating a node
 	$graphId    = 0;   # The ID of the graph to add (gets added to parentNode)
+	$siteId     = 0;   # The ID of the site to add
 
 	$sortMethods = array('manual' => 1, 'alpha' => 2, 'natural' => 4, 'numeric' => 3);
 	$nodeTypes   = array('header' => 1, 'graph' => 2, 'host' => 3);
@@ -62,6 +63,7 @@ if (sizeof($parms)) {
 	$displayGraphs  = false;
 
 	$hosts          = getHosts();
+	$sites          = getSites();
 
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
@@ -145,6 +147,11 @@ if (sizeof($parms)) {
 		}
 	}
 
+	if ($displaySites) {
+		displaySites($sites, $quietMode);
+		exit(0);
+	}
+
 	if ($displayHosts) {
 		displayHosts($hosts, $quietMode);
 		exit(0);
@@ -222,6 +229,7 @@ if (sizeof($parms)) {
 		# Add a new node to a tree
 		if ($nodeType == 'header'||
 			$nodeType == 'graph' ||
+			$nodeType == 'site' ||
 			$nodeType == 'host') {
 			$itemType = $nodeTypes[$nodeType];
 		} else {
@@ -257,11 +265,13 @@ if (sizeof($parms)) {
 			# Blank out the graphId, hostID and host_grouping_style  fields
 			$graphId        = 0;
 			$hostId         = 0;
+			$siteId         = 0;
 			$hostGroupStyle = 1;
 		}else if($nodeType == 'graph') {
 			# Blank out name, hostID, host_grouping_style
 			$name           = '';
 			$hostId         = 0;
+			$siteId         = 0;
 			$hostGroupStyle = 1;
 
 			$graphs = db_fetch_assoc('SELECT id 
@@ -272,9 +282,20 @@ if (sizeof($parms)) {
 				echo "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
 				exit(1);
 			}
+		}else if ($nodeType == 'site') {
+			# Blank out graphId, name fields
+			$graphId        = 0;
+			$hostId         = 0;
+			$name           = '';
+
+			if (!isset($sites[$siteId])) {
+				echo "ERROR: No such site-id ($siteId) exists. Try --list-sites\n";
+				exit(1);
+			}
 		}else if ($nodeType == 'host') {
 			# Blank out graphId, name fields
 			$graphId        = 0;
+			$siteId         = 0;
 			$name           = '';
 
 			if (!isset($hosts[$hostId])) {
@@ -290,7 +311,7 @@ if (sizeof($parms)) {
 		}
 
 		# $nodeId could be a Header Node, a Graph Node, or a Host node.
-		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $hostGroupStyle, $sortMethods[$sortMethod], false);
+		$nodeId = api_tree_item_save(0, $treeId, $itemType, $parentNode, $name, $graphId, $hostId, $siteId, $hostGroupStyle, $sortMethods[$sortMethod], false);
 
 		echo "Added Node node-id: ($nodeId)\n";
 
@@ -319,11 +340,13 @@ function display_help() {
 	echo "    --name=[Tree Name]\n";
 	echo "    --sort-method=[manual|alpha|natural|numeric]\n\n";
 	echo "Node options:\n";
-	echo "    --node-type=[header|host|graph]\n";
+	echo "    --node-type=[header|site|host|graph]\n";
 	echo "    --tree-id=[ID]\n";
 	echo "    [--parent-node=[ID] [Node Type Options]]\n\n";
 	echo "Header node options:\n";
 	echo "    --name=[Name]\n\n";
+	echo "Site node options:\n";
+	echo "    --site-id=[ID]\n";
 	echo "Host node options:\n";
 	echo "    --host-id=[ID]\n";
 	echo "    [--host-group-style=[1|2]]\n";
@@ -333,6 +356,7 @@ function display_help() {
 	echo "Graph node options:\n";
 	echo "    --graph-id=[ID]\n\n";
 	echo "List Options:\n";
+	echo "    --list-sites\n";
 	echo "    --list-hosts\n";
 	echo "    --list-trees\n";
 	echo "    --list-nodes --tree-id=[ID]\n";

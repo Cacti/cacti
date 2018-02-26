@@ -54,7 +54,7 @@ class MibCache{
 	public function install($path, $replace=false, $mib_name='optional') {
 		global $config;
 
-		include_once($config['library_path'] . '/mib_parser.php');
+		include_once($config['include_path'] . '/vendor/phpsnmp/mib_parser.php');
 
 		$mp = new MibParser();
 		$mp->add_mib($path, $mib_name);

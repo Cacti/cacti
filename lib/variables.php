@@ -178,6 +178,8 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['description'];
 		$search[]  = $l_escape_string . 'host_notes' . $r_escape_string;
 		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['notes'];
+		$search[]  = $l_escape_string . 'host_location' . $r_escape_string;
+		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['location'];
 		$search[]  = $l_escape_string . 'host_polling_time' . $r_escape_string;
 		$replace[] = $_SESSION['sess_host_cache_array'][$host_id]['polling_time'];
 		$search[]  = $l_escape_string . 'host_avg_time' . $r_escape_string;
@@ -307,7 +309,7 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			INNER JOIN data_input_data AS did
 			ON dif.id = did.data_input_field_id
 			WHERE data_template_data_id = ?
-			AND input_output = 'in'", 
+			AND input_output = 'in'",
 			array($data_template_data_id));
 
 		if (sizeof($data)) {

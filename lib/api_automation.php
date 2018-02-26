@@ -783,7 +783,7 @@ function display_new_graphs($rule, $url) {
 
 	html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
 
-	if ($xml_array != false) {
+	if (sizeof($xml_array)) {
 		$html_dq_header     = '';
 		$sql_filter         = '';
 		$sql_having         = '';
@@ -877,6 +877,7 @@ function display_new_graphs($rule, $url) {
 				} else {
 					$style = ' style="color: blue"';
 				}
+
 				$column_counter = 0;
 				foreach ($xml_array['fields'] as $field_name => $field_array) {
 					if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1763,7 +1764,6 @@ function get_created_graphs($rule) {
 	}
 
 	return $items;
-
 }
 
 function get_query_fields($table, $excluded_fields) {
@@ -2092,6 +2092,8 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 	include_once($config['base_path'] . '/lib/utility.php');
 
 	$dataSourceId = '';
+	$returnArray  = array();
+
 	$function  = 'Function[' . __FUNCTION__ . ']';
 
 	cacti_log(__FUNCTION__ . ' called: Device[' . $host_id . '] - graph template: ' . $graph_template_id, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
@@ -2128,24 +2130,27 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		$returnArray = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
 
 		$dataSourceId = '';
-		if (sizeof($returnArray)) {
-			if (isset($returnArray['local_data_id'])) {
-				foreach($returnArray['local_data_id'] as $item) {
-					push_out_host($host_id, $item);
+		if ($returnArray !== false) {
+			if (sizeof($returnArray)) {
+				if (isset($returnArray['local_data_id'])) {
+					foreach($returnArray['local_data_id'] as $item) {
+						push_out_host($host_id, $item);
 
-					if ($dataSourceId != '') {
-						$dataSourceId .= ', ' . $item;
-					} else {
-						$dataSourceId = $item;
+						if ($dataSourceId != '') {
+							$dataSourceId .= ', ' . $item;
+						} else {
+							$dataSourceId = $item;
+						}
 					}
-				}
 
-				cacti_log('Device[' . $host_id . '] Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)", false, 'AUTOM8');
+					cacti_log('NOTE: Device[' . $host_id . '] Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)", false, 'AUTOM8');
+				}
+			} else {
+				cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
 			}
 		} else {
-			cacti_log('Device[' . $host_id . '] ERROR: graph-id: (' . $returnArray['local_graph_id'] . ') without data sources', false, 'AUTOM8');
+			cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist check failure.', false, 'AUTOM8');
 		}
-
 	}
 }
 
@@ -2364,32 +2369,35 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				continue;
 			}
 
-			$myempty = array(); /* Suggested Values are not been implemented */
+			$suggested_values = array();
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $suggested_values);
 
-			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $myempty);
+			if ($return_array !== false) {
+				if (sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
+					$data_source_id = db_fetch_cell_prepared('SELECT
+						data_template_rrd.local_data_id
+						FROM graph_templates_item, data_template_rrd
+						WHERE graph_templates_item.local_graph_id = ?
+						AND graph_templates_item.task_item_id = data_template_rrd.id
+						LIMIT 1',
+						array($return_array['local_graph_id']));
 
-			if (sizeof($return_array) && array_key_exists('local_graph_id', $return_array) && array_key_exists('local_data_id', $return_array)) {
-				$data_source_id = db_fetch_cell_prepared('SELECT
-					data_template_rrd.local_data_id
-					FROM graph_templates_item, data_template_rrd
-					WHERE graph_templates_item.local_graph_id = ?
-					AND graph_templates_item.task_item_id = data_template_rrd.id
-					LIMIT 1',
-					array($return_array['local_graph_id']));
+					foreach($return_array['local_data_id'] as $item) {
+						push_out_host($host_id, $item);
 
-				foreach($return_array['local_data_id'] as $item) {
-					push_out_host($host_id, $item);
-
-					if ($data_source_id != '') {
-						$data_source_id .= ', ' . $item;
-					} else {
-						$data_source_id = $item;
+						if ($data_source_id != '') {
+							$data_source_id .= ', ' . $item;
+						} else {
+							$data_source_id = $item;
+						}
 					}
-				}
 
-				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Graph Added - graph-id: (' . $return_array['local_graph_id'] . ") - data-source-ids: ($data_source_id)", false, 'AUTOM8');
+					cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Graph Added - graph-id: (' . $return_array['local_graph_id'] . ") - data-source-ids: ($data_source_id)", false, 'AUTOM8');
+				} else {
+					cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
+				}
 			} else {
-				cacti_log('WARNING: ' . $function . ' Device[' . $host_id . '] Graph Not Added', false, 'AUTOM8');
+				cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to whitelist failure.', false, 'AUTOM8');
 			}
 		}
 
@@ -2525,6 +2533,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	$id             = 0;  # create a new entry
 	$local_graph_id = 0;  # headers don't need no graph_id
 	$host_id        = 0;  # or a host_id
+	$site_id        = 0;  # or a site_id
 	$propagate      = ($item['propagate_changes'] != '');
 	$function  = 'Function[' . __FUNCTION__ . ']';
 
@@ -2533,7 +2542,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 		cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HEADER, $parent_tree_item_id,
-			$title, $local_graph_id, $host_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
+			$title, $local_graph_id, $host_id, $site_id, $rule['host_grouping_type'], $item['sort_type'], $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Parent[' . $parent_tree_item_id . '] Tree Item - Added - id: (' . $new_item . ') Title: (' .$title . ')', false, 'AUTOM8');
@@ -2559,6 +2568,7 @@ function create_device_node($host_id, $parent, $rule) {
 
 	$id             = 0;      # create a new entry
 	$local_graph_id = 0;      # hosts don't need no graph_id
+	$site_id        = 0;      # hosts don't need no site_id
 	$title          = '';     # nor a title
 	$sort_type      = 0;      # nor a sort type
 	$propagate      = false;  # nor a propagation flag
@@ -2575,12 +2585,55 @@ function create_device_node($host_id, $parent, $rule) {
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title,
-			$local_graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+			$local_graph_id, $host_id, $site_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
 		} else {
 			cacti_log('WARNING: ' . $function . ' Device[' . $host_id . '] Tree Item - Not Added', false, 'AUTOM8');
+		}
+	}
+
+	return $new_item;
+}
+
+/**
+ * add a site to the tree
+ * @param int $site_id	- site id
+ * @param int $parent	- parent id
+ * @param array $rule 	- rule
+ * @return int			- id of new item
+ */
+function create_site_node($site_id, $parent, $rule) {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/api_tree.php');
+
+	$id             = 0;      # create a new entry
+	$local_graph_id = 0;      # hosts don't need no graph_id
+	$host_id        = 0;      # hosts don't need no host_id
+	$title          = '';     # nor a title
+	$sort_type      = 0;      # nor a sort type
+	$propagate      = false;  # nor a propagation flag
+	$function       = 'Function[' . __FUNCTION__ . ']';
+
+	if (api_tree_site_exists($rule['tree_id'], $parent, $site_id)) {
+		$new_item = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE site_id = ?
+			AND parent = ?
+			AND graph_tree_id = ?',
+			array($site_id, $parent, $rule['tree_id']));
+
+		cacti_log('NOTE: ' . $function . ' Site[' . $host_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+	} else {
+		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_HOST, $parent, $title,
+			$local_graph_id, $host_id, $site_id, $rule['host_grouping_type'], $sort_type, $propagate);
+
+		if (isset($new_item) && $new_item > 0) {
+			cacti_log('NOTE: ' . $function . ' Site[' . $site_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
+		} else {
+			cacti_log('WARNING: ' . $function . ' Site[' . $site_id . '] Tree Item - Not Added', false, 'AUTOM8');
 		}
 	}
 
@@ -2601,6 +2654,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 
 	$id        = 0;      # create a new entry
 	$host_id   = 0;      # graphs don't need no host_id
+	$site_id   = 0;      # graphs don't need no site_id
 	$title     = '';     # nor a title
 	$sort_type = 0;      # nor a sort type
 	$propagate = false;  # nor a propagation flag
@@ -2617,7 +2671,7 @@ function create_graph_node($graph_id, $parent, $rule) {
 		cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Already Exists', false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 	} else {
 		$new_item = api_tree_item_save($id, $rule['tree_id'], TREE_ITEM_TYPE_GRAPH, $parent, $title,
-			$graph_id, $host_id, $rule['host_grouping_type'], $sort_type, $propagate);
+			$graph_id, $host_id, $site_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
 			cacti_log('NOTE: ' . $function . ' Graph[' . $graph_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
@@ -2712,7 +2766,7 @@ function automation_add_device($device, $web = false) {
 	return $host_id;
 }
 
-function automation_add_tree ($host_id, $tree) {
+function automation_add_tree($host_id, $tree) {
 	automation_debug("     Adding to tree\n");
 	if ($tree > 1000000) {
 		$tree_id = $tree - 1000000;
@@ -2726,7 +2780,7 @@ function automation_add_tree ($host_id, $tree) {
 		$parent = $tree;
 	}
 
-	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, $host_id, 1, 1, false);
+	$nodeId = api_tree_item_save(0, $tree_id, 3, $parent, '', 0, $host_id, 0, 1, 1, false);
 }
 
 function automation_find_os($sysDescr, $sysObject, $sysName) {

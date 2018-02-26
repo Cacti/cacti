@@ -1800,6 +1800,7 @@ CREATE TABLE host (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(100) default NULL,
+  location varchar(40) default NULL,
   notes text,
   external_id varchar(40) default NULL,
   snmp_community varchar(100) default NULL,
@@ -1847,6 +1848,7 @@ CREATE TABLE host (
   KEY external_id (external_id),
   KEY disabled (disabled),
   KEY status (status),
+  KEY site_id_location (site_id, location),
   KEY hostname (hostname),
   KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
@@ -2036,13 +2038,19 @@ CREATE TABLE `poller` (
   `notes` varchar(1024) DEFAULT '',
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   `hostname` varchar(100) NOT NULL DEFAULT '',
-  `dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
-  `dbhost` varchar(64) NOT NULL DEFAULT 'cacti',
+  `dbdefault` varchar(20) NOT NULL DEFAULT '',
+  `dbhost` varchar(64) NOT NULL DEFAULT '',
   `dbuser` varchar(20) NOT NULL DEFAULT '',
   `dbpass` varchar(64) NOT NULL DEFAULT '',
   `dbport` int(10) unsigned DEFAULT '3306',
   `dbssl` char(3) DEFAULT '',
   `total_time` double DEFAULT '0',
+  `max_time` double DEFAULT NULL,
+  `min_time` double DEFAULT NULL,
+  `avg_time` double DEFAULT NULL,
+  `total_polls` int(10) unsigned DEFAULT '0',
+  `processes` int(10) unsigned DEFAULT '1',
+  `threads` int(10) unsigned DEFAULT '1',
   `snmp` mediumint(8) unsigned DEFAULT '0',
   `script` mediumint(8) unsigned DEFAULT '0',
   `server` mediumint(8) unsigned DEFAULT '0',
@@ -2680,6 +2688,8 @@ CREATE TABLE `user_domains_ldap` (
   `search_filter` varchar(128) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
+  `cn_full_name` varchar(50) NULL DEFAULT '',
+  `cn_email` varchar (50) NULL DEFAULT '',
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 

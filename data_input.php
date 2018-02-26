@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/utility.php');
+include_once('./lib/template.php');
 
 $di_actions = array(
 	1 => __('Delete')
@@ -420,7 +421,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	global $fields_data_input_edit;
+	global $config, $fields_data_input_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -436,6 +437,10 @@ function data_edit() {
 		$header_label = __('Data Input Methods [edit: %s]', html_escape($data_input['name']));
 	} else {
 		$header_label = __('Data Input Methods [new]');
+	}
+
+	if (!isset($config['input_whitelist'])) {
+		unset($fields_data_input_edit['whitelist_verification']);
 	}
 
 	form_start('data_input.php', 'data_input');
@@ -456,6 +461,18 @@ function data_edit() {
 		case DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
 			break;
+		}
+
+		if (isset($data_input['hash'])) {
+			$aud = verify_data_input_whitelist($data_input['hash'], $data_input['input_string']);
+
+			if ($aud === true) {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
+			} elseif ($aud == false) {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+			} elseif ($aud == '-1') {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
+			}
 		}
 	}
 

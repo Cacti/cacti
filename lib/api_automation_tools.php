@@ -49,6 +49,19 @@ function getHostsByDescription() {
 	return $hosts;
 }
 
+function getSites() {
+	$sites    = array();
+	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
+
+	if (sizeof($tmpArray)) {
+		foreach ($tmpArray as $site) {
+			$sites[$site['id']] = $site;
+		}
+	}
+
+	return $sites;
+}
+
 function getHosts() {
 	$hosts    = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM host ORDER BY id');

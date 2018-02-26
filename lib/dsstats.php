@@ -532,6 +532,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							switch ($ds_type) {
 							case 2:	// COUNTER
+							case 6:	// DCOUNTER
 								/* get the last values from the database for COUNTER and DERIVE data sources */
 								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
 									FROM data_source_stats_hourly_last
@@ -556,12 +557,21 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 								if ($currentval != 'NULL') {
 									$currentval = $currentval / $polling_interval;
+
+									if ($ds_type == 6) {
+										$currentval = round($currentval, 0);
+									}
 								}
 
 								$lastval = $result['output'];
 
+								if ($ds_type == 6) {
+									$lastval = round($lastval, 0);
+								}
+
 								break;
 							case 3:	// DERIVE
+							case 7:	// DDERIVE
 								/* get the last values from the database for COUNTER and DERIVE data sources */
 								$ds_last = db_fetch_cell_prepared('SELECT SQL_NO_CACHE `value`
 									FROM data_source_stats_hourly_last
@@ -572,11 +582,19 @@ function dsstats_poller_output(&$rrd_update_array) {
 									$currentval = 'NULL';
 								} elseif ($result['output'] != 'NULL') {
 									$currentval = ($result['output'] - $ds_last) / $polling_interval;
+
+									if ($ds_type == 7) {
+										$currentval = round($currentval, 0);
+									}
 								} else {
 									$currentval = 'NULL';
 								}
 
 								$lastval = $result['output'];
+
+								if ($ds_type == 7) {
+									$lastval = round($lastval, 0);
+								}
 
 								break;
 							case 4:	// ABSOLUTE

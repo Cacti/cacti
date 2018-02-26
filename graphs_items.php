@@ -346,7 +346,7 @@ function item_edit() {
 
 							if (sizeof($data_templates)) {
 								foreach ($data_templates as $data_template) {
-									print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected':'') . '>' . htmlspecialchars($data_template['name']) . "</option>\n";
+									print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected':'') . '>' . html_escape($data_template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -396,7 +396,7 @@ function item_edit() {
 		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
-	$header_label = __('Graph Items [graph: %s]', htmlspecialchars($title));
+	$header_label = __('Graph Items [graph: %s]', html_escape($title));
 
 	form_start('graphs_items.php', 'greph_edit');
 
