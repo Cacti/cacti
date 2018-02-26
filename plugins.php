@@ -650,7 +650,7 @@ function plugin_actions($plugin, $table) {
 
 			if (!file_exists("$path/setup.php")) {
 				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
-			} elseif (!file_exists("$path/INFO", $pluginslist)) {
+			} elseif (!file_exists("$path/INFO")) {
 				$link .= "<a href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} elseif (in_array($directory, $plugins_integrated)) {
 				$link .= "<a href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";

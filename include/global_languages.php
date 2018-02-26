@@ -23,7 +23,7 @@
 */
 
 /* default localization of Cacti */
-$cacti_locale  = 'en';
+$cacti_locale  = 'en-US';
 $cacti_country = 'us';
 
 /* an array that will contains all textdomains being in use. */
@@ -36,6 +36,11 @@ $lang2locale = get_list_of_locales();
 if (!read_config_option('i18n_language_support') && read_config_option('i18n_language_support') != '') {
 	load_fallback_procedure();
 	return;
+}
+
+/* Repair legacy language support */
+if (isset($_REQUEST['language'])) {
+	$_REQUEST['language'] = repair_locale($_REQUEST['language']);
 }
 
 /* determine whether or not we can support the language */
@@ -51,45 +56,47 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 	set_user_config_option('language', $cacti_locale);
 } elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
 	/* language definition stored in the SESSION */
-	$cacti_locale = $_SESSION['sess_user_language'];
+	$cacti_locale  = repair_locale($_SESSION['sess_user_language']);
 	$cacti_country = $lang2locale[$_SESSION['sess_user_language']]['country'];
 } else {
 	$cacti_locale_set = false;
 
 	/* look up for user customized language setting stored in Cacti DB */
 	if ($user_locale = read_user_i18n_setting('user_language')) {
+		$user_locale = repair_locale($user_locale);
+
 		if (isset($lang2locale[$user_locale])) {
 			$cacti_locale_set = true;
-			$cacti_locale = $user_locale;
-			$cacti_country = $lang2locale[$cacti_locale]['country'];
+			$cacti_locale     = $user_locale;
+			$cacti_country    = $lang2locale[$cacti_locale]['country'];
+
 			$_SESSION['sess_user_language'] = $cacti_locale;
 		}
 	}
 
-	if (!$cacti_locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && ( read_config_option('i18n_auto_detection') | read_config_option('i18n_auto_detection') == '' ))) {
+	// If the users has not elected a language and autodetect is on
+	if (!$cacti_locale_set && (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) && (read_config_option('i18n_auto_detection') == '' || read_config_option('i18n_auto_detection') == '1'))) {
 		/* detect browser settings if auto detection is enabled */
-		$accepted = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
-		$accepted = strtolower(str_replace(strstr($accepted, ','), '', $accepted));
+		$accepted = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		$accepted = $accepted[0];
 
-		$accepted = (isset($lang2locale[$accepted])) ? $accepted : str_replace(strstr($accepted, '-'), '', $accepted);
-
-		if (isset($lang2locale[$accepted])) {
+		if (isset($lang2local[$accepted])) {
 			$cacti_locale_set = true;
-			$cacti_locale = $accepted;
-			$cacti_country = $lang2locale[$accepted]['country'];
+			$cacti_locale     = $accepted;
+			$cacti_country    = $lang2locale[$accepted]['country'];
 		}
 	}
 
 	if (!$cacti_locale_set) {
-		$accepted = read_config_option('i18n_default_language');
+		$accepted = repair_locale(read_config_option('i18n_default_language'));
 		if ($accepted == '') {
-			$accepted = read_default_config_option('i18n_default_language');
+			$accepted = repair_locale(read_default_config_option('i18n_default_language'));
 		}
 
 		if (isset($lang2locale[$accepted])) {
 			$cacti_locale_set = true;
-			$cacti_locale = $accepted;
-			$cacti_country = $lang2locale[$accepted]['country'];
+			$cacti_locale     = $accepted;
+			$cacti_country    = $lang2locale[$accepted]['country'];
 		}
 	}
 }
@@ -102,7 +109,7 @@ $path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue) & file_exists($path2calendar)) {
-	$cacti_textdomains['cacti']['path2locales'] = $config['base_path'] . '/locales';
+	$cacti_textdomains['cacti']['path2locales']   = $config['base_path'] . '/locales';
 	$cacti_textdomains['cacti']['path2catalogue'] = $path2catalogue;
 } else {
 	load_fallback_procedure();
@@ -110,7 +117,10 @@ if (file_exists($path2catalogue) & file_exists($path2calendar)) {
 }
 
 /* search the correct textdomains for all plugins being installed */
-$plugins = db_fetch_assoc('SELECT `directory` FROM `plugin_config` ORDER BY id');
+$plugins = db_fetch_assoc('SELECT `directory`
+	FROM `plugin_config`
+	ORDER BY id');
+
 if ($plugins && sizeof($plugins) > 0) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
@@ -124,7 +134,7 @@ if ($plugins && sizeof($plugins) > 0) {
 
 	/* if i18n support is set to strict mode then check if all plugins support the requested language */
 	if (read_config_option('i18n_language_support') == 2) {
-		if(sizeof($plugins) != (sizeof($cacti_textdomains) - 1)) {
+		if (sizeof($plugins) != (sizeof($cacti_textdomains) - 1)) {
 			load_fallback_procedure();
 			return;
 		}
@@ -141,12 +151,12 @@ $l10n = array();
 
 foreach ($cacti_textdomains as $domain => $paths) {
 	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
-	if($input == false) {
+	if ($input == false) {
 		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue']);
 	}
 
 	$l10n[$domain] = new gettext_reader($input);
-	if($l10n[$domain] == false) {
+	if ($l10n[$domain] == false) {
 		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue']);
 	}
 }
@@ -159,6 +169,24 @@ define('CACTI_LOCALE', $cacti_locale);
 define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
 define('CACTI_LANGUAGE_FILE', $lang2locale[CACTI_LOCALE]['filename']);
+
+/* best effort function to repair locale */
+function repair_locale($language) {
+	global $lang2locale;
+
+	$locale = $language;
+
+	/* Repair legacy language support */
+	if (strpos($language, '-') === false) {
+		foreach ($lang2locale as $locale => $data) {
+			if (substr($locale, 0, 2) == $language) {
+				break;
+			}
+		}
+	}
+
+	return $locale;
+}
 
 /**
  * Universal escaping wrappers
@@ -194,7 +222,7 @@ function load_fallback_procedure(){
 	$_SESSION['sess_user_language'] = '';
 
 	$cacti_textdomains = array();
-	define('CACTI_LOCALE', 'en');
+	define('CACTI_LOCALE', 'en-US');
 	define('CACTI_COUNTRY', 'us');
 	define('CACTI_LANGUAGE', 'English');
 	define('CACTI_LANGUAGE_FILE', 'english_usa');
@@ -216,7 +244,7 @@ function load_i18n_gettext_wrappers() {
 		}
 	}
 
-	function __n($singular, $plural, $number, $domain = 'cacti'){
+	function __n($singular, $plural, $number, $domain = 'cacti') {
 		global $l10n;
 		if (isset($l10n[$domain])) {
     		return $l10n[$domain]->ngettext($singular, $plural, $number);
@@ -258,20 +286,20 @@ function load_i18n_gettext_wrappers() {
 		}
 	}
 
-	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
+	function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 		$xsingular = $context . chr(4) . $singular;
 		$xplural = $context . chr(4) . $plural;
 
 		$msgstr = __n($xsingular, $xplural, $number, $domain);
 
-		if($number == 1 ) {
+		if ($number == 1 ) {
 			return ( $msgstr == $xsingular ) ? $singular : $msgstr;
 		} else {
 			return ( $msgstr == $xplural ) ? $plural : $msgstr;
 		}
 	}
 
-	function __x(){
+	function __x() {
 		global $l10n;
 
 		$args = func_get_args();
@@ -289,7 +317,7 @@ function load_i18n_gettext_wrappers() {
 
 			$args[0] = $xmsgid;
 
-			if($num == 1) {
+			if ($num == 1) {
 				/* pure text string without placeholders and a change of the default textdomain */
 				$msgstr = __gettext($args[0]);
 			} else {
@@ -343,7 +371,7 @@ function load_i18n_gettext_wrappers() {
  *
  * @return
  */
-function load_i18n_fallback_wrappers(){
+function load_i18n_fallback_wrappers() {
 	function __gettext($text, $domain = 'cacti') {
 		return $text;
 	}
@@ -379,11 +407,11 @@ function load_i18n_fallback_wrappers(){
 		}
 	}
 
-	function __xn($context, $singular, $plural, $number, $domain = 'cacti'){
+	function __xn($context, $singular, $plural, $number, $domain = 'cacti') {
 		return __n($singular, $plural, $number, $domain);
 	}
 
-	function __x(){
+	function __x() {
 		$args = func_get_args();
 		$num  = func_num_args();
 
@@ -407,56 +435,55 @@ function load_i18n_fallback_wrappers(){
  *
  * @return - a multi-dimensional array with the locale code as main key
  */
-function get_list_of_locales () {
+function get_list_of_locales() {
 	$lang2locale = array(
-		'sq' => array('language' => 'Albanian',            'country' => 'al', 'filename' => 'albanian_albania'),
-		'ar' => array('language' => 'Arabic',              'country' => 'sa', 'filename' => 'arabic_saudi_arabia'),
-		'hy' => array('language' => 'Armenian',            'country' => 'am', 'filename' => 'armenian_armenia'),
-		'be' => array('language' => 'Belarusian',          'country' => 'by', 'filename' => 'belarusian_belarus'),
-		'bg' => array('language' => 'Bulgarian',           'country' => 'bg', 'filename' => 'bulgarian_bulgaria'),
-		'zh' => array('language' => 'Chinese',             'country' => 'cn', 'filename' => 'chinese_china'),
-		'zh' => array('language' => 'Chinese (China)',     'country' => 'cn', 'filename' => 'chinese_china_simplified'),
-		'zh' => array('language' => 'Chinese (Hong Kong)', 'country' => 'hk', 'filename' => 'chinese_hong_kong'),
-		'zh' => array('language' => 'Chinese (Singapore)', 'country' => 'sg', 'filename' => 'chinese_singapore'),
-		'zh' => array('language' => 'Chinese (Taiwan)',    'country' => 'tw', 'filename' => 'chinese_taiwan'),
-		'hr' => array('language' => 'Croatian',            'country' => 'hr', 'filename' => 'croatian_croatia'),
-		'cs' => array('language' => 'Czech',               'country' => 'cz', 'filename' => 'czech_czech_republic'),
-		'da' => array('language' => 'Danish',              'country' => 'dk', 'filename' => 'danish_denmark'),
-		'nl' => array('language' => 'Dutch',               'country' => 'nl', 'filename' => 'dutch_netherlands'),
-		'en' => array('language' => 'English',             'country' => 'us', 'filename' => 'english_usa'),
-		'et' => array('language' => 'Estonian',            'country' => 'ee', 'filename' => 'estonian_estonia'),
-		'fi' => array('language' => 'Finnish',             'country' => 'fi', 'filename' => 'finnish_finland'),
-		'fr' => array('language' => 'French',              'country' => 'fr', 'filename' => 'french_france'),
-		'de' => array('language' => 'German',              'country' => 'de', 'filename' => 'german_germany'),
-		'el' => array('language' => 'Greek',               'country' => 'gr', 'filename' => 'greek_greece'),
-		'iw' => array('language' => 'Hebrew',              'country' => 'il', 'filename' => 'hebrew_israel'),
-		'hi' => array('language' => 'Hindi',               'country' => 'in', 'filename' => 'hindi_india'),
-		'hu' => array('language' => 'Hungarian',           'country' => 'hu', 'filename' => 'hungarian_hungary'),
-		'is' => array('language' => 'Icelandic',           'country' => 'is', 'filename' => 'icelandic_iceland'),
-		'id' => array('language' => 'Indonesian',          'country' => 'id', 'filename' => 'indonesian_indonesia'),
-		'ga' => array('language' => 'Irish',               'country' => 'ie', 'filename' => 'irish_ireland'),
-		'it' => array('language' => 'Italian',             'country' => 'it', 'filename' => 'italian_italy'),
-		'ja' => array('language' => 'Japanese',            'country' => 'jp', 'filename' => 'japanese_japan'),
-		'ko' => array('language' => 'Korean',              'country' => 'kr', 'filename' => 'korean_korea'),
-		'lv' => array('language' => 'Lativan',             'country' => 'lv', 'filename' => 'latvian_latvia'),
-		'lt' => array('language' => 'Lithuanian',          'country' => 'lt', 'filename' => 'lithuanian_lithuania'),
-		'mk' => array('language' => 'Macedonian',          'country' => 'mk', 'filename' => 'macedonian_macedonia'),
-		'ms' => array('language' => 'Malay',               'country' => 'my', 'filename' => 'malay_malaysia'),
-		'mt' => array('language' => 'Maltese',             'country' => 'lt', 'filename' => 'maltese_malta'),
-		'no' => array('language' => 'Norwegian',           'country' => 'no', 'filename' => 'norwegian_norway'),
-		'pl' => array('language' => 'Polish',              'country' => 'pl', 'filename' => 'polish_poland'),
-		'pt' => array('language' => 'Portuguese',          'country' => 'pt', 'filename' => 'portuguese_portugal'),
-		'pt' => array('language' => 'Portuguese (Brazil)', 'country' => 'br', 'filename' => 'portuguese_brazil'),
-		'ro' => array('language' => 'Romanian',            'country' => 'ro', 'filename' => 'romanian_romania'),
-		'ru' => array('language' => 'Russian',             'country' => 'ru', 'filename' => 'russian_russia'),
-		'sr' => array('language' => 'Serbian',             'country' => 'rs', 'filename' => 'serbian_serbia'),
-		'sk' => array('language' => 'Slovak',              'country' => 'sk', 'filename' => 'slovak_slovakia'),
-		'sl' => array('language' => 'Slovenian',           'country' => 'si', 'filename' => 'slovenian_slovenia'),
-		'es' => array('language' => 'Spanish',             'country' => 'es', 'filename' => 'spanish_spain'),
-		'sv' => array('language' => 'Swedish',             'country' => 'se', 'filename' => 'swedish_sweden'),
-		'th' => array('language' => 'Thai',                'country' => 'th', 'filename' => 'thai_thailand'),
-		'tr' => array('language' => 'Turkish',             'country' => 'tr', 'filename' => 'turkish_turkey'),
-		'vi' => array('language' => 'Vietnamese',          'country' => 'vn', 'filename' => 'vietnamese_vietnam')
+		'sq-AL' => array('language' => 'Albanian',            'country' => 'al', 'filename' => 'albanian_albania'),
+		'ar-SA' => array('language' => 'Arabic',              'country' => 'sa', 'filename' => 'arabic_saudi_arabia'),
+		'hy-AM' => array('language' => 'Armenian',            'country' => 'am', 'filename' => 'armenian_armenia'),
+		'be-BY' => array('language' => 'Belarusian',          'country' => 'by', 'filename' => 'belarusian_belarus'),
+		'bg-BG' => array('language' => 'Bulgarian',           'country' => 'bg', 'filename' => 'bulgarian_bulgaria'),
+		'zh-CN' => array('language' => 'Chinese (China)',     'country' => 'cn', 'filename' => 'chinese_china_simplified'),
+		'zh-HK' => array('language' => 'Chinese (Hong Kong)', 'country' => 'hk', 'filename' => 'chinese_hong_kong'),
+		'zh-SG' => array('language' => 'Chinese (Singapore)', 'country' => 'sg', 'filename' => 'chinese_singapore'),
+		'zh-TW' => array('language' => 'Chinese (Taiwan)',    'country' => 'tw', 'filename' => 'chinese_taiwan'),
+		'hr-HR' => array('language' => 'Croatian',            'country' => 'hr', 'filename' => 'croatian_croatia'),
+		'cs-GZ' => array('language' => 'Czech',               'country' => 'cz', 'filename' => 'czech_czech_republic'),
+		'da-DK' => array('language' => 'Danish',              'country' => 'dk', 'filename' => 'danish_denmark'),
+		'nl-NL' => array('language' => 'Dutch',               'country' => 'nl', 'filename' => 'dutch_netherlands'),
+		'en-US' => array('language' => 'English',             'country' => 'us', 'filename' => 'english_usa'),
+		'et-EE' => array('language' => 'Estonian',            'country' => 'ee', 'filename' => 'estonian_estonia'),
+		'fi-FI' => array('language' => 'Finnish',             'country' => 'fi', 'filename' => 'finnish_finland'),
+		'fr-FR' => array('language' => 'French',              'country' => 'fr', 'filename' => 'french_france'),
+		'de-DE' => array('language' => 'German',              'country' => 'de', 'filename' => 'german_germany'),
+		'el-GR' => array('language' => 'Greek',               'country' => 'gr', 'filename' => 'greek_greece'),
+		'iw-IL' => array('language' => 'Hebrew',              'country' => 'il', 'filename' => 'hebrew_israel'),
+		'hi-IN' => array('language' => 'Hindi',               'country' => 'in', 'filename' => 'hindi_india'),
+		'hu-HU' => array('language' => 'Hungarian',           'country' => 'hu', 'filename' => 'hungarian_hungary'),
+		'is-IS' => array('language' => 'Icelandic',           'country' => 'is', 'filename' => 'icelandic_iceland'),
+		'id-ID' => array('language' => 'Indonesian',          'country' => 'id', 'filename' => 'indonesian_indonesia'),
+		'ga-IE' => array('language' => 'Irish',               'country' => 'ie', 'filename' => 'irish_ireland'),
+		'it-IT' => array('language' => 'Italian',             'country' => 'it', 'filename' => 'italian_italy'),
+		'ja-JP' => array('language' => 'Japanese',            'country' => 'jp', 'filename' => 'japanese_japan'),
+		'ko-KR' => array('language' => 'Korean',              'country' => 'kr', 'filename' => 'korean_korea'),
+		'lv-LV' => array('language' => 'Lativan',             'country' => 'lv', 'filename' => 'latvian_latvia'),
+		'lt-LT' => array('language' => 'Lithuanian',          'country' => 'lt', 'filename' => 'lithuanian_lithuania'),
+		'mk-MK' => array('language' => 'Macedonian',          'country' => 'mk', 'filename' => 'macedonian_macedonia'),
+		'ms-MY' => array('language' => 'Malay',               'country' => 'my', 'filename' => 'malay_malaysia'),
+		'mt-LT' => array('language' => 'Maltese',             'country' => 'lt', 'filename' => 'maltese_malta'),
+		'no-NO' => array('language' => 'Norwegian',           'country' => 'no', 'filename' => 'norwegian_norway'),
+		'pl-PL' => array('language' => 'Polish',              'country' => 'pl', 'filename' => 'polish_poland'),
+		'pt-PT' => array('language' => 'Portuguese',          'country' => 'pt', 'filename' => 'portuguese_portugal'),
+		'pt-BR' => array('language' => 'Portuguese (Brazil)', 'country' => 'br', 'filename' => 'portuguese_brazil'),
+		'ro-RO' => array('language' => 'Romanian',            'country' => 'ro', 'filename' => 'romanian_romania'),
+		'ru-RU' => array('language' => 'Russian',             'country' => 'ru', 'filename' => 'russian_russia'),
+		'sr-RS' => array('language' => 'Serbian',             'country' => 'rs', 'filename' => 'serbian_serbia'),
+		'sk-SK' => array('language' => 'Slovak',              'country' => 'sk', 'filename' => 'slovak_slovakia'),
+		'sl-SI' => array('language' => 'Slovenian',           'country' => 'si', 'filename' => 'slovenian_slovenia'),
+		'es-ES' => array('language' => 'Spanish',             'country' => 'es', 'filename' => 'spanish_spain'),
+		'sv-SE' => array('language' => 'Swedish',             'country' => 'se', 'filename' => 'swedish_sweden'),
+		'th-TH' => array('language' => 'Thai',                'country' => 'th', 'filename' => 'thai_thailand'),
+		'tr-TR' => array('language' => 'Turkish',             'country' => 'tr', 'filename' => 'turkish_turkey'),
+		'vi-VN' => array('language' => 'Vietnamese',          'country' => 'vn', 'filename' => 'vietnamese_vietnam')
 	);
 
 	return $lang2locale;
@@ -467,22 +494,25 @@ function get_list_of_locales () {
  *
  * @return - an associative array of all installed locales (e.g. 'en' => 'English')
  */
-function get_installed_locales(){
+function get_installed_locales() {
 	global $config, $lang2locale;
 
 	$locations = array();
-	$supported_languages['en'] = $lang2locale['en']['language'];
+	$supported_languages['en-US'] = $lang2locale['en-US']['language'];
 	foreach ($lang2locale as $locale => $properties) {
-		$locations[$properties['filename'] . '.mo'] = array('locale' => $locale, 'language' => $properties['language']);
+		$locations[$properties['filename'] . '.mo'] = array(
+			'locale'   => $locale,
+			'language' => $properties['language']
+		);
 	}
 
 	/* create a list of all languages this Cacti system supports ... */
 	$dhandle = opendir($config['base_path'] . '/locales/LC_MESSAGES');
-	if(is_resource($dhandle)) {
+	if (is_resource($dhandle)) {
 		while (false !== ($filename = readdir($dhandle))) {
 			/* check if language file for DHTML calendar is also available */
 			$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . str_replace('.mo', '.js', $filename);
-			if(isset($locations[$filename]) & file_exists($path2calendar)) {
+			if (isset($locations[$filename]) & file_exists($path2calendar)) {
 				$supported_languages[$locations[$filename]['locale']] = $locations[$filename]['language'];
 			}
 		}
@@ -562,18 +592,18 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	}
 
 	$origlocales = explode(';', setlocale(LC_ALL, 0));
-	setlocale(LC_ALL, $cacti_locale . '_' . $country);
+	setlocale(LC_ALL, $cacti_locale);
 	$locale = localeconv();
 
 	if ($decimals == -1) {
 		$number =  number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
 	} elseif ($number>=pow($baseu, 4)) {
 		$number =  number_format($number/pow($baseu, 4), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' T');
-	} elseif($number>=pow($baseu, 3)) {
+	} elseif ($number>=pow($baseu, 3)) {
 		$number = number_format($number/pow($baseu, 3), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' G');
-	} elseif($number>=pow($baseu, 2)) {
+	} elseif ($number>=pow($baseu, 2)) {
 		$number = number_format($number/pow($baseu, 2), $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' M');
-	} elseif($number>=$baseu) {
+	} elseif ($number>=$baseu) {
 		$number = number_format($number/$baseu, $decimals, $locale['decimal_point'], $locale['thousands_sep']) . __(' K');
 	} else {
 		$number = number_format($number, $decimals, $locale['decimal_point'], $locale['thousands_sep']);
@@ -604,9 +634,10 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 }
 
 function get_new_user_default_language() {
-	$accepted = read_config_option('i18n_default_language');
+	$accepted = repair_locale(read_config_option('i18n_default_language'));
 	if ($accepted == '') {
-		$accepted = read_default_config_option('i18n_default_language');
+		$accepted = repair_locale(read_default_config_option('i18n_default_language'));
 	}
 	return $accepted;
 }
+

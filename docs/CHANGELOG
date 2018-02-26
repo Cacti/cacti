@@ -2,29 +2,29 @@ Cacti CHANGELOG
 
 1.1.36
 -issue#934: Template names missing in graph management list
--issue#1211: CDEF and VDEF Item Edit do not use form API
+-issue#1211: CDEF and VDEF Item Edit do not use correct procedures
 -issue#1250: Language support does not support localization properly
--issue#1331: Maintenance time should occur at midnight, not random time in day
+-issue#1331: Log Rotation should occur at midnight on system
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
--issue#1336: Fix issue with $config not being defined
+-issue#1336: Debian test suite reports php error
 -issue#1338: Allow automation to be run in debug mode from GUI
 -issue#1339: First graph of second page does not render
 -issue#1340: Unable to open Time Graph View in new tab
 -issue#1348: Toggle context menu of Zoom
 -issue#1351: Errorimage does not render on systems without GD ttf support
--issue#1353: New install with missing config.php silently throws errors
--issue#1355: If only one tree exists, don't show move arrows
--issue#1357: Data Profile - Disable fields shown temporarily as editable
--issue#1359: Settings page can generate error if expected tab not found
+-issue#1353: New installation without config.php silently throws errors
+-issue#1355: Single tree can have the order of the tree changed
+-issue#1357: Data Profile disable fields shown temporarily as editable
+-issue#1359: Settings page generates error for removed plugin tab
 -issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
--issue#1365: Plugin Management - Reject invalid folder names
+-issue#1365: Plugin Management enforce folder name
 -issue#1366: Improve error/info message display
 -issue#1380: Potential failure when updating script type
 -issue#1384: When installing/enabling plugins, current user and admin should get permissions
 -issue#1386: form_selectable_cell() ignores width if no style_or_class is passed
 -issue#1389: Poller is including plugins that are not installed
--issue#1390: Have Plugin Uninstall prompt user before Uninnstalling
--issue#1396: Prevent installation/uninstallation of a plugin if a dependency would cause issues
+-issue#1390: Plugin uninstall should prompt user before removal
+-issue#1396: Prevent installation/uninstallation of a plugin if dependency is present
 -issue#1397: Distinguish between plugin tabs and core tabs in settings
 -issue: Allow dynamic setting of from name when emailing
 -issue: Data Query Cache filter layout more consistent
@@ -33,21 +33,14 @@ Cacti CHANGELOG
 -issue: Deprecated DDStats setting removed
 -issue: Graph context menu items are now context aware
 -issue: Validate spine path before allowing enabling of spine
--issue: Optimize filter visibility functions and make html consistent
 -issue: Errored settings fields now highlighted correctly on error
--issue: Reduce load time of settings page
--issue: Separate directory path and file path error messages for readability
--issue: Reduce horizontal space used by settings tabs 
--issue: Install directory bypassed by site replication
--issue: Disable collapsible method for snmp options in host.php
 -issue: Add the Default Device to the Default Tree at install time
--issue: Issue with message text wrapping when no rows found on some pages
--issue: Secpass password verification does not return meaningful error messages
+-issue: Secpass password verification error message unuseful
 -feature: Searching of SNMP Index in View Data Query Cache now works
+-feature: Presets now have default device Template
+-feature: JavaScript library c3.js updated (v0.4.21) / jstree.js (3.3.5)
+-feature: PHPSecLib updated 2.0.10
 -feature: Updated Dutch translations
--feature: Add a default Device Template to the available presets
--feature: Update JavaScript library c3.js (v0.4.21) / jstree.js (3.3.5)
--feature: Update PHPSecLib to version 2.0.10
 
 1.1.35
 -issue#114: *all_max_peak* percentile calculations incorrect
