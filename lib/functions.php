@@ -431,8 +431,12 @@ function is_error_message() {
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if ($messages[$current_message_id]['type'] == 'error') { return true; }
+				if ($messages[$current_message_id]['type'] == 'error') {
+					return true;
+				}
 			}
+		} else {
+			return true;
 		}
 	}
 
@@ -459,7 +463,11 @@ function display_output_messages() {
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		$error_message = is_error_message();
+		if (is_error_message()) {
+			$omessage['type'] = 'error';
+		} else {
+			$omessage['type'] = 'info';
+		}
 
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
@@ -469,33 +477,12 @@ function display_output_messages() {
 						$message = $_SESSION['custom_error'];
 					}
 
-					switch ($messages[$current_message_id]['type']) {
-					case 'info':
-						if ($error_message == false) {
-							$omessage['type']    = 'info';
-							$omessage['message'] = $message;
-
-							/* we don't need these if there are no error messages */
-							kill_session_var('sess_field_values');
-						} else {
-							$omessage['type']    = 'error';
-							$omessage['message'] = $message;
-
-							/* we don't need these if there are no error messages */
-						}
-
-						break;
-					case 'error':
-						$omessage['type']    = 'error';
-						$omessage['message'] = $message;
-						break;
-					}
+					$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
 				} else {
 					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
 				}
 			}
 		} else {
-			$omessage['type']    = 'error';
 			$omessage['message'] = $_SESSION['sess_messages'];
 		}
 	}
@@ -503,6 +490,10 @@ function display_output_messages() {
 	kill_session_var('sess_messages');
 
 	return json_encode($omessage);
+}
+
+function display_custom_error_message($message) {
+	$_SESSION['sess_messages'] = $message;
 }
 
 /* clear_messages - clears the message cache */
@@ -3594,10 +3585,16 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
+	$fromname = '';
+	if (is_array($from)) {
+		$fromname = $from[1];
+		$from     = $from[0];
+	}
+
 	if ($from == '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-	} else {
+	} elseif ($fromname = '') {
 		$full_name = db_fetch_cell_prepared('SELECT full_name
 			FROM user_auth
 			WHERE email_address = ?',

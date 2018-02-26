@@ -747,7 +747,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><? print __('Default Graph policy for this User Group');?></td>
+			<td class='nowrap'><? print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
 			</td>
@@ -888,7 +888,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><? print __('Default Graph policy for this User Group');?></td>
+			<td class='nowrap'><? print __('Default Graph Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_hosts',$policy_array,'','',$policy['policy_hosts'],'',''); ?>
 			</td>
@@ -1036,7 +1036,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><?php print __('Default Graph Template policy for this User Group');?></td>
+			<td class='nowrap'><?php print __('Default Graph Template Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_graph_templates',$policy_array,'','',$policy['policy_graph_templates'],'',''); ?>
 			</td>
@@ -1177,7 +1177,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		?>
 		<tr class='even'>
 			<td><table><tr>
-			<td class='nowrap'><?php print __('Default Tree policy for this User Group');?></td>
+			<td class='nowrap'><?php print __('Default Tree Policy for this User Group');?></td>
 			<td>
 				<?php form_dropdown('policy_trees',$policy_array,'','',$policy['policy_trees'],'',''); ?>
 			</td>
@@ -1929,7 +1929,7 @@ function user_group() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No User Groups Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No User Groups Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

@@ -2317,7 +2317,7 @@ function user() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No Users Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Users Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -3031,7 +3031,7 @@ function member_filter($header_label) {
 					<td>
 						<span>
 							<input type='checkbox' name='associated' id='associated' onChange='applyFilter()' <?php print (get_request_var('associated') == 'true' || get_request_var('associated') == 'on' ? 'checked':'');?>>
-							<label for='associated'><?php print __('Show Exceptions<');?></label>
+							<label for='associated'><?php print __('Show Exceptions');?></label>
 						</span>
 					</td>
 					<td>

@@ -472,7 +472,7 @@ function form_file($form_name, $form_size = 30) {
 	print "<input class='import_button' type='file'";
 
 	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
-		print "class='txtErrorTextBox'";
+		print " class='txtErrorTextBox'";
 		unset($_SESSION["sess_error_fields"][$form_name]);
 	}
 
@@ -502,7 +502,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -547,7 +547,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -595,7 +595,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -1077,7 +1077,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print "class='txtErrorTextBox'";
+			print " class='txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		}
 	}
@@ -1089,7 +1089,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 	}
 
 	if ($form_previous_value == '') { # no data: defaults are used; everythings fine
-			$extra_data = '';
+		$extra_data = '';
 	} else {
 		/* verifying all possible pango font params is too complex to be tested here
 		 * so we only escape the font

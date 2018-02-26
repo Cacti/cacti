@@ -131,13 +131,13 @@ if (isset($_SESSION['refresh'])) {
 	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
 	var passwordMatch='<?php print __('Passphrases match');?>';
 	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
-	var errorOnPage='<?php print __('Sorry, we could not process your last action');?>';
+	var errorOnPage='<?php print __('Sorry, we could not process your last action.');?>';
 	var errorNumberPrefix='<?php print __('Error:');?>';
 	var errorReasonPrefix='<?php print __('Reason:');?>';
 	var errorReasonTitle='<?php print __('Action failed');?>';
-	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected');?>';
+	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected.');?>';
 	var sessionMessageTitle='<?php print __('Operation successful');?>';
-	var sessionMessageSave='<?php print __('The Operation was successful.  Details are below');?>';
+	var sessionMessageSave='<?php print __('The Operation was successful.  Details are below.');?>';
 	var sessionMessage=<?php print display_output_messages(false);?>;
 	var sessionMessageOk='<?php print __('Ok');?>';
 	var sessionMessagePause='<?php print __('Pause');?>';

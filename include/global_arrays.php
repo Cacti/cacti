@@ -109,6 +109,7 @@ $cacti_version_codes = array(
 	'1.1.33' => '0101',
 	'1.1.34' => '0101',
 	'1.1.35' => '0101',
+	'1.1.36' => '0101',
 );
 
 $messages = array(
@@ -119,7 +120,7 @@ $messages = array(
 		'message' => __('Save Failed.'),
 		'type' => 'error'),
 	3  => array(
-		'message' => __('Save Failed: Field Input Error (Check Red Fields).'),
+		'message' => __('Save Failed due to field input errors (Check red fields).'),
 		'type' => 'error'),
 	4  => array(
 		'message' => __('Passwords do not match, please retype.'),
@@ -134,7 +135,7 @@ $messages = array(
 		'message' => __('XML parse error.'),
 		'type' => 'error'),
 	8  => array(
-		'message' => __('Form types dirpath and filepath must point to a valid diretory or file.'),
+		'message' => __('The directory highlighted does not exist.  Please enter a valid directory.'),
 		'type' => 'error'),
 	9  => array(
 		'message' => __('The Cacti log file must have the extension \'.log\''),
@@ -149,10 +150,10 @@ $messages = array(
 		'message' => __('Username already in use.'),
 		'type' => 'error'),
 	13  => array(
-		'message' => __('The SNMP v3 Privacy Passphrases to not match'),
+		'message' => __('The SNMP v3 Privacy Passphrases do not match'),
 		'type' => 'error'),
 	14  => array(
-		'message' => __('The SNMP v3 Authentication Passwords to not match'),
+		'message' => __('The SNMP v3 Authentication Passphrases do not match'),
 		'type' => 'error'),
 	15 => array(
 		'message' => __('XML: Cacti version does not exist.'),
@@ -179,28 +180,28 @@ $messages = array(
 		'message' => __('User delete not permitted for designated graph export user.'),
 		'type' => 'error'),
 	23 => array(
-		'message' => __('Data Template Includes Deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
+		'message' => __('Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
 		'type' => 'error'),
 	24 => array(
-		'message' => __('Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair Script to Identify and/or Correct.'),
+		'message' => __('Graph Template includes deleted GPrint Prefix.  Please run database repair script to identify and/or correct.'),
 		'type' => 'error'),
 	25 => array(
-		'message' => __('Graph Template Includes Deleted CDEFs.  Please run Database Repair Script to Identify and/or Correct.'),
+		'message' => __('Graph Template includes deleted CDEFs.  Please run database repair script to identify and/or correct.'),
 		'type' => 'error'),
 	26 => array(
-		'message' => __('Graph Template Includes Deleted Data Input Method.  Please run Database Repair Script to Identify.'),
+		'message' => __('Graph Template includes deleted Data Input Method.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	27 => array(
-		'message' => __('Data Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Data Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	28 => array(
-		'message' => __('Device Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Device Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	29 => array(
-		'message' => __('Data Query Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Data Query not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	30 => array(
-		'message' => __('Graph Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Graph Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	31 => array(
 		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
@@ -209,10 +210,16 @@ $messages = array(
 		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
 		'type' => 'error'),
 	33 => array(
-		'message' => __('Some Graphs not Updated. Unable to Change Device for Data Query based Graphs.'),
+		'message' => __('Some Graphs not updated. Unable to change device for Data Query based Graphs.'),
 		'type' => 'error'),
 	34 => array(
-		'message' => __('Unable to Change Device for Data Query based Graphs.'),
+		'message' => __('Unable to change device for Data Query based Graphs.'),
+		'type' => 'error'),
+	35 => array(
+		'message' => __('Some settings not saved. Check messages below.  Check red fields for errors.'),
+		'type' => 'error'),
+	36  => array(
+		'message' => __('The file highlighted does not exist.  Please enter a valid file name.'),
 		'type' => 'error'),
 	'clog_invalid' => array(
 		'message' => __('Log file specified is not a Cacti log or archive file.'),
@@ -221,58 +228,58 @@ $messages = array(
 		'message' => __('Log file specified was Cacti archive file and was removed.'),
 		'type' => 'info'),
 	'clog_purged' => array(
-		'message' => __('Cacti Log purged successfully'),
+		'message' => __('Cacti log purged successfully'),
 		'type' => 'info'),
 	'password_change' => array(
-		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'),
+		'message' => __('If you force a password change, you must also allow the user to change their password.'),
 		'type' => 'error'),
 	'nopassword' => array(
-		'message' => __('Error: You are not allowed to change your password.'),
+		'message' => __('You are not allowed to change your password.'),
 		'type' => 'error'),
 	'nodomainpassword' => array(
-		'message' => __('Error: LDAP/AD based password change not supported.'),
+		'message' => __('LDAP/AD based password change not supported.'),
 		'type' => 'error'),
 	'clog_permissions' => array(
-		'message' => __('Error: Unable to clear log, no write permissions'),
+		'message' => __('Unable to clear log, no write permissions'),
 		'type' => 'error'),
 	'clog_missing' => array(
-		'message' => __('Error: Unable to clear log, file does not exist'),
+		'message' => __('Unable to clear log, file does not exist'),
 		'type' => 'error'),
 	'csrf_timeout' => array(
-		'message' => '<i>' . __('CSRF Timeout, refreshing page.') . '</i>',
+		'message' => __('CSRF Timeout, refreshing page.'),
 		'type' => 'error'),
 	'mg_mailtime_invalid' => array(
-		'message' => __('Invalid Timestamp. Select timestamp in the future.'),
+		'message' => __('Invalid timestamp. Select timestamp in the future.'),
 		'type'    => 'error'),
 	'poller_sync' => array(
-		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>',
+		'message' => __('Data Collector(s) synchronized for offline operation'),
 		'type' => 'info'),
 	'poller_notfound' => array(
-		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>',
+		'message' => __('Data Collector(s) not found when attempting synchronization'),
 		'type' => 'error'),
 	'poller_noconnect' => array(
-		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>',
+		'message' => __('Unable to establish MySQL connection with remote Data Collector.'),
 		'type' => 'error'),
 	'poller_nosync' => array(
-		'message' => '<i>' . __('Data Collector Synchronization must be initiated from the main Cacti server.') . '</i>',
+		'message' => __('Data Collector synchronization must be initiated from the main Cacti server.'),
 		'type' => 'error'),
 	'reports_save' => array(
-		'message' => '<i>' . __('Report Saved') . '</i>',
+		'message' => __('Report Saved'),
 		'type' => 'info'),
 	'reports_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Save Failed') . '</i></font>',
-		'type' => 'info'),
+		'message' => __('Report Save Failed'),
+		'type' => 'error'),
 	'reports_item_save' => array(
-		'message' => '<i>' . __('Report Item Saved') . '</i>',
+		'message' => __('Report Item Saved'),
 		'type' => 'info'),
 	'reports_item_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>',
-		'type' => 'info'),
+		'message' => __('Report Item Save Failed'),
+		'type' => 'error'),
 	'resource_cache_rebuild' => array(
-		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
+		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
 		'type' => 'info'),
 	'custom_error' => array(
-		'message' => '<i>' . __('Unexpected error occurred'),
+		'message' => __('Unexpected error occurred'),
 		'type' => 'error')
 );
 
@@ -299,15 +306,15 @@ if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
 
 if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
 	$messages['reports_message'] = array(
-		'message' => '<i>' . $_SESSION['reports_message'] . '</i>',
+		'message' => $_SESSION['reports_message'],
 		'type' => 'info'
 	);
 }
 
 if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
 	$messages['reports_error'] = array(
-		'message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>",
-		'type' => 'info'
+		'message' => $_SESSION['reports_error'],
+		'type' => 'error'
 	);
 }
 
@@ -364,9 +371,9 @@ $vdef_functions = array(1 =>
 );
 
 $vdef_item_types = array(
-	CVDEF_ITEM_TYPE_FUNCTION        => __('Function'),
-	CVDEF_ITEM_TYPE_SPEC_DS         => __('Special Data Source'),
-	CVDEF_ITEM_TYPE_STRING          => __('Custom String'),
+	CVDEF_ITEM_TYPE_FUNCTION => __('Function'),
+	CVDEF_ITEM_TYPE_SPEC_DS  => __('Special Data Source'),
+	CVDEF_ITEM_TYPE_STRING   => __('Custom String'),
 );
 
 $custom_vdef_data_source_types = array( // this may change as soon as RRDtool supports math in VDEF, until then only reference to CDEF may help
@@ -553,10 +560,14 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_DEVDBG => __('DEVEL - Developer DEBUG Level')
 );
 
-$poller_options = array(1 =>
-	'cmd.php',
-	'spine'
+$poller_options = array(
+	1 => 'cmd.php',
+	2 => 'spine'
 );
+
+if (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine'))) {
+	unset($poller_options[2]);
+}
 
 $aggregation_levels = array(
 	1       => __('Selected Poller Interval'),

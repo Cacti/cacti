@@ -548,6 +548,7 @@ function update_resource_cache($poller_id = 1) {
 		'resource' => array('recursive' => true,  'path' => $rpath),
 		'lib'      => array('recursive' => true,  'path' => $mpath . '/lib'),
 		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
+		'install'  => array('recursive' => true,  'path' => $mpath . '/install'),
 		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
 		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
 		'images'   => array('recursive' => true,  'path' => $mpath . '/images'),

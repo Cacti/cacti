@@ -13,34 +13,45 @@ Cacti CHANGELOG
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 
 1.1.36
--issue#1211: CDEF and VDEF Item Edit do not use form API
--issue#1331: Maintenance time should occur at midnight, not random time in day
+-issue#934: Template names missing in graph management list
+-issue#1211: CDEF and VDEF Item Edit do not use correct procedures
+-issue#1250: Language support does not support localization properly
+-issue#1331: Log Rotation should occur at midnight on system
 -issue#1334: Console->Users->(Edit) Permissions checkmark descriptions missing
--issue#1336: Fix issue with $config not being defined
+-issue#1336: Debian test suite reports php error
 -issue#1338: Allow automation to be run in debug mode from GUI
 -issue#1339: First graph of second page does not render
 -issue#1340: Unable to open Time Graph View in new tab
 -issue#1348: Toggle context menu of Zoom
 -issue#1351: Errorimage does not render on systems without GD ttf support
--issue#1353: New install with missing config.php silently throws errors
--issue#1355: If only one tree exists, don't show move arrows
--issue#1357: Data Profile - Disable fields shown temporarily as editable
--issue#1359: Settings page can generate error if expected tab not found
+-issue#1353: New installation without config.php silently throws errors
+-issue#1355: Single tree can have the order of the tree changed
+-issue#1357: Data Profile disable fields shown temporarily as editable
+-issue#1359: Settings page generates error for removed plugin tab
 -issue#1362: DSStats Avg/Peak function broken due to change in RRDtool processing
--issue#1365: Plugin Management - Reject invalid folder names
+-issue#1365: Plugin Management enforce folder name
 -issue#1366: Improve error/info message display
--issue: Fixed some language string inconsistencies
--issue: Update filter layout of Data Query Cache to match Poller Cache
--issue: Remove spurious php code from checkbox area in user admin
+-issue#1380: Potential failure when updating script type
+-issue#1384: When installing/enabling plugins, current user and admin should get permissions
+-issue#1386: form_selectable_cell() ignores width if no style_or_class is passed
+-issue#1389: Poller is including plugins that are not installed
+-issue#1390: Plugin uninstall should prompt user before removal
+-issue#1396: Prevent installation/uninstallation of a plugin if dependency is present
+-issue#1397: Distinguish between plugin tabs and core tabs in settings
+-issue: Allow dynamic setting of from name when emailing
+-issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
--issue: Implementation of error handling causing errors on New Graphs page
--issue: Remove deprecated setting fom DSStats settings
--issue: Move several DSStats logic to standard functions
--issue: Disable graph context menu items that have no right context
--issue: Resolve JavaScript errors when coming out of Realtime
--issue: snmpagent generates a Fatal error when plugin directories duplicated
--issue: Undefined index 'profile_referer' in auth_profile.php
--feature: Allow searching of SNMP Index in View Data Query Cache
+-issue: Implementation of error handling causes errors creating New Graphs
+-issue: Deprecated DDStats setting removed
+-issue: Graph context menu items are now context aware
+-issue: Validate spine path before allowing enabling of spine
+-issue: Errored settings fields now highlighted correctly on error
+-issue: Add the Default Device to the Default Tree at install time
+-issue: Secpass password verification error message unuseful
+-feature: Searching of SNMP Index in View Data Query Cache now works
+-feature: Presets now have default device Template
+-feature: JavaScript library c3.js updated (v0.4.21) / jstree.js (3.3.5)
+-feature: PHPSecLib updated 2.0.10
 -feature: Updated Dutch translations
 
 1.1.35

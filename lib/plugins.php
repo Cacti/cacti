@@ -678,42 +678,39 @@ function api_plugin_disable_hooks_all($plugin) {
 		array($plugin));
 }
 
-function api_plugin_register_realm($plugin, $file, $display, $admin = false) {
-	$exists = db_fetch_assoc_prepared('SELECT id
+function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
+	$exists = db_fetch_cell_prepared('SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?
 		AND file = ?',
-		array($plugin, $file), false);
+		array($plugin, $file));
 
-	if (!count($exists)) {
-		db_execute_prepared('INSERT INTO plugin_realms
+	if ($exists === false) {
+		db_execute_prepared('REPLACE INTO plugin_realms
 			(plugin, file, display)
 			VALUES (?, ?, ?)',
 			array($plugin, $file, $display));
 
 		if ($admin) {
-			$realm_id = db_fetch_assoc_prepared('SELECT id
+			$realm_id = db_fetch_cell_prepared('SELECT id
 				FROM plugin_realms
 				WHERE plugin = ?
 				AND file = ?',
 				array($plugin, $file), false);
 
-			$realm_id = $realm_id[0]['id'] + 100;
+			$realm_id = $realm_id + 100;
 
-			$user_id = db_fetch_assoc("SELECT id
+			$user_ids[] = db_fetch_cell("SELECT id
 				FROM user_auth
 				WHERE username = 'admin'", false);
 
-			if (count($user_id)) {
-				$user_id = $user_id[0]['id'];
-				$exists = db_fetch_assoc_prepared('SELECT realm_id
-					FROM user_auth_realm
-					WHERE user_id = ?
-					AND realm_id = ?',
-					array($user_id, $realm_id), false);
+			if (isset($_SESSION['sess_user_id'])) {
+				$user_ids[] = $_SESSION['sess_user_id'];
+			}
 
-				if (!count($exists)) {
-					db_execute_prepared('INSERT INTO user_auth_realm
+			if (sizeof($user_ids)) {
+				foreach($user_ids as $user_id) {
+					db_execute_prepared('REPLACE INTO user_auth_realm
 						(user_id, realm_id)
 						VALUES (?, ?)',
 						array($user_id, $realm_id));

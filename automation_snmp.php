@@ -688,7 +688,7 @@ function automation_snmp_edit() {
 				$i++;
 			}
 		} else {
-			print "<tr><td><em>" . __('No SNMP Items') . "</em></td></tr>\n";
+			print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>\n";
 		}
 
 		html_end_box();
@@ -916,7 +916,7 @@ function automation_snmp() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

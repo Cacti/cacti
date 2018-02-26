@@ -353,8 +353,9 @@ function field_edit() {
 
 	/* if there are no input fields to choose from, complain */
 	if ((!isset($array_field_names)) && (isset_request_var('type') ? get_request_var('type') == 'in' : false) && ($data_input['type_id'] == '1')) {
-		display_custom_error_message('This script appears to have no input values, therefore there is nothing to add.');
-		return;
+		display_custom_error_message(__('This script appears to have no input values, therefore there is nothing to add.'));
+		header('Location: data_input.php?header=false&action=edit&id=' . get_filter_request_var('data_input_id'));
+		exit;
 	}
 
 	if ($current_field_type == 'out') {

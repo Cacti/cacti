@@ -467,6 +467,7 @@ label {
 	display:block;
 	float:right;
 	text-align:right;
+	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
@@ -872,14 +873,9 @@ legend {
 	margin-right: 5px;
 }
 
-.cactiGraphContentArea>div:first-child {
-	display: none !important;
-}
-
 .cactiGraphContentArea>div:last-child {
 	margin-top: 10px;
 }
-
 
 .cactiGraphContentAreaPreview {
 	height: 100%;
@@ -887,10 +883,6 @@ legend {
 	overflow-x: hidden !important;
 	padding-left: 10px;
 	margin-right: 5px;
-}
-
-.cactiGraphContentAreaPreview>div:first-child {
-	display: none !important;
 }
 
 .cactiGraphContentAreaPreview>div:last-child {
@@ -903,10 +895,6 @@ legend {
 	overflow-x: hidden !important;
 	padding-left: 10px;
 	margin-right: 5px;
-}
-
-.cactiConsoleContentArea>div:first-child {
-	display: none !important;
 }
 
 .cactiConsoleContentArea>div:last-child {

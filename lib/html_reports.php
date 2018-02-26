@@ -793,7 +793,7 @@ function reports_send($id) {
 			$report['subject'] = $report['name'];
 		};
 		if ($report['email'] == '') {
-			$_SESSION['reports_error'] = __('Unable to send Report \'%d\'.  Please set destination e-mail addresses',  $report['name']);
+			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']);
 			if (!isset_request_var('selected_items')) {
 				raise_message('reports_error');
 			}
@@ -816,10 +816,6 @@ function reports_send($id) {
 			generate_report($report, true);
 		}
 	}
-	if ($reports_item['tree_id'] == 0) {
-		$reports_item['branch_id'] = 0;
-	}
-
 }
 
 function reports_item_movedown() {
@@ -1575,7 +1571,7 @@ function reports() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No Reports Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

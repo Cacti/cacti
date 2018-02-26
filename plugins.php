@@ -29,7 +29,6 @@ $actions = array(
 	'enable'    => __('Enable'),
 	'disable'   => __('Disable'),
 	'uninstall' => __('Uninstall'),
-//	'check' => 'Check'
 );
 
 $status_names = array(
@@ -144,13 +143,7 @@ function plugins_temp_table_exists($table) {
 function plugins_load_temp_table() {
 	global $config, $plugins, $plugins_integrated;
 
-	$pluginslist = retrieve_plugin_list();
-
-	if (isset($_SESSION['plugin_temp_table'])) {
-		$table = $_SESSION['plugin_temp_table'];
-	} else {
-		$table = 'plugin_temp_table_' . rand();
-	}
+	$table = 'plugin_temp_table_' . rand();
 
 	$x = 0;
 	while ($x < 30) {
@@ -165,15 +158,22 @@ function plugins_load_temp_table() {
 		} else {
 			$table = 'plugin_temp_table_' . rand();
 		}
+
 		$x++;
+	}
+
+	if (!db_column_exists($table, 'requires')) {
+		db_execute("ALTER TABLE $table
+			ADD COLUMN requires varchar(80) DEFAULT NULL,
+			ADD COLUMN infoname varchar(20) DEFAULT NULL");
 	}
 
 	$path = $config['base_path'] . '/plugins/';
 	$dh   = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if (is_dir("$path/$file") && file_exists("$path/$file/setup.php") && !in_array($file, $pluginslist) && !in_array($file, $plugins_integrated)) {
-				if (file_exists("$path/$file/INFO")) {
+			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated)) {
+				if (file_exists("$path$file/INFO")) {
 					$cinfo[$file] = plugin_load_info_file("$path/$file/INFO");
 
 					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
@@ -181,6 +181,7 @@ function plugins_load_temp_table() {
 					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
 					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
 					if (!isset($cinfo[$file]['version']))  $cinfo[$file]['version']  = __('Unknown');
+					if (!isset($cinfo[$file]['requires'])) $cinfo[$file]['requires'] = '';
 
 					$cinfo[$file]['status'] = 0;
 					$pluginslist[] = $file;
@@ -199,24 +200,38 @@ function plugins_load_temp_table() {
 						'author'   => '',
 						'homepage' => '',
 						'version'  => __('Unknown'),
-						'compat'   => '0.8'
+						'compat'   => '0.8',
+						'requires' => '',
+						'status'   => -4
 					);
-
-					$cinfo[$file]['status'] = -2;
 				}
 
-				$pluginslist[] = $file;
+				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
+					FROM $table
+					WHERE directory = ?",
+					array($file));
 
-				db_execute_prepared("REPLACE INTO $table
-					(directory, name, status, author, webpage, version)
-					VALUES (?, ?, ?, ?, ?, ?)",
-					array(
-						$file,
-						$cinfo[$file]['longname'],
-						$cinfo[$file]['status'],
-						$cinfo[$file]['author'],
-						$cinfo[$file]['homepage'],
-						$cinfo[$file]['version']));
+				if (!$exists) {
+					db_execute_prepared("INSERT INTO $table
+						(directory, name, status, author, webpage, version, requires, infoname)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+						array(
+							$file,
+							$cinfo[$file]['longname'],
+							$cinfo[$file]['status'],
+							$cinfo[$file]['author'],
+							$cinfo[$file]['homepage'],
+							$cinfo[$file]['version'],
+							$cinfo[$file]['requires'],
+							$cinfo[$file]['name']
+						)
+					);
+				} else {
+					db_execute_prepared("UPDATE $table
+						SET infoname = ?, requires = ?
+						WHERE directory = ?",
+						array($cinfo[$file]['name'], $cinfo[$file]['requires'], $file));
+				}
 			}
 		}
 
@@ -395,8 +410,6 @@ function update_show_current () {
 		$sql_order
 		$sql_limit");
 
-	db_execute("DROP TABLE $table");
-
 	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 
 	form_start('plugins.php', 'chk');
@@ -411,6 +424,7 @@ function update_show_current () {
 		'name'      => array('display' => __('Plugin Description'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('A description that the Plugins author has given to the Plugin.')),
 		'status'    => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The status of this Plugin.')),
 		'author'    => array('display' => __('Author'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The author of this Plugin.')),
+		'requires'  => array('display' => __('Requires'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('This Plugin requires the following Plugins be installed first.')),
 		'version'   => array('display' => __('Version'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The version of this Plugin.')),
 		'id'        => array('display' => __('Load Order'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The load order of the Plugin.  You can change the load order by first sorting by it, then moving a Plugin either up or down.'))
 	);
@@ -434,14 +448,14 @@ function update_show_current () {
 
 			form_alternate_row('', true);
 
-			print format_plugin_row($plugin, $last_plugin, $load_ordering);
+			print format_plugin_row($plugin, $last_plugin, $load_ordering, $table);
 
 			$i++;
 
 			$j++;
 		}
 	} else {
-		print '<tr><td><em>' . __('No Plugins Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -451,13 +465,58 @@ function update_show_current () {
 	}
 
 	form_end();
+
+	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Pluign, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_title = __('Are you sure you want to Uninstall?');
+
+	?>
+	<script type='text/javascript'>
+	var url = '';
+
+	$(function() {
+		$('.uninstall').click(function(event) {
+			event.preventDefault();
+			url = $(this).attr('href');
+
+			var btnUninstall = {
+				'Cancel': {
+					text: '<?php print __('Cancel');?>',
+					id: 'btnCancel',
+					click: function() {
+						$(this).dialog('close');
+					}
+				},
+				'Uninstall': {
+					text: '<?php print __('Uninstall');?>',
+					id: 'btnUninstall',
+					click: function() {
+						$('#uninstalldialog').dialog('close');
+						loadPageNoHeader(url + '&header=false');
+					}
+				}
+			};
+
+			$('body').remove('#uninstalldialog').append("<div id='uninstalldialog'><h4><?php print $uninstall_msg;?></h4></div>");
+
+			$('#uninstalldialog').dialog({
+				title: '<?php print $uninstall_title;?>',
+				minHeight: 80,
+				minWidth: 500,
+				buttons: btnUninstall
+			});
+		});
+	});
+	</script>
+	<?php
+
+	db_execute("DROP TABLE $table");
 }
 
-function format_plugin_row($plugin, $last_plugin, $include_ordering) {
+function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 	global $status_names, $config;
 	static $first_plugin = true;
 
-	$row = plugin_actions($plugin);
+	$row = plugin_actions($plugin, $table);
 
 	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
 
@@ -466,13 +525,14 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	if ($plugin['status'] == '-1') {
 		$status = plugin_is_compatible($plugin['directory']);
 		$row .= "<td class='nowrap'>" . __('Not Compatible, %s', $status['requires']) . "</td>\n";
-	} elseif ($plugin['status'] == -3 || $plugin['status'] == -2) {
+	} elseif ($plugin['status'] < -1) {
 		$row .= "<td class='nowrap'>" . __('Plugin Error') . "</td>\n";
 	} else {
 		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
 	}
 
 	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";
+	$row .= "<td class='nowrap'>" . ucfirst($plugin['requires']) . "</td>\n";
 	$row .= "<td class='right'>"  . $plugin['version'] . "</td>\n";
 
 	if ($include_ordering) {
@@ -501,44 +561,87 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering) {
 	return $row;
 }
 
-function plugin_actions($plugin) {
+function plugin_required_for_others($plugin, $table) {
+	$required_for_others = db_fetch_cell("SELECT GROUP_CONCAT(directory)
+		FROM $table
+		WHERE requires LIKE '%" . $plugin['directory'] . "%'
+		AND status IN (1,4)");
+
+	if ($required_for_others) {
+		return $required_for_others;
+	} else {
+		return false;
+	}
+}
+
+function plugin_required_installed($plugin, $table) {
+	$not_installed = '';
+
+	$requires = db_fetch_cell_prepared("SELECT requires
+		FROM $table
+		WHERE directory = ?",
+		array($plugin['directory']));
+
+	if ($requires != '') {
+		$requires = explode(' ', $requires);
+		foreach($requires as $r) {
+			$installed = db_fetch_cell_prepared("SELECT status
+				FROM $table
+				WHERE directory = ?",
+				array($r));
+
+			if (!$installed) {
+				$not_installed .= ($not_installed != '' ? ', ':'') . $r;
+			}
+		}
+	}
+
+	return $not_installed;
+}
+
+function plugin_actions($plugin, $table) {
 	global $config, $pluginslist, $plugins_integrated;
 
 	$link = '<td>';
 	switch ($plugin['status']) {
 		case '0': // Not Installed
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_add.png'></a>";
-			$link .= "<img align='absmiddle' src='" . $config['url_path'] . "images/view_none.gif'>";
+			$not_installed = plugin_required_installed($plugin, $table);
+			if ($not_installed != '') {
+				$link .= "<a href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+			} else {
+				$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_add.png'></a>";
+			}
+			$link .= "<img src='" . $config['url_path'] . "images/view_none.gif'>";
 			break;
 		case '1':	// Currently Active
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/stop.png'></a>";
+			$required = plugin_required_for_others($plugin, $table);
+			if ($required != '') {
+				$link .= "<a href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+			} else {
+				$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			}
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=disable&id=' . $plugin['directory']) . "' title='" . __esc('Disable Plugin') . "'><img src='" . $config['url_path'] . "images/stop.png'></a>";
 			break;
 		case '2': // Configuration issues
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
 			break;
 		case '4':	// Installed but not active
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/cog_delete.png'></a>";
-			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img align='absmiddle' src='" . $config['url_path'] . "images/accept.png'></a>";
+			$required = plugin_required_for_others($plugin, $table);
+			if ($required != '') {
+				$link .= "<a href='#' title='" . __esc('Unable to Uninstall.  This Plugin is required by: %s', ucfirst($required)) . "'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+			} else {
+				$link .= "<a class='uninstall' href='" . html_escape($config['url_path'] . 'plugins.php?mode=uninstall&id=' . $plugin['directory']) . "' title='" . __esc('Uninstall Plugin') . "'><img src='" . $config['url_path'] . "images/cog_delete.png'></a>";
+			}
+			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img src='" . $config['url_path'] . "images/accept.png'></a>";
+			break;
+		case '-4': // Plugins can have spaces in their names
+			$link .= "<a href='#' title='" . __esc('Plugin does not include an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
 		case '-3': // Plugins can have spaces in their names
-			$link .= "<a href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+			$link .= "<a href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
 		case '-2': // Naming issues
-			$path      = $config['base_path'] . '/plugins/' . $plugin['directory'];
-			$directory = $plugin['directory'];
-
-			if (is_dir($path) && file_exists("$path/setup.php") && !in_array($directory, $pluginslist) && !in_array($directory, $plugins_integrated)) {
-				if (file_exists("$path/INFO")) {
-					$cinfo      = plugin_load_info_file("$path/INFO");
-					$directory  = $cinfo['name'];
-					$link      .= "<a href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', $directory, $plugin['directory']) . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
-				} else {
-					$link .= "<a href='#' title='" . __esc('Plugin does not include an INFO file') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
-				}
-			} else {
-				$link .= "<a href='#' title='" . __esc('Directory does not appear to be plugin directory') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
-			}
+			$link .= "<a href='#' title='" . __esc('Plugin directory is not correct.  Should be \'%s\' but is \'%s\'', $plugin['infoname'], $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 
 			break;
 		default: // Old PIA
@@ -546,13 +649,13 @@ function plugin_actions($plugin) {
 			$directory  = $cinfo['name'];
 
 			if (!file_exists("$path/setup.php")) {
-				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
-			} elseif (!file_exists("$path/INFO", $pluginslist)) {
-				$link .= "<a href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			} elseif (!file_exists("$path/INFO")) {
+				$link .= "<a href='#' title='" . __esc('Plugin is lacking an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} elseif (in_array($directory, $plugins_integrated)) {
-				$link .= "<a href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin is integrated into Cacti core') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			} else {
-				$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img align='absmiddle' src='images/cog_error.png'></a>";
+				$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			}
 			break;
 	}

@@ -343,7 +343,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="checkbox"], input[type="radio"]').click(function() {
+	$('input[type="checkbox"], input[type="radio"]').unbind('click').click(function() {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -363,7 +363,7 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Rows
 	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).click(function(data) {
+		$(this).unbind('click').click(function(data) {
 			$(this).closest('tr').toggleClass('selected');
 			var checkbox = $(this).parent().find(':checkbox');
 			checkbox.prop('checked', !checkbox.is(':checked'));
@@ -371,7 +371,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Checkboxes
-	$('tr[id^="gt_line"].selectable').find('input.checkbox').click(function(data) {
+	$('tr[id^="gt_line"].selectable').find('input.checkbox').unbind('click').click(function(data) {
 		if (!$(this).is(':disabled')) {
 			if ($(this).is(':checked')) {
 				$('#all_cg').prop('checked', false);
@@ -386,7 +386,7 @@ function applySelectorVisibilityAndActions() {
 
 	// Create Actions for Rows
 	lines.filter(':not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).click(function(e) {
+		$(this).unbind('click').click(function(e) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
 			} else {
@@ -399,7 +399,7 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Checkboxes
-	lines.find('input.checkbox').click(function(e) {
+	lines.find('input.checkbox').unbind('click').click(function(e) {
 		if (!$(this).is(':disabled')) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, this);
@@ -452,7 +452,7 @@ function dqUpdateDeps(snmp_query_id) {
 	var dqlines = $('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row');
 	var checkboxes = dqlines.find(':checkbox');
 	dqlines.each(function() {
-		$(this).find(':checkbox').click(function(e) {
+		$(this).find(':checkbox').unbind('click').click(function(e) {
 			if (e.shiftKey) {
 				updateCheckboxes(checkboxes, this);
 			} else {
@@ -463,7 +463,7 @@ function dqUpdateDeps(snmp_query_id) {
 		});
 
 		$(this).find('td').not('.checkbox').each(function() {
-			$(this).click(function(e) {
+			$(this).unbind('click').click(function(e) {
 				if (e.shiftKey) {
 					updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
 				} else {
@@ -554,6 +554,8 @@ function cactiReturnTo(href) {
 function applySkin() {
 	pageName = basename($(location).attr('pathname'));
 
+	$('#messageContainer').remove();
+
 	if (!theme || theme == 'classic') {
 		theme = 'classic';
 
@@ -611,7 +613,7 @@ function applySkin() {
 	});
 
 	// Debug message actions
-	$('table.debug').click(function() {
+	$('table.debug').unbind('click').click(function() {
 		if ($(this).find('table').is(':visible')) {
 			$(this).find('table').slideUp('fast');
 		} else {
@@ -619,7 +621,7 @@ function applySkin() {
 		}
 	});
 
-	$('.cactiTableCopy').click(function(event) {
+	$('.cactiTableCopy').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 		containerId =  $(this).attr('id');
@@ -672,6 +674,10 @@ function displayMessages() {
 		clearTimeout(sessionMessageTimer);
 	}
 
+	if (sessionMessage == null) {
+		return;
+	}
+
 	if (typeof sessionMessage.type != 'undefined') {
 		if (sessionMessage.type == 'error') {
 			title = errorReasonTitle;
@@ -708,6 +714,7 @@ function displayMessages() {
 					id: 'btnSessionMessageOk',
 					click: function() {
 						$(this).dialog('close');
+						$('#messageContainer').remove();
 					}
 				}
 			};
@@ -735,6 +742,8 @@ function displayMessages() {
 			title: title,
 			buttons: sessionMessageButtons
 		});
+
+		sessionMessage = null;
 	}
 }
 
@@ -751,6 +760,7 @@ function sessionMessageCountdown(time) {
 		if (sessionMessageTimeLeft <= 0) {
 			clearInterval(sessionMessageTimer);
 			$('#messageContainer').dialog('close');
+			$('#messageContainer').remove();
 		}
 	}, 1000);
 }
@@ -773,119 +783,70 @@ function makeFiltersResponsive() {
 
 	filterNum = 0;
 
-	if ($('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').find('.filterTable').length > 0) {
-		$('div.cactiTableButton').each(function() {
-			if ($(this).closest('.cactiTable').find('.filterTable').length) {
-				if ($(this).find('.cactiFilterState').length == 0) {
-					id    = $(this).closest('.cactiTable').attr('id');
-					child = id+'_child';
+	if ($('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').find('.filterTable').length) {
+		$('div.cactiTableButton').closest('.cactiTable').not('#dqdebug').each(function() {
+			if ($(this).find('.filterTable').length) {
+				filterHeader = $(this).closest('.cactiTable');
+				id     = filterHeader.attr('id');
+				child  = id+'_child';
+				filterContents = $('#'+child);
 
+				filterHeader.find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
+
+				if (filterHeader.find('div.cactiTableButton').find('.cactiFilterAdd').length) {
 					markFilterTDs(child, filterNum);
 
-					if ($(this).find('a').length) {
-						$(this).find('a').tooltip({
-							open: function (event, ui) {
-								$('.cactiTableTitle, .cactiTableButton').tooltip('close');
-								id = $(this).closest('.cactiTable').attr('id');
-							},
-							close: function (event, ui) {
-								id = $(this).closest('.cactiTable').attr('id');
-							}
-						});
-					}
-
-					$(this).parent().addClass('cactiFilterTitle').find('.cactiTableTitle, .cactiTableButton').css('cursor', 'pointer');
+					$('.cactiFilterAdd').tooltip();
 				}
 
-				if ($('#'+child).find('.filterTable').length) {
-					if ($(this).find('.cactiFilter').length == 0) {
-						if ($('#'+child).find('#export').length) {
-							title = $('#export').attr('value');
-							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
+				if (filterContents.find('#export').length) {
+					title = $('#export').attr('value');
+					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
 
-							$('.cactiFilterExport').click(function(event) {
-								event.stopPropagation();
-								$('#export').trigger('click');
-							}).tooltip({
-								open: function (event, ui) {
-									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
-									id = $(this).closest('.cactiTable').attr('id');
-								},
-								close: function (event, ui) {
-									id = $(this).closest('.cactiTable').attr('id');
-								}
-							});
-						}
-
-						if ($('#'+child).find('#import').length) {
-							title = $('#import').attr('value');
-							$(this).append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
-
-							$('.cactiFilterImport').click(function(event) {
-								event.stopPropagation();
-								$('#import').trigger('click');
-							}).tooltip({
-								open: function (event, ui) {
-									id = $(this).closest('.cactiTable').attr('id');
-									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
-								},
-								close: function (event, ui) {
-									id = $(this).closest('.cactiTable').attr('id');
-								}
-							});
-						}
-
-						$('.cactiTableTitle, .cactiTableButton').attr('title', showHideFilter).tooltip({ track: true });
-
-						id    = $(this).closest('.cactiTable').attr('id');
-						child = id+'_child';
-
-						if ($('#'+child).find('#clear').length) {
-							$(this).append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
-
-							$('.cactiFilterClear').click(function(event) {
-								event.stopPropagation();
-								$('#clear').trigger('click');
-							}).tooltip({
-								open: function (event, ui) {
-									$('.cactiTableTitle, .cactiTableButton').tooltip('close');
-									id = $(this).closest('.cactiTable').attr('id');
-								},
-								close: function (event, ui) {
-									id = $(this).closest('.cactiTable').attr('id');
-								}
-							});
-						}
-
-						toggleFilterAndIcon(id, child, true);
-
-						$('.cactiFilterTitle').find('.cactiTableTitle, .cactiTableButton').click(function() {
-							id    = $(this).closest('.cactiTable').attr('id');
-							child = id+'_child';
-							toggleFilterAndIcon(id, child, false);
-						});
-
-						state = storage.get('filterVisibility');
-
-						if (state == 'hidden') {
-							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
-						} else {
-							$(this).append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
-						}
-					}
+					$('.cactiFilterExport').unbind('click').click(function(event) {
+						event.stopPropagation();
+						$('#export').trigger('click');
+					}).tooltip();
 				}
-			} else {
-				if ($(this).find('a').length) {
-					$(this).find('a').tooltip({
-						open: function (event, ui) {
-							$('.cactiTableTitle, .cactiTableButton').tooltip('close');
-							id = $(this).closest('.cactiTable').attr('id');
-						},
-						close: function (event, ui) {
-							id = $(this).closest('.cactiTable').attr('id');
-						}
-					});
+
+				if (filterContents.find('#import').length) {
+					title = $('#import').attr('value');
+					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterImport"><i class="fa fa-arrow-up"></i></span>');
+
+					$('.cactiFilterImport').unbind('click').click(function(event) {
+						event.stopPropagation();
+						$('#import').trigger('click');
+					}).tooltip();
 				}
+
+				if (filterContents.find('#clear').length) {
+					filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
+
+					$('.cactiFilterClear').unbind('click').click(function(event) {
+						event.stopPropagation();
+						$('#clear').trigger('click');
+					}).tooltip();
+				}
+
+				toggleFilterAndIcon(id, child, true);
+
+				filterHeader.find('.cactiTableTitle, .cactiTableButton').unbind('click').click(function() {
+					id     = $(this).closest('.cactiTable').attr('id');
+					child  = id+'_child';
+					toggleFilterAndIcon(id, child, false);
+				});
+
+				state = storage.get('filterVisibility');
+
+				if (state == 'hidden') {
+					filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
+				} else {
+					filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
+				}
+
+				$('.cactiFilterState').attr('title', showHideFilter).tooltip();
+
+				filterNum++;
 			}
 		});
 	} else if ($('#dqdebug').length) {
@@ -895,7 +856,7 @@ function makeFiltersResponsive() {
 				anchors.each(function(){
 					$(this).attr('title', $(this).text());
 				});
-				anchors.not('.cactiTableCopy').addClass('fa fa-plus');
+				anchors.not('.cactiTableCopy').addClass('fa fa-trash-o');
 				anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
 				anchors.tooltip().text('');
 			}
@@ -911,16 +872,16 @@ function toggleFilterAndIcon(id, child, initial) {
 	if (initial) {
 		if (state == 'hidden') {
 			$('#'+child).hide();
-			$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
+			$('#'+id).find('.cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
 		}
 	} else if ($('#'+child).is(':visible')) {
 		$('#'+child).hide();
-		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
+		$('#'+id).find('.cactiFilterClear, .cactiFilterImport, .cactiFilterExport').show();
 		$('.cactiFilterState').find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
 		storage.set('filterVisibility', 'hidden');
 	} else {
 		$('#'+child).show();
-		$('#'+id).find('.cactiFilter, .cactiFilterClear, .cactiFilterImport, .cactiFilterExport').hide();
+		$('#'+id).find('.cactiFilterClear, .cactiFilterImport, .cactiFilterExport').hide();
 		$('.cactiFilterState').find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
 		storage.set('filterVisibility', 'visible');
 	}
@@ -929,7 +890,7 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('a[id^="maintab-anchor"]').unbind().click(function(event) {
+	$('a[id^="maintab-anchor"]').unbind('click').click(function(event) {
 		event.preventDefault();
 
 		if ($('.cactiTreeNavigationArea').length > 0) {
@@ -1309,7 +1270,7 @@ function loadPage(href) {
 				$('#main').html(data);
 
 				myTitle = htmlTitle;
-				myHref  = href;
+				myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
 
 				pushState(myTitle, href);
 			} else {
@@ -1317,6 +1278,8 @@ function loadPage(href) {
 
 				$('#main').empty().hide();
 				$('#main').html(html);
+
+				href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
 
 				pushState(myTitle, href);
 			}
@@ -1442,7 +1405,7 @@ function getPresentHTTPError(data) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind().click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -1505,7 +1468,7 @@ function setupCollapsible() {
 		}
 	});
 
-	$('.collapsible').click(function(data) {
+	$('.collapsible').unbind('click').click(function(data) {
 		id=$(this).attr('id')+'_cs';
 		if ($(this).find('i').hasClass('fa-angle-double-up')) {
 			$(this).addClass('collapsed');
@@ -1746,6 +1709,9 @@ function setupPageTimeout() {
 
 				/* fix coner case with tree refresh */
 				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
+				if (refreshPage.indexOf('header=false') == -1) {
+					refreshPage += (refreshPage.indexOf('?') > 0 ? '&header=fasle':'?header=false');
+				}
 
 				$.get(refreshPage)
 					.done(function(data) {

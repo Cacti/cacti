@@ -31,6 +31,7 @@ get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_sear
 
 switch (get_request_var('action')) {
 case 'save':
+	$errors = array();
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
@@ -62,7 +63,9 @@ case 'save':
 			}
 		} elseif ($field_array['method'] == 'dirpath') {
 			if (get_nfilter_request_var($field_name) != '' && !is_dir(get_nfilter_request_var($field_name))) {
-				raise_message(8);
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[8] = 8;
 			} else {
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
@@ -71,7 +74,9 @@ case 'save':
 			}
 		} elseif ($field_array['method'] == 'filepath') {
 			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
-				raise_message(8);
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[36] = 36;
 			} else {
 				$continue = true;
 
@@ -79,7 +84,9 @@ case 'save':
 					$extension = pathinfo(get_nfilter_request_var($field_name), PATHINFO_EXTENSION);
 
 					if ($extension != 'log') {
-						raise_message(9);
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[9] = 9;
 						$continue = false;
 					}
 				}
@@ -92,8 +99,10 @@ case 'save':
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
-			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-				raise_message(4);
+			if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name . '_confirm')) {
+				$_SESSION['sess_error_fields'][$field_name] = $field_name;
+				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+				$errors[4] = 4;
 				break;
 			} elseif (!isempty_request_var($field_name)) {
 				db_execute_prepared('REPLACE INTO settings
@@ -170,7 +179,15 @@ case 'save':
 	snmpagent_global_settings_update();
 
 	api_plugin_hook_function('global_settings_update');
-	raise_message(1);
+
+	if (sizeof($errors) == 0) {
+		raise_message(1);
+	} else {
+		raise_message(35);
+		foreach($errors as $error) {
+			raise_message($error);
+		}
+	}
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_config_array');
@@ -209,6 +226,8 @@ default:
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
+	$system_tabs = array('general', 'path', 'snmp', 'poller', 'data', 'visual', 'authentication', 'boost', 'spikes', 'mail');
+
 	/* draw the categories tabs on the top of the page */
 	print "<div>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
@@ -217,7 +236,7 @@ default:
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {
-			print "<li class='subTab'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
+			print "<li class='subTab" . (!in_array($tab_short_name, $system_tabs) ? ' pluginTab':'') . "'><a " . (($tab_short_name == $current_tab) ? "class='selected'" : "class=''") . " href='" . html_escape("settings.php?tab=$tab_short_name") . "'>" . $tabs[$tab_short_name] . "</a></li>\n";
 
 			$i++;
 		}
@@ -278,96 +297,10 @@ default:
 
 	var themeChanged = false;
 	var currentTheme = '';
+	var rrdArchivePath = '';
+	var currentTab = '<?php print $current_tab;?>';
 
 	$(function() {
-		$('#selective_plugin_debug').multiselect({
-			height: 300,
-			noneSelectedText: '<?php print __('Select Plugin(s)');?>',
-			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
-				return myReturn;
-			},
-			checkAllText: '<?php print __('All');?>',
-			uncheckAllText: '<?php print __('None');?>',
-			uncheckall: function() {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).prop('checked', true);
-				});
-			}
-		}).multiselectfilter( {
-			label: '<?php print __('Search');?>',
-			placeholder: '<?php print __('Enter keyword');?>',
-			width: '150'
-		});
-
-		$('#selective_debug').multiselect({
-			noneSelectedText: '<?php print __('Select File(s)');?>',
-			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Files Selected');?>';
-				return myReturn;
-			},
-			checkAllText: '<?php print __('All');?>',
-			uncheckAllText: '<?php print __('None');?>',
-			uncheckall: function() {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).prop('checked', true);
-				});
-			}
-		}).multiselectfilter( {
-			label: '<?php print __('Search');?>',
-			placeholder: '<?php print __('Enter keyword');?>',
-			width: '150'
-		});
-
-		$('#spikekill_templates').multiselect({
-			height: 300,
-			noneSelectedText: '<?php print __('Select Template(s)');?>',
-			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-				$.each(checkedItems, function(index, value) {
-					if (value.value == '0') {
-						myReturn='<?php print __('All Templates Selected');?>';
-						return false;
-					}
-				});
-				return myReturn;
-			},
-			checkAllText: '<?php print __('All');?>',
-			uncheckAllText: '<?php print __('None');?>',
-			uncheckall: function() {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).prop('checked', true);
-				});
-			},
-			click: function(event, ui) {
-				checked=$(this).multiselect('widget').find('input:checked').length;
-
-				if (ui.value == '0') {
-					if (ui.checked == true) {
-						$('#host').multiselect('uncheckAll');
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).prop('checked', true);
-						});
-					}
-				}else if (checked == 0) {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).click();
-					});
-				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
-					if (checked > 0) {
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).click();
-							$(this).prop('disable', true);
-						});
-					}
-				}
-			}
-		}).multiselectfilter( {
-			label: '<?php print __('Search');?>',
-			placeholder: '<?php print __('Enter keyword');?>',
-			width: '150'
-		});
-
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');
@@ -397,7 +330,125 @@ default:
 			}
 		});
 
-		if ($('#row_settings_email_header')) {
+		if (currentTab == 'general') {
+			$('#selective_plugin_debug').multiselect({
+				height: 300,
+				noneSelectedText: '<?php print __('Select Plugin(s)');?>',
+				selectedText: function(numChecked, numTotal, checkedItems) {
+					myReturn = numChecked + ' <?php print __('Plugins Selected');?>';
+					return myReturn;
+				},
+				checkAllText: '<?php print __('All');?>',
+				uncheckAllText: '<?php print __('None');?>',
+				uncheckall: function() {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).prop('checked', true);
+					});
+				}
+			}).multiselectfilter( {
+				label: '<?php print __('Search');?>',
+				placeholder: '<?php print __('Enter keyword');?>',
+				width: '150'
+			});
+
+			$('#selective_debug').multiselect({
+				noneSelectedText: '<?php print __('Select File(s)');?>',
+				selectedText: function(numChecked, numTotal, checkedItems) {
+					myReturn = numChecked + ' <?php print __('Files Selected');?>';
+					return myReturn;
+				},
+				checkAllText: '<?php print __('All');?>',
+				uncheckAllText: '<?php print __('None');?>',
+				uncheckall: function() {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).prop('checked', true);
+					});
+				}
+			}).multiselectfilter( {
+				label: '<?php print __('Search');?>',
+				placeholder: '<?php print __('Enter keyword');?>',
+				width: '150'
+			});
+		} else if (currentTab == 'spikes') {
+			$('#spikekill_templates').multiselect({
+				height: 300,
+				noneSelectedText: '<?php print __('Select Template(s)');?>',
+				selectedText: function(numChecked, numTotal, checkedItems) {
+					myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+					$.each(checkedItems, function(index, value) {
+						if (value.value == '0') {
+							myReturn='<?php print __('All Templates Selected');?>';
+							return false;
+						}
+					});
+					return myReturn;
+				},
+				checkAllText: '<?php print __('All');?>',
+				uncheckAllText: '<?php print __('None');?>',
+				uncheckall: function() {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).prop('checked', true);
+					});
+				},
+				click: function(event, ui) {
+					checked=$(this).multiselect('widget').find('input:checked').length;
+
+					if (ui.value == '0') {
+						if (ui.checked == true) {
+							$('#host').multiselect('uncheckAll');
+							$(this).multiselect('widget').find(':checkbox:first').each(function() {
+								$(this).prop('checked', true);
+							});
+						}
+					}else if (checked == 0) {
+						$(this).multiselect('widget').find(':checkbox:first').each(function() {
+							$(this).click();
+						});
+					}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+						if (checked > 0) {
+							$(this).multiselect('widget').find(':checkbox:first').each(function() {
+								$(this).click();
+								$(this).prop('disable', true);
+							});
+						}
+					}
+				}
+			}).multiselectfilter( {
+				label: '<?php print __('Search');?>',
+				placeholder: '<?php print __('Enter keyword');?>',
+				width: '150'
+			});
+		} else if (currentTab == 'data') {
+			$('#storage_location').change(function() {
+				if ($(this).val() == '0') {
+					$('#row_rrdp_header').hide();
+					$('#row_rrdp_server').hide();
+					$('#row_rrdp_port').hide();
+					$('#row_rrdp_fingerprint').hide();
+					$('#row_rrdp_header2').hide();
+					$('#row_rrdp_load_balancing').hide();
+					$('#row_rrdp_server_backup').hide();
+					$('#row_rrdp_port_backup').hide();
+					$('#row_rrdp_fingerprint_backup').hide();
+				} else {
+					$('#row_rrdp_header').show();
+					$('#row_rrdp_server').show();
+					$('#row_rrdp_port').show();
+					$('#row_rrdp_fingerprint').show();
+					$('#row_rrdp_header2').show();
+					$('#row_rrdp_load_balancing').show();
+					$('#row_rrdp_server_backup').show();
+					$('#row_rrdp_port_backup').show();
+					$('#row_rrdp_fingerprint_backup').show();
+				}
+			}).trigger('change');
+		} else if (currentTab == 'mail') {
+			initMail();
+
+			$('#settings_how').change(function() {
+				initMail();
+			});
+
 			$('#emailtest').click(function() {
 				var $div = $('<div />').appendTo('body');
 				$div.attr('id', 'testmail');
@@ -427,9 +478,7 @@ default:
 						getPresentHTTPError(data);
 					});
 			});
-		}
-
-		if ($('#row_font_method')) {
+		} else if (currentTab == 'visual') {
 			currentTheme = $('#selected_theme').val();
 
 			initFonts();
@@ -446,9 +495,7 @@ default:
 			$('#realtime_enabled').change(function() {
 				initRealtime();
 			});
-		}
-
-		if ($('#row_snmp_version')) {
+		} else if (currentTab == 'snmp') {
 			// Need to set this for global snmpv3 functions to remain sane between edits
 			snmp_security_initialized = false;
 
@@ -457,38 +504,12 @@ default:
 			$('#snmp_version, #snmp_auth_protocol, #snmp_priv_protocol, #snmp_security_level').change(function() {
 				setSNMP();
 			});
-		}
 
-		if ($('#row_availability_method')) {
 			initAvail();
 			$('#availability_method').change(function() {
 				initAvail();
 			});
-		}
-
-		if ($('#row_export_type')) {
-			initFTPExport();
-			initPresentation();
-			initTiming();
-
-			$('#export_type').change(function() {
-				initFTPExport();
-			});
-
-			$('#export_presentation').change(function() {
-				initPresentation();
-			});
-
-			$('#export_timing').change(function() {
-				initTiming();
-			});
-
-			$('#export_type').change(function() {
-				initFTPExport();
-			});
-		}
-
-		if ($('#row_auth_method')) {
+		} else if (currentTab == 'authentication') {
 			initAuth();
 			initSearch();
 			initGroupMember();
@@ -504,9 +525,7 @@ default:
 			$('#ldap_group_require').change(function() {
 				initGroupMember();
 			});
-		}
-
-		if ($('#rrd_autoclean')) {
+		} else if (currentTab == 'path') {
 			initRRDClean();
 
 			$('#rrd_autoclean').change(function() {
@@ -516,9 +535,7 @@ default:
 			$('#rrd_autoclean_method').change(function() {
 				initRRDClean();
 			});
-		}
-
-		if ($('#boost_rrd_update_enable')) {
+		} else if (currentTab == 'boost') {
 			initBoostOD();
 			initBoostCache();
 
@@ -528,14 +545,6 @@ default:
 
 			$('#boost_png_cache_enable').change(function() {
 				initBoostCache();
-			});
-		}
-
-		if ($('#settings_test_email')) {
-			initMail();
-
-			$('#settings_how').change(function() {
-				initMail();
 			});
 		}
 
@@ -658,11 +667,23 @@ default:
 		if ($('#rrd_autoclean').is(':checked')) {
 			$('#row_rrd_autoclean_method').show();
 			if ($('#rrd_autoclean_method').val() == '3') {
+				if (rrdArchivePath != '') {
+					$('#rrd_archive').val(rrdArchivePath);
+				}
 				$('#row_rrd_archive').show();
 			} else {
+				if ($('#rrd_archive').val() != '') {
+					rrdArchivePath = $('#rrd_archive').val();
+				}
 				$('#row_rrd_archive').hide();
+				$('#rrd_archive').val('');
 			}
 		} else {
+			if ($('#rrd_archive').val() != '') {
+				rrdArchivePath = $('#rrd_archive').val();
+			}
+			$('#rrd_archive').val('');
+
 			$('#row_rrd_autoclean_method').hide();
 			$('#row_rrd_archive').hide();
 		}
@@ -1010,72 +1031,6 @@ default:
 			$('#row_ping_port').hide();
 			$('#row_ping_timeout').show();
 			$('#row_ping_retries').show();
-			break;
-		}
-	}
-
-	function initFTPExport() {
-		switch($('#export_type').val()) {
-		case 'disabled':
-		case 'local':
-			$('#row_export_hdr_ftp').hide();
-			$('#row_export_ftp_sanitize').hide();
-			$('#row_export_ftp_host').hide();
-			$('#row_export_ftp_port').hide();
-			$('#row_export_ftp_passive').hide();
-			$('#row_export_ftp_user').hide();
-			$('#row_export_ftp_password').hide();
-			break;
-		case 'ftp_php':
-		case 'ftp_ncftpput':
-		case 'sftp_php':
-			$('#row_export_hdr_ftp').show();
-			$('#row_export_ftp_sanitize').show();
-			$('#row_export_ftp_host').show();
-			$('#row_export_ftp_port').show();
-			$('#row_export_ftp_passive').show();
-			$('#row_export_ftp_user').show();
-			$('#row_export_ftp_password').show();
-			break;
-		}
-	}
-
-	function initPresentation() {
-		switch($('#export_presentation').val()) {
-		case 'classical':
-			$('#row_export_tree_options').hide();
-			$('#row_export_tree_isolation').hide();
-			$('#row_export_tree_expand_hosts').hide();
-			break;
-		case 'tree':
-			$('#row_export_tree_options').show();
-			$('#row_export_tree_isolation').show();
-			$('#row_export_tree_expand_hosts').show();
-			break;
-		}
-	}
-
-	function initTiming() {
-		switch($('#export_timing').val()) {
-		case 'disabled':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').hide();
-			break;
-		case 'classic':
-			$('#row_path_html_export_skip').show();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').hide();
-			break;
-		case 'export_hourly':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').show();
-			$('#row_export_daily').hide();
-			break;
-		case 'export_daily':
-			$('#row_path_html_export_skip').hide();
-			$('#row_export_hourly').hide();
-			$('#row_export_daily').show();
 			break;
 		}
 	}

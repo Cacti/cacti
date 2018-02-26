@@ -242,7 +242,7 @@ function host_new_graphs_save($host_id) {
 
 				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
-				debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
+				debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
 
 				/* lastly push host-specific information to our data sources */
 				if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
@@ -258,7 +258,7 @@ function host_new_graphs_save($host_id) {
 
 					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
 
-					debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
+					debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
 
 					/* lastly push host-specific information to our data sources */
 					if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
@@ -295,7 +295,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			if ($form_type == 'cg') {
 				$graph_template_id = $form_id1;
 
-				html_start_box(__("Create Graph from %s", db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id))), '100%', '', '3', 'center', '');
+				html_start_box(__('Create Graph from %s', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id))), '100%', '', '3', 'center', '');
 			} elseif ($form_type == 'sg') {
 				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
@@ -316,9 +316,9 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				}
 
 				if ($num_graphs > 1) {
-					$header = __('Created %s Graphs from %s', $num_graphs, html_escape(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
+					$header = __('Create %s Graphs from %s', $num_graphs, htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
 				} else {
-					$header = __('Created 1 Graph from %s', html_escape(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
+					$header = __('Create Graph from %s', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
 				}
 
 				/* DRAW: Data Query */
