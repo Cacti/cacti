@@ -59,9 +59,9 @@ function repopulate_poller_cache() {
 
 	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
 	if (sizeof($poller_ids)) {
-	foreach($poller_ids as $poller_id) {
-		api_data_source_cache_crc_update($poller_id);
-	}
+		foreach($poller_ids as $poller_id) {
+			api_data_source_cache_crc_update($poller_id);
+		}
 	}
 
 	/* update the field mappings for the poller */
@@ -236,11 +236,11 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-					foreach($data_template_fields as $key => $value) {
-						if (!isset($host_fields[$key])) {
-							$host_fields[$key] = $value;
+						foreach($data_template_fields as $key => $value) {
+							if (!isset($host_fields[$key])) {
+								$host_fields[$key] = $value;
+							}
 						}
-					}
 					}
 				} elseif (sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
