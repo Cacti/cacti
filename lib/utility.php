@@ -744,7 +744,7 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important ot use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	}
