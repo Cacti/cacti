@@ -197,7 +197,7 @@ if (!$master && $thread == 0) {
 		array($network_id, $poller_id));
 
 	if ($status != 'on' && !$force) {
-		cacti_log("ERROR: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
+		cacti_log(automation_get_pid() . " ERROR: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
 		exit;
 	}
 }
@@ -261,7 +261,7 @@ if (!$master && $thread == 0) {
 
 	registerTask($network_id, getmypid(), $poller_id, 'tmaster');
 
-	cacti_log("Network Discover is now running for Subnet Range '$network_id'", true, 'AUTOM8');
+	cacti_log(automation_get_pid() . " Network Discover is now running for Subnet Range '$network_id'", true, 'AUTOM8');
 
 	automation_primeIPAddressTable($network_id);
 
@@ -389,6 +389,7 @@ function discoverDevices($network_id, $thread) {
 
 		if (sizeof($device) && isset($device['ip_address'])) {
 			$count++;
+			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check',false,'AUTOM8',POLLER_VERBOSITY_MEDIUM);
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
@@ -604,7 +605,7 @@ function discoverDevices($network_id, $thread) {
 								$fos = automation_find_os($device['snmp_sysDescr'], $device['snmp_sysObjectID'], $device['snmp_sysName']);
 
 								if ($fos != false && $network['add_to_cacti'] == 'on') {
-									automation_debug(", Template: " . $fos['name']);
+									automation_debug(', Template: ' . $fos['name'] . "\n");
 									$device['os']                   = $fos['name'];
 									$device['host_template']        = $fos['host_template'];
 									$device['availability_method']  = $fos['availability_method'];
@@ -659,11 +660,11 @@ function discoverDevices($network_id, $thread) {
 
 									$stats['added']++;
 								} elseif ($fos == false) {
-									automation_debug(", Template: Not found, Not adding to Cacti");
+									automation_debug(", Template: Not found, Not adding to Cacti\n");
 								} else {
 									automation_debug(", Template: " . $fos['name']);
 									$device['os'] = $fos['name'];
-									automation_debug(", Skipped: Add to Cacti disabled");
+									automation_debug(", Skipped: Add to Cacti disabled\n");
 								}
 							}
 
@@ -749,7 +750,7 @@ function discoverDevices($network_id, $thread) {
 		}
 	}
 
-	cacti_log('Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph .  ' Graphs Added to Cacti', true, 'AUTOM8');
+	cacti_log(automation_get_pid() . ' Network ' . $network['name'] . " Thread $thread Finished, " . $stats['scanned'] . ' IPs Scanned, ' . $stats['ping'] . ' IPs Responded to Ping, ' . $stats['snmp'] . ' Responded to SNMP, ' . $stats['added'] . ' Device Added, ' . $count_graph .  ' Graphs Added to Cacti', true, 'AUTOM8');
 
 	return true;
 }
@@ -843,7 +844,7 @@ function clearTask($network_id, $pid) {
 
 	db_execute_prepared('DELETE FROM automation_ips
 		WHERE network_id = ?',
-		array($pid, $network_id));
+		array($network_id));
 }
 
 function clearAllTasks($network_id) {
