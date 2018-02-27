@@ -121,7 +121,7 @@ function exec_background($filename, $args = '', $force_debug = false) {
 
 	$level = ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG);
 	$logfile = "/dev/null";
-	if ($force_debug || $debug) {
+	if (($force_debug || $debug) && ($config['cacti_server_os'] != 'win32')) {
 		$combined = $filename . ' ' . $args;
 		$match_count = preg_match("/[_\-\w]+\.php/", $combined, $matches);
 		if ($match_count > 0) {
