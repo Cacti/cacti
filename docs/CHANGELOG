@@ -1,5 +1,10 @@
 Cacti CHANGELOG
 
+1.1.37
+-issue: fixed typo's
+-feature: Updated Chinese Simplified translations
+-feature: Updated Dutch translations
+
 1.1.36
 -issue#934: Template names missing in graph management list
 -issue#1211: CDEF and VDEF Item Edit do not use correct procedures

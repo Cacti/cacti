@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-25 10:37-0500\n"
-"PO-Revision-Date: 2018-02-25 18:38+0100\n"
+"PO-Revision-Date: 2018-02-26 20:37+0100\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -8321,7 +8321,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:70
 #: /var/www/html/cacti/include/global_form.php:102
 msgid "How data is to be entered in RRAs."
-msgstr ""
+msgstr "Hoe data wordt ingevoerd in RRA’s."
 
 #: /var/www/html/cacti/include/global_form.php:77
 msgid "Is this the default storage profile?"
@@ -8831,7 +8831,7 @@ msgstr "As opties"
 
 #: /var/www/html/cacti/include/global_form.php:688
 msgid "Right Axis (--right-axis &lt;scale:shift&gt;)"
-msgstr "Rechter as (--right-axis &lt;scale:shift&gt;) "
+msgstr "Rechter as (--right-axis &lt;scale:shift&gt;)"
 
 #: /var/www/html/cacti/include/global_form.php:693
 msgid ""
@@ -9968,7 +9968,7 @@ msgstr "Actie succesvol uitvoerd"
 
 #: /var/www/html/cacti/include/global_session.php:140
 msgid "The Operation was successful.  Details are below."
-msgstr "The actie was succesvol. Details staan hieronder."
+msgstr "De actie was succesvol. Details staan hieronder."
 
 #: /var/www/html/cacti/include/global_session.php:142
 msgid "Ok"
@@ -10982,7 +10982,7 @@ msgstr "As lettertype grootte"
 #: /var/www/html/cacti/include/global_settings.php:873
 #: /var/www/html/cacti/include/global_settings.php:2058
 msgid "The size of the font used for Graph Axis"
-msgstr "De grootte van het lettertype dat wordt gebruikt voor grafiek-as."
+msgstr "De grootte van het lettertype dat wordt gebruikt voor grafiek-as"
 
 #: /var/www/html/cacti/include/global_settings.php:880
 msgid "Axis Font Setting"
@@ -11005,7 +11005,7 @@ msgstr "Eenheid lettertype grootte"
 #: /var/www/html/cacti/include/global_settings.php:2071
 msgid "The size of the font used for Graph Units"
 msgstr ""
-"De grootte van het lettertype dat wordt gebruikt voor de grafiek eenheden."
+"De grootte van het lettertype dat wordt gebruikt voor de grafiek eenheden"
 
 #: /var/www/html/cacti/include/global_settings.php:895
 msgid "Unit Font Setting"
@@ -12641,6 +12641,8 @@ msgid ""
 "This installation is already up-to-date. Click <a href=\"%s\">here</a> to "
 "use Cacti."
 msgstr ""
+"Deze installatie is al up-to-date. Klik <a href=\"%s\">hier</a> om Cacti te "
+"gaan gebruiken."
 
 #: /var/www/html/cacti/install/index.php:58
 #, php-format
@@ -12679,6 +12681,8 @@ msgid ""
 "In Cacti %s, you must also import MySQL TimeZone information into MySQL and "
 "grant the Cacti user SELECT access to the mysql.time_zone_name table"
 msgstr ""
+"In Cacti %s, moet u ook de MySQL tijdzone informatie importeren in MySQL en "
+"de Cacti user SELECT rechten geven op de mysql.time_zone_name tabel"
 
 #: /var/www/html/cacti/install/index.php:68
 msgid "On Linux/UNIX, do the following:"
@@ -12695,6 +12699,10 @@ msgid ""
 "table</a>.  Once that is complete, you can issue the following command to "
 "grant the Cacti user access to the tables:"
 msgstr ""
+"Op Windows kunt u de instructies hier volgen voor de <a target='_blank' "
+"href='https://dev.mysql.com/downloads/timezones.html'>tijdzone tabel</a>.  "
+"Als dat is voltooid, kunt u het volgende commando uitvoeren om de Cacti user "
+"toegang tot de tabellen te geven:"
 
 #: /var/www/html/cacti/install/index.php:72
 #, php-format
@@ -12779,6 +12787,8 @@ msgid ""
 "Note: This process will guide you through the steps for upgrading from "
 "version '%s'. "
 msgstr ""
+"Let op: Dit proces begeleidt u door de stappen voor het upgraden van versie "
+"'%s'. "
 
 #: /var/www/html/cacti/install/index.php:427
 #, php-format
@@ -12835,12 +12845,16 @@ msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
 msgstr ""
+"Update alstublieft de config.php met de correcte relatieve URL van cacti "
+"(url_path)."
 
 #: /var/www/html/cacti/install/index.php:493
 msgid ""
 "Your Cacti configuration has the relative correct path (url_path) in config."
 "php."
 msgstr ""
+"Uw Cacti configuratie heeft het relatieve pad (url_path) ingesteld in de "
+"config.php."
 
 #: /var/www/html/cacti/install/index.php:496
 msgid "MySQL TimeZone Support"
@@ -12884,14 +12898,17 @@ msgid ""
 "ini and uncomment the 'date.timezone' setting and set it to the Web Servers "
 "Timezone per the PHP installation instructions prior to installing Cacti."
 msgstr ""
+"Op uw webserver heeft PHP geen correcte tijdzone instelling. Wijzig "
+"alstublieft de php.ini en activeer de 'date.timezone' instelling en stel "
+"deze in op de tijdzone van de webserver voordat u Cacti gaat installeren."
 
 #: /var/www/html/cacti/install/index.php:519
 msgid "Your Web Servers PHP is properly setup with a Timezone."
-msgstr ""
+msgstr "Op uw webserver is PHP correct ingesteld met een tijdzone."
 
 #: /var/www/html/cacti/install/index.php:522
 msgid "Required PHP Module Support"
-msgstr "Benodigde PHP module ondersteuning"
+msgstr "Benodigde PHP modules"
 
 #: /var/www/html/cacti/install/index.php:524
 msgid ""
@@ -12938,7 +12955,7 @@ msgstr "PHP versie"
 
 #: /var/www/html/cacti/install/index.php:598
 msgid "Optional PHP Module Support"
-msgstr "Optionele PHP module ondersteuning"
+msgstr "Optionele PHP modules"
 
 #: /var/www/html/cacti/install/index.php:600
 msgid ""
@@ -14666,7 +14683,7 @@ msgstr "Activeer deze box om dit rapport te activeren."
 
 #: /var/www/html/cacti/lib/html_reports.php:51
 msgid "Output Formatting"
-msgstr ""
+msgstr "Opmaak uitvoer"
 
 #: /var/www/html/cacti/lib/html_reports.php:56
 msgid "Use Custom Format HTML"
@@ -15412,7 +15429,7 @@ msgstr "standaaard"
 #: /var/www/html/cacti/lib/ping.php:357 /var/www/html/cacti/lib/ping.php:366
 #: /var/www/html/cacti/lib/ping.php:494 /var/www/html/cacti/lib/ping.php:503
 msgid "Please upgrade to PHP 5.5.4+ for IPv6 support!"
-msgstr ""
+msgstr "Upgrade naar PHP 5.5.4+ voor IPv6 ondersteuning!"
 
 #: /var/www/html/cacti/lib/ping.php:389
 #, php-format
@@ -15465,7 +15482,7 @@ msgstr "Plugin beheer"
 #: /var/www/html/cacti/lib/plugins.php:793
 #, php-format
 msgid "Requires: Cacti >= %s"
-msgstr ""
+msgstr "Benodigd: Cacti >= %s"
 
 #: /var/www/html/cacti/lib/plugins.php:790
 msgid "Legacy Plugin"
@@ -15662,11 +15679,13 @@ msgstr "Fout tijdens het parsen van de RRDtool dump XML"
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
+"RRA (CF=%s, RIJEN=%d, PDP_PER_RIJ=%d, XFF=%1.2f) verwijderd van RRD bestand\n"
 
 #: /var/www/html/cacti/lib/rrd.php:3266
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
+"RRA (CF=%s, RIJEN=%d, PDP_PER_RIJ=%d, XFF=%1.2f) toegevoegd aan RRD bestand\n"
 
 #: /var/www/html/cacti/lib/rrd.php:3376
 msgid "Unknown RRDtool Error"
@@ -15690,6 +15709,8 @@ msgstr ""
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr ""
+"Het wordt aanbevolen InnoDB te activeren voor iedere %s versie groter dan "
+"5.1."
 
 #: /var/www/html/cacti/lib/utility.php:711
 msgid ""
@@ -15730,12 +15751,18 @@ msgid ""
 "the utf8mb4_unicode_ci collation type as some characters take more than a "
 "single byte."
 msgstr ""
+"Wanneer Cacti wordt gebruikt in talen anders dan Engels, wordt het "
+"aanbevolen om utf8mb4_unicode_ci collatie te gebruiken omdat sommige "
+"karakters meer dan een enkele byte innemen."
 
 #: /var/www/html/cacti/lib/utility.php:747
 msgid ""
 "When using Cacti with languages other than English, it is important ot use "
 "the utf8mb4 character set as some characters take more than a single byte."
 msgstr ""
+"Wanneer Cacti wordt gebruikt in talen anders dan Engels, wordt het "
+"aanbevolen om utf8mb4 karakter set te gebruiken omdat sommige karakters meer "
+"dan een enkele byte innemen."
 
 #: /var/www/html/cacti/lib/utility.php:756
 #, php-format
