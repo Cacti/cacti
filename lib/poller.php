@@ -122,16 +122,15 @@ function exec_background($filename, $args = '', $force_debug = false) {
 	$level = ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG);
 	$logfile = "/dev/null";
 	if ($force_debug || $debug) {
-		$level = POLLER_VERBOSITY_NONE;
 		$combined = $filename . ' ' . $args;
-
 		$match_count = preg_match("/[_\-\w]+\.php/", $combined, $matches);
 		if ($match_count > 0) {
+			$level = POLLER_VERBOSITY_NONE;
 		        $logfile = str_replace(".php", "", $matches[0]);
+			$logdate = date("Y-m-d-h-i-s");
+			$logfile = sprintf("%s-%s.log", $logfile, $logdate);
+			@file_put_contents("/tmp/".$logfile, "Program: $filename\nArgs...: $args\nDate...: $logdate\n\n", FILE_APPEND);
 		}
-		$logdate = date("Y-m-d-h-i-s");
-		$logfile = sprintf("%s-%s.log", $logfile, $logdate);
-		@file_put_contents("/tmp/".$logfile, "Program: $filename\nArgs...: $args\nDate...: $logdate\n\n", FILE_APPEND);
 	}
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args, LOG: $logfile]", true, 'POLLER', $level);
