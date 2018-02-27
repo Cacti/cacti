@@ -243,11 +243,11 @@ function update_poller_cache($data_source, $commit = false) {
 
 				if (sizeof($host_fields)) {
 					if (sizeof($data_template_fields)) {
-					foreach ($data_template_fields as $key => $value) {
-						if (!isset($host_fields[$key])) {
-							$host_fields[$key] = $value;
+						foreach($data_template_fields as $key => $value) {
+							if (!isset($host_fields[$key])) {
+								$host_fields[$key] = $value;
+							}
 						}
-					}
 					}
 				} elseif (sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
@@ -811,7 +811,7 @@ function utilities_get_mysql_recommendations() {
 				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
-				'comment' => __('When using Cacti with languages other than English, it is important ot use the utf8mb4 character set as some characters take more than a single byte.')
+				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4 character set as some characters take more than a single byte.')
 				)
 		);
 	}
