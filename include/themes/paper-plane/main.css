@@ -960,14 +960,6 @@ legend {
 	border-left: 1px solid #000000;
 }
 
-.cactiGraphContentArea>div:first-child {
-	display: none !important;
-}
-
-.cactiGraphContentArea>div:last-child {
-	# margin-top: 10px;
-}
-
 .cactiGraphContentArea span[align="center"] {
 	color: #9d9d9d;
 }
@@ -992,11 +984,6 @@ legend {
 
 .cactiGraphContentAreaPreview span[align="center"] {
 	color: #9d9d9d;
-}
-
-
-.cactiGraphContentAreaPreview>div:first-child {
-	display: none !important;
 }
 
 .cactiGraphContentAreaPreview .cactitable{
