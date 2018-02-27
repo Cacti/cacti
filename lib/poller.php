@@ -134,7 +134,7 @@ function exec_background($filename, $args = '', $force_debug = false) {
 		@file_put_contents("/tmp/".$logfile, "Program: $filename\nArgs...: $args\nDate...: $logdate\n\n", FILE_APPEND);
 	}
 
-	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', $level);
+	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args, LOG: $logfile]", true, 'POLLER', $level);
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
