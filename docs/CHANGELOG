@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
+-feature: Add support to debug spawned commands via exec_background()
 
 1.1.36
 -issue#934: Template names missing in graph management list

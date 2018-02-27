@@ -116,19 +116,34 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
      to execute code in the foreground
    @arg $filename - the full pathname to the script to execute
    @arg $args - any additional arguments that must be passed onto the executable */
-function exec_background($filename, $args = '') {
+function exec_background($filename, $args = '', $force_debug = false) {
 	global $config, $debug;
 
-	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
+	$level = ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG);
+	$logfile = "/dev/null";
+	if ($force_debug || $debug) {
+		$level = POLLER_VERBOSITY_NONE;
+		$combined = $filename . ' ' . $args;
+
+		$match_count = preg_match("/[_\-\w]+\.php/", $combined, $matches);
+		if ($match_count > 0) {
+		        $logfile = str_replace(".php", "", $matches[0]);
+		}
+		$logdate = date("Y-m-d-h-i-s");
+		$logfile = sprintf("%s-%s.log", $logfile, $logdate);
+		@file_put_contents("/tmp/".$logfile, "Program: $filename\nArgs...: $args\nDate...: $logdate\n\n", FILE_APPEND);
+	}
+
+	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', $level);
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
 			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
 		} else {
-			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+			exec($filename . ' ' . $args . ' >> $logfile 2>&1 &');
 		}
 	} elseif (file_exists_2gb($filename)) {
-		exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		exec($filename . ' ' . $args . ' >> $logfile 2>&1 &');
 	}
 }
 
