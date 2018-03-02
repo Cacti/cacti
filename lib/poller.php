@@ -882,7 +882,7 @@ function resource_cache_out($type, $path) {
 										}
 									}
 
-									//unlink($tmpfile);
+									unlink($tmpfile);
 								} else {
 									cacti_log("ERROR: Unable to write file '" . $tmpfile . "' for PHP Syntax verification", false, 'POLLER');
 								}
