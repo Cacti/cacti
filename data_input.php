@@ -134,11 +134,25 @@ function form_save() {
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
 
+		$exists_on_create = false;
+		if (!$save['id']) {
+			$exists_on_create = db_fetch_cell_prepared('SELECT true
+				FROM data_input_fields
+				WHERE data_input_id = ?
+				AND data_name = ?
+				AND input_output = \'in\'',
+				array($save['data_input_id'], $save['data_name']));
+		}
+
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
 
 			if ($data_input_field_id) {
-				raise_message(1);
+				if ($exists_on_create) {
+					raise_message('field_input_dupe');
+				} else {
+					raise_message(1);
+				}
 
 				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
@@ -347,6 +361,17 @@ function field_edit() {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
+				if (!isset($field)) {
+					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
+						WHERE data_name = ?
+						AND data_input_id = ?',
+						array($current_field_name, get_filter_request_var('data_input_id')));
+					if (!$field_id > 0) {
+						$field = array();
+						$field['name'] = ucwords($current_field_name);
+						$field['data_name'] = $current_field_name;
+					}
+				}
 			}
 		}
 	}
@@ -366,6 +391,9 @@ function field_edit() {
 		$dfield      = __('Input Field');
 	}
 
+	if (isset($field)) {
+		$dfield .= ' ' . $field['data_name'];
+	}
 	form_start('data_input.php', 'data_input');
 
 	html_start_box($header_name, '100%', true, '3', 'center', '');

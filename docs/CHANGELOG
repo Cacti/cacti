@@ -4,10 +4,12 @@ Cacti CHANGELOG
 -feature#122: Support a Site Branch Type
 -feature#973: Obtain users email and full name from ldap 
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-feature#1422: Automatically select the next unused data input field when clicking add on data input method
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
 -issue: Move Graph removal function to Graph API
+-issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti

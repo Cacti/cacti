@@ -493,7 +493,7 @@ function display_output_messages() {
 }
 
 function display_custom_error_message($message) {
-	$_SESSION['sess_messages'] = $message;
+	$_SESSION['sess_messages']['custom_error'] = $message;
 }
 
 /* clear_messages - clears the message cache */
