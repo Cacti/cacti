@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2
 -feature#122: Support a Site Branch Type
 -feature#973: Obtain users email and full name from ldap 
+-feature#1347: Update automation logging to work better
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
@@ -11,6 +12,8 @@ Cacti CHANGELOG
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
+-feature: Updated Chinese Simplified translations
+-feature: Updated Dutch translations
 
 1.1.36
 -issue#934: Template names missing in graph management list
