@@ -83,7 +83,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			// Get rid of bad modes
 			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode'));
-			$new_modes = array()
+			$new_modes = array();
 
 			foreach($modes as $mode) {
 				if (array_search($mode, $bad_modes) === false) {
