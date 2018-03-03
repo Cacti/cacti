@@ -173,7 +173,7 @@ abstract class LdapError {
 	const UndefinedDnOrPassword = 16;
 	const Disabled              = 99;
 
-	public static function GetErrorDetails(int $returnError, $ldapConn = null, int $ldapError = 0) {
+	public static function GetErrorDetails($returnError, $ldapConn = null, $ldapError = 0) {
 		$error_num = $returnError;
 		if ($returnError > 0 && $ldapError == 0 && $ldapConn > 0) {
 			$ldapError = ldap_error($ldapConn);
