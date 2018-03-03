@@ -617,9 +617,9 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* format the message */
 	if ($environ == 'POLLER') {
-		$message = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] ' . $string . "\n";
+		$prefix = "$date - " . $environ . ': Poller[' . $config['poller_id'] . '] ';
 	} else {
-		$message = "$date - " . $environ . ' ' . $string . "\n";
+		$prefix = "$date - " . $environ . ' ';
 	}
 
 	/* Log to Logfile */
@@ -632,7 +632,11 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
-			@fwrite($fp, $message);
+			$lines = explode("\n", $string);
+			foreach ($lines as $line) {
+				$message = $prefix . $line . "\n";
+				@fwrite($fp, $message);
+			}
 			fclose($fp);
 		}
 	}

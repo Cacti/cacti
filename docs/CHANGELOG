@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
+-feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
 -issue: Move Graph removal function to Graph API
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
