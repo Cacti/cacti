@@ -875,7 +875,7 @@ function resource_cache_out($type, $path) {
 										}
 									} else {
 										cacti_log("ERROR: PHP Source File '" . $mypath . "' from Cache has an error whilst checking syntax ($exit) whilst executing: $php_path -l $tmpfile", false, 'POLLER');
-										cacti_log("ERROR: PHP Source File '" . $mypath . "': " . str_replace("\n"," ",str_replace("\n"," ", $output)), false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '" . $mypath . "': " . str_replace("\n"," ",str_replace("\t"," ", $output)), false, 'POLLER');
 									}
 
 									unlink($tmpfile);
