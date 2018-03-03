@@ -245,9 +245,10 @@ function api_plugin_get_dependencies($plugin) {
 		$info = parse_ini_file($file, true);
 
 		if (isset($info['info']['requires'])) {
-			$components = explode(',', $info['info']['requires']);
-			foreach($components as $c) {
-				$returndeps[trim($c)] = trim($c);
+			if (preg_match_all('~([ ]*([\w\-]+)([ ]([\d\.]+))?)~', $info['info']['requires'], $components)) {
+				foreach($components[2] as $k=>$c) {
+					$returndeps[trim($c)] = $components[4][$k];
+				}
 			}
 
 			return $returndeps;
@@ -255,6 +256,21 @@ function api_plugin_get_dependencies($plugin) {
 	}
 
 	return false;
+}
+
+function api_plugin_minimum_version($plugin, $version) {
+	if (strlen($version)) {
+		$plugin_version = db_fetch_cell_prepared('SELECT version
+			FROM plugin_config
+			WHERE directory = ?',
+			array($plugin));
+
+		$result = cacti_version_compare($version, $plugin_version, '<=');
+	} else {
+		$plugin_version = '<not read>';
+		$result = true;
+	}
+	return $result;
 }
 
 function api_plugin_installed($plugin) {
@@ -484,33 +500,42 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 }
 
-function api_plugin_install($plugin) {
-	global $config;
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
-
+function api_plugin_can_install($plugin, &$message) {
 	$dependencies = api_plugin_get_dependencies($plugin);
-
+	$message = '';
+	$proceed = true;
 	if (is_array($dependencies) && sizeof($dependencies)) {
-		$message = '';
-		$proceed = true;
-		foreach($dependencies as $dependency) {
-			if (!api_plugin_installed($dependency)) {
-				$message .= ($message != '' ? '<br>':'') . __('Plugin %s is required for %s, and it is not installed.', $dependency, $plugin);
+		foreach($dependencies as $dependency=>$version) {
+			if (!api_plugin_minimum_version($dependency, $version)) {
+				$message .= '<br>' . __('%s Version %s or above is required for %s.', ucwords($dependency), $version, ucwords($plugin));
+
+				$proceed = false;
+			} else if (!api_plugin_installed($dependency)) {
+				$message .= '<br>' . __('%s is required for %s, and it is not installed.', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
 			}
 		}
-
-		if (!$proceed) {
-			$message .= '<br>' . __('Plugin cannot be installed.');
-			$_SESSION['reports_message'] = $message;
-
-			raise_message('reports_message');
-
-			header('Location: plugins.php?header=false');
-			exit;
-		}
 	}
+	return $proceed;
+}
+
+function api_plugin_install($plugin) {
+	global $config;
+	$dependencies = api_plugin_get_dependencies($plugin);
+
+	$proceed = api_plugin_can_install($plugin, $message);
+	if (!$proceed) {
+		$message .= '<br><br>' . __('Plugin cannot be installed.');
+		$_SESSION['reports_error'] = $message;
+
+		raise_message('reports_error');
+
+		header('Location: plugins.php?header=false');
+		exit;
+	}
+
+	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
 	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
 	if (sizeof($exists)) {

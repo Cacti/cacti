@@ -1281,6 +1281,14 @@ function stri_replace($find, $replace, $string) {
 	return (join($replace, $parts));
 }
 
+/* clean_up_lines - runs a string through a regular expression designed to remove
+     new lines and the spaces around them
+   @arg $string - the string to modify/clean
+   @returns - the modified string */
+function clean_up_lines($string) {
+	return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
+}
+
 /* clean_up_name - runs a string through a series of regular expressions designed to
      eliminate "bad" characters
    @arg $string - the string to modify/clean
@@ -4263,7 +4271,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 	}
 
-	cacti_log(trim("$entry Backtrace: $s"), false);
+	cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
 }
 
 /*	calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
