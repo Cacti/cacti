@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-feature#1399: Allow 'requires' to include version against a plugin
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
