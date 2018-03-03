@@ -415,9 +415,17 @@ function item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$cdef = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', array(get_request_var('id')));
-		$current_type = $cdef['type'];
-		$values[$current_type] = $cdef['value'];
+		$cdef = db_fetch_row_prepared('SELECT *
+			FROM cdef_items
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (sizeof($cdef)) {
+			$current_type = $cdef['type'];
+			$values[$current_type] = $cdef['value'];
+		}
+	} else {
+		$cdef = array();
 	}
 
 	html_start_box(__('CDEF Preview'), '100%', '', '3', 'center', '');
@@ -453,7 +461,7 @@ function item_edit() {
 			'method'        => 'drop_array',
 			'friendly_name' => __('CDEF Item Value'),
 			'description'   => __('Enter a value for this CDEF item.'),
-			'value'         => $cdef['value']
+			'value'         => (isset($cdef['value']) ? $cdef['value']:'')
 		),
 		'id' => array(
 			'method'        => 'hidden',
@@ -502,7 +510,7 @@ function item_edit() {
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($form_cdef, (isset($cdef) ? $cdef : array()))
+			'fields' => inject_form_variables($form_cdef, $cdef)
 		)
 	);
 

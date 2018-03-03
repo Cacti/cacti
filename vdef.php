@@ -375,9 +375,17 @@ function vdef_item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('id')));
-		$current_type = $vdef['type'];
-		$values[$current_type] = $vdef['value'];
+		$vdef = db_fetch_row_prepared('SELECT *
+			FROM vdef_items
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (sizeof($vdef)) {
+			$current_type = $vdef['type'];
+			$values[$current_type] = $vdef['value'];
+		}
+	} else {
+		$vdef = array();
 	}
 
 	html_start_box(__('VDEF Preview'), '100%', '', '3', 'center', '');
@@ -414,7 +422,7 @@ function vdef_item_edit() {
 			'method'        => 'drop_array',
 			'friendly_name' => __('VDEF Item Value'),
 			'description'   => __('Enter a value for this VDEF item.'),
-			'value'         => $vdef['value']
+			'value'         => (isset($vdef['value']) ? $vdef['value']:'')
 		),
 		'id' => array(
 			'method'        => 'hidden',
@@ -454,7 +462,7 @@ function vdef_item_edit() {
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
-			'fields' => inject_form_variables($form_vdef, (isset($vdef) ? $vdef : array()))
+			'fields' => inject_form_variables($form_vdef, $vdef)
 		)
 	);
 
