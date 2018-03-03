@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.37
+-issue#1420: Debian test suite reports issues 
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue: fixed typo's
 -feature: Updated Chinese Simplified translations
