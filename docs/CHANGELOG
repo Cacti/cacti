@@ -11,11 +11,16 @@ Cacti CHANGELOG
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue: Move Graph removal function to Graph API
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
+-issue#1420: Debian test suite reports issues 
+-issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
+-issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
+-issue: fixed typo's
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
+-feature: Make LDAP errors consistent across functions
 
 1.1.36
 -issue#934: Template names missing in graph management list
