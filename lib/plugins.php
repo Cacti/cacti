@@ -505,8 +505,6 @@ function api_plugin_can_install($plugin, &$message) {
 	$message = '';
 	$proceed = true;
 	if (is_array($dependencies) && sizeof($dependencies)) {
-
-		file_put_contents('/tmp/t.log',str_replace("\n","",var_export($dependencies, true))."\n", FILE_APPEND);
 		foreach($dependencies as $dependency=>$version) {
 			if (!api_plugin_minimum_version($dependency, $version)) {
 				$message .= '<br>' . __('%s Version %s or above is required for %s.', ucwords($dependency), $version, ucwords($plugin));
