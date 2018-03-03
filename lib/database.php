@@ -184,7 +184,7 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 			if ($en == 1213 || $en == 1205) {
 				$errors++;
 				if ($errors > 30) {
-					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . $sql . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+					cacti_log("ERROR: Too many Lock/Deadlock errors occurred! SQL:'" . clean_up_lines($sql) . "'", true, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 
 					return false;
 				} else {
@@ -197,13 +197,13 @@ function db_execute_prepared($sql, $parms = array(), $log = true, $db_conn = fal
 					$sql = substr($sql, 0, 1024) . '...';
 				}
 
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 				cacti_debug_backtrace('SQL');
 
 				return false;
 			} else {
-				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL');
+				cacti_log("ERROR: A DB Exec Failed!, Error:$en, SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL');
 				cacti_log('ERROR: A DB Exec Failed!, Error: ' . $errorinfo[2], false);
 				cacti_debug_backtrace('SQL');
 
@@ -275,7 +275,7 @@ function db_fetch_cell_prepared($sql, $parms = array(), $col_name = '', $log = t
 		}
 		return false;
 	}else if ($log) {
-		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Cell Failed!, Error:$en, SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Cell Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -340,7 +340,7 @@ function db_fetch_row_prepared($sql, $parms = array(), $log = true, $db_conn = f
 			return array();
 		}
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		cacti_log("ERROR: SQL Row Failed!, Error:$en, SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('ERROR: SQL Row Failed!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 		cacti_debug_backtrace('SQL');
 	}
@@ -396,7 +396,7 @@ function db_fetch_assoc_prepared($sql, $parms = array(), $log = true, $db_conn =
 		}
 		return $a;
 	} elseif ($log) {
-		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:'" . $sql . "'", false, 'DBCALL');
+		cacti_log("ERROR: SQL Assoc Failed!, Error:$en, SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL');
 		cacti_log('ERROR: SQL Assoc Failed!, Error: ' . $errorinfo[2], false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 	}
@@ -948,7 +948,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
 	$return_code = db_execute($sql, true, $db_conn);
 
 	if (!$return_code) {
-		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . $sql . "'", false, 'DBCALL');
+		cacti_log("ERROR: SQL Save Failed for Table '$table'.  SQL:'" . clean_up_lines($sql) . "'", false, 'DBCALL');
 	}
 
 	return db_fetch_insert_id($db_conn);
@@ -1035,5 +1035,5 @@ function db_qstr($s, $db_conn = false) {
 }
 
 function db_strip_control_chars($sql) {
-	return trim(str_replace(array("\t", "\r", "\n"), array(' ', '', ''), $sql), ';');
+	return trim(clean_up_lines($sql), ';');
 }

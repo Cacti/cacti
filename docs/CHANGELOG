@@ -9,7 +9,9 @@ Cacti CHANGELOG
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
+-issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue: Move Graph removal function to Graph API
+-issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
