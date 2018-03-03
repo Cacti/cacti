@@ -577,7 +577,6 @@ function plugin_required_for_others($plugin, $table) {
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
 	api_plugin_can_install($plugin['infoname'], $not_installed);
-	file_put_contents('/tmp/plugin.log',"plugin: " . str_replace("\n","",var_export($plugin, true)) . ", message: [$not_installed]\n", FILE_APPEND);
 	return $not_installed;
 }
 
