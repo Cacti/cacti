@@ -627,7 +627,7 @@ function plugin_actions($plugin, $table) {
 			break;
 		default: // Old PIA
 			$path = $config['base_path'] . '/plugins/' . $plugin['directory'];
-			$directory  = $cinfo['name'];
+			$directory  = $plugin['name'];
 
 			if (!file_exists("$path/setup.php")) {
 				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
@@ -638,6 +638,7 @@ function plugin_actions($plugin, $table) {
 			} else {
 				$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			}
+
 			break;
 	}
 	$link .= '</td>';

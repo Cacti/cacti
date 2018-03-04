@@ -20,10 +20,19 @@ Cacti CHANGELOG
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
--issue: fixed typo's
+
+1.1.37
+-issue#1405: When Data Query columns are wide, they cause rendering issues
+-issue#1419: CLog: preg_match can blow up log file
+-issue#1420: Debian test suite reports issues 
+-issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
+-issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
+-issue#1432: Delete confirmation does not disappear
+-issue: Output message timer not clearing properly on page refresh
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: Make LDAP errors consistent across functions
+-feature: JavaScript library Chart.js updated 2.7.2 
 
 1.1.36
 -issue#934: Template names missing in graph management list

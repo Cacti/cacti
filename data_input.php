@@ -266,19 +266,22 @@ function field_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+	$field = db_fetch_row_prepared('SELECT *
+		FROM data_input_fields
+		WHERE id = ?',
+		array(get_request_var('id')));
 
 	?>
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Input Field.');?></p>
-			<p><?php print __('Field Name: %s', $field['data_name']);?>'<br>
-			<p><?php print __('Friendly Name: %s', $field['name']);?>'<br>
+			<p><?php print __('Field Name: %s', $field['data_name']);?><br>
+			<p><?php print __('Friendly Name: %s', $field['name']);?><br>
 		</td>
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close")' name='cancel'>
+			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' name='cancel'>
 			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
 		</td>
 	</tr>
@@ -291,7 +294,7 @@ function field_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#continue').click(function(data) {
+		$('#continue').unbind().click(function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
@@ -300,6 +303,10 @@ function field_remove_confirm() {
 				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
 			});
+		});
+
+		$('#cancel').unbind().click(function() {
+			$('#cdialog').dialog('close');
 		});
 	});
 	</script>
@@ -344,7 +351,10 @@ function field_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$field = db_fetch_row_prepared('SELECT * FROM data_input_fields WHERE id = ?', array(get_request_var('id')));
+		$field = db_fetch_row_prepared('SELECT *
+			FROM data_input_fields
+			WHERE id = ?',
+			array(get_request_var('id')));
 	}
 
 	if (!isempty_request_var('type')) {
@@ -353,7 +363,10 @@ function field_edit() {
 		$current_field_type = $field['input_output'];
 	}
 
-	$data_input = db_fetch_row_prepared('SELECT type_id, name FROM data_input WHERE id = ?', array(get_request_var('data_input_id')));
+	$data_input = db_fetch_row_prepared('SELECT type_id, name
+		FROM data_input
+		WHERE id = ?',
+		array(get_request_var('data_input_id')));
 
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
@@ -433,7 +446,10 @@ function field_edit() {
    ----------------------- */
 
 function data_remove($id) {
-	$data_input_fields = db_fetch_assoc_prepared('SELECT id FROM data_input_fields WHERE data_input_id = ?', array($id));
+	$data_input_fields = db_fetch_assoc_prepared('SELECT id
+		FROM data_input_fields
+		WHERE data_input_id = ?',
+		array($id));
 
 	if (is_array($data_input_fields)) {
 		foreach ($data_input_fields as $data_input_field) {
@@ -461,9 +477,16 @@ function data_edit() {
 			header('Location: data_input.php');
 			return;
 		}
-		$data_input = db_fetch_row_prepared('SELECT * FROM data_input WHERE id = ?', array(get_request_var('id')));
+
+		$data_input = db_fetch_row_prepared('SELECT *
+			FROM data_input
+			WHERE id = ?',
+			array(get_request_var('id')));
+
 		$header_label = __('Data Input Methods [edit: %s]', html_escape($data_input['name']));
 	} else {
+		$data_input = array();
+
 		$header_label = __('Data Input Methods [new]');
 	}
 
@@ -504,53 +527,61 @@ function data_edit() {
 		}
 	}
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_data_input_edit, (isset($data_input) ? $data_input : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_data_input_edit, $data_input)
+		)
+	);
 
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
 		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . html_escape_request_var('id'));
+
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem( __('Name'),'',1);
-			DrawMatrixHeaderItem( __('Field Order'),'',1);
-			DrawMatrixHeaderItem( __('Friendly Name'),'',2);
+		DrawMatrixHeaderItem(__('Name'), '', 1);
+		DrawMatrixHeaderItem(__('Friendly Name'), '', 1);
+		DrawMatrixHeaderItem(__('Field Order'), '', 2);
 		print '</tr>';
 
-		$fields = db_fetch_assoc_prepared("SELECT id, data_name, name, sequence FROM data_input_fields WHERE data_input_id = ? AND input_output = 'in' ORDER BY sequence, data_name", array(get_request_var('id')));
+		$fields = db_fetch_assoc_prepared("SELECT id, data_name, name, sequence
+			FROM data_input_fields
+			WHERE data_input_id = ?
+			AND input_output = 'in'
+			ORDER BY sequence, data_name",
+			array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($fields) > 0) {
+		if (sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
-					?>
-					<td>
-						<a class="linkEditMain" href="<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print html_escape($field['data_name']);?></a>
-					</td>
-					<td>
-						<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
-					</td>
-					<td>
-						<?php print html_escape($field['name']);?>
-					</td>
-					<td class="right">
-						<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
-					</td>
-					<?php
+				?>
+				<td>
+					<a class="linkEditMain" href="<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>"><?php print html_escape($field['data_name']);?></a>
+				</td>
+				<td>
+					<?php print html_escape($field['name']);?>
+				</td>
+				<td>
+					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
+				</td>
+				<td class="right">
+					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+				</td>
+				<?php
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Input Fields') . '</em></td></tr>';
+			print '<tr><td colspan="4"><em>' . __('No Input Fields') . '</em></td></tr>';
 		}
 		html_end_box();
 
 		html_start_box(__('Output Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=out&data_input_id=' . get_request_var('id'));
 		print "<tr class='tableHeader'>";
-			DrawMatrixHeaderItem(__('Name'),'',1);
-			DrawMatrixHeaderItem(__('Friendly Name'),'',1);
-			DrawMatrixHeaderItem(__('Update RRA'),'',2);
+		DrawMatrixHeaderItem(__('Name'),'',1);
+		DrawMatrixHeaderItem(__('Friendly Name'),'',1);
+		DrawMatrixHeaderItem(__('Update RRA'),'',2);
 		print '</tr>';
 
 		$fields = db_fetch_assoc_prepared("SELECT id, name, data_name, update_rra, sequence
@@ -561,27 +592,27 @@ function data_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($fields) > 0) {
+		if (sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
 				?>
-					<td>
-						<a class='linkEditMain' href='<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>'><?php print html_escape($field['data_name']);?></a>
-					</td>
-					<td>
-						<?php print html_escape($field['name']);?>
-					</td>
-					<td>
-						<?php print html_boolean_friendly($field['update_rra']);?>
-					</td>
-					<td class='right'>
-						<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
-					</td>
+				<td>
+					<a class='linkEditMain' href='<?php print html_escape('data_input.php?action=field_edit&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>'><?php print html_escape($field['data_name']);?></a>
+				</td>
+				<td>
+					<?php print html_escape($field['name']);?>
+				</td>
+				<td>
+					<?php print html_boolean_friendly($field['update_rra']);?>
+				</td>
+				<td class='right'>
+					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+				</td>
 				<?php
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Output Fields') . '</em></td></tr>';
+			print '<tr><td colspan="4"><em>' . __('No Output Fields') . '</em></td></tr>';
 		}
 
 		html_end_box();
@@ -595,7 +626,7 @@ function data_edit() {
 	$(function() {
 		$('body').append("<div id='cdialog'></div>");
 
-		$('.delete').click(function (event) {
+		$('.delete').unbind().click(function (event) {
 			event.preventDefault();
 
 			request = $(this).attr('href');
@@ -606,6 +637,7 @@ function data_edit() {
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Input Field');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						modal: true,
 						minHeight: 80,
 						minWidth: 500
 					});
@@ -801,7 +833,7 @@ function data() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='5'><em>" . __('No Data Input Methods Found') . "</em></td></tr>";
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
