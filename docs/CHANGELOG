@@ -5,7 +5,7 @@ Cacti CHANGELOG
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -issue#1432: Delete confirmation does not disappear
--issue: fixed typo's
+-issue: Output message timer not clearing properly on page refresh
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: Make LDAP errors consistent across functions
