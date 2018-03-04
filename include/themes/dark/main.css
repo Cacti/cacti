@@ -1143,6 +1143,14 @@ legend {
 	font-weight: normal;
 }
 
+.textOverflow {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+}
+
 .bold {
 	font-weight: bold;
 }
