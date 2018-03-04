@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: Make LDAP errors consistent across functions
+-feature: JavaScript library Chart.js updated 2.7.2 
 
 1.1.36
 -issue#934: Template names missing in graph management list
