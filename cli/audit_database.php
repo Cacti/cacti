@@ -29,7 +29,6 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 $no_http_headers = true;
-
 include(dirname(__FILE__) . '/../include/global.php');
 
 /* process calling arguments */
@@ -42,6 +41,7 @@ if (sizeof($parms)) {
 	$shortopts = 'VvHh';
 
 	$longopts = array(
+		'create',
 		'load',
 		'report',
 		'repair',
@@ -54,6 +54,11 @@ if (sizeof($parms)) {
 
 	foreach($options as $arg => $value) {
 		switch($arg) {
+		case 'create':
+			prime_db_inserts();
+			create_tables();
+			break;
+
 		case 'load':
 			load_audit_database();
 
@@ -109,6 +114,9 @@ function repair_database($run = true) {
 }
 
 function report_audit_results($output = true) {
+	global $database_default;
+	$db_name = 'Tables_in_' . $database_default;
+
 	create_tables();
 
 	$tables = db_fetch_assoc('SHOW TABLES');
@@ -136,8 +144,7 @@ function report_audit_results($output = true) {
 	if (sizeof($tables)) {
 		foreach($tables as $table) {
 			$alter_cmds = array();
-			$table_name = $table['Tables_in_cacti'];
-
+			$table_name = $table[$db_name];
 			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 
 			if ($output) {
@@ -160,10 +167,15 @@ function report_audit_results($output = true) {
 				if (!sizeof($plugin_table)) {
 					if ($output) {
 						print ' - Does not Exist.  Possible Plugin' . PHP_EOL;
+						continue;
 					}
 				}
 
-				continue;
+
+				if ($output) {
+					print ' - Plugin Detected' . PHP_EOL;
+					continue;
+				}
 			}
 
 			/* Column scanning comes in two parts.  In the first part, we
@@ -394,9 +406,9 @@ function create_tables($load = true) {
 	$exists = db_table_exists('table_columns');
 
 	db_execute("CREATE TABLE IF NOT EXISTS table_columns (
-		table_name varchar(50) default '',
-		table_sequence int(10) unsigned default NULL,
-		table_field varchar(50) default NULL,
+		table_name varchar(50) NOT NULL,
+		table_sequence int(10) unsigned NOT NULL,
+		table_field varchar(50) NOT NULL,
 		table_type varchar(50) default NULL,
 		table_null varchar(10) default NULL,
 		table_key varchar(4) default NULL,
@@ -406,12 +418,19 @@ function create_tables($load = true) {
 		ENGINE=InnoDB
 		COMMENT='Holds Default Cacti Table Definitions'");
 
+	$exists_columns = db_table_exists('table_columns');
+
+	if (!$exists_columns) {
+		echo "Failed to create 'table_coluns'";
+		exit;
+	}
+
 	db_execute("CREATE TABLE IF NOT EXISTS table_indexes (
-		idx_table_name varchar(50) default '',
+		idx_table_name varchar(50) NOT NULL,
 		idx_non_unique int(10) unsigned default NULL,
-		idx_key_name varchar(128) default NULL,
-		idx_seq_in_index int(10) unsigned default NULL,
-		idx_column_name varchar(50) default NULL,
+		idx_key_name varchar(128) NOT NULL,
+		idx_seq_in_index int(10) unsigned NOT NULL,
+		idx_column_name varchar(50) NOT NULL,
 		idx_collation varchar(10) default NULL,
 		idx_cardinality int(10) unsigned default NULL,
 		idx_sub_part varchar(50) default NULL,
@@ -422,6 +441,14 @@ function create_tables($load = true) {
 		PRIMARY KEY (idx_table_name, idx_key_name, idx_seq_in_index, idx_column_name))
 		ENGINE=InnoDB
 		COMMENT='Holds Default Cacti Index Definitions'");
+
+	$exists_indexes = db_table_exists('table_indexes');
+
+	if (!$exists_indexes) {
+		echo "Failed to create 'table_indexes'";
+		exit;
+	}
+
 
 	if (!$exists && $load) {
 		prime_db_inserts();
@@ -435,6 +462,9 @@ function create_tables($load = true) {
 }
 
 function load_audit_database() {
+	global $database_default;
+	$db_name = 'Tables_in_' . $database_default;
+
 	create_tables(false);
 
 	db_execute('TRUNCATE table_columns');
@@ -444,7 +474,7 @@ function load_audit_database() {
 
 	if (sizeof($tables)) {
 		foreach($tables as $table) {
-			$table_name = $table['Tables_in_cacti'];
+			$table_name = $table[$db_name];
 
 			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 			$indexes = db_fetch_assoc('SHOW INDEXES IN ' . $table_name);
