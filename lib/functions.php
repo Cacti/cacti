@@ -3598,7 +3598,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	if ($from == '') {
 		$from     = read_config_option('settings_from_email');
 		$fromname = read_config_option('settings_from_name');
-	} elseif ($fromname = '') {
+	} elseif ($fromname == '') {
 		$full_name = db_fetch_cell_prepared('SELECT full_name
 			FROM user_auth
 			WHERE email_address = ?',
@@ -3611,8 +3611,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 		}
 	}
 
-	$from = array($from, $fromname);
-
+	$from = array(0 => $from, 1 => $fromname);
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
