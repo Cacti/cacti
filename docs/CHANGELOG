@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -issue#1432: Delete confirmation does not disappear
+-issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue: Output message timer not clearing properly on page refresh
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
@@ -39,7 +40,7 @@ Cacti CHANGELOG
 -issue#1390: Plugin uninstall should prompt user before removal
 -issue#1396: Prevent installation/uninstallation of a plugin if dependency is present
 -issue#1397: Distinguish between plugin tabs and core tabs in settings
--issue: Allow dynamic setting of from name when emailing
+-issue#1371: Allow dynamic setting of from name when emailing
 -issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
 -issue: Implementation of error handling causes errors creating New Graphs
