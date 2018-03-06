@@ -412,7 +412,7 @@ function install_file_paths () {
 		if (config_value_exists('path_spine')) {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine . '/spine';
+			$input['path_spine']['default'] = $which_spine;
 		} else {
 			$input['path_spine']['default'] = '/usr/local/spine/bin/spine';
 		}
