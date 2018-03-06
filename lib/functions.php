@@ -632,11 +632,8 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
-			$lines = explode("\n", $string);
-			foreach ($lines as $line) {
-				$message = $prefix . $line . "\n";
-				@fwrite($fp, $message);
-			}
+			$message = clean_up_lines($prefix . $string) . "\n";
+			@fwrite($fp, $message);
 			fclose($fp);
 		}
 	}
