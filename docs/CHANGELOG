@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.37
+-issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue#1405: When Data Query columns are wide, they cause rendering issues
 -issue#1419: CLog: preg_match can blow up log file
 -issue#1420: Debian test suite reports issues 
@@ -9,6 +10,7 @@ Cacti CHANGELOG
 -issue#1432: Delete confirmation does not disappear
 -issue#1447: Cli audit_database.php not detecting database name, and failed to create audit tables when run fresh
 -issue: Output message timer not clearing properly on page refresh
+-issue: Incorrect default found path of spine
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: Make LDAP errors consistent across functions
@@ -40,7 +42,7 @@ Cacti CHANGELOG
 -issue#1390: Plugin uninstall should prompt user before removal
 -issue#1396: Prevent installation/uninstallation of a plugin if dependency is present
 -issue#1397: Distinguish between plugin tabs and core tabs in settings
--issue: Allow dynamic setting of from name when emailing
+-issue#1371: Allow dynamic setting of from name when emailing
 -issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
 -issue: Implementation of error handling causes errors creating New Graphs
