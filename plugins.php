@@ -576,26 +576,7 @@ function plugin_required_for_others($plugin, $table) {
 
 function plugin_required_installed($plugin, $table) {
 	$not_installed = '';
-
-	$requires = db_fetch_cell_prepared("SELECT requires
-		FROM $table
-		WHERE directory = ?",
-		array($plugin['directory']));
-
-	if ($requires != '') {
-		$requires = explode(' ', $requires);
-		foreach($requires as $r) {
-			$installed = db_fetch_cell_prepared("SELECT status
-				FROM $table
-				WHERE directory = ?",
-				array($r));
-
-			if (!$installed) {
-				$not_installed .= ($not_installed != '' ? ', ':'') . $r;
-			}
-		}
-	}
-
+	api_plugin_can_install($plugin['infoname'], $not_installed);
 	return $not_installed;
 }
 
@@ -607,7 +588,7 @@ function plugin_actions($plugin, $table) {
 		case '0': // Not Installed
 			$not_installed = plugin_required_installed($plugin, $table);
 			if ($not_installed != '') {
-				$link .= "<a href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first: %s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
+				$link .= "<a href='#' title='" . __esc('Unable to Install Plugin.  The following Plugins must be installed first:<br />%s', ucfirst($not_installed)) . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_error.png'></a>";
 			} else {
 				$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=install&id=' . $plugin['directory']) . "' title='" . __esc('Install Plugin') . "' class='linkEditMain'><img src='" . $config['url_path'] . "images/cog_add.png'></a>";
 			}
@@ -646,7 +627,7 @@ function plugin_actions($plugin, $table) {
 			break;
 		default: // Old PIA
 			$path = $config['base_path'] . '/plugins/' . $plugin['directory'];
-			$directory  = $cinfo['name'];
+			$directory  = $plugin['name'];
 
 			if (!file_exists("$path/setup.php")) {
 				$link .= "<a href='#' title='" . __esc('Plugin directory \'%s\' is missing setup.php', $plugin['directory']) . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
@@ -657,6 +638,7 @@ function plugin_actions($plugin, $table) {
 			} else {
 				$link .= "<a href='#' title='" . __esc('Plugin is not compatible') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			}
+
 			break;
 	}
 	$link .= '</td>';

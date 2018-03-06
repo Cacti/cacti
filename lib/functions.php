@@ -779,7 +779,11 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		return (strpos(strtolower($line), $filter) !== false || preg_match('/' . $filter . '/i', $line));
+		if (strpos(strtolower($line), $filter)) {
+			return $line;
+		} elseif (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+			return $line;
+		}
 	}
 
 	return $display;
