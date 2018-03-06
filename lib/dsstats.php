@@ -52,7 +52,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	$rrdfiles = get_rrdfile_names();
 	$stats    = array();
 
-	$use_proxy = (read_config_option('storage_location') != '' ? true:false);
+	$use_proxy = (read_config_option('storage_location') ? true:false);
 
 	/* open a pipe to rrdtool for writing and reading */
 	if ($use_proxy) {
@@ -156,11 +156,12 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool_pipe) {
 	global $config;
 
-	$use_proxy = (read_config_option('storage_location') != '' ? true:false);
+	$use_proxy = (read_config_option('storage_location') ? true:false);
 
 	if ($use_proxy) {
 		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'DSSTATS');
 	}else {
+		clearstatscache();
 		$file_exists = file_exists($rrdfile);
 	}
 

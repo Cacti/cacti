@@ -671,7 +671,7 @@ function displayMessages() {
 	var header  = '';
 
 	if (typeof sessionMessageTimer === 'function') {
-		clearTimeout(sessionMessageTimer);
+		clearInterval(sessionMessageTimer);
 	}
 
 	if (sessionMessage == null) {

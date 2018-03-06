@@ -783,7 +783,11 @@ function determine_display_log_entry($message_type, $line, $filter) {
 
 	/* match any lines that match the search string */
 	if ($display === true && $filter != '') {
-		return (strpos(strtolower($line), $filter) !== false || preg_match('/' . $filter . '/i', $line));
+		if (strpos(strtolower($line), $filter)) {
+			return $line;
+		} elseif (validate_is_regex($filter) && preg_match('/' . $filter . '/i', $line)) {
+			return $line;
+		}
 	}
 
 	return $display;
@@ -1283,6 +1287,14 @@ function stri_replace($find, $replace, $string) {
 	}
 
 	return (join($replace, $parts));
+}
+
+/* clean_up_lines - runs a string through a regular expression designed to remove
+     new lines and the spaces around them
+   @arg $string - the string to modify/clean
+   @returns - the modified string */
+function clean_up_lines($string) {
+	return preg_replace('/\s*[\r\n]+\s*/',' ', $string);
 }
 
 /* clean_up_name - runs a string through a series of regular expressions designed to
@@ -4267,7 +4279,7 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
 	}
 
-	cacti_log(trim("$entry Backtrace: $s"), false);
+	cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
 }
 
 /*	calculate_percentiles - Given and array of numbers, calculate the Nth percentile,
