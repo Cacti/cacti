@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
+-feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -issue#1420: Debian test suite reports issues 
