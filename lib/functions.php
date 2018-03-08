@@ -3035,13 +3035,7 @@ function get_browser_query_string() {
 /* get_current_page - returns the basename of the current page in a web server friendly way
    @returns - the basename of the current script file */
 function get_current_page($basename = true) {
-	if (isset($_SERVER['PHP_SELF']) && $_SERVER['PHP_SELF'] != '') {
-		if ($basename) {
-			return basename($_SERVER['PHP_SELF']);
-		} else {
-			return $_SERVER['PHP_SELF'];
-		}
-	} elseif (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
+	if (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME'] != '') {
 		if ($basename) {
 			return basename($_SERVER['SCRIPT_NAME']);
 		} else {
