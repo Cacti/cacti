@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -issue#1432: Delete confirmation does not disappear
 -issue#1447: Cli audit_database.php not detecting database name, and failed to create audit tables when run fresh
+-issue#1456: Increase minimum php version maintaining support for RHEL6
 -issue#1457: Path-Based Cross-Site Scripting (XSS) issues
 -issue: Output message timer not clearing properly on page refresh
 -issue: Incorrect default found path of spine

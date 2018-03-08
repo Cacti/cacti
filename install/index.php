@@ -530,8 +530,8 @@ $enabled = '1';
 
 						form_alternate_row('phpline',true);
 						form_selectable_cell(__('PHP Version'), '');
-						form_selectable_cell('5.2.0+', '');
-						form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
+						form_selectable_cell('5.3.0+', '');
+						form_selectable_cell((version_compare(PHP_VERSION, '5.3.0', '<') ? "<font color='red'>" . PHP_VERSION . "</font>" : "<font color='green'>" . PHP_VERSION . "</font>"), '');
 						form_end_row();
 
 						if ($config['cacti_server_os'] == 'unix') {
