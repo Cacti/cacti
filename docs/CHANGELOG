@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#1432: Delete confirmation does not disappear
 -issue#1443: Partial Save warnings under Settings -> Mail/Reporting/DNS
 -issue#1447: Cli audit_database.php not detecting database name, and failed to create audit tables when run fresh
+-issue#1453: Title of add_graphs.php being ignored
 -issue#1456: Increase minimum php version maintaining support for RHEL6
 -issue#1457: Path-Based Cross-Site Scripting (XSS) issues
 -issue#1458: Error in logs when creating new graphs
