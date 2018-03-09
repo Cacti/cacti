@@ -107,7 +107,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 							$title = $add_label;
 						}
 
-						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'":"") . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
