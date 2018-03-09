@@ -2317,7 +2317,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 	$sql_filter = build_rule_item_filter($automation_rule_items, ' a.');
 
-	if (sizeof($sql_filter)) $sql_filter = ' WHERE' . $sql_filter;
+	if (strlen($sql_filter)) $sql_filter = ' WHERE' . $sql_filter;
 
 	/* add the additional filter settings to the original data query.
 	 IMO it's better for the MySQL server to use the original one
