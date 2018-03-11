@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.1.37
 -issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue#1405: When Data Query columns are wide, they cause rendering issues
+-issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -issue#1419: CLog: preg_match can blow up log file
 -issue#1420: Debian test suite reports issues 
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
@@ -15,6 +16,7 @@ Cacti CHANGELOG
 -issue#1457: Path-Based Cross-Site Scripting (XSS) issues
 -issue#1458: Error in logs when creating new graphs
 -issue#1459: Automation filter not applied correctly
+-issue#1464: Further issues with DSSTATS storage location
 -issue: Output message timer not clearing properly on page refresh
 -issue: Incorrect default found path of spine
 -feature: Updated Chinese Simplified translations
