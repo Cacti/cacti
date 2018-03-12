@@ -70,9 +70,9 @@ function stopRealtime() {
 			return false;
 		});
 
-		$('graph_'+graph_id).zoom({ 
-			inputfieldStartTime : 'date1', 
-			inputfieldEndTime : 'date2', 
+		$('graph_'+graph_id).zoom({
+			inputfieldStartTime : 'date1',
+			inputfieldEndTime : 'date2',
 			serverTimeOffset : timeOffset
 		});
 
@@ -83,6 +83,7 @@ function stopRealtime() {
 	}
 
 	setFilters();
+	tuneFilter();
 }
 
 function setFilters() {
@@ -165,7 +166,7 @@ function realtimeGrapher() {
 			});
 		}
 	}
-	
+
 	if (inRealtime == false) {
 		stopRealtime();
 	} else {

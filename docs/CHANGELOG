@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#1458: Error in logs when creating new graphs
 -issue#1459: Automation filter not applied correctly
 -issue#1464: Further issues with DSSTATS storage location
+-issue#1466: No scrollbars in mobile browsers
 -issue: Output message timer not clearing properly on page refresh
 -issue: Incorrect default found path of spine
 -feature: Updated Chinese Simplified translations
