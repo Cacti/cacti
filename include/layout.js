@@ -1158,7 +1158,6 @@ function tuneFilter(object, width) {
 	} else {
 		timespan = false;
 
-		goWidth        = $(object).find('#refresh').width();
 		clearWidth     = $(object).find('#clear').width();
 		saveWidth      = $(object).find('#save').width();
 		exportWidth    = $(object).find('#export').width();
@@ -1218,12 +1217,6 @@ function tuneFilter(object, width) {
 					$('#clear').hide();
 				}
 			}
-
-			if ($(object).width() > width) {
-				if (goWidth > 0) {
-					$('#refresh').hide();
-				}
-			}
 		} else {
 			$('#date1').closest('td').hide().prev('td').hide();
 			$('#date2').closest('td').hide().prev('td').hide();
@@ -1242,10 +1235,6 @@ function tuneFilter(object, width) {
 		}
 	} else {
 		if (!timespan) {
-			if ($(object).width() + goWidth < width) {
-				$('#refresh').show();
-			}
-
 			if ($(object).width() + clearWidth < width) {
 				$('#clear').show();
 			}
