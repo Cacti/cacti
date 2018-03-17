@@ -259,7 +259,7 @@ case 'tree_content':
 	?>
 	<script type='text/javascript'>
 	var refreshIsLogout=false;
-	var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
+	var refreshPage='<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
 	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
@@ -340,12 +340,16 @@ case 'preview':
 			/* process selected graphs */
 			if (!isempty_request_var('graph_list')) {
 				foreach (explode(',', get_request_var('graph_list')) as $item) {
-					$graph_list[$item] = 1;
+					if (is_numeric($item)) {
+						$graph_list[$item] = 1;
+					}
 				}
 			}
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
-					$graph_list[$item] = 1;
+					if (is_numeric($item)) {
+						$graph_list[$item] = 1;
+					}
 				}
 			}
 			/* remove items */
@@ -455,16 +459,22 @@ case 'list':
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'graph_list' => array(
-			'filter' => FILTER_DEFAULT,
+		'graph_add' => array(
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
 			'default' => ''
 			),
-		'graph_add' => array(
-			'filter' => FILTER_DEFAULT,
+		'graph_list' => array(
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
+			'pageset' => true,
 			'default' => ''
 			)
 	);
@@ -483,13 +493,17 @@ case 'list':
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
 		foreach (explode(',', get_request_var('graph_list')) as $item) {
-			$graph_list[$item] = 1;
+			if (is_numeric($item)) {
+				$graph_list[$item] = 1;
+			}
 		}
 	}
 
 	if (!isempty_request_var('graph_add')) {
 		foreach (explode(',', get_request_var('graph_add')) as $item) {
-			$graph_list[$item] = 1;
+			if (is_numeric($item)) {
+				$graph_list[$item] = 1;
+			}
 		}
 	}
 
