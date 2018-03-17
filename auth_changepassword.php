@@ -27,7 +27,7 @@ include('./include/global.php');
 // If the user is not logged in, redirect them to the login page
 if (!isset($_SESSION['sess_user_id'])) {
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
@@ -42,7 +42,7 @@ $auth_method = read_config_option('auth_method');
 if ($auth_method != 1 && $user['realm'] != 0) {
 	raise_message('nodomainpassword');
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
@@ -58,7 +58,7 @@ if ($user['password_change'] != 'on') {
 	setcookie($cacti_session_name, null, -1, $config['url_path']);
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
