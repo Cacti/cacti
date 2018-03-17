@@ -42,8 +42,8 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 	$draw_any_items = false;
 
 	/* fetch information about the graph template */
-	$graph_template = db_fetch_row_prepared('SELECT * 
-		FROM graph_templates_graph 
+	$graph_template = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
 		WHERE graph_template_id = ?
 		AND local_graph_id=0', array($graph_template_id));
 
@@ -115,15 +115,15 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 	$draw_any_items = false;
 
 	/* fetch information about the graph template */
-	$input_item_list = db_fetch_assoc_prepared('SELECT * 
-		FROM graph_template_input 
+	$input_item_list = db_fetch_assoc_prepared('SELECT *
+		FROM graph_template_input
 		WHERE graph_template_id = ?
 		ORDER BY column_name, name', array($graph_template_id));
 
 	/* modifications to the default graph items array */
 	if (!empty($local_graph_id)) {
-		$host_id = db_fetch_cell_prepared('SELECT host_id 
-			FROM graph_local 
+		$host_id = db_fetch_cell_prepared('SELECT host_id
+			FROM graph_local
 			WHERE id = ?', array($local_graph_id));
 
 		$struct_graph_item['task_item_id']['sql'] = "SELECT
@@ -188,7 +188,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 							LEFT JOIN host ON (data_local.host_id=host.id)
 							WHERE data_template_rrd.local_data_id=data_local.id
 							AND data_template_data.local_data_id=data_local.id
-							AND data_template_rrd.id = ?", 
+							AND data_template_rrd.id = ?",
 							array($current_def_value[$item['column_name']]));
 
 						$form_array[$form_field_name]['value'] = $value;
@@ -250,8 +250,8 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 	$draw_any_items = false;
 
 	/* fetch information about the data template */
-	$data_template = db_fetch_row_prepared('SELECT * 
-		FROM data_template_data 
+	$data_template = db_fetch_row_prepared('SELECT *
+		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id=0', array($data_template_id));
 
@@ -355,8 +355,8 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 			if (empty($rrd['local_data_id'])) { /* this is a template */
 				$data_template_rrd = $rrd;
 			} else { /* this is not a template */
-				$data_template_rrd = db_fetch_row_prepared('SELECT * 
-					FROM data_template_rrd 
+				$data_template_rrd = db_fetch_row_prepared('SELECT *
+					FROM data_template_rrd
 					WHERE id = ?', array($rrd['local_data_template_rrd_id']));
 			}
 
@@ -374,7 +374,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 
 				/* append the data source item name so the user will recognize it */
 				if ($draw_title_for_each_item == false) {
-					$form_array[$form_field_name]['friendly_name'] .= ' [' . $rrd['data_source_name'] . ']';
+					$form_array[$form_field_name]['friendly_name'] .= ' [' . html_escape($rrd['data_source_name']) . ']';
 				}
 
 				if ($data_template_rrd['t_' . $field_name] != 'on') {
@@ -393,7 +393,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					if (($draw_any_items == false) && ($draw_title_for_each_item == false) && ($header_title != '')) {
 						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 					} elseif (($draw_any_items == false) && ($draw_title_for_each_item == true) && ($header_title != '')) {
-						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . $rrd['data_source_name'] . "]</div></div>\n";
+						print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title [" . html_escape($rrd['data_source_name']) . "]</div></div>\n";
 					}
 
 					$draw_any_items = true;
@@ -402,16 +402,16 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					   valid choices for the drop-down box must be fetched from the associated
 					   data input method */
 					if ($field_name == 'data_input_field_id') {
-						$data_input_id = db_fetch_cell_prepared('SELECT data_input_id 
-							FROM data_template_data 
-							WHERE data_template_id = ? 
+						$data_input_id = db_fetch_cell_prepared('SELECT data_input_id
+							FROM data_template_data
+							WHERE data_template_id = ?
 							AND local_data_id=0', array($rrd['data_template_id']));
 
-						$form_array[$form_field_name]['sql'] = "SELECT id, CONCAT(data_name,' - ',name) AS name 
-							FROM data_input_fields 
-							WHERE data_input_id=" . $data_input_id . " 
+						$form_array[$form_field_name]['sql'] = "SELECT id, CONCAT(data_name,' - ',name) AS name
+							FROM data_input_fields
+							WHERE data_input_id=" . $data_input_id . "
 							AND input_output = 'out'
-							AND update_rra='on' 
+							AND update_rra='on'
 							ORDER BY data_name,name";
 					}
 				}
@@ -445,43 +445,43 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
      html input elements or omitted altogether?
    @arg $snmp_query_id - if this graph template is part of a data query, specify the data query id here. this
      will be used to determine if a given field is associated with a suggested value */
-function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|', 
+function draw_nontemplated_fields_custom_data($data_template_data_id, $field_name_format = '|field|',
 	$header_title = '', $alternate_colors = true, $include_hidden_fields = true, $snmp_query_id = 0) {
 
-	$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id 
-		FROM data_template_data 
+	$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
+		FROM data_template_data
 		WHERE id = ?', array($data_template_data_id));
 
-	$host_id = db_fetch_cell_prepared('SELECT host.id 
+	$host_id = db_fetch_cell_prepared('SELECT host.id
 		FROM host
-		INNER JOIN data_local 
+		INNER JOIN data_local
 		ON data_local.host_id=host.id
-		WHERE data_local.id = ?', 
+		WHERE data_local.id = ?',
 		array($data['local_data_id']));
 
-	$template_data = db_fetch_row_prepared('SELECT id, data_input_id 
-		FROM data_template_data 
-		WHERE data_template_id = ? AND local_data_id=0', 
+	$template_data = db_fetch_row_prepared('SELECT id, data_input_id
+		FROM data_template_data
+		WHERE data_template_id = ? AND local_data_id=0',
 		array($data['data_template_id']));
 
 	$draw_any_items = false;
 
 	/* get each INPUT field for this data input source */
-	$fields = db_fetch_assoc_prepared('SELECT * 
-		FROM data_input_fields 
-		WHERE data_input_id = ? 
+	$fields = db_fetch_assoc_prepared('SELECT *
+		FROM data_input_fields
+		WHERE data_input_id = ?
 		AND input_output = "in"
-		ORDER BY sequence', 
+		ORDER BY sequence',
 		array($data['data_input_id']));
 
 	/* loop through each field found */
 	$i = 0;
 	if (sizeof($fields)) {
 		foreach ($fields as $field) {
-			$data_input_data = db_fetch_row_prepared('SELECT * 
-				FROM data_input_data 
-				WHERE data_template_data_id = ? 
-				AND data_input_field_id = ?', 
+			$data_input_data = db_fetch_row_prepared('SELECT *
+				FROM data_input_data
+				WHERE data_template_data_id = ?
+				AND data_input_field_id = ?',
 				array($data['id'], $field['id']));
 
 			if (sizeof($data_input_data)) {
@@ -494,9 +494,9 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 			if (empty($data['data_template_id'])) {
 				$can_template = 'on';
 			} else {
-				$can_template = db_fetch_cell_prepared('SELECT t_value 
-					FROM data_input_data 
-					WHERE data_template_data_id = ? 
+				$can_template = db_fetch_cell_prepared('SELECT t_value
+					FROM data_input_data
+					WHERE data_template_data_id = ?
 					AND data_input_field_id = ?', array($template_data['id'], $field['id']));
 			}
 
@@ -525,7 +525,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 				print "<div class='formRow'>\n";
 
-				print "<div class='formColumnLeft'><div class='formFieldName'>" . $field['name'] . "</div></div>\n";
+				print "<div class='formColumnLeft'><div class='formFieldName'>" . html_escape($field['name']) . "</div></div>\n";
 				print "<div class='formColumnRight'>";
 
 				draw_custom_data_row($form_field_name, $field['id'], $data['id'], $old_value);
@@ -551,9 +551,10 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
      belongs to
    @arg $current_value - the current value of this field */
 function draw_custom_data_row($field_name, $data_input_field_id, $data_template_data_id, $current_value) {
-	$field = db_fetch_row_prepared('SELECT data_name, type_code 
-		FROM data_input_fields 
-		WHERE id = ?', array($data_input_field_id));
+	$field = db_fetch_row_prepared('SELECT data_name, type_code
+		FROM data_input_fields
+		WHERE id = ?',
+		array($data_input_field_id));
 
 	if (($field['type_code'] == 'index_type') && (db_fetch_cell_prepared('SELECT local_data_id FROM data_template_data WHERE id = ?', array($data_template_data_id)) > 0)) {
 		$index_type = db_fetch_assoc_prepared('SELECT
@@ -565,7 +566,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY host_snmp_cache.field_name', array($data_template_data_id));
 
 		if (sizeof($index_type) == 0) {
-			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
+			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		} else {
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
 		}
@@ -580,7 +581,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY snmp_query_graph.id', array($data_template_data_id));
 
 		if (sizeof($output_type) == 0) {
-			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='" . htmlspecialchars('graphs_new.php') . "'>" . __('New Graphs') . ".</a>") . "</em>\n";
+			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		} else {
 			form_dropdown($field_name, $output_type, 'name', 'id', $current_value, '', '', '');
 		}
