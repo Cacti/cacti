@@ -407,7 +407,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
 
 	if (!substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
@@ -1033,7 +1033,7 @@ function graphs() {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
