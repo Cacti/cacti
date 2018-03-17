@@ -3383,7 +3383,7 @@ function sanitize_search_string($string) {
  * @returns string    - the sanitized uri
  */
 function sanitize_uri($uri) {
-	static $drop_char_match =   array('^', '$', '<', '>', '`', '\'', '"', '|', '+', '[', ']', '{', '}', ';', '!');
+	static $drop_char_match =   array('^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')');
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
 	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
