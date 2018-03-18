@@ -314,6 +314,8 @@ case 'tree_content':
 		grow_right_pane_tree($tree_id, $node_id, $hgdata);
 	}
 
+	bottom_footer();
+
 	break;
 case 'preview':
 	top_graph_header();
