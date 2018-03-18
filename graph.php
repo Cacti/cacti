@@ -60,6 +60,7 @@ if (get_request_var('rra_id') == 'all' || isempty_request_var('rra_id')) {
 /* make sure the graph requested exists (sanity) */
 if (!(db_fetch_cell_prepared('SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id'))))) {
 	print "<strong><font class='txtErrorTextBox'>GRAPH DOES NOT EXIST</font></strong>";
+	bottom_footer();
 	exit;
 }
 
