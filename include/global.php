@@ -250,7 +250,6 @@ if ($config['is_web']) {
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');
 	ini_set('session.cookie_httponly', '1');
-	ini_set('session.cookie_secure', '1');
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
