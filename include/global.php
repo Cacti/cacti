@@ -249,6 +249,8 @@ if ($config['is_web']) {
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');
+	ini_set('session.cookie_httponly', '1');
+	ini_set('session.cookie_secure', '1');
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -256,6 +258,7 @@ if ($config['is_web']) {
 	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
+	header('X-Frame-Options: SAMEORIGIN');
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 
