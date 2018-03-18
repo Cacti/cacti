@@ -228,7 +228,10 @@ if ($step == '7') {
 			$description  = "Local Linux Machine";
 		}
 
-		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
+		$host_template_id = db_fetch_cell_prepared('SELECT id
+			FROM host_template
+			WHERE hash = ?',
+			array($hash));
 
 		// Add the host
 		if (!empty($host_template_id)) {
@@ -469,23 +472,6 @@ $enabled = '1';
 						$test_config_path = $config['url_path'] . 'install/';
 						$test_compare_result = strcmp($test_config_path,$test_final_path);
 
-						/*
-						 * Uncmment the following to debug the above change
-						 *
-						print '<p>Testing [' . $test_config_path . '] matches [' . $test_final_path .'] result = '.$test_compare_result.'('.gettype($test_compare_result).')</p>';
-
-						print '<p>request_uri = ' . strlen($test_request_uri) . ' [' . $test_request_uri . ']</p>';
-						print '<p>request_parts = ' . var_export($test_request_parts, true) . '</p>';
-						print '<p>request_path = ' . strlen($test_request_path) . ' [' . $test_request_path . ']</p>';
-
-						print '<p>script_name = ' . strlen($test_script_name) . ' [' . $test_script_name . ']</p>';
-							print '<p>script_part = ' . strlen($test_script_part) . ' [' . $test_script_part . ']</p>';
-						print '<p>script_result = ' . $test_script_result . '</p>';
-						print '<p>final_path = ' . strlen($test_final_path) . ' [' . $test_final_path . ']</p>';
-						 *
-						 * The above code should probably be removed once tested.
-						 */
-
 						// The path was not what we expected so print an error
 						if ($test_compare_result !== 0) {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</p>';
@@ -494,6 +480,7 @@ $enabled = '1';
 						}
 
 						print '<h3>' . __('MySQL TimeZone Support') .'</h3>';
+
 						$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
 						if (sizeof($mysql_timezone_access)) {
 							$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
@@ -510,7 +497,7 @@ $enabled = '1';
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
-						print '<h3>' . __('PHP Timezone Support') .'</h3>';
+						print '<h3>' . __('PHP Timezone Support') . '</h3>';
 
 						if (ini_get('date.timezone') == '') {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</p>';
@@ -519,7 +506,7 @@ $enabled = '1';
 							print '<p>' . __('Your Web Servers PHP is properly setup with a Timezone.') . '</p>';
 						}
 
-						print '<h3>' . __('Required PHP Module Support') .'</h3>';
+						print '<h3>' . __('Required PHP Module Support') . '</h3>';
 
 						print '<p>' .  __('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
 
@@ -598,6 +585,7 @@ $enabled = '1';
 						print '<h3>' . __('Optional PHP Module Support') .'</h3>';
 
 						print '<p>' . __('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.') . '</p>';
+
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
@@ -769,7 +757,7 @@ $enabled = '1';
 							strURL = 'index.php?action=testdb';
 							$.post(strURL, $('input').serializeObject()).done(function(data) {
 								$('#results').html('<b><?php print __('Remote Database: ');?></b>'+data);
-								if (data == 'Connection Successful') {
+								if (data == '<?php print __('Connection Successful');?>') {
 									test_good=true;
 									$('#next').button('enable');
 								}

@@ -29,9 +29,9 @@ function test_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print 'Connection Successful';
+		print __('Connection Successful');
 	} else {
-		print 'Connection Failed';
+		print __('Connection Failed');
 	}
 }
 
@@ -41,6 +41,7 @@ function verify_php_extensions($extensions) {
 			$extensions[$i]['installed'] = true;
 		}
 	}
+
 	return $extensions;
 }
 
@@ -430,7 +431,7 @@ function install_file_paths () {
 
 	/* log file path */
 	$input['path_cactilog'] = $settings['path']['path_cactilog'];
-	$input['path_cactilog']['description'] = 'The path to your Cacti log file.';
+	$input['path_cactilog']['description'] = __('The path to your Cacti log file.');
 	if (config_value_exists('path_cactilog')) {
 		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
 	} else {
@@ -493,10 +494,13 @@ function remote_update_config_file() {
 		}
 
 		// Check for an existing poller
-		$poller_id = db_fetch_cell_prepared('SELECT id FROM poller WHERE hostname = ?', array($hostname), true, $connection);
+		$poller_id = db_fetch_cell_prepared('SELECT id
+			FROM poller
+			WHERE hostname = ?',
+			array($hostname), true, $connection);
 
 		if (empty($poller_id)) {
-			$save['name'] = 'New Poller';
+			$save['name'] = __('New Poller');
 			$save['hostname']  = $hostname;
 			$save['dbdefault'] = $database_default;
 			$save['dbhost']    = $database_hostname;
@@ -564,6 +568,7 @@ function import_colors() {
 			}
 		}
 	}
+
 	return true;
 }
 
