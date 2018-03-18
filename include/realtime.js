@@ -51,7 +51,7 @@ function imageOptionsChanged(action) {
 
 	$.getJSON(url)
 		.done(function(data) {
-			$('#image').empty().append('<img class="graphimage" src="data:image/png;base64,'+data.data+'"/>');
+			$('#image').empty().append('<img class="realtimeimage" src="data:image/png;base64,'+data.data+'"/>');
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
