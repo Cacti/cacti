@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.1.37
+-issue#274: Allow Realtime Graph Popup Mode
 -issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue#1405: When Data Query columns are wide, they cause rendering issues
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
