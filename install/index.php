@@ -32,17 +32,18 @@ include_once('../lib/utility.php');
 include_once('../lib/import.php');
 include_once('./functions.php');
 
+set_default_action();
+
 // database test
-if (get_request_var('action') == 'testdb') {
-	if (get_request_var('location') == 'local') {
+if (get_nfilter_request_var('action') == 'testdb') {
+	if (get_nfilter_request_var('location') == 'local') {
 		install_test_local_database_connection();
 	} else {
 		install_test_remote_database_connection();
 	}
+
 	exit;
 }
-
-set_default_action();
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
