@@ -1095,6 +1095,11 @@ function is_hex_string($result) {
 		if (ctype_xdigit($part) == false) {
 			return false;
 		}
+
+		$dec = hexdec($part);
+		if ($dec < 32 || $dec > 127) {
+			return false;
+		}
 	}
 
 	return true;
