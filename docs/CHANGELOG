@@ -18,7 +18,7 @@ Cacti CHANGELOG
 -issue#1458: Error in logs when creating new graphs
 -issue#1459: Automation filter not applied correctly
 -issue#1461: Setting output_format on input type causes no values to be returned
--issue#1464: Further issues with DSSTATS storage location
+-issue#1464: Poller stuck in infinitely loop causing excess logging
 -issue#1466: No scrollbars in mobile browsers
 -issue#1471: Undefined function found in global_languages.php
 -feature: Updated Chinese Simplified translations
