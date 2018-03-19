@@ -32,12 +32,17 @@ include_once('../lib/utility.php');
 include_once('../lib/import.php');
 include_once('./functions.php');
 
-set_default_action();
-
+// database test
 if (get_request_var('action') == 'testdb') {
-	test_database_connection();
+	if (get_request_var('location') == 'local') {
+		install_test_local_database_connection();
+	} else {
+		install_test_remote_database_connection();
+	}
 	exit;
 }
+
+set_default_action();
 
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
@@ -517,59 +522,37 @@ $enabled = '1';
 
 						form_alternate_row('phpline',true);
 						form_selectable_cell(__('PHP Version'), '');
-						form_selectable_cell('5.3.0+', '');
-						form_selectable_cell((version_compare(PHP_VERSION, '5.3.0', '<') ? "<font color='red'>" . PHP_VERSION . "</font>" : "<font color='green'>" . PHP_VERSION . "</font>"), '');
+						form_selectable_cell('5.4.0+', '');
+						form_selectable_cell((version_compare(PHP_VERSION, CACTI_PHP_VERSION_MINIMUM, '<') ? "<font color='red'>" . PHP_VERSION . "</font>" : "<font color='green'>" . PHP_VERSION . "</font>"), '');
 						form_end_row();
 
+						// Common PHP extensions needed for installation
+						$extensions = array(
+							array('name' => 'session',   'installed' => false),
+							array('name' => 'sockets',   'installed' => false),
+							array('name' => 'PDO',       'installed' => false),
+							array('name' => 'pdo_mysql', 'installed' => false),
+							array('name' => 'xml',       'installed' => false),
+							array('name' => 'ldap',      'installed' => false),
+							array('name' => 'mbstring',  'installed' => false),
+							array('name' => 'pcre',      'installed' => false),
+							array('name' => 'json',      'installed' => false),
+							array('name' => 'openssl',   'installed' => false),
+							array('name' => 'gd',        'installed' => false),
+							array('name' => 'zlib',      'installed' => false)
+						);
+
+						// OS specific PHP extensions needed for installation
 						if ($config['cacti_server_os'] == 'unix') {
-							$extensions = array(
-								array('name' => 'posix',     'installed' => false),
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
-						} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
-							$extensions = array(
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
-						} else {
-							$extensions = array(
-								array('name' => 'com_dotnet','installed' => false),
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
+							$extensions[] = array('name' => 'posix',     'installed' => false);
+						} elseif ($config['cacti_server_os'] == 'win32') {
+							// Microsoft COM and DotNet no longer in core PHP as of 5.4.5
+							if (version_compare(PHP_VERSION, '5.4.5') >= 0) {
+								$extensions[] = array('name' => 'com_dotnet','installed' => false);
+							}
 						}
 
+						// Verify and display extension test results
 						$ext = verify_php_extensions($extensions);
 						foreach ($ext as $id =>$e) {
 							form_alternate_row('line' . $id);
@@ -577,7 +560,9 @@ $enabled = '1';
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
-							if (!$e['installed']) $enabled = '0';
+							if (! $e['installed']) {
+								$enabled = '0';
+							}
 						}
 
 						html_end_box(false);

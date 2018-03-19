@@ -22,20 +22,34 @@
  +-------------------------------------------------------------------------+
 */
 
-function test_database_connection() {
+function install_test_local_database_connection() {
+	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl;
+
+	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+	if (is_object($connection)) {
+		db_close($connection);
+		print __('Local Connection Successful');
+	} else {
+		print __('Local Connection Failed');
+	}
+}
+
+function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
 
 	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print __('Connection Successful');
+		print __('Remote Connection Successful');
 	} else {
-		print __('Connection Failed');
+		print __('Remote Connection Failed');
 	}
 }
 
 function verify_php_extensions($extensions) {
+	//FIXME: More to foreach loop
 	for ($i = 0; $i < count($extensions); $i++) {
 		if (extension_loaded($extensions[$i]['name'])){
 			$extensions[$i]['installed'] = true;
