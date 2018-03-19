@@ -742,7 +742,7 @@ $enabled = '1';
 							strURL = 'index.php?action=testdb';
 							$.post(strURL, $('input').serializeObject()).done(function(data) {
 								$('#results').html('<b><?php print __('Remote Database: ');?></b>'+data);
-								if (data == '<?php print __('Connection Successful');?>') {
+								if (data == '<?php print __('Remote Connection Successful');?>') {
 									test_good=true;
 									$('#next').button('enable');
 								}
