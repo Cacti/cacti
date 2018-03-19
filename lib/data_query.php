@@ -814,7 +814,7 @@ function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrit
 	}
 
 	$data_query_rewrite_indexes_cache[$hash][$snmp_index] = $value;
-	if (data_query_ctype_print_unicode($value) === false) {
+	if (mb_detect_encoding($value) === false) {
 		$value = bin2hex($value);
 	}
 
