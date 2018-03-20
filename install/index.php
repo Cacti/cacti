@@ -192,6 +192,12 @@ if ($step == '7') {
 	include_once('../lib/import.php');
 	include_once('../lib/api_automation.php');
 
+	/* ensure all tables are utf8 enabled */
+	$tables = db_fetch_assoc("SHOW TABLES");
+	foreach ($tables as $table) {
+		db_execute('ALTER TABLE `' . $table . '` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+	}
+
 	/* look for templates that have been checked for install */
 	if (get_request_var('install_type') == 1) {
 		$install = Array();
