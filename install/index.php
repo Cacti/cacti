@@ -196,7 +196,11 @@ if ($step == '7') {
 	$data = db_fetch_assoc("SHOW TABLES");
 	foreach ($data as $tables) {
 		foreach ($tables as $table) {
-			db_execute('ALTER TABLE `' . $table . '` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+			if ($table_status === false || $table_status['Collation'] != 'utf8mb4_unicode_ci') {
+				cacti_log("Converting $table to UTF8");
+				db_execute('ALTER TABLE `' . $table . '` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');
+			}
 		}
 	}
 
