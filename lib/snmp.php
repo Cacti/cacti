@@ -730,6 +730,17 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		}
 	}
 
+	$hasHexZeroes = false;
+	$hasHexPrefix = preg_match('/hex- ?/i', $string);
+	if ($hasHexPrefix) {
+		/* strip off the 'Hex-STRING:' */
+		$string = preg_replace('/hex- ?/i', '', $string);
+		$hasHexZeros = preg_match('/00 ?$/', $string);
+		if ($hasHexZeros) {
+			$string = preg_replace('/00 ?$/', '',  $string);
+		}
+	}
+
 	/* Trim the string of trailing and leading spaces */
 	$string = trim($string);
 
@@ -748,14 +759,14 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		} else {
 			$string = $output;
 		}
-	} elseif (preg_match('/hex-/i', $string)) {
+	} elseif ($hasHexPrefix) {
 		$output = '';
-
-		/* strip off the 'Hex-STRING:' */
-		$string = preg_replace('/hex- ?/i', '', $string);
 
 		/* normalize some forms */
 		$string = str_replace(array(' ', '-', '.'), ':', $string);
+		if ($hasHexZeros) {
+			$string .= ':00';
+		}
 		$parts  = explode(':', $string);
 
 		if (is_mac_address($string)) {
