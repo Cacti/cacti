@@ -33,7 +33,7 @@ function clog_get_datasource_titles($local_data_ids) {
 			$titles[$local_data_id] = get_data_source_title($local_data_id);
 		}
 	}
-	
+
 	return $titles;
 }
 
@@ -105,6 +105,10 @@ function clog_view_logfile() {
 	$clogAdmin = clog_admin();
 	$logfile   = read_config_option('path_cactilog');
 	$logbase   = basename($logfile);
+
+	if (is_base64_encoded(get_nfilter_request_var('rfilter'))) {
+		set_request_var('rfilter', base64_decode(get_nfilter_request_var('rfilter')));
+	}
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
@@ -536,7 +540,6 @@ function filter($clogAdmin) {
 				'&filename='+$('#filename').val()+
 				'&header=false';
 
-			console.log(strURL);
 			loadPageNoHeader(strURL);
 		}
 		</script>
@@ -611,7 +614,7 @@ function clog_regex_device($matches) {
 			FROM host
 			WHERE id in (?)',
 			array(implode(',',$dev_ids)));
-		
+
 		$hostDescriptions = array();
 		foreach ($hosts as $host) {
 			$hostDescriptions[$host['id']] = html_escape($host['description']);
@@ -687,7 +690,7 @@ function clog_regex_poller($matches) {
 			FROM poller
 			WHERE id in (?)',
 			array(implode(',',$poller_ids)));
-		
+
 		$pollerDescriptions = array();
 		foreach ($pollers as $poller) {
 			$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
