@@ -143,7 +143,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($template_user, $template_realm));
 
-	if (! isset($user_auth)) {
+	if (!isset($user_auth)) {
 		return false;
 	}
 
@@ -737,6 +737,14 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 		$limit = "LIMIT $limit";
 	}
 
+	if (!is_numeric($tree_id)) {
+		return array();
+	}
+
+	if (!is_numeric($parent)) {
+		return array();
+	}
+
 	if ($order_by != '') {
 		$order_by = "ORDER BY $order_by";
 	}
@@ -806,6 +814,14 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 }
 
 function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $order_by = 'gti.position', $limit = '', &$total_rows = 0, $user = 0) {
+	if (!is_numeric($tree_id)) {
+		return array();
+	}
+
+	if (!is_numeric($leaf_id)) {
+		return array();
+	}
+
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
