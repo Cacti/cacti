@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: JavaScript library Chart.js updated 2.7.2 
+-feature: Allow snmp formatting functions to detect UTF-8 output
 
 1.1.36
 -issue#934: Template names missing in graph management list
