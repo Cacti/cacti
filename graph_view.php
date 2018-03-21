@@ -68,7 +68,12 @@ function get_matching_nodes() {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
-				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
+
+				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($row['parent']));
+
 				if (!sizeof($row)) {
 					break;
 				}
@@ -116,7 +121,6 @@ function get_matching_nodes() {
 		header('Content-Type: application/json; charset=utf-8');
 
 		print json_encode($fa);
-		//print '[' . implode(', ', array_keys($matching)) . ']';
 	}
 }
 
@@ -197,7 +201,8 @@ case 'get_node':
 		if (get_nfilter_request_var('tree_id') == 0 && strstr(get_nfilter_request_var('id'), 'tbranch-') !== false) {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 				FROM graph_tree_items
-				WHERE id = ?', array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
+				WHERE id = ?',
+				array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
 		}else if (get_nfilter_request_var('tree_id') == 'default' ||
 			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
@@ -226,7 +231,12 @@ case 'get_node':
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
 					input_validate_input_number($parent);
-					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id FROM graph_tree_items WHERE id = ?', array($parent));
+
+					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($parent));
+
 					break;
 				}
 			}
@@ -240,7 +250,8 @@ case 'tree_content':
 	html_validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . "</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
+		exit;
 	}
 
 	if (!isempty_request_var('node')) {
