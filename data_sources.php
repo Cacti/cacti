@@ -954,7 +954,7 @@ function ds_edit() {
 				WHERE id = ?',
 				array($local_data_template_rrd_id));
 
-			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
+			$header_label = __('[edit: %s]', html_escape($rrd['data_source_name']));
 		} else {
 			$header_label = '';
 		}
