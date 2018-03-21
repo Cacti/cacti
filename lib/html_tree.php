@@ -89,7 +89,10 @@ function grow_dhtml_trees() {
 
 	if (empty($default_tree_id)) {
 		if (read_config_option('auth_method') != 0) {
-			$user = db_fetch_row_prepared('SELECT policy_trees FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+			$user = db_fetch_row_prepared('SELECT policy_trees
+				FROM user_auth
+				WHERE id = ?',
+				array($_SESSION['sess_user_id']));
 
 			if ($user['policy_trees'] == 1) {
 				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
@@ -453,10 +456,10 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 
 					$dhtml_tree[] = "\t\t\t\t</li>\n";
 				} else { //It's not a host
-					$children = db_fetch_cell_prepared('SELECT COUNT(*) 
-						FROM graph_tree_items 
-						WHERE parent = ? 
-						AND local_graph_id=0', 
+					$children = db_fetch_cell_prepared('SELECT COUNT(*)
+						FROM graph_tree_items
+						WHERE parent = ?
+						AND local_graph_id=0',
 						array($leaf['id']));
 
 					$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . htmlspecialchars('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&hgd=') . '">' . htmlspecialchars($leaf['title']) . "</a></li>\n";
@@ -573,7 +576,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	/* get information for the headers */
 	if (!empty($tree_id)) {
-		$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($tree_id));
+		$tree_name = db_fetch_cell_prepared('SELECT name
+			FROM graph_tree
+			WHERE id = ?',
+			array($tree_id));
 	}
 
 	if (!empty($leaf_id)) {
@@ -584,7 +590,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$host_name = db_fetch_cell_prepared('SELECT host.description
 			FROM (graph_tree_items,host)
 			WHERE graph_tree_items.host_id=host.id
-			AND graph_tree_items.id = ?', array($leaf_id));
+			AND graph_tree_items.id = ?',
+			array($leaf_id));
 	}
 
 	$host_group_data_array = explode(':', $host_group_data);
@@ -593,10 +600,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($host_group_data_array[1]));
 		$graph_template_id = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1])));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1])));
 		$data_query_id = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dqi') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? 'Non Query Based' : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1]))) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1]))) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
 		$data_query_id = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
@@ -980,7 +987,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			array_push(
 				$graph_templates, array(
 					'id' => '0',
-					'name' => '(No Graph Template)'
+					'name' => __('(No Graph Template)')
 				)
 			);
 
