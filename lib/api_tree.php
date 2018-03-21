@@ -444,7 +444,10 @@ function api_tree_parse_node_data($variable) {
 	}
 
 	if ($leaf_id > 0) {
-		$parent = db_fetch_cell_prepared('SELECT parent FROM graph_tree_items WHERE id = ?', array($leaf_id));
+		$parent = db_fetch_cell_prepared('SELECT parent
+			FROM graph_tree_items
+			WHERE id = ?',
+			array($leaf_id));
 	} else {
 		$parent = '0';
 	}
