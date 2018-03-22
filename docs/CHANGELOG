@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#1466: No scrollbars in mobile browsers
 -issue#1471: Undefined function found in global_languages.php
 -issue#1487: Undefined constant in ldap.php
+-issue#1483: Create New Graphs - Paw Styling Issue
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: JavaScript library Chart.js updated 2.7.2 
