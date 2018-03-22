@@ -722,7 +722,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 	/* Remove non-printable characters, allow UTF-8 */
 	if ($value_output_format == SNMP_STRING_OUTPUT_GUESS) {
-		$string = preg_replace('/[\x00-\x1F\x7F\xA0]/u', '', $string);
+		$string = preg_replace('/[^\p{L}\s]/u', '', $string);
 	}
 
 	/* Trim the string of trailing and leading spaces */
