@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#1464: Poller stuck in infinitely loop causing excess logging
 -issue#1466: No scrollbars in mobile browsers
 -issue#1471: Undefined function found in global_languages.php
+-issue#1472: Change Device Options - Style needs updating
 -issue#1487: Undefined constant in ldap.php
 -issue#1483: Create New Graphs - Paw Styling Issue
 -feature: Updated Chinese Simplified translations
