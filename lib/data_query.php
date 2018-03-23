@@ -785,6 +785,30 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 				}
+			} elseif (substr($field_array['source'], 0, 16) == 'OIDVALUE/REGEXP:') {
+				$regex_array = explode(':', str_replace('OIDVALUE/REGEXP:', '', $field_array['source']));
+
+				foreach($snmp_data as $oid => $value) {
+					$parse_value = preg_replace('/' . $regex_array[0] . '/', $regex_array[1], $oid);
+
+					if (isset($snmp_queries['oid_index_parse'])) {
+						$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
+					} elseif ((isset($value)) && ($value != '')) {
+						$snmp_index = $value;
+					}
+
+					/* correct bogus index value */
+					/* found in some devices such as an EMC Cellera */
+					if ($snmp_index == 0) {
+						$snmp_index = 1;
+					}
+
+					$oid = $field_array['oid'];
+
+					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid value parse]', $field_name, $parse_value, $snmp_index));
+
+					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
+				}
 			}
 
 			debug_log_insert_section_end('data_query');
