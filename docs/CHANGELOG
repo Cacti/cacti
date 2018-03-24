@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#1468: Increase max length of host.snmp_sysObjectID column
 -issue#1471: Undefined function found in global_languages.php
 -issue#1472: Change Device Options - Style needs updating
+-issue#1474: Check possibility for creation of temporary tables on install
 -issue#1487: Undefined constant in ldap.php
 -issue#1483: Create New Graphs - Paw Styling Issue
 -issue#1493: Can't create tree branches with '#' sign

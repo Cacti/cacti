@@ -503,6 +503,15 @@ $enabled = '1';
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
+						print '<h3>' . __('MySQL Temporary Table Access') . '</h3>';
+
+						if (!install_test_temporary_table()) {
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Database user account does not have permission to create temporary tables.  Please add this permissiong before continuing.') . '</p>';
+							$enabled = '0';
+						} else {
+							print '<p>' . __('Your Database user account can create temporary tables.') . '</p>';
+						}
+
 						print '<h3>' . __('PHP Timezone Support') . '</h3>';
 
 						if (ini_get('date.timezone') == '') {

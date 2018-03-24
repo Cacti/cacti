@@ -48,6 +48,18 @@ function install_test_remote_database_connection() {
 	}
 }
 
+function install_test_temporary_table() {
+	$table = 'test_temp_' . rand();
+
+	if (!db_execute('CREATE TEMPORARY TABLE ' . $table . ' (`cacti` char(20) NOT NULL DEFAULT "", PRIMARY KEY (`cacti`)) ENGINE=InnoDB', false)) {
+		return false;
+	} else {
+		db_execute('DROP TABLE ' . $table);
+	}
+
+	return true;
+}
+
 function verify_php_extensions($extensions) {
 	//FIXME: More to foreach loop
 	for ($i = 0; $i < count($extensions); $i++) {
