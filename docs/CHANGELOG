@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#1472: Change Device Options - Style needs updating
 -issue#1487: Undefined constant in ldap.php
 -issue#1483: Create New Graphs - Paw Styling Issue
+-feature#1489: Add ability to use parts of OID as value via regex
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
 -feature: JavaScript library Chart.js updated 2.7.2 
