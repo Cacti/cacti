@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#1461: Setting output_format on input type causes no values to be returned
 -issue#1464: Poller stuck in infinitely loop causing excess logging
 -issue#1466: No scrollbars in mobile browsers
+-issue#1468: Increase max length of host.snmp_sysObjectID column
 -issue#1471: Undefined function found in global_languages.php
 -issue#1472: Change Device Options - Style needs updating
 -issue#1487: Undefined constant in ldap.php
