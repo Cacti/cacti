@@ -1558,7 +1558,7 @@ function display_graphs() {
 	if (sizeof($graphs)) {
 		foreach($graphs as $g) {
 			if (is_graph_allowed($g['id'])) {
-				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . $g['title'] . '</li></ul>';
+				echo "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . html_escape($g['title']) . '</li></ul>';
 			}
 		}
 	}
