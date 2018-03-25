@@ -436,7 +436,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $custom_error);
+				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error));
 				set_request_var($name, '');
 				raise_message('custom_error');
 			} else {
@@ -656,11 +656,11 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error);
+						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error));
 						set_request_var($variable, '');
 						raise_message('custom_error');
 					} else {
-						die_html_input_error($variable, get_nfilter_request_var($variable), $custom_error);
+						die_html_input_error($variable, get_nfilter_request_var($variable), html_escape($custom_error));
 					}
 				} else {
 					set_request_var($variable, $value);

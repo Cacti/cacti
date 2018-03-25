@@ -219,12 +219,12 @@ $selectedTheme = get_selected_theme();
 	<?php html_common_header(__('Cacti Real-time Graphing'));?>
     <?php include($config['base_path'] . '/include/global_session.php'); ?>
 </head>
-<body style='text-align: center; padding: 5px 0px 5px 0px; margin: 5px 0px 5px 0px;'>
+<body class='center'>
 <form method='post' action='graph_popup_rt.php' id='gform'>
-	<div>
-		<table align='center'>
+	<div class='cactiTable'>
+		<table class='filterTable center'>
 			<tr>
-				<td> 
+				<td>
 					<?php print __('Window');?>
 				</td>
 				<td>
@@ -260,8 +260,7 @@ $selectedTheme = get_selected_theme();
 			</tr>
 		</table>
 	</div>
-	<br>
-	<div id='image'>
+	<div id='image' style='padding:2px;'>
 		<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-o-notch'></i>
 	</div>
 	<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
@@ -288,39 +287,35 @@ $selectedTheme = get_selected_theme();
 		browser = realtimeDetectBrowser();
 
 		/* set the window size */
-		height = $('.graphimage').height();
-		width  = $('.graphimage').width();
+		height = $('.realtimeimage').height();
+		width  = $('.realtimeimage').width();
 
 		if (height > 40) {
 			if (browser == 'IE') {
-				width  = width  + 30;
-				height = height + 110;
+				width  = width  + 20;
+				height = height + 40;
 			} else {
-				width  = width  + 40;
-				height = height + 170;
+				width  = width  + 20;
+				height = height + 120;
 			}
 
 			if (sizeset == false) {
-				if (browser == 'FF') {
-					window.outerHeight = height;
-					window.outerWidth  = width;
-				} else {
-					window.resizeTo(width, height);
-				}
+				window.outerHeight = height;
+				window.outerWidth  = width;
+				window.resizeTo(width, height);
 
 				sizeset = true;
 			}
 		}
 
 		count++;
-	
+
 		setTimeout('countdown_update()', 1000);
 	}
 
-	setTimeout('countdown_update()', 1000);
-
 	$(function() {
 		imageOptionsChanged('init');
+		setTimeout('countdown_update()', 1000);
 	});
 
 	</script>

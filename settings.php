@@ -298,6 +298,7 @@ default:
 	var themeChanged = false;
 	var currentTheme = '';
 	var rrdArchivePath = '';
+	var smtpPath = '';
 	var currentTab = '<?php print $current_tab;?>';
 
 	$(function() {
@@ -550,11 +551,16 @@ default:
 
 		function initMail() {
 			/* clear passwords */
+			if ($('#settings_sendmail_path').val() != '') {
+				smtpPath = $('#settings_sendmail_path').val();
+			}
+
 			$('#settings_smtp_password').val('');
 			$('#settings_smtp_password_confirm').val('');
 
 			switch($('#settings_how').val()) {
 			case '0':
+				$('#settings_sendmail_path').val('');
 				$('#row_settings_sendmail_header').hide();
 				$('#row_settings_sendmail_path').hide();
 				$('#row_settings_smtp_header').hide();
@@ -566,6 +572,10 @@ default:
 				$('#row_settings_smtp_timeout').hide();
 				break;
 			case '1':
+				if (smtpPath != '') {
+					$('#settings_sendmail_path').val(smtpPath);
+				}
+
 				$('#row_settings_sendmail_header').show();
 				$('#row_settings_sendmail_path').show();
 				$('#row_settings_smtp_header').hide();
@@ -577,6 +587,7 @@ default:
 				$('#row_settings_smtp_timeout').hide();
 				break;
 			case '2':
+				$('#settings_sendmail_path').val('');
 				$('#row_settings_sendmail_header').hide();
 				$('#row_settings_sendmail_path').hide();
 				$('#row_settings_smtp_header').show();

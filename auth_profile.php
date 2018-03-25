@@ -168,15 +168,18 @@ function settings() {
 		return;
 	}
 
+	$referer = '';
+
 	if (get_request_var('action') == 'edit') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
+			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 			if ($timespan_sel_pos) {
-				$_SERVER['HTTP_REFERER'] = substr($_SERVER['HTTP_REFERER'],0,$timespan_sel_pos);
+				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
 		}
 
-		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php');
+		$_SESSION['profile_referer'] = ($referer != '' ? $referer:'graph_view.php');
 	}
 
 	form_start('auth_profile.php');

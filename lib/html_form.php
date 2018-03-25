@@ -61,7 +61,7 @@ function draw_edit_form($array) {
 			} elseif ($field_array['method'] == 'spacer') {
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
-				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . $field_array['friendly_name'] . ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']) . ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
 			} else {
 				// Make a row using a div
 				if (isset($config_array['force_row_color'])) {
@@ -91,10 +91,10 @@ function draw_edit_form($array) {
 						((isset($field_array['sub_checkbox']['friendly_name'])) ? $field_array['sub_checkbox']['friendly_name'] : ''));
 				}
 
-				print $field_array['friendly_name'];
+				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
+					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? html_escape($field_array['description']) : '') . "</span>\n";
 				} else {
 					print '<div class="formTooltip">';
 					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
@@ -840,9 +840,9 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 
 	print "<input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">";
 	if ($show_label) {
-		print "<label for='$form_name'>" . $form_caption . "</label>";
+		print "<label for='$form_name'>" . html_escape($form_caption) . "</label>";
 	} else {
-		print "<label class='checkboxLabel' for='$form_name'>" . $form_caption . "</label>";
+		print "<label class='checkboxLabel' for='$form_name'>" . html_escape($form_caption) . "</label>";
 	}
 }
 
@@ -880,7 +880,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 
 	$css_id = $form_name . '_' . $form_current_value;
 
-	print "<input type='radio' id='$css_id' name='$form_name' value='" . html_escape($form_current_value) . "'" . $class . $on_change . $checked . "><label class='formCheckboxLabel' for='$css_id'>$form_caption</label>\n";
+	print "<input type='radio' id='$css_id' name='$form_name' value='" . html_escape($form_current_value) . "'" . $class . $on_change . $checked . "><label class='formCheckboxLabel' for='$css_id'>" . html_escape($form_caption) . "</label>\n";
 }
 
 /* form_text_area - draws a standard html text area box

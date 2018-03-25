@@ -281,7 +281,7 @@ abstract class LdapError {
 				$error_text = __('Protocol Error, Unable to bind, LDAP result: %s', $ldapError);
 				break;
 
-			case LdapError::ConnectionUnavaialble:
+			case LdapError::ConnectionUnavailable:
 				$error_text = __('Unable to Connect to Server');
 				break;
 
@@ -607,7 +607,7 @@ class Ldap {
 			if ($this->referrals == '0') {
 				if (!@ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					/* referrals set error */
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferrals);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral);
 					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
 					@ldap_close($ldap_conn);
 					return $output;

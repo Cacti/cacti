@@ -23,17 +23,37 @@ Cacti CHANGELOG
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 
 1.1.37
+-issue#274: Allow Realtime Graph Popup Mode
+-issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue#1405: When Data Query columns are wide, they cause rendering issues
+-issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -issue#1419: CLog: preg_match can blow up log file
 -issue#1420: Debian test suite reports issues 
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -issue#1432: Delete confirmation does not disappear
--issue: Output message timer not clearing properly on page refresh
+-issue#1443: Partial Save warnings under Settings -> Mail/Reporting/DNS
+-issue#1447: Cli audit_database.php not detecting database name, and failed to create audit tables when run fresh
+-issue#1453: Title of add_graphs.php being ignored
+-issue#1456: Increase minimum php version maintaining support for RHEL6
+-issue#1457: Path-Based Cross-Site Scripting (XSS) issues
+-issue#1458: Error in logs when creating new graphs
+-issue#1459: Automation filter not applied correctly
+-issue#1461: Setting output_format on input type causes no values to be returned
+-issue#1464: Poller stuck in infinitely loop causing excess logging
+-issue#1466: No scrollbars in mobile browsers
+-issue#1468: Increase max length of host.snmp_sysObjectID column
+-issue#1471: Undefined function found in global_languages.php
+-issue#1472: Change Device Options - Style needs updating
+-issue#1474: Check possibility for creation of temporary tables on install
+-issue#1487: Undefined constant in ldap.php
+-issue#1483: Create New Graphs - Paw Styling Issue
+-issue#1493: Can't create tree branches with '#' sign
+-feature#1489: Add ability to use parts of OID as value via regex
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
--feature: Make LDAP errors consistent across functions
 -feature: JavaScript library Chart.js updated 2.7.2 
+-feature: Allow snmp formatting functions to detect UTF-8 output
 
 1.1.36
 -issue#934: Template names missing in graph management list
@@ -61,7 +81,7 @@ Cacti CHANGELOG
 -issue#1390: Plugin uninstall should prompt user before removal
 -issue#1396: Prevent installation/uninstallation of a plugin if dependency is present
 -issue#1397: Distinguish between plugin tabs and core tabs in settings
--issue: Allow dynamic setting of from name when emailing
+-issue#1371: Allow dynamic setting of from name when emailing
 -issue: Data Query Cache filter layout more consistent
 -issue: Minor plugin permissions format change
 -issue: Implementation of error handling causes errors creating New Graphs

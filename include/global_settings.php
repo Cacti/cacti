@@ -2111,5 +2111,18 @@ $settings_user = array(
 		)
 	);
 
+if (is_realm_allowed(25)) {
+	$settings_user['general']['realtime_mode'] = array(
+		'friendly_name' => __('Realtime View Mode'),
+		'description' => __('How do you wish to view Realtime Graphs?'),
+		'method' => 'drop_array',
+		'array' => array(
+			'1' => __('Inline'),
+			'2' => __('New Window')
+		),
+		'default' => '1'
+	);
+}
+
 api_plugin_hook('config_settings');
 

@@ -48,7 +48,7 @@ if (read_config_option('auth_method') != 0) {
 
 	/* handle change password dialog */
 	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
 		exit;
 	}
 
@@ -62,11 +62,11 @@ if (read_config_option('auth_method') != 0) {
 
 	/* don't even bother with the guest code if we're already logged in */
 	if ((isset($guest_account)) && (empty($_SESSION['sess_user_id']))) {
-		$guest_user_id = db_fetch_cell_prepared('SELECT id 
-			FROM user_auth 
-			WHERE username = ? 
-			AND realm = 0 
-			AND enabled = "on"', 
+		$guest_user_id = db_fetch_cell_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ?
+			AND realm = 0
+			AND enabled = "on"',
 			array(read_config_option('guest_user')));
 
 		/* cannot find guest user */
@@ -78,9 +78,9 @@ if (read_config_option('auth_method') != 0) {
 
 	/* if we are a guest user in a non-guest area, wipe credentials */
 	if (!empty($_SESSION['sess_user_id'])) {
-		$guest_user = db_fetch_cell_prepared('SELECT id 
-			FROM user_auth 
-			WHERE username = ?', 
+		$guest_user = db_fetch_cell_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ?',
 			array(read_config_option('guest_user')));
 
 		if (!isset($guest_account) && $guest_user == $_SESSION['sess_user_id']) {
@@ -136,7 +136,7 @@ if (read_config_option('auth_method') != 0) {
 
 		if ($realm_id != -1 && !$authorized) {
 			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' align='center'>[<a href='" . html_escape($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
+				$goBack = "<td colspan='2' align='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			} else {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}

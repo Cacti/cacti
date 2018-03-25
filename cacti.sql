@@ -1815,7 +1815,7 @@ CREATE TABLE host (
   snmp_port mediumint(5) unsigned NOT NULL default '161',
   snmp_timeout mediumint(8) unsigned NOT NULL default '500',
   snmp_sysDescr varchar(300) NOT NULL default '',
-  snmp_sysObjectID varchar(64) NOT NULL default '',
+  snmp_sysObjectID varchar(128) NOT NULL default '',
   snmp_sysUpTimeInstance int unsigned NOT NULL default '0',
   snmp_sysContact varchar(300) NOT NULL default '',
   snmp_sysName varchar(300) NOT NULL default '',

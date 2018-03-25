@@ -203,11 +203,6 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 		$title = __('New Branch');
 	}
 
-	/* clean up text string */
-	if (isset($title)) {
-		$title = sanitize_search_string(htmlspecialchars_decode($title));
-	}
-
 	$data  = api_tree_parse_node_data($node_id);
 
 	if ($data['leaf_id'] < 0) {
@@ -218,9 +213,11 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	$i     = 0;
 	$found = false;
 	$orig  = $title;
+
 	while(true) {
 		$title = $orig . ($found ? ' (' . $i . ')':'');
 		$exists_id = api_tree_branch_exists($tree_id, $data['leaf_id'], $title);
+
 		if ($exists_id == false) {
 			break;
 		} else {
@@ -507,7 +504,10 @@ function api_tree_parse_node_data($variable) {
 	}
 
 	if ($leaf_id > 0) {
-		$parent = db_fetch_cell_prepared('SELECT parent FROM graph_tree_items WHERE id = ?', array($leaf_id));
+		$parent = db_fetch_cell_prepared('SELECT parent
+			FROM graph_tree_items
+			WHERE id = ?',
+			array($leaf_id));
 	} else {
 		$parent = '0';
 	}
@@ -519,13 +519,10 @@ function api_tree_parse_node_data($variable) {
  * This function is used for editing.
  * @arg $tree_id - The id of the tree you are parsing
  * @arg $node_id - The branch/leaf id of the node to be renamed
- * @arg $text - The new branch/leaf title
+ * @arg $title - The new branch/leaf title
  * @returns - string of the tree items in html format */
-function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
+function api_tree_rename_node($tree_id, $node_id = '', $title = '') {
 	input_validate_input_number($tree_id);
-
-	/* clean up text string */
-	$text = sanitize_search_string(htmlspecialchars_decode($text));
 
 	// Basic Error Checking
 	if ($tree_id <= 0) {
@@ -585,7 +582,7 @@ function api_tree_rename_node($tree_id, $node_id = '', $text = '') {
 			db_execute_prepared('UPDATE graph_tree_items
 				SET title = ?
 				WHERE graph_tree_id = ?
-				AND id = ?', array($text, $tree_id, $leaf_id));
+				AND id = ?', array($title, $tree_id, $leaf_id));
 		}
 	}
 

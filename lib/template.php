@@ -802,7 +802,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 					FROM data_template_rrd WHERE id = ?',
 					array($template_item['task_item_id']));
 
-				if ($data_source_name != '' && sizeof($local_data_ids)) {
+				if ($data_source_name != '' && $local_data_ids != '') {
 					$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id
 						FROM data_template_rrd WHERE
 						local_data_id IN (' . $local_data_ids . ')

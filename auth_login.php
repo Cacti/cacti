@@ -368,17 +368,17 @@ if (get_nfilter_request_var('action') == 'login') {
 				 * have console access
 				 */
 				if (isset($_SERVER['REDIRECT_URL'])) {
-					$referer = $_SERVER['REDIRECT_URL'];
+					$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
 					if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
 						$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'] . ($newtheme ? '&newtheme=1':'');
 					}
-				} else if (isset($_SERVER['HTTP_REFERER'])) {
-					$referer = $_SERVER['HTTP_REFERER'];
+				} elseif (isset($_SERVER['HTTP_REFERER'])) {
+					$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
 					if (basename($referer) == 'logout.php') {
 						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
 					}
-				} else if (isset($_SERVER['REQUEST_URI'])) {
-					$referer = $_SERVER['REQUEST_URI'];
+				} elseif (isset($_SERVER['REQUEST_URI'])) {
+					$referer = sanitize_uri($_SERVER['REQUEST_URI']);
 					if (basename($referer) == 'logout.php') {
 						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
 					}
@@ -388,7 +388,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 				if (substr_count($referer, 'plugins')) {
 					header('Location: ' . $referer);
-				} elseif (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE realm_id = 8 AND user_id = ?', array($_SESSION['sess_user_id']))) == 0) {
+				} elseif (!is_realm_allowed(8)) {
 					header('Location: graph_view.php' . ($newtheme ? '?newtheme=1':''));
 				} else {
 					$param_char = '?';
@@ -420,7 +420,10 @@ if (get_nfilter_request_var('action') == 'login') {
 			exit;
 		} else {
 			/* BAD username/password builtin and LDAP */
-			db_execute_prepared('INSERT IGNORE INTO user_log (username, user_id, result, ip, time) VALUES (?, 0, 0, ?, NOW())', array($username, $_SERVER['REMOTE_ADDR']));
+			db_execute_prepared('INSERT IGNORE INTO user_log
+				(username, user_id, result, ip, time)
+				VALUES (?, 0, 0, ?, NOW())',
+				array($username, $_SERVER['REMOTE_ADDR']));
 		}
 	}
 }
@@ -471,48 +474,90 @@ function domains_login_process() {
 
 			if ($ldap_auth_response['error_num'] == '0') {
 				/* User ok */
-				$user_auth = true;
-				$copy_user = true;
-				$realm = get_nfilter_request_var('realm');
+				$user_auth   = true;
+				$copy_user   = true;
+				$realm       = get_nfilter_request_var('realm');
+
+				$domain_name = db_fetch_cell_prepared('SELECT domain_name
+					FROM user_domains
+					WHERE domain_id = ?',
+					array($realm-1000));
+
 				/* Locate user in database */
-				cacti_log("LOGIN: LDAP User '" . $username . "' Authenticated from Domain '" . db_fetch_cell('SELECT domain_name FROM user_domains WHERE domain_id=' . ($realm-1000)) . "'", false, 'AUTH');
-				$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
+				cacti_log("LOGIN: LDAP User '$username' Authenticated from Domain '$domain_name'", false, 'AUTH');
+
+				$user = db_fetch_row_prepared('SELECT *
+					FROM user_auth
+					WHERE username = ?
+					AND realm = ?',
+					array($username, $realm));
 
 				/* Create user from template if requested */
-				$template_user = db_fetch_cell_prepared('SELECT user_id FROM user_domains WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
-				$template_username = db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($template_user));
-				if (!sizeof($user) && $copy_user && $template_user != '0' && $username != '') {
-					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
-					/* check that template user exists */
-					if (db_fetch_row_prepared('SELECT id FROM user_auth WHERE id = ? AND realm = 0', array($template_user))) {
-						/* template user found */
-//						user_copy($template_username, $username, 0, $realm);
+				$template_user = db_fetch_cell_prepared('SELECT user_id
+					FROM user_domains
+					WHERE domain_id = ?',
+					array(get_nfilter_request_var('realm')-1000));
 
-                       				// get user CN
-                                                $cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
-                                                $cn_email = db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array(get_nfilter_request_var('realm')-1000));
-                                                if( isset($cn_full_name) || isset($cn_email) ) {
-                                                        $ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
-                                                        if( isset($ldap_cn_search_response['cn'])) {
-                                                                $data_override = array();
-                                                                if( array_key_exists( $cn_full_name, $ldap_cn_search_response['cn'] ) ) {
-                                                                      $data_override["full_name"] = $ldap_cn_search_response['cn'][$cn_full_name];
-                                                                } else {
-                                                                      $data_override["full_name"] = '';
-                                                                }
-                                                                if( array_key_exists( $cn_email, $ldap_cn_search_response['cn'] ) ) {
-                                                                      $data_override["email_address"] = $ldap_cn_search_response['cn'][$cn_email];
-                                                                } else {
-                                                                      $data_override["email_address"] = '';
+				$template_username = db_fetch_cell_prepared('SELECT username
+					FROM user_auth
+					WHERE id = ?',
+					array($template_user));
+
+				if (!sizeof($user) && $copy_user && $template_user > 0 && $username != '') {
+					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
+
+					/* check that template user exists */
+					$template_id = db_fetch_row_prepared('SELECT id 
+						FROM user_auth 
+						WHERE id = ? 
+						AND realm = 0', 
+						array($template_user))
+
+					if ($template_id > 0) {
+						/* template user found */
+						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name 
+							FROM user_domains_ldap 
+							WHERE domain_id = ?', 
+							array(get_nfilter_request_var('realm')-1000));
+
+						$cn_email = db_fetch_cell_prepared('SELECT cn_email 
+							FROM user_domains_ldap 
+							WHERE domain_id = ?', 
+							array(get_nfilter_request_var('realm')-1000));
+
+						if ($cn_full_name != '' || $cn_email != '') {
+							$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email) );
+
+							if (isset($ldap_cn_search_response['cn'])) {
+								$data_override = array();
+
+								if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
+									$data_override['full_name'] = $ldap_cn_search_response['cn'][$cn_full_name];
+								} else {
+									$data_override['full_name'] = '';
 								}
-                                                                user_copy(read_config_option("user_template"), $username, 0, $realm, false, $data_override);                                } else {
-                                                                cacti_log("LOGIN: fields not found " . $ldap_cn_search_response[0] . "code: " . $ldap_cn_search_response['error_num'], false, "AUTH");
-                                                                user_copy(read_config_option("user_template"), $username, 0, $realm);
-                                                        }
-                                                }
+
+								if (array_key_exists($cn_email, $ldap_cn_search_response['cn'])) {
+									$data_override['email_address'] = $ldap_cn_search_response['cn'][$cn_email];
+								} else {
+									$data_override['email_address'] = '';
+								}
+
+								user_copy(read_config_option('user_template'), $username, 0, $realm, false, $data_override);
+							} else {
+								cacti_log('LOGIN: fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');
+								user_copy(read_config_option('user_template'), $username, 0, $realm);
+							}
+						} else {
+							user_copy($template_username, $username, 0, $realm);
+						}
 
 						/* requery newly created user */
-						$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE username = ? AND realm = ?', array($username, $realm));
+						$user = db_fetch_row_prepared('SELECT *
+							FROM user_auth
+							WHERE username = ?
+							AND realm = ?',
+							array($username, $realm));
 					} else {
 						/* error */
 						display_custom_error_message(__('Template user %s does not exist.', $template_username));
@@ -540,7 +585,10 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 	if (!empty($password)) $ldap->password = $password;
 	if (!empty($dn))       $ldap->dn       = $dn;
 
-	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
+	$ld = db_fetch_row_prepared('SELECT *
+		FROM user_domains_ldap
+		WHERE domain_id = ?',
+		array($realm-1000));
 
 	if (sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
@@ -559,7 +607,7 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 
 		if ($ld['group_require'] == 'on') {
 			$ldap->group_require = true;
-		}else{
+		} else {
 			$ldap->group_require = false;
 		}
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
@@ -577,7 +625,10 @@ function domains_ldap_search_dn($username, $realm) {
 
 	if (!empty($username)) $ldap->username = $username;
 
-	$ld = db_fetch_row_prepared('SELECT * FROM user_domains_ldap WHERE domain_id = ?', array($realm-1000));
+	$ld = db_fetch_row_prepared('SELECT *
+		FROM user_domains_ldap
+		WHERE domain_id = ?',
+		array($realm-1000));
 
 	if (sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
@@ -596,9 +647,10 @@ function domains_ldap_search_dn($username, $realm) {
 
 		if ($ld['group_require'] == 'on') {
 			$ldap->group_require = true;
-		}else{
+		} else {
 			$ldap->group_require = false;
 		}
+
 		if (!empty($ld['group_dn']))          $ldap->group_dn          = $ld['group_dn'];
 		if (!empty($ld['group_attrib']))      $ldap->group_attrib      = $ld['group_attrib'];
 		if (!empty($ld['group_member_type'])) $ldap->group_member_type = $ld['group_member_type'];

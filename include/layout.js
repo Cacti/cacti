@@ -1041,7 +1041,7 @@ function responsiveResizeGraphs() {
 		canvas_width  = $(this).attr('canvas_width');
 		canvas_height = $(this).attr('canvas_height');
 
-		if (isThumb || myWidth < image_width) {
+		if (myWidth < image_width) {
 			ratio = myWidth / image_width;
 		} else {
 			ratio = 1;
@@ -1148,57 +1148,148 @@ function tuneTable(object, width) {
 }
 
 function tuneFilter(object, width) {
-	filter  = 'input[id="refresh"], input[id="clear"], input[id="save"], input[id="tsrefresh"], input[id="tsclear"]';
-	buttons = 0;
-	visTds  = $(object).find('td:visible').length;
+	if ($(object).find('#timespan').length && $(object).find('#timespan').is(':visible')) {
+		timespan = true;
 
-	// Find the td's with buttons
-	$($(object).find('td').get().reverse()).each(function() {
-		if ($(this).find(filter).length > 0) {
-			buttons++;
-		}
-	});
-	minTds  = 2 + buttons;
+		timeShiftWidth = $(object).find('.shiftArrow').closest('td').width();
+		dateWidth      = $(object).find('#date1').closest('td').width() + $(object).find('#date1').closest('td').prev('td').width();
+		clearWidth     = $('#tsclear').width();
+		refreshWidth   = $('#tsrefresh').width();
+	} else {
+		timespan = false;
+
+		clearWidth     = $(object).find('#clear').width();
+		saveWidth      = $(object).find('#save').width();
+		exportWidth    = $(object).find('#export').width();
+		importWidth    = $(object).find('#import').width();
+	}
+
+	minTds = 2;
+	visTds = $(object).find('td:visible').length;
+	if ($(object).find('input[type="button"]').length) {
+		minTds++;
+	}
 
 	if ($(object).width() > width) {
-		$($(object).find('td').get().reverse()).each(function() {
-			if (visTds < minTds) {
-				return false;
-			}
+		if (!timespan) {
+			$($(object).find('td').get().reverse()).each(function() {
+				if ($(this).find('input[type="button"]').length == 0) {
+					if ($(this).is(':visible')) {
+						$(this).hide();
+						visTds--;
 
-			if ($(this).find(filter).length == 0) {
-				// always show two objects
-				$(this).hide();
-				visTds--;
+						if ($(this).closest('td').prev().find('input, select').length == 0) {
+							$(this).closest('td').prev().hide();
+							visTds--;
+						}
+					}
 
-				if ($(this).closest('td').prev().find('input, select').length == 0) {
-					$(this).closest('td').prev().hide();
-					visTds--;
+					if ($(object).width() < width) {
+						return false;
+					}
+
+					if (visTds <= minTds) {
+						return false;
+					}
 				}
-			}
+			});
 
-			if ($(object).width() < width) {
-				return false;
-			}
-		});
-	} else {
-		$($(object).find('td').get()).each(function() {
-			if (!$(this).find(filter).length) {
-				$(this).show();
-				if ($(this).next('td').find('input, select').length > 0) {
-					$(this).next('td').show();
+			if ($(object).width() > width) {
+				if (saveWidth > 0) {
+					$('#save').hide();
 				}
 			}
 
 			if ($(object).width() > width) {
-				$(this).hide();
-				if ($(this).next('td').find('input, select').length > 0) {
-					$(this).next('td').hide();
+				if (exportWidth > 0) {
+					$('#export').hide();
 				}
-
-				return false;
 			}
-		});
+
+			if ($(object).width() > width) {
+				if (importWidth > 0) {
+					$('#import').hide();
+				}
+			}
+
+			if ($(object).width() > width) {
+				if (clearWidth > 0) {
+					$('#clear').hide();
+				}
+			}
+		} else {
+			$('#date1').closest('td').hide().prev('td').hide();
+			$('#date2').closest('td').hide().prev('td').hide();
+
+			if ($(object).width() > width) {
+				$('.shiftArrow').closest('td').hide();
+			}
+
+			if ($(object).width() > width) {
+				$('#tsclear').hide();
+			}
+
+			if ($(object).width() > width) {
+				$('#tsrefresh').hide();
+			}
+		}
+	} else {
+		if (!timespan) {
+			if ($(object).width() + clearWidth < width) {
+				$('#clear').show();
+			}
+
+			if ($(object).width() + importWidth < width) {
+				$('#import').show();
+			}
+
+			if ($(object).width() + exportWidth < width) {
+				$('#export').show();
+			}
+
+			if ($(object).width() + saveWidth < width) {
+				$('#save').show();
+			}
+
+			if ($(object).width() < width) {
+				$(object).find('td').each(function() {
+					if ($(this).find('input[type="button"]').length == 0) {
+						if (!$(this).is(':visible')) {
+							showWidth = $(this).width();
+							if ($(this).next('td').find('input, select').length > 0) {
+								showWidth += $(this).next('td').width();
+							}
+
+							if ($(object).width() + showWidth < width) {
+								$(this).show();
+								if ($(this).next('td').find('input, select').length > 0) {
+									$(this).next('td').show();
+								}
+							} else {
+								return false;
+							}
+						}
+					}
+				});
+			}
+		} else {
+			if ($(object).width() + refreshWidth < width) {
+				$('#tsrefresh').show();
+			}
+
+			if ($(object).width() + clearWidth < width) {
+				$('#tsclear').show();
+			}
+
+			if ($(object).width() + timeShiftWidth < width) {
+				$('.shiftArrow').closest('td').show();
+			}
+
+			if ($(object).width() + (2 * dateWidth) < width) {
+				$('#date1').closest('td').show().prev('td').show();
+				$('#date2').closest('td').show().prev('td').show();
+			}
+		}
 	}
 }
 
@@ -1776,6 +1867,10 @@ $(function() {
 					screenfull.request();
 				}
 			}
+		});
+
+		$(window).on('load', function(event) {
+			setTimeout(function() { window.scrollTo(0, 1); }, 0);
 		});
 	}
 });

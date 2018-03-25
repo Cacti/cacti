@@ -247,7 +247,12 @@ function form_save() {
 
 						$save3['id'] = $rrd['id'];
 						$save3['local_data_id'] = $local_data_id;
-						$save3['local_data_template_rrd_id'] = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array($rrd['id']));
+
+						$save3['local_data_template_rrd_id'] = db_fetch_cell_prepared('SELECT local_data_template_rrd_id
+							FROM data_template_rrd
+							WHERE id = ?',
+							array($rrd['id']));
+
 						$save3['data_template_id'] = get_filter_request_var('data_template_id');
 						$save3['rrd_maximum'] = form_input_validate(get_nfilter_request_var("rrd_maximum$name_modifier"), "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
 						$save3['rrd_minimum'] = form_input_validate(get_nfilter_request_var("rrd_minimum$name_modifier"), "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
@@ -373,7 +378,11 @@ function form_actions() {
 				get_filter_request_var('host_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_local SET host_id = ? WHERE id = ?', array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+					db_execute_prepared('UPDATE data_local
+						SET host_id = ?
+						WHERE id = ?',
+						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+
 					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
@@ -583,7 +592,7 @@ function data_edit($incform = true) {
 			WHERE id = ?',
 			array($data['data_input_id']));
 
-		html_start_box(__('Custom Data [data input: %s]', $data_input_name), '100%', '', '3', 'center', '');
+		html_start_box(__('Custom Data [data input: %s]', html_escape($data_input_name)), '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -616,13 +625,13 @@ function data_edit($incform = true) {
 				form_alternate_row();
 
 				if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-					print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Device: %s)', $host['hostname']) . "</td>\n";
-					print "<td><em>$old_value</em></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Device: %s)', html_escape($host['hostname'])) . "</td>\n";
+					print "<td><em>" . html_escape($old_value) . "</em></td>\n";
 				} elseif (empty($can_template)) {
-					print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Data Template)') . "</td>\n";
-					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : $old_value) . "</em></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Data Template)') . "</td>\n";
+					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : html_escape($old_value)) . "</em></td>\n";
 				} else {
-					print "<td style='width:50%;'><strong>" . $field['name'] . "</strong></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . "</strong></td>\n";
 					print '<td>';
 
 					draw_custom_data_row('value_' . $field['id'], $field['id'], $data['id'], $old_value);
@@ -967,7 +976,7 @@ function ds_edit() {
 				WHERE id = ?',
 				array($local_data_template_rrd_id));
 
-			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
+			$header_label = __('[edit: %s]', html_escape($rrd['data_source_name']));
 		} else {
 			$header_label = '';
 		}
@@ -1186,7 +1195,10 @@ function ds() {
 	}
 
 	if (get_request_var('host_id') > 0) {
-		$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var('host_id')));
+		$host = db_fetch_row_prepared('SELECT hostname
+			FROM host
+			WHERE id = ?',
+			array(get_request_var('host_id')));
 	} else {
 		$host = array();
 	}

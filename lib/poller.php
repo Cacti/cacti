@@ -861,7 +861,7 @@ function resource_cache_out($type, $path) {
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php') {
 							$tmpdir = sys_get_temp_dir();
-							$tmpfile = tempnam($tmpdir,'ccp').'.php';
+							$tmpfile = tempnam($tmpdir,'ccp');
 
 							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
