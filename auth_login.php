@@ -507,22 +507,22 @@ function domains_login_process() {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 					/* check that template user exists */
-					$template_id = db_fetch_row_prepared('SELECT id 
-						FROM user_auth 
-						WHERE id = ? 
-						AND realm = 0', 
-						array($template_user))
+					$template_id = db_fetch_row_prepared('SELECT id
+						FROM user_auth
+						WHERE id = ?
+						AND realm = 0',
+						array($template_user));
 
 					if ($template_id > 0) {
 						/* template user found */
-						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name 
-							FROM user_domains_ldap 
-							WHERE domain_id = ?', 
+						$cn_full_name = db_fetch_cell_prepared('SELECT cn_full_name
+							FROM user_domains_ldap
+							WHERE domain_id = ?',
 							array(get_nfilter_request_var('realm')-1000));
 
-						$cn_email = db_fetch_cell_prepared('SELECT cn_email 
-							FROM user_domains_ldap 
-							WHERE domain_id = ?', 
+						$cn_email = db_fetch_cell_prepared('SELECT cn_email
+							FROM user_domains_ldap
+							WHERE domain_id = ?',
 							array(get_nfilter_request_var('realm')-1000));
 
 						if ($cn_full_name != '' || $cn_email != '') {
