@@ -22,25 +22,52 @@
  +-------------------------------------------------------------------------+
 */
 
-function test_database_connection() {
+function install_test_local_database_connection() {
+	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl;
+
+	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+
+	if (is_object($connection)) {
+		db_close($connection);
+		print __('Local Connection Successful');
+	} else {
+		print __('Local Connection Failed');
+	}
+}
+
+function install_test_remote_database_connection() {
 	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
 
 	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print 'Connection Successful';
+		print __('Remote Connection Successful');
 	} else {
-		print 'Connection Failed';
+		print __('Remote Connection Failed');
 	}
 }
 
+function install_test_temporary_table() {
+	$table = 'test_temp_' . rand();
+
+	if (!db_execute('CREATE TEMPORARY TABLE ' . $table . ' (`cacti` char(20) NOT NULL DEFAULT "", PRIMARY KEY (`cacti`)) ENGINE=InnoDB', false)) {
+		return false;
+	} else {
+		db_execute('DROP TABLE ' . $table);
+	}
+
+	return true;
+}
+
 function verify_php_extensions($extensions) {
+	//FIXME: More to foreach loop
 	for ($i = 0; $i < count($extensions); $i++) {
 		if (extension_loaded($extensions[$i]['name'])){
 			$extensions[$i]['installed'] = true;
 		}
 	}
+
 	return $extensions;
 }
 
@@ -412,7 +439,7 @@ function install_file_paths () {
 		if (config_value_exists('path_spine')) {
 			$input['path_spine']['default'] = read_config_option('path_spine');
 		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine . '/spine';
+			$input['path_spine']['default'] = $which_spine;
 		} else {
 			$input['path_spine']['default'] = '/usr/local/spine/bin/spine';
 		}
@@ -430,7 +457,7 @@ function install_file_paths () {
 
 	/* log file path */
 	$input['path_cactilog'] = $settings['path']['path_cactilog'];
-	$input['path_cactilog']['description'] = 'The path to your Cacti log file.';
+	$input['path_cactilog']['description'] = __('The path to your Cacti log file.');
 	if (config_value_exists('path_cactilog')) {
 		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
 	} else {
@@ -493,10 +520,13 @@ function remote_update_config_file() {
 		}
 
 		// Check for an existing poller
-		$poller_id = db_fetch_cell_prepared('SELECT id FROM poller WHERE hostname = ?', array($hostname), true, $connection);
+		$poller_id = db_fetch_cell_prepared('SELECT id
+			FROM poller
+			WHERE hostname = ?',
+			array($hostname), true, $connection);
 
 		if (empty($poller_id)) {
-			$save['name'] = 'New Poller';
+			$save['name'] = __('New Poller');
 			$save['hostname']  = $hostname;
 			$save['dbdefault'] = $database_default;
 			$save['dbhost']    = $database_hostname;
@@ -564,6 +594,7 @@ function import_colors() {
 			}
 		}
 	}
+
 	return true;
 }
 

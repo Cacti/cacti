@@ -53,7 +53,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 	unset($_SESSION['sess_current_date2']);
 
 	/* save customized language setting (authenticated users only) */
-	set_user_config_option('language', $cacti_locale);
+	set_user_setting('language', $cacti_locale);
 } elseif (isset($_SESSION['sess_user_language']) && isset($lang2locale[$_SESSION['sess_user_language']])) {
 	/* language definition stored in the SESSION */
 	$cacti_locale  = repair_locale($_SESSION['sess_user_language']);

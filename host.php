@@ -973,7 +973,7 @@ function device_change_javascript() {
 	?>
 	<script type="text/javascript">
 	function disableField(id) {
-		$('#'+id).prop('disabled', true);
+		$('#'+id).prop('disabled', true).addClass('ui-state-disabled');;
 
 		if ($('#'+id).button('instance')) {
 			$('#'+id).button('disable');
@@ -983,7 +983,7 @@ function device_change_javascript() {
 	}
 
 	function enableField(id) {
-		$('#'+id).prop('disabled', false);
+		$('#'+id).prop('disabled', false).removeClass('ui-state-disabled');
 
 		if ($('#'+id).button('instance')) {
 			$('#'+id).button('enable');

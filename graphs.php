@@ -1836,7 +1836,7 @@ function graph_management() {
 		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
 		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')),
 		'name'           => array('display' => __('Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Graph Template that this Graph was based upon.')),
-		'height'         => array('display' => __('Size'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
+		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
@@ -1850,7 +1850,7 @@ function graph_management() {
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
 			form_selectable_cell(filter_value($template_name, get_request_var('rfilter')), $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
+			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}

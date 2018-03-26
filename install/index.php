@@ -34,8 +34,14 @@ include_once('./functions.php');
 
 set_default_action();
 
-if (get_request_var('action') == 'testdb') {
-	test_database_connection();
+// database test
+if (get_nfilter_request_var('action') == 'testdb') {
+	if (get_nfilter_request_var('location') == 'local') {
+		install_test_local_database_connection();
+	} else {
+		install_test_remote_database_connection();
+	}
+
 	exit;
 }
 
@@ -228,7 +234,10 @@ if ($step == '7') {
 			$description  = "Local Linux Machine";
 		}
 
-		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
+		$host_template_id = db_fetch_cell_prepared('SELECT id
+			FROM host_template
+			WHERE hash = ?',
+			array($hash));
 
 		// Add the host
 		if (!empty($host_template_id)) {
@@ -469,23 +478,6 @@ $enabled = '1';
 						$test_config_path = $config['url_path'] . 'install/';
 						$test_compare_result = strcmp($test_config_path,$test_final_path);
 
-						/*
-						 * Uncmment the following to debug the above change
-						 *
-						print '<p>Testing [' . $test_config_path . '] matches [' . $test_final_path .'] result = '.$test_compare_result.'('.gettype($test_compare_result).')</p>';
-
-						print '<p>request_uri = ' . strlen($test_request_uri) . ' [' . $test_request_uri . ']</p>';
-						print '<p>request_parts = ' . var_export($test_request_parts, true) . '</p>';
-						print '<p>request_path = ' . strlen($test_request_path) . ' [' . $test_request_path . ']</p>';
-
-						print '<p>script_name = ' . strlen($test_script_name) . ' [' . $test_script_name . ']</p>';
-							print '<p>script_part = ' . strlen($test_script_part) . ' [' . $test_script_part . ']</p>';
-						print '<p>script_result = ' . $test_script_result . '</p>';
-						print '<p>final_path = ' . strlen($test_final_path) . ' [' . $test_final_path . ']</p>';
-						 *
-						 * The above code should probably be removed once tested.
-						 */
-
 						// The path was not what we expected so print an error
 						if ($test_compare_result !== 0) {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</p>';
@@ -494,6 +486,7 @@ $enabled = '1';
 						}
 
 						print '<h3>' . __('MySQL TimeZone Support') .'</h3>';
+
 						$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
 						if (sizeof($mysql_timezone_access)) {
 							$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
@@ -510,7 +503,16 @@ $enabled = '1';
 							print '<p>' . __('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.') . '</p>';
 						}
 
-						print '<h3>' . __('PHP Timezone Support') .'</h3>';
+						print '<h3>' . __('MySQL Temporary Table Access') . '</h3>';
+
+						if (!install_test_temporary_table()) {
+							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Database user account does not have permission to create temporary tables.  Please add this permissiong before continuing.') . '</p>';
+							$enabled = '0';
+						} else {
+							print '<p>' . __('Your Database user account can create temporary tables.') . '</p>';
+						}
+
+						print '<h3>' . __('PHP Timezone Support') . '</h3>';
 
 						if (ini_get('date.timezone') == '') {
 							print '<p class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</p>';
@@ -519,7 +521,7 @@ $enabled = '1';
 							print '<p>' . __('Your Web Servers PHP is properly setup with a Timezone.') . '</p>';
 						}
 
-						print '<h3>' . __('Required PHP Module Support') .'</h3>';
+						print '<h3>' . __('Required PHP Module Support') . '</h3>';
 
 						print '<p>' .  __('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.') . '</p>';
 
@@ -530,59 +532,37 @@ $enabled = '1';
 
 						form_alternate_row('phpline',true);
 						form_selectable_cell(__('PHP Version'), '');
-						form_selectable_cell('5.2.0+', '');
-						form_selectable_cell((version_compare(PHP_VERSION, '5.2.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
+						form_selectable_cell('5.4.0+', '');
+						form_selectable_cell((version_compare(PHP_VERSION, CACTI_PHP_VERSION_MINIMUM, '<') ? "<font color='red'>" . PHP_VERSION . "</font>" : "<font color='green'>" . PHP_VERSION . "</font>"), '');
 						form_end_row();
 
+						// Common PHP extensions needed for installation
+						$extensions = array(
+							array('name' => 'session',   'installed' => false),
+							array('name' => 'sockets',   'installed' => false),
+							array('name' => 'PDO',       'installed' => false),
+							array('name' => 'pdo_mysql', 'installed' => false),
+							array('name' => 'xml',       'installed' => false),
+							array('name' => 'ldap',      'installed' => false),
+							array('name' => 'mbstring',  'installed' => false),
+							array('name' => 'pcre',      'installed' => false),
+							array('name' => 'json',      'installed' => false),
+							array('name' => 'openssl',   'installed' => false),
+							array('name' => 'gd',        'installed' => false),
+							array('name' => 'zlib',      'installed' => false)
+						);
+
+						// OS specific PHP extensions needed for installation
 						if ($config['cacti_server_os'] == 'unix') {
-							$extensions = array(
-								array('name' => 'posix',     'installed' => false),
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
-						} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
-							$extensions = array(
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
-						} else {
-							$extensions = array(
-								array('name' => 'com_dotnet','installed' => false),
-								array('name' => 'session',   'installed' => false),
-								array('name' => 'sockets',   'installed' => false),
-								array('name' => 'PDO',       'installed' => false),
-								array('name' => 'pdo_mysql', 'installed' => false),
-								array('name' => 'xml',       'installed' => false),
-								array('name' => 'ldap',      'installed' => false),
-								array('name' => 'mbstring',  'installed' => false),
-								array('name' => 'pcre',      'installed' => false),
-								array('name' => 'json',      'installed' => false),
-								array('name' => 'openssl',   'installed' => false),
-								array('name' => 'gd',        'installed' => false),
-								array('name' => 'zlib',      'installed' => false)
-							);
+							$extensions[] = array('name' => 'posix',     'installed' => false);
+						} elseif ($config['cacti_server_os'] == 'win32') {
+							// Microsoft COM and DotNet no longer in core PHP as of 5.4.5
+							if (version_compare(PHP_VERSION, '5.4.5') >= 0) {
+								$extensions[] = array('name' => 'com_dotnet','installed' => false);
+							}
 						}
 
+						// Verify and display extension test results
 						$ext = verify_php_extensions($extensions);
 						foreach ($ext as $id =>$e) {
 							form_alternate_row('line' . $id);
@@ -590,7 +570,9 @@ $enabled = '1';
 							form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 							form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 							form_end_row();
-							if (!$e['installed']) $enabled = '0';
+							if (! $e['installed']) {
+								$enabled = '0';
+							}
 						}
 
 						html_end_box(false);
@@ -598,6 +580,7 @@ $enabled = '1';
 						print '<h3>' . __('Optional PHP Module Support') .'</h3>';
 
 						print '<p>' . __('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.') . '</p>';
+
 						$extensions = array(
 							array('name' => 'snmp', 'installed' => false),
 							array('name' => 'gmp', 'installed' => false)
@@ -769,7 +752,7 @@ $enabled = '1';
 							strURL = 'index.php?action=testdb';
 							$.post(strURL, $('input').serializeObject()).done(function(data) {
 								$('#results').html('<b><?php print __('Remote Database: ');?></b>'+data);
-								if (data == 'Connection Successful') {
+								if (data == '<?php print __('Remote Connection Successful');?>') {
 									test_good=true;
 									$('#next').button('enable');
 								}

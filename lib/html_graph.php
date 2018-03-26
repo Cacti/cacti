@@ -116,21 +116,15 @@ function html_graph_validate_preview_request_vars() {
 			'default' => read_user_setting('thumbnail_section_preview', '') == 'on' ? 'true':'false'
 			),
 		'graph_list' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
-			'pageset' => true,
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_add' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
-			'pageset' => true,
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_VALIDATE_REGEXP,
-			'options' => array('options' => array('regexp' => '/^([\,0-9]+)$/')),
-			'pageset' => true,
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'style' => array(

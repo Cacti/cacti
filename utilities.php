@@ -881,6 +881,10 @@ function utilities_view_logfile() {
 	$logfile = read_config_option('path_cactilog');
 	$logbase = basename($logfile);
 
+	if (is_base64_encoded(get_nfilter_request_var('rfilter'))) {
+		set_request_var('rfilter', base64_decode(get_nfilter_request_var('rfilter')));
+	}
+
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {

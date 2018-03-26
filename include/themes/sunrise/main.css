@@ -1012,14 +1012,6 @@ legend {
 	border-left: 1px solid #000000;
 }
 
-.cactiGraphContentArea>div:first-child {
-	display: none !important;
-}
-
-.cactiGraphContentArea>div:last-child {
-	# margin-top: 10px;
-}
-
 .cactiGraphContentArea span[align="center"] {
 	color: #9d9d9d;
 }
@@ -1046,15 +1038,6 @@ legend {
 	color: #9d9d9d;
 }
 
-
-.cactiGraphContentAreaPreview>div:first-child {
-	display: none !important;
-}
-
-.cactiGraphContentAreaPreview>div:last-child {
-	#margin-top: 10px;
-}
-
 .cactiGraphContentAreaPreview .cactitable{
 	background: none !important;
 }
@@ -1064,10 +1047,6 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-}
-
-.cactiConsoleContentArea>div:first-child {
-	#display: none !important;
 }
 
 #graph_view_preview2 table.cactiTable{
@@ -1160,6 +1139,14 @@ legend {
 .textHeader {
 	font-size: 12px;
 	font-weight: bold;
+}
+
+.textOverflow {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
 }
 
 .bold {

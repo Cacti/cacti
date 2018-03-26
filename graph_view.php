@@ -68,7 +68,12 @@ function get_matching_nodes() {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
-				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id FROM graph_tree_items WHERE id = ?', array($row['parent']));
+
+				$row = db_fetch_row_prepared('SELECT parent, graph_tree_id
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($row['parent']));
+
 				if (!sizeof($row)) {
 					break;
 				}
@@ -116,7 +121,6 @@ function get_matching_nodes() {
 		header('Content-Type: application/json; charset=utf-8');
 
 		print json_encode($fa);
-		//print '[' . implode(', ', array_keys($matching)) . ']';
 	}
 }
 
@@ -197,7 +201,8 @@ case 'get_node':
 		if (get_nfilter_request_var('tree_id') == 0 && strstr(get_nfilter_request_var('id'), 'tbranch-') !== false) {
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
 				FROM graph_tree_items
-				WHERE id = ?', array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
+				WHERE id = ?',
+				array(str_replace('tbranch-', '', get_nfilter_request_var('id'))));
 		}else if (get_nfilter_request_var('tree_id') == 'default' ||
 			get_nfilter_request_var('tree_id') == 'undefined' ||
 			get_nfilter_request_var('tree_id') == '') {
@@ -226,7 +231,12 @@ case 'get_node':
 				if ($pnode[0] == 'tbranch') {
 					$parent = $pnode[1];
 					input_validate_input_number($parent);
-					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id FROM graph_tree_items WHERE id = ?', array($parent));
+
+					$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+						FROM graph_tree_items
+						WHERE id = ?',
+						array($parent));
+
 					break;
 				}
 			}
@@ -240,7 +250,8 @@ case 'tree_content':
 	html_validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . "</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
+		exit;
 	}
 
 	if (!isempty_request_var('node')) {
@@ -259,7 +270,7 @@ case 'tree_content':
 	?>
 	<script type='text/javascript'>
 	var refreshIsLogout=false;
-	var refreshPage='<?php print str_replace('tree_content', 'tree', $_SERVER['REQUEST_URI']);?>';
+	var refreshPage='<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
 	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
 	var graph_start=<?php print get_current_graph_start();?>;
 	var graph_end=<?php print get_current_graph_end();?>;
@@ -314,12 +325,16 @@ case 'tree_content':
 		grow_right_pane_tree($tree_id, $node_id, $hgdata);
 	}
 
+	bottom_footer();
+
 	break;
 case 'preview':
 	top_graph_header();
 
 	if (!is_view_allowed('show_preview')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>"; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>";
+		bottom_footer();
+		exit;
 	}
 
 	html_graph_validate_preview_request_vars();
@@ -340,12 +355,16 @@ case 'preview':
 			/* process selected graphs */
 			if (!isempty_request_var('graph_list')) {
 				foreach (explode(',', get_request_var('graph_list')) as $item) {
-					$graph_list[$item] = 1;
+					if (is_numeric($item)) {
+						$graph_list[$item] = 1;
+					}
 				}
 			}
 			if (!isempty_request_var('graph_add')) {
 				foreach (explode(',', get_request_var('graph_add')) as $item) {
-					$graph_list[$item] = 1;
+					if (is_numeric($item)) {
+						$graph_list[$item] = 1;
+					}
 				}
 			}
 			/* remove items */
@@ -420,13 +439,14 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>'; return;
+		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>';
+		bottom_footer();
+		exit;
 	}
 
 	/* reset the graph list on a new viewing */
 	if (!isset_request_var('page')) {
 		set_request_var('graph_list', '');
-		set_request_var('page', 1);
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -455,16 +475,16 @@ case 'list':
 			'pageset' => true,
 			'default' => '-1'
 			),
-		'graph_list' => array(
-			'filter' => FILTER_DEFAULT,
+		'graph_add' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
-		'graph_add' => array(
-			'filter' => FILTER_DEFAULT,
+		'graph_list' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			),
 		'graph_remove' => array(
-			'filter' => FILTER_DEFAULT,
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'default' => ''
 			)
 	);
@@ -483,13 +503,17 @@ case 'list':
 	/* save selected graphs into url */
 	if (!isempty_request_var('graph_list')) {
 		foreach (explode(',', get_request_var('graph_list')) as $item) {
-			$graph_list[$item] = 1;
+			if (is_numeric($item)) {
+				$graph_list[$item] = 1;
+			}
 		}
 	}
 
 	if (!isempty_request_var('graph_add')) {
 		foreach (explode(',', get_request_var('graph_add')) as $item) {
-			$graph_list[$item] = 1;
+			if (is_numeric($item)) {
+				$graph_list[$item] = 1;
+			}
 		}
 	}
 

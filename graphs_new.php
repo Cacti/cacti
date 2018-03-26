@@ -293,9 +293,13 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 			/* ==================================================== */
 
 			if ($form_type == 'cg') {
-				$graph_template_id = $form_id1;
+				$graph_template_id   = $form_id1;
+				$graph_template_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_templates
+					WHERE id = ?',
+					array($graph_template_id));
 
-				html_start_box(__('Create Graph from %s', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($graph_template_id))), '100%', '', '3', 'center', '');
+				html_start_box(__('Create Graph from %s', html_escape($graph_template_name)), '100%', '', '3', 'center', '');
 			} elseif ($form_type == 'sg') {
 				foreach ($form_array2 as $form_id2 => $form_array3) {
 					/* ================= input validation ================= */
@@ -303,22 +307,25 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 					input_validate_input_number($form_id2);
 					/* ==================================================== */
 
-					$snmp_query_id = $form_id1;
+					$snmp_query_id       = $form_id1;
 					$snmp_query_graph_id = $form_id2;
-					$num_graphs = sizeof($form_array3);
+					$num_graphs          = sizeof($form_array3);
 
-					$snmp_query = db_fetch_row_prepared('SELECT snmp_query.name
+					$snmp_query = db_fetch_cell_prepared('SELECT name
 						FROM snmp_query
-						WHERE snmp_query.id = ?',
+						WHERE id = ?',
 						array($snmp_query_id));
 
-					$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id FROM snmp_query_graph WHERE id = ?', array($snmp_query_graph_id));
+					$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+						FROM snmp_query_graph
+						WHERE id = ?',
+						array($snmp_query_graph_id));
 				}
 
 				if ($num_graphs > 1) {
-					$header = __('Create %s Graphs from %s', $num_graphs, htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
+					$header = __('Create %s Graphs from %s', $num_graphs, html_escape($snmp_query));
 				} else {
-					$header = __('Create Graph from %s', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($snmp_query_id))));
+					$header = __('Create Graph from %s', html_escape($snmp_query));
 				}
 
 				/* DRAW: Data Query */
@@ -345,22 +352,17 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 				ORDER BY data_template.name',
 				array($graph_template_id));
 
-			$graph_template = db_fetch_row_prepared('SELECT
-				graph_templates.name AS graph_template_name,
-				graph_templates_graph.*
-				FROM (graph_templates, graph_templates_graph)
-				WHERE graph_templates.id = graph_templates_graph.graph_template_id
-				AND graph_templates.id = ?
-				AND graph_templates_graph.local_graph_id = 0',
-				array($graph_template_id));
-
-			$graph_template_name = db_fetch_cell_prepared('SELECT name
-				FROM graph_templates
-				WHERE id = ?',
+			$graph_template = db_fetch_row_prepared('SELECT gt.name AS graph_template_name, gtg.*
+				FROM graph_templates AS gt
+				INNER JOIN graph_templates_graph AS gtg
+				ON gt.id = gtg.graph_template_id
+				WHERE gt.id = ?
+				AND gtg.local_graph_id = 0',
 				array($graph_template_id));
 
 			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', htmlspecialchars($graph_template['graph_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', htmlspecialchars($graph_template_name)), false));
+
+			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', htmlspecialchars($graph_template['graph_template_name'])), false));
 
 			/* DRAW: Data Sources */
 			if (sizeof($data_templates)) {
@@ -407,7 +409,7 @@ function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
 	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
 
 	if (!substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
 
@@ -861,7 +863,8 @@ function graphs() {
 						$field_names = db_fetch_assoc_prepared('SELECT DISTINCT field_name
 							FROM host_snmp_cache
 							WHERE host_id = ?
-							AND snmp_query_id = ?', array($host['id'], $snmp_query['id']));
+							AND snmp_query_id = ?',
+							array($host['id'], $snmp_query['id']));
 
 						/* build magic query */
 						$sql_query  = 'SELECT host_id, snmp_query_id, snmp_index';
@@ -950,9 +953,9 @@ function graphs() {
 									if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 										if (in_array($field_name, $fields)) {
 											if (isset($row[$field_name])) {
-												print "<td><span id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
+												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'>" . filter_value($row[$field_name], get_request_var('filter')) . '</span></td>';
 											} else {
-												print "<td><span id='text$query_row" . '_' . $column_counter . "'></span></td>";
+												print "<td><span class='textOverflow' id='text$query_row" . '_' . $column_counter . "'></span></td>";
 											}
 
 											$column_counter++;
@@ -1033,7 +1036,7 @@ function graphs() {
 	}
 
 	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename($_SERVER['HTTP_REFERER']));
+		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 
 	load_current_session_value('returnto', 'sess_grn_returnto', '');

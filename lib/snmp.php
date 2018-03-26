@@ -720,14 +720,9 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		}
 	}
 
-	/* Remove invalid chars, if the string output is to be numeric */
+	/* Remove non-printable characters, allow UTF-8 */
 	if ($value_output_format == SNMP_STRING_OUTPUT_GUESS) {
-		$k = strlen($string);
-		for ($i=0; $i < $k; $i++) {
-			if ((ord($string[$i]) <= 31) || (ord($string[$i]) >= 127)) {
-				$string[$i] = ' ';
-			}
-		}
+		$string = preg_replace('/[^\PC\s]/u', '', $string);
 	}
 
 	/* Trim the string of trailing and leading spaces */
@@ -758,30 +753,22 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		$string = str_replace(array(' ', '-', '.'), ':', $string);
 		$parts  = explode(':', $string);
 
-		if (is_mac_address($string)) {
-			$mac = true;
-		} else {
-			$mac = false;
-		}
-
-		/* convert the hex string into an ascii string */
-		foreach($parts as $part) {
-			if ($mac == false) {
+		if (!is_mac_address($string)) {
+			/* convert the hex string into an ascii string */
+			foreach($parts as $part) {
 				$output .= ($output != '' ? ':' : '');
 				if ($part == '00') {
 					$output .= '00';
 				} else  {
 					$output .= str_pad($part, 2, '0', STR_PAD_LEFT);
 				}
-			} else {
-				$output .= ($output != '' ? ':' : '') . $part;
 			}
-		}
 
-		if (is_numeric($output)) {
-			$string = number_format($output, 0, '', '');
-		} else {
-			$string = $output;
+			if (is_numeric($output)) {
+				$string = number_format($output, 0, '', '');
+			} else {
+				$string = $output;
+			}
 		}
 	} elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
 		$octet = '';
