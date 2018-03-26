@@ -24,17 +24,16 @@ Cacti CHANGELOG
 
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode
--issue#1371: Further fix for #1371 due to incorrect sign usage
 -issue#1405: When Data Query columns are wide, they cause rendering issues
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
--issue#1419: CLog: preg_match can blow up log file
--issue#1420: Debian test suite reports issues 
--issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
--issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
+-issue#1419: Filtering log results in errors in the log
+-issue#1420: PHP NOTICE editing cdef and vdef items
+-issue#1421: CLI upgrade_database.php PHP Warning on execution
+-issue#1426: Remote poller erroring attempting to verify files
 -issue#1432: Delete confirmation does not disappear
 -issue#1443: Partial Save warnings under Settings -> Mail/Reporting/DNS
--issue#1447: Cli audit_database.php not detecting database name, and failed to create audit tables when run fresh
--issue#1453: Title of add_graphs.php being ignored
+-issue#1447: CLI audit_database.php not detecting database name, and failed to create audit tables when run fresh
+-issue#1453: CLI add_graph.php not allowing title to be set
 -issue#1456: Increase minimum php version maintaining support for RHEL6
 -issue#1457: Path-Based Cross-Site Scripting (XSS) issues
 -issue#1458: Error in logs when creating new graphs
