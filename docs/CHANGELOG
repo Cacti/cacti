@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.2
+1.2.0
 -feature#122: Support a Site Branch Type
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
