@@ -174,14 +174,16 @@ if (sizeof($graph)) {
 
 /* display_help - displays the usage of the function */
 function display_help () {
-  print "Cacti Graph Repair Tool v0.4\n\n";
-  print "usage: repair_graphs.php --execute [--help]\n\n";
-  print "--execute               - Perform the repair\n";
-  print "--show-sql              - Show SQL lines for the repair (optional)\n";
-  print "--host-id=id            - The host_id to repair or leave empty to process all hosts\n";
-  print "--data-template-id=id   - The numerical ID of the data template to be fixed\n";
-  print "--graph-template-id=id  - The numerical ID of the graph template to be fixed\n";
-  print "--help                  - display this help message\n";
+  echo "Cacti Graph Repair Tool v0.4\n\n";
+  echo "usage: repair_graphs.php [--help] [--host-id=ID] --data-template-id=[ID]\n";
+  echo "  --graph-template-id=[ID] [--show-sql] [--execute]\n\n";
+  echo "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";
+  echo "--execute               - Perform the repair\n";
+  echo "--show-sql              - Show SQL lines for the repair (optional)\n";
+  echo "--host-id=id            - The host_id to repair or leave empty to process all hosts\n";
+  echo "--data-template-id=id   - The numerical ID of the data template to be fixed\n";
+  echo "--graph-template-id=id  - The numerical ID of the graph template to be fixed\n";
+  echo "--help                  - display this help message\n";
 }
 
 ?>
