@@ -105,7 +105,7 @@ if (!empty($host_id)) {
 function display_help () {
   echo "Cacti Add Datasource to Host v0.1\n\n";
   echo "usage: add_datasource.php [--help] --host-id=[ID] --data-template-id=[ID]\n\n";
-  echo "Cacti utility for creating datasources via a command line interface.\n\n";
+  echo "Cacti utility for adding datasources via a command line interface.\n\n";
   echo "--host-id=id            - The host id\n";
   echo "--data-template-id=id   - The numerical ID of the data template to be added\n";
   echo "--help                  - display this help message\n";
