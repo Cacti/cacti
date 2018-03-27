@@ -1,7 +1,8 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2009 The Cacti Group                                 |
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -23,8 +24,8 @@
 */
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-  die("<br><strong>This script is only meant to run at the command line.</strong>");
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD']) || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
 $no_http_headers = true;
@@ -42,45 +43,45 @@ unset($graph_template_id);
 unset($data_template_id);
 
 foreach($parms as $parameter) {
-  @list($arg, $value) = @explode("=", $parameter);
+	@list($arg, $value) = @explode("=", $parameter);
 
-  switch ($arg) {
-  case "--host-id":
-    $host_id = trim($value);
-    if (!is_numeric($host_id)) {
-      echo "ERROR: You must supply a valid host-id to run this script!\n";
-      exit(1);
-    }
-    break;
-  case "--data-template-id":
-    $data_template_id = $value;
-    if (!is_numeric($data_template_id)) {
-      echo "ERROR: You must supply a numeric data-template-id!\n";
-      exit(1);
-    }
-    break;
-  case "-h":
-  case "-v":
-  case "-V":
-  case "--version":
-  case "--help":
-    display_help();
-    exit;
-  default:
-    print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-    display_help();
-    exit;
-  }
+	switch ($arg) {
+		case "--host-id":
+			$host_id = trim($value);
+			if (!is_numeric($host_id)) {
+				echo "ERROR: You must supply a valid host-id to run this script!\n";
+				exit(1);
+			}
+			break;
+		case "--data-template-id":
+			$data_template_id = $value;
+			if (!is_numeric($data_template_id)) {
+				echo "ERROR: You must supply a numeric data-template-id!\n";
+				exit(1);
+			}
+			break;
+		case "-h":
+		case "-v":
+		case "-V":
+		case "--version":
+		case "--help":
+			display_help();
+			exit;
+		default:
+			print "ERROR: Invalid Parameter " . $parameter . "\n\n";
+			display_help();
+			exit;
+	}
 }
 
 if (!isset($host_id)) {
-  echo "ERROR: You must supply a valid host-id!\n";
-  exit(1);
+	echo "ERROR: You must supply a valid host-id!\n";
+	exit(1);
 }
 
 if (!isset($data_template_id)) {
-  echo "ERROR: You must supply a valid data-template-id!\n";
-  exit(1);
+	echo "ERROR: You must supply a valid data-template-id!\n";
+	exit(1);
 }
 
 //Following code was copied from data_sources.php->function form_save->save_component_data_source_new
@@ -98,17 +99,17 @@ update_data_source_title_cache($local_data_id);
 
 /* update host data */
 if (!empty($host_id)) {
-    push_out_host($host_id, $local_data_id);
+	push_out_host($host_id, $local_data_id);
 }
 
 /* display_help - displays the usage of the function */
 function display_help () {
-  echo "Cacti Add Datasource to Host v0.1\n\n";
-  echo "usage: add_datasource.php [--help] --host-id=[ID] --data-template-id=[ID]\n\n";
-  echo "Cacti utility for adding datasources via a command line interface.\n\n";
-  echo "--host-id=id            - The host id\n";
-  echo "--data-template-id=id   - The numerical ID of the data template to be added\n";
-  echo "--help                  - display this help message\n";
+	echo "Cacti Add Datasource to Host v0.1\n\n";
+	echo "usage: add_datasource.php [--help] --host-id=[ID] --data-template-id=[ID]\n\n";
+	echo "Cacti utility for adding datasources via a command line interface.\n\n";
+	echo "--host-id=id - The host id\n";
+	echo "--data-template-id=id - The numerical ID of the data template to be added\n";
+	echo "--help - display this help message\n";
 }
 
 ?>
