@@ -109,7 +109,6 @@ function display_help () {
 	echo "Cacti utility for adding datasources via a command line interface.\n\n";
 	echo "--host-id=id - The host id\n";
 	echo "--data-template-id=id - The numerical ID of the data template to be added\n";
-	echo "--help - display this help message\n";
 }
 
 ?>

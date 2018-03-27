@@ -184,7 +184,6 @@ function display_help () {
 	echo "--host-id=id - The host_id to repair or leave empty to process all hosts\n";
 	echo "--data-template-id=id - The numerical ID of the data template to be fixed\n";
 	echo "--graph-template-id=id - The numerical ID of the graph template to be fixed\n";
-	echo "--help - display this help message\n";
 }
 
 ?>
