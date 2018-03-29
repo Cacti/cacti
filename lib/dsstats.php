@@ -161,7 +161,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 	if ($use_proxy) {
 		$file_exists = rrdtool_execute("file_exists $rrdfile", true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'DSSTATS');
 	}else {
-		clearstatscache();
+		clearstatcache();
 		$file_exists = file_exists($rrdfile);
 	}
 
