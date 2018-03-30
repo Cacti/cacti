@@ -469,9 +469,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	if (isset($snmp_queries['oid_index_parse'])) {
 		$index_parse_regexp = '/' . str_replace('OID/REGEXP:', '', $snmp_queries['oid_index_parse']) . '/';
 
+		$parsed_indexes = array();
 		foreach ($snmp_indexes as $oid => $value) {
-			$snmp_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
-			query_debug_timer_offset('data_query', __('index_parse at OID: \'%s\' results: \'%s\'', $oid , $snmp_indexes[$oid]));
+			if (preg_match($index_parse_regexp, $oid)) {
+				$parsed_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
+			}
+		}
+
+		$snmp_indexes = $parsed_indexes;
+		query_debug_timer_offset('data_query', __('Filtering list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , sizeof($snmp_indexes)));
+
+		/* show list of indices found */
+		foreach ($snmp_indexes as $oid => $value) {
+			query_debug_timer_offset('data_query', __('Filtered Index found at OID: \'%s\' value: \'%s\'', $oid , $value));
 		}
 	}
 

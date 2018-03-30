@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#1420: Debian test suite reports issues 
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
+-issue#1454: When using oid_regexp_parse, filter indexes to those that match
 -issue#1503: Undefined function clearstatscache in DSSTATS
 -issue#1510: New Graphs Undefined Variable $graph_template_name
 -issue: Move Graph removal function to Graph API
