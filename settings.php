@@ -444,6 +444,8 @@ default:
 				}
 			}).trigger('change');
 		} else if (currentTab == 'mail') {
+			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
+
 			initMail();
 
 			$('#settings_how').change(function() {
@@ -451,29 +453,28 @@ default:
 			});
 
 			$('#emailtest').click(function() {
-				var $div = $('<div />').appendTo('body');
-				$div.attr('id', 'testmail');
-				$('#testmail').prop('title', '<?php print __('Test Email Results');?>');
-				$('#testmail').dialog({
-					autoOpen: false,
-					modal: true,
-					minHeight: 300,
-					maxHeight: 600,
-					height: 450,
-					width: 500,
-					show: {
-						effect: 'appear',
-						duration: 100
-					},
-					hide: {
-						effect: 'appear',
-						duratin: 100
-					}
-				});
 				$.get('settings.php?action=send_test')
 					.done(function(data) {
+						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results');?>"></div>');
 						$('#testmail').html(data);
-						$('#testmail').dialog('open');
+
+						$('#testmail').dialog({
+							autoOpen: false,
+							modal: true,
+							minHeight: 300,
+							maxHeight: 600,
+							height: 450,
+							width: 500,
+							autoOpen: true,
+							show: {
+								effect: 'appear',
+								duration: 100
+							},
+							hide: {
+								effect: 'appear',
+								duratin: 100
+							}
+						});
 					})
 					.fail(function(data) {
 						getPresentHTTPError(data);
@@ -550,8 +551,6 @@ default:
 		}
 
 		function initMail() {
-			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
-
 			/* clear passwords */
 			if ($('#settings_sendmail_path').val() != '') {
 				smtpPath = $('#settings_sendmail_path').val();
