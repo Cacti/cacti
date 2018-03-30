@@ -177,7 +177,10 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if (empty($id)) {
 		$_host_template_id = 0;
 	} else {
-		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($id));
+		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+			FROM host
+			WHERE id = ?',
+			array($id));
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
@@ -270,8 +273,8 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		}
 
 		/* if the user changes the host template, add each snmp query associated with it */
-		if (($host_template_id != $_host_template_id) && (!empty($host_template_id))) {
-			api_device_update_host_template($host_id, $host_template_id);
+		if ($host_template_id > 0 && $host_template_id != $_host_template_id) {
+			api_device_update_host_template($host_id, $host_template_id, true);
 		}
 	}
 
@@ -316,14 +319,19 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 /* api_device_update_host_template - changes the host template of a host
    @arg $host_id - the id of the device which contains the mapping
-   @arg $host_template_id - the id of the host template alter the device to */
-function api_device_update_host_template($host_id, $host_template_id) {
-	db_execute_prepared('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
+   @arg $host_template_id - the id of the host template alter the device to
+   @arg $new_host - if this is a new host, don't prune templates */
+function api_device_update_host_template($host_id, $host_template_id, $new_host = false) {
+	db_execute_prepared('UPDATE host
+		SET host_template_id = ?
+		WHERE id = ?',
+		array($host_template_id, $host_id));
 
 	/* add all snmp queries assigned to the device template */
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_template_snmp_query
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
 	if (sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
@@ -340,7 +348,8 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	/* add all graph templates assigned to the device template */
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_template_graph
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
 	if (sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
@@ -357,34 +366,34 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	}
 
 	/* remove unused graph templates not assigned to the device template */
-	$unused_graph_templates = db_fetch_assoc_prepared('
-	SELECT result.id, result.name, graph_local.id AS graph_local_id
-	    FROM (
-		    SELECT DISTINCT gt.id, gt.name
-		    FROM graph_templates AS gt
-		    INNER JOIN host_graph AS hg
-		    ON gt.id = hg.graph_template_id
-		    WHERE hg.host_id = ?
-	    ) AS result
-	    LEFT JOIN graph_local
-	    ON graph_local.graph_template_id = result.id
-	    AND graph_local.host_id = ?
-	    HAVING graph_local_id IS NULL
-	    ORDER BY result.name',
-	    array($host_id, $host_id)
-	);
+	if (!$new_host) {
+		$unused_graph_templates = db_fetch_assoc_prepared('SELECT
+			result.id, result.name, graph_local.id AS graph_local_id
+		    FROM (
+			    SELECT DISTINCT gt.id, gt.name
+			    FROM graph_templates AS gt
+			    INNER JOIN host_graph AS hg
+			    ON gt.id = hg.graph_template_id
+			    WHERE hg.host_id = ?
+		    ) AS result
+		    LEFT JOIN graph_local
+		    ON graph_local.graph_template_id = result.id
+		    AND graph_local.host_id = ?
+		    HAVING graph_local_id IS NULL
+		    ORDER BY result.name',
+		    array($host_id, $host_id)
+		);
 
-	if (sizeof($unused_graph_templates)) {
-		foreach ($unused_graph_templates as $unused_graph_template) {
-			db_execute_prepared('
-				DELETE
-				FROM host_graph
-				WHERE host_id = ?
-				AND graph_template_id = ?',
-				array($host_id, $unused_graph_template['id']));
+		if (sizeof($unused_graph_templates)) {
+			foreach ($unused_graph_templates as $unused_graph_template) {
+				db_execute_prepared('DELETE
+					FROM host_graph
+					WHERE host_id = ?
+					AND graph_template_id = ?',
+					array($host_id, $unused_graph_template['id']));
+			}
 		}
 	}
-
 }
 
 /* api_device_template_sync_template - updates the device template mapping for all devices mapped to a template
