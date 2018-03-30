@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-issue#1454: When using oid_regexp_parse, filter indexes to those that match
 -feature#1422: Automatically select the next unused data input field when clicking add on data input method
 -feature#1399: Allow 'requires' to include version against a plugin
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
