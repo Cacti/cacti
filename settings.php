@@ -550,6 +550,8 @@ default:
 		}
 
 		function initMail() {
+			$('#row_settings_email_header div.formHeaderText').append('<div id="emailtest" class="emailtest"><?php print __('Send a Test Email');?></div>');
+
 			/* clear passwords */
 			if ($('#settings_sendmail_path').val() != '') {
 				smtpPath = $('#settings_sendmail_path').val();

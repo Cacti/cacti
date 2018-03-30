@@ -1332,7 +1332,7 @@ $settings = array(
 			'default' => 'http://' . gethostname()
 			),
 		'settings_email_header' => array(
-			'friendly_name' => __('Emailing Options<div id="emailtest" class="emailtest">Send a Test Email</div>'),
+			'friendly_name' => __('Emailing Options'),
 			'method' => 'spacer',
 			),
 		'settings_test_email' => array(
