@@ -61,6 +61,7 @@ if (sizeof($parms)) {
 	$displayNodes   = false;
 	$displayRRAs    = false;
 	$displayGraphs  = false;
+	$displaySites   = false;
 
 	$hosts          = getHosts();
 	$sites          = getSites();
@@ -124,6 +125,10 @@ if (sizeof($parms)) {
 				break;
 			case '--list-graphs':
 				$displayGraphs = true;
+
+				break;
+			case '--list-sites':
+				$displaySites = true;
 
 				break;
 			case '--host-group-style':
@@ -274,10 +279,10 @@ if (sizeof($parms)) {
 			$siteId         = 0;
 			$hostGroupStyle = 1;
 
-			$graphs = db_fetch_assoc('SELECT id 
+			$graphs = db_fetch_assoc('SELECT id
 				FROM graph_local
 				WHERE graph_local.id=' . $graphId);
-		
+
 			if (!sizeof($graphs)) {
 				echo "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
 				exit(1);
