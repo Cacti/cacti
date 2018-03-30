@@ -450,24 +450,6 @@ function item_edit() {
 
 	}
 
-	if (!isempty_request_var('id')) {
-		/* we want to mark the fields that are associated with a graph item input */
-		$graph_item_input_fields = db_fetch_assoc_prepared('SELECT
-			graph_template_input.id,
-			graph_template_input.column_name
-			FROM (graph_template_input, graph_template_input_defs)
-			WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
-			AND graph_template_input.graph_template_id = ?
-			AND graph_template_input_defs.graph_template_item_id = ?
-			GROUP BY graph_template_input.column_name', array(get_request_var('graph_template_id'), get_request_var('id')));
-
-		if (sizeof($graph_item_input_fields) > 0) {
-			foreach ($graph_item_input_fields as $field) {
-				$form_array[$field['column_name']]['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
-			}
-		}
-	}
-
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
