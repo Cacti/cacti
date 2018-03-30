@@ -1,24 +1,25 @@
 Cacti CHANGELOG
 
 1.2.0
--feature#122: Support a Site Branch Type
--feature#973: Obtain users email and full name from ldap 
--feature#1347: Update automation logging to work better
--feature#1142: Add Site dropdown to the Graphs and Data Source pages
--issue#1454: When using oid_regexp_parse, filter indexes to those that match
--feature#1422: Automatically select the next unused data input field when clicking add on data input method
--feature#1399: Allow 'requires' to include version against a plugin
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
--feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -issue#1420: Debian test suite reports issues 
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
+-issue#1454: When using oid_regexp_parse, filter indexes to those that match
+-issue#1503: Undefined function clearstatscache in DSSTATS
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
+-feature#122: Support a Site Branch Type
+-feature#973: Obtain users email and full name from ldap 
+-feature#1347: Update automation logging to work better
+-feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-feature#1422: Automatically select the next unused data input field when clicking add on data input method
+-feature#1399: Allow 'requires' to include version against a plugin
+-feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
