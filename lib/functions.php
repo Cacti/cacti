@@ -3591,29 +3591,6 @@ function general_header() {
 }
 
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
-	$fromname = '';
-	if (is_array($from)) {
-		$fromname = $from[1];
-		$from     = $from[0];
-	}
-
-	if ($from == '') {
-		$from     = read_config_option('settings_from_email');
-		$fromname = read_config_option('settings_from_name');
-	} elseif ($fromname == '') {
-		$full_name = db_fetch_cell_prepared('SELECT full_name
-			FROM user_auth
-			WHERE email_address = ?',
-			array($from));
-
-		if (empty($full_name)) {
-			$fromname = $from;
-		} else {
-			$fromname = $full_name;
-		}
-	}
-
-	$from = array(0 => $from, 1 => $fromname);
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
@@ -3631,7 +3608,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *  @arg $headers - an array of name value pairs representing custom headers.
  *  @arg $html - if set to true, html is the default, otherwise text format will be used
  */
-function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
+function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true, $debug_smtp = 0) {
 	global $config;
 
 	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
@@ -3639,6 +3616,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	// Set the to information
 	if ($to == '') {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
+	}
+
+	// allow debugging of smtp
+	if (!is_numeric($debug_smtp) || $debug_smtp < 0) {
+		$debug_smtp = 0;
+	} else if ($debug_smtp > 3) {
+		$debug_smtp = 3;
 	}
 
 	/* perform data substitution */
@@ -3699,6 +3683,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->isSendmail();
 	} else if ($how == 2) {
 		$mail->isSMTP();
+		$mail->SMTPDebug = $debug_smtp;
 		$mail->Host     = read_config_option('settings_smtp_host');
 		$mail->Port     = read_config_option('settings_smtp_port');
 
@@ -3734,25 +3719,53 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	// Set the from information
-	if (!is_array($from)) {
-		$fromname = '';
-		if ($from == '') {
-			$fromname = read_config_option('settings_from_name');
-			if (isset($_SERVER['HOSTNAME'])) {
-				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
+	$from_email = '';
+	$from_name = '';
+	if (!empty($from)) {
+		if (!is_array($from)) {
+			if (preg_match("/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/i",trim($from))) {
+				$from_email = $from;
 			} else {
-				$from = 'Cacti@cacti.net';
+				$from_name = $from;
 			}
+		} else {
+			$from_email = $from[0];
+			$from_name = $form[1];
+		}
+	}
 
-			if ($fromname == '') {
-				$fromname = 'Cacti';
-			}
+	if (empty($from_name)) {
+		if (!empty($from_email)) {
+			$from_name = db_fetch_cell_prepared('SELECT full_name
+				FROM user_auth
+				WHERE email_address = ?',
+				array($from_email));
 		}
 
-		$mail->setFrom($from, $fromname);
-	} else {
-		$mail->setFrom($from[0], $from[1]);
+		if (empty($from_name)) {
+			$from_name = read_config_option('settings_from_name');
+		}
+
+		if (empty($from_name)) {
+			$from_name = 'Cacti';
+		}
 	}
+
+	if (empty($from_email)) {
+		if (empty($from_email)) {
+			$from_email = read_config_option('settings_from_email');
+		}
+
+		if (empty($from_email)) {
+			if (isset($_SERVER['HOSTNAME'])) {
+				$from_email = 'Cacti@' . $_SERVER['HOSTNAME'];
+			} else {
+				$from_email = 'Cacti@cacti.net';
+			}
+		}
+	}
+
+	$mail->setFrom($from_email, $from_name);
 
 	if (!is_array($to)) {
 		$to = explode(',', $to);
@@ -3940,7 +3953,7 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 	}
 
 	//Enable connection-level debug output
-	$smtp->do_debug = 0;
+	$smtp->do_debug = read_config_option('settings_test_debug');
 	//$smtp->do_debug = SMTP::DEBUG_LOWLEVEL;
 
 	$results = true;
@@ -4042,7 +4055,7 @@ function email_test() {
 
 		$global_alert_address = read_config_option('settings_test_email');
 
-		$errors = send_mail($global_alert_address, '', __('Cacti Test Message'), $message, '', '', true);
+		$errors = mailer('',$global_alert_address, '', '', '', __('Cacti Test Message'), $message, '', '', '', true, read_config_option('settings_test_debug'));
 		if ($errors == '') {
 			$errors = __('Success!');
 		}

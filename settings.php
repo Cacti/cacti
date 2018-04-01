@@ -200,8 +200,23 @@ case 'save':
 
 	break;
 case 'send_test':
+	if (isset_request_var('email')) {
+		db_execute_prepared('REPLACE INTO settings
+			(name, value)
+			VALUES ("settings_test_email", ?)',
+			array(get_nfilter_request_var('email')));
+	}
+
+	if (isset_request_var('level')) {
+		db_execute_prepared('REPLACE INTO settings
+			(name, value)
+			VALUES ("settings_test_debug", ?)',
+			array(get_nfilter_request_var('level')));
+	}
+
 	email_test();
 	break;
+
 default:
 	top_header();
 
@@ -453,7 +468,9 @@ default:
 			});
 
 			$('#emailtest').click(function() {
-				$.get('settings.php?action=send_test')
+				email = $('#settings_test_email').val();
+				level = $('#settings_test_debug').val();
+				$.get('settings.php?action=send_test&email='+email+'&level='+level)
 					.done(function(data) {
 						$('body').append('<div id="testmail" title="<?php print __esc('Test Email Results');?>"></div>');
 						$('#testmail').html(data);
@@ -571,6 +588,7 @@ default:
 				$('#row_settings_smtp_password').hide();
 				$('#row_settings_smtp_secure').hide();
 				$('#row_settings_smtp_timeout').hide();
+				$('#row_settings_test_debug').hide();
 				break;
 			case '1':
 				if (smtpPath != '') {
@@ -586,6 +604,7 @@ default:
 				$('#row_settings_smtp_password').hide();
 				$('#row_settings_smtp_secure').hide();
 				$('#row_settings_smtp_timeout').hide();
+				$('#row_settings_test_debug').hide();
 				break;
 			case '2':
 				$('#settings_sendmail_path').val('');
@@ -598,6 +617,7 @@ default:
 				$('#row_settings_smtp_password').show();
 				$('#row_settings_smtp_secure').show();
 				$('#row_settings_smtp_timeout').show();
+				$('#row_settings_test_debug').show();
 				break;
 			}
 		}

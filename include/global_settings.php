@@ -1335,18 +1335,25 @@ $settings = array(
 			'friendly_name' => __('Emailing Options'),
 			'method' => 'spacer',
 			),
-		'settings_test_email' => array(
-			'friendly_name' => __('Test Email'),
-			'description' => __('This is a Email account used for sending a test message to ensure everything is working properly.'),
-			'method' => 'textbox',
-			'max_length' => 255,
-			),
 		'settings_how' => array(
 			'friendly_name' => __('Mail Services'),
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
 			'default' => __('PHP Mail() Function'),
 			'array' => array( __('PHP Mail() Function'), __('Sendmail'), __('SMTP') ),
+			),
+		'settings_test_email' => array(
+			'friendly_name' => __('Test Email'),
+			'description' => __('This is a Email account used for sending a test message to ensure everything is working properly.'),
+			'method' => 'textbox',
+			'max_length' => 255,
+			),
+		'settings_test_debug' => array(
+			'friendly_name' => __('Test Debug Level'),
+			'description' => __('The level of debug to apply (currently only applies to SMTP).'),
+			'method' => 'drop_array',
+			'array' => array( '0' => __('None'), '1' => __('Client'), '2' => __('Client And Server'), '3' => __('Connection'), '4' => __('Low Level') ),
+			'default' => 'none'
 			),
 		'settings_ping_mail' => array(
 			'friendly_name' => __('Ping Mail Server'),
