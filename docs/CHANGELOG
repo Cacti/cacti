@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.1.38
+-issue#1515: Special characters not rendered properly in settings
+
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode
 -issue#1405: When Data Query columns are wide, they cause rendering issues
