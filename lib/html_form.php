@@ -94,7 +94,7 @@ function draw_edit_form($array) {
 				print html_escape($field_array['friendly_name']);
 
 				if (read_config_option('hide_form_description') == 'on') {
-					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? html_escape($field_array['description']) : '') . "</span>\n";
+					print '<br><span class="formFieldDescription">' . ((isset($field_array['description'])) ? $field_array['description'] : '') . "</span>\n";
 				} else {
 					print '<div class="formTooltip">';
 					print display_tooltip((isset($field_array['description'])) ? $field_array['description'] : '');
