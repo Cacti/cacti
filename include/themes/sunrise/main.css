@@ -659,7 +659,7 @@ label.ui-state-hover > span {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -979,22 +979,22 @@ legend {
 }
 
 .spikekillMenu i {
-	text-align:center;
+	text-align: center;
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .spikekillMenu i:empty{
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .loginPanel {
-	padding:4px 0px;
+	padding: 4px 0px;
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
 }
 
 .treeArea {
