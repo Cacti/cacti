@@ -460,7 +460,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	return $out;
 }
 
-function cacti_snmp_session_get($session, $oid) {
+function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	$info = $session->info;
 
 	if (is_array($oid) && sizeof($oid) == 0) {
@@ -487,10 +487,10 @@ function cacti_snmp_session_get($session, $oid) {
 
 	if (is_array($out)) {
 		foreach($out as $oid => $value){
-			$out[$oid] = format_snmp_string($value, false);
+			$out[$oid] = format_snmp_string($value, false, SNMP_STRING_OUTPUT_GUESS, $strip_alpha);
 		}
 	} else {
-		$out = format_snmp_string($out, false);
+		$out = format_snmp_string($out, false, SNMP_STRING_OUTPUT_GUESS, $strip_alpha);
 	}
 
 	return $out;
@@ -674,7 +674,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user, $aut
 	return $snmp_array;
 }
 
-function format_snmp_string($string, $snmp_oid_included, $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+function format_snmp_string($string, $snmp_oid_included, $value_output_format = SNMP_STRING_OUTPUT_GUESS, $strip_alpha = false) {
 	global $banned_snmp_strings;
 
 	$string = preg_replace(REGEXP_SNMP_TRIM, '', trim($string));
@@ -717,6 +717,47 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 			$string = trim(strrev(substr($string, 0, $position)));
 		} else {
 			$string = trim(strrev($string));
+		}
+	}
+
+	/* Remove invalid chars, if the string output is to be numeric */
+	if ($strip_alpha && $value_output_format == SNMP_STRING_OUTPUT_GUESS) {
+		$string = trim($string, "\"' \n\r\v");
+		$len    = strlen($string);
+		$pos    = $len - 1;
+
+		while ($pos > 0) {
+			$value = ord($string[$pos]);
+
+			if (($value < 48 || $value > 57) && $value != 32) {
+				$string[$pos] = ' ';
+			} else {
+				break;
+			}
+
+			$pos--;
+		}
+
+		$string = trim($string);
+		$len    = strlen($string);
+		$pos    = 0;
+
+		while ($pos < $len) {
+			$value = ord($string[$pos]);
+
+			if (($value < 48 || $value > 57) && $value != 32) {
+				$string[$pos] = ' ';
+			} else {
+				break;
+			}
+
+			$pos++;
+		}
+
+		$string = trim($string);
+
+		if ($string == '') {
+			return 'U';
 		}
 	}
 
