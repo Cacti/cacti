@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
+-feature: Add Timezone support for Remote Data Collectors
 
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode

@@ -2037,6 +2037,7 @@ CREATE TABLE `poller` (
   `name` varchar(30) DEFAULT NULL,
   `notes` varchar(1024) DEFAULT '',
   `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `timezone` varchar(40) DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `dbdefault` varchar(20) NOT NULL DEFAULT '',
   `dbhost` varchar(64) NOT NULL DEFAULT '',

@@ -242,6 +242,17 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
 }
 
+if ($config['poller_id'] > 1) {
+	$timezone = db_fetch_cell_prepared('SELECT timezone
+		FROM poller
+		WHERE id = ?',
+		array($config['poller_id']));
+
+	if ($timezone != '') {
+		db_execute_prepared('SET time_zone = ?', array($timezone));
+	}
+}
+
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$boost_records = db_fetch_cell('SELECT COUNT(*)
 		FROM poller_output_boost', '', true, $local_db_cnn_id);

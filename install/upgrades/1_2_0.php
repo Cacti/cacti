@@ -44,4 +44,9 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN location VARCHAR(40) DEFAULT NULL AFTER hostname,
 			ADD INDEX site_id_location(site_id, location)");
 	}
+
+	if (!db_column_exists('poller', 'timezone')) {
+		db_install_execute("ALTER TABLE poller
+			ADD COLUMN `timezone` varchar(40) DEFAULT '' AFTER `status`");
+	}
 }

@@ -65,6 +65,15 @@ $fields_poller_edit = array(
 		'default' => '',
 		'max_length' => '100'
 	),
+	'timezone' => array(
+		'method' => 'drop_callback',
+		'friendly_name' => __('TimeZone'),
+		'description' => __('The TimeZone for the Data Collector.'),
+		'sql' => 'SELECT Name AS id, Name AS name FROM mysql.time_zone_name ORDER BY name',
+		'action' => 'ajax_tz',
+		'id' => '|arg1:timezone|',
+		'value' => '|arg1:timezone|'
+		),
 	'notes' => array(
 		'method' => 'textarea',
 		'friendly_name' => __('Notes'),
@@ -173,6 +182,15 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
+	case 'ajax_tz':
+		print json_encode(db_fetch_assoc_prepared('SELECT Name AS label, Name AS `value`
+			FROM mysql.time_zone_name
+			WHERE Name LIKE ?
+			ORDER BY Name
+			LIMIT ' . read_config_option('autocomplete_rows'),
+			array('%' . get_nfilter_request_var('term') . '%')));
+
+		break;
 	case 'ping':
 		test_database_connection();
 
@@ -208,6 +226,7 @@ function form_save() {
 		// Common data
 		$save['name']      = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 		$save['hostname']  = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
+		$save['timezone']  = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
 		$save['notes']     = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 		// Process settings
@@ -384,6 +403,8 @@ function poller_edit() {
 
 		$header_label = __('Site [edit: %s]', html_escape($poller['name']));
 	} else {
+		$poller = array();
+
 		$header_label = __('Site [new]');
 	}
 
@@ -391,7 +412,7 @@ function poller_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (isset($poller) && sizeof($poller)) {
+	if (sizeof($poller)) {
 		if ($poller['id'] == 1) {
 			unset($fields_poller_edit['spacer1']);
 			unset($fields_poller_edit['dbdefault']);
@@ -400,6 +421,10 @@ function poller_edit() {
 			unset($fields_poller_edit['dbpass']);
 			unset($fields_poller_edit['dbport']);
 			unset($fields_poller_edit['dbssl']);
+		}
+
+		if ($poller['timezone'] == '' || $poller['id'] == 1) {
+			$poller['timezone'] = ini_get('date.timezone');
 		}
 	}
 
@@ -449,6 +474,14 @@ function poller_edit() {
 					$('#results').empty().show().html(data).fadeOut(2000);
 				});
 			}
+			</script>
+			<?php
+		} else {
+			?>
+			<script type='text/javascript'>
+			$(function() {
+				$('#row_timezone').hide();
+			});
 			</script>
 			<?php
 		}
