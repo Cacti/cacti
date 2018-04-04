@@ -37,6 +37,10 @@ switch (get_request_var('action')) {
 		api_auth_logout_everywhere();
 
 		break;
+	case 'clear_user_settings':
+		api_auth_clear_user_settings();
+
+		break;
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
@@ -58,7 +62,21 @@ function api_auth_logout_everywhere() {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id=?', array($user));
+		db_execute_prepared('DELETE FROM user_auth_cache
+			WHERE user_id = ?',
+			array($user));
+	}
+}
+
+function api_auth_clear_user_settings() {
+	$user = $_SESSION['sess_user_id'];
+
+	if (!empty($user)) {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE user_id = ?',
+			array($user));
+
+		raise_message('37');
 	}
 }
 
@@ -238,6 +256,13 @@ function settings() {
 			'max_length' => '60',
 			'size' => '60'
 		),
+		'clear_settings' => array(
+			'method' => 'button',
+			'friendly_name' => __('Clear User Settings'),
+			'description' => __('Return all User Settings to Default values.'),
+			'value' => __('Clear User Settings'),
+			'on_click' => 'clearUserSettings()'
+		),
 		'private_data' => array(
 			'method' => 'button',
 			'friendly_name' => __('Clear Private Data'),
@@ -273,7 +298,7 @@ function settings() {
 			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
-		html_start_box( __('User Settings'), '100%', true, '3', 'center', '');
+		html_start_box(__('User Settings'), '100%', true, '3', 'center', '');
 
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
@@ -306,10 +331,10 @@ function settings() {
 				array(
 					'config' => array(
 						'no_form_tag' => true
-						),
+					),
 					'fields' => $form_array
-					)
-				);
+				)
+			);
 		}
 
 		print "</td></tr>\n";
@@ -318,13 +343,19 @@ function settings() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
 	var themeChanged = false;
 	var langChanged = false;
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
+
+	function clearUserSettings() {
+		$.get('auth_profile.php?action=clear_user_settings', function() {
+			document.location = 'auth_profile.php?newtheme=1';
+		});
+	}
 
 	function clearPrivateData() {
 		Storages.localStorage.removeAll();
