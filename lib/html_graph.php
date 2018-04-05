@@ -93,12 +93,12 @@ function html_graph_validate_preview_request_vars() {
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
-			'default' => read_user_setting('graph_template_id', 0)
+			'default' => '0',
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => read_user_setting('num_columns', 2)
+			'default' => read_user_setting('num_columns', '2')
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,

@@ -375,7 +375,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tgraph:" . $leaf['local_graph_id'] . "' data-jstree='{ \"type\" : \"graph\" }'>" . html_escape(get_graph_title($leaf['local_graph_id'])) . "</a></li>\n";
-			} else { 
+			} else {
 				$dhtml_tree[] = "\t\t\t\t<li class='jstree-closed' id='tbranch:" . $leaf['id'] . "'>" . html_escape($leaf['title']) . "</li>\n";
 			}
 		}
@@ -554,11 +554,11 @@ function html_validate_tree_vars() {
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
-			'default' => read_user_setting('graph_template_id', '0')
+			'default' => '0'
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT,
-			'default' => read_user_setting('num_columns_tree')
+			'default' => read_user_setting('num_columns_tree', '2')
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -664,8 +664,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$data_query_index = $host_group_data_array[2];
 	}
 
-	if (!empty($site_name)) { 
-		$title .= $title_delimeter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name); $title_delimeter = '-> '; 
+	if (!empty($site_name)) {
+		$title .= $title_delimeter . '<strong>' . __('Site:') . '</strong>&nbsp;' . html_escape($site_name); $title_delimeter = '-> ';
 	}
 
 	if (!empty($tree_name)) {

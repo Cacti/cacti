@@ -144,7 +144,6 @@ case 'save':
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
-		get_filter_request_var('graph_template_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
 
 		if (isset_request_var('predefined_timespan')) {
@@ -153,10 +152,6 @@ case 'save':
 
 		if (isset_request_var('predefined_timeshift')) {
 			set_graph_config_option('default_timeshift', get_request_var('predefined_timeshift'));
-		}
-
-		if (isset_request_var('graph_template_id')) {
-			set_graph_config_option('graph_template_id', get_request_var('graph_template_id'));
 		}
 
 		if (isset_request_var('section') && get_nfilter_request_var('section') == 'preview') {
