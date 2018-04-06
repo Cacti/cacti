@@ -355,6 +355,18 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __esc('CSV Export of Graph Data'). "'></a><br>\n";
 	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>\n";
 
+	if (is_realm_allowed(3)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id
+			FROM graph_local
+			WHERE id = ?',
+			array($local_graph_id));
+
+		if ($host_id > 0) {
+			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit the Device') . "'></a>";
+			print '<br/>';
+		}
+	}
+
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
 			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time'). "'></a><br/>\n";

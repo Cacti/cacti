@@ -21,9 +21,10 @@ Cacti CHANGELOG
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
--feature#1422: Automatically select the next unused data input field when clicking add on data input method
--feature#1399: Allow 'requires' to include version against a plugin
 -feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
+-feature#1399: Allow 'requires' to include version against a plugin
+-feature#1422: Automatically select the next unused data input field when clicking add on data input method
+-feature#1505: Allow Device Edit from Graphs page
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
