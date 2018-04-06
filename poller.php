@@ -187,7 +187,7 @@ $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 
 if (sizeof($ds_needing_fixes)) {
 	foreach($ds_needing_fixes as $ds) {
-		db_execute('UPDATE poller_item
+		db_execute_prepared('UPDATE poller_item
 			SET rrd_next_step = ?
 			WHERE local_data_id = ?',
 			array($ds['next_step'], $ds['local_data_id']));
