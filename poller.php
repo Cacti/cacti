@@ -175,7 +175,7 @@ $process_leveling = read_config_option('process_leveling');
 $concurrent_processes = read_config_option('concurrent_processes');
 
 // correct for possible poller output not empty occurances
-$ds_needing_fixes = db_fetch_assoc_prpared('SELECT local_data_id, MIN(rrd_next_step) AS next_step,
+$ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id, MIN(rrd_next_step) AS next_step,
 	COUNT(DISTINCT rrd_next_step) AS intances
 	FROM poller_item
 	WHERE poller_id = ?
