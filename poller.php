@@ -193,7 +193,7 @@ if (sizeof($poller)) {
 }
 
 // correct for possible poller output not empty occurances
-$ds_needing_fixes = db_fetch_assoc_prpared('SELECT local_data_id, MIN(rrd_next_step) AS next_step,
+$ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id, MIN(rrd_next_step) AS next_step,
 	COUNT(DISTINCT rrd_next_step) AS intances
 	FROM poller_item
 	WHERE poller_id = ?
