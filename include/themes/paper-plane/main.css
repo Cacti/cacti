@@ -105,6 +105,14 @@ label {
 	white-space:nowrap;
 }
 
+.glyph_console:before {
+	content: "\f1d9";
+	color: #9d9d9d;
+}
+
+.text_console {
+	display: none;
+}
 
 .nowrap {
 	white-space:nowrap;

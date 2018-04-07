@@ -1505,8 +1505,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
-				'id'	=> 'maintab-anchor-console',
-				'image' => '',
+				'id'	=> 'console',
 				'url'   => $config['url_path'] . 'index.php',
 			);
 		}
@@ -1518,8 +1517,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Graphs'),
-						'id'	=> 'maintab-anchor-graphs',
-						'image' => '',
+						'id'	=> 'graphs',
 						'url'   => $config['url_path'] . 'graph_view.php',
 					);
 			}
@@ -1532,8 +1530,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Reporting'),
-						'id'	=> 'maintab-anchor-reports',
-						'image' => '',
+						'id'	=> 'reports',
 						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
@@ -1543,8 +1540,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
-					'id'	=> 'maintab-anchor-logs',
-					'image' => '',
+					'id'	=> 'logs',
 					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
@@ -1614,8 +1610,7 @@ function html_show_tabs_left() {
 						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
-								'id'    => 'maintab-anchor-link' . $tab['id'],
-								'image' => '',
+								'id'    => 'link' . $tab['id'],
 								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
 							);
 					}
@@ -1644,11 +1639,18 @@ function html_show_tabs_left() {
 		$i = 0;
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
-		foreach($tabs_left as $tab) {
-			print "<li><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i) . "' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'>" . html_escape($tab['title']) . "</a></li>\n";
 
-			$i++;
+		foreach($tabs_left as $tab) {
+			if (isset($tab['id'])) {
+				$id = $tab['id'];
+			} else {
+				$id = 'anchor' . $i;
+				$i++;
+			}
+
+			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a></li>\n";
 		}
+
 		print "</ul></nav></div>\n";
 	}
 }

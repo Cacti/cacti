@@ -124,6 +124,14 @@ label {
 	white-space:nowrap;
 }
 
+.glyph_console:before {
+	content: "\f185";
+}
+
+.text_console {
+	display: none;
+}
+
 input[type="checkbox"] + label:before {
 	border: 1px solid #7f83a2;
 	content: "\00a0";

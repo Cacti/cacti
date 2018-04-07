@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 -feature: Add Timezone support for Remote Data Collectors
 -feature: Add One Minute Sampling to the default Data Source Profiles
+-feature: Allow Top tabs to be Glyphs or Text or both
 
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode
