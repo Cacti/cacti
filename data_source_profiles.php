@@ -795,7 +795,7 @@ function profile() {
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => 'name',
+			'default' => 'step',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
