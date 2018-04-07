@@ -366,25 +366,25 @@ function api_device_update_host_template($host_id, $host_template_id) {
 
 	/* remove unused graph templates not assigned to the device template */
 	$unused_graph_templates = db_fetch_assoc_prepared('SELECT
-		result.id, result.name, graph_local.id AS graph_local_id
-	    FROM (
-		    SELECT DISTINCT gt.id, gt.name
-		    FROM graph_templates AS gt
-		    INNER JOIN host_graph AS hg
-		    ON gt.id = hg.graph_template_id
-		    WHERE hg.host_id = ?
-			UNION SELECT DISTINCT gt.id, gt.name
-			FROM graph_templates AS gt
-			INNER JOIN host_template_graph AS htg
-			ON gt.id=htg.graph_template_id
+		hg.graph_template_id AS id, gt.name, result.gtid
+		FROM host_graph AS hg
+		LEFT JOIN graph_templates AS gt
+		ON gt.id=hg.graph_template_id
+		LEFT JOIN (
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM graph_local AS gl
+			WHERE gl.host_id = ?
+			AND snmp_query_id = 0
+			UNION
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM host_template_graph AS htg
 			WHERE htg.host_template_id = ?
-	    ) AS result
-	    LEFT JOIN graph_local
-	    ON graph_local.graph_template_id = result.id
-	    AND graph_local.host_id = ?
-	    HAVING graph_local_id IS NULL
-	    ORDER BY result.name',
-	    array($host_id, $host_template_id, $host_id)
+		) AS result
+		ON hg.graph_template_id=result.gtid
+		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
+	    HAVING gtid IS NULL
+	    ORDER BY gt.name',
+	    array($host_id, $host_template_id)
 	);
 
 	if (sizeof($unused_graph_templates)) {
