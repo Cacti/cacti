@@ -890,7 +890,7 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('a[id^="maintab-anchor"]').unbind('click').click(function(event) {
+	$('.maintabs').find('.lefttab').unbind('click').click(function(event) {
 		event.preventDefault();
 
 		if ($('.cactiTreeNavigationArea').length > 0) {
