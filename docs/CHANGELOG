@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
 -feature: Add Timezone support for Remote Data Collectors
+-feature: Add One Minute Sampling to the default Data Source Profiles
 
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode
