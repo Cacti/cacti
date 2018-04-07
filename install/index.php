@@ -68,10 +68,10 @@ if ($old_cacti_version == CACTI_VERSION) {
 		<p style="font-family: Verdana, Arial; font-size: 12px;">'
 		. __("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:</p><p><pre>mysql -u %s -p %s < cacti.sql</pre></p><p>This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database.", $database_username, $database_default) . '</p>';
 
-	print '<p>' . __("In Cacti %s, you must also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table", CACTI_VERSION) . '</p>';
+	print '<p>' . __('In Cacti %s, you must also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table', CACTI_VERSION) . '</p>';
 
 	if ($config['cacti_server_os'] == 'unix') {
-		print '<p>' . __("On Linux/UNIX, do the following:") . '</p><p><pre>' . __("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql") . "\n";
+		print '<p>' . __('On Linux/UNIX, do the following:') . '</p><p><pre>' . __('mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql') . PHP_EOL;
 	} else {
 		print '<p>' . __("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:") . '</p><p><pre>';
 	}
@@ -224,14 +224,14 @@ if ($step == '7') {
 			$community    = 'public';
 			$avail        = 'snmp';
 			$ip           = 'localhost';
-			$description  = "Local Windows Machine";
+			$description  = 'Local Windows Machine';
 		} else {
 			$hash = '2d3e47f416738c2d22c87c40218cc55e';
 			$version      = 0;
 			$community    = 'public';
 			$avail        = 'none';
 			$ip           = 'localhost';
-			$description  = "Local Linux Machine";
+			$description  = 'Local Linux Machine';
 		}
 
 		$host_template_id = db_fetch_cell_prepared('SELECT id
@@ -336,7 +336,7 @@ if ($step == '7') {
 	if (!array_key_exists($old_cacti_version, $cacti_version_codes)) {
 		print "	<p style='font-family: Verdana, Arial; font-size: 16px; font-weight: bold; color: red;'>" . __('Error') . "</p>
 			<p style='font-family: Verdana, Arial; font-size: 12px;'>"
-			. __('Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</strong>', $old_cacti_version, CACTI_VERSION) . "</p>";
+			. __('Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</strong>', $old_cacti_version, CACTI_VERSION) . '</p>';
 		exit;
 	}
 
@@ -364,7 +364,7 @@ if ($step == '7') {
 		if (api_plugin_is_enabled ($plugin)) {
 			api_plugin_remove_hooks ($plugin);
 			api_plugin_remove_realms ($plugin);
-			db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+			db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
 		}
 	}
 }
@@ -452,17 +452,17 @@ $enabled = '1';
 						print '<h3>' . __('Location checks') . '</h3>';
 
 						// Get request URI and break into parts
-						$test_request_uri = $_SERVER['REQUEST_URI'];
+						$test_request_uri   = $_SERVER['REQUEST_URI'];
 						$test_request_parts = parse_url($test_request_uri);
-						$test_request_path = $test_request_parts['path'];
-						$test_request_len = strlen($test_request_parts['path']);
+						$test_request_path  = $test_request_parts['path'];
+						$test_request_len   = strlen($test_request_parts['path']);
 
 						// Get current script name (filename only)
 						$test_script_name = basename($_SERVER['SCRIPT_NAME']);
-						$test_script_len = strlen($test_script_name);
+						$test_script_len  = strlen($test_script_name);
 
 						// Get end of the path of URI and see if it's our script
-						$test_script_part = substr($test_request_path, $test_request_len - $test_script_len);
+						$test_script_part   = substr($test_request_path, $test_request_len - $test_script_len);
 						$test_script_result = strcmp($test_script_part, $test_script_name);
 
 						// Assume desired path is the URI
@@ -475,7 +475,7 @@ $enabled = '1';
 
 						// Add the install subfolder to defined path location
 						// and check if it matches, if not there will likely be problems
-						$test_config_path = $config['url_path'] . 'install/';
+						$test_config_path    = $config['url_path'] . 'install/';
 						$test_compare_result = strcmp($test_config_path,$test_final_path);
 
 						// The path was not what we expected so print an error
@@ -528,7 +528,7 @@ $enabled = '1';
 						print '<p>' . __('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.') . '</p>';
 
 						html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
-						html_header( array( __('Name'), __('Required'), __('Installed') ) );
+						html_header(array(__('Name'), __('Required'), __('Installed')));
 
 						form_alternate_row('phpline',true);
 						form_selectable_cell(__('PHP Version'), '');
@@ -587,11 +587,12 @@ $enabled = '1';
 						);
 
 						$ext = verify_php_extensions($extensions);
-						$ext[] = array('name' => 'TrueType Text', 'installed' => function_exists('imagettftext'));
-						$ext[] = array('name' => 'TrueType Box', 'installed' => function_exists('imagettfbbox'));
+						$ext[] = array('name' => __('TrueType Text'), 'installed' => function_exists('imagettftext'));
+						$ext[] = array('name' => __('TrueType Box'),  'installed' => function_exists('imagettfbbox'));
 
 						html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
-						html_header( array( __('Name'), __('Optional'), __('Installed') ) );
+						html_header(array(__('Name'), __('Optional'), __('Installed')));
+
 						foreach ($ext as $id => $e) {
 							form_alternate_row('line' . $id, true);
 							form_selectable_cell($e['name'], '');
@@ -701,7 +702,7 @@ $enabled = '1';
 						print '<span style="height:20px;margin:4px;" id="results"></span>';
 
 						?>
-						<script type="text/javascript">
+						<script type='text/javascript'>
 						$(function() {
 							$('#next, #previous, #test').button();
 
@@ -817,7 +818,10 @@ $enabled = '1';
 						/* get all items on the form and write values for them  */
 						foreach ($input as $name => $array) {
 							if (isset_request_var($name)) {
-								db_execute_prepared("REPLACE INTO settings (name,value) VALUES (?, ?)", array($name, get_nfilter_request_var($name)));
+								db_execute_prepared('REPLACE INTO settings
+									(name,value)
+									VALUES (?, ?)',
+									array($name, get_nfilter_request_var($name)));
 							}
 						}
 
