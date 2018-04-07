@@ -98,10 +98,12 @@ function themeReady() {
 
 	$('.maintabs nav ul li a').each( function() {
 		id = $(this).attr('id');
-		if (id == 'maintab-anchor-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
+
+		if (id == 'graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
 			submenu_counter++;
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-caret-down"></i></a></li>').insertAfter($(this));
+
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
 					+'<li><a href="'+urlPath+'graph_view.php?action=tree"><span>'+treeView+'</span></a></li>'
