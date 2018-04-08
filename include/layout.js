@@ -1925,7 +1925,7 @@ function keepWindowSize() {
 
 		if (theme != 'classic') {
 			$('body').css('height', heightPage);
-			$('#cactiContent, #navigation, #navigation_right, #main').css('height', heightPageContent);
+			$('#cactiContent, #navigation, #navigation_right').css('height', heightPageContent);
 
 			// Handle links pages
 			$('#content').css({'width':'100%', 'height':heightPageContent-4});
