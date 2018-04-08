@@ -731,12 +731,20 @@ function displayMessages() {
 
 		$('#messageContainer').remove();
 		$('body').append(returnStr);
+
+		messageWidth = $(window).width();
+		if (messageWidth > 600) {
+			messageWidth = 600;
+		} else {
+			messageWidth -= 50;
+		}
+
 		$('#messageContainer').dialog({
 			open: sessionMessageOpen,
 			draggable: true,
 			resizable: false,
 			height: 'auto',
-			minWidth: 600,
+			minWidth: messageWidth,
 			maxWidth: 800,
 			maxHeight: 600,
 			title: title,
@@ -1478,12 +1486,19 @@ function getPresentHTTPError(data) {
 				'<div style="display:table-cell"> ' + errorText + '</div></div>' +
 				'</div></div>';
 
+			messageWidth = $(window).width();
+			if (messageWidth > 400) {
+				messageWidth = 400;
+			} else {
+				messageWidth -= 50;
+			}
+
 			$('#httperror').remove();
 			$('body').append(returnStr);
 			$('#httperror').dialog({
 				resizable: false,
 				height: 'auto',
-				width: 400,
+				width: messageWidth,
 				title: errorReasonTitle,
 				buttons: {
 					Ok: function() {
@@ -2773,6 +2788,13 @@ function copyToClipboard(containerId) {
 	var clipboardDataId = containerId.replace('copyToClipboard','clipboardData');
 	var clipboardData   = document.getElementById(clipboardDataId);
 
+	messageWidth = $(window).width();
+	if (messageWidth > 350) {
+		messageWidth = 350;
+	} else {
+		messageWidth -= 50;
+	}
+
 	if (clipboardData == null) {
 		$('body').append('<div style="display:none;" id="clipboardMessage" title="'+clipboard+'">'+clipboardCopyFailed+'<br/><br/>'+clipboardID+': '+clipboardDataId+'</div>');
 
@@ -2780,7 +2802,7 @@ function copyToClipboard(containerId) {
 			resizable: false,
 			draggable: false,
 			height: 170,
-			width: 350,
+			width: messageWidth,
 			buttons: {
 				Ok: function() {
 					$(this).dialog('close');
@@ -2797,7 +2819,7 @@ function copyToClipboard(containerId) {
 			resizable: false,
 			draggable: false,
 			height: 120,
-			width: 350,
+			width: messageWidth,
 			buttons: {
 				Ok: function() {
 					$(this).dialog('close');
@@ -2849,7 +2871,7 @@ function copyToClipboard(containerId) {
 			resizable: false,
 			draggable: false,
 			height: 120,
-			width: 350,
+			width: messageWidth,
 			buttons: {
 				Ok: function() {
 					$(this).dialog('close');
