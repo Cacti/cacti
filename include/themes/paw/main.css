@@ -96,7 +96,6 @@ label {
 
 .glyph_console:before {
 	content: "\f1b0";
-	color: #fff;
 }
 
 .text_console {
@@ -1629,17 +1628,13 @@ div#gtabs {
 	overflow:hidden;
 }
 
-.maintabs a {
+.maintabs a.lefttab, .usertabs a {
 	color: #fff;
-	float:left !important;
-	padding:5px 8px;
-	text-decoration:none;
+	float: left !important;
+	padding: 5px 8px;
+	text-decoration: none;
 	font-size: 18px;
-	vertical-align:bottom;
-}
-
-.maintabs-has-submenu a {
-	padding: 5px 4px 5px 9px;
+	vertical-align: bottom;
 }
 
 .maintabs a:hover {
@@ -1650,21 +1645,37 @@ div#gtabs {
 	background-color: rgba(63,117,162,0.8);
 }
 
+.maintabs a:active {
+	font-size: 18px;
+}
+
 .maintabs nav {
 	display: block;
 }
 
 .maintabs li {
-	bottom:-1px;
-	float:left;
+	bottom: -1px;
+	float: left;
 }
 
-.maintabs-submenu a{
-	padding: 5px 8px 5px 0px;
+.maintabs-submenu {
+	display: none;
 }
 
-.maintabs-submenu i{
+#menu-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+	padding: 5px 5px 5px 0px;
+	color: #fff;
+	float: left !important;
+	text-decoration: none;
+	font-size: 18px;
+	vertical-align: bottom;
+	display: block;
+}
+
+.maintabs-submenu i, .maintabs-submenu-ellipsis i {
+	color: #fff;
 	padding-left: 2px;
+	font-size: 18px;
 	border-left: 1px solid #ccc;
 }
 
@@ -1677,9 +1688,8 @@ div.submenu {
 	z-index: 200;
 }
 
-div.submenu span{
+div.submenu span {
 	display: block;
-
 }
 
 .tabs a {
@@ -1735,15 +1745,15 @@ div.submenu span{
 
 .tabs nav:after, .maintabs nav:after {
 	clear:both;
-	content:".";
-	display:block;
-	height:0;
-	visibility:hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
 }
 .tabs ul, .maintabs ul {
-	list-style:none;
-	margin:0;
-	padding:0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 /* Navigation Area */

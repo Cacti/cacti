@@ -1822,7 +1822,7 @@ div#gtabs {
 .maintabs {
 	line-height: 30px;
 	float: left;
-	width: 50%;
+	width: 70%;
 	overflow: hidden;
 	height: 32px;
 }
@@ -1864,21 +1864,27 @@ div#gtabs {
 }
 
 .maintabs nav {
-
+	white-space: nowrap;
 }
 
 .maintabs li {
 	bottom:-1px;
 	float:left;
-	#position:relative;
-
 }
 
-.maintabs-submenu a{
+.maintabs-submenu {
+	display: none;
+}
+
+#menu-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+	display: block;
+}
+
+.maintabs-submenu a {
 	padding: 5px 8px 5px 0px;
 }
 
-.maintabs-submenu i{
+.maintabs-submenu i {
 	font-size: 14px;
 }
 
@@ -1891,7 +1897,7 @@ div.submenu {
 	z-index: 200;
 }
 
-div.submenu span{
+div.submenu span {
 	display: block;
 
 }
@@ -1936,10 +1942,12 @@ div.submenu span{
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav {
 	border-bottom:1px solid #000;
 }
@@ -1951,6 +1959,7 @@ div.submenu span{
 	height:0;
 	visibility:hidden;
 }
+
 .tabs ul, .maintabs ul {
 	list-style:none;
 	margin:0;

@@ -106,8 +106,7 @@ label {
 }
 
 .glyph_console:before {
-	content: "\f1d9";
-	color: #9d9d9d;
+	content: "\f1d8";
 }
 
 .text_console {
@@ -1769,20 +1768,20 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 64px !important;
-	overflow:hidden;
+	width: 55px !important;
+	overflow: hidden;
 	right: 0;
 }
 
 .maintabs {
 	line-height: 30px;
 	float: left;
-	width: 50%;
+	width: 70%;
 	overflow: hidden;
 	height: 32px;
 }
 
-.maintabs a {
+.maintabs a.lefttab, .usertabs a {
 	color: #9d9d9d;
 	float:left !important;
 	padding:5px 8px;
@@ -1793,6 +1792,10 @@ div#gtabs {
 	border-bottom: 3px solid transparent;
 }
 
+.usertabs {
+	float: right;
+}
+
 .usertabs nav ul {
 	float: right;
 	padding-right: 5px;
@@ -1800,19 +1803,20 @@ div#gtabs {
 
 .usertabs a {
 	padding: 5px 6px;
+	display: block;
 }
 
 .maintabs-has-submenu a {
 	padding: 5px 4px 5px 9px;
 }
 
-.maintabs a:hover {
+.maintabs a.lefttab:hover, .maintabs a:hover {
 	color: white;
 	background: none;
 }
 
 .maintabs a.selected {
-	color: white;
+	color: white !important;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
 	border-bottom: 3px solid #5CB85C;
@@ -1823,18 +1827,32 @@ div#gtabs {
 }
 
 .maintabs li {
-	bottom:-1px;
-	float:left;
-	#position:relative;
-
+	bottom: -1px;
+	float: left;
 }
 
-.maintabs-submenu a{
-	padding: 5px 8px 5px 0px;
+.maintabs-submenu {
+	display: none;
 }
 
-.maintabs-submenu i{
-	font-size: 14px;
+#menu-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+	padding: 5px 5px 5px 0px;
+	color: #9d9d9d;
+	float: left !important;
+	text-decoration:none;
+	font-size: 18px;
+	vertical-align:bottom;
+	outline-style: none;
+	border-bottom: 3px solid transparent;
+	display: block;
+}
+
+.maintabs-submenu i, .maintabs-submenu-ellipsis i {
+	font-size: 18px;
+}
+
+.maintabs-submenu i:hover, .maintabs-submenu-ellipsis i:hover {
+	color: #fff;
 }
 
 div.submenu {

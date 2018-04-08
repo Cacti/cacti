@@ -1648,7 +1648,7 @@ function html_show_tabs_left() {
 				$i++;
 			}
 
-			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a></li>\n";
+			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>\n";
 		}
 
 		print "</ul></nav></div>\n";

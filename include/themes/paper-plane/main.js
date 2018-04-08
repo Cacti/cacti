@@ -8,14 +8,15 @@ function myKeepWindowSize() {
 
 		/* check visibility of all tabs */
 		$('#submenu-ellipsis').empty();
-		$('.maintabs nav ul li a').each(function() {
+		$('.maintabs nav ul li a.lefttab').each(function() {
 			id = $(this).attr('id');
 			if ($(this).offset().top !== 0) {
 				if ($('#' + id + '-ellipsis').length == 0) {
-					var str = $(this).parent().html();
-					var str2 = str.replace( id , id + '-ellipsis');
-					$('#submenu-ellipsis').prepend('<li>' + str2 + '</li>');
-					$('#'+ id + '-ellipsis').css('visibility','');
+					var href = $(this).attr('href');
+					var text = $(this).text();
+					var id   = id + '-ellipsis';
+					$('#submenu-ellipsis').prepend('<li><a href="'+href+'" id="'+id+'">' + text + '</li>');
+					$('#'+ id + '-ellipsis').css('visibility', '');
 					$(this).css('visibility', 'hidden');
 				}
 			} else {
@@ -25,9 +26,9 @@ function myKeepWindowSize() {
 		});
 
 		if ($('#submenu-ellipsis li').length == 0) {
-			$('.ellipsis').hide(0);
+			$('.ellipsis').hide();
 		} else {
-			$('.ellipsis').show(0);
+			$('.ellipsis').show();
 		}
 	}).resize();
 }
@@ -74,16 +75,11 @@ function themeReady() {
 	if ($('.ellipsis').length == 0) {
 		$('<div class="maintabs ellipsis">'
 			+'<nav><ul>'
-				+'<li class="maintabs-submenu">'
-					+'<a class="submenu-ellipsis" href="#"><i class="fa fa-caret-down"></i></a></li>'
+				+'<li class="maintabs-submenu-ellipsis">'
+					+'<a id="menu-ellipsis" class="submenu-ellipsis" href="#"><i class="fa fa-angle-down"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
 	}
-
-	$('<div class="dropdownMenu">'
-		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
-		+'</ul>'
-	+'</div>').appendTo('body');
 
 	$('<div class="dropdownMenu">'
 		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
@@ -94,18 +90,13 @@ function themeReady() {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"><a class="bottom_scroll_up action-icon-user" href="#"><i class="fa fa-arrow-circle-o-up"></i></a></div>').insertAfter('#cactiContent');
 	}
 
-	submenu_counter = 10;
-
-	$('.maintabs nav ul li a').each( function() {
+	$('.maintabs nav ul li a.lefttab').each( function() {
 		id = $(this).attr('id');
 
 		if (id == 'graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0) {
-			submenu_counter++;
 			$(this).parent().addClass('maintabs-has-submenu');
-			$('<li class="maintabs-submenu"><a class="submenu-' + submenu_counter + '" href="#"><i class="fa fa-caret-down"></i></a></li>').insertAfter($(this));
-
 			$('<div class="dropdownMenu">'
-				+'<ul id="submenu-' + submenu_counter + '" class="submenuoptions" style="display:none;">'
+				+'<ul id="submenu-graphs" class="submenuoptions" style="display:none;">'
 					+'<li><a href="'+urlPath+'graph_view.php?action=tree"><span>'+treeView+'</span></a></li>'
 					+'<li><a href="'+urlPath+'graph_view.php?action=list"><span>'+listView+'</span></a></li>'
 					+'<li><a href="'+urlPath+'graph_view.php?action=preview"><span>'+previewView+'</span></a></li>'
@@ -136,8 +127,6 @@ function themeReady() {
 		+'</div>').appendTo('body');
 	}
 
-
-
 	ajaxAnchors();
 
 	/* User Menu */
@@ -163,19 +152,20 @@ function themeReady() {
 		$('#navigation_right').animate({ scrollLeft:0, scrollTop: 0 }, 1000, 'easeInOutQuart');
 	});
 
-
-	$('.maintabs-submenu, .usertabs-submenu').unbind('click').click(function(event) {
+	$('.maintabs-submenu, .submenu-ellipsis').unbind('click').click(function(event) {
 		event.preventDefault();
 
-		submenu_index = $(this).children('a:first').attr('class');
+		submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
 		submenu = $('#'+submenu_index);
 
 		if (submenu.is(':visible') === false) {
 			/* close other drop down menus first */
 			$('.submenuoptions').stop().slideUp(120);
 			$('.menuoptions').stop().slideUp(120);
+
 			/* re-position */
 			position = $(this).parent('.maintabs-has-submenu').position();
+
 			if (!position) {
 				position = $(this).position();
 				submenu.css({'left':position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth()) }).slideDown(120);
@@ -199,7 +189,6 @@ function themeReady() {
 			clearTimeout(userMenuOpenTimer);
 		}
 	});
-
 
 	/* Highlight sortable table columns */
 	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
