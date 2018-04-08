@@ -669,13 +669,6 @@ case 'list':
 		}
 	}
 
-	?>
-	<tr>
-		<td style='text-align:right' colspan='3'><img src='images/arrow.gif' alt=''>&nbsp;</td>
-		<td style='text-align:right' colspan='2'><input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></td>
-	</tr>
-	<?php
-
 	html_end_box(false);
 
 	if (sizeof($graphs)) {
@@ -685,6 +678,11 @@ case 'list':
 	form_end();
 
 	?>
+	<div class='break'></div>
+	<div class='cactiTable'>
+		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
+		<div style='float:right'><input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
+	</div>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
