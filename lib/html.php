@@ -362,7 +362,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 			array($local_graph_id));
 
 		if ($host_id > 0) {
-			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit the Device') . "'></a>";
+			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit Device') . "'></a>";
 			print '<br/>';
 		}
 	}
@@ -1650,6 +1650,8 @@ function html_show_tabs_left() {
 
 			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>\n";
 		}
+
+		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
 
 		print "</ul></nav></div>\n";
 	}
