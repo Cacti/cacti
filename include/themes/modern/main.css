@@ -452,8 +452,8 @@ label {
 	border-width: 0px 1px 1px 1px;
 	z-index:5;
 	display:block;
+	position: absolute;
 	float:right;
-	position:absolute;
 	right:26px;
 	top:22px;
   	list-style: none;
@@ -463,7 +463,6 @@ label {
 }
 
 .menuoptions li a {
-	border-top: 1px solid #ccc;
 	font-weight:normal;
 	display:block;
 	padding:2px;
@@ -633,6 +632,16 @@ label {
 	z-index:4;
 }
 
+.cactiPageHead #tabs {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.cactiPageHead div {
+	top: 0;
+	left: 0;
+}
+
 .cactiGraphPageHeadBackdrop {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom: 0px;
@@ -669,7 +678,7 @@ label {
 	height:18px;
 	width:100%;
 	position:fixed;
-	padding:4px;
+	padding: 4px;
 	top:30px;
 	left:0px;
 	z-index:5;
@@ -1489,6 +1498,18 @@ legend {
 	.ui-button-text-only .ui-button-text {
 		padding: 0.4em;
 	}
+
+	/* dropdown menus */
+	.menuoptions, .submenuoptions {
+		width: 100%;
+		left: 0 !important;
+		border-left: none !important;
+		border-right: none !important;
+	}
+
+	.menuoptions li a, .submenuoptions li a {
+		padding-right: 25px;
+	}
 }
 
 .graphItem {
@@ -1841,16 +1862,6 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
-div#tabs {
-	padding-bottom: 0px;
-	vertical-align: bottom;
-	position: fixed;
-	left: 5px;
-	top: 5px;
-	height: 30px;
-	width: 70%;
-}
-
 td#tabs {
 	padding:0px !important;
 }
@@ -1875,13 +1886,82 @@ div#gtabs {
 	height: 30px;
 }
 
+.ellipsis {
+	width: 25px !important;
+	float: left;
+	display: none;
+}
+
 .maintabs {
+	float: left;
 	overflow: hidden;
 	height: 25px;
 }
 
 .maintabs-submenu {
 	display: none;
+}
+
+.maintabs-submenu-ellipsis a {
+	display: block;
+}
+
+.maintabs-submenu a {
+	padding: 5px 8px 5px 0px;
+}
+
+.maintabs-submenu i {
+	font-size: 18px;
+}
+
+div.submenu {
+	display: none;
+	position: absolute;
+	border: 2px solid #2d4ca8;
+	top: 0;
+	left: 0;
+	z-index: 200;
+}
+
+div.submenu span {
+	display: block;
+}
+
+.submenuoptions {
+	border-width: 0px 1px 1px 1px;
+	border-color:#eee #ccc #ccc #eee;
+	color:#333;
+	border-style: solid;
+	position:absolute;
+	top:30px;
+  	list-style: none;
+	text-align: left;
+	margin:0px;
+	padding: 10px 0px 10px 0px;
+	background: snow;
+	z-index: 200;
+}
+
+.submenuoptions li a {
+	display:block;
+	padding: 4px 15px;
+	font-size: 12px;
+	font-weight: 500;
+	color:#333;
+	text-decoration: none;
+}
+
+.submenuoptions li a:hover {
+	display:block;
+	color:#333;
+	background: rgba(242,246,248,1);
+	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
+	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -o-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -ms-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: linear-gradient(to bottom, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
 }
 
 .tabs a, .maintabs a {

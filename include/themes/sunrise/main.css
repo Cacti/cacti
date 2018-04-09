@@ -1440,7 +1440,6 @@ table.cactiTable {
 		border-left: none !important;
 		border-right: none !important;
 	}
-
 }
 
 .graphItem {
@@ -1816,13 +1815,11 @@ div#gtabs {
 	float: right !important;
 	width: 64px !important;
 	overflow:hidden;
-	right: 0;
 }
 
 .maintabs {
 	line-height: 30px;
 	float: left;
-	width: 70%;
 	overflow: hidden;
 	height: 32px;
 }
@@ -1852,12 +1849,14 @@ div#gtabs {
 }
 
 .maintabs a:hover {
+	font-size: 18px;
 	color: white;
 	background: none;
 }
 
 .maintabs a.selected {
 	color: white;
+	font-size: 18px;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
 	border-bottom: 3px solid #3C8A3C;
@@ -1885,7 +1884,7 @@ div#gtabs {
 }
 
 .maintabs-submenu i {
-	font-size: 14px;
+	font-size: 18px;
 }
 
 div.submenu {

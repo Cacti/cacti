@@ -1,40 +1,6 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-function myKeepWindowSize() {
-	$(window).resize(function (event) {
-		waitForFinalEvent(function() {
-			/* close open dropdown menues first off */
-			$('.dropdownMenu > ul').hide();
-
-			/* check visibility of all tabs */
-			$('#submenu-ellipsis').empty();
-			$('.maintabs nav ul li a.lefttab').each(function() {
-				var id = $(this).attr('id');
-				if ($(this).offset().top !== 0) {
-					if ($('#' + id + '-ellipsis').length == 0) {
-						var href = $(this).attr('href');
-						var text = $(this).text();
-						var id   = id + '-ellipsis';
-						$('#submenu-ellipsis').prepend('<li><a href="'+href+'" id="'+id+'">' + text + '</li>');
-						$('#'+ id + '-ellipsis').css('visibility', '');
-						$(this).css('visibility', 'hidden');
-					}
-				} else {
-					$('#' + id + '-ellipsis').parent().remove();
-					$(this).css('visibility', 'visible');
-				}
-			});
-
-			if ($('#submenu-ellipsis li').length == 0) {
-				$('.ellipsis').hide();
-			} else {
-				$('.ellipsis').show();
-			}
-		}, 100, 'resize-content');
-	});
-}
-
 function themeReady() {
 	var pageName = basename($(location).attr('pathname'));
 	var hostTimer = false;
@@ -44,8 +10,6 @@ function themeReady() {
 	if ($('#cactiPageBottom').length == 0) {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"></a></div>').insertAfter('#cactiContent');
 	}
-
-	myKeepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();
@@ -76,26 +40,6 @@ function themeReady() {
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
-	/* 'ellipsis' menu in the middle */
-	if ($('.ellipsis').length == 0) {
-		$('<div class="maintabs ellipsis">'
-			+'<nav><ul>'
-				+'<li class="maintabs-submenu-ellipsis">'
-					+'<a id="menu-ellipsis" class="submenu-ellipsis" href="#"><i class="fa fa-angle-down"></i></a></li>'
-			+'</ul></nav>'
-		+'</div>').insertAfter('.maintabs');
-	}
-
-	$('<div class="dropdownMenu">'
-		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
-		+'</ul>'
-	+'</div>').appendTo('body');
-
-	/* Hey - No footer available ? */
-	//if ($('#cactiPageBottom').length == 0) {
-		//$('<div id="cactiPageBottom" class="cactiPageBottom"></div>').insertAfter('#cactiContent');
-	//}
-
 	$('.maintabs nav ul li a.lefttab').each( function() {
 		id = $(this).attr('id');
 
@@ -117,7 +61,7 @@ function themeReady() {
 			+'<nav><ul>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
-		+'</div>').insertAfter('.ellipsis');
+		+'</div>').insertAfter('.maintabs');
 	}
 
 	ajaxAnchors();
@@ -135,34 +79,6 @@ function themeReady() {
 			$('.menuoptions').slideDown(120);
 		} else {
 			$('.menuoptions').slideUp(120);
-		}
-
-		return false;
-	});
-
-	$('.maintabs-submenu, .usertabs-submenu, .submenu-ellipsis').unbind('click').click(function(event) {
-		event.preventDefault();
-
-		submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
-		submenu = $('#'+submenu_index);
-
-		if (submenu.is(':visible') === false) {
-			/* close other drop down menus first */
-			$('.submenuoptions').slideUp(120);
-			$('.menuoptions').slideUp(120);
-
-			/* re-position */
-			position = $(this).parent('.maintabs-has-submenu').position();
-
-			if (!position) {
-				position = $(this).position();
-				submenu.css({'left': position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth())}).slideDown(120);
-			} else {
-				/* move dd to the left */
-				submenu.css({'left':position.left}).slideDown(120);
-			}
-		} else {
-			submenu.slideUp(120);
 		}
 
 		return false;

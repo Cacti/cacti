@@ -1776,7 +1776,6 @@ div#gtabs {
 .maintabs {
 	line-height: 30px;
 	float: left;
-	width: 70%;
 	overflow: hidden;
 	height: 32px;
 }
@@ -1793,7 +1792,7 @@ div#gtabs {
 }
 
 .usertabs {
-	float: right;
+	float: right !important;
 }
 
 .usertabs nav ul {

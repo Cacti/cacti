@@ -1624,8 +1624,7 @@ div#gtabs {
 .maintabs {
 	line-height: 35px;
 	float: left;
-	width:80%;
-	overflow:hidden;
+	overflow: hidden;
 }
 
 .maintabs a.lefttab, .usertabs a {
@@ -1735,10 +1734,12 @@ div.submenu span {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav {
 	border-bottom:1px solid #ccc;
 }
@@ -1750,6 +1751,7 @@ div.submenu span {
 	height: 0;
 	visibility: hidden;
 }
+
 .tabs ul, .maintabs ul {
 	list-style: none;
 	margin: 0;

@@ -1,45 +1,11 @@
 // Host Autocomplete Magic
 var pageName = basename($(location).attr('pathname'));
 
-function myKeepWindowSize() {
-	$(window).resize(function (event) {
-		/* close open dropdown menues first off */
-		$('.dropdownMenu > ul').hide();
-
-		/* check visibility of all tabs */
-		$('#submenu-ellipsis').empty();
-		$('.maintabs nav ul li a.lefttab').each(function() {
-			id = $(this).attr('id');
-			if ($(this).offset().top !== 0) {
-				if ($('#' + id + '-ellipsis').length == 0) {
-					var href = $(this).attr('href');
-					var text = $(this).text();
-					var id   = id + '-ellipsis';
-					$('#submenu-ellipsis').prepend('<li><a href="'+href+'" id="'+id+'">' + text + '</li>');
-					$('#'+ id + '-ellipsis').css('visibility', '');
-					$(this).css('visibility', 'hidden');
-				}
-			} else {
-				$('#' + id + '-ellipsis').parent().remove();
-				$(this).css('visibility', 'visible');
-			}
-		});
-
-		if ($('#submenu-ellipsis li').length == 0) {
-			$('.ellipsis').hide();
-		} else {
-			$('.ellipsis').show();
-		}
-	}).resize();
-}
-
 function themeReady() {
 	var pageName = basename($(location).attr('pathname'));
 	var hostTimer = false;
 	var clickTimeout = false;
 	var hostOpen = false;
-
-	myKeepWindowSize();
 
 	// Setup the navigation menu
 	setMenuVisibility();
@@ -71,21 +37,6 @@ function themeReady() {
 	$('.cactiConsoleNavigationArea').find('#menu').appendTo($('.cactiConsoleNavigationArea').find('#navigation'));
 	$('.cactiConsoleNavigationArea').find('#navigation > table').remove();
 
-	/* 'ellipsis' menu in the middle */
-	if ($('.ellipsis').length == 0) {
-		$('<div class="maintabs ellipsis">'
-			+'<nav><ul>'
-				+'<li class="maintabs-submenu-ellipsis">'
-					+'<a id="menu-ellipsis" class="submenu-ellipsis" href="#"><i class="fa fa-angle-down"></i></a></li>'
-			+'</ul></nav>'
-		+'</div>').insertAfter('.maintabs');
-	}
-
-	$('<div class="dropdownMenu">'
-		+'<ul id="submenu-ellipsis" class="submenuoptions" style="display:none;">'
-		+'</ul>'
-	+'</div>').appendTo('body');
-
 	if ($('#cactiPageBottom').length == 0) {
 		$('<div id="cactiPageBottom" class="cactiPageBottom"><a class="bottom_scroll_up action-icon-user" href="#"><i class="fa fa-arrow-circle-o-up"></i></a></div>').insertAfter('#cactiContent');
 	}
@@ -114,7 +65,7 @@ function themeReady() {
 				+'<li class="usertabs-submenu"><a class="submenu-user-help" href="#"><i class="fa fa-question"></i></a></li>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
-		+'</div>').insertAfter('.ellipsis');
+		+'</div>').insertAfter('.maintabs');
 
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
@@ -132,8 +83,6 @@ function themeReady() {
 	/* User Menu */
 	$('.menuoptions').parent().appendTo('body');
 
-	$(window).trigger('resize');
-
 	$('.action-icon-user').unbind().click(function(event) {
 		event.preventDefault();
 
@@ -150,44 +99,6 @@ function themeReady() {
 	$('.bottom_scroll_up').unbind().click(function(event) {
 		event.preventDefault();
 		$('#navigation_right').animate({ scrollLeft:0, scrollTop: 0 }, 1000, 'easeInOutQuart');
-	});
-
-	$('.maintabs-submenu, .submenu-ellipsis').unbind('click').click(function(event) {
-		event.preventDefault();
-
-		submenu_index = $(this).attr('id').replace('menu-', 'submenu-');
-		submenu = $('#'+submenu_index);
-
-		if (submenu.is(':visible') === false) {
-			/* close other drop down menus first */
-			$('.submenuoptions').stop().slideUp(120);
-			$('.menuoptions').stop().slideUp(120);
-
-			/* re-position */
-			position = $(this).parent('.maintabs-has-submenu').position();
-
-			if (!position) {
-				position = $(this).position();
-				submenu.css({'left':position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth()) }).slideDown(120);
-			} else {
-				/* move dd to the left */
-				submenu.css({'left':position.left}).slideDown(120);
-			}
-		} else {
-			submenu.slideUp(120);
-		}
-
-		return false;
-	});
-
-	$('.submenuoptions').mouseenter(function(data) {
-		clearTimeout(userMenuTimer);
-	}).mouseleave(function(data) {
-		if ($('.submenuoptions').is(':visible')) {
-			userMenuTimer = setTimeout(function() {$('.submenuoptions').stop().slideUp(120);}, 1000);
-		} else{
-			clearTimeout(userMenuOpenTimer);
-		}
 	});
 
 	/* Highlight sortable table columns */
