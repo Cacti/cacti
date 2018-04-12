@@ -43,10 +43,10 @@ function themeReady() {
 	$('.maintabs nav ul li a.lefttab').each( function() {
 		id = $(this).attr('id');
 
-		if (id == 'graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
+		if (id == 'tab-graphs' && $(this).parent().hasClass('maintabs-has-submenu') == 0 ) {
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<div class="dropdownMenu">'
-				+'<ul id="submenu-graphs" class="submenuoptions" style="display:none;">'
+				+'<ul id="submenu-tab-graphs" class="submenuoptions" style="display:none;">'
 					+'<li><a href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
 					+'<li><a href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
 					+'<li><a href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'

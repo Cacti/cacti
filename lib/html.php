@@ -1505,7 +1505,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
-				'id'	=> 'console',
+				'id'	=> 'tab-console',
 				'url'   => $config['url_path'] . 'index.php',
 			);
 		}
@@ -1517,7 +1517,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Graphs'),
-						'id'	=> 'graphs',
+						'id'	=> 'tab-graphs',
 						'url'   => $config['url_path'] . 'graph_view.php',
 					);
 			}
@@ -1530,7 +1530,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Reporting'),
-						'id'	=> 'reports',
+						'id'	=> 'tab-reports',
 						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
@@ -1540,7 +1540,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
-					'id'	=> 'logs',
+					'id'	=> 'tab-logs',
 					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
@@ -1610,7 +1610,7 @@ function html_show_tabs_left() {
 						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
-								'id'    => 'link' . $tab['id'],
+								'id'    => 'tab-link' . $tab['id'],
 								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
 							);
 					}
