@@ -206,12 +206,22 @@ function form_save() {
 		}
 
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-	} elseif (isset_request_var('svg_x') && !isempty_request_var('svg_text') && !isempty_request_var('svg_field')) {
+	} elseif (isset_request_var('svg_x')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
+
+		if  (isempty_request_var('svg_text')) {
+			raise_message(39);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		} elseif (isempty_request_var('svg_field')) {
+			raise_message(38);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		}
 
 		/* suggested values -- graph templates */
 		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_filter_request_var('id') . " AND field_name = " . db_qstr(get_nfilter_request_var('svg_field')));
@@ -239,6 +249,16 @@ function form_save() {
 		get_filter_request_var('snmp_query_id');
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
+
+		if  (isempty_request_var('svds_text')) {
+			raise_message(39);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		} elseif (isempty_request_var('svds_field')) {
+			raise_message(38);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		}
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^svds_([0-9]+)_text/i', $var, $matches)) {
