@@ -1833,6 +1833,10 @@ div#gtabs {
 	display: none;
 }
 
+.ellipsis {
+	display: none;
+}
+
 .submenuoptions {
 	border: 0px solid #155413;
 	background: #161616;
