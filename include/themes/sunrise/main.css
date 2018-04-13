@@ -124,11 +124,11 @@ label {
 	white-space:nowrap;
 }
 
-.glyph_console:before {
+.glyph_tab-console:before {
 	content: "\f185";
 }
 
-.text_console {
+.text_tab-console {
 	display: none;
 }
 
@@ -1875,7 +1875,7 @@ div#gtabs {
 	display: none;
 }
 
-#menu-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+#menu-tab-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
 	display: block;
 }
 

@@ -2008,7 +2008,7 @@ function keepWindowSize() {
 			/* check visibility of all tabs */
 			$('#submenu-ellipsis').empty();
 
-			if ($('#gtabs > .tabs').length) {
+			if ($('#gtabs > .tabs').is(':visible')) {
 				var graphTabWidth = $('#gtabs > .tabs').outerWidth();
 			} else {
 				var graphTabWidth = 0;
@@ -2020,7 +2020,7 @@ function keepWindowSize() {
 				var userTabs = 0;
 			}
 
-			var mainTabWidth  = $('#cactiPageHead > #tabs').outerWidth();
+			var bodyWidth     = $('body').width();
 			var totalWidth    = 0;
 			var myWidth       = 0;
 			var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
@@ -2029,7 +2029,7 @@ function keepWindowSize() {
 				var id = $(this).attr('id');
 				myWidth = $(this).parent().outerWidth();
 
-				if ($(this).offset().top > 20 || totalWidth + myWidth + ellipsisWidth + userTabs + graphTabWidth + 10 > mainTabWidth) {
+				if ($(this).offset().top > 20 || totalWidth + myWidth + ellipsisWidth + userTabs + graphTabWidth + 10 > bodyWidth) {
 					if ($('#' + id + '-ellipsis').length == 0) {
 						var href = $(this).attr('href');
 						var text = $(this).text();
