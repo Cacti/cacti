@@ -105,11 +105,11 @@ label {
 	white-space:nowrap;
 }
 
-.glyph_console:before {
+.glyph_tab-console:before {
 	content: "\f1d8";
 }
 
-.text_console {
+.text_tab-console {
 	display: none;
 }
 
@@ -1834,7 +1834,7 @@ div#gtabs {
 	display: none;
 }
 
-#menu-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+#menu-tab-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
 	padding: 5px 5px 5px 0px;
 	color: #9d9d9d;
 	float: left !important;

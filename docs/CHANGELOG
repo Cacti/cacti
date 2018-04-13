@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -feature: Add One Minute Sampling to the default Data Source Profiles
 -feature: Allow Top tabs to be Glyphs or Text or both
 -feature: Update JavaScript library c3.js to version 0.5.3
+-feature: Update JavaScript library jquery-migrate.js to 3.0.1
 
 1.1.37
 -issue#274: Allow Realtime Graph Popup Mode
