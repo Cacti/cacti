@@ -414,7 +414,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid = true;
-				$values = explode(',', $_REQUEST[$name]);
+				$values = preg_split('/,/', $_REQUEST[$name], NULL, PREG_SPLIT_NO_EMPTY);
 				foreach($values AS $number) {
 					if (!is_numeric($number)) {
 						$valid = false;
@@ -635,7 +635,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
-					$values = explode(',', $_REQUEST[$variable]);
+					$values = preg_split('/,/', $_REQUEST[$variable], NULL, PREG_SPLIT_NO_EMPTY);
 					foreach($values AS $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
