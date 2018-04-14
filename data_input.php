@@ -498,7 +498,7 @@ function data_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (isset($data_input)) {
+	if (sizeof($data_input)) {
 		switch ($data_input['type_id']) {
 		case DATA_INPUT_TYPE_SNMP:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
