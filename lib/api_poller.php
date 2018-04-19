@@ -42,7 +42,6 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		$host = $hosts[$host_id];
 	}
 
-
 	if (sizeof($host) || (isset($host_id))) {
 		if (isset($host['disabled']) && $host['disabled'] == 'on') {
 			return;
@@ -102,12 +101,13 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 	}
 }
 
-function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
+function api_poller_get_rrd_next_step($rrd_step = 300, $num_rrd_items = 1) {
 	global $config;
 
 	$poller_interval = read_config_option('poller_interval');
-	$rrd_next_step = 0;
-	if (($rrd_step != $poller_interval) && (isset($poller_interval))){
+	$rrd_next_step   = 0;
+
+	if ($rrd_step != $poller_interval && isset($poller_interval)) {
 		if (!isset($config['rrd_step_counter'])) {
 			$rrd_step_counter = read_config_option('rrd_step_counter');
 		} else {
@@ -126,7 +126,7 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		$modulus = $rrd_step / $poller_interval;
 
-		if (($modulus < 1) || ($rrd_step_counter == 0)) {
+		if ($modulus < 1 || empty($rrd_step_counter)) {
 			$rrd_next_step = 0;
 		} else {
 			$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
@@ -147,7 +147,8 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		/* save rrd_step_counter */
 		$config['rrd_step_counter'] = $rrd_step_counter;
-		db_execute_prepared("REPLACE INTO settings (name, value) VALUES ('rrd_step_counter', ?)", array($rrd_step_counter));
+
+		set_config_option('rrd_step_counter', $rrd_step_counter);
 	}
 
 	return $rrd_next_step;
