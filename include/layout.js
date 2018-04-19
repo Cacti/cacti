@@ -1794,6 +1794,15 @@ function applyTableSizing() {
 	saveTableWidths(true);
 }
 
+function appendHeaderSuppression(url) {
+	url = url.replace('action=tree&', 'action=tree_content&');
+	url = url.split('?header=false').join('?');
+	url = url.split('&header=false').join('');
+	url = url.replace('?&','?');
+	url += (url.indexOf('?') > 0 ? '&header=false':'?header=false');
+	return url;
+}
+
 /** setupPageTimeout - This function will setup the page timeout based upon
  *  the plugin developers $refresh requirements.  It also sets up a location
  *  to redirect the user to upon timeout.  This is generally done for automatically
@@ -1814,10 +1823,7 @@ function setupPageTimeout() {
 				}
 
 				/* fix coner case with tree refresh */
-				refreshPage = refreshPage.replace('action=tree&', 'action=tree_content&');
-				if (refreshPage.indexOf('header=false') == -1) {
-					refreshPage += (refreshPage.indexOf('?') > 0 ? '&header=false':'?header=false');
-				}
+				refreshPage = appendHeaderSuppression(refreshPage);
 
 				$.get(refreshPage)
 					.done(function(data) {
