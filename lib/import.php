@@ -1618,7 +1618,7 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				$different++;
-				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\'';
+				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $value . ', Old Value: ' . $previous_data[$column];
 			}
 		}
 
