@@ -629,45 +629,44 @@ label {
 
 .cactiPageHead {
 	background: #161616 none repeat scroll 0 0;
-	height:30px;
-	width:100%;
-	position:fixed;
-	padding-top:5px;
-	top:0px;
-	left:0px;
-	z-index:4;
+	height: 30px;
+	position: fixed;
+	padding-top: 5px;
+	top: 0px;
+	left: 0px;
+	z-index: 4;
 }
 
 .cactiGraphPageHeadBackdrop {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom: 0px;
-	float:right;
-	width:400px;
-	height:35px;
-	top:0px;
-	position:fixed;
-	right:0px;
-	z-index:-1;
+	float: right;
+	width: 400px;
+	height: 35px;
+	top: 0px;
+	position: fixed;
+	right: 0px;
+	z-index: -1;
 }
 
 .cactiConsolePageHeadBackdrop {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
-	padding-bottom:0px;
-	float:right;
-	width:400px;
-	height:35px;
-	top:0px;
-	position:fixed;
-	right:0px;
-	z-index:-1;
+	padding-bottom: 0px;
+	float: right;
+	width: 400px;
+	height: 35px;
+	top: 0px;
+	position: fixed;
+	right: 0px;
+	z-index: -1;
 }
 
 .navigation {
 }
 
 .debug td {
-	padding:3px;
-	margin:0px;
+	padding: 3px;
+	margin: 0px;
 }
 
 .breadCrumbBar {
