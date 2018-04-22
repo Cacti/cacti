@@ -58,7 +58,7 @@ $fields_poller_edit = array(
 	),
 	'hostname' => array(
 		'method' => 'textbox',
-		'friendly_name' => __('Web Site Hostname'),
+		'friendly_name' => __('Data Collector Hostname'),
 		'description' => __('The hostname for Data Collector.  It may have to be a Fully Qualified Domain name for the remote Pollers to contact it for activities such as re-indexing, Real-time graphing, etc.'),
 		'value' => '|arg1:hostname|',
 		'size' => '50',
