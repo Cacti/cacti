@@ -410,6 +410,9 @@ function aggregate_template_edit() {
 			$('#save_component_template').parent().next('table').css('display', 'none');
 		} else {
 			$('#graph_template_id').prop('disabled', true);
+			if ($('#graph_template_id').selectmenu('widget')) {
+				$('#graph_template_id').selectmenu('disable');
+			}
 		}
 
 		$('#total').change(function() {
