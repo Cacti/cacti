@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -feature: Update JavaScript library jquery.tablesorter.js to version 2.30.1
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
 -feature: Update JavaScript library jquery.js to 3.3.1
+-feature: Make Top Tabs use Ajax Callback
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

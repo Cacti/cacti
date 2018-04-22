@@ -898,8 +898,13 @@ function toggleFilterAndIcon(id, child, initial) {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs').find('.lefttab').unbind('click').click(function(event) {
-		event.preventDefault();
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').unbind('click').click(function(event) {
+		page = basename($(this).attr('href'));
+		if (page == 'logout.php') {
+			return;
+		} else {
+			event.preventDefault();
+		}
 
 		if ($('.cactiTreeNavigationArea').length > 0) {
 			tree = true;
@@ -920,7 +925,19 @@ function setupResponsiveMenuAndTabs() {
 				menuShow(tree);
 			}
 		} else {
-			document.location = $(this).attr('href');
+			/* update menu selection */
+			if ($(this).hasClass('lefttab')) {
+				$('.lefttab').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			/* update menu selection */
+			if ($(this).hasClass('righttab')) {
+				$('.righttab').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			loadTopTab($(this).attr('href'));
 		}
 	});
 
@@ -1347,6 +1364,86 @@ function menuShow(tree) {
 	menuOpen = true;
 }
 
+function loadTopTab(href) {
+	statePushed = false;
+
+	thref = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+	url   = thref+(thref.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
+
+	$('.submenuoptions').slideUp(120);
+	$('.menuoptions').slideUp(120);
+
+	if (href.indexOf('graph_view.php') >= 0) {
+		$('.cactiGraphHeaderBackground').show();
+		$('.cactiConsolePageHeadBackdrop').hide();
+	} else {
+		$('.cactiGraphHeaderBackground').hide();
+		$('.cactiConsolePageHeadBackdrop').show();
+	}
+
+	$.get(url)
+		.done(function(html) {
+			var htmlObject  = $(html);
+			var matches     = html.match(/<title>(.*?)<\/title>/);
+
+			if (matches != null) {
+				var htmlTitle   = matches[1];
+				var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+				var parts       = html.split('</title>');
+				var data        = parts[1];
+
+				checkForLogout(data);
+
+				$('title').text(htmlTitle);
+				$('#breadcrumbs').html(breadCrumbs);
+				$('div[class^="ui-"]').remove();
+				$('#cactiContent').replaceWith(data);
+
+				myTitle = htmlTitle;
+				myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+				pushState(myTitle, href);
+			} else {
+				checkForLogout(html);
+
+				$('#cactiContent').replaceWith(html);
+
+				href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+				pushState(myTitle, href);
+			}
+
+			var hrefParts = href.split('?');
+			pageName = basename(hrefParts[0]);
+
+			if (pageName != '') {
+				if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='"+href+"']").addClass('selected');
+				} else {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+				}
+			}
+
+			applySkin();
+
+			if (isMobile.any() != null) {
+				window.scrollTo(0,1);
+			} else {
+				window.scrollTo(0,0);
+			}
+
+			return false;
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+
+	return false;
+}
+
 function loadPage(href) {
 	statePushed = false;
 
@@ -1544,7 +1641,21 @@ function ajaxAnchors() {
 			pageName = basename(href);
 		}
 
-		loadPage(href);
+		if ($(this).hasClass('lefttab') || $(this).hasClass('righttab')) {
+			/* update menu selection */
+			if ($(this).hasClass('lefttab')) {
+				$('.lefttab').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			/* update menu selection */
+			if ($(this).hasClass('righttab')) {
+				$('.righttab').removeClass('selected');
+				$(this).addClass('selected');
+			}
+		} else {
+			loadPage(href);
+		}
 
 		return false;
 	});

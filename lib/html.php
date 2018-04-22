@@ -1657,7 +1657,7 @@ function html_show_tabs_left() {
 	}
 }
 
-function html_graph_tabs_right($current_user) {
+function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
 	$theme = get_selected_theme();

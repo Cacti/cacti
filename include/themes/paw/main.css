@@ -1603,6 +1603,7 @@ td.tab {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
+	display: none !important;
 	position:fixed;
 	right: 5px;
 	top: 5px;
