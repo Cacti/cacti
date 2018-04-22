@@ -20,8 +20,9 @@
 } )( function( jQuery, window ) {
 "use strict";
 
-
 jQuery.migrateVersion = "3.0.1";
+jQuery.migrateMute = true;
+jQuery.migrateWranings = false;
 
 /* exported migrateWarn, migrateWarnFunc, migrateWarnProp */
 
@@ -43,6 +44,8 @@ jQuery.migrateVersion = "3.0.1";
 	if ( jQuery.migrateWarnings ) {
 		window.console.log( "JQMIGRATE: Migrate plugin loaded multiple times" );
 	}
+
+	return;
 
 	// Show a message on the console so devs know we're active
 	window.console.log( "JQMIGRATE: Migrate is installed" +
