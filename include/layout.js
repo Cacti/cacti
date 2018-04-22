@@ -1641,21 +1641,7 @@ function ajaxAnchors() {
 			pageName = basename(href);
 		}
 
-		if ($(this).hasClass('lefttab') || $(this).hasClass('righttab')) {
-			/* update menu selection */
-			if ($(this).hasClass('lefttab')) {
-				$('.lefttab').removeClass('selected');
-				$(this).addClass('selected');
-			}
-
-			/* update menu selection */
-			if ($(this).hasClass('righttab')) {
-				$('.righttab').removeClass('selected');
-				$(this).addClass('selected');
-			}
-		} else {
-			loadPage(href);
-		}
+		loadPage(href);
 
 		return false;
 	});
