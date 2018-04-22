@@ -261,7 +261,7 @@ $selectedTheme = get_selected_theme();
 		</table>
 	</div>
 	<div id='image' style='padding:2px;'>
-		<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-o-notch'></i>
+		<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-notch'></i>
 	</div>
 	<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
 	<input type='hidden' id='local_graph_id' name='local_graph_id' value='<?php echo get_request_var('local_graph_id'); ?>'/>
