@@ -1047,6 +1047,7 @@ $user_auth_realm_filenames = array(
 	'host.php' => 3,
 	'host_templates.php' => 12,
 	'index.php' => 8,
+	'step_json.php' => 8,
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
