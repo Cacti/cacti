@@ -27,7 +27,6 @@ jQuery.migrateWranings = false;
 /* exported migrateWarn, migrateWarnFunc, migrateWarnProp */
 
 ( function() {
-
 	var rbadVersions = /^[12]\./;
 
 	// Support: IE9 only
@@ -44,14 +43,6 @@ jQuery.migrateWranings = false;
 	if ( jQuery.migrateWarnings ) {
 		window.console.log( "JQMIGRATE: Migrate plugin loaded multiple times" );
 	}
-
-	return;
-
-	// Show a message on the console so devs know we're active
-	window.console.log( "JQMIGRATE: Migrate is installed" +
-		( jQuery.migrateMute ? "" : " with logging active" ) +
-		", version " + jQuery.migrateVersion );
-
 } )();
 
 var warnedAbout = {};
