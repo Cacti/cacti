@@ -31,6 +31,7 @@ define('IN_CACTI_INSTALL', 1);
 /* set the json variable for request validation handling */
 include('../lib/html_utility.php');
 set_request_var('json', true);
+$auth_json = true;
 
 include('../include/auth.php');
 include('../lib/installer.php');
@@ -40,32 +41,30 @@ include('../lib/utility.php');
 $debug = false;
 
 /* ================= input validation ================= */
-get_filter_request_var('step');
-get_filter_request_var('data');
+get_request_var('data', array());
 
-$param_step = -1;
-$step = 1;
-if (!isempty_request_var('step')) {
-	$param_step = get_request_var('step');
-	if ($param_step > 0 && $param_step < 10) {
-		$step = $param_step;
-	}
+$settings = array();
+if (isset_request_var('data') && get_request_var('data')) {
+	$settings = json_decode(get_request_var('data'), true);
 }
 
-$installer = new Installer();
-$installer->setDefaultStep($step);
-$output = trim($installer->getOutput());
-$oarray = array(
-	'param_step' => $param_step,
-	'calc_step' => $step,
+$installer = new Installer($settings);
+$data = $installer->getData();
+
+/*
+array(
 	'step_data' => $installer->stepData,
-	'step' => $installer->stepCurrent,
+	'config_write' => $installer->IsConfigurationWritable(),
+	'config_remote' => $installer->IsRemoteDatabaseGood(),
+	'mode' => $installer->getMode(),
+	'step' => $installer->getStep(),
 	'prev' => $installer->buttonPrevious,
 	'next' => $installer->buttonNext,
 	'test' => $installer->buttonTest,
 	'html' => $output
 );
-$json = json_encode($oarray);
+*/
+$json = json_encode($data);
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));

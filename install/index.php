@@ -48,10 +48,6 @@ if (get_nfilter_request_var('action') == 'testdb') {
 include_once('../lib/installer.php');
 
 /* allow the upgrade script to run for as long as it needs to */
-$cacti_versions = array_keys($cacti_version_codes);
-
-$old_cacti_version = get_cacti_version();
-
 $installer = new Installer();
 if ($installer->shouldRedirectToHome()) {
 	header($url_path);
@@ -89,7 +85,9 @@ if ($installer->shouldRedirectToHome()) {
 			<input class='installButton' id='buttonPrevious' type='button' value='Previous'>
 			<input class='installButton' id='buttonNext' type='button' value='Next'>
 			<input class='installButton' id='buttonTest' type='button' value='Test'>
+			<input id='installData' type='hidden'>
 		</div>
+		<div id="installDebug"></div>
 		<div class='cactiInstallCopyrightArea'>Copyright &copy; 2018 Cacti Group</div>
 	</div>
 <?php

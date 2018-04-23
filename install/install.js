@@ -44,20 +44,22 @@ function setButtonData(buttonName, buttonData) {
 	if (button != null) {
 		button.button();
 		button.data('buttonData', buttonData);
-		buttonCheck = button.data('buttonData');
-		if (buttonData.Enabled) {
-			button.button('enable');
-		} else {
-			button.button('disable');
+		if (buttonData != null) {
+			buttonCheck = button.data('buttonData');
+			if (buttonData.Enabled) {
+				button.button('enable');
+			} else {
+				button.button('disable');
+			}
+
+			if (buttonData.Visible) {
+				button.show();
+			} else {
+				button.hide();
+			}
+			button.val(buttonData.Text);
 		}
 
-		if (buttonData.Visible) {
-			button.show();
-		} else {
-			button.hide();
-		}
-
-		button.val(buttonData.Text);
 	}
 }
 
@@ -101,84 +103,189 @@ function disableButton(buttonName) {
 	}
 }
 
-function performStep(install_step) {
+function collapseHeadings(headingStates) {
+	for (var key in headingStates) {
+		// skip loop if the property is from prototype
+		if (!headingStates.hasOwnProperty(key)) continue;
+
+		var enabled = headingStates[key];
+		var element = $('#' + key);
+		if (element != null && element.length > 0) {
+			fa_icon = 'fa fa-exclamation-triangle';
+			if (enabled) {
+				fa_icon = 'fa fa-check-circle';
+				toggleHeader(element, false);
+			}
+
+			element.append('<div class="cactiInstallValid"><i class="' + fa_icon + '"></i></div>');
+
+			element.click(function(e) {
+				toggleHeader(e.currentTarget);
+			});
+		} else {
+			window.alert('missing section "' + key + '"');
+		}
+	}
+}
+
+function hideHeadings(headingStates) {
+	for (var key in headingStates) {
+		// skip loop if the property is from prototype
+		if (!headingStates.hasOwnProperty(key)) continue;
+
+		var enabled = headingStates[key];
+		var element = $('#' + key);
+		if (element != null && element.length > 0) {
+			if (enabled) {
+				element.show();
+				toggleHeader(element, true);
+			} else {
+				element.hide();
+				toggleHeader(element, false);
+			}
+		} else {
+			window.alert('missing section "' + key + '"');
+		}
+	}
+}
+
+function processStep1(StepData) {
+	if (StepData.Eula == 1) {
+		$("#accept").prop('checked',true);
+	}
+
+	if ($('#accept').length) {
+		$('#accept').click(function() {
+			if ($(this).is(':checked')) {
+				$('#buttonNext').button('enable');
+			} else {
+				$('#buttonNext').button('disable');
+			}
+		});
+
+		if ($('#accept').is(':checked')) {
+			$('#buttonNext').button('enable');
+		} else {
+			$('#buttonNext').button('disable');
+		}
+	}
+}
+
+function processStep2(StepData) {
+	collapseHeadings(StepData);
+}
+
+function processStep3(StepData) {
+	hideHeadings(StepData);
+
+	$("#install_type").on('change', function() {
+		installData = $("#installData").data("installData");
+		//debugger;
+		installData.Mode = this.value;
+		$("#installData").data("installData", installData);
+		performStep(3);
+	});
+}
+
+function getDefaultInstallData() {
+	return { Step: 1, Eula: 0 };
+}
+
+function prepareInstallData(installStep) {
+	//debugger;
+	installData = $("#installData").data('installData');
+	if (typeof installData == 'undefined') {
+		installData = getDefaultInstallData();
+	}
+
+	step = installData.Step;
+	if (step == 1) {
+		element = $("#accept");
+		if (element != null && element.length > 0) {
+			installData.Eula = element.is(':checked');
+		}
+	} else if (step == 2) {
+		element = $("#mode");
+		if (element != null && element.length > 0) {
+			installData.Mode = element.val();
+		}
+	}
+
+	props = [ 'Step', 'Eula', 'Mode' ];
+	newData = getDefaultInstallData();
+	for (i = 0; i < props.length; i++) {
+		propName = props[i];
+		if (installData.hasOwnProperty(propName)) {
+			newData[propName] = installData[propName];
+		}
+	}
+
+	if (typeof installStep != 'undefined') {
+		newData.Step = installStep;
+	}
+
+	return JSON.stringify(newData);
+}
+
+function performStep(installStep) {
 	$.ajaxQ.abortAll();
-	window.history.pushState("" , "Cacti Installation - Step " + install_step, 'index.php?step=' + install_step);
-	url = 'step_json.php?step=' + install_step;
+
+	installData = prepareInstallData(installStep);
+	url = 'step_json.php?data=' + installData;
+
 	$.get(url)
 		.done(function(data) {
 			checkForLogout(data);
 
+			$("#installData").data("installData", data);
+
+			window.history.pushState("" , "Cacti Installation - Step " + data.Step, 'index.php?data=' + prepareInstallData());
+
 			$('#installContent').empty().hide();
 			$('div[class^="ui-"]').remove();
-			$('#installContent').html(data.html);
+			$('#installContent').html(data.Html);
 			$('#installContent').show();
-			setButtonData('Previous',data.prev);
-			setButtonData('Next',data.next);
-			setButtonData('Test',data.test);
+
+			if (typeof $("#installData").data("debug") != 'undefined') {
+				debugData = data;
+				debugData.Html = '';
+				debug = $('#installDebug');
+				debug.empty();
+				debug.html('<h5 style="border: 1px dashed grey">' + JSON.stringify(debugData) + '</h5>');
+ 			}
+
+			setButtonData('Previous',data.Prev);
+			setButtonData('Next',data.Next);
+			setButtonData('Test',data.Test);
 
 			$('buttonTest').button('enable');
 			$('buttonTest').val(data);
 			$('buttonTest').show();
 
-			if (data.step_data != null)  {
-				step_data = data.step_data;
-				for (var key in step_data) {
-					// skip loop if the property is from prototype
-					if (!step_data.hasOwnProperty(key)) continue;
-
-					var enabled = step_data[key];
-					var element = $('#' + key);
-					if (element != null && element.length > 0) {
-						fa_icon = 'fa fa-exclamation-triangle';
-						if (enabled) {
-							fa_icon = 'fa fa-check-circle';
-							toggleHeader(element, false);
-						}
-
-						element.append('<div class="cactiInstallValid"><i class="' + fa_icon + '"></i></div>');
-
-						element.click(function(e) {
-							toggleHeader(e.currentTarget);
-						});
-					} else {
-						window.alert('missing section "' + key + '"');
-					}
+			if (data.StepData != null)  {
+				if (data.Step == 1) {
+					processStep1(data.StepData);
+				} else if (data.Step == 2) {
+					processStep2(data.StepData);
+				} else if (data.Step == 3) {
+					processStep3(data.StepData);
 				}
 			}
-
-			if ($('#accept').length) {
-				$('#accept').click(function() {
-					if ($(this).is(':checked')) {
-						$('#buttonNext').button('enable');
-					} else {
-						$('#buttonNext').button('disable');
-					}
-				});
-
-				if ($('#accept').is(':checked')) {
-					$('#buttonNext').button('enable');
-				} else {
-					$('#buttonNext').button('disable');
-				}
-			}
-
-			$('.installButton').click(function(e) {
-				button = $(e.currentTarget);
-				if (button != null) {
-					buttonData = button.data('buttonData');
-					if (buttonData != null) {
-						performStep(buttonData.Step);
-						return;
-					}
-				}
-				getPresentHTTPError('');
-			});
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
 		}
 	);
+}
+
+$.urlParam = function(name){
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return decodeURI(results[1]) || 0;
+    }
 }
 
 install_step = 0;
@@ -187,5 +294,33 @@ $().ready(function() {
 	disableButton('Previous');
 	disableButton('Next');
 	disableButton('Test');
-	performStep(0);
+
+	//debugger;
+	installData = $.urlParam('data');
+	if (installData != null && installData != 0) {
+//		try {
+			installData = JSON.parse(installData);
+//		} catch (ex) {
+//			installData = getDefaultInstallData();
+//		}
+	}
+	$("#installData").data('installData', installData);
+
+	installDebug = $.urlParam("debug");
+	if (installDebug != null && installDebug != 0) {
+		$("#installData").data("debug", true);
+	}
+
+	$('.installButton').click(function(e) {
+		button = $(e.currentTarget);
+		if (button != null) {
+			buttonData = button.data('buttonData');
+			if (buttonData != null) {
+				performStep(buttonData.Step);
+				return;
+			}
+		}
+		getPresentHTTPError('');
+	});
+	performStep();
 });
