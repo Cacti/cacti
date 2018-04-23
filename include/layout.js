@@ -982,11 +982,7 @@ function responsiveUI(event) {
 		menuShow(tree);
 	}
 
-	if ($('#navigation').length && $('#navigation').is(':visible')) {
-		mainWidth = $('body').innerWidth() - $('#navigation').width();
-	} else {
-		mainWidth = $('body').innerWidth();
-	}
+	mainWidth = getMainWidth();
 
 	/* change textbox and textarea widths */
 	$('input[type="text"], textarea').each(function() {
@@ -1022,17 +1018,22 @@ function responsiveUI(event) {
 	});
 }
 
-function responsiveResizeGraphs() {
-	if ($('.graphimage').length == 0) {
-		return false;
-	}
-
+function getMainWidth() {
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
 		mainWidth = $('body').innerWidth() - $('#navigation').width();
 	} else {
 		mainWidth = $('body').innerWidth();
 	}
 
+	return mainWidth - 30;
+}
+
+function responsiveResizeGraphs() {
+	if ($('.graphimage').length == 0) {
+		return false;
+	}
+
+	mainWidth = getMainWidth();
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 	graphRow  = $('.tableRowGraph:first').width();
@@ -2541,9 +2542,8 @@ function dryRunRangeFill(local_graph_id) {
 }
 
 function redrawGraph(graph_id) {
-	mainWidth = $('#main').width();
+	mainWidth = getMainWidth();
 	isThumb   = $('#thumbnails').is(':checked');
-
 	myColumns = $('#columns').val();
 	graphRow  = $('.tableRowGraph').width();
 	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
@@ -2673,11 +2673,10 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width()-30;
+	mainWidth = getMainWidth();
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
-
-	myWidth = (mainWidth-(30*myColumns))/myColumns;
+	myWidth   = (mainWidth-(30*myColumns))/myColumns;
 
 	$('.graphWrapper').each(function() {
 		graph_id=$(this).attr('graph_id');
