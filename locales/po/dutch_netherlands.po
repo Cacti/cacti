@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-02-25 10:37-0500\n"
-"PO-Revision-Date: 2018-02-26 20:37+0100\n"
+"PO-Revision-Date: 2018-04-23 11:38+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 2.0.7\n"
 
 #: /var/www/html/cacti/about.php:29
 #: /var/www/html/cacti/include/global_session.php:115
@@ -12738,7 +12738,7 @@ msgid ""
 "Invalid Cacti version <strong>%1$s</strong>, cannot upgrade to <strong>%2$s</"
 "strong>"
 msgstr ""
-"Ongeldige Cacti versie <strong>%s$s</strong>, kan niet upgraden naar <strong>"
+"Ongeldige Cacti versie <strong>%1$s</strong>, kan niet upgraden naar <strong>"
 "%2$s</strong>"
 
 #: /var/www/html/cacti/install/index.php:394
