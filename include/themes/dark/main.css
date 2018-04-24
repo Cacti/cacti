@@ -1285,10 +1285,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -2203,6 +2199,27 @@ tr#realtime td:first-child {
 	height: 300px;
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: unset;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
 }
 
 .graphWrapper {

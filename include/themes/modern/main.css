@@ -1049,7 +1049,6 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align: top;
-	display:none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 }
@@ -1324,10 +1323,6 @@ legend {
 .filterTable td {
 	padding: 2px;
 	white-space: nowrap;
-}
-
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
 }
 
 .filterTable label {
@@ -2347,3 +2342,25 @@ tr#realtime td:first-child {
 .note a:hover {
 	text-decoration: underline;
 }
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: unset;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
