@@ -56,7 +56,7 @@ class Installer implements JsonSerializable {
 
 		$step = read_config_option('install_step', true);
 		file_put_contents('/tmp/install_step.log', 'Initial: ' . var_export($step, true). "\n", FILE_APPEND);
-		if ($step === false) {
+		if ($step === false || $step === null) {
 			file_put_contents('/tmp/install_step.log', "Resetting to STEP_WELCOME as not found\n", FILE_APPEND);
 			$step = Installer::STEP_WELCOME;
 			set_config_option('install_step', $step);
@@ -64,13 +64,14 @@ class Installer implements JsonSerializable {
 		} elseif ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version',true);
 			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
-			if ($install_version === false) {
+			if ($install_version === false || $install_version === null) {
 				$install_version = CACTI_VERSION;
 			}
 
 			if (cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
 				file_put_contents('/tmp/install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
-				if (read_config_option('install_error') === false) {
+				$install_error = read_config_option('install_error', true);
+				if ($install_error === false || $install_error === null) {
 					$step = Installer::STEP_COMPLETE;
 				} else {
 					$step = Installer::STEP_ERROR;
@@ -80,7 +81,7 @@ class Installer implements JsonSerializable {
 		} elseif ($step == Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
 			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
-			if ($install_version === false) {
+			if ($install_version === false || $install_version === null) {
 				$install_version = CACTI_VERSION;
 			}
 
@@ -97,14 +98,14 @@ class Installer implements JsonSerializable {
 		$this->templates = install_setup_get_templates();
 		$this->paths = install_file_paths();
 		$this->theme = read_config_option('selected_theme', true);
-		if ($this->theme === false) {
+		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
 		}
 
 		$this->rrdVersion = read_config_option('rrdtool_version', true);
 
 		$mode = read_config_option('install_mode', true);
-		if ($mode === false) {
+		if ($mode === false || $mode === null) {
 			$mode = Installer::MODE_INSTALL;
 			if ($this->old_cacti_version != 'new_install') {
 				if (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '<')) {
@@ -1217,7 +1218,15 @@ class Installer implements JsonSerializable {
 		);
 
 		$backgroundTime = read_config_option('install_started', true);
+		if ($backgroundTime === null) {
+			$backgroundTime = false;
+		}
+
 		$backgroundLast = read_config_option('install_updated', true);
+		if ($backgroundLast === null) {
+			$backgroundLast = false;
+		}
+
 		$backgroundNeeded = $backgroundTime === false;
 		if ($backgroundTime === false) {
 			$backgroundTime = microtime(true);
@@ -1251,8 +1260,13 @@ class Installer implements JsonSerializable {
 				set_config_option("install_updated", $newTime);
 
 				$backgroundTime = read_config_option("install_started", true);
+				if ($backgroundTime === null) {
+					$backgroundTime = false;
+				}
 				$backgroundLast = read_config_option("install_updated", true);
-
+				if ($backgroundLast === null) {
+					$backgroundLast = false;
+				}
 				$backgroundNeeded = ("$newTime" == "$backgroundTime");
 
 				file_put_contents('/tmp/process.log', "\n=======\nExpired\n=======\n", FILE_APPEND);
@@ -1278,7 +1292,7 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->Visible = false;
 
 		$progressCurrent = read_config_option('install_progress', true);
-		if ($progressCurrent === false) {
+		if ($progressCurrent === false || $progressCurrent === null) {
 			$progressCurrent = Installer::PROGRESS_NONE;
 		}
 

@@ -300,17 +300,17 @@ function read_config_option($config_name, $force = false) {
 	if ((!isset($config_array[$config_name])) || ($force)) {
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
+		$value = null;
 		if (isset($db_setting['value'])) {
 			$value = $db_setting['value'];
-		} else {
-			$value = read_default_config_option($config_name);
 		}
 
 		if ($value === null) {
-			$config_array[$config_name] = false;
-		} else {
-			$config_array[$config_name] = $value;
+			$value = read_default_config_option($config_name);
 		}
+		file_put_contents('/tmp/config.log',$config_name . ' = ' . str_replace("\n", " ", var_export($value, true)) . "\n", FILE_APPEND);
+
+		$config_array[$config_name] = $value;
 
 		if (isset($_SESSION)) {
 			$_SESSION['sess_config_array']  = $config_array;

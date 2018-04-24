@@ -43,7 +43,6 @@ include_once($config['base_path'].'/lib/data_query.php');
 include_once($config['base_path'].'/lib/api_automation.php');
 include_once($config['base_path'].'/lib/api_automation_tools.php');
 
-$backgroundTime = read_config_option('install_started', true);
 cacti_log('Checking arguments', false, 'INSTALL:');
 /* process calling arguments */
 $params = $_SERVER['argv'];
@@ -53,7 +52,11 @@ if (sizeof($params) == 0) {
 	die('no parameters passed');
 }
 
-$backgroundTime = read_config_option('install_started');
+$backgroundTime = read_config_option('install_started', true);
+if ($backgroundTime === null) {
+	$backgroundTime = false;
+}
+
 $backgroundArg = $params[0];
 
 if ("$backgroundTime" != "$backgroundArg") {
