@@ -982,7 +982,11 @@ function responsiveUI(event) {
 		menuShow(tree);
 	}
 
-	mainWidth = getMainWidth();
+	if ($('#navigation').length && $('#navigation').is(':visible')) {
+		mainWidth = $('body').innerWidth() - $('#navigation').width();
+	} else {
+		mainWidth = $('body').innerWidth();
+	}
 
 	/* change textbox and textarea widths */
 	$('input[type="text"], textarea').each(function() {
