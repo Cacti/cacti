@@ -721,7 +721,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			$previous_value = $none_entry;
 		}
 
-		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
+		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
 		print "<span class='ui-select-text'>";
 		print "<input type='text' id='$form_name" . "_input' size='28' value='" . html_escape($previous_value) . "'>";
