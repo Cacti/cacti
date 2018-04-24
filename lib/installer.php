@@ -1,4 +1,5 @@
 <?php
+include(dirname(__FILE__) . '/../lib/poller.php');
 
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
@@ -12,15 +13,26 @@ class Installer implements JsonSerializable {
 	const STEP_PERMISSION_CHECK = 5;
 	const STEP_TEMPLATE_INSTALL = 6;
 	const STEP_INSTALL_CONFIRM = 7;
-	const STEP_INSTALL = 8;
-	const STEP_COMPLETE = 9;
-	const STEP_INSTALL_OLDVERSION = 10;
+	const STEP_INSTALL_OLDVERSION = 11;
+	const STEP_INSTALL = 97;
+	const STEP_COMPLETE = 98;
+	const STEP_ERROR = 99;
 
 	const MODE_NONE = 0;
 	const MODE_INSTALL = 1;
 	const MODE_POLLER = 2;
 	const MODE_UPGRADE = 3;
 	const MODE_DOWNGRADE = 4;
+
+	const PROGRESS_NONE = 0;
+	const PROGRESS_START = 1;
+	const PROGRESS_UPGRADES_BEGIN = 2;
+	const PROGRESS_UPGRADES_END = 60;
+	const PROGRESS_TEMPLATES_BEGIN = 61;
+	const PROGRESS_TEMPLATES_END = 70;
+	const PROGRESS_VERSION_BEGIN = 75;
+	const PROGRESS_VERSION_END = 80;
+	const PROGRESS_COMPLETE = 100;
 
 	private $old_cacti_version;
 
@@ -30,42 +42,99 @@ class Installer implements JsonSerializable {
 	private $stepNext;
 	private $stepData = null;
 
+	private $templates;
+	private $rrdVersion;
+	private $paths;
+	private $theme;
+
 	private $buttonNext = null;
 	private $buttonPrevious = null;
 	private $buttonTest = null;
 
 	public function __construct($installData = array()) {
-		$this->eula = false;
-		$mode = Installer::MODE_INSTALL;
+		$this->old_cacti_version = get_cacti_version();
 
-		$this->step = Installer::STEP_WELCOME;
+		$step = read_config_option('install_step', true);
+		file_put_contents('/tmp/install_step.log', 'Initial: ' . var_export($step, true). "\n", FILE_APPEND);
+		if ($step === false) {
+			file_put_contents('/tmp/install_step.log', "Resetting to STEP_WELCOME as not found\n", FILE_APPEND);
+			$step = Installer::STEP_WELCOME;
+			set_config_option('install_step', $step);
+			$installData = array();
+		} elseif ($step == Installer::STEP_INSTALL) {
+			$install_version = read_config_option('install_version',true);
+			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
+			if ($install_version === false) {
+				$install_version = CACTI_VERSION;
+			}
+
+			if (cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
+				file_put_contents('/tmp/install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
+				if (read_config_option('install_error') === false) {
+					$step = Installer::STEP_COMPLETE;
+				} else {
+					$step = Installer::STEP_ERROR;
+				}
+				$installData = array();
+			}
+		} elseif ($step == Installer::STEP_COMPLETE) {
+			$install_version = read_config_option('install_version',true);
+			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
+			if ($install_version === false) {
+				$install_version = CACTI_VERSION;
+			}
+
+			if (!cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
+				file_put_contents('/tmp/install_step.log', 'Does not match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
+				$step = Installer::STEP_WELCOME;
+				db_execute('DELETE FROM settings where name like \'install_%\'');
+				$installData = array();
+			}
+		}
+		file_put_contents('/tmp/install_step.log', 'After: ' . var_export($step, true). "\n\n", FILE_APPEND);
+
+		$this->eula = read_config_option('install_eula', true);
+		$this->templates = install_setup_get_templates();
+		$this->paths = install_file_paths();
+		$this->theme = read_config_option('selected_theme', true);
+		if ($this->theme === false) {
+			$this->setTheme('modern');
+		}
+
+		$this->rrdVersion = read_config_option('rrdtool_version', true);
+
+		$mode = read_config_option('install_mode', true);
+		if ($mode === false) {
+			$mode = Installer::MODE_INSTALL;
+			if ($this->old_cacti_version != 'new_install') {
+				if (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '<')) {
+					$mode = Installer::MODE_UPGRADE;
+				} else {
+					$mode = Installer::MODE_DOWNGRADE;
+				}
+			} elseif ($this->hasRemoteDatabaseInfo()) {
+				$mode = Installer::MODE_POLLER;
+			}
+		}
+
 		$this->stepData = null;
 
-		$this->old_cacti_version = get_cacti_version();
-		if ($this->old_cacti_version != 'new_install') {
-			if (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '<')) {
-				$mode = Installer::MODE_UPGRADE;
-			} else {
-				$mode = Installer::MODE_DOWNGRADE;
-			}
-		} elseif ($this->hasRemoteDatabaseInfo()) {
-			$mode = Installer::MODE_POLLER;
-		}
-
 		$this->setMode($mode);
-		$this->setStep(Installer::STEP_WELCOME);
+		$this->setStep($step);
 
-		if ($installData != null) {
+		if (!empty($installData)) {
 			$this->processData($installData);
 		}
+		file_put_contents('/tmp/install_step.log', 'Done: ' . var_export($this->stepCurrent, true). "\n\n", FILE_APPEND);
 	}
 
-	protected function processData($settings = array()) {
-		if (empty($settings) || !is_array($settings)) {
-			$settings = array();
+	protected function processData($initialData = array()) {
+		if (empty($initialData) || !is_array($initialData)) {
+			$initialData = array();
 		}
 
-		foreach ($settings as $key => $value) {
+		file_put_contents('/tmp/install.log','');
+		foreach ($initialData as $key => $value) {
 			switch ($key) {
 				case 'Step':
 					$this->setStep($value);
@@ -85,19 +154,151 @@ class Installer implements JsonSerializable {
 				case 'Test':
 					$this->buttonTest = new InstallerButton($value);
 					break;
+				case 'Templates':
+					$this->setTemplates($value);
+					break;
+				case 'Paths':
+					$this->setPaths($value);
+					break;
+				case 'RRDVer':
+					$this->setRRDVersion($value);
+					break;
+				case 'Theme':
+					$this->setTheme($value);
+					break;
+				default:
+					file_put_contents('/tmp/install.log',"$key => $value\n", FILE_APPEND);
 			}
 		}
 	}
 
 	public function jsonSerialize() {
+		$output = $this->processCurrentStep();
+
 		return array(
 			'Mode' => $this->mode,
-			'Step' => $this->step,
+			'Step' => $this->stepCurrent,
 			'Eula' => $this->eula,
 			'Prev' => $this->buttonPrevious,
 			'Next' => $this->buttonNext,
 			'Test' => $this->buttonTest,
+			'Html' => $output,
+			'StepData' => $this->stepData,
+			'Templates' => $this->templates,
+			'Paths' => $this->paths,
+			'RRDVer' => $this->rrdVersion,
+			'Theme' => $this->theme
 		);
+	}
+
+	public function getData() {
+		return $this->jsonSerialize();
+	}
+
+	private function setProgress($param_process) {
+		set_config_option('install_progress', $param_process);
+	}
+
+	private function setRRDVersion($param_rrdver = '') {
+		global $config;
+		if (isset($param_rrdver) && strlen($param_rrdver)) {
+			$this->rrdver = $param_rrdver;
+			set_config_option('rrdtool_version', $this->rrdver);
+		}
+	}
+
+	private function setTheme($param_theme = '') {
+		global $config;
+		if (isset($param_theme) && strlen($param_theme)) {
+			$themePath = $config['base_path'] . '/include/themes/' . $param_theme . '/main.css';
+			if (file_exists($themePath)) {
+				$this->theme = $param_theme;
+				set_config_option('selected_theme', $this->theme);
+			}
+		}
+	}
+
+	private function setPaths($param_paths = array()) {
+		if (is_array($param_paths)) {
+			$input = install_file_paths();
+
+			/* get all items on the form and write values for them  */
+			foreach ($input as $name => $array) {
+				if (isset($param_paths[$name])) {
+					db_execute_prepared('REPLACE INTO settings
+						(name,value)
+						VALUES (?, ?)',
+						array($name, $param_paths[$name]));
+				}
+			}
+		}
+	}
+
+	private function setTemplates($param_templates = array()) {
+		if (is_array($param_templates)) {
+			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
+			$known_templates = install_setup_get_templates();
+			file_put_contents('/tmp/templates.log',"Updating templates\n");
+			file_put_contents('/tmp/templates.log',"Parameter data:\n".var_export($param_templates, true)."\n", FILE_APPEND);
+			foreach ($known_templates as $known) {
+				$filename = $known['filename'];
+				$key = 'chk_template_' . str_replace(".", "_", $filename);
+				file_put_contents('/tmp/templates.log',"Checking template file $filename against key $key ...\n", FILE_APPEND);
+				file_put_contents('/tmp/templates.log',"Template data: ".str_replace("\n"," ", var_export($known, true))."\n", FILE_APPEND);
+				if (isset($param_templates[$key])) {
+					$template = $param_templates[$key];
+					file_put_contents('/tmp/templates.log',"Template enabled:" . var_export($template, true) . "\n", FILE_APPEND);
+					file_put_contents('/tmp/templates.log',"Set template: install_template_$key = $filename\n", FILE_APPEND);
+					$key = str_replace(".", "_", $filename);
+					set_config_option("install_template_$key", $filename);
+				}
+			}
+		}
+	}
+
+	private function setMode($param_mode = -1) {
+		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
+			set_config_option('install_mode', $param_mode);
+			$this->mode = $param_mode;
+			$this->updateButtons();
+		}
+	}
+
+	public function getStep() {
+		return $this->stepCurrent;
+	}
+
+	private function setStep($param_step = -1) {
+		$step = Installer::STEP_WELCOME;
+		if (empty($param_step)) {
+			$param_step = 1;
+		}
+
+		if (intval($param_step) > Installer::STEP_NONE && intval($param_step) <= Installer::STEP_COMPLETE) {
+			$step = $param_step;
+		}
+
+		if ($step == Installer::STEP_NONE) {
+			$step == Installer::STEP_WELCOME;
+		}
+
+		file_put_contents('/tmp/install_step.log', 'setStep: ' . var_export($step, true). "\n", FILE_APPEND);
+		file_put_contents('/tmp/install_step.log', "setStep:\n" . var_export(debug_backtrace(0), true). "\n", FILE_APPEND);
+
+//		$install_version = read_config_option('install_version', true);
+//		if ($install_version !== false) {
+//			if ($install_version == CACTI_VERSION && $step == Installer::STEP_INSTALL) {
+//				$step = Installer::STEP_COMPLETE;
+//			}
+//		}
+
+		// Make current step the first if it is unknown
+		$this->stepCurrent  = ($step == Installer::STEP_NONE ? Installer::STEP_WELCOME : $step);
+		$this->stepPrevious = ($step <= Installer::STEP_WELCOME ? Installer::STEP_NONE : $step - 1);
+		$this->stepNext     = ($step >= Installer::STEP_COMPLETE ? Installer::STEP_NONE : $step + 1);
+
+		set_config_option('install_step', $this->stepCurrent);
+		$this->updateButtons();
 	}
 
 	public function shouldRedirectToHome() {
@@ -114,27 +315,37 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
-	public function getOutput() {
+	public function processCurrentStep() {
 		$exitReason = $this->shouldExitWithReason();
 		if ($exitReason !== false) {
 			$this->buttonNext->Enabled = false;
 			$this->buttonPrevious->Enabled = false;
 			$this->buttonTest->Enabled = false;
-			return $this->outputExitReason($exitReason);
+			return $this->exitWithReason($exitReason);
 		}
 
 		switch ($this->stepCurrent) {
 			case Installer::STEP_WELCOME:
-				return $this->outputStepWelcome();
+				return $this->processStepWelcome();
 			case Installer::STEP_CHECK_DEPENDENCIES:
-				return $this->outputStepCheckDependancies();
+				return $this->processStepCheckDependancies();
 			case Installer::STEP_INSTALL_TYPE:
-				return $this->outputStepMode();
+				return $this->processStepMode();
 			case Installer::STEP_BINARY_LOCATIONS:
-				return $this->outputStepBinaryLocations();
+				return $this->processStepBinaryLocations();
+			case Installer::STEP_PERMISSION_CHECK:
+				return $this->processStepPermissionCheck();
+			case Installer::STEP_TEMPLATE_INSTALL:
+				return $this->processStepTemplateInstall();
+			case Installer::STEP_INSTALL_CONFIRM:
+				return $this->processStepInstallConfirm();
+			case Installer::STEP_INSTALL:
+				return $this->processStepInstall();
+			case Installer::STEP_COMPLETE:
+				return $this->processStepComplete();
 		}
 
-		return $this->outputExitReason((0 - $this->stepCurrent));
+		return $this->exitWithReason((0 - $this->stepCurrent));
 	}
 
 	public function isDatabaseEmpty() {
@@ -171,65 +382,65 @@ class Installer implements JsonSerializable {
 			isset($rdatabase_port)) ? true : false;
 	}
 
-	public function outputExitReason($reason) {
+	public function exitWithReason($reason) {
 		global $config;
 
 		switch ($reason) {
 			case Installer::EXIT_DB_EMPTY:
-				return $this->outputExitSqlNeeded();
+				return $this->exitSqlNeeded();
 			case Installer::EXIT_DB_OLD:
-				return $this->outputExitDbTooOld();
+				return $this->exitDbTooOld();
 			default:
-				return $this->outputExitWithUnknownReason($reason);
+				return $this->exitWithUnknownReason($reason);
 		}
 	}
 
-	private function outputExitWithUnknownReason($reason) {
-		$output  = $this->outputErrorTitle();
-		$output .= $this->outputNormalSection(__('An unexpected reason was given for preventing this maintainence session.'));
-		$output .= $this->outputNormalSection(__('Please report this to the Cacti Group.'));
-		$output .= $this->outputCodeSection(__('Unknown Reason: %s', $reason));
+	private function exitWithUnknownReason($reason) {
+		$output  = Installer::sectionTitleError();
+		$output .= Installer::sectionNormal(__('An unexpected reason was given for preventing this maintainence session.'));
+		$output .= Installer::sectionNormal(__('Please report this to the Cacti Group.'));
+		$output .= Installer::sectionCode(__('Unknown Reason: %s', $reason));
 		return $output;
 	}
 
-	private function outputExitDbTooOld() {
-		$output  = $this->outputErrorTitle();
-		$output .= $this->outputNormalSection(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
-		$output .= $this->outputNormalSection(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
-		$output .= $this->outputCodeSection(__("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
-		$output .= $this->outputNormalSection(__('You <b>MUST</b> then update "include/config.php" to point to the new database.'));
-		$output .= $this->outputNormalSection(__('NOTE: Your existing data will not be modified, nor will it or any history be available to to the new install'));
+	private function exitDbTooOld() {
+		$output  = Installer::sectionTitleError();
+		$output .= Installer::sectionNormal(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
+		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
+		$output .= Installer::sectionCode(__("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionNormal(__('You <b>MUST</b> then update "include/config.php" to point to the new database.'));
+		$output .= Installer::sectionNormal(__('NOTE: Your existing data will not be modified, nor will it or any history be available to to the new install'));
 		return $output;
 	}
 
-	private function outputExitSqlNeeded() {
+	private function exitSqlNeeded() {
 		global $config, $database_username, $database_default, $database_password;
-		$output  = $this->outputErrorTitle();
-		$output .= $this->outputNormalSection(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
-		$output .= $this->outputCodeSection(__("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
-		$output .= $this->outputNormalSection(__("This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."));
-		$output .= $this->outputNormalSection(__("You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"));
+		$output  = Installer::sectionTitleError();
+		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
+		$output .= Installer::sectionCode(__("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionNormal(__("This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."));
+		$output .= Installer::sectionNormal(__("You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"));
 
 		if ($config['cacti_server_os'] == 'unix') {
-			$output .= $this->outputNormalSection(__("On Linux/UNIX, run the following as 'root' in a shell:"));
-			$output .= $this->outputCodeSection(__("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"));
+			$output .= Installer::sectionNormal(__("On Linux/UNIX, run the following as 'root' in a shell:"));
+			$output .= Installer::sectionCode(__("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"));
 		} else {
-			$output .= $this->outputNormalSection(__("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"));
+			$output .= Installer::sectionNormal(__("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"));
 		}
 
-		$output .= $this->outputNormalSection(__("Then run the following within MySQL as an administrator:"));
-		$output .= $this->outputCodeSection(__("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
+		$output .= Installer::sectionNormal(__("Then run the following within MySQL as an administrator:"));
+		$output .= Installer::sectionCode(__("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
 		return $output;
 	}
 
-	public function outputErrorTitle($title = '') {
+	public static function sectionTitleError($title = '') {
 		if (empty($title)) {
 			$title = __('Error');
 		}
-		return $this->outputSectionTitle($title, null, 'cactiInstallSectionTitleError');
+		return Installer::sectionTitle($title, null, 'cactiInstallSectionTitleError');
 	}
 
-	public function outputSectionTitle($title = '', $id = '', $class = '') {
+	public static function sectionTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -238,10 +449,10 @@ class Installer implements JsonSerializable {
 			$id = '';
 		}
 
-		return $this->outputSection($title, $id, $class, 'cactiInstallSectionTitle', 'h1');
+		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h1');
 	}
 
-	public function outputSectionSubTitle($title = '', $id = '', $class = '') {
+	public static function sectionSubTitle($title = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -250,10 +461,10 @@ class Installer implements JsonSerializable {
 			$id = '';
 		}
 
-		return $this->outputSection($title, $id, $class, 'cactiInstallSectionTitle', 'h3');
+		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h3');
 	}
 
-	public function outputNormalSection($text = '', $id = '', $class = '') {
+	public static function sectionNormal($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -263,10 +474,10 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionNormal';
-		return $this->outputSection($text, $id, trim($class));
+		return Installer::section($text, $id, trim($class));
 	}
 
-	public function outputNoteSection($text = '', $id = '', $class = '') {
+	public static function sectionNote($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -276,10 +487,10 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionNote';
-		return $this->outputSection($text, $id, trim($class));
+		return Installer::section($text, $id, trim($class));
 	}
 
-	public function outputCodeSection($text = '', $id = '', $class = '') {
+	public static function sectionCode($text = '', $id = '', $class = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -289,10 +500,10 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionCode';
-		return $this->outputSection($text, $id, trim($class), '', '');
+		return Installer::section($text, $id, trim($class), '', '');
 	}
 
-	public function outputSection($text = '', $id = '', $class = '', $baseClass = 'cactiInstallSection', $elementType = 'div') {
+	public static function section($text = '', $id = '', $class = '', $baseClass = 'cactiInstallSection', $elementType = 'div') {
 		if (empty($elementType)) {
 			$elementType = 'div';
 		}
@@ -316,53 +527,6 @@ class Installer implements JsonSerializable {
 
 		$output .= '>' . $text . '</' . $elementType . '>';
 		return $output;
-	}
-
-	public function getData() {
-		return array(
-				'Eula' => $this->eula,
-				'Mode' => $this->mode,
-				'Next' => $this->buttonNext,
-				'Prev' => $this->buttonPrevious,
-				'Test' => $this->buttonTest,
-				'Html' => $this->getOutput(),
-				'Step' => $this->stepCurrent,
-				'StepData' => $this->stepData,
-		);
-	}
-
-	private function setMode($param_mode = -1) {
-		if (intval($param_mode) > Installer::MODE_NONE && intval($param_mode) <= Installer::MODE_DOWNGRADE) {
-			$this->mode = $param_mode;
-			$this->updateButtons();
-		}
-	}
-
-	public function getStep() {
-		return $this->stepCurrent;
-	}
-
-	private function setStep($param_step = -1) {
-		/* pre-processing that needs to be done for each step */
-		$step = Installer::STEP_WELCOME;
-		if (empty($param_step)) {
-			$param_step = 1;
-		}
-
-		if (intval($param_step) > Installer::STEP_NONE && intval($param_step) <= Installer::STEP_COMPLETE) {
-			$step = $param_step;
-		}
-
-		if ($step == Installer::STEP_NONE) {
-			$step == Installer::STEP_WELCOME;
-		}
-
-		// Make current step the first if it is unknown
-		$this->stepCurrent  = ($step == Installer::STEP_NONE ? Installer::STEP_WELCOME : $step);
-		$this->stepPrevious = ($step <= Installer::STEP_WELCOME ? Installer::STEP_NONE : $step - 1);
-		$this->stepNext     = ($step >= Installer::STEP_COMPLETE ? Installer::STEP_NONE : $step + 1);
-
-		$this->updateButtons();
 	}
 
 	private function updateButtons() {
@@ -446,34 +610,38 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->setStep($this->stepPrevious);
 	}
 
-	public function outputStepWelcome() {
-		$output  = $this->outputSectionTitle(__('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement'));
-		$output .= $this->outputNormalSection(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
-		$output .= $this->outputNormalSection(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
+	/****************************************
+	 * The following functions process the  *
+	 * various steps of the install process *
+	 ****************************************/
+	public function processStepWelcome() {
+		$output  = Installer::sectionTitle(__('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement'));
+		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
+		$output .= Installer::sectionNormal(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
 
 		if ($this->mode == Installer::MODE_UPGRADE) {
-			$output .= $this->outputNoteSection(__('Note: This process will guide you through the steps for upgrading from version \'%s\'. ',$this->old_cacti_version));
-			$output .= $this->outputNormalSection(__('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
+			$output .= Installer::sectionNote(__('Note: This process will guide you through the steps for upgrading from version \'%s\'. ',$this->old_cacti_version));
+			$output .= Installer::sectionNormal(__('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
 		}
 
 		if ($this->mode == Installer::MODE_DOWNGRADE) {
-			$output .= $this->outputNoteSection(__('Note: It is NOT recommended to downgrade as the database structure may be inconsistent'));
+			$output .= Installer::sectionNote(__('Note: It is NOT recommended to downgrade as the database structure may be inconsistent'));
 		}
 
-		$output .= $this->outputNormalSection(__('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:'));
+		$output .= Installer::sectionNormal(__('Cacti is licensed under the GNU General Public License, you must agree to its provisions before continuing:'));
 
-		$output .= $this->outputCodeSection(
+		$output .= Installer::sectionCode(
 			__('This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.') . '<br/><br/>' .
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
-		$output .= $this->outputNormalSection('<span><input type=\'checkbox\' id=\'accept\' name=\'accept\'></span><span><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
+		$output .= Installer::sectionNormal('<span><input type=\'checkbox\' id=\'accept\' name=\'accept\'></span><span><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
 		$this->stepData = array('Eula' => $this->eula);
 		$this->buttonNext->Enabled = ($this->eula == 1);
 		return $output;
 	}
 
-	public function outputStepCheckDependancies() {
+	public function processStepCheckDependancies() {
 		global $config;
 		global $database_default, $database_username, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
@@ -487,8 +655,8 @@ class Installer implements JsonSerializable {
 			'mysql_performance' => 1
 		);
 
-		$output  = $this->outputSectionTitle(__('Pre-installation Checks'));
-		$output .= $this->outputSectionSubTitle(__('Location checks'), 'location');
+		$output  = Installer::sectionTitle(__('Pre-installation Checks'));
+		$output .= Installer::sectionSubTitle(__('Location checks'), 'location');
 
 		// Get request URI and break into parts
 		$test_request_uri = $_SERVER['REQUEST_URI'];
@@ -519,16 +687,16 @@ class Installer implements JsonSerializable {
 
 		// The path was not what we expected so print an error
 		if ($test_compare_result !== 0) {
-			$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</span>');
+			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</span>');
 			$enabled['location'] = 0;
 		} else {
-			$output .= $this->outputNormalSection(__('Your Cacti configuration has the relative correct path (url_path) in config.php.'));
+			$output .= Installer::sectionNormal(__('Your Cacti configuration has the relative correct path (url_path) in config.php.'));
 		}
 
-		$output .= $this->outputSectionSubTitle(__('PHP - Module Support (Required)'), 'php_modules');
-		$output .= $this->outputNormalSection(__('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.'));
+		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Required)'), 'php_modules');
+		$output .= Installer::sectionNormal(__('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.'));
 
-		$output .= $this->outputNormalSection(__('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.'));
+		$output .= Installer::sectionNormal(__('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.'));
 
 		ob_start();
 
@@ -542,7 +710,7 @@ class Installer implements JsonSerializable {
 		form_selectable_cell((version_compare(PHP_VERSION, '5.4.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
 		form_end_row();
 
-		$output .= $this->outputNormalSection(ob_get_contents());
+		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
 		if ($config['cacti_server_os'] == 'unix') {
@@ -607,12 +775,12 @@ class Installer implements JsonSerializable {
 
 		html_end_box(false);
 
-		$output .= $this->outputNormalSection(ob_get_contents());
+		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
-		$output .= $this->outputSectionSubTitle(__('PHP - Module Support (Optional)'), 'php_optional');
+		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Optional)'), 'php_optional');
 
-		$output .= $this->outputNormalSection(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.'));
+		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.'));
 		$extensions = array(
 			array('name' => 'snmp', 'installed' => false),
 			array('name' => 'gmp', 'installed' => false)
@@ -637,36 +805,36 @@ class Installer implements JsonSerializable {
 
 		html_end_box();
 
-		$output .= $this->outputNormalSection(ob_get_contents());
+		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
-		$output .= $this->outputSectionSubTitle(__('PHP - Timezone Support'), 'php_timezone');
+		$output .= Installer::sectionSubTitle(__('PHP - Timezone Support'), 'php_timezone');
 		if (ini_get('date.timezone') == '') {
-			$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</span>');
+			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</span>');
 			$enabled['php_timezone'] = 0;
 		} else {
-			$output .= $this->outputNormalSection(__('Your Web Servers PHP is properly setup with a Timezone.'));
+			$output .= Installer::sectionNormal(__('Your Web Servers PHP is properly setup with a Timezone.'));
 		}
 
-		$output .= $this->outputSectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
+		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
 		$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
 		if (sizeof($mysql_timezone_access)) {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 			if (!$timezone_populated) {
-				$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
+				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
 				$enabled['mysql_timezone'] = 0;
 			}
 		} else {
-			$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</span>');
+			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</span>');
 			$enabled['mysql_timezone'] = 0;
 		}
 
 		if ($enabled['mysql_timezone'] == 1) {
-			$output .= $this->outputNormalSection(__('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.'));
+			$output .= Installer::sectionNormal(__('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.'));
 		}
 
-		$output .= $this->outputSectionSubTitle(__('MySQL - Settings'), 'mysql_performance');
-		$output .= $this->outputNormalSection(__('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.'));
+		$output .= Installer::sectionSubTitle(__('MySQL - Settings'), 'mysql_performance');
+		$output .= Installer::sectionNormal(__('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.'));
 
 		html_start_box('<strong> ' . __('Recommended MySQL System Variable Settings') . '</strong>', '30', 0, '', '', false);
 		$output_temp = ob_get_contents();
@@ -678,38 +846,38 @@ class Installer implements JsonSerializable {
 
 		html_end_box(false);
 
-		$output .= $this->outputNormalSection($output_temp . $output_util . ob_get_contents());
+		$output .= Installer::sectionNormal($output_temp . $output_util . ob_get_contents());
 		ob_end_clean();
 
 		$this->stepData = $enabled;
 		return $output;
 	}
 
-	public function outputStepMode() {
+	public function processStepMode() {
 		global $config;
 		global $database_default, $database_username, $database_hostname, $database_port;
 		global $rdatabase_default, $rdatabase_username, $rdatabase_hostname, $rdatabase_port;
 		// install/upgrade
-		$output = $this->outputSectionTitle(__('Installation Type'));
+		$output = Installer::sectionTitle(__('Installation Type'));
 
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
 				// upgrade detected
-				$output .= $this->outputSectionSubTitle(__('Upgrade'));
-				$output .= $this->outputNormalSection(__('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
-				$output .= $this->outputNormalSection('<font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing.  Additionally, after this script is complete, you will also have to refresh your page to load updated JavaScript so that the Cacti pages render properly.  In Firefox and IE, you simply press F5.  In Chrome, you may have to clear your browser cache for the Cacti web site.') . '</font>');
+				$output .= Installer::sectionSubTitle(__('Upgrade'));
+				$output .= Installer::sectionNormal(__('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
+				$output .= Installer::sectionNormal('<font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing.  Additionally, after this script is complete, you will also have to refresh your page to load updated JavaScript so that the Cacti pages render properly.  In Firefox and IE, you simply press F5.  In Chrome, you may have to clear your browser cache for the Cacti web site.') . '</font>');
 				break;
 			case Installer::MODE_DOWNGRADE:
-				$output .= $this->outputSectionSubTitle(__('Upgrade'));
-				$output .= $this->outputNormalSection(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
-				$output .= $this->outputNormalSection('<font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font>');
+				$output .= Installer::sectionSubTitle(__('Upgrade'));
+				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
+				$output .= Installer::sectionNormal('<font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font>');
 				break;
 			default:
 				// new install
-				$output .= $this->outputSectionSubTitle(__('Please select the type of installation'));
-				$output .= $this->outputNormalSection(__('Installation options:'));
+				$output .= Installer::sectionSubTitle(__('Please select the type of installation'));
+				$output .= Installer::sectionNormal(__('Installation options:'));
 
-				$output .= $this->outputNormalSection(
+				$output .= Installer::sectionNormal(
 					'<ul>'.
 					'<li><b><i>' . __('New Primary Server') . '</i></b> - ' . __('Choose this for the Primary site.') . '</li>' .
 					'<li><b><i>' . __('New Remote Poller')  . '</i></b> - ' . __('Remote Pollers are used to access networks that are not readily accessible to the Primary site.') . '</li>' .
@@ -745,18 +913,18 @@ class Installer implements JsonSerializable {
 						break;
 				}
 
-				$output .= $this->outputNormalSection(
+				$output .= Installer::sectionNormal(
 					'<select id="install_type" name="install_type">' .
 					'<option value="1"' . $selectedInstall . '>' . __('New Primary Server') . '</option>' .
 					'<option value="2"' . $selectedPoller . '>' . __('New Remote Poller') . '</option>' .
 					'</select>'
 				);
 
-				$output .= $this->outputNormalSection(__('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.'));
+				$output .= Installer::sectionNormal(__('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.'));
 
-				$output .= $this->outputSectionSubTitle(__('Database Connection Information'),'connection_local');
+				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_local');
 
-				$output .= $this->outputCodeSection(
+				$output .= Installer::sectionCode(
 					__('Database: <b>%s</b>', $database_default) . '<br>' .
 					__('Database User: <b>%s</b>', $database_username) . '<br>' .
 					__('Database Hostname: <b>%s</b>', $database_hostname) . '<br>' .
@@ -764,9 +932,9 @@ class Installer implements JsonSerializable {
 					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 				);
 
-				$output .= $this->outputSectionSubTitle(__('Database Connection Information'),'connection_remote');
+				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_remote');
 
-				$output .= $this->outputCodeSection(
+				$output .= Installer::sectionCode(
 					__('Database: <b>%s</b>', $rdatabase_default) . '<br>' .
 					__('Database User: <b>%s</b>', $rdatabase_username) . '<br>' .
 					__('Database Hostname: <b>%s</b>', $rdatabase_hostname) . '<br>' .
@@ -774,15 +942,15 @@ class Installer implements JsonSerializable {
 					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 				);
 
-				$output .= $this->outputSectionSubTitle(__('Configuration Readonly!'), 'error_file');
-				$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.') . '</span>');
+				$output .= Installer::sectionSubTitle(__('Configuration Readonly!'), 'error_file');
+				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.') . '</span>');
 
-				$output .= $this->outputSectionSubTitle(__('Configuration of Poller'), 'error_poller');
-				$output .= $this->outputNormalSection('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again.') . '</span>','config_remote');
+				$output .= Installer::sectionSubTitle(__('Configuration of Poller'), 'error_poller');
+				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again.') . '</span>','config_remote');
 
-				$output .= $this->outputSectionSubTitle(__('Remote Poller Variables'), 'poller_vars');
-				$output .= $this->outputNormalSection(__('The variables that must be set include the following:'));
-				$output .= $this->outputCodeSection(
+				$output .= Installer::sectionSubTitle(__('Remote Poller Variables'), 'poller_vars');
+				$output .= Installer::sectionNormal(__('The variables that must be set include the following:'));
+				$output .= Installer::sectionCode(
 					'<ul>' .
 					'<li>$rdatabase_type     = \'mysql\';</li>' .
 					'<li>$rdatabase_default  = \'cacti\';</li>' .
@@ -794,8 +962,8 @@ class Installer implements JsonSerializable {
 					'</ul>'
 				);
 
-				$output .= $this->outputNormalSection(__('You must also set the $poller_id variable in the config.php.'), 'config_remote_poller');
-				$output .= $this->outputNormalSection(__('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
+				$output .= Installer::sectionNormal(__('You must also set the $poller_id variable in the config.php.'), 'config_remote_poller');
+				$output .= Installer::sectionNormal(__('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
 
 				$this->stepData = $sections;
 				break;
@@ -804,18 +972,19 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
-	public function outputStepBinaryLocations() {
-		$output = $this->outputSectionTitle(__('Critical Binary Locations and Versions'));
-		$output .= $this->outputNormalSection(__('Make sure all of these values are correct before continuing.'));
+	public function processStepBinaryLocations() {
+		$output = Installer::sectionTitle(__('Critical Binary Locations and Versions'));
+		$output .= Installer::sectionNormal(__('Make sure all of these values are correct before continuing.'));
 
 		$i = 0;
 
 		ob_start();
 		$input = install_file_paths();
+
 		/* find the appropriate value for each 'config name' above by config.php, database,
 		 * or a default for fall back */
 		foreach ($input as $name => $array) {
-			if (isset($input[$name])) {
+			if (isset($array)) {
 				$current_value = $array['default'];
 
 				/* run a check on the path specified only if specified above, then fill a string with
@@ -848,7 +1017,7 @@ class Installer implements JsonSerializable {
 				print '<br></p>';
 				$html = ob_get_contents();
 				ob_clean();
-				$output .= $this->outputNormalSection($html);
+				$output .= Installer::sectionNormal($html);
 			}
 
 			$i++;
@@ -856,6 +1025,350 @@ class Installer implements JsonSerializable {
 		ob_end_clean();
 
 		return $output;
+	}
+
+	public function processStepPermissionCheck() {
+		global $config;
+
+		/* Print message and error logs */
+		$output = Installer::sectionTitle(__('Directory Permission Checks'));
+		$output .= Installer::sectionNormal(__('Please ensure the directory permissions below are correct before proceeding.  During the install, these directories need to be owned by the Web Server user.  These permission changes are required to allow the Installer to install Device Template packages which include XML and script files that will be placed in these directories.  If you choose not to install the packages, there is an \'install_package.php\' cli script that can be used from the command line after the install is complete.'));
+
+		if ($this->mode == Installer::MODE_INSTALL) {
+			$output .= Installer::sectionNormal(__('After the install is complete, you can make some of these directories read only to increase security.'));
+		} else {
+			$output .= Installer::sectionNormal(__('These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes'));
+		}
+
+		$stepData = array();
+		if ($this->mode != Installer::MODE_POLLER) {
+			$install_paths = array(
+				$config['base_path'] . '/resource/snmp_queries',
+				$config['base_path'] . '/resource/script_server',
+				$config['base_path'] . '/resource/script_queries',
+				$config['base_path'] . '/scripts',
+			);
+
+			$output .= Installer::sectionSubTitle(__('Required Writable at Install Time Only'), 'writable_install');
+
+			$stepData['writable_install'] = 1;
+			foreach($install_paths as $path) {
+				if (is_writable($path)) {
+					$output .= Installer::sectionNormal(__('<p>%s is <font color="#008000">Writable</font></p>', $path));
+				} else {
+					$output .= Installer::sectionNormal(__('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path));
+					$writable = false;
+					$stepData['writable_install'] = 0;
+				}
+			}
+		}
+
+		if ($this->mode == Installer::MODE_POLLER) {
+			$always_paths = array(
+				$config['base_path'] . '/resource/snmp_queries',
+				$config['base_path'] . '/resource/script_server',
+				$config['base_path'] . '/resource/script_queries',
+				$config['base_path'] . '/scripts',
+				$config['base_path'] . '/log',
+				$config['base_path'] . '/cache/boost',
+				$config['base_path'] . '/cache/mibcache',
+				$config['base_path'] . '/cache/realtime',
+				$config['base_path'] . '/cache/spikekill'
+			);
+		} else {
+			$always_paths = array(
+				$config['base_path'] . '/log',
+				$config['base_path'] . '/cache/boost',
+				$config['base_path'] . '/cache/mibcache',
+				$config['base_path'] . '/cache/realtime',
+				$config['base_path'] . '/cache/spikekill'
+			);
+		}
+
+		$output .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
+		$stepData['writable_always'] = 1;
+		foreach($always_paths as $path) {
+			if (is_writable($path)) {
+				$output .= Installer::sectionNormal(__('<p>%s is <font color="#008000">Writable</font></p>', $path));
+			} else {
+				$output .= Installer::sectionNormal(__('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path));
+				$stepData['writable_always'] = 0;
+				$writable = false;
+			}
+		}
+
+		/* Print help message for unix and windows if directory is not writable */
+		if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
+			$output .= Installer::sectionSubTitle(__('Ensure Host Process Has Access'));
+			$output .= Installer::sectionNormal(__('Make sure your webserver has read and write access to the entire folder structure.'));
+			$output .= Installer::sectionNormal(__('Example:'));
+			$output .= Installer::sectionCode(__('chown -R apache.apache %s/resource/', $config['base_path']));
+			$output .= Installer::sectionNormal(__('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.'));
+		} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
+			$output .= Installer::sectionNormal(__('Check Permissions'));
+		}else {
+			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
+		}
+
+		if ($this->mode != Installer::MODE_POLLER) {
+			$output .= Installer::sectionNote(
+				'<strong><font color="#FF0000">' .__('NOTE:') . '</font></strong> ' .
+				__('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.')
+			);
+		} else {
+			$output .= Installer::sectionNote(
+				'<strong><font color="#FF0000">' .__('NOTE:') . '</font></strong> ' .
+				__('For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content.')
+			);
+		}
+
+		$this->buttonNext->Enabled = !isset($writable);
+		$this->stepData = $stepData;
+		return $output;
+	}
+
+	public function processStepTemplateInstall() {
+		$output = Installer::sectionTitle(__('Template Setup'));
+
+		$output .= Installer::sectionNormal(__('Please select the Device Templates that you wish to use after the Install.  If you Operating System is Windows, you need to ensure that you select the \'Windows Device\' Template.  If your Operating System is Linux/UNIX, make sure you select the \'Local Linux Machine\' Device Template.'));
+
+		$templates = install_setup_get_templates();
+
+		ob_start();
+		html_start_box('<strong>' . __('Templates') . '</strong>', '100%', '3', 'center', '', '');
+		html_header_checkbox( array( __('Name'), __('Description'), __('Author'), __('Homepage') ) );
+		foreach ($templates as $id => $p) {
+			form_alternate_row('line' . $id, true);
+			form_selectable_cell($p['name'], $id);
+			form_selectable_cell($p['description'], $id);
+			form_selectable_cell($p['author'], $id);
+			if ($p['homepage'] != '') {
+				form_selectable_cell('<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>', $id);
+			} else {
+				form_selectable_cell('', $id);
+			}
+			form_checkbox_cell($p['name'], 'template_'  . str_replace(".", "_",  $p['filename']));
+			form_end_row();
+		}
+		html_end_box(false);
+		$output .= Installer::sectionNormal(ob_get_contents());
+		ob_end_clean();
+		$output .= Installer::sectionNormal(__('Device Templates allow you to monitor and graph a vast assortment of data within Cacti.  After you select the desired Device Templates, press \'Finish\' and the installation will complete.  Please be patient on this step, as the importation of the Device Templates can take a few minutes.'));
+
+		return $output;
+	}
+
+	public function processStepInstallConfirm() {
+		switch ($this->mode) {
+			case Installer::MODE_UPGRADE:
+				$title = __('Confirm Upgrade');
+				$button = __('Upgrade');
+				break;
+			case Installer::MODE_DOWNGRADE:
+				$title = __('Confirm Downgrade');
+				$button = __('Downgrade');
+				break;
+			default:
+				$title = __('Confirm Installation');
+				$button = __('Install');
+				break;
+		}
+
+		if ($this->mode == Installer::MODE_DOWNGRADE) {
+			$output = Installer::sectionTitleError(__('DOWNGRADE DETECTED'));
+			$output .= Installer::sectionCode(__('YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS AUTOMATICALLY FOR YOU'));
+			$output .= Installer::sectionNormal(__('Downgrading should only be performed when absolutely necessary and doing so may break your installlation'));
+		} else {
+			$output = Installer::sectionTitle($title);
+			$output .= Installer::sectionNormal(__('Your Cacti Server is almost ready.  Please check that you are happy to proceed.'));
+
+			$output .= Installer::sectionNote(
+				'<strong><font color="#FF0000">' . __('NOTE:') . ' </font></strong>' .
+				__('Press \'%s\' then click \'%s\' to complete the installation process after selecting your Device Templates.', $title, $button)
+			);
+		}
+		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . $title);
+
+		$this->buttonNext->Text = $button;
+		$this->buttonNext->Enabled = false;
+		$this->buttonNext->Step = Installer::STEP_INSTALL;
+
+		return $output;
+	}
+
+	public function processStepInstall() {
+		global $config;
+		$output  = Installer::sectionTitle(__('Installing Cacti Server v%s', CACTI_VERSION));
+		$output .= Installer::sectionNormal(__('Your Cacti Server is now installing'));
+		$output .= Installer::sectionNormal(
+			'<table width="100%"><tr>' .
+				'<td class="cactiInstallProgressLeft">Refresh in</td>' .
+				'<td class="cactiInstallProgressCenter">&nbsp;</td>' .
+				'<td class="cactiInstallProgressRight">Progress</td>' .
+			'</tr><tr>' .
+				'<td class="cactiInstallProgressLeft">'.
+					'<div id="cactiInstallProgressCountdown"><div></div></div>' .
+				'</td>' .
+				'<td class="cactiInstallProgressCenter">&nbsp;</td>' .
+				'<td class="cactiInstallProgressRight">' .
+					'<div id="cactiInstallProgressBar"><div></div></div>' .
+				'</td>' .
+			'</tr></table>'
+		);
+
+		$backgroundTime = read_config_option('install_started', true);
+		$backgroundLast = read_config_option('install_updated', true);
+		$backgroundNeeded = $backgroundTime === false;
+		if ($backgroundTime === false) {
+			$backgroundTime = microtime(true);
+			set_config_option("install_started", $backgroundTime);
+		}
+
+		file_put_contents('/tmp/process.log', 'backgroundTime = ' . $backgroundTime . "\n");
+		file_put_contents('/tmp/process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
+
+		// Check if background started too long ago
+		if (!$backgroundNeeded) {
+			file_put_contents('/tmp/process.log', "\n----------------\nCheck Expire\n----------------\n", FILE_APPEND);
+
+			$backgroundDateStarted = DateTime::createFromFormat('U.u', $backgroundTime);
+			$backgroundLast = read_config_option('install_updated', true);
+
+			file_put_contents('/tmp/process.log', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s'). "\n", FILE_APPEND);
+			file_put_contents('/tmp/process.log', 'backgroundLast = ' . $backgroundTime . "\n", FILE_APPEND);
+			if ($backgroundLast === false || $backgroundLast < $backgroundTime) {
+				file_put_contents('/tmp/process.log', 'backgroundLast = ' . $backgroundTime . " (Replaced)\n", FILE_APPEND);
+				$backgroundLast = $backgroundTime;
+			}
+
+			$backgroundExpire = time() - 300;
+			file_put_contents('/tmp/process.log', 'backgroundExpire = ' . $backgroundExpire . "\n", FILE_APPEND);
+
+			if ($backgroundLast < $backgroundExpire) {
+				$newTime = microtime(true);
+
+				set_config_option("install_started", $newTime);
+				set_config_option("install_updated", $newTime);
+
+				$backgroundTime = read_config_option("install_started", true);
+				$backgroundLast = read_config_option("install_updated", true);
+
+				$backgroundNeeded = ("$newTime" == "$backgroundTime");
+
+				file_put_contents('/tmp/process.log', "\n=======\nExpired\n=======\n", FILE_APPEND);
+				file_put_contents('/tmp/process.log', '         newTime = ' . $newTime . "\n", FILE_APPEND);
+				file_put_contents('/tmp/process.log', '  backgroundTime = ' . $backgroundTime . "\n", FILE_APPEND);
+				file_put_contents('/tmp/process.log', '  backgroundLast = ' . $backgroundLast . "\n", FILE_APPEND);
+				file_put_contents('/tmp/process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
+			}
+		}
+
+		if ($backgroundNeeded) {
+			$php = read_config_option('path_php_binary', true);
+			$php_file = $config['base_path'] . '/install/background.php ' . $backgroundTime;
+
+			file_put_contents('/tmp/process.log', 'Spawning background process: ' . $php . ' ' . $php_file . "\n", FILE_APPEND);
+			cacti_log('Spawning background process: ' . $php . ' ' . $php_file, false, 'INSTALL:');
+			exec_background($php, $php_file);
+		}
+
+		$output .= $this->getInstallLog();
+
+		$this->buttonNext->Visible = false;
+		$this->buttonPrevious->Visible = false;
+
+		$progressCurrent = read_config_option('install_progress', true);
+		if ($progressCurrent === false) {
+			$progressCurrent = Installer::PROGRESS_NONE;
+		}
+
+		$stepData = array( 'Current' => $progressCurrent, 'Total' => Installer::PROGRESS_COMPLETE );
+		$this->stepData = $stepData;
+		return $output;
+	}
+
+	public function processStepComplete() {
+		db_execute_prepared("UPDATE version SET cacti = ?", array(CACTI_VERSION));
+		set_config_option('install_version', CACTI_VERSION);
+		$output = Installer::sectionTitle(__('Complete'));
+		$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION));
+		$output .= $this->getInstallLog();
+
+		$this->buttonPrevious->Visible = false;
+
+		$this->buttonNext->Text = __('Get Started');
+		$this->buttonNext->Step = -1;
+		$this->buttonNext->Enabled = true;
+		return $output;
+	}
+
+	public function processStepError() {
+		$output = Installer::sectionTitleError(__('Failed'));
+		$output .= Installer::sectionNormal(__('There was a problem during this process.  Please check the log below for more information'));
+		$output .= $this->getInstallLog();
+	}
+
+	public function getInstallLog() {
+		global $config;
+		$logcontents = tail_file($config['base_path'] . '/log/cacti.log', 100, -1, 'INSTALL:' , 1, $total_rows);
+
+		$output_log = '';
+		foreach ($logcontents as $logline) {
+			$output_log = $logline.'<br/>' . $output_log;
+		}
+
+		if (empty($output_log)) {
+			$output_log = '--- NO LOG FOUND ---';
+		}
+
+		$output = Installer::sectionCode($output_log);
+		return $output;
+	}
+
+	public function processBackgroundInstall() {
+		global $config;
+		switch ($this->mode) {
+			case Installer::MODE_UPGRADE:
+				$which = 'UPGRADE';
+				break;
+			case Installer::MODE_DOWNGRADE:
+				$which = 'DOWNGRADE';
+				break;
+			default:
+				$which = 'INSTALL';
+				break;
+		}
+		cacti_log(__('Starting %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
+		$this->setProgress(Installer::PROGRESS_START);
+
+		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%'");
+		if (sizeof($templates)) {
+			cacti_log(__('Found %s templates to install', sizeof($templates)), false, 'INSTALL:');
+			$path = $config['base_path'] . '/install/templates/';
+
+			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
+			$i = 0;
+			foreach ($templates as $template) {
+				$i++;
+				$package = $template['value'];
+				cacti_log(__('Attempting to import package #%s \'%s\'', $i, $package), false, 'INSTALL:');
+				import_package($path . $package, 1, false);
+				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+			}
+		} else {
+			cacti_log(__('No templates were selected for import'), false, 'INSTALL:');
+		}
+		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
+
+		cacti_log(__('Setting Cacti Version to %s', CACTI_VERSION), false, 'INSTALL:');
+
+		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
+		db_execute_prepared('UPDATE version SET cacti = ?', array(CACTI_VERSION));
+		set_config_option('install_version', CACTI_VERSION);
+		$this->setProgress(Installer::PROGRESS_VERSION_END);
+
+		cacti_log(__('Finished %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
+		$this->setProgress(Installer::PROGRESS_COMPLETE);
 	}
 }
 
@@ -865,12 +1378,12 @@ class InstallerButton implements JsonSerializable {
 	public $Visible = true;
 	public $Enabled = true;
 
-	public function __construct($settings = array()) {
-		if (empty($settings) || !is_array($settings)) {
-			$settings = array();
+	public function __construct($initialData = array()) {
+		if (empty($initialData) || !is_array($initialData)) {
+			$initialData = array();
 		}
 
-		foreach ($settings as $key => $value) {
+		foreach ($initialData as $key => $value) {
 			switch ($key) {
 				case 'Text':
 					$this->Text = $value;

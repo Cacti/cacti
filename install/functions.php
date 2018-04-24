@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once(dirname(__FILE__) . '/../include/global_settings.php');
+
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl;
 
@@ -251,216 +253,105 @@ we want the user to input. The "name" field must exist in the 'settings' table f
 this to work. Cacti also uses different default values depending on what OS it is
 running on. */
 
+function install_tool_path($name, $defaultPaths) {
+	global $config, $settings;
+
+	$os = $config['cacti_server_os'];
+
+	$tool = array(
+		'friendly_name' => $name,
+		'description' => 'Path for ' . $name,
+		'method' => 'filepath',
+		'max_length' => 255,
+		'default' => ''
+	);
+
+	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
+		$tool = $settings['path']['path_'.$name];
+	}
+
+	$which_tool = '';
+	if (config_value_exists('path_'.$name)) {
+		$which_tool = read_config_option('path_'.$name);
+	}
+
+	if (empty($which_tool) && isset($defaultPaths[$os])) {
+		$defaultPath = $defaultPaths[$config['cacti_server_os']];
+		$basename = basename($defaultPath);
+		$which_tool = find_best_path($basename);
+	}
+
+	if (empty($which_tool)) {
+		$which_tool = $defaultPath;
+	}
+
+	$tool['default'] = $which_tool;
+	return $tool;
+}
+
 function install_file_paths () {
 	global $config, $settings;
 
 	/* RRDtool Binary Path */
 	$input = array();
-	$input['path_rrdtool'] = $settings['path']['path_rrdtool'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_rrdtool = find_best_path('rrdtool');
-
-		if (config_value_exists('path_rrdtool')) {
-			$input['path_rrdtool']['default'] = read_config_option('path_rrdtool');
-		}else if (!empty($which_rrdtool)) {
-			$input['path_rrdtool']['default'] = $which_rrdtool;
-		} else {
-			$input['path_rrdtool']['default'] = '/usr/local/bin/rrdtool';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_rrdtool = find_best_path('rrdtool.exe');
-
-		if (config_value_exists('path_rrdtool')) {
-			$input['path_rrdtool']['default'] = read_config_option('path_rrdtool');
-		}else if (!empty($which_rrdtool)) {
-			$input['path_rrdtool']['default'] = $which_rrdtool;
-		} else {
-			$input['path_rrdtool']['default'] = 'c:/rrdtool/rrdtool.exe';
-		}
-	}
+	$input['path_rrdtool'] = install_tool_path('rrdtool',
+		array(
+			'unix'  => '/usr/local/bin/rrdtool',
+			'win32' => 'c:/rrdtool/rrdtool.exe'
+		));
 
 	/* PHP Binary Path */
-	$input['path_php_binary'] = $settings['path']['path_php_binary'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_php = find_best_path('php');
-
-		if (config_value_exists('path_php_binary')) {
-			$input['path_php_binary']['default'] = read_config_option('path_php_binary');
-		}else if (!empty($which_php)) {
-			$input['path_php_binary']['default'] = $which_php;
-		} else {
-			$input['path_php_binary']['default'] = '/usr/bin/php';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_php = find_best_path('php.exe');
-
-		if (config_value_exists('path_php_binary')) {
-			$input['path_php_binary']['default'] = read_config_option('path_php_binary');
-		}else if (!empty($which_php)) {
-			$input['path_php_binary']['default'] = $which_php;
-		} else {
-			$input['path_php_binary']['default'] = 'c:/php/php.exe';
-		}
-	}
+	$input['path_php_binary'] = install_tool_path('rrdtool',
+		array(
+			'unix'  => '/usr/bin/php',
+			'win32' => 'c:/php/php.exe'
+		));
 
 	/* snmpwalk Binary Path */
-	$input['path_snmpwalk'] = $settings['path']['path_snmpwalk'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_snmpwalk = find_best_path('snmpwalk');
-
-		if (config_value_exists('path_snmpwalk')) {
-			$input['path_snmpwalk']['default'] = read_config_option('path_snmpwalk');
-		}else if (!empty($which_snmpwalk)) {
-			$input['path_snmpwalk']['default'] = $which_snmpwalk;
-		} else {
-			$input['path_snmpwalk']['default'] = '/usr/local/bin/snmpwalk';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_snmpwalk = find_best_path('snmpwalk.exe');
-
-		if (config_value_exists('path_snmpwalk')) {
-			$input['path_snmpwalk']['default'] = read_config_option('path_snmpwalk');
-		}else if (!empty($which_snmpwalk)) {
-			$input['path_snmpwalk']['default'] = $which_snmpwalk;
-		} else {
-			$input['path_snmpwalk']['default'] = 'c:/net-snmp/bin/snmpwalk.exe';
-		}
-	}
+	$input['path_snmpwalk'] = install_tool_path('snmpwalk',
+		array(
+			'unix'  => '/usr/local/bin/snmpwalk',
+			'win32' => 'c:/net-snmp/bin/snmpwalk.exe'
+		));
 
 	/* snmpget Binary Path */
-	$input['path_snmpget'] = $settings['path']['path_snmpget'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_snmpget = find_best_path('snmpget');
-
-		if (config_value_exists('path_snmpget')) {
-			$input['path_snmpget']['default'] = read_config_option('path_snmpget');
-		}else if (!empty($which_snmpget)) {
-			$input['path_snmpget']['default'] = $which_snmpget;
-		} else {
-			$input['path_snmpget']['default'] = '/usr/local/bin/snmpget';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_snmpget = find_best_path('snmpget.exe');
-
-		if (config_value_exists('path_snmpget')) {
-			$input['path_snmpget']['default'] = read_config_option('path_snmpget');
-		}else if (!empty($which_snmpget)) {
-			$input['path_snmpget']['default'] = $which_snmpget;
-		} else {
-			$input['path_snmpget']['default'] = 'c:/net-snmp/bin/snmpget.exe';
-		}
-	}
+	$input['path_snmpget'] = install_tool_path('snmpget',
+		array(
+			'unix'  => '/usr/local/bin/snmpget',
+			'win32' => 'c:/net-snmp/bin/snmpget.exe'
+		));
 
 	/* snmpbulkwalk Binary Path */
-	$input['path_snmpbulkwalk'] = $settings['path']['path_snmpbulkwalk'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_snmpbulkwalk = find_best_path('snmpbulkwalk');
-
-		if (config_value_exists('path_snmpbulkwalk')) {
-			$input['path_snmpbulkwalk']['default'] = read_config_option('path_snmpbulkwalk');
-		}else if (!empty($which_snmpbulkwalk)) {
-			$input['path_snmpbulkwalk']['default'] = $which_snmpbulkwalk;
-		} else {
-			$input['path_snmpbulkwalk']['default'] = '/usr/local/bin/snmpbulkwalk';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_snmpbulkwalk = find_best_path('snmpbulkwalk.exe');
-
-		if (config_value_exists('path_snmpbulkwalk')) {
-			$input['path_snmpbulkwalk']['default'] = read_config_option('path_snmpbulkwalk');
-		}else if (!empty($which_snmpbulkwalk)) {
-			$input['path_snmpbulkwalk']['default'] = $which_snmpbulkwalk;
-		} else {
-			$input['path_snmpbulkwalk']['default'] = 'c:/net-snmp/bin/snmpbulkwalk.exe';
-		}
-	}
+	$input['path_snmpbulkwalk'] = install_tool_path('snmpbulkwalk',
+		array(
+			'unix'  => '/usr/local/bin/snmpbulkwalk',
+			'win32' => 'c:/net-snmp/bin/snmpbulkwalk.exe'
+		));
 
 	/* snmpgetnext Binary Path */
-	$input['path_snmpgetnext'] = $settings['path']['path_snmpgetnext'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_snmpgetnext = find_best_path('snmpgetnext');
-
-		if (config_value_exists('path_snmpgetnext')) {
-			$input['path_snmpgetnext']['default'] = read_config_option('path_snmpgetnext');
-		}else if (!empty($which_snmpgetnext)) {
-			$input['path_snmpgetnext']['default'] = $which_snmpgetnext;
-		} else {
-			$input['path_snmpgetnext']['default'] = '/usr/local/bin/snmpgetnext';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_snmpgetnext = find_best_path('snmpgetnext.exe');
-
-		if (config_value_exists('path_snmpgetnext')) {
-			$input['path_snmpgetnext']['default'] = read_config_option('path_snmpgetnext');
-		}else if (!empty($which_snmpgetnext)) {
-			$input['path_snmpgetnext']['default'] = $which_snmpgetnext;
-		} else {
-			$input['path_snmpgetnext']['default'] = 'c:/net-snmp/bin/snmpgetnext.exe';
-		}
-	}
+	$input['path_snmpgetnext'] = install_tool_path('snmpgetnext',
+		array(
+			'unix'  => '/usr/local/bin/snmpgetnext',
+			'win32' => 'c:/net-snmp/bin/snmpgetnext.exe'
+		));
 
 	/* snmptrap Binary Path */
-	$input['path_snmptrap'] = $settings['path']['path_snmptrap'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_snmptrap = find_best_path('snmptrap');
-
-		if (config_value_exists('path_snmptrap')) {
-			$input['path_snmptrap']['default'] = read_config_option('path_snmptrap');
-		}else if (!empty($which_snmptrap)) {
-			$input['path_snmptrap']['default'] = $which_snmptrap;
-		} else {
-			$input['path_snmptrap']['default'] = '/usr/local/bin/snmptrap';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_snmptrap = find_best_path('snmptrap.exe');
-
-		if (config_value_exists('path_snmptrap')) {
-			$input['path_snmptrap']['default'] = read_config_option('path_snmptrap');
-		}else if (!empty($which_snmptrap)) {
-			$input['path_snmptrap']['default'] = $which_snmptrap;
-		} else {
-			$input['path_snmptrap']['default'] = 'c:/net-snmp/bin/snmptrap.exe';
-		}
-	}
+	$input['path_snmptrap'] = install_tool_path('snmptrap',
+		array(
+			'unix'  => '/usr/local/bin/snmptrap',
+			'win32' => 'c:/net-snmp/bin/snmptrap.exe'
+		));
 
 	/* spine Binary Path */
-	$input['path_spine'] = $settings['path']['path_spine'];
-
-	if ($config['cacti_server_os'] == 'unix') {
-		$which_spine = find_best_path('spine');
-
-		if (config_value_exists('path_spine')) {
-			$input['path_spine']['default'] = read_config_option('path_spine');
-		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine;
-		} else {
-			$input['path_spine']['default'] = '/usr/local/spine/bin/spine';
-		}
-	} elseif ($config['cacti_server_os'] == 'win32') {
-		$which_spine = find_best_path('spine.exe');
-
-		if (config_value_exists('path_spine')) {
-			$input['path_spine']['default'] = read_config_option('path_spine');
-		}else if (!empty($which_spine)) {
-			$input['path_spine']['default'] = $which_spine;
-		} else {
-			$input['path_spine']['default'] = 'c:/spine/bin/spine.exe';
-		}
-	}
+	$input['path_spine'] = install_tool_path('spine',
+		array(
+			'unix'  => '/usr/local/spine/bin/spine',
+			'win32' => 'c:/spine/bin/spine.exe'
+		));
 
 	/* log file path */
 	$input['path_cactilog'] = $settings['path']['path_cactilog'];
-	$input['path_cactilog']['description'] = __('The path to your Cacti log file.');
-	if (config_value_exists('path_cactilog')) {
-		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
-	} else {
+	if (empty($input['path_cactilog']['default'])) {
 		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
@@ -474,7 +365,7 @@ function install_file_paths () {
 	}
 
 	/* RRDtool Version */
-	if ((file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
+	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
 
 		$out_array = array();

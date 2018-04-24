@@ -46,13 +46,6 @@ if (get_nfilter_request_var('action') == 'testdb') {
 }
 
 include_once('../lib/installer.php');
-
-/* allow the upgrade script to run for as long as it needs to */
-$installer = new Installer();
-if ($installer->shouldRedirectToHome()) {
-	header($url_path);
-}
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -69,29 +62,22 @@ if ($installer->shouldRedirectToHome()) {
 		<div class='cactiInstallArea'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
-				print $installer->outputSectionTitle(__('Initializing'));
-				print $installer->outputsection(__('Please wait whilst the installation system for Cacti Version %s initialises.  You must have javascript enabled for this to work.', CACTI_VERSION));
+				print Installer::sectionTitle(__('Initializing'));
+				print Installer::sectionNormal(__('Please wait whilst the installation system for Cacti Version %s initialises.  You must have javascript enabled for this to work.', CACTI_VERSION));
 ?>
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea'>
-			<!--
-				print __x('Dialog: previous', 'Previous');
-				print __x('Dialog: complete', 'Finish');
-				print __x('Dialog: go to the next page', $installer->default_install_button);
-				print __('Test remote database connection')
-				print __x('Dialog: test connection', 'Test Connection');
-			-->
-			<input class='installButton' id='buttonPrevious' type='button' value='Previous'>
-			<input class='installButton' id='buttonNext' type='button' value='Next'>
-			<input class='installButton' id='buttonTest' type='button' value='Test'>
+			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonPrevious' type='button' value='Previous' style="display: none">
+			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonNext' type='button' value='Next' style="display: none">
+			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonTest' type='button' value='Test' style="display:none">
 			<input id='installData' type='hidden'>
 		</div>
 		<div id="installDebug"></div>
 		<div class='cactiInstallCopyrightArea'>Copyright &copy; 2018 Cacti Group</div>
 	</div>
 <?php
-include_once('../include/global_session.php');
+include_once(dirname(__FILE__) . '/../include/global_session.php');
 ?>
 </body>
 </html>

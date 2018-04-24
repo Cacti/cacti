@@ -43,13 +43,12 @@ $debug = false;
 /* ================= input validation ================= */
 get_request_var('data', array());
 
-$settings = array();
+$initialData = array();
 if (isset_request_var('data') && get_request_var('data')) {
-	$settings = json_decode(get_request_var('data'), true);
+	$initialData = json_decode(get_request_var('data'), true);
 }
 
-$installer = new Installer($settings);
-$data = $installer->getData();
+$installer = new Installer($initialData);
 
 /*
 array(
@@ -64,7 +63,10 @@ array(
 	'html' => $output
 );
 */
-$json = json_encode($data);
+
+file_put_contents('/tmp/step.log','Start: ' . clean_up_lines(get_request_var('data')) . "\n\n");
+$json = json_encode($installer);
+file_put_contents('/tmp/step.log','  End: ' . clean_up_lines($json) . "\n\n", FILE_APPEND);
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));

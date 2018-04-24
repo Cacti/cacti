@@ -1,44 +1,4 @@
 
-function updateButtons(step, install_type) {
-	$('#next, #previous, #test').button();
-	if (step == 0) {
-		$('#next').button('disable');
-	}else if (step == 1) {
-		$('#next').button('disable');
-	}else if (step == 8) {
-		// Was __('Finish');
-		$('#next').val();
-	}else if (step == 5 && install_type == 2) {
-		// Was __('Finish');
-		$('#next').val();
-	}else if (step == 6 && install_type == 1) {
-		// Was __('Finish');
-		$('#next').val();
-	}
-
-	$('#previous').click(function() {
-		document.location = '?step='+$('#previous_step').val();
-	});
-
-	if (step == 3) {
-		// script is handled in the step
-	}else if (enabled) {
-		$('#next').button('enable');
-	} else {
-		$('#next').button('disable');
-	}
-
-	$('#database_hostname').keyup(function() {
-		if ($('#database_hostname').val() == 'localhost') {
-			$('#testdb').button('disable');
-		}else if ($('#database_hostname').val() == '127.0.0.1') {
-			$('#testdb').button('disable');
-		} else {
-			$('#testdb').button('enable');
-		}
-	});
-}
-
 function setButtonData(buttonName, buttonData) {
 	button = $('#button'+buttonName);
 	if (button != null) {
@@ -187,6 +147,81 @@ function processStep3(StepData) {
 	});
 }
 
+function processStep5(StepData) {
+	collapseHeadings(StepData);
+
+}
+
+function processStep6(StepData) {
+	element = $("#selectall");
+	if (element != null && element.length > 0) {
+		element.click();
+//prop("checked", true);
+	}
+}
+
+function processStep7(StepData) {
+	if ($('#confirm').length) {
+		$('#confirm').click(function() {
+			if ($(this).is(':checked')) {
+				$('#buttonNext').button('enable');
+			} else {
+				$('#buttonNext').button('disable');
+			}
+		});
+
+		if ($('#confirm').is(':checked')) {
+			$('#buttonNext').button('enable');
+		} else {
+			$('#buttonNext').button('disable');
+		}
+	}
+}
+
+function processStep97Refresh() {
+	performStep(97);
+}
+
+function processStep97Status(current, total) {
+	return "";
+}
+
+function processStep97(StepData) {
+	progress(0.0, 1.0, $("#cactiInstallProgressCountdown"), processStep97Refresh, processStep97Status);
+	setProgressBar(StepData.Current, StepData.Total, $("#cactiInstallProgressBar"), 0.0);
+}
+
+
+function setProgressBar(current, total, element, updatetime, fnStatus) {
+	var progressBarWidth = element.width() * (current / total);
+	if (fnStatus != null) {
+		status = fnStatus(current, total);
+	} else {
+		status = (current * 100) / total + "&nbsp;%";
+	}
+	element.find('div').animate({ width: progressBarWidth }, updatetime).html(status);
+}
+
+function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
+	setProgressBar(timetotal, timetotal, $element, 0, fnStatus);
+	setProgressBar(timeleft, timetotal, $element, 5000, fnStatus);
+	setTimeout(function() {
+		fnComplete();
+	}, 5000);
+}
+
+function progress_old(timeleft, timetotal, $element, fnComplete, fnStatus) {
+	setProgressBar(timeleft, timetotal, $element, 100, fnStatus);
+	if(timeleft < timetotal - 0.1) {
+		setTimeout(function() {
+			//progress(timeleft + 0.5, timetotal, $element, fnComplete, fnStatus);
+			fnComplete();
+		}, 100);
+	} else if (fnComplete != null) {
+		fnComplete();
+	}
+}
+
 function getDefaultInstallData() {
 	return { Step: 1, Eula: 0 };
 }
@@ -194,25 +229,13 @@ function getDefaultInstallData() {
 function prepareInstallData(installStep) {
 	//debugger;
 	installData = $("#installData").data('installData');
-	if (typeof installData == 'undefined') {
+	if (typeof installData == 'undefined' || installData == null) {
 		installData = getDefaultInstallData();
 	}
 
-	step = installData.Step;
-	if (step == 1) {
-		element = $("#accept");
-		if (element != null && element.length > 0) {
-			installData.Eula = element.is(':checked');
-		}
-	} else if (step == 2) {
-		element = $("#mode");
-		if (element != null && element.length > 0) {
-			installData.Mode = element.val();
-		}
-	}
-
-	props = [ 'Step', 'Eula', 'Mode' ];
 	newData = getDefaultInstallData();
+
+	props = [ 'Step' , 'Eula' ];
 	for (i = 0; i < props.length; i++) {
 		propName = props[i];
 		if (installData.hasOwnProperty(propName)) {
@@ -220,11 +243,57 @@ function prepareInstallData(installStep) {
 		}
 	}
 
+	step = installData.Step;
+	if (step == 1) prepareStep1(newData);
+	else if (step == 3) prepareStep3(newData);
+	else if (step == 4) prepareStep4(newData);
+	else if (step == 6) prepareStep6(newData);
+
 	if (typeof installStep != 'undefined') {
 		newData.Step = installStep;
 	}
 
 	return JSON.stringify(newData);
+}
+
+function prepareStep1(installData) {
+	element = $("#accept");
+	if (element != null && element.length > 0) {
+		installData.Eula = element.is(':checked');
+	}
+}
+
+function prepareStep3(installData) {
+	element = $("#mode");
+	if (element != null && element.length > 0) {
+		installData.Mode = element.value;
+	}
+}
+
+function prepareStep4(installData) {
+	paths = {}
+	$('input[name^="path_"]').each(function(index,element) {
+		paths[element.id] = element.value;
+	});
+
+	installData.Paths = paths;
+	element = $("#selected_theme");
+	if (element != null && element.length > 0) {
+		installData.Theme = element.value;
+	}
+
+	element = $("#rrdtool_version");
+	if (element != null && element.length > 0) {
+		installData.RRDVer = element.value;
+	}
+}
+
+function prepareStep6(installData) {
+	templates = {}
+	$('input[name^="chk_"]').each(function(index,element) {
+		templates[element.id] = element.value;
+	});
+	installData.Templates = templates;
 }
 
 function performStep(installStep) {
@@ -262,14 +331,20 @@ function performStep(installStep) {
 			$('buttonTest').val(data);
 			$('buttonTest').show();
 
-			if (data.StepData != null)  {
-				if (data.Step == 1) {
-					processStep1(data.StepData);
-				} else if (data.Step == 2) {
-					processStep2(data.StepData);
-				} else if (data.Step == 3) {
-					processStep3(data.StepData);
-				}
+			if (data.Step == 1) {
+				processStep1(data.StepData);
+			} else if (data.Step == 2) {
+				processStep2(data.StepData);
+			} else if (data.Step == 3) {
+				processStep3(data.StepData);
+			} else if (data.Step == 5) {
+				processStep5(data.StepData);
+			} else if (data.Step == 6) {
+				processStep6(data.StepData);
+			} else if (data.Step == 7) {
+				processStep7(data.StepData);
+			} else if (data.Step == 97) {
+				processStep97(data.StepData);
 			}
 		})
 		.fail(function(data) {
@@ -298,11 +373,11 @@ $().ready(function() {
 	//debugger;
 	installData = $.urlParam('data');
 	if (installData != null && installData != 0) {
-//		try {
+		try {
 			installData = JSON.parse(installData);
-//		} catch (ex) {
-//			installData = getDefaultInstallData();
-//		}
+		} catch (ex) {
+			installData = getDefaultInstallData();
+		}
 	}
 	$("#installData").data('installData', installData);
 
@@ -316,7 +391,11 @@ $().ready(function() {
 		if (button != null) {
 			buttonData = button.data('buttonData');
 			if (buttonData != null) {
-				performStep(buttonData.Step);
+				if (buttonData.Step == -1) {
+					window.location.assign('../../');
+				} else {
+					performStep(buttonData.Step);
+				}
 				return;
 			}
 		}

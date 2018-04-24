@@ -301,9 +301,15 @@ function read_config_option($config_name, $force = false) {
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
 		if (isset($db_setting['value'])) {
-			$config_array[$config_name] = $db_setting['value'];
+			$value = $db_setting['value'];
 		} else {
-			$config_array[$config_name] = read_default_config_option($config_name);
+			$value = read_default_config_option($config_name);
+		}
+
+		if ($value === null) {
+			$config_array[$config_name] = false;
+		} else {
+			$config_array[$config_name] = $value;
 		}
 
 		if (isset($_SESSION)) {

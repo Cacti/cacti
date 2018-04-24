@@ -46,17 +46,6 @@ $cacti_versions = array_keys($cacti_version_codes);
 
 $old_cacti_version = get_cacti_version();
 
-$installer = new Installer();
-if ($installer->shouldRedirectHome()) {
-	header($url_path);
-}
-
-$exitReason = $installer->shouldExitWithReason();
-if ($exitReason !== false) {
-	$this->exitWithReason($exitReason);
-	exit;
-}
-
 /* pre-processing that needs to be done for each step */
 if (isset_request_var('step') && get_filter_request_var('step') > 0) {
 	$step = get_filter_request_var('step');
