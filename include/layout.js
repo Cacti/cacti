@@ -575,6 +575,10 @@ function applySkin() {
 		});
 	}
 
+	if (pageName.indexOf('graph_view.php') >= 0) {
+		setGraphTabs($('.righttab .selected').attr('id'));
+	}
+
 	$('.ui-tooltip').remove();
 
 	setupSortable();
@@ -897,6 +901,36 @@ function toggleFilterAndIcon(id, child, initial) {
 	$(window).trigger('resize');
 }
 
+function setGraphTabs(id) {
+	/* update menu selection */
+	if ($('#'+id).hasClass('righttab')) {
+		$('.righttab').removeClass('selected');
+		$('#'+id).addClass('selected');
+
+		if (theme == 'classic') {
+			$('.righttab').each(function() {
+				if ($(this).hasClass('selected')) {
+					if ($(this).find('img').length) {
+						imageSRC = $(this).find('img').attr('src');
+						if (imageSRC.indexOf('_down') < 0) {
+							imageSRC = imageSRC.replace('.gif', '_down.gif');
+							$(this).find('img').attr('src', imageSRC);
+						}
+					}
+				} else {
+					if ($(this).find('img').length) {
+						imageSRC = $(this).find('img').attr('src');
+						if (imageSRC.indexOf('_down') >= 0) {
+							imageSRC = imageSRC.replace('_down.gif', '.gif');
+							$(this).find('img').attr('src', imageSRC);
+						}
+					}
+				}
+			});
+		}
+	}
+}
+
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').unbind('click').click(function(event) {
 		page = basename($(this).attr('href'));
@@ -931,11 +965,7 @@ function setupResponsiveMenuAndTabs() {
 				$(this).addClass('selected');
 			}
 
-			/* update menu selection */
-			if ($(this).hasClass('righttab')) {
-				$('.righttab').removeClass('selected');
-				$(this).addClass('selected');
-			}
+			setGraphTabs($(this).attr('id'));
 
 			loadTopTab($(this).attr('href'));
 		}
