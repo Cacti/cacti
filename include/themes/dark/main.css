@@ -2191,6 +2191,10 @@ tr#realtime td:first-child {
 	vertical-align: 20%;
 }
 
+.graphWrapper {
+	position: relative;
+}
+
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: scroll;
@@ -2218,6 +2222,7 @@ tr#realtime td:first-child {
 	font-size: unset;
 }
 
-.graphWrapper {
-	position: relative;
+.ui-checkboxradio-icon {
+	display: none;
 }
+

@@ -2337,5 +2337,15 @@ tr#realtime td:first-child {
 
 .ui-widget {
 	font-size: unset;
+	background: transparent;
+	color: #CECECE;
 }
 
+.ui-checkboxradio-icon {
+	display: none;
+}
+
+.ui-state-default {
+	background: transparent;
+	color: #CECECE;
+}

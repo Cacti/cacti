@@ -2360,3 +2360,7 @@ tr#realtime td:first-child {
 	font-size: unset;
 }
 
+.ui-checkboxradio-icon {
+	display: none;
+}
+
