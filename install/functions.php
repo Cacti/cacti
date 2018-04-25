@@ -266,23 +266,28 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
+	file_put_contents('/tmp/file.log', "$name: Locations ($os)\n" . var_export($defaultPaths, true) . "\n", FILE_APPEND);
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	}
 
 	$which_tool = '';
 	if (config_value_exists('path_'.$name)) {
-		$which_tool = read_config_option('path_'.$name);
+		$which_tool = read_config_option('path_'.$name, true);
+		file_put_contents('/tmp/file.log', "Using config location: $which_tool\n", FILE_APPEND);
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
 		$defaultPath = $defaultPaths[$config['cacti_server_os']];
 		$basename = basename($defaultPath);
+		file_put_contents('/tmp/file.log', "Searching best path with location: $defaultPath\n", FILE_APPEND);
 		$which_tool = find_best_path($basename);
+		file_put_contents('/tmp/file.log', "Searching best path with location return: $which_tool\n", FILE_APPEND);
 	}
 
 	if (empty($which_tool)) {
 		$which_tool = $defaultPath;
+		file_put_contents('/tmp/file.log', "Nothing found defaulting to $defaultPath\n", FILE_APPEND);
 	}
 
 	$tool['default'] = $which_tool;
@@ -292,19 +297,20 @@ function install_tool_path($name, $defaultPaths) {
 function install_file_paths () {
 	global $config, $settings;
 
-	/* RRDtool Binary Path */
 	$input = array();
+
+	/* PHP Binary Path */
+	$input['path_php_binary'] = install_tool_path('php_binary',
+		array(
+			'unix'  => '/usr/bin/php',
+			'win32' => 'c:/php/php.exe'
+		));
+
+	/* RRDtool Binary Path */
 	$input['path_rrdtool'] = install_tool_path('rrdtool',
 		array(
 			'unix'  => '/usr/local/bin/rrdtool',
 			'win32' => 'c:/rrdtool/rrdtool.exe'
-		));
-
-	/* PHP Binary Path */
-	$input['path_php_binary'] = install_tool_path('rrdtool',
-		array(
-			'unix'  => '/usr/bin/php',
-			'win32' => 'c:/php/php.exe'
 		));
 
 	/* snmpwalk Binary Path */

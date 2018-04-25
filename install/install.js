@@ -139,10 +139,6 @@ function processStep3(StepData) {
 	hideHeadings(StepData);
 
 	$("#install_type").on('change', function() {
-		installData = $("#installData").data("installData");
-		//debugger;
-		installData.Mode = this.value;
-		$("#installData").data("installData", installData);
 		performStep(3);
 	});
 }
@@ -227,7 +223,6 @@ function getDefaultInstallData() {
 }
 
 function prepareInstallData(installStep) {
-	//debugger;
 	installData = $("#installData").data('installData');
 	if (typeof installData == 'undefined' || installData == null) {
 		installData = getDefaultInstallData();
@@ -245,11 +240,12 @@ function prepareInstallData(installStep) {
 
 	step = installData.Step;
 	if (step == 1) prepareStep1(newData);
-	else if (step == 3) prepareStep3(newData);
-	else if (step == 4) prepareStep4(newData);
-	else if (step == 6) prepareStep6(newData);
 
 	if (typeof installStep != 'undefined') {
+		if (step == 3) prepareStep3(newData);
+		else if (step == 4) prepareStep4(newData);
+		else if (step == 6) prepareStep6(newData);
+
 		newData.Step = installStep;
 	}
 
@@ -264,9 +260,9 @@ function prepareStep1(installData) {
 }
 
 function prepareStep3(installData) {
-	element = $("#mode");
+	element = $("#install_type");
 	if (element != null && element.length > 0) {
-		installData.Mode = element.value;
+		installData.Mode = element[0].value;
 	}
 }
 
@@ -279,12 +275,12 @@ function prepareStep4(installData) {
 	installData.Paths = paths;
 	element = $("#selected_theme");
 	if (element != null && element.length > 0) {
-		installData.Theme = element.value;
+		installData.Theme = element[0].value;
 	}
 
 	element = $("#rrdtool_version");
 	if (element != null && element.length > 0) {
-		installData.RRDVer = element.value;
+		installData.RRDVer = element[0].value;
 	}
 }
 
@@ -370,7 +366,6 @@ $().ready(function() {
 	disableButton('Next');
 	disableButton('Test');
 
-	//debugger;
 	installData = $.urlParam('data');
 	if (installData != null && installData != 0) {
 		try {
@@ -401,5 +396,7 @@ $().ready(function() {
 		}
 		getPresentHTTPError('');
 	});
-	performStep();
+	setTimeout(function() {
+		performStep();
+	}, 1000);
 });

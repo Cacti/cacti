@@ -65,10 +65,10 @@ class Installer implements JsonSerializable {
 			$install_version = read_config_option('install_version',true);
 			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
 			if ($install_version === false || $install_version === null) {
-				$install_version = CACTI_VERSION;
+				$install_version = $this->old_cacti_version;
 			}
 
-			if (cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
+			if (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
 				file_put_contents('/tmp/install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
 				$install_error = read_config_option('install_error', true);
 				if ($install_error === false || $install_error === null) {
@@ -222,14 +222,13 @@ class Installer implements JsonSerializable {
 	private function setPaths($param_paths = array()) {
 		if (is_array($param_paths)) {
 			$input = install_file_paths();
+			file_put_contents('/tmp/paths.log', "\nsetPaths($this->stepCurrent)\n", FILE_APPEND);
 
 			/* get all items on the form and write values for them  */
 			foreach ($input as $name => $array) {
 				if (isset($param_paths[$name])) {
-					db_execute_prepared('REPLACE INTO settings
-						(name,value)
-						VALUES (?, ?)',
-						array($name, $param_paths[$name]));
+					file_put_contents('/tmp/paths.log', "$name => $param_paths[$name]\n", FILE_APPEND);
+					set_config_option($name, $param_paths[$name]);
 				}
 			}
 		}
