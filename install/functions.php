@@ -266,7 +266,7 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
-	file_put_contents('/tmp/file.log', "$name: Locations ($os)\n" . var_export($defaultPaths, true) . "\n", FILE_APPEND);
+	tmp_log('file.log', "$name: Locations ($os)\n" . var_export($defaultPaths, true) . "\n", FILE_APPEND);
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	}
@@ -274,20 +274,20 @@ function install_tool_path($name, $defaultPaths) {
 	$which_tool = '';
 	if (config_value_exists('path_'.$name)) {
 		$which_tool = read_config_option('path_'.$name, true);
-		file_put_contents('/tmp/file.log', "Using config location: $which_tool\n", FILE_APPEND);
+		tmp_log('file.log', "Using config location: $which_tool\n", FILE_APPEND);
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
 		$defaultPath = $defaultPaths[$config['cacti_server_os']];
 		$basename = basename($defaultPath);
-		file_put_contents('/tmp/file.log', "Searching best path with location: $defaultPath\n", FILE_APPEND);
+		tmp_log('file.log', "Searching best path with location: $defaultPath\n", FILE_APPEND);
 		$which_tool = find_best_path($basename);
-		file_put_contents('/tmp/file.log', "Searching best path with location return: $which_tool\n", FILE_APPEND);
+		tmp_log('file.log', "Searching best path with location return: $which_tool\n", FILE_APPEND);
 	}
 
 	if (empty($which_tool)) {
 		$which_tool = $defaultPath;
-		file_put_contents('/tmp/file.log', "Nothing found defaulting to $defaultPath\n", FILE_APPEND);
+		tmp_log('file.log', "Nothing found defaulting to $defaultPath\n", FILE_APPEND);
 	}
 
 	$tool['default'] = $which_tool;

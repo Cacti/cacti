@@ -59,7 +59,7 @@ if ($backgroundTime === null) {
 
 $backgroundArg = $params[0];
 
-if ("$backgroundTime" != "$backgroundArg") {
+if ("$backgroundTime" != "$backgroundArg" && "-b" != "$backgroundArg") {
 	$dateTime = DateTime::createFromFormat('U.u', $backgroundTime);
 	$dateArg = DateTime::createFromFormat('U.u', $backgroundArg);
 	cacti_log(__('Background was already started at %s, this attempt at %s was skipped',
@@ -70,6 +70,7 @@ if ("$backgroundTime" != "$backgroundArg") {
 }
 
 try {
+	$backgroundTime = microtime(true);
 	$installer = new Installer();
 	$installer->processBackgroundInstall();
 } catch (Exception $e) {
@@ -79,7 +80,7 @@ try {
 $backgroundDone = microtime(true);
 set_config_option('install_complete', $backgroundDone);
 
-$dateBack = DateTime::createFromFormat('U.u', $backgroundArg);
+$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 $dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
 
 cacti_log(__('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')), false, 'INSTALL:');

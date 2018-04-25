@@ -1,6 +1,13 @@
 <?php
 include(dirname(__FILE__) . '/../lib/poller.php');
 
+function tmp_log($filename, $data, $flags = 0) {
+	return false;
+
+	global $config;
+	file_put_contents($config['base_path'] .'/log/'.$filename, $data, $flags);
+}
+
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
 	const EXIT_DB_OLD = 2;
@@ -41,15 +48,15 @@ class Installer implements JsonSerializable {
 	const PROGRESS_UPGRADES_END = 30;
 	const PROGRESS_TEMPLATES_BEGIN = 41;
 	const PROGRESS_TEMPLATES_END = 60;
-	const PROGRESS_PROFILE_START = 61;
-	const PROGRESS_PROFILE_POLLER = 63;
-	const PROGRESS_PROFILE_TIMING = 64;
-	const PROGRESS_PROFILE_END = 70;
-	const PROGRESS_DEVICE_START = 71;
-	const PROGRESS_DEVICE_TEMPLATE = 72;
-	const PROGRESS_DEVICE_GRAPH = 73;
-	const PROGRESS_DEVICE_TREE = 74;
-	const PROGRESS_DEVICE_END = 75;
+	const PROGRESS_DEVICE_START = 61;
+	const PROGRESS_DEVICE_TEMPLATE = 62;
+	const PROGRESS_DEVICE_GRAPH = 63;
+	const PROGRESS_DEVICE_TREE = 64;
+	const PROGRESS_DEVICE_END = 65;
+	const PROGRESS_PROFILE_START = 71;
+	const PROGRESS_PROFILE_POLLER = 73;
+	const PROGRESS_PROFILE_DEFAULT = 74;
+	const PROGRESS_PROFILE_END = 75;
 	const PROGRESS_VERSION_BEGIN = 80;
 	const PROGRESS_VERSION_END = 85;
 	const PROGRESS_COMPLETE = 100;
@@ -75,21 +82,21 @@ class Installer implements JsonSerializable {
 		$this->old_cacti_version = get_cacti_version();
 
 		$step = read_config_option('install_step', true);
-		file_put_contents('/tmp/install_step.log', 'Initial: ' . var_export($step, true). "\n", FILE_APPEND);
+		tmp_log('install_step.log', 'Initial: ' . var_export($step, true). "\n", FILE_APPEND);
 		if ($step === false || $step === null) {
-			file_put_contents('/tmp/install_step.log', "Resetting to STEP_WELCOME as not found\n", FILE_APPEND);
+			tmp_log('install_step.log', "Resetting to STEP_WELCOME as not found\n", FILE_APPEND);
 			$step = Installer::STEP_WELCOME;
 			set_config_option('install_step', $step);
 			$installData = array();
 		} elseif ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version',true);
-			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
+			tmp_log('install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
 			if ($install_version === false || $install_version === null) {
 				$install_version = $this->old_cacti_version;
 			}
 
 			if (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
-				file_put_contents('/tmp/install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
+				tmp_log('install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
 				$install_error = read_config_option('install_error', true);
 				if ($install_error === false || $install_error === null) {
 					$step = Installer::STEP_COMPLETE;
@@ -100,19 +107,19 @@ class Installer implements JsonSerializable {
 			}
 		} elseif ($step == Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
-			file_put_contents('/tmp/install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
+			tmp_log('install_step.log', 'Previously complete: ' . var_export($install_version, true). "\n", FILE_APPEND);
 			if ($install_version === false || $install_version === null) {
 				$install_version = CACTI_VERSION;
 			}
 
 			if (!cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
-				file_put_contents('/tmp/install_step.log', 'Does not match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
+				tmp_log('install_step.log', 'Does not match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
 				$step = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings where name like \'install_%\'');
 				$installData = array();
 			}
 		}
-		file_put_contents('/tmp/install_step.log', 'After: ' . var_export($step, true). "\n\n", FILE_APPEND);
+		tmp_log('install_step.log', 'After: ' . var_export($step, true). "\n\n", FILE_APPEND);
 
 		$this->eula = read_config_option('install_eula', true);
 		$this->templates = install_setup_get_templates();
@@ -148,7 +155,7 @@ class Installer implements JsonSerializable {
 		if (!empty($installData)) {
 			$this->processData($installData);
 		}
-		file_put_contents('/tmp/install_step.log', 'Done: ' . var_export($this->stepCurrent, true). "\n\n", FILE_APPEND);
+		tmp_log('install_step.log', 'Done: ' . var_export($this->stepCurrent, true). "\n\n", FILE_APPEND);
 	}
 
 	protected function processData($initialData = array()) {
@@ -156,7 +163,7 @@ class Installer implements JsonSerializable {
 			$initialData = array();
 		}
 
-		file_put_contents('/tmp/install.log','');
+		tmp_log('install.log','');
 		foreach ($initialData as $key => $value) {
 			switch ($key) {
 				case 'Step':
@@ -193,7 +200,7 @@ class Installer implements JsonSerializable {
 					$this->setTheme($value);
 					break;
 				default:
-					file_put_contents('/tmp/install.log',"$key => $value\n", FILE_APPEND);
+					tmp_log('install.log',"$key => $value\n", FILE_APPEND);
 			}
 		}
 	}
@@ -247,12 +254,12 @@ class Installer implements JsonSerializable {
 	private function setPaths($param_paths = array()) {
 		if (is_array($param_paths)) {
 			$input = install_file_paths();
-			file_put_contents('/tmp/paths.log', "\nsetPaths($this->stepCurrent)\n", FILE_APPEND);
+			tmp_log('paths.log', "\nsetPaths($this->stepCurrent)\n", FILE_APPEND);
 
 			/* get all items on the form and write values for them  */
 			foreach ($input as $name => $array) {
 				if (isset($param_paths[$name])) {
-					file_put_contents('/tmp/paths.log', "$name => $param_paths[$name]\n", FILE_APPEND);
+					tmp_log('paths.log', "$name => $param_paths[$name]\n", FILE_APPEND);
 					set_config_option($name, $param_paths[$name]);
 				}
 			}
@@ -270,17 +277,17 @@ class Installer implements JsonSerializable {
 		if (is_array($param_templates)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
 			$known_templates = install_setup_get_templates();
-			file_put_contents('/tmp/templates.log',"Updating templates\n");
-			file_put_contents('/tmp/templates.log',"Parameter data:\n".var_export($param_templates, true)."\n", FILE_APPEND);
+			tmp_log('templates.log',"Updating templates\n");
+			tmp_log('templates.log',"Parameter data:\n".var_export($param_templates, true)."\n", FILE_APPEND);
 			foreach ($known_templates as $known) {
 				$filename = $known['filename'];
 				$key = 'chk_template_' . str_replace(".", "_", $filename);
-				file_put_contents('/tmp/templates.log',"Checking template file $filename against key $key ...\n", FILE_APPEND);
-				file_put_contents('/tmp/templates.log',"Template data: ".str_replace("\n"," ", var_export($known, true))."\n", FILE_APPEND);
+				tmp_log('templates.log',"Checking template file $filename against key $key ...\n", FILE_APPEND);
+				tmp_log('templates.log',"Template data: ".str_replace("\n"," ", var_export($known, true))."\n", FILE_APPEND);
 				if (isset($param_templates[$key])) {
 					$template = $param_templates[$key];
-					file_put_contents('/tmp/templates.log',"Template enabled:" . var_export($template, true) . "\n", FILE_APPEND);
-					file_put_contents('/tmp/templates.log',"Set template: install_template_$key = $filename\n", FILE_APPEND);
+					tmp_log('templates.log',"Template enabled:" . var_export($template, true) . "\n", FILE_APPEND);
+					tmp_log('templates.log',"Set template: install_template_$key = $filename\n", FILE_APPEND);
 					$key = str_replace(".", "_", $filename);
 					set_config_option("install_template_$key", $filename);
 				}
@@ -314,8 +321,8 @@ class Installer implements JsonSerializable {
 			$step == Installer::STEP_WELCOME;
 		}
 
-		file_put_contents('/tmp/install_step.log', 'setStep: ' . var_export($step, true). "\n", FILE_APPEND);
-		file_put_contents('/tmp/install_step.log', "setStep:\n" . var_export(debug_backtrace(0), true). "\n", FILE_APPEND);
+		tmp_log('install_step.log', 'setStep: ' . var_export($step, true). "\n", FILE_APPEND);
+		tmp_log('install_step.log', "setStep:\n" . var_export(debug_backtrace(0), true). "\n", FILE_APPEND);
 
 //		$install_version = read_config_option('install_version', true);
 //		if ($install_version !== false) {
@@ -1312,25 +1319,25 @@ class Installer implements JsonSerializable {
 			set_config_option("install_started", $backgroundTime);
 		}
 
-		file_put_contents('/tmp/process.log', 'backgroundTime = ' . $backgroundTime . "\n");
-		file_put_contents('/tmp/process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
+		tmp_log('process.log', 'backgroundTime = ' . $backgroundTime . "\n");
+		tmp_log('process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
 
 		// Check if background started too long ago
 		if (!$backgroundNeeded) {
-			file_put_contents('/tmp/process.log', "\n----------------\nCheck Expire\n----------------\n", FILE_APPEND);
+			tmp_log('process.log', "\n----------------\nCheck Expire\n----------------\n", FILE_APPEND);
 
 			$backgroundDateStarted = DateTime::createFromFormat('U.u', $backgroundTime);
 			$backgroundLast = read_config_option('install_updated', true);
 
-			file_put_contents('/tmp/process.log', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s'). "\n", FILE_APPEND);
-			file_put_contents('/tmp/process.log', 'backgroundLast = ' . $backgroundTime . "\n", FILE_APPEND);
+			tmp_log('process.log', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s'). "\n", FILE_APPEND);
+			tmp_log('process.log', 'backgroundLast = ' . $backgroundTime . "\n", FILE_APPEND);
 			if ($backgroundLast === false || $backgroundLast < $backgroundTime) {
-				file_put_contents('/tmp/process.log', 'backgroundLast = ' . $backgroundTime . " (Replaced)\n", FILE_APPEND);
+				tmp_log('process.log', 'backgroundLast = ' . $backgroundTime . " (Replaced)\n", FILE_APPEND);
 				$backgroundLast = $backgroundTime;
 			}
 
 			$backgroundExpire = time() - 300;
-			file_put_contents('/tmp/process.log', 'backgroundExpire = ' . $backgroundExpire . "\n", FILE_APPEND);
+			tmp_log('process.log', 'backgroundExpire = ' . $backgroundExpire . "\n", FILE_APPEND);
 
 			if ($backgroundLast < $backgroundExpire) {
 				$newTime = microtime(true);
@@ -1348,11 +1355,11 @@ class Installer implements JsonSerializable {
 				}
 				$backgroundNeeded = ("$newTime" == "$backgroundTime");
 
-				file_put_contents('/tmp/process.log', "\n=======\nExpired\n=======\n", FILE_APPEND);
-				file_put_contents('/tmp/process.log', '         newTime = ' . $newTime . "\n", FILE_APPEND);
-				file_put_contents('/tmp/process.log', '  backgroundTime = ' . $backgroundTime . "\n", FILE_APPEND);
-				file_put_contents('/tmp/process.log', '  backgroundLast = ' . $backgroundLast . "\n", FILE_APPEND);
-				file_put_contents('/tmp/process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
+				tmp_log('process.log', "\n=======\nExpired\n=======\n", FILE_APPEND);
+				tmp_log('process.log', '         newTime = ' . $newTime . "\n", FILE_APPEND);
+				tmp_log('process.log', '  backgroundTime = ' . $backgroundTime . "\n", FILE_APPEND);
+				tmp_log('process.log', '  backgroundLast = ' . $backgroundLast . "\n", FILE_APPEND);
+				tmp_log('process.log', 'backgroundNeeded = ' . $backgroundNeeded . "\n", FILE_APPEND);
 			}
 		}
 
@@ -1360,7 +1367,7 @@ class Installer implements JsonSerializable {
 			$php = read_config_option('path_php_binary', true);
 			$php_file = $config['base_path'] . '/install/background.php ' . $backgroundTime;
 
-			file_put_contents('/tmp/process.log', 'Spawning background process: ' . $php . ' ' . $php_file . "\n", FILE_APPEND);
+			tmp_log('process.log', 'Spawning background process: ' . $php . ' ' . $php_file . "\n", FILE_APPEND);
 			cacti_log('Spawning background process: ' . $php . ' ' . $php_file, false, 'INSTALL:');
 			exec_background($php, $php_file);
 		}
@@ -1455,18 +1462,21 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 		if ($this->mode == Installer::MODE_INSTALL) {
 			$this->setProgress(Installer::PROGRESS_PROFILE_START);
-			$profile = db_fetch_row_prepared('SELECT id, name, steps FROM data_source_profiles WHERE id = ?', array(intval($this->profile)));
+			$profile_id = intval($this->profile);
+			$profile = db_fetch_row_prepared('SELECT id, name, step FROM data_source_profiles WHERE id = ?', array($profile_id));
+			tmp_log('profile.log', var_export($profile, true));
 			if ($profile['id'] == $this->profile) {
 				cacti_log(__('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']), false, 'INSTALL:');
 				$profile_array = array($profile['id']);
 				$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
-				db_execute_prepared('UPDATE data_source_profiles SET default = \'\' WHERE id <> ?', $profile_array);
-				db_execute_prepared('UPDATE data_source_profiles SET default = \'on\' WHERE id = ?', $profile_array);
+				db_execute_prepared('UPDATE data_source_profiles SET `default` = \'\' WHERE `id` != ?', $profile_array);
+				db_execute_prepared('UPDATE data_template_data SET data_source_profile_id = ?', $profile_array);
+				db_execute_prepared('UPDATE data_source_profiles SET `default` = \'on\' WHERE `id` = ?', $profile_array);
 
 				$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
-				set_config_option('poller_interval', $profile['steps']);
+				set_config_option('poller_interval', $profile['step']);
 			} else {
-				cacti_log(__('Failed to find selected profile (%s), no changes were made', $this->profile), false, 'INSTALL:');
+				cacti_log(__('Failed to find selected profile (%s), no changes were made', $profile_id), false, 'INSTALL:');
 			}
 			$this->setProgress(Installer::PROGRESS_PROFILE_END);
 

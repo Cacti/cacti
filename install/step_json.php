@@ -64,9 +64,9 @@ array(
 );
 */
 
-file_put_contents('/tmp/step.log','Start: ' . clean_up_lines(get_request_var('data')) . "\n\n");
+tmp_log('step.log','Start: ' . clean_up_lines(get_request_var('data')) . "\n\n");
 $json = json_encode($installer);
-file_put_contents('/tmp/step.log','  End: ' . clean_up_lines($json) . "\n\n", FILE_APPEND);
+tmp_log('step.log','  End: ' . clean_up_lines($json) . "\n\n", FILE_APPEND);
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));
