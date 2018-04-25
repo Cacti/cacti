@@ -308,7 +308,6 @@ function read_config_option($config_name, $force = false) {
 		if ($value === null) {
 			$value = read_default_config_option($config_name);
 		}
-		file_put_contents('/tmp/config.log',$config_name . ' = ' . str_replace("\n", " ", var_export($value, true)) . "\n", FILE_APPEND);
 
 		$config_array[$config_name] = $value;
 
