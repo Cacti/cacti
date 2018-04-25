@@ -1,3 +1,26 @@
+/***********************************************************
+ * The STEP_ constants are defined in the following files: *
+ *                                                         *
+ * lib/installer.php                                       *
+ * install/install.js                                      *
+ *                                                         *
+ * All files must be updated to match for the installation *
+ * process to work properly                                *
+ ***********************************************************/
+
+const STEP_NONE = 0;
+const STEP_WELCOME = 1;
+const STEP_CHECK_DEPENDENCIES = 2;
+const STEP_INSTALL_TYPE = 3;
+const STEP_BINARY_LOCATIONS = 4;
+const STEP_PERMISSION_CHECK = 5;
+const STEP_DEFAULT_PROFILE = 6;
+const STEP_TEMPLATE_INSTALL = 7;
+const STEP_INSTALL_CONFIRM = 8;
+const STEP_INSTALL_OLDVERSION = 11;
+const STEP_INSTALL = 97;
+const STEP_COMPLETE = 98;
+const STEP_ERROR = 99;
 
 function setButtonData(buttonName, buttonData) {
 	button = $('#button'+buttonName);
@@ -109,7 +132,7 @@ function hideHeadings(headingStates) {
 	}
 }
 
-function processStep1(StepData) {
+function processStepWelcome(StepData) {
 	if (StepData.Eula == 1) {
 		$("#accept").prop('checked',true);
 	}
@@ -131,11 +154,11 @@ function processStep1(StepData) {
 	}
 }
 
-function processStep2(StepData) {
+function processStepCheckDependencies(StepData) {
 	collapseHeadings(StepData);
 }
 
-function processStep3(StepData) {
+function processStepInstallType(StepData) {
 	hideHeadings(StepData);
 
 	$("#install_type").on('change', function() {
@@ -143,20 +166,22 @@ function processStep3(StepData) {
 	});
 }
 
-function processStep5(StepData) {
+function processStepPermissionCheck(StepData) {
 	collapseHeadings(StepData);
 
 }
 
-function processStep6(StepData) {
+function processStepDefaultProfile(StepData) {
+}
+
+function processStepTemplateInstall(StepData) {
 	element = $("#selectall");
 	if (element != null && element.length > 0) {
 		element.click();
-//prop("checked", true);
 	}
 }
 
-function processStep7(StepData) {
+function processStepInstallConfirm(StepData) {
 	if ($('#confirm').length) {
 		$('#confirm').click(function() {
 			if ($(this).is(':checked')) {
@@ -174,16 +199,16 @@ function processStep7(StepData) {
 	}
 }
 
-function processStep97Refresh() {
-	performStep(97);
+function processStepInstallRefresh() {
+	performStep(STEP_INSTALL);
 }
 
-function processStep97Status(current, total) {
+function processStepInstallStatus(current, total) {
 	return "";
 }
 
-function processStep97(StepData) {
-	progress(0.0, 1.0, $("#cactiInstallProgressCountdown"), processStep97Refresh, processStep97Status);
+function processStepInstall(StepData) {
+	progress(0.0, 1.0, $("#cactiInstallProgressCountdown"), processStepInstallRefresh, processStepInstallStatus);
 	setProgressBar(StepData.Current, StepData.Total, $("#cactiInstallProgressBar"), 0.0);
 }
 
@@ -219,7 +244,7 @@ function progress_old(timeleft, timetotal, $element, fnComplete, fnStatus) {
 }
 
 function getDefaultInstallData() {
-	return { Step: 1, Eula: 0 };
+	return { Step: STEP_WELCOME, Eula: 0 };
 }
 
 function prepareInstallData(installStep) {
@@ -239,12 +264,13 @@ function prepareInstallData(installStep) {
 	}
 
 	step = installData.Step;
-	if (step == 1) prepareStep1(newData);
+	if (step == STEP_WELCOME) prepareStepWelcome(newData);
 
 	if (typeof installStep != 'undefined') {
-		if (step == 3) prepareStep3(newData);
-		else if (step == 4) prepareStep4(newData);
-		else if (step == 6) prepareStep6(newData);
+		if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
+		else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
+		else if (step == STEP_DEFAULT_PROFILE) prepareStepDefaultProfile(newData);
+		else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
 
 		newData.Step = installStep;
 	}
@@ -252,21 +278,21 @@ function prepareInstallData(installStep) {
 	return JSON.stringify(newData);
 }
 
-function prepareStep1(installData) {
+function prepareStepWelcome(installData) {
 	element = $("#accept");
 	if (element != null && element.length > 0) {
 		installData.Eula = element.is(':checked');
 	}
 }
 
-function prepareStep3(installData) {
+function prepareStepInstallType(installData) {
 	element = $("#install_type");
 	if (element != null && element.length > 0) {
 		installData.Mode = element[0].value;
 	}
 }
 
-function prepareStep4(installData) {
+function prepareStepBinaryLocations(installData) {
 	paths = {}
 	$('input[name^="path_"]').each(function(index,element) {
 		paths[element.id] = element.value;
@@ -284,7 +310,13 @@ function prepareStep4(installData) {
 	}
 }
 
-function prepareStep6(installData) {
+function prepareStepDefaultProfile(installData) {
+	element = $("#default_profile");
+	if (element != null && element.length > 0) {
+		installData.Profile = element[0].value;
+	}
+}
+function prepareStepTemplateInstall(installData) {
 	templates = {}
 	$('input[name^="chk_"]').each(function(index,element) {
 		templates[element.id] = element.value;
@@ -327,20 +359,22 @@ function performStep(installStep) {
 			$('buttonTest').val(data);
 			$('buttonTest').show();
 
-			if (data.Step == 1) {
-				processStep1(data.StepData);
-			} else if (data.Step == 2) {
-				processStep2(data.StepData);
-			} else if (data.Step == 3) {
-				processStep3(data.StepData);
-			} else if (data.Step == 5) {
-				processStep5(data.StepData);
-			} else if (data.Step == 6) {
-				processStep6(data.StepData);
-			} else if (data.Step == 7) {
-				processStep7(data.StepData);
-			} else if (data.Step == 97) {
-				processStep97(data.StepData);
+			if (data.Step == STEP_WELCOME) {
+				processStepWelcome(data.StepData);
+			} else if (data.Step == STEP_CHECK_DEPENDENCIES) {
+				processStepCheckDependencies(data.StepData);
+			} else if (data.Step == STEP_INSTALL_TYPE) {
+				processStepInstallType(data.StepData);
+			} else if (data.Step == STEP_PERMISSION_CHECK) {
+				processStepPermissionCheck(data.StepData);
+			} else if (data.Step == STEP_DEFAULT_PROFILE) {
+				processStepDefaultProfile(data.StepData);
+			} else if (data.Step == STEP_TEMPLATE_INSTALL) {
+				processStepTemplateInstall(data.StepData);
+			} else if (data.Step == STEP_INSTALL_CONFIRM) {
+				processStepInstallConfirm(data.StepData);
+			} else if (data.Step == STEP_INSTALL) {
+				processStepInstall(data.StepData);
 			}
 		})
 		.fail(function(data) {

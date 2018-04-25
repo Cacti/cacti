@@ -5,14 +5,25 @@ class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;
 	const EXIT_DB_OLD = 2;
 
+	/***********************************************************
+	 * The STEP_ constants are defined in the following files: *
+	 *                                                         *
+	 * lib/installer.php                                       *
+	 * install/install.js                                      *
+	 *                                                         *
+	 * All files must be updated to match for the installation *
+	 * process to work properly                                *
+	 ***********************************************************/
+
 	const STEP_NONE = 0;
 	const STEP_WELCOME = 1;
 	const STEP_CHECK_DEPENDENCIES = 2;
 	const STEP_INSTALL_TYPE = 3;
 	const STEP_BINARY_LOCATIONS = 4;
 	const STEP_PERMISSION_CHECK = 5;
-	const STEP_TEMPLATE_INSTALL = 6;
-	const STEP_INSTALL_CONFIRM = 7;
+	const STEP_DEFAULT_PROFILE = 6;
+	const STEP_TEMPLATE_INSTALL = 7;
+	const STEP_INSTALL_CONFIRM = 8;
 	const STEP_INSTALL_OLDVERSION = 11;
 	const STEP_INSTALL = 97;
 	const STEP_COMPLETE = 98;
@@ -27,11 +38,20 @@ class Installer implements JsonSerializable {
 	const PROGRESS_NONE = 0;
 	const PROGRESS_START = 1;
 	const PROGRESS_UPGRADES_BEGIN = 2;
-	const PROGRESS_UPGRADES_END = 60;
-	const PROGRESS_TEMPLATES_BEGIN = 61;
-	const PROGRESS_TEMPLATES_END = 70;
-	const PROGRESS_VERSION_BEGIN = 75;
-	const PROGRESS_VERSION_END = 80;
+	const PROGRESS_UPGRADES_END = 30;
+	const PROGRESS_TEMPLATES_BEGIN = 41;
+	const PROGRESS_TEMPLATES_END = 60;
+	const PROGRESS_PROFILE_START = 61;
+	const PROGRESS_PROFILE_POLLER = 63;
+	const PROGRESS_PROFILE_TIMING = 64;
+	const PROGRESS_PROFILE_END = 70;
+	const PROGRESS_DEVICE_START = 71;
+	const PROGRESS_DEVICE_TEMPLATE = 72;
+	const PROGRESS_DEVICE_GRAPH = 73;
+	const PROGRESS_DEVICE_TREE = 74;
+	const PROGRESS_DEVICE_END = 75;
+	const PROGRESS_VERSION_BEGIN = 80;
+	const PROGRESS_VERSION_END = 85;
 	const PROGRESS_COMPLETE = 100;
 
 	private $old_cacti_version;
@@ -98,6 +118,8 @@ class Installer implements JsonSerializable {
 		$this->templates = install_setup_get_templates();
 		$this->paths = install_file_paths();
 		$this->theme = read_config_option('selected_theme', true);
+		$this->profile = read_config_option('install_profile', true);
+
 		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
 		}
@@ -154,6 +176,9 @@ class Installer implements JsonSerializable {
 					break;
 				case 'Test':
 					$this->buttonTest = new InstallerButton($value);
+					break;
+				case 'Profile':
+					$this->setProfile($value);
 					break;
 				case 'Templates':
 					$this->setTemplates($value);
@@ -231,6 +256,13 @@ class Installer implements JsonSerializable {
 					set_config_option($name, $param_paths[$name]);
 				}
 			}
+		}
+	}
+
+	private function setProfile($param_profile = null) {
+		if (!empty($param_profile)) {
+			$this->profile = $param_profile;
+			set_config_option('install_profile', $param_profile);
 		}
 	}
 
@@ -313,39 +345,6 @@ class Installer implements JsonSerializable {
 		}
 
 		return false;
-	}
-
-	public function processCurrentStep() {
-		$exitReason = $this->shouldExitWithReason();
-		if ($exitReason !== false) {
-			$this->buttonNext->Enabled = false;
-			$this->buttonPrevious->Enabled = false;
-			$this->buttonTest->Enabled = false;
-			return $this->exitWithReason($exitReason);
-		}
-
-		switch ($this->stepCurrent) {
-			case Installer::STEP_WELCOME:
-				return $this->processStepWelcome();
-			case Installer::STEP_CHECK_DEPENDENCIES:
-				return $this->processStepCheckDependancies();
-			case Installer::STEP_INSTALL_TYPE:
-				return $this->processStepMode();
-			case Installer::STEP_BINARY_LOCATIONS:
-				return $this->processStepBinaryLocations();
-			case Installer::STEP_PERMISSION_CHECK:
-				return $this->processStepPermissionCheck();
-			case Installer::STEP_TEMPLATE_INSTALL:
-				return $this->processStepTemplateInstall();
-			case Installer::STEP_INSTALL_CONFIRM:
-				return $this->processStepInstallConfirm();
-			case Installer::STEP_INSTALL:
-				return $this->processStepInstall();
-			case Installer::STEP_COMPLETE:
-				return $this->processStepComplete();
-		}
-
-		return $this->exitWithReason((0 - $this->stepCurrent));
 	}
 
 	public function isDatabaseEmpty() {
@@ -614,6 +613,45 @@ class Installer implements JsonSerializable {
 	 * The following functions process the  *
 	 * various steps of the install process *
 	 ****************************************/
+	/**************************************************
+	 * The following sections of code are all related
+	 * to the installation process of the current step
+	 **************************************************/
+	public function processCurrentStep() {
+		$exitReason = $this->shouldExitWithReason();
+		if ($exitReason !== false) {
+			$this->buttonNext->Enabled = false;
+			$this->buttonPrevious->Enabled = false;
+			$this->buttonTest->Enabled = false;
+			return $this->exitWithReason($exitReason);
+		}
+
+		switch ($this->stepCurrent) {
+			case Installer::STEP_WELCOME:
+				return $this->processStepWelcome();
+			case Installer::STEP_CHECK_DEPENDENCIES:
+				return $this->processStepCheckDependancies();
+			case Installer::STEP_INSTALL_TYPE:
+				return $this->processStepMode();
+			case Installer::STEP_BINARY_LOCATIONS:
+				return $this->processStepBinaryLocations();
+			case Installer::STEP_PERMISSION_CHECK:
+				return $this->processStepPermissionCheck();
+			case Installer::STEP_DEFAULT_PROFILE:
+				return $this->processStepDefaultProfile();
+			case Installer::STEP_TEMPLATE_INSTALL:
+				return $this->processStepTemplateInstall();
+			case Installer::STEP_INSTALL_CONFIRM:
+				return $this->processStepInstallConfirm();
+			case Installer::STEP_INSTALL:
+				return $this->processStepInstall();
+			case Installer::STEP_COMPLETE:
+				return $this->processStepComplete();
+		}
+
+		return $this->exitWithReason((0 - $this->stepCurrent));
+	}
+
 	public function processStepWelcome() {
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement'));
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
@@ -1127,6 +1165,48 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public function processStepDefaultProfile() {
+		$profiles = db_fetch_assoc('SELECT dsp.id, dsp.name, dsp.default
+			FROM data_source_profiles AS dsp
+			ORDER BY dsp.step, dsp.name');
+
+		if (sizeof($profiles)) {
+			$output  = Installer::sectionTitle(__('Default Profile'));
+			$output .= Installer::sectionNormal(__('Please select the default profile to be used for polling sources'));
+			$output .= Installer::sectionNote(__('The lower the polling interval, the more work is placed on the Cacti Server host'));
+
+			$selectOutput = '<select id="default_profile" name="default_profile">';
+			foreach ($profiles as $profile) {
+				$selectedProfile = '';
+				$suffix = '';
+
+				if ($profile['default'] == 'on') {
+					if ($this->profile === false || $this->profile === null) {
+						$this->setProfile($profile['id']);
+					}
+					$suffix = ' (default)';
+				}
+
+				if ($profile['id'] == $this->profile) {
+					$selectedProfile = ' selected';
+				}
+
+				$selectOutput .= '<option value="' . $profile['id'] .'"' . $selectedProfile . '>';
+				$selectOutput .= $profile['name'] . $suffix;
+				$selectOutput .= '</option>';
+			}
+			$selectOutput .= '</select>';
+
+			$output .= Installer::sectionNormal($selectOutput);
+		} else {
+			$output  = Installer::sectionTitleError(__('Error Locating Profiles'));
+			$ouptut .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
+			$output .= Installer::sectionNote(__('This may occur if you have a blank database and have not yet imported the cacti.sql file'));
+			$output .= Installer::sectionCode('mysql> source cacti.sql');
+		}
+		return $output;
+	}
+
 	public function processStepTemplateInstall() {
 		$output = Installer::sectionTitle(__('Template Setup'));
 
@@ -1371,16 +1451,103 @@ class Installer implements JsonSerializable {
 		} else {
 			cacti_log(__('No templates were selected for import'), false, 'INSTALL:');
 		}
+
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
+		if ($this->mode == Installer::MODE_INSTALL) {
+			$this->setProgress(Installer::PROGRESS_PROFILE_START);
+			$profile = db_fetch_row_prepared('SELECT id, name, steps FROM data_source_profiles WHERE id = ?', array(intval($this->profile)));
+			if ($profile['id'] == $this->profile) {
+				cacti_log(__('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']), false, 'INSTALL:');
+				$profile_array = array($profile['id']);
+				$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
+				db_execute_prepared('UPDATE data_source_profiles SET default = \'\' WHERE id <> ?', $profile_array);
+				db_execute_prepared('UPDATE data_source_profiles SET default = \'on\' WHERE id = ?', $profile_array);
+
+				$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
+				set_config_option('poller_interval', $profile['steps']);
+			} else {
+				cacti_log(__('Failed to find selected profile (%s), no changes were made', $this->profile), false, 'INSTALL:');
+			}
+			$this->setProgress(Installer::PROGRESS_PROFILE_END);
+
+			$this->setProgress(Installer::PROGRESS_DEVICE_START);
+			// Add the correct device type
+			if ($config['cacti_server_os'] == 'win32') {
+				$hash = '5b8300be607dce4f030b026a381b91cd';
+				$version      = 2;
+				$community    = 'public';
+				$avail        = 'snmp';
+				$ip           = 'localhost';
+				$description  = "Local Windows Machine";
+			} else {
+				$hash = '2d3e47f416738c2d22c87c40218cc55e';
+				$version      = 0;
+				$community    = 'public';
+				$avail        = 'none';
+				$ip           = 'localhost';
+				$description  = "Local Linux Machine";
+			}
+
+			$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
+
+			// Add the host
+			if (!empty($host_template_id)) {
+				$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
+
+				cacti_log('Device Template for First Cacti Device is ' . $host_template_id, false, 'INSTALL:');
+
+				$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_device.php' .
+					' --description=' . cacti_escapeshellarg($description) .
+					' --ip=' . cacti_escapeshellarg($ip) .
+					' --template=' . $host_template_id .
+					' --notes=' . cacti_escapeshellarg('Initial Cacti Device') .
+					' --poller=1 --site=0 --avail=' . cacti_escapeshellarg($avail) .
+					' --version=' . $version .
+					' --community=' . cacti_escapeshellarg($community));
+
+				$host_id = db_fetch_cell_prepared('SELECT id
+					FROM host
+					WHERE host_template_id = ?
+					LIMIT 1',
+					array($host_template_id));
+
+				if (!empty($host_id)) {
+					$this->setProgress(Installer::PROGRESS_DEVICE_GRAPH);
+					$templates = db_fetch_assoc_prepared('SELECT *
+						FROM host_graph
+						WHERE host_id = ?',
+						array($host_id));
+
+					if (sizeof($templates)) {
+						cacti_log('Creating Graphs for Default Device', false, 'INSTALL:');
+						foreach($templates as $template) {
+							automation_execute_graph_template($host_id, $template['graph_template_id']);
+						}
+						$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
+						cacti_log('Adding Device to Default Tree', false, 'INSTALL:');
+						shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_tree.php' .
+							' --type=node' .
+							' --node-type=host' .
+							' --tree-id=1' .
+							' --host-id=' . $host_id);
+					} else {
+						cacti_log('No templated graphs for Default Device were found', false, 'INSTALL:');
+					}
+				}
+			} else {
+				cacti_log('WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.', 'INSTALL:');
+			}
+		}
+		$this->setProgress(Installer::PROGRESS_DEVICE_END);
 
 		cacti_log(__('Setting Cacti Version to %s', CACTI_VERSION), false, 'INSTALL:');
+		cacti_log(__('Finished %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
 
 		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 		db_execute_prepared('UPDATE version SET cacti = ?', array(CACTI_VERSION));
 		set_config_option('install_version', CACTI_VERSION);
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
-		cacti_log(__('Finished %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
 		$this->setProgress(Installer::PROGRESS_COMPLETE);
 	}
 }
