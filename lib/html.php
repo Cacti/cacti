@@ -1810,9 +1810,11 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
-				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
-				<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
+				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
+				<span class='ui-select-text'>
+					<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+				</span>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
 			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
