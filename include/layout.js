@@ -317,6 +317,12 @@ $.tablesorter.addParser({
 	});
 })(jQuery);
 
+function checkOptionalEnabled(item, e) {
+	isOptionalEnabled = item.is(':checked');
+	siblings = item.closest('div').siblings('.formColumnLeft, .formColumnRight');
+	siblings.find('*').prop('disabled', !isOptionalEnabled);
+}
+
 // helper function which selects row range when shift key is pressed during click
 function updateCheckboxes(checkboxes, clicked_element) {
 	var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
@@ -379,6 +385,14 @@ function applySelectorVisibilityAndActions() {
 
 			$(this).closest('tr').toggleClass('selected');
 		}
+	});
+
+	$('input[id^="user_optional_"]').each(function(data) {
+		optional = $(this);
+		optional.unbind('click').click(function(e) {
+			checkOptionalEnabled($(this), e);
+		});
+		checkOptionalEnabled($(this), null);
 	});
 
 	var lines = $('tr[id^="line"].selectable');

@@ -1295,17 +1295,23 @@ table.cactiTable {
 	display: table-column;
 }
 
+.formColumnOptional {
+	float: left;
+	display: table-column;
+	width: 5%;
+}
+
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 

@@ -100,19 +100,85 @@ function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
+/* sAVE_user_setting - sets/updates aLL user settings
+   @arg $config_name - the name of the configuration setting as specified $settings array
+   @arg $value       - the values to be saved
+   @arg $user        - the user id, otherwise the session user
+   @returns          - void */
+function save_user_settings($user = -1) {
+	global $settings_user;
+	if ($user == -1) {
+		$user = $_SESSION['sess_user_id'];
+	}
+
+	foreach ($settings_user as $tab_short_name => $tab_fields) {
+		foreach ($tab_fields as $field_name => $field_array) {
+			if (!empty($field_array['user'])) {
+				if (!isset_request_var('user_optional_' . $field_name) ||
+				    get_nfilter_request_var('user_optional_' . $field_name) != 'on') {
+					clear_user_setting($field_name);
+					continue;
+				}
+			}
+
+			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
+			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
+				set_request_var($field_name, $field_array['default']);
+			}
+
+			if ($field_array['method'] == 'checkbox') {
+				set_user_setting($field_name,
+					(isset_request_var($field_name) ? 'on' : ''),
+					$user);
+			} elseif ($field_array['method'] == 'checkbox_group') {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					set_user_setting($sub_field_name,
+						(isset_request_var($sub_field_name) ? 'on' : ''),
+						$user);
+				}
+			} elseif ($field_array['method'] == 'textbox_password') {
+				if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
+					$_SESSION['sess_error_fields'][$field_name] = $field_name;
+					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+					$errors[4] = 4;
+				} elseif (isset_request_var($field_name)) {
+					set_user_setting($field_name,
+						get_nfilter_request_var($field_name),
+						$user);
+				}
+			} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+					if (isset_request_var($sub_field_name)) {
+						set_user_setting($sub_field_name,
+							get_nfilter_request_var($sub_field_name),
+							$user);
+					}
+				}
+			} else if (isset_request_var($field_name)) {
+				set_user_setting($field_name,
+					get_nfilter_request_var($field_name),
+					$user);
+			}
+		}
+	}
+
+}
+
 /* set_user_setting - sets/updates a user setting with the given value.
    @arg $config_name - the name of the configuration setting as specified $settings array
    @arg $value       - the values to be saved
    @arg $user        - the user id, otherwise the session user
    @returns          - void */
 function set_user_setting($config_name, $value, $user = -1) {
+	global $settings_user;
+
 	if ($user == -1) {
 		$user = $_SESSION['sess_user_id'];
 	}
 	db_execute_prepared('REPLACE INTO settings_user SET user_id = ?, name = ?, value = ?', array($user, $config_name, $value));
 
 	unset($_SESSION['sess_user_config_array']);
-	unset($settings_user);
+	$settings_user[$config_name]['value'] = $value;
 }
 
 /* user_setting_exists - determines if a value exists for the current user/setting specified
@@ -136,6 +202,19 @@ function user_setting_exists($config_name, $user_id) {
 	return $user_setting_values[$config_name];
 }
 
+/* clear_user_setting - if a value exists for the current user/setting specified, removes it
+   @arg $config_name - the name of the configuration setting as specified $settings_user array
+     in 'include/global_settings.php'
+   @arg $user_id - the id of the user to remove the configuration value for */
+function clear_user_setting($config_name, $user_id) {
+	global $settings_user;
+
+	db_execute_prepared('DELETE FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user_id));
+
+	unset($_SESSION['sess_user_config_array']);
+	unset($settings_user[$config_name]['value']);
+}
+
 /* read_default_user_setting - finds the default value of a user configuration setting
    @arg $config_name - the name of the configuration setting as specified $settings array
      in 'include/global_settings.php'
@@ -147,7 +226,7 @@ function read_default_user_setting($config_name) {
 		if (isset($tab_array[$config_name]) && isset($tab_array[$config_name]['default'])) {
 			return $tab_array[$config_name]['default'];
 		} else {
-            foreach ($tab_array as $field_array) {
+			foreach ($tab_array as $field_array) {
 				if (isset($field_array['items']) && isset($field_array['items'][$config_name]) && isset($field_array['items'][$config_name]['default'])) {
 					return $field_array['items'][$config_name]['default'];
 				}

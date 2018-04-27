@@ -95,67 +95,7 @@ function form_save() {
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
-		foreach ($settings_user as $tab_short_name => $tab_fields) {
-			foreach ($tab_fields as $field_name => $field_array) {
-				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
-					set_request_var($field_name, $field_array['default']);
-				}
-
-				if ($field_array['method'] == 'checkbox') {
-					if (isset_request_var($field_name)) {
-						db_execute_prepared("REPLACE INTO settings_user
-							(user_id, name, value)
-							VALUES (?, ?, 'on')",
-							array($_SESSION['sess_user_id'], $field_name));
-					} else {
-						db_execute_prepared("REPLACE INTO settings_user
-							(user_id, name, value)
-							VALUES (?, ?, '')",
-							array($_SESSION['sess_user_id'], $field_name));
-					}
-				} elseif ($field_array['method'] == 'checkbox_group') {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared("REPLACE INTO settings_user
-								(user_id, name, value)
-								VALUES (?, ?, 'on')",
-								array($_SESSION['sess_user_id'], $sub_field_name));
-						} else {
-							db_execute_prepared("REPLACE INTO settings_user
-								(user_id, name, value)
-								VALUES (?, ?, '')",
-								array($_SESSION['sess_user_id'], $sub_field_name));
-						}
-					}
-				} elseif ($field_array['method'] == 'textbox_password') {
-					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-						$_SESSION['sess_error_fields'][$field_name] = $field_name;
-						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-						$errors[4] = 4;
-					} elseif (isset_request_var($field_name)) {
-						db_execute_prepared('REPLACE INTO settings_user
-							(user_id, name, value)
-							VALUES (?, ?, ?)',
-							array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
-					}
-				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared('REPLACE INTO settings_user
-								(user_id, name, value)
-								VALUES (?, ?, ?)',
-								array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
-						}
-					}
-				}else if (isset_request_var($field_name)) {
-					db_execute_prepared('REPLACE INTO settings_user
-						(user_id, name, value)
-						VALUES (?, ?, ?)',
-						array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
-				}
-			}
-		}
+		save_user_settings();
 	}
 
 	if (sizeof($errors) == 0) {
@@ -323,7 +263,13 @@ function settings() {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
+					$user_row = db_fetch_row_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
+					if (sizeof($user_row)) {
+						$form_array[$field_name]['user_set'] = true;
+						$form_array[$field_name]['value'] = $user_row['value'];
+					} else {
+						$form_array[$field_name]['user_set'] = false;
+					}
 				}
 			}
 

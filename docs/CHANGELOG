@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
 -feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
 -feature#1399: Allow 'requires' to include version against a plugin
+-feature#1400: User settings should have checkbox to enable overriding of global settings
 -feature#1422: Automatically select the next unused data input field when clicking add on data input method
 -feature#1505: Allow Device Edit from Graphs page
 -feature#1527: Update Fontawesome from 4.7 to 5.0.10

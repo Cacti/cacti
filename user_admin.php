@@ -609,6 +609,7 @@ function form_save() {
 
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_settings')) {
+		save_user_settings();
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			foreach ($tab_fields as $field_name => $field_array) {
 				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
