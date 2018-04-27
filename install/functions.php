@@ -139,27 +139,12 @@ function db_install_drop_column ($table, $column) {
 }
 
 function db_install_add_cache ($status, $sql) {
-	global $cacti_upgrade_version, $session;
+	global $cacti_upgrade_version;
 
-	// check if web upgrade or cli
-	if (isset($_SESSION)) {
-		// add query to upgrade results array by version to the web session
-		if (! array_key_exists('cacti_db_install_cache', $_SESSION)) {
-			$_SESSION['cacti_db_install_cache'] = array();
-		}
-		if (! array_key_exists($cacti_upgrade_version, $_SESSION['cacti_db_install_cache'])) {
-			$_SESSION['cacti_db_install_cache'][$cacti_upgrade_version] = array();
-		}
-		$_SESSION['cacti_db_install_cache'][$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql);
-	} else {
-		// add query to upgrade results array by version to the cli global session
-		if (! array_key_exists('cacti_db_install_cache', $session)) {
-			$session['cacti_db_install_cache'] = array();
-		}
-		if (! array_key_exists($cacti_upgrade_version, $session['cacti_db_install_cache'])) {
-			$session['cacti_db_install_cache'][$cacti_upgrade_version] = array();
-		}
-		$session['cacti_db_install_cache'][$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql);
+	// add query to upgrade results array by version to the cli global session
+	$cache_file = read_config_option('install_cache_db');
+	if (!empty($cache_file)) {
+		file_put_contents($cache_file, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . "\n", FILE_APPEND);
 	}
 }
 
@@ -403,7 +388,7 @@ function remote_update_config_file() {
 	global $database_type, $database_hostname, $database_username,
 		$database_password, $database_default, $database_type, $database_port, $database_ssl;
 
-	$written     = false;
+	$failure     = '';
 	$newfile     = array();
 	$config_file = $config['base_path'] . '/include/config.php';
 
@@ -453,16 +438,22 @@ function remote_update_config_file() {
 						fwrite($fp, $line);
 					}
 					fclose($fp);
-
-					$written = true;
+				} else {
+					$failure = 'Failed to read configuration file';
 				}
+			} else {
+				$failure = 'Configuration file is not writable';
 			}
+		} else {
+			$failure = 'Unable to obtain poller id for this server';
 		}
 
 		db_close($connection);
+	} else {
+		$failure = 'Failed to connect database';
 	}
 
-	return $written;
+	return $failure;
 }
 
 function import_colors() {

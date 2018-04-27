@@ -95,7 +95,12 @@ function collapseHeadings(headingStates) {
 		var element = $('#' + key);
 		if (element != null && element.length > 0) {
 			fa_icon = 'fa fa-exclamation-triangle';
-			if (enabled) {
+			if (enabled == 0) {
+				fa_icon = 'fa fa-thumbs-down';
+			} else if (enabled == 1 || enabled == 2) {
+				fa_icon = 'fa fa-thumbs-up';
+				toggleHeader(element, false);
+			} else if (enabled) {
 				fa_icon = 'fa fa-check-circle';
 				toggleHeader(element, false);
 			}
@@ -175,10 +180,25 @@ function processStepDefaultProfile(StepData) {
 }
 
 function processStepTemplateInstall(StepData) {
-	element = $("#selectall");
-	if (element != null && element.length > 0) {
-		element.click();
+	if (StepData.all) {
+		element = $("#selectall");
+		if (element != null && element.length > 0) {
+			element.click();
+		}
+	} else {
+		for (var propName in StepData) {
+			if (StepData.hasOwnProperty(propName)) {
+				propValue = StepData[propName];
+				if (propValue) {
+					element = $("#" + propName);
+					if (element != null && element.length > 0) {
+						element.prop('checked', true);
+					}
+				}
+			}
+		}
 	}
+
 }
 
 function processStepInstallConfirm(StepData) {
@@ -212,6 +232,9 @@ function processStepInstall(StepData) {
 	setProgressBar(StepData.Current, StepData.Total, $("#cactiInstallProgressBar"), 0.0);
 }
 
+function processStepComplete(Step, StepData) {
+	collapseHeadings(StepData);
+}
 
 function setProgressBar(current, total, element, updatetime, fnStatus) {
 	var progressBarWidth = element.width() * (current / total);
@@ -319,7 +342,7 @@ function prepareStepDefaultProfile(installData) {
 function prepareStepTemplateInstall(installData) {
 	templates = {}
 	$('input[name^="chk_"]').each(function(index,element) {
-		templates[element.id] = element.value;
+		templates[element.id] =$(element).is(':checked');
 	});
 	installData.Templates = templates;
 }
@@ -375,6 +398,8 @@ function performStep(installStep) {
 				processStepInstallConfirm(data.StepData);
 			} else if (data.Step == STEP_INSTALL) {
 				processStepInstall(data.StepData);
+			} else if (data.Step >= STEP_COMPLETE) {
+				processStepComplete(data.Step, data.StepData);
 			}
 		})
 		.fail(function(data) {
@@ -422,6 +447,12 @@ $().ready(function() {
 			if (buttonData != null) {
 				if (buttonData.Step == -1) {
 					window.location.assign('../../');
+				} else if (buttonData.Step == -2) {
+					var win = window.open('https://forums.cacti.net/');
+					win.focus;
+				} else if (buttonData.Step == -3) {
+					var win = window.open('https://github.com/cacti/cacti/issues/');
+					win.focus;
 				} else {
 					performStep(buttonData.Step);
 				}

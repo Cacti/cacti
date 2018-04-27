@@ -69,7 +69,7 @@ body {
 	color: red;
 }
 
-.cactiInstallSectionCode {
+.cactiInstallSectionCode, .cactiInstallSqlResults {
 	font-family: consolas,courier new;
 	border: 1px dashed #999;
 	background-color: #eee;
@@ -128,4 +128,36 @@ body {
 	width: 0px;
 	background-color: #CBEA00;
 	box-sizing: border-box;
+}
+
+.cactiInstallSqlResults {
+	display: table;
+	width: 90%;
+	margin: 0 auto;
+}
+
+.cactiInstallSqlRow {
+	display: table-row;
+}
+
+.cactiInstallSqlSuccess {
+	color: green;
+}
+
+.cactiInstallSqlFailure {
+	color: red;
+}
+
+.cactiInstallSqlSkipped {
+	color: gray;
+}
+
+.cactiInstallSqlLeft, .cactInstallSqlRight {
+	display: table-cell;
+	width: 100%;
+}
+
+.cactiInstallSqlRow, .cactiInstallSqlLeft, .cactInstallSqlRight {
+	padding: 5px;
+	vertical-align: top;
 }
