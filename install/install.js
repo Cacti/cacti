@@ -96,12 +96,12 @@ function collapseHeadings(headingStates) {
 		if (element != null && element.length > 0) {
 			fa_icon = 'fa fa-exclamation-triangle';
 			if (enabled == 0) {
-				fa_icon = 'fa fa-thumbs-down';
+				fa_icon = 'fa fa-thumbs-down cactiInstallSqlFailure';
 			} else if (enabled == 1 || enabled == 2) {
-				fa_icon = 'fa fa-thumbs-up';
+				fa_icon = 'fa fa-thumbs-up cactiInstallSqlSuccess';
 				toggleHeader(element, false);
 			} else if (enabled) {
-				fa_icon = 'fa fa-check-circle';
+				fa_icon = 'fa fa-check-circle cactiInstallSqlSkipped';
 				toggleHeader(element, false);
 			}
 
