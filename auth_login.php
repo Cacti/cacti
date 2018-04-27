@@ -251,10 +251,10 @@ if (get_nfilter_request_var('action') == 'login') {
 					user_copy($user_template['username'], $username, 0, $realm, false, $data_override);
 				} else {
 					cacti_log('LOGIN: Email Address and Full Name fields not found ' . $ldap_cn_search_response[0] . 'code: ' . $ldap_cn_search_response['error_num'], false, 'AUTH');
-					user_copy($user_template['username']), $username, 0, $realm);
+					user_copy($user_template['username'], $username, 0, $realm);
 				}
 			} else {
-				user_copy(user_template['username'], $username, 0, $realm);
+				user_copy($user_template['username'], $username, 0, $realm);
 			}
 
 			/* requery newly created user */
