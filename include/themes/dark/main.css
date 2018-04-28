@@ -2211,7 +2211,7 @@ tr#realtime td:first-child {
 .ui-multiselect {
 	padding: 0.4em 1em;
 	text-align: left;
-	line-height: unset;
+	line-height: initial;
 }
 
 .ui-multiselect .ui-icon {
