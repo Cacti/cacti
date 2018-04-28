@@ -284,7 +284,7 @@ class Installer implements JsonSerializable {
 		foreach ($known_templates as $known) {
 			$filename = $known['filename'];
 			$key = str_replace(".", "_", $filename);		
-			$isSelected = empty($hasTemplates) || !empty(read_config_option('install_template_' . $key));
+			$isSelected = empty($hasTemplates) || !config_value_exists('install_template_' . $key);
 			$selected['chk_template_' . $key] = $isSelected;
 			if ($select_all === null || $select_all) {
 				$select_all = $isSelected;
