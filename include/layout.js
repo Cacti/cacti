@@ -2868,8 +2868,8 @@ $.widget('custom.dropcolor', {
 	_create: function() {
 		$('body').append('<div id="cwrap" class="ui-selectmenu-menu ui-front">');
 
-		this.wrapper = $('<span>')
-		.addClass('autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all')
+		this.wrapper = $('<span><span class="ui-select-text"><div id="bgc" class="ui-icon color-icon" style="margin-left:2px;margin-right:3px;"></div></span></span>')
+		.addClass('class="ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-button ui-widget"')
 		.insertAfter(this.element);
 
 		this.element.hide();
@@ -2880,18 +2880,12 @@ $.widget('custom.dropcolor', {
 	_createAutocomplete: function() {
 		var selected = this.element.children(':selected');
 		var value = selected.val() ? selected.text() : '';
+		var regExp = /\(([^)]+)\)/;
+		var hex   = regExp.exec(value);
 
-		this.input = $('<input>')
+		this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
+		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenut-text" style="background:transparent;border:0px;margin-left:-22px;padding-right:3px;padding-left:22px;" value="'+value+'">')
 		.appendTo(this.wrapper)
-		.val(value)
-		.attr('title', '')
-		.addClass('ui-autocomplete-input ui-state-default ui-selectmenu-text')
-		.css({'border':'medium none', 'background-color':'transparent', 'width':'220px', 'padding-left':'12px'})
-		.tooltip({
-			classes: {
-				'ui-tooltip': 'ui-state-highlight'
-			}
-		})
 		.on('click', function() {
 			$(this).autocomplete('search', '');
 		})
@@ -2899,14 +2893,17 @@ $.widget('custom.dropcolor', {
 			delay: 0,
 			minLength: 0,
 			source: $.proxy(this, '_source'),
+			select: $.proxy(this, '_select'),
 			create: function() {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
-					pie = item.label.replace(')', '').split(' (');
-					if (pie[1] != undefined) {
-						color = pie[1];
-						return $('<li>').attr('data-value', item.value).html('<div style="background-color:#'+color+';" class="ui-icon color-icon"></div><div>'+item.label+'</div>').appendTo(ul);
+					var regExp = /\(([^)]+)\)/;
+					var hex   = regExp.exec(item.label);
+
+					if (hex !== null) {
+						color = hex[1];
+						return $('<li>').attr('data-value', item.value).html('<div><span style="background-color:#'+color+';" class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
 					} else {
-						return $('<li>').attr('data-value', item.value).append(item.label).appendTo(ul);
+						return $('<li>').attr('data-value', item.value).html('<div><span class="ui-icon color-icon"></span>'+item.label+'</div>').appendTo(ul);
 					}
 				}
 
@@ -2929,6 +2926,23 @@ $.widget('custom.dropcolor', {
 		});
 	},
 
+	_select: function(event, ui) {
+		var regExp = /\(([^)]+)\)/;
+		var hex    = regExp.exec(ui.item.label);
+		var id     = $(ui.item.option).attr('value');
+
+		if (hex !== null) {
+			color = hex[1];
+			this.wrapper.find('#bgc').css('background-color', '#'+color);
+			this.wrapper.find('input').val(ui.item.value);
+		} else {
+			this.wrapper.find('#bgc').css('background-color', '');
+			this.wrapper.find('input').val(ui.item.value);
+		}
+
+		$('.colordropdown').val(id).css('background-color', '#'+color);
+	},
+
 	_createShowAllButton: function() {
 		var input = this.input;
 		var wasOpen = false;
@@ -2949,7 +2963,6 @@ $.widget('custom.dropcolor', {
 				return;
 			}
 
-			// Pass empty string as value to search for, displaying all results
 			input.autocomplete('search', '');
 		});
 	},
@@ -2967,11 +2980,12 @@ $.widget('custom.dropcolor', {
 			}
 		});
 
-		response(results.slice(0,15));
+		response(results);
 	},
 
 	_removeIfInvalid: function(event, ui) {
 		// Selected an item, nothing to do
+return;
 		if (ui.item) {
 			return;
 		}
