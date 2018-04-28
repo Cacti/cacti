@@ -95,7 +95,7 @@ function form_save() {
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
-		save_user_settings();
+		save_user_settings($_SESSION['sess_user_id']);
 	}
 
 	if (sizeof($errors) == 0) {

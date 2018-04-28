@@ -100,14 +100,14 @@ function read_graph_config_option($config_name, $force = false) {
 	return read_user_setting($config_name, false, $force);
 }
 
-/* sAVE_user_setting - sets/updates aLL user settings
+/* save_user_setting - sets/updates aLL user settings
    @arg $config_name - the name of the configuration setting as specified $settings array
    @arg $value       - the values to be saved
    @arg $user        - the user id, otherwise the session user
    @returns          - void */
 function save_user_settings($user = -1) {
 	global $settings_user;
-	if ($user == -1) {
+	if ($user == -1 || empty($user)) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
@@ -116,7 +116,7 @@ function save_user_settings($user = -1) {
 			if (!empty($field_array['user'])) {
 				if (!isset_request_var('user_optional_' . $field_name) ||
 				    get_nfilter_request_var('user_optional_' . $field_name) != 'on') {
-					clear_user_setting($field_name);
+					clear_user_setting($field_name, $user);
 					continue;
 				}
 			}
@@ -206,13 +206,13 @@ function user_setting_exists($config_name, $user_id) {
    @arg $config_name - the name of the configuration setting as specified $settings_user array
      in 'include/global_settings.php'
    @arg $user_id - the id of the user to remove the configuration value for */
-function clear_user_setting($config_name, $user_id) {
+function clear_user_setting($config_name, $user = -1) {
 	global $settings_user;
 
-	db_execute_prepared('DELETE FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user_id));
-
-	unset($_SESSION['sess_user_config_array']);
-	unset($settings_user[$config_name]['value']);
+	if ($user == -1) {
+		$user = $_SESSION['sess_user_id'];
+	}
+	db_execute_prepared('DELETE FROM settings_user WHERE name = ? AND user_id = ?', array($config_name, $user));
 }
 
 /* read_default_user_setting - finds the default value of a user configuration setting
