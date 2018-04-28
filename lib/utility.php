@@ -539,7 +539,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	}
 
 	/* remove stale records FROM the poller cache */
-	if (strlen($ids)) {
+	if ($ids != '') {
 		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
 	} else {
 		/* only handle explicitely given local_data_ids */

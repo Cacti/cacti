@@ -750,7 +750,7 @@ function host_edit() {
 				<div class='cactiTableButton'>
 					<span>
 						<a class='linkCopyDark cactiTableCopy' id='copyToClipboard<?php print $dbg_copy_uid;?>'><?php print __('Copy');?></a>
-						<a id='dbghide' class='fa fa-remove' href='#'><?php print __('Hide');?></a>
+						<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide');?></a>
 					</span>
 				</div>
 			</div>
@@ -832,7 +832,7 @@ function host_edit() {
 						<?php print (($is_being_graphed == true) ? "<span class='beingGraphed'>" . __('Is Being Graphed') . "</span> (<a class='linkEditMain' href='" . html_escape('graphs.php?action=graph_edit&id=' . $item['graph_local_id']) . "'>" . __('Edit') . "</a>)" : "<span class='notBeingGraphed'>" . __('Not Being Graphed') ."</span>");?>
 					</td>
 					<td class='nowrap right'>
-						<span title='<?php print __esc('Delete Graph Template Association');?>' class='deletequery fa fa-remove' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
+						<span title='<?php print __esc('Delete Graph Template Association');?>' class='deletequery fa fa-times' id='gtremove<?php print $item['id'];?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 
@@ -935,9 +935,9 @@ function host_edit() {
 						<?php print (($status == 'success') ? "<span class='success'>" . __('Success') . "</span>" : "<span class='failed'>" . __('Fail')) . "</span>" . __(' [%d Items, %d Rows]', $item['itemCount'], $item['rowCount']);?>
 					</td>
 					<td class='nowrap right' style='vertical-align:middle;'>
-						<span class='reloadquery fa fa-refresh' id='reload<?php print $item['id'];?>' title='<?php print __esc('Reload Query');?>' data-id='<?php print $item['id'];?>'></span>
-						<span class='verbosequery fa fa-refresh' id='verbose<?php print $item['id'];?>' title='<?php print __esc('Verbose Query');?>' data-id='<?php print $item['id'];?>'></span>
-						<span class='deletequery fa fa-remove' id='remove<?php print $item['id'];?>' title='<?php print __esc('Remove Query');?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='reloadquery fa fa-sync' id='reload<?php print $item['id'];?>' title='<?php print __esc('Reload Query');?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='verbosequery fa fa-sync' id='verbose<?php print $item['id'];?>' title='<?php print __esc('Verbose Query');?>' data-id='<?php print $item['id'];?>'></span>
+						<span class='deletequery fa fa-times' id='remove<?php print $item['id'];?>' title='<?php print __esc('Remove Query');?>' data-id='<?php print $item['id'];?>'></span>
 					</td>
 				<?php
 				form_end_row();

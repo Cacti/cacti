@@ -1353,8 +1353,12 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					$matrix_title = 'VRULE: ' . $item['value'];
 					break;
 				case preg_match('/(COMMENT)/', $_graph_type_name):
-					$force_skip = true;
-					$matrix_title = 'COMMENT: ' . $item['text_format'];
+					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
+						$matrix_title = 'COMMENT: ' . $item['text_format'];
+					} else {
+						$force_skip = true;
+						$matrix_title = 'COMMENT: ' . $item['text_format'];
+					}
 					break;
 			}
 
@@ -1423,8 +1427,8 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
 				print '</td>';
 			} else {
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "'>";
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked':'') . '></td>';
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
 				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '>';
 				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'></td>";
 			}

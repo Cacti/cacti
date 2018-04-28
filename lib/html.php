@@ -575,11 +575,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-down';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-up';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -736,11 +736,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-down';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-up';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -1073,7 +1073,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				}
 				print "</td>\n";
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
 			}
 
 			print "</tr>";
@@ -1178,7 +1178,7 @@ function draw_menu($user_menu = "") {
 			if (isset($menu_glyphs[$header_name])) {
 				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
 			} else {
-				$glyph = '<i class="menu_glyph fa fa-folder-o"></i>';
+				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
@@ -1657,7 +1657,7 @@ function html_show_tabs_left() {
 	}
 }
 
-function html_graph_tabs_right($current_user) {
+function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
 	$theme = get_selected_theme();
@@ -1810,9 +1810,11 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
-				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
-				<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
+				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
+				<span class='ui-select-text'>
+					<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+				</span>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
 			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
@@ -1926,10 +1928,10 @@ function html_spikekill_menu($local_graph_id) {
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-support'></i><span></span><?php print __('Float Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa life-ring'></i><span></span><?php print __('Remove StdDev');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-life-ring'></i><span></span><?php print __('Remove Variance');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-life-ring'></i><span></span><?php print __('Gap Fill Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-life-ring'></i><span></span><?php print __('Float Range');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
@@ -2128,7 +2130,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
-	print get_md5_include_css('include/fa/css/font-awesome.css');
+	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js');
 	print get_md5_include_js('include/js/jquery.js');

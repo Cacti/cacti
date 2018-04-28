@@ -1276,7 +1276,7 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '</td>';
 
 			$form_data .= '<td style="width:1%;">
-				<a class="pid deleteMarker fa fa-remove" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pid deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1338,7 +1338,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="right nowrap">
-				<a class="pic deleteMarker fa fa-remove" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] .	'&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -1402,7 +1402,7 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$form_data .= '</td>';
 
 			$form_data .= '<td class="nowrap" style="width:1%;">
-				<a class="pic deleteMarker fa fa-remove" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
+				<a class="pic deleteMarker fa fa-times" href="' . html_escape($module . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Delete') . '"></a></td>
 			</tr>';
 
 			print $form_data;
@@ -3133,7 +3133,7 @@ function automation_valid_snmp_device(&$device) {
 				$device['snmp_priv_protocol'], $device['snmp_context'], $device['snmp_engine_id'], $device['snmp_port'],
 				$device['snmp_timeout'], $device['snmp_retries'], $device['max_oids']);
 
-            
+
 			if ($session !== false) {
 				/* Community string is not used for v3 */
 				$snmp_sysObjectID = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.2.0');

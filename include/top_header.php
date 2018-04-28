@@ -24,48 +24,43 @@
 
 global $config, $menu;
 
-$oper_mode = api_plugin_hook_function('top_header', OPER_MODE_NATIVE);
-if ($oper_mode == OPER_MODE_RESKIN) {
-	return;
-}
-
 $page_title = api_plugin_hook_function('page_title', draw_navigation_text('title'));
 $using_guest_account = false;
 
-?>
+if (!isset_request_var('headercontent')) {?>
 <!DOCTYPE html>
 <html>
 <head>
 	<?php html_common_header($page_title);?>
 </head>
 <body>
-<div id='cactiPageHead' class='cactiPageHead' role='banner'>
-	<?php if ($oper_mode == OPER_MODE_NATIVE) { ;?>
-	<div id='tabs'><?php html_show_tabs_left();?></div>
-	<div class='cactiConsolePageHeadBackdrop'></div>
-</div>
-<div id='breadCrumbBar' class='breadCrumbBar'>
-	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
-	<div class='scrollBar'></div>
-	<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
-</div>
-<div class='cactiShadow'></div>
-<div id='cactiContent' class='cactiContent'>
-	<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
-		<div style='display:none;' id='navigation'>
-			<table style='width:100%;'>
-				<?php draw_menu();?>
-				<tr>
-					<td style='text-align:center;'>
-						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
-					</td>
-				</tr>
-			</table>
-		</div>
+	<div id='cactiPageHead' class='cactiPageHead' role='banner'>
+		<div id='tabs'><?php html_show_tabs_left();?></div>
+		<div class='cactiGraphHeaderBackground' style='display:none'><div id='gtabs'><?php print html_graph_tabs_right();?></div></div>
+		<div class='cactiConsolePageHeadBackdrop'></div>
 	</div>
-	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='position:relative;display:none;' id='main' role='main'>
-<?php } else { ?>
-	<div id='navigation_right' class='cactiConsoleContentArea'>
-		<div style='position:relative;display:none;' id='main' role='main'>
-<?php } ?>
+	<div id='breadCrumbBar' class='breadCrumbBar'>
+		<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+		<div class='scrollBar'></div>
+		<?php if (read_config_option('auth_method') != 0) {?><div class='infoBar'><?php echo draw_login_status($using_guest_account);?></div><?php }?>
+	</div>
+	<div class='cactiShadow'></div>
+	<?php } else {?>
+	<div id='navBar' class='navBar'><?php echo draw_navigation_text();?></div>
+	<title><?php print $page_title;?></title>
+	<?php } ?>
+	<div id='cactiContent' class='cactiContent'>
+		<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
+			<div style='display:none;' id='navigation'>
+				<table style='width:100%;'>
+					<?php draw_menu();?>
+					<tr>
+						<td style='text-align:center;'>
+							<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id='navigation_right' class='cactiConsoleContentArea'>
+			<div style='position:relative;display:none;' id='main'>

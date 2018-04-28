@@ -119,7 +119,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 					}
 				}
 
-				print "<a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
+				print "<a class='delete deleteMarker fa fa-times' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
 
 				print "</td>\n";
 			}

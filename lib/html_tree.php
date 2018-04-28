@@ -810,7 +810,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<span>
 							<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
-							<i id='startDate' class='calendar fa fa-calendar' title='<?php print __esc('Start Date Selector');?>'></i>
+							<i id='startDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('Start Date Selector');?>'></i>
 						</span>
 					</td>
 					<td>
@@ -819,7 +819,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<span>
 							<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
-							<i id='endDate' class='calendar fa fa-calendar' title='<?php print __esc('End Date Selector');?>'></i>
+							<i id='endDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('End Date Selector');?>'></i>
 						</span>
 					</td>
 					<td>

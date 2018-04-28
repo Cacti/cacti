@@ -1167,10 +1167,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1895,10 +1891,27 @@ tr#realtime td:first-child {
 	display: none;
 }
 
-.ui-multiselect {
+.ui-multiselect, .ui-multiselect span {
 	padding: 1px;
 	color: black;
 	font-size: 12px;
+}
+
+.ui-widget {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding: 0.4em;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
+}
+
+.ui-state-default {
+	background: #FFFFFF !important;
+	border: none;
+	font-weight: normal;
+	padding: 2px;
 }
 
 .ui-multiselect-checkboxes span {
@@ -1912,6 +1925,27 @@ tr#realtime td:first-child {
 
 .ui-multiselect-filter {
 	width: 100%;
+}
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: unset;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
 }
 
 .graphWrapper {

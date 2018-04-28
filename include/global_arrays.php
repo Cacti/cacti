@@ -874,14 +874,14 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 $menu_glyphs = array(
-	__('Create') => 'fa fa-area-chart',
+	__('Create') => 'fa fa-chart-area',
 	__('Management') => 'fa fa-home',
 	__('Data Collection') => 'fa fa-database',
 	__('Templates') => 'fa fa-clone',
-	__('Automation') => 'fa fa-superpowers',
+	__('Automation') => 'fab fa-superpowers',
 	__('Presets') => 'fa fa-archive',
-	__('Import/Export') => 'fa fa-exchange',
-	__('Configuration')  => 'fa fa-sliders',
+	__('Import/Export') => 'fa fa-exchange-alt',
+	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
 	__('External Links') => 'fa fa-external-link'
 );

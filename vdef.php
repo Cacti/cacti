@@ -617,7 +617,7 @@ function vdef_edit() {
 						}
 					}
 					?>
-					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete VDEF Item');?>'></a>
+					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete VDEF Item');?>'></a>
 				</td>
 				<?php
 

@@ -1,9 +1,11 @@
 Cacti CHANGELOG
 
 1.2.0
+-issue#186: Cacti does not support jQueryUI 1.12.x
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
+-issue#1200: Aggregate Graphs can not include some classes of COMMENT
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
 -issue#1420: Debian test suite reports issues 
@@ -13,11 +15,16 @@ Cacti CHANGELOG
 -issue#1503: Undefined function clearstatscache in DSSTATS
 -issue#1507: When saving graph settings from the graph page, the graph template id should not be included
 -issue#1510: New Graphs Undefined Variable $graph_template_name
+-issue#1528: Saving a device can result in WARNINGS related to string vs array handling
+-issue#1529: Allow Aggregate Graphs to Sum Bandwidth and Percentile COMMENTS
 -issue#1543: Graph Preview appends header=false too many times
 -issue#1553: Poller does not set rrd_step_counter correctly if no steps taken
+-issue#1559: CLI Output Issues due to over escaping
+-issue#1560: Warning that escapeshellarg() is escaping a null
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
+-issue: Typo in Dutch translations when an error occurred while downgrading
 -feature#122: Support a Site Branch Type
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
@@ -26,6 +33,7 @@ Cacti CHANGELOG
 -feature#1399: Allow 'requires' to include version against a plugin
 -feature#1422: Automatically select the next unused data input field when clicking add on data input method
 -feature#1505: Allow Device Edit from Graphs page
+-feature#1527: Update Fontawesome from 4.7 to 5.0.10
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
@@ -36,6 +44,8 @@ Cacti CHANGELOG
 -feature: Update JavaScript library jquery.tablesorter.js to version 2.30.1
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
 -feature: Update phpseclib to version 2.0.11
+-feature: Update JavaScript library jquery.js to 3.3.1
+-feature: Make Top Tabs use Ajax Callback
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

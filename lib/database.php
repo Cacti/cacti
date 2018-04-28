@@ -32,7 +32,7 @@
    @param $retries - the number a time the server should attempt to connect before failing
    @returns - (bool) '1' for success, '0' for error */
 function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $db_ssl = false, $retries = 20) {
-	global $database_sessions, $database_total_queries;
+	global $database_sessions, $database_total_queries, $config;
 	$database_total_queries = 0;
 
 	$i = 0;
@@ -92,7 +92,18 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 			$sql_mode = implode(',', $new_modes);
 
-			db_execute('SET SESSION sql_mode = "' . $sql_mode . '"');
+			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode));
+
+			if ($config['poller_id'] > 1) {
+				$timezone = db_fetch_cell_prepared('SELECT timezone
+					FROM poller
+					WHERE id = ?',
+					array($config['poller_id']));
+
+				if ($timezone != '') {
+					db_execute_prepared('SET SESSION time_zone = ?', array($timezone));
+				}
+			}
 
 			return $cnn_id;
 		} catch (PDOException $e) {

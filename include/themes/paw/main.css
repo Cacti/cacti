@@ -245,10 +245,6 @@ label {
 	font-family: monospace;
 }
 
-.autodrop {
-	line-height: 22px;
-}
-
 .utilityPick {
 	width: 200px;
 }
@@ -1112,10 +1108,6 @@ legend {
 	white-space:nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1603,6 +1595,7 @@ td.tab {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
+	display: none !important;
 	position:fixed;
 	right: 5px;
 	top: 5px;
@@ -2035,3 +2028,29 @@ tr#realtime td:first-child {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: unset;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+

@@ -1360,7 +1360,7 @@ function tree_edit() {
 				'rename' : {
 					'separator_before'	: false,
 					'separator_after'	: false,
-					'icon'				: 'fa fa-pencil',
+					'icon'				: 'fa fa-pencil-alt',
 					'_disabled'			: false,
 					'label'				: '<?php print __('Rename');?>',
 					'action'			: function (data) {
@@ -1371,7 +1371,7 @@ function tree_edit() {
 				},
 				'remove' : {
 					'separator_before'	: false,
-					'icon'				: 'fa fa-remove',
+					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
 					'label'				: '<?php print __('Delete');?>',
@@ -1503,7 +1503,7 @@ function tree_edit() {
 						},
 						'paste' : {
 							'separator_before'	: false,
-							'icon'				: 'fa fa-paste',
+							'icon'				: 'fa fa-clipboard',
 							'_disabled'			: function (data) {
 								return !$.jstree.reference(data.reference).can_paste();
 							},
@@ -1524,7 +1524,7 @@ function tree_edit() {
 			return {
 				'remove' : {
 					'separator_before'	: false,
-					'icon'				: 'fa fa-remove',
+					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false, //(this.check('delete_node', data.reference, this.get_parent(data.reference), '')),
 					'label'				: '<?php print __('Delete');?>',
@@ -1584,7 +1584,7 @@ function tree_edit() {
 			return {
 				'remove' : {
 					'separator_before'	: false,
-					'icon'				: 'fa fa-remove',
+					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
 					'label'				: '<?php print __('Delete');?>',
@@ -1605,7 +1605,7 @@ function tree_edit() {
 			return {
 				'remove' : {
 					'separator_before'	: false,
-					'icon'				: 'fa fa-remove',
+					'icon'				: 'fa fa-times',
 					'separator_after'	: false,
 					'_disabled'			: false,
 					'label'				: '<?php print __('Delete');?>',
@@ -1862,13 +1862,13 @@ function tree() {
 			'href'     => 'tree.php?action=sortasc',
 			'callback' => true,
 			'title'    => __esc('Sort Trees Ascending'),
-			'class'    => 'fa fa-sort-alpha-asc'
+			'class'    => 'fa fa-sort-alpha-down'
 		),
 		array(
 			'href'     => 'tree.php?action=sortdesc',
 			'callback' => true,
 			'title'    => __esc('Sort Trees Descending'),
-			'class'    => 'fa fa-sort-alpha-desc'
+			'class'    => 'fa fa-sort-alpha-up'
 		)
 	);
 
@@ -1905,8 +1905,8 @@ function tree() {
 						<span>
 							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<button type='button' id='sorta' title='<?php print __esc('Sort Trees Ascending');?>'><i class='fa fa-sort-alpha-asc'></i></button>
-							<button type='button' id='sortd' title='<?php print __esc('Sort Trees Descending');?>'><i class='fa fa-sort-alpha-desc'></i></button>
+							<button type='button' id='sorta' title='<?php print __esc('Sort Trees Ascending');?>'><i class='fa fa-sort-alpha-down'></i></button>
+							<button type='button' id='sortd' title='<?php print __esc('Sort Trees Descending');?>'><i class='fa fa-sort-alpha-up'></i></button>
 						</span>
 					</td>
 				</tr>

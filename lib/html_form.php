@@ -721,16 +721,18 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			$previous_value = $none_entry;
 		}
 
-		print "<span id='$form_name" . "_wrap' style='width:300px;' class='autodrop ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>";
-		print "<input type='text' id='$form_name" . "_input' size='28' class='ui-autocomplete-input ui-state-default ui-selectmenu-text' value='" . html_escape($previous_value) . "'>";
-		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-icon ui-icon-triangle-1-s'></span>";
+		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
+		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
+		print "<span class='ui-select-text'>";
+		print "<input type='text' id='$form_name" . "_input' size='28' value='" . html_escape($previous_value) . "'>";
+		print "</span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
 			$previous_value = $none_entry;
 		}
 
-		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . html_escape($previous_id) . "'>";
 		print "</span>";
+		print "<input type='hidden' id='" . $form_name . "' name='" . $form_name . "' value='" . html_escape($previous_id) . "'>";
 		?>
 		<script type='text/javascript'>
 		var <?php print $form_name;?>Timer;
@@ -753,12 +755,12 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 				}
 			}).css('border', 'none').css('background-color', 'transparent');
 
-			$('#<?php print $form_name;?>_wrap').dblclick(function() {
+			$('#<?php print $form_name;?>_wrap').on('dblclick', function() {
 				<?php print $form_name;?>Open = false;
 				clearTimeout(<?php print $form_name;?>Timer);
 				clearTimeout(<?php print $form_name;?>ClickTimer);
 				$('#<?php print $form_name;?>_input').autocomplete('close');
-			}).click(function() {
+			}).on('click', function() {
 				if (<?php print $form_name;?>Open) {
 					$('#<?php print $form_name;?>_input').autocomplete('close');
 					clearTimeout(<?php print $form_name;?>Timer);
@@ -1041,6 +1043,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 			} else {
 				$display = $color['name'] . ' (' . $color['hex'] . ')';
 			}
+
 			print "<option data-color='" . $color['hex'] . "' style='background-color: #" . $color['hex'] . ";' value='" . $color['id'] . "'";
 
 			if ($form_previous_value == $color['id']) {

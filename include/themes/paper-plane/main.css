@@ -256,10 +256,6 @@ label {
 	font-family: monospace;
 }
 
-.autodrop {
-	line-height: 22px;
-}
-
 .utilityPick {
 	width: 200px;
 }
@@ -1245,10 +1241,6 @@ table.cactiTable {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1755,7 +1747,8 @@ td.tab {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
-	position:fixed;
+	display: none !important;
+	position: fixed;
 	right: 5px;
 	top: 5px;
 	height: 30px;
@@ -1768,7 +1761,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 55px !important;
+	width: 65px !important;
 	overflow: hidden;
 	right: 0;
 }
@@ -2230,3 +2223,29 @@ tr#realtime td:first-child {
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: unset;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+

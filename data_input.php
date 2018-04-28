@@ -514,7 +514,7 @@ function data_edit() {
 			break;
 		}
 
-		if (isset($data_input['hash'])) {
+		if (isset($config['input_whitelist']) && isset($data_input['hash'])) {
 			$aud = verify_data_input_whitelist($data_input['hash'], $data_input['input_string']);
 
 			if ($aud === true) {
@@ -537,7 +537,7 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . html_escape_request_var('id'));
+		html_start_box(__('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id'));
 
 		print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Name'), '', 1);
@@ -567,7 +567,7 @@ function data_edit() {
 					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
 				</td>
 				<td class="right">
-					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -606,7 +606,7 @@ function data_edit() {
 					<?php print html_boolean_friendly($field['update_rra']);?>
 				</td>
 				<td class='right'>
-					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 				</td>
 				<?php
 				form_end_row();

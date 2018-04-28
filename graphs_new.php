@@ -813,7 +813,7 @@ function graphs() {
 					}
 				}
 
-				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-refresh' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
+				print "<div class='cactiTable'><div><div class='cactiTableTitle'><span>" . __('Data Query [%s]', $snmp_query['name']) . "</span></div><div class='cactiTableButton'><span class='reloadquery fa fa-sync' id='reload" . $snmp_query['id'] . "' data-id='" . $snmp_query['id'] . "'></span></div></div></div>\n";
 
 				if ($xml_array != false) {
 					$html_dq_header = '';

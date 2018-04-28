@@ -575,6 +575,10 @@ function applySkin() {
 		});
 	}
 
+	if (pageName.indexOf('graph_view.php') >= 0) {
+		setGraphTabs($('.righttab .selected').attr('id'));
+	}
+
 	$('.ui-tooltip').remove();
 
 	setupSortable();
@@ -828,7 +832,7 @@ function makeFiltersResponsive() {
 				}
 
 				if (filterContents.find('#clear').length) {
-					filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-o"></i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-alt"></i></span>');
 
 					$('.cactiFilterClear').unbind('click').click(function(event) {
 						event.stopPropagation();
@@ -864,7 +868,7 @@ function makeFiltersResponsive() {
 				anchors.each(function(){
 					$(this).attr('title', $(this).text());
 				});
-				anchors.not('.cactiTableCopy').addClass('fa fa-trash-o');
+				anchors.not('.cactiTableCopy').addClass('fa fa-trash-alt');
 				anchors.filter('.cactiTableCopy').addClass('fa fa-copy');
 				anchors.tooltip().text('');
 			}
@@ -897,9 +901,44 @@ function toggleFilterAndIcon(id, child, initial) {
 	$(window).trigger('resize');
 }
 
+function setGraphTabs(id) {
+	/* update menu selection */
+	if ($('#'+id).hasClass('righttab')) {
+		$('.righttab').removeClass('selected');
+		$('#'+id).addClass('selected');
+
+		if (theme == 'classic') {
+			$('.righttab').each(function() {
+				if ($(this).hasClass('selected')) {
+					if ($(this).find('img').length) {
+						imageSRC = $(this).find('img').attr('src');
+						if (imageSRC.indexOf('_down') < 0) {
+							imageSRC = imageSRC.replace('.gif', '_down.gif');
+							$(this).find('img').attr('src', imageSRC);
+						}
+					}
+				} else {
+					if ($(this).find('img').length) {
+						imageSRC = $(this).find('img').attr('src');
+						if (imageSRC.indexOf('_down') >= 0) {
+							imageSRC = imageSRC.replace('_down.gif', '.gif');
+							$(this).find('img').attr('src', imageSRC);
+						}
+					}
+				}
+			});
+		}
+	}
+}
+
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs').find('.lefttab').unbind('click').click(function(event) {
-		event.preventDefault();
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').unbind('click').click(function(event) {
+		page = basename($(this).attr('href'));
+		if (page == 'logout.php') {
+			return;
+		} else {
+			event.preventDefault();
+		}
 
 		if ($('.cactiTreeNavigationArea').length > 0) {
 			tree = true;
@@ -920,7 +959,15 @@ function setupResponsiveMenuAndTabs() {
 				menuShow(tree);
 			}
 		} else {
-			document.location = $(this).attr('href');
+			/* update menu selection */
+			if ($(this).hasClass('lefttab')) {
+				$('.lefttab').removeClass('selected');
+				$(this).addClass('selected');
+			}
+
+			setGraphTabs($(this).attr('id'));
+
+			loadTopTab($(this).attr('href'));
 		}
 	});
 
@@ -1005,17 +1052,22 @@ function responsiveUI(event) {
 	});
 }
 
-function responsiveResizeGraphs() {
-	if ($('.graphimage').length == 0) {
-		return false;
-	}
-
+function getMainWidth() {
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
 		mainWidth = $('body').innerWidth() - $('#navigation').width();
 	} else {
 		mainWidth = $('body').innerWidth();
 	}
 
+	return mainWidth - 30;
+}
+
+function responsiveResizeGraphs() {
+	if ($('.graphimage').length == 0) {
+		return false;
+	}
+
+	mainWidth = getMainWidth();
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
 	graphRow  = $('.tableRowGraph:first').width();
@@ -1345,6 +1397,86 @@ function menuShow(tree) {
 	}
 
 	menuOpen = true;
+}
+
+function loadTopTab(href) {
+	statePushed = false;
+
+	thref = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+	url   = thref+(thref.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
+
+	$('.submenuoptions').slideUp(120);
+	$('.menuoptions').slideUp(120);
+
+	if (href.indexOf('graph_view.php') >= 0) {
+		$('.cactiGraphHeaderBackground').show();
+		$('.cactiConsolePageHeadBackdrop').hide();
+	} else {
+		$('.cactiGraphHeaderBackground').hide();
+		$('.cactiConsolePageHeadBackdrop').show();
+	}
+
+	$.get(url)
+		.done(function(html) {
+			var htmlObject  = $(html);
+			var matches     = html.match(/<title>(.*?)<\/title>/);
+
+			if (matches != null) {
+				var htmlTitle   = matches[1];
+				var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+				var parts       = html.split('</title>');
+				var data        = parts[1];
+
+				checkForLogout(data);
+
+				$('title').text(htmlTitle);
+				$('#breadcrumbs').html(breadCrumbs);
+				$('div[class^="ui-"]').remove();
+				$('#cactiContent').replaceWith(data);
+
+				myTitle = htmlTitle;
+				myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+				pushState(myTitle, href);
+			} else {
+				checkForLogout(html);
+
+				$('#cactiContent').replaceWith(html);
+
+				href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+				pushState(myTitle, href);
+			}
+
+			var hrefParts = href.split('?');
+			pageName = basename(hrefParts[0]);
+
+			if (pageName != '') {
+				if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='"+href+"']").addClass('selected');
+				} else {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+				}
+			}
+
+			applySkin();
+
+			if (isMobile.any() != null) {
+				window.scrollTo(0,1);
+			} else {
+				window.scrollTo(0,0);
+			}
+
+			return false;
+		})
+		.fail(function(data) {
+			getPresentHTTPError(data);
+		}
+	);
+
+	return false;
 }
 
 function loadPage(href) {
@@ -2444,9 +2576,8 @@ function dryRunRangeFill(local_graph_id) {
 }
 
 function redrawGraph(graph_id) {
-	mainWidth = $('#main').width();
+	mainWidth = getMainWidth();
 	isThumb   = $('#thumbnails').is(':checked');
-
 	myColumns = $('#columns').val();
 	graphRow  = $('.tableRowGraph').width();
 	drillDown = $('.graphDrillDown:first').outerWidth() + 10;
@@ -2576,11 +2707,10 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	mainWidth = $('#main').width()-30;
+	mainWidth = getMainWidth();
 	myColumns = $('#columns').val();
 	isThumb   = $('#thumbnails').is(':checked');
-
-	myWidth = (mainWidth-(30*myColumns))/myColumns;
+	myWidth   = (mainWidth-(30*myColumns))/myColumns;
 
 	$('.graphWrapper').each(function() {
 		graph_id=$(this).attr('graph_id');
@@ -2723,7 +2853,7 @@ function initializeGraphs() {
 				setFilters();
 			} else {
 				keepRealtime[graph_id]  = $('#wrapper_'+graph_id).html();
-				$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-o-notch fa-spin'/>");
+				$(this).html("<i style='text-align:center;padding:0px;' title='"+realtimeClickOff+"' class='drillDown fa fa-circle-notch fa-spin'/>");
 				$(this).find('i').tooltip();
 				realtimeArray[graph_id] = true;
 				setFilters();
