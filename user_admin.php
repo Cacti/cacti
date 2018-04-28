@@ -610,23 +610,6 @@ function form_save() {
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_settings')) {
 		save_user_settings();
-		foreach ($settings_user as $tab_short_name => $tab_fields) {
-			foreach ($tab_fields as $field_name => $field_array) {
-				if ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						db_execute_prepared('REPLACE INTO settings_user
-							(user_id, name, value)
-							VALUES (?, ?, ?)',
-							array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $sub_field_name, get_nfilter_request_var($sub_field_name, '')));
-					}
-				} else {
-					db_execute_prepared('REPLACE INTO settings_user
-						(user_id, name, value)
-						VALUES (?, ?, ?)',
-						array((!empty($user_id) ? $user_id : get_filter_request_var('id')), $field_name, get_nfilter_request_var($field_name)));
-				}
-			}
-		}
 
 		/* reset local settings cache so the user sees the new settings */
 		kill_session_var('sess_user_config_array');
