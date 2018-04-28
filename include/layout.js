@@ -320,7 +320,12 @@ $.tablesorter.addParser({
 function checkOptionalEnabled(item, e) {
 	isOptionalEnabled = item.is(':checked');
 	siblings = item.closest('div').siblings('.formColumnLeft, .formColumnRight');
-	siblings.find('*').prop('disabled', !isOptionalEnabled);
+	elements = siblings.find('*.formFieldName, *.ui-widget, *.formCheckbox, *.checkboxLabel, *:input');
+	if (isOptionalEnabled) {
+		elements.removeClass('ui-state-disabled').prop('disabled', false);
+	} else {
+		elements.addClass('ui-state-disabled').prop('disabled', true);
+	}
 }
 
 // helper function which selects row range when shift key is pressed during click
@@ -385,14 +390,6 @@ function applySelectorVisibilityAndActions() {
 
 			$(this).closest('tr').toggleClass('selected');
 		}
-	});
-
-	$('input[id^="user_optional_"]').each(function(data) {
-		optional = $(this);
-		optional.unbind('click').click(function(e) {
-			checkOptionalEnabled($(this), e);
-		});
-		checkOptionalEnabled($(this), null);
 	});
 
 	var lines = $('tr[id^="line"].selectable');
@@ -678,6 +675,14 @@ function applySkin() {
 
 	$.when.apply(this, showPage).done(function() {
 		responsiveUI('force');
+	});
+
+	$('input[id^="user_optional_"]').each(function(data) {
+		optional = $(this);
+		optional.unbind('click').click(function(e) {
+			checkOptionalEnabled($(this), e);
+		});
+		checkOptionalEnabled($(this), null);
 	});
 
 	displayMessages();
