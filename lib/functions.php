@@ -300,11 +300,16 @@ function read_config_option($config_name, $force = false) {
 	if ((!isset($config_array[$config_name])) || ($force)) {
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
+		$value = null;
 		if (isset($db_setting['value'])) {
-			$config_array[$config_name] = $db_setting['value'];
-		} else {
-			$config_array[$config_name] = read_default_config_option($config_name);
+			$value = $db_setting['value'];
 		}
+
+		if ($value === null) {
+			$value = read_default_config_option($config_name);
+		}
+
+		$config_array[$config_name] = $value;
 
 		if (isset($_SESSION)) {
 			$_SESSION['sess_config_array']  = $config_array;
@@ -5145,20 +5150,16 @@ function get_rrdtool_version() {
 }
 
 function get_md5_hash($path) {
-	if (!isset($_SESSION['md5_' . $path]) || !strlen($_SESSION['md5_' . $path])) {
-		$md5 = db_fetch_cell_prepared('SELECT md5sum
-			FROM poller_resource_cache
-			WHERE path = ?',
-			array($path));
+	$md5 = db_fetch_cell_prepared('SELECT md5sum
+		FROM poller_resource_cache
+		WHERE path = ?',
+		array($path));
 
-		if (!isset($md5) || !strlen($md5)) {
-			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
-		}
-
-		$_SESSION['md5_'.$path] = $md5;
+	if (!isset($md5) || !strlen($md5)) {
+		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
 	}
 
-	return $_SESSION['md5_'.$path];
+	return $md5;
 }
 
 function get_md5_include_js($path) {
