@@ -719,7 +719,6 @@ class Installer implements JsonSerializable {
 
 		$themePath = $config['base_path'] . '/include/themes/';
 		$themes = glob($themePath . '*', GLOB_ONLYDIR);
-		file_put_contents('/tmp/theme.log', "Searched $themePath*\n" . var_export($themes, true) . "\n");
 		$themeOutput = '<select id=\'theme\' name=\'theme\'>';
 		foreach ($themes as $themeFolder) {
 			$theme = substr($themeFolder, strlen($themePath));
