@@ -101,12 +101,7 @@ class Installer implements JsonSerializable {
 				$installData = array();
 			} elseif (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
 				tmp_log('install_step.log', 'Does match: ' . var_export($this->old_cacti_version, true). "\n", FILE_APPEND);
-				$install_error = read_config_option('install_error', true);
-				if ($install_error === false || $install_error === null) {
-					$step = Installer::STEP_COMPLETE;
-				} else {
-					$step = Installer::STEP_ERROR;
-				}
+				$step = Installer::STEP_COMPLETE;
 				$installData = array();
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
@@ -699,6 +694,8 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepWelcome() {
+		global $config;
+
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement'));
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
 		$output .= Installer::sectionNormal(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
@@ -719,7 +716,23 @@ class Installer implements JsonSerializable {
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
-		$output .= Installer::sectionNormal('<span><input type=\'checkbox\' id=\'accept\' name=\'accept\'></span><span><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
+
+		$themePath = $config['base_path'] . '/include/themes/';
+		$themes = glob($themePath . '*', GLOB_ONLYDIR);
+		file_put_contents('/tmp/theme.log', "Searched $themePath*\n" . var_export($themes, true) . "\n");
+		$themeOutput = '<select id=\'theme\' name=\'theme\'>';
+		foreach ($themes as $themeFolder) {
+			$theme = substr($themeFolder, strlen($themePath));
+			if (file_exists($themePath . $theme . '/main.css')) {
+				$selected = '';
+				if ($theme == $this->theme) {
+					$selected = ' selected';
+				}
+				$themeOutput .= '<option value=\'' . $theme . '\'' . $selected .'>' . $theme . '</option>';
+			}
+		}
+		$themeOutput .= '</select>';
+		$output .= Installer::sectionNormal('<span><input type=\'checkbox\' id=\'accept\' name=\'accept\'></span><span><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span><span style=\'float:right\'>Select default theme: '.$themeOutput.'</span>');
 		$this->stepData = array('Eula' => $this->eula);
 		$this->buttonNext->Enabled = ($this->eula == 1);
 		return $output;
