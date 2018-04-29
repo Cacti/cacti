@@ -579,8 +579,6 @@ function applySkin() {
 		setGraphTabs($('.righttab .selected').attr('id'));
 	}
 
-	$('.ui-tooltip').remove();
-
 	setupSortable();
 
 	setupBreadcrumbs();
@@ -609,13 +607,6 @@ function applySkin() {
 
 	keepWindowSize();
 
-	// Add tooltips to graph drilldowns
-	$('.drillDown').tooltip({
-		content: function() {
-			return $(this).prop('title');
-		}
-	});
-
 	// Debug message actions
 	$('table.debug').unbind('click').click(function() {
 		if ($(this).find('table').is(':visible')) {
@@ -630,6 +621,17 @@ function applySkin() {
 		event.stopPropagation();
 		containerId =  $(this).attr('id');
 		copyToClipboard(containerId);
+	});
+
+	$('i, th, img, input, label, select, button, .drillDown')
+	.tooltip({
+		closed: true
+	})
+	.on('focus', function() {
+		$(this).tooltip('close');
+	})
+	.on('click', function() {
+		$(this).tooltip('close');
 	});
 
 	$(document).tooltip({
@@ -647,9 +649,6 @@ function applySkin() {
 	}).tooltip('close').on('keyup keydown', function(event) {
 		shiftPressed = event.shiftKey;
 	});
-
-	// remove stray tooltips
-	$(document).tooltip('close');
 
 	$('#main').show();
 
@@ -1803,9 +1802,6 @@ function setupSortable() {
 			);
 		}
 	});
-
-	// Setup tool tips for all titles to match the jQueryUI theme
-	$('i, th, img, input, label, select, button').tooltip({ closed: true }).on('focus', function() { $('#filter, #rfilter').tooltip('close'); }).on('click', function() { $(this).tooltip('close'); });
 }
 
 function setupBreadcrumbs() {
@@ -2949,7 +2945,6 @@ $.widget('custom.dropcolor', {
 
 		$('<span>')
 		.attr('tabIndex', -1)
-		.tooltip()
 		.appendTo(this.wrapper)
 		.addClass('ui-icon ui-icon-triangle-1-s')
 		.on('mousedown', function() {
