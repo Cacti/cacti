@@ -1297,17 +1297,23 @@ legend {
 	text-align: left;
 }
 
+.formColumnOptional {
+	float: left;
+	display: table-column;
+	width: 5%;
+}
+
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1402,7 +1408,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		text-align: left;
 	}
 

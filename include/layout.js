@@ -317,6 +317,17 @@ $.tablesorter.addParser({
 	});
 })(jQuery);
 
+function checkOptionalEnabled(item, e) {
+	isOptionalEnabled = item.is(':checked');
+	siblings = item.closest('div').siblings('.formColumnLeft, .formColumnRight');
+	elements = siblings.find('*.formFieldName, *.ui-widget, *.formCheckbox, *.checkboxLabel, *:input');
+	if (isOptionalEnabled) {
+		elements.removeClass('ui-state-disabled').prop('disabled', false);
+	} else {
+		elements.addClass('ui-state-disabled').prop('disabled', true);
+	}
+}
+
 // helper function which selects row range when shift key is pressed during click
 function updateCheckboxes(checkboxes, clicked_element) {
 	var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
@@ -663,6 +674,14 @@ function applySkin() {
 
 	$.when.apply(this, showPage).done(function() {
 		responsiveUI('force');
+	});
+
+	$('input[id^="user_optional_"]').each(function(data) {
+		optional = $(this);
+		optional.unbind('click').click(function(e) {
+			checkOptionalEnabled($(this), e);
+		});
+		checkOptionalEnabled($(this), null);
 	});
 
 	displayMessages();
