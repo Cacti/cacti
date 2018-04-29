@@ -732,7 +732,7 @@ class Installer implements JsonSerializable {
 			}
 		}
 		$themeOutput .= '</select>';
-		$output .= Installer::sectionNormal('<span><input type=\'checkbox\' id=\'accept\' name=\'accept\'></span><span><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span><span style=\'float:right\'>Select default theme: '.$themeOutput.'</span>');
+		$output .= Installer::sectionNormal('<span>Select default theme: '.$themeOutput.'</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
 		$this->stepData = array('Eula' => $this->eula);
 		$this->buttonNext->Enabled = ($this->eula == 1);
 		return $output;
