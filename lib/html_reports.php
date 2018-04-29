@@ -463,6 +463,34 @@ $fields_reports_item_edit = array(
 	),
 );
 
+function reports_item_dnd() {
+	/* ================= Input validation ================= */
+	get_filter_request_var('id');
+	/* ================= Input validation ================= */
+
+	$continue = true;
+
+	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
+        $report_items = get_nfilter_request_var('report_item');
+
+        if (sizeof($report_items)) {
+            $sequence = 1;
+            foreach($report_items as $item) {
+                $item_id = str_replace('line', '', $item);
+                input_validate_input_number($item_id);
+
+                db_execute_prepared('UPDATE reports_items
+                    SET sequence = ?
+                    WHERE id = ?
+					AND report_id = ?',
+                    array($sequence, $item_id, get_request_var('id')));
+
+                $sequence++;
+            }
+        }
+    }
+}
+
 function reports_form_save() {
 	global $config, $messages;
 	# when using cacti_log: include_once($config['library_path'] . '/functions.php');
@@ -1013,11 +1041,11 @@ function reports_item_edit() {
 			$('#graph').html("<img align='center' src='<?php print $config['url_path'];?>graph_image.php"+
 					"?local_graph_id="+graphId+
 					"&image_format=png"+
-					"<?php print (($report["graph_width"] > 0) ? "&graph_width=" . $report["graph_width"]:"");?>"+
-					"<?php print (($report["graph_height"] > 0) ? "&graph_height=" . $report["graph_height"]:"");?>"+
-					"<?php print (($report["thumbnails"] == "on") ? "&graph_nolegend=true":"");?>"+
-					"<?php print ((isset($timespan["begin_now"])) ? "&graph_start=" . $timespan["begin_now"]:"");?>"+
-					"<?php print ((isset($timespan["end_now"])) ? "&graph_end=" . $timespan["end_now"]:"");?>"+
+					"<?php print (($report['graph_width'] > 0) ? '&graph_width=' . $report['graph_width']:'');?>"+
+					"<?php print (($report['graph_height'] > 0) ? '&graph_height=' . $report['graph_height']:'');?>"+
+					"<?php print (($report['thumbnails'] == 'on') ? '&graph_nolegend=true':'');?>"+
+					"<?php print ((isset($timespan['begin_now'])) ? '&graph_start=' . $timespan['begin_now']:'');?>"+
+					"<?php print ((isset($timespan['end_now'])) ? '&graph_end=' . $timespan['end_now']:'');?>"+
 					"&rra_id=0'>");
 		} else {
 			$('#graphdiv').hide();
@@ -1197,6 +1225,25 @@ function reports_edit() {
 
 		html_end_box();
 
+		if (!empty($report['id'])) {
+			?>
+			<script type='text/javascript'>
+			$('#reports_admin_items1').find('.cactiTable').attr('id', 'report_item');
+			reportsPage = '<?php print get_reports_page();?>';
+			reportId    = <?php print $report['id'];?>;
+			$(function() {
+				<?php if (read_config_option('drag_and_drop') == 'on') { ?>
+				$('#report_item').tableDnD({
+					onDrop: function(table, row) {
+						loadPageNoHeader(reportsPage+'?action=ajax_dnd&id='+reportId+'&'+$.tableDnD.serialize());
+					}
+				});
+				<?php } ?>
+			});
+			</script>
+			<?php
+		}
+
 		break;
 	case 'events':
 		if (($timestamp = strtotime($report['mailtime'])) === false) {
@@ -1246,14 +1293,14 @@ function display_reports_items($report_id) {
 
 	html_header(
 		array(
-			array('display' => __('Item'), 'align' => 'left'),
-			array('display' => __('Sequence'), 'align' => 'left'),
-			array('display' => __('Type'), 'align' => 'left'),
+			array('display' => __('Item'),         'align' => 'left'),
+			array('display' => __('Sequence'),     'align' => 'left'),
+			array('display' => __('Type'),         'align' => 'left'),
 			array('display' => __('Item Details'), 'align' => 'left'),
-			array('display' => __('Timespan'), 'align' => 'left'),
-			array('display' => __('Alignment'), 'align' => 'left'),
-			array('display' => __('Font Size'), 'align' => 'left'),
-			array('display' => __('Actions'), 'align' => 'right')
+			array('display' => __('Timespan'),     'align' => 'left'),
+			array('display' => __('Alignment'),    'align' => 'left'),
+			array('display' => __('Font Size'),    'align' => 'left'),
+			array('display' => __('Actions'),      'align' => 'right')
 		), 2);
 
 	$i = 1;
@@ -1311,7 +1358,7 @@ function display_reports_items($report_id) {
 				$size = '';
 			}
 
-			form_alternate_row();
+			form_alternate_row('line' . $item['id'], false);
 			$form_data = '<td><a class="linkEditMain" href="' . html_escape(get_reports_page() . '?action=item_edit&id=' . $report_id. '&item_id=' . $item['id']) . '">' . __('Item # %d', $i) . '</a></td>';
 			$form_data .= '<td>' . $item['sequence'] . '</td>';
 			$form_data .= '<td>' . $item_types[$item['item_type']] . '</td>';

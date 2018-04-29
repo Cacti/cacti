@@ -53,6 +53,7 @@ if (get_nfilter_request_var('template_id') != '-1' && get_nfilter_request_var('t
 $graph_actions += array(
 	5  => __('Change Device'),
 	6  => __('Reapply Suggested Names'),
+	11 => __('Place Graphs on Report'),
 	9  => __('Create Aggregate Graph'),
 	10 => __('Create Aggregate from Template'),
 	8  => __('Apply Automation Rules')
@@ -677,6 +678,20 @@ function form_actions() {
 				for ($i=0;($i<count($selected_items));$i++) {
 					automation_execute_graph_create_tree($selected_items[$i]);
 				}
+			} elseif (get_request_var('drp_action') == '11') {
+				// Add to a report
+				$good = true;
+				for ($i=0;($i<count($selected_items));$i++) {
+					if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
+						raise_message('reports_add_error');
+						$good = false;
+						break;
+					}
+				}
+
+				if ($good) {
+					raise_message('reports_graphs_added');
+				}
 			} else {
 				api_plugin_hook_function('graphs_action_execute', get_request_var('drp_action'));
 			}
@@ -815,7 +830,7 @@ function form_actions() {
 
 					$gtsql = get_common_graph_templates($graph);
 
-					form_dropdown('graph_template_id', db_fetch_assoc($gtsql), 'name','id','','','0');
+					form_dropdown('graph_template_id', db_fetch_assoc($gtsql), 'name', 'id', '', '', '0');
 
 					print "</p>
 				</td>
@@ -1073,6 +1088,39 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Apply Automation Rules') . "'>";
+		} elseif (get_request_var('drp_action') == '11') {
+			global $alignment, $graph_timespans;
+
+			$reports = db_fetch_assoc_prepared('SELECT id, name
+				FROM reports
+				WHERE user_id = ?
+				ORDER BY name',
+				array($_SESSION['sess_user_id']));
+
+			if (sizeof($reports)) {
+				print "<tr>
+					<td class='textArea'>
+						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
+						<div class='itemlist'><ul>$graph_list</ul></div>
+					</td>
+				</tr>
+				<tr><td>" . __('Report Name') . '<br>';
+				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Timespan') . '<br>';
+				form_dropdown('timespan',$graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Align') . '<br>';
+				form_dropdown('align',$alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
+				print "</td></tr>\n";
+
+				$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
+			} else {
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>\n";
+				$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+			}
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['graph_list'] = $graph_list;
@@ -1161,7 +1209,7 @@ function item() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('.deleteMarker, .moveArrow').click(function(event) {
+		$('.deleteMarker, .moveArrow').unbind().click(function(event) {
 			event.preventDefault();
 			loadPageNoHeader($(this).attr('href'));
 		});
@@ -1532,8 +1580,8 @@ function graph_edit() {
 
 	if (locked) {
 		$('input, select').not('input[value="<?php print __('Cancel');?>"]').prop('disabled', true);
-		$('.moveArrow, .deleteMarker, .linkOverDark, .linkEditMain').unbind().attr('href', '#').removeClass('moveArrow').removeClass('deleteMarker');
-		if ($('#submit').button === 'function') {
+		$('.moveArrow, .deleteMarker, .linkOverDark, .linkEditMain').attr('href', '#').removeClass('moveArrow').removeClass('deleteMarker');
+		if ($('#submit').button('instance')) {
 			$('#submit').button('disable');
 		} else {
 			$('#submit').prop('disabled', true);
@@ -1623,15 +1671,15 @@ function graph_management() {
 	}
 
 	$(function() {
-		$('#clear').click(function() {
+		$('#clear').unbind().on('click', function() {
 			clearFilter();
 		});
 
-		$('#filter').change(function() {
+		$('#filter').unbind().on('change', function() {
 			applyFilter();
 		});
 
-		$('#form_graphs').submit(function(event) {
+		$('#form_graphs').unbind().on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

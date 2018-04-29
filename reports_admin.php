@@ -48,6 +48,11 @@ switch (get_request_var('action')) {
 
 		header('Location: reports_admin.php?action=edit&tab=' . get_request_var('tab') . '&id=' . get_request_var('id'));
 		break;
+	case 'ajax_dnd':
+		reports_item_dnd();
+
+		header('Location: reports_admin.php?action=edit&header=false&tab=items&id=' . get_request_var('id'));
+		break;
 	case 'actions':
 		reports_form_actions();
 
