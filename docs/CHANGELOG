@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -feature#1505: Allow Device Edit from Graphs page
 -feature#1527: Update Fontawesome from 4.7 to 5.0.10
 -feature#1580: Support Drag & Drop for Report Items
+-feature#1581: Allow Mass Adding of Graphs to Reports
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti

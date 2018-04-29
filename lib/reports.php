@@ -69,6 +69,68 @@ function duplicate_reports($_id, $_title) {
 	}
 }
 
+function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
+	$report_user = db_fetch_cell_prepared('SELECT user_id
+		FROM reports
+		WHERE id = ?',
+		array($report_id));
+
+	if ($report_user != $_SESSION['sess_user_id']) {
+		raise_message('reports_not_owner');
+
+		return false;
+	} else {
+		$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
+			FROM reports_items
+			WHERE report_id = ?',
+			array($report_id)) + 1;
+
+		$existing = db_fetch_cell_prepared('SELECT id
+			FROM reports_items
+			WHERE local_graph_id = ?
+			AND report_id = ?
+			AND timespan = ?',
+			array($local_graph_id, $report_id, $timespan));
+
+		if (!$existing) {
+			$gd = db_fetch_row_prepared('SELECT *
+				FROM graph_local
+				WHERE id = ?',
+				array($local_graph_id));
+
+			$host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+				FROM host
+				WHERE id = ?',
+				array($gd['host_id']));
+
+			if (sizeof($gd)) {
+				db_execute_prepared('INSERT INTO reports_items
+					(report_id, item_type, host_template_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
+					VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)',
+					array(
+						$report_id,
+						$host_template_id,
+						$gd['host_id'],
+						$gd['graph_template_id'],
+						$local_graph_id,
+						$timespan,
+						$align,
+						$sequence
+					)
+				);
+
+				return true;
+			} else {
+				raise_message('reports_graph_not_found');
+
+				return false;
+			}
+		} else {
+			return true;
+		}
+	}
+}
+
 /** reports_date_time_format		fetches the date/time formatting information for current user
  * @return string	- string defining the datetime format specific to this user
  */
@@ -1530,7 +1592,7 @@ function reports_graphs_action_execute($action) {
 						array($local_graph_id, $reports_id, get_nfilter_request_var('timespan')));
 
 					if (!$existing) {
-						$sequence = db_fetch_cell_prepared('SELECT max(sequence)
+						$sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
 							FROM reports_items
 							WHERE report_id = ?',
 							array($reports_id));
