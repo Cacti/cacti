@@ -796,6 +796,9 @@ $enabled = '1';
 								case 'filepath':
 									form_filepath_box($name, $current_value, '', '', '40', 'text');
 									break;
+								case 'dirpath':
+									form_dirpath_box($name, $current_value, '', '', '40', 'text');
+									break;
 								case 'drop_array':
 									form_dropdown($name, $array['array'], '', '', $current_value, '', '');
 									break;
@@ -849,6 +852,7 @@ $enabled = '1';
 						);
 
 						$always_paths = array(
+							sys_get_temp_dir(),
 							$config['base_path'] . '/log',
 							$config['base_path'] . '/cache/boost',
 							$config['base_path'] . '/cache/mibcache',

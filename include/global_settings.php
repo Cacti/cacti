@@ -211,6 +211,13 @@ $settings = array(
 			'default' => $config['base_path'] . '/rra/archive/',
 			'max_length' => 255,
 			),
+		'rrd_temporary' => array(
+			'friendly_name' => __('Temporary directory'),
+			'description' => __('This is the directory used for <strong>temporary</strong> files'),
+			'method' => 'dirpath',
+			'default' => sys_get_temp_dir(),
+			'max_length' => 255,
+			),
 		),
 	'general' => array(
 		'event_logging_header' => array(

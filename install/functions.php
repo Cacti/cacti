@@ -464,6 +464,8 @@ function install_file_paths () {
 		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
+	$input['path_temporary'] = $settings['path']['rrd_temporary'];
+
 	/* Theme */
 	$input['selected_theme'] = $settings['visual']['selected_theme'];
 	$input['selected_theme']['description'] = __('Please select one of the available Themes to skin your Cacti with.');
