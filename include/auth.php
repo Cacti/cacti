@@ -24,7 +24,7 @@
 
 global $current_user;
 
-include('./include/global.php');
+require_once('global.php');
 
 if (!isset($config['cacti_db_version'])) {
 	$version = get_cacti_version();
@@ -33,7 +33,7 @@ if (!isset($config['cacti_db_version'])) {
 	$version = $config['cacti_db_version'];
 }
 
-if ($version != CACTI_VERSION && $config['poller_id'] == 1) {
+if ($version != CACTI_VERSION && $config['poller_id'] == 1 && !defined('IN_CACTI_INSTALL')) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
@@ -100,7 +100,7 @@ if (read_config_option('auth_method') != 0) {
 		} elseif (isset($auth_text) && $auth_text == true) {
 			print __('FATAL: You must be logged in to access this area of Cacti.');
 		} else {
-			include($config['base_path'] . '/auth_login.php');
+			require_once($config['base_path'] . '/auth_login.php');
 		}
 
 		exit;
@@ -168,7 +168,7 @@ if (read_config_option('auth_method') != 0) {
 				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 			});
 			</script>\n";
-			include_once('./include/global_session.php');
+			include_once('global_session.php');
 			print "</body>
 			</html>\n";
 			exit;
