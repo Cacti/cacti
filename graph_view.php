@@ -28,6 +28,7 @@ include('./include/auth.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/api_tree.php');
+include_once('./lib/reports.php');
 include_once('./lib/timespan_settings.php');
 
 /* set the default graph action */
@@ -132,6 +133,37 @@ case 'ajax_hosts':
 case 'ajax_search':
 	get_matching_nodes();
 	exit;
+
+	break;
+case 'ajax_reports':
+	// Add to a report
+	get_filter_request_var('report_id');
+	get_filter_request_var('timespan');
+	get_filter_request_var('align');
+
+	if (isset_request_var('graph_list')) {
+		$items = explode(',', get_request_var('graph_list'));
+
+		if (sizeof($items)) {
+			$good = true;
+
+			foreach($items as $item) {
+				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
+					raise_message('reports_add_error');
+					$good = false;
+					break;
+				}
+			}
+
+			if ($good) {
+				raise_message('reports_graphs_added');
+			}
+		}
+	} else {
+		raise_message('reports_no_graph');
+	}
+
+	header('Location: graph_view.php?action=list&header=false');
 
 	break;
 case 'update_timespan':
@@ -525,6 +557,11 @@ case 'list':
 	}
 	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
 
+	$reports = db_fetch_assoc_prepared('SELECT *
+		FROM reports
+		WHERE user_id = ?',
+		array($_SESSION['sess_user_id']));
+
 	form_start('graph_view.php', 'form_graph_list');
 
 	/* display graph view filter selector */
@@ -542,6 +579,20 @@ case 'list':
 						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<?php html_host_filter(get_request_var('host_id'));?>
+					<td>
+						<span>
+							<input type='submit' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
+							<input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
+							<?php if (sizeof($reports)) {?>
+							<input type='button' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
+							<?php } ?>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
 					<td>
 						<?php print __('Template');?>
 					</td>
@@ -590,13 +641,6 @@ case 'list':
 							}
 							?>
 						</select>
-					</td>
-					<td>
-						<span>
-							<input type='submit' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
-							<input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
-						</span>
 					</td>
 				</tr>
 			</table>
@@ -677,12 +721,46 @@ case 'list':
 
 	form_end();
 
+	global $graph_timespans, $alignment;
+
+	$report_text = '';
+
+	if (sizeof($reports)) {
+		$report_text = '<div id="addGraphs">
+			<p>' . __('Select the Report to add the selected Graphs to.') . '</p>
+			<table class="cactiTable">';
+
+		$report_text .= '<tr><td>' . __('Report Name') . '</td>';
+		$report_text .= '<td><select id="report_id">';
+		foreach($reports as $report) {
+			$report_text .= '<option value="' . $report['id'] . '">' . $report['name'] . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '<tr><td>' . __('Timespan') . '</td>';
+		$report_text .= '<td><select id="timespan">';
+		foreach($graph_timespans as $key => $value) {
+			$report_text .= '<option value="' . $key . '"' . ($key == read_user_setting('default_timespan') ? ' selected':'') . '>' . $value . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '<tr><td>' . __('Align') . '</td>';
+		$report_text .= '<td><select id="align">';
+		foreach($alignment as $key => $value) {
+			$report_text .= '<option value="' . $key . '"' . ($key == REPORTS_ALIGN_CENTER ? ' selected':'') . '>' . $value . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '</table></div>';
+	}
+
 	?>
 	<div class='break'></div>
 	<div class='cactiTable'>
 		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
 		<div style='float:right'><input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
 	</div>
+	<?php print $report_text;?>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
@@ -781,10 +859,67 @@ case 'list':
 		return false;
 	}
 
+	function addReport() {
+		$('#addGraphs').dialog({
+			title: '<?php print __('Add Selected Graphs to Report');?>',
+			minHeight: 80,
+			minWidth: 400,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			buttons: [
+				{
+					text: '<?php print __('Cancel');?>',
+					click: function() {
+						$(this).dialog('close');
+					}
+				},
+				{
+					text: '<?php print __('Ok');?>',
+					click: function() {
+						graphList = $('#graph_list').val();
+						$('input[id^=chk_]').each(function(data) {
+							graphID = $(this).attr('id').replace('chk_','');
+							if ($(this).is(':checked')) {
+								graphList += (graphList.length > 0 ? ',':'') + graphID;
+							}
+						});
+						$('#graph_list').val(graphList);
+
+						$(this).dialog('close');
+
+						strURL = 'graph_view.php?action=ajax_reports&header=false' +
+							'&report_id='  + $('#report_id').val()  +
+							'&timespan='   + $('#timespan').val()   +
+							'&align='      + $('#align').val()      +
+							'&graph_list=' + $('#graph_list').val();
+
+						loadPageNoHeader(strURL);
+					}
+				}
+			],
+			open: function() {
+				$('.ui-dialog').css('z-index', 99);
+				$('.ui-widget-overlay').css('z-index', 98);
+			},
+			close: function() {
+				$('[title]').each(function() {
+					if ($(this).tooltip('instance')) {
+						$(this).tooltip('close');
+					}
+				});
+			}
+		});
+	}
+
 	$(function() {
 		myGraphLocation='list';
 
 		initializeChecks();
+
+		$('#addreport').click(function() {
+			addReport();
+		});
 
 		var msWidth = 100;
 		$('#graph_template_id option').each(function() {
@@ -832,12 +967,12 @@ case 'list':
 					}
 				}else if (checked == 0) {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).click();
+						$(this).trigger('click');
 					});
 				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
 					if (checked > 0) {
 						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).click();
+							$(this).trigger('click');
 							$(this).prop('disable', true);
 						});
 					}
