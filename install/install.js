@@ -306,6 +306,11 @@ function prepareStepWelcome(installData) {
 	if (element != null && element.length > 0) {
 		installData.Eula = element.is(':checked');
 	}
+
+	element = $('#theme');
+	if (element != null && element.length > 0) {
+		installData.Theme = element.val();
+	}
 }
 
 function prepareStepInstallType(installData) {
