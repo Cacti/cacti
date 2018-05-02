@@ -49,4 +49,9 @@ function upgrade_to_1_2_0() {
 		db_install_execute("ALTER TABLE poller
 			ADD COLUMN `timezone` varchar(40) DEFAULT '' AFTER `status`");
 	}
+
+	if (!db_column_exists('poller_resource_cache', 'attributes')) {
+		db_install_execute("ALTER TABLE poller_resource_cache
+			ADD COLUMN `attributes` INT unsigned DEFAULT '0'");
+	}
 }
