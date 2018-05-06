@@ -65,7 +65,7 @@ if (isset($_SESSION['refresh'])) {
 	unset($_SESSION['refresh']);
 } elseif (isset($refresh) && is_array($refresh)) {
 	$myrefresh['seconds'] = $refresh['seconds'];
-	$myrefresh['page']    = sanitize_uri(strpos($refresh['page'], '?') ? '&':'?' . 'header=false');
+	$myrefresh['page']    = sanitize_uri($refresh['page'] . (strpos($refresh['page'], '?') ? '&':'?') . 'header=false');
 	$refreshIsLogout      = 'false';
 } elseif (isset($refresh)) {
 	$myrefresh['seconds'] = $refresh;

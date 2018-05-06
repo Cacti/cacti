@@ -62,10 +62,11 @@ case 'move_page_down':
 
 	break;
 case 'save':
-	$save['id']            = isset_request_var('id') ? get_filter_request_var('id'):0;
-	$save['title']         = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-	$save['style']         = get_nfilter_request_var('style');
-	$save['enabled']       = (isset_request_var('enabled') ? 'on':'');
+	$save['id']      = isset_request_var('id') ? get_filter_request_var('id'):0;
+	$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
+	$save['style']   = get_nfilter_request_var('style');
+	$save['enabled'] = (isset_request_var('enabled') ? 'on':'');
+	$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
 
 	if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
 		$save['contentfile'] = get_nfilter_request_var('fileurl');
@@ -470,7 +471,7 @@ function page_move($pageid, $junk, $direction) {
 }
 
 function edit_page() {
-	global $config;
+	global $config, $poller_intervals;
 
 	$sections = db_fetch_assoc("SELECT extendedstyle
 		FROM external_links
@@ -493,6 +494,9 @@ function edit_page() {
 	} else {
 		$data = array();
 	}
+
+	$myrefresh[0] = __('Disabled');
+	$myrefresh   += $poller_intervals;
 
 	$field_array = array(
 		'id' => array(
@@ -552,11 +556,18 @@ function edit_page() {
 			'value' => (isset($data['contentfile']) ? $data['contentfile']:'')
 		),
 		'enabled' => array(
-			'friendly_name' => 'Do you want this page enabled',
+			'friendly_name' => __('Enabled'),
 			'method' => 'checkbox',
-			'description' => "If you wish this page to be viewable immediately, please check the checkbox.",
+			'description' => __('If checked, the page will be available immediately to the admin user.'),
 			'default' => 'on',
 			'value' => (isset($data['enabled']) ? 'on':'')
+		),
+		'refresh' => array(
+			'friendly_name' => __('Automatic Page Refresh'),
+			'method' => 'drop_array',
+			'array' => $myrefresh,
+			'description' => __('How often do you wish this page to be refreshed automatically.'),
+			'value' => (isset($data['refresh']) ? $data['refresh']:'')
 		),
 	);
 

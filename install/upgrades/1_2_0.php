@@ -49,4 +49,9 @@ function upgrade_to_1_2_0() {
 		db_install_execute("ALTER TABLE poller
 			ADD COLUMN `timezone` varchar(40) DEFAULT '' AFTER `status`");
 	}
+
+	if (!db_column_exists('external_links', 'refresh')) {
+		db_install_execute("ALTER TABLE external_links
+			ADD COLUMN `refresh` int unsigned default NULL");
+	}
 }
