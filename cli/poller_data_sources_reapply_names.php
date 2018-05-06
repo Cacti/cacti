@@ -34,6 +34,7 @@ $no_http_headers = true;
 
 include (dirname(__FILE__) . '/../include/global.php');
 include_once ($config['base_path'] . '/lib/api_data_source.php');
+include_once ($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -124,8 +125,8 @@ if (strtolower($host_id) == 'all') {
 	exit;
 }
 
-$data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active, 
-	data_input.name as data_input_name, data_template.name as data_template_name, data_local.host_id 
+$data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active,
+	data_input.name as data_input_name, data_template.name as data_template_name, data_local.host_id
 	FROM (data_local,data_template_data)
 	LEFT JOIN data_input
 	ON (data_input.id=data_template_data.data_input_id)

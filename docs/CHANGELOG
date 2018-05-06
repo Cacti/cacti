@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#1559: CLI Output Issues due to over escaping
 -issue#1560: Warning that escapeshellarg() is escaping a null
 -issue#1574: User templates are not correctly being applied
+-issue#1602: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
