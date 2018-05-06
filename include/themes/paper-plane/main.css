@@ -1264,12 +1264,6 @@ table.cactiTable {
 	display: table-column;
 }
 
-.formColumnOptional {
-	float: left;
-	display: table-column;
-	width: 5%;
-}
-
 .formColumnLeft {
 	float: left;
 	display: table-column;

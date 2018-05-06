@@ -1866,7 +1866,6 @@ $settings = array(
 $settings_user = array(
 	'general' => array(
 		'selected_theme' => array(
-			'user' => true,
 			'friendly_name' => __('Theme'),
 			'description' => __('Please select one of the available Themes to skin your Cacti with.'),
 			'method' => 'drop_array',
@@ -1874,7 +1873,6 @@ $settings_user = array(
 			'array' => $themes
 			),
 		'default_view_mode' => array(
-			'user' => true,
 			'friendly_name' => __('Default View Mode'),
 			'description' => __('Which Graph mode you want displayed by default when you first visit the Graphs page?'),
 			'method' => 'drop_array',
@@ -1882,7 +1880,6 @@ $settings_user = array(
 			'default' => '1'
 			),
 		'user_language' => array(
-			'user' => true,
 			'friendly_name' => __('User Language'),
 			'description' => __('Defines the preferred GUI language.'),
 			'method' => 'drop_array',
@@ -1890,21 +1887,18 @@ $settings_user = array(
 			'array' => get_installed_locales()
 		),
 		'show_graph_title' => array(
-			'user' => true,
 			'friendly_name' => __('Show Graph Title'),
 			'description' => __('Display the graph title on the page so that it may be searched using the browser.'),
 			'method' => 'checkbox',
 			'default' => ''
 			),
 		'hide_disabled' => array(
-			'user' => true,
 			'friendly_name' => __('Hide Disabled'),
 			'description' => __('Hide Disabled Devices and Graphs from Disabled Devices.'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
 		'default_date_format' => array(
-			'user' => true,
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The date format to use in Cacti.'),
 			'method' => 'drop_array',
@@ -1912,7 +1906,6 @@ $settings_user = array(
 			'default' => GD_Y_MO_D
 			),
 		'default_datechar' => array(
-			'user' => true,
 			'friendly_name' => __('Date Separator'),
 			'description' => __('The date separator to be used in Cacti.'),
 			'method' => 'drop_array',
@@ -1920,7 +1913,6 @@ $settings_user = array(
 			'default' => GDC_SLASH
 			),
 		'page_refresh' => array(
-			'user' => true,
 			'friendly_name' => __('Page Refresh'),
 			'description' => __('The number of seconds between automatic page refreshes.'),
 			'method' => 'drop_array',
@@ -1928,7 +1920,6 @@ $settings_user = array(
 			'array' => array( '15' => __('%d Seconds', 15), '20' => __('%d Seconds', 20), '30' => __('%d Seconds', 30), '60' => __('1 Minute'), '300' => __('%d Minutes', 5) )
 			),
 		'preview_graphs_per_page' => array(
-			'user' => true,
 			'friendly_name' => __('Preview Graphs Per Page'),
 			'description' => __('The number of graphs to display on one page in preview mode.'),
 			'method' => 'drop_array',
@@ -1938,7 +1929,6 @@ $settings_user = array(
 		),
 	'timespan' => array(
 		'default_rra_id' => array(
-			'user' => true,
 			'friendly_name' => __('Default Time Range'),
 			'description' => __('The default RRA to use in rare occasions.'),
 			'method' => 'drop_sql',
@@ -1946,7 +1936,6 @@ $settings_user = array(
 			'default' => '1'
 			),
 		'default_timespan' => array(
-			'user' => true,
 			'friendly_name' => __('Default Graph View Timespan'),
 			'description' => __('The default timespan you wish to be displayed when you display graphs'),
 			'method' => 'drop_array',
@@ -1954,7 +1943,6 @@ $settings_user = array(
 			'default' => GT_LAST_DAY
 			),
 		'default_timeshift' => array(
-			'user' => true,
 			'friendly_name' => __('Default Graph View Timeshift'),
 			'description' => __('The default timeshift you wish to be displayed when you display graphs'),
 			'method' => 'drop_array',
@@ -1962,14 +1950,12 @@ $settings_user = array(
 			'default' => GTS_1_DAY
 			),
 		'allow_graph_dates_in_future' => array(
-			'user' => true,
 			'friendly_name' => __('Allow Graph to extend to Future'),
 			'description' => __('When displaying Graphs, allow Graph Dates to extend \'to future\''),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
 		'first_weekdayid' => array(
-			'user' => true,
 			'friendly_name' => __('First Day of the Week'),
 			'description' => __('The first Day of the Week for weekly Graph Displays'),
 			'method' => 'drop_array',
@@ -1977,7 +1963,6 @@ $settings_user = array(
 			'default' => WD_MONDAY
 			),
 		'day_shift_start' => array(
-			'user' => true,
 			'friendly_name' => __('Start of Daily Shift'),
 			'description' => __('Start Time of the Daily Shift.'),
 			'method' => 'textbox',
@@ -1986,7 +1971,6 @@ $settings_user = array(
 			'size' => '7'
 			),
 		'day_shift_end' => array(
-			'user' => true,
 			'friendly_name' => __('End of Daily Shift'),
 			'description' => __('End Time of the Daily Shift.'),
 			'method' => 'textbox',
@@ -1997,7 +1981,6 @@ $settings_user = array(
 		),
 	'thumbnail' => array(
 		'thumbnail_sections' => array(
-			'user' => true,
 			'friendly_name' => __('Thumbnail Sections'),
 			'description' => __('Which portions of Cacti display Thumbnails by default.'),
 			'method' => 'checkbox_group',
@@ -2013,7 +1996,6 @@ $settings_user = array(
 				)
 			),
 		'num_columns' => array(
-			'user' => true,
 			'friendly_name' => __('Preview Thumbnail Columns'),
 			'description' => __('The number of columns to use when displaying Thumbnail graphs in Preview mode.'),
 			'method' => 'drop_array',
@@ -2021,7 +2003,6 @@ $settings_user = array(
 			'array' => array('1' => __('1 Column'),'2' => __('%d Columns', 2), '3' => __('%d Columns', 3), '4' => __('%d Columns', 4), '5' => __('%d Columns', 5), '6' => __('%d Columns', 6) )
 			),
 		'num_columns_tree' => array(
-			'user' => true,
 			'friendly_name' => __('Tree View Thumbnail Columns'),
 			'description' => __('The number of columns to use when displaying Thumbnail graphs in Tree mode.'),
 			'method' => 'drop_array',
@@ -2029,7 +2010,6 @@ $settings_user = array(
 			'array' => array('1' => __('1 Column'),'2' => __('%d Columns', 2), '3' => __('%d Columns', 3), '4' => __('%d Columns', 4), '5' => __('%d Columns', 5), '6' => __('%d Columns', 6) )
 			),
 		'default_height' => array(
-			'user' => true,
 			'friendly_name' => __('Thumbnail Height'),
 			'description' => __('The height of Thumbnail graphs in pixels.'),
 			'method' => 'textbox',
@@ -2038,7 +2018,6 @@ $settings_user = array(
 			'size' => '7'
 			),
 		'default_width' => array(
-			'user' => true,
 			'friendly_name' => __('Thumbnail Width'),
 			'description' => __('The width of Thumbnail graphs in pixels.'),
 			'method' => 'textbox',
@@ -2049,7 +2028,6 @@ $settings_user = array(
 		),
 	'tree' => array(
 		'default_tree_id' => array(
-			'user' => true,
 			'friendly_name' => __('Default Tree'),
 			'description' => __('The default graph tree to use when displaying graphs in tree mode.'),
 			'method' => 'drop_sql',
@@ -2057,7 +2035,6 @@ $settings_user = array(
 			'default' => '0'
 			),
 		'treeview_graphs_per_page' => array(
-			'user' => true,
 			'friendly_name' => __('Graphs Per Page'),
 			'description' => __('The number of graphs to display on one page in preview mode.'),
 			'method' => 'drop_array',
@@ -2065,7 +2042,6 @@ $settings_user = array(
 			'array' => $graphs_per_page
 			),
 		'expand_hosts' => array(
-			'user' => true,
 			'friendly_name' => __('Expand Devices'),
 			'description' => __('Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.'),
 			'method' => 'checkbox',
@@ -2074,7 +2050,6 @@ $settings_user = array(
 		),
 	'fonts' => array(
 		'custom_fonts' => array(
-			'user' => true,
 			'friendly_name' => __('Use Custom Fonts'),
 			'description' => __('Choose whether to use your own custom fonts and font sizes or utilize the system defaults.'),
 			'method' => 'checkbox',
@@ -2082,7 +2057,6 @@ $settings_user = array(
 			'default' => ''
 			),
 		'title_size' => array(
-			'user' => true,
 			'friendly_name' => __('Title Font Size'),
 			'description' => __('The size of the font used for Graph Titles'),
 			'method' => 'textbox',
@@ -2090,14 +2064,12 @@ $settings_user = array(
 			'max_length' => '10'
 			),
 		'title_font' => array(
-			'user' => true,
 			'friendly_name' => __('Title Font File'),
 			'description' => __('The font file to use for Graph Titles'),
 			'method' => 'font',
 			'max_length' => '100'
 			),
 		'legend_size' => array(
-			'user' => true,
 			'friendly_name' => __('Legend Font Size'),
 			'description' => __('The size of the font used for Graph Legend items'),
 			'method' => 'textbox',
@@ -2105,14 +2077,12 @@ $settings_user = array(
 			'max_length' => '10'
 			),
 		'legend_font' => array(
-			'user' => true,
 			'friendly_name' => __('Legend Font File'),
 			'description' => __('The font file to be used for Graph Legend items'),
 			'method' => 'font',
 			'max_length' => '100'
 			),
 		'axis_size' => array(
-			'user' => true,
 			'friendly_name' => __('Axis Font Size'),
 			'description' => __('The size of the font used for Graph Axis'),
 			'method' => 'textbox',
@@ -2120,14 +2090,12 @@ $settings_user = array(
 			'max_length' => '10'
 			),
 		'axis_font' => array(
-			'user' => true,
 			'friendly_name' => __('Axis Font File'),
 			'description' => __('The font file to be used for Graph Axis items'),
 			'method' => 'font',
 			'max_length' => '100'
 			),
 		'unit_size' => array(
-			'user' => true,
 			'friendly_name' => __('Unit Font Size'),
 			'description' => __('The size of the font used for Graph Units'),
 			'method' => 'textbox',
@@ -2135,7 +2103,6 @@ $settings_user = array(
 			'max_length' => '10'
 			),
 		'unit_font' => array(
-			'user' => true,
 			'friendly_name' => __('Unit Font File'),
 			'description' => __('The font file to be used for Graph Unit items'),
 			'method' => 'font',
@@ -2146,7 +2113,6 @@ $settings_user = array(
 
 if (is_realm_allowed(25)) {
 	$settings_user['general']['realtime_mode'] = array(
-		'user' => true,
 		'friendly_name' => __('Realtime View Mode'),
 		'description' => __('How do you wish to view Realtime Graphs?'),
 		'method' => 'drop_array',

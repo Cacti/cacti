@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -feature: Update phpseclib to version 2.0.11
 -feature: Update JavaScript library jquery.js to 3.3.1
 -feature: Make Top Tabs use Ajax Callback
+-feature: Make all user settings dynamic and allow resetting to default.
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

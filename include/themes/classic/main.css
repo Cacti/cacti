@@ -1187,12 +1187,6 @@ legend {
 	text-align: left;
 }
 
-.formColumnOptional {
-	float: left;
-	display: table-column;
-	width: 5%;
-}
-
 .formColumnLeft {
 	float: left;
 	display: table-column;

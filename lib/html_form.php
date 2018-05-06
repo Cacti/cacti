@@ -75,21 +75,6 @@ function draw_edit_form($array) {
 					}
 				}
 
-				print "<div class='formColumnOptional'>";
-				if (isset($field_array['user'])) {
-					form_checkbox('user_optional_' . $field_name,
-						empty($field_array['user_set']) ? '' : 'on',
-						'',
-						'',
-						'',
-						'',
-						'',
-						'');
-				} else {
-					print '&nbsp;';
-				}
-				print "</div>";
-
 				// Make a form cell
 				print "<div class='formColumnLeft'>";
 
