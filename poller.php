@@ -721,10 +721,17 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	cacti_log('STATS: ' . $cacti_stats , true, 'SYSTEM');
 
 	// Insert poller stats into the settings table
-	db_execute_prepared('REPLACE INTO settings
-		(name, value) VALUES
-		("stats_poller", ?)',
-		array($cacti_stats));
+	if ($poller_id > 1) {
+		db_execute_prepared("REPLACE INTO settings
+			(name, value) VALUES
+			('stats_poller_$poller_id', ?)",
+			array($cacti_stats));
+	} else {
+		db_execute_prepared('REPLACE INTO settings
+			(name, value) VALUES
+			("stats_poller", ?)',
+			array($cacti_stats));
+	}
 
 	// Calculate min/max/average timings
 	$total_time  = $loop_end-$loop_start;
