@@ -62,7 +62,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			if (filetype($device) == 'socket') {
+			if (is_file($device) && filetype($device) == 'socket') {
 				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);

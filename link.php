@@ -25,7 +25,7 @@
 include_once('./include/global.php');
 
 $page = db_fetch_row_prepared('SELECT
-	id, title, style, contentfile, enabled
+	id, title, style, contentfile, enabled, refresh
 	FROM external_links AS el
 	WHERE id = ?',
 	array(get_filter_request_var('id')));
@@ -37,6 +37,11 @@ if (!sizeof($page)) {
 
 	if (is_realm_allowed($page['id']+10000)) {
 		unset ($refresh);
+
+		if (!empty($page['refresh'])) {
+			$refresh['seconds'] = $page['refresh'];
+			$refresh['page']    = $config['url_path'] . 'link.php?id=' . get_request_var('id');
+		}
 
 		if ($page['style'] == 'TAB') {
 			$link_nav['link.php:']['title']   = $page['title'];

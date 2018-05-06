@@ -87,6 +87,10 @@ fieldset {
 	color: #000000;
 }
 
+.realms .checkboxLabel {
+	display: inline !important;
+}
+
 /* links */
 
 a, a:active, a:visited {

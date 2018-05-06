@@ -27,7 +27,6 @@ body {
 	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-
 }
 
 table {

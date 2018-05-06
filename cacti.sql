@@ -1531,6 +1531,7 @@ CREATE TABLE external_links (
   title varchar(20) NOT NULL default '',
   style varchar(10) NOT NULL DEFAULT '',
   extendedstyle varchar(50) NOT NULL DEFAULT '',
+  refresh int unsigned default NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Contains external links that are embedded into Cacti';
 
