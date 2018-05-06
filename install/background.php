@@ -33,15 +33,15 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 $no_http_headers = true;
 
 include_once(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'].'/lib/api_data_source.php');
-include_once($config['base_path'].'/lib/api_device.php');
-include_once($config['base_path'].'/lib/utility.php');
-include_once($config['base_path'].'/lib/import.php');
-include_once($config['base_path'].'/install/functions.php');
-include_once($config['base_path'].'/lib/installer.php');
-include_once($config['base_path'].'/lib/data_query.php');
-include_once($config['base_path'].'/lib/api_automation.php');
-include_once($config['base_path'].'/lib/api_automation_tools.php');
+include_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/api_device.php');
+include_once($config['base_path'] . '/lib/utility.php');
+include_once($config['base_path'] . '/lib/import.php');
+include_once($config['base_path'] . '/install/functions.php');
+include_once($config['base_path'] . '/lib/installer.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/api_automation.php');
+include_once($config['base_path'] . '/lib/api_automation_tools.php');
 
 cacti_log('Checking arguments', false, 'INSTALL:');
 /* process calling arguments */
