@@ -793,6 +793,6 @@ $selectedTheme = get_selected_theme();
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
 	</script>
-	<?php include_once('./include/global_session.php');?>
+	<?php include_once(dirname(__FILE__) . '/include/global_session.php');?>
 </body>
 </html>
