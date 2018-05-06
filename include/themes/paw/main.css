@@ -56,7 +56,11 @@ fieldset {
 }
 
 .checkboxLabel {
-	display:none;
+	display: none;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
 }
 
 /* links */

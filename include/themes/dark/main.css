@@ -90,6 +90,10 @@ fieldset {
 	display:none;
 }
 
+.realms .checkboxLabel {
+	display: inline !important;
+}
+
 /* links */
 
 a, a:active {
