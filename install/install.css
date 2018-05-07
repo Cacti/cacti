@@ -4,65 +4,72 @@ input, select {
 }
 
 h1 {
-	font-size: 2em;
+	font-size: 1.4em;
+}
+
+h2 {
+	font-size: 1.3em;
 }
 
 h3 {
-	font-size: 1.5em;
+	font-size: 1.2em;
 	border-bottom: 1px dashed black;
 }
 
 p {
-	margin: 0px 1px 0px 1px;
+	margin: 5px 0px 10px 0px !important;
 }
 
 body {
 	overflow: auto;
 }
 
+label {
+	vertical-align: 10%;
+}
+
 .cactiInstallTable {
-	width: 90%; min-width: 400px; max-width: 900px;
-	height: 90%; min-height: 200px; max-height: 300px;
-	margin: 0 auto;
-	padding: 20px;
-	color: black;
+	width: 90%;
+	min-width: 400px;
+	max-width: 900px;
+	height: 80%;
+	min-height: 200px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 20px;
 }
 
 .cactiInstallTableTitleRow {
-	background: #000;
 	padding: 5px;
 }
 
 .cactiInstallArea {
 	overflow-x: hidden;
 	overflow-y: auto;
-	height: 100%; 
-	border: 1px solid black;
+	height: 100%;
+	width: 100%;
+	padding: 0px;
 }
 
 .cactiInstallAreaContent {
 	padding: 5px;
+	width: 100%;
 }
 
 .cactiInstallButtonArea {
-	background: #EAEAEA;
 	min-height: 24px;
 	padding: 5px;
 }
 
 .cactiInstallSection, .cactiInstallSectionTitle, .cactiInstallSectionNormal {
-	margin: 0px 5px 0px 5px;
-	padding: 5px;
-}
-
-.cactiInstallSectionNormal {
-	font-family: Verdana, Arial; 
+	padding: 0px;
 }
 
 .cactiInstallSectionTitle {
-	font-family: Verdana, Arial; 
-	font-weight: bold; 
-	padding-bottom: 10px;
+	font-weight: bold;
+	padding-bottom: 5px;
+	cursor: pointer;
+	margin: 4px 0px 4px 0px;
 }
 
 .cactiInstallSectionTitleError {
@@ -72,8 +79,8 @@ body {
 .cactiInstallSectionCode, .cactiInstallSqlResults {
 	font-family: consolas,courier new;
 	border: 1px dashed #999;
-	background-color: #eee;
 	margin: 10px;
+	padding: 5px;
 }
 
 .cactiInstallCopyrightArea {
@@ -85,6 +92,7 @@ body {
 
 .cactiInstallValid {
 	float: right;
+	width: 20px;
 }
 
 .cactiInstallProgressLeft {
@@ -137,7 +145,6 @@ body {
 }
 
 .cactiInstallSqlRow {
-	display: table-row;
 }
 
 .cactiInstallSqlSuccess {

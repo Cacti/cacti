@@ -34,6 +34,15 @@ include_once('./functions.php');
 
 set_default_action();
 
+if (isset_request_var('theme')) {
+	$theme = get_nfilter_request_var('theme');
+	$_SESSION['install_theme'] = get_nfilter_request_var('theme');
+} elseif (isset($_SESSION['install_theme'])) {
+	$theme = $_SESSION['install_theme'];
+} else {
+	$theme = 'modern';
+}
+
 // database test
 if (get_nfilter_request_var('action') == 'testdb') {
 	if (get_nfilter_request_var('location') == 'local') {
@@ -50,31 +59,31 @@ include_once('../lib/installer.php');
 <!DOCTYPE html>
 <html>
 <head>
-	<?php print html_common_header(__('Cacti Server v%s - Install/Version Change',CACTI_VERSION), 'modern');?>
+	<?php print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);?>
 	<?php print get_md5_include_js('install/install.js'); ?>
 	<?php print get_md5_include_css('install/install.css'); ?>
 </head>
 <body>
 	<div class='cactiInstallTable'>
-		<div class='cactiInstallTableTitleRow'>
-			<div class='textHeaderDark'><strong><?php print __('Cacti Server v%s - Installation Wizard',CACTI_VERSION); ?></strong></div>
+		<div class='cactiTableTitleRow'>
+			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?></div>
 		</div>
 		<div class='cactiInstallArea'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
 				print Installer::sectionTitle(__('Initializing'));
-				print Installer::sectionNormal(__('Please wait whilst the installation system for Cacti Version %s initialises.  You must have javascript enabled for this to work.', CACTI_VERSION));
+				print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes.  You must have JavaScript enabled for this to work.', CACTI_VERSION));
 ?>
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea'>
-			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonPrevious' type='button' value='Previous' style="display: none">
-			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonNext' type='button' value='Next' style="display: none">
-			<input class='installButton ui-button-disabled ui-state-disabled' id='buttonTest' type='button' value='Test' style="display:none">
+			<input class='installButton' id='buttonPrevious' type='button' value='Previous' style='display: none'>
+			<input class='installButton' id='buttonNext' type='button' value='Next' style='display: none'>
+			<input class='installButton' id='buttonTest' type='button' value='Test' style='display:none'>
 			<input id='installData' type='hidden'>
 		</div>
-		<div id="installDebug"></div>
-		<div class='cactiInstallCopyrightArea'>Copyright &copy; 2018 Cacti Group</div>
+		<div id='installDebug'></div>
+		<div class='cactiInstallCopyrightArea'><?php print COPYRIGHT_YEARS;?></div>
 	</div>
 <?php
 include_once(dirname(__FILE__) . '/../include/global_session.php');

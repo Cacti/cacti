@@ -50,32 +50,19 @@ function toggleHeader(key, initial = null) {
 	if (key != null) {
 		header = $(key);
 		if (header != null && header.length > 0) {
-			if (initial == null) {
-				firstSibling = header.next();
-				enable = (!firstSibling.is(':visible'));
-			} else {
-				enable = initial;
-			}
+			firstSibling = header.next();
 
-			next = header.next();
-			while (next != null && next.length > 0 && !next.is('h1,h2,h3,h4,h5,h6')) {
-				if (enable) {
-					if (initial != null) {
-						next.show();
-					} else {
-						next.slideDown();
-					}
+			if (initial != null) {
+				firstSibling.hide();
+			} else {
+				if (firstSibling.is(':visible')) {
+					firstSibling.slideUp();
 				} else {
-					if (initial != null) {
-						next.hide();
-					} else {
-						next.slideUp();
-					}
+					firstSibling.slideDown();
 				}
-				next = next.next();
 			}
 		}
-	}		
+	}
 }
 
 function disableButton(buttonName) {
@@ -119,16 +106,18 @@ function collapseHeadings(headingStates) {
 function hideHeadings(headingStates) {
 	for (var key in headingStates) {
 		// skip loop if the property is from prototype
-		if (!headingStates.hasOwnProperty(key)) continue;
+		if (!headingStates.hasOwnProperty(key)) {
+			continue;
+		}
 
 		var enabled = headingStates[key];
 		var element = $('#' + key);
 		if (element != null && element.length > 0) {
-			if (enabled) {
-				element.show();
+			if (!enabled) {
+				element.hide();
 				toggleHeader(element, true);
 			} else {
-				element.hide();
+				element.show();
 				toggleHeader(element, false);
 			}
 		} else {
@@ -139,7 +128,7 @@ function hideHeadings(headingStates) {
 
 function processStepWelcome(StepData) {
 	if (StepData.Eula == 1) {
-		$("#accept").prop('checked',true);
+		$('#accept').prop('checked',true);
 	}
 
 	if ($('#accept').length) {
@@ -166,7 +155,19 @@ function processStepCheckDependencies(StepData) {
 function processStepInstallType(StepData) {
 	hideHeadings(StepData);
 
-	$("#install_type").on('change', function() {
+	$('.cactiInstallSectionTitle').each(function() {
+		if ($(this).is(':visible')) {
+			$(this).next().show();
+		}
+	});
+
+	if (StepData.connection_remote) {
+		if (StepData.error_file || StepData.error_poller) {
+			$('#buttonTest').button('disable');
+		}
+	}
+
+	$('#install_type').on('change', function() {
 		performStep(3);
 	});
 }
@@ -181,7 +182,7 @@ function processStepDefaultProfile(StepData) {
 
 function processStepTemplateInstall(StepData) {
 	if (StepData.all) {
-		element = $("#selectall");
+		element = $('#selectall');
 		if (element != null && element.length > 0) {
 			element.click();
 		}
@@ -190,7 +191,7 @@ function processStepTemplateInstall(StepData) {
 			if (StepData.hasOwnProperty(propName)) {
 				propValue = StepData[propName];
 				if (propValue) {
-					element = $("#" + propName);
+					element = $('#' + propName);
 					if (element != null && element.length > 0) {
 						element.prop('checked', true);
 					}
@@ -224,12 +225,12 @@ function processStepInstallRefresh() {
 }
 
 function processStepInstallStatus(current, total) {
-	return "";
+	return '';
 }
 
 function processStepInstall(StepData) {
-	progress(0.0, 1.0, $("#cactiInstallProgressCountdown"), processStepInstallRefresh, processStepInstallStatus);
-	setProgressBar(StepData.Current, StepData.Total, $("#cactiInstallProgressBar"), 0.0);
+	progress(0.0, 1.0, $('#cactiInstallProgressCountdown'), processStepInstallRefresh, processStepInstallStatus);
+	setProgressBar(StepData.Current, StepData.Total, $('#cactiInstallProgressBar'), 0.0);
 }
 
 function processStepComplete(Step, StepData) {
@@ -241,7 +242,7 @@ function setProgressBar(current, total, element, updatetime, fnStatus) {
 	if (fnStatus != null) {
 		status = fnStatus(current, total);
 	} else {
-		status = (current * 100) / total + "&nbsp;%";
+		status = (current * 100) / total + '&nbsp;%';
 	}
 	element.find('div').animate({ width: progressBarWidth }, updatetime).html(status);
 }
@@ -271,7 +272,7 @@ function getDefaultInstallData() {
 }
 
 function prepareInstallData(installStep) {
-	installData = $("#installData").data('installData');
+	installData = $('#installData').data('installData');
 	if (typeof installData == 'undefined' || installData == null) {
 		installData = getDefaultInstallData();
 	}
@@ -302,7 +303,7 @@ function prepareInstallData(installStep) {
 }
 
 function prepareStepWelcome(installData) {
-	element = $("#accept");
+	element = $('#accept');
 	if (element != null && element.length > 0) {
 		installData.Eula = element.is(':checked');
 	}
@@ -314,7 +315,7 @@ function prepareStepWelcome(installData) {
 }
 
 function prepareStepInstallType(installData) {
-	element = $("#install_type");
+	element = $('#install_type');
 	if (element != null && element.length > 0) {
 		installData.Mode = element[0].value;
 	}
@@ -327,19 +328,19 @@ function prepareStepBinaryLocations(installData) {
 	});
 
 	installData.Paths = paths;
-	element = $("#selected_theme");
+	element = $('#selected_theme');
 	if (element != null && element.length > 0) {
 		installData.Theme = element[0].value;
 	}
 
-	element = $("#rrdtool_version");
+	element = $('#rrdtool_version');
 	if (element != null && element.length > 0) {
 		installData.RRDVer = element[0].value;
 	}
 }
 
 function prepareStepDefaultProfile(installData) {
-	element = $("#default_profile");
+	element = $('#default_profile');
 	if (element != null && element.length > 0) {
 		installData.Profile = element[0].value;
 	}
@@ -362,16 +363,16 @@ function performStep(installStep) {
 		.done(function(data) {
 			checkForLogout(data);
 
-			$("#installData").data("installData", data);
+			$('#installData').data('installData', data);
 
-			window.history.pushState("" , "Cacti Installation - Step " + data.Step, 'index.php?data=' + prepareInstallData());
+			window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
 
 			$('#installContent').empty().hide();
 			$('div[class^="ui-"]').remove();
 			$('#installContent').html(data.Html);
 			$('#installContent').show();
 
-			if (typeof $("#installData").data("debug") != 'undefined') {
+			if (typeof $('#installData').data('debug') != 'undefined') {
 				debugData = data;
 				debugData.Html = '';
 				debug = $('#installDebug');
@@ -425,7 +426,7 @@ $.urlParam = function(name){
 
 install_step = 0;
 
-$().ready(function() {
+$(function() {
 	disableButton('Previous');
 	disableButton('Next');
 	disableButton('Test');
@@ -438,11 +439,11 @@ $().ready(function() {
 			installData = getDefaultInstallData();
 		}
 	}
-	$("#installData").data('installData', installData);
+	$('#installData').data('installData', installData);
 
-	installDebug = $.urlParam("debug");
+	installDebug = $.urlParam('debug');
 	if (installDebug != null && installDebug != 0) {
-		$("#installData").data("debug", true);
+		$('#installData').data('debug', true);
 	}
 
 	$('.installButton').click(function(e) {
@@ -466,6 +467,7 @@ $().ready(function() {
 		}
 		getPresentHTTPError('');
 	});
+
 	setTimeout(function() {
 		performStep();
 	}, 1000);

@@ -1048,6 +1048,17 @@ legend {
 	margin-right:auto;
 }
 
+.cactiTableTitleRow {
+	color: white;
+	float: left;
+	text-align: left;
+	line-height: 22px;
+	display: table-column;
+	width: 100%;
+	font-size: 1em;
+	font-weight: 700;
+	background: rgba(0,0,0,0.9);
+}
 
 .cactiTableTitle {
 	color: white;

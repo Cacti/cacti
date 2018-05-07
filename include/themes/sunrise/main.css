@@ -45,6 +45,10 @@ th {
 	white-space: nowrap;
 }
 
+p {
+	color: white;
+}
+
 h2 {
 	border-color: rgba(255,255,255,0.1);
 }
@@ -1211,6 +1215,20 @@ legend {
 
 table.cactiTable {
 	color: lightgrey;
+}
+
+.cactiTableTitleRow {
+	color: #FFAA00;
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	display: table-column;
+	width: 100%;
+	font-size: 13px;
+	font-weight: 600;
+	border-color: rgba(255,255,255,0.2);
+	background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+	background-repeat: repeat-x;
 }
 
 .cactiTableTitle {
