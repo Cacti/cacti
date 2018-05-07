@@ -64,7 +64,7 @@ include_once('../lib/installer.php');
 	<?php print get_md5_include_css('install/install.css'); ?>
 </head>
 <body>
-	<div class='cactiInstallTable'>
+	<div class='cactiInstallTable cactiBorderWall'>
 		<div class='cactiTableTitleRow'>
 			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?></div>
 		</div>
@@ -76,7 +76,7 @@ include_once('../lib/installer.php');
 ?>
 			</div>
 		</div>
-		<div class='cactiInstallButtonArea'>
+		<div class='cactiInstallButtonArea saveRow'>
 			<input class='installButton' id='buttonPrevious' type='button' value='Previous' style='display: none'>
 			<input class='installButton' id='buttonNext' type='button' value='Next' style='display: none'>
 			<input class='installButton' id='buttonTest' type='button' value='Test' style='display:none'>

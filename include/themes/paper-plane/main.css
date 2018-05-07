@@ -1164,6 +1164,12 @@ tr>td.textInfo.right{
 	outline-style: none;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #222222;
+	border-style: solid;
+}
+
 .cactiTable {
 	color: #f7f7f7;
 	width: 100%;

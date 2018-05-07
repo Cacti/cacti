@@ -1088,8 +1088,13 @@ legend {
 	background-color: #E1E1E1;
 }
 
-.cactiTable {
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #00438C;
+	border-style: solid;
+}
 
+.cactiTable {
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438C;

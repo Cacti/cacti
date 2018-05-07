@@ -1041,6 +1041,12 @@ legend {
 	white-space: nowrap;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #E5E5E5;
+	border-style: solid;
+}
+
 .cactiTable {
 	display: table;
 	width: 100%;
