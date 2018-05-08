@@ -213,6 +213,12 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
+		}
+
 		if  (isempty_request_var('svg_text')) {
 			raise_message(39);
 			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
@@ -249,6 +255,12 @@ function form_save() {
 		get_filter_request_var('snmp_query_id');
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
+
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
+		}
 
 		if  (isempty_request_var('svds_text')) {
 			raise_message(39);
