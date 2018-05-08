@@ -293,7 +293,8 @@ class Installer implements JsonSerializable {
 				$select_count++;
 			}
 		}
-		$selected['all'] = ($select_count == count($selected) || empty(hasTemplates));
+		$selected['all'] = ($select_count == count($selected) || empty($hasTemplates));
+
 		return $selected;
 	}
 
@@ -1482,6 +1483,7 @@ class Installer implements JsonSerializable {
 
 		$stepData = array( 'Current' => $progressCurrent, 'Total' => Installer::PROGRESS_COMPLETE );
 		$this->stepData = $stepData;
+
 		return $output;
 	}
 
@@ -1569,7 +1571,9 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->Visible = false;
 		$this->buttonNext->Enabled = true;
 
-		$this->stepData = array('Sections' => $stepData);
+		if (isset($stepData)) {
+			$this->stepData = array('Sections' => $stepData);
+		}
 
 		iF ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text = __('Get Help');
@@ -1583,6 +1587,7 @@ class Installer implements JsonSerializable {
 			$this->buttonNext->Text = __('Get Started');
 			$this->buttonNext->Step = -1;
 		}
+
 		return $output;
 	}
 
@@ -1709,8 +1714,13 @@ class Installer implements JsonSerializable {
 		global $config;
 
 		$this->setProgress(Installer::PROGRESS_PROFILE_START);
+
 		$profile_id = intval($this->profile);
-		$profile = db_fetch_row_prepared('SELECT id, name, step FROM data_source_profiles WHERE id = ?', array($profile_id));
+		$profile    = db_fetch_row_prepared('SELECT id, name, step, heartbeat
+			FROM data_source_profiles
+			WHERE id = ?',
+			array($profile_id));
+
 		tmp_log('profile.log', var_export($profile, true));
 
 		if ($profile['id'] == $this->profile) {
@@ -1718,9 +1728,21 @@ class Installer implements JsonSerializable {
 			$profile_array = array($profile['id']);
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
-			db_execute_prepared('UPDATE data_source_profiles SET `default` = \'\' WHERE `id` != ?', $profile_array);
-			db_execute_prepared('UPDATE data_template_data SET data_source_profile_id = ?', $profile_array);
-			db_execute_prepared('UPDATE data_source_profiles SET `default` = \'on\' WHERE `id` = ?', $profile_array);
+			db_execute('UPDATE data_source_profiles
+				SET `default` = ""');
+
+			db_execute_prepared('UPDATE data_template_data
+				SET rrd_step = ?, data_source_profile_id = ?',
+				$profile['step'], $profile_array);
+
+			db_execute_prepared('UPDATE data_template_rrd
+				SET rrd_heartbeat = ?',
+				$profile['heartbeat']);
+
+			db_execute_prepared('UPDATE data_source_profiles
+				SET `default` = \'on\'
+				WHERE `id` = ?',
+				$profile_array);
 
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
 			set_config_option('poller_interval', $profile['step']);

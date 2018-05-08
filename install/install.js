@@ -257,7 +257,9 @@ function processStepInstall(StepData) {
 }
 
 function processStepComplete(Step, StepData) {
-	collapseHeadings(StepData.Sections);
+	if (StepData !== null) {
+		collapseHeadings(StepData.Sections);
+	}
 }
 
 function setProgressBar(current, total, element, updatetime, fnStatus) {
@@ -419,7 +421,7 @@ function performStep(installStep) {
 			$('buttonTest').val(data);
 			$('buttonTest').show();
 
-			$('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all'); 
+			$('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 			if (data.Theme != 'classic') {
 				$('select').selectmenu();
 			}
