@@ -131,8 +131,21 @@ function processStepWelcome(StepData) {
 		$('#accept').prop('checked',true);
 	}
 
+	if (StepData.Theme != 'classic') {
+		$('select#theme').selectmenu({
+			change: function() {
+				document.location = document.location + '&theme='+$('#theme').val();
+			}
+		});
+	} else {
+		$('#theme').change(function() {
+			document.location =  document.location + '&theme='+$('#theme').val();
+		});
+	}
+
 	if ($('#accept').length) {
 		$('#accept').click(function() {
+			setAddressBar(StepData, true);
 			if ($(this).is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -149,11 +162,12 @@ function processStepWelcome(StepData) {
 }
 
 function processStepCheckDependencies(StepData) {
-	collapseHeadings(StepData);
+	collapseHeadings(StepData.Sections);
 }
 
 function processStepInstallType(StepData) {
-	hideHeadings(StepData);
+	var sections = StepData.Sections;
+	hideHeadings(sections);
 
 	$('.cactiInstallSectionTitle').each(function() {
 		if ($(this).is(':visible')) {
@@ -161,19 +175,27 @@ function processStepInstallType(StepData) {
 		}
 	});
 
-	if (StepData.connection_remote) {
-		if (StepData.error_file || StepData.error_poller) {
+	if (sections.connection_remote) {
+		if (sections.error_file || sections.error_poller) {
 			$('#buttonTest').button('disable');
 		}
 	}
 
-	$('#install_type').on('change', function() {
-		performStep(3);
-	});
+	if (StepData.Theme != 'classic') {
+		$('select#install_type').selectmenu({
+			change: function() {
+				performStep(3);
+			}
+		});
+	} else {
+		$('#install_type').change(function() {
+			performStep(3);
+		});
+	}
 }
 
 function processStepPermissionCheck(StepData) {
-	collapseHeadings(StepData);
+	collapseHeadings(StepData.Sections);
 
 }
 
@@ -181,15 +203,16 @@ function processStepDefaultProfile(StepData) {
 }
 
 function processStepTemplateInstall(StepData) {
-	if (StepData.all) {
+	var templates = StepData.Templates;
+	if (templates.all) {
 		element = $('#selectall');
 		if (element != null && element.length > 0) {
 			element.click();
 		}
 	} else {
-		for (var propName in StepData) {
-			if (StepData.hasOwnProperty(propName)) {
-				propValue = StepData[propName];
+		for (var propName in templates) {
+			if (templates.hasOwnProperty(propName)) {
+				propValue = templates[propName];
 				if (propValue) {
 					element = $('#' + propName);
 					if (element != null && element.length > 0) {
@@ -234,7 +257,7 @@ function processStepInstall(StepData) {
 }
 
 function processStepComplete(Step, StepData) {
-	collapseHeadings(StepData);
+	collapseHeadings(StepData.Sections);
 }
 
 function setProgressBar(current, total, element, updatetime, fnStatus) {
@@ -353,6 +376,14 @@ function prepareStepTemplateInstall(installData) {
 	installData.Templates = templates;
 }
 
+function setAddressBar(data, replace) {
+	if (replace) {
+		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+	} else {
+		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+	}
+}
+
 function performStep(installStep) {
 	$.ajaxQ.abortAll();
 
@@ -365,7 +396,7 @@ function performStep(installStep) {
 
 			$('#installData').data('installData', data);
 
-			window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+			setAddressBar(data, false);
 
 			$('#installContent').empty().hide();
 			$('div[class^="ui-"]').remove();
@@ -387,6 +418,11 @@ function performStep(installStep) {
 			$('buttonTest').button('enable');
 			$('buttonTest').val(data);
 			$('buttonTest').show();
+
+			$('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all'); 
+			if (data.Theme != 'classic') {
+				$('select').selectmenu();
+			}
 
 			if (data.Step == STEP_WELCOME) {
 				processStepWelcome(data.StepData);

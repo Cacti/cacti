@@ -1116,6 +1116,10 @@ legend {
 	font-size: 12px;
 }
 
+.cactiInstallTableTitleRow {
+	border-color: #00438C;
+}
+
 .cactiTableTitle {
 	color: white;
 	float: left;

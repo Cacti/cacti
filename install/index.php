@@ -64,11 +64,11 @@ include_once('../lib/installer.php');
 	<?php print get_md5_include_css('install/install.css'); ?>
 </head>
 <body>
-	<div class='cactiInstallTable cactiBorderWall'>
-		<div class='cactiTableTitleRow'>
+	<div class='cactiInstallTable'>
+		<div class='cactiTableTitleRow cactiBorderWall'>
 			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?></div>
 		</div>
-		<div class='cactiInstallArea'>
+		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
 				print Installer::sectionTitle(__('Initializing'));
@@ -83,7 +83,7 @@ include_once('../lib/installer.php');
 			<input id='installData' type='hidden'>
 		</div>
 		<div id='installDebug'></div>
-		<div class='cactiInstallCopyrightArea'><?php print COPYRIGHT_YEARS;?></div>
+		<div class='cactiInstallCopyrightArea textHeaderDark'><?php print COPYRIGHT_YEARS;?></div>
 	</div>
 <?php
 include_once(dirname(__FILE__) . '/../include/global_session.php');
