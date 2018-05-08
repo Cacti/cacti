@@ -1725,24 +1725,23 @@ class Installer implements JsonSerializable {
 
 		if ($profile['id'] == $this->profile) {
 			cacti_log(sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']), false, 'INSTALL:');
-			$profile_array = array($profile['id']);
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
 			db_execute('UPDATE data_source_profiles
 				SET `default` = ""');
 
-			db_execute_prepared('UPDATE data_template_data
-				SET rrd_step = ?, data_source_profile_id = ?',
-				$profile['step'], $profile_array);
-
-			db_execute_prepared('UPDATE data_template_rrd
-				SET rrd_heartbeat = ?',
-				$profile['heartbeat']);
-
 			db_execute_prepared('UPDATE data_source_profiles
 				SET `default` = \'on\'
 				WHERE `id` = ?',
-				$profile_array);
+				array($profile['id']));
+
+			db_execute_prepared('UPDATE data_template_data
+				SET rrd_step = ?, data_source_profile_id = ?',
+				array($profile['step'], $profile['id']));
+
+			db_execute_prepared('UPDATE data_template_rrd
+				SET rrd_heartbeat = ?',
+				array($profile['heartbeat']));
 
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
 			set_config_option('poller_interval', $profile['step']);
