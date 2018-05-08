@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -feature#1580: Support Drag & Drop for Report Items
 -feature#1581: Allow Mass Adding of Graphs to Reports
 -feature#1584: Allow theme selection when installing
+-feature#1597: Ensure synchronised files have same attributes as originals
 -feature#1593: Allow External links to auto refresh
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive

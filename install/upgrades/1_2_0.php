@@ -50,7 +50,12 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN `timezone` varchar(40) DEFAULT '' AFTER `status`");
 	}
 
-	if (!db_column_exists('external_links', 'refresh')) {
+	if (!db_column_exists('poller_resource_cache', 'attributes')) {
+		db_install_execute("ALTER TABLE poller_resource_cache
+      ADD COLUMN `attributes` INT unsigned DEFAULT '0'");
+  }
+
+  if (!db_column_exists('external_links', 'refresh')) {
 		db_install_execute("ALTER TABLE external_links
 			ADD COLUMN `refresh` int unsigned default NULL");
 	}

@@ -768,10 +768,12 @@ function update_db_from_path($path, $type, $recursive = true) {
 						WHERE path = ?',
 						array($save['path']));
 
+					$entry_path = $path. DIRECTORY_SEPARATOR . $entry;
 					$save['resource_type'] = $type;
-					$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+					$save['md5sum']        = md5_file($entry_path);
 					$save['update_time']   = date('Y-m-d H:i:s');
-					$save['contents']      = base64_encode(file_get_contents($path . DIRECTORY_SEPARATOR . $entry));
+					$save['attributes']    = fileperms($entry_path);
+					$save['contents']      = base64_encode(file_get_contents($entry_path));
 
 					sql_save($save, 'poller_resource_cache');
 				}
@@ -829,7 +831,7 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum
+		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum, attributes
 			FROM poller_resource_cache
 			WHERE resource_type = ?',
 			array($type));
@@ -851,6 +853,7 @@ function resource_cache_out($type, $path) {
 
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
+						$attributes = empty($e['attributes']) ? 0 : $e['attributes'];
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
@@ -867,15 +870,21 @@ function resource_cache_out($type, $path) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
 									$output = system($php_path . ' -l ' . $tmpfile, $exit);
 									if ($exit == 0) {
-										cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
+										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'POLLER');
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
+											if ($attributes != 0) {
+												chmod($mypath, $attributes);
+												if (fileperms($mypath) != $attributes) {
+													cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'POLLER');
+												}
+											}
 										} else {
-											cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
+											cacti_log("ERROR: Cache in cannot write to '$mypath', purge this location");
 										}
 									} else {
-										cacti_log("ERROR: PHP Source File '" . $mypath . "' from Cache has an error whilst checking syntax ($exit) whilst executing: $php_path -l $tmpfile", false, 'POLLER');
-										cacti_log("ERROR: PHP Source File '" . $mypath . "': " . str_replace("\n"," ",str_replace("\t"," ", $output)), false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath' from Cache has an error whilst checking syntax ($exit) whilst executing: $php_path -l $tmpfile", false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath'': " . str_replace("\n"," ",str_replace("\t"," ", $output)), false, 'POLLER');
 									}
 
 									unlink($tmpfile);
@@ -888,6 +897,12 @@ function resource_cache_out($type, $path) {
 						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 							cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
 							file_put_contents($mypath, $contents);
+							if ($attributes != 0) {
+								chmod($mypath, $attributes);
+								if (fileperms($mypath) != $attributes) {
+									cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'POLLER');
+								}
+							}
 						} else {
 							cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
 						}
