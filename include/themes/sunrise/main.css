@@ -2431,3 +2431,18 @@ tr#realtime td:first-child {
     border-bottom-left-radius: 0px;
 }
 
+.cactiInstallSqlResults {
+	color: #fff;
+}
+
+.cactiInstallSectionTitle {
+	color: #fff;
+	background-repeat: repeat-y;
+	overflow: hidden;
+   	background-color: #ffffff;
+	background-image: -webkit-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -moz-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+}

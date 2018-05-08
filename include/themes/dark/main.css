@@ -1235,6 +1235,15 @@ legend {
 	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
 }
 
+.cactiInstallTableTitleRow {
+	border-color: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
+	border-color: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
 .cactiTableTitle {
 	float: left;
 	text-align: left;
