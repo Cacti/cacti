@@ -120,15 +120,17 @@ class Installer implements JsonSerializable {
 		}
 		tmp_log('install_step.log', 'After: ' . var_export($step, true). "\n\n", FILE_APPEND);
 
-		$this->eula = read_config_option('install_eula', true);
+		$this->eula      = read_config_option('install_eula', true);
 		$this->templates = $this->getTemplates();
-		$this->paths = install_file_paths();
-		$this->theme = read_config_option('selected_theme', true);
-		$this->profile = read_config_option('install_profile', true);
+		$this->paths     = install_file_paths();
+		$this->theme     = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
+		$this->profile   = read_config_option('install_profile', true);
 
 		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
 		}
+
+		set_config_option('selected_theme', $this->theme);
 
 		$this->rrdVersion = read_config_option('rrdtool_version', true);
 
@@ -278,7 +280,7 @@ class Installer implements JsonSerializable {
 		$select_all = null;
 		foreach ($known_templates as $known) {
 			$filename = $known['filename'];
-			$key = str_replace(".", "_", $filename);		
+			$key = str_replace(".", "_", $filename);
 			$isSelected = empty($hasTemplates) || !config_value_exists('install_template_' . $key);
 			$selected['chk_template_' . $key] = $isSelected;
 			if ($select_all === null || $select_all) {
@@ -481,7 +483,7 @@ class Installer implements JsonSerializable {
 			$id = '';
 		}
 
-		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h1');
+		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h2');
 	}
 
 	public static function sectionSubTitle($title = '', $id = '', $class = '') {
@@ -493,7 +495,14 @@ class Installer implements JsonSerializable {
 			$id = '';
 		}
 
-		return Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h3');
+		$subtitle  = Installer::section($title, $id, $class, 'cactiInstallSectionTitle', 'h3');
+		$subtitle .=  '<div class="installSubSection">';
+
+		return $subtitle;
+	}
+
+	public static function sectionSubTitleEnd() {
+		return '</div>';
 	}
 
 	public static function sectionNormal($text = '', $id = '', $class = '') {
@@ -506,7 +515,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionNormal';
-		return Installer::section($text, $id, trim($class));
+
+		return Installer::section($text, $id, trim($class), 'cactiInstallSection', 'p');
 	}
 
 	public static function sectionNote($text = '', $id = '', $class = '') {
@@ -519,7 +529,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionNote';
-		return Installer::section($text, $id, trim($class));
+
+		return Installer::section($text, $id, trim($class), '', 'p');
 	}
 
 	public static function sectionCode($text = '', $id = '', $class = '') {
@@ -532,7 +543,8 @@ class Installer implements JsonSerializable {
 		}
 
 		$class .= ' cactiInstallSectionCode';
-		return Installer::section($text, $id, trim($class), '', '');
+
+		return Installer::section($text, $id, trim($class), '', 'p');
 	}
 
 	public static function section($text = '', $id = '', $class = '', $baseClass = 'cactiInstallSection', $elementType = 'div') {
@@ -572,12 +584,12 @@ class Installer implements JsonSerializable {
 
 		if (empty($this->buttonTest)) {
 			$this->buttonTest = new InstallerButton();
-			$this->Enabled = false;
-			$this->Visible = true;
-			$this->Text = __('Test');
+			$this->buttonTest->Enabled = false;
+			$this->buttonTest->Visible = true;
+			$this->buttonTest->Text    = __('Test Connection');
 		}
 
-		$this->buttonNext->Text = __('Next');
+		$this->buttonNext->Text     = __('Next');
 		$this->buttonPrevious->Text = __('Previous');
 
 		$this->buttonTest->Visible = false;
@@ -696,7 +708,7 @@ class Installer implements JsonSerializable {
 	public function processStepWelcome() {
 		global $config;
 
-		$output  = Installer::sectionTitle(__('Cacti Version') . ' '. CACTI_VERSION . ' - ' . __('License Agreement'));
+		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
 		$output .= Installer::sectionNormal(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
 
@@ -716,7 +728,6 @@ class Installer implements JsonSerializable {
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
-
 		$themePath = $config['base_path'] . '/include/themes/';
 		$themes = glob($themePath . '*', GLOB_ONLYDIR);
 		$themeOutput = '<select id=\'theme\' name=\'theme\'>';
@@ -727,13 +738,28 @@ class Installer implements JsonSerializable {
 				if ($theme == $this->theme) {
 					$selected = ' selected';
 				}
-				$themeOutput .= '<option value=\'' . $theme . '\'' . $selected .'>' . $theme . '</option>';
+
+				$themeOutput .= '<option value=\'' . $theme . '\'' . $selected . '>' . ucfirst($theme) . '</option>';
 			}
 		}
 		$themeOutput .= '</select>';
-		$output .= Installer::sectionNormal('<span>Select default theme: '.$themeOutput.'</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
+		$output .= Installer::sectionNormal('<span>' . __('Select default theme: ') . $themeOutput . '</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
+
+
+		// Callsbacks for theme settings
+		$output .= "<script type='text/javascript'>$(function() {";
+
+		if ($this->theme != 'classic') {
+			$output .= "\t$('select#theme').selectmenu({ change: function() { document.location = 'index.php?theme='+$('#theme').val(); } });\n";
+		} else {
+			$output .= "$('#theme').unbind().change(function() { document.location = 'index.php?theme='+$('#theme').val(); });";
+		}
+
+		$output .= "});\n</script>\n";
+
 		$this->stepData = array('Eula' => $this->eula);
 		$this->buttonNext->Enabled = ($this->eula == 1);
+
 		return $output;
 	}
 
@@ -789,6 +815,8 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti configuration has the relative correct path (url_path) in config.php.'));
 		}
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Required)'), 'php_modules');
 		$output .= Installer::sectionNormal(__('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.'));
 
@@ -796,8 +824,8 @@ class Installer implements JsonSerializable {
 
 		ob_start();
 
-		html_start_box('<strong> ' . __('Required PHP Modules') . '</strong>', '30', 0, '', '', false);
-		html_header( array( __('Name'), __('Required'), __('Installed') ) );
+		html_start_box(__('Required PHP Modules'), '100%', false, '3', '', false);
+		html_header(array(__('Name'), __('Required'), __('Installed')));
 
 		$enabled['php_modules'] = version_compare(PHP_VERSION, '5.4.0', '<') ? 0 : 1;
 		form_alternate_row('phpline',true);
@@ -874,6 +902,8 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Optional)'), 'php_optional');
 
 		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.'));
@@ -886,8 +916,8 @@ class Installer implements JsonSerializable {
 		$ext[] = array('name' => 'TrueType Text', 'installed' => function_exists('imagettftext'));
 		$ext[] = array('name' => 'TrueType Box', 'installed' => function_exists('imagettfbbox'));
 
-		html_start_box('<strong> ' . __('Optional Modules') . '</strong>', '30', 0, '', '', false);
-		html_header( array( __('Name'), __('Optional'), __('Installed') ) );
+		html_start_box(__('Optional Modules'), '100%', false, '3', '', false);
+		html_header(array(__('Name'), __('Optional'), __('Installed')));
 
 		foreach ($ext as $id => $e) {
 			form_alternate_row('line' . $id, true);
@@ -904,6 +934,8 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$output .= Installer::sectionSubTitle(__('PHP - Timezone Support'), 'php_timezone');
 		if (ini_get('date.timezone') == '') {
 			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</span>');
@@ -911,6 +943,8 @@ class Installer implements JsonSerializable {
 		} else {
 			$output .= Installer::sectionNormal(__('Your Web Servers PHP is properly setup with a Timezone.'));
 		}
+
+		$output .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
 		$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
@@ -929,10 +963,12 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.'));
 		}
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$output .= Installer::sectionSubTitle(__('MySQL - Settings'), 'mysql_performance');
 		$output .= Installer::sectionNormal(__('These MySQL performance tuning settings will help your Cacti system perform better without issues for a longer time.'));
 
-		html_start_box('<strong> ' . __('Recommended MySQL System Variable Settings') . '</strong>', '30', 0, '', '', false);
+		html_start_box(__('Recommended MySQL System Variable Settings'), '100%', false, '3', '', false);
 		$output_temp = ob_get_contents();
 		ob_clean();
 
@@ -944,6 +980,8 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionNormal($output_temp . $output_util . ob_get_contents());
 		ob_end_clean();
+
+		$output .= Installer::sectionSubTitleEnd();
 
 		$this->stepData = $enabled;
 		return $output;
@@ -962,11 +1000,13 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
 				$output .= Installer::sectionNormal(__('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
 				$output .= Installer::sectionNormal('<font color="#FF0000">' . __('WARNING - If you are upgrading from a previous version please close all Cacti browser sessions and clear cache before continuing.  Additionally, after this script is complete, you will also have to refresh your page to load updated JavaScript so that the Cacti pages render properly.  In Firefox and IE, you simply press F5.  In Chrome, you may have to clear your browser cache for the Cacti web site.') . '</font>');
+				$output .= Installer::sectionSubTitleEnd();
 				break;
 			case Installer::MODE_DOWNGRADE:
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
 				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
 				$output .= Installer::sectionNormal('<font color="#FF0000">' . __('WARNING - Appears you are downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.') . '</font>');
+				$output .= Installer::sectionSubTitleEnd();
 				break;
 			default:
 				// new install
@@ -1013,10 +1053,12 @@ class Installer implements JsonSerializable {
 					'<select id="install_type" name="install_type">' .
 					'<option value="1"' . $selectedInstall . '>' . __('New Primary Server') . '</option>' .
 					'<option value="2"' . $selectedPoller . '>' . __('New Remote Poller') . '</option>' .
-					'</select>'
+					'</select><script type="text/javascript">$(function() { $("select").selectmenu({ change: function() { performStep(3); }}); });</script>'
 				);
 
 				$output .= Installer::sectionNormal(__('The following information has been determined from Cacti\'s configuration file. If it is not correct, please edit "include/config.php" before continuing.'));
+
+				$output .= Installer::sectionSubTitleEnd();
 
 				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_local');
 
@@ -1028,6 +1070,8 @@ class Installer implements JsonSerializable {
 					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 				);
 
+				$output .= Installer::sectionSubTitleEnd();
+
 				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_remote');
 
 				$output .= Installer::sectionCode(
@@ -1038,11 +1082,17 @@ class Installer implements JsonSerializable {
 					__('Server Operating System Type: <b>%s</b>', $config['cacti_server_os']) . '<br>'
 				);
 
+				$output .= Installer::sectionSubTitleEnd();
+
 				$output .= Installer::sectionSubTitle(__('Configuration Readonly!'), 'error_file');
 				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.') . '</span>');
 
+				$output .= Installer::sectionSubTitleEnd();
+
 				$output .= Installer::sectionSubTitle(__('Configuration of Poller'), 'error_poller');
 				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your Remote Cacti Poller information has not been included in your config.php file.  Please review the config.php.dist, and set the variables: <i>$rdatabase_default, $rdatabase_username</i>, etc.  These variables must be set and point back to your Primary Cacti database server.  Correct this and try again.') . '</span>','config_remote');
+
+				$output .= Installer::sectionSubTitleEnd();
 
 				$output .= Installer::sectionSubTitle(__('Remote Poller Variables'), 'poller_vars');
 				$output .= Installer::sectionNormal(__('The variables that must be set include the following:'));
@@ -1120,6 +1170,8 @@ class Installer implements JsonSerializable {
 		}
 		ob_end_clean();
 
+		$output .= "<script type='text/javascript'>$(function() { $('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all'); $('select').selectmenu(); });</script>";
+
 		return $output;
 	}
 
@@ -1181,6 +1233,8 @@ class Installer implements JsonSerializable {
 			);
 		}
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$output .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
 		$stepData['writable_always'] = 1;
 		foreach($always_paths as $path) {
@@ -1195,6 +1249,8 @@ class Installer implements JsonSerializable {
 
 		/* Print help message for unix and windows if directory is not writable */
 		if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
+			$output .= Installer::sectionSubTitleEnd();
+
 			$output .= Installer::sectionSubTitle(__('Ensure Host Process Has Access'));
 			$output .= Installer::sectionNormal(__('Make sure your webserver has read and write access to the entire folder structure.'));
 			$output .= Installer::sectionNormal(__('Example:'));
@@ -1262,6 +1318,9 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNote(__('This may occur if you have a blank database and have not yet imported the cacti.sql file'));
 			$output .= Installer::sectionCode('mysql> source cacti.sql');
 		}
+
+		$output .= "<script type='text/javascript'>$(function() { $('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all'); $('select').selectmenu(); });</script>";
+
 		return $output;
 	}
 
@@ -1272,8 +1331,8 @@ class Installer implements JsonSerializable {
 
 		$templates = install_setup_get_templates();
 		ob_start();
-		html_start_box('<strong>' . __('Templates') . '</strong>', '100%', '3', 'center', '', '');
-		html_header_checkbox( array( __('Name'), __('Description'), __('Author'), __('Homepage') ) );
+		html_start_box(__('Templates'), '100%', false, '3', 'center', '', '');
+		html_header_checkbox(array(__('Name'), __('Description'), __('Author'), __('Homepage')));
 		foreach ($templates as $id => $p) {
 			form_alternate_row('line' . $id, true);
 			form_selectable_cell($p['name'], $id);
@@ -1452,6 +1511,8 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION));
 		}
 
+		$output .= Installer::sectionSubTitleEnd();
+
 		$stepData = array();
 		$cacheFile = read_config_option('install_cache_db');
 		if (!empty($cacheFile)) {
@@ -1508,6 +1569,9 @@ class Installer implements JsonSerializable {
 				$output .= '</table>';
 				$stepData[$sectionId] = $sectionStatus;
 			}
+
+			$output .= Installer::sectionSubTitleEnd();
+
 			fclose($file);
 		}
 
@@ -1570,7 +1634,9 @@ class Installer implements JsonSerializable {
 				$which = 'INSTALL';
 				break;
 		}
-		cacti_log(__('Starting %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
+
+		cacti_log(sprintf('Starting %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
+
 		$this->setProgress(Installer::PROGRESS_START);
 
 		if (!$this->hasRemoteDatabaseInfo()) {
@@ -1591,8 +1657,8 @@ class Installer implements JsonSerializable {
 			$this->disablePluginsNowIntegrated();
 		}
 
-		cacti_log(__('Setting Cacti Version to %s', CACTI_VERSION), false, 'INSTALL:');
-		cacti_log(__('Finished %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
+		cacti_log(sprintf('Setting Cacti Version to %s', CACTI_VERSION), false, 'INSTALL:');
+		cacti_log(sprintf('Finished %s Process for v%s', $which, CACTI_VERSION), false, 'INSTALL:');
 
 		set_config_option('install_error',$failure);
 		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
@@ -1615,7 +1681,7 @@ class Installer implements JsonSerializable {
 		global $config;
 		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%'");
 		if (sizeof($templates)) {
-			cacti_log(__('Found %s templates to install', sizeof($templates)), false, 'INSTALL:');
+			cacti_log(sprintf('Found %s templates to install', sizeof($templates)), false, 'INSTALL:');
 			$path = $config['base_path'] . '/install/templates/';
 
 			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
@@ -1623,12 +1689,12 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
-				cacti_log(__('Attempting to import package #%s \'%s\'', $i, $package), false, 'INSTALL:');
+				cacti_log(sprintf('Attempting to import package #%s \'%s\'', $i, $package), false, 'INSTALL:');
 				import_package($path . $package, 1, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 			}
 		} else {
-			cacti_log(__('No templates were selected for import'), false, 'INSTALL:');
+			cacti_log(sprintf('No templates were selected for import'), false, 'INSTALL:');
 		}
 	}
 
@@ -1652,13 +1718,15 @@ class Installer implements JsonSerializable {
 	}
 
 	private function installServer() {
+		global $config;
+
 		$this->setProgress(Installer::PROGRESS_PROFILE_START);
 		$profile_id = intval($this->profile);
 		$profile = db_fetch_row_prepared('SELECT id, name, step FROM data_source_profiles WHERE id = ?', array($profile_id));
 		tmp_log('profile.log', var_export($profile, true));
 
 		if ($profile['id'] == $this->profile) {
-			cacti_log(__('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']), false, 'INSTALL:');
+			cacti_log(sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']), false, 'INSTALL:');
 			$profile_array = array($profile['id']);
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
@@ -1669,7 +1737,7 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
 			set_config_option('poller_interval', $profile['step']);
 		} else {
-			cacti_log(__('Failed to find selected profile (%s), no changes were made', $profile_id), false, 'INSTALL:');
+			cacti_log(sprintf('Failed to find selected profile (%s), no changes were made', $profile_id), false, 'INSTALL:');
 		}
 
 		$this->setProgress(Installer::PROGRESS_PROFILE_END);
@@ -1834,7 +1902,9 @@ class Installer implements JsonSerializable {
 			if (api_plugin_is_enabled ($plugin)) {
 				api_plugin_remove_hooks ($plugin);
 				api_plugin_remove_realms ($plugin);
-				db_execute("DELETE FROM plugin_config WHERE directory = '$plugin'");
+				db_execute_prepared('DELETE FROM plugin_config
+					WHERE directory = ?',
+					array($plugin));
 			}
 		}
 	}
