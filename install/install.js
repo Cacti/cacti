@@ -274,15 +274,15 @@ function setProgressBar(current, total, element, updatetime, fnStatus) {
 
 function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
 	setProgressBar(timetotal, timetotal, $element, 0, fnStatus);
-	setProgressBar(timeleft, timetotal, $element, 5000, fnStatus);
+	setProgressBar(timeleft, timetotal, $element, 1000, fnStatus);
 	setTimeout(function() {
 		fnComplete();
-	}, 5000);
+	}, 1000);
 }
 
 function progress_old(timeleft, timetotal, $element, fnComplete, fnStatus) {
 	setProgressBar(timeleft, timetotal, $element, 100, fnStatus);
-	if(timeleft < timetotal - 0.1) {
+	if (timeleft < timetotal - 0.1) {
 		setTimeout(function() {
 			//progress(timeleft + 0.5, timetotal, $element, fnComplete, fnStatus);
 			fnComplete();
