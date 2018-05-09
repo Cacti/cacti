@@ -43,6 +43,16 @@ if (isset_request_var('theme')) {
 	$theme = 'modern';
 }
 
+if (isset_request_var('language')) {
+	$language = get_nfilter_request_var('language');
+	$_SESSION['install_language'] = get_nfilter_request_var('language');
+	set_user_setting('user_language', $language);
+} elseif (isset($_SESSION['install_language'])) {
+	$language = $_SESSION['install_language'];
+} else {
+	$language = read_user_setting('user_language', get_new_user_default_language(), true);
+}
+
 // database test
 if (get_nfilter_request_var('action') == 'testdb') {
 	if (get_nfilter_request_var('location') == 'local') {
@@ -62,6 +72,7 @@ include_once('../lib/installer.php');
 	<?php print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);?>
 	<?php print get_md5_include_js('install/install.js'); ?>
 	<?php print get_md5_include_css('install/install.css'); ?>
+	<?php print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css'); ?>
 </head>
 <body>
 	<div class='cactiInstallTable'>
