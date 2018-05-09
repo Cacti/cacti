@@ -2223,6 +2223,7 @@ CREATE TABLE poller_resource_cache (
   path varchar(191) DEFAULT NULL,
   update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   contents longblob,
+  attributes INT unsigned DEFAULT '0',
   PRIMARY KEY (id),
   UNIQUE KEY path (path)
 ) ENGINE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
