@@ -121,7 +121,7 @@ function grow_dhtml_trees() {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
 	}
 
-	print "<div class='cactiTreeSearch' style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input id='searcher' style='padding:2px;font-size:12px;max-width:200px;' type='text' size='35'><hr></div>\n";
+	print "<div class='cactiTreeSearch' style='white-space:nowrap'><span style='padding-right:4px;'>" . __('Search') . "</span><input type='text' class='ui-state-default ui-corner-all' id='searcher' style='padding:2px;font-size:12px;max-width:200px;' size='35'><hr></div>\n";
 
 	$dhtml_tree = create_dhtml_tree();
 	if (sizeof($dhtml_tree)) {
@@ -696,7 +696,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -731,10 +731,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
-							<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearGraphFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filter');?>' onClick='applyGraphFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearGraphFilter()'>
 							<?php if (is_view_allowed('graph_settings')) {?>
-							<input id='save' type='button' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='save' value='<?php print __esc('Save');?>' title='<?php print __esc('Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift preferences to your profile');?>' onClick='saveGraphFilter("tree")'>
 							<?php }?>
 						</span>
 					</td>
@@ -809,7 +809,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input type='text' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='date1' size='18' value='<?php print (isset($_SESSION['sess_current_date1']) ? $_SESSION['sess_current_date1'] : '');?>'>
 							<i id='startDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('Start Date Selector');?>'></i>
 						</span>
 					</td>
@@ -818,7 +818,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input type='text' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='date2' size='18' value='<?php print (isset($_SESSION['sess_current_date2']) ? $_SESSION['sess_current_date2'] : '');?>'>
 							<i id='endDate' class='calendar fa fa-calendar-alt' title='<?php print __esc('End Date Selector');?>'></i>
 						</span>
 					</td>
@@ -841,8 +841,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<span>
-							<input id='tsrefresh' type='button' value='<?php print __esc('Refresh');?>' title='<?php print __esc('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
-							<input id='tsclear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsrefresh' value='<?php print __esc('Refresh');?>' title='<?php print __esc('Refresh selected time span');?>' onClick='refreshGraphTimespanFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='tsclear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Return to the default time span');?>' onClick='clearGraphTimespanFilter()'>
 						</span>
 					</td>
 				</tr>
@@ -874,7 +874,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						</select>
 					</td>
 					<td>
-						<input type='button' id='realtimeoff' value='<?php print __esc('Stop');?>'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
 					<td align='center' colspan='6'>
 						<span id='countdown'></span>

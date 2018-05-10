@@ -437,9 +437,8 @@ function draw_edit_control($field_name, &$field_array) {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_button($form_name, $value, $title = '', $action = '') {
-	print "<input type='button' " .
+	print "<input type='button' class='ui-button ui-corner-all ui-widget' " .
 		"id='$form_name' " .
-		"class='ui-button ui-corner-all ui-widget' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
 		($action!='' ? "onClick='$action'":"") .
@@ -452,9 +451,8 @@ function form_button($form_name, $value, $title = '', $action = '') {
    @arg $title - the hover title for the button
    @arg $action - the onClick action for the button */
 function form_submit($form_name, $value, $title = '', $action = '') {
-	print "<input type='submit' " .
+	print "<input type='submit' class='ui-button ui-corner-all ui-widget' " .
 		"id='$form_name' " .
-		"class='ui-button ui-corner-all ui-widget' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
 		($action!='' ? "onClick='$action'":"") .
@@ -467,11 +465,13 @@ function form_submit($form_name, $value, $title = '', $action = '') {
 function form_file($form_name, $form_size = 30) {
 	print "<div>\n";
 	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
-	print "<input class='import_button ui-state-default ui-corner-all' type='file'";
+	print "<input type='file'";
 
 	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
-		print " class='txtErrorTextBox'";
+		print " class='import_button ui-state-default ui-corner-all txtErrorTextBox'";
 		unset($_SESSION['sess_error_fields'][$form_name]);
+	} else {
+		print " class='import_button ui-state-default ui-corner-all'";
 	}
 
 	print " id='$form_name' name='$form_name' size='$form_size'>\n";
@@ -496,12 +496,14 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type' class='ui-state-default ui-corner-all'";
+	print "<input type='$type'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print " class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
@@ -541,12 +543,14 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type' class='ui-state-default ui-corner-all'";
+	print "<input type='$type'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print " class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
@@ -589,12 +593,14 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type' class='ui-state-default ui-corner-all'" . ($title != '' ? ' title="' . $title . '"':'');
+	print "<input type='$type'" . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print " class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
@@ -722,7 +728,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
 		print "<span class='ui-select-text'>";
-		print "<input type='text' id='$form_name" . "_input' size='28' value='" . html_escape($previous_value) . "'>";
+		print "<input type='text' class='ui-state-default ui-corner-all' id='$form_name" . "_input' size='28' value='" . html_escape($previous_value) . "'>";
 		print "</span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
@@ -1074,12 +1080,14 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type' class='ui-state-default ui-corner-all'";
+	print "<input type='$type'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print " class='txtErrorTextBox'";
+			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
+		} else {
+			print " class='ui-state-default ui-corner-all'"l
 		}
 	}
 
@@ -1182,7 +1190,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
-				<input class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' type='submit' value='<?php print $alt;?>'>
+				<input type='submit' class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>

@@ -729,7 +729,7 @@ function reports_form_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == REPORTS_DELETE) { // delete
 			print "<tr>
@@ -787,7 +787,7 @@ function reports_form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
-			<input type='button' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -1465,7 +1465,7 @@ function reports() {
 						" . __('Search') . "
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='" . html_escape_request_var('filter') . "'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='" . html_escape_request_var('filter') . "'>
 					</td>
 					<td>
 						" . __('Status') . "
@@ -1493,8 +1493,8 @@ function reports() {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='" . __esc('Go') . "' name='go'>
-							<input id='clear' type='button' value='" . __esc('Clear') . "' name='clear'>
+							<input id='refresh' type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Go') . "' name='go'>
+							<input id='clear' type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Clear') . "' name='clear'>
 						</span>
 					</td>
 				</tr>

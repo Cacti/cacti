@@ -1258,7 +1258,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
@@ -1813,7 +1813,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
 				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
 				<span class='ui-select-text'>
-					<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
 				</span>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>

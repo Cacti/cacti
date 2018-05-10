@@ -199,8 +199,8 @@ function clog_view_logfile() {
 		</tr>
 		<tr class='saveRow'>
 			<td colspan='2' align='right'>
-				<input id='cancel' type='button' value='" . __esc('Cancel') . "'>&nbsp
-				<input id='pc' type='button' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
+				<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='" . __esc('Cancel') . "'>&nbsp
+				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript'>
 				$('#pc').click(function() {
 					strURL = location.pathname+'?purge_continue=1&header=false&filename=" . basename($logfile) . "';
@@ -419,9 +419,9 @@ function filter($clogAdmin) {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' name='go' value='<?php print __esc('Go');?>'>
-							<input type='button' id='clear' name='clear' value='<?php print __esc('Clear');?>'>
-						<?php if ($clogAdmin) {?><input type='button' id='purge' name='purge' value='<?php print __esc('Purge');?>'><?php }?>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' name='go' value='<?php print __esc('Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' name='clear' value='<?php print __esc('Clear');?>'>
+						<?php if ($clogAdmin) {?><input type='button' class='ui-button ui-corner-all ui-widget' id='purge' name='purge' value='<?php print __esc('Purge');?>'><?php }?>
 						</span>
 					</td>
 				</tr>
@@ -474,7 +474,7 @@ function filter($clogAdmin) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>

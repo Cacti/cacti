@@ -141,7 +141,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filterd' size='25' value='<?php print html_escape_request_var('filterd');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filterd' size='25' value='<?php print html_escape_request_var('filterd');?>'>
 						</td>
 						<td>
 							<?php print __('Type');?>
@@ -193,8 +193,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
-								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -457,8 +457,8 @@ function display_matching_graphs($rule, $rule_type, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
-								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refres' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -469,7 +469,7 @@ function display_matching_graphs($rule, $rule_type, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-defaut ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Devices');?>
@@ -699,7 +699,7 @@ function display_new_graphs($rule, $url) {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Objects');?>
@@ -718,8 +718,8 @@ function display_new_graphs($rule, $url) {
 						</td>
 						<td>
 							<span>
-								<input id='orefresh' type='button' value='<?php print __esc('Go');?>'>
-								<input id='oclear' type='button' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='orefresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='oclear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -1021,7 +1021,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Type');?>
@@ -1073,8 +1073,8 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
-							<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>

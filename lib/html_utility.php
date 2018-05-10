@@ -209,9 +209,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') ."' title='$save_message'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
