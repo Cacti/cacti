@@ -1,7 +1,7 @@
-/*! jQuery UI - v1.12.1 - 2018-04-23
+/*! jQuery UI - v1.12.1 - 2018-05-10
 * http://jqueryui.com
 * Includes: draggable.css, core.css, resizable.css, selectable.css, sortable.css, accordion.css, autocomplete.css, menu.css, button.css, controlgroup.css, checkboxradio.css, datepicker.css, dialog.css, progressbar.css, selectmenu.css, slider.css, spinner.css, tabs.css, tooltip.css, theme.css
-* To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=smoothness&cornerRadiusShadow=8px&offsetLeftShadow=-8px&offsetTopShadow=-8px&thicknessShadow=8px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=aaaaaa&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=aaaaaa&iconColorError=cd0a0a&fcError=cd0a0a&borderColorError=cd0a0a&bgImgOpacityError=95&bgTextureError=glass&bgColorError=fef1ec&iconColorHighlight=2e83ff&fcHighlight=363636&borderColorHighlight=fcefa1&bgImgOpacityHighlight=55&bgTextureHighlight=glass&bgColorHighlight=fbf9ee&iconColorActive=454545&fcActive=212121&borderColorActive=aaaaaa&bgImgOpacityActive=65&bgTextureActive=glass&bgColorActive=ffffff&iconColorHover=454545&fcHover=212121&borderColorHover=999999&bgImgOpacityHover=75&bgTextureHover=glass&bgColorHover=dadada&iconColorDefault=888888&fcDefault=555555&borderColorDefault=d3d3d3&bgImgOpacityDefault=75&bgTextureDefault=glass&bgColorDefault=e6e6e6&iconColorContent=222222&fcContent=222222&borderColorContent=aaaaaa&bgImgOpacityContent=75&bgTextureContent=flat&bgColorContent=ffffff&iconColorHeader=222222&fcHeader=222222&borderColorHeader=aaaaaa&bgImgOpacityHeader=75&bgTextureHeader=highlight_soft&bgColorHeader=cccccc&cornerRadius=4px&fsDefault=1.1em&fwDefault=normal&ffDefault=Verdana%2CArial%2Csans-serif
+* To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=smoothness&bgImgOpacityHeader=75&bgImgOpacityContent=75&bgImgOpacityDefault=75&bgImgOpacityHover=75&bgImgOpacityActive=65&bgImgOpacityHighlight=55&bgImgOpacityError=95&cornerRadiusShadow=0px&offsetLeftShadow=4px&offsetTopShadow=4px&thicknessShadow=4px&opacityShadow=80&bgImgOpacityShadow=80&bgTextureShadow=flat&bgColorShadow=%23b2aeae&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=%23aaaaaa&iconColorError=%23cd0a0a&fcError=%23cd0a0a&borderColorError=%23cd0a0a&bgTextureError=glass&bgColorError=%23fef1ec&iconColorHighlight=%232e83ff&fcHighlight=%23363636&borderColorHighlight=%23fcefa1&bgTextureHighlight=glass&bgColorHighlight=%23fbf9ee&iconColorActive=%23454545&fcActive=%23212121&borderColorActive=%23aaaaaa&bgTextureActive=glass&bgColorActive=%23ffffff&iconColorHover=%23454545&fcHover=%23212121&borderColorHover=%23999999&bgTextureHover=glass&bgColorHover=%23dadada&iconColorDefault=%23888888&fcDefault=%23555555&borderColorDefault=%23d3d3d3&bgTextureDefault=glass&bgColorDefault=%23e6e6e6&iconColorContent=%23222222&fcContent=%23222222&borderColorContent=%23aaaaaa&bgTextureContent=flat&bgColorContent=%23ffffff&iconColorHeader=%23222222&fcHeader=%23222222&borderColorHeader=%23aaaaaa&bgTextureHeader=highlight_soft&bgColorHeader=%23cccccc&cornerRadius=4px&fwDefault=normal&fsDefault=1.1em&ffDefault=Verdana%2CArial%2Csans-serif
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 .ui-draggable-handle {
@@ -1307,6 +1307,6 @@ a.ui-button:active,
 	filter: Alpha(Opacity=30); /* support: IE8 */
 }
 .ui-widget-shadow {
-	-webkit-box-shadow: -8px -8px 8px #aaaaaa;
-	box-shadow: -8px -8px 8px #aaaaaa;
+	-webkit-box-shadow: 4px 4px 4px #b2aeae;
+	box-shadow: 4px 4px 4px #b2aeae;
 }
