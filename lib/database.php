@@ -789,7 +789,6 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	return true;
 }
 
-
 /* db_table_create - checks whether a table exists
    @param $table - the name of the table
    @param $data - data array
@@ -868,6 +867,59 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 	}
 }
 
+/* db_begin_transaction - start a transaction
+   @param $db_conn - the database connection to use
+   @returns - (bool) if the begin transaction was successful */
+function db_begin_transaction($db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	return $db_conn->beginTransaction();
+}
+
+/* db_commit_transaction - commit a transaction
+   @param $db_conn - the database connection to use
+   @returns - (bool) if the commit transaction was successful */
+function db_commit_transaction($db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	return $db_conn->commit();
+}
+
+/* db_rollback_transaction - rollback a transaction
+   @param $db_conn - the database connection to use
+   @returns - (bool) if the rollback transaction was successful */
+function db_rollback_transaction($db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	return $db_conn->rollBack();
+}
 
 /* array_to_sql_or - loops through a single dimentional array and converts each
      item to a string that can be used in the OR portion of an sql query in the
