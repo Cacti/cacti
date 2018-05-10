@@ -140,8 +140,8 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	$time_till_next_run = $next_run_time - $current_time;
 
 	/* determine if you must output boost table now */
-	$max_records        = read_config_option('boost_rrd_update_max_records');
-	$current_records    = boost_get_total_rows();
+	$max_records     = read_config_option('boost_rrd_update_max_records');
+	$current_records = boost_get_total_rows();
 
 	if (($time_till_next_run <= 0) ||
 		($forcerun) ||
@@ -169,9 +169,11 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	}
 
 	/* store the next run time so that people understand */
-	db_execute("REPLACE INTO settings
-		(name, value) VALUES
-		('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
+	if ($rrd_updates != '-1') {
+		db_execute("REPLACE INTO settings
+			(name, value) VALUES
+			('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
+	}
 } else {
 	/* turn off the system level updates */
 	if (read_config_option('boost_rrd_update_system_enable') == 'on') {
