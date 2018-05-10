@@ -59,9 +59,20 @@ function themeReady() {
 	if ($('.usertabs').length == 0) {
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
+				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="fa fa-question"></i></a></li>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
+
+		$('<div class="dropdownMenu">'
+			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
+				+'<li><a href="http://www.cacti.net" target="_blank"><span>'+cactiHome+'</span></a></li>'
+				+'<li><a href="https://github.com/cacti" target="_blank"><span>'+cactiProjectPage+'</span></a></li>'
+				+'<li><a href="http://forums.cacti.net/" target="_blank"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank"><span>'+reportABug+'</span></a></li>'
+				+'<li><a href="'+urlPath+'about.php"><span>'+aboutCacti+'</span></a></li>'
+			+'</ul>'
+		+'</div>').appendTo('body');
 	}
 
 	ajaxAnchors();

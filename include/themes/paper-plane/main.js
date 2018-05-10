@@ -62,7 +62,7 @@ function themeReady() {
 	if ($('.usertabs').length == 0) {
 		$('<div class="maintabs usertabs">'
 			+'<nav><ul>'
-				+'<li class="usertabs-submenu"><a class="submenu-user-help" href="#"><i class="fa fa-question"></i></a></li>'
+				+'<li><a id="menu-user-help" class="usertabs-submenu" href="#"><i class="fa fa-question"></i></a></li>'
 				+'<li class="action-icon-user"><a class="pic" href="#"><i class="fa fa-user"></i></a></li>'
 			+'</ul></nav>'
 		+'</div>').insertAfter('.maintabs');
@@ -188,20 +188,10 @@ function themeReady() {
 		}
 	});
 
-/* End clean up */
-
-
-	/* Notification Handler */
-	if ($("#message").length) {
-	//	alert($('#message_container').html());
-	}
-
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
 	$('.fa-arrow-up').addClass('fa-chevron-up').removeClass('fa-arrow-up');
 	$('.fa-remove').addClass('fa-trash-o').removeClass('fa-remove');
-
-
 }
 
 function setMenuVisibility() {

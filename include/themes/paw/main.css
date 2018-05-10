@@ -1630,9 +1630,6 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 30px !important;
-	overflow:hidden;
-	right: 0;
 }
 
 .maintabs {

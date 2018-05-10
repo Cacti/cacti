@@ -931,7 +931,7 @@ function setGraphTabs(id) {
 }
 
 function setupResponsiveMenuAndTabs() {
-	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').unbind('click').click(function(event) {
+	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').unbind('click').click(function(event) {
 		page = basename($(this).attr('href'));
 		if (page == 'logout.php') {
 			return;
@@ -1642,7 +1642,7 @@ function getPresentHTTPError(data) {
 }
 
 function ajaxAnchors() {
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"]').unbind('click').click(function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -2000,9 +2000,9 @@ $(function() {
 
 	setupUserMenu();
 
-	setupEllipsis();
-
 	applySkin();
+
+	setupEllipsis();
 
 	$('#navigation_right').show();
 
@@ -2065,7 +2065,7 @@ function setupEllipsis() {
 				submenu.css({'left': position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth())}).slideDown(120);
 			} else {
 				/* move dd to the left */
-				submenu.css({'left':position.left}).slideDown(120);
+				submenu.css({'left': position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth())}).slideDown(120);
 			}
 		} else {
 			submenu.slideUp(120);
