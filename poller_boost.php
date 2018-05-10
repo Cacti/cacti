@@ -273,13 +273,14 @@ function output_rrd_data($start_time, $force = false) {
 		$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
 	}
 
-	/* split poller_output_boost */
-	$archive_table = 'poller_output_boost_arch_' . time();
+	$time = time();
 
-	db_begin_transaction();
-	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
-	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
-	db_commit_transaction();
+	/* split poller_output_boost */
+	$archive_table = 'poller_output_boost_arch_' . $time;
+	$interim_table = 'poller_output_boost_' . $time;
+
+	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
+	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
