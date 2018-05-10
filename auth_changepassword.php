@@ -102,8 +102,8 @@ case 'changepassword':
 	$user_id = intval($_SESSION['sess_user_id']);
 
 	// Get passwords entered for change
-	$password = get_nfilter_request_var('password');
-	$confirm = get_nfilter_request_var('confirm');
+	$password         = get_nfilter_request_var('password');
+	$password_confirm = get_nfilter_request_var('password_confirm');
 
 	// Get current password as entered
 	$current_password = get_nfilter_request_var('current_password');
@@ -126,7 +126,7 @@ case 'changepassword':
 	}
 
 	// Password and Confirmed password checks
-	if ($password !== $confirm) {
+	if ($password !== $password_confirm) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
 		break;
