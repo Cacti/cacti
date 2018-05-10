@@ -60,6 +60,7 @@ Cacti CHANGELOG
 -feature: Make Top Tabs use Ajax Callback
 -feature: Make all user settings dynamic and allow resetting to default.
 -feature: Change password page provides visible confirmation of password rules
+-feature: Allow ASCII filepath paths to not be found on settings save
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

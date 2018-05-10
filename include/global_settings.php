@@ -98,42 +98,49 @@ $settings = array(
 			'friendly_name' => __('snmpwalk Binary Path'),
 			'description' => __('The path to your snmpwalk binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_snmpget' => array(
 			'friendly_name' => __('snmpget Binary Path'),
 			'description' => __('The path to your snmpget binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_snmpbulkwalk' => array(
 			'friendly_name' => __('snmpbulkwalk Binary Path'),
 			'description' => __('The path to your snmpbulkwalk binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_snmpgetnext' => array(
 			'friendly_name' => __('snmpgetnext Binary Path'),
 			'description' => __('The path to your snmpgetnext binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_snmptrap' => array(
 			'friendly_name' => __('snmptrap Binary Path'),
 			'description' => __('The path to your snmptrap binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_rrdtool' => array(
 			'friendly_name' => __('RRDtool Binary Path'),
 			'description' => __('The path to the rrdtool binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_php_binary' => array(
 			'friendly_name' => __('PHP Binary Path'),
 			'description' => __('The path to your PHP binary file (may require a php recompile to get this file).'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'logging_header' => array(
@@ -145,6 +152,7 @@ $settings = array(
 			'friendly_name' => __('Cacti Log Path'),
 			'description' => __('The path to your Cacti log file (if blank, defaults to &lt;path_cacti&gt;/log/cacti.log)'),
 			'method' => 'filepath',
+			'file_type' => 'ascii',
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255'
 			),
@@ -178,12 +186,14 @@ $settings = array(
 			'friendly_name' => __('Spine Binary File Location'),
 			'description' => __('The path to Spine binary.'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => '255'
 			),
 		'path_spine_config' => array(
 			'friendly_name' => __('Spine Config File Path'),
 			'description' => __('The path to Spine configuration file.  By default, in the cwd of spine, or /etc if not specified.'),
 			'method' => 'filepath',
+			'file_type' => 'ascii',
 			'max_length' => '255'
 			),
 		'rrdclean_header' => array(
@@ -1406,6 +1416,7 @@ $settings = array(
 			'friendly_name' => __('Sendmail Path'),
 			'description' => __('This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)'),
 			'method' => 'filepath',
+			'file_type' => 'binary',
 			'max_length' => 255,
 			'default' => '/usr/sbin/sendmail',
 			),
@@ -1606,6 +1617,14 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'path_boost_log' => array(
+			'friendly_name' => __('Boost Debug Log'),
+			'description' => __('If this field is non-blank, Boost will log RRDupdate output from the boost	poller process.'),
+			'method' => 'filepath',
+			'file_type' => 'ascii',
+			'default' => '',
+			'max_length' => '255'
+			),
 		'boost_png_header' => array(
 			'friendly_name' => __('Image Caching'),
 			'method' => 'spacer',
@@ -1623,18 +1642,6 @@ $settings = array(
 			'method' => 'dirpath',
 			'max_length' => '255',
 			'default' => $config['base_path'] . '/cache/boost/'
-			),
-		'boost_process_header' => array(
-			'friendly_name' => __('Process Interlocking'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
-			),
-		'path_boost_log' => array(
-			'friendly_name' => __('Boost Debug Log'),
-			'description' => __('If this field is non-blank, Boost will log RRDupdate output from the boost	poller process.'),
-			'method' => 'filepath',
-			'default' => '',
-			'max_length' => '255'
 			)
 		),
 	'data' => array(

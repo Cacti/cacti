@@ -73,7 +73,10 @@ case 'save':
 					array($field_name, get_nfilter_request_var($field_name)));
 			}
 		} elseif ($field_array['method'] == 'filepath') {
-			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
+			if (isset($field_array['file_type']) &&
+				$field_array['file_type'] == 'binary' &&
+				get_nfilter_request_var($field_name) != '' &&
+				file_exists(get_nfilter_request_var($field_name)) === false) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[36] = 36;
