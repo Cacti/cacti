@@ -276,8 +276,10 @@ function output_rrd_data($start_time, $force = false) {
 	/* split poller_output_boost */
 	$archive_table = 'poller_output_boost_arch_' . time();
 
+	db_begin_transaction();
 	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
 	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
+	db_commit_transaction();
 
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
