@@ -52,7 +52,7 @@ function rrdtool_set_language($lang = -1) {
 	$prev_lang = getenv('LANG');
 
 	if ($lang == -1) {
-		putenv('LANG=' . CACTI_LOCALE . '.UTF-8');
+		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.utf8');
 	} else {
 		putenv('LANG=en_EN.UTF-8');
 	}
