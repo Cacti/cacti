@@ -477,6 +477,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 				if (isset($graph_data_array['graph_height'])) {
 					$cache_file .= '_height_' . $graph_data_array['graph_height'];
 				}
+
 				if (isset($graph_data_array['graph_width'])) {
 					$cache_file .= '_width_' . $graph_data_array['graph_width'];
 				}
@@ -1270,7 +1271,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 }
 
-function boost_poller_command_args ($args) {
+function boost_poller_command_args($args) {
 	boost_memory_limit();
 
 	return $args;
@@ -1280,7 +1281,7 @@ function boost_memory_limit() {
 	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
 }
 
-function boost_poller_bottom () {
+function boost_poller_bottom() {
 	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
