@@ -1087,7 +1087,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
 			unset($_SESSION['sess_error_fields'][$form_name]);
 		} else {
-			print " class='ui-state-default ui-corner-all'"l
+			print " class='ui-state-default ui-corner-all'";
 		}
 	}
 
