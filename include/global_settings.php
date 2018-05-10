@@ -201,7 +201,9 @@ $settings = array(
 			'friendly_name' => __('RRDfile Auto Clean Method'),
 			'description' => __('The method used to Clean RRDfiles from Cacti after their Data Sources are deleted.'),
 			'method' => 'drop_array',
-			'array' => array('1' => 'Delete', '3' => 'Archive'),
+			'array' => array(
+				'1' => __('Delete'),
+				'3' => __('Archive')),
 			'default' => '1'
  			),
 		'rrd_archive' => array(
@@ -352,7 +354,9 @@ $settings = array(
             'description' => __('Allow to automatically determine the \'default\' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language.'),
             'method' => 'drop_array',
             'default' => '1',
-            'array' => array( '0' => __('Disabled'), '1' => __('Enabled'))
+            'array' => array(
+				'0' => __('Disabled'),
+				'1' => __('Enabled'))
             ),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
@@ -385,14 +389,18 @@ $settings = array(
 			'description' => __('There are two methods for determining a User\'s Graph Permissions.  The first is \'Permissive\'.  Under the \'Permissive\' setting, a User only needs access to either the Graph, Device or Graph Template to gain access to the Graphs that apply to them.  Under \'Restrictive\', the User must have access to the Graph, the Device, and the Graph Template to gain access to the Graph.'),
 			'method' => 'drop_array',
 			'default' => '1',
-			'array' => array('1' => __('Permissive'), '2' => __('Restrictive'))
+			'array' => array(
+				'1' => __('Permissive'),
+				'2' => __('Restrictive'))
 			),
 		'grds_creation_method' => array(
 			'method' => 'drop_array',
 			'friendly_name' => __('Graph/Data Source Creation Method'),
 			'description' => __('If set to Simple, Graphs and Data Sources can only be created from New Graphs.  If Advanced, legacy Graph and Data Source creation is supported.'),
 			'default' => '0',
-			'array' => array('0' => __('Simple'), '1' => __('Advanced'))
+			'array' => array(
+				'0' => __('Simple'),
+				'1' => __('Advanced'))
 			),
 		'hide_form_description' => array(
 			'friendly_name' => __('Show Form/Setting Help Inline'),
@@ -411,8 +419,10 @@ $settings = array(
 			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can replace the Cacti Console with your own page.'),
 			'method' => 'drop_array',
 			'default' => 0,
-			'array' => array(0 => __('No'), 1 => __('Yes'))
-		),
+			'array' => array(
+				0 => __('No'),
+				1 => __('Yes'))
+			),
 		'drag_and_drop' => array(
 			'friendly_name' => __('Enable Drag-N-Drop'),
 			'description' => __('Some of Cacti\'s interfaces support Drag-N-Drop.  If checked this option will be enabled.  Note: For visually impaired user, this option may be disabled.'),
@@ -731,7 +741,9 @@ $settings = array(
 			'description' => __('When creating graphs, what Graph Type would you like pre-selected?'),
 			'method' => 'drop_array',
 			'default' => '-2',
-			'array' => array( '-2' => __('All Types'), '-1' => __('By Template/Data Query') ),
+			'array' => array(
+				'-2' => __('All Types'),
+				'-1' => __('By Template/Data Query'))
 			),
 		'logmgmt_header' => array(
 			'friendly_name' => __('Log Management'),
@@ -829,7 +841,9 @@ $settings = array(
 			'description' => __('How do you wish fonts to be handled by default?'),
 			'method' => 'drop_array',
 			'default' => 1,
-			'array' => array(0 => __('System'), 1 => __('Theme'))
+			'array' => array(
+				0 => __('System'),
+				1 => __('Theme'))
 			),
 		'path_rrdtool_default_font' => array(
 			'friendly_name' => __('Default Font'),
@@ -985,8 +999,7 @@ $settings = array(
 			'array' => array(
 				'0'  => __('None'),
 				'1'  => __('Summary'),
-				'2'  => __('Detailed')
-				),
+				'2'  => __('Detailed'))
 			),
 		'max_threads' => array(
 			'friendly_name' => __('Maximum Threads per Process'),
@@ -1104,13 +1117,13 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('Disabled'),
+				'0'   => __('Disabled'),
 				'30'  => __('%d Days', 30),
 				'60'  => __('%d Days', 60),
 				'90'  => __('%d Days', 90),
-				'120'  => __('%d Days', 120),
-				'365'  => __('%d Year', 1),
-				'730'  => __('%d Years', 2) )
+				'120' => __('%d Days', 120),
+				'365' => __('%d Year', 1),
+				'730' => __('%d Years', 2) )
 			),
 		'secpass_expirepass' => array(
 			'friendly_name' => __('Expire Password'),
@@ -1118,11 +1131,11 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-			'0'  => __('Disabled'),
+				'0'   => __('Disabled'),
 				'30'  => __('%d Days', 30),
 				'60'  => __('%d Days', 60),
 				'90'  => __('%d Days', 90),
-				'120'  => __('%d Days', 120) )
+				'120' => __('%d Days', 120))
 			),
 		'secpass_history' => array(
 			'friendly_name' => __('Password History'),
@@ -1155,13 +1168,13 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '0',
 			'array' => array(
-				'0'  => __('Disabled'),
-				'1'  => __('1 Attempt'),
-				'2'  => __('%d Attempts', 2),
-				'3'  => __('%d Attempts', 3),
-				'4'  => __('%d Attempts', 4),
-				'5'  => __('%d Attempts', 5),
-				'6'  => __('%d Attempts', 6) )
+				'0' => __('Disabled'),
+				'1' => __('1 Attempt'),
+				'2' => __('%d Attempts', 2),
+				'3' => __('%d Attempts', 3),
+				'4' => __('%d Attempts', 4),
+				'5' => __('%d Attempts', 5),
+				'6' => __('%d Attempts', 6) )
 			),
 		'secpass_unlocktime' => array(
 			'friendly_name' => __('Auto Unlock'),
@@ -1169,19 +1182,19 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '60',
 			'array' => array(
-				'0'  => __('Disabled'),
-				'1'  => __('1 Minute'),
-				'2'  => __('%d Minutes', 2),
-				'5'  => __('%d Minutes', 5),
-				'10'  => __('%d Minutes', 10),
-				'20'  => __('%d Minutes', 20),
-				'30'  => __('%d Minutes', 30),
-				'60'  => __('1 Hour'),
+				'0'    => __('Disabled'),
+				'1'    => __('1 Minute'),
+				'2'    => __('%d Minutes', 2),
+				'5'    => __('%d Minutes', 5),
+				'10'   => __('%d Minutes', 10),
+				'20'   => __('%d Minutes', 20),
+				'30'   => __('%d Minutes', 30),
+				'60'   => __('1 Hour'),
 				'120'  => __('%d Hours', 2),
 				'240'  => __('%d Hours', 4),
 				'480'  => __('%d Hours', 8),
 				'960'  => __('%d Hours', 16),
-				'1440'  => __('1 Day') )
+				'1440' => __('1 Day') )
 			),
 		'ldap_general_header' => array(
 			'friendly_name' => __('LDAP General Settings'),
@@ -1228,7 +1241,9 @@ $settings = array(
 			'description' => __('Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.'),
 			'method' => 'drop_array',
 			'default' => '0',
-			'array' => array( '0' => __('Disabled'), '1' => __('Enable'))
+			'array' => array(
+				'0' => __('Disabled'),
+				'1' => __('Enable'))
 			),
 		'ldap_mode' => array(
 			'friendly_name' => __('Mode'),
@@ -1270,7 +1285,9 @@ $settings = array(
 			'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
 			'method' => 'drop_array',
 			'default' => 1,
-			'array' => array( 1 => __('Distinguished Name'), 2 => __('Username') )
+			'array' => array(
+				1 => __('Distinguished Name'),
+				2 => __('Username'))
 			),
 		'ldap_search_base_header' => array(
 			'friendly_name' => __('LDAP Specific Search Settings'),
@@ -1346,14 +1363,19 @@ $settings = array(
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
 			'default' => __('PHP Mail() Function'),
-			'array' => array( __('PHP Mail() Function'), __('Sendmail'), __('SMTP') ),
+			'array' => array(
+				__('PHP Mail() Function'),
+				__('Sendmail'),
+				__('SMTP') ),
 			),
 		'settings_ping_mail' => array(
 			'friendly_name' => __('Ping Mail Server'),
 			'description' => __('Ping the Mail Server before sending test Email?'),
 			'method' => 'drop_array',
 			'default' => 0,
-			'array' => array(0 => __('Yes'), 1 => __('No'))
+			'array' => array(
+				0 => __('Yes'),
+				1 => __('No'))
 			),
 		'settings_from_email' => array(
 			'friendly_name' => __('From Email Address'),
@@ -1423,7 +1445,10 @@ $settings = array(
 			'friendly_name' => __('SMTP Security'),
 			'description' => __('The encryption method to use for the Email.'),
 			'method' => 'drop_array',
-			'array' => array( 'none' => __('None'), 'ssl' => __('SSL'), 'tls' => __('TLS') ),
+			'array' => array(
+				'none' => __('None'),
+				'ssl'  => __('SSL'),
+				'tls'  => __('TLS')),
 			'default' => 'none'
 			),
 		'settings_smtp_timeout' => array(
@@ -1663,7 +1688,9 @@ $settings = array(
 			'description' => __('Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server.'),
 			'method' => 'drop_array',
 			'default' => 0,
-			'array' => array ( __('Local'), __('RRDtool Proxy Server') ),
+			'array' => array (
+				__('Local'),
+				__('RRDtool Proxy Server'))
 			),
 		'extended_paths' => array(
 			'friendly_name' => __('Structured RRD Paths'),
@@ -1741,14 +1768,19 @@ $settings = array(
 			'description' => __('There are two removal methods.  The first, Standard Deviation, will remove any sample that is X number of standard deviations away from the average of samples.  The second method, Variance, will remove any sample that is X% more than the Variance average.  The Variance method takes into account a certain number of \'outliers\'.  Those are exceptional samples, like the spike, that need to be excluded from the Variance Average calculation.'),
 			'method' => 'drop_array',
 			'default' => '2',
-			'array' => array(1 => __('Standard Deviation'), 2 => __('Variance Based w/Outliers Removed'))
+			'array' => array(
+				1 => __('Standard Deviation'),
+				2 => __('Variance Based w/Outliers Removed'))
 			),
 		'spikekill_avgnan' => array(
 			'friendly_name' => __('Replacement Method'),
 			'description' => __('There are three replacement methods.  The first method replaces the spike with the the average of the data source in question.  The second method replaces the spike with a \'NaN\'.  The last replaces the spike with the last known good value found.'),
 			'method' => 'drop_array',
 			'default' => 'last',
-			'array' => array('avg' => __('Average'), 'nan' => __('NaN\'s'), 'last' => __('Last Known Good'))
+			'array' => array(
+				'avg'  => __('Average'),
+				'nan'  => __('NaN\'s'),
+				'last' => __('Last Known Good'))
 			),
 		'spikekill_deviations' => array(
 			'friendly_name' => __('Number of Standard Deviations'),
@@ -1843,8 +1875,7 @@ $settings = array(
 				6  => __('Every %d Hours', 6),
 				12 => __('Every %d Hours', 12),
 				24 => __('Once a Day'),
-				48 => __('Every Other Day')
-				)
+				48 => __('Every Other Day'))
 			),
 		'spikekill_basetime' => array(
 			'friendly_name' => __('Base Time'),
@@ -1869,7 +1900,7 @@ $settings_user = array(
 			'friendly_name' => __('Theme'),
 			'description' => __('Please select one of the available Themes to skin your Cacti with.'),
 			'method' => 'drop_array',
-			'default' => 'modern',
+			'default' => read_config_option('selected_theme'),
 			'array' => $themes
 			),
 		'default_view_mode' => array(
@@ -1903,21 +1934,26 @@ $settings_user = array(
 			'description' => __('The date format to use in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $dateformats,
-			'default' => GD_Y_MO_D
+			'default' => read_config_option('default_date_format')
 			),
 		'default_datechar' => array(
 			'friendly_name' => __('Date Separator'),
 			'description' => __('The date separator to be used in Cacti.'),
 			'method' => 'drop_array',
 			'array' => $datechar,
-			'default' => GDC_SLASH
+			'default' => read_config_option('default_datechar')
 			),
 		'page_refresh' => array(
 			'friendly_name' => __('Page Refresh'),
 			'description' => __('The number of seconds between automatic page refreshes.'),
 			'method' => 'drop_array',
 			'default' => '300',
-			'array' => array( '15' => __('%d Seconds', 15), '20' => __('%d Seconds', 20), '30' => __('%d Seconds', 30), '60' => __('1 Minute'), '300' => __('%d Minutes', 5) )
+			'array' => array(
+				'15'  => __('%d Seconds', 15),
+				'20'  => __('%d Seconds', 20),
+				'30'  => __('%d Seconds', 30),
+				'60'  => __('1 Minute'),
+				'300' => __('%d Minutes', 5))
 			),
 		'preview_graphs_per_page' => array(
 			'friendly_name' => __('Preview Graphs Per Page'),
@@ -2000,14 +2036,26 @@ $settings_user = array(
 			'description' => __('The number of columns to use when displaying Thumbnail graphs in Preview mode.'),
 			'method' => 'drop_array',
 			'default' => '2',
-			'array' => array('1' => __('1 Column'),'2' => __('%d Columns', 2), '3' => __('%d Columns', 3), '4' => __('%d Columns', 4), '5' => __('%d Columns', 5), '6' => __('%d Columns', 6) )
+			'array' => array(
+				'1' => __('1 Column'),
+				'2' => __('%d Columns', 2),
+				'3' => __('%d Columns', 3),
+				'4' => __('%d Columns', 4),
+				'5' => __('%d Columns', 5),
+				'6' => __('%d Columns', 6))
 			),
 		'num_columns_tree' => array(
 			'friendly_name' => __('Tree View Thumbnail Columns'),
 			'description' => __('The number of columns to use when displaying Thumbnail graphs in Tree mode.'),
 			'method' => 'drop_array',
 			'default' => '2',
-			'array' => array('1' => __('1 Column'),'2' => __('%d Columns', 2), '3' => __('%d Columns', 3), '4' => __('%d Columns', 4), '5' => __('%d Columns', 5), '6' => __('%d Columns', 6) )
+			'array' => array(
+				'1' => __('1 Column'),
+				'2' => __('%d Columns', 2),
+				'3' => __('%d Columns', 3),
+				'4' => __('%d Columns', 4),
+				'5' => __('%d Columns', 5),
+				'6' => __('%d Columns', 6))
 			),
 		'default_height' => array(
 			'friendly_name' => __('Thumbnail Height'),
