@@ -115,20 +115,31 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 /* exec_background - executes a program in the background so that php can continue
      to execute code in the foreground
    @arg $filename - the full pathname to the script to execute
-   @arg $args - any additional arguments that must be passed onto the executable */
-function exec_background($filename, $args = '') {
+   @arg $args - any additional arguments that must be passed onto the executable
+   @arg $redirect_args - any additional arguments for file re-direction.  Otherwise output goes to /dev/null */
+function exec_background($filename, $args = '', $redirect_args = '') {
 	global $config, $debug;
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
-			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
-		} else {
+			if ($redirect_args == '') {
+				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
+			} else {
+				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args . ' ' . $redirect_args, 'r'));
+			}
+		} elseif ($redirect_args == '') {
 			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		} else {
+			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	} elseif (file_exists_2gb($filename)) {
-		exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		if ($redirect_args == '') {
+			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		} else {
+			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+		}
 	}
 }
 

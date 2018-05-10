@@ -1289,20 +1289,24 @@ function boost_poller_bottom() {
 
 		chdir($config['base_path']);
 
+		$redirect_args = '';
+
 		boost_update_snmp_statistics();
 
 		$command_string = read_config_option('path_php_binary');
 		if (read_config_option('path_boost_log') != '') {
 			if ($config['cacti_server_os'] == 'unix') {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php >> ' . read_config_option('path_boost_log') . ' 2>&1';
+				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';
+				$redirect_args =  '>> ' . read_config_option('path_boost_log') . ' 2>&1';
 			} else {
-				$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php >> ' . read_config_option('path_boost_log');
+				$extra_args    = '-q ' . $config['base_path'] . '/poller_boost.php --debug';
+				$redirect_args = '>> ' . read_config_option('path_boost_log');
 			}
 		} else {
 			$extra_args = '-q ' . $config['base_path'] . '/poller_boost.php';
 		}
 
-		exec_background($command_string, $extra_args);
+		exec_background($command_string, $extra_args, $redirect_args);
 	}
 }
 

@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#1560: Warning that escapeshellarg() is escaping a null
 -issue#1574: User templates are not correctly being applied
 -issue#1602: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
+-issue#1606: Boost debug log not functional
 -issue#1608: Possible boost race conditions
 -issue#1609: Remote pollers update 'stats_poller' on main poller
 -issue#1617: Editing a data query results in missing $header variable
