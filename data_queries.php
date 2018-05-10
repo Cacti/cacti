@@ -361,10 +361,10 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data query.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -515,8 +515,8 @@ function data_query_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -758,16 +758,16 @@ function data_query_item_edit() {
 						<?php print __('Field Name');?>
 					</td>
 					<td>
-						<input type='text' id='svg_field' size='15'>
+						<input type='text' class='ui-state-default ui-corner-all' id='svg_field' size='15'>
 					</td>
 					<td class='nowrap'>
 						<?php print __('Suggested Value');?>
 					</td>
 					<td>
-						<input type='text' id='svg_text' size='60'>
+						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
 					</td>
 					<td>
-						<input id='svg_x' type='button' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
 					</td>
 				</tr>
 			</table>
@@ -859,16 +859,16 @@ function data_query_item_edit() {
 								<?php print __('Field Name');?>
 							</td>
 							<td>
-								<input id='svds_field' type='text' name='svds_<?php print $data_template['id'];?>_field' size='15'>
+								<input type='text' class='ui-state-default ui-corner-all' id='svds_field' name='svds_<?php print $data_template['id'];?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
 								<?php print __('Suggested Value');?>
 							</td>
 							<td>
-								<input id='svds_text' type='text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
+								<input type='text' class='ui-state-default ui-corner-all' id='svds_text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
 							</td>
 							<td>
-								<input id='svds_x' type='button' name='svds_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='svds_x' name='svds_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
 							</td>
 						</tr>
 					</table>
@@ -1166,7 +1166,7 @@ function data_query() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Data Queries');?>
@@ -1185,8 +1185,8 @@ function data_query() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' name='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' name='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>

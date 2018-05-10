@@ -166,10 +166,6 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'textbox_password':
-		// Fake out firefox so that you don't get pre-set passwords
-		print "<input type='text' name='mylogin' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
-		print "<input type='password' name='mypassword' style='display:none;' value='' autocomplete='off' disabled='disabled'>\n";
-
 		form_text_box(
 			$field_name,
 			$field_array['value'],
@@ -443,6 +439,7 @@ function draw_edit_control($field_name, &$field_array) {
 function form_button($form_name, $value, $title = '', $action = '') {
 	print "<input type='button' " .
 		"id='$form_name' " .
+		"class='ui-button ui-corner-all ui-widget' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
 		($action!='' ? "onClick='$action'":"") .
@@ -457,6 +454,7 @@ function form_button($form_name, $value, $title = '', $action = '') {
 function form_submit($form_name, $value, $title = '', $action = '') {
 	print "<input type='submit' " .
 		"id='$form_name' " .
+		"class='ui-button ui-corner-all ui-widget' " .
 		"name='$form_name' " .
 		"value='" . html_escape($value) . "' " .
 		($action!='' ? "onClick='$action'":"") .
@@ -469,11 +467,11 @@ function form_submit($form_name, $value, $title = '', $action = '') {
 function form_file($form_name, $form_size = 30) {
 	print "<div>\n";
 	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
-	print "<input class='import_button' type='file'";
+	print "<input class='import_button ui-state-default ui-corner-all' type='file'";
 
-	if (isset($_SESSION["sess_error_fields"]) && !empty($_SESSION["sess_error_fields"][$form_name])) {
+	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
 		print " class='txtErrorTextBox'";
-		unset($_SESSION["sess_error_fields"][$form_name]);
+		unset($_SESSION['sess_error_fields'][$form_name]);
 	}
 
 	print " id='$form_name' name='$form_name' size='$form_size'>\n";
@@ -498,7 +496,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	print "<input type='$type' class='ui-state-default ui-corner-all'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -543,7 +541,7 @@ function form_dirpath_box($form_name, $form_previous_value, $form_default_value,
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	print "<input type='$type' class='ui-state-default ui-corner-all'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -591,7 +589,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'" . ($title != '' ? ' title="' . $title . '"':'');
+	print "<input type='$type' class='ui-state-default ui-corner-all'" . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -922,7 +920,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$placeholder = " placeholder='$placeholder'";
 	}
 
-	print "<textarea aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
+	print "<textarea class='ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
@@ -1076,7 +1074,7 @@ function form_font_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'";
+	print "<input type='$type' class='ui-state-default ui-corner-all'";
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -1136,8 +1134,8 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	?>
 	<tr>
 		<td align='right'>
-			<input type='button' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
-			<input type='button' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
 		</td>
 	</tr>
 <?php }
@@ -1173,7 +1171,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 	}
 
 	if ($force_type != 'import' && $force_type != 'export' && $force_type != 'save' && $cancel_url != '') {
-		$cancel_action = "<input type='button' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
+		$cancel_action = "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo(\"" . html_escape($cancel_url, ENT_QUOTES) . "\")' value='" . $calt . "'>";
 	} else {
 		$cancel_action = '';
 	}
@@ -1184,7 +1182,7 @@ function form_save_button($cancel_url, $force_type = '', $key_field = 'id', $aja
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php print $cancel_action;?>
-				<input class='<?php print $force_type;?>' id='submit' type='submit' value='<?php print $alt;?>'>
+				<input class='<?php print $force_type;?> ui-button ui-corner-all ui-widget' id='submit' type='submit' value='<?php print $alt;?>'>
 			</td>
 		</tr>
 	</table>
@@ -1203,7 +1201,7 @@ function form_save_buttons($buttons) {
 			<td class='saveRow'>
 				<input type='hidden' name='action' value='save'>
 				<?php foreach($buttons as $b) {
-					print "<input type='button' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'>\n";
+					print "<input type='button' class='ui-button ui-corner-all ui-widget' id='" . $b['id'] . "' value='" . html_escape($b['value']) . "'>\n";
 				} ?>
 			</td>
 		</tr>

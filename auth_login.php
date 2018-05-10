@@ -706,7 +706,7 @@ $selectedTheme = get_selected_theme();
 								<label for='login_username'><?php print __('Username');?></label>
 							</td>
 							<td>
-								<input type='text' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
+								<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
 							</td>
 						</tr>
 						<tr>
@@ -714,7 +714,7 @@ $selectedTheme = get_selected_theme();
 								<label for='login_password'><?php print __('Password');?></label>
 							</td>
 							<td>
-								<input type='password' id='login_password' name='login_password' placeholder='********'>
+								<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
 							</td>
 						</tr>
 						<?php
@@ -761,7 +761,7 @@ $selectedTheme = get_selected_theme();
 					<?php } ?>
 						<tr>
 							<td cospan='2'>
-								<input type='submit' value='<?php print __esc('Login');?>'>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
 							</td>
 						</tr>
 					</table>

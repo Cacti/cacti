@@ -351,11 +351,11 @@ case 'zoom':
 	</tr>
 	<tr>
 		<td style='display:none;'>
-			<input type='button' name='button_refresh_x' value='<?php print __esc('Refresh');?>' onClick='refreshGraph()'>
-			<input type='textbox' id='date1' value=''>
-			<input type='textbox' id='date2' value=''>
-			<input type='textbox' id='graph_start' value='<?php print $graph_start;?>'>
-			<input type='textbox' id='graph_end' value='<?php print $graph_end;?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' name='button_refresh_x' value='<?php print __esc('Refresh');?>' onClick='refreshGraph()'>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='date1' value=''>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='date2' value=''>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='graph_start' value='<?php print $graph_start;?>'>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='graph_end' value='<?php print $graph_end;?>'>
 		</td>
 	</tr>
 	<tr class='odd'>
