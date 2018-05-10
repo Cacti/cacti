@@ -180,3 +180,7 @@ label {
 	padding: 5px;
 	vertical-align: top;
 }
+
+.flag-icon {
+	float: right;
+}

@@ -73,6 +73,8 @@ class Installer implements JsonSerializable {
 	private $rrdVersion;
 	private $paths;
 	private $theme;
+	private $locales;
+	private $language;
 
 	private $buttonNext = null;
 	private $buttonPrevious = null;
@@ -122,6 +124,8 @@ class Installer implements JsonSerializable {
 
 		$this->eula      = read_config_option('install_eula', true);
 		$this->templates = $this->getTemplates();
+		$this->locales   = get_installed_locales();
+		$this->language  = read_user_setting('user_language', get_new_user_default_language(), true);
 		$this->paths     = install_file_paths();
 		$this->theme     = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
 		$this->profile   = read_config_option('install_profile', true);
@@ -185,6 +189,9 @@ class Installer implements JsonSerializable {
 				case 'Test':
 					$this->buttonTest = new InstallerButton($value);
 					break;
+				case 'Language':
+					$this->setLanguage($value);
+					break;
 				case 'Profile':
 					$this->setProfile($value);
 					break;
@@ -216,16 +223,17 @@ class Installer implements JsonSerializable {
 		}
 
 		return array(
-			'Mode' => $this->mode,
-			'Step' => $this->stepCurrent,
-			'Eula' => $this->eula,
-			'Prev' => $this->buttonPrevious,
-			'Next' => $this->buttonNext,
-			'Test' => $this->buttonTest,
-			'Html' => $output,
+			'Mode'     => $this->mode,
+			'Step'     => $this->stepCurrent,
+			'Eula'     => $this->eula,
+			'Prev'     => $this->buttonPrevious,
+			'Next'     => $this->buttonNext,
+			'Test'     => $this->buttonTest,
+			'Html'     => $output,
 			'StepData' => $this->stepData,
-			'RRDVer' => $this->rrdVersion,
-			'Theme' => $this->theme
+			'RRDVer'   => $this->rrdVersion,
+			'Theme'    => $this->theme,
+			'Language' => $this->language
 		);
 	}
 
@@ -235,6 +243,13 @@ class Installer implements JsonSerializable {
 
 	private function setProgress($param_process) {
 		set_config_option('install_progress', $param_process);
+	}
+
+	private function setLanguage($param_language = '') {
+		if (isset($param_language) && strlen($param_language)) {
+			$this->language = $param_language;
+			set_user_setting('user_language', $param_language);
+		}
 	}
 
 	private function setRRDVersion($param_rrdver = '') {
@@ -735,6 +750,24 @@ class Installer implements JsonSerializable {
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
+		$langOutput = '<select id=\'language\' name=\'theme\'>';
+		foreach ($this->locales as $key => $value) {
+			$selected = '';
+			$langOutput .= "\n" . $this->language . " == $key [$value]\n";
+			if ($this->language == $key) {
+				$selected = ' selected';
+			}
+
+			$flags = explode("-", $key);
+			if (count($flags) > 1) {
+				$flagName = strtolower($flags[1]);
+			} else {
+				$flagName = strtolower($flags[0]);
+			}
+			$langOutput .= '<option value=\'' . $key . '\'' . $selected . ' data-class=\'flag-icon-' . $flagName . '\'><span class="flag-icon flag-icon-squared flag-icon-'.$flagName.'"></span>' . $value . '</option>';
+		}
+		$langOutput .= '</select>';
+
 		$themePath = $config['base_path'] . '/include/themes/';
 		$themes = glob($themePath . '*', GLOB_ONLYDIR);
 		$themeOutput = '<select id=\'theme\' name=\'theme\'>';
@@ -750,7 +783,7 @@ class Installer implements JsonSerializable {
 			}
 		}
 		$themeOutput .= '</select>';
-		$output .= Installer::sectionNormal('<span>' . __('Select default theme: ') . $themeOutput . '</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span>');
+		$output .= Installer::sectionNormal('<span>' . __('Select default theme: ') . $themeOutput . '</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span><span>'.$langOutput.'</span>');
 
 		$this->stepData = array('Eula' => $this->eula);
 		$this->buttonNext->Enabled = ($this->eula == 1);

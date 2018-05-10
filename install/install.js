@@ -137,9 +137,18 @@ function processStepWelcome(StepData) {
 				document.location = document.location + '&theme='+$('#theme').val();
 			}
 		});
+
+		$("select#language").selectmenu('destroy').iconselectmenu({
+			change: function() {
+				document.location =  document.location + '&language='+$('#language').val();
+			}
+		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 	} else {
 		$('#theme').change(function() {
 			document.location =  document.location + '&theme='+$('#theme').val();
+		});
+		$('#language').change(function() {
+			document.location =  document.location + '&language='+$('#language').val();
 		});
 	}
 
@@ -452,6 +461,24 @@ function performStep(installStep) {
 	);
 }
 
+function createItemSelectMenu() {
+	$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+		_renderItem: function( ul, item ) {
+			var li = $( "<li>" ), wrapper = $( "<div>", { text: item.label } );
+			if ( item.disabled ) {
+				li.addClass( "ui-state-disabled" );
+			}
+
+			$( "<span>", {
+				style: item.element.attr( "data-style" ),
+				"class": "flag-icon flag-icon-squared " + item.element.attr( "data-class" )
+			}).appendTo( wrapper );
+
+			return li.append( wrapper ).appendTo( ul );
+		}
+	});
+}
+
 $.urlParam = function(name){
     var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
     if (results==null){
@@ -468,6 +495,8 @@ $(function() {
 	disableButton('Previous');
 	disableButton('Next');
 	disableButton('Test');
+
+	createItemSelectMenu();
 
 	installData = $.urlParam('data');
 	if (installData != null && installData != 0) {
