@@ -320,6 +320,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 			foreach($local_data_ids as $local_data_id) {
 				$updates += boost_process_poller_output($local_data_id['local_data_id'], $rrdtool_pipe);
 			}
+
 			if ($updates) {
 				/* restore original error handler */
 				restore_error_handler();
@@ -617,6 +618,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 	$data_ids_to_get = read_config_option('boost_rrd_update_max_records_per_select');
 
+	db_begin_transaction();
+
 	/* get the records */
 	if ($single_local_data_id) {
 		$query_string = '';
@@ -680,6 +683,8 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	boost_timer('get_records', BOOST_TIMER_START);
 	$results = db_fetch_assoc($query_string);
 	boost_timer('get_records', BOOST_TIMER_END);
+
+	db_commit_transaction();
 
 	/* log memory */
 	if ($get_memory) {

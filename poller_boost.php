@@ -353,7 +353,7 @@ function output_rrd_data($start_time, $force = false) {
 		foreach($tables as $table) {
 			$rows = db_fetch_cell('SELECT count(*) FROM ' . $table['name']);
 			if (is_numeric($rows) && intval($rows) == 0) {
-				db_execute('DROP TABLE ' . $table['name'] . ' IF EXISTS');
+				db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 			}
 		}
 	}
