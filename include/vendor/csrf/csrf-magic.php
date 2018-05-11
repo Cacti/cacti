@@ -284,25 +284,11 @@ function csrf_callback($tokens) {
 		$data .= '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($value).'" />';
 	}
 
-	if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], $config['url_path']) !== false) {
-		raise_message('csrf_timeout');
-
-		if (strpos($_SERVER['HTTP_REFERER'], '?') !== false) {
-			$add = '&';
-		} else {
-			$add = '?';
-		}
-
-		header('Location:' . $_SERVER['HTTP_REFERER'] . (strpos($_SERVER['HTTP_REFERER'], 'header=false')) !== 'false' ? $add . '&header=false':'');
-	} else {
-		header('logout.php');
-		exit;
-		header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
-		echo "<html><head><title>CSRF check failed</title></head>
-			<body>
-				<p><font color='red'>Warning: CSRF check failed!</font></p>
-			</body></html>";
-	}
+	header($_SERVER['SERVER_PROTOCOL'] . ' 403 Forbidden');
+	echo "<html><head><title>CSRF check failed</title></head>
+		<body>
+			<p><font color='red'>Warning: CSRF check failed!</font></p>
+		</body></html>";
 }
 
 /**

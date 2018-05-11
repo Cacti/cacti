@@ -374,7 +374,16 @@ if ($config['is_web']) {
 	function csrf_startup() {
 		global $config;
 		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
+		csrf_conf('callback', 'csrf_error_callback');
+		csrf_conf('expires', 7200);
 	}
+
+	function csrf_error_callback() {
+		raise_message('csrf_timeout');
+		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
+		exit;
+	}
+
 	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
 
 	if (isset_request_var('newtheme')) {
