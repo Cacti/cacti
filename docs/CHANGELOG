@@ -57,7 +57,7 @@ Cacti CHANGELOG
 -feature: Add One Minute Sampling to the default Data Source Profiles
 -feature: Allow Top tabs to be Glyphs or Text or both
 -feature: Update JavaScript library c3.js to version 0.5.3
--feature: Update JavaScript library jquery.tablesorter.js to version 2.30.1
+-feature: Update JavaScript library jquery.tablesorter.js to version 2.30.3
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
 -feature: Update phpseclib to version 2.0.11
 -feature: Update JavaScript library jquery.js to 3.3.1
