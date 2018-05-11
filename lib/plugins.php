@@ -507,11 +507,11 @@ function api_plugin_can_install($plugin, &$message) {
 	if (is_array($dependencies) && sizeof($dependencies)) {
 		foreach($dependencies as $dependency=>$version) {
 			if (!api_plugin_minimum_version($dependency, $version)) {
-				$message .= '<br>' . __('%s Version %s or above is required for %s.', ucwords($dependency), $version, ucwords($plugin));
+				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
 
 				$proceed = false;
 			} else if (!api_plugin_installed($dependency)) {
-				$message .= '<br>' . __('%s is required for %s, and it is not installed.', ucwords($dependency), ucwords($plugin));
+				$message .= __('%s is required for %s, and it is not installed. ', ucwords($dependency), ucwords($plugin));
 
 				$proceed = false;
 			}
