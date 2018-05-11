@@ -141,8 +141,7 @@ input[type="checkbox"] + label:before {
 	display: inline-block;
 	font: 12px/1em sans-serif;
 	height: 12px;
-	margin: .25em .25em 0 0;
-	vertical-align:text-bottom;
+	margin: 0.25em 0.45em;
 	width: 12px;
 	background: transparent;
 }
@@ -153,6 +152,7 @@ input[type="checkbox"]:checked + label:before {
 	content: "\2713";
 	text-align: center;
 }
+
 input[type="checkbox"]:checked + label,
 input[type="radio"]:not([name^="reindex"]):checked + label {
   color: #FFFFFF;

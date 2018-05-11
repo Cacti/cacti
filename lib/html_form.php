@@ -347,8 +347,6 @@ function draw_edit_control($field_name, &$field_array) {
 				'',
 				true
 			);
-
-			print '<br>';
 		}
 		print "</div>\n";
 

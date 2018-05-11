@@ -223,6 +223,10 @@ if ($output !== false && $output != '') {
 
 	ob_end_clean();
 
+	if (read_config_option('stats_poller') == '') {
+		$error = __('The Cacti Poller has not run yet.');
+	}
+
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
 	} else {
