@@ -1675,6 +1675,7 @@ function build_sort_order($index_order, $default_order = '') {
  */
 function get_matching_hosts($rule, $rule_type, $sql_where='') {
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
@@ -1706,6 +1707,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
  */
 function get_matching_graphs($rule, $rule_type, $sql_where = '') {
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' called: ' . json_encode($rule) . ' type: ' . $rule_type, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
@@ -1741,6 +1743,7 @@ function get_matching_graphs($rule, $rule_type, $sql_where = '') {
  */
 function get_created_graphs($rule) {
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' called: ' . json_encode($rule), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	$sql = 'SELECT sqg.id
@@ -2049,6 +2052,7 @@ function automation_hook_graph_create_tree($data) {
 	global $config;
 
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . ' called: ' . json_encode($data), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	if (read_config_option('automation_tree_enabled') == '') {
@@ -2107,7 +2111,9 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 
 			cacti_log($function . ' Device[' . $host_id . '] - create sql: ' . str_replace("\n",' ', $rows_query) . ' matches: ' . sizeof($hosts), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
-			if (!sizeof($hosts)) { continue; }
+			if (!sizeof($hosts)) {
+				continue;
+			}
 
 			create_dq_graphs($host_id, $snmp_query_id, $rule);
 		}
@@ -2201,6 +2207,7 @@ function automation_execute_device_create_tree($host_id) {
 	 */
 
 	$function = automation_function_with_pid(__FUNCTION__);
+
 	cacti_log($function . " Device[$host_id] called", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 	/*
@@ -2238,6 +2245,7 @@ function automation_execute_device_create_tree($host_id) {
 
 				/* now that all rule items have been executed, add the item itself */
 				$node = create_device_node($host_id, $parent, $rule);
+
 				cacti_log($function . " Device[$host_id], rule: " . $rule['id'] . ', node: ' . $node, false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 			}
 		}
