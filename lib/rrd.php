@@ -52,7 +52,7 @@ function rrdtool_set_language($lang = -1) {
 	$prev_lang = getenv('LANG');
 
 	if ($lang == -1) {
-		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.utf8');
+		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	} else {
 		putenv('LANG=en_EN.UTF-8');
 	}
@@ -1145,7 +1145,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (getenv('LANG') == '') {
-		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.utf8');
+		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	}
 
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */
