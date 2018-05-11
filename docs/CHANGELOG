@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#1559: CLI Output Issues due to over escaping
 -issue#1560: Warning that escapeshellarg() is escaping a null
 -issue#1574: User templates are not correctly being applied
+-issue#1590: User Admin generates SQL error if user is not part of any groups
 -issue#1602: PHP ERROR: Call to undefined function api_data_source_cache_crc_update()
 -issue#1606: Boost debug log not functional
 -issue#1607: Boost next run time occurs in the past

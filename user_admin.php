@@ -800,6 +800,10 @@ function graph_perms_edit($tab, $header_label) {
 
 	switch($tab) {
 	case 'permsg':
+		if (isempty_request_var('id')) {
+			header('Location: user_admin.php&header=false');
+		}
+
 		process_graph_request_vars();
 
 		graph_filter($header_label);
@@ -1021,6 +1025,10 @@ function graph_perms_edit($tab, $header_label) {
 
 		break;
 	case 'permsgr':
+		if (isempty_request_var('id')) {
+			header('Location: user_admin.php&header=false');
+		}
+
 		process_group_request_vars();
 
 		group_filter($header_label);
@@ -1112,6 +1120,10 @@ function graph_perms_edit($tab, $header_label) {
 
 		break;
 	case 'permsd':
+		if (isempty_request_var('id')) {
+			header('Location: user_admin.php&header=false');
+		}
+
 		process_device_request_vars();
 
 		device_filter($header_label);
@@ -1273,6 +1285,10 @@ function graph_perms_edit($tab, $header_label) {
 
 		break;
 	case 'permste':
+		if (isempty_request_var('id')) {
+			header('Location: user_admin.php&header=false');
+		}
+
 		process_template_request_vars();
 
 		template_filter($header_label);
@@ -1414,6 +1430,10 @@ function graph_perms_edit($tab, $header_label) {
 
 		break;
 	case 'permstr':
+		if (isempty_request_var('id')) {
+			header('Location: user_admin.php&header=false');
+		}
+
 		process_tree_request_vars();
 
 		tree_filter($header_label);

@@ -1721,10 +1721,18 @@ function group_edit() {
 
 		break;
 	case 'settings':
+		if (isempty_request_var('id')) {
+			header('Location: user_group_admin.php&header=false');
+		}
+
 		user_group_settings_edit($header_label);
 
 		break;
 	case 'realms':
+		if (isempty_request_var('id')) {
+			header('Location: user_group_admin.php&header=false');
+		}
+
 		user_group_realms_edit($header_label);
 
 		break;
@@ -1732,10 +1740,18 @@ function group_edit() {
 	case 'permsd':
 	case 'permste':
 	case 'permstr':
+		if (isempty_request_var('id')) {
+			header('Location: user_group_admin.php&header=false');
+		}
+
 		user_group_graph_perms_edit(get_request_var('tab'), $header_label);
 
 		break;
 	case 'members':
+		if (isempty_request_var('id')) {
+			header('Location: user_group_admin.php&header=false');
+		}
+
 		user_group_members_edit($header_label);
 
 		break;
