@@ -288,10 +288,7 @@ if ((($poller_start - $poller_lastrun - 5) > MAX_POLLER_RUNTIME) && ($poller_las
 	cacti_log("WARNING: $task_type is out of sync with the Poller Interval!  The Poller Interval is '$poller_interval' seconds, with a maximum of a '$min_period' second $task_type, but " . number_format_i18n($poller_start - $poller_lastrun, 1) . ' seconds have passed since the last poll!', true, 'POLLER');
 }
 
-db_execute_prepared('REPLACE INTO settings
-	(name, value)
-	VALUES (?, ?)',
-	array('poller_lastrun_' . $poller_id, (int)$poller_start));
+set_config_option('poller_lastrun_' . $poller_id, (int)$poller_start);
 
 /* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
@@ -360,9 +357,10 @@ while ($poller_runs_completed < $poller_runs) {
 	$started_processes = 0;
 	$first_host        = 0;
 	$last_host         = 0;
+	$webroot           = addslashes(($config['cacti_server_os'] == 'win32') ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", '/') : dirname(__FILE__));
 
 	/* update web paths for the poller */
-	db_execute("REPLACE INTO settings (name, value) VALUES ('path_webroot','" . addslashes(($config['cacti_server_os'] == 'win32') ? strtr(strtolower(substr(dirname(__FILE__), 0, 1)) . substr(dirname(__FILE__), 1),"\\", '/') : dirname(__FILE__)) . "')");
+	set_config_option('path_webroot', $webroot);
 
 	/* obtain some defaults from the database */
 	$poller_type = read_config_option('poller_type');
@@ -543,7 +541,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 		if ($poller_id == 1) {
 			/* insert the current date/time for graphs */
-			db_execute("REPLACE INTO settings (name, value) VALUES ('date', NOW())");
+			set_config_option('date', date('Y-m-d H:i:s'));
 
 			/* open a pipe to rrdtool for writing */
 			$rrdtool_pipe = rrd_init();
@@ -618,7 +616,7 @@ while ($poller_runs_completed < $poller_runs) {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			db_execute("REPLACE INTO settings (name,value) VALUES ('stats_recache_$poller_id','RecacheTime:0.0 DevicesRecached:0')");
+			set_config_option('stats_recache_' . $poller_id,'RecacheTime:0.0 DevicesRecached:0');
 		}
 
 		if ($method == 'spine') {
@@ -722,15 +720,9 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 
 	// Insert poller stats into the settings table
 	if ($poller_id > 1) {
-		db_execute_prepared("REPLACE INTO settings
-			(name, value) VALUES
-			('stats_poller_$poller_id', ?)",
-			array($cacti_stats));
+		set_config_option('stats_poller_' . $poller_id, $cacti_stats);
 	} else {
-		db_execute_prepared('REPLACE INTO settings
-			(name, value) VALUES
-			("stats_poller", ?)',
-			array($cacti_stats));
+		set_config_option('stats_poller', $cacti_stats);
 	}
 
 	// Calculate min/max/average timings
