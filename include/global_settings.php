@@ -1540,7 +1540,7 @@ $settings = array(
 			),
 		'boost_rrd_update_enable' => array(
 			'friendly_name' => __('Enable On-demand RRD Updating'),
-			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take effect until after the next polling cycle.'),
+			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take effect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on.'),
 			'method' => 'checkbox',
 			'default' => ''
 			),

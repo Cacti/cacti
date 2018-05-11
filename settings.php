@@ -32,6 +32,7 @@ get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_sear
 switch (get_request_var('action')) {
 case 'save':
 	$errors = array();
+
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
@@ -229,7 +230,24 @@ default:
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
-	$system_tabs = array('general', 'path', 'snmp', 'poller', 'data', 'visual', 'authentication', 'boost', 'spikes', 'mail');
+	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+
+	if ($data_collectors > 1) {
+		set_config_option('boost_rrd_update_enable', 'on');
+	}
+
+	$system_tabs = array(
+		'general',
+		'path',
+		'snmp',
+		'poller',
+		'data',
+		'visual',
+		'authentication',
+		'boost',
+		'spikes',
+		'mail'
+	);
 
 	/* draw the categories tabs on the top of the page */
 	print "<div>\n";
@@ -303,6 +321,7 @@ default:
 	var rrdArchivePath = '';
 	var smtpPath = '';
 	var currentTab = '<?php print $current_tab;?>';
+	var dataCollectors = '<?php print $data_collectors;?>';
 
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
@@ -541,6 +560,11 @@ default:
 				initRRDClean();
 			});
 		} else if (currentTab == 'boost') {
+			if (dataCollectors > 1) {
+				$('#boost_rrd_update_enable').prop('checked', true);
+				$('#boost_rrd_update_enable').prop('disabled', true);
+			}
+
 			initBoostOD();
 			initBoostCache();
 
@@ -617,6 +641,8 @@ default:
 	function initBoostOD() {
 		if ($('#boost_rrd_update_enable').is(':checked')){
 			$('#row_boost_rrd_update_interval').show();
+			$('#row_boost_parallel').show();
+			$('#row_path_boost_log').show();
 			$('#row_boost_rrd_update_max_records').show();
 			$('#row_boost_rrd_update_max_records_per_select').show();
 			$('#row_boost_rrd_update_string_length').show();
@@ -625,6 +651,8 @@ default:
 			$('#row_boost_redirect').show();
 		} else {
 			$('#row_boost_rrd_update_interval').hide();
+			$('#row_boost_parallel').hide();
+			$('#row_path_boost_log').hide();
 			$('#row_boost_rrd_update_max_records').hide();
 			$('#row_boost_rrd_update_max_records_per_select').hide();
 			$('#row_boost_rrd_update_string_length').hide();
