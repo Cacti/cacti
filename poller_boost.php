@@ -104,6 +104,7 @@ if (function_exists('pcntl_signal')) {
 
 /* take time and log performance data */
 $start = microtime(true);
+$rrd_updates = -1;
 
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');
@@ -154,7 +155,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
 
-		if ($rrd_updates != '-1') {
+		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
 			$next_run_time = $current_time + $seconds_offset;
 		} else { /* rollback last run time */
@@ -169,7 +170,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	}
 
 	/* store the next run time so that people understand */
-	if ($rrd_updates != '-1') {
+	if ($rrd_updates > 0) {
 		db_execute("REPLACE INTO settings
 			(name, value) VALUES
 			('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
@@ -191,7 +192,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
 
-		if ($rrd_updates != '-1') {
+		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
 		}
 	}
@@ -233,6 +234,7 @@ function output_rrd_data($start_time, $force = false) {
 		if ($debug){
 			cacti_log('DEBUG: Found lock, so another boost process is running');
 		}
+
 		return -1;
 	}
 
