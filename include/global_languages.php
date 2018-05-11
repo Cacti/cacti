@@ -62,7 +62,7 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 	$cacti_locale_set = false;
 
 	/* look up for user customized language setting stored in Cacti DB */
-	$user_local = read_user_i18n_setting('user_language');
+	$user_locale = read_user_i18n_setting('user_language');
 	if ($user_locale != '') {
 		$user_locale = repair_locale($user_locale);
 
