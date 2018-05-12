@@ -104,6 +104,25 @@ function open_snmp_session($host_id, &$item) {
 	}
 }
 
+function get_max_column_width() {
+	$pcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output WHERE Field='output'");
+	$bcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output_boost WHERE Field='output'");
+
+	if (isset($pcol_data['Type'])) {
+		$pcol = $pcol_data['Type'];
+		$data = explode('(', $pcol);
+		$pmax  = trim($data[1], ')');
+	}
+
+	if (sizeof($bcol_data)) {
+		$bcol = $bcol_data['Type'];
+		$data = explode('(', $bcol);
+		$bmax  = trim($data[1], ')');
+	}
+
+	return min($pmax, $bmax);
+}
+
 function display_version() {
 	$version = get_cacti_version();
 	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
@@ -159,6 +178,7 @@ $debug     = false;
 $mibs      = false;
 $mode      = 'online';
 $poller_id = $config['poller_id'];
+$maxwidth  = get_max_column_width();
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -410,6 +430,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 	$output_array = array();
 	$output_count = 0;
 	$error_ds     = array();
+	$width_dses   = array();
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
@@ -728,6 +749,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			} /* End Switch */
 
 			if (isset($output)) {
+				if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
+					$width_dses[] = $data_source;
+					$width_errors++;
+				}
+
 				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ':'))) {
 					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time));
@@ -741,7 +767,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						(local_data_id, rrd_name, time, output)
 						VALUES ' . implode(', ', $output_array));
 
-					if (read_config_option('boost_redirect') == 'on') {
+					if (read_config_option('boost_redirect') == 'on'
+						&& read_config_option('boost_rrd_update_enable') == 'on') {
 						db_execute('INSERT IGNORE INTO poller_output_boost
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(', ', $output_array));
@@ -765,6 +792,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 	if (sizeof($error_ds)) {
 		cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+	}
+
+	if (sizeof($width_dses)) {
+		cacti_log('WARNING: Long Responses Errors[' . sizeof($width_dses) . '] DS[' . implode(', ', $width_dses) . ']', false, 'POLLER');
 	}
 
 	if ($output_count > 0) {

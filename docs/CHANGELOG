@@ -68,6 +68,7 @@ Cacti CHANGELOG
 -feature: Make all user settings dynamic and allow resetting to default.
 -feature: Change password page provides visible confirmation of password rules
 -feature: Allow ASCII filepath paths to not be found on settings save
+-feature: Provide option to debug width errors where output exceeds column width
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

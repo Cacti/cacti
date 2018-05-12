@@ -971,6 +971,12 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
+		'poller_debug' => array(
+			'friendly_name' => __('Debug Output Width'),
+			'description' => __('If you choose this option, Cacti will check for output that exceeds Cacti\'s ability to store it and issue a warning when it finds it.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'oid_increasing_check_disable' => array(
 			'friendly_name' => __('Disable increasing OID Check'),
 			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
