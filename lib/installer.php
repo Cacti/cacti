@@ -351,7 +351,8 @@ class Installer implements JsonSerializable {
 		foreach ($known_tables as $known) {
 			$table = $known['Name'];
 			$key = $known['Name'];
-			$isSelected = !empty($hasTables) && (!empty(read_config_option('install_table_' . $key)));
+			$option = read_config_option('install_table_' . $key);
+			$isSelected = !empty($hasTables) && (!empty($option));
 			$selected['chk_table_' . $key] = $isSelected;
 			if ($isSelected) {
 				$select_count++;
