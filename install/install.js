@@ -16,7 +16,8 @@ const STEP_BINARY_LOCATIONS = 4;
 const STEP_PERMISSION_CHECK = 5;
 const STEP_DEFAULT_PROFILE = 6;
 const STEP_TEMPLATE_INSTALL = 7;
-const STEP_INSTALL_CONFIRM = 8;
+const STEP_CHECK_TABLES = 8;
+const STEP_INSTALL_CONFIRM = 9;
 const STEP_INSTALL_OLDVERSION = 11;
 const STEP_INSTALL = 97;
 const STEP_COMPLETE = 98;
@@ -234,6 +235,29 @@ function processStepTemplateInstall(StepData) {
 
 }
 
+function processStepCheckTables(StepData) {
+	var tables = StepData.Tables;
+	if (tables.all) {
+		element = $('#selectall');
+		if (element != null && element.length > 0) {
+			element.click();
+		}
+	} else {
+		for (var propName in tables) {
+			if (tables.hasOwnProperty(propName)) {
+				propValue = tables[propName];
+				if (propValue) {
+					element = $('#' + propName);
+					if (element != null && element.length > 0) {
+						element.prop('checked', true);
+					}
+				}
+			}
+		}
+	}
+
+}
+
 function processStepInstallConfirm(StepData) {
 	if ($('#confirm').length) {
 		$('#confirm').click(function() {
@@ -329,6 +353,7 @@ function prepareInstallData(installStep) {
 		else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
 		else if (step == STEP_DEFAULT_PROFILE) prepareStepDefaultProfile(newData);
 		else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
+		else if (step == STEP_CHECK_TABLES) prepareStepCheckTables(newData);
 
 		newData.Step = installStep;
 	}
@@ -379,6 +404,15 @@ function prepareStepDefaultProfile(installData) {
 		installData.Profile = element[0].value;
 	}
 }
+
+function prepareStepCheckTables(installData) {
+	tables = {}
+	$('input[name^="chk_"]').each(function(index,element) {
+		tables[element.id] =$(element).is(':checked');
+	});
+	installData.Tables = tables;
+}
+
 function prepareStepTemplateInstall(installData) {
 	templates = {}
 	$('input[name^="chk_"]').each(function(index,element) {
@@ -447,6 +481,8 @@ function performStep(installStep) {
 				processStepDefaultProfile(data.StepData);
 			} else if (data.Step == STEP_TEMPLATE_INSTALL) {
 				processStepTemplateInstall(data.StepData);
+			} else if (data.Step == STEP_CHECK_TABLES) {
+				processStepCheckTables(data.StepData);
 			} else if (data.Step == STEP_INSTALL_CONFIRM) {
 				processStepInstallConfirm(data.StepData);
 			} else if (data.Step == STEP_INSTALL) {

@@ -5112,6 +5112,14 @@ function get_cacti_version() {
 }
 
 /**
+ * get_cacti_cli_version() {
+ */
+function get_cacti_cli_version() {
+	$version = get_cacti_version();
+	return ($version == 'new_install') ? CACTI_VERSION : $version;
+}
+
+/**
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
