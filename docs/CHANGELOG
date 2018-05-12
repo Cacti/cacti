@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.0
 -issue#186: Cacti does not support jQueryUI 1.12.x
+-issue#983: Import Template Preview is misleading
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
