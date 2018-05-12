@@ -610,7 +610,7 @@ if (sizeof($parms)) {
 				(?, ?)',
 				array($host_id , $template_id));
 
-			echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+			echo 'Graph Added - Graph[' . $returnArray['local_graph_id'] . "] - DS[$dataSourceId]\n";
 		} else {
 			echo "Graph Not Added due to whitelist check failure.\n";
 		}
@@ -716,7 +716,7 @@ if (sizeof($parms)) {
 						}
 					}
 
-					echo 'Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)\n";
+					echo 'Graph Added - Graph[' . $returnArray['local_graph_id'] . "] - DS[$dataSourceId]\n";
 				} else {
 					echo "Graph Not Added due to whitelist check failure.\n";
 				}

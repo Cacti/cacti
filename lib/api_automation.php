@@ -2183,13 +2183,13 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 						}
 					}
 
-					cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Graph Added - graph-id: (' . $returnArray['local_graph_id'] . ") - data-source-ids: ($dataSourceId)", false, 'AUTOM8');
+					cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $returnArray['local_graph_id'] . "], DS[$dataSourceId]", false, 'AUTOM8');
 				}
 			} else {
-				cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
+				cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
 			}
 		} else {
-			cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to whitelist check failure.', false, 'AUTOM8');
+			cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist check failure.', false, 'AUTOM8');
 		}
 	}
 }
@@ -2435,12 +2435,12 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 						}
 					}
 
-					cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Graph Added - graph-id: (' . $return_array['local_graph_id'] . ") - data-source-ids: ($data_source_id)", false, 'AUTOM8');
+					cacti_log('NOTE: Graph Added, Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . "], DS[$data_source_id]", false, 'AUTOM8');
 				} else {
-					cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
+					cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
 				}
 			} else {
-				cacti_log('ERROR: ' . $function . ' Device[' . $host_id . '] Graph Not Added due to whitelist failure.', false, 'AUTOM8');
+				cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to whitelist failure.', false, 'AUTOM8');
 			}
 		}
 	}
