@@ -90,6 +90,7 @@ if (isset($_SESSION['refresh'])) {
 } ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
+	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';

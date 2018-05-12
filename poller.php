@@ -482,6 +482,12 @@ while ($poller_runs_completed < $poller_runs) {
 			$total_procs    = $concurrent_processes;
 		}
 
+		if (read_config_option('path_stderrlog') != '' && $config['cacti_server_os'] != 'win32') {
+			$extra_parms = '>> ' . read_config_option('path_stderrlog') . ' 2>&1';
+		} else {
+			$extra_parms = '';
+		}
+
 		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
 		if ($poller_id > 1) {
@@ -517,7 +523,7 @@ while ($poller_runs_completed < $poller_runs) {
 			$host_count ++;
 
 			if ($change_proc) {
-				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
+				exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
 				usleep(100000);
 
 				$host_count   = 1;
@@ -533,7 +539,7 @@ while ($poller_runs_completed < $poller_runs) {
 		if ($host_count > 1) {
 			$last_host = $item['id'];
 
-			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''));
+			exec_background($command_string, "$extra_args --poller=$poller_id --first=$first_host --last=$last_host" . ($mibs ? ' --mibs':''), $extra_parms);
 			usleep(100000);
 
 			$started_processes++;

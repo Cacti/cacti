@@ -556,6 +556,10 @@ default:
 				initRRDClean();
 			});
 
+			if (cactiServerOS == 'win32') {
+				$('#row_path_stderrlog').hide();
+			}
+
 			$('#rrd_autoclean_method').change(function() {
 				initRRDClean();
 			});

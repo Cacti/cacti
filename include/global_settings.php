@@ -156,6 +156,14 @@ $settings = array(
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255'
 			),
+		'path_stderrlog' => array(
+			'friendly_name' => __('Poller Standard Error Log Path'),
+			'description' => __('If you are having issues with Cacti\'s Data Collectors, set this file path and the Data Collectors standard error will be redirected to this file'),
+			'method' => 'filepath',
+			'file_type' => 'ascii',
+			'default' => $config['base_path'] . '/log/cacti_debug.log',
+			'max_length' => '255'
+			),
 		'logrotate_enabled' => array(
 			'friendly_name' => __('Rotate the Cacti Log'),
 			'description' => __('This option will rotate the Cacti Log periodically.'),
