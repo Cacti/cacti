@@ -226,6 +226,35 @@ function install_setup_get_templates() {
 	return $info;
 }
 
+function install_setup_get_tables() {
+	/* ensure all tables are utf8 enabled */
+	$db_tables = db_fetch_assoc("SHOW TABLES");
+	$t = array();
+	foreach ($db_tables as $tables) {
+		foreach ($tables as $table) {
+			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+			$collation = '';
+			$engine = '';
+			$rows = 0;
+
+			if ($table_status !== false) {
+				$collation = ($table_status['Collation'] != 'utf8mb4_unicode_ci') ? $table_status['Collation'] : '';
+				$engine    = ($table_status['Engine']    == 'MyISAM')             ? $table_status['Engine']    : '';
+				$rows      = $table_status['Rows'];
+			}
+
+			if ($table_status === false || $collation != '' || $engine != '') {
+				$t[$table]['Name'] = $table;
+				$t[$table]['Collation'] = $collation;
+				$t[$table]['Engine'] = $engine;
+				$t[$table]['Rows'] = $rows;
+			}
+		}
+	}
+
+	return $t;
+}
+
 function to_array ($data) {
 	if (is_object($data)) {
 		$data = get_object_vars($data);

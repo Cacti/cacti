@@ -38,9 +38,12 @@ array_shift($parms);
 
 global $debug;
 
+$innodb = false;
+$utf8 = false;
 $debug = false;
 $size  = 300000;
 $rebuild = false;
+$table_name = '';
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -64,6 +67,18 @@ if (sizeof($parms)) {
 			case '--size':
 				$size = $value;
 				break;
+			case '-t':
+			case '--table':
+				$table_name = $value;
+				break;
+			case '-i':
+			case '--innodb':
+				$innodb = true;
+				break;
+			case '-u':
+			case '--utf8':
+				$utf8 = true;
+				break;
 			case '--version':
 			case '-V':
 			case '-v':
@@ -81,45 +96,82 @@ if (sizeof($parms)) {
 		}
 	}
 }
-echo "Converting All Non-Memory Cacti Database Tables to Innodb with Less than '$size' Records\n";
 
-$engines = db_fetch_assoc('SHOW ENGINES');
+if (!($innodb || $utf8)) {
+	print "ERROR: Must select either UTF8 or InnoDB conversion\n\n";
+	display_help();
+	exit;
+}
 
-foreach($engines as $engine) {
-	if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
-		echo "InnoDB Engine is not enabled\n";
+$convert = $innodb ? 'InnoDB' : '';
+if ($utf8) {
+	$convert .= (strlen($convert) ? ' and ' : '') . ' utf8';
+}
+
+echo "Converting Database Tables to $convert with less than '$size' Records\n";
+
+if ($innodb) {
+	$engines = db_fetch_assoc('SHOW ENGINES');
+
+	foreach($engines as $engine) {
+		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
+			echo "InnoDB Engine is not enabled\n";
+			exit;
+		}
+	}
+
+	$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
+
+	if (strtolower($file_per_table['Value']) != 'on') {
+		echo 'innodb_file_per_table not enabled';
 		exit;
 	}
 }
 
-$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
-
-if (strtolower($file_per_table['Value']) != 'on') {
-	echo 'innodb_file_per_table not enabled';
-	exit;
+if (strlen($table_name)) {
+	$tables = db_fetch_assoc('SHOW TABLE STATUS LIKE \''.$table_name .'\'');
+} else {
+	$tables = db_fetch_assoc('SHOW TABLE STATUS');
 }
-
-$tables = db_fetch_assoc('SHOW TABLE STATUS');
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
-		if ($table['Engine'] == 'MyISAM' || ($table['Engine'] == 'InnoDB' && $rebuild)) {
+		$canConvert = $rebuild;
+		if (!$canConvert && $innodb) {
+			$canConvert = $table['Engine'] == 'MyISAM';
+		}
+
+		if (!$canConvert && $utf8) {
+			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
+		}
+
+		if ($canConvert) {
 			if ($table['Rows'] < $size) {
 				echo "Converting Table -> '" . $table['Name'] . "'";
-				$status = db_execute('ALTER TABLE ' . $table['Name'] . ' ENGINE=Innodb');
+
+				$sql = '';
+				if ($utf8) {
+					$sql .= ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+				}
+
+				if ($innodb) {
+					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
+				}
+
+				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . $sql);
 				echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
 			} else {
 				echo "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
 			}
 		} else {
-			echo "Skipping Table ->'" . $table['Name'] . "\n";
+			echo "Skipping Table -> '" . $table['Name'] . "'\n";
 		}
 	}
 }
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	echo "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
@@ -127,9 +179,13 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: convert_innodb.php [--debug] [--site=N] \n\n";
+	echo "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild]\n\n";
 	echo "A utility to convert a Cacti Database from MyISAM to the InnoDB table format\n\n";
+	echo "Required (one or more):\n";
+	echo "-i | --innodb  - Convert any MyISAM tables to InnoDB\n";
+	echo "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n\n";
 	echo "Optional:\n";
+	echo "-t | --table=N - The name of a single table to change\n";
 	echo "-s | --size=N  - The largest table size in records to convert\n";
 	echo "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
 	echo "-d | --debug   - Display verbose output during execution\n\n";

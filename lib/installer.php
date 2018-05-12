@@ -2,8 +2,6 @@
 include(dirname(__FILE__) . '/../lib/poller.php');
 
 function tmp_log($filename, $data, $flags = 0) {
-	return;
-
 	global $config;
 	file_put_contents($config['base_path'] .'/log/'.$filename, $data, $flags);
 }
@@ -30,7 +28,8 @@ class Installer implements JsonSerializable {
 	const STEP_PERMISSION_CHECK = 5;
 	const STEP_DEFAULT_PROFILE = 6;
 	const STEP_TEMPLATE_INSTALL = 7;
-	const STEP_INSTALL_CONFIRM = 8;
+	const STEP_CHECK_TABLES = 8;
+	const STEP_INSTALL_CONFIRM = 9;
 	const STEP_INSTALL_OLDVERSION = 11;
 	const STEP_INSTALL = 97;
 	const STEP_COMPLETE = 98;
@@ -46,6 +45,7 @@ class Installer implements JsonSerializable {
 	const PROGRESS_START = 1;
 	const PROGRESS_UPGRADES_BEGIN = 2;
 	const PROGRESS_UPGRADES_END = 30;
+	const PROGRESS_TABLES_BEGIN = 35;
 	const PROGRESS_TEMPLATES_BEGIN = 41;
 	const PROGRESS_TEMPLATES_END = 60;
 	const PROGRESS_DEVICE_START = 61;
@@ -75,6 +75,7 @@ class Installer implements JsonSerializable {
 	private $theme;
 	private $locales;
 	private $language;
+	private $tables;
 
 	private $buttonNext = null;
 	private $buttonPrevious = null;
@@ -124,6 +125,7 @@ class Installer implements JsonSerializable {
 
 		$this->eula      = read_config_option('install_eula', true);
 		$this->templates = $this->getTemplates();
+		$this->tables    = $this->getTables();
 		$this->locales   = get_installed_locales();
 		$this->language  = read_user_setting('user_language', get_new_user_default_language(), true);
 		$this->paths     = install_file_paths();
@@ -197,6 +199,9 @@ class Installer implements JsonSerializable {
 					break;
 				case 'Templates':
 					$this->setTemplates($value);
+					break;
+				case 'Tables':
+					$this->setTables($value);
 					break;
 				case 'Paths':
 					$this->setPaths($value);
@@ -334,6 +339,48 @@ class Installer implements JsonSerializable {
 			}
 
 			set_config_option('install_has_templates', true);
+		}
+	}
+
+	private function getTables() {
+		$known_tables = install_setup_get_tables();
+		$db_tables = db_fetch_assoc('SELECT name, value FROM settings where name like \'install_table_%\'');
+		$hasTables = read_config_option('install_has_tables', true);
+		$selected = array();
+		$select_count = 0;
+		foreach ($known_tables as $known) {
+			$table = $known['Name'];
+			$key = $known['Name'];
+			$isSelected = !empty($hasTables) && (!empty(read_config_option('install_table_' . $key)));
+			$selected['chk_table_' . $key] = $isSelected;
+			if ($isSelected) {
+				$select_count++;
+			}
+		}
+		$selected['all'] = ($select_count == count($selected) || empty($hasTables));
+
+		return $selected;
+	}
+
+	private function setTables($param_tables = array()) {
+		if (is_array($param_tables)) {
+			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
+			$known_tables = install_setup_get_tables();
+			tmp_log('tables.log',"Updating Tables\n");
+			tmp_log('tables.log',"Parameter data:\n".var_export($param_tables, true)."\n", FILE_APPEND);
+			foreach ($known_tables as $known) {
+				$name = $known['Name'];
+				$key = 'chk_table_' . $name;
+				tmp_log('tables.log',"Checking table '$name' against key $key ...\n", FILE_APPEND);
+				tmp_log('tables.log',"Table: ".str_replace("\n"," ", var_export($known, true))."\n", FILE_APPEND);
+				if (!empty($param_tables[$key])) {
+					$table = $param_tables[$key];
+					tmp_log('tables.log',"Set table: install_table_$name = $name\n", FILE_APPEND);
+					set_config_option("install_table_$name", $name);
+				}
+			}
+
+			set_config_option('install_has_tables', true);
 		}
 	}
 
@@ -626,10 +673,8 @@ class Installer implements JsonSerializable {
 				/* checkdependencies - send to install/upgrade */
 				if ($this->mode == Installer::MODE_UPGRADE) {
 					$this->buttonNext->Text = __('Upgrade');
-					$this->stepPrevious = Installer::STEP_INSTALL_TYPE;
 				} elseif ($this->mode == Installer::MODE_DOWNGRADE) {
 					$this->buttonNext->Text = __('Downgrade');
-					$this->stepPrevious = Installer::STEP_INSTALL_TYPE;
 				}
 				break;
 
@@ -644,7 +689,7 @@ class Installer implements JsonSerializable {
 
 					case Installer::MODE_UPGRADE:
 					case Installer::MODE_DOWNGRADE:
-						$this->stepNext = Installer::STEP_INSTALL_CONFIRM;
+						$this->stepNext = Installer::STEP_CHECK_TABLES;
 						break;
 				}
 
@@ -667,7 +712,9 @@ class Installer implements JsonSerializable {
 				} else {
 					$this->stepNext = Installer::STPE_INSTALL;
 				}
+				break;
 
+			case Installer::STEP_CHECK_TABLES:
 				if ($this->mode == Installer::MODE_UPGRADE ||
 				    $this->mode == Installer::MODE_DOWNGRADE) {
 					$this->stepPrevious = Installer::STEP_INSTALL_TYPE;
@@ -715,6 +762,8 @@ class Installer implements JsonSerializable {
 				return $this->processStepDefaultProfile();
 			case Installer::STEP_TEMPLATE_INSTALL:
 				return $this->processStepTemplateInstall();
+			case Installer::STEP_CHECK_TABLES:
+				return $this->processStepCheckTables();
 			case Installer::STEP_INSTALL_CONFIRM:
 				return $this->processStepInstallConfirm();
 			case Installer::STEP_INSTALL:
@@ -1377,6 +1426,53 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public function processStepCheckTables() {
+		$output = Installer::sectionTitle(__('Table Setup'));
+
+		$tables = install_setup_get_tables();
+
+		if (sizeof($tables)) {
+			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
+			$output .= Installer::sectionNote(__('WARNING: Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
+
+			$show_warning=false;
+			ob_start();
+			html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
+			html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
+			foreach ($tables as $id => $p) {
+				$enabled = ($p['Rows'] < 300000 ? true : false);
+				$style = ($enabled ? '' : 'text-decoration: line-through;');
+				form_alternate_row('line' . $id, true, $enabled);
+				form_selectable_cell($p['Name'], $id, '', $style);
+				form_selectable_cell($p['Collation'], $id, '', $style);
+				form_selectable_cell($p['Engine'], $id, '', $style);
+				form_selectable_cell($p['Rows'], $id, '', $style);
+				if ($enabled) {
+					form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
+				} else {
+					$show_warning=true;
+					form_selectable_cell('', $id, '', $style);
+				}
+				form_end_row();
+			}
+			html_end_box(false);
+			$output .= Installer::sectionNormal(ob_get_contents());
+
+			if ($show_warning) {
+				$output .= Installer::sectionTitleError(__('WARNING'));
+				$output .= Installer::sectionNormal(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion.'));
+				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_database.php -u -i');
+			}
+
+			ob_end_clean();
+		} else {
+			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 compliant'));
+		}
+
+		$this->stepData = array('Tables' => $this->tables);
+		return $output;
+	}
+
 	public function processStepInstallConfirm() {
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
@@ -1665,6 +1761,8 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_START);
 
+		$this->convertDatabase();
+
 		if (!$this->hasRemoteDatabaseInfo()) {
 			$this->installTemplate();
 		}
@@ -1876,6 +1974,29 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_DEVICE_END);
 		return '';
+	}
+
+	private function convertDatabase() {
+		global $config;
+
+		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
+		if (sizeof($tables)) {
+			cacti_log(sprintf('Found %s tables to convert', sizeof($tables)), false, 'INSTALL:');
+			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
+			$i = 0;
+			foreach ($tables as $table) {
+				$i++;
+				$name = $table['value'];
+				cacti_log(sprintf('Attempting to convert table #%s \'%s\'', $i, $name), false, 'INSTALL:');
+				$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
+					' --table=' . cacti_escapeshellarg($name) .
+					' --utf8 --innodb');
+
+				cacti_log(sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results), false, 'INSTALL:');
+			}
+		} else {
+			cacti_log(sprintf('No tables where found or selected for conversion'), false, 'INSTALL:');
+		}
 	}
 
 	private function upgradeDatabase() {
