@@ -259,7 +259,20 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
    @arg $max_chars - the maximum number of characters to substitute
    @returns - the original string with all of the variable substitutions made */
 function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_index, $max_chars = 0) {
-	$snmp_cache_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' field_name, field_value FROM host_snmp_cache WHERE host_id = ? AND snmp_query_id = ? AND snmp_index = ?', array($host_id, $snmp_query_id, $snmp_index));
+	if ($host_id > 0) {
+		$snmp_cache_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' field_name, field_value
+			FROM host_snmp_cache
+			WHERE host_id = ?
+			AND snmp_query_id = ?
+			AND snmp_index = ?',
+			array($host_id, $snmp_query_id, $snmp_index));
+	} else {
+		$snmp_cache_data = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' field_name, field_value
+			FROM host_snmp_cache
+			WHERE snmp_query_id = ?
+			AND snmp_index = ?',
+			array($snmp_query_id, $snmp_index));
+	}
 
 	if (sizeof($snmp_cache_data) > 0) {
 		foreach ($snmp_cache_data as $data) {

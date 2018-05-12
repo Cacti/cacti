@@ -126,8 +126,8 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 			return;
 		}
 	} elseif ($data['site'] > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
 			WHERE parent = ?
 			AND graph_tree_id = ?
 			AND site_id = ?',
@@ -254,11 +254,11 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
  * @arg $title - The branch name to search for
  * @returns - the id of the branch if it exists */
 function api_tree_branch_exists($tree_id, $parent, $title) {
-	$id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_tree_items 
-		WHERE graph_tree_id = ? 
-		AND parent = ? 
-		AND title = ?', 
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM graph_tree_items
+		WHERE graph_tree_id = ?
+		AND parent = ?
+		AND title = ?',
 		array($tree_id, $parent, $title));
 
 	if ($id > 0) {
@@ -274,11 +274,11 @@ function api_tree_branch_exists($tree_id, $parent, $title) {
  * @arg $sist_id - The host_id to search for
  * @returns - the id of the leaf if it exists */
 function api_tree_site_exists($tree_id, $parent, $host_id) {
-	$id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_tree_items 
-		WHERE graph_tree_id = ? 
-		AND parent = ? 
-		AND site_id = ?', 
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM graph_tree_items
+		WHERE graph_tree_id = ?
+		AND parent = ?
+		AND site_id = ?',
 		array($tree_id, $parent, $site_id));
 
 	if ($id > 0) {
@@ -294,11 +294,11 @@ function api_tree_site_exists($tree_id, $parent, $host_id) {
  * @arg $host_id - The host_id to search for
  * @returns - the id of the leaf if it exists */
 function api_tree_host_exists($tree_id, $parent, $host_id) {
-	$id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_tree_items 
-		WHERE graph_tree_id = ? 
-		AND parent = ? 
-		AND host_id = ?', 
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM graph_tree_items
+		WHERE graph_tree_id = ?
+		AND parent = ?
+		AND host_id = ?',
 		array($tree_id, $parent, $host_id));
 
 	if ($id > 0) {
@@ -314,11 +314,11 @@ function api_tree_host_exists($tree_id, $parent, $host_id) {
  * @arg $local_graph_id - The local_graph_id to search for
  * @returns - the id of the leaf if it exists */
 function api_tree_graph_exists($tree_id, $parent, $local_graph_id) {
-	$id = db_fetch_cell_prepared('SELECT id 
-		FROM graph_tree_items 
-		WHERE graph_tree_id = ? 
-		AND parent = ? 
-		AND local_graph_id = ?', 
+	$id = db_fetch_cell_prepared('SELECT id
+		FROM graph_tree_items
+		WHERE graph_tree_id = ?
+		AND parent = ?
+		AND local_graph_id = ?',
 		array($tree_id, $parent, $local_graph_id));
 
 	if ($id > 0) {
@@ -353,9 +353,9 @@ function api_tree_delete_node($tree_id, $node_id) {
 			api_tree_delete_node_content($tree_id, $data['leaf_id']);
 		}
 
-		db_execute_prepared('DELETE FROM graph_tree_items 
-			WHERE graph_tree_id = ? 
-			AND id = ?', 
+		db_execute_prepared('DELETE FROM graph_tree_items
+			WHERE graph_tree_id = ?
+			AND id = ?',
 			array($tree_id, $data['leaf_id']));
 	}
 }
@@ -676,7 +676,7 @@ function api_tree_get_node($tree_id, $node_id, $editing = false) {
  * @arg $sort_children - The sort type in the case of a leaf
  * @arg $propagate_changes - Wether the changes should be cascaded through all children
  * @returns - boolean true or false depending on the outcome of the operation */
-function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id, 
+function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, $local_graph_id,
 	$host_id, $site_id, $host_grouping_type, $sort_children_type, $propagate_changes) {
 	global $config;
 
@@ -686,33 +686,33 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
 	//api_tree_get_lock('tree-lock', 10);
 
 	if ($local_graph_id > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE local_graph_id = ? 
-			AND parent = ? 
-			AND graph_tree_id = ?', 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE local_graph_id = ?
+			AND parent = ?
+			AND graph_tree_id = ?',
 			array($local_graph_id, $parent_tree_item_id, $tree_id));
 
 		if ($exists) {
 			return false;
 		}
 	} elseif ($site_id > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE site_id = ? 
-			AND parent = ? 
-			AND graph_tree_id = ?', 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE site_id = ?
+			AND parent = ?
+			AND graph_tree_id = ?',
 			array($site_id, $parent_tree_item_id, $tree_id));
 
 		if ($exists) {
 			return false;
 		}
 	} elseif ($host_id > 0) {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM graph_tree_items 
-			WHERE host_id = ? 
-			AND parent = ? 
-			AND graph_tree_id = ?', 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM graph_tree_items
+			WHERE host_id = ?
+			AND parent = ?
+			AND graph_tree_id = ?',
 			array($host_id, $parent_tree_item_id, $tree_id));
 
 		if ($exists) {
@@ -753,16 +753,21 @@ function api_tree_item_save($id, $tree_id, $type, $parent_tree_item_id, $title, 
    @returns - a string reprenting the type of the tree item. valid return
      values are 'header', 'graph', and 'host' */
 function api_tree_get_item_type($tree_item_id) {
-	$tree_item = db_fetch_row_prepared('SELECT title,local_graph_id,host_id FROM graph_tree_items WHERE id = ?', array($tree_item_id));
+	$tree_item = db_fetch_row_prepared('SELECT title, local_graph_id, site_id, host_id
+		FROM graph_tree_items
+		WHERE id = ?',
+		array($tree_item_id));
 
 	if (!sizeof($tree_item)) {
 		return '';
 	} elseif ($tree_item['local_graph_id'] > 0) {
 		return 'graph';
-	} elseif ($tree_item['title'] != '') {
-		return 'header';
+	} elseif ($tree_item['site_id'] > 0) {
+		return 'site';
 	} elseif ($tree_item['host_id'] > 0) {
 		return 'host';
+	} elseif ($tree_item['title'] != '') {
+		return 'header';
 	}
 
 	return '';

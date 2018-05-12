@@ -1293,15 +1293,23 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	include_once($config['library_path'] . '/sort.php');
 
 	if (empty($data_query_id)) {
-		return array('' => 'Unknown Index');
+		return array('' => __('Unknown Index'));
 	}
 
 	/* from the xml; cached in 'host_snmp_query' */
-	$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
-		FROM host_snmp_query
-		WHERE host_id = ?
-		AND snmp_query_id = ?',
-		array($host_id, $data_query_id));
+	if ($host_id > 0) {
+		$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
+			FROM host_snmp_query
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($host_id, $data_query_id));
+	} else {
+		$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
+			FROM host_snmp_query
+			WHERE snmp_query_id = ?
+			LIMIT 1',
+			array($data_query_id));
+	}
 
 	/* in case no unique index is available, fallback to first field in XML */
 	if ($sort_cache['sort_field'] == ''){
@@ -1316,17 +1324,30 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	/* get a list of data query indexes AND the field value that we are supposed
 	to sort */
-	$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT gl.snmp_index, hsc.field_value
-		FROM graph_local AS gl
-		INNER JOIN host_snmp_cache AS hsc
-		ON gl.host_id=hsc.host_id
-		AND gl.snmp_query_id=hsc.snmp_query_id
-		AND gl.snmp_index=hsc.snmp_index
-		WHERE gl.snmp_query_id = ?
-		AND gl.host_id = ?
-		AND hsc.field_name = ?
-		GROUP BY gl.snmp_index',
-		array($data_query_id, $host_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	if ($host_id > 0) {
+		$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT gl.snmp_index, hsc.field_value
+			FROM graph_local AS gl
+			INNER JOIN host_snmp_cache AS hsc
+			ON gl.host_id=hsc.host_id
+			AND gl.snmp_query_id=hsc.snmp_query_id
+			AND gl.snmp_index=hsc.snmp_index
+			WHERE gl.snmp_query_id = ?
+			AND gl.host_id = ?
+			AND hsc.field_name = ?
+			GROUP BY gl.snmp_index',
+			array($data_query_id, $host_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	} else {
+		$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT gl.snmp_index, hsc.field_value
+			FROM graph_local AS gl
+			INNER JOIN host_snmp_cache AS hsc
+			ON gl.host_id=hsc.host_id
+			AND gl.snmp_query_id=hsc.snmp_query_id
+			AND gl.snmp_index=hsc.snmp_index
+			WHERE gl.snmp_query_id = ?
+			AND hsc.field_name = ?
+			GROUP BY gl.snmp_index',
+			array($data_query_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	}
 
 	/* sort the data using the 'data query index' sort algorithm */
 	uasort($sort_field_data, 'usort_data_query_index');
