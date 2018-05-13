@@ -6,6 +6,7 @@ var resltimeTimer   = '';
 var originalRefresh = 0;
 var timeOffset;
 var realtimeTimer;
+var realtimePopout  = false;
 var rtWidth         = 0;
 var rtHeight        = 0;
 var url;
@@ -30,6 +31,8 @@ function imageOptionsChanged(action) {
 	graph_start    = $("#graph_start").val();
 	graph_end      = 0;
 	ds_step        = $("#ds_step").val();
+	size           = $('#size').val();
+	isThumb        = $('#thumbnails').is(':checked');
 
 	if ($('#local_graph_id').length) {
 		local_graph_id = $('#local_graph_id').val();
@@ -45,17 +48,61 @@ function imageOptionsChanged(action) {
 		rtHeight = $(window).height()+50;
 	}
 
-	url="graph_realtime.php?top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count;
+	if (action == 'countdown') {
+		url="graph_realtime.php?action=countdown&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id;
+	} else if (action == 'initial') {
+		url="graph_realtime.php?action=initial&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count+"&size="+size;
+	} else {
+		url="graph_realtime.php?action="+action+"&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count+"&size="+size+"&graph_nolegend="+isThumb;
+	}
 
 	Pace.stop;
 
 	$.getJSON(url)
 		.done(function(data) {
-			$('#image').empty().append('<img class="realtimeimage" src="data:image/png;base64,'+data.data+'"/>');
+			$('#image').empty().append('<img id="rimage" class="realtimeimage" src="data:image/png;base64,'+data.data+'"/>');
+			if (realtimePopout) {
+				setRealtimeWindowSize();
+				$('#ds_step').val(data.ds_step);
+				if ($('#ds_step').selectmenu('instance') !== undefined) {
+					$('#ds_step').selectmenu('refresh');
+				}
+
+				$('#graph_start').val(Math.abs(data.graph_start));
+				if ($('#graph_start').selectmenu('instance') !== undefined) {
+					$('#graph_start').selectmenu('refresh');
+				}
+
+				$('#size').val(data.size);
+				if ($('#size').selectmenu('instance') !== undefined) {
+					$('#size').selectmenu('refresh');
+				}
+
+				if (data.thumbnails == 'true') {
+					$('#thumbnails').prop('checked', true);
+				} else {
+					$('#thumbnails').prop('checked', false);
+				}
+			}
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
 		});
+}
+
+function setRealtimeWindowSize() {
+	if (realtimePopout == true) {
+		/* set the window size */
+		height1 = $('#rtfilter').outerHeight() + 60;
+		height2 = $('#rimage').outerHeight() + 30;
+		width   = $('#rimage').outerWidth() + 40;
+
+		if (width > 60) {
+			window.outerHeight = height1+height2;
+			window.outerWidth  = width
+			window.resizeTo(width, height1+height2);
+		}
+	}
 }
 
 function stopRealtime() {
@@ -126,9 +173,9 @@ function realtimeGrapher() {
 	graph_start = $('#graph_start').val();
 	graph_end   = 0;
 	ds_step     = $('#ds_step').val();
+	size        = $('#size').val();
 	inRealtime  = false;
-
-    isThumb   = $('#thumbnails').is(':checked');
+    isThumb     = $('#thumbnails').is(':checked');
 
 	for (key in realtimeArray) {
 		if (realtimeArray[key] == true) {
@@ -147,7 +194,7 @@ function realtimeGrapher() {
 			Pace.ignore(function() {
 				position = $('#wrapper_'+local_graph_id).find('img').position();
 
-				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count)
+				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 					.done(function(data) {
 						results = $.parseJSON(data);
 

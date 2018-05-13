@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#1608: Possible boost race conditions
 -issue#1609: Remote pollers update 'stats_poller' on main poller
 -issue#1617: Editing a data query results in missing $header variable
+-issue#1621: Realtime Popup can cause automatic logout
 -issue#1626: httpd-error.log have message about Fontconfig
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling

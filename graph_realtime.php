@@ -46,31 +46,37 @@ case 'countdown':
 	get_filter_request_var('graph_height');
 	get_filter_request_var('graph_width');
 	get_filter_request_var('local_graph_id');
+	get_filter_request_var('size');
 	get_filter_request_var('ds_step');
 	get_filter_request_var('count');
 	get_filter_request_var('top');
 	get_filter_request_var('left');
-	if (isset_request_var('graph_nolegend')) {
-		set_request_var('graph_nolegend', 'true');
-	}
 	/* ==================================================== */
 
 	switch (get_request_var('action')) {
 	case 'init':
-		load_current_session_value('ds_step',     'sess_realtime_ds_step',     read_config_option('realtime_interval'));
-		load_current_session_value('graph_start', 'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('size',           'sess_realtime_size',        100);
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
 
 		break;
 	case 'timespan':
-		load_current_session_value('graph_start', 'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
 
 		break;
 	case 'interval':
-		load_current_session_value('ds_step',     'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('size',           'sess_realtime_size',        100);
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
 
 		break;
 	case 'countdown':
-		/* do nothing */
+		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('size',           'sess_realtime_size',        100);
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
 
 		break;
 	}
@@ -95,10 +101,34 @@ case 'countdown':
 	}
 
 	/* override: skip drawing the legend? */
-	if (!isempty_request_var('graph_nolegend')) {
-		$graph_data_array['graph_nolegend'] = get_request_var('graph_nolegend');
-		$graph_data_array['graph_width']    = read_user_setting('default_width');
-		$graph_data_array['graph_height']   = read_user_setting('default_height');
+	if (get_request_var('graph_nolegend') == 'true') {
+		$graph_data_array['graph_nolegend'] = 'true';
+	}
+
+	if (isset_request_var('size') && get_request_var('size') != '') {
+		$_SESSION['sess_realtime_size'] = get_request_var('size');
+		$size = get_request_var('size');
+	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
+		$size = $_SESSION['sess_realtime_size'];
+	} else {
+		$size = 100;
+	}
+
+	if (isset_request_var('local_graph_id')) {
+		$graph_data = db_fetch_row_prepared('SELECT width, height
+			FROM graph_templates_graph
+			WHERE local_graph_id = ?',
+			array(get_request_var('local_graph_id')));
+
+		if (sizeof($graph_data)) {
+			$graph_data_array['graph_height'] = $graph_data['height'];
+			$graph_data_array['graph_width']  = $graph_data['width'];
+		}
+	}
+
+	if (isset_request_var('size') && get_request_var('size') < 100) {
+		$graph_data_array['graph_height'] = $graph_data_array['graph_height'] * $size / 100;
+		$graph_data_array['graph_width']  = $graph_data_array['graph_width']  * $size / 100;
 	}
 
 	/* override: graph start */
@@ -151,6 +181,8 @@ case 'countdown':
 		'left'           => get_request_var('left'),
 		'ds_step'        => (isset($_SESSION['sess_realtime_ds_step']) ? $_SESSION['sess_realtime_ds_step']:$graph_data_array['ds_step']),
 		'graph_start'    => (isset($_SESSION['sess_realtime_graph_start']) ? $_SESSION['sess_realtime_graph_start']:$graph_data_array['graph_start']),
+		'size'           => (isset($_SESSION['sess_realtime_size']) ? $_SESSION['sess_realtime_size']:100),
+		'thumbnails'     => (isset($_SESSION['sess_realtime_nolegend']) ? $_SESSION['sess_realtime_nolegend']:'false'),
 		'data'           => (isset($data) ? $data:'')
 	);
 
@@ -164,6 +196,7 @@ case 'view':
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
 	}
+
 	exit;
 	break;
 }
@@ -172,6 +205,7 @@ case 'view':
 get_filter_request_var('ds_step');
 get_filter_request_var('local_graph_id');
 get_filter_request_var('graph_start');
+get_filter_request_var('size');
 /* ==================================================== */
 
 $init = '';
@@ -213,15 +247,25 @@ if (read_config_option('realtime_enabled') == '') {
 
 $selectedTheme = get_selected_theme();
 
+$sizes = array(
+	'100' => '100%',
+	'90'  => '90%',
+	'80'  => '80%',
+	'70'  => '70%',
+	'60'  => '60%',
+	'50'  => '50%',
+	'40'  => '40%'
+);
+
 ?>
 <html>
 <head>
 	<?php html_common_header(__('Cacti Real-time Graphing'));?>
     <?php include($config['base_path'] . '/include/global_session.php'); ?>
 </head>
-<body class='center'>
+<body>
 <form method='post' action='graph_popup_rt.php' id='gform'>
-	<div class='cactiTable'>
+	<div id='rtfilter' class='cactiTable'>
 		<table class='filterTable center'>
 			<tr>
 				<td>
@@ -242,7 +286,7 @@ $selectedTheme = get_selected_theme();
 					<?php print __('Refresh');?>
 				</td>
 				<td>
-					<select id='ds_step' onChange="imageOptionsChanged('interval')">
+					<select id='ds_step' onChange='imageOptionsChanged("interval")'>
 					<?php
 					foreach ($realtime_refresh as $interval => $text) {
 						printf('<option value="%d"%s>%s</option>',
@@ -252,6 +296,30 @@ $selectedTheme = get_selected_theme();
 					?>
 					</select>
 				</td>
+			</td>
+		</table>
+		<table class='filterTable center'>
+			<tr>
+				<td>
+					<?php print __('Size');?>
+				</td>
+				<td>
+					<select id='size' onChange='imageOptionsChanged("interval")'>
+					<?php
+					foreach ($sizes as $key => $value) {
+						printf('<option value="%d"%s>%s</option>',
+							$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
+						);
+					}
+					?>
+					</select>
+				</td>
+				<td>
+					<label for='thumbnails'><?php print __('Thumbnails');?></label>
+				</td>
+				<td>
+					<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
+				</td>
 			</tr>
 			<tr>
 				<td align='center' colspan='6'>
@@ -260,7 +328,7 @@ $selectedTheme = get_selected_theme();
 			</tr>
 		</table>
 	</div>
-	<div id='image' style='padding:2px;'>
+	<div id='image' class='center' style='padding:2px;'>
 		<i id='imaging' style='font-size:40px;' class='fa fa-spin fa-circle-notch'></i>
 	</div>
 	<input type='hidden' id='url_path' name='url_path' value='<?php echo $config['url_path'];?>'/>
@@ -271,7 +339,10 @@ $selectedTheme = get_selected_theme();
 	var ds_step = 0;
 	var sizeset = false;
 	var count   = 0;
-	var browser = '';
+	var realtimePopout = true;
+	var refreshIsLogout= false;
+	var refreshPage=urlPath+'/graph_realtime.php?action=countdown';
+	var refreshMSeconds=999999999;
 
 	function countdown_update() {
 		ds_step--;
@@ -282,31 +353,9 @@ $selectedTheme = get_selected_theme();
 			sizeset = false;
 		}
 
+		setRealtimeWindowSize();
+
 		$('#countdown').html(ds_step + ' <?php print __('seconds left.');?>');
-
-		browser = realtimeDetectBrowser();
-
-		/* set the window size */
-		height = $('.realtimeimage').height();
-		width  = $('.realtimeimage').width();
-
-		if (height > 40) {
-			if (browser == 'IE') {
-				width  = width  + 20;
-				height = height + 40;
-			} else {
-				width  = width  + 20;
-				height = height + 120;
-			}
-
-			if (sizeset == false) {
-				window.outerHeight = height;
-				window.outerWidth  = width;
-				window.resizeTo(width, height);
-
-				sizeset = true;
-			}
-		}
 
 		count++;
 
