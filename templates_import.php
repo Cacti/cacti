@@ -29,18 +29,17 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-switch (get_request_var('action')) {
-	case 'save':
-		form_save();
+$action = get_request_var('action');
+$is_save = isset_request_var('save_component_import');
 
-		break;
-	default:
-		top_header();
+if ($is_save && $action == 'save') {
+	form_save();
+} else {
+	top_header();
 
-		import();
+	import();
 
-		bottom_footer();
-		break;
+	bottom_footer();
 }
 
 /* --------------------------
@@ -107,33 +106,30 @@ function import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		import_display_results($_SESSION['import_debug_info'], array(), true, get_filter_request_var('preview'));
 
+		form_save_button('','close');
 		kill_session_var('import_debug_info');
+	} else {
+		html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
-		$display_hideme = true;
-	}
+		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+		if (empty($default_profile)) {
+			$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+		}
 
-	html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
+		$fields_template_import['import_data_source_profile']['default'] = $default_profile;
 
-	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
-	if (empty($default_profile)) {
-		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
-	}
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => $fields_template_import
+			)
+		);
 
-	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
+		html_end_box(true, true);
 
-	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => $fields_template_import
-		)
-	);
+		form_hidden_box('save_component_import','1','');
 
-	html_end_box(true, true);
-
-	form_hidden_box('save_component_import','1','');
-
-	form_save_button('', 'import');
-
+		form_save_button('','import');
 	?>
 	<script type='text/javascript'>
 	$(function() {
@@ -147,5 +143,6 @@ function import() {
 	});
 	</script>
 	<?php
+	}
 }
 
