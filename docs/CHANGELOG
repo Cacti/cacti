@@ -40,6 +40,7 @@ Cacti CHANGELOG
 -issue: Graph List View was not fully responsive
 -issue: Typo in Dutch translations when an error occurred while downgrading
 -feature#122: Support a Site Branch Type
+-feature#289: Allow external nologin access for Realtime Graphs
 -feature#973: Obtain users email and full name from ldap 
 -feature#1347: Update automation logging to work better
 -feature#1142: Add Site dropdown to the Graphs and Data Source pages
