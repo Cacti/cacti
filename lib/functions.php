@@ -542,6 +542,28 @@ function is_error_message() {
 	return false;
 }
 
+/* get_message_type - finds the message and returns it's type
+   @returns - (string) the message type 'info', 'error' or 'csrf' */
+function get_message_type() {
+	global $config, $messages;
+
+	if (isset($_SESSION['sess_messages'])) {
+		if (is_array($_SESSION['sess_messages'])) {
+			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
+				if (isset($messages[$current_message_id]['type'])) {
+					return $messages[$current_message_id]['type'];
+				} else {
+					return 'unknown';
+				}
+			}
+		} else {
+			return 'unknown';
+		}
+	}
+
+	return 'unknown';
+}
+
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id) {
@@ -562,11 +584,7 @@ function display_output_messages() {
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		if (is_error_message()) {
-			$omessage['type'] = 'error';
-		} else {
-			$omessage['type'] = 'info';
-		}
+		$omessage['type'] = get_message_type();
 
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {

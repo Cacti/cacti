@@ -390,6 +390,10 @@ if ($config['is_web']) {
 		unset($_SESSION['selected_theme']);
 	}
 
+	if (isset_request_var('csrf_timeout')) {
+		raise_message('csrf_ptimeout');
+	}
+
 	if (read_config_option('force_https') == 'on') {
 		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
 			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");

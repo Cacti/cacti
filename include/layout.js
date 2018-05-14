@@ -696,6 +696,11 @@ function displayMessages() {
 			};
 
 			sessionMessageOpen = {};
+		} else if (sessionMessage.type == 'csrf') {
+			href = document.location.href;
+			href = href + (href.indexOf('?') > 0 ? '&':'?') + 'csrf_timeout=true';
+			document.location = href;
+			return false;
 		} else {
 			title = sessionMessageTitle;
 			header = sessionMessageSave;
