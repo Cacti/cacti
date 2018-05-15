@@ -191,6 +191,8 @@ case 'changepassword':
 
 		kill_session_var('sess_change_password');
 
+		raise_message('password_success');
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
 
 		/* if no console permissions show graphs otherwise, pay attention to user setting */
