@@ -2407,7 +2407,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		dspc.consolidation_function_id AS cf,
 		dsp.x_files_factor AS xff,
 		dspr.steps AS steps,
-		dspr.rows AS xrows
+		dspr.rows AS `rows` 
 		FROM data_source_profiles AS dsp
 		INNER JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id
@@ -2583,12 +2583,12 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 						$diff['rra'][$file_rra_id]['xff'] = __("XFF for cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xff']);
 					}
 
-					if ($cacti_rra['xrows'] != $file_rra['rows'] && $resize) {
-						$diff['rra'][$file_rra_id]['rows'] = __("Number of rows for Cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['xrows']);
-						if ($cacti_rra['xrows'] > $file_rra['rows']) {
-							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['xrows'] - $file_rra['rows']);
+					if ($cacti_rra['rows'] != $file_rra['rows'] && $resize) {
+						$diff['rra'][$file_rra_id]['rows'] = __("Number of rows for Cacti RRA id '%s' should be '%s'", $cacti_rra_id, $cacti_rra['rows']);
+						if ($cacti_rra['rows'] > $file_rra['rows']) {
+							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' GROW ' . ($cacti_rra['rows'] - $file_rra['rows']);
 						} else {
-							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' SHRINK ' . ($file_rra['rows'] - $cacti_rra['xrows']);
+							$diff['resize'][] = $info['filename'] . ' ' . $cacti_rra_id . ' SHRINK ' . ($file_rra['rows'] - $cacti_rra['rows']);
 						}
 					}
 				}
@@ -2599,7 +2599,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				$info['rra']['cacti_' . $cacti_rra_id]['cf']    = $consolidation_functions[$cacti_rra['cf']];
 				$info['rra']['cacti_' . $cacti_rra_id]['steps'] = $cacti_rra['steps'];
 				$info['rra']['cacti_' . $cacti_rra_id]['xff']   = $cacti_rra['xff'];
-				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['xrows'];
+				$info['rra']['cacti_' . $cacti_rra_id]['rows']  = $cacti_rra['rows'];
 				$diff['rra']['cacti_' . $cacti_rra_id]['error'] = __("RRA '%s' missing in RRDfile", $cacti_rra_id);
 			}
 		}
