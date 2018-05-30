@@ -1317,7 +1317,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		/* for graphs without a template */
 		array_push(
 			$graph_templates, array(
-				'id' => '0',
+				'id'   => '0',
 				'name' => __('(Non Graph Template)')
 			)
 		);
@@ -1334,9 +1334,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $host_id;
 				}
 
-				if ($graph_template['id'] > 0) {
-					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $graph_template['id'];
-				}
+				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $graph_template['id'];
 
 				$graphs = get_allowed_graphs($sql_where);
 
@@ -1351,8 +1349,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				}
 			}
 		}
-	/* data query index grouping */
 	} elseif ($host_grouping_type == HOST_GROUPING_DATA_QUERY_INDEX) {
+		/* data query index grouping */
 		if ($host_id > 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id=' . $host_id;
 		}
