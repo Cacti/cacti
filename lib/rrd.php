@@ -2452,7 +2452,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		dspc.consolidation_function_id AS cf,
 		dsp.x_files_factor AS xff,
 		dspr.steps AS steps,
-		dspr.rows AS rows
+		dspr.rows AS `rows` 
 		FROM data_source_profiles AS dsp
 		INNER JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id

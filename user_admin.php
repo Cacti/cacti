@@ -969,7 +969,7 @@ function graph_perms_edit($tab, $header_label) {
 				$sql_join
 				$sql_where
 				$sql_having
-			) AS rows");
+			) AS `rows`");
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
@@ -1338,9 +1338,9 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (user_auth_perms.type=4 AND user_auth_perms.user_id=' . get_request_var('id', 0) . ')';
 		}
 
-		$total_rows = db_fetch_cell("SELECT COUNT(rows)
+		$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 			FROM (SELECT
-				COUNT(DISTINCT gt.id) rows
+				COUNT(DISTINCT gt.id) `rows`
 				FROM graph_templates AS gt
 				INNER JOIN graph_local AS gl
 				ON gt.id = gl.graph_template_id
