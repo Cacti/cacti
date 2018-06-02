@@ -2217,15 +2217,15 @@ CREATE TABLE poller_reindex (
 --
 
 CREATE TABLE poller_resource_cache (
-  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  resource_type varchar(20) DEFAULT NULL,
-  md5sum varchar(32) DEFAULT NULL,
-  path varchar(191) DEFAULT NULL,
-  update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  contents longblob,
-  attributes INT unsigned DEFAULT '0',
-  PRIMARY KEY (id),
-  UNIQUE KEY path (path)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `resource_type` varchar(20) DEFAULT NULL,
+  `md5sum` varchar(32) DEFAULT NULL,
+  `path` varchar(191) DEFAULT NULL,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `contents` longblob,
+  `attributes` INT unsigned DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `path` (`path`)
 ) ENGINE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
 
 --

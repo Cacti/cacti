@@ -659,16 +659,16 @@ function update_resource_cache($poller_id = 1) {
 			foreach($cache as $item) {
 				if (!file_exists($item['path'])) {
 					db_execute_prepared('DELETE FROM poller_resource_cache
-						WHERE path = ?',
+						WHERE `path` = ?',
 						array($item['path']));
 				}
 			}
 		}
 	} elseif ($poller_id > 1) {
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
-		$plugin_paths = db_fetch_assoc('SELECT resource_type, path
+		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
 			FROM poller_resource_cache
-			WHERE path LIKE "plugins/%"
+			WHERE `path` LIKE "plugins/%"
 			GROUP BY resource_type');
 
 		if (sizeof($plugin_paths)) {
@@ -776,7 +776,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 					$save['path'] = $spath;
 					$save['id']   = db_fetch_cell_prepared('SELECT id
 						FROM poller_resource_cache
-						WHERE path = ?',
+						WHERE `path` = ?',
 						array($save['path']));
 
 					$entry_path = $path. DIRECTORY_SEPARATOR . $entry;
@@ -810,7 +810,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 				$save['id']   = db_fetch_cell_prepared('SELECT id
 					FROM poller_resource_cache
-					WHERE path = ?',
+					WHERE `path` = ?',
 					array($save['path']));
 
 				$save['resource_type'] = $type;
@@ -842,7 +842,7 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum, attributes
+		$entries = db_fetch_assoc_prepared('SELECT id, `path`, md5sum, attributes
 			FROM poller_resource_cache
 			WHERE resource_type = ?',
 			array($type));

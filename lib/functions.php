@@ -5272,7 +5272,7 @@ function get_rrdtool_version() {
 function get_md5_hash($path) {
 	$md5 = db_fetch_cell_prepared('SELECT md5sum
 		FROM poller_resource_cache
-		WHERE path = ?',
+		WHERE `path` = ?',
 		array($path));
 
 	if (!isset($md5) || !strlen($md5)) {
