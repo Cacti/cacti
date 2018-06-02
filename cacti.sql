@@ -459,10 +459,10 @@ INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New G
 --
 
 CREATE TABLE cdef (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  system mediumint(8) unsigned NOT NULL DEFAULT '0',
-  name varchar(255) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `system` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))

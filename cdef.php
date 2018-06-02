@@ -496,7 +496,7 @@ function item_edit() {
 		break;
 	case '5':
 		$form_cdef['value']['method'] = 'drop_sql';
-		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE system=0 ORDER BY name';
+		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE `system`=0 ORDER BY name';
 
 		break;
 	case '6':
@@ -825,9 +825,9 @@ function cdef() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND system=0)";
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND `system`=0)";
 	} else {
-		$sql_where = 'WHERE system=0';
+		$sql_where = 'WHERE `system`=0';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
@@ -860,7 +860,7 @@ function cdef() {
 			FROM cdef AS cd
 			LEFT JOIN graph_templates_item AS gti
 			ON gti.cdef_id=cd.id
-			WHERE system=0
+			WHERE `system`=0
 			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
 		) AS rs
 		$sql_where
