@@ -1504,7 +1504,7 @@ function get_graph_title($local_graph_id) {
 		array($local_graph_id));
 
 	if (sizeof($graph)) {
-		if (strstr($graph['title'], '|') && !empty($graph['host_id']) && $graph['t_title'] == '') {
+		if (strstr($graph['title'], '|') && !empty($graph['host_id']) && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
 		} else {
