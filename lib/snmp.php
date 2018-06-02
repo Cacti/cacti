@@ -47,8 +47,8 @@ if (!class_exists('SNMP')) {
 	include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 }
 
-function cacti_snmp_session($hostname, $community, $version, $auth_user, $auth_pass,
-	$auth_proto, $priv_pass, $priv_proto, $context, $engineid,
+function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
 	$port = 161, $timeout = 500, $retries = 0, $max_oids = 10) {
 
 	switch ($version) {
@@ -74,6 +74,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user, $auth_p
 		$session->valueretrieval = SNMP_VALUE_LIBRARY;
 	}
 
+	$session->quick_print = false;
 	$session->max_oids = $max_oids;
 
 	if (read_config_option('oid_increasing_check_disable') == 'on') {
@@ -105,8 +106,8 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user, $auth_p
 	return $session;
 }
 
-function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user, $auth_pass,
-	$auth_proto, $priv_pass, $priv_proto, $context,
+function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER,
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
@@ -198,8 +199,8 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user, $auth
 	return $snmp_value;
 }
 
-function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user, $auth_pass,
-	$auth_proto, $priv_pass, $priv_proto, $context,
+function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER,
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
@@ -287,8 +288,8 @@ function cacti_snmp_get_raw($hostname, $community, $oid, $version, $auth_user, $
 	return $snmp_value;
 }
 
-function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user, $auth_pass,
-	$auth_proto, $priv_pass, $priv_proto, $context,
+function cacti_snmp_getnext($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout = 500, $retries = 0, $environ = SNMP_POLLER,
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
@@ -530,8 +531,8 @@ function cacti_snmp_session_getnext($session, $oid) {
 	return $out;
 }
 
-function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user, $auth_pass,
-	$auth_proto, $priv_pass, $priv_proto, $context,
+function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '', $auth_pass = '',
+	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '',
 	$port = 161, $timeout = 500, $retries = 0, $max_oids = 10, $environ = SNMP_POLLER,
 	$engineid = '', $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 

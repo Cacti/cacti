@@ -150,7 +150,7 @@ class SNMP {
 				$backup['valueretrieval'] = snmp_get_valueretrieval();
 				snmp_set_valueretrieval($this->valueretrieval);
 
-				$backup['quick_print']    = snmp_get_quick_print();
+				$backup['quick_print'] = snmp_get_quick_print();
 				snmp_set_quick_print($this->quick_print);
 
 				if ($this->oid_output_format !== NULL) {
