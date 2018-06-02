@@ -2896,7 +2896,7 @@ $.widget('custom.dropcolor', {
 		if (hex != null) {
 			this.wrapper.find('#bgc').css('background-color', '#'+hex[1]);
 		}
-		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenut-text" style="background:transparent;border:0px;margin-left:-22px;padding-right:3px;padding-left:22px;" value="'+value+'">')
+		this.input = $('<input class="ui-autocomplete-input ui-state-default ui-selectmenut-text" style="background:transparent;border:0px;margin-left:-22px;padding:0px 3px 0px 22px;" value="'+value+'">')
 		.appendTo(this.wrapper)
 		.on('click', function() {
 			$(this).autocomplete('search', '');

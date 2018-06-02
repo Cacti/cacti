@@ -124,10 +124,6 @@ input {
 	max-width: 400px;
 }
 
-#host_id_wrap {
-	line-height: 25px;
-}
-
 select {
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	font-size: 12px;
