@@ -3512,6 +3512,12 @@ function sanitize_uri($uri) {
 	static $drop_char_match =   array('^', '$', '<', '>', '`', "'", '"', '|', '+', '[', ']', '{', '}', ';', '!', '(', ')');
 	static $drop_char_replace = array( '', '',  '',  '',  '',  '',   '',  '',  '',  '',  '',  '',  '',  '',  '');
 
+	if (strpos($uri, 'graph_view.php')) {
+		if (!strpos($uri, 'action=')) {
+			$uri = $uri . (strpos($uri, '?') ? '&':'?') . 'action=' . get_request_var('action');
+		}
+	}
+
 	return str_replace($drop_char_match, $drop_char_replace, strip_tags(urldecode($uri)));
 }
 

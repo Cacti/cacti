@@ -575,9 +575,7 @@ function applySkin() {
 		});
 	}
 
-	if (pageName.indexOf('graph_view.php') >= 0) {
-		setGraphTabs($('.righttab .selected').attr('id'));
-	}
+	setGraphTabs();
 
 	setupSortable();
 
@@ -905,12 +903,23 @@ function toggleFilterAndIcon(id, child, initial) {
 	$(window).trigger('resize');
 }
 
-function setGraphTabs(id) {
-	/* update menu selection */
-	if ($('#'+id).hasClass('righttab')) {
-		$('.righttab').removeClass('selected');
-		$('#'+id).addClass('selected');
+function setGraphTabs() {
+	url = window.location.href;
 
+	if (refreshPage.indexOf('graph_view.php') >= 0) {
+		$('.lefttab').removeClass('selected');
+		$('#tab-graphs').addClass('selected');
+
+		$('.righttab').removeClass('selected');
+		if (refreshPage.indexOf('action=tree') > 0) {
+			$('#treeview').addClass('selected');
+		} else if (refreshPage.indexOf('action=list') > 0) {
+			$('#listview').addClass('selected');
+		} else if (refreshPage.indexOf('action=preview') > 0) {
+			$('#preview').addClass('selected');
+		}
+
+		/* update menu selection */
 		if (theme == 'classic') {
 			$('.righttab').each(function() {
 				if ($(this).hasClass('selected')) {
@@ -968,8 +977,6 @@ function setupResponsiveMenuAndTabs() {
 				$('.lefttab').removeClass('selected');
 				$(this).addClass('selected');
 			}
-
-			setGraphTabs($(this).attr('id'));
 
 			loadTopTab($(this).attr('href'));
 		}
@@ -2989,7 +2996,6 @@ $.widget('custom.dropcolor', {
 
 	_removeIfInvalid: function(event, ui) {
 		// Selected an item, nothing to do
-return;
 		if (ui.item) {
 			return;
 		}
