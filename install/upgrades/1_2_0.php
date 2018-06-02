@@ -59,4 +59,6 @@ function upgrade_to_1_2_0() {
 		db_install_execute("ALTER TABLE external_links
 			ADD COLUMN `refresh` int unsigned default NULL");
 	}
+
+	db_install_execute('UPDATE graph_templates_graph SET t_title="" WHERE t_title IS NULL or t_title="0"');
 }
