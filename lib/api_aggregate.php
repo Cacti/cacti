@@ -180,7 +180,6 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
  * @param int $_skip					- graph items to be skipped, array starts at 1
  * @param int $_totali                  - graph items to be totaled, array starts at 1
- * @param bool $_hr						- graph items that should have a <HR>
  * @param int $_graph_item_sequence		- sequence number of the next graph item to be inserted
  * @param int $_selected_graph_index	- index of current graph to be inserted
  * @param array $_color_templates		- the color templates to be used
@@ -350,12 +349,15 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			$save['graph_type_id'] = aggregate_change_graph_type($_selected_graph_index, $save['graph_type_id'], $_graph_type);
 
 			# new item text format required?
-			if ($prepend && ($_total_type == AGGREGATE_TOTAL_TYPE_ALL)) {
+			if ($prepend && $_total_type != '') {
 				# pointless to add any data source item name here, cause ALL are totaled
 				$save['text_format'] = $_gprint_prefix;
 
 				# no more prepending until next line break is encountered
 				$prepend = false;
+			} elseif (!$prepend && $_total_type != '' && strpos($save['text_format'], ':current:')) {
+				// Accomodate gprint summation types
+				$save['text_format'] = str_replace(':current:', ':total:', $save['text_format']);
 			} elseif ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
 				$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
 				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -375,6 +377,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			if (isset($_hr[$i]) && $_hr[$i] > 0) {
 				$save['hard_return'] = 'on';
 			}
+
 			# if this item defines a line break, remember to prepend next line
 			if ($save['text_format'] != '') {
 				$prepend = ($save['hard_return'] == 'on');
@@ -1077,8 +1080,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				# now skip all items, that are
-					# - explicitely marked as skipped (based on $skipped_items)
-					# - OR NOT marked as 'totalling' items
+				# - explicitely marked as skipped (based on $skipped_items)
+				# - OR NOT marked as 'totalling' items
 				for ($k=1; $k<=$item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -1089,7 +1092,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				# add the 'templating' graph to the new graph, honoring skipped, hr and color
-				$foo = aggregate_graphs_insert_graph_items(
+				aggregate_graphs_insert_graph_items(
 					$local_graph_id,
 					$example_graph_id,
 					$graph_template_id,
@@ -1100,9 +1103,9 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$color_templates,
 					$graph_item_types,
 					$cdefs,
-					$_graph_type,			#TODO: user may choose LINEx instead of assuming LINE1
+					$_graph_type, #TODO: user may choose LINEx instead of assuming LINE1
 					$gprint_prefix,
-					AGGREGATE_TOTAL_ALL,	# now add the totalling line(s)
+					AGGREGATE_TOTAL_ALL, # now add the totalling line(s)
 					$_total_type,
 					$member_graphs);
 
