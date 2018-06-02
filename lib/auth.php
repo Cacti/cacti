@@ -2083,7 +2083,7 @@ function secpass_login_process($username) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
 			$p = get_nfilter_request_var('login_password');
-			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, locked, password
+			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, `locked`, password
 				FROM user_auth
 				WHERE username = ?
 				AND realm = 0
@@ -2103,7 +2103,7 @@ function secpass_login_process($username) {
 
 				if ($unlock > 0 && ($secs_fail > $secs_unlock)) {
 					db_execute_prepared("UPDATE user_auth
-						SET lastfail = 0, failed_attempts = 0, locked = ''
+						SET lastfail = 0, failed_attempts = 0, `locked` = ''
 						WHERE username = ?
 						AND realm = 0
 						AND enabled = 'on'",
@@ -2122,7 +2122,7 @@ function secpass_login_process($username) {
 
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
-							SET locked = 'on'
+							SET `locked` = 'on'
 							WHERE username = ?
 							AND realm = 0
 							AND enabled = 'on'",

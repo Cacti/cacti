@@ -34,7 +34,7 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree
-		SET locked = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ?
+		SET `locked` = 1, locked_date = NOW(), last_modified = NOW(), modified_by = ?
 		WHERE id = ?',
 		array($user_id, $tree_id));
 
@@ -55,7 +55,7 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 	/* ==================================================== */
 
 	db_execute_prepared('UPDATE graph_tree
-		SET locked = 0, last_modified = NOW(), modified_by = ?
+		SET `locked` = 0, last_modified = NOW(), modified_by = ?
 		WHERE id = ?',
 		array($user_id, $tree_id));
 
