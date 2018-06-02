@@ -2067,9 +2067,11 @@ function setupEllipsis() {
 
 			if (!position) {
 				position = $(this).position();
-				submenu.css({'left': position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth())}).slideDown(120);
+			}
+
+			if (position.left - parseInt(submenu.outerWidth()) < 0) {
+				submenu.css({'left': 0}).slideDown(120);
 			} else {
-				/* move dd to the left */
 				submenu.css({'left': position.left - parseInt(submenu.outerWidth()) + parseInt($(this).outerWidth())}).slideDown(120);
 			}
 		} else {
