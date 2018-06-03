@@ -123,7 +123,7 @@ th i.fa {
 }
 
 input {
-	padding: 0.5em 0.5em 0.5em 0.5em;
+	padding: 5px;
 	font-size: 12px;
 	max-width: 400px;
 }

@@ -57,7 +57,7 @@ function themeReady() {
 		$('.import_text').html(fileText);
 	}
 
-	maxWidth = 280;
+	maxWidth = 300;
 
 	$('select.colordropdown').dropcolor();
 
@@ -82,13 +82,13 @@ function themeReady() {
 					}
 				});
 
-				minWidth+=80;
+				minWidth+=70;
 
 				if (minWidth > maxWidth) {
 					minWidth = maxWidth;
 				}
 
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', maxWidth+'px').css('width','');
+				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', maxWidth+'px').css('width',minWidth);
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		}else{
