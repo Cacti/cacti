@@ -525,7 +525,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
 								$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]->quick_print = true;
-								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1'], true);
+								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']);
 							} else {
 								$output = 'U';
 							}
