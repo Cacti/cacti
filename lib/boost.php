@@ -795,7 +795,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
-					if (strpos(trim($return_value), 'OK') === false) {
+					if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
@@ -841,7 +841,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 					$vals_in_buffer = 0;
 
 					/* check return status for delete operation */
-					if (strpos(trim($return_value), 'OK') === false) {
+					if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
 						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
@@ -938,7 +938,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			boost_timer('rrdupdate', BOOST_TIMER_END);
 
 			/* check return status for delete operation */
-			if (strpos(trim($return_value), 'OK') === false) {
+			if (strpos(trim($return_value), 'OK') === false && $return_value != '') {
 				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 			}
 		}
