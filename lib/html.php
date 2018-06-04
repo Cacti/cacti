@@ -575,9 +575,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-down';
-		} elseif (strtolower($icon) == 'desc') {
 			$icon = 'fa fa-sort-up';
+		} elseif (strtolower($icon) == 'desc') {
+			$icon = 'fa fa-sort-down';
 		} else {
 			$icon = 'fa fa-sort';
 		}
@@ -736,9 +736,9 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-down';
-		} elseif (strtolower($icon) == 'desc') {
 			$icon = 'fa fa-sort-up';
+		} elseif (strtolower($icon) == 'desc') {
+			$icon = 'fa fa-sort-down';
 		} else {
 			$icon = 'fa fa-sort';
 		}
