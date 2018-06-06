@@ -940,6 +940,12 @@ $settings = array(
 			'default' => 'on',
 			'tab' => 'poller'
 			),
+		'enable_snmp_agent' => array(
+			'friendly_name' => __('SNMP Agent Support Enabled'),
+			'description' => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti devide and system information.  It does not enable the SNMP Agent itself.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
 		'poller_type' => array(
 			'friendly_name' => __('Poller Type'),
 			'description' => __('The poller type to use.  This setting will take effect at next polling interval.'),

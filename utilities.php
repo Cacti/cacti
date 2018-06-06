@@ -1907,24 +1907,26 @@ function utilities() {
 		),
 	);
 
-	$utilities[__('SNMPAgent Utilities')] = array(
-		__('View SNMPAgent Cache') => array(
-			'link'  => 'utilities.php?action=view_snmpagent_cache',
-			'description' => __('This shows all objects being handled by the SNMPAgent.')
-		),
-		__('Rebuild SNMPAgent Cache') => array(
-			'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
-			'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
-		),
-		__('View SNMPAgent Notification Log') => array(
-			'link'  => 'utilities.php?action=view_snmpagent_events',
-			'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
-		),
-		__('SNMP Notification Receivers') => array(
-			'link'  => 'managers.php',
-			'description' => __('Allows Administrators to maintain SNMP notification receivers.')
-		),
-	);
+	if (snmpagent_enabled()) {
+		$utilities[__('SNMPAgent Utilities')] = array(
+			__('View SNMPAgent Cache') => array(
+				'link'  => 'utilities.php?action=view_snmpagent_cache',
+				'description' => __('This shows all objects being handled by the SNMPAgent.')
+			),
+			__('Rebuild SNMPAgent Cache') => array(
+				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
+			),
+			__('View SNMPAgent Notification Log') => array(
+				'link'  => 'utilities.php?action=view_snmpagent_events',
+				'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
+			),
+			__('SNMP Notification Receivers') => array(
+				'link'  => 'managers.php',
+				'description' => __('Allows Administrators to maintain SNMP notification receivers.')
+			),
+		);
+	}
 
 	api_plugin_hook('utilities_array');
 

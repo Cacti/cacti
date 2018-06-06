@@ -43,7 +43,7 @@ class MibCache{
 		/* avoid that our default mib will be dropped by some plugin developer */
 		if ($this->active_mib == 'CACTI-MIB') {
 			return false;
-		}else {
+		} else {
 			db_execute_prepared('DELETE FROM snmpagent_cache WHERE `mib` = ?', array($this->active_mib));
 			db_execute_prepared('DELETE FROM snmpagent_cache_notifications WHERE `mib` = ?', array($this->active_mib));
 			db_execute_prepared('DELETE FROM snmpagent_cache_textual_conventions WHERE `mib` = ?', array($this->active_mib));
@@ -68,7 +68,7 @@ class MibCache{
 					unset($mp->oids);
 					unset($mp->mib);
 					return false;
-				}else {
+				} else {
 					$this->uninstall();
 				}
 			}
@@ -91,7 +91,7 @@ class MibCache{
 								array($object_name, $object_params['mib'], $notification_object, $notification_object_index));
 						}
 					}
-				}else {
+				} else {
 					db_execute_prepared('INSERT INTO `snmpagent_cache_textual_conventions`
 						(`name`, `mib`, `type`, `description`)
 						VALUES (?, ?, ?, ?)',
@@ -101,7 +101,7 @@ class MibCache{
 
 			unset($mp->oids);
 			unset($mp->mib);
-		}else {
+		} else {
 			return false;
 		}
 	}
@@ -136,19 +136,19 @@ class MibCache{
 					$this->cache__tables_columns[$this->active_mib][$table] = $this->columns();
 					$this->active_table_entry = '';
 					return $this;
-				}else {
+				} else {
 					/* MIB table does not exist */
 					$this->active_table = '';
 					$this->active_table_entry = '';
 					throw new Exception('MIB table does not exist');
 				}
-			}else {
+			} else {
 				/* table exists and has already been cached */
 				$this->active_table = $table;
 				$this->active_table_entry = '';
 				return $this;
 			}
-		}else {
+		} else {
 			/* no changes necessary */
 			return $this;
 		}
@@ -265,7 +265,7 @@ class MibCache{
 					}
 				}
 			}
-		}else {
+		} else {
 			/* query the whole MIB table */
 			$oid_entry = $this->cache__tables[$this->active_mib][$this->active_table] . '.1';
 			if ($column == false) {
@@ -290,7 +290,7 @@ class MibCache{
 						}
 					}
 					return $result;
-				}else {
+				} else {
 					return $entries;
 				}
 			} elseif (is_string($column)) {
@@ -324,11 +324,12 @@ class MibCache{
 						}
 					}
 					return $result;
-				}else {
+				} else {
 					return $entries;
 				}
 			}
 		}
+
 		return false;
 	}
 
