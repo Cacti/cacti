@@ -1209,7 +1209,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						ON sq.data_input_id=di.id
 						INNER JOIN data_input_fields AS dif
 						ON di.id=dif.data_input_id
-						WHERE (dif.type_code="index_type" OR dif.type_code="index_value" OR dif.type_code="output_type")
+						WHERE (dif.type_code="index_type"
+						OR dif.type_code="index_value" 
+						OR dif.type_code="output_type")
 						AND sq.id = ?',
 						array($snmp_query_array['snmp_query_id'])), 'type_code', 'id');
 
