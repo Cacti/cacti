@@ -249,6 +249,10 @@ function grow_dhtml_trees() {
 						icon : urlPath+'images/site.png',
 						max_children : 0
 					},
+					'location' : {
+						icon : urlPath+'images/location.png',
+						max_children : 0
+					},
 					'host_template' : {
 						icon : urlPath+'images/server_device_template.png',
 						max_children : 0
