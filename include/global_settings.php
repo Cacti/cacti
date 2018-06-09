@@ -1546,8 +1546,6 @@ $settings = array(
 			'size' => '5'
 			),
 		),
-	'dsstats' => array(
-		),
 	'boost' => array(
 		'boost_hq_header' => array(
 			'friendly_name' => __('On-demand RRD Update Settings'),
