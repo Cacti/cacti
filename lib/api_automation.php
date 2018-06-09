@@ -2579,7 +2579,7 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	$host_id        = 0;  # or a host_id
 	$site_id        = 0;  # or a site_id
 	$propagate      = ($item['propagate_changes'] != '');
-	$function  = automation_function_with_pid(__FUNCTION__);
+	$function       = automation_function_with_pid(__FUNCTION__);
 
 	if (api_tree_branch_exists($rule['tree_id'], $parent_tree_item_id, $title)) {
 		$new_item = api_tree_get_branch_id($rule['tree_id'], $parent_tree_item_id, $title);
