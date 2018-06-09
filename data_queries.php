@@ -172,11 +172,21 @@ function form_save() {
 				/* if the user changed the graph template, go through and delete everything that
 				was associated with the old graph template */
 				if (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) {
-					db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
-					db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
+					db_execute_prepared('DELETE 
+						FROM snmp_query_graph_rrd_sv 
+						WHERE snmp_query_graph_id = ?', 
+						array($snmp_query_graph_id));
+
+					db_execute_prepared('DELETE 
+						FROM snmp_query_graph_sv 
+						WHERE snmp_query_graph_id = ?', 
+						array($snmp_query_graph_id));
 				}
 
-				db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
+				db_execute_prepared('DELETE 
+					FROM snmp_query_graph_rrd 
+					WHERE snmp_query_graph_id = ?', 
+					array($snmp_query_graph_id));
 
 				foreach ($_POST as $var => $val) {
 					if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
@@ -190,7 +200,15 @@ function form_save() {
 						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
 							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
 							VALUES (?, ?, ?, ?)',
-							array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, get_nfilter_request_var('dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output')));
+							array(
+								$snmp_query_graph_id, 
+								$data_template_id, 
+								$data_template_rrd_id, 
+								get_nfilter_request_var('dsdt_' . 
+									$data_template_id . '_' . 
+									$data_template_rrd_id . '_snmp_field_output')
+							)
+						);
 					}
 				}
 
@@ -238,7 +256,14 @@ function form_save() {
 		db_execute_prepared('INSERT INTO snmp_query_graph_sv
 			(hash, snmp_query_graph_id, sequence, field_name, text)
 			VALUES (?, ?, ?, ?, ?)',
-			array($hash, get_request_var('id'), $sequence, get_nfilter_request_var('svg_field'), get_nfilter_request_var('svg_text')));
+			array(
+				$hash, 
+				get_request_var('id'), 
+				$sequence, 
+				get_nfilter_request_var('svg_field'), 
+				get_nfilter_request_var('svg_text')
+			)
+		);
 
 		clear_messages();
 
@@ -285,7 +310,14 @@ function form_save() {
 				db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv
 					(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text)
 					VALUES (?, ?, ?, ?, ?, ?)',
-					array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
+					array(
+						$hash, get_request_var('id'), 
+						$matches[1], 
+						$sequence, 
+						get_nfilter_request_var('svds_' . $matches[1] . '_field'), 
+						get_nfilter_request_var('svds_' . $matches[1] . '_text')
+					)
+				);
 
 				clear_messages();
 
@@ -336,7 +368,12 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '</li>';
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM snmp_query
+				WHERE id = ?',
+				array($matches[1]));
+
+			$dq_list .= '<li>' . html_escape($name) . '</li>';
 			$dq_array[$i] = $matches[1];
 
 			$i++;
@@ -410,7 +447,9 @@ function data_query_item_remove_gsv() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM snmp_query_graph_sv 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_movedown_dssv() {
@@ -489,7 +528,10 @@ function data_query_item_remove_dssv() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd_sv 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_remove_confirm() {
@@ -504,7 +546,10 @@ function data_query_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$graph_template = db_fetch_row_prepared('SELECT * FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
+	$graph_template = db_fetch_row_prepared('SELECT * 
+		FROM snmp_query_graph 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 
 	?>
 	<tr>
@@ -548,10 +593,25 @@ function data_query_item_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd_sv 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_sv 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_edit() {
@@ -600,9 +660,7 @@ function data_query_item_edit() {
 	if (!empty($snmp_query_item['id'])) {
 		html_start_box( __('Associated Data Templates'), '100%', '', '3', 'center', '');
 
-		$data_templates = db_fetch_assoc_prepared('SELECT
-			data_template.id,
-			data_template.name
+		$data_templates = db_fetch_assoc_prepared('SELECT data_template.id, data_template.name
 			FROM (data_template, data_template_rrd, graph_templates_item)
 			WHERE graph_templates_item.task_item_id = data_template_rrd.id
 			AND data_template_rrd.data_template_id = data_template.id
@@ -619,8 +677,8 @@ function data_query_item_edit() {
 						<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
 					</tr>';
 
-				$data_template_rrds = db_fetch_assoc_prepared('SELECT
-					dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
+				$data_template_rrds = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name, 
+					sqgr.snmp_field_name, sqgr.snmp_query_graph_id
 					FROM data_template_rrd AS dtr
 					LEFT JOIN snmp_query_graph_rrd AS sqgr
 					ON sqgr.data_template_rrd_id = dtr.id
@@ -930,6 +988,7 @@ function data_query_item_edit() {
 		var svds_text_name=$form.find('input.svds_text').attr('name');
 		var svds_field_name=$form.find('input.svds_field').attr('name');
 		var svds_x_name=$form.find('input.svds_x').attr('name');
+
 		var jSON = $.parseJSON('{ ' +
 			'"graph_template_id_prev":"'+graph_template_id_prev + '", ' +
 			'"action":"save", ' +
@@ -961,19 +1020,44 @@ function data_query_item_edit() {
    --------------------- */
 
 function data_query_remove($id) {
-	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph WHERE snmp_query_id = ?', array($id));
+	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id 
+		FROM snmp_query_graph 
+		WHERE snmp_query_id = ?', 
+		array($id));
 
 	if (sizeof($snmp_query_graph)) {
 		foreach ($snmp_query_graph as $item) {
-			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($item['id']));
+			db_execute_prepared('DELETE 
+				FROM snmp_query_graph_rrd 
+				WHERE snmp_query_graph_id = ?', 
+				array($item['id']));
 		}
 	}
 
-	db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM snmp_query_graph WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_snmp_query WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_snmp_cache WHERE snmp_query_id = ?', array($id));
+	db_execute_prepared('DELETE 
+		FROM snmp_query 
+		WHERE id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_template_snmp_query 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_snmp_query 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_snmp_cache 
+		WHERE snmp_query_id = ?', 
+		array($id));
 
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
@@ -996,10 +1080,12 @@ function data_query_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
+		)
+	);
 
 	html_end_box(false, true);
 
@@ -1040,7 +1126,8 @@ function data_query_edit() {
 			AND gl.graph_template_id = sqg.graph_template_id
 			WHERE sqg.snmp_query_id = ?
 			GROUP BY sqg.id
-			ORDER BY sqg.name', array($snmp_query['id']));
+			ORDER BY sqg.name', 
+			array($snmp_query['id']));
 
 		if (sizeof($snmp_query_graphs)) {
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -1230,7 +1317,7 @@ function data_query() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (sq.name like '%%" . get_request_var('filter') . "%%' OR di.name like '%%" . get_request_var('filter') . "%%')";
+		$sql_where = "WHERE (sq.name like '%" . get_request_var('filter') . "%' OR di.name like '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
 	}
