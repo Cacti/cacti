@@ -47,7 +47,8 @@ function sig_handler($signo) {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
 					FROM automation_processes
 					WHERE network_id = ?
-					AND task!='tmaster'", array($network_id)), 'pid', 'pid');
+					AND task!='tmaster'",
+					array($network_id)), 'pid', 'pid');
 
 				if (sizeof($pids)) {
 					foreach($pids as $pid) {
@@ -57,12 +58,16 @@ function sig_handler($signo) {
 
 				clearTask($network_id, getmypid());
 
-				db_execute_prepared('DELETE FROM automation_ips WHERE network_id = ?', array($network_id));
+				db_execute_prepared('DELETE
+					FROM automation_ips
+					WHERE network_id = ?',
+					array($network_id));
 			} else {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
 					FROM automation_processes
 					WHERE poller_id = ?
-					AND task='tmaster'", array($poller_id)), 'pid', 'pid');
+					AND task='tmaster'",
+					array($poller_id)), 'pid', 'pid');
 
 				if (sizeof($pids)) {
 					foreach($pids as $pid) {
@@ -837,12 +842,14 @@ function addSNMPDevice($network_id, $pid) {
 }
 
 function clearTask($network_id, $pid) {
-	db_execute_prepared('DELETE FROM automation_processes
+	db_execute_prepared('DELETE
+		FROM automation_processes
 		WHERE pid = ?
 		AND network_id = ?',
 		array($pid, $network_id));
 
-	db_execute_prepared('DELETE FROM automation_ips
+	db_execute_prepared('DELETE
+		FROM automation_ips
 		WHERE network_id = ?',
 		array($network_id));
 }
