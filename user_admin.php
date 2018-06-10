@@ -1340,7 +1340,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$total_rows = db_fetch_cell("SELECT COUNT(`rows`)
 			FROM (SELECT
-				COUNT(DISTINCT gt.id) `rows`
+				COUNT(DISTINCT gt.id) AS `rows`
 				FROM graph_templates AS gt
 				INNER JOIN graph_local AS gl
 				ON gt.id = gl.graph_template_id
@@ -1734,7 +1734,7 @@ function user_realms_edit($header_label) {
 			}
 
 			if ($break || $i == 1) {
-				print "<i>" . $r['name'] . "</i><br>\n";
+				print "<i>" . html_escape($r['name']) . "</i><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;
