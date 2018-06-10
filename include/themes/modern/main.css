@@ -60,6 +60,10 @@ th {
 	white-space: nowrap;
 }
 
+p {
+	padding: 3px 5px;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
