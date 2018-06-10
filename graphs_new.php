@@ -242,22 +242,7 @@ function host_new_graphs_save($host_id) {
 
 				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
 
-				debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
-
-				/* lastly push host-specific information to our data sources */
-				if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-					foreach($return_array['local_data_id'] as $item) {
-						push_out_host($host_id, $item);
-					}
-				} else {
-					debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
-				}
-			} elseif ($current_form_type == 'sg') {
-				foreach ($snmp_index_array as $snmp_index => $true) {
-					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
-
-					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
-
+				if ($return_array !== false) {
 					debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
 
 					/* lastly push host-specific information to our data sources */
@@ -266,7 +251,30 @@ function host_new_graphs_save($host_id) {
 							push_out_host($host_id, $item);
 						}
 					} else {
-						debug_log_insert('new_graphs', __('ERROR: no Data Source associated. Check Template'));
+						debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+					}
+				} else {
+					debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+				}
+			} elseif ($current_form_type == 'sg') {
+				foreach ($snmp_index_array as $snmp_index => $true) {
+					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
+
+					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+
+					if ($return_array !== false) {
+						debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+						/* lastly push host-specific information to our data sources */
+						if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+							foreach($return_array['local_data_id'] as $item) {
+								push_out_host($host_id, $item);
+							}
+						} else {
+							debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+						}
+					} else {
+						debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
 					}
 				}
 			}
