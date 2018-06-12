@@ -528,8 +528,8 @@ function utilities_view_tech($php_info = '') {
 			widgets: ['zebra'],
 			widgetZebra: { css: ['even', 'odd'] },
 			headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>',
-			cssIconAsc: 'fa-sort-asc',
-			cssIconDesc: 'fa-sort-desc',
+			cssIconAsc: 'fa-sort-up',
+			cssIconDesc: 'fa-sort-down',
 			cssIconNone: 'fa-sort',
 			cssIcon: 'fa'
 		});

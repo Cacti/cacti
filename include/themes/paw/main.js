@@ -96,10 +96,10 @@ function themeReady() {
 	});
 
 	/* Highlight sortable table columns */
-	$('.tableHeader th').has('i.fa-unsorted').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-asc').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-sort-desc').addClass('tableHeaderColumnSelected');
-	$('.tableHeader th').has('i.fa-unsorted').hover(
+	$('.tableHeader th').has('i.fa-sort').removeClass('tableHeaderColumnHover tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-up').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort-down').addClass('tableHeaderColumnSelected');
+	$('.tableHeader th').has('i.fa-sort').hover(
 		function() {
 			$(this).addClass('tableHeaderColumnHover');
 		}, function() {

@@ -231,8 +231,8 @@ if (isset($xport_array['data']) && is_array($xport_array['data'])) {
 				widgets: ['zebra'],
 				widgetZebra: { css: ['even', 'odd'] },
 				headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>',
-				cssIconAsc: 'fa-sort-asc',
-				cssIconDesc: 'fa-sort-desc',
+				cssIconAsc: 'fa-sort-up',
+				cssIconDesc: 'fa-sort-down',
 				cssIconNone: 'fa-sort',
 				cssIcon: 'fa'
 			});
