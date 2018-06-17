@@ -785,7 +785,6 @@ function template() {
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($template['graphs'], '-1'), $template['id'], '', 'text-align:right');
-			//form_selectable_cell('<a class="linkEditMain" href="' . html_escape('graphs.php?reset=true&template_id=' . ($template['dqid'] > 0 ? 'dq_':'') . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');
