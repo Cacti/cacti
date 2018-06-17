@@ -898,13 +898,15 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		$leaves = db_fetch_assoc_prepared('SELECT *
 			FROM graph_tree_items
 			WHERE graph_tree_id = ?
-			AND parent = ?',
+			AND parent = ?
+			ORDER BY position',
 			array($tree_id, $parent));
 	} elseif (is_device_allowed($device_id, $user)) {
 		$leaves = db_fetch_assoc_prepared('SELECT *
 			FROM graph_tree_items
 			WHERE graph_tree_id = ?
-			AND id = ?',
+			AND id = ?
+			ORDER BY position',
 			array($tree_id, $parent));
 	} else{
 		$leaves = array();
@@ -1148,7 +1150,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						array_push($data_queries,
 							array(
 								'id' => '0',
-								'name' => 'Non Query Based'
+								'name' => __('(Non Query Based)')
 							)
 						);
 					}
@@ -1198,11 +1200,11 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 
 								$outstr .= "\t\t<tr class='text_row'>\n";
 								if ($format_ok) {
-									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
+									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . "\n";
 									$outstr .= "\t\t\t</td>\n";
 									$outstr .= "\t\t</tr>\n";
 								} else {
-									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'><strong>Data Query:</strong> " . $data_query['name'] . "\n";
+									$outstr .= "\t\t\t<td class='text' style='text-align:" . $alignment[$item['align']] . ";font-size: " . $item['font_size'] . "pt;'><strong>" . __('Data Query:') . "</strong> " . $data_query['name'] . "\n";
 									$outstr .= "\t\t\t</td>\n";
 									$outstr .= "\t\t</tr>\n";
 								}
