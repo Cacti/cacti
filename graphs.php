@@ -122,7 +122,9 @@ function add_tree_names_to_actions_array() {
 	global $graph_actions;
 
 	/* add a list of tree names to the actions dropdown */
-	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
+	$trees = db_fetch_assoc('SELECT id, name
+		FROM graph_tree
+		ORDER BY name');
 
 	if (sizeof($trees)) {
 		foreach ($trees as $tree) {
@@ -266,20 +268,18 @@ function form_save() {
 		}
 
 		if (!is_error_message()) {
-			$lg_template_id = db_fetch_cell_prepared(
-				'SELECT graph_template_id
-				 FROM graph_local
-				 WHERE id = ?',
+			$lg_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+				FROM graph_local
+				WHERE id = ?',
 				array($local_graph_id)
 			);
 
 			if ($lg_template_id > 0) {
 				change_graph_template($local_graph_id, $gt_id_unparsed);
 
-				$lg_dq_id = db_fetch_cell_prepared(
-					'SELECT snmp_query_id
-					 FROM graph_local
-					 WHERE id = ?',
+				$lg_dq_id = db_fetch_cell_prepared('SELECT snmp_query_id
+					FROM graph_local
+					WHERE id = ?',
 					array($local_graph_id)
 				);
 
@@ -427,20 +427,24 @@ function get_current_graph_template($local_graph_id) {
 }
 
 function get_common_graph_templates(&$graph) {
+	$dqid = 0;
+
 	if (sizeof($graph)) {
-		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id FROM graph_local WHERE id = ?', array($graph['local_graph_id']));
-	} else {
-		$dqid = '';
+		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id
+			FROM graph_local
+			WHERE id = ?',
+			array($graph['local_graph_id']));
 	}
 
-	if (!empty($dqid)) {
+	if ($dqid > 0) {
 		$sqgi = db_fetch_cell_prepared('SELECT GROUP_CONCAT(id) AS id
 			FROM snmp_query_graph
 			WHERE snmp_query_id = ?
 			AND graph_template_id = ?',
 			array($dqid, $graph['graph_template_id']));
 
-		$query_fields = array_rekey(db_fetch_assoc_prepared('SELECT snmp_query_graph_id, GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
+		$query_fields = array_rekey(db_fetch_assoc_prepared('SELECT snmp_query_graph_id,
+			GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
 			FROM snmp_query_graph_rrd
 			WHERE snmp_query_graph_id IN (' . $sqgi . ')
 			GROUP BY snmp_query_graph_id'), 'snmp_query_graph_id', 'columns');
@@ -457,14 +461,16 @@ function get_common_graph_templates(&$graph) {
 
 		$gtids = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT graph_template_id) AS gtids
 			FROM snmp_query_graph
-			WHERE snmp_query_id = ? AND id IN (' . $ids . ')', array($dqid));
+			WHERE snmp_query_id = ?
+			AND id IN (' . $ids . ')',
+			array($dqid));
 
 		$gtsql = "SELECT CONCAT_WS('', graph_template_id, '_', id, '') AS id, name
 			FROM snmp_query_graph
-			WHERE (snmp_query_id = " . $dqid . "
-			AND id IN (" . $ids . ")) OR graph_template_id IN (" . $gtids . ") ORDER BY name";
+			WHERE (snmp_query_id = $dqid AND id IN ($ids))
+			OR graph_template_id IN ($gtids) ORDER BY name";
 	} elseif (sizeof($graph)) {
-		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id=' . $graph['graph_template_id'] . ' ORDER BY name';
+		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id!=' . $graph['graph_template_id'] . ' ORDER BY name';
 	} else {
 		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
 	}
@@ -1696,6 +1702,12 @@ function graph_management() {
 
 	html_start_box(__('Graph Management'), '100%', '', '3', 'center', $add_url);
 
+	if (get_request_var('site_id') > 0) {
+		$host_where = 'site_id = ' . get_request_var('site_id');
+	} else {
+		$host_where = '';
+	}
+
 	?>
 	<tr class='even noprint'>
 		<td>
@@ -1703,7 +1715,7 @@ function graph_management() {
 			<table class='filterTable'>
 				<tr>
 					<?php print html_site_filter(get_request_var('site_id'));?>
-					<?php print html_host_filter(get_request_var('host_id'));?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
 						<?php print __('Template');?>
 					</td>
