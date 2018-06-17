@@ -87,13 +87,24 @@ switch (get_request_var('action')) {
 		graph_remove();
 
 		header('Location: graphs.php?header=false');
+
 		break;
 	case 'ajax_hosts':
-		get_allowed_ajax_hosts();
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
-		get_allowed_ajax_hosts(false);
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
 	case 'lock':

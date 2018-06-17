@@ -44,6 +44,8 @@ $ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
 /* set default action */
 set_default_action();
 
+validate_data_source_vars();
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -78,11 +80,22 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_hosts':
-		get_allowed_ajax_hosts();
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
-		get_allowed_ajax_hosts(false);
+
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
 	default:
@@ -1123,9 +1136,7 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 	}
 }
 
-function ds() {
-	global $ds_actions, $item_rows, $sampling_intervals;
-
+function validate_data_source_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1187,6 +1198,10 @@ function ds() {
 
 	validate_store_request_vars($filters, 'sess_ds');
 	/* ================= input validation ================= */
+}
+
+function ds() {
+	global $ds_actions, $item_rows, $sampling_intervals;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1208,6 +1223,7 @@ function ds() {
 	function applyFilter() {
 		strURL  = 'data_sources.php' +
 			'?host_id=' + $('#host_id').val() +
+			'&site_id=' + $('#site_id').val() +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
 			'&rows=' + $('#rows').val() +
 			'&status=' + $('#status').val() +
@@ -1252,6 +1268,12 @@ function ds() {
 		$add_url = '';
 	}
 
+	if (get_request_var('site_id') > 0) {
+		$host_where = 'site_id = ' . get_request_var('site_id');
+	} else {
+		$host_where = '';
+	}
+
 	html_start_box( __('Data Sources [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', $add_url);
 
 	?>
@@ -1261,7 +1283,7 @@ function ds() {
 			<table class='filterTable'>
 				<tr>
 					<?php print html_site_filter(get_request_var('site_id'));?>
-					<?php print html_host_filter(get_request_var('host_id'));?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
 						<?php print __('Template');?>
 					</td>
@@ -1298,12 +1320,6 @@ function ds() {
 			<table class='filterTable'>
 				<tr>
 					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
-					</td>
-					<td>
 						<?php print __('Profile');?>
 					</td>
 					<td>
@@ -1338,6 +1354,16 @@ function ds() {
 							<option value='0'<?php print (get_request_var('orphans') == '0' ? ' selected>':'>') . __('Has Graphs');?></option>
 							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
 						</select>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Data Sources');?>
