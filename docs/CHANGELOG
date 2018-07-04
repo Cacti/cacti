@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#1553: Poller does not set rrd_step_counter correctly if no steps taken
 -issue#1559: CLI Output Issues due to over escaping
 -issue#1560: Warning that escapeshellarg() is escaping a null
+-issue#1567: Technical support - add notification if Cacti and Spine version is different
 -issue#1574: User templates are not correctly being applied
 -issue#1590: User Admin generates SQL error if user is not part of any groups
 -issue#1601: Aggregate Graphs can not include some classes of COMMENT
