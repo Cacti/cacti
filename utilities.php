@@ -305,7 +305,7 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('poller_interval') . "</td>\n";
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
-		        if (!strpos($spine_version,CACTI_VERSION)) {	
+		        if (!strpos($spine_version, CACTI_VERSION)) {	
 		    	    $type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
 			}	
 		} else {
