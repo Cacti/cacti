@@ -294,6 +294,7 @@ CREATE TABLE `automation_networks` (
   `snmp_id` int(10) unsigned DEFAULT NULL,
   `enable_netbios` char(2) DEFAULT '',
   `add_to_cacti` char(2) DEFAULT '',
+  `same_sysname` char(2) DEFAULT '',
   `total_ips` int(10) unsigned DEFAULT '0',
   `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',

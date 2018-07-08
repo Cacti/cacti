@@ -60,5 +60,10 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN `refresh` int unsigned default NULL");
 	}
 
+	if (!db_column_exists('automation_networks', 'same_sysname')) {
+		db_install_execute("ALTER TABLE automation_networks
+			ADD COLUMN `dupe_sysname` char(2) DEFAULT ''");
+	}
+
 	db_install_execute('UPDATE graph_templates_graph SET t_title="" WHERE t_title IS NULL or t_title="0"');
 }
