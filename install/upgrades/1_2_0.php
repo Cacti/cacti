@@ -37,6 +37,21 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN total_polls INT unsigned DEFAULT '0' AFTER avg_time,
 			ADD COLUMN processes INT unsigned DEFAULT '1' AFTER total_polls,
 			ADD COLUMN threads INT unsigned DEFAULT '1' AFTER processes");
+
+		// Take the value from the settings table and translate to
+		// the new Data Collector table settings
+
+		// Ensure value falls in line with what we expect for processes
+		$max_processes = read_config_option('concurrent_processes');
+		if ($max_processes < 1) $max_processes = 1;
+		if ($max_processes > 10) $max_processes = 10;
+
+		// Ensure value falls in line with what we expect for threads
+		$max_threads = read_config_option('max_threads');
+		if ($max_threads < 1) $max_threads = 1;
+		if ($max_threads > 100) $max_threads = 100;
+
+		db_install_execute("UPDATE TABLE poller SET processes = $max_processes, threads = $max_threads");
 	}
 
 	if (!db_column_exists('host', 'location')) {
@@ -60,5 +75,9 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN `refresh` int unsigned default NULL");
 	}
 
-	db_install_execute('UPDATE graph_templates_graph SET t_title="" WHERE t_title IS NULL or t_title="0"');
+	db_install_execute("ALTER TABLE graph_tree_items
+		MODIFY COLUMN sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0'");
+	
+	db_install_execute('UPDATE graph_templates_graph 
+		SET t_title="" WHERE t_title IS NULL or t_title="0"');
 }

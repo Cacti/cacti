@@ -151,7 +151,7 @@ function api_tree_copy_node($tree_id, $node_id, $new_parent, $new_position) {
 	$save['host_id']            = $data['host'];
 	$save['site_id']            = $data['site'];
 	$save['host_grouping_type'] = 1;
-	$save['sort_children_type'] = 1;
+	$save['sort_children_type'] = TREE_ORDERING_INHERIT;
 	$save['title']              = $title;
 
 	$id = sql_save($save, 'graph_tree_items');
@@ -237,7 +237,7 @@ function api_tree_create_node($tree_id, $node_id, $position, $title = '') {
 	$save['host_id']            = 0;
 	$save['site_id']            = 0;
 	$save['host_grouping_type'] = 1;
-	$save['sort_children_type'] = 1;
+	$save['sort_children_type'] = TREE_ORDERING_INHERIT;
 	$save['title']              = $title;
 
 	$id = sql_save($save, 'graph_tree_items');
