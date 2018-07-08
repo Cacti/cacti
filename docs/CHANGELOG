@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#1553: Poller does not set rrd_step_counter correctly if no steps taken
 -issue#1559: CLI Output Issues due to over escaping
 -issue#1560: Warning that escapeshellarg() is escaping a null
+-issue#1567: Technical support - add notification if Cacti and Spine version is different
 -issue#1574: User templates are not correctly being applied
 -issue#1590: User Admin generates SQL error if user is not part of any groups
 -issue#1601: Aggregate Graphs can not include some classes of COMMENT
@@ -40,6 +41,7 @@ Cacti CHANGELOG
 -issue#1655: Correct Cacti to handle new MySQL 8.0 reserved word `system`
 -issue#1658: Devices drop down should be filtered by Site
 -issue#1660: Reports based upon Tree don't maintain graph order
+-issue#1674: Threads and Processes values not migrated to Poller table during upgrade
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
@@ -62,6 +64,7 @@ Cacti CHANGELOG
 -feature#1597: Ensure synchronised files have same attributes as originals
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
+-feature#1677: Default Tree nodes sorting to be inherited
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive

@@ -1790,7 +1790,7 @@ CREATE TABLE graph_tree_items (
   host_id mediumint(8) unsigned NOT NULL DEFAULT '0',
   site_id int unsigned DEFAULT '0',
   host_grouping_type tinyint(3) unsigned NOT NULL DEFAULT '1',
-  sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '1',
+  sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0',
   graph_regex varchar(60) DEFAULT '',
   host_regex varchar(60) DEFAULT '',
   PRIMARY KEY (`id`),
