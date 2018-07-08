@@ -1003,7 +1003,7 @@
 					zoomAction_zoom_in();
 					break;
 				case 'copy':
-					$('#zoom-textarea').html('<img class="graphimage" id="graph_4" src="data:image/png;base64,'+btoa(unescape(encodeURIComponent(zoom.image.data)))+'" width="550" height="246">').select();
+					$('#zoom-textarea').html('<img src="data:image/png;base64,'+btoa(unescape(encodeURIComponent(zoom.image.data)))+'" width="'+zoom.image.width+'" height="'+zoom.image.height'">').select();
 
 					try {
 						var successful = document.execCommand('copy');
