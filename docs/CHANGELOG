@@ -62,6 +62,7 @@ Cacti CHANGELOG
 -feature#1597: Ensure synchronised files have same attributes as originals
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
+-feature#1692: Separate option for logging Input Validation issues
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti

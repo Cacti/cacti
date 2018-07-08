@@ -277,6 +277,12 @@ $settings = array(
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
 			),
+		'log_validation' => array(
+			'friendly_name' => __('Log Input Validation Issues'),
+			'description' => __('Record when request fields are accessed without going through proper input validatdion'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'selective_debug' => array(
 			'friendly_name' => __('Selective File Debug'),
 			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),

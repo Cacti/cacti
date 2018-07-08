@@ -319,12 +319,12 @@ function set_request_var($variable, $value) {
 function get_request_var($name, $default = '') {
 	global $_CACTI_REQUEST;
 
-	$developer = read_config_option('developer_mode');
+	$log_validation = read_config_option('log_validation');
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
 	} elseif (isset_request_var($name)) {
-		if ($developer == 'on') {
+		if ($log_validation == 'on') {
 			html_log_input_error($name);
 		}
 
