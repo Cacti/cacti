@@ -62,7 +62,7 @@ function upgrade_to_1_2_0() {
 
 	if (!db_column_exists('automation_networks', 'same_sysname')) {
 		db_install_execute("ALTER TABLE automation_networks
-			ADD COLUMN `same_sysname` char(2) DEFAULT ''");
+			ADD COLUMN `same_sysname` char(2) DEFAULT '' AFTER `add_to_cacti`");
 	}
 
 	db_install_execute('UPDATE graph_templates_graph SET t_title="" WHERE t_title IS NULL or t_title="0"');
