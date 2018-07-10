@@ -3787,10 +3787,28 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$toText = $to;
 	}
 
-	if (is_array($from)) {
-		$fromText = $from[1] . ' <' . $from[0] . '>';
+
+	// Set the from information
+	if (!is_array($from)) {
+		$fromname = '';
+		$fromemail = $from;
+		if ($fromemail == '') {
+			$fromname = read_config_option('settings_from_name');
+			if (isset($_SERVER['HOSTNAME'])) {
+				$fromemail = 'Cacti@' . $_SERVER['HOSTNAME'];
+			} else {
+				$fromemail = 'Cacti@cacti.net';
+			}
+
+			if ($fromname == '') {
+				$fromname = 'Cacti';
+			}
+		}
+
+		$fromText = $fromemail;
+		$from = array($fromemail, $fromname);
 	} else {
-		$fromText = $from;
+		$fromText = $from[1] . ' <' . $from[0] . '>';
 	}
 
 	$body = str_replace('<SUBJECT>', $subject, $body);
@@ -3861,26 +3879,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		}
 	}
 
-	// Set the from information
-	if (!is_array($from)) {
-		$fromname = '';
-		if ($from == '') {
-			$fromname = read_config_option('settings_from_name');
-			if (isset($_SERVER['HOSTNAME'])) {
-				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
-			} else {
-				$from = 'Cacti@cacti.net';
-			}
-
-			if ($fromname == '') {
-				$fromname = 'Cacti';
-			}
-		}
-
-		$mail->setFrom($from, $fromname);
-	} else {
-		$mail->setFrom($from[0], $from[1]);
-	}
+	$mail->setFrom($from[0], $from[1]);
 
 	if (!is_array($to)) {
 		$to = explode(',', $to);
@@ -4039,11 +4038,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
-		cacti_log("Mail Successfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Successfully Sent '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return '';
 	} else {
-		cacti_log("Mail Failed to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Failed from '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return $mail->ErrorInfo;
 	}
@@ -4063,8 +4062,8 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 			$host = $secure . '://' . $host;
 		}
 	} else {
-		$mail->SMTPAutoTLS = false;
-		$mail->SMTPSecure = false;
+		$smtp->SMTPAutoTLS = false;
+		$smtp->SMTPSecure = false;
 	}
 
 	//Enable connection-level debug output
