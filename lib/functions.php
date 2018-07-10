@@ -659,6 +659,16 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
+/* cacti_log_file - returns the log filename */
+function cacti_log_file() {
+	global $config;
+	$logfile        = read_config_option('path_cactilog');
+	if ($logfile == '') {
+		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+	return $logfile;
+}
+
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
@@ -730,7 +740,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
-	$logfile        = read_config_option('path_cactilog');
+	$logfile        = cacti_log_name();
 
 	/* format the message */
 	if ($environ == 'POLLER') {
@@ -741,10 +751,6 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* Log to Logfile */
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
-		if ($logfile == '') {
-			$logfile = $config['base_path'] . '/log/cacti.log';
-		}
-
 		/* echo the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
 
