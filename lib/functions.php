@@ -740,7 +740,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
-	$logfile        = cacti_log_name();
+	$logfile        = cacti_log_file();
 
 	/* format the message */
 	if ($environ == 'POLLER') {
