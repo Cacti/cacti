@@ -323,6 +323,7 @@
 					+ 		'<div class="inner_li">'
 					+ 			'<span class="zoomContextMenuAction__newTab">Open in new tab</a></span>'
 					+			'<span class="zoomContextMenuAction__save">Save graph</span>'
+					+			'<span class="zoomContextMenuAction__copy">Copy graph</span>'
 					+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
 					+ 		'</div>'
 					+ '</div>'
@@ -1000,6 +1001,16 @@
 					break;
 				case 'zoom_in':
 					zoomAction_zoom_in();
+					break;
+				case 'copy':
+					$('#zoom-textarea').html('<img src="data:image/png;base64,'+btoa(unescape(encodeURIComponent(zoom.image.data)))+'" width="'+zoom.image.width+'" height="'+zoom.image.height+'">').select();
+
+					try {
+						var successful = document.execCommand('copy');
+					} catch (err) {
+						alert('Unsupported Browser');
+					}
+					return false;
 					break;
 				case 'save':
 					var arraybuffer = new ArrayBuffer(zoom.image.data.length);

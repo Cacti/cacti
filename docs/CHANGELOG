@@ -66,6 +66,7 @@ Cacti CHANGELOG
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
 -feature#1677: Default Tree nodes sorting to be inherited
+-feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
