@@ -75,7 +75,12 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN `refresh` int unsigned default NULL");
 	}
 
-	db_install_execute("ALTER TABLE graph_tree_items
+	if (!db_column_exists('automation_networks', 'same_sysname')) {
+		db_install_execute("ALTER TABLE automation_networks
+			ADD COLUMN `same_sysname` char(2) DEFAULT '' AFTER `add_to_cacti`");
+	}
+
+  db_install_execute("ALTER TABLE graph_tree_items
 		MODIFY COLUMN sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0'");
 	
 	db_install_execute('UPDATE graph_templates_graph 

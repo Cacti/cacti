@@ -584,8 +584,9 @@ function discoverDevices($network_id, $thread) {
 							if ($snmp_sysName != '') {
 								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM host
-									WHERE snmp_sysName = ?',
-									array($snmp_sysName));
+									WHERE snmp_sysName = ?
+									AND ip == ?',
+									array($snmp_sysName, $device['ip_address']));
 
 								if ($isCactiSysName) {
 									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already in Cacti!\n");
@@ -593,18 +594,20 @@ function discoverDevices($network_id, $thread) {
 									continue;
 								}
 
-								$isDuplicateSysName = db_fetch_cell_prepared('SELECT COUNT(*)
-									FROM automation_devices
-									WHERE network_id = ?
-									AND sysName != ""
-									AND ip != ?
-									AND sysName = ?',
-									array($device['ip_address'], $network_id, $snmp_sysName));
+								if ($network['same_sysname'] == '') {
+									$isDuplicateSysName = db_fetch_cell_prepared('SELECT COUNT(*)
+										FROM automation_devices
+										WHERE network_id = ?
+										AND sysName != ""
+										AND ip != ?
+										AND sysName = ?',
+										array($device['ip_address'], $network_id, $snmp_sysName));
 
-								if ($isDuplicateSysName) {
-									automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
-									markIPDone($device['ip_address'], $network_id);
-									continue;
+									if ($isDuplicateSysName) {
+										automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
+										markIPDone($device['ip_address'], $network_id);
+										continue;
+									}
 								}
 
 								$stats['snmp']++;

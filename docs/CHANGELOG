@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
 -issue#1174: Disable drag and drop when tree is not in edit mode
 -issue#1200: Aggregate Graphs can not include some classes of COMMENT
+-issue#1298: Prevent system running if system log is not writable
 -issue#1383: CSRF Timeout does not obey session timeout
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
@@ -42,6 +43,7 @@ Cacti CHANGELOG
 -issue#1658: Devices drop down should be filtered by Site
 -issue#1660: Reports based upon Tree don't maintain graph order
 -issue#1674: Threads and Processes values not migrated to Poller table during upgrade
+-issue#1676: Allow automation discovery to add the same sysname on different hosts
 -issue#1700: Mail sent without auth causes errors to appear in logs
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
@@ -67,6 +69,7 @@ Cacti CHANGELOG
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
 -feature#1677: Default Tree nodes sorting to be inherited
+-feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti
