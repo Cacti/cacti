@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#1658: Devices drop down should be filtered by Site
 -issue#1660: Reports based upon Tree don't maintain graph order
 -issue#1674: Threads and Processes values not migrated to Poller table during upgrade
+-issue#1676: Allow automation discovery to add the same sysname on different hosts
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
