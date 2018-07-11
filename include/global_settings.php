@@ -479,20 +479,20 @@ $settings = array(
 			'max_length' => '128',
 			'size' => '40'
 			),
-		'automation_from_email' => array(
+		'automation_email_from' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('Automation sender email address'),
 			'description' => __('Default email address automation report is sent from per network discovery. Leave this field empty to use default Cacti email address.'),
-			'value' => '|arg1:automation_from_email|',
+			'value' => '|arg1:automation_email_from|',
 			'default' => '',
 			'max_length' => '128',
 			'size' => '40'
 			),
-		'automation_from_name' => array(
+		'automation_email_name' => array(
 			'method' => 'textbox',
 			'friendly_name' => __('Automation sender display name'),
 			'description' => __('Default email display name automation report is sent from per network discovery. Leave this field empty to use default Cacti email display name.'),
-			'value' => '|arg1:automation_from_name|',
+			'value' => '|arg1:automation_email_name|',
 			'default' => '',
 			'max_length' => '128',
 			'size' => '40'
