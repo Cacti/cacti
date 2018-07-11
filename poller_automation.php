@@ -579,8 +579,8 @@ function discoverDevices($network_id, $thread) {
 							if ($snmp_sysName != '') {
 								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM host
-									AND ip == ?
-									WHERE snmp_sysName = ?',
+									WHERE snmp_sysName = ?
+									AND ip == ?',
 									array($snmp_sysName, $device['ip_address']));
 
 								if ($isCactiSysName) {
