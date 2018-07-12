@@ -24,8 +24,8 @@ class Installer implements JsonSerializable {
 	const STEP_WELCOME = 1;
 	const STEP_CHECK_DEPENDENCIES = 2;
 	const STEP_INSTALL_TYPE = 3;
-	const STEP_BINARY_LOCATIONS = 4;
-	const STEP_PERMISSION_CHECK = 5;
+	const STEP_PERMISSION_CHECK = 4;
+	const STEP_BINARY_LOCATIONS = 5;
 	const STEP_DEFAULT_PROFILE = 6;
 	const STEP_TEMPLATE_INSTALL = 7;
 	const STEP_CHECK_TABLES = 8;
@@ -679,9 +679,7 @@ class Installer implements JsonSerializable {
 				}
 				break;
 
-			case Installer::STEP_INSTALL_TYPE:
-				$this->stepPrevious = Installer::STEP_CHECK_DEPENDENCIES;
-
+			case Installer::STEP_PERMISSION_CHECK:
 				switch ($this->mode) {
 					case Installer::MODE_INSTALL:
 					case Installer::MODE_POLLER:
@@ -711,14 +709,14 @@ class Installer implements JsonSerializable {
 					/* upgrade - if user runs old version send to upgrade-oldversion */
 					$this->stepNext = Installer::STEP_INSTALL_OLD;
 				} else {
-					$this->stepNext = Installer::STPE_INSTALL;
+					$this->stepNext = Installer::STEP_INSTALL;
 				}
 				break;
 
 			case Installer::STEP_CHECK_TABLES:
 				if ($this->mode == Installer::MODE_UPGRADE ||
 				    $this->mode == Installer::MODE_DOWNGRADE) {
-					$this->stepPrevious = Installer::STEP_INSTALL_TYPE;
+					$this->stepPrevious = Installer::STEP_PERMISSION_CHECK;
 				}
 				break;
 
@@ -1287,6 +1285,7 @@ class Installer implements JsonSerializable {
 
 		if ($this->mode == Installer::MODE_POLLER) {
 			$always_paths = array(
+				sys_get_temp_dir(),
 				$config['base_path'] . '/resource/snmp_queries',
 				$config['base_path'] . '/resource/script_server',
 				$config['base_path'] . '/resource/script_queries',
@@ -1299,6 +1298,7 @@ class Installer implements JsonSerializable {
 			);
 		} else {
 			$always_paths = array(
+				sys_get_temp_dir(),
 				$config['base_path'] . '/log',
 				$config['base_path'] . '/cache/boost',
 				$config['base_path'] . '/cache/mibcache',
@@ -1428,7 +1428,27 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckTables() {
-		$output = Installer::sectionTitle(__('Table Setup'));
+		$output = Installer::sectionTitle(__('Database Collation'));
+
+		$collation_vars = db_fetch_assoc('show variables like "collation_database";');
+
+		$collation_value = '';
+		$collation_valid = false;
+		if (sizeof($collation_vars)) {
+			$collation_value = $collation_vars[0]['Value'];
+			$collation_valid = ($collation_value == 'utf8mb4_unicode_ci');
+		}
+
+		file_put_contents('/tmp/vars',var_export($collation_vars, true));
+		if ($collation_valid) {
+			$output .= Installer::sectionNormal(__('Your databse default collation appears to be UTF8 compliant'));
+		} else {
+			$output .= Installer::sectionNormal(__('Your database default collaction does NOT appear to be UTF8 compliant'));
+			$output .= Installer::sectionNote('<strong><font color="#FF0000">' . __('WARNING:') . '</font></strong> ' . __('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched'));
+			$output .= Installer::sectionNormal(__('Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\'', $collation_value));
+		}
+
+		$output .= Installer::sectionTitle(__('Table Setup'));
 
 		$tables = install_setup_get_tables();
 
