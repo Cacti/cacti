@@ -1439,7 +1439,6 @@ class Installer implements JsonSerializable {
 			$collation_valid = ($collation_value == 'utf8mb4_unicode_ci');
 		}
 
-		file_put_contents('/tmp/vars',var_export($collation_vars, true));
 		if ($collation_valid) {
 			$output .= Installer::sectionNormal(__('Your databse default collation appears to be UTF8 compliant'));
 		} else {
