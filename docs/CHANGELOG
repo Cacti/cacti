@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -issue#1676: Allow automation discovery to add the same sysname on different hosts
 -issue#1690: Report a warning if the default collation is not utf8mb4_unicode_ci
 -issue#1700: Mail sent without auth causes errors to appear in logs
+-issue#1710: RRDtool create command causes first update to fail
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
