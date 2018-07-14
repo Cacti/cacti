@@ -1265,8 +1265,14 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);
 	}
 
+	if (get_rrdtool_version() >= 1.5) {
+		$update_options='--skip-past-updates';
+	} else {
+		$update_options='';
+	}
+
 	if ($valid_entry) {
-		rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 		return 'OK';
 	}
 }
