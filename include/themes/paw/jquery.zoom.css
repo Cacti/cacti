@@ -172,7 +172,7 @@
 }
 
 .zoom-menu .first_li span {
-	width:115px;
+	width:150px;
 	display:block;
 	padding:5px 10px;
 	cursor:pointer
@@ -180,7 +180,7 @@
 
 .zoom-menu .inner_li {
 	display:none;
-	margin-left:130px;
+	margin-left:150px;
 	position:absolute;
 	border:1px solid #aaa;
 	border-left:1px solid #ccc;
@@ -203,6 +203,13 @@
 	float:left;
 	margin-left: 0.2em;
 	margin-right:0.4em;
+	margin-top: 2px;
+}
+
+.zoom-menu .ui-icon-right {
+	float: right;
+	margin-left: 0.4em;
+	margin-right:0.2em;
 	margin-top: 2px;
 }
 
