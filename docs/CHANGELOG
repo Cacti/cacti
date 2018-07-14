@@ -45,6 +45,7 @@ Cacti CHANGELOG
 -issue#1660: Reports based upon Tree don't maintain graph order
 -issue#1674: Threads and Processes values not migrated to Poller table during upgrade
 -issue#1676: Allow automation discovery to add the same sysname on different hosts
+-issue#1682: Slow Select Statement lib/api_automation.php
 -issue#1690: Report a warning if the default collation is not utf8mb4_unicode_ci
 -issue#1700: Mail sent without auth causes errors to appear in logs
 -issue#1710: RRDtool create command causes first update to fail
