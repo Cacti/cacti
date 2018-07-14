@@ -197,6 +197,11 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
+/* check cacti log is available */
+if (!is_writable(cacti_log_file())) {
+	die('System log file is not available for writing, please enable write access');
+}
+
 $filename = get_current_page();
 
 $config['is_web'] = true;

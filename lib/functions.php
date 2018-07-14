@@ -659,6 +659,16 @@ function array_rekey($array, $key, $key_value) {
 	return $ret_array;
 }
 
+/* cacti_log_file - returns the log filename */
+function cacti_log_file() {
+	global $config;
+	$logfile        = read_config_option('path_cactilog');
+	if ($logfile == '') {
+		$logfile = $config['base_path'] . '/log/cacti.log';
+	}
+	return $logfile;
+}
+
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
@@ -730,7 +740,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* determine how to log data */
 	$logdestination = read_config_option('log_destination');
-	$logfile        = read_config_option('path_cactilog');
+	$logfile        = cacti_log_file();
 
 	/* format the message */
 	if ($environ == 'POLLER') {
@@ -741,10 +751,6 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* Log to Logfile */
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
-		if ($logfile == '') {
-			$logfile = $config['base_path'] . '/log/cacti.log';
-		}
-
 		/* echo the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
 
@@ -3787,10 +3793,28 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$toText = $to;
 	}
 
-	if (is_array($from)) {
-		$fromText = $from[1] . ' <' . $from[0] . '>';
+
+	// Set the from information
+	if (!is_array($from)) {
+		$fromname = '';
+		$fromemail = $from;
+		if ($fromemail == '') {
+			$fromname = read_config_option('settings_from_name');
+			if (isset($_SERVER['HOSTNAME'])) {
+				$fromemail = 'Cacti@' . $_SERVER['HOSTNAME'];
+			} else {
+				$fromemail = 'Cacti@cacti.net';
+			}
+
+			if ($fromname == '') {
+				$fromname = 'Cacti';
+			}
+		}
+
+		$fromText = $fromemail;
+		$from = array($fromemail, $fromname);
 	} else {
-		$fromText = $from;
+		$fromText = $from[1] . ' <' . $from[0] . '>';
 	}
 
 	$body = str_replace('<SUBJECT>', $subject, $body);
@@ -3861,26 +3885,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		}
 	}
 
-	// Set the from information
-	if (!is_array($from)) {
-		$fromname = '';
-		if ($from == '') {
-			$fromname = read_config_option('settings_from_name');
-			if (isset($_SERVER['HOSTNAME'])) {
-				$from = 'Cacti@' . $_SERVER['HOSTNAME'];
-			} else {
-				$from = 'Cacti@cacti.net';
-			}
-
-			if ($fromname == '') {
-				$fromname = 'Cacti';
-			}
-		}
-
-		$mail->setFrom($from, $fromname);
-	} else {
-		$mail->setFrom($from[0], $from[1]);
-	}
+	$mail->setFrom($from[0], $from[1]);
 
 	if (!is_array($to)) {
 		$to = explode(',', $to);
@@ -4039,11 +4044,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	if ($mail->send()) {
-		cacti_log("Mail Successfully Sent to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Successfully Sent '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return '';
 	} else {
-		cacti_log("Mail Failed to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
+		cacti_log("Mail Failed from '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
 
 		return $mail->ErrorInfo;
 	}
@@ -4063,8 +4068,8 @@ function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure
 			$host = $secure . '://' . $host;
 		}
 	} else {
-		$mail->SMTPAutoTLS = false;
-		$mail->SMTPSecure = false;
+		$smtp->SMTPAutoTLS = false;
+		$smtp->SMTPSecure = false;
 	}
 
 	//Enable connection-level debug output

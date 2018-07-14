@@ -171,6 +171,7 @@ function api_networks_save($post) {
 		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
 		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
 		$save['add_to_cacti']       = (isset($post['add_to_cacti']) ? 'on':'');
+		$save['same_sysname']       = (isset($post['same_sysname']) ? 'on':'');
 		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
@@ -536,6 +537,12 @@ function network_edit() {
 		'friendly_name' => __('Automatically Add to Cacti'),
 		'description' => __('For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.'),
 		'value' => '|arg1:add_to_cacti|'
+		),
+	'same_sysname' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Allow same sysName on different hosts'),
+		'description' => __('When discovering devices, allow duplicate sysnames to be added on different hosts'),
+		'value' => '|arg1:same_sysname|'
 		),
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',

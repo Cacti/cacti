@@ -476,6 +476,33 @@ $settings = array(
 			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible.'),
 			'default' => '',
 			),
+		'automation_email' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('Automation recipient email address'),
+			'description' => __('Default email address automation report is sent to per network discovery. Leave this field empty to suppress report generation.'),
+			'value' => '|arg1:automation_email|',
+			'default' => '',
+			'max_length' => '128',
+			'size' => '40'
+			),
+		'automation_email_from' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('Automation sender email address'),
+			'description' => __('Default email address automation report is sent from per network discovery. Leave this field empty to use default Cacti email address.'),
+			'value' => '|arg1:automation_email_from|',
+			'default' => '',
+			'max_length' => '128',
+			'size' => '40'
+			),
+		'automation_email_name' => array(
+			'method' => 'textbox',
+			'friendly_name' => __('Automation sender display name'),
+			'description' => __('Default email display name automation report is sent from per network discovery. Leave this field empty to use default Cacti email display name.'),
+			'value' => '|arg1:automation_email_name|',
+			'default' => '',
+			'max_length' => '128',
+			'size' => '40'
+			),
 		),
 	'snmp' => array(
 		'general_header' => array(
