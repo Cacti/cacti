@@ -526,7 +526,7 @@ function get_request_var_post($name, $default = '') {
    allows for the concept of global session variables such as
    'sess_default_rows'.
 
-   Validateion 'filter' follow PHP conventions including:
+   Validation 'filter' follow PHP conventions including:
 
      FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
      FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
