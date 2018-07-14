@@ -75,6 +75,7 @@ Cacti CHANGELOG
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature#1703: Provide i18n for the graph right context menu
 -feature#1709: Dont warn when attempting to make updates in the past
+-feature#1711: Support specifying MySQL SSL file paths in the database API
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
 -feature: Add support for DDERIVE and DCOUNTER to Cacti

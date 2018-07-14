@@ -33,6 +33,9 @@ $database_username = 'cactiuser';
 $database_password = 'cactiuser';
 $database_port     = '3306';
 $database_ssl      = false;
+$database_ssl_key  = '';
+$database_ssl_cert = '';
+$database_ssl_ca   = '';
 
 /*
  * When the cacti server is a remote poller, then these entries point to
@@ -47,6 +50,9 @@ $database_ssl      = false;
 #$rdatabase_password = 'cactiuser';
 #$rdatabase_port     = '3306';
 #$rdatabase_ssl      = false;
+#$rdatabase_ssl_key  = '';
+#$rdatabase_ssl_cert = '';
+#$rdatabase_ssl_ca   = '';
 
 /*
  * The poller_id of this system.  set to `1` for the main cacti web server.
