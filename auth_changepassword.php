@@ -53,11 +53,10 @@ switch (get_request_var('action')) {
 		}
 }
 
-$user        = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-$version     = get_cacti_version();
-$auth_method = read_config_option('auth_method');
+$user    = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+$version = get_cacti_version();
 
-if ($auth_method != 1 && $user['realm'] != 0) {
+if ($user['realm'] != 0) {
 	raise_message('nodomainpassword');
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));

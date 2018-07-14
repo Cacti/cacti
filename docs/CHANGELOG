@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#1655: Correct Cacti to handle new MySQL 8.0 reserved word `system`
 -issue#1658: Devices drop down should be filtered by Site
 -issue#1660: Reports based upon Tree don't maintain graph order
+-issue#1665: Must change password not working for local users when main realm is not local
 -issue#1674: Threads and Processes values not migrated to Poller table during upgrade
 -issue#1676: Allow automation discovery to add the same sysname on different hosts
 -issue#1682: Slow Select Statement lib/api_automation.php
