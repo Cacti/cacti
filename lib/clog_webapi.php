@@ -237,16 +237,16 @@ function clog_view_logfile() {
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
 		if ($exclude_regex != '') {
-			$ad_filter = __(' - Admin Filter in Affect');
+			$ad_filter = __(' - Admin Filter active');
 		} else {
-			$ad_filter = __(' - No Admin Filter in Affect');
+			$ad_filter = __(' - Admin Unfiltered');
 		}
 	} else {
-		$ad_filter = __(' - Admin View');
+		$ad_filter = __(' - Admin view');
 		$exclude_regex = '';
 	}
 
-	if (get_request_var('message_type') > 0) {
+	if (get_request_var('message_type') > 0 || get_request_var('rfilter') != '') {
 		$start_string = __('Log [Total Lines: %d %s - Filter active]', $total_rows, $ad_filter);
 	} else {
 		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
