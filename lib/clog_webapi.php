@@ -251,9 +251,9 @@ function clog_view_logfile() {
 	}
 
 	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
-	} else {
 		$start_string = __('Log [Total Lines: %d %s - Filter active]', $total_rows, $ad_filter);
+	} else {
+		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
 	}
 
 	$rfilter      = get_request_var('rfilter');
