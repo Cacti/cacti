@@ -29,9 +29,15 @@
    @param $pass - the password to connect to the database server with
    @param $db_name - the name of the database to connect to
    @param $db_type - the type of database server to connect to, only 'mysql' is currently supported
+   @param $port - the port to communicate with MySQL/MariaDB on
    @param $retries - the number a time the server should attempt to connect before failing
+   @param $db_ssl - boolean true or false
+   @param $db_ssl_key - the client ssl key
+   @param $db_ssl_cert - the client ssl cert
+   @param $db_ssl_ca - the ssl ca
    @returns - (bool) '1' for success, '0' for error */
-function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $db_ssl = false, $retries = 20) {
+function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $port = '3306', $retries = 20,
+	$db_ssl = false, $db_ssl_key = '', $db_ssl_cert = '', $db_ssl_ca = '') {
 	global $database_sessions, $database_total_queries, $config;
 	$database_total_queries = 0;
 
@@ -52,11 +58,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 		$flags[PDO::ATTR_PERSISTENT] = true;
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
-			// PDO requires paths to certificates for SSL support, will have to figure out the best way to handle this
-			// I believe they can instead setup these parameters in their mysql config file in [client]
-			//$flags[PDO::MYSQL_ATTR_SSL_KEY]  = '/path/to/client-key.pem';
-			//$flags[PDO::MYSQL_ATTR_SSL_CERT] = '/path/to/client-cert.pem';
-			//$flags[PDO::MYSQL_ATTR_SSL_CA]   = '/path/to/ca-cert.pem';
+			if ($db_ssl_key != '' && $db_ssl_cert != '' && $db_ssl_ca != '') {
+				if (file_exists($db_ssl_key) && file_exists($db_ssl_cert) && file_exists($db_ssl_ca)) {
+					$flags[PDO::MYSQL_ATTR_SSL_KEY]  = $db_ssl_key;
+					$flags[PDO::MYSQL_ATTR_SSL_CERT] = $db_ssl_cert;
+					$flags[PDO::MYSQL_ATTR_SSL_CA]   = $db_ssl_ca;
+				}
+			}
 		}
 	}
 

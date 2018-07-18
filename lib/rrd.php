@@ -472,7 +472,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '') {
+function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
 	global $config, $data_source_types, $consolidation_functions;
 
 	include ($config['include_path'] . '/global_arrays.php');
@@ -520,8 +520,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		return false;
 	}
 
+	/* back off the initial time to allow updates */
+	$initial_time -= 300;
+
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start ' . $initial_time . ' --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat,
@@ -652,20 +655,17 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 				$file_exists = file_exists($rrd_path);
 			}
 
+			ksort($rrd_fields['times']);
+
 			if ($file_exists === false) {
-				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
+				$times = array_keys($rrd_fields['times']);
+				rrdtool_function_create($rrd_fields['local_data_id'], $times[0], false, $rrdtool_pipe);
 				$create_rrd_file = true;
 			}
-
-			ksort($rrd_fields['times']);
 
 			foreach ($rrd_fields['times'] as $update_time => $field_array) {
 				if (empty($update_time)) {
 					/* default the rrdupdate time to now */
-					$rrd_update_values = 'N:';
-				} elseif ($create_rrd_file == true) {
-					/* for some reason rrdtool will not let you update using times less than the
-					rrd create time */
 					$rrd_update_values = 'N:';
 				} else {
 					$rrd_update_values = $update_time . ':';
@@ -689,7 +689,13 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 					$rrd_update_values .= $value;
 				}
 
-				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				if (get_rrdtool_version() >= 1.5) {
+					$update_options='--skip-past-updates';
+				} else {
+					$update_options='';
+				}
+
+				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 				$rrds_processed++;
 			}
 		}

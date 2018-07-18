@@ -106,10 +106,6 @@ function clog_view_logfile() {
 	$logfile   = read_config_option('path_cactilog');
 	$logbase   = basename($logfile);
 
-	if (is_base64_encoded(get_nfilter_request_var('rfilter'))) {
-		set_request_var('rfilter', base64_decode(get_nfilter_request_var('rfilter')));
-	}
-
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
 		if (file_exists($requestedFile)) {
@@ -241,19 +237,19 @@ function clog_view_logfile() {
 	if (!$clogAdmin) {
 		$exclude_regex = read_config_option('clog_exclude', true);
 		if ($exclude_regex != '') {
-			$ad_filter = __(' - Admin Filter in Affect');
+			$ad_filter = __(' - Admin Filter active');
 		} else {
-			$ad_filter = __(' - No Admin Filter in Affect');
+			$ad_filter = __(' - Admin Unfiltered');
 		}
 	} else {
-		$ad_filter = __(' - Admin View');
+		$ad_filter = __(' - Admin view');
 		$exclude_regex = '';
 	}
 
-	if (get_request_var('message_type') > 0) {
-		$start_string = __('Log [Total Lines: %d %s - Additional Filter in Affect]', $total_rows, $ad_filter);
+	if (get_request_var('message_type') > 0 || get_request_var('rfilter') != '') {
+		$start_string = __('Log [Total Lines: %d %s - Filter active]', $total_rows, $ad_filter);
 	} else {
-		$start_string = __('Log [Total Lines: %d %s - No Other Filter in Affect]', $total_rows, $ad_filter);
+		$start_string = __('Log [Total Lines: %d %s - Unfiltered]', $total_rows, $ad_filter);
 	}
 
 	$rfilter      = get_request_var('rfilter');

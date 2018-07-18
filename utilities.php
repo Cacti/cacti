@@ -305,9 +305,9 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('poller_interval') . "</td>\n";
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
-		        if (!strpos($spine_version, CACTI_VERSION)) {	
+		        if (!strpos($spine_version, CACTI_VERSION)) {
 		    	    $type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
-			}	
+			}
 		} else {
 			$type = $poller_options[read_config_option('poller_type')];
 		}
@@ -883,10 +883,6 @@ function utilities_view_logfile() {
 
 	$logfile = read_config_option('path_cactilog');
 	$logbase = basename($logfile);
-
-	if (is_base64_encoded(get_nfilter_request_var('rfilter'))) {
-		set_request_var('rfilter', base64_decode(get_nfilter_request_var('rfilter')));
-	}
 
 	if (isset_request_var('filename')) {
 		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));

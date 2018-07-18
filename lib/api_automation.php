@@ -2340,8 +2340,9 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	$field_names = db_fetch_assoc_prepared('SELECT DISTINCT
 		field_name
 		FROM host_snmp_cache AS hsc
-		WHERE snmp_query_id= ?',
-		array($snmp_query_id));
+		WHERE snmp_query_id= ?
+		AND host_id = ?',
+		array($snmp_query_id, $host_id));
 
 	#print '<pre>Field Names: $sql<br>'; print_r($field_names); print '</pre>';
 

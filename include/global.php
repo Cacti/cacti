@@ -47,13 +47,18 @@ $cacti_version = trim($cacti_version);
 define('CACTI_VERSION', $cacti_version);
 
 /* Default database settings*/
-$database_type = 'mysql';
-$database_default = 'cacti';
+$database_type     = 'mysql';
+$database_default  = 'cacti';
 $database_hostname = 'localhost';
 $database_username = 'cactiuser';
 $database_password = 'cactiuser';
-$database_port = '3306';
-$database_ssl = false;
+$database_port     = '3306';
+$database_retries  = 5;
+
+$database_ssl      = false;
+$database_ssl_key  = '';
+$database_ssl_cert = '';
+$database_ssl_ca   = '';
 
 /* Default session name - Session name must contain alpha characters */
 $cacti_session_name = 'Cacti';
@@ -214,7 +219,7 @@ global $local_db_cnn_id, $remote_db_cnn_id;
 
 $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
-	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
 
@@ -222,7 +227,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
 
 	// We are a remote poller also try to connect to the remote database
-	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
 	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
@@ -232,12 +237,15 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_password  = $rdatabase_password;
 		$database_port      = $rdatabase_port;
 		$database_ssl       = $rdatabase_ssl;
+		$database_ssl_key   = $rdatabase_ssl_key;
+		$database_ssl_cert  = $rdatabase_ssl_cert;
+		$database_ssl_ca    = $rdatabase_ssl_ca;
 
 		$config['connection'] = 'online';
 	} else {
 		$config['connection'] = 'offline';
 	}
-} elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl)) {
+} elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
 	print $config['is_web'] ? '<p>':'';
 	print 'FATAL: Connection to Cacti database failed. Please ensure the database is running and your credentials in config.php are valid.';
 	print $config['is_web'] ? '</p>':'';
