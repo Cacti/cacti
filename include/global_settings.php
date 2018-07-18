@@ -259,7 +259,7 @@ $settings = array(
 					'friendly_name' => __('Graph Syntax'),
 					'default' => ''
 					),
-				'developer_mode' => array(
+				'log_validation' => array(
 					'friendly_name' => __('Developer Mode'),
 					'default' => ''
 					)

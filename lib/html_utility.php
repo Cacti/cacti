@@ -309,7 +309,7 @@ function set_request_var($variable, $value) {
 
 /* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
      returning a default value if the request variable does not exist.  When Cacti
-     is set to 'developer_mode', it will log all instances where a request variable
+     has 'log_validation' set on, it will log all instances where a request variable
      has not first been filtered.
    @arg $name - the name of the request variable. this should be a valid key in the
      $_REQUEST array
