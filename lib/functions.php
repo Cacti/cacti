@@ -5305,3 +5305,24 @@ function get_md5_include_css($path) {
 	return '<link href=\''. $config['url_path'] . $path . '?' . get_md5_hash($path) . '\' type=\'text/css\' rel=\'stylesheet\'>' . PHP_EOL;
 }
 
+function is_resource_writable($path) {
+	if ($path{strlen($path)-1}=='/') {
+		return is__writable($path.uniqid(mt_rand()).'.tmp');
+	}
+
+	if (file_exists($path)) {
+		if (($f = @fopen($path, 'r+'))) {
+			fclose($f);
+			return true;
+		}
+		return false;
+	}
+
+	if (($f = @fopen($path, 'w'))) {
+		fclose($f);
+		unlink($path);
+		return true;
+	}
+
+	return false;
+}
