@@ -129,6 +129,7 @@ class Installer implements JsonSerializable {
 		$this->locales   = get_installed_locales();
 		$this->language  = read_user_setting('user_language', get_new_user_default_language(), true);
 		$this->paths     = install_file_paths();
+		$this->errors    = array();
 		$this->theme     = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
 		$this->profile   = read_config_option('install_profile', true);
 
@@ -171,11 +172,15 @@ class Installer implements JsonSerializable {
 		}
 
 		tmp_log('install.log','');
+
+		// Always set the current step first
+		if (isset($initialData['Step'])) {
+			$this->setStep($initialData['Step']);
+			unset($initialData['Step']);
+		}
+
 		foreach ($initialData as $key => $value) {
 			switch ($key) {
-				case 'Step':
-					$this->setStep($value);
-					break;
 				case 'Mode':
 					$this->setMode($value);
 					break;
@@ -277,16 +282,41 @@ class Installer implements JsonSerializable {
 	}
 
 	private function setPaths($param_paths = array()) {
+		global $config;
 		if (is_array($param_paths)) {
 			$input = install_file_paths();
 			tmp_log('paths.log', "\nsetPaths($this->stepCurrent)\n", FILE_APPEND);
 
+			$this->errors = array();
 			/* get all items on the form and write values for them  */
 			foreach ($input as $name => $array) {
 				if (isset($param_paths[$name])) {
-					tmp_log('paths.log', "$name => $param_paths[$name]\n", FILE_APPEND);
+					if ($name == 'path_php_binary') {
+						$input = mt_rand(1,64);
+						$output = shell_exec(
+							$param_paths[$name] . ' -q ' . $config['base_path'] .
+							'/install/cli_test.php ' . $input);
+
+						if ($output != $input * $input) {
+							$this->errors[$name] = 'PHP did not return expected result';
+						}
+					}
+
+					$should_set = !isset($this->errors[$name]);
+					if ($should_set && $name != 'path_cactilog' && $name != 'path_spine') {
+						$should_set = file_exists($param_paths[$name]);
+						if (!$should_set) {
+							$this->errors[$name] = 'File not found';
+						}
+					}
+
+					tmp_log('paths.log', "$name => $param_paths[$name], $should_set\n", FILE_APPEND);
 					set_config_option($name, $param_paths[$name]);
 				}
+			}
+
+			if (sizeof($this->errors) && $this->stepCurrent > Installer::STEP_BINARY_LOCATIONS) {
+				$this->setStep(Installer::STEP_BINARY_LOCATIONS);
 			}
 		}
 	}
@@ -1196,6 +1226,9 @@ class Installer implements JsonSerializable {
 		$output = Installer::sectionTitle(__('Critical Binary Locations and Versions'));
 		$output .= Installer::sectionNormal(__('Make sure all of these values are correct before continuing.'));
 
+		if (!empty($this->errors)) {
+			$output .= Installer::sectionNote('<strong><font color="#FF0000">' . __('WARNING:') . '</font></strong> ' . __('One or more paths appear to be incorrect, unable to proceed'));
+		}
 		$i = 0;
 
 		ob_start();
@@ -1234,7 +1267,12 @@ class Installer implements JsonSerializable {
 						break;
 				}
 
+				if (isset($this->errors[$name])) {
+					print '<br>' . '<strong><font color="#FF0000">' . __('ERROR:') . '</font></strong> ' . __($this->errors[$name]);
+				}
+
 				print '<br></p>';
+
 				$html = ob_get_contents();
 				ob_clean();
 				$output .= Installer::sectionNormal($html);
@@ -1242,6 +1280,7 @@ class Installer implements JsonSerializable {
 
 			$i++;
 		}
+		$this->stepData = array('Errors' => $this->errors);
 		ob_end_clean();
 
 		return $output;

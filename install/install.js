@@ -206,7 +206,29 @@ function processStepInstallType(StepData) {
 
 function processStepPermissionCheck(StepData) {
 	collapseHeadings(StepData.Sections);
+}
 
+function processStepBinaryLocations(StepData) {
+	var errors = StepData.Errors;
+	$(function () {
+            var focusedElement;
+            $(document).on('focus', 'input', function () {
+                if (focusedElement == this) return; //already focused, return so user can now place cursor at specific point in input.
+                focusedElement = this;
+                setTimeout(function () { focusedElement.select(); }, 50); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
+            });
+        });
+
+	for (var propName in errors) {
+		if (errors.hasOwnProperty(propName)) {
+			propValue = errors[propName];
+			if (propValue) {
+				element = $("#" + propName);
+				element.focus();
+				break;
+			}
+		}
+	}
 }
 
 function processStepDefaultProfile(StepData) {
@@ -477,6 +499,8 @@ function performStep(installStep) {
 				processStepInstallType(data.StepData);
 			} else if (data.Step == STEP_PERMISSION_CHECK) {
 				processStepPermissionCheck(data.StepData);
+			} else if (data.Step == STEP_BINARY_LOCATIONS) {
+				processStepBinaryLocations(data.StepData);
 			} else if (data.Step == STEP_DEFAULT_PROFILE) {
 				processStepDefaultProfile(data.StepData);
 			} else if (data.Step == STEP_TEMPLATE_INSTALL) {
