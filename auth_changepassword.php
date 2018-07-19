@@ -268,98 +268,55 @@ $secpass_tooltip .= $secpass_body;
 
 $selectedTheme = get_selected_theme();
 
-print "<!DOCTYPE html>\n";
-print "<html>\n";
-print "<head>\n";
-print "\t<title>" . __('Change Password') . "</title>\n";
-print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>\n";
-print "\t<meta name='apple-mobile-web-app-capable' content='yes'>\n";
-print "\t<meta name='mobile-web-app-capable' content='yes'>\n";
-print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/favicon.ico' rel='shortcut icon'>";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>";
-print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
-print get_md5_include_css('include/fa/css/font-awesome.css');
-print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
-print get_md5_include_js('include/js/screenfull.js');
-print get_md5_include_js('include/js/jquery.js');
-print get_md5_include_js('include/js/jquery-migrate.js');
-print get_md5_include_js('include/js/jquery-ui.js');
-print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
-print get_md5_include_js('include/js/jquery.cookie.js');
-print get_md5_include_js('include/js/js.storage.js');
-print get_md5_include_js('include/js/jstree.js');
-print get_md5_include_js('include/js/jquery.hotkeys.js');
-print get_md5_include_js('include/js/jquery.tablednd.js');
-print get_md5_include_js('include/js/jquery.zoom.js');
-print get_md5_include_js('include/js/jquery.multiselect.js');
-print get_md5_include_js('include/js/jquery.multiselect.filter.js');
-print get_md5_include_js('include/js/jquery.timepicker.js');
-print get_md5_include_js('include/js/jquery.colorpicker.js');
-print get_md5_include_js('include/js/jquery.tablesorter.js');
-print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
-print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
-print get_md5_include_js('include/js/jquery.metadata.js');
-print get_md5_include_js('include/js/jquery.sparkline.js');
-print get_md5_include_js('include/js/Chart.js');
-print get_md5_include_js('include/js/dygraph-combined.js');
-print get_md5_include_js('include/js/d3.js');
-print get_md5_include_js('include/js/c3.js');
-print get_md5_include_js('include/js/pace.js');
-print get_md5_include_js('include/realtime.js');
-print get_md5_include_js('include/layout.js');
-print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
-print "<script type='text/javascript'>var theme='" . $selectedTheme . "';</script>\n";
-print "</head>\n";
-print "<body class='loginBody'>
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
+	<script type='text/javascript'>
+	$(function() {
+	}
+</head>
+<body class='loginBody'>
 	<div class='loginLeft'></div>
 	<div class='loginCenter'>
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Change Password') . "</legend>
-			<form name='login' method='post' action='" . get_current_page() . "'>
+			<legend><?php print __('Change Password');?></legend>
+			<form name='login' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
-				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
+				<input type='hidden' name='ref' value='<?php print sanitize_uri(get_request_var('ref')); ?>'>
+				<input type='hidden' name='name' value='<?php print isset($user['username']) ? $user['username'] : '';?>'>
 				<div class='loginTitle'>
-					<p>" . __('Please enter your current password and your new<br>Cacti password.') . "</p>
+					<p><?php print __('Please enter your current password and your new<br>Cacti password.');?></p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
 						<tr>
-							<td>" . __('Current password') . "</td>
+							<td><?php print __('Current password');?></td>
 							<td><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td>" . __('New password') . "</td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'>" . display_tooltip($secpass_tooltip) ."</td>
+							<td><?php print __('New password');?></td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
-							<td>" . __('Confirm new password') . "</td>
+							<td><?php print __('Confirm new password');?></td>
 							<td><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Save') . "'>
-						" . ($user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='" . __esc('Return') . "'>":"") . "
+							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
 							</td>
 						</tr>
 					</table>
 				</div>
 			</form>
-			<div class='loginErrors'>" . $errorMessage . "</div>
+			<div class='loginErrors'><?php print $errorMessage ?></div>
 		</div>
-		<div class='versionInfo'>" . __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT) . "</div>
+		<div class='versionInfo'><?php __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
 	</div>
-	<div class='loginRight'></div>";
-	?>
+	<div class='loginRight'></div>
 	<script type='text/javascript'>
 
 	var minChars=<?php print read_config_option('secpass_minlen');?>;

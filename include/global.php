@@ -203,7 +203,7 @@ include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
 /* check cacti log is available */
-if (!is_writable(cacti_log_file())) {
+if (!is_resource_writable(cacti_log_file())) {
 	die('System log file is not available for writing, please enable write access');
 }
 

@@ -197,14 +197,12 @@ function setMenuVisibility() {
 	$('#navigation').hide();
 	$('li.menuitem').each(function() {
 		active = storage.get($(this).attr('id'));
-		if (active != null) {
-			if (active == 'active') {
+		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
 		}else{
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
-		}
 		}
 
 		if ($(this).find('a.selected').length) {
