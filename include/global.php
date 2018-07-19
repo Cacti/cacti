@@ -75,7 +75,7 @@ if (file_exists(dirname(__FILE__) . '/config.php')) {
 }
 
 if (isset($config['cacti_version'])) {
-	die('Invalid include/config.php file detected.');
+	die("Invalid include/config.php file detected.\n");
 	exit;
 }
 
@@ -204,7 +204,7 @@ include_once($config['include_path'] . '/global_constants.php');
 
 /* check cacti log is available */
 if (!is_resource_writable(cacti_log_file())) {
-	die('System log file is not available for writing, please enable write access');
+	die("System log file is not available for writing, please enable write access\n");
 }
 
 $filename = get_current_page();
