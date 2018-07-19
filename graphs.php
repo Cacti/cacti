@@ -362,23 +362,23 @@ function form_save() {
     The "actions" function
    ------------------------ */
 
-function get_current_graph_template_name($local_graph_id) {
+function get_current_graph_template_details($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
 		WHERE id = ?',
 		array($local_graph_id));
 
 	if (empty($graph_local['graph_template_id'])) {
-		return __('None');
+		return array('source' => 0, 'name' => '');
 	} elseif ($graph_local['snmp_query_id'] > 0) {
-		return db_fetch_cell_prepared('SELECT sqg.name
+		return db_fetch_row_prepared('SELECT sqg.name, 1 as source
 			FROM snmp_query_graph AS sqg
 			INNER JOIN graph_local AS gl
 			ON gl.snmp_query_graph_id=sqg.id
 			WHERE gl.id = ?',
 			array($local_graph_id));
 	} else {
-		return db_fetch_cell_prepared('SELECT gt.name
+		return db_fetch_row_prepared('SELECT gt.name, 2 as source
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gl.graph_template_id=gt.id
@@ -1879,7 +1879,8 @@ function graph_management() {
 	$display_text = array(
 		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
 		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')),
-		'name'           => array('display' => __('Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Graph Template that this Graph was based upon.')),
+		'type'           => array('display' => __('Source Type'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The underlying source that this Graph was based upon.')),
+		'name'           => array('display' => __('Source Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Graph Template or Data Query that this Graph was based upon.')),
 		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
 	);
 
@@ -1887,13 +1888,20 @@ function graph_management() {
 
 	$i = 0;
 	if (sizeof($graph_list)) {
+		$template_sources = array(
+			0 => __('None'),
+			1 => __('Data Query'),
+			2 => __('Template'),
+		);
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$template_name = get_current_graph_template_name($graph['local_graph_id']);
+			$template_details = get_current_graph_template_details($graph['local_graph_id']);
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(filter_value($template_name, get_request_var('rfilter')), $graph['local_graph_id']);
+			form_selectable_cell(filter_value($template_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter')), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();

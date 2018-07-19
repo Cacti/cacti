@@ -77,6 +77,7 @@ Cacti CHANGELOG
 -feature#1597: Ensure synchronised files have same attributes as originals
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
+-feature#1670: Improve Graph Management to show type of source for a graph
 -feature#1677: Default Tree nodes sorting to be inherited
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature#1703: Provide i18n for the graph right context menu
