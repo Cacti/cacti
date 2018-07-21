@@ -129,6 +129,11 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			WHERE id = ?',
 			array($local_graph_id));
 
+		if (get_selected_theme() != 'classic') {
+			$struct_graph_item['task_item_id']['method'] = 'drop_callback';
+			$struct_graph_item['task_item_id']['action'] = 'ajax_get_graphitem';
+		}
+
 		$struct_graph_item['task_item_id']['sql'] = "SELECT
 			CONCAT_WS('',
 			CASE
@@ -171,6 +176,11 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			$form_field_name = str_replace('|field|', $item['column_name'], $field_name_format);
 			$form_field_name = str_replace('|id|', $item['id'], $form_field_name);
 
+			if (get_selected_theme() != 'classic') {
+				$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
+				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items&host_id=' . $host_id . '&rrd_id=' . $current_def_value[$item['column_name']];
+			}
+
 			$form_array += array($form_field_name => $struct_graph_item[$item['column_name']]);
 
 			/* modifications to the default form array */
@@ -196,6 +206,19 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 						$form_array[$form_field_name]['value'] = $value;
 					}
+				}
+			} elseif (get_selected_theme() != 'classic') {
+				if (substr_count($form_field_name, 'task_item_id') > 0) {
+					$value = db_fetch_cell_prepared("SELECT
+						CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+						FROM (data_template_data,data_template_rrd,data_local)
+						LEFT JOIN host ON (data_local.host_id=host.id)
+						WHERE data_template_rrd.local_data_id=data_local.id
+						AND data_template_data.local_data_id=data_local.id
+						AND data_template_rrd.id = ?",
+						array($current_def_value[$item['column_name']]));
+
+					$form_array[$form_field_name]['value'] = $value;
 				}
 			}
 

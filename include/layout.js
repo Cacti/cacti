@@ -208,6 +208,19 @@ $.fn.textWidth = function(text){
 	return width;
 };
 
+/** textBoxWidth - This function will return the natural width of a string
+ *  without any wrapping. */
+$.fn.textBoxWidth = function() {
+	var org = $(this);
+	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.val() + '</span>');
+	html.css('font-family', org.css('font-family'));
+	html.css('font-weight', org.css('font-weight'));
+	$('body').append(html);
+	var width = html.width();
+	html.remove();
+	return width;
+};
+
 /** classes - This function will return an array of all
  *  classes of an element */
 $.fn.classes = function(callback) {
@@ -262,6 +275,12 @@ $.fn.focusEnd = function() {
 $.fn.serializeObject = function() {
 	var arrayData, objectData;
 	arrayData = this.serializeArray();
+	formID = $(this).attr('id');
+	arrayData = arrayData.concat(
+		$('#'+formID+' input[type=checkbox]:not(:checked)').map(function() {
+			return {"name": this.name, "value": $(this).is(':checked') ? 'on':''}
+		}).get());
+
 	objectData = {};
 
 	$.each(arrayData, function() {
