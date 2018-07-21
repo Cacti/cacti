@@ -48,7 +48,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=0&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>\n";
+			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=0&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
 		}
 	}
 }
@@ -296,7 +296,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		cacti_debug_backtrace('AGGREGATE', true);
 
 		if (isset($GLOBALS['error_fatal'])) {
-			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno\n");
+			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno" . PHP_EOL);
 		}
 	}
 

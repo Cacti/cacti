@@ -49,7 +49,7 @@ $params = $_SERVER['argv'];
 array_shift($params);
 
 if (sizeof($params) == 0) {
-	die("no parameters passed\n");
+	die('no parameters passed' . PHP_EOL);
 }
 
 $backgroundTime = read_config_option('install_started', true);
