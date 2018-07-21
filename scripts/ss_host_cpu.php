@@ -25,19 +25,19 @@ if (!isset($called_by_script_server)) {
 
 function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
-	$snmp_version 	= $snmp[0];
-	$snmp_port    	= $snmp[1];
-	$snmp_timeout 	= $snmp[2];
-	$ping_retries 	= $snmp[3];
-	$max_oids		= $snmp[4];
+	$snmp_version = $snmp[0];
+	$snmp_port    = $snmp[1];
+	$snmp_timeout = $snmp[2];
+	$ping_retries = $snmp[3];
+	$max_oids     = $snmp[4];
 
-	$snmp_auth_username   	= '';
-	$snmp_auth_password   	= '';
-	$snmp_auth_protocol  	= '';
-	$snmp_priv_passphrase 	= '';
-	$snmp_priv_protocol   	= '';
-	$snmp_context         	= '';
-	$snmp_community 		= '';
+	$snmp_auth_username   = '';
+	$snmp_auth_password   = '';
+	$snmp_auth_protocol   = '';
+	$snmp_priv_passphrase = '';
+	$snmp_priv_protocol   = '';
+	$snmp_context         = '';
+	$snmp_community       = '';
 
 	if ($snmp_version == 3) {
 		$snmp_auth_username   = $snmp[6];
@@ -62,12 +62,12 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 
 			foreach($arr_index as $value) {
-				print $value . "\n";
+				print $value . PHP_EOL;
 			}
 		} else {
 			$indexes = explode(',', $value);
 			foreach($indexes as $index) {
-				print $index . "\n";
+				print $index . PHP_EOL;
 			}
 		}
 	} elseif (($cmd == 'num_indexes')) {
@@ -92,15 +92,15 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 
 			foreach ($arr_index as $index => $value) {
 				if ($arg == 'usage') {
-					print $index . '!' . $arr[$index] . "\n";
+					print $index . '!' . $arr[$index] . PHP_EOL;
 				} elseif ($arg == 'index') {
-					print $index . '!' . $value . "\n";
+					print $index . '!' . $value . PHP_EOL;
 				}
 			}
 		} else {
 			$indexes = explode(',', $value);
 			foreach($indexes as $index) {
-				print $index . '!' . $index . "\n";
+				print $index . '!' . $index . PHP_EOL;
 			}
 		}
 	} elseif ($cmd == 'get') {
