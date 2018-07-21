@@ -25,19 +25,19 @@ if (!isset($called_by_script_server)) {
 
 function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
-	$snmp_version 	= $snmp[0];
-	$snmp_port    	= $snmp[1];
-	$snmp_timeout 	= $snmp[2];
-	$ping_retries 	= $snmp[3];
-	$max_oids		= $snmp[4];
+	$snmp_version   = $snmp[0];
+	$snmp_port      = $snmp[1];
+	$snmp_timeout   = $snmp[2];
+	$ping_retries   = $snmp[3];
+	$max_oids       = $snmp[4];
 
-	$snmp_auth_username   	= '';
-	$snmp_auth_password   	= '';
-	$snmp_auth_protocol  	= '';
-	$snmp_priv_passphrase 	= '';
-	$snmp_priv_protocol   	= '';
-	$snmp_context         	= '';
-	$snmp_community 		= '';
+	$snmp_auth_username   = '';
+	$snmp_auth_password   = '';
+	$snmp_auth_protocol   = '';
+	$snmp_priv_passphrase = '';
+	$snmp_priv_protocol   = '';
+	$snmp_context         = '';
+	$snmp_community       = '';
 
 	if ($snmp_version == 3) {
 		$snmp_auth_username   = $snmp[6];
@@ -51,13 +51,13 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 	}
 
 	$oids = array(
-		'total' 		=> '.1.3.6.1.2.1.25.2.3.1.5',
-		'totalin' 		=> '.1.3.6.1.2.1.25.2.3.1.5',
-		'used' 			=> '.1.3.6.1.2.1.25.2.3.1.6',
-		'failures' 		=> '.1.3.6.1.2.1.25.2.3.1.7',
-		'index' 		=> '.1.3.6.1.2.1.25.2.3.1.1',
-		'description' 	=> '.1.3.6.1.2.1.25.2.3.1.3',
-		'sau' 			=> '.1.3.6.1.2.1.25.2.3.1.4'
+		'total'       => '.1.3.6.1.2.1.25.2.3.1.5',
+		'totalin'     => '.1.3.6.1.2.1.25.2.3.1.5',
+		'used'        => '.1.3.6.1.2.1.25.2.3.1.6',
+		'failures'    => '.1.3.6.1.2.1.25.2.3.1.7',
+		'index'       => '.1.3.6.1.2.1.25.2.3.1.1',
+		'description' => '.1.3.6.1.2.1.25.2.3.1.3',
+		'sau'         => '.1.3.6.1.2.1.25.2.3.1.4'
 	);
 
 	if ($cmd == 'index') {
@@ -104,11 +104,11 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 
 		if (is_array($value)) {
 			if (($arg == 'total') || ($arg == 'used')) {
-				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared('SELECT field_value
+				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared("SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
-					AND field_name = "hrStorageAllocationUnits"
-					AND snmp_index = ?',
+					AND field_name = 'hrStorageAllocationUnits'
+					AND snmp_index = ?",
 					array($host_id, $index)));
 
 				$snmp_data = cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
