@@ -89,6 +89,10 @@ switch (get_request_var('action')) {
 		header('Location: graphs.php?header=false');
 
 		break;
+	case 'ajax_graph_items':
+		get_ajax_graph_items();
+
+		break;
 	case 'ajax_hosts':
 		$sql_where = '';
 		if (get_request_var('site_id') > 0) {
@@ -128,6 +132,60 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+
+function get_ajax_graph_items() {
+	$rrd_id  = get_filter_request_var('rrd_id');
+	$host_id = get_filter_request_var('host_id');
+
+	if ($host_id > 0) {
+		$sql_where = ' AND data_local.host_id=' . $host_id;
+	} else {
+		$sql_where = '';
+	}
+
+	if (get_request_var('term') != '') {
+		$sql_where .= ' HAVING name LIKE "%' . trim(db_qstr(get_request_var('term')),"'") . '%"';
+	}
+
+	$items  = db_fetch_assoc_prepared("SELECT *
+		FROM (SELECT data_template_rrd.id AS id,
+			CONCAT_WS('',
+			CASE
+			WHEN host.description IS NULL THEN 'No Device - '
+			WHEN host.description IS NOT NULL THEN ''
+			END,
+			data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+			FROM (data_template_data,data_template_rrd,data_local)
+			LEFT JOIN host ON (data_local.host_id=host.id)
+			WHERE data_template_rrd.local_data_id=data_local.id
+			AND data_template_data.local_data_id=data_local.id
+			AND data_template_rrd.id = ?
+		) AS a
+		UNION
+		SELECT *
+		FROM (SELECT data_template_rrd.id AS id,
+			CONCAT_WS('',
+			CASE
+			WHEN host.description IS NULL THEN 'No Device - '
+			WHEN host.description IS NOT NULL THEN ''
+			END,
+			data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+			FROM (data_template_data,data_template_rrd,data_local)
+			LEFT JOIN host ON (data_local.host_id=host.id)
+			WHERE data_template_rrd.local_data_id=data_local.id
+			AND data_template_data.local_data_id=data_local.id
+			$sql_where
+			ORDER BY name
+		) AS b
+		LIMIT " . read_config_option('autocomplete_rows'),
+		array($rrd_id));
+
+	foreach($items as $key => $item) {
+		$items[$key]['label'] = $item['name'];
+	}
+
+	print json_encode($items);
+}
 
 function add_tree_names_to_actions_array() {
 	global $graph_actions;

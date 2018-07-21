@@ -726,7 +726,7 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		print "<span id='$form_name" . "_wrap' class='autodrop ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>";
 		print "<span id='$form_name" . "_click' style='z-index:4' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>";
 		print "<span class='ui-select-text'>";
-		print "<input type='text' class='ui-state-default ui-corner-all' id='$form_name" . "_input' size='28' value='" . html_escape($previous_value) . "'>";
+		print "<input type='text' class='ui-state-default ui-corner-all' id='$form_name" . "_input' value='" . html_escape($previous_value) . "'>";
 		print "</span>";
 
 		if (!empty($none_entry) && empty($previous_value)) {
@@ -777,6 +777,14 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 			}).on('mouseleave', function() {
 				<?php print $form_name;?>Timer = setTimeout(function() { $('#<?php print $form_name;?>_input').autocomplete('close'); }, 800);
 			});
+
+			width = $('#<?php print $form_name;?>_input').textBoxWidth();
+			if (width < 100) {
+				width = 100;
+			}
+
+			$('#<?php print $form_name;?>_wrap').css('width', width+20);
+			$('#<?php print $form_name;?>_input').css('width', width);
 
 			$('ul[id^="ui-id"]').on('mouseenter', function() {
 				clearTimeout(<?php print $form_name;?>Timer);
