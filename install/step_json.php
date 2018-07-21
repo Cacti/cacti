@@ -64,9 +64,9 @@ array(
 );
 */
 
-tmp_log('step.log','Start: ' . clean_up_lines(get_request_var('data')) . "\n\n");
+log_install('json','Start: ' . clean_up_lines(get_request_var('data')));
 $json = json_encode($installer);
-tmp_log('step.log','  End: ' . clean_up_lines($json) . "\n\n", FILE_APPEND);
+log_install('json','  End: ' . clean_up_lines($json) . "\n");
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));

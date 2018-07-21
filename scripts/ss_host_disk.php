@@ -68,7 +68,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 			);
 
 		for ($i=0;($i<sizeof($return_arr));$i++) {
-			print $return_arr[$i] . PHP_EOL;
+			print $return_arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'num_indexes') {
 		$return_arr = ss_host_disk_reindex(
@@ -94,7 +94,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 			);
 
 		for ($i=0;($i<sizeof($arr_index));$i++) {
-			print $arr_index[$i] . '!' . $arr[$i] . PHP_EOL;
+			print $arr_index[$i] . '!' . $arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
@@ -104,11 +104,11 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 
 		if (is_array($value)) {
 			if (($arg == 'total') || ($arg == 'used')) {
-				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared('SELECT field_value
+				$sau = preg_replace('/[^0-9]/i', '', db_fetch_cell_prepared("SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
-					AND field_name = "hrStorageAllocationUnits"
-					AND snmp_index = ?',
+					AND field_name = 'hrStorageAllocationUnits'
+					AND snmp_index = ?",
 					array($host_id, $index)));
 
 				$snmp_data = cacti_snmp_get($hostname, $snmp_community, $oids[$arg] . ".$index", $snmp_version,
