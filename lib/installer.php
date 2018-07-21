@@ -8,7 +8,8 @@ function log_install_and_cacti($string) {
 
 function log_install($filename, $data, $flags = FILE_APPEND) {
 	global $config;
-	if (!empty(read_config_option('log_install',''))) {
+	$can_log = read_config_option('log_install','');
+	if (!empty($can_log)) {
 		$logname = 'install';
 		if (!empty($filename)) {
 			$logname .= "-$filename";
