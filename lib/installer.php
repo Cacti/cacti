@@ -14,7 +14,7 @@ function log_install($filename, $data, $flags = FILE_APPEND) {
 		if (!empty($filename)) {
 			$logname .= "-$filename";
 		}
-		file_put_contents($config['base_path'] . "/log/$logname.log", $data . "\n", $flags);
+		file_put_contents($config['base_path'] . "/log/$logname.log", $data . PHP_EOL, $flags);
 	}
 }
 
@@ -101,7 +101,7 @@ class Installer implements JsonSerializable {
 		$step = read_config_option('install_step', true);
 		log_install('step', 'Initial: ' . var_export($step, true));
 		if ($step === false || $step === null) {
-			log_install('step', "Resetting to STEP_WELCOME as not found\n");
+			log_install('step', "Resetting to STEP_WELCOME as not found");
 			$step = Installer::STEP_WELCOME;
 			set_config_option('install_step', $step);
 			$installData = array();
@@ -135,7 +135,7 @@ class Installer implements JsonSerializable {
 				$installData = array();
 			}
 		}
-		log_install('step', 'After: ' . var_export($step, true). "\n");
+		log_install('step', 'After: ' . var_export($step, true) . PHP_EOL);
 
 		$this->eula            = read_config_option('install_eula', true);
 		$this->templates       = $this->getTemplates();
@@ -187,7 +187,7 @@ class Installer implements JsonSerializable {
 		if (!empty($installData)) {
 			$this->processData($installData);
 		}
-		log_install('step', 'Done: ' . var_export($this->stepCurrent, true). "\n");
+		log_install('step', 'Done: ' . var_export($this->stepCurrent, true) . PHP_EOL);
 	}
 
 	protected function processData($initialData = array()) {
@@ -398,7 +398,7 @@ class Installer implements JsonSerializable {
 			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
 			$known_templates = install_setup_get_templates();
 			log_install('templates',"Updating templates");
-			log_install('templates',"Parameter data:\n".var_export($param_templates, true)."\n");
+			log_install('templates',"Parameter data:" . PHP_EOL . var_export($param_templates, true) . PHP_EOL);
 			foreach ($known_templates as $known) {
 				$filename = $known['filename'];
 				$key = 'chk_template_' . str_replace(".", "_", $filename);
@@ -443,7 +443,7 @@ class Installer implements JsonSerializable {
 			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
 			$known_tables = install_setup_get_tables();
 			log_install('tables',"Updating Tables");
-			log_install('tables',"Parameter data:\n".var_export($param_tables, true)."\n");
+			log_install('tables',"Parameter data:" . PHP_EOL . var_export($param_tables, true) . PHP_EOL);
 			foreach ($known_tables as $known) {
 				$name = $known['Name'];
 				$key = 'chk_table_' . $name;
@@ -487,7 +487,7 @@ class Installer implements JsonSerializable {
 		}
 
 		log_install('step', 'setStep: ' . var_export($step, true));
-		log_install('step', "setStep:\n" . var_export(debug_backtrace(0), true));
+		log_install('step', "setStep:" . PHP_EOL . var_export(debug_backtrace(0), true));
 
 //		$install_version = read_config_option('install_version', true);
 //		if ($install_version !== false) {
@@ -904,7 +904,7 @@ class Installer implements JsonSerializable {
 		$langOutput = '<select id=\'language\' name=\'theme\'>';
 		foreach ($this->locales as $key => $value) {
 			$selected = '';
-			$langOutput .= "\n" . $this->language . " == $key [$value]\n";
+			$langOutput .= PHP_EOL . $this->language . " == $key [$value]" . PHP_EOL;
 			if ($this->language == $key) {
 				$selected = ' selected';
 			}
@@ -1693,12 +1693,12 @@ class Installer implements JsonSerializable {
 
 		// Check if background started too long ago
 		if (!$backgroundNeeded) {
-			log_install('', "\n----------------\nCheck Expire\n----------------");
+			log_install('', PHP_EOL . '----------------' . PHP_EOL . 'Check Expire' . PHP_EOL . '----------------');
 
 			$backgroundDateStarted = DateTime::createFromFormat('U.u', $backgroundTime);
 			$backgroundLast = read_config_option('install_updated', true);
 
-			log_install('', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s'). "\n");
+			log_install('', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s') . PHP_EOL);
 			log_install('', 'backgroundLast = ' . $backgroundTime);
 			if ($backgroundLast === false || $backgroundLast < $backgroundTime) {
 				log_install('', 'backgroundLast = ' . $backgroundTime . " (Replaced)");
@@ -1724,7 +1724,7 @@ class Installer implements JsonSerializable {
 				}
 				$backgroundNeeded = ("$newTime" == "$backgroundTime");
 
-				log_install('', "\n=======\nExpired\n=======\n");
+				log_install('', PHP_EOL . '=======' . PHP_EOL . 'Expired' . PHP_EOL . '=======' . PHP_EOL);
 				log_install('', '         newTime = ' . $newTime);
 				log_install('', '  backgroundTime = ' . $backgroundTime);
 				log_install('', '  backgroundLast = ' . $backgroundLast);
@@ -2022,7 +2022,7 @@ class Installer implements JsonSerializable {
 			WHERE id = ?',
 			array($profile_id));
 
-		log_install('', "Profile ID: $profile_id\nProfile: " . var_export($profile, true));
+		log_install('', "Profile ID: $profile_id" . PHP_EOL . 'Profile: ' . var_export($profile, true));
 
 		if ($profile['id'] == $this->profile) {
 			log_install_and_cacti(sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
@@ -2054,7 +2054,7 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_AUTOMATION_START);
 		$automation_row = db_fetch_row('SELECT id, enabled, subnet_range FROM automation_networks ORDER BY id LIMIT 1');
-		log_install('automation',"Automation Row:\n" . var_export($automation_row, false) . "\n");
+		log_install('automation','Automation Row:' . PHP_EOL . var_export($automation_row, false) . PHP_EOL);
 		if (!empty($automation_row)) {
 			log_install_and_cacti(sprintf('Updating automation network (%s), mode "%s" => "%s", subnet "%s" => %s"'
 				, $automation_row['id'], $automation_row['mode'], $this->automationMode ? 'on' : ''
