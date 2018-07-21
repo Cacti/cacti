@@ -79,6 +79,7 @@ Cacti CHANGELOG
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
 -feature#1677: Default Tree nodes sorting to be inherited
+-feature#1692: Separate option for logging Input Validation issues
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature#1703: Provide i18n for the graph right context menu
 -feature#1709: Dont warn when attempting to make updates in the past
