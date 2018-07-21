@@ -82,7 +82,10 @@ function upgrade_to_1_2_0() {
 
   db_install_execute("ALTER TABLE graph_tree_items
 		MODIFY COLUMN sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0'");
-	
-	db_install_execute('UPDATE graph_templates_graph 
+
+	db_install_execute('UPDATE graph_templates_graph
 		SET t_title="" WHERE t_title IS NULL or t_title="0"');
+
+	db_install_execute('UPDATE settings
+		SET name="log_validation" WHERE name="developer_mode"');
 }
