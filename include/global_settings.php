@@ -258,10 +258,6 @@ $settings = array(
 				'log_graph' => array(
 					'friendly_name' => __('Graph Syntax'),
 					'default' => ''
-					),
-				'log_validation' => array(
-					'friendly_name' => __('Developer Mode'),
-					'default' => ''
 					)
 				),
 			),
