@@ -1852,7 +1852,8 @@ function graph_management() {
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
-		gtg.title_cache, gt.name, gl.host_id
+		gtg.title_cache, gt.name, gl.host_id,
+		IF(gl.graph_template_id=0, 'None', IF(gl.snmp_query_id=0, 'Template', 'Query')) AS source
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
@@ -1879,7 +1880,7 @@ function graph_management() {
 	$display_text = array(
 		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
 		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')),
-		'type'           => array('display' => __('Source Type'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The underlying source that this Graph was based upon.')),
+		'source'         => array('display' => __('Source Type'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The underlying source that this Graph was based upon.')),
 		'name'           => array('display' => __('Source Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Graph Template or Data Query that this Graph was based upon.')),
 		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
 	);
@@ -1888,11 +1889,6 @@ function graph_management() {
 
 	$i = 0;
 	if (sizeof($graph_list)) {
-		$template_sources = array(
-			0 => __('None'),
-			1 => __('Data Query'),
-			2 => __('Template'),
-		);
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_current_graph_template_details($graph['local_graph_id']);
@@ -1900,7 +1896,7 @@ function graph_management() {
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
-			form_selectable_cell(filter_value($template_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($graph['source'], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
 			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter')), $graph['local_graph_id']);
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
