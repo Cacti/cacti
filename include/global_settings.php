@@ -258,10 +258,6 @@ $settings = array(
 				'log_graph' => array(
 					'friendly_name' => __('Graph Syntax'),
 					'default' => ''
-					),
-				'developer_mode' => array(
-					'friendly_name' => __('Developer Mode'),
-					'default' => ''
 					)
 				),
 			),
@@ -276,6 +272,12 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => POLLER_VERBOSITY_LOW,
 			'array' => $logfile_verbosity,
+			),
+		'log_validation' => array(
+			'friendly_name' => __('Log Input Validation Issues'),
+			'description' => __('Record when request fields are accessed without going through proper input validatdion'),
+			'method' => 'checkbox',
+			'default' => ''
 			),
 		'selective_debug' => array(
 			'friendly_name' => __('Selective File Debug'),

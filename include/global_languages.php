@@ -153,12 +153,12 @@ $l10n = array();
 foreach ($cacti_textdomains as $domain => $paths) {
 	$input = new FileReader($cacti_textdomains[$domain]['path2catalogue']);
 	if ($input == false) {
-		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue']);
+		die('Unable to read file: ' . $cacti_textdomains[$domain]['path2catalogue'] . "\n");
 	}
 
 	$l10n[$domain] = new gettext_reader($input);
 	if ($l10n[$domain] == false) {
-		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue']);
+		die('Invalid language file: ' . $cacti_textdomains[$domain]['path2catalogue'] . "\n");
 	}
 }
 unset($input);

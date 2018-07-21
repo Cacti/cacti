@@ -1501,7 +1501,7 @@ function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		cacti_debug_backtrace('REPORTS', true);
 
 		if (isset($GLOBALS['error_fatal'])) {
-			if($GLOBALS['error_fatal'] & $errno) die('fatal');
+			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno\n");
 		}
 	}
 

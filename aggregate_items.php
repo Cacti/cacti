@@ -298,7 +298,7 @@ function item_edit() {
 		$page_name  = 'aggregate_templates.php';
 	}else {
 		/* TODO redirect somewhere and show an error message, rather than die */
-		die();
+		die("We should have redirected somewhere but we ended up here instead\n");
 	}
 
 	if (!isempty_request_var('id')) {

@@ -144,7 +144,7 @@ function db_install_add_cache ($status, $sql) {
 	// add query to upgrade results array by version to the cli global session
 	$cache_file = read_config_option('install_cache_db');
 	if (!empty($cache_file)) {
-		file_put_contents($cache_file, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . "\n", FILE_APPEND);
+		file_put_contents($cache_file, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . PHP_EOL, FILE_APPEND);
 	}
 }
 
@@ -280,7 +280,7 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
-	tmp_log('file.log', "$name: Locations ($os)\n" . var_export($defaultPaths, true) . "\n", FILE_APPEND);
+	log_install('file', "$name: Locations ($os)" . PHP_EOL . var_export($defaultPaths, true));
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	}
@@ -288,20 +288,20 @@ function install_tool_path($name, $defaultPaths) {
 	$which_tool = '';
 	if (config_value_exists('path_'.$name)) {
 		$which_tool = read_config_option('path_'.$name, true);
-		tmp_log('file.log', "Using config location: $which_tool\n", FILE_APPEND);
+		log_install('file', "Using config location: $which_tool");
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
 		$defaultPath = $defaultPaths[$config['cacti_server_os']];
 		$basename = basename($defaultPath);
-		tmp_log('file.log', "Searching best path with location: $defaultPath\n", FILE_APPEND);
+		log_install('file', "Searching best path with location: $defaultPath");
 		$which_tool = find_best_path($basename);
-		tmp_log('file.log', "Searching best path with location return: $which_tool\n", FILE_APPEND);
+		log_install('file', "Searching best path with location return: $which_tool");
 	}
 
 	if (empty($which_tool)) {
 		$which_tool = $defaultPath;
-		tmp_log('file.log', "Nothing found defaulting to $defaultPath\n", FILE_APPEND);
+		log_install('file', "Nothing found defaulting to $defaultPath");
 	}
 
 	$tool['default'] = $which_tool;
@@ -456,7 +456,7 @@ function remote_update_config_file() {
 				if (sizeof($file_array)) {
 					foreach($file_array as $line) {
 						if (strpos(trim($line), "\$poller_id") !== false) {
-							$newfile[] = "\$poller_id = $poller_id;\n";
+							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
 						} else {
 							$newfile[] = $line;
 						}

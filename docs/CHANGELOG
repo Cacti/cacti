@@ -54,6 +54,7 @@ Cacti CHANGELOG
 -issue#1716: New Installation incorrectly reports log unwritable bug
 -issue#1718: auth_changepassword generates no such file warning
 -issue#1721: Console Side Bar not correct on first login
+-issue#1723: die() messages should include \n for better logging
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
@@ -74,11 +75,14 @@ Cacti CHANGELOG
 -feature#1580: Support Drag & Drop for Report Items
 -feature#1581: Allow Mass Adding of Graphs to Reports
 -feature#1584: Allow theme selection when installing
+-feature#1588: Check that PHP can run a test file
 -feature#1597: Ensure synchronised files have same attributes as originals
 -feature#1593: Allow External links to auto refresh
 -feature#1610: Script STDERR logging
+-feature#1628: Allow the User to define a initial Network Discovery during Setup
 -feature#1670: Improve Graph Management to show type of source for a graph
 -feature#1677: Default Tree nodes sorting to be inherited
+-feature#1692: Separate option for logging Input Validation issues
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature#1703: Provide i18n for the graph right context menu
 -feature#1709: Dont warn when attempting to make updates in the past
