@@ -203,8 +203,9 @@ include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
 /* check cacti log is available */
-if (!is_resource_writable(cacti_log_file())) {
-	die('System log file is not available for writing, please enable write access' . PHP_EOL);
+$log_filename = cacti_log_file();
+if (!is_resource_writable($log_filename)) {
+	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
 $filename = get_current_page();

@@ -1,3 +1,4 @@
+#!/usr/bin/php -q
 <?php
 /*
  +-------------------------------------------------------------------------+
@@ -22,52 +23,12 @@
  +-------------------------------------------------------------------------+
 */
 
-/* since we'll have additional headers, tell php when to flush them */
-ob_start();
-
-// Prevnt redirect to /install/
-define('IN_CACTI_INSTALL', 1);
-
-/* set the json variable for request validation handling */
-include('../lib/html_utility.php');
-set_request_var('json', true);
-$auth_json = true;
-
-include('../include/auth.php');
-include('../lib/installer.php');
-include('functions.php');
-include('../lib/utility.php');
-
-$debug = false;
-
-/* ================= input validation ================= */
-get_request_var('data', array());
-
-$initialData = array();
-if (isset_request_var('data') && get_request_var('data')) {
-	$initialData = json_decode(get_request_var('data'), true);
+/* do NOT run this script through a web browser */
+if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-$installer = new Installer($initialData);
-
-/*
-array(
-	'step_data' => $installer->stepData,
-	'config_write' => $installer->IsConfigurationWritable(),
-	'config_remote' => $installer->IsRemoteDatabaseGood(),
-	'mode' => $installer->getMode(),
-	'step' => $installer->getStep(),
-	'prev' => $installer->buttonPrevious,
-	'next' => $installer->buttonNext,
-	'test' => $installer->buttonTest,
-	'html' => $output
-);
-*/
-
-log_install('json','Start: ' . clean_up_lines(get_request_var('data')));
-$json = json_encode($installer);
-log_install('json','  End: ' . clean_up_lines($json) . PHP_EOL);
-
-header('Content-Type: application/json');
-header('Content-Length: ' . strlen($json));
-print $json;
+if (sizeof($argv)) {
+	$value = intval($argv[1]);
+	print $value * $value;
+}
