@@ -62,12 +62,12 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 
 			foreach($arr_index as $value) {
-				print $value . PHP_EOL;
+				print $value . "\n";
 			}
 		} else {
 			$indexes = explode(',', $value);
 			foreach($indexes as $index) {
-				print $index . PHP_EOL;
+				print $index . "\n";
 			}
 		}
 	} elseif (($cmd == 'num_indexes')) {
@@ -92,15 +92,15 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 
 			foreach ($arr_index as $index => $value) {
 				if ($arg == 'usage') {
-					print $index . '!' . $arr[$index] . PHP_EOL;
+					print $index . '!' . $arr[$index] . "\n";
 				} elseif ($arg == 'index') {
-					print $index . '!' . $value . PHP_EOL;
+					print $index . '!' . $value . "\n";
 				}
 			}
 		} else {
 			$indexes = explode(',', $value);
 			foreach($indexes as $index) {
-				print $index . '!' . $index . PHP_EOL;
+				print $index . '!' . $index . "\n";
 			}
 		}
 	} elseif ($cmd == 'get') {

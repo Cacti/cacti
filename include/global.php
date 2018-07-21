@@ -75,7 +75,7 @@ if (file_exists(dirname(__FILE__) . '/config.php')) {
 }
 
 if (isset($config['cacti_version'])) {
-	die("Invalid include/config.php file detected.\n");
+	die('Invalid include/config.php file detected.' . PHP_EOL);
 	exit;
 }
 
@@ -203,8 +203,9 @@ include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
 /* check cacti log is available */
-if (!is_resource_writable(cacti_log_file())) {
-	die("System log file is not available for writing, please enable write access\n");
+$log_filename = cacti_log_file();
+if (!is_resource_writable($log_filename)) {
+	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
 $filename = get_current_page();
@@ -409,7 +410,7 @@ if ($config['is_web']) {
 
 	if (read_config_option('force_https') == 'on') {
 		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . "\n\n");
+			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . PHP_EOL);
 			exit;
 		}
 	}

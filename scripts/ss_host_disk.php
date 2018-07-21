@@ -68,7 +68,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 			);
 
 		for ($i=0;($i<sizeof($return_arr));$i++) {
-			print $return_arr[$i] . PHP_EOL;
+			print $return_arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'num_indexes') {
 		$return_arr = ss_host_disk_reindex(
@@ -94,7 +94,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 			);
 
 		for ($i=0;($i<sizeof($arr_index));$i++) {
-			print $arr_index[$i] . '!' . $arr[$i] . PHP_EOL;
+			print $arr_index[$i] . '!' . $arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
