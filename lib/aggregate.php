@@ -296,7 +296,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		cacti_debug_backtrace('AGGREGATE', true);
 
 		if (isset($GLOBALS['error_fatal'])) {
-			if($GLOBALS['error_fatal'] & $errno) die('fatal');
+			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno\n");
 		}
 	}
 
