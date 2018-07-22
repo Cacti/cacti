@@ -43,7 +43,7 @@ function draw_edit_form($array) {
 
 	if (sizeof($fields_array) > 0) {
 		if (!isset($config_array['no_form_tag'])) {
-			print "<form method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
+			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
 		}
 
 		$i = 0;
@@ -1241,7 +1241,7 @@ function form_start($action, $id = '') {
 
 	$form_action = $action;
 
-	print "<form id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'>\n";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'>\n";
 }
 
 /* form_end - draws post form end. To be combined with form_start() */
@@ -1252,11 +1252,74 @@ function form_end($ajax = true) {
 
 	if ($ajax) { ?>
 		<script type='text/javascript'>
+		var formArray = [];
+		var changed = false;
+
+		function warningMessage(href, type, scroll_or_id) {
+			title='<?php print __('Warning Unsaved Form Data');?>';
+			returnStr = '<div id="messageContainer" style="display:none">' +
+				'<h4><?php print __('Unsaved Changes Detected');?></h4>' +
+				'<p style="display:table-cell;overflow:auto"><?php print __('You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form.');?></p>' +
+				'</div>';
+
+			$('#messageContainer').remove();
+			$('body').append(returnStr);
+
+			var messageButtons = {
+				'Cancel': {
+					text: sessionMessageCancel,
+					id: 'messageCancel',
+					click: function() {
+						$(this).dialog('close');
+						$('#messageContainer').remove();
+					}
+				},
+				'Continue': {
+					text: sessionMessageContinue,
+					id: 'messageContinue',
+					click: function() {
+						$('#messageContainer').remove();
+
+						if (type == 'noheader') {
+							loadPageNoHeader(href, true, scroll_or_id);
+						} else if (type == 'toptab') {
+							loadTopTab(href, scroll_or_id, true);
+						} else {
+							loadPage(href, true);
+						}
+					}
+				}
+			};
+
+			messageWidth = $(window).width();
+			if (messageWidth > 600) {
+				messageWidth = 600;
+			} else {
+				messageWidth -= 50;
+			}
+
+			$('#messageContainer').dialog({
+				draggable: true,
+				resizable: false,
+				height: 'auto',
+				minWidth: messageWidth,
+				maxWidth: 800,
+				maxHeight: 600,
+				title: title,
+				buttons: messageButtons
+			});
+		}
+
 		$(function() {
+			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeObject();
+			changed = false;
+
 			$('#<?php print $form_id;?>').submit(function(event) {
 				event.preventDefault();
-				strURL = '<?php print $form_action;?>';
+
+				strURL  = '<?php print $form_action;?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
+
 				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
 					checkForLogout(data);
