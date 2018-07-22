@@ -1429,8 +1429,19 @@ function menuShow(tree) {
 
 function loadTopTab(href, id, force) {
 	statePushed = false;
+	cont = false;
 
-	if (force || checkFormStatus(href, 'toptab', id)) {
+	if (force == undefined) {
+		force = false;
+	}
+
+	if (!force) {
+		cont = checkFormStatus(href, 'toptab', id);
+	} else {
+		cont = true;
+	}
+
+	if (cont) {
 		thref = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
 		url   = thref+(thref.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
 
@@ -1519,8 +1530,19 @@ function loadTopTab(href, id, force) {
 
 function loadPage(href, force) {
 	statePushed = false;
+	cont = false;
 
-	if (force || checkFormStatus(href, 'loadpage')) {
+	if (force == undefined) {
+		force = false;
+	}
+
+	if (!force) {
+		cont = checkFormStatus(href, 'loadpage');
+	} else {
+		cont = true;
+	}
+
+	if (cont) {
 		$.get(href)
 			.done(function(html) {
 				var htmlObject  = $(html);
@@ -1588,8 +1610,23 @@ function loadPage(href, force) {
 
 function loadPageNoHeader(href, scroll, force) {
 	statePushed = false;
+	cont = false;
 
-	if (force || checkFormStatus(href, 'noheader', scroll)) {
+	if (scroll == undefined) {
+		scroll = false;
+	}
+
+	if (force == undefined) {
+		force = false;
+	}
+
+	if (!force) {
+		cont = checkFormStatus(href, 'noheader', scroll);
+	} else {
+		cont = true;
+	}
+
+	if (cont) {
 		$.get(href)
 			.done(function(data) {
 				checkForLogout(data);

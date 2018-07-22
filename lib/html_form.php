@@ -1281,7 +1281,7 @@ function form_end($ajax = true) {
 						$('#messageContainer').remove();
 
 						if (type == 'noheader') {
-							loadPageNoHeader(href, true, scroll_or_id);
+							loadPageNoHeader(href, scroll_or_id, true);
 						} else if (type == 'toptab') {
 							loadTopTab(href, scroll_or_id, true);
 						} else {
