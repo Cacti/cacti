@@ -279,7 +279,7 @@ $.fn.serializeObject = function() {
 	formID = $(this).attr('id');
 	arrayData = arrayData.concat(
 		$('#'+formID+' input[type=checkbox]:not(:checked)').map(function() {
-			return {"name": this.name, "value": $(this).is(':checked') ? 'on':''}
+			return $(this).is(':checked') ? {"name": this.name, "value": 'on'} : null;
 		}).get());
 
 	objectData = {};
