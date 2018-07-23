@@ -1311,7 +1311,7 @@ function form_end($ajax = true) {
 		}
 
 		$(function() {
-			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeObject();
+			formArray['<?php print $form_id;?>'] = $('#<?php print $form_id;?>').serializeForm();
 			changed = false;
 
 			$('#<?php print $form_id;?>').submit(function(event) {

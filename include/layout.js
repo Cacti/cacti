@@ -273,7 +273,7 @@ $.fn.focusEnd = function() {
 	return this;
 };
 
-$.fn.serializeObject = function() {
+$.fn.serializeForm = function() {
 	var arrayData, objectData;
 	arrayData = this.serializeArray();
 	formID = $(this).attr('id');
@@ -281,6 +281,36 @@ $.fn.serializeObject = function() {
 		$('#'+formID+' input[type=checkbox]:not(:checked)').map(function() {
 			return {"name": this.name, "value": $(this).is(':checked') ? 'on':''}
 		}).get());
+
+	objectData = {};
+
+	$.each(arrayData, function() {
+		var value;
+
+		if (this.value != null) {
+			value = this.value;
+		} else {
+			value = '';
+		}
+
+		if (objectData[this.name] != null) {
+			if (!objectData[this.name].push) {
+				objectData[this.name] = [objectData[this.name]];
+			}
+
+			objectData[this.name].push(value);
+		} else {
+			objectData[this.name] = value;
+		}
+	});
+
+	return objectData;
+};
+
+$.fn.serializeObject = function() {
+	var arrayData, objectData;
+	arrayData = this.serializeArray();
+	formID = $(this).attr('id');
 
 	objectData = {};
 
@@ -1775,7 +1805,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 	if ($('.cactiFormStart').not('#chk').length) {
 		$('.cactiFormStart').not('#chk').each(function() {
 			var formID     = $(this).attr('id');
-			var submitData = $(this).serializeObject();
+			var submitData = $(this).serializeForm();
 			var formData   = formArray[formID];
 
 			$.each(submitData, function(index, value) {
