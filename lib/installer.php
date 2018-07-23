@@ -1603,7 +1603,7 @@ class Installer implements JsonSerializable {
 			if ($show_warning) {
 				$output .= Installer::sectionTitleError(__('WARNING'));
 				$output .= Installer::sectionNormal(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion.'));
-				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_database.php -u -i');
+				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
 			}
 
 			ob_end_clean();
