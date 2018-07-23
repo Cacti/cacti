@@ -589,7 +589,7 @@ $(function() {
 			buttonData = button.data('buttonData');
 			if (buttonData != null) {
 				if (buttonData.Step == -1) {
-					window.location.assign('../../');
+					window.location.assign('../');
 				} else if (buttonData.Step == -2) {
 					var win = window.open('https://forums.cacti.net/');
 					win.focus;
