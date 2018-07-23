@@ -51,7 +51,7 @@ function upgrade_to_1_2_0() {
 		if ($max_threads < 1) $max_threads = 1;
 		if ($max_threads > 100) $max_threads = 100;
 
-		db_install_execute("UPDATE TABLE poller SET processes = $max_processes, threads = $max_threads");
+		db_install_execute("UPDATE poller SET processes = $max_processes, threads = $max_threads");
 	}
 
 	if (!db_column_exists('host', 'location')) {
