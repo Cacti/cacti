@@ -1802,6 +1802,8 @@ function ajaxAnchors() {
 }
 
 function checkFormStatus(href, type, scroll_or_id) {
+	var changed = false;
+
 	if ($('.cactiFormStart').not('#chk').length) {
 		$('.cactiFormStart').not('#chk').each(function() {
 			var formID     = $(this).attr('id');
