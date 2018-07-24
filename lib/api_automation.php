@@ -2005,6 +2005,23 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 			WHERE id=$rule_item_id
 			$sql_and");
 
+		if (sizeof($automation_item)) {
+			$missing_key = $automation_item['field'];
+			if (!array_key_exists($missing_key, $_fields_rule_item_edit['field']['array'])) {
+				$missing_array = explode('.',$missing_key);
+				if (sizeof($missing_array) > 1) {
+					$missing_table = strtoupper($missing_array[0]);
+					$missing_value = strtolower($missing_array[1]);
+				} else {
+					$missing_table = '';
+					$missing_value = strtolower($missing_array[0]);
+				}
+
+				$_fields_rule_item_edit['field']['array'] = array_merge(
+					array($automation_item['field'] => 'Unknown: ' . $missing_table . ': ' . $missing_value),
+					$_fields_rule_item_edit['field']['array']);
+			}
+		}
 		$header_label = __('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
 	} else {
 		$header_label = __('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
