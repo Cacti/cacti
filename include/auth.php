@@ -111,25 +111,76 @@ if (read_config_option('auth_method') != 0) {
 			$realm_id = $user_auth_realm_filenames[get_current_page()];
 		}
 
+		/* Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26 */
+		if ($realm_id == 26 && cacti_version_compare(get_cacti_version, '1.2', '<')) {
+			/* See if we can find any users that are allowed to upgrade */
+			$install_sql_query = '
+					SELECT COUNT(*)
+					FROM (
+						SELECT realm_id
+						FROM user_auth_realm AS uar
+						AND uar.realm_id = ?';
+			$install_sql_params = array($realm_id);
+
+			/* See if the group realms exist and if so, check if permission exists there too */
+			if (db_table_exists('user_auth_group_realm')) {
+				$install_sql_query .= '
+						UNION
+						SELECT realm_id
+						FROM user_auth_group_realm AS uagr
+						INNER JOIN user_auth_group_members AS uagm
+						ON uagr.group_id=uagm.group_id
+						INNER JOIN user_auth_group AS uag
+						ON uag.id=uagr.group_id
+						WHERE uag.enabled="on"
+						AND uagr.realm_id = ?';
+				$install_sql_params = array_merge($install_sql_params, array($realm_id));
+			}
+			$install_sql_query .= '
+					) AS authorized';
+			$has_install_user = db_fetch_cell_prepared($install_sql_query, $install_sql_params);
+
+			if (!$has_install_user) {
+				/* We did not find any existing users who can upgrade/install so add any admin *
+				 * who has access to the system settings (realm 15) by default                 */
+				db_execute('INSERT INTO `user_auth_realm` (realm_id, user_id)
+					SELECT 26 as realm_id, ua.id
+					FROM user_auth ua
+					INNER JOIN user_auth_realm uar
+					ON uar.user_id = ua.id
+					WHERE uar.realm_id = 15');
+			}
+		}
+
 		if ($realm_id > 0) {
-			$authorized = db_fetch_cell_prepared('SELECT COUNT(*)
-				FROM (
-					SELECT realm_id
-					FROM user_auth_realm AS uar
-					WHERE uar.user_id = ?
-					AND uar.realm_id = ?
-					UNION
-					SELECT realm_id
-					FROM user_auth_group_realm AS uagr
-					INNER JOIN user_auth_group_members AS uagm
-					ON uagr.group_id=uagm.group_id
-					INNER JOIN user_auth_group AS uag
-					ON uag.id=uagr.group_id
-					WHERE uag.enabled="on"
-					AND uagm.user_id = ?
-					AND uagr.realm_id = ?
-				) AS authorized',
-				array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
+			$auth_sql_query = '
+					SELECT COUNT(*)
+					FROM (
+						SELECT realm_id
+						FROM user_auth_realm AS uar
+						WHERE uar.user_id = ?
+						AND uar.realm_id = ?';
+			$auth_sql_params = array($_SESSION['sess_user_id'], $realm_id);
+
+			/* Because we now expect installation to be done by authorized users, check the group_realm *
+			 * exists before using it as this may not be present if upgrading from pre-1.x              */
+			if (db_table_exists('user_auth_group_realm')) {
+				$auth_sql_query .= '
+						UNION
+						SELECT realm_id
+						FROM user_auth_group_realm AS uagr
+						INNER JOIN user_auth_group_members AS uagm
+						ON uagr.group_id=uagm.group_id
+						INNER JOIN user_auth_group AS uag
+						ON uag.id=uagr.group_id
+						WHERE uag.enabled="on"
+						AND uagm.user_id = ?
+						AND uagr.realm_id = ?';
+				$auth_sql_params = array_merge($auth_sql_params, array($_SESSION['sess_user_id'], $realm_id));
+			}
+			$auth_sql_query .= '
+					) AS authorized';
+			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
 		} else {
 			$authorized = false;
 		}

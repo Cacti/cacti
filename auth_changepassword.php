@@ -53,6 +53,20 @@ switch (get_request_var('action')) {
 		}
 }
 
+$len = db_get_column_length('user_auth','password');
+if ($len === false) {
+	raise_message('nopasswordlen');
+	exit;
+} else if ($len < 80) {
+	/* Ensure that the password length is increased before we start updating it */
+	db_execute("ALTER TABLE user_auth MODIFY COLUMN password varchar(2048) NOT NULL default ''");
+	$len = db_get_column_length('user_auth','password');
+	if ($len < 80) {
+		raise_message('nopasswordinc');
+		exit;
+	}
+}
+
 $user    = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 $version = get_cacti_version();
 

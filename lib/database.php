@@ -1109,3 +1109,42 @@ function db_qstr($s, $db_conn = false) {
 function db_strip_control_chars($sql) {
 	return trim(clean_up_lines($sql), ';');
 }
+
+function db_get_column_attributes($table, $columns) {
+	if (empty($columns) || empty($table)) {
+		return false;
+	}
+
+	if (!is_array($columns)) {
+		$columns = explode(',', $columns);
+	}
+
+	$sql = 'SELECT * FROM information_schema.columns WHERE table_name = ? and column_name IN (';
+	$column_names = array();
+	foreach ($columns as $column) {
+		if (!empty($column)) {
+			$sql .= (sizeof($column_names) ? ',' : '') . '?';
+			$column_names[] = $column;
+		}
+	}
+	$sql .= ')';
+
+	$params = array_merge(array($table), $column_names);
+	return db_fetch_assoc_prepared($sql, $params);
+}
+
+function db_get_columns_length($table, $columns) {
+	$column_data = db_get_column_attributes($table, $columns);
+	if (!empty($column_data)) {
+		return array_rekey($column_data, 'COLUMN_NAME','CHARACTER_MAXIMUM_LENGTH');
+	}
+	return false;
+}
+
+function db_get_column_length($table, $column) {
+	$column_data = db_get_columns_length($table, $column);
+	if (!empty($column_data) && isset($column_data[$column])) {
+		return $column_data[$column];
+	}
+	return false;
+}
