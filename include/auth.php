@@ -119,7 +119,7 @@ if (read_config_option('auth_method') != 0) {
 					FROM (
 						SELECT realm_id
 						FROM user_auth_realm AS uar
-						AND uar.realm_id = ?';
+						WHERE uar.realm_id = ?';
 			$install_sql_params = array($realm_id);
 
 			/* See if the group realms exist and if so, check if permission exists there too */
@@ -147,8 +147,12 @@ if (read_config_option('auth_method') != 0) {
 					SELECT 26 as realm_id, ua.id
 					FROM user_auth ua
 					INNER JOIN user_auth_realm uar
-					ON uar.user_id = ua.id
-					WHERE uar.realm_id = 15');
+					ON uar.user_id=ua.id
+					LEFT JOIN user_auth_realm uar2
+					ON uar2.user_id=ua.id
+					AND uar2.realm_id=26
+					WHERE uar.realm_id=15
+					AND uar2.user_id IS NULL');
 			}
 		}
 
