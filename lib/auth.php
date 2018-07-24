@@ -2385,5 +2385,5 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 			password_needs_rehash($password, $algo);
 	}
 
-	return md5($password);
+	return true;
 }

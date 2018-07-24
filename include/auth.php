@@ -112,7 +112,7 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		/* Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26 */
-		if ($realm_id == 26 && cacti_version_compare(get_cacti_version, '1.2', '<')) {
+		if ($realm_id == 26 && cacti_version_compare(get_cacti_version(), '1.2', '<')) {
 			/* See if we can find any users that are allowed to upgrade */
 			$install_sql_query = '
 					SELECT COUNT(*)
