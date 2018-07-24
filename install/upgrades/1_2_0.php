@@ -80,7 +80,10 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN `same_sysname` char(2) DEFAULT '' AFTER `add_to_cacti`");
 	}
 
-  db_install_execute("ALTER TABLE graph_tree_items
+	db_install_execute("ALTER TABLE user_auth
+		MODIFY COLUMN password varchar(256) NOT NULL DEFAULT ''");
+
+	db_install_execute("ALTER TABLE graph_tree_items
 		MODIFY COLUMN sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0'");
 
 	db_install_execute('UPDATE graph_templates_graph
