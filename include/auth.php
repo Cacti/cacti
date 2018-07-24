@@ -192,20 +192,27 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
+			$title_header = __('Permission Denied');
+			$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+
+			if ($realm_id == 26) {
+				$title_header = __('Installation In Progress');
+				$title_body = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
+			}
 			print "<!DOCTYPE html>\n";
 			print "<html>\n";
 			print "<head>\n";
-			html_common_header(__('Permission Denied'));
+			html_common_header($title_header);
 			print "</head>\n";
 			print "<body class='logoutBody'>
 			<div class='logoutLeft'></div>
 			<div class='logoutCenter'>
 				<div class='logoutArea'>
 					<div class='cactiLogoutLogo'></div>
-					<legend>" . __('Permission Denied') . "</legend>
+					<legend>" . $title_header . "</legend>
 					<div class='logoutTitle'>
-						<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') .
-						"</p>
+						" . $title_body . "
+						</p>
 						<center>" . $goBack . "</center>
 					</div>
 					<div class='logoutErrors'></div>
