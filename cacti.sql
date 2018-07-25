@@ -2465,7 +2465,7 @@ CREATE TABLE snmp_query_graph_sv (
 CREATE TABLE user_auth (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `username` varchar(50) NOT NULL default '0',
-  `password` varchar(2048) NOT NULL default '',
+  `password` varchar(256) NOT NULL default '',
   `realm` mediumint(8) NOT NULL default '0',
   `full_name` varchar(100) default '0',
   `email_address` varchar(128) NULL,
