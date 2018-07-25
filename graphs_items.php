@@ -72,12 +72,12 @@ switch (get_request_var('action')) {
 	case 'ajax_graph_items':
 		$sql_where = '';
 
-		if (get_filter_request_var('host_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.host_id=' . get_request_var('host_id');
+		if (!isempty_request_var('host_id')) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.host_id=' . get_filter_request_var('host_id');
 		}
 
-		if (get_filter_request_var('data_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dtd.data_template_id=' . get_request_var('data_template_id');
+		if (!isempty_request_var('data_template_id')) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dtd.data_template_id=' . get_filter_request_var('data_template_id');
 		}
 
 		get_allowed_ajax_graph_items(true, $sql_where);
