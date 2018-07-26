@@ -1081,7 +1081,7 @@ function ds_edit() {
 			<tr>
 				<td>
 					<span class='textInfo'><?php print __('Data Source Debug');?></span><br>
-					<pre><?php print @rrdtool_function_create(get_request_var('id'), true);?></pre>
+					<pre><?php print @rrdtool_function_create(get_request_var('id'), '-600', true);?></pre>
 				</td>
 			</tr>
 		</table>
