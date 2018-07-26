@@ -64,7 +64,7 @@ if (sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
-	
+
 				break;
 			case '--force':
 				$force = true;
@@ -195,12 +195,12 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	$rrds_processed = 0;
 
 	/* create/update the rrd files */
-	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id, 
+	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id,
 		poller_item.rrd_path, poller_item.rrd_name, poller_item.rrd_num
 		FROM (poller_output_realtime AS port, poller_item)
 		WHERE (port.local_data_id=poller_item.local_data_id
 		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id = ?', 
+		AND port.poller_id = ?',
 		array($poller_id));
 
 	if (sizeof($results) > 0) {
@@ -212,7 +212,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* create rt rrd */
 			if (!file_exists($rt_graph_path)) {
 				/* get the syntax */
-				$command = @rrdtool_function_create($item['local_data_id'], true);
+				$command = @rrdtool_function_create($item['local_data_id'], '-60', true);
 
 				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
@@ -280,9 +280,9 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		/* make sure each .rrd file has complete data */
 		foreach ($results as $item) {
 			db_execute_prepared('DELETE FROM poller_output_realtime
-				WHERE local_data_id = ? 
-				AND rrd_name = ? 
-				AND time = ? 
+				WHERE local_data_id = ?
+				AND rrd_name = ?
+				AND time = ?
 				AND poller_id = ?',
 				array($item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id));
 		}

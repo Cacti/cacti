@@ -142,6 +142,8 @@ if (isset($_SESSION['refresh'])) {
 	var sessionMessage=<?php print display_output_messages(false);?>;
 	var sessionMessageOk='<?php print __('Ok');?>';
 	var sessionMessagePause='<?php print __('Pause');?>';
+	var sessionMessageContinue='<?php print __('Continue');?>';
+	var sessionMessageCancel='<?php print __('Cancel');?>';
 	var zoom_i18n_zoom_in='<?php print __('Zoom In');?>';
 	var zoom_i18n_zoom_out='<?php print __('Zoom Out');?>';
 	var zoom_i18n_zoom_out_factor='<?php print __('Zoom Out Factor');?>';

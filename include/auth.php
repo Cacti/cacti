@@ -111,25 +111,80 @@ if (read_config_option('auth_method') != 0) {
 			$realm_id = $user_auth_realm_filenames[get_current_page()];
 		}
 
+		/* Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26 */
+		if ($realm_id == 26 && cacti_version_compare(get_cacti_version(), '1.2', '<')) {
+			/* See if we can find any users that are allowed to upgrade */
+			$install_sql_query = '
+					SELECT COUNT(*)
+					FROM (
+						SELECT realm_id
+						FROM user_auth_realm AS uar
+						WHERE uar.realm_id = ?';
+			$install_sql_params = array($realm_id);
+
+			/* See if the group realms exist and if so, check if permission exists there too */
+			if (db_table_exists('user_auth_group_realm')) {
+				$install_sql_query .= '
+						UNION
+						SELECT realm_id
+						FROM user_auth_group_realm AS uagr
+						INNER JOIN user_auth_group_members AS uagm
+						ON uagr.group_id=uagm.group_id
+						INNER JOIN user_auth_group AS uag
+						ON uag.id=uagr.group_id
+						WHERE uag.enabled="on"
+						AND uagr.realm_id = ?';
+				$install_sql_params = array_merge($install_sql_params, array($realm_id));
+			}
+			$install_sql_query .= '
+					) AS authorized';
+			$has_install_user = db_fetch_cell_prepared($install_sql_query, $install_sql_params);
+
+			if (!$has_install_user) {
+				/* We did not find any existing users who can upgrade/install so add any admin *
+				 * who has access to the system settings (realm 15) by default                 */
+				db_execute('INSERT INTO `user_auth_realm` (realm_id, user_id)
+					SELECT 26 as realm_id, ua.id
+					FROM user_auth ua
+					INNER JOIN user_auth_realm uar
+					ON uar.user_id=ua.id
+					LEFT JOIN user_auth_realm uar2
+					ON uar2.user_id=ua.id
+					AND uar2.realm_id=26
+					WHERE uar.realm_id=15
+					AND uar2.user_id IS NULL');
+			}
+		}
+
 		if ($realm_id > 0) {
-			$authorized = db_fetch_cell_prepared('SELECT COUNT(*)
-				FROM (
-					SELECT realm_id
-					FROM user_auth_realm AS uar
-					WHERE uar.user_id = ?
-					AND uar.realm_id = ?
-					UNION
-					SELECT realm_id
-					FROM user_auth_group_realm AS uagr
-					INNER JOIN user_auth_group_members AS uagm
-					ON uagr.group_id=uagm.group_id
-					INNER JOIN user_auth_group AS uag
-					ON uag.id=uagr.group_id
-					WHERE uag.enabled="on"
-					AND uagm.user_id = ?
-					AND uagr.realm_id = ?
-				) AS authorized',
-				array($_SESSION['sess_user_id'], $realm_id, $_SESSION['sess_user_id'], $realm_id));
+			$auth_sql_query = '
+					SELECT COUNT(*)
+					FROM (
+						SELECT realm_id
+						FROM user_auth_realm AS uar
+						WHERE uar.user_id = ?
+						AND uar.realm_id = ?';
+			$auth_sql_params = array($_SESSION['sess_user_id'], $realm_id);
+
+			/* Because we now expect installation to be done by authorized users, check the group_realm *
+			 * exists before using it as this may not be present if upgrading from pre-1.x              */
+			if (db_table_exists('user_auth_group_realm')) {
+				$auth_sql_query .= '
+						UNION
+						SELECT realm_id
+						FROM user_auth_group_realm AS uagr
+						INNER JOIN user_auth_group_members AS uagm
+						ON uagr.group_id=uagm.group_id
+						INNER JOIN user_auth_group AS uag
+						ON uag.id=uagr.group_id
+						WHERE uag.enabled="on"
+						AND uagm.user_id = ?
+						AND uagr.realm_id = ?';
+				$auth_sql_params = array_merge($auth_sql_params, array($_SESSION['sess_user_id'], $realm_id));
+			}
+			$auth_sql_query .= '
+					) AS authorized';
+			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
 		} else {
 			$authorized = false;
 		}
@@ -141,20 +196,27 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
+			$title_header = __('Permission Denied');
+			$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+
+			if ($realm_id == 26) {
+				$title_header = __('Installation In Progress');
+				$title_body = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
+			}
 			print "<!DOCTYPE html>\n";
 			print "<html>\n";
 			print "<head>\n";
-			html_common_header(__('Permission Denied'));
+			html_common_header($title_header);
 			print "</head>\n";
 			print "<body class='logoutBody'>
 			<div class='logoutLeft'></div>
 			<div class='logoutCenter'>
 				<div class='logoutArea'>
 					<div class='cactiLogoutLogo'></div>
-					<legend>" . __('Permission Denied') . "</legend>
+					<legend>" . $title_header . "</legend>
 					<div class='logoutTitle'>
-						<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') .
-						"</p>
+						" . $title_body . "
+						</p>
 						<center>" . $goBack . "</center>
 					</div>
 					<div class='logoutErrors'></div>

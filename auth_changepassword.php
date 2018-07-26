@@ -183,6 +183,7 @@ case 'changepassword':
 			VALUES (?, 3, NOW(), ?)',
 			array($user['username'], $_SERVER['REMOTE_ADDR']));
 
+		db_check_password_length();
 		db_execute_prepared("UPDATE user_auth
 			SET must_change_password = '', password = ?
 			WHERE id = ?",

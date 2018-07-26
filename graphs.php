@@ -538,8 +538,6 @@ function get_common_graph_templates(&$graph) {
 			FROM snmp_query_graph
 			WHERE (snmp_query_id = $dqid AND id IN ($ids))
 			OR graph_template_id IN ($gtids) ORDER BY name";
-	} elseif (sizeof($graph)) {
-		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt WHERE gt.id!=' . $graph['graph_template_id'] . ' ORDER BY name';
 	} else {
 		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
 	}

@@ -202,6 +202,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 						if (compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
 							$p = compat_password_hash($p, PASSWORD_DEFAULT);
+							db_check_password_length();
 							db_execute_prepared('UPDATE user_auth
 								SET password = ?
 								WHERE username = ?',
