@@ -3294,8 +3294,34 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
+function rrdtool_parse_error($string) {
+	global $config;
+
+	file_put_contents('/tmp/rrd',$string);
+	if (preg_match('/ERROR. opening \'(.*)\': No such .*/', $string, $matches)) {
+		if (sizeof($matches) >= 2) {
+			$filename = $matches[1];
+			if (stripos($filename, $config['base_path']) >= 0) {
+				$rra_file = str_replace($config['base_path'] .'/rra/', '', $filename);
+				$rra_name = basename($rra_file);
+				$rra_path = dirname($rra_file);
+			} else {
+				$rra_name = basename($rra_file);
+				$rra_path = __('(Custom)');
+			}
+
+			$rra_path = '(' . __('RRA Folder') . ': ' . ((empty($rra_path) || $rra_path == ".") ? __('Root') : $rra_path) . ')';
+
+			$string = __("Failed to open data file:\n\0x27\n%s\n%s", $rra_name, $rra_path);
+		}
+	}
+	return $string;
+}
+
 function rrdtool_create_error_image($string, $width = '', $height = '') {
 	global $config;
+
+	$string = rrdtool_parse_error($string);
 
 	/* put image in buffer */
 	ob_start();
