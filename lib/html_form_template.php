@@ -178,7 +178,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 
 			if (get_selected_theme() != 'classic') {
 				$struct_graph_item[$item['column_name']]['id'] = $current_def_value[$item['column_name']];
-				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items&host_id=' . $host_id . '&rrd_id=' . $current_def_value[$item['column_name']];
+				$struct_graph_item['task_item_id']['action']   = 'ajax_graph_items' . (isset($host_id) ? '&host_id=' . $host_id:'') . '&rrd_id=' . $current_def_value[$item['column_name']];
 			}
 
 			$form_array += array($form_field_name => $struct_graph_item[$item['column_name']]);
