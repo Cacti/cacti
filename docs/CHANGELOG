@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#1174: Disable drag and drop when tree is not in edit mode
 -issue#1200: Aggregate Graphs can not include some classes of COMMENT
 -issue#1298: Prevent system running if system log is not writable
+-issue#1350: When switching an Automation Tree Rule's leaf type, remove invalid Automation Rule Items
 -issue#1383: CSRF Timeout does not obey session timeout
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist

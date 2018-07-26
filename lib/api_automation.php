@@ -3787,3 +3787,63 @@ function automation_get_pid() {
 	}
 	return "[PID: $pid]";
 }
+
+function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
+	$function = automation_function_with_pid(__FUNCTION__);
+	$leaf_old = db_fetch_cell_prepared('SELECT leaf_type
+					FROM automation_tree_rules
+					WHERE id = ?',
+					array($rule_id));
+
+
+	if ($leaf_old != $leaf_type) {
+		cacti_log($function . ' Found leaf change from Leaf[' . $leaf_old . '] to Leaf[' . $leaf_type . '] for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+		if ($leaf_type == 3) {
+			cacti_log($function . ' Found leaf changed to \'Device\' for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+
+			$rule_items = db_fetch_assoc_prepared('SELECT *
+							FROM automation_tree_rule_items
+							WHERE rule_id = ?
+							AND (field like \'gtg.%\' or field like \'gt.%\')',
+							array($rule_id));
+
+			if (sizeof($rule_items)) {
+				cacti_log($function . ' ' . sizeof($rule_items) . ' invalid Tree Creation rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
+				foreach($rule_items as $rule_item) {
+					cacti_log($function . ' Removing invalid Tree Creation rule item TreeRule[' . $rule_id . '] TreeRuleItem[' . $rule_item['id'] . '] Field[' . $rule_item['field'] . '] with Search[' . $rule_item['search_pattern'] . '] Replace[' . $rule_item['replace_pattern'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+					db_execute_prepared('DELETE FROM automation_tree_rule_items
+							WHERE id = ?',
+							array($rule_item['id']));
+				}
+			} else {
+				cacti_log($function . ' No invalid Tree Creation rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+			}
+
+			$match_items = db_fetch_assoc_prepared('SELECT *
+							FROM automation_match_rule_items
+							WHERE rule_id = ?
+							AND (field like \'gtg.%\' or field like \'gt.%\')',
+							array($rule_id));
+
+			if (sizeof($match_items)) {
+				cacti_log($function . ' ' . sizeof($match_items) . ' invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
+				foreach($match_items as $match_item) {
+					cacti_log($function . ' Removing invalid Object Selection rule item TreeRule[' . $rule_id . '] TreeMatchItem[' . $match_item['id'] . '] Field[' . $match_item['field'] . '] with Pattern[' . $match_item['pattern'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+					db_execute_prepared('DELETE FROM automation_match_rule_items
+							WHERE id = ?',
+							array($match_item['id']));
+				}
+			} else {
+				cacti_log($function . ' No invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+			}
+
+		}
+
+		db_execute_prepared('UPDATE automation_tree_rules
+				SET leaf_type = ?
+				WHERE id = ?',
+				array($leaf_type, $rule_id));
+	}
+}
