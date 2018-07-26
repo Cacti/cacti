@@ -44,6 +44,11 @@ switch (get_request_var('action')) {
 		automation_tree_rules_form_actions();
 
 		break;
+	case 'change_leaf':
+		automation_tree_rules_change_leaf();
+
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+		break;
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
@@ -300,6 +305,15 @@ function automation_tree_rules_form_actions() {
 	form_end();
 
 	bottom_footer();
+}
+
+function automation_tree_rules_change_leaf() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('leaf_type');
+	/* ==================================================== */
+
+	automation_change_tree_rule_leaf_type(get_request_var('leaf_type'), get_request_var('id'));
 }
 
 /* --------------------------
@@ -624,26 +638,98 @@ function automation_tree_rules_edit() {
 
 	?>
 	<script type='text/javascript'>
+	var automationLeafTypeOriginal = $('#leaf_type').val();
 	$(function() {
 		applyItemTypeChange();
 	});
 
-	function applyTreeChange() {
-		strURL  = 'automation_tree_rules.php?header=false&action=edit&id=' + $('#id').val();
+	function applyTreeChange(action,force) {
+		if (force == undefined) {
+			force = false;
+		}
+
+		if (action == undefined) {
+			action = 'edit';
+		}
+
+		strURL  = 'automation_tree_rules.php?header=false&action=' + action;
+		strURL += '&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
 		strURL += '&tree_id=' + $('#tree_id').val();
 		strURL += '&tree_item_id=' + $('#tree_item_id').val();
 		strURL += '&leaf_type=' + $('#leaf_type').val();
 		strURL += '&enabled=' + $('#enabled').val();
 
-		loadPageNoHeader(strURL);
+		loadPageNoHeader(strURL,undefined,force);
 	}
 
 	function applyItemTypeChange() {
-		if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
-			$('#row_host_grouping_type').show();
-		} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
-			$('#row_host_grouping_type').hide();
+		var automationLeafTypeNew = $('#leaf_type').val();
+		if (automationLeafTypeOriginal != automationLeafTypeNew) {
+			if (automationLeafTypeNew == 3) {
+				var automationLeafTypeButtons = {
+					'Yes': {
+						text: '<?php print __('Yes'); ?>',
+						id: 'btnAutomationLeafTypeYes',
+						click: function() {
+							applyTreeChange('change_leaf',true);
+						}
+					},
+					'No': {
+						text: '<?php print __('No'); ?>',
+						id: 'btnAutomationLeafTypeNo',
+						click: function() {
+							$(this).dialog('close');
+							var leaf = $('#leaf_type');
+							if (leaf != null) {
+								leaf.val(automationLeafTypeOriginal);
+								leaf.selectmenu("refresh");
+								leaf.change();
+							}
+						}
+					}
+				};
+
+				var automationLeafTypeTitle = '<?php print __('Change Leaf Type'); ?>';
+				var automationLeafTypeContainer = '<div id="automationLeafTypeContainer" style="display:none">' +
+					'<p style="display:table-cell;overflow:auto"> ' +
+					'<b><?php print __('WARNING:'); ?></b>' +
+					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.');?>' +
+					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.');?> <br/><br/>' +
+					'<?php print __('Are you sure you wish to continue?');?>' +
+					'</p>' +
+					'</div>';
+
+				$('#automationLeafTypeContainer').remove();
+				$('body').append(automationLeafTypeContainer);
+
+				var automationLeafTypeWidth = $(window).width();
+				if (automationLeafTypeWidth > 600) {
+					automationLeafTypeWidth = 600;
+				} else {
+					automationLeafTypeWidth -= 50;
+				}
+
+				$('#automationLeafTypeContainer').dialog({
+					draggable: true,
+					resizable: false,
+					height: 'auto',
+					minWidth: automationLeafTypeWidth,
+					maxWidth: 800,
+					maxHeight: 600,
+					title: automationLeafTypeTitle,
+					buttons: automationLeafTypeButtons
+				});
+			} else {
+				applyTreeChange('change_leaf',true);
+			}
+		} else {
+			if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
+				$('#row_host_grouping_type').show();
+			} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
+				$('#row_host_grouping_type').hide();
+			}
+			$('#leaf_type').selectmenu("refresh");
 		}
 	}
 	</script>
