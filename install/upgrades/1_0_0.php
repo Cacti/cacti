@@ -613,9 +613,9 @@ function upgrade_to_1_0_0() {
 						FROM graph_local
 						WHERE id=' . $row['local_graph_id']);
 
-					db_execute('UPDATE reports_items SET 
-						host_id=' . $host['id'] . ', 
-						host_template_id=' . $host['host_template_id'] . ', 
+					db_execute('UPDATE reports_items SET
+						host_id=' . $host['id'] . ',
+						host_template_id=' . $host['host_template_id'] . ',
 						graph_template_id=' . $graph_template . '
 						WHERE id=' . $row['id']);
 				}
@@ -1011,8 +1011,9 @@ function upgrade_to_1_0_0() {
 	foreach($autom8_tables as $table) {
 		$new_table = str_replace('plugin_autom8', 'automation', $table);
 
-		if (!db_table_exists($new_table)) {
-			db_install_rename_table ($table, str_replace('plugin_autom8', 'automation', $table));
+		if (db_table_exists($table)) {
+			db_install_execute("DROP TABLE IF EXISTS $new_table");
+			db_install_rename_table($table, str_replace('plugin_autom8', 'automation', $table));
 		}
 	}
 
