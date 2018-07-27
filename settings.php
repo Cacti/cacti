@@ -266,7 +266,7 @@ default:
 	print "</ul></nav></div>\n";
 	print "</div>\n";
 
-	form_start('settings.php', 'chk');
+	form_start('settings.php', 'form_settings');
 
 	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', true, '3', 'center', '');
 
@@ -328,7 +328,7 @@ default:
 			event.preventDefault();
 			strURL = $(this).attr('href');
 			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true, false);
 		});
 
 		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
