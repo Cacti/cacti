@@ -333,7 +333,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
-					<td align='center' colspan='6'>
+					<td class='center' colspan='6'>
 						<span id='countdown'></span>
 					</td>
 					<td>

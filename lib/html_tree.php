@@ -1030,7 +1030,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					<td>
 						<input type='button' class='ui-button ui-corner-all ui-widget' id='realtimeoff' value='<?php print __esc('Stop');?>'>
 					</td>
-					<td align='center' colspan='6'>
+					<td class='center' colspan='6'>
 						<span id='countdown'></span>
 					</td>
 					<td>
@@ -1040,7 +1040,10 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			</table>
 		</form>
 		</td>
-	</tr>
+	</tr><?php
+	html_end_box();
+
+	?>
 	<script type='text/javascript'>
 
 	var graph_start=<?php print get_current_graph_start();?>;
@@ -1174,7 +1177,6 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	</script>
 	<?php
 	html_spikekill_js();
-	html_end_box();
 
 	api_plugin_hook_function('graph_tree_page_buttons',
 		array(

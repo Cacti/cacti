@@ -347,6 +347,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	global $config;
+	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
@@ -362,8 +363,9 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 			array($local_graph_id));
 
 		if ($host_id > 0) {
-			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit Device') . "'></a>";
+			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . '_' . $rand . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit Device') . "'></a>";
 			print '<br/>';
+			$rand++;
 		}
 	}
 
