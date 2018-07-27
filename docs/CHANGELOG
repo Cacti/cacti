@@ -86,6 +86,7 @@ Cacti CHANGELOG
 -feature#1692: Separate option for logging Input Validation issues
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
 -feature#1703: Provide i18n for the graph right context menu
+-feature#1708: Automation: Email settings should have network level overrides
 -feature#1709: Dont warn when attempting to make updates in the past
 -feature#1711: Support specifying MySQL SSL file paths in the database API
 -feature#1731: Warn a user if they are going off page and there are unsaved changes

@@ -91,4 +91,10 @@ function upgrade_to_1_2_0() {
 
 	db_install_execute('UPDATE settings
 		SET name="log_validation" WHERE name="developer_mode"');
+
+	if (!db_column_exists('automation_networks', 'notification_enabled')) {
+		db_install_execute('ALTER TABLE automation_networks
+			ADD COLUMN notification_enabled char(2) default "" AFTER enabled,
+			ADD COLUMN notification_email varchar(255) default "" AFTER notification_enabled');
+	}
 }

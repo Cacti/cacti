@@ -291,6 +291,8 @@ CREATE TABLE `automation_networks` (
   `subnet_range` varchar(1024) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
+  `notification_enabled` char(2) DEFAULT '',
+  `notification_email` varchar(255) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,
   `enable_netbios` char(2) DEFAULT '',
   `add_to_cacti` char(2) DEFAULT '',
@@ -325,7 +327,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,1,'Test Network','192.168.1.0/24','','',1,'on','','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,1,'Test Network','192.168.1.0/24','','','','',1,'on','','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -2647,6 +2649,7 @@ INSERT INTO user_auth_realm VALUES (20,1);
 INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (22,1);
 INSERT INTO user_auth_realm VALUES (23,1);
+INSERT INTO user_auth_realm VALUES (26,1);
 INSERT INTO user_auth_realm VALUES (101,1);
 
 --

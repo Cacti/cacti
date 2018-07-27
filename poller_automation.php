@@ -320,7 +320,7 @@ if (!$master && $thread == 0) {
 		automation_debug("Found $running Threads\n");
 
 		// Are there no more running tasks? Wait up to 15 seconds to
-		// allow processes to start before checking for failures 
+		// allow processes to start before checking for failures
 		if ($running == 0 && $failcount > 3) {
 			db_execute_prepared('DELETE FROM automation_ips
 				WHERE network_id = ?',
@@ -850,132 +850,140 @@ function addSNMPDevice($network_id, $pid) {
 }
 
 function reportNetworkStatus($network_id, $old_devices) {
-	$email = read_config_option('automation_email');
-	if ($email != '') {
-		$new_devices = getNetworkDevices($network_id);
+	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
 
-		$ids = array();
-		populateDeviceIndex($ids, 0, $old_devices);
-		populateDeviceIndex($ids, 1, $new_devices);
+	if (sizeof($details)) {
+		if ($details['notification_enabled'] == 'on' && $details['notification_email'] != '') {
+			$email = $details['notification_email'];
 
-		$table_head_style = 'style="border-bottom: 1px solid black"';
-		$table_head = '<tr>' .
-			"<td $table_head_style><i>Hostname</i></td>" .
-			"<td $table_head_style><i>IP Address</i></td>" .
-			"<td $table_head_style><i>SNMP Name</i></td>" .
-			"<td $table_head_style><i>Has SNMP?</i></td>" .
-			"<td $table_head_style><i>Responding?</i></td>" .
-			'</tr>';
+			$new_devices = getNetworkDevices($network_id);
 
-		$table_exist = '';
-		$table_new = '';
-		$count_exist = 0;
-		$count_new = 0;
+			$ids = array();
+			populateDeviceIndex($ids, 0, $old_devices);
+			populateDeviceIndex($ids, 1, $new_devices);
 
-		$font_up = '<font color="green">up</font>';
-		$font_down = '<font color="red">down</font>';
+			$table_head_style = 'style="border-bottom: 1px solid black"';
+			$table_head = '<tr>' .
+				"<td $table_head_style><i>Hostname</i></td>" .
+				"<td $table_head_style><i>IP Address</i></td>" .
+				"<td $table_head_style><i>SNMP Name</i></td>" .
+				"<td $table_head_style><i>Has SNMP?</i></td>" .
+				"<td $table_head_style><i>Responding?</i></td>" .
+				'</tr>';
 
-		foreach ($new_devices as $device)
-		{
-			$id = $device['ip'];
-			$html_line = '<tr><td>' . $device['hostname'] .
-				'</td><td>' . $device['ip'] .
-				'</td><td>' . (empty($device['sysName']) ? '<i><u>None</u></i>' : $device['sysName']) .
-				'</td><td>' . ($device['snmp'] ? $font_up : $font_down) .
-				'</td><td>' . ($device['up'] ? $font_up : $font_down) .
-				'</td></tr>';
+			$table_exist = '';
+			$table_new = '';
+			$count_exist = 0;
+			$count_new = 0;
 
-			if ($ids[$id]['old'] != '') {
-				$table_exist .= $html_line;
-				$count_exist++;
-			} else {
-				$table_new .= $html_line;
-				$count_new++;
+			$font_up = '<font color="green">up</font>';
+			$font_down = '<font color="red">down</font>';
+
+			foreach ($new_devices as $device) {
+				$id = $device['ip'];
+				$html_line = '<tr><td>' . $device['hostname'] .
+					'</td><td>' . $device['ip'] .
+					'</td><td>' . (empty($device['sysName']) ? '<i><u>None</u></i>' : $device['sysName']) .
+					'</td><td>' . ($device['snmp'] ? $font_up : $font_down) .
+					'</td><td>' . ($device['up'] ? $font_up : $font_down) .
+					'</td></tr>';
+
+				if ($ids[$id]['old'] != '') {
+					$table_exist .= $html_line;
+					$count_exist++;
+				} else {
+					$table_new .= $html_line;
+					$count_new++;
+				}
 			}
-		}
 
-		if (strlen($table_exist) > 0) {
-			$table_exist .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
-		}
+			if (strlen($table_exist) > 0) {
+				$table_exist .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
+			}
 
-		if (strlen($table_new) > 0) {
-			$table_new .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
-		}
+			if (strlen($table_new) > 0) {
+				$table_new .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
+			}
 
-		$v = get_cacti_version();
-		$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
+			$v = get_cacti_version();
+			$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
 
-		$status = ($count_new + $count_exist) . ' devices discovered';
-		if ($count_new > 0) {
-			$status .= ', ' . $count_new . ' new!';
-		}
-
-		$network = db_fetch_row_prepared('SELECT id, name, subnet_range, last_started, last_runtime
-			FROM automation_networks
-			WHERE id = ?',
-			array($network_id));
-
-		$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
-		$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
-			'<h2>Summary</h2><table>' .
-			'<tr><td>Network:</td><td>' . $network['subnet_range'] . '</td></tr>'.
-			'<tr><td>Started:</td><td>' . $network['last_started'] . '</td></tr>' .
-			'<tr><td>Duration:</td><td>' . intval($network['last_runtime']) . '</td></tr>' .
-			'<tr><td>Existing:</td><td>' . $count_exist . ' devices</td></tr>' .
-			'<tr><td>New:</td><td>' . $count_new . ' devices</td></tr>' .
-			'</table><br><br>';
-
-		if ($count_new > 0 || $count_exist > 0) {
-			$output .= '<table cellspacing="5" cellpadding="5">';
+			$status = ($count_new + $count_exist) . ' devices discovered';
 			if ($count_new > 0) {
-				$output .= '<tr><td colspan="5"><h3>New Devices</h3></td></tr>' . $table_head . $table_new;
+				$status .= ', ' . $count_new . ' new!';
 			}
 
-			if ($count_exist > 0) {
-				$output .= '<tr><td colspan="5"><h3>Existing Devices</h3></td></tr>' . $table_head . $table_exist;
+			$network = db_fetch_row_prepared('SELECT id, name, subnet_range, last_started, last_runtime
+				FROM automation_networks
+				WHERE id = ?',
+				array($network_id));
+
+			$subject = 'Discovery of ' . $network['name'] . ' (' . $network['subnet_range'] . ') - ' . $status;
+			$output = '<h1>Discovery of ' . $network['name'] . '</h1><hr><br>' .
+				'<h2>Summary</h2><table>' .
+				'<tr><td>Network:</td><td>' . $network['subnet_range'] . '</td></tr>'.
+				'<tr><td>Started:</td><td>' . $network['last_started'] . '</td></tr>' .
+				'<tr><td>Duration:</td><td>' . intval($network['last_runtime']) . '</td></tr>' .
+				'<tr><td>Existing:</td><td>' . $count_exist . ' devices</td></tr>' .
+				'<tr><td>New:</td><td>' . $count_new . ' devices</td></tr>' .
+				'</table><br><br>';
+
+			if ($count_new > 0 || $count_exist > 0) {
+				$output .= '<table cellspacing="5" cellpadding="5">';
+				if ($count_new > 0) {
+					$output .= '<tr><td colspan="5"><h3>New Devices</h3></td></tr>' . $table_head . $table_new;
+				}
+
+				if ($count_exist > 0) {
+					$output .= '<tr><td colspan="5"><h3>Existing Devices</h3></td></tr>' . $table_head . $table_exist;
+				}
+				$output .= '</table>';
 			}
-			$output .= '</table>';
-		}
 
-		$from_email = read_config_option('automation_email_from');
-		$from_name = read_config_option('automation_email_name');
+			$from_email = read_config_option('settings_from_email');
+			$from_name  = read_config_option('settings_from_name');
 
-		if ($from_email != '') {
-			if ($form_name != '') {
-				$from = array($from_email, $from_name);
+			if ($from_email != '') {
+				if ($form_name != '') {
+					$from = array($from_email, $from_name);
+				} else {
+					$from = $from_email;
+				}
 			} else {
-				$from = $from_email;
+				$from = '';
 			}
-		} else {
-			$from = '';
-		}
 
-		$error = mailer(
-			$from,
-        		$email,
-			'',
-			'',
-			'',
-			$subject,
-			$output,
-			'Cacti Automation Report requires an html based Email client',
-			'',
-			$headers
-		);
+			$error = mailer(
+				$from,
+				$email,
+				'',
+				'',
+				'',
+				$subject,
+				$output,
+				'Cacti Automation Report requires an html based Email client',
+				'',
+				$headers
+			);
 
-		if (strlen($error)) {
-			cacti_log("WARNING: Automation had problems sending to '$email' for $status.  The error was '$error'", false, 'AUTOM8');
-		} else {
-			cacti_log("NOTICE: Email Notification Sent to '$email' for $status.", false, 'AUTOM8');
+			if (strlen($error)) {
+				cacti_log("WARNING: Automation had problems sending to '$email' for $status.  The error was '$error'", false, 'AUTOM8');
+			} else {
+				cacti_log("NOTICE: Email Notification Sent to '$email' for $status.", false, 'AUTOM8');
+			}
 		}
 	}
 }
 
-function populateDeviceIndex(&$ids, $is_new, $devices)
-{
+function populateDeviceIndex(&$ids, $is_new, $devices) {
 	$field = ($is_new ? 'new' : 'old');
+
 	foreach ($devices as $index => $device) {
 		$id = $device['ip'];
+
 		if (!isset($ids[$id])) {
 			$ids[$id] = array('old' => '', 'new' => '');
 		}

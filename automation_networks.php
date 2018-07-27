@@ -168,11 +168,16 @@ function api_networks_save($post) {
 		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
 		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
 
-		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
-		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
-		$save['add_to_cacti']       = (isset($post['add_to_cacti']) ? 'on':'');
-		$save['same_sysname']       = (isset($post['same_sysname']) ? 'on':'');
-		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
+		$save['enabled']              = (isset($post['enabled']) ? 'on':'');
+
+		/* notification settings */
+		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on':'');
+		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
+
+		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on':'');
+		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on':'');
+		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on':'');
+		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
 		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
@@ -550,6 +555,26 @@ function network_edit() {
 		'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
 		'value' => '|arg1:rerun_data_queries|'
 		),
+	'spacern' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Notification Settings'),
+		'collapsible' => 'true'
+		),
+	'notification_enabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Notification Enabled'),
+		'description' => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+		'value' => '|arg1:notification_enabled|',
+		'default' => ''
+		),
+	'notification_email' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification Email'),
+		'description' => __('The Email account to be used to send the Notification Email to.'),
+		'value' => '|arg1:notification_email|',
+		'max_length' => '250',
+		'default' => ''
+		),
 	'spacer2' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Discovery Timing'),
@@ -797,12 +822,26 @@ function network_edit() {
 
 		setSchedule();
 
+		$('#notification_enabled').click(function() {
+			setNotification();
+		});
+
+		setNotification();
+
 		$('#ping_method').change(function() {
 			setPing();
 		});
 
 		setPing();
 	});
+
+	function setNotification() {
+		if ($('#notification_enabled').is(':checked')) {
+			$('#row_notification_email').show();
+		} else {
+			$('#row_notification_email').hide();
+		}
+	}
 
 	function setPing() {
 		switch($('#ping_method').val()) {
