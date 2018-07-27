@@ -5307,7 +5307,7 @@ function get_md5_include_css($path) {
 
 function is_resource_writable($path) {
 	if ($path{strlen($path)-1}=='/') {
-		return is__writable($path.uniqid(mt_rand()).'.tmp');
+		return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
 	}
 
 	if (file_exists($path)) {

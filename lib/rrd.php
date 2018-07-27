@@ -3294,8 +3294,51 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
+function rrdtool_parse_error($string) {
+	global $config;
+
+	file_put_contents('/tmp/rrd',$string);
+	if (preg_match('/ERROR. opening \'(.*)\': (No such|Permiss).*/', $string, $matches)) {
+		if (sizeof($matches) >= 2) {
+			$filename = $matches[1];
+			$rra_name = basename($filename);
+			$rra_path = dirname($filename) . "/";
+			if (!is_resource_writable($rra_path)) {
+				$message = __('Website does not have write access to %s, may be unable to create/update RRDs', 'folder');
+				$rra_name = str_replace($config['base_path'],'', $rra_path);
+				$rra_path = "";
+			} else {
+				if (stripos($filename, $config['base_path']) >= 0) {
+					$rra_file = str_replace($config['base_path'] . '/rra/', '', $filename);
+					$rra_name = basename($rra_file);
+					$rra_path = dirname($rra_file);
+				} else {
+					$rra_name = basename($rra_file);
+					$rra_path = __('(Custom)');
+				}
+
+				if (!is_resource_writable($filename)) {
+					$message = __('Website does not have write access to %s, may be unable to create/update RRDs', 'data file');
+				} else {
+					$message = __('Failed to open data file, poller may not have run yet');
+				}
+
+				$rra_path = '(' . __('RRA Folder') . ': ' . ((empty($rra_path) || $rra_path == ".") ? __('Root') : $rra_path) . ')';
+			}
+
+			$string = $message . ":\n\0x27\n" . $rra_name;
+			if (!empty($rra_path)) {
+				$string .= "\n" . $rra_path;
+			}
+		}
+	}
+	return $string;
+}
+
 function rrdtool_create_error_image($string, $width = '', $height = '') {
 	global $config;
+
+	$string = rrdtool_parse_error($string);
 
 	/* put image in buffer */
 	ob_start();
@@ -3373,7 +3416,7 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 
 	/* see the size of the string */
 	$string    = trim($string);
-	$maxstring = (450 - (125 + 10)) / ($font_size / 1.4);
+	$maxstring = (450 - (125 + 10)) / ($font_size / 0.9);
 	$stringlen = strlen($string) * $font_size;
 	$padding   = 5;
 

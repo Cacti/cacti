@@ -89,6 +89,7 @@ Cacti CHANGELOG
 -feature#1709: Dont warn when attempting to make updates in the past
 -feature#1711: Support specifying MySQL SSL file paths in the database API
 -feature#1731: Warn a user if they are going off page and there are unsaved changes
+-feature#1734: Visual enhancements to RRD error message when file not found
 -feature: New Install/Upgrade user permission to limit access to being able to upgrade
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
