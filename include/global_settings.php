@@ -472,33 +472,6 @@ $settings = array(
 			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible.'),
 			'default' => '',
 			),
-		'automation_email' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Automation recipient email address'),
-			'description' => __('Default email address automation report is sent to per network discovery. Leave this field empty to suppress report generation.'),
-			'value' => '|arg1:automation_email|',
-			'default' => '',
-			'max_length' => '128',
-			'size' => '40'
-			),
-		'automation_email_from' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Automation sender email address'),
-			'description' => __('Default email address automation report is sent from per network discovery. Leave this field empty to use default Cacti email address.'),
-			'value' => '|arg1:automation_email_from|',
-			'default' => '',
-			'max_length' => '128',
-			'size' => '40'
-			),
-		'automation_email_name' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('Automation sender display name'),
-			'description' => __('Default email display name automation report is sent from per network discovery. Leave this field empty to use default Cacti email display name.'),
-			'value' => '|arg1:automation_email_name|',
-			'default' => '',
-			'max_length' => '128',
-			'size' => '40'
-			),
 		),
 	'snmp' => array(
 		'general_header' => array(
@@ -1113,6 +1086,14 @@ $settings = array(
 			'method' => 'spacer',
 			'collapsible' => 'true'
 			),
+		'admin_user' => array(
+			'friendly_name' => __('Primary Admin'),
+			'description' => __('The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the the administrative account has an Email address that is set.'),
+			'method' => 'drop_sql',
+			'none_value' => __('No User'),
+			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
+			'default' => '0'
+			),
 		'guest_user' => array(
 			'friendly_name' => __('Guest User'),
 			'description' => __('The name of the guest user for viewing graphs; is \'No User\' by default.'),
@@ -1384,7 +1365,7 @@ $settings = array(
 			),
 		'cn_email' => array(
 			'friendly_name' => __('Email'),
-			'description' => __('Field that will replace the email taken from LDAP. (on windows: mail)'),
+			'description' => __('Field that will replace the Email taken from LDAP. (on windows: mail)'),
 			'method' => 'textbox',
 			'max_length' => '255'
 			),

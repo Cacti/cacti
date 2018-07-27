@@ -3724,6 +3724,29 @@ function general_header() {
 	}
 }
 
+function admin_email($subject, $message) {
+	if (read_config_option('admin_user')) {
+		$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
+			FROM user_auth
+			WHERE id = ?',
+			array(read_config_option('admin_user')));
+
+		if (sizeof($admin_details)) {
+			$from[0] = read_config_option('settings_from_email');
+			$from[1] = read_config_option('settings_from_name');
+
+			$to[0]   = $admin_details['email_address'];
+			$to[1]   = $admin_details['full_name'];
+
+			send_mail($to, $from, $subject, $message, strip_tags($message), '', true);
+		} else {
+			cacti_log('WARNING: Primay Admin account not found!  Unable to send administrative Email.', false, 'SYSTEM');
+		}
+	} else {
+		cacti_log('WARNING: Primary Admin account not set!  Unable to send administrative Email.', false, 'SYSTEM');
+	}
+}
+
 function send_mail($to, $from, $subject, $body, $attachments = '', $headers = '', $html = false) {
 	$fromname = '';
 	if (is_array($from)) {
@@ -4712,6 +4735,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+				admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $error));
 			}
 			break;
 		case E_RECOVERABLE_ERROR:
@@ -4772,6 +4796,7 @@ function CactiShutdownHandler () {
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+				admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
 			}
 	}
 }
