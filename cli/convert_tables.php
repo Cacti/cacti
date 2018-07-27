@@ -137,8 +137,10 @@ if (strlen($table_name)) {
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
 		$canConvert = $rebuild;
+		$canInnoDB  = false;
 		if (!$canConvert && $innodb) {
 			$canConvert = $table['Engine'] == 'MyISAM';
+			$canInnoDB  = true;
 		}
 
 		if (!$canConvert && $utf8) {
@@ -154,7 +156,7 @@ if (sizeof($tables)) {
 					$sql .= ' CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
 				}
 
-				if ($innodb) {
+				if ($innodb && $canInnoDB) {
 					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
 				}
 
