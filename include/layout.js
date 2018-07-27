@@ -1808,13 +1808,18 @@ function checkFormStatus(href, type, scroll_or_id) {
 		$('.cactiFormStart').not('#chk').each(function() {
 			var formID     = $(this).attr('id');
 			var submitData = $(this).serializeForm();
-			var formData   = formArray[formID];
 
-			$.each(submitData, function(index, value) {
-				if (formData[index] != value) {
-					changed = true;
-				}
-			});
+			if (typeof formArray != 'undefined') {
+				var formData   = formArray[formID];
+
+				console.log(formData);
+
+				$.each(submitData, function(index, value) {
+					if (formData[index] != value) {
+						changed = true;
+					}
+				});
+			}
 		});
 
 		if (changed) {
