@@ -483,7 +483,7 @@ $settings = array(
 			'friendly_name' => __('Automation Notification From Name'),
 			'description' => __('The Email Name to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Name.'),
 			'method' => 'textbox',
-			'default' => 'public',
+			'default' => '',
 			'max_length' => '32',
 			'size' => '30'
 			),
@@ -491,7 +491,7 @@ $settings = array(
 			'friendly_name' => __('Automation Notification From Email'),
 			'description' => __('The Email Address to use for Automation Notification Emails to if not specified at the Automation Network level.  If either this field, or the Automation Network value are left blank, Cacti will use the system default From Email Address.'),
 			'method' => 'textbox',
-			'default' => 'public',
+			'default' => '',
 			'max_length' => '100',
 			),
 		),
