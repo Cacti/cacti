@@ -1582,7 +1582,7 @@ class Installer implements JsonSerializable {
 			html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
 			html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
 			foreach ($tables as $id => $p) {
-				$enabled = ($p['Rows'] < 300000 ? true : false);
+				$enabled = ($p['Rows'] < 1000000 ? true : false);
 				$style = ($enabled ? '' : 'text-decoration: line-through;');
 				form_alternate_row('line' . $id, true, $enabled);
 				form_selectable_cell($p['Name'], $id, '', $style);

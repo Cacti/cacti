@@ -38,12 +38,13 @@ array_shift($parms);
 
 global $debug;
 
-$innodb = false;
-$utf8 = false;
-$debug = false;
-$size  = 300000;
-$rebuild = false;
-$table_name = '';
+$innodb      = false;
+$utf8        = false;
+$debug       = false;
+$size        = 1000000;
+$rebuild     = false;
+$table_name  = '';
+$skip_tables = array();
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -75,6 +76,10 @@ if (sizeof($parms)) {
 			case '--innodb':
 				$innodb = true;
 				break;
+			case '-n':
+			case '--skip-innodb':
+				$skip_tables = explode(' ', $value);
+				break;
 			case '-u':
 			case '--utf8':
 				$utf8 = true;
@@ -97,10 +102,25 @@ if (sizeof($parms)) {
 	}
 }
 
-if (!($innodb || $utf8)) {
-	print "ERROR: Must select either UTF8 or InnoDB conversion\n\n";
+if (sizeof($skip_tables) && $table_name != '') {
+	print "ERROR: You can not specify a single table and skip tables at the same time.\n\n";
 	display_help();
 	exit;
+}
+
+if (!($innodb || $utf8)) {
+	print "ERROR: Must select either UTF8 or InnoDB conversion.\n\n";
+	display_help();
+	exit;
+}
+
+if (sizeof($skip_tables)) {
+	foreach($skip_tables as $table) {
+	if (!db_table_exists($table)) {
+		print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
+		display_help();
+		exit;
+	}
 }
 
 $convert = $innodb ? 'InnoDB' : '';
@@ -143,6 +163,10 @@ if (sizeof($tables)) {
 			$canInnoDB  = true;
 		}
 
+		if (in_array($table['Name'], $skip_tables)) {
+			$canInnoDB = false;
+		}
+
 		if (!$canConvert && $utf8) {
 			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
 		}
@@ -182,13 +206,15 @@ function display_help () {
 	display_version();
 
 	echo "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild]\n\n";
-	echo "A utility to convert a Cacti Database from MyISAM to the InnoDB table format\n\n";
+	echo "A utility to convert a Cacti Database from MyISAM to the InnoDB table format.\n";
+	echo "MEMORY tables are not converted to InnoDB in this process.\n\n";
 	echo "Required (one or more):\n";
 	echo "-i | --innodb  - Convert any MyISAM tables to InnoDB\n";
 	echo "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n\n";
 	echo "Optional:\n";
-	echo "-t | --table=N - The name of a single table to change\n";
-	echo "-s | --size=N  - The largest table size in records to convert\n";
+	echo "-t | --table=S - The name of a single table to change\n";
+	echo "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
+	echo "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
 	echo "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
 	echo "-d | --debug   - Display verbose output during execution\n\n";
 }
