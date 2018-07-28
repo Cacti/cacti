@@ -174,6 +174,9 @@ function api_networks_save($post) {
 		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on':'');
 		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
 
+		$save['notification_fromname']  = form_input_validate($post['notification_fromname'], 'notification_fromname', '', true, 3);
+		$save['notification_fromemail'] = form_input_validate($post['notification_fromemail'], 'notification_fromemail', '', true, 3);
+
 		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on':'');
 		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on':'');
 		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on':'');
@@ -575,6 +578,23 @@ function network_edit() {
 		'max_length' => '250',
 		'default' => ''
 		),
+	'notification_fromname' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification From Name'),
+		'description' => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
+		'value' => '|arg1:notification_fromname|',
+		'max_length' => '32',
+		'size' => '30',
+		'default' => ''
+		),
+	'notification_fromemail' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification From Email Address'),
+		'description' => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
+		'value' => '|arg1:notification_fromemail|',
+		'max_length' => '128',
+		'default' => ''
+		),
 	'spacer2' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Discovery Timing'),
@@ -838,8 +858,12 @@ function network_edit() {
 	function setNotification() {
 		if ($('#notification_enabled').is(':checked')) {
 			$('#row_notification_email').show();
+			$('#row_notification_fromname').show();
+			$('#row_notification_fromemail').show();
 		} else {
 			$('#row_notification_email').hide();
+			$('#row_notification_fromname').hide();
+			$('#row_notification_fromemail').hide();
 		}
 	}
 

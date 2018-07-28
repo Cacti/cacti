@@ -850,14 +850,74 @@ function addSNMPDevice($network_id, $pid) {
 }
 
 function reportNetworkStatus($network_id, $old_devices) {
-	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email
+	$details = db_fetch_row_prepared('SELECT notification_enabled, notification_email,
+		notification_fromname, notification_fromemail
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id));
 
 	if (sizeof($details)) {
-		if ($details['notification_enabled'] == 'on' && $details['notification_email'] != '') {
-			$email = $details['notification_email'];
+		if ($details['notification_enabled'] == 'on') {
+			if ($details['notification_fromname'] == '') {
+				$fromname = read_config_option('automation_fromname');
+				if ($fromname == '') {
+					$fromname = read_config_option('settings_from_name');
+
+					if ($fromname == '') {
+						$fromname = __('Primary Cacti Admin');
+					}
+				}
+			} else {
+				$fromname = $details['notification_fromname'];
+			}
+
+			if ($details['notification_fromemail'] == '') {
+				$fromemail = read_config_option('automation_fromemail');
+				if ($fromemail == '') {
+					$fromemail = read_config_option('settings_from_email');
+
+					if ($fromemail == '') {
+						$fromemail = 'root@cacti.net';
+					}
+				}
+			} else {
+				$fromemail = $details['notification_fromemail'];
+			}
+
+			$from = $fromname . ' <' . $fromemail . '>';
+
+			if ($details['notification_email'] != '') {
+				$email = $details['notification_email'];
+			} else {
+				$email = read_config_option('automation_email');
+
+				if ($email == '') {
+					$admin_user = read_config_option('admin_user');
+
+					if ($admin_user == '') {
+						cacti_log('WARNING: Unable to send Automation Notification Email.  No Primary Admin User Account specified.', false, 'POLLER');
+
+						return false;
+					}
+
+					$details = db_fetch_cell_prepared('SELECT email_address AS notification_email, full_name
+						FROM user_auth
+						WHERE id = ?',
+						array($admin_user));
+
+					if (!sizeof($details)) {
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.', false, 'POLLER');
+						return false;
+					}
+
+					if ($details['notification_email'] == '') {
+						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not have an Email Address.', false, 'POLLER');
+						return false;
+					}
+
+					$email = ($details['full_name'] != '' ? $details['full_name']:__('Cacti Primary Admin')) . ' <' . $details['notification_email'] . '>';
+				}
+			}
 
 			$new_devices = getNetworkDevices($network_id);
 
@@ -943,19 +1003,6 @@ function reportNetworkStatus($network_id, $old_devices) {
 				$output .= '</table>';
 			}
 
-			$from_email = read_config_option('settings_from_email');
-			$from_name  = read_config_option('settings_from_name');
-
-			if ($from_email != '') {
-				if ($form_name != '') {
-					$from = array($from_email, $from_name);
-				} else {
-					$from = $from_email;
-				}
-			} else {
-				$from = '';
-			}
-
 			$error = mailer(
 				$from,
 				$email,
@@ -964,7 +1011,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 				'',
 				$subject,
 				$output,
-				'Cacti Automation Report requires an html based Email client',
+				__('Cacti Automation Report requires an html based Email client'),
 				'',
 				$headers
 			);

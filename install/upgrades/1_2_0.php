@@ -97,4 +97,10 @@ function upgrade_to_1_2_0() {
 			ADD COLUMN notification_enabled char(2) default "" AFTER enabled,
 			ADD COLUMN notification_email varchar(255) default "" AFTER notification_enabled');
 	}
+
+	if (!db_column_exists('automation_networks', 'notification_fromname')) {
+		db_install_execute('ALTER TABLE automation_networks
+			ADD COLUMN notification_fromname varchar(32) default "" AFTER notification_email,
+			ADD COLUMN notification_fromemail varchar(128) default "" AFTER notification_fromname');
+	}
 }
