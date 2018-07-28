@@ -116,10 +116,11 @@ if (!($innodb || $utf8)) {
 
 if (sizeof($skip_tables)) {
 	foreach($skip_tables as $table) {
-	if (!db_table_exists($table)) {
-		print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
-		display_help();
-		exit;
+		if (!db_table_exists($table)) {
+			print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
+			display_help();
+			exit;
+		}
 	}
 }
 
