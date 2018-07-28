@@ -582,10 +582,17 @@ function discoverDevices($network_id, $thread) {
 							$host_id = 0;
 
 							if ($snmp_sysName != '') {
+								$hostname = gethostbyaddr($device['ip_address']);
+								if ($hostname != $device['ip_address']) {
+									if (strpos($hostname, '.')) {
+										$hostname = substr($hostname, 0, strpos($hostname, '.') - 1);
+									}
+								}
+
 								$isCactiSysName = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM host
 									WHERE snmp_sysName = ?
-									AND ip == ?',
+									AND (hostname == ? OR hostname LIKE "' . $hostname . '%")',
 									array($snmp_sysName, $device['ip_address']));
 
 								if ($isCactiSysName) {
@@ -601,7 +608,7 @@ function discoverDevices($network_id, $thread) {
 										AND sysName != ""
 										AND ip != ?
 										AND sysName = ?',
-										array($device['ip_address'], $network_id, $snmp_sysName));
+										array($network_id, $device['ip_address'], $snmp_sysName));
 
 									if ($isDuplicateSysName) {
 										automation_debug(", Skipping sysName '" . $snmp_sysName . "' already Discovered!\n");
