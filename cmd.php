@@ -268,7 +268,6 @@ $exists = db_fetch_cell_prepared('SELECT COUNT(*)
 	array($poller_id));
 
 if (empty($exists)) {
-	cacti_log('FATAL: No devices matching this poller exist on the system', true, 'POLLER');
 	record_cmdphp_done();
 	db_close();
 	exit(-1);
