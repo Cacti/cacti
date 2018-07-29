@@ -150,6 +150,36 @@ class Installer implements JsonSerializable {
 		$this->automationMode  = read_config_option('install_automation_mode', true);
 		$this->cronInterval    = read_config_option('cron_interval', true);
 
+		$this->defaultAutomation = array(
+			array(
+				'name'          => 'Net-SNMP Device',
+				'hash'          => '07d3fe6a52915f99e642d22e27d967a4',
+				'sysDescrMatch' => 'Linux',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 1
+			),
+			array(
+				'name'          => 'Windows Device',
+				'hash'          => '5b8300be607dce4f030b026a381b91cd',
+				'sysDescrMatch' => 'Windows',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 2
+			),
+			array(
+				'name'          => 'Cisco Router',
+				'hash'          => 'cae6a879f86edacb2471055783bec6d0',
+				'sysDescrMatch' => '(Cisco Internetwork Operating System Software|IOS)',
+				'sysNameMatch'  => '',
+				'sysOidMatch'   => '',
+				'availMethod'   => 2,
+				'sequence'      => 3
+			)
+		);
+
 		if ($this->automationMode === false || $this->automationMode === null) {
 			$this->setAutomationMode($this->getAutomationNetworkMode());
 		}
@@ -2010,6 +2040,23 @@ class Installer implements JsonSerializable {
 				log_install_and_cacti(sprintf('Attempting to import package #%s \'%s\'', $i, $package));
 				import_package($path . $package, 1, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+			}
+
+			db_execute('TRUNCATE TABLE automation_templates');
+
+			foreach($this->defaultAutomation as $item) {
+				$host_template_id = db_fetch_cell_prepared('SELECT id
+					FROM host_template
+					WHERE hash = ?',
+					array($item['hash']));
+
+				if (!empty($host_template_id)) {
+					db_execute_prepared('INSERT INTO automation_templates
+						(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
+						VALUES (?, ?, ?, ?, ?, ?)',
+						array($host_template_id, $item['availMethod'], $item['sysDescrMatch'],
+						$item['sysNameMatch'], $item['sysOidMatch'], $item['sequence']));
+				}
 			}
 		} else {
 			log_install_and_cacti(sprintf('No templates were selected for import'));
