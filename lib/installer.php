@@ -2157,7 +2157,7 @@ class Installer implements JsonSerializable {
 		snmpagent_cache_rebuilt();
 
 		/* generate RSA key pair */
-		log_install_and_cacti('Generating RSA Key PAir');
+		log_install_and_cacti('Generating RSA Key Pair');
 		rsa_check_keypair();
 
 		$this->setProgress(Installer::PROGRESS_DEVICE_END);
