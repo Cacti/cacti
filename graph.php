@@ -45,6 +45,11 @@ api_plugin_hook_function('graph');
 
 include_once('./lib/html_tree.php');
 
+$refresh['seconds'] = read_config_option('page_refresh');
+$refresh['page']    = 'graph.php?local_graph_id=' . get_request_var('local_graph_id') . '&header=false';
+$refresh['logout']  = 'false';
+set_page_refresh($refresh);
+
 top_graph_header();
 
 if (!isset_request_var('rra_id')) {
