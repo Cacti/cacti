@@ -1093,7 +1093,7 @@ $settings = array(
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
-			'default' => '0'
+			'default' => '1'
 			),
 		'guest_user' => array(
 			'friendly_name' => __('Guest User'),
