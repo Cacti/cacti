@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-28 13:15-0400\n"
+"POT-Creation-Date: 2018-07-28 22:40-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -79,7 +79,7 @@ msgstr ""
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr ""
 
-#: /var/www/html/cacti/about.php:75 /var/www/html/cacti/lib/installer.php:900
+#: /var/www/html/cacti/about.php:75 /var/www/html/cacti/lib/installer.php:913
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -968,11 +968,11 @@ msgstr ""
 #: /var/www/html/cacti/gprint_presets.php:413
 #: /var/www/html/cacti/graph_templates.php:786
 #: /var/www/html/cacti/host_templates.php:832
-#: /var/www/html/cacti/include/global_settings.php:443
-#: /var/www/html/cacti/include/global_settings.php:742
-#: /var/www/html/cacti/include/global_settings.php:1436
-#: /var/www/html/cacti/lib/installer.php:1073
-#: /var/www/html/cacti/lib/installer.php:1105 /var/www/html/cacti/tree.php:1998
+#: /var/www/html/cacti/include/global_settings.php:422
+#: /var/www/html/cacti/include/global_settings.php:721
+#: /var/www/html/cacti/include/global_settings.php:1415
+#: /var/www/html/cacti/lib/installer.php:1086
+#: /var/www/html/cacti/lib/installer.php:1118 /var/www/html/cacti/tree.php:1998
 #: /var/www/html/cacti/tree.php:1999 /var/www/html/cacti/user_admin.php:2302
 #: /var/www/html/cacti/user_domains.php:764
 #: /var/www/html/cacti/user_group_admin.php:1933
@@ -996,13 +996,13 @@ msgstr ""
 #: /var/www/html/cacti/gprint_presets.php:413
 #: /var/www/html/cacti/graph_templates.php:786
 #: /var/www/html/cacti/host_templates.php:832
-#: /var/www/html/cacti/include/global_settings.php:444
-#: /var/www/html/cacti/include/global_settings.php:741
-#: /var/www/html/cacti/include/global_settings.php:1435
-#: /var/www/html/cacti/lib/installer.php:1072
-#: /var/www/html/cacti/lib/installer.php:1073
-#: /var/www/html/cacti/lib/installer.php:1104
-#: /var/www/html/cacti/lib/installer.php:1105 /var/www/html/cacti/tree.php:1998
+#: /var/www/html/cacti/include/global_settings.php:423
+#: /var/www/html/cacti/include/global_settings.php:720
+#: /var/www/html/cacti/include/global_settings.php:1414
+#: /var/www/html/cacti/lib/installer.php:1085
+#: /var/www/html/cacti/lib/installer.php:1086
+#: /var/www/html/cacti/lib/installer.php:1117
+#: /var/www/html/cacti/lib/installer.php:1118 /var/www/html/cacti/tree.php:1998
 #: /var/www/html/cacti/tree.php:1999 /var/www/html/cacti/user_admin.php:2300
 #: /var/www/html/cacti/user_domains.php:760
 #: /var/www/html/cacti/user_domains.php:764
@@ -1027,7 +1027,7 @@ msgstr ""
 #: /var/www/html/cacti/data_sources.php:1288
 #: /var/www/html/cacti/graph_view.php:597 /var/www/html/cacti/graphs.php:1787
 #: /var/www/html/cacti/graphs.php:1939 /var/www/html/cacti/host.php:1545
-#: /var/www/html/cacti/include/global_settings.php:505
+#: /var/www/html/cacti/include/global_settings.php:484
 #: /var/www/html/cacti/lib/api_automation.php:441
 #: /var/www/html/cacti/lib/html_graph.php:153
 #: /var/www/html/cacti/lib/html_tree.php:856
@@ -1112,11 +1112,11 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:1039
 #: /var/www/html/cacti/include/global_form.php:2107
 #: /var/www/html/cacti/include/global_form.php:2149
-#: /var/www/html/cacti/include/global_settings.php:509
-#: /var/www/html/cacti/include/global_settings.php:517
-#: /var/www/html/cacti/include/global_settings.php:525
-#: /var/www/html/cacti/include/global_settings.php:1050
-#: /var/www/html/cacti/include/global_settings.php:1508
+#: /var/www/html/cacti/include/global_settings.php:488
+#: /var/www/html/cacti/include/global_settings.php:496
+#: /var/www/html/cacti/include/global_settings.php:504
+#: /var/www/html/cacti/include/global_settings.php:1029
+#: /var/www/html/cacti/include/global_settings.php:1487
 #: /var/www/html/cacti/lib/api_automation.php:152
 #: /var/www/html/cacti/lib/api_automation.php:429
 #: /var/www/html/cacti/lib/api_automation.php:446
@@ -1204,7 +1204,7 @@ msgstr ""
 #: /var/www/html/cacti/color_templates.php:556
 #: /var/www/html/cacti/include/global_arrays.php:849
 #: /var/www/html/cacti/include/global_arrays.php:907
-#: /var/www/html/cacti/lib/installer.php:1528
+#: /var/www/html/cacti/lib/installer.php:1552
 #: /var/www/html/cacti/user_admin.php:2851
 #: /var/www/html/cacti/user_group_admin.php:2385
 msgid "Templates"
@@ -1438,7 +1438,7 @@ msgstr ""
 
 #: /var/www/html/cacti/auth_login.php:707
 #: /var/www/html/cacti/auth_login.php:710
-#: /var/www/html/cacti/include/global_settings.php:1348
+#: /var/www/html/cacti/include/global_settings.php:1327
 #: /var/www/html/cacti/lib/functions.php:4167
 msgid "Username"
 msgstr ""
@@ -1450,7 +1450,7 @@ msgid "Password"
 msgstr ""
 
 #: /var/www/html/cacti/auth_login.php:727
-#: /var/www/html/cacti/include/global_settings.php:1745
+#: /var/www/html/cacti/include/global_settings.php:1724
 #: /var/www/html/cacti/lib/auth.php:341 /var/www/html/cacti/lib/auth.php:363
 #: /var/www/html/cacti/lib/auth.php:374
 msgid "Local"
@@ -1491,7 +1491,7 @@ msgstr ""
 #: /var/www/html/cacti/auth_profile.php:230
 #: /var/www/html/cacti/include/global_arrays.php:718
 #: /var/www/html/cacti/include/global_session.php:109
-#: /var/www/html/cacti/include/global_settings.php:2082
+#: /var/www/html/cacti/include/global_settings.php:2061
 #: /var/www/html/cacti/lib/html.php:1672 /var/www/html/cacti/lib/html.php:1694
 msgid "Tree View"
 msgstr ""
@@ -1523,7 +1523,7 @@ msgstr ""
 
 #: /var/www/html/cacti/auth_profile.php:259
 #: /var/www/html/cacti/include/global_form.php:1429
-#: /var/www/html/cacti/include/global_settings.php:1383
+#: /var/www/html/cacti/include/global_settings.php:1362
 #: /var/www/html/cacti/user_admin.php:2281
 #: /var/www/html/cacti/user_domains.php:493
 #: /var/www/html/cacti/user_group_admin.php:675
@@ -1720,7 +1720,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_devices.php:251
 #: /var/www/html/cacti/include/global_form.php:1009
-#: /var/www/html/cacti/include/global_settings.php:1740
+#: /var/www/html/cacti/include/global_settings.php:1719
 msgid "Location"
 msgstr ""
 
@@ -1735,7 +1735,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:1640
 #: /var/www/html/cacti/lib/api_automation.php:276
 #: /var/www/html/cacti/lib/api_automation.php:1170
-#: /var/www/html/cacti/lib/installer.php:1529
+#: /var/www/html/cacti/lib/installer.php:1553
 #: /var/www/html/cacti/managers.php:216 /var/www/html/cacti/user_admin.php:1081
 #: /var/www/html/cacti/user_admin.php:1226
 #: /var/www/html/cacti/user_group_admin.php:966
@@ -1867,7 +1867,7 @@ msgstr ""
 #: /var/www/html/cacti/automation_tree_rules.php:30
 #: /var/www/html/cacti/data_sources.php:38 /var/www/html/cacti/host.php:39
 #: /var/www/html/cacti/include/global_arrays.php:1400
-#: /var/www/html/cacti/include/global_settings.php:1304
+#: /var/www/html/cacti/include/global_settings.php:1283
 #: /var/www/html/cacti/links.php:29 /var/www/html/cacti/managers.php:29
 #: /var/www/html/cacti/managers.php:35 /var/www/html/cacti/plugins.php:29
 #: /var/www/html/cacti/pollers.php:31 /var/www/html/cacti/user_admin.php:30
@@ -2010,16 +2010,16 @@ msgstr ""
 #: /var/www/html/cacti/data_sources.php:1344 /var/www/html/cacti/host.php:1585
 #: /var/www/html/cacti/include/global_arrays.php:768
 #: /var/www/html/cacti/include/global_form.php:1453
-#: /var/www/html/cacti/include/global_settings.php:379
+#: /var/www/html/cacti/include/global_settings.php:358
 #: /var/www/html/cacti/lib/api_automation.php:170
 #: /var/www/html/cacti/lib/api_automation.php:1050
 #: /var/www/html/cacti/lib/html_reports.php:1476
 #: /var/www/html/cacti/lib/html_reports.php:1568
 #: /var/www/html/cacti/lib/html_reports.php:1579
 #: /var/www/html/cacti/lib/html_reports.php:1615
-#: /var/www/html/cacti/links.php:381 /var/www/html/cacti/links.php:559
-#: /var/www/html/cacti/managers.php:243 /var/www/html/cacti/managers.php:598
-#: /var/www/html/cacti/user_admin.php:1081
+#: /var/www/html/cacti/lib/installer.php:1523 /var/www/html/cacti/links.php:381
+#: /var/www/html/cacti/links.php:559 /var/www/html/cacti/managers.php:243
+#: /var/www/html/cacti/managers.php:598 /var/www/html/cacti/user_admin.php:1081
 #: /var/www/html/cacti/user_admin.php:1093
 #: /var/www/html/cacti/user_admin.php:2282
 #: /var/www/html/cacti/user_domains.php:348
@@ -2043,22 +2043,22 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1327
 #: /var/www/html/cacti/include/global_arrays.php:1610
 #: /var/www/html/cacti/include/global_session.php:171
-#: /var/www/html/cacti/include/global_settings.php:378
-#: /var/www/html/cacti/include/global_settings.php:1178
-#: /var/www/html/cacti/include/global_settings.php:1192
-#: /var/www/html/cacti/include/global_settings.php:1204
-#: /var/www/html/cacti/include/global_settings.php:1229
-#: /var/www/html/cacti/include/global_settings.php:1243
-#: /var/www/html/cacti/include/global_settings.php:1303
-#: /var/www/html/cacti/include/global_settings.php:1927
+#: /var/www/html/cacti/include/global_settings.php:357
+#: /var/www/html/cacti/include/global_settings.php:1157
+#: /var/www/html/cacti/include/global_settings.php:1171
+#: /var/www/html/cacti/include/global_settings.php:1183
+#: /var/www/html/cacti/include/global_settings.php:1208
+#: /var/www/html/cacti/include/global_settings.php:1222
+#: /var/www/html/cacti/include/global_settings.php:1282
+#: /var/www/html/cacti/include/global_settings.php:1906
 #: /var/www/html/cacti/lib/api_automation.php:171
 #: /var/www/html/cacti/lib/api_automation.php:1051
 #: /var/www/html/cacti/lib/html_reports.php:1477
 #: /var/www/html/cacti/lib/html_reports.php:1615
 #: /var/www/html/cacti/lib/html_utility.php:848
-#: /var/www/html/cacti/links.php:498 /var/www/html/cacti/managers.php:243
-#: /var/www/html/cacti/managers.php:598 /var/www/html/cacti/pollers.php:40
-#: /var/www/html/cacti/user_admin.php:1093
+#: /var/www/html/cacti/lib/installer.php:1523 /var/www/html/cacti/links.php:498
+#: /var/www/html/cacti/managers.php:243 /var/www/html/cacti/managers.php:598
+#: /var/www/html/cacti/pollers.php:40 /var/www/html/cacti/user_admin.php:1093
 #: /var/www/html/cacti/user_domains.php:409
 #: /var/www/html/cacti/user_group_admin.php:690
 #: /var/www/html/cacti/utilities.php:2250
@@ -2225,10 +2225,10 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:2080
 #: /var/www/html/cacti/include/global_form.php:2178
 #: /var/www/html/cacti/include/global_form.php:2223
-#: /var/www/html/cacti/lib/installer.php:1007
-#: /var/www/html/cacti/lib/installer.php:1099
-#: /var/www/html/cacti/lib/installer.php:1529
-#: /var/www/html/cacti/lib/installer.php:1583
+#: /var/www/html/cacti/lib/installer.php:1020
+#: /var/www/html/cacti/lib/installer.php:1112
+#: /var/www/html/cacti/lib/installer.php:1553
+#: /var/www/html/cacti/lib/installer.php:1607
 #: /var/www/html/cacti/lib/vdef.php:74 /var/www/html/cacti/managers.php:562
 #: /var/www/html/cacti/pollers.php:52 /var/www/html/cacti/sites.php:40
 #: /var/www/html/cacti/user_admin.php:1081
@@ -2385,12 +2385,12 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1372
 #: /var/www/html/cacti/include/global_arrays.php:1373
 #: /var/www/html/cacti/include/global_arrays.php:1384
-#: /var/www/html/cacti/include/global_settings.php:1245
-#: /var/www/html/cacti/include/global_settings.php:1246
-#: /var/www/html/cacti/include/global_settings.php:1247
-#: /var/www/html/cacti/include/global_settings.php:1248
-#: /var/www/html/cacti/include/global_settings.php:1249
-#: /var/www/html/cacti/include/global_settings.php:2009
+#: /var/www/html/cacti/include/global_settings.php:1224
+#: /var/www/html/cacti/include/global_settings.php:1225
+#: /var/www/html/cacti/include/global_settings.php:1226
+#: /var/www/html/cacti/include/global_settings.php:1227
+#: /var/www/html/cacti/include/global_settings.php:1228
+#: /var/www/html/cacti/include/global_settings.php:1988
 #, php-format
 msgid "%d Minutes"
 msgstr ""
@@ -2434,10 +2434,10 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1309
 #: /var/www/html/cacti/include/global_arrays.php:1310
 #: /var/www/html/cacti/include/global_arrays.php:1311
-#: /var/www/html/cacti/include/global_settings.php:1251
-#: /var/www/html/cacti/include/global_settings.php:1252
-#: /var/www/html/cacti/include/global_settings.php:1253
-#: /var/www/html/cacti/include/global_settings.php:1254
+#: /var/www/html/cacti/include/global_settings.php:1230
+#: /var/www/html/cacti/include/global_settings.php:1231
+#: /var/www/html/cacti/include/global_settings.php:1232
+#: /var/www/html/cacti/include/global_settings.php:1233
 #, php-format
 msgid "%d Hours"
 msgstr ""
@@ -2729,7 +2729,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:725
 #: /var/www/html/cacti/include/global_form.php:1207
-#: /var/www/html/cacti/include/global_settings.php:665
+#: /var/www/html/cacti/include/global_settings.php:644
 msgid "Ping Port"
 msgstr ""
 
@@ -2740,7 +2740,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:733
 #: /var/www/html/cacti/include/global_form.php:1215
-#: /var/www/html/cacti/include/global_settings.php:673
+#: /var/www/html/cacti/include/global_settings.php:652
 msgid "Ping Timeout Value"
 msgstr ""
 
@@ -2753,7 +2753,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_networks.php:742
 #: /var/www/html/cacti/include/global_form.php:1224
-#: /var/www/html/cacti/include/global_settings.php:681
+#: /var/www/html/cacti/include/global_settings.php:660
 msgid "Ping Retry Count"
 msgstr ""
 
@@ -2912,9 +2912,9 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1380
 #: /var/www/html/cacti/include/global_arrays.php:1381
 #: /var/www/html/cacti/include/global_arrays.php:1382
-#: /var/www/html/cacti/include/global_settings.php:2005
-#: /var/www/html/cacti/include/global_settings.php:2006
-#: /var/www/html/cacti/include/global_settings.php:2007
+#: /var/www/html/cacti/include/global_settings.php:1984
+#: /var/www/html/cacti/include/global_settings.php:1985
+#: /var/www/html/cacti/include/global_settings.php:1986
 #, php-format
 msgid "%d Seconds"
 msgstr ""
@@ -3067,7 +3067,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:497
 #: /var/www/html/cacti/include/global_form.php:1148
-#: /var/www/html/cacti/include/global_settings.php:614
+#: /var/www/html/cacti/include/global_settings.php:593
 msgid "SNMP Engine ID (v3)"
 msgstr ""
 
@@ -3170,14 +3170,14 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:632
 #: /var/www/html/cacti/include/auth.php:224
-#: /var/www/html/cacti/include/global_settings.php:548
+#: /var/www/html/cacti/include/global_settings.php:527
 #: /var/www/html/cacti/permission_denied.php:52
 #: /var/www/html/cacti/plugins.php:428
 msgid "Version"
 msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:633
-#: /var/www/html/cacti/include/global_settings.php:555
+#: /var/www/html/cacti/include/global_settings.php:534
 msgid "Community"
 msgstr ""
 
@@ -3187,12 +3187,12 @@ msgid "Port"
 msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:635
-#: /var/www/html/cacti/include/global_settings.php:630
+#: /var/www/html/cacti/include/global_settings.php:609
 msgid "Timeout"
 msgstr ""
 
 #: /var/www/html/cacti/automation_snmp.php:636
-#: /var/www/html/cacti/include/global_settings.php:638
+#: /var/www/html/cacti/include/global_settings.php:617
 msgid "Retries"
 msgstr ""
 
@@ -3472,7 +3472,7 @@ msgid "Change Leaf Type"
 msgstr ""
 
 #: /var/www/html/cacti/automation_tree_rules.php:696
-#: /var/www/html/cacti/lib/installer.php:692
+#: /var/www/html/cacti/lib/installer.php:705
 #: /var/www/html/cacti/utilities.php:2113
 #: /var/www/html/cacti/utilities.php:2114
 #: /var/www/html/cacti/utilities.php:2117
@@ -4421,7 +4421,7 @@ msgid "Data Retention"
 msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:564
-#: /var/www/html/cacti/include/global_settings.php:851
+#: /var/www/html/cacti/include/global_settings.php:830
 #: /var/www/html/cacti/lib/html_reports.php:426
 msgid "Graph Timespan"
 msgstr ""
@@ -4435,7 +4435,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:118
 #: /var/www/html/cacti/lib/html.php:405
 #: /var/www/html/cacti/lib/html_filter.php:73
-#: /var/www/html/cacti/lib/installer.php:1583
+#: /var/www/html/cacti/lib/installer.php:1607
 #: /var/www/html/cacti/lib/rrd.php:2751 /var/www/html/cacti/utilities.php:484
 #: /var/www/html/cacti/utilities.php:1415
 msgid "Rows"
@@ -4462,7 +4462,7 @@ msgstr ""
 #: /var/www/html/cacti/data_source_profiles.php:734
 #: /var/www/html/cacti/include/global_arrays.php:687
 #: /var/www/html/cacti/include/global_arrays.php:1255
-#: /var/www/html/cacti/include/global_settings.php:1184
+#: /var/www/html/cacti/include/global_settings.php:1163
 #, php-format
 msgid "%d Years"
 msgstr ""
@@ -4529,14 +4529,14 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1244
 #: /var/www/html/cacti/include/global_arrays.php:1245
 #: /var/www/html/cacti/include/global_arrays.php:1246
-#: /var/www/html/cacti/include/global_settings.php:1179
-#: /var/www/html/cacti/include/global_settings.php:1180
-#: /var/www/html/cacti/include/global_settings.php:1181
-#: /var/www/html/cacti/include/global_settings.php:1182
-#: /var/www/html/cacti/include/global_settings.php:1193
-#: /var/www/html/cacti/include/global_settings.php:1194
-#: /var/www/html/cacti/include/global_settings.php:1195
-#: /var/www/html/cacti/include/global_settings.php:1196
+#: /var/www/html/cacti/include/global_settings.php:1158
+#: /var/www/html/cacti/include/global_settings.php:1159
+#: /var/www/html/cacti/include/global_settings.php:1160
+#: /var/www/html/cacti/include/global_settings.php:1161
+#: /var/www/html/cacti/include/global_settings.php:1172
+#: /var/www/html/cacti/include/global_settings.php:1173
+#: /var/www/html/cacti/include/global_settings.php:1174
+#: /var/www/html/cacti/include/global_settings.php:1175
 #, php-format
 msgid "%d Days"
 msgstr ""
@@ -4548,7 +4548,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1339
 #: /var/www/html/cacti/include/global_arrays.php:1348
 #: /var/www/html/cacti/include/global_arrays.php:1374
-#: /var/www/html/cacti/include/global_settings.php:1250
+#: /var/www/html/cacti/include/global_settings.php:1229
 msgid "1 Hour"
 msgstr ""
 
@@ -4592,7 +4592,7 @@ msgstr ""
 
 #: /var/www/html/cacti/data_source_profiles.php:966
 #: /var/www/html/cacti/data_sources.php:1505
-#: /var/www/html/cacti/include/global_settings.php:981
+#: /var/www/html/cacti/include/global_settings.php:960
 msgid "Poller Interval"
 msgstr ""
 
@@ -4851,8 +4851,8 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1333
 #: /var/www/html/cacti/include/global_arrays.php:1367
 #: /var/www/html/cacti/include/global_arrays.php:1383
-#: /var/www/html/cacti/include/global_settings.php:1244
-#: /var/www/html/cacti/include/global_settings.php:2008
+#: /var/www/html/cacti/include/global_settings.php:1223
+#: /var/www/html/cacti/include/global_settings.php:1987
 msgid "1 Minute"
 msgstr ""
 
@@ -5531,7 +5531,7 @@ msgid "Align"
 msgstr ""
 
 #: /var/www/html/cacti/graph_view.php:825
-#: /var/www/html/cacti/include/global_settings.php:2078
+#: /var/www/html/cacti/include/global_settings.php:2057
 #: /var/www/html/cacti/lib/functions.php:2153
 msgid "Preview Mode"
 msgstr ""
@@ -6352,7 +6352,7 @@ msgid "SNMP GetNext"
 msgstr ""
 
 #: /var/www/html/cacti/host.php:1510
-#: /var/www/html/cacti/include/global_settings.php:513
+#: /var/www/html/cacti/include/global_settings.php:492
 #: /var/www/html/cacti/lib/html.php:1837
 msgid "Site"
 msgstr ""
@@ -7245,8 +7245,8 @@ msgstr ""
 #: /var/www/html/cacti/include/global_arrays.php:1614
 #: /var/www/html/cacti/include/global_arrays.php:1615
 #: /var/www/html/cacti/include/global_arrays.php:1616
-#: /var/www/html/cacti/include/global_settings.php:1928
-#: /var/www/html/cacti/include/global_settings.php:1929
+#: /var/www/html/cacti/include/global_settings.php:1907
+#: /var/www/html/cacti/include/global_settings.php:1908
 #, php-format
 msgid "Every %d Hours"
 msgstr ""
@@ -7257,7 +7257,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:686
 #: /var/www/html/cacti/include/global_arrays.php:1254
-#: /var/www/html/cacti/include/global_settings.php:1183
+#: /var/www/html/cacti/include/global_settings.php:1162
 #: /var/www/html/cacti/rrdcleaner.php:493
 #, php-format
 msgid "%d Year"
@@ -7288,12 +7288,12 @@ msgid "Active Directory"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:748
-#: /var/www/html/cacti/include/global_settings.php:1509
+#: /var/www/html/cacti/include/global_settings.php:1488
 msgid "SSL"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:749
-#: /var/www/html/cacti/include/global_settings.php:1510
+#: /var/www/html/cacti/include/global_settings.php:1489
 msgid "TLS"
 msgstr ""
 
@@ -7471,7 +7471,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:856
 #: /var/www/html/cacti/include/global_arrays.php:908
-#: /var/www/html/cacti/include/global_settings.php:459
+#: /var/www/html/cacti/include/global_settings.php:438
 msgid "Automation"
 msgstr ""
 
@@ -7647,7 +7647,7 @@ msgid "Import Data"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:1036
-#: /var/www/html/cacti/include/global_settings.php:787
+#: /var/www/html/cacti/include/global_settings.php:766
 msgid "Log Management"
 msgstr ""
 
@@ -9197,7 +9197,7 @@ msgid "Choose the SNMPv3 privacy passphrase."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1139
-#: /var/www/html/cacti/include/global_settings.php:605
+#: /var/www/html/cacti/include/global_settings.php:584
 msgid "SNMP Context (v3)"
 msgstr ""
 
@@ -9218,7 +9218,7 @@ msgid "Availability/Reachability Options"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1188
-#: /var/www/html/cacti/include/global_settings.php:651
+#: /var/www/html/cacti/include/global_settings.php:630
 msgid "Downed Device Detection"
 msgstr ""
 
@@ -9987,7 +9987,7 @@ msgid "Quick"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_session.php:160
-#: /var/www/html/cacti/include/global_settings.php:423
+#: /var/www/html/cacti/include/global_settings.php:402
 msgid "Advanced"
 msgstr ""
 
@@ -10037,8 +10037,8 @@ msgid "3rd Mouse Button"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:38
-#: /var/www/html/cacti/include/global_settings.php:956
-#: /var/www/html/cacti/include/global_settings.php:1089
+#: /var/www/html/cacti/include/global_settings.php:935
+#: /var/www/html/cacti/include/global_settings.php:1068
 #: /var/www/html/cacti/managers.php:39 /var/www/html/cacti/user_admin.php:1937
 #: /var/www/html/cacti/user_group_admin.php:1664
 msgid "General"
@@ -10053,7 +10053,7 @@ msgid "Device Defaults"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:41
-#: /var/www/html/cacti/include/global_settings.php:521
+#: /var/www/html/cacti/include/global_settings.php:500
 msgid "Poller"
 msgstr ""
 
@@ -10273,7 +10273,7 @@ msgid ""
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:237
-msgid "Event Logging"
+msgid "Log Settings"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:242
@@ -10285,142 +10285,122 @@ msgid "How will Cacti handle event logging."
 msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:249
-msgid "Web Events"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:250
-msgid "What Cacti website messages should be placed in the log."
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:255
-msgid "SNMP Messages"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:259
-msgid "Graph Syntax"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:265
-msgid "Log Settings"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:270
 msgid "Generic Log Level"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:271
+#: /var/www/html/cacti/include/global_settings.php:250
 msgid ""
 "What level of detail do you want sent to the log file.  WARNING: Leaving in "
 "any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:277
+#: /var/www/html/cacti/include/global_settings.php:256
 msgid "Log Input Validation Issues"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:278
+#: /var/www/html/cacti/include/global_settings.php:257
 msgid ""
 "Record when request fields are accessed without going through proper input "
 "validatdion"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:283
+#: /var/www/html/cacti/include/global_settings.php:262
 msgid "Selective File Debug"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:284
+#: /var/www/html/cacti/include/global_settings.php:263
 msgid ""
 "Select which files you wish to place in Debug mode regardless of the Generic "
 "Log Level setting.  Any files selected will be treated as they are in Debug "
 "mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:290
+#: /var/www/html/cacti/include/global_settings.php:269
 msgid "Selective Plugin Debug"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:291
+#: /var/www/html/cacti/include/global_settings.php:270
 msgid ""
 "Select which Plugins you wish to place in Debug mode regardless of the "
 "Generic Log Level setting.  Any files used by this plugin will be treated as "
 "they are in Debug mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:297
+#: /var/www/html/cacti/include/global_settings.php:276
 msgid "Selective Device Debug"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:298
+#: /var/www/html/cacti/include/global_settings.php:277
 msgid ""
 "A comma delimited list of Device ID's that you wish to be in Debug mode "
 "during data collection.  This Debug level is only in place during the Cacti "
 "polling process."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:305
-msgid "Poller Syslog/Eventlog Selection"
+#: /var/www/html/cacti/include/global_settings.php:284
+msgid "Syslog/Eventlog Item Selection"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:306
+#: /var/www/html/cacti/include/global_settings.php:285
 msgid ""
-"If you are using the Syslog/Eventlog, What Cacti poller messages should be "
-"placed in the Syslog/Eventlog."
+"When using Syslog/Eventlog for logging, the Cacti log messages that will be "
+"forwarded to the Syslog/Eventlog."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:311
+#: /var/www/html/cacti/include/global_settings.php:290
 msgid "Statistics"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:315
+#: /var/www/html/cacti/include/global_settings.php:294
 #: /var/www/html/cacti/lib/clog_webapi.php:434
 #: /var/www/html/cacti/utilities.php:1089
 msgid "Warnings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:319
+#: /var/www/html/cacti/include/global_settings.php:298
 #: /var/www/html/cacti/lib/clog_webapi.php:435
 #: /var/www/html/cacti/utilities.php:1090
 msgid "Errors"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:325
+#: /var/www/html/cacti/include/global_settings.php:304
 msgid "Other Defaults"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:330
+#: /var/www/html/cacti/include/global_settings.php:309
 msgid "Has Graphs/Data Sources Checked"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:331
+#: /var/www/html/cacti/include/global_settings.php:310
 msgid "Should the Has Graphs and Has Data Sources be Checked by Default."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:336
+#: /var/www/html/cacti/include/global_settings.php:315
 msgid "Graph Template Image Format"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:337
+#: /var/www/html/cacti/include/global_settings.php:316
 msgid "The default Image Format to be used for all new Graph Templates."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:343
+#: /var/www/html/cacti/include/global_settings.php:322
 msgid "Graph Template Height"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:344
-#: /var/www/html/cacti/include/global_settings.php:352
+#: /var/www/html/cacti/include/global_settings.php:323
+#: /var/www/html/cacti/include/global_settings.php:331
 msgid "The default Graph Width to be used for all new Graph Templates."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:351
+#: /var/www/html/cacti/include/global_settings.php:330
 msgid "Graph Template Width"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:359
+#: /var/www/html/cacti/include/global_settings.php:338
 msgid "Language Support"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:360
+#: /var/www/html/cacti/include/global_settings.php:339
 msgid ""
 "Choose 'enabled' to allow the localization of Cacti. The strict mode "
 "requires that the requested language will also be supported by all plugins "
@@ -10428,19 +10408,19 @@ msgid ""
 "displayed in English."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:366
+#: /var/www/html/cacti/include/global_settings.php:345
 msgid "Language"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:367
+#: /var/www/html/cacti/include/global_settings.php:346
 msgid "Default language for this system."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:373
+#: /var/www/html/cacti/include/global_settings.php:352
 msgid "Auto Language Detection"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:374
+#: /var/www/html/cacti/include/global_settings.php:353
 msgid ""
 "Allow to automatically determine the 'default' language of the user and "
 "provide it at login time if that language is supported by Cacti. If "
@@ -10448,42 +10428,42 @@ msgid ""
 "another language."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:382
-#: /var/www/html/cacti/include/global_settings.php:1986
+#: /var/www/html/cacti/include/global_settings.php:361
+#: /var/www/html/cacti/include/global_settings.php:1965
 msgid "Date Display Format"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:383
+#: /var/www/html/cacti/include/global_settings.php:362
 msgid "The System default date format to use in Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:389
-#: /var/www/html/cacti/include/global_settings.php:1993
+#: /var/www/html/cacti/include/global_settings.php:368
+#: /var/www/html/cacti/include/global_settings.php:1972
 msgid "Date Separator"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:390
+#: /var/www/html/cacti/include/global_settings.php:369
 msgid "The System default date separator to be used in Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:396
+#: /var/www/html/cacti/include/global_settings.php:375
 msgid "Other Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:401
+#: /var/www/html/cacti/include/global_settings.php:380
 #: /var/www/html/cacti/utilities.php:271
 msgid "RRDtool Version"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:402
+#: /var/www/html/cacti/include/global_settings.php:381
 msgid "The version of RRDtool that you have installed."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:408
+#: /var/www/html/cacti/include/global_settings.php:387
 msgid "Graph Permission Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:409
+#: /var/www/html/cacti/include/global_settings.php:388
 msgid ""
 "There are two methods for determining a User's Graph Permissions.  The first "
 "is 'Permissive'.  Under the 'Permissive' setting, a User only needs access "
@@ -10492,81 +10472,81 @@ msgid ""
 "Graph, the Device, and the Graph Template to gain access to the Graph."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:413
+#: /var/www/html/cacti/include/global_settings.php:392
 msgid "Permissive"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:414
+#: /var/www/html/cacti/include/global_settings.php:393
 msgid "Restrictive"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:418
+#: /var/www/html/cacti/include/global_settings.php:397
 msgid "Graph/Data Source Creation Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:419
+#: /var/www/html/cacti/include/global_settings.php:398
 msgid ""
 "If set to Simple, Graphs and Data Sources can only be created from New "
 "Graphs.  If Advanced, legacy Graph and Data Source creation is supported."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:422
+#: /var/www/html/cacti/include/global_settings.php:401
 msgid "Simple"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:426
+#: /var/www/html/cacti/include/global_settings.php:405
 msgid "Show Form/Setting Help Inline"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:427
+#: /var/www/html/cacti/include/global_settings.php:406
 msgid ""
 "When checked, Form and Setting Help will be show inline.  Otherwise it will "
 "be presented when hovering over the help button."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:432
+#: /var/www/html/cacti/include/global_settings.php:411
 msgid "Deletion Verification"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:433
+#: /var/www/html/cacti/include/global_settings.php:412
 msgid "Prompt user before item deletion."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:438
+#: /var/www/html/cacti/include/global_settings.php:417
 msgid "Hide Cacti Console"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:439
+#: /var/www/html/cacti/include/global_settings.php:418
 msgid ""
 "For use with Cacti's External Link Support.  Using this setting, you can "
 "replace the Cacti Console with your own page."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:447
+#: /var/www/html/cacti/include/global_settings.php:426
 msgid "Enable Drag-N-Drop"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:448
+#: /var/www/html/cacti/include/global_settings.php:427
 msgid ""
 "Some of Cacti's interfaces support Drag-N-Drop.  If checked this option will "
 "be enabled.  Note: For visually impaired user, this option may be disabled."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:453
+#: /var/www/html/cacti/include/global_settings.php:432
 msgid "Force Connections over HTTPS"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:454
+#: /var/www/html/cacti/include/global_settings.php:433
 msgid ""
 "When checked, any attempts to access Cacti will be redirected to HTTPS to "
 "ensure high security."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:465
+#: /var/www/html/cacti/include/global_settings.php:444
 msgid "Enable Automatic Graph Creation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:466
+#: /var/www/html/cacti/include/global_settings.php:445
 msgid ""
 "When disabled, Cacti Automation will not actively create any Graph.  This is "
 "useful when adjusting Host settings so as to avoid creating new Graphs each "
@@ -10574,11 +10554,11 @@ msgid ""
 "possible."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:471
+#: /var/www/html/cacti/include/global_settings.php:450
 msgid "Enable Automatic Tree Item Creation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:472
+#: /var/www/html/cacti/include/global_settings.php:451
 msgid ""
 "When disabled, Cacti Automation will not actively create any Tree Item.  "
 "This is useful when adjusting Host or Graph settings so as to avoid creating "
@@ -10586,11 +10566,11 @@ msgid ""
 "still be possible."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:476
+#: /var/www/html/cacti/include/global_settings.php:455
 msgid "Automation Notification To Email"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:477
+#: /var/www/html/cacti/include/global_settings.php:456
 msgid ""
 "The Email Address to send Automation Notification Emails to if not specified "
 "at the Automation Network level.  If either this field, or the Automation "
@@ -10598,22 +10578,22 @@ msgid ""
 "account."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:483
+#: /var/www/html/cacti/include/global_settings.php:462
 msgid "Automation Notification From Name"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:484
+#: /var/www/html/cacti/include/global_settings.php:463
 msgid ""
 "The Email Name to use for Automation Notification Emails to if not specified "
 "at the Automation Network level.  If either this field, or the Automation "
 "Network value are left blank, Cacti will use the system default From Name."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:491
+#: /var/www/html/cacti/include/global_settings.php:470
 msgid "Automation Notification From Email"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:492
+#: /var/www/html/cacti/include/global_settings.php:471
 msgid ""
 "The Email Address to use for Automation Notification Emails to if not "
 "specified at the Automation Network level.  If either this field, or the "
@@ -10621,153 +10601,153 @@ msgid ""
 "From Email Address."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:500
+#: /var/www/html/cacti/include/global_settings.php:479
 msgid "General Defaults"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:506
+#: /var/www/html/cacti/include/global_settings.php:485
 msgid "The default Device Template all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:514
+#: /var/www/html/cacti/include/global_settings.php:493
 msgid "The default Site for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:522
+#: /var/www/html/cacti/include/global_settings.php:501
 msgid "The default Poller for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:529
+#: /var/www/html/cacti/include/global_settings.php:508
 msgid "Device Threads"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:530
+#: /var/www/html/cacti/include/global_settings.php:509
 msgid ""
 "The default number of Device Threads.  This is only applicable when using "
 "the spine Data Collector."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:536
+#: /var/www/html/cacti/include/global_settings.php:515
 msgid "Re-index Method for Data Queries"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:537
+#: /var/www/html/cacti/include/global_settings.php:516
 msgid "The default Re-index Method to use for all Data Queries."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:543
+#: /var/www/html/cacti/include/global_settings.php:522
 msgid "SNMP Defaults"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:549
+#: /var/www/html/cacti/include/global_settings.php:528
 msgid "Default SNMP version for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:556
+#: /var/www/html/cacti/include/global_settings.php:535
 msgid "Default SNMP read community for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:562
+#: /var/www/html/cacti/include/global_settings.php:541
 msgid "Security Level"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:563
+#: /var/www/html/cacti/include/global_settings.php:542
 msgid "Default SNMP v3 Security Level for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:569
+#: /var/www/html/cacti/include/global_settings.php:548
 msgid "Auth User (v3)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:570
+#: /var/www/html/cacti/include/global_settings.php:549
 msgid "Default SNMP v3 Authorization User for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:577
+#: /var/www/html/cacti/include/global_settings.php:556
 msgid "Auth Protocol (v3)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:578
+#: /var/www/html/cacti/include/global_settings.php:557
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:583
+#: /var/www/html/cacti/include/global_settings.php:562
 msgid "Auth Passphrase (v3)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:584
+#: /var/www/html/cacti/include/global_settings.php:563
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:591
+#: /var/www/html/cacti/include/global_settings.php:570
 msgid "Privacy Protocol (v3)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:592
+#: /var/www/html/cacti/include/global_settings.php:571
 msgid "Default SNMPv3 Privacy Protocol for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:598
+#: /var/www/html/cacti/include/global_settings.php:577
 msgid "Privacy Passphrase (v3)."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:599
+#: /var/www/html/cacti/include/global_settings.php:578
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:606
+#: /var/www/html/cacti/include/global_settings.php:585
 msgid "Enter the SNMP v3 Context for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:615
+#: /var/www/html/cacti/include/global_settings.php:594
 msgid ""
 "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use "
 "the SNMP Engine ID being defined per SNMPv3 Notification receiver."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:622
+#: /var/www/html/cacti/include/global_settings.php:601
 msgid "Port Number"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:623
+#: /var/www/html/cacti/include/global_settings.php:602
 msgid "Default UDP Port for all new Devices.  Typically 161."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:631
+#: /var/www/html/cacti/include/global_settings.php:610
 msgid "Default SNMP timeout in milli-seconds for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:639
+#: /var/www/html/cacti/include/global_settings.php:618
 msgid "Default SNMP retries for all new Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:646
+#: /var/www/html/cacti/include/global_settings.php:625
 msgid "Availability/Reachability"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:652
+#: /var/www/html/cacti/include/global_settings.php:631
 msgid ""
 "Default Availability/Reachability for all new Devices.  The method Cacti "
 "will use to determine if a Device is available for polling.  <br><i>NOTE: It "
 "is recommended that, at a minimum, SNMP always be selected.</i>"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:658
+#: /var/www/html/cacti/include/global_settings.php:637
 msgid "Ping Type"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:659
+#: /var/www/html/cacti/include/global_settings.php:638
 msgid "Default Ping type for all new Devices.</i>"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:666
+#: /var/www/html/cacti/include/global_settings.php:645
 msgid ""
 "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn "
 "the port.  With UDP, Cacti requires either a successful connection, or a "
 "port not reachable error to determine if the Device is up or not."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:674
+#: /var/www/html/cacti/include/global_settings.php:653
 msgid ""
 "Default Ping Timeout value in milli-seconds for all new Devices.  The "
 "timeout values to use for Device SMMP, ICMP, UDP and TCP pinging.  ICMP "
@@ -10776,69 +10756,69 @@ msgid ""
 "therefore not recommended on Windows."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:682
+#: /var/www/html/cacti/include/global_settings.php:661
 msgid ""
 "The number of times Cacti will attempt to ping a Device before marking it as "
 "down."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:689
+#: /var/www/html/cacti/include/global_settings.php:668
 msgid "Up/Down Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:694
+#: /var/www/html/cacti/include/global_settings.php:673
 msgid "Failure Count"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:695
+#: /var/www/html/cacti/include/global_settings.php:674
 msgid ""
 "The number of polling intervals a Device must be down before logging an "
 "error and reporting Device as down."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:702
+#: /var/www/html/cacti/include/global_settings.php:681
 msgid "Recovery Count"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:703
+#: /var/www/html/cacti/include/global_settings.php:682
 msgid ""
 "The number of polling intervals a Device must remain up before returning "
 "Device to an up status and issuing a notice."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:712
+#: /var/www/html/cacti/include/global_settings.php:691
 msgid "Theme Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:717
-#: /var/www/html/cacti/include/global_settings.php:884
-#: /var/www/html/cacti/include/global_settings.php:1953
+#: /var/www/html/cacti/include/global_settings.php:696
+#: /var/www/html/cacti/include/global_settings.php:863
+#: /var/www/html/cacti/include/global_settings.php:1932
 msgid "Theme"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:718
-#: /var/www/html/cacti/include/global_settings.php:1954
+#: /var/www/html/cacti/include/global_settings.php:697
+#: /var/www/html/cacti/include/global_settings.php:1933
 #: /var/www/html/cacti/install/functions.php:380
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:724
+#: /var/www/html/cacti/include/global_settings.php:703
 msgid "Table Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:729
+#: /var/www/html/cacti/include/global_settings.php:708
 msgid "Rows Per Page"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:730
+#: /var/www/html/cacti/include/global_settings.php:709
 msgid "The default number of rows to display on for a table."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:736
+#: /var/www/html/cacti/include/global_settings.php:715
 msgid "Autocomplete Enabled"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:737
+#: /var/www/html/cacti/include/global_settings.php:716
 msgid ""
 "In very large systems, select lists can slow the user interface "
 "significantly.  If this option is enabled, Cacti will use autocomplete "
@@ -10846,291 +10826,291 @@ msgid ""
 "forcibly disabled on the Classic theme."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:745
+#: /var/www/html/cacti/include/global_settings.php:724
 msgid "Autocomplete Rows"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:746
+#: /var/www/html/cacti/include/global_settings.php:725
 msgid ""
 "The default number of rows to return from an autocomplete based select "
 "pattern match."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:752
+#: /var/www/html/cacti/include/global_settings.php:731
 msgid "Graph/Data Source/Data Query Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:757
+#: /var/www/html/cacti/include/global_settings.php:736
 msgid "Maximum Title Length"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:758
+#: /var/www/html/cacti/include/global_settings.php:737
 msgid "The maximum allowable Graph or Data Source titles."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:765
+#: /var/www/html/cacti/include/global_settings.php:744
 msgid "Data Source Field Length"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:766
+#: /var/www/html/cacti/include/global_settings.php:745
 msgid "The maximum Data Query field length."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:773
+#: /var/www/html/cacti/include/global_settings.php:752
 msgid "Graph Creation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:778
+#: /var/www/html/cacti/include/global_settings.php:757
 msgid "Default Graph Type"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:779
+#: /var/www/html/cacti/include/global_settings.php:758
 msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:783
+#: /var/www/html/cacti/include/global_settings.php:762
 msgid "All Types"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:784
+#: /var/www/html/cacti/include/global_settings.php:763
 msgid "By Template/Data Query"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:792
+#: /var/www/html/cacti/include/global_settings.php:771
 msgid "Default Log Tail Lines"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:793
+#: /var/www/html/cacti/include/global_settings.php:772
 msgid "Default number of lines of the Cacti log file to tail."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:799
+#: /var/www/html/cacti/include/global_settings.php:778
 msgid "Maximum number of rows per page"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:800
+#: /var/www/html/cacti/include/global_settings.php:779
 msgid ""
 "User defined number of lines for the CLOG to tail when selecting 'All lines'."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:807
+#: /var/www/html/cacti/include/global_settings.php:786
 msgid "Log Tail Refresh"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:808
+#: /var/www/html/cacti/include/global_settings.php:787
 msgid "How often do you want the Cacti log display to update."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:814
+#: /var/www/html/cacti/include/global_settings.php:793
 msgid "RRDtool Graph Watermark"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:819
+#: /var/www/html/cacti/include/global_settings.php:798
 msgid "Watermark Text"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:820
+#: /var/www/html/cacti/include/global_settings.php:799
 msgid "Text placed at the bottom center of every Graph."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:827
+#: /var/www/html/cacti/include/global_settings.php:806
 msgid "Log Viewer Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:832
+#: /var/www/html/cacti/include/global_settings.php:811
 msgid "Exclusion Regex"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:833
+#: /var/www/html/cacti/include/global_settings.php:812
 msgid ""
 "Any strings that match this regex will be excluded from the user display.  "
 "<strong>For example, if you want to exclude all log lines that include the "
 "words 'Admin' or 'Login' you would type '(Admin || Login)'</strong>"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:840
+#: /var/www/html/cacti/include/global_settings.php:819
 msgid "Real-time Graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:845
+#: /var/www/html/cacti/include/global_settings.php:824
 msgid "Enable Real-time Graphing"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:846
+#: /var/www/html/cacti/include/global_settings.php:825
 msgid ""
 "When an option is checked, users will be able to put Cacti into Real-time "
 "mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:852
+#: /var/www/html/cacti/include/global_settings.php:831
 msgid "This timespan you wish to see on the default graph."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:858
+#: /var/www/html/cacti/include/global_settings.php:837
 #: /var/www/html/cacti/utilities.php:1996
 msgid "Refresh Interval"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:859
+#: /var/www/html/cacti/include/global_settings.php:838
 msgid "This is the time between graph updates."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:865
+#: /var/www/html/cacti/include/global_settings.php:844
 msgid "Cache Directory"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:866
+#: /var/www/html/cacti/include/global_settings.php:845
 msgid ""
 "This is the location, on the web server where the RRDfiles and PNG files "
 "will be cached.  This cache will be managed by the poller.  Make sure you "
 "have the correct read and write permissions on this folder"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:873
+#: /var/www/html/cacti/include/global_settings.php:852
 msgid "RRDtool Graph Font Control"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:878
+#: /var/www/html/cacti/include/global_settings.php:857
 msgid "Font Selection Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:879
+#: /var/www/html/cacti/include/global_settings.php:858
 msgid "How do you wish fonts to be handled by default?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:883
+#: /var/www/html/cacti/include/global_settings.php:862
 #: /var/www/html/cacti/lib/api_device.php:488
 msgid "System"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:887
+#: /var/www/html/cacti/include/global_settings.php:866
 msgid "Default Font"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:888
+#: /var/www/html/cacti/include/global_settings.php:867
 msgid ""
 "When not using Theme based font control, the Pangon font-config font name to "
 "use for all Graphs. Optionally, you may leave blank and control font "
 "settings on a per object basis."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:890
-#: /var/www/html/cacti/include/global_settings.php:905
-#: /var/www/html/cacti/include/global_settings.php:920
-#: /var/www/html/cacti/include/global_settings.php:935
-#: /var/www/html/cacti/include/global_settings.php:950
+#: /var/www/html/cacti/include/global_settings.php:869
+#: /var/www/html/cacti/include/global_settings.php:884
+#: /var/www/html/cacti/include/global_settings.php:899
+#: /var/www/html/cacti/include/global_settings.php:914
+#: /var/www/html/cacti/include/global_settings.php:929
 msgid "Enter Valid Font Config Value"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:894
-#: /var/www/html/cacti/include/global_settings.php:2161
+#: /var/www/html/cacti/include/global_settings.php:873
+#: /var/www/html/cacti/include/global_settings.php:2140
 msgid "Title Font Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:895
-#: /var/www/html/cacti/include/global_settings.php:2162
+#: /var/www/html/cacti/include/global_settings.php:874
+#: /var/www/html/cacti/include/global_settings.php:2141
 msgid "The size of the font used for Graph Titles"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:902
+#: /var/www/html/cacti/include/global_settings.php:881
 msgid "Title Font Setting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:903
+#: /var/www/html/cacti/include/global_settings.php:882
 msgid ""
 "The font to use for Graph Titles.  Enter either a valid True Type Font file "
 "or valid Pango font-config value."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:909
-#: /var/www/html/cacti/include/global_settings.php:2174
+#: /var/www/html/cacti/include/global_settings.php:888
+#: /var/www/html/cacti/include/global_settings.php:2153
 msgid "Legend Font Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:910
-#: /var/www/html/cacti/include/global_settings.php:2175
+#: /var/www/html/cacti/include/global_settings.php:889
+#: /var/www/html/cacti/include/global_settings.php:2154
 msgid "The size of the font used for Graph Legend items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:917
+#: /var/www/html/cacti/include/global_settings.php:896
 msgid "Legend Font Setting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:918
+#: /var/www/html/cacti/include/global_settings.php:897
 msgid ""
 "The font to use for Graph Legends.  Enter either a valid True Type Font file "
 "or valid Pango font-config value."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:924
-#: /var/www/html/cacti/include/global_settings.php:2187
+#: /var/www/html/cacti/include/global_settings.php:903
+#: /var/www/html/cacti/include/global_settings.php:2166
 msgid "Axis Font Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:925
-#: /var/www/html/cacti/include/global_settings.php:2188
+#: /var/www/html/cacti/include/global_settings.php:904
+#: /var/www/html/cacti/include/global_settings.php:2167
 msgid "The size of the font used for Graph Axis"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:932
+#: /var/www/html/cacti/include/global_settings.php:911
 msgid "Axis Font Setting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:933
+#: /var/www/html/cacti/include/global_settings.php:912
 msgid ""
 "The font to use for Graph Axis items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:939
-#: /var/www/html/cacti/include/global_settings.php:2200
+#: /var/www/html/cacti/include/global_settings.php:918
+#: /var/www/html/cacti/include/global_settings.php:2179
 msgid "Unit Font Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:940
-#: /var/www/html/cacti/include/global_settings.php:2201
+#: /var/www/html/cacti/include/global_settings.php:919
+#: /var/www/html/cacti/include/global_settings.php:2180
 msgid "The size of the font used for Graph Units"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:947
+#: /var/www/html/cacti/include/global_settings.php:926
 msgid "Unit Font Setting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:948
+#: /var/www/html/cacti/include/global_settings.php:927
 msgid ""
 "The font to use for Graph Unit items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:961
+#: /var/www/html/cacti/include/global_settings.php:940
 msgid "Data Collection Enabled"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:962
+#: /var/www/html/cacti/include/global_settings.php:941
 msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:968
+#: /var/www/html/cacti/include/global_settings.php:947
 msgid "SNMP Agent Support Enabled"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:969
+#: /var/www/html/cacti/include/global_settings.php:948
 msgid ""
 "If this option is checked, Cacti will populate SNMP Agent tables with Cacti "
 "devide and system information.  It does not enable the SNMP Agent itself."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:974
+#: /var/www/html/cacti/include/global_settings.php:953
 msgid "Poller Type"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:975
+#: /var/www/html/cacti/include/global_settings.php:954
 msgid ""
 "The poller type to use.  This setting will take effect at next polling "
 "interval."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:982
+#: /var/www/html/cacti/include/global_settings.php:961
 msgid ""
 "The polling interval in use.  This setting will effect how often RRDfiles "
 "are checked and updated.  <strong><u>NOTE: If you change this value, you "
@@ -11138,126 +11118,126 @@ msgid ""
 "data.</u></strong>"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:988
+#: /var/www/html/cacti/include/global_settings.php:967
 msgid "Cron Interval"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:989
+#: /var/www/html/cacti/include/global_settings.php:968
 msgid ""
 "The cron interval in use.  You need to set this setting to the interval that "
 "your cron or scheduled task is currently running."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:995
+#: /var/www/html/cacti/include/global_settings.php:974
 msgid "Maximum Concurrent Poller Processes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:996
+#: /var/www/html/cacti/include/global_settings.php:975
 msgid ""
 "The number of concurrent processes to execute.  Using a higher number when "
 "using cmd.php will improve performance.  Performance improvements in spine "
 "are best resolved with the threads parameter"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1003
+#: /var/www/html/cacti/include/global_settings.php:982
 msgid "Balance Process Load"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1004
+#: /var/www/html/cacti/include/global_settings.php:983
 msgid ""
 "If you choose this option, Cacti will attempt to balance the load of each "
 "poller process by equally distributing poller items per process."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1009
+#: /var/www/html/cacti/include/global_settings.php:988
 msgid "Debug Output Width"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1010
+#: /var/www/html/cacti/include/global_settings.php:989
 msgid ""
 "If you choose this option, Cacti will check for output that exceeds Cacti's "
 "ability to store it and issue a warning when it finds it."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1015
+#: /var/www/html/cacti/include/global_settings.php:994
 msgid "Disable increasing OID Check"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1016
+#: /var/www/html/cacti/include/global_settings.php:995
 msgid "Controls disabling check for increasing OID while walking OID tree."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1021
+#: /var/www/html/cacti/include/global_settings.php:1000
 msgid "SNMP Bulkwalk Fetch Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1022
+#: /var/www/html/cacti/include/global_settings.php:1001
 msgid ""
 "How many OID's should be returned per snmpbulkwalk request?  For Devices "
 "with large SNMP trees, increasing this size will increase re-index "
 "performance over a WAN."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1040
+#: /var/www/html/cacti/include/global_settings.php:1019
 msgid "Spine Specific Execution Parameters"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1045
+#: /var/www/html/cacti/include/global_settings.php:1024
 msgid "Invalid Data Logging"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1046
+#: /var/www/html/cacti/include/global_settings.php:1025
 msgid ""
 "How would you like Spine output errors logged?  The options are: 'Detailed' "
 "which is similar to cmd.php logging; 'Summary' which provides the number of "
 "output errors per Device; and 'None', which does not provide error counts."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1051
+#: /var/www/html/cacti/include/global_settings.php:1030
 #: /var/www/html/cacti/utilities.php:206
 msgid "Summary"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1052
+#: /var/www/html/cacti/include/global_settings.php:1031
 msgid "Detailed"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1055
+#: /var/www/html/cacti/include/global_settings.php:1034
 msgid "Maximum Threads per Process"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1056
+#: /var/www/html/cacti/include/global_settings.php:1035
 msgid ""
 "The maximum threads allowed per process.  Using a higher number when using "
 "Spine will improve performance."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1063
+#: /var/www/html/cacti/include/global_settings.php:1042
 msgid "Number of PHP Script Servers"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1064
+#: /var/www/html/cacti/include/global_settings.php:1043
 msgid ""
 "The number of concurrent script server processes to run per Spine process.  "
 "Settings between 1 and 10 are accepted.  This parameter will help if you are "
 "running several threads and script server scripts."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1071
+#: /var/www/html/cacti/include/global_settings.php:1050
 msgid "Script and Script Server Timeout Value"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1072
+#: /var/www/html/cacti/include/global_settings.php:1051
 msgid ""
 "The maximum time that Cacti will wait on a script to complete.  This timeout "
 "value is in seconds"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1079
+#: /var/www/html/cacti/include/global_settings.php:1058
 msgid "The Maximum SNMP OIDs Per SNMP Get Request"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1080
+#: /var/www/html/cacti/include/global_settings.php:1059
 msgid ""
 "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  "
 "Increasing this value speeds poller performance over slow links.  The "
@@ -11265,11 +11245,11 @@ msgid ""
 "snmpbulkwalk"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1094
+#: /var/www/html/cacti/include/global_settings.php:1073
 msgid "Authentication Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1095
+#: /var/www/html/cacti/include/global_settings.php:1074
 msgid ""
 "<blockquote><i>None</i> - No authentication will be used, all users will "
 "have full access.<br><br><i>Built-in Authentication</i> - Cacti handles user "
@@ -11288,26 +11268,26 @@ msgid ""
 "LDAP module is required to utilize this method.</blockquote>"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1101
+#: /var/www/html/cacti/include/global_settings.php:1080
 msgid "Support Authentication Cookies"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1102
+#: /var/www/html/cacti/include/global_settings.php:1081
 msgid ""
 "If a user authenticates and selects 'Keep me signed in', an authentication "
 "cookie will be created on the user's computer allowing that user to stay "
 "logged in.  The authentication cookie expires after 90 days of non-use."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1107
+#: /var/www/html/cacti/include/global_settings.php:1086
 msgid "Special Users"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1112
+#: /var/www/html/cacti/include/global_settings.php:1091
 msgid "Primary Admin"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1113
+#: /var/www/html/cacti/include/global_settings.php:1092
 msgid ""
 "The name of the primary administrative account that will automatically "
 "receive Emails when the Cacti system experiences issues.  To receive these "
@@ -11315,240 +11295,240 @@ msgid ""
 "administrative account has an Email address that is set."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1115
-#: /var/www/html/cacti/include/global_settings.php:1123
-#: /var/www/html/cacti/include/global_settings.php:1131
+#: /var/www/html/cacti/include/global_settings.php:1094
+#: /var/www/html/cacti/include/global_settings.php:1102
+#: /var/www/html/cacti/include/global_settings.php:1110
 #: /var/www/html/cacti/user_domains.php:342
 msgid "No User"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1120
+#: /var/www/html/cacti/include/global_settings.php:1099
 msgid "Guest User"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1121
+#: /var/www/html/cacti/include/global_settings.php:1100
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1128
+#: /var/www/html/cacti/include/global_settings.php:1107
 #: /var/www/html/cacti/user_domains.php:338
 msgid "User Template"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1129
+#: /var/www/html/cacti/include/global_settings.php:1108
 msgid ""
 "The name of the user that Cacti will use as a template for new Web Basic and "
 "LDAP users; is 'guest' by default.  This user account will be disabled from "
 "logging in upon being selected."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1136
+#: /var/www/html/cacti/include/global_settings.php:1115
 msgid "Local Account Complexity Requirements"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1141
+#: /var/www/html/cacti/include/global_settings.php:1120
 msgid "Minimum Length"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1142
+#: /var/www/html/cacti/include/global_settings.php:1121
 msgid "This is minimal length of allowed passwords."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1149
+#: /var/www/html/cacti/include/global_settings.php:1128
 msgid "Require Mix Case"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1150
+#: /var/www/html/cacti/include/global_settings.php:1129
 msgid ""
 "This will require new passwords to contains both lower and upper-case "
 "characters."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1155
+#: /var/www/html/cacti/include/global_settings.php:1134
 msgid "Require Number"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1156
+#: /var/www/html/cacti/include/global_settings.php:1135
 msgid ""
 "This will require new passwords to contain at least 1 numerical character."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1161
+#: /var/www/html/cacti/include/global_settings.php:1140
 msgid "Require Special Character"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1162
+#: /var/www/html/cacti/include/global_settings.php:1141
 msgid ""
 "This will require new passwords to contain at least 1 special character."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1167
+#: /var/www/html/cacti/include/global_settings.php:1146
 msgid "Force Complexity Upon Old Passwords"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1168
+#: /var/www/html/cacti/include/global_settings.php:1147
 msgid ""
 "This will require all old passwords to also meet the new complexity "
 "requirements upon login.  If not met, it will force a password change."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1173
+#: /var/www/html/cacti/include/global_settings.php:1152
 msgid "Expire Inactive Accounts"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1174
+#: /var/www/html/cacti/include/global_settings.php:1153
 msgid ""
 "This is maximum number of days before inactive accounts are disabled.  The "
 "Admin account is excluded from this policy."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1187
+#: /var/www/html/cacti/include/global_settings.php:1166
 msgid "Expire Password"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1188
+#: /var/www/html/cacti/include/global_settings.php:1167
 msgid "This is maximum number of days before a password is set to expire."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1199
+#: /var/www/html/cacti/include/global_settings.php:1178
 msgid "Password History"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1200
+#: /var/www/html/cacti/include/global_settings.php:1179
 msgid "Remember this number of old passwords and disallow re-using them."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1205
+#: /var/www/html/cacti/include/global_settings.php:1184
 msgid "1 Change"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1206
-#: /var/www/html/cacti/include/global_settings.php:1207
-#: /var/www/html/cacti/include/global_settings.php:1208
+#: /var/www/html/cacti/include/global_settings.php:1185
+#: /var/www/html/cacti/include/global_settings.php:1186
+#: /var/www/html/cacti/include/global_settings.php:1187
+#: /var/www/html/cacti/include/global_settings.php:1188
+#: /var/www/html/cacti/include/global_settings.php:1189
+#: /var/www/html/cacti/include/global_settings.php:1190
+#: /var/www/html/cacti/include/global_settings.php:1191
+#: /var/www/html/cacti/include/global_settings.php:1192
+#: /var/www/html/cacti/include/global_settings.php:1193
+#: /var/www/html/cacti/include/global_settings.php:1194
+#: /var/www/html/cacti/include/global_settings.php:1195
+#, php-format
+msgid "%d Changes"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_settings.php:1198
+msgid "Account Locking"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_settings.php:1203
+msgid "Lock Accounts"
+msgstr ""
+
+#: /var/www/html/cacti/include/global_settings.php:1204
+msgid "Lock an account after this many failed attempts in 1 hour."
+msgstr ""
+
 #: /var/www/html/cacti/include/global_settings.php:1209
+msgid "1 Attempt"
+msgstr ""
+
 #: /var/www/html/cacti/include/global_settings.php:1210
 #: /var/www/html/cacti/include/global_settings.php:1211
 #: /var/www/html/cacti/include/global_settings.php:1212
 #: /var/www/html/cacti/include/global_settings.php:1213
 #: /var/www/html/cacti/include/global_settings.php:1214
-#: /var/www/html/cacti/include/global_settings.php:1215
-#: /var/www/html/cacti/include/global_settings.php:1216
-#, php-format
-msgid "%d Changes"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:1219
-msgid "Account Locking"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:1224
-msgid "Lock Accounts"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:1225
-msgid "Lock an account after this many failed attempts in 1 hour."
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:1230
-msgid "1 Attempt"
-msgstr ""
-
-#: /var/www/html/cacti/include/global_settings.php:1231
-#: /var/www/html/cacti/include/global_settings.php:1232
-#: /var/www/html/cacti/include/global_settings.php:1233
-#: /var/www/html/cacti/include/global_settings.php:1234
-#: /var/www/html/cacti/include/global_settings.php:1235
 #, php-format
 msgid "%d Attempts"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1238
+#: /var/www/html/cacti/include/global_settings.php:1217
 msgid "Auto Unlock"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1239
+#: /var/www/html/cacti/include/global_settings.php:1218
 msgid ""
 "An account will automatically be unlocked after this many minutes.  Even if "
 "the correct password is entered, the account will not unlock until this time "
 "limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1255
+#: /var/www/html/cacti/include/global_settings.php:1234
 msgid "1 Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1258
+#: /var/www/html/cacti/include/global_settings.php:1237
 msgid "LDAP General Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1262
+#: /var/www/html/cacti/include/global_settings.php:1241
 #: /var/www/html/cacti/user_domains.php:365
 msgid "Server"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1263
+#: /var/www/html/cacti/include/global_settings.php:1242
 msgid "The DNS hostname or IP address of the server."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1268
+#: /var/www/html/cacti/include/global_settings.php:1247
 #: /var/www/html/cacti/user_domains.php:373
 msgid "Port Standard"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1269
+#: /var/www/html/cacti/include/global_settings.php:1248
 msgid "TCP/UDP port for Non-SSL communications."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1276
+#: /var/www/html/cacti/include/global_settings.php:1255
 #: /var/www/html/cacti/user_domains.php:382
 msgid "Port SSL"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1277
+#: /var/www/html/cacti/include/global_settings.php:1256
 #: /var/www/html/cacti/user_domains.php:383
 msgid "TCP/UDP port for SSL communications."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1284
+#: /var/www/html/cacti/include/global_settings.php:1263
 #: /var/www/html/cacti/user_domains.php:391
 msgid "Protocol Version"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1285
+#: /var/www/html/cacti/include/global_settings.php:1264
 #: /var/www/html/cacti/user_domains.php:392
 msgid "Protocol Version that the server supports."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1291
+#: /var/www/html/cacti/include/global_settings.php:1270
 #: /var/www/html/cacti/user_domains.php:398
 msgid "Encryption"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1292
+#: /var/www/html/cacti/include/global_settings.php:1271
 #: /var/www/html/cacti/user_domains.php:399
 msgid ""
 "Encryption that the server supports. TLS is only supported by Protocol "
 "Version 3."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1298
+#: /var/www/html/cacti/include/global_settings.php:1277
 #: /var/www/html/cacti/user_domains.php:405
 msgid "Referrals"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1299
+#: /var/www/html/cacti/include/global_settings.php:1278
 #: /var/www/html/cacti/user_domains.php:406
 msgid ""
 "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of "
 "searches."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1307
+#: /var/www/html/cacti/include/global_settings.php:1286
 #: /var/www/html/cacti/user_domains.php:412
 msgid "Mode"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1308
+#: /var/www/html/cacti/include/global_settings.php:1287
 msgid ""
 "Mode which cacti will attempt to authenticate against the LDAP server."
 "<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching "
@@ -11560,12 +11540,12 @@ msgid ""
 "Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1314
+#: /var/www/html/cacti/include/global_settings.php:1293
 #: /var/www/html/cacti/user_domains.php:419
 msgid "Distinguished Name (DN)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1315
+#: /var/www/html/cacti/include/global_settings.php:1294
 #: /var/www/html/cacti/user_domains.php:420
 msgid ""
 "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;"
@@ -11575,12 +11555,12 @@ msgid ""
 "in \"No Searching\" mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1320
+#: /var/www/html/cacti/include/global_settings.php:1299
 #: /var/www/html/cacti/user_domains.php:426
 msgid "Require Group Membership"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1321
+#: /var/www/html/cacti/include/global_settings.php:1300
 #: /var/www/html/cacti/user_domains.php:427
 msgid ""
 "Require user to be member of group to authenticate. Group settings must be "
@@ -11588,69 +11568,69 @@ msgid ""
 "authentication failure."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1326
+#: /var/www/html/cacti/include/global_settings.php:1305
 #: /var/www/html/cacti/user_domains.php:432
 msgid "LDAP Group Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1330
+#: /var/www/html/cacti/include/global_settings.php:1309
 #: /var/www/html/cacti/user_domains.php:436
 msgid "Group Distinguished Name (DN)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1331
+#: /var/www/html/cacti/include/global_settings.php:1310
 #: /var/www/html/cacti/user_domains.php:437
 msgid "Distinguished Name of the group that user must have membership."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1336
+#: /var/www/html/cacti/include/global_settings.php:1315
 #: /var/www/html/cacti/user_domains.php:443
 msgid "Group Member Attribute"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1337
+#: /var/www/html/cacti/include/global_settings.php:1316
 #: /var/www/html/cacti/user_domains.php:444
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1342
+#: /var/www/html/cacti/include/global_settings.php:1321
 #: /var/www/html/cacti/user_domains.php:450
 msgid "Group Member Type"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1343
+#: /var/www/html/cacti/include/global_settings.php:1322
 #: /var/www/html/cacti/user_domains.php:451
 msgid ""
 "Defines if users use full Distinguished Name or just Username in the defined "
 "Group Member Attribute."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1347
+#: /var/www/html/cacti/include/global_settings.php:1326
 msgid "Distinguished Name"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1351
+#: /var/www/html/cacti/include/global_settings.php:1330
 #: /var/www/html/cacti/user_domains.php:457
 msgid "LDAP Specific Search Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1355
+#: /var/www/html/cacti/include/global_settings.php:1334
 #: /var/www/html/cacti/user_domains.php:461
 msgid "Search Base"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1356
+#: /var/www/html/cacti/include/global_settings.php:1335
 msgid ""
 "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,"
 "dc=local'</i> or <i>'ou=people,dc=domain,dc=local'</i>."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1361
+#: /var/www/html/cacti/include/global_settings.php:1340
 #: /var/www/html/cacti/user_domains.php:468
 msgid "Search Filter"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1362
+#: /var/www/html/cacti/include/global_settings.php:1341
 msgid ""
 "Search filter to use to locate the user in the LDAP directory, such as for "
 "windows: <i>'(&amp;(objectclass=user)(objectcategory=user)"
@@ -11659,352 +11639,352 @@ msgid ""
 "is replaced with the username that was supplied at the login prompt. "
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1367
+#: /var/www/html/cacti/include/global_settings.php:1346
 #: /var/www/html/cacti/user_domains.php:475
 msgid "Search Distinguished Name (DN)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1368
+#: /var/www/html/cacti/include/global_settings.php:1347
 #: /var/www/html/cacti/user_domains.php:476
 msgid ""
 "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1373
+#: /var/www/html/cacti/include/global_settings.php:1352
 #: /var/www/html/cacti/user_domains.php:482
 msgid "Search Password"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1374
+#: /var/www/html/cacti/include/global_settings.php:1353
 #: /var/www/html/cacti/user_domains.php:483
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1379
+#: /var/www/html/cacti/include/global_settings.php:1358
 #: /var/www/html/cacti/user_domains.php:489
 msgid "LDAP CN Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1384
+#: /var/www/html/cacti/include/global_settings.php:1363
 #: /var/www/html/cacti/user_domains.php:494
 msgid ""
 "Field that will replace the Full Name when creating a new user, taken from "
 "LDAP. (on windows: displayname) "
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1389
+#: /var/www/html/cacti/include/global_settings.php:1368
 msgid "Email"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1390
+#: /var/www/html/cacti/include/global_settings.php:1369
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1397
+#: /var/www/html/cacti/include/global_settings.php:1376
 msgid "URL Linking"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1402
+#: /var/www/html/cacti/include/global_settings.php:1381
 msgid "Server Base URL"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1403
+#: /var/www/html/cacti/include/global_settings.php:1382
 msgid ""
 "This is a the server location that will be used for links to the Cacti site."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1410
+#: /var/www/html/cacti/include/global_settings.php:1389
 msgid "Emailing Options"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1414
+#: /var/www/html/cacti/include/global_settings.php:1393
 msgid "Test Email"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1415
+#: /var/www/html/cacti/include/global_settings.php:1394
 msgid ""
 "This is a Email account used for sending a test message to ensure everything "
 "is working properly."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1420
+#: /var/www/html/cacti/include/global_settings.php:1399
 msgid "Mail Services"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1421
+#: /var/www/html/cacti/include/global_settings.php:1400
 msgid "Which mail service to use in order to send mail"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1423
-#: /var/www/html/cacti/include/global_settings.php:1425
+#: /var/www/html/cacti/include/global_settings.php:1402
+#: /var/www/html/cacti/include/global_settings.php:1404
 msgid "PHP Mail() Function"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1426
+#: /var/www/html/cacti/include/global_settings.php:1405
 #: /var/www/html/cacti/lib/functions.php:4149
 msgid "Sendmail"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1427
+#: /var/www/html/cacti/include/global_settings.php:1406
 #: /var/www/html/cacti/lib/functions.php:4154
 msgid "SMTP"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1430
+#: /var/www/html/cacti/include/global_settings.php:1409
 msgid "Ping Mail Server"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1431
+#: /var/www/html/cacti/include/global_settings.php:1410
 msgid "Ping the Mail Server before sending test Email?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1439
+#: /var/www/html/cacti/include/global_settings.php:1418
 #: /var/www/html/cacti/lib/html_reports.php:186
 msgid "From Email Address"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1440
+#: /var/www/html/cacti/include/global_settings.php:1419
 msgid "This is the Email address that the Email will appear from."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1445
+#: /var/www/html/cacti/include/global_settings.php:1424
 #: /var/www/html/cacti/lib/html_reports.php:178
 msgid "From Name"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1446
+#: /var/www/html/cacti/include/global_settings.php:1425
 msgid "This is the actual name that the Email will appear from."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1451
+#: /var/www/html/cacti/include/global_settings.php:1430
 msgid "Word Wrap"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1452
+#: /var/www/html/cacti/include/global_settings.php:1431
 msgid ""
 "This is how many characters will be allowed before a line in the Email is "
 "automatically word wrapped. (0 = Disabled)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1459
+#: /var/www/html/cacti/include/global_settings.php:1438
 msgid "Sendmail Options"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1464
+#: /var/www/html/cacti/include/global_settings.php:1443
 #: /var/www/html/cacti/lib/functions.php:4149
 msgid "Sendmail Path"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1465
+#: /var/www/html/cacti/include/global_settings.php:1444
 msgid ""
 "This is the path to sendmail on your server. (Only used if Sendmail is "
 "selected as the Mail Service)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1472
+#: /var/www/html/cacti/include/global_settings.php:1451
 msgid "SMTP Options"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1477
+#: /var/www/html/cacti/include/global_settings.php:1456
 msgid "SMTP Hostname"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1478
+#: /var/www/html/cacti/include/global_settings.php:1457
 msgid ""
 "This is the hostname/IP of the SMTP Server you will send the Email to. For "
 "failover, separate your hosts using a semi-colon."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1484
+#: /var/www/html/cacti/include/global_settings.php:1463
 msgid "SMTP Port"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1485
+#: /var/www/html/cacti/include/global_settings.php:1464
 msgid "The port on the SMTP Server to use."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1492
+#: /var/www/html/cacti/include/global_settings.php:1471
 msgid "SMTP Username"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1493
+#: /var/www/html/cacti/include/global_settings.php:1472
 msgid ""
 "The username to authenticate with when sending via SMTP. (Leave blank if you "
 "do not require authentication.)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1498
+#: /var/www/html/cacti/include/global_settings.php:1477
 msgid "SMTP Password"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1499
+#: /var/www/html/cacti/include/global_settings.php:1478
 msgid ""
 "The password to authenticate with when sending via SMTP. (Leave blank if you "
 "do not require authentication.)"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1504
+#: /var/www/html/cacti/include/global_settings.php:1483
 msgid "SMTP Security"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1505
+#: /var/www/html/cacti/include/global_settings.php:1484
 msgid "The encryption method to use for the Email."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1514
+#: /var/www/html/cacti/include/global_settings.php:1493
 msgid "SMTP Timeout"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1515
+#: /var/www/html/cacti/include/global_settings.php:1494
 msgid "Please enter the SMTP timeout in seconds."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1522
+#: /var/www/html/cacti/include/global_settings.php:1501
 msgid "Reporting Presets"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1527
+#: /var/www/html/cacti/include/global_settings.php:1506
 msgid "Default Graph Image Format"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1528
+#: /var/www/html/cacti/include/global_settings.php:1507
 msgid ""
 "When creating a new report, what image type should be used for the inline "
 "graphs."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1534
+#: /var/www/html/cacti/include/global_settings.php:1513
 msgid "Maximum E-Mail Size"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1535
+#: /var/www/html/cacti/include/global_settings.php:1514
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1541
+#: /var/www/html/cacti/include/global_settings.php:1520
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1542
+#: /var/www/html/cacti/include/global_settings.php:1521
 msgid ""
 "What level of detail do you want sent to the log file. WARNING: Leaving in "
 "any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1548
+#: /var/www/html/cacti/include/global_settings.php:1527
 msgid "Enable Lotus Notes (R) tweak"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1549
+#: /var/www/html/cacti/include/global_settings.php:1528
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1554
+#: /var/www/html/cacti/include/global_settings.php:1533
 msgid "DNS Options"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1559
+#: /var/www/html/cacti/include/global_settings.php:1538
 msgid "Primary DNS IP Address"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1560
+#: /var/www/html/cacti/include/global_settings.php:1539
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1566
+#: /var/www/html/cacti/include/global_settings.php:1545
 msgid "Secondary DNS IP Address"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1567
+#: /var/www/html/cacti/include/global_settings.php:1546
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1573
+#: /var/www/html/cacti/include/global_settings.php:1552
 msgid "DNS Timeout"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1574
+#: /var/www/html/cacti/include/global_settings.php:1553
 msgid ""
 "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS "
 "resolver."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1583
+#: /var/www/html/cacti/include/global_settings.php:1562
 msgid "On-demand RRD Update Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1588
+#: /var/www/html/cacti/include/global_settings.php:1567
 msgid "Enable On-demand RRD Updating"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1589
+#: /var/www/html/cacti/include/global_settings.php:1568
 msgid ""
 "Should Boost enable on demand RRD updating in Cacti?  If you disable, this "
 "change will not take effect until after the next polling cycle.  When you "
 "have Remote Data Collectors, this settings is required to be on."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1594
+#: /var/www/html/cacti/include/global_settings.php:1573
 msgid "System Level RRD Updater"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1595
+#: /var/www/html/cacti/include/global_settings.php:1574
 msgid ""
 "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1600
+#: /var/www/html/cacti/include/global_settings.php:1579
 msgid "How Often Should Boost Update All RRDs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1601
+#: /var/www/html/cacti/include/global_settings.php:1580
 msgid ""
 "When you enable boost, your RRD files are only updated when they are "
 "requested by a user, or when this time period elapses."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1607
+#: /var/www/html/cacti/include/global_settings.php:1586
 msgid "Number of Boost Processes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1608
+#: /var/www/html/cacti/include/global_settings.php:1587
 msgid ""
 "The number of concurrent boost processes to use to use to process all of the "
 "RRDs in the boost table."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1612
+#: /var/www/html/cacti/include/global_settings.php:1591
 msgid "1 Process"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1613
-#: /var/www/html/cacti/include/global_settings.php:1614
-#: /var/www/html/cacti/include/global_settings.php:1615
-#: /var/www/html/cacti/include/global_settings.php:1616
-#: /var/www/html/cacti/include/global_settings.php:1617
-#: /var/www/html/cacti/include/global_settings.php:1618
-#: /var/www/html/cacti/include/global_settings.php:1619
-#: /var/www/html/cacti/include/global_settings.php:1620
-#: /var/www/html/cacti/include/global_settings.php:1621
+#: /var/www/html/cacti/include/global_settings.php:1592
+#: /var/www/html/cacti/include/global_settings.php:1593
+#: /var/www/html/cacti/include/global_settings.php:1594
+#: /var/www/html/cacti/include/global_settings.php:1595
+#: /var/www/html/cacti/include/global_settings.php:1596
+#: /var/www/html/cacti/include/global_settings.php:1597
+#: /var/www/html/cacti/include/global_settings.php:1598
+#: /var/www/html/cacti/include/global_settings.php:1599
+#: /var/www/html/cacti/include/global_settings.php:1600
 #, php-format
 msgid "%d Processes"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1624
+#: /var/www/html/cacti/include/global_settings.php:1603
 msgid "Maximum Records"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1625
+#: /var/www/html/cacti/include/global_settings.php:1604
 msgid ""
 "If the boost output table exceeds this size, in records, an update will take "
 "place."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1632
+#: /var/www/html/cacti/include/global_settings.php:1611
 msgid "Maximum Data Source Items Per Pass"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1633
+#: /var/www/html/cacti/include/global_settings.php:1612
 msgid ""
 "To optimize performance, the boost RRD updater needs to know how many Data "
 "Source Items should be retrieved in one pass.  Please be careful not to set "
@@ -12013,11 +11993,11 @@ msgid ""
 "number.  The default value is 50000."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1639
+#: /var/www/html/cacti/include/global_settings.php:1618
 msgid "Maximum Argument Length"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1640
+#: /var/www/html/cacti/include/global_settings.php:1619
 msgid ""
 "When boost sends update commands to RRDtool, it must not exceed the "
 "operating systems Maximum Argument Length.  This varies by operating system "
@@ -12025,212 +12005,212 @@ msgid ""
 "Linux 2.6.22-- <= 131072, Linux 2.6.23++ unlimited"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1647
+#: /var/www/html/cacti/include/global_settings.php:1626
 msgid "Memory Limit for Boost and Poller"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1648
+#: /var/www/html/cacti/include/global_settings.php:1627
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1654
+#: /var/www/html/cacti/include/global_settings.php:1633
 msgid "Maximum RRD Update Script Run Time"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1655
+#: /var/www/html/cacti/include/global_settings.php:1634
 msgid ""
 "The maximum boot poller run time allowed prior to boost issuing warning "
 "messages relative to possible hardware/software issues preventing proper "
 "updates."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1661
+#: /var/www/html/cacti/include/global_settings.php:1640
 msgid "Enable direct population of poller_output_boost table"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1662
+#: /var/www/html/cacti/include/global_settings.php:1641
 msgid ""
 "Enables direct insert of records into poller output boost with results in a "
 "25% time reduction in each poll cycle."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1667
+#: /var/www/html/cacti/include/global_settings.php:1646
 msgid "Boost Debug Log"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1668
+#: /var/www/html/cacti/include/global_settings.php:1647
 msgid ""
 "If this field is non-blank, Boost will log RRDupdate output from the boost"
 "\tpoller process."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1675
+#: /var/www/html/cacti/include/global_settings.php:1654
 #: /var/www/html/cacti/utilities.php:2247
 msgid "Image Caching"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1680
+#: /var/www/html/cacti/include/global_settings.php:1659
 msgid "Enable Image Caching"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1681
+#: /var/www/html/cacti/include/global_settings.php:1660
 msgid "Should image caching be enabled?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1686
+#: /var/www/html/cacti/include/global_settings.php:1665
 msgid "Location for Image Files"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1687
+#: /var/www/html/cacti/include/global_settings.php:1666
 msgid ""
 "Specify the location where Boost should place your image files.  These files "
 "will be automatically purged by the poller when they expire."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1695
+#: /var/www/html/cacti/include/global_settings.php:1674
 msgid "Data Sources Statistics"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1700
+#: /var/www/html/cacti/include/global_settings.php:1679
 msgid "Enable Data Source Statistics Collection"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1701
+#: /var/www/html/cacti/include/global_settings.php:1680
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1706
+#: /var/www/html/cacti/include/global_settings.php:1685
 msgid "Daily Update Frequency"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1707
+#: /var/www/html/cacti/include/global_settings.php:1686
 msgid "How frequent should Daily Stats be updated?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1713
+#: /var/www/html/cacti/include/global_settings.php:1692
 msgid "Hourly Average Window"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1714
+#: /var/www/html/cacti/include/global_settings.php:1693
 msgid ""
 "The number of consecutive hours that represent the hourly average.  Keep in "
 "mind that a setting too high can result in very large memory tables"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1720
+#: /var/www/html/cacti/include/global_settings.php:1699
 msgid "Maintenance Time"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1721
+#: /var/www/html/cacti/include/global_settings.php:1700
 msgid ""
 "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format "
 "is HH:MM [am/pm]"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1728
+#: /var/www/html/cacti/include/global_settings.php:1707
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1729
+#: /var/www/html/cacti/include/global_settings.php:1708
 msgid ""
 "The maximum amount of memory for the Cacti Poller and Data Source Statistics "
 "Poller"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1735
+#: /var/www/html/cacti/include/global_settings.php:1714
 msgid "Data Storage Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1741
+#: /var/www/html/cacti/include/global_settings.php:1720
 msgid ""
 "Choose if RRDs will be stored locally or being handled by an external "
 "RRDtool proxy server."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1746
-#: /var/www/html/cacti/include/global_settings.php:1754
+#: /var/www/html/cacti/include/global_settings.php:1725
+#: /var/www/html/cacti/include/global_settings.php:1733
 msgid "RRDtool Proxy Server"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1749
+#: /var/www/html/cacti/include/global_settings.php:1728
 msgid "Structured RRD Paths"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1750
+#: /var/www/html/cacti/include/global_settings.php:1729
 msgid ""
 "Use a separate subfolder for each hosts RRD files.  The naming of the "
 "RRDfiles will be &lt;path_cacti&gt;/rra/host_id/local_data_id.rrd."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1759
-#: /var/www/html/cacti/include/global_settings.php:1791
+#: /var/www/html/cacti/include/global_settings.php:1738
+#: /var/www/html/cacti/include/global_settings.php:1770
 msgid "Proxy Server"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1760
+#: /var/www/html/cacti/include/global_settings.php:1739
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1765
-#: /var/www/html/cacti/include/global_settings.php:1797
+#: /var/www/html/cacti/include/global_settings.php:1744
+#: /var/www/html/cacti/include/global_settings.php:1776
 msgid "Proxy Port Number"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1766
+#: /var/www/html/cacti/include/global_settings.php:1745
 msgid "TCP port for encrypted communication."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1773
-#: /var/www/html/cacti/include/global_settings.php:1805
+#: /var/www/html/cacti/include/global_settings.php:1752
+#: /var/www/html/cacti/include/global_settings.php:1784
 #: /var/www/html/cacti/utilities.php:261
 msgid "RSA Fingerprint"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1774
+#: /var/www/html/cacti/include/global_settings.php:1753
 msgid ""
 "The fingerprint of the current public RSA key the proxy is using. This is "
 "required to establish a trusted connection."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1781
+#: /var/www/html/cacti/include/global_settings.php:1760
 msgid "RRDtool Proxy Server - Backup"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1786
+#: /var/www/html/cacti/include/global_settings.php:1765
 msgid "Load Balancing"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1787
+#: /var/www/html/cacti/include/global_settings.php:1766
 msgid ""
 "If both main and backup proxy are receivable this option allows to spread "
 "all requests against RRDtool."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1792
+#: /var/www/html/cacti/include/global_settings.php:1771
 msgid ""
 "The DNS hostname or IP address of the RRDtool backup proxy server if proxy "
 "is running in MSR mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1798
+#: /var/www/html/cacti/include/global_settings.php:1777
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1806
+#: /var/www/html/cacti/include/global_settings.php:1785
 msgid ""
 "The fingerprint of the current public RSA key the backup proxy is using. "
 "This required to establish a trusted connection."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1815
+#: /var/www/html/cacti/include/global_settings.php:1794
 msgid "Spike Kill Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1820
+#: /var/www/html/cacti/include/global_settings.php:1799
 msgid "Removal Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1821
+#: /var/www/html/cacti/include/global_settings.php:1800
 msgid ""
 "There are two removal methods.  The first, Standard Deviation, will remove "
 "any sample that is X number of standard deviations away from the average of "
@@ -12240,20 +12220,20 @@ msgid ""
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1825
+#: /var/www/html/cacti/include/global_settings.php:1804
 msgid "Standard Deviation"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1826
+#: /var/www/html/cacti/include/global_settings.php:1805
 msgid "Variance Based w/Outliers Removed"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1829
+#: /var/www/html/cacti/include/global_settings.php:1808
 #: /var/www/html/cacti/lib/html.php:1900
 msgid "Replacement Method"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1830
+#: /var/www/html/cacti/include/global_settings.php:1809
 msgid ""
 "There are three replacement methods.  The first method replaces the spike "
 "with the the average of the data source in question.  The second method "
@@ -12261,52 +12241,52 @@ msgid ""
 "known good value found."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1834
+#: /var/www/html/cacti/include/global_settings.php:1813
 #: /var/www/html/cacti/lib/html.php:1901
 msgid "Average"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1835
+#: /var/www/html/cacti/include/global_settings.php:1814
 #: /var/www/html/cacti/lib/html.php:1902
 msgid "NaN's"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1836
+#: /var/www/html/cacti/include/global_settings.php:1815
 #: /var/www/html/cacti/lib/html.php:1903
 msgid "Last Known Good"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1839
+#: /var/www/html/cacti/include/global_settings.php:1818
 msgid "Number of Standard Deviations"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1840
+#: /var/www/html/cacti/include/global_settings.php:1819
 msgid ""
 "Any value that is this many standard deviations above the average will be "
 "excluded.  A good number will be dependent on the type of data to be "
 "operated on.  We recommend a number no lower than 5 Standard Deviations."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1844
-#: /var/www/html/cacti/include/global_settings.php:1845
-#: /var/www/html/cacti/include/global_settings.php:1846
-#: /var/www/html/cacti/include/global_settings.php:1847
-#: /var/www/html/cacti/include/global_settings.php:1848
-#: /var/www/html/cacti/include/global_settings.php:1849
-#: /var/www/html/cacti/include/global_settings.php:1850
-#: /var/www/html/cacti/include/global_settings.php:1851
-#: /var/www/html/cacti/include/global_settings.php:1852
-#: /var/www/html/cacti/include/global_settings.php:1853
+#: /var/www/html/cacti/include/global_settings.php:1823
+#: /var/www/html/cacti/include/global_settings.php:1824
+#: /var/www/html/cacti/include/global_settings.php:1825
+#: /var/www/html/cacti/include/global_settings.php:1826
+#: /var/www/html/cacti/include/global_settings.php:1827
+#: /var/www/html/cacti/include/global_settings.php:1828
+#: /var/www/html/cacti/include/global_settings.php:1829
+#: /var/www/html/cacti/include/global_settings.php:1830
+#: /var/www/html/cacti/include/global_settings.php:1831
+#: /var/www/html/cacti/include/global_settings.php:1832
 #, php-format
 msgid "%d Standard Deviations"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1857
+#: /var/www/html/cacti/include/global_settings.php:1836
 #: /var/www/html/cacti/lib/html.php:1912
 msgid "Variance Percentage"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1858
+#: /var/www/html/cacti/include/global_settings.php:1837
 #, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
@@ -12315,11 +12295,11 @@ msgid ""
 "above the quantity of 100 from the graph."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1877
+#: /var/www/html/cacti/include/global_settings.php:1856
 msgid "Variance Number of Outliers"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1878
+#: /var/www/html/cacti/include/global_settings.php:1857
 msgid ""
 "This value represents the number of high and low average samples will be "
 "removed from the sample set prior to calculating the Variance Average.  If "
@@ -12327,243 +12307,243 @@ msgid ""
 "are removed."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1882
-#: /var/www/html/cacti/include/global_settings.php:1883
-#: /var/www/html/cacti/include/global_settings.php:1884
-#: /var/www/html/cacti/include/global_settings.php:1885
-#: /var/www/html/cacti/include/global_settings.php:1886
-#: /var/www/html/cacti/include/global_settings.php:1887
-#: /var/www/html/cacti/include/global_settings.php:1888
-#: /var/www/html/cacti/include/global_settings.php:1889
+#: /var/www/html/cacti/include/global_settings.php:1861
+#: /var/www/html/cacti/include/global_settings.php:1862
+#: /var/www/html/cacti/include/global_settings.php:1863
+#: /var/www/html/cacti/include/global_settings.php:1864
+#: /var/www/html/cacti/include/global_settings.php:1865
+#: /var/www/html/cacti/include/global_settings.php:1866
+#: /var/www/html/cacti/include/global_settings.php:1867
+#: /var/www/html/cacti/include/global_settings.php:1868
 #, php-format
 msgid "%d High/Low Samples"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1893
+#: /var/www/html/cacti/include/global_settings.php:1872
 msgid "Max Kills Per RRA"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1894
+#: /var/www/html/cacti/include/global_settings.php:1873
 msgid ""
 "This value represents the maximum number of spikes to remove from a Graph "
 "RRA."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1898
-#: /var/www/html/cacti/include/global_settings.php:1899
-#: /var/www/html/cacti/include/global_settings.php:1900
-#: /var/www/html/cacti/include/global_settings.php:1901
-#: /var/www/html/cacti/include/global_settings.php:1902
-#: /var/www/html/cacti/include/global_settings.php:1903
-#: /var/www/html/cacti/include/global_settings.php:1904
-#: /var/www/html/cacti/include/global_settings.php:1905
+#: /var/www/html/cacti/include/global_settings.php:1877
+#: /var/www/html/cacti/include/global_settings.php:1878
+#: /var/www/html/cacti/include/global_settings.php:1879
+#: /var/www/html/cacti/include/global_settings.php:1880
+#: /var/www/html/cacti/include/global_settings.php:1881
+#: /var/www/html/cacti/include/global_settings.php:1882
+#: /var/www/html/cacti/include/global_settings.php:1883
+#: /var/www/html/cacti/include/global_settings.php:1884
 #, php-format
 msgid "%d Samples"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1909
+#: /var/www/html/cacti/include/global_settings.php:1888
 msgid "RRDfile Backup Directory"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1910
+#: /var/www/html/cacti/include/global_settings.php:1889
 msgid ""
 "If this directory is not empty, then your original RRDfiles will be backed "
 "up to this location."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1917
+#: /var/www/html/cacti/include/global_settings.php:1896
 msgid "Batch Spike Kill Settings"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1922
+#: /var/www/html/cacti/include/global_settings.php:1901
 msgid "Removal Schedule"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1923
+#: /var/www/html/cacti/include/global_settings.php:1902
 msgid ""
 "Do you wish to periodically remove spikes from your graphs?  If so, select "
 "the frequency below."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1930
+#: /var/www/html/cacti/include/global_settings.php:1909
 msgid "Once a Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1931
+#: /var/www/html/cacti/include/global_settings.php:1910
 msgid "Every Other Day"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1934
+#: /var/www/html/cacti/include/global_settings.php:1913
 msgid "Base Time"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1935
+#: /var/www/html/cacti/include/global_settings.php:1914
 msgid ""
 "The Base Time for Spike removal to occur.  For example, if you use '12:00am' "
 "and you choose once per day, the batch removal would begin at approximately "
 "midnight every day."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1942
+#: /var/www/html/cacti/include/global_settings.php:1921
 msgid "Graph Templates to Spike Kill"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1944
+#: /var/www/html/cacti/include/global_settings.php:1923
 msgid ""
 "When performing batch spike removal, only the templates selected below will "
 "be acted on."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1960
+#: /var/www/html/cacti/include/global_settings.php:1939
 msgid "Default View Mode"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1961
+#: /var/www/html/cacti/include/global_settings.php:1940
 msgid ""
 "Which Graph mode you want displayed by default when you first visit the "
 "Graphs page?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1967
+#: /var/www/html/cacti/include/global_settings.php:1946
 msgid "User Language"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1968
+#: /var/www/html/cacti/include/global_settings.php:1947
 msgid "Defines the preferred GUI language."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1974
+#: /var/www/html/cacti/include/global_settings.php:1953
 msgid "Show Graph Title"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1975
+#: /var/www/html/cacti/include/global_settings.php:1954
 msgid ""
 "Display the graph title on the page so that it may be searched using the "
 "browser."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1980
+#: /var/www/html/cacti/include/global_settings.php:1959
 msgid "Hide Disabled"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1981
+#: /var/www/html/cacti/include/global_settings.php:1960
 msgid "Hide Disabled Devices and Graphs from Disabled Devices."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1987
+#: /var/www/html/cacti/include/global_settings.php:1966
 msgid "The date format to use in Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:1994
+#: /var/www/html/cacti/include/global_settings.php:1973
 msgid "The date separator to be used in Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2000
+#: /var/www/html/cacti/include/global_settings.php:1979
 msgid "Page Refresh"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2001
+#: /var/www/html/cacti/include/global_settings.php:1980
 msgid "The number of seconds between automatic page refreshes."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2012
+#: /var/www/html/cacti/include/global_settings.php:1991
 msgid "Preview Graphs Per Page"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2013
-#: /var/www/html/cacti/include/global_settings.php:2140
+#: /var/www/html/cacti/include/global_settings.php:1992
+#: /var/www/html/cacti/include/global_settings.php:2119
 msgid "The number of graphs to display on one page in preview mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2021
+#: /var/www/html/cacti/include/global_settings.php:2000
 msgid "Default Time Range"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2022
+#: /var/www/html/cacti/include/global_settings.php:2001
 msgid "The default RRA to use in rare occasions."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2028
+#: /var/www/html/cacti/include/global_settings.php:2007
 msgid "Default Graph View Timespan"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2029
+#: /var/www/html/cacti/include/global_settings.php:2008
 msgid "The default timespan you wish to be displayed when you display graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2035
+#: /var/www/html/cacti/include/global_settings.php:2014
 msgid "Default Graph View Timeshift"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2036
+#: /var/www/html/cacti/include/global_settings.php:2015
 msgid "The default timeshift you wish to be displayed when you display graphs"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2042
+#: /var/www/html/cacti/include/global_settings.php:2021
 msgid "Allow Graph to extend to Future"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2043
+#: /var/www/html/cacti/include/global_settings.php:2022
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2048
+#: /var/www/html/cacti/include/global_settings.php:2027
 msgid "First Day of the Week"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2049
+#: /var/www/html/cacti/include/global_settings.php:2028
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2055
+#: /var/www/html/cacti/include/global_settings.php:2034
 msgid "Start of Daily Shift"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2056
+#: /var/www/html/cacti/include/global_settings.php:2035
 msgid "Start Time of the Daily Shift."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2063
+#: /var/www/html/cacti/include/global_settings.php:2042
 msgid "End of Daily Shift"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2064
+#: /var/www/html/cacti/include/global_settings.php:2043
 msgid "End Time of the Daily Shift."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2073
+#: /var/www/html/cacti/include/global_settings.php:2052
 msgid "Thumbnail Sections"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2074
+#: /var/www/html/cacti/include/global_settings.php:2053
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2088
+#: /var/www/html/cacti/include/global_settings.php:2067
 msgid "Preview Thumbnail Columns"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2089
+#: /var/www/html/cacti/include/global_settings.php:2068
 msgid ""
 "The number of columns to use when displaying Thumbnail graphs in Preview "
 "mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2093
-#: /var/www/html/cacti/include/global_settings.php:2106
+#: /var/www/html/cacti/include/global_settings.php:2072
+#: /var/www/html/cacti/include/global_settings.php:2085
 msgid "1 Column"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2094
-#: /var/www/html/cacti/include/global_settings.php:2095
-#: /var/www/html/cacti/include/global_settings.php:2096
-#: /var/www/html/cacti/include/global_settings.php:2097
-#: /var/www/html/cacti/include/global_settings.php:2098
-#: /var/www/html/cacti/include/global_settings.php:2107
-#: /var/www/html/cacti/include/global_settings.php:2108
-#: /var/www/html/cacti/include/global_settings.php:2109
-#: /var/www/html/cacti/include/global_settings.php:2110
-#: /var/www/html/cacti/include/global_settings.php:2111
+#: /var/www/html/cacti/include/global_settings.php:2073
+#: /var/www/html/cacti/include/global_settings.php:2074
+#: /var/www/html/cacti/include/global_settings.php:2075
+#: /var/www/html/cacti/include/global_settings.php:2076
+#: /var/www/html/cacti/include/global_settings.php:2077
+#: /var/www/html/cacti/include/global_settings.php:2086
+#: /var/www/html/cacti/include/global_settings.php:2087
+#: /var/www/html/cacti/include/global_settings.php:2088
+#: /var/www/html/cacti/include/global_settings.php:2089
+#: /var/www/html/cacti/include/global_settings.php:2090
 #: /var/www/html/cacti/lib/html_graph.php:223
 #: /var/www/html/cacti/lib/html_graph.php:224
 #: /var/www/html/cacti/lib/html_graph.php:225
@@ -12578,108 +12558,108 @@ msgstr ""
 msgid "%d Columns"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2101
+#: /var/www/html/cacti/include/global_settings.php:2080
 msgid "Tree View Thumbnail Columns"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2102
+#: /var/www/html/cacti/include/global_settings.php:2081
 msgid ""
 "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2114
+#: /var/www/html/cacti/include/global_settings.php:2093
 msgid "Thumbnail Height"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2115
+#: /var/www/html/cacti/include/global_settings.php:2094
 msgid "The height of Thumbnail graphs in pixels."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2122
+#: /var/www/html/cacti/include/global_settings.php:2101
 msgid "Thumbnail Width"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2123
+#: /var/www/html/cacti/include/global_settings.php:2102
 msgid "The width of Thumbnail graphs in pixels."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2132
+#: /var/www/html/cacti/include/global_settings.php:2111
 msgid "Default Tree"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2133
+#: /var/www/html/cacti/include/global_settings.php:2112
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2139
+#: /var/www/html/cacti/include/global_settings.php:2118
 msgid "Graphs Per Page"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2146
+#: /var/www/html/cacti/include/global_settings.php:2125
 msgid "Expand Devices"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2147
+#: /var/www/html/cacti/include/global_settings.php:2126
 msgid ""
 "Choose whether to expand the Graph Templates and Data Queries used by a "
 "Device on Tree."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2154
+#: /var/www/html/cacti/include/global_settings.php:2133
 msgid "Use Custom Fonts"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2155
+#: /var/www/html/cacti/include/global_settings.php:2134
 msgid ""
 "Choose whether to use your own custom fonts and font sizes or utilize the "
 "system defaults."
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2168
+#: /var/www/html/cacti/include/global_settings.php:2147
 msgid "Title Font File"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2169
+#: /var/www/html/cacti/include/global_settings.php:2148
 msgid "The font file to use for Graph Titles"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2181
+#: /var/www/html/cacti/include/global_settings.php:2160
 msgid "Legend Font File"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2182
+#: /var/www/html/cacti/include/global_settings.php:2161
 msgid "The font file to be used for Graph Legend items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2194
+#: /var/www/html/cacti/include/global_settings.php:2173
 msgid "Axis Font File"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2195
+#: /var/www/html/cacti/include/global_settings.php:2174
 msgid "The font file to be used for Graph Axis items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2207
+#: /var/www/html/cacti/include/global_settings.php:2186
 msgid "Unit Font File"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2208
+#: /var/www/html/cacti/include/global_settings.php:2187
 msgid "The font file to be used for Graph Unit items"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2217
+#: /var/www/html/cacti/include/global_settings.php:2196
 msgid "Realtime View Mode"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2218
+#: /var/www/html/cacti/include/global_settings.php:2197
 msgid "How do you wish to view Realtime Graphs?"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2221
+#: /var/www/html/cacti/include/global_settings.php:2200
 msgid "Inline"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_settings.php:2222
+#: /var/www/html/cacti/include/global_settings.php:2201
 msgid "New Window"
 msgstr ""
 
@@ -13873,7 +13853,7 @@ msgid "Kill Spikes in Graphs"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html.php:418
-#: /var/www/html/cacti/lib/installer.php:766
+#: /var/www/html/cacti/lib/installer.php:779
 msgid "Previous"
 msgstr ""
 
@@ -13883,7 +13863,7 @@ msgid "%d to %d of %s [ %s ]"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html.php:424
-#: /var/www/html/cacti/lib/installer.php:765
+#: /var/www/html/cacti/lib/installer.php:778
 msgid "Next"
 msgstr ""
 
@@ -14659,7 +14639,7 @@ msgid "Bad UTF-8 offset error!"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html_utility.php:861
-#: /var/www/html/cacti/lib/installer.php:617
+#: /var/www/html/cacti/lib/installer.php:630
 msgid "Error"
 msgstr ""
 
@@ -14759,62 +14739,62 @@ msgstr ""
 msgid "Unmet Dependency:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:579
+#: /var/www/html/cacti/lib/installer.php:592
 msgid ""
 "An unexpected reason was given for preventing this maintainence session."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:580
+#: /var/www/html/cacti/lib/installer.php:593
 msgid "Please report this to the Cacti Group."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:581
+#: /var/www/html/cacti/lib/installer.php:594
 #, php-format
 msgid "Unknown Reason: %s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:587
+#: /var/www/html/cacti/lib/installer.php:600
 #, php-format
 msgid ""
 "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, "
 "this can not be performed."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:588
+#: /var/www/html/cacti/lib/installer.php:601
 msgid ""
 "To be able continue, you <b>MUST</b> create a new database, import \"cacti."
 "sql\" into it:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:589
+#: /var/www/html/cacti/lib/installer.php:602
 #, php-format
 msgid "mysql -u %s -p [new_database] < cacti.sql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:590
+#: /var/www/html/cacti/lib/installer.php:603
 msgid ""
 "You <b>MUST</b> then update \"include/config.php\" to point to the new "
 "database."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:591
+#: /var/www/html/cacti/lib/installer.php:604
 msgid ""
 "NOTE: Your existing data will not be modified, nor will it or any history be "
 "available to to the new install"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:598
+#: /var/www/html/cacti/lib/installer.php:611
 msgid ""
 "You have created a new database, but have not yet imported the 'cacti.sql' "
 "file. At the command line, execute the following to continue:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:599
+#: /var/www/html/cacti/lib/installer.php:612
 #, php-format
 msgid "mysql -u %s -p %s < cacti.sql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:600
+#: /var/www/html/cacti/lib/installer.php:613
 msgid ""
 "This error may also be generated if the cacti database user does not have "
 "correct permissions on the Cacti database. Please ensure that the Cacti "
@@ -14822,21 +14802,21 @@ msgid ""
 "ALTER, DROP, INDEX on the Cacti database."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:601
+#: /var/www/html/cacti/lib/installer.php:614
 msgid ""
 "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant "
 "the Cacti user SELECT access to the mysql.time_zone_name table"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:604
+#: /var/www/html/cacti/lib/installer.php:617
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:605
+#: /var/www/html/cacti/lib/installer.php:618
 msgid "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:607
+#: /var/www/html/cacti/lib/installer.php:620
 msgid ""
 "On Windows, you must follow the instructions here <a target='_blank' "
 "href='https://dev.mysql.com/downloads/timezones.html'>Time zone description "
@@ -14844,69 +14824,69 @@ msgid ""
 "grant the Cacti user access to the tables:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:610
+#: /var/www/html/cacti/lib/installer.php:623
 msgid "Then run the following within MySQL as an administrator:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:611
+#: /var/www/html/cacti/lib/installer.php:624
 #, php-format
 msgid ""
 "mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' "
 "IDENTIFIED BY '%s'"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:678
+#: /var/www/html/cacti/lib/installer.php:691
 msgid "NOTE:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:706
-#: /var/www/html/cacti/lib/installer.php:991
-#: /var/www/html/cacti/lib/installer.php:1120
+#: /var/www/html/cacti/lib/installer.php:719
+#: /var/www/html/cacti/lib/installer.php:1004
 #: /var/www/html/cacti/lib/installer.php:1133
-#: /var/www/html/cacti/lib/installer.php:1137
-#: /var/www/html/cacti/lib/installer.php:1267
-#: /var/www/html/cacti/lib/installer.php:1272
+#: /var/www/html/cacti/lib/installer.php:1146
+#: /var/www/html/cacti/lib/installer.php:1150
+#: /var/www/html/cacti/lib/installer.php:1280
+#: /var/www/html/cacti/lib/installer.php:1285
 msgid "ERROR:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:762
+#: /var/www/html/cacti/lib/installer.php:775
 #: /var/www/html/cacti/pollers.php:446
 msgid "Test Connection"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:773
+#: /var/www/html/cacti/lib/installer.php:786
 msgid "Begin"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:779
-#: /var/www/html/cacti/lib/installer.php:1179
-#: /var/www/html/cacti/lib/installer.php:1185
-#: /var/www/html/cacti/lib/installer.php:1622
+#: /var/www/html/cacti/lib/installer.php:792
+#: /var/www/html/cacti/lib/installer.php:1192
+#: /var/www/html/cacti/lib/installer.php:1198
+#: /var/www/html/cacti/lib/installer.php:1646
 msgid "Upgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:781
-#: /var/www/html/cacti/lib/installer.php:1626
+#: /var/www/html/cacti/lib/installer.php:794
+#: /var/www/html/cacti/lib/installer.php:1650
 msgid "Downgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:884
+#: /var/www/html/cacti/lib/installer.php:897
 #: /var/www/html/cacti/utilities.php:251
 msgid "Cacti Version"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:884
+#: /var/www/html/cacti/lib/installer.php:897
 msgid "License Agreement"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:885
+#: /var/www/html/cacti/lib/installer.php:898
 msgid ""
 "Thanks for taking the time to download and install Cacti, the complete "
 "graphing solution for your network. Before you can start making cool graphs, "
 "there are a few pieces of data that Cacti needs to know."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:886
+#: /var/www/html/cacti/lib/installer.php:899
 #, php-format
 msgid ""
 "Make sure you have read and followed the required steps needed to install "
@@ -14914,33 +14894,33 @@ msgid ""
 "\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:889
+#: /var/www/html/cacti/lib/installer.php:902
 #, php-format
 msgid ""
 "This process will guide you through the steps for upgrading from version "
 "'%s'. "
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:890
+#: /var/www/html/cacti/lib/installer.php:903
 #, php-format
 msgid ""
 "Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</"
 "a> information file."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:894
+#: /var/www/html/cacti/lib/installer.php:907
 msgid ""
 "It is NOT recommended to downgrade as the database structure may be "
 "inconsistent"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:897
+#: /var/www/html/cacti/lib/installer.php:910
 msgid ""
 "Cacti is licensed under the GNU General Public License, you must agree to "
 "its provisions before continuing:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:901
+#: /var/www/html/cacti/lib/installer.php:914
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -14948,39 +14928,39 @@ msgid ""
 "more details."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:937
+#: /var/www/html/cacti/lib/installer.php:950
 msgid "Accept GPL License Agreement"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:937
+#: /var/www/html/cacti/lib/installer.php:950
 msgid "Select default theme: "
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:959
+#: /var/www/html/cacti/lib/installer.php:972
 msgid "Pre-installation Checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:960
+#: /var/www/html/cacti/lib/installer.php:973
 msgid "Location checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:991
+#: /var/www/html/cacti/lib/installer.php:1004
 msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:994
+#: /var/www/html/cacti/lib/installer.php:1007
 msgid ""
 "Your Cacti configuration has the relative correct path (url_path) in config."
 "php."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:999
+#: /var/www/html/cacti/lib/installer.php:1012
 msgid "PHP - Module Support (Required)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1000
+#: /var/www/html/cacti/lib/installer.php:1013
 msgid ""
 "Cacti requires several PHP Modules to be installed to work properly. If any "
 "of these are not installed, you will be unable to continue the installation "
@@ -14990,76 +14970,76 @@ msgid ""
 "you have any questions."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1002
+#: /var/www/html/cacti/lib/installer.php:1015
 msgid ""
 "The following PHP extensions are mandatory, and MUST be installed before "
 "continuing your Cacti install."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1006
+#: /var/www/html/cacti/lib/installer.php:1019
 msgid "Required PHP Modules"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1007
-#: /var/www/html/cacti/lib/installer.php:1099
+#: /var/www/html/cacti/lib/installer.php:1020
+#: /var/www/html/cacti/lib/installer.php:1112
 #: /var/www/html/cacti/plugins.php:40 /var/www/html/cacti/plugins.php:339
 #: /var/www/html/cacti/utilities.php:431
 msgid "Installed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1007
+#: /var/www/html/cacti/lib/installer.php:1020
 msgid "Required"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1011
+#: /var/www/html/cacti/lib/installer.php:1024
 #: /var/www/html/cacti/utilities.php:403
 msgid "PHP Version"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1086
+#: /var/www/html/cacti/lib/installer.php:1099
 msgid "PHP - Module Support (Optional)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1088
+#: /var/www/html/cacti/lib/installer.php:1101
 msgid ""
 "The following PHP extensions are recommended, and should be installed before "
 "continuing your Cacti install."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1098
+#: /var/www/html/cacti/lib/installer.php:1111
 msgid "Optional Modules"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1099
+#: /var/www/html/cacti/lib/installer.php:1112
 msgid "Optional"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1118
+#: /var/www/html/cacti/lib/installer.php:1131
 msgid "PHP - Timezone Support"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1120
+#: /var/www/html/cacti/lib/installer.php:1133
 msgid ""
 "Your Web Servers PHP Timezone settings have not been set.  Please edit php."
 "ini and uncomment the 'date.timezone' setting and set it to the Web Servers "
 "Timezone per the PHP installation instructions prior to installing Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1123
+#: /var/www/html/cacti/lib/installer.php:1136
 msgid "Your Web Servers PHP is properly setup with a Timezone."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1128
+#: /var/www/html/cacti/lib/installer.php:1141
 msgid "MySQL - TimeZone Support"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1133
+#: /var/www/html/cacti/lib/installer.php:1146
 msgid ""
 "Your MySQL TimeZone database is not populated.  Please populate this "
 "database before proceeding."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1137
+#: /var/www/html/cacti/lib/installer.php:1150
 msgid ""
 "Your Cacti database login account does not have access to the MySQL TimeZone "
 "database.  Please provide the Cacti database account \"select\" access to "
@@ -15067,36 +15047,36 @@ msgid ""
 "TimeZone information before proceeding."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1142
+#: /var/www/html/cacti/lib/installer.php:1155
 msgid ""
 "Your Cacti database account has access to the MySQL TimeZone database and "
 "that database is populated with global TimeZone information."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1147
+#: /var/www/html/cacti/lib/installer.php:1160
 msgid "MySQL - Settings"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1148
+#: /var/www/html/cacti/lib/installer.php:1161
 msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1150
+#: /var/www/html/cacti/lib/installer.php:1163
 msgid "Recommended MySQL System Variable Settings"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1174
+#: /var/www/html/cacti/lib/installer.php:1187
 msgid "Installation Type"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1180
+#: /var/www/html/cacti/lib/installer.php:1193
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1181
+#: /var/www/html/cacti/lib/installer.php:1194
 msgid ""
 "If you are upgrading from a previous version please close all Cacti browser "
 "sessions and clear cache before continuing.  Additionally, after this script "
@@ -15106,103 +15086,103 @@ msgid ""
 "the Cacti web site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1186
+#: /var/www/html/cacti/lib/installer.php:1199
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1187
+#: /var/www/html/cacti/lib/installer.php:1200
 msgid ""
 "You appears to be downgrading to a previous version.  Database changes made "
 "for the newer version will not be reversed and <i>could</i> cause issues."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1192
+#: /var/www/html/cacti/lib/installer.php:1205
 msgid "Please select the type of installation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1193
+#: /var/www/html/cacti/lib/installer.php:1206
 msgid "Installation options:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1197
+#: /var/www/html/cacti/lib/installer.php:1210
 msgid "Choose this for the Primary site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1197
-#: /var/www/html/cacti/lib/installer.php:1233
+#: /var/www/html/cacti/lib/installer.php:1210
+#: /var/www/html/cacti/lib/installer.php:1246
 msgid "New Primary Server"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1198
-#: /var/www/html/cacti/lib/installer.php:1234
+#: /var/www/html/cacti/lib/installer.php:1211
+#: /var/www/html/cacti/lib/installer.php:1247
 msgid "New Remote Poller"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1198
+#: /var/www/html/cacti/lib/installer.php:1211
 msgid ""
 "Remote Pollers are used to access networks that are not readily accessible "
 "to the Primary site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1238
+#: /var/www/html/cacti/lib/installer.php:1251
 msgid ""
 "The following information has been determined from Cacti's configuration "
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1242
-#: /var/www/html/cacti/lib/installer.php:1254
+#: /var/www/html/cacti/lib/installer.php:1255
+#: /var/www/html/cacti/lib/installer.php:1267
 msgid "Database Connection Information"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1245
-#: /var/www/html/cacti/lib/installer.php:1257
+#: /var/www/html/cacti/lib/installer.php:1258
+#: /var/www/html/cacti/lib/installer.php:1270
 #, php-format
 msgid "Database: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1246
-#: /var/www/html/cacti/lib/installer.php:1258
+#: /var/www/html/cacti/lib/installer.php:1259
+#: /var/www/html/cacti/lib/installer.php:1271
 #, php-format
 msgid "Database User: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1247
-#: /var/www/html/cacti/lib/installer.php:1259
+#: /var/www/html/cacti/lib/installer.php:1260
+#: /var/www/html/cacti/lib/installer.php:1272
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1248
-#: /var/www/html/cacti/lib/installer.php:1260
+#: /var/www/html/cacti/lib/installer.php:1261
+#: /var/www/html/cacti/lib/installer.php:1273
 #, php-format
 msgid "Port: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1249
-#: /var/www/html/cacti/lib/installer.php:1261
+#: /var/www/html/cacti/lib/installer.php:1262
+#: /var/www/html/cacti/lib/installer.php:1274
 #, php-format
 msgid "Server Operating System Type: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1266
+#: /var/www/html/cacti/lib/installer.php:1279
 msgid "Configuration Readonly!"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1267
+#: /var/www/html/cacti/lib/installer.php:1280
 msgid ""
 "Your config.php file must be writable by the web server during install in "
 "order to configure the Remote poller.  Once installation is complete, you "
 "must set this file to Read Only to prevent possible security issues."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1271
+#: /var/www/html/cacti/lib/installer.php:1284
 msgid "Configuration of Poller"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1272
+#: /var/www/html/cacti/lib/installer.php:1285
 msgid ""
 "Your Remote Cacti Poller information has not been included in your config."
 "php file.  Please review the config.php.dist, and set the variables: <i>"
@@ -15211,19 +15191,19 @@ msgid ""
 "try again."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1276
+#: /var/www/html/cacti/lib/installer.php:1289
 msgid "Remote Poller Variables"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1277
+#: /var/www/html/cacti/lib/installer.php:1290
 msgid "The variables that must be set include the following:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1288
+#: /var/www/html/cacti/lib/installer.php:1301
 msgid "You must also set the $poller_id variable in the config.php."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1289
+#: /var/www/html/cacti/lib/installer.php:1302
 msgid ""
 "Once you have the variables set in the config.php file, you must also grant "
 "the $rdatabase_username access to the Cacti database.  Follow the same "
@@ -15232,23 +15212,23 @@ msgid ""
 "proceed and complete the install."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1299
+#: /var/www/html/cacti/lib/installer.php:1312
 msgid "Critical Binary Locations and Versions"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1300
+#: /var/www/html/cacti/lib/installer.php:1313
 msgid "Make sure all of these values are correct before continuing."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1303
+#: /var/www/html/cacti/lib/installer.php:1316
 msgid "One or more paths appear to be incorrect, unable to proceed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1363
+#: /var/www/html/cacti/lib/installer.php:1376
 msgid "Directory Permission Checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1364
+#: /var/www/html/cacti/lib/installer.php:1377
 msgid ""
 "Please ensure the directory permissions below are correct before "
 "proceeding.  During the install, these directories need to be owned by the "
@@ -15259,80 +15239,80 @@ msgid ""
 "be used from the command line after the install is complete."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1367
+#: /var/www/html/cacti/lib/installer.php:1380
 msgid ""
 "After the install is complete, you can make some of these directories read "
 "only to increase security."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1369
+#: /var/www/html/cacti/lib/installer.php:1382
 msgid ""
 "These directories will be required to stay read writable after the install "
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1381
+#: /var/www/html/cacti/lib/installer.php:1394
 msgid "Required Writable at Install Time Only"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1386
-#: /var/www/html/cacti/lib/installer.php:1425
+#: /var/www/html/cacti/lib/installer.php:1399
+#: /var/www/html/cacti/lib/installer.php:1438
 #, php-format
 msgid "<p>%s is <font color=\"#008000\">Writable</font></p>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1388
-#: /var/www/html/cacti/lib/installer.php:1427
+#: /var/www/html/cacti/lib/installer.php:1401
+#: /var/www/html/cacti/lib/installer.php:1440
 #, php-format
 msgid "<p>%s is <font color=\"#FF0000\">Not Writable</font></p>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1421
+#: /var/www/html/cacti/lib/installer.php:1434
 msgid "Required Writable after Install Complete"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1437
+#: /var/www/html/cacti/lib/installer.php:1450
 msgid "Ensure Host Process Has Access"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1438
+#: /var/www/html/cacti/lib/installer.php:1451
 msgid ""
 "Make sure your webserver has read and write access to the entire folder "
 "structure."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1439
+#: /var/www/html/cacti/lib/installer.php:1452
 msgid "Example:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1440
+#: /var/www/html/cacti/lib/installer.php:1453
 #, php-format
 msgid "chown -R apache.apache %s/resource/"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1441
+#: /var/www/html/cacti/lib/installer.php:1454
 msgid ""
 "For SELINUX-users make sure that you have the correct permissions or set "
 "'setenforce 0' temporarily."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1443
+#: /var/www/html/cacti/lib/installer.php:1456
 msgid "Check Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1445
+#: /var/www/html/cacti/lib/installer.php:1458
 msgid "All folders are writable"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1449
+#: /var/www/html/cacti/lib/installer.php:1462
 msgid ""
 "If you are installing packages, once the packages are installed, you should "
 "change the scripts directory back to read only as this presents some "
 "exposure to the web site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1451
+#: /var/www/html/cacti/lib/installer.php:1464
 msgid ""
 "For remote pollers, it is critical that the paths that you will be updating "
 "frequently, including the plugins, scripts, and resources paths have read/"
@@ -15340,58 +15320,68 @@ msgid ""
 "main web server content."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1465
+#: /var/www/html/cacti/lib/installer.php:1480
 msgid "Default Profile"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1466
+#: /var/www/html/cacti/lib/installer.php:1481
 msgid ""
-"Please select the default profile to be used for polling sources.  This is "
-"the maximum amount of time between scanning devices for information so the "
-"lower the polling interval, the more work is placed on the Cacti Server host"
+"Please select the default Data Source Profile to be used for polling "
+"sources.  This is the maximum amount of time between scanning devices for "
+"information so the lower the polling interval, the more work is placed on "
+"the Cacti Server host.  Also, select the intended, or configured Cron "
+"interval that you wish to use for Data Collection."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1492
+#: /var/www/html/cacti/lib/installer.php:1483
+msgid "Default Profile:"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:1507
+msgid "Cron Interval:"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:1516
 msgid "Default Automation Network"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1493
+#: /var/www/html/cacti/lib/installer.php:1517
 msgid ""
 "Please enter the default automation network range to be scanned when "
-"enabled. To enable scanning on installation, please select \"Enabled\" below"
+"enabled. To enable scanning on installation, please select 'Enabled' below"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1494
+#: /var/www/html/cacti/lib/installer.php:1518
 msgid "When enabled, scanning will be set to daily by default"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1498
+#: /var/www/html/cacti/lib/installer.php:1522
 msgid "Mode:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1503
+#: /var/www/html/cacti/lib/installer.php:1527
 msgid "Network Range:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1512
+#: /var/www/html/cacti/lib/installer.php:1536
 msgid "Error Locating Profiles"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1513
+#: /var/www/html/cacti/lib/installer.php:1537
 msgid "The installation cannot continue because no profiles could be found."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1514
+#: /var/www/html/cacti/lib/installer.php:1538
 msgid ""
 "This may occur if you have a blank database and have not yet imported the "
 "cacti.sql file"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1522
+#: /var/www/html/cacti/lib/installer.php:1546
 msgid "Template Setup"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1524
+#: /var/www/html/cacti/lib/installer.php:1548
 msgid ""
 "Please select the Device Templates that you wish to use after the Install.  "
 "If you Operating System is Windows, you need to ensure that you select the "
@@ -15399,16 +15389,16 @@ msgid ""
 "sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1529
+#: /var/www/html/cacti/lib/installer.php:1553
 #: /var/www/html/cacti/plugins.php:426
 msgid "Author"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1529
+#: /var/www/html/cacti/lib/installer.php:1553
 msgid "Homepage"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1546
+#: /var/www/html/cacti/lib/installer.php:1570
 msgid ""
 "Device Templates allow you to monitor and graph a vast assortment of data "
 "within Cacti.  After you select the desired Device Templates, press 'Finish' "
@@ -15416,41 +15406,41 @@ msgid ""
 "importation of the Device Templates can take a few minutes."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1553
+#: /var/www/html/cacti/lib/installer.php:1577
 msgid "Database Collation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1565
+#: /var/www/html/cacti/lib/installer.php:1589
 msgid "Your databse default collation appears to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1567
+#: /var/www/html/cacti/lib/installer.php:1591
 msgid "Your database default collaction does NOT appear to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1568
+#: /var/www/html/cacti/lib/installer.php:1592
 msgid ""
 "Any tables created by plugins may have issues linked against Cacti Core "
 "tables if the collation is not matched"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1569
+#: /var/www/html/cacti/lib/installer.php:1593
 #, php-format
 msgid ""
 "Please ensure your database is changed from '%s' to 'utf8mb4_unicode_ci'"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1572
+#: /var/www/html/cacti/lib/installer.php:1596
 msgid "Table Setup"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1577
+#: /var/www/html/cacti/lib/installer.php:1601
 msgid ""
 "The following tables should be converted to UTF8 and InnoDB.  Please select "
 "the tables that you wish to convert during the installation process."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1578
+#: /var/www/html/cacti/lib/installer.php:1602
 msgid ""
 "Conversion of tables may take some time especially on larger tables.  The "
 "conversion of these tables will occur in the background but will not prevent "
@@ -15458,136 +15448,136 @@ msgid ""
 "not enough resources for MySQL to handle the conversion."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1582
+#: /var/www/html/cacti/lib/installer.php:1606
 msgid "Tables"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1583
+#: /var/www/html/cacti/lib/installer.php:1607
 #: /var/www/html/cacti/utilities.php:488
 msgid "Collation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1583
+#: /var/www/html/cacti/lib/installer.php:1607
 #: /var/www/html/cacti/utilities.php:483
 msgid "Engine"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1604
+#: /var/www/html/cacti/lib/installer.php:1628
 msgid "WARNING"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1605
+#: /var/www/html/cacti/lib/installer.php:1629
 msgid ""
 "One or more tables are too large to convert during the installation.  You "
 "should use the cli/convert_tables.php script to perform the conversion."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1611
+#: /var/www/html/cacti/lib/installer.php:1635
 msgid "All your tables appear to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1621
+#: /var/www/html/cacti/lib/installer.php:1645
 msgid "Confirm Upgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1625
+#: /var/www/html/cacti/lib/installer.php:1649
 msgid "Confirm Downgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1629
+#: /var/www/html/cacti/lib/installer.php:1653
 msgid "Confirm Installation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1630
+#: /var/www/html/cacti/lib/installer.php:1654
 #: /var/www/html/cacti/plugins.php:28
 msgid "Install"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1635
+#: /var/www/html/cacti/lib/installer.php:1659
 msgid "DOWNGRADE DETECTED"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1636
+#: /var/www/html/cacti/lib/installer.php:1660
 msgid ""
 "YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES "
 "THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS "
 "AUTOMATICALLY FOR YOU"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1637
+#: /var/www/html/cacti/lib/installer.php:1661
 msgid ""
 "Downgrading should only be performed when absolutely necessary and doing so "
 "may break your installlation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1640
+#: /var/www/html/cacti/lib/installer.php:1664
 msgid ""
 "Your Cacti Server is almost ready.  Please check that you are happy to "
 "proceed."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1643
+#: /var/www/html/cacti/lib/installer.php:1667
 #, php-format
 msgid ""
 "Press '%s' then click '%s' to complete the installation process after "
 "selecting your Device Templates."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1657
+#: /var/www/html/cacti/lib/installer.php:1681
 #, php-format
 msgid "Installing Cacti Server v%s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1658
+#: /var/www/html/cacti/lib/installer.php:1682
 msgid "Your Cacti Server is now installing"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1766
+#: /var/www/html/cacti/lib/installer.php:1790
 msgid "Complete"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1767
+#: /var/www/html/cacti/lib/installer.php:1791
 #, php-format
 msgid ""
 "Your Cacti Server v%s has been installed/updated.  You may now start using "
 "the software."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1770
+#: /var/www/html/cacti/lib/installer.php:1794
 #, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1781
+#: /var/www/html/cacti/lib/installer.php:1805
 msgid "[Fail]"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1782
+#: /var/www/html/cacti/lib/installer.php:1806
 msgid "[Success]"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1783
+#: /var/www/html/cacti/lib/installer.php:1807
 msgid "[Skipped]"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1852
+#: /var/www/html/cacti/lib/installer.php:1876
 msgid "Get Help"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1857
+#: /var/www/html/cacti/lib/installer.php:1881
 msgid "Report Issue"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1860
+#: /var/www/html/cacti/lib/installer.php:1884
 msgid "Get Started"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1868
+#: /var/www/html/cacti/lib/installer.php:1892
 #: /var/www/html/cacti/utilities.php:672
 msgid "Failed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1869
+#: /var/www/html/cacti/lib/installer.php:1893
 msgid ""
 "There was a problem during this process.  Please check the log below for "
 "more information"
@@ -16777,15 +16767,15 @@ msgstr ""
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
 msgstr ""
 
-#: /var/www/html/cacti/poller_automation.php:867
+#: /var/www/html/cacti/poller_automation.php:874
 msgid "Primary Cacti Admin"
 msgstr ""
 
-#: /var/www/html/cacti/poller_automation.php:918
+#: /var/www/html/cacti/poller_automation.php:925
 msgid "Cacti Primary Admin"
 msgstr ""
 
-#: /var/www/html/cacti/poller_automation.php:1014
+#: /var/www/html/cacti/poller_automation.php:1021
 msgid "Cacti Automation Report requires an html based Email client"
 msgstr ""
 
