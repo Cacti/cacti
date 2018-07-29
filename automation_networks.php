@@ -868,6 +868,9 @@ function network_edit() {
 	}
 
 	function setPing() {
+		$('#row_snmp_id').show();
+		$('#row_ping_method').show();
+
 		switch($('#ping_method').val()) {
 		case '0':
 			$('#row_ping_port').hide();
