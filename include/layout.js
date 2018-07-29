@@ -1813,9 +1813,11 @@ function checkFormStatus(href, type, scroll_or_id) {
 				var formData   = formArray[formID];
 
 				$.each(submitData, function(index, value) {
-					if (formData[index] != value) {
-						if (index != 'settings_sendmail_path' && index != 'rrd_archive') {
-							changed = true;
+					if (typeof formData[index] != 'undefined') {
+						if (formData[index] != value) {
+							if (index != 'settings_sendmail_path' && index != 'rrd_archive') {
+								changed = true;
+							}
 						}
 					}
 				});
