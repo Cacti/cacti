@@ -426,6 +426,11 @@ function prepareStepProfileAndAutomation(installData) {
 		installData.Profile = element[0].value;
 	}
 
+	element = $('#cron_interval');
+	if (element != null && element.length > 0) {
+		installData.CronInterval = element[0].value;
+	}
+
 	element = $('#automation_mode');
 	if (element != null && element.length > 0) {
 		installData.AutomationMode = element[0].value;

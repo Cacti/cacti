@@ -131,7 +131,7 @@ class Installer implements JsonSerializable {
 			if (!cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
 				log_install('step', 'Does not match: ' . var_export($this->old_cacti_version, true));
 				$step = Installer::STEP_WELCOME;
-				db_execute('DELETE FROM settings where name like \'install_%\'');
+				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
 				$installData = array();
 			}
 		}
@@ -148,6 +148,8 @@ class Installer implements JsonSerializable {
 		$this->profile         = read_config_option('install_profile', true);
 
 		$this->automationMode  = read_config_option('install_automation_mode', true);
+		$this->cronInterval    = read_config_option('cron_interval', true);
+
 		if ($this->automationMode === false || $this->automationMode === null) {
 			$this->setAutomationMode($this->getAutomationNetworkMode());
 		}
@@ -223,6 +225,9 @@ class Installer implements JsonSerializable {
 					break;
 				case 'Profile':
 					$this->setProfile($value);
+					break;
+				case 'CronInterval':
+					$this->setCronInterval($value);
 					break;
 				case 'AutomationMode':
 					$this->setAutomationMode($value);
@@ -363,6 +368,14 @@ class Installer implements JsonSerializable {
 			set_config_option('install_automation_mode', $param_mode);
 		}
 		log_install('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
+	}
+
+	private function setCronInterval($param_mode = null) {
+		if ($param_mode != null) {
+			$this->cronInterval = $param_mode;
+			set_config_option('cron_interval', $param_mode);
+		}
+		log_install('automation',"setCronInterval($param_mode) returns with $this->cronInterval");
 	}
 
 	private function setAutomationRange($param_range = null) {
@@ -1457,15 +1470,17 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepProfileAndAutomation() {
+		global $cron_intervals;
+
 		$profiles = db_fetch_assoc('SELECT dsp.id, dsp.name, dsp.default
 			FROM data_source_profiles AS dsp
 			ORDER BY dsp.step, dsp.name');
 
 		if (sizeof($profiles)) {
 			$output  = Installer::sectionTitle(__('Default Profile'));
-			$output .= Installer::sectionNormal(__('Please select the default profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host'));
+			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
-			$selectOutput = '<p float="left">Interval:<br/><select id="default_profile" name="default_profile">';
+			$html = '<p>' . __('Default Profile:') . '<br/><select id="default_profile" name="default_profile">';
 			foreach ($profiles as $profile) {
 				$selectedProfile = '';
 				$suffix = '';
@@ -1481,26 +1496,35 @@ class Installer implements JsonSerializable {
 					$selectedProfile = ' selected';
 				}
 
-				$selectOutput .= '<option value="' . $profile['id'] .'"' . $selectedProfile . '>';
-				$selectOutput .= $profile['name'] . $suffix;
-				$selectOutput .= '</option>';
+				$html .= '<option value="' . $profile['id'] .'"' . $selectedProfile . '>';
+				$html .= $profile['name'] . $suffix;
+				$html .= '</option>';
 			}
-			$selectOutput .= '</select></p>';
+			$html .= '</select></p>';
 
-			$output .= Installer::sectionNormal($selectOutput);
+			ob_start();
+			$current_value = $this->cronInterval;
+			print '<p>' . __('Cron Interval:') . '<br />';
+			form_dropdown('cron_interval', $cron_intervals, '', '', $current_value, '', '');
+			print '</p>';
+
+			$html .= ob_get_contents();
+			ob_end_clean();
+
+			$output .= Installer::sectionNormal($html);
 
 			$output .= Installer::sectionTitle(__('Default Automation Network'));
-			$output .= Installer::sectionNormal(__('Please enter the default automation network range to be scanned when enabled. To enable scanning on installation, please select "Enabled" below'));
+			$output .= Installer::sectionNormal(__('Please enter the default automation network range to be scanned when enabled. To enable scanning on installation, please select \'Enabled\' below'));
 			$output .= Installer::sectionNote(__('When enabled, scanning will be set to daily by default'));
 
 			ob_start();
 			$current_value = $this->automationMode;
-			print '<p style="float:left">' . __("Mode:") . '<br />';
-			form_dropdown('automation_mode', array('Disabled','Enabled'), '', '', $current_value, '', '');
+			print '<p>' . __('Mode:') . '<br />';
+			form_dropdown('automation_mode', array(__('Disabled'), __('Enabled')), '', '', $current_value, '', '');
 			print '</p>';
 
 			$current_value = $this->automationRange;
-			print '<p style="float:left">' . __("Network Range:") . '<br />';
+			print '<p>' . __('Network Range:') . '<br />';
 			form_text_box('automation_range', $current_value, '', '', '40', 'text');
 			print '</p>';
 
@@ -1552,7 +1576,7 @@ class Installer implements JsonSerializable {
 	public function processStepCheckTables() {
 		$output = Installer::sectionTitle(__('Database Collation'));
 
-		$collation_vars = db_fetch_assoc('show variables like "collation_database";');
+		$collation_vars = db_fetch_assoc('SHOW VARIABLES LIKE "collation_database";');
 
 		$collation_value = '';
 		$collation_valid = false;
