@@ -719,6 +719,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_name = '';
 	$graph_template_id    = '-1';
 	$data_query_id        = '-1';
+	$data_query_index     = '';
 	$leaf_names           = array();
 
 	$leaf = db_fetch_row_prepared('SELECT
@@ -795,14 +796,29 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$host_group_data_array = explode(':', $host_group_data);
 
 	if ($host_group_data_array[0] == 'gt') {
-		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($host_group_data_array[1]));
-		$graph_template_id = $host_group_data_array[1];
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM graph_templates
+			WHERE id = ?',
+			array($host_group_data_array[1]));
+
+		$host_group_data_name = '<strong>' . __('Graph Template:'). '</strong> ' . $name;
+		$graph_template_id    = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dq') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1])));
-		$data_query_id = $host_group_data_array[1];
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM snmp_query
+			WHERE id = ?',
+			array($host_group_data_array[1]));
+
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : $name);
+		$data_query_id        = $host_group_data_array[1];
 	} elseif ($host_group_data_array[0] == 'dqi') {
-		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($host_group_data_array[1]))) . '-> ' . (empty($host_group_data_array[2]) ? 'Template Based' : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
-		$data_query_id = $host_group_data_array[1];
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM snmp_query
+			WHERE id = ?',
+			array($host_group_data_array[1]));
+
+		$host_group_data_name = '<strong>' . __('Graph Template:') . '</strong> ' . (empty($host_group_data_array[1]) ? __('Non Query Based') : $name) . '-> ' . (empty($host_group_data_array[2]) ? __('Template Based') : get_formatted_data_query_index($leaf['host_id'], $host_group_data_array[1], $host_group_data_array[2]));
+		$data_query_id    = $host_group_data_array[1];
 		$data_query_index = $host_group_data_array[2];
 	}
 
@@ -1203,7 +1219,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
 	} elseif ($leaf_type == 'host') {
-		$graph_list = get_host_graph_list($leaf['host_id'], $graph_template_id, $data_query_id, $leaf['host_grouping_type']);
+		$graph_list = get_host_graph_list($leaf['host_id'], $graph_template_id, $data_query_id, $leaf['host_grouping_type'], $data_query_index);
 	} elseif ($leaf_type == 'site') {
 		$sql_where = '';
 
@@ -1300,7 +1316,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 }
 
-function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '') {
+function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host_grouping_type = '', $data_query_index = '') {
 	$graph_list = array();
 	$sql_where  = '';
 
