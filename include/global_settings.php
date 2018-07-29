@@ -233,8 +233,8 @@ $settings = array(
 			),
 		),
 	'general' => array(
-		'event_logging_header' => array(
-			'friendly_name' => __('Event Logging'),
+		'poller_specific_header' => array(
+			'friendly_name' => __('Log Settings'),
 			'collapsible' => 'true',
 			'method' => 'spacer',
 			),
@@ -244,27 +244,6 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => 1,
 			'array' => $logfile_options,
-			),
-		'web_log' => array(
-			'friendly_name' => __('Web Events'),
-			'description' => __('What Cacti website messages should be placed in the log.'),
-			'method' => 'checkbox_group',
-			'tab' => 'general',
-			'items' => array(
-				'log_snmp' => array(
-					'friendly_name' => __('SNMP Messages'),
-					'default' => ''
-					),
-				'log_graph' => array(
-					'friendly_name' => __('Graph Syntax'),
-					'default' => ''
-					)
-				),
-			),
-		'poller_specific_header' => array(
-			'friendly_name' => __('Log Settings'),
-			'collapsible' => 'true',
-			'method' => 'spacer',
 			),
 		'log_verbosity' => array(
 			'friendly_name' => __('Generic Log Level'),
@@ -302,8 +281,8 @@ $settings = array(
 			'default' => ''
 			),
 		'poller_log' => array(
-			'friendly_name' => __('Poller Syslog/Eventlog Selection'),
-			'description' => __('If you are using the Syslog/Eventlog, What Cacti poller messages should be placed in the Syslog/Eventlog.'),
+			'friendly_name' => __('Syslog/Eventlog Item Selection'),
+			'description' => __('When using Syslog/Eventlog for logging, the Cacti log messages that will be forwarded to the Syslog/Eventlog.'),
 			'method' => 'checkbox_group',
 			'tab' => 'poller',
 			'items' => array(
