@@ -329,7 +329,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,2,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
+INSERT INTO `automation_networks` VALUES (1,1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
 
 --
 -- Table structure for table `automation_processes`
