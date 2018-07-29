@@ -303,14 +303,14 @@ function pages() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='links' action='links.php' method='post'>
+			<form id='link_filter' action='links.php' method='post'>
 			<table class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='textbox' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Links');?>
@@ -365,7 +365,7 @@ function pages() {
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM external_links');
 
-	form_start('links.php');
+	form_start('links.php', 'chk');
 
 	$nav = html_nav_bar('links.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 8, __('External Links'), 'page', 'main');
 
@@ -571,7 +571,7 @@ function edit_page() {
 		),
 	);
 
-	form_start('links.php');
+	form_start('links.php', 'link_edit');
 
 	if (isset($data['title'])) {
 		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', true, '3', 'center', '');
