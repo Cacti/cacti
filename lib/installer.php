@@ -2051,6 +2051,8 @@ class Installer implements JsonSerializable {
 					array($item['hash']));
 
 				if (!empty($host_template_id)) {
+					log_install_and_cacti(sprintf('Mapping Automation Template for Device Template \'%s\'', $item['name']));
+
 					db_execute_prepared('INSERT INTO automation_templates
 						(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
 						VALUES (?, ?, ?, ?, ?, ?)',
