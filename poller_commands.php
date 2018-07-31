@@ -82,8 +82,8 @@ if (sizeof($parms)) {
 /* Record Start Time */
 $start = microtime(true);
 
-$poller_commands = db_fetch_assoc_prepared('SELECT action, command 
-	FROM poller_command 
+$poller_commands = db_fetch_assoc_prepared('SELECT action, command
+	FROM poller_command
 	WHERE poller_id = ?', array($poller_id));
 
 $last_host_id   = 0;

@@ -41,7 +41,7 @@ chdir($dir);
 /* record the start time */
 $poller_start = microtime(true);
 
-include ('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 
 global $config, $database_default, $archived, $purged;
 

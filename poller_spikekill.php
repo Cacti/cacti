@@ -30,7 +30,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
     die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-include('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 
 ini_set('memory_limit', '512M');
 
@@ -118,7 +118,7 @@ if (timeToRun()) {
 
     $cacti_stats = sprintf(
         'Time:%01.4f ' .
-        'Graphs:%s ' . 
+        'Graphs:%s ' .
 		'Kills:%s',
         round($end-$start,2),
         $graphs,
@@ -183,7 +183,7 @@ function debug($message) {
 function kill_spikes($templates, &$found) {
 	global $debug, $config;
 
-	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path 
+	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_item AS gti
 		ON gt.id=gti.graph_template_id
@@ -195,7 +195,7 @@ function kill_spikes($templates, &$found) {
 	if (sizeof($rrdfiles)) {
 	foreach($rrdfiles as $f) {
 		debug("Removing Spikes from '$f'");
-		$response = exec(read_config_option('path_php_binary') . ' -q ' . 
+		$response = exec(read_config_option('path_php_binary') . ' -q ' .
 			$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
 		if (substr_count($response, 'Spikes Found and Remediated')) {
 			$found++;

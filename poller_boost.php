@@ -41,7 +41,7 @@ if (strpos($dir, 'boost') !== false) {
 }
 
 /* include important functions */
-include_once('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/boost.php');
 include_once($config['base_path'] . '/lib/dsstats.php');

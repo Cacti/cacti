@@ -103,7 +103,7 @@ ini_set('max_execution_time', '0');
 $dir = dirname(__FILE__);
 chdir($dir);
 
-include('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/snmp.php');
 include_once($config['base_path'] . '/lib/ping.php');
 include_once($config['base_path'] . '/lib/poller.php');

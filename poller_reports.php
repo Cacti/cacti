@@ -74,7 +74,7 @@ $dir = dirname(__FILE__);
 chdir($dir);
 
 /* include important functions */
-include_once('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 include_once($config['base_path'] . '/lib/reports.php');

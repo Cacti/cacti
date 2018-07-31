@@ -32,7 +32,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 }
 
 /* start initialization section */
-include('./include/global.php');
+include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/rrd.php');

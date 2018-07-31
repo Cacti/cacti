@@ -86,7 +86,7 @@ if (strpos($dir, 'boost') !== false) {
 }
 
 /* include important functions */
-include_once('./include/global.php');
+include('./include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/boost.php');
 include_once($config['base_path'] . '/lib/dsstats.php');
@@ -190,13 +190,13 @@ if ($run) {
 	$end_count = 0;
 
 	/* let the console know you are in recovery mode */
-	db_execute_prepared('UPDATE poller 
-		SET status="5" 
+	db_execute_prepared('UPDATE poller
+		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries 
-			FROM poller_output_boost 
+		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
+			FROM poller_output_boost
 			GROUP BY time', true, $local_db_cnn_id);
 
 		debug('There are ' . sizeof($time_records) . ' in the recovery database');
@@ -250,13 +250,13 @@ if ($run) {
 			}
 
 			if ($purge_time == 0) {
-				$rows = db_fetch_assoc("SELECT * 
-					FROM poller_output_boost 
+				$rows = db_fetch_assoc("SELECT *
+					FROM poller_output_boost
 					ORDER BY time ASC", true, $local_db_cnn_id);
 			} else {
-				$rows = db_fetch_assoc("SELECT * 
-					FROM poller_output_boost 
-					WHERE time $operator '$purge_time' 
+				$rows = db_fetch_assoc("SELECT *
+					FROM poller_output_boost
+					WHERE time $operator '$purge_time'
 					ORDER BY time ASC", true, $local_db_cnn_id);
 			}
 
@@ -269,8 +269,8 @@ if ($run) {
 					$count += strlen($sql);
 
 					if ($count >= $max_allowed_packet) {
-						db_execute('INSERT IGNORE INTO poller_output_boost 
-							(local_data_id, rrd_name, time, output) 
+						db_execute('INSERT IGNORE INTO poller_output_boost
+							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
 						$inserted += sizeof($sql_array);
@@ -282,8 +282,8 @@ if ($run) {
 				}
 
 				if ($count > 0) {
-					db_execute("INSERT IGNORE INTO poller_output_boost 
-						(local_data_id, rrd_name, time, output) 
+					db_execute("INSERT IGNORE INTO poller_output_boost
+						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
 					$inserted += $count;
 				}
@@ -301,8 +301,8 @@ if ($run) {
 	}
 
 	/* let the console know you are in online mode */
-	db_execute_prepared('UPDATE poller 
-		SET status="2" 
+	db_execute_prepared('UPDATE poller
+		SET status="2"
 		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');
