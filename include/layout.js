@@ -202,6 +202,9 @@ $.fn.textWidth = function(text){
 	if (!text) {
 		html.css('font-family', org.css('font-family'));
 		html.css('font-weight', org.css('font-weight'));
+		html.css('font-size',   org.css('font-size'));
+		html.css('padding',     org.css('padding'));
+		html.css('margin',      org.css('margin'));
 	}
 	$('body').append(html);
 	var width = html.width();
@@ -216,6 +219,9 @@ $.fn.textBoxWidth = function() {
 	var html = $('<span style="display:none;white-space:nowrap;position:absolute;width:auto;left:-9999px">' + org.val() + '</span>');
 	html.css('font-family', org.css('font-family'));
 	html.css('font-weight', org.css('font-weight'));
+	html.css('font-size',   org.css('font-size'));
+	html.css('padding',     org.css('padding'));
+	html.css('margin',      org.css('margin'));
 	$('body').append(html);
 	var width = html.width();
 	html.remove();

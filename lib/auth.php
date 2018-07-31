@@ -1249,7 +1249,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 			$sql_where .= ' AND (' . $sql_user . ')';
 		}
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id = gtg.local_graph_id
@@ -1276,7 +1276,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 			$sql_where"
 		);
 	} else {
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id=gtg.local_graph_id
@@ -1949,9 +1949,9 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 	}
 
 	if ($sql_where != '') {
-		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
+		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
 	} else {
-		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ')';
+		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
 	}
 
 	if ($limit != '') {
@@ -1964,7 +1964,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 
 	$templates = db_fetch_assoc("SELECT DISTINCT
 		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
-		IF(snmp_query_graph_id=0, gt.name, sqg.name) AS name
+		IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']')) AS name
 		FROM graph_local AS gl
 		INNER JOIN graph_templates AS gt
 		ON gt.id=gl.graph_template_id

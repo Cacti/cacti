@@ -1073,15 +1073,21 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 	function initPage() {
 		var msWidth = 100;
+		var maxWidth = 200;
 		$('#graph_template_id option').each(function() {
 			if ($(this).textWidth() > msWidth) {
 				msWidth = $(this).textWidth();
+				if (msWidth > maxWidth) {
+					msWidth = maxWidth;
+				}
 			}
 			$('#graph_template_id').css('width', msWidth+120+'px');
 		});
 
 		$('#graph_template_id').hide().multiselect({
 			height: 300,
+			menuWidth: 390,
+			buttonWidth: 390,
 			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
