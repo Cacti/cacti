@@ -102,13 +102,17 @@ if (!empty($host_id)) {
 	push_out_host($host_id, $local_data_id);
 }
 
-/* display_help - displays the usage of the function */
-function display_help () {
-	echo "Cacti Add Datasource to Host v0.1\n\n";
-	echo "usage: add_datasource.php [--help] --host-id=[ID] --data-template-id=[ID]\n\n";
+/*  display_version - displays version information */
+function display_version() {
+	$version = get_cacti_version();
+	echo "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+}
+
+function display_help() {
+	display_version();
+	echo "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";
 	echo "Cacti utility for adding datasources via a command line interface.\n\n";
 	echo "--host-id=id - The host id\n";
 	echo "--data-template-id=id - The numerical ID of the data template to be added\n";
 }
 
-?>
