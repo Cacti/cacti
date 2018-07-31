@@ -115,27 +115,21 @@ function themeReady() {
 
 	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
-			$(this).selectmenu({
-				change: function(event, ui) {
-					$(this).val(ui.item.value).change();
-				},
-				position: {
-					my: 'left top',
-					at: 'left bottom',
-					collision: 'flip'
-				},
-			}).each(function() {
+			$(this).each(function() {
 				id = $(this).attr('id');
-				minWidth = 0;
-				$('#'+id+' > option').each(function() {
-					width=$(this).textWidth();
-					if (width > minWidth) {
-						minWidth = width;
-					}
+
+				$(this).selectmenu({
+					change: function(event, ui) {
+						$(this).val(ui.item.value).change();
+					},
+					position: {
+						my: "left top",
+						at: "left bottom",
+						collision: "flip"
+					},
+					width: 'auto'
 				});
 
-				minWidth+=80;
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', '400px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		} else {
