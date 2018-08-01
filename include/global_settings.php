@@ -1389,6 +1389,12 @@ $settings = array(
 			'friendly_name' => __('Emailing Options'),
 			'method' => 'spacer',
 			),
+		'notify_admin' => array(
+			'friendly_name' => __('Notify Primary Admin of Issues'),
+			'description' => __('In cases where the Cacti server is experiencing problems, should the Primary Administrator be notified by Email?  The Primary Administrator\'s Cacti user account is specified under the Authentication tab on Cacti\'s settings page. It defaults to the \'admin\' account.'),
+			'default' => '',
+			'method' => 'checkbox'
+			),
 		'settings_test_email' => array(
 			'friendly_name' => __('Test Email'),
 			'description' => __('This is a Email account used for sending a test message to ensure everything is working properly.'),

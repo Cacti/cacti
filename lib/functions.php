@@ -3725,7 +3725,7 @@ function general_header() {
 }
 
 function admin_email($subject, $message) {
-	if (read_config_option('admin_user')) {
+	if (read_config_option('admin_user') && read_config_option('notify_admin')) {
 		$admin_details = db_fetch_row_prepared('SELECT full_name, email_address
 			FROM user_auth
 			WHERE id = ?',
@@ -3735,10 +3735,14 @@ function admin_email($subject, $message) {
 			$from[0] = read_config_option('settings_from_email');
 			$from[1] = read_config_option('settings_from_name');
 
-			$to[0]   = $admin_details['email_address'];
-			$to[1]   = $admin_details['full_name'];
+			if ($admin_details['email_address'] != '') {
+				$to[0]   = $admin_details['email_address'];
+				$to[1]   = $admin_details['full_name'];
 
-			send_mail($to, $from, $subject, $message, strip_tags($message), '', true);
+				send_mail($to, $from, $subject, $message, strip_tags($message), '', true);
+			} else {
+				cacti_log('WARNING: Primay Admin account not set!  Unable to send administrative Email.', false, 'SYSTEM');
+			}
 		} else {
 			cacti_log('WARNING: Primay Admin account not found!  Unable to send administrative Email.', false, 'SYSTEM');
 		}
