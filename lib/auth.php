@@ -2388,9 +2388,23 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 	return true;
 }
 
-function auth_raise_message($message_id) {
+function auth_raise_message($message_id, $type = '') {
+	global $messages;
 	if (defined('IN_CACTI_INSTALL')) {
-		auth_display_message($messages[$message_id]);
+		$msg = $message_id;
+		if (isset($messages[$message_id])) {
+			$msg = $messages[$message_id];
+			if (is_array($msg)) {
+				if (isset($msg['message'])) {
+					$msg = $msg['message'];
+				}
+				if (isset($msg['type'])) {
+					$type = $msg['type'];
+				}
+			}
+		}
+
+		auth_display_message($msg, $type);
 	        exit;
 	} else {
 		//auth_display_message($messages[$message_id]);
@@ -2402,12 +2416,10 @@ function auth_raise_message($message_id) {
    the pre-defined error messages
    @arg $message - the actual text of the error message to display
 */
-function auth_display_message($message) {
-	global $config;
+function auth_display_message($message, $type = 'info', $hook = '') {
+	global $config, $messages_titles;
 
 	/* kill the session */
-	setcookie(session_name(), '', time() - 3600, $config['url_path']);
-
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		$returnLink = sanitize_uri($_SERVER['HTTP_REFERER']);
 	} else {
@@ -2415,7 +2427,20 @@ function auth_display_message($message) {
 	}
 
 	/* print error */
-        print html_common_login_header('', __('Cacti - Unable to continue'), __('Unable to continue'), '');
+	$title = '';
+	if (empty($type)) {
+		$type = 'info';
+	}
+
+	if (!empty($type)) {
+		if (isset($messages_titles[$type])) {
+			$title = $messages_titles[$type];
+		} else {
+			$title = __('Cacti') . ' - ' . $type;
+		}
+	}
+
+        print html_common_login_header($hook, __('Cacti') . ' - ' . $title, $title, '');
 	print "<div class='loginMessage'>" . $message . "</div>\n";
         print "<div class='loginReturn'>[<a href='" . $returnLink . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</div>";
         print html_common_login_footer('');

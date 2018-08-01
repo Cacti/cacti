@@ -47,7 +47,8 @@ if (read_config_option('auth_method') == '2') {
 		/* No user - Bad juju! */
 		$username = '';
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
-		auth_display_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
+		setcookie(session_name(), '', time() - 3600, $config['url_path']);
+		auth_display_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'), 'error');
 		exit;
 	}
 } else {

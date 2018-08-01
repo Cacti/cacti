@@ -164,6 +164,7 @@ case 'updatepassword':
 			WHERE id = ?",
 			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
 
+		kill_session_var('sess_change_password');
 		auth_raise_message('password_success');
 
 		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */

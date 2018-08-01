@@ -115,6 +115,12 @@ $cacti_version_codes = array(
 	'1.2.0'  => '0101',
 );
 
+$messages_titles = array(
+	'info'  => __('Operation successful'),
+	'warn'  => __('Operation generated a warning'),
+	'error' => __('Operation failed'),
+);
+
 $messages = array(
 	1  => array(
 		'message' => __('Save Successful.'),
