@@ -2387,3 +2387,38 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 
 	return true;
 }
+
+function auth_raise_message($message_id) {
+	if (defined('IN_CACTI_INSTALL')) {
+		auth_display_message($messages[$message_id]);
+	        exit;
+	} else {
+		//auth_display_message($messages[$message_id]);
+		raise_message($message_id);
+	}
+}
+
+/* auth_display_message - displays a custom error message to the browser that looks like
+   the pre-defined error messages
+   @arg $message - the actual text of the error message to display
+*/
+function auth_display_message($message) {
+	global $config;
+
+	/* kill the session */
+	setcookie(session_name(), '', time() - 3600, $config['url_path']);
+
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$returnLink = sanitize_uri($_SERVER['HTTP_REFERER']);
+	} else {
+                $returnLink = "#' onClick='window.history.back();";
+	}
+
+	/* print error */
+        print html_common_login_header('', __('Cacti - Unable to continue'), __('Unable to continue'), '');
+	print "<div class='loginMessage'>" . $message . "</div>\n";
+        print "<div class='loginReturn'>[<a href='" . $returnLink . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</div>";
+        print html_common_login_footer('');
+
+	exit;
+}

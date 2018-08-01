@@ -47,7 +47,7 @@ if (read_config_option('auth_method') == '2') {
 		/* No user - Bad juju! */
 		$username = '';
 		cacti_log('ERROR: No username passed with Web Basic Authentication enabled.', false, 'AUTH');
-		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
+		auth_display_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
 		exit;
 	}
 } else {
@@ -109,7 +109,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = html_escape($username);
 
-			display_custom_error_message(__('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username));
+			auth_display_message(__('%s authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.', $username));
 			header('Location: index.php?header=false');
 			exit;
 		}
@@ -267,7 +267,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				array($username, $realm));
 		} else {
 			/* error */
-			display_custom_error_message(__('Template user id %s does not exist.', read_config_option('user_template')));
+			auth_display_message(__('Template user id %s does not exist.', read_config_option('user_template')));
 			cacti_log("LOGIN: Template user id '" . read_config_option('user_template') . "' does not exist.", false, 'AUTH');
 			header('Location: index.php?header=false');
 			exit;
@@ -289,7 +289,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			$guest_user = true;
 		} else {
 			/* error */
-			display_custom_error_message(__('Guest user id %s does not exist.', read_config_option('guest_user')));
+			auth_display_message(__('Guest user id %s does not exist.', read_config_option('guest_user')));
 			cacti_log("LOGIN: Unable to locate guest user '" . read_config_option('guest_user') . "'", false, 'AUTH');
 			header('Location: index.php?header=false');
 			exit;
@@ -311,7 +311,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$user_enabled = $user['enabled'];
 		if ($user_enabled != 'on') {
 			/* Display error */
-			display_custom_error_message(__('Access Denied, user account disabled.'));
+			auth_display_message(__('Access Denied, user account disabled.'));
 			header('Location: index.php?header=false');
 			exit;
 		}
@@ -323,14 +323,6 @@ if (get_nfilter_request_var('action') == 'login') {
 
 		/* set the php session */
 		$_SESSION['sess_user_id'] = $user['id'];
-
-		/* handle 'force change password' */
-		if (($user['must_change_password'] == 'on') &&
-			(read_config_option('auth_method') == 1) &&
-			($user['password_change'] == 'on')) {
-
-			$_SESSION['sess_change_password'] = true;
-		}
 
 		$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
 			FROM user_auth_group AS uag
@@ -402,7 +394,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	} else {
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */
-			display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
+			auth_display_message(__('Access Denied, please contact you Cacti Administrator.'));
 			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
 			header('Location: index.php');
 			exit;
@@ -414,27 +406,6 @@ if (get_nfilter_request_var('action') == 'login') {
 				array($username, get_client_addr('')));
 		}
 	}
-}
-
-/* auth_display_custom_error_message - displays a custom error message to the browser that looks like
-   the pre-defined error messages
-   @arg $message - the actual text of the error message to display
-*/
-function auth_display_custom_error_message($message) {
-	global $config;
-
-	/* kill the session */
-	setcookie(session_name(), '', time() - 3600, $config['url_path']);
-
-	/* print error */
-	print '<!DOCTYPE html>';
-	print "<html>\n";
-	print "<head>\n";
-	html_common_header(__('Cacti'));
-	print "</head>\n";
-	print "<body>\n<br><br>\n";
-	print $message . "\n";
-	print "</body>\n</html>\n";
 }
 
 function domains_login_process() {
@@ -547,7 +518,7 @@ function domains_login_process() {
 							array($username, $realm));
 					} else {
 						/* error */
-						display_custom_error_message(__('Template user id %s does not exist.', $template_id));
+						auth_display_message(__('Template user id %s does not exist.', $template_id));
 						cacti_log("LOGIN: Template user id '" . $template_id . "' does not exist.", false, 'AUTH');
 						header('Location: index.php?header=false');
 						exit;
@@ -654,130 +625,120 @@ if (api_plugin_hook_function('custom_login', OPER_MODE_NATIVE) == OPER_MODE_RESK
 
 $selectedTheme = get_selected_theme();
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
+$html_header = "
 	<script type='text/javascript'>
 	$(function() {
 			$('#login_username').focus();
 	});
 	</script>
-</head>
-<body class='loginBody'>
-	<div class='loginLeft'></div>
-	<div class='loginCenter'>
-	<div class='loginArea'>
-		<div class='cactiLoginLogo'></div>
-			<legend><?php print __('User Login');?></legend>
-			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<input type='hidden' name='action' value='login'>
-				<?php api_plugin_hook_function('login_before',
-					array(
-						'ldap_error' => $ldap_error,
-						'ldap_error_message' => $ldap_error_message,
-						'username' => $username,
-						'user_enabled' => $user_enabled,
-						'action' => get_nfilter_request_var('action')));
-				?>
-				<div class='loginTitle'>
-					<p><?php print __('Enter your Username and Password below');?></p>
-				</div>
-				<div class='cactiLogin'>
-					<table class='cactiLoginTable'>
-						<tr>
-							<td>
-								<label for='login_username'><?php print __('Username');?></label>
-							</td>
-							<td>
-								<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<label for='login_password'><?php print __('Password');?></label>
-							</td>
-							<td>
-								<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
-							</td>
-						</tr>
-						<?php
-						if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
-							if (read_config_option('auth_method') == '3') {
-								$realms = api_plugin_hook_function('login_realms',
-									array(
-										'1' => array(
-											'name' => __('Local'),
-											'selected' => false
-										),
-										'2' => array(
-											'name' => __('LDAP'),
-											'selected' => true
-										)
-									)
-								);
-							} else {
-								$realms = get_auth_realms(true);
-							}
-						?>
-						<tr>
-							<td>
-								<label for='realm'><?php print __('Realm');?></label>
-							</td>
-							<td>
-								<select id='realm' name='realm'><?php
-									if (sizeof($realms)) {
-										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
-										}
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
-						<tr>
-							<td colspan='2'>
-								<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>
-								<label for='remember_me'><?php print __('Keep me signed in');?></label>
-							</td>
-						</tr>
-					<?php } ?>
-						<tr>
-							<td cospan='2'>
-								<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
-							</td>
-						</tr>
-					</table>
-				</div>
-			<?php api_plugin_hook('login_after'); ?>
-			</form>
-			<div class='loginErrors'>
-				<?php
-				if ($ldap_error) {
-					print $ldap_error_message;
-				} else {
-					if (get_nfilter_request_var('action') == 'login') {
-						print __('Invalid User Name/Password Please Retype');
-					}
-					if ($user_enabled == '0') {
-						print __('User Account Disabled');
-					}
-				}
-				?>
-			</div>
+";
+$html_footer = "";
+
+html_common_login_header('login_title', __('Login to Cacti'), __('User Login'), $html_header);
+?>
+<?php
+	api_plugin_hook_function('login_before',
+		array(
+			'ldap_error' => $ldap_error,
+			'ldap_error_message' => $ldap_error_message,
+			'username' => $username,
+			'user_enabled' => $user_enabled,
+			'action' => get_nfilter_request_var('action')
+		)
+	);
+?>
+	<form name='login' method='post' action='<?php print get_current_page();?>'>
+		<input type='hidden' name='action' value='login'>
+		<div class='loginTitle'>
+			<p><?php print __('This system requires that you authenticate in order to provide access to the system');?></p>
+			<p><?php print __('Enter your Username and Password below');?></p>
 		</div>
-		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
+		<div class='cactiLogin'>
+			<table class='cactiLoginTable'>
+				<tr>
+					<td>
+						<label for='login_username'><?php print __('Username');?></label>
+					</td>
+					<td>
+						<input style='width: 90%' type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label for='login_password'><?php print __('Password');?></label>
+					</td>
+					<td>
+						<input style='width: 90%' type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+					</td>
+				</tr>
+				<?php
+					if (read_config_option('auth_method') == '3' || read_config_option('auth_method') == '4') {
+						if (read_config_option('auth_method') == '3') {
+							$realms = api_plugin_hook_function('login_realms',
+								array(
+									'1' => array(
+										'name' => __('Local'),
+										'selected' => false
+									),
+									'2' => array(
+										'name' => __('LDAP'),
+										'selected' => true
+									)
+							)
+						);
+					} else {
+						$realms = get_auth_realms(true);
+					}
+				?>
+				<tr>
+					<td>
+						<label for='realm'><?php print __('Realm');?></label>
+					</td>
+					<td>
+						<select id='realm' name='realm' width='100%'><?php
+							if (sizeof($realms)) {
+								foreach($realms as $index => $realm) {
+									print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
+								}
+							}
+							?>
+						</select>
+					</td>
+				</tr>
+			<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+					<td>
+						<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>
+						<label for='remember_me'><?php print __('Keep me signed in');?></label>
+					</td>
+				</tr>
+			<?php } ?>
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+					<td>
+						<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Login');?>'>
+					</td>
+				</tr>
+			</table>
+		</div>
+<?php api_plugin_hook('login_after'); ?>
+	<div class='loginErrors'>
+		<?php
+		if ($ldap_error) {
+			print $ldap_error_message;
+		} else {
+			if (get_nfilter_request_var('action') == 'login') {
+				print __('Invalid User Name/Password Please Retype');
+			}
+			if ($user_enabled == '0') {
+				print __('User Account Disabled');
+			}
+		}
+		?>
 	</div>
-	<div class='loginRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		$('body').css('height', $(window).height());
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-	});
-	</script>
-	<?php include_once(dirname(__FILE__) . '/include/global_session.php');?>
-</body>
-</html>
+<?php html_common_login_footer($html_footer); ?>

@@ -2100,7 +2100,7 @@ function setupPageTimeout() {
 	if (typeof refreshMSeconds != 'undefined') {
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {
-				document.location = urlPath+'logout.php?action=timeout';
+				document.location = urlPath+'logout.php?action=timeout&3';
 			} else {
 				if (previousPage != '') {
 					refreshPage = previousPage;
@@ -2363,6 +2363,7 @@ if (typeof urlPath == 'undefined') {
 }
 
 var graphPage  = urlPath+'graph_view.php';
+var checkPage  = urlPath+'check_json.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
@@ -2370,8 +2371,25 @@ function checkForLogout(data) {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
-	} else if (data.indexOf('cactiLoginLogo') >= 0) {
-		document.location = urlPath + 'logout.php?action=timeout';
+	} else {
+		href = checkPage + '?action=checksess';
+		$.get(href)
+			.done(function(data) {
+				var shouldLogout = -1;
+				try {
+					j = JSON.parse(data);
+					shouldLogout = j.status;
+				} catch (e) {
+					shouldLogout = -2;
+				}
+
+				if (shouldLogout != 200) {
+					document.location = urlPath + 'logout.php?action=timeout&' + shouldLogout;
+				}
+			})
+			.fail(function(data) {
+				document.location = urlPath + 'logout.php?action=timeout&-3';
+			});
 	}
 }
 

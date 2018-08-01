@@ -22,40 +22,54 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
+/* since we'll have additional headers, tell php when to flush them */
+ob_start();
 
-$version = get_cacti_version();
+$guest_account = true;
+$auth_json     = true;
 
-print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-print "<html>\n";
-print "<head>\n";
-html_common_header(__('Permission Denied'));
-print "</head>\n";
-print "<body class='logoutBody'>
-	<div class='logoutLeft'></div>
-	<div class='logoutCenter'>
-		<div class='logoutArea'>
-			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Permission Denied') . "</legend>
-			<div class='logoutTitle'>
-				<p>" . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') . "</p>
-				<center>" . $goBack . "</center>
-			</div>
-			<div class='logoutErrors'></div>
-		</div>
-		<div class='versionInfo'>" . __('Version') . " " . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
-	</div>
-	<div class='logoutRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-	});
-	</script>";
+include('include/global.php');
 
-include_once('./include/global_session.php');
+/* set the json variable for request validation handling */
+set_request_var('json', true);
 
-print "</body>
-</html>\n";
-exit;
+$debug = false;
+switch (get_request_var('action')) {
+	case 'checkpass':
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
 
+		if ($error == '') {
+			print $error;
+		} else {
+			print 'ok';
+		}
+
+		exit;
+
+		break;
+
+	case 'checksess':
+		include('./include/auth.php');
+		$json = json_encode(
+			array(
+				'status' => '200',
+				'statusText' => __('Logged In'),
+				'responseText' => __('Logged in with access to Cacti.')
+			)
+		);
+		break;
+
+	default:
+		include('./include/auth.php');
+		$json = json_encode(
+			array(
+				'status' => '404',
+				'statusText' => __('Action Not Found'),
+				'responseText' => __('Requested action not found on %s', 'check_json.php')
+			)
+		);
+		break;
+}
+
+header('Content-Length: ' . strlen($json));
+print $json;

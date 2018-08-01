@@ -1109,6 +1109,7 @@ $user_auth_realm_filenames = array(
 	'logout.php' => -1,
 	'auth_profile.php' => 20,
 	'auth_changepassword.php' => -1,
+	'check_json.php' => -1,
 	'reports_user.php' => 21,
 	'reports_admin.php' => 22,
 	'automation_graph_rules.php' => 23,

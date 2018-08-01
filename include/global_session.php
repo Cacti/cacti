@@ -59,7 +59,7 @@ if (isset($_SESSION['refresh'])) {
     if (isset($_SESSION['refresh']['page'])) {
         $myrefresh['page'] = sanitize_uri($_SESSION['refresh']['page']);
     } else {
-		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout&1';
 	}
 
 	unset($_SESSION['refresh']);
@@ -85,7 +85,7 @@ if (isset($_SESSION['refresh'])) {
 	$refreshIsLogout      = 'false';
 } else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
-	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
+	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout&2';
 	$refreshIsLogout      = 'true';
 } ?>
 <script type='text/javascript'>

@@ -2161,7 +2161,7 @@ function draw_login_status($using_guest_account = false) {
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
 				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") .
-				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') .
+				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=changepassword'>" . __('Change Password') . "</a></li>":'') .
 				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"") .
 			"</ul>\n";
 
