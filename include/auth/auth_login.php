@@ -118,7 +118,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		break;
 	case '3':
 		/* LDAP Auth */
- 		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
+		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
 			/* include LDAP lib */
 			include_once('./lib/ldap.php');
 
@@ -234,7 +234,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			if ($cn_full_name != '' || $cn_email != '') {
 				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email));
 
-   				if (isset($ldap_cn_search_response['cn'])) {
+				if (isset($ldap_cn_search_response['cn'])) {
 					$data_override = array();
 
 					if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {

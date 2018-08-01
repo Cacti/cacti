@@ -86,7 +86,7 @@ if (read_config_option('auth_method') != 0) {
 		} elseif (isset($auth_text) && $auth_text == true) {
 			print __('FATAL: You must be logged in to access this area of Cacti.');
 		} else {
-			require_once($config['base_path'] . '/auth_login.php');
+			require_once($config['base_path'] . '/include/auth/auth_login.php');
 		}
 
 		exit;
@@ -225,7 +225,7 @@ if (read_config_option('auth_method') != 0) {
 		} elseif (isset($auth_text) && $auth_text == true) {
 			print __('FATAL: You must change your password to access this area of Cacti.');
 		} else {
-			require_once($config['base_path'] . '/auth_changepassword.php');
+			require_once($config['base_path'] . '/include/auth/auth_changepassword.php');
 		}
 		exit;
 	}

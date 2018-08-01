@@ -264,11 +264,17 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+							<td>
+								<input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?>
+								<div id="pass" class="password badpassword fa fa-times" title="<?php print __('Password not set');?>"></div>
+							</td>
 						</tr>
 						<tr>
 							<td><?php print __('Confirm new password');?></td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
+							<td>
+								<input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'>
+								<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __('Password not set')?>"></div>
+							</td>
 						</tr>
 						<tr>
 							<td>&nbsp;</td>
@@ -284,42 +290,43 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 
 			var minChars=<?php print read_config_option('secpass_minlen'); ?>;
 
-			function setPassword(isValid, title = '') {
+			function setPassword(field, isValid, title = '') {
 				if (title == '' || title == undefined) {
 					title = '<?php print __('Password Too Short');?>';
 				}
 
 				if (isValid) {
-					titleClass = 'good';
-					titleIcon  = 'check';
-					title      = '<?php print __('Password Validation Passes');?>';
+					classAdd = 'goodpassword fa-check';
+					classDel = 'badpassword fa-times';
+					title    = '<?php print __('Password Validation Passes');?>';
 				} else {
-					titleClass = 'bad';
+					classAdd = 'badpassword fa-times';
+					classDel = 'goodpassword fa-check';
 					titleIcon  = 'times';
 				}
 
-				$('#pass').remove();
-				$('#password').after('<div id="pass" class="password ' + titleClass + 'password fa fa-' + titleIcon + '" title="' + title + '"></div>');
-				$('.password').tooltip();
-				checkPasswordConfirm();
+				$('#' + field).removeClass(classDel).addClass(classAdd).tooltip('option','content',title);
 			}
 
 			function checkPassword() {
 				if ($('#password').val().length == 0) {
-					setPassword(false);
+					setPassword('pass', false);
+					checkPasswordConfirm();
 				} else if ($('#password').val().length < minChars) {
-					setPassword(false);
+					setPassword('pass', false);
+					checkPasswordConfirm();
 				} else {
 					var checkPage = '<?php print URL_PATH;?>check_json.php?action=checkpass';
-					debugger;
 					$.post(checkPage, { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
 						if (data == 'ok') {
-							setPassword(true);
+							setPassword('pass', true);
 						} else {
-							setPassword(false, data);
+							setPassword('pass', false, data);
 						}
+						checkPasswordConfirm();
 					}).fail(function() {
-						setPassword(false);
+						setPassword('pass', false);
+						checkPasswordConfirm();
 					});
 				}
 			}
@@ -330,15 +337,12 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 					isValid= ($('#password').val() == $('#password_confirm').val());
 				}
 
-				if (!isValid) {
-					$('#passconfirm').remove();
-					$('#password_confirm').after('<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __('Passwords do Not Match')?>"></div>');
-					$('.passconfirm').tooltip();
-				} else {
-					$('#passconfirm').remove();
-					$('#password_confirm').after('<div id="passconfirm" class="passconfirm goodpassword fa fa-check" title="<?php print __('Passwords Match'); ?>"></div>');
-					$('.passconfirm').tooltip();
+				title = '<?php print __('Passwords do Not Match');?>';
+				if (isValid) {
+					title = '<?php print __('Passwords Match'); ?>';
 				}
+
+				setPassword('passconfirm', isValid, title);
 				$('#save').button( "option", "disabled", !isValid );
 			}
 
@@ -350,8 +354,11 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 
 				/* clear passwords */
-				$('#password').val('');
-				$('#password_confirm').val('');
+				var inputs = $('#password, #pass, #password_confirm, #passconfirm');
+				inputs.tooltip();
+
+				$('#password, password_confirm').val('');
+				//$('#password_confirm').val('');
 
 				$('#password').keyup(function() {
 					checkPassword();

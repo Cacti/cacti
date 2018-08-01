@@ -31,7 +31,7 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'changepassword':
 		global $config;
-		require_once($config['base_path'] . '/auth_changepassword.php');
+		require_once($config['base_path'] . '/include/auth/auth_changepassword.php');
 		exit;
 
 		break;
