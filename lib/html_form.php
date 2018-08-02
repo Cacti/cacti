@@ -334,7 +334,7 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'checkbox_group':
-		print "<div id='${field_name}_group' class='checkboxgroup'>\n";
+		print "<div id='${field_name}_group' class='checkboxgroup1'>\n";
 		foreach ($field_array['items'] as $check_name => $check_array) {
 			form_checkbox(
 				$check_name,
@@ -344,7 +344,7 @@ function draw_edit_control($field_name, &$field_array) {
 				((isset($check_array['form_id'])) ? $check_array['form_id'] : ''),
 				((isset($field_array['class'])) ? $field_array['class'] : ''),
 				((isset($check_array['on_change'])) ? $check_array['on_change'] : (((isset($field_array['on_change'])) ? $field_array['on_change'] : ''))),
-				'',
+				$field_array['friendly_name'],
 				true
 			);
 		}
@@ -850,12 +850,13 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = " aria-checked='false'";
 	}
 
-	print "<input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . ">";
+	$labelClass = "";
 	if ($show_label) {
-		print "<label for='$form_name'>" . html_escape($form_caption) . "</label>";
-	} else {
-		print "<label class='checkboxLabel' for='$form_name'>" . html_escape($form_caption) . "</label>";
+		$labelClass = ' checkboxLabelWanted';
 	}
+
+	print "<label class='checkboxSwitch'><input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
+	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . "</label>";
 }
 
 /* form_radio_button - draws a standard html radio button

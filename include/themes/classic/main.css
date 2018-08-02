@@ -1976,3 +1976,7 @@ tr#realtime td:first-child {
 .graphWrapper {
 	position: relative;
 }
+
+.checkboxLabelWanted {
+	display: inline-block;
+}
