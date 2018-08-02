@@ -2376,10 +2376,10 @@ function checkForLogout(data) {
 		$.get(href)
 			.done(function(data) {
 				var shouldLogout = -1;
-				try {
-					j = JSON.parse(data);
-					shouldLogout = j.status;
-				} catch (e) {
+				if (typeof data == "object" && data.status != undefined) {
+					shouldLogout = data.status;
+				} else {
+					debugger;
 					shouldLogout = -2;
 				}
 
