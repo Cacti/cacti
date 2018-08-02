@@ -71,5 +71,6 @@ switch (get_request_var('action')) {
 		break;
 }
 
+header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));
 print $json;
