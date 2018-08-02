@@ -471,7 +471,7 @@ $data_source_types = array(
 	5 => 'COMPUTE'
 );
 
-if (get_rrdtool_version() >= 1.5) {
+if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
 	$data_source_types[6] = 'DCOUNTER';
 	$data_source_types[7] = 'DDERIVE';
 }
@@ -756,11 +756,12 @@ $ldap_modes = array(
 );
 
 $rrdtool_versions = array(
-	'rrd-1.3.x' => 'RRDtool 1.3.x',
-	'rrd-1.4.x' => 'RRDtool 1.4.x',
-	'rrd-1.5.x' => 'RRDtool 1.5.x',
-	'rrd-1.6.x' => 'RRDtool 1.6.x',
-	'rrd-1.7.x' => 'RRDtool 1.7.x'
+	'1.3.0' => 'RRDtool 1.3+',
+	'1.4.0' => 'RRDtool 1.4+',
+	'1.5.0' => 'RRDtool 1.5+',
+	'1.6.0' => 'RRDtool 1.6+',
+	'1.7.0' => 'RRDtool 1.7+',
+	'1.8.0' => 'RRDtool 1.8+'
 );
 
 $i18n_modes = array(

@@ -879,7 +879,7 @@ function graph_edit() {
 
 		form_hidden_box('save_component_graph','1','');
 		form_hidden_box('save_component_input','1','');
-		form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+		form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 		form_save_button($referer, 'return', 'id');
 
 		echo '</div>';
@@ -907,7 +907,7 @@ function graph_edit() {
 		function dynamic() {
 			if ($('#scale_log_units')) {
 				$('#scale_log_units').prop('disabled', true);
-				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				if (($('#rrdtool_version').val() != '1.0.0') &&
 					($('#auto_scale_log').is(':checked'))) {
 					$('#scale_log_units').prop('disabled', true);
 				}
@@ -917,7 +917,7 @@ function graph_edit() {
 		function changeScaleLog() {
 			if ($('#scale_log_units')) {
 				$('#scale_log_units').prop('disabled', true);
-				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				if (($('#rrdtool_version').val() != '1.0.0') &&
 					($('#auto_scale_log').is(':checked'))) {
 					$('#scale_log_units').prop('disabled', false);
 				}

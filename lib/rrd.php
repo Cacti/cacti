@@ -689,7 +689,7 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 					$rrd_update_values .= $value;
 				}
 
-				if (get_rrdtool_version() >= 1.5) {
+				if (cacti_version_compare(get_rrdtool_version(),'1.5','>=')) {
 					$update_options='--skip-past-updates';
 				} else {
 					$update_options='';
@@ -1069,28 +1069,28 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 			}
 			break;
 		case "legend_position":
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=') {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-position " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case "legend_direction":
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=') {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-direction " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'left_axis_formatter':
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=') {
 				if (!empty($value)) {
 					$graph_opts .= "--left-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'right_axis_formatter':
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=') {
 				if (!empty($value)) {
 					$graph_opts .= "--right-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -2695,10 +2695,10 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	}
 
 	$loop = array(
-		'filename' 		=> $info_array['filename'],
-		'rrd_version'	=> $info_array['rrd_version'],
-		'step' 			=> $info_array['step'],
-		'last_update'	=> $info_array['last_update']);
+		'filename'    => $info_array['filename'],
+		'rrd_version' => $info_array['rrd_version'],
+		'step'        => $info_array['step'],
+		'last_update' => $info_array['last_update']);
 
 	foreach ($loop as $key => $value) {
 		form_alternate_row($key, true);

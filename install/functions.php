@@ -393,16 +393,13 @@ function install_file_paths () {
 		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool 1\.7/', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.7.x';
-			}else if (preg_match('/^RRDtool 1\.6/', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.6.x';
-			}else if (preg_match('/^RRDtool 1\.5/', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.5.x';
-			}else if (preg_match('/^RRDtool 1\.4\./', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.4.x';
-			}else if (preg_match('/^RRDtool 1\.3\./', $out_array[0])) {
-				$input['rrdtool_version']['default'] = 'rrd-1.3.x';
+			if (preg_match('/^RRDtool ([0-9.]+) /', $out_array[0], $m)) {
+				global $rrdtool_versions;
+				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
+					if (cacti_version_compare($rrdtool_version, $m[1], '<=')) {
+						$input['rrdtool_version']['default'] = $rrdtool_version;
+					}
+				}
 			}
 		}
 	}

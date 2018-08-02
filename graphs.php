@@ -1557,7 +1557,7 @@ function graph_edit() {
 		form_hidden_box('save_component_graph_new','1','');
 	}
 
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
 	form_save_button('graphs.php');
 

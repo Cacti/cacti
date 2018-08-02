@@ -47,11 +47,6 @@ define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 
-define('RRD_VERSION_1_3', 'rrd-1.3.x');
-define('RRD_VERSION_1_4', 'rrd-1.4.x');
-define('RRD_VERSION_1_5', 'rrd-1.5.x');
-define('RRD_VERSION_1_6', 'rrd-1.6.x');
-
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
 define('RRD_FONT_RENDER_MONO',    'mono');
