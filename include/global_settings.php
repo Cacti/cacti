@@ -380,7 +380,7 @@ $settings = array(
 			'friendly_name' => __('RRDtool Version'),
 			'description' => __('The version of RRDtool that you have installed.'),
 			'method' => 'drop_array',
-			'default' => 'rrd-1.4.x',
+			'default' => '1.4.0',
 			'array' => $rrdtool_versions,
 			),
 		'graph_auth_method' => array(

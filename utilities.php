@@ -164,8 +164,10 @@ function utilities_view_tech($php_info = '') {
 		$out_array = array();
 		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool ([1-9]\.[0-9])/', $out_array[0], $m)) {
-				$rrdtool_version = 'rrd-'. $m[1] .'.x';
+			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
+				preg_match('/^([0-9]+\.[0-9]+)\./', $m[1], $m2);
+				$rrdtool_release = $m[1];
+				$rrdtool_version = $m2[1];
 			}
 		}
 	}
@@ -178,13 +180,14 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* Check RRDtool issues */
-	$rrdtool_error = '';
-	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
+	$rrdtool_errors = array();
+	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
 	}
+
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if ($graph_gif_count > 0) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span><br>';
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
 	}
 
 	/* Get spine version */
@@ -268,9 +271,27 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RRDtool Version') . "</td>\n";
-		print '<td>' . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
+		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . "</td>\n";
+		print '<td>' . get_rrdtool_version() . "+</td>\n";
 		form_end_row();
+
+		form_alternate_row();
+		print '<td>' . __('RRDtool Version') . ' ' . __('Found') . "</td>\n";
+		print '<td>' . $rrdtool_release . "</td>\n";
+		form_end_row();
+
+		if (!empty($rrdtool_errors)) {
+			form_alternate_row();
+			print "<td>&nbsp;</td>\n";
+			$br = '';
+			print "<td>";
+			foreach ($rrdtool_errors as $rrdtool_error) {
+				print $br . $rrdtool_error;
+				$br = '<br/>';
+			}
+			print "</td>\n";
+			form_end_row();
+		}
 
 		form_alternate_row();
 		print '<td>' . __('Devices') . "</td>\n";

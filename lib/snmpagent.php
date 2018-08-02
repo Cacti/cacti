@@ -68,7 +68,7 @@ function snmpagent_global_settings_update(){
 	$mc = new MibCache();
 	$mc->object('cactiApplVersion')->set( snmpagent_read('cactiApplVersion') );
 	$mc->object('cactiApplSnmpVersion')->set( snmpagent_read('cactiApplSnmpVersion') );
-	$mc->object('cactiApplRrdtoolVersion')->set( read_config_option('rrdtool_version', true) );
+	$mc->object('cactiApplRrdtoolVersion')->set( get_rrdtool_version() );
 	$mc->object('cactiApplPollerEnabled')->set( (read_config_option('poller_enabled', true) == 'on') ? 1 : 2 );
 	$mc->object('cactiApplPollerType')->set( read_config_option('poller_type', true) );
 	$mc->object('cactiApplPollerInterval')->set( read_config_option('poller_interval', true) );

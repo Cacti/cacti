@@ -195,7 +195,7 @@ class Installer implements JsonSerializable {
 
 		set_config_option('selected_theme', $this->theme);
 
-		$this->rrdVersion = read_config_option('rrdtool_version', true);
+		$this->rrdVersion = get_rrdtool_version();
 
 		$mode = read_config_option('install_mode', true);
 		if ($mode === false || $mode === null) {
