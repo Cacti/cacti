@@ -181,7 +181,7 @@ function utilities_view_tech($php_info = '') {
 
 	/* Check RRDtool issues */
 	$rrdtool_errors = array();
-	if (cacti_version_compare($rrdtool_version, read_config_option('rrdtool_version'), '<')) {
+	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
 		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
 	}
 
@@ -272,7 +272,7 @@ function utilities_view_tech($php_info = '') {
 
 		form_alternate_row();
 		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . "</td>\n";
-		print '<td>' . read_config_option('rrdtool_version') . "+</td>\n";
+		print '<td>' . get_rrdtool_version() . "+</td>\n";
 		form_end_row();
 
 		form_alternate_row();

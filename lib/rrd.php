@@ -859,7 +859,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	$scale               = '';
 	$rigid               = '';
 	$unit_value          = '';
-	$version             = read_config_option('rrdtool_version');
+	$version             = get_rrdtool_version();
 	$unit_exponent_value = '';
 
 	if ($graph['auto_scale'] == 'on') {
@@ -2278,7 +2278,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	}
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
-		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
+		$rrdversion = get_rrdtool_version();
 		include($rrdtheme);
 
 		if (isset($rrdcolors)) {
@@ -2287,7 +2287,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 			}
 		}
 
-		if (isset($rrdborder) && $rrdversion >= 1.4) {
+		if (isset($rrdborder) && cacti_version_compare($rrdversion,'1.4','>=')) {
 			$graph_opts .= "--border $rrdborder " ;
 		}
 
@@ -2309,7 +2309,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	$graph_opts .= rrdtool_function_set_font('unit', '', $themefonts);
 
 	/* watermark fonts */
-	if (isset($rrdversion) && $rrdversion > 1.3) {
+	if (isset($rrdversion) && cacti_version_compare($rrdversion,'1.3','>')) {
 		$graph_opts .= rrdtool_function_set_font('watermark', '', $themefonts);
 	}
 
