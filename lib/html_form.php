@@ -850,13 +850,6 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$checked = " aria-checked='false'";
 	}
 
-	/*
-		<label class="switch">
-		  <input type="checkbox">
-		  <span class="slider round"></span>
-		</label>
-	 */
-
 	$labelClass = "";
 	if ($show_label) {
 		$labelClass = ' checkboxLabelWanted';

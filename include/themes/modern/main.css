@@ -2386,7 +2386,9 @@ tr#realtime td:first-child {
 	vertical-align: middle;
 }
 
-.checkboxSwitch input {display:none;}
+.checkboxSwitch input {
+	display:none;
+}
 
 .checkboxSlider {
 	position: absolute;
