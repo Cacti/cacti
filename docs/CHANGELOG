@@ -58,6 +58,7 @@ Cacti CHANGELOG
 -issue#1726: Poor page performance editing a Graphs Graph Items
 -issue#1746: Poller with no hosts does not exit until timeout is reached
 -issue#1761: Graph Management page shows bogus template names
+-issue#1783: Browser Back button still does not working
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive

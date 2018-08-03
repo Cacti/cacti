@@ -1795,16 +1795,6 @@ function ajaxAnchors() {
 
 		return false;
 	});
-
-	$(window).on('popstate', function(event) {
-		handlePopState();
-	});
-
-	$('#filter, #rfilter').keydown(function(event) {
-		if (event.keyCode == 8 && $(this).val() == '') {
-			handlePopState();
-		}
-	});
 }
 
 function checkFormStatus(href, type, scroll_or_id) {
@@ -2145,6 +2135,16 @@ $(function() {
 	var statePushed = false;
 	var popFired    = false;
 	var tapped      = false;
+
+	$(window).on('popstate', function(event) {
+		handlePopState();
+	});
+
+	$('#filter, #rfilter').keydown(function(event) {
+		if (event.keyCode == 8 && $(this).val() == '') {
+			handlePopState();
+		}
+	});
 
 	setTitleAndHref();
 
