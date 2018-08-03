@@ -1354,12 +1354,20 @@ th.sortable {
 	background: rgba(0,0,0,0.4);
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	font-weight:bold;
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .graphSubHeaderColumn {
@@ -2142,4 +2150,12 @@ input:checked + .checkboxSlider:before {
 	display: inline-block;
 	margin-left: 5px;
 	margin-right: 10px;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

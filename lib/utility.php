@@ -727,6 +727,8 @@ function data_input_whitelist_check($data_input_id) {
 
 function utilities_get_mysql_recommendations() {
 	// MySQL/MariaDB Important Variables
+	// Assume we are successfully, until we aren't!
+	$result = 1;
 	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 
 	$memInfo = utilities_get_system_memory();
@@ -749,7 +751,7 @@ function utilities_get_mysql_recommendations() {
 	$recommendations = array(
 		'version' => array(
 			'value' => '5.6',
-			'measure' => 'gt',
+			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 			)
 	);
@@ -803,7 +805,6 @@ function utilities_get_mysql_recommendations() {
 		$recommendations += array(
 			'collation_server' => array(
 				'value' => 'utf8mb4_unicode_ci',
-				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8mb4_unicode_ci collation type as some characters take more than a single byte.')
 				),
@@ -819,32 +820,33 @@ function utilities_get_mysql_recommendations() {
 	$recommendations += array(
 		'max_connections' => array(
 			'value'   => '100',
-			'measure' => 'gt',
+			'measure' => 'ge',
 			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
 			),
 		'max_heap_table_size' => array(
 			'value'   => '5',
 			'measure' => 'pmem',
+			'class' => 'warning',
 			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
 			),
 		'table_cache' => array(
 			'value'   => '200',
-			'measure' => 'gt',
+			'measure' => 'ge',
 			'comment' => __('Keeping the table cache larger means less file open/close operations when using innodb_file_per_table.')
 			),
 		'max_allowed_packet' => array(
 			'value'   => 16777216,
-			'measure' => 'gt',
+			'measure' => 'ge',
 			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
 			),
 		'tmp_table_size' => array(
 			'value'   => '64M',
-			'measure' => 'gtm',
+			'measure' => 'gem',
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
 			'value'   => '64M',
-			'measure' => 'gtm',
+			'measure' => 'gem',
 			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
@@ -855,21 +857,23 @@ function utilities_get_mysql_recommendations() {
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',
+			'class' => 'warning',
 			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'OFF',
 			'measure' => 'equal',
+			'class' => 'warning',
 			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50% overhead on all write operations.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
-			'measure' => 'gtm',
+			'measure' => 'gem',
 			'comment' => __('This is where metadata is stored. If you had a lot of tables, it would be useful to increase this.')
 			),
 		'innodb_lock_wait_timeout' => array(
 			'value'   => '50',
-			'measure' => 'gt',
+			'measure' => 'ge',
 			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
 			)
 	);
@@ -883,7 +887,7 @@ function utilities_get_mysql_recommendations() {
 			),
 			'innodb_file_io_threads' => array(
 				'value'   => '16',
-				'measure' => 'gt',
+				'measure' => 'ge',
 				'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
 				)
 		);
@@ -891,22 +895,23 @@ function utilities_get_mysql_recommendations() {
 		$recommendations += array(
 			'innodb_flush_log_at_timeout' => array(
 				'value'   => '3',
-				'measure'  => 'gt',
+				'measure'  => 'ge',
 				'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
 				),
 			'innodb_read_io_threads' => array(
 				'value'   => '32',
-				'measure' => 'gt',
+				'measure' => 'ge',
 				'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
 				),
 			'innodb_write_io_threads' => array(
 				'value'   => '16',
-				'measure' => 'gt',
+				'measure' => 'ge',
 				'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
 				),
 			'innodb_buffer_pool_instances' => array(
 				'value' => '16',
-				'measure' => 'present',
+				'measure' => 'pinst',
+				'class' => 'warning',
 				'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
 				)
 		);
@@ -920,63 +925,42 @@ function utilities_get_mysql_recommendations() {
 	print "<thead>\n";
 	print "<tr class='tableHeader'>\n";
 	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Current Value')     . "</th>\n";
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>\n";
+	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>\n";
 	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>\n";
 	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>\n";
 	print "</tr>\n";
 	print "</thead>\n";
 
+	$innodb_pool_size = 0;
 	foreach ($recommendations as $name => $r) {
 		if (isset($variables[$name])) {
 			$class = '';
 
-			form_alternate_row();
+			// Unset $passed so that we only display fields that we checked
+			unset($passed);
+
+			$compare = '';
+			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
+			$value_current = isset($variables[$name]) ? $variables[$name] : '<unset>';
+			$value_display = $value_current;
+
 			switch($r['measure']) {
-			case 'gtm':
+			case 'gem':
+				$compare = '>=';
+				$value_display = ($variables[$name]/1024/1024).'M';
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
-					if (isset($r['class']) && $r['class'] == 'warning') {
-						$class = 'textWarning';
-					} else {
-						$class = 'textError';
-					}
+					$passed = false;
 				}
-
-				print "<td>" . $name . "</td>\n";
-				print "<td class='$class'>" . ($variables[$name]/1024/1024) . "M</td>\n";
-				print "<td>>= " . $r['value'] . "</td>\n";
-				print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
 				break;
-			case 'gt':
-				if (version_compare($variables[$name], $r['value'], '<')) {
-					if (isset($r['class']) && $r['class'] == 'warning') {
-						$class = 'textWarning';
-					} else {
-						$class = 'textError';
-					}
-				}
-
-				print "<td>" . $name . "</td>\n";
-				print "<td class='$class'>" . $variables[$name] . "</td>\n";
-				print "<td>>= " . $r['value'] . "</td>\n";
-				print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
+			case 'ge':
+				$compare = '>=';
+				$passed = (version_compare($value_current, $value_recommend, '>='));
 				break;
 			case 'equal':
-				if (!isset($variables[$name]) || $variables[$name] != $r['value']) {
-					if (isset($r['class']) && $r['class'] == 'warning') {
-						$class = 'textWarning';
-					} else {
-						$class = 'textError';
-					}
-				}
-
-				print "<td>" . $name . "</td>\n";
-				print "<td class='$class'>" . (isset($variables[$name]) ? $variables[$name]:'UNSET') . "</td>\n";
-				print "<td>" . $r['value'] . "</td>\n";
-				print "<td class='$class'>" . $r['comment'] . "</td>\n";
-
+				$compare = '=';
+				$passed = (isset($variables[$name]) || $value_current != $value_recommend);
 				break;
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
@@ -987,27 +971,62 @@ function utilities_get_mysql_recommendations() {
 					break;
 				}
 
-				if ($variables[$name] < ($r['value']*$totalMem/100)) {
+				if ($name == 'innodb_buffer_pool_size') {
+					$innodb_pool_size = $variables[$name];
+				}
+
+				$compare = '>=';
+				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
+				$value_display = round($variables[$name]/1024/1024,0) . "M";
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . "M";
+				break;
+			case 'pinst':
+				$compare = '>=';
+				// Divide the buffer pool size by 128MB, and ensure 1 or more
+				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+				if ($pool_instances < 1) {
+					$pool_instances = 1;
+				}
+				$passed = ($variables[$name] >= $pool_instances);
+				$value_recommend = $pool_instances;
+				break;
+			default:
+				$compare = $r['measure'];
+				$passed = true;
+			}
+
+			if (isset($passed)) {
+				if (!$passed) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
+						if ($result == 1) {
+							$result = 3;
+						}
 					} else {
 						$class = 'textError';
+						if ($result != 0) {
+							$result = 0;
+						}
 					}
 				}
 
+				form_alternate_row();
+
 				print "<td>" . $name . "</td>\n";
-				print "<td class='$class'>" . round($variables[$name]/1024/1024,0) . "M</td>\n";
-				print "<td>>=" . round($r['value']*$totalMem/100/1024/1024,0) . "M</td>\n";
+				print "<td class='right $class'>$value_display</td>\n";
+				print "<td class='center'>$compare</td>\n";
+				print "<td>$value_recommend</td>\n";
 				print "<td class='$class'>" . $r['comment'] . "</td>\n";
 
-				break;
+				form_end_row();
 			}
-			form_end_row();
+
 		}
 	}
 	print "</table>\n";
 	print "</td>\n";
 	form_end_row();
+	return $result;
 }
 
 function utilities_php_modules() {
@@ -1139,4 +1158,3 @@ function utilities_get_system_memory() {
 
 	return $memInfo;
 }
-

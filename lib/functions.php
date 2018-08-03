@@ -5362,3 +5362,23 @@ function is_resource_writable($path) {
 
 	return false;
 }
+
+function get_validated_theme($theme, $defaultTheme) {
+	global $config;
+	if (isset($theme) && strlen($theme)) {
+		$themePath = $config['base_path'] . '/include/themes/' . $theme . '/main.css';
+		if (file_exists($themePath)) {
+			return $theme;
+		}
+	}
+
+	return $defaultTheme;
+}
+
+function get_validated_language($language, $defaultLanguage) {
+	if (isset($language) && strlen($language)) {
+		return $language;
+	}
+
+	return $defaultLanguage;
+}

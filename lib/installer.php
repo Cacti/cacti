@@ -289,12 +289,6 @@ class Installer implements JsonSerializable {
 	public function jsonSerialize() {
 		$output = $this->processCurrentStep();
 
-		if (isset($this->stepData)) {
-			if (!isset($this->stepData['Theme'])) {
-				$this->stepData['Theme'] = $this->theme;
-			}
-		}
-
 		return array(
 			'Mode'     => $this->mode,
 			'Step'     => $this->stepCurrent,
@@ -304,9 +298,6 @@ class Installer implements JsonSerializable {
 			'Test'     => $this->buttonTest,
 			'Html'     => $output,
 			'StepData' => $this->stepData,
-			'RRDVer'   => $this->rrdVersion,
-			'Theme'    => $this->theme,
-			'Language' => $this->language
 		);
 	}
 
@@ -979,7 +970,7 @@ class Installer implements JsonSerializable {
 		$themeOutput .= '</select>';
 		$output .= Installer::sectionNormal('<span>' . __('Select default theme: ') . $themeOutput . '</span><span style=\'float: right\'><input type=\'checkbox\' id=\'accept\' name=\'accept\'><label for=\'accept\'>' . __('Accept GPL License Agreement') . '</label></span><span>'.$langOutput.'</span>');
 
-		$this->stepData = array('Eula' => $this->eula);
+		$this->stepData = array('Eula' => $this->eula, 'Theme' => $this->theme, 'Language' => $this->language);
 		$this->buttonNext->Enabled = ($this->eula == 1);
 
 		return $output;
@@ -1194,7 +1185,8 @@ class Installer implements JsonSerializable {
 		$output_temp = ob_get_contents();
 		ob_clean();
 
-		utilities_get_mysql_recommendations();
+		$enabled['mysql_performance'] = utilities_get_mysql_recommendations();
+
 		$output_util = ob_get_contents();
 		ob_clean();
 

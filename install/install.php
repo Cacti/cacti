@@ -35,8 +35,10 @@ include_once('./functions.php');
 set_default_action();
 
 if (isset_request_var('theme')) {
-	$theme = get_nfilter_request_var('theme');
-	$_SESSION['install_theme'] = get_nfilter_request_var('theme');
+	$theme = get_validated_theme(get_nfilter_request_var('theme'), read_config_option('selected_theme', true));
+	$_SESSION['install_theme'] = $theme;
+	set_user_setting('selected_theme', $theme);
+	set_config_option('install_theme', $theme);
 } elseif (isset($_SESSION['install_theme'])) {
 	$theme = $_SESSION['install_theme'];
 } else {
@@ -44,9 +46,10 @@ if (isset_request_var('theme')) {
 }
 
 if (isset_request_var('language')) {
-	$language = get_nfilter_request_var('language');
-	$_SESSION['install_language'] = get_nfilter_request_var('language');
+	$language = get_validated_language(get_nfilter_request_var('language'), read_config_option('user_language', true));
+	$_SESSION['install_language'] = $language;
 	set_user_setting('user_language', $language);
+	set_config_option('isntall_language', $language);
 } elseif (isset($_SESSION['install_language'])) {
 	$language = $_SESSION['install_language'];
 } else {

@@ -88,6 +88,9 @@ function collapseHeadings(headingStates) {
 			} else if (enabled == 1 || enabled == 2) {
 				fa_icon = 'fa fa-thumbs-up cactiInstallSqlSuccess';
 				toggleHeader(element, false);
+			} else if (enabled == 3) {
+				fa_icon = 'fa fa-exclamation-triangle cactiInstallSqlWarning';
+				toggleHeader(element, false);
 			} else if (enabled) {
 				fa_icon = 'fa fa-check-circle cactiInstallSqlSkipped';
 				toggleHeader(element, false);
@@ -460,9 +463,9 @@ function prepareStepTemplateInstall(installData) {
 
 function setAddressBar(data, replace) {
 	if (replace) {
-		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
 	} else {
-		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
 	}
 }
 

@@ -1471,11 +1471,19 @@ th.sortable {
 	color: white !important;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	cursor: pointer;
 	text-align: left;
 	padding: 3px;
 	outline-style: none;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .tablesorter-headerRow {
@@ -2343,4 +2351,12 @@ input:checked + .checkboxSlider:before {
 	display: inline-block;
 	margin-left: 5px;
 	margin-right: 10px;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

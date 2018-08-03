@@ -167,6 +167,10 @@ label {
 	color: red;
 }
 
+.cactiInstallSqlWarning {
+	color: orange;
+}
+
 .cactiInstallSqlSkipped {
 	color: gray;
 }

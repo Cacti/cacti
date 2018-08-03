@@ -1527,11 +1527,19 @@ th.sortable {
 	color: white !important;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	cursor: pointer;
 	text-align: left;
 	padding: 3px;
 	outline-style: none;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .tablesorter-headerRow {
@@ -2522,4 +2530,12 @@ input:checked + .checkboxSlider:before {
 
 .checkboxSlider.checkboxRound:before {
 	border-radius: 50%;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }
