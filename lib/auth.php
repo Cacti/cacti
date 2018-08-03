@@ -1964,7 +1964,7 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 
 	$templates = db_fetch_assoc("SELECT DISTINCT
 		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
-		IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']')) AS name
+		IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']'))) AS name
 		FROM graph_local AS gl
 		INNER JOIN graph_templates AS gt
 		ON gt.id=gl.graph_template_id
