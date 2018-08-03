@@ -32,12 +32,21 @@ set_default_action();
 $action = get_request_var('action');
 $is_save = isset_request_var('save_component_import');
 
-if ($is_save && $action == 'save') {
+$tmp_dir = sys_get_temp_dir();
+$tmp_len = strlen($tmp_dir);
+$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+$is_tmp = is_tmp_writable(sys_get_temp_dir());
+
+if ($is_tmp && $is_save && $action == 'save') {
 	form_save();
 } else {
 	top_header();
 
-	import();
+	if ($is_tmp) {
+		import();
+	} else {
+		bad_tmp();
+	}
 
 	bottom_footer();
 }
@@ -92,6 +101,12 @@ function form_save() {
 	}
 }
 
+function bad_tmp() {
+	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
+	form_alternate_row();
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ":</strong> " .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	html_end_box();
+}
 /* ---------------------------
     Template Import Functions
    --------------------------- */
@@ -146,3 +161,10 @@ function import() {
 	}
 }
 
+function is_tmp_writable($tmp_dir) {
+	$tmp_dir = sys_get_temp_dir();
+	$tmp_len = strlen($tmp_dir);
+	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+	$is_tmp = is_resource_writable($tmp_dir);
+	return $is_tmp;
+}
