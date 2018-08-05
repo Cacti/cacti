@@ -127,7 +127,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		WHERE dif.type_code = "output_type"
 		AND dl.snmp_query_id = ?
 		AND dl.host_id = ?',
-		array($host_id, $snmp_query_id));
+		array($snmp_query_id, $host_id));
 
 	$bestDataQueryIndexType = get_best_data_query_index_type($host_id, $snmp_query_id);
 	if (sizeof($data_queries)) {
