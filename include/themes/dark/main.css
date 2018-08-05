@@ -1558,12 +1558,20 @@ th.secondarySort {
 	white-space: nowrap;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: snow;
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .graphSubHeaderColumn {
@@ -2334,4 +2342,12 @@ input:checked + .checkboxSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

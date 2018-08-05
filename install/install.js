@@ -23,6 +23,11 @@ const STEP_INSTALL = 97;
 const STEP_COMPLETE = 98;
 const STEP_ERROR = 99;
 
+const DB_STATUS_ERROR = 0;
+const DB_STATUS_WARNING = 1;
+const DB_STATUS_SUCCESS = 2;
+const DB_STATUS_SKIPPED = 3;
+
 function setButtonData(buttonName, buttonData) {
 	button = $('#button'+buttonName);
 	if (button != null) {
@@ -83,9 +88,11 @@ function collapseHeadings(headingStates) {
 		var element = $('#' + key);
 		if (element != null && element.length > 0) {
 			fa_icon = 'fa fa-exclamation-triangle';
-			if (enabled == 0) {
+			if (enabled == DB_STATUS_ERROR) {
 				fa_icon = 'fa fa-thumbs-down cactiInstallSqlFailure';
-			} else if (enabled == 1 || enabled == 2) {
+			} else if (enabled == DB_STATUS_WARNING) {
+				fa_icon = 'fa fa-exclamation-triangle cactiInstallSqlWarning';
+			} else if (enabled == DB_STATUS_SUCCESS) {
 				fa_icon = 'fa fa-thumbs-up cactiInstallSqlSuccess';
 				toggleHeader(element, false);
 			} else if (enabled) {
@@ -460,9 +467,9 @@ function prepareStepTemplateInstall(installData) {
 
 function setAddressBar(data, replace) {
 	if (replace) {
-		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
 	} else {
-		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'index.php?data=' + prepareInstallData());
+		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
 	}
 }
 

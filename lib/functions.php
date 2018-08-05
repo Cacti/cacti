@@ -385,13 +385,25 @@ function read_default_config_option($config_name) {
 function read_config_option($config_name, $force = false) {
 	global $config;
 
+	$config_array = array();
 	if (isset($_SESSION['sess_config_array'])) {
 		$config_array = $_SESSION['sess_config_array'];
 	} elseif (isset($config['config_options_array'])) {
 		$config_array = $config['config_options_array'];
 	}
 
-	if ((!isset($config_array[$config_name])) || ($force)) {
+	if (!array_key_exists($config_name, $config_array) || ($force)) {
+		$default_value = read_default_config_option($config_name);
+		$config_array[$config_name] = $default_value;
+
+		// store config array in case we loop around
+		if (isset($_SESSION)) {
+			$_SESSION['sess_config_array']  = $config_array;
+		} else {
+			$config['config_options_array'] = $config_array;
+		}
+
+
 		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
 
 		$value = null;
@@ -675,7 +687,14 @@ function cacti_log_file() {
    @arg $environ - (string) tell's from where the script was called from
    @arg $level - (int) only log if above the specified log level */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
-	global $config;
+	global $config, $database_log;
+
+	if (!isset($database_log)) {
+		$databsae_log = false;
+	}
+
+	$last_log = $database_log;
+	$database_log = false;
 
 	if (isset($_SERVER['PHP_SELF'])) {
 		$current_file = basename($_SERVER['PHP_SELF']);
@@ -722,10 +741,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 			if ($logVerbosity == POLLER_VERBOSITY_DEVDBG) {
 				if ($level != POLLER_VERBOSITY_DEVDBG) {
 					if ($level > POLLER_VERBOSITY_LOW) {
+						$database_log = $last_log;
 						return;
 					}
 				}
 			} elseif ($level > $logVerbosity) {
+				$database_log = $last_log;
 				return;
 			}
 		}
@@ -792,12 +813,14 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 			closelog();
 		}
-   }
+	}
 
 	/* print output to standard out if required */
 	if ($output == true && isset($_SERVER['argv'][0])) {
 		print $message;
 	}
+
+	$database_log = $last_log;
 }
 
 /* tail_file - Emulates the tail function with PHP native functions.
@@ -5361,4 +5384,82 @@ function is_resource_writable($path) {
 	}
 
 	return false;
+}
+
+function get_validated_theme($theme, $defaultTheme) {
+	global $config;
+	if (isset($theme) && strlen($theme)) {
+		$themePath = $config['base_path'] . '/include/themes/' . $theme . '/main.css';
+		if (file_exists($themePath)) {
+			return $theme;
+		}
+	}
+
+	return $defaultTheme;
+}
+
+function get_validated_language($language, $defaultLanguage) {
+	if (isset($language) && strlen($language)) {
+		return $language;
+	}
+
+	return $defaultLanguage;
+}
+
+function get_running_user() {
+	global $config;
+	if ($config['cacti_server_os'] == 'win32') {
+		return getenv('username');
+	} else {
+		$tmp_user = '';
+		$tmp_file = tempnam(sys_get_temp_dir(), 'uid');
+		$f_owner = '';
+
+		if (is_resource_writable($tmp_file)) {
+			if (file_exists($tmp_file)) {
+				unlink($tmp_file);
+			}
+			file_put_contents($tmp_file, 'cacti');
+
+			$f_owner = fileowner($tmp_file);
+			$f_source = 'file';
+
+			if (file_exists($tmp_file)) {
+				unlink($tmp_file);
+			}
+		}
+
+		if (empty($f_owner) && function_exists('posix_getuid')) {
+			$f_owner = posix_getuid();
+			$f_source = 'posix';
+		}
+
+		if (!empty($f_owner) && function_exists('posix_getpwuid1')) {
+			$f_array = posix_getpwuid($f_owner);
+			if (isset($f_array['name'])) {
+				$tmp_user = $f_array['name'];
+			}
+		}
+
+		if (empty($tmp_user)) {
+			exec('id -nu', $o, $r);
+
+			if ($r == 0) {
+				$tmp_user = trim($o['0']);
+			}
+		}
+
+		/*** Code left here for future development, don't think it is right ***
+		 *
+		if (empty($tmp_user) && !empty($f_owner) && is_readable('/etc/passwd'))
+		{
+			exec(sprintf('grep :%s: /etc/passwd | cut -d: -f1', (int) $uid), $o, $r);
+			if ($r == 0) {
+				$tmp_user = 'passwd-' . trim($o['0']);
+			}
+		}
+		 */
+
+		return (empty($tmp_user) ? 'apache' : $tmp_user);
+	}
 }

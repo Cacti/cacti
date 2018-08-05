@@ -202,12 +202,6 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-/* check cacti log is available */
-$log_filename = cacti_log_file();
-if (!is_resource_writable($log_filename)) {
-	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
-}
-
 $filename = get_current_page();
 
 $config['is_web'] = true;
@@ -219,6 +213,7 @@ if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename,
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $config['connection'] = 'online';
+
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
@@ -254,6 +249,12 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 } else {
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+}
+
+/* check cacti log is available */
+$log_filename = cacti_log_file();
+if (!is_resource_writable($log_filename)) {
+	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
 if ($config['poller_id'] > 1) {

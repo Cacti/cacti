@@ -23,21 +23,20 @@
 */
 
 function upgrade_to_1_2_0() {
-	if (!db_column_exists('user_domains_ldap', 'cn_full_name')) {
-		db_install_execute("ALTER TABLE `user_domains_ldap`
-			ADD `cn_full_name` VARCHAR(50) NULL DEFAULT '',
-			ADD `cn_email` VARCHAR(50) NULL DEFAULT ''");
-	}
+	db_install_add_column('user_domains_ldap', array('name' => 'cn_full_name', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
+	db_install_add_column('user_domains_ldap', array('name' => 'cn_email', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
 
-	if (!db_column_exists('poller', 'max_time')) {
-		db_install_execute("ALTER TABLE poller
-			ADD COLUMN max_time DOUBLE DEFAULT NULL AFTER total_time,
-			ADD COLUMN min_time DOUBLE DEFAULT NULL AFTER max_time,
-			ADD COLUMN avg_time DOUBLE DEFAULT NULL AFTER min_time,
-			ADD COLUMN total_polls INT unsigned DEFAULT '0' AFTER avg_time,
-			ADD COLUMN processes INT unsigned DEFAULT '1' AFTER total_polls,
-			ADD COLUMN threads INT unsigned DEFAULT '1' AFTER processes");
+	$poller_exists = db_column_exists('poller', 'processes');
 
+	db_install_add_column('poller', array('name' => 'max_time', 'type' => 'double', 'after' => 'total_time'));
+	db_install_add_column('poller', array('name' => 'min_time', 'type' => 'double', 'after' => 'max_time'));
+	db_install_add_column('poller', array('name' => 'avg_time', 'type' => 'double', 'after' => 'min_time'));
+	db_install_add_column('poller', array('name' => 'total_polls', 'type' => 'int', 'after' => 'avg_time', 'default' => '0'));
+	db_install_add_column('poller', array('name' => 'processes', 'type' => 'int', 'after' => 'total_polls', 'default' => '1'));
+	db_install_add_column('poller', array('name' => 'threads', 'type' => 'double', 'after' => 'processes', 'default' => '1'));
+	db_install_add_column('poller', array('name' => 'timezone', 'type' => 'varchar(40)', 'default' => '', 'after' => 'status'));
+
+	if ($poller_exists) {
 		// Take the value from the settings table and translate to
 		// the new Data Collector table settings
 
@@ -54,31 +53,12 @@ function upgrade_to_1_2_0() {
 		db_install_execute("UPDATE poller SET processes = $max_processes, threads = $max_threads");
 	}
 
-	if (!db_column_exists('host', 'location')) {
-		db_install_execute("ALTER TABLE host
-			ADD COLUMN location VARCHAR(40) DEFAULT NULL AFTER hostname,
-			ADD INDEX site_id_location(site_id, location)");
-	}
+	db_install_add_column('host', array('name' => 'location', 'type' => 'varchar(40)', 'after' => 'hostname'));
+	db_install_add_key('host', 'index', 'site_id_location', array('site_id', 'location'));
 
-	if (!db_column_exists('poller', 'timezone')) {
-		db_install_execute("ALTER TABLE poller
-			ADD COLUMN `timezone` varchar(40) DEFAULT '' AFTER `status`");
-	}
-
-	if (!db_column_exists('poller_resource_cache', 'attributes')) {
-		db_install_execute("ALTER TABLE poller_resource_cache
-			ADD COLUMN `attributes` INT unsigned DEFAULT '0'");
-	}
-
-	if (!db_column_exists('external_links', 'refresh')) {
-		db_install_execute("ALTER TABLE external_links
-			ADD COLUMN `refresh` int unsigned default NULL");
-	}
-
-	if (!db_column_exists('automation_networks', 'same_sysname')) {
-		db_install_execute("ALTER TABLE automation_networks
-			ADD COLUMN `same_sysname` char(2) DEFAULT '' AFTER `add_to_cacti`");
-	}
+	db_install_add_column('poller_resource_cache', array('name' => 'attributes', 'type' => 'int unsigned', 'default' => '0'));
+	db_install_add_column('external_links', array('name' => 'refresh', 'type' => 'int unsigned'));
+	db_install_add_column('automation_networks', array('name' => 'same_sysname', 'type' => 'char(2)', 'default' => '', 'after' => 'add_to_cacti'));
 
 	db_install_execute("ALTER TABLE user_auth
 		MODIFY COLUMN password varchar(256) NOT NULL DEFAULT ''");
@@ -89,18 +69,38 @@ function upgrade_to_1_2_0() {
 	db_install_execute('UPDATE graph_templates_graph
 		SET t_title="" WHERE t_title IS NULL or t_title="0"');
 
-	db_install_execute('UPDATE settings
-		SET name="log_validation" WHERE name="developer_mode"');
-
-	if (!db_column_exists('automation_networks', 'notification_enabled')) {
-		db_install_execute('ALTER TABLE automation_networks
-			ADD COLUMN notification_enabled char(2) default "" AFTER enabled,
-			ADD COLUMN notification_email varchar(255) default "" AFTER notification_enabled');
+	$log_validation = db_fetch_cell('SELECT value FROM settings WHERE name=\'log_validation\'');
+	$log_developer  = db_fetch_cell('SELECT value FROM settings WHERE name=\'developer_mode\'');
+	if ($log_developer !== false && $log_validation === false) {
+		db_install_execute('UPDATE settings
+			SET name="log_validation" WHERE name="developer_mode"');
 	}
 
-	if (!db_column_exists('automation_networks', 'notification_fromname')) {
-		db_install_execute('ALTER TABLE automation_networks
-			ADD COLUMN notification_fromname varchar(32) default "" AFTER notification_email,
-			ADD COLUMN notification_fromemail varchar(128) default "" AFTER notification_fromname');
+	db_install_add_column('automation_networks', array('name' => 'notification_enabled', 'type' => 'char(2)', 'default' => '', 'after' => 'enabled'));
+	db_install_add_column('automation_networks', array('name' => 'notification_email', 'type' => 'varchar(255)', 'default' => "", 'after' => 'notification_enabled'));
+	db_install_add_column('automation_networks', array('name' => 'notification_fromname', 'type' => 'varchar(32)', 'default' => "", 'after' => 'notification_email'));
+	db_install_add_column('automation_networks', array('name' => 'notification_fromemail', 'type' => 'varchar(128)', 'default' => "", 'after' => 'notification_fromname'));
+
+	if (db_table_exists('dsdebug')) {
+		db_install_rename_table('dsdebug','data_debug');
 	}
+
+	if (!db_table_exists('data_debug')) {
+		db_install_execute("CREATE TABLE `data_debug` (
+			`id` int(11) unsigned NOT NULL auto_increment,
+			`started` int(11) NOT NULL DEFAULT '0',
+			`done` int(11) NOT NULL DEFAULT '0',
+			`user` int(11) NOT NULL DEFAULT '0',
+			`datasource` int(11) NOT NULL DEFAULT '0',
+			`info` text NOT NULL DEFAULT '',
+			`issue` text NOT NULL NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `user` (`user`),
+			KEY `done` (`done`),
+			KEY `datasource` (`datasource`),
+			KEY `started` (`started`))
+			COMMENT = 'Datasource Debugger Information';");
+	}
+
+	/****** NEED TO UPGRADE REALM FROM PLUGIN TO CORE ******/
 }

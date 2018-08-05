@@ -1413,13 +1413,21 @@ legend {
 	font-size: 10px;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: #FFFFFF;
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
 	cursor: pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align: center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align: right;
 }
 
 .graphSubHeaderColumn {
@@ -1979,4 +1987,12 @@ tr#realtime td:first-child {
 
 .checkboxLabelWanted {
 	display: inline-block;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

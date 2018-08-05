@@ -43,7 +43,7 @@ function upgrade_to_1_1_17() {
 
 				$timespan = get_nearest_timespan($timespan);
 
-				db_execute_prepared('UPDATE data_source_profiles_rra
+				db_install_execute('UPDATE data_source_profiles_rra
 					SET timespan = ?
 					WHERE id = ?',
 					array($timespan, $rra['id']));

@@ -28,57 +28,24 @@ function upgrade_to_1_1_34() {
 			CHANGE COLUMN `snmp_readstring` `snmp_community` varchar(50) NOT NULL DEFAULT ""');
 	}
 
-	if (!db_index_exists('data_input_fields', 'input_output')) {
-		db_install_execute('ALTER TABLE `data_input_fields`
-			ADD INDEX `input_output` (`input_output`)');
-	}
+	db_install_add_key('data_input_fields', 'index', 'input_output', array('input_output'));
 
-	if (db_column_exists('graph_templates_graph', 'export')) {
-		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `export`');
-	}
+	db_install_drop_column('graph_templates_graph', 'export');
+	db_install_drop_column('graph_templates_graph', 't_export');
 
-	if (db_column_exists('graph_templates_graph', 't_export')) {
-		db_install_execute('ALTER TABLE `graph_templates_graph` DROP COLUMN `t_export`');
-	}
+	db_install_add_key('host', 'index', 'hostname', array('hostname'));
+	db_install_drop_key('host', 'index', 'last_updated');
+	db_install_add_key('host', 'index', 'poller_id_last_updated', array('poller_id', 'last_updated'));
 
-	if (!db_index_exists('host', 'hostname')) {
-		db_install_execute('ALTER TABLE `host`
-			ADD INDEX `hostname` (`hostname`)');
-	}
-
-	if (db_index_exists('host', 'last_updated')) {
-		db_install_execute('ALTER TABLE `host`
-			DROP INDEX `last_updated`');
-	}
-
-	if (!db_index_exists('host', 'poller_id_last_updated')) {
-		db_install_execute('ALTER TABLE `host`
-			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
-	}
-
-	if (!db_index_exists('poller_command', 'poller_id_last_updated')) {
-		db_install_execute('ALTER TABLE `poller_command`
-			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
-	}
-
-	if (db_index_exists('poller_command', 'last_updated')) {
-		db_install_execute('ALTER TABLE `poller_command`
-			DROP INDEX `last_updated`');
-	}
+	db_install_add_key('poller_command', 'index', 'poller_id_last_updated', array('poller_id', 'last_updated'));
+	db_install_drop_key('poller_command', 'index', 'last_updated');
 
 	db_install_execute('ALTER TABLE `poller_item`
 		MODIFY COLUMN `snmp_auth_protocol` char(6) NOT NULL DEFAULT "",
 		MODIFY COLUMN `snmp_priv_protocol` char(6) NOT NULL DEFAULT ""');
 
-	if (db_index_exists('poller_item', 'last_updated')) {
-		db_install_execute('ALTER TABLE `poller_item`
-			DROP INDEX `last_updated`');
-	}
-
-	if (!db_index_exists('poller_item', 'poller_id_last_updated')) {
-		db_install_execute('ALTER TABLE `poller_item`
-			ADD INDEX `poller_id_last_updated` (`poller_id`, `last_updated`)');
-	}
+	db_install_drop_key('poller_item', 'index', 'last_updated');
+	db_install_add_key('poller_item', 'index', 'poller_id_last_updated', array('poller_id', 'last_updated'));
 
 	// Results of upgrade audit
 	db_install_execute('ALTER TABLE `aggregate_graph_templates`
@@ -121,10 +88,7 @@ function upgrade_to_1_1_34() {
 	db_install_execute('ALTER TABLE `data_input_data`
 		MODIFY COLUMN `t_value` char(2) DEFAULT ""');
 
-	if (!db_index_exists('data_input_data', 't_value')) {
-		db_install_execute('ALTER TABLE `data_input_data`
-			ADD INDEX `t_value` (`t_value`) USING BTREE');
-	}
+	db_install_add_key('data_input_data', 'index', 't_value', array('t_value'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `data_input_fields`
 		MODIFY COLUMN `input_output` char(3) NOT NULL DEFAULT "",
@@ -132,10 +96,7 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `type_code` varchar(40) DEFAULT "",
 		MODIFY COLUMN `allow_nulls` char(2) DEFAULT ""');
 
-	if (!db_index_exists('data_input_fields', 'type_code_data_input_id')) {
-		db_install_execute('ALTER TABLE `data_input_fields`
-			ADD INDEX `type_code_data_input_id` (`type_code`,`data_input_id`) USING BTREE');
-	}
+	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', array('type_code','data_input_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `data_template_data`
 		MODIFY COLUMN `t_name` char(2) DEFAULT "",
@@ -153,19 +114,13 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `t_data_source_name` char(2) DEFAULT "",
 		MODIFY COLUMN `t_data_input_field_id` char(2) DEFAULT ""');
 
-	if (!db_index_exists('data_template_rrd', 'local_data_template_rrd_id')) {
-		db_install_execute('ALTER TABLE `data_template_rrd`
-			ADD INDEX `local_data_template_rrd_id` (`local_data_template_rrd_id`) USING BTREE');
-	}
+	db_install_add_key('data_template_rrd', 'index', 'local_data_template_rrd_id', array('local_data_template_rrd_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `graph_local`
 		MODIFY COLUMN `snmp_query_id` mediumint(8) NOT NULL DEFAULT "0",
 		MODIFY COLUMN `snmp_query_graph_id` mediumint(8) NOT NULL DEFAULT "0"');
 
-	if (!db_index_exists('graph_local', 'snmp_query_id')) {
-		db_install_execute('ALTER TABLE `graph_local`
-			ADD INDEX `snmp_query_id` (`snmp_query_id`) USING BTREE');
-	}
+	db_install_add_key('graph_local', 'index', 'snmp_query_id', array('snmp_query_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `graph_templates_graph`
 		MODIFY COLUMN `t_image_format_id` char(2) DEFAULT "",
@@ -198,10 +153,7 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `alpha` char(2) DEFAULT "FF",
 		MODIFY COLUMN `hard_return` char(2) DEFAULT ""');
 
-	if (!db_index_exists('graph_templates_item', 'task_item_id')) {
-		db_install_execute('ALTER TABLE `graph_templates_item`
-			ADD INDEX `task_item_id` (`task_item_id`) USING BTREE');
-	}
+	db_install_add_key('graph_templates_item', 'index', 'task_item_id', array('task_item_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `graph_tree`
 		MODIFY COLUMN `sequence` int(10) unsigned DEFAULT "1"');
@@ -218,10 +170,7 @@ function upgrade_to_1_1_34() {
 	db_install_execute('ALTER TABLE `host_snmp_cache`
 		MODIFY COLUMN `last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP');
 
-	if (!db_index_exists('host_snmp_cache', 'snmp_query_id')) {
-		db_install_execute('ALTER TABLE `host_snmp_cache`
-			ADD INDEX `snmp_query_id` (`snmp_query_id`) USING BTREE');
-	}
+	db_install_add_key('host_snmp_cache', 'index', 'snmp_query_id', array('snmp_query_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `plugin_config`
 		MODIFY COLUMN `id` mediumint(8) unsigned NOT NULL auto_increment');
@@ -255,18 +204,12 @@ function upgrade_to_1_1_34() {
 	db_install_execute('ALTER TABLE `poller_time`
 		MODIFY COLUMN `poller_id` int(10) unsigned NOT NULL DEFAULT "1"');
 
-	if (!db_index_exists('snmp_query_graph_rrd', 'data_template_rrd_id')) {
-		db_install_execute('ALTER TABLE `snmp_query_graph_rrd`
-			ADD INDEX `data_template_rrd_id` (`data_template_rrd_id`) USING BTREE');
-	}
+	db_install_add_key('snmp_query_graph_rrd', 'index', 'data_template_rrd_id', array('data_template_rrd_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `snmp_query_graph_rrd_sv`
 		MODIFY COLUMN `data_template_id` mediumint(8) unsigned NOT NULL DEFAULT "0"');
 
-	if (!db_index_exists('snmp_query_graph_rrd_sv', 'data_template_id')) {
-		db_install_execute('ALTER TABLE `snmp_query_graph_rrd_sv`
-			ADD INDEX `data_template_id` (`data_template_id`) USING BTREE');
-	}
+	db_install_add_key('snmp_query_graph_rrd_sv', 'index', 'data_template_id', array('data_template_id'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `snmpagent_cache`
 		MODIFY COLUMN `max-access` varchar(50) NOT NULL DEFAULT "not-accessible"');
@@ -280,6 +223,7 @@ function upgrade_to_1_1_34() {
 
 	db_install_execute('ALTER TABLE `snmpagent_notifications_log`
 		MODIFY COLUMN `notification` varchar(190) NOT NULL DEFAULT ""');
+
 	db_install_execute('ALTER TABLE `snmpagent_notifications_log`
 		MODIFY COLUMN `mib` varchar(50) NOT NULL DEFAULT ""');
 
@@ -292,10 +236,7 @@ function upgrade_to_1_1_34() {
 		MODIFY COLUMN `graph_settings` char(2) DEFAULT "",
 		MODIFY COLUMN `reset_perms` int(12) unsigned NOT NULL DEFAULT "0"');
 
-	if (!db_index_exists('user_auth', 'realm')) {
-		db_install_execute('ALTER TABLE `user_auth`
-			ADD INDEX `realm` (`realm`) USING BTREE');
-	}
+	db_install_add_key('user_auth', 'index', 'realm', array('realm'), 'BTREE');
 
 	db_install_execute('ALTER TABLE `user_auth_cache`
 		MODIFY COLUMN `hostname` varchar(100) NOT NULL DEFAULT ""');
@@ -303,9 +244,6 @@ function upgrade_to_1_1_34() {
 	db_install_execute('ALTER TABLE `version`
 		MODIFY COLUMN `cacti` char(20) NOT NULL DEFAULT ""');
 
-	if (!db_index_exists('version', 'PRIMARY')) {
-		db_install_execute('ALTER TABLE `version`
-			ADD PRIMARY KEY (`cacti`) USING BTREE');
-	}
+	db_install_add_key('version', 'key', 'PRIMARY', array('cacti'), 'BTREE');
 }
 

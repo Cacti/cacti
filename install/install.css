@@ -167,6 +167,10 @@ label {
 	color: red;
 }
 
+.cactiInstallSqlWarning {
+	color: orange;
+}
+
 .cactiInstallSqlSkipped {
 	color: gray;
 }
@@ -179,6 +183,12 @@ label {
 .cactiInstallSqlRow, .cactiInstallSqlLeft, .cactInstallSqlRight {
 	padding: 5px;
 	vertical-align: top;
+}
+
+.cactiInstallSqlIcon {
+	width: 50px;
+	text-align: center;
+	padding: 5px;
 }
 
 .flag-icon {
