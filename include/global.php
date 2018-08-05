@@ -202,12 +202,6 @@ include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
 
-/* check cacti log is available */
-$log_filename = cacti_log_file();
-if (!is_resource_writable($log_filename)) {
-	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
-}
-
 $filename = get_current_page();
 
 $config['is_web'] = true;
@@ -255,6 +249,12 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 } else {
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+}
+
+/* check cacti log is available */
+$log_filename = cacti_log_file();
+if (!is_resource_writable($log_filename)) {
+	die('System log file is not available for writing, please enable write access' . PHP_EOL . 'Log: ' . $log_filename . PHP_EOL);
 }
 
 if ($config['poller_id'] > 1) {
