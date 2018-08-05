@@ -728,7 +728,7 @@ function data_input_whitelist_check($data_input_id) {
 function utilities_get_mysql_recommendations() {
 	// MySQL/MariaDB Important Variables
 	// Assume we are successfully, until we aren't!
-	$result = 1;
+	$result = DB_STATUS_SUCCESS;
 	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 
 	$memInfo = utilities_get_system_memory();
@@ -999,13 +999,13 @@ function utilities_get_mysql_recommendations() {
 				if (!$passed) {
 					if (isset($r['class']) && $r['class'] == 'warning') {
 						$class = 'textWarning';
-						if ($result == 1) {
-							$result = 3;
+						if ($result == DB_STATUS_SUCCESS) {
+							$result = DB_STATUS_WARNING;
 						}
 					} else {
 						$class = 'textError';
-						if ($result != 0) {
-							$result = 0;
+						if ($result != DB_STATUS_ERROR) {
+							$result = DB_STATUS_ERROR;
 						}
 					}
 				}

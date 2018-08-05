@@ -23,95 +23,40 @@
 */
 
 function upgrade_to_1_1_4() {
-	if (!db_index_exists('cdef', 'hash')) {
-		db_install_execute('ALTER TABLE `cdef` ADD INDEX (`hash`)');
-	}
+	db_install_add_key('cdef', 'index', 'hash', array('hash'));
+	db_install_drop_key('cdef_items', 'index', 'cdef_id');
+	db_install_add_key('cdef_items', 'index', 'cdef_id_sequence', array('cdef_id', 'sequence'));
 
-	if (db_index_exists('cdef_items', 'cdef_id')) {
-		db_install_execute(
-			'ALTER TABLE `cdef_items` 
-				DROP INDEX `cdef_id`,
-				ADD INDEX `cdef_id_sequence` (`cdef_id`, `sequence`)'
-		);
-	}
+	db_install_drop_key('data_input_fields', 'index', 'type_code');
+	db_install_add_key('data_input_fields', 'index', 'type_code_data_input_id', array('type_code', 'data_input_id'));
 
-	if (db_index_exists('data_input_fields', 'type_code')) {
-		db_install_execute(
-			'ALTER TABLE `data_input_fields` 
-				DROP INDEX `type_code`,
-				ADD INDEX `type_code_data_input_id` (`type_code`, `data_input_id`)'
-		);
-	}
+	db_install_drop_key('data_local', 'index', 'host_id');
+	db_install_add_key('data_local', 'index', 'host_id_snmp_query_id', array('host_id', 'snmp_query_id'));
 
-	if (db_index_exists('data_local', 'host_id')) {
-		db_install_execute(
-			'ALTER TABLE `data_local` 
-				DROP INDEX `host_id`,
-				ADD INDEX `host_id_snmp_query_id` (`host_id`, `snmp_query_id`)'
-		);
-	}
+	db_install_drop_key('snmpagent_cache', 'index', 'mib');
+	db_install_add_key('snmpagent_cache', 'index', 'mib_name', array('mib', 'name'));
 
-	if (db_index_exists('snmpagent_cache', 'mib')) {
-		db_install_execute(
-			'ALTER TABLE `snmpagent_cache` 
-				DROP INDEX `mib`,
-				ADD INDEX `mib_name` (`mib`, `name`)'
-		);
-	}
+	db_install_add_key('host', 'index', 'hostname', array('hostname'));
 
-	if (!db_index_exists('host', 'hostname')) {
-		db_install_execute('ALTER TABLE `host` ADD INDEX (`hostname`)');
-	}
+	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id');
+	db_install_drop_key('snmpagent_managers_notifications', 'index', 'manager_id2');
+	db_install_add_key('snmpagent_managers_notifications', 'index', 'manager_id_notification', array('manager_id', 'notification'));
 
-	if (db_index_exists('snmpagent_managers_notifications', 'manager_id')) {
-		db_install_execute(
-			'ALTER TABLE `snmpagent_managers_notifications` 
-				DROP INDEX `manager_id`,
-				DROP INDEX `manager_id2`,
-				ADD INDEX `manager_id_notification` (`manager_id`,`notification`)'
-		);
-	}
+	db_install_drop_key('snmpagent_notifications_log', 'index', 'manager_id');
+	db_install_drop_key('snmpagent_notifications_log', 'index', 'manager_id2');
+	db_install_add_key('snmpagent_notifications_log', 'index', 'manager_id_notification', array('manager_id', 'notification'));
 
-	if (db_index_exists('snmpagent_notifications_log', 'manager_id')) {
-		db_install_execute(
-			'ALTER TABLE `snmpagent_notifications_log` 
-				DROP INDEX `manager_id`,
-				DROP INDEX `manager_id2`,
-				ADD INDEX `manager_id_notification` (`manager_id`,`notification`)'
-		);
-	}
+	db_install_drop_key('user_auth_group_members', 'index', 'group_id');
+	db_install_drop_key('user_auth_group_realm', 'index', 'group_id');
+	db_install_drop_key('user_log', 'index', 'username');
 
-	if (db_index_exists('user_auth_group_members', 'group_id')) {
-		db_install_execute('ALTER TABLE `user_auth_group_members` DROP INDEX `group_id`');
-	}
+	db_install_add_key('vdef', 'index', 'hash', array('hash'));
 
-	if (db_index_exists('user_auth_group_realm', 'group_id')) {
-		db_install_execute('ALTER TABLE `user_auth_group_realm` DROP INDEX `group_id`');
-	}
+	db_install_drop_key('vdef_items', 'index', 'vdef_id');
+	db_install_add_key('vdef_items', 'index', 'vdef_id_sequence', array('vdef_id', 'sequence'));
 
-	if (db_index_exists('user_log', 'username')) {
-		db_install_execute('ALTER TABLE `user_log` DROP INDEX `username`');
-	}
-
-	if (!db_index_exists('vdef', 'hash')) {
-		db_install_execute('ALTER TABLE `vdef` ADD INDEX `hash` (`hash`)');
-	}
-
-	if (db_index_exists('vdef_items', 'vdef_id')) {
-		db_install_execute(
-			'ALTER TABLE `vdef_items` 
-				DROP INDEX `vdef_id`, 
-				ADD INDEX `vdef_id_sequence` (`vdef_id`, `sequence`)'
-		);
-	}
-
-	if (!db_index_exists('graph_templates_item', 'lgi_gti')) {
-		db_install_execute('ALTER TABLE `graph_templates_item` ADD INDEX `lgi_gti` (`local_graph_id`, `graph_template_id`)');
-	}
-
-	if (!db_index_exists('poller_item', 'poller_id_host_id')) {
-		db_install_execute('ALTER TABLE `poller_item` ADD INDEX `poller_id_host_id` (`poller_id`, `host_id`)');
-	}
+	db_install_add_key('graph_templates_item', 'index', 'lgi_gti', array('local_graph_id', 'graph_template_id'));
+	db_install_add_key('poller_item', 'index', 'poller_id_host_id', array('poller_id', 'host_id'));
 
 	if (!db_column_exists('automation_networks', 'site_id')) {
 		db_install_execute('ALTER TABLE `automation_networks` ADD COLUMN `site_id` INT UNSIGNED DEFAULT "1" AFTER `poller_id`');
@@ -119,7 +64,7 @@ function upgrade_to_1_1_4() {
 
 	if (!db_column_exists('graph_tree_items', 'site_id')) {
 		db_install_execute(
-			'ALTER TABLE `graph_tree_items` 
+			'ALTER TABLE `graph_tree_items`
 				ADD COLUMN `site_id` INT UNSIGNED DEFAULT "0" AFTER `host_id`,
 				ADD INDEX `site_id` (`site_id`)'
 		);
@@ -127,7 +72,7 @@ function upgrade_to_1_1_4() {
 
 	if (!db_column_exists('graph_tree_items', 'graph_regex')) {
 		db_install_execute(
-			'ALTER TABLE `graph_tree_items` 
+			'ALTER TABLE `graph_tree_items`
 				ADD COLUMN `graph_regex` VARCHAR(60) DEFAULT "" AFTER `sort_children_type`,
 				ADD COLUMN `host_regex` VARCHAR(60) DEFAULT "" AFTER `graph_regex`'
 		);

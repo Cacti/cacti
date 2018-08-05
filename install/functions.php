@@ -53,10 +53,12 @@ function install_test_remote_database_connection() {
 function install_test_temporary_table() {
 	$table = 'test_temp_' . rand();
 
-	if (!db_execute('CREATE TEMPORARY TABLE ' . $table . ' (`cacti` char(20) NOT NULL DEFAULT "", PRIMARY KEY (`cacti`)) ENGINE=InnoDB', false)) {
+	if (!db_execute('CREATE TEMPORARY TABLE ' . $table . ' (`cacti` char(20) NOT NULL DEFAULT "", PRIMARY KEY (`cacti`)) ENGINE=InnoDB')) {
 		return false;
 	} else {
-		db_execute('DROP TABLE ' . $table);
+		if (!db_execute('DROP TABLE ' . $table)) {
+			return false;
+		}
 	}
 
 	return true;
@@ -73,78 +75,147 @@ function verify_php_extensions($extensions) {
 	return $extensions;
 }
 
-function db_install_execute($sql) {
-	$status = (db_execute($sql, false) ? 1 : 0);
-	db_install_add_cache ($status, $sql);
+function db_install_execute($sql, $log = true) {
+	$status = (db_execute($sql, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+
+	if ($log) {
+		db_install_add_cache($status, $sql);
+	}
+
+	return $status;
 }
 
-function db_install_add_column ($table, $column, $ignore = true) {
+function db_install_add_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
-	$status = 1;
+	global $database_last_error;
+	$status = DB_STATUS_SKIPPED;
 
 	$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
 
-	if (!db_column_exists($table, $column['name'], false)) {
-		$status = db_add_column($table, $column, false);
+	if (!db_table_exists($table)) {
+		$database_last_error = 'Table \'' . $table . '\' missing, cannot add column \'' . $column['name'] . '\'';
+		$status = DB_STATUS_WARNING;
+	} elseif (!db_column_exists($table, $column['name'], false)) {
+		$status = db_add_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	} elseif (!$ignore) {
-		$status = 2;
+		$status = DB_STATUS_SKIPPED;
 	} else {
-		$status = 1;
+		$status = DB_STATUS_SUCCESS;
 	}
 
-	db_install_add_cache ($status, $sql);
+	db_install_add_cache($status, $sql);
+	return $status;
 }
 
-function db_install_add_key ($table, $type, $key, $columns) {
+function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	if (!is_array($columns)) {
 		$columns = array($columns);
 	}
 
-	$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+	$type = strtoupper($type);
+	if ($type == 'KEY' && $key == 'PRIMARY') {
+		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $key . ' ' . $type . '(' . implode(',', $columns) . ')';
+	} else {
+		$sql = 'ALTER TABLE `' . $table . '` ADD ' . $type . ' ' . $key . '(' . implode(',', $columns) . ')';
+	}
 
+	if (!empty($using)) {
+		$sql .= ' USING ' . $using;
+	}
+
+	$status = DB_STATUS_SKIPPED;
+	if (db_index_matches($table, $key, $columns, false) !== 0) {
+		if (db_index_exists($table, $key)) {
+			$status = db_install_drop_key($table, $type, $key);
+		}
+
+		if ($status != DB_STATUS_ERROR) {
+			$status = db_install_execute($sql);
+		}
+	}
+
+	db_install_add_cache($status, $sql);
+	return $status;
+}
+
+function db_install_drop_key($table, $type, $key) {
+	$type = strtoupper(str_ireplace('UNIQUE ', '', $type));
+	if ($type == 'KEY' && $key == 'PRIMARY') {
+		$sql = "ALTER TABLE $table DROP $key $type;";
+	} else {
+		$sql = "ALTER TABLE $table DROP $type $key";
+	}
+
+	$status = DB_STATUS_SKIPPED;
 	if (db_index_exists($table, $key, false)) {
-		$type = str_ireplace('UNIQUE ', '', $type);
-		db_install_execute("ALTER TABLE $table DROP $type $key");
+		$status = db_install_execute($sql);
 	}
 
-	db_install_execute($sql);
+	db_install_add_cache($status, $sql);
+	return $status;
 }
 
-function db_install_drop_table ($table) {
+function db_install_drop_table($table) {
 	$sql = 'DROP TABLE `' . $table . '`';
+
+	$status = DB_STATUS_SKIPPED;
 	if (db_table_exists($table, false)) {
-		db_install_execute ($sql);
-	} else {
-		db_install_add_cache (2, $sql);
+		$status = db_install_execute($sql, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
+
+	db_install_add_cache($status, $sql);
+	return $status;
 }
 
-function db_install_rename_table ($table, $newname) {
+function db_install_rename_table($table, $newname) {
 	$sql = 'RENAME TABLE `' . $table . '` TO `' . $newname . '`';
+
+	$status = DB_STATUS_SKIPPED;
 	if (db_table_exists($table, false) && !db_table_exists($newname, false)) {
-		db_install_execute ($sql);
-	} else {
-		db_install_add_cache (2, $sql);
+		$status = db_install_execute($sql, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
+
+	db_install_add_cache($status, $sql);
+	return $status;
 }
 
-function db_install_drop_column ($table, $column) {
+function db_install_drop_column($table, $column) {
 	$sql = 'ALTER TABLE `' . $table . '` DROP `' . $column . '`';
+
+	$status = DB_STATUS_SKIPPED;
 	if (db_column_exists($table, $column, false)) {
-		$status = (db_remove_column ($table, $column) ? 1 : 0);
-	} else {
-		$status = 2;
+		$status = db_remove_column($table, $column) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
-	db_install_add_cache ($status, $sql);
+
+	db_install_add_cache($status, $sql);
+	return $status;
 }
 
-function db_install_add_cache ($status, $sql) {
-	global $cacti_upgrade_version;
+function db_install_add_cache($status, $sql) {
+	echo ".";
+	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
+
+	if (!isset($database_upgrade_status)) {
+		$database_upgrade_status = array();
+	}
 
 	// add query to upgrade results array by version to the cli global session
-	$cache_file = read_config_option('install_cache_db');
-	if (!empty($cache_file)) {
-		file_put_contents($cache_file, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . PHP_EOL, FILE_APPEND);
+	if (!isset($database_upgrade_status[$cacti_upgrade_version])) {
+		$database_upgrade_status[$cacti_upgrade_version] = array();
+	}
+
+	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
+
+	$cacheFile = '';
+	if (isset($database_upgrade_status['file'])) {
+		$cacheFile = $database_upgrade_status['file'];
+	}
+
+	if (!empty($cacheFile)) {
+		if (function_exists('log_install')) {
+			log_install('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
+		}
+		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
 	}
 }
 
@@ -229,10 +300,15 @@ function install_setup_get_templates() {
 function install_setup_get_tables() {
 	/* ensure all tables are utf8 enabled */
 	$db_tables = db_fetch_assoc("SHOW TABLES");
+	if ($db_tables === false) {
+		return false;
+	}
+
 	$t = array();
 	foreach ($db_tables as $tables) {
 		foreach ($tables as $table) {
 			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
+
 			$collation = '';
 			$engine = '';
 			$rows = 0;
@@ -500,11 +576,18 @@ function import_colors() {
 			$name    = $parts[2];
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
+			if ($id === false) {
+				return $false;
+			}
 
 			if (!empty($id)) {
-				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
+				if (!db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'")) {
+					return false;
+				}
 			} else {
-				db_execute("INSERT INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')");
+				if (!db_execute("INSERT INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')")) {
+					return false;
+				}
 			}
 		}
 	}

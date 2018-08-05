@@ -32,7 +32,7 @@ function upgrade_to_0_8_6i() {
 	db_install_execute("ALTER TABLE `graph_tree_items` MODIFY COLUMN `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT;");
 
 	/* let's keep track of an important statistical value */
-	db_install_add_column ('poller_time', array('name' => 'pid', 'type' => 'INTEGER UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'id'));
+	db_install_add_column('poller_time', array('name' => 'pid', 'type' => 'INTEGER UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'id'));
 
 	/* add some missing information from default/system data input methods */
 	/* first we must see if the user was smart enough to add it themselves */

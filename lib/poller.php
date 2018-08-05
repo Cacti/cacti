@@ -517,6 +517,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 		/* process dsstats information */
 		dsstats_poller_output($rrd_update_array);
+		dsdebug_poller_output($rrd_update_array);
 
 		api_plugin_hook_function('poller_output', $rrd_update_array);
 

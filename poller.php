@@ -66,6 +66,7 @@ include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/rrd.php');
 include_once($config['base_path'] . '/lib/dsstats.php');
+include_once($config['base_path'] . '/lib/dsdebug.php');
 include_once($config['base_path'] . '/lib/boost.php');
 include_once($config['base_path'] . '/lib/reports.php');
 
@@ -190,6 +191,10 @@ if (sizeof($poller)) {
 	$concurrent_processes = $poller['processes'];
 } else {
 	$concurrent_processes = read_config_option('concurrent_processes');
+}
+
+if (!isset($concurrent_process) || inval($concurrent_processes) < 1) {
+	$concurrent_processes = 1;
 }
 
 // correct for possible poller output not empty occurances
@@ -374,10 +379,14 @@ while ($poller_runs_completed < $poller_runs) {
 	/* obtain some defaults from the database */
 	$poller_type = read_config_option('poller_type');
 
-	if (sizeof($poller)) {
+	if (sizeof($poller) && isset($poller['threads'])) {
 		$max_threads = $poller['threads'];
 	} else {
 		$max_threads = read_config_option('max_threads');
+	}
+
+	if (!isset($max_threads) || intval($max_threads) < 1) {
+		$max_threads = 1;
 	}
 
 	/* initialize poller_time and poller_output tables, check poller_output for issues */
@@ -671,6 +680,7 @@ while ($poller_runs_completed < $poller_runs) {
 			if ($poller_id == 1) {
 				snmpagent_poller_bottom();
 				dsstats_poller_bottom();
+				dsdebug_poller_bottom();
 				boost_poller_bottom();
 				api_plugin_hook('poller_bottom');
 			}
@@ -832,6 +842,7 @@ if ($poller_id == 1) {
 	snmpagent_poller_bottom();
 	boost_poller_bottom();
 	dsstats_poller_bottom();
+	dsdebug_poller_bottom();
 	reports_poller_bottom();
 	spikekill_poller_bottom();
 	automation_poller_bottom();

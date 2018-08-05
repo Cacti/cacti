@@ -880,8 +880,9 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'user_domains.php'     => __('User Domains')
 			),
 		__('Utilities') => array(
-			'utilities.php' => __('System Utilities'),
-			'links.php'     => __('External Links'),
+			'utilities.php'  => __('System Utilities'),
+			'data_debug.php' => __('Datasource Debug'),
+			'links.php'      => __('External Links'),
 			)
 	);
 } else {
@@ -1054,6 +1055,7 @@ $user_auth_realm_filenames = array(
 	'clog.php' => 18,
 	'clog_user.php' => 19,
 	'color.php' => 5,
+	'data_debug.php' => 15,
 	'data_input.php' => 2,
 	'data_sources.php' => 3,
 	'data_source_profiles.php' => 9,
@@ -1681,6 +1683,18 @@ $i18n_weekdays_short = array(
 	'Thu'	=> __x('A textual representation of a day, three letters', 'Thu'),
 	'Fri'	=> __x('A textual representation of a day, three letters', 'Fri'),
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
+);
+
+define('DB_STATUS_ERROR'  , 0);
+define('DB_STATUS_WARNING', 1);
+define('DB_STATUS_SUCCESS', 2);
+define('DB_STATUS_SKIPPED', 3);
+
+$database_statuses = array(
+	0 => __('[Fail]'),
+	1 => __('[Warning]'),
+	2 => __('[Success]'),
+	3 => __('[Skipped]'),
 );
 
 $phperrors = array (

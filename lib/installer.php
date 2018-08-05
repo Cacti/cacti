@@ -523,13 +523,6 @@ class Installer implements JsonSerializable {
 		log_install('step', 'setStep: ' . var_export($step, true));
 		log_install('step', "setStep:" . PHP_EOL . var_export(debug_backtrace(0), true));
 
-//		$install_version = read_config_option('install_version', true);
-//		if ($install_version !== false) {
-//			if ($install_version == CACTI_VERSION && $step == Installer::STEP_INSTALL) {
-//				$step = Installer::STEP_COMPLETE;
-//			}
-//		}
-
 		// Make current step the first if it is unknown
 		$this->stepCurrent  = ($step == Installer::STEP_NONE ? Installer::STEP_WELCOME : $step);
 		$this->stepPrevious = Installer::STEP_NONE;
@@ -584,7 +577,7 @@ class Installer implements JsonSerializable {
 
 	public function isConfigurationWritable() {
 		global $config;
-		return (is_writable($config['base_path'] . '/include/config.php') ? true : false);
+		return is_resource_writable($config['base_path'] . '/include/config.php');
 	}
 
 	public function isRemoteDatabaseGood() {
@@ -982,12 +975,12 @@ class Installer implements JsonSerializable {
 		global $rdatabase_default, $rdatabase_username, $rdatabase_port;
 
 		$enabled = array(
-			'location' => 1,
-			'php_timezone' => 1,
-			'php_modules' => 1,
-			'php_optional' => 1,
-			'mysql_timezone' => 1,
-			'mysql_performance' => 1
+			'location'          => DB_STATUS_SUCCESS,
+			'php_timezone'      => DB_STATUS_SUCCESS,
+			'php_modules'       => DB_STATUS_SUCCESS,
+			'php_optional'      => DB_STATUS_SUCCESS,
+			'mysql_timezone'    => DB_STATUS_SUCCESS,
+			'mysql_performance' => DB_STATUS_SUCCESS
 		);
 
 		$output  = Installer::sectionTitle(__('Pre-installation Checks'));
@@ -1023,7 +1016,7 @@ class Installer implements JsonSerializable {
 		// The path was not what we expected so print an error
 		if ($test_compare_result !== 0) {
 			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Please update config.php with the correct relative URI location of Cacti (url_path).') . '</span>');
-			$enabled['location'] = 0;
+			$enabled['location'] = DB_STATUS_ERROR;
 		} else {
 			$output .= Installer::sectionNormal(__('Your Cacti configuration has the relative correct path (url_path) in config.php.'));
 		}
@@ -1040,7 +1033,7 @@ class Installer implements JsonSerializable {
 		html_start_box(__('Required PHP Modules'), '100%', false, '3', '', false);
 		html_header(array(__('Name'), __('Required'), __('Installed')));
 
-		$enabled['php_modules'] = version_compare(PHP_VERSION, '5.4.0', '<') ? 0 : 1;
+		$enabled['php_modules'] = version_compare(PHP_VERSION, '5.4.0', '<') ? DB_STATUS_ERROR : DB_STATUS_SUCCESS;
 		form_alternate_row('phpline',true);
 		form_selectable_cell(__('PHP Version'), '');
 		form_selectable_cell('5.4.0+', '');
@@ -1107,7 +1100,7 @@ class Installer implements JsonSerializable {
 			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 			form_end_row();
 
-			if (!$e['installed']) $enabled['php_modules'] = 0;
+			if (!$e['installed']) $enabled['php_modules'] = DB_STATUS_ERROR;
 		}
 
 		html_end_box(false);
@@ -1139,7 +1132,7 @@ class Installer implements JsonSerializable {
 			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 			form_end_row();
 
-			if (!$e['installed']) $enabled['php_optional'] = 0;
+			if (!$e['installed']) $enabled['php_optional'] = DB_STATUS_WARNING;
 		}
 
 		html_end_box();
@@ -1152,7 +1145,7 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitle(__('PHP - Timezone Support'), 'php_timezone');
 		if (ini_get('date.timezone') == '') {
 			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</span>');
-			$enabled['php_timezone'] = 0;
+			$enabled['php_timezone'] = DB_STATUS_ERROR;
 		} else {
 			$output .= Installer::sectionNormal(__('Your Web Servers PHP is properly setup with a Timezone.'));
 		}
@@ -1165,14 +1158,14 @@ class Installer implements JsonSerializable {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 			if (!$timezone_populated) {
 				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
-				$enabled['mysql_timezone'] = 0;
+				$enabled['mysql_timezone'] = DB_STATUS_ERROR;
 			}
 		} else {
 			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Cacti database login account does not have access to the MySQL TimeZone database.  Please provide the Cacti database account "select" access to the "time_zone_name" table in the "mysql" database, and populate MySQL\'s TimeZone information before proceeding.') . '</span>');
-			$enabled['mysql_timezone'] = 0;
+			$enabled['mysql_timezone'] = DB_STATUS_ERROR;
 		}
 
-		if ($enabled['mysql_timezone'] == 1) {
+		if ($enabled['mysql_timezone'] == DB_STATUS_SUCCESS) {
 			$output .= Installer::sectionNormal(__('Your Cacti database account has access to the MySQL TimeZone database and that database is populated with global TimeZone information.'));
 		}
 
@@ -1415,14 +1408,14 @@ class Installer implements JsonSerializable {
 
 			$output .= Installer::sectionSubTitle(__('Required Writable at Install Time Only'), 'writable_install');
 
-			$sections['writable_install'] = 1;
+			$sections['writable_install'] = DB_STATUS_SUCCESS;
 			foreach($install_paths as $path) {
-				if (is_writable($path)) {
+				if (is_resource_writable($path . '/')) {
 					$output .= Installer::sectionNormal(__('<p>%s is <font color="#008000">Writable</font></p>', $path));
 				} else {
 					$output .= Installer::sectionNormal(__('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path));
 					$writable = false;
-					$sections['writable_install'] = 0;
+					$sections['writable_install'] = DB_STATUS_ERROR;
 				}
 			}
 		}
@@ -1454,13 +1447,13 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
-		$sections['writable_always'] = 1;
+		$sections['writable_always'] = DB_STATUS_SUCCESS;
 		foreach($always_paths as $path) {
-			if (is_writable($path)) {
+			if (is_resource_writable($path . '/')) {
 				$output .= Installer::sectionNormal(__('<p>%s is <font color="#008000">Writable</font></p>', $path));
 			} else {
 				$output .= Installer::sectionNormal(__('<p>%s is <font color="#FF0000">Not Writable</font></p>', $path));
-				$sections['writable_always'] = 0;
+				$sections['writable_always'] = DB_STATUS_ERROR;
 				$writable = false;
 			}
 		}
@@ -1469,11 +1462,18 @@ class Installer implements JsonSerializable {
 		if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
 			$output .= Installer::sectionSubTitleEnd();
 
-			$output .= Installer::sectionSubTitle(__('Ensure Host Process Has Access'));
+			$running_user = get_running_user();
+
+			$sections['host_access'] = DB_STATUS_WARNING;
+			$output .= Installer::sectionSubTitle(__('Ensure Host Process Has Access'),'host_access');
 			$output .= Installer::sectionNormal(__('Make sure your webserver has read and write access to the entire folder structure.'));
 			$output .= Installer::sectionNormal(__('Example:'));
-			$output .= Installer::sectionCode(__('chown -R apache.apache %s/resource/', $config['base_path']));
-			$output .= Installer::sectionNormal(__('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.'));
+			if ($config['cacti_server_os'] == 'win32') {
+				$output .= Installer::sectionCode(__('%s should have MODIFY permission to the above directories', $running_user));
+			} else {
+				$output .= Installer::sectionCode(__('chown -R %s.%s %s/resource/', $running_user, $running_user, $config['base_path']));
+				$output .= Installer::sectionNormal(__('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.'));
+			}
 		} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
 			$output .= Installer::sectionNormal(__('Check Permissions'));
 		}else {
@@ -1635,6 +1635,7 @@ class Installer implements JsonSerializable {
 				form_selectable_cell($p['Collation'], $id, '', $style);
 				form_selectable_cell($p['Engine'], $id, '', $style);
 				form_selectable_cell($p['Rows'], $id, '', $style);
+
 				if ($enabled) {
 					form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
 				} else {
@@ -1803,10 +1804,9 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepComplete() {
-		global $cacti_version_codes;
+		global $cacti_version_codes, $database_statuses;
 
-		//db_execute_prepared("UPDATE version SET cacti = ?", array(CACTI_VERSION));
-		//set_config_option('install_version', CACTI_VERSION);
+		$cacheFile = read_config_option('install_cache_db', true);
 
 		if ($this->stepCurrent == Installer::STEP_COMPLETE) {
 			$output = Installer::sectionTitle(__('Complete'));
@@ -1819,69 +1819,99 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$sections = array();
-		$cacheFile = read_config_option('install_cache_db');
-		if (!empty($cacheFile)) {
+		clearstatcache();
+		if ((!empty($cacheFile)) && (is_file($cacheFile))) {
 			$cacti_versions = array_keys($cacti_version_codes);
 
-			$sqltext = array(
-				0 => __('[Fail]'),
-				1 => __('[Success]'),
-				2 => __('[Skipped]'),
-			);
+			$sql_text = $database_statuses;
 
 			$sqlclass = array(
-				0 => 'cactiInstallSqlFailure',
-				1 => 'cactiInstallSqlSuccess',
-				2 => 'cactiInstallSqlSkipped',
+				DB_STATUS_ERROR   => 'cactiInstallSqlFailure',
+				DB_STATUS_WARNING => 'cactiInstallSqlWarning',
+				DB_STATUS_SUCCESS => 'cactiInstallSqlSuccess',
+				DB_STATUS_SKIPPED => 'cactiInstallSqlSkipped',
+			);
+			$sqlicon = array(
+				DB_STATUS_ERROR   => 'fa fa-thumbs-down',
+				DB_STATUS_WARNING => 'fa fa-exclamation-triangle',
+				DB_STATUS_SUCCESS => 'fa fa-thumbs-up',
+				DB_STATUS_SKIPPED => 'fa fa-check-circle'
 			);
 
 			$file = fopen($cacheFile, "r");
-			$version_last = '';
-			while (!feof($file)) {
-				$change = fgets($file);
-				$action = preg_split('~[ ]*<\[(version|status|sql)\]>[ ]*~i', $change);
-				if (empty($action) || !sizeof($action)) {
-					log_install('upgrade', "$cacheFile: Read unexpect change - '" . var_export($change, false) . "'");
-				} else {
-					$version = $action[1];
-					if (!empty($version)) {
-						if ($version != $version_last) {
-							$version_last = $version;
-							if (!empty($sectionId)) {
-								$stepData[$sectionId] = $sectionStatus;
-								$output .= '</table>';
+			if ($file !== false) {
+				$version_last = '';
+				while (!feof($file)) {
+					$change = fgets($file);
+					$action = preg_split('~[ ]*<\[(version|status|sql|error)\]>[ ]*~i', $change);
+					if (empty($action) || sizeof($action) != 5) {
+						log_install('upgrade', "$cacheFile: Read unexpected change - " . sizeof($action) . " - '" . clean_up_lines(var_export($change, true)) . "'");
+					} else {
+						$version = $action[1];
+						if (!empty($version)) {
+							if ($version != $version_last) {
+								$version_last = $version;
+								if (!empty($sectionId)) {
+									$sections[$sectionId] = $sectionStatus;
+									$output .= '</table>';
+									$output .= $this->sectionSubTitleEnd();
+								}
+
+								$sectionId = str_replace(".", "_", $version);
+								$output .= $this->sectionSubTitle('Database Upgrade - Version ' . $version, $sectionId);
+								$output .= $this->sectionNormal('The following table lists the status of each upgrade performed on the database');
+								$output .= '<table class=\'cactiInstallSqlResults\'>';
+
+								$sectionStatus = DB_STATUS_SKIPPED;
 							}
 
-							$sectionId = str_replace(".", "_", $version);
-							$output .= $this->sectionSubTitle('Database Upgrade - Version ' . $version, $sectionId);
-							$output .= $this->sectionNormal('The following table lists the status of each upgrade performed on the database');
-							$output .= '<table class=\'cactiInstallSqlResults\'>';
+							// show results from version upgrade
+							$sql_temp = $action[3];
 
-							$sectionStatus = 2;
-						}
+//						if (!empty($action[4])) {
+//							$sql .= "<br>Error: " . $action[4];
+//						}
 
-						// show results from version upgrade
-						$output .= '<tr class=\'cactiInstallSqlRow\'>';
-						$output .= '<td class=\'cactiInstallSqlLeft\'>' . $action[3] . '</td>';
-						$output .= '<td class=\'cactiInstallSqlRight ' . $sqlclass[$action[2]] . '\'>' . $sqltext[$action[2]] . '</td>';
-						$output .= '</td></tr>';
+							if (isset($sqlclass[$action[2]])) {
+								$cssClass = $sqlclass[$action[2]];
+							} else {
+								$cssClass = $action[2];
+							}
 
-						// set sql failure if status set to zero on any action
-						if ($action[2] < $sectionStatus) {
-							$sectionStatus = $action[2];
+							$dbIcon = '';
+							if (isset($sqlicon[$action[2]])) {
+								$dbIcon = $sqlicon[$action[2]];
+							}
+
+							if (isset($database_statuses[$action[2]])) {
+								$dbStatus = $database_statuses[$action[2]];
+							} else {
+								$dbStatus = 'Unknown ' . $action[2];
+							}
+
+							$output .= '<tr class=\'cactiInstallSqlRow\'>';
+							$output .= '<td class=\'cactiInstallSqlIcon ' . $cssClass . '\' width=\'50\'><i class=\'' . $dbIcon . '\'></i></td>';
+							$output .= '<td class=\'cactiInstallSqlLeft\'>' . $sql_temp . '</td>';
+							$output .= '<td class=\'cactiInstallSqlRight ' . $cssClass . '\'>' . $dbStatus . '</td>';
+							$output .= '</tr>';
+
+							// set sql failure if status set to zero on any action
+							if ($action[2] < $sectionStatus) {
+								$sectionStatus = $action[2];
+							}
 						}
 					}
 				}
+
+				if (!empty($sectionId)) {
+					$output .= '</table>';
+					$sections[$sectionId] = $sectionStatus;
+				}
+
+				$output .= Installer::sectionSubTitleEnd();
+
+				fclose($file);
 			}
-
-			if (!empty($sectionId)) {
-				$output .= '</table>';
-				$sections[$sectionId] = $sectionStatus;
-			}
-
-			$output .= Installer::sectionSubTitleEnd();
-
-			fclose($file);
 		}
 
 		$output .= $this->sectionSubTitle('Process Log');
@@ -1890,8 +1920,8 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->Visible = false;
 		$this->buttonNext->Enabled = true;
 
-		if (isset($stepData)) {
-			$this->stepData = array('Sections' => $stepData);
+		if (isset($sections)) {
+			$this->stepData = array('Sections' => $sections);
 		}
 
 		iF ($this->stepCurrent == Installer::STEP_ERROR) {
@@ -1908,12 +1938,6 @@ class Installer implements JsonSerializable {
 		}
 
 		return $output;
-	}
-
-	public function processStepError() {
-		$output = Installer::sectionTitleError(__('Failed'));
-		$output .= Installer::sectionNormal(__('There was a problem during this process.  Please check the log below for more information'));
-		$output .= $this->getInstallLog();
 	}
 
 	public function getAutomationNetworkMode() {
@@ -1961,6 +1985,8 @@ class Installer implements JsonSerializable {
 
 	public function processBackgroundInstall() {
 		global $config;
+		$failure = '';
+
 		switch ($this->mode) {
 			case Installer::MODE_UPGRADE:
 				$which = 'UPGRADE';
@@ -1984,7 +2010,6 @@ class Installer implements JsonSerializable {
 		}
 
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
-		$failure = '';
 
 		if ($this->mode == Installer::MODE_POLLER) {
 			$failure = $this->installPoller();
@@ -1994,7 +2019,7 @@ class Installer implements JsonSerializable {
 			} else if ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
 			}
-			$this->disablePluginsNowIntegrated();
+			$this->disableInvalidPlugins();
 		}
 
 		log_install_and_cacti(sprintf('Setting Cacti Version to %s', CACTI_VERSION));
@@ -2119,7 +2144,7 @@ class Installer implements JsonSerializable {
 
 		$this->setProgress(Installer::PROGRESS_AUTOMATION_START);
 		$automation_row = db_fetch_row('SELECT id, enabled, subnet_range FROM automation_networks ORDER BY id LIMIT 1');
-		log_install('automation','Automation Row:' . PHP_EOL . var_export($automation_row, false) . PHP_EOL);
+		log_install('automation','Automation Row:' . PHP_EOL . var_export($automation_row, true) . PHP_EOL);
 		if (!empty($automation_row)) {
 			log_install_and_cacti(sprintf('Updating automation network (%s), mode "%s" => "%s", subnet "%s" => %s"'
 				, $automation_row['id'], $automation_row['mode'], $this->automationMode ? 'on' : ''
@@ -2253,12 +2278,20 @@ class Installer implements JsonSerializable {
 	}
 
 	private function upgradeDatabase() {
-		global $cacti_version_codes, $config, $cacti_upgrade_version;
-		$failure = '';
+		global $cacti_version_codes, $config, $cacti_upgrade_version, $database_statuses, $database_upgrade_status;
+		$failure = DB_STATUS_SKIPPED;
 
-		set_config_option('install_cache_db', tempnam(sys_get_temp_dir(), 'cdu'));
-		$temp = read_config_option('install_cache_db');
-		log_install_and_cacti('NOTE: Using temporary file: ' . $temp);
+		$cachePrev = read_config_option('install_cache_db', true);
+		$cacheFile = tempnam(sys_get_temp_dir(), 'cdu');
+
+		log_install_and_cacti('Switched from ' . $cachePrev . ' to ' . $cacheFile);
+		set_config_option('install_cache_db', $cacheFile);
+
+		$database_upgrade_status = array('file' => $cacheFile);
+		log_install_and_cacti('NOTE: Using temporary file for db cache: ' . $cacheFile);
+
+		$prev_cacti_version = $this->old_cacti_version;
+		$orig_cacti_version = get_cacti_cli_version();
 
 		// loop through versions from old version to the current, performing updates for each version in the chain
 		foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
@@ -2275,35 +2308,49 @@ class Installer implements JsonSerializable {
 			$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 			// check for upgrade version file, then include, check for function and execute
+			$ver_status = DB_STATUS_SKIPPED;
 			if (file_exists($upgrade_file)) {
+				log_install_and_cacti('Upgrading from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ') to v' . $cacti_upgrade_version . PHP_EOL);
+
 				include_once($upgrade_file);
 				if (function_exists($upgrade_function)) {
-					log_install_and_cacti('Applying v' . $cacti_upgrade_version . ' upgrade');
 					call_user_func($upgrade_function);
+					$ver_status = $this->checkDatabaseUpgrade($cacti_upgrade_version);
 				} else {
 					log_install_and_cacti('WARNING: Failed to find upgrade function for v' . $cacti_upgrade_version);
+					$ver_status = DB_STATUS_WARNING;
 				}
-			} else {
-				log_install('','INFO: Failed to find ' . $upgrade_file . ' upgrade file for v' . $cacti_upgrade_version);
+			}
+
+			if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+				db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
+				$orig_cacti_version = $cacti_upgrade_version;
+			}
+			$prev_cacti_version = $cacti_upgrade_version;
+
+			if ($failure > $ver_status) {
+				$failure = $ver_status;
 			}
 		}
 
-		if (empty($failure)) {
-			$failure = $this->checkDatabaseUpgrade();
+		set_config_option('install_cache_result', $failure);
+		if ($failure == DB_STATUS_ERROR) {
+			return 'WARNING: One or more upgrades failed to install correctly';
 		}
 
-		return $failure;;
+		return false;
 	}
 
-	private function checkDatabaseUpgrade() {
-		$failure = '';
+	private function checkDatabaseUpgrade($cacti_upgrade_version) {
+		global $database_upgrade_status;
+		$failure = DB_STATUS_SKIPPED;
 
-		if (isset($_SESSION['cacti_db_install_cache']) && is_array($_SESSION['cacti_db_install_cache'])) {
-			foreach ($_SESSION['cacti_db_install_cache'] as $cacti_upgrade_version => $actions) {
-				foreach ($actions as $action) {
-					// set sql failure if status set to zero on any action
-					if ($action['status'] == 0) {
-						$failure = 'WARNING: One or more database actions failed';
+		if (sizeof($database_upgrade_status)) {
+			if (isset($database_upgrade_status[$cacti_upgrade_version])) {
+				foreach ($database_upgrade_status[$cacti_upgrade_version] as $cache_item) {
+					log_install('dbc', $cacti_upgrade_version . ': ' . clean_up_lines(var_export($cache_item, true)));
+					if ($cache_item['status'] < $failure) {
+						$failure = $cache_item['status'];
 					}
 				}
 			}
@@ -2312,12 +2359,52 @@ class Installer implements JsonSerializable {
 		return $failure;
 	}
 
-	private function disablePluginsNowIntegrated() {
-		global $plugins_integrated;
+	private function disableInvalidPlugins() {
+		global $plugins_integrated, $config;
+
 		foreach ($plugins_integrated as $plugin) {
-			if (api_plugin_is_enabled ($plugin)) {
-				api_plugin_remove_hooks ($plugin);
-				api_plugin_remove_realms ($plugin);
+			if (api_plugin_is_enabled($plugin)) {
+				api_plugin_remove_hooks($plugin);
+				api_plugin_remove_realms($plugin);
+			}
+		}
+
+		$plugins = array_rekey(
+			db_fetch_assoc('SELECT directory AS plugin, version
+				FROM plugin_config
+				WHERE status IN(1,2)'),
+			'plugin', 'version'
+		);
+
+		if (sizeof($plugins)) {
+			foreach ($plugins as $plugin => $version) {
+				$disable = true;
+				$integrated = in_array($plugin, $plugins_integrated);
+
+				if (is_dir($config['base_path'] . '/plugins/' . $plugin)
+					&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php")
+					&& file_exists($config['base_path'] . "/plugins/$plugin/INFO")
+					&& !$integrated) {
+						$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
+						if (isset($info['info']['compat']) && version_compare(CACTI_VERSION, $info['info']['compat']) > -1) {
+							$disable = false;
+						}
+				}
+
+				if ($disable) {
+					if ($integrated) {
+						cacti_log("Removing $plugin version $version as it is now integrated with Cacti " . CACTI_VERSION);
+					} else {
+						cacti_log("Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
+					}
+					api_plugin_disable_all($plugin);
+				}
+			}
+		}
+
+
+		foreach ($plugins_integrated as $plugin) {
+			if (!api_plugin_is_enabled($plugin)) {
 				db_execute_prepared('DELETE FROM plugin_config
 					WHERE directory = ?',
 					array($plugin));
