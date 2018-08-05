@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -issue#1621: Realtime Popup can cause automatic logout
 -issue#1626: httpd-error.log have message about Fontconfig
 -issue#1634: Default snmp quick print setting resulting in false poller ASSERTS on some php releases
+-issue#1651: Check temporary folder has write access during import
 -issue#1655: Correct Cacti to handle new MySQL 8.0 reserved word `system`
 -issue#1658: Devices drop down should be filtered by Site
 -issue#1660: Reports based upon Tree don't maintain graph order
