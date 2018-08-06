@@ -796,7 +796,7 @@ function utilities_view_user_log() {
 		'username'  => array(__('User'), 'ASC'),
 		'full_name' => array(__('Full Name'), 'ASC'),
 		'realm'     => array(__('Authentication Realm'), 'ASC'),
-		'time'      => array(__('Date'), 'ASC'),
+		'time'      => array(__('Date'), 'DESC'),
 		'result'    => array(__('Result'), 'DESC'),
 		'ip'        => array(__('IP Address'), 'DESC')
 	);
