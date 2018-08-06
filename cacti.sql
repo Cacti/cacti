@@ -1245,6 +1245,29 @@ CREATE TABLE data_local (
 --
 
 --
+-- Table structure for table `data_debug`
+--
+
+CREATE TABLE `data_debug` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `started` int(11) NOT NULL default '0',
+  `done` int(11) NOT NULL default '0',
+  `user` int(11) NOT NULL default '0',
+  `datasource` int(11) NOT NULL default '0',
+  `info` text NOT NULL default '',
+  `issue` text NOT NULL NULL default '',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `done` (`done`),
+  KEY `datasource` (`datasource`),
+  KEY `started` (`started`)
+) ENGINE=InnoDB COMMENT='Datasource Debugger Information';
+
+--
+-- Dumping data for table `data_debug`
+--
+
+--
 -- Table structure for table `data_source_profiles`
 --
 
