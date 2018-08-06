@@ -34,6 +34,8 @@ include_once('./functions.php');
 
 set_default_action();
 
+prime_default_settings();
+
 if (isset_request_var('theme')) {
 	$theme = get_validated_theme(get_nfilter_request_var('theme'), read_config_option('selected_theme', true));
 	$_SESSION['install_theme'] = $theme;

@@ -2054,7 +2054,7 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
-				log_install_and_cacti(sprintf('Attempting to import package #%s \'%s\'', $i, $package));
+				log_install_and_cacti(sprintf('Importing Package #%s \'%s\'', $i, $package));
 				import_package($path . $package, 1, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 			}
@@ -2265,7 +2265,7 @@ class Installer implements JsonSerializable {
 			foreach ($tables as $table) {
 				$i++;
 				$name = $table['value'];
-				log_install_and_cacti(sprintf('Attempting to convert table #%s \'%s\'', $i, $name));
+				log_install_and_cacti(sprintf('Converting Table #%s \'%s\'', $i, $name));
 				$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
 					' --table=' . cacti_escapeshellarg($name) .
 					' --utf8 --innodb');

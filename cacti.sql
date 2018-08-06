@@ -277,7 +277,7 @@ CREATE TABLE `automation_match_rule_items` (
 -- Dumping data for table `automation_match_rule_items`
 --
 
-INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic');
+INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.snmp_sysDescr',8,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic'),(8,1,1,3,1,'h.snmp_sysDescr',2,'Windows');
 
 --
 -- Table structure for table `automation_networks`
@@ -2344,6 +2344,8 @@ CREATE TABLE settings (
 -- Dumping data for table `settings`
 --
 
+INSERT INTO settings VALUES ('auth_method', 1);
+INSERT INTO settings VALUES ('selected_theme', 'modern');
 
 --
 -- Table structure for table `settings_user`

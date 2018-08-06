@@ -24,6 +24,35 @@
 
 include_once(dirname(__FILE__) . '/../include/global_settings.php');
 
+function prime_default_settings() {
+	global $settings;
+
+	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
+		foreach ($settings as $tab_array) {
+			if (sizeof($tab_array)) {
+				foreach($tab_array as $setting => $attributes) {
+					if (isset($attributes['default'])) {
+						db_execute_prepared('INSERT IGNORE INTO settings 
+							(name, value) VALUES (?, ?)', 
+							array($setting, $attributes['default']));
+					} elseif (isset($attributes['items'])) {
+						foreach($items as $isetting => $iattributes) {
+							if (isset($iattributes['default'])) {
+								db_execute_prepared('INSERT IGNORE INTO settings 
+									(name, value) 
+									VALUES (?, ?)', 
+									array($isetting, $iattributes['default']));
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	$_SESSION['settings_primed'] = true;
+}
+
 function install_test_local_database_connection() {
 	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl;
 
