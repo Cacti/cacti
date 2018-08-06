@@ -56,66 +56,67 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 	// Populate the hash cache with preexisting objects.
 	$hash_cache = array();
 	$hash_types_to_db_info = array(
-		"graph_template" => array(
-			"table" => "graph_templates",
+		'graph_template' => array(
+			'table' => 'graph_templates',
 		),
-		"graph_template_item" => array(
-			"table" => "graph_templates_item",
+		'graph_template_item' => array(
+			'table' => 'graph_templates_item',
 		),
-		"graph_template_input" => array(
-			"table" => "graph_template_input",
+		'graph_template_input' => array(
+			'table' => 'graph_template_input',
 		),
-		"data_template" => array(
-			"table" => "data_template",
+		'data_template' => array(
+			'table' => 'data_template',
 		),
-		"data_template_item" => array(
-			"table" => "data_template_rrd",
+		'data_template_item' => array(
+			'table' => 'data_template_rrd',
 		),
-		"host_template" => array(
-			"table" => "host_template",
+		'host_template' => array(
+			'table' => 'host_template',
 		),
-		"data_input_method" => array(
-			"table" => "data_input",
+		'data_input_method' => array(
+			'table' => 'data_input',
 		),
-		"data_input_field" => array(
-			"table" => "data_input_fields",
+		'data_input_field' => array(
+			'table' => 'data_input_fields',
 		),
-		"data_query" => array(
-			"table" => "snmp_query",
+		'data_query' => array(
+			'table' => 'snmp_query',
 		),
-		"data_query_graph" => array(
-			"table" => "snmp_query_graph",
+		'data_query_graph' => array(
+			'table' => 'snmp_query_graph',
 		),
-		"data_query_sv_graph" => array(
-			"table" => "snmp_query_graph_sv",
+		'data_query_sv_graph' => array(
+			'table' => 'snmp_query_graph_sv',
 		),
-		"data_query_sv_data_source" => array(
-			"table" => "snmp_query_graph_rrd_sv",
+		'data_query_sv_data_source' => array(
+			'table' => 'snmp_query_graph_rrd_sv',
 		),
-		"gprint_preset" => array(
-			"table" => "graph_templates_gprint",
+		'gprint_preset' => array(
+			'table' => 'graph_templates_gprint',
 		),
-		"cdef" => array(
-			"table" => "cdef",
+		'cdef' => array(
+			'table' => 'cdef',
 		),
-		"cdef_item" => array(
-			"table" => "cdef_items",
+		'cdef_item' => array(
+			'table' => 'cdef_items',
 		),
-		"vdef" => array(
-			"table" => "vdef",
+		'vdef' => array(
+			'table' => 'vdef',
 		),
-		"vdef_item" => array(
-			"table" => "vdef_items",
+		'vdef_item' => array(
+			'table' => 'vdef_items',
 		),
-		"data_source_profiles" => array(
-			"table" => "data_source_profiles",
+		'data_source_profiles' => array(
+			'table' => 'data_source_profiles',
 		),
-		"data_source_profile_rra" => array(
-			"table" => "data_source_profiles_rra",
-			"hash_field" => "name",
+		'data_source_profile_rra' => array(
+			'table' => 'data_source_profiles_rra',
+			'hash_field' => 'name',
 		),
 	);
 	$hash_cache_sql_union_selects = array();
+
 	foreach ($hash_types_to_db_info as $hash_type => $db_info) {
 		$db_id_field = (
 			isset($db_info['id_field'])
@@ -137,10 +138,13 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				`$db_table`
 		";
 	}
-	$hash_cache_sql = implode(" UNION ALL ", $hash_cache_sql_union_selects);
+
+	$hash_cache_sql = implode(' UNION ALL ', $hash_cache_sql_union_selects);
 	$hash_cache_results = db_fetch_assoc($hash_cache_sql);
-	foreach ($hash_cache_results as $hash_cache_row) {
-		$hash_cache[$hash_cache_row['type']][$hash_cache_row['hash']] = $hash_cache_row['id'];
+	if (sizeof($hash_cache_results)) {
+		foreach ($hash_cache_results as $hash_cache_row) {
+			$hash_cache[$hash_cache_row['type']][$hash_cache_row['hash']] = $hash_cache_row['id'];
+		}
 	}
 
 	$repair     = 0;
