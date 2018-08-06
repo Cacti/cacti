@@ -304,6 +304,8 @@ function form_actions() {
 				foreach($selected_items as $item) {
 					api_networks_discover($item, $discover_debug);
 				}
+
+				sleep(2);
 			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
 				foreach($selected_items as $item) {
 					api_networks_cancel($item);

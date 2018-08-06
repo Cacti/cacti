@@ -58,6 +58,8 @@ function sig_handler($signo) {
 
 				clearTask($network_id, getmypid());
 
+				sleep(5);
+
 				db_execute_prepared('DELETE
 					FROM automation_ips
 					WHERE network_id = ?',
