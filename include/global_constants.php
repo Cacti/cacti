@@ -300,11 +300,6 @@ define('REPORTS_TREE_NONE', 0);
 define('REPORTS_TIMESPAN_DEFAULT', GT_LAST_DAY);
 
 define('REPORTS_EXTENSION_GD', 'gd');
-if (function_exists('read_config_option')) {
-	define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
-} else {
-	define('REPORTS_DEBUG', 1, true);
-}
 
 define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
