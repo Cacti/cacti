@@ -383,7 +383,7 @@ function read_default_config_option($config_name) {
      in 'include/global_settings.php'
    @returns - the current value of the configuration option */
 function read_config_option($config_name, $force = false) {
-	global $config;
+	global $config, $database_hostname, $database_default, $database_port, $database_sessions;
 
 	$config_array = array();
 	if (isset($_SESSION['sess_config_array'])) {
@@ -392,39 +392,70 @@ function read_config_option($config_name, $force = false) {
 		$config_array = $config['config_options_array'];
 	}
 
-	if (!array_key_exists($config_name, $config_array) || ($force)) {
-		$default_value = read_default_config_option($config_name);
-		$config_array[$config_name] = $default_value;
-
-		// store config array in case we loop around
-		if (isset($_SESSION)) {
-			$_SESSION['sess_config_array']  = $config_array;
-		} else {
-			$config['config_options_array'] = $config_array;
-		}
-
-
-		$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
-
-		$value = null;
-		if (isset($db_setting['value'])) {
-			$value = $db_setting['value'];
-		}
-
-		if ($value === null) {
-			$value = read_default_config_option($config_name);
-		}
-
-		$config_array[$config_name] = $value;
-
-		if (isset($_SESSION)) {
-			$_SESSION['sess_config_array']  = $config_array;
-		} else {
-			$config['config_options_array'] = $config_array;
-		}
+	if (defined('DEBUG_READ_OPTIONS') && !defined('DEBUG_READ_OPTIONS_DB_OPEN')) {
+		$prefix = '<[' . getmypid() . ']> -- ';
+		file_put_contents(sys_get_temp_dir() . '/read.log', $prefix . cacti_debug_backtrace($config_name, false, false) . "\n", FILE_APPEND);
 	}
 
-	return $config_array[$config_name];
+	// Do we have a value already stored in the array, or
+	// do we want to make sure we have the latest value
+	// from the database?
+	if (!array_key_exists($config_name, $config_array) || ($force)) {
+		// We need to check against the DB, but lets assume default value
+		// unless we can actually read the DB
+		$value = read_default_config_option($config_name);
+
+		if (defined('DEBUG_READ_OPTIONS')) {
+			$prefix = '<[' . getmypid() . ']> -- ';
+			file_put_contents(sys_get_temp_dir() . '/read.log', $prefix .
+				" $config_name: " .
+				' dh: ' . isset($database_hostname) .
+				' dp: ' . isset($database_port) .
+				' dd: ' . isset($database_default) .
+				' ds: ' . isset($database_sessions["$database_hostname:$database_port:$database_default"]) .
+				"\n", FILE_APPEND);
+
+			if (isset($database_hostname) && isset($database_port) && isset($database_default)) {
+				$prefix = '<[' . getmypid() . ']> -- ';
+				file_put_contents(sys_get_temp_dir() . '/read.log', $prefix .
+					" $config_name: [$database_hostname:$database_port:$database_default]\n", FILE_APPEND);
+			}
+		}
+
+		// Are the database variables set, and do we have a connection??
+		// If we don't, we'll only use the default value without storing
+		// so that we can read the database version later.
+		if (isset($database_hostname) && isset($database_port) && isset($database_default) &&
+		    isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+
+			// Get the database setting
+			$db_setting = db_fetch_row_prepared('SELECT value FROM settings WHERE name = ?', array($config_name), false);
+
+			// Does the settings exist in the database?
+			if (isset($db_setting['value'])) {
+
+				// It does? lets use it
+				$value = $db_setting['value'];
+			}
+
+			// Store whatever value we have in the array
+			$config_array[$config_name] = $value;
+
+			// Store the array back for later retrieval
+			if (isset($_SESSION)) {
+				$_SESSION['sess_config_array']  = $config_array;
+			} else {
+				$config['config_options_array'] = $config_array;
+			}
+		}
+	} else {
+		// We already have the value stored in the array and
+		// we don't want to force a db read, so use the cached
+		// version
+		$value = $config_array[$config_name];
+	}
+
+	return $value;
 }
 
 /*
@@ -4425,7 +4456,7 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function cacti_debug_backtrace($entry = '', $html = false) {
+function cacti_debug_backtrace($entry = '', $html = false, $record = true) {
 	global $config;
 
 	if (defined('IN_CACTI_INSTALL')) {
@@ -4450,11 +4481,15 @@ function cacti_debug_backtrace($entry = '', $html = false) {
 		$s = "(" . ($file != '' ? "$file: ":'') . ($line != '' ? "$line ":'') . "$func)" . $s;
 	}
 
-	if ($html) {
-		echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
-	}
+	if ($record) {
+		if ($html) {
+			echo "<table style='width:100%;text-align:center;'><tr><td>$s</td></tr></table>\n";
+		}
 
-	cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
+		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
+	} else {
+		return trim("$entry Backtrace: " . clean_up_lines($s));
+	}
 }
 
 /*	calculate_percentiles - Given and array of numbers, calculate the Nth percentile,

@@ -90,7 +90,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
 			// Get rid of bad modes
-			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode'));
+			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = array();
 
 			foreach($modes as $mode) {
@@ -100,19 +100,24 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 			$sql_mode = implode(',', $new_modes);
 
-			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode));
+			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
 
 			if ($config['poller_id'] > 1) {
 				$timezone = db_fetch_cell_prepared('SELECT timezone
 					FROM poller
 					WHERE id = ?',
-					array($config['poller_id']));
+					array($config['poller_id']), false);
 
 				if ($timezone != '') {
-					db_execute_prepared('SET SESSION time_zone = ?', array($timezone));
+					db_execute_prepared('SET SESSION time_zone = ?', array($timezone), false);
 				}
 			}
 
+			if (defined('DEBUG_READ_OPTIONS')) {
+				$prefix = '<[' . getmypid() . ']> -- ';
+				define('DEBUG_READ_OPTIONS_DB_OPEN', true);
+				file_put_contents(sys_get_temp_dir() . '/read.log', "$prefix\n$prefix ************* DATABASE OPEN ****************\n$prefix session name: $odevice:$port:$db_name\n$prefix\n", FILE_APPEND);
+			}
 			return $cnn_id;
 		} catch (PDOException $e) {
 			// Must catch this exception or else PDO will display an error with our username/password
@@ -179,7 +184,9 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	$sql = db_strip_control_chars($sql);
 
-	cacti_log('DEVEL: SQL ' . $execute_name . ': "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	if (defined('CACTI_SQL_DEBUG')) {
+		cacti_log('DEVEL: SQL ' . $execute_name . ': "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+	}
 
 	$errors = 0;
 	$db_conn->affected_rows = 0;

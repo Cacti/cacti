@@ -266,6 +266,15 @@ function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
  @param bool $output 	- whether to output the log line to the browser using pring() or not
  @param string $environ - tell's from where the script was called from */
 function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER_VERBOSITY_NONE) {
+	# Define REPORTS_DEBUG if not already set
+	if (!defined('REPORTS_DEBUG')) {
+		if (function_exists('read_config_option')) {
+			define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
+		} else {
+			define('REPORTS_DEBUG', 1, true);
+		}
+	}
+
 	# if current verbosity >= level of current message, print it
 	if (strstr($string, 'STATS')) {
 		cacti_log($string, $output, 'SYSTEM');
