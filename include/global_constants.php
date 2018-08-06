@@ -416,6 +416,11 @@ define('EINPROGRESS',     115);
 define('EREMOTEIO',       121);
 define('ECANCELED',       125);
 
+define('DB_STATUS_ERROR'  , 0);
+define('DB_STATUS_WARNING', 1);
+define('DB_STATUS_SUCCESS', 2);
+define('DB_STATUS_SKIPPED', 3);
+
 if (!defined('PASSWORD_DEFAULT')) {
 	define('PASSWORD_DEFAULT', 1);
 }

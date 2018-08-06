@@ -1685,11 +1685,6 @@ $i18n_weekdays_short = array(
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
 );
 
-define('DB_STATUS_ERROR'  , 0);
-define('DB_STATUS_WARNING', 1);
-define('DB_STATUS_SUCCESS', 2);
-define('DB_STATUS_SKIPPED', 3);
-
 $database_statuses = array(
 	0 => __('[Fail]'),
 	1 => __('[Warning]'),
