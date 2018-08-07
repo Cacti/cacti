@@ -100,6 +100,7 @@ Cacti CHANGELOG
 -feature#1731: Warn a user if they are going off page and there are unsaved changes
 -feature#1734: Visual enhancements to RRD error message when file not found
 -feature#1763: Automatic refresh for Time Graph View - Enhancement
+-feature#1806: Control low level debug routines via config.php
 -feature: New Install/Upgrade user permission to limit access to being able to upgrade
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive

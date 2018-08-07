@@ -98,3 +98,33 @@ $cacti_db_session = false;
 
 //$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
 
+/*
+ * The following are optional variables for debugging low level system
+ * functions that are generally only used by Cacti Developers to help
+ * identify potential issues in commonly used functions
+ *
+ * To use them, uncomment and the equivalent field will be set in the
+ * $config variable allowing for instant on but still allowing the
+ * ability to fine turn and turn them off.
+ */
+
+/*
+ * Debug the read_config_option program flow
+ */
+# define('DEBUG_READ_CONFIG_OPTION', true);
+
+/*
+ * Automatically suppress the DEBUG_READ_CONFIG_OPTION
+ */
+# define('DEBUG_READ_CONFIG_OPTION_DB_OPEN', true);
+
+/*
+ * Always write the SQL command to the cacti log file
+ */
+# define('DEBUG_SQL_CMD', true);
+
+/*
+ * Debug the flow of calls to the db_xxx functions that
+ * are defined in lib/database.php
+ */
+# define('DEBUG_SQL_FLOW', true);

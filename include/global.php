@@ -132,6 +132,12 @@ $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 /* built-in snmp support */
 $config['php_snmp_support'] = function_exists('snmpget');
 
+/* Set various debug fields */
+$config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
+$config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');
+$config['DEBUG_SQL_CMD']                    = defined('DEBUG_SQL_CMD');
+$config['DEBUG_SQL_FLOW']                   = defined('DEBUG_SQL_FLOW');
+
 /* Set the poller_id */
 if (isset($poller_id)) {
 	$config['poller_id'] = $poller_id;
