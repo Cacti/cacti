@@ -1289,7 +1289,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 			$limit"
 		);
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gtg.graph_template_id AS id)
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gtg.graph_template_id) AS id
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id=gtg.local_graph_id

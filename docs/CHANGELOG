@@ -63,6 +63,7 @@ Cacti CHANGELOG
 -issue#1783: Browser Back button still does not working
 -issue#1796: Import: Fixed handling of references to objects not included in file
 -issue#1799: Default User log sort should be date descending
+-issue#1810: Correct SQL errors with authentication set to no authentication
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
