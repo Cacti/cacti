@@ -589,7 +589,7 @@ function utilities_view_user_log() {
 			),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => 'ASC',
+			'default' => 'DESC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'username' => array(
