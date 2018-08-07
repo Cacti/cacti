@@ -677,7 +677,7 @@ function applySkin() {
 		copyToClipboard(containerId);
 	});
 
-	$('i, th, img, input, label, select, button, .drillDown')
+	$('i, th, img, input, label, select, button, .drillDown, .checkboxSlider')
 	.tooltip({
 		closed: true
 	})
@@ -689,7 +689,7 @@ function applySkin() {
 	});
 
 	$(document).tooltip({
-		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span',
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span, .checkboxSlider',
 		content: function() {
 			var element = $(this);
 

@@ -2309,10 +2309,7 @@ tr#realtime td:first-child {
 }
 
 input:checked + .checkboxSlider {
-	background:    -moz-linear-gradient(top, #45484dff 20%, #45484d70 100%); /* FF3.6+ */
-	background: -webkit-linear-gradient(top, #45484dff 20%, #45484d70 100%); /* Chrome10+,Safari5.1+ */
-	background:      -o-linear-gradient(top, #45484dff 20%, #45484d70 100%); /* Opera 11.10+ */
-	background:     -ms-linear-gradient(top, #45484dff 20%, #45484d70 100%); /* IE10+ */
+	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
 }
 
 input:focus + .checkboxSlider {
