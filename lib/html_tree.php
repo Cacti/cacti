@@ -1383,7 +1383,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id=' . $host_id;
 		}
 
-		if ($data_query_id > 0) {
+		if ($data_query_id >= 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'sq.id=' . $data_query_id;
 		}
 
@@ -1396,7 +1396,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			ORDER BY sq.name");
 
 		/* for graphs without a data query */
-		if (empty($data_query_id)) {
+		if ($data_query_id <= 0) {
 			array_push($data_queries,
 				array(
 					'id' => '0',
@@ -1419,7 +1419,7 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				/* grab a list of all graphs for this host/data query combination */
 				$sql_where .= ($sql_where != '' ? ' AND ':'') .
 					'gl.snmp_query_id=' . $data_query['id'] . ($host_id > 0 ? ' AND gl.host_id=' . $host_id:'') .
-					' ' . ($data_query_index != '' ? '' : ' AND gl.snmp_index = ' . db_qstr($data_query_index));
+					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
 				$graphs = get_allowed_graphs($sql_where);
 
