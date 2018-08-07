@@ -9,10 +9,18 @@
 
 **PLEASE READ**
 
-Feature branch for `1.2.x` has been merged into the `develop` branch. This means
-things may and will break, but they will eventually be fixed.
+When updating sources using `git` or by downloading the code directly from GitHub, please ensure that you run through the database upgrade script again if you start to experience any errors about missing tables or columns.  When we add new tables or columns into the database, we update the `cacti.sql` and the upgrade scripts to handle this.  However, as you have already been `upgraded` then the only way to obtain these is to use the `cli/upgrade_database.php` script as such:
 
-> DEVELOP branch is currently considered UNSTABLE, use with caution!
+```
+sudo -u <website user> php -q cli/upgrade_database.php --forcever=<previous version>
+```
+Or by resetting your database version to the previous version and using the gui, using the following SQL statement:
+```
+update version set cacti = '1.1.38';
+```
+For now, that previous version would be 1.1.38
+
+## DEVELOP branch is currently considered UNSTABLE, use with caution!
 
 -----------------------------------------------------------------------------
 
