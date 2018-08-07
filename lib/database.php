@@ -113,10 +113,13 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 				}
 			}
 
-			if (defined('DEBUG_READ_OPTIONS')) {
-				$prefix = '<[' . getmypid() . ']> -- ';
-				define('DEBUG_READ_OPTIONS_DB_OPEN', true);
-				file_put_contents(sys_get_temp_dir() . '/read.log', "$prefix\n$prefix ************* DATABASE OPEN ****************\n$prefix session name: $odevice:$port:$db_name\n$prefix\n", FILE_APPEND);
+			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+				$prefix = get_debug_prefix();
+				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', "$prefix\n$prefix ************* DATABASE OPEN ****************\n$prefix session name: $odevice:$port:$db_name\n$prefix\n", FILE_APPEND);
+			}
+
+			if (!empty($config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'])) {
+				$config['DEBUG_READ_CONFIG_OPTION'] = false;
 			}
 			return $cnn_id;
 		} catch (PDOException $e) {
@@ -184,7 +187,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	$sql = db_strip_control_chars($sql);
 
-	if (defined('CACTI_SQL_DEBUG')) {
+	if (!empty($config['DEBUG_SQL_CMD'])) {
 		cacti_log('DEVEL: SQL ' . $execute_name . ': "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
 	}
 
@@ -222,15 +225,19 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 					$return_array = array_merge($return_array, $return_params);
 				}
 
-				db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func .'\' (' . function_exists($return_func) . ")\n");
-				db_echo_sql('db_' . $execute_name . '_return_func: params ' . clean_up_lines(var_export($return_array, true)) . "\n");
+				if (!empty($config['DEBUG_SQL_FLOW'])) {
+					db_echo_sql('db_' . $execute_name . '_return_func: \'' . $return_func .'\' (' . function_exists($return_func) . ")\n");
+					db_echo_sql('db_' . $execute_name . '_return_func: params ' . clean_up_lines(var_export($return_array, true)) . "\n");
+				}
 
 				$return_value = call_user_func_array($return_func, $return_array);
 			}
 			$query->closeCursor();
 			unset($query);
 
-			db_echo_sql('db_' . $execute_name . ': returns ' . clean_up_lines(var_export($return_value, true)) . "\n", true);
+			if (!empty($config['DEBUG_SQL_FLOW'])) {
+				db_echo_sql('db_' . $execute_name . ': returns ' . clean_up_lines(var_export($return_value, true)) . "\n", true);
+			}
 			return $return_value;
 		} else {
 			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
@@ -270,14 +277,19 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 				}
 			}
 
-			db_echo_sql($database_last_error);
+			if (!empty($config['DEBUG_SQL_FLOW'])) {
+				db_echo_sql($database_last_error);
+			}
 			return false;
 		}
 	}
 
 	unset($query);
 
-	db_echo_sql($database_last_error);
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql($database_last_error);
+	}
+
 	return false;
 }
 
@@ -289,7 +301,12 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_cell($sql, $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_cell($sql, $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
+	}
+
 	return db_fetch_cell_prepared($sql, array(), $col_name, $log, $db_conn);
 }
 
@@ -300,12 +317,22 @@ function db_fetch_cell($sql, $col_name = '', $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_fetch_cell_prepared($sql, $params = array(), $col_name = '', $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_cell_prepared($sql, $params = ' . clean_up_lines(var_export($params, true)) . ', $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_cell_prepared($sql, $params = ' . clean_up_lines(var_export($params, true)) . ', $col_name = \'' . $col_name . '\', $log = true, $db_conn = false)' . "\n");
+	}
+
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Cell', false, 'db_fetch_cell_return', $col_name);
 }
 
 function db_fetch_cell_return($query, $col_name = '') {
-	db_echo_sql('db_fetch_cell_return($query, $col_name = \'' . $col_name . '\')' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_cell_return($query, $col_name = \'' . $col_name . '\')' . "\n");
+	}
+
 	$r = $query->fetchAll(PDO::FETCH_BOTH);
 	if (isset($r[0]) && is_array($r[0])) {
 		if ($col_name != '') {
@@ -322,7 +349,12 @@ function db_fetch_cell_return($query, $col_name = '') {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row($sql, $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_row(\'' . clean_up_lines($sql) . '\', $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+	}
+
 	return db_fetch_row_prepared($sql, array(), $log, $db_conn);
 }
 
@@ -331,12 +363,22 @@ function db_fetch_row($sql, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - the first row of the result as a hash */
 function db_fetch_row_prepared($sql, $params = array(), $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode($params, '\', \'') . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_row_prepared(\'' . clean_up_lines($sql) . '\', $params = (\'' . implode($params, '\', \'') . '\'), $log = ' . $log . ', $db_conn = ' . ($db_conn ? 'true' : 'false') .')' . "\n");
+	}
+
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', false, 'db_fetch_row_return');
 }
 
 function db_fetch_row_return($query) {
-	db_echo_sql('db_fetch_row_return($query)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_row_return($query)' . "\n");
+	}
+
 	if ($query->rowCount()) {
 		$r = $query->fetchAll(PDO::FETCH_ASSOC);
 	}
@@ -349,7 +391,12 @@ function db_fetch_row_return($query) {
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc($sql, $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_assoc($sql, $log = true, $db_conn = false)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_assoc($sql, $log = true, $db_conn = false)' . "\n");
+	}
+
 	return db_fetch_assoc_prepared($sql, array(), $log, $db_conn);
 }
 
@@ -358,12 +405,22 @@ function db_fetch_assoc($sql, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - the entire result set as a multi-dimensional hash */
 function db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false) {
-	db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_assoc_prepared($sql, $params = array(), $log = true, $db_conn = false)' . "\n");
+	}
+
 	return db_execute_prepared($sql, $params, $log, $db_conn, 'Row', array(), 'db_fetch_assoc_return');
 }
 
 function db_fetch_assoc_return($query) {
-	db_echo_sql('db_fetch_assoc_return($query)' . "\n");
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_fetch_assoc_return($query)' . "\n");
+	}
+
 	$r = $query->fetchAll(PDO::FETCH_ASSOC);
 	return (is_array($r)) ? $r : array();
 }
@@ -541,9 +598,11 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
 	$_keys = array_rekey($_data, "Key_name", "Key_name");
 
 	$database_log = $_log;
-	db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index .'\'): '
-		. in_array($index, $_keys) . ' - '
-		. clean_up_lines(var_export($_keys, true)));
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_index_exists(\'' . $table . '\', \'' . $index .'\'): '
+			. in_array($index, $_keys) . ' - '
+			. clean_up_lines(var_export($_keys, true)));
+	}
 
 	return in_array($index, $_keys);
 }
@@ -595,11 +654,13 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 	}
 
 	$database_log = $_log;
-	db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
-		. $status . "\n ::: "
-		. clean_up_lines(var_export($columns, true))
-		. " ::: "
-		. clean_up_lines(var_export($_cols, true)));
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		db_echo_sql('db_index_matches(\'' . $table . '\', \'' . $index .'\'): '
+			. $status . "\n ::: "
+			. clean_up_lines(var_export($columns, true))
+			. " ::: "
+			. clean_up_lines(var_export($_cols, true)));
+	}
 
 	return $status;
 }
@@ -1215,8 +1276,9 @@ function db_check_password_length() {
 }
 
 function db_echo_sql($line, $force = false) {
-	global $database_log;
-	if ($database_log) {
-		echo "  " . $line;
+	global $config;
+
+	if (!empty($config['DEBUG_SQL_FLOW'])) {
+		file_put_contents(get_sys_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 	}
 }

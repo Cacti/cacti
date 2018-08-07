@@ -392,9 +392,8 @@ function read_config_option($config_name, $force = false) {
 		$config_array = $config['config_options_array'];
 	}
 
-	if (defined('DEBUG_READ_OPTIONS') && !defined('DEBUG_READ_OPTIONS_DB_OPEN')) {
-		$prefix = '<[' . getmypid() . ']> -- ';
-		file_put_contents(sys_get_temp_dir() . '/read.log', $prefix . cacti_debug_backtrace($config_name, false, false) . "\n", FILE_APPEND);
+	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false) . "\n", FILE_APPEND);
 	}
 
 	// Do we have a value already stored in the array, or
@@ -405,9 +404,8 @@ function read_config_option($config_name, $force = false) {
 		// unless we can actually read the DB
 		$value = read_default_config_option($config_name);
 
-		if (defined('DEBUG_READ_OPTIONS')) {
-			$prefix = '<[' . getmypid() . ']> -- ';
-			file_put_contents(sys_get_temp_dir() . '/read.log', $prefix .
+		if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+			file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 				" $config_name: " .
 				' dh: ' . isset($database_hostname) .
 				' dp: ' . isset($database_port) .
@@ -416,8 +414,7 @@ function read_config_option($config_name, $force = false) {
 				"\n", FILE_APPEND);
 
 			if (isset($database_hostname) && isset($database_port) && isset($database_default)) {
-				$prefix = '<[' . getmypid() . ']> -- ';
-				file_put_contents(sys_get_temp_dir() . '/read.log', $prefix .
+				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() .
 					" $config_name: [$database_hostname:$database_port:$database_default]\n", FILE_APPEND);
 			}
 		}
@@ -5142,7 +5139,7 @@ function repair_system_data_input_methods($step = 'import') {
 	}
 }
 
-if ($config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
+if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' && !function_exists('posix_kill')) {
 	function posix_kill($pid, $signal = SIGTERM) {
 		$wmi   = new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
 		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
@@ -5497,4 +5494,11 @@ function get_running_user() {
 
 		return (empty($tmp_user) ? 'apache' : $tmp_user);
 	}
+}
+
+function get_debug_prefix() {
+	$dateTime = new DateTime('NOW');
+	$dateTime = $dateTime->format('Y-m-d H:i:s.u');
+
+	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
