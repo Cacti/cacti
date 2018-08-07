@@ -105,7 +105,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			AND realm = 2',
 			array($username));
 
-		if (!$user && read_config_option('user_template') == '0' && read_config_option('guest_user') == '0') {
+		if (!$user && get_template_account() == '0' && get_guest_account() == '0') {
 			cacti_log("ERROR: User '" . $username . "' authenticated by Web Server, but both Template and Guest Users are not defined in Cacti.  Exiting.", false, 'AUTH');
 			$username = html_escape($username);
 
@@ -216,14 +216,13 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* end of switch */
 
 	/* Create user from template if requested */
-	if (!sizeof($user) && $copy_user && read_config_option('user_template') != '0' && $username != '') {
+	if (!sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
 		cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
-		$user_template = db_fetch_row_prepared('SELECT id, username
+		$user_template = db_fetch_row_prepared('SELECT *
 			FROM user_auth
-			WHERE id = ?
-			AND realm = 0',
-			array(read_config_option('user_template')));
+			WHERE id = ?',
+			array(get_template_account()));
 
 		/* check that template user exists */
 		if (!empty($user_template)) {
@@ -277,12 +276,12 @@ if (get_nfilter_request_var('action') == 'login') {
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
-	if ((!sizeof($user)) && ($user_auth) && (read_config_option('guest_user') != '0')) {
+	if ((!sizeof($user)) && ($user_auth) && (get_guest_account() != '0')) {
 		/* Locate guest user record */
 		$user = db_fetch_row_prepared('SELECT id, username, enabled
 			FROM user_auth
 			WHERE id = ?',
-			array(read_config_option('guest_user')));
+			array(get_guest_account()));
 
 		if ($user) {
 			cacti_log("LOGIN: Authenticated user '" . $username . "' using guest account '" . $user['username'] . "'", false, 'AUTH');
@@ -510,11 +509,10 @@ function domains_login_process() {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 					/* check that template user exists */
-					$user_template = db_fetch_row_prepared('SELECT id, name
-						FROM user_auth
-						WHERE id = ?
-						AND realm = 0',
-						array($template_user));
+					$user_template = db_fetch_row_prepared('SELECT * 
+						FROM user_auth 
+						WHERE id = ?', 
+						array(get_template_account()));
 
 					if (!empty($user_template['id']) && $user_template['id'] > 0) {
 						/* template user found */

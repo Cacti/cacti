@@ -542,11 +542,10 @@ function read_user_i18n_setting($config_name) {
 		}
 
 		if (!isset($config_array[$config_name])) {
-			$effective_uid = db_fetch_cell("SELECT user_auth.id
-				FROM settings
-				INNER JOIN user_auth
-				ON user_auth.username = settings.value
-				WHERE settings.name = 'guest_user'");
+			$effective_uid = db_fetch_cell_prepared('SELECT id
+				FROM user_auth
+				WHERE id = ?', 
+				array(get_guest_account()));
 		}
 
 		if ($effective_uid == '') {

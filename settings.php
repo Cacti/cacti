@@ -172,11 +172,11 @@ case 'save':
 	}
 
 	// Disable template user from being able to login
-	if (isset_request_var('user_template') && get_request_var('user_template') > 0) {
+	if (isset_request_var('user_template')) {
 		db_execute_prepared('UPDATE user_auth
 			SET enabled=""
 			WHERE id = ?',
-			array(get_request_var('user_template')));
+			array(get_nfilter_request_var('user_template')));
 	}
 
 	// Update snmpcache

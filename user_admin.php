@@ -538,14 +538,11 @@ function form_save() {
 		$history  = db_fetch_cell_prepared('SELECT password_history FROM user_auth WHERE id = ?', array(get_nfilter_request_var('id')));
 
 		if ($username != '' && $username != get_nfilter_request_var('username')) {
-			$template_user = read_config_option('user_template');
-			$guest_user    = read_config_option('guest_user');
-
-			if ($username == $template_user) {
+			if (get_filter_request_var('id') == get_template_account()) {
 				raise_message(20);
 			}
 
-			if ($username == $guest_user) {
+			if (get_filter_request_var('id') == get_guest_account()) {
 				raise_message(20);
 			}
 		}

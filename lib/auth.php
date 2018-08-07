@@ -286,12 +286,12 @@ function user_remove($user_id) {
 		array($user_id));
 
 	if ($username != get_nfilter_request_var('username')) {
-		if ($username == read_config_option('user_template')) {
+		if ($user_id == get_template_account()) {
 			raise_message(21);
 			return;
 		}
 
-		if ($username == read_config_option('guest_user')) {
+		if ($user_id == get_guest_account()) {
 			raise_message(21);
 			return;
 		}
