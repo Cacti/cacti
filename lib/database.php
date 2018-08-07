@@ -1279,6 +1279,6 @@ function db_echo_sql($line, $force = false) {
 	global $config;
 
 	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		file_put_contents(get_sys_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
+		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 	}
 }
