@@ -25,6 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/utility.php');
 include_once('./lib/template.php');
+include_once('./lib/api_data_source.php');
 
 $di_actions = array(
 	1 => __('Delete')
@@ -96,7 +97,7 @@ function form_save() {
 			$data_input_id = sql_save($save, 'data_input');
 
 			if ($data_input_id) {
-				raise_message(1);
+				data_input_save_message($data_input_id);
 
 				/* get a list of each field so we can note their sequence of occurrence in the database */
 				if (!isempty_request_var('id')) {
@@ -134,25 +135,11 @@ function form_save() {
 		$save['regexp_match']  = form_input_validate((isset_request_var('regexp_match') ? get_nfilter_request_var('regexp_match') : ''), 'regexp_match', '', true, 3);
 		$save['allow_nulls']   = form_input_validate((isset_request_var('allow_nulls') ? get_nfilter_request_var('allow_nulls') : ''), 'allow_nulls', '', true, 3);
 
-		$exists_on_create = false;
-		if (!$save['id']) {
-			$exists_on_create = db_fetch_cell_prepared('SELECT true
-				FROM data_input_fields
-				WHERE data_input_id = ?
-				AND data_name = ?
-				AND input_output = \'in\'',
-				array($save['data_input_id'], $save['data_name']));
-		}
-
 		if (!is_error_message()) {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
 
 			if ($data_input_field_id) {
-				if ($exists_on_create) {
-					raise_message('field_input_dupe');
-				} else {
-					raise_message(1);
-				}
+				data_input_save_message(get_request_var('data_input_id'), 'field');
 
 				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
@@ -168,6 +155,33 @@ function form_save() {
 			header('Location: data_input.php?header=false&action=field_edit&data_input_id=' . get_request_var('data_input_id') . '&id=' . (empty($data_input_field_id) ? get_request_var('id') : $data_input_field_id) . (!isempty_request_var('input_output') ? '&type=' . get_request_var('input_output') : ''));
 		} else {
 			header('Location: data_input.php?header=false&action=edit&id=' . get_request_var('data_input_id'));
+		}
+	}
+}
+
+function data_input_save_message($data_input_id, $type = 'input') {
+	$counts = db_fetch_row_prepared("SELECT 
+		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
+		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+		FROM data_input AS di
+		LEFT JOIN data_template_data AS dtd
+		ON di.id=dtd.data_input_id
+		WHERE di.id = ?",
+		array($data_input_id));
+
+	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
+		raise_message(1);
+	} elseif ($counts['templates'] > 0 && $counts['data_sources'] == 0) {
+		if ($type == 'input') {
+			raise_message('input_save_wo_ds');
+		} else {
+			raise_message('input_field_save_wo_ds');
+		}
+	} else {
+		if ($type == 'input') {
+			raise_message('input_save_w_ds');
+		} else {
+			raise_message('input_field_save_w_ds');
 		}
 	}
 }
@@ -294,13 +308,12 @@ function field_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#continue').unbind().click(function(data) {
+		$('#continue').unbind('click').click(function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
 				id: <?php print get_request_var('id');?>
 			}, function(data) {
-				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
 			});
 		});
@@ -552,6 +565,26 @@ function data_edit() {
 			ORDER BY sequence, data_name",
 			array(get_request_var('id')));
 
+		$counts = db_fetch_row_prepared("SELECT 
+			SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
+			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+			FROM data_input AS di
+			LEFT JOIN data_template_data AS dtd
+			ON di.id=dtd.data_input_id
+			WHERE di.id = ?",
+			array(get_request_var('id')));
+
+		if (!sizeof($counts)) {
+			$output_disabled  = false;
+			$save_alt_message = false;
+		} elseif ($counts['data_sources'] > 0) {
+			$output_disabled  = true;
+			$save_alt_message = true;
+		} elseif ($counts['templates'] > 0) {
+			$output_disabled  = false;
+			$save_alt_message = true;
+		}
+
 		$i = 0;
 		if (sizeof($fields)) {
 			foreach ($fields as $field) {
@@ -606,7 +639,11 @@ function data_edit() {
 					<?php print html_boolean_friendly($field['update_rra']);?>
 				</td>
 				<td class='right'>
+					<?php if ($output_disabled) {?>
+					<a class='deleteMarkerDisabled fa fa-times' href='#' title='<?php print __esc('Output Fields can not be removed when Data Sources are present');?>'></a>
+					<?php } else { ?>
 					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<?php } ?>
 				</td>
 				<?php
 				form_end_row();
@@ -637,7 +674,7 @@ function data_edit() {
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Input Field');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-						modal: true,
+						modal: false,
 						minHeight: 80,
 						minWidth: 500
 					});
@@ -693,7 +730,7 @@ function data() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
+	html_start_box(__('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
