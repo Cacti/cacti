@@ -75,7 +75,7 @@ if (read_config_option('auth_method') != 0) {
 	if (!empty($_SESSION['sess_user_id'])) {
 		$guest_user_id = get_guest_account();
 
-		if (!isset($guest_account) && $guest_user == $_SESSION['sess_user_id']) {
+		if (!isset($guest_account) && $guest_user_id == $_SESSION['sess_user_id']) {
 			kill_session_var('sess_user_id');
 		}
 	}
