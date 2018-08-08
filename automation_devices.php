@@ -238,7 +238,7 @@ function display_discovery_page() {
 	/* generate page list */
 	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
 
-	form_start('automation_devices.php', 'automation_devices');
+	form_start('automation_devices.php', 'chk');
 
 	print $nav;
 
