@@ -2433,9 +2433,9 @@ function applyGraphFilter() {
 }
 
 function cleanHeader(href) {
-	href = href.replace('header=false', '').replace('header=false', '').replace('&&', '&').replace('?&', '?');
-	href = href.replace('action=tree_content', 'action=tree').replace('&&', '&');
-	href = href.replace('&nostate=true', '').replace('?nostate=true', '');
+	href = href.replace('?header=false', '?').replace('&header=false', '').replace('?&', '?');
+	href = href.replace('action=tree_content', 'action=tree');
+	href = href.replace('?nostate=true', '?').replace('&nostate=true', '').replace('?&', '?');
 
 	return href;
 }
@@ -2443,15 +2443,14 @@ function cleanHeader(href) {
 function pushState(myTitle, myHref) {
 	if (myHref.indexOf('nostate') < 0) {
 		if (statePushed == false) {
-			var myObject = { myTitle: myHref };
 			if (typeof window.history.pushState != 'undefined') {
-				window.history.pushState(myObject, myTitle, cleanHeader(myHref));
+				var myObject = { Page: myTitle, Url: cleanHeader(myHref) };
+				window.history.pushState(myObject, myObject.Page, myObject.Url);
 			}
 		}
+	} else if (typeof window.history.popState === 'function') {
+		window.history.popState();
 	} else {
-		if (typeof window.history.popState === 'function') {
-			window.history.popState();
-		}
 	}
 
 	statePushed = true;

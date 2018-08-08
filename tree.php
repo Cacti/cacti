@@ -1048,13 +1048,13 @@ function tree_edit() {
 			});
 
 			$('#lock').click(function() {
-				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'tree.php?action=lock&id=<?php print $tree['id'];?>';
+				loadPage(strURL);
 			});
 
 			$('#unlock').click(function() {
-				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>&header=false';
-				loadPageNoHeader(strURL);
+				strURL = 'tree.php?action=unlock&id=<?php print $tree['id'];?>';
+				loadPage(strURL);
 			});
 
 			var height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
