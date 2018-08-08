@@ -1805,7 +1805,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 			var formID     = $(this).attr('id');
 			var submitData = $(this).serializeForm();
 
-			if (typeof formArray[formID] != 'undefined') {
+			if (typeof formArray != 'undefined' && typeof formArray[formID] != 'undefined') {
 				var formData   = formArray[formID];
 
 				$.each(submitData, function(index, value) {

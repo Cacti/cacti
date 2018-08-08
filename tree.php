@@ -1089,7 +1089,7 @@ function tree_edit() {
 				var treeWidth = parseInt($('.treeTable').outerWidth());
 
 				if (selected == 0) {
-					if (mainWidth != treeWidth) {
+					if (mainWidth != treeWidth && treeWidth > 0) {
 						$('#element').prop('selectedIndex', 1);
 						if (typeof $('#element').selectmenu() === 'object') {
 							$('#element').selectmenu('refresh');
