@@ -31,6 +31,7 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'changepassword':
 		global $config;
+		header('Cacti-FullScreen: true');
 		require_once($config['base_path'] . '/include/auth/auth_changepassword.php');
 		exit;
 

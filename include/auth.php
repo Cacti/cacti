@@ -75,6 +75,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	if (empty($_SESSION['sess_user_id'])) {
+		header('Cacti-FullScreen: true');
 		if (isset($auth_json) && $auth_json == true) {
 			print json_encode(
 				array(
@@ -188,6 +189,7 @@ if (read_config_option('auth_method') != 0) {
 				$title_text = __('There is an Installation or Upgrade in progress.') . "\n" . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time');
 			}
 
+			header('Cacti-FullScreen: true');
 			if (isset($auth_json) && $auth_json == true) {
 				print json_encode(
 					array(
@@ -214,6 +216,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	if (isset($_SESSION['sess_change_password'])) {
+		header('Cacti-FullScreen: true');
 		if (isset($auth_json) && $auth_json == true) {
 			print json_encode(
 				array(
