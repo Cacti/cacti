@@ -1431,7 +1431,7 @@ function get_device_records(&$total_rows, $rows) {
 }
 
 function host() {
-	global $device_actions, $item_rows;
+	global $device_actions, $item_rows, $config;
 
 	if ((!empty($_SESSION['sess_host_status'])) && (!isempty_request_var('host_status'))) {
 		if ($_SESSION['sess_host_status'] != get_nfilter_request_var('host_status')) {
