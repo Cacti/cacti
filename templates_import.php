@@ -114,7 +114,7 @@ function bad_tmp() {
 function import() {
 	global $hash_type_names, $fields_template_import;
 
-	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
+	form_start('templates_import.php', 'import', true);
 
 	$display_hideme = false;
 
@@ -154,7 +154,6 @@ function import() {
 			$('#templates_import1').hide();
 		});
 		<?php } ?>
-		$('#remove_orphans').prop('checked', false).prop('disabled', true);
 	});
 	</script>
 	<?php

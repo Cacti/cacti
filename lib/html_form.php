@@ -1229,7 +1229,7 @@ function form_save_buttons($buttons) {
 /* form_start - draws post form start. To be combined with form_end()
    @arg $action - a mandatory php file URI
    @arg $id     - an optional id, if empty, one will be generated */
-function form_start($action, $id = '') {
+function form_start($action, $id = '', $multipart = false) {
 	global $form_id, $form_action;
 	static $counter = 1;
 
@@ -1242,7 +1242,7 @@ function form_start($action, $id = '') {
 
 	$form_action = $action;
 
-	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'>\n";
+	print "<form class='cactiFormStart' id='$form_id' name='$form_id' action='$form_action' autocomplete='off' method='post'" . ($multipart ? " enctype='multipart/form-data'":'') . ">\n";
 }
 
 /* form_end - draws post form end. To be combined with form_start() */
@@ -1257,7 +1257,7 @@ function form_end($ajax = true) {
 		var changed = false;
 
 		function warningMessage(href, type, scroll_or_id) {
-			title='<?php print __('Warning Unsaved Form Data');?>';
+			title='<?php print __esc('Warning Unsaved Form Data');?>';
 			returnStr = '<div id="messageContainer" style="display:none">' +
 				'<h4><?php print __('Unsaved Changes Detected');?></h4>' +
 				'<p style="display:table-cell;overflow:auto"><?php print __('You have unsaved changes on this form.  If you press &#39;Continue&#39; these changes will be discarded.  Press &#39;Cancel&#39; to continue editing the form.');?></p>' +

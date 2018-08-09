@@ -1617,7 +1617,7 @@ $fields_template_import = array(
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will delete any Graph Items from both the Graph Template and associated Graphs that are not included in the imported Graph Template.'),
 		'value' => '',
-		'default' => 'on'
+		'default' => ''
 		),
 	'import_data_source_profile' => array(
 		'friendly_name' => __('Data Source Profile'),
