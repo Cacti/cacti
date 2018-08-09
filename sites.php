@@ -346,7 +346,7 @@ function site_edit() {
 }
 
 function sites() {
-	global $site_actions, $item_rows;
+	global $site_actions, $item_rows, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -502,10 +502,11 @@ function sites() {
 	$i = 0;
 	if (sizeof($site_list)) {
 		foreach ($site_list as $site) {
+			$devices_url = $config['url_path'] . 'host.php?reset=1&site_id=' . $site['id'];
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($site['hosts'], '-1'), $site['id'], '', 'right');
+			form_selectable_cell('<a class="linkEditMain" href="' . $devices_url . '">' . number_format_i18n($site['hosts'], '-1') . '</a>', $site['id'], '', 'right');
 			form_selectable_cell($site['city'], $site['id'], '', 'left');
 			form_selectable_cell($site['state'], $site['id'], '', 'left');
 			form_selectable_cell($site['country'], $site['id'], '', 'left');
