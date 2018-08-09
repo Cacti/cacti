@@ -2136,7 +2136,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js');
 	print get_md5_include_js('include/js/jquery.js');
-	print get_md5_include_js('include/js/jquery-migrate.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
 	print get_md5_include_js('include/js/jquery.cookie.js');
