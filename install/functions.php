@@ -36,7 +36,7 @@ function prime_default_settings() {
 							(name, value) VALUES (?, ?)', 
 							array($setting, $attributes['default']));
 					} elseif (isset($attributes['items'])) {
-						foreach($items as $isetting => $iattributes) {
+						foreach($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
 								db_execute_prepared('INSERT IGNORE INTO settings 
 									(name, value) 
