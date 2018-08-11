@@ -26,8 +26,7 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -73,11 +72,6 @@ function debug($string) {
 	}
 }
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
 $dir = dirname(__FILE__);
 chdir($dir);
 
@@ -86,7 +80,6 @@ if (strpos($dir, 'boost') !== false) {
 }
 
 /* include important functions */
-include('./include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/boost.php');
 include_once($config['base_path'] . '/lib/dsstats.php');

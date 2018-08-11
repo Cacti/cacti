@@ -23,14 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-    die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-include(dirname(__FILE__) . '/include/global.php');
+require(__DIR__ . '/include/cli_check.php');
 
 ini_set('memory_limit', '512M');
 

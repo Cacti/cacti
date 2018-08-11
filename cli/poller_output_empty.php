@@ -23,16 +23,9 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/../include/cli_check.php');
 
 /* start initialization section */
-include(dirname(__FILE__) . '/../include/global.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/dsstats.php');

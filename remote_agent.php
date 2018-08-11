@@ -22,10 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/* We are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
 
-include('./include/global.php');
 include_once('./lib/api_device.php');
 include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
@@ -116,19 +114,8 @@ function strip_domain($host) {
 
 function remote_client_authorized() {
 	/* don't allow to run from the command line */
-	if (isset($_SERVER['X-Forwarded-For'])) {
-		$client_addr = $_SERVER['X-Forwarded-For'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED'];
-	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
-		$client_addr = $_SERVER['REMOTE_ADDR'];
-	} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_CLIENT_IP'];
-	} else {
+	$client_addr = get_client_addr();
+	if ($client_addr === false) {
 		return false;
 	}
 

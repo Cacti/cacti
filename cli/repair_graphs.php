@@ -25,14 +25,8 @@
 
 /* Original script is located here https://forums.cacti.net/viewtopic.php?t=35816, but this one was modified quite a lot */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD']) || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
 
-$no_http_headers = true;
-
-include(dirname(__FILE__) . "/../include/global.php");
 include_once("../lib/utility.php");
 include_once("../lib/template.php");
 
