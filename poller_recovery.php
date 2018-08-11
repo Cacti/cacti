@@ -27,6 +27,9 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -71,18 +74,6 @@ function debug($string) {
 		print trim($string) . "\n";
 	}
 }
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-if (strpos($dir, 'boost') !== false) {
-	chdir('../../');
-}
-
-/* include important functions */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
 
 global $local_db_cnn_id, $remote_db_cnn_id;
 

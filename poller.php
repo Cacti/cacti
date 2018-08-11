@@ -27,6 +27,13 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/dsdebug.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/reports.php');
 
 function sig_handler($signo) {
 	switch ($signo) {
@@ -53,15 +60,6 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 }
-
-/* start initialization section */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
-include_once($config['base_path'] . '/lib/dsdebug.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/reports.php');
 
 /* initialize some variables */
 $force     = false;
@@ -114,7 +112,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -690,9 +688,9 @@ while ($poller_runs_completed < $poller_runs) {
 
 			/* log some nice debug information */
 			if ($debug) {
-				echo 'Loop  Time is: ' . round($loop_time, 2) . "\n";
-				echo 'Sleep Time is: ' . round($sleep_time, 2) . "\n";
-				echo 'Total Time is: ' . round($loop_end - $poller_start, 2) . "\n";
+				print 'Loop  Time is: ' . round($loop_time, 2) . "\n";
+				print 'Sleep Time is: ' . round($sleep_time, 2) . "\n";
+				print 'Total Time is: ' . round($loop_end - $poller_start, 2) . "\n";
  			}
 
 			$plugin_end = microtime(true);
@@ -815,19 +813,19 @@ function spikekill_poller_bottom () {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Main Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller.php [--poller=ID] [--force] [--debug]\n\n";
-	echo "Cacti's main poller.  This poller is the launcher of cmd.php, spine, and all other\n";
-	echo "background processes.  It is the heart of Cacti's data collection engine.\n\n";
-	echo "Optional:\n";
-	echo "    --poller=ID    Run as the poller indicated and not the default poller.\n";
-	echo "    --force        Override poller overrun detection and force a poller run.\n";
-	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
+	print "\nusage: poller.php [--poller=ID] [--force] [--debug]\n\n";
+	print "Cacti's main poller.  This poller is the launcher of cmd.php, spine, and all other\n";
+	print "background processes.  It is the heart of Cacti's data collection engine.\n\n";
+	print "Optional:\n";
+	print "    --poller=ID    Run as the poller indicated and not the default poller.\n";
+	print "    --force        Override poller overrun detection and force a poller run.\n";
+	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
 /* start post data processing */

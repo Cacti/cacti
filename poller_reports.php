@@ -27,11 +27,14 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/reports.php');
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /** display_help - generic help screen for utilities
@@ -62,14 +65,6 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 }
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-/* include important functions */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/reports.php');
 
 global $current_user;
 

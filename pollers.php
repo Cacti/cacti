@@ -22,8 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/auth.php');
-include_once('./lib/poller.php');
+require('./include/auth.php');
+require($config['base_path'] . '/lib/poller.php');
 
 $poller_actions = array(
 	1 => __('Delete'),

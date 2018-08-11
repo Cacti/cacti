@@ -27,6 +27,9 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -66,11 +69,6 @@ function sig_handler($signo) {
 			/* ignore all other signals */
 	}
 }
-
-/* include important functions */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

@@ -24,11 +24,9 @@
 */
 
 require(__DIR__ . '/include/cli_check.php');
-
-/* start initialization section */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 /* force Cacti to store realtime data locally */
 $config['force_storage_location_local'] = true;
@@ -82,7 +80,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -90,13 +88,13 @@ if (sizeof($parms)) {
 }
 
 if ($graph_id === false || $graph_id < 0) {
-	echo "ERROR: No --graph=ID specified\n\n";
+	print "ERROR: No --graph=ID specified\n\n";
 	display_help();
 	exit(1);
 }
 
 if ($interval === false || $interval < 0) {
-	echo "ERROR: No --interval=SEC specified\n\n";
+	print "ERROR: No --interval=SEC specified\n\n";
 	display_help();
 	exit(1);
 }
@@ -160,22 +158,22 @@ db_close();
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_rt.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
-	echo "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
-	echo "to Cacti's main poller with the exception that it only polls data source\n";
-	echo "that are specific to the graph being rendered in the Cacti UI.\n\n";
-	echo "Required:\n";
-	echo "    --graph=ID     Specify the graph id to convert (realtime)\n\n";
-	echo "Optional:\n";
-	echo "    --interval=SEC Specify the graph interval (realtime)\n";
-	echo "    --force        Override poller overrun detection and force a poller run\n";
-	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
+	print "\nusage: poller_rt.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
+	print "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
+	print "to Cacti's main poller with the exception that it only polls data source\n";
+	print "that are specific to the graph being rendered in the Cacti UI.\n\n";
+	print "Required:\n";
+	print "    --graph=ID     Specify the graph id to convert (realtime)\n\n";
+	print "Optional:\n";
+	print "    --interval=SEC Specify the graph interval (realtime)\n";
+	print "    --force        Override poller overrun detection and force a poller run\n";
+	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
 /* process_poller_output REAL TIME MODIFIED */

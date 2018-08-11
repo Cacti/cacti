@@ -27,11 +27,9 @@
 define('MAX_RECACHE_RUNTIME', 296);
 
 require(__DIR__ . '/include/cli_check.php');
-
-/* Start Initialization Section */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 $poller_id = $config['poller_id'];
 
@@ -66,7 +64,7 @@ if (sizeof($parms)) {
 				$debug = true;
 				break;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -146,10 +144,10 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
-	echo "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
-	echo "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
-	echo "Optional:\n";
-	echo "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
-	echo "    --debug     - Display verbose output during execution\n\n";
+	print "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
+	print "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
+	print "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
+	print "Optional:\n";
+	print "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
+	print "    --debug     - Display verbose output during execution\n\n";
 }

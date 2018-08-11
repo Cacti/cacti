@@ -27,18 +27,10 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-if (strpos($dir, 'boost') !== false) {
-	chdir('../../');
-}
-
-/* include important functions */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 /* get the boost polling cycle */
 $max_run_duration = read_config_option('boost_rrd_update_max_runtime');
@@ -217,8 +209,6 @@ function sig_handler($signo) {
 
 function output_rrd_data($start_time, $force = false) {
 	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
-
-	include_once($config['base_path'] . '/lib/rrd.php');
 
 	$boost_poller_status = read_config_option('boost_poller_status');
 	$rrd_updates = 0;

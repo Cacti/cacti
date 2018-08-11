@@ -24,6 +24,10 @@
 */
 
 require(__DIR__ . '/include/cli_check.php');
+require($config['library_path'] . '/api_graph.php');
+require($config['library_path'] . '/api_data_source.php');
+require($config['library_path'] . '/rrd.php');
+require($config['library_path'] . '/utility.php');
 
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
@@ -73,7 +77,7 @@ if (sizeof($parms)) {
 				$debug = true;
 				break;
 			default :
-				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
 				exit;
 		}
@@ -379,9 +383,6 @@ function secpass_check_expired () {
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;
 
-	include_once ($config['library_path'] . '/api_graph.php');
-	include_once ($config['library_path'] . '/api_data_source.php');
-
 	maint_debug('RRDClean is now running on ' . sizeof($file_array) . ' items');
 
 	/* determine the location of the RRA files */
@@ -500,12 +501,6 @@ function rrdclean_create_path($path) {
 function cleanup_ds_and_graphs() {
 	global $config;
 
-	include_once ($config['library_path'] . '/rrd.php');
-	include_once ($config['library_path'] . '/utility.php');
-	include_once ($config['library_path'] . '/api_graph.php');
-	include_once ($config['library_path'] . '/api_data_source.php');
-	include_once ($config['library_path'] . '/functions.php');
-
 	$remove_ldis = array ();
 	$remove_lgis = array ();
 
@@ -567,14 +562,14 @@ function maint_debug($message) {
 	global $debug;
 
 	if ($debug) {
-		echo trim($message) . "\n";
+		print trim($message) . "\n";
 	}
 }
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*
@@ -584,10 +579,10 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
-	echo "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
-	echo "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
-	echo "Optional:\n";
-	echo "    --force   - Force immediate execution, e.g. for testing.\n";
-	echo "    --debug   - Display verbose output during execution.\n\n";
+	print "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
+	print "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	print "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
+	print "Optional:\n";
+	print "    --force   - Force immediate execution, e.g. for testing.\n";
+	print "    --debug   - Display verbose output during execution.\n\n";
 }
