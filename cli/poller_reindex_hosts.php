@@ -68,22 +68,22 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit(0)
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit(0)
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit(1)
+				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit(1)
+	exit(1);
 }
 
 /* determine the hosts to reindex */
