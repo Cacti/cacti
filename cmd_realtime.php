@@ -22,19 +22,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br>This script is only meant to run at the command line.');
-}
+ini_set('max_execution_time', '0');
+
+require(__DIR__ . '/include/cli_check.php');
 
 $start = date('Y-m-d H:i:s'); // for runtime measurement
 
-ini_set('max_execution_time', '0');
-
 /* we are not talking to the browser */
-$no_http_headers = true;
-
-include('./include/global.php');
 include_once($config['base_path'] . '/lib/snmp.php');
 include_once($config['base_path'] . '/lib/poller.php');
 include_once($config['base_path'] . '/lib/rrd.php');

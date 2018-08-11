@@ -23,13 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* we are not talking to the browser */
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
-if (!isset ($_SERVER['argv'][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/include/cli_check.php');
 
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
@@ -40,8 +34,6 @@ chdir($dir);
 
 /* record the start time */
 $poller_start = microtime(true);
-
-include(dirname(__FILE__) . '/include/global.php');
 
 global $config, $database_default, $archived, $purged;
 

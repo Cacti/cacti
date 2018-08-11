@@ -300,21 +300,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	if (sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
 
-		if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-			$client_addr = $_SERVER['HTTP_CLIENT_IP'];
-		} elseif (isset($_SERVER['X-Forwarded-For'])) {
-			$client_addr = $_SERVER['X-Forwarded-For'];
-		} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-			$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
-		} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-			$client_addr = $_SERVER['HTTP_FORWARDED'];
-		} elseif (isset($_SERVER['REMOTE_ADDR'])) {
-			$client_addr = $_SERVER['REMOTE_ADDR'];
-		} else {
-			$client_addr = '';
-		}
+		$client_addr = get_client_addr('');
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, user_id, result, ip, time)
@@ -425,7 +411,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			db_execute_prepared('INSERT IGNORE INTO user_log
 				(username, user_id, result, ip, time)
 				VALUES (?, 0, 0, ?, NOW())',
-				array($username, $_SERVER['REMOTE_ADDR']));
+				array($username, get_client_addr('')));
 		}
 	}
 }

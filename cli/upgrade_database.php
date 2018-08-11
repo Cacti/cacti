@@ -23,18 +23,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-   die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* We are not talking to the browser */
-$no_http_headers = true;
-
 /* allow the upgrade script to run for as long as it needs to */
 ini_set('max_execution_time', '0');
 
-include(dirname(__FILE__) . '/../include/global.php');
+require(__DIR__ . '/../include/cli_check.php');
+
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/utility.php');
 include_once($config['base_path'] . '/install/functions.php');

@@ -22,13 +22,7 @@
    +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
 
 /* let's report all errors */
 error_reporting(E_ALL);
@@ -37,7 +31,6 @@ error_reporting(E_ALL);
 set_time_limit(0);
 
 chdir(dirname(__FILE__));
-include_once('./include/global.php');
 
 $last_time = time()-30;
 

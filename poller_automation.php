@@ -26,10 +26,9 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-/* we are not talking to the browser */
-$no_http_headers = true;
-
 ini_set('output_buffering', 'Off');
+
+require(__DIR__ . '/include/cli_check.php');
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
@@ -88,11 +87,6 @@ function sig_handler($signo) {
     }
 }
 
-/* let PHP run just as long as it has to */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
 /* take time and log performance data */
 $start = microtime(true);
 
@@ -105,7 +99,6 @@ ini_set('max_execution_time', '0');
 $dir = dirname(__FILE__);
 chdir($dir);
 
-include(dirname(__FILE__) . '/include/global.php');
 include_once($config['base_path'] . '/lib/snmp.php');
 include_once($config['base_path'] . '/lib/ping.php');
 include_once($config['base_path'] . '/lib/poller.php');

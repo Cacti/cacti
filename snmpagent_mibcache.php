@@ -22,22 +22,15 @@
    +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER["argv"][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die("<br><strong>This script is only meant to run at the command line.</strong>");
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
-
 /* let's report all errors */
 error_reporting(E_ALL);
+
+require(__DIR__ . '/include/cli_check.php');
 
 /* allow the script to hang around. */
 set_time_limit(0);
 
 chdir(dirname(__FILE__));
-include_once('./include/global.php');
 
 $path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
 $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
