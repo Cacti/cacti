@@ -24,8 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-include_once($config['base_path'] . '/lib/auth.php');
+require($config['base_path'] . '/lib/auth.php');
 
 if (empty($_SERVER['argv'][1]) ){
 	display_help();

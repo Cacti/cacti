@@ -23,13 +23,12 @@
  +-------------------------------------------------------------------------+
 */
 
-ini_set('max_execution_time', '0');
-
 require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/api_automation_tools.php');
 
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/api_automation_tools.php');
+ini_set('max_execution_time', '0');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

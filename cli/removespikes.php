@@ -23,14 +23,12 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/../include/cli_check.php');
-
 $dir = dirname(__FILE__);
 chdir($dir);
 
 /* Start Initialization Section */
 if (file_exists('../include/global.php')) {
-	include_once('../include/global.php');
+	require(__DIR__ . '/../include/cli_check.php');
 	$using_cacti = true;
 } else {
 	$using_cacti = false;

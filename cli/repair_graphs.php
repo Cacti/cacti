@@ -26,9 +26,8 @@
 /* Original script is located here https://forums.cacti.net/viewtopic.php?t=35816, but this one was modified quite a lot */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-include_once("../lib/utility.php");
-include_once("../lib/template.php");
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -71,17 +70,20 @@ foreach($parms as $parameter) {
 				exit(1);
 			}
 			break;
-		case "-h":
+		case "--version":
 		case "-v":
 		case "-V":
-		case "--version":
+			display_version();
+			exit(0);
 		case "--help":
+		case "-h":
+		case "-H":
 			display_help();
-			exit;
+			exit(0);
 		default:
 			print "ERROR: Invalid Parameter " . $parameter . "\n\n";
 			display_help();
-			exit;
+			exit(1);
 	}
 }
 
@@ -167,9 +169,13 @@ if (sizeof($graph)) {
 	}
 }
 
+function display_version() {
+	$version = get_cacti_version();
+	echo "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+}
+
 /* display_help - displays the usage of the function */
-function display_help () {
-	echo "Cacti Graph Repair Tool v0.4\n\n";
+function display_help() {
 	echo "usage: repair_graphs.php [--help] [--host-id=ID] --data-template-id=[ID]\n";
 	echo "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";
 	echo "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";

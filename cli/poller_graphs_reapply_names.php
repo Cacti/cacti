@@ -23,11 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-ini_set('max_execution_time', '0');
-
 require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/api_graph.php');
 
-include_once($config['base_path'] . '/lib/api_graph.php');
+ini_set('max_execution_time', '0');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

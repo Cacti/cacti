@@ -24,14 +24,13 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-include_once($config['base_path'] . '/lib/api_automation_tools.php');
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/lib/api_data_source.php');
-include_once($config['base_path'] . '/lib/api_graph.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/api_device.php');
+require($config['base_path'] . '/lib/api_automation_tools.php');
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/lib/api_data_source.php');
+require($config['base_path'] . '/lib/api_graph.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/api_device.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

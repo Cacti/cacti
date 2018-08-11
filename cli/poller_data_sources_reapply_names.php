@@ -23,12 +23,11 @@
  +-------------------------------------------------------------------------+
 */
 
-ini_set('max_execution_time', '0');
-
 require(__DIR__ . '/../include/cli_check.php');
+require ($config['base_path'] . '/lib/api_data_source.php');
+require ($config['base_path'] . '/lib/utility.php');
 
-include_once ($config['base_path'] . '/lib/api_data_source.php');
-include_once ($config['base_path'] . '/lib/utility.php');
+ini_set('max_execution_time', '0');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

@@ -24,10 +24,8 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-// start initialization section
-include(dirname(__FILE__) . '/../lib/utility.php');
-include(dirname(__FILE__) . '/../lib/template.php');
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/lib/template.php');
 
 $audit  = false;
 $update = false;

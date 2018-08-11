@@ -72,7 +72,7 @@ if ($table == '') {
 	echo sqltable_to_php($table, $create);
 }
 
-function sqltable_to_php ($table, $create) {
+function sqltable_to_php($table, $create) {
 	global $config, $database_default;
 
 	include_once($config['library_path'] . '/database.php');

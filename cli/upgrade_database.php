@@ -23,14 +23,12 @@
  +-------------------------------------------------------------------------+
 */
 
-/* allow the upgrade script to run for as long as it needs to */
-ini_set('max_execution_time', '0');
-
 require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/install/functions.php');
 
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/install/functions.php');
+ini_set('max_execution_time', '0');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -64,15 +62,16 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				echo "ERROR: Invalid Parameter " . $parameter . PHP_EOL . PHP_EOL;
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }

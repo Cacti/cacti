@@ -36,7 +36,7 @@ define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n
 define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
 define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
 
-include(dirname(__FILE__).'/../include/global_constants.php');
+include($config['base_path'] . '/include/global_constants.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

@@ -26,10 +26,9 @@
 ini_set('zlib.output_compression', '0');
 
 require(__DIR__ . '/../include/cli_check.php');
-
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/lib/template.php');
+require($config['base_path'] . '/lib/import.php');
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

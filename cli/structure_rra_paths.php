@@ -28,7 +28,7 @@ $proceed         = false;
 require(__DIR__ . '/../include/cli_check.php');
 
 /* process calling arguments */
-$parms = $_SERVER["argv"];
+$parms = $_SERVER['argv'];
 array_shift($parms);
 $hostId = NULL;
 

@@ -24,13 +24,11 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-/* start initialization section */
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -46,20 +44,20 @@ if (sizeof($parms)) {
 		}
 
 		switch ($arg) {
-			case '--version':
-			case '-V':
-			case '-v':
-				display_help();
-				exit;
-			case '--help':
-			case '-H':
-			case '-h':
-				display_help();
-				exit;
-			default:
-				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
-				display_help();
-				exit;
+		case '--version':
+		case '-V':
+		case '-v':
+			display_version();
+			exit(0);
+		case '--help':
+		case '-H':
+		case '-h':
+			display_help();
+			exit(0);
+		default:
+			echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			display_help();
+			exit(1);
 		}
 	}
 }

@@ -24,9 +24,8 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-
-include_once("../lib/utility.php");
-include_once("../lib/template.php");
+require($config['base_path'] . '/lib/utility.php');
+require($config['base_path'] . '/lib/template.php');
 
 /* process calling arguments */
 $parms = $_SERVER["argv"];
@@ -40,41 +39,44 @@ foreach($parms as $parameter) {
 	@list($arg, $value) = @explode("=", $parameter);
 
 	switch ($arg) {
-		case "--host-id":
-			$host_id = trim($value);
-			if (!is_numeric($host_id)) {
-				echo "ERROR: You must supply a valid host-id to run this script!\n";
-				exit(1);
-			}
-			break;
-		case "--data-template-id":
-			$data_template_id = $value;
-			if (!is_numeric($data_template_id)) {
-				echo "ERROR: You must supply a numeric data-template-id!\n";
-				exit(1);
-			}
-			break;
-		case "-h":
-		case "-v":
-		case "-V":
-		case "--version":
-		case "--help":
-			display_help();
-			exit;
-		default:
-			print "ERROR: Invalid Parameter " . $parameter . "\n\n";
-			display_help();
-			exit;
+	case '--host-id':
+		$host_id = trim($value);
+		if (!is_numeric($host_id)) {
+			print 'ERROR: You must supply a valid host-id to run this script!' . PHP_EOL;
+			exit(1);
+		}
+		break;
+	case '--data-template-id':
+		$data_template_id = $value;
+		if (!is_numeric($data_template_id)) {
+			print 'ERROR: You must supply a numeric data-template-id!' . PHP_EOL;
+			exit(1);
+		}
+		break;
+	case '--version':
+	case '-V':
+	case '-v':
+		display_version();
+		exit(0);
+	case '--help':
+	case '-H':
+	case '-h':
+		display_help();
+		exit(0);
+	default:
+		print 'ERROR: Invalid Parameter ' . $parameter . PHP_EOL . PHP_EOL;
+		display_help();
+		exit(1);
 	}
 }
 
 if (!isset($host_id)) {
-	echo "ERROR: You must supply a valid host-id!\n";
+	print "ERROR: You must supply a valid host-id!\n";
 	exit(1);
 }
 
 if (!isset($data_template_id)) {
-	echo "ERROR: You must supply a valid data-template-id!\n";
+	print "ERROR: You must supply a valid data-template-id!\n";
 	exit(1);
 }
 
@@ -99,14 +101,14 @@ if (!empty($host_id)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . "\n\n";
+	print "Cacti Add Data Source, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
 	display_version();
-	echo "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";
-	echo "Cacti utility for adding datasources via a command line interface.\n\n";
-	echo "--host-id=id - The host id\n";
-	echo "--data-template-id=id - The numerical ID of the data template to be added\n";
+	print "usage: add_datasource.php --host-id=[ID] --data-template-id=[ID]\n\n";
+	print "Cacti utility for adding datasources via a command line interface.\n\n";
+	print "--host-id=id - The host id\n";
+	print "--data-template-id=id - The numerical ID of the data template to be added\n";
 }
 

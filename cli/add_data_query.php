@@ -24,9 +24,8 @@
 */
 
 require(__DIR__ . '/include/cli_check.php');
-
-include_once($config['base_path'].'/lib/api_automation_tools.php');
-include_once($config['base_path'].'/lib/data_query.php');
+require($config['base_path'] . '/lib/api_automation_tools.php');
+require($config['base_path'] . '/lib/data_query.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
