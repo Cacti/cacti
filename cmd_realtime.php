@@ -22,17 +22,15 @@
  +-------------------------------------------------------------------------+
 */
 
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/ping.php');
+
 ini_set('max_execution_time', '0');
 
-require(__DIR__ . '/include/cli_check.php');
-
 $start = date('Y-m-d H:i:s'); // for runtime measurement
-
-/* we are not talking to the browser */
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/ping.php');
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
 if (count($_SERVER['argv']) < 4) {

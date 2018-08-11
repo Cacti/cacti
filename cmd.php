@@ -59,12 +59,11 @@ function debug_level($host_id, $level) {
 	}
 }
 
-include(dirname(__FILE__) . '/include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/ping.php');
-include_once($config['library_path'] . '/variables.php');
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/ping.php');
 
 /* let the poller server know about cmd.php being finished */
 function record_cmdphp_done($pid = '') {
