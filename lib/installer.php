@@ -1502,7 +1502,7 @@ class Installer implements JsonSerializable {
 			$output  = Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
-			$html = '<p>' . __('Default Profile:') . '<br/><select id="default_profile" name="default_profile">';
+			/*
 			foreach ($profiles as $profile) {
 				$selectedProfile = '';
 				$suffix = '';
@@ -1513,22 +1513,32 @@ class Installer implements JsonSerializable {
 					}
 					$suffix = ' (default)';
 				}
+			*/
 
-				if ($profile['id'] == $this->profile) {
-					$selectedProfile = ' selected';
-				}
-
-				$html .= '<option value="' . $profile['id'] .'"' . $selectedProfile . '>';
-				$html .= $profile['name'] . $suffix;
-				$html .= '</option>';
-			}
-			$html .= '</select></p>';
+			$fields_schedule = array(
+				'default_profile' => array(
+					'method' => 'drop_sql',
+					'friendly_name' => __('Default Profile'),
+					'sql' => 'SELECT dsp.id, dsp.name, dsp.default FROM data_source_profiles AS dsp ORDER BY dsp.step, dsp.name',
+					'value' => '|arg1:default_profile|',
+				),
+				'cron_interval' => array(
+					'method' => 'drop_array',
+					'friendly_name' => __('Cron Internal'),
+					'array' => $cron_intervals,
+					'value' => '|arg1:cron_interval|',
+				)
+			);
 
 			ob_start();
-			$current_value = $this->cronInterval;
-			print '<p>' . __('Cron Interval:') . '<br />';
-			form_dropdown('cron_interval', $cron_intervals, '', '', $current_value, '', '');
-			print '</p>';
+			$values = array('default_profile' => $this->profile, 'value' => $this->cronInterval);
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($fields_schedule, $values),
+				)
+			);
 
 			$html .= ob_get_contents();
 			ob_end_clean();
@@ -1539,16 +1549,31 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Please enter the default automation network range to be scanned when enabled. To enable scanning on installation, please select \'Enabled\' below'));
 			$output .= Installer::sectionNote(__('When enabled, scanning will be set to daily by default'));
 
-			ob_start();
-			$current_value = $this->automationMode;
-			print '<p>' . __('Mode:') . '<br />';
-			form_dropdown('automation_mode', array(__('Disabled'), __('Enabled')), '', '', $current_value, '', '');
-			print '</p>';
+			global $fields_snmp_item_with_retry;
 
-			$current_value = $this->automationRange;
-			print '<p>' . __('Network Range:') . '<br />';
-			form_text_box('automation_range', $current_value, '', '', '40', 'text');
-			print '</p>';
+			$fields_automation = array(
+				'automation_mode' => array(
+					'method' => 'drop_array',
+					'friendly_name' => __('Scan Mode'),
+					'array' => array('Enabled','Disabled'),
+					'value' => '|arg1:automation_mode|',
+				),
+				'automation_range' => array(
+					'method' => 'textbox',
+					'friendly_name' => __('Network Range'),
+					'value' => '|arg1:automation_range|',
+				)
+			) + $fields_snmp_item_with_retry;
+
+			ob_start();
+			$values = array('automation_mode' => $this->automationMode, 'value' => $this->automationRange);
+
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($fields_automation, $values),
+				)
+			);
 
 			$html = ob_get_contents();
 			ob_end_clean();

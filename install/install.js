@@ -239,6 +239,7 @@ function processStepBinaryLocations(StepData) {
 }
 
 function processStepProfileAndAutomation(StepData) {
+	setSNMP();
 }
 
 function processStepTemplateInstall(StepData) {

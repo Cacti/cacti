@@ -28,6 +28,141 @@ if (!defined('VALID_HOST_FIELDS')) {
 }
 $valid_host_fields = VALID_HOST_FIELDS;
 
+$fields_snmp_item = array(
+	'snmp_version' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Version'),
+		'description' => __('Choose the SNMP version for this host.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_version|',
+		'default' => read_config_option('snmp_version'),
+		'array' => $snmp_versions
+		),
+	'snmp_community' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Community String'),
+		'description' => __('Fill in the SNMP read community for this device.'),
+		'value' => '|arg1:snmp_community|',
+		'default' => read_config_option('snmp_community'),
+		'max_length' => '100',
+		'size' => '20'
+		),
+	'snmp_security_level' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Security Level'),
+		'description' => __('SNMP v3 Security Level to user for querying the device.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_security_level|',
+		'form_id' => '|arg1:id|',
+		'default' => read_config_option('snmp_security_level'),
+		'array' => $snmp_security_levels
+		),
+	'snmp_username' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Username (v3)'),
+		'description' => __('SNMP v3 username for this device.'),
+		'value' => '|arg1:snmp_username|',
+		'default' => read_config_option('snmp_username'),
+		'max_length' => '50',
+		'size' => '20'
+		),
+	'snmp_auth_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Auth Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Authorization Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_auth_protocol|',
+		'default' => read_config_option('snmp_auth_protocol'),
+		'array' => $snmp_auth_protocols,
+		),
+	'snmp_password' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('SNMP Password (v3)'),
+		'description' => __('SNMP v3 password for this device.'),
+		'value' => '|arg1:snmp_password|',
+		'default' => read_config_option('snmp_password'),
+		'max_length' => '50',
+		'size' => '20'
+		),
+	'snmp_priv_protocol' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Protocol.'),
+		'on_change' => 'setSNMP()',
+		'value' => '|arg1:snmp_priv_protocol|',
+		'default' => read_config_option('snmp_priv_protocol'),
+		'array' => $snmp_priv_protocols,
+		),
+	'snmp_priv_passphrase' => array(
+		'method' => 'textbox_password',
+		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
+		'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
+		'value' => '|arg1:snmp_priv_passphrase|',
+		'default' => read_config_option('snmp_priv_passphrase'),
+		'max_length' => '200',
+		'size' => '40'
+		),
+	'snmp_context' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Context (v3)'),
+		'description' => __('Enter the SNMP Context to use for this device.'),
+		'value' => '|arg1:snmp_context|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '40'
+		),
+	'snmp_engine_id' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Engine ID (v3)'),
+		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
+		'value' => '|arg1:snmp_engine_id|',
+		'default' => '',
+		'max_length' => '64',
+		'size' => '40'
+		),
+	'snmp_port' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Port'),
+		'description' => __('Enter the UDP port number to use for SNMP (default is 161).'),
+		'value' => '|arg1:snmp_port|',
+		'max_length' => '5',
+		'default' => read_config_option('snmp_port'),
+		'size' => '12'
+		),
+	'snmp_timeout' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Timeout'),
+		'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
+		'value' => '|arg1:snmp_timeout|',
+		'max_length' => '8',
+		'default' => read_config_option('snmp_timeout'),
+		'size' => '12'
+		),
+	);
+$fields_snmp_item_with_oids = $fields_snmp_item + array(
+	'max_oids' => array(
+		'method' => 'textbox',
+		'friendly_name' => __("Maximum OID's Per Get Request"),
+		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
+		'value' => '|arg1:max_oids|',
+		'max_length' => '8',
+		'default' => read_config_option('max_get_size'),
+		'size' => '12'
+		),
+	);
+
+$fields_snmp_item_with_retry = $fields_snmp_item_with_oids + array(
+	'snmp_retries' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('SNMP Retries'),
+		'description' => __('The maximum number of attempts to reach a device via an SNMP readstring prior to giving up.'),
+		'value' => '|arg1:snmp_retries|',
+		'max_length' => '8',
+		'default' => read_config_option('snmp_retries'),
+		'size' => '12'
+		),
+	);
+
 /* file: profiles.php, action: edit */
 $fields_profile_edit = array(
 	'name' => array(
@@ -1060,125 +1195,7 @@ $fields_host_edit = array(
 		'method' => 'spacer',
 		'friendly_name' => __('SNMP Options'),
 		),
-	'snmp_version' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Version'),
-		'description' => __('Choose the SNMP version for this device.'),
-		'on_change' => 'changeHostForm()',
-		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_version'),
-		'array' => $snmp_versions,
-		),
-	'snmp_community' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Community'),
-		'description' => __('SNMP read community for this device.'),
-		'value' => '|arg1:snmp_community|',
-		'form_id' => '|arg1:id|',
-		'default' => read_config_option('snmp_community'),
-		'max_length' => '100',
-		'size' => '20'
-		),
-	'snmp_security_level' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Security Level'),
-		'description' => __('SNMP v3 Security Level to user for querying the device.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_security_level|',
-		'form_id' => '|arg1:id|',
-		'default' => read_config_option('snmp_security_level'),
-		'array' => $snmp_security_levels
-		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '20'
-		),
-	'snmp_auth_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 authentication protocol.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
-		),
-	'snmp_password' => array(
-		'method' => 'textbox_password',
-		'friendly_name' => __('SNMP Password (v3)'),
-		'description' => __('SNMP v3 authentication pass phrase for this device.'),
-		'value' => '|arg1:snmp_password|',
-		'default' => read_config_option('snmp_password'),
-		'max_length' => '50',
-		'size' => '20'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 privacy protocol.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
-		),
-	'snmp_priv_passphrase' => array(
-		'method' => 'textbox_password',
-		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
-		'description' => __('Choose the SNMPv3 privacy passphrase.'),
-		'value' => '|arg1:snmp_priv_passphrase|',
-		'default' => read_config_option('snmp_priv_passphrase'),
-		'max_length' => '200',
-		'size' => '40'
-		),
-	'snmp_context' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Context (v3)'),
-		'description' => __('Enter the SNMP v3 context to use for this device.'),
-		'value' => '|arg1:snmp_context|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '40'
-		),
-	'snmp_engine_id' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Engine ID (v3)'),
-		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
-		'value' => '|arg1:snmp_engine_id|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '40'
-		),
-	'snmp_port' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Port'),
-		'description' => __('Enter the UDP port number to use for SNMP (default is 161).'),
-		'value' => '|arg1:snmp_port|',
-		'max_length' => '5',
-		'default' => read_config_option('snmp_port'),
-		'size' => '12'
-		),
-	'snmp_timeout' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Timeout'),
-		'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
-		'value' => '|arg1:snmp_timeout|',
-		'max_length' => '8',
-		'default' => read_config_option('snmp_timeout'),
-		'size' => '12'
-		),
-	'max_oids' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('Maximum OIDs Per Get Request'),
-		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
-		'value' => '|arg1:max_oids|',
-		'max_length' => '8',
-		'default' => read_config_option('max_get_size'),
-		'size' => '12'
-		),
+	) + $fields_snmp_item_with_oids + array(
 	'host_avail_head' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Availability/Reachability Options'),
@@ -1672,106 +1689,7 @@ $fields_template_import = array(
 			'friendly_name' => __('SNMP Options'),
 			'collapsible' => 'true'
 			),
-		'snmp_version' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Version'),
-			'description' => __('Choose the SNMP version for this device.'),
-			'on_change' => 'setSNMP()',
-			'value' => '|arg1:snmp_version|',
-			'default' => '1',
-			'array' => array('1'=>'Version 1', '2'=>'Version 2', '3' => 'Version 3'),
-			),
-		'snmp_community' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Community'),
-			'description' => __('SNMP read community for this device.'),
-			'value' => '|arg1:snmp_community|',
-			'form_id' => '|arg1:id|',
-			'default' => read_config_option('snmp_community'),
-			'max_length' => '100',
-			'size' => '20'
-			),
-		'snmp_security_level' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Security Level'),
-			'description' => __('SNMP v3 Security Level to user for querying the device.'),
-			'on_change' => 'setSNMP()',
-			'value' => '|arg1:snmp_security_level|',
-			'form_id' => '|arg1:id|',
-			'default' => read_config_option('snmp_security_level'),
-			'array' => $snmp_security_levels
-			),
-		'snmp_username' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Username (v3)'),
-			'description' => __('SNMP v3 username for this device.'),
-			'value' => '|arg1:snmp_username|',
-			'default' => read_config_option('snmp_username'),
-			'max_length' => '50',
-			'size' => '20'
-			),
-		'snmp_auth_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Auth Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Authorization Protocol.<br>Note: SHA authentication support is only available if you have OpenSSL installed.'),
-			'on_change' => 'setSNMP()',
-			'value' => '|arg1:snmp_auth_protocol|',
-			'default' => read_config_option('snmp_auth_protocol'),
-			'array' => $snmp_auth_protocols,
-			),
-		'snmp_password' => array(
-			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Auth Password (v3)'),
-			'description' => __('SNMP v3 user password for this device.'),
-			'value' => '|arg1:snmp_password|',
-			'default' => read_config_option('snmp_password'),
-			'max_length' => '50',
-			'size' => '20'
-			),
-		'snmp_priv_protocol' => array(
-			'method' => 'drop_array',
-			'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Protocol.<br>Note: DES/AES encryption support is only available if you have OpenSSL installed.'),
-			'on_change' => 'setSNMP()',
-			'value' => '|arg1:snmp_priv_protocol|',
-			'default' => read_config_option('snmp_priv_protocol'),
-			'array' => $snmp_priv_protocols,
-			),
-		'snmp_priv_passphrase' => array(
-			'method' => 'textbox_password',
-			'friendly_name' => __('SNMP Privacy Password (v3)'),
-			'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-			'value' => '|arg1:snmp_priv_passphrase|',
-			'default' => read_config_option('snmp_priv_passphrase'),
-			'max_length' => '200',
-			'size' => '40'
-			),
-		'snmp_engine_id' => array(
-			'friendly_name' => __('SNMP Engine ID'),
-			'description' => __('Defines the unique SNMP Engine ID to identify this peer. Following format will be recommended:<br>FlexibleLength+Enterprise(8000) + IANA-Cacti(5d75) + MAC-Following(03) + YOUR-MAC-ADDRESS(e.g.:D89D67287B00).<br>Per default the locally administrated MAC 02-FF-FF-FF-FF-FF will be used.'),
-			'value' => '|arg1:snmp_engine_id|',
-			'method' => 'textbox',
-			'max_length' => 64,
-			'default' => '80005d750302FFFFFFFFFF',
-			),
-		'snmp_port' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Port'),
-			'description' => __('The UDP port to be used for SNMP traps. Typically, 162.'),
-			'value' => '|arg1:snmp_port|',
-			'max_length' => '5',
-			'default' => '162',
-			'size' => '7'
-			),
-		'snmp_timeout' => array(
-			'method' => 'textbox',
-			'friendly_name' => __('SNMP Timeout'),
-			'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
-			'value' => '|arg1:snmp_timeout|',
-			'max_length' => '8',
-			'default' => read_config_option('snmp_timeout'),
-			'size' => '7'
-			),
+		) + $fields_snmp_item + array(
 		'snmp_message_type' => array(
 			'friendly_name' => __('SNMP Message Type'),
 			'description' => __('SNMP traps are always unacknowledged. To send out acknowledged SNMP notifications, formally called "INFORMS", SNMPv2 or above will be required.'),
