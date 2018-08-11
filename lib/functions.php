@@ -5521,8 +5521,7 @@ function get_debug_prefix() {
 	return sprintf('<[ %s | %7d ]> -- ', $dateTime, getmypid());
 }
 
-function get_client_addr() {
-	$client_addr = false;
+function get_client_addr($client_addr = false) {
 	if (isset($_SERVER['X-Forwarded-For'])) {
 		$client_addr = $_SERVER['X-Forwarded-For'];
 	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

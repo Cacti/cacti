@@ -185,7 +185,7 @@ case 'changepassword':
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, result, time, ip)
 			VALUES (?, 3, NOW(), ?)',
-			array($user['username'], $_SERVER['REMOTE_ADDR']));
+			array($user['username'], get_client_addr()));
 
 		db_check_password_length();
 		db_execute_prepared("UPDATE user_auth

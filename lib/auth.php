@@ -60,7 +60,7 @@ function set_auth_cookie($user) {
 
 	clear_auth_cookie();
 
-	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5($_SERVER['REMOTE_ADDR']);
+	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr(''));
 
 	$secret = hash('sha512', $nssecret, false);
 
@@ -68,7 +68,7 @@ function set_auth_cookie($user) {
 		(user_id, hostname, last_update, token)
 		VALUES
 		(?, ?, NOW(), ?);',
-		array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
+		array($user['id'], get_client_addr(''), $secret));
 
 	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 }
@@ -109,7 +109,7 @@ function check_auth_cookie() {
 							(username, user_id, result, ip, time)
 							VALUES
 							(?, ?, 2, ?, NOW())',
-							array($user, $user_info['id'], $_SERVER['REMOTE_ADDR'])
+							array($user, $user_info['id'], get_client_addr(''))
 						);
 
 						return $user_info['id'];
