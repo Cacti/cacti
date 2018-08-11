@@ -114,7 +114,7 @@ function form_save() {
 			'active' => '',
 			'owner' => '',
 			'runas_poller' => '',
-			'runas_website' => get_runnig_user(),
+			'runas_website' => get_running_user(),
 			'last_result' => '',
 			'valid_data' => '',
 			'rra_timestamp' => '',
