@@ -2334,8 +2334,6 @@ function automation_execute_graph_create_tree($graph_id) {
 function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 	global $config, $automation_op_array, $automation_oper;
 
-	include_once($config['base_path'] . '/lib/template.php');
-
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . "] - snmp query: $snmp_query_id - rule: " . $rule['name'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
@@ -2590,8 +2588,6 @@ function create_multi_header_node($object, $rule, $tree_item, $parent_tree_item_
 function create_header_node($title, $rule, $item, $parent_tree_item_id) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_tree.php');
-
 	$id             = 0;  # create a new entry
 	$local_graph_id = 0;  # headers don't need no graph_id
 	$host_id        = 0;  # or a host_id
@@ -2625,8 +2621,6 @@ function create_header_node($title, $rule, $item, $parent_tree_item_id) {
  */
 function create_device_node($host_id, $parent, $rule) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_tree.php');
 
 	$id             = 0;      # create a new entry
 	$local_graph_id = 0;      # hosts don't need no graph_id
@@ -2669,8 +2663,6 @@ function create_device_node($host_id, $parent, $rule) {
 function create_site_node($site_id, $parent, $rule) {
 	global $config;
 
-	include_once($config['base_path'] . '/lib/api_tree.php');
-
 	$id             = 0;      # create a new entry
 	$local_graph_id = 0;      # hosts don't need no graph_id
 	$host_id        = 0;      # hosts don't need no host_id
@@ -2711,8 +2703,6 @@ function create_site_node($site_id, $parent, $rule) {
  */
 function create_graph_node($graph_id, $parent, $rule) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_tree.php');
 
 	$id        = 0;      # create a new entry
 	$host_id   = 0;      # graphs don't need no host_id
