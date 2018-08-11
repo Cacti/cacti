@@ -73,26 +73,26 @@ if (sizeof($parms)) {
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			case '--version':
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				exit(1);
 		}
 	}
 	
 	if($profile_id > 0) {
 		if ($with_profile) {
-			echo "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
+			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
 		} else {
 			$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($profile_id));
 
 			if (empty($id)) {
-				echo "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
+				print "WARNING: Data Source Profile ID $profile_id not found. Using System Default\n";
 				$id = db_fetch_cell_prepared('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 			}
 		}
@@ -101,7 +101,7 @@ if (sizeof($parms)) {
 	}
 
 	if (empty($id)) {
-		echo "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
+		print "FATAL: No valid Data Source Profiles found on the system.  Exiting!\n";
 		exit(1);
 	}
 
@@ -111,22 +111,22 @@ if (sizeof($parms)) {
 			$xml_data = fread($fp,filesize($filename));
 			fclose($fp);
 
-			echo 'Read ' . strlen($xml_data) . " bytes of XML data\n";
+			print 'Read ' . strlen($xml_data) . " bytes of XML data\n";
 
 			$debug_data = import_xml_data($xml_data, false, $id, $remove_orphans);
 
 			import_display_results($debug_data, array(), $preview_only);
 		} else {
-			echo "ERROR: file $filename is not readable, or does not exist\n\n";
+			print "ERROR: file $filename is not readable, or does not exist\n\n";
 			exit(1);
 		}
 	} else {
-		echo "ERROR: no filename specified\n\n";
+		print "ERROR: no filename specified\n\n";
 		display_help();
 		exit(1);
 	}
 } else {
-	echo "ERROR: no parameters given\n\n";
+	print "ERROR: no parameters given\n\n";
 	display_help();
 	exit(1);
 }
@@ -134,21 +134,21 @@ if (sizeof($parms)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Import Template Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
-	echo "A utility to allow Cacti Templates to be imported from the command line.\n\n";
-	echo "Required:\n";
-	echo "    --filename        The name of the XML file to import\n\n";
-	echo "Optional:\n";
-	echo "    --preview         Preview the Template Import, do not import\n";
-	echo "    --with-profile    Use the default system Data Source Profile\n";
-	echo "    --profile-id=N    Use the specific profile id when importing\n";
-	echo "    --remove-orphans  If importing a new version of the template, old\n";
-	echo "                      elements will be removed, if they do not exist\n";
-	echo "                      in the new version of the template.\n\n";
+	print "\nusage: import_template.php --filename=[filename] [--with-profile | --profile-id=N]\n\n";
+	print "A utility to allow Cacti Templates to be imported from the command line.\n\n";
+	print "Required:\n";
+	print "    --filename        The name of the XML file to import\n\n";
+	print "Optional:\n";
+	print "    --preview         Preview the Template Import, do not import\n";
+	print "    --with-profile    Use the default system Data Source Profile\n";
+	print "    --profile-id=N    Use the specific profile id when importing\n";
+	print "    --remove-orphans  If importing a new version of the template, old\n";
+	print "                      elements will be removed, if they do not exist\n";
+	print "                      in the new version of the template.\n\n";
 }

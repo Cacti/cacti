@@ -60,20 +60,20 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
-echo "Repairing All Cacti Database Tables\n";
+print "Repairing All Cacti Database Tables\n";
 
 db_execute('UNLOCK TABLES');
 
@@ -81,13 +81,13 @@ $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
-		echo "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
-		echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 }
 
-echo "\nNOTE: Checking for Invalid Cacti Templates\n";
+print "\nNOTE: Checking for Invalid Cacti Templates\n";
 
 /* keep track of total rows */
 $total_rows = 0;
@@ -106,7 +106,7 @@ if ($rows > 0) {
 		db_execute('DELETE FROM graph_templates_item 
 			WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint) AND gprint_id>0');
 	}
-	echo "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
+	print "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
 }
 
 /* remove invalid CDEF Items from the Database, validated */
@@ -121,7 +121,7 @@ if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM cdef_items WHERE cdef_id NOT IN (SELECT id FROM cdef)');
 	}
-	echo "NOTE: $rows Invalid CDEF Item Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
+	print "NOTE: $rows Invalid CDEF Item Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
 }
 
 /* remove invalid Data Templates from the Database, validated */
@@ -136,7 +136,7 @@ if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM data_template_data WHERE data_input_id NOT IN (SELECT id FROM data_input)');
 	}
-	echo "NOTE: $rows Invalid Data Input Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print "NOTE: $rows Invalid Data Input Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
 /* remove invalid Data Input Fields from the Database, validated */
@@ -154,7 +154,7 @@ if ($rows > 0) {
 
 		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
-	echo "NOTE: $rows Invalid Data Input Field Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print "NOTE: $rows Invalid Data Input Field Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
 /* --------------------------------------------------------------------*/
@@ -172,7 +172,7 @@ if ($rows > 0) {
 		db_execute('DELETE FROM data_input_data 
 			WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 	}
-	echo "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
 $rows = db_fetch_cell('SELECT count(*) 
@@ -187,32 +187,32 @@ if ($rows > 0) {
 		db_execute('DELETE FROM data_input_data 
 			WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 	}
-	echo "NOTE: $rows Invalid Data Input Data rows based upon field mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
+	print "NOTE: $rows Invalid Data Input Data rows based upon field mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
 if ($total_rows > 0 && !$force) {
-	echo "\nWARNING: Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
-	echo "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
-	echo "should contact your support organization prior to proceeding with that repair.\n\n";
+	print "\nWARNING: Cacti Template Problems found in your Database.  Using the '--force' option will remove\n";
+	print "the invalid records.  However, these changes can be catastrophic to existing data sources.  Therefore, you \n";
+	print "should contact your support organization prior to proceeding with that repair.\n\n";
 } elseif ($total_rows == 0) {
-	echo "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
+	print "NOTE: No Invalid Cacti Template Records found in your Database\n\n";
 }
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: repair_database.php [--debug] [--force] [--form]\n\n";
-	echo "A utility designed to repair the Cacti database if damaged, and optionally repair any\n";
-	echo "corruption found in the Cacti databases various Templates.\n\n";
-	echo "Optional:\n";
-	echo "    --form    - Force rebuilding the indexes from the database creation syntax.\n";
-	echo "    --force   - Remove Invalid Template records from the database.\n";
-	echo "    --debug   - Display verbose output during execution.\n\n";
+	print "\nusage: repair_database.php [--debug] [--force] [--form]\n\n";
+	print "A utility designed to repair the Cacti database if damaged, and optionally repair any\n";
+	print "corruption found in the Cacti databases various Templates.\n\n";
+	print "Optional:\n";
+	print "    --form    - Force rebuilding the indexes from the database creation syntax.\n";
+	print "    --force   - Remove Invalid Template records from the database.\n";
+	print "    --debug   - Display verbose output during execution.\n\n";
 }

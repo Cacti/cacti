@@ -81,16 +81,16 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -122,14 +122,14 @@ if ($utf8) {
 	$convert .= (strlen($convert) ? ' and ' : '') . ' utf8';
 }
 
-echo "Converting Database Tables to $convert with less than '$size' Records\n";
+print "Converting Database Tables to $convert with less than '$size' Records\n";
 
 if ($innodb) {
 	$engines = db_fetch_assoc('SHOW ENGINES');
 
 	foreach($engines as $engine) {
 		if (strtolower($engine['Engine']) == 'innodb' && strtolower($engine['Support'] == 'off')) {
-			echo "InnoDB Engine is not enabled\n";
+			print "InnoDB Engine is not enabled\n";
 			exit;
 		}
 	}
@@ -137,7 +137,7 @@ if ($innodb) {
 	$file_per_table = db_fetch_row("show global variables like 'innodb_file_per_table'");
 
 	if (strtolower($file_per_table['Value']) != 'on') {
-		echo 'innodb_file_per_table not enabled';
+		print 'innodb_file_per_table not enabled';
 		exit;
 	}
 }
@@ -167,7 +167,7 @@ if (sizeof($tables)) {
 
 		if ($canConvert) {
 			if ($table['Rows'] < $size) {
-				echo "Converting Table -> '" . $table['Name'] . "'";
+				print "Converting Table -> '" . $table['Name'] . "'";
 
 				$sql = '';
 				if ($utf8) {
@@ -179,12 +179,12 @@ if (sizeof($tables)) {
 				}
 
 				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . $sql);
-				echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
+				print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 			} else {
-				echo "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
+				print "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
 			}
 		} else {
-			echo "Skipping Table -> '" . $table['Name'] . "'\n";
+			print "Skipping Table -> '" . $table['Name'] . "'\n";
 		}
 	}
 }
@@ -192,23 +192,23 @@ if (sizeof($tables)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	echo "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Database Conversion Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild]\n\n";
-	echo "A utility to convert a Cacti Database from MyISAM to the InnoDB table format.\n";
-	echo "MEMORY tables are not converted to InnoDB in this process.\n\n";
-	echo "Required (one or more):\n";
-	echo "-i | --innodb  - Convert any MyISAM tables to InnoDB\n";
-	echo "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n\n";
-	echo "Optional:\n";
-	echo "-t | --table=S - The name of a single table to change\n";
-	echo "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
-	echo "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
-	echo "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
-	echo "-d | --debug   - Display verbose output during execution\n\n";
+	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild]\n\n";
+	print "A utility to convert a Cacti Database from MyISAM to the InnoDB table format.\n";
+	print "MEMORY tables are not converted to InnoDB in this process.\n\n";
+	print "Required (one or more):\n";
+	print "-i | --innodb  - Convert any MyISAM tables to InnoDB\n";
+	print "-u | --utf8    - Convert any non-UTF8 tables to utf8mb4_unicode_ci\n\n";
+	print "Optional:\n";
+	print "-t | --table=S - The name of a single table to change\n";
+	print "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
+	print "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
+	print "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
+	print "-d | --debug   - Display verbose output during execution\n\n";
 }

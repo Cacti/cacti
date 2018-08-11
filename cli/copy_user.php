@@ -28,19 +28,19 @@ require($config['base_path'] . '/lib/auth.php');
 
 if (empty($_SERVER['argv'][1]) ){
 	display_help();
-	exit;
+	exit(1);
 } else {
 	switch($_SERVER['argv'][1]) {
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
-			exit;
+			exit(0);
 		case '--version':
 		case '-V':
 		case '-v':
 			display_version();
-			exit;
+			exit(0);
 	}
 }
 
@@ -72,7 +72,7 @@ print "User copied..." . PHP_EOL;
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {

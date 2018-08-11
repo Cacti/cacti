@@ -52,21 +52,21 @@ foreach($parms as $parameter) {
 		case "--host-id":
 			$host_id = trim($value);
 			if (!is_numeric($host_id)) {
-				echo "ERROR: You must supply a valid host-id to run this script!\n";
+				print "ERROR: You must supply a valid host-id to run this script!\n";
 				exit(1);
 			}
 			break;
 		case "--graph-template-id":
 			$graph_template_id = $value;
 			if (!is_numeric($graph_template_id)) {
-				echo "ERROR: You must supply a numeric graph-template-id!\n";
+				print "ERROR: You must supply a numeric graph-template-id!\n";
 				exit(1);
 			}
 			break;
 		case "--data-template-id":
 			$data_template_id = $value;
 			if (!is_numeric($data_template_id)) {
-				echo "ERROR: You must supply a numeric data-template-id!\n";
+				print "ERROR: You must supply a numeric data-template-id!\n";
 				exit(1);
 			}
 			break;
@@ -89,23 +89,23 @@ foreach($parms as $parameter) {
 
 if (!$show_sql && !$execute) {
 	display_help();
-	exit;
+	exit(1);
 }
 
 if (!isset($data_template_id)) {
-	echo "ERROR: You must supply a valid data-template-id!\n";
+	print "ERROR: You must supply a valid data-template-id!\n";
 	exit(1);
 }
 
 if (!isset($graph_template_id)) {
-	echo "ERROR: You must supply a valid graph-template-id!\n";
+	print "ERROR: You must supply a valid graph-template-id!\n";
 	exit(1);
 }
 
 if ($execute) {
-	echo "NOTE: Repairing Graphs\n";
+	print "NOTE: Repairing Graphs\n";
 } else {
-	echo "NOTE: Performing Check of Graphs\n";
+	print "NOTE: Performing Check of Graphs\n";
 }
 
 // Get all graphs for supplied graph template
@@ -113,7 +113,7 @@ $graph = db_fetch_assoc("SELECT * FROM graph_local where " . (!isset($host_id) ?
 
 if (sizeof($graph)) {
 	if(!$show_sql) {
-		echo "\nCorrupted graphs:\n";
+		print "\nCorrupted graphs:\n";
 	}
 
 	foreach($graph as $g) {
@@ -127,7 +127,7 @@ if (sizeof($graph)) {
 		// Get rrd for found datasource
 		$rrd_data = db_fetch_assoc("SELECT * FROM data_template_rrd where local_data_id=" . $ds["id"]);
 		if (!sizeof($rrd_data)) {
-			echo "Could not get correct rrd id for datasource=" . $ds["id"] . "\n";
+			print "Could not get correct rrd id for datasource=" . $ds["id"] . "\n";
 			continue;
 		}
 
@@ -154,12 +154,12 @@ if (sizeof($graph)) {
 			}
 		}
 
-		echo "Host " . $g["host_id"] . ", graph " . $g["id"] . ", graph item " . implode(",",$graph_templates_item) . ", task_item_id " . implode(",",$task_item_id) . "->" . $rrd_data[0]["id"] . "\n";
+		print "Host " . $g["host_id"] . ", graph " . $g["id"] . ", graph item " . implode(",",$graph_templates_item) . ", task_item_id " . implode(",",$task_item_id) . "->" . $rrd_data[0]["id"] . "\n";
 
 		$query = "UPDATE graph_templates_item SET task_item_id=" . $rrd_data[0]["id"] . " WHERE task_item_id!=" . $rrd_data[0]["id"] . " and graph_template_id=" . $graph_template_id . " and local_graph_id=" . $g["id"] . " and id in (" . implode(",",$graph_templates_item) . ")";
 
 		if ($show_sql) {
-			echo $query . ";\n";
+			print $query . ";\n";
 		}
 		if ($execute) {
 			db_execute($query);
@@ -171,19 +171,18 @@ if (sizeof($graph)) {
 
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	print "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 /* display_help - displays the usage of the function */
 function display_help() {
-	echo "usage: repair_graphs.php [--help] [--host-id=ID] --data-template-id=[ID]\n";
-	echo "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";
-	echo "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";
-	echo "--execute - Perform the repair\n";
-	echo "--show-sql - Show SQL lines for the repair (optional)\n";
-	echo "--host-id=id - The host_id to repair or leave empty to process all hosts\n";
-	echo "--data-template-id=id - The numerical ID of the data template to be fixed\n";
-	echo "--graph-template-id=id - The numerical ID of the graph template to be fixed\n";
+	print "usage: repair_graphs.php [--host-id=ID] --data-template-id=[ID]\n";
+	print "	--graph-template-id=[ID] [--show-sql] [--execute]\n\n";
+	print "Cacti utility for repairing graph<->datasource relationship via a command line interface.\n\n";
+	print "--execute - Perform the repair\n";
+	print "--show-sql - Show SQL lines for the repair (optional)\n";
+	print "--host-id=id - The host_id to repair or leave empty to process all hosts\n";
+	print "--data-template-id=id - The numerical ID of the data template to be fixed\n";
+	print "--graph-template-id=id - The numerical ID of the graph template to be fixed\n";
 }
 
-?>

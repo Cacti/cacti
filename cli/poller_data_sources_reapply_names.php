@@ -37,7 +37,7 @@ array_shift($parms);
 if (sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 $debug   = false;
@@ -71,16 +71,16 @@ if (sizeof($parms)) {
 			case '-v' :
 			case '-V' :
 				display_version();
-				exit;
+				exit(0);
 			case '--help' :
 			case '-H' :
 			case '-h' :
 				display_help();
-				exit;
+				exit(0);
 			default :
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -146,20 +146,20 @@ foreach ($data_source_list as $data_source) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]\n\n";
-	echo "A utility that will recalculate Data Source names for the selected Data Templates.\n\n";
-	echo "Required:\n";
-	echo "    --host-id=N|all|N1,N2,... - The deivces id, 'all' or a comma delimited list of id's\n\n";
-	echo "Optional:\n";
-	echo "    --filter=search           - A Data Template name or Data Source Title to search for\n";
-	echo "    --debug                   - Display verbose output during execution\n\n";
+	print "\nusage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]\n\n";
+	print "A utility that will recalculate Data Source names for the selected Data Templates.\n\n";
+	print "Required:\n";
+	print "    --host-id=N|all|N1,N2,... - The deivces id, 'all' or a comma delimited list of id's\n\n";
+	print "Optional:\n";
+	print "    --filter=search           - A Data Template name or Data Source Title to search for\n";
+	print "    --debug                   - Display verbose output during execution\n\n";
 }
 
 function debug($message) {

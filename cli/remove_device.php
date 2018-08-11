@@ -74,25 +74,21 @@ if (sizeof($parms)) {
 
 			break;
 		case '--version':
-			display_version();
-			exit;
-			break;
-		case '--version':
 		case '-V':
 		case '-v':
 			display_version();
-			exit;
+			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
-			exit;
+			exit(0);
 		case '--quiet':
 			$quietMode = true;
 
 			break;
 		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
+			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -107,30 +103,30 @@ if (sizeof($parms)) {
 	/* process host description */
 	if ($description > '') {
 		if ($debug) {
-			echo "Searching hosts by description...\n";
+			print "Searching hosts by description...\n";
 		}
 
 		$ids_host = preg_array_key_match("/$description/", $hosts);
 		if (sizeof($ids_host) == 0) {
-			echo "ERROR: Unable to find host in the database matching desciption ($description)\n";
+			print "ERROR: Unable to find host in the database matching desciption ($description)\n";
 			exit(1);
 		}
 	}
 
 	if ($ip > '') {
 		if ($debug) {
-			echo "Searching hosts by IP...\n";
+			print "Searching hosts by IP...\n";
 		}
 
 		$ids_ip = preg_array_key_match("/$ip/", $addresses);
 		if (sizeof($ids_ip) == 0) {
-			echo "ERROR: Unable to find host in the database matching IP ($ip)\n";
+			print "ERROR: Unable to find host in the database matching IP ($ip)\n";
 			exit(1);
 		}
 	}
 
 	if (sizeof($ids_host) == 0 && sizeof($ids_ip) == 0) {
-		echo "ERROR: No matches found, was IP or Description set properly?\n";
+		print "ERROR: No matches found, was IP or Description set properly?\n";
 		exit(1);
 	}
 
@@ -139,7 +135,7 @@ if (sizeof($parms)) {
 
 	$ids_sql = implode(',',$ids);
 	if ($debug) {
-		echo "Finding devices with ids $ids_sql\n\n";
+		print "Finding devices with ids $ids_sql\n\n";
 	}
 
 	$hosts = db_fetch_assoc("SELECT id, hostname, description FROM host WHERE id IN ($ids_sql) ORDER by description");
@@ -150,25 +146,25 @@ if (sizeof($parms)) {
 			printf("%8.d | %30.s | %30.s\n",$host['id'],$host['hostname'],$host['description']);
 			$ids_found[] = $host['id'];
 		}
-		echo "\n";
+		print "\n";
 	}
 
 	if ($confirm) {
 		$ids_confirm = implode(', ',$ids_found);
 		if (!$quiet) {
-			echo "Removing devices with ids: $ids_confirm\n";
+			print "Removing devices with ids: $ids_confirm\n";
 		}
 		$host_id = api_device_remove_multi($ids);
 
 		if (is_error_message()) {
-			echo "ERROR: Failed to remove devices\n";
+			print "ERROR: Failed to remove devices\n";
 			exit(1);
 		} else {
-			echo "Success - removed device-ids: $ids_confirm\n";
+			print "Success - removed device-ids: $ids_confirm\n";
 			exit(0);
 		}
 	} else {
-		echo "Please use --confirm to remove these devices\n";
+		print "Please use --confirm to remove these devices\n";
 	}
 } else {
 	display_help();
@@ -178,22 +174,22 @@ if (sizeof($parms)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Remove Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: remove_device.php --description=[description] --ip=[IP]\n";
-	echo "    [--confirm] [--quiet]\n\n";
-	echo "Required:\n";
-	echo "    --description  the name that will be displayed by Cacti in the graphs\n";
-	echo "    --ip           self explanatory (can also be a FQDN)\n";
-	echo "   (either one or both fields can be used and may be regex)\n\n";
-	echo "Optional:\n";
-	echo "    -confirm       confirms that you wish to remove matches\n\n";
-	echo "List Options:\n";
-	echo "    --quiet - batch mode value return\n\n";
+	print "\nusage: remove_device.php --description=[description] --ip=[IP]\n";
+	print "    [--confirm] [--quiet]\n\n";
+	print "Required:\n";
+	print "    --description  the name that will be displayed by Cacti in the graphs\n";
+	print "    --ip           self explanatory (can also be a FQDN)\n";
+	print "   (either one or both fields can be used and may be regex)\n\n";
+	print "Optional:\n";
+	print "    -confirm       confirms that you wish to remove matches\n\n";
+	print "List Options:\n";
+	print "    --quiet - batch mode value return\n\n";
 }
 
 function preg_array_key_match($needle, $haystack) {
@@ -209,17 +205,17 @@ function preg_array_key_match($needle, $haystack) {
 	}
 
 	if ($debug) {
-		echo "Attempting to match against '$needle' against ".sizeof($haystack)." entries\n";
+		print "Attempting to match against '$needle' against ".sizeof($haystack)." entries\n";
 	}
 
 	foreach ($haystack as $str => $value) {
 		if ($debug) {
-			echo " - Key $str => Value $value\n";
+			print " - Key $str => Value $value\n";
 		}
 
 		if (preg_match ($needle, $str, $m)) {
 			if ($debug) {
-				echo "   + $str: $value\n";
+				print "   + $str: $value\n";
 			}
 			$matches[] = $value;
 		}

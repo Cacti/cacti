@@ -67,15 +67,15 @@ if (sizeof($parms)) {
 	}
 }
 
-echo "Analyzing All Cacti Database Tables\n";
+print "Analyzing All Cacti Database Tables\n";
 
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
 if (sizeof($tables)) {
 	foreach($tables AS $table) {
-		echo "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
+		print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);
-		echo ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
 	}
 
 	cacti_log('ANALYSIS STATS: Analyzing Cacti Tables Complete.  Total time ' . (time() - $start) . ' seconds.', false, 'SYSTEM');
@@ -84,16 +84,16 @@ if (sizeof($tables)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Analyze Database Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: analyze_database.php [-d|--debug]\n\n";
-	echo "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
-	echo "It's important to periodically run this utility expecially on larger systems.\n\n";
-	echo "Optional:\n";
-	echo "-d | --debug - Display verbose output during execution\n\n";
+	print "\nusage: analyze_database.php [-d|--debug]\n\n";
+	print "A utility to recalculate the cardinality of indexes within the Cacti database.\n";
+	print "It's important to periodically run this utility expecially on larger systems.\n\n";
+	print "Optional:\n";
+	print "-d | --debug - Display verbose output during execution\n\n";
 }

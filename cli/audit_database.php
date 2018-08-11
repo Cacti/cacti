@@ -73,7 +73,7 @@ if (sizeof($parms)) {
 		case 'V':
 		case 'v':
 			display_version();
-			exit;
+			exit(0);
 		case 'help':
 		case 'H':
 		case 'h':
@@ -415,7 +415,7 @@ function create_tables($load = true) {
 	$exists_columns = db_table_exists('table_columns');
 
 	if (!$exists_columns) {
-		echo "Failed to create 'table_coluns'";
+		print "Failed to create 'table_coluns'";
 		exit;
 	}
 
@@ -439,7 +439,7 @@ function create_tables($load = true) {
 	$exists_indexes = db_table_exists('table_indexes');
 
 	if (!$exists_indexes) {
-		echo "Failed to create 'table_indexes'";
+		print "Failed to create 'table_indexes'";
 		exit;
 	}
 

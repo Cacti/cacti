@@ -55,7 +55,7 @@ if (sizeof($parms)) {
 			display_help();
 			exit(0);
 		default:
-			echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+			print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 			display_help();
 			exit(1);
 		}
@@ -74,20 +74,20 @@ while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
 	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
 }
 
-echo "There were $rrds_processed, RRD updates made this pass\n";
+print "There were $rrds_processed, RRD updates made this pass\n";
 
 rrd_close($rrdtool_pipe);
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_output_empty.php\n\n";
-	echo "A utility to process the poller output table.  This tool is deprecated but should work.\n\n";
+	print "\nusage: poller_output_empty.php\n\n";
+	print "A utility to process the poller output table.  This tool is deprecated but should work.\n\n";
 }
