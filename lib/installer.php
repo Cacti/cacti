@@ -146,7 +146,6 @@ class Installer implements JsonSerializable {
 		$this->errors          = array();
 		$this->theme           = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
 		$this->profile         = read_config_option('install_profile', true);
-
 		$this->automationMode  = read_config_option('install_automation_mode', true);
 		$this->cronInterval    = read_config_option('cron_interval', true);
 
@@ -1553,9 +1552,8 @@ class Installer implements JsonSerializable {
 
 			$fields_automation = array(
 				'automation_mode' => array(
-					'method' => 'drop_array',
+					'method' => 'checkbox',
 					'friendly_name' => __('Scan Mode'),
-					'array' => array('Enabled','Disabled'),
 					'value' => '|arg1:automation_mode|',
 				),
 				'automation_range' => array(

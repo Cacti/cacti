@@ -28,6 +28,7 @@ if (!defined('VALID_HOST_FIELDS')) {
 }
 $valid_host_fields = VALID_HOST_FIELDS;
 
+/* If you update this, check that you have updated the installer */
 $fields_snmp_item = array(
 	'snmp_version' => array(
 		'method' => 'drop_array',
