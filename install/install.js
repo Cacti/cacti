@@ -29,7 +29,7 @@ const DB_STATUS_SUCCESS = 2;
 const DB_STATUS_SKIPPED = 3;
 
 const FIELDS_WELCOME = {
-	accept:                { type: 'checked',  name: 'Eula'               },
+	accept:                { type: 'checkbox',  name: 'Eula'              },
 	theme:                 { type: 'dropdown', name: 'Theme'              },
 	language:              { type: 'dropdown', name: 'Language'           },
 }
@@ -50,8 +50,9 @@ const FIELDS_BINARY_LOCATIONS = {
 const FIELDS_PROFILE = {
 	default_profile:       { type: 'dropdown', name: 'Profile'            },
 	cron_interval:         { type: 'textbox',  name: 'CronInterval'       },
-	automation_mode:       { type: 'dropdown', name: 'AutomationMode'     },
+	automation_mode:       { type: 'checkbox', name: 'AutomationMode'     },
 	automation_range:      { type: 'textbox',  name: 'AutomationRange'    },
+	automation_override:   { type: 'checkbox', name: 'AutomationOverride' },
 }
 
 const FIELDS_SNMP = {
@@ -72,11 +73,19 @@ const FIELDS_SNMP = {
 };
 
 const FIELDS_CHECK_TABLES = {
-	tables:                { type: 'checked'                              },
+	tables:                { type: 'checkbox'                             },
 }
 
 const FIELDS_TEMPLATES = {
-	templates:             { type: 'checked'                              },
+	templates:             { type: 'checkbox'                             },
+}
+
+function setSNMPOverride() {
+	element = $('#automation_override');
+	if (element != null && element.length > 0) {
+		enabled = ($(element[0]).is(':checked'));
+		toggleSection('#automation_snmp_options', enabled);
+	}
 }
 
 function setButtonData(buttonName, buttonData) {
@@ -115,12 +124,12 @@ function setFieldData(fields, fieldData) {
 
 		var field = fields[fieldId];
 
-		if (field.type == "checked") {
+		if (field.type == "checkbox") {
 			for (var propName in fieldData) {
 				if (fieldData.hasOwnProperty(propName)) {
 					propValue = fieldData[propName];
 					if (propValue !== undefined) {
-						element = $('#' + fieldId);
+						element = $('#' + propName);
 						if (element != null && element.length > 0) {
 							element.prop('checked', propValue != 0);
 						}
@@ -152,7 +161,7 @@ function getFieldData(fields, fieldData) {
 
 		var field = fields[fieldId];
 
-		if (field.type == 'checked') {
+		if (field.type == 'checkbox') {
 			if (field.name) {
 				fieldData[field.name] = $("#" + fieldId).is(':checked');
 			} else {
@@ -207,6 +216,27 @@ function toggleHeader(key, initial = null) {
 	}
 }
 
+function toggleSection(key, initial = null) {
+	if (key != null) {
+		header = $(key);
+		if (header != null && header.length > 0) {
+
+			if (initial == null) {
+				initial = !header.visible;
+			}
+
+			firstSibling = header.next();
+			if (!initial) {
+				firstSibling.hide();
+				header.hide();
+			} else {
+				header.show();
+				firstSibling.show();
+			}
+		}
+	}
+}
+
 function disableButton(buttonName) {
 	button = $('#button'+buttonName);
 	if (button != null) {
@@ -249,7 +279,7 @@ function collapseHeadings(headingStates) {
 
 function hideHeadings(headingStates) {
 	for (var key in headingStates) {
-v		// skip loop if the property is from prototype
+		// skip loop if the property is from prototype
 		if (!headingStates.hasOwnProperty(key)) {
 			continue;
 		}
@@ -387,6 +417,14 @@ function processStepProfileAndAutomation(StepData) {
 	setSNMP();
 	applySkin();
 
+	element = $('#automation_override');
+	if (element != null && element.length > 0) {
+		element.change(function() {
+			setSNMPOverride();
+		});
+	}
+
+	setSNMPOverride();
 }
 
 function processStepTemplateInstall(StepData) {

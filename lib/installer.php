@@ -8,7 +8,10 @@ function log_install_and_cacti($string) {
 
 function log_install($filename, $data, $flags = FILE_APPEND) {
 	global $config;
-	$can_log = read_config_option('log_install','');
+	$can_log = read_config_option('log_install', true);
+	if (empty($can_log) && !empty($filename)) {
+		$can_log = read_config_option('log_install_'.$filename, true);
+	}
 	if (!empty($can_log)) {
 		$logname = 'install';
 		if (!empty($filename)) {
@@ -137,17 +140,19 @@ class Installer implements JsonSerializable {
 		}
 		log_install('step', 'After: ' . var_export($step, true) . PHP_EOL);
 
-		$this->eula            = read_config_option('install_eula', true);
-		$this->templates       = $this->getTemplates();
-		$this->tables          = $this->getTables();
-		$this->locales         = get_installed_locales();
-		$this->language        = read_user_setting('user_language', get_new_user_default_language(), true);
-		$this->paths           = install_file_paths();
-		$this->errors          = array();
-		$this->theme           = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
-		$this->profile         = read_config_option('install_profile', true);
-		$this->automationMode  = read_config_option('install_automation_mode', true);
-		$this->cronInterval    = read_config_option('cron_interval', true);
+		$this->eula               = read_config_option('install_eula', true);
+		$this->templates          = $this->getTemplates();
+		$this->tables             = $this->getTables();
+		$this->locales            = get_installed_locales();
+		$this->language           = read_user_setting('user_language', get_new_user_default_language(), true);
+		$this->paths              = install_file_paths();
+		$this->errors             = array();
+		$this->theme              = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
+		$this->profile            = read_config_option('install_profile', true);
+		$this->automationMode     = read_config_option('install_automation_mode', true);
+		$this->automationOverride = read_config_option('install_automation_override', true);
+		$this->cronInterval       = read_config_option('cron_interval', true);
+		$this->snmpOptions        = $this->getSnmpOptions();
 
 		$this->defaultAutomation = array(
 			array(
@@ -183,6 +188,10 @@ class Installer implements JsonSerializable {
 			$this->setAutomationMode($this->getAutomationNetworkMode());
 		}
 
+		if ($this->automationOverride === false || $this->automationOverride === null) {
+			$this->setAutomationOverride($this->getAutomationOverride());
+		}
+
 		$this->automationRange = read_config_option('install_automation_range', true);
 		if (empty($this->automationRange)) {
 			$this->setAutomationRange($this->getAutomationNetworkRange());
@@ -195,6 +204,7 @@ class Installer implements JsonSerializable {
 		set_config_option('selected_theme', $this->theme);
 
 		$this->rrdVersion = get_rrdtool_version();
+		$this->snmpOptions = $this->getSnmpOptions();
 
 		$mode = read_config_option('install_mode', true);
 		if ($mode === false || $mode === null) {
@@ -261,6 +271,9 @@ class Installer implements JsonSerializable {
 				case 'AutomationMode':
 					$this->setAutomationMode($value);
 					break;
+				case 'AutomationOverride':
+					$this->setAutomationOverride($value);
+					break;
 				case 'AutomationRange':
 					$this->setAutomationRange($value);
 					break;
@@ -278,6 +291,9 @@ class Installer implements JsonSerializable {
 					break;
 				case 'Theme':
 					$this->setTheme($value);
+					break;
+				case 'SnmpOptions':
+					$this->setSnmpOptions($value);
 					break;
 				default:
 					log_install('badkey',"$key => $value");
@@ -390,6 +406,14 @@ class Installer implements JsonSerializable {
 		log_install('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
 	}
 
+	private function setAutomationOverride($param_override = null) {
+		if ($param_override != null) {
+			$this->automationOverride = $param_override;
+			set_config_option('install_automation_override', $param_override);
+		}
+		log_install('automation',"setAutomationOverride($param_override) returns with $this->automationOverride");
+	}
+
 	private function setCronInterval($param_mode = null) {
 		if ($param_mode != null) {
 			$this->cronInterval = $param_mode;
@@ -406,23 +430,99 @@ class Installer implements JsonSerializable {
 		log_install('automation',"setAutomationRange($param_range) returns with $this->automationRange");
 	}
 
+	private function getSnmpOptions() {
+		global $fields_snmp_item_with_retry;
+		$db_snmp_options = db_fetch_assoc('SELECT name, value FROM settings where name like \'install_snmp_option_%\'');
+		$options = array();
+		foreach ($db_snmp_options as $row) {
+			$key = str_replace('install_snmp_option_', '', $row['name']);
+			$options[$key] = $row['value'];
+		}
+
+		log_install('snmp_options','Option array: ' . clean_up_lines(var_export($options, true)));
+		return $options;
+	}
+
+	private function setSnmpOptions($param_snmp_options = array()) {
+		global $fields_snmp_item_with_retry;
+		$known_snmp_options = $fields_snmp_item_with_retry;
+
+		if (is_array($param_snmp_options)) {
+			db_execute('DELETE FROM settings WHERE name like \'install_snmp_option_%\'');
+			log_install('snmp_options',"Updating snmp_options");
+			log_install('snmp_options',"Parameter data:" . PHP_EOL . var_export($param_snmp_options, true) . PHP_EOL);
+			$known_map = array(
+				'snmp_version'          => 'SnmpVersion'        ,
+				'snmp_community'        => 'SnmpCommunity'      ,
+				'snmp_security_level'   => 'SnmpSecurityLevel'  ,
+				'snmp_username'         => 'SnmpUsername'       ,
+				'snmp_auth_protocol'    => 'SnmpAuthProtocol'   ,
+				'snmp_password'         => 'SnmpPassword'       ,
+				'snmp_priv_protocol'    => 'SnmpPrivProtocol'   ,
+				'snmp_priv_passphrase'  => 'SnmpPrivPassphrase' ,
+				'snmp_context'          => 'SnmpContext'        ,
+				'snmp_engine_id'        => 'SnmpEngineId'       ,
+				'snmp_port'             => 'SnmpPort'           ,
+				'snmp_timeout'          => 'SnmpTimeout'        ,
+				'max_oids'              => 'SnmpMaxOids'        ,
+				'snmp_retries'          => 'SnmpRetries'        ,
+			);
+
+			foreach ($known_snmp_options as $known => $fieldData) {
+				log_install('snmp_options',"snmp_option data: ".str_replace("\n"," ", var_export($known, true)));
+				if (array_key_exists($known, $known_map)) {
+					$key = $known_map[$known];
+					log_install('snmp_options',"snmp_option found:" . var_export($key, true));
+
+					if (!empty($param_snmp_options[$key])) {
+						$snmp_option = $param_snmp_options[$key];
+						log_install('snmp_options',"snmp_option enabled:" . var_export($snmp_option, true));
+						log_install('snmp_options',"Set snmp_option: install_snmp_option_$known = $snmp_option");
+						set_config_option("install_snmp_option_$known", $snmp_option);
+					}
+				}
+			}
+		}
+	}
+
 	private function getTemplates() {
 		$known_templates = install_setup_get_templates();
-		$db_templates = db_fetch_assoc('SELECT name, value FROM settings where name like \'install_template_%\'');
+		$db_templates = array_rekey(
+			db_fetch_assoc('SELECT name, value FROM settings where name like \'install_template_%\''),
+			'name', 'value');
+
 		$hasTemplates = read_config_option('install_has_templates', true);
 		$selected = array();
 		$select_count = 0;
+		log_install('templates','getTemplates(): First: ' . (empty($hasTemplates) ? 'Yes' : 'No') . ', Templates - ' . clean_up_lines(var_export($known_templates, true)));
+		log_install('templates','getTemplates(): DB: ' . clean_up_lines(var_export($db_templates, true)));
+
 		foreach ($known_templates as $known) {
-			$filename = $known['filename'];
-			$key = str_replace(".", "_", $filename);
-			$isSelected = !empty($hasTemplates) && (read_config_option('install_template_' . $key) == $filename);
-			$selected['chk_template_' . $key] = $isSelected;
+			$filename    = $known['filename'];
+			$key_base    = str_replace(".", "_", $filename);
+			$key_install = 'install_template_' . $key_base;
+			$key_check   = 'chk_template_' . $key_base;
+
+			log_install('templates','getTemplates(): Checking template ' . $known['name'] . ' using base: ' . $key_base);
+			log_install('templates','getTemplates(): Checking template ' . $known['name'] . ' using key.: ' . $key_install);
+			log_install('templates','getTemplates(): Checking template ' . $known['name'] . ' filename..: ' . $filename);
+
+			$value = '';
+			if (array_key_exists($key_install, $db_templates)) {
+				$value = $db_templates[$key_install];
+			}
+
+			log_install('templates','getTemplates(): Checking template ' . $known['name'] . ' against...: ' . $value);
+
+			$isSelected = !empty($hasTemplates) && ($value == $filename);
+			$selected[$key_check] = $isSelected;
 			if ($isSelected) {
 				$select_count++;
 			}
 		}
 		$selected['all'] = ($select_count == count($selected) || empty($hasTemplates));
 
+		log_install('templates', 'getTemplates(): Returning with ' . clean_up_lines(var_export($selected, true)));
 		return $selected;
 	}
 
@@ -430,18 +530,18 @@ class Installer implements JsonSerializable {
 		if (is_array($param_templates)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
 			$known_templates = install_setup_get_templates();
-			log_install('templates',"Updating templates");
-			log_install('templates',"Parameter data:" . PHP_EOL . var_export($param_templates, true) . PHP_EOL);
+			log_install('templates',"setTemplates(): Updating templates");
+			log_install('templates',"setTemplates(): Parameter data:" . PHP_EOL . var_export($param_templates, true) . PHP_EOL);
 			foreach ($known_templates as $known) {
 				$filename = $known['filename'];
 				$key = 'chk_template_' . str_replace(".", "_", $filename);
-				log_install('templates',"Checking template file $filename against key $key ...");
-				log_install('templates',"Template data: ".str_replace("\n"," ", var_export($known, true)));
+				log_install('templates',"setTemplates(): Checking template file $filename against key $key ...");
+				log_install('templates',"setTemplates(): Template data: ".str_replace("\n"," ", var_export($known, true)));
 				if (!empty($param_templates[$key])) {
 					$template = $param_templates[$key];
-					log_install('templates',"Template enabled:" . var_export($template, true));
-					log_install('templates',"Set template: install_template_$key = $filename");
 					$key = str_replace(".", "_", $filename);
+					log_install('templates',"setTemplates(): Template enabled:" . var_export($template, true));
+					log_install('templates',"setTemplates(): Using key: install_template_$key = $filename");
 					set_config_option("install_template_$key", $filename);
 				}
 			}
@@ -452,14 +552,19 @@ class Installer implements JsonSerializable {
 
 	private function getTables() {
 		$known_tables = install_setup_get_tables();
-		$db_tables = db_fetch_assoc('SELECT name, value FROM settings where name like \'install_table_%\'');
+		$db_tables = array_rekey(
+			db_fetch_assoc('SELECT name, value FROM settings where name like \'install_table_%\''),
+			'name', 'value');
 		$hasTables = read_config_option('install_has_tables', true);
 		$selected = array();
 		$select_count = 0;
 		foreach ($known_tables as $known) {
 			$table = $known['Name'];
 			$key = $known['Name'];
-			$option = read_config_option('install_table_' . $key);
+			$option = '';
+			if (array_key_exists('install_table_' . $key, $db_tables)) {
+				$option = $db_tables['install_table_' . $key];
+			}
 			$isSelected = !empty($hasTables) && (!empty($option));
 			$selected['chk_table_' . $key] = $isSelected;
 			if ($isSelected) {
@@ -475,16 +580,16 @@ class Installer implements JsonSerializable {
 		if (is_array($param_tables)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
 			$known_tables = install_setup_get_tables();
-			log_install('tables',"Updating Tables");
-			log_install('tables',"Parameter data:" . PHP_EOL . var_export($param_tables, true) . PHP_EOL);
+			log_install('tables',"setTables(): Updating Tables");
+			log_install('tables',"setTables(): Parameter data:" . PHP_EOL . var_export($param_tables, true) . PHP_EOL);
 			foreach ($known_tables as $known) {
 				$name = $known['Name'];
 				$key = 'chk_table_' . $name;
-				log_install('tables',"Checking table '$name' against key $key ...");
-				log_install('tables',"Table: ".str_replace("\n"," ", var_export($known, true)));
+				log_install('tables',"setTables(): Checking table '$name' against key $key ...");
+				log_install('tables',"setTables(): Table: ".str_replace("\n"," ", var_export($known, true)));
 				if (!empty($param_tables[$key])) {
 					$table = $param_tables[$key];
-					log_install('tables',"Set table: install_table_$name = $name");
+					log_install('tables',"setTables(): install_table_$name = $name");
 					set_config_option("install_table_$name", $name);
 				}
 			}
@@ -1539,17 +1644,19 @@ class Installer implements JsonSerializable {
 				)
 			);
 
-			$html .= ob_get_contents();
+			$html = ob_get_contents();
 			ob_end_clean();
 
 			$output .= Installer::sectionNormal($html);
 
 			$output .= Installer::sectionTitle(__('Default Automation Network'));
-			$output .= Installer::sectionNormal(__('Please enter the default automation network range to be scanned when enabled. To enable scanning on installation, please select \'Enabled\' below'));
-			$output .= Installer::sectionNote(__('When enabled, scanning will be set to daily by default'));
+			$output .= Installer::sectionNormal(__('Cacti can automatically scan the network once installation has completed. This will utilise the network range below to work out the range of IPs that can be scanned.  A predefined set of options are defined for scanning which include using both \'public\' and \'private\' communities.'));
+			$output .= Installer::sectionNormal(__('If your devices require a different set of options to be used first, you may define them below and they will be utilized before the defaults'));
+			$output .= Installer::sectionNormal(__('All options may be adjusted post installation'));
 
 			global $fields_snmp_item_with_retry;
 
+			$output .= Installer::sectionSubTitle(__('Default Options'));
 			$fields_automation = array(
 				'automation_mode' => array(
 					'method' => 'checkbox',
@@ -1560,11 +1667,21 @@ class Installer implements JsonSerializable {
 					'method' => 'textbox',
 					'friendly_name' => __('Network Range'),
 					'value' => '|arg1:automation_range|',
+					'max_length' => '100',
+				),
+				'automation_override' => array(
+					'method' => 'checkbox',
+					'friendly_name' => __('Additional Defaults'),
+					'value' => '|arg1:automation_override|',
 				)
-			) + $fields_snmp_item_with_retry;
+			);
 
 			ob_start();
-			$values = array('automation_mode' => $this->automationMode, 'value' => $this->automationRange);
+			$values = array(
+				'automation_mode'     => $this->automationMode ? 'on' : '',
+				'automation_range'    => $this->automationRange,
+				'automation_override' => $this->automationOverride ? 'on' : '',
+			);
 
 			draw_edit_form(
 				array(
@@ -1572,11 +1689,21 @@ class Installer implements JsonSerializable {
 					'fields' => inject_form_variables($fields_automation, $values),
 				)
 			);
-
 			$html = ob_get_contents();
-			ob_end_clean();
 
 			$output .= Installer::sectionNormal($html);
+			$output .= Installer::sectionSubTitle(__('Additional SNMP Options'), 'automation_snmp_options');
+
+			ob_clean();
+			draw_edit_form(
+				array(
+					'config' => array('no_form_tag' => true),
+					'fields' => inject_form_variables($fields_snmp_item_with_retry, $this->snmpOptions),
+				)
+			);
+			$html = ob_get_contents();
+			$output .= Installer::sectionNormal($html);
+			ob_end_clean();
 		} else {
 			$output  = Installer::sectionTitleError(__('Error Locating Profiles'));
 			$ouptut .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
@@ -1963,6 +2090,10 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public function getAutomationOverride() {
+		return read_config_option('install_automation_override', true);
+	}
+
 	public function getAutomationNetworkMode() {
 		$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
 		$enabled = 0;
@@ -2181,7 +2312,47 @@ class Installer implements JsonSerializable {
 		} else {
 			log_install_and_cacti('Failed to find automation network, no changes were made');
 		}
-		$this->setProgress(Installer::PROGRESS_AUTOMATION_START);
+
+		$override = read_config_option('install_automation_override', true);
+		if (!empty($override)) {
+			log_install_and_cacti('Adding extra snmp settings for automation');
+
+			$snmp_options = db_fetch_assoc('select name, value from settings where name like \'install_snmp_option_%\'');
+			$snmp_id = db_fetch_cell('select id from automation_snmp limit 1');
+
+			if ($snmp_id) {
+				log_install_and_cacti('Selecting Automation Option Set ' . $snmp_id);
+
+				$save = array('id' => '', 'snmp_id' => $snmp_id);
+				foreach($snmp_options as $snmp_option) {
+					$snmp_name = str_replace('install_snmp_option_','',$snmp_option['name']);
+					$snmp_value = $snmp_option['value'];
+
+					if ($snmp_name != 'snmp_security_level') {
+						$save[$snmp_name] = $snmp_value;
+						set_config_option($snmp_name, $snmp_value);
+					}
+				}
+
+				log_install_and_cacti('Updating Automation Option Set ' . $snmp_id);
+				$item_id = sql_save($save, 'automation_snmp_items');
+				if ($item_id) {
+					log_install_and_cacti('Successfully updated Automation Option Set ' . $snmp_id);
+
+					log_install_and_cacti('Resequencing Automation Option Set ' . $snmp_id);
+					db_execute_prepared('UPDATE automation_snmp_items
+							     SET sequence = sequence + 1
+							     WHERE snmp_id = ?',
+							     array($snmp_id));
+				} else {
+					log_install_and_cacti('Failed to updated Automation Option Set ' . $snmp_id);
+				}
+			} else {
+				log_install_and_cacti('Failed to find any automation option set');
+			}
+		}
+
+		$this->setProgress(Installer::PROGRESS_AUTOMATION_END);
 
 		$this->setProgress(Installer::PROGRESS_DEVICE_START);
 		// Add the correct device type
