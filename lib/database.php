@@ -1139,7 +1139,8 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 	}
 
-	if (!db_table_exists($table_name)) {
+	$log = true;
+	if (!db_table_exists($table_name, $log, $db_conn)) {
 		cacti_log("ERROR: SQL Save on table '$table_name': Table does not exist, unable to save!", false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 		return false;
