@@ -28,6 +28,66 @@ const DB_STATUS_WARNING = 1;
 const DB_STATUS_SUCCESS = 2;
 const DB_STATUS_SKIPPED = 3;
 
+const FIELDS_WELCOME = {
+	accept:                { type: 'checkbox',  name: 'Eula'              },
+	theme:                 { type: 'dropdown', name: 'Theme'              },
+	language:              { type: 'dropdown', name: 'Language'           },
+}
+
+const FIELDS_INSTALL_TYPE = {
+	install_type:          { type: 'dropdown', name: 'Mode'               },
+}
+
+const FIELDS_BINARY_OPTIONS = {
+	selected_theme:        { type: 'dropdown', name: 'Theme'              },
+	rrdtool_version:       { type: 'dropdown', name: 'RRDVer'             },
+}
+
+const FIELDS_BINARY_LOCATIONS = {
+	paths:                 { type: 'textbox',  prefix: 'path_'            },
+}
+
+const FIELDS_PROFILE = {
+	default_profile:       { type: 'dropdown', name: 'Profile'            },
+	cron_interval:         { type: 'textbox',  name: 'CronInterval'       },
+	automation_mode:       { type: 'checkbox', name: 'AutomationMode'     },
+	automation_range:      { type: 'textbox',  name: 'AutomationRange'    },
+	automation_override:   { type: 'checkbox', name: 'AutomationOverride' },
+}
+
+const FIELDS_SNMP = {
+	snmp_version:          { type: 'dropdown', name: 'SnmpVersion'        },
+	snmp_community:        { type: 'textbox',  name: 'SnmpCommunity'      },
+	snmp_security_level:   { type: 'dropdown', name: 'SnmpSecurityLevel'  },
+	snmp_username:         { type: 'textbox',  name: 'SnmpUsername'       },
+	snmp_auth_protocol:    { type: 'dropdown', name: 'SnmpAuthProtocol'   },
+	snmp_password:         { type: 'textbox',  name: 'SnmpPassword'       },
+	snmp_priv_protocol:    { type: 'dropdown', name: 'SnmpPrivProtocol'   },
+	snmp_priv_passphrase:  { type: 'textbox',  name: 'SnmpPrivPassphrase' },
+	snmp_context:          { type: 'textbox',  name: 'SnmpContext'        },
+	snmp_engine_id:        { type: 'textbox',  name: 'SnmpEngineId'       },
+	snmp_port:             { type: 'textbox',  name: 'SnmpPort'           },
+	snmp_timeout:          { type: 'textbox',  name: 'SnmpTimeout'        },
+	max_oids:              { type: 'textbox',  name: 'SnmpMaxOids'        },
+	snmp_retries:          { type: 'textbox',  name: 'SnmpRetries'        },
+};
+
+const FIELDS_CHECK_TABLES = {
+	tables:                { type: 'checkbox'                             },
+}
+
+const FIELDS_TEMPLATES = {
+	templates:             { type: 'checkbox'                             },
+}
+
+function setSNMPOverride() {
+	element = $('#automation_override');
+	if (element != null && element.length > 0) {
+		enabled = ($(element[0]).is(':checked'));
+		toggleSection('#automation_snmp_options', enabled);
+	}
+}
+
 function setButtonData(buttonName, buttonData) {
 	button = $('#button'+buttonName);
 	if (button != null) {
@@ -52,6 +112,91 @@ function setButtonData(buttonName, buttonData) {
 	}
 }
 
+function setFieldData(fields, fieldData) {
+	if (fieldData === null) {
+		return;
+	}
+
+	for (var fieldId in fields) {
+		if (!fields.hasOwnProperty(fieldId)) {
+			continue;
+		}
+
+		var field = fields[fieldId];
+
+		if (field.type == "checkbox") {
+			for (var propName in fieldData) {
+				if (fieldData.hasOwnProperty(propName)) {
+					propValue = fieldData[propName];
+					if (propValue !== undefined) {
+						element = $('#' + propName);
+						if (element != null && element.length > 0) {
+							element.prop('checked', propValue != 0);
+						}
+					}
+				}
+			}
+		} else if (fieldData[field.name]) {
+			element = $("#" + fieldId);
+			if (element != null && element.length > 0) {
+				if (field.type == 'textbox') {
+					element[0].value = fieldData[field.name];
+				} else if (field.type == 'dropdown' ) {
+					element[0].value = fieldData[field.name];
+				}
+			}
+		}
+	};
+}
+
+function getFieldData(fields, fieldData) {
+	if (fieldData === null) {
+		return;
+	}
+
+	for (var fieldId in fields) {
+		if (!fields.hasOwnProperty(fieldId)) {
+			continue;
+		}
+
+		var field = fields[fieldId];
+
+		if (field.type == 'checkbox') {
+			if (field.name) {
+				fieldData[field.name] = $("#" + fieldId).is(':checked');
+			} else {
+				prefix="chk_";
+				if (field.prefix) {
+					prefix = field.prefix;
+				}
+
+				$('input[name^="' + prefix + '"]').each(function(index,element) {
+					fieldData[element.id] =$(element).is(':checked');
+				});
+			}
+		} else {
+			if (field.prefix) {
+				$('input[name^="' + field.prefix + '"]').each(function(index, element) {
+					fieldData[element.id] = element.value;
+				});
+			} else {
+				element = $('#' + fieldId);
+				if (element != null && element.length > 0) {
+					if (field.type == 'textbox') {
+						fieldData[field.name] = element[0].value;
+					} else if (field.type == 'dropdown') {
+						fieldData[field.name] = element[0].value;
+					}
+				}
+			}
+		}
+	};
+}
+
+function getDefaultInstallData() {
+	return { Step: STEP_WELCOME, Eula: 0 };
+}
+
 function toggleHeader(key, initial = null) {
 	if (key != null) {
 		header = $(key);
@@ -66,6 +211,27 @@ function toggleHeader(key, initial = null) {
 				} else {
 					firstSibling.slideDown();
 				}
+			}
+		}
+	}
+}
+
+function toggleSection(key, initial = null) {
+	if (key != null) {
+		header = $(key);
+		if (header != null && header.length > 0) {
+
+			if (initial == null) {
+				initial = !header.visible;
+			}
+
+			firstSibling = header.next();
+			if (!initial) {
+				firstSibling.hide();
+				header.hide();
+			} else {
+				header.show();
+				firstSibling.show();
 			}
 		}
 	}
@@ -135,9 +301,11 @@ function hideHeadings(headingStates) {
 }
 
 function processStepWelcome(StepData) {
-	if (StepData.Eula == 1) {
-		$('#accept').prop('checked',true);
-	}
+	setFieldData(FIELDS_WELCOME, StepData);
+
+//	if (StepData.Eula == 1) {
+//		$('#accept').prop('checked',true);
+//	}
 
 	if (StepData.Theme != 'classic') {
 		$('select#theme').selectmenu({
@@ -216,6 +384,9 @@ function processStepPermissionCheck(StepData) {
 }
 
 function processStepBinaryLocations(StepData) {
+	setFieldData(FIELDS_BINARY_OPTIONS, StepData);
+	setFieldData(FIELDS_BINARY_LOCATIONS, StepData);
+
 	var errors = StepData.Errors;
 	$(function () {
             var focusedElement;
@@ -226,6 +397,7 @@ function processStepBinaryLocations(StepData) {
             });
         });
 
+	/* Focus on first error */
 	for (var propName in errors) {
 		if (errors.hasOwnProperty(propName)) {
 			propValue = errors[propName];
@@ -239,6 +411,20 @@ function processStepBinaryLocations(StepData) {
 }
 
 function processStepProfileAndAutomation(StepData) {
+	setFieldData(FIELDS_PROFILE, StepData);
+	setFieldData(FIELDS_SNMP, StepData);
+
+	setSNMP();
+	applySkin();
+
+	element = $('#automation_override');
+	if (element != null && element.length > 0) {
+		element.change(function() {
+			setSNMPOverride();
+		});
+	}
+
+	setSNMPOverride();
 }
 
 function processStepTemplateInstall(StepData) {
@@ -249,17 +435,7 @@ function processStepTemplateInstall(StepData) {
 			element.click();
 		}
 	} else {
-		for (var propName in templates) {
-			if (templates.hasOwnProperty(propName)) {
-				propValue = templates[propName];
-				if (propValue) {
-					element = $('#' + propName);
-					if (element != null && element.length > 0) {
-						element.prop('checked', true);
-					}
-				}
-			}
-		}
+		setFieldData(FIELDS_TEMPLATES, StepData.Templates);
 	}
 
 }
@@ -272,17 +448,7 @@ function processStepCheckTables(StepData) {
 			element.click();
 		}
 	} else {
-		for (var propName in tables) {
-			if (tables.hasOwnProperty(propName)) {
-				propValue = tables[propName];
-				if (propValue) {
-					element = $('#' + propName);
-					if (element != null && element.length > 0) {
-						element.prop('checked', true);
-					}
-				}
-			}
-		}
+		setFieldData(FIELDS_CHECK_TABLES, StepData.Tables);
 	}
 
 }
@@ -342,22 +508,6 @@ function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
 	}, 1000);
 }
 
-function progress_old(timeleft, timetotal, $element, fnComplete, fnStatus) {
-	setProgressBar(timeleft, timetotal, $element, 100, fnStatus);
-	if (timeleft < timetotal - 0.1) {
-		setTimeout(function() {
-			//progress(timeleft + 0.5, timetotal, $element, fnComplete, fnStatus);
-			fnComplete();
-		}, 100);
-	} else if (fnComplete != null) {
-		fnComplete();
-	}
-}
-
-function getDefaultInstallData() {
-	return { Step: STEP_WELCOME, Eula: 0 };
-}
-
 function prepareInstallData(installStep) {
 	installData = $('#installData').data('installData');
 	if (typeof installData == 'undefined' || installData == null) {
@@ -391,78 +541,37 @@ function prepareInstallData(installStep) {
 }
 
 function prepareStepWelcome(installData) {
-	element = $('#accept');
-	if (element != null && element.length > 0) {
-		installData.Eula = element.is(':checked');
-	}
-
-	element = $('#theme');
-	if (element != null && element.length > 0) {
-		installData.Theme = element.val();
-	}
+	getFieldData(FIELDS_WELCOME, installData);
 }
 
 function prepareStepInstallType(installData) {
-	element = $('#install_type');
-	if (element != null && element.length > 0) {
-		installData.Mode = element[0].value;
-	}
+	getFieldData(FIELDS_INSTALL_TYPE, installData);
 }
 
 function prepareStepBinaryLocations(installData) {
-	paths = {}
-	$('input[name^="path_"]').each(function(index,element) {
-		paths[element.id] = element.value;
-	});
+	installData.Paths = {};
 
-	installData.Paths = paths;
-	element = $('#selected_theme');
-	if (element != null && element.length > 0) {
-		installData.Theme = element[0].value;
-	}
-
-	element = $('#rrdtool_version');
-	if (element != null && element.length > 0) {
-		installData.RRDVer = element[0].value;
-	}
+	getFieldData(FIELDS_BINARY_OPTIONS, installData);
+	getFieldData(FIELDS_BINARY_LOCATIONS, installData.Paths);
 }
 
 function prepareStepProfileAndAutomation(installData) {
-	element = $('#default_profile');
-	if (element != null && element.length > 0) {
-		installData.Profile = element[0].value;
-	}
+	installData.SnmpOptions = {};
 
-	element = $('#cron_interval');
-	if (element != null && element.length > 0) {
-		installData.CronInterval = element[0].value;
-	}
-
-	element = $('#automation_mode');
-	if (element != null && element.length > 0) {
-		installData.AutomationMode = element[0].value;
-	}
-
-	element = $('#automation_range');
-	if (element != null && element.length > 0) {
-		installData.AutomationRange = element[0].value;
-	}
+	getFieldData(FIELDS_PROFILE, installData);
+	getFieldData(FIELDS_SNMP, installData.SnmpOptions);
 }
 
 function prepareStepCheckTables(installData) {
-	tables = {}
-	$('input[name^="chk_"]').each(function(index,element) {
-		tables[element.id] =$(element).is(':checked');
-	});
-	installData.Tables = tables;
+	installData.Tables = {}
+
+	getFieldData(FIELDS_CHECK_TABLES, installData.Tables);
 }
 
 function prepareStepTemplateInstall(installData) {
-	templates = {}
-	$('input[name^="chk_"]').each(function(index,element) {
-		templates[element.id] =$(element).is(':checked');
-	});
-	installData.Templates = templates;
+	installData.Templates = {}
+
+	getFieldData(FIELDS_TEMPLATES, installData.Templates);
 }
 
 function setAddressBar(data, replace) {
