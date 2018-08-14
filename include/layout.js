@@ -279,6 +279,22 @@ $.fn.focusEnd = function() {
 	return this;
 };
 
+$.fn.getObjectDetails = function() {
+	var coords = {};
+
+	coords.width  = $(this).outerWidth();
+	coords.height = $(this).outerHeight();
+	coords.left = 0;
+	coords.top  = 0;
+
+	$(this).parentsUntil('body').each(function(){
+		coords.left += $(this).position().left;
+		coords.top  += $(this).position().top;
+	});
+
+	return coords;
+};
+
 $.fn.serializeForm = function() {
 	var arrayData, objectData;
 	arrayData = this.serializeArray();
