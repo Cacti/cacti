@@ -921,10 +921,6 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		}
 	}
 
-	if ($class != '') {
-		$class = " class='$class' ";
-	}
-
 	if ($on_change != '') {
 		$on_change = " onChange='$on_change' ";
 	}
@@ -933,7 +929,7 @@ function form_text_area($form_name, $form_previous_value, $form_rows, $form_colu
 		$placeholder = " placeholder='$placeholder'";
 	}
 
-	print "<textarea class='ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
+	print "<textarea class='$class ui-state-default ui-corner-all' aria-multiline='true' cols='$form_columns' rows='$form_rows' id='$form_name' name='$form_name'" . $class . $on_change . $placeholder . '>' . html_escape($form_previous_value) . "</textarea>\n";
 }
 
 /* form_multi_dropdown - draws a standard html multiple select dropdown
