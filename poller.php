@@ -184,7 +184,7 @@ if (sizeof($poller)) {
 	$concurrent_processes = read_config_option('concurrent_processes');
 }
 
-if (!isset($concurrent_process) || inval($concurrent_processes) < 1) {
+if (!isset($concurrent_process) || intval($concurrent_processes) < 1) {
 	$concurrent_processes = 1;
 }
 
