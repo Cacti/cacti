@@ -285,8 +285,6 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 		$sql_where
 		ORDER by gt.name ASC");
 
-	cacti_log("SELECT htg.graph_template_id AS id, gt.name AS name FROM host_template_graph AS htg LEFT JOIN graph_templates AS gt ON htg.graph_template_id = gt.id $sql_where ORDER by gt.name ASC");
-
 	if (sizeof($tmpArray)) {
 		foreach ($tmpArray as $t) {
 			$graph_templates[$t['id']] = $t['name'];
