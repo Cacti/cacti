@@ -1185,7 +1185,11 @@ function device_javascript() {
 				break;
 		}
 
-		if ($('#availability_method-button').length) {
+		if ($('#ping_method').selectmenu('instance')) {
+			$('#ping_method').selectmenu('refresh');
+		}
+
+		if ($('#availability_method').selectmenu('instance')) {
 			$('#availability_method').selectmenu('refresh');
 		}
 	}
