@@ -57,11 +57,11 @@ if (sizeof($parms)) {
 	$shortopts = 'VvHh';
 
 	$longopts = array(
-		'host-ids::',
+		'host-id::',
 		'graph-type::',
-		'graph-template-ids::',
-		'host-template-ids::',
-		'regex::',
+		'graph-template-id::',
+		'host-template-id::',
+		'graph-regex::',
 		'preserve',
 		'quiet',
 
@@ -78,7 +78,7 @@ if (sizeof($parms)) {
 
 	foreach($options as $arg => $value) {
 		switch($arg) {
-		case 'regex':
+		case 'graph-regex':
 			if (!is_array($value)) {
 				$value = array($value);
 			}
@@ -93,7 +93,7 @@ if (sizeof($parms)) {
 			}
 
 			break;
-		case 'graph-template-ids':
+		case 'graph-template-id':
 			if (!is_array($value)) {
 				$value = array($value);
 			}
@@ -101,7 +101,7 @@ if (sizeof($parms)) {
 			$graph_template_ids = $value;
 
 			break;
-		case 'host-template-ids':
+		case 'host-template-id':
 			if (!is_array($value)) {
 				$value = array($value);
 			}
@@ -109,7 +109,7 @@ if (sizeof($parms)) {
 			$host_template_ids = $value;
 
 			break;
-		case 'host-ids':
+		case 'host-id':
 			if (!is_array($value)) {
 				$value = array($value);
 			}
@@ -222,9 +222,14 @@ if ($listHosts) {
 	}
 
 	if (sizeof($regex)) {
+		$sql_where .= ' AND (';
+		$sql_cwhere = '';
+
 		foreach($regex as $r) {
-			$sql_where .= ' AND title_cache RLIKE "' . $r . '"';
+			$sql_cwhere .= ($sql_cwhere == '' ? '':' OR title_cache RLIKE "' . $r . '"');
 		}
+
+		$sql_where .= $sql_cwhere . ')';
 	}
 
 	$graphs = db_fetch_assoc("SELECT gl.id, gtg.title_cache
@@ -276,31 +281,33 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print PHP_EOL . "usage: remove_graphs.php --graph-template-ids='ID ID ...' [--host-template-ids='ID ID ...'" . PHP_EOL;
-	print "    [--host-ids='ID ID ...'] [--graph-regex='R']" . PHP_EOL;
+	print PHP_EOL . "usage: remove_graphs.php --graph-template-id=ID [--host-template-id=ID" . PHP_EOL;
+	print "    [--host-id=ID] [--graph-regex=R]" . PHP_EOL;
 	print "    [--force] [--preserve]" . PHP_EOL . PHP_EOL;
 
 	print "Cacti utility for removing Graphs through the command line." . PHP_EOL . PHP_EOL;
 
 	print "Options:" . PHP_EOL;
-	print "    --graph-template-ids='ID ID ...'  Mandatory list of Graph Templates." . PHP_EOL;
-	print "    --host-template-ids='ID ID ...'   Optional list of Device Templates." . PHP_EOL;
-	print "    --host-ids='ID ID ...'            Optional list of Device ID's." . PHP_EOL;
-	print "    --graph-regex='R'                 Optional Graph name regular expression." . PHP_EOL;
-	print "    --force                           Actually remove the Graphs, dont just list." . PHP_EOL;
-	print "    --preserve                        Preserve the Data Sources.  Default is to remove." . PHP_EOL . PHP_EOL;
+	print "    --graph-template-id=ID  Mandatory list of Graph Templates." . PHP_EOL;
+	print "    --host-template-id=ID   Optional list of Device Templates." . PHP_EOL;
+	print "    --host-id=ID            Optional list of Device ID's." . PHP_EOL;
+	print "    --graph-regex=R         Optional Graph name regular expression." . PHP_EOL;
+	print "    --force                 Actually remove the Graphs, dont just list." . PHP_EOL;
+	print "    --preserve              Preserve the Data Sources.  Default is to remove." . PHP_EOL . PHP_EOL;
 
-	print "By default, you must provide from one to many graph-template-ids.  Device Template id's" . PHP_EOL;
-	print "Device id's and the regular expression are optional." . PHP_EOL . PHP_EOL;
+	print "By default, you must provide from one to many graph-template-id.  Device Template id's" . PHP_EOL;
+	print "Device id's and the regular expression are optional.  If you wish to specify multiple" . PHP_EOL;
+	print "ID's, just repeat the parameter ex: --host-template-id=X --host-template-id=Y" . PHP_EOL . PHP_EOL;
 
 	print "By default, this utility will only report on the number of Graphs that will be removed.  If you" . PHP_EOL;
 	print "provide the --force option, the Graphs will actually be removed.  If you use the --list option" . PHP_EOL;
-	print "each of the Graphs to be removed, will be listed." . PHP_EOL;
+	print "each of the Graphs to be removed, will be listed.  Options --list and --force are" . PHP_EOL;
+	print "mutulally exclusive." . PHP_EOL . PHP_EOL;
 
 	print "List Options:" . PHP_EOL;
 	print "    --list" . PHP_EOL;
-	print "    --list-hosts [--host-template-ids='ID ID ...']" . PHP_EOL;
-	print "    --list-graph-templates [--host-template-ids='ID ID ...']" . PHP_EOL;
+	print "    --list-hosts [--host-template-id=ID]" . PHP_EOL;
+	print "    --list-graph-templates [--host-template-id=ID]" . PHP_EOL;
 	print "    --list-host-templates" . PHP_EOL . PHP_EOL;
 }
 
