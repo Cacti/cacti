@@ -1,0 +1,306 @@
+<?php
+/*
+ +-------------------------------------------------------------------------+
+ | Copyright (C) 2004-2018 The Cacti Group                                 |
+ |                                                                         |
+ | This program is free software; you can redistribute it and/or           |
+ | modify it under the terms of the GNU General Public License             |
+ | as published by the Free Software Foundation; either version 2          |
+ | of the License, or (at your option) any later version.                  |
+ |                                                                         |
+ | This program is distributed in the hope that it will be useful,         |
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of          |
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
+ | GNU General Public License for more details.                            |
+ +-------------------------------------------------------------------------+
+ | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ +-------------------------------------------------------------------------+
+ | This code is designed, written, and maintained by the Cacti Group. See  |
+ | about.php and/or the AUTHORS file for specific developer information.   |
+ +-------------------------------------------------------------------------+
+ | http://www.cacti.net/                                                   |
+ +-------------------------------------------------------------------------+
+ */
+
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/api_graph.php');
+require($config['base_path'] . '/lib/api_data_source.php');
+require($config['base_path'] . '/lib/api_automation_tools.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/utility.php');
+
+ini_set('max_execution_time', '0');
+ini_set('memory_limit', '-1');
+
+/* process calling arguments */
+$parms = $_SERVER['argv'];
+array_shift($parms);
+
+if (sizeof($parms)) {
+	$host_template_ids   = array();
+	$host_ids            = array();
+	$graph_template_ids  = array();
+	$regex               = array();
+
+	$graphTemplates      = getGraphTemplates();
+	$hostTemplates       = getHostTemplates();
+	$force               = false;
+	$list                = false;
+	$preserve            = false;
+
+	$listHosts           = false;
+	$listGraphTemplates  = false;
+	$listHostTemplates   = false;
+
+	$quietMode          = false;
+
+	$shortopts = 'VvHh';
+
+	$longopts = array(
+		'host-ids::',
+		'graph-type::',
+		'graph-template-ids::',
+		'host-template-ids::',
+		'regex::',
+		'preserve',
+		'quiet',
+
+		'list',
+		'list-hosts',
+		'list-host-templates',
+		'list-graph-templates',
+		'force',
+		'version',
+		'help'
+	);
+
+	$options = getopt($shortopts, $longopts);
+
+	foreach($options as $arg => $value) {
+		switch($arg) {
+		case 'regex':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$regex = $value;
+
+			foreach($value as $item) {
+				if (!validate_is_regex($item)) {
+					print "ERROR: Regex specified '$item', is not a valid Regex!" . PHP_EOL;
+					exit(1);
+				}
+			}
+
+			break;
+		case 'graph-template-ids':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$graph_template_ids = $value;
+
+			break;
+		case 'host-template-ids':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$host_template_ids = $value;
+
+			break;
+		case 'host-ids':
+			if (!is_array($value)) {
+				$value = array($value);
+			}
+
+			$host_ids = $value;
+
+			break;
+		case 'list':
+			$list = true;
+
+			break;
+		case 'list-hosts':
+			$listHosts = true;
+
+			break;
+		case 'list-graph-templates':
+			$listGraphTemplates = true;
+
+			break;
+		case 'list-host-templates':
+			$listHostTemplates = true;
+
+			break;
+		case 'force':
+			$force = true;
+
+			break;
+		case 'version':
+		case 'V':
+		case 'v':
+			display_version();
+			exit(0);
+		case 'help':
+		case 'H':
+		case 'h':
+			display_help();
+			exit(0);
+		default:
+			print "ERROR: Invalid Argument: ($arg)" . PHP_EOL . PHP_EOL;
+		}
+	}
+} else {
+	display_help();
+	exit(0);
+}
+
+if ($list && $force) {
+	print "The --list and --force options are mutually exclusive.  Pick on or the other." . PHP_EOL;
+	exit(1);
+}
+
+if (sizeof($host_template_ids)) {
+	foreach($host_template_ids as $id) {
+		if (!is_numeric($id) || $id <= 0) {
+			print "FATAL: Host Template ID $id is invalid" . PHP_EOL;
+			exit(1);
+		}
+	}
+}
+
+if (sizeof($graph_template_ids)) {
+	foreach($graph_template_ids as $id) {
+		if (!is_numeric($id) || $id <= 0) {
+			print "FATAL: Graph Template ID $id is invalid" . PHP_EOL;
+			exit(1);
+		}
+	}
+}
+
+if (sizeof($host_ids)) {
+	foreach($host_ids as $id) {
+		if (!is_numeric($id) || $id <= 0) {
+			print "FATAL: Host ID $id is invalid" . PHP_EOL;
+			exit(1);
+		}
+	}
+}
+
+if ($listHosts) {
+	$hosts = getHosts($host_template_ids);
+
+	displayHosts($hosts, $quietMode);
+
+	exit(0);
+} elseif ($listHostTemplates) {
+	$hostTemplates = getHostTemplates();
+
+	displayHostTemplates($hostTemplates, $quietMode);
+
+	exit(0);
+} elseif ($listGraphTemplates) {
+	$graphTemplates = getGraphTemplatesByHostTemplate($host_template_ids);
+
+	displayGraphTemplates($graphTemplates, $quietMode);
+
+	exit(0);
+} else {
+	$sql_where = 'WHERE gl.id > 0';
+
+	if (sizeof($host_ids)) {
+		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids). ')';
+	}
+
+	if (sizeof($host_template_ids)) {
+		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids). ')';
+	}
+
+	if (sizeof($graph_template_ids)) {
+		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids). ')';
+	}
+
+	if (sizeof($regex)) {
+		foreach($regex as $r) {
+			$sql_where .= ' AND title_cache RLIKE "' . $r . '"';
+		}
+	}
+
+	$graphs = db_fetch_assoc("SELECT gl.id, gtg.title_cache
+		FROM graph_local AS gl
+		INNER JOIN graph_templates_graph AS gtg
+		ON gl.id=gtg.local_graph_id
+		INNER JOIN host AS h
+		ON h.id = gl.host_id
+		$sql_where");
+
+	if (sizeof($graphs)) {
+		print 'There are ' . sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
+
+		if ($force) {
+			$local_graph_ids = array_rekey($graphs, 'id', 'id');
+
+			if ($preserve) {
+				print '  Data Sources will be preserved.' . PHP_EOL;
+				$delete_type = 1;
+			} else {
+				print '  Data Sources will be removed is possible.' . PHP_EOL;
+				$delete_type = 2;
+			}
+
+			api_delete_graphs($local_graph_ids, $delete_type);
+		} elseif ($list) {
+			print PHP_EOL . "ID\tGraphName" . PHP_EOL;
+
+			foreach($graphs as $graph) {
+				print $graph['id'] . "\t" . $graph['title_cache'] . PHP_EOL;
+			}
+		} else {
+			print PHP_EOL . '  Use the --list option to view the list of Graphs' . PHP_EOL;;
+		}
+	} else {
+		print 'No matching Graphs found.' . PHP_EOL;
+		exit(1);
+	}
+}
+
+exit(0);
+
+/*  display_version - displays version information */
+function display_version() {
+	$version = get_cacti_version();
+	print "Cacti Remove Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+}
+
+function display_help() {
+	display_version();
+
+	print PHP_EOL . "usage: remove_graphs.php --graph-template-ids='ID ID ...' [--host-template-ids='ID ID ...'" . PHP_EOL;
+	print "    [--host-ids='ID ID ...'] [--graph-regex='R']" . PHP_EOL;
+	print "    [--force] [--preserve]" . PHP_EOL . PHP_EOL;
+
+	print "Cacti utility for removing Graphs through the command line." . PHP_EOL . PHP_EOL;
+
+	print "Options:" . PHP_EOL;
+	print "    --graph-template-ids='ID ID ...'  Mandatory list of Graph Templates." . PHP_EOL;
+	print "    --host-template-ids='ID ID ...'   Optional list of Device Templates." . PHP_EOL;
+	print "    --host-ids='ID ID ...'            Optional list of Device ID's." . PHP_EOL;
+	print "    --graph-regex='R'                 Optional Graph name regular expression." . PHP_EOL;
+	print "    --force                           Actually remove the Graphs, dont just list." . PHP_EOL;
+	print "    --preserve                        Preserve the Data Sources.  Default is to remove." . PHP_EOL . PHP_EOL;
+
+	print "By default, you must provide from one to many graph-template-ids.  Device Template id's" . PHP_EOL;
+	print "Device id's and the regular expression are optional." . PHP_EOL . PHP_EOL;
+
+	print "By default, this utility will only report on the number of Graphs that will be removed.  If you" . PHP_EOL;
+	print "provide the --force option, the Graphs will actually be removed.  If you use the --list option" . PHP_EOL;
+	print "each of the Graphs to be removed, will be listed." . PHP_EOL;
+
+	print "List Options:" . PHP_EOL;
+	print "    --list" . PHP_EOL;
+	print "    --list-hosts [--host-template-ids='ID ID ...']" . PHP_EOL;
+	print "    --list-graph-templates [--host-template-ids='ID ID ...']" . PHP_EOL;
+	print "    --list-host-templates" . PHP_EOL . PHP_EOL;
+}
+

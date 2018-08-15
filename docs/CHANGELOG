@@ -104,6 +104,7 @@ Cacti CHANGELOG
 -feature#1734: Visual enhancements to RRD error message when file not found
 -feature#1763: Automatic refresh for Time Graph View - Enhancement
 -feature#1806: Control low level debug routines via config.php
+-feature#1819: Removing Graphs using CLI
 -feature: New Install/Upgrade user permission to limit access to being able to upgrade
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
