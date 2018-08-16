@@ -1414,7 +1414,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 	$hosts = get_allowed_devices();
 	$sql_hosts_where = "";
 	if (sizeof($hosts) > 0) {
-		$sql_hosts_where =  'AND h.id IN ('.implode(',', array_keys(array_rekey($hosts, 'id','description'))).')';
+		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
 	}
 
 	if ($auth_method != 0) {
@@ -1435,6 +1435,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			AND uagm.user_id = ?",
 			array($user)
 		);
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees
 			FROM user_auth
 			WHERE id = ?",
@@ -1489,9 +1490,9 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
-			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on' AND $sql_where";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='' AND $sql_where";
 		} else {
-			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on'";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on'";
 		}
 
 		$sql = "(
@@ -1501,7 +1502,6 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			AND gti.host_id=0
 			AND gti.local_graph_id=0
-			$sql_join
 			$sql_where
 			) UNION (
 			SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
