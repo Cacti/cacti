@@ -1022,27 +1022,27 @@ $user_auth_realms = array(
 	24   => __('External Links'),
 
 	1    => __('User Management'),
-	15   => __('Settings and Utilities'),
-	23   => __('Automation Settings'),
-	26   => __('Installation And Upgrades'),
+	15   => __('Settings/Utilities'),
+	23   => __('Automation'),
+	26   => __('Installation/Upgrades'),
 
 	2    => __('Data Input Methods'),
 	13   => __('Data Queries'),
 
-	3    => __('Sites/Devices/Data Sources/Data Collectors'),
+	3    => __('Sites/Devices/Data'),
 	5    => __('Graphs'),
 	4    => __('Trees'),
-	1043 => __('Remove Spikes from Graphs'),
+	1043 => __('Spike Management'),
 
 	9    => __('Data Source Profiles'),
-	14   => __('Colors/GPrints/CDEFs/VDEFs'),
+	14   => __('Presets'),
 
 	10   => __('Graph Templates'),
 	11   => __('Data Templates'),
 	12   => __('Device Templates'),
 
-	16   => __('Export Data'),
-	17   => __('Import Data'),
+	16   => __('Export Templates'),
+	17   => __('Import Templates'),
 
 	18   => __('Log Management'),
 	19   => __('Log Viewing'),
@@ -1052,10 +1052,10 @@ $user_auth_realms = array(
 );
 
 $user_auth_roles = array(
-	'Normal User'            => array(7, 19, 20, 22, 24, 25),
-	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
-	'General Administration' => array(8, 3, 4, 5, 23, 1043),
-	'System Administration'  => array(8, 15, 26, 1, 18, 21, 101)
+	__('Normal User')            => array(7, 19, 20, 22, 24, 25),
+	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
+	__('General Administration') => array(8, 3, 4, 5, 23, 1043),
+	__('System Administration')  => array(8, 15, 26, 1, 18, 21, 101)
 );
 
 $user_auth_realm_filenames = array(
