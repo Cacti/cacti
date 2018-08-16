@@ -512,32 +512,36 @@ function get_common_graph_templates(&$graph) {
 			AND graph_template_id = ?',
 			array($dqid, $graph['graph_template_id']));
 
-		$query_fields = array_rekey(db_fetch_assoc_prepared('SELECT snmp_query_graph_id,
-			GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
-			FROM snmp_query_graph_rrd
-			WHERE snmp_query_graph_id IN (' . $sqgi . ')
-			GROUP BY snmp_query_graph_id'), 'snmp_query_graph_id', 'columns');
+		if ($sqgi != '') {
+			$query_fields = array_rekey(db_fetch_assoc_prepared('SELECT snmp_query_graph_id,
+				GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
+				FROM snmp_query_graph_rrd
+				WHERE snmp_query_graph_id IN (' . $sqgi . ')
+				GROUP BY snmp_query_graph_id'), 'snmp_query_graph_id', 'columns');
 
-		$ids = array_to_sql_or(array_values($query_fields), 'columns');
+			$ids = array_to_sql_or(array_values($query_fields), 'columns');
 
-		$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT
-			snmp_query_graph_id, GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
-			FROM snmp_query_graph_rrd
-			GROUP BY snmp_query_graph_id
-			HAVING ' . $ids), 'snmp_query_graph_id', 'columns');
+			$common_graph_ids = array_rekey(db_fetch_assoc_prepared('SELECT
+				snmp_query_graph_id, GROUP_CONCAT(snmp_field_name ORDER BY snmp_field_name) AS columns
+				FROM snmp_query_graph_rrd
+				GROUP BY snmp_query_graph_id
+				HAVING ' . $ids), 'snmp_query_graph_id', 'columns');
 
-		$ids = implode(',', array_keys($common_graph_ids));
+			$ids = implode(',', array_keys($common_graph_ids));
 
-		$gtids = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT graph_template_id) AS gtids
-			FROM snmp_query_graph
-			WHERE snmp_query_id = ?
-			AND id IN (' . $ids . ')',
-			array($dqid));
+			$gtids = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT graph_template_id) AS gtids
+				FROM snmp_query_graph
+				WHERE snmp_query_id = ?
+				AND id IN (' . $ids . ')',
+				array($dqid));
 
-		$gtsql = "SELECT CONCAT_WS('', graph_template_id, '_', id, '') AS id, name
-			FROM snmp_query_graph
-			WHERE (snmp_query_id = $dqid AND id IN ($ids))
-			OR graph_template_id IN ($gtids) ORDER BY name";
+			$gtsql = "SELECT CONCAT_WS('', graph_template_id, '_', id, '') AS id, name
+				FROM snmp_query_graph
+				WHERE (snmp_query_id = $dqid AND id IN ($ids))
+				OR graph_template_id IN ($gtids) ORDER BY name";
+		} else {
+			$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
+		}
 	} else {
 		$gtsql = 'SELECT gt.id, gt.name FROM graph_templates AS gt ORDER BY name';
 	}
