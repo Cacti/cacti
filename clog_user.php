@@ -29,7 +29,7 @@ include_once('./lib/clog_webapi.php');
 
 /* check edit/alter permissions */
 if (!clog_authorized()) {
-	echo __('FATAL: YOU DO NO HAVE ACCESS TO THIS AREA OF CACTI');
+	echo __('FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI');
 	exit;
 }
 
