@@ -22,17 +22,55 @@
  +-------------------------------------------------------------------------+
 */
 
-$guest_account = true;
-include('./include/auth.php');
-include_once('./lib/utility.php');
-include_once('./lib/clog_webapi.php');
+/* since we'll have additional headers, tell php when to flush them */
+ob_start();
 
-/* check edit/alter permissions */
-if (!clog_authorized()) {
-	header('Location: permission_denied.php');
-	exit;
+$guest_account = true;
+$auth_json     = true;
+
+include('include/global.php');
+
+/* set the json variable for request validation handling */
+set_request_var('json', true);
+
+$debug = false;
+switch (get_request_var('action')) {
+	case 'checkpass':
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
+
+		if ($error == '') {
+			print $error;
+		} else {
+			print 'ok';
+		}
+
+		exit;
+
+		break;
+
+	case 'checksess':
+		include('./include/auth.php');
+		$json = json_encode(
+			array(
+				'status' => '200',
+				'statusText' => __('Logged In'),
+				'responseText' => __('Logged in with access to Cacti.')
+			)
+		);
+		break;
+
+	default:
+		include('./include/auth.php');
+		$json = json_encode(
+			array(
+				'status' => '404',
+				'statusText' => __('Action Not Found'),
+				'responseText' => __('Requested action not found on %s', 'check_json.php')
+			)
+		);
+		break;
 }
 
-load_current_session_value('page_referrer', 'page_referrer', '');
-
-clog_view_logfile();
+header('Content-Type: application/json');
+header('Content-Length: ' . strlen($json));
+print $json;

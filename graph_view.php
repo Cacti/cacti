@@ -277,7 +277,7 @@ case 'tree_content':
 	html_validate_tree_vars();
 
 	if (!is_view_allowed('show_tree')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
+		header('Location: permission_denied.php');
 		exit;
 	}
 
@@ -359,8 +359,7 @@ case 'preview':
 	top_graph_header();
 
 	if (!is_view_allowed('show_preview')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>";
-		bottom_footer();
+		header('Location: permission_denied.php');
 		exit;
 	}
 
@@ -466,8 +465,7 @@ case 'list':
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
-		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>';
-		bottom_footer();
+		header('Loction: permission_denied.php');
 		exit;
 	}
 

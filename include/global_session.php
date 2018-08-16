@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $refresh;
+global $config, $refresh, $messages_titles;
 
 $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
@@ -59,7 +59,7 @@ if (isset($_SESSION['refresh'])) {
     if (isset($_SESSION['refresh']['page'])) {
         $myrefresh['page'] = sanitize_uri($_SESSION['refresh']['page']);
     } else {
-		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout';
+		$myrefresh['page'] = $config['url_path'] . 'logout.php?action=timeout&1';
 	}
 
 	unset($_SESSION['refresh']);
@@ -85,7 +85,7 @@ if (isset($_SESSION['refresh'])) {
 	$refreshIsLogout      = 'false';
 } else {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
-	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
+	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout&2';
 	$refreshIsLogout      = 'true';
 } ?>
 <script type='text/javascript'>
@@ -135,9 +135,9 @@ if (isset($_SESSION['refresh'])) {
 	var errorOnPage='<?php print __('Sorry, we could not process your last action.');?>';
 	var errorNumberPrefix='<?php print __('Error:');?>';
 	var errorReasonPrefix='<?php print __('Reason:');?>';
-	var errorReasonTitle='<?php print __('Action failed');?>';
+	var errorReasonTitle='<?php print $messages_titles['error'];?>';
 	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected.');?>';
-	var sessionMessageTitle='<?php print __('Operation successful');?>';
+	var sessionMessageTitle='<?php $messages_titles['info'];?>';
 	var sessionMessageSave='<?php print __('The Operation was successful.  Details are below.');?>';
 	var sessionMessage=<?php print display_output_messages(false);?>;
 	var sessionMessageOk='<?php print __('Ok');?>';

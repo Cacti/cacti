@@ -851,7 +851,7 @@ ul#breadcrumbs {
 	-moz-border-radius:10px;
 	border-radius:10px;
 	position:relative;
-	padding:30px 0px 5px 20px;
+	padding:30px 20px 5px 20px;
 	background-color:snow;
 	top:30%;
 	max-width:360px;
@@ -868,14 +868,13 @@ ul#breadcrumbs {
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
-	position:relative;
+	display: inline-block;
 	float:right;
 	background: transparent url('./images/cacti_logo.svg') no-repeat center;
 	width:120px;
 	height:148px;
 	z-index:2;
 	margin-top:-95px;
-	margin-left:240px;
 	margin-bottom:-20px;
 }
 
@@ -884,6 +883,23 @@ ul#breadcrumbs {
 	border-radius:10px;
 	position:relative;
 	min-height:200px;
+}
+
+.loginMessage {
+	height: 100%;
+	vertical-align: middle;
+}
+
+.loginReturn {
+	position: absolute;
+	bottom: 0;
+	margin-bottom: 25px;
+	width: 100%;
+	text-align: center;
+}
+
+.cactiLoginTable {
+	width: 100%;
 }
 
 .cactiLoginTable td {
@@ -921,6 +937,8 @@ legend {
 	float:right;
 	margin-top:10px;
 	color:snow;
+	text-align: center;
+	width: 100%;
 }
 
 .actionsDropdown {
@@ -2341,10 +2359,12 @@ input:checked + .checkboxSlider:before {
 	vertical-align: middle;
 }
 
-.right {
-	text-align: right;
-}
-
-.center {
-	text-align: center;
+.loginArea > legend, .loginTitle > p {
+	padding: 0px;
+	text-shadow:
+		 3px  3px 0 #000,
+		-1px -1px 0 #000,
+		 1px -1px 0 #000,
+		-1px  1px 0 #000,
+		 1px  1px 0 #000;
 }

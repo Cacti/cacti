@@ -46,12 +46,6 @@ if (read_config_option('auth_method') != 0) {
 	/* handle alternate authentication realms */
 	api_plugin_hook_function('auth_alternate_realms');
 
-	/* handle change password dialog */
-	if ((isset($_SESSION['sess_change_password'])) && (read_config_option('webbasic_enabled') != 'on')) {
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
-		exit;
-	}
-
 	/* check for remember me function ality */
 	if (!isset($_SESSION['sess_user_id'])) {
 		$cookie_user = check_auth_cookie();
@@ -81,6 +75,7 @@ if (read_config_option('auth_method') != 0) {
 	}
 
 	if (empty($_SESSION['sess_user_id'])) {
+		header('Cacti-FullScreen: true');
 		if (isset($auth_json) && $auth_json == true) {
 			print json_encode(
 				array(
@@ -92,7 +87,7 @@ if (read_config_option('auth_method') != 0) {
 		} elseif (isset($auth_text) && $auth_text == true) {
 			print __('FATAL: You must be logged in to access this area of Cacti.');
 		} else {
-			require_once($config['base_path'] . '/auth_login.php');
+			require_once($config['base_path'] . '/include/auth/auth_login.php');
 		}
 
 		exit;
@@ -182,53 +177,59 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		if ($realm_id != -1 && !$authorized) {
-			if (isset($_SERVER['HTTP_REFERER'])) {
-				$goBack = "<td colspan='2' align='center'>[<a href='" . sanitize_uri($_SERVER['HTTP_REFERER']) . "'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-			} else {
-				$goBack = "<td colspan='2' align='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
-			}
-
+			$title_hook = 'permission_denied';
 			$title_header = __('Permission Denied');
-			$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+			$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.') . '</p>';
+			$title_text = __('You are not permitted to access this section of Cacti.') . "\n" . __('If you feel that this is an error. Please contact your Cacti Administrator.');
 
 			if ($realm_id == 26) {
+				$title_hook = 'installation_in_progress';
 				$title_header = __('Installation In Progress');
 				$title_body = '<p>' . __('There is an Installation or Upgrade in progress.') . '</p><p>' . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time') . '</p>';
+				$title_text = __('There is an Installation or Upgrade in progress.') . "\n" . __('Only Cacti Administrators with Install/Upgrade privilege may login at this time');
 			}
-			print "<!DOCTYPE html>\n";
-			print "<html>\n";
-			print "<head>\n";
-			html_common_header($title_header);
-			print "</head>\n";
-			print "<body class='logoutBody'>
-			<div class='logoutLeft'></div>
-			<div class='logoutCenter'>
-				<div class='logoutArea'>
-					<div class='cactiLogoutLogo'></div>
-					<legend>" . $title_header . "</legend>
-					<div class='logoutTitle'>
-						" . $title_body . "
-						</p>
-						<center>" . $goBack . "</center>
-					</div>
-					<div class='logoutErrors'></div>
-				</div>
-				<div class='versionInfo'>" . __('Version') . ' ' . $version . " | " . COPYRIGHT_YEARS_SHORT . "</div>
-			</div>
-			<div class='logoutRight'></div>
-			<script type='text/javascript'>
-			$(function() {
-				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-			});
-			</script>\n";
-			include_once('global_session.php');
-			print "</body>
-			</html>\n";
+
+			header('Cacti-FullScreen: true');
+			if (isset($auth_json) && $auth_json == true) {
+				print json_encode(
+					array(
+						'status' => '500',
+						'statusText' => $title_header,
+						'responseText' => $title_text
+					)
+				);
+			} elseif (isset($auth_text) && $auth_text == true) {
+				print $title_text;
+			} else {
+				html_common_login_header($title_hook, $title_header, $title_header, '');
+				print $title_body;
+				html_common_login_footer('');
+			}
 			exit;
 		}
 
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+		if ($current_user['must_change_password'] == 'on') {
+			$_SESSION['sess_change_password'] = true;
+		}
+
+	}
+
+	if (isset($_SESSION['sess_change_password'])) {
+		header('Cacti-FullScreen: true');
+		if (isset($auth_json) && $auth_json == true) {
+			print json_encode(
+				array(
+					'status' => '501',
+					'statusText' => __('Must Change Password'),
+					'responseText' => __('You must change your password to access this area of Cacti.')
+				)
+			);
+		} elseif (isset($auth_text) && $auth_text == true) {
+			print __('FATAL: You must change your password to access this area of Cacti.');
+		} else {
+			require_once($config['base_path'] . '/include/auth/auth_changepassword.php');
+		}
+		exit;
 	}
 }
-
