@@ -1510,8 +1510,6 @@ function loadTopTab(href, id, force) {
 
 		$.get(url)
 			.done(function(html,status,jqXHR) {
-				debugger;
-
 				if (!checkForLogout(html)) {
 					if (jqXHR.getResponseHeader('Cacti-FullScreen')) {
 						var newDoc = document.open("text/html", "replace");
@@ -1596,8 +1594,6 @@ function loadPage(href, force) {
 	if (cont) {
 		$.get(href)
 			.done(function(html, status, jqXHR) {
-				debugger;
-
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
@@ -1677,7 +1673,6 @@ function loadPageNoHeader(href, scroll, force) {
 	if (cont) {
 		$.get(href)
 			.done(function(html, status, jqXHR) {
-				debugger;
 				if (!checkForLogout(html)) {
 					if (jqXHR.getResponseHeader('Cacti-FullScreen')) {
 						var newDoc = document.open("text/html", "replace");
@@ -2380,7 +2375,6 @@ function checkForLogout(data) {
 				if (typeof data == "object" && data.status != undefined) {
 					shouldLogout = data.status;
 				} else {
-					debugger;
 					shouldLogout = -2;
 				}
 
