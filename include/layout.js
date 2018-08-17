@@ -1681,7 +1681,7 @@ function loadPageNoHeader(href, scroll, force) {
 					} else {
 						$('#main').empty().hide();
 						$('div[class^="ui-"]').remove();
-						$('#main').html(data);
+						$('#main').html(html);
 
 						var hrefParts = href.split('?');
 						pageName = basename(hrefParts[0]);
