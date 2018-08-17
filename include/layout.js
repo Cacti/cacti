@@ -1019,7 +1019,7 @@ function setGraphTabs() {
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').unbind('click').click(function(event) {
 		page = basename($(this).attr('href'));
-		if (page == 'logout.php') {
+		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
 		} else {
 			event.preventDefault();
