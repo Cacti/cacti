@@ -1509,55 +1509,58 @@ function loadTopTab(href, id, force) {
 		}
 
 		$.get(url)
-			.done(function(html,status,jqXHR) {
-				if (!checkForLogout(html)) {
-					if (jqXHR.getResponseHeader('Cacti-FullScreen')) {
-						var newDoc = document.open("text/html", "replace");
-						newDoc.write(html);
-						newDoc.close();
+			.done(function(html) {
+				var htmlObject  = $(html);
+				var matches     = html.match(/<title>(.*?)<\/title>/);
+
+				if (matches != null) {
+					var htmlTitle   = matches[1];
+					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+					var parts       = html.split('</title>');
+					var data        = parts[1];
+
+					checkForLogout(data);
+
+					$('title').text(htmlTitle);
+					$('#breadcrumbs').html(breadCrumbs);
+					$('div[class^="ui-"]').remove();
+					$('#cactiContent').replaceWith(data);
+
+					myTitle = htmlTitle;
+					myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+					pushState(myTitle, href);
+				} else {
+					checkForLogout(html);
+
+					$('#cactiContent').replaceWith(html);
+
+					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
+					pushState(myTitle, href);
+				}
+
+				var hrefParts = href.split('?');
+				pageName = basename(hrefParts[0]);
+
+				if (pageName != '') {
+					if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+						$('#menu').find('.pic').removeClass('selected');
+						$('#menu').find("a[href*='"+href+"']").addClass('selected');
 					} else {
-						var htmlObject  = $(html);
-						var matches     = html.match(/<title>(.*?)<\/title>/);
-
-						if (matches != null) {
-							var htmlTitle   = matches[1];
-							var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-							var parts       = html.split('</title>');
-
-							html    = parts[1];
-							myTitle = htmlTitle;
-
-							$('title').text(htmlTitle);
-							$('#breadcrumbs').html(breadCrumbs);
-							$('div[class^="ui-"]').remove();
-						}
-						$('#cactiContent').replaceWith(html);
-
-						href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
-						pushState(myTitle, href);
-					}
-
-					var hrefParts = href.split('?');
-					pageName = basename(hrefParts[0]);
-
-					if (pageName != '') {
-						if ($('#menu').find("a[href*='"+href+"']").length > 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='"+href+"']").addClass('selected');
-						} else {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-						}
-					}
-
-					applySkin();
-
-					if (isMobile.any() != null) {
-						window.scrollTo(0,1);
-					} else {
-						window.scrollTo(0,0);
+						$('#menu').find('.pic').removeClass('selected');
+						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
 				}
+
+				applySkin();
+
+				if (isMobile.any() != null) {
+					window.scrollTo(0,1);
+				} else {
+					window.scrollTo(0,0);
+				}
+
 				return false;
 			})
 			.fail(function(data) {
@@ -1593,52 +1596,57 @@ function loadPage(href, force) {
 
 	if (cont) {
 		$.get(href)
-			.done(function(html, status, jqXHR) {
+			.done(function(html) {
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
-				$('#main').empty().hide();
-				if (!checkForLogout(html)) {
-					if (jqXHR.getResponseHeader('Cacti-FullScreen')) {
-						var newDoc = document.open("text/html", "replace");
-						newDoc.write(html);
-						newDoc.close();
-					} else if (matches != null) {
-						var htmlTitle   = matches[1];
-						var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-						html        = htmlObject.find('#main').html();
+				if (matches != null) {
+					var htmlTitle   = matches[1];
+					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+					var data        = htmlObject.find('#main').html();
 
-						$('#main').empty().hide();
-						$('title').text(htmlTitle);
-						$('#breadcrumbs').html(breadCrumbs);
-						$('div[class^="ui-"]').remove();
-						myTitle = htmlTitle;
-					}
+					checkForLogout(data);
 
-					$('#main').html(html);
-					href  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+					$('#main').empty().hide();
+					$('title').text(htmlTitle);
+					$('#breadcrumbs').html(breadCrumbs);
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
+
+					myTitle = htmlTitle;
+					myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+
 					pushState(myTitle, href);
+				} else {
+					checkForLogout(html);
 
-					var hrefParts = href.split('?');
-					pageName = basename(hrefParts[0]);
+					$('#main').empty().hide();
+					$('#main').html(html);
 
-					if (pageName != '') {
-						if ($('#menu').find("a[href*='"+href+"']").length > 0) {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='"+href+"']").addClass('selected');
-						} else {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-						}
-					}
+					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
 
-					applySkin();
+					pushState(myTitle, href);
+				}
 
-					if (isMobile.any() != null) {
-						window.scrollTo(0,1);
+				var hrefParts = href.split('?');
+				pageName = basename(hrefParts[0]);
+
+				if (pageName != '') {
+					if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+						$('#menu').find('.pic').removeClass('selected');
+						$('#menu').find("a[href*='"+href+"']").addClass('selected');
 					} else {
-						window.scrollTo(0,0);
+						$('#menu').find('.pic').removeClass('selected');
+						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
+				}
+
+				applySkin();
+
+				if (isMobile.any() != null) {
+					window.scrollTo(0,1);
+				} else {
+					window.scrollTo(0,0);
 				}
 
 				return false;
@@ -1672,33 +1680,29 @@ function loadPageNoHeader(href, scroll, force) {
 
 	if (cont) {
 		$.get(href)
-			.done(function(html, status, jqXHR) {
-				if (!checkForLogout(html)) {
-					if (jqXHR.getResponseHeader('Cacti-FullScreen')) {
-						var newDoc = document.open("text/html", "replace");
-						newDoc.write(html);
-						newDoc.close();
-					} else {
-						$('#main').empty().hide();
-						$('div[class^="ui-"]').remove();
-						$('#main').html(html);
+			.done(function(data) {
+				checkForLogout(data);
 
-						var hrefParts = href.split('?');
-						pageName = basename(hrefParts[0]);
+				$('#main').empty().hide();
+				$('div[class^="ui-"]').remove();
+				$('#main').html(data);
 
-						if (pageName != '') {
-							$('#menu').find('.pic').removeClass('selected');
-							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
-						}
-					}
-					applySkin();
-					pushState(myTitle, href);
+				var hrefParts = href.split('?');
+				pageName = basename(hrefParts[0]);
 
-					if (isMobile.any() != null) {
-						window.scrollTo(0,1);
-					} else {
-						window.scrollTo(0,0);
-					}
+				if (pageName != '') {
+					$('#menu').find('.pic').removeClass('selected');
+					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+				}
+
+				applySkin();
+
+				pushState(myTitle, href);
+
+				if (isMobile.any() != null) {
+					window.scrollTo(0,1);
+				} else {
+					window.scrollTo(0,0);
 				}
 
 				return false;
@@ -2096,7 +2100,7 @@ function setupPageTimeout() {
 	if (typeof refreshMSeconds != 'undefined') {
 		myRefresh = setTimeout(function() {
 			if (refreshIsLogout) {
-				document.location = urlPath+'logout.php?action=timeout&3';
+				document.location = urlPath+'logout.php?action=timeout';
 			} else {
 				if (previousPage != '') {
 					refreshPage = previousPage;
@@ -2359,7 +2363,6 @@ if (typeof urlPath == 'undefined') {
 }
 
 var graphPage  = urlPath+'graph_view.php';
-var checkPage  = urlPath+'check_json.php';
 var pageAction = 'preview';
 
 function checkForLogout(data) {
@@ -2367,24 +2370,8 @@ function checkForLogout(data) {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
-	} else {
-		href = checkPage + '?action=checksess';
-		$.get(href)
-			.done(function(data) {
-				var shouldLogout = -1;
-				if (typeof data == "object" && data.status != undefined) {
-					shouldLogout = data.status;
-				} else {
-					shouldLogout = -2;
-				}
-
-				if (shouldLogout != 200) {
-					document.location = urlPath + 'logout.php?action=timeout&' + shouldLogout;
-				}
-			})
-			.fail(function(data) {
-				document.location = urlPath + 'logout.php?action=timeout&-3';
-			});
+	} else if (data.indexOf('cactiLoginLogo') >= 0) {
+		document.location = urlPath + 'logout.php?action=timeout';
 	}
 }
 
@@ -3618,4 +3605,5 @@ function checkSNMPPassphraseConfirm(type) {
 		}
 	}
 }
+
 
