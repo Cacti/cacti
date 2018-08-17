@@ -1440,7 +1440,7 @@ $fields_user_user_edit_host = array(
 		'description' => __('The login name for this user.'),
 		'value' => '|arg1:username|',
 		'max_length' => '255',
-		'size' => '20',
+		'size' => '40',
 		),
 	'full_name' => array(
 		'method' => 'textbox',
@@ -1448,7 +1448,7 @@ $fields_user_user_edit_host = array(
 		'description' => __('A more descriptive name for this user, that can include spaces or special characters.'),
 		'value' => '|arg1:full_name|',
 		'max_length' => '128',
-		'size' => '20'
+		'size' => 60
 		),
 	'email_address' => array(
 		'method' => 'textbox',
@@ -1456,7 +1456,7 @@ $fields_user_user_edit_host = array(
 		'description' => __('An Email Address where the User can be reached.'),
 		'value' => '|arg1:email_address|',
 		'max_length' => '128',
-		'size' => '30'
+		'size' => 60
 		),
 	'password' => array(
 		'method' => 'textbox_password',
@@ -1464,7 +1464,7 @@ $fields_user_user_edit_host = array(
 		'description' => __('Enter the password for this user twice. Remember that passwords are case sensitive!'),
 		'value' => '',
 		'max_length' => '255',
-		'size' => '20' 
+		'size' => 60
 		),
 	'enabled' => array(
 		'method' => 'checkbox',

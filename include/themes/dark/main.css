@@ -874,7 +874,7 @@ ul#breadcrumbs {
 	width:120px;
 	height:148px;
 	z-index:2;
-	margin-top:-110px;
+	margin-top:-95px;
 	margin-bottom:-20px;
 }
 
@@ -2359,3 +2359,12 @@ input:checked + .checkboxSlider:before {
 	vertical-align: middle;
 }
 
+.loginArea > legend, .loginTitle > p {
+	padding: 0px;
+	text-shadow:
+		 3px  3px 0 #000,
+		-1px -1px 0 #000,
+		 1px -1px 0 #000,
+		-1px  1px 0 #000,
+		 1px  1px 0 #000;
+}

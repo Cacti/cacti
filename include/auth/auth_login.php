@@ -661,7 +661,7 @@ html_common_login_header('login_title', __('Login to Cacti'), __('User Login'), 
 						<label for='login_username'><?php print __('Username');?></label>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
+						<input style='width: 90%' type='text' class='ui-state-default ui-corner-all' id='login_username' name='login_username' value='<?php print html_escape($username); ?>' placeholder='<?php print __esc('Username');?>'>
 					</td>
 				</tr>
 				<tr>
@@ -669,7 +669,7 @@ html_common_login_header('login_title', __('Login to Cacti'), __('User Login'), 
 						<label for='login_password'><?php print __('Password');?></label>
 					</td>
 					<td>
-						<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+						<input style='width: 90%' type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
 					</td>
 				</tr>
 				<?php
