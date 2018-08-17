@@ -793,7 +793,7 @@ ul#breadcrumbs {
 
 .loginCenter, .logoutCenter {
 	position: relative;
-	padding: 30px 20px 5px 20px;
+	padding: 30px 0px 5px 20px;
 	top: 15%;
 	max-width: 350px;
 	max-height: 350px;
@@ -802,7 +802,7 @@ ul#breadcrumbs {
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
-	display: inline-block;
+	position: relative;
 	float: right;
 	top: 15%;
 	background: transparent url('./../../../images/auth_background.gif') no-repeat center;
@@ -816,23 +816,6 @@ ul#breadcrumbs {
 
 .loginArea, .logoutArea {
 	position: relative;
-}
-
-.loginMessage {
-	height: 100%;
-	vertical-align: middle;
-}
-
-.loginReturn {
-	position: absolute;
-	bottom: 0;
-	margin-bottom: 25px;
-	width: 100%;
-	text-align: center;
-}
-
-.cactiLoginTable {
-	width: 100%;
 }
 
 .cactiLoginTable td {
@@ -864,8 +847,6 @@ legend {
 	float: right;
 	font-size: 10px;
 	color: black;
-	text-align: center;
-	width: 100%;
 }
 
 .actionsDropdown {
@@ -2008,12 +1989,10 @@ tr#realtime td:first-child {
 	display: inline-block;
 }
 
-.loginArea > legend, .loginTitle > p {
-	padding: 0px;
-	text-shadow:
-		 3px  3px 0 #fff,
-		-1px -1px 0 #fff,
-		 1px -1px 0 #fff,
-		-1px  1px 0 #fff,
-		 1px  1px 0 #fff;
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

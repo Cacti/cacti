@@ -802,23 +802,6 @@ label {
 	color: #9d9d9d;
 }
 
-.loginMessage {
-	height: 100%;
-	vertical-align: middle;
-}
-
-.loginReturn {
-	position: absolute;
-	bottom: 0;
-	margin-bottom: 25px;
-	width: 100%;
-	text-align: center;
-}
-
-.cactiLoginTable {
-	width: 100%;
-}
-
 .cactiLoginTable td {
 	padding-bottom:6px;
 	padding-right:6px;
@@ -866,8 +849,6 @@ legend {
 	right: 5px;
 	bottom: 5px;
 	color: #5CB85C;
-	text-align:center;
-	width:100%;
 }
 
 .actionsDropdown {
@@ -2382,12 +2363,10 @@ input:checked + .checkboxSlider:before {
 	margin-right: 10px;
 }
 
-.loginArea > legend, .loginTitle > p {
-	padding: 0px;
-	text-shadow:
-		 3px  3px 0 #fff,
-		-1px -1px 0 #fff,
-		 1px -1px 0 #fff,
-		-1px  1px 0 #fff,
-		 1px  1px 0 #fff;
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

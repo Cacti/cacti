@@ -22,17 +22,46 @@
  +-------------------------------------------------------------------------+
 */
 
+include('./include/global.php');
+
 set_default_action();
 
-$user    = db_fetch_row_prepared('SELECT *
-	FROM user_auth
-	WHERE id = ?',
+switch (get_request_var('action')) {
+	case 'checkpass':
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
+
+		if ($error == '') {
+			print $error;
+		} else {
+			print 'ok';
+		}
+
+		exit;
+
+		break;
+	default:
+		// If the user is not logged in, redirect them to the login page
+		if (!isset($_SESSION['sess_user_id'])) {
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+			} else {
+				header('Location: index.php');
+			}
+
+			header('Location: index.php');
+			exit;
+		}
+}
+
+$user    = db_fetch_row_prepared('SELECT * 
+	FROM user_auth 
+	WHERE id = ?', 
 	array($_SESSION['sess_user_id']));
 
 $version = get_cacti_version();
 
 if ($user['realm'] != 0) {
-	auth_raise_message('nodomainpassword');
+	raise_message('nodomainpassword');
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
@@ -42,7 +71,7 @@ if ($user['realm'] != 0) {
 }
 
 if ($user['password_change'] != 'on') {
-	auth_raise_message('nopassword');
+	raise_message('nopassword');
 
 	/* destroy session information */
 	kill_session_var('sess_user_id');
@@ -71,7 +100,7 @@ $errorMessage = '';
 set_default_action();
 
 switch (get_request_var('action')) {
-case 'updatepassword':
+case 'changepassword':
 	// Get current user
 	$user_id = intval($_SESSION['sess_user_id']);
 
@@ -165,7 +194,8 @@ case 'updatepassword':
 			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
 
 		kill_session_var('sess_change_password');
-		auth_raise_message('password_success');
+
+		raise_message('password_success');
 
 		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
 
@@ -242,15 +272,24 @@ if (read_config_option('secpass_history') != '0') {
 $secpass_tooltip .= $secpass_body;
 
 $selectedTheme = get_selected_theme();
-$html_header = "";
-$html_footer = "";
 
-global $config;
-
-html_common_login_header('change_password_title', __('Change Password'), __('Change Password'), $html_header);
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
+	<script type='text/javascript'>
+	$(function() {
+	}
+</head>
+<body class='loginBody'>
+	<div class='loginLeft'></div>
+	<div class='loginCenter'>
+		<div class='loginArea'>
+			<div class='cactiLogoutLogo'></div>
+			<legend><?php print __('Change Password');?></legend>
 			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<input type='hidden' name='action' value='updatepassword'>
+				<input type='hidden' name='action' value='changepassword'>
 				<input type='hidden' name='ref' value='<?php print sanitize_uri(get_request_var('ref')); ?>'>
 				<input type='hidden' name='name' value='<?php print isset($user['username']) ? $user['username'] : '';?>'>
 				<div class='loginTitle'>
@@ -264,21 +303,14 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
-							<td>
-								<input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?>
-								<div id="pass" class="password badpassword fa fa-times" title="<?php print __('Password not set');?>"></div>
-							</td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
 							<td><?php print __('Confirm new password');?></td>
-							<td>
-								<input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'>
-								<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __('Password not set')?>"></div>
-							</td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td>&nbsp;</td>
-							<td class='nowrap'><input id='save' type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
 								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
 							</td>
 						</tr>
@@ -286,91 +318,77 @@ html_common_login_header('change_password_title', __('Change Password'), __('Cha
 				</div>
 			</form>
 			<div class='loginErrors'><?php print $errorMessage ?></div>
-			<script type='text/javascript'>
+		</div>
+		<div class='versionInfo'><?php __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
+	</div>
+	<div class='loginRight'></div>
+	<script type='text/javascript'>
 
-			var minChars=<?php print read_config_option('secpass_minlen'); ?>;
+	var minChars=<?php print read_config_option('secpass_minlen');?>;
 
-			function setPassword(field, isValid, title = '') {
-				if (title == '' || title == undefined) {
-					title = '<?php print __('Password Too Short');?>';
-				}
-
-				if (isValid) {
-					classAdd = 'goodpassword fa-check';
-					classDel = 'badpassword fa-times';
-					title    = '<?php print __('Password Validation Passes');?>';
-				} else {
-					classAdd = 'badpassword fa-times';
-					classDel = 'goodpassword fa-check';
-					titleIcon  = 'times';
-				}
-
-				$('#' + field).removeClass(classDel).addClass(classAdd).tooltip('option','content',title);
-			}
-
-			function checkPassword() {
-				if ($('#password').val().length == 0) {
-					setPassword('pass', false);
-					checkPasswordConfirm();
-				} else if ($('#password').val().length < minChars) {
-					setPassword('pass', false);
+	function checkPassword() {
+		if ($('#password').val().length == 0) {
+			$('#pass').remove();
+			$('#passconfirm').remove();
+		}else if ($('#password').val().length < minChars) {
+			$('#pass').remove();
+			$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="<?php print __esc('Password Too Short');?>"></div>');
+			$('.password').tooltip();
+		} else {
+			$.post('auth_changepassword.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
+				if (data == 'ok') {
+					$('#pass').remove();
+					$('#password').after('<div id="pass" class="password goodpassword fa fa-check" title="<?php print __esc('Password Validation Passes');?>"></div>');
+					$('.password').tooltip();
 					checkPasswordConfirm();
 				} else {
-					var checkPage = '<?php print URL_PATH;?>check_json.php?action=checkpass';
-					$.post(checkPage, { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
-						if (data == 'ok') {
-							setPassword('pass', true);
-						} else {
-							setPassword('pass', false, data);
-						}
-						checkPasswordConfirm();
-					}).fail(function() {
-						setPassword('pass', false);
-						checkPasswordConfirm();
-					});
+					$('#pass').remove();
+					$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="'+data+'"></div>');
+					$('.password').tooltip();
 				}
-			}
-
-			function checkPasswordConfirm() {
-				var isValid = false;
-				if ($('#password_confirm').val().length > 0) {
-					isValid= ($('#password').val() == $('#password_confirm').val());
-				}
-
-				title = '<?php print __('Passwords do Not Match');?>';
-				if (isValid) {
-					title = '<?php print __('Passwords Match'); ?>';
-				}
-
-				setPassword('passconfirm', isValid, title);
-				$('#save').button( "option", "disabled", !isValid );
-			}
-
-			var password_change = $('#password_change').is(':checked');
-
-			$(function() {
-				$('#current').focus();
-				$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-				$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-
-				/* clear passwords */
-				var inputs = $('#password, #pass, #password_confirm, #passconfirm');
-				inputs.tooltip();
-
-				$('#password, password_confirm').val('');
-				//$('#password_confirm').val('');
-
-				$('#password').keyup(function() {
-					checkPassword();
-				});
-
-				$('#password_confirm').keyup(function() {
-					checkPasswordConfirm();
-				});
-
-				checkPassword();
-				checkPasswordConfirm();
 			});
-			</script>
+		}
+	}
+
+	function checkPasswordConfirm() {
+		if ($('#password_confirm').val().length > 0) {
+			if ($('#password').val() != $('#password_confirm').val()) {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __esc('Passwords do Not Match');?>"></div>');
+				$('.passconfirm').tooltip();
+			} else {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id="passconfirm" class="passconfirm goodpassword fa fa-check" title="<?php print __esc('Passwords Match');?>"></div>');
+				$('.passconfirm').tooltip();
+			}
+		} else {
+			$('#passconfirm').remove();
+		}
+	}
+
+	var password_change = $('#password_change').is(':checked');
+
+	$(function() {
+		$('#current').focus();
+		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
+		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+
+		/* clear passwords */
+		$('#password').val('');
+		$('#password_confirm').val('');
+
+		$('#password').keyup(function() {
+			checkPassword();
+		});
+
+		$('#password_confirm').keyup(function() {
+			checkPasswordConfirm();
+		});
+	});
+	</script>
 <?php
-html_common_login_footer($html_footer);
+
+include_once('./include/global_session.php');
+
+print "</body>
+	</html>\n";
