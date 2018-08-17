@@ -1760,7 +1760,7 @@ function user_realms_edit($header_label) {
 			print "</td><td class='realms'>\n";
 		}
 
-		print "<strong>" . __('Legacy 1.x Plugins') . "</strong><br>\n";
+		print '<strong>' . __('Legacy 1.x Plugins') . '</strong><br>';
 		foreach($all_realms as $realm => $name) {
 			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
@@ -1788,12 +1788,6 @@ function user_realms_edit($header_label) {
 	$(function() {
 		$('input[type="checkbox"]').each(function() {
 			$(this).addClass($(this).attr('id'));
-		});
-
-		$('label').click(function(event) {
-			event.preventDefault();
-			id = $(this).attr('for');
-			$('.'+id).trigger('click');
 		});
 	});
 	</script>

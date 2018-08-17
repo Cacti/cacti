@@ -1379,12 +1379,6 @@ function user_group_realms_edit($header_label) {
 		$('input[type="checkbox"]').each(function() {
 			$(this).addClass($(this).attr('id'));
 		});
-
-		$('label').click(function(event) {
-			event.preventDefault();
-			id = $(this).attr('for');
-			$('.'+id).trigger('click');
-		});
 	});
 	</script>
 	<?php
