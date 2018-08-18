@@ -107,8 +107,8 @@ function upgrade_to_1_2_0() {
 	if ($debug_id !== false && $debug_id > 0) {
 		// Plugin realms are plugin_id + 100
 		$debug_id += 100;
-		db_install_execute_prepared('DELETE FROM user_auth_realm WHERE id = ?', array($debug_id));
-		db_install_execute_prepared('DELETE FROM user_auth_group_realm WHERE id = ?', array($debug_id));
+		db_execute_prepared('DELETE FROM user_auth_realm WHERE id = ?', array($debug_id));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE id = ?', array($debug_id));
 	}
 
 	// Fix data source stats column type
@@ -127,7 +127,7 @@ function upgrade_to_1_2_0() {
 
 	if (sizeof($snmp_queries)) {
 		foreach($snmp_queries as $query) {
-			db_install_execute_prepared("UPDATE graph_local AS gl
+			db_execute_prepared("UPDATE graph_local AS gl
 				INNER JOIN (
 					SELECT graph_template_id 
 					FROM graph_local AS gl
@@ -157,12 +157,12 @@ function upgrade_to_1_2_0() {
 				array($id['snmp_query_id'], $id['graph_template_id']));
 	
 			if (empty($query_graph_id)) {
-				db_install_execute_prepared('UPDATE graph_local
+				db_execute_prepared('UPDATE graph_local
 					SET snmp_query_id=0, snmp_query_graph_id=0, snmp_index=""
 					WHERE id = ?',
 					array($id['id']));
 			} else {
-				db_install_execute_prepared('UPDATE graph_local
+				db_execute_prepared('UPDATE graph_local
 					SET snmp_query_graph_id=?
 					WHERE id = ?',
 					array($query_graph_id, $id['id']));
@@ -171,26 +171,27 @@ function upgrade_to_1_2_0() {
 	}
 
 	// Move text columns to mediumtext
-	$columns['data_input_data']['value'];
-	$columns['data_debug']['info'];
-	$columns['data_debug']['issue'];
-	$columns['graph_template_input']['description'];
-	$columns['host']['notes'];
-	$columns['plugin_realms']['file'];
-	$columns['poller_output_realtime']['output'];
-	$columns['reports']['from_email'];
-	$columns['reports']['email'];
-	$columns['reports']['bcc'];
-	$columns['reports_items']['item_text'];
-	$columns['snmpagent_managers']['notes'];
+	$columns = array(
+		'data_input_data'        => array('value'),
+		'data_debug'             => array('info', 'issue'),
+		'graph_template_input'   => array('description'),
+		'host'                   => array('notes'),
+		'plugin_realms'          => array('file'),
+		'poller_output_realtime' => array('output'),
+		'reports'                => array('from_email', 'email', 'bcc'),
+		'reports_items'          => array('item_text'),
+		'snmpagent_managers'     => array('notes')
+	);
 	
-	foreach($columns as $table => $column) {
-		// Fix data source stats column type
-		$value_parms = db_get_column_attributes($table, $column);
+	foreach($columns as $table => $tcolumns) {
+		foreach($tcolumns as $column) {
+			// Fix data source stats column type
+			$value_parms = db_get_column_attributes($table, $column);
 
-		if (sizeof($value_parms)) {
-			if ($value_parms[0]['COLUMN_TYPE'] != 'mediumtext') {
-				db_install_execute("ALTER TABLE $table MODIFY COLUMN `$column` mediumtext NOT NULL default ''");
+			if (sizeof($value_parms)) {
+				if ($value_parms[0]['COLUMN_TYPE'] != 'mediumtext') {
+					db_install_execute("ALTER TABLE $table MODIFY COLUMN `$column` mediumtext NOT NULL default ''");
+				}
 			}
 		}
 	}
