@@ -1090,7 +1090,7 @@ CREATE TABLE data_input_data (
   data_input_field_id mediumint(8) unsigned NOT NULL default '0',
   data_template_data_id mediumint(8) unsigned NOT NULL default '0',
   t_value char(2) default NULL,
-  value text NOT NULL default '',
+  value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
   KEY t_value (t_value)
 ) ENGINE=InnoDB;
@@ -1595,7 +1595,7 @@ CREATE TABLE graph_template_input (
   hash varchar(32) NOT NULL default '',
   graph_template_id mediumint(8) unsigned NOT NULL default '0',
   name varchar(255) NOT NULL default '',
-  description text NOT NULL default '',
+  description text,
   column_name varchar(50) NOT NULL default '',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Stores the names for graph item input groups.';
@@ -1845,7 +1845,7 @@ CREATE TABLE host (
   description varchar(150) NOT NULL default '',
   hostname varchar(100) default NULL,
   location varchar(40) default NULL,
-  notes text NOT NULL default '',
+  notes text,
   external_id varchar(40) default NULL,
   snmp_community varchar(100) default NULL,
   snmp_version tinyint(1) unsigned NOT NULL default '1',
@@ -2046,7 +2046,7 @@ CREATE TABLE `plugin_hooks` (
 CREATE TABLE `plugin_realms` (
   `id` mediumint(8) unsigned NOT NULL auto_increment,
   `plugin` varchar(32) NOT NULL default '',
-  `file` text NOT NULL default '',
+  `file` text NOT NULL,
   `display` varchar(64) NOT NULL default '',
   PRIMARY KEY (`id`),
   KEY `plugin` (`plugin`)
@@ -2217,7 +2217,7 @@ CREATE TABLE poller_output_realtime (
   local_data_id mediumint(8) unsigned NOT NULL default '0',
   rrd_name varchar(19) NOT NULL default '',
   `time` timestamp NOT NULL default '0000-00-00 00:00:00',
-  output text NOT NULL default '',
+  output text NOT NULL,
   poller_id varchar(256) NOT NULL default '1',
   PRIMARY KEY (local_data_id,rrd_name,`time`),
   KEY poller_id (poller_id(191)),
@@ -2289,9 +2289,9 @@ CREATE TABLE `reports` (
   `mailtime` bigint(20) unsigned NOT NULL DEFAULT '0',
   `subject` varchar(64) NOT NULL DEFAULT '',
   `from_name` varchar(40) NOT NULL,
-  `from_email` text NOT NULL default '',
-  `email` text NOT NULL default '',
-  `bcc` text NOT NULL default '',
+  `from_email` text NOT NULL,
+  `email` text NOT NULL,
+  `bcc` text NOT NULL,
   `attachment_type` smallint(2) unsigned NOT NULL DEFAULT '1',
   `graph_height` smallint(2) unsigned NOT NULL DEFAULT '0',
   `graph_width` smallint(2) unsigned NOT NULL DEFAULT '0',
@@ -2322,7 +2322,7 @@ CREATE TABLE `reports_items` (
   `local_graph_id` int(10) unsigned NOT NULL DEFAULT '0',
   `timespan` int(10) unsigned NOT NULL DEFAULT '0',
   `align` tinyint(1) unsigned NOT NULL DEFAULT '1',
-  `item_text` text NOT NULL default '',
+  `item_text` text NOT NULL,
   `font_size` smallint(2) unsigned NOT NULL DEFAULT '10',
   `sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -2885,7 +2885,7 @@ CREATE TABLE `snmpagent_managers` (
   `snmp_engine_id` varchar(64) DEFAULT NULL,
   `snmp_port` mediumint(5) unsigned NOT NULL DEFAULT '161',
   `snmp_message_type` tinyint(1) NOT NULL,
-  `notes` text NOT NULL default '',
+  `notes` text,
   PRIMARY KEY (`id`),
   KEY `hostname` (`hostname`)
 ) ENGINE=InnoDB COMMENT='snmp notification receivers';
