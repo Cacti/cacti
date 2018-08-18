@@ -940,7 +940,7 @@ function reports_item_edit() {
 	/* set the default item alignment */
 	$fields_reports_item_edit['font_size']['default'] = $report['font_size'];
 
-	form_start(get_current_page(), 'reports_item_edit');
+	form_start(get_current_page(), 'chk');
 
 	# ready for displaying the fields
 	html_start_box($header_label, '100%', true, '3', 'center', '');
