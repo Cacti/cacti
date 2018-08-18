@@ -497,9 +497,31 @@ function template_edit() {
 	get_filter_request_var('view_rrd');
 	/* ==================================================== */
 
+	$isSNMPget = false;
+
 	if (!isempty_request_var('id')) {
-		$template_data = db_fetch_row_prepared('SELECT * FROM data_template_data WHERE data_template_id = ? AND local_data_id = 0', array(get_request_var('id')));
-		$template = db_fetch_row_prepared('SELECT * FROM data_template WHERE id = ?', array(get_request_var('id')));
+		$template_data = db_fetch_row_prepared('SELECT * 
+			FROM data_template_data 
+			WHERE data_template_id = ? 
+			AND local_data_id = 0', 
+			array(get_request_var('id')));
+
+		$template = db_fetch_row_prepared('SELECT * 
+			FROM data_template 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		if (sizeof($template_data)) {
+			$snmp_data = db_fetch_row_prepared('SELECT * 
+				FROM data_input 
+				WHERE hash="3eb92bb845b9660a7445cf9740726522" 
+				AND id = ?', 
+				array($template_data['data_input_id']));
+
+			if (sizeof($snmp_data)) {
+				$isSNMPget = true;
+			}
+		}
 
 		$header_label = __('Data Templates [edit: %s]', html_escape($template['name']));
 
@@ -584,7 +606,12 @@ function template_edit() {
 
 	/* fetch ALL rrd's for this data source */
 	if (!isempty_request_var('id')) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE data_template_id = ? AND local_data_id = 0 ORDER BY data_source_name', array(get_request_var('id')));
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name 
+			FROM data_template_rrd 
+			WHERE data_template_id = ? 
+			AND local_data_id = 0 
+			ORDER BY data_source_name', 
+			array(get_request_var('id')));
 	}
 
 	/* select the first "rrd" of this data source by default */
@@ -594,7 +621,10 @@ function template_edit() {
 
 	/* get more information about the rrd we chose */
 	if (!isempty_request_var('view_rrd')) {
-		$template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
+		$template_rrd = db_fetch_row_prepared('SELECT * 
+			FROM data_template_rrd 
+			WHERE id = ?', 
+			array(get_request_var('view_rrd')));
 	}
 
 	$i = 0;
@@ -604,7 +634,7 @@ function template_edit() {
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
 			foreach ($template_data_rrds as $template_data_rrd) {
-				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . html_escape($template_data_rrd['data_source_name']) . "</a><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
+				print "<li class='subTab'><a " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='pic selected'" : "class='pic'") . " href='" . html_escape('data_templates.php?action=template_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>" . ($i+1) . ": " . html_escape($template_data_rrd['data_source_name']) . "</a><a class='pic deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape('data_templates.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&data_template_id=' . get_request_var('id')) . "'></a></li>\n";
 
 				$i++;
 			}
@@ -617,15 +647,26 @@ function template_edit() {
 		}
 	}
 
-	html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
+	if (!$isSNMPget) {
+		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
+	} else {
+		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', '', '');
+	}
 
 	/* data input fields list */
-	if ((empty($template_data['data_input_id'])) ||
-		((db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '1') &&
-		(db_fetch_cell_prepared('SELECT type_id FROM data_input WHERE id = ?', array($template_data['data_input_id'])) != '5'))) {
+	if (empty($template_data['data_input_id'])) {
 		unset($struct_data_source_item['data_input_field_id']);
 	} else {
-		$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id,CONCAT(data_name,' - ',name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name,name";
+		$input_type = db_fetch_cell_prepared('SELECT type_id 
+			FROM data_input 
+			WHERE id = ?', 
+			array($template_data['data_input_id']));
+
+		if ($input_type == 1 || $input_type == 2 || $input_type == 3 || $input_type == 4 || $input_type == 6) {
+			unset($struct_data_source_item['data_input_field_id']);
+		} else {
+			$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id, CONCAT(data_name, ' - ', name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name, name";
+		}
 	}
 
 	$form_array = array();
@@ -664,7 +705,12 @@ function template_edit() {
 			AND input_output="in" ORDER BY name',
 			array($template_data['data_input_id']));
 
-		html_start_box(__('Custom Data [data input: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($template_data['data_input_id'])))), '100%', true, '3', 'center', '');
+		$name = db_fetch_cell_prepared('SELECT name 
+			FROM data_input 
+			WHERE id = ?', 
+			array($template_data['data_input_id']));
+
+		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -674,7 +720,8 @@ function template_edit() {
 				$data_input_data = db_fetch_row_prepared('SELECT t_value, value
 					FROM data_input_data
 					WHERE data_template_data_id = ?
-					AND data_input_field_id = ?', array($template_data['id'], $field['id']));
+					AND data_input_field_id = ?', 
+					array($template_data['id'], $field['id']));
 
 				if (sizeof($data_input_data)) {
 					$old_value  = $data_input_data['value'];
@@ -961,6 +1008,7 @@ function template() {
 			} else {
 				$disabled = false;
 			}
+
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'data_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
@@ -975,6 +1023,7 @@ function template() {
 	} else {
 		print "<tr class='tableRow'><td colspan='6'><em>" . __('No Data Templates Found') . "</em></td></tr>\n";
 	}
+
 	html_end_box(false);
 
 	if (sizeof($template_list)) {
