@@ -36,8 +36,6 @@ define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n
 define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
 define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
 
-include($config['base_path'] . '/include/global_constants.php');
-
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -312,7 +310,7 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function fail($exit_value,$args,$display_help = 0) {
+function fail($exit_value,$args = array(),$display_help = 0) {
 	global $quiet,$fail_msg;
 
 	if (!$quiet) {
