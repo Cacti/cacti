@@ -289,6 +289,7 @@ function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER
  */
 function generate_report($report, $force = false) {
 	global $config, $alignment;
+
 	include_once($config['base_path'] . '/lib/time.php');
 	include_once($config['base_path'] . '/lib/rrd.php');
 
@@ -299,6 +300,7 @@ function generate_report($report, $force = false) {
 	$body = reports_generate_html($report['id'], REPORTS_OUTPUT_EMAIL, $theme);
 
 	$time = time();
+
 	# get config option for first-day-of-the-week
 	$first_weekdayid = read_user_setting('first_weekdayid', false, false, $report['user_id']);
 
@@ -475,21 +477,13 @@ function generate_report($report, $force = false) {
 	if ($error != '') {
 		if (isset_request_var('id')) {
 			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";
-
-			if (!isset_request_var('selected_items')) {
-				raise_message('reports_error');
-			}
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
 
 		return false;
 	} elseif (isset($_REQUEST)) {
-		$_SESSION['reports_message'] = "Report '" . $report['name'] . "' Sent Successfully";
-
-		if (!isset_request_var('selected_items')) {
-			raise_message('reports_message');
-		}
+		$_SESSION['reports_info'] = "Report '" . $report['name'] . "' Sent Successfully";
 
 		$int = read_config_option('poller_interval');
 
@@ -1655,9 +1649,9 @@ function reports_graphs_action_execute($action) {
 		}
 
 		if ($message != '') {
-			$_SESSION['reports_message'] = $message;
+			$_SESSION['reports_info'] = $message;
 		}
-		raise_message('reports_message');
+		raise_message('reports_info');
 	} else {
 		return $action;
 	}
