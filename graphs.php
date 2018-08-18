@@ -429,19 +429,32 @@ function get_current_graph_template_details($local_graph_id) {
 	if (!sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
 		return array('name' => __('Non Templated'), 'source' => 0);
 	} elseif ($graph_local['snmp_query_id'] > 0) {
-		return db_fetch_row_prepared('SELECT sqg.name, 1 as source
+		$name = db_fetch_cell_prepared('SELECT sqg.name
 			FROM snmp_query_graph AS sqg
 			INNER JOIN graph_local AS gl
 			ON gl.snmp_query_graph_id=sqg.id
+			AND gl.snmp_query_id=sqg.snmp_query_id
 			WHERE gl.id = ?',
 			array($local_graph_id));
+
+		if ($name != '') {
+			return array('name' => $name, 'source' => 1);
+		} else {
+			return array('name' => __('Not Found'), 'source' => 1);
+		}
 	} else {
-		return db_fetch_row_prepared('SELECT gt.name, 2 as source
+		$name = db_fetch_cell_prepared('SELECT gt.name
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gl.graph_template_id=gt.id
 			WHERE gl.id = ?',
 			array($local_graph_id));
+
+		if ($name != '') {
+			return array('name' => $name, 'source' => 2);
+		} else {
+			return array('name' => __('Not Found'), 'source' => 2);
+		}
 	}
 }
 

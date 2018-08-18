@@ -119,4 +119,54 @@ function upgrade_to_1_2_0() {
 			db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY COLUMN `value` DOUBLE DEFAULT NULL');
 		}
 	}
+
+	// Resolve issues with bogus templates issue #1761
+	$snmp_queries = db_fetch_assoc('SELECT id, name 
+		FROM snmp_query 
+		ORDER BY id');
+
+	if (sizeof($snmp_queries)) {
+		foreach($snmp_queries as $query) {
+			db_install_execute_prepared("UPDATE graph_local AS gl
+				INNER JOIN (
+					SELECT graph_template_id 
+					FROM graph_local AS gl
+					WHERE snmp_query_id = ?
+					HAVING graph_template_id NOT IN (
+						SELECT graph_template_id
+						FROM snmp_query_graph
+						WHERE snmp_query_id = ?)
+				) AS rs
+				ON gl.graph_template_id=rs.graph_template_id
+				SET snmp_query_id=0, snmp_query_graph_id=0, snmp_index=''",
+				array($query['id'], $query['id']));
+		}
+	}
+
+	$ids = db_fetch_assoc('SELECT * 
+		FROM graph_local 
+		WHERE snmp_query_id > 0 
+		AND snmp_query_graph_id = 0');
+
+	if (sizeof($ids)) {
+		foreach($ids as $id) {
+			$query_graph_id = db_fetch_cell_prepared('SELECT id 
+				FROM snmp_query_graph
+				WHERE snmp_query_id = ?
+				AND graph_template_id = ?',
+				array($id['snmp_query_id'], $id['graph_template_id']));
+	
+			if (empty($query_graph_id)) {
+				db_install_execute_prepared('UPDATE graph_local
+					SET snmp_query_id=0, snmp_query_graph_id=0, snmp_index=""
+					WHERE id = ?',
+					array($id['id']));
+			} else {
+				db_install_execute_prepared('UPDATE graph_local
+					SET snmp_query_graph_id=?
+					WHERE id = ?',
+					array($query_graph_id, $id['id']));
+			}
+		}
+	}
 }
