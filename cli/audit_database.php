@@ -141,6 +141,13 @@ function report_audit_results($output = true) {
 			$table_name = $table[$db_name];
 			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 
+			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
+			if ($status['Collation'] == 'utf8mb4_unicode_ci') {
+				$text = 'mediumtext';
+			} else {
+				$text = 'text';
+			}
+
 			if ($output) {
 				print '---------------------------------------------------------------------------------------------' . PHP_EOL;
 				printf('Checking Table: %-40s', '\'' . $table_name . '\'');
@@ -209,6 +216,12 @@ function report_audit_results($output = true) {
 						}
 					} else {
 						foreach($cols as $dbcol => $col) {
+							if ($col == 'Type' && $dbc[$dbcol] == 'text') {
+								if ($text == 'mediumtext') {
+									$dbc[$dbcol] = $text;
+								}
+							} 
+
 							if ($c[$col] != $dbc[$dbcol]) {
 								if ($output) {
 									if ($col != 'Key') {
