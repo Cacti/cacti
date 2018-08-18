@@ -102,7 +102,14 @@ function upgrade_to_1_2_0() {
 			COMMENT = 'Datasource Debugger Information';");
 	}
 
-	/****** NEED TO UPGRADE REALM FROM PLUGIN TO CORE ******/
+	// Upgrade debug plugin to core access by removing custom realm
+	$debug_id = db_fetch_cell('SELECT id FROM plugin_config WHERE name = \'Debug\'');
+	if ($debug_id !== false && $debug_id > 0) {
+		// Plugin realms are plugin_id + 100
+		$debug_id += 100;
+		db_install_execute_prepared('DELETE FROM user_auth_realm WHERE id = ?', array($debug_id));
+		db_install_execute_prepared('DELETE FROM user_auth_group_realm WHERE id = ?', array($debug_id));
+	}
 
 	// Fix data source stats column type
 	$value_parms = db_get_column_attributes('data_source_stats_hourly_last', 'value');
