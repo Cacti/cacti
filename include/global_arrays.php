@@ -334,41 +334,6 @@ $messages = array(
 		'type' => 'error')
 );
 
-if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
-	$messages['automation_message'] = array(
-		'message' => $_SESSION['automation_message'],
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
-	$messages['clog_message'] = array(
-		'message' => $_SESSION['clog_message'],
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
-	$messages['clog_error'] = array(
-		'message' => $_SESSION['clog_error'],
-		'type' => 'error'
-	);
-}
-
-if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
-	$messages['reports_message'] = array(
-		'message' => $_SESSION['reports_message'],
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
-	$messages['reports_error'] = array(
-		'message' => $_SESSION['reports_error'],
-		'type' => 'error'
-	);
-}
-
 $cdef_operators = array(1 =>
 	'+',
 	'-',

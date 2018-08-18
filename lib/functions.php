@@ -671,6 +671,19 @@ function kill_session_var($var_name) {
 	}
 }
 
+/* force_session_data - forces session data into the session if the session was closed for some reason */
+function force_session_data() {
+	if (session_status() == PHP_SESSION_NONE) {
+		$data = $_SESSION;
+
+		session_start();
+
+		$_SESSION = $data;
+
+		session_write_close();
+	}
+}
+
 /* array_rekey - changes an array in the form:
      '$arr[0] = array('id' => 23, 'name' => 'blah')'
      to the form

@@ -636,7 +636,9 @@ function reports_form_save() {
  ------------------------ */
 function reports_form_actions() {
 	global $config, $reports_actions;
+
 	include_once($config['base_path'].'/lib/reports.php');
+
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
 	/* ==================================================== */
@@ -652,39 +654,56 @@ function reports_form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute_prepared('UPDATE reports SET user_id = ? WHERE id = ?', array($_SESSION['sess_user_id'], $selected_items[$i]));
+
+					db_execute_prepared('UPDATE reports 
+						SET user_id = ? 
+						WHERE id = ?', 
+						array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+
 					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute_prepared('UPDATE reports SET enabled="on" WHERE id = ?', array($selected_items[$i]));
+
+					db_execute_prepared('UPDATE reports 
+						SET enabled="on" 
+						WHERE id = ?', 
+						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
 				for ($i=0;($i<count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
-					db_execute_prepared('UPDATE reports SET enabled="" WHERE id = ?', array($selected_items[$i]));
+
+					db_execute_prepared('UPDATE reports 
+						SET enabled="" 
+						WHERE id = ?', 
+						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
 				include_once($config['base_path'] . '/lib/reports.php');
+
 				$message = '';
 
-				for ($i=0;($i<count($selected_items));$i++) {
-					$_SESSION['reports_message'] = '';
-					$_SESSION['reports_error']   = '';
+				kill_session_var('reports_message');
 
+				for ($i=0;($i<count($selected_items));$i++) {
 					reports_send($selected_items[$i]);
 
-					if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
-						$message .= ($message != '' ? '<br>':'') . $_SESSION['reports_message'];
+					if (isset($_SESSION['reports_info']) && $_SESSION['reports_info'] != '') {
+						$message .= ($message != '' ? '<br>':'') . $_SESSION['reports_info'];
 					}
+
 					if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
 						$message .= ($message != '' ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
 					}
+
+					kill_session_var('reports_info');
+					kill_session_var('reports_error');
 				}
 
 				if ($message != '') {
@@ -694,7 +713,9 @@ function reports_form_actions() {
 			}
 		}
 
-		header('Location: ' . get_reports_page());
+		force_session_data();
+
+		header('Location: ' . get_reports_page() . '?header=false');
 		exit;
 	}
 
@@ -706,22 +727,18 @@ function reports_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
+
 			$reports_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1])) . '</li>';
+
 			$reports_array[$i] = $matches[1];
+
 			$i++;
 		}
 	}
 
 	general_header();
 
-	?>
-	<script type='text/javascript'>
-	function goTo(location) {
-		document.location = location;
-	}
-	</script><?php
-
-	print "<form name='report' action='" . get_reports_page() . "' method='post'>";
+	form_start(get_reports_page(), 'report');
 
 	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
@@ -794,7 +811,7 @@ function reports_form_actions() {
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	bottom_footer();
 }
@@ -808,18 +825,24 @@ function reports_send($id) {
 	/* ================= input validation ================= */
 	input_validate_input_number($id);
 	/* ==================================================== */
+
 	include_once($config['base_path'] . '/lib/reports.php');
 
-	$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array($id));
+	$report = db_fetch_row_prepared('SELECT * 
+		FROM reports 
+		WHERE id = ?', 
+		array($id));
 
 	if (!sizeof($report)) {
 		/* set error condition */
 	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+
 		/* use report name as default EMail title */
 		if ($report['subject'] == '') {
 			$report['subject'] = $report['name'];
-		};
+		}
+
 		if ($report['email'] == '') {
 			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']);
 			if (!isset_request_var('selected_items')) {

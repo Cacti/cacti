@@ -152,6 +152,8 @@ function api_networks_discover($network_id, $discover_debug) {
 		$_SESSION['automation_message'] = "Can Not Perform Discovery for Disabled Network '$name'";
 		raise_message('automation_message');
 	}
+
+	force_session_data();
 }
 
 function api_networks_save($post) {
@@ -238,18 +240,18 @@ function api_networks_save($post) {
 
 		$i = 0;
 		if (sizeof($networks)) {
-		foreach($networks as $net) {
-			$ips = automation_calculate_total_ips($networks, $i);
-			if ($ips !== false) {
-				$total_ips += $ips;
-			} else {
-				$continue = false;
-				$_SESSION['automation_message'] = __("ERROR: Network '%s' is Invalid.", $net);
-				raise_message('automation_message');
-				break;
+			foreach($networks as $net) {
+				$ips = automation_calculate_total_ips($networks, $i);
+				if ($ips !== false) {
+					$total_ips += $ips;
+				} else {
+					$continue = false;
+					$_SESSION['automation_message'] = __("ERROR: Network '%s' is Invalid.", $net);
+					raise_message('automation_message');
+					break;
+				}
+				$i++;
 			}
-			$i++;
-		}
 		}
 
 		if ($continue) {

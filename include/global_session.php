@@ -22,7 +22,39 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $refresh;
+global $config, $refresh, $messages;
+
+if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
+	$messages['automation_message'] = array(
+		'message' => $_SESSION['automation_message'],
+		'type' => 'info'
+	);
+	kill_session_var('automation_message');
+}
+
+if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
+	$messages['clog_message'] = array(
+		'message' => $_SESSION['clog_message'],
+		'type' => 'info'
+	);
+	kill_session_var('clog_message');
+}
+
+if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
+	$messages['clog_error'] = array(
+		'message' => $_SESSION['clog_error'],
+		'type' => 'error'
+	);
+	kill_session_var('clog_error');
+}
+
+if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
+	$messages['reports_message'] = array(
+		'message' => $_SESSION['reports_message'],
+		'type' => 'info'
+	);
+	kill_session_var('reports_message');
+}
 
 $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
