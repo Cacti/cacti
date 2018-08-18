@@ -62,7 +62,7 @@ function getHostsByDescription($hostTemplateIds = false) {
 		INNER JOIN host_template AS ht
 		ON h.host_template_id = h.id
 		$sql_where
-		ORDER BY hdescription");
+		ORDER BY h.description");
 
 	if ($tmpArray !== false && sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
