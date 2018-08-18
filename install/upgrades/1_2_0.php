@@ -92,8 +92,8 @@ function upgrade_to_1_2_0() {
 			`done` int(11) NOT NULL DEFAULT '0',
 			`user` int(11) NOT NULL DEFAULT '0',
 			`datasource` int(11) NOT NULL DEFAULT '0',
-			`info` mediumtext NOT NULL DEFAULT '',
-			`issue` mediumtext NOT NULL NULL DEFAULT '',
+			`info` text NOT NULL DEFAULT '',
+			`issue` text NOT NULL NULL DEFAULT '',
 			PRIMARY KEY (`id`),
 			KEY `user` (`user`),
 			KEY `done` (`done`),
@@ -166,32 +166,6 @@ function upgrade_to_1_2_0() {
 					SET snmp_query_graph_id=?
 					WHERE id = ?',
 					array($query_graph_id, $id['id']));
-			}
-		}
-	}
-
-	// Move text columns to mediumtext
-	$columns = array(
-		'data_input_data'        => array('value'),
-		'data_debug'             => array('info', 'issue'),
-		'graph_template_input'   => array('description'),
-		'host'                   => array('notes'),
-		'plugin_realms'          => array('file'),
-		'poller_output_realtime' => array('output'),
-		'reports'                => array('from_email', 'email', 'bcc'),
-		'reports_items'          => array('item_text'),
-		'snmpagent_managers'     => array('notes')
-	);
-	
-	foreach($columns as $table => $tcolumns) {
-		foreach($tcolumns as $column) {
-			// Fix data source stats column type
-			$value_parms = db_get_column_attributes($table, $column);
-
-			if (sizeof($value_parms)) {
-				if ($value_parms[0]['COLUMN_TYPE'] != 'mediumtext') {
-					db_install_execute("ALTER TABLE $table MODIFY COLUMN `$column` mediumtext NOT NULL default ''");
-				}
 			}
 		}
 	}
