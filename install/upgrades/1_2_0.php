@@ -103,4 +103,13 @@ function upgrade_to_1_2_0() {
 	}
 
 	/****** NEED TO UPGRADE REALM FROM PLUGIN TO CORE ******/
+
+	// Fix data source stats column type
+	$value_parms = db_get_column_attributes('data_source_stats_hourly_last', 'value');
+
+	if (sizeof($value_parms)) {
+		if ($value_parms[0]['COLUMN_TYPE'] != 'double') {
+			db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY COLUMN `value` DOUBLE DEFAULT NULL');
+		}
+	}
 }
