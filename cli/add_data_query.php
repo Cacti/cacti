@@ -23,7 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
+require(__DIR__ . '/../include/cli_check.php');
 require($config['base_path'] . '/lib/api_automation_tools.php');
 require($config['base_path'] . '/lib/data_query.php');
 

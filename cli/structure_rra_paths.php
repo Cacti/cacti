@@ -23,14 +23,14 @@
  +-------------------------------------------------------------------------+
 */
 
-$proceed         = false;
-
 require(__DIR__ . '/../include/cli_check.php');
+
+$hostId  = NULL;
+$proceed = false;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
-$hostId = NULL;
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {

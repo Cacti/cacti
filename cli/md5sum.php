@@ -312,22 +312,6 @@ function display_help() {
 	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function get_cacti_version() {
-	$cacti_version_file = dirname(__FILE__) . '/../include/cacti_version';
-
-	if (! file_exists($cacti_version_file)) {
-	        die ("ERROR: failed to find cacti version file\n");
-	}
-
-	$cacti_version = file_get_contents($cacti_version_file, false);
-	if ($cacti_version === false) {
-	        die ("ERROR: failed to load cacti version file\n");
-	}
-	$cacti_version = trim($cacti_version);
-
-	return $cacti_version;
-}
-
 function fail($exit_value,$args,$display_help = 0) {
 	global $quiet,$fail_msg;
 

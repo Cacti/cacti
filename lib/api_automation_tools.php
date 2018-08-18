@@ -39,11 +39,13 @@ function getHostTemplates() {
 function getHostsByDescription($hostTemplateIds = false) {
 	$hosts = array();
 
-	if (!is_array($hostTemplateIds) && $hostTemplateIds !== false) {
-		$hostTemplateIds = array($hostTemplateIds);
+	if ($hostTemplateIds !== false) {
+		if (!is_array($hostTemplateIds)) {
+			$hostTemplateIds = array($hostTemplateIds);
+		}
 	}
 
-	if (sizeof($hostTemplateIds)) {
+	if ($hostTemplateIds !== false && sizeof($hostTemplateIds)) {
 		foreach($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
@@ -87,11 +89,13 @@ function getSites() {
 function getHosts($hostTemplateIds = false) {
 	$hosts = array();
 
-	if (!is_array($hostTemplateIds) && $hostTemplateIds !== false) {
-		$hostTemplateIds = array($hostTemplateIds);
+	if ($hostTemplateIds !== false) {
+		if (!is_array($hostTemplateIds)) {
+			$hostTemplateIds = array($hostTemplateIds);
+		}
 	}
 
-	if (sizeof($hostTemplateIds)) {
+	if ($hostTemplateIds !== false && sizeof($hostTemplateIds)) {
 		foreach($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
@@ -262,11 +266,13 @@ function getGraphTemplates() {
 function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 	$graph_templates = array();
 
-	if (!is_array($host_template_ids) && $host_template_ids !== false) {
-		$host_template_ids = array($host_template_ids);
+	if ($host_template_ids !== false) {
+		if (!is_array($host_template_ids)) {
+			$host_template_ids = array($host_template_ids);
+		}
 	}
 
-	if (is_array($host_template_ids) && sizeof($host_template_ids)) {
+	if ($host_template_ids !== false && sizeof($host_template_ids)) {
 		foreach($host_template_ids as $id) {
 			if (!is_numeric($id)) {
 				return false;

@@ -131,18 +131,20 @@ if (sizeof($data_queries)) {
 	}
 }
 
+function display_version() {
+	$version = get_cacti_version();
+	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = get_cacti_version();
-	print "Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]] [--host-descr=[description]]\n";
-	print "                           [-d] [-h] [--help] [-v] [--version]\n\n";
+	display_version();
+	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
+	print "   [--host-descr=[description]] [--debug]\n\n";
 	print "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
 	print "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
 	print "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
 	print "--debug                  - Display verbose output during execution\n";
-	print "-v --version             - Display this help message\n";
-	print "-h --help                - Display this help message\n";
 }
 
 function debug($message) {
