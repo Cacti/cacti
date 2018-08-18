@@ -23,16 +23,17 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
-include_once('./lib/api_data_source.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/html_tree.php');
-include_once('./lib/api_graph.php');
-include_once('./lib/snmp.php');
-include_once('./lib/ping.php');
-include_once('./lib/data_query.php');
 include_once('./lib/api_automation.php');
+include_once('./lib/api_data_source.php');
 include_once('./lib/api_device.php');
+include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
+include_once('./lib/data_query.php');
+include_once('./lib/html_tree.php');
+include_once('./lib/ping.php');
+include_once('./lib/snmp.php');
+include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 $device_actions = array(
 	1 => __('Delete'),
