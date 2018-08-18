@@ -127,8 +127,8 @@ Cacti CHANGELOG
 -feature: Allow snmpagent to be disabled for very large installs
 -feature: Inform the primary Cacti administrator of problems by Email
 -feature: Add Graphs and Data Sources hyperlinks on Device page
--feature: Do not allow second data source to be added to an SNMP Get data
-template
+-feature: Do not allow second data source to be added to an SNMP Get data template
+-feature: Allow drill down from Graphs to Data Queries or Templates
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

@@ -427,9 +427,9 @@ function get_current_graph_template_details($local_graph_id) {
 		array($local_graph_id));
 
 	if (!sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
-		return array('name' => __('Non Templated'), 'source' => 0);
+		return array('id' => 0, 'name' => __('Non Templated'), 'source' => 0);
 	} elseif ($graph_local['snmp_query_id'] > 0) {
-		$name = db_fetch_cell_prepared('SELECT sqg.name
+		$detail = db_fetch_row_prepared('SELECT sqg.id, sqg.name
 			FROM snmp_query_graph AS sqg
 			INNER JOIN graph_local AS gl
 			ON gl.snmp_query_graph_id=sqg.id
@@ -437,23 +437,23 @@ function get_current_graph_template_details($local_graph_id) {
 			WHERE gl.id = ?',
 			array($local_graph_id));
 
-		if ($name != '') {
-			return array('name' => $name, 'source' => 1);
+		if (sizeof($detail)) {
+			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 1);
 		} else {
-			return array('name' => __('Not Found'), 'source' => 1);
+			return array('id' => 0, 'name' => __('Not Found'), 'source' => 1);
 		}
 	} else {
-		$name = db_fetch_cell_prepared('SELECT gt.name
+		$detail = db_fetch_row_prepared('SELECT gt.id, gt.name
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gl.graph_template_id=gt.id
 			WHERE gl.id = ?',
 			array($local_graph_id));
 
-		if ($name != '') {
-			return array('name' => $name, 'source' => 2);
+		if (sizeof($detail)) {
+			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 2);
 		} else {
-			return array('name' => __('Not Found'), 'source' => 2);
+			return array('id' => 0, 'name' => __('Not Found'), 'source' => 2);
 		}
 	}
 }
@@ -1972,11 +1972,21 @@ function graph_management() {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_current_graph_template_details($graph['local_graph_id']);
 
+			if ($template_details['id'] > 0) {
+				if ($template_details['source'] == 1) { // Data Query
+					$url = $config['url_path'] . 'data_queries.php?action=item_edit&id=' . $template_details['id'];
+				} else { // Graph Template
+					$url = $config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $template_details['id'];
+				}
+			} else {
+				$url = '';
+			}
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
 			form_selectable_cell(filter_value($sources[$graph['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
-			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $url), $graph['local_graph_id'], '', 'right');
 			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
