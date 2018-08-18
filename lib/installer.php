@@ -1437,21 +1437,26 @@ class Installer implements JsonSerializable {
 		$i = 0;
 
 		ob_start();
-		print '<table width="100%"><tr><td colspan="2"><center><hr></center></td></tr>';
+		print '<div class="cactiTable" style="width:100%;text-align:center">';
 		$input = install_file_paths();
 
 		/* find the appropriate value for each 'config name' above by config.php, database,
 		 * or a default for fall back */
+		$class = 'odd';
 		foreach ($input as $name => $array) {
 			if (isset($array)) {
 				$current_value = $array['default'];
+
+				$class = ($class == 'even' ? 'odd':'even');
 
 				/* run a check on the path specified only if specified above, then fill a string with
 				the results ('FOUND' or 'NOT FOUND') so they can be displayed on the form */
 				$form_check_string = '';
 
 				/* draw the acual header and textbox on the form */
-				print '<tr><td><strong>' . $array['friendly_name'] . '</strong></td><td>';
+				print "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $array['friendly_name'] . "<div class='formTooltip'><div class='cactiTooltipHint fa fa-question-circle'><span style='display:none;'>" . $array['description'] . "</span></div></div></div></div>";
+
+				print "<div class='formColumnRight'><div class='formData'>";
 
 				switch ($array['method']) {
 					case 'textbox':
@@ -1465,25 +1470,23 @@ class Installer implements JsonSerializable {
 						break;
 				}
 
-				print '</td></tr>';
-				if (!empty($array['description'])) {
-					print '<tr><td>&nbsp;</td><td>' . $array['description'] . '</td></tr>';
+				if (isset($this->errors[$name])) {
+					print Installer::sectionError(__($this->errors[$name]));
 				}
 
-				if (isset($this->errors[$name])) {
-					print '<tr><td>&nbsp;</td><td>' . Installer::sectionError(__($this->errors[$name])) . '</td></tr>';
-				}
-				print '<tr><td colspan="2"><center><hr></center></td></tr>';
+				print '</div></div>';
+
+				print '</div>';
 			}
 
 			$i++;
 		}
 		$this->stepData = array('Errors' => $this->errors);
-		print '</table>';
+		print '</div>';
+
 		$html = ob_get_contents();
 		$output .= Installer::sectionNormal($html);
 		ob_end_clean();
-
 
 		return $output;
 	}

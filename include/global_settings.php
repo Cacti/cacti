@@ -1451,7 +1451,7 @@ $settings = array(
 			'method' => 'filepath',
 			'file_type' => 'binary',
 			'max_length' => 255,
-			'default' => '/usr/sbin/sendmail',
+			'default' => '',
 			),
 		'settings_smtp_header' => array(
 			'friendly_name' => __('SMTP Options'),

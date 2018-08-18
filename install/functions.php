@@ -379,7 +379,7 @@ function install_tool_path($name, $defaultPaths) {
 
 	$tool = array(
 		'friendly_name' => $name,
-		'description' => 'Path for ' . $name,
+		'description' => __('Path for %s', $name),
 		'method' => 'filepath',
 		'max_length' => 255,
 		'default' => ''
@@ -388,6 +388,8 @@ function install_tool_path($name, $defaultPaths) {
 	log_install('file', "$name: Locations ($os)" . PHP_EOL . var_export($defaultPaths, true));
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
+	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
+		$tool = $settings['mail'][$name];
 	}
 
 	$which_tool = '';
@@ -413,7 +415,7 @@ function install_tool_path($name, $defaultPaths) {
 	return $tool;
 }
 
-function install_file_paths () {
+function install_file_paths() {
 	global $config, $settings;
 
 	$input = array();
@@ -472,6 +474,13 @@ function install_file_paths () {
 		array(
 			'unix'  => '/usr/local/spine/bin/spine',
 			'win32' => 'c:/spine/bin/spine.exe'
+		));
+
+	/* sendmail Binary Path */
+	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
+		array(
+			'unix'  => '/usr/sbin/sendmail',
+			'win32' => ''
 		));
 
 	/* log file path */
