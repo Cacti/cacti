@@ -121,7 +121,7 @@ function import() {
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		import_display_results($_SESSION['import_debug_info'], array(), true, get_filter_request_var('preview'));
 
-		form_save_button('','close');
+		form_save_button('', 'close');
 		kill_session_var('import_debug_info');
 	} else {
 		html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
@@ -144,19 +144,20 @@ function import() {
 
 		form_hidden_box('save_component_import','1','');
 
-		form_save_button('','import');
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		<?php if ($display_hideme) { ?>
-		$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
-		$('#hideme').click(function() {
-			$('#templates_import1').hide();
+		form_save_button('', 'import', 'import', false);
+
+		?>
+		<script type='text/javascript'>
+		$(function() {
+			<?php if ($display_hideme) { ?>
+			$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
+			$('#hideme').click(function() {
+				$('#templates_import1').hide();
+			});
+			<?php } ?>
 		});
-		<?php } ?>
-	});
-	</script>
-	<?php
+		</script>
+		<?php
 	}
 }
 
