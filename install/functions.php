@@ -489,15 +489,6 @@ function install_file_paths() {
 		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
-	/* Theme */
-	$input['selected_theme'] = $settings['visual']['selected_theme'];
-	$input['selected_theme']['description'] = __('Please select one of the available Themes to skin your Cacti with.');
-	if (config_value_exists('selected_theme')) {
-		$input['selected_theme']['default'] = read_config_option('selected_theme');
-	} else {
-		$input['selected_theme']['default'] = 'modern';
-	}
-
 	/* RRDtool Version */
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];

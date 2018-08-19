@@ -12,6 +12,7 @@ function log_install($filename, $data, $flags = FILE_APPEND) {
 	if (empty($can_log) && !empty($filename)) {
 		$can_log = read_config_option('log_install_'.$filename, true);
 	}
+	$can_log = true;
 	if (!empty($can_log)) {
 		$logname = 'install';
 		if (!empty($filename)) {
@@ -201,7 +202,7 @@ class Installer implements JsonSerializable {
 			$this->setTheme('modern');
 		}
 
-		set_config_option('selected_theme', $this->theme);
+		$this->setPaths($this->getPaths());
 
 		$this->rrdVersion = get_rrdtool_version();
 		$this->snmpOptions = $this->getSnmpOptions();
@@ -311,6 +312,8 @@ class Installer implements JsonSerializable {
 			'Prev'     => $this->buttonPrevious,
 			'Next'     => $this->buttonNext,
 			'Test'     => $this->buttonTest,
+			'Theme'    => $this->theme,
+			'Errors'   => $this->errors,
 			'Html'     => $output,
 			'StepData' => $this->stepData,
 		);
@@ -320,6 +323,41 @@ class Installer implements JsonSerializable {
 		return $this->jsonSerialize();
 	}
 
+	function setTrueFalse($param, &$field, $option) {
+		$value = null;
+		if ($param === true || $param === 'on' || $param === 1) {
+			$value = true;
+		} else if ($param === false || $param === '' || $param === 0) {
+			$value = false;
+		}
+
+		if ($value !== null) {
+			set_config_option('install_' . $option, $param);
+		}
+
+		return $value !== null;
+	}
+
+	public function addError($step, $section, $item, $text = false) {
+		if (!isset($this->errors[$section])) {
+			$this->errors[$section] = array();
+		}
+
+		if ($text === false) {
+			$this->errors[$section][] = $item;
+			log_install('errors',"addError($section, $item)");
+		} else {
+			$this->errors[$section][$item] = $text;
+			log_install('errors',"addError($section, $item, $text)");
+		}
+
+		if ($this->stepCurrent > $step) {
+			$this->setStep($step);
+		}
+
+		log_install('errors-json', clean_up_lines(var_export($this->errors, true)));
+	}
+
 	private function setProgress($param_process) {
 		log_install('', "Progress: $param_process");
 		set_config_option('install_progress', $param_process);
@@ -327,40 +365,62 @@ class Installer implements JsonSerializable {
 
 	private function setLanguage($param_language = '') {
 		if (isset($param_language) && strlen($param_language)) {
-			$this->language = $param_language;
-			set_user_setting('user_language', $param_language);
+			$langauge = apply_locale($param_language);
+			if (empty($language)) {
+				$this->addError('Language', 'Failed to apply specified language');
+			} else {
+				$this->language = $param_language;
+				set_user_setting('user_language', $param_language);
+			}
 		}
 	}
 
 	private function setRRDVersion($param_rrdver = '') {
 		global $config;
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
-			$this->rrdver = $param_rrdver;
-			set_config_option('rrdtool_version', $this->rrdver);
+			if (cacti_version_compare('1.3', $param_rrdver, '>')) {
+				$this->rrdver = $param_rrdver;
+				set_config_option('rrdtool_version', $this->rrdver);
+			} else {
+				$this->addError('RRDVersion',__('Failed to set specified RRDTool version'));
+			}
 		}
 	}
 
 	private function setTheme($param_theme = '') {
 		global $config;
 		if (isset($param_theme) && strlen($param_theme)) {
+			log_install('theme','Checking theme: ' . $param_theme);
 			$themePath = $config['base_path'] . '/include/themes/' . $param_theme . '/main.css';
 			if (file_exists($themePath)) {
+				log_install('theme','Setting theme: ' . $param_theme);
 				$this->theme = $param_theme;
 				set_config_option('selected_theme', $this->theme);
+			} else {
+				$this->addError('Theme', __('Invalid Theme Specified'));
 			}
 		}
+	}
+
+	private function getPaths() {
+		$paths = array();
+		foreach ($this->paths as $name => $array) {
+			if (substr($name, 0, 5) == 'path_') {
+				$paths[$name] = $array['default'];
+			}
+		}
+		return $paths;
 	}
 
 	private function setPaths($param_paths = array()) {
 		global $config;
 		if (is_array($param_paths)) {
-			$input = install_file_paths();
 			log_install('paths', "setPaths($this->stepCurrent)");
 
-			$this->errors = array();
 			/* get all items on the form and write values for them  */
-			foreach ($input as $name => $array) {
+			foreach ($this->paths as $name => $array) {
 				if (isset($param_paths[$name])) {
+					$should_set = true;
 					if ($name == 'path_php_binary') {
 						$input = mt_rand(1,64);
 						$output = shell_exec(
@@ -368,64 +428,82 @@ class Installer implements JsonSerializable {
 							'/install/cli_test.php ' . $input);
 
 						if ($output != $input * $input) {
-							$this->errors[$name] = 'PHP did not return expected result';
+							$this->addError('Paths', $name, __('PHP did not return expected result'));
+							$should_set = false;
 						}
 					}
 
-					$should_set = !isset($this->errors[$name]);
 					if ($should_set && $name != 'path_cactilog' && $name != 'path_spine') {
 						$should_set = file_exists($param_paths[$name]);
 						if (!$should_set) {
-							$this->errors[$name] = 'File not found';
+							$this->addError('Paths', $name, __('File not found'));
 						}
 					}
 
+					if ($should_set) {
+						unset($this->errors['Paths'][$name]);
+					}
+
 					log_install('paths', "$name => $param_paths[$name], $should_set");
+					$this->paths[$name]['default'] = $param_paths[$name];
 					set_config_option($name, $param_paths[$name]);
 				}
-			}
-
-			if (sizeof($this->errors) && $this->stepCurrent > Installer::STEP_BINARY_LOCATIONS) {
-				$this->setStep(Installer::STEP_BINARY_LOCATIONS);
 			}
 		}
 	}
 
 	private function setProfile($param_profile = null) {
 		if (!empty($param_profile)) {
-			$this->profile = $param_profile;
-			set_config_option('install_profile', $param_profile);
+			$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($param_profile));
+			if ($valid === false || $valid != $param_profile) {
+				$this->addError('Profile', __('Failed to apply specified profile'));
+			} else {
+				$this->profile = $param_profile;
+				set_config_option('install_profile', $param_profile);
+			}
 		}
 	}
 
 	private function setAutomationMode($param_mode = null) {
 		if ($param_mode != null) {
-			$this->automationMode = $param_mode;
-			set_config_option('install_automation_mode', $param_mode);
+			if (!$this->setTrueFalse($param_mode, $this->automationMode, 'automation_mode')) {
+				$this->addError('Automation','Mode', __('Failed to apply specified mode'));
+			}
 		}
 		log_install('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
 	}
 
 	private function setAutomationOverride($param_override = null) {
 		if ($param_override != null) {
-			$this->automationOverride = $param_override;
-			set_config_option('install_automation_override', $param_override);
+			if (!$this->setTrueFalse($param_override, $this->automationOverride, 'automation_override')) {
+				$this->addError('Automation','Override', __('Failed to apply specified automation override'));
+			}
 		}
 		log_install('automation',"setAutomationOverride($param_override) returns with $this->automationOverride");
 	}
 
 	private function setCronInterval($param_mode = null) {
+		global $cron_intervals;
 		if ($param_mode != null) {
-			$this->cronInterval = $param_mode;
-			set_config_option('cron_interval', $param_mode);
+			if (array_key_exists($param_mode, $cron_intervals)) {
+				$this->cronInterval = $param_mode;
+				set_config_option('cron_interval', $param_mode);
+			} else {
+				$this->addError('Poller','Cron', __('Failed to apply specified cron interval'));
+			}
 		}
 		log_install('automation',"setCronInterval($param_mode) returns with $this->cronInterval");
 	}
 
 	private function setAutomationRange($param_range = null) {
 		if (!empty($param_range)) {
-			$this->automationRange = $param_range;
-			set_config_option('install_automation_range', $param_range);
+			$ip_details = cacti_pton($param_range);
+			if ($ip_details === false) {
+				$this->addError('Automation', 'Range', __('Failed to apply specified Automation Range'));
+			} else {
+				$this->automationRange = $param_range;
+				set_config_option('install_automation_range', $param_range);
+			}
 		}
 		log_install('automation',"setAutomationRange($param_range) returns with $this->automationRange");
 	}
@@ -530,6 +608,7 @@ class Installer implements JsonSerializable {
 		if (is_array($param_templates)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_template_%\'');
 			$known_templates = install_setup_get_templates();
+
 			log_install('templates',"setTemplates(): Updating templates");
 			log_install('templates',"setTemplates(): Parameter data:" . PHP_EOL . var_export($param_templates, true) . PHP_EOL);
 			foreach ($known_templates as $known) {
@@ -537,8 +616,14 @@ class Installer implements JsonSerializable {
 				$key = 'chk_template_' . str_replace(".", "_", $filename);
 				log_install('templates',"setTemplates(): Checking template file $filename against key $key ...");
 				log_install('templates',"setTemplates(): Template data: ".str_replace("\n"," ", var_export($known, true)));
+				$template = '';
 				if (!empty($param_templates[$key])) {
-					$template = $param_templates[$key];
+					$template = $param_template[$key];
+				} else if (!empty($param_templates[$filename])) {
+					$template = $param_template[$filename];
+				}
+
+				if ($template != '') {
 					$key = str_replace(".", "_", $filename);
 					log_install('templates',"setTemplates(): Template enabled:" . var_export($template, true));
 					log_install('templates',"setTemplates(): Using key: install_template_$key = $filename");
@@ -587,7 +672,7 @@ class Installer implements JsonSerializable {
 				$key = 'chk_table_' . $name;
 				log_install('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install('tables',"setTables(): Table: ".str_replace("\n"," ", var_export($known, true)));
-				if (!empty($param_tables[$key])) {
+				if (!empty($param_tables[$key]) || !empty($param_tables["all"])) {
 					$table = $param_tables[$key];
 					log_install('tables',"setTables(): install_table_$name = $name");
 					set_config_option("install_table_$name", $name);
@@ -1466,12 +1551,11 @@ class Installer implements JsonSerializable {
 
 		ob_start();
 		print '<div class="cactiTable" style="width:100%;text-align:center">';
-		$input = install_file_paths();
 
 		/* find the appropriate value for each 'config name' above by config.php, database,
 		 * or a default for fall back */
 		$class = 'odd';
-		foreach ($input as $name => $array) {
+		foreach ($this->paths as $name => $array) {
 			if (isset($array)) {
 				$current_value = $array['default'];
 
@@ -1498,9 +1582,13 @@ class Installer implements JsonSerializable {
 						break;
 				}
 
-				if (isset($this->errors[$name])) {
-					print Installer::sectionError(__($this->errors[$name]));
+				/*** Disable ouput of error for now, pending QA ***
+
+				if (isset($this->errors['Paths'][$name])) {
+					print Installer::sectionError(__($this->errors['Paths'][$name]));
 				}
+
+				*/
 
 				print '</div></div>';
 
@@ -1509,7 +1597,6 @@ class Installer implements JsonSerializable {
 
 			$i++;
 		}
-		$this->stepData = array('Errors' => $this->errors);
 		print '</div>';
 
 		$html = ob_get_contents();
