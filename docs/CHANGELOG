@@ -96,6 +96,7 @@ Cacti CHANGELOG
 -feature#1610: Script STDERR logging
 -feature#1628: Allow the User to define a initial Network Discovery during Setup
 -feature#1670: Improve Graph Management to show type of source for a graph
+-feature#1671: Duplicate Graph Template does not duplicate Data Query Graph Template Mappings
 -feature#1677: Default Tree nodes sorting to be inherited
 -feature#1692: Separate option for logging Input Validation issues
 -feature#1691: Add a 'Copy graph' option to context menu of graphs
