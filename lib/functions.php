@@ -4611,6 +4611,7 @@ function get_installed_rrdtool_version() {
 	if (preg_match('/^RRDtool ([0-9.]+)$/', $shell, $matches)) {
 		return $matches[1];
 	}
+	return false;
 }
 
 function get_md5_hash($path) {

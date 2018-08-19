@@ -385,7 +385,7 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
-	log_install('file', "$name: Locations ($os)" . PHP_EOL . var_export($defaultPaths, true));
+	log_install('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {

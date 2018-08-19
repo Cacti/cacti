@@ -40,11 +40,12 @@ const FIELDS_INSTALL_TYPE = {
 
 const FIELDS_BINARY_OPTIONS = {
 	selected_theme:        { type: 'dropdown', name: 'Theme'              },
-	rrdtool_version:       { type: 'dropdown', name: 'RRDVer'             },
+	rrdtool_version:       { type: 'dropdown', name: 'RRDVersion'         },
 }
 
 const FIELDS_BINARY_LOCATIONS = {
 	paths:                 { type: 'textbox',  prefix: 'path_'            },
+	settings_sendmail_path:{ type: 'textbox',  name: 'settings_sendmail_path' },
 }
 
 const FIELDS_PROFILE = {
