@@ -7,23 +7,31 @@ body {
 	margin-right:auto;
 }
 
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border: none;
+	text-align: center;
+	align-content: center;
+	width: 100%;
+}
+
 .report_table {
 	background-color:#F9F9F9;
-	align: center;
-	border:0;
-	width:100%;
+	text-align: center;
+	border: 0;
+	width: 100%;
 	margin: auto;
 }
 
 .title_row {
-	background-color:#EAEAEA;
+	background-color: #EAEAEA;
 }
 
 .title {
-	background-color:#EAEAEA;
-	font-size:16pt;
-	text-align:center;
-	align:center;
+	background-color: #EAEAEA;
+	font-size: 16pt;
+	text-align: center;
 }
 
 .image_table {
@@ -33,32 +41,32 @@ body {
 }
 
 .image_column {
-	align:center;
+	align: center;
 }
 
 .image {
 }
 
 .text_row {
-	background-color:#EAEAEA;
+	background-color: #EAEAEA;
 }
 
 .text {
-	background-color:#EAEAEA;
+	background-color: #EAEAEA;
 	font-size: 16pt;
 	text-align: center;
 }
 
 .left {
-	text-align:left;
+	text-align: left;
 }
 
 .right {
-	text-align:right;
+	text-align: right;
 }
 
 .center {
-	text-align:center;
+	text-align: center;
 }
 
 </style>
