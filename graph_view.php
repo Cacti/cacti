@@ -125,6 +125,10 @@ function get_matching_nodes() {
 	}
 }
 
+function redefine_resizer() {
+	print "<script type='text/javascript'> function resizer() { return true; } </script>";
+}
+
 switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts();
@@ -216,6 +220,8 @@ case 'tree':
 	}
 
 	top_graph_header();
+
+	redefine_resizer();
 
 	bottom_footer();
 
@@ -456,6 +462,8 @@ case 'preview':
 	if ($total_graphs) {
 		print $nav;
 	}
+
+	redefine_resizer();
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
 		bottom_footer();
