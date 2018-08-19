@@ -29,11 +29,12 @@ include_once('./lib/api_tree.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/api_aggregate.php');
 include_once('./lib/api_automation.php');
-include_once('./lib/template.php');
-include_once('./lib/html_tree.php');
-include_once('./lib/html_form_template.php');
-include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
+include_once('./lib/html_form_template.php');
+include_once('./lib/html_tree.php');
+include_once('./lib/reports.php');
+include_once('./lib/rrd.php');
+include_once('./lib/template.php');
 
 /* set default action */
 set_default_action();
@@ -1733,7 +1734,7 @@ function validate_graph_request_vars() {
 }
 
 function graph_management() {
-	global $graph_actions, $item_rows;
+	global $graph_actions, $item_rows, $config;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
