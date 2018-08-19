@@ -1021,26 +1021,20 @@ function setupResponsiveMenuAndTabs() {
 			event.preventDefault();
 		}
 
-		if ($('.cactiTreeNavigationArea').length > 0) {
-			tree = true;
-		} else {
-			tree = false;
-		}
-
 		if ($(this).hasClass('selected')) {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
-					menuHide(tree);
+					menuHide(true);
 				} else {
-					menuShow(tree);
+					menuShow();
 				}
 			}
 		} else if (pageName == page) {
 			if ($('#navigation').length) {
 				if (menuOpen(page)) {
-					menuHide(tree);
+					menuHide(true);
 				} else {
-					menuShow(tree);
+					menuShow();
 				}
 			}
 		} else {
@@ -1102,16 +1096,18 @@ function responsiveUI(event) {
 	}
 
 	if ($('#navigation').length) {
-		if ($(window).width() < 640) {
-			menuHide(tree);
+		if ($(window).width() < 640 && loadMenuStateOpen(page)) {
+			menuHide(false);
 			menuHideResponsive = true;
 		} else if (menuHideResponsive == true) {
-			if (!loadMenuStateOpen(page)) {
-				menuShow(tree);
+			if (loadMenuStateOpen(page)) {
+				menuShow();
 			} else {
-				menuHide(tree);
+				menuHide(true);
 			}
 			menuHideResponsive = false;
+		} else if (loadMenuStateOpen(page)) {
+			menuShow();
 		}
 	}
 
@@ -1456,7 +1452,7 @@ function tuneFilter(object, width) {
 	}
 }
 
-function menuHide() {
+function menuHide(store) {
 	storage = Storages.localStorage;
 	page = basename(location.pathname).replace('.php', '');
 
@@ -1480,10 +1476,12 @@ function menuHide() {
 		});
 	}
 
-	storage.set('menuState_' + page, 'hidden');
+	if (store) {
+		storage.set('menuState_' + page, 'hidden');
+	}
 }
 
-function menuShow(tree) {
+function menuShow() {
 	storage = Storages.localStorage;
 	page = basename(location.pathname).replace('.php', '');
 
