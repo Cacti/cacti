@@ -2644,7 +2644,7 @@ function create_device_node($host_id, $parent, $rule) {
 			$local_graph_id, $host_id, $site_id, $rule['host_grouping_type'], $sort_type, $propagate);
 
 		if (isset($new_item) && $new_item > 0) {
-			cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Tree Item - Added - id: (' . $new_item . ')', false, 'AUTOM8');
+			cacti_log('NOTE: ' . $function . ' Device[' . $host_id . '] Tree Item - Added - Parent[' . $parent . '] Id[' . $new_item . ']', false, 'AUTOM8');
 		} else {
 			cacti_log('WARNING: ' . $function . ' Device[' . $host_id . '] Tree Item - Not Added', false, 'AUTOM8');
 		}
