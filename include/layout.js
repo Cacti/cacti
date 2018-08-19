@@ -38,7 +38,6 @@ var lastPage = null;
 var statePushed = false;
 var popFired = false;
 var hostInfoHeight = 0;
-var menuOpen = null;
 var menuHideResponsive = null;
 var marginLeft = null;
 var pageName;
@@ -675,8 +674,6 @@ function applySkin() {
 
 	setupResponsiveMenuAndTabs();
 
-	keepWindowSize();
-
 	// Debug message actions
 	$('table.debug').unbind('click').click(function() {
 		if ($(this).find('table').is(':visible')) {
@@ -731,9 +728,7 @@ function applySkin() {
 		return dfd;
 	});
 
-	$.when.apply(this, showPage).done(function() {
-		responsiveUI('force');
-	});
+	keepWindowSize();
 
 	displayMessages();
 }
@@ -865,7 +860,7 @@ function markFilterTDs(child, filterNum) {
 }
 
 function makeFiltersResponsive() {
-	storage=Storages.localStorage;
+	storage = Storages.localStorage;
 
 	filterNum = 0;
 
@@ -951,7 +946,7 @@ function makeFiltersResponsive() {
 }
 
 function toggleFilterAndIcon(id, child, initial) {
-	storage=Storages.localStorage;
+	storage = Storages.localStorage;
 
 	state = storage.get('filterVisibility');
 
@@ -1019,6 +1014,7 @@ function setGraphTabs() {
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').unbind('click').click(function(event) {
 		page = basename($(this).attr('href'));
+
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
 			return;
 		} else {
@@ -1032,16 +1028,20 @@ function setupResponsiveMenuAndTabs() {
 		}
 
 		if ($(this).hasClass('selected')) {
-			if (menuOpen) {
-				menuHide(tree);
-			} else {
-				menuShow(tree);
+			if ($('#navigation').length) {
+				if (menuOpen(page)) {
+					menuHide(tree);
+				} else {
+					menuShow(tree);
+				}
 			}
-		} else if (pageName == basename($(this).attr('href'))) {
-			if (menuOpen) {
-				menuHide(tree);
-			} else {
-				menuShow(tree);
+		} else if (pageName == page) {
+			if ($('#navigation').length) {
+				if (menuOpen(page)) {
+					menuHide(tree);
+				} else {
+					menuShow(tree);
+				}
 			}
 		} else {
 			id   = $(this).attr('id');
@@ -1056,7 +1056,32 @@ function setupResponsiveMenuAndTabs() {
 	});
 }
 
+function loadMenuStateOpen(page) {
+	storage = Storages.localStorage;
+	page    = page.replace('.php', '');
+
+	state = storage.get('menuState_' + page);
+	if (state == 'hidden') {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function menuOpen(page) {
+	storage = Storages.localStorage;
+	page    = page.replace('.php', '');
+
+	if ($('#navigation').is(':visible')) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 function responsiveUI(event) {
+	page = basename(location.pathname);
+
 	if (event != 'force') {
 	    if (new Date() - resizeTime < resizeDelta) {
 			myEvent = event;
@@ -1076,20 +1101,18 @@ function responsiveUI(event) {
 		tree = false;
 	}
 
-	if ($(window).width() < 640) {
-		menuHide(tree);
-		menuHideResponsive = true;
-	} else if (menuHideResponsive == true) {
-		if (!menuOpen) {
-			menuShow(tree);
+	if ($('#navigation').length) {
+		if ($(window).width() < 640) {
+			menuHide(tree);
+			menuHideResponsive = true;
+		} else if (menuHideResponsive == true) {
+			if (!loadMenuStateOpen(page)) {
+				menuShow(tree);
+			} else {
+				menuHide(tree);
+			}
 			menuHideResponsive = false;
 		}
-	} else if (menuOpen != null) {
-		if (!menuOpen) {
-			menuHide(tree);
-		}
-	} else if (!menuOpen) {
-		menuShow(tree);
 	}
 
 	if ($('#navigation').length && $('#navigation').is(':visible')) {
@@ -1434,6 +1457,9 @@ function tuneFilter(object, width) {
 }
 
 function menuHide() {
+	storage = Storages.localStorage;
+	page = basename(location.pathname).replace('.php', '');
+
 	myClass = '';
     curMargin = $('#navigation').outerWidth();
 	if (curMargin > 0) {
@@ -1454,10 +1480,13 @@ function menuHide() {
 		});
 	}
 
-	menuOpen = false;
+	storage.set('menuState_' + page, 'hidden');
 }
 
 function menuShow(tree) {
+	storage = Storages.localStorage;
+	page = basename(location.pathname).replace('.php', '');
+
 	myClass = '';
 
 	if ($('.cactiTreeNavigationArea').length) {
@@ -1476,7 +1505,7 @@ function menuShow(tree) {
 		});
 	}
 
-	menuOpen = true;
+	storage.set('menuState_' + page, 'visible');
 }
 
 function loadTopTab(href, id, force) {
@@ -1849,7 +1878,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 }
 
 function setupCollapsible() {
-	storage=Storages.localStorage;
+	storage = Storages.localStorage;
 
 	$('.collapsible').each(function(data) {
 		id=$(this).attr('id')+'_cs';
@@ -1978,7 +2007,7 @@ function setupBreadcrumbs() {
  *  load.  It includes the 'initial' boolean to initialize the page */
 function saveTableWidths(initial) {
 	// We will save columns widths persistently
-	storage=Storages.localStorage;
+	storage = Storages.localStorage;
 
 	// Initialize table width on the page
 	$('.cactiTable').each(function(data) {
