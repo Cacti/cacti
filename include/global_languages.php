@@ -175,18 +175,23 @@ function apply_locale($language) {
 function repair_locale($language) {
 	global $lang2locale;
 
-	$locale = $language;
-
 	/* Repair legacy language support */
-	if (strpos($language, '-') === false) {
+	$found_locale = '';
+	$locale = str_replace('_','-', $language);
+	if (array_key_exists($locale, $lang2locale)) {
+		$language = $locale;
+	} else {
+		$wanted_locale = substr($language, 0, 2);
+		$language = '';
 		foreach ($lang2locale as $locale => $data) {
-			if (substr($locale, 0, 2) == $language) {
+			if (substr($locale, 0, 2) == $wanted_locale) {
+				$language = $locale;
 				break;
 			}
 		}
 	}
 
-	return $locale;
+	return $language;
 }
 
 /**

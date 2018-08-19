@@ -18,7 +18,7 @@ function log_install($filename, $data, $flags = FILE_APPEND) {
 		if (!empty($filename)) {
 			$logname .= "-$filename";
 		}
-		file_put_contents($config['base_path'] . "/log/$logname.log", $data . PHP_EOL, $flags);
+		file_put_contents($config['base_path'] . "/log/$logname.log", date('Y-m-d H:i:s ') . $data . PHP_EOL, $flags);
 	}
 }
 
@@ -365,9 +365,9 @@ class Installer implements JsonSerializable {
 
 	private function setLanguage($param_language = '') {
 		if (isset($param_language) && strlen($param_language)) {
-			$langauge = apply_locale($param_language);
+			$language = apply_locale($param_language);
 			if (empty($language)) {
-				$this->addError('Language', 'Failed to apply specified language');
+				$this->addError(Installer::STEP_WELCOME, 'Language', 'Failed to apply specified language');
 			} else {
 				$this->language = $param_language;
 				set_user_setting('user_language', $param_language);
@@ -382,7 +382,7 @@ class Installer implements JsonSerializable {
 				$this->rrdver = $param_rrdver;
 				set_config_option('rrdtool_version', $this->rrdver);
 			} else {
-				$this->addError('RRDVersion',__('Failed to set specified RRDTool version'));
+				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'RRDVersion', __('Failed to set specified RRDTool version'));
 			}
 		}
 	}
@@ -397,7 +397,7 @@ class Installer implements JsonSerializable {
 				$this->theme = $param_theme;
 				set_config_option('selected_theme', $this->theme);
 			} else {
-				$this->addError('Theme', __('Invalid Theme Specified'));
+				$this->addError(Installer::STEP_WELCOME, 'Theme', __('Invalid Theme Specified'));
 			}
 		}
 	}
@@ -428,7 +428,7 @@ class Installer implements JsonSerializable {
 							'/install/cli_test.php ' . $input);
 
 						if ($output != $input * $input) {
-							$this->addError('Paths', $name, __('PHP did not return expected result'));
+							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('PHP did not return expected result'));
 							$should_set = false;
 						}
 					}
@@ -436,7 +436,7 @@ class Installer implements JsonSerializable {
 					if ($should_set && $name != 'path_cactilog' && $name != 'path_spine') {
 						$should_set = file_exists($param_paths[$name]);
 						if (!$should_set) {
-							$this->addError('Paths', $name, __('File not found'));
+							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('File not found'));
 						}
 					}
 
@@ -456,7 +456,7 @@ class Installer implements JsonSerializable {
 		if (!empty($param_profile)) {
 			$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($param_profile));
 			if ($valid === false || $valid != $param_profile) {
-				$this->addError('Profile', __('Failed to apply specified profile'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile'));
 			} else {
 				$this->profile = $param_profile;
 				set_config_option('install_profile', $param_profile);
@@ -467,7 +467,7 @@ class Installer implements JsonSerializable {
 	private function setAutomationMode($param_mode = null) {
 		if ($param_mode != null) {
 			if (!$this->setTrueFalse($param_mode, $this->automationMode, 'automation_mode')) {
-				$this->addError('Automation','Mode', __('Failed to apply specified mode'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Mode', __('Failed to apply specified mode'));
 			}
 		}
 		log_install('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
@@ -476,7 +476,7 @@ class Installer implements JsonSerializable {
 	private function setAutomationOverride($param_override = null) {
 		if ($param_override != null) {
 			if (!$this->setTrueFalse($param_override, $this->automationOverride, 'automation_override')) {
-				$this->addError('Automation','Override', __('Failed to apply specified automation override'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Override', __('Failed to apply specified automation override'));
 			}
 		}
 		log_install('automation',"setAutomationOverride($param_override) returns with $this->automationOverride");
@@ -489,7 +489,7 @@ class Installer implements JsonSerializable {
 				$this->cronInterval = $param_mode;
 				set_config_option('cron_interval', $param_mode);
 			} else {
-				$this->addError('Poller','Cron', __('Failed to apply specified cron interval'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Poller','Cron', __('Failed to apply specified cron interval'));
 			}
 		}
 		log_install('automation',"setCronInterval($param_mode) returns with $this->cronInterval");
@@ -499,7 +499,7 @@ class Installer implements JsonSerializable {
 		if (!empty($param_range)) {
 			$ip_details = cacti_pton($param_range);
 			if ($ip_details === false) {
-				$this->addError('Automation', 'Range', __('Failed to apply specified Automation Range'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply specified Automation Range'));
 			} else {
 				$this->automationRange = $param_range;
 				set_config_option('install_automation_range', $param_range);
