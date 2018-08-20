@@ -27,7 +27,7 @@
      average and peak calculations.
    @returns - (mixed) The RRDfile names */
 function get_rrdfile_names() {
-	return db_fetch_assoc('SELECT local_data_id, data_source_path FROM data_template_data WHERE local_data_id != 0');
+	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path FROM data_template_data LEFT JOIN poller_item ON poller_item.local_data_id = data_template_data.local_data_id WHERE poller_item.local_data_id IS NOT NULL AND data_template_data.local_data_id != 0');
 }
 
 /* dsstats_debug - this simple routine print's a standard message to the console
