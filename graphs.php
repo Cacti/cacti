@@ -1437,12 +1437,15 @@ function graph_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	$gtsql = get_common_graph_templates($graph);
-
 	if (!empty($graph['local_graph_id'])) {
 		$graph_template_id = get_current_graph_template($graph['local_graph_id']);
+		$gtsql = get_common_graph_templates($graph);
 	} else {
 		$graph_template_id = 0;
+		$gtsql = 'SELECT gt.id, gt.name 
+			FROM graph_templates AS gt
+			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph) 
+			ORDER BY name';
 	}
 
 	$form_array = array(

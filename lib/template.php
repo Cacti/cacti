@@ -1387,7 +1387,26 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
 				$input_fields));
 	} else {
-		return array();
+		/* create each data source, but don't duplicate */
+		$data_source = db_fetch_row_prepared('SELECT dl.*
+			FROM data_template AS dt
+			INNER JOIN data_local AS dl
+			ON dl.data_template_id=dt.id
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.data_template_id=dt.id
+			INNER JOIN graph_templates_item AS gti
+			ON gti.task_item_id=dtr.id
+			WHERE dtr.local_data_id > 0
+			AND dl.host_id = ?
+			AND dl.data_template_id = ?
+			AND dtr.data_source_name = ?
+			AND gti.local_graph_id > 0
+			AND gti.graph_template_id = ?
+			GROUP BY dt.id
+			ORDER BY dt.name',
+			array($host_id, $data_template['id'], $data_template['data_source_name'], $graph_template_id));
+
+		return $data_source;
 	}
 }
 
