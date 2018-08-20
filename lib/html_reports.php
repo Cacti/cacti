@@ -293,13 +293,23 @@ if ($sql_where != '') {
 		get_allowed_graphs($sql_where),
 		'local_graph_id', 'title_cache'
 	);
+	$agg   = array_rekey(
+		get_allowed_aggregate_graphs($sql_where),
+		'local_graph_id', 'title_cache'
+	};
 } else {
 	$sql_where = 'gl.graph_template_id=0';
 	$graphs = array_rekey(
 		get_allowed_graphs($sql_where),
 		'local_graph_id', 'title_cache'
 	);
+	$agg   = array_rekey(
+		get_allowed_aggregate_graphs($sql_where),
+		'local_graph_id', 'title_cache'
+	};
 }
+
+$graphs = array_merge($graphs, $agg);
 
 $trees = array_rekey(
 	get_allowed_trees(),

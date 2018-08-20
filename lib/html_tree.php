@@ -635,9 +635,13 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	if (sizeof($data_queries)) {
 		if ($leaf['host_id'] > 0) {
 			$ntg = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
+			$agg = get_allowed_aggregate_graph('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
 		} else {
 			$ntg = get_allowed_graphs('gl.snmp_query_id=0');
+			$agg = get_allowed_aggregate_graph('gl.snmp_query_id=0');
 		}
+
+		$ntg = array_merge($ntg, $agg);
 
 		foreach ($data_queries as $data_query) {
 			if ($data_query['id'] == 0) {
@@ -1335,6 +1339,9 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		$graphs = get_allowed_graphs($sql_where);
+		$agg    = get_allowed_aggregate_graphs($sql_where);
+
+		$graphs = array_merge($graphs, $agg);   
 
 		/* let's sort the graphs naturally */
 		usort($graphs, 'naturally_sort_graphs');
@@ -1429,6 +1436,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $graph_template['id'];
 
 				$graphs = get_allowed_graphs($sql_where);
+				$agg    = get_allowed_aggregate_graphs($sql_where);
+				$graphs = array_merge($graphs, $agg);
 
 				/* let's sort the graphs naturally */
 				usort($graphs, 'naturally_sort_graphs');
@@ -1486,6 +1495,8 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
 				$graphs = get_allowed_graphs($sql_where);
+				$agg    = get_allowed_aggregate_graphs($sql_where);
+				$graphs = array_merge($graphs, $agg);
 
 				/* re-key the results on data query index */
 				$snmp_index_to_graph = array();
