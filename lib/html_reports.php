@@ -296,7 +296,7 @@ if ($sql_where != '') {
 	$agg   = array_rekey(
 		get_allowed_aggregate_graphs($sql_where),
 		'local_graph_id', 'title_cache'
-	};
+	);
 } else {
 	$sql_where = 'gl.graph_template_id=0';
 	$graphs = array_rekey(
@@ -306,7 +306,7 @@ if ($sql_where != '') {
 	$agg   = array_rekey(
 		get_allowed_aggregate_graphs($sql_where),
 		'local_graph_id', 'title_cache'
-	};
+	);
 }
 
 $graphs = array_merge($graphs, $agg);
