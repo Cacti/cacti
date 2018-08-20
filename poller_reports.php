@@ -26,10 +26,10 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-require(__DIR__ . '/include/cli_check.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/rrd.php');
-require($config['base_path'] . '/lib/reports.php');
+require_once(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/reports.php');
 
 /*  display_version - displays version information */
 function display_version() {
