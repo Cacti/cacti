@@ -1854,7 +1854,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 				$.each(submitData, function(index, value) {
 					if (typeof formData[index] != 'undefined') {
 						if (formData[index] != value) {
-							if (index != 'settings_sendmail_path' && index != 'rrd_archive' && index != 'csrfMagicToken') {
+							if (index != 'settings_sendmail_path' && index != 'rrd_archive' && index != '__csrf_magicSubmit') {
 								console.log('Index:'+index+'Submit:'+value+', Orig:'+formData[index]);
 								changed = true;
 							}
