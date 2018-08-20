@@ -28,7 +28,8 @@ include_once('./lib/template.php');
 include_once('./lib/api_data_source.php');
 
 $di_actions = array(
-	1 => __('Delete')
+	1 => __('Delete'),
+	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -78,6 +79,50 @@ switch (get_request_var('action')) {
 /* --------------------------
     The Save Function
    -------------------------- */
+
+function duplicate_data_input($_data_input_id, $input_title) {
+	$orig_input = db_fetch_row_prepared('SELECT * 
+		FROM data_input 
+		WHERE id = ?', 
+		array($_data_input_id));
+
+	if (sizeof($orig_input)) {
+		unset($save);
+		$save['id']           = 0;
+		$save['hash']         = get_hash_data_input(0);
+		$save['name']         = str_replace('<input_title>', $orig_input['name'], $input_title);
+		$save['input_string'] = $orig_input['input_string'];
+		$save['type_id']      = $orig_input['type_id'];
+
+		$data_input_id = sql_save($save, 'data_input');
+
+		if (!empty($data_input_id)) {
+			$data_input_fields = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_fields
+				WHERE data_input_id = ?',
+				array($_data_input_id));
+
+			if (sizeof($data_input_fields)) {
+				foreach($data_input_fields as $dif) {
+					unset($save);
+					$save['id']            = 0;
+					$save['hash']          = get_hash_data_input(0, 'data_input_field');
+					$save['data_input_id'] = $data_input_id;
+					$save['name']          = $dif['name'];
+					$save['data_name']     = $dif['data_name'];
+					$save['input_output']  = $dif['input_output'];
+					$save['update_rra']    = $dif['update_rra'];
+					$save['sequence']      = $dif['sequence'];
+					$save['type_code']     = $dif['type_code'];
+					$save['regexp_match']  = $dif['regexp_match'];
+					$save['allow_nulls']   = $dif['allow_nulls'];
+
+					$data_input_field_id = sql_save($save, 'data_input_fields');
+				}
+			}
+		}
+	}
+}
 
 function form_save() {
 	global $registered_cacti_names;
@@ -198,9 +243,13 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+			if (get_request_var('drp_action') == '1') { // delete 
 				for ($i=0;($i<count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
+				}
+			} elseif (get_request_var('drp_action') == '2') { // duplicate
+				for ($i=0;($i<count($selected_items));$i++) {
+					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
 		}
@@ -212,7 +261,7 @@ function form_actions() {
 	/* setup some variables */
 	$di_list = ''; $i = 0;
 
-	/* loop through each of the data queries and process them */
+	/* loop through each of the data inputs and process them */
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
@@ -233,7 +282,7 @@ function form_actions() {
 	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && sizeof($di_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+		if (get_request_var('drp_action') == '1') { // delete 
 			$graphs = array();
 
 			print "<tr>
@@ -241,6 +290,14 @@ function form_actions() {
 					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
 					<div class='itemlist'><ul>$di_list</ul></div>
 				</td>
+			</tr>\n";
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Methods(s).') . "</p>
+                    <div class='itemlist'><ul>$di_list</ul></div>
+                    <p><strong>" . __('Input Name:'). "</strong><br>"; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
+                </td>
 			</tr>\n";
 		}
 
