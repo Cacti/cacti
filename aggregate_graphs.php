@@ -31,6 +31,7 @@ include_once('./lib/api_aggregate.php');
 include_once('./lib/template.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_form_template.php');
+include_once('./lib/reports.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
@@ -38,6 +39,7 @@ aggregate_prune_graphs();
 
 $graph_actions = array(
 	1 => __('Delete'),
+	4 => __('Place Graphs on Report'),
 	2 => __('Migrate Aggregate to use a Template'),
 	3 => __('Create New Aggregate from Aggregates')
 );
@@ -268,6 +270,19 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '3') { // create aggregate from aggregate
 				$aggregate_name = get_request_var('aggregate_name');
 				api_aggregate_create($aggregate_name, $selected_items);
+			} elseif (get_request_var('drp_action') == '4') { // add graphs to report
+                $good = true;
+                for ($i=0;($i<count($selected_items));$i++) {
+                    if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
+                        raise_message('reports_add_error');
+                        $good = false;
+                        break;
+                    }
+                }
+
+                if ($good) {
+                    raise_message('reports_graphs_added');
+                }
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 				api_aggregate_associate($selected_items);
 			} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
@@ -407,6 +422,39 @@ function form_actions() {
 			print "	<tr><td class='textArea'><input type='text' class='ui-state-default ui-corner-all' name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
+		} elseif (get_request_var('drp_action') == '4') {
+			global $alignment, $graph_timespans;
+
+			$reports = db_fetch_assoc_prepared('SELECT id, name
+				FROM reports
+				WHERE user_id = ?
+				ORDER BY name',
+				array($_SESSION['sess_user_id']));
+
+			if (sizeof($reports)) {
+				print "<tr>
+					<td class='textArea'>
+						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
+						<div class='itemlist'><ul>$graph_list</ul></div>
+					</td>
+				</tr>
+				<tr><td>" . __('Report Name') . '<br>';
+				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Timespan') . '<br>';
+				form_dropdown('timespan',$graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Align') . '<br>';
+				form_dropdown('align',$alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
+				print "</td></tr>\n";
+
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
+			} else {
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>\n";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+			}
 		} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 			print "<tr>
 				<td class='textArea'>
