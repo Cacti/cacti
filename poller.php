@@ -26,14 +26,14 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-require_once(__DIR__ . '/include/cli_check.php');
-require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/rrd.php');
-require_once($config['base_path'] . '/lib/dsstats.php');
-require_once($config['base_path'] . '/lib/dsdebug.php');
-require_once($config['base_path'] . '/lib/boost.php');
-require_once($config['base_path'] . '/lib/reports.php');
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/dsdebug.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/reports.php');
 
 function sig_handler($signo) {
 	switch ($signo) {
@@ -184,7 +184,7 @@ if (sizeof($poller)) {
 	$concurrent_processes = read_config_option('concurrent_processes');
 }
 
-if (!isset($concurrent_process) || intval($concurrent_processes) < 1) {
+if (!isset($concurrent_processes) || intval($concurrent_processes) < 1) {
 	$concurrent_processes = 1;
 }
 
