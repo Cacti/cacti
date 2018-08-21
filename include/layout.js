@@ -3087,6 +3087,12 @@ $.widget('custom.dropcolor', {
 			minLength: 0,
 			source: $.proxy(this, '_source'),
 			select: $.proxy(this, '_select'),
+			search: function() {
+				$(this).data('ui-autocomplete').menu.bindings = $();
+			},
+			close: function() {
+				$(this).data('ui-autocomplete').menu.bindings = $();
+			},
 			create: function() {
 				$(this).data('ui-autocomplete')._renderItem = function(ul, item) {
 					var regExp = /\(([^)]+)\)/;
@@ -3132,8 +3138,6 @@ $.widget('custom.dropcolor', {
 			this.wrapper.find('#bgc').css('background-color', '');
 			this.wrapper.find('input').val(ui.item.value);
 		}
-
-		$('.colordropdown').val(id).css('background-color', '#'+color);
 	},
 
 	_createShowAllButton: function() {
