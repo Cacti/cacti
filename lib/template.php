@@ -1121,7 +1121,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			/* check if the data source already exists */
 			$previous_data_source = data_source_exists($graph_template_id, $host_id, $data_template, $snmp_query_array);
 
-			if (sizeof($previous_data_source)) {
+			$custom_data = create_graph_has_custom_data_properties($suggested_vals);
+
+			if (sizeof($previous_data_source) && !$custom_data) {
 				$cache_array['local_data_id'][$data_template['id']] = $previous_data_source['id'];
 			} else {
 				unset($save);
@@ -1359,9 +1361,122 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
+/* create_graph_has_custom_data_properties - checks to see if this graphs data sources have custom
+   data source properties.  If so, then you must duplicate the Data Source and not use
+   the existing one.
+   @arg $sugested_vals - any additional information to be included in the new graphs or
+	data sources must be included in the array. data is to be included in the following format:
+	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
+function create_graph_has_custom_data_properties($suggested_vals) {
+	if (!sizeof($suggested_vals)) {
+		return false;
+	} else {
+		foreach($suggested_vals as $template => $items) {
+			if (sizeof($items)) {
+				foreach($items as $type => $item) {
+					if ($type == 'data_template') {
+						return true;
+					} elseif ($type == 'data_template_item') {
+						return true;
+					} elseif (is_numeric($type)) {
+						if (sizeof($item)) {
+							foreach($item as $ftype => $fitem) {
+								if ($ftype == 'data_template') {
+									return true;
+								} elseif ($ftype == 'data_template_item') {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
+	/* ================= input validation ================= */
+	input_validate_input_number($form_id1);
+	/* ==================================================== */
+
+	if ($form_type == 'cg') {
+		$graph_template_id = $form_id1;
+	} elseif ($form_type == 'sg') {
+		foreach ($form_array2 as $form_id2 => $form_array3) {
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id2);
+			/* ==================================================== */
+
+			$snmp_index_array = $form_array3;
+
+			$snmp_query_array['snmp_query_id'] = $form_id1;
+			$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
+			$snmp_query_array['snmp_query_graph_id'] = $form_id2;
+		}
+
+		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+			FROM snmp_query_graph
+			WHERE id = ?',
+			array($snmp_query_array['snmp_query_graph_id']));
+	}
+
+	if ($form_type == 'cg') {
+		$snmp_query_array = array();
+
+		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
+
+		if ($return_array !== false) {
+			debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+			/* lastly push host-specific information to our data sources */
+			if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+				foreach($return_array['local_data_id'] as $item) {
+					push_out_host($host_id, $item);
+				}
+			} else {
+				debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+			}
+		} else {
+			debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+		}
+	} elseif ($form_type == 'sg') {
+		foreach ($snmp_index_array as $snmp_index => $true) {
+			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
+
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+
+			if ($return_array !== false) {
+				debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+				/* lastly push host-specific information to our data sources */
+				if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+					foreach($return_array['local_data_id'] as $item) {
+						push_out_host($host_id, $item);
+					}
+				} else {
+					debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+				}
+			} else {
+				debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+			}
+		}
+	}
+}
+
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (sizeof($snmp_query_array)) {
-		$input_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
+		$input_fields = db_fetch_cell_prepared('SELECT 
+			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
 			FROM snmp_query_graph_rrd
 			WHERE snmp_query_graph_id = ?',
 			array($snmp_query_array['snmp_query_graph_id']));

@@ -23,12 +23,13 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/data_query.php');
 include_once('./lib/api_data_source.php');
-include_once('./lib/utility.php');
-include_once('./lib/sort.php');
+include_once('./lib/data_query.php');
 include_once('./lib/html_form_template.php');
+include_once('./lib/html_graph.php');
+include_once('./lib/sort.php');
 include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -120,7 +121,7 @@ function form_save() {
 		}
 
 		if (isset($selected_graphs)) {
-			host_new_graphs($host_id, $host_template_id, $selected_graphs);
+			html_graph_new_graphs('graphs_new.php', $host_id, $host_template_id, $selected_graphs);
 			exit;
 		}
 
@@ -211,218 +212,9 @@ function host_new_graphs_save($host_id) {
 
 		foreach ($form_array as $form_id1 => $form_array2) {
 			/* enumerate information from the arrays stored in post variables */
-
-			/* ================= input validation ================= */
-			input_validate_input_number($form_id1);
-			/* ==================================================== */
-
-			if ($form_type == 'cg') {
-				$graph_template_id = $form_id1;
-			} elseif ($form_type == 'sg') {
-				foreach ($form_array2 as $form_id2 => $form_array3) {
-					/* ================= input validation ================= */
-					input_validate_input_number($form_id2);
-					/* ==================================================== */
-
-					$snmp_index_array = $form_array3;
-
-					$snmp_query_array['snmp_query_id'] = $form_id1;
-					$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
-					$snmp_query_array['snmp_query_graph_id'] = $form_id2;
-				}
-
-				$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
-					FROM snmp_query_graph
-					WHERE id = ?',
-					array($snmp_query_array['snmp_query_graph_id']));
-			}
-
-			if ($current_form_type == 'cg') {
-				$snmp_query_array = array();
-
-				$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
-
-				if ($return_array !== false) {
-					debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
-
-					/* lastly push host-specific information to our data sources */
-					if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-						foreach($return_array['local_data_id'] as $item) {
-							push_out_host($host_id, $item);
-						}
-					} else {
-						debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
-					}
-				} else {
-					debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
-				}
-			} elseif ($current_form_type == 'sg') {
-				foreach ($snmp_index_array as $snmp_index => $true) {
-					$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
-
-					$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
-
-					if ($return_array !== false) {
-						debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
-
-						/* lastly push host-specific information to our data sources */
-						if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
-							foreach($return_array['local_data_id'] as $item) {
-								push_out_host($host_id, $item);
-							}
-						} else {
-							debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
-						}
-					} else {
-						debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
-					}
-				}
-			}
+			create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values);
 		}
 	}
-}
-
-function host_new_graphs($host_id, $host_template_id, $selected_graphs_array) {
-	/* we use object buffering on this page to allow redirection to another page if no
-	fields are actually drawn */
-	ob_start();
-
-	top_header();
-
-	form_start('graphs_new.php');
-
-	$snmp_query_id = 0;
-	$num_output_fields = array();
-
-	foreach ($selected_graphs_array as $form_type => $form_array) {
-		foreach ($form_array as $form_id1 => $form_array2) {
-			/* ================= input validation ================= */
-			input_validate_input_number($form_id1);
-			/* ==================================================== */
-
-			if ($form_type == 'cg') {
-				$graph_template_id   = $form_id1;
-				$graph_template_name = db_fetch_cell_prepared('SELECT name
-					FROM graph_templates
-					WHERE id = ?',
-					array($graph_template_id));
-
-				html_start_box(__('Create Graph from %s', html_escape($graph_template_name)), '100%', '', '3', 'center', '');
-			} elseif ($form_type == 'sg') {
-				foreach ($form_array2 as $form_id2 => $form_array3) {
-					/* ================= input validation ================= */
-					input_validate_input_number($snmp_query_id);
-					input_validate_input_number($form_id2);
-					/* ==================================================== */
-
-					$snmp_query_id       = $form_id1;
-					$snmp_query_graph_id = $form_id2;
-					$num_graphs          = sizeof($form_array3);
-
-					$snmp_query = db_fetch_cell_prepared('SELECT name
-						FROM snmp_query
-						WHERE id = ?',
-						array($snmp_query_id));
-
-					$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
-						FROM snmp_query_graph
-						WHERE id = ?',
-						array($snmp_query_graph_id));
-				}
-
-				if ($num_graphs > 1) {
-					$header = __('Create %s Graphs from %s', $num_graphs, html_escape($snmp_query));
-				} else {
-					$header = __('Create Graph from %s', html_escape($snmp_query));
-				}
-
-				/* DRAW: Data Query */
-				html_start_box($header, '100%', '', '3', 'center', '');
-			}
-
-			/* ================= input validation ================= */
-			input_validate_input_number($graph_template_id);
-			/* ==================================================== */
-
-			$data_templates = db_fetch_assoc_prepared('SELECT
-				data_template.name AS data_template_name,
-				data_template_rrd.data_source_name,
-				data_template_data.*
-				FROM (data_template, data_template_rrd, data_template_data, graph_templates_item)
-				WHERE graph_templates_item.task_item_id = data_template_rrd.id
-				AND data_template_rrd.data_template_id = data_template.id
-				AND data_template_data.data_template_id = data_template.id
-				AND data_template_rrd.local_data_id = 0
-				AND data_template_data.local_data_id = 0
-				AND graph_templates_item.local_graph_id = 0
-				AND graph_templates_item.graph_template_id = ?
-				GROUP BY data_template.id
-				ORDER BY data_template.name',
-				array($graph_template_id));
-
-			$graph_template = db_fetch_row_prepared('SELECT gt.name AS graph_template_name, gtg.*
-				FROM graph_templates AS gt
-				INNER JOIN graph_templates_graph AS gtg
-				ON gt.id = gtg.graph_template_id
-				WHERE gt.id = ?
-				AND gtg.local_graph_id = 0',
-				array($graph_template_id));
-
-			array_push($num_output_fields, draw_nontemplated_fields_graph($graph_template_id, $graph_template, "g_$snmp_query_id" . '_' . $graph_template_id . '_|field|', __('Graph [Template: %s]', html_escape($graph_template['graph_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-			array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template['graph_template_name'])), false));
-
-			/* DRAW: Data Sources */
-			if (sizeof($data_templates)) {
-				foreach ($data_templates as $data_template) {
-					array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-
-					$data_template_items = db_fetch_assoc_prepared('SELECT
-						data_template_rrd.*
-						FROM data_template_rrd
-						WHERE data_template_rrd.data_template_id = ?
-						AND local_data_id = 0',
-						array($data_template['data_template_id']));
-
-					array_push($num_output_fields, draw_nontemplated_fields_data_source_item($data_template['data_template_id'], $data_template_items, 'di_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|_|field|', '', false, false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
-					array_push($num_output_fields, draw_nontemplated_fields_custom_data($data_template['id'], 'c_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|id|', __('Custom Data [Template: %s]', html_escape($data_template['data_template_name'])), false, false, $snmp_query_id));
-				}
-			}
-
-			html_end_box(false);
-		}
-	}
-
-	/* no fields were actually drawn on the form; just save without prompting the user */
-	if (array_sum($num_output_fields) == 0) {
-		ob_end_clean();
-
-		/* since the user didn't actually click "Create" to POST the data; we have to
-		pretend like they did here */
-		set_request_var('save_component_new_graphs', '1');
-		set_request_var('selected_graphs_array', serialize($selected_graphs_array));
-
-		host_new_graphs_save($host_id);
-
-		header('Location: graphs_new.php?host_id=' . $host_id . '&header=false');
-		exit;
-	}
-
-	/* flush the current output buffer to the browser */
-	ob_end_flush();
-
-	form_hidden_box('host_template_id', $host_template_id, '0');
-	form_hidden_box('host_id', $host_id, '0');
-	form_hidden_box('save_component_new_graphs', '1', '');
-	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
-
-	if (!substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
-		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
-	}
-	load_current_session_value('returnto', 'sess_grn_returnto', '');
-
-	form_save_button(get_nfilter_request_var('returnto'));
-
-	bottom_footer();
 }
 
 /* -------------------
