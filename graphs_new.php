@@ -164,6 +164,8 @@ function host_new_graphs_save($host_id) {
 				$values['sg'][$matches[1]][$matches[2]]['graph_template'][$matches[3]] = $val;
 			}
 		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
+			$values = array();
+
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[3]);
 			/* ==================================================== */
