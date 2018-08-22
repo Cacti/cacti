@@ -107,8 +107,8 @@ function upgrade_to_1_2_0() {
 	if ($debug_id !== false && $debug_id > 0) {
 		// Plugin realms are plugin_id + 100
 		$debug_id += 100;
-		db_execute_prepared('DELETE FROM user_auth_realm WHERE id = ?', array($debug_id));
-		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE id = ?', array($debug_id));
+		db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($debug_id));
+		db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($debug_id));
 	}
 
 	// Fix data source stats column type
@@ -121,15 +121,15 @@ function upgrade_to_1_2_0() {
 	}
 
 	// Resolve issues with bogus templates issue #1761
-	$snmp_queries = db_fetch_assoc('SELECT id, name 
-		FROM snmp_query 
+	$snmp_queries = db_fetch_assoc('SELECT id, name
+		FROM snmp_query
 		ORDER BY id');
 
 	if (sizeof($snmp_queries)) {
 		foreach($snmp_queries as $query) {
 			db_execute_prepared("UPDATE graph_local AS gl
 				INNER JOIN (
-					SELECT graph_template_id 
+					SELECT graph_template_id
 					FROM graph_local AS gl
 					WHERE snmp_query_id = ?
 					HAVING graph_template_id NOT IN (
@@ -143,14 +143,14 @@ function upgrade_to_1_2_0() {
 		}
 	}
 
-	$ids = db_fetch_assoc('SELECT * 
-		FROM graph_local 
-		WHERE snmp_query_id > 0 
+	$ids = db_fetch_assoc('SELECT *
+		FROM graph_local
+		WHERE snmp_query_id > 0
 		AND snmp_query_graph_id = 0');
 
 	if (sizeof($ids)) {
 		foreach($ids as $id) {
-			$query_graph_id = db_fetch_cell_prepared('SELECT id 
+			$query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph
 				WHERE snmp_query_id = ?
 				AND graph_template_id = ?',
