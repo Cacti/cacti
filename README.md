@@ -1,8 +1,29 @@
 # Cacti <sup>TM</sup>
+
 [![Build Status - Develop](https://travis-ci.org/Cacti/cacti.svg?branch=develop)](https://travis-ci.org/Cacti/cacti)
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
 [![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
+
+-----------------------------------------------------------------------------
+
+## 1.2.0 Development
+
+**PLEASE READ**
+
+When updating sources using `git` or by downloading the code directly from GitHub, please ensure that you run through the database upgrade script again if you start to experience any errors about missing tables or columns.  When we add new tables or columns into the database, we update the `cacti.sql` and the upgrade scripts to handle this.  However, as you have already been `upgraded` then the only way to obtain these is to use the `cli/upgrade_database.php` script as such:
+
+```
+sudo -u <website user> php -q cli/upgrade_database.php --forcever=<previous version>
+```
+Or by resetting your database version to the previous version and using the gui, using the following SQL statement:
+```
+update version set cacti = '1.1.38';
+```
+For now, that previous version would be 1.1.38
+
+## DEVELOP branch is currently considered UNSTABLE, use with caution!
+
 -----------------------------------------------------------------------------
 
 Cacti is a complete network graphing solution designed to harness the power of RRDtool's data storage and graphing functionality. Cacti provides following features:

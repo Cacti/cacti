@@ -115,20 +115,31 @@ function exec_poll_php($command, $using_proc_function, $pipes, $proc_fd) {
 /* exec_background - executes a program in the background so that php can continue
      to execute code in the foreground
    @arg $filename - the full pathname to the script to execute
-   @arg $args - any additional arguments that must be passed onto the executable */
-function exec_background($filename, $args = '') {
+   @arg $args - any additional arguments that must be passed onto the executable
+   @arg $redirect_args - any additional arguments for file re-direction.  Otherwise output goes to /dev/null */
+function exec_background($filename, $args = '', $redirect_args = '') {
 	global $config, $debug;
 
 	cacti_log("DEBUG: About to Spawn a Remote Process [CMD: $filename, ARGS: $args]", true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_DEBUG));
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
-			pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
-		} else {
+			if ($redirect_args == '') {
+				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
+			} else {
+				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args . ' ' . $redirect_args, 'r'));
+			}
+		} elseif ($redirect_args == '') {
 			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		} else {
+			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	} elseif (file_exists_2gb($filename)) {
-		exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		if ($redirect_args == '') {
+			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
+		} else {
+			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
+		}
 	}
 }
 
@@ -343,7 +354,7 @@ function poller_update_poller_reindex_from_buffer($host_id, $data_query_id, &$re
 /* process_poller_output - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDtool for processing
   @arg $rrdtool_pipe - the array of pipes containing the file descriptor for rrdtool
-  @arg $remainder - don't use LIMIT if TRUE */
+  @arg $remainder - don't use LIMIT if true */
 function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 	global $config, $debug;
 
@@ -506,6 +517,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 		/* process dsstats information */
 		dsstats_poller_output($rrd_update_array);
+		dsdebug_poller_output($rrd_update_array);
 
 		api_plugin_hook_function('poller_output', $rrd_update_array);
 
@@ -548,6 +560,7 @@ function update_resource_cache($poller_id = 1) {
 		'resource' => array('recursive' => true,  'path' => $rpath),
 		'lib'      => array('recursive' => true,  'path' => $mpath . '/lib'),
 		'include'  => array('recursive' => true,  'path' => $mpath . '/include'),
+		'install'  => array('recursive' => true,  'path' => $mpath . '/install'),
 		'formats'  => array('recursive' => true,  'path' => $mpath . '/formats'),
 		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
 		'images'   => array('recursive' => true,  'path' => $mpath . '/images'),
@@ -646,17 +659,17 @@ function update_resource_cache($poller_id = 1) {
 		if (sizeof($cache)) {
 			foreach($cache as $item) {
 				if (!file_exists($item['path'])) {
-					db_execute_prepared('DELETE FROM poller_resource_cache 
-						WHERE path = ?', 
+					db_execute_prepared('DELETE FROM poller_resource_cache
+						WHERE `path` = ?',
 						array($item['path']));
 				}
 			}
 		}
 	} elseif ($poller_id > 1) {
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
-		$plugin_paths = db_fetch_assoc('SELECT resource_type, path 
-			FROM poller_resource_cache 
-			WHERE path LIKE "plugins/%" 
+		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
+			FROM poller_resource_cache
+			WHERE `path` LIKE "plugins/%"
 			GROUP BY resource_type');
 
 		if (sizeof($plugin_paths)) {
@@ -764,13 +777,15 @@ function update_db_from_path($path, $type, $recursive = true) {
 					$save['path'] = $spath;
 					$save['id']   = db_fetch_cell_prepared('SELECT id
 						FROM poller_resource_cache
-						WHERE path = ?',
+						WHERE `path` = ?',
 						array($save['path']));
 
+					$entry_path = $path. DIRECTORY_SEPARATOR . $entry;
 					$save['resource_type'] = $type;
-					$save['md5sum']        = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+					$save['md5sum']        = md5_file($entry_path);
 					$save['update_time']   = date('Y-m-d H:i:s');
-					$save['contents']      = base64_encode(file_get_contents($path . DIRECTORY_SEPARATOR . $entry));
+					$save['attributes']    = fileperms($entry_path);
+					$save['contents']      = base64_encode(file_get_contents($entry_path));
 
 					sql_save($save, 'poller_resource_cache');
 				}
@@ -796,7 +811,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 				$save['id']   = db_fetch_cell_prepared('SELECT id
 					FROM poller_resource_cache
-					WHERE path = ?',
+					WHERE `path` = ?',
 					array($save['path']));
 
 				$save['resource_type'] = $type;
@@ -828,9 +843,9 @@ function resource_cache_out($type, $path) {
 	$curr_md5      = md5sum_path($path['path']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
-		$entries = db_fetch_assoc_prepared('SELECT id, path, md5sum 
-			FROM poller_resource_cache 
-			WHERE resource_type = ?', 
+		$entries = db_fetch_assoc_prepared('SELECT id, `path`, md5sum, attributes
+			FROM poller_resource_cache
+			WHERE resource_type = ?',
 			array($type));
 
 		if (sizeof($entries)) {
@@ -850,6 +865,7 @@ function resource_cache_out($type, $path) {
 
 				if (is_dir(dirname($mypath))) {
 					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
+						$attributes = empty($e['attributes']) ? 0 : $e['attributes'];
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
@@ -859,26 +875,28 @@ function resource_cache_out($type, $path) {
 
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php') {
-							if ($config['cacti_server_os'] == 'win32') {
-								$tmpfile = '%TEMP%' . DIRECTORY_SEPARATOR . 'cachecheck.php';
-								$tmpdir  = '%TEMP%';
-							} else {
-								$tmpfile = '/tmp/cachecheck.php';
-								$tmpdir  = '/tmp';
-							}
+							$tmpdir = sys_get_temp_dir();
+							$tmpfile = tempnam($tmpdir,'ccp');
 
-							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && !is_writable($tmpfile))) {
+							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
 									$output = system($php_path . ' -l ' . $tmpfile, $exit);
 									if ($exit == 0) {
-										cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
+										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'POLLER');
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
+											if ($attributes != 0) {
+												chmod($mypath, $attributes);
+												if (fileperms($mypath) != $attributes) {
+													cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'POLLER');
+												}
+											}
 										} else {
-											cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
+											cacti_log("ERROR: Cache in cannot write to '$mypath', purge this location");
 										}
 									} else {
-										cacti_log("ERROR: PHP Source File '" . $mypath . "' from Cache has a Syntax error!", false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath' from Cache has an error whilst checking syntax ($exit) whilst executing: $php_path -l $tmpfile", false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath'': " . str_replace("\n"," ",str_replace("\t"," ", $output)), false, 'POLLER');
 									}
 
 									unlink($tmpfile);
@@ -891,6 +909,12 @@ function resource_cache_out($type, $path) {
 						} elseif (is_writeable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 							cacti_log("INFO: Updating '" . $mypath . "' from Cache!", false, 'POLLER');
 							file_put_contents($mypath, $contents);
+							if ($attributes != 0) {
+								chmod($mypath, $attributes);
+								if (fileperms($mypath) != $attributes) {
+									cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'POLLER');
+								}
+							}
 						} else {
 							cacti_log("ERROR: Cache in cannot write to '" . $mypath . "', purge this location");
 						}
@@ -958,9 +982,9 @@ function replicate_out($remote_poller_id = 1) {
 	global $config;
 
 	if ($config['poller_id'] == 1) {
-		$cinfo = db_fetch_row_prepared('SELECT * 
-			FROM poller 
-			WHERE id = ?', 
+		$cinfo = db_fetch_row_prepared('SELECT *
+			FROM poller
+			WHERE id = ?',
 			array($remote_poller_id));
 
 		if (!sizeof($cinfo)) {

@@ -173,6 +173,10 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
 		}
 	} else {
 		$output = 'class="nowrap"';
+
+		if ($width != '') {
+			$output .= " style='width:$width;'";
+		}
 	}
 
 	if ($title != '') {
@@ -205,9 +209,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') ."' title='$save_message'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
@@ -305,7 +309,7 @@ function set_request_var($variable, $value) {
 
 /* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
      returning a default value if the request variable does not exist.  When Cacti
-     is set to 'developer_mode', it will log all instances where a request variable
+     has 'log_validation' set on, it will log all instances where a request variable
      has not first been filtered.
    @arg $name - the name of the request variable. this should be a valid key in the
      $_REQUEST array
@@ -315,12 +319,12 @@ function set_request_var($variable, $value) {
 function get_request_var($name, $default = '') {
 	global $_CACTI_REQUEST;
 
-	$developer = read_config_option('developer_mode');
+	$log_validation = read_config_option('log_validation');
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
 	} elseif (isset_request_var($name)) {
-		if ($developer == 'on') {
+		if ($log_validation == 'on') {
 			html_log_input_error($name);
 		}
 
@@ -410,7 +414,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				}
 			} elseif ($filter == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 				$valid = true;
-				$values = explode(',', $_REQUEST[$name]);
+				$values = preg_split('/,/', $_REQUEST[$name], NULL, PREG_SPLIT_NO_EMPTY);
 				foreach($values AS $number) {
 					if (!is_numeric($number)) {
 						$valid = false;
@@ -432,7 +436,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 
 		if ($value === false) {
 			if ($filter == FILTER_VALIDATE_IS_REGEX) {
-				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($name), $custom_error);
+				$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($name)), html_escape($custom_error));
 				set_request_var($name, '');
 				raise_message('custom_error');
 			} else {
@@ -522,7 +526,7 @@ function get_request_var_post($name, $default = '') {
    allows for the concept of global session variables such as
    'sess_default_rows'.
 
-   Validateion 'filter' follow PHP conventions including:
+   Validation 'filter' follow PHP conventions including:
 
      FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
      FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
@@ -631,7 +635,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 					}
 				} elseif ($options['filter'] == FILTER_VALIDATE_IS_NUMERIC_LIST) {
 					$valid = true;
-					$values = explode(',', $_REQUEST[$variable]);
+					$values = preg_split('/,/', $_REQUEST[$variable], NULL, PREG_SPLIT_NO_EMPTY);
 					foreach($values AS $number) {
 						if (!is_numeric($number)) {
 							$valid = false;
@@ -652,11 +656,11 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 
 				if ($value === false) {
 					if ($options['filter'] == FILTER_VALIDATE_IS_REGEX) {
-						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', get_nfilter_request_var($variable), $custom_error);
+						$_SESSION['custom_error'] = __('The search term "%s" is not valid. Error is %s', html_escape(get_nfilter_request_var($variable)), html_escape($custom_error));
 						set_request_var($variable, '');
 						raise_message('custom_error');
 					} else {
-						die_html_input_error($variable, get_nfilter_request_var($variable), $custom_error);
+						die_html_input_error($variable, get_nfilter_request_var($variable), html_escape($custom_error));
 					}
 				} else {
 					set_request_var($variable, $value);
@@ -958,7 +962,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$url_page_select .= '</ul>';
 
 	if ($return_to != '') {
-		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('${url}header=false&$page_var='+pageNo+url_add,function(data) { $('#$return_to').html(data); applySkin(); if (typeof initializeGraphs == 'function') initializeGraphs();}); }</script>";
+		$url_page_select .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
 	} else {
 		$url_page_select .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$url$page_var='+pageNo+url_add }</script>";
 	}

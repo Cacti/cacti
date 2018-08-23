@@ -22,8 +22,16 @@
    +-------------------------------------------------------------------------+
 */
 
+function snmpagent_enabled() {
+	return read_config_option('enable_snmp_agent') == 'on';
+}
+
 function snmpagent_cacti_stats_update($data){
 	$mc = new MibCache();
+
+	if (!snmpagent_enabled()) {
+		return false;
+	}
 
 	/* refresh total stats */
 	$mc->object('cactiStatsTotalsDevices')->set( snmpagent_read('cactiStatsTotalsDevices') );
@@ -60,7 +68,7 @@ function snmpagent_global_settings_update(){
 	$mc = new MibCache();
 	$mc->object('cactiApplVersion')->set( snmpagent_read('cactiApplVersion') );
 	$mc->object('cactiApplSnmpVersion')->set( snmpagent_read('cactiApplSnmpVersion') );
-	$mc->object('cactiApplRrdtoolVersion')->set( read_config_option('rrdtool_version', true) );
+	$mc->object('cactiApplRrdtoolVersion')->set( get_rrdtool_version() );
 	$mc->object('cactiApplPollerEnabled')->set( (read_config_option('poller_enabled', true) == 'on') ? 1 : 2 );
 	$mc->object('cactiApplPollerType')->set( read_config_option('poller_type', true) );
 	$mc->object('cactiApplPollerInterval')->set( read_config_option('poller_interval', true) );
@@ -88,6 +96,10 @@ function snmpagent_global_settings_update(){
 }
 
 function snmpagent_api_device_new($device){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	/* add device to cactiApplDeviceTable and cactiStatsDeviceTable*/
 	$device_data = db_fetch_row_prepared('SELECT * FROM `host` WHERE id = ?', array($device['id']));
@@ -138,6 +150,10 @@ function snmpagent_api_device_new($device){
 
 
 function snmpagent_data_source_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	if ($action == '1') {
@@ -153,6 +169,10 @@ function snmpagent_data_source_action_bottom($data){
 }
 
 function snmpagent_graphs_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	if ($action == '1') {
@@ -168,6 +188,10 @@ function snmpagent_graphs_action_bottom($data){
 }
 
 function snmpagent_device_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	$selected_items = $data[1];
@@ -263,6 +287,10 @@ function snmpagent_device_action_bottom($data){
 }
 
 function snmpagent_poller_exiting($poller_index = 1){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 
 	try
@@ -285,6 +313,14 @@ function snmpagent_poller_exiting($poller_index = 1){
 
 function snmpagent_poller_bottom() {
 	global $config;
+
+	if (!snmpagent_enabled()) {
+		snmpagent_cache_unistall();
+
+		return false;
+	} elseif (!snmpagent_cache_initialized()) {
+		snmpagent_cache_rebuilt();
+	}
 
 	if (api_plugin_is_enabled('maint')) {
 		include_once($config['base_path'] . '/plugins/maint/functions.php');
@@ -531,54 +567,45 @@ function snmpagent_get_pluginslist(){
 	}
 
 	$path = $config['base_path'] . '/plugins/';
-	$dh = opendir($path);
+	$dh   = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) &&
-				!in_array($file, $plugins_integrated) &&
-				(file_exists("$path/$file/setup.php")) &&
-				(!array_key_exists($file, $pluginslist))
-			) {
-				include_once("$path/$file/setup.php");
-				if (!function_exists('plugin_' . $file . '_install') && function_exists($file . '_version')) {
-					$function = $file . '_version';
-					$cinfo = $function();
+			if ((is_dir("$path/$file")) && !in_array($file, $plugins_integrated) &&
+				(file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
+				if (file_exists("$path/$file/INFO")) {
+					$cinfo = plugin_load_info_file("$path/$file/INFO");
+
 					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
 					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
 					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
 					if (!isset($cinfo['longname'])) $cinfo['longname'] = ucfirst($file);
-					$cinfo['status'] = -2; // old PIA -- disabled
-					if (in_array($file, $plugins)) {
-						$cinfo['status'] = -1; // old PIA -- enabled
-					}
 					$cinfo['directory'] = $file;
-					$pluginslist[$file] = $cinfo;
 
-				} elseif (function_exists('plugin_' . $file . '_install') && function_exists('plugin_' . $file . '_version')) {
-					$function = 'plugin_' . $file . '_version';
-					$cinfo = $function();
-					$cinfo['status'] = 0;
-					if (!isset($cinfo['author']))   $cinfo['author']   = 'Unknown';
-					if (!isset($cinfo['homepage'])) $cinfo['homepage'] = 'Not Stated';
-					if (isset($cinfo['webpage']))   $cinfo['homepage'] = $cinfo['webpage'];
-					if (!isset($cinfo['longname'])) $cinfo['homepage'] = ucfirst($file);
-					$cinfo['directory'] = $file;
 					$pluginslist[$file] = $cinfo;
+					if (!isset($pluginslist[$file]['status'])) {
+						$pluginslist[$file]['status'] = 0;
+					}
 				}
 			}
 		}
+
 		closedir($dh);
 	}
+
 	return $pluginslist;
 }
 
 /**
- * snmpagent_cache_setup()
+ * snmpagent_cache_install()
  * Generates a SNMP caching tables reflecting all objects of the Cacti MIB
  * @return
  */
-function snmpagent_cache_install(){
+function snmpagent_cache_install() {
 	global $config;
+
+	if (!snmpagent_enabled()) {
+		return false;
+	}
 
 	/* drop everything */
 	db_execute('TRUNCATE `snmpagent_cache`');
@@ -594,6 +621,18 @@ function snmpagent_cache_install(){
 
 	/* call install routine of plugins supporting the SNMPagent */
 	api_plugin_hook('snmpagent_cache_install');
+}
+
+function snmpagent_cache_uninstall() {
+	/* drop everything */
+	db_execute('TRUNCATE `snmpagent_cache`');
+	db_execute('TRUNCATE `snmpagent_mibs`;');
+	db_execute('TRUNCATE `snmpagent_cache_notifications`;');
+	db_execute('TRUNCATE `snmpagent_cache_textual_conventions`;');
+}
+
+function snmpagent_cache_initialized() {
+	return db_fetch_cell('SELECT COUNT(*) FROM `snmpagent_cache`') > 0;
 }
 
 function snmpagent_cache_rebuilt(){
@@ -619,7 +658,7 @@ function snmpagent_cache_init(){
 		foreach($pollers as $poller){
 			$poller_data = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($poller['id']));
 		}
-	}else {
+	} else {
 		/* this is NOT a distributed system, but it should have at least one local poller. */
 		$poller_lastrun = read_config_option('poller_lastrun', true);
 		$values = array(
@@ -762,7 +801,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		return false;
 	}
 
-	$path_snmptrap = read_config_option('snmpagent_path_snmptrap');
+	$path_snmptrap = read_config_option('path_snmptrap');
 
 	if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
 		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
@@ -780,7 +819,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		cacti_log('ERROR: Unknown event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 
 		return false;
-	}else {
+	} else {
 		$branches = explode('.', $enterprise_oid);
 		$specific_trap_number = array_pop($branches);
 	}
@@ -795,11 +834,11 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		AND snmpagent_managers_notifications.mib = ?',
 		array($notification, $mib));
 
-	if (sizeof($notification_managers)) {
+	if (sizeof($notification_managers) == 0) {
 		/* To bad! Nobody wants to hear our message. :( */
 		if (in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
 			cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
-		}else {
+		} else {
 			/* keep notifications of a lower/medium severity in mind to make a quicker decision next time */
 			$config['snmpagent']['notifications']['ignore'][$notification] = 1;
 		}
@@ -913,7 +952,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 						$snmp_security_level = 'authPriv';
 					} elseif ( $notification_manager['snmp_password'] && !$notification_manager['snmp_priv_passphrase']) {
 						$snmp_security_level = 'authNoPriv';
-					}else {
+					} else {
 						$snmp_security_level = 'noAuthNoPriv';
 					}
 					$args .= ' -l ' . $snmp_security_level . (($snmp_security_level != 'noAuthNoPriv') ? ' -a ' . $notification_manager['snmp_auth_protocol'] . ' -A ' . $notification_manager['snmp_password'] : '' ) . (($snmp_security_level == 'authPriv')? ' -x ' . $notification_manager['snmp_priv_protocol'] . ' -X ' . $notification_manager['snmp_priv_passphrase'] : '')  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
@@ -938,7 +977,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_password'], $notification_manager['snmp_priv_passphrase']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 			}
 		}
-	}else {
+	} else {
 		/* mismatching number of var binds */
 		cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 		return false;

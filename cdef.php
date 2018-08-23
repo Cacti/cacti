@@ -279,7 +279,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
@@ -290,11 +290,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one CDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -342,8 +342,8 @@ function cdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove CDEF Item');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");$(".deleteMarker").blur();' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove CDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -415,9 +415,17 @@ function item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$cdef = db_fetch_row_prepared('SELECT * FROM cdef_items WHERE id = ?', array(get_request_var('id')));
-		$current_type = $cdef['type'];
-		$values[$current_type] = $cdef['value'];
+		$cdef = db_fetch_row_prepared('SELECT *
+			FROM cdef_items
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (sizeof($cdef)) {
+			$current_type = $cdef['type'];
+			$values[$current_type] = $cdef['value'];
+		}
+	} else {
+		$cdef = array();
 	}
 
 	html_start_box(__('CDEF Preview'), '100%', '', '3', 'center', '');
@@ -441,66 +449,85 @@ function item_edit() {
 		$current_type = '1';
 	}
 
-	form_alternate_row();?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('CDEF Item Type');?></span><br>
-			<?php print __('Choose what type of CDEF item this is.');?>
-		</td>
-		<td>
-			<select id='type_select'>
-				<?php
-				foreach ($cdef_item_types as $var => $val) {
-					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
-				}
-				?>
-			</select>
-            <script type='text/javascript'>
-            $(function() {
-                $('#type_select').unbind().change(function() {
-					strURL  = 'cdef.php?action=item_edit';
-					strURL += '&id='+<?php print get_request_var('id');?>;
-					strURL += '&cdef_id='+<?php print get_request_var('cdef_id');?>;
-					strURL += '&type_select='+$('#type_select').val();
-					strURL += '&header=false';
-                    loadPageNoHeader(strURL);
-                });
-            });
-            </script>
-		</td>
-	</tr>
-	<?php form_alternate_row();?>
-		<td style='width:50%;'>
-			<span class='textEditTitle'><?php print __('CDEF Item Value');?></span><br>
-			<?php print __('Enter a value for this CDEF item.');?>
-		</td>
-		<td>
-			<?php
-			switch ($current_type) {
-			case '1':
-				form_dropdown('value', $cdef_functions, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '2':
-				form_dropdown('value', $cdef_operators, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '4':
-				form_dropdown('value', $custom_data_source_types, '', '', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '5':
-				form_dropdown('value', db_fetch_assoc('SELECT name, id FROM cdef WHERE system=0 ORDER BY name'), 'name', 'id', (isset($cdef['value']) ? $cdef['value'] : ''), '', '');
-				break;
-			case '6':
-				form_text_box('value', (isset($cdef['value']) ? $cdef['value'] : ''), '', '255', 30, 'text', isset_request_var('id') ? get_request_var('id') : '0');
-				break;
-			}
-			?>
-		</td>
-	</tr>
-	<?php
+	$form_cdef = array(
+		'type_select' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('CDEF Item Type'),
+			'description'   => __('Choose what type of CDEF item this is.'),
+			'value'         => $current_type,
+			'array'         => $cdef_item_types
+		),
+		'value' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('CDEF Item Value'),
+			'description'   => __('Enter a value for this CDEF item.'),
+			'value'         => (isset($cdef['value']) ? $cdef['value']:'')
+		),
+		'id' => array(
+			'method'        => 'hidden',
+			'value'         => isset_request_var('id') ?  get_request_var('id') : '0',
+		),
+		'type' => array(
+			'method'        => 'hidden',
+			'value'         => $current_type
+		),
+		'cdef_id' => array(
+			'method'        => 'hidden',
+			'value'         => get_request_var('cdef_id')
+		),
+		'save_component_item' => array(
+			'method'        => 'hidden',
+			'value'         => '1'
+		)
+	);
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('type', $current_type, '');
-	form_hidden_box('cdef_id', get_request_var('cdef_id'), '');
-	form_hidden_box('save_component_item', '1', '');
+	switch ($current_type) {
+	case '1':
+		$form_cdef['value']['array'] = $cdef_functions;
+
+		break;
+	case '2':
+		$form_cdef['value']['array'] = $cdef_operators;
+
+		break;
+	case '4':
+		$form_cdef['value']['array'] = $custom_data_source_types;
+
+		break;
+	case '5':
+		$form_cdef['value']['method'] = 'drop_sql';
+		$form_cdef['value']['sql']    = 'SELECT name, id FROM cdef WHERE `system`=0 ORDER BY name';
+
+		break;
+	case '6':
+		$form_cdef['value']['method']     = 'textbox';
+		$form_cdef['value']['max_length'] = '255';
+		$form_cdef['value']['size']       = '30';
+
+		break;
+	}
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($form_cdef, $cdef)
+		)
+	);
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#type_select').unbind().change(function() {
+			strURL  = 'cdef.php?action=item_edit';
+			strURL += '&id=' + $('#id').val();
+			strURL += '&cdef_id=' + $('#cdef_id').val();
+			strURL += '&type_select=' + $('#type_select').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		});
+	});
+	</script>
+	<?php
 
 	html_end_box();
 
@@ -614,7 +641,7 @@ function cdef_edit() {
 							}
 						}
 						?>
-						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='#'></a>
+						<a id='<?php print $cdef['id'] . '_' . $cdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='#'></a>
 					</td>
 				</tr>
 				<?php
@@ -644,19 +671,22 @@ function cdef_edit() {
 		});
 		<?php } ?>
 
-		$('.delete').click(function (event) {
+		$('.delete').click(function(event) {
 			event.preventDefault();
 
 			id = $(this).attr('id').split('_');
 			request = 'cdef.php?action=item_remove_confirm&id='+id[0]+'&cdef_id='+id[1];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
-			});
-		}).css('cursor', 'pointer');
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({ title: '<?php print __('Delete CDEF Item');?>', minHeight: 80, minWidth: 500 });
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
+		});
 	});
-
 	</script>
 	<?php
 }
@@ -720,7 +750,7 @@ function cdef() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('CDEFs');?>
@@ -745,8 +775,8 @@ function cdef() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -795,9 +825,9 @@ function cdef() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND system=0)";
+		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' AND `system`=0)";
 	} else {
-		$sql_where = 'WHERE system=0';
+		$sql_where = 'WHERE `system`=0';
 	}
 
 	if (get_request_var('has_graphs') == 'true') {
@@ -830,7 +860,7 @@ function cdef() {
 			FROM cdef AS cd
 			LEFT JOIN graph_templates_item AS gti
 			ON gti.cdef_id=cd.id
-			WHERE system=0
+			WHERE `system`=0
 			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id
 		) AS rs
 		$sql_where

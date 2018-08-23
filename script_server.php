@@ -22,12 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
 
 declare(ticks = 1);
 
@@ -64,7 +59,6 @@ if (function_exists('pcntl_signal')) {
 }
 
 error_reporting(0);
-include_once(dirname(__FILE__) . '/include/global.php');
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
 if (php_sapi_name() != 'cli') {
@@ -192,7 +186,9 @@ while (1) {
 				continue;
 			}
 
-			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) . "' FUNC: '" .$function . "' PARMS: '" . $parameters . "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
+			cacti_log("DEBUG: PID[$pid] CTR[$ctr] INC: '". basename($include_file) .
+			        "' FUNC: '$function' PARMS: '" . implode('\', \'',$parameter_array) .
+			        "'", false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 
 			/* validate the existance of the function, and include if applicable */
 			if (!function_exists($function)) {

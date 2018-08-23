@@ -23,15 +23,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/utility.php');
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -58,7 +51,7 @@ if (sizeof($parms)) {
 				$host_id = trim($value);
 
 				if (!is_numeric($host_id)) {
-					echo "ERROR: You must supply a valid device id to run this script!\n";
+					print "ERROR: You must supply a valid device id to run this script!\n";
 					exit(1);
 				}
 
@@ -67,16 +60,16 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
-				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -103,13 +96,13 @@ $local_data_ids = array();
 $poller_items   = array();
 
 /* issue warnings and start message if applicable */
-echo "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
+print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
 debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
 
 /* start rebuilding the poller cache */
 if (sizeof($poller_data)) {
 	foreach ($poller_data as $data) {
-		if (!$debug) echo '.';
+		if (!$debug) print '.';
 		$local_data_ids[] = $data['id'];
 		$poller_items = array_merge($poller_items, update_poller_cache($data));
 
@@ -121,7 +114,7 @@ if (sizeof($poller_data)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 }
-if (!$debug) echo "\n";
+if (!$debug) print "\n";
 
 /* poller cache rebuilt, restore runtime parameters */
 ini_set('max_execution_time', $max_execution);
@@ -129,25 +122,25 @@ ini_set('max_execution_time', $max_execution);
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Rebuild Poller Cache Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: rebuild_poller_cache.php [--host-id=ID] [--debug]\n\n";
-	echo "A utility to repopulate Cacti's poller cache for a host or a system.  Note: That when performing\n";
-	echo "for an entire Cacti system, expecially a large one, this may take some time.\n\n";
-	echo "Optional:\n";
-	echo "    --host-id=ID - Limit the repopulation to a single Cacti Device\n";
-	echo "    --debug      - Display verbose output during execution\n\n";
+	print "\nusage: rebuild_poller_cache.php [--host-id=ID] [--debug]\n\n";
+	print "A utility to repopulate Cacti's poller cache for a host or a system.  Note: That when performing\n";
+	print "for an entire Cacti system, expecially a large one, this may take some time.\n\n";
+	print "Optional:\n";
+	print "    --host-id=ID - Limit the repopulation to a single Cacti Device\n";
+	print "    --debug      - Display verbose output during execution\n\n";
 }
 
 function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		echo 'DEBUG: ' . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }

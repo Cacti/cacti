@@ -25,19 +25,19 @@ if (!isset($called_by_script_server)) {
 
 function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
 	$snmp = explode(':', $snmp_auth);
-	$snmp_version 	= $snmp[0];
-	$snmp_port    	= $snmp[1];
-	$snmp_timeout 	= $snmp[2];
-	$ping_retries 	= $snmp[3];
-	$max_oids		= $snmp[4];
+	$snmp_version = $snmp[0];
+	$snmp_port    = $snmp[1];
+	$snmp_timeout = $snmp[2];
+	$ping_retries = $snmp[3];
+	$max_oids     = $snmp[4];
 
-	$snmp_auth_username   	= '';
-	$snmp_auth_password   	= '';
-	$snmp_auth_protocol  	= '';
-	$snmp_priv_passphrase 	= '';
-	$snmp_priv_protocol   	= '';
-	$snmp_context         	= '';
-	$snmp_community 		= '';
+	$snmp_auth_username   = '';
+	$snmp_auth_password   = '';
+	$snmp_auth_protocol   = '';
+	$snmp_priv_passphrase = '';
+	$snmp_priv_protocol   = '';
+	$snmp_context         = '';
+	$snmp_community       = '';
 
 	if ($snmp_version == 3) {
 		$snmp_auth_username   = $snmp[6];
@@ -112,7 +112,7 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 			$arr = ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
-			if (isset($arr_index[$index])) {
+			if (isset($arr_index[$index]) && isset($arr[$index])) {
 				return $arr[$index];
 			} else {
 				cacti_log('ERROR: Invalid Return Value in ss_host_cpu.php for get ' . $index . ' and host_id ' . $host_id, false);

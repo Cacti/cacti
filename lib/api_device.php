@@ -166,7 +166,8 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1, $external_id = '') {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id,
+	$max_oids = 5, $device_threads = 1, $poller_id = 1, $site_id = 1, $external_id = '', $location = '') {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');
@@ -177,7 +178,10 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	if (empty($id)) {
 		$_host_template_id = 0;
 	} else {
-		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($id));
+		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+			FROM host
+			WHERE id = ?',
+			array($id));
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
@@ -190,6 +194,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
+	$save['location']             = form_input_validate($location, 'location', '', true, 3);
 
 	$save['snmp_version']         = form_input_validate($snmp_version, 'snmp_version', '', true, 3);
 	$save['snmp_community']       = form_input_validate($snmp_community, 'snmp_community', '', true, 3);
@@ -269,7 +274,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		}
 
 		/* if the user changes the host template, add each snmp query associated with it */
-		if (($host_template_id != $_host_template_id) && (!empty($host_template_id))) {
+		if ($host_template_id > 0 && $host_template_id != $_host_template_id) {
 			api_device_update_host_template($host_id, $host_template_id);
 		}
 	}
@@ -317,11 +322,16 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
    @arg $host_id - the id of the device which contains the mapping
    @arg $host_template_id - the id of the host template alter the device to */
 function api_device_update_host_template($host_id, $host_template_id) {
-	db_execute_prepared('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
+	db_execute_prepared('UPDATE host
+		SET host_template_id = ?
+		WHERE id = ?',
+		array($host_template_id, $host_id));
 
+	/* add all snmp queries assigned to the device template */
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_template_snmp_query
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
 	if (sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
@@ -335,9 +345,11 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		}
 	}
 
+	/* add all graph templates assigned to the device template */
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_template_graph
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
 	if (sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
@@ -350,6 +362,39 @@ function api_device_update_host_template($host_id, $host_template_id) {
 
 			api_plugin_hook_function('add_graph_template_to_host',
 				array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
+		}
+	}
+
+	/* remove unused graph templates not assigned to the device template */
+	$unused_graph_templates = db_fetch_assoc_prepared('SELECT
+		hg.graph_template_id AS id, gt.name, result.gtid
+		FROM host_graph AS hg
+		LEFT JOIN graph_templates AS gt
+		ON gt.id=hg.graph_template_id
+		LEFT JOIN (
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM graph_local AS gl
+			WHERE gl.host_id = ?
+			AND snmp_query_id = 0
+			UNION
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM host_template_graph AS htg
+			WHERE htg.host_template_id = ?
+		) AS result
+		ON hg.graph_template_id=result.gtid
+		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
+	    HAVING gtid IS NULL
+	    ORDER BY gt.name',
+	    array($host_id, $host_template_id)
+	);
+
+	if (sizeof($unused_graph_templates)) {
+		foreach ($unused_graph_templates as $unused_graph_template) {
+			db_execute_prepared('DELETE
+				FROM host_graph
+				WHERE host_id = ?
+				AND graph_template_id = ?',
+				array($host_id, $unused_graph_template['id']));
 		}
 	}
 }
@@ -381,7 +426,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 }
 
 function api_device_ping_device($device_id, $from_remote = false) {
-	global $config;
+	global $config, $snmp_error;
 
 	if (empty($device_id)) {
 		return "";
@@ -396,13 +441,15 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			FROM poller
 			WHERE id = ?',
 			array($host['poller_id']));
-		
-		$fgc_contextoption = get_default_contextoption();
-		if($fgc_contextoption) {
-			$fgc_context = stream_context_create($fgc_contextoption);
-			print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
+
+		$fgc_contextoption = get_default_contextoption(5);
+		$fgc_context       = stream_context_create($fgc_contextoption);
+		$results           = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
+
+		if ($results != '') {
+			print $results;
 		} else {
-			print file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id']);
+			print __('ERROR: Failed to connect to remote collector.');
 		}
 
 		return;
@@ -423,52 +470,66 @@ function api_device_ping_device($device_id, $from_remote = false) {
 		if (($host['snmp_community'] == '' && $host['snmp_username'] == '') || $host['snmp_version'] == 0) {
 			print "<span style='color: #ab3f1e; font-weight: bold;'>" . __('SNMP not in use') . "</span>\n";
 		} else {
+			$snmp_error = '';
 			$session = cacti_snmp_session($host['hostname'], $host['snmp_community'], $host['snmp_version'],
  				$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'], $host['snmp_priv_passphrase'],
  				$host['snmp_priv_protocol'], $host['snmp_context'], $host['snmp_engine_id'], $host['snmp_port'],
 				$host['snmp_timeout'], $host['ping_retries'], $host['max_oids']);
 
-			if ($session === false) {
-				print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+			if ($session === false || $snmp_error > '') {
+				print "<span class='hostDown'>" . __('Session') . ' ' . __('SNMP error');
+				if ($snmp_error > '') {
+					print " - $snmp_error";
+				}
+				print "</span>\n";
 			} else {
 				$snmp_system = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.1.0');
-				if ($snmp_system === false || $snmp_system == 'U') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
-					return false;
-				}
-
-				/* modify for some system descriptions */
-				/* 0000937: System output in host.php poor for Alcatel */
-				if (substr_count($snmp_system, '00:')) {
-					$snmp_system = str_replace('00:', '', $snmp_system);
-					$snmp_system = str_replace(':', ' ', $snmp_system);
-				}
-
-				if ($snmp_system == '') {
-					print "<span class='hostDown'>" . __('SNMP error') . "</span>\n";
+				if ($snmp_system === false || $snmp_system == 'U' || $snmp_error > '') {
+					print "<span class='hostDown'>" . __('System') . ' ' . __('SNMP error');
+					if ($snmp_error > '') {
+						print " - $snmp_error";
+					}
+					print "</span>\n";
 				} else {
-					$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
-					$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
-					$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
-					$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
 
-					print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
-					$days      = intval($snmp_uptime / (60*60*24*100));
-					$remainder = $snmp_uptime % (60*60*24*100);
-					$hours     = intval($remainder / (60*60*100));
-					$remainder = $remainder % (60*60*100);
-					$minutes   = intval($remainder / (60*100));
-					print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
-					print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
-					print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
-					print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
-					print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+					/* modify for some system descriptions */
+					/* 0000937: System output in host.php poor for Alcatel */
+					if (substr_count($snmp_system, '00:')) {
+						$snmp_system = str_replace('00:', '', $snmp_system);
+						$snmp_system = str_replace(':', ' ', $snmp_system);
+					}
+
+					if ($snmp_system == '') {
+						print "<span class='hostDown'>" . __('Host') . ' ' .  __('SNMP error');
+						if ($snmp_error > '') {
+							print " - $snmp_error";
+						}
+						"</span>\n";
+					} else {
+						$snmp_uptime     = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.3.0');
+						$snmp_hostname   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.5.0');
+						$snmp_location   = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.6.0');
+						$snmp_contact    = cacti_snmp_session_get($session, '.1.3.6.1.2.1.1.4.0');
+
+						print '<strong>' . __('System:') . '</strong> ' . html_split_string($snmp_system) . "<br>\n";
+						$days      = intval($snmp_uptime / (60*60*24*100));
+						$remainder = $snmp_uptime % (60*60*24*100);
+						$hours     = intval($remainder / (60*60*100));
+						$remainder = $remainder % (60*60*100);
+						$minutes   = intval($remainder / (60*100));
+						print '<strong>' . __('Uptime:') . "</strong> $snmp_uptime";
+						print "&nbsp;(" . $days . __('days') . ', ' . $hours . __('hours') . ', ' . $minutes . __('minutes') . ")<br>\n";
+						print "<strong>" . __('Hostname:') . "</strong> $snmp_hostname<br>\n";
+						print "<strong>" . __('Location:') . "</strong> $snmp_location<br>\n";
+						print "<strong>" . __('Contact:') . "</strong> $snmp_contact<br>\n";
+					}
+
 				}
 
 				$session->close();
 			}
 		}
-		print "</span>\n";
+		print "</span><br>\n";
 	}
 
 	if ($am == AVAIL_PING || $am == AVAIL_SNMP_AND_PING || $am == AVAIL_SNMP_OR_PING) {

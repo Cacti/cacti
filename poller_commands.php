@@ -24,20 +24,13 @@
 */
 
 /* we are not talking to the browser */
-$no_http_headers = true;
-
 define('MAX_RECACHE_RUNTIME', 296);
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* Start Initialization Section */
-include(dirname(__FILE__) . '/include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/rrd.php');
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/data_query.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/template.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 $poller_id = $config['poller_id'];
 
@@ -72,7 +65,7 @@ if (sizeof($parms)) {
 				$debug = true;
 				break;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -82,8 +75,8 @@ if (sizeof($parms)) {
 /* Record Start Time */
 $start = microtime(true);
 
-$poller_commands = db_fetch_assoc_prepared('SELECT action, command 
-	FROM poller_command 
+$poller_commands = db_fetch_assoc_prepared('SELECT action, command
+	FROM poller_command
 	WHERE poller_id = ?', array($poller_id));
 
 $last_host_id   = 0;
@@ -152,10 +145,10 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
-	echo "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
-	echo "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
-	echo "Optional:\n";
-	echo "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
-	echo "    --debug     - Display verbose output during execution\n\n";
+	print "\nusage: poller_commands.php [--poller=ID] [--debug]\n\n";
+	print "Cacti's commands poller.  This poller can receive specifically crafted commands from\n";
+	print "either the Cacti UI, or from the main poller, and then run them in the background.\n\n";
+	print "Optional:\n";
+	print "    --poller=ID - The poller to run as.  Defaults to the system poller\n";
+	print "    --debug     - Display verbose output during execution\n\n";
 }

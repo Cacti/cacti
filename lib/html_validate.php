@@ -47,19 +47,26 @@ function html_log_input_error($variable) {
 function die_html_input_error($variable = '', $value = '', $message = '') {
 	global $config;
 
-	?>
-	<table style='width:100%;text-align:center;'>
-		<tr>
-			<td>
-				<?php print __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', $variable, htmlspecialchars($value));?>
-			</td>
-		</tr>
-	</table>
-	<?php
+	if ($message == '') {
+		$message = __('Validation error for variable %s with a value of %s.  See backtrace below for more details.', html_escape($variable), html_escape($value));
+	}
 
-	cacti_debug_backtrace('Validation Error' . ($variable != '' ? ", Variable:$variable":'') . ($value != '' ? ", Value:$value":''), true);
+	if (isset_request_var('json')) {
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):''), false);
+		print json_encode(
+			array(
+				'status' => '500',
+				'statusText' => __('Validation Error'),
+				'responseText' => $message
+			)
+		);
+	} else {
+		cacti_debug_backtrace('Validation Error' . ($variable != '' ? ', Variable:' . html_escape($variable):'') . ($value != '' ? ', Value:' . html_escape($value):''), true);
 
-	bottom_footer();
+		print "<table style='width:100%;text-align:center;'><tr><td>$message</td></tr></table>";
+		bottom_footer();
+	}
+
 	exit;
 }
 

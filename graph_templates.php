@@ -292,7 +292,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
+			$graph_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			$i++;
@@ -314,7 +314,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
@@ -324,7 +324,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue'). "' title='" . __esc('Duplicate Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Duplicate Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '3') { // resize
 			print "<tr>
 				<td class='textArea'>
@@ -344,7 +344,7 @@ function form_actions() {
 
 			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph Template(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '4') { // retemplate
 			print "<tr>
 				<td class='textArea'>
@@ -353,11 +353,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><p><span class='textError'>" . __('ERROR: You must select at least one graph template.') . "</span></p></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -410,7 +410,7 @@ function item() {
 			ORDER BY gti.sequence",
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template Items [edit: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
+		$header_label = __('Graph Template Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -434,10 +434,10 @@ function item() {
 			form_alternate_row('', true);
 			?>
 			<td>
-				<a class='linkEditMain' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print htmlspecialchars($item['name']);?></a>
+				<a class='linkEditMain' href='<?php print html_escape('graph_templates_inputs.php?action=input_edit&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'><?php print html_escape($item['name']);?></a>
 			</td>
 			<td class='right'>
-				<a class='deleteMarker fa fa-remove' title='<?php print __esc('Delete');?>' href='<?php print htmlspecialchars('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
+				<a class='deleteMarker fa fa-times' title='<?php print __esc('Delete');?>' href='<?php print html_escape('graph_templates_inputs.php?action=input_remove&id=' . $item['id'] . '&graph_template_id=' . get_request_var('id'));?>'></a>
 			</td>
 		</tr>
 		<?php
@@ -488,7 +488,7 @@ function template_edit() {
 			AND local_graph_id=0',
 			array(get_request_var('id')));
 
-		$header_label = __('Template [edit: %s]', htmlspecialchars($template['name']));
+		$header_label = __('Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Template [new]');
 	}
@@ -518,10 +518,11 @@ function template_edit() {
 		}
 
 		$form_array[$field_name]['form_id'] = (isset($template_graph['id']) ? $template_graph['id'] : '0');
+
 		if ($form_array[$field_name]['method'] != 'spacer') {
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Use Per-Graph Value (Ignore this Value)'),
+				'friendly_name' => __esc('Check this checkbox if you wish to allow the user to override the value on the right during Graph creation.'),
 				'value' => (isset($template_graph['t_' . $field_name]) ? $template_graph['t_' . $field_name] : '')
 			);
 		}
@@ -534,7 +535,7 @@ function template_edit() {
 		)
 	);
 
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
 	html_end_box(true, true);
 
@@ -628,7 +629,7 @@ function template() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Graph Templates');?>
@@ -639,7 +640,7 @@ function template() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -653,8 +654,8 @@ function template() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -784,7 +785,6 @@ function template() {
 			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
 			form_selectable_cell(number_format_i18n($template['graphs'], '-1'), $template['id'], '', 'text-align:right');
-			//form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('graphs.php?reset=true&template_id=' . ($template['dqid'] > 0 ? 'dq_':'') . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['size'], $template['id'], '', 'text-align:right');
 			form_selectable_cell($image_types[$template['image_format_id']], $template['id'], '', 'text-align:right');
 			form_selectable_cell($template['vertical_label'], $template['id'], '', 'text-align:right');

@@ -277,7 +277,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -287,11 +287,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Data Source Profile.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -338,8 +338,8 @@ function profile_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Source Profile RRA');?>'>
 		</td>
 	</tr>
 	<?php
@@ -475,20 +475,36 @@ function item_edit() {
 
 		if (readonly) {
 			$('#steps').prop('disabled', true);
+			if ($('#steps').selectmenu('instance')) {
+				$('#steps').selectmenu('disable');
+			}
+
 			$('#rows').prop('disabled', true);
+			if ($('#rows').selectmenu('instance')) {
+				$('#rows').selectmenu('disable');
+			}
 		}
 	});
 
 	function get_size() {
-		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val(), function(data) {
-			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_size&type=rra&id='+profile_id+'&rows='+$('#rows').val())
+			.done(function(data) {
+				$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	function get_span() {
-		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val(), function(data) {
-			$('#row_retention').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_span&profile_id='+profile_id+'&span='+$('#steps').val()+'&rows='+$('#rows').val())
+			.done(function(data) {
+				$('#row_retention').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
+
 	}
 	</script>
 	<?php
@@ -578,7 +594,7 @@ function profile_edit() {
 					<em><?php print $rra['rows'];?></em>
 				</td>
 				<td class='right'>
-					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='#'></a>":"");?>
+					<?php print (!$readonly ? "<a id='" . $profile['id'] . '_' . $rra['id'] . "' class='delete deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='#'></a>":"");?>
 				</td>
 				<?php
 				form_end_row();
@@ -622,31 +638,50 @@ function profile_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'data_source_profiles.php?action=item_remove_confirm&id='+id[1]+'&profle_id='+id[0];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({
-					title: '<?php print __('Delete Data Source Profile Item');?>',
-					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80,
-					minWidth: 500
-				});
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Data Source Profile Item');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
+					});
 			});
 		}).css('cursor', 'pointer');
 		<?php } else { ?>
 		$('#step').prop('disabled', true);
+		if ($('#step').selectmenu('instance')) {
+			$('#step').selectmenu('disable')
+		}
+
 		$('#x_files_factor').prop('disabled', true);
+
 		$('#heartbeat').prop('disabled', true);
+		if ($('#heartbeat').selectmenu('instance')) {
+			$('#heartbeat').selectmenu('disable')
+		}
+
 		$('#consolidation_function_id').prop('disabled', true);
-		$('#consolidation_function_id').multiselect('disable');
+		if ($('#consolidation_function_id').multiselect('instance')) {
+			$('#consolidation_function_id').multiselect('disable');
+		}
 		<?php } ?>
 	});
 
 	function get_size() {
 		checked = $('#consolidation_function_id').multiselect('getChecked').length;
-		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked, function(data) {
-			$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
-		});
+		$.get('data_source_profiles.php?action=ajax_size&type=profile&id='+profile_id+'&cfs='+checked)
+			.done(function(data) {
+				$('#row_size').find('.formColumnRight').empty().html('<em>'+data+'</em>');
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	}
 
 	</script>
@@ -739,7 +774,7 @@ function get_span($duration) {
 }
 
 function profile() {
-	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats;
+	global $profile_actions, $item_rows, $sampling_intervals, $heartbeats, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -760,7 +795,7 @@ function profile() {
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => 'name',
+			'default' => 'step',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_direction' => array(
@@ -797,7 +832,7 @@ function profile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Profiles');?>
@@ -822,8 +857,8 @@ function profile() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -950,6 +985,18 @@ function profile() {
 				$readonly = false;
 			}
 
+			if ($profile['data_sources'] > 0) {
+				$ds = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_sources.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['data_sources'], '-1') . '</a>';
+			} else {
+				$ds = number_format_i18n($profile['data_sources'], '-1');
+			}
+
+			if ($profile['templates'] > 0) {
+				$dt = '<a class="linkEditMain" href="' . $config['url_path'] . 'data_templates.php?reset=true&profile=' . $profile['id'] . '">' . number_format_i18n($profile['templates'], '-1') . '</a>';
+			} else {
+				$dt = number_format_i18n($profile['templates'], '-1');
+			}
+
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
 			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'text-align:right');
@@ -957,8 +1004,8 @@ function profile() {
 			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
 			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
 			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['data_sources'], '-1'), $profile['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($profile['templates'], '-1'), $profile['id'], '', 'text-align:right');
+			form_selectable_cell($ds, $profile['id'], '', 'text-align:right');
+			form_selectable_cell($dt, $profile['id'], '', 'text-align:right');
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}

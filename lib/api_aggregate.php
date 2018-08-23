@@ -180,7 +180,6 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param int $_graph_template_id		- template id of the old graph if the old graph is 0
  * @param int $_skip					- graph items to be skipped, array starts at 1
  * @param int $_totali                  - graph items to be totaled, array starts at 1
- * @param bool $_hr						- graph items that should have a <HR>
  * @param int $_graph_item_sequence		- sequence number of the next graph item to be inserted
  * @param int $_selected_graph_index	- index of current graph to be inserted
  * @param array $_color_templates		- the color templates to be used
@@ -350,12 +349,15 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			$save['graph_type_id'] = aggregate_change_graph_type($_selected_graph_index, $save['graph_type_id'], $_graph_type);
 
 			# new item text format required?
-			if ($prepend && ($_total_type == AGGREGATE_TOTAL_TYPE_ALL)) {
+			if ($prepend && $_total_type != '') {
 				# pointless to add any data source item name here, cause ALL are totaled
 				$save['text_format'] = $_gprint_prefix;
 
 				# no more prepending until next line break is encountered
 				$prepend = false;
+			} elseif (!$prepend && $_total_type != '' && strpos($save['text_format'], ':current:')) {
+				// Accomodate gprint summation types
+				$save['text_format'] = str_replace(':current:', ':total:', $save['text_format']);
 			} elseif ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
 				$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
 				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -375,6 +377,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			if (isset($_hr[$i]) && $_hr[$i] > 0) {
 				$save['hard_return'] = 'on';
 			}
+
 			# if this item defines a line break, remember to prepend next line
 			if ($save['text_format'] != '') {
 				$prepend = ($save['hard_return'] == 'on');
@@ -526,7 +529,7 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 		if ($defs['type'] == 'bool') {
 			$params_new[$field] = (isset($posted[$field])) ? 'on' : '';
 		} else {
-			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(htmlspecialchars($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
+			$params_new[$field] = (isset($posted[$field]) ? form_input_validate(html_escape($posted[$field]), $field, $defs['regex'], $defs['allow_empty'], 3) : $defs['default']);
 		}
 	}
 
@@ -1077,8 +1080,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				# now skip all items, that are
-					# - explicitely marked as skipped (based on $skipped_items)
-					# - OR NOT marked as 'totalling' items
+				# - explicitely marked as skipped (based on $skipped_items)
+				# - OR NOT marked as 'totalling' items
 				for ($k=1; $k<=$item_no; $k++) {
 					cacti_log(__FUNCTION__ . ' old skip: ' . (isset($skipped_items[$k]) ? $skipped_items[$k]:''), true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
@@ -1089,7 +1092,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				}
 
 				# add the 'templating' graph to the new graph, honoring skipped, hr and color
-				$foo = aggregate_graphs_insert_graph_items(
+				aggregate_graphs_insert_graph_items(
 					$local_graph_id,
 					$example_graph_id,
 					$graph_template_id,
@@ -1100,9 +1103,9 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$color_templates,
 					$graph_item_types,
 					$cdefs,
-					$_graph_type,			#TODO: user may choose LINEx instead of assuming LINE1
+					$_graph_type, #TODO: user may choose LINEx instead of assuming LINE1
 					$gprint_prefix,
-					AGGREGATE_TOTAL_ALL,	# now add the totalling line(s)
+					AGGREGATE_TOTAL_ALL, # now add the totalling line(s)
 					$_total_type,
 					$member_graphs);
 
@@ -1170,7 +1173,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . htmlspecialchars($graph_template['name'], ENT_QUOTES) . "</li>\n";
+				print '<li>' . html_escape($graph_template['name']) . "</li>\n";
 			}
 			print '</ul></td></tr>';
 
@@ -1232,9 +1235,11 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if ($_graph_id == 0) {
 		$item_list_where = "gti.local_graph_id=0 AND graph_template_id=$_graph_template_id ";
 	}
+
 	if ($_graph_template_id == 0) {
 		$item_list_where = "gti.local_graph_id=$_graph_id ";
 	}
+
 	$item_list = db_fetch_assoc("SELECT
 		gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id,
 		gti.consolidation_function_id, cdef.name as cdef_name, colors.hex
@@ -1310,10 +1315,10 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	if (sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
-			$this_row_style = '';
+			$this_row_style   = '';
 			$use_custom_class = false;
-			$hard_return = '';
-			$matrix_title = '';
+			$hard_return      = '';
+			$matrix_title     = '';
 
 			if (!preg_match('/(GPRINT|TEXTALIGN|HRULE|VRULE|TICK)/', $graph_item_types[$item['graph_type_id']])) {
 				$this_row_style = 'font-weight: bold;';
@@ -1351,8 +1356,12 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					$matrix_title = 'VRULE: ' . $item['value'];
 					break;
 				case preg_match('/(COMMENT)/', $_graph_type_name):
-					$force_skip = true;
-					$matrix_title = 'COMMENT: ' . $item['text_format'];
+					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
+						$matrix_title = 'COMMENT: ' . $item['text_format'];
+					} else {
+						$force_skip = true;
+						$matrix_title = 'COMMENT: ' . $item['text_format'];
+					}
 					break;
 			}
 
@@ -1388,7 +1397,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
-			print "<td style='$this_row_style'>" . htmlspecialchars($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>\n";
 
 			/* column 'Graph Item Type' */
 			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>\n";
@@ -1413,18 +1422,18 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			/* column "Skip" */
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
 				print '</td>';
 
 				/* column 'Total' */
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
 				print '</td>';
 			} else {
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '></td>';
-				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "' " . ($is_edit ? 'checked':'') . '>';
-				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . htmlspecialchars($item['text_format'], ENT_QUOTES) . "'></td>";
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked':'') . '></td>';
+				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '>';
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'></td>";
 			}
 
 			print '</tr>';
@@ -1532,3 +1541,4 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	</script>
 	<?php
 }
+

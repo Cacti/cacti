@@ -149,7 +149,7 @@
 		function zoom_init(image) {
 			var $this = image;
 
-			if($('#zoom-container').hasClass('zoom_active_' + $this.attr('id'))) {
+			if($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
 				zoomElements_remove();
 				zoomFunction_init($this);
 			}
@@ -163,6 +163,30 @@
 			);
 		}
 
+		function zoomGetElement(zoom) {
+			var id = '#' + zoom.image.reference;
+			if (zoom.image.rra_id > 0) {
+				id += '[rra_id=\'' + zoom.image.rra_id + '\']';
+			}
+			return id;
+		}
+
+		function zoomGetImageId(image) {
+			var id = image.attr('id');
+			if (image.attr('rra_id') > 0) {
+				id += '_rra' +rra_id;
+			}
+			return id;
+		}
+
+		function zoomGetId(zoom) {
+			var id = zoom.image.reference;
+			if (zoom.image.rra_id > 0) {
+				id += '_rra' + rra_id;
+			}
+			return id;
+		}
+
 		function zoomFunction_init(image) {
 			var $this = image;
 
@@ -172,7 +196,7 @@
 			if (zoom.custom.zoomOutPositioning == undefined) zoom.custom.zoomOutPositioning = 'center';
 			if (zoom.custom.zoomOutFactor == undefined) zoom.custom.zoomOutFactor = '2';
 			if (zoom.custom.zoomTimestamps == undefined) zoom.custom.zoomTimestamps = 'auto';
-			if (zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = false;
+			if (zoom.custom.zoom3rdMouseButton == undefined) zoom.custom.zoom3rdMouseButton = 'zoom_out';
 			storage.set(zoom.options.cookieName, serialize(zoom.custom));
 
 			/* take care of different time zones server and client can make use of */
@@ -187,7 +211,8 @@
 			zoom.image.type 			= (zoom.initiator.attr('src').split(';')[0] == 'data:image/svg+xml' )? 'svg' : 'png';
 			zoom.image.reference		= zoom.initiator.attr('id');
 			zoom.image.id				= zoom.image.reference.replace('graph_', '');
-			zoom.image.name 			= 'cacti_' + zoom.image.id + '.' + zoom.image.type;
+			zoom.image.rra_id			= zoom.initiator.attr('rra_id');
+			zoom.image.name 			= 'cacti_' + zoomGetImageId(zoom.initiator)+ '.' + zoom.image.type;
 			zoom.image.legend			= ($('#thumbnails').length != 0 && $('#thumbnails').is(':checked')) ? false : true;
 			zoom.image.top				= parseInt(zoom.initiator.offset().top);
 			zoom.image.left				= parseInt(zoom.initiator.offset().left);
@@ -200,7 +225,7 @@
 			zoom.graph.start			= parseInt(zoom.initiator.attr('graph_start'));
 			zoom.graph.end				= parseInt(zoom.initiator.attr('graph_end'));
 			zoom.graph.timespan			= zoom.graph.end - zoom.graph.start;
-			zoom.graph.secondsPerPixel 	= zoom.graph.timespan/zoom.graph.width;
+			zoom.graph.secondsPerPixel	= zoom.graph.timespan/zoom.graph.width;
 			zoom.box.width				= zoom.graph.width;
 			zoom.box.height				= zoom.graph.height;
 			zoom.box.top 				= zoom.graph.top-1;
@@ -228,7 +253,7 @@
 				// Please note: IE does not fire hover or click behaviors on completely transparent elements.
 				// Use a background color and set opacity to 1% as a workaround.(see CSS file)
 				$('<div id="zoom-container"></div>').appendTo('body').delay(1000);
-				$('#zoom-container').css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoom.image.reference);
+				$('#zoom-container').css({ position: 'absolute', width:(zoom.image.width-1)+'px', height:(zoom.image.height-1)+'px' }).removeClass().addClass('zoom_active_' + zoomGetId(zoom));
 			}
 
 			// add a hidden anchor to use for downloads
@@ -270,77 +295,94 @@
 			if ($('#zoom-menu').length == 0) {
 				$('<div id="zoom-menu" class="zoom-menu">'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
-					+       '<span class="zoomContextMenuAction__zoom_in">Zoom In</span>'
+					+ 	'<div class="ui-icon ui-icon-zoomin zoomContextMenuAction__zoom_in"></div>'
+					+ 	'<span class="zoomContextMenuAction__zoom_in">' + zoom_i18n_zoom_in + '</span>'
 					+ '</div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
-					+ 		'<span class="zoomContextMenuAction__zoom_out">Zoom Out (2x)</span>'
-					+ 		'<div class="inner_li">'
-					+ 			'<span class="zoomContextMenuAction__zoom_out__2">2x</span>'
-					+ 			'<span class="zoomContextMenuAction__zoom_out__4">4x</span>'
-					+ 			'<span class="zoomContextMenuAction__zoom_out__8">8x</span>'
-					+ 			'<span class="zoomContextMenuAction__zoom_out__16">16x</span>'
-					+ 			'<span class="zoomContextMenuAction__zoom_out__32">32x</span>'
-					+ 		'</div>'
-					+ '</div>'
-					+ '<div class="sep_li"></div>'
-					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-empty"></div><span>Zoom Mode</span>'
-					+ 		'<div class="inner_li">'
-					+ 			'<span class="zoomContextMenuAction__set_zoomMode__quick">Quick</span>'
-					+ 			'<span class="zoomContextMenuAction__set_zoomMode__advanced">Advanced</span>'
-					+ 		'</div>'
+					+ 	'<div class="ui-icon ui-icon-zoomout zoomContextMenuAction__zoom_out"></div>'
+					+	'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+ 	'<span class="zoomContextMenuAction__zoom_out">' + zoom_i18n_zoom_out + '</span>'
+					+ 	'<div class="inner_li">'
+					+ 		'<span class="zoomContextMenuAction__zoom_out__2">' + zoom_i18n_zoom_2 + '</span>'
+					+ 		'<span class="zoomContextMenuAction__zoom_out__4">' + zoom_i18n_zoom_4 + '</span>'
+					+ 		'<span class="zoomContextMenuAction__zoom_out__8">' + zoom_i18n_zoom_8 + '</span>'
+					+ 		'<span class="zoomContextMenuAction__zoom_out__16">' + zoom_i18n_zoom_16 + '</span>'
+					+ 		'<span class="zoomContextMenuAction__zoom_out__32">' + zoom_i18n_zoom_32 + '</span>'
+					+ 	'</div>'
 					+ '</div>'
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-empty"></div><span>Graph</span>'
-					+ 		'<div class="inner_li">'
-					+ 			'<span class="zoomContextMenuAction__newTab">Open in new tab</a></span>'
-					+			'<span class="zoomContextMenuAction__save">Save graph</span>'
-					+ 			'<span class="zoomContextMenuAction__link">Copy graph link</span>'
-					+ 		'</div>'
+					+ 	'<div class="ui-icon ui-icon-empty"></div>'
+					+	'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+	'<span>' + zoom_i18n_mode + '</span>'
+					+ 	'<div class="inner_li">'
+					+ 		'<span class="zoomContextMenuAction__set_zoomMode__quick">' + zoom_i18n_quick + '</span>'
+					+ 		'<span class="zoomContextMenuAction__set_zoomMode__advanced">' + zoom_i18n_advanced + '</span>'
+					+ 	'</div>'
+					+ '</div>'
+					+ '<div class="sep_li"></div>'
+					+ '<div class="first_li">'
+					+ 	'<div class="ui-icon ui-icon-empty"></div>'
+					+	'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+	'<span>' + zoom_i18n_graph + '</span>'
+					+	'<div class="inner_li">'
+					+ 		'<span class="zoomContextMenuAction__newTab">' + zoom_i18n_newTab + '</span>'
+					+		'<span class="zoomContextMenuAction__save">' + zoom_i18n_save_graph + '</span>'
+					+		'<span class="zoomContextMenuAction__copy">' + zoom_i18n_copy_graph + '</span>'
+					+		'<span class="zoomContextMenuAction__link">' + zoom_i18n_copy_graph_link + '</span>'
+					+	'</div>'
 					+ '</div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-wrench"></div><span>Settings</span>'
+					+	'<div class="ui-icon ui-icon-wrench"></div>'
+					+	'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+	'<span>' + zoom_i18n_settings + '</span>'
+					+	'<div class="inner_li">'
+					+		'<div class="sec_li">'
+					+			'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+			'<span>' + zoom_i18n_timestamps + '</span>'
+					+			'<div class="inner_li">'
+					+ 				'<span class="zoomContextMenuAction__set_zoomTimestamps__on">' + zoom_i18n_on + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">' + zoom_i18n_auto + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomTimestamps__off">' + zoom_i18n_off + '</span>'
+					+ 			'</div>'
+					+ 		'</div>'
+					+ 		'<div class="sep_li"></div>'
+					+ 		'<div class="sec_li">'
+					+			'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+			'<span>' + zoom_i18n_zoom_out_factor + '</span>'
 					+ 			'<div class="inner_li">'
-					+ 				'<div class="sec_li advanced_mode"><span>Timestamps</span></span>'
-					+ 					'<div class="inner_li advanced_mode">'
-					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__on">Always On</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__auto">Auto</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomTimestamps__off">Always Off</span>'
-					+ 					'</div>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomOutFactor__2">' + zoom_i18n_zoom_2 + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomOutFactor__4">' + zoom_i18n_zoom_4 + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomOutFactor__8">' + zoom_i18n_zoom_8 + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomOutFactor__16">' + zoom_i18n_zoom_16 + '</span>'
+					+ 				'<span class="zoomContextMenuAction__set_zoomOutFactor__32">' + zoom_i18n_zoom_32 + '</span>'
+					+ 			'</div>'
+					+ 		'</div>'
+					+ 		'<div class="sec_li">'
+					+			'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+			'<span>' + zoom_i18n_zoom_out_positioning + '</span>'
+					+ 				'<div class="inner_li">'
+					+ 					'<span class="zoomContextMenuAction__set_zoomOutPositioning__begin">' + zoom_i18n_begin + '</span>'
+					+ 					'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">' + zoom_i18n_center + '</span>'
+					+ 					'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">' + zoom_i18n_end + '</span>'
 					+ 				'</div>'
-					+ 				'<div class="sep_li"></div>'
-					+ 				'<div class="sec_li"><span>Zoom Out Factor</span>'
-					+ 					'<div class="inner_li">'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__2">2x</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__4">4x</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__8">8x</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__16">16x</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutFactor__32">32x</span>'
-					+ 					'</div>'
-					+ 				'</div>'
-					+ 				'<div class="sec_li"><span>Zoom Out Positioning</span>'
-					+ 					'<div class="inner_li">'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__begin">Begin with</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__center">Center</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoomOutPositioning__end">End with</span>'
-					+ 					'</div>'
-					+ 				'</div>'
-					+ 				'<div class="sec_li advanced_mode"><span>3rd Mouse Button</span>'
-					+ 					'<div class="inner_li advanced_mode">'
-					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">Zoom in</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">Zoom out</span>'
-					+ 						'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">Disabled</span>'
-					+ 					'</div>'
+					+ 			'</div>'
+					+ 			'<div class="sec_li">'
+					+				'<div class="ui-icon ui-icon-play ui-icon-right"></div>'
+					+				'<span>' + zoom_i18n_3rd_button + '</span>'
+					+ 				'<div class="inner_li">'
+					+ 					'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_in">' + zoom_i18n_zoom_in + '</span>'
+					+ 					'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__zoom_out">' + zoom_i18n_zoom_out + '</span>'
+					+ 					'<span class="zoomContextMenuAction__set_zoom3rdMouseButton__off">' + zoom_i18n_disabled + '</span>'
 					+ 				'</div>'
 					+ 			'</div>'
 					+ 		'</div>'
+					+ 	'</div>'
 					+ '<div class="sep_li"></div>'
 					+ '<div class="first_li">'
-					+ 		'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div><span class="zoomContextMenuAction__close">Close</span>'
-				+ '</div>').appendTo('body');
+					+ 	'<div class="ui-icon ui-icon-close zoomContextMenuAction__close"></div>'
+					+	'<span class="zoomContextMenuAction__close">' + zoom_i18n_close + '</span>'
+					+ '</div>').appendTo('body');
 			}
 			zoomElements_reposition();
 			zoomElements_reset();
@@ -352,7 +394,7 @@
 		 * reposition all elements of Zoom
 		 **/
 		function zoomElements_reposition() {
-			$('#zoom-container').insertBefore('#' + zoom.image.reference);
+			$('#zoom-container').insertBefore(zoomGetElement(zoom));
 		}
 
 		/**
@@ -374,13 +416,13 @@
 				$(this).removeAttr('style');
 			});
 			$('#zoom-container').off();
-			$('#zoom-container').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('#zoom-container').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('#zoom-box').off();
 			$('#zoom-box').css({ cursor:'crosshair', width:zoom.box.width + 'px', height:zoom.box.height + 'px', top:zoom.box.top+'px', left:zoom.box.left+'px' });
-			$('#zoom-box').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('#zoom-box').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('#zoom-area').off().css({ top:zoom.box.top+'px', height:zoom.box.height+'px' });
 			$('.zoom-area-excluded').off();
-			$('.zoom-area-excluded').bind('contextmenu', function(e) { zoomContextMenu_show(e); return false;} );
+			$('.zoom-area-excluded').bind('contextmenu', function(e) { zoomContextMenu_toggle(e); return false;} );
 			$('.zoom-area-excluded').bind('click', function(e) { zoomContextMenu_hide(); return false;} );
 			$('.zoom-marker-arrow-up').css({ top:(zoom.box.height-6) + 'px' });
 			$('.zoom-marker-tooltip-value').disableSelection();
@@ -407,7 +449,7 @@
 				});
 
 				/* register the mouse up event */
-				$('#zoom-box').off('mouseup').on('mouseup', function(e) {
+				$('#zoom-box, #zoom-area').off('mouseup').on('mouseup', function(e) {
 					switch(e.which) {
 						/* leaving the left mouse button will execute a zoom in */
 						case 1:
@@ -415,30 +457,22 @@
 								zoomAction_zoom_in();
 							}
 						break;
-					}
-				});
 
-				/* register the mouse up event */
-				$('#zoom-area').off('mouseup').on('mouseup', function(e) {
-					switch(e.which) {
-						/* leaving the left mouse button will execute a zoom in */
-						case 1:
-							if (zoom.attr.start != 'none') {
+						case 2:
+							/* hide context menu if open */
+							zoomContextMenu_hide();
+							if (zoom.custom.zoom3rdMouseButton == 'zoom_in') {
 								zoomAction_zoom_in();
-
+							} else {
+								zoomAction_zoom_out( zoom.custom.zoomOutFactor );
 							}
 						break;
 					}
 				});
-
-				/* stretch the zoom area in that direction the user moved the mouse pointer */
-				$('#zoom-box').mousemove( function(e) {
-					zoomAction_draw(e);
-				} );
 
 				/* stretch the zoom area in that direction the user moved the mouse pointer.
 				   That is required to get it working faultlessly with Opera, IE and Chrome	*/
-				$('#zoom-area').mousemove( function(e) {
+				$('#zoom-box, #zoom-area').mousemove( function(e) {
 					zoomAction_draw(e);
 				} );
 
@@ -708,6 +742,10 @@
 			}
 		}
 
+		function getZoomOutFactorText(zoomOutFactor) {
+			return eval('zoom_i18n_zoom_out + \' (\' + zoom_i18n_zoom_' + zoomOutFactor + ' + \')\'');
+		}
+
 		/*
 		* executes a static zoom out (as right click event)
 		*/
@@ -843,7 +881,7 @@
 			$('.zoomContextMenuAction__set_zoomOutFactor__' + zoom.custom.zoomOutFactor).addClass('zoom-menu-highlight');
 			$('.zoomContextMenuAction__set_zoomOutPositioning__' + zoom.custom.zoomOutPositioning).addClass('zoom-menu-highlight');
 			$('.zoomContextMenuAction__set_zoom3rdMouseButton__' + ((zoom.custom.zoom3rdMouseButton === false) ? 'off' : zoom.custom.zoom3rdMouseButton) ).addClass('zoom-menu-highlight');
-			$('.zoomContextMenuAction__zoom_out').text('Zoom Out (' + zoom.custom.zoomOutFactor + 'x)');
+			$('.zoomContextMenuAction__zoom_out').text(getZoomOutFactorText(zoom.custom.zoomOutFactor));
 
 			if (zoom.custom.zoomMode == 'quick') {
 				$('.advanced_mode').hide();
@@ -948,7 +986,7 @@
 						storage.set(zoom.options.cookieName, serialize(zoom.custom));
 						$('[class*=zoomContextMenuAction__set_zoomOutFactor__]').removeClass('zoom-menu-highlight');
 						$('.zoomContextMenuAction__set_zoomOutFactor__' + value).addClass('zoom-menu-highlight');
-						$('.zoomContextMenuAction__zoom_out').text('Zoom Out (' + value + 'x)');
+						$('.zoomContextMenuAction__zoom_out').text(getZoomOutFactorText(value));
 					}
 					break;
 				case 'outpositioning':
@@ -984,6 +1022,16 @@
 				case 'zoom_in':
 					zoomAction_zoom_in();
 					break;
+				case 'copy':
+					$('#zoom-textarea').html('<img src="data:image/png;base64,'+btoa(unescape(encodeURIComponent(zoom.image.data)))+'" width="'+zoom.image.width+'" height="'+zoom.image.height+'">').select();
+
+					try {
+						var successful = document.execCommand('copy');
+					} catch (err) {
+						alert('Unsupported Browser');
+					}
+					return false;
+					break;
 				case 'save':
 					var arraybuffer = new ArrayBuffer(zoom.image.data.length);
 					var view = new Uint8Array(arraybuffer);
@@ -1007,7 +1055,11 @@
 					}
 					break;
 				case 'newTab':
-					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
+					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id;
+					if (zoom.image.rra_id > 0) {
+						url += '&rra_id='+zoom.image.rra_id;
+					}
+					url += '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
 					$('#zoom-image').removeAttr('download').attr({ 'href':url, 'target': '_bank' }).get(0).click();
 					break;
 				case 'link':
@@ -1063,6 +1115,10 @@
 
 		function zoomContextMenu_hide(){
 			$('#zoom-menu').hide();
+		}
+
+		function zoomContextMenu_toggle(e){
+			($('#zoom-menu').css('display') == 'none') ? zoomContextMenu_show(e) : zoomContextMenu_hide();
 		}
 
 	};

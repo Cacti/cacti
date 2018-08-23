@@ -26,6 +26,7 @@
 ob_start();
 
 $guest_account = true;
+$auth_text     = true;
 $gtype = 'png';
 
 include('./include/auth.php');
@@ -144,6 +145,10 @@ if ($output !== false && $output != '') {
 	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 	$error = ob_get_contents();
+
+	if (read_config_option('stats_poller') == '') {
+		$error = __('The Cacti Poller has not run yet.');
+	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);

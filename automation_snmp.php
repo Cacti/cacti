@@ -226,7 +226,7 @@ function form_automation_snmp_actions() {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
 		$save_html = '';
 	} else {
-		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
@@ -251,7 +251,7 @@ function form_automation_snmp_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
-			<input type='button' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -335,8 +335,8 @@ function automation_snmp_item_remove_confirm() {
     </tr>
     <tr>
         <td align='right'>
-            <input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-            <input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
+            <input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+            <input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove SNMP Item');?>'>
         </td>
     </tr>
     <?php
@@ -409,143 +409,15 @@ function automation_snmp_item_edit() {
 	/* this is snmp we are talking about here */
 	unset($snmp_versions[0]);
 
-	$fields_automation_snmp_item = array(
-	'snmp_version' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Version'),
-		'description' => __('Choose the SNMP version for this host.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_version|',
-		'default' => read_config_option('snmp_version'),
-		'array' => $snmp_versions
-		),
-	'snmp_community' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Community String'),
-		'description' => __('Fill in the SNMP read community for this device.'),
-		'value' => '|arg1:snmp_community|',
-		'default' => read_config_option('snmp_community'),
-		'max_length' => '100',
-		'size' => '20'
-		),
-	'snmp_security_level' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Security Level'),
-		'description' => __('SNMP v3 Security Level to user for querying the device.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_security_level|',
-		'form_id' => '|arg1:id|',
-		'default' => read_config_option('snmp_security_level'),
-		'array' => $snmp_security_levels
-		),
-	'snmp_username' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Username (v3)'),
-		'description' => __('SNMP v3 username for this device.'),
-		'value' => '|arg1:snmp_username|',
-		'default' => read_config_option('snmp_username'),
-		'max_length' => '50',
-		'size' => '15'
-		),
-	'snmp_auth_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Auth Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 Authorization Protocol.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_auth_protocol|',
-		'default' => read_config_option('snmp_auth_protocol'),
-		'array' => $snmp_auth_protocols,
-		),
-	'snmp_password' => array(
-		'method' => 'textbox_password',
-		'friendly_name' => __('SNMP Password (v3)'),
-		'description' => __('SNMP v3 password for this device.'),
-		'value' => '|arg1:snmp_password|',
-		'default' => read_config_option('snmp_password'),
-		'max_length' => '50',
-		'size' => '15'
-		),
-	'snmp_priv_protocol' => array(
-		'method' => 'drop_array',
-		'friendly_name' => __('SNMP Privacy Protocol (v3)'),
-		'description' => __('Choose the SNMPv3 Privacy Protocol.'),
-		'on_change' => 'setSNMP()',
-		'value' => '|arg1:snmp_priv_protocol|',
-		'default' => read_config_option('snmp_priv_protocol'),
-		'array' => $snmp_priv_protocols,
-		),
-	'snmp_priv_passphrase' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Privacy Passphrase (v3)'),
-		'description' => __('Choose the SNMPv3 Privacy Passphrase.'),
-		'value' => '|arg1:snmp_priv_passphrase|',
-		'default' => read_config_option('snmp_priv_passphrase'),
-		'max_length' => '200',
-		'size' => '40'
-		),
-	'snmp_context' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Context'),
-		'description' => __('Enter the SNMP Context to use for this device.'),
-		'value' => '|arg1:snmp_context|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '25'
-		),
-	'snmp_engine_id' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Engine ID (v3)'),
-		'description' => __('Enter the SNMP v3 Engine Id to use for this device. Leave this field empty to use the SNMP Engine ID being defined per SNMPv3 Notification receiver.'),
-		'value' => '|arg1:snmp_engine_id|',
-		'default' => '',
-		'max_length' => '64',
-		'size' => '40'
-		),
-	'snmp_port' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Port'),
-		'description' => __('The UDP/TCP Port to poll the SNMP agent on.'),
-		'value' => '|arg1:snmp_port|',
-		'max_length' => '8',
-		'default' => read_config_option('snmp_port'),
-		'size' => '10'
-		),
-	'snmp_timeout' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Timeout'),
-		'description' => __('The maximum number of milliseconds Cacti will wait for an SNMP response (does not work with php-snmp support).'),
-		'value' => '|arg1:snmp_timeout|',
-		'max_length' => '8',
-		'default' => read_config_option('snmp_timeout'),
-		'size' => '10'
-		),
-	'snmp_retries' => array(
-		'method' => 'textbox',
-		'friendly_name' => __('SNMP Retries'),
-		'description' => __('The maximum number of attempts to reach a device via an SNMP readstring prior to giving up.'),
-		'value' => '|arg1:snmp_retries|',
-		'max_length' => '8',
-		'default' => read_config_option('snmp_retries'),
-		'size' => '10'
-		),
-	'max_oids' => array(
-		'method' => 'textbox',
-		'friendly_name' => __("Maximum OID's Per Get Request"),
-		'description' => __('Specified the number of OIDs that can be obtained in a single SNMP Get request.'),
-		'value' => '|arg1:max_oids|',
-		'max_length' => '8',
-		'default' => read_config_option('max_get_size'),
-		'size' => '15'
-		),
-	);
+	global $fields_snmp_item_with_retry;
 
-    /* file: mactrack_snmp.php, action: item_edit */
-	$fields_automation_snmp_item_edit = $fields_automation_snmp_item + array(
-	'sequence' => array(
-		'method' => 'view',
-		'friendly_name' => __('Sequence'),
-		'description' => __('Sequence of Item.'),
-		'value' => '|arg1:sequence|'),
+	/* file: mactrack_snmp.php, action: item_edit */
+	$fields_automation_snmp_item_edit = $fields_snmp_item_with_retry + array(
+		'sequence' => array(
+			'method' => 'view',
+			'friendly_name' => __('Sequence'),
+			'description' => __('Sequence of Item.'),
+			'value' => '|arg1:sequence|'),
 	);
 
 	draw_edit_form(array(
@@ -680,7 +552,7 @@ function automation_snmp_edit() {
 					}
 				}
 
-				$form_data .= '<a class="delete deleteMarker fa fa-remove" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
+				$form_data .= '<a class="delete deleteMarker fa fa-times" id="' . $item['id'] . '_' . $item['snmp_id'] . '" title="' . __esc('Delete') . '"></a>';
 				$form_data .= '</td></tr>';
 
 				print $form_data;
@@ -688,7 +560,7 @@ function automation_snmp_edit() {
 				$i++;
 			}
 		} else {
-			print "<tr><td><em>" . __('No SNMP Items') . "</em></td></tr>\n";
+			print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>\n";
 		}
 
 		html_end_box();
@@ -720,11 +592,15 @@ function automation_snmp_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'automation_snmp.php?action=item_remove_confirm&item_id='+id[0]+'&id='+id[1];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
-			});
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({ title: '<?php print __('Delete SNMP Option Item');?>', minHeight: 80, minWidth: 500 });
+				})
+				.fail(function(data) {
+                		        getPresentHTTPError(data);
+		                });
 		}).css('cursor', 'pointer');
     });
     </script>
@@ -783,7 +659,7 @@ function automation_snmp() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('SNMP Rules');?>
@@ -802,8 +678,8 @@ function automation_snmp() {
                     </td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -912,7 +788,7 @@ function automation_snmp() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

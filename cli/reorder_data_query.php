@@ -21,20 +21,13 @@
  +-------------------------------------------------------------------------+
  | http://www.cacti.net/                                                   |
  +-------------------------------------------------------------------------+
- */
+*/
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/data_query.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/data_query.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -71,22 +64,22 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 
@@ -153,26 +146,26 @@ if (sizeof($data_queries)) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reorder Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
-	echo "A utility to Re-order Cacti Data Queries for a Device or system in batch mode.\n\n";
-	echo "Required:\n";
-	echo "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
-	echo "Optional:\n";
-	echo "    --qid=query_id - Only index on a specific data query id\n";
-	echo "    --debug | -d   - Display verbose output during execution\n\n";
+	print "\nusage: reorder_data_query.php --host-id=[id|all] [--qid=[query_id]] [--debug|-d]\n\n";
+	print "A utility to Re-order Cacti Data Queries for a Device or system in batch mode.\n\n";
+	print "Required:\n";
+	print "    --host-id=N    - The Device id to be reindexed; defaults to 'all' to reindex all Devices.\n\n";
+	print "Optional:\n";
+	print "    --qid=query_id - Only index on a specific data query id\n";
+	print "    --debug | -d   - Display verbose output during execution\n\n";
 }
 
 function debug($message) {
 	global $debug;
 	
 	if ($debug) {
-		echo "DEBUG: " . trim($message) . "\n";
+		print "DEBUG: " . trim($message) . "\n";
 	}
 }

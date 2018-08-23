@@ -23,25 +23,16 @@
 */
 
 function upgrade_to_1_1_26() {
-	db_install_execute(
-		'ALTER TABLE `host` ADD KEY `status` (`status`);'
-	);
+	db_install_add_key('host', 'key', 'status', array('status'));
+	db_install_add_key('user_auth_cache', 'key', 'last_update', array('last_update'));
+	db_install_add_key('poller_output_realtime', 'key', 'time', array('time'));
+	db_install_add_key('poller_time', 'key', 'poller_id_end_time', array('poller_id', 'end_time'));
 
-	db_install_execute(
-		'ALTER TABLE `user_auth_cache` ADD KEY `last_update` (`last_update`);'
-	);
+	if (db_column_exists('poller_time', 'rrd_next_step')) {
+		db_install_add_key('poller_time', 'key', 'poller_id_rrd_next_step', array('poller_id', 'rrd_next_step'));
+	}
 
-	db_install_execute(
-		'ALTER TABLE `poller_output_realtime` ADD KEY `time` (`time`);'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `poller_time` ADD KEY `poller_id_end_time` (`poller_id`, `end_time`);'
-	);
-
-	db_install_execute(
-		'ALTER TABLE `poller_item` 
-		 DROP KEY `rrd_next_step`,
-		 ADD KEY `poller_id_rrd_next_step` (`poller_id`, `rrd_next_step`);'
-	);
+	if (db_column_exists('poller_item', 'rrd_next_step')) {
+		db_install_add_key('poller_item', 'key', 'rrd_next_step', array('rrd_next_step'));
+	}
 }

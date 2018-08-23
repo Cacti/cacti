@@ -298,7 +298,7 @@ function item_edit() {
 		$page_name  = 'aggregate_templates.php';
 	}else {
 		/* TODO redirect somewhere and show an error message, rather than die */
-		die();
+		die("We should have redirected somewhere but we ended up here instead" . PHP_EOL);
 	}
 
 	if (!isempty_request_var('id')) {
@@ -354,7 +354,7 @@ function item_edit() {
 		if (array_key_exists('t_' . $field_name, $item_overrides)) {
 			$form_array[$field_name]['sub_checkbox']  = array(
 				'name' => 't_' . $field_name,
-				'friendly_name' => __('Override this Value') . '<br>',
+				'friendly_name' => __esc('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
@@ -381,7 +381,7 @@ function item_edit() {
 	form_hidden_box('_graph_type_id', (isset($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 	form_hidden_box('aggregate_graph_id', get_request_var('aggregate_graph_id'), '0');
 	form_hidden_box('aggregate_template_id', get_request_var('aggregate_template_id'), '0');
 

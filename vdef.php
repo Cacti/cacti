@@ -267,7 +267,7 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 			print "	<tr>
 					<td class='topBoxAlt'>
@@ -277,11 +277,11 @@ function vdef_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
     print "<tr>
@@ -329,8 +329,8 @@ function vdef_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -375,9 +375,17 @@ function vdef_item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row_prepared('SELECT * FROM vdef_items WHERE id = ?', array(get_request_var('id')));
-		$current_type = $vdef['type'];
-		$values[$current_type] = $vdef['value'];
+		$vdef = db_fetch_row_prepared('SELECT *
+			FROM vdef_items
+			WHERE id = ?',
+			array(get_request_var('id')));
+
+		if (sizeof($vdef)) {
+			$current_type = $vdef['type'];
+			$values[$current_type] = $vdef['value'];
+		}
+	} else {
+		$vdef = array();
 	}
 
 	html_start_box(__('VDEF Preview'), '100%', '', '3', 'center', '');
@@ -402,58 +410,76 @@ function vdef_item_edit() {
 		$current_type = CVDEF_ITEM_TYPE_FUNCTION;
 	}
 
-	form_alternate_row();
-	print '<td style="width:50%"><span class="textEditTitle">' . __('VDEF Item Type') . '</span><br>' . __('Choose what type of VDEF item this is.') .'</td>';
-	?>
-		<td>
-			<select id='type_select'>
-				<?php
-				foreach ($vdef_item_types as $var => $val) {
-					print "<option value='$var'" . ($var == $current_type ? ' selected':'') . ">$val</option>";
-				}
-				?>
-			</select>
-			<script type='text/javascript'>
-			$(function() {
-				$('#type_select').unbind().change(function() {
-					strURL = 'vdef.php?action=item_edit';
-					strURL += '&header=false';
-					strURL += '&id=<?php print get_request_var('id');?>';
-					strURL += '&vdef_id=<?php print get_request_var('vdef_id');?>';
-					strURL += '&type_select='+$('#type_select').val();
-					loadPageNoHeader(strURL);
-				});
-			});
-			</script>
-		</td>
-	<?php
-	form_end_row();
+	$form_vdef = array(
+		'type_select' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('VDEF Item Type'),
+			'description'   => __('Choose what type of VDEF item this is.'),
+			'value'         => $current_type,
+			'array'         => $vdef_item_types
+		),
+		'value' => array(
+			'method'        => 'drop_array',
+			'friendly_name' => __('VDEF Item Value'),
+			'description'   => __('Enter a value for this VDEF item.'),
+			'value'         => (isset($vdef['value']) ? $vdef['value']:'')
+		),
+		'id' => array(
+			'method'        => 'hidden',
+			'value'         => isset_request_var('id') ?  get_request_var('id') : '0',
+		),
+		'type' => array(
+			'method'        => 'hidden',
+			'value'         => $current_type
+		),
+		'vdef_id' => array(
+			'method'        => 'hidden',
+			'value'         => get_request_var('vdef_id')
+		),
+		'save_component_item' => array(
+			'method'        => 'hidden',
+			'value'         => '1'
+		)
+	);
 
-	form_alternate_row();
-	print '<td style="width:50%;"><span class="textEditTitle">' . __('VDEF Item Value') . '</span><br>' . __('Enter a value for this VDEF item.') . '</td>';
-	?>
-		<td>
-			<?php
-			switch ($current_type) {
-			case '1':
-				form_dropdown('value', $vdef_functions, '', '', (isset($vdef['value']) ? $vdef['value'] : ''), '', '');
-				break;
-			case '4':
-				form_dropdown('value', $custom_vdef_data_source_types, '', '', (isset($vdef['value']) ? $vdef['value'] : ''), '', '');
-				break;
-			case '6':
-				form_text_box('value', (isset($vdef['value']) ? $vdef['value'] : ''), '', '255', 30, 'text', (isset_request_var('id') ? get_request_var('id') : '0'));
-				break;
-			}
-			?>
-		</td>
-	<?php
-	form_end_row();
+	switch ($current_type) {
+	case '1':
+		$form_vdef['value']['array'] = $vdef_functions;
 
-	form_hidden_box('id', (isset_request_var('id') ? get_request_var('id') : '0'), '');
-	form_hidden_box('type', $current_type, '');
-	form_hidden_box('vdef_id', get_request_var('vdef_id'), '');
-	form_hidden_box('save_component_item', '1', '');
+		break;
+	case '4':
+		$form_vdef['value']['array'] = $custom_vdef_data_source_types;
+
+		break;
+	case '6':
+		$form_vdef['value']['method']     = 'textbox';
+		$form_vdef['value']['max_length'] = '255';
+		$form_vdef['value']['size']       = '30';
+
+		break;
+	}
+
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($form_vdef, $vdef)
+		)
+	);
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('#type_select').unbind().change(function() {
+			strURL  = 'vdef.php?action=item_edit';
+			strURL += '&id=' + $('#id').val();
+			strURL += '&vdef_id=' + $('#vdef_id').val();
+			strURL += '&type_select=' + $('#type_select').val();
+			strURL += '&header=false';
+			loadPageNoHeader(strURL);
+		});
+	});
+	</script>
+	<?php
 
 	html_end_box();
 
@@ -591,7 +617,7 @@ function vdef_edit() {
 						}
 					}
 					?>
-					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-remove' title='<?php print __esc('Delete VDEF Item');?>'></a>
+					<a id='<?php print $vdef['id'] . '_' . $vdef_item['id'];?>' class='delete deleteMarker fa fa-times' title='<?php print __esc('Delete VDEF Item');?>'></a>
 				</td>
 				<?php
 
@@ -627,11 +653,15 @@ function vdef_edit() {
 
 			id = $(this).attr('id').split('_');
 			request = 'vdef.php?action=item_remove_confirm&id='+id[0]+'&vdef_id='+id[1];
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({ title: '<?php print __esc('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
-			});
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({ title: '<?php print __esc('Delete VDEF Item');?>', minHeight: 80, minWidth: 500 });
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		}).css('cursor', 'pointer');
 	});
 
@@ -653,7 +683,7 @@ function vdef_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('VDEFs');?>
@@ -678,8 +708,8 @@ function vdef_filter() {
                     </td>
 					<td>
 						<span>
-							<input type='button' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
-							<input type='button' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' id='refresh'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' id='clear'>
 						</span>
 					</td>
 				</tr>

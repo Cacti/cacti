@@ -475,7 +475,7 @@ function filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Time Since Update');?>
@@ -510,15 +510,15 @@ function filter() {
 					</td>
 					<td>
 						<span>
-							<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
-							<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
-							<input id='rescan' type='button' value='<?php print __esc('Rescan');?>' name='rescan'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __x('filter: use', 'Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __x('filter: reset', 'Clear');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='rescan' value='<?php print __esc('Rescan');?>' name='rescan'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input id='remall' type='button' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
-							<input id='arcall' type='button' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='remall' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='arcall' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
 						</span>
 					</td>
 					<td id='text'></td>
@@ -552,37 +552,49 @@ function filter() {
 				$('#rescan').click(function() {
 					$('#text').text('Rebuilding RRDfile Listing');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&rescan=1&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&rescan=1&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 
 				$('#arcall').click(function() {
 					$('#text').text('Scheduling Archiving of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&action=arcall&raction=3&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 
 				$('#remall').click(function() {
 					$('#text').text('Scheduling Purging of All Unknowns');
 					pulsate('#text');
-					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1', function(data) {
-						checkForLogout(data);
+					$.get('rrdcleaner.php?header=false&action=remall&raction=1&clear=1')
+						.done(function(data) {
+							checkForLogout(data);
 
-						$('#main').html(data);
-						$('#text').text('Finished').fadeOut(2000);
-						applySkin();
-					});
+							$('#main').html(data);
+							$('#text').text('Finished').fadeOut(2000);
+							applySkin();
+						})
+						.fail(function(data) {
+							getPresentHTTPError(data);
+						});
 				});
 			});
 			</script>

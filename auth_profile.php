@@ -37,6 +37,23 @@ switch (get_request_var('action')) {
 		api_auth_logout_everywhere();
 
 		break;
+	case 'clear_user_settings':
+		api_auth_clear_user_settings();
+
+		break;
+	case 'reset_default':
+		$name  = get_nfilter_request_var('name');
+
+		api_auth_clear_user_setting($name);
+
+		break;
+	case 'update_data':
+		$name  = get_nfilter_request_var('name');
+		$value = get_nfilter_request_var('value');
+
+		api_auth_update_user_setting($name, $value);
+
+		break;
 	default:
 		// We must exempt ourselves from the page refresh, or else the settings page could update while the user is making changes
 		$_SESSION['custom'] = 1;
@@ -58,7 +75,82 @@ function api_auth_logout_everywhere() {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM user_auth_cache WHERE user_id=?', array($user));
+		db_execute_prepared('DELETE FROM user_auth_cache
+			WHERE user_id = ?',
+			array($user));
+	}
+}
+
+function api_auth_clear_user_settings() {
+	$user = $_SESSION['sess_user_id'];
+
+	if (!empty($user)) {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE user_id = ?',
+			array($user));
+
+		kill_session_var('sess_user_config_array');
+
+		raise_message('37');
+	}
+}
+
+function api_auth_clear_user_setting($name) {
+	global $settings_user;
+
+	$user = $_SESSION['sess_user_id'];
+
+	if (!empty($user)) {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE user_id = ? AND name = ?',
+			array($user, $name));
+
+		foreach($settings_user as $tab => $settings) {
+			if (isset($settings[$name])) {
+				if (isset($settings[$name]['default'])) {
+					db_execute_prepared('INSERT INTO settings_user
+						(name, value, user_id)
+						VALUES (?, ?, ?)',
+						array($name, $settings[$name]['default'], $user));
+
+					print $settings[$name]['default'];
+
+					kill_session_var('sess_user_config_array');
+
+					break;
+				}
+			}
+		}
+	}
+}
+
+function api_auth_update_user_setting($name, $value) {
+	global $settings_user;
+
+	$user = $_SESSION['sess_user_id'];
+
+	if (!empty($user)) {
+		if ($name == 'full_name' || $name == 'email_address') {
+			db_execute_prepared("UPDATE user_auth
+				SET $name = ?
+				WHERE id = ?",
+				array($value, $user));
+		} else {
+			foreach($settings_user as $tab => $settings) {
+				if (isset($settings[$name])) {
+					db_execute_prepared('REPLACE INTO settings_user
+						(name, value, user_id)
+						VALUES (?, ?, ?)',
+						array($name, $value, $user));
+
+					kill_session_var('sess_user_config_array');
+					kill_session_var('selected_theme');
+					kill_session_var('sess_user_language');
+
+					break;
+				}
+			}
+		}
 	}
 }
 
@@ -67,53 +159,27 @@ function form_save() {
 
 	// Save the users profile information
 	if (isset_request_var('full_name') && isset_request_var('email_address') && isset($_SESSION['sess_user_id'])) {
-		db_execute_prepared("UPDATE user_auth SET full_name = ?, email_address = ? WHERE id = ?", array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
+		db_execute_prepared("UPDATE user_auth
+			SET full_name = ?, email_address = ?
+			WHERE id = ?",
+			array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
 	}
+
+	$errors = array();
 
 	// Save the users graph settings if they have permission
 	if (is_view_allowed('graph_settings') == true) {
-		foreach ($settings_user as $tab_short_name => $tab_fields) {
-			foreach ($tab_fields as $field_name => $field_array) {
-				/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
-				if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
-					set_request_var($field_name, $field_array['default']);
-				}
-
-				if ($field_array['method'] == 'checkbox') {
-					if (isset_request_var($field_name)) {
-						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $field_name));
-					} else {
-						db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $field_name));
-					}
-				} elseif ($field_array['method'] == 'checkbox_group') {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, 'on')", array($_SESSION['sess_user_id'], $sub_field_name));
-						} else {
-							db_execute_prepared("REPLACE INTO settings_user (user_id,name,value) VALUES (?, ?, '')", array($_SESSION['sess_user_id'], $sub_field_name));
-						}
-					}
-				} elseif ($field_array['method'] == 'textbox_password') {
-					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-						raise_message(4);
-						break;
-					} elseif (isset_request_var($field_name)) {
-						db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) VALUES (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
-					}
-				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-						if (isset_request_var($sub_field_name)) {
-							db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $sub_field_name, get_nfilter_request_var($sub_field_name)));
-						}
-					}
-				}else if (isset_request_var($field_name)) {
-					db_execute_prepared('REPLACE INTO settings_user (user_id, name, value) values (?, ?, ?)', array($_SESSION['sess_user_id'], $field_name, get_nfilter_request_var($field_name)));
-				}
-			}
-		}
+		save_user_settings($_SESSION['sess_user_id']);
 	}
 
-	raise_message(1);
+	if (sizeof($errors) == 0) {
+		raise_message(1);
+	} else {
+		raise_message(35);
+		foreach($errors as $error) {
+			raise_message($error);
+		}
+	}
 
 	/* reset local settings cache so the user sees the new settings */
 	kill_session_var('sess_user_language');
@@ -131,19 +197,21 @@ function settings() {
 	/* you cannot have per-user graph settings if cacti's user management is not turned on */
 	if (read_config_option('auth_method') == 0) {
 		raise_message(6);
-		display_output_messages();
 		return;
 	}
 
+	$referer = '';
+
 	if (get_request_var('action') == 'edit') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$timespan_sel_pos = strpos($_SERVER['HTTP_REFERER'],'&predefined_timespan');
+			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
 			if ($timespan_sel_pos) {
-				$_SERVER['HTTP_REFERER'] = substr($_SERVER['HTTP_REFERER'],0,$timespan_sel_pos);
+				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
 		}
 
-		$_SESSION['profile_referer'] = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER']:'graph_view.php');
+		$_SESSION['profile_referer'] = ($referer != '' ? $referer:'graph_view.php');
 	}
 
 	form_start('auth_profile.php');
@@ -202,6 +270,13 @@ function settings() {
 			'max_length' => '60',
 			'size' => '60'
 		),
+		'clear_settings' => array(
+			'method' => 'button',
+			'friendly_name' => __('Clear User Settings'),
+			'description' => __('Return all User Settings to Default values.'),
+			'value' => __('Clear User Settings'),
+			'on_click' => 'clearUserSettings()'
+		),
 		'private_data' => array(
 			'method' => 'button',
 			'friendly_name' => __('Clear Private Data'),
@@ -237,7 +312,7 @@ function settings() {
 			$settings_user['tree']['default_tree_id']['sql'] = get_allowed_trees(false, true);
 		}
 
-		html_start_box( __('User Settings'), '100%', true, '3', 'center', '');
+		html_start_box(__('User Settings'), '100%', true, '3', 'center', '');
 
 		foreach ($settings_user as $tab_short_name => $tab_fields) {
 			$collapsible = true;
@@ -262,7 +337,19 @@ function settings() {
 						$form_array[$field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($field_name, $_SESSION['sess_user_id']));
+					$user_row = db_fetch_row_prepared('SELECT value
+						FROM settings_user
+						WHERE name = ?
+						AND user_id = ?',
+						array($field_name, $_SESSION['sess_user_id']));
+
+					if (sizeof($user_row)) {
+						$form_array[$field_name]['user_set'] = true;
+						$form_array[$field_name]['value'] = $user_row['value'];
+					} else {
+						$form_array[$field_name]['user_set'] = false;
+						$form_array[$field_name]['value'] = null;
+					}
 				}
 			}
 
@@ -270,10 +357,10 @@ function settings() {
 				array(
 					'config' => array(
 						'no_form_tag' => true
-						),
+					),
 					'fields' => $form_array
-					)
-				);
+				)
+			);
 		}
 
 		print "</td></tr>\n";
@@ -282,13 +369,17 @@ function settings() {
 	}
 
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	var themeFonts=<?php print read_config_option('font_method');?>;
-	var themeChanged = false;
-	var langChanged = false;
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
+
+	function clearUserSettings() {
+		$.get('auth_profile.php?action=clear_user_settings', function() {
+			document.location = 'auth_profile.php?newtheme=1';
+		});
+	}
 
 	function clearPrivateData() {
 		Storages.localStorage.removeAll();
@@ -335,16 +426,16 @@ function settings() {
 
 	function graphSettings() {
 		if (themeFonts == 1) {
-				$('#row_fonts').hide();
-				$('#row_custom_fonts').hide();
-				$('#row_title_size').hide();
-				$('#row_title_font').hide();
-				$('#row_legend_size').hide();
-				$('#row_legend_font').hide();
-				$('#row_axis_size').hide();
-				$('#row_axis_font').hide();
-				$('#row_unit_size').hide();
-				$('#row_unit_font').hide();
+			$('#row_fonts').hide();
+			$('#row_custom_fonts').hide();
+			$('#row_title_size').hide();
+			$('#row_title_font').hide();
+			$('#row_legend_size').hide();
+			$('#row_legend_font').hide();
+			$('#row_axis_size').hide();
+			$('#row_axis_font').hide();
+			$('#row_unit_size').hide();
+			$('#row_unit_font').hide();
 		} else {
 			var custom_fonts = $('#custom_fonts').is(':checked');
 
@@ -375,51 +466,76 @@ function settings() {
 		}
 	}
 
-	function themeChange() {
-		if ($('#selected_theme').val() != currentTheme) {
-			themeChanged = true;
-		} else {
-			themeChanged = false;
-		}
-	}
-
-	function langChange() {
-		if ($('#user_language').val() != currentLang) {
-			langChanged = true;
-		} else {
-			langChanged = false;
-		}
-	}
-
 	$(function() {
 		graphSettings();
 
-		$('#navigation').show();
-		$('#navigation_right').show();
+		$('#navigation, #navigation_right').show();
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
-            if (themeChanged != true && langChanged != true) {
-                $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-					loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
-                });
-            } else {
-                $.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
-                    document.location = 'auth_profile.php?newtheme=1';
-                });
-            }
+			$.post('auth_profile.php?header=false', $('input, select, textarea').serialize()).done(function(data) {
+				loadPageNoHeader('auth_profile.php?action=noreturn&header=false');
+			});
 		});
 
-		$('#selected_theme').change(function() {
-			themeChange();
+		$('#auth_profile_edit2 .formData, #auth_profile_noreturn2 .formData').each(function() {
+			if ($(this).find('select, input[type!="button"]').length) {
+				$(this).parent().hover(
+					function() {
+						var id = $(this).find('select, input[type!="button"]').attr('id');
+
+						$('<a class="resetHover" data-id="'+id+'" style="padding-left:10px" href="#"><?php print __('Reset');?></a>').appendTo($(this));
+						$('.resetHover').on('click', function(event) {
+							event.preventDefault();
+
+							var id = $(this).attr('data-id');
+
+							if (id != undefined) {
+								$.get('auth_profile.php?action=reset_default&name='+id, function(data) {
+									if (id != 'selected_theme' && id != 'user_language') {
+										if ($('#'+id).is(':checkbox')) {
+											if (data == 'on') {
+												$('#'+id).prop('checked', true);
+											} else {
+												$('#'+id).prop('checked', false);
+											}
+										} else {
+											$('#'+id).val(data);
+											if ($('#'+id).selectmenu('instance')) {
+												$('#'+id).selectmenu('refresh');
+											}
+										}
+									} else {
+										document.location = 'auth_profile.php?action=edit';
+									}
+								});
+							}
+						});
+					},
+					function() {
+						$('.resetHover').remove();
+					}
+				);
+			}
 		});
 
-		$('#user_language').change(function() {
-			langChange();
+		$('select, input[type!="button"]').unbind().keyup(function() {
+			name  = $(this).attr('id');
+			value = $(this).val();
+			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+			});
+		}).change(function() {
+			name  = $(this).attr('id');
+			value = $(this).val();
+			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+				if (name == 'selected_theme' || name == 'user_language') {
+					document.location = 'auth_profile.php?action=edit';
+				}
+			});
 		});
 
 		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print html_escape($_SESSION['profile_referer']);?>';
+			document.location = '<?php print html_escape(isset($_SESSION['profile_referer']) ? $_SESSION['profile_referer']:'auth_profile.php');?>';
 		});
 	});
 
@@ -428,7 +544,7 @@ function settings() {
 
 	form_hidden_box('save_component_graph_config','1','');
 
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return')), array('id' => 'save', 'value' => __esc('Save'))));
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
 
 	form_end();
 }

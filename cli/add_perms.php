@@ -23,15 +23,8 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__).'/../include/global.php');
-include_once($config['base_path'].'/lib/api_automation_tools.php');
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/api_automation_tools.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -77,7 +70,7 @@ if (sizeof($parms) == 0) {
 			if ( ($value == 'graph') || ($value == 'tree') || ($value == 'host') || ($value == 'graph_template')) {
 				$itemType = $itemTypes[$value];
 			} else {
-				echo "ERROR: Invalid Item Type: ($value)\n\n";
+				print "ERROR: Invalid Item Type: ($value)\n\n";
 				display_help();
 				exit(1);
 			}
@@ -123,14 +116,14 @@ if (sizeof($parms) == 0) {
 		case '-V':
 		case '-v':
 			display_version();
-			exit;
+			exit(0);
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
-			exit;
+			exit(0);
 		default:
-			echo "ERROR: Invalid Argument: ($arg)\n\n";
+			print "ERROR: Invalid Argument: ($arg)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -159,8 +152,8 @@ if (sizeof($parms) == 0) {
 
 	if ($displayGraphs) {
 		if (!isset($hostId) || ($hostId === 0) || (!db_fetch_cell("SELECT id FROM host WHERE id=$hostId"))) {
-			echo "ERROR: You must supply a valid host_id before you can list its graphs\n";
-			echo "Try --list-hosts\n";
+			print "ERROR: You must supply a valid host_id before you can list its graphs\n";
+			print "Try --list-hosts\n";
 			display_help();
 			exit(1);
 		} else {
@@ -183,7 +176,7 @@ if (sizeof($parms) == 0) {
 		if ( db_fetch_cell("SELECT id FROM user_auth WHERE id=$userId") ) {
 			array_push($userIds, $userId);
 		} else {
-			echo "ERROR: Invalid Userid: ($value)\n\n";
+			print "ERROR: Invalid Userid: ($value)\n\n";
 			display_help();
 			exit(1);
 		}
@@ -192,13 +185,13 @@ if (sizeof($parms) == 0) {
 
 	/* verify --item-id */
 	if ($itemType == 0) {
-		echo "ERROR: --item-type missing. Please specify.\n\n";
+		print "ERROR: --item-type missing. Please specify.\n\n";
 		display_help();
 		exit(1);
 	}
 
 	if ($itemId == 0) {
-		echo "ERROR: --item-id missing. Please specify.\n\n";
+		print "ERROR: --item-id missing. Please specify.\n\n";
 		display_help();
 		exit(1);
 	}
@@ -207,21 +200,21 @@ if (sizeof($parms) == 0) {
 	switch ($itemType) {
 		case 1: /* graph */
 			if (!db_fetch_cell("SELECT local_graph_id FROM graph_templates_graph WHERE local_graph_id=$itemId") ) {
-				echo "ERROR: Invalid Graph item id: ($itemId)\n\n";
+				print "ERROR: Invalid Graph item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
 			break;
 		case 2: /* tree */
 			if (!db_fetch_cell("SELECT id FROM graph_tree WHERE id=$itemId") ) {
-				echo "ERROR: Invalid Tree item id: ($itemId)\n\n";
+				print "ERROR: Invalid Tree item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
 			break;
 		case 3: /* host */
 			if (!db_fetch_cell("SELECT id FROM host WHERE id=$itemId") ) {
-				echo "ERROR: Invalid Host item id: ($itemId)\n\n";
+				print "ERROR: Invalid Host item id: ($itemId)\n\n";
 				display_help();
 				exit(1);
 			}
@@ -244,26 +237,26 @@ if (sizeof($parms) == 0) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Permissions Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: add_perms.php [ --user-id=[ID] ]\n";
-	echo "    --item-type=[graph|tree|host|graph_template]\n";
-	echo "    --item-id [--quiet]\n\n";
-	echo "Where item-id is the id of the object of type item-type\n\n";
-	echo "List Options:\n";
-	echo "    --list-users\n";
-	echo "    --list-trees\n";
-	echo "    --list-graph-templates\n";
-	echo "    --list-graphs --host-id=[ID]\n";
+	print "\nusage: add_perms.php [ --user-id=[ID] ]\n";
+	print "    --item-type=[graph|tree|host|graph_template]\n";
+	print "    --item-id [--quiet]\n\n";
+	print "Where item-id is the id of the object of type item-type\n\n";
+	print "List Options:\n";
+	print "    --list-users\n";
+	print "    --list-trees\n";
+	print "    --list-graph-templates\n";
+	print "    --list-graphs --host-id=[ID]\n";
 }
 
 function displayGroups() {
     /**
      * Todo implement
      */
-	echo 'This option has not yet been implemented';
+	print 'This option has not yet been implemented';
 }

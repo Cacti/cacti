@@ -309,11 +309,11 @@ function aggregate_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Aggregate Graph Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -410,6 +410,9 @@ function aggregate_template_edit() {
 			$('#save_component_template').parent().next('table').css('display', 'none');
 		} else {
 			$('#graph_template_id').prop('disabled', true);
+			if ($('#graph_template_id').selectmenu('widget')) {
+				$('#graph_template_id').selectmenu('disable');
+			}
 		}
 
 		$('#total').change(function() {
@@ -538,7 +541,7 @@ function aggregate_template() {
 						' . __('Search') . '
 					</td>
 					<td>
-						<input type="text" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
+						<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
 					</td>
 					<td>
 						' . __('Templates') . '
@@ -572,8 +575,8 @@ function aggregate_template() {
 					</td>
 					<td>
 						<span>
-							<input type="button" value="' . __esc('Go') . '" id="refresh">
-							<input type="button" value="' . __esc('Clear') . '" id="clear">
+							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Go') . '" id="refresh">
+							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Clear') . '" id="clear">
 						</span>
 					</td>
 				</tr>
@@ -655,13 +658,13 @@ function aggregate_template() {
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'), $template['id']);
 			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
-			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('aggregate_graphs.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right;');
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('aggregate_graphs.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right;');
 			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

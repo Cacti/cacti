@@ -23,17 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/api_graph.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/api_graph.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -69,22 +62,22 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* form the 'where' clause for our main sql query */
@@ -148,20 +141,20 @@ foreach ($graph_list as $graph) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
-	echo "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
-	echo "Required:\n";
-	echo "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
-	echo "Optional:\n";
-	echo "    --filter=string            - A Graph Template name or Graph Title to search for\n";
-	echo "    --debug                    - Display verbose output during execution\n\n";
+	print "\nusage: poller_graphs_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=[string] [--debug]\n\n";
+	print "A utility to reapply Cacti Graph naming rules to existing Graphs in bulk.\n\n";
+	print "Required:\n";
+	print "    --host-id=id|all|N1,N2,... - The devices id, 'all' or a comma delimited list of id's\n\n";
+	print "Optional:\n";
+	print "    --filter=string            - A Graph Template name or Graph Title to search for\n";
+	print "    --debug                    - Display verbose output during execution\n\n";
 }
 
 function debug($message) {

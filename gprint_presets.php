@@ -128,7 +128,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
+			$gprint_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
 			$gprint_array[$i] = $matches[1];
 
 			$i++;
@@ -150,11 +150,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one GPRINT Preset.') ."</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') ."' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') ."' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -182,7 +182,7 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('GPRINT Presets [edit: %s]', htmlspecialchars($gprint_preset['name']));
+		$header_label = __('GPRINT Presets [edit: %s]', html_escape($gprint_preset['name']));
 	} else {
 		$header_label = __('GPRINT Presets [new]');
 	}
@@ -262,7 +262,7 @@ function gprint_presets() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('GPRINTs');?>
@@ -273,7 +273,7 @@ function gprint_presets() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -287,8 +287,8 @@ function gprint_presets() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>

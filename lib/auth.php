@@ -60,14 +60,15 @@ function set_auth_cookie($user) {
 
 	clear_auth_cookie();
 
-	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5($_SERVER['REMOTE_ADDR']);
+	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr(''));
 
 	$secret = hash('sha512', $nssecret, false);
 
 	db_execute_prepared('REPLACE INTO user_auth_cache
 		(user_id, hostname, last_update, token)
 		VALUES
-		(?, ?, NOW(), ?);', array($user['id'], $_SERVER['REMOTE_ADDR'], $secret));
+		(?, ?, NOW(), ?);',
+		array($user['id'], get_client_addr(''), $secret));
 
 	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 }
@@ -108,8 +109,9 @@ function check_auth_cookie() {
 							(username, user_id, result, ip, time)
 							VALUES
 							(?, ?, 2, ?, NOW())',
-							array($user, $user_info['id'], $_SERVER['REMOTE_ADDR'])
+							array($user, $user_info['id'], get_client_addr(''))
 						);
+
 						return $user_info['id'];
 					}
 				}
@@ -126,7 +128,7 @@ function check_auth_cookie() {
    @arg $new_realm - new realm of the account to be created, overwrite not affected, but is used for lookup
    @arg $overwrite - Allow overwrite of existing user, preserves username, fullname, password and realm
    @arg $data_override - Array of user_auth field and values to override on the new user
-   @return - True on copy, False on no copy */
+   @return - the new users id, or false on no copy */
 function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 0, $overwrite = false, $data_override = array()) {
 
 	/* ================= input validation ================= */
@@ -141,7 +143,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($template_user, $template_realm));
 
-	if (! isset($user_auth)) {
+	if (!isset($user_auth)) {
 		return false;
 	}
 
@@ -157,24 +159,28 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	if (sizeof($user_exist)) {
 		if ($overwrite) {
 			/* Overwrite existing user */
-			$user_auth['id']        = $user_exist['id'];
-			$user_auth['username']  = $user_exist['username'];
-			$user_auth['password']  = $user_exist['password'];
-			$user_auth['realm']     = $user_exist['realm'];
-			$user_auth['full_name'] = $user_exist['full_name'];
-			$user_auth['must_change_password'] = $user_exist['must_change_password'];
-			$user_auth['enabled']   = $user_exist['enabled'];
+			$user_auth['id']            = $user_exist['id'];
+			$user_auth['username']      = $user_exist['username'];
+			$user_auth['password']      = $user_exist['password'];
+			$user_auth['realm']         = $user_exist['realm'];
+			$user_auth['full_name']     = $user_exist['full_name'];
+			$user_auth['email_address'] = $user_exist['email_address'];
+ 			$user_auth['must_change_password'] = $user_exist['must_change_password'];
+			$user_auth['enabled']       = $user_exist['enabled'];
 		} else {
 			/* User already exists, duplicate users are bad */
 			raise_message(19);
+
 			return false;
 		}
 	} else {
 		/* new user */
-		$user_auth['id'] = 0;
-		$user_auth['username'] = $new_user;
-		$user_auth['password'] = '!';
-		$user_auth['realm'] = $new_realm;
+		$user_auth['id']            = 0;
+		$user_auth['username']      = $new_user;
+		$user_auth['enabled']       = 'on';
+		$user_auth['password']      = mt_rand(100000, 10000000);
+		$user_auth['email_address'] = '';
+ 		$user_auth['realm']         = $new_realm;
 	}
 
 	/* Update data_override fields */
@@ -262,7 +268,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 
 	api_plugin_hook_function('copy_user', array('template_id' => $template_id, 'new_id' => $new_id));
 
-	return true;
+	return $new_id;
 }
 
 
@@ -280,12 +286,12 @@ function user_remove($user_id) {
 		array($user_id));
 
 	if ($username != get_nfilter_request_var('username')) {
-		if ($username == read_config_option('user_template')) {
+		if ($user_id == get_template_account()) {
 			raise_message(21);
 			return;
 		}
 
-		if ($username == read_config_option('guest_user')) {
+		if ($user_id == get_guest_account()) {
 			raise_message(21);
 			return;
 		}
@@ -695,12 +701,15 @@ function is_realm_allowed($realm) {
 
 function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 0) {
 	$items = db_fetch_assoc_prepared('SELECT gti.id, gti.title, gti.host_id,
-		gti.local_graph_id, gti.host_grouping_type, h.description AS hostname
+		gti.site_id, gti.local_graph_id, gti.host_grouping_type,
+		h.description AS hostname, s.name AS sitename
 		FROM graph_tree_items AS gti
 		INNER JOIN graph_tree AS gt
 		ON gt.id = gti.graph_tree_id
 		LEFT JOIN host AS h
 		ON h.id = gti.host_id
+		LEFT JOIN sites AS s
+		ON s.id = gti.site_id
 		WHERE gti.graph_tree_id = ?
 		AND gti.parent = ?
 		ORDER BY gti.position ASC',
@@ -732,6 +741,14 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
 function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order_by = '', $limit = '', &$total_rows = 0, $user = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
+	}
+
+	if (!is_numeric($tree_id)) {
+		return array();
+	}
+
+	if (!is_numeric($parent)) {
+		return array();
 	}
 
 	if ($order_by != '') {
@@ -790,6 +807,8 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 							$new_heirarchy[] = $h;
 						}
 					}
+				} elseif ($h['site_id'] > 0) {
+					$new_heirarchy[] = $h;
 				} elseif (!is_tree_branch_empty($h['tree_id'], $h['id'])) {
 					$new_heirarchy[] = $h;
 				}
@@ -803,6 +822,14 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 }
 
 function get_allowed_tree_header_graphs($tree_id, $leaf_id = 0, $sql_where = '', $order_by = 'gti.position', $limit = '', &$total_rows = 0, $user = 0) {
+	if (!is_numeric($tree_id)) {
+		return array();
+	}
+
+	if (!is_numeric($leaf_id)) {
+		return array();
+	}
+
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -1127,7 +1154,201 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	return $graphs;
 }
 
-function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
+function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_cache', $limit = '', &$total_rows = 0, $user = 0, $graph_id = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if ($graph_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.id = $graph_id";
+	}
+
+	if (read_user_setting('hide_disabled') == 'on') {
+		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+	}
+
+	if ($sql_where != '') {
+		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($user == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method != 0) {
+		if ($user == 0) {
+			if (isset($_SESSION['sess_user_id'])) {
+				$user = $_SESSION['sess_user_id'];
+			} else {
+				return array();
+			}
+		}
+
+		if (read_config_option('graph_auth_method') == 1) {
+			$sql_operator = 'OR';
+		} else {
+			$sql_operator = 'AND';
+		}
+
+		/* get policies for all groups and user */
+		$policies = db_fetch_assoc_prepared("SELECT uag.id,
+			'group' AS type, uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+			WHERE uag.enabled = 'on'
+			AND uagm.user_id = ?",
+			array($user)
+		);
+
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type, policy_graphs,
+			policy_hosts, policy_graph_templates
+			FROM user_auth
+			WHERE id = ?",
+			array($user));
+
+		$i          = 0;
+		$sql_having = '';
+		$sql_select = '';
+		$sql_join   = '';
+
+		foreach($policies as $policy) {
+			if ($policy['policy_graphs'] == 1) {
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NULL";
+			} else {
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NOT NULL";
+			}
+
+			$sql_join   .= "LEFT JOIN user_auth_" . ($policy['type'] == 'user' ? '' : 'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_hosts'] == 1) {
+				$sql_having .= " OR (user$i IS NULL";
+			} else {
+				$sql_having .= " OR (user$i IS NOT NULL";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '' : 'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_graph_templates'] == 1) {
+				$sql_having .= " $sql_operator user$i IS NULL))";
+			} else {
+				$sql_having .= " $sql_operator user$i IS NOT NULL))";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '' : 'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . "_id=" . $policy['id'] . ") ";
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+		}
+
+		$sql_having = "HAVING $sql_having";
+
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			$sql_select
+			FROM graph_templates_graph AS gtg
+			INNER JOIN (
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+				FROM aggregate_graphs AS ag
+				INNER JOIN aggregate_graphs_items AS agi
+				ON ag.id=agi.aggregate_graph_id
+				INNER JOIN graph_local AS gl
+				ON gl.id=agi.local_graph_id
+			) AS gl
+			ON gl.id=gtg.local_graph_id
+			INNER JOIN aggregate_graphs AS ag
+			ON gl.id=ag.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
+			$sql_join
+			$sql_where
+			$sql_having
+			$order_by
+			$limit"
+		);
+
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.id)
+			FROM (
+				SELECT gl.id, $sql_select
+				FROM graph_templates_graph AS gtg
+				INNER JOIN (
+					SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+					gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+					FROM aggregate_graphs AS ag
+					INNER JOIN aggregate_graphs_items AS agi
+					ON ag.id=agi.aggregate_graph_id
+					INNER JOIN graph_local AS gl
+					ON gl.id=agi.local_graph_id
+				) AS gl
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host AS h
+				ON h.id=gl.host_id
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rower"
+		);
+	} else {
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id
+			FROM graph_templates_graph AS gtg
+			INNER JOIN (
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+				FROM aggregate_graphs AS ag
+				INNER JOIN aggregate_graphs_items AS agi
+				ON ag.id=agi.aggregate_graph_id
+				INNER JOIN graph_local AS gl
+				ON gl.id=agi.local_graph_id
+			) AS gl
+			ON gl.id=gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
+			$sql_where
+			$order_by
+			$limit"
+		);
+
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id)
+			FROM graph_templates_graph AS gtg
+			INNER JOIN (
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
+				FROM aggregate_graphs AS ag
+				INNER JOIN aggregate_graphs_items AS agi
+				ON ag.id=agi.aggregate_graph_id
+				INNER JOIN graph_local AS gl
+				ON gl.id=agi.local_graph_id
+			) AS gl
+			ON gl.id=gtg.local_graph_id
+			LEFT JOIN graph_templates AS gt
+			ON gt.id=gl.graph_template_id
+			LEFT JOIN host AS h
+			ON h.id=gl.host_id
+			$sql_where"
+		);
+	}
+
+	return $graphs;
+}
+
+function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
 	}
@@ -1222,7 +1443,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$sql_where .= ' AND (' . $sql_user . ')';
 		}
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id = gtg.local_graph_id
@@ -1249,7 +1470,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$sql_where"
 		);
 	} else {
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, gt.name
+		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.graph_template_id AS id, IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id=gtg.local_graph_id
@@ -1262,7 +1483,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'name', $limit
 			$limit"
 		);
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gtg.graph_template_id AS id)
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gtg.graph_template_id) AS id
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_local AS gl
 			ON gl.id=gtg.local_graph_id
@@ -1387,7 +1608,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 	$hosts = get_allowed_devices();
 	$sql_hosts_where = "";
 	if (sizeof($hosts) > 0) {
-		$sql_hosts_where =  'AND h.id IN ('.implode(',', array_keys(array_rekey($hosts, 'id','description'))).')';
+		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
 	}
 
 	if ($auth_method != 0) {
@@ -1408,6 +1629,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			AND uagm.user_id = ?",
 			array($user)
 		);
+
 		$policies[] = db_fetch_row_prepared("SELECT id, 'user' as type, policy_trees
 			FROM user_auth
 			WHERE id = ?",
@@ -1462,9 +1684,9 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
-			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on' AND $sql_where";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='' AND $sql_where";
 		} else {
-			$sql_where = "WHERE gt.enabled='on' AND h.enabled='on'";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on'";
 		}
 
 		$sql = "(
@@ -1474,7 +1696,6 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			AND gti.host_id=0
 			AND gti.local_graph_id=0
-			$sql_join
 			$sql_where
 			) UNION (
 			SELECT gti.id, CONCAT('" . __('Device:') . " ', h.description) AS name
@@ -1483,7 +1704,6 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 			ON gti.graph_tree_id = gt.id
 			INNER JOIN host AS h
 			ON h.id=gti.host_id
-			$sql_hosts_where
 			$sql_join
 			$sql_where
 			)
@@ -1680,38 +1900,276 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	return $host_list;
 }
 
+function get_allowed_sites($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $site_id = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if ($sql_where != '') {
+		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($site_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " s.id=$site_id";
+	}
+
+	if ($user == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($user == 0) {
+		if (isset($_SESSION['sess_user_id'])) {
+			$user = $_SESSION['sess_user_id'];
+		} else {
+			return array();
+		}
+	}
+
+	$sites = db_fetch_assoc("SELECT DISTINCT s.id, s.name
+		FROM sites AS s
+		INNER JOIN host AS h
+		ON s.id=h.site_id
+		$sql_where
+		$order_by
+		$limit");
+
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT s.id)
+		FROM sites AS s
+		INNER JOIN host AS h
+		ON s.id=h.site_id
+		$sql_where");
+
+	return $sites;
+}
+
+function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0) {
+	if ($limit != '') {
+		$limit = "LIMIT $limit";
+	}
+
+	if ($order_by != '') {
+		$order_by = "ORDER BY $order_by";
+	}
+
+	if (read_user_setting('hide_disabled') == 'on') {
+		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+	}
+
+	if ($sql_where != '') {
+		$sql_where = "WHERE $sql_where";
+	}
+
+	if ($site_id > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ' : 'WHERE ') . " h.site_id=$site_id";
+	}
+
+	if ($user == -1) {
+		$auth_method = 0;
+	} else {
+		$auth_method = read_config_option('auth_method');
+	}
+
+	if ($auth_method != 0) {
+		if ($user == 0) {
+			if (isset($_SESSION['sess_user_id'])) {
+				$user = $_SESSION['sess_user_id'];
+			} else {
+				return array();
+			}
+		}
+
+		if (read_config_option('graph_auth_method') == 1) {
+			$sql_operator = 'OR';
+		} else {
+			$sql_operator = 'AND';
+		}
+
+		/* get policies for all groups and user */
+		$policies   = db_fetch_assoc_prepared("SELECT uag.id, 'group' AS type,
+			uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates
+			FROM user_auth_group AS uag
+			INNER JOIN user_auth_group_members AS uagm
+			ON uag.id = uagm.group_id
+			WHERE uag.enabled = 'on'
+			AND uagm.user_id = ?",
+			array($user)
+		);
+
+		$policies[] = db_fetch_row_prepared("SELECT id, 'user' AS type,
+			policy_graphs, policy_hosts, policy_graph_templates
+			FROM user_auth
+			WHERE id = ?",
+			array($user)
+		);
+
+		$i          = 0;
+		$sql_select = '';
+		$sql_join   = '';
+		$sql_having = '';
+
+		foreach($policies as $policy) {
+			if ($policy['policy_graphs'] == 1) {
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NULL";
+			} else {
+				$sql_having .= ($sql_having != '' ? ' OR ' : '') . "(user$i IS NOT NULL";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.id=uap$i.item_id AND uap$i.type=1 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_hosts'] == 1) {
+				$sql_having .= " OR (user$i IS NULL";
+			} else {
+				$sql_having .= " OR (user$i IS NOT NULL";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.host_id=uap$i.item_id AND uap$i.type=3 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+
+			if ($policy['policy_graph_templates'] == 1) {
+				$sql_having .= " $sql_operator user$i IS NULL))";
+			} else {
+				$sql_having .= " $sql_operator user$i IS NOT NULL))";
+			}
+
+			$sql_join   .= 'LEFT JOIN user_auth_' . ($policy['type'] == 'user' ? '':'group_') . "perms AS uap$i ON (gl.graph_template_id=uap$i.item_id AND uap$i.type=4 AND uap$i." . $policy['type'] . '_id=' . $policy['id'] . ') ';
+			$sql_select .= ($sql_select != '' ? ', ' : '') . "uap$i." . $policy['type'] . "_id AS user$i";
+			$i++;
+		}
+
+		$sql_having = "HAVING $sql_having";
+
+		$host_list = db_fetch_assoc("SELECT h1.*, ht.name AS host_template_name
+			FROM host AS h1
+			LEFT JOIN host_template AS ht
+			ON h1.host_template_id=ht.id
+			INNER JOIN (
+				SELECT DISTINCT id FROM (
+					SELECT h.*, $sql_select
+					FROM host AS h
+					LEFT JOIN graph_local AS gl
+					ON h.id=gl.host_id
+					LEFT JOIN graph_templates_graph AS gtg
+					ON gl.id=gtg.local_graph_id
+					LEFT JOIN graph_templates AS gt
+					ON gt.id=gl.graph_template_id
+					LEFT JOIN host_template AS ht
+					ON h.host_template_id=ht.id
+					$sql_join
+					$sql_where
+					$sql_having
+				) AS rs1
+			) AS rs2
+			ON rs2.id=h1.id
+			$order_by
+			$limit"
+		);
+
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+			FROM (
+				SELECT h.id, $sql_select
+				FROM host AS h
+				LEFT JOIN graph_local AS gl
+				ON h.id=gl.host_id
+				LEFT JOIN graph_templates_graph AS gtg
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host_template AS ht
+				ON h.host_template_id=ht.id
+				$sql_join
+				$sql_where
+				$sql_having
+			) AS rower"
+		);
+	} else {
+		$host_list = db_fetch_assoc("SELECT h1.*, ht.name AS host_template_name
+			FROM host AS h1
+			LEFT JOIN host_template AS ht
+			ON h1.host_template_id=ht.id
+			INNER JOIN (
+				SELECT DISTINCT id FROM (
+					SELECT h.*
+					FROM host AS h
+					LEFT JOIN graph_local AS gl
+					ON h.id=gl.host_id
+					LEFT JOIN graph_templates_graph AS gtg
+					ON gl.id=gtg.local_graph_id
+					LEFT JOIN graph_templates AS gt
+					ON gt.id=gl.graph_template_id
+					LEFT JOIN host_template AS ht
+					ON h.host_template_id=ht.id
+					$sql_where
+				) AS rs1
+			) AS rs2
+			ON rs2.id=h1.id
+			$order_by
+			$limit"
+		);
+
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT id)
+			FROM (
+				SELECT h.id
+				FROM host AS h
+				LEFT JOIN graph_local AS gl
+				ON h.id=gl.host_id
+				LEFT JOIN graph_templates_graph AS gtg
+				ON gl.id=gtg.local_graph_id
+				LEFT JOIN graph_templates AS gt
+				ON gt.id=gl.graph_template_id
+				LEFT JOIN host_template AS ht
+				ON h.host_template_id=ht.id
+				$sql_where
+			) AS rower"
+		);
+	}
+
+	return $host_list;
+}
+
 function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
-	$templates = get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id);
+	$templates = array_rekey(get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id), 'id', 'name');
 
 	if (!sizeof($templates)) {
 		return array();
 	}
 
-	$new_templates = array();
-	$sql_where     = ($sql_where != '' ? ' AND ' : '') . $sql_where;
-
-	foreach ($templates as $key => $t) {
-		$dqg = db_fetch_assoc_prepared("SELECT DISTINCT sqg.id, name
-			FROM snmp_query_graph AS sqg
-			INNER JOIN graph_local AS gl
-			ON gl.snmp_query_graph_id=sqg.id
-			WHERE sqg.graph_template_id = ?
-			$sql_where
-			ORDER BY name",
-			array($t['id'])
-		);
-
-		if (sizeof($dqg)) {
-			unset($templates[$key]);
-			foreach ($dqg as $t) {
-				$new_templates[] = array('id' => 'dq_' . $t['id'], 'name' => $t['name']);
-			}
-		} else {
-			$new_templates[] = array('id' => 'cg_' . $t['id'], 'name' => $t['name']);
-		}
+	if ($sql_where != '') {
+		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
+	} else {
+		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
 	}
 
-	return $new_templates;
+	if ($limit != '') {
+		$sql_limit = 'LIMIT ' . $limit;
+	} else {
+		$sql_limit = '';
+	}
+
+	$sql_order = 'ORDER BY ' . $order_by;
+
+	$templates = db_fetch_assoc("SELECT DISTINCT
+		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
+		IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']'))) AS name
+		FROM graph_local AS gl
+		INNER JOIN graph_templates AS gt
+		ON gt.id=gl.graph_template_id
+		LEFT JOIN snmp_query_graph AS sqg
+		ON gl.snmp_query_graph_id=sqg.id
+		AND gl.graph_template_id=sqg.graph_template_id
+		$sql_where
+		$sql_order
+		$sql_limit");
+
+	return $templates;
 }
 
 /* get_host_array - returns a list of hosts taking permissions into account if necessary
@@ -1819,12 +2277,13 @@ function secpass_login_process($username) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
 			$p = get_nfilter_request_var('login_password');
-			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, locked, password
+			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, `locked`, password
 				FROM user_auth
 				WHERE username = ?
 				AND realm = 0
 				AND enabled = 'on'",
 				array($username));
+
 			if (isset($user['username'])) {
 				$unlock = intval(read_config_option('secpass_unlocktime'));
 				if ($unlock > 1440) {
@@ -1835,33 +2294,39 @@ function secpass_login_process($username) {
 				$secs_fail = time() - $user['lastfail'];
 
 				cacti_log('DEBUG: User \'' . $username . '\' secs_fail = ' . $secs_fail . ', secs_unlock = ' . $secs_unlock, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+
 				if ($unlock > 0 && ($secs_fail > $secs_unlock)) {
 					db_execute_prepared("UPDATE user_auth
-						SET lastfail = 0, failed_attempts = 0, locked = ''
+						SET lastfail = 0, failed_attempts = 0, `locked` = ''
 						WHERE username = ?
 						AND realm = 0
 						AND enabled = 'on'",
 						array($username));
+
 					$user['failed_attempts'] = $user['lastfail'] = 0;
 					$user['locked'] = '';
 				}
 
 				$valid_pass = compat_password_verify($p, $user['password']);
-				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass,false,'AUTH', POLLER_VERBOSITY_DEBUG);
+				cacti_log('DEBUG: User \'' . $username . '\' valid password = ' . $valid_pass, false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 
 				if (!$valid_pass) {
 					$failed = intval($user['failed_attempts']) + 1;
 					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
+
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
-							SET locked = 'on'
+							SET `locked` = 'on'
 							WHERE username = ?
 							AND realm = 0
 							AND enabled = 'on'",
 							array($username));
+
 						$user['locked'] = 'on';
 					}
+
 					$user['lastfail'] = time();
+
 					db_execute_prepared("UPDATE user_auth
 						SET lastfail = ?, failed_attempts = ?
 						WHERE username = ?
@@ -1870,13 +2335,17 @@ function secpass_login_process($username) {
 						array($user['lastfail'], $failed, $username));
 
 					if ($user['locked'] != '') {
-						auth_display_custom_error_message('This account has been locked.');
+						display_custom_error_message(__('This account has been locked.'));
+						header('Location: index.php?header=false');
 						exit;
 					}
+
 					return false;
 				}
+
 				if ($user['locked'] != '') {
-					auth_display_custom_error_message('This account has been locked.');
+					display_custom_error_message(__('This account has been locked.'));
+					header('Location: index.php?header=false');
 					exit;
 				}
 			}
@@ -1886,14 +2355,19 @@ function secpass_login_process($username) {
 	// Check if old password doesn't meet specifications and must be changed
 	if (read_config_option('secpass_forceold') == 'on') {
 		$p = get_nfilter_request_var('login_password');
-		if (secpass_check_pass($p) != 'ok') {
+		$message = secpass_check_pass($p);
+
+		if ($message != 'ok') {
 			db_execute_prepared("UPDATE user_auth
 				SET must_change_password = 'on'
 				WHERE username = ?
 				AND realm = 0
 				AND enabled = 'on'",
 				array($username));
-			return true;
+
+			display_custom_error_message($message);
+			header('Location: index.php?header=false');
+			exit;
 		}
 	}
 
@@ -1906,6 +2380,7 @@ function secpass_login_process($username) {
 			AND enabled = 'on'",
 			array(time(), $username));
 	}
+
 	return true;
 }
 
@@ -1948,9 +2423,7 @@ function secpass_check_history($id, $p) {
 		if (compat_password_verify($p,$user['password'])) {
 			return false;
 		}
-
 		$passes = explode('|', $user['password_history']);
-
 		// Double check this incase the password history setting was changed
 		while (count($passes) > $history) {
 			array_shift($passes);
@@ -1958,19 +2431,19 @@ function secpass_check_history($id, $p) {
 
 		if (!empty($passes)) {
 			foreach ($passes as $hash) {
-				if (compat_password_verify($p, $hash))
+				if (compat_password_verify($p, $hash)) {
 					return false;
+				}
 			}
 		}
 	}
-
 	return true;
 }
 
 function rsa_check_keypair() {
 	global $config;
 
-	set_include_path($config['include_path'] . '/phpseclib/');
+	set_include_path($config['include_path'] . '/vendor/phpseclib/');
 	include('Crypt/Base.php');
 	include('Math/BigInteger.php');
 	include('Crypt/Hash.php');
@@ -2000,7 +2473,11 @@ function rsa_check_keypair() {
    @arg $user_id - (int) the id of the current user
    @returns - null */
 function reset_group_perms($group_id) {
-	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id FROM user_auth_group_members WHERE group_id = ?', array($group_id)), 'user_id', 'user_id');
+	$users = array_rekey(db_fetch_assoc_prepared('SELECT user_id
+		FROM user_auth_group_members
+		WHERE group_id = ?',
+		array($group_id)), 'user_id', 'user_id');
+
 	if (sizeof($users)) {
 		db_execute('UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
@@ -2053,13 +2530,12 @@ function user_perms_valid($user_id) {
 	return $valid;
 }
 
-/*	compat_password_verify - if the secure function exists, verify against that
-	first.  If that checks fails or does not exist, check against older md5
-	version
-	@arg $password - (string) password to verify
-	@arg $hash     - (string) current password hash
-	@returns - true if password hash matches, false otherwise
-	*/
+/* compat_password_verify - if the secure function exists, verify against that
+   first.  If that checks fails or does not exist, check against older md5
+   version
+   @arg $password - (string) password to verify
+   @arg $hash     - (string) current password hash
+   @returns - true if password hash matches, false otherwise */
 function compat_password_verify($password, $hash) {
 	if (function_exists('password_verify')) {
 		if (password_verify($password, $hash)) {
@@ -2072,12 +2548,11 @@ function compat_password_verify($password, $hash) {
 	return ($md5 == $hash);
 }
 
-/*	compat_password_hash - if the secure function exists, hash using that.
-	If that does not exist, hash older md5 function instead
-	@arg $password - (string) password to hash
-	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-	@returns - true if password hash matches, false otherwise
-	*/
+/* compat_password_hash - if the secure function exists, hash using that.
+   If that does not exist, hash older md5 function instead
+   @arg $password - (string) password to hash
+   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+   @returns - true if password hash matches, false otherwise */
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
@@ -2090,13 +2565,12 @@ function compat_password_hash($password, $algo, $options = array()) {
 }
 
 
-/*	compat_password_needs_rehash - if the secure function exists, check hash
-	using that. If that does not exist, return false as md5 doesn't need a
-	rehash
-	@arg $password - (string) password to hash
-	@arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
-	@returns - true if password hash needs changing, false otherwise
-	*/
+/* compat_password_needs_rehash - if the secure function exists, check hash
+   using that. If that does not exist, return false as md5 doesn't need a
+   rehash
+   @arg $password - (string) password to hash
+   @arg $algo     - (string) algorithm to use (PASSWORD_DEFAULT)
+   @returns - true if password hash needs changing, false otherwise */
 function compat_password_needs_rehash($password, $algo, $options = array()) {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
@@ -2105,5 +2579,5 @@ function compat_password_needs_rehash($password, $algo, $options = array()) {
 			password_needs_rehash($password, $algo);
 	}
 
-	return md5($password);
+	return true;
 }

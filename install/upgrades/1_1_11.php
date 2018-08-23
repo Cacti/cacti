@@ -29,5 +29,5 @@ function upgrade_to_1_1_11() {
 
 	// required for tne new plugin structure
 	db_install_execute('DELETE FROM settings WHERE name LIKE "md5%_plugins"');
-	db_install_execute('DELETE FROM poller_resource_cache WHERE path LIKE "plugins/%"');
+	db_install_execute('DELETE FROM poller_resource_cache WHERE `path` LIKE "plugins/%"');
 }

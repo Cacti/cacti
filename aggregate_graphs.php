@@ -31,6 +31,7 @@ include_once('./lib/api_aggregate.php');
 include_once('./lib/template.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_form_template.php');
+include_once('./lib/reports.php');
 include_once('./lib/rrd.php');
 include_once('./lib/data_query.php');
 
@@ -38,6 +39,7 @@ aggregate_prune_graphs();
 
 $graph_actions = array(
 	1 => __('Delete'),
+	4 => __('Place Graphs on Report'),
 	2 => __('Migrate Aggregate to use a Template'),
 	3 => __('Create New Aggregate from Aggregates')
 );
@@ -268,6 +270,19 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '3') { // create aggregate from aggregate
 				$aggregate_name = get_request_var('aggregate_name');
 				api_aggregate_create($aggregate_name, $selected_items);
+			} elseif (get_request_var('drp_action') == '4') { // add graphs to report
+                $good = true;
+                for ($i=0;($i<count($selected_items));$i++) {
+                    if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
+                        raise_message('reports_add_error');
+                        $good = false;
+                        break;
+                    }
+                }
+
+                if ($good) {
+                    raise_message('reports_graphs_added');
+                }
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 				api_aggregate_associate($selected_items);
 			} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
@@ -276,7 +291,7 @@ function form_actions() {
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
 				for ($i=0;($i<count($selected_items));$i++) {
-					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, false);
+					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			}
 		}
@@ -320,7 +335,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // migrate to aggregate
 			/* determine the common graph template if any */
 			foreach ($_POST as $var => $val) {
@@ -352,7 +367,7 @@ function form_actions() {
 					</td>
 				</tr>\n";
 
-				$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			} else {
 				$graph_template      = $graph_templates[0]['graph_template_id'];
 
@@ -381,7 +396,7 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<tr><td colspan='2' align='right'><input type='button' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
+					$save_html = "<tr><td colspan='2' align='right'><input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
 				} else {
 					print "<tr>
 						<td class='textArea'>
@@ -392,7 +407,7 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 				}
 			}
 		} elseif (get_request_var('drp_action') == '3') { // create aggregate from aggregates
@@ -404,9 +419,42 @@ function form_actions() {
 			</tr>\n";
 
 			print "	<tr><td class='textArea' width='170'>" . __('Aggregate Name:') . "</td></tr>\n";
-			print "	<tr><td class='textArea'><input name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>\n";
+			print "	<tr><td class='textArea'><input type='text' class='ui-state-default ui-corner-all' name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
+		} elseif (get_request_var('drp_action') == '4') {
+			global $alignment, $graph_timespans;
+
+			$reports = db_fetch_assoc_prepared('SELECT id, name
+				FROM reports
+				WHERE user_id = ?
+				ORDER BY name',
+				array($_SESSION['sess_user_id']));
+
+			if (sizeof($reports)) {
+				print "<tr>
+					<td class='textArea'>
+						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
+						<div class='itemlist'><ul>$graph_list</ul></div>
+					</td>
+				</tr>
+				<tr><td>" . __('Report Name') . '<br>';
+				form_dropdown('report_id', $reports, 'name', 'id', '', '', '0');
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Timespan') . '<br>';
+				form_dropdown('timespan',$graph_timespans, '', '', '', '', read_user_setting('default_timespan'));
+				print '</td></tr>';
+
+				print '<tr><td>' . __('Align') . '<br>';
+				form_dropdown('align',$alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
+				print "</td></tr>\n";
+
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
+			} else {
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>\n";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+			}
 		} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 			print "<tr>
 				<td class='textArea'>
@@ -415,7 +463,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Associate Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Associate Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
 			print "<tr>
 				<td class='textArea'>
@@ -424,7 +472,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Dis-Associate Graph(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Dis-Associate Graph(s)') . "'>";
 		} elseif (preg_match("/^tr_([0-9]+)$/", get_request_var('drp_action'), $matches)) { // place on tree
 			print "<tr>
 				<td class='textArea'>
@@ -435,11 +483,11 @@ function form_actions() {
 			</tr>\n
 			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one graph.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "	<tr>
@@ -524,9 +572,9 @@ function graph_edit() {
 	if (isset_request_var('reset')) {
 		$_SESSION['aggregate_referer'] = 'aggregate_graphs.php';
 	} elseif (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'aggregate_graphs.php')) {
-		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
+		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	} elseif (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
-		$_SESSION['aggregate_referer'] = $_SERVER['HTTP_REFERER'];
+		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
 	$referer = $_SESSION['aggregate_referer'];
 
@@ -879,7 +927,7 @@ function graph_edit() {
 
 		form_hidden_box('save_component_graph','1','');
 		form_hidden_box('save_component_input','1','');
-		form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+		form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 		form_save_button($referer, 'return', 'id');
 
 		echo '</div>';
@@ -907,7 +955,7 @@ function graph_edit() {
 		function dynamic() {
 			if ($('#scale_log_units')) {
 				$('#scale_log_units').prop('disabled', true);
-				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				if (($('#rrdtool_version').val() != '1.0.0') &&
 					($('#auto_scale_log').is(':checked'))) {
 					$('#scale_log_units').prop('disabled', true);
 				}
@@ -917,7 +965,7 @@ function graph_edit() {
 		function changeScaleLog() {
 			if ($('#scale_log_units')) {
 				$('#scale_log_units').prop('disabled', true);
-				if (($('#rrdtool_version').val() != 'rrd-1.0.x') &&
+				if (($('#rrdtool_version').val() != '1.0.0') &&
 					($('#auto_scale_log').is(':checked'))) {
 					$('#scale_log_units').prop('disabled', false);
 				}
@@ -982,11 +1030,12 @@ function aggregate_items() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL = 'aggregate_graphs.php?action=edit&tab=items&id='+$('#id').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&matching=' + $('#matching').is(':checked');
-		strURL += '&header=false';
+		strURL = 'aggregate_graphs.php' +
+			'?action=edit&tab=items&id='+$('#id').val() +
+			'&rows=' + $('#rows').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&matching=' + $('#matching').is(':checked') +
+			'&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -1028,7 +1077,7 @@ function aggregate_items() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='rfilter' size='45' onChange='applyFilter()' value='<?php print get_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='45' onChange='applyFilter()' value='<?php print get_request_var('rfilter');?>'>
 					</td>
 					<td>
 						<?php print __('Graphs');?>
@@ -1053,8 +1102,8 @@ function aggregate_items() {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input id='clear' type='button' onClick='clearFilter()' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' onClick='clearFilter()' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1356,7 +1405,7 @@ function aggregate_graph() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -1397,8 +1446,8 @@ function aggregate_graph() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1482,7 +1531,7 @@ function aggregate_graph() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No Aggregate Graphs Found') .'</em></td></tr>';
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Aggregate Graphs Found') .'</em></td></tr>';
 	}
 
 	html_end_box(false);

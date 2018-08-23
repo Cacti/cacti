@@ -28,13 +28,13 @@
    @arg $data_template_id - the id of the data template to push out values for */
 function push_out_data_source_custom_data($data_template_id) {
 	/* valid data template id? */
-	if (empty($data_template_id)) { 
-		return 0; 
+	if (empty($data_template_id)) {
+		return 0;
 	}
 
 	/* get data_input_id from template */
-	$data_template_data = db_fetch_row_prepared('SELECT id, data_input_id 
-		FROM data_template_data 
+	$data_template_data = db_fetch_row_prepared('SELECT id, data_input_id
+		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id=0', array($data_template_id));
 
@@ -42,24 +42,24 @@ function push_out_data_source_custom_data($data_template_id) {
 	if (empty($data_template_data['data_input_id'])) { return 0; }
 
 	/* get a list of data sources using this template */
-	$data_sources = db_fetch_assoc_prepared('SELECT data_template_data.id 
-		FROM data_template_data 
+	$data_sources = db_fetch_assoc_prepared('SELECT data_template_data.id
+		FROM data_template_data
 		WHERE data_template_id = ?
 		AND local_data_id>0', array($data_template_id));
 
-	/* pull out all custom templated 'input' values from the template itself 
+	/* pull out all custom templated 'input' values from the template itself
 	 * templated items are selected by querying t_value = '' OR t_value = NULL */
-	$template_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT data_input_fields.id, 
-		data_input_fields.type_code, data_input_data.value, data_input_data.t_value 
-		FROM data_input_fields 
+	$template_input_fields = array_rekey(db_fetch_assoc_prepared('SELECT data_input_fields.id,
+		data_input_fields.type_code, data_input_data.value, data_input_data.t_value
+		FROM data_input_fields
 		INNER JOIN data_input_data
-		ON data_input_fields.id = data_input_data.data_input_field_id 
-		INNER JOIN data_template_data 
+		ON data_input_fields.id = data_input_data.data_input_field_id
+		INNER JOIN data_template_data
 		ON data_template_data.id = data_input_data.data_template_data_id
 		WHERE (data_input_fields.input_output = "in")
 		AND (data_input_data.t_value="" OR data_input_data.t_value IS NULL)
 		AND (data_input_data.data_template_data_id = ?)
-		AND (data_template_data.local_data_template_data_id=0)', 
+		AND (data_template_data.local_data_template_data_id=0)',
 		array($data_template_data['id'])), 'id', array('type_code', 'value', 't_value'));
 
 	/* which data_input_fields are templated? */
@@ -74,19 +74,19 @@ function push_out_data_source_custom_data($data_template_id) {
 		$dif_in_str .= ') ';
 	}
 
-	/* pull out all templated 'input' values from all related data sources 
+	/* pull out all templated 'input' values from all related data sources
 	 * unfortunately, you can't simply provide the same test as above
 	 * all input fields not related to a template ALWAYS are marked with t_value = NULL
 	 * so we will verify against the list of data_input_field id's taken from above */
-	$input_fields = db_fetch_assoc("SELECT data_template_data.id AS data_template_data_id, 
-		data_input_fields.id, data_input_fields.type_code, data_input_data.value, data_input_data.t_value 
-		FROM data_input_fields 
-		INNER JOIN data_input_data 
-		ON data_input_fields.id = data_input_data.data_input_field_id 
-		INNER JOIN data_template_data 
-		ON data_template_data.id = data_input_data.data_template_data_id 
+	$input_fields = db_fetch_assoc("SELECT data_template_data.id AS data_template_data_id,
+		data_input_fields.id, data_input_fields.type_code, data_input_data.value, data_input_data.t_value
+		FROM data_input_fields
+		INNER JOIN data_input_data
+		ON data_input_fields.id = data_input_data.data_input_field_id
+		INNER JOIN data_template_data
+		ON data_template_data.id = data_input_data.data_template_data_id
 		WHERE (data_input_fields.input_output = 'in')
-		$dif_in_str 
+		$dif_in_str
 		AND (data_input_data.t_value='' OR data_input_data.t_value IS NULL)
 		AND (data_template_data.local_data_template_data_id=" . $data_template_data['id'] . ')');
 
@@ -112,11 +112,11 @@ function push_out_data_source_custom_data($data_template_id) {
 					}
 				}
 			}
-			
+
 			/* create large inserts to reduce turns */
 			$ds_in_str .= ($ds_cnt == 0 ? '(':',') . $data_source['id'];
 			$ds_cnt++;
-			
+
 			/* per 1000 data source, update rows */
 			if ($ds_cnt % 1000 == 0) {
 				$ds_in_str .= ')';
@@ -128,7 +128,7 @@ function push_out_data_source_custom_data($data_template_id) {
 			}
 		}
 	}
-	
+
 	if ($ds_cnt > 0) {
 		$ds_in_str .= ')';
 		push_out_data_source_templates($did_vals, $ds_in_str);
@@ -159,17 +159,17 @@ function push_out_data_source_item($data_template_rrd_id) {
 	$data_template_rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($data_template_rrd_id));
 
 	/* must be a data template */
-	if (empty($data_template_rrd['data_template_id'])) { 
-		return 0; 
+	if (empty($data_template_rrd['data_template_id'])) {
+		return 0;
 	}
 
 	/* loop through each data source column name (from the above array) */
 	foreach ($struct_data_source_item as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_rrd['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_rrd['t_' . $field_name])) && (isset($data_template_rrd[$field_name])))) {
-			db_execute_prepared("UPDATE data_template_rrd 
-				SET $field_name = ? 
-				WHERE local_data_template_rrd_id = ?", 
+			db_execute_prepared("UPDATE data_template_rrd
+				SET $field_name = ?
+				WHERE local_data_template_rrd_id = ?",
 				array($data_template_rrd[$field_name], $data_template_rrd['id']));
 		}
 	}
@@ -190,9 +190,9 @@ function push_out_data_source($data_template_data_id) {
 	foreach ($struct_data_source as $field_name => $field_array) {
 		/* are we allowed to push out the column? */
 		if (((empty($data_template_data['t_' . $field_name])) || (preg_match('/FORCE:/', $field_name))) && ((isset($data_template_data['t_' . $field_name])) && (isset($data_template_data[$field_name])))) {
-			db_execute_prepared("UPDATE data_template_data 
-				SET $field_name = ? 
-				WHERE local_data_template_data_id=?", 
+			db_execute_prepared("UPDATE data_template_data
+				SET $field_name = ?
+				WHERE local_data_template_data_id=?",
 				array($data_template_data[$field_name], $data_template_data['id']));
 
 			/* update the title cache */
@@ -213,22 +213,22 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	global $struct_data_source, $struct_data_source_item;
 
 	/* always update tables to new data template (or no data template) */
-	db_execute_prepared('UPDATE data_local 
-		SET data_template_id = ? WHERE id = ?', 
+	db_execute_prepared('UPDATE data_local
+		SET data_template_id = ? WHERE id = ?',
 		array($data_template_id, $local_data_id));
 
 	/* get data about the template and the data source */
-	$data = db_fetch_row_prepared('SELECT * 
-		FROM data_template_data 
-		WHERE local_data_id = ?' , 
+	$data = db_fetch_row_prepared('SELECT *
+		FROM data_template_data
+		WHERE local_data_id = ?' ,
 		array($local_data_id));
 
 	$template_data = (($data_template_id == '0') ? $data : db_fetch_row_prepared('SELECT * FROM data_template_data WHERE local_data_id=0 AND data_template_id = ?', array($data_template_id)));
 
 	/* determine if we are here for the first time, or coming back */
-	$exists = db_fetch_cell_prepared('SELECT local_data_template_data_id 
-		FROM data_template_data 
-		WHERE local_data_id = ?', 
+	$exists = db_fetch_cell_prepared('SELECT local_data_template_data_id
+		FROM data_template_data
+		WHERE local_data_id = ?',
 		array($local_data_id));
 
 	if (empty($exists)) {
@@ -262,8 +262,8 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
-	$data_rrds_list = db_fetch_assoc_prepared('SELECT * 
-		FROM data_template_rrd 
+	$data_rrds_list = db_fetch_assoc_prepared('SELECT *
+		FROM data_template_rrd
 		WHERE local_data_id = ?', array($local_data_id));
 
 	$template_rrds_list = (($data_template_id == '0') ? $data_rrds_list : db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id=0 AND data_template_id = ?', array($data_template_id)));
@@ -322,8 +322,8 @@ function push_out_graph($graph_template_graph_id) {
 	global $struct_graph;
 
 	/* get information about this graph template */
-	$graph_template_graph = db_fetch_row_prepared('SELECT * 
-		FROM graph_templates_graph 
+	$graph_template_graph = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
 		WHERE id = ?', array($graph_template_graph_id));
 
 	/* must be a graph template */
@@ -336,8 +336,8 @@ function push_out_graph($graph_template_graph_id) {
 		/* are we allowed to push out the column? */
 		if (isset($graph_template_graph['t_' . $field_name]) && empty($graph_template_graph['t_' . $field_name])) {
 			if ($field_array['method'] != 'spacer') {
-				db_execute_prepared("UPDATE graph_templates_graph 
-					SET $field_name = ? 
+				db_execute_prepared("UPDATE graph_templates_graph
+					SET $field_name = ?
 					WHERE local_graph_template_graph_id = ?", array($graph_template_graph[$field_name], $graph_template_graph['id']));
 			}
 
@@ -359,12 +359,12 @@ function push_out_graph($graph_template_graph_id) {
 	template items. typically you want to ignore all items that were just selected and have yet to be
 	saved to the database. this is because these items most likely contain incorrect data */
 function push_out_graph_input($graph_template_input_id, $graph_template_item_id, $session_members) {
-	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name 
-		FROM graph_template_input 
+	$graph_input = db_fetch_row_prepared('SELECT graph_template_id, column_name
+		FROM graph_template_input
 		WHERE id = ?', array($graph_template_input_id));
 
-	$graph_input_items = db_fetch_assoc_prepared('SELECT graph_template_item_id 
-		FROM graph_template_input_defs 
+	$graph_input_items = db_fetch_assoc_prepared('SELECT graph_template_item_id
+		FROM graph_template_input_defs
 		WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
 	$i = 0;
@@ -384,10 +384,10 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 	}
 
 	if (sizeof($session_members) == 0) {
-		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . ' 
-			FROM graph_templates_item 
-			WHERE graph_template_id=' . $graph_input['graph_template_id'] . " $sql_include_items 
-			AND local_graph_id>0 
+		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . '
+			FROM graph_templates_item
+			WHERE graph_template_id=' . $graph_input['graph_template_id'] . " $sql_include_items
+			AND local_graph_id>0
 			GROUP BY local_graph_id");
 	} else {
 		$i = 0;
@@ -396,10 +396,10 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 			$i++;
 		}
 
-		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . ' 
-			FROM graph_templates_item 
-			WHERE graph_template_id=' . $graph_input['graph_template_id'] . ' 
-			AND local_graph_id>0 
+		$values_to_apply = db_fetch_assoc('SELECT local_graph_id,' . $graph_input['column_name'] . '
+			FROM graph_templates_item
+			WHERE graph_template_id=' . $graph_input['graph_template_id'] . '
+			AND local_graph_id>0
 			AND !(' . array_to_sql_or($new_session_members, 'local_graph_template_item_id') . ") $sql_include_items GROUP BY local_graph_id");
 	}
 
@@ -407,9 +407,9 @@ function push_out_graph_input($graph_template_input_id, $graph_template_item_id,
 		foreach ($values_to_apply as $value) {
 			/* this is just an extra check that i threw in to prevent users' graphs from getting really messed up */
 			if (!(($graph_input['column_name'] == 'task_item_id') && (empty($value[$graph_input['column_name']])))) {
-				db_execute('UPDATE graph_templates_item 
-					SET ' . $graph_input['column_name'] . "=" . db_qstr($value[$graph_input['column_name']]) . " 
-					WHERE local_graph_id=" . $value['local_graph_id'] . " 
+				db_execute('UPDATE graph_templates_item
+					SET ' . $graph_input['column_name'] . "=" . db_qstr($value[$graph_input['column_name']]) . "
+					WHERE local_graph_id=" . $value['local_graph_id'] . "
 					AND local_graph_template_item_id=$graph_template_item_id");
 			}
 		}
@@ -424,27 +424,27 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 	global $struct_graph_item;
 
 	/* get information about this graph template */
-	$graph_template_item = db_fetch_row_prepared('SELECT * 
-		FROM graph_templates_item 
+	$graph_template_item = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_item
 		WHERE id = ?', array($graph_template_item_id));
 
 	/* must be a graph template */
-	if ($graph_template_item['graph_template_id'] == 0) { 
+	if ($graph_template_item['graph_template_id'] == 0) {
 		return 0;
 	}
 
 	/* find out if any graphs actual contain this item */
-	$exists = db_fetch_assoc_prepared('SELECT id 
-		FROM graph_templates_item 
-		WHERE local_graph_template_item_id = ?', 
+	$exists = db_fetch_assoc_prepared('SELECT id
+		FROM graph_templates_item
+		WHERE local_graph_template_item_id = ?',
 		array($graph_template_item_id));
 
 	if (!sizeof($exists)) {
 		/* if not, reapply the template to push out the new item */
-		$attached_graphs = db_fetch_assoc_prepared('SELECT local_graph_id 
-			FROM graph_templates_graph 
+		$attached_graphs = db_fetch_assoc_prepared('SELECT local_graph_id
+			FROM graph_templates_graph
 			WHERE graph_template_id = ?
-			AND local_graph_id>0', 
+			AND local_graph_id>0',
 			array($graph_template_item['graph_template_id']));
 
 		if (sizeof($attached_graphs)) {
@@ -462,7 +462,7 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 		FROM (graph_template_input, graph_template_input_defs)
 		WHERE graph_template_input.graph_template_id = ?
 		AND graph_template_input.id=graph_template_input_defs.graph_template_input_id
-		AND graph_template_input_defs.graph_template_item_id = ?', 
+		AND graph_template_input_defs.graph_template_item_id = ?',
 		array($graph_template_item['graph_template_id'], $graph_template_item_id));
 
 	$graph_item_inputs = array_rekey($graph_item_inputs, 'column_name', 'graph_template_item_id');
@@ -472,17 +472,17 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 		/* are we allowed to push out the column? */
 		if ($local_graph_id == 0) {
 			if (!isset($graph_item_inputs[$field_name])) {
-				db_execute_prepared("UPDATE graph_templates_item 
-					SET $field_name = ? 
-					WHERE local_graph_template_item_id = ?", 
+				db_execute_prepared("UPDATE graph_templates_item
+					SET $field_name = ?
+					WHERE local_graph_template_item_id = ?",
 					array($graph_template_item[$field_name], $graph_template_item['id']));
 			}
 		} else {
 			if (!isset($graph_item_inputs[$field_name])) {
-				db_execute_prepared("UPDATE graph_templates_item 
-					SET $field_name = ? 
+				db_execute_prepared("UPDATE graph_templates_item
+					SET $field_name = ?
 					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?", 
+					AND local_graph_id = ?",
 					array($graph_template_item[$field_name], $graph_template_item['id'], $local_graph_id));
 			}
 		}
@@ -490,19 +490,19 @@ function push_out_graph_item($graph_template_item_id, $local_graph_id = 0) {
 }
 
 function update_graph_data_source_output_type($local_graph_id, $output_type_id) {
-	$graph_local = db_fetch_row_prepared('SELECT * 
-		FROM graph_local 
-		WHERE id = ?', 
+	$graph_local = db_fetch_row_prepared('SELECT *
+		FROM graph_local
+		WHERE id = ?',
 		array($local_graph_id));
 
-	$task_items = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT task_item_id) AS items 
-		FROM graph_templates_item 
-		WHERE local_graph_id = ?', 
+	$task_items = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT task_item_id) AS items
+		FROM graph_templates_item
+		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
 	if ($task_items != '') {
-		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id 
-			FROM data_template_rrd 
+		$local_data_id = db_fetch_cell("SELECT DISTINCT local_data_id
+			FROM data_template_rrd
 			WHERE id IN($task_items)");
 	} else {
 		$local_data_id = 0;
@@ -511,7 +511,7 @@ function update_graph_data_source_output_type($local_graph_id, $output_type_id) 
 	if ($local_data_id > 0) {
 		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
 			FROM data_template_data
-			WHERE local_data_id = ?', 
+			WHERE local_data_id = ?',
 			array($local_data_id));
 
 		/* get each INPUT field for this data input source */
@@ -563,33 +563,33 @@ function parse_graph_template_id($value) {
 
 function resequence_graphs($graph_template_id, $local_graph_id = 0) {
 	$template_items = db_fetch_assoc_prepared('SELECT *
-		FROM graph_templates_item 
-		WHERE graph_template_id = ? 
+		FROM graph_templates_item
+		WHERE graph_template_id = ?
 		AND local_graph_id = 0
-		ORDER BY sequence', 
+		ORDER BY sequence',
 		array($graph_template_id));
 
 	if (sizeof($template_items)) {
 		foreach($template_items as $item) {
 			if ($local_graph_id == -1) {
-				db_execute_prepared('UPDATE graph_templates_item 
-					SET sequence = ? 
+				db_execute_prepared('UPDATE graph_templates_item
+					SET sequence = ?
 					WHERE graph_template_id = ?
-					AND local_graph_template_item_id = ?', 
+					AND local_graph_template_item_id = ?',
 					array($item['sequence'], $graph_template_id, $item['id']));
 			} elseif ($local_graph_id == 0) {
-				db_execute_prepared('UPDATE graph_templates_item 
-					SET sequence = ? 
-					WHERE graph_template_id = ? 
+				db_execute_prepared('UPDATE graph_templates_item
+					SET sequence = ?
+					WHERE graph_template_id = ?
 					AND local_graph_id > 0
-					AND local_graph_template_item_id = ?', 
+					AND local_graph_template_item_id = ?',
 					array($item['sequence'], $graph_template_id, $item['id']));
 			} else {
-				db_execute_prepared('UPDATE graph_templates_item 
-					SET sequence = ? 
-					WHERE graph_template_id = ? 
+				db_execute_prepared('UPDATE graph_templates_item
+					SET sequence = ?
+					WHERE graph_template_id = ?
 					AND local_graph_id = ?
-					AND local_graph_template_item_id = ?', 
+					AND local_graph_template_item_id = ?',
 					array($item['sequence'], $graph_template_id, $local_graph_id, $item['id']));
 			}
 		}
@@ -603,15 +603,15 @@ function resequence_graphs($graph_template_id, $local_graph_id = 0) {
    @arg $local_graph_id - optional local graph id */
 function retemplate_graphs($graph_template_id, $local_graph_id = 0) {
 	if ($local_graph_id == 0) {
-		$graphs = db_fetch_assoc_prepared('SELECT id 
-			FROM graph_local 
-			WHERE graph_template_id = ?', 
+		$graphs = db_fetch_assoc_prepared('SELECT id
+			FROM graph_local
+			WHERE graph_template_id = ?',
 			array($graph_template_id));
 	} else {
-		$graphs = db_fetch_assoc_prepared('SELECT id 
-			FROM graph_local 
+		$graphs = db_fetch_assoc_prepared('SELECT id
+			FROM graph_local
 			WHERE graph_template_id = ?
-			AND id = ?', 
+			AND id = ?',
 			array($graph_template_id, $local_graph_id));
 	}
 
@@ -643,19 +643,19 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	}
 
 	/* get information about both the graph and the graph template we're using */
-	$graph_list = db_fetch_row_prepared('SELECT * 
-		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', 
+	$graph_list = db_fetch_row_prepared('SELECT *
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
-	$snmp_query_id = db_fetch_cell_prepared('SELECT snmp_query_id 
-		FROM graph_local 
-		WHERE id = ?', 
+	$snmp_query_id = db_fetch_cell_prepared('SELECT snmp_query_id
+		FROM graph_local
+		WHERE id = ?',
 		array($local_graph_id));
 
 	/* always update tables to new graph template (or no graph template) */
-	db_execute_prepared('UPDATE graph_local 
-		SET graph_template_id = ? 
+	db_execute_prepared('UPDATE graph_local
+		SET graph_template_id = ?
 		WHERE id = ?',
 		array($graph_template_id, $local_graph_id));
 
@@ -670,17 +670,17 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	if ($graph_template_id == 0) {
 		$template_graph_list = $graph_list;
 	} else {
-		$template_graph_list = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_graph 
-			WHERE local_graph_id = 0 
-			AND graph_template_id = ?', 
+		$template_graph_list = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_graph
+			WHERE local_graph_id = 0
+			AND graph_template_id = ?',
 			array($graph_template_id));
 	}
 
 	/* determine if we are here for the first time, or coming back */
-	$exists = db_fetch_cell_prepared('SELECT local_graph_template_graph_id 
-		FROM graph_templates_graph 
-		WHERE local_graph_id = ?', 
+	$exists = db_fetch_cell_prepared('SELECT local_graph_template_graph_id
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
 	if (!$exists) {
@@ -710,20 +710,20 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 
 	sql_save($save, 'graph_templates_graph');
 
-	$graph_items_list = db_fetch_assoc_prepared('SELECT * 
-		FROM graph_templates_item 
+	$graph_items_list = db_fetch_assoc_prepared('SELECT *
+		FROM graph_templates_item
 		WHERE local_graph_id = ?
-		ORDER BY sequence', 
+		ORDER BY sequence',
 		array($local_graph_id));
 
 	if ($graph_template_id == 0) {
 		$template_items_list = $graph_items_list;
 	} else {
-		$template_items_list = db_fetch_assoc_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE local_graph_id=0 
-			AND graph_template_id = ? 
-			ORDER BY sequence', 
+		$template_items_list = db_fetch_assoc_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE local_graph_id=0
+			AND graph_template_id = ?
+			ORDER BY sequence',
 			array($graph_template_id));
 	}
 
@@ -732,7 +732,7 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 		FROM graph_template_input AS gti
 		INNER JOIN graph_template_input_defs AS gtid
 		ON gti.id=gtid.graph_template_input_id
-		AND gti.graph_template_id = ?', 
+		AND gti.graph_template_id = ?',
 		array($graph_template_id));
 
 	$cols = db_get_table_column_types('graph_templates_item');
@@ -789,23 +789,23 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 				$save['id'] = 0;
 
 				/* attempt to discover the task_item_id */
-				$local_data_ids = db_fetch_cell_prepared('SELECT 
+				$local_data_ids = db_fetch_cell_prepared('SELECT
 					GROUP_CONCAT(DISTINCT local_data_id) AS ids
-					FROM data_template_rrd 
+					FROM data_template_rrd
 					WHERE id IN (
-						SELECT DISTINCT task_item_id 
-						FROM graph_templates_item 
+						SELECT DISTINCT task_item_id
+						FROM graph_templates_item
 						WHERE local_graph_id = ?)',
 					array($local_graph_id));
 
-				$data_source_name = db_fetch_cell_prepared('SELECT data_source_name 
-					FROM data_template_rrd WHERE id = ?', 
+				$data_source_name = db_fetch_cell_prepared('SELECT data_source_name
+					FROM data_template_rrd WHERE id = ?',
 					array($template_item['task_item_id']));
 
-				if ($data_source_name != '' && sizeof($local_data_ids)) {
-					$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id 
+				if ($data_source_name != '' && $local_data_ids != '') {
+					$task_item_id = db_fetch_cell_prepared('SELECT DISTINCT id
 						FROM data_template_rrd WHERE
-						local_data_id IN (' . $local_data_ids . ') 
+						local_data_id IN (' . $local_data_ids . ')
 						AND data_source_name = ?
 						LIMIT 1', array($data_source_name));
 
@@ -853,10 +853,10 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	/* if there are more graph items than there are items in the template, delete the difference */
 	/* we have probably modified 'graph_templates_item' so we need to recalculate the number of
 	   items before checking them */
-	$graph_items_list = db_fetch_assoc_prepared('SELECT * 
-		FROM graph_templates_item 
+	$graph_items_list = db_fetch_assoc_prepared('SELECT *
+		FROM graph_templates_item
 		WHERE local_graph_id = ?
-		ORDER BY sequence', 
+		ORDER BY sequence',
 		array($local_graph_id));
 
 	if ($new_save == false && sizeof($graph_items_list) > sizeof($template_items_list)) {
@@ -864,8 +864,8 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 			$ids[] = $item['id'];
 		}
 
-		db_execute('DELETE FROM graph_templates_item 
-			WHERE local_graph_template_item_id NOT IN (' . implode(',', $ids) . ') 
+		db_execute('DELETE FROM graph_templates_item
+			WHERE local_graph_template_item_id NOT IN (' . implode(',', $ids) . ')
 			AND local_graph_id = ' . $local_graph_id);
 	}
 
@@ -887,39 +887,39 @@ function change_graph_template($local_graph_id, $graph_template_id, $intrusive =
 	<graph_title> will be substituted for the current graph title */
 function graph_to_graph_template($local_graph_id, $graph_title) {
 	/* create a new graph template entry */
-	$title_template = db_fetch_cell_prepared('SELECT title 
-		FROM graph_templates_graph WHERE local_graph_id = ?', 
+	$title_template = db_fetch_cell_prepared('SELECT title
+		FROM graph_templates_graph WHERE local_graph_id = ?',
 		array($local_graph_id));
 
 	$title = str_replace('<graph_title>', $title_template, $graph_title);
 
-	db_execute_prepared('INSERT INTO graph_templates 
-		(id, name, hash) 
+	db_execute_prepared('INSERT INTO graph_templates
+		(id, name, hash)
 		VALUES (0, ?, ?)', array($title, get_hash_graph_template(0)));
 
 	$graph_template_id = db_fetch_insert_id();
 
 	/* update graph to point to the new template */
-	db_execute_prepared('UPDATE graph_templates_graph 
+	db_execute_prepared('UPDATE graph_templates_graph
 		SET local_graph_id=0, local_graph_template_graph_id=0, graph_template_id = ?
-		WHERE local_graph_id = ?', 
+		WHERE local_graph_id = ?',
 		array($graph_template_id, $local_graph_id));
 
-	db_execute_pepared('UPDATE graph_templates_item 
-		SET local_graph_id=0, local_graph_template_item_id=0, graph_template_id = ?, task_item_id=0 
-		WHERE local_graph_id = ?', 
+	db_execute_pepared('UPDATE graph_templates_item
+		SET local_graph_id=0, local_graph_template_item_id=0, graph_template_id = ?, task_item_id=0
+		WHERE local_graph_id = ?',
 		array($graph_template_id, $local_graph_id));
 
 	/* create hashes for the graph template items */
-	$items = db_fetch_assoc_prepared('SELECT id 
-		FROM graph_templates_item 
-		WHERE graph_template_id = ? 
-		AND local_graph_id=0', 
+	$items = db_fetch_assoc_prepared('SELECT id
+		FROM graph_templates_item
+		WHERE graph_template_id = ?
+		AND local_graph_id=0',
 		array($graph_template_id));
 
 	for ($j=0; $j<count($items); $j++) {
-		db_execute_prepared('UPDATE graph_templates_item 
-			SET hash = ? WHERE id= ?', 
+		db_execute_prepared('UPDATE graph_templates_item
+			SET hash = ? WHERE id= ?',
 			array(get_hash_graph_template($items[$j]['id'], 'graph_template_item'), $items[$j]['id']));
 	}
 
@@ -934,41 +934,41 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 	<ds_title> will be substituted for the current data source title */
 function data_source_to_data_template($local_data_id, $data_source_title) {
 	/* create a new graph template entry */
-	$title_template = db_fetch_cell_prepared('SELECT name 
-		FROM data_template_data 
+	$title_template = db_fetch_cell_prepared('SELECT name
+		FROM data_template_data
 		WHERE local_data_id = ?',
 		array($local_data_id));
 
 	$title = str_replace('<ds_title>', $title_template, $data_source_title);
 
-	db_execute('INSERT INTO data_template 
-		(id,name,hash) 
-		VALUES (0, ?, ?)', 
+	db_execute('INSERT INTO data_template
+		(id,name,hash)
+		VALUES (0, ?, ?)',
 		array($title, get_hash_data_template(0)));
 
 	$data_template_id = db_fetch_insert_id();
 
 	/* update graph to point to the new template */
-	db_execute_prepared('UPDATE data_template_data 
+	db_execute_prepared('UPDATE data_template_data
 		SET local_data_id=0, local_data_template_data_id=0, data_template_id = ?
-		WHERE local_data_id = ?', 
+		WHERE local_data_id = ?',
 		array($data_template_id, $local_data_id));
 
-	db_execute_prepared('UPDATE data_template_rrd 
+	db_execute_prepared('UPDATE data_template_rrd
 		SET local_data_id=0, local_data_template_rrd_id=0, data_template_id = ?
-		WHERE local_data_id = ?', 
+		WHERE local_data_id = ?',
 		array($data_template_id, $local_data_id));
 
 	/* create hashes for the data template items */
-	$items = db_fetch_assoc_prepared('SELECT id 
-		FROM data_template_rrd 
+	$items = db_fetch_assoc_prepared('SELECT id
+		FROM data_template_rrd
 		WHERE data_template_id = ?
-		AND local_data_id=0', 
+		AND local_data_id=0',
 		array($data_template_id));
 
 	for ($j=0; $j<count($items); $j++) {
-		db_execute_prepared('UPDATE data_template_rrd 
-			SET hash = ? WHERE id =?', 
+		db_execute_prepared('UPDATE data_template_rrd
+			SET hash = ? WHERE id =?',
 			array(get_hash_data_template($items[$j]['id'], 'data_template_item'), $items[$j]['id']));
 	}
 
@@ -1003,6 +1003,12 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	include_once($config['library_path'] . '/data_query.php');
 
+	if (!graph_template_whitelist_check($graph_template_id)) {
+		raise_message(10);
+
+		return false;
+	}
+
 	/* create the graph */
 	$save['id']                  = 0;
 	$save['graph_template_id']   = $graph_template_id;
@@ -1035,35 +1041,32 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* perform graph replacement based upon suggested values */
 	if (sizeof($snmp_query_array)) {
 		/* suggested values for snmp query code */
-		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name 
-			FROM snmp_query_graph_sv 
+		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name
+			FROM snmp_query_graph_sv
 			WHERE snmp_query_graph_id = ?
-			ORDER BY sequence', 
+			ORDER BY sequence',
 			array($snmp_query_array['snmp_query_graph_id']));
 
-		$suggested_values_graph = array();
 		if (sizeof($suggested_values)) {
 			foreach ($suggested_values as $suggested_value) {
 				/* once we find a match; don't try to find more */
-				if (!isset($suggested_values_graph[$graph_template_id][$suggested_value['field_name']])) {
-					$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id, 
-						$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'], 
-						read_config_option('max_data_query_field_length'));
+				$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id,
+					$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
+					read_config_option('max_data_query_field_length'));
 
-					/* if there are no '|' characters, all of the substitutions were successful */
-					if (!strstr($subs_string, '|query')) {
-						if (db_column_exists('graph_templates_graph', $suggested_value['field_name'])) {
-							db_execute_prepared('UPDATE graph_templates_graph 
-								SET ' . $suggested_value['field_name'] . ' = ?
-								WHERE local_graph_id = ?', 
-								array($suggested_value['text'], $cache_array['local_graph_id']));
-
-							/* once we find a working value, stop */
-							$suggested_values_graph[$graph_template_id][$suggested_value['field_name']] = true;
-						} else {
-							cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Graph Template ID ' . $graph_template_id .  ' is not a compatible field name.  Please correct this suggested value mapping', false);
-						}
+				/* if there are no '|' characters, all of the substitutions were successful */
+				if (!strstr($subs_string, '|query')) {
+					if (db_column_exists('graph_templates_graph', $suggested_value['field_name'])) {
+						db_execute_prepared('UPDATE graph_templates_graph
+							SET ' . $suggested_value['field_name'] . ' = ?
+							WHERE local_graph_id = ?',
+							array($suggested_value['text'], $cache_array['local_graph_id']));
+					} else {
+						cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Graph Template ID ' . $graph_template_id .  ' is not a compatible field name.  Please correct this suggested value mapping', false);
 					}
+
+					/* once the suggested values matches, break out of for loop */
+					break;
 				}
 			}
 		}
@@ -1072,9 +1075,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	/* suggested values: graph */
 	if (isset($suggested_vals[$graph_template_id]['graph_template'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template'] as $field_name => $field_value) {
-			db_execute_prepared('UPDATE graph_templates_graph 
-				SET ' . $field_name . ' = ? 
-				WHERE local_graph_id= ?', 
+			db_execute_prepared('UPDATE graph_templates_graph
+				SET ' . $field_name . ' = ?
+				WHERE local_graph_id= ?',
 				array($field_value, $cache_array['local_graph_id']));
 		}
 	}
@@ -1083,15 +1086,15 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	if (isset($suggested_vals[$graph_template_id]['graph_template_item'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template_item'] as $graph_template_item_id => $field_array) {
 			foreach ($field_array as $field_name => $field_value) {
-				$graph_item_id = db_fetch_cell_prepared('SELECT id 
-					FROM graph_templates_item 
+				$graph_item_id = db_fetch_cell_prepared('SELECT id
+					FROM graph_templates_item
 					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?', 
+					AND local_graph_id = ?',
 					array($graph_template_item_id, $cache_array['local_graph_id']));
 
-				db_execute_prepared('UPDATE graph_templates_item 
+				db_execute_prepared('UPDATE graph_templates_item
 					SET ' . $field_name . ' = ?
-					WHERE id = ?', 
+					WHERE id = ?',
 					array($field_value, $graph_item_id));
 			}
 		}
@@ -1110,7 +1113,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		AND gti.local_graph_id=0
 		AND gti.graph_template_id = ?
 		GROUP BY dt.id
-		ORDER BY dt.name', 
+		ORDER BY dt.name',
 		array($graph_template_id));
 
 	if (sizeof($data_templates)) {
@@ -1118,7 +1121,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			/* check if the data source already exists */
 			$previous_data_source = data_source_exists($graph_template_id, $host_id, $data_template, $snmp_query_array);
 
-			if (sizeof($previous_data_source)) {
+			$custom_data = create_graph_has_custom_data_properties($suggested_vals);
+
+			if (sizeof($previous_data_source) && !$custom_data) {
 				$cache_array['local_data_id'][$data_template['id']] = $previous_data_source['id'];
 			} else {
 				unset($save);
@@ -1133,17 +1138,17 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					/* validate the data source profile */
 					$profile = array();
 					if ($profile_id != 0) {
-						$profile = db_fetch_row_prepared('SELECT * 
-							FROM data_source_profiles 
-							WHERE id = ?', 
+						$profile = db_fetch_row_prepared('SELECT *
+							FROM data_source_profiles
+							WHERE id = ?',
 							array($profile_id));
 					}
 
 					/* default to the default profile if the one given is invalid */
 					if (!sizeof($profile)) {
-						$profile = db_fetch_row('SELECT * 
-							FROM data_source_profiles 
-							ORDER BY `default` 
+						$profile = db_fetch_row('SELECT *
+							FROM data_source_profiles
+							ORDER BY `default`
 							DESC LIMIT 1');
 					}
 				} else {
@@ -1155,56 +1160,45 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 				change_data_template($cache_array['local_data_id'][$data_template['id']], $data_template['id'], $profile);
 
-				$data_template_data_id = db_fetch_cell_prepared('SELECT id 
-					FROM data_template_data 
+				$data_template_data_id = db_fetch_cell_prepared('SELECT id
+					FROM data_template_data
 					WHERE local_data_id = ?',
 					array($cache_array['local_data_id'][$data_template['id']]));
 
 				if (sizeof($snmp_query_array)) {
 					/* suggested values for snmp query code */
-					$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name 
-						FROM snmp_query_graph_rrd_sv 
+					$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name
+						FROM snmp_query_graph_rrd_sv
 						WHERE snmp_query_graph_id = ?
 						AND data_template_id = ?
-						ORDER BY sequence', 
+						ORDER BY sequence',
 						array($snmp_query_array['snmp_query_graph_id'], $data_template['id']));
 
-					$suggested_values_ds = array();
 					if (sizeof($suggested_values)) {
 						foreach ($suggested_values as $suggested_value) {
 							/* once we find a match; don't try to find more */
-							if (!isset($suggested_values_ds[$data_template['id']][$suggested_value['field_name']])) {
-								$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id, 
-									$snmp_query_array['snmp_query_id'], 
-									$snmp_query_array['snmp_index'], read_config_option('max_data_query_field_length'));
+							$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id,
+								$snmp_query_array['snmp_query_id'],
+								$snmp_query_array['snmp_index'], read_config_option('max_data_query_field_length'));
 
-								/* if there are no '|' characters, all of the substitutions were successful */
-								if (!strstr($subs_string, '|query')) {
-									$columns = db_fetch_row("SHOW COLUMNS 
-										FROM data_template_data 
-										LIKE '" . $suggested_value['field_name'] . "'");
-
-									if (sizeof($columns)) {
-										db_execute_prepared('UPDATE data_template_data 
-											SET ' . $suggested_value['field_name'] . ' = ?
-											WHERE local_data_id = ?',
-											array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
-									}
-
-									/* once we find a working value, stop */
-									$suggested_values_ds[$data_template['id']][$suggested_value['field_name']] = true;
-
-									$columns = db_fetch_row("SHOW COLUMNS 
-										FROM data_template_rrd 
-										LIKE '" . $suggested_value['field_name'] . "'");
-
-									if (sizeof($columns) && !substr_count($subs_string, '|')) {
-										db_execute_prepared('UPDATE data_template_rrd 
-											SET ' . $suggested_value['field_name'] . ' = ?
-											WHERE local_data_id = ?', 
-											array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
-									}
+							/* if there are no '|' characters, all of the substitutions were successful */
+							if (!strstr($subs_string, '|query')) {
+								if (db_column_exists('data_template_data', $suggested_value['field_name'])) {
+									db_execute_prepared('UPDATE data_template_data
+										SET ' . $suggested_value['field_name'] . ' = ?
+										WHERE local_data_id = ?',
+										array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
+								} elseif (db_column_exists('data_template_rrd', $suggested_value['field_name'])) {
+									db_execute_prepared('UPDATE data_template_rrd
+										SET ' . $suggested_value['field_name'] . ' = ?
+										WHERE local_data_id = ?',
+										array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
+								} else {
+									cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Data Template ID ' . $data_template['id'] .  ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
 								}
+
+								/* after a metch is found, stop searching */
+								break;
 							}
 						}
 					}
@@ -1217,8 +1211,10 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						ON sq.data_input_id=di.id
 						INNER JOIN data_input_fields AS dif
 						ON di.id=dif.data_input_id
-						WHERE (dif.type_code="index_type" OR dif.type_code="index_value" OR dif.type_code="output_type")
-						AND sq.id = ?', 
+						WHERE (dif.type_code="index_type"
+						OR dif.type_code="index_value" 
+						OR dif.type_code="output_type")
+						AND sq.id = ?',
 						array($snmp_query_array['snmp_query_id'])), 'type_code', 'id');
 
 					$snmp_cache_value = db_fetch_cell_prepared('SELECT field_value
@@ -1227,19 +1223,19 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						AND snmp_query_id = ?
 						AND field_name = ?
 						AND snmp_index = ?',
-						array($host_id, $snmp_query_array['snmp_query_id'], 
+						array($host_id, $snmp_query_array['snmp_query_id'],
 							$snmp_query_array['snmp_index_on'], $snmp_query_array['snmp_index']));
 
 					/* save the value to index on (ie. ifindex, ifip, etc) */
 					db_execute_prepared('REPLACE INTO data_input_data
 						(data_input_field_id, data_template_data_id, t_value, value)
-						VALUES (?, ?, "", ?)', 
+						VALUES (?, ?, "", ?)',
 						array($data_input_field['index_type'], $data_template_data_id, $snmp_query_array['snmp_index_on']));
 
 					/* save the actual value (ie. 3, 192.168.1.101, etc) */
 					db_execute_prepared('REPLACE INTO data_input_data
 						(data_input_field_id,data_template_data_id,t_value,value)
-						VALUES (?, ?, "", ?)', 
+						VALUES (?, ?, "", ?)',
 						array($data_input_field['index_value'], $data_template_data_id, $snmp_cache_value));
 
 					/* set the expected output type (ie. bytes, errors, packets) */
@@ -1257,7 +1253,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					foreach ($suggested_vals[$graph_template_id]['data_template'][$data_template['id']] as $field_name => $field_value) {
 						db_execute_prepared("UPDATE data_template_data
 							SET $field_name = ?
-							WHERE local_data_id = ?", 
+							WHERE local_data_id = ?",
 							array($field_value, $cache_array['local_data_id'][$data_template['id']]));
 					}
 				}
@@ -1266,15 +1262,15 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				if (isset($suggested_vals[$graph_template_id]['data_template_item'])) {
 					foreach ($suggested_vals[$graph_template_id]['data_template_item'] as $data_template_item_id => $field_array) {
 						foreach ($field_array as $field_name => $field_value) {
-							$data_source_item_id = db_fetch_cell_prepared('SELECT id 
-								FROM data_template_rrd 
+							$data_source_item_id = db_fetch_cell_prepared('SELECT id
+								FROM data_template_rrd
 								WHERE local_data_template_rrd_id = ?
-								AND local_data_id = ?', 
+								AND local_data_id = ?',
 								array($data_template_item_id, $cache_array['local_data_id'][$data_template['id']]));
 
 							db_execute_prepared("UPDATE data_template_rrd
 								SET $field_name = ?
-								WHERE id = ?", 
+								WHERE id = ?",
 								array($field_value, $data_source_item_id));
 						}
 					}
@@ -1283,9 +1279,9 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				/* suggested values: custom data */
 				if (isset($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']])) {
 					foreach ($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']] as $data_input_field_id => $field_value) {
-						db_execute_prepared('REPLACE INTO data_input_data 
-							(data_input_field_id, data_template_data_id, t_value, value) 
-							VALUES (?, ?, "", ?)', 
+						db_execute_prepared('REPLACE INTO data_input_data
+							(data_input_field_id, data_template_data_id, t_value, value)
+							VALUES (?, ?, "", ?)',
 							array($data_input_field_id, $data_template_data_id, $field_value));
 					}
 				}
@@ -1303,7 +1299,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		ON gti.task_item_id=dtr.id
 		WHERE gti.graph_template_id = ?
 		AND local_graph_id=0
-		AND task_item_id>0', 
+		AND task_item_id>0',
 		array($graph_template_id));
 
 	/* loop through each item affected and update column data */
@@ -1312,22 +1308,22 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			if (isset($cache_array['local_data_id'][$template_item['data_template_id']])) {
 				$local_data_id = $cache_array['local_data_id'][$template_item['data_template_id']];
 
-				$graph_template_item_id = db_fetch_cell_prepared('SELECT id 
-					FROM graph_templates_item 
+				$graph_template_item_id = db_fetch_cell_prepared('SELECT id
+					FROM graph_templates_item
 					WHERE local_graph_template_item_id = ?
-					AND local_graph_id = ?', 
+					AND local_graph_id = ?',
 					array( $template_item['id'], $cache_array['local_graph_id']));
 
-				$data_template_rrd_id = db_fetch_cell_prepared('SELECT id 
-					FROM data_template_rrd 
+				$data_template_rrd_id = db_fetch_cell_prepared('SELECT id
+					FROM data_template_rrd
 					WHERE local_data_template_rrd_id = ?
-					AND local_data_id = ?', 
+					AND local_data_id = ?',
 					array($template_item['data_template_rrd_id'], $local_data_id));
 
 				if (!empty($data_template_rrd_id)) {
-					db_execute_prepared('UPDATE graph_templates_item 
+					db_execute_prepared('UPDATE graph_templates_item
 						SET task_item_id = ?
-						WHERE id = ?', 
+						WHERE id = ?',
 						array($data_template_rrd_id, $graph_template_item_id));
 				}
 			}
@@ -1365,35 +1361,267 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
+/* create_graph_has_custom_data_properties - checks to see if this graphs data sources have custom
+   data source properties.  If so, then you must duplicate the Data Source and not use
+   the existing one.
+   @arg $sugested_vals - any additional information to be included in the new graphs or
+	data sources must be included in the array. data is to be included in the following format:
+	  $values['cg'][graph_template_id]['graph_template'][field_name] = $value  // graph template
+	  $values['cg'][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item
+	  $values['cg'][data_template_id]['data_template'][field_name] = $value  // data template
+	  $values['cg'][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item
+	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
+	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
+	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
+	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
+function create_graph_has_custom_data_properties($suggested_vals) {
+	if (!sizeof($suggested_vals)) {
+		return false;
+	} else {
+		foreach($suggested_vals as $template => $items) {
+			if (sizeof($items)) {
+				foreach($items as $type => $item) {
+					if ($type == 'data_template') {
+						return true;
+					} elseif ($type == 'data_template_item') {
+						return true;
+					} elseif (is_numeric($type)) {
+						if (sizeof($item)) {
+							foreach($item as $ftype => $fitem) {
+								if ($ftype == 'data_template') {
+									return true;
+								} elseif ($ftype == 'data_template_item') {
+									return true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {
+	/* ================= input validation ================= */
+	input_validate_input_number($form_id1);
+	/* ==================================================== */
+
+	if ($form_type == 'cg') {
+		$graph_template_id = $form_id1;
+	} elseif ($form_type == 'sg') {
+		foreach ($form_array2 as $form_id2 => $form_array3) {
+			/* ================= input validation ================= */
+			input_validate_input_number($form_id2);
+			/* ==================================================== */
+
+			$snmp_index_array = $form_array3;
+
+			$snmp_query_array['snmp_query_id'] = $form_id1;
+			$snmp_query_array['snmp_index_on'] = get_best_data_query_index_type($host_id, $form_id1);
+			$snmp_query_array['snmp_query_graph_id'] = $form_id2;
+		}
+
+		$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
+			FROM snmp_query_graph
+			WHERE id = ?',
+			array($snmp_query_array['snmp_query_graph_id']));
+	}
+
+	if ($form_type == 'cg') {
+		$snmp_query_array = array();
+
+		$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['cg']);
+
+		if ($return_array !== false) {
+			debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+			/* lastly push host-specific information to our data sources */
+			if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+				foreach($return_array['local_data_id'] as $item) {
+					push_out_host($host_id, $item);
+				}
+			} else {
+				debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+			}
+		} else {
+			debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+		}
+	} elseif ($form_type == 'sg') {
+		foreach ($snmp_index_array as $snmp_index => $true) {
+			$snmp_query_array['snmp_index'] = decode_data_query_index($snmp_index, $snmp_query_array['snmp_query_id'], $host_id);
+
+			$return_array = create_complete_graph_from_template($graph_template_id, $host_id, $snmp_query_array, $values['sg'][$snmp_query_array['snmp_query_id']]);
+
+			if ($return_array !== false) {
+				debug_log_insert('new_graphs', __('Created: %s', get_graph_title($return_array['local_graph_id'])));
+
+				/* lastly push host-specific information to our data sources */
+				if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+					foreach($return_array['local_data_id'] as $item) {
+						push_out_host($host_id, $item);
+					}
+				} else {
+					debug_log_insert('new_graphs', __('ERROR: No Data Source associated. Check Template'));
+				}
+			} else {
+				debug_log_insert('new_graphs', __('ERROR: Whitelist Validation Failed. Check Data Input Method'));
+			}
+		}
+	}
+}
+
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (sizeof($snmp_query_array)) {
-		$input_fields = db_fetch_cell_prepared('SELECT GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields 
-			FROM snmp_query_graph_rrd 
-			WHERE snmp_query_graph_id = ?', 
+		$input_fields = db_fetch_cell_prepared('SELECT 
+			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
+			FROM snmp_query_graph_rrd
+			WHERE snmp_query_graph_id = ?',
 			array($snmp_query_array['snmp_query_graph_id']));
 
-		return db_fetch_row_prepared('SELECT dl.*, 
-			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields 
-			FROM data_local AS dl 
-			INNER JOIN data_template_data AS dtd 
-			ON dl.id=dtd.local_data_id 
-			INNER JOIN data_input_fields AS dif 
-			ON dif.data_input_id=dtd.data_input_id 
-			INNER JOIN snmp_query_graph_rrd AS sqgr 
-			ON sqgr.data_template_id=dtd.data_template_id 
+		return db_fetch_row_prepared('SELECT dl.*,
+			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
+			FROM data_local AS dl
+			INNER JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			INNER JOIN data_input_fields AS dif
+			ON dif.data_input_id=dtd.data_input_id
+			INNER JOIN snmp_query_graph_rrd AS sqgr
+			ON sqgr.data_template_id=dtd.data_template_id
 			WHERE input_output = "in"
-			AND type_code="output_type" 
-			AND dl.host_id = ? 
+			AND type_code="output_type"
+			AND dl.host_id = ?
 			AND dl.data_template_id = ?
 			AND dl.snmp_query_id = ?
 			AND dl.snmp_index = ?
 			GROUP BY dtd.local_data_id
 			HAVING local_data_id IS NOT NULL AND input_fields = ?',
-			array($host_id, $data_template['id'], 
+			array($host_id, $data_template['id'],
 				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
 				$input_fields));
 	} else {
-		return array();
+		/* create each data source, but don't duplicate */
+		$data_source = db_fetch_row_prepared('SELECT dl.*
+			FROM data_template AS dt
+			INNER JOIN data_local AS dl
+			ON dl.data_template_id=dt.id
+			INNER JOIN data_template_rrd AS dtr
+			ON dtr.data_template_id=dt.id
+			INNER JOIN graph_templates_item AS gti
+			ON gti.task_item_id=dtr.id
+			WHERE dtr.local_data_id > 0
+			AND dl.host_id = ?
+			AND dl.data_template_id = ?
+			AND dtr.data_source_name = ?
+			AND gti.local_graph_id > 0
+			AND gti.graph_template_id = ?
+			GROUP BY dt.id
+			ORDER BY dt.name',
+			array($host_id, $data_template['id'], $data_template['data_source_name'], $graph_template_id));
+
+		return $data_source;
 	}
+}
+
+function verify_data_input($hash, $input_string) {
+	$input = db_fetch_row_prepared('SELECT *
+		FROM data_input
+		WHERE hash = ?',
+		array($hash));
+
+	if ($input['input_string'] == $input_string) {
+		$input['status'] = true;
+		return $input;
+	} else {
+		$input['status'] = false;
+		return $input;
+	}
+}
+
+function verify_data_input_whitelist($hash, $input_string) {
+	global $config;
+
+	if (!isset($config['input_whitelist'])) {
+		return true;
+	} elseif (isset($config['input_whitelist']) && !file_exists($config['input_whitelist'])) {
+		return true;
+	}
+
+	$whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+
+	if (isset($whitelist[$hash])) {
+		if ($input_string == $whitelist[$hash]) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return -1;
+	}
+}
+
+function graph_template_whitelist_check($graph_template_id) {
+	global $config;
+
+	static $data_input_whitelist = null;
+	static $notified = array();
+
+	// no whitelist file defined, everything whitelisted
+	if (!isset($config['input_whitelist'])) {
+		return true;
+	}
+
+	// whitelist is configured but does not exist, means nothing whitelisted
+	if (!file_exists($config['input_whitelist'])) {
+		return false;
+	}
+
+	// load whitelist, but only once within process execution
+	if ($data_input_whitelist == null) {
+		$data_input_whitelist = json_decode(file_get_contents($config['input_whitelist']), true);
+		if ($data_input_whitelist === null) {
+			cacti_log('ERROR: Failed to parse input whitelist file: ' . $config['input_whitelist']);
+			return true;
+		}
+	}
+
+	$valid = true;
+
+	$data_input_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtd.data_input_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_template_data AS dtd
+		ON dtr.data_template_id=dtd.data_template_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id=dtr.id
+		WHERE gti.graph_template_id = ?
+		AND gti.local_graph_id = 0',
+		array($graph_template_id));
+
+	if (sizeof($data_input_ids)) {
+		foreach ($data_input_ids as $dii) {
+			$found = false;
+			$data_input = db_fetch_row_prepared('SELECT *
+				FROM data_input
+				WHERE id = ?',
+				array($dii['data_input_id']));
+
+			if (isset($data_input_whitelist[$data_input['hash']])) {
+				$found = true;
+
+				if ($data_input_whitelist[$data_input['hash']] != $data_input['input_string']) {
+					$valid = false;
+				}
+			}
+
+			if (!$found && !isset($notified[$dii['data_input_id']])) {
+				cacti_log('WARNING: Data input script not found in input whitelist file: ' . $config['input_whitelist']);
+				$notified[$dii['data_input_id']] = true;
+			}
+		}
+	}
+
+	return $valid;
 }
 

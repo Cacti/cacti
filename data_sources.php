@@ -44,6 +44,8 @@ $ds_actions = api_plugin_hook_function('data_source_action_array', $ds_actions);
 /* set default action */
 set_default_action();
 
+validate_data_source_vars();
+
 switch (get_request_var('action')) {
 	case 'save':
 		form_save();
@@ -78,11 +80,22 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_hosts':
-		get_allowed_ajax_hosts();
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(true, 'applyFilter', $sql_where);
 
 		break;
 	case 'ajax_hosts_noany':
-		get_allowed_ajax_hosts(false);
+
+		$sql_where = '';
+		if (get_request_var('site_id') > 0) {
+			$sql_where = 'site_id = ' . get_request_var('site_id');
+		}
+
+		get_allowed_ajax_hosts(false, 'applyFilter', $sql_where);
 
 		break;
 	default:
@@ -247,7 +260,12 @@ function form_save() {
 
 						$save3['id'] = $rrd['id'];
 						$save3['local_data_id'] = $local_data_id;
-						$save3['local_data_template_rrd_id'] = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array($rrd['id']));
+
+						$save3['local_data_template_rrd_id'] = db_fetch_cell_prepared('SELECT local_data_template_rrd_id
+							FROM data_template_rrd
+							WHERE id = ?',
+							array($rrd['id']));
+
 						$save3['data_template_id'] = get_filter_request_var('data_template_id');
 						$save3['rrd_maximum'] = form_input_validate(get_nfilter_request_var("rrd_maximum$name_modifier"), "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
 						$save3['rrd_minimum'] = form_input_validate(get_nfilter_request_var("rrd_minimum$name_modifier"), "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
@@ -333,11 +351,15 @@ function form_actions() {
 
 				switch (get_request_var('delete_type')) {
 					case '2': /* delete all graph items tied to this data source */
-						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id FROM data_template_rrd WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
+						$data_template_rrds = array_rekey(db_fetch_assoc('SELECT id
+							FROM data_template_rrd
+							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
 						/* loop through each data source item */
 						if (sizeof($data_template_rrds) > 0) {
-							db_execute('DELETE FROM graph_templates_item WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ') and local_graph_id > 0');
+							db_execute('DELETE FROM graph_templates_item
+								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
+								AND local_graph_id > 0');
 						}
 
 						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
@@ -369,7 +391,11 @@ function form_actions() {
 				get_filter_request_var('host_id');
 
 				for ($i=0;($i<count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_local SET host_id = ? WHERE id = ?', array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+					db_execute_prepared('UPDATE data_local
+						SET host_id = ?
+						WHERE id = ?',
+						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
+
 					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
@@ -410,7 +436,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$ds_list .= '<li>' . htmlspecialchars(get_data_source_title($matches[1])) . '</li>';
+			$ds_list .= '<li>' . html_escape(get_data_source_title($matches[1])) . '</li>';
 			$ds_array[$i] = $matches[1];
 
 			$i++;
@@ -465,7 +491,7 @@ function form_actions() {
 			print "</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source', 'Delete Data Sources', sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
 			print "<tr>
 				<td class='textArea'>
@@ -475,7 +501,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Device') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
 			print "<tr>
 				<td class='textArea'>
@@ -484,7 +510,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Source', 'Enable Data Sources', sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '7') { // data source disable
 			print "<tr>
 				<td class='textArea'>
@@ -493,7 +519,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Disable Data Source', 'Disable Data Sources', sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Source', 'Disable Data Sources', sizeof($ds_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
 			print "<tr>
 				<td class='textArea'>
@@ -502,17 +528,17 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', sizeof($ds_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Reapply Suggested Naming to Data Source', 'Reapply Suggested Naming to Data Sources', sizeof($ds_array)) . "'>";
 		} else {
 			$save['drp_action'] = get_nfilter_request_var('drp_action');
 			$save['ds_list'] = $ds_list;
 			$save['ds_array'] = (isset($ds_array)? $ds_array : array());
 			api_plugin_hook_function('data_source_action_prepare', $save);
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data source.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -543,15 +569,20 @@ function data_edit($incform = true) {
 	if (!isempty_request_var('id')) {
 		$data = db_fetch_row_prepared('SELECT id, data_input_id, data_template_id, name, local_data_id
 			FROM data_template_data
-			WHERE local_data_id = ?', array(get_request_var('id')));
+			WHERE local_data_id = ?',
+			array(get_request_var('id')));
 
 		$template_data = db_fetch_row_prepared('SELECT id, data_input_id
 			FROM data_template_data
-			WHERE data_template_id = ? AND local_data_id = 0', array($data['data_template_id']));
+			WHERE data_template_id = ?
+			AND local_data_id = 0',
+			array($data['data_template_id']));
 
 		$host = db_fetch_row_prepared('SELECT host.id, host.hostname
 			FROM (data_local, host)
-			WHERE data_local.host_id = host.id and data_local.id = ?', array(get_request_var('id')));
+			WHERE data_local.host_id = host.id
+			AND data_local.id = ?',
+			array(get_request_var('id')));
 	}
 
 	if ($incform) {
@@ -561,15 +592,20 @@ function data_edit($incform = true) {
 	$i = 0;
 	if (!empty($data['data_input_id'])) {
 		/* get each INPUT field for this data input source */
-		$fields = db_fetch_assoc_prepared("SELECT *
+		$fields = db_fetch_assoc_prepared('SELECT *
 			FROM data_input_fields
 			WHERE data_input_id = ?
-			AND input_output = 'in'
-			ORDER BY name",
+			AND input_output = "in"
+			ORDER BY name',
 			array($data['data_input_id'])
 		);
 
-		html_start_box( __('Custom Data [data input: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM data_input WHERE id = ?', array($data['data_input_id']))) ),'100%', '', '3', 'center', '');
+		$data_input_name = db_fetch_cell_prepared('SELECT name
+			FROM data_input
+			WHERE id = ?',
+			array($data['data_input_id']));
+
+		html_start_box(__('Custom Data [data input: %s]', html_escape($data_input_name)), '100%', '', '3', 'center', '');
 
 		/* loop through each field found */
 		if (sizeof($fields) > 0) {
@@ -602,13 +638,13 @@ function data_edit($incform = true) {
 				form_alternate_row();
 
 				if ((!empty($host['id'])) && (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $field['type_code']))) {
-					print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Device: %s)', $host['hostname']) . "</td>\n";
-					print "<td><em>$old_value</em></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Device: %s)', html_escape($host['hostname'])) . "</td>\n";
+					print "<td><em>" . html_escape($old_value) . "</em></td>\n";
 				} elseif (empty($can_template)) {
-					print "<td style='width:50%;'><strong>" . $field['name'] . '</strong> ' . __('(From Data Template)') . "</td>\n";
-					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : $old_value) . "</em></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . '</strong> ' . __('(From Data Template)') . "</td>\n";
+					print '<td><em>' . (empty($old_value) ? __('Nothing Entered') : html_escape($old_value)) . "</em></td>\n";
 				} else {
-					print "<td style='width:50%;'><strong>" . $field['name'] . "</strong></td>\n";
+					print "<td style='width:50%;'><strong>" . html_escape($field['name']) . "</strong></td>\n";
 					print '<td>';
 
 					draw_custom_data_row('value_' . $field['id'], $field['id'], $data['id'], $old_value);
@@ -644,8 +680,14 @@ function ds_rrd_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('UPDATE graph_templates_item SET task_item_id = 0 WHERE task_item_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM data_template_rrd
+		WHERE id = ?',
+		array(get_request_var('id')));
+
+	db_execute_prepared('UPDATE graph_templates_item
+		SET task_item_id = 0
+		WHERE task_item_id = ?',
+		array(get_request_var('id')));
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('local_data_id'));
 }
@@ -655,7 +697,11 @@ function ds_rrd_add() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared("INSERT INTO data_template_rrd (local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name) VALUES (?, 100, 0, 600, 1, 'ds')", array(get_request_var('id')));
+	db_execute_prepared("INSERT INTO data_template_rrd
+		(local_data_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name)
+		VALUES (?, 100, 0, 600, 1, 'ds')",
+		array(get_request_var('id')));
+
 	$data_template_rrd_id = db_fetch_insert_id();
 
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
@@ -702,7 +748,7 @@ function ds_edit() {
 			exit;
 		}
 
-		$header_label = __('Data Template Selection [edit: %s]', htmlspecialchars(get_data_source_title(get_request_var('id'))));
+		$header_label = __('Data Template Selection [edit: %s]', html_escape(get_data_source_title(get_request_var('id'))));
 
 		if (empty($data_local['data_template_id'])) {
 			$use_data_template = false;
@@ -738,17 +784,17 @@ function ds_edit() {
 		<table style='width:100%'>
 			<tr>
 				<td class='textInfo left' style='vertical-align:top;'>
-					<?php print htmlspecialchars(get_data_source_title(get_request_var('id')));?>
+					<?php print html_escape(get_data_source_title(get_request_var('id')));?>
 				</td>
 				<td class='textInfo right' style='vertical-align:top;'>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
-					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
 					<?php
 						if (!empty($data_template['id'])) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
-						if (!isempty_request_var('host_id') || !empty($data_local['host_id'])) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print htmlspecialchars('host.php?action=edit&id=' . (isset_request_var('host_id') ? get_request_var('host_id') : $data_local['host_id']));?>'><?php print __('Edit Device.');?></a><br><?php
+						if (!empty($data_local['host_id'])) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
 						}
 					?>
 				</td>
@@ -864,9 +910,13 @@ function ds_edit() {
 
 	/* only display the "inputs" area if we are using a data template for this data source */
 	if (!empty($data['data_template_id'])) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array(get_request_var('id')));
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE local_data_id = ?
+			ORDER BY data_source_name',
+			array(get_request_var('id')));
 
-		html_start_box( __('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
+		html_start_box(__('Supplemental Data Template Data'), '100%', true, '3', 'center', '');
 
 		draw_nontemplated_fields_data_source($data['data_template_id'], $data['local_data_id'], $data, '|field|', __('Data Source Fields'), true, true, 0);
 		draw_nontemplated_fields_data_source_item($data['data_template_id'], $template_data_rrds, '|field|_|id|', __('Data Source Item Fields'), true, true, true, 0);
@@ -910,7 +960,11 @@ function ds_edit() {
 
 		/* fetch ALL rrd's for this data source */
 		if (!isempty_request_var('id')) {
-			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name FROM data_template_rrd WHERE local_data_id = ? ORDER BY data_source_name', array(get_request_var('id')));
+			$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name
+				FROM data_template_rrd
+				WHERE local_data_id = ?
+				ORDER BY data_source_name',
+				array(get_request_var('id')));
 		}
 
 		/* select the first "rrd" of this data source by default */
@@ -920,12 +974,22 @@ function ds_edit() {
 
 		/* get more information about the rrd we chose */
 		if (!isempty_request_var('view_rrd')) {
-			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
+			$local_data_template_rrd_id = db_fetch_cell_prepared('SELECT local_data_template_rrd_id
+				FROM data_template_rrd
+				WHERE id = ?',
+				array(get_request_var('view_rrd')));
 
-			$rrd = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array(get_request_var('view_rrd')));
-			$rrd_template = db_fetch_row_prepared('SELECT * FROM data_template_rrd WHERE id = ?', array($local_data_template_rrd_id));
+			$rrd = db_fetch_row_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE id = ?',
+				array(get_request_var('view_rrd')));
 
-			$header_label = '[edit: ' . $rrd['data_source_name'] . ']';
+			$rrd_template = db_fetch_row_prepared('SELECT *
+				FROM data_template_rrd
+				WHERE id = ?',
+				array($local_data_template_rrd_id));
+
+			$header_label = __('[edit: %s]', html_escape($rrd['data_source_name']));
 		} else {
 			$header_label = '';
 		}
@@ -939,7 +1003,7 @@ function ds_edit() {
 				foreach ($template_data_rrds as $template_data_rrd) {
 					$i++;
 					print "	<td " . (($template_data_rrd['id'] == get_request_var('view_rrd')) ? "class='even'" : "class='odd'") . " style='width:" . ((strlen($template_data_rrd['data_source_name']) * 9) + 50) . ";text-align:center;' class='tab'>
-						<span class='textHeader'><a href='" . htmlspecialchars('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . htmlspecialchars($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a class='pic deleteMarker fa fa-remove' href='" . htmlspecialchars('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . "</span>
+						<span class='textHeader'><a href='" . html_escape('data_sources.php?action=ds_edit&id=' . get_request_var('id') . '&view_rrd=' . $template_data_rrd['id']) . "'>$i: " . html_escape($template_data_rrd['data_source_name']) . '</a>' . (($use_data_template == false) ? " <a class='pic deleteMarker fa fa-times' href='" . html_escape('data_sources.php?action=rrd_remove&id=' . $template_data_rrd['id'] . '&local_data_id=' . get_request_var('id')) . "' title='" . __esc('Delete') . "'></a>" : '') . "</span>
 						</td>\n";
 					print "<td style='width:1px;'></td>\n";
 				}
@@ -957,7 +1021,7 @@ function ds_edit() {
 				" . __('Data Source Item %s', $header_label) . "
 			</div>
 			<div class='tableSubHeaderColumn right'>
-				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . htmlspecialchars('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . "</a>&nbsp;" : '') . "
+				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . html_escape('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . "</a>&nbsp;" : '') . "
 			</div>
 		</div>\n";
 
@@ -1017,7 +1081,7 @@ function ds_edit() {
 			<tr>
 				<td>
 					<span class='textInfo'><?php print __('Data Source Debug');?></span><br>
-					<pre><?php print @rrdtool_function_create(get_request_var('id'), true);?></pre>
+					<pre><?php print @rrdtool_function_create(get_request_var('id'), '-600', true);?></pre>
 				</td>
 			</tr>
 		</table>
@@ -1036,7 +1100,7 @@ function ds_edit() {
 					$diff = rrdtool_cacti_compare(get_request_var('id'), $rrd_info);
 					rrdtool_info2html($rrd_info, $diff);
 					if (sizeof($diff)) {
-						html_start_box( __('RRDtool Tune Info'), '100%', '', '3', 'center', '');
+						html_start_box(__('RRDtool Tune Info'), '100%', '', '3', 'center', '');
 						rrdtool_tune($rrd_info['filename'], $diff, true);
 						html_end_box();
 					}
@@ -1072,9 +1136,7 @@ function get_poller_interval($seconds, $data_source_profile_id) {
 	}
 }
 
-function ds() {
-	global $ds_actions, $item_rows, $sampling_intervals;
-
+function validate_data_source_vars() {
 	/* ================= input validation and session storage ================= */
 	$filters = array(
 		'rows' => array(
@@ -1107,6 +1169,11 @@ function ds() {
 			'pageset' => true,
 			'default' => '-1'
 			),
+		'site_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'pageset' => true,
+			'default' => '-1'
+			),
 		'status' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
@@ -1131,6 +1198,10 @@ function ds() {
 
 	validate_store_request_vars($filters, 'sess_ds');
 	/* ================= input validation ================= */
+}
+
+function ds() {
+	global $ds_actions, $item_rows, $sampling_intervals;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1139,7 +1210,10 @@ function ds() {
 	}
 
 	if (get_request_var('host_id') > 0) {
-		$host = db_fetch_row_prepared('SELECT hostname FROM host WHERE id = ?', array(get_request_var('host_id')));
+		$host = db_fetch_row_prepared('SELECT hostname
+			FROM host
+			WHERE id = ?',
+			array(get_request_var('host_id')));
 	} else {
 		$host = array();
 	}
@@ -1147,14 +1221,16 @@ function ds() {
 	?>
 	<script type='text/javascript'>
 	function applyFilter() {
-		strURL  = 'data_sources.php?host_id=' + $('#host_id').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&rows=' + $('#rows').val();
-		strURL += '&status=' + $('#status').val();
-		strURL += '&profile=' + $('#profile').val();
-		strURL += '&orphans=' + $('#orphans').val();
-		strURL += '&template_id=' + $('#template_id').val();
-		strURL += '&header=false';
+		strURL  = 'data_sources.php' +
+			'?host_id=' + $('#host_id').val() +
+			'&site_id=' + $('#site_id').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&rows=' + $('#rows').val() +
+			'&status=' + $('#status').val() +
+			'&profile=' + $('#profile').val() +
+			'&orphans=' + $('#orphans').val() +
+			'&template_id=' + $('#template_id').val() +
+			'&header=false';
 		loadPageNoHeader(strURL);
 	}
 
@@ -1187,12 +1263,18 @@ function ds() {
 			$new_host_id = get_request_var('host_id');
 		}
 
-		$add_url = htmlspecialchars('data_sources.php?action=ds_edit&host_id=' . $new_host_id);
+		$add_url = html_escape('data_sources.php?action=ds_edit&host_id=' . $new_host_id);
 	} else {
 		$add_url = '';
 	}
 
-	html_start_box( __('Data Sources [%s]', (empty($host['hostname']) ? __('No Device') : htmlspecialchars($host['hostname']))), '100%', '', '3', 'center', $add_url);
+	if (get_request_var('site_id') > 0) {
+		$host_where = 'site_id = ' . get_request_var('site_id');
+	} else {
+		$host_where = '';
+	}
+
+	html_start_box( __('Data Sources [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>
@@ -1200,7 +1282,8 @@ function ds() {
 		<form id='form_data_sources' name='form_data_sources' action='data_sources.php'>
 			<table class='filterTable'>
 				<tr>
-					<?php print html_host_filter(get_request_var('host_id'));?>
+					<?php print html_site_filter(get_request_var('site_id'));?>
+					<?php print html_host_filter(get_request_var('host_id'), 'applyFilter', $host_where);?>
 					<td>
 						<?php print __('Template');?>
 					</td>
@@ -1219,11 +1302,37 @@ function ds() {
 
 							if (sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(htmlspecialchars($template['name']), 40) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>\n";
 								}
 							}
 							?>
 
+						</select>
+					</td>
+					<td>
+						<span>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Profile');?>
+					</td>
+					<td>
+						<select id='profile' name='profile' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<?php
+							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
+							if (sizeof($profiles)) {
+								foreach ($profiles as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+								}
+							}
+							?>
 						</select>
 					</td>
 					<td>
@@ -1237,10 +1346,14 @@ function ds() {
 						</select>
 					</td>
 					<td>
-						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-						</span>
+						<?php print __('Orphaned');?>
+					</td>
+					<td>
+						<select id='orphans' name='rows' onChange='applyFilter()'>
+							<option value='-1'<?php print (get_request_var('orphans') == '-1' ? ' selected>':'>') . __('All');?></option>
+							<option value='0'<?php print (get_request_var('orphans') == '0' ? ' selected>':'>') . __('Has Graphs');?></option>
+							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
+						</select>
 					</td>
 				</tr>
 			</table>
@@ -1250,33 +1363,7 @@ function ds() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
-					</td>
-					<td>
-						<?php print __('Profile');?>
-					</td>
-					<td>
-						<select id='profile' name='profile' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
-							<?php
-							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
-							if (sizeof($profiles)) {
-								foreach ($profiles as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-					</td>
-					<td>
-						<?php print __('Orphaned');?>
-					</td>
-					<td>
-						<select id='orphans' name='rows' onChange='applyFilter()'>
-							<option value='-1'<?php print (get_request_var('orphans') == '-1' ? ' selected>':'>') . __('All');?></option>
-							<option value='0'<?php print (get_request_var('orphans') == '0' ? ' selected>':'>') . __('Has Graphs');?></option>
-							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
-						</select>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>' onChange='applyFilter()'>
 					</td>
 					<td>
 						<?php print __('Data Sources');?>
@@ -1287,7 +1374,7 @@ function ds() {
 							<?php
 							if (sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -1319,11 +1406,19 @@ function ds() {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.host_id=' . get_request_var('host_id');
 	}
 
+	if (get_request_var('site_id') == '-1') {
+		/* Show all items */
+	} elseif (isempty_request_var('site_id')) {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (h.site_id=0 OR h.site_id IS NULL)';
+	} elseif (!isempty_request_var('site_id')) {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' h.site_id=' . get_request_var('site_id');
+	}
+
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=0';
-	} elseif (!isempty_request_var('host_id')) {
+	} elseif (!isempty_request_var('template_id')) {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.data_template_id=' . get_request_var('template_id');
 	}
 
@@ -1360,7 +1455,9 @@ function ds() {
 		LEFT JOIN data_template_rrd AS dtr
 		ON dtr.local_data_id=dtd.local_data_id
 		LEFT JOIN graph_templates_item AS gti
-		ON (gti.task_item_id=dtr.id)
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN host AS h
+		ON h.id=dl.host_id
 		$sql_where1
 		GROUP BY dl.id
 		$sql_having"));
@@ -1385,7 +1482,9 @@ function ds() {
 		LEFT JOIN data_template_rrd AS dtr
 		ON dtr.local_data_id=dtd.local_data_id
 		LEFT JOIN graph_templates_item AS gti
-		ON (gti.task_item_id=dtr.id)
+		ON gti.task_item_id=dtr.id
+		LEFT JOIN host AS h
+		ON h.id=dl.host_id
 		$sql_where1
 		GROUP BY dl.id
 		$sql_having
@@ -1419,8 +1518,8 @@ function ds() {
 				$disabled = false;
 			}
 
-			$data_source['data_template_name'] = htmlspecialchars($data_source['data_template_name']);
-			$data_name_cache = title_trim(htmlspecialchars($data_source['name_cache']), read_config_option('max_title_length'));
+			$data_source['data_template_name'] = html_escape($data_source['data_template_name']);
+			$data_name_cache = title_trim(html_escape($data_source['name_cache']), read_config_option('max_title_length'));
 
 			if (get_request_var('rfilter') != '') {
 				$data_name_cache = filter_value($data_name_cache, get_request_var('rfilter'));
@@ -1439,7 +1538,7 @@ function ds() {
 			} elseif (get_request_var('rfilter') != '') {
 				$data_template_name = filter_value($data_source['data_template_name'], get_request_var('rfilter'));
 			} else {
-				$data_template_name = htmlspecialchars($data_source['data_template_name']);
+				$data_template_name = html_escape($data_source['data_template_name']);
 			}
 
 			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);

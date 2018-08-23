@@ -84,6 +84,11 @@ function form_save() {
 			$domain_id = sql_save($save, 'user_domains', 'domain_id');
 
 			if ($domain_id) {
+				// Disable template user from logging in
+				db_execute_prepared('UPDATE user_auth
+					SET enabled=""
+					WHERE id = ?', array($save['user_id']));
+
 				raise_message(1);
 			} else {
 				raise_message(2);
@@ -119,6 +124,8 @@ function form_save() {
 				$save['search_filter']     = form_input_validate(get_nfilter_request_var('search_filter'),     'search_filter',   '', true, 3);
 				$save['specific_dn']         = form_input_validate(get_nfilter_request_var('specific_dn'),         'specific_dn',       '', true, 3);
 				$save['specific_password']   = form_input_validate(get_nfilter_request_var('specific_password'),   'specific_password', '', true, 3);
+                                $save['cn_full_name']        = get_nfilter_request_var('cn_full_name');
+                                $save['cn_email']            = get_nfilter_request_var('cn_email');
 
 				if (!is_error_message()) {
 					$insert_id = sql_save($save, 'user_domains_ldap', 'domain_id', false);
@@ -224,7 +231,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
@@ -233,7 +240,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
@@ -242,7 +249,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
@@ -251,11 +258,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one User Domain.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -478,6 +485,24 @@ function domain_edit() {
 			'value' => '|arg1:specific_password|',
 			'max_length' => '255'
 			),
+		'cn_header' => array(
+			'friendly_name' => __('LDAP CN Settings'),
+			'method' => 'spacer'
+			),
+		'cn_full_name' => array(
+			'friendly_name' => __('Full Name'),
+			'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
+			'method' => 'textbox',
+			'value' => '|arg1:cn_full_name|',
+			'max_length' => '255'
+			),
+		'cn_email' => array(
+			'friendly_name' => __('eMail'),
+			'description' => __('Field that will replace the email taken from LDAP. (on windows: mail) '),
+			'method' => 'textbox',
+			'value' => '|arg1:cn_email|',
+			'max_length' => '255'
+			),
 		'save_component_domain_ldap' => array(
 			'method' => 'hidden',
 			'value' => '1'
@@ -532,6 +557,8 @@ function domain_edit() {
 			$('#row_search_filter').hide();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
 		case "1":
 			$('#row_search_base_header').show();
@@ -539,6 +566,8 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').hide();
 			$('#row_specific_password').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			break;
 		case "2":
 			$('#row_search_base_header').show();
@@ -546,6 +575,8 @@ function domain_edit() {
 			$('#row_search_filter').show();
 			$('#row_specific_dn').show();
 			$('#row_specific_password').show();
+			$('#row_cn_full_name').show();
+			$('#row_cn_email').show();
 			break;
 		}
 	}
@@ -621,7 +652,7 @@ function domains() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Domains');?>
@@ -632,7 +663,7 @@ function domains() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -640,8 +671,8 @@ function domains() {
 					</td>
 					<td>
 						<span>
-							<input id='refresh' type='button' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input id='clear' type='button' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __x('filter: use', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -700,7 +731,7 @@ function domains() {
 		ORDER BY " . get_request_var('sort_column') . ' ' . get_request_var('sort_direction') . '
 		LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows);
 
-	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('User Domains'), 'page', 'main');
+	$nav = html_nav_bar('user_user_domains.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('User Domains'), 'page', 'main');
 
 	form_start('user_domains.php', 'chk');
 
@@ -709,11 +740,13 @@ function domains() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'domain_name' => array( __('Domain Name'), 'ASC'),
-		'type' => array( __('Domain Type'), 'ASC'),
-		'defdomain' => array( __('Default'), 'ASC'),
-		'user_id' => array( __('Effective User'), 'ASC'),
-		'enabled' => array( __('Enabled'), 'ASC'));
+		'domain_name'  => array(__('Domain Name'), 'ASC'),
+		'type'         => array(__('Domain Type'), 'ASC'),
+		'defdomain'    => array(__('Default'), 'ASC'),
+		'user_id'      => array(__('Effective User'), 'ASC'),
+		'cn_full_name' => array(__('CN FullName'), 'ASC'),
+		'cn_email'     => array(__('CN eMail'), 'ASC'),
+		'enabled'      => array(__('Enabled'), 'ASC'));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -724,14 +757,16 @@ function domains() {
 			form_alternate_row('line' . $domain['domain_id'], true);
 			form_selectable_cell(filter_value($domain['domain_name'], get_request_var('filter'), 'user_domains.php?action=edit&domain_id=' . $domain['domain_id']), $domain['domain_id']);
 			form_selectable_cell($domain_types[$domain['type']], $domain['domain_id']);
-			form_selectable_cell( ($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
-			form_selectable_cell( ($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
-			form_selectable_cell( ($domain['enabled'] == 'on' ? __('Yes'):__('No') ), $domain['domain_id']);
+			form_selectable_cell(($domain['defdomain'] == '0' ? '--': __('Yes') ), $domain['domain_id']);
+			form_selectable_cell(($domain['user_id'] == '0' ? __('None Selected') : db_fetch_cell_prepared('SELECT username FROM user_auth WHERE id = ?', array($domain['user_id']))), $domain['domain_id']);
+			form_selectable_cell(db_fetch_cell_prepared('SELECT cn_full_name FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell(db_fetch_cell_prepared('SELECT cn_email FROM user_domains_ldap WHERE domain_id = ?', array($domain['domain_id'])), $domain['domain_id']);
+			form_selectable_cell($domain['enabled'] == 'on' ? __('Yes'):__('No'), $domain['domain_id']);
 			form_checkbox_cell($domain['domain_name'], $domain['domain_id']);
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No User Domains Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No User Domains Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);

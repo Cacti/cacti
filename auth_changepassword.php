@@ -24,25 +24,46 @@
 
 include('./include/global.php');
 
-// If the user is not logged in, redirect them to the login page
-if (!isset($_SESSION['sess_user_id'])) {
-	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
-	} else {
-		header('Location: index.php');
-	}
-	header('Location: index.php');
-	exit;
+set_default_action();
+
+switch (get_request_var('action')) {
+	case 'checkpass':
+		$error = secpass_check_pass(get_nfilter_request_var('password'));
+
+		if ($error == '') {
+			print $error;
+		} else {
+			print 'ok';
+		}
+
+		exit;
+
+		break;
+	default:
+		// If the user is not logged in, redirect them to the login page
+		if (!isset($_SESSION['sess_user_id'])) {
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+			} else {
+				header('Location: index.php');
+			}
+
+			header('Location: index.php');
+			exit;
+		}
 }
 
-$user        = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
-$version     = get_cacti_version();
-$auth_method = read_config_option('auth_method');
+$user    = db_fetch_row_prepared('SELECT * 
+	FROM user_auth 
+	WHERE id = ?', 
+	array($_SESSION['sess_user_id']));
 
-if ($auth_method != 1 && $user['realm'] != 0) {
+$version = get_cacti_version();
+
+if ($user['realm'] != 0) {
 	raise_message('nodomainpassword');
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
@@ -58,7 +79,7 @@ if ($user['password_change'] != 'on') {
 	setcookie($cacti_session_name, null, -1, $config['url_path']);
 
 	if (isset($_SERVER['HTTP_REFERER'])) {
-		header('Location: ' . $_SERVER['HTTP_REFERER']);
+		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
@@ -66,7 +87,7 @@ if ($user['password_change'] != 'on') {
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
-if (sizeof($user) && $user['username'] == read_config_option('guest_user')) {
+if (sizeof($user) && $user['id'] == get_guest_account()) {
 	header('Location: graph_view.php');
 	exit;
 }
@@ -84,8 +105,8 @@ case 'changepassword':
 	$user_id = intval($_SESSION['sess_user_id']);
 
 	// Get passwords entered for change
-	$password = get_nfilter_request_var('password');
-	$confirm = get_nfilter_request_var('confirm');
+	$password         = get_nfilter_request_var('password');
+	$password_confirm = get_nfilter_request_var('password_confirm');
 
 	// Get current password as entered
 	$current_password = get_nfilter_request_var('current_password');
@@ -108,7 +129,7 @@ case 'changepassword':
 	}
 
 	// Password and Confirmed password checks
-	if ($password !== $confirm) {
+	if ($password !== $password_confirm) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your new passwords do not match, please retype.') . "</span>";
 		break;
@@ -164,14 +185,17 @@ case 'changepassword':
 		db_execute_prepared('INSERT IGNORE INTO user_log
 			(username, result, time, ip)
 			VALUES (?, 3, NOW(), ?)',
-			array($user['username'], $_SERVER['REMOTE_ADDR']));
+			array($user['username'], get_client_addr()));
 
+		db_check_password_length();
 		db_execute_prepared("UPDATE user_auth
 			SET must_change_password = '', password = ?
 			WHERE id = ?",
 			array(compat_password_hash($password,PASSWORD_DEFAULT), $user_id));
 
 		kill_session_var('sess_change_password');
+
+		raise_message('password_success');
 
 		/* ok, at the point the user has been sucessfully authenticated; so we must decide what to do next */
 
@@ -249,78 +273,120 @@ $secpass_tooltip .= $secpass_body;
 
 $selectedTheme = get_selected_theme();
 
-print "<!DOCTYPE html>\n";
-print "<html>\n";
-print "<head>\n";
-print "\t<title>" . __('Change Password') . "</title>\n";
-print "\t<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>\n";
-print "\t<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>\n";
-print "\t<meta name='apple-mobile-web-app-capable' content='yes'>\n";
-print "\t<meta name='mobile-web-app-capable' content='yes'>\n";
-print "\t<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/jquery-ui.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/" .  "/fa/css/font-awesome.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/main.css' type='text/css' rel='stylesheet'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/favicon.ico' rel='shortcut icon'>\n";
-print "\t<link href='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/images/cacti_logo.gif' rel='icon' sizes='96x96'>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-migrate.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery-ui.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.cookie.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/js.storage.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.tablesorter.js' language='javascript'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/js/jquery.hotkeys.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/layout.js'></script>\n";
-print "\t<script type='text/javascript' src='" . $config['url_path'] . "include/themes/" . $selectedTheme . "/main.js'></script>\n";
-print "<script type='text/javascript'>var theme='" . $selectedTheme . "';</script>\n";
-print "</head>\n";
-print "<body class='loginBody'>
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
+	<script type='text/javascript'>
+	$(function() {
+	}
+</head>
+<body class='loginBody'>
 	<div class='loginLeft'></div>
 	<div class='loginCenter'>
 		<div class='loginArea'>
 			<div class='cactiLogoutLogo'></div>
-			<legend>" . __('Change Password') . "</legend>
-			<form name='login' method='post' action='" . get_current_page() . "'>
+			<legend><?php print __('Change Password');?></legend>
+			<form name='login' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='" . sanitize_uri(get_request_var('ref')) . "'>
-				<input type='hidden' name='name' value='" . (isset($user['username']) ? $user['username'] : '') . "'>
+				<input type='hidden' name='ref' value='<?php print sanitize_uri(get_request_var('ref')); ?>'>
+				<input type='hidden' name='name' value='<?php print isset($user['username']) ? $user['username'] : '';?>'>
 				<div class='loginTitle'>
-					<p>" . __('Please enter your current password and your new<br>Cacti password.') . "</p>
+					<p><?php print __('Please enter your current password and your new<br>Cacti password.');?></p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
 						<tr>
-							<td>" . __('Current password') . "</td>
-							<td><input type='password' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+							<td><?php print __('Current password');?></td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td>" . __('New password') . "</td>
-							<td><input type='password' name='password' autocomplete='off' size='20' placeholder='********'>" . display_tooltip($secpass_tooltip) ."</td>
+							<td><?php print __('New password');?></td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
-							<td>" . __('Confirm new password') . "</td>
-							<td><input type='password' name='confirm' autocomplete='off' size='20' placeholder='********'></td>
+							<td><?php print __('Confirm new password');?></td>
+							<td><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
-							<td class='nowrap' colspan='2'><input type='submit' value='" . __esc('Save') . "'>
-						" . ($user['must_change_password'] != 'on' ? "<input type='button' onClick='window.history.go(-1)' value='" . __esc('Return') . "'>":"") . "
+							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
 							</td>
 						</tr>
 					</table>
 				</div>
 			</form>
-			<div class='loginErrors'>" . $errorMessage . "</div>
+			<div class='loginErrors'><?php print $errorMessage ?></div>
 		</div>
-		<div class='versionInfo'>" . __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT) . "</div>
+		<div class='versionInfo'><?php __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
+
+	var minChars=<?php print read_config_option('secpass_minlen');?>;
+
+	function checkPassword() {
+		if ($('#password').val().length == 0) {
+			$('#pass').remove();
+			$('#passconfirm').remove();
+		}else if ($('#password').val().length < minChars) {
+			$('#pass').remove();
+			$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="<?php print __esc('Password Too Short');?>"></div>');
+			$('.password').tooltip();
+		} else {
+			$.post('auth_changepassword.php?action=checkpass', { password: $('#password').val(), password_confim: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
+				if (data == 'ok') {
+					$('#pass').remove();
+					$('#password').after('<div id="pass" class="password goodpassword fa fa-check" title="<?php print __esc('Password Validation Passes');?>"></div>');
+					$('.password').tooltip();
+					checkPasswordConfirm();
+				} else {
+					$('#pass').remove();
+					$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="'+data+'"></div>');
+					$('.password').tooltip();
+				}
+			});
+		}
+	}
+
+	function checkPasswordConfirm() {
+		if ($('#password_confirm').val().length > 0) {
+			if ($('#password').val() != $('#password_confirm').val()) {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __esc('Passwords do Not Match');?>"></div>');
+				$('.passconfirm').tooltip();
+			} else {
+				$('#passconfirm').remove();
+				$('#password_confirm').after('<div id="passconfirm" class="passconfirm goodpassword fa fa-check" title="<?php print __esc('Passwords Match');?>"></div>');
+				$('.passconfirm').tooltip();
+			}
+		} else {
+			$('#passconfirm').remove();
+		}
+	}
+
+	var password_change = $('#password_change').is(':checked');
+
 	$(function() {
 		$('#current').focus();
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+
+		/* clear passwords */
+		$('#password').val('');
+		$('#password_confirm').val('');
+
+		$('#password').keyup(function() {
+			checkPassword();
+		});
+
+		$('#password_confirm').keyup(function() {
+			checkPasswordConfirm();
+		});
 	});
-	</script>";
+	</script>
+<?php
 
 include_once('./include/global_session.php');
 

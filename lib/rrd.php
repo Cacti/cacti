@@ -27,7 +27,7 @@ define('MAX_FETCH_CACHE_SIZE', 5);
 
 if (read_config_option('storage_location')) {
 	/* load crypt libraries only if the Cacti RRDtool Proxy Server is in use */
-	set_include_path($config['include_path'] . '/phpseclib/');
+	set_include_path($config['include_path'] . '/vendor/phpseclib/');
 	include_once('Math/BigInteger.php');
 	include_once('Crypt/Base.php');
 	include_once('Crypt/Hash.php');
@@ -52,7 +52,7 @@ function rrdtool_set_language($lang = -1) {
 	$prev_lang = getenv('LANG');
 
 	if ($lang == -1) {
-		putenv('LANG=' . CACTI_LOCALE . '_' . strtoupper(CACTI_COUNTRY) . '.UTF-8');
+		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	} else {
 		putenv('LANG=en_EN.UTF-8');
 	}
@@ -472,7 +472,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	}
 }
 
-function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '') {
+function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
 	global $config, $data_source_types, $consolidation_functions;
 
 	include ($config['include_path'] . '/global_arrays.php');
@@ -520,8 +520,11 @@ function rrdtool_function_create($local_data_id, $show_source, $rrdtool_pipe = '
 		return false;
 	}
 
+	/* back off the initial time to allow updates */
+	$initial_time -= 300;
+
 	/* create the "--step" line */
-	$create_ds = RRD_NL . '--step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
+	$create_ds = RRD_NL . '--start ' . $initial_time . ' --step '. $rras[0]['rrd_step'] . ' ' . RRD_NL;
 
 	/* query the data sources to be used in this .rrd file */
 	$data_sources = db_fetch_assoc_prepared('SELECT id, rrd_heartbeat,
@@ -652,20 +655,17 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 				$file_exists = file_exists($rrd_path);
 			}
 
+			ksort($rrd_fields['times']);
+
 			if ($file_exists === false) {
-				rrdtool_function_create($rrd_fields['local_data_id'], false, $rrdtool_pipe);
+				$times = array_keys($rrd_fields['times']);
+				rrdtool_function_create($rrd_fields['local_data_id'], $times[0], false, $rrdtool_pipe);
 				$create_rrd_file = true;
 			}
-
-			ksort($rrd_fields['times']);
 
 			foreach ($rrd_fields['times'] as $update_time => $field_array) {
 				if (empty($update_time)) {
 					/* default the rrdupdate time to now */
-					$rrd_update_values = 'N:';
-				} elseif ($create_rrd_file == true) {
-					/* for some reason rrdtool will not let you update using times less than the
-					rrd create time */
 					$rrd_update_values = 'N:';
 				} else {
 					$rrd_update_values = $update_time . ':';
@@ -689,7 +689,13 @@ function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
 					$rrd_update_values .= $value;
 				}
 
-				rrdtool_execute("update $rrd_path --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
+				if (cacti_version_compare(get_rrdtool_version(),'1.5','>=')) {
+					$update_options='--skip-past-updates';
+				} else {
+					$update_options='';
+				}
+
+				rrdtool_execute("update $rrd_path $update_options --template $rrd_update_template $rrd_update_values", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'POLLER');
 				$rrds_processed++;
 			}
 		}
@@ -853,7 +859,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	$scale               = '';
 	$rigid               = '';
 	$unit_value          = '';
-	$version             = read_config_option('rrdtool_version');
+	$version             = get_rrdtool_version();
 	$unit_exponent_value = '';
 
 	if ($graph['auto_scale'] == 'on') {
@@ -1063,28 +1069,28 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 			}
 			break;
 		case "legend_position":
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=')) {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-position " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case "legend_direction":
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=')) {
 				if (!empty($value)) {
 					$graph_opts .= "--legend-direction " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'left_axis_formatter':
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=')) {
 				if (!empty($value)) {
 					$graph_opts .= "--left-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
 			}
 			break;
 		case 'right_axis_formatter':
-			if ($version != RRD_VERSION_1_3) {
+			if (cacti_version_compare($version, '1.4', '>=')) {
 				if (!empty($value)) {
 					$graph_opts .= "--right-axis-formatter " . cacti_escapeshellarg($value) . RRD_NL;
 				}
@@ -1142,6 +1148,10 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		if (!is_graph_allowed($local_graph_id, $user)) {
 			return 'GRAPH ACCESS DENIED';
 		}
+	}
+
+	if (getenv('LANG') == '') {
+		putenv('LANG=' . str_replace('-', '_', CACTI_LOCALE) . '.UTF-8');
 	}
 
 	/* check the purge the boost poller output cache, and check for a live image file if caching is enabled */
@@ -2268,7 +2278,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	}
 
 	if (file_exists($rrdtheme) && is_readable($rrdtheme)) {
-		$rrdversion = str_replace('rrd-', '', str_replace('.x', '', read_config_option('rrdtool_version')));
+		$rrdversion = get_rrdtool_version();
 		include($rrdtheme);
 
 		if (isset($rrdcolors)) {
@@ -2277,7 +2287,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 			}
 		}
 
-		if (isset($rrdborder) && $rrdversion >= 1.4) {
+		if (isset($rrdborder) && cacti_version_compare($rrdversion,'1.4','>=')) {
 			$graph_opts .= "--border $rrdborder " ;
 		}
 
@@ -2299,7 +2309,7 @@ function rrdtool_function_theme_font_options(&$graph_data_array) {
 	$graph_opts .= rrdtool_function_set_font('unit', '', $themefonts);
 
 	/* watermark fonts */
-	if (isset($rrdversion) && $rrdversion > 1.3) {
+	if (isset($rrdversion) && cacti_version_compare($rrdversion,'1.3','>')) {
 		$graph_opts .= rrdtool_function_set_font('watermark', '', $themefonts);
 	}
 
@@ -2448,7 +2458,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		dspc.consolidation_function_id AS cf,
 		dsp.x_files_factor AS xff,
 		dspr.steps AS steps,
-		dspr.rows AS rows
+		dspr.rows AS `rows` 
 		FROM data_source_profiles AS dsp
 		INNER JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id
@@ -2685,10 +2695,10 @@ function rrdtool_info2html($info_array, $diff=array()) {
 	}
 
 	$loop = array(
-		'filename' 		=> $info_array['filename'],
-		'rrd_version'	=> $info_array['rrd_version'],
-		'step' 			=> $info_array['step'],
-		'last_update'	=> $info_array['last_update']);
+		'filename'    => $info_array['filename'],
+		'rrd_version' => $info_array['rrd_version'],
+		'step'        => $info_array['step'],
+		'last_update' => $info_array['last_update']);
 
 	foreach ($loop as $key => $value) {
 		form_alternate_row($key, true);
@@ -2741,7 +2751,7 @@ function rrdtool_info2html($info_array, $diff=array()) {
 		array('display' => __('Rows'),                        'align' => 'right'),
 		array('display' => __('Cur Row'),                     'align' => 'right'),
 		array('display' => __('PDP per Row'),                 'align' => 'right'),
-		array('display' => __('X Files Factor'),              'align' => 'right'),
+		array('display' => __('X-Files Factor'),              'align' => 'right'),
 		array('display' => __('CDP Prep Value (0)'),          'align' => 'right'),
 		array('display' => __('CDP Unknown Data points (0)'), 'align' => 'right')
 	);
@@ -3284,8 +3294,51 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 	return $dom;
 }
 
+function rrdtool_parse_error($string) {
+	global $config;
+
+	file_put_contents('/tmp/rrd',$string);
+	if (preg_match('/ERROR. opening \'(.*)\': (No such|Permiss).*/', $string, $matches)) {
+		if (sizeof($matches) >= 2) {
+			$filename = $matches[1];
+			$rra_name = basename($filename);
+			$rra_path = dirname($filename) . "/";
+			if (!is_resource_writable($rra_path)) {
+				$message = __('Website does not have write access to %s, may be unable to create/update RRDs', 'folder');
+				$rra_name = str_replace($config['base_path'],'', $rra_path);
+				$rra_path = "";
+			} else {
+				if (stripos($filename, $config['base_path']) >= 0) {
+					$rra_file = str_replace($config['base_path'] . '/rra/', '', $filename);
+					$rra_name = basename($rra_file);
+					$rra_path = dirname($rra_file);
+				} else {
+					$rra_name = basename($rra_file);
+					$rra_path = __('(Custom)');
+				}
+
+				if (!is_resource_writable($filename)) {
+					$message = __('Website does not have write access to %s, may be unable to create/update RRDs', 'data file');
+				} else {
+					$message = __('Failed to open data file, poller may not have run yet');
+				}
+
+				$rra_path = '(' . __('RRA Folder') . ': ' . ((empty($rra_path) || $rra_path == ".") ? __('Root') : $rra_path) . ')';
+			}
+
+			$string = $message . ":\n\0x27\n" . $rra_name;
+			if (!empty($rra_path)) {
+				$string .= "\n" . $rra_path;
+			}
+		}
+	}
+	return $string;
+}
+
 function rrdtool_create_error_image($string, $width = '', $height = '') {
 	global $config;
+
+	$string = rrdtool_parse_error($string);
 
 	/* put image in buffer */
 	ob_start();
@@ -3363,14 +3416,18 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 
 	/* see the size of the string */
 	$string    = trim($string);
-	$maxstring = (450 - (125 + 10)) / ($font_size / 1.4);
+	$maxstring = (450 - (125 + 10)) / ($font_size / 0.9);
 	$stringlen = strlen($string) * $font_size;
 	$padding   = 5;
+
 	if ($stringlen > $maxstring) {
 		$cstring = wordwrap($string, $maxstring, "\n", true);
 		$strings = explode("\n", $cstring);
 		$strings = array_reverse($strings);
 		$lines   = sizeof($strings);
+	} elseif (strlen(trim($string)) == 0) {
+		$strings = array(__('Unknown RRDtool Error'));
+		$lines   = 1;
 	} else {
 		$strings = array($string);
 		$lines   = 1;
@@ -3384,17 +3441,21 @@ function rrdtool_create_error_image($string, $width = '', $height = '') {
 	/* set the font of the image */
 	if (file_exists($font_file) && is_readable($font_file) && function_exists('imagettftext')) {
 		foreach($strings as $string) {
-			if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
-				cacti_log('TTF text overlay failed');
+			if (trim($string) != '') {
+				if (!imagettftext($image, $font_size, 0, $xpos, $ypos, $text_color, $font_file, $string)) {
+					cacti_log('TTF text overlay failed');
+				}
+				$ypos -= ($font_size + $padding);
 			}
-			$ypos -= ($font_size + $padding);
 		}
 	} else {
 		foreach($strings as $string) {
-			if (!imagestring($image, $font_size, $xpos, $ypos, $string, $font_color)) {
-				cacti_log('Text overlay failed');
+			if (trim($string) != '') {
+				if (!imagestring($image, $font_size, $xpos, $ypos, $string, $text_color)) {
+					cacti_log('Text overlay failed');
+				}
+				$ypos -= ($font_size + $padding);
 			}
-			$ypos -= ($font_size + $padding);
 		}
 	}
 

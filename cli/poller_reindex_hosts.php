@@ -23,18 +23,11 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/data_query.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/data_query.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -75,21 +68,22 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 } else {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 /* determine the hosts to reindex */
@@ -137,18 +131,20 @@ if (sizeof($data_queries)) {
 	}
 }
 
+function display_version() {
+	$version = get_cacti_version();
+	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+}
+
 /*	display_help - displays the usage of the function */
 function display_help () {
-	$version = get_cacti_version();
-	echo "Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n\n";
-	echo "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]] [--host-descr=[description]]\n";
-	echo "                           [-d] [-h] [--help] [-v] [--version]\n\n";
-	echo "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
-	echo "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
-	echo "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
-	echo "--debug                  - Display verbose output during execution\n";
-	echo "-v --version             - Display this help message\n";
-	echo "-h --help                - Display this help message\n";
+	display_version();
+	print "usage: poller_reindex_hosts.php --id=[host_id|all] [--qid=[ID|all]]\n";
+	print "   [--host-descr=[description]] [--debug]\n\n";
+	print "--id=host_id             - The host_id to have data queries reindexed or 'all' to reindex all hosts\n";
+	print "--qid=query_id           - Only index on a specific data query id; defaults to 'all'\n";
+	print "--host-descr=description - The host description to filter by (SQL filters acknowledged)\n";
+	print "--debug                  - Display verbose output during execution\n";
 }
 
 function debug($message) {

@@ -307,12 +307,19 @@ function item_movedown() {
 
 	global $graph_item_types;
 
-	$arr     = get_graph_group(get_request_var('id'));
-	$next_id = get_graph_parent(get_request_var('id'), 'next');
+	$arr        = get_graph_group(get_request_var('id'));
+	$next_id    = get_graph_parent(get_request_var('id'), 'next');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	$text_type  = $graph_item_types[$graph_type];
+
+	if (!empty($next_id) && isset($arr[get_request_var('id')])) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'next');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (!preg_match('/(AREA|STACK|LINE)/', $text_type)) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$next_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'next');
 
@@ -335,9 +342,16 @@ function item_moveup() {
 	$arr = get_graph_group(get_request_var('id'));
 	$next_id = get_graph_parent(get_request_var('id'), 'previous');
 
-	if ((!empty($next_id)) && (isset($arr{get_request_var('id')}))) {
+	$graph_type = db_fetch_cell_prepared('SELECT graph_type_id 
+		FROM graph_templates_item 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	$text_type  = $graph_item_types[$graph_type];
+
+	if (!empty($next_id) && isset($arr[get_request_var('id')])) {
 		move_graph_group(get_request_var('id'), $arr, $next_id, 'previous');
-	} elseif (preg_match('/(GPRINT|VRULE|HRULE|COMMENT)/', $graph_item_types{db_fetch_cell_prepared('SELECT graph_type_id FROM graph_templates_item WHERE id = ?', array(get_request_var('id')))})) {
+	} elseif (!preg_match('/(AREA|STACK|LINE)/', $text_type)) {
 		/* this is so we know the "other" graph item to propagate the changes to */
 		$last_item = get_item('graph_templates_item', 'sequence', get_request_var('id'), 'graph_template_id=' . get_request_var('graph_template_id') . ' AND local_graph_id=0', 'previous');
 
@@ -388,7 +402,7 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __('Graph Template Items [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
@@ -436,24 +450,6 @@ function item_edit() {
 
 	}
 
-	if (!isempty_request_var('id')) {
-		/* we want to mark the fields that are associated with a graph item input */
-		$graph_item_input_fields = db_fetch_assoc_prepared('SELECT
-			graph_template_input.id,
-			graph_template_input.column_name
-			FROM (graph_template_input, graph_template_input_defs)
-			WHERE graph_template_input.id = graph_template_input_defs.graph_template_input_id
-			AND graph_template_input.graph_template_id = ?
-			AND graph_template_input_defs.graph_template_item_id = ?
-			GROUP BY graph_template_input.column_name', array(get_request_var('graph_template_id'), get_request_var('id')));
-
-		if (sizeof($graph_item_input_fields) > 0) {
-			foreach ($graph_item_input_fields as $field) {
-				$form_array[$field['column_name']]['friendly_name'] .= " [<a href='" . htmlspecialchars('graph_templates_inputs.php?action=input_edit&id=' . $field['id'] . '&graph_template_id=' . get_request_var('graph_template_id')) . "'>" . __('Field Not Templated') . "</a>]";
-			}
-		}
-	}
-
 	draw_edit_form(
 		array(
 			'config' => array('no_form_tag' => true),
@@ -469,7 +465,7 @@ function item_edit() {
 	form_hidden_box('_task_item_id', (isset($template_item) ? $template_item['task_item_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
 	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 

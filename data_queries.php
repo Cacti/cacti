@@ -118,18 +118,28 @@ function form_save() {
 		get_filter_request_var('id');
 		get_filter_request_var('data_input_id');
 
-		$save['id'] = get_request_var('id');
-		$save['hash'] = get_hash_data_query(get_nfilter_request_var('id'));
-		$save['name'] = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['description'] = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
-		$save['xml_path'] = form_input_validate(get_nfilter_request_var('xml_path'), 'xml_path', '', false, 3);
+		$save['id']            = get_request_var('id');
+		$save['hash']          = get_hash_data_query(get_nfilter_request_var('id'));
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['description']   = form_input_validate(get_nfilter_request_var('description'), 'description', '', true, 3);
+		$save['xml_path']      = form_input_validate(get_nfilter_request_var('xml_path'), 'xml_path', '', false, 3);
 		$save['data_input_id'] = get_request_var('data_input_id');
+
+		// Detect changing input id
+		if (!empty($save['id'])) {
+			$previous_input_id = db_fetch_cell_prepared('SELECT data_input_id
+				FROM snmp_query
+				WHERE id = ?',
+				array($save['id']));
+		}
 
 		if (!is_error_message()) {
 			$snmp_query_id = sql_save($save, 'snmp_query');
 
 			if ($snmp_query_id) {
 				raise_message(1);
+
+				data_query_update_input_method($snmp_query_id, $previous_input_id, $save['data_input_id']);
 
 				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 			} else {
@@ -162,11 +172,21 @@ function form_save() {
 				/* if the user changed the graph template, go through and delete everything that
 				was associated with the old graph template */
 				if (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) {
-					db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
-					db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
+					db_execute_prepared('DELETE 
+						FROM snmp_query_graph_rrd_sv 
+						WHERE snmp_query_graph_id = ?', 
+						array($snmp_query_graph_id));
+
+					db_execute_prepared('DELETE 
+						FROM snmp_query_graph_sv 
+						WHERE snmp_query_graph_id = ?', 
+						array($snmp_query_graph_id));
 				}
 
-				db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($snmp_query_graph_id));
+				db_execute_prepared('DELETE 
+					FROM snmp_query_graph_rrd 
+					WHERE snmp_query_graph_id = ?', 
+					array($snmp_query_graph_id));
 
 				foreach ($_POST as $var => $val) {
 					if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
@@ -180,7 +200,15 @@ function form_save() {
 						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
 							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
 							VALUES (?, ?, ?, ?)',
-							array($snmp_query_graph_id, $data_template_id, $data_template_rrd_id, get_nfilter_request_var('dsdt_' . $data_template_id . '_' . $data_template_rrd_id . '_snmp_field_output')));
+							array(
+								$snmp_query_graph_id, 
+								$data_template_id, 
+								$data_template_rrd_id, 
+								get_nfilter_request_var('dsdt_' . 
+									$data_template_id . '_' . 
+									$data_template_rrd_id . '_snmp_field_output')
+							)
+						);
 					}
 				}
 
@@ -196,12 +224,28 @@ function form_save() {
 		}
 
 		header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . (empty($snmp_query_graph_id) ? get_request_var('id') : $snmp_query_graph_id) . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-	} elseif (isset_request_var('svg_x') && !isempty_request_var('svg_text') && !isempty_request_var('svg_field')) {
+	} elseif (isset_request_var('svg_x')) {
 		/* ================= input validation ================= */
 		get_filter_request_var('id');
 		get_filter_request_var('snmp_query_id');
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
+
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
+		}
+
+		if  (isempty_request_var('svg_text')) {
+			raise_message(39);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		} elseif (isempty_request_var('svg_field')) {
+			raise_message(38);
+			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+			return;
+		}
 
 		/* suggested values -- graph templates */
 		$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_sv', 'snmp_query_graph_id=' . get_filter_request_var('id') . " AND field_name = " . db_qstr(get_nfilter_request_var('svg_field')));
@@ -212,7 +256,14 @@ function form_save() {
 		db_execute_prepared('INSERT INTO snmp_query_graph_sv
 			(hash, snmp_query_graph_id, sequence, field_name, text)
 			VALUES (?, ?, ?, ?, ?)',
-			array($hash, get_request_var('id'), $sequence, get_nfilter_request_var('svg_field'), get_nfilter_request_var('svg_text')));
+			array(
+				$hash, 
+				get_request_var('id'), 
+				$sequence, 
+				get_nfilter_request_var('svg_field'), 
+				get_nfilter_request_var('svg_text')
+			)
+		);
 
 		clear_messages();
 
@@ -230,11 +281,27 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
+		}
+
 		foreach ($_POST as $var => $val) {
-			if (preg_match('/^svds_([0-9]+)_text/i', $var, $matches)) {
+			if (preg_match('/^svds_([0-9]+)_x/i', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
+
+				if  (isempty_request_var('svds_' . $matches[1] . '_text')) {
+					raise_message(39);
+					header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+					return;
+				} elseif (isempty_request_var('svds_' . $matches[1] . '_field')) {
+					raise_message(38);
+					header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+					return;
+				}
 
 				$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . get_request_var('id')  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . get_nfilter_request_var('svds_' . $matches[1] . '_field') . "'");
 
@@ -243,7 +310,14 @@ function form_save() {
 				db_execute_prepared('INSERT INTO snmp_query_graph_rrd_sv
 					(hash, snmp_query_graph_id, data_template_id, sequence, field_name, text)
 					VALUES (?, ?, ?, ?, ?, ?)',
-					array($hash, get_request_var('id'), $matches[1], $sequence, get_nfilter_request_var('svds_' . $matches[1] . '_field'), get_nfilter_request_var('svds_' . $matches[1] . '_text')));
+					array(
+						$hash, get_request_var('id'), 
+						$matches[1], 
+						$sequence, 
+						get_nfilter_request_var('svds_' . $matches[1] . '_field'), 
+						get_nfilter_request_var('svds_' . $matches[1] . '_text')
+					)
+				);
 
 				clear_messages();
 
@@ -294,7 +368,12 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$dq_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT snmp_query.name FROM snmp_query WHERE id = ?', array($matches[1]))) . '</li>';
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM snmp_query
+				WHERE id = ?',
+				array($matches[1]));
+
+			$dq_list .= '<li>' . html_escape($name) . '</li>';
 			$dq_array[$i] = $matches[1];
 
 			$i++;
@@ -319,10 +398,10 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Query', 'Delete Data Query', sizeof($dq_array)) . "'>";
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data query.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -368,7 +447,9 @@ function data_query_item_remove_gsv() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE FROM snmp_query_graph_sv 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_movedown_dssv() {
@@ -391,12 +472,66 @@ function data_query_item_moveup_dssv() {
 	move_item_up('snmp_query_graph_rrd_sv', get_request_var('id'), 'data_template_id=' . get_request_var('data_template_id') . ' AND snmp_query_graph_id=' . get_request_var('snmp_query_graph_id') . " AND field_name = " . db_qstr(get_nfilter_request_var('field_name')));
 }
 
+function data_query_sv_check_sequences($type, $snmp_query_graph_id, $field_name) {
+	if ($type == 'ds' || $type == 'gr') {
+		if ($type == 'ds') {
+			$table = 'snmp_query_graph_rrd_sv';
+		} else {
+			$table = 'snmp_query_graph_sv';
+		}
+	} else {
+		return false;
+	}
+
+	$bad_seq = db_fetch_cell_prepared("SELECT COUNT(sequence)
+		FROM $table
+		WHERE sequence <= 0
+		AND field_name = ?
+		AND snmp_query_graph_id = ?",
+		array($field_name, $snmp_query_graph_id));
+
+	$dup_seq = db_fetch_cell_prepared("SELECT SUM(count)
+		FROM (
+			SELECT sequence, COUNT(sequence) AS count
+			FROM $table
+			WHERE field_name = ?
+			AND snmp_query_graph_id = ?
+			GROUP BY sequence
+		) AS t
+		WHERE t.count > 1",
+		array($field_name, $snmp_query_graph_id));
+
+	// report any bad or duplicate sequencs to the log for reporting purposes
+	if ($bad_seq > 0) {
+		cacti_log('WARN: Found ' . $bad_seq . " Bad Sequences in $table Table", false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+	}
+
+	if ($dup_seq > 0) {
+		cacti_log('WARN: Found ' . $dup_seq . " Duplicated Sequences in $table Table", false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+	}
+
+	if ($bad_seq > 0 || $dup_seq > 0) {
+		// resequence the list so it has no gaps, and 0 values will appear at the top
+		// since thats where they would have been displayed
+		db_execute_prepared("SET @seq = 0;
+			UPDATE $table
+			SET sequence = (@seq:=@seq+1)
+			WHERE field_name = ?
+			AND snmp_query_graph_id = ?
+			ORDER BY sequence, id;",
+			array($field_name, $snmp_query_graph_id));
+	}
+}
+
 function data_query_item_remove_dssv() {
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd_sv 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_remove_confirm() {
@@ -411,7 +546,10 @@ function data_query_item_remove_confirm() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$graph_template = db_fetch_row_prepared('SELECT * FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
+	$graph_template = db_fetch_row_prepared('SELECT * 
+		FROM snmp_query_graph 
+		WHERE id = ?', 
+		array(get_request_var('id')));
 
 	?>
 	<tr>
@@ -422,8 +560,8 @@ function data_query_item_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove VDEF Item');?>'>
 		</td>
 	</tr>
 	<?php
@@ -455,10 +593,25 @@ function data_query_item_remove() {
 	get_filter_request_var('id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
-	db_execute_prepared('DELETE FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ?', array(get_request_var('id')));
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph 
+		WHERE id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_rrd_sv 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph_sv 
+		WHERE snmp_query_graph_id = ?', 
+		array(get_request_var('id')));
 }
 
 function data_query_item_edit() {
@@ -470,19 +623,27 @@ function data_query_item_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$snmp_query_item = db_fetch_row_prepared('SELECT * FROM snmp_query_graph WHERE id = ?', array(get_request_var('id')));
+		$snmp_query_item = db_fetch_row_prepared('SELECT *
+			FROM snmp_query_graph
+			WHERE id = ?',
+			array(get_request_var('id')));
 	}
 
-	$snmp_query = db_fetch_row_prepared('SELECT name, xml_path FROM snmp_query WHERE id = ?', array(get_request_var('snmp_query_id')));
+	$snmp_query   = db_fetch_row_prepared('SELECT name, xml_path
+		FROM snmp_query
+		WHERE id = ?',
+		array(get_request_var('snmp_query_id')));
+
 	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
 
 	form_start('data_queries.php', 'data_queries');
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_REQUEST)
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_data_query_item_edit, (isset($snmp_query_item) ? $snmp_query_item : array()), $_REQUEST)
 		)
 	);
 
@@ -499,9 +660,7 @@ function data_query_item_edit() {
 	if (!empty($snmp_query_item['id'])) {
 		html_start_box( __('Associated Data Templates'), '100%', '', '3', 'center', '');
 
-		$data_templates = db_fetch_assoc_prepared('SELECT
-			data_template.id,
-			data_template.name
+		$data_templates = db_fetch_assoc_prepared('SELECT data_template.id, data_template.name
 			FROM (data_template, data_template_rrd, graph_templates_item)
 			WHERE graph_templates_item.task_item_id = data_template_rrd.id
 			AND data_template_rrd.data_template_id = data_template.id
@@ -513,80 +672,81 @@ function data_query_item_edit() {
 
 		$i = 0;
 		if (sizeof($data_templates)) {
-		foreach ($data_templates as $data_template) {
-			print "<tr class='tableHeader'>
-					<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
-				</tr>';
+			foreach ($data_templates as $data_template) {
+				print "<tr class='tableHeader'>
+						<th class='tableSubHeaderColumn'>" . __('Data Template - %s', $data_template['name']) . '</th>
+					</tr>';
 
-			$data_template_rrds = db_fetch_assoc_prepared('SELECT
-				dtr.id, dtr.data_source_name, sqgr.snmp_field_name, sqgr.snmp_query_graph_id
-				FROM data_template_rrd AS dtr
-				LEFT JOIN snmp_query_graph_rrd AS sqgr
-				ON sqgr.data_template_rrd_id = dtr.id
-				AND sqgr.snmp_query_graph_id = ?
-				AND sqgr.data_template_id = ?
-				WHERE dtr.data_template_id = ?
-				AND dtr.local_data_id = 0
-				ORDER BY dtr.data_source_name',
-				array(get_request_var('id'), $data_template['id'], $data_template['id']));
+				$data_template_rrds = db_fetch_assoc_prepared('SELECT dtr.id, dtr.data_source_name, 
+					sqgr.snmp_field_name, sqgr.snmp_query_graph_id
+					FROM data_template_rrd AS dtr
+					LEFT JOIN snmp_query_graph_rrd AS sqgr
+					ON sqgr.data_template_rrd_id = dtr.id
+					AND sqgr.snmp_query_graph_id = ?
+					AND sqgr.data_template_id = ?
+					WHERE dtr.data_template_id = ?
+					AND dtr.local_data_id = 0
+					ORDER BY dtr.data_source_name',
+					array(get_request_var('id'), $data_template['id'], $data_template['id']));
 
-			$i = 0;
-			if (sizeof($data_template_rrds)) {
-			foreach ($data_template_rrds as $data_template_rrd) {
-				if (empty($data_template_rrd['snmp_query_graph_id'])) {
-					$old_value = '';
-				} else {
-					$old_value = 'on';
-				}
+				$i = 0;
+				if (sizeof($data_template_rrds)) {
+					foreach ($data_template_rrds as $data_template_rrd) {
+						if (empty($data_template_rrd['snmp_query_graph_id'])) {
+							$old_value = '';
+						} else {
+							$old_value = 'on';
+						}
 
-				form_alternate_row();
-				?>
-					<td>
-						<table>
-							<tr>
-								<td style='width:200px;'>
-									<?php print __('Data Source');?>
-								</td>
-								<td style='width:200px;'>
-									<?php print $data_template_rrd['data_source_name'];?>
-								</td>
-								<td>
-									<?php
-									$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
-									$xml_outputs = array();
+						form_alternate_row();
+						?>
+						<td>
+							<table>
+								<tr>
+									<td style='width:200px;'>
+										<?php print __('Data Source');?>
+									</td>
+									<td style='width:200px;'>
+										<?php print $data_template_rrd['data_source_name'];?>
+									</td>
+									<td>
+										<?php
+										$snmp_queries = get_data_query_array(get_request_var('snmp_query_id'));
+										$xml_outputs  = array();
 
-									if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
-										foreach ($snmp_queries['fields'] as $field_name => $field_array) {
-											if ($field_array['direction'] == 'output' || $field_array['direction'] == 'input-output') {
-												$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+										if (isset($snmp_queries['fields']) && sizeof($snmp_queries['fields'])) {
+											foreach ($snmp_queries['fields'] as $field_name => $field_array) {
+												if ($field_array['direction'] == 'output' || $field_array['direction'] == 'input-output') {
+													$xml_outputs[$field_name] = $field_name . ' (' . $field_array['name'] . ')';
+												}
 											}
 										}
-									}
 
-									form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
-								</td>
-								<td class='right'>
-									<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
-								</td>
-							</tr>
-						</table>
-					</td>
-				<?php
-				form_end_row();
+										form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
+									</td>
+									<td class='right'>
+										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<?php
+						form_end_row();
+					}
+				}
 			}
-			}
-		}
 		}
 
 		html_end_box();
 
-		html_start_box( __('Suggested Values - Graph Names'), '100%', '', '3', 'center', '');
+		html_start_box(__('Suggested Values - Graphs'), '100%', '', '3', 'center', '');
 
 		/* suggested values for graphs templates */
-		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, id
+		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
 			FROM snmp_query_graph_sv
 			WHERE snmp_query_graph_id = ?
-			ORDER BY field_name, sequence', array(get_request_var('id')));
+			ORDER BY field_name, sequence',
+			array(get_request_var('id')));
 
 		html_header(array(
 			array('display' => __('Name'), 'align' => 'left'),
@@ -598,6 +758,8 @@ function data_query_item_edit() {
 		$total_values = sizeof($suggested_values);
 		if ($total_values) {
 			foreach ($suggested_values as $suggested_value) {
+				data_query_sv_check_sequences('gr', $suggested_value['snmp_query_graph_id'], $suggested_value['field_name']);
+
 				form_alternate_row();
 
 				$show_up   = false;
@@ -633,7 +795,7 @@ function data_query_item_edit() {
 					<?php print html_escape($suggested_value['text']);?>
 				</td>
 				<td class='right'>
-					<a class='remover deleteMarker fa fa-remove' title='<?php print html_escape(__('Delete'));?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
+					<a class='remover deleteMarker fa fa-times' title='<?php print html_escape(__('Delete'));?>' href='<?php print html_escape('data_queries.php?action=item_remove_gsv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id'));?>'></a>
 				</td>
 				<?php
 
@@ -654,16 +816,16 @@ function data_query_item_edit() {
 						<?php print __('Field Name');?>
 					</td>
 					<td>
-						<input type='text' id='svg_field' size='15'>
+						<input type='text' class='ui-state-default ui-corner-all' id='svg_field' size='15'>
 					</td>
 					<td class='nowrap'>
 						<?php print __('Suggested Value');?>
 					</td>
 					<td>
-						<input type='text' id='svg_text' size='60'>
+						<input type='text' class='ui-state-default ui-corner-all' id='svg_text' size='60'>
 					</td>
 					<td>
-						<input id='svg_x' type='button' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' id='svg_x' name='svg_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Graph Title Suggested Name');?>'>
 					</td>
 				</tr>
 			</table>
@@ -673,12 +835,12 @@ function data_query_item_edit() {
 
 		html_end_box();
 
-		html_start_box( __('Suggested Values - Data Source Names'), '100%', '', '3', 'center', '');
+		html_start_box( __('Suggested Values - Data Sources'), '100%', '', '3', 'center', '');
 
 		/* suggested values for data templates */
 		if (sizeof($data_templates)) {
 			foreach ($data_templates as $data_template) {
-				$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, id
+				$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name, snmp_query_graph_id, id
 					FROM snmp_query_graph_rrd_sv
 					WHERE snmp_query_graph_id = ?
 					AND data_template_id = ?
@@ -696,6 +858,8 @@ function data_query_item_edit() {
 				if ($total_values) {
 					$prev_name = '';
 					foreach ($suggested_values as $suggested_value) {
+						data_query_sv_check_sequences('ds', $suggested_value['snmp_query_graph_id'], $suggested_value['field_name']);
+
 						form_alternate_row();
 
 						$show_up   = false;
@@ -731,7 +895,7 @@ function data_query_item_edit() {
 							<?php print html_escape($suggested_value['text']);?>
 						</td>
 						<td class='right'>
-							<a class='remover deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
+							<a class='remover deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_dssv&snmp_query_graph_id=' . get_request_var('id') . '&id=' . $suggested_value['id'] . '&snmp_query_id=' . get_request_var('snmp_query_id') . '&data_template_id=' . $data_template['id']);?>'></a>
 						</td>
 						<?php
 
@@ -753,16 +917,16 @@ function data_query_item_edit() {
 								<?php print __('Field Name');?>
 							</td>
 							<td>
-								<input id='svds_field' type='text' name='svds_<?php print $data_template['id'];?>_field' size='15'>
+								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_field' name='svds_<?php print $data_template['id'];?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
 								<?php print __('Suggested Value');?>
 							</td>
 							<td>
-								<input id='svds_text' type='text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
+								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
 							</td>
 							<td>
-								<input id='svds_x' type='button' name='svds_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
+								<input type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id'];?>_x' name='svds_<?php print $data_template['id'];?>_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
 							</td>
 						</tr>
 					</table>
@@ -788,11 +952,15 @@ function data_query_item_edit() {
 	$('.remover').click(function(event) {
 		event.preventDefault();
 		href=$(this).attr('href');
-		$.get(href, function(data) {
-			$('form[action="data_queries.php"]').unbind();
-			$('#main').html(data);
-			applySkin();
-		});
+		$.get(href)
+			.done(function(data) {
+				$('form[action="data_queries.php"]').unbind();
+				$('#main').html(data);
+				applySkin();
+			})
+			.fail(function(data) {
+				getPresentHTTPError(data);
+			});
 	});
 
 	$('input[id="svg_x"]').click(function() {
@@ -815,10 +983,12 @@ function data_query_item_edit() {
 		});
 	});
 
-	$('input[id="svds_x"]').click(function() {
-		var svds_text_name=$('#svds_text').attr('name');
-		var svds_field_name=$('#svds_field').attr('name');
-		var svds_x_name=$('#svds_x').attr('name');
+	$('input.svds_x').click(function() {
+		var $form = $(this).closest('form');
+		var svds_text_name=$form.find('input.svds_text').attr('name');
+		var svds_field_name=$form.find('input.svds_field').attr('name');
+		var svds_x_name=$form.find('input.svds_x').attr('name');
+
 		var jSON = $.parseJSON('{ ' +
 			'"graph_template_id_prev":"'+graph_template_id_prev + '", ' +
 			'"action":"save", ' +
@@ -829,9 +999,10 @@ function data_query_item_edit() {
 			'"__csrf_magic":"'+csrfMagicToken+'", ' +
 			'"save_component_snmp_query_item":"1", ' +
 			'"snmp_query_id":"'+$('#snmp_query_id').val() + '", ' +
-			'"'+svds_field_name+'":"'+$('#svds_field').val() + '", ' +
-			'"'+svds_text_name+'":"'+$('#svds_text').val() + '", ' +
-			'"'+svds_x_name+'":"Add" }');
+			'"'+svds_field_name+'":"'+$form.find('input.svds_field').val() + '", ' +
+			'"'+svds_text_name+'":"'+$form.find('input.svds_text').val() + '", ' +
+			'"'+svds_x_name+'":"Add", ' +
+			'"svds_x":"Add" }');
 
 		$.post('data_queries.php', jSON).done(function(data) {
 			$('#main').html(data);
@@ -849,19 +1020,44 @@ function data_query_item_edit() {
    --------------------- */
 
 function data_query_remove($id) {
-	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph WHERE snmp_query_id = ?', array($id));
+	$snmp_query_graph = db_fetch_assoc_prepared('SELECT id 
+		FROM snmp_query_graph 
+		WHERE snmp_query_id = ?', 
+		array($id));
 
 	if (sizeof($snmp_query_graph)) {
 		foreach ($snmp_query_graph as $item) {
-			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE snmp_query_graph_id = ?', array($item['id']));
+			db_execute_prepared('DELETE 
+				FROM snmp_query_graph_rrd 
+				WHERE snmp_query_graph_id = ?', 
+				array($item['id']));
 		}
 	}
 
-	db_execute_prepared('DELETE FROM snmp_query WHERE id = ?', array($id));
-	db_execute_prepared('DELETE FROM snmp_query_graph WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_snmp_query WHERE snmp_query_id = ?', array($id));
-	db_execute_prepared('DELETE FROM host_snmp_cache WHERE snmp_query_id = ?', array($id));
+	db_execute_prepared('DELETE 
+		FROM snmp_query 
+		WHERE id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM snmp_query_graph 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_template_snmp_query 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_snmp_query 
+		WHERE snmp_query_id = ?', 
+		array($id));
+
+	db_execute_prepared('DELETE 
+		FROM host_snmp_cache 
+		WHERE snmp_query_id = ?', 
+		array($id));
 
 	update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 }
@@ -884,10 +1080,12 @@ function data_query_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	draw_edit_form(array(
-		'config' => array('no_form_tag' => true),
-		'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
-		));
+	draw_edit_form(
+		array(
+			'config' => array('no_form_tag' => true),
+			'fields' => inject_form_variables($fields_data_query_edit, (isset($snmp_query) ? $snmp_query : array()))
+		)
+	);
 
 	html_end_box(false, true);
 
@@ -928,7 +1126,8 @@ function data_query_edit() {
 			AND gl.graph_template_id = sqg.graph_template_id
 			WHERE sqg.snmp_query_id = ?
 			GROUP BY sqg.id
-			ORDER BY sqg.name', array($snmp_query['id']));
+			ORDER BY sqg.name', 
+			array($snmp_query['id']));
 
 		if (sizeof($snmp_query_graphs)) {
 			foreach ($snmp_query_graphs as $snmp_query_graph) {
@@ -951,11 +1150,11 @@ function data_query_edit() {
 						<?php print $snmp_query_graph['id'];?>
 					</td><?php if ($snmp_query_graph['graphs'] == 0) {?>
 					<td class='right'>
-							<a class='delete deleteMarker fa fa-remove' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
+							<a class='delete deleteMarker fa fa-times' title='<?php print __('Delete');?>' href='<?php print html_escape('data_queries.php?action=item_remove_confirm&id=' . $snmp_query_graph['id'] . '&snmp_query_id=' . $snmp_query['id']);?>'></a>
 					</td>
 					<?php } else { ?>
 					<td class='right'>
-							<a class='deleteMarkerDisabled fa fa-remove' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
+							<a class='deleteMarkerDisabled fa fa-times' title='<?php print __('Mapped Graph Templates with Graphs are read only');?>' href='#'></a>
 					</td>
 					<?php } ?>
 				</tr>
@@ -982,16 +1181,20 @@ function data_query_edit() {
 			event.preventDefault();
 
 			request = $(this).attr('href');
-			$.get(request, function(data) {
-				$('#cdialog').html(data);
-				applySkin();
-				$('#cdialog').dialog({
-					title: '<?php print __('Delete Associated Graph');?>',
-					close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-					minHeight: 80,
-					minWidth: 500
+			$.get(request)
+				.done(function(data) {
+					$('#cdialog').html(data);
+					applySkin();
+					$('#cdialog').dialog({
+						title: '<?php print __('Delete Associated Graph');?>',
+						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
+						minHeight: 80,
+						minWidth: 500
+					});
+				})
+				.fail(function(data) {
+					getPresentHTTPError(data);
 				});
-			});
 		}).css('cursor', 'pointer');
 	});
 
@@ -1052,7 +1255,7 @@ function data_query() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Data Queries');?>
@@ -1071,8 +1274,8 @@ function data_query() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' name='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' name='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1114,7 +1317,7 @@ function data_query() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (sq.name like '%%" . get_request_var('filter') . "%%' OR di.name like '%%" . get_request_var('filter') . "%%')";
+		$sql_where = "WHERE (sq.name like '%" . get_request_var('filter') . "%' OR di.name like '%" . get_request_var('filter') . "%')";
 	} else {
 		$sql_where = '';
 	}

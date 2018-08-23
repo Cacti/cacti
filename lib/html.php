@@ -78,7 +78,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		print "<div class='cactiTableTitle'><span>" . ($title != '' ? $title:'') . '</span></div>';
 		print "<div class='cactiTableButton'>\n";
 		if ($add_text != '' && !is_array($add_text)) {
-			print "<span><a class='linkOverDark' title='$add_label' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
+			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
 				if (sizeof($add_text)) {
@@ -107,7 +107,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 							$title = $add_label;
 						}
 
-						print "<span><a" . (isset($icon['id']) ? "id='" . $icon['id'] . "'":"") . " class='$classo' href='$href' title='$title'><i class='$classi'></i></a></span>";
+						print "<span class='cactiFilterAdd' title='$title'><a" . (isset($icon['id']) ? " id='" . $icon['id'] . "'":"") . " class='$classo' href='$href'><i class='$classi'></i></a></span>";
 					}
 				}
 			} else {
@@ -347,6 +347,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	global $config;
+	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
@@ -354,9 +355,28 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	print "<a class='iconLink utils' href='#' role='link' id='graph_" . $local_graph_id . "_util'><img class='drillDown' src='" . $config['url_path'] . "images/cog.png' alt='' title='" . __esc('Graph Details, Zooming and Debugging Utilities') . "'></a><br>\n";
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __esc('CSV Export of Graph Data'). "'></a><br>\n";
 	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>\n";
-	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
-		print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time'). "'></a><br/>\n";
+
+	if (is_realm_allowed(3)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id
+			FROM graph_local
+			WHERE id = ?',
+			array($local_graph_id));
+
+		if ($host_id > 0) {
+			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . '_' . $rand . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit Device') . "'></a>";
+			print '<br/>';
+			$rand++;
+		}
 	}
+
+	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
+		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
+			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time'). "'></a><br/>\n";
+		} else {
+			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time') . "'></a><br/>\n";
+		}
+	}
+
 	if (is_realm_allowed(1043)) {
 		print "<span class='iconLink spikekill' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_sk'><img id='sk" . $local_graph_id . "' class='drillDown' src='" . $config['url_path'] . "images/spikekill.gif' title='" . __esc('Kill Spikes in Graphs') . "'></span>";
 		print '<br/>';
@@ -557,11 +577,11 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-up';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-down';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -718,11 +738,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-up';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-down';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -1055,7 +1075,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				}
 				print "</td>\n";
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
 			}
 
 			print "</tr>";
@@ -1160,7 +1180,7 @@ function draw_menu($user_menu = "") {
 			if (isset($menu_glyphs[$header_name])) {
 				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
 			} else {
-				$glyph = '<i class="menu_glyph fa fa-folder-o"></i>';
+				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
@@ -1240,7 +1260,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
@@ -1487,8 +1507,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
-				'id'	=> 'maintab-anchor-console',
-				'image' => '',
+				'id'	=> 'tab-console',
 				'url'   => $config['url_path'] . 'index.php',
 			);
 		}
@@ -1500,8 +1519,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Graphs'),
-						'id'	=> 'maintab-anchor-graphs',
-						'image' => '',
+						'id'	=> 'tab-graphs',
 						'url'   => $config['url_path'] . 'graph_view.php',
 					);
 			}
@@ -1514,8 +1532,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Reporting'),
-						'id'	=> 'maintab-anchor-reports',
-						'image' => '',
+						'id'	=> 'tab-reports',
 						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
@@ -1525,8 +1542,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
-					'id'	=> 'maintab-anchor-logs',
-					'image' => '',
+					'id'	=> 'tab-logs',
 					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
@@ -1596,8 +1612,7 @@ function html_show_tabs_left() {
 						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
-								'id'    => 'maintab-anchor-link' . $tab['id'],
-								'image' => '',
+								'id'    => 'tab-link' . $tab['id'],
 								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
 							);
 					}
@@ -1626,16 +1641,25 @@ function html_show_tabs_left() {
 		$i = 0;
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
-		foreach($tabs_left as $tab) {
-			print "<li><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i) . "' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'>" . html_escape($tab['title']) . "</a></li>\n";
 
-			$i++;
+		foreach($tabs_left as $tab) {
+			if (isset($tab['id'])) {
+				$id = $tab['id'];
+			} else {
+				$id = 'anchor' . $i;
+				$i++;
+			}
+
+			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>\n";
 		}
+
+		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
+
 		print "</ul></nav></div>\n";
 	}
 }
 
-function html_graph_tabs_right($current_user) {
+function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
 	$theme = get_selected_theme();
@@ -1788,15 +1812,47 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
-				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
-				<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
+				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
+				<span class='ui-select-text'>
+					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
+				</span>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
 			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
 		</td>
 	<?php
 	}
+}
+
+function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+	$theme = get_selected_theme();
+
+	if (strpos($call_back, '()') === false) {
+		$call_back .= '()';
+	}
+
+	?>
+	<td>
+		<?php print __('Site');?>
+	</td>
+	<td>
+		<select id='site_id' onChange='<?php print $call_back;?>'>
+			<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('site_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+			<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('site_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+			<?php
+
+			$sites = get_allowed_sites($sql_where);
+
+			if (sizeof($sites)) {
+				foreach ($sites as $site) {
+					print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
+				}
+			}
+			?>
+		</select>
+	</td>
+	<?php
 }
 
 function html_spikekill_actions() {
@@ -1843,7 +1899,7 @@ function html_spikekill_setting($name) {
 function html_spikekill_menu($local_graph_id) {
 	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
 	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Nan\'s') . '</li>';
+	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('NaN\'s') . '</li>';
 	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
 	$ravgnan .= '</ul></li>';
 
@@ -1874,10 +1930,10 @@ function html_spikekill_menu($local_graph_id) {
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-support'></i><span></span><?php print __('Float Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa life-ring'></i><span></span><?php print __('Remove StdDev');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-life-ring'></i><span></span><?php print __('Remove Variance');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-life-ring'></i><span></span><?php print __('Gap Fill Range');?></li>
+		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-life-ring'></i><span></span><?php print __('Float Range');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
 		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
@@ -1908,26 +1964,35 @@ function html_spikekill_js() {
 			}
 		});
 
+		$('span.spikekill').children().contextmenu(function() {
+			return false;
+		});
+
 		$('span.spikekill').unbind().click(function() {
 			if (spikeKillOpen == false) {
 				local_graph_id = $(this).attr('data-graph');
 
-				$.get('?action=spikemenu&local_graph_id='+local_graph_id, function(data) {
-					$('#sk'+local_graph_id).after(data);
+				$.get('?action=spikemenu&local_graph_id='+local_graph_id)
+					.done(function(data) {
+						$('#sk'+local_graph_id).after(data);
 
-					$('.spikekillMenu').menu({
-						select: function(event, ui) {
-							$(this).menu('focus', event, ui.item);
-						},
-						delay: 1000
+						$('.spikekillMenu').menu({
+							select: function(event, ui) {
+								$(this).menu('focus', event, ui.item);
+							},
+							delay: 1000
+						});
+
+						$('.spikekillParent').show();
+
+						spikeKillActions();
+
+						spikeKillOpen = true;
+					})
+					.fail(function(data) {
+						getPresentHTTPError(data);
 					});
 
-					$('.spikekillParent').show();
-
-					spikeKillActions();
-
-					spikeKillOpen = true;
-				});
 			} else {
 				spikeKillOpen = false;
 				$(this).find('.spikekillMenu').menu('destroy').parent().remove();
@@ -1982,7 +2047,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=ravgnan&id='+$(this).attr('id').replace('method_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skkills').unbind().click(function() {
@@ -1991,7 +2059,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rkills&id='+$(this).attr('id').replace('kills_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skstddev').unbind().click(function() {
@@ -2000,7 +2071,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rstddev&id='+$(this).attr('id').replace('stddev_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skvarpct').unbind().click(function() {
@@ -2009,7 +2083,10 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarpct&id='+$(this).attr('id').replace('varpct_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 
 		$('.skvarout').unbind().click(function() {
@@ -2018,10 +2095,72 @@ function html_spikekill_js() {
 			$(this).find('.spikekillMenu').menu('destroy').parent().remove();
 
 			strURL = '?action=spikesave&setting=rvarout&id='+$(this).attr('id').replace('varout_','');
-			$.get(strURL);
+			$.get(strURL)
+				.fail(function(data) {
+					getPresentHTTPError(data);
+				});
 		});
 	}
 	</script>
 	<?php
+}
+
+function html_common_header($title, $selectedTheme = '') {
+	global $config;
+
+	if ($selectedTheme == '') {
+		$selectedTheme = get_selected_theme();
+	}
+
+	?>
+	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
+	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
+	<meta name='apple-mobile-web-app-capable' content='yes'>
+	<meta name='mobile-web-app-capable' content='yes'>
+	<meta name='robots' content='noindex,nofollow'>
+	<title><?php echo $title; ?></title>
+	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
+	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<?php
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
+	print get_md5_include_css('include/fa/css/fontawesome.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
+	print get_md5_include_js('include/js/screenfull.js');
+	print get_md5_include_js('include/js/jquery.js');
+	print get_md5_include_js('include/js/jquery-ui.js');
+	print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
+	print get_md5_include_js('include/js/jquery.cookie.js');
+	print get_md5_include_js('include/js/js.storage.js');
+	print get_md5_include_js('include/js/jstree.js');
+	print get_md5_include_js('include/js/jquery.hotkeys.js');
+	print get_md5_include_js('include/js/jquery.tablednd.js');
+	print get_md5_include_js('include/js/jquery.zoom.js');
+	print get_md5_include_js('include/js/jquery.multiselect.js');
+	print get_md5_include_js('include/js/jquery.multiselect.filter.js');
+	print get_md5_include_js('include/js/jquery.timepicker.js');
+	print get_md5_include_js('include/js/jquery.colorpicker.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
+	print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
+	print get_md5_include_js('include/js/jquery.metadata.js');
+	print get_md5_include_js('include/js/jquery.sparkline.js');
+	print get_md5_include_js('include/js/Chart.js');
+	print get_md5_include_js('include/js/dygraph-combined.js');
+	print get_md5_include_js('include/js/d3.js');
+	print get_md5_include_js('include/js/c3.js');
+	print get_md5_include_js('include/js/pace.js');
+	print get_md5_include_js('include/realtime.js');
+	print get_md5_include_js('include/layout.js');
+	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
+	api_plugin_hook('page_head');
 }
 

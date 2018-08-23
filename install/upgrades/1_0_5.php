@@ -31,34 +31,34 @@ function upgrade_to_1_0_5() {
 
 	/* poller reindex is more complicated due to reports of more than one entry */
 	$duplicates = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
-		FROM poller_reindex 
+		FROM poller_reindex
 		GROUP BY host_id, data_query_id
 		HAVING totals > 1');
 
 	if (!sizeof($duplicates)) {
-		db_install_execute('ALTER TABLE poller_reindex DROP PRIMARY KEY, ADD PRIMARY KEY (host_id, data_query_id)');
+		db_install_add_key('poller_reindex', 'KEY', 'PRIMARY', array('host_id', 'data_query_id'));
 	} else {
 		$nonhostzero = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
-			FROM poller_reindex 
+			FROM poller_reindex
 			WHERE host_id > 0
 			GROUP BY host_id, data_query_id
 			HAVING totals > 1');
 
 		$haszero = db_fetch_assoc('SELECT host_id, data_query_id, count(*) AS totals 
-			FROM poller_reindex 
+			FROM poller_reindex
 			WHERE host_id = 0
 			GROUP BY host_id, data_query_id
 			HAVING totals > 1');
 
 		if (sizeof($nonhostzero) && !sizeof($haszero)) {
 			/* get rid of bad apples */
-			db_execute('DELETE poller_reindex 
+			db_install_execute('DELETE poller_reindex
 				FROM poller_reindex
 				LEFT JOIN host_snmp_query
 				ON poller_reindex.host_id=host_snmp_query.host_id
 				AND poller_reindex.data_query_id=host_snmp_query.snmp_query_id
 				WHERE host_snmp_query.host_id IS NULL');
-			db_install_execute('ALTER TABLE poller_reindex DROP PRIMARY KEY, ADD PRIMARY KEY (host_id, data_query_id)');
+			db_install_add_key('poller_reindex', '', 'PRIMARY KEY', array('host_id', 'data_query_id'));
 		} else {
 			cacti_log('WARNING: Unable to ajust poller_reindex table for UTF8mb4 Character Set.  Consider deleting host_id 0.', false, 'UPGRADE');
 		}
@@ -82,7 +82,7 @@ function upgrade_to_1_0_5() {
 		$order = 1;
 
 		foreach($links as $link) {
-			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
+			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));
 			$order++;
 		}
 	}
@@ -90,6 +90,6 @@ function upgrade_to_1_0_5() {
 	/* add external id column */
 	if (!db_column_exists('host', 'external_id')) {
 		db_install_execute('ALTER TABLE host ADD COLUMN external_id VARCHAR(40) DEFAULT NULL AFTER notes');
-		db_install_execute('ALTER TABLE host ADD INDEX external_id (external_id)');
+		db_install_add_key('host', 'index', 'external_id', array('external_id'));
 	}
 }

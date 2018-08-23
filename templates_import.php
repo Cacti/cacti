@@ -29,18 +29,26 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-switch (get_request_var('action')) {
-	case 'save':
-		form_save();
+$action = get_request_var('action');
+$is_save = isset_request_var('save_component_import');
 
-		break;
-	default:
-		top_header();
+$tmp_dir = sys_get_temp_dir();
+$tmp_len = strlen($tmp_dir);
+$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+$is_tmp = is_tmp_writable(sys_get_temp_dir());
 
+if ($is_tmp && $is_save && $action == 'save') {
+	form_save();
+} else {
+	top_header();
+
+	if ($is_tmp) {
 		import();
+	} else {
+		bad_tmp();
+	}
 
-		bottom_footer();
-		break;
+	bottom_footer();
 }
 
 /* --------------------------
@@ -93,6 +101,12 @@ function form_save() {
 	}
 }
 
+function bad_tmp() {
+	html_start_box(__('Import Template'), '60%', '', '1', 'center', '');
+	form_alternate_row();
+	print "<td class='textarea'><p><strong>" . __('ERROR') . ":</strong> " .__('Failed to access temporary folder, import functionality is disabled') . "</p></td></tr>\n";
+	html_end_box();
+}
 /* ---------------------------
     Template Import Functions
    --------------------------- */
@@ -100,52 +114,57 @@ function form_save() {
 function import() {
 	global $hash_type_names, $fields_template_import;
 
-	print "<form method='post' action='templates_import.php' enctype='multipart/form-data'>\n";
+	form_start('templates_import.php', 'import', true);
 
 	$display_hideme = false;
 
 	if ((isset($_SESSION['import_debug_info'])) && (is_array($_SESSION['import_debug_info']))) {
 		import_display_results($_SESSION['import_debug_info'], array(), true, get_filter_request_var('preview'));
 
+		form_save_button('', 'close');
 		kill_session_var('import_debug_info');
+	} else {
+		html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
 
-		$display_hideme = true;
-	}
+		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
+		if (empty($default_profile)) {
+			$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+		}
 
-	html_start_box(__('Import Template'), '100%', true, '3', 'center', '');
+		$fields_template_import['import_data_source_profile']['default'] = $default_profile;
 
-	$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default`="on"');
-	if (empty($default_profile)) {
-		$default_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
-	}
+		draw_edit_form(
+			array(
+				'config' => array('no_form_tag' => true),
+				'fields' => $fields_template_import
+			)
+		);
 
-	$fields_template_import['import_data_source_profile']['default'] = $default_profile;
+		html_end_box(true, true);
 
-	draw_edit_form(
-		array(
-			'config' => array('no_form_tag' => true),
-			'fields' => $fields_template_import
-		)
-	);
+		form_hidden_box('save_component_import','1','');
 
-	html_end_box(true, true);
+		form_save_button('', 'import', 'import', false);
 
-	form_hidden_box('save_component_import','1','');
-
-	form_save_button('', 'import');
-
-	?>
-	<script type='text/javascript'>
-	$(function() {
-		<?php if ($display_hideme) { ?>
-		$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
-		$('#hideme').click(function() {
-			$('#templates_import1').hide();
+		?>
+		<script type='text/javascript'>
+		$(function() {
+			<?php if ($display_hideme) { ?>
+			$('#templates_import1').find('.cactiTableButton > span').html('<a href="#" id="hideme"><?php print __('Hide');?></a>');
+			$('#hideme').click(function() {
+				$('#templates_import1').hide();
+			});
+			<?php } ?>
 		});
-		<?php } ?>
-		$('#remove_orphans').prop('checked', false).prop('disabled', true);
-	});
-	</script>
-	<?php
+		</script>
+		<?php
+	}
 }
 
+function is_tmp_writable($tmp_dir) {
+	$tmp_dir = sys_get_temp_dir();
+	$tmp_len = strlen($tmp_dir);
+	$tmp_dir .= ($tmp_len !== 0 && substr($tmp_dir, -$tmp_len) === '/') ? '': '/';
+	$is_tmp = is_resource_writable($tmp_dir);
+	return $is_tmp;
+}

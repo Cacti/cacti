@@ -59,12 +59,11 @@ function debug_level($host_id, $level) {
 	}
 }
 
-include(dirname(__FILE__) . '/include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/ping.php');
-include_once($config['library_path'] . '/variables.php');
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/snmp.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/rrd.php');
+require($config['base_path'] . '/lib/ping.php');
 
 /* let the poller server know about cmd.php being finished */
 function record_cmdphp_done($pid = '') {
@@ -72,7 +71,11 @@ function record_cmdphp_done($pid = '') {
 
 	if ($pid == '') $pid = getmypid();
 
-	db_execute_prepared('UPDATE poller_time SET end_time=NOW() WHERE poller_id = ? AND pid = ?', array($poller_id, $pid));
+	db_execute_prepared('UPDATE poller_time
+		SET end_time=NOW()
+		WHERE poller_id = ?
+		AND pid = ?',
+		array($poller_id, $pid));
 }
 
 /* let cacti processes know that a poller has started */
@@ -81,7 +84,8 @@ function record_cmdphp_started() {
 
 	db_execute_prepared("INSERT INTO poller_time
 		(poller_id, pid, start_time, end_time)
-		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')", array($poller_id, getmypid()));
+		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')",
+		array($poller_id, getmypid()));
 }
 
 function open_snmp_session($host_id, &$item) {
@@ -102,6 +106,25 @@ function open_snmp_session($host_id, &$item) {
 			$downhosts[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']] = true;
 		}
 	}
+}
+
+function get_max_column_width() {
+	$pcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output WHERE Field='output'");
+	$bcol_data = db_fetch_row("SHOW COLUMNS FROM poller_output_boost WHERE Field='output'");
+
+	if (isset($pcol_data['Type'])) {
+		$pcol = $pcol_data['Type'];
+		$data = explode('(', $pcol);
+		$pmax  = trim($data[1], ')');
+	}
+
+	if (sizeof($bcol_data)) {
+		$bcol = $bcol_data['Type'];
+		$data = explode('(', $bcol);
+		$bmax  = trim($data[1], ')');
+	}
+
+	return min($pmax, $bmax);
 }
 
 function display_version() {
@@ -159,6 +182,7 @@ $debug     = false;
 $mibs      = false;
 $mode      = 'online';
 $poller_id = $config['poller_id'];
+$maxwidth  = get_max_column_width();
 
 if (sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -232,19 +256,21 @@ if ($first == NULL || $last == NULL ) {
 if (!is_numeric($poller_id) || $poller_id < 1) {
 	cacti_log('FATAL: The poller needs to be a positive numeric value', true, 'POLLER');
 	exit(-1);
-} else {
-	$exists = db_fetch_cell_prepared('SELECT COUNT(*) FROM host WHERE poller_id = ?', array($poller_id));
-
-	if (empty($exists)) {
-		cacti_log('FATAL: No devices matching this poller exist on the system', true, 'POLLER');
-		record_cmdphp_done();
-		db_close();
-		exit(-1);
-	}
 }
 
 /* notify cacti processes that a poller is running */
 record_cmdphp_started();
+
+$exists = db_fetch_cell_prepared('SELECT COUNT(*)
+	FROM host
+	WHERE poller_id = ?',
+	array($poller_id));
+
+if (empty($exists)) {
+	record_cmdphp_done();
+	db_close();
+	exit(-1);
+}
 
 /* install signal handlers for UNIX only */
 if (function_exists('pcntl_signal')) {
@@ -410,6 +436,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 	$output_array = array();
 	$output_count = 0;
 	$error_ds     = array();
+	$width_dses   = array();
 
 	/* create new ping socket for host pinging */
 	$ping = new Net_Ping;
@@ -656,7 +683,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 					open_snmp_session($host_id, $item);
 
 					if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-						$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $item['arg1']);
+						$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $item['arg1'], true);
 					} else {
 						$output = 'U';
 					}
@@ -727,6 +754,11 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			} /* End Switch */
 
 			if (isset($output)) {
+				if (read_config_option('poller_debug') == 'on' && strlen($output) > $maxwidth) {
+					$width_dses[] = $data_source;
+					$width_errors++;
+				}
+
 				/* insert a U in place of the actual value if the snmp agent restarts */
 				if (($set_spike_kill) && (!substr_count($output, ':'))) {
 					$output_array[] = sprintf('(%d, %s, %s, "U")', $item['local_data_id'], db_qstr($item['rrd_name']), db_qstr($host_update_time));
@@ -740,7 +772,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						(local_data_id, rrd_name, time, output)
 						VALUES ' . implode(', ', $output_array));
 
-					if (read_config_option('boost_redirect') == 'on') {
+					if (read_config_option('boost_redirect') == 'on'
+						&& read_config_option('boost_rrd_update_enable') == 'on') {
 						db_execute('INSERT IGNORE INTO poller_output_boost
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(', ', $output_array));
@@ -764,6 +797,10 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 
 	if (sizeof($error_ds)) {
 		cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+	}
+
+	if (sizeof($width_dses)) {
+		cacti_log('WARNING: Long Responses Errors[' . sizeof($width_dses) . '] DS[' . implode(', ', $width_dses) . ']', false, 'POLLER');
 	}
 
 	if ($output_count > 0) {

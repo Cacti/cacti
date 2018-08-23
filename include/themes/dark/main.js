@@ -57,38 +57,27 @@ function themeReady() {
 		$('.import_text').html(fileText);
 	}
 
-	maxWidth = 280;
+	maxWidth = 300;
 
 	$('select.colordropdown').dropcolor();
 
 	$('select').not('.colordropdown').each(function() {
 		if ($(this).prop('multiple') != true) {
-			$(this).selectmenu({
-				change: function(event, ui) {
-					$(this).val(ui.item.value).change();
-				},
-				position: {
-					my: "left top",
-					at: "left bottom",
-					collision: "flip"
-				},
-			}).each(function() {
+			$(this).each(function() {
 				id = $(this).attr('id');
-				minWidth = 0;
-				$('#'+id+' > option').each(function() {
-					width=$(this).textWidth();
-					if (width > minWidth) {
-						minWidth = width;
-					}
+
+				$(this).selectmenu({
+					change: function(event, ui) {
+						$(this).val(ui.item.value).change();
+					},
+					position: {
+						my: "left top",
+						at: "left bottom",
+						collision: "flip"
+					},
+					width: 'auto'
 				});
 
-				minWidth+=80;
-
-				if (minWidth > maxWidth) {
-					minWidth = maxWidth;
-				}
-
-				$('#'+id+'-button').css('min-width', minWidth+'px').css('max-width', maxWidth+'px').css('width','');
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
 		}else{
@@ -243,14 +232,12 @@ function setMenuVisibility() {
 	$('#navigation').hide();
 	$('li.menuitem').each(function() {
 		active = storage.get($(this).attr('id'));
-		if (active != null) {
-			if (active == 'active') {
-				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-				$(this).next('a').show();
-			}else{
-				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-				$(this).next('a').hide();
-			}
+		if (active != null && active == 'active') {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+		}else{
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
 		}
 
 		if ($(this).find('a.selected').length) {

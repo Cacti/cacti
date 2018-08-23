@@ -27,7 +27,6 @@ body {
 	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
 	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-
 }
 
 table {
@@ -44,6 +43,10 @@ td, th {
 
 th {
 	white-space: nowrap;
+}
+
+p {
+	color: white;
 }
 
 h2 {
@@ -124,14 +127,21 @@ label {
 	white-space:nowrap;
 }
 
+.glyph_tab-console:before {
+	content: "\f185";
+}
+
+.text_tab-console {
+	display: none;
+}
+
 input[type="checkbox"] + label:before {
 	border: 1px solid #7f83a2;
 	content: "\00a0";
 	display: inline-block;
 	font: 12px/1em sans-serif;
 	height: 12px;
-	margin: .25em .25em 0 0;
-	vertical-align:text-bottom;
+	margin: 0.25em 0.45em;
 	width: 12px;
 	background: transparent;
 }
@@ -142,6 +152,7 @@ input[type="checkbox"]:checked + label:before {
 	content: "\2713";
 	text-align: center;
 }
+
 input[type="checkbox"]:checked + label,
 input[type="radio"]:not([name^="reindex"]):checked + label {
   color: #FFFFFF;
@@ -347,10 +358,6 @@ label.ui-state-hover > span {
 .monoSpace {
 	font-size:9px;
 	font-family: monospace;
-}
-
-.autodrop {
-	line-height: 22px;
 }
 
 .utilityPick {
@@ -579,6 +586,7 @@ label.ui-state-hover > span {
 	display:block;
 	float:right;
 	text-align:right;
+	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
@@ -658,7 +666,7 @@ label.ui-state-hover > span {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -978,22 +986,22 @@ legend {
 }
 
 .spikekillMenu i {
-	text-align:center;
+	text-align: center;
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .spikekillMenu i:empty{
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .loginPanel {
-	padding:4px 0px;
+	padding: 4px 0px;
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
 }
 
 .treeArea {
@@ -1009,14 +1017,6 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-}
-
-.cactiGraphContentArea>div:first-child {
-	display: none !important;
-}
-
-.cactiGraphContentArea>div:last-child {
-	# margin-top: 10px;
 }
 
 .cactiGraphContentArea span[align="center"] {
@@ -1045,15 +1045,6 @@ legend {
 	color: #9d9d9d;
 }
 
-
-.cactiGraphContentAreaPreview>div:first-child {
-	display: none !important;
-}
-
-.cactiGraphContentAreaPreview>div:last-child {
-	#margin-top: 10px;
-}
-
 .cactiGraphContentAreaPreview .cactitable{
 	background: none !important;
 }
@@ -1063,10 +1054,6 @@ legend {
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
-}
-
-.cactiConsoleContentArea>div:first-child {
-	#display: none !important;
 }
 
 #graph_view_preview2 table.cactiTable{
@@ -1161,6 +1148,14 @@ legend {
 	font-weight: bold;
 }
 
+.textOverflow {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -1209,6 +1204,12 @@ legend {
 	margin: 2px 0px 3px 5px;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: rgba(255,255,255,0.2);
+	border-style: solid;
+}
+
 .cactiTable {
 	color: #9d9d9d;
 	width: 100%;
@@ -1220,6 +1221,20 @@ legend {
 
 table.cactiTable {
 	color: lightgrey;
+}
+
+.cactiTableTitleRow {
+	color: #FFAA00;
+	float: left;
+	text-align: left;
+	padding: 3px 0px;
+	display: table-column;
+	width: 100%;
+	font-size: 13px;
+	font-weight: 600;
+	border-color: rgba(255,255,255,0.2);
+	background-image: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1));
+	background-repeat: repeat-x;
 }
 
 .cactiTableTitle {
@@ -1287,10 +1302,6 @@ table.cactiTable {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1310,14 +1321,14 @@ table.cactiTable {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1444,7 +1455,6 @@ table.cactiTable {
 		border-left: none !important;
 		border-right: none !important;
 	}
-
 }
 
 .graphItem {
@@ -1517,11 +1527,19 @@ th.sortable {
 	color: white !important;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	cursor: pointer;
 	text-align: left;
 	padding: 3px;
 	outline-style: none;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .tablesorter-headerRow {
@@ -1555,7 +1573,8 @@ th.sortable {
 }
 
 .tableSubHeaderCheckbox {
-	width:1%;
+	max-width: 20px;
+	width: 20px;
 }
 
 .image_table {
@@ -1804,7 +1823,8 @@ td.tab {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
-	position:fixed;
+	display: none !important;
+	position: fixed;
 	right: 5px;
 	top: 5px;
 	height: 30px;
@@ -1819,13 +1839,11 @@ div#gtabs {
 	float: right !important;
 	width: 64px !important;
 	overflow:hidden;
-	right: 0;
 }
 
 .maintabs {
-	line-height: 32px;
+	line-height: 30px;
 	float: left;
-	width: 50%;
 	overflow: hidden;
 	height: 32px;
 }
@@ -1855,34 +1873,42 @@ div#gtabs {
 }
 
 .maintabs a:hover {
+	font-size: 18px;
 	color: white;
 	background: none;
 }
 
 .maintabs a.selected {
 	color: white;
+	font-size: 18px;
 	background: none;
 	box-shadow: inset 0 0 20px 0 rgba(0,0,0,.5);
 	border-bottom: 3px solid #3C8A3C;
 }
 
 .maintabs nav {
-
+	white-space: nowrap;
 }
 
 .maintabs li {
 	bottom:-1px;
 	float:left;
-	#position:relative;
-
 }
 
-.maintabs-submenu a{
+.maintabs-submenu {
+	display: none;
+}
+
+#menu-tab-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+	display: block;
+}
+
+.maintabs-submenu a {
 	padding: 5px 8px 5px 0px;
 }
 
-.maintabs-submenu i{
-	font-size: 14px;
+.maintabs-submenu i {
+	font-size: 18px;
 }
 
 div.submenu {
@@ -1894,7 +1920,7 @@ div.submenu {
 	z-index: 200;
 }
 
-div.submenu span{
+div.submenu span {
 	display: block;
 
 }
@@ -1939,10 +1965,12 @@ div.submenu span{
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav {
 	border-bottom:1px solid #000;
 }
@@ -1954,6 +1982,7 @@ div.submenu span{
 	height:0;
 	visibility:hidden;
 }
+
 .tabs ul, .maintabs ul {
 	list-style:none;
 	margin:0;
@@ -2310,12 +2339,203 @@ tr#realtime td:first-child {
 	background: #3C8A3C;
 }
 
-.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
-	color: #93CEFF;
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+	border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    font-weight: normal;
+    color: #555555;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus, .ui-button:hover, .ui-button:focus {
+	border: 1px solid rgba(255,255,255,0.2);
+    background: transparent;
+    font-weight: normal;
+    color: #93CEFF;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background: transparent;
+    color: #93CEFF;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+	background: transparent;
+	color: #CECECE;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	border: 1px solid rgba(255,255,255,0.2);
+	background: transparent;
+	font-weight: normal;
+	color: #969BA3;
+}
+
+.ui-widget-content {
+	border: 1px solid rgba(255,255,255,0.2);
+	background: #000000;
+	color: #969BA3;
+}
+
+.ui-widget.ui-widget-content {
+	border: 1px solid rgba(255,255,255,0.2);
+}
+
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active {
+	background: #3C8A3C;
+	margin: -1px;
+}
+
+.ui-menu .ui-menu-item {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+    min-height: 0;
+    list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+    color: #93CEFF;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr {
+    border-top-right-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
+    border-top-left-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br {
+    border-bottom-right-radius: 0px;
+}
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl {
+    border-bottom-left-radius: 0px;
+}
+
+.cactiInstallSqlResults {
+	color: #fff;
+}
+
+.cactiInstallSectionTitle {
+	color: #fff;
+	background-repeat: repeat-y;
+	overflow: hidden;
+   	background-color: #ffffff;
+	background-image: -webkit-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -moz-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -o-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -ms-radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(85% 145%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+}
+
+/* New Checkbox Stuff */
+.checkboxSwitch {
+	position: relative;
+	display: inline-block;
+	width: 45px;
+	height: 24px;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.checkboxSwitch input {
+	display:none;
+}
+
+.checkboxSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #FFAA00;
+	-webkit-transition: .4s;
+	transition: .4s;
+
+	border: 1px solid #7f83a2;
+	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #000000 1%, #04335b 35%, #000000 65%);
+	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+}
+
+.checkboxSlider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .checkboxSlider {
+	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+}
+
+input:focus + .checkboxSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .checkboxSlider:before {
+	-webkit-transform: translateX(20px);
+	-ms-transform: translateX(20px);
+	transform: translateX(20px);
+}
+
+/* Rounded.checkboxSliders */
+.checkboxSlider.checkboxRound {
+	border-radius: 24px;
+}
+
+.checkboxSlider.checkboxRound:before {
+	border-radius: 50%;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }

@@ -53,7 +53,100 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	//print '<pre>';print_r($dep_hash_cache);print '</pre>';exit;
 
+	// Populate the hash cache with preexisting objects.
 	$hash_cache = array();
+	$hash_types_to_db_info = array(
+		'graph_template' => array(
+			'table' => 'graph_templates',
+		),
+		'graph_template_item' => array(
+			'table' => 'graph_templates_item',
+		),
+		'graph_template_input' => array(
+			'table' => 'graph_template_input',
+		),
+		'data_template' => array(
+			'table' => 'data_template',
+		),
+		'data_template_item' => array(
+			'table' => 'data_template_rrd',
+		),
+		'host_template' => array(
+			'table' => 'host_template',
+		),
+		'data_input_method' => array(
+			'table' => 'data_input',
+		),
+		'data_input_field' => array(
+			'table' => 'data_input_fields',
+		),
+		'data_query' => array(
+			'table' => 'snmp_query',
+		),
+		'data_query_graph' => array(
+			'table' => 'snmp_query_graph',
+		),
+		'data_query_sv_graph' => array(
+			'table' => 'snmp_query_graph_sv',
+		),
+		'data_query_sv_data_source' => array(
+			'table' => 'snmp_query_graph_rrd_sv',
+		),
+		'gprint_preset' => array(
+			'table' => 'graph_templates_gprint',
+		),
+		'cdef' => array(
+			'table' => 'cdef',
+		),
+		'cdef_item' => array(
+			'table' => 'cdef_items',
+		),
+		'vdef' => array(
+			'table' => 'vdef',
+		),
+		'vdef_item' => array(
+			'table' => 'vdef_items',
+		),
+		'data_source_profiles' => array(
+			'table' => 'data_source_profiles',
+		),
+		'data_source_profile_rra' => array(
+			'table' => 'data_source_profiles_rra',
+			'hash_field' => 'name',
+		),
+	);
+	$hash_cache_sql_union_selects = array();
+
+	foreach ($hash_types_to_db_info as $hash_type => $db_info) {
+		$db_id_field = (
+			isset($db_info['id_field'])
+			? $db_info['id_field']
+			: 'id'
+		);
+		$db_hash_field = (
+			isset($db_info['hash_field'])
+			? $db_info['hash_field']
+			: 'hash'
+		);
+		$db_table = $db_info['table'];
+		$hash_cache_sql_union_selects[] = "
+			SELECT
+				'$hash_type' AS type,
+				`$db_id_field` AS id,
+				`$db_hash_field` AS hash
+			FROM
+				`$db_table`
+		";
+	}
+
+	$hash_cache_sql = implode(' UNION ALL ', $hash_cache_sql_union_selects);
+	$hash_cache_results = db_fetch_assoc($hash_cache_sql);
+	if (sizeof($hash_cache_results)) {
+		foreach ($hash_cache_results as $hash_cache_row) {
+			$hash_cache[$hash_cache_row['type']][$hash_cache_row['hash']] = $hash_cache_row['id'];
+		}
+	}
+
 	$repair     = 0;
 
 	/* the order of the $hash_type_codes array is ordered such that the items
@@ -140,6 +233,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	global $config, $preview_only;
 
 	$preview_only = $preview;
+
+	@ini_set('zlib.output_compression', '0');
 
 	/* set new timeout and memory settings */
 	ini_set('max_execution_time', '50');
@@ -737,7 +832,11 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				$save['t_value']               = $item_array['t_value'];
 				$save['value']                 = xml_character_decode($item_array['value']);
 
-				sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+				if (!empty($save['data_input_field_id'])) {
+					sql_save($save, 'data_input_data', array('data_template_data_id', 'data_input_field_id'), false);
+				} else {
+					cacti_log('Import Error: Failed to insert into data_input_data table', false, POLLER_VERBOSITY_HIGH);
+				}
 			}
 		}
 
@@ -872,7 +971,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 						$save['data_template_rrd_id'] = resolve_hash_to_id($sub_item_array['data_template_rrd_id'], $hash_cache);
 						$save['snmp_field_name']      = $sub_item_array['snmp_field_name'];
 
-						sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+						if (!empty($save['data_template_id']) && !empty($save['data_template_rrd_id'])) {
+							sql_save($save, 'snmp_query_graph_rrd', array('snmp_query_graph_id', 'data_template_id', 'data_template_rrd_id'), false);
+						} else {
+							cacti_log('Import Error: inserting into snmp_query_graph_rrd', false, POLLER_VERBOSITY_HIGH);
+						}
 					}
 				}
 			} else {
@@ -963,7 +1066,11 @@ function xml_to_data_query($hash, &$xml_array, &$hash_cache) {
 					$status += compare_data($save, $previous_data, 'snmp_query_graph_rrd_sv');
 
 					if (!$preview_only) {
-						$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+						if (!empty($save['data_template_id'])) {
+							$data_query_graph_rrd_sv_id = sql_save($save, 'snmp_query_graph_rrd_sv');
+						} else {
+							cacti_log('Import Error: Error Importing into snmp_query_graph_rrd_sv table', false, POLLER_VERBOSITY_HIGH);
+						}
 
 						$hash_cache['data_query_sv_data_source'][$parsed_hash['hash']] = $data_query_graph_rrd_sv_id;
 					} else {
@@ -1498,6 +1605,13 @@ function xml_to_data_input_method($hash, &$xml_array, &$hash_cache) {
 			/* invalid/wrong hash */
 			if ($parsed_hash == false) { return false; }
 
+			/* bad snmp port hashes */
+			if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
+				continue;
+			} elseif ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+				continue;
+			}
+
 			unset($save);
 			$_data_input_field_id = db_fetch_cell_prepared('SELECT id
 				FROM data_input_fields
@@ -1597,7 +1711,7 @@ function compare_data($save, $previous_data, $table) {
 				}
 
 				$different++;
-				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: \'' . $value . '\', Old Value: \'' . $previous_data[$column] . '\'';
+				$import_debug_info['differences'][] = 'Table: ' . $table . ', Column: ' . $column . ', New Value: ' . $value . ', Old Value: ' . $previous_data[$column];
 			}
 		}
 
@@ -1613,7 +1727,7 @@ function hash_to_friendly_name($hash, $display_type_name) {
 
 	/* invalid/wrong hash */
 	if ($parsed_hash == false) {
-		return false;
+		return __('Unknown Field');
 	}
 
 	if ($display_type_name == true) {
@@ -1696,7 +1810,19 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 		$import_debug_info['dep'][$hash] = 'met';
 		return $hash_cache_array[$parsed_hash['type']][$parsed_hash['hash']];
 	} else {
+		/* bad snmp port hashes */
+		if ($parsed_hash['hash'] == '5240353b8f7f259acaf30e6229bc14e7') {
+			return 0;
+		} elseif ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+			return 0;
+		} elseif ($parsed_hash['hash'] == 'cbbe5c1ddfb264a6e5d509ce1c78c95f') {
+			return 0;
+		}
+
+		cacti_log("Import Error: Import found an invalid dependency hash of :" . $parsed_hash['hash'] . ".  Please open bug on GitHub.");
+
 		$import_debug_info['dep'][$hash] = 'unmet';
+
 		return 0;
 	}
 }
@@ -1713,6 +1839,13 @@ function parse_xml_hash($hash) {
 			return false;
 		}
 	} else {
+		/* bad snmp port hashes */
+		if ($hash == '5240353b8f7f259acaf30e6229bc14e7') {
+			return false;
+		} elseif ($hash == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
+			return false;
+		}
+
 		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		return false;
 	}

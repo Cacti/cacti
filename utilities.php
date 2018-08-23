@@ -164,8 +164,10 @@ function utilities_view_tech($php_info = '') {
 		$out_array = array();
 		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 		if (sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool ([1-9]\.[0-9])/', $out_array[0], $m)) {
-				$rrdtool_version = 'rrd-'. $m[1] .'.x';
+			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
+				preg_match('/^([0-9]+\.[0-9]+)\./', $m[1], $m2);
+				$rrdtool_release = $m[1];
+				$rrdtool_version = $m2[1];
 			}
 		}
 	}
@@ -178,13 +180,14 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* Check RRDtool issues */
-	$rrdtool_error = '';
-	if ($rrdtool_version != read_config_option('rrdtool_version')) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not match configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span><br>";
+	$rrdtool_errors = array();
+	if (cacti_version_compare($rrdtool_version, get_rrdtool_version(), '<')) {
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: Installed RRDtool version does not exceed configured version.<br>Please visit the %s and select the correct RRDtool Utility Version.', "<a href='" . html_escape('settings.php?tab=general') . "'>" . __('Configuration Settings') . '</a>') . "</span>";
 	}
+
 	$graph_gif_count = db_fetch_cell('SELECT COUNT(*) FROM graph_templates_graph WHERE image_format_id = 2');
 	if ($graph_gif_count > 0) {
-		$rrdtool_error .= "<br><span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span><br>';
+		$rrdtool_errors[] = "<span class='deviceDown'>" . __('ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d" graph(s) and/or templates have GIF set as the image format.', $graph_gif_count) . '</span>';
 	}
 
 	/* Get spine version */
@@ -268,9 +271,27 @@ function utilities_view_tech($php_info = '') {
 		form_end_row();
 
 		form_alternate_row();
-		print '<td>' . __('RRDtool Version') . "</td>\n";
-		print '<td>' . $rrdtool_versions[$rrdtool_version] . ' ' . $rrdtool_error . "</td>\n";
+		print '<td>' . __('RRDtool Version') . ' ' . __('Configured') . "</td>\n";
+		print '<td>' . get_rrdtool_version() . "+</td>\n";
 		form_end_row();
+
+		form_alternate_row();
+		print '<td>' . __('RRDtool Version') . ' ' . __('Found') . "</td>\n";
+		print '<td>' . $rrdtool_release . "</td>\n";
+		form_end_row();
+
+		if (!empty($rrdtool_errors)) {
+			form_alternate_row();
+			print "<td>&nbsp;</td>\n";
+			$br = '';
+			print "<td>";
+			foreach ($rrdtool_errors as $rrdtool_error) {
+				print $br . $rrdtool_error;
+				$br = '<br/>';
+			}
+			print "</td>\n";
+			form_end_row();
+		}
 
 		form_alternate_row();
 		print '<td>' . __('Devices') . "</td>\n";
@@ -305,6 +326,9 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . read_config_option('poller_interval') . "</td>\n";
 		if (file_exists(read_config_option('path_spine')) && $poller_options[read_config_option('poller_type')] == 'spine') {
 			$type = $spine_version;
+		        if (!strpos($spine_version, CACTI_VERSION)) {
+		    	    $type .= '<span class="textError"> (' . __('Different version of Cacti and Spine!') . ')</span>';
+			}
 		} else {
 			$type = $poller_options[read_config_option('poller_type')];
 		}
@@ -528,8 +552,8 @@ function utilities_view_tech($php_info = '') {
 			widgets: ['zebra'],
 			widgetZebra: { css: ['even', 'odd'] },
 			headerTemplate: '<div class="textSubHeaderDark">{content} {icon}</div>',
-			cssIconAsc: 'fa-sort-asc',
-			cssIconDesc: 'fa-sort-desc',
+			cssIconAsc: 'fa-sort-up',
+			cssIconDesc: 'fa-sort-down',
 			cssIconNone: 'fa-sort',
 			cssIcon: 'fa'
 		});
@@ -565,7 +589,7 @@ function utilities_view_user_log() {
 			),
 		'sort_direction' => array(
 			'filter' => FILTER_CALLBACK,
-			'default' => 'ASC',
+			'default' => 'DESC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
 		'username' => array(
@@ -686,9 +710,9 @@ function utilities_view_user_log() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge User Log');?>'>
 						</span>
 					</td>
 				</tr>
@@ -699,7 +723,7 @@ function utilities_view_user_log() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -772,7 +796,7 @@ function utilities_view_user_log() {
 		'username'  => array(__('User'), 'ASC'),
 		'full_name' => array(__('Full Name'), 'ASC'),
 		'realm'     => array(__('Authentication Realm'), 'ASC'),
-		'time'      => array(__('Date'), 'ASC'),
+		'time'      => array(__('Date'), 'DESC'),
 		'result'    => array(__('Result'), 'DESC'),
 		'ip'        => array(__('IP Address'), 'DESC')
 	);
@@ -979,14 +1003,15 @@ function utilities_view_logfile() {
 	});
 
 	function applyFilter() {
-		strURL  = urlPath+'utilities.php?tail_lines=' + $('#tail_lines').val();
-		strURL += '&message_type=' + $('#message_type').val();
-		strURL += '&refresh=' + $('#refresh').val();
-		strURL += '&reverse=' + $('#reverse').val();
-		strURL += '&rfilter=' + $('#rfilter').val();
-		strURL += '&filename=' + $('#filename').val();
-		strURL += '&action=view_logfile';
-		strURL += '&header=false';
+		strURL  = urlPath+'utilities.php' +
+			'?tail_lines=' + $('#tail_lines').val() +
+			'&message_type=' + $('#message_type').val() +
+			'&refresh=' + $('#refresh').val() +
+			'&reverse=' + $('#reverse').val() +
+			'&rfilter=' + base64_encode($('#rfilter').val()) +
+			'&filename=' + $('#filename').val() +
+			'&action=view_logfile' +
+			'&header=false';
 		refreshMSeconds=$('#refresh').val()*1000;
 		loadPageNoHeader(strURL);
 	}
@@ -1066,9 +1091,9 @@ function utilities_view_logfile() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-							<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refreshme' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Log');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1117,7 +1142,7 @@ function utilities_view_logfile() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='75' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 				</tr>
 			</table>
@@ -1273,6 +1298,10 @@ function utilities_view_snmp_cache() {
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
 			),
+		'with_index' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '0'
+			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
@@ -1311,6 +1340,11 @@ function utilities_view_snmp_cache() {
 	function applyFilter() {
 		strURL  = urlPath+'utilities.php?host_id=' + $('#host_id').val();
 		strURL += '&snmp_query_id=' + $('#snmp_query_id').val();
+		if ($('#with_index').is(':checked')) {
+			strURL += '&with_index=1';
+		} else {
+			strURL += '&with_index=0';
+		}
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&action=view_snmp_cache';
@@ -1348,12 +1382,6 @@ function utilities_view_snmp_cache() {
 		<form id='form_snmpcache' action='utilities.php'>
 			<table class='filterTable'>
 				<tr>
-					<td>
-						<?php print __('Search');?>
-					</td>
-					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
-					</td>
 					<?php print html_host_filter(get_request_var('host_id'));?>
 					<td>
 						<?php print __('Query Name');?>
@@ -1389,6 +1417,22 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
+						<span>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
+					<td>
+						<?php print __('Search');?>
+					</td>
+					<td>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+					</td>
+					<td>
 						<?php print __('Rows');?>
 					</td>
 					<td>
@@ -1404,10 +1448,8 @@ function utilities_view_snmp_cache() {
 						</select>
 					</td>
 					<td>
-						<span>
-							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-						</span>
+						<input type='checkbox' id='with_index' onChange='applyFilter()' title='<?php print __esc('Allow the search term to include the index column');?>' <?php if (get_request_var('with_index') == 1) { print ' checked '; }?>>
+						<label for='with_index'><?php print __('Include Index') ?></label>
 					</td>
 				</tr>
 			</table>
@@ -1443,7 +1485,11 @@ function utilities_view_snmp_cache() {
 			OR sq.name LIKE '%" . get_request_var('filter') . "%'
 			OR hsc.field_name LIKE '%" . get_request_var('filter') . "%'
 			OR hsc.field_value LIKE '%" . get_request_var('filter') . "%'
-			OR hsc.oid LIKE '%" . get_request_var('filter') . "%')";
+			OR hsc.oid LIKE '%" . get_request_var('filter') . "%'";
+		if (get_request_var('with_index') == 1) {
+			$sql_where .= " OR hsc.snmp_index LIKE '%" . get_request_var('filter') . "%'";
+		}
+		$sql_where .= ")";
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1650,8 +1696,8 @@ function utilities_view_poller_cache() {
 					</td>
 					<td>
 						<span>
-							<input type='submit' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -1662,7 +1708,7 @@ function utilities_view_poller_cache() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Action');?>
@@ -1881,24 +1927,26 @@ function utilities() {
 		),
 	);
 
-	$utilities[__('SNMPAgent Utilities')] = array(
-		__('View SNMPAgent Cache') => array(
-			'link'  => 'utilities.php?action=view_snmpagent_cache',
-			'description' => __('This shows all objects being handled by the SNMPAgent.')
-		),
-		__('Rebuild SNMPAgent Cache') => array(
-			'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
-			'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
-		),
-		__('View SNMPAgent Notification Log') => array(
-			'link'  => 'utilities.php?action=view_snmpagent_events',
-			'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
-		),
-		__('SNMP Notification Receivers') => array(
-			'link'  => 'managers.php',
-			'description' => __('Allows Administrators to maintain SNMP notification receivers.')
-		),
-	);
+	if (snmpagent_enabled()) {
+		$utilities[__('SNMPAgent Utilities')] = array(
+			__('View SNMPAgent Cache') => array(
+				'link'  => 'utilities.php?action=view_snmpagent_cache',
+				'description' => __('This shows all objects being handled by the SNMPAgent.')
+			),
+			__('Rebuild SNMPAgent Cache') => array(
+				'link'  => 'utilities.php?action=rebuild_snmpagent_cache',
+				'description' => __('The SNMP cache will be cleared and re-generated if you select this option. Note that it takes another poller run to restore the SNMP cache completely.')
+			),
+			__('View SNMPAgent Notification Log') => array(
+				'link'  => 'utilities.php?action=view_snmpagent_events',
+				'description' => __('This menu pick allows you to view the latest events SNMPAgent has handled in relation to the registered notification receivers.')
+			),
+			__('SNMP Notification Receivers') => array(
+				'link'  => 'managers.php',
+				'description' => __('Allows Administrators to maintain SNMP notification receivers.')
+			),
+		);
+	}
 
 	api_plugin_hook('utilities_array');
 
@@ -1977,7 +2025,7 @@ function boost_display_run_status() {
 						?>
 					</td>
 					<td>
-						<input type='button' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
+						<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Refresh');?>' onClick='applyFilter()'>
 					</td>
 				</tr>
 			</table>
@@ -2337,7 +2385,7 @@ function snmpagent_utilities_run_cache() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('MIB');?>
@@ -2371,8 +2419,8 @@ function snmpagent_utilities_run_cache() {
 						</td>
 						<td>
 							<span>
-								<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-								<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 							</span>
 						</td>
 					</tr>
@@ -2588,7 +2636,7 @@ function snmpagent_utilities_run_eventlog(){
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Severity');?>
@@ -2633,9 +2681,9 @@ function snmpagent_utilities_run_eventlog(){
 						</td>
 						<td>
 							<span>
-								<input type='button' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-								<input type='button' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
-								<input type='button' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc_x('Button: use filter settings', 'Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc_x('Button: reset filter settings', 'Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc_x('Button: delete all table entries', 'Purge');?>' title='<?php print __esc('Purge Notification Log');?>'>
 							</span>
 						</td>
 					</tr>

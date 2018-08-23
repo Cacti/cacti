@@ -284,9 +284,9 @@ function automation_graph_rules_form_actions() {
 
 	if (!isset($automation_graph_rules_array)) {
 		print "<tr class='even'><td><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}else {
-		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
 	print "	<tr>
@@ -747,7 +747,7 @@ function automation_graph_rules() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Data Query');?>
@@ -798,8 +798,8 @@ function automation_graph_rules() {
 						</td>
 						<td>
 							<span>
-								<input type='submit' id='refresh' name='go' value='<?php print __esc('Go');?>'>
-								<input type='button' id='clear' value='<?php print __esc('Clear');?>'></td>
+								<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' name='go' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'></td>
 							</span>
 					</tr>
 				</table>
@@ -922,7 +922,7 @@ function automation_graph_rules() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td><em>" . __('No Graph Rules Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Graph Rules Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

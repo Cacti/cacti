@@ -48,7 +48,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . htmlspecialchars($config['url_path'] . 'graph_view.php?page=1&graph_template_id=0&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>\n";
+			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=0&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
 		}
 	}
 }
@@ -61,6 +61,7 @@ function api_aggregate_convert_template($graphs) {
 		array($aggregate_template_id));
 
 	foreach($graphs as $graph) {
+		$save                          = array();
 		$save['id']                    = '';
 		$save['local_graph_id']        = $graph;
 		$save['aggregate_template_id'] = $aggregate_template_id;
@@ -295,7 +296,7 @@ function aggregate_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
 		cacti_debug_backtrace('AGGREGATE', true);
 
 		if (isset($GLOBALS['error_fatal'])) {
-			if($GLOBALS['error_fatal'] & $errno) die('fatal');
+			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno" . PHP_EOL);
 		}
 	}
 
@@ -579,6 +580,8 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 		WHERE color_template_id = ?',
 		array($_color_template_id));
 
+	$save = array();
+
 	/* create new entry: color_templates */
 	$save['color_template_id'] = 0;
 
@@ -589,11 +592,10 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 
 	$new_color_template_id = sql_save($save, 'color_templates', 'color_template_id');
 
-	unset($save);
-
 	/* create new entry(s): color_template_items */
 	if (sizeof($color_template_items)) {
 		foreach ($color_template_items as $color_template_item) {
+			$save = array();
 			$save['color_template_item_id'] = 0;
 			$save['color_template_id'] = $new_color_template_id;
 			$save['color_id'] = $color_template_item['color_id'];
@@ -602,7 +604,6 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 			cacti_log(__FUNCTION__ . ' called. Id:' . $new_color_template_id . ' Color: ' . $save['color_id'] . ' sequence: ' . $save['sequence'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 			$new_color_template_item_id = sql_save($save, 'color_template_items', 'color_template_item_id');
-			unset($save);
 		}
 	}
 }
@@ -631,6 +632,7 @@ function aggregate_cdef_make0() {
 	}
 
 	# create a new cdef entry
+	$save           = array();
 	$save['id']     = 0;
 	$save['hash']   = get_hash_cdef(0);
 	$save['system'] = 1;
@@ -642,7 +644,7 @@ function aggregate_cdef_make0() {
 	cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $magic, true, 'AGGREGATE', POLLER_VERBOSITY_DEEBUG);
 
 	# create a new cdef item entry
-	unset($save);
+	$save             = array();
 	$save['id']       = 0;
 	$save['hash']     = get_hash_cdef(0, 'cdef_item');
 	$save['cdef_id']  = $new_cdef_id;
@@ -744,6 +746,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 			# in case, we have NO match
 			if (empty($new_cdef_id)) {
 				# create a new cdef entry
+				$save           = array();
 				$save['id']     = 0;
 				$save['hash']   = get_hash_cdef(0);
 				$save['system'] = 1;
@@ -764,9 +767,9 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 				$new_cdef_id  = sql_save($save, 'cdef');
 
 				cacti_log(__FUNCTION__ . ' created new cdef: ' . $new_cdef_id . ' name: ' . $new_cdef_name . ' value: ' . $new_cdef_text, true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-				unset($save);
 
 				# create a new cdef item entry
+				$save             = array();
 				$save['id']       = 0;
 				$save['hash']     = get_hash_cdef(0, 'cdef_item');
 				$save['cdef_id']  = $new_cdef_id;

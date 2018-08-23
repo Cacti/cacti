@@ -266,7 +266,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$site_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
+			$site_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
 			$site_array[$i] = $matches[1];
 
 			$i++;
@@ -288,11 +288,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', sizeof($site_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', sizeof($site_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Site.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr>
@@ -324,7 +324,7 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', htmlspecialchars($site['name']));
+		$header_label = __('Site [edit: %s]', html_escape($site['name']));
 	} else {
 		$header_label = __('Site [new]');
 	}
@@ -346,7 +346,7 @@ function site_edit() {
 }
 
 function sites() {
-	global $site_actions, $item_rows;
+	global $site_actions, $item_rows, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -398,7 +398,7 @@ function sites() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Sites');?>
@@ -409,7 +409,7 @@ function sites() {
 							<?php
 							if (sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -417,8 +417,8 @@ function sites() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -502,10 +502,11 @@ function sites() {
 	$i = 0;
 	if (sizeof($site_list)) {
 		foreach ($site_list as $site) {
+			$devices_url = $config['url_path'] . 'host.php?reset=1&site_id=' . $site['id'];
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($site['hosts'], '-1'), $site['id'], '', 'right');
+			form_selectable_cell('<a class="linkEditMain" href="' . $devices_url . '">' . number_format_i18n($site['hosts'], '-1') . '</a>', $site['id'], '', 'right');
 			form_selectable_cell($site['city'], $site['id'], '', 'left');
 			form_selectable_cell($site['state'], $site['id'], '', 'left');
 			form_selectable_cell($site['country'], $site['id'], '', 'left');

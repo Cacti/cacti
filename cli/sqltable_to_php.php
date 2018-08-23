@@ -23,14 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
+require(__DIR__ . '/../include/cli_check.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -59,12 +52,12 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 
 		}
@@ -72,14 +65,14 @@ if (sizeof($parms)) {
 }
 
 if ($table == '') {
-	echo "ERROR: You must provide a table name\n";
+	print "ERROR: You must provide a table name\n";
 	display_help();
-	exit;
+	exit(1);
 } else {
-	echo sqltable_to_php($table, $create);
+	print sqltable_to_php($table, $create);
 }
 
-function sqltable_to_php ($table, $create) {
+function sqltable_to_php($table, $create) {
 	global $config, $database_default;
 
 	include_once($config['library_path'] . '/database.php');
@@ -96,7 +89,7 @@ function sqltable_to_php ($table, $create) {
 			}
 		}
 	} else {
-		echo "ERROR: Obtaining list of tables from $database_default\n";
+		print "ERROR: Obtaining list of tables from $database_default\n";
 		exit;
 	}
 
@@ -141,7 +134,7 @@ function sqltable_to_php ($table, $create) {
 				$text .= ");\n";
 			}
 		} else {
-			echo "ERROR: Obtaining list of columns from $table\n";
+			print "ERROR: Obtaining list of columns from $table\n";
 			exit;
 		}
 
@@ -165,7 +158,7 @@ function sqltable_to_php ($table, $create) {
 				}
 			}
 		} else {
-			//echo "ERROR: Obtaining list of indexes from $table\n";
+			//print "ERROR: Obtaining list of indexes from $table\n";
 			//exit;
 		}
 
@@ -179,7 +172,7 @@ function sqltable_to_php ($table, $create) {
 				$text .= "db_update_table ('$table', \$data, false);\n";
 			}
 		} else {
-			echo "ERROR: Unable to get tables details from Information Schema\n";
+			print "ERROR: Unable to get tables details from Information Schema\n";
 			exit;
 		}
 	}
@@ -195,21 +188,21 @@ function sql_clean($text) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: sqltable_to_php.php --table=table_name [--update]\n\n";
-	echo "A simple developers utility to create a save schema for a newly created or\n";
-	echo "modified database table.  These save schema's can be placed into a plugins\n";
-	echo "setup.php file in order to create the tables inside of a plugin as a part of\n";
-	echo "it's install function.\n\n";
-	echo "Required:\n";
-	echo "--table=table_name - The table that you want exportred\n\n";
-	echo "Optional:\n";
-	echo "--update           - The utility provides create syntax.  If the update flag is\n";
-	echo "                     specified, the utility will provide update syntax\n\n";
+	print "\nusage: sqltable_to_php.php --table=table_name [--update]\n\n";
+	print "A simple developers utility to create a save schema for a newly created or\n";
+	print "modified database table.  These save schema's can be placed into a plugins\n";
+	print "setup.php file in order to create the tables inside of a plugin as a part of\n";
+	print "it's install function.\n\n";
+	print "Required:\n";
+	print "--table=table_name - The table that you want exportred\n\n";
+	print "Optional:\n";
+	print "--update           - The utility provides create syntax.  If the update flag is\n";
+	print "                     specified, the utility will provide update syntax\n\n";
 }
 

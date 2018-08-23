@@ -62,10 +62,11 @@ case 'move_page_down':
 
 	break;
 case 'save':
-	$save['id']            = isset_request_var('id') ? get_filter_request_var('id'):0;
-	$save['title']         = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
-	$save['style']         = get_nfilter_request_var('style');
-	$save['enabled']       = (isset_request_var('enabled') ? 'on':'');
+	$save['id']      = isset_request_var('id') ? get_filter_request_var('id'):0;
+	$save['title']   = form_input_validate(get_nfilter_request_var('title'), 'title', '', false, 3);
+	$save['style']   = get_nfilter_request_var('style');
+	$save['enabled'] = (isset_request_var('enabled') ? 'on':'');
+	$save['refresh'] = form_input_validate(get_nfilter_request_var('refresh'), 'refresh', '^[0-9]+$', false, 3);
 
 	if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', get_nfilter_request_var('fileurl')) && get_nfilter_request_var('filename') == '0') {
 		$save['contentfile'] = get_nfilter_request_var('fileurl');
@@ -171,7 +172,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$page_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
+			$page_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT title FROM external_links WHERE id = ?', array($matches[1]))) . '</li>';
 			$pages[$i] = $matches[1];
 
 			$i++;
@@ -193,7 +194,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __esc('Enable Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Enable Page(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // Disable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -202,7 +203,7 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __esc('Disable Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Disable Page(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '1') { // Delete Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -211,11 +212,11 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
 		}
 	} else {
 		print "<tr><td><span class='textError'>" . __('You must select at least one page.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
 	}
 
 	print "<tr class='saveRow'>
@@ -302,14 +303,14 @@ function pages() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='links' action='links.php' method='post'>
+			<form id='link_filter' action='links.php' method='post'>
 			<table class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='textbox' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Links');?>
@@ -326,8 +327,8 @@ function pages() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>' onClick='applyFilter()'>
-							<input type='button' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Reset filters');?>' onClick='clearFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Apply Filter');?>' onClick='applyFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Reset filters');?>' onClick='clearFilter()'>
 						</span>
 					</td>
 				</tr>
@@ -364,7 +365,7 @@ function pages() {
 
 	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM external_links');
 
-	form_start('links.php');
+	form_start('links.php', 'chk');
 
 	$nav = html_nav_bar('links.php', MAX_DISPLAY_PAGES, get_request_var_request('page'), $rows, $total_rows, 8, __('External Links'), 'page', 'main');
 
@@ -388,21 +389,21 @@ function pages() {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
-			$actions = '<a class="pic"  href="' . htmlspecialchars('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
+			$actions = '<a class="pic"  href="' . html_escape('links.php?action=edit&id='.$page['id']) . '" title="' . __esc('Edit Page') . '"><img src="' . $config['url_path'] . 'images/application_edit.png" alt=""></a>';
 
 			if ($page['enabled'] == 'on') {
-				$actions .= '<a class="pic" href="' . htmlspecialchars('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
+				$actions .= '<a class="pic" href="' . html_escape('link.php?id=' . $page['id']) . '" title="' . __esc('View Page') . '"><img src="' . $config['url_path'] . 'images/view_page.png" alt=""></a>';
 			}
 
 			form_selectable_cell($actions, $page['id'], '50');
-			form_selectable_cell(htmlspecialchars($page['contentfile']), $page['id']);
-			form_selectable_cell(htmlspecialchars($page['title']), $page['id']);
-			form_selectable_cell(htmlspecialchars($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
+			form_selectable_cell(html_escape($page['contentfile']), $page['id']);
+			form_selectable_cell(html_escape($page['title']), $page['id']);
+			form_selectable_cell(html_escape($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
 			form_selectable_cell(($page['enabled'] == 'on' ? 'Yes':'No'), $page['id']);
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {
-					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
+					$sort = '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('links.php?action=move_page_up&order=' . $page['sortorder'] . '&id='.$page['id']) . '"></a>';
 				} else {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
@@ -410,7 +411,7 @@ function pages() {
 				if ($i == sizeof($pages)-1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
-					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
+					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
 				}
 
 				form_selectable_cell($sort, $page['id'], '', 'center');
@@ -470,7 +471,7 @@ function page_move($pageid, $junk, $direction) {
 }
 
 function edit_page() {
-	global $config;
+	global $config, $poller_intervals;
 
 	$sections = db_fetch_assoc("SELECT extendedstyle
 		FROM external_links
@@ -493,6 +494,9 @@ function edit_page() {
 	} else {
 		$data = array();
 	}
+
+	$myrefresh[0] = __('Disabled');
+	$myrefresh   += $poller_intervals;
 
 	$field_array = array(
 		'id' => array(
@@ -552,15 +556,22 @@ function edit_page() {
 			'value' => (isset($data['contentfile']) ? $data['contentfile']:'')
 		),
 		'enabled' => array(
-			'friendly_name' => 'Do you want this page enabled',
+			'friendly_name' => __('Enabled'),
 			'method' => 'checkbox',
-			'description' => "If you wish this page to be viewable immediately, please check the checkbox.",
+			'description' => __('If checked, the page will be available immediately to the admin user.'),
 			'default' => 'on',
 			'value' => (isset($data['enabled']) ? 'on':'')
 		),
+		'refresh' => array(
+			'friendly_name' => __('Automatic Page Refresh'),
+			'method' => 'drop_array',
+			'array' => $myrefresh,
+			'description' => __('How often do you wish this page to be refreshed automatically.'),
+			'value' => (isset($data['refresh']) ? $data['refresh']:'')
+		),
 	);
 
-	form_start('links.php');
+	form_start('links.php', 'link_edit');
 
 	if (isset($data['title'])) {
 		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', true, '3', 'center', '');

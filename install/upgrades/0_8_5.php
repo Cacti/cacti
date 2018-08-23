@@ -38,9 +38,9 @@ function upgrade_to_0_8_5() {
 	$data_templates = db_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
 
 	if (sizeof($data_templates) > 0) {
-	foreach ($data_templates as $item) {
-		db_install_execute("UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=" . $item["id"] . ";");
-	}
+		foreach ($data_templates as $item) {
+			db_install_execute("UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=" . $item["id"] . ";");
+		}
 	}
 
 	db_install_execute("UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=22;");
@@ -53,7 +53,9 @@ function upgrade_to_0_8_5() {
 	db_install_execute("UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=33;");
 	db_install_execute("UPDATE graph_templates_graph set title = REPLACE(title,'ifDesc','ifDescr') where graph_template_id=23;");
 
-	db_install_execute("CREATE TABLE `host_graph` (`host_id` mediumint(8) unsigned NOT NULL default '0', `graph_template_id` mediumint(8) unsigned NOT NULL default '0', PRIMARY KEY  (`host_id`,`graph_template_id`)) TYPE=MyISAM;");
+	if (!db_table_exists('host_graph')) {
+		db_install_execute("CREATE TABLE `host_graph` (`host_id` mediumint(8) unsigned NOT NULL default '0', `graph_template_id` mediumint(8) unsigned NOT NULL default '0', PRIMARY KEY  (`host_id`,`graph_template_id`))");
+	}
 
 	/* typo */
 	db_install_execute("UPDATE settings set name='snmp_version' where name='smnp_version';");

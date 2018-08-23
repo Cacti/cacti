@@ -1,7 +1,6 @@
-<?php
 #!/usr/bin/php -q
+<?php
 /*
- ex: set tabstop=4 shiftwidth=4 autoindent:
  +-------------------------------------------------------------------------+
  | Copyright (C) 2004-2009 The Cacti Group                                 |
  |                                                                         |
@@ -24,20 +23,12 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* We are not talking to the browser */
-$no_http_headers = true;
-
 $dir = dirname(__FILE__);
 chdir($dir);
 
 /* Start Initialization Section */
 if (file_exists('../include/global.php')) {
-	include_once('../include/global.php');
+	require(__DIR__ . '/../include/cli_check.php');
 	$using_cacti = true;
 } else {
 	$using_cacti = false;
@@ -94,7 +85,7 @@ if (sizeof($parms)) {
 				$user = $value;
 
 				if (!is_numeric($user) || ($user < 1)) {
-					echo "FATAL: The user id must be a positive integer.\n\n";
+					print "FATAL: The user id must be a positive integer.\n\n";
 					display_help();
 					exit(-12);
 				}
@@ -102,7 +93,7 @@ if (sizeof($parms)) {
 				/* confirm the user id is accurate */
 				$user_info = db_fetch_row_prepared('SELECT id, username FROM user_auth WHERE id = ?', array($user));
 				if (empty($user_info)) {
-					echo "FATAL: Invalid user id.\n\n";
+					print "FATAL: Invalid user id.\n\n";
 					display_help();
 					exit(-13);
 				}
@@ -128,7 +119,7 @@ if (sizeof($parms)) {
 				} elseif ($value == 'fill') {
 					$method = 4;
 				} else {
-					echo "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
+					print "FATAL: You must specify either 'stddev' or 'variance' as methods.\n\n";
 					display_help();
 					exit(-11);
 				}
@@ -145,7 +136,7 @@ if (sizeof($parms)) {
 				} elseif ($value == 'nan') {
 					$avgnan = 'nan';
 				} else {
-					echo "FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.\n\n";
+					print "FATAL: You must specify either 'last', 'avg' or 'nan' as a replacement method.\n\n";
 					display_help();
 					exit(-10);
 				}
@@ -156,16 +147,16 @@ if (sizeof($parms)) {
 				$rrdfile = $value;
 
 				if (!file_exists($rrdfile)) {
-					echo "FATAL: File '$rrdfile' does not exist.\n";
+					print "FATAL: File '$rrdfile' does not exist.\n";
 					exit(-9);
 				}
 
 				if (!is_writable($rrdfile)) {
 					$username = get_execution_user();
 					if ($username != '') {
-						echo "FATAL: File '$rrdfile' is not writable by the '$username' account.\n";
+						print "FATAL: File '$rrdfile' is not writable by the '$username' account.\n";
 					} else {
-						echo "FATAL: File '$rrdfile' is not writable by this account.\n";
+						print "FATAL: File '$rrdfile' is not writable by this account.\n";
 					}
 					exit(-8);
 				}
@@ -176,7 +167,7 @@ if (sizeof($parms)) {
 				$stddev = $value;
 
 				if (!is_numeric($stddev) || ($stddev < 1)) {
-					echo "FATAL: Standard Deviation must be a positive integer.\n\n";
+					print "FATAL: Standard Deviation must be a positive integer.\n\n";
 					display_help();
 					exit(-7);
 				}
@@ -190,7 +181,7 @@ if (sizeof($parms)) {
 				}
 
 				if ($out_start === false) {
-					echo "FATAL: The outlier-start argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
+					print "FATAL: The outlier-start argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
 					display_help();
 					exit(-6);
 				}
@@ -204,7 +195,7 @@ if (sizeof($parms)) {
 				}
 
 				if ($out_end === false) {
-					echo "FATAL: The outlier-end argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
+					print "FATAL: The outlier-end argument must be in the format of YYYY-MM-DD HH:MM.\n\n";
 					display_help();
 					exit(-6);
 				}
@@ -215,7 +206,7 @@ if (sizeof($parms)) {
 				$outliers = $value;
 
 				if (!is_numeric($outliers) || ($outliers < 1)) {
-					echo "FATAL: The number of outliers to exlude must be a positive integer.\n\n";
+					print "FATAL: The number of outliers to exlude must be a positive integer.\n\n";
 					display_help();
 					exit(-6);
 				}
@@ -228,7 +219,7 @@ if (sizeof($parms)) {
 				$percent = $value/100;
 
 				if (!is_numeric($percent) || ($percent <= 0)) {
-					echo "FATAL: Percent deviation must be a positive floating point number.\n\n";
+					print "FATAL: Percent deviation must be a positive floating point number.\n\n";
 					display_help();
 					exit(-5);
 				}
@@ -257,7 +248,7 @@ if (sizeof($parms)) {
 				$numspike = $value;
 
 				if (!is_numeric($numspike) || ($numspike < 1)) {
-					echo "FATAL: Number of spikes to remove must be a positive integer\n\n";
+					print "FATAL: Number of spikes to remove must be a positive integer\n\n";
 					display_help();
 					exit(-4);
 				}
@@ -267,12 +258,12 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
@@ -331,34 +322,34 @@ if (!isset($outliers)) {
 }
 
 if ((!empty($out_start) || !empty($out_end)) && $out_set == true) {
-	echo "FATAL: Outlier time range and outliers are mutually exclusive options\n";
+	print "FATAL: Outlier time range and outliers are mutually exclusive options\n";
 	display_help();
 	exit(-4);
 }
 
 if ((!empty($out_start) && empty($out_end)) || (!empty($out_end) && empty($out_start))) {
-	echo "FATAL: Outlier time range requires outlier-start and outlier-end to be specified.\n";
+	print "FATAL: Outlier time range requires outlier-start and outlier-end to be specified.\n";
 	display_help();
 	exit(-4);
 }
 
 if (!empty($out_start)) {
 	if ($out_start >= $out_end) {
-		echo "FATAL: Outlier time range requires outlier-start to be less than outlier-end.\n";
+		print "FATAL: Outlier time range requires outlier-start to be less than outlier-end.\n";
 		display_help();
 		exit(-4);
 	}
 }
 
 if ($method == 3 && empty($out_start)) {
-	echo "FATAL: The 'float' removal method requires the specification of a start and end date.\n";
+	print "FATAL: The 'float' removal method requires the specification of a start and end date.\n";
 	display_help();
 	exit(-4);
 }
 
 /* additional error check */
 if ($rrdfile == '') {
-	echo "FATAL: You must specify an RRDfile!\n\n";
+	print "FATAL: You must specify an RRDfile!\n\n";
 	display_help();
 	exit(-2);
 }
@@ -373,9 +364,9 @@ if (!$using_cacti) {
 
 	if ($response != '') {
 		$response_array = explode(' ', $response);
-		echo 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
+		print 'NOTE: Using ' . $response_array[0] . ' Version ' . $response_array[1] . "\n";
 	} else {
-		echo "FATAL: RRDtool not found in path.  Please ensure RRDtool can be found in your path!\n";
+		print "FATAL: RRDtool not found in path.  Please ensure RRDtool can be found in your path!\n";
 		exit(-1);
 	}
 }
@@ -1263,7 +1254,7 @@ function debug($string) {
 	global $debug;
 
 	if ($debug) {
-		echo 'DEBUG: ' . $string . "\n";
+		print 'DEBUG: ' . $string . "\n";
 	}
 }
 
@@ -1318,41 +1309,41 @@ function calculateStandardDeviation($items) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Spike Remover Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /* display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	echo "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
-	echo "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
-	echo "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
-	echo "    [-U|--user=N] [--html]\n\n";
+	print "\nusage: removespikes.php -R|--rrdfile=rrdfile [-M|--method=stddev] [-A|--avgnan] [-S|--stddev=N]\n";
+	print "    [-O|--outliers=N | --outlier-start=YYYY-MM-DD HH:MM --outlier-end=YYYY-MM-DD HH:MM]\n";
+	print "    [-P|--percent=N] [-N|--number=N] [-D|--dryrun] [-d|--debug]\n";
+	print "    [-U|--user=N] [--html]\n\n";
 
-	echo "A utility to programatically remove spikes from Cacti graphs. If no optional input parameters\n";
-	echo "are specified the defaults are taken from the Cacti database.\n\n";
+	print "A utility to programatically remove spikes from Cacti graphs. If no optional input parameters\n";
+	print "are specified the defaults are taken from the Cacti database.\n\n";
 
-	echo "Required:\n";
-	echo "    --rrdfile=F   - The path to the RRDfile that will be de-spiked.\n\n";
+	print "Required:\n";
+	print "    --rrdfile=F   - The path to the RRDfile that will be de-spiked.\n\n";
 
-	echo "Optional:\n";
-	echo "    --user          - The Cacti user account to pull settings from.  Default is to use the system settings.\n";
-	echo "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float\n";
-	echo "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
-	echo "    --stddev        - The number of standard deviations +/- allowed\n";
-	echo "    --percent       - The sample to sample percentage variation allowed\n";
-	echo "    --number        - The maximum number of spikes to remove from the RRDfile\n";
-	echo "    --outlier-start - A start date of an incident where all data should be considered\n";
-	echo "                      invalid data and should be excluded from average calculations.\n";
-	echo "    --outlier-end   - An end date of an incident where all data should be considered\n";
-	echo "                      invalid data and should be excluded from average calculations.\n";
-	echo "    --outliers      - The number of outliers to ignore when calculating average.\n";
-	echo "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
-	echo "                      changes that would have been performed will be issued.\n";
-	echo "    --backup        - Backup the original RRDfile to preserve prior values.\n\n";
+	print "Optional:\n";
+	print "    --user          - The Cacti user account to pull settings from.  Default is to use the system settings.\n";
+	print "    --method        - The spike removal method to use.  Options are stddev|variance|fill|float\n";
+	print "    --avgnan        - The spike replacement method to use.  Options are last|avg|nan\n";
+	print "    --stddev        - The number of standard deviations +/- allowed\n";
+	print "    --percent       - The sample to sample percentage variation allowed\n";
+	print "    --number        - The maximum number of spikes to remove from the RRDfile\n";
+	print "    --outlier-start - A start date of an incident where all data should be considered\n";
+	print "                      invalid data and should be excluded from average calculations.\n";
+	print "    --outlier-end   - An end date of an incident where all data should be considered\n";
+	print "                      invalid data and should be excluded from average calculations.\n";
+	print "    --outliers      - The number of outliers to ignore when calculating average.\n";
+	print "    --dryrun        - If specified, the RRDfile will not be changed.  Instead a summary of\n";
+	print "                      changes that would have been performed will be issued.\n";
+	print "    --backup        - Backup the original RRDfile to preserve prior values.\n\n";
 
-	echo "The remainder of arguments are informational\n";
-	echo "    --html          - Format the output for a web browser\n";
-	echo "    --debug         - Display verbose output during execution\n";
+	print "The remainder of arguments are informational\n";
+	print "    --html          - Format the output for a web browser\n";
+	print "    --debug         - Display verbose output during execution\n";
 }

@@ -26,25 +26,11 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD']) || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-if (strpos($dir, 'boost') !== false) {
-	chdir('../../');
-}
-
-/* include important functions */
-include_once('./include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
+require(__DIR__ . '/include/cli_check.php');
+require($config['base_path'] . '/lib/poller.php');
+require($config['base_path'] . '/lib/boost.php');
+require($config['base_path'] . '/lib/dsstats.php');
+require($config['base_path'] . '/lib/rrd.php');
 
 /* get the boost polling cycle */
 $max_run_duration = read_config_option('boost_rrd_update_max_runtime');
@@ -104,6 +90,7 @@ if (function_exists('pcntl_signal')) {
 
 /* take time and log performance data */
 $start = microtime(true);
+$rrd_updates = -1;
 
 /* let's give this script lot of time to run for ever */
 ini_set('max_execution_time', '0');
@@ -140,8 +127,8 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	$time_till_next_run = $next_run_time - $current_time;
 
 	/* determine if you must output boost table now */
-	$max_records        = read_config_option('boost_rrd_update_max_records');
-	$current_records    = boost_get_total_rows();
+	$max_records     = read_config_option('boost_rrd_update_max_records');
+	$current_records = boost_get_total_rows();
 
 	if (($time_till_next_run <= 0) ||
 		($forcerun) ||
@@ -154,7 +141,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
 
-		if ($rrd_updates != '-1') {
+		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
 			$next_run_time = $current_time + $seconds_offset;
 		} else { /* rollback last run time */
@@ -169,9 +156,11 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	}
 
 	/* store the next run time so that people understand */
-	db_execute("REPLACE INTO settings
-		(name, value) VALUES
-		('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
+	if ($rrd_updates > 0) {
+		db_execute("REPLACE INTO settings
+			(name, value) VALUES
+			('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
+	}
 } else {
 	/* turn off the system level updates */
 	if (read_config_option('boost_rrd_update_system_enable') == 'on') {
@@ -189,7 +178,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
 
-		if ($rrd_updates != '-1') {
+		if ($rrd_updates > 0) {
 			log_boost_statistics($rrd_updates);
 		}
 	}
@@ -221,8 +210,6 @@ function sig_handler($signo) {
 function output_rrd_data($start_time, $force = false) {
 	global $start, $max_run_duration, $config, $database_default, $debug, $get_memory, $memory_used;
 
-	include_once($config['base_path'] . '/lib/rrd.php');
-
 	$boost_poller_status = read_config_option('boost_poller_status');
 	$rrd_updates = 0;
 
@@ -231,6 +218,7 @@ function output_rrd_data($start_time, $force = false) {
 		if ($debug){
 			cacti_log('DEBUG: Found lock, so another boost process is running');
 		}
+
 		return -1;
 	}
 
@@ -273,11 +261,14 @@ function output_rrd_data($start_time, $force = false) {
 		$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
 	}
 
-	/* split poller_output_boost */
-	$archive_table = 'poller_output_boost_arch_' . time();
+	$time = time();
 
-	db_execute("RENAME TABLE poller_output_boost TO $archive_table");
-	db_execute("CREATE TABLE poller_output_boost LIKE $archive_table");
+	/* split poller_output_boost */
+	$archive_table = 'poller_output_boost_arch_' . $time;
+	$interim_table = 'poller_output_boost_' . $time;
+
+	db_execute("CREATE TABLE $interim_table LIKE poller_output_boost");
+	db_execute("RENAME TABLE poller_output_boost TO $archive_table, $interim_table TO poller_output_boost");
 
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
@@ -351,7 +342,7 @@ function output_rrd_data($start_time, $force = false) {
 		foreach($tables as $table) {
 			$rows = db_fetch_cell('SELECT count(*) FROM ' . $table['name']);
 			if (is_numeric($rows) && intval($rows) == 0) {
-				db_execute('DROP TABLE ' . $table['name']);
+				db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 			}
 		}
 	}

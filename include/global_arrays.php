@@ -106,6 +106,13 @@ $cacti_version_codes = array(
 	'1.1.30' => '0101',
 	'1.1.31' => '0101',
 	'1.1.32' => '0101',
+	'1.1.33' => '0101',
+	'1.1.34' => '0101',
+	'1.1.35' => '0101',
+	'1.1.36' => '0101',
+	'1.1.37' => '0101',
+	'1.1.38' => '0101',
+	'1.2.0'  => '0101',
 );
 
 $messages = array(
@@ -116,7 +123,7 @@ $messages = array(
 		'message' => __('Save Failed.'),
 		'type' => 'error'),
 	3  => array(
-		'message' => __('Save Failed: Field Input Error (Check Red Fields).'),
+		'message' => __('Save Failed due to field input errors (Check red fields).'),
 		'type' => 'error'),
 	4  => array(
 		'message' => __('Passwords do not match, please retype.'),
@@ -131,10 +138,13 @@ $messages = array(
 		'message' => __('XML parse error.'),
 		'type' => 'error'),
 	8  => array(
-		'message' => __('Form types dirpath and filepath must point to a valid diretory or file.'),
+		'message' => __('The directory highlighted does not exist.  Please enter a valid directory.'),
 		'type' => 'error'),
 	9  => array(
 		'message' => __('The Cacti log file must have the extension \'.log\''),
+		'type' => 'error'),
+	10  => array(
+		'message' => __('Data Input for method does not appear to be whitelisted.'),
 		'type' => 'error'),
 	11  => array(
 		'message' => __('Data Source does not exist.'),
@@ -143,10 +153,10 @@ $messages = array(
 		'message' => __('Username already in use.'),
 		'type' => 'error'),
 	13  => array(
-		'message' => __('The SNMP v3 Privacy Passphrases to not match'),
+		'message' => __('The SNMP v3 Privacy Passphrases do not match'),
 		'type' => 'error'),
 	14  => array(
-		'message' => __('The SNMP v3 Authentication Passwords to not match'),
+		'message' => __('The SNMP v3 Authentication Passphrases do not match'),
 		'type' => 'error'),
 	15 => array(
 		'message' => __('XML: Cacti version does not exist.'),
@@ -173,28 +183,28 @@ $messages = array(
 		'message' => __('User delete not permitted for designated graph export user.'),
 		'type' => 'error'),
 	23 => array(
-		'message' => __('Data Template Includes Deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
+		'message' => __('Data Template includes deleted Data Source Profile.  Please resave the Data Template with an existing Data Source Profile.'),
 		'type' => 'error'),
 	24 => array(
-		'message' => __('Graph Template Includes Deleted GPrint Prefix.  Please run Database Repair Script to Identify and/or Correct.'),
+		'message' => __('Graph Template includes deleted GPrint Prefix.  Please run database repair script to identify and/or correct.'),
 		'type' => 'error'),
 	25 => array(
-		'message' => __('Graph Template Includes Deleted CDEFs.  Please run Database Repair Script to Identify and/or Correct.'),
+		'message' => __('Graph Template includes deleted CDEFs.  Please run database repair script to identify and/or correct.'),
 		'type' => 'error'),
 	26 => array(
-		'message' => __('Graph Template Includes Deleted Data Input Method.  Please run Database Repair Script to Identify.'),
+		'message' => __('Graph Template includes deleted Data Input Method.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	27 => array(
-		'message' => __('Data Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Data Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	28 => array(
-		'message' => __('Device Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Device Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	29 => array(
-		'message' => __('Data Query Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Data Query not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	30 => array(
-		'message' => __('Graph Template Not Found during Export.  Please run Database Repair Script to Identify.'),
+		'message' => __('Graph Template not found during Export.  Please run database repair script to identify.'),
 		'type' => 'error'),
 	31 => array(
 		'message' => __('Graph not found.  Either it has been deleted or your database needs repair.'),
@@ -203,11 +213,38 @@ $messages = array(
 		'message' => __('SNMPv3 Auth Passphrases must be 8 characters or greater.'),
 		'type' => 'error'),
 	33 => array(
-		'message' => __('Some Graphs not Updated. Unable to Change Device for Data Query based Graphs.'),
+		'message' => __('Some Graphs not updated. Unable to change device for Data Query based Graphs.'),
 		'type' => 'error'),
 	34 => array(
-		'message' => __('Unable to Change Device for Data Query based Graphs.'),
+		'message' => __('Unable to change device for Data Query based Graphs.'),
 		'type' => 'error'),
+	35 => array(
+		'message' => __('Some settings not saved. Check messages below.  Check red fields for errors.'),
+		'type' => 'error'),
+	36 => array(
+		'message' => __('The file highlighted does not exist.  Please enter a valid file name.'),
+		'type' => 'error'),
+	37 => array(
+		'message' => __('All User Settings have been returned to their default values.'),
+		'type' => 'info'),
+	38 => array(
+		'message' => __('Suggested Field Name was not entered.  Please enter a field name and try again.'),
+		'type' => 'error'),
+	39 => array(
+		'message' => __('Suggested Value was not entered.  Please enter a suggested value and try again.'),
+		'type' => 'error'),
+	'input_save_wo_ds' => array(
+		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
+		'type' => 'info'),
+	'input_save_w_ds' => array(
+		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input Input Fields.'),
+		'type' => 'info'),
+	'input_field_save_wo_ds' => array(
+		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
+		'type' => 'info'),
+	'input_field_save_w_ds' => array(
+		'message' => __('Data Input Field Saved.  You must update the Data Templates referencing this Data Input Method before the Data Collectors will start using any new or modified Data Input Input Fields.'),
+		'type' => 'info'),
 	'clog_invalid' => array(
 		'message' => __('Log file specified is not a Cacti log or archive file.'),
 		'type' => 'info'),
@@ -215,92 +252,87 @@ $messages = array(
 		'message' => __('Log file specified was Cacti archive file and was removed.'),
 		'type' => 'info'),
 	'clog_purged' => array(
-		'message' => __('Cacti Log purged successfully'),
+		'message' => __('Cacti log purged successfully'),
 		'type' => 'info'),
 	'password_change' => array(
-		'message' => __('Error: If you force a password change, you must also allow the user to change their password.'),
+		'message' => __('If you force a password change, you must also allow the user to change their password.'),
 		'type' => 'error'),
 	'nopassword' => array(
-		'message' => __('Error: You are not allowed to change your password.'),
+		'message' => __('You are not allowed to change your password.'),
+		'type' => 'error'),
+	'nopasswordlen' => array(
+		'message' => __('Unable to determine size of password field, please check permissions of db user'),
+		'type' => 'error'),
+	'nopasswordinc' => array(
+		'message' => __('Unable to increase size of password field, pleas check permission of db user'),
 		'type' => 'error'),
 	'nodomainpassword' => array(
-		'message' => __('Error: LDAP/AD based password change not supported.'),
+		'message' => __('LDAP/AD based password change not supported.'),
 		'type' => 'error'),
+	'password_success' => array(
+		'message' => __('Password successfully changed.'),
+		'type' => 'info'),
 	'clog_permissions' => array(
-		'message' => __('Error: Unable to clear log, no write permissions'),
+		'message' => __('Unable to clear log, no write permissions'),
 		'type' => 'error'),
 	'clog_missing' => array(
-		'message' => __('Error: Unable to clear log, file does not exist'),
+		'message' => __('Unable to clear log, file does not exist'),
 		'type' => 'error'),
 	'csrf_timeout' => array(
-		'message' => '<i>' . __('CSRF Timeout, refreshing page.') . '</i>',
+		'message' => __('CSRF Timeout, refreshing page.'),
+		'type' => 'csrf'),
+	'csrf_ptimeout' => array(
+		'message' => __('CSRF Timeout occurred due to inactivity, page refreshed.'),
 		'type' => 'error'),
 	'mg_mailtime_invalid' => array(
-		'message' => __('Invalid Timestamp. Select timestamp in the future.'),
+		'message' => __('Invalid timestamp. Select timestamp in the future.'),
 		'type'    => 'error'),
 	'poller_sync' => array(
-		'message' => '<i>' . __('Data Collector(s) Synchronized for Offline Operation') . '</i>',
+		'message' => __('Data Collector(s) synchronized for offline operation'),
 		'type' => 'info'),
 	'poller_notfound' => array(
-		'message' => '<i>' . __('Data Collector(s) Not found when attempting Synchronization') . '</i>',
+		'message' => __('Data Collector(s) not found when attempting synchronization'),
 		'type' => 'error'),
 	'poller_noconnect' => array(
-		'message' => '<i>' . __('Unable to establish MySQL connection with remote Data Collector.') . '</i>',
+		'message' => __('Unable to establish MySQL connection with remote Data Collector.'),
 		'type' => 'error'),
 	'poller_nosync' => array(
-		'message' => '<i>' . __('Data Collector Synchronization must be initiated from the main Cacti server.') . '</i>',
+		'message' => __('Data Collector synchronization must be initiated from the main Cacti server.'),
 		'type' => 'error'),
 	'reports_save' => array(
-		'message' => '<i>' . __('Report Saved') . '</i>',
+		'message' => __('Report Saved'),
 		'type' => 'info'),
 	'reports_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Save Failed') . '</i></font>',
-		'type' => 'info'),
+		'message' => __('Report Save Failed'),
+		'type' => 'error'),
 	'reports_item_save' => array(
-		'message' => '<i>' . __('Report Item Saved') . '</i>',
+		'message' => __('Report Item Saved'),
 		'type' => 'info'),
 	'reports_item_save_failed' => array(
-		'message' => '<font style="color:red;"><i>' . __('Report Item Save Failed') . '</i></font>',
+		'message' => __('Report Item Save Failed'),
+		'type' => 'error'),
+	'reports_graph_not_found' => array(
+		'message' => __('Graph was not found attempting to Add to Report'),
+		'type' => 'error'),
+	'reports_not_owner' => array(
+		'message' => __('Unable to Add Graphs.  Current user is not owner'),
+		'type' => 'error'),
+	'reports_add_error' => array(
+		'message' => __('Unable to Add all Graphs.  See error message for details.'),
+		'type' => 'error'),
+	'reports_no_graph' => array(
+		'message' => __('You must select at least on Graph to add to a Report.'),
+		'type' => 'error'),
+	'reports_graphs_added' => array(
+		'message' => __('All Graphs have been added to the Report.  Duplicate Graphs with the same Timespan were skipped.'),
 		'type' => 'info'),
 	'resource_cache_rebuild' => array(
-		'message' => '<i>' . __('Poller Resource Cache Cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
-		'type' => 'info')
+		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
+		'type' => 'info'),
+	'custom_error' => array(
+		'message' => __('Unexpected error occurred'),
+		'type' => 'error')
 );
-
-if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
-	$messages['automation_message'] = array(
-		'message' => $_SESSION['automation_message'],
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
-	$messages['clog_message'] = array(
-		'message' => $_SESSION['clog_message'],
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
-	$messages['clog_error'] = array(
-		'message' => $_SESSION['clog_error'],
-		'type' => 'error'
-	);
-}
-
-if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
-	$messages['reports_message'] = array(
-		'message' => '<i>' . $_SESSION['reports_message'] . '</i>',
-		'type' => 'info'
-	);
-}
-
-if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
-	$messages['reports_error'] = array(
-		'message' => "<span style='color:red;'><i>" . $_SESSION['reports_error'] . "</i></span>",
-		'type' => 'info'
-	);
-}
 
 $cdef_operators = array(1 =>
 	'+',
@@ -355,9 +387,9 @@ $vdef_functions = array(1 =>
 );
 
 $vdef_item_types = array(
-	CVDEF_ITEM_TYPE_FUNCTION        => __('Function'),
-	CVDEF_ITEM_TYPE_SPEC_DS         => __('Special Data Source'),
-	CVDEF_ITEM_TYPE_STRING          => __('Custom String'),
+	CVDEF_ITEM_TYPE_FUNCTION => __('Function'),
+	CVDEF_ITEM_TYPE_SPEC_DS  => __('Special Data Source'),
+	CVDEF_ITEM_TYPE_STRING   => __('Custom String'),
 );
 
 $custom_vdef_data_source_types = array( // this may change as soon as RRDtool supports math in VDEF, until then only reference to CDEF may help
@@ -405,13 +437,18 @@ $consolidation_functions = array(1 =>
 	'LAST'
 );
 
-$data_source_types = array(1 =>
-	'GAUGE',
-	'COUNTER',
-	'DERIVE',
-	'ABSOLUTE',
-	'COMPUTE'
+$data_source_types = array(
+	1 => 'GAUGE',
+	2 => 'COUNTER',
+	3 => 'DERIVE',
+	4 => 'ABSOLUTE',
+	5 => 'COMPUTE'
 );
+
+if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
+	$data_source_types[6] = 'DCOUNTER';
+	$data_source_types[7] = 'DDERIVE';
+}
 
 $rrd_font_render_modes = array(
 	RRD_FONT_RENDER_NORMAL  => __('Normal'),
@@ -539,10 +576,14 @@ $logfile_verbosity = array(
 	POLLER_VERBOSITY_DEVDBG => __('DEVEL - Developer DEBUG Level')
 );
 
-$poller_options = array(1 =>
-	'cmd.php',
-	'spine'
+$poller_options = array(
+	1 => 'cmd.php',
+	2 => 'spine'
 );
+
+if (!file_exists(read_config_option('path_spine')) || !is_executable(read_config_option('path_spine'))) {
+	unset($poller_options[2]);
+}
 
 $aggregation_levels = array(
 	1       => __('Selected Poller Interval'),
@@ -689,11 +730,12 @@ $ldap_modes = array(
 );
 
 $rrdtool_versions = array(
-	'rrd-1.3.x' => 'RRDtool 1.3.x',
-	'rrd-1.4.x' => 'RRDtool 1.4.x',
-	'rrd-1.5.x' => 'RRDtool 1.5.x',
-	'rrd-1.6.x' => 'RRDtool 1.6.x',
-	'rrd-1.7.x' => 'RRDtool 1.7.x'
+	'1.3.0' => 'RRDtool 1.3+',
+	'1.4.0' => 'RRDtool 1.4+',
+	'1.5.0' => 'RRDtool 1.5+',
+	'1.6.0' => 'RRDtool 1.6+',
+	'1.7.0' => 'RRDtool 1.7+',
+	'1.8.0' => 'RRDtool 1.8+'
 );
 
 $i18n_modes = array(
@@ -812,8 +854,9 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'user_domains.php'     => __('User Domains')
 			),
 		__('Utilities') => array(
-			'utilities.php' => __('System Utilities'),
-			'links.php'     => __('External Links'),
+			'utilities.php'  => __('System Utilities'),
+			'data_debug.php' => __('Datasource Debug'),
+			'links.php'      => __('External Links'),
 			)
 	);
 } else {
@@ -834,14 +877,14 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 $menu_glyphs = array(
-	__('Create') => 'fa fa-area-chart',
+	__('Create') => 'fa fa-chart-area',
 	__('Management') => 'fa fa-home',
 	__('Data Collection') => 'fa fa-database',
 	__('Templates') => 'fa fa-clone',
-	__('Automation') => 'fa fa-superpowers',
+	__('Automation') => 'fab fa-superpowers',
 	__('Presets') => 'fa fa-archive',
-	__('Import/Export') => 'fa fa-exchange',
-	__('Configuration')  => 'fa fa-sliders',
+	__('Import/Export') => 'fa fa-exchange-alt',
+	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
 	__('External Links') => 'fa fa-external-link'
 );
@@ -944,26 +987,27 @@ $user_auth_realms = array(
 	24   => __('External Links'),
 
 	1    => __('User Management'),
-	15   => __('Settings and Utilities'),
-	23   => __('Automation Settings'),
+	15   => __('Settings/Utilities'),
+	23   => __('Automation'),
+	26   => __('Installation/Upgrades'),
 
 	2    => __('Data Input Methods'),
 	13   => __('Data Queries'),
 
-	3    => __('Sites/Devices/Data Sources/Data Collectors'),
+	3    => __('Sites/Devices/Data'),
 	5    => __('Graphs'),
 	4    => __('Trees'),
-	1043 => __('Remove Spikes from Graphs'),
+	1043 => __('Spike Management'),
 
 	9    => __('Data Source Profiles'),
-	14   => __('Colors/GPrints/CDEFs/VDEFs'),
+	14   => __('Presets'),
 
 	10   => __('Graph Templates'),
 	11   => __('Data Templates'),
 	12   => __('Device Templates'),
 
-	16   => __('Export Data'),
-	17   => __('Import Data'),
+	16   => __('Export Templates'),
+	17   => __('Import Templates'),
 
 	18   => __('Log Management'),
 	19   => __('Log Viewing'),
@@ -973,10 +1017,10 @@ $user_auth_realms = array(
 );
 
 $user_auth_roles = array(
-	'Normal User'            => array(7, 19, 20, 22, 24, 25),
-	'Template Editor'        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
-	'General Administration' => array(8, 3, 4, 5, 23, 1043),
-	'System Administration'  => array(8, 15, 1, 18, 21, 101)
+	__('Normal User')            => array(7, 19, 20, 22, 24, 25),
+	__('Template Editor')        => array(8, 2, 9, 10, 11, 12, 13, 14, 16, 17),
+	__('General Administration') => array(8, 3, 4, 5, 23, 1043),
+	__('System Administration')  => array(8, 15, 26, 1, 18, 21, 101)
 );
 
 $user_auth_realm_filenames = array(
@@ -985,6 +1029,7 @@ $user_auth_realm_filenames = array(
 	'clog.php' => 18,
 	'clog_user.php' => 19,
 	'color.php' => 5,
+	'data_debug.php' => 15,
 	'data_input.php' => 2,
 	'data_sources.php' => 3,
 	'data_source_profiles.php' => 9,
@@ -1007,6 +1052,8 @@ $user_auth_realm_filenames = array(
 	'host.php' => 3,
 	'host_templates.php' => 12,
 	'index.php' => 8,
+	'install.php' => 26,
+	'step_json.php' => 26,
 	'managers.php' => 15,
 	'rrdcleaner.php' => 15,
 	'settings.php' => 15,
@@ -1421,7 +1468,7 @@ $automation_op_array = array(
 		AUTOMATION_OP_ENDS         => __('ends with'),
 		AUTOMATION_OP_ENDS_NOT     => __('does not end with'),
 		AUTOMATION_OP_MATCHES      => __('matches'),
-		AUTOMATION_OP_MATCHES_NOT  => __('does not match with'),
+		AUTOMATION_OP_MATCHES_NOT  => __('is not equal to'),
 		AUTOMATION_OP_LT           => __('is less than'),
 		AUTOMATION_OP_LE           => __('is less than or equal'),
 		AUTOMATION_OP_GT           => __('is greater than'),
@@ -1610,6 +1657,13 @@ $i18n_weekdays_short = array(
 	'Thu'	=> __x('A textual representation of a day, three letters', 'Thu'),
 	'Fri'	=> __x('A textual representation of a day, three letters', 'Fri'),
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
+);
+
+$database_statuses = array(
+	0 => __('[Fail]'),
+	1 => __('[Warning]'),
+	2 => __('[Success]'),
+	3 => __('[Skipped]'),
 );
 
 $phperrors = array (

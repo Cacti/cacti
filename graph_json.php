@@ -26,12 +26,16 @@
 ob_start();
 
 $guest_account = true;
+$auth_json     = true;
 $gtype         = 'png';
 
 include('./include/auth.php');
 include_once('./lib/rrd.php');
 
 api_plugin_hook_function('graph_image');
+
+/* set the json variable for request validation handling */
+set_request_var('json', true);
 
 $debug = false;
 
@@ -182,15 +186,11 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$fgc_contextoption = get_default_contextoption();
-	if($fgc_contextoption) {
-		$fgc_context = stream_context_create($fgc_contextoption);
-		$output = file_get_contents($url, false, $fgc_context);
-	} else {
-		$output = file_get_contents($url);
-	}
-	
+	$fgc_contextoption = get_default_contextoption(5);
+	$fgc_context       = stream_context_create($fgc_contextoption);
+	$output            = @file_get_contents($url, false, $fgc_context);
 }
+
 $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
@@ -215,13 +215,17 @@ if ($output !== false && $output != '') {
 
 	ob_start();
 
-    $graph_data_array['get_error'] = true;
+	$graph_data_array['get_error'] = true;
 
-    rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 	$error = ob_get_contents();
 
 	ob_end_clean();
+
+	if (read_config_option('stats_poller') == '') {
+		$error = __('The Cacti Poller has not run yet.');
+	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
@@ -256,5 +260,9 @@ if ($output !== false && $output != '') {
 	}
 }
 
-print json_encode($oarray);
+header('Content-Type: application/json');
+$json = json_encode($oarray);
+header('Content-Length: ' . strlen($json));
+print $json;
+
 

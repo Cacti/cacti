@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+define('CACTI_PHP_VERSION_MINIMUM', '5.4.0');
+
 define('CACTI_ESCAPE_CHARACTER', '"');
 define('COPYRIGHT_YEARS', 'Copyright (C) 2004-' . date('Y') . ' The Cacti Group');
 define('COPYRIGHT_YEARS_SHORT', '(c) 2004-' . date('Y') . ' - The Cacti Group');
@@ -44,11 +46,6 @@ define('RRDTOOL_OUTPUT_STDOUT', 1);
 define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
-
-define('RRD_VERSION_1_3', 'rrd-1.3.x');
-define('RRD_VERSION_1_4', 'rrd-1.4.x');
-define('RRD_VERSION_1_5', 'rrd-1.5.x');
-define('RRD_VERSION_1_6', 'rrd-1.6.x');
 
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
@@ -303,7 +300,6 @@ define('REPORTS_TREE_NONE', 0);
 define('REPORTS_TIMESPAN_DEFAULT', GT_LAST_DAY);
 
 define('REPORTS_EXTENSION_GD', 'gd');
-define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
 
 define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
@@ -370,7 +366,7 @@ define('AUTOMATION_ACTION_TREE_ENABLE', 2);
 define('AUTOMATION_ACTION_TREE_DISABLE', 3);
 define('AUTOMATION_ACTION_TREE_DELETE', 99);
 
-if ($database_type == 'mysql') {
+if (isset($database_type) && $database_type == 'mysql') {
 	define('SQL_NO_CACHE', 'SQL_NO_CACHE');
 } else {
 	define('SQL_NO_CACHE', '');
@@ -414,6 +410,11 @@ define('EALREADY',        114);
 define('EINPROGRESS',     115);
 define('EREMOTEIO',       121);
 define('ECANCELED',       125);
+
+define('DB_STATUS_ERROR'  , 0);
+define('DB_STATUS_WARNING', 1);
+define('DB_STATUS_SUCCESS', 2);
+define('DB_STATUS_SKIPPED', 3);
 
 if (!defined('PASSWORD_DEFAULT')) {
 	define('PASSWORD_DEFAULT', 1);

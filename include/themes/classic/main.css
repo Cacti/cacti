@@ -61,6 +61,14 @@ fieldset {
 	font-size: 9px;
 }
 
+.checkboxLabel {
+	display:none;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
+}
+
 /* links */
 
 a, a:active, a:visited {
@@ -512,6 +520,7 @@ label {
 	display:block;
 	float:right;
 	text-align:right;
+	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
@@ -575,7 +584,7 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -1017,6 +1026,14 @@ legend {
 	font-weight: bold;
 }
 
+.textOverflow {
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -1071,8 +1088,13 @@ legend {
 	background-color: #E1E1E1;
 }
 
-.cactiTable {
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #00438C;
+	border-style: solid;
+}
 
+.cactiTable {
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438C;
@@ -1080,6 +1102,22 @@ legend {
 	margin-left:auto;
 	margin-right:auto;
 	display: table;
+}
+
+.cactiTableTitleRow {
+	color: white;
+	float: left;
+	line-height: 22px;
+	height: 22px;
+	text-align: left;
+	display: table-column;
+	width: 100%;
+	background-color: #00438C;
+	font-size: 12px;
+}
+
+.cactiInstallTableTitleRow {
+	border-color: #00438C;
 }
 
 .cactiTableTitle {
@@ -1154,10 +1192,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1178,14 +1212,14 @@ legend {
 	float: left;
 	display: table-column;
 	padding-left: 4px;
-	width: 40%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 58%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1283,7 +1317,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		text-align: left;
 	}
 
@@ -1379,13 +1413,21 @@ legend {
 	font-size: 10px;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: #FFFFFF;
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
 	cursor: pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align: center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align: right;
 }
 
 .graphSubHeaderColumn {
@@ -1398,6 +1440,8 @@ legend {
 
 .tableSubHeaderCheckbox {
 	background-color: #819BC0;
+	max-width: 20px;
+	width: 20px;
 }
 
 .image_table {
@@ -1475,6 +1519,8 @@ legend {
 	width: 100%;
 	height: 16px;
 	margin-top: auto;
+	padding-top: 3px;
+	padding-bottom: 3px;
 }
 
 .navBarNavigationNext i.ui-icon {
@@ -1878,10 +1924,27 @@ tr#realtime td:first-child {
 	display: none;
 }
 
-.ui-multiselect {
+.ui-multiselect, .ui-multiselect span {
 	padding: 1px;
 	color: black;
 	font-size: 12px;
+}
+
+.ui-widget {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding: 0.4em;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
+}
+
+.ui-state-default {
+	background: #FFFFFF !important;
+	border: none;
+	font-weight: normal;
+	padding: 2px;
 }
 
 .ui-multiselect-checkboxes span {
@@ -1897,6 +1960,39 @@ tr#realtime td:first-child {
 	width: 100%;
 }
 
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
 .graphWrapper {
 	position: relative;
+}
+
+.checkboxLabelWanted {
+	display: inline-block;
+}
+
+.right {
+	text-align: right;
+}
+
+.center {
+	text-align: center;
 }
