@@ -92,9 +92,11 @@ if (sizeof($parms)) {
 				$dryrun = TRUE;
 
 				break;
-			case '-H':
 			case '-V':
 			case '--version':
+				display_version();
+				exit(0);
+			case '-H':
 			case '--help':
 				display_help();
 				exit(0);
