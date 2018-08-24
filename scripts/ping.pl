@@ -6,7 +6,7 @@ $path = $ENV{'PATH'};
 
 # take care for tcp:hostname or TCP:ip@
 $host = $ARGV[0];
-$host =~ s/tcp:/$1/gis;
+$host =~ s/(?:tcp|udp)6?:/$1/gis;
 
 # leave IPv6 in tact
 if (($host =~ tr/:://) == 0) {
