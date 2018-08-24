@@ -921,7 +921,7 @@
 			$('.first_li , .sec_li, .inner_li span').hover(
 				function () {
 					$(this).addClass('zoom-menu-hover');
-					if ( $(this).children().size() >0 )
+					if ( $(this).children().length >0 )
 						if (zoom.custom.zoomMode == 'quick') {
 							$(this).children('.inner_li:not(.advanced_mode)').show();
 						} else {
