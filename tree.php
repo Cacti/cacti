@@ -1071,16 +1071,18 @@ function tree_edit() {
 			});
 
 			function resizer() {
-				height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
-				sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
-				hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
-				gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
-				$('#jstree').css('height', height).css('overflow','auto');;
-				$('#hosts').css('height', hheight).css('overflow','auto');;
-				$('#sites').css('height', hheight).css('overflow','auto');;
-				$('#graphs').css('height', gheight).css('overflow','auto');;
+				if ($('#jstree').length) {
+					height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+					sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
+					hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
+					gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
+					$('#jstree').css('height', height).css('overflow','auto');;
+					$('#hosts').css('height', hheight).css('overflow','auto');;
+					$('#sites').css('height', hheight).css('overflow','auto');;
+					$('#graphs').css('height', gheight).css('overflow','auto');;
 
-				switchDisplay();
+					switchDisplay();
+				}
 			}
 
 			function switchDisplay() {
