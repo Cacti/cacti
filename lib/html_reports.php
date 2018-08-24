@@ -503,7 +503,6 @@ function reports_item_dnd() {
 
 function reports_form_save() {
 	global $config, $messages;
-	# when using cacti_log: include_once($config['library_path'] . '/functions.php');
 
 	if (isset_request_var('save_component_report')) {
 		/* ================= input validation ================= */
@@ -647,8 +646,6 @@ function reports_form_save() {
 function reports_form_actions() {
 	global $config, $reports_actions;
 
-	include_once($config['base_path'].'/lib/reports.php');
-
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
 	/* ==================================================== */
@@ -695,8 +692,6 @@ function reports_form_actions() {
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
-				include_once($config['base_path'] . '/lib/reports.php');
-
 				$message = '';
 
 				kill_session_var('reports_message');
@@ -835,8 +830,6 @@ function reports_send($id) {
 	/* ================= input validation ================= */
 	input_validate_input_number($id);
 	/* ==================================================== */
-
-	include_once($config['base_path'] . '/lib/reports.php');
 
 	$report = db_fetch_row_prepared('SELECT * 
 		FROM reports 
@@ -1110,8 +1103,6 @@ function reports_item_edit() {
 function reports_edit() {
 	global $config;
 	global $fields_reports_edit;
-
-	include_once($config['base_path'] . '/lib/reports.php');
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -1429,8 +1420,6 @@ function is_reports_admin() {
 function reports() {
 	global $config, $item_rows, $reports_interval;
 	global $reports_actions, $attach_types;
-
-	include_once($config['base_path'] . '/lib/reports.php');
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
