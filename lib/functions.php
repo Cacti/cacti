@@ -570,8 +570,10 @@ function is_error_message() {
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
 			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if ($messages[$current_message_id]['type'] == 'error') {
-					return true;
+				if (isset($messages[$current_message_id]) && isset($messages[$current_message_id]['type'])) {
+					if ($messages[$current_message_id]['type'] == 'error') {
+						return true;
+					}
 				}
 			}
 		} else {
