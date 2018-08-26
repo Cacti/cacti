@@ -135,6 +135,7 @@ Cacti CHANGELOG
 -feature: Do not allow second data source to be added to an SNMP Get data template
 -feature: Allow drill down from Graphs to Data Queries or Templates
 -feature: Allow Adding Aggregate Graphs to a Report 
+-feature: Don't allow removal of Data Sources from Data Template once its in use
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values
