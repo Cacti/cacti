@@ -1535,6 +1535,8 @@ function loadTopTab(href, id, force) {
 			$('.cactiConsolePageHeadBackdrop').show();
 		}
 
+		$.ajaxQ.abortAll();
+
 		$.get(url)
 			.done(function(html) {
 				var htmlObject  = $(html);
@@ -1622,6 +1624,8 @@ function loadPage(href, force) {
 	}
 
 	if (cont) {
+		$.ajaxQ.abortAll();
+
 		$.get(href)
 			.done(function(html) {
 				var htmlObject  = $(html);
@@ -1710,6 +1714,8 @@ function loadPageNoHeader(href, scroll, force) {
 	}
 
 	if (cont) {
+		$.ajaxQ.abortAll();
+
 		$.get(href)
 			.done(function(data) {
 				checkForLogout(data);
@@ -1979,6 +1985,8 @@ function setupSortable() {
 				'&header=false' +
 				sortAdd;
 
+			$.ajaxQ.abortAll();
+
 			$.get(url)
 				.done(function(data) {
 					checkForLogout(data);
@@ -2144,6 +2152,8 @@ function setupPageTimeout() {
 
 				/* fix coner case with tree refresh */
 				refreshPage = appendHeaderSuppression(refreshPage);
+
+				$.ajaxQ.abortAll();
 
 				$.get(refreshPage)
 					.done(function(data) {
@@ -2417,6 +2427,7 @@ function clearGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.ajaxQ.abortAll();
+
 	$.get(new_href+'&header=false')
 		.done(function(data) {
 			checkForLogout(data);
@@ -2440,6 +2451,8 @@ function saveGraphFilter(section) {
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val()+
 		'&thumbnails='+$('#thumbnails').is(':checked');
+
+	$.ajaxQ.abortAll();
 
 	$.get(href+'&header=false&section='+section)
 		.done(function(data) {
@@ -2467,6 +2480,7 @@ function applyGraphFilter() {
 	new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.ajaxQ.abortAll();
+
 	$.get(new_href+'&header=false')
 		.done(function(data) {
 			checkForLogout(data);
@@ -2532,6 +2546,7 @@ function applyGraphTimespan() {
 	var new_href = href.replace('action=tree&', 'action=tree_content&');
 
 	$.ajaxQ.abortAll();
+
 	$.get(new_href+'?action='+pageAction+'&header=false'+
 		'&predefined_timespan='+$('#predefined_timespan').val()+
 		'&predefined_timeshift='+$('#predefined_timeshift').val())
@@ -2646,6 +2661,9 @@ function clearGraphTimespanFilter() {
 
 function removeSpikesStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2661,6 +2679,9 @@ function removeSpikesStdDev(local_graph_id) {
 
 function removeSpikesVariance(local_graph_id) {
 	strURL = 'spikekill.php?method=variance&local_graph_id='+local_graph_id;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2676,6 +2697,9 @@ function removeSpikesVariance(local_graph_id) {
 
 function removeSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2691,6 +2715,9 @@ function removeSpikesInRange(local_graph_id) {
 
 function removeRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2706,6 +2733,9 @@ function removeRangeFill(local_graph_id) {
 
 function dryRunStdDev(local_graph_id) {
 	strURL = 'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2723,6 +2753,9 @@ function dryRunStdDev(local_graph_id) {
 
 function dryRunVariance(local_graph_id) {
 	strURL = 'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2740,6 +2773,9 @@ function dryRunVariance(local_graph_id) {
 
 function dryRunSpikesInRange(local_graph_id) {
 	strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2758,6 +2794,9 @@ function dryRunSpikesInRange(local_graph_id) {
 
 function dryRunRangeFill(local_graph_id) {
 	strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+
+	$.ajaxQ.abortAll();
+
 	$.getJSON(strURL)
 		.done(function(data) {
 			checkForLogout(data);
@@ -2791,6 +2830,8 @@ function redrawGraph(graph_id) {
 
 	graph_height= $('#wrapper_'+graph_id).attr('graph_height');
 	graph_width = $('#wrapper_'+graph_id).attr('graph_width');
+
+	$.ajaxQ.abortAll();
 
 	$.getJSON(urlPath+'graph_json.php?rra_id=0'+
 		'&local_graph_id='+graph_id+
@@ -2857,6 +2898,7 @@ function initializeGraphs() {
 			event.stopPropagation();
 			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 			$.ajaxQ.abortAll();
+
 			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
 				.done(function(data) {
 					checkForLogout(data);
@@ -2924,6 +2966,8 @@ function initializeGraphs() {
 
 		graph_height=$(this).attr('graph_height');
 		graph_width=$(this).attr('graph_width');
+
+		$.ajaxQ.abortAll();
 
 		$.getJSON(urlPath+'graph_json.php?rra_id='+rra_id+
 			'&local_graph_id='+graph_id+
@@ -3008,6 +3052,7 @@ function initializeGraphs() {
 			event.stopPropagation();
 			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
 			$.ajaxQ.abortAll();
+
 			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
 				.done(function(data) {
 					checkForLogout(data);
