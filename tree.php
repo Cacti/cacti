@@ -786,7 +786,7 @@ function tree_edit() {
 
 		html_start_box(__('Tree Items'), '100%', '', '3', 'center', '');
 
-		print "<tr><td style='padding:7px;'><div id='jstree'></div></td></tr>\n";
+		print "<tr><td style='padding:7px;'><div id='ctree'></div></td></tr>\n";
 
 		html_end_box();
 
@@ -913,7 +913,7 @@ function tree_edit() {
 		var branchSortInfo = {};
 
 		function createNode() {
-			var ref = $('#jstree').jstree(true);
+			var ref = $('#ctree').jstree(true);
 			sel = ref.create_node('#', '<?php print __('New Node');?>', '0');
 			if (sel) {
 				ref.edit(sel);
@@ -1057,7 +1057,7 @@ function tree_edit() {
 				loadPage(strURL);
 			});
 
-			var height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+			var height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
 			var sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
 			var hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
 			var gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
@@ -1071,12 +1071,12 @@ function tree_edit() {
 			});
 
 			function resizer() {
-				if ($('#jstree').length) {
-					height  = parseInt($(window).height()-$('#jstree').offset().top-10)+'px';
+				if ($('#ctree').length) {
+					height  = parseInt($(window).height()-$('#ctree').offset().top-10)+'px';
 					sheight = parseInt($(window).height()-$('#sites').offset().top-10)+'px';
 					hheight = parseInt($(window).height()-$('#hosts').offset().top-10)+'px';
 					gheight = parseInt($(window).height()-$('#graphs').offset().top-10)+'px';
-					$('#jstree').css('height', height).css('overflow','auto');;
+					$('#ctree').css('height', height).css('overflow','auto');;
 					$('#hosts').css('height', hheight).css('overflow','auto');;
 					$('#sites').css('height', hheight).css('overflow','auto');;
 					$('#graphs').css('height', gheight).css('overflow','auto');;
@@ -1124,7 +1124,7 @@ function tree_edit() {
 				}
 			}
 
-			$("#jstree")
+			$("#ctree")
 			.jstree({
 				'types' : {
 					'site' : {
@@ -1185,7 +1185,7 @@ function tree_edit() {
 			})
 			.on('ready.jstree', function(e, data) {
 				if (reset == true) {
-					$('#jstree').jstree('clear_state');
+					$('#ctree').jstree('clear_state');
 				}
 			})<?php if ($editable) {?>.on('delete_node.jstree', function (e, data) {
 				$.get('?action=delete_node', { 'id' : data.node.id, 'tree_id' : $('#id').val() })
@@ -1278,7 +1278,7 @@ function tree_edit() {
 				return false;
 			})<?php }?>;
 
-			$('#jstree').css('height', height).css('overflow','auto');;
+			$('#ctree').css('height', height).css('overflow','auto');;
 
 			dragable('#graphs', 'graphs');
 			dragable('#sites',  'sites');
@@ -1320,7 +1320,7 @@ function tree_edit() {
 				})
 				.on('ready.jstree', function(e, data) {
 					if (reset == true) {
-						$('#jstree').jstree('clear_state');
+						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
 				.on('select_node.jstree', function(e, data) {
