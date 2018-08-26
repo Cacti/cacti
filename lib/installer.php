@@ -1609,7 +1609,6 @@ class Installer implements JsonSerializable {
 			$output  = Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
-			/*
 			foreach ($profiles as $profile) {
 				$selectedProfile = '';
 				$suffix = '';
@@ -1618,9 +1617,10 @@ class Installer implements JsonSerializable {
 					if ($this->profile === false || $this->profile === null) {
 						$this->setProfile($profile['id']);
 					}
+
 					$suffix = ' (default)';
 				}
-			*/
+			}
 
 			$fields_schedule = array(
 				'default_profile' => array(
