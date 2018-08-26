@@ -125,10 +125,6 @@ function get_matching_nodes() {
 	}
 }
 
-function redefine_resizer() {
-	print "<script type='text/javascript'> function resizer() { return true; } </script>";
-}
-
 switch (get_nfilter_request_var('action')) {
 case 'ajax_hosts':
 	get_allowed_ajax_hosts();
@@ -220,8 +216,6 @@ case 'tree':
 	}
 
 	top_graph_header();
-
-	redefine_resizer();
 
 	bottom_footer();
 
@@ -463,8 +457,6 @@ case 'preview':
 		print $nav;
 	}
 
-	redefine_resizer();
-
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'false') {
 		bottom_footer();
 	}
@@ -570,7 +562,7 @@ case 'list':
 		WHERE user_id = ?',
 		array($_SESSION['sess_user_id']));
 
-	form_start('graph_view.php', 'form_graph_list');
+	form_start('graph_view.php', 'chk');
 
 	/* display graph view filter selector */
 	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
@@ -807,7 +799,7 @@ case 'list':
 		$('#graph_list').val(graphList);
 
 		strURL = urlPath+'graph_view.php?action=preview';
-		$('#form_graph_list').find('select, input').each(function() {
+		$('#chk').find('select, input').each(function() {
 			switch($(this).attr('id')) {
 			case 'graph_template_id':
 				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
@@ -997,7 +989,7 @@ case 'list':
 			width: msWidth
 		});
 
-		$('#form_graph_list').unbind().on('submit', function(event) {
+		$('#chk').unbind().on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});
