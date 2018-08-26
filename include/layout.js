@@ -1666,6 +1666,10 @@ function loadPage(href, force) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
+
+					if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
+						$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+					}
 				}
 
 				applySkin();
@@ -1720,6 +1724,10 @@ function loadPageNoHeader(href, scroll, force) {
 				if (pageName != '') {
 					$('#menu').find('.pic').removeClass('selected');
 					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+
+					if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
+						$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+					}
 				}
 
 				applySkin();
