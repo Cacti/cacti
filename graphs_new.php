@@ -155,8 +155,11 @@ function host_reload_query() {
 function host_new_graphs_save($host_id) {
 	$selected_graphs_array = unserialize(stripslashes(get_nfilter_request_var('selected_graphs_array')));
 
+	$values = array();
+
 	/* form an array that contains all of the data on the previous form */
 	foreach ($_POST as $var => $val) {
+
 		if (preg_match('/^g_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: field_name
 			if (empty($matches[1])) { // this is a new graph from template field
 				$values['cg'][$matches[2]]['graph_template'][$matches[3]] = $val;
@@ -164,8 +167,6 @@ function host_new_graphs_save($host_id) {
 				$values['sg'][$matches[1]][$matches[2]]['graph_template'][$matches[3]] = $val;
 			}
 		} elseif (preg_match('/^gi_(\d+)_(\d+)_(\d+)_(\w+)/', $var, $matches)) { // 1: snmp_query_id, 2: graph_template_id, 3: graph_template_input_id, 4:field_name
-			$values = array();
-
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[3]);
 			/* ==================================================== */
