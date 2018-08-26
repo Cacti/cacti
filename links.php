@@ -425,7 +425,7 @@ function pages() {
 			$i++;
 		}
 	} else {
-		print "<tr><td><em>" . __('No Pages Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (sizeof($nav) + 1) . "'><em>" . __('No Pages Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
