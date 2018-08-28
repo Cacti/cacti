@@ -27,10 +27,10 @@
 declare(ticks = 1);
 
 require(__DIR__ . '/include/cli_check.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/boost.php');
-require($config['base_path'] . '/lib/dsstats.php');
-require($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/boost.php');
+require_once($config['base_path'] . '/lib/dsstats.php');
+require_once($config['base_path'] . '/lib/rrd.php');
 
 /* get the boost polling cycle */
 $max_run_duration = read_config_option('boost_rrd_update_max_runtime');

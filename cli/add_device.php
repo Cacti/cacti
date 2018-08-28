@@ -24,14 +24,14 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require($config['base_path'] . '/lib/api_automation_tools.php');
-require($config['base_path'] . '/lib/api_device.php');
-require($config['base_path'] . '/lib/api_data_source.php');
-require($config['base_path'] . '/lib/api_graph.php');
-require($config['base_path'] . '/lib/data_query.php');
-require($config['base_path'] . '/lib/snmp.php');
-require($config['base_path'] . '/lib/template.php');
-require($config['base_path'] . '/lib/utility.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

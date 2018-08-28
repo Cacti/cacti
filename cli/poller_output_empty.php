@@ -24,11 +24,11 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/data_query.php');
-require($config['base_path'] . '/lib/dsstats.php');
-require($config['base_path'] . '/lib/boost.php');
-require($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/dsstats.php');
+require_once($config['base_path'] . '/lib/boost.php');
+require_once($config['base_path'] . '/lib/rrd.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

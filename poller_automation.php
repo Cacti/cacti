@@ -29,18 +29,18 @@ declare(ticks = 1);
 ini_set('output_buffering', 'Off');
 
 require(__DIR__ . '/include/cli_check.php');
-require($config['base_path'] . '/lib/api_device.php');
-require($config['base_path'] . '/lib/api_data_source.php');
-require($config['base_path'] . '/lib/api_graph.php');
-require($config['base_path'] . '/lib/api_tree.php');
-require($config['base_path'] . '/lib/data_query.php');
-require($config['base_path'] . '/lib/html_form_template.php');
-require($config['base_path'] . '/lib/ping.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/snmp.php');
-require($config['base_path'] . '/lib/sort.php');
-require($config['base_path'] . '/lib/template.php');
-require($config['base_path'] . '/lib/utility.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/html_form_template.php');
+require_once($config['base_path'] . '/lib/ping.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.

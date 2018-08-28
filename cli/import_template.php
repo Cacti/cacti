@@ -24,8 +24,8 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require($config['base_path'] . '/lib/import.php');
-require($config['base_path'] . '/lib/utility.php');
+require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];

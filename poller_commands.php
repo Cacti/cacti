@@ -27,10 +27,10 @@
 define('MAX_RECACHE_RUNTIME', 296);
 
 require(__DIR__ . '/include/cli_check.php');
-require($config['base_path'] . '/lib/data_query.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/template.php');
-require($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/rrd.php');
 
 $poller_id = $config['poller_id'];
 

@@ -23,7 +23,7 @@
 */
 
 require('./include/auth.php');
-require($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/poller.php');
 
 $poller_actions = array(
 	1 => __('Delete'),

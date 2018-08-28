@@ -24,9 +24,9 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require($config['base_path'] . '/lib/snmp.php');
-require($config['base_path'] . '/lib/data_query.php');
-require($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
 
 ini_set('max_execution_time', '0');
 
