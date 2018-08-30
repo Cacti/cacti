@@ -292,8 +292,14 @@ function generate_report($report, $force = false) {
 
 	include_once($config['base_path'] . '/lib/time.php');
 	include_once($config['base_path'] . '/lib/rrd.php');
+	include_once($config['base_path'] . '/lib/html_reports.php');
 
 	reports_log(__FUNCTION__ . ', report_id: ' . $report['id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+
+	if (!reports_html_account_exists($report['user_id'])) {
+		reports_html_report_disable($report['id']);
+		return false;
+	}
 
 	$theme = 'classic';
 
