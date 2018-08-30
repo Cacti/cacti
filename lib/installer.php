@@ -1150,6 +1150,7 @@ class Installer implements JsonSerializable {
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions = array(
 				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
 				array('name' => 'filter',    'installed' => false),
 				array('name' => 'gettext',   'installed' => false),
 				array('name' => 'gd',        'installed' => false),
@@ -1166,12 +1167,15 @@ class Installer implements JsonSerializable {
 				array('name' => 'session',   'installed' => false),
 				array('name' => 'simplexml', 'installed' => false),
 				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
 				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
 		} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
 			$extensions = array(
 				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
 				array('name' => 'filter',    'installed' => false),
 				array('name' => 'gettext',   'installed' => false),
 				array('name' => 'gd',        'installed' => false),
@@ -1187,6 +1191,8 @@ class Installer implements JsonSerializable {
 				array('name' => 'session',   'installed' => false),
 				array('name' => 'simplexml', 'installed' => false),
 				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
 				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
@@ -1194,6 +1200,7 @@ class Installer implements JsonSerializable {
 			$extensions = array(
 				array('name' => 'com_dotnet','installed' => false),
 				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
 				array('name' => 'filter',    'installed' => false),
 				array('name' => 'gettext',   'installed' => false),
 				array('name' => 'gd',        'installed' => false),
@@ -1209,6 +1216,8 @@ class Installer implements JsonSerializable {
 				array('name' => 'session',   'installed' => false),
 				array('name' => 'simplexml', 'installed' => false),
 				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
 				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
