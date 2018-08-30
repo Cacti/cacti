@@ -1149,49 +1149,67 @@ class Installer implements JsonSerializable {
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$extensions = array(
-				array('name' => 'posix',     'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'xml',       'installed' => false),
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
 				array('name' => 'ldap',      'installed' => false),
 				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
 				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'posix',     'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
 		} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
 			$extensions = array(
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'xml',       'installed' => false),
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
 				array('name' => 'ldap',      'installed' => false),
 				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
 				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
 		} else {
 			$extensions = array(
 				array('name' => 'com_dotnet','installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
+				array('name' => 'mbstring',  'installed' => false),
+				array('name' => 'openssl',   'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
 				array('name' => 'PDO',       'installed' => false),
 				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'xml',       'installed' => false),
 				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'xml',       'installed' => false),
 				array('name' => 'zlib',      'installed' => false)
 			);
 		}
@@ -1216,7 +1234,8 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Optional)'), 'php_optional');
 
-		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.'));
+		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time.'));
+
 		$extensions = array(
 			array('name' => 'snmp', 'installed' => false),
 			array('name' => 'gmp', 'installed' => false)
@@ -1233,7 +1252,7 @@ class Installer implements JsonSerializable {
 			form_alternate_row('line' . $id, true);
 			form_selectable_cell($e['name'], '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
-			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
+			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=orange>' . __('No') . '</font>'), '');
 			form_end_row();
 
 			if (!$e['installed']) $enabled['php_optional'] = DB_STATUS_WARNING;
