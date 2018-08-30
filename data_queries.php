@@ -213,6 +213,12 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
+		}
+
 		if  (isempty_request_var('svg_text')) {
 			raise_message(39);
 			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
@@ -250,21 +256,27 @@ function form_save() {
 		get_filter_request_var('graph_template_id');
 		/* ==================================================== */
 
-		if  (isempty_request_var('svds_text')) {
-			raise_message(39);
-			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-			return;
-		} elseif (isempty_request_var('svds_field')) {
-			raise_message(38);
-			header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
-			return;
+		if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+			$header = '&header=false';
+		} else {
+			$header = '';
 		}
 
 		foreach ($_POST as $var => $val) {
-			if (preg_match('/^svds_([0-9]+)_text/i', $var, $matches)) {
+			if (preg_match('/^svds_([0-9]+)_x/i', $var, $matches)) {
 				/* ================= input validation ================= */
 				input_validate_input_number($matches[1]);
 				/* ==================================================== */
+
+				if  (isempty_request_var('svds_' . $matches[1] . '_text')) {
+					raise_message(39);
+					header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+					return;
+				} elseif (isempty_request_var('svds_' . $matches[1] . '_field')) {
+					raise_message(38);
+					header('Location: data_queries.php?header=false&action=item_edit' . $header . '&id=' . get_request_var('id') . '&snmp_query_id=' . get_request_var('snmp_query_id'));
+					return;
+				}
 
 				$sequence = get_sequence(0, 'sequence', 'snmp_query_graph_rrd_sv', 'snmp_query_graph_id=' . get_request_var('id')  . ' AND data_template_id=' . $matches[1] . " AND field_name='" . get_nfilter_request_var('svds_' . $matches[1] . '_field') . "'");
 
@@ -847,16 +859,16 @@ function data_query_item_edit() {
 								<?php print __('Field Name');?>
 							</td>
 							<td>
-								<input id='svds_field' type='text' name='svds_<?php print $data_template['id'];?>_field' size='15'>
+								<input type='text' class='svds_field ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_field' name='svds_<?php print $data_template['id'];?>_field' size='15'>
 							</td>
 							<td class='nowrap'>
 								<?php print __('Suggested Value');?>
 							</td>
 							<td>
-								<input id='svds_text' type='text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
+								<input type='text' class='svds_text ui-state-default ui-corner-all' id='svds_<?php print $data_template['id'];?>_text' name='svds_<?php print $data_template['id'];?>_text' size='60'>
 							</td>
 							<td>
-								<input id='svds_x' type='button' name='svds_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
+								<input type='button' class='svds_x ui-button ui-corner-all ui-widget' id='svds_<?php print $data_template['id'];?>_x' name='svds_<?php print $data_template['id'];?>_x' value='<?php print __esc('Add');?>' title='<?php print __('Add Data Source Name Suggested Name');?>'>
 							</td>
 						</tr>
 					</table>
@@ -913,10 +925,12 @@ function data_query_item_edit() {
 		});
 	});
 
-	$('input[id="svds_x"]').click(function() {
-		var svds_text_name=$('#svds_text').attr('name');
-		var svds_field_name=$('#svds_field').attr('name');
-		var svds_x_name=$('#svds_x').attr('name');
+		
+	$('input.svds_x').click(function() {
+		var $form = $(this).closest('form');
+		var svds_text_name=$form.find('input.svds_text').attr('name');
+		var svds_field_name=$form.find('input.svds_field').attr('name');
+		var svds_x_name=$form.find('input.svds_x').attr('name');
 		var jSON = $.parseJSON('{ ' +
 			'"graph_template_id_prev":"'+graph_template_id_prev + '", ' +
 			'"action":"save", ' +
@@ -927,9 +941,10 @@ function data_query_item_edit() {
 			'"__csrf_magic":"'+csrfMagicToken+'", ' +
 			'"save_component_snmp_query_item":"1", ' +
 			'"snmp_query_id":"'+$('#snmp_query_id').val() + '", ' +
-			'"'+svds_field_name+'":"'+$('#svds_field').val() + '", ' +
-			'"'+svds_text_name+'":"'+$('#svds_text').val() + '", ' +
-			'"'+svds_x_name+'":"Add" }');
+			'"'+svds_field_name+'":"'+$form.find('input.svds_field').val() + '", ' +
+			'"'+svds_text_name+'":"'+$form.find('input.svds_text').val() + '", ' +
+			'"'+svds_x_name+'":"Add", ' +
+			'"svds_x":"Add" }');
 
 		$.post('data_queries.php', jSON).done(function(data) {
 			$('#main').html(data);
