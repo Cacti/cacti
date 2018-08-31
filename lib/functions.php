@@ -3137,9 +3137,9 @@ function draw_navigation_text($type = 'url') {
 		if ($style == 'CONSOLE') {
 			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0' href='" . $config['url_path'] .
 				"index.php'>" . __('Console') . '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>';
-			$current_nav .= "<li><a id='nav_1' href='#'>Link " . $title . '</a></li>';
+			$current_nav .= "<li><a id='nav_1' href='#'>" . __('Link %s', html_escape($title)) . '</a></li>';
 		} else {
-			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . $title . '</a></li>';
+			$current_nav = "<ul id='breadcrumbs'><li><a id='nav_0'>" . html_escape($title) . '</a></li>';
 		}
 		$tree_title = '';
 	} else {

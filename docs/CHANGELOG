@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.0
+-security#1882: Bypass output validation in select cases
 -issue#186: Cacti does not support jQueryUI 1.12.x
 -issue#187: Remove the use of jQuery Migrate plugin
 -issue#983: Import Template Preview is misleading

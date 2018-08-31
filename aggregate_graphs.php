@@ -310,7 +310,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$graph_list .= '<li>' . get_graph_title($matches[1]) . '</li>';
+			$graph_list .= '<li>' . html_escape(get_graph_title($matches[1])) . '</li>';
 			$graph_array[$i] = $matches[1];
 
 			$i++;
@@ -481,7 +481,7 @@ function form_actions() {
 					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
 				</td>
 			</tr>\n
-			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+			<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
 		}

@@ -420,7 +420,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			if (get_nfilter_request_var('drp_action') != '2') {
-				$group_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1])) . '</li>';
+				$group_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM user_auth_group WHERE id = ?', array($matches[1]))) . '</li>';
 			}
 			$group_array[$i] = $matches[1];
 
@@ -496,7 +496,7 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>";
 
 	print "<input type='hidden' name='selected_items' value='" . (isset($group_array) ? serialize($group_array) : '') . "'>\n";
-	print "<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 		$save_html
 		</td>
 	</tr>\n";
@@ -1668,7 +1668,7 @@ function group_edit() {
 	$tabs = api_plugin_hook_function('ugroup_tabs', $tabs);
 	if (!isempty_request_var('id')) {
 		$group = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('User Group Management [edit: %s]', $group['name']);
+		$header_label = __('User Group Management [edit: %s]', html_escape($group['name']));
 	} else {
 		$header_label = __('User Group Management [new]');
 	}

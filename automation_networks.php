@@ -331,7 +331,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
-			$networks_list .= '<li>' . $networks_info['name'] . '</li>';
+			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
 
@@ -394,7 +394,7 @@ function form_actions() {
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . ($save_html != '' ? "
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
 			<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Cancel') . "'>
 			$save_html" : "<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>

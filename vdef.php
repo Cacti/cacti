@@ -247,7 +247,7 @@ function vdef_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$vdef_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1])) . '</li>';
+			$vdef_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array($matches[1]))) . '</li>';
 			$vdef_array[] = $matches[1];
 		}
 	}
@@ -288,7 +288,7 @@ function vdef_form_actions() {
         <td class='saveRow'>
             <input type='hidden' name='action' value='actions'>
             <input type='hidden' name='selected_items' value='" . (isset($vdef_array) ? serialize($vdef_array) : '') . "'>
-            <input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+            <input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
             $save_html
         </td>
     </tr>\n";
@@ -393,7 +393,12 @@ function vdef_item_edit() {
 	html_end_box();
 
 	if (!isempty_request_var('vdef_id')) {
-		$header_label = __('VDEF Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM vdef WHERE id = ?', array(get_request_var('vdef_id'))) );
+		$name = db_fetch_cell_prepared('SELECT name 
+			FROM vdef 
+			WHERE id = ?', 
+			array(get_request_var('vdef_id')));
+
+		$header_label = __('VDEF Items [edit: %s]', html_escape($name));
 	}else {
 		$header_label = __('VDEF Items [new]');
 	}
@@ -545,8 +550,12 @@ function vdef_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row_prepared('SELECT * FROM vdef WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('VDEFs [edit: %s]', $vdef['name']);
+		$vdef = db_fetch_row_prepared('SELECT * 
+			FROM vdef 
+			WHERE id = ?', 
+			array(get_request_var('id')));
+
+		$header_label = __('VDEFs [edit: %s]', html_escape($vdef['name']));
 	} else {
 		$header_label = __('VDEFs [new]');
 	}

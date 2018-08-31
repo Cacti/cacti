@@ -241,7 +241,7 @@ function automation_tree_rules_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$automation_tree_rules_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1])) . '</li>';
+			$automation_tree_rules_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1]))) . '</li>';
 			$automation_tree_rules_array[] = $matches[1];
 		}
 	}
@@ -295,7 +295,7 @@ function automation_tree_rules_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_tree_rules_array) ? serialize($automation_tree_rules_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";

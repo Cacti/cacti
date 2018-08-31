@@ -556,7 +556,7 @@ function form_actions() {
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . serialize($host_array) . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";

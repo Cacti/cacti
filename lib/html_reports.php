@@ -733,7 +733,7 @@ function reports_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$reports_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1])) . '</li>';
+			$reports_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM reports WHERE id = ?', array($matches[1]))) . '</li>';
 
 			$reports_array[$i] = $matches[1];
 
@@ -808,7 +808,7 @@ function reports_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($reports_array) ? serialize($reports_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? 'Return':'Cancel') . "' name='cancel'>
 			$save_html
 		</td>
@@ -1148,7 +1148,7 @@ function reports_edit() {
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
-		$header_label = __('[edit: %s]', $report['name']);
+		$header_label = __('[edit: %s]', html_escape($report['name']));
 		$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
 	} else {
 		$header_label = __('[new]');

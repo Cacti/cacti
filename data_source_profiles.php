@@ -438,7 +438,7 @@ function item_edit() {
 		WHERE id = ?',
 		array(get_request_var('id')));
 
-	html_start_box( __('RRA [edit: %s %s]', $name, ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
+	html_start_box( __('RRA [edit: %s %s]', html_escape($name), ($readonly ? __('(Some Elements Read Only)'):'')), '100%', true, '3', 'center', '');
 
 	draw_edit_form(array(
 		'config' => array('no_form_tag' => true),

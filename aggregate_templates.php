@@ -289,7 +289,7 @@ function aggregate_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$aggregate_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1])) . '</li>';
+			$aggregate_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
 			$aggregate_array[] = $matches[1];
 		}
 	}
@@ -320,7 +320,7 @@ function aggregate_form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -348,7 +348,7 @@ function aggregate_template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Aggregate Template [edit: %s]', $template['name']);
+		$header_label = __('Aggregate Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Aggregate Template [new]');
 	}

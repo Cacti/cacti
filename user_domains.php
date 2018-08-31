@@ -211,7 +211,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$d_list .= '<li>' . db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1])) . '</li>';
+			$d_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT domain_name FROM user_domains WHERE domain_id = ?', array($matches[1]))) . '</li>';
 			$d_array[] = $matches[1];
 		}
 	}
@@ -269,7 +269,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($d_array) ? serialize($d_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -312,7 +312,7 @@ function domain_edit() {
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array(get_request_var('domain_id')));
-		$header_label = __('User Domain [edit: %s]', $domain['domain_name']);
+		$header_label = __('User Domain [edit: %s]', html_escape($domain['domain_name']));
 	} else {
 		$header_label = __('User Domain [new]');
 	}

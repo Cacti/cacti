@@ -290,8 +290,8 @@ $selectedTheme = get_selected_theme();
 			<legend><?php print __('Change Password');?></legend>
 			<form name='login' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='<?php print sanitize_uri(get_request_var('ref')); ?>'>
-				<input type='hidden' name='name' value='<?php print isset($user['username']) ? $user['username'] : '';?>'>
+				<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
+				<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
 				<div class='loginTitle'>
 					<p><?php print __('Please enter your current password and your new<br>Cacti password.');?></p>
 				</div>

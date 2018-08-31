@@ -286,7 +286,12 @@ function aggregate_color_item() {
 			ORDER BY cti.sequence ASC',
 			array(get_request_var('color_template_id')));
 
-		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id'))));
+		$name = db_fetch_cell_prepared('SELECT name 
+			FROM color_templates 
+			WHERE color_template_id = ?', 
+			array(get_request_var('color_template_id')));
+
+		$header_label = __('Color Template Items [edit: %s]', html_escape($name));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
@@ -350,7 +355,7 @@ function aggregate_color_template_edit() {
 
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
-		$header_label = __('Color Template [edit: %s]', $template['name']);
+		$header_label = __('Color Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Color Template [new]');
 	}

@@ -574,7 +574,7 @@ function edit_page() {
 	form_start('links.php', 'link_edit');
 
 	if (isset($data['title'])) {
-		html_start_box(__('External Links [edit: %s]', $data['title']), '100%', true, '3', 'center', '');
+		html_start_box(__('External Links [edit: %s]', html_escape($data['title'])), '100%', true, '3', 'center', '');
 	} else {
 		html_start_box(__('External Links [new]'), '100%', true, '3', 'center', '');
 	}

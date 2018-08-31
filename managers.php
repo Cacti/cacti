@@ -975,7 +975,7 @@ function form_actions(){
 					/* ================= input validation ================= */
 					input_validate_input_number($id);
 					/* ==================================================== */
-					$list .= '<li>' . db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id)) . '</li>';
+					$list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT description FROM snmpagent_managers WHERE id = ?', array($id))) . '</li>';
 					$selected_items[] = $id;
 				}
 			}
@@ -1013,7 +1013,7 @@ function form_actions(){
 				<input type='hidden' name='action' value='actions'>
 				<input type='hidden' name='action_receivers' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
-				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 				$save_html
 				</td>
 			</tr>\n";
@@ -1036,7 +1036,7 @@ function form_actions(){
 					/* grep mib and notification name */
 					$row_id = substr($key, 4);
 					list($mib, $name) = explode('__', $row_id);
-					$list .= '<li>' . $name . ' (' . $mib .')</li>';
+					$list .= '<li>' . html_escape($name) . ' (' . html_escape($mib) .')</li>';
 					$selected_items[$mib][$name] = 1;
 				}
 			}
@@ -1071,7 +1071,7 @@ function form_actions(){
 				<input type='hidden' name='action_receiver_notifications' value='1'>
 				<input type='hidden' name='selected_items' value='" . (isset($selected_items) ? serialize($selected_items) : '') . "'>
 				<input type='hidden' name='id' value='" . get_nfilter_request_var('id') . "'>
-				<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+				<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 				$save_html
 				</td>
 			</tr>";

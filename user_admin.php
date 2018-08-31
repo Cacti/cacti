@@ -439,7 +439,7 @@ function form_actions() {
 		print "<input type='hidden' name='selected_items' value='" . (isset($user_array) ? serialize($user_array) : '') . "'>\n";
 	}
 
-	print "<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+	print "<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 		$save_html
 		</td>
 	</tr>\n";
@@ -1941,7 +1941,7 @@ function user_edit() {
 
 	if (!isempty_request_var('id')) {
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('[edit: %s]', $user['username']);
+		$header_label = __('[edit: %s]', html_escape($user['username']));
 	} else {
 		$header_label = __('[new]');
 	}

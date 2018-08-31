@@ -477,7 +477,7 @@ function form_actions() {
 
 				print '<div class="itemlist"><ul>';
 				foreach ($graphs as $graph) {
-					print '<li>' . $graph['title_cache'] . "</li>\n";
+					print '<li>' . html_escape($graph['title_cache']) . "</li>\n";
 				}
 				print '</ul></div>';
 				print '<br>';
@@ -545,7 +545,7 @@ function form_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($ds_array) ? serialize($ds_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";

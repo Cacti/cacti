@@ -202,7 +202,7 @@ function form_automation_snmp_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$snmp_groups .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1])) . '</li>';
+			$snmp_groups .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_snmp WHERE id = ?', array($matches[1]))) . '</li>';
 			$automation_array[$i] = $matches[1];
 			$i++;
 		}
@@ -250,7 +250,7 @@ function form_automation_snmp_actions() {
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
@@ -458,7 +458,7 @@ function automation_snmp_edit() {
 	if (!isempty_request_var('id')) {
 		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
-		$header_label = __('SNMP Option Set [edit: %s]', $snmp_group['name']);
+		$header_label = __('SNMP Option Set [edit: %s]', html_escape($snmp_group['name']));
 	} else {
 		$header_label = __('SNMP Option Set [new]');
 	}

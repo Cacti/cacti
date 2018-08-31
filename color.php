@@ -413,7 +413,7 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Colors [edit: %s]', $color['hex']);
+		$header_label = __('Colors [edit: %s]', html_escape($color['hex']));
 	} else {
 		$header_label = __('Colors [new]');
 	}
