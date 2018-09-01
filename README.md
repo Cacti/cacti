@@ -55,6 +55,10 @@ Cacti should be able to run on any Linux, UNIX, or Windows based operating syste
 
 PHP Must also be compiled as a standalone cgi or cli binary. This is required for data gathering via cron.
 
+## Note on php-snmp
+
+We mark the php-snmp module as optional.  So long as you are not using ipv6 devices, or using snmpv3 engine id's or contexts, then using php-snmp should be safe.  Otherwise, you should consider uninstalling the php-snmp module as it will create problems.  We are aware of the problem with php-snmp and looking to get involved in the php project to resolve these issues.
+
 ## Note About RRDtool
 
 RRDtool is available in multiple versions and a majority of them are supported by Cacti. Please remember to confirm your Cacti settings for the RRDtool version if you having problem rendering graphs.
