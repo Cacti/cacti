@@ -457,7 +457,7 @@ CREATE TABLE `automation_tree_rules` (
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New Graph',1,0,2,0,'');
+INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,'on'),(2,'New Graph',1,0,2,0,'');
 
 --
 -- Table structure for table `cdef`

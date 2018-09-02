@@ -449,7 +449,7 @@ $settings = array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Enable Automatic Tree Item Creation'),
 			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible.'),
-			'default' => '',
+			'default' => 'on',
 			),
 		'automation_email' => array(
 			'friendly_name' => __('Automation Notification To Email'),
