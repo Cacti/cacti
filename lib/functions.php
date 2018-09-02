@@ -2194,6 +2194,25 @@ function draw_navigation_text($type = 'url') {
 	global $config, $navigation;
 
 	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
+	$navigation      =  api_plugin_hook_function('draw_navigation_text', $navigation);
+	$current_page    = get_current_page();
+
+	if (!isempty_request_var('action')) {
+		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
+	}
+
+	$current_action = (isset_request_var('action') ? get_request_var('action') : '');
+
+	// find the current page in the big array
+	if (isset($navigation[$current_page . ':' . $current_action])) {
+		$current_array = $navigation[$current_page . ':' . $current_action];
+	} else {
+		$current_array = array(
+			'mapping' => 'index.php:',
+			'title' => ucwords(str_replace('_', ' ', basename(get_current_page(), '.php'))),
+			'level' => 1
+		);
+	}
 
 	if (isset($current_array['mapping'])) {
 		$current_mappings = explode(',', $current_array['mapping']);
@@ -2251,7 +2270,7 @@ function draw_navigation_text($type = 'url') {
 			$current_nav .= "<li><a id='nav_$i' href=#>" . html_escape(resolve_navigation_variables($current_array['title'])) . '</a></li>';
 		}
 	} else {
-		$current_array = $nav[$current_page . ':' . $current_action];
+		$current_array = $navigation[$current_page . ':' . $current_action];
 		$url           = (isset($current_array['url']) ? $current_array['url']:'');
 
 		if (isset($current_array['title'])) {
