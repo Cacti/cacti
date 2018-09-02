@@ -2451,7 +2451,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 						}
 					}
 
-					cacti_log('NOTE: Graph Added, Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . "], DS[$data_source_id]", false, 'AUTOM8');
+					cacti_log('NOTE: Graph Added - Device[' . $host_id . '], Graph[' . $return_array['local_graph_id'] . "], DS[$data_source_id]", false, 'AUTOM8');
 				} else {
 					cacti_log('ERROR: Device[' . $host_id . '] Graph Not Added due to missing data sources.', false, 'AUTOM8');
 				}
