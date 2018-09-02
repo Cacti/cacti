@@ -22,9 +22,9 @@ $ENV{LANG}='en_US.UTF-8';
 #
 # Get the OS name
 #
-chomp (my $osname = `uname -s`);
+my $osname = "$^O";
 
-if ($osname =~ 'SunOS') {
+if ($osname =~ 'solaris') {
   # Solaris needs a different ping command
   $pingcmd="ping -s $host 64 1";
 } else {
