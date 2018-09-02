@@ -635,10 +635,10 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	if (sizeof($data_queries)) {
 		if ($leaf['host_id'] > 0) {
 			$ntg = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
-			$agg = get_allowed_aggregate_graph('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
+			$agg = get_allowed_aggregate_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
 		} else {
 			$ntg = get_allowed_graphs('gl.snmp_query_id=0');
-			$agg = get_allowed_aggregate_graph('gl.snmp_query_id=0');
+			$agg = get_allowed_aggregate_graphs('gl.snmp_query_id=0');
 		}
 
 		$ntg = array_merge($ntg, $agg);
