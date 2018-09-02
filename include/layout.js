@@ -674,6 +674,8 @@ function applySkin() {
 
 	setupResponsiveMenuAndTabs();
 
+	setupButtonStyle();
+
 	// Debug message actions
 	$('table.debug').unbind('click').click(function() {
 		if ($(this).find('table').is(':visible')) {
@@ -731,6 +733,18 @@ function applySkin() {
 	keepWindowSize();
 
 	displayMessages();
+}
+
+function setupButtonStyle() {
+	if ($('input#submit').length) {
+		$('input#submit').addClass('ui-state-active');
+	} else if ($('input#return').length) {
+		$('input#return').addClass('ui-state-active');
+	}
+
+	if ($('input#refresh').length) {
+		$('input#refresh').addClass('ui-state-active');
+	}
 }
 
 function displayMessages() {
