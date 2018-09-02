@@ -4458,8 +4458,12 @@ function get_cacti_version() {
 /**
  * get_cacti_version_text    Return the cacti version text including beta moniker
  */
-function get_cacti_version_text() {
-	return trim(__('Cacti Version %s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+function get_cacti_version_text($include_version = true) {
+	if ($include_version) {
+		return trim(__('Version %s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+	} else {
+		return trim(__('%s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+	}
 }
 
 /**
