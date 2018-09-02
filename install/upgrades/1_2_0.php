@@ -169,4 +169,13 @@ function upgrade_to_1_2_0() {
 			}
 		}
 	}
+
+	db_install_execute('UPDATE graph_tree_items
+		SET host_grouping_type = 1 
+		WHERE host_id > 0 
+		AND host_grouping_type = 0');
+
+	db_install_execute('UPDATE automation_tree_rules
+		SET host_grouping_type = 1
+		WHERE host_grouping_type = 0');
 }
