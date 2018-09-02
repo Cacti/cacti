@@ -745,6 +745,10 @@ function setupButtonStyle() {
 	if ($('input#refresh').length) {
 		$('input#refresh').addClass('ui-state-active');
 	}
+
+	if ($('input#go').length) {
+		$('input#go').addClass('ui-state-active');
+	}
 }
 
 function displayMessages() {
