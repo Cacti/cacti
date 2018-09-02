@@ -2358,25 +2358,25 @@ function draw_navigation_text($type = 'url') {
 			'level' => '2'
 			),
 		'clog.php:' => array(
-			'title' => __('View Cacti Log'),
+			'title' => __('View Log'),
 			'mapping' => '',
 			'url' => 'clog.php',
 			'level' => '0'
 			),
 		'clog.php:preview' => array(
-			'title' => __('View Cacti Log'),
+			'title' => __('View Log'),
 			'mapping' => '',
 			'url' => 'clog.php',
 			'level' => '0'
 			),
 		'clog_user.php:' => array(
-			'title' => __('View Cacti Log'),
+			'title' => __('View Log'),
 			'mapping' => '',
 			'url' => 'clog_user.php',
 			'level' => '0'
 			),
 		'clog_user.php:preview' => array(
-			'title' => __('View Cacti Log'),
+			'title' => __('View Log'),
 			'mapping' => '',
 			'url' => 'clog_user.php',
 			'level' => '0'
@@ -2640,13 +2640,13 @@ function draw_navigation_text($type = 'url') {
 			'level' => '2'
 			),
 		'utilities.php:view_logfile' => array(
-			'title' => __('View Cacti Log'),
+			'title' => __('View Log'),
 			'mapping' => 'index.php:,utilities.php:',
 			'url' => 'utilities.php',
 			'level' => '2'
 			),
 		'utilities.php:clear_logfile' => array(
-			'title' => __('Clear Cacti Log'),
+			'title' => __('Clear Log'),
 			'mapping' => 'index.php:,utilities.php:',
 			'url' => 'utilities.php',
 			'level' => '2'
