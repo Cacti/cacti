@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 delete @ENV{qw(PATH)};
-$ENV{PATH} = "/usr/bin:/bin:/sbin";
+$ENV{PATH} = "/usr/bin:/bin:/usr/sbin:/sbin";
 $path = $ENV{'PATH'};
 
 # take care for tcp:hostname or TCP:ip@
@@ -19,9 +19,21 @@ if (($host =~ tr/:://) == 0) {
 # always have the language in english
 $ENV{LANG}='en_US.UTF-8';
 
+#
+# Get the OS name
+#
+my $osname = "$^O";
+
+if ($osname =~ 'solaris') {
+  # Solaris needs a different ping command
+  $pingcmd="ping -s $host 64 1";
+} else {
+  $pingcmd="ping -c 1 $host";
+}
+
 # old linux version use 'icmp_seq'
 # newer use 'icmp_req' instead
-open(PROCESS, "ping -c 1 $host 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)' 2>/dev/null |");
+open(PROCESS, "$pingcmd 2>&1 | grep -E '(icmp_[s|r]eq.*time|unknown host|Unknown host|not supported|Name or service not known|No address associated with name)' 2>/dev/null |");
 $ping = <PROCESS>;
 close(PROCESS);
 chomp($ping);
