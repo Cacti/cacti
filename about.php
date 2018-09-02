@@ -32,7 +32,7 @@ html_start_box(__('About Cacti'), '100%', '', '3', 'center', '');
 
 <tr class='tableHeader'>
 	<td class='tableSubHeaderColumn' colspan="2">
-		<font class='textSubHeaderDark'><?php print __('Version %s', CACTI_VERSION); ?></font>
+		<font class='textSubHeaderDark'><?php print get_cacti_version_text(); ?></font>
 	</td>
 </tr>
 <tr>

@@ -62,6 +62,10 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$add_label = __('Add');
 	}
 
+	if (CACTI_VERSION_BETA) {
+		$title .= ' [ ' . get_cacti_version_text() . ' ]';
+	}
+
 	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('report')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));

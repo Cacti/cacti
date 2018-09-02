@@ -5258,6 +5258,13 @@ function get_cacti_version() {
 }
 
 /**
+ * get_cacti_version_text    Return the cacti version text including beta moniker
+ */
+function get_cacti_version_text() {
+	return trim(__('Cacti Version %s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+}
+
+/**
  * get_cacti_cli_version() {
  */
 function get_cacti_cli_version() {
