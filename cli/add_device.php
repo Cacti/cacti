@@ -28,6 +28,7 @@ require_once($config['base_path'] . '/lib/api_automation_tools.php');
 require_once($config['base_path'] . '/lib/api_device.php');
 require_once($config['base_path'] . '/lib/api_data_source.php');
 require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/snmp.php');
 require_once($config['base_path'] . '/lib/template.php');

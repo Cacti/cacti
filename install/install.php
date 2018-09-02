@@ -28,8 +28,9 @@ define('IN_CACTI_INSTALL', 1);
 include_once('../include/auth.php');
 include_once('../lib/api_data_source.php');
 include_once('../lib/api_device.php');
-include_once('../lib/utility.php');
+include_once('../lib/api_tree.php');
 include_once('../lib/import.php');
+include_once('../lib/utility.php');
 include_once('./functions.php');
 
 set_default_action();
