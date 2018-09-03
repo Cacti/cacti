@@ -199,7 +199,7 @@ $settings = array(
 			),
 		'path_spine_config' => array(
 			'friendly_name' => __('Spine Config File Path'),
-			'description' => __('The path to Spine configuration file.  By default, in the cwd of spine, or /etc if not specified.'),
+			'description' => __('The path to Spine configuration file.  By default, in the cwd of Spine, or /etc if not specified.'),
 			'method' => 'filepath',
 			'file_type' => 'ascii',
 			'max_length' => '255'
@@ -506,7 +506,7 @@ $settings = array(
 			),
 		'device_threads' => array(
 			'friendly_name' => __('Device Threads'),
-			'description' => __('The default number of Device Threads.  This is only applicable when using the spine Data Collector.'),
+			'description' => __('The default number of Device Threads.  This is only applicable when using the Spine Data Collector.'),
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => array(1, 2, 3, 4, 5, 6)
@@ -971,8 +971,8 @@ $settings = array(
 			'array' => $cron_intervals,
 			),
 		'concurrent_processes' => array(
-			'friendly_name' => __('Maximum Concurrent Poller Processes'),
-			'description' => __('The number of concurrent processes to execute.  Using a higher number when using cmd.php will improve performance.  Performance improvements in spine are best resolved with the threads parameter'),
+			'friendly_name' => __('Default Data Collector Processes'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: This setting maintained in the Data Collector starting with Cacti 1.2+.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
@@ -1031,8 +1031,8 @@ $settings = array(
 				'2'  => __('Detailed'))
 			),
 		'max_threads' => array(
-			'friendly_name' => __('Maximum Threads per Process'),
-			'description' => __('The maximum threads allowed per process.  Using a higher number when using Spine will improve performance.'),
+			'friendly_name' => __('Default Threads per Process'),
+			'description' => __('The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained in the Data Collector, and this is simply the Preset.  Using a higher number when using Spine will improve performance.  However, ensure that you have enough MySQL/MariaDB connections to support the following equation: connections = data collectors * processes * (threads + script servers).  You must also ensure that you have enough spare connections for user login connections as well.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
