@@ -2793,6 +2793,9 @@ CREATE TABLE `sites` (
 -- Dumping data for table `sites`
 --
 
+INSERT INTO `sites` VALUES (1,'Edge','','','','','','','',0.0000000000,0.0000000000,'','');
+INSERT INTO `sites` VALUES (2,'Core','','','','','','','',0.0000000000,0.0000000000,'','');
+
 --
 -- Table structure for table `snmpagent_cache`
 --
