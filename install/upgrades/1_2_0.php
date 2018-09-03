@@ -178,4 +178,6 @@ function upgrade_to_1_2_0() {
 	db_install_execute('UPDATE automation_tree_rules
 		SET host_grouping_type = 1
 		WHERE host_grouping_type = 0');
+
+	db_install_add_column('sites', array('name' => 'zoom', 'type' => 'tinyint', 'unsigned' => true, 'NULL' => true));
 }

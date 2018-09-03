@@ -44,6 +44,11 @@ $fields_site_edit = array(
 		'default' => __('New Site'),
 		'max_length' => '100'
 	),
+	'spacer1' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Address Information'),
+		'collapsible' => 'true'
+	),
 	'address1' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Address1'),
@@ -107,6 +112,11 @@ $fields_site_edit = array(
 		'id' => '|arg1:timezone|',
 		'value' => '|arg1:timezone|'
 		),
+	'spacer2' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Geolocation Information'),
+		'collapsible' => 'true'
+	),
 	'latitude' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Latitude'),
@@ -125,9 +135,23 @@ $fields_site_edit = array(
 		'size' => '20',
 		'max_length' => '30'
 	),
+	'zoom' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Zoom'),
+		'description' => __('The default Map Zoom for this Site.  Values can be from 0 to 12.'),
+		'value' => '|arg1:zoom|',
+		'placeholder' => __('0 - 12'),
+		'size' => '4',
+		'max_length' => '4'
+	),
+	'spacer3' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Additional Information'),
+		'collapsible' => 'true'
+	),
 	'notes' => array(
 		'method' => 'textarea',
-		'friendly_name' => __('Site Notes'),
+		'friendly_name' => __('Notes'),
 		'textarea_rows' => '3',
 		'textarea_cols' => '70',
 		'description' => __('Additional area use for random notes related to this Site.'),
@@ -213,6 +237,7 @@ function form_save() {
 		$save['timezone']     = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', true, 3);
 		$save['latitude']     = form_input_validate(get_nfilter_request_var('latitude'), 'latitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
 		$save['longitude']    = form_input_validate(get_nfilter_request_var('longitude'), 'longitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
+		$save['zoom']         = form_input_validate(get_nfilter_request_var('zoom'), 'zoom', '^[0-9]$', true, 3);
 		$save['alternate_id'] = form_input_validate(get_nfilter_request_var('alternate_id'), 'alternate_id', '', true, 3);
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 

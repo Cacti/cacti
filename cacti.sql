@@ -2778,6 +2778,7 @@ CREATE TABLE `sites` (
   `timezone` varchar(40) DEFAULT '',
   `latitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
   `longitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `zoom` tinyint unsigned default NULL,
   `alternate_id` varchar(30) DEFAULT '',
   `notes` varchar(1024),
   PRIMARY KEY (`id`),
@@ -2793,8 +2794,8 @@ CREATE TABLE `sites` (
 -- Dumping data for table `sites`
 --
 
-INSERT INTO `sites` VALUES (1,'Edge','','','','','','','',0.0000000000,0.0000000000,'','');
-INSERT INTO `sites` VALUES (2,'Core','','','','','','','',0.0000000000,0.0000000000,'','');
+INSERT INTO `sites` VALUES (1,'Edge','','','','','','','',0.0000000000,0.0000000000,'','','');
+INSERT INTO `sites` VALUES (2,'Core','','','','','','','',0.0000000000,0.0000000000,'','','');
 
 --
 -- Table structure for table `snmpagent_cache`
