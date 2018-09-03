@@ -138,9 +138,9 @@ $fields_site_edit = array(
 	'zoom' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Zoom'),
-		'description' => __('The default Map Zoom for this Site.  Values can be from 0 to 12.'),
+		'description' => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
 		'value' => '|arg1:zoom|',
-		'placeholder' => __('0 - 12'),
+		'placeholder' => __('0 - 23'),
 		'size' => '4',
 		'max_length' => '4'
 	),
@@ -237,7 +237,7 @@ function form_save() {
 		$save['timezone']     = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', true, 3);
 		$save['latitude']     = form_input_validate(get_nfilter_request_var('latitude'), 'latitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
 		$save['longitude']    = form_input_validate(get_nfilter_request_var('longitude'), 'longitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
-		$save['zoom']         = form_input_validate(get_nfilter_request_var('zoom'), 'zoom', '^[0-9]$', true, 3);
+		$save['zoom']         = form_input_validate(get_nfilter_request_var('zoom'), 'zoom', '^[0-9]+$', true, 3);
 		$save['alternate_id'] = form_input_validate(get_nfilter_request_var('alternate_id'), 'alternate_id', '', true, 3);
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
