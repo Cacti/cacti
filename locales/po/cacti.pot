@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-03 11:19-0400\n"
+"POT-Creation-Date: 2018-09-04 18:25-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,7 +73,7 @@ msgstr ""
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr ""
 
-#: /var/www/html/cacti/about.php:75 /var/www/html/cacti/lib/installer.php:1031
+#: /var/www/html/cacti/about.php:75 /var/www/html/cacti/lib/installer.php:1212
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -126,7 +126,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:1341
 #: /var/www/html/cacti/lib/api_automation.php:1405
 #: /var/www/html/cacti/lib/html.php:1082
-#: /var/www/html/cacti/lib/html_form.php:1149
+#: /var/www/html/cacti/lib/html_form.php:1168
 #: /var/www/html/cacti/lib/html_reports.php:1402
 #: /var/www/html/cacti/links.php:28 /var/www/html/cacti/managers.php:28
 #: /var/www/html/cacti/pollers.php:29 /var/www/html/cacti/sites.php:28
@@ -228,16 +228,16 @@ msgstr ""
 #: /var/www/html/cacti/host_templates.php:390
 #: /var/www/html/cacti/include/global_session.php:178
 #: /var/www/html/cacti/lib/clog_webapi.php:198
-#: /var/www/html/cacti/lib/html_form.php:1148
-#: /var/www/html/cacti/lib/html_form.php:1160
-#: /var/www/html/cacti/lib/html_form.php:1171
+#: /var/www/html/cacti/lib/html_form.php:1167
+#: /var/www/html/cacti/lib/html_form.php:1179
+#: /var/www/html/cacti/lib/html_form.php:1190
 #: /var/www/html/cacti/lib/html_utility.php:214
 #: /var/www/html/cacti/links.php:197 /var/www/html/cacti/links.php:206
 #: /var/www/html/cacti/links.php:215 /var/www/html/cacti/managers.php:1005
 #: /var/www/html/cacti/managers.php:1062 /var/www/html/cacti/plugins.php:483
 #: /var/www/html/cacti/pollers.php:337 /var/www/html/cacti/pollers.php:346
 #: /var/www/html/cacti/pollers.php:355 /var/www/html/cacti/pollers.php:364
-#: /var/www/html/cacti/sites.php:291 /var/www/html/cacti/tree.php:643
+#: /var/www/html/cacti/sites.php:317 /var/www/html/cacti/tree.php:643
 #: /var/www/html/cacti/tree.php:652 /var/www/html/cacti/tree.php:661
 #: /var/www/html/cacti/user_admin.php:340
 #: /var/www/html/cacti/user_admin.php:380
@@ -321,7 +321,7 @@ msgstr ""
 #: /var/www/html/cacti/links.php:215 /var/www/html/cacti/managers.php:1005
 #: /var/www/html/cacti/managers.php:1062 /var/www/html/cacti/pollers.php:337
 #: /var/www/html/cacti/pollers.php:346 /var/www/html/cacti/pollers.php:355
-#: /var/www/html/cacti/pollers.php:364 /var/www/html/cacti/sites.php:291
+#: /var/www/html/cacti/pollers.php:364 /var/www/html/cacti/sites.php:317
 #: /var/www/html/cacti/tree.php:643 /var/www/html/cacti/tree.php:652
 #: /var/www/html/cacti/tree.php:661 /var/www/html/cacti/user_admin.php:340
 #: /var/www/html/cacti/user_admin.php:380
@@ -390,13 +390,13 @@ msgstr ""
 #: /var/www/html/cacti/graphs.php:1228 /var/www/html/cacti/host.php:552
 #: /var/www/html/cacti/host_templates.php:290
 #: /var/www/html/cacti/include/auth.php:186
-#: /var/www/html/cacti/lib/html_form.php:1169
+#: /var/www/html/cacti/lib/html_form.php:1188
 #: /var/www/html/cacti/lib/html_utility.php:212
 #: /var/www/html/cacti/links.php:219 /var/www/html/cacti/managers.php:1008
 #: /var/www/html/cacti/managers.php:1065
 #: /var/www/html/cacti/permission_denied.php:30
 #: /var/www/html/cacti/permission_denied.php:32
-#: /var/www/html/cacti/pollers.php:368 /var/www/html/cacti/sites.php:295
+#: /var/www/html/cacti/pollers.php:368 /var/www/html/cacti/sites.php:321
 #: /var/www/html/cacti/tree.php:665 /var/www/html/cacti/user_admin.php:429
 #: /var/www/html/cacti/user_domains.php:265
 #: /var/www/html/cacti/user_group_admin.php:491
@@ -658,7 +658,7 @@ msgstr ""
 #: /var/www/html/cacti/managers.php:726 /var/www/html/cacti/plugins.php:327
 #: /var/www/html/cacti/pollers.php:584 /var/www/html/cacti/rrdcleaner.php:475
 #: /var/www/html/cacti/settings.php:372 /var/www/html/cacti/settings.php:391
-#: /var/www/html/cacti/settings.php:440 /var/www/html/cacti/sites.php:398
+#: /var/www/html/cacti/settings.php:440 /var/www/html/cacti/sites.php:424
 #: /var/www/html/cacti/tree.php:803 /var/www/html/cacti/tree.php:838
 #: /var/www/html/cacti/tree.php:873 /var/www/html/cacti/tree.php:1886
 #: /var/www/html/cacti/user_admin.php:2202
@@ -741,7 +741,7 @@ msgstr ""
 #: /var/www/html/cacti/links.php:320 /var/www/html/cacti/managers.php:160
 #: /var/www/html/cacti/managers.php:504 /var/www/html/cacti/plugins.php:350
 #: /var/www/html/cacti/pollers.php:594 /var/www/html/cacti/rrdcleaner.php:501
-#: /var/www/html/cacti/sites.php:408 /var/www/html/cacti/tree.php:1896
+#: /var/www/html/cacti/sites.php:434 /var/www/html/cacti/tree.php:1896
 #: /var/www/html/cacti/user_admin.php:2212
 #: /var/www/html/cacti/user_admin.php:2572
 #: /var/www/html/cacti/user_admin.php:2657
@@ -802,7 +802,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:972 /var/www/html/cacti/links.php:330
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
 #: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:362
-#: /var/www/html/cacti/pollers.php:606 /var/www/html/cacti/sites.php:420
+#: /var/www/html/cacti/pollers.php:606 /var/www/html/cacti/sites.php:446
 #: /var/www/html/cacti/tree.php:1908 /var/www/html/cacti/user_admin.php:2224
 #: /var/www/html/cacti/user_admin.php:2590
 #: /var/www/html/cacti/user_admin.php:2675
@@ -832,7 +832,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_graph.php:185
 #: /var/www/html/cacti/managers.php:172 /var/www/html/cacti/managers.php:516
 #: /var/www/html/cacti/managers.php:746 /var/www/html/cacti/plugins.php:362
-#: /var/www/html/cacti/pollers.php:606 /var/www/html/cacti/sites.php:420
+#: /var/www/html/cacti/pollers.php:606 /var/www/html/cacti/sites.php:446
 #: /var/www/html/cacti/tree.php:1908 /var/www/html/cacti/user_admin.php:2224
 #: /var/www/html/cacti/user_admin.php:2590
 #: /var/www/html/cacti/user_admin.php:2675
@@ -889,7 +889,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:1083 /var/www/html/cacti/links.php:331
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
 #: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:363
-#: /var/www/html/cacti/pollers.php:607 /var/www/html/cacti/sites.php:421
+#: /var/www/html/cacti/pollers.php:607 /var/www/html/cacti/sites.php:447
 #: /var/www/html/cacti/tree.php:1909 /var/www/html/cacti/user_admin.php:2225
 #: /var/www/html/cacti/user_admin.php:2591
 #: /var/www/html/cacti/user_admin.php:2676
@@ -920,7 +920,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/html_tree.php:973
 #: /var/www/html/cacti/managers.php:173 /var/www/html/cacti/managers.php:517
 #: /var/www/html/cacti/managers.php:747 /var/www/html/cacti/plugins.php:363
-#: /var/www/html/cacti/pollers.php:607 /var/www/html/cacti/sites.php:421
+#: /var/www/html/cacti/pollers.php:607 /var/www/html/cacti/sites.php:447
 #: /var/www/html/cacti/tree.php:1909 /var/www/html/cacti/user_admin.php:2225
 #: /var/www/html/cacti/user_admin.php:2591
 #: /var/www/html/cacti/user_admin.php:2676
@@ -964,7 +964,7 @@ msgstr ""
 #: /var/www/html/cacti/graphs.php:1965 /var/www/html/cacti/host.php:1637
 #: /var/www/html/cacti/host_templates.php:813
 #: /var/www/html/cacti/lib/api_automation.php:280
-#: /var/www/html/cacti/pollers.php:680 /var/www/html/cacti/sites.php:494
+#: /var/www/html/cacti/pollers.php:680 /var/www/html/cacti/sites.php:520
 #: /var/www/html/cacti/tree.php:1962 /var/www/html/cacti/user_admin.php:979
 #: /var/www/html/cacti/user_admin.php:1078
 #: /var/www/html/cacti/user_admin.php:1223
@@ -1008,8 +1008,8 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:422
 #: /var/www/html/cacti/include/global_settings.php:721
 #: /var/www/html/cacti/include/global_settings.php:1421
-#: /var/www/html/cacti/lib/installer.php:1231
-#: /var/www/html/cacti/lib/installer.php:1264 /var/www/html/cacti/tree.php:2000
+#: /var/www/html/cacti/lib/installer.php:1412
+#: /var/www/html/cacti/lib/installer.php:1445 /var/www/html/cacti/tree.php:2000
 #: /var/www/html/cacti/tree.php:2001 /var/www/html/cacti/user_admin.php:2293
 #: /var/www/html/cacti/user_domains.php:764
 #: /var/www/html/cacti/user_group_admin.php:1927
@@ -1036,10 +1036,10 @@ msgstr ""
 #: /var/www/html/cacti/include/global_settings.php:423
 #: /var/www/html/cacti/include/global_settings.php:720
 #: /var/www/html/cacti/include/global_settings.php:1420
-#: /var/www/html/cacti/lib/installer.php:1230
-#: /var/www/html/cacti/lib/installer.php:1231
-#: /var/www/html/cacti/lib/installer.php:1263
-#: /var/www/html/cacti/lib/installer.php:1264 /var/www/html/cacti/tree.php:2000
+#: /var/www/html/cacti/lib/installer.php:1411
+#: /var/www/html/cacti/lib/installer.php:1412
+#: /var/www/html/cacti/lib/installer.php:1444
+#: /var/www/html/cacti/lib/installer.php:1445 /var/www/html/cacti/tree.php:2000
 #: /var/www/html/cacti/tree.php:2001 /var/www/html/cacti/user_admin.php:2291
 #: /var/www/html/cacti/user_domains.php:760
 #: /var/www/html/cacti/user_domains.php:764
@@ -1241,7 +1241,7 @@ msgstr ""
 #: /var/www/html/cacti/color_templates.php:561
 #: /var/www/html/cacti/include/global_arrays.php:824
 #: /var/www/html/cacti/include/global_arrays.php:883
-#: /var/www/html/cacti/lib/installer.php:1755
+#: /var/www/html/cacti/lib/installer.php:1948
 #: /var/www/html/cacti/user_admin.php:2842
 #: /var/www/html/cacti/user_group_admin.php:2379
 msgid "Templates"
@@ -1378,8 +1378,8 @@ msgstr ""
 #: /var/www/html/cacti/auth_changepassword.php:313
 #: /var/www/html/cacti/auth_profile.php:474
 #: /var/www/html/cacti/graphs_new.php:369
-#: /var/www/html/cacti/lib/html_form.php:1166
-#: /var/www/html/cacti/lib/html_form.php:1175
+#: /var/www/html/cacti/lib/html_form.php:1185
+#: /var/www/html/cacti/lib/html_form.php:1194
 #: /var/www/html/cacti/lib/html_graph.php:188
 #: /var/www/html/cacti/lib/html_tree.php:975
 #: /var/www/html/cacti/settings.php:334
@@ -1733,7 +1733,7 @@ msgstr ""
 #: /var/www/html/cacti/lib/api_automation.php:475
 #: /var/www/html/cacti/lib/api_automation.php:558
 #: /var/www/html/cacti/lib/api_automation.php:1163
-#: /var/www/html/cacti/pollers.php:686 /var/www/html/cacti/sites.php:495
+#: /var/www/html/cacti/pollers.php:686 /var/www/html/cacti/sites.php:521
 #: /var/www/html/cacti/tree.php:781 /var/www/html/cacti/tree.php:1971
 #: /var/www/html/cacti/user_admin.php:1215
 #: /var/www/html/cacti/user_admin.php:2757
@@ -1772,7 +1772,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:1654
 #: /var/www/html/cacti/lib/api_automation.php:276
 #: /var/www/html/cacti/lib/api_automation.php:1170
-#: /var/www/html/cacti/lib/installer.php:1756
+#: /var/www/html/cacti/lib/installer.php:1949
 #: /var/www/html/cacti/managers.php:216 /var/www/html/cacti/user_admin.php:1078
 #: /var/www/html/cacti/user_admin.php:1223
 #: /var/www/html/cacti/user_group_admin.php:966
@@ -1848,7 +1848,7 @@ msgstr ""
 
 #: /var/www/html/cacti/automation_devices.php:475
 #: /var/www/html/cacti/color.php:570 /var/www/html/cacti/host.php:1571
-#: /var/www/html/cacti/lib/html_form.php:1183
+#: /var/www/html/cacti/lib/html_form.php:1202
 msgid "Export"
 msgstr ""
 
@@ -2265,10 +2265,10 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:1995
 #: /var/www/html/cacti/include/global_form.php:2093
 #: /var/www/html/cacti/include/global_form.php:2138
-#: /var/www/html/cacti/lib/installer.php:1138
-#: /var/www/html/cacti/lib/installer.php:1258
-#: /var/www/html/cacti/lib/installer.php:1756
-#: /var/www/html/cacti/lib/installer.php:1810
+#: /var/www/html/cacti/lib/installer.php:1319
+#: /var/www/html/cacti/lib/installer.php:1439
+#: /var/www/html/cacti/lib/installer.php:1949
+#: /var/www/html/cacti/lib/installer.php:2003
 #: /var/www/html/cacti/lib/vdef.php:74 /var/www/html/cacti/managers.php:562
 #: /var/www/html/cacti/pollers.php:52 /var/www/html/cacti/sites.php:40
 #: /var/www/html/cacti/user_admin.php:1078
@@ -3365,7 +3365,7 @@ msgid "Change Leaf Type"
 msgstr ""
 
 #: /var/www/html/cacti/automation_tree_rules.php:696
-#: /var/www/html/cacti/lib/installer.php:823
+#: /var/www/html/cacti/lib/installer.php:1004
 #: /var/www/html/cacti/utilities.php:2134
 #: /var/www/html/cacti/utilities.php:2135
 #: /var/www/html/cacti/utilities.php:2138
@@ -3664,7 +3664,7 @@ msgstr ""
 msgid "Named Colors"
 msgstr ""
 
-#: /var/www/html/cacti/color.php:569 /var/www/html/cacti/lib/html_form.php:1181
+#: /var/www/html/cacti/color.php:569 /var/www/html/cacti/lib/html_form.php:1200
 msgid "Import"
 msgstr ""
 
@@ -3905,6 +3905,8 @@ msgid "Valid Data"
 msgstr ""
 
 #: /var/www/html/cacti/data_debug.php:243
+#: /var/www/html/cacti/lib/installer.php:1746
+#: /var/www/html/cacti/lib/installer.php:1777
 msgid "Writable"
 msgstr ""
 
@@ -4477,7 +4479,7 @@ msgstr ""
 #: /var/www/html/cacti/include/global_form.php:254
 #: /var/www/html/cacti/lib/html.php:409
 #: /var/www/html/cacti/lib/html_filter.php:73
-#: /var/www/html/cacti/lib/installer.php:1810
+#: /var/www/html/cacti/lib/installer.php:2003
 #: /var/www/html/cacti/lib/rrd.php:2751 /var/www/html/cacti/utilities.php:505
 #: /var/www/html/cacti/utilities.php:1436
 msgid "Rows"
@@ -5996,8 +5998,8 @@ msgstr ""
 #: /var/www/html/cacti/graphs_new.php:533
 #: /var/www/html/cacti/include/global_arrays.php:808
 #: /var/www/html/cacti/include/global_arrays.php:880
-#: /var/www/html/cacti/lib/html_form.php:1164
-#: /var/www/html/cacti/lib/html_form.php:1177 /var/www/html/cacti/tree.php:1353
+#: /var/www/html/cacti/lib/html_form.php:1183
+#: /var/www/html/cacti/lib/html_form.php:1196 /var/www/html/cacti/tree.php:1353
 msgid "Create"
 msgstr ""
 
@@ -7427,8 +7429,8 @@ msgid "Management"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:813
-#: /var/www/html/cacti/sites.php:389 /var/www/html/cacti/sites.php:404
-#: /var/www/html/cacti/sites.php:484 /var/www/html/cacti/tree.php:780
+#: /var/www/html/cacti/sites.php:415 /var/www/html/cacti/sites.php:430
+#: /var/www/html/cacti/sites.php:510 /var/www/html/cacti/tree.php:780
 #: /var/www/html/cacti/tree.php:1969
 msgid "Sites"
 msgstr ""
@@ -7564,7 +7566,7 @@ msgid "System Utilities"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:858
-msgid "Datasource Debug"
+msgid "Data Debug"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_arrays.php:859
@@ -9555,7 +9557,7 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_form.php:1257
 #: /var/www/html/cacti/include/global_form.php:1705
-#: /var/www/html/cacti/pollers.php:79
+#: /var/www/html/cacti/pollers.php:79 /var/www/html/cacti/sites.php:155
 msgid "Notes"
 msgstr ""
 
@@ -10060,19 +10062,19 @@ msgid ""
 "by e.g. <strong>\\${1}</strong> for the first match!"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_languages.php:601
+#: /var/www/html/cacti/include/global_languages.php:606
 msgid " T"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_languages.php:603
+#: /var/www/html/cacti/include/global_languages.php:608
 msgid " G"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_languages.php:605
+#: /var/www/html/cacti/include/global_languages.php:610
 msgid " M"
 msgstr ""
 
-#: /var/www/html/cacti/include/global_languages.php:607
+#: /var/www/html/cacti/include/global_languages.php:612
 msgid " K"
 msgstr ""
 
@@ -10301,7 +10303,7 @@ msgid "End with"
 msgstr ""
 
 #: /var/www/html/cacti/include/global_session.php:204
-#: /var/www/html/cacti/lib/html_form.php:1179
+#: /var/www/html/cacti/lib/html_form.php:1198
 msgid "Close"
 msgstr ""
 
@@ -11065,7 +11067,6 @@ msgstr ""
 
 #: /var/www/html/cacti/include/global_settings.php:697
 #: /var/www/html/cacti/include/global_settings.php:1939
-#: /var/www/html/cacti/install/functions.php:494
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr ""
 
@@ -13051,7 +13052,7 @@ msgstr ""
 msgid "Path for %s"
 msgstr ""
 
-#: /var/www/html/cacti/install/functions.php:551
+#: /var/www/html/cacti/install/functions.php:542
 msgid "New Poller"
 msgstr ""
 
@@ -14002,7 +14003,7 @@ msgid "Kill Spikes in Graphs"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html.php:422
-#: /var/www/html/cacti/lib/installer.php:897
+#: /var/www/html/cacti/lib/installer.php:1078
 msgid "Previous"
 msgstr ""
 
@@ -14012,7 +14013,7 @@ msgid "%d to %d of %s [ %s ]"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html.php:428
-#: /var/www/html/cacti/lib/installer.php:896
+#: /var/www/html/cacti/lib/installer.php:1077
 msgid "Next"
 msgstr ""
 
@@ -14115,56 +14116,56 @@ msgstr ""
 msgid "Reset filter to default values"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:515
+#: /var/www/html/cacti/lib/html_form.php:524
 msgid "File Found"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:517
+#: /var/www/html/cacti/lib/html_form.php:528
 msgid "Path is a Directory and not a File"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:521
+#: /var/www/html/cacti/lib/html_form.php:532
 msgid "File is Not Found"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:524
+#: /var/www/html/cacti/lib/html_form.php:543
 msgid "Enter a valid file path"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:562
+#: /var/www/html/cacti/lib/html_form.php:581
 msgid "Directory Found"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:564
+#: /var/www/html/cacti/lib/html_form.php:583
 msgid "Path is a File and not a Directory"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:568
+#: /var/www/html/cacti/lib/html_form.php:587
 msgid "Directory is Not found"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:571
+#: /var/www/html/cacti/lib/html_form.php:590
 msgid "Enter a valid directory path"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:1049
+#: /var/www/html/cacti/lib/html_form.php:1068
 #, php-format
 msgid "Cacti Color (%s)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:1109
+#: /var/www/html/cacti/lib/html_form.php:1128
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:1256
+#: /var/www/html/cacti/lib/html_form.php:1275
 msgid "Warning Unsaved Form Data"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:1258
+#: /var/www/html/cacti/lib/html_form.php:1277
 msgid "Unsaved Changes Detected"
 msgstr ""
 
-#: /var/www/html/cacti/lib/html_form.php:1259
+#: /var/www/html/cacti/lib/html_form.php:1278
 msgid ""
 "You have unsaved changes on this form.  If you press &#39;Continue&#39; "
 "these changes will be discarded.  Press &#39;Cancel&#39; to continue editing "
@@ -14823,7 +14824,7 @@ msgid "Bad UTF-8 offset error!"
 msgstr ""
 
 #: /var/www/html/cacti/lib/html_utility.php:861
-#: /var/www/html/cacti/lib/installer.php:748
+#: /var/www/html/cacti/lib/installer.php:929
 msgid "Error"
 msgstr ""
 
@@ -14923,62 +14924,114 @@ msgstr ""
 msgid "Unmet Dependency:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:710
+#: /var/www/html/cacti/lib/installer.php:415
+msgid "Failed to set specified RRDTool version"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:430
+msgid "Invalid Theme Specified"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:465
+msgid "Path was not writable"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:474
+msgid "Path is not writable"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:506
+msgid "Resource is not writable"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:511
+msgid "File not found"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:522
+msgid "PHP did not return expected result"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:544
+msgid "Failed to apply specified profile"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:555
+msgid "Failed to apply specified mode"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:564
+msgid "Failed to apply specified automation override"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:577
+msgid "Failed to apply specified cron interval"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:587
+msgid "Failed to apply specified Automation Range"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:714
+msgid "No matching template exists"
+msgstr ""
+
+#: /var/www/html/cacti/lib/installer.php:891
 msgid ""
 "An unexpected reason was given for preventing this maintainence session."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:711
+#: /var/www/html/cacti/lib/installer.php:892
 msgid "Please report this to the Cacti Group."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:712
+#: /var/www/html/cacti/lib/installer.php:893
 #, php-format
 msgid "Unknown Reason: %s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:718
+#: /var/www/html/cacti/lib/installer.php:899
 #, php-format
 msgid ""
 "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, "
 "this can not be performed."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:719
+#: /var/www/html/cacti/lib/installer.php:900
 msgid ""
 "To be able continue, you <b>MUST</b> create a new database, import \"cacti."
 "sql\" into it:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:720
+#: /var/www/html/cacti/lib/installer.php:901
 #, php-format
 msgid "mysql -u %s -p [new_database] < cacti.sql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:721
+#: /var/www/html/cacti/lib/installer.php:902
 msgid ""
 "You <b>MUST</b> then update \"include/config.php\" to point to the new "
 "database."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:722
+#: /var/www/html/cacti/lib/installer.php:903
 msgid ""
 "NOTE: Your existing data will not be modified, nor will it or any history be "
 "available to to the new install"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:729
+#: /var/www/html/cacti/lib/installer.php:910
 msgid ""
 "You have created a new database, but have not yet imported the 'cacti.sql' "
 "file. At the command line, execute the following to continue:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:730
+#: /var/www/html/cacti/lib/installer.php:911
 #, php-format
 msgid "mysql -u %s -p %s < cacti.sql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:731
+#: /var/www/html/cacti/lib/installer.php:912
 msgid ""
 "This error may also be generated if the cacti database user does not have "
 "correct permissions on the Cacti database. Please ensure that the Cacti "
@@ -14986,21 +15039,21 @@ msgid ""
 "ALTER, DROP, INDEX on the Cacti database."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:732
+#: /var/www/html/cacti/lib/installer.php:913
 msgid ""
 "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant "
 "the Cacti user SELECT access to the mysql.time_zone_name table"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:735
+#: /var/www/html/cacti/lib/installer.php:916
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:736
+#: /var/www/html/cacti/lib/installer.php:917
 msgid "mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:738
+#: /var/www/html/cacti/lib/installer.php:919
 msgid ""
 "On Windows, you must follow the instructions here <a target='_blank' "
 "href='https://dev.mysql.com/downloads/timezones.html'>Time zone description "
@@ -15008,69 +15061,69 @@ msgid ""
 "grant the Cacti user access to the tables:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:741
+#: /var/www/html/cacti/lib/installer.php:922
 msgid "Then run the following within MySQL as an administrator:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:742
+#: /var/www/html/cacti/lib/installer.php:923
 #, php-format
 msgid ""
 "mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' "
 "IDENTIFIED BY '%s'"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:809
+#: /var/www/html/cacti/lib/installer.php:990
 msgid "NOTE:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:837
-#: /var/www/html/cacti/lib/installer.php:1122
-#: /var/www/html/cacti/lib/installer.php:1279
-#: /var/www/html/cacti/lib/installer.php:1292
-#: /var/www/html/cacti/lib/installer.php:1296
-#: /var/www/html/cacti/lib/installer.php:1427
-#: /var/www/html/cacti/lib/installer.php:1432
+#: /var/www/html/cacti/lib/installer.php:1018
+#: /var/www/html/cacti/lib/installer.php:1303
+#: /var/www/html/cacti/lib/installer.php:1460
+#: /var/www/html/cacti/lib/installer.php:1473
+#: /var/www/html/cacti/lib/installer.php:1477
+#: /var/www/html/cacti/lib/installer.php:1608
+#: /var/www/html/cacti/lib/installer.php:1613
 msgid "ERROR:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:893
+#: /var/www/html/cacti/lib/installer.php:1074
 #: /var/www/html/cacti/pollers.php:446
 msgid "Test Connection"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:904
+#: /var/www/html/cacti/lib/installer.php:1085
 msgid "Begin"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:910
-#: /var/www/html/cacti/lib/installer.php:1339
-#: /var/www/html/cacti/lib/installer.php:1345
-#: /var/www/html/cacti/lib/installer.php:1850
+#: /var/www/html/cacti/lib/installer.php:1091
+#: /var/www/html/cacti/lib/installer.php:1520
+#: /var/www/html/cacti/lib/installer.php:1526
+#: /var/www/html/cacti/lib/installer.php:2043
 msgid "Upgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:912
-#: /var/www/html/cacti/lib/installer.php:1854
+#: /var/www/html/cacti/lib/installer.php:1093
+#: /var/www/html/cacti/lib/installer.php:2047
 msgid "Downgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1015
+#: /var/www/html/cacti/lib/installer.php:1196
 #: /var/www/html/cacti/utilities.php:254
 msgid "Cacti Version"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1015
+#: /var/www/html/cacti/lib/installer.php:1196
 msgid "License Agreement"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1016
+#: /var/www/html/cacti/lib/installer.php:1197
 msgid ""
 "Thanks for taking the time to download and install Cacti, the complete "
 "graphing solution for your network. Before you can start making cool graphs, "
 "there are a few pieces of data that Cacti needs to know."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1017
+#: /var/www/html/cacti/lib/installer.php:1198
 #, php-format
 msgid ""
 "Make sure you have read and followed the required steps needed to install "
@@ -15078,33 +15131,33 @@ msgid ""
 "\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1020
+#: /var/www/html/cacti/lib/installer.php:1201
 #, php-format
 msgid ""
 "This process will guide you through the steps for upgrading from version "
 "'%s'. "
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1021
+#: /var/www/html/cacti/lib/installer.php:1202
 #, php-format
 msgid ""
 "Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</"
 "a> information file."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1025
+#: /var/www/html/cacti/lib/installer.php:1206
 msgid ""
 "It is NOT recommended to downgrade as the database structure may be "
 "inconsistent"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1028
+#: /var/www/html/cacti/lib/installer.php:1209
 msgid ""
 "Cacti is licensed under the GNU General Public License, you must agree to "
 "its provisions before continuing:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1032
+#: /var/www/html/cacti/lib/installer.php:1213
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -15112,39 +15165,39 @@ msgid ""
 "more details."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1068
+#: /var/www/html/cacti/lib/installer.php:1249
 msgid "Accept GPL License Agreement"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1068
+#: /var/www/html/cacti/lib/installer.php:1249
 msgid "Select default theme: "
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1090
+#: /var/www/html/cacti/lib/installer.php:1271
 msgid "Pre-installation Checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1091
+#: /var/www/html/cacti/lib/installer.php:1272
 msgid "Location checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1122
+#: /var/www/html/cacti/lib/installer.php:1303
 msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1125
+#: /var/www/html/cacti/lib/installer.php:1306
 msgid ""
 "Your Cacti configuration has the relative correct path (url_path) in config."
 "php."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1130
+#: /var/www/html/cacti/lib/installer.php:1311
 msgid "PHP - Module Support (Required)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1131
+#: /var/www/html/cacti/lib/installer.php:1312
 msgid ""
 "Cacti requires several PHP Modules to be installed to work properly. If any "
 "of these are not installed, you will be unable to continue the installation "
@@ -15154,77 +15207,77 @@ msgid ""
 "you have any questions."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1133
+#: /var/www/html/cacti/lib/installer.php:1314
 msgid ""
 "The following PHP extensions are mandatory, and MUST be installed before "
 "continuing your Cacti install."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1137
+#: /var/www/html/cacti/lib/installer.php:1318
 msgid "Required PHP Modules"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1138
-#: /var/www/html/cacti/lib/installer.php:1258
+#: /var/www/html/cacti/lib/installer.php:1319
+#: /var/www/html/cacti/lib/installer.php:1439
 #: /var/www/html/cacti/plugins.php:40 /var/www/html/cacti/plugins.php:339
 #: /var/www/html/cacti/utilities.php:452
 msgid "Installed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1138
+#: /var/www/html/cacti/lib/installer.php:1319
 msgid "Required"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1142
+#: /var/www/html/cacti/lib/installer.php:1323
 #: /var/www/html/cacti/utilities.php:424
 msgid "PHP Version"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1244
+#: /var/www/html/cacti/lib/installer.php:1425
 msgid "PHP - Module Support (Optional)"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1246
+#: /var/www/html/cacti/lib/installer.php:1427
 msgid ""
 "The following PHP extensions are recommended, and should be installed before "
 "continuing your Cacti install.  NOTE: If you are planning on supporting "
 "SNMPv3 with IPv6, you should not install the php-snmp module at this time."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1257
+#: /var/www/html/cacti/lib/installer.php:1438
 msgid "Optional Modules"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1258
+#: /var/www/html/cacti/lib/installer.php:1439
 msgid "Optional"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1277
+#: /var/www/html/cacti/lib/installer.php:1458
 msgid "PHP - Timezone Support"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1279
+#: /var/www/html/cacti/lib/installer.php:1460
 msgid ""
 "Your Web Servers PHP Timezone settings have not been set.  Please edit php."
 "ini and uncomment the 'date.timezone' setting and set it to the Web Servers "
 "Timezone per the PHP installation instructions prior to installing Cacti."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1282
+#: /var/www/html/cacti/lib/installer.php:1463
 msgid "Your Web Servers PHP is properly setup with a Timezone."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1287
+#: /var/www/html/cacti/lib/installer.php:1468
 msgid "MySQL - TimeZone Support"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1292
+#: /var/www/html/cacti/lib/installer.php:1473
 msgid ""
 "Your MySQL TimeZone database is not populated.  Please populate this "
 "database before proceeding."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1296
+#: /var/www/html/cacti/lib/installer.php:1477
 msgid ""
 "Your Cacti database login account does not have access to the MySQL TimeZone "
 "database.  Please provide the Cacti database account \"select\" access to "
@@ -15232,36 +15285,36 @@ msgid ""
 "TimeZone information before proceeding."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1301
+#: /var/www/html/cacti/lib/installer.php:1482
 msgid ""
 "Your Cacti database account has access to the MySQL TimeZone database and "
 "that database is populated with global TimeZone information."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1306
+#: /var/www/html/cacti/lib/installer.php:1487
 msgid "MySQL - Settings"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1307
+#: /var/www/html/cacti/lib/installer.php:1488
 msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1309
+#: /var/www/html/cacti/lib/installer.php:1490
 msgid "Recommended MySQL System Variable Settings"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1334
+#: /var/www/html/cacti/lib/installer.php:1515
 msgid "Installation Type"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1340
+#: /var/www/html/cacti/lib/installer.php:1521
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1341
+#: /var/www/html/cacti/lib/installer.php:1522
 msgid ""
 "If you are upgrading from a previous version please close all Cacti browser "
 "sessions and clear cache before continuing.  Additionally, after this script "
@@ -15271,103 +15324,103 @@ msgid ""
 "the Cacti web site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1346
+#: /var/www/html/cacti/lib/installer.php:1527
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1347
+#: /var/www/html/cacti/lib/installer.php:1528
 msgid ""
 "You appears to be downgrading to a previous version.  Database changes made "
 "for the newer version will not be reversed and <i>could</i> cause issues."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1352
+#: /var/www/html/cacti/lib/installer.php:1533
 msgid "Please select the type of installation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1353
+#: /var/www/html/cacti/lib/installer.php:1534
 msgid "Installation options:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1357
+#: /var/www/html/cacti/lib/installer.php:1538
 msgid "Choose this for the Primary site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1357
-#: /var/www/html/cacti/lib/installer.php:1393
+#: /var/www/html/cacti/lib/installer.php:1538
+#: /var/www/html/cacti/lib/installer.php:1574
 msgid "New Primary Server"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1358
-#: /var/www/html/cacti/lib/installer.php:1394
+#: /var/www/html/cacti/lib/installer.php:1539
+#: /var/www/html/cacti/lib/installer.php:1575
 msgid "New Remote Poller"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1358
+#: /var/www/html/cacti/lib/installer.php:1539
 msgid ""
 "Remote Pollers are used to access networks that are not readily accessible "
 "to the Primary site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1398
+#: /var/www/html/cacti/lib/installer.php:1579
 msgid ""
 "The following information has been determined from Cacti's configuration "
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1402
-#: /var/www/html/cacti/lib/installer.php:1414
+#: /var/www/html/cacti/lib/installer.php:1583
+#: /var/www/html/cacti/lib/installer.php:1595
 msgid "Database Connection Information"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1405
-#: /var/www/html/cacti/lib/installer.php:1417
+#: /var/www/html/cacti/lib/installer.php:1586
+#: /var/www/html/cacti/lib/installer.php:1598
 #, php-format
 msgid "Database: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1406
-#: /var/www/html/cacti/lib/installer.php:1418
+#: /var/www/html/cacti/lib/installer.php:1587
+#: /var/www/html/cacti/lib/installer.php:1599
 #, php-format
 msgid "Database User: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1407
-#: /var/www/html/cacti/lib/installer.php:1419
+#: /var/www/html/cacti/lib/installer.php:1588
+#: /var/www/html/cacti/lib/installer.php:1600
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1408
-#: /var/www/html/cacti/lib/installer.php:1420
+#: /var/www/html/cacti/lib/installer.php:1589
+#: /var/www/html/cacti/lib/installer.php:1601
 #, php-format
 msgid "Port: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1409
-#: /var/www/html/cacti/lib/installer.php:1421
+#: /var/www/html/cacti/lib/installer.php:1590
+#: /var/www/html/cacti/lib/installer.php:1602
 #, php-format
 msgid "Server Operating System Type: <b>%s</b>"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1426
+#: /var/www/html/cacti/lib/installer.php:1607
 msgid "Configuration Readonly!"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1427
+#: /var/www/html/cacti/lib/installer.php:1608
 msgid ""
 "Your config.php file must be writable by the web server during install in "
 "order to configure the Remote poller.  Once installation is complete, you "
 "must set this file to Read Only to prevent possible security issues."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1431
+#: /var/www/html/cacti/lib/installer.php:1612
 msgid "Configuration of Poller"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1432
+#: /var/www/html/cacti/lib/installer.php:1613
 msgid ""
 "Your Remote Cacti Poller information has not been included in your config."
 "php file.  Please review the config.php.dist, and set the variables: <i>"
@@ -15376,19 +15429,19 @@ msgid ""
 "try again."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1436
+#: /var/www/html/cacti/lib/installer.php:1617
 msgid "Remote Poller Variables"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1437
+#: /var/www/html/cacti/lib/installer.php:1618
 msgid "The variables that must be set include the following:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1448
+#: /var/www/html/cacti/lib/installer.php:1629
 msgid "You must also set the $poller_id variable in the config.php."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1449
+#: /var/www/html/cacti/lib/installer.php:1630
 msgid ""
 "Once you have the variables set in the config.php file, you must also grant "
 "the $rdatabase_username access to the Cacti database.  Follow the same "
@@ -15397,23 +15450,23 @@ msgid ""
 "proceed and complete the install."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1459
+#: /var/www/html/cacti/lib/installer.php:1640
 msgid "Critical Binary Locations and Versions"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1460
+#: /var/www/html/cacti/lib/installer.php:1641
 msgid "Make sure all of these values are correct before continuing."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1463
+#: /var/www/html/cacti/lib/installer.php:1644
 msgid "One or more paths appear to be incorrect, unable to proceed"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1526
+#: /var/www/html/cacti/lib/installer.php:1720
 msgid "Directory Permission Checks"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1527
+#: /var/www/html/cacti/lib/installer.php:1721
 msgid ""
 "Please ensure the directory permissions below are correct before "
 "proceeding.  During the install, these directories need to be owned by the "
@@ -15424,85 +15477,78 @@ msgid ""
 "be used from the command line after the install is complete."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1530
+#: /var/www/html/cacti/lib/installer.php:1724
 msgid ""
 "After the install is complete, you can make some of these directories read "
 "only to increase security."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1532
+#: /var/www/html/cacti/lib/installer.php:1726
 msgid ""
 "These directories will be required to stay read writable after the install "
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1544
+#: /var/www/html/cacti/lib/installer.php:1731
 msgid "Required Writable at Install Time Only"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1549
-#: /var/www/html/cacti/lib/installer.php:1588
-#, php-format
-msgid "<p>%s is <font color=\"#008000\">Writable</font></p>"
+#: /var/www/html/cacti/lib/installer.php:1750
+#: /var/www/html/cacti/lib/installer.php:1781
+msgid "Not Writable"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1551
-#: /var/www/html/cacti/lib/installer.php:1590
-#, php-format
-msgid "<p>%s is <font color=\"#FF0000\">Not Writable</font></p>"
-msgstr ""
-
-#: /var/www/html/cacti/lib/installer.php:1584
+#: /var/www/html/cacti/lib/installer.php:1762
 msgid "Required Writable after Install Complete"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1603
+#: /var/www/html/cacti/lib/installer.php:1796
 msgid "Ensure Host Process Has Access"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1604
+#: /var/www/html/cacti/lib/installer.php:1797
 msgid ""
 "Make sure your webserver has read and write access to the entire folder "
 "structure."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1605
+#: /var/www/html/cacti/lib/installer.php:1798
 msgid "Example:"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1607
+#: /var/www/html/cacti/lib/installer.php:1800
 #, php-format
 msgid "%s should have MODIFY permission to the above directories"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1609
+#: /var/www/html/cacti/lib/installer.php:1802
 #, php-format
 msgid "chown -R %s.%s %s/resource/"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1610
+#: /var/www/html/cacti/lib/installer.php:1803
 msgid ""
 "For SELINUX-users make sure that you have the correct permissions or set "
 "'setenforce 0' temporarily."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1613
+#: /var/www/html/cacti/lib/installer.php:1806
 msgid "Check Permissions"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1615
+#: /var/www/html/cacti/lib/installer.php:1808
 msgid "All folders are writable"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1619
+#: /var/www/html/cacti/lib/installer.php:1812
 msgid ""
 "If you are installing packages, once the packages are installed, you should "
 "change the scripts directory back to read only as this presents some "
 "exposure to the web site."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1621
+#: /var/www/html/cacti/lib/installer.php:1814
 msgid ""
 "For remote pollers, it is critical that the paths that you will be updating "
 "frequently, including the plugins, scripts, and resources paths have read/"
@@ -15510,12 +15556,12 @@ msgid ""
 "main web server content."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1637
-#: /var/www/html/cacti/lib/installer.php:1656
+#: /var/www/html/cacti/lib/installer.php:1830
+#: /var/www/html/cacti/lib/installer.php:1849
 msgid "Default Profile"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1638
+#: /var/www/html/cacti/lib/installer.php:1831
 msgid ""
 "Please select the default Data Source Profile to be used for polling "
 "sources.  This is the maximum amount of time between scanning devices for "
@@ -15524,15 +15570,15 @@ msgid ""
 "interval that you wish to use for Data Collection."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1662
+#: /var/www/html/cacti/lib/installer.php:1855
 msgid "Cron Internal"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1683
+#: /var/www/html/cacti/lib/installer.php:1876
 msgid "Default Automation Network"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1684
+#: /var/www/html/cacti/lib/installer.php:1877
 msgid ""
 "Cacti can automatically scan the network once installation has completed. "
 "This will utilise the network range below to work out the range of IPs that "
@@ -15540,55 +15586,55 @@ msgid ""
 "include using both 'public' and 'private' communities."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1685
+#: /var/www/html/cacti/lib/installer.php:1878
 msgid ""
 "If your devices require a different set of options to be used first, you may "
 "define them below and they will be utilized before the defaults"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1686
+#: /var/www/html/cacti/lib/installer.php:1879
 msgid "All options may be adjusted post installation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1690
+#: /var/www/html/cacti/lib/installer.php:1883
 msgid "Default Options"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1694
+#: /var/www/html/cacti/lib/installer.php:1887
 msgid "Scan Mode"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1699
+#: /var/www/html/cacti/lib/installer.php:1892
 msgid "Network Range"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1705
+#: /var/www/html/cacti/lib/installer.php:1898
 msgid "Additional Defaults"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1726
+#: /var/www/html/cacti/lib/installer.php:1919
 msgid "Additional SNMP Options"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1739
+#: /var/www/html/cacti/lib/installer.php:1932
 msgid "Error Locating Profiles"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1740
+#: /var/www/html/cacti/lib/installer.php:1933
 msgid "The installation cannot continue because no profiles could be found."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1741
+#: /var/www/html/cacti/lib/installer.php:1934
 msgid ""
 "This may occur if you have a blank database and have not yet imported the "
 "cacti.sql file"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1749
+#: /var/www/html/cacti/lib/installer.php:1942
 msgid "Template Setup"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1751
+#: /var/www/html/cacti/lib/installer.php:1944
 msgid ""
 "Please select the Device Templates that you wish to use after the Install.  "
 "If you Operating System is Windows, you need to ensure that you select the "
@@ -15596,16 +15642,16 @@ msgid ""
 "sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1756
+#: /var/www/html/cacti/lib/installer.php:1949
 #: /var/www/html/cacti/plugins.php:426
 msgid "Author"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1756
+#: /var/www/html/cacti/lib/installer.php:1949
 msgid "Homepage"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1773
+#: /var/www/html/cacti/lib/installer.php:1966
 msgid ""
 "Device Templates allow you to monitor and graph a vast assortment of data "
 "within Cacti.  After you select the desired Device Templates, press 'Finish' "
@@ -15613,41 +15659,41 @@ msgid ""
 "importation of the Device Templates can take a few minutes."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1780
+#: /var/www/html/cacti/lib/installer.php:1973
 msgid "Database Collation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1792
+#: /var/www/html/cacti/lib/installer.php:1985
 msgid "Your databse default collation appears to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1794
+#: /var/www/html/cacti/lib/installer.php:1987
 msgid "Your database default collaction does NOT appear to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1795
+#: /var/www/html/cacti/lib/installer.php:1988
 msgid ""
 "Any tables created by plugins may have issues linked against Cacti Core "
 "tables if the collation is not matched"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1796
+#: /var/www/html/cacti/lib/installer.php:1989
 #, php-format
 msgid ""
 "Please ensure your database is changed from '%s' to 'utf8mb4_unicode_ci'"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1799
+#: /var/www/html/cacti/lib/installer.php:1992
 msgid "Table Setup"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1804
+#: /var/www/html/cacti/lib/installer.php:1997
 msgid ""
 "The following tables should be converted to UTF8 and InnoDB.  Please select "
 "the tables that you wish to convert during the installation process."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1805
+#: /var/www/html/cacti/lib/installer.php:1998
 msgid ""
 "Conversion of tables may take some time especially on larger tables.  The "
 "conversion of these tables will occur in the background but will not prevent "
@@ -15655,115 +15701,115 @@ msgid ""
 "not enough resources for MySQL to handle the conversion."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1809
+#: /var/www/html/cacti/lib/installer.php:2002
 msgid "Tables"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1810
+#: /var/www/html/cacti/lib/installer.php:2003
 #: /var/www/html/cacti/utilities.php:509
 msgid "Collation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1810
+#: /var/www/html/cacti/lib/installer.php:2003
 #: /var/www/html/cacti/utilities.php:504
 msgid "Engine"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1832
+#: /var/www/html/cacti/lib/installer.php:2025
 msgid "WARNING"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1833
+#: /var/www/html/cacti/lib/installer.php:2026
 msgid ""
 "One or more tables are too large to convert during the installation.  You "
 "should use the cli/convert_tables.php script to perform the conversion."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1839
+#: /var/www/html/cacti/lib/installer.php:2032
 msgid "All your tables appear to be UTF8 compliant"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1849
+#: /var/www/html/cacti/lib/installer.php:2042
 msgid "Confirm Upgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1853
+#: /var/www/html/cacti/lib/installer.php:2046
 msgid "Confirm Downgrade"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1857
+#: /var/www/html/cacti/lib/installer.php:2050
 msgid "Confirm Installation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1858
+#: /var/www/html/cacti/lib/installer.php:2051
 #: /var/www/html/cacti/plugins.php:28
 msgid "Install"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1863
+#: /var/www/html/cacti/lib/installer.php:2056
 msgid "DOWNGRADE DETECTED"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1864
+#: /var/www/html/cacti/lib/installer.php:2057
 msgid ""
 "YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES "
 "THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS "
 "AUTOMATICALLY FOR YOU"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1865
+#: /var/www/html/cacti/lib/installer.php:2058
 msgid ""
 "Downgrading should only be performed when absolutely necessary and doing so "
 "may break your installlation"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1868
+#: /var/www/html/cacti/lib/installer.php:2061
 msgid ""
 "Your Cacti Server is almost ready.  Please check that you are happy to "
 "proceed."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1871
+#: /var/www/html/cacti/lib/installer.php:2064
 #, php-format
 msgid ""
 "Press '%s' then click '%s' to complete the installation process after "
 "selecting your Device Templates."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1885
+#: /var/www/html/cacti/lib/installer.php:2078
 #, php-format
 msgid "Installing Cacti Server v%s"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1886
+#: /var/www/html/cacti/lib/installer.php:2079
 msgid "Your Cacti Server is now installing"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1993
+#: /var/www/html/cacti/lib/installer.php:2186
 msgid "Complete"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1994
+#: /var/www/html/cacti/lib/installer.php:2187
 #, php-format
 msgid ""
 "Your Cacti Server v%s has been installed/updated.  You may now start using "
 "the software."
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:1997
+#: /var/www/html/cacti/lib/installer.php:2190
 #, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:2109
+#: /var/www/html/cacti/lib/installer.php:2296
 msgid "Get Help"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:2114
+#: /var/www/html/cacti/lib/installer.php:2301
 msgid "Report Issue"
 msgstr ""
 
-#: /var/www/html/cacti/lib/installer.php:2117
+#: /var/www/html/cacti/lib/installer.php:2304
 msgid "Get Started"
 msgstr ""
 
@@ -17014,7 +17060,7 @@ msgid ""
 "indexing, Real-time graphing, etc."
 msgstr ""
 
-#: /var/www/html/cacti/pollers.php:70 /var/www/html/cacti/sites.php:103
+#: /var/www/html/cacti/pollers.php:70 /var/www/html/cacti/sites.php:108
 msgid "TimeZone"
 msgstr ""
 
@@ -17142,16 +17188,16 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: /var/www/html/cacti/pollers.php:367 /var/www/html/cacti/sites.php:294
+#: /var/www/html/cacti/pollers.php:367 /var/www/html/cacti/sites.php:320
 msgid "You must select at least one Site."
 msgstr ""
 
-#: /var/www/html/cacti/pollers.php:404 /var/www/html/cacti/sites.php:327
+#: /var/www/html/cacti/pollers.php:404 /var/www/html/cacti/sites.php:353
 #, php-format
 msgid "Site [edit: %s]"
 msgstr ""
 
-#: /var/www/html/cacti/pollers.php:408 /var/www/html/cacti/sites.php:329
+#: /var/www/html/cacti/pollers.php:408 /var/www/html/cacti/sites.php:355
 msgid "Site [new]"
 msgstr ""
 
@@ -17421,130 +17467,152 @@ msgid "New Site"
 msgstr ""
 
 #: /var/www/html/cacti/sites.php:49
+msgid "Address Information"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:54
 msgid "Address1"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:50
+#: /var/www/html/cacti/sites.php:55
 msgid "The primary address for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:52
+#: /var/www/html/cacti/sites.php:57
 msgid "Enter the Site Address"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:58
+#: /var/www/html/cacti/sites.php:63
 msgid "Address2"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:59
+#: /var/www/html/cacti/sites.php:64
 msgid "Additional address information for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:61
+#: /var/www/html/cacti/sites.php:66
 msgid "Additional Site Address information"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:67 /var/www/html/cacti/sites.php:496
+#: /var/www/html/cacti/sites.php:72 /var/www/html/cacti/sites.php:522
 msgid "City"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:68
+#: /var/www/html/cacti/sites.php:73
 msgid "The city or locality for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:70
+#: /var/www/html/cacti/sites.php:75
 msgid "Enter the City or Locality"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:76 /var/www/html/cacti/sites.php:497
+#: /var/www/html/cacti/sites.php:81 /var/www/html/cacti/sites.php:523
 msgid "State"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:77
+#: /var/www/html/cacti/sites.php:82
 msgid "The state for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:79
+#: /var/www/html/cacti/sites.php:84
 msgid "Enter the state"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:85
+#: /var/www/html/cacti/sites.php:90
 msgid "Postal/Zip Code"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:86
+#: /var/www/html/cacti/sites.php:91
 msgid "The postal or zip code for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:88
+#: /var/www/html/cacti/sites.php:93
 msgid "Enter the postal code"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:94 /var/www/html/cacti/sites.php:498
+#: /var/www/html/cacti/sites.php:99 /var/www/html/cacti/sites.php:524
 msgid "Country"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:95
+#: /var/www/html/cacti/sites.php:100
 msgid "The country for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:97
+#: /var/www/html/cacti/sites.php:102
 msgid "Enter the country"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:104
+#: /var/www/html/cacti/sites.php:109
 msgid "The TimeZone for the Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:112
-msgid "Latitude"
-msgstr ""
-
-#: /var/www/html/cacti/sites.php:113
-msgid "The Latitude for this Site."
-msgstr ""
-
-#: /var/www/html/cacti/sites.php:115
-msgid "example 38.889488"
-msgstr ""
-
-#: /var/www/html/cacti/sites.php:121
-msgid "Longitude"
+#: /var/www/html/cacti/sites.php:117
+msgid "Geolocation Information"
 msgstr ""
 
 #: /var/www/html/cacti/sites.php:122
+msgid "Latitude"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:123
+msgid "The Latitude for this Site."
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:125
+msgid "example 38.889488"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:131
+msgid "Longitude"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:132
 msgid "The Longitude for this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:124
+#: /var/www/html/cacti/sites.php:134
 msgid "example -77.0374678"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:130
-msgid "Site Notes"
-msgstr ""
-
-#: /var/www/html/cacti/sites.php:133
-msgid "Additional area use for random notes related to this Site."
-msgstr ""
-
-#: /var/www/html/cacti/sites.php:136
-msgid "Enter some useful information about the Site."
+#: /var/www/html/cacti/sites.php:140
+msgid "Zoom"
 msgstr ""
 
 #: /var/www/html/cacti/sites.php:141
+msgid ""
+"The default Map Zoom for this Site.  Values can be from 0 to 23. Note that "
+"some regions of the planet have a max Zoom of 15."
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:143
+msgid "0 - 23"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:150
+msgid "Additional Information"
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:158
+msgid "Additional area use for random notes related to this Site."
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:161
+msgid "Enter some useful information about the Site."
+msgstr ""
+
+#: /var/www/html/cacti/sites.php:166
 msgid "Alternate Name"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:142
+#: /var/www/html/cacti/sites.php:167
 msgid "Used for cases where a Site has an alternate named used to describe it"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:144
+#: /var/www/html/cacti/sites.php:169
 msgid "If the Site is known by another name enter it here."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:286
+#: /var/www/html/cacti/sites.php:312
 msgid ""
 "Click 'Continue' to delete the following Site.  Note, all devices will be "
 "disassociated from this site."
@@ -17554,41 +17622,41 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: /var/www/html/cacti/sites.php:291
+#: /var/www/html/cacti/sites.php:317
 msgid "Delete Site"
 msgid_plural "Delete Sites"
 msgstr[0] ""
 msgstr[1] ""
 
-#: /var/www/html/cacti/sites.php:493 /var/www/html/cacti/tree.php:817
+#: /var/www/html/cacti/sites.php:519 /var/www/html/cacti/tree.php:817
 msgid "Site Name"
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:493
+#: /var/www/html/cacti/sites.php:519
 msgid "The name of this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:494
+#: /var/www/html/cacti/sites.php:520
 msgid "The unique id associated with this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:495
+#: /var/www/html/cacti/sites.php:521
 msgid "The number of Devices associated with this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:496
+#: /var/www/html/cacti/sites.php:522
 msgid "The City associated with this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:497
+#: /var/www/html/cacti/sites.php:523
 msgid "The State associated with this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:498
+#: /var/www/html/cacti/sites.php:524
 msgid "The Country associated with this Site."
 msgstr ""
 
-#: /var/www/html/cacti/sites.php:517
+#: /var/www/html/cacti/sites.php:543
 msgid "No Sites Found"
 msgstr ""
 

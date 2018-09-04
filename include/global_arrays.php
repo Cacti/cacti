@@ -855,7 +855,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Utilities') => array(
 			'utilities.php'  => __('System Utilities'),
-			'data_debug.php' => __('Datasource Debug'),
+			'data_debug.php' => __('Data Debug'),
 			'links.php'      => __('External Links'),
 			)
 	);
