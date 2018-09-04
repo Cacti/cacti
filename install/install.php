@@ -52,7 +52,7 @@ if (isset_request_var('language')) {
 	$language = get_validated_language(get_nfilter_request_var('language'), read_config_option('user_language', true));
 	$_SESSION['install_language'] = $language;
 	set_user_setting('user_language', $language);
-	set_config_option('isntall_language', $language);
+	set_config_option('install_language', $language);
 } elseif (isset($_SESSION['install_language'])) {
 	$language = $_SESSION['install_language'];
 } else {

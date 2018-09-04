@@ -40,11 +40,12 @@ const FIELDS_INSTALL_TYPE = {
 
 const FIELDS_BINARY_OPTIONS = {
 	selected_theme:        { type: 'dropdown', name: 'Theme'              },
-	rrdtool_version:       { type: 'dropdown', name: 'RRDVer'             },
+	rrdtool_version:       { type: 'dropdown', name: 'RRDVersion'         },
 }
 
 const FIELDS_BINARY_LOCATIONS = {
 	paths:                 { type: 'textbox',  prefix: 'path_'            },
+	settings_sendmail_path:{ type: 'textbox',  name: 'settings_sendmail_path' },
 }
 
 const FIELDS_PROFILE = {
@@ -310,21 +311,37 @@ function processStepWelcome(StepData) {
 	if (StepData.Theme != 'classic') {
 		$('select#theme').selectmenu({
 			change: function() {
-				document.location = document.location + '&theme='+$('#theme').val();
+				document.location = location.pathname + '?theme='+$('#theme').val();
+			}
+		});
+
+		$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+			_renderItem: function( ul, item ) {
+				var li = $( "<li>" ), wrapper = $( "<div>", { text: item.label } );
+				if ( item.disabled ) {
+					li.addClass( "ui-state-disabled" );
+				}
+
+				$( "<span>", {
+					style: item.element.attr( "data-style" ),
+					"class": "flag-icon flag-icon-squared " + item.element.attr( "data-class" )
+				}).appendTo( wrapper );
+
+				return li.append( wrapper ).appendTo( ul );
 			}
 		});
 
 		$("select#language").selectmenu('destroy').iconselectmenu({
 			change: function() {
-				document.location =  document.location + '&language='+$('#language').val();
+				document.location = location.pathname + '?language='+$('#language').val();
 			}
 		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 	} else {
 		$('#theme').change(function() {
-			document.location =  document.location + '&theme='+$('#theme').val();
+			document.location = location.pathname + '?theme='+$('#theme').val();
 		});
 		$('#language').change(function() {
-			document.location =  document.location + '&language='+$('#language').val();
+			document.location = location.pathname + '?language='+$('#language').val();
 		});
 	}
 
@@ -386,28 +403,6 @@ function processStepPermissionCheck(StepData) {
 function processStepBinaryLocations(StepData) {
 	setFieldData(FIELDS_BINARY_OPTIONS, StepData);
 	setFieldData(FIELDS_BINARY_LOCATIONS, StepData);
-
-	var errors = StepData.Errors;
-	$(function () {
-            var focusedElement;
-            $(document).on('focus', 'input', function () {
-                if (focusedElement == this) return; //already focused, return so user can now place cursor at specific point in input.
-                focusedElement = this;
-                setTimeout(function () { focusedElement.select(); }, 50); //select all text in any field on focus for easy re-entry. Delay sightly to allow focus to "stick" before selecting.
-            });
-        });
-
-	/* Focus on first error */
-	for (var propName in errors) {
-		if (errors.hasOwnProperty(propName)) {
-			propValue = errors[propName];
-			if (propValue) {
-				element = $("#" + propName);
-				element.focus();
-				break;
-			}
-		}
-	}
 }
 
 function processStepProfileAndAutomation(StepData) {
@@ -645,6 +640,42 @@ function performStep(installStep) {
 			} else if (data.Step >= STEP_COMPLETE) {
 				processStepComplete(data.Step, data.StepData);
 			}
+
+			$(function () {
+				var focusedElement;
+				$(document).on('focus', 'input', function () {
+					if (focusedElement == this) {
+						// already focused, return so user can now place cursor
+						// at specific point in input.
+						return;
+					}
+					focusedElement = this;
+
+					// select all text in any field on focus for easy re-entry.
+					// delay sightly to allow focus to "stick" before selecting.
+					setTimeout(function () { focusedElement.select(); }, 50);
+				});
+
+				/* Focus on first error */
+				var errors = data.Errors;
+				for (var propIndex in errors) {
+					if (errors.hasOwnProperty(propIndex)) {
+						propArray = errors[propIndex];
+						if (propArray) {
+							for (var propName in propArray) {
+								if (propArray.hasOwnProperty(propName)) {
+									propValue = propArray[propName];
+									element = $("#" + propName);
+									if (element != null && element.length > 0) {
+										element.focus();
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
+			});
 		})
 		.fail(function(data) {
 			getPresentHTTPError(data);
@@ -653,21 +684,6 @@ function performStep(installStep) {
 }
 
 function createItemSelectMenu() {
-	$.widget( "custom.iconselectmenu", $.ui.selectmenu, {
-		_renderItem: function( ul, item ) {
-			var li = $( "<li>" ), wrapper = $( "<div>", { text: item.label } );
-			if ( item.disabled ) {
-				li.addClass( "ui-state-disabled" );
-			}
-
-			$( "<span>", {
-				style: item.element.attr( "data-style" ),
-				"class": "flag-icon flag-icon-squared " + item.element.attr( "data-class" )
-			}).appendTo( wrapper );
-
-			return li.append( wrapper ).appendTo( ul );
-		}
-	});
 }
 
 $.urlParam = function(name){
@@ -686,8 +702,6 @@ $(function() {
 	disableButton('Previous');
 	disableButton('Next');
 	disableButton('Test');
-
-	createItemSelectMenu();
 
 	installData = $.urlParam('data');
 	if (installData != null && installData != 0) {

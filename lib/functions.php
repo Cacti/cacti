@@ -4611,6 +4611,7 @@ function get_installed_rrdtool_version() {
 	if (preg_match('/^RRDtool ([0-9.]+)$/', $shell, $matches)) {
 		return $matches[1];
 	}
+	return false;
 }
 
 function get_md5_hash($path) {
@@ -4761,4 +4762,92 @@ function get_client_addr($client_addr = false) {
 	}
 
 	return $client_addr;
+}
+
+function cacti_pton($ipaddr) {
+	// Strip out the netmask, if there is one.
+	$subnet_pos = strpos($ipaddr, '/');
+	if ($subnet_pos) {
+		$subnet = substr($ipaddr, $subnet_pos+1);
+		$ipaddr = substr($ipaddr, 0, $subnet_pos);
+	} else {
+		$subnet = null; // No netmask present
+	}
+
+	// Convert address to packed format
+	$addr = @inet_pton($ipaddr);
+	if ($addr === false) {
+		return false;
+	}
+
+	// Maximum netmask length = same as packed address
+	$len = 8*strlen($addr);
+
+	if (!empty($subnet)) {
+		if (!is_numeric($subnet)) {
+			return false;
+		} else if ($subnet > $len) {
+			return false;
+		}
+	}
+
+	if (!is_numeric($subnet)){
+		$subnet=$len;
+	} else {
+		$subnet=(int)$subnet;
+	}
+
+	// Create a hex expression of the subnet mask
+	$mask=str_repeat('f',$subnet>>2);
+	switch($subnet&3) {
+		case 3:
+			$mask.='e';
+			break;
+		case 2:
+			$mask.='c'; break;
+		case 1:
+			$mask.='8'; break;
+	}
+	$mask=str_pad($mask,$len>>2,'0');
+
+	// Packed representation of netmask
+	$mask=pack('H*',$mask);
+
+	$result = array('ip' => $addr, 'subnet' => $mask);
+	return $result;
+}
+
+function cacti_ntop($addr) {
+	if (empty($addr)) {
+		return false;
+	}
+
+	if (is_array($addr)) {
+		foreach ($addr as $ip) {
+			$addr = $ip;
+			break;
+		}
+	}
+	return @inet_ntop($addr);
+}
+
+function cacti_ntoc($subnet, $ipv6 = false) {
+	$result = false;
+	$count = 0;
+	foreach(str_split($subnet) as $char) {
+		$i = ord($char);
+		while (($i & 128) == 128) {
+			$count++;
+			$i = ($i << 1) % 256;
+		}
+	}
+
+	return $count;
+}
+
+function cacti_ptoa($title, $addr) {
+	// Let's display it as hexadecimal format
+	foreach(str_split($addr) as $char) {
+		print str_pad(dechex(ord($char)),2,'0',STR_PAD_LEFT);
+	}
 }

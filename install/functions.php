@@ -385,7 +385,7 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
-	log_install('file', "$name: Locations ($os)" . PHP_EOL . var_export($defaultPaths, true));
+	log_install('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
@@ -487,15 +487,6 @@ function install_file_paths() {
 	$input['path_cactilog'] = $settings['path']['path_cactilog'];
 	if (empty($input['path_cactilog']['default'])) {
 		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
-	}
-
-	/* Theme */
-	$input['selected_theme'] = $settings['visual']['selected_theme'];
-	$input['selected_theme']['description'] = __('Please select one of the available Themes to skin your Cacti with.');
-	if (config_value_exists('selected_theme')) {
-		$input['selected_theme']['default'] = read_config_option('selected_theme');
-	} else {
-		$input['selected_theme']['default'] = 'modern';
 	}
 
 	/* RRDtool Version */

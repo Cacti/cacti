@@ -488,38 +488,57 @@ function form_file($form_name, $form_size = 30) {
    @arg $type - the type of textbox, either 'text' or 'password'
    @arg $current_id - used to determine if a current value for this form element
      exists or not. a $current_id of '0' indicates that no current value exists,
-     a non-zero value indicates that a current value does exist */
-function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0) {
+     a non-zero value indicates that a current value does exist
+   @arg data - array containing 'text' element for display and if 'error' element present, shows failure */
+function form_filepath_box($form_name, $form_previous_value, $form_default_value, $form_max_length, $form_size = 30, $type = 'text', $current_id = 0, $data = false) {
 	if (($form_previous_value == '') && (empty($current_id))) {
 		$form_previous_value = $form_default_value;
 	}
 
 	print "<input type='$type'";
 
-	if (isset($_SESSION['sess_error_fields'])) {
-		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-			print " class='ui-state-default ui-corner-all txtErrorTextBox'";
-			unset($_SESSION['sess_error_fields'][$form_name]);
-		} else {
-			print " class='ui-state-default ui-corner-all'";
-		}
-	}
-
-	if (isset($_SESSION['sess_field_values'])) {
-		if (!empty($_SESSION['sess_field_values'][$form_name])) {
-			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
-		}
-	}
-
-	if (is_file(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-check-circle' style='padding:5px;font-size:16px;color:green' title='" . __esc('File Found') . "'></span>";
-	}else if (is_dir(trim($form_previous_value))) {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('Path is a Directory and not a File') . "'></span>";
-	}else if ($form_previous_value == '') {
-		$extra_data = '';
+	if (is_array($data)) {
+		$extra_text = $data['text'];
+		$extra_class = (isset($data['error']) ? 'fa-times-circle' : 'fa-check-circle');
+		$extra_color = (isset($data['error']) ? 'red' : 'green');
+		$error_class = (isset($data['error']) ? 'txtErrorTextBox' : '');
 	} else {
-		$extra_data = "<span class='cactiTooltipHint fa fa-times-circle' style='padding:5px;font-size:16px;color:red' title='" . __esc('File is Not Found'). "'></span>";
+		if (isset($_SESSION['sess_field_values'])) {
+			if (!empty($_SESSION['sess_field_values'][$form_name])) {
+				$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+			}
+		}
+
+		if (isset($_SESSION['sess_error_fields'])) {
+			if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+				$error_class = "txtErrorTextBox";
+				unset($_SESSION['sess_error_fields'][$form_name]);
+			}
+		}
+
+		if ($form_previous_value == '') {
+			$extra_text  = '';
+		} else if (is_file(trim($form_previous_value))) {
+			$extra_class = 'fa-check-circle';
+			$extra_color = 'green';
+			$extra_text  = __esc('File Found');
+		} else if (is_dir(trim($form_previous_value))) {
+			$extra_class = 'fa-times-circle';
+			$extra_color = 'red';
+			$extra_text  = __esc('Path is a Directory and not a File');
+		} else {
+			$extra_class = 'fa-times-circle';
+			$extra_color = 'red';
+			$extra_text  = __esc('File is Not Found');
+		}
 	}
+
+	$extra_data = '';
+	if ($extra_text != '') {
+		$extra_data = "<span class='cactiTooltipHint fa $extra_class' style='padding:5px;font-size:16px;color:$extra_color' title='$extra_text'></span>";
+	}
+
+	print " class='ui-state-default ui-corner-all$error_class'";
 
 	print " id='$form_name' placeholder='" . __('Enter a valid file path') . "' name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>" . $extra_data;
 }
