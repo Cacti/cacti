@@ -109,8 +109,8 @@ function getHosts($hostTemplateIds = false) {
 
 	$tmpArray = db_fetch_assoc("SELECT h.id, h.hostname, h.description, h.host_template_id
 		FROM host AS h
-		INNER JOIN host_template AS ht
-		ON h.host_template_id = h.id
+		LEFT JOIN host_template AS ht
+		ON h.host_template_id = ht.id
 		$sql_where
 		ORDER BY h.id");
 
