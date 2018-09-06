@@ -497,6 +497,10 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 
 	print "<input type='$type'";
 
+	$extra_text = '';
+	$extra_color = '';
+	$extra_class = '';
+	$error_class = '';
 	if (is_array($data)) {
 		$extra_text = $data['text'];
 		$extra_class = (isset($data['error']) ? 'fa-times-circle' : 'fa-check-circle');
