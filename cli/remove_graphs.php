@@ -241,7 +241,7 @@ if ($listHosts) {
 		ON h.id = gl.host_id
 		$sql_where");
 
-	if (sizeof($graphs)) {
+	if ($graphs != false && sizeof($graphs)) {
 		print 'There are ' . sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
 
 		if ($force) {
