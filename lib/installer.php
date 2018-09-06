@@ -3,24 +3,29 @@ include(dirname(__FILE__) . '/../lib/poller.php');
 
 function log_install_and_cacti($string) {
 	cacti_log($string, false, 'INSTALL:');
-	log_install('', $string);
+	log_install('', $string, FILE_APPEND, true);
 }
 
-function log_install($filename, $data, $flags = FILE_APPEND) {
-	global $config;
-	$can_log = read_config_option('log_install', true);
-	if (empty($can_log) && !empty($filename)) {
-		$can_log = read_config_option('log_install_'.$filename, true);
+function log_install($filename, $data, $flags = FILE_APPEND, $force = false) {
+	global $config, $debug;
+	$log_install = read_config_option('log_install', true);
+	$can_log = !empty($log_install);
+	if (!$can_log && !empty($filename)) {
+		$can_log = !empty(read_config_option('log_install_'.$filename, true));
+	}
+
+	$logdate = date('[Y-m-d H:i:s');
+	if (($force || !empty($can_log)) && defined('log_install_echo')) {
+		printf("%s %3s] %s%s", $logdate, $can_log?'Log':'---', $data, PHP_EOL);
 	}
 
 	if (!empty($can_log)) {
-		$logdate = date('[Y-m-d H:i:s ');
 		$logfile = 'install';
 		if (!empty($filename)) {
 			$logfile .= '-' . $filename;
 		}
-		file_put_contents($config['base_path'] . "/log/$logfile.log", $logdate . '] ' . $data . PHP_EOL, $flags);
-		file_put_contents($config['base_path'] . "/log/install-complete.log", sprintf("$logdate %15s] %s", $filename, $data . PHP_EOL), $flags);
+		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', $logdate . '] ' . $data . PHP_EOL, $flags);
+		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf('%s %15s] %s', $logdate, $filename, $data . PHP_EOL), $flags);
 	}
 }
 
@@ -106,6 +111,8 @@ class Installer implements JsonSerializable {
 
 		$step = read_config_option('install_step', true);
 		log_install('step', 'Initial: ' . clean_up_lines(var_export($step, true)));
+		$this->webMode = isset($installData['web_mode']);
+
 		if ($step === false || $step === null) {
 			log_install('step', "Resetting to STEP_WELCOME as not found");
 			$step = Installer::STEP_WELCOME;
@@ -319,18 +326,26 @@ class Installer implements JsonSerializable {
 	public function jsonSerialize() {
 		$output = $this->processCurrentStep();
 
-		return array(
+		$basics = array(
 			'Mode'     => $this->mode,
 			'Step'     => $this->stepCurrent,
-			'Eula'     => $this->eula,
-			'Prev'     => $this->buttonPrevious,
-			'Next'     => $this->buttonNext,
-			'Test'     => $this->buttonTest,
-			'Theme'    => $this->theme,
-			'Errors'   => $this->errors,
-			'Html'     => $output,
-			'StepData' => $this->stepData,
+			'Errors'   => $this->errors
 		);
+		if ($this->webMode) {
+			$webdata = array(
+				'Eula'     => $this->eula,
+				'Prev'     => $this->buttonPrevious,
+				'Next'     => $this->buttonNext,
+				'Test'     => $this->buttonTest,
+				'Theme'    => $this->theme,
+				'Html'     => $output,
+				'StepData' => $this->stepData,
+			);
+		} else {
+			$webdata = array();
+		}
+
+		return array_merge($basics, $webdata);
 	}
 
 	public function getData() {
@@ -2355,6 +2370,39 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public static function processInstall($backgroundArg) {
+		$backgroundTime = read_config_option('install_started', true);
+		if ($backgroundTime === null) {
+			$backgroundTime = false;
+		}
+
+		if ("$backgroundTime" != "$backgroundArg" && "-b" != "$backgroundArg") {
+			$dateTime = DateTime::createFromFormat('U.u', $backgroundTime);
+			$dateArg = DateTime::createFromFormat('U.u', $backgroundArg);
+			log_install_and_cacti(__('Background was already started at %s, this attempt at %s was skipped',
+				$dateTime->format('Y-m-d H:i:s.u'),
+				$dateArg->format('Y-m-d H:i:s.u')
+			));
+			return false;
+		}
+
+		try {
+			$backgroundTime = microtime(true);
+			$installer = new Installer();
+			$installer->processBackgroundInstall();
+		} catch (Exception $e) {
+			log_install_and_cacti(__('Exception occurred during installation:  #' . $e->getErrorCode() . ' - ' . $e->getErrorText()), false, 'INSTALL:');
+		}
+
+		$backgroundDone = microtime(true);
+		set_config_option('install_complete', $backgroundDone);
+
+		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
+		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
+
+		log_install_and_cacti(__('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')), false, 'INSTALL:');
+	}
+
 	public function processBackgroundInstall() {
 		global $config;
 		$failure = '';
@@ -2519,7 +2567,7 @@ class Installer implements JsonSerializable {
 		log_install('automation','Automation Row:' . clean_up_lines(var_export($automation_row, true)));
 		if (!empty($automation_row)) {
 			log_install_and_cacti(sprintf('Updating automation network (%s), mode "%s" => "%s", subnet "%s" => %s"'
-				, $automation_row['id'], $automation_row['mode'], $this->automationMode ? 'on' : ''
+				, $automation_row['id'], $automation_row['enabled'], $this->automationMode ? 'on' : ''
 				, $automation_row['subnet_range'], $this->automationRange));
 
 			db_execute_prepared('UPDATE automation_networks SET

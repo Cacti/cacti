@@ -296,7 +296,7 @@ function find_best_path($binary_name) {
 function install_setup_get_templates() {
 	global $config;
 
-	ini_set('zlib.output_compression', '0');
+	@ini_set('zlib.output_compression', '0');
 
 	$templates = array(
 		'Cisco_Router.xml.gz',
