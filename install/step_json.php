@@ -64,9 +64,9 @@ array(
 );
 */
 
-log_install('json','Start: ' . clean_up_lines(get_request_var('data')));
+log_install_high('json','Start: ' . clean_up_lines(get_request_var('data')));
 $json = json_encode($installer);
-log_install('json','  End: ' . clean_up_lines($json) . PHP_EOL);
+log_install_high('json','  End: ' . clean_up_lines($json) . PHP_EOL);
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));

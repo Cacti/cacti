@@ -24,6 +24,7 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
+include_once($config['base_path'] . '/install/functions.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -35,8 +36,10 @@ $options = array();
 $should_install = false;
 $force_install = false;
 
+display_version();
+
 error_reporting(E_ALL);
-set_config_option('log_install', '');
+db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
 define('log_install_echo', 'on');
 
 if (sizeof($parms)) {
@@ -52,16 +55,29 @@ if (sizeof($parms)) {
 			/* Standard parameters */
 			case '-d':
 			case '--debug':
-				if ($debug) {
-					set_config_option('log_install','on');
-				} else {
-					$debug = true;
+				$logname = 'log_install';
+				$tmplevel = false;
+				if (!empty($value)) {
+					$pos = strpos($value,':');
+					if ($pos !== false) {
+						$tmplevel = substr($value,$pos+1);
+						$value = substr($value,0,$pos);
+					}
+					if (!empty($value)) {
+						$logname .= '_' . $value;
+					}
 				}
+				if ($tmplevel !== false) {
+					$level = $tmplevel;
+				} else {
+					$level = log_install_level($logname, POLLER_VERBOSITY_NONE) + 1;
+				}
+				$level = log_install_level_sanitize($level);
+				set_config_option($logname, $level);
 				break;
 			case '--version':
 			case '-V':
 			case '-v':
-				display_version();
 				exit(0);
 			case '--help':
 			case '-H':
@@ -150,7 +166,6 @@ include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/api_automation.php');
 include_once($config['base_path'] . '/lib/api_automation_tools.php');
-include_once($config['base_path'] . '/install/functions.php');
 include_once($config['base_path'] . '/lib/installer.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
@@ -158,8 +173,6 @@ $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 $results = array('Step' => $options['Step']);
 $update_char = "o";
 
-display_version();
-print PHP_EOL;
 debug_install_array('Options', $options);
 $installer = new Installer($options);
 $results = $installer->jsonSerialize();
@@ -168,9 +181,12 @@ debug_install_array('Result', $results);
 if (isset($results['Errors']) && sizeof($results['Errors']) > 0) {
 	print PHP_EOL . 'Unable to continue as ' . sizeof($results['Errors']) . ' issues were found.' . PHP_EOL;
 	$count = 0;
-	foreach ($results['Errors'] as $error) {
+	foreach ($results['Errors'] as $error_section => $error_array) {
 		$count++;
-		print 'Error #' . $count . ' - ' . $error . PHP_EOL;
+		print $error_section . PHP_EOL;
+		foreach ($error_array as $error_key => $error) {
+			print $error_key . ' Error #' . $count . ' - ' . $error . PHP_EOL;
+		}
 	}
 	exit();
 }
@@ -181,6 +197,8 @@ if ($should_install) {
 		$time = '-b';
 	}
 	$installer->processInstall($time);
+} else {
+	print PHP_EOL . 'No errors were detected.  Install not performed as --install not specified' . PHP_EOL;
 }
 
 /*  get_install_option - gets the install options from a json file */
@@ -216,9 +234,7 @@ function set_install_option(&$options, $key, $display_name, $value) {
 	global $debug;
 
 	$options[$key] = $value;
-	if ($debug) {
-		printf('Setting %s to \'%s\'%s', $display_name, $value, PHP_EOL);
-	}
+	log_install_high('cli',sprintf('Setting %s to \'%s\'', $display_name, $value));
 }
 
 /*  set_install_multioption - sets sub-options that have mutiple key/value combinations with optional prefix */
@@ -245,17 +261,18 @@ function set_install_multioption(&$options, $key, $display_name, $value, $prefix
 }
 
 function debug_install_array($parent, $contents, $indent = 0) {
-	global $debug;
-	if ($debug) {
-		foreach ($contents as $key => $value) {
-			if (is_array($value) || is_object($value)) {
-				echo $parent . '->' . $key . ' (' . PHP_EOL;
-				debug_install_array($parent . '->' . $key, $value, $indent + 1);
-				echo $parent . '->' . $key . ' )' . PHP_EOL;
-			} else {
-				echo $parent . '.' . $key . ': ' . $value . PHP_EOL;
-			}
+	$hasContents = false;
+	foreach ($contents as $key => $value) {
+		if (is_array($value) || is_object($value)) {
+			debug_install_array($parent . '.' . $key, $value, $indent + 1);
+		} else {
+			$hasContents = true;
+			log_install_debug('cli',$parent . '.' . $key . ': ' . $value);
 		}
+	}
+
+	if (!$hasContents) {
+		log_install_debug('cli',$parent . ' (no items)');
 	}
 }
 /*  display_version - displays version information */
@@ -266,8 +283,6 @@ function display_version() {
 
 /*	display_help - displays the usage of the function */
 function display_help () {
-	display_version();
-
 	print PHP_EOL . 'usage: install_cacti.php [--debug] --accept-eula ' . PHP_EOL;
 	print '                         [--automationmode=] [--automationrange=] [--cron=]' . PHP_EOL;
 	print '                         [--language=] [--mode=] [--profile=] [--path=]' . PHP_EOL;
