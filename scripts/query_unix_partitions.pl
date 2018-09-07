@@ -1,7 +1,7 @@
 #!/usr/bin/perl
+
 delete @ENV{qw(PATH)};
-$ENV{PATH} = "/usr/bin:/bin";
-$path = $ENV{'PATH'};
+$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin';
 
 $val1 = $ARGV[0];
 ($val1) = $val1 =~ /^([\w]+)$/;

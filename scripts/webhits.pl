@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+delete @ENV{qw(PATH)};
+$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin';
+
 if ($ARGV[0] eq "") {
 	$log_path = "/var/log/httpd/access_log";
 }else{

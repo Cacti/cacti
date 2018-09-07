@@ -1,7 +1,7 @@
 #!/usr/bin/perl
+
 delete @ENV{qw(PATH)};
-$ENV{PATH} = "/usr/bin:/bin";
-$path = $ENV{'PATH'};
+$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin';
 
 #get load avg for 1;5;10 min
 open(PROCESS, "env LC_ALL=C uptime |");
