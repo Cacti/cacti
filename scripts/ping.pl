@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 delete @ENV{qw(PATH)};
-$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin';
+$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
 # take care for tcp:hostname or TCP:ip@
 $host = $ARGV[0];
