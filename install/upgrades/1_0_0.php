@@ -1539,11 +1539,13 @@ function upgrade_to_1_0_0() {
 		db_install_drop_column('external_links', 'imagecache');
 
 		db_install_add_column('external_links', array('name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 'disabled'));
-		db_install_execute('UPDATE external_links SET enabled="on" WHERE disabled=""');
-		db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
+		if (db_column_exists('external_links', 'disabled')) {
+			db_install_execute('UPDATE external_links SET enabled="on" WHERE disabled=""');
+			db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
+			db_install_drop_column('external_links', 'disabled');
+		}
 		db_install_execute('DELETE FROM external_links WHERE style NOT IN ("TAB", "CONSOLE", "FRONT", "FRONTTOP")');
 
-		db_install_drop_column('external_links', 'disabled');
 		db_install_execute('ALTER TABLE external_links
 			MODIFY COLUMN contentfile VARCHAR(255) NOT NULL default "",
 			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
