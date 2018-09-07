@@ -78,7 +78,7 @@ if (sizeof($parms)) {
 
 /* we need to rerun the upgrade, force the current version */
 if ($forcever == '') {
-	$old_cacti_version = get_cacti_version();
+	$old_cacti_version = get_cacti_cli_version();
 } else {
 	$old_cacti_version = $forcever;
 }
@@ -186,7 +186,7 @@ function db_install_errors($cacti_version) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Database Upgrade Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

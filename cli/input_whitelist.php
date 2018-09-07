@@ -163,7 +163,7 @@ exit(0);
  * display_version - displays version information
  */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Data Input Whitelist Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

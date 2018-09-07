@@ -227,7 +227,7 @@ if ($listHosts) {
 		$sql_cwhere = '';
 
 		foreach($regex as $r) {
-			$sql_cwhere .= ($sql_cwhere == '' ? '':' OR title_cache RLIKE "' . $r . '"');
+			$sql_cwhere .= ($sql_cwhere == '' ? '':' OR ') . 'title_cache RLIKE "' . $r . '"';
 		}
 
 		$sql_where .= $sql_cwhere . ')';
@@ -241,7 +241,7 @@ if ($listHosts) {
 		ON h.id = gl.host_id
 		$sql_where");
 
-	if (sizeof($graphs)) {
+	if ($graphs != false && sizeof($graphs)) {
 		print 'There are ' . sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
 
 		if ($force) {
@@ -275,7 +275,7 @@ exit(0);
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Remove Graphs Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

@@ -4460,9 +4460,9 @@ function get_cacti_version() {
  */
 function get_cacti_version_text($include_version = true) {
 	if ($include_version) {
-		return trim(__('Version %s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+		return trim(__('Version %s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
 	} else {
-		return trim(__('%s %s', CACTI_VERSION, (CACTI_VERSION_BETA == true ? __('- Beta'):'')));
+		return trim(__('%s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
 	}
 }
 
@@ -4470,8 +4470,9 @@ function get_cacti_version_text($include_version = true) {
  * get_cacti_cli_version() {
  */
 function get_cacti_cli_version() {
-	$version = get_cacti_version();
-	return ($version == 'new_install') ? CACTI_VERSION : $version;
+	$dbversion = get_cacti_version();
+	$version = get_cacti_version_text(false);
+	return $version . ' (DB: ' . $dbversion . ')';
 }
 
 /**

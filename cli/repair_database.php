@@ -200,7 +200,7 @@ if ($total_rows > 0 && !$force) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Database Repair Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
