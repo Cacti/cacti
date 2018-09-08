@@ -1124,7 +1124,7 @@ function get_item_xml($type, $id, $follow_deps) {
 					$param['dep_type'] = $dep_type;
 					$param['xml_text'] = $xml_text;
 
-					$param = api_plugin_hook_function('generate_xml_text', $param);
+					$param = api_plugin_hook_function('export_action', $param);
 
 					$xml_text = $param['xml_text'];
 				}

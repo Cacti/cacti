@@ -1279,6 +1279,8 @@ function item() {
 			WHERE gti.local_graph_id = ?
 			ORDER BY gti.sequence', array(get_request_var('id')));
 
+		$template_item_list = api_plugin_hook_function('graphs_item_array', $template_item_list);
+
 		$host_id = db_fetch_cell_prepared('SELECT host_id
 			FROM graph_local
 			WHERE id = ?',
@@ -1685,6 +1687,11 @@ function graph_edit() {
 	}
 	</script>
 	<?php
+	if (isset_request_var('id')) { 
+		api_plugin_hook_function('graph_edit_after', get_request_var('id'));
+	} else {
+		api_plugin_hook_function('graph_edit_after');
+	}
 }
 
 function validate_graph_request_vars() {
