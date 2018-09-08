@@ -606,7 +606,7 @@ function import_colors() {
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
 			if ($id === false) {
-				return $false;
+				return false;
 			}
 
 			if (!empty($id)) {
