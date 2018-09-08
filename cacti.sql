@@ -2236,7 +2236,7 @@ CREATE TABLE poller_reindex (
   op char(1) NOT NULL default '',
   assert_value varchar(100) NOT NULL default '',
   arg1 varchar(255) NOT NULL default '',
-  PRIMARY KEY (host_id, data_query_id),
+  PRIMARY KEY (host_id, data_query_id, arg1(187)),
   KEY present (present)
 ) ENGINE=InnoDB;
 
