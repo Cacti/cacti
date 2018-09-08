@@ -142,6 +142,7 @@ Cacti CHANGELOG
 -feature: Allow Adding Aggregate Graphs to a Report 
 -feature: Don't allow removal of Data Sources from Data Template once its in use
 -feature: Tree automation is now defaulted to on for new install
+-feature: Allow Import/Export to be hookable
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values
