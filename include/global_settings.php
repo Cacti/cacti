@@ -168,7 +168,7 @@ $settings = array(
 			'friendly_name' => __('Rotate the Cacti Log'),
 			'description' => __('This option will rotate the Cacti Log periodically.'),
 			'method' => 'checkbox',
-			'default' => '',
+			'default' => 'on',
 			),
 		'logrotate_frequency' => array(
 			'friendly_name' => __('Rotation Frequency'),
