@@ -27,46 +27,44 @@ ob_start();
 
 // Prevnt redirect to /install/
 define('IN_CACTI_INSTALL', 1);
+chdir(__DIR__ . '/../');
 
 /* set the json variable for request validation handling */
-include('../lib/html_utility.php');
+include_once('lib/functions.php');
+include_once('lib/html_utility.php');
 set_request_var('json', true);
 $auth_json = true;
 
-include('../include/auth.php');
-include('../lib/installer.php');
-include('functions.php');
-include('../lib/utility.php');
+include('include/auth.php');
+include('install/functions.php');
+include('lib/installer.php');
+include('lib/utility.php');
 
 $debug = false;
 
-/* ================= input validation ================= */
-get_request_var('data', array());
 
 $initialData = array();
+/* ================= input validation ================= */
+get_request_var('data', array());
 if (isset_request_var('data') && get_request_var('data')) {
-	$initialData = json_decode(get_request_var('data'), true);
+	log_install_debug('json','Using supplied data');
+	$initialData = get_request_var('data');
 }
 
+$json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
+log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
+
+$initialData['Runtime'] = 'Web';
 $installer = new Installer($initialData);
-
-/*
-array(
-	'step_data' => $installer->stepData,
-	'config_write' => $installer->IsConfigurationWritable(),
-	'config_remote' => $installer->IsRemoteDatabaseGood(),
-	'mode' => $installer->getMode(),
-	'step' => $installer->getStep(),
-	'prev' => $installer->buttonPrevious,
-	'next' => $installer->buttonNext,
-	'test' => $installer->buttonTest,
-	'html' => $output
-);
-*/
-
-log_install('json','Start: ' . clean_up_lines(get_request_var('data')));
 $json = json_encode($installer);
-log_install('json','  End: ' . clean_up_lines($json) . PHP_EOL);
+
+$json_debug = $json;
+if ($json_level < POLLER_VERBOSITY_DEBUG) {
+	$installer->setRuntime('Json');
+	$json_debug = json_encode($installer);
+}
+
+log_install_high('json','  End: ' . clean_up_lines($json_debug) . PHP_EOL);
 
 header('Content-Type: application/json');
 header('Content-Length: ' . strlen($json));

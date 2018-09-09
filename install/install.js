@@ -29,7 +29,7 @@ const DB_STATUS_SUCCESS = 2;
 const DB_STATUS_SKIPPED = 3;
 
 const FIELDS_WELCOME = {
-	accept:                { type: 'checkbox',  name: 'Eula'              },
+	accept:                { type: 'checkbox', name: 'Eula'               },
 	theme:                 { type: 'dropdown', name: 'Theme'              },
 	language:              { type: 'dropdown', name: 'Language'           },
 }
@@ -347,19 +347,13 @@ function processStepWelcome(StepData) {
 
 	if ($('#accept').length) {
 		$('#accept').click(function() {
-			setAddressBar(StepData, true);
-			if ($(this).is(':checked')) {
+			performStep(1);
+			if ($('#accept').is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
 				$('#buttonNext').button('disable');
 			}
 		});
-
-		if ($('#accept').is(':checked')) {
-			$('#buttonNext').button('enable');
-		} else {
-			$('#buttonNext').button('disable');
-		}
 	}
 }
 
@@ -368,31 +362,33 @@ function processStepCheckDependencies(StepData) {
 }
 
 function processStepInstallType(StepData) {
-	var sections = StepData.Sections;
-	hideHeadings(sections);
+	if (StepData != null) {
+		var sections = (StepData.Sections == null) ? [] : StepData.Sections;
+		hideHeadings(sections);
 
-	$('.cactiInstallSectionTitle').each(function() {
-		if ($(this).is(':visible')) {
-			$(this).next().show();
-		}
-	});
-
-	if (sections.connection_remote) {
-		if (sections.error_file || sections.error_poller) {
-			$('#buttonTest').button('disable');
-		}
-	}
-
-	if (StepData.Theme != 'classic') {
-		$('select#install_type').selectmenu({
-			change: function() {
-				performStep(3);
+		$('.cactiInstallSectionTitle').each(function() {
+			if ($(this).is(':visible')) {
+				$(this).next().show();
 			}
 		});
-	} else {
-		$('#install_type').change(function() {
-			performStep(3);
-		});
+
+		if (sections.connection_remote) {
+			if (sections.error_file || sections.error_poller) {
+				$('#buttonTest').button('disable');
+			}
+		}
+
+		if (StepData.Theme != 'classic') {
+			$('select#install_type').selectmenu({
+				change: function() {
+					performStep(3);
+				}
+			});
+		} else {
+			$('#install_type').change(function() {
+				performStep(3);
+			});
+		}
 	}
 }
 
@@ -503,35 +499,40 @@ function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
 	}, 1000);
 }
 
-function prepareInstallData(installStep) {
-	installData = $('#installData').data('installData');
-	if (typeof installData == 'undefined' || installData == null) {
-		installData = getDefaultInstallData();
-	}
+function prepareInstallData(installStep, stepOnly) {
+	// No installation step if we have never started.
+	if (typeof installStep == 'undefined') {
+		newData = [];
+	} else {
+		installData = $('#installData').data('installData');
+		if (typeof installData == 'undefined' || installData == null) {
+			installData = getDefaultInstallData();
+		}
 
-	newData = getDefaultInstallData();
+		newData = getDefaultInstallData();
 
-	props = [ 'Step' , 'Eula' ];
-	for (i = 0; i < props.length; i++) {
-		propName = props[i];
-		if (installData.hasOwnProperty(propName)) {
-			newData[propName] = installData[propName];
+		props = [ 'Step' , 'Eula' ];
+		for (i = 0; i < props.length; i++) {
+			propName = props[i];
+			if (installData.hasOwnProperty(propName)) {
+				newData[propName] = installData[propName];
+			}
+		}
+
+		step = installData.Step;
+		if (step == STEP_WELCOME) prepareStepWelcome(newData);
+
+		// Assume we want all data if stepOnly not set
+		if (typeof stepOnly == 'undefined') {
+			if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
+			else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
+			else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
+			else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
+			else if (step == STEP_CHECK_TABLES) prepareStepCheckTables(newData);
+
+			newData.Step = installStep;
 		}
 	}
-
-	step = installData.Step;
-	if (step == STEP_WELCOME) prepareStepWelcome(newData);
-
-	if (typeof installStep != 'undefined') {
-		if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
-		else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
-		else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
-		else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
-		else if (step == STEP_CHECK_TABLES) prepareStepCheckTables(newData);
-
-		newData.Step = installStep;
-	}
-
 	return JSON.stringify(newData);
 }
 
@@ -571,9 +572,9 @@ function prepareStepTemplateInstall(installData) {
 
 function setAddressBar(data, replace) {
 	if (replace) {
-		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
+		window.history.replaceState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData(data.Step, true));
 	} else {
-		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData());
+		window.history.pushState('' , 'Cacti Installation - Step ' + data.Step, 'install.php?data=' + prepareInstallData(data.Step, true));
 	}
 }
 
@@ -581,9 +582,10 @@ function performStep(installStep) {
 	$.ajaxQ.abortAll();
 
 	installData = prepareInstallData(installStep);
-	url = 'step_json.php?data=' + installData;
+	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
+	url = 'step_json.php'; //?data=' + installData;
 
-	$.get(url)
+	$.post(url, installJson)
 		.done(function(data) {
 			checkForLogout(data);
 
