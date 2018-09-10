@@ -339,9 +339,17 @@ function install_setup_get_tables() {
 			$rows = 0;
 
 			if ($table_status !== false) {
-				$collation = ($table_status['Collation'] != 'utf8mb4_unicode_ci') ? $table_status['Collation'] : '';
-				$engine    = ($table_status['Engine']    == 'MyISAM')             ? $table_status['Engine']    : '';
-				$rows      = $table_status['Rows'];
+				if (isset($table_status['Collation']) && $table_status['Collation'] != 'utf8mb4_unicode_ci') {
+					$collation = $table_status['Collation'];
+				}
+
+				if (isset($table_status['Engine']) && $table_status['Engine'] == 'MyISAM') {
+					$engine = $table_status['Engine'];
+				}
+
+				if (isset($table_status['Rows'])) {
+					$rows = $table_status['Rows'];
+				}
 			}
 
 			if ($table_status === false || $collation != '' || $engine != '') {
@@ -625,30 +633,49 @@ function import_colors() {
 	return true;
 }
 
-function log_install_debug($filename, $string) {
-	log_install_and_file(POLLER_VERBOSITY_DEBUG, $string, $filename);
+function log_install_debug($section, $string) {
+	log_install_and_file(POLLER_VERBOSITY_DEBUG, $string, $section);
 }
 
-function log_install_low($filename, $string) {
-	log_install_and_file(POLLER_VERBOSITY_LOW, $string, $filename);
+function log_install_low($section, $string) {
+	log_install_and_file(POLLER_VERBOSITY_LOW, $string, $section);
 }
 
-function log_install_medium($filename, $string) {
-	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $string, $filename);
+function log_install_medium($section, $string) {
+	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $string, $section);
 }
 
-function log_install_high($filename, $string) {
-	log_install_and_file(POLLER_VERBOSITY_HIGH, $string, $filename);
+function log_install_high($section, $string) {
+	log_install_and_file(POLLER_VERBOSITY_HIGH, $string, $section);
 }
 
-function log_install_always($filename, $string) {
-	log_install_and_file(POLLER_VERBOSITY_NONE, $string, $filename);
+function log_install_always($section, $string) {
+	log_install_and_file(POLLER_VERBOSITY_NONE, $string, $section);
 }
 
-function log_install_and_file($level, $string, $filename = '') {
+function log_install_and_file($level, $string, $section = '') {
 	$level = log_install_level_sanitize($level);
-	cacti_log($string, false, 'INSTALL:', $level);
-	log_install_to_file($filename, $string, FILE_APPEND, $level, true);
+	$name = 'INSTALL:';
+	if (!empty($section)) {
+		$name = 'INSTALL-' . strtoupper($section) . ':';
+	}
+	cacti_log(log_install_level_name($level) . ': ' . $string, false, $name, $level);
+	log_install_to_file($section, $string, FILE_APPEND, $level);
+}
+
+function log_install_section_level($section) {
+	$log_level = log_install_level('log_verbosity', POLLER_VERBOSITY_LOW);
+	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
+	$log_section = log_install_level('log_install_'.$section, POLLER_VERBOSITY_NONE);
+
+	if ($log_install > $log_level) {
+		$log_level = $log_install;
+	}
+
+	if ($log_section > $log_level) {
+		$log_level = $log_section;
+	}
+	return $log_level;
 }
 
 function log_install_level($option, $default_level) {
@@ -658,7 +685,6 @@ function log_install_level($option, $default_level) {
 
 function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NONE, $option = '') {
 	if (empty($level) || !is_numeric($level)) {
-		//echo $option . ': Level bad - if (empty("' . $level . '") || !is_numeric("' . $level . '")), now "' . $default_level . '" (' . POLLER_VERBOSITY_NONE . '/' . POLLER_VERBOSITY_DEBUG . ')' . PHP_EOL;
 		$level = $default_level;
 	}
 
@@ -694,39 +720,28 @@ function log_install_level_name($level) {
 	return $name;
 }
 
-function log_install_to_file($filename, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
+function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
 	global $config, $debug;
-	$log_level = log_install_level('log_verbosity', POLLER_VERBOSITY_LOW);
-	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
-	$log_install_file = log_install_level('log_install_'.$filename, POLLER_VERBOSITY_NONE);
+	$log_level = log_install_section_level($section);
 
-	if ($log_install > $log_level) {
-		$log_level = $log_install;
-	}
-
-	if ($log_install_file > $log_level) {
-		$log_level = $log_install_file;
-	}
-
-	$can_log = $log_level >= $level;
-	//echo "	$can_log = $log_level >= $level;" . PHP_EOL;
-
+	$can_log = $level <= $log_level;
 	$day = date('Y-m-d');
 	$time = date('H:i:s');
 	$levelname = log_install_level_name($level);
-	$sectionname = empty($filename) ? 'global' : $filename;
+	$sectionname = empty($section) ? 'global' : $section;
 
 	$format_cli  = '[%s] [ %15s %-7s ] %s%s';
 	$format_log1 = '[%s %s] [ %-7s ] %s%s';
 	$format_log2 = '[%s %s] [ %15s %-7s ] %s%s';
+
 	if (($force || $can_log) && defined('log_install_echo')) {
 		printf($format_cli, $time, $sectionname, $levelname, $data, PHP_EOL);
 	}
 
 	if ($can_log) {
 		$logfile = 'install';
-		if (!empty($filename)) {
-			$logfile .= '-' . $filename;
+		if (!empty($section)) {
+			$logfile .= '-' . $section;
 		}
 		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);

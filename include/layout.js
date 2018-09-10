@@ -656,7 +656,7 @@ function applySkin() {
 
 	setupPageTimeout();
 
-	if (typeof CsrMagic !== 'undefined') {
+	if (typeof CsrfMagic !== 'undefined') {
 		CsrfMagic.end();
 	}
 
