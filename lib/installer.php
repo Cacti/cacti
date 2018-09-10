@@ -83,7 +83,7 @@ class Installer implements JsonSerializable {
 	private $buttonTest = null;
 
 	public function __construct($install_params = array()) {
-		log_install_high('', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
+		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
 
 		$this->old_cacti_version = get_cacti_version();
 		$this->setRuntime(isset($install_params['Runtime']) ? $install_params['Runtime'] : 'unknown');
@@ -109,7 +109,7 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 				$step = Installer::STEP_COMPLETE;
 			}
-		} elseif ($step >= Installer::STEP_COMPLETE) {
+		} else if ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 			if ($install_version === false || $install_version === null) {
@@ -126,7 +126,9 @@ class Installer implements JsonSerializable {
 		}
 		log_install_medium('step', 'After: ' . clean_up_lines(var_export($step, true)));
 
+		$this->setStep($step);
 		$this->stepError = false;
+
 		$this->iconClass = array(
 			DB_STATUS_ERROR   => 'fa fa-thumbs-down',
 			DB_STATUS_WARNING => 'fa fa-exclamation-triangle',
@@ -134,6 +136,27 @@ class Installer implements JsonSerializable {
 			DB_STATUS_SKIPPED => 'fa fa-check-circle'
 		);
 
+		$this->errors        = array();
+		$this->eula          = read_config_option('install_eula', true);
+		$this->cronInterval  = read_config_option('cron_interval', true);
+		$this->locales       = get_installed_locales();
+		$this->language      = read_user_setting('user_language', get_new_user_default_language(), true);
+		$this->profile       = read_config_option('install_profile', true);
+		$this->stepData      = null;
+		$this->theme         = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
+
+		if ($this->theme === false || $this->theme === null) {
+			$this->setTheme('modern');
+		}
+
+		if ($step < Installer::STEP_INSTALL) {
+			$this->setDefaults($install_params);
+		}
+		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
+		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
+	}
+
+	private function setDefaults($install_params = array()) {
 		$this->defaultAutomation = array(
 			array(
 				'name'          => 'Net-SNMP Device',
@@ -164,21 +187,10 @@ class Installer implements JsonSerializable {
 			)
 		);
 
-		$this->eula               = read_config_option('install_eula', true);
 		$this->templates          = $this->getTemplates();
 		$this->tables             = $this->getTables();
-		$this->locales            = get_installed_locales();
-		$this->language           = read_user_setting('user_language', get_new_user_default_language(), true);
 		$this->paths              = install_file_paths();
-		$this->errors             = array();
-		$this->theme              = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
-		$this->profile            = read_config_option('install_profile', true);
-		$this->cronInterval       = read_config_option('cron_interval', true);
 		$this->permissions        = $this->getPermissions();
-
-		if ($this->theme === false || $this->theme === null) {
-			$this->setTheme('modern');
-		}
 
 		$this->setAutomationMode($this->getAutomationNetworkMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
@@ -186,16 +198,12 @@ class Installer implements JsonSerializable {
 		$this->setPaths($this->getPaths());
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
-		$this->stepData = null;
 		$this->setMode($this->getMode());
-		$this->setStep($step);
 
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
 			$this->processParameters($install_params);
 		}
-		log_install_debug('step', 'Error: ' . clean_up_lines(var_export($this->stepError, true)));
-		log_install_debug('step', 'Done: ' . clean_up_lines(var_export($this->stepCurrent, true)));
 	}
 
 	protected function processParameters($params_install = array()) {
@@ -505,7 +513,7 @@ class Installer implements JsonSerializable {
 
 	private function setPaths($param_paths = array()) {
 		global $config;
-		log_install_debug('paths', "setPath(): BACKTRACE: " . clean_up_lines(var_export(debug_backtrace(0), true)));
+		log_install_debug('paths', "setPaths(): BACKTRACE: " . cacti_debug_backtrace('', false, false));
 		if (is_array($param_paths)) {
 			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . count($param_paths) . ')');
 
@@ -514,7 +522,7 @@ class Installer implements JsonSerializable {
 				$key_exists = array_key_exists($name, $this->paths);
 				$check = isset($this->paths[$name]['install_check']) ? $this->paths[$name]['install_check'] : 'file_exists';
 				$optional = isset($this->paths[$name]['install_optional']) ? $this->paths[$name]['install_optional'] : false;
-				log_install_high('paths', sprintf('setPath(): name: %-25s, key_exists: %-5s, optional: %-5s, check: %s, path: %s', $name, $key_exists, $optional, $check, $path));
+				log_install_high('paths', sprintf('setPaths(): name: %-25s, key_exists: %-5s, optional: %-5s, check: %s, path: %s', $name, $key_exists, $optional, $check, $path));
 				if ($key_exists) {
 					$should_set = true;
 					if ($check == 'writable') {
@@ -546,12 +554,12 @@ class Installer implements JsonSerializable {
 
 					if ($should_set) {
 						unset($this->errors['Paths'][$name]);
-						set_config_option($name, $path);
+						set_config_option($name, empty($path)?'':$path);
 					}
 
 					$this->paths[$name]['default'] = $path;
-					log_install_debug('paths', sprintf('setPath(): name: %-25s, key_exists: %-5s, optional: %-5s, should_set: %3s, check: %s', $name, $key_exists, $optional, $should_set?'Yes':'No',$check));
-					log_install_debug('paths', sprintf('setPath(): name: %-25s, data: %s', $name, clean_up_lines(var_export($this->paths[$name], true))));
+					log_install_debug('paths', sprintf('setPaths(): name: %-25s, key_exists: %-5s, optional: %-5s, should_set: %3s, check: %s', $name, $key_exists, $optional, $should_set?'Yes':'No',$check));
+					log_install_debug('paths', sprintf('setPaths(): name: %-25s, data: %s', $name, clean_up_lines(var_export($this->paths[$name], true))));
 				} else {
 					$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Unexpected path parameter'));
 				}
@@ -876,10 +884,10 @@ class Installer implements JsonSerializable {
 		}
 
 		log_install_medium('step', 'setStep(): ' . var_export($step, true));
-		log_install_debug('step', "setStep():" . clean_up_lines(var_export(debug_backtrace(0)[1], true)));
+		log_install_debug('step', "setStep():" . cacti_debug_backtrace('', false, false, 1));
 
 		// Make current step the first if it is unknown
-		log_install_medium('step', 'setStep(): stepError ' . $this->stepError . ' < ' . $step);
+		log_install_medium('step', 'setStep(): stepError ' . clean_up_lines(var_export($this->stepError, true)) . ' < ' . clean_up_lines(var_export($step, true)));
 		if ($this->stepError !== false && $this->stepError < $step) {
 			$step = $this->stepError;
 		}
@@ -2186,25 +2194,25 @@ class Installer implements JsonSerializable {
 			set_config_option("install_started", $backgroundTime);
 		}
 
-		log_install_high('', 'backgroundTime = ' . $backgroundTime, 0);
-		log_install_high('', 'backgroundNeeded = ' . $backgroundNeeded);
+		log_install_debug('background', 'backgroundTime = ' . $backgroundTime, 0);
+		log_install_debug('background', 'backgroundNeeded = ' . $backgroundNeeded);
 
 		// Check if background started too long ago
 		if (!$backgroundNeeded) {
-			log_install_medium('', PHP_EOL . '----------------' . PHP_EOL . 'Check Expire' . PHP_EOL . '----------------');
+			log_install_debug('background', PHP_EOL . '----------------' . PHP_EOL . 'Check Expire' . PHP_EOL . '----------------');
 
 			$backgroundDateStarted = DateTime::createFromFormat('U.u', $backgroundTime);
 			$backgroundLast = read_config_option('install_updated', true);
 
-			log_install_high('', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s') . PHP_EOL);
-			log_install_high('', 'backgroundLast = ' . $backgroundTime);
+			log_install_debug('background', 'backgroundDateStarted = ' . $backgroundDateStarted->format('Y-m-d H:i:s') . PHP_EOL);
+			log_install_debug('background', 'backgroundLast = ' . $backgroundTime);
 			if ($backgroundLast === false || $backgroundLast < $backgroundTime) {
-				log_install_high('', 'backgroundLast = ' . $backgroundTime . " (Replaced)");
+				log_install_high('background', 'backgroundLast = ' . $backgroundTime . " (Replaced)");
 				$backgroundLast = $backgroundTime;
 			}
 
 			$backgroundExpire = time() - 300;
-			log_install_high('', 'backgroundExpire = ' . $backgroundExpire);
+			log_install_debug('background', 'backgroundExpire = ' . $backgroundExpire);
 
 			if ($backgroundLast < $backgroundExpire) {
 				$newTime = microtime(true);
@@ -2222,11 +2230,11 @@ class Installer implements JsonSerializable {
 				}
 				$backgroundNeeded = ("$newTime" == "$backgroundTime");
 
-				log_install_high('', PHP_EOL . '=======' . PHP_EOL . 'Expired' . PHP_EOL . '=======' . PHP_EOL);
-				log_install_high('', '         newTime = ' . $newTime);
-				log_install_high('', '  backgroundTime = ' . $backgroundTime);
-				log_install_high('', '  backgroundLast = ' . $backgroundLast);
-				log_install_high('', 'backgroundNeeded = ' . $backgroundNeeded);
+				log_install_debug('background', PHP_EOL . '=======' . PHP_EOL . 'Expired' . PHP_EOL . '=======' . PHP_EOL);
+				log_install_debug('background', '         newTime = ' . $newTime);
+				log_install_debug('background', '  backgroundTime = ' . $backgroundTime);
+				log_install_debug('background', '  backgroundLast = ' . $backgroundLast);
+				log_install_debug('background', 'backgroundNeeded = ' . $backgroundNeeded);
 			}
 		}
 
@@ -2416,7 +2424,7 @@ class Installer implements JsonSerializable {
 
 	public function getInstallLog() {
 		global $config;
-		$logcontents = tail_file($config['base_path'] . '/log/cacti.log', 100, -1, 'INSTALL:' , 1, $total_rows);
+		$logcontents = tail_file($config['base_path'] . '/log/cacti.log', 100, -1, ' INSTALL:' , 1, $total_rows);
 
 		$output_log = '';
 		foreach ($logcontents as $logline) {
@@ -2469,6 +2477,7 @@ class Installer implements JsonSerializable {
 			if ($installer == null) {
 				$installer = new Installer();
 			}
+			$installer->setDefaults();
 			$installer->processBackgroundInstall();
 		} catch (Exception $e) {
 			log_install_always('', __('Exception occurred during installation:  #' . $e->getErrorCode() . ' - ' . $e->getErrorText()), false, 'INSTALL:');
@@ -2484,7 +2493,7 @@ class Installer implements JsonSerializable {
 		return true;
 	}
 
-	public function processBackgroundInstall() {
+	private function processBackgroundInstall() {
 		global $config;
 		$failure = '';
 

@@ -195,7 +195,7 @@ function getFieldData(fields, fieldData) {
 }
 
 function getDefaultInstallData() {
-	return { Step: STEP_WELCOME, Eula: 0 };
+	return { Step: STEP_NONE, Eula: 0 };
 }
 
 function toggleHeader(key, initial = null) {
@@ -500,15 +500,15 @@ function progress(timeleft, timetotal, $element, fnComplete, fnStatus) {
 }
 
 function prepareInstallData(installStep, stepOnly) {
+	installData = $('#installData').data('installData');
+	if (typeof installData == 'undefined' || installData == null) {
+		installData = getDefaultInstallData();
+	}
+
 	// No installation step if we have never started.
-	if (typeof installStep == 'undefined') {
+	if (typeof installStep == 'undefined' && installData.Step == STEP_NONE) {
 		newData = [];
 	} else {
-		installData = $('#installData').data('installData');
-		if (typeof installData == 'undefined' || installData == null) {
-			installData = getDefaultInstallData();
-		}
-
 		newData = getDefaultInstallData();
 
 		props = [ 'Step' , 'Eula' ];
@@ -519,18 +519,20 @@ function prepareInstallData(installStep, stepOnly) {
 			}
 		}
 
-		step = installData.Step;
-		if (step == STEP_WELCOME) prepareStepWelcome(newData);
+		if (typeof installStep != 'undefined') {
+			step = installData.Step;
+			if (step == STEP_WELCOME) prepareStepWelcome(newData);
 
-		// Assume we want all data if stepOnly not set
-		if (typeof stepOnly == 'undefined') {
-			if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
-			else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
-			else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
-			else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
-			else if (step == STEP_CHECK_TABLES) prepareStepCheckTables(newData);
+			// Assume we want all data if stepOnly not set
+			if (typeof stepOnly == 'undefined') {
+				if (step == STEP_INSTALL_TYPE) prepareStepInstallType(newData);
+				else if (step == STEP_BINARY_LOCATIONS) prepareStepBinaryLocations(newData);
+				else if (step == STEP_PROFILE_AND_AUTOMATION) prepareStepProfileAndAutomation(newData);
+				else if (step == STEP_TEMPLATE_INSTALL) prepareStepTemplateInstall(newData);
+				else if (step == STEP_CHECK_TABLES) prepareStepCheckTables(newData);
 
-			newData.Step = installStep;
+				newData.Step = installStep;
+			}
 		}
 	}
 	return JSON.stringify(newData);

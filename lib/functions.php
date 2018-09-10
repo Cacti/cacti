@@ -172,18 +172,22 @@ function save_user_settings($user = -1) {
 function set_user_setting($config_name, $value, $user = -1) {
 	global $settings_user;
 
-	if ($user == -1) {
+	if ($user == -1 && isset($_SESSION['sess_user_id'])) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
-	db_execute_prepared('REPLACE INTO settings_user
-		SET user_id = ?,
-		name = ?,
-		value = ?',
-		array($user, $config_name, $value));
+	if ($user == -1) {
+		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false), false, 'WARNING:');
+	} else {
+		db_execute_prepared('REPLACE INTO settings_user
+			SET user_id = ?,
+			name = ?,
+			value = ?',
+			array($user, $config_name, $value));
 
-	unset($_SESSION['sess_user_config_array']);
-	$settings_user[$config_name]['value'] = $value;
+		unset($_SESSION['sess_user_config_array']);
+		$settings_user[$config_name]['value'] = $value;
+	}
 }
 
 /* user_setting_exists - determines if a value exists for the current user/setting specified
@@ -3684,29 +3688,38 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function cacti_debug_backtrace($entry = '', $html = false, $record = true) {
+function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 1) {
 	global $config;
 
-	if (defined('IN_CACTI_INSTALL')) {
-		return true;
-	}
+	$skip = $skip > 0 ? $skip : 1;
+	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
-	$callers = debug_backtrace();
-	$s = '';
+	$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
+	array_shift($callers);
+	$s='';
 	foreach ($callers as $c) {
-		if (isset($c['file'])) {
-			$file = str_replace($config['base_path'], '', $c['file']);
-		} else {
-			$file = '';
-		}
-
 		if (isset($c['line'])) {
-			$line = $c['line'];
+			$line = '[' . $c['line'] . ']';
 		} else {
 			$line = '';
 		}
-		$func = $c['function'];
-		$s = "(" . ($file != '' ? "$file: ":'') . ($line != '' ? "$line ":'') . "$func)" . $s;
+
+		if (isset($c['file'])) {
+			$file = str_replace($config['base_path'], '', $c['file']) . $line;
+		} else {
+			$file = $line;
+		}
+
+		$func = $c['function'].'()';
+		if (isset($c['class'])) {
+			$func = $c['class'] . $c['type'] . $func;
+		}
+
+		$s = ($file != '' ? $file . ':':'') . "$func" . (empty($s) ? '' : ', ') . $s;
+	}
+
+	if (!empty($s)) {
+		$s = ' (' . $s . ')';
 	}
 
 	if ($record) {
@@ -3716,7 +3729,11 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true) {
 
 		cacti_log(trim("$entry Backtrace: " . clean_up_lines($s)), false);
 	} else {
-		return trim("$entry Backtrace: " . clean_up_lines($s));
+		if (!empty($entry)) {
+			return trim("$entry Backtrace: " . clean_up_lines($s));
+		} else {
+			return trim(clean_up_lines($s));
+		}
 	}
 }
 
