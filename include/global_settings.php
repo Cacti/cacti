@@ -154,7 +154,8 @@ $settings = array(
 			'method' => 'filepath',
 			'file_type' => 'ascii',
 			'default' => $config['base_path'] . '/log/cacti.log',
-			'max_length' => '255'
+			'max_length' => '255',
+			'install_check' => 'writable'
 			),
 		'path_stderrlog' => array(
 			'friendly_name' => __('Poller Standard Error Log Path'),
@@ -162,7 +163,9 @@ $settings = array(
 			'method' => 'filepath',
 			'file_type' => 'ascii',
 			'default' => $config['base_path'] . '/log/cacti_stderr.log',
-			'max_length' => '255'
+			'max_length' => '255',
+			'install_check' => 'writable',
+			'install_optional' => true
 			),
 		'logrotate_enabled' => array(
 			'friendly_name' => __('Rotate the Cacti Log'),
@@ -195,14 +198,16 @@ $settings = array(
 			'description' => __('The path to Spine binary.'),
 			'method' => 'filepath',
 			'file_type' => 'binary',
-			'max_length' => '255'
+			'max_length' => '255',
+			'install_optional' => true,
 			),
 		'path_spine_config' => array(
 			'friendly_name' => __('Spine Config File Path'),
 			'description' => __('The path to Spine configuration file.  By default, in the cwd of Spine, or /etc if not specified.'),
 			'method' => 'filepath',
 			'file_type' => 'ascii',
-			'max_length' => '255'
+			'max_length' => '255',
+			'install_optional' => true,
 			),
 		'rrdclean_header' => array(
 			'friendly_name' => __('RRD Cleaner'),

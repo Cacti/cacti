@@ -22,8 +22,6 @@
  +-------------------------------------------------------------------------+
 */
 
-include_once(dirname(__FILE__) . '/../include/global_settings.php');
-
 function prime_default_settings() {
 	global $settings;
 
@@ -32,15 +30,15 @@ function prime_default_settings() {
 			if (sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
-						db_execute_prepared('INSERT IGNORE INTO settings 
-							(name, value) VALUES (?, ?)', 
+						db_execute_prepared('INSERT IGNORE INTO settings
+							(name, value) VALUES (?, ?)',
 							array($setting, $attributes['default']));
 					} elseif (isset($attributes['items'])) {
 						foreach($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
-								db_execute_prepared('INSERT IGNORE INTO settings 
-									(name, value) 
-									VALUES (?, ?)', 
+								db_execute_prepared('INSERT IGNORE INTO settings
+									(name, value)
+									VALUES (?, ?)',
 									array($isetting, $iattributes['default']));
 							}
 						}
@@ -241,9 +239,7 @@ function db_install_add_cache($status, $sql) {
 	}
 
 	if (!empty($cacheFile)) {
-		if (function_exists('log_install')) {
-			log_install('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
-		}
+		log_install_high('cache','<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error);
 		file_put_contents($cacheFile, '<[version]> ' . $cacti_upgrade_version . ' <[status]> ' . $status . ' <[sql]> ' . clean_up_lines($sql) . ' <[error]> ' . $database_last_error . PHP_EOL, FILE_APPEND);
 	}
 }
@@ -296,7 +292,7 @@ function find_best_path($binary_name) {
 function install_setup_get_templates() {
 	global $config;
 
-	ini_set('zlib.output_compression', '0');
+	@ini_set('zlib.output_compression', '0');
 
 	$templates = array(
 		'Cisco_Router.xml.gz',
@@ -385,7 +381,7 @@ function install_tool_path($name, $defaultPaths) {
 		'default' => ''
 	);
 
-	log_install('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
+	log_install_debug('file', "$name: Locations ($os), Paths: " . clean_up_lines(var_export($defaultPaths, true)));
 	if (isset($settings) && isset($settings['path']) && isset($settings['path']['path_'.$name])) {
 		$tool = $settings['path']['path_'.$name];
 	} elseif (isset($settings) && isset($settings['mail']) && isset($settings['mail'][$name])) {
@@ -395,20 +391,20 @@ function install_tool_path($name, $defaultPaths) {
 	$which_tool = '';
 	if (config_value_exists('path_'.$name)) {
 		$which_tool = read_config_option('path_'.$name, true);
-		log_install('file', "Using config location: $which_tool");
+		log_install_high('file', "Using config location: $which_tool");
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
 		$defaultPath = $defaultPaths[$config['cacti_server_os']];
 		$basename = basename($defaultPath);
-		log_install('file', "Searching best path with location: $defaultPath");
+		log_install_debug('file', "Searching best path with location: $defaultPath");
 		$which_tool = find_best_path($basename);
-		log_install('file', "Searching best path with location return: $which_tool");
+		log_install_debug('file', "Searching best path with location return: $which_tool");
 	}
 
 	if (empty($which_tool)) {
 		$which_tool = $defaultPath;
-		log_install('file', "Nothing found defaulting to $defaultPath");
+		log_install_high('file', "Nothing found defaulting to $defaultPath");
 	}
 
 	$tool['default'] = $which_tool;
@@ -469,13 +465,6 @@ function install_file_paths() {
 			'win32' => 'c:/net-snmp/bin/snmptrap.exe'
 		));
 
-	/* spine Binary Path */
-	$input['path_spine'] = install_tool_path('spine',
-		array(
-			'unix'  => '/usr/local/spine/bin/spine',
-			'win32' => 'c:/spine/bin/spine.exe'
-		));
-
 	/* sendmail Binary Path */
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
 		array(
@@ -483,11 +472,23 @@ function install_file_paths() {
 			'win32' => ''
 		));
 
+	/* spine Binary Path */
+	$input['path_spine'] = install_tool_path('spine',
+		array(
+			'unix'  => '/usr/local/spine/bin/spine',
+			'win32' => 'c:/spine/bin/spine.exe'
+		));
+
+	$input['path_spine_config'] = $settings['path']['path_spine_config'];
+
 	/* log file path */
 	$input['path_cactilog'] = $settings['path']['path_cactilog'];
 	if (empty($input['path_cactilog']['default'])) {
 		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
+
+	/* stderr log file path */
+	$input['path_stderrrlog'] = $settings['path']['path_stderrlog'];
 
 	/* RRDtool Version */
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
@@ -624,3 +625,110 @@ function import_colors() {
 	return true;
 }
 
+function log_install_debug($filename, $string) {
+	log_install_and_file(POLLER_VERBOSITY_DEBUG, $string, $filename);
+}
+
+function log_install_low($filename, $string) {
+	log_install_and_file(POLLER_VERBOSITY_LOW, $string, $filename);
+}
+
+function log_install_medium($filename, $string) {
+	log_install_and_file(POLLER_VERBOSITY_MEDIUM, $string, $filename);
+}
+
+function log_install_high($filename, $string) {
+	log_install_and_file(POLLER_VERBOSITY_HIGH, $string, $filename);
+}
+
+function log_install_always($filename, $string) {
+	log_install_and_file(POLLER_VERBOSITY_NONE, $string, $filename);
+}
+
+function log_install_and_file($level, $string, $filename = '') {
+	$level = log_install_level_sanitize($level);
+	cacti_log($string, false, 'INSTALL:', $level);
+	log_install_to_file($filename, $string, FILE_APPEND, $level, true);
+}
+
+function log_install_level($option, $default_level) {
+	$level = read_config_option($option, true);
+	return log_install_level_sanitize($level, $default_level, $option);
+}
+
+function log_install_level_sanitize($level, $default_level = POLLER_VERBOSITY_NONE, $option = '') {
+	if (empty($level) || !is_numeric($level)) {
+		//echo $option . ': Level bad - if (empty("' . $level . '") || !is_numeric("' . $level . '")), now "' . $default_level . '" (' . POLLER_VERBOSITY_NONE . '/' . POLLER_VERBOSITY_DEBUG . ')' . PHP_EOL;
+		$level = $default_level;
+	}
+
+	if ($level < POLLER_VERBOSITY_NONE) {
+		echo 'Level too low - "' . $level . '"' . PHP_EOL;
+		$level = POLLER_VERBOSITY_NONE;
+	} else if ($level > POLLER_VERBOSITY_DEBUG) {
+		echo 'Level too high - "' . $level . '"' . PHP_EOL;
+		$level = POLLER_VERBOSITY_DEBUG;
+	}
+	return $level;
+}
+
+function log_install_level_name($level) {
+	$name = 'Unknown (' . $level . ')';
+	switch ($level) {
+		case POLLER_VERBOSITY_NONE:
+			$name = 'always';
+			break;
+		case POLLER_VERBOSITY_LOW:
+			$name = 'general';
+			break;
+		case POLLER_VERBOSITY_MEDIUM:
+			$name = 'info';
+			break;
+		case POLLER_VERBOSITY_HIGH:
+			$name = 'notice';
+			break;
+		case POLLER_VERBOSITY_DEBUG:
+			$name = 'debug';
+			break;
+	}
+	return $name;
+}
+
+function log_install_to_file($filename, $data, $flags = FILE_APPEND, $level = POLLER_VERBOSITY_DEBUG, $force = false) {
+	global $config, $debug;
+	$log_level = log_install_level('log_verbosity', POLLER_VERBOSITY_LOW);
+	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
+	$log_install_file = log_install_level('log_install_'.$filename, POLLER_VERBOSITY_NONE);
+
+	if ($log_install > $log_level) {
+		$log_level = $log_install;
+	}
+
+	if ($log_install_file > $log_level) {
+		$log_level = $log_install_file;
+	}
+
+	$can_log = $log_level >= $level;
+	//echo "	$can_log = $log_level >= $level;" . PHP_EOL;
+
+	$day = date('Y-m-d');
+	$time = date('H:i:s');
+	$levelname = log_install_level_name($level);
+	$sectionname = empty($filename) ? 'global' : $filename;
+
+	$format_cli  = '[%s] [ %15s %-7s ] %s%s';
+	$format_log1 = '[%s %s] [ %-7s ] %s%s';
+	$format_log2 = '[%s %s] [ %15s %-7s ] %s%s';
+	if (($force || $can_log) && defined('log_install_echo')) {
+		printf($format_cli, $time, $sectionname, $levelname, $data, PHP_EOL);
+	}
+
+	if ($can_log) {
+		$logfile = 'install';
+		if (!empty($filename)) {
+			$logfile .= '-' . $filename;
+		}
+		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
+		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+	}
+}
