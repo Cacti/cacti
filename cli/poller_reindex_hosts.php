@@ -132,7 +132,7 @@ if (sizeof($data_queries)) {
 }
 
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Reindex Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

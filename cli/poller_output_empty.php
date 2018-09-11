@@ -80,7 +80,7 @@ rrd_close($rrdtool_pipe);
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

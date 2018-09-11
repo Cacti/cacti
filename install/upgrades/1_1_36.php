@@ -36,7 +36,7 @@ function upgrade_to_1_1_36() {
 			if (strpos($user['value'], '-') === false) {
 				$locale = repair_locale($user['value']);
 
-				db_install_execute('UPDATE settings_user
+				db_execute_prepared('UPDATE settings_user
 					SET value = ?
 					WHERE user_id = ?
 					AND name = ?',
@@ -54,7 +54,7 @@ function upgrade_to_1_1_36() {
 			if (strpos($group['value'], '-') === false) {
 				$locale = repair_locale($group['value']);
 
-				db_install_execute('UPDATE settings_user_group
+				db_execute_parepared('UPDATE settings_user_group
 					SET value = ?
 					WHERE group_id = ?
 					AND name = ?',

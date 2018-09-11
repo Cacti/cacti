@@ -145,7 +145,7 @@ foreach ($data_source_list as $data_source) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

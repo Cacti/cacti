@@ -202,6 +202,16 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				case 'round_robin_archive':
 					// Deprecated
 					break;
+				default:
+					$param = array();
+					$param['hash']       = $dep_hash_cache[$type][$i]['hash'];
+					$param['xml_array']  = $hash_array;
+					$param['hash_cache'] = $hash_cache;
+					$param['type']       = $type;
+					$param['version']    = $dep_hash_cache[$type][$i]['version'];
+					$param = api_plugin_hook_function('import_action', $param);
+					$hash_cache += $param['hash_cache'];
+					break;
 				}
 
 				if (!empty($import_debug_info)) {
@@ -1794,6 +1804,15 @@ function hash_to_friendly_name($hash, $display_type_name) {
 			array($parsed_hash['hash']));
 		case 'round_robin_archive':
 			return $prepend;
+		default:
+			$param = array();
+			$param['hash']    = $parsed_hash['hash'];
+			$param['type']    = $parsed_hash['type'];
+			$param['prepend'] = $prepend;
+
+			api_plugin_hook_function('get_friendly_name', $param);
+
+			return $param['prepend'];
 	}
 }
 

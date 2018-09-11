@@ -760,37 +760,39 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		set_config_option('stats_poller', $cacti_stats);
 	}
 
-	// Calculate min/max/average timings
-	$total_time  = $loop_end-$loop_start;
-	$total_polls = $poller['total_polls'];
+	if (isset($poller['min_time'])) {
+		// Calculate min/max/average timings
+		$total_time  = $loop_end-$loop_start;
+		$total_polls = $poller['total_polls'];
 
-	if ($total_time < $poller['min_time'] || $poller['min_time'] == '') {
-		$min_time = $total_time;
-	} else {
-		$min_time = $poller['min_time'];
+		if ($total_time < $poller['min_time'] || $poller['min_time'] == '') {
+			$min_time = $total_time;
+		} else {
+			$min_time = $poller['min_time'];
+		}
+
+		if ($total_time > $poller['max_time'] || $poller['max_time'] == '') {
+			$max_time = $total_time;
+		} else {
+			$max_time = $poller['max_time'];
+		}
+
+		$avg_time = (($total_polls * $poller['avg_time']) + $total_time) / ($total_polls + 1);
+
+		// Insert poller stats into the poller table
+		db_execute_prepared('INSERT INTO poller
+			(id, total_time, min_time, max_time, avg_time, total_polls, last_update, last_status, status)
+			VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), 2)
+			ON DUPLICATE KEY UPDATE
+			total_time=VALUES(total_time),
+			min_time=VALUES(min_time),
+			max_time=VALUES(max_time),
+			avg_time=VALUES(avg_time),
+			total_polls=VALUES(total_polls),
+			last_update=VALUES(last_update),
+			last_status=VALUES(last_status), status=VALUES(status)',
+			array($poller_id, round($total_time, 4), $min_time, $max_time, $avg_time, $total_polls + 1));
 	}
-
-	if ($total_time > $poller['max_time'] || $poller['max_time'] == '') {
-		$max_time = $total_time;
-	} else {
-		$max_time = $poller['max_time'];
-	}
-
-	$avg_time = (($total_polls * $poller['avg_time']) + $total_time) / ($total_polls + 1);
-
-	// Insert poller stats into the poller table
-	db_execute_prepared('INSERT INTO poller
-		(id, total_time, min_time, max_time, avg_time, total_polls, last_update, last_status, status)
-		VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), 2)
-		ON DUPLICATE KEY UPDATE
-		total_time=VALUES(total_time),
-		min_time=VALUES(min_time),
-		max_time=VALUES(max_time),
-		avg_time=VALUES(avg_time),
-		total_polls=VALUES(total_polls),
-		last_update=VALUES(last_update),
-		last_status=VALUES(last_status), status=VALUES(status)',
-		array($poller_id, round($total_time, 4), $min_time, $max_time, $avg_time, $total_polls + 1));
 
 	// Update snmpcache
 	snmpagent_cacti_stats_update($perf_data);

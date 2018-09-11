@@ -180,4 +180,8 @@ function upgrade_to_1_2_0() {
 		WHERE host_grouping_type = 0');
 
 	db_install_add_column('sites', array('name' => 'zoom', 'type' => 'tinyint', 'unsigned' => true, 'NULL' => true));
+
+	db_install_drop_key('poller_reindex', 'key', 'PRIMARY');
+
+	db_install_add_key('poller_reindex', 'key', 'PRIMARY', array('host_id', 'data_query_id', 'arg1(187)'));
 }

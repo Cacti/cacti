@@ -187,7 +187,7 @@ function sql_clean($text) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

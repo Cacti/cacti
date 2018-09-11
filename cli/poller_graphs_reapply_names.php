@@ -140,7 +140,7 @@ foreach ($graph_list as $graph) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Reapply graph Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

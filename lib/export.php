@@ -1057,6 +1057,16 @@ function resolve_dependencies($type, $id, $dep_array) {
 		}
 
 		break;
+	default:
+		$param = array();
+		$param['type']      = $type;
+		$param['id']        = $id;
+		$param['dep_array'] = $dep_array;
+
+		$param = api_plugin_hook_function('resolve_dependencies', $param);
+
+		$dep_array = $param['dep_array'];
+		break;
 	}
 
 	/* update the dependency array */
@@ -1108,6 +1118,15 @@ function get_item_xml($type, $id, $follow_deps) {
 				case 'data_source_profile':
 					$xml_text .= "\n" . data_source_profile_to_xml($dep_id);
 					break;
+
+					$param = array();
+					$param['dep_id']   = $dep_id;
+					$param['dep_type'] = $dep_type;
+					$param['xml_text'] = $xml_text;
+
+					$param = api_plugin_hook_function('export_action', $param);
+
+					$xml_text = $param['xml_text'];
 				}
 			}
 		}

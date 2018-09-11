@@ -668,7 +668,7 @@ function standard_deviation($samples) {
 }
 
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	echo 'Cacti RRDfile Splicer Utility, Version ' . $version . ', ' . COPYRIGHT_YEARS . PHP_EOL;
 }
 /* display_help - displays the usage of the function */

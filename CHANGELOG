@@ -71,10 +71,13 @@ Cacti CHANGELOG
 -issue#1841: Data Source Stats table not properly migrated from pre 1.x Cacti plugin
 -issue#1849: SNMPAgent not sending traps
 -issue#1852: Reports Preview/Mails show no graphs
+-issue#1889: Insecure $ENV{ENV} which running setgid
+-issue#1901: Upgrade from 0.8.8h fails on external_links statement
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
 -issue: Typo in Dutch translations when an error occurred while downgrading
+-issue: Verify all Fields not working due to Cacti 1.x upgrade error
 -feature#122: Support a Site Branch Type
 -feature#289: Allow external nologin access for Realtime Graphs
 -feature#553: Aggregated graph does not belong to host
@@ -139,6 +142,7 @@ Cacti CHANGELOG
 -feature: Allow Adding Aggregate Graphs to a Report 
 -feature: Don't allow removal of Data Sources from Data Template once its in use
 -feature: Tree automation is now defaulted to on for new install
+-feature: Allow Import/Export to be hookable
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

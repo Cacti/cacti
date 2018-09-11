@@ -152,7 +152,7 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Retemplate Host Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

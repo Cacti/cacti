@@ -170,7 +170,7 @@ if (sizeof($graph)) {
 }
 
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	print "Cacti Graph Repair Tool, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

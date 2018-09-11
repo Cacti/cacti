@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+
 delete @ENV{qw(PATH)};
-$ENV{PATH} = "/usr/bin:/bin";
-$path = $ENV{'PATH'};
+$ENV{PATH} = '/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/sbin';
 
 my $grep_string= $ARGV[0];
 ($grep_string) = $grep_string =~ /^([\w]+)$/;

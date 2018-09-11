@@ -62,7 +62,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$add_label = __('Add');
 	}
 
-	if (CACTI_VERSION_BETA && $title != '') {
+	if (defined('CACTI_VERSION_BETA') && $title != '') {
 		$title .= ' [ ' . get_cacti_version_text(false) . ' ]';
 	}
 

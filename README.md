@@ -91,12 +91,9 @@ Get involved in creating and editing Cacti Documentation!  Fork, change and subm
 
 Get involved in development of Cacti! Join the developers and community on [GitHub](https://github.com/cacti)!
 
-
-
-# Functionality
-
 -----------------------------------------------------------------------------
 
+# Functionality
 
 ## Data Sources
 
@@ -168,6 +165,3 @@ Cacti supports more RRDtool Graph options including:
  
 -----------------------------------------------------------------------------
 Copyright (c) 2018 - The Cacti Group, Inc.
-
-
-
