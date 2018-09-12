@@ -37,7 +37,10 @@ function upgrade_to_0_8_1() {
 
 	if (sizeof($_src) > 0) {
 		foreach ($_src as $item) {
-			db_install_execute("UPDATE user_log set user_id = " . $item["id"] . " where username = '" . $item["username"] . "';");
+			db_install_execute("UPDATE user_log
+				SET user_id = ?
+				WHERE username = ?",
+				array($item["id"], $item["username"]));
 		}
 	}
 }

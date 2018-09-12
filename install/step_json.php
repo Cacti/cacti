@@ -49,12 +49,15 @@ get_request_var('data', array());
 if (isset_request_var('data') && get_request_var('data')) {
 	log_install_debug('json','Using supplied data');
 	$initialData = get_request_var('data');
+	if (!is_array($initialData)) {
+		$initialData = array($initialData);
+	}
 }
 
 $json_level = log_install_level('json',POLLER_VERBOSITY_NONE);
 log_install_high('json','Start: ' . clean_up_lines(json_encode($initialData)));
 
-$initialData['Runtime'] = 'Web';
+$initialData = array_merge(array('Runtime' => 'Web'), $initialData);
 $installer = new Installer($initialData);
 $json = json_encode($installer);
 

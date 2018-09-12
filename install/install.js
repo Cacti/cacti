@@ -669,7 +669,7 @@ function performStep(installStep) {
 							for (var propName in propArray) {
 								if (propArray.hasOwnProperty(propName)) {
 									propValue = propArray[propName];
-									element = $("#" + propName);
+									element = $("#" + propName.replace(/\//g,'_').replace(/\./g,'_'));
 									if (element != null && element.length > 0) {
 										element.focus();
 										break;

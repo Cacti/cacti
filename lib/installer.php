@@ -75,6 +75,7 @@ class Installer implements JsonSerializable {
 	private $language;
 	private $tables;
 	private $runtime;
+	private $errors;
 
 	private $automationMode = null;
 	private $automationOverride = null;
@@ -191,7 +192,7 @@ class Installer implements JsonSerializable {
 		$this->tables             = $this->getTables();
 		$this->paths              = install_file_paths();
 		$this->permissions        = $this->getPermissions();
-
+		$this->modules            = $this->getModules();
 		$this->setAutomationMode($this->getAutomationNetworkMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
 		$this->setAutomationRange($this->getAutomationNetworkRange());
@@ -203,6 +204,10 @@ class Installer implements JsonSerializable {
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
 			$this->processParameters($install_params);
+		}
+
+		if ($this->stepError !== false && $this->stepCurrent > $this->stepError) {
+			$this->setStep($this->stepError);
 		}
 	}
 
@@ -315,6 +320,10 @@ class Installer implements JsonSerializable {
 		return $this->jsonSerialize();
 	}
 
+	public function getErrors() {
+		return (isset($this->errors) && !empty($this->errors)) ? $this->errors : array();
+	}
+
 	function setTrueFalse($param, &$field, $option) {
 		$value = null;
 		if ($param === true || $param === 'on' || $param === 1) {
@@ -354,6 +363,7 @@ class Installer implements JsonSerializable {
 	private function setProgress($param_process) {
 		log_install_always('', "Progress: $param_process");
 		set_config_option('install_progress', $param_process);
+		set_config_option('install_updated', microtime(true));
 	}
 
 	public function setRuntime($param_runtime = 'unknown') {
@@ -384,6 +394,9 @@ class Installer implements JsonSerializable {
 		}
 
 		$this->eula = ($param_eula > 0);
+		if (!$this->eula) {
+			$this->addError(Installer::STEP_WELCOME, 'Eula','Eula not accepted');
+		}
 		set_config_option('install_eula', $this->eula);
 	}
 
@@ -680,6 +693,93 @@ class Installer implements JsonSerializable {
 				}
 			}
 		}
+	}
+
+	private function getModules() {
+		global $config;
+		if ($config['cacti_server_os'] == 'unix') {
+			$extensions = array(
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
+				array('name' => 'ldap',      'installed' => false),
+				array('name' => 'mbstring',  'installed' => false),
+				array('name' => 'openssl',   'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'posix',     'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
+				array('name' => 'xml',       'installed' => false),
+				array('name' => 'zlib',      'installed' => false)
+			);
+		} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
+			$extensions = array(
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
+				array('name' => 'ldap',      'installed' => false),
+				array('name' => 'mbstring',  'installed' => false),
+				array('name' => 'openssl',   'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
+				array('name' => 'xml',       'installed' => false),
+				array('name' => 'zlib',      'installed' => false)
+			);
+		} else {
+			$extensions = array(
+				array('name' => 'com_dotnet','installed' => false),
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
+				array('name' => 'mbstring',  'installed' => false),
+				array('name' => 'openssl',   'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'ldap',      'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
+				array('name' => 'xml',       'installed' => false),
+				array('name' => 'zlib',      'installed' => false)
+			);
+		}
+
+		$ext = verify_php_extensions($extensions);
+		foreach ($ext as $e) {
+			if (!$e['installed']) {
+				$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $e['name'] . ' is missing');
+			}
+		}
+		return $ext;
 	}
 
 	private function getTemplates() {
@@ -1412,91 +1512,16 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
 
-		if ($config['cacti_server_os'] == 'unix') {
-			$extensions = array(
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'posix',     'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
-			$extensions = array(
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		} else {
-			$extensions = array(
-				array('name' => 'com_dotnet','installed' => false),
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		}
-
-		$ext = verify_php_extensions($extensions);
-		foreach ($ext as $id =>$e) {
+		foreach ($this->modules as $id =>$e) {
 			form_alternate_row('line' . $id);
 			form_selectable_cell($e['name'], '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
 			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
 			form_end_row();
 
-			if (!$e['installed']) $enabled['php_modules'] = DB_STATUS_ERROR;
+			if (!$e['installed']) {
+				$enabled['php_modules'] = DB_STATUS_ERROR;
+			}
 		}
 
 		html_end_box(false);
@@ -1588,6 +1613,7 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$this->stepData = array('Sections' => $enabled);
+		$this->buttonNext->Enabled = $enabled['php_modules'] != DB_STATUS_ERROR;
 		return $output;
 	}
 
@@ -2160,13 +2186,15 @@ class Installer implements JsonSerializable {
 
 	public function processStepInstall() {
 		global $config;
+		$time = read_config_option('install_updated', true);
+
 		$output  = Installer::sectionTitle(__('Installing Cacti Server v%s', CACTI_VERSION));
 		$output .= Installer::sectionNormal(__('Your Cacti Server is now installing'));
 		$output .= Installer::sectionNormal(
 			'<table width="100%"><tr>' .
 				'<td class="cactiInstallProgressLeft">Refresh in</td>' .
 				'<td class="cactiInstallProgressCenter">&nbsp;</td>' .
-				'<td class="cactiInstallProgressRight">Progress</td>' .
+				'<td class="cactiInstallProgressRight">Progress<span style=\'float:right\'>Last updated: ' . date('H:i:s', $time) . '</span></td>' .
 			'</tr><tr>' .
 				'<td class="cactiInstallProgressLeft">'.
 					'<div id="cactiInstallProgressCountdown"><div></div></div>' .
@@ -2211,7 +2239,7 @@ class Installer implements JsonSerializable {
 				$backgroundLast = $backgroundTime;
 			}
 
-			$backgroundExpire = time() - 300;
+			$backgroundExpire = time() - 1500;
 			log_install_debug('background', 'backgroundExpire = ' . $backgroundExpire);
 
 			if ($backgroundLast < $backgroundExpire) {
@@ -2294,11 +2322,17 @@ class Installer implements JsonSerializable {
 			$file = fopen($cacheFile, "r");
 			if ($file !== false) {
 				$version_last = '';
+				$line = 0;
 				while (!feof($file)) {
+					$line++;
 					$change = fgets($file);
+					if (empty($change)) {
+						break;
+					}
+
 					$action = preg_split('~[ ]*<\[(version|status|sql|error)\]>[ ]*~i', $change);
 					if (empty($action) || sizeof($action) != 5) {
-						log_install_medium('upgrade', "$cacheFile: Read unexpected change - " . sizeof($action) . " - '" . clean_up_lines(var_export($change, true)) . "'");
+						log_install_medium('upgrade', $cacheFile . '[' . $line . ']: Read unexpected change - ' . sizeof($action) . ' - \'' . clean_up_lines(var_export($change, true)) . '\'');
 					} else {
 						$version = $action[1];
 						if (!empty($version)) {
@@ -2532,12 +2566,10 @@ class Installer implements JsonSerializable {
 			$this->disableInvalidPlugins();
 		}
 
-		log_install_always('', sprintf('Setting Cacti Version to %s', CACTI_VERSION));
 		log_install_always('', sprintf('Finished %s Process for v%s', $which, CACTI_VERSION));
 
 		set_config_option('install_error',$failure);
 		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
-		db_execute_prepared('UPDATE version SET cacti = ?', array(CACTI_VERSION));
 		set_config_option('install_version', CACTI_VERSION);
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
@@ -2564,6 +2596,7 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
+				set_config_option('install_updated', microtime(true));
 				log_install_always('', sprintf('Importing Package #%s \'%s\'', $i, $package));
 				import_package($path . $package, 1, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
@@ -2579,6 +2612,7 @@ class Installer implements JsonSerializable {
 
 				if (!empty($host_template_id)) {
 					log_install_always('', sprintf('Mapping Automation Template for Device Template \'%s\'', $item['name']));
+
 
 					db_execute_prepared('INSERT INTO automation_templates
 						(host_template, availability_method, sysDescr, sysName, sysOid, sequence)
@@ -2760,6 +2794,7 @@ class Installer implements JsonSerializable {
 				if (sizeof($templates)) {
 					log_install_always('', 'Creating Graphs for Default Device');
 					foreach($templates as $template) {
+						set_config_option('install_updated', microtime(true));
 						automation_execute_graph_template($host_id, $template['graph_template_id']);
 					}
 
@@ -2789,14 +2824,17 @@ class Installer implements JsonSerializable {
 		/* it's always a good idea to re-populate
 		 * the poller cache to make sure everything
 		 * is refreshed and up-to-date */
+		set_config_option('install_updated', microtime(true));
 		log_install_always('', 'Repopulating poller cache');
 		repopulate_poller_cache();
 
 		/* fill up the snmpcache */
+		set_config_option('install_updated', microtime(true));
 		log_install_always('', 'Repopulating SNMP Agent cache');
 		snmpagent_cache_rebuilt();
 
 		/* generate RSA key pair */
+		set_config_option('install_updated', microtime(true));
 		log_install_always('', 'Generating RSA Key Pair');
 		rsa_check_keypair();
 
@@ -2820,6 +2858,7 @@ class Installer implements JsonSerializable {
 					' --table=' . cacti_escapeshellarg($name) .
 					' --utf8 --innodb');
 
+				set_config_option('install_updated', microtime(true));
 				log_install_always('', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
 			}
 		} else {
@@ -2860,26 +2899,34 @@ class Installer implements JsonSerializable {
 			// check for upgrade version file, then include, check for function and execute
 			$ver_status = DB_STATUS_SKIPPED;
 			if (file_exists($upgrade_file)) {
-				log_install_always('', 'Upgrading from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ') to v' . $cacti_upgrade_version . PHP_EOL);
+				log_install_always('', 'Upgrading from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ') to v' . $cacti_upgrade_version);
 
 				include_once($upgrade_file);
 				if (function_exists($upgrade_function)) {
 					call_user_func($upgrade_function);
+					echo PHP_EOL;
 					$ver_status = $this->checkDatabaseUpgrade($cacti_upgrade_version);
 				} else {
 					log_install_always('', 'WARNING: Failed to find upgrade function for v' . $cacti_upgrade_version);
 					$ver_status = DB_STATUS_WARNING;
 				}
-			}
 
-			if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-				db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
-				$orig_cacti_version = $cacti_upgrade_version;
+				/* Only update database version if database successfully upgraded */
+				if ($ver_status != DB_STATUS_ERROR) {
+					if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+						db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
+						$orig_cacti_version = $cacti_upgrade_version;
+					}
+					$prev_cacti_version = $cacti_upgrade_version;
+				}
 			}
-			$prev_cacti_version = $cacti_upgrade_version;
 
 			if ($failure > $ver_status) {
 				$failure = $ver_status;
+			}
+
+			if ($failure == DB_STATUS_ERROR) {
+				break;
 			}
 		}
 
@@ -2888,6 +2935,9 @@ class Installer implements JsonSerializable {
 			return 'WARNING: One or more upgrades failed to install correctly';
 		}
 
+		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
+			db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
+		}
 		return false;
 	}
 
@@ -2902,6 +2952,10 @@ class Installer implements JsonSerializable {
 					if ($cache_item['status'] < $failure) {
 						$failure = $cache_item['status'];
 					}
+
+					if ($cache_item['status'] == DB_STATUS_ERROR) {
+						$this->addError(Installer::STEP_ERROR, 'DB:'.$cacti_upgrade_version, 'FAIL: ' . $cache_item['sql']);
+					}
 				}
 			}
 		}
@@ -2914,6 +2968,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($plugins_integrated as $plugin) {
 			if (api_plugin_is_enabled($plugin)) {
+				set_config_option('install_updated', microtime(true));
 				api_plugin_remove_hooks($plugin);
 				api_plugin_remove_realms($plugin);
 			}
@@ -2930,6 +2985,8 @@ class Installer implements JsonSerializable {
 			foreach ($plugins as $plugin => $version) {
 				$disable = true;
 				$integrated = in_array($plugin, $plugins_integrated);
+
+				set_config_option('install_updated', microtime(true));
 
 				if (is_dir($config['base_path'] . '/plugins/' . $plugin)
 					&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php")

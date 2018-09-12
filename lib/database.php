@@ -55,6 +55,15 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$device = '127.0.0.1';
 		}
 
+		if (!defined('PDO::MYSQL_ATTR_FOUND_ROWS')) {
+			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+				$prefix = get_debug_prefix();
+				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', "$prefix\n$prefix ************* DATABASE MODULE MISSING ****************\n$prefix session name: $odevice:$port:$db_name\n$prefix\n", FILE_APPEND);
+			}
+
+			return false;
+		}
+
 		$flags[PDO::ATTR_PERSISTENT] = true;
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
@@ -135,6 +144,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
+function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+	throw new Exception($errstr, $errno);
+}
+
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = false) {
@@ -197,17 +210,34 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	while (true) {
 		$query = $db_conn->prepare($sql);
 
+		$code = 0;
 		$en = '';
-		$query->execute($params);
-		$code = $query->errorCode();
-		if ($code > 0) {
-			$errorinfo = $query->errorInfo();
-			$en = $errorinfo[1];
-		}  else {
-			$code = $db_conn->errorCode();
+
+		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
+		try {
+			if (empty($params) || count($params) == 0) {
+				$query->execute();
+			} else {
+				$query->execute($params);
+			}
+		} catch (Exception $ex) {
+			$code = $ex->getCode();
+			$en = $code;
+			$errorinfo = array(1=>$code,2=>$ex->getMessage());
+		}
+		restore_error_handler();
+
+		if ($code == 0) {
+			$code = $query->errorCode();
 			if ($code > 0) {
-				$errorinfo = $db_conn->errorInfo();
+				$errorinfo = $query->errorInfo();
 				$en = $errorinfo[1];
+			}  else {
+				$code = $db_conn->errorCode();
+				if ($code > 0) {
+					$errorinfo = $db_conn->errorInfo();
+					$en = $errorinfo[1];
+				}
 			}
 		}
 
