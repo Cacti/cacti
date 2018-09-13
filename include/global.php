@@ -249,9 +249,17 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$config['connection'] = 'offline';
 	}
 } elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
-	print $config['is_web'] ? '<p>':'';
-	print 'FATAL: Connection to Cacti database failed. Please ensure the database is running and your credentials in config.php are valid.';
-	print $config['is_web'] ? '</p>':'';
+	$ps = $config['is_web'] ? '<p>' : '';
+	$sp = $config['is_web'] ? '</p>' : PHP_EOL;
+	$ul = $config['is_web'] ? '<ul>' : PHP_EOL;
+	$li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
+	$lu = $config['is_web'] ? '</ul>' : '';
+	$il = $config['is_web'] ? '</li>' : '';
+	print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
+	print $li . 'the PHP MySQL module is installed and enabled.' . $il;
+	print $li . 'the database is running.' . $il;
+	print $li . 'the credentials in config.php are valid.' . $il;
+	print $lu . $sp;
 	exit;
 } else {
 	/* gather the existing cactidb version */
@@ -315,6 +323,9 @@ if ($config['is_web']) {
 	header('P3P: CP="CAO PSA OUR"');
 
 	/* initialize php session */
+	if (!function_exists('session_name')) {
+		die('PHP Session Management is missing, please install PHP Session module');
+	}
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 

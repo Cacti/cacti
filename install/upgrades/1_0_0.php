@@ -1374,7 +1374,6 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('data_template_data', array('name' => 't_data_source_profile_id', 'type' => 'CHAR(2)',  'default' => ''));
 	db_install_add_column('data_template_data', array('name' => 'data_source_profile_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0'));
 
-
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles` (
 		`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 		`hash` varchar(32) NOT NULL DEFAULT '',

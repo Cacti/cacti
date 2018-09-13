@@ -70,15 +70,23 @@ if (get_nfilter_request_var('action') == 'testdb') {
 	exit;
 }
 
-include_once('../lib/installer.php');
+$hasJson = false;
+if (interface_exists('JsonSerializable')) {
+	$hasJson = true;
+	include_once('../lib/installer.php');
+}
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<?php print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);?>
-	<?php print get_md5_include_js('install/install.js'); ?>
-	<?php print get_md5_include_css('install/install.css'); ?>
-	<?php print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css'); ?>
+<?php
+print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);
+if ($hasJson) {
+	print get_md5_include_js('install/install.js');
+}
+print get_md5_include_css('install/install.css');
+print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
+?>
 </head>
 <body>
 	<div class='cactiInstallTable'>
@@ -88,8 +96,13 @@ include_once('../lib/installer.php');
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
+if ($hasJson) {
 				print Installer::sectionTitle(__('Initializing'));
 				print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes.  You must have JavaScript enabled for this to work.', CACTI_VERSION));
+} else {
+				print '<p>ERROR: PHP Json module is not enabled. This is required for the installer to work</p>';
+				print '<p>See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation </p>';
+}
 ?>
 			</div>
 		</div>
