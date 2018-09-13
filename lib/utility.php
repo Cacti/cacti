@@ -40,7 +40,7 @@ function repopulate_poller_cache() {
 	$local_data_ids = array();
 	$i = 0;
 
-	if (sizeof($poller_data)) {
+	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
 			$poller_items     = array_merge($poller_items, update_poller_cache($data));
 			$local_data_ids[] = $data['id'];
@@ -60,7 +60,7 @@ function repopulate_poller_cache() {
 	}
 
 	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
-	if (sizeof($poller_ids)) {
+	if (cacti_sizeof($poller_ids)) {
 		foreach ($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
 		}
@@ -87,7 +87,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 	$i = 0;
 	$poller_items = $local_data_ids = array();
 
-	if (sizeof($poller_data)) {
+	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
 			$poller_items     = array_merge($poller_items, update_poller_cache($data));
 			$local_data_ids[] = $data['id'];
@@ -114,7 +114,7 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 		'poller_id', 'poller_id'
 	);
 
-	if (sizeof($poller_ids)) {
+	if (cacti_sizeof($poller_ids)) {
 		foreach ($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
 		}
@@ -145,7 +145,7 @@ function update_poller_cache($data_source, $commit = false) {
 		WHERE dtd.local_data_id = ?',
 		array($data_source['id']));
 
-	if (sizeof($data_input)) {
+	if (cacti_sizeof($data_input)) {
 		// Check whitelist for input validation
 		if (!data_input_whitelist_check($data_input['id'])) {
 			return $poller_items;
@@ -191,7 +191,7 @@ function update_poller_cache($data_source, $commit = false) {
 					$script_path = get_full_script_path($data_source['id']);
 				}
 
-				$num_output_fields = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
+				$num_output_fields = cacti_sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' id
 					FROM data_input_fields
 					WHERE data_input_id = ?
 					AND input_output = "out"
@@ -241,15 +241,15 @@ function update_poller_cache($data_source, $commit = false) {
 					'type_code', 'value'
 				);
 
-				if (sizeof($host_fields)) {
-					if (sizeof($data_template_fields)) {
+				if (cacti_sizeof($host_fields)) {
+					if (cacti_sizeof($data_template_fields)) {
 						foreach($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
 						}
 					}
-				} elseif (sizeof($data_template_fields)) {
+				} elseif (cacti_sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
 				}
 
@@ -292,19 +292,19 @@ function update_poller_cache($data_source, $commit = false) {
 					'type_code', 'value'
 				);
 
-				if (sizeof($host_fields)) {
-					if (sizeof($data_template_fields)) {
+				if (cacti_sizeof($host_fields)) {
+					if (cacti_sizeof($data_template_fields)) {
 						foreach ($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
 						}
 					}
-				} elseif (sizeof($data_template_fields)) {
+				} elseif (cacti_sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs) && sizeof($snmp_queries)) {
+				if (cacti_sizeof($outputs) && cacti_sizeof($snmp_queries)) {
 					foreach ($outputs as $output) {
 						if (isset($snmp_queries['fields'][$output['snmp_field_name']]['oid'])) {
 							$oid = $snmp_queries['fields'][$output['snmp_field_name']]['oid'] . '.' . $data_source['snmp_index'];
@@ -315,7 +315,7 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 
 						if (!empty($oid)) {
-							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $oid);
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], 0, get_data_source_item_name($output['data_template_rrd_id']), cacti_sizeof($outputs), $oid);
 						}
 					}
 				}
@@ -352,19 +352,19 @@ function update_poller_cache($data_source, $commit = false) {
 					'type_code', 'value'
 				);
 
-				if (sizeof($host_fields)) {
-					if (sizeof($data_template_fields)) {
+				if (cacti_sizeof($host_fields)) {
+					if (cacti_sizeof($data_template_fields)) {
 						foreach ($data_template_fields as $key => $value) {
 							if (!isset($host_fields[$key])) {
 								$host_fields[$key] = $value;
 							}
 						}
 					}
-				} elseif (sizeof($data_template_fields)) {
+				} elseif (cacti_sizeof($data_template_fields)) {
 					$host_fields = $data_template_fields;
 				}
 
-				if (sizeof($outputs) && sizeof($script_queries)) {
+				if (cacti_sizeof($outputs) && cacti_sizeof($script_queries)) {
 					foreach ($outputs as $output) {
 						if (isset($script_queries['fields'][$output['snmp_field_name']]['query_name'])) {
 							$identifier = $script_queries['fields'][$output['snmp_field_name']]['query_name'];
@@ -395,7 +395,7 @@ function update_poller_cache($data_source, $commit = false) {
 						}
 
 						if (isset($script_path)) {
-							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], $action, get_data_source_item_name($output['data_template_rrd_id']), sizeof($outputs), $script_path);
+							$poller_items[] = api_poller_cache_item_add($data_source['host_id'], $host_fields, $data_source['id'], $data_input['rrd_step'], $action, get_data_source_item_name($output['data_template_rrd_id']), cacti_sizeof($outputs), $script_path);
 						}
 					}
 				}
@@ -411,7 +411,7 @@ function update_poller_cache($data_source, $commit = false) {
 				// Process the returned poller items
 				if ((isset($arguments['poller_items'])) &&
 					(is_array($arguments['poller_items'])) &&
-					(sizeof($poller_items) < sizeof($arguments['poller_items']))) {
+					(cacti_sizeof($poller_items) < cacti_sizeof($arguments['poller_items']))) {
 					$poller_items = $arguments['poller_items'];
 				}
 			}
@@ -422,12 +422,12 @@ function update_poller_cache($data_source, $commit = false) {
 			WHERE local_data_id = ?',
 			array($data_source['id']));
 
-		if (sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
+		if (cacti_sizeof($data_template_data) && $data_template_data['data_input_id'] > 0) {
 			cacti_log('WARNING: Repopulate Poller Cache found Data Input Missing for Data Source ' . $data_source['id'] . '.  Database may be corrupted');
 		}
 	}
 
-	if ($commit && sizeof($poller_items)) {
+	if ($commit && cacti_sizeof($poller_items)) {
 		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items);
 	} elseif (!$commit) {
 		return $poller_items;
@@ -449,14 +449,14 @@ function push_out_data_input_method($data_input_id) {
 	$poller_items = array();
 	$_my_local_data_ids = array();
 
-	if (sizeof($data_sources)) {
+	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			$_my_local_data_ids[] = $data_source['id'];
 
 			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
 		}
 
-		if (sizeof($_my_local_data_ids)) {
+		if (cacti_sizeof($_my_local_data_ids)) {
 			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
 		}
 	}
@@ -469,7 +469,7 @@ function push_out_data_input_method($data_input_id) {
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = '';
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
@@ -505,7 +505,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 	$buf_count    = 0;
 	$buffer       = '';
 
-	if (sizeof($poller_items)) {
+	if (cacti_sizeof($poller_items)) {
 		foreach ($poller_items as $record) {
 			/* take care of invalid entries */
 			if ($record == '') {
@@ -593,7 +593,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		$sql_where");
 
 	/* loop through each matching data source */
-	if (sizeof($data_sources)) {
+	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			/* set the host information */
 			if (!isset($hosts[$data_source['host_id']])) {
@@ -622,7 +622,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 			 - the field is a valid "host field"
 			 - the value of the field is empty
 			 - the field is set to 'templated' */
-			if (sizeof($template_fields[$data_source['local_data_template_data_id']])) {
+			if (cacti_sizeof($template_fields[$data_source['local_data_template_data_id']])) {
 				foreach ($template_fields[$data_source['local_data_template_data_id']] as $template_field) {
 					if (preg_match('/^' . VALID_HOST_FIELDS . '$/i', $template_field['type_code']) && $template_field['value'] == '' && $template_field['t_value'] == '') {
 						// handle special case type_code
@@ -649,7 +649,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 
@@ -691,7 +691,7 @@ function data_input_whitelist_check($data_input_id) {
 			return true;
 		}
 
-		if (sizeof($data_input_ids)) {
+		if (cacti_sizeof($data_input_ids)) {
 			foreach ($data_input_ids as $hash => $id) {
 				if ($id['input_string'] != '') {
 					if (isset($data_input_whitelist[$hash])) {
@@ -1098,7 +1098,7 @@ function utilities_get_system_memory() {
 		exec('wmic os get SizeStoredInPagingFiles', $memInfo['SizeStoredInPagingFiles']);
 		exec('wmic os get TotalVirtualMemorySize', $memInfo['TotalVirtualMemorySize']);
 		exec('wmic os get TotalVisibleMemorySize', $memInfo['TotalVisibleMemorySize']);
-		if (sizeof($memInfo)) {
+		if (cacti_sizeof($memInfo)) {
 			foreach ($memInfo as $key => $values) {
 				$memInfo[$key] = $values[1];
 			}

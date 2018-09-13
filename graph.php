@@ -113,7 +113,7 @@ case 'view':
 	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
 
 	$i = 0;
-	if (sizeof($rras)) {
+	if (cacti_sizeof($rras)) {
 		$graph_end   = time();
 		foreach ($rras as $rra) {
 			if (!empty($rra['timespan'])) {
@@ -246,7 +246,7 @@ case 'view':
 case 'zoom':
 	/* find the maximum time span a graph can show */
 	$max_timespan=1;
-	if (sizeof($rras)) {
+	if (cacti_sizeof($rras)) {
 		foreach ($rras as $rra) {
 			if ($rra['steps'] * $rra['rows'] * $rra['rrd_step'] > $max_timespan) {
 				$max_timespan = $rra['steps'] * $rra['rows'] * $rra['rrd_step'];

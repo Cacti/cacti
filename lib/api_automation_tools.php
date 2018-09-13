@@ -27,7 +27,7 @@ function getHostTemplates() {
 
 	$host_templates[0] = 'None';
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $template) {
 			$host_templates[$template['id']] = $template['name'];
 		}
@@ -45,7 +45,7 @@ function getHostsByDescription($hostTemplateIds = false) {
 		}
 	}
 
-	if ($hostTemplateIds !== false && sizeof($hostTemplateIds)) {
+	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
 		foreach($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
@@ -64,7 +64,7 @@ function getHostsByDescription($hostTemplateIds = false) {
 		$sql_where
 		ORDER BY h.description");
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
 			$hosts[$tmp['description']] = $tmp['id'];
 		}
@@ -77,7 +77,7 @@ function getSites() {
 	$sites = array();
 	$tmpArray = db_fetch_assoc('SELECT * FROM sites ORDER BY id');
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $site) {
 			$sites[$site['id']] = $site;
 		}
@@ -95,7 +95,7 @@ function getHosts($hostTemplateIds = false) {
 		}
 	}
 
-	if ($hostTemplateIds !== false && sizeof($hostTemplateIds)) {
+	if ($hostTemplateIds !== false && cacti_sizeof($hostTemplateIds)) {
 		foreach($hostTemplateIds as $id) {
 			if (!is_numeric($id)) {
 				return false;
@@ -114,7 +114,7 @@ function getHosts($hostTemplateIds = false) {
 		$sql_where
 		ORDER BY h.id");
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $host) {
 			$hosts[$host['id']] = $host;
 		}
@@ -147,7 +147,7 @@ function getInputFields($templateId) {
 		AND dif.input_output IN ('in', 'inout')",
 		array($templateId));
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $row) {
 			$fields[$row['data_template_id'] . ':' . $row['name']] = $row;
 		}
@@ -160,7 +160,7 @@ function getAddresses() {
 	$addresses = array();
 	$tmpArray  = db_fetch_assoc('SELECT id, hostname FROM host ORDER BY hostname');
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $tmp) {
 			$addresses[$tmp['hostname']] = $tmp['id'];
 		}
@@ -184,7 +184,7 @@ function getSNMPFields($hostId, $snmp_query_id = '') {
 		$sql_where
 		ORDER BY field_name");
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $f) {
 			$fieldNames[$f['field_name']] = 1;
 		}
@@ -209,7 +209,7 @@ function getSNMPValues($hostId, $field, $snmp_query_id = '') {
 		$sql_where
 		ORDER BY field_value");
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $v) {
 			$values[$v['field_value']] = 1;
 		}
@@ -222,7 +222,7 @@ function getSNMPQueries() {
 	$queries  = array();
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM snmp_query ORDER by id');
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $q) {
 			$queries[$q['id']] = $q['name'];
 		}
@@ -240,7 +240,7 @@ function getSNMPQueryTypes($snmpQueryId) {
 		ORDER BY id', 
 		array($snmpQueryId));
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $type) {
 			$types[$type['id']] = $type['name'];
 		}
@@ -254,7 +254,7 @@ function getGraphTemplates() {
 
 	$tmpArray = db_fetch_assoc('SELECT id, name FROM graph_templates ORDER BY id');
 
-	if ($tmpArray !== false && sizeof($tmpArray)) {
+	if ($tmpArray !== false && cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $t) {
 			$graph_templates[$t['id']] = $t['name'];
 		}
@@ -272,7 +272,7 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 		}
 	}
 
-	if ($host_template_ids !== false && sizeof($host_template_ids)) {
+	if ($host_template_ids !== false && cacti_sizeof($host_template_ids)) {
 		foreach($host_template_ids as $id) {
 			if (!is_numeric($id)) {
 				return false;
@@ -291,7 +291,7 @@ function getGraphTemplatesByHostTemplate($host_template_ids = false) {
 		$sql_where
 		ORDER by gt.name ASC");
 
-	if (sizeof($tmpArray)) {
+	if (cacti_sizeof($tmpArray)) {
 		foreach ($tmpArray as $t) {
 			$graph_templates[$t['id']] = $t['name'];
 		}
@@ -305,7 +305,7 @@ function displayQueryTypes($types, $quietMode = false) {
 		print 'Known SNMP Query Types: (id, name)' . PHP_EOL;
 	}
 
-	if ($types !== false && sizeof($types)) {
+	if ($types !== false && cacti_sizeof($types)) {
 		foreach ($types as $id => $name) {
 			print $id . "\t" . $name . PHP_EOL;
 		}
@@ -321,7 +321,7 @@ function displayHostTemplates($host_templates, $quietMode = false) {
 		print 'Valid Device Templates: (id, name)' . PHP_EOL;
 	}
 
-	if ($host_templates !== false && sizeof($host_templates)) {
+	if ($host_templates !== false && cacti_sizeof($host_templates)) {
 		foreach ($host_templates as $id => $name) {
 			print "$id\t$name" . PHP_EOL;
 		}
@@ -341,7 +341,7 @@ function displayCommunities($quietMode = false) {
 		FROM host 
 		ORDER BY snmp_community');
 
-	if ($communities !== false &&sizeof($communities)) {
+	if ($communities !== false &&cacti_sizeof($communities)) {
 		foreach ($communities as $community) {
 			print $community['snmp_community'] . PHP_EOL;
 		}
@@ -357,7 +357,7 @@ function displaySNMPFields($fields, $hostId, $quietMode = false) {
 		print 'Known SNMP Fields for host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
 
-	if ($fields !== false && sizeof($fields)) {
+	if ($fields !== false && cacti_sizeof($fields)) {
 		foreach ($fields as $field => $values) {
 			print $field . PHP_EOL;
 		}
@@ -373,7 +373,7 @@ function displaySNMPValues($values, $hostId, $field, $quietMode = false) {
 		print 'Known SNMP Values for Field ' . $field . ' and host-id ' . $hostId . ': (name)' . PHP_EOL;
 	}
 
-	if ($values !== false && sizeof($values)) {
+	if ($values !== false && cacti_sizeof($values)) {
 		foreach ($values as $value => $foo) {
 			print $value . PHP_EOL;
 		}
@@ -389,7 +389,7 @@ function displaySNMPQueries($queries, $quietMode = false) {
 		print 'Known SNMP Queries: (id, name)' . PHP_EOL;
 	}
 
-	if ($queries !== false &&sizeof($queries)) {
+	if ($queries !== false &&cacti_sizeof($queries)) {
 		foreach ($queries as $id => $name) {
 			print $id . "\t" . $name . PHP_EOL;
 		}
@@ -405,7 +405,7 @@ function displayInputFields($input_fields, $quietMode = false) {
 		print 'Known Input Fields: (name, default, description)' . PHP_EOL;
 	}
 
-	if ($input_fields !== false &&sizeof($input_fields)) {
+	if ($input_fields !== false &&cacti_sizeof($input_fields)) {
 		foreach ($input_fields as $row) {
 			print $row['data_template_id'] . ':' . $row['name'] . "\t" . $row['default'] . "\t" . $row['description'] . PHP_EOL;
 		}
@@ -421,7 +421,7 @@ function displayGraphTemplates($templates, $quietMode = false) {
 		print 'Known Graph Templates: (id, name)' . PHP_EOL;
 	}
 
-	if ($templates !== false && sizeof($templates)) {
+	if ($templates !== false && cacti_sizeof($templates)) {
 		foreach ($templates as $id => $name) {
 			print $id . "\t" . $name . PHP_EOL;
 		}
@@ -437,7 +437,7 @@ function displayHosts($hosts, $quietMode = false) {
 		print 'Known Devices: (id, hostname, template, description)' . PHP_EOL;
 	}
 
-	if ($hosts !== false && sizeof($hosts)) {
+	if ($hosts !== false && cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
 			print $host['id'] . "\t" . $host['hostname'] . "\t" . $host['host_template_id'] . "\t" . $host['description'] . PHP_EOL;
 		}
@@ -453,7 +453,7 @@ function displaySites($sites, $quietMode = false) {
 		print 'Known Sites: (id, name)' . PHP_EOL;
 	}
 
-	if ($sites !== false && sizeof($sites)) {
+	if ($sites !== false && cacti_sizeof($sites)) {
 		foreach($sites as $site) {
 			print $site['id'] . "\t" . $site['name'] . PHP_EOL;
 		}
@@ -475,7 +475,7 @@ function displayTrees($quietMode = false) {
 		FROM graph_tree 
 		ORDER BY id');
 
-	if (sizeof($trees)) {
+	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
 			print $tree['id'] . "\t";
 			print $tree_sort_types[$tree['sort_type']] . "\t";
@@ -506,7 +506,7 @@ function displayTreeNodes($tree_id, $nodeType = '', $parentNode = 0, $quietMode 
 		AND parent = ?
 		ORDER BY position', array($tree_id, $parentNode));
 
-	if (sizeof($nodes)) {
+	if (cacti_sizeof($nodes)) {
 		foreach ($nodes as $node) {
 			/* taken from tree.php, funtion item_edit() */
 			$current_type = TREE_ITEM_TYPE_HEADER;
@@ -587,7 +587,7 @@ function displayRRAs($quietMode = false) {
 
 	$rras = db_fetch_assoc('SELECT id, name, steps, `rows` FROM data_source_profiles_rra ORDER BY id');
 
-	if (sizeof($rras)) {
+	if (cacti_sizeof($rras)) {
 		foreach ($rras as $rra) {
 			print $rra['id']    . "\t";
 			print $rra['steps'] . "\t";
@@ -616,7 +616,7 @@ function displayHostGraphs($host_id, $quietMode = false) {
 			AND graph_local.host_id = ?
 			ORDER BY graph_templates_graph.local_graph_id', array($host_id));
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			print $graph['id'] . "\t";
 			print $graph['name'] . "\t";
@@ -639,7 +639,7 @@ function displayUsers($quietMode = false) {
 		FROM user_auth 
 		ORDER BY id');
 
-	if (sizeof($groups)) {
+	if (cacti_sizeof($groups)) {
 		foreach ($groups as $group) {
 			print $group['id']        ."\t";
 			print $group['username']  ."\t";

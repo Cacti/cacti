@@ -65,7 +65,7 @@ function get_matching_nodes() {
 		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
 	}
 
-	if (sizeof($matching)) {
+	if (cacti_sizeof($matching)) {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
@@ -75,12 +75,12 @@ function get_matching_nodes() {
 					WHERE id = ?',
 					array($row['parent']));
 
-				if (!sizeof($row)) {
+				if (!cacti_sizeof($row)) {
 				    break;
 				}
 			}
 
-			if (sizeof($row)) {
+			if (cacti_sizeof($row)) {
 				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
 				$my_matches[] = array_reverse($match);
 				$match        = array();
@@ -109,7 +109,7 @@ function get_matching_nodes() {
 			}
 		}
 
-		if (sizeof($final_array)) {
+		if (cacti_sizeof($final_array)) {
 			$fa = array();
 
 			foreach($final_array as $key => $matches) {
@@ -144,7 +144,7 @@ case 'ajax_reports':
 	if (isset_request_var('graph_list')) {
 		$items = explode(',', get_request_var('graph_list'));
 
-		if (sizeof($items)) {
+		if (cacti_sizeof($items)) {
 			$good = true;
 
 			foreach($items as $item) {
@@ -407,7 +407,7 @@ case 'preview':
 				$i++;
 			}
 
-			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
+			if ((isset($graph_array)) && (cacti_sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 			}
@@ -552,7 +552,7 @@ case 'list':
 	}
 
 	/* update the revised graph list session variable */
-	if (sizeof($graph_list)) {
+	if (cacti_sizeof($graph_list)) {
 		set_request_var('graph_list', implode(',', array_keys($graph_list)));
 	}
 	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
@@ -584,7 +584,7 @@ case 'list':
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
-							<?php if (sizeof($reports)) {?>
+							<?php if (cacti_sizeof($reports)) {?>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
 							<?php } ?>
 						</span>
@@ -602,7 +602,7 @@ case 'list':
 							<?php
 
 							$graph_templates = get_allowed_graph_templates();
-							if (sizeof($graph_templates)) {
+							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
 									if ($gt['id'] != 0) {
@@ -613,7 +613,7 @@ case 'list':
 
 										if ($found) {
 											print "<option value='" . $gt['id'] . "'";
-											if (sizeof($selected)) {
+											if (cacti_sizeof($selected)) {
 												if (in_array($gt['id'], $selected)) {
 													print ' selected';
 												}
@@ -634,7 +634,7 @@ case 'list':
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
@@ -684,7 +684,7 @@ case 'list':
 	html_header_checkbox(array(__('Graph Title'), __('Device'), __('Graph Template'), __('Graph Size')), false);
 
 	$i = 0;
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			if ($graph['description'] == '' && $graph['template_name'] == '') {
 				$aggregate = db_fetch_cell_prepared('SELECT agt.name
@@ -715,7 +715,7 @@ case 'list':
 
 	html_end_box(false);
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		print $nav;
 	}
 
@@ -725,7 +725,7 @@ case 'list':
 
 	$report_text = '';
 
-	if (sizeof($reports)) {
+	if (cacti_sizeof($reports)) {
 		$report_text = '<div id="addGraphs">
 			<p>' . __('Select the Report to add the selected Graphs to.') . '</p>
 			<table class="cactiTable">';

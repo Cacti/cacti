@@ -61,7 +61,7 @@ function sig_handler($signo) {
 					AND task!='tmaster'",
 					array($network_id)), 'pid', 'pid');
 
-				if (sizeof($pids)) {
+				if (cacti_sizeof($pids)) {
 					foreach($pids as $pid) {
 						posix_kill($pid, SIGTERM);
 					}
@@ -82,7 +82,7 @@ function sig_handler($signo) {
 					AND task='tmaster'",
 					array($poller_id)), 'pid', 'pid');
 
-				if (sizeof($pids)) {
+				if (cacti_sizeof($pids)) {
 					foreach($pids as $pid) {
 						posix_kill($pid, SIGTERM);
 					}
@@ -124,7 +124,7 @@ $master     = false;
 
 global $debug, $poller_id, $network_id, $thread, $master;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -204,7 +204,7 @@ if ($master) {
 		array($poller_id));
 
 	$launched = 0;
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		foreach($networks as $network) {
 			if (api_automation_is_time_to_start($network['id']) || $force) {
 				automation_debug("Launching Network Master for '" . $network['name'] . "'\n");
@@ -233,7 +233,7 @@ if (!$master && $thread == 0) {
 	);
 
 	automation_debug("Killing any prior running threads\n");
-	if (sizeof($pids)) {
+	if (cacti_sizeof($pids)) {
 		foreach($pids as $pid) {
 			if (isProcessRunning($pid)) {
 				killProcess($pid);
@@ -300,7 +300,7 @@ if (!$master && $thread == 0) {
 			killProcess(getmypid());
 		}
 
-		$running = db_fetch_cell_prepared('SELECT count(*)
+		$running = db_fetch_cell_prepared('SELECT cacti_count(*)
 			FROM automation_processes
 			WHERE network_id = ?
 			AND task!="tmaster"
@@ -387,7 +387,7 @@ function discoverDevices($network_id, $thread) {
 			AND status=0',
 			array(getmypid(), $thread));
 
-		if (sizeof($device) && isset($device['ip_address'])) {
+		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
 			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check',false,'AUTOM8',POLLER_VERBOSITY_MEDIUM);
 			if ($dns != '') {
@@ -473,7 +473,7 @@ function discoverDevices($network_id, $thread) {
 				WHERE hostname IN (?,?)',
 				array($device['ip_address'], $device['hostname']));
 
-			if (!sizeof($exists)) {
+			if (!cacti_sizeof($exists)) {
 				automation_debug(", Status: Not in Cacti");
 
 				if (substr($device['ip_address'], -3) < 255) {
@@ -553,7 +553,7 @@ function discoverDevices($network_id, $thread) {
 							WHERE hostname IN (?,?)',
 							array($snmp_sysName_short, $snmp_sysName));
 
-						if (sizeof($exists)) {
+						if (cacti_sizeof($exists)) {
 							if ($exists['status'] == 3 || $exists['status'] == 2) {
 								addUpDevice($network_id, getmypid());
 
@@ -807,7 +807,7 @@ function rerunDataQueries($host_id, &$network) {
 			WHERE host_id = ?',
 			array($host_id));
 
-		if (sizeof($snmp_queries)) {
+		if (cacti_sizeof($snmp_queries)) {
 			foreach($snmp_queries as $query) {
 				run_data_query($host_id, $query['snmp_query_id']);
 			}
@@ -853,7 +853,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 		WHERE id = ?',
 		array($network_id));
 
-	if (sizeof($details)) {
+	if (cacti_sizeof($details)) {
 		if ($details['notification_enabled'] == 'on') {
 			if ($details['notification_fromname'] == '') {
 				$fromname = read_config_option('automation_fromname');
@@ -902,7 +902,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 						WHERE id = ?',
 						array($admin_user));
 
-					if (!sizeof($details)) {
+					if (!cacti_sizeof($details)) {
 						cacti_log('WARNING: Unable to send Automation Notification Email.  The Primary Admin User Account does not exist.', false, 'POLLER');
 						return false;
 					}

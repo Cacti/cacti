@@ -114,7 +114,7 @@ function upgrade_to_1_2_0() {
 	// Fix data source stats column type
 	$value_parms = db_get_column_attributes('data_source_stats_hourly_last', 'value');
 
-	if (sizeof($value_parms)) {
+	if (cacti_sizeof($value_parms)) {
 		if ($value_parms[0]['COLUMN_TYPE'] != 'double') {
 			db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY COLUMN `value` DOUBLE DEFAULT NULL');
 		}
@@ -125,7 +125,7 @@ function upgrade_to_1_2_0() {
 		FROM snmp_query
 		ORDER BY id');
 
-	if (sizeof($snmp_queries)) {
+	if (cacti_sizeof($snmp_queries)) {
 		foreach($snmp_queries as $query) {
 			db_execute_prepared("UPDATE graph_local AS gl
 				INNER JOIN (
@@ -148,7 +148,7 @@ function upgrade_to_1_2_0() {
 		WHERE snmp_query_id > 0
 		AND snmp_query_graph_id = 0');
 
-	if (sizeof($ids)) {
+	if (cacti_sizeof($ids)) {
 		foreach($ids as $id) {
 			$query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph

@@ -344,7 +344,7 @@ function item_edit() {
 									array(get_request_var('host_id')));
 							}
 
-							if (sizeof($data_templates)) {
+							if (cacti_sizeof($data_templates)) {
 								foreach ($data_templates as $data_template) {
 									print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected':'') . '>' . html_escape($data_template['name']) . "</option>\n";
 								}

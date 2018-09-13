@@ -111,7 +111,7 @@ if ($execute) {
 // Get all graphs for supplied graph template
 $graph = db_fetch_assoc("SELECT * FROM graph_local where " . (!isset($host_id) ? '' : "host_id=".$host_id." and ") . " graph_template_id=" . $graph_template_id . "");
 
-if (sizeof($graph)) {
+if (cacti_sizeof($graph)) {
 	if(!$show_sql) {
 		print "\nCorrupted graphs:\n";
 	}
@@ -119,14 +119,14 @@ if (sizeof($graph)) {
 	foreach($graph as $g) {
 		// Get datasource for supplied data template for current host
 		$ds = db_fetch_assoc("SELECT * FROM data_local where host_id=" . $g["host_id"] . " and data_template_id=" . $data_template_id);
-		if (!sizeof($ds)) {
+		if (!cacti_sizeof($ds)) {
 			continue;
 		}
 		$ds = $ds[0];
 
 		// Get rrd for found datasource
 		$rrd_data = db_fetch_assoc("SELECT * FROM data_template_rrd where local_data_id=" . $ds["id"]);
-		if (!sizeof($rrd_data)) {
+		if (!cacti_sizeof($rrd_data)) {
 			print "Could not get correct rrd id for datasource=" . $ds["id"] . "\n";
 			continue;
 		}
@@ -143,7 +143,7 @@ if (sizeof($graph)) {
 		*/
 
 		$graph_templates_items_wrong = db_fetch_assoc("select id, task_item_id from graph_templates_item WHERE task_item_id!=" . $rrd_data[0]["id"] . " and graph_template_id=" . $graph_template_id . " and local_graph_id=" . $g["id"] . " and local_graph_template_item_id in (select id from graph_templates_item where local_graph_template_item_id=0 and local_graph_id=0 and task_item_id=(select id from data_template_rrd where local_data_template_rrd_id=0 and local_data_id=0 and data_template_id=" . $data_template_id . "))");
-		if (!sizeof($graph_templates_items_wrong)) {
+		if (!cacti_sizeof($graph_templates_items_wrong)) {
 			// Everything correct here.
 			continue;
 		} else {

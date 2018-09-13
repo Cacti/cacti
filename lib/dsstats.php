@@ -63,7 +63,7 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 		$rrdtool_pipe  = $process_pipes[1];
 	}
 
-	if (sizeof($rrdfiles)) {
+	if (cacti_sizeof($rrdfiles)) {
 		foreach ($rrdfiles as $file) {
 			if ($file['data_source_path'] != '') {
 				$rrdfile = str_replace('<path_rra>', $config['rra_path'], $file['data_source_path']);
@@ -107,10 +107,10 @@ function dsstats_write_buffer(&$stats_array, $interval) {
 	$max_packet = '264000';
 
 	/* don't attempt to process an empty array */
-	if (sizeof($stats_array)) {
+	if (cacti_sizeof($stats_array)) {
 		foreach($stats_array as $local_data_id => $stats) {
 			/* some additional sanity checking */
-			if (is_array($stats) && sizeof($stats)) {
+			if (is_array($stats) && cacti_sizeof($stats)) {
 				foreach($stats as $rrd_name => $avgpeak_stats) {
 					$outbuf .= ($i == 1 ? ' ':', ') . "('" . $local_data_id . "','" .
 						$rrd_name . "','" .
@@ -185,7 +185,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 			/* figure out whatis in this RRDfile.  Assume CF Uniformity as Cacti does not allow async rrdfiles.
 			 * also verify the consolidation functions in the RRDfile for average and max calculations.
 			 */
-			if (sizeof($info_array)) {
+			if (cacti_sizeof($info_array)) {
 				foreach ($info_array as $line) {
 					if (substr_count($line, 'ds[')) {
 						$parts = explode(']', $line);
@@ -221,7 +221,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 			}
 
 			/* setup the export command by parsing throught the internal data source names */
-			if (sizeof($dsnames)) {
+			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
 						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
@@ -278,7 +278,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 			if ($xport_data != '') {
 				$xport_array = explode("\n", $xport_data);
 
-				if (sizeof($xport_array)) {
+				if (cacti_sizeof($xport_array)) {
 					foreach($xport_array as $line) {
 						/* we've found an output value, let's cut it to pieces */
 						if (substr_count($line, '<v>')) {
@@ -450,7 +450,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 	/* do not make any calculations unlessed enabled */
 	if (read_config_option('dsstats_enable') == 'on') {
-		if (sizeof($rrd_update_array) > 0) {
+		if (cacti_sizeof($rrd_update_array) > 0) {
 			/* we will assume a smaller than the max packet size.  This would appear to be around the sweat spot. */
 			$max_packet       = '264000';
 

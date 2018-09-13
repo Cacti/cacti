@@ -85,7 +85,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
-				if (sizeof($add_text)) {
+				if (cacti_sizeof($add_text)) {
 					foreach($add_text as $icon) {
 						if (isset($icon['callback']) && $icon['callback'] === true) {
 							$classo = 'linkOverDark';
@@ -167,7 +167,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -243,7 +243,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -589,7 +589,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
@@ -785,9 +785,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 				$align = 'left';
 			}
 
-			print "<th class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
+			print "<th class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
 		} else {
-			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
+			print "<th " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
 		}
 
 		$i++;
@@ -862,7 +862,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach (array_keys($form_data) as $id) {
 				print '<option value="' . html_escape($id) . '"';
 
@@ -874,7 +874,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 		}
 	} else {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach ($form_data as $row) {
 				print "<option value='" . html_escape($row[$column_id]) . "'";
 
@@ -974,7 +974,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
 			$this_row_style   = '';
@@ -1067,7 +1067,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
-				if ($i != sizeof($item_list)-1) {
+				if ($i != cacti_sizeof($item_list)-1) {
 					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				} else {
 					print "<span class='moveArrowNone'></span>\n";
@@ -1097,7 +1097,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* break out the URL and variables */
-	if (!is_array($url_array) || (is_array($url_array) && !sizeof($url_array))) {
+	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
@@ -1399,9 +1399,9 @@ function is_console_page($url) {
 		return true;
 	}
 
-	if (sizeof($menu)) {
+	if (cacti_sizeof($menu)) {
 		foreach($menu as $section => $children) {
-			if (sizeof($children)) {
+			if (cacti_sizeof($children)) {
 				foreach($children as $page => $name) {
 					if (basename($page) == $basename) {
 						return true;
@@ -1480,7 +1480,7 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
@@ -1610,7 +1610,7 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$tabs_left[] =
@@ -1793,7 +1793,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-				if (sizeof($devices)) {
+				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
 						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
@@ -1848,7 +1848,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			$sites = get_allowed_sites($sql_where);
 
-			if (sizeof($sites)) {
+			if (cacti_sizeof($sites)) {
 				foreach ($sites as $site) {
 					print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
 				}

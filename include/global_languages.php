@@ -85,7 +85,7 @@ $plugins = db_fetch_assoc('SELECT `directory`
 	FROM `plugin_config`
 	ORDER BY id');
 
-if ($plugins && sizeof($plugins) > 0) {
+if ($plugins && cacti_sizeof($plugins) > 0) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 		$path2catalogue =  $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
@@ -98,7 +98,7 @@ if ($plugins && sizeof($plugins) > 0) {
 
 	/* if i18n support is set to strict mode then check if all plugins support the requested language */
 	if (read_config_option('i18n_language_support') == 2) {
-		if (sizeof($plugins) != (sizeof($cacti_textdomains) - 1)) {
+		if (cacti_sizeof($plugins) != (cacti_sizeof($cacti_textdomains) - 1)) {
 			load_fallback_procedure();
 			return;
 		}

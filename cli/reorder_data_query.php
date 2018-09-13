@@ -37,7 +37,7 @@ $debug		= false;
 $host_id	= 'all';
 $host_descr	= '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -121,10 +121,10 @@ $data_queries = db_fetch_assoc("SELECT data_local.host_id, data_local.snmp_query
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Reordering can take quite some time\n";
-debug("There are '" . sizeof($data_queries) . "' data query index items to run");
+debug("There are '" . cacti_sizeof($data_queries) . "' data query index items to run");
 
 $i = 1;
-if (sizeof($data_queries)) {
+if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) print '.';
 		/* fetch current index_order from data_query XML definition and put it into host_snmp_query */

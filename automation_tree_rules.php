@@ -206,19 +206,19 @@ function automation_tree_rules_form_actions() {
 				db_execute('DELETE FROM automation_tree_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					duplicate_automation_tree_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", array($selected_items[$i]));
@@ -820,7 +820,7 @@ function automation_tree_rules() {
 							<select id='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
 								}
@@ -934,7 +934,7 @@ function automation_tree_rules() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($automation_tree_rules)) {
+	if (cacti_sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
 			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
 			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : $automation_tree_rule['subtree_name']);
@@ -958,7 +958,7 @@ function automation_tree_rules() {
 
 	html_end_box(false);
 
-	if (sizeof($automation_tree_rules)) {
+	if (cacti_sizeof($automation_tree_rules)) {
 		print $nav;
 	}
 

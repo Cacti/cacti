@@ -43,7 +43,7 @@ $debug    = false;
 $forcerun = false;
 $verbose  = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -276,10 +276,10 @@ function output_rrd_data($start_time, $force = false) {
 		AND table_name LIKE 'poller_output_boost_arch_%'
 		AND table_name != ?", array($database_default, $archive_table));
 
-	if (count($more_arch_tables)) {
+	if (cacti_count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
 			$table_name = $table['name'];
-			$rows = db_fetch_cell("SELECT count(*) FROM $table_name");
+			$rows = db_fetch_cell("SELECT cacti_count(*) FROM $table_name");
 			if (is_numeric($rows) && intval($rows) > 0) {
 				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
 				db_execute("TRUNCATE TABLE $table_name");
@@ -293,7 +293,7 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	while (true) {
-		$rows = db_fetch_cell("SELECT count(*) FROM $archive_table");
+		$rows = db_fetch_cell("SELECT cacti_count(*) FROM $archive_table");
 
 		if ($rows > 0) {
 			$rrd_updates += boost_process_poller_output('', $rrdtool_pipe, $current_time);
@@ -338,9 +338,9 @@ function output_rrd_data($start_time, $force = false) {
 		WHERE table_schema=SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
-	if (count($tables)) {
+	if (cacti_count($tables)) {
 		foreach($tables as $table) {
-			$rows = db_fetch_cell('SELECT count(*) FROM ' . $table['name']);
+			$rows = db_fetch_cell('SELECT cacti_count(*) FROM ' . $table['name']);
 			if (is_numeric($rows) && intval($rows) == 0) {
 				db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 			}
@@ -422,7 +422,7 @@ function purge_cached_png_files($forcerun) {
 			}
 
 			/* remove age old files */
-			if (sizeof($directory_contents)) {
+			if (cacti_sizeof($directory_contents)) {
 				/* goto the cache directory */
 				chdir($cache_directory);
 

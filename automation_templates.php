@@ -154,7 +154,7 @@ function form_actions() {
 
 	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($at_array) && sizeof($at_array)) {
+	if (isset($at_array) && cacti_sizeof($at_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -231,7 +231,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 
 	$spaces .= '--';
 
-	if (sizeof($items)) {
+	if (cacti_sizeof($items)) {
 	foreach($items as $i) {
 		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
 		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
@@ -260,7 +260,7 @@ function template_edit() {
 
 	$template_names = array();
 
-	if (sizeof($host_template_names)) {
+	if (cacti_sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
 			$template_names[$ht['id']] = $ht['name'];
 		}
@@ -401,7 +401,7 @@ function template() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -501,8 +501,8 @@ function template() {
 	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 1;
-	$total_items = sizeof($dts);
-	if (sizeof($dts)) {
+	$total_items = cacti_sizeof($dts);
+	if (cacti_sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
 				$name = __('Unknown Template');
@@ -545,7 +545,7 @@ function template() {
 
 	html_end_box(false);
 
-	if (sizeof($dts)) {
+	if (cacti_sizeof($dts)) {
 		print $nav;
 	}
 

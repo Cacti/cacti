@@ -34,7 +34,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* utility requires input parameters */
-if (sizeof($parms) == 0) {
+if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
 	exit(1);
@@ -44,7 +44,7 @@ $debug   = false;
 $host_id = '';
 $filter  = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -130,7 +130,7 @@ $data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, dat
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
-debug("There are '" . sizeof($data_source_list) . "' Data Sources to rename");
+debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
 
 $i = 1;
 foreach ($data_source_list as $data_source) {

@@ -35,7 +35,7 @@ $push   = false;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -89,7 +89,7 @@ if ($audit) {
 	$input = json_decode(file_get_contents($config['input_whitelist']), true);
 
 	$totals = 0;
-	$items = sizeof($input);
+	$items = cacti_sizeof($input);
 
 	if ($items) {
 		print 'Data Input Methods Whitelist Verification' . PHP_EOL . PHP_EOL;
@@ -134,7 +134,7 @@ if ($audit) {
 		$input_ws = array();
 	}
 
-	if (sizeof($input_db)) {
+	if (cacti_sizeof($input_db)) {
 		// format data for easier consumption
 		$input = array();
 		foreach ($input_db as $value) {

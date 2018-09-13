@@ -359,7 +359,7 @@ function filter($clogAdmin) {
 							$files = array('cacti.log');
 						}
 
-						if (sizeof($files)) {
+						if (cacti_sizeof($files)) {
 							$logFileArray = array();
 							foreach ($files as $logFile) {
 								if (in_array($logFile, array('.', '..', '.htaccess'))) {
@@ -547,7 +547,7 @@ function filter($clogAdmin) {
 function clog_get_regex_array() {
 	static $regex_array = array();
 
-	if (!sizeof($regex_array)) {
+	if (!cacti_sizeof($regex_array)) {
 		$regex_array = array(
 			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',       'func' => 'clog_regex_datasource'),
 			2 => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',       'func' => 'clog_regex_dataquery'),
@@ -576,7 +576,7 @@ function clog_regex_parser($matches) {
 	$match = $matches[0];
 
 	$key_match = -1;
-	for ($index = 1; $index < sizeof($matches); $index++) {
+	for ($index = 1; $index < cacti_sizeof($matches); $index++) {
 		if ($match == $matches[$index]) {
 			$key_match = $index;
 			break;
@@ -587,7 +587,7 @@ function clog_regex_parser($matches) {
 		$key_setting = ($key_match - 1) / 4 + 1;
 		$regex_array = clog_get_regex_array();
 
-		if (sizeof($regex_array)) {
+		if (cacti_sizeof($regex_array)) {
 			if (array_key_exists($key_setting, $regex_array)) {
 				$regex_setting = $regex_array[$key_setting];
 
@@ -610,7 +610,7 @@ function clog_regex_device($matches) {
 	$result = $matches[0];
 
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($dev_ids)) {
+	if (cacti_sizeof($dev_ids)) {
 		$result = '';
 		$hosts = db_fetch_assoc_prepared('SELECT id, description
 			FROM host
@@ -618,7 +618,7 @@ function clog_regex_device($matches) {
 			array(implode(',',$dev_ids)));
 
 		$hostDescriptions = array();
-		if (sizeof($hosts)) {
+		if (cacti_sizeof($hosts)) {
 			foreach ($hosts as $host) {
 				$hostDescriptions[$host['id']] = html_escape($host['description']);
 			}
@@ -638,7 +638,7 @@ function clog_regex_datasource($matches) {
 	$result = $matches[0];
 
 	$ds_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($ds_ids)) {
+	if (cacti_sizeof($ds_ids)) {
 		$result = '';
 
 		$graph_rows = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
@@ -653,7 +653,7 @@ function clog_regex_datasource($matches) {
 			array($matches[2])),'id','id');
 
 		$graph_results = '';
-		if (sizeof($graph_rows)) {
+		if (cacti_sizeof($graph_rows)) {
 			$graph_ids = implode(',',$graph_rows);
 			$graph_array = array( 0 => '', 1 => ' Graphs[', 2 => $graph_ids, 3 => ']');
 
@@ -691,7 +691,7 @@ function clog_regex_poller($matches) {
 	$result = $matches[0];
 
 	$poller_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($poller_ids)) {
+	if (cacti_sizeof($poller_ids)) {
 		$result = '';
 		$pollers = db_fetch_assoc_prepared('SELECT id, name
 			FROM poller
@@ -699,7 +699,7 @@ function clog_regex_poller($matches) {
 			array(implode(',',$poller_ids)));
 
 		$pollerDescriptions = array();
-		if (sizeof($pollers)) {
+		if (cacti_sizeof($pollers)) {
 			foreach ($pollers as $poller) {
 				$pollerDescriptions[$poller['id']] = html_escape($poller['name']);
 			}
@@ -719,7 +719,7 @@ function clog_regex_dataquery($matches) {
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($query_ids)) {
+	if (cacti_sizeof($query_ids)) {
 		$result = '';
 		$querys = db_fetch_assoc_prepared('SELECT id, name
 			FROM snmp_query
@@ -727,7 +727,7 @@ function clog_regex_dataquery($matches) {
 			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
-		if (sizeof($querys)) {
+		if (cacti_sizeof($querys)) {
 			foreach ($querys as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['name']);
 			}
@@ -764,7 +764,7 @@ function clog_regex_graphs($matches) {
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($query_ids)) {
+	if (cacti_sizeof($query_ids)) {
 		$result = '';
 		$graph_add = $config['url_path'] . 'graph_view.php?page=1&style=selective&action=preview&graph_add=';
 
@@ -785,7 +785,7 @@ function clog_regex_graphs($matches) {
 		$result .= $matches[1] . "<a href='";
 
 		$queryDescriptions = array();
-		if (sizeof($querys)) {
+		if (cacti_sizeof($querys)) {
 			foreach ($querys as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['title']);
 			}
@@ -809,7 +809,7 @@ function clog_regex_graphtemplates($matches) {
 	$result = $matches[0];
 
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
-	if (sizeof($query_ids)) {
+	if (cacti_sizeof($query_ids)) {
 		$result = '';
 		$querys = db_fetch_assoc_prepared('SELECT id, name
 			FROM graph_templates
@@ -817,7 +817,7 @@ function clog_regex_graphtemplates($matches) {
 			array(implode(',',$query_ids)));
 
 		$queryDescriptions = array();
-		if (sizeof($querys)) {
+		if (cacti_sizeof($querys)) {
 			foreach ($querys as $query) {
 				$queryDescriptions[$query['id']] = html_escape($query['name']);
 			}

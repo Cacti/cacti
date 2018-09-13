@@ -120,7 +120,7 @@ case 'countdown':
 			WHERE local_graph_id = ?',
 			array(get_request_var('local_graph_id')));
 
-		if (sizeof($graph_data)) {
+		if (cacti_sizeof($graph_data)) {
 			$graph_data_array['graph_height'] = $graph_data['height'];
 			$graph_data_array['graph_width']  = $graph_data['width'];
 		}

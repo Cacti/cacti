@@ -31,7 +31,7 @@ function render_external_links($style = 'FRONT') {
 	global $config;
 
 	$consoles = db_fetch_assoc_prepared('SELECT id, contentfile FROM external_links WHERE style = ?', array($style));
-	if (sizeof($consoles)) {
+	if (cacti_sizeof($consoles)) {
 		foreach($consoles as $page) {
 			if (is_realm_allowed($page['id']+10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {

@@ -95,7 +95,7 @@ $forcerun       = false;
 $verbose        = false;
 $poller_id      = $config['poller_id'];
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -179,16 +179,16 @@ if ($run) {
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
+		$time_records  = db_fetch_assoc('SELECT time, cacti_count(*) AS entries
 			FROM poller_output_boost
 			GROUP BY time', true, $local_db_cnn_id);
 
-		debug('There are ' . sizeof($time_records) . ' in the recovery database');
+		debug('There are ' . cacti_sizeof($time_records) . ' in the recovery database');
 
 		$total_records = db_affected_rows();
 		$found         = 0;
 
-		if (!sizeof($time_records)) {
+		if (!cacti_sizeof($time_records)) {
 			// This should happen, but only after purging at least some records
 			break;
 		} else {
@@ -244,7 +244,7 @@ if ($run) {
 					ORDER BY time ASC", true, $local_db_cnn_id);
 			}
 
-			if (sizeof($rows)) {
+			if (cacti_sizeof($rows)) {
 				$count     = 0;
 				$sql_array = array();
 
@@ -257,7 +257,7 @@ if ($run) {
 							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
-						$inserted += sizeof($sql_array);
+						$inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
 						$count = 0;
 					}

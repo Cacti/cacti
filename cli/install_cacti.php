@@ -42,7 +42,7 @@ error_reporting(E_ALL);
 db_execute("DELETE FROM settings WHERE name like 'log_install%' or name = 'install_eula'");
 define('log_install_echo', 'on');
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -305,7 +305,7 @@ function debug_install_array($parent, $contents, $indent = 0) {
 }
 
 function process_install_errors($results) {
-	if (isset($results['Errors']) && sizeof($results['Errors']) > 0) {
+	if (isset($results['Errors']) && cacti_sizeof($results['Errors']) > 0) {
 		$errors = $results['Errors'];
 		$count = 0;
 		$sections = 0;

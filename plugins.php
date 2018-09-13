@@ -137,7 +137,7 @@ update_show_current();
 bottom_footer();
 
 function plugins_temp_table_exists($table) {
-	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
+	return cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
 function plugins_load_temp_table() {
@@ -349,7 +349,7 @@ function update_show_current () {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -394,7 +394,7 @@ function update_show_current () {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		count(*)
+		cacti_count(*)
 		FROM $table
 		$sql_where");
 
@@ -432,7 +432,7 @@ function update_show_current () {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
 	$i = 0;
-	if (sizeof($plugins)) {
+	if (cacti_sizeof($plugins)) {
 		$j = 0;
 		foreach ($plugins as $plugin) {
 			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
@@ -455,12 +455,12 @@ function update_show_current () {
 			$j++;
 		}
 	} else {
-		print '<tr><td colspan="' . sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . cacti_sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($plugins)) {
+	if (cacti_sizeof($plugins)) {
 		print $nav;
 	}
 

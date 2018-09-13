@@ -136,7 +136,7 @@ function color_templates_item_dnd() {
     if (isset_request_var('color_item') && is_array(get_nfilter_request_var('color_item'))) {
 		$color_items = get_nfilter_request_var('color_item');
 
-		if (sizeof($color_items)) {
+		if (cacti_sizeof($color_items)) {
 			$sequence = 1;
 
 		    foreach($color_items as $option_id) {

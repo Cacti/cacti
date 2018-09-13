@@ -46,7 +46,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 			HAVING graphs = 1
 			AND ' . array_to_sql_or($all_data_sources, 'local_data_id')), 'local_data_id', 'local_data_id');
 
-		if (sizeof($data_sources)) {
+		if (cacti_sizeof($data_sources)) {
 			api_data_source_remove_multi($data_sources);
 			api_plugin_hook_function('data_source_remove', $data_sources);
 		}
@@ -65,7 +65,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 			AND gti.local_graph_id IS NULL
 			AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
 
-		if (sizeof($data_sources)) {
+		if (cacti_sizeof($data_sources)) {
 			api_data_source_remove_multi($data_sources);
 			api_plugin_hook_function('data_source_remove', $data_sources);
 		}
@@ -98,7 +98,7 @@ function api_graph_remove_multi($local_graph_ids) {
 	$i = 0;
 
 	/* build the array */
-	if (sizeof($local_graph_ids)) {
+	if (cacti_sizeof($local_graph_ids)) {
 		foreach($local_graph_ids as $local_graph_id) {
 			if ($i == 0) {
 				$ids_to_delete .= $local_graph_id;
@@ -208,7 +208,7 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		ORDER BY sequence", array($snmp_query_graph_id));
 
 	$suggested_values_graph = array();
-	if (sizeof($suggested_values)) {
+	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
 			/* once we find a match; don't try to find more */
 			if (!isset($suggested_values_graph[$suggested_value['field_name']])) {
@@ -323,7 +323,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 	$graph_templates_graph_id = sql_save($save, 'graph_templates_graph');
 
 	/* create new entry(s): graph_templates_item */
-	if (sizeof($graph_template_items)) {
+	if (cacti_sizeof($graph_template_items)) {
 		foreach ($graph_template_items as $graph_template_item) {
 			unset($save);
 
@@ -344,7 +344,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 
 	if (!empty($_graph_template_id)) {
 		/* create new entry(s): graph_template_input (graph template only) */
-		if (sizeof($graph_template_inputs)) {
+		if (cacti_sizeof($graph_template_inputs)) {
 			foreach ($graph_template_inputs as $graph_template_input) {
 				unset($save);
 
@@ -363,7 +363,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					array($graph_template_input['id']));
 
 				/* create new entry(s): graph_template_input_defs (graph template only) */
-				if (sizeof($graph_template_input_defs)) {
+				if (cacti_sizeof($graph_template_input_defs)) {
 					foreach ($graph_template_input_defs as $graph_template_input_def) {
 						db_execute_prepared('INSERT INTO graph_template_input_defs
 							(graph_template_input_id, graph_template_item_id)
@@ -388,7 +388,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 			WHERE graph_template_id = ?', 
 			array($_graph_template_id));
 
-		if (sizeof($data_query_graphs)) {
+		if (cacti_sizeof($data_query_graphs)) {
 			unset($save);
 
 			$name = db_fetch_cell_prepared('SELECT name 
@@ -413,7 +413,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 						WHERE snmp_query_graph_id = ?',
 						array($dqg['id']));
 
-					if (sizeof($snmp_query_graph_rrds)) {
+					if (cacti_sizeof($snmp_query_graph_rrds)) {
 						foreach($snmp_query_graph_rrds as $sqgr) {
 							db_execute_prepared('INSERT INTO snmp_query_graph_rrd
 								(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
@@ -435,7 +435,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					WHERE snmp_query_graph_id = ?',
 					array($dqg['id']));
 
-				if (sizeof($snames)) {
+				if (cacti_sizeof($snames)) {
 					foreach($snames as $sn) {
 						unset($save);
 
@@ -457,7 +457,7 @@ function api_duplicate_graph($_local_graph_id, $_graph_template_id, $graph_title
 					WHERE snmp_query_graph_id = ?',
 					array($dqg['id']));
 
-				if (sizeof($snames)) {
+				if (cacti_sizeof($snames)) {
 					foreach($snames as $sn) {
 						unset($save);
 
@@ -498,7 +498,7 @@ function api_graph_change_device($local_graph_id, $host_id) {
 			WHERE gti.local_graph_id = ?',
 			array($local_graph_id));
 
-		if (sizeof($data_ids)) {
+		if (cacti_sizeof($data_ids)) {
 			foreach($data_ids as $data_id) {
 				db_execute_prepared('UPDATE data_local
 					SET host_id = ?

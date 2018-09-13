@@ -41,7 +41,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	$check_fields = array('id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
 
 	/* loop through each available field */
-	if (sizeof($form_array)) {
+	if (cacti_sizeof($form_array)) {
 		foreach ($form_array as $field_name => $field_array) {
 			/* loop through each sub-field that we are going to check for variables */
 			foreach ($check_fields as $field_to_check) {
@@ -72,7 +72,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
 
-							if (!sizeof($matches)) {
+							if (!cacti_sizeof($matches)) {
 								$form_array[$field_name][$field_to_check] = $string;
 								break;
 							}
@@ -427,7 +427,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				} else {
 					$value = false;
 				}
-			} elseif (!sizeof($options)) {
+			} elseif (!cacti_sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
 			} else {
 				$value = filter_var($_REQUEST[$name], $filter, $options);
@@ -560,7 +560,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	$changed = 0;
 	$custom_error = '';
 
-	if (sizeof($filters)) {
+	if (cacti_sizeof($filters)) {
 		foreach($filters as $variable => $options) {
 			// Establish the session variable first
 			if ($sess_prefix != '') {

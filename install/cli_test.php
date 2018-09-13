@@ -28,7 +28,7 @@ if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
-if (sizeof($argv)) {
+if (cacti_sizeof($argv)) {
 	$value = intval($argv[1]);
 	print $value * $value;
 }

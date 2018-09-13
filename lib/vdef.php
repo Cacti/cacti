@@ -47,7 +47,7 @@ function get_vdef($vdef_id, $display = false) {
 
 	$i = 0; $vdef_string = '';
 
-	if (sizeof($vdef_items)) {
+	if (cacti_sizeof($vdef_items)) {
 		foreach ($vdef_items as $vdef_item) {
 			if ($i > 0) {
 				$vdef_string .= ($display ? ', ':',');

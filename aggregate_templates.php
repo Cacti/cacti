@@ -300,7 +300,7 @@ function aggregate_form_actions() {
 
 	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($aggregate_array) && sizeof($aggregate_array)) {
+	if (isset($aggregate_array) && cacti_sizeof($aggregate_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 					<td class='textArea'>
@@ -555,7 +555,7 @@ function aggregate_template() {
 	}
 
 	$filter_html .= '>' . __('Default') . '</option>';
-	if (sizeof($item_rows)) {
+	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
 			if (get_request_var("rows") == $key) {
@@ -647,7 +647,7 @@ function aggregate_template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['graphs'] > 0) {
 				$disabled = true;
@@ -664,12 +664,12 @@ function aggregate_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}

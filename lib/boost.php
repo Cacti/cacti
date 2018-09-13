@@ -141,7 +141,7 @@ function boost_poller_on_demand(&$results) {
 			$max_allowed_packet = db_fetch_row("SHOW VARIABLES LIKE 'max_allowed_packet'");
 			$max_allowed_packet = $max_allowed_packet['Value'];
 
-			if (sizeof($results)) {
+			if (cacti_sizeof($results)) {
 				$i          = 1;
 				$out_length = 0;
 
@@ -315,7 +315,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 			AND data_template_rrd.local_data_id > 0', array($local_graph_id));
 
 		/* first update the RRD files */
-		if (sizeof($local_data_ids)) {
+		if (cacti_sizeof($local_data_ids)) {
 			$updates = 0;
 			foreach($local_data_ids as $local_data_id) {
 				$updates += boost_process_poller_output($local_data_id['local_data_id'], $rrdtool_pipe);
@@ -385,7 +385,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 								/* get access to the SNMP Cache of BOOST*/
 								$mc = new MibCache('CACTI-BOOST-MIB');
-								$mc->object('boostStatsTotalsImagesCacheReads')->count();
+								$mc->object('boostStatsTotalsImagesCacheReads')->cacti_count();
 								$mc->object('boostStatsLastUpdate')->set( time() );
 
 								return $output;
@@ -497,7 +497,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 							chmod($cache_file, 0666);
 
 							/* count the number of images that had to be cached */
-							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
+							$mc->object('boostStatsTotalsImagesCacheWrites')->cacti_count();
 							$mc->object('boostStatsLastUpdate')->set( time() );
 						}
 					}
@@ -563,7 +563,7 @@ function boost_get_arch_table_name() {
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
-		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+		$rows = db_fetch_cell('SELECT cacti_count(*) FROM '.$table['name']);
 		if (is_numeric($rows) && intval($rows) > 0) {
 			return $table['name'];
 		}
@@ -629,7 +629,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			WHERE table_schema = '$database_default'
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
-		if (count($arch_tables)) {
+		if (cacti_count($arch_tables)) {
 			foreach($arch_tables as $table) {
 				$rows = db_fetch_cell('SELECT COUNT(*) FROM ' . $table['name']);
 				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
@@ -663,7 +663,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			WHERE table_schema = '$database_default'
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
-		if (count($arch_tables)) {
+		if (cacti_count($arch_tables)) {
 			foreach($arch_tables as $table) {
 				$rows = db_fetch_cell('SELECT COUNT(*) FROM ' . $table['name']);
 				if (db_table_exists($table['name']) && is_numeric($rows) && intval($rows) > 0) {
@@ -703,10 +703,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			$log_verbosity = POLLER_VERBOSITY_LOW;
 		}
 
-		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . sizeof($results) . "' Updates to Process", false, 'BOOST', $log_verbosity);
+		cacti_log("NOTE: Updating Local Data ID:'$local_data_id', Total of '" . cacti_sizeof($results) . "' Updates to Process", false, 'BOOST', $log_verbosity);
 	}
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		$rrdp_auto_close = false;
 
 		if (!$rrdtool_pipe) {
@@ -743,7 +743,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			reset($results);
 
 			if ($first_ds == $last_ds) {
-				if (sizeof($results) == $data_ids_to_get) {
+				if (cacti_sizeof($results) == $data_ids_to_get) {
 					cacti_log("FALURE: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
 				}
 
@@ -883,7 +883,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				$first_tmpl = true;
 				$multi_ok   = false;
 
-				for ($i=0; $i<count($values); $i++) {
+				for ($i=0; $i<cacti_count($values); $i++) {
 					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
@@ -948,7 +948,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		/* remove the entries from the table */
 		boost_timer('delete', BOOST_TIMER_START);
 		if ($single_local_data_id) {
-			if (count($arch_tables)) {
+			if (cacti_count($arch_tables)) {
 				foreach($arch_tables as $table) {
 					db_execute_prepared('DELETE FROM ' . $table['name'] . '
 						WHERE local_data_id = ?',
@@ -961,7 +961,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				AND time < FROM_UNIXTIME(?)',
 				array($local_data_id, $timestamp));
 		} else {
-			if (count($arch_tables)) {
+			if (cacti_count($arch_tables)) {
 				foreach($arch_tables as $table) {
 					db_execute_prepared('DELETE FROM ' . $table['name'] . '
 						WHERE local_data_id BETWEEN ? AND ?',
@@ -984,7 +984,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	/* restore original error handler */
 	restore_error_handler();
 
-	return sizeof($results);
+	return cacti_sizeof($results);
 }
 
 function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
@@ -1055,7 +1055,7 @@ function boost_get_rrd_filename_and_template($local_data_id) {
 		WHERE dtr.local_data_id = ?
 		ORDER BY data_source_name ASC", array($local_data_id));
 
-	if (sizeof($ds_names)) {
+	if (cacti_sizeof($ds_names)) {
 		foreach($ds_names as $ds_name) {
 			if ($rrd_path == '') {
 				$rrd_path = $ds_name['rrd_path'];
@@ -1129,7 +1129,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	/* if we find that this DS has no RRA associated; get out.  This would
 	 * indicate that a data sources has been deleted
 	 */
-	if (sizeof($rras) <= 0) {
+	if (cacti_sizeof($rras) <= 0) {
 		return false;
 	}
 
@@ -1154,7 +1154,7 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 	- There is multiple data sources and this item is not the main one.
 	- There is only one data source (then use it) */
 
-	if (sizeof($data_sources)) {
+	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
 			/* use the cacti ds name by default or the user defined one, if entered */
 			$data_source_name = get_data_source_item_name($data_source['id']);

@@ -101,13 +101,13 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 			}
 
 			$parts = explode('.', $measure['oid']);
-			$indexes[$parts[sizeof($parts)-1]] = $parts[sizeof($parts)-1];
+			$indexes[$parts[cacti_sizeof($parts)-1]] = $parts[cacti_sizeof($parts)-1];
 		}
 	}
 
 	$reads = $writes = 0;
 
-	if (sizeof($indexes)) {
+	if (cacti_sizeof($indexes)) {
 		$iops = cacti_snmp_walk($host['hostname'],
 			$host['snmp_community'],
 			'.1.3.6.1.4.1.2021.13.15.1.1.5',
@@ -127,7 +127,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 
 		foreach($iops as $measure) {
 			$parts = explode('.', $measure['oid']);
-			$index = $parts[sizeof($parts)-1];
+			$index = $parts[cacti_sizeof($parts)-1];
 
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {
@@ -165,7 +165,7 @@ function ss_net_snmp_disk_io($host_id_or_hostname) {
 
 		foreach($iops as $measure) {
 			$parts = explode('.', $measure['oid']);
-			$index = $parts[sizeof($parts)-1];
+			$index = $parts[cacti_sizeof($parts)-1];
 
 			if (array_key_exists($index, $indexes)) {
 				if (!isset($previous['uptime'])) {

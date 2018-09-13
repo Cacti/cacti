@@ -31,7 +31,7 @@ array_shift($parms);
 
 global $db_insert1, $db_insert2;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$shortopts = 'VvHh';
 
 	$longopts = array(
@@ -95,7 +95,7 @@ if (sizeof($parms)) {
 function repair_database($run = true) {
 	$alters = report_audit_results(false);
 
-	if (sizeof($alters)) {
+	if (cacti_sizeof($alters)) {
 		foreach($alters as $alter) {
 			print 'Executing : ' . trim($alter, ';');
 			if ($run) {
@@ -135,7 +135,7 @@ function report_audit_results($output = true) {
 		'idx_comment'      => 'Comment'
 	);
 
-	if (sizeof($tables)) {
+	if (cacti_sizeof($tables)) {
 		foreach($tables as $table) {
 			$alter_cmds = array();
 			$table_name = $table[$db_name];
@@ -165,7 +165,7 @@ function report_audit_results($output = true) {
 					AND method = ?',
 					array($table_name, 'create'));
 
-				if (!sizeof($plugin_table)) {
+				if (!cacti_sizeof($plugin_table)) {
 					if ($output) {
 						print ' - Does not Exist.  Possible Plugin' . PHP_EOL;
 						continue;
@@ -188,7 +188,7 @@ function report_audit_results($output = true) {
 			$errors = 0;
 			$warnings = 0;
 
-			if (sizeof($columns)) {
+			if (cacti_sizeof($columns)) {
 				foreach($columns as $c) {
 					$alter_cmd    = '';
 					$sequence_off = false;
@@ -199,7 +199,7 @@ function report_audit_results($output = true) {
 						AND table_field = ?',
 						array($table_name, $c['Field']));
 
-					if (!sizeof($dbc)) {
+					if (!cacti_sizeof($dbc)) {
 						$plugin_column = db_fetch_row_prepared('SELECT *
 							FROM plugin_db_changes
 							WHERE `table` = ?
@@ -207,7 +207,7 @@ function report_audit_results($output = true) {
 							AND method = ?',
 							array($table_name, $c['Field'], 'addcolumn'));
 
-						if (!sizeof($plugin_column)) {
+						if (!cacti_sizeof($plugin_column)) {
 							if ($output) {
 								print PHP_EOL . 'WARNING Col: \'' . $c['Field'] . '\', does not exist in default Cacti.  Plugin possible';
 							}
@@ -247,7 +247,7 @@ function report_audit_results($output = true) {
 				}
 			}
 
-			if (isset($alter_cmds) && sizeof($alter_cmds)) {
+			if (isset($alter_cmds) && cacti_sizeof($alter_cmds)) {
 				$alters = array_merge($alters, $alter_cmds);
 			}
 
@@ -259,7 +259,7 @@ function report_audit_results($output = true) {
 				WHERE table_name = ?',
 				array($table_name));
 
-			if (sizeof($db_columns)) {
+			if (cacti_sizeof($db_columns)) {
 				foreach($db_columns as $c) {
 					if (!db_column_exists($table_name, $c['table_field'])) {
 						if ($output) {
@@ -279,7 +279,7 @@ function report_audit_results($output = true) {
 
 			$indexes = db_fetch_assoc('SHOW INDEXES IN ' . $table_name);
 
-			if (sizeof($indexes)) {
+			if (cacti_sizeof($indexes)) {
 				foreach($indexes as $i) {
 					$dbc = db_fetch_row_prepared('SELECT *
 						FROM table_indexes
@@ -289,7 +289,7 @@ function report_audit_results($output = true) {
 						AND idx_column_name = ?',
 						array($i['Table'], $i['Key_name'], $i['Seq_in_index'], $i['Column_name']));
 
-					if (!sizeof($dbc)) {
+					if (!cacti_sizeof($dbc)) {
 						if ($output) {
 							print PHP_EOL . 'WARNING Index: \'' . $i['Key_name'] . '\', does not exist in default Cacti.  Plugin possible';
 						}
@@ -315,7 +315,7 @@ function report_audit_results($output = true) {
 				WHERE idx_table_name = ?',
 				array($table_name));
 
-			if (sizeof($db_indexes)) {
+			if (cacti_sizeof($db_indexes)) {
 				foreach($db_indexes as $i) {
 					if (!db_index_exists($table_name, $i['idx_key_name'])) {
 						if ($output) {
@@ -338,7 +338,7 @@ function report_audit_results($output = true) {
 		}
 	}
 
-	if (sizeof($ialters)) {
+	if (cacti_sizeof($ialters)) {
 		$alters = array_merge($alters, $ialters);
 	}
 
@@ -380,7 +380,7 @@ function make_index_alter($table, $key) {
 		ORDER BY idx_seq_in_index',
 		array($table, $key));
 
-	if (sizeof($parts)) {
+	if (cacti_sizeof($parts)) {
 		$i = 0;
 		foreach($parts as $p) {
 			if ($i == 0 && $p['idx_key_name'] == 'PRIMARY') {
@@ -477,7 +477,7 @@ function load_audit_database() {
 
 	$tables = db_fetch_assoc('SHOW TABLES');
 
-	if (sizeof($tables)) {
+	if (cacti_sizeof($tables)) {
 		foreach($tables as $table) {
 			$table_name = $table[$db_name];
 
@@ -487,7 +487,7 @@ function load_audit_database() {
 			print 'Importing Table: ' . $table_name;
 
 			$i = 1;
-			if (sizeof($columns)) {
+			if (cacti_sizeof($columns)) {
 				foreach($columns as $c) {
 					db_execute_prepared('INSERT INTO table_columns
 						(table_name, table_sequence, table_field, table_type, table_null, table_key, table_default, table_extra)
@@ -510,7 +510,7 @@ function load_audit_database() {
 
 			print ' - Done' . PHP_EOL;
 
-			if (sizeof($indexes)) {
+			if (cacti_sizeof($indexes)) {
 				foreach($indexes as $i) {
 					db_execute_prepared('INSERT INTO table_indexes
 						(idx_table_name, idx_non_unique, idx_key_name, idx_seq_in_index, idx_column_name,

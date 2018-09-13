@@ -37,7 +37,7 @@ function usort_data_query_index($a, $b) {
 	$arr_a = explode('/', $a);
 	$arr_b = explode('/', $b);
 
-	for ($i=0; $i<min(count($arr_a), count($arr_b)); $i++) {
+	for ($i=0; $i<min(cacti_count($arr_a), cacti_count($arr_b)); $i++) {
 		if ((is_numeric($arr_a[$i])) && (is_numeric($arr_b[$i]))) {
 			if (intval($arr_a[$i]) > intval($arr_b[$i])) {
 				return 1;
@@ -53,9 +53,9 @@ function usort_data_query_index($a, $b) {
 		}
 	}
 
-	if (count($arr_a) < count($arr_b)) {
+	if (cacti_count($arr_a) < cacti_count($arr_b)) {
 		return 1;
-	} elseif (count($arr_a) > count($arr_b)) {
+	} elseif (cacti_count($arr_a) > cacti_count($arr_b)) {
 		return -1;
 	}
 

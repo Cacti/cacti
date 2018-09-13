@@ -43,7 +43,7 @@ function sig_handler($signo) {
 
 			$running_processes = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM poller_time WHERE end_time=\'0000-00-00 00:00:00\'');
 
-			if (sizeof($running_processes)) {
+			if (cacti_sizeof($running_processes)) {
 				foreach($running_processes as $process) {
 					if (function_exists('posix_kill')) {
 						cacti_log("WARNING: Termination poller process with pid '" . $process['pid'] . "'", true, 'POLLER', POLLER_VERBOSITY_LOW);
@@ -77,7 +77,7 @@ chdir(dirname(__FILE__));
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -178,7 +178,7 @@ if ($cron_interval != 60) {
 $process_leveling = read_config_option('process_leveling');
 
 // retreive the number of concurrent process settings
-if (sizeof($poller)) {
+if (cacti_sizeof($poller)) {
 	$concurrent_processes = $poller['processes'];
 } else {
 	$concurrent_processes = read_config_option('concurrent_processes');
@@ -199,7 +199,7 @@ $ds_needing_fixes = db_fetch_assoc_prepared('SELECT local_data_id,
 	HAVING instances > 1',
 	array($poller_id));
 
-if (sizeof($ds_needing_fixes)) {
+if (cacti_sizeof($ds_needing_fixes)) {
 	foreach($ds_needing_fixes as $ds) {
 		db_execute_prepared('UPDATE poller_item
 			SET rrd_next_step = ?
@@ -233,7 +233,7 @@ if (isset($concurrent_processes) && $concurrent_processes > 1) {
 		ORDER BY host_id"), 'host_id', 'data_sources');
 }
 
-if (isset($items_perhost) && sizeof($items_perhost)) {
+if (isset($items_perhost) && cacti_sizeof($items_perhost)) {
 	$items_per_process   = floor($num_polling_items / $concurrent_processes);
 
 	if ($items_per_process == 0) {
@@ -318,13 +318,13 @@ while ($poller_runs_completed < $poller_runs) {
 
 	$script = $server = $snmp = 0;
 
-	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals
+	$totals = db_fetch_assoc_prepared('SELECT action, cacti_count(*) AS totals
 		FROM poller_item
 		WHERE poller_id = ?
 		GROUP BY action',
 		array($poller_id));
 
-	if (sizeof($totals)) {
+	if (cacti_sizeof($totals)) {
 		foreach($totals as $value) {
 			switch($value['action']) {
 			case '0': // SNMP
@@ -370,7 +370,7 @@ while ($poller_runs_completed < $poller_runs) {
 	/* obtain some defaults from the database */
 	$poller_type = read_config_option('poller_type');
 
-	if (sizeof($poller) && isset($poller['threads'])) {
+	if (cacti_sizeof($poller) && isset($poller['threads'])) {
 		$max_threads = $poller['threads'];
 	} else {
 		$max_threads = read_config_option('max_threads');
@@ -424,7 +424,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$issues = array();
 	}
 
-	if (sizeof($issues)) {
+	if (cacti_sizeof($issues)) {
 		$count  = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
 			FROM poller_output AS po
 			LEFT JOIN data_local AS dl
@@ -434,7 +434,7 @@ while ($poller_runs_completed < $poller_runs) {
 			WHERE h.poller_id = ? OR h.id IS NULL',
 			array($poller_id));
 
-		if (sizeof($issues)) {
+		if (cacti_sizeof($issues)) {
 			$issue_list =  'DS[';
 			$i = 0;
 			foreach($issues as $issue) {
@@ -465,7 +465,7 @@ while ($poller_runs_completed < $poller_runs) {
 	/* mainline */
 	if (read_config_option('poller_enabled') == 'on') {
 		/* determine the number of hosts to process per file */
-		$hosts_per_process = ceil(($poller_id == '1' ? sizeof($polling_hosts)-1 : sizeof($polling_hosts)) / $concurrent_processes );
+		$hosts_per_process = ceil(($poller_id == '1' ? cacti_sizeof($polling_hosts)-1 : cacti_sizeof($polling_hosts)) / $concurrent_processes );
 
 		$items_launched    = 0;
 
@@ -529,7 +529,7 @@ while ($poller_runs_completed < $poller_runs) {
 				}
 
 				if (($items_launched >= $items_per_process) ||
-					(sizeof($items_perhost) == $concurrent_processes)) {
+					(cacti_sizeof($items_perhost) == $concurrent_processes)) {
 					$last_host      = $item['id'];
 					/* if this is the dummy entry for externally updated data sources
 					 * that are not related to any host (host id = 0), do NOT change_proc */
@@ -578,7 +578,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
 		while (1) {
-			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
+			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " cacti_count(*)
 				FROM poller_time
 				WHERE poller_id = ?
 				AND end_time >'0000-00-00 00:00:00'",
@@ -596,7 +596,7 @@ while ($poller_runs_completed < $poller_runs) {
 				}
 
 				log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-					($poller_id == '1' ? sizeof($polling_hosts) - 1 : sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+					($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 				break;
 			}else {
@@ -620,7 +620,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 					api_plugin_hook_function('poller_exiting');
 					log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threads,
-						($poller_id == '1' ? sizeof($polling_hosts) - 1 : sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
+						($poller_id == '1' ? cacti_sizeof($polling_hosts) - 1 : cacti_sizeof($polling_hosts)), $hosts_per_process, $num_polling_items, $rrds_processed);
 
 					break;
 				} elseif (microtime(true) - $mtb < 1) {

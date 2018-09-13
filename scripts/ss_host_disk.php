@@ -67,7 +67,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 				$snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER)
 			);
 
-		for ($i=0;($i<sizeof($return_arr));$i++) {
+		for ($i=0;($i<cacti_sizeof($return_arr));$i++) {
 			print $return_arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'num_indexes') {
@@ -77,7 +77,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 				$snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER)
 			);
 
-		return sizeof($return_arr);
+		return cacti_sizeof($return_arr);
 	} elseif ($cmd == 'query') {
 		$arg = $arg1;
 
@@ -93,7 +93,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 				$snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER)
 			);
 
-		for ($i=0;($i<sizeof($arr_index));$i++) {
+		for ($i=0;($i<cacti_sizeof($arr_index));$i++) {
 			print $arr_index[$i] . '!' . $arr[$i] . "\n";
 		}
 	} elseif ($cmd == 'get') {
@@ -136,7 +136,7 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 function ss_host_disk_reindex($arr) {
 	$return_arr = array();
 
-	for ($i=0;($i<sizeof($arr));$i++) {
+	for ($i=0;($i<cacti_sizeof($arr));$i++) {
 		$return_arr[$i] = $arr[$i]['value'];
 	}
 

@@ -183,7 +183,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 
 	$data_query_xml  = get_data_query_array($data_query_id);
 
-	if (sizeof($data_query)) {
+	if (cacti_sizeof($data_query)) {
 		switch ($data_query['reindex_method']) {
 		case DATA_QUERY_AUTOINDEX_NONE:
 			break;
@@ -226,7 +226,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */
-			$assert_value = sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index
+			$assert_value = cacti_sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
@@ -276,7 +276,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 				AND field_name = ?',
 				array($host_id, $data_query_id, $data_query['sort_field']));
 
-			if (sizeof($primary_indexes) > 0) {
+			if (cacti_sizeof($primary_indexes) > 0) {
 				foreach ($primary_indexes as $index) {
 					$assert_value = $index['field_value'];
 
@@ -292,7 +292,7 @@ function update_reindex_cache($host_id, $data_query_id) {
 		}
 	}
 
-	if (sizeof($recache_stack)) {
+	if (cacti_sizeof($recache_stack)) {
 		poller_update_poller_reindex_from_buffer($host_id, $data_query_id, $recache_stack);
 	}
 }
@@ -394,7 +394,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 		ORDER BY po.local_data_id
 		$limit");
 
-	if (!sizeof($rrd_field_names)) {
+	if (!cacti_sizeof($rrd_field_names)) {
 		$rrd_field_names = array_rekey(
 			db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . '
 				CONCAT(data_template_id, "_", data_name) AS keyname, data_source_names AS data_source_name
@@ -402,7 +402,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 			'keyname', array('data_source_name'));
 	}
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			/* trim the default characters, but add single and double quotes */
@@ -439,7 +439,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 				foreach($values as $value) {
 					$matches = explode(':', $value);
 
-					if (sizeof($matches) == 2) {
+					if (cacti_sizeof($matches) == 2) {
 						$fields = array();
 
 						if (isset($rrd_field_names[$item['data_template_id'] . '_' . $matches[0]])) {
@@ -466,7 +466,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 								'data_name', 'data_source_name'
 							);
 
-							if (sizeof($nt_rrd_field_names)) {
+							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
 									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names[$matches[0]] . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
 
@@ -495,7 +495,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 			$rrd_name  = $item['rrd_name'];
 
 			if (isset($rrd_update_array[$rrd_path]['times'][$unix_time])) {
-				if ($item['rrd_num'] <= sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
+				if ($item['rrd_num'] <= cacti_sizeof($rrd_update_array[$rrd_path]['times'][$unix_time])) {
 					$data_ids[] = $item['local_data_id'];
 					$k++;
 					if ($k % 10000 == 0) {
@@ -597,7 +597,7 @@ function update_resource_cache($poller_id = 1) {
 		/* handle plugin paths */
 		$files_and_dirs = array_diff(scandir($mpath . '/plugins'), array('..', '.'));
 
-		if (sizeof($files_and_dirs)) {
+		if (cacti_sizeof($files_and_dirs)) {
 			foreach($files_and_dirs as $path) {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
@@ -607,7 +607,7 @@ function update_resource_cache($poller_id = 1) {
 
 						if (isset($info['info']['nosync'])) {
 							$exclude_paths = explode(',', $info['info']['nosync']);
-							if (sizeof($exclude_paths)) {
+							if (cacti_sizeof($exclude_paths)) {
 								foreach($exclude_paths as $epath) {
 									if (strpos($epath, '*.') !== false) {
 										$file_exclusions[] = trim(str_replace('*.', '', $epath));
@@ -619,7 +619,7 @@ function update_resource_cache($poller_id = 1) {
 						}
 
 						$fod = array_diff(scandir($mpath . '/plugins/' . $path), $dir_exclusions);
-						if (sizeof($fod)) {
+						if (cacti_sizeof($fod)) {
 							foreach($fod as $file_or_dir) {
 								$fpath = $mpath . '/plugins/' . $path . '/' . $file_or_dir;
 								if (is_dir($fpath)) {
@@ -656,7 +656,7 @@ function update_resource_cache($poller_id = 1) {
 
 		/* purge old entries */
 		$cache = db_fetch_assoc('SELECT path FROM poller_resource_cache');
-		if (sizeof($cache)) {
+		if (cacti_sizeof($cache)) {
 			foreach($cache as $item) {
 				if (!file_exists($item['path'])) {
 					db_execute_prepared('DELETE FROM poller_resource_cache
@@ -672,7 +672,7 @@ function update_resource_cache($poller_id = 1) {
 			WHERE `path` LIKE "plugins/%"
 			GROUP BY resource_type');
 
-		if (sizeof($plugin_paths)) {
+		if (cacti_sizeof($plugin_paths)) {
 			foreach ($plugin_paths as $path) {
 				$paths[$path['resource_type']] = array('recursive' => false, 'path' => dirname($mpath . '/' . $path['path']));
 			}
@@ -848,7 +848,7 @@ function resource_cache_out($type, $path) {
 			WHERE resource_type = ?',
 			array($type));
 
-		if (sizeof($entries)) {
+		if (cacti_sizeof($entries)) {
 			foreach($entries as $e) {
 				$mypath = $config['base_path'] . DIRECTORY_SEPARATOR . $e['path'];
 
@@ -987,7 +987,7 @@ function replicate_out($remote_poller_id = 1) {
 			WHERE id = ?',
 			array($remote_poller_id));
 
-		if (!sizeof($cinfo)) {
+		if (!cacti_sizeof($cinfo)) {
 			raise_message('poller_notfound');
 			return false;
 		}
@@ -1187,12 +1187,12 @@ function replicate_in() {
 }
 
 function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
-	if (sizeof($data)) {
+	if (cacti_sizeof($data)) {
 		/* check if the table structure changed */
 		$local_columns  = db_fetch_assoc('SHOW COLUMNS FROM ' . $table);
 		$remote_columns = db_fetch_assoc('SHOW COLUMNS FROM ' . $table, true, $conn);
 
-		if (sizeof($local_columns) != sizeof($remote_columns)) {
+		if (cacti_sizeof($local_columns) != cacti_sizeof($remote_columns)) {
 			cacti_log('NOTE: Replicate Out Detected a Table Structure Change for ' . $table);
 			$create = db_fetch_row('SHOW CREATE TABLE ' . $table);
 			if (isset($create['Create Table'])) {

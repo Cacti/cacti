@@ -32,7 +32,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
-	if (sizeof($aggregate_data)) {
+	if (cacti_sizeof($aggregate_data)) {
 		$local_graph_ids = array_rekey(
 			db_fetch_assoc_prepared('SELECT local_graph_id
 				FROM aggregate_graphs_items
@@ -41,7 +41,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 			), 'local_graph_id', 'local_graph_id'
 		);
 
-		if (sizeof($local_graph_ids)) {
+		if (cacti_sizeof($local_graph_ids)) {
 			$graph_select = 'graph_add=';
 
 			foreach($local_graph_ids as $graph) {
@@ -201,7 +201,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 		}
 	}
 
-	if (sizeof($agg_template)) {
+	if (cacti_sizeof($agg_template)) {
 		/* create new graph in cacti tables */
 		$graph_template_graph = db_fetch_row_prepared('SELECT *
 			FROM graph_templates_graph
@@ -221,7 +221,7 @@ function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
 
 		$agg_id = sql_save($save, 'aggregate_graphs');
 
-		if (sizeof($graph_items)) {
+		if (cacti_sizeof($graph_items)) {
 			$aggs = 1;
 			$sql  = '';
 			foreach($graph_items as $i) {
@@ -593,7 +593,7 @@ function duplicate_color_template($_color_template_id, $color_template_title) {
 	$new_color_template_id = sql_save($save, 'color_templates', 'color_template_id');
 
 	/* create new entry(s): color_template_items */
-	if (sizeof($color_template_items)) {
+	if (cacti_sizeof($color_template_items)) {
 		foreach ($color_template_items as $color_template_item) {
 			$save = array();
 			$save['color_template_item_id'] = 0;
@@ -708,7 +708,7 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 	$cdefs[0]['cdef_text'] = 'CURRENT_DATA_SOURCE';
 
 	/* new CDEF(s) are required! */
-	$num_items = sizeof($graph_template_items);
+	$num_items = cacti_sizeof($graph_template_items);
 	if ($num_items > 0) {
 		$i = 0;
 		foreach ($graph_template_items as $graph_template_item) {
@@ -810,8 +810,8 @@ function aggregate_cdef_totalling($_new_graph_id, $_graph_item_sequence, $_total
 function auto_hr($s, $h) {
 	cacti_log(__FUNCTION__ . ' called', true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
-	# start at end of array, both arrays are from 1 .. count(array)
-	$i = count($h);
+	# start at end of array, both arrays are from 1 .. cacti_count(array)
+	$i = cacti_count($h);
 
 	# make sure, that last item always has a HR, even if template does not have any
 	$h[$i] = true;
@@ -863,7 +863,7 @@ function api_aggregate_remove_multi($graphs) {
 
 	include_once($config['base_path'] . '/lib/api_graph.php');
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $graph) {
 			$ag = db_fetch_cell_prepared('SELECT id
 				FROM aggregate_graphs
@@ -912,12 +912,12 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 		$aggregate_graphs[$p['aggregate_graph_id']] = $p['aggregate_graph_id'];
 	}
 
-	if (sizeof($local_graph_ids)) {
+	if (cacti_sizeof($local_graph_ids)) {
 		db_execute('DELETE FROM aggregate_graphs_items
 			WHERE local_graph_id IN (' . implode(',', $local_graph_ids) . ')');
 	}
 
-	if (sizeof($aggregate_graphs) || $local_graph_id > 0) {
+	if (cacti_sizeof($aggregate_graphs) || $local_graph_id > 0) {
 		if ($local_graph_id > 0) {
 			$agg_graph = db_fetch_cell_prepared('SELECT id
 				FROM aggregate_graphs
@@ -944,7 +944,7 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 				AND dtr.id IS NULL
 				AND gti.graph_type_id IN (4,5,6,7,8,9)', array($graph_id)), 'id', 'id');
 
-			if (sizeof($bad_graph_items)) {
+			if (cacti_sizeof($bad_graph_items)) {
 				db_execute('DELETE FROM graph_templates_item
 					WHERE id IN (' . implode(',', $bad_graph_items) . ')');
 			}

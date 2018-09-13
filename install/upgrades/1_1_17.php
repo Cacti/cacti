@@ -32,7 +32,7 @@ function upgrade_to_1_1_17() {
 
 		$rras = db_fetch_assoc("SELECT * FROM data_source_profiles_rra");
 
-		if (sizeof($rras)) {
+		if (cacti_sizeof($rras)) {
 			foreach($rras as $rra) {
 				$interval = db_fetch_cell_prepared('SELECT step
 					FROM data_source_profiles

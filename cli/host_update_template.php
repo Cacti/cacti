@@ -35,7 +35,7 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* utility requires input parameters */
-if (sizeof($parms) == 0) {
+if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
 	exit(1);
@@ -45,7 +45,7 @@ $debug    = false;
 $template = '';
 $hostid   = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -111,15 +111,15 @@ if (is_numeric($template)) {
 if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 	$hosts = db_fetch_assoc("SELECT * FROM host $sql_where");
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 	foreach($hosts as $host) {
 		print "NOTE: Updating Host '" . $host['description'] . "'\n";
 		$snmp_queries = db_fetch_assoc('SELECT snmp_query_id
 			FROM host_template_snmp_query
 			WHERE host_template_id=' . $host['host_template_id']);
 
-		if (sizeof($snmp_queries) > 0) {
-			print "NOTE: Updating Data Queries. There were '" . sizeof($snmp_queries) . "' Found\n";
+		if (cacti_sizeof($snmp_queries) > 0) {
+			print "NOTE: Updating Data Queries. There were '" . cacti_sizeof($snmp_queries) . "' Found\n";
 			foreach ($snmp_queries as $snmp_query) {
 				print "NOTE: Updating Data Query ID '" . $snmp_query['snmp_query_id'] . "'\n";
 				db_execute('REPLACE INTO host_snmp_query (host_id,snmp_query_id,reindex_method)
@@ -132,8 +132,8 @@ if (db_fetch_cell("SELECT id FROM host_template WHERE id=$template") > 0) {
 
 		$graph_templates = db_fetch_assoc('SELECT graph_template_id FROM host_template_graph WHERE host_template_id=' . $host['host_template_id']);
 
-		if (sizeof($graph_templates) > 0) {
-			print "NOTE: Updating Graph Templates. There were '" . sizeof($graph_templates) . "' Found\n";
+		if (cacti_sizeof($graph_templates) > 0) {
+			print "NOTE: Updating Graph Templates. There were '" . cacti_sizeof($graph_templates) . "' Found\n";
 
 			foreach ($graph_templates as $graph_template) {
 				db_execute('REPLACE INTO host_graph (host_id, graph_template_id) VALUES (' . $host['id'] . ', ' . $graph_template['graph_template_id'] . ')');

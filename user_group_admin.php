@@ -216,7 +216,7 @@ function user_group_copy($id, $prefix = 'New Group') {
 			WHERE group_id = ?',
 			array($id));
 
-		if (sizeof($perms)) {
+		if (cacti_sizeof($perms)) {
 			foreach($perms as $p) {
 				db_execute_prepared('INSERT INTO user_auth_group_perms
 					(group_id, item_id, type)
@@ -230,7 +230,7 @@ function user_group_copy($id, $prefix = 'New Group') {
 			WHERE group_id = ?',
 			array($id));
 
-		if (sizeof($realms)) {
+		if (cacti_sizeof($realms)) {
 			foreach($realms as $r) {
 				db_execute_prepared('INSERT INTO user_auth_group_realm
 					(group_id, realm_id)
@@ -387,19 +387,19 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					user_group_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* copy */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					user_group_copy($selected_items[$i], get_nfilter_request_var('group_prefix'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					user_group_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { /* disable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					user_group_disable($selected_items[$i]);
 				}
 			}
@@ -434,24 +434,24 @@ function form_actions() {
 
 	html_start_box($group_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($group_array) && sizeof($group_array)) {
-		if ((get_nfilter_request_var('drp_action') == '1') && (sizeof($group_array))) { /* delete */
+	if (isset($group_array) && cacti_sizeof($group_array)) {
+		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($group_array))) { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following User Group', 'Click \'Continue\' to delete following User Groups', sizeof($group_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following User Group', 'Click \'Continue\' to delete following User Groups', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Group', 'Delete User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
 		$group_id = '';
 
-		if ((get_nfilter_request_var('drp_action') == '2') && (sizeof($group_array))) { /* copy */
+		if ((get_nfilter_request_var('drp_action') == '2') && (cacti_sizeof($group_array))) { /* copy */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to Copy the following User Group to a new User Group.', 'Click \'Continue\' to Copy following User Groups to new User Groups.', sizeof($group_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to Copy the following User Group to a new User Group.', 'Click \'Continue\' to Copy following User Groups to new User Groups.', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
 			</tr>
@@ -462,29 +462,29 @@ function form_actions() {
 			print "</p></td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Copy User Group', 'Copy User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
-		if ((get_nfilter_request_var('drp_action') == '3') && (sizeof($group_array))) { /* enable */
+		if ((get_nfilter_request_var('drp_action') == '3') && (cacti_sizeof($group_array))) { /* enable */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to enable the following User Group.', 'Click \'Continue\' to enable following User Groups.', sizeof($group_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to enable the following User Group.', 'Click \'Continue\' to enable following User Groups.', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable User Group', 'Enable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 
-		if ((get_nfilter_request_var('drp_action') == '4') && (sizeof($group_array))) { /* disable */
+		if ((get_nfilter_request_var('drp_action') == '4') && (cacti_sizeof($group_array))) { /* disable */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following User Group.', 'Click \'Continue\' to disable following User Groups.', sizeof($group_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to disable the following User Group.', 'Click \'Continue\' to disable following User Groups.', cacti_sizeof($group_array)) . "</p>
 					<div class='itemlist'><ul>$group_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', sizeof($group_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Group', 'Disable User Groups', cacti_sizeof($group_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Group.') . "</span></td></tr>\n";
@@ -522,7 +522,7 @@ function form_save() {
 		/* ==================================================== */
 
 		/* check duplicate group */
-		if (sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', array(get_nfilter_request_var('name'), get_nfilter_request_var('id'))))) {
+		if (cacti_sizeof(db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE name = ? AND id != ?', array(get_nfilter_request_var('name'), get_nfilter_request_var('id'))))) {
 			raise_message(12);
 		}
 
@@ -676,7 +676,7 @@ function user_group_members_edit($header_label) {
 
 	html_header_checkbox($display_text, false);
 
-	if (sizeof($members)) {
+	if (cacti_sizeof($members)) {
 		foreach ($members as $g) {
 			form_alternate_row('line' . $g['id'], true);
 			form_selectable_cell(filter_value($g['username'], get_request_var('filter'), 'user_admin.php?action=user_edit&id=' . $g['id']), $g['id']);
@@ -698,7 +698,7 @@ function user_group_members_edit($header_label) {
 
 	html_end_box(false);
 
-	if (sizeof($members)) {
+	if (cacti_sizeof($members)) {
 		print $nav;
 	}
 
@@ -822,7 +822,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_header_checkbox($display_text, false);
 
-		if (sizeof($graphs)) {
+		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $g) {
 				form_alternate_row('line' . $g['local_graph_id'], true);
 				form_selectable_cell(filter_value($g['title_cache'], get_request_var('filter')), $g['local_graph_id']);
@@ -849,7 +849,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box(false);
 
-		if (sizeof($graphs)) {
+		if (cacti_sizeof($graphs)) {
 			print $nav;
 		}
 
@@ -942,8 +942,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			ON (host.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 3 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
 			$sql_where");
 
-		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) AS graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
-		$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) AS data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
+		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) AS graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
+		$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) AS data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 		$sql_query = "SELECT host.*, user_auth_group_perms.group_id
 			FROM host
@@ -967,7 +967,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_header_checkbox($display_text, false);
 
-		if (sizeof($hosts)) {
+		if (cacti_sizeof($hosts)) {
 			foreach ($hosts as $host) {
 				form_alternate_row('line' . $host['id'], true);
 				form_selectable_cell(filter_value($host['description'], get_request_var('filter')), $host['id']);
@@ -997,7 +997,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		if (sizeof($hosts)) {
+		if (cacti_sizeof($hosts)) {
 			print $nav;
 		}
 
@@ -1085,7 +1085,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where
 			GROUP BY gl.graph_template_id");
 
-		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_group_perms.group_id
+		$sql_query = "SELECT gt.id, gt.name, cacti_count(*) AS totals, user_auth_group_perms.group_id
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
@@ -1110,7 +1110,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_header_checkbox($display_text, false);
 
-		if (sizeof($graphs)) {
+		if (cacti_sizeof($graphs)) {
 			foreach ($graphs as $g) {
 				form_alternate_row('line' . $g['id'], true);
 				form_selectable_cell(filter_value($g['name'], get_request_var('filter')), $g['id']);
@@ -1138,7 +1138,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_end_box(false);
 
-		if (sizeof($graphs)) {
+		if (cacti_sizeof($graphs)) {
 			print $nav;
 		}
 
@@ -1244,7 +1244,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		html_header_checkbox($display_text, false);
 
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			foreach ($trees as $t) {
 				form_alternate_row('line' . $t['id'], true);
 				form_selectable_cell(filter_value($t['name'], get_request_var('filter')), $t['id']);
@@ -1270,7 +1270,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		}
 		html_end_box(false);
 
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			print $nav;
 		}
 
@@ -1337,7 +1337,7 @@ function user_group_realms_edit($header_label) {
 
 			print "<td class='realms'>\n";
 			if (isset($user_auth_realms[$realm])) {
-				if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+				if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 					$old_value = 'on';
 				} else {
 					$old_value = '';
@@ -1395,7 +1395,7 @@ function user_group_realms_edit($header_label) {
 
 	print "<tr class='tableHeader'><th colspan='2'>" . __('External Link Permissions') . "</th></tr>\n";
 	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
-	if (sizeof($links)) {
+	if (cacti_sizeof($links)) {
 		$j = 1;
 
 		foreach($links as $r) {
@@ -1405,7 +1405,7 @@ function user_group_realms_edit($header_label) {
 
 			$realm = $r['id'] + 10000;
 
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1452,7 +1452,7 @@ function user_group_realms_edit($header_label) {
 
 	print "<tr class='tableHeader'><th colspan='2'>" . __('Plugin Permissions') . "</th></tr>\n";
 	print "<tr class='odd'><td colspan='4'><table style='width:100%;'><tr><td class='realms'>\n";
-	if (sizeof($realms)) {
+	if (cacti_sizeof($realms)) {
 		$last_plugin = 'none';
 		$i = 1;
 		$j = 1;
@@ -1482,7 +1482,7 @@ function user_group_realms_edit($header_label) {
 
 			$realm = $r['realm_id'] + 100;
 
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1501,14 +1501,14 @@ function user_group_realms_edit($header_label) {
 	}
 
 	/* get the old PIA 1.x realms */
-	if (sizeof($all_realms)) {
+	if (cacti_sizeof($all_realms)) {
 		if ($break) {
 			print "</td><td class='realms'>\n";
 		}
 
 		print "<strong>Legacy 1.x Plugins</strong><br>\n";
 		foreach($all_realms as $realm => $name) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
 			} else {
 				$old_value = '';
@@ -1677,7 +1677,7 @@ function group_edit() {
     load_current_session_value('tab', 'sess_ugroup_tab', 'general');
     $current_tab = get_nfilter_request_var('tab');
 
-	if (sizeof($tabs) && !isempty_request_var('id')) {
+	if (cacti_sizeof($tabs) && !isempty_request_var('id')) {
 		$i = 0;
 
 		/* draw the tabs */
@@ -1846,7 +1846,7 @@ function user_group() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1890,7 +1890,7 @@ function user_group() {
 
 	$group_list = db_fetch_assoc("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
-		uag.enabled, count(uagm.group_id) AS members
+		uag.enabled, cacti_count(uagm.group_id) AS members
 		FROM user_auth_group AS uag
 		LEFT JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
@@ -1919,7 +1919,7 @@ function user_group() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($group_list)) {
+	if (cacti_sizeof($group_list)) {
 		foreach ($group_list as $group) {
 			if ($group['enabled'] == 'on') {
 				$enabled = __('Yes');
@@ -1939,12 +1939,12 @@ function user_group() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No User Groups Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No User Groups Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($group_list)) {
+	if (cacti_sizeof($group_list)) {
 		print $nav;
 	}
 
@@ -2178,7 +2178,7 @@ function graph_filter($header_label) {
 								ON gl.graph_template_id = gt.id
 								ORDER BY name');
 
-							if (sizeof($graph_templates)) {
+							if (cacti_sizeof($graph_templates)) {
 								foreach ($graph_templates as $gt) {
 									print "<option value='" . $gt['id'] . "'"; if (get_request_var('graph_template_id') == $gt['id']) { print ' selected'; } print '>' . html_escape($gt['name']) . "</option>\n";
 								}
@@ -2193,7 +2193,7 @@ function graph_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -2282,7 +2282,7 @@ function device_filter($header_label) {
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
-							if (sizeof($host_templates) > 0) {
+							if (cacti_sizeof($host_templates) > 0) {
 								foreach ($host_templates as $host_template) {
 									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
 								}
@@ -2297,7 +2297,7 @@ function device_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -2382,7 +2382,7 @@ function template_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -2467,7 +2467,7 @@ function tree_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -2552,7 +2552,7 @@ function member_filter($header_label) {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}

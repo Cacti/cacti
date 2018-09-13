@@ -41,7 +41,7 @@ $cli_upgrade = true;
 $session     = array();
 $forcever    = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -156,7 +156,7 @@ function db_install_errors($cacti_version) {
 		$database_upgrade_status = array();
 	}
 
-	if (sizeof($database_upgrade_status)) {
+	if (cacti_sizeof($database_upgrade_status)) {
 		if (isset($database_upgrade_status[$cacti_version])) {
 			foreach ($database_upgrade_status[$cacti_version] as $cache_item) {
 				$status = $cache_item['status'];

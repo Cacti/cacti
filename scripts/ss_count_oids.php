@@ -24,15 +24,15 @@ function ss_count_oids($hostid = '', $oid = '') {
 			WHERE id = ?',
 			array($hostid));
 
-		if (sizeof($host)) {
+		if (cacti_sizeof($host)) {
 			$walk = cacti_snmp_walk($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
 				$host['snmp_username'], $host['snmp_password'],
 				$host['snmp_auth_protocol'], $host['snmp_priv_passphrase'], $host['snmp_priv_protocol'],
 				$host['snmp_context'], $host['snmp_port'], $host['snmp_timeout'],
 				read_config_option('snmp_retries'), $host['max_oids'], SNMP_WEBUI, $host['snmp_engine_id']);
 
-			if (sizeof($walk)) {
-				return sizeof($walk);
+			if (cacti_sizeof($walk)) {
+				return cacti_sizeof($walk);
 			}
 		}
 	}

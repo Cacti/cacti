@@ -32,7 +32,7 @@ array_shift($parms);
 $table = '';
 $create = true;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -82,7 +82,7 @@ function sqltable_to_php($table, $create) {
 	$tables = array();
 	$text   = '';
 
-	if (sizeof($result)) {
+	if (cacti_sizeof($result)) {
 		foreach($result as $index => $arr) {
 			foreach ($arr as $t) {
 				$tables[] = $t;
@@ -101,7 +101,7 @@ function sqltable_to_php($table, $create) {
 		$keys   = array();
 		$text   = "\n\$data = array();\n";
 
-		if (sizeof($result)) {
+		if (cacti_sizeof($result)) {
 			foreach ($result as $r) {
 				$text .= "\$data['columns'][] = array(";
 				$text .= "'name' => '" . $r['Field'] . "'";
@@ -139,7 +139,7 @@ function sqltable_to_php($table, $create) {
 		}
 
 		$result = db_fetch_assoc("SHOW INDEX FROM $table");
-		if (sizeof($result)) {
+		if (cacti_sizeof($result)) {
 			foreach ($result as $r) {
 				if ($r['Key_name'] == 'PRIMARY') {
 					$pri[] = $r['Column_name'];
@@ -163,7 +163,7 @@ function sqltable_to_php($table, $create) {
 		}
 
 		$result = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'");
-		if (sizeof($result)) {
+		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
 			if ($create) {

@@ -113,7 +113,7 @@ function api_networks_discover($network_id, $discover_debug) {
 		WHERE id = ?',
 		array($network_id));
 
-	$running = db_fetch_cell_prepared('SELECT count(*)
+	$running = db_fetch_cell_prepared('SELECT cacti_count(*)
 		FROM automation_processes
 		WHERE network_id = ?',
 		array($network_id));
@@ -239,7 +239,7 @@ function api_networks_save($post) {
 		$networks  = explode(',', $save['subnet_range']);
 
 		$i = 0;
-		if (sizeof($networks)) {
+		if (cacti_sizeof($networks)) {
 			foreach($networks as $net) {
 				$ips = automation_calculate_total_ips($networks, $i);
 				if ($ips !== false) {
@@ -1087,7 +1087,7 @@ function networks() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
 				$mystat   = "<span class='disabled'>" . __('Disabled') . "</span>";
@@ -1151,7 +1151,7 @@ function networks() {
 	}
 	html_end_box(false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}
@@ -1184,7 +1184,7 @@ function networks_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}

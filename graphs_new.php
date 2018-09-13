@@ -178,7 +178,7 @@ function host_new_graphs_save($host_id) {
 				WHERE graph_template_input_id = ?', array($matches[3]));
 
 			/* loop through each item affected and update column data */
-			if (sizeof($item_list)) {
+			if (cacti_sizeof($item_list)) {
 				foreach ($item_list as $item) {
 					if (empty($matches[1])) { // this is a new graph from template field
 						$values['cg'][$matches[2]]['graph_template_item'][$item['graph_template_item_id']][$matches[4]] = $val;
@@ -263,7 +263,7 @@ function graphs() {
 	if (!isempty_request_var('host_id')) {
 		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
 
-		if (sizeof($host)) {
+		if (cacti_sizeof($host)) {
 			$header =  __('New Graphs for [ %s ]', html_escape($host['description']) . ' (' . html_escape($host['hostname']) . ') ' .
 			(!empty($host['host_template_id']) ? html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
 		} else {
@@ -354,7 +354,7 @@ function graphs() {
 									ORDER BY snmp_query.name',
 									array($host['id']));
 
-								if (sizeof($snmp_queries) > 0) {
+								if (cacti_sizeof($snmp_queries) > 0) {
 									foreach ($snmp_queries as $query) {
 										print "<option value='" . $query['id'] . "'"; if (get_request_var('graph_type') == $query['id']) { print ' selected'; } print '>' . $query['name'] . "</option>\n";
 									}
@@ -387,7 +387,7 @@ function graphs() {
 							<select id='rows' name='rows' onChange='applyFilter()'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
@@ -414,7 +414,7 @@ function graphs() {
 
 	form_start('graphs_new.php', 'chk');
 
-	$total_rows = sizeof(db_fetch_assoc_prepared('SELECT graph_template_id FROM host_graph WHERE host_id = ?', array(get_request_var('host_id'))));
+	$total_rows = cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_id FROM host_graph WHERE host_id = ?', array(get_request_var('host_id'))));
 
 	$i = 0;
 
@@ -463,7 +463,7 @@ function graphs() {
 				AND gl.snmp_query_id = 0
 				GROUP BY gl.graph_template_id', array($host['id']));
 
-			if (sizeof($template_graphs)) {
+			if (cacti_sizeof($template_graphs)) {
 				$script .= 'var gt_created_graphs = new Array(';
 
 				$cg_ctr = 0;
@@ -492,7 +492,7 @@ function graphs() {
 		);
 
 		/* create a row for each graph template associated with the host template */
-		if (sizeof($graph_templates)) {
+		if (cacti_sizeof($graph_templates)) {
 			foreach ($graph_templates as $graph_template) {
 				$query_row = $graph_template['graph_template_id'];
 
@@ -550,7 +550,7 @@ function graphs() {
 			(get_request_var('graph_type') != -2 ? ' AND snmp_query.id=' . get_request_var('graph_type') : '') . '
 			ORDER BY snmp_query.name');
 
-		if (sizeof($snmp_queries)) {
+		if (cacti_sizeof($snmp_queries)) {
 			foreach ($snmp_queries as $snmp_query) {
 				unset($total_rows);
 
@@ -565,14 +565,14 @@ function graphs() {
 				$num_input_fields = 0;
 				$num_visible_fields = 0;
 
-				if (sizeof($xml_array)) {
+				if (cacti_sizeof($xml_array)) {
 					/* loop through once so we can find out how many input fields there are */
 					foreach ($xml_array['fields'] as $field_name => $field_array) {
 						if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 							$num_input_fields++;
 
 							if (!isset($total_rows)) {
-								$total_rows = db_fetch_cell_prepared('SELECT count(*)
+								$total_rows = db_fetch_cell_prepared('SELECT cacti_count(*)
 									FROM host_snmp_cache
 									WHERE host_id = ?
 									AND snmp_query_id = ?
@@ -593,7 +593,7 @@ function graphs() {
 					WHERE snmp_query_graph.snmp_query_id = ?
 					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
 
-				if (sizeof($snmp_query_graphs)) {
+				if (cacti_sizeof($snmp_query_graphs)) {
 					foreach ($snmp_query_graphs as $snmp_query_graph) {
 						$created_graphs = db_fetch_assoc_prepared('SELECT DISTINCT
 							gl.snmp_index
@@ -605,7 +605,7 @@ function graphs() {
 						$script .= 'created_graphs[' . $snmp_query_graph['id'] . '] = new Array(';
 
 						$cg_ctr = 0;
-						if (sizeof($created_graphs)) {
+						if (cacti_sizeof($created_graphs)) {
 							foreach ($created_graphs as $created_graph) {
 								$script .= ($cg_ctr > 0 ? ',' : '') . "'" . encode_data_query_index($created_graph['snmp_index']) . "'";
 								++$cg_ctr;
@@ -632,7 +632,7 @@ function graphs() {
 							AND host_id = ?',
 							array('%' . get_request_var('filter') . '%', $snmp_query['id'], $host['id']));
 
-						if (sizeof($indexes)) {
+						if (cacti_sizeof($indexes)) {
 							foreach($indexes as $index) {
 								if ($sql_where != '') {
 									$sql_where .= ", '" . $index['snmp_index'] . "'";
@@ -645,7 +645,7 @@ function graphs() {
 						}
 					}
 
-					if (get_request_var('filter') == '' || (get_request_var('filter') != '' && sizeof($indexes))) {
+					if (get_request_var('filter') == '' || (get_request_var('filter') != '' && cacti_sizeof($indexes))) {
 						/* determine the sort order */
 						if (isset($xml_array['index_order_type'])) {
 							if ($xml_array['index_order_type'] == 'numeric') {
@@ -670,9 +670,9 @@ function graphs() {
 
 						/* build magic query */
 						$sql_query  = 'SELECT host_id, snmp_query_id, snmp_index';
-						$num_visible_fields = sizeof($field_names);
+						$num_visible_fields = cacti_sizeof($field_names);
 						$i = 0;
-						if (sizeof($field_names)) {
+						if (cacti_sizeof($field_names)) {
 							foreach($field_names as $column) {
 								$field_name = $column['field_name'];
 								$sql_query .= ", MAX(CASE WHEN field_name='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
@@ -703,11 +703,11 @@ function graphs() {
 							GROUP BY host_id, snmp_query_id, snmp_index";
 
 						$snmp_query_indexes = db_fetch_assoc($sql_query);
-						if (sizeof($snmp_query_indexes)) {
+						if (cacti_sizeof($snmp_query_indexes)) {
 							$snmp_query_indexes = db_fetch_assoc($sql_query_worder);
 						}
 
-						$total_rows = sizeof(db_fetch_assoc($rows_query));
+						$total_rows = cacti_sizeof(db_fetch_assoc($rows_query));
 
 						if (($page - 1) * $rows > $total_rows) {
 							$page = 1;
@@ -722,7 +722,7 @@ function graphs() {
 						html_start_box('', '100%', '', '3', 'center', '');
 
 						foreach ($xml_array['fields'] as $field_name => $field_array) {
-							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && sizeof($field_names)) {
+							if (($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && cacti_sizeof($field_names)) {
 								foreach($field_names as $row) {
 									if ($row['field_name'] == $field_name) {
 										$html_dq_header .= "<th class='tableSubHeaderColumn'>" . $field_array['name'] . "</th>\n";
@@ -732,7 +732,7 @@ function graphs() {
 							}
 						}
 
-						if (!sizeof($snmp_query_indexes)) {
+						if (!cacti_sizeof($snmp_query_indexes)) {
 							print "<tr class='odd'><td>" . __('This Data Query returned 0 rows, perhaps there was a problem executing this Data Query.') . "<a href='" . html_escape('host.php?action=query_verbose&header=true&id=' . $snmp_query['id'] . '&host_id=' . $host['id']) . "'>" . __('You can run this Data Query in debug mode') . "</a> " . __('From there you can get more information.') . "</td></tr>\n";
 						} else {
 							print "<tr class='tableHeader'>
@@ -744,7 +744,7 @@ function graphs() {
 						$row_counter    = 0;
 						$column_counter = 0;
 						$fields         = array_rekey($field_names, 'field_name', 'field_name');
-						if (sizeof($snmp_query_indexes)) {
+						if (cacti_sizeof($snmp_query_indexes)) {
 							foreach($snmp_query_indexes as $row) {
 								$query_row = $snmp_query['id'] . '_' . encode_data_query_index($row['snmp_index']);
 
@@ -793,9 +793,9 @@ function graphs() {
 					WHERE snmp_query_graph.snmp_query_id = ?
 					ORDER BY snmp_query_graph.name', array($snmp_query['id']));
 
-				if (sizeof($data_query_graphs) == 1) {
+				if (cacti_sizeof($data_query_graphs) == 1) {
 					echo "<input type='hidden' id='sgg_" . $snmp_query['id'] . "' name='sgg_" . $snmp_query['id'] . "' value='" . $data_query_graphs[0]['id'] . "'>\n";
-				} elseif (sizeof($data_query_graphs) > 1) {
+				} elseif (cacti_sizeof($data_query_graphs) > 1) {
 					print "<div class='break'></div>\n";
 
 					html_start_box('', '100%', '', '3', 'center', '');

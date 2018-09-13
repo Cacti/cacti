@@ -325,43 +325,43 @@ function form_actions() {
 
 	html_start_box($poller_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($poller_array) && sizeof($poller_array)) {
+	if (isset($poller_array) && cacti_sizeof($poller_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector.', 'Click \'Continue\' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector.', sizeof($poller_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Collector.  Note, all devices will be disassociated from this Data Collector and mapped back to the Main Cacti Data Collector.', 'Click \'Continue\' to delete all following Data Collectors.  Note, all devices will be disassociated from these Data Collectors and mapped back to the Main Cacti Data Collector.', cacti_sizeof($poller_array)) . "</p>
 					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Collector', 'Delete Data Collectors', sizeof($poller_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Collector', 'Delete Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to disable the following Data Collector.', 'Click \'Continue\' to disable the following Data Collectors.', sizeof($poller_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to disable the following Data Collector.', 'Click \'Continue\' to disable the following Data Collectors.', cacti_sizeof($poller_array)) . "</p>
 					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Collector', 'Disable Data Collectors', sizeof($poller_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable Data Collector', 'Disable Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to enable the following Data Collector.', 'Click \'Continue\' to enable the following Data Collectors.', sizeof($poller_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to enable the following Data Collector.', 'Click \'Continue\' to enable the following Data Collectors.', cacti_sizeof($poller_array)) . "</p>
 					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Enable Data Collectors', sizeof($poller_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Enable Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '4') { // full sync
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Collectors for Offline Operation.', sizeof($poller_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to Synchronize the Remote Data Collector for Offline Operation.', 'Click \'Continue\' to Synchronize the Remote Data Collectors for Offline Operation.', cacti_sizeof($poller_array)) . "</p>
 					<div class='itemlist'><ul>$pollers</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', sizeof($poller_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enable Data Collector', 'Synchronize Remote Data Collectors', cacti_sizeof($poller_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Site.') . "</span></td></tr>\n";
@@ -412,7 +412,7 @@ function poller_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (sizeof($poller)) {
+	if (cacti_sizeof($poller)) {
 		if ($poller['id'] == 1) {
 			unset($fields_poller_edit['spacer1']);
 			unset($fields_poller_edit['dbdefault']);
@@ -445,7 +445,7 @@ function poller_edit() {
 
 	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><input type="button" class="ui-button ui-corner-all ui-widget" id="dbtest" value="' . __esc('Test Connection') . '"><span id="results"></span></div></div>';
 
-	if (isset($poller) && sizeof($poller)) {
+	if (isset($poller) && cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
@@ -493,7 +493,7 @@ function poller_edit() {
 }
 
 function test_database_connection($poller = array()) {
-	if (!sizeof($poller)) {
+	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
 
 		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl');
@@ -593,7 +593,7 @@ function pollers() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -658,7 +658,7 @@ function pollers() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$pollers = db_fetch_assoc("SELECT poller.*, count(h.id) AS hosts
+	$pollers = db_fetch_assoc("SELECT poller.*, cacti_count(h.id) AS hosts
 		FROM poller
 		LEFT JOIN host AS h
 		ON h.poller_id=poller.id
@@ -693,7 +693,7 @@ function pollers() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($pollers)) {
+	if (cacti_sizeof($pollers)) {
 		foreach ($pollers as $poller) {
 			if ($poller['id'] == 1) {
 				$disabled = true;
@@ -732,7 +732,7 @@ function pollers() {
 
 	html_end_box(false);
 
-	if (sizeof($pollers)) {
+	if (cacti_sizeof($pollers)) {
 		print $nav;
 	}
 

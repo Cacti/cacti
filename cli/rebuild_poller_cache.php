@@ -33,7 +33,7 @@ array_shift($parms);
 $debug = false;
 $host_id = 0;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -89,7 +89,7 @@ if ($host_id > 0) {
 
 /* initialize some variables */
 $current_ds = 1;
-$total_ds = sizeof($poller_data);
+$total_ds = cacti_sizeof($poller_data);
 
 /* setting local_data_ids to an empty array saves time during updates */
 $local_data_ids = array();
@@ -97,10 +97,10 @@ $poller_items   = array();
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Rebuilding the Poller Cache can take quite some time\n";
-debug("There are '" . sizeof($poller_data) . "' data source elements to update.");
+debug("There are '" . cacti_sizeof($poller_data) . "' data source elements to update.");
 
 /* start rebuilding the poller cache */
-if (sizeof($poller_data)) {
+if (cacti_sizeof($poller_data)) {
 	foreach ($poller_data as $data) {
 		if (!$debug) print '.';
 		$local_data_ids[] = $data['id'];
@@ -110,7 +110,7 @@ if (sizeof($poller_data)) {
 		$current_ds++;
 	}
 
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 	}
 }

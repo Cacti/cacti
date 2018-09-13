@@ -92,7 +92,7 @@ function form_actions() {
 
 					// pull ping options from network_id
 					$n = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($d['network_id']));
-					if (sizeof($n)) {
+					if (cacti_sizeof($n)) {
 						$d['ping_method']  = $n['ping_method'];
 						$d['ping_port']    = $n['ping_port'];
 						$d['ping_timeout'] = $n['ping_timeout'];
@@ -145,7 +145,7 @@ function form_actions() {
 
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
-	if (isset($device_array) && sizeof($device_array)) {
+	if (isset($device_array) && cacti_sizeof($device_array)) {
 		if (get_request_var('drp_action') == '1') { /* add */
 
 			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
@@ -269,7 +269,7 @@ function display_discovery_page() {
 	$availability_method = read_config_option('availability_method');
 
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		foreach($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
@@ -305,7 +305,7 @@ function display_discovery_page() {
 
 	html_end_box(false);
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		print $nav;
 	}
 
@@ -457,7 +457,7 @@ function draw_filter() {
 						<select id='network' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($networks)) {
+							if (cacti_sizeof($networks)) {
 							foreach ($networks as $key => $name) {
 								print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
 							}
@@ -487,7 +487,7 @@ function draw_filter() {
 						<select id='status' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($status_arr)) {
+							if (cacti_sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -502,7 +502,7 @@ function draw_filter() {
 						<select id='os' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($os_arr)) {
+							if (cacti_sizeof($os_arr)) {
 							foreach ($os_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -517,7 +517,7 @@ function draw_filter() {
 						<select id='snmp' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($status_arr)) {
+							if (cacti_sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -532,7 +532,7 @@ function draw_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
 								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
@@ -598,7 +598,7 @@ function export_discovery_results() {
 	header('Content-Disposition: attachment; filename=discovery_results.csv');
 	print "Host,IP,System Name,System Location,System Contact,System Description,OS,Uptime,SNMP,Status\n";
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 	foreach ($results as $host) {
 		if ($host['sysUptime'] != 0) {
 			$days = intval($host['sysUptime']/8640000);

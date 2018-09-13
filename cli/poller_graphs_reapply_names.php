@@ -36,7 +36,7 @@ $debug   = false;
 $host_id = '';
 $filter  = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -126,7 +126,7 @@ $graph_list = db_fetch_assoc("SELECT
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
-debug("There are '" . sizeof($graph_list) . "' Graphs to rename");
+debug("There are '" . cacti_sizeof($graph_list) . "' Graphs to rename");
 
 $i = 1;
 foreach ($graph_list as $graph) {
