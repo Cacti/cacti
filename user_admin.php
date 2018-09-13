@@ -589,7 +589,9 @@ function form_save() {
 			}
 		}
 	} elseif (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array(get_nfilter_request_var('id')));
+		db_execute_prepared('DELETE FROM user_auth_realm 
+			WHERE user_id = ?', 
+			array(get_nfilter_request_var('id')));
 
 		foreach ($_POST as $var => $val) {
 			if (preg_match('/^[section]/i', $var)) {
@@ -606,7 +608,7 @@ function form_save() {
 
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_settings')) {
-		save_user_settings();
+		save_user_settings(get_request_var('id'));
 
 		/* reset local settings cache so the user sees the new settings */
 		kill_session_var('sess_user_config_array');
@@ -616,9 +618,19 @@ function form_save() {
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_perms')) {
 		db_execute_prepared('UPDATE user_auth
-			SET policy_graphs = ?, policy_trees = ?, policy_hosts = ?, policy_graph_templates = ?
+			SET policy_graphs = ?, 
+			policy_trees = ?, 
+			policy_hosts = ?, 
+			policy_graph_templates = ?
 			WHERE id = ?',
-			array(get_nfilter_request_var('policy_graphs'), get_nfilter_request_var('policy_trees'), get_nfilter_request_var('policy_hosts'), get_nfilter_request_var('policy_graph_templates'), get_nfilter_request_var('id')));
+			array(
+				get_nfilter_request_var('policy_graphs'), 
+				get_nfilter_request_var('policy_trees'), 
+				get_nfilter_request_var('policy_hosts'), 
+				get_nfilter_request_var('policy_graph_templates'), 
+				get_nfilter_request_var('id')
+			)
+		);
 	} else {
 		api_plugin_hook('user_admin_user_save');
 

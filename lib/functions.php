@@ -107,61 +107,45 @@ function read_graph_config_option($config_name, $force = false) {
    @returns          - void */
 function save_user_settings($user = -1) {
 	global $settings_user;
+
 	if ($user == -1 || empty($user)) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
-			if (!empty($field_array['user'])) {
-				if (!isset_request_var('user_optional_' . $field_name) ||
-				    get_nfilter_request_var('user_optional_' . $field_name) != 'on') {
-					clear_user_setting($field_name, $user);
-					continue;
-				}
-			}
-
 			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
 			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
 				set_request_var($field_name, $field_array['default']);
 			}
 
-			if ($field_array['method'] == 'checkbox') {
-				set_user_setting($field_name,
-					(isset_request_var($field_name) ? 'on' : ''),
-					$user);
-			} elseif ($field_array['method'] == 'checkbox_group') {
-				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-					set_user_setting($sub_field_name,
-						(isset_request_var($sub_field_name) ? 'on' : ''),
-						$user);
-				}
-			} elseif ($field_array['method'] == 'textbox_password') {
-				if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-					$_SESSION['sess_error_fields'][$field_name] = $field_name;
-					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[4] = 4;
-				} elseif (isset_request_var($field_name)) {
-					set_user_setting($field_name,
-						get_nfilter_request_var($field_name),
-						$user);
-				}
-			} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-					if (isset_request_var($sub_field_name)) {
-						set_user_setting($sub_field_name,
-							get_nfilter_request_var($sub_field_name),
-							$user);
+			if (isset($field_array['method'])) {
+				if ($field_array['method'] == 'checkbox') {
+					set_user_setting($field_name, (isset_request_var($field_name) ? 'on' : ''), $user);
+				} elseif ($field_array['method'] == 'checkbox_group') {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+						set_user_setting($sub_field_name, (isset_request_var($sub_field_name) ? 'on' : ''), $user);
 					}
+				} elseif ($field_array['method'] == 'textbox_password') {
+					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[4] = 4;
+					} elseif (isset_request_var($field_name)) {
+						set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
+					}
+				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+						if (isset_request_var($sub_field_name)) {
+							set_user_setting($sub_field_name, get_nfilter_request_var($sub_field_name), $user);
+						}
+					}
+				} elseif (isset_request_var($field_name)) {
+					set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
 				}
-			} else if (isset_request_var($field_name)) {
-				set_user_setting($field_name,
-					get_nfilter_request_var($field_name),
-					$user);
 			}
 		}
 	}
-
 }
 
 /* set_user_setting - sets/updates a user setting with the given value.
@@ -1332,7 +1316,7 @@ function prepare_validate_result(&$result) {
 		/* it has no delimiters, and no space, therefore, must be numeric */
 		if (is_numeric($result)) {
 			return true;
-		} else if (is_float($result)) {
+		} elseif (is_float($result)) {
 			return true;
 		} else {
 			$result = 'U';
@@ -3159,10 +3143,10 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	if ($how == 0) {
 		$mail->isMail();
-	} else if ($how == 1) {
+	} elseif ($how == 1) {
 		$mail->Sendmail = read_config_option('settings_sendmail_path');
 		$mail->isSendmail();
-	} else if ($how == 2) {
+	} elseif ($how == 2) {
 		$mail->isSMTP();
 		$mail->Host     = read_config_option('settings_smtp_host');
 		$mail->Port     = read_config_option('settings_smtp_port');
@@ -3435,11 +3419,11 @@ function email_test() {
 		$how = 0;
 	if ($how == 0) {
 		$mail = __('PHP\'s Mailer Class');
-	} else if ($how == 1) {
+	} elseif ($how == 1) {
 		$mail = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
 		$mail .= $sendmail;
-	} else if ($how == 2) {
+	} elseif ($how == 2) {
 		print __('Method: SMTP') . '<br>';
 		$mail = __('SMTP') . '<br>';
 		$smtp_host = read_config_option('settings_smtp_host');
@@ -4804,7 +4788,7 @@ function cacti_pton($ipaddr) {
 	if (!empty($subnet)) {
 		if (!is_numeric($subnet)) {
 			return false;
-		} else if ($subnet > $len) {
+		} elseif ($subnet > $len) {
 			return false;
 		}
 	}
