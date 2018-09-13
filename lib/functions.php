@@ -4855,9 +4855,9 @@ function cacti_ptoa($title, $addr) {
 }
 
 function cacti_sizeof($array) {
-	return ($array === false || !is_array($array)) ? 0 : cacti_sizeof($array);
+	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
 }
 
 function cacti_count($array) {
-	return ($array === false || !is_array($array)) ? 0 : cacti_count($array);
+	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
