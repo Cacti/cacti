@@ -500,7 +500,7 @@ function template_edit() {
 	$isSNMPget = false;
 
 	if (!isempty_request_var('id')) {
-		$template_data = db_fetch_row_prepared('SELECT *,
+		$template_data = db_fetch_row_prepared('SELECT dtd.*,
 			SUM(CASE WHEN dl.data_template_id = ? THEN 1 ELSE 0 END) AS data_sources
 			FROM data_template_data AS dtd
 			LEFT JOIN data_local AS dl
