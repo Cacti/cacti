@@ -297,7 +297,7 @@ function tree_dnd() {
 function get_host_sort_type() {
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
-		if (sizeof($ndata)) {
+		if (cacti_sizeof($ndata)) {
 			foreach($ndata as $n) {
 				$parts = explode(':', $n);
 
@@ -334,7 +334,7 @@ function set_host_sort_type() {
 
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
-		if (sizeof($ndata)) {
+		if (cacti_sizeof($ndata)) {
 			foreach($ndata as $n) {
 				$parts = explode(':', $n);
 
@@ -365,7 +365,7 @@ function set_host_sort_type() {
 function get_branch_sort_type() {
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
-		if (sizeof($ndata)) {
+		if (cacti_sizeof($ndata)) {
 		foreach($ndata as $n) {
 			$parts = explode(':', $n);
 
@@ -419,7 +419,7 @@ function set_branch_sort_type() {
 
 	if (isset_request_var('nodeid')) {
 		$ndata = explode('_', get_request_var('nodeid'));
-		if (sizeof($ndata)) {
+		if (cacti_sizeof($ndata)) {
 			foreach($ndata as $n) {
 				$parts = explode(':', $n);
 
@@ -541,7 +541,7 @@ function sort_recursive($branch, $tree_id) {
 		AND host_id = 0',
 		array($tree_id, $branch));
 
-	if (sizeof($leaves)) {
+	if (cacti_sizeof($leaves)) {
 		foreach($leaves as $leaf) {
 			if ($leaf['sort_children_type'] == TREE_ORDERING_INHERIT) {
 				$first_child = db_fetch_cell_prepared('SELECT id
@@ -631,34 +631,34 @@ function form_actions() {
 
 	html_start_box($tree_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($tree_array) && sizeof($tree_array)) {
+	if (isset($tree_array) && cacti_sizeof($tree_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', sizeof($tree_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Tree.', 'Click \'Continue\' to delete following Trees.', cacti_sizeof($tree_array)) . "</p>
 					<div class='itemlist'><ul>$tree_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Tree', 'Delete Trees', cacti_sizeof($tree_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { // publish
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', sizeof($tree_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to publish the following Tree.', 'Click \'Continue\' to publish following Trees.', cacti_sizeof($tree_array)) . "</p>
 					<div class='itemlist'><ul>$tree_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Publish Tree', 'Publish Trees', cacti_sizeof($tree_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // un-publish
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', sizeof($tree_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to un-publish the following Tree.', 'Click \'Continue\' to un-publish following Trees.', cacti_sizeof($tree_array)) . "</p>
 					<div class='itemlist'><ul>$tree_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', sizeof($tree_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
 		}
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Tree.') . "</span></td></tr>\n";
@@ -730,7 +730,7 @@ function tree_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (!sizeof($tree)) {
+	if (!cacti_sizeof($tree)) {
 		unset($fields_tree_edit['enabled']);
 	}
 
@@ -1721,7 +1721,7 @@ function display_sites() {
 
 	$sites = db_fetch_assoc("SELECT * FROM sites $sql_where");
 
-	if (sizeof($sites)) {
+	if (cacti_sizeof($sites)) {
 		foreach($sites as $s) {
 			print "<ul><li id='tsite:" . $s['id'] . "' data-jstree='{ \"type\" : \"site\"}'>" . $s['name'] . "</li></ul>\n";
 		}
@@ -1737,7 +1737,7 @@ function display_hosts() {
 
 	$hosts = get_allowed_devices($sql_where, 'description', '20');
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $h) {
 			print "<ul><li id='thost:" . $h['id'] . "' data-jstree='{ \"type\" : \"device\"}'>" . $h['description'] . ' (' . $h['hostname'] . ')' . "</li></ul>\n";
 		}
@@ -1762,7 +1762,7 @@ function display_graphs() {
 		ORDER BY title_cache
 		LIMIT 20");
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $g) {
 			if (is_graph_allowed($g['id'])) {
 				print "<ul><li id='tgraph:" . $g['id'] . "' data-jstree='{ \"type\": \"graph\" }'>" . html_escape($g['title']) . '</li></ul>';
@@ -1895,7 +1895,7 @@ function tree() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1974,17 +1974,17 @@ function tree() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 1;
-	if (sizeof($trees)) {
+	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
 			$sequence = '';
 			if (get_request_var('sort_column') == 'sequence' && get_request_var('sort_direction') == 'ASC') {
-				if ($i == 1 && sizeof($trees) == 1) {
+				if ($i == 1 && cacti_sizeof($trees) == 1) {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<span class="moveArrowNone"></span>';
 				} elseif ($i == 1) {
 					$sequence .= '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('tree.php?action=tree_down&id=' . $tree['id']) . '" title="' . __esc('Move Down') . '"></a>';
 					$sequence .= '<span class="moveArrowNone"></span>';
-				} elseif ($i == sizeof($trees)) {
+				} elseif ($i == cacti_sizeof($trees)) {
 					$sequence .= '<span class="moveArrowNone"></span>';
 					$sequence .= '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('tree.php?action=tree_up&id=' . $tree['id']) . '" title="' . __esc('Move Up') . '"></a>';
 
@@ -2017,7 +2017,7 @@ function tree() {
 	}
 	html_end_box(false);
 
-	if (sizeof($trees)) {
+	if (cacti_sizeof($trees)) {
 		print $nav;
 	}
 

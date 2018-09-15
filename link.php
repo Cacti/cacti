@@ -30,7 +30,7 @@ $page = db_fetch_row_prepared('SELECT
 	WHERE id = ?',
 	array(get_filter_request_var('id')));
 
-if (!sizeof($page)) {
+if (!cacti_sizeof($page)) {
 	print 'FATAL: Page is not defined.';
 } else {
 	global $link_nav;

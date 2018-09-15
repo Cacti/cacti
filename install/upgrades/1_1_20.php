@@ -59,7 +59,7 @@ function upgrade_to_1_1_20() {
 		GROUP BY manager_id, notification, mib
 		HAVING totals > 1');
 
-	if (sizeof($notifications)) {
+	if (cacti_sizeof($notifications)) {
 		foreach($notifications as $n) {
 			$totals = $n['totals'];
 

@@ -49,7 +49,7 @@ $md5_file = '';
 $show_hash = false;
 $base_dir = dirname(__FILE__).'/../';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 
 	foreach($parms as $parameter) {
 
@@ -169,7 +169,7 @@ if ($create) {
 	}
 
 	if (!$quiet) {
-		print 'Writing '.sizeof($file_array)." entries to $md5_file\n";
+		print 'Writing '.cacti_sizeof($file_array)." entries to $md5_file\n";
 	}
 
 	if (!$confirm && file_exists($md5_file)) {

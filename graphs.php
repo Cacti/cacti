@@ -197,7 +197,7 @@ function add_tree_names_to_actions_array() {
 		FROM graph_tree
 		ORDER BY name');
 
-	if (sizeof($trees)) {
+	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
 			$graph_actions['tr_' . $tree['id']] = __('Place on a Tree (%s)', $tree['name']);
 		}
@@ -251,7 +251,7 @@ function form_save() {
 			debug_log_insert('new_graphs', __('Created graph: %s', get_graph_title($return_array['local_graph_id'])));
 
 			/* lastly push host-specific information to our data sources */
-			if (sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
+			if (cacti_sizeof($return_array['local_data_id'])) { # we expect at least one data source associated
 				foreach($return_array['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 				}
@@ -379,7 +379,7 @@ function form_save() {
 				WHERE graph_template_id = ?',
 				array($graph_template_id));
 
-			if (sizeof($input_list)) {
+			if (cacti_sizeof($input_list)) {
 				foreach ($input_list as $input) {
 					/* we need to find out which graph items will be affected by saving this particular item */
 					$item_list = db_fetch_assoc_prepared('SELECT gti.id
@@ -391,7 +391,7 @@ function form_save() {
 						array(get_nfilter_request_var('local_graph_id'), $input['id']));
 
 					/* loop through each item affected and update column data */
-					if (sizeof($item_list)) {
+					if (cacti_sizeof($item_list)) {
 						foreach ($item_list as $item) {
 							/* if we are changing templates, the POST vars we are searching for here will not exist.
 							 this is because the db and form are out of sync here, but it is ok to just skip over saving
@@ -428,7 +428,7 @@ function get_current_graph_template_details($local_graph_id) {
 		WHERE id = ?',
 		array($local_graph_id));
 
-	if (!sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
+	if (!cacti_sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
 		return array('id' => 0, 'name' => __('Non Templated'), 'source' => 0);
 	} elseif ($graph_local['snmp_query_id'] > 0) {
 		$detail = db_fetch_row_prepared('SELECT sqg.id, sqg.name
@@ -439,7 +439,7 @@ function get_current_graph_template_details($local_graph_id) {
 			WHERE gl.id = ?',
 			array($local_graph_id));
 
-		if (sizeof($detail)) {
+		if (cacti_sizeof($detail)) {
 			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 1);
 		} else {
 			return array('id' => 0, 'name' => __('Not Found'), 'source' => 1);
@@ -452,7 +452,7 @@ function get_current_graph_template_details($local_graph_id) {
 			WHERE gl.id = ?',
 			array($local_graph_id));
 
-		if (sizeof($detail)) {
+		if (cacti_sizeof($detail)) {
 			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 2);
 		} else {
 			return array('id' => 0, 'name' => __('Not Found'), 'source' => 2);
@@ -513,7 +513,7 @@ function get_current_graph_template($local_graph_id) {
 function get_common_graph_templates(&$graph) {
 	$dqid = 0;
 
-	if (sizeof($graph)) {
+	if (cacti_sizeof($graph)) {
 		$dqid = db_fetch_cell_prepared('SELECT snmp_query_id
 			FROM graph_local
 			WHERE id = ?',
@@ -587,27 +587,27 @@ function form_actions() {
 				$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
 				parse_validate_graph_template_id('graph_template_id');
 
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					change_graph_template($selected_items[$i], $gt_id_unparsed, true);
 				}
 			} elseif (get_request_var('drp_action') == '3') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_graph($selected_items[$i], 0, get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // graph -> graph template
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					graph_to_graph_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_tree_item_save(0, get_nfilter_request_var('tree_id'), TREE_ITEM_TYPE_GRAPH, get_nfilter_request_var('tree_item_id'), '', $selected_items[$i], 0, 0, 0, 0, false);
 				}
 			} elseif (get_request_var('drp_action') == '5') { // change host
 				get_filter_request_var('host_id');
 				$failures = false;
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					if (!api_graph_change_device($selected_items[$i], get_request_var('host_id'))) {
 						$failures = true;
 					}
@@ -617,7 +617,7 @@ function form_actions() {
 					}
 				}
 			} elseif (get_request_var('drp_action') == '6') { // reapply suggested naming
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_reapply_suggested_graph_title($selected_items[$i]);
 					update_graph_title_cache($selected_items[$i]);
 				}
@@ -767,13 +767,13 @@ function form_actions() {
 				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					automation_execute_graph_create_tree($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '11') {
 				// Add to a report
 				$good = true;
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					if (!reports_add_graphs(get_filter_request_var('report_id'), $selected_items[$i], get_request_var('timespan'), get_request_var('align'))) {
 						raise_message('reports_add_error');
 						$good = false;
@@ -838,10 +838,10 @@ function form_actions() {
 
 	html_start_box($graph_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
-	if (isset($graph_array) && sizeof($graph_array)) {
+	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			/* find out which (if any) data sources are being used by this graph, so we can tell the user */
-			if (isset($graph_array) && sizeof($graph_array)) {
+			if (isset($graph_array) && cacti_sizeof($graph_array)) {
 				$data_sources = array_rekey(
 					db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
 						FROM data_template_data AS dtd
@@ -856,7 +856,7 @@ function form_actions() {
 				/* data sources to delete */
 				$data_array = array_keys($data_sources);
 
-				if (sizeof($data_array)) {
+				if (cacti_sizeof($data_array)) {
 					$not_deletable = array_rekey(
 						db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
 							FROM data_template_data AS dtd
@@ -872,7 +872,7 @@ function form_actions() {
 					$not_deletable = array();
 				}
 
-				if (sizeof($not_deletable)) {
+				if (cacti_sizeof($not_deletable)) {
 					$data_sources = array_rekey(
 						db_fetch_assoc('SELECT DISTINCT dtd.local_data_id, dtd.name_cache
 							FROM data_template_data AS dtd
@@ -892,7 +892,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to delete the following Graph(s).  Note that if you choose to Delete Data Sources, only those Data Sources not in use elsewhere will also be Deleted.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>";
 
-			if (isset($data_sources) && sizeof($data_sources)) {
+			if (isset($data_sources) && cacti_sizeof($data_sources)) {
 				print "<tr><td class='textArea'><p>" . __('The following Data Source(s) are in use by these Graph(s).') . "</p>\n";
 
 				print '<div class="itemlist"><ul>';
@@ -1011,7 +1011,7 @@ function form_actions() {
 				/* list affected data sources */
 				print '<tr>';
 
-				if (sizeof($data_sources)) {
+				if (cacti_sizeof($data_sources)) {
 					print "<td class='textArea'>" .
 					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
 					<div class="itemlist"><ul>';
@@ -1132,7 +1132,7 @@ function form_actions() {
 					WHERE graph_template_id = ?
 					ORDER BY name', array($graph_template));
 
-				if (sizeof($aggregate_templates)) {
+				if (cacti_sizeof($aggregate_templates)) {
 					/* list affected graphs */
 					print "<tr>
 						<td class='textArea'>
@@ -1189,7 +1189,7 @@ function form_actions() {
 				ORDER BY name',
 				array($_SESSION['sess_user_id']));
 
-			if (sizeof($reports)) {
+			if (cacti_sizeof($reports)) {
 				print "<tr>
 					<td class='textArea'>
 						<p>" . __('Click \'Continue\' to add the selected Graphs to the Report below.') . "</p>
@@ -1367,7 +1367,7 @@ function graph_edit() {
 			array(get_request_var('id')));
 
 		/* case of a deleted graph */
-		if (!sizeof($graph)) {
+		if (!cacti_sizeof($graph)) {
 			raise_message(31);
 			header('Location: graphs.php');
 			exit;
@@ -1827,7 +1827,7 @@ function graph_management() {
 								$templates = get_allowed_graph_templates_normalized();
 							}
 
-							if (sizeof($templates) > 0) {
+							if (cacti_sizeof($templates) > 0) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
 								}
@@ -1858,7 +1858,7 @@ function graph_management() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1978,7 +1978,7 @@ function graph_management() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($graph_list)) {
+	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
 			$template_details = get_current_graph_template_details($graph['local_graph_id']);
@@ -2008,7 +2008,7 @@ function graph_management() {
 
 	html_end_box(false);
 
-	if (sizeof($graph_list)) {
+	if (cacti_sizeof($graph_list)) {
 		print $nav;
 	}
 

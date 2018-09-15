@@ -38,7 +38,7 @@ require_once($config['base_path'] . '/lib/utility.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	/* setup defaults */
 	$graph_type    = '';
 	$templateGraph = array();
@@ -265,7 +265,7 @@ if (sizeof($parms)) {
 		/* is a Host Template Id is given, print the related Graph Templates */
 		if ($hostTemplateId > 0) {
 			$graphTemplates = getGraphTemplatesByHostTemplate($hostTemplateId);
-			if (!sizeof($graphTemplates)) {
+			if (!cacti_sizeof($graphTemplates)) {
 				print "ERROR: You must supply a valid --host-template-id before you can list its graph templates\n";
 				print "Try --list-graph-template-id --host-template-id=[ID]\n";
 				exit(1);
@@ -387,9 +387,9 @@ if (sizeof($parms)) {
 			exit(1);
 		}
 
-		$nbSnmpFields      = sizeof($dsGraph['snmpField']);
-		$nbSnmpValues      = sizeof($dsGraph['snmpValue']);
-		$nbSnmpValuesRegex = sizeof($dsGraph['snmpValueRegex']);
+		$nbSnmpFields      = cacti_sizeof($dsGraph['snmpField']);
+		$nbSnmpValues      = cacti_sizeof($dsGraph['snmpValue']);
+		$nbSnmpValuesRegex = cacti_sizeof($dsGraph['snmpValueRegex']);
 
 		if ($nbSnmpValues) {
 			if ($nbSnmpFields != $nbSnmpValues) {
@@ -469,7 +469,7 @@ if (sizeof($parms)) {
 				exit(1);
 			}
 
-			if (sizeof($dsGraph['snmpField'])) {
+			if (cacti_sizeof($dsGraph['snmpField'])) {
 				foreach($dsGraph['snmpField'] as $snmpField) {
 					if ($snmpField = "") {
 						print "ERROR: You must supply a valid snmp-field before you can list its values\n";
@@ -503,7 +503,7 @@ if (sizeof($parms)) {
 			$input_fields = getInputFields($template_id, $quietMode);
 		}
 
-		if (sizeof($fields)) {
+		if (cacti_sizeof($fields)) {
 			foreach ($fields as $option) {
 				$data_template_id = 0;
 				$option_value = explode('=', $option);
@@ -518,7 +518,7 @@ if (sizeof($parms)) {
 
 				/* check for the input fields existance */
 				$field_found = false;
-				if (sizeof($input_fields)) {
+				if (cacti_sizeof($input_fields)) {
 					foreach ($input_fields as $key => $row) {
 						if (substr_count($key, $field_name)) {
 							if ($data_template_id == 0) {
@@ -582,8 +582,8 @@ if (sizeof($parms)) {
 			}
 		}
 
-		if (is_array($returnArray) && sizeof($returnArray)) {
-			if (sizeof($returnArray['local_data_id'])) {
+		if (is_array($returnArray) && cacti_sizeof($returnArray)) {
+			if (cacti_sizeof($returnArray['local_data_id'])) {
 				foreach($returnArray['local_data_id'] as $item) {
 					push_out_host($host_id, $item);
 
@@ -606,7 +606,7 @@ if (sizeof($parms)) {
 			print "Graph Not Added due to whitelist check failure.\n";
 		}
 	} elseif ($graph_type == 'ds') {
-		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (sizeof($dsGraph['snmpField']) == 0) ) {
+		if (($dsGraph['snmpQueryId'] == '') || ($dsGraph['snmpQueryType'] == '') || (cacti_sizeof($dsGraph['snmpField']) == 0) ) {
 			print "ERROR: For graph-type of 'ds' you must supply more options\n";
 			display_help();
 			exit(1);
@@ -623,12 +623,12 @@ if (sizeof($parms)) {
 			AND snmp_query_id=' . $dsGraph['snmpQueryId'];
 
 		$index_snmp_filter = 0;
-		if (sizeof($dsGraph['snmpField'])) {
+		if (cacti_sizeof($dsGraph['snmpField'])) {
 			foreach ($dsGraph['snmpField'] as $snmpField) {
 				$req  .= ' AND snmp_index IN (
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 
-				if (sizeof($dsGraph['snmpValue'])) {
+				if (cacti_sizeof($dsGraph['snmpValue'])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
 				} else {
 					$req .= ' AND field_value LIKE "%' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '%")';
@@ -640,7 +640,7 @@ if (sizeof($parms)) {
 
 		$snmp_indexes = db_fetch_assoc($req);
 
-		if (sizeof($snmp_indexes)) {
+		if (cacti_sizeof($snmp_indexes)) {
 			foreach ($snmp_indexes as $snmp_index) {
 				$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
@@ -715,7 +715,7 @@ if (sizeof($parms)) {
 		} else {
 			$err_msg = 'ERROR: Could not find one of more snmp-fields ' . implode(',', $dsGraph['snmpField']) . ' with values (';
 
-			if (sizeof($dsGraph['snmpValue'])) {
+			if (cacti_sizeof($dsGraph['snmpValue'])) {
 				$err_msg .= implode(',',$dsGraph['snmpValue']);
 			} else {
 				$err_msg .= implode(',',$dsGraph['snmpValueRegex']);

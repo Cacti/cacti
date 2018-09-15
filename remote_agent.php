@@ -128,7 +128,7 @@ function remote_client_authorized() {
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller');
 
-	if (sizeof($pollers)) {
+	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
 			if (strip_domain($poller['hostname']) == $client_name) {
 				return true;
@@ -253,7 +253,7 @@ function get_snmp_data_walk() {
 		}
 	}
 
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 		print json_encode($output);
 	} else {
 		print 'U';
@@ -275,7 +275,7 @@ function poll_for_data() {
 
 	$i = 0;
 
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		foreach($local_data_ids as $local_data_id) {
 			input_validate_input_number($local_data_id);
 
@@ -292,7 +292,7 @@ function poll_for_data() {
 				AND action = 2',
 				array($host_id, $local_data_id));
 
-			if (sizeof($items)) {
+			if (cacti_sizeof($items)) {
 				foreach($items as $item) {
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */

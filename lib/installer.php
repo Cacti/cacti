@@ -405,8 +405,8 @@ class Installer implements JsonSerializable {
 		if (isset($param_rrdver) && strlen($param_rrdver)) {
 			log_install_debug('rrdversion', 'sanitizeRRDVersion() - Checking for version string');
 			if (preg_match("/(?:version|v)*\s*((?:[0-9]+\.?)+)/i", $param_rrdver, $matches)) {
-				log_install_debug('rrdversion', 'sanitizeRRDVersion() - Checking for version string - ' . (sizeof($matches) - 1) . ' matches found');
-				if (sizeof($matches) > 1) {
+				log_install_debug('rrdversion', 'sanitizeRRDVersion() - Checking for version string - ' . (cacti_sizeof($matches) - 1) . ' matches found');
+				if (cacti_sizeof($matches) > 1) {
 					log_install_debug('rrdversion', 'sanitizeRRDVersion() - Comparing ' . $param_rrdver . ' <= 1.3');
 					if (cacti_version_compare('1.3', $matches[1], '<=')) {
 						$rrdver = $matches[1];
@@ -528,7 +528,7 @@ class Installer implements JsonSerializable {
 		global $config;
 		log_install_debug('paths', "setPaths(): BACKTRACE: " . cacti_debug_backtrace('', false, false));
 		if (is_array($param_paths)) {
-			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . count($param_paths) . ')');
+			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . cacti_count($param_paths) . ')');
 
 			/* get all items on the form and write values for them  */
 			foreach ($param_paths as $name => $path) {
@@ -817,7 +817,7 @@ class Installer implements JsonSerializable {
 				$select_count++;
 			}
 		}
-		$selected['all'] = ($select_count == count($selected) || empty($hasTemplates));
+		$selected['all'] = ($select_count == cacti_count($selected) || empty($hasTemplates));
 
 		log_install_high('templates', 'getTemplates(): Returning with ' . clean_up_lines(var_export($selected, true)));
 		return $selected;
@@ -881,7 +881,7 @@ class Installer implements JsonSerializable {
 				$select_count++;
 			}
 		}
-		$selected['all'] = ($select_count == count($selected) || empty($hasTables));
+		$selected['all'] = ($select_count == cacti_count($selected) || empty($hasTables));
 
 		return $selected;
 	}
@@ -1405,7 +1405,7 @@ class Installer implements JsonSerializable {
 			}
 
 			$flags = explode("-", $key);
-			if (count($flags) > 1) {
+			if (cacti_count($flags) > 1) {
 				$flagName = strtolower($flags[1]);
 			} else {
 				$flagName = strtolower($flags[0]);
@@ -1576,7 +1576,7 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitle(__('MySQL - TimeZone Support'), 'mysql_timezone');
 		$mysql_timezone_access = db_fetch_assoc('SHOW COLUMNS FROM mysql.time_zone_name', false);
-		if (sizeof($mysql_timezone_access)) {
+		if (cacti_sizeof($mysql_timezone_access)) {
 			$timezone_populated = db_fetch_cell('SELECT COUNT(*) FROM mysql.time_zone_name');
 			if (!$timezone_populated) {
 				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your MySQL TimeZone database is not populated.  Please populate this database before proceeding.') . '</span>');
@@ -1937,7 +1937,7 @@ class Installer implements JsonSerializable {
 			FROM data_source_profiles AS dsp
 			ORDER BY dsp.step, dsp.name');
 
-		if (sizeof($profiles)) {
+		if (cacti_sizeof($profiles)) {
 			$output  = Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
@@ -2087,7 +2087,7 @@ class Installer implements JsonSerializable {
 
 		$collation_value = '';
 		$collation_valid = false;
-		if (sizeof($collation_vars)) {
+		if (cacti_sizeof($collation_vars)) {
 			$collation_value = $collation_vars[0]['Value'];
 			$collation_valid = ($collation_value == 'utf8mb4_unicode_ci');
 		}
@@ -2104,7 +2104,7 @@ class Installer implements JsonSerializable {
 
 		$tables = install_setup_get_tables();
 
-		if (sizeof($tables)) {
+		if (cacti_sizeof($tables)) {
 			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
 			$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
 
@@ -2331,8 +2331,8 @@ class Installer implements JsonSerializable {
 					}
 
 					$action = preg_split('~[ ]*<\[(version|status|sql|error)\]>[ ]*~i', $change);
-					if (empty($action) || sizeof($action) != 5) {
-						log_install_medium('upgrade', $cacheFile . '[' . $line . ']: Read unexpected change - ' . sizeof($action) . ' - \'' . clean_up_lines(var_export($change, true)) . '\'');
+					if (empty($action) || cacti_sizeof($action) != 5) {
+						log_install_medium('upgrade', $cacheFile . '[' . $line . ']: Read unexpected change - ' . cacti_sizeof($action) . ' - \'' . clean_up_lines(var_export($change, true)) . '\'');
 					} else {
 						$version = $action[1];
 						if (!empty($version)) {
@@ -2587,8 +2587,8 @@ class Installer implements JsonSerializable {
 	private function installTemplate() {
 		global $config;
 		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%'");
-		if (sizeof($templates)) {
-			log_install_always('', sprintf('Found %s templates to install', sizeof($templates)));
+		if (cacti_sizeof($templates)) {
+			log_install_always('', sprintf('Found %s templates to install', cacti_sizeof($templates)));
 			$path = $config['base_path'] . '/install/templates/';
 
 			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
@@ -2791,7 +2791,7 @@ class Installer implements JsonSerializable {
 					WHERE host_id = ?',
 					array($host_id));
 
-				if (sizeof($templates)) {
+				if (cacti_sizeof($templates)) {
 					log_install_always('', 'Creating Graphs for Default Device');
 					foreach($templates as $template) {
 						set_config_option('install_updated', microtime(true));
@@ -2846,8 +2846,8 @@ class Installer implements JsonSerializable {
 		global $config;
 
 		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
-		if (sizeof($tables)) {
-			log_install_always('', sprintf('Found %s tables to convert', sizeof($tables)));
+		if (cacti_sizeof($tables)) {
+			log_install_always('', sprintf('Found %s tables to convert', cacti_sizeof($tables)));
 			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
 			$i = 0;
 			foreach ($tables as $table) {
@@ -2945,7 +2945,7 @@ class Installer implements JsonSerializable {
 		global $database_upgrade_status;
 		$failure = DB_STATUS_SKIPPED;
 
-		if (sizeof($database_upgrade_status)) {
+		if (cacti_sizeof($database_upgrade_status)) {
 			if (isset($database_upgrade_status[$cacti_upgrade_version])) {
 				foreach ($database_upgrade_status[$cacti_upgrade_version] as $cache_item) {
 					log_install_debug('dbc', $cacti_upgrade_version . ': ' . clean_up_lines(var_export($cache_item, true)));
@@ -2981,7 +2981,7 @@ class Installer implements JsonSerializable {
 			'plugin', 'version'
 		);
 
-		if (sizeof($plugins)) {
+		if (cacti_sizeof($plugins)) {
 			foreach ($plugins as $plugin => $version) {
 				$disable = true;
 				$integrated = in_array($plugin, $plugins_integrated);

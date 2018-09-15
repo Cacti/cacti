@@ -157,7 +157,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 							$graph_templates = get_allowed_graph_templates();
-							if (sizeof($graph_templates)) {
+							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
 									$found = db_fetch_cell_prepared('SELECT id
@@ -167,7 +167,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 									if ($found) {
 										print "<option value='" . $gt['id'] . "'";
-										if (sizeof($selected)) {
+										if (cacti_sizeof($selected)) {
 											if (in_array($gt['id'], $selected)) {
 												print ' selected';
 											}
@@ -206,7 +206,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td>
 						<select id='graphs' onChange='applyGraphFilter()'>
 							<?php
-							if (sizeof($graphs_per_page)) {
+							if (cacti_sizeof($graphs_per_page)) {
 							foreach ($graphs_per_page as $key => $value) {
 								print "<option value='" . $key . "'"; if (get_request_var('graphs') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
@@ -251,9 +251,9 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<?php
 							$graph_timespans[GT_CUSTOM] = __('Custom');
 							$start_val = 0;
-							$end_val = sizeof($graph_timespans);
+							$end_val = cacti_sizeof($graph_timespans);
 
-							if (sizeof($graph_timespans)) {
+							if (cacti_sizeof($graph_timespans)) {
 								foreach($graph_timespans as $value => $text) {
 									print "<option value='$value'"; if ($_SESSION['sess_current_timespan'] == $value) { print ' selected'; } print '>' . $text . "</option>\n";
 								}
@@ -285,8 +285,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 							<select id='predefined_timeshift' name='predefined_timeshift' title='<?php print __esc('Define Shifting Interval');?>'>
 								<?php
 								$start_val = 1;
-								$end_val = sizeof($graph_timeshifts)+1;
-								if (sizeof($graph_timeshifts) > 0) {
+								$end_val = cacti_sizeof($graph_timeshifts)+1;
+								if (cacti_sizeof($graph_timeshifts) > 0) {
 									for ($shift_value=$start_val; $shift_value < $end_val; $shift_value++) {
 										print "<option value='$shift_value'"; if ($_SESSION['sess_current_timeshift'] == $shift_value) { print ' selected'; } print '>' . title_trim($graph_timeshifts[$shift_value], 40) . "</option>\n";
 									}
@@ -554,7 +554,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 
 			$snmp_query_id       = $form_id1;
 			$snmp_query_graph_id = $form_id2;
-			$num_graphs          = sizeof($form_array3);
+			$num_graphs          = cacti_sizeof($form_array3);
 
 			$snmp_query = db_fetch_cell_prepared('SELECT name
 				FROM snmp_query
@@ -609,7 +609,7 @@ function html_graph_custom_data($host_id, $host_template_id, $snmp_query_id, $fo
 	array_push($num_output_fields, draw_nontemplated_fields_graph_item($graph_template_id, 0, 'gi_' . $snmp_query_id . '_' . $graph_template_id . '_|id|_|field|', __('Graph Items [Template: %s]', html_escape($graph_template['graph_template_name'])), false));
 
 	/* DRAW: Data Sources */
-	if (sizeof($data_templates)) {
+	if (cacti_sizeof($data_templates)) {
 		foreach ($data_templates as $data_template) {
 			array_push($num_output_fields, draw_nontemplated_fields_data_source($data_template['data_template_id'], 0, $data_template, 'd_' . $snmp_query_id . '_' . $graph_template_id . '_' . $data_template['data_template_id'] . '_|field|', __('Data Source [Template: %s]', html_escape($data_template['data_template_name'])), false, false, (isset($snmp_query_graph_id) ? $snmp_query_graph_id : 0)));
 

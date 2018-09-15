@@ -172,7 +172,7 @@ function form_save() {
 		save_user_settings($_SESSION['sess_user_id']);
 	}
 
-	if (sizeof($errors) == 0) {
+	if (cacti_sizeof($errors) == 0) {
 		raise_message(1);
 	} else {
 		raise_message(35);
@@ -220,7 +220,7 @@ function settings() {
 
 	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 
-	if (!sizeof($current_user)) {
+	if (!cacti_sizeof($current_user)) {
 		return;
 	}
 
@@ -238,7 +238,7 @@ function settings() {
 		$graph_views[2] = __('Preview View');
 	}
 
-	if (sizeof($graph_views)) {
+	if (cacti_sizeof($graph_views)) {
 		$settings_user['general']['default_view_mode']['array'] = $graph_views;
 	} else {
 		unset($settings_user['general']['default_view_mode']);
@@ -343,7 +343,7 @@ function settings() {
 						AND user_id = ?',
 						array($field_name, $_SESSION['sess_user_id']));
 
-					if (sizeof($user_row)) {
+					if (cacti_sizeof($user_row)) {
 						$form_array[$field_name]['user_set'] = true;
 						$form_array[$field_name]['value'] = $user_row['value'];
 					} else {

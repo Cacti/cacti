@@ -31,7 +31,7 @@
      the html form. see the arrays contained in include/global_settings.php
      for the extact syntax of this array */
 function draw_edit_form($array) {
-	if (sizeof($array) > 0) {
+	if (cacti_sizeof($array) > 0) {
 		foreach ($array as $top_branch => $top_children) {
 			if ($top_branch == 'config') {
 				$config_array = $top_children;
@@ -41,7 +41,7 @@ function draw_edit_form($array) {
 		}
 	}
 
-	if (sizeof($fields_array) > 0) {
+	if (cacti_sizeof($fields_array) > 0) {
 		if (!isset($config_array['no_form_tag'])) {
 			print "<form class='cactiForm' method='post' autocomplete='off' action='" . ((isset($config_array['post_to'])) ? $config_array['post_to'] : get_current_page()) . "'" . ((isset($config_array['form_name'])) ? " name='" . $config_array['form_name'] . "'" : '') . ((isset($config_array['enctype'])) ? " enctype='" . $config_array['enctype'] . "'" : '') . ">\n";
 		}
@@ -234,7 +234,7 @@ function draw_edit_control($field_name, &$field_array) {
 					closedir($dh);
 				}
 
-				if (sizeof($files)) {
+				if (cacti_sizeof($files)) {
 				foreach($files as $file) {
 					if (is_readable($dir . '/' . $file) && $file != '.' && $file != '..') {
 						if (!in_array($file, $field_array['exclusions'])) {
@@ -1002,8 +1002,8 @@ function form_multi_dropdown($form_name, $array_display, $sql_previous_values, $
 	foreach (array_keys($array_display) as $id) {
 		print "<option value='" . $id . "'";
 
-		if (is_array($sql_previous_values) && sizeof($sql_previous_values)) {
-			for ($i=0; ($i < count($sql_previous_values)); $i++) {
+		if (is_array($sql_previous_values) && cacti_sizeof($sql_previous_values)) {
+			for ($i=0; ($i < cacti_count($sql_previous_values)); $i++) {
 				if ($sql_previous_values[$i][$column_id] == $id) {
 					print ' selected';
 				}
@@ -1066,7 +1066,7 @@ function form_color_dropdown($form_name, $form_previous_value, $form_none_entry,
 		print "<option value='0'>$form_none_entry</option>";
 	}
 
-	if (sizeof($colors_list) > 0) {
+	if (cacti_sizeof($colors_list) > 0) {
 		foreach ($colors_list as $color) {
 			if ($color['name'] == '') {
 				$display = __('Cacti Color (%s)', $color['hex']);

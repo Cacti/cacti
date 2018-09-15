@@ -27,7 +27,7 @@ function prime_default_settings() {
 
 	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
 		foreach ($settings as $tab_array) {
-			if (sizeof($tab_array)) {
+			if (cacti_sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
 						db_execute_prepared('INSERT IGNORE INTO settings
@@ -93,7 +93,7 @@ function install_test_temporary_table() {
 
 function verify_php_extensions($extensions) {
 	//FIXME: More to foreach loop
-	for ($i = 0; $i < count($extensions); $i++) {
+	for ($i = 0; $i < cacti_count($extensions); $i++) {
 		if (extension_loaded($extensions[$i]['name'])){
 			$extensions[$i]['installed'] = true;
 		}
@@ -296,7 +296,7 @@ function find_best_path($binary_name) {
 		);
 	}
 
-	for ($i=0; $i<count($search_paths); $i++) {
+	for ($i=0; $i<cacti_count($search_paths); $i++) {
 		if ((file_exists($search_paths[$i] . '/' . $binary_name)) && (is_readable($search_paths[$i] . '/' . $binary_name))) {
 			return $search_paths[$i] . '/' . $binary_name;
 		}
@@ -523,7 +523,7 @@ function install_file_paths() {
 
 		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
-		if (sizeof($out_array) > 0) {
+		if (cacti_sizeof($out_array) > 0) {
 			if (preg_match('/^RRDtool ([0-9.]+) /', $out_array[0], $m)) {
 				global $rrdtool_versions;
 				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
@@ -581,7 +581,7 @@ function remote_update_config_file() {
 			if (is_writable($config_file)) {
 				$file_array = file($config_file);
 
-				if (sizeof($file_array)) {
+				if (cacti_sizeof($file_array)) {
 					foreach($file_array as $line) {
 						if (strpos(trim($line), "\$poller_id") !== false) {
 							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
@@ -622,7 +622,7 @@ function import_colors() {
 
 	$contents = file(dirname(__FILE__) . '/colors.csv');
 
-	if (count($contents)) {
+	if (cacti_count($contents)) {
 		foreach($contents as $line) {
 			$line    = trim($line);
 			$parts   = explode(',',$line);

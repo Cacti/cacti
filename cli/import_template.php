@@ -33,7 +33,7 @@ array_shift($parms);
 
 global $preview_only;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$filename       = '';
 	$with_profile   = false;
 	$remove_orphans = false;

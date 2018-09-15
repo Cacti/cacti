@@ -32,7 +32,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	$xml_array = xml2array($xml_data);
 
-	if (sizeof($xml_array) == 0) {
+	if (cacti_sizeof($xml_array) == 0) {
 		raise_message(7); /* xml parse error */
 		return $info_array;
 	}
@@ -141,7 +141,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 
 	$hash_cache_sql = implode(' UNION ALL ', $hash_cache_sql_union_selects);
 	$hash_cache_results = db_fetch_assoc($hash_cache_sql);
-	if (sizeof($hash_cache_results)) {
+	if (cacti_sizeof($hash_cache_results)) {
 		foreach ($hash_cache_results as $hash_cache_row) {
 			$hash_cache[$hash_cache_row['type']][$hash_cache_row['hash']] = $hash_cache_row['id'];
 		}
@@ -156,7 +156,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		/* do we have any matches for this type? */
 		if (isset($dep_hash_cache[$type])) {
 			/* yes we do. loop through each match for this type */
-			for ($i=0; $i<count($dep_hash_cache[$type]); $i++) {
+			for ($i=0; $i<cacti_count($dep_hash_cache[$type]); $i++) {
 				$import_debug_info = false;
 
 				cacti_log('$dep_hash_cache[$type][$i][\'type\']: ' . $dep_hash_cache[$type][$i]['type'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
@@ -215,7 +215,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				}
 
 				if (!empty($import_debug_info)) {
-					$info_array[$type]{isset($info_array[$type]) ? count($info_array[$type]) : 0} = $import_debug_info;
+					$info_array[$type]{isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0} = $import_debug_info;
 				}
 			}
 		}
@@ -459,7 +459,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				AND local_graph_id = 0',
 				array($graph_template_id));
 
-			if (sizeof($items)) {
+			if (cacti_sizeof($items)) {
 				foreach($items as $item) {
 					$orphaned_items[$item['hash']] = $item;
 				}
@@ -529,7 +529,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 			}
 
 			if (!empty($_graph_template_id)) {
-				if (!sizeof($previous_data)) {
+				if (!cacti_sizeof($previous_data)) {
 					$new_items[$parsed_hash['hash']] = $save;
 				}
 			}
@@ -595,7 +595,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				$hash_items = explode('|', $item_array['items']);
 
 				if (!empty($hash_items[0])) {
-					for ($i=0; $i<count($hash_items); $i++) {
+					for ($i=0; $i<cacti_count($hash_items); $i++) {
 						/* parse information from the hash */
 						$parsed_hash = parse_xml_hash($hash_items[$i]);
 
@@ -619,7 +619,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	$import_debug_info['title']  = $xml_array['name'];
 	$import_debug_info['result'] = ($preview_only ? 'preview':(empty($graph_template_id) ? 'fail' : 'success'));
 
-	if (isset($new_items) && sizeof($new_items)) {
+	if (isset($new_items) && cacti_sizeof($new_items)) {
 		$new_text = array();
 		foreach($new_items as $item) {
 			$new_text[] = 'New Graph Items, Type: ' . $graph_item_types[$item['graph_type_id']] . ', Text Format: ' . $item['text_format'] . ', Value: ' . $item['value'];
@@ -627,7 +627,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 		$import_debug_info['new_items'] = $new_text;
 	}
 
-	if (isset($orphaned_items) && sizeof($orphaned_items)) {
+	if (isset($orphaned_items) && cacti_sizeof($orphaned_items)) {
 		$orphan_text = array();
 		foreach($orphaned_items as $item) {
 			if ($remove_orphans) {
@@ -1182,7 +1182,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 			$hash_items = explode('|', $xml_array['cf_items']);
 
 			if (!empty($hash_items[0])) {
-				for ($i=0; $i<count($hash_items); $i++) {
+				for ($i=0; $i<cacti_count($hash_items); $i++) {
 					db_execute_prepared('REPLACE INTO data_source_profiles_cf
 						(data_source_profile_id,consolidation_function_id)
 						VALUES (?, ?)',
@@ -1267,7 +1267,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 		$hash_items = explode('|', $xml_array['graph_templates']);
 
 		if (!empty($hash_items[0])) {
-			for ($i=0; $i<count($hash_items); $i++) {
+			for ($i=0; $i<cacti_count($hash_items); $i++) {
 				/* parse information from the hash */
 				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
@@ -1287,7 +1287,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 		$hash_items = explode('|', $xml_array['data_queries']);
 
 		if (!empty($hash_items[0])) {
-			for ($i=0; $i<count($hash_items); $i++) {
+			for ($i=0; $i<cacti_count($hash_items); $i++) {
 				/* parse information from the hash */
 				$parsed_hash = parse_xml_hash($hash_items[$i]);
 
@@ -1698,7 +1698,7 @@ function compare_data($save, $previous_data, $table) {
 		$ignores = array();
 	}
 
-	if (!sizeof($previous_data)) {
+	if (!cacti_sizeof($previous_data)) {
 		return 0;
 	} else {
 		$different = 0;
@@ -1960,10 +1960,10 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	// Capture to a buffer
 	ob_start();
 
-	if (sizeof($import_debug_info)) {
+	if (cacti_sizeof($import_debug_info)) {
 		html_start_box(($preview ? __('Import Preview Results'):__('Import Results')), '100%', '', '3', 'center', '');
 
-		if (sizeof($filestatus)) {
+		if (cacti_sizeof($filestatus)) {
 			if ($preview) {
 				print "<tr class='odd'><td><p class='textArea'>" . __('Cacti would make the following changes if the Package was imported:') . "</p>\n";
 			} else {
@@ -2035,7 +2035,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 					$dep_text   = '';
 					$dep_errors = false;
 
-					if ((isset($vals['dep'])) && (sizeof($vals['dep']) > 0)) {
+					if ((isset($vals['dep'])) && (cacti_sizeof($vals['dep']) > 0)) {
 						foreach ($vals['dep'] as $dep_hash => $dep_status) {
 							if ($dep_status == 'met') {
 								$dep_status_text = "<span class='foundDependency'>" . __('Found Dependency:') . "</span>";
@@ -2066,7 +2066,7 @@ function import_display_results($import_debug_info, $filestatus, $web = false, $
 	} else {
 		$output = ob_get_clean();
 		$output = explode("\n", $output);
-		if (sizeof($output)) {
+		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
 				$line = trim(str_replace('&nbsp;', '', strip_tags($line)));
 

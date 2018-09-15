@@ -35,14 +35,14 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 			WHERE id = ?',
 			array($host_id));
 
-		if (sizeof($host)) {
+		if (cacti_sizeof($host)) {
 			$hosts[$host_id] = $host;
 		}
 	} else {
 		$host = $hosts[$host_id];
 	}
 
-	if (sizeof($host) || (isset($host_id))) {
+	if (cacti_sizeof($host) || (isset($host_id))) {
 		if (isset($host['disabled']) && $host['disabled'] == 'on') {
 			return;
 		}
@@ -72,7 +72,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		}
 
 		/* the $host_field_override array can be used to override certain host fields in the poller cache */
-		if (sizeof($host_field_override)) {
+		if (cacti_sizeof($host_field_override)) {
 			$host = array_merge($host, $host_field_override);
 		}
 

@@ -38,7 +38,7 @@ $forcerun  = false;
 $templates = false;
 $kills     = 0;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -86,7 +86,7 @@ if (!$templates) {
 	$templates = explode(',', $templates);
 }
 
-if (!sizeof($templates)) {
+if (!cacti_sizeof($templates)) {
 	print "ERROR: No valid Graph Templates selected\n\n";
 	exit(1);
 } else {
@@ -185,7 +185,7 @@ function kill_spikes($templates, &$found) {
 		INNER JOIN poller_item AS pi ON pi.local_data_id=dtr.local_data_id
 		WHERE gt.id IN (' . implode(',', $templates) . ')'), 'rrd_path', 'rrd_path');
 
-	if (sizeof($rrdfiles)) {
+	if (cacti_sizeof($rrdfiles)) {
 	foreach($rrdfiles as $f) {
 		debug("Removing Spikes from '$f'");
 		$response = exec(read_config_option('path_php_binary') . ' -q ' .
@@ -198,7 +198,7 @@ function kill_spikes($templates, &$found) {
 	}
 	}
 
-	return sizeof($rrdfiles);
+	return cacti_sizeof($rrdfiles);
 }
 
 /*  display_version - displays version information */

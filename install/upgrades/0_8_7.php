@@ -71,12 +71,12 @@ function upgrade_to_0_8_7() {
 	/* Convert to new authentication system */
 	$global_auth = "on";
 	$global_auth_db = db_fetch_row("SELECT value FROM settings WHERE name = 'global_auth'");
-	if (sizeof($global_auth_db)) {
+	if (cacti_sizeof($global_auth_db)) {
 		$global_auth = $global_auth_db["value"];
 	}
 	$ldap_enabled = "";
 	$ldap_enabled_db = db_fetch_row("SELECT value FROM settings WHERE name = 'ldap_enabled'");
-	if (sizeof($ldap_enabled_db)) {
+	if (cacti_sizeof($ldap_enabled_db)) {
 		$ldap_enabled = $ldap_enabled_db["value"];
 	}
 
@@ -105,7 +105,7 @@ function upgrade_to_0_8_7() {
 	$availability_method = read_config_option("availability_method");
 	$hosts               = db_fetch_assoc("SELECT id, snmp_community, snmp_version FROM host");
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
 			if (strlen($host["snmp_community"] != 0)) {
 				if ($host["snmp_version"] == "3") {

@@ -897,7 +897,7 @@ if ((isset($_SESSION['sess_user_id']))) {
 			AND enabled="on"
 			ORDER BY extendedstyle, sortorder, id');
 
-		if (sizeof($consoles)) {
+		if (cacti_sizeof($consoles)) {
 			foreach ($consoles as $page) {
 				if (is_realm_allowed($page['id']+10000)) {
 					$menuname = (isset($page['extendedstyle']) && $page['extendedstyle'] != '' ? $page['extendedstyle'] : __('External Links'));

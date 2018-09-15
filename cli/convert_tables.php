@@ -39,7 +39,7 @@ $rebuild     = false;
 $table_name  = '';
 $skip_tables = array();
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -95,7 +95,7 @@ if (sizeof($parms)) {
 	}
 }
 
-if (sizeof($skip_tables) && $table_name != '') {
+if (cacti_sizeof($skip_tables) && $table_name != '') {
 	print "ERROR: You can not specify a single table and skip tables at the same time.\n\n";
 	display_help();
 	exit;
@@ -107,7 +107,7 @@ if (!($innodb || $utf8)) {
 	exit;
 }
 
-if (sizeof($skip_tables)) {
+if (cacti_sizeof($skip_tables)) {
 	foreach($skip_tables as $table) {
 		if (!db_table_exists($table)) {
 			print "ERROR: Skip Table $table does not Exist.  Can not continue.\n\n";
@@ -148,7 +148,7 @@ if (strlen($table_name)) {
 	$tables = db_fetch_assoc('SHOW TABLE STATUS');
 }
 
-if (sizeof($tables)) {
+if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
 		$canConvert = $rebuild;
 		$canInnoDB  = false;

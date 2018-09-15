@@ -35,7 +35,7 @@ $debug = false;
 $form  = '';
 $force = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -79,7 +79,7 @@ db_execute('UNLOCK TABLES');
 
 $tables = db_fetch_assoc('SHOW TABLES FROM ' . $database_default);
 
-if (sizeof($tables)) {
+if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
 		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
@@ -93,27 +93,27 @@ print "\nNOTE: Checking for Invalid Cacti Templates\n";
 $total_rows = 0;
 
 /* remove invalid GPrint Presets from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*) 
-	FROM graph_templates_item 
-	LEFT JOIN graph_templates_gprint 
-	ON graph_templates_item.gprint_id=graph_templates_gprint.id 
-	WHERE graph_templates_gprint.id IS NULL 
+$rows = db_fetch_cell('SELECT cacti_count(*)
+	FROM graph_templates_item
+	LEFT JOIN graph_templates_gprint
+	ON graph_templates_item.gprint_id=graph_templates_gprint.id
+	WHERE graph_templates_gprint.id IS NULL
 	AND graph_templates_item.gprint_id>0');
 
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM graph_templates_item 
+		db_execute('DELETE FROM graph_templates_item
 			WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint) AND gprint_id>0');
 	}
 	print "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
 }
 
 /* remove invalid CDEF Items from the Database, validated */
-$rows = db_fetch_cell("SELECT count(*) 
-	FROM cdef_items 
+$rows = db_fetch_cell("SELECT cacti_count(*)
+	FROM cdef_items
 	LEFT JOIN cdef 
-	ON cdef_items.cdef_id=cdef.id 
+	ON cdef_items.cdef_id=cdef.id
 	WHERE cdef.id IS NULL");
 
 $total_rows += $rows;
@@ -125,10 +125,10 @@ if ($rows > 0) {
 }
 
 /* remove invalid Data Templates from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*) 
-	FROM data_template_data 
-	LEFT JOIN data_input 
-	ON data_template_data.data_input_id=data_input.id 
+$rows = db_fetch_cell('SELECT cacti_count(*)
+	FROM data_template_data
+	LEFT JOIN data_input
+	ON data_template_data.data_input_id=data_input.id
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
@@ -140,16 +140,16 @@ if ($rows > 0) {
 }
 
 /* remove invalid Data Input Fields from the Database, validated */
-$rows = db_fetch_cell('SELECT count(*) 
-	FROM data_input_fields 
-	LEFT JOIN data_input 
-	ON data_input_fields.data_input_id=data_input.id 
+$rows = db_fetch_cell('SELECT cacti_count(*)
+	FROM data_input_fields
+	LEFT JOIN data_input
+	ON data_input_fields.data_input_id=data_input.id
 	WHERE data_input.id IS NULL');
 
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM data_input_fields 
+		db_execute('DELETE FROM data_input_fields
 			WHERE data_input_fields.data_input_id NOT IN (SELECT id FROM data_input)');
 
 		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
@@ -160,31 +160,31 @@ if ($rows > 0) {
 /* --------------------------------------------------------------------*/
 
 /* remove invalid Data Input Data Rows from the Database in two passes */
-$rows = db_fetch_cell('SELECT count(*) 
-	FROM data_input_data 
-	LEFT JOIN data_template_data 
-	ON data_input_data.data_template_data_id=data_template_data.id 
+$rows = db_fetch_cell('SELECT cacti_count(*)
+	FROM data_input_data
+	LEFT JOIN data_template_data
+	ON data_input_data.data_template_data_id=data_template_data.id
 	WHERE data_template_data.id IS NULL');
 
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM data_input_data 
+		db_execute('DELETE FROM data_input_data
 			WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 	}
 	print "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
-$rows = db_fetch_cell('SELECT count(*) 
-	FROM data_input_data 
-	LEFT JOIN data_input_fields 
-	ON data_input_fields.id=data_input_data.data_input_field_id 
+$rows = db_fetch_cell('SELECT cacti_count(*)
+	FROM data_input_data
+	LEFT JOIN data_input_fields
+	ON data_input_fields.id=data_input_data.data_input_field_id
 	WHERE data_input_fields.id IS NULL');
 
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM data_input_data 
+		db_execute('DELETE FROM data_input_data
 			WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 	}
 	print "NOTE: $rows Invalid Data Input Data rows based upon field mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";

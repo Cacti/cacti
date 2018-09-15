@@ -118,7 +118,7 @@ function get_max_column_width() {
 		$pmax  = trim($data[1], ')');
 	}
 
-	if (sizeof($bcol_data)) {
+	if (cacti_sizeof($bcol_data)) {
 		$bcol = $bcol_data['Type'];
 		$data = explode('(', $bcol);
 		$bmax  = trim($data[1], ')');
@@ -184,7 +184,7 @@ $mode      = 'online';
 $poller_id = $config['poller_id'];
 $maxwidth  = get_max_column_width();
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -297,7 +297,7 @@ if ($allhost) {
 			ORDER BY host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
 			FROM poller_item
 			WHERE poller_id = ?
 			AND action IN (?, ?)
@@ -310,7 +310,7 @@ if ($allhost) {
 			ORDER by host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
 			FROM poller_item
 			WHERE poller_id = ?
 			AND action IN (?, ?)',
@@ -330,7 +330,7 @@ if ($allhost) {
 	/* rework the hosts array to be searchable */
 	$hosts = array_rekey($hosts, 'id', $host_struc);
 
-	$host_count = sizeof($hosts);
+	$host_count = cacti_sizeof($hosts);
 
 	/* setup next polling interval */
 	if (isset($polling_interval)) {
@@ -362,7 +362,7 @@ if ($allhost) {
 			array($poller_id, $first, $last));
 
 		$hosts      = array_rekey($hosts, 'id', $host_struc);
-		$host_count = sizeof($hosts);
+		$host_count = cacti_sizeof($hosts);
 
 		if (isset($polling_interval)) {
 			$polling_items = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
@@ -374,7 +374,7 @@ if ($allhost) {
 				ORDER by host_id',
 				array($poller_id, $first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
 				FROM poller_item
 				WHERE poller_id = ?
 				AND action IN(?, ?)
@@ -406,7 +406,7 @@ if ($allhost) {
 				ORDER by host_id',
 				array($poller_id, $first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
 				FROM poller_item
 				WHERE poller_id = ?
 				AND action IN (?, ?)
@@ -427,7 +427,7 @@ if ($allhost) {
 	}
 }
 
-if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on')) {
+if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on')) {
 	$failure_type = '';
 	$host_down    = false;
 	$new_host     = true;
@@ -477,8 +477,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 			$host_update_time = date('Y-m-d H:i:s'); // for poller update time
 
 			if ($last_host != '') {
-				if (sizeof($error_ds)) {
-					cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+				if (cacti_sizeof($error_ds)) {
+					cacti_log('WARNING: Invalid Response(s), Errors[' . cacti_sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
 				}
 
 				$error_ds = array();
@@ -517,8 +517,8 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 					WHERE pr.host_id=?',
 					array($item['host_id']));
 
-				if (sizeof($reindex) && !$host_down) {
-					cacti_log("Device[$host_id] RECACHE: Processing " . sizeof($reindex) . " items in the auto reindex cache for '" . $item['hostname'] . "'.", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_DEBUG));
+				if (cacti_sizeof($reindex) && !$host_down) {
+					cacti_log("Device[$host_id] RECACHE: Processing " . cacti_sizeof($reindex) . " items in the auto reindex cache for '" . $item['hostname'] . "'.", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_DEBUG));
 
 					foreach ($reindex as $index_item) {
 						$assert_fail = false;
@@ -578,7 +578,7 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 							open_snmp_session($host_id, $item);
 
 							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-								$output = sizeof(cacti_snmp_session_walk($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']));
+								$output = cacti_sizeof(cacti_snmp_session_walk($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']));
 							} else {
 								$output = 'U';
 							}
@@ -589,14 +589,14 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 						case POLLER_ACTION_SCRIPT_COUNT: /* script (popen); count items */
 							/* count items found */
 							$script_index_array = exec_into_array($index_item['arg1']);
-							$output = sizeof($script_index_array);
+							$output = cacti_sizeof($script_index_array);
 
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script Count: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SCRIPT_PHP_COUNT: /* script (php script server); count items */
 							$output = exec_into_array($index_item['arg1']);
-							$output = sizeof($output);
+							$output = cacti_sizeof($output);
 
 							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script Server Count: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
@@ -795,12 +795,12 @@ if ((sizeof($polling_items) > 0) && (read_config_option('poller_enabled') == 'on
 		}
 	} /* End foreach */
 
-	if (sizeof($error_ds)) {
-		cacti_log('WARNING: Invalid Response(s), Errors[' . sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
+	if (cacti_sizeof($error_ds)) {
+		cacti_log('WARNING: Invalid Response(s), Errors[' . cacti_sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
 	}
 
-	if (sizeof($width_dses)) {
-		cacti_log('WARNING: Long Responses Errors[' . sizeof($width_dses) . '] DS[' . implode(', ', $width_dses) . ']', false, 'POLLER');
+	if (cacti_sizeof($width_dses)) {
+		cacti_log('WARNING: Long Responses Errors[' . cacti_sizeof($width_dses) . '] DS[' . implode(', ', $width_dses) . ']', false, 'POLLER');
 	}
 
 	if ($output_count > 0) {

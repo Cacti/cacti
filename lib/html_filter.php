@@ -147,7 +147,7 @@ class CactiTableFilter {
 	}
 
 	private function create_filter() {
-		if (!sizeof($this->filter_array)) {
+		if (!cacti_sizeof($this->filter_array)) {
 			$this->filter_array = $this->default_filter;
 		}
 

@@ -92,7 +92,7 @@ function form_save() {
 					}
 				}
 
-				if ((isset($new_members)) && (sizeof($new_members) > 0)) {
+				if ((isset($new_members)) && (cacti_sizeof($new_members) > 0)) {
 					foreach ($new_members as $item_id) {
 						push_out_graph_input($graph_template_input_id, $item_id, (isset($new_members) ? $new_members : array()));
 					}
@@ -100,7 +100,7 @@ function form_save() {
 
 				db_execute_prepared('DELETE FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_template_input_id));
 
-				if (sizeof($selected_graph_items) > 0) {
+				if (cacti_sizeof($selected_graph_items) > 0) {
 					foreach ($selected_graph_items as $graph_template_item_id) {
 						db_execute_prepared('INSERT INTO graph_template_input_defs (graph_template_input_id, graph_template_item_id) VALUES (?, ?)', array($graph_template_input_id, $graph_template_item_id));
 					}
@@ -196,7 +196,7 @@ function input_edit() {
 	html_start_box(__('Associated Graph Items'), '100%', false, '3', 'center', '');
 
 	$i = 0; $any_selected_item = '';
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			form_alternate_row();
 

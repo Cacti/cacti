@@ -52,7 +52,7 @@ function upgrade_to_0_8_3() {
 		$auth_graph = db_fetch_assoc("select user_id,local_graph_id from user_auth_graph");
 
 		/* update to new 'user_auth_perms' table */
-		if (sizeof($auth_graph) > 0) {
+		if (cacti_sizeof($auth_graph) > 0) {
 			foreach ($auth_graph as $item) {
 				db_install_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["local_graph_id"] . ",1);");
 			}
@@ -61,7 +61,7 @@ function upgrade_to_0_8_3() {
 		$auth_tree = db_fetch_assoc("select user_id,tree_id from user_auth_tree");
 
 		/* update to new 'user_auth_perms' table */
-		if (sizeof($auth_tree) > 0) {
+		if (cacti_sizeof($auth_tree) > 0) {
 			foreach ($auth_tree as $item) {
 				db_install_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["tree_id"] . ",2);");
 			}
@@ -70,7 +70,7 @@ function upgrade_to_0_8_3() {
 		$users = db_fetch_assoc("select id from user_auth");
 
 		/* default all current users to tree view mode 1 (single pane) */
-		if (sizeof($users) > 0) {
+		if (cacti_sizeof($users) > 0) {
 			foreach ($users as $item) {
 				db_install_execute("replace into settings_graphs (user_id,name,value) values (" . $item["id"] . ",'default_tree_view_mode',1);");
 			}

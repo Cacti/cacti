@@ -38,7 +38,7 @@ $poller_id = $config['poller_id'];
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -83,7 +83,7 @@ $last_host_id   = 0;
 $first_host     = true;
 $recached_hosts = 0;
 
-if (sizeof($poller_commands) > 0) {
+if (cacti_sizeof($poller_commands) > 0) {
 	foreach ($poller_commands as $command) {
 		switch ($command['action']) {
 		case POLLER_COMMAND_REINDEX:

@@ -31,7 +31,7 @@ require_once($config['base_path'] . '/lib/data_query.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$displayHosts 		= false;
 	$displayDataQueries = false;
 	$quietMode			= false;

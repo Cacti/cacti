@@ -44,7 +44,7 @@ global $debug;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -255,7 +255,7 @@ chown($finrrd, 'apache');
 memoryUsage();
 
 function spliceRRDs(&$new_rrd, &$old_rrd) {
-	if (sizeof($new_rrd) && sizeof($old_rrd)) {
+	if (cacti_sizeof($new_rrd) && cacti_sizeof($old_rrd)) {
 		if (isset($new_rrd['rra'])) {
 			foreach($new_rrd['rra'] as $rra_num => $rra) {
 				$cf  = $new_rrd['rra'][$rra_num]['cf'];
@@ -463,7 +463,7 @@ function processXML($output) {
 	$in_cdp     = false;
 	$in_cdp_ds  = false;
 
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 	foreach($output as $line) {
 		if (substr_count($line, '<row>')) {
 			$line   = trim(str_replace('<row>', '', str_replace('</row>', '', $line)));
@@ -584,7 +584,7 @@ function backupRRDFile($rrdfile) {
 }
 
 function preProcessXML(&$output) {
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 		foreach($output as $line) {
 			$line = trim($line);
 			$date = '';
@@ -658,7 +658,7 @@ function debug($string) {
 }
 
 function standard_deviation($samples) {
-	$sample_count = count($samples);
+	$sample_count = cacti_count($samples);
 
 	for ($current_sample = 0; $sample_count > $current_sample; ++$current_sample) {
 		$sample_square[$current_sample] = pow($samples[$current_sample], 2);

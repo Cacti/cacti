@@ -76,10 +76,10 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 
-			return sizeof($arr_index);
+			return cacti_sizeof($arr_index);
 		} else {
 			$indexes = explode(',', $value);
-			return sizeof($indexes);
+			return cacti_sizeof($indexes);
 		}
 	} elseif ($cmd == 'query') {
 		$value = api_plugin_hook_function('hmib_get_cpu_indexes', array('host_id' => $host_id));
@@ -138,8 +138,8 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 		}
 	}
 
-	if (sizeof($return_arr)) {
-		$return_arr[4000] = round($sum / sizeof($return_arr));
+	if (cacti_sizeof($return_arr)) {
+		$return_arr[4000] = round($sum / cacti_sizeof($return_arr));
 	} else {
 		$return_arr[4000] = 0;
 	}

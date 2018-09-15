@@ -37,7 +37,7 @@ ini_set('memory_limit', '-1');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$host_template_ids   = array();
 	$host_ids            = array();
 	$graph_template_ids  = array();
@@ -162,7 +162,7 @@ if ($list && $force) {
 	exit(1);
 }
 
-if (sizeof($host_template_ids)) {
+if (cacti_sizeof($host_template_ids)) {
 	foreach($host_template_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Host Template ID $id is invalid" . PHP_EOL;
@@ -171,7 +171,7 @@ if (sizeof($host_template_ids)) {
 	}
 }
 
-if (sizeof($graph_template_ids)) {
+if (cacti_sizeof($graph_template_ids)) {
 	foreach($graph_template_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Graph Template ID $id is invalid" . PHP_EOL;
@@ -180,7 +180,7 @@ if (sizeof($graph_template_ids)) {
 	}
 }
 
-if (sizeof($host_ids)) {
+if (cacti_sizeof($host_ids)) {
 	foreach($host_ids as $id) {
 		if (!is_numeric($id) || $id <= 0) {
 			print "FATAL: Host ID $id is invalid" . PHP_EOL;
@@ -210,19 +210,19 @@ if ($listHosts) {
 } else {
 	$sql_where = 'WHERE gl.id > 0';
 
-	if (sizeof($host_ids)) {
+	if (cacti_sizeof($host_ids)) {
 		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids). ')';
 	}
 
-	if (sizeof($host_template_ids)) {
+	if (cacti_sizeof($host_template_ids)) {
 		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids). ')';
 	}
 
-	if (sizeof($graph_template_ids)) {
+	if (cacti_sizeof($graph_template_ids)) {
 		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids). ')';
 	}
 
-	if (sizeof($regex)) {
+	if (cacti_sizeof($regex)) {
 		$sql_where .= ' AND (';
 		$sql_cwhere = '';
 
@@ -241,8 +241,8 @@ if ($listHosts) {
 		ON h.id = gl.host_id
 		$sql_where");
 
-	if ($graphs != false && sizeof($graphs)) {
-		print 'There are ' . sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
+	if ($graphs != false && cacti_sizeof($graphs)) {
+		print 'There are ' . cacti_sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
 
 		if ($force) {
 			$local_graph_ids = array_rekey($graphs, 'id', 'id');

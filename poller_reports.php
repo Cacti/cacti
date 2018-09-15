@@ -75,7 +75,7 @@ array_shift($parms);
 $debug = false;
 $force = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -132,10 +132,10 @@ if (!$force) {
 } else {
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 }
-reports_log('Cacti Reports reports found: ' . sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
+reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 
 # execute each of those reports
-if (sizeof($reports)) {
+if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));

@@ -67,7 +67,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', array($snmp_query_graph_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_sv WHERE snmp_query_graph_id = ? AND field_name = ?', array($snmp_query_graph_id, $field_name))) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -96,7 +96,7 @@ function draw_nontemplated_fields_graph($graph_template_id, &$values_array, $fie
 			)
 		);
 
-	return (isset($form_array) ? sizeof($form_array) : 0);
+	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_graph_item - draws a form that consists of all non-templated graph item fields
@@ -150,7 +150,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			ORDER BY name";
 	}
 
-	if (sizeof($input_item_list)) {
+	if (cacti_sizeof($input_item_list)) {
 		foreach ($input_item_list as $item) {
 			if (!empty($local_graph_id)) {
 				$current_def_value = db_fetch_row_prepared('SELECT gti.' . $item['column_name'] . ', gti.id
@@ -243,7 +243,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
-	if (sizeof($input_item_list)) {
+	if (cacti_sizeof($input_item_list)) {
 		draw_edit_form(
 			array(
 				'config' => $form_config_array,
@@ -252,7 +252,7 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 		);
 	}
 
-	return (isset($form_array) ? sizeof($form_array) : 0);
+	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_data_source - draws a form that consists of all non-templated data source fields
@@ -302,7 +302,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 			} else {
 				unset($form_array[$form_field_name]);
 			}
-		} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+		} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
 			if ($include_hidden_fields == true) {
 				$form_array[$form_field_name]['method'] = 'hidden';
 			} else {
@@ -337,7 +337,7 @@ function draw_nontemplated_fields_data_source($data_template_id, $local_data_id,
 		)
 	);
 
-	return (isset($form_array) ? sizeof($form_array) : 0);
+	return (isset($form_array) ? cacti_sizeof($form_array) : 0);
 }
 
 /* draw_nontemplated_fields_data_source_item - draws a form that consists of all non-templated data source
@@ -369,7 +369,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 		$form_config_array = array('no_form_tag' => true, 'force_row_color' => true);
 	}
 
-	if (sizeof($values_array)) {
+	if (cacti_sizeof($values_array)) {
 		foreach ($values_array as $rrd) {
 			$form_array = array();
 
@@ -411,7 +411,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 					} else {
 						unset($form_array[$form_field_name]);
 					}
-				} elseif ((!empty($snmp_query_graph_id)) && (sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
+				} elseif ((!empty($snmp_query_graph_id)) && (cacti_sizeof(db_fetch_assoc_prepared('SELECT id FROM snmp_query_graph_rrd_sv WHERE snmp_query_graph_id = ? AND data_template_id = ? AND field_name = ?', array($snmp_query_graph_id, $data_template_id, $field_name))) > 0)) {
 					if ($include_hidden_fields == true) {
 						$form_array[$form_field_name]['method'] = 'hidden';
 					} else {
@@ -453,7 +453,7 @@ function draw_nontemplated_fields_data_source_item($data_template_id, &$values_a
 				)
 			);
 
-			$num_fields_drawn += sizeof($form_array);
+			$num_fields_drawn += cacti_sizeof($form_array);
 		}
 	}
 
@@ -507,7 +507,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 
 	/* loop through each field found */
 	$i = 0;
-	if (sizeof($fields)) {
+	if (cacti_sizeof($fields)) {
 		foreach ($fields as $field) {
 			$data_input_data = db_fetch_row_prepared('SELECT *
 				FROM data_input_data
@@ -515,7 +515,7 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				AND data_input_field_id = ?',
 				array($data['id'], $field['id']));
 
-			if (sizeof($data_input_data)) {
+			if (cacti_sizeof($data_input_data)) {
 				$old_value = $data_input_data['value'];
 			} else {
 				$old_value = '';
@@ -598,7 +598,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY host_snmp_cache.field_name',
 			array($data_template_data_id));
 
-		if (sizeof($index_type) == 0) {
+		if (cacti_sizeof($index_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		} else {
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
@@ -614,7 +614,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			GROUP BY snmp_query_graph.id',
 			array($data_template_data_id));
 
-		if (sizeof($output_type) == 0) {
+		if (cacti_sizeof($output_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		} else {
 			form_dropdown($field_name, $output_type, 'name', 'id', $current_value, '', '', '');

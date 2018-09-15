@@ -33,7 +33,7 @@ array_shift($parms);
 
 $execute = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -78,15 +78,15 @@ if ($execute) {
 }
 
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT data_template_id FROM data_template_rrd WHERE hash='' AND local_data_id=0");
-if (sizeof($damaged_template_ids)) {
+if (cacti_sizeof($damaged_template_ids)) {
 	foreach($damaged_template_ids as $id) {
 		$template_name = db_fetch_cell('SELECT name FROM data_template WHERE id=' . $id['data_template_id']);
 		print "NOTE: Data Template '$template_name' is Damaged and can be repaired\n";
 	}
 
 	$damaged_templates = db_fetch_assoc("SELECT * FROM data_template_rrd WHERE hash='' AND local_data_id=0");
-	if (sizeof($damaged_templates)) {
-		print "NOTE: -- Damaged Data Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
+	if (cacti_sizeof($damaged_templates)) {
+		print "NOTE: -- Damaged Data Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'\n";
 		if ($execute) {
 			foreach($damaged_templates as $template) {
 				$hash = get_hash_data_template($template['local_data_template_rrd_id'], 'data_template_item');
@@ -109,15 +109,15 @@ if ($execute) {
 }
 
 $damaged_template_ids = db_fetch_assoc("SELECT DISTINCT graph_template_id FROM graph_template_input WHERE hash=''");
-if (sizeof($damaged_template_ids)) {
+if (cacti_sizeof($damaged_template_ids)) {
 	foreach($damaged_template_ids as $id) {
 		$template_name = db_fetch_cell('SELECT name FROM graph_templates WHERE id=' . $id['graph_template_id']);
 		print "NOTE: Graph Template '$template_name' is Damaged and can be repaired\n";
 	}
 
 	$damaged_templates = db_fetch_assoc("SELECT * FROM graph_template_input WHERE hash=''");
-	if (sizeof($damaged_templates)) {
-		print "NOTE: -- Damaged Graph Templates Objects Found is '" . sizeof($damaged_templates) . "'\n";
+	if (cacti_sizeof($damaged_templates)) {
+		print "NOTE: -- Damaged Graph Templates Objects Found is '" . cacti_sizeof($damaged_templates) . "'\n";
 		if ($execute) {
 			foreach($damaged_templates as $template) {
 				$hash = get_hash_graph_template(0, 'graph_template_input');

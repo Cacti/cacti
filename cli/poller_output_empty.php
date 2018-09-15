@@ -34,7 +34,7 @@ require_once($config['base_path'] . '/lib/rrd.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -70,7 +70,7 @@ $rrdtool_pipe = rrd_init();
 
 $rrds_processed = 0;
 
-while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
+while (db_fetch_cell('SELECT cacti_count(*) FROM poller_output') > 0) {
 	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
 }
 

@@ -25,23 +25,23 @@
 function upgrade_to_0_8_6a() {
 	/* fix import/export template bug */
 	$item = db_fetch_assoc("select id from data_template");
-	for ($i=0; $i<count($item); $i++) {
+	for ($i=0; $i<cacti_count($item); $i++) {
 		db_install_execute("update data_template set hash='" . get_hash_data_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 		$item2 = db_fetch_assoc("select id from data_template_rrd where data_template_id=" . $item[$i]["id"] . " and local_data_id=0");
-		for ($j=0; $j<count($item2); $j++) {
+		for ($j=0; $j<cacti_count($item2); $j++) {
 			db_install_execute("update data_template_rrd set hash='" . get_hash_data_template($item2[$j]["id"], "data_template_item") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
 
 	$item = db_fetch_assoc("select id from graph_templates");
-	for ($i=0; $i<count($item); $i++) {
+	for ($i=0; $i<cacti_count($item); $i++) {
 		db_install_execute("update graph_templates set hash='" . get_hash_graph_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 		$item2 = db_fetch_assoc("select id from graph_templates_item where graph_template_id=" . $item[$i]["id"] . " and local_graph_id=0");
-		for ($j=0; $j<count($item2); $j++) {
+		for ($j=0; $j<cacti_count($item2); $j++) {
 			db_install_execute("update graph_templates_item set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_item") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 		$item2 = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $item[$i]["id"]);
-		for ($j=0; $j<count($item2); $j++) {
+		for ($j=0; $j<cacti_count($item2); $j++) {
 			db_install_execute("update graph_template_input set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_input") . "' where id=" . $item2[$j]["id"] . ";");
 		}
 	}
@@ -49,7 +49,7 @@ function upgrade_to_0_8_6a() {
 	/* clean up data template item orphans left behind by the graph->graph template bug */
 	$graph_templates = db_fetch_assoc("select id from graph_templates");
 
-	if (sizeof($graph_templates) > 0) {
+	if (cacti_sizeof($graph_templates) > 0) {
 		foreach ($graph_templates as $graph_template) {
 			/* find non-templated graph template items */
 			$non_templated_items = array_rekey(db_fetch_assoc("select
@@ -67,7 +67,7 @@ function upgrade_to_0_8_6a() {
 				where graph_templates_item.graph_template_id = '" . $graph_template["id"] . "'
 				and graph_templates_item.local_graph_id = 0");
 
-			if (sizeof($graph_template_items) > 0) {
+			if (cacti_sizeof($graph_template_items) > 0) {
 				foreach ($graph_template_items as $graph_template_item) {
 					if (!isset($non_templated_items[$graph_template_item["id"]])) {
 						if ($graph_template_item["task_item_id"] > 0) {
@@ -90,11 +90,11 @@ function upgrade_to_0_8_6a() {
 	/* make sure the 'host_graph' table is populated (problem from 0.8.4) */
 	$hosts = db_fetch_assoc("select id,host_template_id from host where host_template_id > 0");
 
-	if (sizeof($hosts) > 0) {
+	if (cacti_sizeof($hosts) > 0) {
 		foreach ($hosts as $host) {
 			$graph_templates = db_fetch_assoc("select graph_template_id from host_template_graph where host_template_id=" . $host["host_template_id"]);
 
-			if (sizeof($graph_templates) > 0) {
+			if (cacti_sizeof($graph_templates) > 0) {
 				foreach ($graph_templates as $graph_template) {
 					db_install_execute("replace into host_graph (host_id,graph_template_id) values (" . $host["id"] . "," . $graph_template["graph_template_id"] . ")");
 				}

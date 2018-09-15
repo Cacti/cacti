@@ -70,7 +70,7 @@ if ($using_cacti) {
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -520,7 +520,7 @@ $ds_name = array();
    4) Build both the rra and sample arrays
    5) Get each ds' min and max values
 */
-if (sizeof($output)) {
+if (cacti_sizeof($output)) {
 foreach($output as $line) {
 	if (substr_count($line, '<v>')) {
 		$linearray = explode('<v>', $line);
@@ -780,12 +780,12 @@ function backupRRDFile($rrdfile) {
 function calculateVarianceAverages(&$rra, &$samples) {
 	global $outliers, $out_start, $out_end;
 
-	if (sizeof($samples)) {
+	if (cacti_sizeof($samples)) {
 	foreach($samples as $rra_num => $dses) {
-		if (sizeof($dses)) {
+		if (cacti_sizeof($dses)) {
 		foreach($dses as $ds_num => $ds) {
 			if (empty($out_start)) {
-				if (sizeof($ds) < $outliers * 3) {
+				if (cacti_sizeof($ds) < $outliers * 3) {
 					$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
 				} else {
 					$myds = $ds;
@@ -799,8 +799,8 @@ function calculateVarianceAverages(&$rra, &$samples) {
 					sort($ds, SORT_NUMERIC);
 					$myds = array_slice($myds, $outliers);
 
-					if (sizeof($myds)) {
-						$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / sizeof($myds);
+					if (cacti_sizeof($myds)) {
+						$rra[$rra_num][$ds_num]['variance_avg'] = array_sum($myds) / cacti_sizeof($myds);
 					} else {
 						$rra[$rra_num][$ds_num]['variance_avg'] = 'NAN';
 					}
@@ -830,11 +830,11 @@ function calculateOverallStatistics(&$rra, &$samples) {
 	global $percent, $stddev, $method, $ds_min, $ds_max, $var_kills, $std_kills, $out_kills, $out_start, $out_end;
 
 	$rra_num = 0;
-	if (sizeof($rra)) {
+	if (cacti_sizeof($rra)) {
 	foreach($rra as $dses) {
 		$ds_num = 0;
 
-		if (sizeof($dses)) {
+		if (cacti_sizeof($dses)) {
 		foreach($dses as $ds) {
 			if (isset($samples[$rra_num][$ds_num])) {
 				$rra[$rra_num][$ds_num]['standard_deviation'] = processStandardDeviationCalculation($samples[$rra_num][$ds_num]);
@@ -872,7 +872,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 				$rra[$rra_num][$ds_num]['outwind_killed']  = 0;
 
 				/* kill what is required to be killed */
-				if (sizeof($samples[$rra_num][$ds_num])) {
+				if (cacti_sizeof($samples[$rra_num][$ds_num])) {
 				foreach($samples[$rra_num][$ds_num] as $timestamp => $sample) {
 					if (!empty($out_start) && $timestamp >= $out_start && $timestamp <= $out_end) {
 						if ($method == 3) {
@@ -946,7 +946,7 @@ function calculateOverallStatistics(&$rra, &$samples) {
 function outputStatistics($rra) {
 	global $strout, $rra_cf, $rra_name, $ds_name, $rra_pdp, $html;
 
-	if (sizeof($rra)) {
+	if (cacti_sizeof($rra)) {
 		if (!$html) {
 			$strout .= "\n";
 			$strout .= sprintf("%10s %16s %10s %7s %7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s %10s\n",
@@ -957,7 +957,7 @@ function outputStatistics($rra) {
 				'----------', '----------', '----------', '----------', '----------', '----------', '----------',
 				'----------', '----------', '----------');
 			foreach($rra as $rra_key => $dses) {
-				if (sizeof($dses)) {
+				if (cacti_sizeof($dses)) {
 					foreach($dses as $dskey => $ds) {
 						$strout .= sprintf('%10s %16s %10s %7s %7s ' .
 							($ds['average'] < 1E6 ? '%10s ':'%10.4e ') .
@@ -995,7 +995,7 @@ function outputStatistics($rra) {
 				'Size', 'DataSource', 'CF', 'Samples', 'NonNan', 'Avg', 'StdDev',
 				'MaxValue', 'MinValue', 'MaxStdDev', 'MinStdDev', 'StdKilled', 'VarKilled', 'WindFilled', 'StdDevAvg', 'VarAvg');
 			foreach($rra as $rra_key => $dses) {
-				if (sizeof($dses)) {
+				if (cacti_sizeof($dses)) {
 					foreach($dses as $dskey => $ds) {
 						$strout .= sprintf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>' .
 							($ds['average'] < 1E6 ? '%s</td><td>':'%.4e</td><td>') .
@@ -1039,7 +1039,7 @@ function updateXML(&$output, &$rra) {
 	$kills     = 0;
 	$last_num  = array();
 
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 	foreach($output as $line) {
 		if (substr_count($line, '<v>')) {
 			$linearray = explode('<v>', $line);
@@ -1184,7 +1184,7 @@ function updateXML(&$output, &$rra) {
 }
 
 function removeComments(&$output) {
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 		foreach($output as $line) {
 			$line = trim($line);
 			if ($line == '') {
@@ -1277,7 +1277,7 @@ function processStandardDeviationCalculation($samples) {
 function calculateStandardDeviation($items) {
 	if (!function_exists('stats_standard_deviation')) {
 		function stats_standard_deviation($items, $sample = false) {
-			$total_items = count($items);
+			$total_items = cacti_count($items);
 
 			if ($total_items === 0) {
 				return false;

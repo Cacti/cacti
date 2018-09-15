@@ -116,8 +116,8 @@ function dsdebug_poller_output(&$rrd_update_array) {
 
 	/* do not make any calculations unless enabled */
 	$checks = db_fetch_assoc('SELECT * FROM data_debug WHERE `done` = 0');
-	if (sizeof($checks)) {
-		if (sizeof($rrd_update_array) > 0) {
+	if (cacti_sizeof($checks)) {
+		if (cacti_sizeof($rrd_update_array) > 0) {
 			foreach ($checks as $c) {
 				foreach($rrd_update_array as $item) {
 					if ($c['datasource'] == $item['local_data_id']) {

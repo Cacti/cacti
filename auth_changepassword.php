@@ -87,7 +87,7 @@ if ($user['password_change'] != 'on') {
 }
 
 /* find out if we are logged in as a 'guest user' or not, if we are redirect away from password change */
-if (sizeof($user) && $user['id'] == get_guest_account()) {
+if (cacti_sizeof($user) && $user['id'] == get_guest_account()) {
 	header('Location: graph_view.php');
 	exit;
 }
@@ -171,7 +171,7 @@ case 'changepassword':
 
 				$op = $h['password'];
 				$h = explode('|', $h['password_history']);
-				while (count($h) > $history - 1) {
+				while (cacti_count($h) > $history - 1) {
 					array_shift($h);
 				}
 				$h[] = $op;

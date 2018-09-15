@@ -215,7 +215,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
 		try {
-			if (empty($params) || count($params) == 0) {
+			if (empty($params) || cacti_count($params) == 0) {
 				$query->execute();
 			} else {
 				$query->execute($params);
@@ -765,7 +765,7 @@ function db_get_table_column_types($table, $db_conn = false) {
 
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
-	if (sizeof($columns)) {
+	if (cacti_sizeof($columns)) {
 		foreach($columns as $col) {
 			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
 		}
@@ -984,7 +984,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			}
 		}
 
-		if (isset($data['keys']) && sizeof($data['keys'])) {
+		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
 					if (is_array($key['columns'])) {
@@ -1072,7 +1072,7 @@ function array_to_sql_or($array, $sql_column) {
 		array_pop($array);
 	}
 
-	if (sizeof($array)) {
+	if (cacti_sizeof($array)) {
 		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
 
 		return $sql_or;
@@ -1266,7 +1266,7 @@ function db_get_column_attributes($table, $columns) {
 	$column_names = array();
 	foreach ($columns as $column) {
 		if (!empty($column)) {
-			$sql .= (sizeof($column_names) ? ',' : '') . '?';
+			$sql .= (cacti_sizeof($column_names) ? ',' : '') . '?';
 			$column_names[] = $column;
 		}
 	}

@@ -144,7 +144,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	$host_template_id = sql_save($save, 'host_template');
 
 	/* create new entry(s): host_template_graph */
-	if (sizeof($host_template_graphs)) {
+	if (cacti_sizeof($host_template_graphs)) {
 		foreach ($host_template_graphs as $host_template_graph) {
 			db_execute_prepared('INSERT INTO host_template_graph
 				(host_template_id,graph_template_id)
@@ -154,7 +154,7 @@ function duplicate_host_template($_host_template_id, $host_template_title) {
 	}
 
 	/* create new entry(s): host_template_snmp_query */
-	if (sizeof($host_template_data_queries)) {
+	if (cacti_sizeof($host_template_data_queries)) {
 		foreach ($host_template_data_queries as $host_template_data_query) {
 			db_execute_prepared('INSERT INTO host_template_snmp_query
 				(host_template_id,snmp_query_id)
@@ -212,11 +212,11 @@ function form_actions() {
 				/* "undo" any device that is currently using this template */
 				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_device_template_sync_template($selected_items[$i]);
 				}
 			}
@@ -249,7 +249,7 @@ function form_actions() {
 
 	html_start_box($host_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($host_array) && sizeof($host_array)) {
+	if (isset($host_array) && cacti_sizeof($host_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
@@ -466,7 +466,7 @@ function template_edit() {
 			ORDER BY graph_templates.name', array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($selected_graph_templates)) {
+		if (cacti_sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				form_alternate_row("gt$i", true);
 				?>
@@ -523,7 +523,7 @@ function template_edit() {
 			ORDER BY snmp_query.name', array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($selected_data_queries)) {
+		if (cacti_sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				form_alternate_row("dq$i", true);
 				?>
@@ -705,7 +705,7 @@ function template() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -818,7 +818,7 @@ function template() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['hosts'] > 0) {
 				$disabled = true;
@@ -839,7 +839,7 @@ function template() {
 	}
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		print $nav;
 	}
 

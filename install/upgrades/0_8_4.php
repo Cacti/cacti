@@ -70,10 +70,10 @@ function upgrade_to_0_8_4() {
 	/* new realms */
 	$users = db_fetch_assoc("select id from user_auth");
 
-	if ($users !== false && sizeof($users) > 0) {
+	if ($users !== false && cacti_sizeof($users) > 0) {
 		foreach ($users as $user) {
 			$realms = db_fetch_assoc("select realm_id from user_auth_realm where user_id=" . $user["id"]);
-			if ($realms !== false && sizeof($realms) == 13) {
+			if ($realms !== false && cacti_sizeof($realms) == 13) {
 				db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",4)");
 				db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",16)");
 				db_install_execute("insert into user_auth_realm (user_id,realm_id) values (" . $user["id"] . ",17)");
@@ -743,12 +743,12 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from cdef");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update cdef set hash='" . get_hash_cdef($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 
 			$item2 = db_fetch_assoc("select id from cdef_items where cdef_id=" . $item[$i]["id"]);
 			if ($item2 !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update cdef_items set hash='" . get_hash_cdef($item2[$j]["id"], "cdef_item") . "' where id=" . $item2[$j]["id"] . ";");
 				}
 			}
@@ -757,19 +757,19 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from graph_templates_gprint");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update graph_templates_gprint set hash='" . get_hash_gprint($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 		}
 	}
 
 	$item = db_fetch_assoc("select id from data_input");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update data_input set hash='" . get_hash_data_input($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 
 			$item2 = db_fetch_assoc("select id from data_input_fields where data_input_id=" . $item[$i]["id"]);
 			if ($item2 !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update data_input_fields set hash='" . get_hash_data_input($item2[$j]["id"], "data_input_field") . "' where id=" . $item2[$j]["id"] . ";");
 				}
 			}
@@ -778,12 +778,12 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from data_template");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update data_template set hash='" . get_hash_data_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 
 			$item2 = db_fetch_assoc("select id from data_template_rrd where data_template_id=" . $item[$i]["id"] . " and local_data_id=0");
 			if ($item2 !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update data_template_rrd set hash='" . get_hash_data_template($item2[$j]["id"], "data_template_item") . "' where id=" . $item2[$j]["id"] . ";");
 				}
 			}
@@ -792,19 +792,19 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from graph_templates");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update graph_templates set hash='" . get_hash_graph_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 
 			$item2 = db_fetch_assoc("select id from graph_templates_item where graph_template_id=" . $item[$i]["id"] . " and local_graph_id=0");
 			if ($item !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update graph_templates_item set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_item") . "' where id=" . $item2[$j]["id"] . ";");
 				}
 			}
 
 			$item2 = db_fetch_assoc("select id from graph_template_input where graph_template_id=" . $item[$i]["id"]);
 			if ($item2 !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update graph_template_input set hash='" . get_hash_graph_template($item2[$j]["id"], "graph_template_input") . "' where id=" . $item2[$j]["id"] . ";");
 				}
 			}
@@ -813,24 +813,24 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from snmp_query");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update snmp_query set hash='" . get_hash_data_query($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 
 			$item2 = db_fetch_assoc("select id from snmp_query_graph where snmp_query_id=" . $item[$i]["id"]);
 			if ($item2 !== false) {
-				for ($j=0; $j<sizeof($item2); $j++) {
+				for ($j=0; $j<cacti_sizeof($item2); $j++) {
 					db_install_execute("update snmp_query_graph set hash='" . get_hash_data_query($item2[$j]["id"], "data_query_graph") . "' where id=" . $item2[$j]["id"] . ";");
 
 					$item3 = db_fetch_assoc("select id from snmp_query_graph_rrd_sv where snmp_query_graph_id=" . $item2[$j]["id"]);
 					if ($item3 !== false) {
-						for ($k=0; $k<sizeof($item3); $k++) {
+						for ($k=0; $k<cacti_sizeof($item3); $k++) {
 							db_install_execute("update snmp_query_graph_rrd_sv set hash='" . get_hash_data_query($item3[$k]["id"], "data_query_sv_data_source") . "' where id=" . $item3[$k]["id"] . ";");
 						}
 					}
 
 					$item3 = db_fetch_assoc("select id from snmp_query_graph_sv where snmp_query_graph_id=" . $item2[$j]["id"]);
 					if ($item3 !== false) {
-						for ($k=0; $k<sizeof($item3); $k++) {
+						for ($k=0; $k<cacti_sizeof($item3); $k++) {
 							db_install_execute("update snmp_query_graph_sv set hash='" . get_hash_data_query($item3[$k]["id"], "data_query_sv_graph") . "' where id=" . $item3[$k]["id"] . ";");
 						}
 					}
@@ -841,14 +841,14 @@ function upgrade_to_0_8_4() {
 
 	$item = db_fetch_assoc("select id from host_template");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update host_template set hash='" . get_hash_host_template($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 		}
 	}
 
 	$item = db_fetch_assoc("select id from rra");
 	if ($item !== false) {
-		for ($i=0; $i<sizeof($item); $i++) {
+		for ($i=0; $i<cacti_sizeof($item); $i++) {
 			db_install_execute("update rra set hash='" . get_hash_round_robin_archive($item[$i]["id"]) . "' where id=" . $item[$i]["id"] . ";");
 		}
 	}

@@ -91,7 +91,7 @@ function upgrade_to_0_8_6() {
 	/* update the sort cache */
 	$host_snmp_query = db_fetch_assoc("select host_id,snmp_query_id from host_snmp_query");
 
-	if (sizeof($host_snmp_query) > 0) {
+	if (cacti_sizeof($host_snmp_query) > 0) {
 		foreach ($host_snmp_query as $item) {
 			update_data_query_sort_cache($item["host_id"], $item["snmp_query_id"]);
 			update_reindex_cache($item["host_id"], $item["snmp_query_id"]);
@@ -150,7 +150,7 @@ function upgrade_to_0_8_6() {
 	/* update trees to three characters per tier */
 	$trees = db_fetch_assoc("select id from graph_tree");
 
-	if (sizeof($trees) > 0) {
+	if (cacti_sizeof($trees) > 0) {
 		foreach ($trees as $tree) {
 			$tree_items = db_fetch_assoc("select
 				graph_tree_items.id,
@@ -159,7 +159,7 @@ function upgrade_to_0_8_6() {
 				where graph_tree_items.graph_tree_id='" . $tree["id"] . "'
 				order by graph_tree_items.order_key");
 
-			if ($tree_items !== false && sizeof($tree_items) > 0) {
+			if ($tree_items !== false && cacti_sizeof($tree_items) > 0) {
 				$_tier = 0;
 
 				/* only do the upgrade once */

@@ -184,7 +184,7 @@ case 'save':
 
 	api_plugin_hook_function('global_settings_update');
 
-	if (sizeof($errors) == 0) {
+	if (cacti_sizeof($errors) == 0) {
 		raise_message(1);
 	} else {
 		raise_message(35);
@@ -253,7 +253,7 @@ default:
 	print "<div>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
-	if (sizeof($tabs) > 0) {
+	if (cacti_sizeof($tabs) > 0) {
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {

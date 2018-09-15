@@ -242,12 +242,12 @@ function debug_wizard() {
 
 	html_header_checkbox(array(__('ID'), __('User'), __('Started'), __('Data Source'), __('Status'), __('Writable'), __('Exists'), __('Active'), __('RRD Match'), __('Valid Data'), __('RRD Updated'), __('Issue')));
 
-	if (sizeof($checks)) {
+	if (cacti_sizeof($checks)) {
 		foreach ($checks as $check) {
 			$info = unserialize($check['info']);
 			$issues = explode("\n", $check['issue']);
 			$issue_line = '';
-			if (sizeof($issues)) {
+			if (cacti_sizeof($issues)) {
 				$issue_line = $issues[0];
 			}
 			$issue_title = implode($issues, '<br/>');

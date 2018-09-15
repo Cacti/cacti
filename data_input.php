@@ -86,7 +86,7 @@ function duplicate_data_input($_data_input_id, $input_title) {
 		WHERE id = ?', 
 		array($_data_input_id));
 
-	if (sizeof($orig_input)) {
+	if (cacti_sizeof($orig_input)) {
 		unset($save);
 		$save['id']           = 0;
 		$save['hash']         = get_hash_data_input(0);
@@ -102,7 +102,7 @@ function duplicate_data_input($_data_input_id, $input_title) {
 				WHERE data_input_id = ?',
 				array($_data_input_id));
 
-			if (sizeof($data_input_fields)) {
+			if (cacti_sizeof($data_input_fields)) {
 				foreach($data_input_fields as $dif) {
 					unset($save);
 					$save['id']            = 0;
@@ -244,11 +244,11 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '1') { // delete 
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
@@ -281,13 +281,13 @@ function form_actions() {
 
 	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($di_array) && sizeof($di_array)) {
+	if (isset($di_array) && cacti_sizeof($di_array)) {
 		if (get_request_var('drp_action') == '1') { // delete 
 			$graphs = array();
 
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', cacti_sizeof($di_array)) . "</p>
 					<div class='itemlist'><ul>$di_list</ul></div>
 				</td>
 			</tr>\n";
@@ -301,7 +301,7 @@ function form_actions() {
 			</tr>\n";
 		}
 
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
 		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
@@ -400,7 +400,7 @@ function field_remove() {
 	/* when a field is deleted; we need to re-order the field sequences */
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
 		$j = 0;
-		for ($i=0; ($i < count($matches[1])); $i++) {
+		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$j++;
 				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
@@ -440,7 +440,7 @@ function field_edit() {
 
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
-		for ($i=0; ($i < count($matches[1])); $i++) {
+		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
@@ -568,7 +568,7 @@ function data_edit() {
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (sizeof($data_input)) {
+	if (cacti_sizeof($data_input)) {
 		switch ($data_input['type_id']) {
 		case DATA_INPUT_TYPE_SNMP:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
@@ -631,7 +631,7 @@ function data_edit() {
 			WHERE di.id = ?",
 			array(get_request_var('id')));
 
-		if (!sizeof($counts)) {
+		if (!cacti_sizeof($counts)) {
 			$output_disabled  = false;
 			$save_alt_message = false;
 		} elseif ($counts['data_sources'] > 0) {
@@ -643,7 +643,7 @@ function data_edit() {
 		}
 
 		$i = 0;
-		if (sizeof($fields)) {
+		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
 				?>
@@ -682,7 +682,7 @@ function data_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($fields)) {
+		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
 				?>
@@ -808,7 +808,7 @@ function data() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -873,7 +873,7 @@ function data() {
 	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
 	$total_rows = db_fetch_cell("SELECT
-		count(*)
+		cacti_count(*)
 		FROM data_input AS di
 		$sql_where");
 
@@ -909,7 +909,7 @@ function data() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($data_inputs)) {
+	if (cacti_sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
@@ -927,12 +927,12 @@ function data() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($data_inputs)) {
+	if (cacti_sizeof($data_inputs)) {
 		print $nav;
 	}
 
