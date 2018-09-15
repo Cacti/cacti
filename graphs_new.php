@@ -572,7 +572,7 @@ function graphs() {
 							$num_input_fields++;
 
 							if (!isset($total_rows)) {
-								$total_rows = db_fetch_cell_prepared('SELECT cacti_count(*)
+								$total_rows = db_fetch_cell_prepared('SELECT count(*)
 									FROM host_snmp_cache
 									WHERE host_id = ?
 									AND snmp_query_id = ?

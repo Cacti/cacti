@@ -70,7 +70,7 @@ $rrdtool_pipe = rrd_init();
 
 $rrds_processed = 0;
 
-while (db_fetch_cell('SELECT cacti_count(*) FROM poller_output') > 0) {
+while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
 	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
 }
 

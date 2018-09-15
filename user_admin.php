@@ -1201,13 +1201,13 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_where");
 
 		$host_graphs       = array_rekey(
-			db_fetch_assoc('SELECT host_id, cacti_count(*) AS graphs
+			db_fetch_assoc('SELECT host_id, count(*) AS graphs
 				FROM graph_local
 				GROUP BY host_id'),
 			'host_id', 'graphs');
 
 		$host_data_sources = array_rekey(
-			db_fetch_assoc('SELECT host_id, cacti_count(*) AS data_sources
+			db_fetch_assoc('SELECT host_id, count(*) AS data_sources
 				FROM data_local
 				GROUP BY host_id'),
 			'host_id', 'data_sources');
@@ -1359,7 +1359,7 @@ function graph_perms_edit($tab, $header_label) {
 				GROUP BY gl.graph_template_id
 			) AS rs");
 
-		$sql_query = "SELECT gt.id, gt.name, cacti_count(*) AS totals, user_auth_perms.user_id
+		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_perms.user_id
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id

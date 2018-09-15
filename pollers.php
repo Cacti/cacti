@@ -658,7 +658,7 @@ function pollers() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$pollers = db_fetch_assoc("SELECT poller.*, cacti_count(h.id) AS hosts
+	$pollers = db_fetch_assoc("SELECT poller.*, count(h.id) AS hosts
 		FROM poller
 		LEFT JOIN host AS h
 		ON h.poller_id=poller.id

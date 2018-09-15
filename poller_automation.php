@@ -300,7 +300,7 @@ if (!$master && $thread == 0) {
 			killProcess(getmypid());
 		}
 
-		$running = db_fetch_cell_prepared('SELECT cacti_count(*)
+		$running = db_fetch_cell_prepared('SELECT count(*)
 			FROM automation_processes
 			WHERE network_id = ?
 			AND task!="tmaster"

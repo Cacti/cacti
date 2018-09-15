@@ -88,7 +88,7 @@ maint_debug('Checking for Purge Actions');
 
 if ($config['poller_id'] == 1) {
 	/* are my tables already present? */
-	$purge = db_fetch_cell('SELECT cacti_count(*)
+	$purge = db_fetch_cell('SELECT count(*)
 		FROM data_source_purge_action');
 
 	/* if the table that holds the actions is present, work on it */

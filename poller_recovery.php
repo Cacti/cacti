@@ -179,7 +179,7 @@ if ($run) {
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, cacti_count(*) AS entries
+		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
 			FROM poller_output_boost
 			GROUP BY time', true, $local_db_cnn_id);
 

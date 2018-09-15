@@ -318,7 +318,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	$script = $server = $snmp = 0;
 
-	$totals = db_fetch_assoc_prepared('SELECT action, cacti_count(*) AS totals
+	$totals = db_fetch_assoc_prepared('SELECT action, count(*) AS totals
 		FROM poller_item
 		WHERE poller_id = ?
 		GROUP BY action',
@@ -578,7 +578,7 @@ while ($poller_runs_completed < $poller_runs) {
 		$rrds_processed = 0;
 		$poller_finishing_dispatched = false;
 		while (1) {
-			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " cacti_count(*)
+			$finished_processes = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . " count(*)
 				FROM poller_time
 				WHERE poller_id = ?
 				AND end_time >'0000-00-00 00:00:00'",

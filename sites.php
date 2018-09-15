@@ -498,7 +498,7 @@ function sites() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$site_list = db_fetch_assoc("SELECT sites.*, cacti_count(h.id) AS hosts
+	$site_list = db_fetch_assoc("SELECT sites.*, count(h.id) AS hosts
 		FROM sites
 		LEFT JOIN host AS h
 		ON h.site_id=sites.id

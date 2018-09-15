@@ -97,7 +97,7 @@ if (cacti_sizeof($idbyhost)) {
 		AND host_id IN (' . implode(',', $hosts) . ')
 		ORDER BY host_id');
 
-	$script_server_calls = db_fetch_cell('SELECT cacti_count(*)
+	$script_server_calls = db_fetch_cell('SELECT count(*)
 		FROM poller_item
 		WHERE action=2
 		AND host_id IN (' . implode(',', $hosts) . ')

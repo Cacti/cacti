@@ -80,10 +80,10 @@ $ctr = 0;
 $polling_interval = read_config_option('poller_interval');
 
 if (!empty($polling_interval)) {
-	$num_polling_items = db_fetch_cell_prepared('SELECT cacti_count(*) FROM poller_item WHERE rrd_next_step <= 0 AND poller_id = ?', array($config['poller_id']), 'cacti_count(*)');
+	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE rrd_next_step <= 0 AND poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', $polling_interval);
 } else {
-	$num_polling_items = db_fetch_cell_prepared('SELECT cacti_count(*) FROM poller_item WHERE poller_id = ?', array($config['poller_id']), 'cacti_count(*)');
+	$num_polling_items = db_fetch_cell_prepared('SELECT count(*) FROM poller_item WHERE poller_id = ?', array($config['poller_id']), 'count(*)');
 	define('MAX_POLLER_RUNTIME', 300);
 }
 

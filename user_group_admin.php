@@ -942,8 +942,8 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			ON (host.id = user_auth_group_perms.item_id AND user_auth_group_perms.type = 3 AND user_auth_group_perms.group_id = " . get_request_var('id') . ")
 			$sql_where");
 
-		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) AS graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
-		$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) AS data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
+		$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) AS graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
+		$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) AS data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 		$sql_query = "SELECT host.*, user_auth_group_perms.group_id
 			FROM host
@@ -1085,7 +1085,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			$sql_where
 			GROUP BY gl.graph_template_id");
 
-		$sql_query = "SELECT gt.id, gt.name, cacti_count(*) AS totals, user_auth_group_perms.group_id
+		$sql_query = "SELECT gt.id, gt.name, count(*) AS totals, user_auth_group_perms.group_id
 			FROM graph_templates AS gt
 			INNER JOIN graph_local AS gl
 			ON gt.id = gl.graph_template_id
@@ -1890,7 +1890,7 @@ function user_group() {
 
 	$group_list = db_fetch_assoc("SELECT uag.id, uag.name, uag.description,
 		uag.policy_graphs, uag.policy_hosts, uag.policy_graph_templates,
-		uag.enabled, cacti_count(uagm.group_id) AS members
+		uag.enabled, count(uagm.group_id) AS members
 		FROM user_auth_group AS uag
 		LEFT JOIN user_auth_group_members AS uagm
 		ON uag.id = uagm.group_id
