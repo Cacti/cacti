@@ -394,7 +394,7 @@ function update_show_current () {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		cacti_count(*)
+		count(*)
 		FROM $table
 		$sql_where");
 

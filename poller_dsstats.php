@@ -142,7 +142,7 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	$last_run_major = read_config_option('dsstats_last_major_run_time');
 
 	/* remove old records from the cache first */
-	if (db_fetch_cell_prepared('SELECT cacti_count(*) FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window))) {
+	if (db_fetch_cell_prepared('SELECT count(*) FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window))) {
 		db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE time < ?', array($hourly_window));
 	}
 

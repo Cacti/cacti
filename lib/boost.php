@@ -563,7 +563,7 @@ function boost_get_arch_table_name() {
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
-		$rows = db_fetch_cell('SELECT cacti_count(*) FROM '.$table['name']);
+		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
 		if (is_numeric($rows) && intval($rows) > 0) {
 			return $table['name'];
 		}

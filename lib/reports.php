@@ -1044,7 +1044,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					$gr_where .= " AND title_cache REGEXP '" . $item['graph_name_regexp'] . "'";
 				}
 
-				$graph = db_fetch_cell("SELECT cacti_count(*)
+				$graph = db_fetch_cell("SELECT count(*)
 					FROM graph_templates_graph
 					WHERE local_graph_id=" . $leaf['local_graph_id'] . $gr_where);
 

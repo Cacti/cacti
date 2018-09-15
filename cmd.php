@@ -297,7 +297,7 @@ if ($allhost) {
 			ORDER BY host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 			FROM poller_item
 			WHERE poller_id = ?
 			AND action IN (?, ?)
@@ -310,7 +310,7 @@ if ($allhost) {
 			ORDER by host_id',
 			array($poller_id));
 
-		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
+		$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 			FROM poller_item
 			WHERE poller_id = ?
 			AND action IN (?, ?)',
@@ -374,7 +374,7 @@ if ($allhost) {
 				ORDER by host_id',
 				array($poller_id, $first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 				FROM poller_item
 				WHERE poller_id = ?
 				AND action IN(?, ?)
@@ -406,7 +406,7 @@ if ($allhost) {
 				ORDER by host_id',
 				array($poller_id, $first, $last));
 
-			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' cacti_count(*)
+			$script_server_calls = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' count(*)
 				FROM poller_item
 				WHERE poller_id = ?
 				AND action IN (?, ?)

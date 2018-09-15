@@ -93,7 +93,7 @@ print "\nNOTE: Checking for Invalid Cacti Templates\n";
 $total_rows = 0;
 
 /* remove invalid GPrint Presets from the Database, validated */
-$rows = db_fetch_cell('SELECT cacti_count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM graph_templates_item
 	LEFT JOIN graph_templates_gprint
 	ON graph_templates_item.gprint_id=graph_templates_gprint.id
@@ -110,7 +110,7 @@ if ($rows > 0) {
 }
 
 /* remove invalid CDEF Items from the Database, validated */
-$rows = db_fetch_cell("SELECT cacti_count(*)
+$rows = db_fetch_cell("SELECT count(*)
 	FROM cdef_items
 	LEFT JOIN cdef 
 	ON cdef_items.cdef_id=cdef.id
@@ -125,7 +125,7 @@ if ($rows > 0) {
 }
 
 /* remove invalid Data Templates from the Database, validated */
-$rows = db_fetch_cell('SELECT cacti_count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM data_template_data
 	LEFT JOIN data_input
 	ON data_template_data.data_input_id=data_input.id
@@ -140,7 +140,7 @@ if ($rows > 0) {
 }
 
 /* remove invalid Data Input Fields from the Database, validated */
-$rows = db_fetch_cell('SELECT cacti_count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM data_input_fields
 	LEFT JOIN data_input
 	ON data_input_fields.data_input_id=data_input.id
@@ -160,7 +160,7 @@ if ($rows > 0) {
 /* --------------------------------------------------------------------*/
 
 /* remove invalid Data Input Data Rows from the Database in two passes */
-$rows = db_fetch_cell('SELECT cacti_count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM data_input_data
 	LEFT JOIN data_template_data
 	ON data_input_data.data_template_data_id=data_template_data.id
@@ -175,7 +175,7 @@ if ($rows > 0) {
 	print "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
-$rows = db_fetch_cell('SELECT cacti_count(*)
+$rows = db_fetch_cell('SELECT count(*)
 	FROM data_input_data
 	LEFT JOIN data_input_fields
 	ON data_input_fields.id=data_input_data.data_input_field_id

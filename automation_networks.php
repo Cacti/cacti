@@ -113,7 +113,7 @@ function api_networks_discover($network_id, $discover_debug) {
 		WHERE id = ?',
 		array($network_id));
 
-	$running = db_fetch_cell_prepared('SELECT cacti_count(*)
+	$running = db_fetch_cell_prepared('SELECT count(*)
 		FROM automation_processes
 		WHERE network_id = ?',
 		array($network_id));

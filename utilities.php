@@ -144,7 +144,7 @@ function utilities_view_tech($php_info = '') {
 		WHERE table_schema = ?', array($database_default));
 
 	/* Get poller stats */
-	$poller_item = db_fetch_assoc('SELECT action, cacti_count(action) AS total
+	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
 		FROM poller_item
 		GROUP BY action');
 

@@ -233,8 +233,8 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		$sql_where .= ($sql_where != '' ? ' AND h.host_template_id=' . get_request_var('host_template_id') : 'WHERE h.host_template_id=' . get_request_var('host_template_id'));
 	}
 
-	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
-	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, cacti_count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
+	$host_graphs       = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as graphs FROM graph_local GROUP BY host_id'), 'host_id', 'graphs');
+	$host_data_sources = array_rekey(db_fetch_assoc('SELECT host_id, count(*) as data_sources FROM data_local GROUP BY host_id'), 'host_id', 'data_sources');
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
 	$sql_query = 'SELECT h.id AS host_id, h.hostname, h.description, h.disabled,
@@ -767,7 +767,7 @@ function display_new_graphs($rule, $url) {
 				$num_input_fields++;
 
 				if (!isset($total_rows)) {
-					$total_rows = db_fetch_cell_prepared('SELECT cacti_count(*)
+					$total_rows = db_fetch_cell_prepared('SELECT count(*)
 						FROM host_snmp_cache
 						WHERE snmp_query_id = ?
 						AND field_name = ?',
