@@ -593,12 +593,16 @@ function api_plugin_uninstall($plugin) {
 
 function api_plugin_check_config ($plugin) {
 	global $config;
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
-	$function = 'plugin_' . $plugin . '_check_config';
-	if (function_exists($function)) {
-		return $function();
+	clearstatcache();
+	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+		$function = 'plugin_' . $plugin . '_check_config';
+		if (function_exists($function)) {
+			return $function();
+		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 function api_plugin_enable($plugin) {

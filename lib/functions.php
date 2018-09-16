@@ -555,21 +555,24 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_messages'])) {
-		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]) && isset($messages[$current_message_id]['type'])) {
-					if ($messages[$current_message_id]['type'] == 'error') {
-						return true;
-					}
-				}
-			}
-		} else {
-			return true;
+	return get_message_type() === MESSAGE_LEVEL_ERROR;
+}
+
+function get_message_level($current_message) {
+	$current_level = MESSAGE_LEVEL_NONE;
+	if (isset($current_message['level'])) {
+		$current_level = $current_message['level'];
+	} elseif (isset($current_message['type'])) {
+		switch ($current_message['type']) {
+			case 'error':
+				$current_level = MESSAGE_LEVEL_ERROR;
+				break;
+			case 'info':
+				$current_level = MESSAGE_LEVEL_INFO;
+				break;
 		}
 	}
-
-	return false;
+	return $current_level;
 }
 
 /* get_message_type - finds the message and returns it's type
@@ -577,27 +580,41 @@ function is_error_message() {
 function get_message_type() {
 	global $config, $messages;
 
+	$level = MESSAGE_LEVEL_NONE;
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]['type'])) {
-					return $messages[$current_message_id]['type'];
-				} else {
-					return 'unknown';
+			foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+				$current_level = get_message_level($current_message);
+				if ($current_level == MESSAGE_LEVEL_NONE && isset($messages[$current_message_id])) {
+					$current_level = get_message_level($messages[$current_message_id]);
+				}
+
+				if ($current_level > $level) {
+					$level = $current_level;
 				}
 			}
-		} else {
-			return 'unknown';
 		}
 	}
 
-	return 'unknown';
+	return $level;
 }
 
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
-function raise_message($message_id) {
-	$_SESSION['sess_messages'][$message_id] = $message_id;
+function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
+	global $messages;
+	if (empty($message)) {
+		if (array_key_exists($message_id, $messages)) {
+			$predefined = $messages[$message_id];
+			if (isset($predefined['message'])) {
+				$message = $predefined['message'];
+			} else {
+				$message = $predefined;
+			}
+		}
+		$message = ''; //No message defined';
+	}
+	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
 }
 
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
@@ -609,38 +626,49 @@ function display_output_messages() {
 	$debug_message = debug_log_return('new_graphs');
 
 	if ($debug_message != '') {
-		$omessage['type']    = 'info';
+		$omessage['level']    = MESSAGE_LEVEL_NONE;
 		$omessage['message'] = $debug_message;
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		$omessage['type'] = get_message_type();
+		if (!is_array($_SESSION['sess_messages'])) {
+			$_SESSION['sess_messages'] = array('custom_error' => $_SESSION['sess_messages']);
+		}
 
-		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]['message'])) {
-					$message = $messages[$current_message_id]['message'];
-					if ($current_message_id == 'custom_error') {
-						$message = $_SESSION['custom_error'];
+		$omessage['level'] = get_message_type();
+
+		foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+			if (is_array($current_message)) {
+				$message = isset($current_message['message']) ? $current_message['message'] : null;
+			} else {
+				$message = $current_message;
+			}
+
+			if (empty($message) && isset($messages[$current_message_id])) {
+				if (is_array($messages[$current_message_id])) {
+					if (isset($messages[$current_message_id]['message'])) {
+						$message = $messages[$current_message_id]['message'];
 					}
-
-					$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
 				} else {
-					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
+					$message = $messages[$current_message_id];
 				}
 			}
-		} else {
-			$omessage['message'] = $_SESSION['sess_messages'];
+
+			if (!empty($message)) {
+				$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
+			} else {
+				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
+			}
 		}
 	}
 
-	kill_session_var('sess_messages');
+	clear_messages();
 
 	return json_encode($omessage);
 }
 
 function display_custom_error_message($message) {
-	$_SESSION['sess_messages'] = $message;
+	raise_message('custom_error', $message);
 }
 
 /* clear_messages - clears the message cache */

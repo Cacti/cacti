@@ -1162,7 +1162,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -1171,7 +1171,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	$log = true;
 	if (!db_table_exists($table_name, $log, $db_conn)) {
-		cacti_log("ERROR: SQL Save on table '$table_name': Table does not exist, unable to save!", false, 'DBCALL');
+		$error_message = "SQL Save on table '$table_name': Table does not exist, unable to save!";
+		raise_message('sql_save_table', $error_message, MESSAGE_LEVEL_ERROR);
+		cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 		return false;
 	}
@@ -1182,7 +1184,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	foreach ($array_items as $key => $value) {
 		if (!isset($cols[$key])) {
-			cacti_log("ERROR: SQL Save on table '$table_name': Column '$key' does not exist, unable to save!", false, 'DBCALL');
+			$error_message = "SQL Save on table '$table_name': Column '$key' does not exist, unable to save!";
+			raise_message('sql_save_key', $error_message, MESSAGE_LEVEL_ERROR);
+			cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 			cacti_debug_backtrace('SQL');
 			return false;
 		}
@@ -1222,8 +1226,13 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 				return str_replace('"', '', $array_items[$key_cols]);
 			}
 		}
+
+		raise_message('sql_save_fail', $database_last_error, MESSAGE_LEVEL_ERROR);
 		return false;
 	} else {
+		if ($replace_result === false) {
+			raise_message('sql_save_fail', $database_last_error, MESSAGE_LEVEL_ERROR);
+		}
 		return $replace_result;
 	}
 }

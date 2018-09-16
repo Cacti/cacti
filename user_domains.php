@@ -721,7 +721,7 @@ function domains() {
 	}
 
 	$total_rows = db_fetch_cell("SELECT
-		cacti_count(*)
+		count(*)
 		FROM user_domains
 		$sql_where");
 

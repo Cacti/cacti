@@ -385,7 +385,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 
 								/* get access to the SNMP Cache of BOOST*/
 								$mc = new MibCache('CACTI-BOOST-MIB');
-								$mc->object('boostStatsTotalsImagesCacheReads')->cacti_count();
+								$mc->object('boostStatsTotalsImagesCacheReads')->count();
 								$mc->object('boostStatsLastUpdate')->set( time() );
 
 								return $output;
@@ -497,7 +497,7 @@ function boost_graph_set_file(&$output, $local_graph_id, $rra_id) {
 							chmod($cache_file, 0666);
 
 							/* count the number of images that had to be cached */
-							$mc->object('boostStatsTotalsImagesCacheWrites')->cacti_count();
+							$mc->object('boostStatsTotalsImagesCacheWrites')->count();
 							$mc->object('boostStatsLastUpdate')->set( time() );
 						}
 					}

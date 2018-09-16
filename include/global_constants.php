@@ -416,6 +416,12 @@ define('DB_STATUS_WARNING', 1);
 define('DB_STATUS_SUCCESS', 2);
 define('DB_STATUS_SKIPPED', 3);
 
+define('MESSAGE_LEVEL_NONE', 0);
+define('MESSAGE_LEVEL_INFO', 1);
+define('MESSAGE_LEVEL_WARN', 2);
+define('MESSAGE_LEVEL_ERROR', 3);
+define('MESSAGE_LEVEL_CSRF', 4);
+
 if (!defined('PASSWORD_DEFAULT')) {
 	define('PASSWORD_DEFAULT', 1);
 }
