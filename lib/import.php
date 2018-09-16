@@ -249,7 +249,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	/* set new timeout and memory settings */
 	if ($limit_exec_time) {
 		ini_set('max_execution_time', '50');
-		ini_set('memory_limit', '128M');
+		ini_set('memory_limit', '384M');
 	}
 
 	$public_key = get_public_key();
