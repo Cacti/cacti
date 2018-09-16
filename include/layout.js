@@ -21,6 +21,12 @@
  +-------------------------------------------------------------------------+
 */
 
+const MESSAGE_LEVEL_NONE = 0;
+const MESSAGE_LEVEL_INFO = 1;
+const MESSAGE_LEVEL_WARN = 2;
+const MESSAGE_LEVEL_ERROR = 3;
+const MESSAGE_LEVEL_CSRF = 4;
+
 var theme;
 var myRefresh;
 var userMenuTimer;
@@ -766,8 +772,8 @@ function displayMessages() {
 		return;
 	}
 
-	if (typeof sessionMessage.type != 'undefined') {
-		if (sessionMessage.type == 'error') {
+	if (typeof sessionMessage.level != 'undefined') {
+		if (sessionMessage.level == MESSAGE_LEVEL_ERROR) {
 			title = errorReasonTitle;
 			header = errorOnPage;
 			var sessionMessageButtons = {
@@ -781,7 +787,7 @@ function displayMessages() {
 			};
 
 			sessionMessageOpen = {};
-		} else if (sessionMessage.type == 'csrf') {
+		} else if (sessionMessage.level == MESSAGE_LEVEL_CSRF) {
 			href = document.location.href;
 			href = href + (href.indexOf('?') > 0 ? '&':'?') + 'csrf_timeout=true';
 			document.location = href;

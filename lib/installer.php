@@ -125,7 +125,7 @@ class Installer implements JsonSerializable {
 				$install_params = array();
 			}
 		}
-		log_install_medium('step', 'After: ' . clean_up_lines(var_export($step, true)));
+		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
 
 		$this->setStep($step);
 		$this->stepError = false;
@@ -142,7 +142,7 @@ class Installer implements JsonSerializable {
 		$this->cronInterval  = read_config_option('cron_interval', true);
 		$this->locales       = get_installed_locales();
 		$this->language      = read_user_setting('user_language', get_new_user_default_language(), true);
-		$this->profile       = read_config_option('install_profile', true);
+		$this->profile       = $this->getProfile();
 		$this->stepData      = null;
 		$this->theme         = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
 
@@ -326,9 +326,9 @@ class Installer implements JsonSerializable {
 
 	function setTrueFalse($param, &$field, $option) {
 		$value = null;
-		if ($param === true || $param === 'on' || $param === 1) {
+		if ($param == true || $param === 'on' || $param === 1) {
 			$value = true;
-		} else if ($param === false || $param === '' || $param === 0) {
+		} else if ($param == false || $param === '' || $param === 0) {
 			$value = false;
 		}
 
@@ -580,11 +580,19 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	private function getProfile() {
+		$profile = read_config_option('install_profile', true);
+		if (empty($profile)) {
+			$profile = db_fetch_cell('SELECT id FROM data_sourc_profiles WHERE default = \'on\'');
+		}
+		$this->profile = $profile;
+	}
+
 	private function setProfile($param_profile = null) {
 		if (!empty($param_profile)) {
 			$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($param_profile));
 			if ($valid === false || $valid != $param_profile) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile %s != %s', $valid, $param_profile));
 			} else {
 				$this->profile = $param_profile;
 				set_config_option('install_profile', $param_profile);
@@ -595,7 +603,7 @@ class Installer implements JsonSerializable {
 	private function setAutomationMode($param_mode = null) {
 		if ($param_mode != null) {
 			if (!$this->setTrueFalse($param_mode, $this->automationMode, 'automation_mode')) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Mode', __('Failed to apply specified mode'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Mode', __('Failed to apply specified mode: %s', $param_mode));
 			}
 		}
 		log_install_medium('automation',"setAutomationMode($param_mode) returns with $this->automationMode");
@@ -604,7 +612,7 @@ class Installer implements JsonSerializable {
 	private function setAutomationOverride($param_override = null) {
 		if ($param_override != null) {
 			if (!$this->setTrueFalse($param_override, $this->automationOverride, 'automation_override')) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Override', __('Failed to apply specified automation override'));
+				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation','Override', __('Failed to apply specified automation override: %s', $param_override));
 			}
 		}
 		log_install_medium('automation',"setAutomationOverride($param_override) returns with $this->automationOverride");
@@ -983,11 +991,11 @@ class Installer implements JsonSerializable {
 			$step == Installer::STEP_WELCOME;
 		}
 
-		log_install_medium('step', 'setStep(): ' . var_export($step, true));
+		log_install_debug('step', 'setStep(): ' . var_export($step, true));
 		log_install_debug('step', "setStep():" . cacti_debug_backtrace('', false, false, 1));
 
 		// Make current step the first if it is unknown
-		log_install_medium('step', 'setStep(): stepError ' . clean_up_lines(var_export($this->stepError, true)) . ' < ' . clean_up_lines(var_export($step, true)));
+		log_install_high('step', 'setStep(): stepError ' . clean_up_lines(var_export($this->stepError, true)) . ' < ' . clean_up_lines(var_export($step, true)));
 		if ($this->stepError !== false && $this->stepError < $step) {
 			$step = $this->stepError;
 		}
@@ -2506,6 +2514,8 @@ class Installer implements JsonSerializable {
 			return false;
 		}
 
+		Installer::setPhpOption('max_execution_time', 0);
+		Installer::setPhpOption('memory_limit', -1);
 		try {
 			$backgroundTime = microtime(true);
 			if ($installer == null) {
@@ -2525,6 +2535,18 @@ class Installer implements JsonSerializable {
 
 		log_install_always('', __('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')), false, 'INSTALL:');
 		return true;
+	}
+
+	public static function setPhpOption($option_name, $option_value) {
+		log_install_always('', 'Setting PHP Option ' . $option_name . ' = ' . $option_value);
+		$value = ini_get($option_name);
+		if ($value != $option_value) {
+			ini_set($option_name, $option_value);
+			$value = ini_get($option_name);
+			if ($value != $option_value) {
+				log_install_always('', 'Failed to set PHP option ' . $option_name . ', is ' . $value . ' (should be ' . $option_value . ')');
+			}
+		}
 	}
 
 	private function processBackgroundInstall() {
@@ -2598,7 +2620,7 @@ class Installer implements JsonSerializable {
 				$package = $template['value'];
 				set_config_option('install_updated', microtime(true));
 				log_install_always('', sprintf('Importing Package #%s \'%s\'', $i, $package));
-				import_package($path . $package, 1, false);
+				import_package($path . $package, $this->profile, false, false, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 			}
 
@@ -2850,16 +2872,22 @@ class Installer implements JsonSerializable {
 			log_install_always('', sprintf('Found %s tables to convert', cacti_sizeof($tables)));
 			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
 			$i = 0;
-			foreach ($tables as $table) {
+			foreach ($tables as $key => $table) {
 				$i++;
 				$name = $table['value'];
-				log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
-				$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
-					' --table=' . cacti_escapeshellarg($name) .
-					' --utf8 --innodb');
+				if (!empty($name)) {
+					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
+					$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
+						' --table=' . cacti_escapeshellarg($name) .
+						' --utf8 --innodb');
 
-				set_config_option('install_updated', microtime(true));
-				log_install_always('', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
+					set_config_option('install_updated', microtime(true));
+					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
+					if ((stripos($results, 'Converting table') !== false && stripos($results, 'Successful') !== false) ||
+					    stripos($results, 'Skipped table') !== false) {
+						set_config_option($key, '');
+					}
+				}
 			}
 		} else {
 			log_install_always('', sprintf('No tables where found or selected for conversion'));

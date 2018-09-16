@@ -180,7 +180,7 @@ class MibCache{
 			array($this->active_object, $this->active_mib));
 	}
 
-	public function cacti_count() {
+	public function count() {
 		return db_execute_prepared('UPDATE IGNORE snmpagent_cache
 			SET `value` = CASE
 			WHEN `type`="Counter32" AND `value`= 4294967295 THEN 0
