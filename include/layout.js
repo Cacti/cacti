@@ -662,9 +662,7 @@ function applySkin() {
 
 	setupPageTimeout();
 
-	if (typeof CsrfMagic !== 'undefined') {
-		CsrfMagic.end();
-	}
+	CsrfMagic.end();
 
 	setupSpecialKeys();
 
