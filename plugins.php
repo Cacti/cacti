@@ -240,44 +240,40 @@ function plugins_load_temp_table() {
 	}
 
 	$found_plugins = array_keys($cinfo);
-	$found_plugin_keys = '';
-	if (cacti_sizeof($found_plugins)) {
-		$found_plugin_keys = implode(', ', $found_plugins);
-	}
+	$plugins = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
 
-	$plugins = db_fetch_assoc_prepared('SELECT id, directory, status
-		FROM plugin_config
-		WHERE directory NOT IN (?)',
-		array($found_plugin_keys));
+	if ($plugins !== false && sizeof($plugins)) {
+		foreach ($plugins as $plugin) {
+			if (!array_key_exists($plugin['directory'], $cinfo)) {
+				$plugin['status'] = '-5';
 
-	foreach ($plugins as $plugin) {
-		$plugin['status'] = '-5';
+				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
+					FROM $table
+					WHERE directory = ?",
+					array($plugin['directory']));
 
-		$exists = db_fetch_cell_prepared("SELECT COUNT(*)
-			FROM $table
-			WHERE directory = ?",
-			array($plugin['directory']));
-
-		if (!$exists) {
-			db_execute_prepared("INSERT INTO $table
-				(directory, name, status, author, webpage, version, requires, infoname)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-				array(
-					$directory,
-					$plugin['longname'],
-					$plugin['status'],
-					$plugin['author'],
-					$plugin['homepage'],
-					$plugin['version'],
-					$plugin['requires'],
-					$plugin['name']
-				)
-			);
-		} else {
-			db_execute_prepared("UPDATE $table
-				SET status = ?
-				WHERE directory = ?",
-				array($plugin['status'], $plugin['directory']));
+				if (!$exists) {
+					db_execute_prepared("INSERT INTO $table
+						(directory, name, status, author, webpage, version, requires, infoname)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+						array(
+							$directory,
+							$plugin['longname'],
+							$plugin['status'],
+							$plugin['author'],
+							$plugin['homepage'],
+							$plugin['version'],
+							$plugin['requires'],
+							$plugin['name']
+						)
+					);
+				} else {
+					db_execute_prepared("UPDATE $table
+						SET status = ?
+						WHERE directory = ?",
+						array($plugin['status'], $plugin['directory']));
+				}
+			}
 		}
 	}
 
@@ -423,20 +419,22 @@ function update_show_current () {
 		$sql_where = "WHERE ($table.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	if (isset_request_var('state')) {
-		switch (get_request_var('state')) {
-			case 5:
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status IN(1,4)';
-				break;
-			case -98:
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status < 0';
-				break;
-			case -99:
-				break;
-			default:
-				$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
-				break;
-		}
+	if (!isset_request_var('state')) {
+		set_request_var('status', -99);
+	}
+
+	switch (get_request_var('state')) {
+		case 5:
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status IN(1,4)';
+			break;
+		case -98:
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status < 0';
+			break;
+		case -99:
+			break;
+		default:
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
+			break;
 	}
 
 	if (get_request_var('rows') == '-1') {
