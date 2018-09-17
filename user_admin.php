@@ -982,7 +982,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsg&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graphs'), 'page', 'main');
 
-		form_start(html_escape('user_admin.php?tab=permsg&id=' . get_request_var('id')), 'chk');
+		form_start('user_admin.php?tab=permsg&id=' . get_request_var('id'), 'chk');
 
 		print $nav;
 
@@ -1081,7 +1081,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsgr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Groups'), 'page', 'main');
 
-		form_start(html_escape('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
+		form_start('user_admin.php?tab=permsd&id=' . get_request_var('id'), 'chk');
 
 		print $nav;
 
@@ -1226,7 +1226,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permsd&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Devices'), 'page', 'main');
 
-		form_start(html_escape('user_admin.php?tab=permsd&id=' . get_request_var('id')), 'chk');
+		form_start('user_admin.php?tab=permsd&id=' . get_request_var('id'), 'chk');
 
 		print $nav;
 
@@ -1374,7 +1374,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permste&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Graph Templates'), 'page', 'main');
 
-		form_start(html_escape('user_admin.php?tab=permste&id=' . get_request_var('id')), 'chk');
+		form_start('user_admin.php?tab=permste&id=' . get_request_var('id'), 'chk');
 
 		print $nav;
 
@@ -1515,7 +1515,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		$nav = html_nav_bar('user_admin.php?action=user_edit&tab=permstr&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 11, __('Trees'), 'page', 'main');
 
-		form_start(html_escape('user_admin.php?tab=permstr&id=' . get_request_var('id')), 'chk');
+		form_start('user_admin.php?tab=permstr&id=' . get_request_var('id'), 'chk');
 
 		print $nav;
 
