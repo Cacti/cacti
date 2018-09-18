@@ -583,7 +583,7 @@ class Installer implements JsonSerializable {
 	private function getProfile() {
 		$profile = read_config_option('install_profile', true);
 		if (empty($profile)) {
-			$profile = db_fetch_cell('SELECT id FROM data_sourc_profiles WHERE default = \'on\'');
+			$profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE default = \'on\'');
 		}
 		$this->profile = $profile;
 	}
@@ -2596,6 +2596,8 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 		if (empty($failure)) {
+			db_execute('UPDATE version SET cacti = \'' . CACTI_VERSION . '\'');
+
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_COMPLETE);
