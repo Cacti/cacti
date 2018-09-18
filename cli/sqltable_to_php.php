@@ -149,12 +149,12 @@ function sqltable_to_php($table, $create) {
 			}
 
 			if (!empty($pri)) {
-				$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
+				$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
 			}
 
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
-					$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
+					$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode("`,`", $k) . "');\n";
 				}
 			}
 		} else {
@@ -167,7 +167,7 @@ function sqltable_to_php($table, $create) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
 			if ($create) {
-				$text .= "db_table_create ('$table', \$data);\n";
+				$text .= "api_plugin_db_table_create ('$table', \$data);\n";
 			} else {
 				$text .= "db_update_table ('$table', \$data, false);\n";
 			}
