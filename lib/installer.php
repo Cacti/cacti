@@ -67,6 +67,8 @@ class Installer implements JsonSerializable {
 	private $stepData = null;
 	private $stepError = array();
 
+
+	private $output;
 	private $templates;
 	private $rrdVersion;
 	private $paths;
@@ -142,7 +144,6 @@ class Installer implements JsonSerializable {
 		$this->cronInterval  = read_config_option('cron_interval', true);
 		$this->locales       = get_installed_locales();
 		$this->language      = read_user_setting('user_language', get_new_user_default_language(), true);
-		$this->profile       = $this->getProfile();
 		$this->stepData      = null;
 		$this->theme         = (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
 
@@ -193,7 +194,8 @@ class Installer implements JsonSerializable {
 		$this->paths              = install_file_paths();
 		$this->permissions        = $this->getPermissions();
 		$this->modules            = $this->getModules();
-		$this->setAutomationMode($this->getAutomationNetworkMode());
+		$this->setProfile($this->getProfile());
+		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
 		$this->setAutomationRange($this->getAutomationNetworkRange());
 		$this->setPaths($this->getPaths());
@@ -284,7 +286,9 @@ class Installer implements JsonSerializable {
 	}
 
 	public function jsonSerialize() {
-		$output = $this->processCurrentStep();
+		if (empty($this->output)) {
+			$this->output = $this->processCurrentStep();
+		}
 
 		$basics = array(
 			'Mode'     => $this->mode,
@@ -309,7 +313,7 @@ class Installer implements JsonSerializable {
 		/* Are we running in only Web mode? */
 		if ($this->runtime == 'Web') {
 			$webdata += array(
-				'Html'     => $output,
+				'Html'     => $this->output,
 			);
 		}
 
@@ -326,9 +330,9 @@ class Installer implements JsonSerializable {
 
 	function setTrueFalse($param, &$field, $option) {
 		$value = null;
-		if ($param == true || $param === 'on' || $param === 1) {
+		if ($param === true || $param === 'true' || $param === 'on' || $param === 1 || $param === '1') {
 			$value = true;
-		} else if ($param == false || $param === '' || $param === 0) {
+		} else if ($param === false || $param === 'false' || $param === '' || $param === 0 || $param === '0') {
 			$value = false;
 		}
 
@@ -337,7 +341,9 @@ class Installer implements JsonSerializable {
 			$field = $value;
 		}
 
-		return $value !== null;
+		$result = $value !== null;
+		log_install_medium('', "setTrueFalse($option, " . var_export($param, true) . " sets $value, returns $result");
+		return $result;
 	}
 
 	public function addError($step, $section, $item, $text = false) {
@@ -581,11 +587,17 @@ class Installer implements JsonSerializable {
 	}
 
 	private function getProfile() {
-		$profile = read_config_option('install_profile', true);
-		if (empty($profile)) {
-			$profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE default = \'on\'');
+		$db_profile = read_config_option('install_profile', true);
+		if (empty($db_profile)) {
+			$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE default = \'on\' LIMIT 1');
+			if ($db_profile === false) {
+				$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
+			}
 		}
-		$this->profile = $profile;
+		log_install_medium('automation', 'getProfile() returns with ' . $db_profile);
+		log_install_medium('automation', 'getProfile() called from ' . cacti_debug_backtrace('', false, false, 1));
+
+		return $db_profile;
 	}
 
 	private function setProfile($param_profile = null) {
@@ -594,10 +606,11 @@ class Installer implements JsonSerializable {
 			if ($valid === false || $valid != $param_profile) {
 				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile %s != %s', $valid, $param_profile));
 			} else {
-				$this->profile = $param_profile;
-				set_config_option('install_profile', $param_profile);
+				$this->profile = $valid;
+				set_config_option('install_profile', $valid);
 			}
 		}
+		log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
 	}
 
 	private function setAutomationMode($param_mode = null) {
@@ -1949,19 +1962,6 @@ class Installer implements JsonSerializable {
 			$output  = Installer::sectionTitle(__('Default Profile'));
 			$output .= Installer::sectionNormal(__('Please select the default Data Source Profile to be used for polling sources.  This is the maximum amount of time between scanning devices for information so the lower the polling interval, the more work is placed on the Cacti Server host.  Also, select the intended, or configured Cron interval that you wish to use for Data Collection.'));
 
-			foreach ($profiles as $profile) {
-				$selectedProfile = '';
-				$suffix = '';
-
-				if ($profile['default'] == 'on') {
-					if ($this->profile === false || $this->profile === null) {
-						$this->setProfile($profile['id']);
-					}
-
-					$suffix = ' (default)';
-				}
-			}
-
 			$fields_schedule = array(
 				'default_profile' => array(
 					'method' => 'drop_sql',
@@ -1978,7 +1978,7 @@ class Installer implements JsonSerializable {
 			);
 
 			ob_start();
-			$values = array('default_profile' => $this->profile, 'value' => $this->cronInterval);
+			$values = array('default_profile' => $this->profile, 'cron_interval' => $this->cronInterval);
 
 			draw_edit_form(
 				array(
@@ -2439,15 +2439,20 @@ class Installer implements JsonSerializable {
 		return read_config_option('install_automation_override', true);
 	}
 
-	public function getAutomationNetworkMode() {
-		$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
-		$enabled = 0;
-		if (!empty($row)) {
-			if ($row['enabled'] == 'on') {
-				$enabled = 1;
+	public function getAutomationMode() {
+		$enabled = read_config_option('install_automation_mode', true);
+		log_install_always('automation', 'automation_mode: ' . clean_up_lines($enabled));
+		if ($enabled == NULL) {
+			$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
+			log_install_debug('automation', 'Network data: ' . clean_up_lines(var_export($row, true)));
+			$enabled = 0;
+			if (!empty($row)) {
+				if ($row['enabled'] == 'on') {
+					$enabled = 1;
+				}
 			}
 		}
-		log_install_medium('automation',"getAutomationNetworkMode() returns '$enabled'");
+		log_install_medium('automation',"getAutomationMode() returns '$enabled'");
 		return $enabled;
 	}
 
@@ -2621,7 +2626,7 @@ class Installer implements JsonSerializable {
 				$i++;
 				$package = $template['value'];
 				set_config_option('install_updated', microtime(true));
-				log_install_always('', sprintf('Importing Package #%s \'%s\'', $i, $package));
+				log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));
 				import_package($path . $package, $this->profile, false, false, false);
 				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 			}
@@ -2675,15 +2680,15 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_PROFILE_START);
 
 		$profile_id = intval($this->profile);
-		$profile    = db_fetch_row_prepared('SELECT id, name, step, heartbeat
+		$profile = db_fetch_row_prepared('SELECT id, name, step, heartbeat
 			FROM data_source_profiles
 			WHERE id = ?',
 			array($profile_id));
 
-		log_install_medium('', "Profile ID: $profile_id (" . clean_up_lines(var_export($profile, true)).')');
+		log_install_high('automation', "Profile ID: $profile_id (" . $this->profile . ") returned " . clean_up_lines(var_export($profile, true)));
 
 		if ($profile['id'] == $this->profile) {
-			log_install_always('', sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
+			log_install_always('automation', sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
 			db_execute('UPDATE data_source_profiles
