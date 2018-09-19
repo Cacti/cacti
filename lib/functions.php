@@ -611,9 +611,19 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 			} else {
 				$message = $predefined;
 			}
+
+			if ($message_level == MESSAGE_LEVEL_NONE) {
+				$message_level = get_message_level($predefined);
+			}
+		} else {
+			$message = ''; //No message defined';
 		}
-		$message = ''; //No message defined';
 	}
+
+	if (!isset($_SESSION['sess_messages'])) {
+		$_SESSION['sess_messages'] = array();
+	}
+
 	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
 }
 
