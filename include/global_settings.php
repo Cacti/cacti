@@ -259,7 +259,7 @@ $settings = array(
 			),
 		'log_validation' => array(
 			'friendly_name' => __('Log Input Validation Issues'),
-			'description' => __('Record when request fields are accessed without going through proper input validatdion'),
+			'description' => __('Record when request fields are accessed without going through proper input validation'),
 			'method' => 'checkbox',
 			'default' => ''
 			),
@@ -487,7 +487,7 @@ $settings = array(
 			),
 		'default_template' => array(
 			'friendly_name' => __('Template'),
-			'description' => __('The default Device Template all new Devices.'),
+			'description' => __('The default Device Template used on all new Devices.'),
 			'method' => 'drop_sql',
 			'default' => '1',
 			'none_value' => __('None'),
@@ -647,7 +647,7 @@ $settings = array(
 			),
 		'ping_port' => array(
 			'friendly_name' => __('Ping Port'),
-			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a port not reachable error to determine if the Device is up or not.'),
+			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a \'port not reachable\' error to determine if the Device is up or not.'),
 			'method' => 'textbox',
 			'default' => '23',
 			'max_length' => '10',
