@@ -668,8 +668,8 @@ function plugin_actions($plugin, $table) {
 		case '-5': // Plugin directory missing
 			$link .= "<a href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
-		case '-4': // Plugins can have spaces in their names
-			$link .= "<a href='#' title='" . __esc('Plugin does not include an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+		case '-4': // Plugins should have INFO file since 1.0.0
+			$link .= "<a href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
 		case '-3': // Plugins can have spaces in their names
 			$link .= "<a href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
