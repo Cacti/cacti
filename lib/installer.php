@@ -1971,7 +1971,7 @@ class Installer implements JsonSerializable {
 				),
 				'cron_interval' => array(
 					'method' => 'drop_array',
-					'friendly_name' => __('Cron Internal'),
+					'friendly_name' => __('Cron Interval'),
 					'array' => $cron_intervals,
 					'value' => '|arg1:cron_interval|',
 				)
