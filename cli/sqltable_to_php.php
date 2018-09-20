@@ -29,7 +29,8 @@ require(__DIR__ . '/../include/cli_check.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-$table = '';
+$table  = '';
+$plugin = '';
 $create = true;
 
 if (cacti_sizeof($parms)) {
@@ -44,6 +45,9 @@ if (cacti_sizeof($parms)) {
 		switch ($arg) {
 			case '--table':
 				$table = trim(sql_clean($value));
+				break;
+			case '--plugin':
+				$plugin = trim(sql_clean($value));
 				break;
 			case '--update':
 				$create = false;
@@ -69,10 +73,10 @@ if ($table == '') {
 	display_help();
 	exit(1);
 } else {
-	print sqltable_to_php($table, $create);
+	print sqltable_to_php($table, $create, $plugin);
 }
 
-function sqltable_to_php($table, $create) {
+function sqltable_to_php($table, $create, $plugin = '') {
 	global $config, $database_default;
 
 	include_once($config['library_path'] . '/database.php');
@@ -149,12 +153,20 @@ function sqltable_to_php($table, $create) {
 			}
 
 			if (!empty($pri)) {
-				$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
+				if ($plugin != '') {
+					$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
+				} else {
+					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
+				}
 			}
 
 			if (!empty($keys)) {
 				foreach ($keys as $n => $k) {
-					$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode("`,`", $k) . "');\n";
+					if ($plugin != '') {
+						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => '" . implode("`,`", $k) . "');\n";
+					} else {
+						$text .= "\$data['keys'][] = array('name' => '$n', 'columns' => array('" . implode("','", $k) . "'));\n";
+					}
 				}
 			}
 		} else {
@@ -167,7 +179,11 @@ function sqltable_to_php($table, $create) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
 			if ($create) {
-				$text .= "api_plugin_db_table_create ('$table', \$data);\n";
+				if ($plugin != '') {
+					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);\n";
+				} else {
+					$text .= "db_table_create ('$table', \$data);\n";
+				}
 			} else {
 				$text .= "db_update_table ('$table', \$data, false);\n";
 			}
@@ -188,20 +204,23 @@ function sql_clean($text) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Add Device Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti SQL to PHP Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	print "\nusage: sqltable_to_php.php --table=table_name [--update]\n\n";
+	print "\nusage: sqltable_to_php.php --table=table_name [--plugin=name] [--update]\n\n";
 	print "A simple developers utility to create a save schema for a newly created or\n";
-	print "modified database table.  These save schema's can be placed into a plugins\n";
-	print "setup.php file in order to create the tables inside of a plugin as a part of\n";
-	print "it's install function.\n\n";
+	print "modified database table in a format that is consumable by Cacti.\n\n";
+	print "These save schema's can be placed into a plugins setup.php file in order\n";
+	print "to create the tables inside of a plugin as a part of it's install function.\n";
+	print "The plugin parameter is optional, but if you want the table(s) automatically\n";
+	print "removed from Cacti when uninstalling the plugin, specify it's name.\n\n";
 	print "Required:\n";
 	print "--table=table_name - The table that you want exportred\n\n";
 	print "Optional:\n";
+	print "--plugin=name      - The name of the plugin that will manage tables\n";
 	print "--update           - The utility provides create syntax.  If the update flag is\n";
 	print "                     specified, the utility will provide update syntax\n\n";
 }
