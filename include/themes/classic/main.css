@@ -1104,6 +1104,10 @@ legend {
 	display: table;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color:  #00438c !important;
+}
+
 .cactiTableTitleRow {
 	color: white;
 	float: left;

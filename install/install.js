@@ -347,7 +347,7 @@ function processStepWelcome(StepData) {
 
 	if ($('#accept').length) {
 		$('#accept').click(function() {
-			performStep(1);
+			performStep(STEP_WELCOME);
 			if ($('#accept').is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -381,12 +381,12 @@ function processStepInstallType(StepData) {
 		if (StepData.Theme != 'classic') {
 			$('select#install_type').selectmenu({
 				change: function() {
-					performStep(3);
+					performStep(STEP_INSTALL_TYPE);
 				}
 			});
 		} else {
 			$('#install_type').change(function() {
-				performStep(3);
+				performStep(STEP_INSTALL_TYPE);
 			});
 		}
 	}
@@ -583,6 +583,9 @@ function setAddressBar(data, replace) {
 function performStep(installStep) {
 	$.ajaxQ.abortAll();
 
+	$('#installContent').addClass('cactiInstallLoaderBlur');
+	$('#installLoader').show();
+
 	installData = prepareInstallData(installStep);
 	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
 	url = 'step_json.php'; //?data=' + installData;
@@ -591,6 +594,8 @@ function performStep(installStep) {
 		.done(function(data) {
 			checkForLogout(data);
 
+			$('#installLoader').hide();
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installData').data('installData', data);
 
 			setAddressBar(data, false);
@@ -682,6 +687,8 @@ function performStep(installStep) {
 			});
 		})
 		.fail(function(data) {
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
+			$('#installLoader').hide();
 			getPresentHTTPError(data);
 		}
 	);
@@ -745,6 +752,10 @@ $(function() {
 	});
 
 	setTimeout(function() {
+		$('#installRefresh').click(function() {
+			performStep();
+		});
+
 		performStep();
 	}, 1000);
 });

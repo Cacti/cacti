@@ -91,7 +91,7 @@ print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?></div>
+			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?><span style="float:right"><i id="installRefresh" class="fa fa-redo"></i></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
@@ -104,6 +104,10 @@ if ($hasJson) {
 				print '<p>See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation </p>';
 }
 ?>
+			</div>
+			<div class='cactiInstallLoader' id='installLoader'>
+				<div class='cactiInstallLoaderLogo'><img src='../images/cacti_logo.svg' /></div>
+				<div class='cactiInstallLoaderSpinnerTheme cactiInstallLoaderSpinner'></div>
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea saveRow'>

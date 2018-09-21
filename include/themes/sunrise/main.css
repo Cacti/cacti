@@ -1223,6 +1223,10 @@ table.cactiTable {
 	color: lightgrey;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(255,255,255,0.2) !important;
+}
+
 .cactiTableTitleRow {
 	color: #FFAA00;
 	float: left;
