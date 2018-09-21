@@ -38,6 +38,9 @@ ini_set('max_execution_time', '0');
 // define base path of Cacti
 define('CACTI_PATH', str_replace('/tests/tools', '', dirname(__FILE__)));
 
+global $config;
+$config = array('base_path' => CACTI_PATH);
+
 // pre-flush oubput buffer to avoid header warning
 flush();
 

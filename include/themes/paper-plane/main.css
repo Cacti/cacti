@@ -1177,6 +1177,10 @@ tr>td.textInfo.right{
 	border-color: #222;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: #3a3b3c !important;
+}
+
 table.cactiTable {
 	background: #f7f7f7;
 	color: black;

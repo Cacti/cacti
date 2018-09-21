@@ -1053,6 +1053,10 @@ legend {
 	margin-right:auto;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(0,0,0,0.9) !important;
+}
+
 .cactiTableTitleRow {
 	color: white;
 	float: left;

@@ -1238,6 +1238,10 @@ legend {
 	color: snow;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(98,125,77,1) !important;
+}
+
 .cactiTableTitleRow {
 	float: left;
 	text-align: left;
