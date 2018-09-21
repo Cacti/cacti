@@ -597,8 +597,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$oids[] = $value['oid'];
 					}
 
-					debug_log_insert('data_query', __('Executing SNMP get for %s oids' , cacti_count($oids)));
+					debug_log_insert('data_query', __('Executing SNMP get for %s oids (%s)' , count($oids), implode(', ', $oids)));
 
+					$value_output_format = '';
 					if (isset($field_array['output_format'])) {
 						if ($field_array['output_format'] == 'hex') {
 							$value_output_format = SNMP_STRING_OUTPUT_HEX;
@@ -607,7 +608,13 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						} else {
 							$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 						}
+					}
 
+					if (empty($value_output_format) && (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:')) {
+						$value_output_format = SNMP_STRING_OUTPUT_GUESS;
+					}
+
+					if (!empty($value_output_format)) {
 						foreach ($oids as $oid) {
 							$results[$oid] = cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
 								$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
@@ -619,9 +626,22 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$results = cacti_snmp_session_walk($session, $oids);
 					}
 
+					foreach ($results as $key => $value) {
+						debug_log_insert('data_query',
+							__('Found result for data @ \'%s\' [value=\'%s\']',
+							$key, $value));
+					}
+
 					foreach (array_keys($values) as $key){
 						if (isset($results[$values[$key]['oid']])) {
 							$values[$key]['value'] = $results[$values[$key]['oid']];
+							debug_log_insert('data_query',
+								__('Setting result for data @ \'%s\' [key=\'%s\', value=\'%s\']',
+								$values[$key]['oid'], $key, $values[$key]['value']));
+						} else {
+							debug_log_insert('data_query',
+								__('Skipped result for data @ \'%s\' [key=\'%s\', value=\'%s\']',
+								$values[$key]['oid'], $key, $values[$key]['value']));
 						}
 					}
 
