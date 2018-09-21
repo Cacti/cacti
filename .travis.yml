@@ -17,9 +17,11 @@ before_install:
   - mysql -e 'CREATE DATABASE cacti;'
   - mysql cacti < cacti.sql
 
-install:
+install: true
+
+script:
   - php tests/tools/check_install_code.php
-  - bash tests/tools/version-test.sh
+  - bash tests/tools/check_cli_version.sh
 
 notifications:
   email:
