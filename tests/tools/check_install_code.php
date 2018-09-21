@@ -29,8 +29,8 @@
 // report all the errors
 error_reporting(E_ALL);
 
-// setup global expection tracking array
-$global_exception = array();
+// set error handler
+set_error_handler('error_handler');
 
 // allow infinite execute
 ini_set('max_execution_time', '0');
@@ -68,3 +68,16 @@ while (($file = readdir($dh)) !== false)
 closedir($dh);
 
 exit(0);
+
+/*
+ * Error handler function to cause exception on error and warnings
+ */
+function error_handler($err_number, $err_string, $err_file, $err_line) {
+	$msg = $err_string . " in " . $err_file . " on line " . $err_line;
+
+	if ($err_number == E_NOTICE || $err_number == E_WARNING) {
+		throw new ErrorException($msg, $err_number);
+	} else {
+		echo $msg;
+	}
+}
