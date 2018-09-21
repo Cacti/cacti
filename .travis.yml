@@ -19,6 +19,7 @@ before_install:
 
 install:
   - php tests/tools/check_install_code.php
+  - bash tests/tools/version-test.sh
 
 notifications:
   email:
