@@ -1558,7 +1558,6 @@ class Installer implements JsonSerializable {
 
 		$extensions = array(
 			array('name' => 'snmp', 'installed' => false),
-			array('name' => 'gmp', 'installed' => false)
 		);
 
 		$ext = verify_php_extensions($extensions);
