@@ -1092,7 +1092,7 @@ class Installer implements JsonSerializable {
 
 	private function exitWithUnknownReason($reason) {
 		$output  = Installer::sectionTitleError();
-		$output .= Installer::sectionNormal(__('An unexpected reason was given for preventing this maintainence session.'));
+		$output .= Installer::sectionNormal(__('An unexpected reason was given for preventing this maintenance session.'));
 		$output .= Installer::sectionNormal(__('Please report this to the Cacti Group.'));
 		$output .= Installer::sectionCode(__('Unknown Reason: %s', $reason));
 		return $output;
@@ -1104,7 +1104,7 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
 		$output .= Installer::sectionCode(__("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
 		$output .= Installer::sectionNormal(__('You <b>MUST</b> then update "include/config.php" to point to the new database.'));
-		$output .= Installer::sectionNormal(__('NOTE: Your existing data will not be modified, nor will it or any history be available to to the new install'));
+		$output .= Installer::sectionNormal(__('NOTE: Your existing data will not be modified, nor will it or any history be available to the new install'));
 		return $output;
 	}
 

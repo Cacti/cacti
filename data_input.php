@@ -294,7 +294,7 @@ function form_actions() {
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Methods(s).') . "</p>
+					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s).') . "</p>
                     <div class='itemlist'><ul>$di_list</ul></div>
                     <p><strong>" . __('Input Name:'). "</strong><br>"; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
                 </td>

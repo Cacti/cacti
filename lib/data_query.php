@@ -531,7 +531,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					if (isset($oid_rewrite_pattern)) {
 						$orig_oid = $oid;
 						$oid = preg_replace($oid_rewrite_pattern, $oid_rewrite_replacement, $oid);
-						query_debug_timer_offset('data_query', __('oid_rewrite at OID: \'%s\' new OI: \'%s\'', $orig_oid , $oid));
+						query_debug_timer_offset('data_query', __('oid_rewrite at OID: \'%s\' new OID: \'%s\'', $orig_oid , $oid));
 					}
 
 					if (isset($field_array['output_format'])) {

@@ -516,7 +516,7 @@ function update_show_current () {
 
 	form_end();
 
-	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Pluign, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>

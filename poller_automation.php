@@ -861,7 +861,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 					$fromname = read_config_option('settings_from_name');
 
 					if ($fromname == '') {
-						$fromname = __('Primary Cacti Admin');
+						$fromname = __('Cacti Primary Admin');
 					}
 				}
 			} else {

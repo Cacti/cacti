@@ -80,7 +80,7 @@ if (interface_exists('JsonSerializable')) {
 <html>
 <head>
 <?php
-print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);
+print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION), $theme);
 if ($hasJson) {
 	print get_md5_include_js('install/install.js');
 }
