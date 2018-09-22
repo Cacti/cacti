@@ -76,11 +76,11 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config['library_path'] . '/api_data_source.php');
 	include_once($config['library_path'] . '/utility.php');
 
-	query_debug_timer_offset('data_query', __('Prime previous query data [%s].', $snmp_query_id));
+	query_debug_timer_offset('data_query', __('Running data query [%s].', $snmp_query_id));
 
 	data_query_create_prime_temp_table($host_id, $snmp_query_id);
 
-	query_debug_timer_offset('data_query', __('Running data query [%s].', $snmp_query_id));
+	query_debug_timer_offset('data_query', __('Prime previous query data [%s].', $snmp_query_id));
 
 	$type_id = db_fetch_cell_prepared('SELECT data_input.type_id
 		FROM snmp_query
