@@ -766,6 +766,8 @@ function update_db_from_path($path, $type, $recursive = true) {
 					}
 				} elseif (basename($path) == 'config.php') {
 					continue;
+				} elseif (basename($path) == '.travis.yml') {
+					continue;
 				} else {
 					$pathinfo = pathinfo($entry);
 					if (isset($pathinfo['extension'])) {
@@ -877,7 +879,7 @@ function resource_cache_out($type, $path) {
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
-							array($e['id']), true, $remote_db_cnn_id));
+							array($e['id'])), true, $remote_db_cnn_id);
 
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php') {
