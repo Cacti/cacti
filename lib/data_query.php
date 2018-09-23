@@ -197,7 +197,7 @@ function run_data_query($host_id, $snmp_query_id) {
 }
 
 function data_query_create_prime_temp_table($host_id, $snmp_query_id) {
-	global $snmp_reindex_table_name;
+	global $snmp_reindex_table;
 
 	$table_name = 'host_snmp_cache_' . rand(0, 65535);
 
@@ -210,13 +210,13 @@ function data_query_create_prime_temp_table($host_id, $snmp_query_id) {
 		AND snmp_query_id = ?",
 		array($host_id, $snmp_query_id));
 
-	$snmp_reindex_table_name = $table_name;
+	$snmp_reindex_table = $table_name;
 }
 
 function data_query_drop_temp_table() {
-	global $snmp_reindex_table_name;
+	global $snmp_reindex_table;
 
-	db_execute("DROP TABLE $snmp_reindex_table_name");
+	db_execute("DROP TABLE $snmp_reindex_table");
 }
 
 function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
@@ -1127,10 +1127,16 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL) {
    @arg $data_query_id - (int) the data query ID to match
    @returns - (array) the data query ID and index that matches the three arguments */
 function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
-	global $snmp_reindex_table_name;
+	global $snmp_reindex_table;
+
+	if (isset($snmp_reindex_table) && $snmp_reindex_table != '' && db_table_exists($snmp_reindex_table)) {
+		$table = $snmp_reindex_table;
+	} else {
+		$table = 'host_snmp_cache';
+	}
 
 	return db_fetch_cell_prepared("SELECT snmp_index
-		FROM $snmp_reindex_table_name
+		FROM $table
 		WHERE field_name = ?
 		AND field_value = ?
 		AND host_id = ?
@@ -1263,7 +1269,9 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 		LIMIT 1',
 		array($local_graph_id)));
 
-	if (empty($field)) { return; }
+	if (empty($field)) {
+		return;
+	}
 
 	if (empty($data_query_id)) {
 		$data_query_id = db_fetch_cell_prepared('SELECT snmp_query_id
