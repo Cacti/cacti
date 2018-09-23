@@ -22,8 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
-
+require(__DIR__ . '/include/global.php');
 include_once('./lib/api_device.php');
 include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
