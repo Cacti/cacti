@@ -186,4 +186,5 @@ function upgrade_to_1_2_0() {
 	db_install_add_key('poller_reindex', 'key', 'PRIMARY', array('host_id', 'data_query_id', 'arg1(187)'));
 
 	db_install_add_column('poller', array('name' => 'last_sync', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00 00:00:00'));
+	db_install_add_column('poller', array('name' => 'requires_sync', 'type' => 'char(3)', 'NULL' => false, 'default' => ''));
 }

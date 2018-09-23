@@ -295,10 +295,11 @@ function form_actions() {
 					replicate_out($item);
 
 					db_execute_prepared('UPDATE poller
-						SET last_sync = NOW
+						SET last_sync = NOW()
 						WHERE id = ?',
 						array($item));
 				}
+
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			}
 		}
