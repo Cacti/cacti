@@ -1227,12 +1227,8 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			}
 		}
 
-		raise_message('sql_save_fail', $database_last_error, MESSAGE_LEVEL_ERROR);
 		return false;
 	} else {
-		if ($replace_result === false) {
-			raise_message('sql_save_fail', $database_last_error, MESSAGE_LEVEL_ERROR);
-		}
 		return $replace_result;
 	}
 }
