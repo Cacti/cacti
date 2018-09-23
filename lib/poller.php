@@ -1280,7 +1280,7 @@ function poller_push_data_to_main() {
 
 		poller_push_table($remote_db_cnn_id, $host_records, 'host', true);
 
-		$poller_item_records = db_fetch_assoc_prepared('local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
+		$poller_item_records = db_fetch_assoc_prepared('SELECT local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
 			FROM poller_item
 			WHERE poller_id = ?',
 			array($config['poller_id']));
