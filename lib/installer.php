@@ -29,6 +29,10 @@ class Installer implements JsonSerializable {
 	const STEP_INSTALL = 97;
 	const STEP_COMPLETE = 98;
 	const STEP_ERROR = 99;
+	const STEP_GO_SITE = -1;
+	const STEP_GO_FORUMS = -2;
+	const STEP_GO_GITHUB = -3;
+	const STEP_TEST_REMOTE = -4;
 
 	const MODE_NONE = 0;
 	const MODE_INSTALL = 1;
@@ -596,7 +600,6 @@ class Installer implements JsonSerializable {
 			}
 		}
 		log_install_medium('automation', 'getProfile() returns with ' . $db_profile);
-		log_install_medium('automation', 'getProfile() called from ' . cacti_debug_backtrace('', false, false, 1));
 
 		return $db_profile;
 	}
@@ -1291,7 +1294,6 @@ class Installer implements JsonSerializable {
 		if (empty($this->buttonTest)) {
 			$this->buttonTest = new InstallerButton();
 			$this->buttonTest->Enabled = false;
-			$this->buttonTest->Visible = true;
 			$this->buttonTest->Text    = __('Test Connection');
 		}
 
@@ -1299,7 +1301,7 @@ class Installer implements JsonSerializable {
 		$this->buttonPrevious->Text = __('Previous');
 
 		$this->buttonTest->Visible = false;
-		$this->buttonTest->setStep(0);
+		$this->buttonTest->setStep(Installer::STEP_TEST_REMOTE);
 
 		switch($this->stepCurrent) {
 			case Installer::STEP_WELCOME:
@@ -1781,6 +1783,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal(__('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
 
 				$this->stepData = array('Sections' => $sections);
+				$this->buttonNext->Enabled = false;
 				break;
 		}
 
@@ -2441,15 +2444,15 @@ class Installer implements JsonSerializable {
 
 		iF ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text = __('Get Help');
-			$this->buttonPrevious->Step = -2;
+			$this->buttonPrevious->Step = STEP_GO_FORUMS;
 			$this->buttonPrevious->Visible = true;
 			$this->buttonPrevious->Enabled = true;
 
 			$this->buttonNext->Text = __('Report Issue');
-			$this->buttonNext->Step = -3;
+			$this->buttonNext->Step = STEP_GO_GITHUB;
 		} else {
 			$this->buttonNext->Text = __('Get Started');
-			$this->buttonNext->Step = -1;
+			$this->buttonNext->Step = STEP_GO_SITE;
 		}
 
 		return $output;

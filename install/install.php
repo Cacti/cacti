@@ -59,17 +59,6 @@ if (isset_request_var('language')) {
 	$language = read_user_setting('user_language', get_new_user_default_language(), true);
 }
 
-// database test
-if (get_nfilter_request_var('action') == 'testdb') {
-	if (get_nfilter_request_var('location') == 'local') {
-		install_test_local_database_connection();
-	} else {
-		install_test_remote_database_connection();
-	}
-
-	exit;
-}
-
 $hasJson = false;
 if (interface_exists('JsonSerializable')) {
 	$hasJson = true;

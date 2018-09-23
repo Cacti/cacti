@@ -58,9 +58,9 @@ function install_test_local_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print __('Local Connection Successful');
+		print json_encode(array('status' => 'true'));
 	} else {
-		print __('Local Connection Failed');
+		print json_encode(array('status' => 'false'));
 	}
 }
 
@@ -71,9 +71,9 @@ function install_test_remote_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print __('Remote Connection Successful');
+		print json_encode(array('status' => 'true'));
 	} else {
-		print __('Remote Connection Failed');
+		print json_encode(array('status' => 'false'));
 	}
 }
 
