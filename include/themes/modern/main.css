@@ -1235,7 +1235,7 @@ legend {
 	margin-right:auto;
 	display: table;
 	line-height: 16px;
-	color: snow;
+	color: rgb(68, 68, 68);
 }
 
 .cactiInstallLoaderSpinnerTheme {
