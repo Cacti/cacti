@@ -590,7 +590,7 @@ class Installer implements JsonSerializable {
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
 		if (empty($db_profile)) {
-			$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE default = \'on\' LIMIT 1');
+			$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default` = \'on\' LIMIT 1');
 			if ($db_profile === false) {
 				$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 			}
