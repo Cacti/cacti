@@ -35,12 +35,12 @@ require_once($config['base_path'] . '/lib/dsdebug.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/reports.php');
 
-global $poller_db_cnn_id;
+global $poller_db_cnn_id, $remote_db_cnn_id;
 
 if ($config['poller_id'] > 1 && $config['connection'] != 'offline') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
-	$poller_db_cnn_id = $local_db_cnn_id;
+	$poller_db_cnn_id = false;
 }
 
 function sig_handler($signo) {
@@ -759,7 +759,7 @@ function poller_replicate_check() {
 	$pollers = db_fetch_assoc("SELECT id
 		FROM poller
 		WHERE id > 1
-		AND ((UNIX_TIMESTAMP()-$sync_interval) < UNIX_TIMESTAMP(last_sync) 
+		AND ((UNIX_TIMESTAMP()-$sync_interval) > UNIX_TIMESTAMP(last_sync)
 		OR last_sync='0000-00-00 00:00:00' OR requires_sync='on')
 		AND disabled=''");
 
