@@ -284,3 +284,9 @@ label {
   display: none;
   text-align: center;
 }
+
+.installTestLabel {
+  text-align: center;
+  vertical-align: middle;
+  margin: 5px;
+}
