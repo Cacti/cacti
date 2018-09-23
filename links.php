@@ -141,15 +141,15 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '3') { // Enable Page
+			if (get_request_var('drp_action') == '3') { // Enable Page
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
-			} elseif ($_POST['drp_action'] == '2') { // Disable Page
+			} elseif (get_request_var('drp_action') == '2') { // Disable Page
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
-			} elseif ($_POST['drp_action'] == '1') { // Delete Page
+			} elseif (get_request_var('drp_action') == '1') { // Delete Page
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($selected_items[$i]));
 					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
