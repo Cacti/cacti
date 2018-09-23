@@ -214,7 +214,7 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
-	if ($is_web && $remote_db_cnn_id && 
+	if ($config['is_web'] && $remote_db_cnn_id && 
 		$config['connection'] != 'recovery' && 
 		$config['cacti_db_version'] != 'new_install') {
 
