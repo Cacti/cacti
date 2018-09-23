@@ -36,7 +36,7 @@ $poller_status = array(
 	0 => '<div class="deviceUnknown">'    . __('New/Idle')     . '</div>',
 	1 => '<div class="deviceUp">'         . __('Running')      . '</div>',
 	2 => '<div class="deviceRecovering">' . __('Idle')         . '</div>',
-	3 => '<div class="deviceDown">'       . __('Unknown/Down') . '</div>',
+	3 => '<div class="deviceDown">'       . __('Down')         . '</div>',
 	4 => '<div class="deviceDisabled">'   . __('Disabled')     . '</div>',
 	5 => '<div class="deviceDown">'       . __('Recovering')   . '</div>'
 );
