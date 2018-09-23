@@ -759,7 +759,8 @@ function poller_replicate_check() {
 	$pollers = db_fetch_assoc("SELECT id
 		FROM poller
 		WHERE id > 1
-		AND (UNIX_TIMESTAMP()-$sync_interval) < UNIX_TIMESTAMP(last_sync)
+		AND ((UNIX_TIMESTAMP()-$sync_interval) < UNIX_TIMESTAMP(last_sync) 
+		OR last_sync='0000-00-00 00:00:00' OR requires_sync='on')
 		AND disabled=''");
 
 	foreach($pollers as $poller) {
