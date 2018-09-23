@@ -1278,20 +1278,48 @@ function poller_push_data_to_main() {
 			WHERE poller_id = ?',
 			array($config['poller_id']));
 
-		poller_push_table($remote_db_cnn_id, $host_records, 'host', true);
+		$updates = array(
+			'snmp_sysDescr',
+			'snmp_sysObjectID',
+			'snmp_sysUpTimeInstance',
+			'snmp_sysContact',
+			'snmp_sysName',
+			'snmp_sysLocation',
+			'status',
+			'status_event_count',
+			'status_fail_date',
+			'status_rec_date',
+			'status_last_error',
+			'min_time',
+			'max_time',
+			'cur_time',
+			'avg_time',
+			'polling_time',
+			'total_polls',
+			'failed_polls',
+			'availability',
+			'last_updated'
+		);
+
+		poller_push_table($remote_db_cnn_id, $host_records, 'host', true, $updates);
 
 		$poller_item_records = db_fetch_assoc_prepared('SELECT local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
 			FROM poller_item
 			WHERE poller_id = ?',
 			array($config['poller_id']));
 
-		poller_push_table($remote_db_cnn_id, $poller_item_records, 'poller_item', true);
+		$updates = array(
+			'rrd_next_step'
+		);
+
+		poller_push_table($remote_db_cnn_id, $poller_item_records, 'poller_item', true, $updates);
 	}
 }
 
-function poller_push_table($db_cnn, $records, $table, $ignore = false) {
-	$prefix  = 'UPDATE ' . ($ignore ? 'IGNORE':'') . ' INTO ' . $table . '(';
-	$first = false;
+function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = array()) {
+	$prefix = 'INSERT ' . ($ignore ? 'IGNORE':'') . ' INTO ' . $table . ' ';
+	$first  = true;
+	$dupe   = '';
 
 	if (cacti_sizeof($records)) {
 		foreach($records as $r) {
@@ -1300,14 +1328,29 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false) {
 				$first = false;
 			}
 
-			$sql[] = "('" . implode("','", array_values($r)) . "')";
+			$string = '(';
+			foreach($r as $c) {
+				$string .= ($string == '(' ? '':', ') . db_qstr($c);
+			}
+			$string .= ')';
+
+			$sql[] = $string;
+		}
+
+		if (sizeof($dupes)) {
+			$dupe = ' ON DUPLICATE KEY UPDATE ';
+			$i = 0;
+			foreach($dupes as $item) {
+				$dupe .= ($i == 0 ? '':', ') . "$item=VALUES($item)";
+				$i++;
+			}
 		}
 
 		$sqln = array_chunk($sql, 1000);
 
 		foreach($sqln as $sql) {
 			$osql = implode(',', $sql);
-			db_execute($prefix . ' ' . $osql, true, $db_cnn);
+			db_execute($prefix . $osql . $dupe, true, $db_cnn);
 		}
 	}
 
