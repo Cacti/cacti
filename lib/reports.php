@@ -634,7 +634,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
  * @return string			- generated html output
  */
 function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
-	global $config, $colors;
+	global $config;
 	global $alignment;
 
 	include_once($config['base_path'] . '/lib/time.php');
@@ -870,7 +870,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @return string			- html
  */
 function reports_expand_tree($report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
-	global $colors, $config, $alignment;
+	global $config, $alignment;
 
 	include($config['include_path'] . '/global_arrays.php');
 	include_once($config['library_path'] . '/data_query.php');
@@ -1536,7 +1536,7 @@ function reports_graphs_action_array($action) {
  * returns array $save				-
  *  */
 function reports_graphs_action_prepare($save) {
-	global $colors, $config, $graph_timespans, $alignment;
+	global $config, $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { /* report */
 		print "<tr>

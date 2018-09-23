@@ -1264,3 +1264,53 @@ function poller_recovery_flush_boost($poller_id) {
 		}
 	}
 }
+
+function poller_push_data_to_main() {
+	global $config, $remote_db_cnn_id;
+
+	if ($config['poller_id'] > 1) {
+		$host_records = db_fetch_assoc_prepared('SELECT id, snmp_sysDescr, snmp_sysObjectID,
+			snmp_sysUpTimeInstance, snmp_sysContact, snmp_sysName, snmp_sysLocation,
+			status, status_event_count, status_fail_date, status_rec_date,
+			status_last_error, min_time, max_time, cur_time, avg_time, polling_time,
+			total_polls, failed_polls, availability, last_updated
+			FROM host
+			WHERE poller_id = ?',
+			array($config['poller_id']));
+
+		poller_push_table($remote_db_cnn_id, $host_records, 'host', true);
+
+		$poller_item_records = db_fetch_assoc_prepared('local_data_id, host_id, rrd_name, rrd_step, rrd_next_step
+			FROM poller_item
+			WHERE poller_id = ?',
+			array($config['poller_id']));
+
+		poller_push_table($remote_db_cnn_id, $poller_item_records, 'poller_item', true);
+	}
+}
+
+function poller_push_table($db_cnn, $records, $table, $ignore = false) {
+	$prefix  = 'UPDATE ' . ($ignore ? 'IGNORE':'') . ' INTO ' . $table . '(';
+	$first = false;
+
+	if (cacti_sizeof($records)) {
+		foreach($records as $r) {
+			if ($first) {
+				$prefix .= '(`' . implode('`,`', array_keys($r)) . '`) VALUES ';
+				$first = false;
+			}
+
+			$sql[] = "('" . implode("','", array_values($r)) . "')";
+		}
+
+		$sqln = array_chunk($sql, 1000);
+
+		foreach($sqln as $sql) {
+			$osql = implode(',', $sql);
+			db_execute($prefix . ' ' . $osql, true, $db_cnn);
+		}
+	}
+
+	return sizeof($records);
+}
+

@@ -186,24 +186,6 @@ if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
 }
 
-/* colors */
-$colors['dark_outline'] = '454E53';
-$colors['dark_bar'] = 'AEB4B7';
-$colors['panel'] = 'E5E5E5';
-$colors['panel_text'] = '000000';
-$colors['panel_link'] = '000000';
-$colors['light'] = 'F5F5F5';
-$colors['alternate'] = 'E7E9F2';
-$colors['panel_dark'] = 'C5C5C5';
-
-$colors['header'] = '00438C';
-$colors['header_panel'] = '6d88ad';
-$colors['header_text'] = 'ffffff';
-$colors['form_background_dark'] = 'E1E1E1';
-
-$colors['form_alternate1'] = 'F5F5F5';
-$colors['form_alternate2'] = 'E5E5E5';
-
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
@@ -232,7 +214,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
-	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
+	if ($is_web && $remote_db_cnn_id && 
+		$config['connection'] != 'recovery' && 
+		$config['cacti_db_version'] != 'new_install') {
+
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default   = $rdatabase_default;
 		$database_hostname  = $rdatabase_hostname;
@@ -243,7 +228,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_key   = $rdatabase_ssl_key;
 		$database_ssl_cert  = $rdatabase_ssl_cert;
 		$database_ssl_ca    = $rdatabase_ssl_ca;
+	}
 
+	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
 		$config['connection'] = 'online';
 	} else {
 		$config['connection'] = 'offline';
