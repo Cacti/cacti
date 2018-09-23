@@ -81,9 +81,9 @@ switch (get_request_var('action')) {
    -------------------------- */
 
 function duplicate_data_input($_data_input_id, $input_title) {
-	$orig_input = db_fetch_row_prepared('SELECT * 
-		FROM data_input 
-		WHERE id = ?', 
+	$orig_input = db_fetch_row_prepared('SELECT *
+		FROM data_input
+		WHERE id = ?',
 		array($_data_input_id));
 
 	if (cacti_sizeof($orig_input)) {
@@ -205,7 +205,7 @@ function form_save() {
 }
 
 function data_input_save_message($data_input_id, $type = 'input') {
-	$counts = db_fetch_row_prepared("SELECT 
+	$counts = db_fetch_row_prepared("SELECT
 		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_input AS di
@@ -243,7 +243,7 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_request_var('drp_action') == '1') { // delete 
+			if (get_request_var('drp_action') == '1') { // delete
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
 				}
@@ -282,7 +282,7 @@ function form_actions() {
 	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($di_array) && cacti_sizeof($di_array)) {
-		if (get_request_var('drp_action') == '1') { // delete 
+		if (get_request_var('drp_action') == '1') { // delete
 			$graphs = array();
 
 			print "<tr>
@@ -622,7 +622,7 @@ function data_edit() {
 			ORDER BY sequence, data_name",
 			array(get_request_var('id')));
 
-		$counts = db_fetch_row_prepared("SELECT 
+		$counts = db_fetch_row_prepared("SELECT
 			SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
 			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 			FROM data_input AS di
@@ -872,8 +872,7 @@ function data() {
 
 	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT
-		cacti_count(*)
+	$total_rows = db_fetch_cell("SELECT count(*)
 		FROM data_input AS di
 		$sql_where");
 
