@@ -197,7 +197,7 @@ class Installer implements JsonSerializable {
 		$this->setProfile($this->getProfile());
 		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
-		$this->setAutomationRange($this->getAutomationNetworkRange());
+		$this->setAutomationRange($this->getAutomationRange());
 		$this->setPaths($this->getPaths());
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
@@ -427,6 +427,7 @@ class Installer implements JsonSerializable {
 		log_install_medium('rrdversion', 'sanitizeRRDVersion() - returning ' . $rrdver);
 		return $rrdver;
 	}
+
 	private function getRRDVersion() {
 		$rrdver = read_config_option('install_rrdtool_vrsion');
 		if (empty($rrdver)) {
@@ -642,6 +643,22 @@ class Installer implements JsonSerializable {
 			}
 		}
 		log_install_medium('automation',"setCronInterval($param_mode) returns with $this->cronInterval");
+	}
+
+	public function getAutomationRange() {
+		$range = read_config_option('install_automation_range', true);
+		if (empty($range)) {
+			$row = db_fetch_row('SELECT id, subnet_range FROM automation_networks LIMIT 1');
+			$enabled = 0;
+			$network = '';
+			log_install_debug('automation', "getAutomationRange(): found '" . clean_up_lines(var_export($row, true)));
+			if (!empty($row)) {
+				$range = $row['subnet_range'];
+			}
+		}
+		$result = empty($range) ? '192.168.0.1/24' : $range;
+		log_install_medium('automation',"getAutomationRange() returns '$result'");
+		return $result;
 	}
 
 	private function setAutomationRange($param_range = null) {
@@ -2444,7 +2461,7 @@ class Installer implements JsonSerializable {
 
 	public function getAutomationMode() {
 		$enabled = read_config_option('install_automation_mode', true);
-		log_install_always('automation', 'automation_mode: ' . clean_up_lines($enabled));
+		log_install_debug('automation', 'automation_mode: ' . clean_up_lines($enabled));
 		if ($enabled == NULL) {
 			$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
 			log_install_debug('automation', 'Network data: ' . clean_up_lines(var_export($row, true)));
@@ -2457,19 +2474,6 @@ class Installer implements JsonSerializable {
 		}
 		log_install_medium('automation',"getAutomationMode() returns '$enabled'");
 		return $enabled;
-	}
-
-	public function getAutomationNetworkRange() {
-		$row = db_fetch_row('SELECT id, subnet_range FROM automation_networks LIMIT 1');
-		$enabled = 0;
-		$network = '';
-		log_install_debug('automation', "getAutomationNetworkRange(): found '" . clean_up_lines(var_export($row, true)));
-		if (!empty($row)) {
-			$network = $row['subnet_range'];
-		}
-		$result = empty($network) ? '192.168.0.1/24' : $network;
-		log_install_medium('automation',"getAutomationNetworkRange() returns '$result'");
-		return $result;
 	}
 
 	public function getInstallLog() {
