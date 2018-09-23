@@ -2101,6 +2101,7 @@ CREATE TABLE `poller` (
   `server` mediumint(8) unsigned DEFAULT '0',
   `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_sync` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `disabled` (`disabled`)

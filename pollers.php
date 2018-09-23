@@ -293,6 +293,11 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '4') { // full sync
 				foreach($selected_items as $item) {
 					replicate_out($item);
+
+					db_execute_prepared('UPDATE poller
+						SET last_sync = NOW
+						WHERE id = ?',
+						array($item));
 				}
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			}
@@ -687,8 +692,9 @@ function pollers() {
 		'snmp'        => array('display' => __('SNMP Gets'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of SNMP gets associated with this Collector.')),
 		'script'      => array('display' => __('Scripts'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of script calls associated with this Data Collector.')),
 		'server'      => array('display' => __('Servers'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The number of script server calls associated with this Data Collector.')),
-		'last_update' => array('display' => __('Last Finished'),      'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector completed.')),
-		'last_status' => array('display' => __('Last Update'),    'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector checked in with the main Cacti site.')));
+		'last_update' => array('display' => __('Last Finished'),  'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector completed.')),
+		'last_status' => array('display' => __('Last Update'),    'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector checked in with the main Cacti site.')),
+		'last_sync' => array('display' => __('Last Sync'),        'align' => 'right',  'sort' => 'DESC', 'tip' => __('The last time this Data Collector was full synced with main Cacti site.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
@@ -723,6 +729,13 @@ function pollers() {
 			form_selectable_cell(number_format_i18n($poller['server'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell($poller['last_update'], $poller['id'], '', 'right');
 			form_selectable_cell($poller['last_status'], $poller['id'], '', 'right');
+
+			if ($poller['id'] == 1) {
+				form_selectable_cell(__('N/A'), $poller['id'], '', 'right');
+			} else {
+				form_selectable_cell($poller['last_sync'], $poller['id'], '', 'right');
+			}
+
 			form_checkbox_cell($poller['name'], $poller['id'], $disabled);
 			form_end_row();
 		}

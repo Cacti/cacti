@@ -155,7 +155,7 @@ function upgrade_to_1_2_0() {
 				WHERE snmp_query_id = ?
 				AND graph_template_id = ?',
 				array($id['snmp_query_id'], $id['graph_template_id']));
-	
+
 			if (empty($query_graph_id)) {
 				db_execute_prepared('UPDATE graph_local
 					SET snmp_query_id=0, snmp_query_graph_id=0, snmp_index=""
@@ -171,8 +171,8 @@ function upgrade_to_1_2_0() {
 	}
 
 	db_install_execute('UPDATE graph_tree_items
-		SET host_grouping_type = 1 
-		WHERE host_id > 0 
+		SET host_grouping_type = 1
+		WHERE host_id > 0
 		AND host_grouping_type = 0');
 
 	db_install_execute('UPDATE automation_tree_rules
@@ -184,4 +184,6 @@ function upgrade_to_1_2_0() {
 	db_install_drop_key('poller_reindex', 'key', 'PRIMARY');
 
 	db_install_add_key('poller_reindex', 'key', 'PRIMARY', array('host_id', 'data_query_id', 'arg1(187)'));
+
+	db_install_add_column('poller', array('name' => 'last_sync', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00 00:00:00'));
 }

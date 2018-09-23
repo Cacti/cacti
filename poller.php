@@ -729,6 +729,46 @@ while ($poller_runs_completed < $poller_runs) {
 	poller_recovery_flush_boost($poller_id);
 }
 
+/* start post data processing */
+if ($poller_id == 1) {
+	poller_replicate_check();
+	snmpagent_poller_bottom();
+	boost_poller_bottom();
+	dsstats_poller_bottom();
+	dsdebug_poller_bottom();
+	reports_poller_bottom();
+	spikekill_poller_bottom();
+	automation_poller_bottom();
+	poller_maintenance();
+	api_plugin_hook('poller_bottom');
+} else {
+	automation_poller_bottom();
+	poller_maintenance();
+}
+
+function poller_replicate_check() {
+    global $config;
+    include_once($config['base_path'] . '/lib/poller.php');
+
+	$sync_interval = read_config_option('poller_sync_interval');
+
+	if ($sync_interval == '') {
+		$sync_interval = 7200;
+	}
+
+	$pollers = db_fetch_assoc("SELECT id
+		FROM poller
+		WHERE id > 1
+		AND (UNIX_TIMESTAMP()-$sync_interval) < UNIX_TIMESTAMP(last_sync)
+		AND disabled=''");
+
+	foreach($pollers as $poller) {
+    	$command_string = read_config_option('path_php_binary');
+	    $extra_args = '-q ' . $config['base_path'] . '/cli/poller_replicate.php --poller=' . $poller['id'];
+		exec_background($command_string, $extra_args);
+	}
+}
+
 function poller_enabled_check($poller_id) {
 	global $poller_db_cnn_id;
 
@@ -783,7 +823,7 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 		set_config_option('stats_poller', $cacti_stats);
 	}
 
-	if (isset($poller['min_time'])) {
+	if (array_key_exists('min_time', $poller)) {
 		// calculate min/max/average timings
 		$total_time  = $loop_end-$loop_start;
 		$total_polls = $poller['total_polls'];
@@ -851,21 +891,5 @@ function display_help() {
 	print "    --poller=ID    Run as the poller indicated and not the default poller.\n";
 	print "    --force        Override poller overrun detection and force a poller run.\n";
 	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
-}
-
-/* start post data processing */
-if ($poller_id == 1) {
-	snmpagent_poller_bottom();
-	boost_poller_bottom();
-	dsstats_poller_bottom();
-	dsdebug_poller_bottom();
-	reports_poller_bottom();
-	spikekill_poller_bottom();
-	automation_poller_bottom();
-	poller_maintenance();
-	api_plugin_hook('poller_bottom');
-} else {
-	automation_poller_bottom();
-	poller_maintenance();
 }
 
