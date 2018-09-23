@@ -544,9 +544,15 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
  * @return null             - No data is returned
  */
 function update_resource_cache($poller_id = 1) {
-	global $config;
+	global $config, $remote_db_cnn_id;
 
 	if ($config['cacti_server_os'] == 'win32') return;
+
+	if ($poller_id == 1) {
+		$conn = false;
+	} else {
+		$conn = $remote_db_cnn_id;
+	}
 
 	$mpath = $config['base_path'];
 	$spath = $config['scripts_path'];
@@ -568,7 +574,7 @@ function update_resource_cache($poller_id = 1) {
 		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
 	);
 
-	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""', '', true, $conn);
 
 	if ($poller_id == 1 && $pollers > 1) {
 		foreach($paths as $type => $path) {
@@ -670,7 +676,7 @@ function update_resource_cache($poller_id = 1) {
 		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
 			FROM poller_resource_cache
 			WHERE `path` LIKE "plugins/%"
-			GROUP BY resource_type');
+			GROUP BY resource_type', true, $conn);
 
 		if (cacti_sizeof($plugin_paths)) {
 			foreach ($plugin_paths as $path) {
@@ -834,7 +840,7 @@ function update_db_from_path($path, $type, $recursive = true) {
  * @return null             - No data is returned
  */
 function resource_cache_out($type, $path) {
-	global $config;
+	global $config, $remote_db_cnn_id;
 
 	$settings_path = "md5dirsum_$type";
 	$php_path      = read_config_option('path_php_binary');
@@ -846,7 +852,7 @@ function resource_cache_out($type, $path) {
 		$entries = db_fetch_assoc_prepared('SELECT id, `path`, md5sum, attributes
 			FROM poller_resource_cache
 			WHERE resource_type = ?',
-			array($type));
+			array($type), true, $remote_db_cnn_id);
 
 		if (cacti_sizeof($entries)) {
 			foreach($entries as $e) {
@@ -871,7 +877,7 @@ function resource_cache_out($type, $path) {
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
-							array($e['id'])));
+							array($e['id']), true, $remote_db_cnn_id));
 
 						/* if the file type is PHP check syntax */
 						if ($extension == 'php') {
