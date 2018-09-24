@@ -135,7 +135,7 @@ $phostname = db_fetch_cell_prepared('SELECT hostname
 	array($poller_id), '', true, $poller_db_cnn_id);
 
 // update the pollers hostname if it is blank, otherwise allow the user to edit it
-if ($phostname == '') {
+if ($phostname == '' || $phostname == 'localhost') {
 	db_execute_prepared('UPDATE poller
 		SET hostname = ?
 		WHERE id = ?',
