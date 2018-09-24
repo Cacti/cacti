@@ -364,6 +364,14 @@ case 'preview':
 		exit;
 	}
 
+	if (isset_request_var('external_id')) {
+		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', array(get_nfilter_request_var('external_id')));
+		if (!empty($host_id)) {
+			set_request_var('host_id', $host_id);
+			set_request_var('reset',true);
+		}
+	}
+
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
