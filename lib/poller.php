@@ -1217,6 +1217,8 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 			}
 		}
 
+		db_execute("TRUNCATE TABLE $table", true, $conn);
+
 		$prefix    = "REPLACE INTO $table (";
 		$sql       = '';
 		$colcnt    = 0;
@@ -1264,7 +1266,24 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 
 		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
 	} else {
+		db_execute("TRUNCATE TABLE $table", true, $conn);
+
 		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+	}
+
+	$stats = db_fetch_row_prepared('SELECT
+		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
+		SUM(CASE WHEN action=1 THEN 1 ELSE 0 END) AS script,
+		SUM(CASE WHEN action=2 THEN 1 ELSE 0 END) AS server
+		FROM poller_item
+		WHERE poller_id = ?',
+		array($remote_poller_id));
+
+	if (cacti_sizeof($stats)) {
+		db_execute_prepared('UPDATE poller
+			SET snmp = ?, script = ?, server = ?
+			WHERE id = ?',
+			array($stats['snmp'], $stats['script'], $stats['server'], $remote_poller_id));
 	}
 }
 

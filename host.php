@@ -285,7 +285,7 @@ function form_actions() {
 								db_execute_prepared('UPDATE poller
 									SET requires_sync="on"
 									WHERE id = ?',
-									array($selected_item));
+									array(get_nfilter_request_var($field_name)));
 							}
 
 							db_execute_prepared("UPDATE host

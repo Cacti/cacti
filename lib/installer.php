@@ -1783,7 +1783,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal(__('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
 
 				$this->stepData = array('Sections' => $sections);
-				$this->buttonNext->Enabled = false;
+				$this->buttonNext->Enabled = ($this->mode != MODE_POLLER);
 				break;
 		}
 
