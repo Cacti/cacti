@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-23 21:32-0400\n"
+"POT-Creation-Date: 2018-09-23 22:19-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -755,7 +755,7 @@ msgstr ""
 #: aggregate_templates.php:547 automation_templates.php:398
 #: automation_templates.php:481 color_templates.php:561
 #: include/global_arrays.php:827 include/global_arrays.php:886
-#: lib/installer.php:2090 user_admin.php:2854 user_group_admin.php:2379
+#: lib/installer.php:2112 user_admin.php:2854 user_group_admin.php:2379
 msgid "Templates"
 msgstr ""
 
@@ -1185,7 +1185,7 @@ msgstr ""
 #: automation_devices.php:253 include/global_form.php:1094
 #: include/global_form.php:1130 include/global_form.php:1315
 #: include/global_form.php:1654 lib/api_automation.php:276
-#: lib/api_automation.php:1170 lib/installer.php:2091 managers.php:216
+#: lib/api_automation.php:1170 lib/installer.php:2113 managers.php:216
 #: user_admin.php:1090 user_admin.php:1235 user_group_admin.php:966
 #: user_group_admin.php:1913
 msgid "Description"
@@ -1552,7 +1552,7 @@ msgstr ""
 #: include/global_form.php:1373 include/global_form.php:1401
 #: include/global_form.php:1995 include/global_form.php:2093
 #: include/global_form.php:2138 lib/installer.php:1543 lib/installer.php:1587
-#: lib/installer.php:2091 lib/installer.php:2145 lib/vdef.php:74
+#: lib/installer.php:2113 lib/installer.php:2167 lib/vdef.php:74
 #: managers.php:562 pollers.php:52 sites.php:40 user_admin.php:1090
 #: user_domains.php:324 utilities.php:503 utilities.php:2465
 msgid "Name"
@@ -3000,7 +3000,7 @@ msgstr ""
 msgid "Valid Data"
 msgstr ""
 
-#: data_debug.php:243 lib/installer.php:1901 lib/installer.php:1932
+#: data_debug.php:243 lib/installer.php:1923 lib/installer.php:1954
 msgid "Writable"
 msgstr ""
 
@@ -3528,7 +3528,7 @@ msgid "Steps"
 msgstr ""
 
 #: data_source_profiles.php:566 graphs_new.php:384 include/global_form.php:254
-#: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2145
+#: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2167
 #: lib/rrd.php:2751 utilities.php:505 utilities.php:1436
 msgid "Rows"
 msgstr ""
@@ -10033,7 +10033,7 @@ msgid ""
 "data.</u></strong>"
 msgstr ""
 
-#: include/global_settings.php:972 lib/installer.php:1997
+#: include/global_settings.php:972 lib/installer.php:2019
 msgid "Cron Interval"
 msgstr ""
 
@@ -13541,8 +13541,8 @@ msgid "NOTE:"
 msgstr ""
 
 #: lib/installer.php:1242 lib/installer.php:1527 lib/installer.php:1608
-#: lib/installer.php:1621 lib/installer.php:1625 lib/installer.php:1761
-#: lib/installer.php:1766
+#: lib/installer.php:1621 lib/installer.php:1625 lib/installer.php:1775
+#: lib/installer.php:1780
 msgid "ERROR:"
 msgstr ""
 
@@ -13555,11 +13555,11 @@ msgid "Begin"
 msgstr ""
 
 #: lib/installer.php:1314 lib/installer.php:1669 lib/installer.php:1679
-#: lib/installer.php:2185
+#: lib/installer.php:2207
 msgid "Upgrade"
 msgstr ""
 
-#: lib/installer.php:1316 lib/installer.php:2189
+#: lib/installer.php:1316 lib/installer.php:2211
 msgid "Downgrade"
 msgstr ""
 
@@ -13814,11 +13814,11 @@ msgstr ""
 msgid "Choose this for the Primary site."
 msgstr ""
 
-#: lib/installer.php:1691 lib/installer.php:1727
+#: lib/installer.php:1691 lib/installer.php:1740
 msgid "New Primary Server"
 msgstr ""
 
-#: lib/installer.php:1692 lib/installer.php:1728
+#: lib/installer.php:1692 lib/installer.php:1741
 msgid "New Remote Poller"
 msgstr ""
 
@@ -13828,58 +13828,62 @@ msgid ""
 "to the Primary site."
 msgstr ""
 
-#: lib/installer.php:1732
+#: lib/installer.php:1745
 msgid ""
 "The following information has been determined from Cacti's configuration "
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
 
-#: lib/installer.php:1736 lib/installer.php:1748
-msgid "Database Connection Information"
+#: lib/installer.php:1749
+msgid "Local Database Connection Information"
 msgstr ""
 
-#: lib/installer.php:1739 lib/installer.php:1751
+#: lib/installer.php:1752 lib/installer.php:1764
 #, php-format
 msgid "Database: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1740 lib/installer.php:1752
+#: lib/installer.php:1753 lib/installer.php:1765
 #, php-format
 msgid "Database User: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1741 lib/installer.php:1753
+#: lib/installer.php:1754 lib/installer.php:1766
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1742 lib/installer.php:1754
+#: lib/installer.php:1755 lib/installer.php:1767
 #, php-format
 msgid "Port: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1743 lib/installer.php:1755
+#: lib/installer.php:1756 lib/installer.php:1768
 #, php-format
 msgid "Server Operating System Type: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1760
+#: lib/installer.php:1761
+msgid "Central Database Connection Information"
+msgstr ""
+
+#: lib/installer.php:1773
 msgid "Configuration Readonly!"
 msgstr ""
 
-#: lib/installer.php:1761
+#: lib/installer.php:1775
 msgid ""
 "Your config.php file must be writable by the web server during install in "
 "order to configure the Remote poller.  Once installation is complete, you "
 "must set this file to Read Only to prevent possible security issues."
 msgstr ""
 
-#: lib/installer.php:1765
+#: lib/installer.php:1779
 msgid "Configuration of Poller"
 msgstr ""
 
-#: lib/installer.php:1766
+#: lib/installer.php:1780
 msgid ""
 "Your Remote Cacti Poller information has not been included in your config."
 "php file.  Please review the config.php.dist, and set the variables: <i>"
@@ -13888,44 +13892,59 @@ msgid ""
 "try again."
 msgstr ""
 
-#: lib/installer.php:1770
+#: lib/installer.php:1784
 msgid "Remote Poller Variables"
 msgstr ""
 
-#: lib/installer.php:1771
-msgid "The variables that must be set include the following:"
-msgstr ""
-
-#: lib/installer.php:1782
-msgid "You must also set the $poller_id variable in the config.php."
-msgstr ""
-
-#: lib/installer.php:1783
+#: lib/installer.php:1786
 msgid ""
-"Once you have the variables set in the config.php file, you must also grant "
-"the $rdatabase_username access to the Cacti database.  Follow the same "
-"procedure you would with any other Cacti install.  You may then press the "
-"'Test Connection' button.  If the test is successful you will be able to "
-"proceed and complete the install."
+"The variables that must be set in the config.php file include the following:"
 msgstr ""
 
-#: lib/installer.php:1794
+#: lib/installer.php:1797
+msgid ""
+"The Installer automatically assigns a $poller_id and adds it to the config."
+"php file."
+msgstr ""
+
+#: lib/installer.php:1799
+msgid ""
+"Once the variables are all set in the config.php file, you must also grant "
+"the $rdatabase_username access to the main Cacti database server.  Follow "
+"the same procedure you would with any other Cacti install.  You may then "
+"press the 'Test Connection' button.  If the test is successful you will be "
+"able to proceed and complete the install."
+msgstr ""
+
+#: lib/installer.php:1803
+msgid "Additional Steps After Installation"
+msgstr ""
+
+#: lib/installer.php:1805
+msgid ""
+"It essential that the Central Cacti server can communicate via MySQL to each "
+"remote Cacti database server.  Once the install is complete, you must edit "
+"the Remote Data Collector and ensure the settings are correct.  You can "
+"verify using the 'Test Connection' when editing the Remote Data Collector."
+msgstr ""
+
+#: lib/installer.php:1816
 msgid "Critical Binary Locations and Versions"
 msgstr ""
 
-#: lib/installer.php:1795
+#: lib/installer.php:1817
 msgid "Make sure all of these values are correct before continuing."
 msgstr ""
 
-#: lib/installer.php:1798
+#: lib/installer.php:1820
 msgid "One or more paths appear to be incorrect, unable to proceed"
 msgstr ""
 
-#: lib/installer.php:1875
+#: lib/installer.php:1897
 msgid "Directory Permission Checks"
 msgstr ""
 
-#: lib/installer.php:1876
+#: lib/installer.php:1898
 msgid ""
 "Please ensure the directory permissions below are correct before "
 "proceeding.  During the install, these directories need to be owned by the "
@@ -13936,77 +13955,77 @@ msgid ""
 "be used from the command line after the install is complete."
 msgstr ""
 
-#: lib/installer.php:1879
+#: lib/installer.php:1901
 msgid ""
 "After the install is complete, you can make some of these directories read "
 "only to increase security."
 msgstr ""
 
-#: lib/installer.php:1881
+#: lib/installer.php:1903
 msgid ""
 "These directories will be required to stay read writable after the install "
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
 
-#: lib/installer.php:1886
+#: lib/installer.php:1908
 msgid "Required Writable at Install Time Only"
 msgstr ""
 
-#: lib/installer.php:1905 lib/installer.php:1936
+#: lib/installer.php:1927 lib/installer.php:1958
 msgid "Not Writable"
 msgstr ""
 
-#: lib/installer.php:1917
+#: lib/installer.php:1939
 msgid "Required Writable after Install Complete"
 msgstr ""
 
-#: lib/installer.php:1951
+#: lib/installer.php:1973
 msgid "Ensure Host Process Has Access"
 msgstr ""
 
-#: lib/installer.php:1952
+#: lib/installer.php:1974
 msgid ""
 "Make sure your webserver has read and write access to the entire folder "
 "structure."
 msgstr ""
 
-#: lib/installer.php:1953
+#: lib/installer.php:1975
 msgid "Example:"
 msgstr ""
 
-#: lib/installer.php:1955
+#: lib/installer.php:1977
 #, php-format
 msgid "%s should have MODIFY permission to the above directories"
 msgstr ""
 
-#: lib/installer.php:1957
+#: lib/installer.php:1979
 #, php-format
 msgid "chown -R %s.%s %s/resource/"
 msgstr ""
 
-#: lib/installer.php:1958
+#: lib/installer.php:1980
 msgid ""
 "For SELINUX-users make sure that you have the correct permissions or set "
 "'setenforce 0' temporarily."
 msgstr ""
 
-#: lib/installer.php:1961
+#: lib/installer.php:1983
 msgid "Check Permissions"
 msgstr ""
 
-#: lib/installer.php:1963
+#: lib/installer.php:1985
 msgid "All folders are writable"
 msgstr ""
 
-#: lib/installer.php:1967
+#: lib/installer.php:1989
 msgid ""
 "If you are installing packages, once the packages are installed, you should "
 "change the scripts directory back to read only as this presents some "
 "exposure to the web site."
 msgstr ""
 
-#: lib/installer.php:1969
+#: lib/installer.php:1991
 msgid ""
 "For remote pollers, it is critical that the paths that you will be updating "
 "frequently, including the plugins, scripts, and resources paths have read/"
@@ -14014,11 +14033,11 @@ msgid ""
 "main web server content."
 msgstr ""
 
-#: lib/installer.php:1985 lib/installer.php:1991
+#: lib/installer.php:2007 lib/installer.php:2013
 msgid "Default Profile"
 msgstr ""
 
-#: lib/installer.php:1986
+#: lib/installer.php:2008
 msgid ""
 "Please select the default Data Source Profile to be used for polling "
 "sources.  This is the maximum amount of time between scanning devices for "
@@ -14027,11 +14046,11 @@ msgid ""
 "interval that you wish to use for Data Collection."
 msgstr ""
 
-#: lib/installer.php:2018
+#: lib/installer.php:2040
 msgid "Default Automation Network"
 msgstr ""
 
-#: lib/installer.php:2019
+#: lib/installer.php:2041
 msgid ""
 "Cacti can automatically scan the network once installation has completed. "
 "This will utilise the network range below to work out the range of IPs that "
@@ -14039,55 +14058,55 @@ msgid ""
 "include using both 'public' and 'private' communities."
 msgstr ""
 
-#: lib/installer.php:2020
+#: lib/installer.php:2042
 msgid ""
 "If your devices require a different set of options to be used first, you may "
 "define them below and they will be utilized before the defaults"
 msgstr ""
 
-#: lib/installer.php:2021
+#: lib/installer.php:2043
 msgid "All options may be adjusted post installation"
 msgstr ""
 
-#: lib/installer.php:2025
+#: lib/installer.php:2047
 msgid "Default Options"
 msgstr ""
 
-#: lib/installer.php:2029
+#: lib/installer.php:2051
 msgid "Scan Mode"
 msgstr ""
 
-#: lib/installer.php:2034
+#: lib/installer.php:2056
 msgid "Network Range"
 msgstr ""
 
-#: lib/installer.php:2040
+#: lib/installer.php:2062
 msgid "Additional Defaults"
 msgstr ""
 
-#: lib/installer.php:2061
+#: lib/installer.php:2083
 msgid "Additional SNMP Options"
 msgstr ""
 
-#: lib/installer.php:2074
+#: lib/installer.php:2096
 msgid "Error Locating Profiles"
 msgstr ""
 
-#: lib/installer.php:2075
+#: lib/installer.php:2097
 msgid "The installation cannot continue because no profiles could be found."
 msgstr ""
 
-#: lib/installer.php:2076
+#: lib/installer.php:2098
 msgid ""
 "This may occur if you have a blank database and have not yet imported the "
 "cacti.sql file"
 msgstr ""
 
-#: lib/installer.php:2084
+#: lib/installer.php:2106
 msgid "Template Setup"
 msgstr ""
 
-#: lib/installer.php:2086
+#: lib/installer.php:2108
 msgid ""
 "Please select the Device Templates that you wish to use after the Install.  "
 "If you Operating System is Windows, you need to ensure that you select the "
@@ -14095,15 +14114,15 @@ msgid ""
 "sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
 
-#: lib/installer.php:2091 plugins.php:476
+#: lib/installer.php:2113 plugins.php:476
 msgid "Author"
 msgstr ""
 
-#: lib/installer.php:2091
+#: lib/installer.php:2113
 msgid "Homepage"
 msgstr ""
 
-#: lib/installer.php:2108
+#: lib/installer.php:2130
 msgid ""
 "Device Templates allow you to monitor and graph a vast assortment of data "
 "within Cacti.  After you select the desired Device Templates, press 'Finish' "
@@ -14111,41 +14130,41 @@ msgid ""
 "importation of the Device Templates can take a few minutes."
 msgstr ""
 
-#: lib/installer.php:2115
+#: lib/installer.php:2137
 msgid "Database Collation"
 msgstr ""
 
-#: lib/installer.php:2127
+#: lib/installer.php:2149
 msgid "Your databse default collation appears to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2129
+#: lib/installer.php:2151
 msgid "Your database default collaction does NOT appear to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2130
+#: lib/installer.php:2152
 msgid ""
 "Any tables created by plugins may have issues linked against Cacti Core "
 "tables if the collation is not matched"
 msgstr ""
 
-#: lib/installer.php:2131
+#: lib/installer.php:2153
 #, php-format
 msgid ""
 "Please ensure your database is changed from '%s' to 'utf8mb4_unicode_ci'"
 msgstr ""
 
-#: lib/installer.php:2134
+#: lib/installer.php:2156
 msgid "Table Setup"
 msgstr ""
 
-#: lib/installer.php:2139
+#: lib/installer.php:2161
 msgid ""
 "The following tables should be converted to UTF8 and InnoDB.  Please select "
 "the tables that you wish to convert during the installation process."
 msgstr ""
 
-#: lib/installer.php:2140
+#: lib/installer.php:2162
 msgid ""
 "Conversion of tables may take some time especially on larger tables.  The "
 "conversion of these tables will occur in the background but will not prevent "
@@ -14153,120 +14172,120 @@ msgid ""
 "not enough resources for MySQL to handle the conversion."
 msgstr ""
 
-#: lib/installer.php:2144
+#: lib/installer.php:2166
 msgid "Tables"
 msgstr ""
 
-#: lib/installer.php:2145 utilities.php:509
+#: lib/installer.php:2167 utilities.php:509
 msgid "Collation"
 msgstr ""
 
-#: lib/installer.php:2145 utilities.php:504
+#: lib/installer.php:2167 utilities.php:504
 msgid "Engine"
 msgstr ""
 
-#: lib/installer.php:2167
+#: lib/installer.php:2189
 msgid "WARNING"
 msgstr ""
 
-#: lib/installer.php:2168
+#: lib/installer.php:2190
 msgid ""
 "One or more tables are too large to convert during the installation.  You "
 "should use the cli/convert_tables.php script to perform the conversion."
 msgstr ""
 
-#: lib/installer.php:2174
+#: lib/installer.php:2196
 msgid "All your tables appear to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2184
+#: lib/installer.php:2206
 msgid "Confirm Upgrade"
 msgstr ""
 
-#: lib/installer.php:2188
+#: lib/installer.php:2210
 msgid "Confirm Downgrade"
 msgstr ""
 
-#: lib/installer.php:2192
+#: lib/installer.php:2214
 msgid "Confirm Installation"
 msgstr ""
 
-#: lib/installer.php:2193 plugins.php:28
+#: lib/installer.php:2215 plugins.php:28
 msgid "Install"
 msgstr ""
 
-#: lib/installer.php:2198
+#: lib/installer.php:2220
 msgid "DOWNGRADE DETECTED"
 msgstr ""
 
-#: lib/installer.php:2199
+#: lib/installer.php:2221
 msgid ""
 "YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES "
 "THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS "
 "AUTOMATICALLY FOR YOU"
 msgstr ""
 
-#: lib/installer.php:2200
+#: lib/installer.php:2222
 msgid ""
 "Downgrading should only be performed when absolutely necessary and doing so "
 "may break your installlation"
 msgstr ""
 
-#: lib/installer.php:2203
+#: lib/installer.php:2225
 msgid ""
 "Your Cacti Server is almost ready.  Please check that you are happy to "
 "proceed."
 msgstr ""
 
-#: lib/installer.php:2206
+#: lib/installer.php:2228
 #, php-format
 msgid ""
 "Press '%s' then click '%s' to complete the installation process after "
 "selecting your Device Templates."
 msgstr ""
 
-#: lib/installer.php:2222
+#: lib/installer.php:2244
 #, php-format
 msgid "Installing Cacti Server v%s"
 msgstr ""
 
-#: lib/installer.php:2223
+#: lib/installer.php:2245
 msgid "Your Cacti Server is now installing"
 msgstr ""
 
-#: lib/installer.php:2330
+#: lib/installer.php:2352
 msgid "Complete"
 msgstr ""
 
-#: lib/installer.php:2331
+#: lib/installer.php:2353
 #, php-format
 msgid ""
 "Your Cacti Server v%s has been installed/updated.  You may now start using "
 "the software."
 msgstr ""
 
-#: lib/installer.php:2334
+#: lib/installer.php:2356
 #, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr ""
 
-#: lib/installer.php:2446
+#: lib/installer.php:2468
 msgid "Get Help"
 msgstr ""
 
-#: lib/installer.php:2451
+#: lib/installer.php:2473
 msgid "Report Issue"
 msgstr ""
 
-#: lib/installer.php:2454
+#: lib/installer.php:2476
 msgid "Get Started"
 msgstr ""
 
-#: lib/installer.php:2542
+#: lib/installer.php:2564
 msgid "Exception occurred during installation:  #"
 msgstr ""
 
-#: lib/installer.php:2551
+#: lib/installer.php:2573
 #, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr ""

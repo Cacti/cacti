@@ -1705,16 +1705,29 @@ class Installer implements JsonSerializable {
 				);
 
 				$this->buttonNext->Enabled = true;
+
 				switch ($this->mode) {
 					case Installer::MODE_POLLER:
 						$selectedPoller = ' selected';
-						$sections['poller_vars'] = 1;
+						$sections['connection_local'] = 1;
 						$sections['connection_remote'] = 1;
 						$sections['error_file'] = !$this->isConfigurationWritable();
 						$sections['error_poller'] = !$this->isRemoteDatabaseGood();
-						$this->buttonNext->Enabled = !($sections['error_file'] || $sections['error_poller']);
-						$this->buttonTest->Enabled = true;
-						$this->buttonTest->Visible = true;
+
+						if ($sections['error_poller']) {
+							$sections['poller_vars'] = 1;
+							$sections['connection_remote'] = 0;
+						}
+
+						if (!($sections['error_file'] || $sections['error_poller'])) {
+							$this->buttonNext->Enabled = true;
+							$this->buttonTest->Enabled = true;
+							$this->buttonTest->Visible = true;
+						} else {
+							$this->buttonNext->Enabled = false;
+							$this->buttonNext->Visible = false;
+						}
+
 						break;
 					default:
 						$selectedInstall = ' selected';
@@ -1733,7 +1746,7 @@ class Installer implements JsonSerializable {
 
 				$output .= Installer::sectionSubTitleEnd();
 
-				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_local');
+				$output .= Installer::sectionSubTitle(__('Local Database Connection Information'), 'connection_local');
 
 				$output .= Installer::sectionCode(
 					__('Database: <b>%s</b>', $database_default) . '<br>' .
@@ -1745,7 +1758,7 @@ class Installer implements JsonSerializable {
 
 				$output .= Installer::sectionSubTitleEnd();
 
-				$output .= Installer::sectionSubTitle(__('Database Connection Information'),'connection_remote');
+				$output .= Installer::sectionSubTitle(__('Central Database Connection Information'), 'connection_remote');
 
 				$output .= Installer::sectionCode(
 					__('Database: <b>%s</b>', $rdatabase_default) . '<br>' .
@@ -1758,6 +1771,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionSubTitleEnd();
 
 				$output .= Installer::sectionSubTitle(__('Configuration Readonly!'), 'error_file');
+
 				$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' . __('Your config.php file must be writable by the web server during install in order to configure the Remote poller.  Once installation is complete, you must set this file to Read Only to prevent possible security issues.') . '</span>');
 
 				$output .= Installer::sectionSubTitleEnd();
@@ -1768,11 +1782,12 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionSubTitleEnd();
 
 				$output .= Installer::sectionSubTitle(__('Remote Poller Variables'), 'poller_vars');
-				$output .= Installer::sectionNormal(__('The variables that must be set include the following:'));
+
+				$output .= Installer::sectionNormal(__('The variables that must be set in the config.php file include the following:'));
 				$output .= Installer::sectionCode(
 					'$rdatabase_type     = \'mysql\';<br>' .
 					'$rdatabase_default  = \'cacti\';<br>' .
-					'$rdatabase_hostname = \'localhost\';<br>' .
+					'$rdatabase_hostname = \'cacti.example.com\'; // Central Cacti server.<br>' .
 					'$rdatabase_username = \'cactiuser\';<br>' .
 					'$rdatabase_password = \'cactiuser\';<br>' .
 					'$rdatabase_port     = \'3306\';<br>' .
@@ -1783,7 +1798,11 @@ class Installer implements JsonSerializable {
 
 				$output .= Installer::sectionNormal(__('Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
 
-				$output .= Installer::sectionNormal(__('It is also important that the main Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remove Data Collector and ensure the settings are correct.'), 'config_remote_db');
+				$output .= Installer::sectionSubTitleEnd();
+
+				$output .= Installer::sectionSubTitle(__('Additional Steps After Installation'), 'poller_vars');
+
+				$output .= Installer::sectionNormal(__('It essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the \'Test Connection\' when editing the Remote Data Collector.'), 'config_remote_db');
 
 				$this->stepData = array('Sections' => $sections);
 				$this->buttonNext->Enabled = ($this->mode != MODE_POLLER);
