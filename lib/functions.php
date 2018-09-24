@@ -1561,7 +1561,8 @@ function get_data_source_title($local_data_id) {
 		data_template_data.name
 		FROM (data_template_data, data_local)
 		WHERE data_template_data.local_data_id = data_local.id
-		AND data_local.id = ?', array($local_data_id));
+		AND data_local.id = ?',
+		array($local_data_id));
 
 	if (isset($data) && cacti_sizeof($data)) {
 		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
@@ -2172,16 +2173,16 @@ function get_web_browser() {
 }
 
 function get_guest_account() {
-	return db_fetch_cell_prepared('SELECT id 
-		FROM user_auth 
-		WHERE username = ? OR id = ?', 
+	return db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE username = ? OR id = ?',
 		array(read_config_option('guest_user'), read_config_option('guest_user')));
 }
 
 function get_template_account() {
-	return db_fetch_cell_prepared('SELECT id 
-		FROM user_auth 
-		WHERE username = ? OR id = ?', 
+	return db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE username = ? OR id = ?',
 		array(read_config_option('user_template'), read_config_option('user_template')));
 }
 

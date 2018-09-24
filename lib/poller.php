@@ -171,8 +171,16 @@ function update_reindex_cache($host_id, $data_query_id) {
 	/* will be used to keep track of sql statements to execute later on */
 	$recache_stack = array();
 
-	$host       = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host WHERE id = ?', array($host_id));
-	$data_query = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host_snmp_query WHERE host_id = ? AND snmp_query_id = ?', array($host_id, $data_query_id));
+	$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	$data_query = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
+		FROM host_snmp_query
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
 
 	$data_query_type = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' data_input.type_id
 		FROM data_input
