@@ -685,6 +685,13 @@ function update_resource_cache($poller_id = 1) {
 		}
 
 		foreach($paths as $type => $path) {
+			if ($type == 'plugins') {
+				if (!file_exists($path['path'])) {
+					cacti_log('INFO: Attempting to create directory \'' . $path['path'] . '\'', false, 'POLLER');
+					@mkdir($path['path'], 0755, true);
+				}
+			}
+
 			if (is_writable($path['path'])) {
 				resource_cache_out($type, $path);
 			} else {
@@ -879,10 +886,10 @@ function resource_cache_out($type, $path) {
 						$contents = base64_decode(db_fetch_cell_prepared('SELECT contents
 							FROM poller_resource_cache
 							WHERE id = ?',
-							array($e['id'])), true, $remote_db_cnn_id);
+							array($e['id']), '', true, $remote_db_cnn_id));
 
 						/* if the file type is PHP check syntax */
-						if ($extension == 'php') {
+						if ($extension == 'php' && $contents != '') {
 							$tmpdir = sys_get_temp_dir();
 							$tmpfile = tempnam($tmpdir,'ccp');
 
