@@ -1779,8 +1779,11 @@ class Installer implements JsonSerializable {
 					'$rdatabase_ssl      = false;<br>'
 				);
 
-				$output .= Installer::sectionNormal(__('You must also set the $poller_id variable in the config.php.'), 'config_remote_poller');
-				$output .= Installer::sectionNormal(__('Once you have the variables set in the config.php file, you must also grant the $rdatabase_username access to the Cacti database.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
+				$output .= Installer::sectionNormal(__('The Installer automatically assigns a $poller_id and adds it to the config.php file.'), 'config_remote_poller');
+
+				$output .= Installer::sectionNormal(__('Once the variables are all set in the config.php file, you must also grant the $rdatabase_username access to the main Cacti database server.  Follow the same procedure you would with any other Cacti install.  You may then press the \'Test Connection\' button.  If the test is successful you will be able to proceed and complete the install.'), 'config_remote_var');
+
+				$output .= Installer::sectionNormal(__('It is also important that the main Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remove Data Collector and ensure the settings are correct.'), 'config_remote_db');
 
 				$this->stepData = array('Sections' => $sections);
 				$this->buttonNext->Enabled = ($this->mode != MODE_POLLER);
