@@ -241,7 +241,9 @@ function form_save() {
 		$save['dbport']    = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
 		$save['dbssl']     = isset_request_var('dbssl') ? 'on':'';
 
-		if (!is_error_message()) {
+		if ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
+			raise_message('poller_nodupe');
+		} elseif (!is_error_message()) {
 			$poller_id = sql_save($save, 'poller');
 
 			if ($poller_id) {
@@ -258,6 +260,18 @@ function form_save() {
 /* ------------------------
     The 'actions' function
    ------------------------ */
+
+function poller_host_duplicate($poller_id, $host) {
+	if ($host == 'localhost') {
+		return true;
+	} else {
+		return db_fetch_cell_prepared('SELECT COUNT(*)
+			FROM poller
+			WHERE dbhost LIKE "' . $host . '%"
+			AND id != ?',
+			array($poller_id));
+	}
+}
 
 function form_actions() {
 	global $poller_actions;
@@ -457,7 +471,6 @@ function poller_edit() {
 			<script type='text/javascript'>
 			$(function() {
 				$('#row_dbssl').after('<?php print $row_html;?>');
-				applySkin();
 
 				$('#dbtest').click(function() {
 					ping_database();
