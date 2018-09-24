@@ -142,6 +142,12 @@ if ($phostname == '' || $phostname == 'localhost') {
 		array($hostname, $poller_id), true, $poller_db_cnn_id);
 }
 
+// if you have more than one poller, boost must be enabled
+$total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
+if ($total_pollers > 1 && read_config_option('boost_rrd_update_system_enable') == '') {
+	set_config_option('boost_rrd_update_system_enable', 'on');
+}
+
 // check to see if the poller is disabled
 poller_enabled_check($poller_id);
 
