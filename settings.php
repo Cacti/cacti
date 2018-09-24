@@ -234,6 +234,7 @@ default:
 
 	if ($data_collectors > 1) {
 		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_redirect', 'on');
 	}
 
 	$system_tabs = array(
@@ -567,6 +568,8 @@ default:
 			if (dataCollectors > 1) {
 				$('#boost_rrd_update_enable').prop('checked', true);
 				$('#boost_rrd_update_enable').prop('disabled', true);
+				$('#boost_redirect').prop('checked', true);
+				$('#boost_redirect').prop('disabled', true);
 			}
 
 			initBoostOD();
