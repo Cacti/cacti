@@ -135,9 +135,26 @@ $phostname = db_fetch_cell_prepared('SELECT hostname
 	array($poller_id), '', true, $poller_db_cnn_id);
 
 // update the pollers hostname if it is blank, otherwise allow the user to edit it
-if ($phostname == '' || $phostname == 'localhost') {
+if ($phostname == '' || $phostname == 'localhost' || $phostname == '127.0.0.1') {
 	db_execute_prepared('UPDATE poller
 		SET hostname = ?
+		WHERE id = ?',
+		array($hostname, $poller_id), true, $poller_db_cnn_id);
+}
+
+$dbhostname = db_fetch_cell_prepared('SELECT dbhost
+	FROM poller
+	WHERE id = ?',
+	array($poller_id), '', true, $poller_db_cnn_id);
+
+// update the database hostname based upon the entry
+if ($dbhostname == '' || $dbhostname == 'localhost' || $dbhostname == '127.0.0.1') {
+	if ($database_hostname != 'localhost' && $database_hostname != '127.0.0.1') {
+		$hostname = $database_hostname;
+	}
+
+	db_execute_prepared('UPDATE poller
+		SET dbhost = ?
 		WHERE id = ?',
 		array($hostname, $poller_id), true, $poller_db_cnn_id);
 }
@@ -768,6 +785,7 @@ function poller_replicate_check() {
 		WHERE id > 1
 		AND ((UNIX_TIMESTAMP()-$sync_interval) > UNIX_TIMESTAMP(last_sync)
 		OR last_sync='0000-00-00 00:00:00' OR requires_sync='on')
+		AND dbhost NOT IN ('localhost', '127.0.0.1', '')
 		AND disabled=''");
 
 	foreach($pollers as $poller) {
