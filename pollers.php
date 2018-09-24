@@ -241,7 +241,9 @@ function form_save() {
 		$save['dbport']    = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
 		$save['dbssl']     = isset_request_var('dbssl') ? 'on':'';
 
-		if ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
+		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
+			raise_message('poller_dbhost');
+		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
 		} elseif (!is_error_message()) {
 			$poller_id = sql_save($save, 'poller');
@@ -306,12 +308,22 @@ function form_actions() {
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			} elseif (get_request_var('drp_action') == '4') { // full sync
 				foreach($selected_items as $item) {
-					replicate_out($item);
-
-					db_execute_prepared('UPDATE poller
-						SET last_sync = NOW()
+					$poller = db_fetch_assoc_prepared('SELECT *
+						FROM poller
 						WHERE id = ?',
 						array($item));
+
+					if ($poller['dbhost'] == 'localhost') {
+						raise_message('poller_dbhost');
+						continue;
+					} else {
+						replicate_out($item);
+
+						db_execute_prepared('UPDATE poller
+							SET last_sync = NOW()
+							WHERE id = ?',
+							array($item));
+					}
 				}
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
