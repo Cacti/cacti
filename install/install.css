@@ -203,7 +203,13 @@ label {
 }
 
 .cactiInstallSectionNoteTitle, .cactiInstallSectionWarningTitle, .cactiInstallSectionErrorTitle {
+	display: table-cell;
 	font-weight: bold;
+}
+
+.cactiInstallSectionNoteBody, .cactiInstallSectionWarningBody, .cactiInstallSectionErrorBody {
+	padding-left: 5px;
+	display: table-cell;
 }
 
 .cactiInstallSectionNoteTitle {

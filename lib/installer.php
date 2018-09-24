@@ -346,7 +346,7 @@ class Installer implements JsonSerializable {
 		}
 
 		$result = $value !== null;
-		log_install_medium('', "setTrueFalse($option, " . var_export($param, true) . " sets $value, returns $result");
+		log_install_high('', "setTrueFalse($option, " . var_export($param, true) . " sets $value, returns $result");
 		return $result;
 	}
 
@@ -371,7 +371,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function setProgress($param_process) {
-		log_install_always('', "Progress: $param_process");
+		log_install_medium('', "Progress: $param_process");
 		set_config_option('install_progress', $param_process);
 		set_config_option('install_updated', microtime(true));
 	}
@@ -1319,11 +1319,6 @@ class Installer implements JsonSerializable {
 
 			case Installer::STEP_PERMISSION_CHECK:
 				switch ($this->mode) {
-					case Installer::MODE_INSTALL:
-					case Installer::MODE_POLLER:
-						$this->stepNext = Installer::STEP_BINARY_LOCATIONS;
-						break;
-
 					case Installer::MODE_UPGRADE:
 					case Installer::MODE_DOWNGRADE:
 						$this->stepNext = Installer::STEP_CHECK_TABLES;
@@ -1332,14 +1327,26 @@ class Installer implements JsonSerializable {
 
 				break;
 
-			case Installer::STEP_PERMISSION_CHECK:
+			case Installer::STEP_BINARY_LOCATIONS:
 				switch ($this->mode) {
+					case Installer::MODE_POLLER:
+						$this->stepNext = Installer::STEP_CHECK_TABLES;
+						break;
+				}
+				break;
+
+			case Installer::STEP_CHECK_TABLES:
+				switch ($this->mode) {
+					case Installer::MODE_POLLER:
+						$this->stepPrevious = Installer::STEP_BINARY_LOCATIONS;
+						break;
+
 					case Installer::MODE_UPGRADE:
 					case Installer::MODE_DOWNGRADE:
-						$this->stepPrevious = Installer::STEP_INSTALL_TYPE;
+						$this->stepPrevious = Installer::STEP_PERMISSION_CHECK;
 						break;
-					}
-					break;
+				}
+				break;
 
 			case Installer::STEP_INSTALL_CONFIRM:
 				/* upgrade - if user upgrades send to settings check */
@@ -1348,13 +1355,6 @@ class Installer implements JsonSerializable {
 					$this->stepNext = Installer::STEP_INSTALL_OLD;
 				} else {
 					$this->stepNext = Installer::STEP_INSTALL;
-				}
-				break;
-
-			case Installer::STEP_CHECK_TABLES:
-				if ($this->mode == Installer::MODE_UPGRADE ||
-				    $this->mode == Installer::MODE_DOWNGRADE) {
-					$this->stepPrevious = Installer::STEP_PERMISSION_CHECK;
 				}
 				break;
 
@@ -1720,7 +1720,7 @@ class Installer implements JsonSerializable {
 						}
 
 						if (!($sections['error_file'] || $sections['error_poller'])) {
-							$this->buttonNext->Enabled = true;
+							$this->buttonNext->Enabled = ($this->mode != Installer::MODE_POLLER);
 							$this->buttonTest->Enabled = true;
 							$this->buttonTest->Visible = true;
 						} else {
@@ -1805,7 +1805,7 @@ class Installer implements JsonSerializable {
 				$output .= Installer::sectionNormal(__('It essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the \'Test Connection\' when editing the Remote Data Collector.'), 'config_remote_db');
 
 				$this->stepData = array('Sections' => $sections);
-				$this->buttonNext->Enabled = ($this->mode != MODE_POLLER);
+				$this->buttonNext->Enabled = ($this->mode != Installer::MODE_POLLER);
 				break;
 		}
 
@@ -2112,15 +2112,16 @@ class Installer implements JsonSerializable {
 		html_start_box(__('Templates'), '100%', false, '3', 'center', '', '');
 		html_header_checkbox(array(__('Name'), __('Description'), __('Author'), __('Homepage')));
 		foreach ($templates as $id => $p) {
+			$name = (isset($p['name']) && !empty($p['name'])) ? $p['name'] : '';
+			$description = (isset($p['description']) && !empty($p['description'])) ? $p['description'] : '';
+			$author = (isset($p['author']) && !empty($p['author'])) ? $p['author'] : '';
+			$homepage = (isset($p['homepage']) && !empty($p['homepage'])) ? '<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>' : '';
+
 			form_alternate_row('line' . $id, true);
-			form_selectable_cell($p['name'], $id);
-			form_selectable_cell($p['description'], $id);
-			form_selectable_cell($p['author'], $id);
-			if ($p['homepage'] != '') {
-				form_selectable_cell('<a href="'. $p['homepage'] . '" target=_new>' . $p['homepage'] . '</a>', $id);
-			} else {
-				form_selectable_cell('', $id);
-			}
+			form_selectable_cell($name, $id);
+			form_selectable_cell($description, $id);
+			form_selectable_cell($author, $id);
+			form_selectable_cell($homepage, $id);
 			form_checkbox_cell($p['name'], 'template_'  . str_replace(".", "_",  $p['filename']));
 			form_end_row();
 		}
@@ -2466,15 +2467,15 @@ class Installer implements JsonSerializable {
 
 		iF ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text = __('Get Help');
-			$this->buttonPrevious->Step = STEP_GO_FORUMS;
+			$this->buttonPrevious->Step = Installer::STEP_GO_FORUMS;
 			$this->buttonPrevious->Visible = true;
 			$this->buttonPrevious->Enabled = true;
 
 			$this->buttonNext->Text = __('Report Issue');
-			$this->buttonNext->Step = STEP_GO_GITHUB;
+			$this->buttonNext->Step = Installer::STEP_GO_GITHUB;
 		} else {
 			$this->buttonNext->Text = __('Get Started');
-			$this->buttonNext->Step = STEP_GO_SITE;
+			$this->buttonNext->Step = Installer::STEP_GO_SITE;
 		}
 
 		return $output;
