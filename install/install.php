@@ -26,11 +26,18 @@ error_reporting(E_ALL);
 define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/auth.php');
-include_once('../lib/api_data_source.php');
-include_once('../lib/api_device.php');
-include_once('../lib/api_tree.php');
-include_once('../lib/import.php');
-include_once('../lib/utility.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 include_once('./functions.php');
 
 set_default_action();

@@ -24,8 +24,15 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
 require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -59,7 +66,7 @@ if (cacti_sizeof($parms)) {
 					print "ERROR: You must supply a valid host-id to run this script!\n";
 					exit(1);
 				}
-	
+
 				break;
 			case '--data-query-id':
 				$data_query_id = $value;
@@ -179,11 +186,11 @@ if (cacti_sizeof($parms)) {
 		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
 		exit(1);
 	} else {
-		db_execute('REPLACE INTO host_snmp_query 
-			(host_id,snmp_query_id,reindex_method) 
-			VALUES (' . 
-				$host_id        . ',' . 
-				$data_query_id  . ',' . 
+		db_execute('REPLACE INTO host_snmp_query
+			(host_id,snmp_query_id,reindex_method)
+			VALUES (' .
+				$host_id        . ',' .
+				$data_query_id  . ',' .
 				$reindex_method . ')');
 
 		/* recache snmp data */

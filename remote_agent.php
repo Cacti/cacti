@@ -23,12 +23,20 @@
 */
 
 require(__DIR__ . '/include/global.php');
-include_once('./lib/api_device.php');
-include_once('./lib/data_query.php');
-include_once('./lib/poller.php');
-include_once('./lib/ping.php');
-include_once('./lib/snmp.php');
-include_once('./lib/rrd.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/html_form_template.php');
+require_once($config['base_path'] . '/lib/ping.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 $debug = false;
 
