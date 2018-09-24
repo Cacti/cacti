@@ -1011,6 +1011,10 @@ function replicate_out($remote_poller_id = 1) {
 			return false;
 		}
 
+		if ($cinfo['dbhost'] == 'localhost' || $cinfo['dbhost'] == '127.0.0.1') {
+			return false;
+		}
+
 		$remote_db_cnn_id = db_connect_real(
 			$cinfo['dbhost'],
 			$cinfo['dbuser'],
