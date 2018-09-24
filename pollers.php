@@ -308,7 +308,7 @@ function form_actions() {
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			} elseif (get_request_var('drp_action') == '4') { // full sync
 				foreach($selected_items as $item) {
-					$poller = db_fetch_assoc_prepared('SELECT *
+					$poller = db_fetch_row_prepared('SELECT *
 						FROM poller
 						WHERE id = ?',
 						array($item));
