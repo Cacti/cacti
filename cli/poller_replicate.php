@@ -72,9 +72,17 @@ if ($poller_id < 1) {
 	print 'FATAL: The poller needs to be greater than 1!' . PHP_EOL;
 	exit(1);
 } elseif ($poller_id == 0) {
-	$pollers = db_fetch_assoc('SELECT id FROM poller WHERE id > 1 AND disabled=""');
+	$pollers = db_fetch_assoc('SELECT id
+		FROM poller
+		WHERE id > 1
+		AND disabled=""');
 } else {
-	$pollers = db_fetch_assoc_prepared('SELECT id FROM poller WHERE id = ? AND disabled=""', array($poller_id));
+	$pollers = db_fetch_assoc_prepared('SELECT id
+		FROM poller
+		WHERE id != 1
+		AND id = ?
+		AND disabled=""',
+		array($poller_id));
 }
 
 if (sizeof($pollers)) {
@@ -82,7 +90,7 @@ if (sizeof($pollers)) {
 		replicate_out($poller['id']);
 
 		db_execute_prepared('UPDATE poller
-			SET last_sync = NOW()
+			SET last_sync = NOW(), requires_sync=""
 			WHERE id = ?',
 			array($poller['id']));
 

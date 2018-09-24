@@ -685,11 +685,9 @@ function update_resource_cache($poller_id = 1) {
 		}
 
 		foreach($paths as $type => $path) {
-			if ($type == 'plugins') {
-				if (!file_exists($path['path'])) {
-					cacti_log('INFO: Attempting to create directory \'' . $path['path'] . '\'', false, 'POLLER');
-					@mkdir($path['path'], 0755, true);
-				}
+			if (!file_exists($path['path'])) {
+				cacti_log('INFO: Attempting to create directory \'' . $path['path'] . '\'', false, 'POLLER');
+				@mkdir($path['path'], 0755, true);
 			}
 
 			if (is_writable($path['path'])) {
