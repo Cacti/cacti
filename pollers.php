@@ -316,6 +316,9 @@ function form_actions() {
 					if ($poller['dbhost'] == 'localhost') {
 						raise_message('poller_dbhost');
 						continue;
+					} elseif ($item == 1) {
+						raise_message('poller_nomain');
+						continue;
 					} else {
 						replicate_out($item);
 
