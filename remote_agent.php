@@ -32,6 +32,12 @@ include_once('./lib/rrd.php');
 
 $debug = false;
 
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	$poller_db_cnn_id = $remote_db_cnn_id;
+} else {
+	$poller_db_cnn_id = false;
+}
+
 if (!remote_client_authorized()) {
 	print 'FATAL: You are not authorized to use this service';
 	exit;
@@ -112,6 +118,8 @@ function strip_domain($host) {
 }
 
 function remote_client_authorized() {
+	global $poller_db_cnn_id;
+
 	/* don't allow to run from the command line */
 	$client_addr = get_client_addr();
 	if ($client_addr === false) {
@@ -125,7 +133,7 @@ function remote_client_authorized() {
 
 	$client_name = strip_domain(gethostbyaddr($client_addr));
 
-	$pollers = db_fetch_assoc('SELECT * FROM poller');
+	$pollers = db_fetch_assoc('SELECT * FROM poller', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
@@ -136,7 +144,9 @@ function remote_client_authorized() {
 			}
 		}
 	}
+
 	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
+
 	return false;
 }
 
