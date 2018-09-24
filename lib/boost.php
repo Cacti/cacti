@@ -113,9 +113,17 @@ function boost_check_correct_enabled() {
 }
 
 function boost_poller_on_demand(&$results) {
-	global $config;
+	global $config, $remote_db_cnn_id;
 
-	if (read_config_option('boost_rrd_update_enable') == 'on') {
+	if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+		$conn = $remote_db_cnn_id;
+	} else {
+		$conn = false;
+	}
+
+	if (read_config_option('boost_rrd_update_enable') == 'on' || $config['poller_id'] > 1) {
+		set_config_option('boost_rrd_update_enable', 'on');
+
 		/* suppress warnings */
 		if (defined('E_DEPRECATED')) {
 			error_reporting(E_ALL ^ E_DEPRECATED);
@@ -162,7 +170,7 @@ function boost_poller_on_demand(&$results) {
 					$out_length += strlen($outbuf2);
 
 					if (($out_length + $overhead) > $max_allowed_packet) {
-						db_execute($sql_prefix . $outbuf . $sql_suffix);
+						db_execute($sql_prefix . $outbuf . $sql_suffix, true, $conn);
 						$outbuf     = $outbuf2;
 						$out_length = strlen($outbuf2);
 						$i          = 1;
@@ -173,7 +181,7 @@ function boost_poller_on_demand(&$results) {
 				}
 
 				if ($outbuf != '') {
-					db_execute($sql_prefix . $outbuf . $sql_suffix);
+					db_execute($sql_prefix . $outbuf . $sql_suffix, true, $conn);
 				}
 			}
 

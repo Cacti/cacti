@@ -233,6 +233,14 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
+global $poller_db_cnn_id, $remote_db_cnn_id;
+
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	$poller_db_cnn_id = $remote_db_cnn_id;
+} else {
+	$poller_db_cnn_id = false;
+}
+
 if ($first == NULL || $last == NULL ) {
 	cacti_log('FATAL: You must either a host range, or no range at all using --first=N --last=N syntax!', true, 'POLLER');
 	exit(-1);
@@ -769,19 +777,12 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 				if ($output_count > 1000) {
 					db_execute('INSERT IGNORE INTO poller_output
 						(local_data_id, rrd_name, time, output)
-						VALUES ' . implode(', ', $output_array));
+						VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
-					if (read_config_option('boost_redirect') == 'on'
-						&& read_config_option('boost_rrd_update_enable') == 'on') {
-						if ($poller_id == 1 || ($poller_id > 1 && $mode != 'online')) {
-							db_execute('INSERT IGNORE INTO poller_output_boost
-								(local_data_id, rrd_name, time, output)
-								VALUES ' . implode(', ', $output_array));
-						} else {
-							db_execute('INSERT IGNORE INTO poller_output_boost
-								(local_data_id, rrd_name, time, output)
-								VALUES ' . implode(', ', $output_array), true, $remote_db_cnn_id);
-						}
+					if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+						db_execute('INSERT IGNORE INTO poller_output_boost
+							(local_data_id, rrd_name, time, output)
+							VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 					}
 
 					$output_array = array();
@@ -811,18 +812,12 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 	if ($output_count > 0) {
 		db_execute('INSERT IGNORE INTO poller_output
 			(local_data_id, rrd_name, time, output)
-			VALUES ' . implode(', ', $output_array));
+			VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 
-		if (read_config_option('boost_redirect') == 'on') {
-			if ($poller_id == 1 || ($poller_id > 1 && $mode != 'online')) {
-				db_execute('INSERT IGNORE INTO poller_output_boost
-					(local_data_id, rrd_name, time, output)
-					VALUES ' . implode(', ', $output_array));
-			} else {
-				db_execute('INSERT IGNORE INTO poller_output_boost
-					(local_data_id, rrd_name, time, output)
-					VALUES ' . implode(', ', $output_array), true, $remote_db_cnn_id);
-			}
+		if (read_config_option('boost_redirect') == 'on' && read_config_option('boost_rrd_update_enable') == 'on') {
+			db_execute('INSERT IGNORE INTO poller_output_boost
+				(local_data_id, rrd_name, time, output)
+				VALUES ' . implode(', ', $output_array), true, $poller_db_cnn_id);
 		}
 	}
 

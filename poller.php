@@ -37,7 +37,7 @@ require_once($config['base_path'] . '/lib/reports.php');
 
 global $poller_db_cnn_id, $remote_db_cnn_id;
 
-if ($config['poller_id'] > 1 && $config['connection'] != 'offline') {
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -144,8 +144,9 @@ if ($phostname == '' || $phostname == 'localhost') {
 
 // if you have more than one poller, boost must be enabled
 $total_pollers = db_fetch_cell('SELECT COUNT(*) FROM poller');
-if ($total_pollers > 1 && read_config_option('boost_rrd_update_system_enable') == '') {
+if ($total_pollers > 1) {
 	set_config_option('boost_rrd_update_system_enable', 'on');
+	set_config_option('boost_redirect', 'on');
 }
 
 // check to see if the poller is disabled
