@@ -996,6 +996,10 @@ function md5sum_path($path, $recursive = true) {
 function replicate_out($remote_poller_id = 1) {
 	global $config;
 
+	if ($remote_poller_id == 1) {
+		return false;
+	}
+
 	if ($config['poller_id'] == 1) {
 		$cinfo = db_fetch_row_prepared('SELECT *
 			FROM poller
