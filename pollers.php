@@ -29,8 +29,11 @@ $poller_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),
 	3 => __('Enable'),
-	4 => __('Full Sync')
 );
+
+if ($config['poller_id'] == 1) {
+	$poller_actions += array(4 =>__('Full Sync'));
+}
 
 $poller_status = array(
 	0 => '<div class="deviceUnknown">'    . __('New/Idle')     . '</div>',
