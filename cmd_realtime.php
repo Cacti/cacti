@@ -67,7 +67,7 @@ $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl
 	INNER JOIN data_local AS dl
 	ON dl.id=dtr.local_data_id
 	WHERE gti.local_graph_id = ?
-	AND dtr.local_data_id > 0', 
+	AND dtr.local_data_id > 0',
 	array($graph_id));
 
 if (!cacti_count($local_data_ids)) {
@@ -147,7 +147,7 @@ if (cacti_sizeof($idbyhost)) {
 				'&' . http_build_query($local_data_ids) .
 				'&poller_id=' . $poller_id;
 
-			$fgc_contextoption = get_default_contextoption(4);
+			$fgc_contextoption = get_default_contextoption();
 			$fgc_context       = stream_context_create($fgc_contextoption);
 			$output            = json_decode(@file_get_contents($url, FALSE, $fgc_context), true);
 

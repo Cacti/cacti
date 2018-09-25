@@ -4209,9 +4209,9 @@ function get_default_contextoption($timeout = '') {
 	$fgc_contextoption = false;
 
 	if ($timeout == '') {
-		$timeout = read_config_option('script_timeout');
+		$timeout = read_config_option('remote_agent_timeout');
 	} elseif (!is_numeric($timeout)) {
-		$timeout = 2;
+		$timeout = 5;
 	}
 
 	$protocol = get_url_type();

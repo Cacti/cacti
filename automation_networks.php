@@ -140,7 +140,7 @@ function api_networks_discover($network_id, $discover_debug) {
 					WHERE id = ?',
 					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption(5);
+				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
 				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}

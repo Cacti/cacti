@@ -186,7 +186,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$fgc_contextoption = get_default_contextoption(5);
+	$fgc_contextoption = get_default_contextoption();
 	$fgc_context       = stream_context_create($fgc_contextoption);
 	$output            = @file_get_contents($url, false, $fgc_context);
 }

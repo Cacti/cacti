@@ -442,7 +442,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			WHERE id = ?',
 			array($host['poller_id']));
 
-		$fgc_contextoption = get_default_contextoption(5);
+		$fgc_contextoption = get_default_contextoption();
 		$fgc_context       = stream_context_create($fgc_contextoption);
 		$results           = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
 

@@ -1001,6 +1001,13 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Remote Agent Timeout'),
+			'description' => __('The amount of time, in seconds, that the web server will wait on the Remote Agent will wait before abandoning the request.  On systems that are connected to the Remote Agent over high latency connections, you should consider a higer default.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(5, 10, 15, 20)
+			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
 			'description' => __('How many OID\'s should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, increasing this size will increase re-index performance over a WAN.'),
