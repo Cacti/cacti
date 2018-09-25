@@ -319,21 +319,10 @@ function install_setup_get_templates() {
 	$path = $config['base_path'] . '/install/templates';
 	$info = array();
 	foreach ($templates as $xmlfile) {
-		//Loading Template Information from package
-		if (extension_loaded('simplexml_load_string') && extension_loaded('zlib')) {
-			$filename = "compress.zlib://$path/$xmlfile";
-			$xml = file_get_contents($filename);;
-			$xmlget = simplexml_load_string($xml);
-			$data = to_array($xmlget);
-			if (is_array($data['info']['author'])) $data['info']['author'] = '1';
-			if (is_array($data['info']['email'])) $data['info']['email'] = '2';
-			if (is_array($data['info']['description'])) $data['info']['description'] = '3';
-			if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
-			$data['info']['filename'] = $xmlfile;
-			$info[] = $data['info'];
-		} else {
-			$info[] = array('filename' => $xmlfile, 'name' => $xmlfile);
-		}
+		// Loading Template Information from package
+		$myinfo = json_decode(shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/import_package.php --filename=/$path/$xmlfile --info-only"), true);
+		$myinfo['filename'] = $xmlfile;
+		$info[] = $myinfo;
 	}
 
 	return $info;

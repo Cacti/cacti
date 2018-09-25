@@ -239,7 +239,7 @@ EOD;
     return $public_key;
 }
 
-function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $preview = false, $limit_exec_time = true) {
+function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $preview = false, $info_only = false, $limitex = true) {
 	global $config, $preview_only;
 
 	$preview_only = $preview;
@@ -247,7 +247,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	@ini_set('zlib.output_compression', '0');
 
 	/* set new timeout and memory settings */
-	if ($limit_exec_time) {
+	if ($limitex) {
 		ini_set('max_execution_time', '50');
 		ini_set('memory_limit', '384M');
 	}
@@ -297,6 +297,11 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	$filestatus = array();
 
 	$plugin = $data['info']['name'];
+
+	if ($info_only) {
+		return $data['info'];
+		exit;
+	}
 
 	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 

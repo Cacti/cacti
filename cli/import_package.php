@@ -41,6 +41,7 @@ if (cacti_sizeof($parms)) {
 	$use_profile    = false;
 	$remove_orphans = false;
 	$preview_only   = false;
+	$info_only      = false;
 	$profile_id     = '';
 
 	foreach($parms as $parameter) {
@@ -72,6 +73,10 @@ if (cacti_sizeof($parms)) {
 				$preview_only = true;
 
 				break;
+			case '--info-only':
+				$info_only = true;
+
+				break;
 			case '--help':
 			case '-H':
 			case '-h':
@@ -88,9 +93,23 @@ if (cacti_sizeof($parms)) {
 		}
 	}
 
+	if ($info_only) {
+		if ($filename != '' && is_readable($filename)) {
+			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
+
+			if (sizeof($result)) {
+				print json_encode($result);
+				exit(0);
+			} else {
+				print "FATAL: Error processing package file.  Info not returned\n";
+				exit(1);
+			}
+		}
+	}
+
 	if ($profile_id != '') {
-		$exists = db_fetch_cell_prepared('SELECT id 
-			FROM data_source_profiles 
+		$exists = db_fetch_cell_prepared('SELECT id
+			FROM data_source_profiles
 			WHERE id = ?',
 			array($profile_id));
 
@@ -101,9 +120,9 @@ if (cacti_sizeof($parms)) {
 	} else {
 		$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
 	}
-	
+
 	if ($filename != '' && is_readable($filename)) {
-		if(file_exists($filename) && is_readable($filename)) {
+		if (file_exists($filename) && is_readable($filename)) {
 			$fp = fopen($filename,'r');
 			$data = fread($fp,filesize($filename));
 			fclose($fp);
@@ -144,11 +163,12 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	print "\nusage: import_package.php --filename=[filename] [--remove-orphans] [--with-profile] [--profile-id=N\n\n";
+	print "\nusage: import_package.php --filename=[filename] [--only-info] [--remove-orphans] [--with-profile] [--profile-id=N\n\n";
 	print "A utility to allow signed Cacti Packages to be imported from the command line.\n\n";
 	print "Required:\n";
 	print "    --filename              The name of the gziped package file to import\n\n";
 	print "Optional:\n";
+	print "    --only-info       Output the info section of the package, do not import\n";
 	print "    --preview         Preview the Template Import, do not import\n";
 	print "    --with-profile    Use the default system Data Source Profile\n";
 	print "    --profile-id=N    Use the specific profile id when importing\n";
