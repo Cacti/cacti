@@ -275,6 +275,11 @@ label {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	display: block;
+	width: 100%:
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }

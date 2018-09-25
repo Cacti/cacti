@@ -1900,60 +1900,79 @@ function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
+	$output = '<li ';
+
+	if (!empty($id)) {
+		$output .= "id='$id' ";
+	}
+
+	if (!empty($data_graph)) {
+		$output .= "data-graph='$data_graph' ";
+	}
+
+	$output .= 'class=\'' . (empty($class)?'': " $class") . '\'>';
+	$output .= '<span class=\'spikeKillMenuItem\'>';
+	if (!empty($icon)) {
+		$output .= "<i class='$icon'></i>";
+	}
+
+	$output .= "$text</span>";
+
+	if (!empty($subitem)) {
+		$output .= "<ul>$subitem</ul>";
+	}
+
+	$output .= '</li>';
+	return $output;
+}
+
 function html_spikekill_menu($local_graph_id) {
-	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
-	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('NaN\'s') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
-	$ravgnan .= '</ul></li>';
+	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
+	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
+	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
 
-	$rstddev  = '<li>' . __('Standard Deviations') . '<ul>';
+	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
+
+	$rstddev = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rstddev .= '<li class="skstddev" id="stddev_' . $i . '"><i ' . (html_spikekill_setting('spikekill_deviations') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%s Standard Deviations', $i) . '</li>';
+		$rstddev .= html_spikekill_menu_item(__('%s Standard Deviations', $i), html_spikekill_setting('spikekill_deviations') == $i ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $i);
 	}
-	$rstddev .= '</ul></li>';
+	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct  = '<li>' . __('Variance Percentage') . '<ul>';
+	$rvarpct = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rvarpct .= '<li class="skvarpct" id="varpct_' . ($i * 100) . '"><i ' . (html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'class="fa fa-check"':'') . '></i><span></span>' . round($i * 100,0) . ' %</li>';
+		$rvarpct .= html_spikekill_menu_item(round($i * 100,0) . ' %', html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . ($i * 100));
 	}
-	$rvarpct .= '</ul></li>';
+	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
-	$rvarout  = '<li>' . __('Variance Outliers') . '<ul>';
+	$rvarout  = '';
 	for($i = 3; $i <= 10; $i++) {
-		$rvarout .= '<li class="skvarout" id="varout_' . $i . '"><i ' . (html_spikekill_setting('spikekill_outliers') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Outliers', $i) . '</li>';
+		$rvarout .= html_spikekill_menu_item(__('%d Outliers', $i), html_spikekill_setting('spikekill_outliers') == $i ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $i);
 	}
-	$rvarout .= '</ul></li>';
+	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
-	$rkills  = '<li>' . __('Kills Per RRA') . '<ul>';
+	$rkills  = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spikes', $i) . '</li>';
+		$rkills .= html_spikekill_menu_item(__('%d Spikes', $i),html_spikekill_setting('spikekill_number') == $i ? 'fa fa-check':'fa', 'skkills', 'kills_' . $i);
 	}
-	$rkills .= '</ul></li>';
+	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa life-ring'></i><span></span><?php print __('Remove StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-life-ring'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-life-ring'></i><span></span><?php print __('Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-life-ring'></i><span></span><?php print __('Float Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='drangefill'><i class='deviceDown fa fa-check'></i><span></span><?php print __('Dry Run Float Range');?></li>
-		<li><i class='fa fa-cog'></i><span></span>Settings
-			<ul>
-				<?php print $ravgnan;?>
-				<?php print $rstddev;?>
-				<?php print $rvarpct;?>
-				<?php print $rvarout;?>
-				<?php print $rkills;?>
-			</ul>
-		</li>
-	</ul>
-	</div>
 	<?php
+	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp fa fa-life-ring', 'rstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
 }
 
 function html_spikekill_js() {
