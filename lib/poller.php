@@ -771,7 +771,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 		$pobject = dir($path);
 
 		while (($entry = $pobject->read()) !== false) {
-			if ($entry != '.' && $entry != '..' && $entry != '.git' && $entry != '') {
+			if (!should_ignore_from_replication($entry)) {
 				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
 				if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 					if ($recursive) {
@@ -815,7 +815,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 
 		$pobject->close();
 	} else {
-		if (basename($path) != 'config.php' && basename($path) != '.git' && $path != '') {
+		if (!should_ignore_from_replication($path)) {
 			$pathinfo = pathinfo($path);
 			if (isset($pathinfo['extension'])) {
 				$extension = strtolower($pathinfo['extension']);
@@ -871,6 +871,10 @@ function resource_cache_out($type, $path) {
 
 		if (cacti_sizeof($entries)) {
 			foreach($entries as $e) {
+				if (should_ignore_from_replication($e['path'])) {
+					continue;
+				}
+
 				$mypath = $config['base_path'] . DIRECTORY_SEPARATOR . $e['path'];
 
 				if (file_exists($mypath)) {
@@ -965,15 +969,7 @@ function md5sum_path($path, $recursive = true) {
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
 
     while (($entry = $pobject->read()) !== false) {
-		if ($entry == '.') {
-			continue;
-		} elseif ($entry == '..') {
-			continue;
-		} elseif ($entry == '.git') {
-			continue;
-		} elseif ($entry == '') {
-			continue;
-		} else {
+		if (!should_ignore_from_replication($entry)) {
 			$pathinfo = pathinfo($entry);
 			if (isset($pathinfo['extension'])) {
 				$extension = strtolower($pathinfo['extension']);
@@ -1408,3 +1404,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 	return sizeof($records);
 }
 
+function should_ignore_from_replication($path) {
+	$entry = basename($path);
+	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '' || $entry == 'config.php');
+}
