@@ -280,8 +280,9 @@ function vdef_form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: vdef.php?header=false');
+		exit;
 	}
 
     print "<tr>
@@ -393,9 +394,9 @@ function vdef_item_edit() {
 	html_end_box();
 
 	if (!isempty_request_var('vdef_id')) {
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM vdef 
-			WHERE id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM vdef
+			WHERE id = ?',
 			array(get_request_var('vdef_id')));
 
 		$header_label = __('VDEF Items [edit: %s]', html_escape($name));
@@ -550,9 +551,9 @@ function vdef_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row_prepared('SELECT * 
-			FROM vdef 
-			WHERE id = ?', 
+		$vdef = db_fetch_row_prepared('SELECT *
+			FROM vdef
+			WHERE id = ?',
 			array(get_request_var('id')));
 
 		$header_label = __('VDEFs [edit: %s]', html_escape($vdef['name']));

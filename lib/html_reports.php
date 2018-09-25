@@ -662,9 +662,9 @@ function reports_form_actions() {
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET user_id = ? 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET user_id = ?
+						WHERE id = ?',
 						array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
@@ -677,18 +677,18 @@ function reports_form_actions() {
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET enabled="on" 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET enabled="on"
+						WHERE id = ?',
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET enabled="" 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET enabled=""
+						WHERE id = ?',
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
@@ -748,8 +748,9 @@ function reports_form_actions() {
 	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: ' . get_reports_page() . '?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
@@ -831,9 +832,9 @@ function reports_send($id) {
 	input_validate_input_number($id);
 	/* ==================================================== */
 
-	$report = db_fetch_row_prepared('SELECT * 
-		FROM reports 
-		WHERE id = ?', 
+	$report = db_fetch_row_prepared('SELECT *
+		FROM reports
+		WHERE id = ?',
 		array($id));
 
 	if (!cacti_sizeof($report)) {

@@ -424,9 +424,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Reset User(s) Settings') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one user.') . "</span></td></tr>\n";
-
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: user_admin.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -589,8 +589,8 @@ function form_save() {
 			}
 		}
 	} elseif (isset_request_var('save_component_realm_perms')) {
-		db_execute_prepared('DELETE FROM user_auth_realm 
-			WHERE user_id = ?', 
+		db_execute_prepared('DELETE FROM user_auth_realm
+			WHERE user_id = ?',
 			array(get_nfilter_request_var('id')));
 
 		foreach ($_POST as $var => $val) {
@@ -618,16 +618,16 @@ function form_save() {
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_perms')) {
 		db_execute_prepared('UPDATE user_auth
-			SET policy_graphs = ?, 
-			policy_trees = ?, 
-			policy_hosts = ?, 
+			SET policy_graphs = ?,
+			policy_trees = ?,
+			policy_hosts = ?,
 			policy_graph_templates = ?
 			WHERE id = ?',
 			array(
-				get_nfilter_request_var('policy_graphs'), 
-				get_nfilter_request_var('policy_trees'), 
-				get_nfilter_request_var('policy_hosts'), 
-				get_nfilter_request_var('policy_graph_templates'), 
+				get_nfilter_request_var('policy_graphs'),
+				get_nfilter_request_var('policy_trees'),
+				get_nfilter_request_var('policy_hosts'),
+				get_nfilter_request_var('policy_graph_templates'),
 				get_nfilter_request_var('id')
 			)
 		);

@@ -356,8 +356,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><p><span class='textError'>" . __('ERROR: You must select at least one graph template.') . "</span></p></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: graph_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>

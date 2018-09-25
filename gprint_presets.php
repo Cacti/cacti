@@ -153,8 +153,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one GPRINT Preset.') ."</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') ."' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: gprint_presets.php?header=false');
+        exit;
 	}
 
 	print "<tr>

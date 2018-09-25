@@ -389,8 +389,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Data Source Profile') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: data_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -509,16 +510,16 @@ function template_edit() {
 			HAVING dtd.local_data_id=0',
 			array(get_request_var('id'), get_request_var('id')));
 
-		$template = db_fetch_row_prepared('SELECT * 
-			FROM data_template 
-			WHERE id = ?', 
+		$template = db_fetch_row_prepared('SELECT *
+			FROM data_template
+			WHERE id = ?',
 			array(get_request_var('id')));
 
 		if (cacti_sizeof($template_data)) {
-			$snmp_data = db_fetch_row_prepared('SELECT * 
-				FROM data_input 
-				WHERE hash="3eb92bb845b9660a7445cf9740726522" 
-				AND id = ?', 
+			$snmp_data = db_fetch_row_prepared('SELECT *
+				FROM data_input
+				WHERE hash="3eb92bb845b9660a7445cf9740726522"
+				AND id = ?',
 				array($template_data['data_input_id']));
 
 			if (cacti_sizeof($snmp_data)) {
@@ -609,11 +610,11 @@ function template_edit() {
 
 	/* fetch ALL rrd's for this data source */
 	if (!isempty_request_var('id')) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name 
-			FROM data_template_rrd 
-			WHERE data_template_id = ? 
-			AND local_data_id = 0 
-			ORDER BY data_source_name', 
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name
+			FROM data_template_rrd
+			WHERE data_template_id = ?
+			AND local_data_id = 0
+			ORDER BY data_source_name',
 			array(get_request_var('id')));
 	}
 
@@ -624,9 +625,9 @@ function template_edit() {
 
 	/* get more information about the rrd we chose */
 	if (!isempty_request_var('view_rrd')) {
-		$template_rrd = db_fetch_row_prepared('SELECT * 
-			FROM data_template_rrd 
-			WHERE id = ?', 
+		$template_rrd = db_fetch_row_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE id = ?',
 			array(get_request_var('view_rrd')));
 	}
 
@@ -660,9 +661,9 @@ function template_edit() {
 	if (empty($template_data['data_input_id'])) {
 		unset($struct_data_source_item['data_input_field_id']);
 	} else {
-		$input_type = db_fetch_cell_prepared('SELECT type_id 
-			FROM data_input 
-			WHERE id = ?', 
+		$input_type = db_fetch_cell_prepared('SELECT type_id
+			FROM data_input
+			WHERE id = ?',
 			array($template_data['data_input_id']));
 
 		if ($input_type == 1 || $input_type == 2 || $input_type == 3 || $input_type == 4 || $input_type == 6) {
@@ -708,9 +709,9 @@ function template_edit() {
 			AND input_output="in" ORDER BY name',
 			array($template_data['data_input_id']));
 
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM data_input 
-			WHERE id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM data_input
+			WHERE id = ?',
 			array($template_data['data_input_id']));
 
 		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, '3', 'center', '');
@@ -723,7 +724,7 @@ function template_edit() {
 				$data_input_data = db_fetch_row_prepared('SELECT t_value, value
 					FROM data_input_data
 					WHERE data_template_data_id = ?
-					AND data_input_field_id = ?', 
+					AND data_input_field_id = ?',
 					array($template_data['id'], $field['id']));
 
 				if (cacti_sizeof($data_input_data)) {

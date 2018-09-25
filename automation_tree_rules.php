@@ -285,8 +285,9 @@ function automation_tree_rules_form_actions() {
 	}
 
 	if (!isset($automation_tree_rules_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: automation_tree_rules.php?header=false');
+		exit;
 	}else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}

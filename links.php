@@ -215,8 +215,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
 		}
 	} else {
-		print "<tr><td><span class='textError'>" . __('You must select at least one page.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: links.php?header=false');
+		exit;
 	}
 
 	print "<tr class='saveRow'>

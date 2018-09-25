@@ -384,8 +384,9 @@ function form_actions() {
 	}
 
 	if (!isset($networks_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: automation_networks.php?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 	}

@@ -1223,9 +1223,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Graph.') . "</span></td></tr>\n";
-
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: graphs.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -1445,9 +1445,9 @@ function graph_edit() {
 		$gtsql = get_common_graph_templates($graph);
 	} else {
 		$graph_template_id = 0;
-		$gtsql = 'SELECT gt.id, gt.name 
+		$gtsql = 'SELECT gt.id, gt.name
 			FROM graph_templates AS gt
-			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph) 
+			WHERE id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
 			ORDER BY name';
 	}
 
@@ -1687,7 +1687,7 @@ function graph_edit() {
 	}
 	</script>
 	<?php
-	if (isset_request_var('id')) { 
+	if (isset_request_var('id')) {
 		api_plugin_hook_function('graph_edit_after', get_request_var('id'));
 	} else {
 		api_plugin_hook_function('graph_edit_after');

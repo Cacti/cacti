@@ -242,8 +242,9 @@ function aggregate_color_form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Color Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: color_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -286,9 +287,9 @@ function aggregate_color_item() {
 			ORDER BY cti.sequence ASC',
 			array(get_request_var('color_template_id')));
 
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM color_templates 
-			WHERE color_template_id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM color_templates
+			WHERE color_template_id = ?',
 			array(get_request_var('color_template_id')));
 
 		$header_label = __('Color Template Items [edit: %s]', html_escape($name));

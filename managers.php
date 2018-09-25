@@ -1004,8 +1004,9 @@ function form_actions(){
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'><input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('%s Notification Receivers', $manager_actions[get_nfilter_request_var('drp_action')]) . "'>";
 			} else {
-				print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Notification Receiver.') . "</span></td></tr>";
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+				raise_message(40);
+				header('Location: managers.php?header=false');
+				exit;
 			}
 
 			print "<tr>

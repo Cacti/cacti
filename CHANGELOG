@@ -74,6 +74,7 @@ Cacti CHANGELOG
 -issue#1889: Insecure $ENV{ENV} which running setgid
 -issue#1901: Upgrade from 0.8.8h fails on external_links statement
 -issue#1921: Data Query XML field method 'rewrite_index' does not correctly query for value
+-issue#1926: Deselecting items should present warning or disable GO button
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive

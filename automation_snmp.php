@@ -223,8 +223,9 @@ function form_automation_snmp_actions() {
 	html_start_box($automation_snmp_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($automation_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: automation_snmp.php?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
@@ -251,7 +252,7 @@ function form_automation_snmp_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
