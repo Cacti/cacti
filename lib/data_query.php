@@ -605,7 +605,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 					debug_log_insert('data_query', __('Executing SNMP get for %s oids (%s)' , count($oids), implode(', ', $oids)));
 
-					$value_output_format = '';
+					$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 					if (isset($field_array['output_format'])) {
 						if ($field_array['output_format'] == 'hex') {
 							$value_output_format = SNMP_STRING_OUTPUT_HEX;
@@ -614,10 +614,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						} else {
 							$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 						}
-					}
-
-					if (empty($value_output_format) && (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:')) {
-						$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 					}
 
 					if (!empty($value_output_format)) {
