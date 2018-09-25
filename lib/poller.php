@@ -1053,6 +1053,9 @@ function replicate_out($remote_poller_id = 1) {
 	$data = db_fetch_assoc('SELECT * FROM data_input_fields');
 	replicate_out_table($remote_db_cnn_id, $data, 'data_input_fields', $remote_poller_id);
 
+	$data = db_fetch_assoc('SELECT * FROM poller');
+	replicate_out_table($remote_db_cnn_id, $data, 'poller', $remote_poller_id);
+
 	$data = db_fetch_assoc('SELECT * FROM user_auth');
 	replicate_out_table($remote_db_cnn_id, $data, 'user_auth', $remote_poller_id);
 
