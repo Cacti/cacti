@@ -184,7 +184,7 @@ case 'save':
 
 	api_plugin_hook_function('global_settings_update');
 
-	if (sizeof($errors) == 0) {
+	if (cacti_sizeof($errors) == 0) {
 		raise_message(1);
 	} else {
 		raise_message(35);
@@ -234,6 +234,7 @@ default:
 
 	if ($data_collectors > 1) {
 		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_redirect', 'on');
 	}
 
 	$system_tabs = array(
@@ -253,7 +254,7 @@ default:
 	print "<div>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
-	if (sizeof($tabs) > 0) {
+	if (cacti_sizeof($tabs) > 0) {
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {
@@ -567,6 +568,8 @@ default:
 			if (dataCollectors > 1) {
 				$('#boost_rrd_update_enable').prop('checked', true);
 				$('#boost_rrd_update_enable').prop('disabled', true);
+				$('#boost_redirect').prop('checked', true);
+				$('#boost_redirect').prop('disabled', true);
 			}
 
 			initBoostOD();

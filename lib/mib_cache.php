@@ -194,7 +194,7 @@ class MibCache{
 		$oid_entry = $this->exists();
 		if ($oid_entry == false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
-			if ($columns & sizeof($columns)>0) {
+			if ($columns & cacti_sizeof($columns)>0) {
 				foreach($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
 					$column_params['otype'] = 'DATA';
@@ -233,7 +233,7 @@ class MibCache{
 						ORDER BY oid',
 						array($filter));
 
-					if ($entries && sizeof($entries)>0) {
+					if ($entries && cacti_sizeof($entries)>0) {
 						foreach($entries as $entry) { $result[$entry['name']] = $entry['value']; }
 						return $result;
 					}
@@ -247,7 +247,7 @@ class MibCache{
 						AND oid LIKE ?
 						LIMIT 1',
 						array($column, $filter));
-				} elseif (is_array($column) && sizeof($column)>0) {
+				} elseif (is_array($column) && cacti_sizeof($column)>0) {
 					$filter = $oid_entry . '.%.' . $this->active_table_entry;
 
 					/* fetch all values of specific columns given for that MIB table row */
@@ -259,7 +259,7 @@ class MibCache{
 						ORDER BY oid",
 						array($filter));
 
-					if ($entries && sizeof($entries)>0) {
+					if ($entries && cacti_sizeof($entries)>0) {
 						foreach($entries as $entry) { $result[$entry['name']] = $entry['value']; }
 						return $result;
 					}
@@ -271,7 +271,7 @@ class MibCache{
 			if ($column == false) {
 				/* fetch all rows */
 				$columns     = $this->cache__tables_columns[$this->active_mib][$this->active_table];
-				$num_columns = sizeof($columns);
+				$num_columns = cacti_sizeof($columns);
 				$filter      = $oid_entry . '.%.%';
 
 				$entries = db_fetch_assoc_prepared('SELECT name, value
@@ -280,8 +280,8 @@ class MibCache{
 					ORDER BY oid',
 					array($filter));
 
-				if ($num_columns && $entries && sizeof($entries)) {
-					$num_entries = sizeof($entries);
+				if ($num_columns && $entries && cacti_sizeof($entries)) {
+					$num_entries = cacti_sizeof($entries);
 					$entries_per_object = $num_entries/$num_columns;
 					for($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i]=array();
@@ -303,7 +303,7 @@ class MibCache{
 					AND oid LIKE ?
 					ORDER BY oid",
 					array($column, $filter));
-			} elseif (is_array($column) && sizeof($column)>0) {
+			} elseif (is_array($column) && cacti_sizeof($column)>0) {
 				/* fetch values of specific columns given */
 				$filter = $oid_entry . '.%.%';
 
@@ -313,9 +313,9 @@ class MibCache{
 					AND oid LIKE ?
 					ORDER BY oid", array($filter));
 
-				if (sizeof($entries)) {
-					$num_objects = sizeof($column);
-					$num_entries = sizeof($entries);
+				if (cacti_sizeof($entries)) {
+					$num_objects = cacti_sizeof($column);
+					$num_entries = cacti_sizeof($entries);
 					$entries_per_object = $num_entries/$num_objects;
 					for($i = 0; $i < $entries_per_object; $i++) {
 						$result[$i]=array();
@@ -338,7 +338,7 @@ class MibCache{
 		if ($oid_entry !== false) {
 			/* get list of columns for this mib table */
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
-			if ($columns & sizeof($columns)>0) {
+			if ($columns & cacti_sizeof($columns)>0) {
 				foreach($columns as $column_params) {
 					$column_params['oid'] .= '.' . $this->active_table_entry;
 					db_execute_prepared('DELETE FROM `snmpagent_cache` WHERE `oid` = ?', array($column_params['oid']));
@@ -353,7 +353,7 @@ class MibCache{
 		$oid_entry = $this->exists();
 		if ($oid_entry !== false) {
 			$columns = $this->cache__tables_columns[$this->active_mib][$this->active_table];
-			if ($columns & sizeof($columns)>0) {
+			if ($columns & cacti_sizeof($columns)>0) {
 				$sql = array();
 
 				foreach($columns as $column_params) {
@@ -363,7 +363,7 @@ class MibCache{
 					}
 				}
 
-				if (sizeof($sql)) {
+				if (cacti_sizeof($sql)) {
 					db_execute('INSERT INTO `snmpagent_cache`
 						(name, value, oid)
 						VALUES ' . implode(', ', $sql) . '

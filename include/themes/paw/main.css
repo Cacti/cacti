@@ -264,6 +264,11 @@ label {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	display: block;
+	width: 100%:
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }
@@ -1051,6 +1056,10 @@ legend {
 	width: 100%;
 	margin-left:auto;
 	margin-right:auto;
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(0,0,0,0.9) !important;
 }
 
 .cactiTableTitleRow {

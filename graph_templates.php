@@ -224,7 +224,7 @@ function form_actions() {
 					FROM graph_template_input
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 
-				if (sizeof($graph_template_input) > 0) {
+				if (cacti_sizeof($graph_template_input) > 0) {
 					foreach ($graph_template_input as $item) {
 						db_execute_prepared('DELETE FROM graph_template_input_defs
 							WHERE graph_template_input_id = ?', array($item['id']));
@@ -256,14 +256,14 @@ function form_actions() {
 					SET graph_template_id=0
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_request_var('drp_action') == '3') { // resize
 				get_filter_request_var('graph_width');
 				get_filter_request_var('graph_height');
 
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared('UPDATE graph_templates_graph
 						SET width = ?, height = ?
 						WHERE graph_template_id = ?',
@@ -272,7 +272,7 @@ function form_actions() {
 						$selected_items[$i]));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // retemplate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					retemplate_graphs($selected_items[$i]);
 				}
 			}
@@ -305,7 +305,7 @@ function form_actions() {
 
 	html_start_box($graph_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($graph_array) && sizeof($graph_array)) {
+	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
@@ -356,8 +356,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue'). "' title='" . __esc('Synchronize Graphs to Graph Template(s)') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><p><span class='textError'>" . __('ERROR: You must select at least one graph template.') . "</span></p></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: graph_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -429,7 +430,7 @@ function item() {
 		ORDER BY name', array(get_request_var('id')));
 
 	$i = 0;
-	if (sizeof($template_item_list) > 0) {
+	if (cacti_sizeof($template_item_list) > 0) {
 		foreach ($template_item_list as $item) {
 			form_alternate_row('', true);
 			?>
@@ -638,7 +639,7 @@ function template() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -773,7 +774,7 @@ function template() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['graphs'] > 0) {
 				$disabled = true;
@@ -796,7 +797,7 @@ function template() {
 	}
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		print $nav;
 	}
 

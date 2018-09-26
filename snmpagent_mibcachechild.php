@@ -43,7 +43,7 @@ $mibcache_changed = db_fetch_cell_prepared("SHOW TABLE STATUS WHERE `Name` LIKE 
 if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 	$objects = db_fetch_assoc("SELECT `oid`, LOWER(type) as type, `otype`, `max-access`, `value` FROM snmpagent_cache");
 
-	if($objects && sizeof($objects)>0) {
+	if($objects && cacti_sizeof($objects)>0) {
 		$oids = array();
 		foreach($objects as &$object) {
 			$oids[] = $object['oid'];
@@ -60,7 +60,7 @@ if($mibcache_changed !== NULL || file_exists($path_mibcache) === false ) {
 				if($last_accessible_object) {
 					$cache[$last_accessible_object]['next'] = $oid;
 				}
-				if(sizeof($next_accessible_object_required)>0) {
+				if(cacti_sizeof($next_accessible_object_required)>0) {
 					foreach($next_accessible_object_required as $next_accessible_object_required_oid) {
 						$cache[$next_accessible_object_required_oid]['next'] = $oid;
 					}

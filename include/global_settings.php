@@ -259,7 +259,7 @@ $settings = array(
 			),
 		'log_validation' => array(
 			'friendly_name' => __('Log Input Validation Issues'),
-			'description' => __('Record when request fields are accessed without going through proper input validatdion'),
+			'description' => __('Record when request fields are accessed without going through proper input validation'),
 			'method' => 'checkbox',
 			'default' => ''
 			),
@@ -487,7 +487,7 @@ $settings = array(
 			),
 		'default_template' => array(
 			'friendly_name' => __('Template'),
-			'description' => __('The default Device Template all new Devices.'),
+			'description' => __('The default Device Template used on all new Devices.'),
 			'method' => 'drop_sql',
 			'default' => '1',
 			'none_value' => __('None'),
@@ -647,7 +647,7 @@ $settings = array(
 			),
 		'ping_port' => array(
 			'friendly_name' => __('Ping Port'),
-			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a port not reachable error to determine if the Device is up or not.'),
+			'description' => __('Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, Cacti requires either a successful connection, or a \'port not reachable\' error to determine if the Device is up or not.'),
 			'method' => 'textbox',
 			'default' => '23',
 			'max_length' => '10',
@@ -655,7 +655,7 @@ $settings = array(
 			),
 		'ping_timeout' => array(
 			'friendly_name' => __('Ping Timeout Value'),
-			'description' => __('Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SMMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows.'),
+			'description' => __('Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for Device SNMP, ICMP, UDP and TCP pinging.  ICMP Pings will be rounded up to the nearest second.  TCP and UDP connection timeouts on Windows are controlled by the operating system, and are therefore not recommended on Windows.'),
 			'method' => 'textbox',
 			'default' => '400',
 			'max_length' => '10',
@@ -950,7 +950,7 @@ $settings = array(
 			),
 		'enable_snmp_agent' => array(
 			'friendly_name' => __('SNMP Agent Support Enabled'),
-			'description' => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti devide and system information.  It does not enable the SNMP Agent itself.'),
+			'description' => __('If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system information.  It does not enable the SNMP Agent itself.'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
@@ -1000,6 +1000,13 @@ $settings = array(
 			'description' => __('Controls disabling check for increasing OID while walking OID tree.'),
 			'method' => 'checkbox',
 			'default' => ''
+			),
+		'remote_agent_timeout' => array(
+			'friendly_name' => __('Remote Agent Timeout'),
+			'description' => __('The amount of time, in seconds, that the web server will wait on the Remote Agent will wait before abandoning the request.  On systems that are connected to the Remote Agent over high latency connections, you should consider a higer default.'),
+			'method' => 'drop_array',
+			'default' => '5',
+			'array' => array(5, 10, 15, 20)
 			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1094,7 +1101,7 @@ $settings = array(
 			),
 		'admin_user' => array(
 			'friendly_name' => __('Primary Admin'),
-			'description' => __('The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the the administrative account has an Email address that is set.'),
+			'description' => __('The name of the primary administrative account that will automatically receive Emails when the Cacti system experiences issues.  To receive these Emails, ensure that your mail settings are correct, and the administrative account has an Email address that is set.'),
 			'method' => 'drop_sql',
 			'none_value' => __('No User'),
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
@@ -1642,7 +1649,7 @@ $settings = array(
 			),
 		'boost_rrd_update_max_runtime' => array(
 			'friendly_name' => __('Maximum RRD Update Script Run Time'),
-			'description' => __('The maximum boot poller run time allowed prior to boost issuing warning messages relative to possible hardware/software issues preventing proper updates.'),
+			'description' => __('If the boost poller excceds this runtime, a warning will be placed in the cacti log,'),
 			'method' => 'drop_array',
 			'default' => '1200',
 			'array' => $boost_max_runtime
@@ -1817,7 +1824,7 @@ $settings = array(
 			),
 		'spikekill_avgnan' => array(
 			'friendly_name' => __('Replacement Method'),
-			'description' => __('There are three replacement methods.  The first method replaces the spike with the the average of the data source in question.  The second method replaces the spike with a \'NaN\'.  The last replaces the spike with the last known good value found.'),
+			'description' => __('There are three replacement methods.  The first method replaces the spike with the average of the data source in question.  The second method replaces the spike with a \'NaN\'.  The last replaces the spike with the last known good value found.'),
 			'method' => 'drop_array',
 			'default' => 'last',
 			'array' => array(
@@ -1968,7 +1975,7 @@ $settings_user = array(
 			),
 		'hide_disabled' => array(
 			'friendly_name' => __('Hide Disabled'),
-			'description' => __('Hide Disabled Devices and Graphs from Disabled Devices.'),
+			'description' => __('Hides Disabled Devices and Graphs when viewing outside of Console tab.'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),

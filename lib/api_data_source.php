@@ -49,7 +49,7 @@ function api_data_source_remove($local_data_id) {
 			FROM data_template_data
 			WHERE local_data_id = ?', array($local_data_id));
 
-		if (sizeof($dsinfo)) {
+		if (cacti_sizeof($dsinfo)) {
 			$filename = str_replace('<path_cacti>/', '', $dsinfo['data_source_path']);
 			db_execute_prepared('INSERT INTO data_source_purge_action
 				(local_data_id, name, action) VALUES (?, ?, ?)
@@ -95,7 +95,7 @@ function api_data_source_remove($local_data_id) {
 
 function api_data_source_remove_multi($local_data_ids) {
 	// Shortcut out if no data
-	if (!sizeof($local_data_ids)) {
+	if (!cacti_sizeof($local_data_ids)) {
 		return;
 	}
 
@@ -108,18 +108,18 @@ function api_data_source_remove_multi($local_data_ids) {
 			FROM data_template_data
 			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
-		if (sizeof($data_template_data_ids)) {
+		if (cacti_sizeof($data_template_data_ids)) {
 			$dtd_ids_to_delete = array();
 			foreach($data_template_data_ids as $data_template_data_id) {
 				$dtd_ids_to_delete[] = $data_template_data_id['id'];
 
-				if (sizeof($dtd_ids_to_delete) >= 1000) {
+				if (cacti_sizeof($dtd_ids_to_delete) >= 1000) {
 					db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 					$dtd_ids_to_delete = array();
 				}
 			}
 
-			if (sizeof($dtd_ids_to_delete)) {
+			if (cacti_sizeof($dtd_ids_to_delete)) {
 				db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 			}
 
@@ -155,7 +155,7 @@ function api_data_source_remove_multi($local_data_ids) {
 				ON DUPLICATE KEY UPDATE action=VALUES(action)');
 		}
 
-		if (sizeof($poller_ids)) {
+		if (cacti_sizeof($poller_ids)) {
 			foreach($poller_ids as $poller_id) {
 				api_data_source_cache_crc_update($poller_id);
 			}
@@ -190,7 +190,7 @@ function api_data_source_disable_multi($local_data_ids) {
 	$i = 0;
 
 	/* build the array */
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		foreach($local_data_ids as $local_data_id) {
 			if ($i == 0) {
 				$ids_to_disable .= $local_data_id;
@@ -223,7 +223,7 @@ function api_data_source_disable_multi($local_data_ids) {
 		}
 	}
 
-	if (sizeof($poller_ids)) {
+	if (cacti_sizeof($poller_ids)) {
 		foreach($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
 		}
@@ -275,7 +275,7 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		AND field_name = 'name'
 		ORDER BY sequence", array($snmp_query_graph_id, $data_local['data_template_id']));
 
-	if (sizeof($suggested_values)) {
+	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
 			$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
 				$data_local['snmp_query_id'], $data_local['snmp_index'],
@@ -390,7 +390,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	$data_template_data_id = sql_save($save, 'data_template_data');
 
 	/* create new entry(s): data_template_rrd */
-	if (sizeof($data_template_rrds)) {
+	if (cacti_sizeof($data_template_rrds)) {
 		foreach ($data_template_rrds as $data_template_rrd) {
 			unset($save);
 
@@ -417,7 +417,7 @@ function api_duplicate_data_source($_local_data_id, $_data_template_id, $data_so
 	}
 
 	/* create new entry(s): data_input_data */
-	if (sizeof($data_input_datas)) {
+	if (cacti_sizeof($data_input_datas)) {
 		foreach ($data_input_datas as $data_input_data) {
 			db_execute_prepared('INSERT INTO data_input_data
 				(data_input_field_id, data_template_data_id, t_value, value)

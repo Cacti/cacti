@@ -59,7 +59,7 @@ function duplicate_reports($_id, $_title) {
 	$reports_id  = sql_save($save, 'reports');
 
 	/* create new rule items */
-	if (sizeof($reports_items) > 0) {
+	if (cacti_sizeof($reports_items) > 0) {
 		foreach ($reports_items as $reports_item) {
 			$save = $reports_item;
 			$save['id'] = 0;
@@ -103,7 +103,7 @@ function reports_add_graphs($report_id, $local_graph_id, $timespan, $align) {
 				WHERE id = ?',
 				array($gd['host_id']));
 
-			if (sizeof($gd)) {
+			if (cacti_sizeof($gd)) {
 				db_execute_prepared('INSERT INTO reports_items
 					(report_id, item_type, host_template_id, host_id, graph_template_id, local_graph_id, timespan, align, sequence)
 					VALUES (?, 1, ?, ?, ?, ?, ?, ?, ?)',
@@ -334,7 +334,7 @@ function generate_report($report, $force = false) {
 
 	$xport_meta = array();
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $key => $local_graph_id) {
 			$arr = explode(':', $key);
 			$timesp = $arr[1];
@@ -529,7 +529,7 @@ function reports_load_format_file($format_file, &$output, &$report_tag_included,
 	$output   = '';
 	$report_tag_included = false;
 
-	if (sizeof($contents)) {
+	if (cacti_sizeof($contents)) {
 		foreach($contents as $line) {
 			$line = trim($line);
 			if (substr_count($line, '<REPORT>')) {
@@ -616,7 +616,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 	}
 
 	/* verify permissions */
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $key => $id) {
 			if (!is_graph_allowed($id, $effective_user)) {
 				unset($graphs[$key]);
@@ -624,7 +624,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
 		}
 	}
 
-	return sizeof($graphs);
+	return cacti_sizeof($graphs);
 }
 
 
@@ -634,7 +634,7 @@ function reports_tree_has_graphs($tree_id, $branch_id, $effective_user, $search_
  * @return string			- generated html output
  */
 function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$theme = '') {
-	global $config, $colors;
+	global $config;
 	global $alignment;
 
 	include_once($config['base_path'] . '/lib/time.php');
@@ -684,9 +684,9 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 		$include_body = true;
 	}
 
-	reports_log(__FUNCTION__ . ', items found: ' . sizeof($reports_items), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
+	reports_log(__FUNCTION__ . ', items found: ' . cacti_sizeof($reports_items), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-	if (sizeof($reports_items)) {
+	if (cacti_sizeof($reports_items)) {
 		if ($output == REPORTS_OUTPUT_EMAIL && $include_body) {
 			$outstr .= "<body>" . PHP_EOL;
 		}
@@ -816,7 +816,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 		AND graph_tree_id = ?
 		ORDER BY position', array($branch_id, $item['tree_id']));
 
-	if (sizeof($tree_branches)) {
+	if (cacti_sizeof($tree_branches)) {
 		foreach ($tree_branches as $branch) {
 			$outstr .= expand_branch($report, $item, $branch['id'], $output, $format_ok, $theme);
 		}
@@ -870,7 +870,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
  * @return string			- html
  */
 function reports_expand_tree($report, $item, $parent, $output, $format_ok, $theme = 'classic', $nested = false) {
-	global $colors, $config, $alignment;
+	global $config, $alignment;
 
 	include($config['include_path'] . '/global_arrays.php');
 	include_once($config['library_path'] . '/data_query.php');
@@ -921,7 +921,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 		$leaves = array();
 	}
 
-	if (sizeof($leaves)) {
+	if (cacti_sizeof($leaves)) {
 		foreach ($leaves as $leaf) {
 			$sql_where       = '';
 			$title           = '';
@@ -1022,7 +1022,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					}
 				}
 
-				if (sizeof($mygraphs)) {
+				if (cacti_sizeof($mygraphs)) {
 					/* start graph display */
 					if ($title != '') {
 						$outstr .= "\t\t<tr class='text_row'>" . PHP_EOL;
@@ -1082,7 +1082,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 						'id', 'name'
 					);
 
-					if (sizeof($graph_templates)) {
+					if (cacti_sizeof($graph_templates)) {
 						foreach($graph_templates AS $id => $name) {
 							if (!is_graph_template_allowed($id, $user)) {
 								unset($graph_templates[$id]);
@@ -1099,7 +1099,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					);
 
 					$outgraphs = array();
-					if (sizeof($graph_templates) > 0) {
+					if (cacti_sizeof($graph_templates) > 0) {
 						foreach ($graph_templates as $id => $name) {
 							$graphs = db_fetch_assoc('SELECT
 								gtg.local_graph_id, gtg.title_cache
@@ -1111,7 +1111,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 								$sql_where
 								ORDER BY gtg.title_cache");
 
-							if (sizeof($graphs)) {
+							if (cacti_sizeof($graphs)) {
 								foreach($graphs as $key => $graph) {
 									if (!is_graph_allowed($graph['local_graph_id'], $user)) {
 										unset($graphs[$key]);
@@ -1121,7 +1121,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 							$outgraphs = array_merge($outgraphs, $graphs);
 						}
 
-						if (sizeof($outgraphs)) {
+						if (cacti_sizeof($outgraphs)) {
 							/* let's sort the graphs naturally */
 							usort($outgraphs, 'necturally_sort_graphs');
 
@@ -1165,7 +1165,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 					}
 
 					$i = 0;
-					if (sizeof($data_queries)) {
+					if (cacti_sizeof($data_queries)) {
 						foreach ($data_queries as $data_query) {
 							/* fetch a list of field names that are sorted by the preferred sort field */
 							$sort_field_data = get_formatted_data_query_indexes($leaf['host_id'], $data_query['id']);
@@ -1181,7 +1181,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 								$sql_where
 								ORDER BY gtg.title_cache");
 
-							if (sizeof($graphs)) {
+							if (cacti_sizeof($graphs)) {
 								foreach($graphs as $key => $graph) {
 									if (!is_graph_allowed($graph['local_graph_id'], $user)) {
 										unset($graphs[$key]);
@@ -1190,7 +1190,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 							}
 
 							/* re-key the results on data query index */
-							if (sizeof($graphs)) {
+							if (cacti_sizeof($graphs)) {
 								if ($i == 0) {
 									/* start graph display */
 									if ($title != '') {
@@ -1238,7 +1238,7 @@ function reports_expand_tree($report, $item, $parent, $output, $format_ok, $them
 								}
 							}
 
-							if (sizeof($graph_list)) {
+							if (cacti_sizeof($graph_list)) {
 								$outstr .= reports_graph_area($graph_list, $report, $item, $timespan, $output, $format_ok, $theme);
 							}
 						}
@@ -1279,7 +1279,7 @@ function reports_graph_area($graphs, $report, $item, $timespan, $output, $format
 	$column = 0;
 	$outstr = '';
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach($graphs as $graph) {
 			$item['local_graph_id'] = $graph['local_graph_id'];
 
@@ -1424,12 +1424,12 @@ function reports_get_format_files() {
 			closedir($dh);
 		}
 
-		if (sizeof($files)) {
+		if (cacti_sizeof($files)) {
 			foreach($files as $file) {
 				if (substr_count($file, '.format')) {
 					$contents = file($dir . '/' . $file);
 
-					if (sizeof($contents)) {
+					if (cacti_sizeof($contents)) {
 						foreach($contents as $line) {
 							$line = trim($line);
 							if (substr_count($line, 'Description:') && substr($line, 0, 1) == '#') {
@@ -1536,7 +1536,7 @@ function reports_graphs_action_array($action) {
  * returns array $save				-
  *  */
 function reports_graphs_action_prepare($save) {
-	global $colors, $config, $graph_timespans, $alignment;
+	global $config, $graph_timespans, $alignment;
 
 	if ($save['drp_action'] == 'reports') { /* report */
 		print "<tr>

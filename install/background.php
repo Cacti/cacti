@@ -44,7 +44,7 @@ cacti_log('Checking arguments', false, 'INSTALL:');
 $params = $_SERVER['argv'];
 array_shift($params);
 
-if (sizeof($params) == 0) {
+if (cacti_sizeof($params) == 0) {
 	log_install_always('','no parameters passed' . PHP_EOL);
 	exit();
 }

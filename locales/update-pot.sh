@@ -31,4 +31,5 @@ fi
 # update translation files
 echo "Updating Cacti language gettext language files"
 
-${XGETTEXT_BIN} -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o ${BASE_PATH}/locales/po/cacti.pot `find ${BASE_PATH} -maxdepth 2 -name \*.php`
+cd ${BASE_PATH}
+${XGETTEXT_BIN} -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot `find . -maxdepth 2 -name \*.php`

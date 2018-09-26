@@ -22,16 +22,29 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
-
-include_once('./lib/api_device.php');
-include_once('./lib/data_query.php');
-include_once('./lib/poller.php');
-include_once('./lib/ping.php');
-include_once('./lib/snmp.php');
-include_once('./lib/rrd.php');
+require(__DIR__ . '/include/global.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/html_form_template.php');
+require_once($config['base_path'] . '/lib/ping.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 $debug = false;
+
+if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	$poller_db_cnn_id = $remote_db_cnn_id;
+} else {
+	$poller_db_cnn_id = false;
+}
 
 if (!remote_client_authorized()) {
 	print 'FATAL: You are not authorized to use this service';
@@ -113,6 +126,8 @@ function strip_domain($host) {
 }
 
 function remote_client_authorized() {
+	global $poller_db_cnn_id;
+
 	/* don't allow to run from the command line */
 	$client_addr = get_client_addr();
 	if ($client_addr === false) {
@@ -126,9 +141,9 @@ function remote_client_authorized() {
 
 	$client_name = strip_domain(gethostbyaddr($client_addr));
 
-	$pollers = db_fetch_assoc('SELECT * FROM poller');
+	$pollers = db_fetch_assoc('SELECT * FROM poller', true, $poller_db_cnn_id);
 
-	if (sizeof($pollers)) {
+	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
 			if (strip_domain($poller['hostname']) == $client_name) {
 				return true;
@@ -137,7 +152,9 @@ function remote_client_authorized() {
 			}
 		}
 	}
+
 	cacti_log("Unauthorized remote agent access attempt from $client_name ($client_addr)");
+
 	return false;
 }
 
@@ -253,7 +270,7 @@ function get_snmp_data_walk() {
 		}
 	}
 
-	if (sizeof($output)) {
+	if (cacti_sizeof($output)) {
 		print json_encode($output);
 	} else {
 		print 'U';
@@ -275,7 +292,7 @@ function poll_for_data() {
 
 	$i = 0;
 
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		foreach($local_data_ids as $local_data_id) {
 			input_validate_input_number($local_data_id);
 
@@ -292,7 +309,7 @@ function poll_for_data() {
 				AND action = 2',
 				array($host_id, $local_data_id));
 
-			if (sizeof($items)) {
+			if (cacti_sizeof($items)) {
 				foreach($items as $item) {
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */

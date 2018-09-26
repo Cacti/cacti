@@ -315,7 +315,7 @@ function item_edit() {
 		AND graph_templates_item_id = ?", 
 		array(get_request_var($id_field), get_request_var("id")));
 
-	if (sizeof($item_overrides) == 0) {
+	if (cacti_sizeof($item_overrides) == 0) {
 		/* this item is not currently in aggregate tables
 		 * item editor will not work in this case, so let's
 		 * save it now

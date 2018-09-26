@@ -55,6 +55,15 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			$device = '127.0.0.1';
 		}
 
+		if (!defined('PDO::MYSQL_ATTR_FOUND_ROWS')) {
+			if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
+				$prefix = get_debug_prefix();
+				file_put_contents(sys_get_temp_dir() . '/cacti-option.log', "$prefix\n$prefix ************* DATABASE MODULE MISSING ****************\n$prefix session name: $odevice:$port:$db_name\n$prefix\n", FILE_APPEND);
+			}
+
+			return false;
+		}
+
 		$flags[PDO::ATTR_PERSISTENT] = true;
 		$flags[PDO::MYSQL_ATTR_FOUND_ROWS] = true;
 		if ($db_ssl) {
@@ -135,6 +144,10 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
+function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+	throw new Exception($errstr, $errno);
+}
+
 /* db_close - closes the open connection
    @returns - the result of the close command */
 function db_close($db_conn = false) {
@@ -197,17 +210,34 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	while (true) {
 		$query = $db_conn->prepare($sql);
 
+		$code = 0;
 		$en = '';
-		$query->execute($params);
-		$code = $query->errorCode();
-		if ($code > 0) {
-			$errorinfo = $query->errorInfo();
-			$en = $errorinfo[1];
-		}  else {
-			$code = $db_conn->errorCode();
+
+		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
+		try {
+			if (empty($params) || cacti_count($params) == 0) {
+				$query->execute();
+			} else {
+				$query->execute($params);
+			}
+		} catch (Exception $ex) {
+			$code = $ex->getCode();
+			$en = $code;
+			$errorinfo = array(1=>$code,2=>$ex->getMessage());
+		}
+		restore_error_handler();
+
+		if ($code == 0) {
+			$code = $query->errorCode();
 			if ($code > 0) {
-				$errorinfo = $db_conn->errorInfo();
+				$errorinfo = $query->errorInfo();
 				$en = $errorinfo[1];
+			}  else {
+				$code = $db_conn->errorCode();
+				if ($code > 0) {
+					$errorinfo = $db_conn->errorInfo();
+					$en = $errorinfo[1];
+				}
 			}
 		}
 
@@ -735,7 +765,7 @@ function db_get_table_column_types($table, $db_conn = false) {
 
 	$columns = db_fetch_assoc("SHOW COLUMNS FROM $table", false, $db_conn);
 	$cols    = array();
-	if (sizeof($columns)) {
+	if (cacti_sizeof($columns)) {
 		foreach($columns as $col) {
 			$cols[$col['Field']] = array('type' => $col['Type'], 'null' => $col['Null'], 'default' => $col['Default'], 'extra' => $col['Extra']);;
 		}
@@ -954,7 +984,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			}
 		}
 
-		if (isset($data['keys']) && sizeof($data['keys'])) {
+		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
 					if (is_array($key['columns'])) {
@@ -1042,7 +1072,7 @@ function array_to_sql_or($array, $sql_column) {
 		array_pop($array);
 	}
 
-	if (sizeof($array)) {
+	if (cacti_sizeof($array)) {
 		$sql_or = "($sql_column IN('" . implode("','", $array) . "'))";
 
 		return $sql_or;
@@ -1132,7 +1162,7 @@ function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
    @param $key_cols - the primary key(s)
    @returns - the auto incriment id column (if applicable) */
 function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, $db_conn = false) {
-	global $database_sessions, $database_default, $database_hostname, $database_port;
+	global $database_sessions, $database_default, $database_hostname, $database_port, $database_last_error;
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
@@ -1141,7 +1171,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	$log = true;
 	if (!db_table_exists($table_name, $log, $db_conn)) {
-		cacti_log("ERROR: SQL Save on table '$table_name': Table does not exist, unable to save!", false, 'DBCALL');
+		$error_message = "SQL Save on table '$table_name': Table does not exist, unable to save!";
+		raise_message('sql_save_table', $error_message, MESSAGE_LEVEL_ERROR);
+		cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 		cacti_debug_backtrace('SQL');
 		return false;
 	}
@@ -1152,7 +1184,9 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 
 	foreach ($array_items as $key => $value) {
 		if (!isset($cols[$key])) {
-			cacti_log("ERROR: SQL Save on table '$table_name': Column '$key' does not exist, unable to save!", false, 'DBCALL');
+			$error_message = "SQL Save on table '$table_name': Column '$key' does not exist, unable to save!";
+			raise_message('sql_save_key', $error_message, MESSAGE_LEVEL_ERROR);
+			cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
 			cacti_debug_backtrace('SQL');
 			return false;
 		}
@@ -1192,6 +1226,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 				return str_replace('"', '', $array_items[$key_cols]);
 			}
 		}
+
 		return false;
 	} else {
 		return $replace_result;
@@ -1236,7 +1271,7 @@ function db_get_column_attributes($table, $columns) {
 	$column_names = array();
 	foreach ($columns as $column) {
 		if (!empty($column)) {
-			$sql .= (sizeof($column_names) ? ',' : '') . '?';
+			$sql .= (cacti_sizeof($column_names) ? ',' : '') . '?';
 			$column_names[] = $column;
 		}
 	}

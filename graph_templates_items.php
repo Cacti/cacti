@@ -260,7 +260,7 @@ function form_save() {
 								AND task_item_id = ?',
 								array($save['graph_template_id'], get_nfilter_request_var('task_item_id')));
 
-							if (sizeof($graph_items)) {
+							if (cacti_sizeof($graph_items)) {
 								foreach ($graph_items as $graph_item) {
 									db_execute_prepared('REPLACE INTO graph_template_input_defs
 										(graph_template_input_id, graph_template_item_id)
@@ -381,9 +381,9 @@ function item_remove() {
 		AND graph_template_input_defs.graph_template_item_id = ?
 		GROUP BY graph_template_input.id', array(get_request_var('graph_template_id'), get_request_var('id')));
 
-	if (sizeof($graph_item_inputs) > 0) {
+	if (cacti_sizeof($graph_item_inputs) > 0) {
 		foreach ($graph_item_inputs as $graph_item_input) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_item_input['id']))) == 1) {
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_item_input['id']))) == 1) {
 				db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array($graph_item_input['id']));
 			}
 		}
@@ -422,7 +422,7 @@ function item_edit() {
 			ORDER BY sequence DESC',
 			array(get_request_var('graph_template_id')));
 
-		if (sizeof($default) > 0) {
+		if (cacti_sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
 		} else {
 			$struct_graph_item['task_item_id']['default'] = 0;

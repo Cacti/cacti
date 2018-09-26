@@ -140,7 +140,7 @@ function api_networks_discover($network_id, $discover_debug) {
 					WHERE id = ?',
 					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption(5);
+				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
 				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
@@ -239,7 +239,7 @@ function api_networks_save($post) {
 		$networks  = explode(',', $save['subnet_range']);
 
 		$i = 0;
-		if (sizeof($networks)) {
+		if (cacti_sizeof($networks)) {
 			foreach($networks as $net) {
 				$ips = automation_calculate_total_ips($networks, $i);
 				if ($ips !== false) {
@@ -384,8 +384,9 @@ function form_actions() {
 	}
 
 	if (!isset($networks_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: automation_networks.php?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 	}
@@ -1087,7 +1088,7 @@ function networks() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
 				$mystat   = "<span class='disabled'>" . __('Disabled') . "</span>";
@@ -1151,7 +1152,7 @@ function networks() {
 	}
 	html_end_box(false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}
@@ -1184,7 +1185,7 @@ function networks_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}

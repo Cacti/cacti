@@ -78,7 +78,7 @@ $debug          = false;
 $forcerun       = false;
 $forcerun_maint = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);

@@ -164,7 +164,7 @@ function add_tree_names_to_actions_array() {
 	/* add a list of tree names to the actions dropdown */
 	$trees = db_fetch_assoc('SELECT id, name FROM graph_tree ORDER BY name');
 
-	if (sizeof($trees)) {
+	if (cacti_sizeof($trees)) {
 		foreach ($trees as $tree) {
 			$device_actions['tr_' . $tree['id']] = 'Place on a Tree (' . $tree['name'] . ')';
 		}
@@ -187,7 +187,7 @@ function get_site_locations() {
 		ORDER BY location',
 		array($site_id, "%$term%"));
 
-	if (sizeof($locations)) {
+	if (cacti_sizeof($locations)) {
 		foreach($locations as $l) {
 			$return[] = array('label' => $l['location'], 'value' => $l['location'], 'id' => $l['location']);
 		}
@@ -258,14 +258,14 @@ function form_actions() {
 					$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_item));
 					$poller_items = $local_data_ids = array();
 
-					if (sizeof($data_sources)) {
+					if (cacti_sizeof($data_sources)) {
 						foreach ($data_sources as $data_source) {
 							$local_data_ids[] = $data_source['id'];
 							$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
 						}
 					}
 
-					if (sizeof($local_data_ids)) {
+					if (cacti_sizeof($local_data_ids)) {
 						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 					}
 				}
@@ -281,7 +281,18 @@ function form_actions() {
 				foreach ($selected_items as $selected_item) {
 					foreach ($fields_host_edit as $field_name => $field_array) {
 						if (isset_request_var("t_$field_name")) {
-							db_execute_prepared("UPDATE host SET $field_name = ? WHERE id = ?", array(get_nfilter_request_var($field_name), $selected_item));
+							if ($field_name == 'poller_id') {
+								db_execute_prepared('UPDATE poller
+									SET requires_sync="on"
+									WHERE id = ?',
+									array(get_nfilter_request_var($field_name)));
+							}
+
+							db_execute_prepared("UPDATE host
+								SET $field_name = ?
+								WHERE id = ?",
+								array(get_nfilter_request_var($field_name), $selected_item));
+
 							if ($field_name == 'host_template_id') {
 								api_device_update_host_template($selected_item, get_nfilter_request_var($field_name));
 							}
@@ -319,7 +330,7 @@ function form_actions() {
 						FROM data_local
 						WHERE ' . array_to_sql_or($selected_items, 'data_local.host_id'));
 
-					if (sizeof($data_sources)) {
+					if (cacti_sizeof($data_sources)) {
 						foreach ($data_sources as $data_source) {
 							$data_sources_to_act_on[] = $data_source['local_data_id'];
 						}
@@ -331,7 +342,7 @@ function form_actions() {
 							FROM graph_local
 							WHERE ' . array_to_sql_or($selected_items, 'graph_local.host_id'));
 
-						if (sizeof($graphs)) {
+						if (cacti_sizeof($graphs)) {
 							foreach ($graphs as $graph) {
 								$graphs_to_act_on[] = $graph['local_graph_id'];
 							}
@@ -416,7 +427,7 @@ function form_actions() {
 
 	html_start_box($device_actions[get_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($host_array) && sizeof($host_array)) {
+	if (isset($host_array) && cacti_sizeof($host_array)) {
 		if (get_request_var('drp_action') == '2') { // Enable Devices
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -548,8 +559,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one device.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: host.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -582,7 +594,7 @@ function host_export() {
 	header('Content-type: application/excel');
 	header('Content-Disposition: attachment; filename=cacti-devices-' . time() . '.csv');
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		$columns = array_keys($hosts[0]);
 		fputcsv($stdout, $columns);
 
@@ -684,7 +696,7 @@ function host_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		if (sizeof($host)) {
+		if (cacti_sizeof($host)) {
 			$header_label = __('Device [edit: %s]', html_escape($host['description']));
 			if (is_device_debug_enabled($host['id'])) {
 				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
@@ -812,7 +824,7 @@ function host_edit() {
 
 		$i = 0;
 		$displayed_templates = array();
-		if (sizeof($selected_graph_templates)) {
+		if (cacti_sizeof($selected_graph_templates)) {
 			foreach ($selected_graph_templates as $item) {
 				if (isset($displayed_templates[$item['id']])) {
 					continue;
@@ -918,7 +930,7 @@ function host_edit() {
 			ORDER BY snmp_query.name");
 
 		$i = 0;
-		if (sizeof($selected_data_queries)) {
+		if (cacti_sizeof($selected_data_queries)) {
 			foreach ($selected_data_queries as $item) {
 				$i++;
 
@@ -1521,7 +1533,7 @@ function host() {
 							<?php
 							$sites = db_fetch_assoc('SELECT id, name FROM sites ORDER BY name');
 
-							if (sizeof($sites)) {
+							if (cacti_sizeof($sites)) {
 								foreach ($sites as $site) {
 									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
 								}
@@ -1538,7 +1550,7 @@ function host() {
 							<?php
 							$pollers = db_fetch_assoc('SELECT id, name FROM poller ORDER BY name');
 
-							if (sizeof($pollers)) {
+							if (cacti_sizeof($pollers)) {
 								foreach ($pollers as $poller) {
 									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>\n";
 								}
@@ -1556,7 +1568,7 @@ function host() {
 							<?php
 							$host_templates = db_fetch_assoc('SELECT id, name FROM host_template ORDER BY name');
 
-							if (sizeof($host_templates)) {
+							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
 									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
 								}
@@ -1603,7 +1615,7 @@ function host() {
 						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1697,7 +1709,7 @@ function host() {
 
 	$hosts = get_device_records($total_rows, $rows);
 
-	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Devices'), 'page', 'main');
+	$nav = html_nav_bar('host.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Devices'), 'page', 'main');
 
 	form_start('host.php', 'chk');
 
@@ -1707,7 +1719,7 @@ function host() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		foreach ($hosts as $host) {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
@@ -1748,7 +1760,7 @@ function host() {
 
 	html_end_box(false);
 
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		print $nav;
 	}
 

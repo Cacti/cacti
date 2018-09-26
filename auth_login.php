@@ -216,7 +216,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	/* end of switch */
 
 	/* Create user from template if requested */
-	if (!sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
+	if (!cacti_sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
 		cacti_log("NOTE: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 		$user_template = db_fetch_row_prepared('SELECT *
@@ -276,7 +276,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
-	if ((!sizeof($user)) && ($user_auth) && (get_guest_account() != '0')) {
+	if ((!cacti_sizeof($user)) && ($user_auth) && (get_guest_account() != '0')) {
 		/* Locate guest user record */
 		$user = db_fetch_row_prepared('SELECT id, username, enabled
 			FROM user_auth
@@ -297,7 +297,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	}
 
 	/* Process the user  */
-	if (sizeof($user)) {
+	if (cacti_sizeof($user)) {
 		cacti_log("LOGIN: User '" . $user['username'] . "' Authenticated", false, 'AUTH');
 
 		$client_addr = get_client_addr('');
@@ -491,7 +491,7 @@ function domains_login_process() {
 					WHERE id = ?',
 					array($template_user));
 
-				if (!sizeof($user) && $copy_user && $template_user > 0 && $username != '') {
+				if (!cacti_sizeof($user) && $copy_user && $template_user > 0 && $username != '') {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 					/* check that template user exists */
@@ -577,7 +577,7 @@ function domains_ldap_auth($username, $password = '', $dn = '', $realm) {
 		WHERE domain_id = ?',
 		array($realm-1000));
 
-	if (sizeof($ld)) {
+	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
@@ -617,7 +617,7 @@ function domains_ldap_search_dn($username, $realm) {
 		WHERE domain_id = ?',
 		array($realm-1000));
 
-	if (sizeof($ld)) {
+	if (cacti_sizeof($ld)) {
 		if (!empty($ld['dn']))                $ldap->dn                = $ld['dn'];
 		if (!empty($ld['server']))            $ldap->host              = $ld['server'];
 		if (!empty($ld['port']))              $ldap->port              = $ld['port'];
@@ -727,7 +727,7 @@ $selectedTheme = get_selected_theme();
 							</td>
 							<td>
 								<select id='realm' name='realm'><?php
-									if (sizeof($realms)) {
+									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
 											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
 										}

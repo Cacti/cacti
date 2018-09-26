@@ -201,7 +201,7 @@ function duplicate_cdef($_cdef_id, $cdef_title) {
 	$cdef_id = sql_save($save, 'cdef');
 
 	/* create new entry(s): cdef_items */
-	if (sizeof($cdef_items) > 0) {
+	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
 			unset($save);
 
@@ -237,7 +237,7 @@ function form_actions() {
 				db_execute('DELETE FROM cdef WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM cdef_items WHERE ' . array_to_sql_or($selected_items, 'cdef_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_cdef($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
@@ -270,31 +270,32 @@ function form_actions() {
 
 	html_start_box($cdef_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($cdef_array) && sizeof($cdef_array)) {
+	if (isset($cdef_array) && cacti_sizeof($cdef_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', sizeof($cdef_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following CDEF.', 'Click \'Continue\' to delete all following CDEFs.', cacti_sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete CDEF', 'Delete CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', sizeof($cdef_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following CDEF. You can optionally change the title format for the new CDEF.', 'Click \'Continue\' to duplicate the following CDEFs. You can optionally change the title format for the new CDEFs.', cacti_sizeof($cdef_array)) . "</p>
 					<div class='itemlist'><ul>$cdef_list</ul></div>
 					<p>" . __('Title Format:') . '<br>';
 					form_text_box('title_format', '<cdef_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', sizeof($cdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate CDEF', 'Duplicate CDEFs', cacti_sizeof($cdef_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one CDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: cdef.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -420,7 +421,7 @@ function item_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		if (sizeof($cdef)) {
+		if (cacti_sizeof($cdef)) {
 			$current_type = $cdef['type'];
 			$values[$current_type] = $cdef['value'];
 		}
@@ -548,7 +549,7 @@ function cdef_item_dnd() {
 	if (isset_request_var('cdef_item') && is_array(get_nfilter_request_var('cdef_item'))) {
 		$cdef_ids = get_nfilter_request_var('cdef_item');
 
-		if (sizeof($cdef_ids)) {
+		if (cacti_sizeof($cdef_ids)) {
 			$sequence = 1;
 			foreach($cdef_ids as $cdef_id) {
 				$cdef_id = str_replace('line', '', $cdef_id);
@@ -615,8 +616,8 @@ function cdef_edit() {
 			array(get_request_var('id')));
 
 		$i = 1;
-		$total_items = sizeof($cdef_items);
-		if (sizeof($cdef_items)) {
+		$total_items = cacti_sizeof($cdef_items);
+		if (cacti_sizeof($cdef_items)) {
 			foreach ($cdef_items as $cdef_item) {
 				form_alternate_row('line' . $cdef_item['id'], true, true);?>
 					<td>
@@ -759,7 +760,7 @@ function cdef() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -886,7 +887,7 @@ function cdef() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($cdef_list)) {
+	if (cacti_sizeof($cdef_list)) {
 		foreach ($cdef_list as $cdef) {
 			if ($cdef['graphs'] == 0 && $cdef['templates'] == 0) {
 				$disabled = false;
@@ -908,7 +909,7 @@ function cdef() {
 
 	html_end_box(false);
 
-	if (sizeof($cdef_list)) {
+	if (cacti_sizeof($cdef_list)) {
 		print $nav;
 	}
 

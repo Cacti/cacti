@@ -49,7 +49,7 @@ if (is_realm_allowed(1043)) {
 		array(get_filter_request_var('local_graph_id')));
 
 	$results = '';
-	if (sizeof($local_data_ids)) {
+	if (cacti_sizeof($local_data_ids)) {
 		foreach($local_data_ids as $local_data_id) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
 

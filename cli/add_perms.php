@@ -30,7 +30,7 @@ require_once($config['base_path'] . '/lib/api_automation_tools.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms) == 0) {
+if (cacti_sizeof($parms) == 0) {
 	display_help();
 
 	exit(1);

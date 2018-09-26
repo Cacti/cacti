@@ -27,7 +27,7 @@ function prime_default_settings() {
 
 	if (is_array($settings) && !isset($_SESSION['settings_primed'])) {
 		foreach ($settings as $tab_array) {
-			if (sizeof($tab_array)) {
+			if (cacti_sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
 						db_execute_prepared('INSERT IGNORE INTO settings
@@ -58,9 +58,9 @@ function install_test_local_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print __('Local Connection Successful');
+		print json_encode(array('status' => 'true'));
 	} else {
-		print __('Local Connection Failed');
+		print json_encode(array('status' => 'false'));
 	}
 }
 
@@ -71,9 +71,9 @@ function install_test_remote_database_connection() {
 
 	if (is_object($connection)) {
 		db_close($connection);
-		print __('Remote Connection Successful');
+		print json_encode(array('status' => 'true'));
 	} else {
-		print __('Remote Connection Failed');
+		print json_encode(array('status' => 'false'));
 	}
 }
 
@@ -93,7 +93,7 @@ function install_test_temporary_table() {
 
 function verify_php_extensions($extensions) {
 	//FIXME: More to foreach loop
-	for ($i = 0; $i < count($extensions); $i++) {
+	for ($i = 0; $i < cacti_count($extensions); $i++) {
 		if (extension_loaded($extensions[$i]['name'])){
 			$extensions[$i]['installed'] = true;
 		}
@@ -102,8 +102,8 @@ function verify_php_extensions($extensions) {
 	return $extensions;
 }
 
-function db_install_execute($sql, $log = true) {
-	$status = (db_execute($sql, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
+function db_install_execute($sql, $params = array(), $log = true) {
+	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
 		db_install_add_cache($status, $sql);
@@ -187,7 +187,7 @@ function db_install_drop_table($table) {
 
 	$status = DB_STATUS_SKIPPED;
 	if (db_table_exists($table, false)) {
-		$status = db_install_execute($sql, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
 
 	db_install_add_cache($status, $sql);
@@ -199,7 +199,7 @@ function db_install_rename_table($table, $newname) {
 
 	$status = DB_STATUS_SKIPPED;
 	if (db_table_exists($table, false) && !db_table_exists($newname, false)) {
-		$status = db_install_execute($sql, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+		$status = db_install_execute($sql, array(), false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
 	}
 
 	db_install_add_cache($status, $sql);
@@ -219,9 +219,23 @@ function db_install_drop_column($table, $column) {
 }
 
 function db_install_add_cache($status, $sql) {
-	echo ".";
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
+	set_config_option('install_updated', microtime(true));
+
+	$status_char = '?';
+	$status_array = array(
+		DB_STATUS_SKIPPED => '-',
+		DB_STATUS_SUCCESS => '+',
+		DB_STATUS_WARNING => '!',
+		DB_STATUS_ERROR   => 'x',
+	);
+
+	if (array_key_exists($status, $status_array)) {
+		$status_char = $status_array[$status];
+	}
+
+	echo $status_char;
 	if (!isset($database_upgrade_status)) {
 		$database_upgrade_status = array();
 	}
@@ -282,7 +296,7 @@ function find_best_path($binary_name) {
 		);
 	}
 
-	for ($i=0; $i<count($search_paths); $i++) {
+	for ($i=0; $i<cacti_count($search_paths); $i++) {
 		if ((file_exists($search_paths[$i] . '/' . $binary_name)) && (is_readable($search_paths[$i] . '/' . $binary_name))) {
 			return $search_paths[$i] . '/' . $binary_name;
 		}
@@ -305,18 +319,10 @@ function install_setup_get_templates() {
 	$path = $config['base_path'] . '/install/templates';
 	$info = array();
 	foreach ($templates as $xmlfile) {
-		$filename = "compress.zlib://$path/$xmlfile";
-		$xml = file_get_contents($filename);;
-		//Loading Template Information from package
-		$xmlget = simplexml_load_string($xml);
-		$data = to_array($xmlget);
-		if (is_array($data['info']['author'])) $data['info']['author'] = '1';
-		if (is_array($data['info']['email'])) $data['info']['email'] = '2';
-		if (is_array($data['info']['description'])) $data['info']['description'] = '3';
-		if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
-
-		$data['info']['filename'] = $xmlfile;
-		$info[] = $data['info'];
+		// Loading Template Information from package
+		$myinfo = json_decode(shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/import_package.php --filename=/$path/$xmlfile --info-only"), true);
+		$myinfo['filename'] = $xmlfile;
+		$info[] = $myinfo;
 	}
 
 	return $info;
@@ -506,7 +512,7 @@ function install_file_paths() {
 
 		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
 
-		if (sizeof($out_array) > 0) {
+		if (cacti_sizeof($out_array) > 0) {
 			if (preg_match('/^RRDtool ([0-9.]+) /', $out_array[0], $m)) {
 				global $rrdtool_versions;
 				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
@@ -564,7 +570,7 @@ function remote_update_config_file() {
 			if (is_writable($config_file)) {
 				$file_array = file($config_file);
 
-				if (sizeof($file_array)) {
+				if (cacti_sizeof($file_array)) {
 					foreach($file_array as $line) {
 						if (strpos(trim($line), "\$poller_id") !== false) {
 							$newfile[] = "\$poller_id = $poller_id;" . PHP_EOL;
@@ -605,7 +611,7 @@ function import_colors() {
 
 	$contents = file(dirname(__FILE__) . '/colors.csv');
 
-	if (count($contents)) {
+	if (cacti_count($contents)) {
 		foreach($contents as $line) {
 			$line    = trim($line);
 			$parts   = explode(',',$line);

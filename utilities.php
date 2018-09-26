@@ -163,7 +163,7 @@ function utilities_view_tech($php_info = '') {
 
 		$out_array = array();
 		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
-		if (sizeof($out_array) > 0) {
+		if (cacti_sizeof($out_array) > 0) {
 			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
 				preg_match('/^([0-9]+\.[0-9]+)\./', $m[1], $m2);
 				$rrdtool_release = $m[1];
@@ -195,7 +195,7 @@ function utilities_view_tech($php_info = '') {
 	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 		$out_array = array();
 		exec(read_config_option('path_spine') . ' --version', $out_array);
-		if (sizeof($out_array) > 0) {
+		if (cacti_sizeof($out_array) > 0) {
 			$spine_version = $out_array[0];
 		}
 	}
@@ -217,7 +217,7 @@ function utilities_view_tech($php_info = '') {
 
 	$header_label = __('Technical Support [%s]', $tabs[get_request_var('tab')]);
 
-	if (sizeof($tabs)) {
+	if (cacti_sizeof($tabs)) {
 		$i = 0;
 
 		/* draw the tabs */
@@ -307,7 +307,7 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . __('Data Sources') . "</td>\n";
 		print '<td>';
 		$data_total = 0;
-		if (sizeof($data_count)) {
+		if (cacti_sizeof($data_count)) {
 			foreach ($data_count as $item) {
 				print $input_types[$item['type_id']] . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$data_total += $item['total'];
@@ -343,7 +343,7 @@ function utilities_view_tech($php_info = '') {
 		print '<td>' . __('Items') . "</td>\n";
 		print '<td>';
 		$total = 0;
-		if (sizeof($poller_item)) {
+		if (cacti_sizeof($poller_item)) {
 			foreach ($poller_item as $item) {
 				print __('Action[%s]', $item['action']) . ': ' . number_format_i18n($item['total'], -1) . '<br>';
 				$total += $item['total'];
@@ -388,7 +388,7 @@ function utilities_view_tech($php_info = '') {
 		/* Get System Memory */
 		$memInfo = utilities_get_system_memory();
 
-		if (sizeof($memInfo)) {
+		if (cacti_sizeof($memInfo)) {
 			html_section_header(__('System Memory'), 2);
 
 			foreach($memInfo as $name => $value) {
@@ -496,7 +496,7 @@ function utilities_view_tech($php_info = '') {
 
 		form_alternate_row();
 		print "		<td colspan='2' style='text-align:left;padding:0px'>";
-		if (sizeof($tables) > 0) {
+		if (cacti_sizeof($tables) > 0) {
 			print "<table id='tables' class='cactiTable' style='width:100%'>\n";
 			print "<thead>\n";
 			print "<tr class='tableHeader'>\n";
@@ -674,7 +674,7 @@ function utilities_view_user_log() {
 							<?php
 							$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth ORDER BY username');
 
-							if (sizeof($users)) {
+							if (cacti_sizeof($users)) {
 								foreach ($users as $user) {
 									print "<option value='" . $user['username'] . "'"; if (get_request_var('username') == $user['username']) { print ' selected'; } print '>' . $user['username'] . "</option>\n";
 								}
@@ -700,7 +700,7 @@ function utilities_view_user_log() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -803,7 +803,7 @@ function utilities_view_user_log() {
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
-	if (sizeof($user_log)) {
+	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
 			form_alternate_row('', true);
 			?>
@@ -842,7 +842,7 @@ function utilities_view_user_log() {
 
 	html_end_box();
 
-	if (sizeof($user_log)) {
+	if (cacti_sizeof($user_log)) {
 		print $nav;
 	}
 }
@@ -850,7 +850,7 @@ function utilities_view_user_log() {
 function utilities_clear_user_log() {
 	$users = db_fetch_assoc('SELECT DISTINCT username FROM user_auth');
 
-	if (sizeof($users)) {
+	if (cacti_sizeof($users)) {
 		/* remove active users */
 		foreach ($users as $user) {
 			$total_login_rows = db_fetch_cell_prepared('SELECT COUNT(username)
@@ -1055,7 +1055,7 @@ function utilities_view_logfile() {
 								$files = array('cacti.log');
 							}
 
-							if (sizeof($files)) {
+							if (cacti_sizeof($files)) {
 								foreach($files as $logFile) {
 									if (in_array($logFile, array('.', '..', '.htaccess'))) {
 										continue;
@@ -1408,7 +1408,7 @@ function utilities_view_snmp_cache() {
 									ORDER by sq.name", array(get_request_var('host_id')));
 							}
 
-							if (sizeof($snmp_queries)) {
+							if (cacti_sizeof($snmp_queries)) {
 								foreach ($snmp_queries as $snmp_query) {
 									print "<option value='" . $snmp_query['id'] . "'"; if (get_request_var('snmp_query_id') == $snmp_query['id']) { print ' selected'; } print '>' . html_escape($snmp_query['name']) . "</option>\n";
 								}
@@ -1439,7 +1439,7 @@ function utilities_view_snmp_cache() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1524,7 +1524,7 @@ function utilities_view_snmp_cache() {
 	html_header(array(__('Device'), __('Data Query Name'), __('Index'), __('Field Name'), __('Field Value'), __('OID')));
 
 	$i = 0;
-	if (sizeof($snmp_cache)) {
+	if (cacti_sizeof($snmp_cache)) {
 	foreach ($snmp_cache as $item) {
 		form_alternate_row();
 		?>
@@ -1553,7 +1553,7 @@ function utilities_view_snmp_cache() {
 
 	html_end_box();
 
-	if (sizeof($snmp_cache)) {
+	if (cacti_sizeof($snmp_cache)) {
 		print $nav;
 	}
 }
@@ -1686,7 +1686,7 @@ function utilities_view_poller_cache() {
 								$sql_where
 								ORDER BY name");
 
-							if (sizeof($templates)) {
+							if (cacti_sizeof($templates)) {
 								foreach ($templates as $template) {
 									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim(html_escape($template['name']), 40) . "</option>\n";
 								}
@@ -1728,7 +1728,7 @@ function utilities_view_poller_cache() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1815,7 +1815,7 @@ function utilities_view_poller_cache() {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_poller_cache');
 
 	$i = 0;
-	if (sizeof($poller_cache)) {
+	if (cacti_sizeof($poller_cache)) {
 		foreach ($poller_cache as $item) {
 			if ($i % 2 == 0) {
 				$class = 'odd';
@@ -1871,7 +1871,7 @@ function utilities_view_poller_cache() {
 
 	html_end_box();
 
-	if (sizeof($poller_cache)) {
+	if (cacti_sizeof($poller_cache)) {
 		print $nav;
 	}
 }
@@ -1909,7 +1909,7 @@ function utilities() {
 		),
 		__('Rebuild Resource Cache') => array(
 			'link'  => 'utilities.php?action=rebuild_resource_cache',
-			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
+			'description' => __('When operating multiple Data Collectors in Cacti, Cacti will attempt to maintain state for key files on all Data Collectors.  This includes all core, non-install related website and plugin files.  When you force a Resource Cache rebuild, Cacti will clear the local Resource Cache, and then rebuild it at the next scheduled poller start.  This will trigger all Remote Data Collectors to recheck their website and plugin files for consistency.')
 		),
 	);
 
@@ -2113,7 +2113,7 @@ function boost_display_run_status() {
 			$directory_size = 0;
 			$cache_files    = 0;
 
-			if (sizeof($directory_contents)) {
+			if (cacti_sizeof($directory_contents)) {
 				/* goto the cache directory */
 				chdir($cache_directory);
 
@@ -2394,7 +2394,7 @@ function snmpagent_utilities_run_cache() {
 							<select id='mib' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('mib') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<?php
-								if (sizeof($mibs) > 0) {
+								if (cacti_sizeof($mibs) > 0) {
 									foreach ($mibs as $mib) {
 										print "<option value='" . $mib['mib'] . "'"; if (get_request_var('mib') == $mib['mib']) { print ' selected'; } print '>' . html_escape($mib['mib']) . "</option>\n";
 									}
@@ -2409,7 +2409,7 @@ function snmpagent_utilities_run_cache() {
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows)) {
+								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
@@ -2464,7 +2464,7 @@ function snmpagent_utilities_run_cache() {
 
 	html_header(array(__('OID'), __('Name'), __('MIB'), __('Type'), __('Max-Access'), __('Value')));
 
-	if (sizeof($snmp_cache)) {
+	if (cacti_sizeof($snmp_cache)) {
 		foreach ($snmp_cache as $item) {
 
 			$oid        = filter_value($item['oid'], get_request_var('filter'));
@@ -2489,7 +2489,7 @@ function snmpagent_utilities_run_cache() {
 
 	html_end_box();
 
-	if (sizeof($snmp_cache)) {
+	if (cacti_sizeof($snmp_cache)) {
 		print $nav;
 	}
 
@@ -2671,7 +2671,7 @@ function snmpagent_utilities_run_eventlog(){
 							<select id='rows' onChange='applyFilter()'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
-								if (sizeof($item_rows)) {
+								if (cacti_sizeof($item_rows)) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 									}
@@ -2739,7 +2739,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	html_header(array(' ', __('Time'), __('Receiver'), __('Notification'), __('Varbinds')));
 
-	if (sizeof($logs)) {
+	if (cacti_sizeof($logs)) {
 		foreach ($logs as $item) {
 			$varbinds = filter_value($item['varbinds'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
@@ -2764,7 +2764,7 @@ function snmpagent_utilities_run_eventlog(){
 
 	html_end_box();
 
-	if (sizeof($logs)) {
+	if (cacti_sizeof($logs)) {
 		print $nav;
 	}
 

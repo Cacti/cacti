@@ -107,61 +107,45 @@ function read_graph_config_option($config_name, $force = false) {
    @returns          - void */
 function save_user_settings($user = -1) {
 	global $settings_user;
+
 	if ($user == -1 || empty($user)) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		foreach ($tab_fields as $field_name => $field_array) {
-			if (!empty($field_array['user'])) {
-				if (!isset_request_var('user_optional_' . $field_name) ||
-				    get_nfilter_request_var('user_optional_' . $field_name) != 'on') {
-					clear_user_setting($field_name, $user);
-					continue;
-				}
-			}
-
 			/* Check every field with a numeric default value and reset it to default if the inputted value is not numeric  */
 			if (isset($field_array['default']) && is_numeric($field_array['default']) && !is_numeric(get_nfilter_request_var($field_name))) {
 				set_request_var($field_name, $field_array['default']);
 			}
 
-			if ($field_array['method'] == 'checkbox') {
-				set_user_setting($field_name,
-					(isset_request_var($field_name) ? 'on' : ''),
-					$user);
-			} elseif ($field_array['method'] == 'checkbox_group') {
-				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-					set_user_setting($sub_field_name,
-						(isset_request_var($sub_field_name) ? 'on' : ''),
-						$user);
-				}
-			} elseif ($field_array['method'] == 'textbox_password') {
-				if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
-					$_SESSION['sess_error_fields'][$field_name] = $field_name;
-					$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
-					$errors[4] = 4;
-				} elseif (isset_request_var($field_name)) {
-					set_user_setting($field_name,
-						get_nfilter_request_var($field_name),
-						$user);
-				}
-			} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
-				foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
-					if (isset_request_var($sub_field_name)) {
-						set_user_setting($sub_field_name,
-							get_nfilter_request_var($sub_field_name),
-							$user);
+			if (isset($field_array['method'])) {
+				if ($field_array['method'] == 'checkbox') {
+					set_user_setting($field_name, (isset_request_var($field_name) ? 'on' : ''), $user);
+				} elseif ($field_array['method'] == 'checkbox_group') {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+						set_user_setting($sub_field_name, (isset_request_var($sub_field_name) ? 'on' : ''), $user);
 					}
+				} elseif ($field_array['method'] == 'textbox_password') {
+					if (get_nfilter_request_var($field_name) != get_nfilter_request_var($field_name.'_confirm')) {
+						$_SESSION['sess_error_fields'][$field_name] = $field_name;
+						$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
+						$errors[4] = 4;
+					} elseif (isset_request_var($field_name)) {
+						set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
+					}
+				} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
+					foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
+						if (isset_request_var($sub_field_name)) {
+							set_user_setting($sub_field_name, get_nfilter_request_var($sub_field_name), $user);
+						}
+					}
+				} elseif (isset_request_var($field_name)) {
+					set_user_setting($field_name, get_nfilter_request_var($field_name), $user);
 				}
-			} else if (isset_request_var($field_name)) {
-				set_user_setting($field_name,
-					get_nfilter_request_var($field_name),
-					$user);
 			}
 		}
 	}
-
 }
 
 /* set_user_setting - sets/updates a user setting with the given value.
@@ -290,7 +274,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 			AND user_id = ?',
 			array($config_name, $effective_uid));
 
-		if (sizeof($db_setting)) {
+		if (cacti_sizeof($db_setting)) {
 			return $db_setting['value'];
 		} elseif ($default !== false) {
 			return $default;
@@ -314,7 +298,7 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 			AND user_id = ?',
 			array($config_name, $effective_uid));
 
-		if (sizeof($db_setting)) {
+		if (cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
 		} elseif ($default !== false) {
 			$user_config_array[$config_name] = $default;
@@ -571,21 +555,24 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	if (isset($_SESSION['sess_messages'])) {
-		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]) && isset($messages[$current_message_id]['type'])) {
-					if ($messages[$current_message_id]['type'] == 'error') {
-						return true;
-					}
-				}
-			}
-		} else {
-			return true;
+	return get_message_type() === MESSAGE_LEVEL_ERROR;
+}
+
+function get_message_level($current_message) {
+	$current_level = MESSAGE_LEVEL_NONE;
+	if (isset($current_message['level'])) {
+		$current_level = $current_message['level'];
+	} elseif (isset($current_message['type'])) {
+		switch ($current_message['type']) {
+			case 'error':
+				$current_level = MESSAGE_LEVEL_ERROR;
+				break;
+			case 'info':
+				$current_level = MESSAGE_LEVEL_INFO;
+				break;
 		}
 	}
-
-	return false;
+	return $current_level;
 }
 
 /* get_message_type - finds the message and returns it's type
@@ -593,27 +580,51 @@ function is_error_message() {
 function get_message_type() {
 	global $config, $messages;
 
+	$level = MESSAGE_LEVEL_NONE;
 	if (isset($_SESSION['sess_messages'])) {
 		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]['type'])) {
-					return $messages[$current_message_id]['type'];
-				} else {
-					return 'unknown';
+			foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+				$current_level = get_message_level($current_message);
+				if ($current_level == MESSAGE_LEVEL_NONE && isset($messages[$current_message_id])) {
+					$current_level = get_message_level($messages[$current_message_id]);
+				}
+
+				if ($current_level > $level) {
+					$level = $current_level;
 				}
 			}
-		} else {
-			return 'unknown';
 		}
 	}
 
-	return 'unknown';
+	return $level;
 }
 
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
-function raise_message($message_id) {
-	$_SESSION['sess_messages'][$message_id] = $message_id;
+function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
+	global $messages;
+	if (empty($message)) {
+		if (array_key_exists($message_id, $messages)) {
+			$predefined = $messages[$message_id];
+			if (isset($predefined['message'])) {
+				$message = $predefined['message'];
+			} else {
+				$message = $predefined;
+			}
+
+			if ($message_level == MESSAGE_LEVEL_NONE) {
+				$message_level = get_message_level($predefined);
+			}
+		} else {
+			$message = ''; //No message defined';
+		}
+	}
+
+	if (!isset($_SESSION['sess_messages'])) {
+		$_SESSION['sess_messages'] = array();
+	}
+
+	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
 }
 
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
@@ -625,38 +636,49 @@ function display_output_messages() {
 	$debug_message = debug_log_return('new_graphs');
 
 	if ($debug_message != '') {
-		$omessage['type']    = 'info';
+		$omessage['level']    = MESSAGE_LEVEL_NONE;
 		$omessage['message'] = $debug_message;
 
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
-		$omessage['type'] = get_message_type();
+		if (!is_array($_SESSION['sess_messages'])) {
+			$_SESSION['sess_messages'] = array('custom_error' => $_SESSION['sess_messages']);
+		}
 
-		if (is_array($_SESSION['sess_messages'])) {
-			foreach (array_keys($_SESSION['sess_messages']) as $current_message_id) {
-				if (isset($messages[$current_message_id]['message'])) {
-					$message = $messages[$current_message_id]['message'];
-					if ($current_message_id == 'custom_error') {
-						$message = $_SESSION['custom_error'];
+		$omessage['level'] = get_message_type();
+
+		foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
+			if (is_array($current_message)) {
+				$message = isset($current_message['message']) ? $current_message['message'] : null;
+			} else {
+				$message = $current_message;
+			}
+
+			if (empty($message) && isset($messages[$current_message_id])) {
+				if (is_array($messages[$current_message_id])) {
+					if (isset($messages[$current_message_id]['message'])) {
+						$message = $messages[$current_message_id]['message'];
 					}
-
-					$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
 				} else {
-					cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
+					$message = $messages[$current_message_id];
 				}
 			}
-		} else {
-			$omessage['message'] = $_SESSION['sess_messages'];
+
+			if (!empty($message)) {
+				$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;
+			} else {
+				cacti_log("ERROR: Cacti Error Message Id '$current_message_id' Not Defined", false, 'WEBUI');
+			}
 		}
 	}
 
-	kill_session_var('sess_messages');
+	clear_messages();
 
 	return json_encode($omessage);
 }
 
 function display_custom_error_message($message) {
-	$_SESSION['sess_messages'] = $message;
+	raise_message('custom_error', $message);
 }
 
 /* clear_messages - clears the message cache */
@@ -1278,7 +1300,7 @@ function is_hex_string($result) {
 
 	/* assume if something is a hex string
 	   it will have a length > 1 */
-	if (sizeof($parts) == 1) {
+	if (cacti_sizeof($parts) == 1) {
 		return false;
 	}
 
@@ -1332,7 +1354,7 @@ function prepare_validate_result(&$result) {
 		/* it has no delimiters, and no space, therefore, must be numeric */
 		if (is_numeric($result)) {
 			return true;
-		} else if (is_float($result)) {
+		} elseif (is_float($result)) {
 			return true;
 		} else {
 			$result = 'U';
@@ -1376,7 +1398,7 @@ function get_full_script_path($local_data_id) {
 
 	$full_path = $data_source['input_string'];
 
-	if (sizeof($data)) {
+	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
 			$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
 		}
@@ -1438,7 +1460,7 @@ function get_data_source_path($local_data_id, $expand_paths) {
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' name, data_source_path FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
 
-	if (sizeof($data_source) > 0) {
+	if (cacti_sizeof($data_source) > 0) {
 		if (empty($data_source['data_source_path'])) {
 			/* no custom path was specified */
 			$data_source_path = generate_data_source_path($local_data_id);
@@ -1539,9 +1561,10 @@ function get_data_source_title($local_data_id) {
 		data_template_data.name
 		FROM (data_template_data, data_local)
 		WHERE data_template_data.local_data_id = data_local.id
-		AND data_local.id = ?', array($local_data_id));
+		AND data_local.id = ?',
+		array($local_data_id));
 
-	if (isset($data) && sizeof($data)) {
+	if (isset($data) && cacti_sizeof($data)) {
 		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
 			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
 			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
@@ -1579,7 +1602,7 @@ function get_graph_title($local_graph_id) {
 		WHERE gl.id = ?',
 		array($local_graph_id));
 
-	if (sizeof($graph)) {
+	if (cacti_sizeof($graph)) {
 		if (strstr($graph['title'], '|') && !empty($graph['host_id']) && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
@@ -1670,7 +1693,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
 		/* workaround until we have RRA presets in 0.8.8 */
-		if (sizeof($avail_cf_functions)) {
+		if (cacti_sizeof($avail_cf_functions)) {
 			/* check through the cf's and get the best */
 			foreach($avail_cf_functions as $cf) {
 				if ($cf == $requested_cf) {
@@ -1712,7 +1735,7 @@ function get_rrd_cfs($local_data_id) {
 	if ($output != '') {
 		$output = explode("\n", $output);
 
-		if (sizeof($output)) {
+		if (cacti_sizeof($output)) {
 			foreach($output as $line) {
 				if (substr_count($line, '.cf')) {
 					$values = explode('=',$line);
@@ -1727,7 +1750,7 @@ function get_rrd_cfs($local_data_id) {
 
 	$new_cfs = array();
 
-	if (sizeof($cfs)) {
+	if (cacti_sizeof($cfs)) {
 		foreach($cfs as $cf) {
 			switch($cf) {
 			case 'AVG':
@@ -1781,7 +1804,7 @@ function generate_data_input_field_sequences($string, $data_input_id) {
 
 	if (preg_match_all('/<([_a-zA-Z0-9]+)>/', $string, $matches)) {
 		$j = 0;
-		for ($i=0; ($i < count($matches[1])); $i++) {
+		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$j++;
 
@@ -1821,7 +1844,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 	$target_graph_group_array = get_graph_group($target_id);
 
 	/* if this "parent" item has no children, then treat it like a regular gprint */
-	if (sizeof($target_graph_group_array) == 0) {
+	if (cacti_sizeof($target_graph_group_array) == 0) {
 		if ($direction == 'next') {
 			move_item_down('graph_templates_item', $graph_template_item_id, $sql_where);
 		} elseif ($direction == 'previous') {
@@ -1839,7 +1862,7 @@ function move_graph_group($graph_template_item_id, $graph_group_array, $target_i
 		WHERE $sql_where
 		ORDER BY sequence");
 
-	if (sizeof($graph_items)) {
+	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			/* check to see if we are at the "target" spot in the loop; if we are, update the sequences and move on */
 			if ($target_id == $item['id']) {
@@ -1935,7 +1958,7 @@ function get_graph_group($graph_template_item_id) {
 
 	$is_hard = false;
 
-	if (sizeof($graph_items)) {
+	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $item) {
 			if ($is_hard) {
 				return $graph_item_children_array;
@@ -2150,16 +2173,16 @@ function get_web_browser() {
 }
 
 function get_guest_account() {
-	return db_fetch_cell_prepared('SELECT id 
-		FROM user_auth 
-		WHERE username = ? OR id = ?', 
+	return db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE username = ? OR id = ?',
 		array(read_config_option('guest_user'), read_config_option('guest_user')));
 }
 
 function get_template_account() {
-	return db_fetch_cell_prepared('SELECT id 
-		FROM user_auth 
-		WHERE username = ? OR id = ?', 
+	return db_fetch_cell_prepared('SELECT id
+		FROM user_auth
+		WHERE username = ? OR id = ?',
 		array(read_config_option('user_template'), read_config_option('user_template')));
 }
 
@@ -2229,7 +2252,7 @@ function draw_navigation_text($type = 'url') {
 	$nav_count   = 0;
 
 	// resolve all mappings to build the navigation string
-	for ($i=0; ($i < count($current_mappings)); $i++) {
+	for ($i=0; ($i < cacti_count($current_mappings)); $i++) {
 		if (empty($current_mappings[$i])) {
 			continue;
 		}
@@ -2286,7 +2309,7 @@ function draw_navigation_text($type = 'url') {
 		if (isset_request_var('leaf_id') && get_nfilter_request_var('leaf_id') != '') {
 			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
 
-			if (sizeof($leaf)) {
+			if (cacti_sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
 					$leaf_name = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($leaf['host_id']));
 				} else {
@@ -2376,7 +2399,7 @@ function resolve_navigation_variables($text) {
 	$graphTitle = get_graph_title(get_filter_request_var('local_graph_id'));
 
 	if (preg_match_all("/\|([a-zA-Z0-9_]+)\|/", $text, $matches)) {
-		for ($i=0; $i<count($matches[1]); $i++) {
+		for ($i=0; $i<cacti_count($matches[1]); $i++) {
 			switch ($matches[1][$i]) {
 				case 'current_graph_title':
 					$text = str_replace('|' . $matches[1][$i] . '|', $graphTitle, $text);
@@ -2745,7 +2768,7 @@ function debug_log_return($type) {
 	if ($type == 'new_graphs') {
 		if (isset($_SESSION['debug_log'][$type])) {
 			$log_text .= "<table style='width:100%;'>";
-			for ($i=0; $i<count($_SESSION['debug_log'][$type]); $i++) {
+			for ($i=0; $i<cacti_count($_SESSION['debug_log'][$type]); $i++) {
 				$log_text .= '<tr><td>' . $_SESSION['debug_log'][$type][$i] . '</td></tr>';
 			}
 			$log_text .= '</table>';
@@ -2782,7 +2805,7 @@ function sanitize_search_string($string) {
 	$string = preg_replace('/\b[a-z0-9]+:\/\/[a-z0-9\.\-]+(\/[a-z0-9\?\.%_\-\+=&\/]+)?/', ' ', $string);
 
 	/* Filter out strange characters like ^, $, &, change "it's" to "its" */
-	for($i = 0; $i < count($drop_char_match); $i++) {
+	for($i = 0; $i < cacti_count($drop_char_match); $i++) {
 		$string =  str_replace($drop_char_match[$i], $drop_char_replace[$i], $string);
 	}
 
@@ -3014,7 +3037,7 @@ function admin_email($subject, $message) {
 				WHERE id = ?',
 				array(read_config_option('admin_user')));
 
-			if (sizeof($admin_details)) {
+			if (cacti_sizeof($admin_details)) {
 				$from[0] = read_config_option('settings_from_email');
 				$from[1] = read_config_option('settings_from_name');
 
@@ -3159,10 +3182,10 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	if ($how == 0) {
 		$mail->isMail();
-	} else if ($how == 1) {
+	} elseif ($how == 1) {
 		$mail->Sendmail = read_config_option('settings_sendmail_path');
 		$mail->isSendmail();
-	} else if ($how == 2) {
+	} elseif ($how == 2) {
 		$mail->isSMTP();
 		$mail->Host     = read_config_option('settings_smtp_host');
 		$mail->Port     = read_config_option('settings_smtp_port');
@@ -3267,7 +3290,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$i = 0;
 
 	// Handle Graph Attachments
-	if (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
+	if (is_array($attachments) && cacti_sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
 		foreach($attachments as $attachment) {
 			if ($attachment['attachment'] != '') {
 				/* get content id and create attachment */
@@ -3287,7 +3310,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 				$body = str_replace('<GRAPH>' . $attachment['local_graph_id'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
 			}
 		}
-	} elseif (is_array($attachments) && sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
+	} elseif (is_array($attachments) && cacti_sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
 		foreach($attachments as $attachment) {
 			if ($attachment['attachment'] != '') {
 				/* get content id and create attachment */
@@ -3318,7 +3341,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	/* process custom headers */
-	if (is_array($headers) && sizeof($headers)) {
+	if (is_array($headers) && cacti_sizeof($headers)) {
 		foreach($headers as $name => $value) {
 			$mail->addCustomHeader($name, $value);
 		}
@@ -3435,11 +3458,11 @@ function email_test() {
 		$how = 0;
 	if ($how == 0) {
 		$mail = __('PHP\'s Mailer Class');
-	} else if ($how == 1) {
+	} elseif ($how == 1) {
 		$mail = __('Sendmail') . '<br><b>' . __('Sendmail Path'). '</b>: ';
 		$sendmail = read_config_option('settings_sendmail_path');
 		$mail .= $sendmail;
-	} else if ($how == 2) {
+	} elseif ($how == 2) {
 		print __('Method: SMTP') . '<br>';
 		$mail = __('SMTP') . '<br>';
 		$smtp_host = read_config_option('settings_smtp_host');
@@ -3517,7 +3540,7 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 	$octets = explode('.', $ip);
 
 	/* perform a quick error check */
-	if (count($octets) != 4) return 'ERROR';
+	if (cacti_count($octets) != 4) return 'ERROR';
 
 	/* needs a byte to indicate the length of each segment of the request */
 	for ($x=3; $x>=0; $x--) {
@@ -3670,7 +3693,7 @@ function update_system_mibs($host_id) {
 
 	$h = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($host_id));
 
-	if (sizeof($h)) {
+	if (cacti_sizeof($h)) {
 		open_snmp_session($host_id, $h);
 
 		if (isset($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']])) {
@@ -3772,7 +3795,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 	}
 
 	$results  = array();
-	$elements = sizeof($data);
+	$elements = cacti_sizeof($data);
 
 	/* sort the array to return */
 	sort($data);
@@ -4186,9 +4209,9 @@ function get_default_contextoption($timeout = '') {
 	$fgc_contextoption = false;
 
 	if ($timeout == '') {
-		$timeout = read_config_option('script_timeout');
+		$timeout = read_config_option('remote_agent_timeout');
 	} elseif (!is_numeric($timeout)) {
-		$timeout = 2;
+		$timeout = 5;
 	}
 
 	$protocol = get_url_type();
@@ -4284,8 +4307,8 @@ function repair_system_data_input_methods($step = 'import') {
 				AND data_input_id = ?',
 				array($data_input_id));
 
-			if (sizeof($bad_hashes)) {
-				cacti_log(strtoupper($step) . ' NOTE: Repairing ' . sizeof($bad_hashes) . ' Damaged data_input_fields', false);
+			if (cacti_sizeof($bad_hashes)) {
+				cacti_log(strtoupper($step) . ' NOTE: Repairing ' . cacti_sizeof($bad_hashes) . ' Damaged data_input_fields', false);
 
 				foreach($bad_hashes as $bhash) {
 					$good_field_id = db_fetch_cell_prepared('SELECT id
@@ -4306,8 +4329,8 @@ function repair_system_data_input_methods($step = 'import') {
 							WHERE data_input_field_id = ?',
 							array($bhash['id']));
 
-						if (sizeof($bad_mappings)) {
-							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_input_fields', false);
+						if (cacti_sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_input_fields', false);
 							foreach($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
 									FROM data_input_data
@@ -4344,8 +4367,8 @@ function repair_system_data_input_methods($step = 'import') {
 							WHERE data_input_field_id = ?',
 							array($bhash['id']));
 
-						if (sizeof($bad_mappings)) {
-							cacti_log(strtoupper($step) . ' NOTE: Found ' . sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
+						if (cacti_sizeof($bad_mappings)) {
+							cacti_log(strtoupper($step) . ' NOTE: Found ' . cacti_sizeof($bad_mappings) . ' Damaged data_template_rrd', false);
 
 							foreach($bad_mappings as $mfid) {
 								$good_found = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -4392,7 +4415,7 @@ if (isset($config['cacti_server_os']) && $config['cacti_server_os'] == 'win32' &
 		$wmi   = new COM("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
 		$procs = $wmi->ExecQuery("SELECT ProcessId FROM Win32_Process WHERE ProcessId='" . $pid . "'");
 
-		if (sizeof($procs)) {
+		if (cacti_sizeof($procs)) {
 			if ($signal == SIGTERM) {
 				foreach($procs as $proc) {
 					$proc->Terminate();
@@ -4496,7 +4519,7 @@ function get_cacti_cli_version() {
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$length   = max(sizeof(explode('.', $version1)), sizeof(explode('.', $version2)));
+	$length   = max(cacti_sizeof(explode('.', $version1)), cacti_sizeof(explode('.', $version2)));
 	$version1 = version_to_decimal($version1, $length);
 	$version2 = version_to_decimal($version2, $length);
 
@@ -4552,8 +4575,8 @@ function version_to_decimal($version, $length = 1) {
 		}
 	}
 
-	if (sizeof($parts) < $length) {
-		$i = sizeof($parts);
+	if (cacti_sizeof($parts) < $length) {
+		$i = cacti_sizeof($parts);
 		while($i < $length) {
 			$newver .= '00';
 			$i++;
@@ -4593,7 +4616,7 @@ function cacti_gethostbyname($hostname, $type = '') {
 
 	$return = cacti_gethostinfo($hostname, $type);
 
-	if (sizeof($return)) {
+	if (cacti_sizeof($return)) {
 		foreach($return as $record) {
 			switch($record['type']) {
 			case 'A':
@@ -4804,7 +4827,7 @@ function cacti_pton($ipaddr) {
 	if (!empty($subnet)) {
 		if (!is_numeric($subnet)) {
 			return false;
-		} else if ($subnet > $len) {
+		} elseif ($subnet > $len) {
 			return false;
 		}
 	}
@@ -4868,4 +4891,12 @@ function cacti_ptoa($title, $addr) {
 	foreach(str_split($addr) as $char) {
 		print str_pad(dechex(ord($char)),2,'0',STR_PAD_LEFT);
 	}
+}
+
+function cacti_sizeof($array) {
+	return ($array === false || !is_array($array)) ? 0 : sizeof($array);
+}
+
+function cacti_count($array) {
+	return ($array === false || !is_array($array)) ? 0 : count($array);
 }

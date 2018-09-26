@@ -186,24 +186,6 @@ if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
 }
 
-/* colors */
-$colors['dark_outline'] = '454E53';
-$colors['dark_bar'] = 'AEB4B7';
-$colors['panel'] = 'E5E5E5';
-$colors['panel_text'] = '000000';
-$colors['panel_link'] = '000000';
-$colors['light'] = 'F5F5F5';
-$colors['alternate'] = 'E7E9F2';
-$colors['panel_dark'] = 'C5C5C5';
-
-$colors['header'] = '00438C';
-$colors['header_panel'] = '6d88ad';
-$colors['header_text'] = 'ffffff';
-$colors['form_background_dark'] = 'E1E1E1';
-
-$colors['form_alternate1'] = 'F5F5F5';
-$colors['form_alternate2'] = 'E5E5E5';
-
 /* include base modules */
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
@@ -225,6 +207,9 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
+	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca = false;
 
 	/* gather the existing cactidb version */
 	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1', false, $local_db_cnn_id);
@@ -232,7 +217,10 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	// We are a remote poller also try to connect to the remote database
 	$remote_db_cnn_id = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $database_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
-	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
+	if ($config['is_web'] && $remote_db_cnn_id &&
+		$config['connection'] != 'recovery' &&
+		$config['cacti_db_version'] != 'new_install') {
+
 		// Connection worked, so now override the default settings so that it will always utilize the remote connection
 		$database_default   = $rdatabase_default;
 		$database_hostname  = $rdatabase_hostname;
@@ -243,19 +231,36 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		$database_ssl_key   = $rdatabase_ssl_key;
 		$database_ssl_cert  = $rdatabase_ssl_cert;
 		$database_ssl_ca    = $rdatabase_ssl_ca;
+	}
 
+	if ($remote_db_cnn_id && $config['connection'] != 'recovery' && $config['cacti_db_version'] != 'new_install') {
 		$config['connection'] = 'online';
 	} else {
 		$config['connection'] = 'offline';
 	}
-} elseif (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
-	print $config['is_web'] ? '<p>':'';
-	print 'FATAL: Connection to Cacti database failed. Please ensure the database is running and your credentials in config.php are valid.';
-	print $config['is_web'] ? '</p>':'';
-	exit;
 } else {
-	/* gather the existing cactidb version */
-	$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	if (!isset($database_ssl)) $database_ssl = false;
+	if (!isset($database_ssl_key)) $database_ssl_key = false;
+	if (!isset($database_ssl_cert)) $database_ssl_cert = false;
+	if (!isset($database_ssl_ca)) $database_ssl_ca = false;
+
+	if (!db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca)) {
+		$ps = $config['is_web'] ? '<p>' : '';
+		$sp = $config['is_web'] ? '</p>' : PHP_EOL;
+		$ul = $config['is_web'] ? '<ul>' : PHP_EOL;
+		$li = $config['is_web'] ? '<li>' : PHP_EOL . '  - ';
+		$lu = $config['is_web'] ? '</ul>' : '';
+		$il = $config['is_web'] ? '</li>' : '';
+		print $ps . 'FATAL: Connection to Cacti database failed. Please ensure: ' . $ul;
+		print $li . 'the PHP MySQL module is installed and enabled.' . $il;
+		print $li . 'the database is running.' . $il;
+		print $li . 'the credentials in config.php are valid.' . $il;
+		print $lu . $sp;
+		exit;
+	} else {
+		/* gather the existing cactidb version */
+		$config['cacti_db_version'] = db_fetch_cell('SELECT cacti FROM version LIMIT 1');
+	}
 }
 
 /* check cacti log is available */
@@ -315,6 +320,9 @@ if ($config['is_web']) {
 	header('P3P: CP="CAO PSA OUR"');
 
 	/* initialize php session */
+	if (!function_exists('session_name')) {
+		die('PHP Session Management is missing, please install PHP Session module');
+	}
 	session_name($cacti_session_name);
 	if (!session_id()) session_start();
 

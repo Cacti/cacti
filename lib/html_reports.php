@@ -238,7 +238,7 @@ if (isset_request_var('host_template_id')) {
 			'id', 'description'
 		);
 	}
-} elseif (sizeof($report_item) && $report_item['host_template_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['host_template_id'] > 0) {
 	$hosts = array_rekey(
 		get_allowed_devices('h.host_template_id =' . $report_item['host_template_id']),
 		'id', 'description'
@@ -255,7 +255,7 @@ if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
 		get_allowed_graph_templates('h.id = ' . get_request_var('host_id')),
 		'id', 'name'
 	);
-} elseif (sizeof($report_item) && $report_item['host_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['host_id'] > 0) {
 	$graph_templates = array_rekey(
 		get_allowed_graph_templates('h.id = ' . $report_item['host_id']),
 		'id', 'name'
@@ -268,7 +268,7 @@ if (isset_request_var('host_template_id')) {
 	if (get_filter_request_var('host_template_id') > 0) {
 		$sql_where = 'h.host_template_id=' . get_request_var('host_template_id');
 	}
-} elseif (sizeof($report_item) && $report_item['host_template_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['host_template_id'] > 0) {
 	$sql_where = 'h.host_template_id=' . $report_item['host_template_id'];
 }
 
@@ -276,7 +276,7 @@ if (isset_request_var('host_id')) {
 	if (get_filter_request_var('host_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . get_request_var('host_id');
 	}
-} elseif (sizeof($report_item) && $report_item['host_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['host_id'] > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $report_item['host_id'];
 }
 
@@ -284,7 +284,7 @@ if (isset_request_var('graph_template_id')) {
 	if (get_filter_request_var('graph_template_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . get_request_var('graph_template_id');
 	}
-} elseif (sizeof($report_item) && $report_item['graph_template_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['graph_template_id'] > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $report_item['graph_template_id'];
 }
 
@@ -321,7 +321,7 @@ if (isset_request_var('tree_id')) {
 	if (get_filter_request_var('tree_id') > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . get_request_var('tree_id');
 	}
-} elseif (sizeof($report_item) && $report_item['tree_id'] > 0) {
+} elseif (cacti_sizeof($report_item) && $report_item['tree_id'] > 0) {
 	$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gt.id=' . $report_item['tree_id'];
 }
 
@@ -483,7 +483,7 @@ function reports_item_dnd() {
 	if (isset_request_var('report_item') && is_array(get_nfilter_request_var('report_item'))) {
         $report_items = get_nfilter_request_var('report_item');
 
-        if (sizeof($report_items)) {
+        if (cacti_sizeof($report_items)) {
             $sequence = 1;
             foreach($report_items as $item) {
                 $item_id = str_replace('line', '', $item);
@@ -659,36 +659,36 @@ function reports_form_actions() {
 				db_execute('DELETE FROM reports WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM reports_items WHERE ' . str_replace('id', 'report_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_OWN) { // take ownership
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', takeown: ' . $selected_items[$i] . ' user: ' . $_SESSION['sess_user_id'], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET user_id = ? 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET user_id = ?
+						WHERE id = ?',
 						array($_SESSION['sess_user_id'], $selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DUPLICATE) { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					duplicate_reports($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_ENABLE) { // enable
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', enable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET enabled="on" 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET enabled="on"
+						WHERE id = ?',
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_DISABLE) { // disable
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_log(__FUNCTION__ . ', disable: ' . $selected_items[$i], false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
 
-					db_execute_prepared('UPDATE reports 
-						SET enabled="" 
-						WHERE id = ?', 
+					db_execute_prepared('UPDATE reports
+						SET enabled=""
+						WHERE id = ?',
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
@@ -696,7 +696,7 @@ function reports_form_actions() {
 
 				kill_session_var('reports_message');
 
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_send($selected_items[$i]);
 
 					if (isset($_SESSION['reports_info']) && $_SESSION['reports_info'] != '') {
@@ -748,8 +748,9 @@ function reports_form_actions() {
 	html_start_box($reports_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($reports_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Report.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: ' . get_reports_page() . '?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
@@ -831,12 +832,12 @@ function reports_send($id) {
 	input_validate_input_number($id);
 	/* ==================================================== */
 
-	$report = db_fetch_row_prepared('SELECT * 
-		FROM reports 
-		WHERE id = ?', 
+	$report = db_fetch_row_prepared('SELECT *
+		FROM reports
+		WHERE id = ?',
 		array($id));
 
-	if (!sizeof($report)) {
+	if (!cacti_sizeof($report)) {
 		/* set error condition */
 	} elseif ($report['user_id'] == $_SESSION['sess_user_id']) {
 		reports_log(__FUNCTION__ . ', send now, report_id: ' . $id, false, 'REPORTS TRACE', POLLER_VERBOSITY_MEDIUM);
@@ -1165,7 +1166,7 @@ function reports_edit() {
 	if (!isset_request_var('tab')) set_request_var('tab', 'details');
 	$current_tab = get_request_var('tab');
 
-	if (sizeof($tabs) && isset_request_var('id')) {
+	if (cacti_sizeof($tabs) && isset_request_var('id')) {
 		$i = 0;
 
 		/* draw the tabs */
@@ -1328,7 +1329,7 @@ function display_reports_items($report_id) {
 		), 2);
 
 	$i = 1;
-	if (sizeof($items)) {
+	if (cacti_sizeof($items)) {
 		foreach ($items as $item) {
 			switch ($item['item_type']) {
 			case REPORTS_ITEM_GRAPH:
@@ -1393,7 +1394,7 @@ function display_reports_items($report_id) {
 
 			if ($i == 1) {
 				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<span class="moveArrowNone"</span></td>';
-			} elseif ($i > 1 && $i < sizeof($items)) {
+			} elseif ($i > 1 && $i < cacti_sizeof($items)) {
 				$form_data .= '<td class="right nowrap"><a class="remover fa fa-caret-down moveArrow" title="' . __esc('Move Down') . '" href="' . html_escape(get_reports_page() . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $report_id) . '"></a>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			} else {
 				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
@@ -1505,7 +1506,7 @@ function reports() {
 					<td>
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'" . (get_request_var('rows') == '-1' ? ' selected':'') . '>' . __('Default') . '</option>';
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'" .
 										(get_request_var('rows') == $key ? ' selected':'') . ">$value</option>\n";
@@ -1605,7 +1606,7 @@ function reports() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($reports_list)) {
+	if (cacti_sizeof($reports_list)) {
 		$date_format = reports_date_time_format();
 
 		foreach ($reports_list as $report) {
@@ -1640,12 +1641,12 @@ function reports() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Reports Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($reports_list)) {
+	if (cacti_sizeof($reports_list)) {
 		print $nav;
 	}
 

@@ -32,7 +32,7 @@ $proceed = false;
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);

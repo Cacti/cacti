@@ -114,7 +114,7 @@ function upgrade_to_1_2_0() {
 	// Fix data source stats column type
 	$value_parms = db_get_column_attributes('data_source_stats_hourly_last', 'value');
 
-	if (sizeof($value_parms)) {
+	if (cacti_sizeof($value_parms)) {
 		if ($value_parms[0]['COLUMN_TYPE'] != 'double') {
 			db_install_execute('ALTER TABLE data_source_stats_hourly_last MODIFY COLUMN `value` DOUBLE DEFAULT NULL');
 		}
@@ -125,7 +125,7 @@ function upgrade_to_1_2_0() {
 		FROM snmp_query
 		ORDER BY id');
 
-	if (sizeof($snmp_queries)) {
+	if (cacti_sizeof($snmp_queries)) {
 		foreach($snmp_queries as $query) {
 			db_execute_prepared("UPDATE graph_local AS gl
 				INNER JOIN (
@@ -148,14 +148,14 @@ function upgrade_to_1_2_0() {
 		WHERE snmp_query_id > 0
 		AND snmp_query_graph_id = 0');
 
-	if (sizeof($ids)) {
+	if (cacti_sizeof($ids)) {
 		foreach($ids as $id) {
 			$query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph
 				WHERE snmp_query_id = ?
 				AND graph_template_id = ?',
 				array($id['snmp_query_id'], $id['graph_template_id']));
-	
+
 			if (empty($query_graph_id)) {
 				db_execute_prepared('UPDATE graph_local
 					SET snmp_query_id=0, snmp_query_graph_id=0, snmp_index=""
@@ -171,8 +171,8 @@ function upgrade_to_1_2_0() {
 	}
 
 	db_install_execute('UPDATE graph_tree_items
-		SET host_grouping_type = 1 
-		WHERE host_id > 0 
+		SET host_grouping_type = 1
+		WHERE host_id > 0
 		AND host_grouping_type = 0');
 
 	db_install_execute('UPDATE automation_tree_rules
@@ -184,4 +184,7 @@ function upgrade_to_1_2_0() {
 	db_install_drop_key('poller_reindex', 'key', 'PRIMARY');
 
 	db_install_add_key('poller_reindex', 'key', 'PRIMARY', array('host_id', 'data_query_id', 'arg1(187)'));
+
+	db_install_add_column('poller', array('name' => 'last_sync', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00 00:00:00'));
+	db_install_add_column('poller', array('name' => 'requires_sync', 'type' => 'char(3)', 'NULL' => false, 'default' => ''));
 }

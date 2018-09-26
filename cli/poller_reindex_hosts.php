@@ -24,8 +24,16 @@
 */
 
 require(__DIR__ . '/../include/cli_check.php');
-require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
 require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 ini_set('max_execution_time', '0');
 
@@ -38,7 +46,7 @@ $host_id	= '';
 $query_id	= 'all';		/* just to mimic the old behaviour */
 $host_descr	= '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -118,10 +126,10 @@ if ($host_descr != '') {
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Reindexing can take quite some time\n";
-debug("There are '" . sizeof($data_queries) . "' data queries to run");
+debug("There are '" . cacti_sizeof($data_queries) . "' data queries to run");
 
 $i = 1;
-if (sizeof($data_queries)) {
+if (cacti_sizeof($data_queries)) {
 	foreach ($data_queries as $data_query) {
 		if (!$debug) print '.';
 		debug("Data query number '" . $i . "' host: '" . $data_query['host_id'] . "' SNMP Query Id: '" . $data_query['snmp_query_id'] . "' starting");

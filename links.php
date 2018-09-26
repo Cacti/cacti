@@ -141,16 +141,16 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if ($_POST['drp_action'] == '3') { // Enable Page
-				for ($i=0;($i<count($selected_items));$i++) {
+			if (get_request_var('drp_action') == '3') { // Enable Page
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
-			} elseif ($_POST['drp_action'] == '2') { // Disable Page
-				for ($i=0;($i<count($selected_items));$i++) {
+			} elseif (get_request_var('drp_action') == '2') { // Disable Page
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared("UPDATE external_links SET enabled='' WHERE id = ?", array($selected_items[$i]));
 				}
-			} elseif ($_POST['drp_action'] == '1') { // Delete Page
-				for ($i=0;($i<count($selected_items));$i++) {
+			} elseif (get_request_var('drp_action') == '1') { // Delete Page
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared('DELETE FROM external_links WHERE id = ?', array($selected_items[$i]));
 					db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
 					db_execute_prepared('DELETE FROM user_auth_group_realm WHERE realm_id = ?', array($selected_items[$i]+10000));
@@ -185,7 +185,7 @@ function form_actions() {
 
 	html_start_box($actions[get_request_var_post('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($pages) && sizeof($pages)) {
+	if (isset($pages) && cacti_sizeof($pages)) {
 		if (get_request_var('drp_action') == '3') { // Enable Pages
 			print "<tr>
 				<td colspan='2' class='textArea'>
@@ -215,8 +215,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __('Continue') . "' title='" . __esc('Delete Page(s)') . "'>";
 		}
 	} else {
-		print "<tr><td><span class='textError'>" . __('You must select at least one page.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: links.php?header=false');
+		exit;
 	}
 
 	print "<tr class='saveRow'>
@@ -385,7 +386,7 @@ function pages() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
 
 	$i = 0;
-	if (sizeof($pages)) {
+	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			form_alternate_row('line' . $page['id']);
 
@@ -408,7 +409,7 @@ function pages() {
 					$sort = '<span class="moveArrowNone"></span>';
 				}
 
-				if ($i == sizeof($pages)-1) {
+				if ($i == cacti_sizeof($pages)-1) {
 					$sort .= '<span class="moveArrowNone"></span>';
 				} else {
 					$sort .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('links.php?action=move_page_down&order=' . $page['sortorder'] . '&id=' . $page['id']) . '"></a>';
@@ -425,12 +426,12 @@ function pages() {
 			$i++;
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($nav) + 1) . "'><em>" . __('No Pages Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($nav) + 1) . "'><em>" . __('No Pages Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($pages)) {
+	if (cacti_sizeof($pages)) {
 		print $nav;
 	}
 
@@ -451,7 +452,7 @@ function page_resort() {
 	$pages = db_fetch_assoc("SELECT * FROM external_links ORDER BY sortorder");
 
 	$i = 1;
-	if (sizeof($pages)) {
+	if (cacti_sizeof($pages)) {
 		foreach ($pages as $page) {
 			db_execute_prepared('UPDATE external_links SET sortorder = ? WHERE id = ?' . array($id, $page['id']));
 			$i++;

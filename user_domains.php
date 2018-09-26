@@ -174,22 +174,22 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_remove($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // disable
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_disable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // enable
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					domain_enable($selected_items[$i]);
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '4') { // default
-				if (sizeof($selected_items) > 1) {
+				if (cacti_sizeof($selected_items) > 1) {
 					/* error message */
 				} else {
-					for ($i=0;($i<count($selected_items));$i++) {
+					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						domain_default($selected_items[$i]);
 					}
 				}
@@ -222,34 +222,34 @@ function form_actions() {
 
 	html_start_box($actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($d_array) && sizeof($d_array)) {
+	if (isset($d_array) && cacti_sizeof($d_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following User Domain.', 'Click \'Continue\' to delete following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete User Domain', 'Delete User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '2') { // disable
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to disable the following User Domain.', 'Click \'Continue\' to disable following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Disable User Domain', 'Disable User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '3') { // enable
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', sizeof($d_array)) . "</p>
+					<p>" . __('Click \'Continue\' to enable the following User Domain.', 'Click \'Continue\' to enable following User Domains.', cacti_sizeof($d_array)) . "</p>
 					<div class='itemlist'><ul>$d_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', sizeof($d_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Enabled User Domain', 'Enable User Domains', cacti_sizeof($d_array)) . "'>";
 		}else if (get_nfilter_request_var('drp_action') == '4') { // default
 			print "<tr>
 				<td class='textArea'>
@@ -261,8 +261,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Make Selected Domain Default') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one User Domain.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: user_domains.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -661,7 +662,7 @@ function domains() {
 						<select id='rows' onChange="applyFilter()">
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -751,7 +752,7 @@ function domains() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($domains)) {
+	if (cacti_sizeof($domains)) {
 		foreach ($domains as $domain) {
 			/* hide system types */
 			form_alternate_row('line' . $domain['domain_id'], true);
@@ -766,12 +767,12 @@ function domains() {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No User Domains Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No User Domains Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($domains)) {
+	if (cacti_sizeof($domains)) {
 		print $nav;
 	}
 

@@ -305,20 +305,21 @@ function form_actions() {
 
 	html_start_box($site_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($site_array) && sizeof($site_array)) {
+	if (isset($site_array) && cacti_sizeof($site_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', sizeof($site_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', cacti_sizeof($site_array)) . "</p>
 					<div class='itemlist'><ul>$site_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', sizeof($site_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', cacti_sizeof($site_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Site.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: sites.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -433,7 +434,7 @@ function sites() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -526,7 +527,7 @@ function sites() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($site_list)) {
+	if (cacti_sizeof($site_list)) {
 		foreach ($site_list as $site) {
 			$devices_url = $config['url_path'] . 'host.php?reset=1&site_id=' . $site['id'];
 			form_alternate_row('line' . $site['id'], true);
@@ -545,7 +546,7 @@ function sites() {
 
 	html_end_box(false);
 
-	if (sizeof($site_list)) {
+	if (cacti_sizeof($site_list)) {
 		print $nav;
 	}
 

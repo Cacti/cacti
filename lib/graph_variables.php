@@ -46,7 +46,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			if ($peak) {
 				$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, 'MAX');
 
-				if (!sizeof($fetch_array[$i])) {
+				if (!cacti_sizeof($fetch_array[$i])) {
 					$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
 				}
 			} else {
@@ -77,12 +77,12 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 			$sum_array['data_source_names'] = $fetch_array[0]['data_source_names'];
 		}
 
-		if (sizeof($fetch_array)) {
+		if (cacti_sizeof($fetch_array)) {
 			/* Create hash of ds_item_name => array or fetch_array indexes */
 			/* this is used to later sum, max and total the data sources used on the graph */
 			/* Loop fetch array index  */
 			$dsi_name_to_id = array();
-			for ($i=0; $i<count($fetch_array); $i++) {
+			for ($i=0; $i<cacti_count($fetch_array); $i++) {
 				/* Go through data souce names */
 				foreach ($fetch_array[$i]['data_source_names'] as $ds_name) {
 					$dsi_name_to_id[$ds_name][] = $i;
@@ -100,7 +100,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 					$fetch_id = array_search($ds_name,$fetch_array[$id]['data_source_names']);
 
 					/* Sum up like ds names */
-					for ($j=0; $j<count($fetch_array[$id]['values'][$fetch_id]); $j++) {
+					for ($j=0; $j<cacti_count($fetch_array[$id]['values'][$fetch_id]); $j++) {
 						if (isset($fetch_array[$id]['values'][$fetch_id][$j])) {
 							$value = $fetch_array[$id]['values'][$fetch_id][$j];
 						} else {
@@ -121,11 +121,11 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 
 		/* calculate extra data, max, sum */
 		if (isset($sum_array['values'])) {
-			$num_ds = count($sum_array['values']);
-			$total_ds = count($sum_array['values']);
+			$num_ds = cacti_count($sum_array['values']);
+			$total_ds = cacti_count($sum_array['values']);
 
 			for ($j=0; $j<$total_ds; $j++) { /* each data source item */
-				for ($k=0; $k<count($sum_array['values'][$j]); $k++) { /* each rrd row */
+				for ($k=0; $k<cacti_count($sum_array['values'][$j]); $k++) { /* each rrd row */
 					/* now we must re-calculate the 95th max */
 					$value = 0;
 					if (isset($sum_array['values'][$j][$k])) {
@@ -168,7 +168,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 	}
 
 	$values_array = array();
-	for ($i=0; $i<count($fetch_array['data_source_names']); $i++) {
+	for ($i=0; $i<cacti_count($fetch_array['data_source_names']); $i++) {
 		if (isset($fetch_array['values'][$i])) {
 			$values_array = $fetch_array['values'][$i];
 
@@ -178,7 +178,7 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 
 		/* grab the N% row (or 1 - N% in reverse) and use that as our Nth percentile value */
 		$inverse_percentile = 1 - ($percentile / 100);
-		$target = ((count($values_array) + 1) * $inverse_percentile);
+		$target = ((cacti_count($values_array) + 1) * $inverse_percentile);
 		$target = sprintf('%d', $target);
 
 		if (empty($values_array[$target])) {
@@ -222,18 +222,18 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
-	if (!isset($fetch_array['data_source_names']) || count($fetch_array['data_source_names']) == 0) {
+	if (!isset($fetch_array['data_source_names']) || cacti_count($fetch_array['data_source_names']) == 0) {
 		return;
 	}
 
 	$return_array = array();
 
 	/* loop through each regexp determined above (or each data source) */
-	for ($i=0; $i<count($fetch_array['data_source_names']); $i++) {
+	for ($i=0; $i<cacti_count($fetch_array['data_source_names']); $i++) {
 		if (isset($fetch_array['values'][$i])) {
 			$sum = array_sum($fetch_array['values'][$i]);
 
-			if (count($fetch_array['values'][$i]) > 0) {
+			if (cacti_count($fetch_array['values'][$i]) > 0) {
 				$sum = ($sum * $ds_steps * $rra_steps);
 			} else {
 				$sum = 0;
@@ -270,7 +270,7 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
 
-	if (sizeof($regexp_match_array) == 0) {
+	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
 
@@ -496,7 +496,7 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;
 
-	if (sizeof($regexp_match_array) == 0) {
+	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
 

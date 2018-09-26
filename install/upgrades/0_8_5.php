@@ -37,7 +37,7 @@ function upgrade_to_0_8_5() {
 
 	$data_templates = db_fetch_assoc("select id from data_template_data where (data_template_id=1 or data_template_id=2 or data_template_id=38 or data_template_id=39 or data_template_id=40 or data_template_id=41);");
 
-	if (sizeof($data_templates) > 0) {
+	if (cacti_sizeof($data_templates) > 0) {
 		foreach ($data_templates as $item) {
 			db_install_execute("UPDATE data_input_data set value='ifDescr' where value='ifDesc' and data_template_data_id=" . $item["id"] . ";");
 		}

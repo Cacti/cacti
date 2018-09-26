@@ -139,7 +139,7 @@ function form_save() {
 				if (isset_request_var('step')) {
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
-					if (sizeof($cfs) && !empty($cfs)) {
+					if (cacti_sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
 							input_validate_input_number($cf);
 						}
@@ -152,7 +152,7 @@ function form_save() {
 
 					// Validate consolidation functions
 					$cfs = get_nfilter_request_var('consolidation_function_id');
-					if (sizeof($cfs) && !empty($cfs)) {
+					if (cacti_sizeof($cfs) && !empty($cfs)) {
 						foreach($cfs as $cf) {
 							db_execute_prepared('REPLACE INTO data_source_profiles_cf
 								(data_source_profile_id, consolidation_function_id)
@@ -235,7 +235,7 @@ function form_actions() {
 				db_execute('DELETE FROM data_source_profiles_rra WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 				db_execute('DELETE FROM data_source_profiles_cf WHERE ' . array_to_sql_or($selected_items, 'data_source_profile_id'));
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_data_source_profile($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
@@ -268,30 +268,31 @@ function form_actions() {
 
 	html_start_box($profile_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
-	if (isset($profile_array) && sizeof($profile_array)) {
+	if (isset($profile_array) && cacti_sizeof($profile_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', sizeof($profile_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Source Profile', 'Click \'Continue\' to delete following Data Source Profiles', cacti_sizeof($profile_array)) . "</p>
 					<div class='itemlist'><ul>$profile_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Source Profile', 'Delete Data Source Profiles', cacti_sizeof($profile_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', sizeof($profile_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Data Source Profile. You can optionally change the title format for the new Data Source Profile', 'Click \'Continue\' to duplicate following Data Source Profiles. You can optionally change the title format for the new Data Source Profiles.', cacti_sizeof($profile_array)) . "</p>
 					<div class='itemlist'><ul>$profile_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<profile_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', sizeof($profile_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Data Source Profile', 'Duplicate Date Source Profiles', cacti_sizeof($profile_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Data Source Profile.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: data_source_profiles.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -575,7 +576,7 @@ function profile_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($profile_rras)) {
+		if (cacti_sizeof($profile_rras)) {
 			foreach ($profile_rras as $rra) {
 				form_alternate_row('line' . $rra['id']);$i++;?>
 				<td>
@@ -841,7 +842,7 @@ function profile() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -971,7 +972,7 @@ function profile() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($profile_list)) {
+	if (cacti_sizeof($profile_list)) {
 		foreach ($profile_list as $profile) {
 			if ($profile['data_sources'] == 0 && $profile['templates'] == 0) {
 				$disabled = false;
@@ -1015,7 +1016,7 @@ function profile() {
 
 	html_end_box(false);
 
-	if (sizeof($profile_list)) {
+	if (cacti_sizeof($profile_list)) {
 		print $nav;
 	}
 

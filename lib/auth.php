@@ -156,7 +156,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		AND realm = ?',
 		array($new_user, $new_realm));
 
-	if (sizeof($user_exist)) {
+	if (cacti_sizeof($user_exist)) {
 		if ($overwrite) {
 			/* Overwrite existing user */
 			$user_auth['id']            = $user_exist['id'];
@@ -196,7 +196,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 	$new_id = sql_save($user_auth, 'user_auth');
 
 	/* Create/Update permissions and settings */
-	if (sizeof($user_exist) && $overwrite) {
+	if (cacti_sizeof($user_exist) && $overwrite) {
 		db_execute_prepared('DELETE FROM user_auth_perms WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM user_auth_realm WHERE user_id = ?', array($user_exist['id']));
 		db_execute_prepared('DELETE FROM settings_user WHERE user_id = ?', array($user_exist['id']));
@@ -208,7 +208,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		WHERE user_id = ?',
 		array($template_id));
 
-	if (sizeof($user_auth_perms)) {
+	if (cacti_sizeof($user_auth_perms)) {
 		foreach ($user_auth_perms as $row) {
 			$row['user_id'] = $new_id;
 			sql_save($row, 'user_auth_perms', array('user_id', 'item_id', 'type'), false);
@@ -220,7 +220,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		WHERE user_id = ?',
 		array($template_id));
 
-	if (sizeof($user_auth_realm)) {
+	if (cacti_sizeof($user_auth_realm)) {
 		foreach ($user_auth_realm as $row) {
 			$row['user_id'] = $new_id;
 			sql_save($row, 'user_auth_realm', array('realm_id', 'user_id'), false);
@@ -232,7 +232,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		WHERE user_id = ?',
 		array($template_id));
 
-	if (sizeof($settings_user)) {
+	if (cacti_sizeof($settings_user)) {
 		foreach ($settings_user as $row) {
 			$row['user_id'] = $new_id;
 			sql_save($row, 'settings_user', array('user_id', 'name'), false);
@@ -244,7 +244,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		WHERE user_id = ?',
 		array($template_id));
 
-	if (sizeof($settings_tree)) {
+	if (cacti_sizeof($settings_tree)) {
 		foreach ($settings_tree as $row) {
 			$row['user_id'] = $new_id;
 			sql_save($row, 'settings_tree', array('user_id', 'graph_tree_item_id'), false);
@@ -257,7 +257,7 @@ function user_copy($template_user, $new_user, $template_realm = 0, $new_realm = 
 		WHERE user_id = ?',
 		array($template_id));
 
-	if (sizeof($groups)) {
+	if (cacti_sizeof($groups)) {
 		foreach($groups as $g) {
 			$sql[] = '(' . $new_id . ', ' . $g['group_id'] . ')';
 		}
@@ -335,7 +335,7 @@ function get_auth_realms($login = false) {
 			WHERE enabled="on"
 			ORDER BY domain_name');
 
-		if (sizeof($drealms)) {
+		if (cacti_sizeof($drealms)) {
 			if ($login) {
 				$new_realms['0'] = array(
 					'name' => __('Local'),
@@ -442,7 +442,7 @@ function is_graph_allowed($local_graph_id, $user = 0) {
 }
 
 function auth_check_perms($objects, $policy) {
-	$objectSize = sizeof($objects);
+	$objectSize = cacti_sizeof($objects);
 
 	/* policy == allow AND matches = DENY */
 	if ($objectSize && $policy == 1) {
@@ -504,7 +504,7 @@ function is_tree_allowed($tree_id, $user = 0) {
 			array($user)
 		);
 
-		if (!sizeof($groups)) {
+		if (!cacti_sizeof($groups)) {
 			return false;
 		}
 
@@ -604,7 +604,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 			array($tree_id, $parent)
 		), 'local_graph_id', 'local_graph_id'
 	);
-	if (sizeof($graphs) && sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')')) > 0) {
+	if (cacti_sizeof($graphs) && cacti_sizeof(get_allowed_graphs('gl.id IN(' . implode(',', $graphs) . ')')) > 0) {
 		return false;
 	}
 
@@ -616,7 +616,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 			array($tree_id, $parent)
 		), 'host_id', 'host_id'
 	);
-	if (sizeof($hosts) && sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')')) > 0) {
+	if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')')) > 0) {
 		return false;
 	}
 
@@ -628,7 +628,7 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		AND host_id = 0',
 		array($tree_id, $parent)
 	);
-	if (sizeof($branches)) {
+	if (cacti_sizeof($branches)) {
 		foreach($branches as $b) {
 			if (!is_tree_branch_empty($b['graph_tree_id'], $b['id'])) {
 				return false;
@@ -718,7 +718,7 @@ function get_allowed_tree_level($tree_id, $parent_id, $editing = false, $user = 
 
 	if (!$editing) {
 		$i = 0;
-		if (sizeof($items)) {
+		if (cacti_sizeof($items)) {
 			foreach($items as $item) {
 				if ($item['host_id'] > 0) {
 					if (!is_device_allowed($item['host_id'], $user)) {
@@ -767,7 +767,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	);
 
 	if ($tree_id > 0) {
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			$sql_where .= ' AND gt.id IN (' . implode(', ', array_keys($trees)) . ')';
 		}
 
@@ -783,7 +783,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 			$sql_where
 			ORDER BY gti.position"
 		);
-	} elseif (sizeof($trees)) {
+	} elseif (cacti_sizeof($trees)) {
 		$heirarchy = db_fetch_assoc("SELECT gt.id AS tree_id, '0' AS id, gt.name AS title, '0' AS host_id, '0' AS site_id,
 			'0' AS local_graph_id, '1' AS host_grouping_type, '' AS hostname, '' AS sitename
 			FROM graph_tree AS gt
@@ -795,7 +795,7 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 
 	if (read_config_option('auth_method') != 0) {
 		$new_heirarchy = array();
-		if (sizeof($heirarchy)) {
+		if (cacti_sizeof($heirarchy)) {
 			foreach($heirarchy as $h) {
 				if ($h['host_id'] > 0) {
 					if (is_device_allowed($h['host_id'])) {
@@ -1607,7 +1607,7 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 
 	$hosts = get_allowed_devices();
 	$sql_hosts_where = "";
-	if (sizeof($hosts) > 0) {
+	if (cacti_sizeof($hosts) > 0) {
 		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
 	}
 
@@ -2138,7 +2138,7 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$templates = array_rekey(get_allowed_graph_templates($sql_where, $order_by, $limit, $total_rows, $user, $graph_template_id), 'id', 'name');
 
-	if (!sizeof($templates)) {
+	if (!cacti_sizeof($templates)) {
 		return array();
 	}
 
@@ -2202,7 +2202,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	}
 
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'));
-	if (sizeof($hosts)) {
+	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
 			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
 		}
@@ -2226,7 +2226,7 @@ function get_allowed_ajax_graph_items($include_none = true, $sql_where = '') {
 	}
 
 	$graph_items = get_allowed_graph_items($sql_where, 'name_cache', read_config_option('autocomplete_rows'));
-	if (sizeof($graph_items)) {
+	if (cacti_sizeof($graph_items)) {
 		foreach($graph_items as $gi) {
 			$return[] = array('label' => $gi['name'], 'value' => $gi['name'], 'id' => $gi['id']);
 		}
@@ -2259,7 +2259,7 @@ function get_allowed_graph_items($sql_where, $sort = 'name' , $limit = 20, $user
 		ORDER BY $sort
 		LIMIT $limit");
 
-	if (sizeof($items)) {
+	if (cacti_sizeof($items)) {
 		foreach($items as $i) {
 			if (is_device_allowed($i['host_id'], $user)) {
 				$return[] = array('id' => $i['id'], 'name' => $i['name']);
@@ -2425,7 +2425,7 @@ function secpass_check_history($id, $p) {
 		}
 		$passes = explode('|', $user['password_history']);
 		// Double check this incase the password history setting was changed
-		while (count($passes) > $history) {
+		while (cacti_count($passes) > $history) {
 			array_shift($passes);
 		}
 
@@ -2478,7 +2478,7 @@ function reset_group_perms($group_id) {
 		WHERE group_id = ?',
 		array($group_id)), 'user_id', 'user_id');
 
-	if (sizeof($users)) {
+	if (cacti_sizeof($users)) {
 		db_execute('UPDATE user_auth
 			SET reset_perms=FLOOR(RAND() * 4294967295) + 1
 			WHERE id IN (' . implode(',', $users) . ')');
@@ -2556,7 +2556,7 @@ function compat_password_verify($password, $hash) {
 function compat_password_hash($password, $algo, $options = array()) {
 	if (function_exists('password_hash')) {
 		// Check if options array has anything, only pass when required
-		return (sizeof($options) > 0) ?
+		return (cacti_sizeof($options) > 0) ?
 			password_hash($password, $algo, $options) :
 			password_hash($password, $algo);
 	}
@@ -2574,7 +2574,7 @@ function compat_password_hash($password, $algo, $options = array()) {
 function compat_password_needs_rehash($password, $algo, $options = array()) {
 	if (function_exists('password_needs_rehash')) {
 		// Check if options array has anything, only pass when required
-		return (sizeof($options) > 0) ?
+		return (cacti_sizeof($options) > 0) ?
 			password_needs_rehash($password, $algo, $options) :
 			password_needs_rehash($password, $algo);
 	}

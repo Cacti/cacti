@@ -42,7 +42,7 @@ $poller_id = '';
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -194,7 +194,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		AND port.poller_id = ?',
 		array($poller_id));
 
-	if (sizeof($results) > 0) {
+	if (cacti_sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
@@ -251,7 +251,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 					WHERE data_template_rrd.data_input_field_id=data_input_fields.id
 					AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
 
-				for ($i=0; $i<count($values); $i++) {
+				for ($i=0; $i<cacti_count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[1]]] = $matches[2];

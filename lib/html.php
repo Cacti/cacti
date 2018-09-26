@@ -85,7 +85,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
-				if (sizeof($add_text)) {
+				if (cacti_sizeof($add_text)) {
 					foreach($add_text as $icon) {
 						if (isset($icon['callback']) && $icon['callback'] === true) {
 							$classo = 'linkOverDark';
@@ -167,7 +167,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -243,7 +243,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -589,7 +589,7 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
@@ -785,9 +785,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 				$align = 'left';
 			}
 
-			print "<th class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
+			print "<th class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
 		} else {
-			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
+			print "<th " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
 		}
 
 		$i++;
@@ -862,7 +862,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach (array_keys($form_data) as $id) {
 				print '<option value="' . html_escape($id) . '"';
 
@@ -874,7 +874,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 		}
 	} else {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach ($form_data as $row) {
 				print "<option value='" . html_escape($row[$column_id]) . "'";
 
@@ -974,7 +974,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
 			$this_row_style   = '';
@@ -1067,7 +1067,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
-				if ($i != sizeof($item_list)-1) {
+				if ($i != cacti_sizeof($item_list)-1) {
 					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				} else {
 					print "<span class='moveArrowNone'></span>\n";
@@ -1097,7 +1097,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* break out the URL and variables */
-	if (!is_array($url_array) || (is_array($url_array) && !sizeof($url_array))) {
+	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
@@ -1399,9 +1399,9 @@ function is_console_page($url) {
 		return true;
 	}
 
-	if (sizeof($menu)) {
+	if (cacti_sizeof($menu)) {
 		foreach($menu as $section => $children) {
-			if (sizeof($children)) {
+			if (cacti_sizeof($children)) {
 				foreach($children as $page => $name) {
 					if (basename($page) == $basename) {
 						return true;
@@ -1480,7 +1480,7 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
@@ -1610,7 +1610,7 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$tabs_left[] =
@@ -1793,7 +1793,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				$devices = get_allowed_devices($sql_where);
 
-				if (sizeof($devices)) {
+				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
 						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
@@ -1848,7 +1848,7 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 			$sites = get_allowed_sites($sql_where);
 
-			if (sizeof($sites)) {
+			if (cacti_sizeof($sites)) {
 				foreach ($sites as $site) {
 					print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
 				}
@@ -1900,60 +1900,79 @@ function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
+	$output = '<li ';
+
+	if (!empty($id)) {
+		$output .= "id='$id' ";
+	}
+
+	if (!empty($data_graph)) {
+		$output .= "data-graph='$data_graph' ";
+	}
+
+	$output .= 'class=\'' . (empty($class)?'': " $class") . '\'>';
+	$output .= '<span class=\'spikeKillMenuItem\'>';
+	if (!empty($icon)) {
+		$output .= "<i class='$icon'></i>";
+	}
+
+	$output .= "$text</span>";
+
+	if (!empty($subitem)) {
+		$output .= "<ul>$subitem</ul>";
+	}
+
+	$output .= '</li>';
+	return $output;
+}
+
 function html_spikekill_menu($local_graph_id) {
-	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
-	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('NaN\'s') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
-	$ravgnan .= '</ul></li>';
+	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
+	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
+	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
 
-	$rstddev  = '<li>' . __('Standard Deviations') . '<ul>';
+	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
+
+	$rstddev = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rstddev .= '<li class="skstddev" id="stddev_' . $i . '"><i ' . (html_spikekill_setting('spikekill_deviations') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%s Standard Deviations', $i) . '</li>';
+		$rstddev .= html_spikekill_menu_item(__('%s Standard Deviations', $i), html_spikekill_setting('spikekill_deviations') == $i ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $i);
 	}
-	$rstddev .= '</ul></li>';
+	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct  = '<li>' . __('Variance Percentage') . '<ul>';
+	$rvarpct = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rvarpct .= '<li class="skvarpct" id="varpct_' . ($i * 100) . '"><i ' . (html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'class="fa fa-check"':'') . '></i><span></span>' . round($i * 100,0) . ' %</li>';
+		$rvarpct .= html_spikekill_menu_item(round($i * 100,0) . ' %', html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . ($i * 100));
 	}
-	$rvarpct .= '</ul></li>';
+	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
-	$rvarout  = '<li>' . __('Variance Outliers') . '<ul>';
+	$rvarout  = '';
 	for($i = 3; $i <= 10; $i++) {
-		$rvarout .= '<li class="skvarout" id="varout_' . $i . '"><i ' . (html_spikekill_setting('spikekill_outliers') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Outliers', $i) . '</li>';
+		$rvarout .= html_spikekill_menu_item(__('%d Outliers', $i), html_spikekill_setting('spikekill_outliers') == $i ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $i);
 	}
-	$rvarout .= '</ul></li>';
+	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
-	$rkills  = '<li>' . __('Kills Per RRA') . '<ul>';
+	$rkills  = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spikes', $i) . '</li>';
+		$rkills .= html_spikekill_menu_item(__('%d Spikes', $i),html_spikekill_setting('spikekill_number') == $i ? 'fa fa-check':'fa', 'skkills', 'kills_' . $i);
 	}
-	$rkills .= '</ul></li>';
+	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa life-ring'></i><span></span><?php print __('Remove StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-life-ring'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-life-ring'></i><span></span><?php print __('Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-life-ring'></i><span></span><?php print __('Float Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='drangefill'><i class='deviceDown fa fa-check'></i><span></span><?php print __('Dry Run Float Range');?></li>
-		<li><i class='fa fa-cog'></i><span></span>Settings
-			<ul>
-				<?php print $ravgnan;?>
-				<?php print $rstddev;?>
-				<?php print $rvarpct;?>
-				<?php print $rvarout;?>
-				<?php print $rkills;?>
-			</ul>
-		</li>
-	</ul>
-	</div>
 	<?php
+	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp fa fa-life-ring', 'rstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
 }
 
 function html_spikekill_js() {

@@ -31,7 +31,7 @@ require_once($config['base_path'] . '/lib/api_tree.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	/* setup defaults */
 	$type       = '';  # tree or node
 	$name       = '';  # Name of a tree or node
@@ -276,7 +276,7 @@ if (sizeof($parms)) {
 				FROM graph_local
 				WHERE graph_local.id=' . $graphId);
 
-			if (!sizeof($graphs)) {
+			if (!cacti_sizeof($graphs)) {
 				print "ERROR: No such graph-id ($graphId) exists. Try --list-graphs\n";
 				exit(1);
 			}

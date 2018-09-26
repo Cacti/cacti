@@ -144,7 +144,7 @@ function form_save() {
 			array(get_request_var('data_input_id')));
 
 		/* pass 1 for validation */
-		if (sizeof($input_fields)) {
+		if (cacti_sizeof($input_fields)) {
 			foreach ($input_fields as $input_field) {
 				$form_value = 'value_' . $input_field['data_name'];
 
@@ -214,7 +214,7 @@ function form_save() {
 					WHERE data_template_data_id = ?',
 					array($data_template_data_id));
 
-				if (sizeof($input_fields)) {
+				if (cacti_sizeof($input_fields)) {
 					foreach ($input_fields as $input_field) {
 						$form_value = 'value_' . $input_field['data_name'];
 
@@ -303,7 +303,7 @@ function form_actions() {
 				db_execute('UPDATE data_template_rrd set local_data_template_rrd_id=0,data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 				db_execute('UPDATE data_local set data_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'data_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_data_source(0, $selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // change data source profile
@@ -313,7 +313,7 @@ function form_actions() {
 					array(get_filter_request_var('data_source_profile_id')));
 
 				if (!empty($step)) {
-					for ($i=0;($i<count($selected_items));$i++) {
+					for ($i=0;($i<cacti_count($selected_items));$i++) {
 						db_execute_prepared('UPDATE data_template_data
 							SET data_source_profile_id = ?,
 							rrd_step = ?
@@ -351,7 +351,7 @@ function form_actions() {
 
 	html_start_box($ds_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
-	if (isset($ds_array) && sizeof($ds_array)) {
+	if (isset($ds_array) && cacti_sizeof($ds_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
 				<td class='textArea'>
@@ -389,8 +389,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Change Data Source Profile') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one data template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: data_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -425,7 +426,7 @@ function template_rrd_remove() {
 		OR id = ?',
 		array(get_request_var('id'), get_request_var('id')));
 
-	if (sizeof($children)) {
+	if (cacti_sizeof($children)) {
 		foreach ($children as $item) {
 			db_execute_prepared('DELETE FROM data_template_rrd WHERE id = ?', array($item['id']));
 			db_execute_prepared('DELETE FROM snmp_query_graph_rrd WHERE data_template_rrd_id = ?', array($item['id']));
@@ -477,7 +478,7 @@ function template_rrd_add() {
 		AND local_data_id > 0',
 		array(get_request_var('id')));
 
-	if (sizeof($children)) {
+	if (cacti_sizeof($children)) {
 		foreach ($children as $item) {
 			db_execute_prepared('INSERT IGNORE INTO data_template_rrd
 				(local_data_template_rrd_id, local_data_id, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name)
@@ -500,7 +501,7 @@ function template_edit() {
 	$isSNMPget = false;
 
 	if (!isempty_request_var('id')) {
-		$template_data = db_fetch_row_prepared('SELECT *,
+		$template_data = db_fetch_row_prepared('SELECT dtd.*,
 			SUM(CASE WHEN dl.data_template_id = ? THEN 1 ELSE 0 END) AS data_sources
 			FROM data_template_data AS dtd
 			LEFT JOIN data_local AS dl
@@ -509,19 +510,19 @@ function template_edit() {
 			HAVING dtd.local_data_id=0',
 			array(get_request_var('id'), get_request_var('id')));
 
-		$template = db_fetch_row_prepared('SELECT * 
-			FROM data_template 
-			WHERE id = ?', 
+		$template = db_fetch_row_prepared('SELECT *
+			FROM data_template
+			WHERE id = ?',
 			array(get_request_var('id')));
 
-		if (sizeof($template_data)) {
-			$snmp_data = db_fetch_row_prepared('SELECT * 
-				FROM data_input 
-				WHERE hash="3eb92bb845b9660a7445cf9740726522" 
-				AND id = ?', 
+		if (cacti_sizeof($template_data)) {
+			$snmp_data = db_fetch_row_prepared('SELECT *
+				FROM data_input
+				WHERE hash="3eb92bb845b9660a7445cf9740726522"
+				AND id = ?',
 				array($template_data['data_input_id']));
 
-			if (sizeof($snmp_data)) {
+			if (cacti_sizeof($snmp_data)) {
 				$isSNMPget = true;
 			}
 		}
@@ -609,11 +610,11 @@ function template_edit() {
 
 	/* fetch ALL rrd's for this data source */
 	if (!isempty_request_var('id')) {
-		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name 
-			FROM data_template_rrd 
-			WHERE data_template_id = ? 
-			AND local_data_id = 0 
-			ORDER BY data_source_name', 
+		$template_data_rrds = db_fetch_assoc_prepared('SELECT id, data_source_name
+			FROM data_template_rrd
+			WHERE data_template_id = ?
+			AND local_data_id = 0
+			ORDER BY data_source_name',
 			array(get_request_var('id')));
 	}
 
@@ -624,15 +625,15 @@ function template_edit() {
 
 	/* get more information about the rrd we chose */
 	if (!isempty_request_var('view_rrd')) {
-		$template_rrd = db_fetch_row_prepared('SELECT * 
-			FROM data_template_rrd 
-			WHERE id = ?', 
+		$template_rrd = db_fetch_row_prepared('SELECT *
+			FROM data_template_rrd
+			WHERE id = ?',
 			array(get_request_var('view_rrd')));
 	}
 
 	$i = 0;
 	if (isset($template_data_rrds)) {
-		if (sizeof($template_data_rrds) > 1) {
+		if (cacti_sizeof($template_data_rrds) > 1) {
 			/* draw the data source tabs on the top of the page */
 			print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
@@ -645,7 +646,7 @@ function template_edit() {
 			print "
 			</ul></nav>\n
 			</div>\n";
-		} elseif (sizeof($template_data_rrds) == 1) {
+		} elseif (cacti_sizeof($template_data_rrds) == 1) {
 			set_request_var('view_rrd', $template_data_rrds[0]['id']);
 		}
 	}
@@ -660,9 +661,9 @@ function template_edit() {
 	if (empty($template_data['data_input_id'])) {
 		unset($struct_data_source_item['data_input_field_id']);
 	} else {
-		$input_type = db_fetch_cell_prepared('SELECT type_id 
-			FROM data_input 
-			WHERE id = ?', 
+		$input_type = db_fetch_cell_prepared('SELECT type_id
+			FROM data_input
+			WHERE id = ?',
 			array($template_data['data_input_id']));
 
 		if ($input_type == 1 || $input_type == 2 || $input_type == 3 || $input_type == 4 || $input_type == 6) {
@@ -708,25 +709,25 @@ function template_edit() {
 			AND input_output="in" ORDER BY name',
 			array($template_data['data_input_id']));
 
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM data_input 
-			WHERE id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM data_input
+			WHERE id = ?',
 			array($template_data['data_input_id']));
 
 		html_start_box(__('Custom Data [data input: %s]', html_escape($name)), '100%', true, '3', 'center', '');
 
 		/* loop through each field found */
-		if (sizeof($fields) > 0) {
+		if (cacti_sizeof($fields) > 0) {
 			$class = 'odd';
 
 			foreach ($fields as $field) {
 				$data_input_data = db_fetch_row_prepared('SELECT t_value, value
 					FROM data_input_data
 					WHERE data_template_data_id = ?
-					AND data_input_field_id = ?', 
+					AND data_input_field_id = ?',
 					array($template_data['id'], $field['id']));
 
-				if (sizeof($data_input_data)) {
+				if (cacti_sizeof($data_input_data)) {
 					$old_value  = $data_input_data['value'];
 					$old_tvalue = $data_input_data['t_value'];
 				} else {
@@ -853,7 +854,7 @@ function template() {
 							<option value='-1'<?php print (get_request_var('profile') == '-1' ? ' selected>':'>') . __('All');?></option>
 							<?php
 							$profiles = array_rekey(db_fetch_assoc('SELECT id, name FROM data_source_profiles ORDER BY name'), 'id', 'name');
-							if (sizeof($profiles)) {
+							if (cacti_sizeof($profiles)) {
 								foreach ($profiles as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('profile') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -868,7 +869,7 @@ function template() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -1004,7 +1005,7 @@ function template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['data_sources'] > 0) {
 				$disabled = true;
@@ -1029,7 +1030,7 @@ function template() {
 
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		print $nav;
 	}
 

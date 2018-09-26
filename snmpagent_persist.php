@@ -82,7 +82,7 @@ if(strstr(PHP_OS, 'WIN')) {
 	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
-	if(!sizeof($output)) {
+	if(!cacti_sizeof($output)) {
 		exec($php . " " . $extra_args . " > /dev/null &");
 	}
 }

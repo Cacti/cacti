@@ -26,11 +26,11 @@ function upgrade_to_1_0_0() {
 	global $config, $plugins_integrated;
 
 	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
-	if (!sizeof($default_engine)) {
+	if (!cacti_sizeof($default_engine)) {
 		$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
 	}
 
-	if (sizeof($default_engine)) {
+	if (cacti_sizeof($default_engine)) {
 		$engine = $default_engine['Value'];
 	} else {
 		$engine = 'MyISAM';
@@ -409,7 +409,7 @@ function upgrade_to_1_0_0() {
 	if (db_column_exists('graph_tree_items', 'order_key', false)) {
 		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
 
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			foreach($trees as $t) {
 				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
@@ -424,7 +424,7 @@ function upgrade_to_1_0_0() {
 				$prev_id     = 0;
 				$position    = 0;
 
-				if (sizeof($tree_items)) {
+				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items AS $item) {
 						$translated_key = rtrim($item["order_key"], "0\r\n");
 						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
@@ -463,7 +463,7 @@ function upgrade_to_1_0_0() {
 					ORDER BY order_key");
 
 				$position = 0;
-				if (sizeof($tree_items)) {
+				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items as $item) {
 						db_install_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
 						$position++;
@@ -479,7 +479,7 @@ function upgrade_to_1_0_0() {
 	/* clog user = 19 */
 	/* dlog admin = 18 */
 	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugin = 'clog'");
-	if (sizeof($realms)) {
+	if (cacti_sizeof($realms)) {
 		foreach($realms as $r) {
 			if ($r['file'] == 'clog.php') {
 				db_install_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
@@ -517,7 +517,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("DELETE FROM plugin_hooks WHERE name='realtime'");
 
 	// If we have never install Nectar before, we can simply install
-	if (!sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
+	if (!cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports` (
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -599,7 +599,7 @@ function upgrade_to_1_0_0() {
 
 		/* fix host templates and graph template ids */
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
-		if (sizeof($items)) {
+		if (cacti_sizeof($items)) {
 			foreach ($items as $row) {
 				$host = db_fetch_row('SELECT host.*
 					FROM graph_local
@@ -607,7 +607,7 @@ function upgrade_to_1_0_0() {
 					ON (graph_local.host_id=host.id)
 					WHERE graph_local.id=' . $row['local_graph_id']);
 
-				if (sizeof($host)) {
+				if (cacti_sizeof($host)) {
 					$graph_template = db_fetch_cell('SELECT graph_template_id
 						FROM graph_local
 						WHERE id=' . $row['local_graph_id']);
@@ -631,7 +631,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
 
 	// Add realms to the admin user if it exists
-	if (sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
+	if (cacti_sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
@@ -687,7 +687,7 @@ function upgrade_to_1_0_0() {
 			'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
 
 		# now run all SQL commands
-		if (sizeof($sql)) {
+		if (cacti_sizeof($sql)) {
 			foreach ($sql as $query) {
 				$result = db_install_execute($query);
 			}
@@ -991,7 +991,7 @@ function upgrade_to_1_0_0() {
 	}
 
 	# now run all SQL commands
-	if (sizeof($sql)) {
+	if (cacti_sizeof($sql)) {
 		foreach($sql as $query) {
 			$result = db_install_execute($query);
 		}
@@ -1216,7 +1216,7 @@ function upgrade_to_1_0_0() {
 		GROUP BY hex
 		HAVING totals > 1');
 
-	if (sizeof($duplicates)) {
+	if (cacti_sizeof($duplicates)) {
 		foreach($duplicates as $duplicate) {
 			$hexes = db_fetch_assoc_prepared('SELECT id, hex
 				FROM colors
@@ -1374,7 +1374,6 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('data_template_data', array('name' => 't_data_source_profile_id', 'type' => 'CHAR(2)',  'default' => ''));
 	db_install_add_column('data_template_data', array('name' => 'data_source_profile_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0'));
 
-
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles` (
 		`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 		`hash` varchar(32) NOT NULL DEFAULT '',
@@ -1424,7 +1423,7 @@ function upgrade_to_1_0_0() {
 			GROUP BY pattern, rrd_step, rrd_heartbeat, x_files_factor");
 
 		$i = 1;
-		if (sizeof($profiles)) {
+		if (cacti_sizeof($profiles)) {
 			foreach($profiles as $profile) {
 				$pattern = $profile['pattern'];
 
@@ -1689,7 +1688,7 @@ function upgrade_to_1_0_0() {
 		/* allow sorting of trees */
 		db_install_add_column('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
 		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			foreach($trees as $sequence => $tree) {
 				db_install_execute('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
 			}

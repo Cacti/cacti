@@ -21,6 +21,12 @@
  +-------------------------------------------------------------------------+
 */
 
+const MESSAGE_LEVEL_NONE = 0;
+const MESSAGE_LEVEL_INFO = 1;
+const MESSAGE_LEVEL_WARN = 2;
+const MESSAGE_LEVEL_ERROR = 3;
+const MESSAGE_LEVEL_CSRF = 4;
+
 var theme;
 var myRefresh;
 var userMenuTimer;
@@ -656,9 +662,7 @@ function applySkin() {
 
 	setupPageTimeout();
 
-	if (typeof CsrfMagic !== 'undefined') {
-		CsrfMagic.end();
-	}
+	CsrfMagic.end();
 
 	setupSpecialKeys();
 
@@ -766,8 +770,8 @@ function displayMessages() {
 		return;
 	}
 
-	if (typeof sessionMessage.type != 'undefined') {
-		if (sessionMessage.type == 'error') {
+	if (typeof sessionMessage.level != 'undefined') {
+		if (sessionMessage.level == MESSAGE_LEVEL_ERROR) {
 			title = errorReasonTitle;
 			header = errorOnPage;
 			var sessionMessageButtons = {
@@ -781,7 +785,7 @@ function displayMessages() {
 			};
 
 			sessionMessageOpen = {};
-		} else if (sessionMessage.type == 'csrf') {
+		} else if (sessionMessage.level == MESSAGE_LEVEL_CSRF) {
 			href = document.location.href;
 			href = href + (href.indexOf('?') > 0 ? '&':'?') + 'csrf_timeout=true';
 			document.location = href;
@@ -921,7 +925,9 @@ function makeFiltersResponsive() {
 				}
 
 				if (filterContents.find('#clear').length) {
-					filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-alt"></i></span>');
+					if (filterHeader.find('.cactiFilterClear').length == 0) {
+						filterHeader.find('div.cactiTableButton').append('<span title="'+clearFilterTitle+'" style="display:none;" class="cactiFilterClear"><i class="fa fa-trash-alt"></i></span>');
+					}
 
 					$('.cactiFilterClear').unbind('click').click(function(event) {
 						event.stopPropagation();
@@ -940,9 +946,13 @@ function makeFiltersResponsive() {
 				state = storage.get('filterVisibility');
 
 				if (state == 'hidden') {
-					filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
+					if (filterHeader.find('.cactiFilterState').length == 0) {
+						filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-down"></i></span>');
+					}
 				} else {
-					filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
+					if (filterHeader.find('.cactiFilterState').length == 0) {
+						filterHeader.find('div.cactiTableButton').append('<span class="cactiFilterState"><i class="fa fa-angle-double-up"></i></span>');
+					}
 				}
 
 				$('.cactiFilterState').attr('title', showHideFilter).tooltip();
@@ -1882,8 +1892,12 @@ function checkFormStatus(href, type, scroll_or_id) {
 				$.each(submitData, function(index, value) {
 					if (typeof formData[index] != 'undefined') {
 						if (formData[index] != value) {
-							if (index != 'settings_sendmail_path' && index != 'rrd_archive' && index != '__csrf_magicSubmit') {
-								console.log('Index:'+index+'Submit:'+value+', Orig:'+formData[index]);
+							if (index == 'settings_sendmail_path' || index == 'rrd_archive' || index == '__csrf_magicSubmit' || index == '__csrf_magic') {
+								// Ignore this entry
+							} else if (index.indexOf('[]') > 0) {
+								// Ignore this entry
+							} else {
+								console.log('Index:-'+index+'-:Submit:'+value+', Orig:'+formData[index]);
 								changed = true;
 							}
 						}

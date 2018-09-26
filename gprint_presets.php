@@ -141,7 +141,7 @@ function form_actions() {
 
 	html_start_box($gprint_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
-	if (isset($gprint_array) && sizeof($gprint_array)) {
+	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -153,8 +153,9 @@ function form_actions() {
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one GPRINT Preset.') ."</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') ."' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: gprint_presets.php?header=false');
+        exit;
 	}
 
 	print "<tr>
@@ -271,7 +272,7 @@ function gprint_presets() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -399,7 +400,7 @@ function gprint_presets() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		foreach ($gprint_list as $gp) {
 			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
 				$disabled = false;
@@ -422,7 +423,7 @@ function gprint_presets() {
 
 	html_end_box(false);
 
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		print $nav;
 	}
 

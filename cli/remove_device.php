@@ -36,7 +36,7 @@ require_once($config['base_path'] . '/lib/api_device.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';
@@ -107,7 +107,7 @@ if (sizeof($parms)) {
 		}
 
 		$ids_host = preg_array_key_match("/$description/", $hosts);
-		if (sizeof($ids_host) == 0) {
+		if (cacti_sizeof($ids_host) == 0) {
 			print "ERROR: Unable to find host in the database matching desciption ($description)\n";
 			exit(1);
 		}
@@ -119,13 +119,13 @@ if (sizeof($parms)) {
 		}
 
 		$ids_ip = preg_array_key_match("/$ip/", $addresses);
-		if (sizeof($ids_ip) == 0) {
+		if (cacti_sizeof($ids_ip) == 0) {
 			print "ERROR: Unable to find host in the database matching IP ($ip)\n";
 			exit(1);
 		}
 	}
 
-	if (sizeof($ids_host) == 0 && sizeof($ids_ip) == 0) {
+	if (cacti_sizeof($ids_host) == 0 && cacti_sizeof($ids_ip) == 0) {
 		print "ERROR: No matches found, was IP or Description set properly?\n";
 		exit(1);
 	}
@@ -205,7 +205,7 @@ function preg_array_key_match($needle, $haystack) {
 	}
 
 	if ($debug) {
-		print "Attempting to match against '$needle' against ".sizeof($haystack)." entries\n";
+		print "Attempting to match against '$needle' against ".cacti_sizeof($haystack)." entries\n";
 	}
 
 	foreach ($haystack as $str => $value) {

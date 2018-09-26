@@ -59,7 +59,7 @@ function api_device_remove_multi($device_ids) {
 	$devices_to_delete = '';
 	$i = 0;
 
-	if (sizeof($device_ids)) {
+	if (cacti_sizeof($device_ids)) {
 		/* build the list */
 		foreach($device_ids as $device_id) {
 			if ($i == 0) {
@@ -93,7 +93,7 @@ function api_device_remove_multi($device_ids) {
 		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
 	}
 
-	if (sizeof($poller_ids)) {
+	if (cacti_sizeof($poller_ids)) {
 		foreach($poller_ids as $poller_id) {
 			api_device_cache_crc_update($poller_id);
 		}
@@ -333,7 +333,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		WHERE host_template_id = ?',
 		array($host_template_id));
 
-	if (sizeof($snmp_queries)) {
+	if (cacti_sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
 			db_execute_prepared('REPLACE INTO host_snmp_query
 				(host_id, snmp_query_id, reindex_method)
@@ -351,7 +351,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 		WHERE host_template_id = ?',
 		array($host_template_id));
 
-	if (sizeof($graph_templates)) {
+	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
 			db_execute_prepared('REPLACE INTO host_graph
 				(host_id, graph_template_id)
@@ -388,7 +388,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	    array($host_id, $host_template_id)
 	);
 
-	if (sizeof($unused_graph_templates)) {
+	if (cacti_sizeof($unused_graph_templates)) {
 		foreach ($unused_graph_templates as $unused_graph_template) {
 			db_execute_prepared('DELETE
 				FROM host_graph
@@ -418,7 +418,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 		'id', 'id'
 	);
 
-	if (sizeof($devices)) {
+	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
 			api_device_update_host_template($device, $device_template);
 		}
@@ -442,7 +442,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			WHERE id = ?',
 			array($host['poller_id']));
 
-		$fgc_contextoption = get_default_contextoption(5);
+		$fgc_contextoption = get_default_contextoption();
 		$fgc_context       = stream_context_create($fgc_contextoption);
 		$results           = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
 

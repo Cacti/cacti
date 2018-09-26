@@ -318,6 +318,11 @@ label {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	padding-left: 0.5em !important;
+	display: block;
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }
@@ -1215,6 +1220,10 @@ legend {
 	color: snow;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: #252426 !important;
+}
+
 .cactiTableTitleRow {
 	float: left;
 	text-align: left;
@@ -1966,7 +1975,6 @@ div#gtabs {
 	display: block;
 	padding: 2px 4px;
 	background: #ccc;
-	border-bottom: 1px solid #151515;
 	text-decoration: none;
 	color: #fff;
 }

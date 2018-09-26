@@ -200,12 +200,12 @@ function automation_graph_rules_form_actions() {
 				db_execute('DELETE FROM automation_graph_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DUPLICATE) { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions duplicate: ' . $selected_items[$i] . ' name: ' . get_nfilter_request_var('name_format'), true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 					duplicate_automation_graph_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_ENABLE) { /* enable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_graph_rules
@@ -214,7 +214,7 @@ function automation_graph_rules_form_actions() {
 						array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_GRAPH_DISABLE) { /* disable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_graph_rules
@@ -283,9 +283,10 @@ function automation_graph_rules_form_actions() {
 	}
 
 	if (!isset($automation_graph_rules_array)) {
-		print "<tr class='even'><td><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
-	}else {
+		raise_message(40);
+		header('Location: automation_graph_rules.php?header=false');
+		exit;
+	} else {
 		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
@@ -763,7 +764,7 @@ function automation_graph_rules() {
 									ON ar.snmp_query_id=sq.id
 									ORDER BY sq.name');
 
-								if (sizeof($available_data_queries)) {
+								if (cacti_sizeof($available_data_queries)) {
 									foreach ($available_data_queries as $data_query) {
 										print "<option value='" . $data_query['id'] . "'" . (get_request_var('snmp_query_id') == $data_query['id'] ? ' selected':'') .  '>' . $data_query['name'] . "</option>\n";
 									}
@@ -788,7 +789,7 @@ function automation_graph_rules() {
 							<select id='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (cacti_sizeof($item_rows) > 0) {
 									foreach ($item_rows as $key => $value) {
 										print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
 									}
@@ -905,7 +906,7 @@ function automation_graph_rules() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($automation_graph_rules_list)) {
+	if (cacti_sizeof($automation_graph_rules_list)) {
 		foreach ($automation_graph_rules_list as $automation_graph_rules) {
 			$snmp_query_name 		= ((empty($automation_graph_rules['snmp_query_name'])) 	 ? __('None') : html_escape($automation_graph_rules['snmp_query_name']));
 			$graph_type_name 		= ((empty($automation_graph_rules['graph_type_name'])) 	 ? __('None') : html_escape($automation_graph_rules['graph_type_name']));
@@ -922,12 +923,12 @@ function automation_graph_rules() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Graph Rules Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Graph Rules Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($automation_graph_rules_list)) {
+	if (cacti_sizeof($automation_graph_rules_list)) {
 		print $nav;
 	}
 

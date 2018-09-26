@@ -318,6 +318,11 @@ label {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	padding-left: 0.5em !important;
+	display: block;
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }
@@ -1235,7 +1240,11 @@ legend {
 	margin-right:auto;
 	display: table;
 	line-height: 16px;
-	color: snow;
+	color: rgb(68, 68, 68);
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(98,125,77,1) !important;
 }
 
 .cactiTableTitleRow {
@@ -1437,6 +1446,7 @@ legend {
 
 .formHeaderText {
 	padding-left: 3px;
+	color: snow;
 }
 
 .formHeaderAnchor {

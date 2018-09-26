@@ -177,7 +177,7 @@ function duplicate_vdef($_vdef_id, $vdef_title) {
 	$vdef_id = sql_save($save, 'vdef');
 
 	/* create new entry(s): vdef_items */
-	if (sizeof($vdef_items) > 0) {
+	if (cacti_sizeof($vdef_items) > 0) {
 		foreach ($vdef_items as $vdef_item) {
 			unset($save);
 
@@ -207,7 +207,7 @@ function vdef_form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') === '1') { // delete
 				/* do a referential integrity check */
-				if (sizeof($selected_items)) {
+				if (cacti_sizeof($selected_items)) {
 				foreach($selected_items as $vdef_id) {
 					/* ================= input validation ================= */
 					input_validate_input_number($vdef_id);
@@ -222,7 +222,7 @@ function vdef_form_actions() {
 					db_execute('DELETE FROM vdef_items WHERE ' . array_to_sql_or($vdef_ids, 'vdef_id'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					/* ================= input validation ================= */
 					input_validate_input_number($selected_items[$i]);
 					/* ==================================================== */
@@ -262,26 +262,27 @@ function vdef_form_actions() {
 		if (get_nfilter_request_var('drp_action') === '1') { // delete
 			print "	<tr>
 					<td class='topBoxAlt'>
-						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', sizeof($vdef_array)) . "</p>
+						<p>" . __n('Click \'Continue\' to delete the following VDEF.', 'Click \'Continue\' to delete following VDEFs.', cacti_sizeof($vdef_array)) . "</p>
 						<div class='itemlist'><ul>$vdef_list</ul></div>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Delete VDEF', 'Delete VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		} elseif (get_nfilter_request_var('drp_action') === '2') { // duplicate
 			print "	<tr>
 					<td class='topBoxAlt'>
-						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', sizeof($vdef_array)) . "</p>
+						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', cacti_sizeof($vdef_array)) . "</p>
 						<div class='itemlist'><ul>$vdef_list</ul></div>
 						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', sizeof($vdef_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc_n('Duplicate VDEF', 'Duplicate VDEFs', cacti_sizeof($vdef_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one VDEF.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: vdef.php?header=false');
+		exit;
 	}
 
     print "<tr>
@@ -380,7 +381,7 @@ function vdef_item_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		if (sizeof($vdef)) {
+		if (cacti_sizeof($vdef)) {
 			$current_type = $vdef['type'];
 			$values[$current_type] = $vdef['value'];
 		}
@@ -393,9 +394,9 @@ function vdef_item_edit() {
 	html_end_box();
 
 	if (!isempty_request_var('vdef_id')) {
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM vdef 
-			WHERE id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM vdef
+			WHERE id = ?',
 			array(get_request_var('vdef_id')));
 
 		$header_label = __('VDEF Items [edit: %s]', html_escape($name));
@@ -523,7 +524,7 @@ function vdef_item_dnd() {
 	if (isset_request_var('vdef_item') && is_array(get_nfilter_request_var('vdef_item'))) {
 		$vdef_ids = get_nfilter_request_var('vdef_item');
 
-		if (sizeof($vdef_ids)) {
+		if (cacti_sizeof($vdef_ids)) {
 			$sequence = 1;
 			foreach($vdef_ids as $vdef_id) {
 				$vdef_id = str_replace('line', '', $vdef_id);
@@ -550,9 +551,9 @@ function vdef_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$vdef = db_fetch_row_prepared('SELECT * 
-			FROM vdef 
-			WHERE id = ?', 
+		$vdef = db_fetch_row_prepared('SELECT *
+			FROM vdef
+			WHERE id = ?',
 			array(get_request_var('id')));
 
 		$header_label = __('VDEFs [edit: %s]', html_escape($vdef['name']));
@@ -598,9 +599,9 @@ function vdef_edit() {
 			array(get_request_var('id')));
 
 		$i = 1;
-		$total_items = sizeof($vdef_items);
+		$total_items = cacti_sizeof($vdef_items);
 
-		if (sizeof($vdef_items)) {
+		if (cacti_sizeof($vdef_items)) {
 			foreach ($vdef_items as $vdef_item) {
 				form_alternate_row('line' . $vdef_item['id'], true, true);
 				?>
@@ -701,7 +702,7 @@ function vdef_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
@@ -886,7 +887,7 @@ function vdef($refresh = true) {
     html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
     $i = 0;
-    if (sizeof($vdefs)) {
+    if (cacti_sizeof($vdefs)) {
         foreach ($vdefs as $vdef) {
             if ($vdef['graphs'] == 0 && $vdef['templates'] == 0) {
                 $disabled = false;
@@ -908,7 +909,7 @@ function vdef($refresh = true) {
 
     html_end_box(false);
 
-    if (sizeof($vdefs)) {
+    if (cacti_sizeof($vdefs)) {
         print $nav;
 	}
 

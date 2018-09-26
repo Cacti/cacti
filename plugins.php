@@ -74,7 +74,7 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 				api_plugin_install($id);
 			}
 
-			if ($_SESSION['sess_plugins_state'] != '-3') {
+			if ($_SESSION['sess_plugins_state'] >= 0) {
 				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
 			} else {
 				header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
@@ -137,7 +137,7 @@ update_show_current();
 bottom_footer();
 
 function plugins_temp_table_exists($table) {
-	return sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
+	return cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '$table'"));
 }
 
 function plugins_load_temp_table() {
@@ -168,8 +168,9 @@ function plugins_load_temp_table() {
 			ADD COLUMN infoname varchar(20) DEFAULT NULL");
 	}
 
-	$path = $config['base_path'] . '/plugins/';
-	$dh   = opendir($path);
+	$path  = $config['base_path'] . '/plugins/';
+	$dh    = opendir($path);
+	$cinfo = array();
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
 			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated)) {
@@ -238,6 +239,44 @@ function plugins_load_temp_table() {
 		closedir($dh);
 	}
 
+	$found_plugins = array_keys($cinfo);
+	$plugins = db_fetch_assoc('SELECT id, directory, status FROM plugin_config');
+
+	if ($plugins !== false && sizeof($plugins)) {
+		foreach ($plugins as $plugin) {
+			if (!array_key_exists($plugin['directory'], $cinfo)) {
+				$plugin['status'] = '-5';
+
+				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
+					FROM $table
+					WHERE directory = ?",
+					array($plugin['directory']));
+
+				if (!$exists) {
+					db_execute_prepared("INSERT INTO $table
+						(directory, name, status, author, webpage, version, requires, infoname)
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+						array(
+							$directory,
+							$plugin['longname'],
+							$plugin['status'],
+							$plugin['author'],
+							$plugin['homepage'],
+							$plugin['version'],
+							$plugin['requires'],
+							$plugin['name']
+						)
+					);
+				} else {
+					db_execute_prepared("UPDATE $table
+						SET status = ?
+						WHERE directory = ?",
+						array($plugin['status'], $plugin['directory']));
+				}
+			}
+		}
+	}
+
 	return $table;
 }
 
@@ -274,7 +313,7 @@ function update_show_current () {
 		'state' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'pageset' => true,
-			'default' => '-3'
+			'default' => '-99'
 			)
 	);
 
@@ -334,7 +373,8 @@ function update_show_current () {
 					</td>
 					<td>
 						<select id='state' name='state' onChange='applyFilter()'>
-							<option value='-3'<?php if (get_request_var('state') == '-3') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='-99'<?php if (get_request_var('state') == '-99') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='-98'<?php if (get_request_var('state') == '-98') {?> selected<?php }?>><?php print __('Plugin Error');?></option>
 							<option value='1'<?php if (get_request_var('state') == '1') {?> selected<?php }?>><?php print __('Active');?></option>
 							<option value='4'<?php if (get_request_var('state') == '4') {?> selected<?php }?>><?php print __('Installed');?></option>
 							<option value='5'<?php if (get_request_var('state') == '5') {?> selected<?php }?>><?php print __('Active/Installed');?></option>
@@ -349,7 +389,7 @@ function update_show_current () {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -379,12 +419,22 @@ function update_show_current () {
 		$sql_where = "WHERE ($table.name LIKE '%" . get_request_var('filter') . "%')";
 	}
 
-	if (get_request_var('state') > -3) {
-		if (get_request_var('state') == 5) {
+	if (!isset_request_var('state')) {
+		set_request_var('status', -99);
+	}
+
+	switch (get_request_var('state')) {
+		case 5:
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status IN(1,4)';
-		} else {
+			break;
+		case -98:
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status < 0';
+			break;
+		case -99:
+			break;
+		default:
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' status=' . get_request_var('state');
-		}
+			break;
 	}
 
 	if (get_request_var('rows') == '-1') {
@@ -432,7 +482,7 @@ function update_show_current () {
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1);
 
 	$i = 0;
-	if (sizeof($plugins)) {
+	if (cacti_sizeof($plugins)) {
 		$j = 0;
 		foreach ($plugins as $plugin) {
 			if ((isset($plugins[$j+1]) && $plugins[$j+1]['status'] < 0) || (!isset($plugins[$j+1]))) {
@@ -455,18 +505,18 @@ function update_show_current () {
 			$j++;
 		}
 	} else {
-		print '<tr><td colspan="' . sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . cacti_sizeof($display_text) . '"><em>' . __('No Plugins Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($plugins)) {
+	if (cacti_sizeof($plugins)) {
 		print $nav;
 	}
 
 	form_end();
 
-	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Pluign, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
+	$uninstall_msg = __('Uninstalling this Plugin will remove all Plugin Data and Settings.  If you really want to Uninstall the Plugin, click \'Uninstall\' below.  Otherwise click \'Cancel\'');
 	$uninstall_title = __('Are you sure you want to Uninstall?');
 
 	?>
@@ -518,7 +568,7 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 
 	$row = plugin_actions($plugin, $table);
 
-	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a>' . (is_dir($config['base_path'] . '/plugins/' . $plugin['directory']) ? '':' (<span class="txtErrorText">' . __('ERROR: Directory Missing') . '</span>)') . '</td>';
+	$row .= "<td><a href='" . html_escape($plugin['webpage']) . "' target='_blank'>" . (get_request_var('filter') != '' ? preg_replace('/(' . preg_quote(get_request_var('filter')) . ')/i', "<span class='filteredValue'>\\1</span>", ucfirst($plugin['directory'])) : ucfirst($plugin['directory'])) . '</a></td>';
 
 	$row .= "<td class='nowrap'>" . filter_value($plugin['name'], get_request_var('filter')) . "</td>\n";
 
@@ -615,8 +665,11 @@ function plugin_actions($plugin, $table) {
 			}
 			$link .= "<a href='" . html_escape($config['url_path'] . 'plugins.php?mode=enable&id=' . $plugin['directory']) . "' title='" . __esc('Enable Plugin') . "'><img src='" . $config['url_path'] . "images/accept.png'></a>";
 			break;
-		case '-4': // Plugins can have spaces in their names
-			$link .= "<a href='#' title='" . __esc('Plugin does not include an INFO file') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+		case '-5': // Plugin directory missing
+			$link .= "<a href='#' title='" . __esc('Plugin directory is missing!') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
+			break;
+		case '-4': // Plugins should have INFO file since 1.0.0
+			$link .= "<a href='#' title='" . __esc('Plugin is not compatible (Pre-1.x)') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";
 			break;
 		case '-3': // Plugins can have spaces in their names
 			$link .= "<a href='#' title='" . __esc('Plugin directories can not include spaces') . "' class='linkEditMain'><img src='images/cog_error.png'></a>";

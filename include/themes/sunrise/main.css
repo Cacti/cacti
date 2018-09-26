@@ -375,6 +375,11 @@ label.ui-state-hover > span {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	display: block;
+	width: 100%:
+}
+
 .deviceUp {
 	color: #3C8A3C !important;
 }
@@ -1221,6 +1226,10 @@ legend {
 
 table.cactiTable {
 	color: lightgrey;
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(255,255,255,0.2) !important;
 }
 
 .cactiTableTitleRow {

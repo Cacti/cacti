@@ -25,10 +25,8 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
-require_once($config['base_path'] . '/lib/data_query.php');
-require_once($config['base_path'] . '/lib/dsstats.php');
-require_once($config['base_path'] . '/lib/boost.php');
-require_once($config['base_path'] . '/lib/rrd.php');
+
+$poller_id = 0;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -44,6 +42,11 @@ if (cacti_sizeof($parms)) {
 		}
 
 		switch ($arg) {
+		case '--poller':
+		case '-P':
+		case '-p':
+			$poller_id = $value;
+			break;
 		case '--version':
 		case '-V':
 		case '-v':
@@ -65,29 +68,51 @@ if (cacti_sizeof($parms)) {
 /* record the start time */
 $start = microtime(true);
 
-/* open a pipe to rrdtool for writing */
-$rrdtool_pipe = rrd_init();
-
-$rrds_processed = 0;
-
-while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
-	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
+if ($poller_id < 1) {
+	print 'FATAL: The poller needs to be greater than 1!' . PHP_EOL;
+	exit(1);
+} elseif ($poller_id == 0) {
+	$pollers = db_fetch_assoc('SELECT id
+		FROM poller
+		WHERE id > 1
+		AND disabled=""');
+} else {
+	$pollers = db_fetch_assoc_prepared('SELECT id
+		FROM poller
+		WHERE id != 1
+		AND id = ?
+		AND disabled=""',
+		array($poller_id));
 }
 
-print "There were $rrds_processed, RRD updates made this pass\n";
+if (sizeof($pollers)) {
+	foreach ($pollers as $poller) {
+		replicate_out($poller['id']);
 
-rrd_close($rrdtool_pipe);
+		db_execute_prepared('UPDATE poller
+			SET last_sync = NOW(), requires_sync=""
+			WHERE id = ?',
+			array($poller['id']));
+
+		cacti_log('STATS: Poller ID ' . $poller['id'] . ' fully Replicated', false, 'POLLER');
+	}
+} else {
+	print 'FATAL: The poller specified ' . $poller_id . ' is either disabled, or does not exist!' . PHP_EOL;
+	exit(1);
+}
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_cli_version();
-	print "Cacti Process Poller Output Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Poller Full Sync Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help () {
 	display_version();
 
-	print "\nusage: poller_output_empty.php\n\n";
-	print "A utility to process the poller output table.  This tool is deprecated but should work.\n\n";
+	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";
+	print "usage: poller_output_empty.php [--poller=N]\n\n";
+	print "Optional:\n";
+	print "    --poller=N  The numeric id of the poller to replicate out.\n";
 }

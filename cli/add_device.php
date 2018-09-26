@@ -38,7 +38,7 @@ require_once($config['base_path'] . '/lib/utility.php');
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	/* setup defaults */
 	$description   = '';
 	$ip            = '';
@@ -106,7 +106,7 @@ if (sizeof($parms)) {
 
 			break;
 		case '--version':
-			if (sizeof($parms) == 1) {
+			if (cacti_sizeof($parms) == 1) {
 				display_version();
 				exit(0);
 			} else {

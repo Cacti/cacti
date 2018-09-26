@@ -77,9 +77,9 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	html_header($display_text, 2);
 
 	$i = 1;
-	$total_items = sizeof($item_list);
+	$total_items = cacti_sizeof($item_list);
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* alternating row color */
 			form_alternate_row('line' . $item['color_template_item_id'], true, true);
@@ -190,7 +190,7 @@ function aggregate_color_form_actions() {
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
@@ -220,30 +220,31 @@ function aggregate_color_form_actions() {
 
 	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($color_array) && sizeof($color_array)) {
+	if (isset($color_array) && cacti_sizeof($color_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', sizeof($color_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Color Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: color_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -286,9 +287,9 @@ function aggregate_color_item() {
 			ORDER BY cti.sequence ASC',
 			array(get_request_var('color_template_id')));
 
-		$name = db_fetch_cell_prepared('SELECT name 
-			FROM color_templates 
-			WHERE color_template_id = ?', 
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM color_templates
+			WHERE color_template_id = ?',
 			array(get_request_var('color_template_id')));
 
 		$header_label = __('Color Template Items [edit: %s]', html_escape($name));
@@ -462,7 +463,7 @@ function aggregate_color_template() {
 
 	$filter_html .= '>' . __('Default') . '</option>';
 
-	if (sizeof($item_rows)) {
+	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
 			if (get_request_var('rows') == $key) {
@@ -563,7 +564,7 @@ function aggregate_color_template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['templates'] > 0) {
 				$disabled = true;
@@ -581,12 +582,12 @@ function aggregate_color_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		print $nav;
 	}
 

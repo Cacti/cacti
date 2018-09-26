@@ -279,7 +279,7 @@ function api_plugin_installed($plugin) {
 		WHERE directory = ?',
 		array($plugin));
 
-	if (sizeof($plugin_data)) {
+	if (cacti_sizeof($plugin_data)) {
 		if ($plugin_data['status'] >= 1) {
 			return true;
 		}
@@ -301,7 +301,7 @@ function api_plugin_remote_capabilities($plugin) {
 		if (file_exists($file)) {
 			$info = parse_ini_file($file, true);
 
-			if (sizeof($info)) {
+			if (cacti_sizeof($info)) {
 				$info_data[$plugin] = $info['info'];
 			}
 		}
@@ -405,7 +405,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 			$sql .= ",\n PRIMARY KEY (`" . $data['primary'] . '`)';
 		}
 
-		if (isset($data['keys']) && sizeof($data['keys'])) {
+		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
 					$sql .= ",\n INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
@@ -443,7 +443,7 @@ function api_plugin_db_changes_remove($plugin) {
 		AND method ='create'",
 		array($plugin), false);
 
-	if (count($tables)) {
+	if (cacti_count($tables)) {
 		foreach ($tables as $table) {
 			db_execute('DROP TABLE IF EXISTS `' . $table['table'] . '`;');
 		}
@@ -456,7 +456,7 @@ function api_plugin_db_changes_remove($plugin) {
 		AND method ='addcolumn'",
 		array($plugin), false);
 
-	if (count($columns)) {
+	if (cacti_count($columns)) {
 		foreach ($columns as $column) {
 			db_execute('ALTER TABLE `' . $column['table'] . '` DROP `' . $column['column'] . '`');
 		}
@@ -504,7 +504,7 @@ function api_plugin_can_install($plugin, &$message) {
 	$dependencies = api_plugin_get_dependencies($plugin);
 	$message = '';
 	$proceed = true;
-	if (is_array($dependencies) && sizeof($dependencies)) {
+	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
 		foreach($dependencies as $dependency=>$version) {
 			if (!api_plugin_minimum_version($dependency, $version)) {
 				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
@@ -538,7 +538,7 @@ function api_plugin_install($plugin) {
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
 	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
-	if (sizeof($exists)) {
+	if (cacti_sizeof($exists)) {
 		db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
 	}
 
@@ -593,12 +593,16 @@ function api_plugin_uninstall($plugin) {
 
 function api_plugin_check_config ($plugin) {
 	global $config;
-	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
-	$function = 'plugin_' . $plugin . '_check_config';
-	if (function_exists($function)) {
-		return $function();
+	clearstatcache();
+	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
+		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
+		$function = 'plugin_' . $plugin . '_check_config';
+		if (function_exists($function)) {
+			return $function();
+		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 function api_plugin_enable($plugin) {
@@ -657,7 +661,7 @@ function api_plugin_register_hook($plugin, $hook, $function, $file) {
 		AND hook = ?',
 		array($plugin, $hook), false);
 
-	if (!count($exists)) {
+	if (!cacti_count($exists)) {
 		$settings = array('config_settings', 'config_arrays', 'config_form');
 		$status = (!in_array($hook, $settings) ? 0 : 1);
 		db_execute_prepared('INSERT INTO plugin_hooks
@@ -733,7 +737,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 				$user_ids[] = $_SESSION['sess_user_id'];
 			}
 
-			if (sizeof($user_ids)) {
+			if (cacti_sizeof($user_ids)) {
 				foreach($user_ids as $user_id) {
 					db_execute_prepared('REPLACE INTO user_auth_realm
 						(user_id, realm_id)
@@ -776,7 +780,7 @@ function api_plugin_remove_realms($plugin) {
 function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
 	$plugin_realms = db_fetch_assoc('SELECT * FROM plugin_realms ORDER BY plugin, display', false);
-	if (count($plugin_realms)) {
+	if (cacti_count($plugin_realms)) {
 		foreach ($plugin_realms as $plugin_realm) {
 			$plugin_files = explode(',', $plugin_realm['file']);
 			foreach($plugin_files as $plugin_file) {
@@ -835,7 +839,7 @@ function plugin_load_info_file($file) {
 	if (file_exists($file)) {
 		if (is_readable($file)) {
 			$info = parse_ini_file($file, true);
-			if (sizeof($info)) {
+			if (cacti_sizeof($info)) {
 				return $info['info'];
 			} else {
 				cacti_log('WARNING: Loading plugin INFO file failed.  Parsing INI file failed.', false, 'WEBUI');

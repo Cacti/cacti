@@ -50,7 +50,7 @@ $force    = false;
 $archived = 0;
 $purged   = 0;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -104,11 +104,11 @@ if ($config['poller_id'] == 1) {
 				ORDER BY name
 				LIMIT 1000');
 
-			if (sizeof($file_array) == 0) {
+			if (cacti_sizeof($file_array) == 0) {
 				break;
 			}
 
-			if (sizeof($file_array) || $force) {
+			if (cacti_sizeof($file_array) || $force) {
 				/* there's something to do for us now */
 				remove_files($file_array);
 
@@ -328,7 +328,7 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 
 	clearstatcache();
 	$dir = scandir($baselogdir);
-	if (sizeof($dir)) {
+	if (cacti_sizeof($dir)) {
 		$date_log = clone $date;
 		$date_log->modify('-'.$rotation.'day');
 		$e = $date_log->format('Ymd');
@@ -412,7 +412,7 @@ function secpass_check_expired () {
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;
 
-	maint_debug('RRDClean is now running on ' . sizeof($file_array) . ' items');
+	maint_debug('RRDClean is now running on ' . cacti_sizeof($file_array) . ' items');
 
 	/* determine the location of the RRA files */
 	if (isset ($config['rra_path'])) {
@@ -475,9 +475,9 @@ function remove_files($file_array) {
 			WHERE (local_data_id=?)',
 			array($file['local_data_id']));
 
-		if (sizeof($lgis)) {
+		if (cacti_sizeof($lgis)) {
 			/* anything found? */
-			maint_debug('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
+			maint_debug('Processing ' . cacti_sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
 
 			/* get them all */
 			foreach ($lgis as $item) {
@@ -498,7 +498,7 @@ function remove_files($file_array) {
 		}
 	}
 
-	maint_debug('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items');
+	maint_debug('RRDClean has finished a purge pass of ' . cacti_sizeof($file_array) . ' items');
 }
 
 function rrdclean_create_path($path) {
@@ -584,7 +584,7 @@ function cleanup_ds_and_graphs() {
 	maint_debug('removing data sources');
 	api_data_source_remove_multi($remove_ldis);
 
-	maint_debug('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis));
+	maint_debug('removed graphs:' . cacti_count($remove_lgis) . ' removed data-sources:' . cacti_count($remove_ldis));
 }
 
 function maint_debug($message) {

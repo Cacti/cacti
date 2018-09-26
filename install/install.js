@@ -22,6 +22,10 @@ const STEP_INSTALL_OLDVERSION = 11;
 const STEP_INSTALL = 97;
 const STEP_COMPLETE = 98;
 const STEP_ERROR = 99;
+const STEP_GO_SITE = -1;
+const STEP_GO_FORUMS = -2;
+const STEP_GO_GITHUB = -3;
+const STEP_TEST_REMOTE = -4;
 
 const DB_STATUS_ERROR = 0;
 const DB_STATUS_WARNING = 1;
@@ -246,6 +250,14 @@ function disableButton(buttonName) {
 	}
 }
 
+function enableButton(buttonName) {
+	button = $('#button'+buttonName);
+	if (button != null) {
+		button.button();
+		button.button('enable');
+	}
+}
+
 function collapseHeadings(headingStates) {
 	for (var key in headingStates) {
 		// skip loop if the property is from prototype
@@ -347,7 +359,7 @@ function processStepWelcome(StepData) {
 
 	if ($('#accept').length) {
 		$('#accept').click(function() {
-			performStep(1);
+			performStep(STEP_WELCOME);
 			if ($('#accept').is(':checked')) {
 				$('#buttonNext').button('enable');
 			} else {
@@ -381,12 +393,12 @@ function processStepInstallType(StepData) {
 		if (StepData.Theme != 'classic') {
 			$('select#install_type').selectmenu({
 				change: function() {
-					performStep(3);
+					performStep(STEP_INSTALL_TYPE);
 				}
 			});
 		} else {
 			$('#install_type').change(function() {
-				performStep(3);
+				performStep(STEP_INSTALL_TYPE);
 			});
 		}
 	}
@@ -583,6 +595,9 @@ function setAddressBar(data, replace) {
 function performStep(installStep) {
 	$.ajaxQ.abortAll();
 
+	$('#installContent').addClass('cactiInstallLoaderBlur');
+	$('#installLoader').show();
+
 	installData = prepareInstallData(installStep);
 	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
 	url = 'step_json.php'; //?data=' + installData;
@@ -591,6 +606,8 @@ function performStep(installStep) {
 		.done(function(data) {
 			checkForLogout(data);
 
+			$('#installLoader').hide();
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installData').data('installData', data);
 
 			setAddressBar(data, false);
@@ -611,10 +628,6 @@ function performStep(installStep) {
 			setButtonData('Previous',data.Prev);
 			setButtonData('Next',data.Next);
 			setButtonData('Test',data.Test);
-
-			$('buttonTest').button('enable');
-			$('buttonTest').val(data);
-			$('buttonTest').show();
 
 			$('input[type=\"text\"], input[type=\"password\"], input[type=\"checkbox\"], textarea').not('image').addClass('ui-state-default ui-corner-all');
 			if (data.Theme != 'classic') {
@@ -669,7 +682,7 @@ function performStep(installStep) {
 							for (var propName in propArray) {
 								if (propArray.hasOwnProperty(propName)) {
 									propValue = propArray[propName];
-									element = $("#" + propName);
+									element = $("#" + propName.replace(/\//g,'_').replace(/\./g,'_'));
 									if (element != null && element.length > 0) {
 										element.focus();
 										break;
@@ -682,7 +695,54 @@ function performStep(installStep) {
 			});
 		})
 		.fail(function(data) {
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
+			$('#installLoader').hide();
 			getPresentHTTPError(data);
+		}
+	);
+}
+
+function performTestConnection() {
+	$.ajaxQ.abortAll();
+
+	$('#installContent').addClass('cactiInstallLoaderBlur');
+	$('#installLoader').show();
+
+	var testLabel = $('#labelTest');
+	if (testLabel.length == 0) {
+		$('#buttonTest').after('<label id="labelTest" class="installTestLabel"></label>');
+	}
+
+	installJson = JSON.parse('{"data":{"step":"' + STEP_TEST_REMOTE + '"}, "__csrf_magic":"'+csrfMagicToken+'"}');
+	url = 'step_json.php'; //?data=' + installData;
+
+	$.post(url, installJson)
+		.done(function(data) {
+			checkForLogout(data);
+
+			$('#installLoader').hide();
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
+
+			var isSuccessful = false, statusText = 'Failed';
+			if (typeof data.status != 'undefined') {
+				if (data.status) {
+					isSuccessful = true;
+					statusText = 'Successful';
+				}
+			}
+			$('#labelTest').text(statusText);
+			$('#labelTest').show().fadeOut(2000);
+			if (isSuccessful) {
+				enableButton('Next');
+			} else {
+				disableButton('Next');
+			}
+		})
+		.fail(function(data) {
+			$('#installContent').removeClass('cactiInstallLoaderBlur');
+			$('#installLoader').hide();
+			getPresentHTTPError(data);
+			disableButton('Next');
 		}
 	);
 }
@@ -727,14 +787,16 @@ $(function() {
 		if (button != null) {
 			buttonData = button.data('buttonData');
 			if (buttonData != null) {
-				if (buttonData.Step == -1) {
+				if (buttonData.Step == STEP_GO_SITE) {
 					window.location.assign('../');
-				} else if (buttonData.Step == -2) {
+				} else if (buttonData.Step == STEP_GO_FORUMS) {
 					var win = window.open('https://forums.cacti.net/');
 					win.focus;
-				} else if (buttonData.Step == -3) {
+				} else if (buttonData.Step == STEP_GO_GITHUB) {
 					var win = window.open('https://github.com/cacti/cacti/issues/');
 					win.focus;
+				} else if (buttonData.Step == STEP_TEST_REMOTE) {
+					performTestConnection();
 				} else {
 					performStep(buttonData.Step);
 				}
@@ -745,6 +807,10 @@ $(function() {
 	});
 
 	setTimeout(function() {
+		$('#installRefresh').click(function() {
+			performStep();
+		});
+
 		performStep();
 	}, 1000);
 });

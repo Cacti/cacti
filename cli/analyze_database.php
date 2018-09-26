@@ -35,7 +35,7 @@ $debug = false;
 $form  = '';
 $start = time();
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -71,7 +71,7 @@ print "Analyzing All Cacti Database Tables\n";
 
 $tables = db_fetch_assoc('SHOW TABLES FROM `' . $database_default . '`');
 
-if (sizeof($tables)) {
+if (cacti_sizeof($tables)) {
 	foreach($tables AS $table) {
 		print "Analyzing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('ANALYZE TABLE ' . $table['Tables_in_' . $database_default] . $form);

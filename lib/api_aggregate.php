@@ -117,7 +117,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 			WHERE aggregate_template_id = ?',
 			array($aggregate_template_id));
 
-		if (sizeof($aggregate_data)) {
+		if (cacti_sizeof($aggregate_data)) {
 			foreach ($aggregate_data as $field => $value) {
 				if (substr($field, 0, 2) == 't_' && $value == 'on') {
 					$value_field_name = substr($field, 2);
@@ -127,7 +127,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		}
 	}
 
-	if (sizeof($existing_data) == 0) {
+	if (cacti_sizeof($existing_data) == 0) {
 		/* this is a new graph, use template data */
 		$graph_data = $template_data;
 
@@ -235,7 +235,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 	}
 
 	/* create new entry(s): graph_templates_item */
-	$num_items = sizeof($graph_items);
+	$num_items = cacti_sizeof($graph_items);
 	if ($num_items > 0) {
 		# take care of items having a HR that shall be skipped
 		$i = 0;
@@ -293,9 +293,9 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						FROM graph_templates_item
 						WHERE color_id>0
 						AND sequence = ' . $graph_item['sequence'] .
-						(sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
-						(sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')':'') .
-						(sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
+						(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
+						(cacti_sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')':'') .
+						(cacti_sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
 						LIMIT 1');
 				}
 			}
@@ -688,7 +688,7 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		}
 
 		# now run all updates
-		if (sizeof($updates)) {
+		if (cacti_sizeof($updates)) {
 			foreach($updates as $update) {
 				cacti_log(__FUNCTION__ .  ' update: ' . $update, false, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 				db_execute($update);
@@ -871,14 +871,14 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 			WHERE aggregate_template_id = ?',
 			array($aggregate_template_id));
 
-		if (sizeof($graphs)) {
+		if (cacti_sizeof($graphs)) {
 			foreach($graphs as $g) {
 				$aggregate_graphs[] = $g['local_graph_id'];
 			}
 		}
 	}
 
-	if (sizeof($aggregate_graphs)) {
+	if (cacti_sizeof($aggregate_graphs)) {
 		foreach($aggregate_graphs as $ag) {
 			$member_graphs = array();
 			$graphs        = db_fetch_assoc_prepared('SELECT DISTINCT agi.local_graph_id
@@ -895,7 +895,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 					array($ag));
 			}
 
-			if (sizeof($graphs)) {
+			if (cacti_sizeof($graphs)) {
 				foreach($graphs as $mg) {
 					$member_graphs[] = $mg['local_graph_id'];
 				}
@@ -925,7 +925,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 	/* install own error handler */
 	set_error_handler('aggregate_error_handler');
 
-	if (sizeof($member_graphs)) {
+	if (cacti_sizeof($member_graphs)) {
 		$graph_title          = (isset($attribs['graph_title']) ? $attribs['graph_title']:'');
 		$aggregate_template   = (isset($attribs['aggregate_template_id']) ? $attribs['aggregate_template_id']:0);
 		$graph_template_id    = (isset($attribs['graph_template_id']) ? $attribs['graph_template_id']:0);
@@ -1061,8 +1061,8 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				$cf_id = db_fetch_cell('SELECT consolidation_function_id
 					FROM graph_templates_item
 					WHERE color_id>0' .
-					(sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
-					(sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
+					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
 					LIMIT 1');
 
 				/* add an empty line before total items */
@@ -1166,7 +1166,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			AND graph_local.graph_template_id>0';
 		$used_graph_templates = db_fetch_assoc($sql);
 
-		if (sizeof($used_graph_templates) > 1) {
+		if (cacti_sizeof($used_graph_templates) > 1) {
 			# this is invalid! STOP
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . "</p>";
@@ -1185,7 +1185,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			});
 			</script>
 			<?php
-		} elseif (sizeof($used_graph_templates) < 1) {
+		} elseif (cacti_sizeof($used_graph_templates) < 1) {
 			/* selected graphs do not use templates */
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
@@ -1255,7 +1255,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	$current_vals = array();
 	$is_edit = false;
 	$is_templated = false;
-	if (sizeof($_object) > 0 && $_object['id'] > 0) {
+	if (cacti_sizeof($_object) > 0 && $_object['id'] > 0) {
 		/* drawing items for existing aggregate graph/template */
 		$is_edit =true;
 		/* fetch existing item values */
@@ -1312,7 +1312,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
 			$this_row_style   = '';
@@ -1446,7 +1446,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	html_end_box();
 
-	form_hidden_box('item_no', sizeof($item_list), sizeof($item_list));
+	form_hidden_box('item_no', cacti_sizeof($item_list), cacti_sizeof($item_list));
 }
 
 
@@ -1482,7 +1482,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 
 			/* value from graph template or aggregate graph template
 			(based on value of t_$field_name of aggregate_template_graph) */
-			if (sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on') {
+			if (cacti_sizeof($aggregate_templates_graph) && $aggregate_templates_graph['t_'.$field_name] == 'on') {
 				$value = $aggregate_templates_graph[$field_name];
 			} else {
 				$value = $graph_templates_graph[$field_name];
@@ -1492,7 +1492,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 			$form_array[$field_name]['sub_checkbox'] = array(
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Override this Value'). '<br>',
-				'value' => (sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
+				'value' => (cacti_sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
 				'on_change' => 'toggleFieldEnabled(this);'
 			);
 		} else {

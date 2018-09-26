@@ -26,11 +26,18 @@ error_reporting(E_ALL);
 define('IN_CACTI_INSTALL', 1);
 
 include_once('../include/auth.php');
-include_once('../lib/api_data_source.php');
-include_once('../lib/api_device.php');
-include_once('../lib/api_tree.php');
-include_once('../lib/import.php');
-include_once('../lib/utility.php');
+require_once($config['base_path'] . '/lib/api_automation_tools.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 include_once('./functions.php');
 
 set_default_action();
@@ -59,38 +66,44 @@ if (isset_request_var('language')) {
 	$language = read_user_setting('user_language', get_new_user_default_language(), true);
 }
 
-// database test
-if (get_nfilter_request_var('action') == 'testdb') {
-	if (get_nfilter_request_var('location') == 'local') {
-		install_test_local_database_connection();
-	} else {
-		install_test_remote_database_connection();
-	}
-
-	exit;
+$hasJson = false;
+if (interface_exists('JsonSerializable')) {
+	$hasJson = true;
+	include_once('../lib/installer.php');
 }
-
-include_once('../lib/installer.php');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-	<?php print html_common_header(__('Cacti Server v%s - Install/Version Change', CACTI_VERSION), $theme);?>
-	<?php print get_md5_include_js('install/install.js'); ?>
-	<?php print get_md5_include_css('install/install.css'); ?>
-	<?php print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css'); ?>
+<?php
+print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION), $theme);
+if ($hasJson) {
+	print get_md5_include_js('install/install.js');
+}
+print get_md5_include_css('install/install.css');
+print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
+?>
 </head>
 <body>
 	<div class='cactiInstallTable'>
 		<div class='cactiTableTitleRow cactiBorderWall'>
-			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?></div>
+			<div class='textHeaderDark'><?php print __('Cacti Server v%s - Installation Wizard', CACTI_VERSION); ?><span style="float:right"><i id="installRefresh" class="fa fa-redo"></i></span></div>
 		</div>
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
+if ($hasJson) {
 				print Installer::sectionTitle(__('Initializing'));
 				print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes.  You must have JavaScript enabled for this to work.', CACTI_VERSION));
+} else {
+				print '<p>ERROR: PHP Json module is not enabled. This is required for the installer to work</p>';
+				print '<p>See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation </p>';
+}
 ?>
+			</div>
+			<div class='cactiInstallLoader' id='installLoader'>
+				<div class='cactiInstallLoaderLogo'><img src='../images/cacti_logo.svg' /></div>
+				<div class='cactiInstallLoaderSpinnerTheme cactiInstallLoaderSpinner'></div>
 			</div>
 		</div>
 		<div class='cactiInstallButtonArea saveRow'>

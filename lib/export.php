@@ -77,7 +77,7 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
-	if (sizeof($graph_template_items) > 0) {
+	if (cacti_sizeof($graph_template_items) > 0) {
 		foreach ($graph_template_items as $item) {
 			$hash['graph_template_item'] = get_hash_version('graph_template_item') . get_hash_graph_template($item['id'], 'graph_template_item');
 
@@ -123,7 +123,7 @@ function graph_template_to_xml($graph_template_id) {
 	$xml_text .= "\t<inputs>\n";
 
 	$i = 0;
-	if (sizeof($graph_template_inputs) > 0) {
+	if (cacti_sizeof($graph_template_inputs) > 0) {
 		foreach ($graph_template_inputs as $item) {
 			$hash['graph_template_input'] = get_hash_version('graph_template_input') . get_hash_graph_template($item['id'], 'graph_template_input');
 
@@ -143,11 +143,11 @@ function graph_template_to_xml($graph_template_id) {
 			$xml_text .= "\t\t\t<items>";
 
 			$j = 0;
-			if (sizeof($graph_template_input_items) > 0) {
+			if (cacti_sizeof($graph_template_input_items) > 0) {
 				foreach ($graph_template_input_items as $item2) {
 					$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item2['graph_template_item_id'], 'graph_template_item');
 
-					if (($j+1) < sizeof($graph_template_input_items)) {
+					if (($j+1) < cacti_sizeof($graph_template_input_items)) {
 						$xml_text .= '|';
 					}
 
@@ -231,7 +231,7 @@ function data_template_to_xml($data_template_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
-	if (sizeof($data_template_rrd) > 0) {
+	if (cacti_sizeof($data_template_rrd) > 0) {
 		foreach ($data_template_rrd as $item) {
 			$hash['data_template_item'] = get_hash_version('data_template_item') . get_hash_data_template($item['id'], 'data_template_item');
 
@@ -264,7 +264,7 @@ function data_template_to_xml($data_template_id) {
 	$xml_text .= "\t<data>\n";
 
 	$i = 0;
-	if (sizeof($data_input_data) > 0) {
+	if (cacti_sizeof($data_input_data) > 0) {
 		foreach ($data_input_data as $item) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
@@ -332,7 +332,7 @@ function data_input_method_to_xml($data_input_id) {
 
 	$xml_text .= "\t<fields>\n";
 
-	if (sizeof($data_input_fields) > 0) {
+	if (cacti_sizeof($data_input_fields) > 0) {
 		foreach ($data_input_fields as $item) {
 			$hash['data_input_field'] = get_hash_version('data_input_field') . get_hash_data_input($item['id'], 'data_input_field');
 
@@ -408,7 +408,7 @@ function cdef_to_xml($cdef_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
-	if (sizeof($cdef_items) > 0) {
+	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $item) {
 			$hash['cdef_item'] = get_hash_version('cdef_item') . get_hash_cdef($item['id'], 'cdef_item');
 
@@ -479,7 +479,7 @@ function vdef_to_xml($vdef_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
-	if (sizeof($vdef_items) > 0) {
+	if (cacti_sizeof($vdef_items) > 0) {
 		foreach ($vdef_items as $item) {
 			$hash['vdef_item'] = get_hash_version('vdef_item') . get_hash_vdef($item['id'], 'vdef_item');
 
@@ -579,11 +579,11 @@ function data_source_profile_to_xml($data_source_profile_id) {
 
 	/* XML Branch: <cf_items> */
 	$i = 0;
-	if (sizeof($profile_cf) > 0) {
+	if (cacti_sizeof($profile_cf) > 0) {
 		foreach ($profile_cf as $item) {
 			$xml_text .= $item['consolidation_function_id'];
 
-			if (($i+1) < sizeof($profile_cf)) {
+			if (($i+1) < cacti_sizeof($profile_cf)) {
 				$xml_text .= '|';
 			}
 
@@ -596,7 +596,7 @@ function data_source_profile_to_xml($data_source_profile_id) {
 	$xml_text .= "\t<items>\n";
 
 	$i = 0;
-	if (sizeof($profile_rra)) {
+	if (cacti_sizeof($profile_rra)) {
 		foreach ($profile_rra as $item) {
 			$xml_text .= "\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 			foreach ($fields_profile_rra_edit as $field_name => $field_array) {
@@ -661,11 +661,11 @@ function host_template_to_xml($host_template_id) {
 	$xml_text .= "\t<graph_templates>";
 
 	$j = 0;
-	if (sizeof($host_template_graph) > 0) {
+	if (cacti_sizeof($host_template_graph) > 0) {
 		foreach ($host_template_graph as $item) {
 			$xml_text .= 'hash_' . get_hash_version('graph_template') . get_hash_graph_template($item['graph_template_id']);
 
-			if (($j+1) < sizeof($host_template_graph)) {
+			if (($j+1) < cacti_sizeof($host_template_graph)) {
 				$xml_text .= '|';
 			}
 
@@ -679,11 +679,11 @@ function host_template_to_xml($host_template_id) {
 	$xml_text .= "\t<data_queries>";
 
 	$j = 0;
-	if (sizeof($host_template_snmp_query) > 0) {
+	if (cacti_sizeof($host_template_snmp_query) > 0) {
 		foreach ($host_template_snmp_query as $item) {
 			$xml_text .= 'hash_' . get_hash_version('data_query') . get_hash_data_query($item['snmp_query_id']);
 
-			if (($j+1) < sizeof($host_template_snmp_query)) {
+			if (($j+1) < cacti_sizeof($host_template_snmp_query)) {
 				$xml_text .= '|';
 			}
 
@@ -740,7 +740,7 @@ function data_query_to_xml($data_query_id) {
 	$xml_text .= "\t<graphs>\n";
 
 	$i = 0;
-	if (sizeof($snmp_query_graph) > 0) {
+	if (cacti_sizeof($snmp_query_graph) > 0) {
 		foreach ($snmp_query_graph as $item) {
 			$hash['data_query_graph'] = get_hash_version('data_query_graph') . get_hash_data_query($item['id'], 'data_query_graph');
 
@@ -780,7 +780,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<rrd>\n";
 
 			$i = 0;
-			if (sizeof($snmp_query_graph_rrd) > 0) {
+			if (cacti_sizeof($snmp_query_graph_rrd) > 0) {
 				foreach ($snmp_query_graph_rrd as $item2) {
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
@@ -801,7 +801,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<sv_graph>\n";
 
 			$j = 0;
-			if (sizeof($snmp_query_graph_sv) > 0) {
+			if (cacti_sizeof($snmp_query_graph_sv) > 0) {
 				foreach ($snmp_query_graph_sv as $item2) {
 					$hash['data_query_sv_graph'] = get_hash_version('data_query_sv_graph') . get_hash_data_query($item2['id'], 'data_query_sv_graph');
 
@@ -824,7 +824,7 @@ function data_query_to_xml($data_query_id) {
 			$xml_text .= "\t\t\t<sv_data_source>\n";
 
 			$j = 0;
-			if (sizeof($snmp_query_graph_rrd_sv) > 0) {
+			if (cacti_sizeof($snmp_query_graph_rrd_sv) > 0) {
 				foreach ($snmp_query_graph_rrd_sv as $item2) {
 					$hash['data_query_sv_data_source'] = get_hash_version('data_query_sv_data_source') . get_hash_data_query($item2['id'], 'data_query_sv_data_source');
 
@@ -874,7 +874,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			AND graph_templates_item.task_item_id > 0
 			GROUP BY data_template_rrd.data_template_id', array($id));
 
-		if (sizeof($graph_template_items) > 0) {
+		if (cacti_sizeof($graph_template_items) > 0) {
 			foreach ($graph_template_items as $item) {
 				if (!isset($dep_array['data_template'][$item['data_template_id']])) {
 					$dep_array = resolve_dependencies('data_template', $item['data_template_id'], $dep_array);
@@ -893,7 +893,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 		$recursive = true;
 		/* in the first turn, search all inherited cdef items related to all cdef's known on highest recursion level */
 		$search_cdef_items = array_rekey($cdef_items, 'cdef_id', 'cdef_id');
-		if (sizeof($cdef_items) > 0) {
+		if (cacti_sizeof($cdef_items) > 0) {
 			while ($recursive) {
 				/* are there any inherited cdef's within those referenced by any graph item?
 				 * search for all cdef_items of type = 5 (inherited cdef)
@@ -906,7 +906,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 				$inherited_cdef_items = db_fetch_assoc($sql);
 
 				/* in case we found any */
-				if (sizeof($inherited_cdef_items) > 0) {
+				if (cacti_sizeof($inherited_cdef_items) > 0) {
 					/* join all cdef's found
 					 * ATTENTION!
 					 * sequence of parameters matters!
@@ -939,7 +939,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			GROUP BY vdef_id',
 			array($id));
 
-		if (sizeof($vdef_items) > 0) {
+		if (cacti_sizeof($vdef_items) > 0) {
 			foreach ($vdef_items as $item) {
 				if (!isset($dep_array['vdef'][$item['vdef_id']])) {
 					$dep_array = resolve_dependencies('vdef', $item['vdef_id'], $dep_array);
@@ -956,7 +956,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			GROUP BY gprint_id',
 			array($id));
 
-		if (sizeof($graph_template_items) > 0) {
+		if (cacti_sizeof($graph_template_items) > 0) {
 			foreach ($graph_template_items as $item) {
 				if (!isset($dep_array['gprint_preset'][$item['gprint_id']])) {
 					$dep_array = resolve_dependencies('gprint_preset', $item['gprint_id'], $dep_array);
@@ -985,7 +985,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			AND local_data_id=0',
 			array($id));
 
-		if (sizeof($profiles)) {
+		if (cacti_sizeof($profiles)) {
 			foreach ($profiles as $item) {
 				if (!isset($dep_array['data_source_profile'][$item['data_source_profile_id']])) {
 					$dep_array = resolve_dependencies('data_source_profile', $item['data_source_profile_id'], $dep_array);
@@ -1014,7 +1014,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			GROUP BY graph_template_id',
 			array($id));
 
-		if (sizeof($snmp_query_graph) > 0) {
+		if (cacti_sizeof($snmp_query_graph) > 0) {
 			foreach ($snmp_query_graph as $item) {
 				if (!isset($dep_array['graph_template'][$item['graph_template_id']])) {
 					$dep_array = resolve_dependencies('graph_template', $item['graph_template_id'], $dep_array);
@@ -1032,7 +1032,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			GROUP BY graph_template_id',
 			array($id));
 
-		if (sizeof($host_template_graph) > 0) {
+		if (cacti_sizeof($host_template_graph) > 0) {
 			foreach ($host_template_graph as $item) {
 				if (!isset($dep_array['graph_template'][$item['graph_template_id']])) {
 					$dep_array = resolve_dependencies('graph_template', $item['graph_template_id'], $dep_array);
@@ -1048,7 +1048,7 @@ function resolve_dependencies($type, $id, $dep_array) {
 			GROUP BY snmp_query_id',
 			array($id));
 
-		if (sizeof($host_template_snmp_query) > 0) {
+		if (cacti_sizeof($host_template_snmp_query) > 0) {
 			foreach ($host_template_snmp_query as $item) {
 				if (!isset($dep_array['data_query'][$item['snmp_query_id']])) {
 					$dep_array = resolve_dependencies('data_query', $item['snmp_query_id'], $dep_array);
@@ -1087,7 +1087,7 @@ function get_item_xml($type, $id, $follow_deps) {
 		$dep_array[$type][$id] = $id;
 	}
 
-	if (sizeof($dep_array)) {
+	if (cacti_sizeof($dep_array)) {
 		foreach ($dep_array as $dep_type => $dep_arr) {
 			foreach ($dep_arr as $dep_id => $dep_id) {
 				switch($dep_type) {
@@ -1134,7 +1134,7 @@ function get_item_xml($type, $id, $follow_deps) {
 
 	$xml_array = explode("\n", $xml_text);
 
-	for ($i=0; $i<count($xml_array); $i++) {
+	for ($i=0; $i<cacti_count($xml_array); $i++) {
 		$xml_indent .= "\t" . $xml_array[$i] . "\n";
 	}
 

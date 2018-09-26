@@ -184,7 +184,7 @@ function form_automation_snmp_actions() {
 				db_execute('DELETE FROM automation_snmp WHERE ' . array_to_sql_or($selected_items, 'id'));
 				db_execute('DELETE FROM automation_snmp_items WHERE ' . str_replace('id', 'snmp_id', array_to_sql_or($selected_items, 'id')));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_mactrack($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			}
@@ -223,8 +223,9 @@ function form_automation_snmp_actions() {
 	html_start_box($automation_snmp_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (!isset($automation_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one SNMP Option.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: automation_snmp.php?header=false');
+		exit;
 	} else {
 		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 
@@ -251,7 +252,7 @@ function form_automation_snmp_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_array) ? serialize($automation_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
-			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='goTo(\"" . "automation_snmp.php" . "\")' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -519,8 +520,8 @@ function automation_snmp_edit() {
 		html_header($display_text);
 
 		$i = 1;
-		$total_items = sizeof($items);
-		if (sizeof($items)) {
+		$total_items = cacti_sizeof($items);
+		if (cacti_sizeof($items)) {
 			foreach ($items as $item) {
 				form_alternate_row('line' . $item['id'], true, true);
 				$form_data = "<td><a class='linkEditMain' href='" . html_escape('automation_snmp.php?action=item_edit&item_id=' . $item['id'] . '&id=' . $item['snmp_id']) . "'>" . __('Item # %d', $i) . '</a></td>';
@@ -560,7 +561,7 @@ function automation_snmp_edit() {
 				$i++;
 			}
 		} else {
-			print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>\n";
+			print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>\n";
 		}
 
 		html_end_box();
@@ -668,7 +669,7 @@ function automation_snmp() {
                         <select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
                             <?php
-                            if (sizeof($item_rows)) {
+                            if (cacti_sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
                                     print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
                                 }
@@ -773,7 +774,7 @@ function automation_snmp() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($snmp_groups)) {
+	if (cacti_sizeof($snmp_groups)) {
 		foreach ($snmp_groups as $snmp_group) {
 			form_alternate_row('line' . $snmp_group['id'], true);
 
@@ -788,12 +789,12 @@ function automation_snmp() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($snmp_groups)) {
+	if (cacti_sizeof($snmp_groups)) {
 		print $nav;
 	}
 

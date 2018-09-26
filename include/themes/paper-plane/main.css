@@ -275,6 +275,11 @@ label {
 	white-space:nowrap;
 }
 
+.spikeKillMenuItem {
+	display: block;
+	width: 100%:
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }
@@ -1175,6 +1180,10 @@ tr>td.textInfo.right{
 	margin-left:auto;
 	margin-right:auto;
 	border-color: #222;
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: #3a3b3c !important;
 }
 
 table.cactiTable {

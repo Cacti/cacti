@@ -417,7 +417,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 	$non_repeaters = NULL, $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
 	$info = $session->info;
-	if (is_array($oid) && sizeof($oid) == 0) {
+	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 		return array();
 	}
@@ -452,7 +452,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 		return array();
 	}
 
-	if (sizeof($out)) {
+	if (cacti_sizeof($out)) {
 		foreach($out as $oid => $value){
 			$out[$oid] = format_snmp_string($value, false, $value_output_format);
 		}
@@ -464,7 +464,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	$info = $session->info;
 
-	if (is_array($oid) && sizeof($oid) == 0) {
+	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 		return array();
 	}
@@ -499,7 +499,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 
 function cacti_snmp_session_getnext($session, $oid) {
 	$info = $session->info;
-	if (is_array($oid) && sizeof($oid) == 0) {
+	if (is_array($oid) && cacti_sizeof($oid) == 0) {
 		cacti_log('Empty OID!', false);
 		return array();
 	}
@@ -583,7 +583,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		}
 
 		/* check for bad entries */
-		if ($temp_array !== false && sizeof($temp_array)) {
+		if ($temp_array !== false && cacti_sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
 				foreach($banned_snmp_strings as $item) {
 					if (strstr($value, $item) != '') {
@@ -649,7 +649,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 		}
 
 		/* check for bad entries */
-		if (is_array($temp_array) && sizeof($temp_array)) {
+		if (is_array($temp_array) && cacti_sizeof($temp_array)) {
 			foreach($temp_array as $key => $value) {
 				foreach($banned_snmp_strings as $item) {
 					if (strstr($value, $item) != '') {
@@ -684,7 +684,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		/* strip off all leading junk (the oid and stuff) */
 		$string_array = explode('=', $string);
 
-		if (sizeof($string_array) == 1) {
+		if (cacti_sizeof($string_array) == 1) {
 			/* trim excess first */
 			$string = trim($string);
 		} elseif ((substr($string, 0, 1) == '.') || (strpos($string, '::') !== false)) {
@@ -822,10 +822,10 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		$octets = preg_split('/\s|:/', $string);
 
 		/* loop through each octet and format it accordingly */
-		for ($i=0;($i<count($octets));$i++) {
+		for ($i=0;($i<cacti_count($octets));$i++) {
 			$octet .= str_pad($octets[$i], 2, '0', STR_PAD_LEFT);
 
-			if (($i+1) < count($octets)) {
+			if (($i+1) < cacti_count($octets)) {
 				$octet .= ':';
 			}
 		}
