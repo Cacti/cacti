@@ -567,6 +567,7 @@ function update_resource_cache($poller_id = 1) {
 	$rpath = $config['resource_path'];
 
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+	$excluded_dirs       = array('.git');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -594,9 +595,13 @@ function update_resource_cache($poller_id = 1) {
 					$extension = '';
 				}
 
-				/* exclude spurious extensions */
+				/* exclude spurious extensions directories */
 				$exclude = false;
 				if (array_search($extension, $excluded_extensions, true) !== false) {
+					$exclude = true;
+				}
+
+				if (array_search(basename($path['path']), $excluded_dirs, true) !== false) {
 					$exclude = true;
 				}
 
@@ -733,6 +738,7 @@ function cache_in_path($path, $type, $recursive = true) {
 	} else {
 		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+		$excluded_dirs_files = array('.git', '.travis.yml', 'config.php', '.gitattributes');
 		$pathinfo = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
@@ -741,13 +747,29 @@ function cache_in_path($path, $type, $recursive = true) {
 			$extension = '';
 		}
 
+		/* exclude spurious extensions directories */
+		$exclude = false;
+		if (array_search($extension, $excluded_extensions, true) !== false) {
+			$exclude = true;
+		}
+
+		if (array_search(basename($path), $excluded_dirs_files, true) !== false) {
+			$exclude = true;
+		}
+
 		/* exclude spurious extensions */
-		if (array_search($extension, $excluded_extensions, true) === false && basename($path) != 'config.php') {
+		if (!$exclude && basename($path) != 'config.php') {
 			$curr_md5 = md5_file($path);
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
+			if (substr($spath, 0, 8) == 'plugins/') {
+				$ppath = $config['base_path'] . $spath;
+			} else {
+				$ppath = $spath;
+			}
+
 			if (empty($last_md5) || $last_md5 != $curr_md5) {
-				cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$spath'", false, 'POLLER');
+				cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$ppath'", false, 'POLLER');
 				update_db_from_path($path, $type, $recursive);
 			}
 		}
