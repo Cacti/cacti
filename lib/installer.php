@@ -736,91 +736,59 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	public static function sortModules($a, $b) {
+		$name_a = isset($a['name']) ? $a['name'] : '';
+		$name_b = isset($b['name']) ? $b['name'] : '';
+
+		return strcasecmp($name_a, $name_b);
+	}
+
 	private function getModules() {
 		global $config;
-		if ($config['cacti_server_os'] == 'unix') {
-			$extensions = array(
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'posix',     'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		} elseif (version_compare(PHP_VERSION, '5.4.5') < 0) {
-			$extensions = array(
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		} else {
-			$extensions = array(
-				array('name' => 'com_dotnet','installed' => false),
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
-		}
 
-		$ext = verify_php_extensions($extensions);
-		foreach ($ext as $e) {
-			if (!$e['installed']) {
-				$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $e['name'] . ' is missing');
+		if (isset($this->extensions) || empty($this->$extensions)) {
+			$extensions = array(
+				array('name' => 'ctype',     'installed' => false),
+				array('name' => 'date',      'installed' => false),
+				array('name' => 'filter',    'installed' => false),
+				array('name' => 'gettext',   'installed' => false),
+				array('name' => 'gd',        'installed' => false),
+				array('name' => 'gmp',       'installed' => false),
+				array('name' => 'hash',      'installed' => false),
+				array('name' => 'json',      'installed' => false),
+				array('name' => 'ldap',      'installed' => false),
+				array('name' => 'mbstring',  'installed' => false),
+				array('name' => 'openssl',   'installed' => false),
+				array('name' => 'pcre',      'installed' => false),
+				array('name' => 'PDO',       'installed' => false),
+				array('name' => 'pdo_mysql', 'installed' => false),
+				array('name' => 'session',   'installed' => false),
+				array('name' => 'simplexml', 'installed' => false),
+				array('name' => 'sockets',   'installed' => false),
+				array('name' => 'spl',       'installed' => false),
+				array('name' => 'standard',  'installed' => false),
+				array('name' => 'xml',       'installed' => false),
+				array('name' => 'zlib',      'installed' => false)
+			);
+
+			if ($config['cacti_server_os'] == 'unix') {
+				$extensions = array_merge($extensions, array(array('name' => 'posix', 'installed' => false)));
+			} else {
+				$extensions = array_merge($extensions, array(array('name' => 'com_dotnot', 'installed' => false)));
 			}
+
+			usort($extensions, "Installer::sortModules");
+
+			$ext = verify_php_extensions($extensions);
+			foreach ($ext as $e) {
+				if (!$e['installed']) {
+					$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $e['name'] . ' is missing');
+				}
+			}
+
+			$this->extensions = $ext;
 		}
-		return $ext;
+		return $this->extensions;
 	}
 
 	private function getTemplates() {
