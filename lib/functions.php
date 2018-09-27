@@ -4210,7 +4210,9 @@ function get_default_contextoption($timeout = '') {
 
 	if ($timeout == '') {
 		$timeout = read_config_option('remote_agent_timeout');
-	} elseif (!is_numeric($timeout)) {
+	}
+
+	if (!is_numeric($timeout)) {
 		$timeout = 5;
 	}
 
