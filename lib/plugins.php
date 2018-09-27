@@ -654,26 +654,52 @@ function api_plugin_movedown($plugin) {
 	db_execute_prepared('UPDATE plugin_config SET id = ? WHERE id = ?', array($id, $temp_id));
 }
 
-function api_plugin_register_hook($plugin, $hook, $function, $file) {
-	$exists = db_fetch_assoc_prepared('SELECT id
+function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = false) {
+	$status = 0;
+	$exists = db_fetch_cell_prepared('SELECT COUNT(*)
 		FROM plugin_hooks
 		WHERE name = ?
 		AND hook = ?',
 		array($plugin, $hook), false);
 
-	if (!cacti_count($exists)) {
+	if (!$exists) {
+		// enable the hooks if they are system level hooks to enable configuration
 		$settings = array('config_settings', 'config_arrays', 'config_form');
-		$status = (!in_array($hook, $settings) ? 0 : 1);
+		$status   = (!in_array($hook, $settings) ? 0 : 1);
+
+		if ($enable) {
+			$status = 1;
+		}
+
 		db_execute_prepared('INSERT INTO plugin_hooks
 			(name, hook, function, file, status)
 			VALUES (?, ?, ?, ?, ?)',
 			array($plugin, $hook, $function, $file, $status));
 	} else {
+		if ($enable == true) {
+			$status = 1;
+		}
+
+		// enable the hook automatically if other hooks are already enabled
+		// for this plugin.
+		if (!$status) {
+			$exists = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM plugin_hooks
+				WHERE name = ?
+				AND status = 1',
+				array($plugin));
+
+			if ($exists > 0) {
+				$status = 1;
+			}
+		}
+
 		db_execute_prepared("UPDATE plugin_hooks
-			SET function = ?,
+			SET function = ?, status = ?
 			file = ?
-			WHERE name = ? AND hook = ?",
-			array($function, $file, $plugin, $hook));
+			WHERE name = ?
+			AND hook = ?",
+			array($function, $status, $file, $plugin, $hook));
 	}
 }
 
