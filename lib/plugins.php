@@ -597,6 +597,7 @@ function api_plugin_check_config ($plugin) {
 	if (file_exists($config['base_path'] . "/plugins/$plugin/setup.php")) {
 		include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 		$function = 'plugin_' . $plugin . '_check_config';
+
 		if (function_exists($function)) {
 			return $function();
 		}
@@ -695,10 +696,10 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 		}
 
 		db_execute_prepared("UPDATE plugin_hooks
-			SET function = ?, status = ?
-			file = ?
-			WHERE name = ?
-			AND hook = ?",
+			SET `function` = ?, `status` = ?,
+			`file` = ?
+			WHERE `name` = ?
+			AND `hook` = ?",
 			array($function, $status, $file, $plugin, $hook));
 	}
 }
