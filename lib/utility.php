@@ -59,7 +59,12 @@ function repopulate_poller_cache() {
 		}
 	}
 
-	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
+	$poller_ids = array_rekey(
+		db_fetch_assoc('SELECT DISTINCT poller_id
+			FROM poller_item'),
+		'poller_id', 'poller_id'
+	);
+
 	if (cacti_sizeof($poller_ids)) {
 		foreach ($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
@@ -67,21 +72,23 @@ function repopulate_poller_cache() {
 	}
 
 	/* update the field mappings for the poller */
-	db_execute("TRUNCATE TABLE poller_data_template_field_mappings");
-	db_execute("INSERT IGNORE INTO poller_data_template_field_mappings
-		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
+	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
+		SELECT dtr.data_template_id, dif.data_name,
+		GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
 		FROM data_template_rrd AS dtr
 		INNER JOIN data_input_fields AS dif
 		ON dtr.data_input_field_id = dif.id
-		WHERE dtr.local_data_id=0
-		GROUP BY dtr.data_template_id, dif.data_name");
+		WHERE dtr.local_data_id = 0
+		GROUP BY dtr.data_template_id, dif.data_name');
 }
 
-function update_poller_cache_from_query($host_id, $data_query_id) {
+function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
-		AND snmp_query_id = ?',
+		AND snmp_query_id = ?
+		AND id IN(' . implode(', ', $local_data_ids) . ')',
 		array($host_id, $data_query_id));
 
 	$i = 0;
@@ -473,7 +480,9 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
-			db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
+			db_execute("UPDATE poller_item
+				SET present=0
+				WHERE local_data_id IN ($ids)");
 		}
 	} else {
 		/* don't mark anything in case we have no $local_data_ids =>
@@ -540,7 +549,9 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
-		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
+		db_execute("DELETE FROM poller_item
+			WHERE present=0
+			AND local_data_id IN ($ids)");
 	} else {
 		/* only handle explicitely given local_data_ids */
 	}
