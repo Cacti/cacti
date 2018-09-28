@@ -136,22 +136,16 @@ function form_save() {
 		/* ==================================================== */
 
 		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc_prepared("SELECT
-			data_template_data.data_input_id,
-			data_local.host_id,
-			data_input_fields.id,
-			data_input_fields.input_output,
-			data_input_fields.data_name,
-			data_input_fields.regexp_match,
-			data_input_fields.allow_nulls,
-			data_input_fields.type_code
-			FROM data_template_data
-			LEFT JOIN data_input_fields
-			ON (data_input_fields.data_input_id = data_template_data.data_input_id)
-			LEFT JOIN data_local
-			ON (data_template_data.local_data_id = data_local.id)
-			WHERE data_template_data.id = ?
-			AND data_input_fields.input_output='in'", array(get_request_var('data_template_data_id')));
+		$input_fields = db_fetch_assoc_prepared("SELECT dtd.data_input_id, dl.host_id, dif.id, dif.input_output,
+			dif.data_name, dif.regexp_match, dif.allow_nulls, dif.type_code
+			FROM data_template_data AS dtd
+			LEFT JOIN data_input_fields AS dif
+			ON dif.data_input_id = dtd.data_input_id
+			LEFT JOIN data_local AS dl
+			ON dtd.local_data_id = dl.id
+			WHERE dtd.id = ?
+			AND dif.input_output='in'",
+			array(get_request_var('data_template_data_id')));
 
 		if (cacti_sizeof($input_fields)) {
 			foreach ($input_fields as $input_field) {
@@ -871,7 +865,7 @@ function ds_edit() {
 			'none_value' => __('None'),
 			'sql' => 'SELECT id, description AS name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
-			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : (isset($data_local['host_id']) ? $data_local['host_id'] : 0)),
+			'id' => (isset($data_local['host_id']) ? $data_local['host_id'] : 0),
 			'value' => $hostDescription
 			),
 		'_data_template_id' => array(
@@ -880,7 +874,7 @@ function ds_edit() {
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
-			'value' => (empty($data_local['host_id']) ? (isset_request_var('host_id') ? get_request_var('host_id') : '0') : $data_local['host_id'])
+			'value' => (isset($data_local['host_id']) ? $data_local['host_id'] : '0')
 			),
 		'_data_input_id' => array(
 			'method' => 'hidden',

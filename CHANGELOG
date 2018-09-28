@@ -81,6 +81,7 @@ Cacti CHANGELOG
 -issue: Graph List View was not fully responsive
 -issue: Typo in Dutch translations when an error occurred while downgrading
 -issue: Verify all Fields not working due to Cacti 1.x upgrade error
+-issue: On the Data Sources page, if there is no filtered Device and a Data Source is edited, device association is lost
 -feature#122: Support a Site Branch Type
 -feature#289: Allow external nologin access for Realtime Graphs
 -feature#553: Aggregated graph does not belong to host
