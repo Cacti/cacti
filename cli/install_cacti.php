@@ -203,7 +203,7 @@ if ($installer->getStep() == Installer::STEP_INSTALL_CONFIRM && $should_install)
 		$time = '-b';
 	}
 	log_install_always('cli', 'Starting installation...');
-	$installer->processInstall($time, $installer);
+	Installer::beginInstall($time, $installer);
 	log_install_always('cli', 'Finished installation...');
 }
 
