@@ -2674,12 +2674,16 @@ INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
 INSERT INTO user_auth_realm VALUES (18,1);
+INSERT INTO user_auth_realm VALUES (19,1);
 INSERT INTO user_auth_realm VALUES (20,1);
 INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (22,1);
 INSERT INTO user_auth_realm VALUES (23,1);
+INSERT INTO user_auth_realm VALUES (24,1);
+INSERT INTO user_auth_realm VALUES (25,1);
 INSERT INTO user_auth_realm VALUES (26,1);
 INSERT INTO user_auth_realm VALUES (101,1);
+INSERT INTO user_auth_realm VALUES (1043,1);
 
 --
 -- Table structure for table `user_log`
