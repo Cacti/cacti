@@ -1343,10 +1343,30 @@ function form_end($ajax = true) {
 				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
 					checkForLogout(data);
+					var htmlObject  = $(data);
+					var matches     = data.match(/<title>(.*?)<\/title>/);
 
-					$('#main').html(data);
-					applySkin();
-					window.scrollTo(0, 0);
+					if (matches != null) {
+						var htmlTitle   = matches[1];
+						var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+						var data        = htmlObject.find('#main').html();
+
+						$('#main').empty().hide();
+						$('title').text(htmlTitle);
+						$('#breadcrumbs').html(breadCrumbs);
+						$('div[class^="ui-"]').remove();
+						$('#main').html(data);
+						applySkin();
+					} else {
+						$('#main').empty().hide().html(data);
+						applySkin();
+					}
+
+					if (isMobile.any() != null) {
+						window.scrollTo(0,1);
+					} else {
+						window.scrollTo(0,0);
+					}
 				});
 			});
 		});

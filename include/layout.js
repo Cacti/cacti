@@ -1565,6 +1565,7 @@ function loadTopTab(href, id, force) {
 			$('.cactiConsolePageHeadBackdrop').show();
 		}
 
+		$.ajaxQ.abortAll();
 		$.get(url)
 			.done(function(html) {
 				var htmlObject  = $(html);
@@ -1584,7 +1585,7 @@ function loadTopTab(href, id, force) {
 					$('#cactiContent').replaceWith(data);
 
 					myTitle = htmlTitle;
-					myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+					myHref  = cleanHeader(href);
 
 					pushState(myTitle, href);
 				} else {
@@ -1592,7 +1593,7 @@ function loadTopTab(href, id, force) {
 
 					$('#cactiContent').replaceWith(html);
 
-					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?&', '');
 
 					pushState(myTitle, href);
 				}
@@ -1652,6 +1653,7 @@ function loadPage(href, force) {
 	}
 
 	if (cont) {
+		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(html) {
 				var htmlObject  = $(html);
@@ -1671,7 +1673,7 @@ function loadPage(href, force) {
 					$('#main').html(data);
 
 					myTitle = htmlTitle;
-					myHref  = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+					myHref  = cleanHeader(href);
 
 					pushState(myTitle, href);
 				} else {
@@ -1740,29 +1742,52 @@ function loadPageNoHeader(href, scroll, force) {
 	}
 
 	if (cont) {
+		$.ajaxQ.abortAll();
 		$.get(href)
 			.done(function(data) {
-				checkForLogout(data);
+				var htmlObject  = $(data);
+				var matches     = data.match(/<title>(.*?)<\/title>/);
 
-				$('#main').empty().hide();
-				$('div[class^="ui-"]').remove();
-				$('#main').html(data);
+				if (matches != null) {
+					checkForLogout(data);
 
-				var hrefParts = href.split('?');
-				pageName = basename(hrefParts[0]);
+					var htmlTitle   = matches[1];
+					var breadCrumbs = htmlObject.filter('#breadcrumbs').html();
+					var data        = htmlObject.filter('#main').html();
 
-				if (pageName != '') {
-					$('#menu').find('.pic').removeClass('selected');
-					$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+					$('#main').empty().hide();
+					$('title').text(htmlTitle);
+					$('#breadcrumbs').html(breadCrumbs);
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
 
-					if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
-						$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+					myTitle = htmlTitle;
+					myHref  = cleanHeader(href);
+
+					pushState(myTitle, href);
+				} else {
+					checkForLogout(data);
+
+					$('#main').empty().hide();
+					$('div[class^="ui-"]').remove();
+					$('#main').html(data);
+
+					var hrefParts = href.split('?');
+					pageName = basename(hrefParts[0]);
+
+					if (pageName != '') {
+						$('#menu').find('.pic').removeClass('selected');
+						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+
+						if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
+							$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');
+						}
 					}
+
+					applySkin();
+
+					pushState(myTitle, href);
 				}
-
-				applySkin();
-
-				pushState(myTitle, href);
 
 				if (isMobile.any() != null) {
 					window.scrollTo(0,1);
@@ -2013,6 +2038,7 @@ function setupSortable() {
 				'&header=false' +
 				sortAdd;
 
+			$.ajaxQ.abortAll();
 			$.get(url)
 				.done(function(data) {
 					checkForLogout(data);
@@ -2179,6 +2205,7 @@ function setupPageTimeout() {
 				/* fix coner case with tree refresh */
 				refreshPage = appendHeaderSuppression(refreshPage);
 
+				$.ajaxQ.abortAll();
 				$.get(refreshPage)
 					.done(function(data) {
 						checkForLogout(data);
