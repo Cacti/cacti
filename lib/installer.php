@@ -939,7 +939,7 @@ class Installer implements JsonSerializable {
 			if ($config['cacti_server_os'] == 'unix') {
 				$extensions = array_merge($extensions, array(array('name' => 'posix', 'installed' => false)));
 			} else {
-				$extensions = array_merge($extensions, array(array('name' => 'com_dotnot', 'installed' => false)));
+				$extensions = array_merge($extensions, array(array('name' => 'com_dotnet', 'installed' => false)));
 			}
 
 			usort($extensions, "Installer::sortModules");
