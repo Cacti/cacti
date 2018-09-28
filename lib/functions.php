@@ -1554,14 +1554,11 @@ function clean_up_path($path) {
    @arg $local_data_id - (int) the ID of the data source to get a title for
    @returns - the data source title */
 function get_data_source_title($local_data_id) {
-	$data = db_fetch_row_prepared('SELECT
-		data_local.host_id,
-		data_local.snmp_query_id,
-		data_local.snmp_index,
-		data_template_data.name
-		FROM (data_template_data, data_local)
-		WHERE data_template_data.local_data_id = data_local.id
-		AND data_local.id = ?',
+	$data = db_fetch_row_prepared('SELECT dl.host_id, dl.snmp_query_id, dl.snmp_index, dtd.name
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = dl.id
+		WHERE dl.id = ?',
 		array($local_data_id));
 
 	if (isset($data) && cacti_sizeof($data)) {
@@ -1572,7 +1569,7 @@ function get_data_source_title($local_data_id) {
 			return $data['name'];
 		}
 	} else {
-		return 'Missing Datasource '.$local_data_id;
+		return 'Missing Datasource ' . $local_data_id;
 	}
 }
 

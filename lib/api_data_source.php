@@ -255,12 +255,15 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		return;
 	}
 
-	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT
-		data_input_data.value FROM data_input_data
-		JOIN data_input_fields ON (data_input_data.data_input_field_id = data_input_fields.id)
-		JOIN data_template_data ON (data_template_data.id = data_input_data.data_template_data_id)
-		WHERE data_input_fields.type_code = 'output_type'
-		AND data_template_data.local_data_id = ?", array($data_local['id']));
+	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT did.value
+		FROM data_input_data AS did
+		INNER JOIN data_input_fields AS dif
+		ON did.data_input_field_id = dif.id
+		INNER JOIN data_template_data AS dtd
+		ON dtd.id = did.data_template_data_id
+		WHERE dif.type_code = 'output_type'
+		AND dtd.local_data_id = ?",
+		array($data_local['id']));
 
 	/* no snmp query graph id found */
 	if ($snmp_query_graph_id == 0) {
@@ -273,7 +276,8 @@ function api_reapply_suggested_data_source_title($local_data_id) {
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?
 		AND field_name = 'name'
-		ORDER BY sequence", array($snmp_query_graph_id, $data_local['data_template_id']));
+		ORDER BY sequence",
+		array($snmp_query_graph_id, $data_local['data_template_id']));
 
 	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
