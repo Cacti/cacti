@@ -85,12 +85,6 @@ switch (get_request_var('action')) {
 		bottom_footer();
 
 		break;
-	case 'graph_remove':
-		graph_remove();
-
-		header('Location: graphs.php?header=false');
-
-		break;
 	case 'ajax_graph_items':
 		get_ajax_graph_items();
 

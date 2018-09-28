@@ -356,22 +356,16 @@ function form_actions() {
 					case '1': /* leave graphs and data_sources in place, but disable the data sources */
 						api_data_source_disable_multi($data_sources_to_act_on);
 
-						api_plugin_hook_function('data_source_remove', $data_sources_to_act_on);
-
 						break;
 					case '2': /* delete graphs/data sources tied to this device */
 						api_data_source_remove_multi($data_sources_to_act_on);
 
 						api_graph_remove_multi($graphs_to_act_on);
 
-						api_plugin_hook_function('graphs_remove', $graphs_to_act_on);
-
 						break;
 				}
 
 				api_device_remove_multi($devices_to_act_on);
-
-				api_plugin_hook_function('device_remove', $devices_to_act_on);
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');

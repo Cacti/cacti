@@ -349,14 +349,14 @@ function form_actions() {
 							FROM data_template_rrd
 							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
+						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+
 						/* loop through each data source item */
 						if (cacti_sizeof($data_template_rrds) > 0) {
 							db_execute('DELETE FROM graph_templates_item
 								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 								AND local_graph_id > 0');
 						}
-
-						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
 
 						break;
 					case '3': /* delete all graphs tied to this data source */
@@ -373,14 +373,10 @@ function form_actions() {
 							api_graph_remove_multi($graphs);
 						}
 
-						api_plugin_hook_function('graphs_remove', $graphs);
-
 						break;
 				}
 
 				api_data_source_remove_multi($selected_items);
-
-				api_plugin_hook_function('data_source_remove', $selected_items);
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
 				get_filter_request_var('host_id');
 

@@ -41,6 +41,8 @@ function api_data_source_remove($local_data_id) {
 		return;
 	}
 
+	api_plugin_hook_function('data_source_remove', array($local_data_id));
+
 	$autoclean = read_config_option('rrd_autoclean');
 	$acmethod  = read_config_option('rrd_autoclean_method');
 
@@ -98,6 +100,8 @@ function api_data_source_remove_multi($local_data_ids) {
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
 	}
+
+	api_plugin_hook_function('data_source_remove', $local_data_ids);
 
 	$autoclean = read_config_option('rrd_autoclean');
 	$acmethod  = read_config_option('rrd_autoclean_method');

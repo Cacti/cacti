@@ -37,6 +37,8 @@ function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_d
 function api_device_remove($device_id) {
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($device_id));
 
+	api_plugin_hook_function('device_remove', array($device_id));
+
 	db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id));
@@ -60,6 +62,8 @@ function api_device_remove_multi($device_ids) {
 	$i = 0;
 
 	if (cacti_sizeof($device_ids)) {
+		api_plugin_hook_function('device_remove', $device_ids);
+
 		/* build the list */
 		foreach($device_ids as $device_id) {
 			if ($i == 0) {
