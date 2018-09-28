@@ -633,7 +633,6 @@ class Installer implements JsonSerializable {
 	 *         found with the value. */
 	private function setPaths($param_paths = array()) {
 		global $config;
-		log_install_debug('paths', "setPaths(): BACKTRACE: " . cacti_debug_backtrace('', false, false));
 		if (is_array($param_paths)) {
 			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . cacti_count($param_paths) . ')');
 
@@ -1128,7 +1127,7 @@ class Installer implements JsonSerializable {
 			if ($mode == Installer::MODE_POLLER || $mode == Installer::MODE_INSTALL) {
 				$db_mode = read_config_option('install_mode', true);
 				log_install_high('mode','getMode(): DB Install mode ' . clean_up_lines(var_export($db_mode, true)));
-				if ($db_mode !== false) {
+				if ($db_mode !== false && $db_mode !== null) {
 					$mode = $db_mode;
 				}
 			}
@@ -1185,7 +1184,6 @@ class Installer implements JsonSerializable {
 		}
 
 		log_install_debug('step', 'setStep(): ' . var_export($step, true));
-		log_install_debug('step', "setStep():" . cacti_debug_backtrace('', false, false, 1));
 
 		// Make current step the first if it is unknown
 		log_install_high('step', 'setStep(): stepError ' . clean_up_lines(var_export($this->stepError, true)) . ' < ' . clean_up_lines(var_export($step, true)));
@@ -2690,12 +2688,11 @@ class Installer implements JsonSerializable {
 			log_install_always('', 'Failed to find automation network, no changes were made');
 		}
 
-		$override = read_config_option('install_automation_override', true);
-		if (!empty($override)) {
+		if ($this->automationOverride) {
 			log_install_always('', 'Adding extra snmp settings for automation');
 
 			$snmp_options = db_fetch_assoc('select name, value from settings where name like \'install_snmp_option_%\'');
-			$snmp_id = db_fetch_cell('select id from automation_snmp limit 1');
+			$snmp_id = db_fetch_cell('select id from automation_snmp_items limit 1');
 
 			if ($snmp_id) {
 				log_install_always('', 'Selecting Automation Option Set ' . $snmp_id);
@@ -3039,6 +3036,12 @@ class Installer implements JsonSerializable {
 				log_install_always('', 'Failed to set PHP option ' . $option_name . ', is ' . $value . ' (should be ' . $option_value . ')');
 			}
 		}
+	}
+
+	public static function sortModules($a, $b) {
+		$name_a = isset($a['name']) ? $a['name'] : '';
+		$name_b = isset($b['name']) ? $b['name'] : '';
+		return strcasecmp($name_a, $name_b);
 	}
 
 	private static function disableInvalidPlugins() {
