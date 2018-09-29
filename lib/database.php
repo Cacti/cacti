@@ -201,7 +201,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	$sql = db_strip_control_chars($sql);
 
 	if (!empty($config['DEBUG_SQL_CMD'])) {
-		cacti_log('DEVEL: SQL ' . $execute_name . ': "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		db_echo_sql('db_' . $execute_name . ': "' . $sql . "\"\n");
 	}
 
 	$errors = 0;
@@ -212,6 +212,10 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 		$code = 0;
 		$en = '';
+
+		if (!empty($config['DEBUG_SQL_CMD'])) {
+			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
+		}
 
 		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
 		try {
@@ -226,6 +230,10 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			$errorinfo = array(1=>$code,2=>$ex->getMessage());
 		}
 		restore_error_handler();
+
+		if (!empty($config['DEBUG_SQL_CMD'])) {
+			db_echo_sql('db_' . $execute_name . ' Memory [ After]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
+		}
 
 		if ($code == 0) {
 			$code = $query->errorCode();
@@ -1314,7 +1322,5 @@ function db_check_password_length() {
 function db_echo_sql($line, $force = false) {
 	global $config;
 
-	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
-	}
+	file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 }
