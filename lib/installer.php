@@ -1282,7 +1282,7 @@ class Installer implements JsonSerializable {
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
 		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
-		$output .= Installer::sectionCode(__("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionCode(sprintf("mysql -u %s -p [new_database] < cacti.sql", $database_username, $database_default));
 		$output .= Installer::sectionNormal(__('You <b>MUST</b> then update "include/config.php" to point to the new database.'));
 		$output .= Installer::sectionNormal(__('NOTE: Your existing data will not be modified, nor will it or any history be available to the new install'));
 		return $output;
@@ -1292,19 +1292,19 @@ class Installer implements JsonSerializable {
 		global $config, $database_username, $database_default, $database_password;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__("You have created a new database, but have not yet imported the 'cacti.sql' file. At the command line, execute the following to continue:"));
-		$output .= Installer::sectionCode(__("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
+		$output .= Installer::sectionCode(sprintf("mysql -u %s -p %s < cacti.sql", $database_username, $database_default));
 		$output .= Installer::sectionNormal(__("This error may also be generated if the cacti database user does not have correct permissions on the Cacti database. Please ensure that the Cacti database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP, INDEX on the Cacti database."));
 		$output .= Installer::sectionNormal(__("You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant the Cacti user SELECT access to the mysql.time_zone_name table"));
 
 		if ($config['cacti_server_os'] == 'unix') {
 			$output .= Installer::sectionNormal(__("On Linux/UNIX, run the following as 'root' in a shell:"));
-			$output .= Installer::sectionCode(__("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"));
+			$output .= Installer::sectionCode(sprintf("mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p mysql"));
 		} else {
 			$output .= Installer::sectionNormal(__("On Windows, you must follow the instructions here <a target='_blank' href='https://dev.mysql.com/downloads/timezones.html'>Time zone description table</a>.  Once that is complete, you can issue the following command to grant the Cacti user access to the tables:"));
 		}
 
 		$output .= Installer::sectionNormal(__("Then run the following within MySQL as an administrator:"));
-		$output .= Installer::sectionCode(__("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
+		$output .= Installer::sectionCode(sprintf("mysql &gt; GRANT SELECT ON mysql.time_zone_name to '%s'@'localhost' IDENTIFIED BY '%s'", $database_username, $database_password));
 		return $output;
 	}
 
@@ -1999,7 +1999,7 @@ class Installer implements JsonSerializable {
 			if ($config['cacti_server_os'] == 'win32') {
 				$output .= Installer::sectionCode(__('%s should have MODIFY permission to the above directories', $running_user));
 			} else {
-				$output .= Installer::sectionCode(__('chown -R %s.%s %s/resource/', $running_user, $running_user, $config['base_path']));
+				$output .= Installer::sectionCode(sprintf('chown -R %s.%s %s/resource/', $running_user, $running_user, $config['base_path']));
 				$output .= Installer::sectionNormal(__('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.'));
 			}
 		} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
@@ -2174,7 +2174,13 @@ class Installer implements JsonSerializable {
 		} else {
 			$output .= Installer::sectionNormal(__('Your database default collaction does NOT appear to be UTF8 compliant'));
 			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched'));
-			$output .= Installer::sectionNormal(__('Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\'', $collation_value));
+			$output .= Installer::sectionNormal(__('Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
+			$output .= Installer::sectionNormal(__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:'));
+			$output .= Installer::sectionCode(
+				'[mysqld]<br>' .
+				'character-set-server=utf8mb4<br>' .
+				'collation-server=ubt8mb4_unicode_ci'
+			);
 		}
 
 		$output .= Installer::sectionTitle(__('Table Setup'));
