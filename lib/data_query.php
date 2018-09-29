@@ -148,14 +148,15 @@ function run_data_query($host_id, $snmp_query_id) {
 	$changed_ids = array();
 	if (sizeof($local_data)) {
 		foreach($local_data as $data_source) {
-			// Find current index
+			// See if the index is in the host cache
 			$current_index = db_fetch_cell_prepared('SELECT snmp_index
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
+				AND snmp_index = ?
 				AND field_name = ?
 				AND field_value = ?',
-				array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+				array($host_id, $snmp_query_id, $data_source['snmp_index'], $data_source['sort_field'], $data_source['query_index']));
 
 			if ($remap) {
 				$new_field_value = db_fetch_cell_prepared('SELECT field_value
@@ -183,7 +184,9 @@ function run_data_query($host_id, $snmp_query_id) {
 			}
 
 			if ($current_index != '') {
-				if ($current_index != $data_source['snmp_index']) {
+				// Non blank index found
+				// Check to see if the index changed
+				if ($current_index != $data_source['query_index']) {
 					db_execute_prepared('UPDATE data_local
 						SET snmp_index = ?
 						WHERE id = ?',
@@ -199,19 +202,58 @@ function run_data_query($host_id, $snmp_query_id) {
 					$changed_ids[] = $data_source['local_data_id'];
 				}
 			} elseif ($data_source['snmp_index'] != '') {
+				// Found a deleted index, masking off to prevent issues
 				db_execute_prepared('UPDATE data_local
 					SET snmp_index = ""
 					WHERE id = ?',
-					array($current_index, $data_source['local_data_id']));
+					array($data_source['local_data_id']));
 
 				db_execute_prepared('UPDATE graph_local
 					SET snmp_index = ""
 					WHERE host_id = ?
 					AND snmp_query_id = ?
 					AND snmp_index = ?',
-					array($current_index, $host_id, $snmp_query_id, $data_source['snmp_index']));
+					array($host_id, $snmp_query_id, $data_source['snmp_index']));
 
 				$changed_ids[] = $data_source['local_data_id'];
+			} else {
+				// Searching for previously unmapped index
+				$current_index = db_fetch_cell_prepared('SELECT snmp_index
+					FROM host_snmp_cache
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND field_name = ?
+					AND field_value = ?',
+					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+
+				if ($current_index != '') {
+					// Found previous index
+					db_execute_prepared('UPDATE data_local
+						SET snmp_index = ?
+						WHERE host_id = ?
+						AND snmp_query_id = ?
+						AND id = ?',
+						array($current_index, $host_id, $snmp_query_id, $data_source['local_data_id']));
+
+					$graph_ids = array_rekey(
+						db_fetch_assoc_prepared('SELECT gti.local_graph_id
+							FROM graph_templates_item AS gti
+							INNER JOIN data_template_rrd AS dtr
+							ON gti.task_item_id=dtr.id
+							WHERE dtr.local_data_id = ?',
+							array($data_source['local_data_id'])),
+						'local_graph_id', 'local_graph_id');
+
+					if (sizeof($graph_ids)) {
+						db_execute_prepared('UPDATE graph_local
+							SET snmp_index = ?
+							WHERE id IN (' . implode(', ', $graph_ids) . ')',
+							array($current_index));
+					}
+
+					$changed_ids[] = $data_source['local_data_id'];
+				}
+
 			}
 
 			if ($remap) {
