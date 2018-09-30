@@ -2239,7 +2239,7 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionCode(
 				'[mysqld]<br>' .
 				'character-set-server=utf8mb4<br>' .
-				'collation-server=ubt8mb4_unicode_ci'
+				'collation-server=utf8mb4_unicode_ci'
 			);
 		}
 
