@@ -29,7 +29,16 @@ then
 fi
 
 # update translation files
-echo "Updating Cacti language gettext language files"
+echo "Updating Core Cacti language gettext language file"
 
 cd ${BASE_PATH}
 ${XGETTEXT_BIN} -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot `find . -maxdepth 2 -name \*.php`
+
+# update translation files
+echo "Updating Each Specific Existing Language file with new data to translate"
+
+for file in `ls -1 locales/po/*.po`;do
+	echo "Updating $file from cacti.pot"
+	msgmerge --update $file locales/po/cacti.pot
+done
+
