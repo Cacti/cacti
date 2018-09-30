@@ -76,12 +76,16 @@ function update_data_source_title_cache_from_host($host_id) {
 /* update_data_source_title_cache - updates the title cache for a single data source
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
-	db_execute_prepared('UPDATE data_template_data
-		SET name_cache = ?
-		WHERE local_data_id = ?',
-		array(get_data_source_title($local_data_id), $local_data_id));
+	$data_source = get_data_source_title($local_data_id);
 
-	api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+	if (strstr($data_source, '|query_') === false && strstr($data_source, '|host_') === false) {
+		db_execute_prepared('UPDATE data_template_data
+			SET name_cache = ?
+			WHERE local_data_id = ?',
+			array($data_source, $local_data_id));
+
+		api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+	}
 }
 
 /* update_graph_title_cache_from_template - updates the title cache for all graphs
@@ -138,10 +142,14 @@ function update_graph_title_cache_from_host($host_id) {
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
-	db_execute_prepared('UPDATE graph_templates_graph
-		SET title_cache = ?
-		WHERE local_graph_id = ?',
-		array(get_graph_title($local_graph_id), $local_graph_id));
+	$graph_title = get_graph_title($local_graph_id);
+
+	if (strstr($graph_title, '|query_') === false && strstr($graph_title, '|host_') === false) {
+		db_execute_prepared('UPDATE graph_templates_graph
+			SET title_cache = ?
+			WHERE local_graph_id = ?',
+			array($graph_title, $local_graph_id));
+	}
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
