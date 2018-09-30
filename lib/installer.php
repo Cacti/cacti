@@ -1272,7 +1272,7 @@ class Installer implements JsonSerializable {
 
 	private function exitWithUnknownReason($reason) {
 		$output  = Installer::sectionTitleError();
-		$output .= Installer::sectionNormal(__('An unexpected reason was given for preventing this maintenance session.'));
+		$output .= Installer::sectionNormal(__('The Installer could not proceed due to an unexpected error.'));
 		$output .= Installer::sectionNormal(__('Please report this to the Cacti Group.'));
 		$output .= Installer::sectionCode(__('Unknown Reason: %s', $reason));
 		return $output;
@@ -1885,7 +1885,7 @@ class Installer implements JsonSerializable {
 
 				$output .= Installer::sectionSubTitle(__('Additional Steps After Installation'), 'poller_vars');
 
-				$output .= Installer::sectionNormal(__('It essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the \'Test Connection\' when editing the Remote Data Collector.'), 'config_remote_db');
+				$output .= Installer::sectionNormal(__('It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the \'Test Connection\' when editing the Remote Data Collector.'), 'config_remote_db');
 
 				$this->stepData = array('Sections' => $sections);
 				$this->buttonNext->Enabled = ($this->mode != Installer::MODE_POLLER);

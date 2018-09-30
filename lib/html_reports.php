@@ -436,8 +436,7 @@ $fields_reports_item_edit = array(
 		'friendly_name' => __('Graph Timespan'),
 		'method' => 'drop_array',
 		'default' => GT_LAST_DAY,
-		'description' => __("Graph End Time is always set to Cacti's schedule.") . '<br>' .
-			__('Graph Start Time equals Graph End Time minus given timespan'),
+		'description' => __('The Graph End time will be set to the scheduled report send time.  So, if you wish the end time on the various Graphs to be midnight, ensure you send the report at midnight.  The Graph Start time will be the End Time minus the Graph Timespan.'),
 		'array' => $graph_timespans,
 		'value' => '|arg1:timespan|'
 	),

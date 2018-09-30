@@ -977,7 +977,7 @@ $settings = array(
 			),
 		'concurrent_processes' => array(
 			'friendly_name' => __('Default Data Collector Processes'),
-			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: This setting maintained in the Data Collector starting with Cacti 1.2+.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
@@ -1003,7 +1003,7 @@ $settings = array(
 			),
 		'remote_agent_timeout' => array(
 			'friendly_name' => __('Remote Agent Timeout'),
-			'description' => __('The amount of time, in seconds, that the web server will wait on the Remote Agent will wait before abandoning the request.  On systems that are connected to the Remote Agent over high latency connections, you should consider a higer default.'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
 			'method' => 'drop_array',
 			'default' => '5',
 			'array' => array(5, 10, 15, 20)
