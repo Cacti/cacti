@@ -1355,7 +1355,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 		}
 	}
 
-	query_debug_timer_offset('data_query', __('Update data source data query cache complete'));
+	query_debug_timer_offset('data_query', __('Re-Indexing Data Query complete'));
 }
 
 /* update_graph_data_query_cache - updates the local data query cache for a particular
