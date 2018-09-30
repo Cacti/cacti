@@ -303,13 +303,13 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_debug_backtrace('SQL');
+					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . $errorinfo[2];
 				} else {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
-					cacti_debug_backtrace('SQL');
+					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
 				}
@@ -1182,7 +1182,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 		$error_message = "SQL Save on table '$table_name': Table does not exist, unable to save!";
 		raise_message('sql_save_table', $error_message, MESSAGE_LEVEL_ERROR);
 		cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
-		cacti_debug_backtrace('SQL');
+		cacti_debug_backtrace('SQL', false, true, 0, 1);
 		return false;
 	}
 
@@ -1195,7 +1195,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			$error_message = "SQL Save on table '$table_name': Column '$key' does not exist, unable to save!";
 			raise_message('sql_save_key', $error_message, MESSAGE_LEVEL_ERROR);
 			cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
-			cacti_debug_backtrace('SQL');
+			cacti_debug_backtrace('SQL', false, true, 0, 1);
 			return false;
 		}
 
