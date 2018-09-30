@@ -1170,7 +1170,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				$issue_log_message = true;
 
 				/* update the recovery date only if the recovery count is 1 */
-				if ($ping_recovery_count == $ping_recovery_count) {
+				if ($hosts[$host_id]['status_event_count'] == $ping_recovery_count) {
 					$hosts[$host_id]['status_rec_date'] = date('Y-m-d H:i:s');
 				}
 
