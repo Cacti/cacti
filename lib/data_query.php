@@ -146,6 +146,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		array($snmp_query_id, $host_id));
 
 	$changed_ids = array();
+	$removed_ids = array();
 	if (sizeof($local_data)) {
 		foreach($local_data as $data_source) {
 			// See if the index is in the host cache
@@ -215,7 +216,7 @@ function run_data_query($host_id, $snmp_query_id) {
 					AND snmp_index = ?',
 					array($host_id, $snmp_query_id, $data_source['snmp_index']));
 
-				$changed_ids[] = $data_source['local_data_id'];
+				$removed_ids[] = $data_source['local_data_id'];
 			} else {
 				// Searching for previously unmapped index
 				$current_index = db_fetch_cell_prepared('SELECT snmp_index
@@ -252,6 +253,15 @@ function run_data_query($host_id, $snmp_query_id) {
 					}
 
 					$changed_ids[] = $data_source['local_data_id'];
+				} else {
+					$poller_items = db_fetch_cell_prepared('SELECT COUNT(*)
+						FROM poller_item
+						WHERE local_data_id = ?',
+						array($data_source['local_data_id']));
+
+					if ($poller_items > 0) {
+						$removed_ids[] = $data_source['local_data_id'];
+					}
 				}
 
 			}
@@ -284,6 +294,24 @@ function run_data_query($host_id, $snmp_query_id) {
 		query_debug_timer_offset('data_query', __('Update Poller Cache for Query complete'));
 	} else {
 		query_debug_timer_offset('data_query', __('No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population'));
+	}
+
+	if (sizeof($removed_ids)) {
+		$poller_ids = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT poller_id
+				FROM poller_item
+				WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')'),
+			'poller_id', 'poller_id'
+		);
+
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				api_data_source_cache_crc_update($poller_id);
+			}
+		}
+
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
 	}
 
 	if ($config['poller_id'] == 1) {
