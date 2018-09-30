@@ -134,14 +134,15 @@ if ($audit) {
 		$input_ws = array();
 	}
 
+	$pushes = array();
+
 	if (cacti_sizeof($input_db)) {
 		// format data for easier consumption
 		$input = array();
 		foreach ($input_db as $value) {
 			if ($push && isset($input_ws[$value['hash']])) {
 				if ($value['input_string'] != $input_ws[$value['hash']]) {
-					print 'NOTE: Pushing Out Data Input Method: ' . $value['name'] . ' (' . $value['id'] . ')' . PHP_EOL;
-					push_out_data_input_method($value['id']);
+					$pushes[$value['id']] = $value['name'];
 				}
 			}
 			$input[$value['hash']] = $value['input_string'];
@@ -149,6 +150,13 @@ if ($audit) {
 
 		file_put_contents($config['input_whitelist'], json_encode($input));
 		print 'SUCCESS: Data Input Whitelist file \'' . $config['input_whitelist'] . '\' successfully updated.' . PHP_EOL;
+
+		if (sizeof($pushes)) {
+			foreach($pushes as $data_input_method => $name) {
+				print 'NOTE: Pushing Out Data Input Method: ' . $name . ' (' . $data_input_method . ')' . PHP_EOL;
+				push_out_data_input_method($data_input_method);
+			}
+		}
 	} else {
 		print 'ERROR: No Data Input records found.' . PHP_EOL;
 		exit(1);
