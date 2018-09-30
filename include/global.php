@@ -45,7 +45,7 @@ $cacti_version = trim($cacti_version);
 
 /* define cacti version */
 define('CACTI_VERSION', $cacti_version);
-define('CACTI_VERSION_BETA', 0);
+define('CACTI_VERSION_BETA', 1);
 
 /* Default database settings*/
 $database_type     = 'mysql';
