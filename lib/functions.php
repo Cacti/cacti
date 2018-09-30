@@ -161,7 +161,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 	}
 
 	if ($user == -1) {
-		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false), false, 'WARNING:');
+		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
 	} else {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
@@ -381,7 +381,7 @@ function read_config_option($config_name, $force = false) {
 	}
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false) . "\n", FILE_APPEND);
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
 	}
 
 	// Do we have a value already stored in the array, or
@@ -747,6 +747,7 @@ function cacti_log_file() {
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
+	$config['log_path'] = $logfile;
 	return $logfile;
 }
 
@@ -3708,14 +3709,18 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 1) {
+function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
 	global $config;
 
-	$skip = $skip > 0 ? $skip : 1;
+	$skip = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
 	$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
-	array_shift($callers);
+	while ($skip > 0) {
+		array_shift($callers);
+		$skip--;
+	}
+
 	$s='';
 	foreach ($callers as $c) {
 		if (isset($c['line'])) {
@@ -4058,7 +4063,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_ERROR:
 		case E_PARSE:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
+			cacti_debug_backtrace('PHP ERROR PARSE', false, true, 0, 1);
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
@@ -4068,27 +4073,27 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 			break;
 		case E_COMPILE_WARNING:
 		case E_CORE_WARNING:
 		case E_USER_WARNING:
 		case E_WARNING:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR WARNING');
+			cacti_debug_backtrace('PHP ERROR WARNING', false, true, 0, 1);
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR NOTICE');
+			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 			break;
 		case E_STRICT:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR STRICT');
+			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
 			break;
 		default:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 	}
 
 	return false;
@@ -4118,7 +4123,7 @@ function CactiShutdownHandler () {
 				' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
 
 			cacti_log($message, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);

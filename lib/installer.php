@@ -1555,25 +1555,85 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitleEnd();
 
+		$output .= Installer::sectionSubTitle(__('PHP - Recommendations'), 'php_recommends');
+
+		$rec_version    = '5.4.0';
+		$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
+		$rec_execute_m  = 5;
+
+		$rec_memory	= $rec_memory_mb * 1024 * 1024;
+		$rec_execute    = $rec_execute_m * 60;
+		$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
+		$execute_time   = ini_get('max_execution_time');
+
+		$recommends = array(
+			array(
+				'name'        => 'version',
+				'value'       => $rec_version,
+				'current'     => PHP_VERSION,
+				'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+				'description' => __('PHP %s is the mimimum version', $rec_version),
+			),
+			array(
+				'name'        => 'memory_limit',
+				'value'       => $rec_memory_mb . 'M',
+				'current'     => $memory_limit . 'M',
+				'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+				'description' => __('A minimum of %s MB memory limit', $rec_memory_mb),
+			),
+			array(
+				'name'        => 'max_execution_time',
+				'value'       => $rec_execute,
+				'current'     => $execute_time,
+				'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+				'description' => __('A minimum of %s m execution time', $rec_execute_m),
+			),
+		);
+
+		ob_start();
+
+		html_start_box(__('PHP Recommendations'), '100%', false, '4', '', false);
+		html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
+
+		$status = DB_STATUS_SUCCESS;
+		foreach ($recommends as $recommend) {
+			if ($recommend['status'] == DB_STATUS_SUCCESS) {
+				$status_font = 'green';
+				$status_text = __('Passed');
+			} else {
+				$status_font = 'red';
+				$status_text = __('Warning');
+				$status = DB_STATUS_WARNING;
+			}
+
+			form_alternate_row('php_' . $recommend['name'],true);
+			form_selectable_cell($recommend['name'], '');
+			form_selectable_cell($recommend['current'], '');
+			form_selectable_cell('>= ' . $recommend['value'], '');
+			form_selectable_cell("<font color='$status_text'>$status_text</font>", '');
+			form_selectable_cell($recommend['description'], '');
+			form_end_row();
+		}
+
+		html_end_box(false);
+
+		$output .= Installer::sectionNormal(ob_get_contents());
+		ob_clean();
+
+		$output .= Installer::sectionSubTitleEnd();
+		$enabled['php_recommends'] = $status;
+
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Required)'), 'php_modules');
 		$output .= Installer::sectionNormal(__('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.'));
 
 		$output .= Installer::sectionNormal(__('The following PHP extensions are mandatory, and MUST be installed before continuing your Cacti install.'));
 
-		ob_start();
+		ob_clean();
 
 		html_start_box(__('Required PHP Modules'), '100%', false, '3', '', false);
 		html_header(array(__('Name'), __('Required'), __('Installed')));
 
-		$enabled['php_modules'] = version_compare(PHP_VERSION, '5.4.0', '<') ? DB_STATUS_ERROR : DB_STATUS_SUCCESS;
-		form_alternate_row('phpline',true);
-		form_selectable_cell(__('PHP Version'), '');
-		form_selectable_cell('5.4.0+', '');
-		form_selectable_cell((version_compare(PHP_VERSION, '5.4.0', '<') ? "<font color=red>" . PHP_VERSION . "</font>" : "<font color=green>" . PHP_VERSION . "</font>"), '');
-		form_end_row();
-
-		$output .= Installer::sectionNormal(ob_get_contents());
-		ob_clean();
+		$enabled['php_modules'] = DB_STATUS_SUCCESS;
 
 		foreach ($this->modules as $id =>$e) {
 			form_alternate_row('line' . $id);
