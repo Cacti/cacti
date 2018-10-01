@@ -127,6 +127,7 @@ Cacti CHANGELOG
 -feature#1806: Control low level debug routines via config.php
 -feature#1819: Removing Graphs using CLI
 -feature#1969: Allow linking to graph previews of a host by it's external id
+-feature#2006: Data Source Profile RRAs: Aggregation Level and Default Timespan for a Decade long graph
 -feature: New Install/Upgrade user permission to limit access to being able to upgrade
 -feature: Make Graph and Data Source suggested naming more efficient
 -feature: Make tree editing responive
