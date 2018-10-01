@@ -310,6 +310,7 @@ function form_actions() {
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			} elseif (get_request_var('drp_action') == '4') { // full sync
+				session_write_close(); // Save&Close the session so the Interface is still responsive 
 				foreach($selected_items as $item) {
 					$poller = db_fetch_row_prepared('SELECT *
 						FROM poller
@@ -331,7 +332,7 @@ function form_actions() {
 							array($item));
 					}
 				}
-
+				session_start(); // Start the session again
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			}
 		}
