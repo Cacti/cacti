@@ -2219,7 +2219,7 @@ function draw_navigation_text($type = 'url') {
 	global $config, $navigation;
 
 	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
-	$navigation      =  api_plugin_hook_function('draw_navigation_text', $navigation);
+	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
 
 	if (!isempty_request_var('action')) {

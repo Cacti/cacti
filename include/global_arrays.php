@@ -880,12 +880,16 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'utilities.php'  => __('System Utilities'),
 			'data_debug.php' => __('Data Debug'),
 			'links.php'      => __('External Links'),
+			),
+		__('Support') => array(
+			'EXTERNAL::docs/index.php'           => __('Documentation'),
+			'EXTERNAL::https://forums.cacti.net' => __('Users Community'),
 			)
 	);
 } else {
 	$menu = array(
 		__('Management') => array(
-			'host.php'             => __('Devices')
+			'host.php' => __('Devices')
 			),
 		__('Data Collection') => array(
 			'pollers.php' => __('Data Collectors')
@@ -894,7 +898,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'settings.php' => __('Settings')
 			),
 		__('Utilities') => array(
-			'utilities.php'        => __('System Utilities')
+			'utilities.php' => __('System Utilities')
 			)
 	);
 }
@@ -909,7 +913,8 @@ $menu_glyphs = array(
 	__('Import/Export') => 'fa fa-exchange-alt',
 	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
-	__('External Links') => 'fa fa-external-link'
+	__('External Links') => 'fa fa-external-link',
+	__('Support') => 'fa fa-question-circle'
 );
 
 if ((isset($_SESSION['sess_user_id']))) {
