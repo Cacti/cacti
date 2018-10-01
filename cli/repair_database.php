@@ -31,9 +31,10 @@ array_shift($parms);
 
 global $debug;
 
-$debug = false;
-$form  = '';
-$force = false;
+$debug   = false;
+$form    = '';
+$force   = false;
+$dynamic = false;
 
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
@@ -51,6 +52,9 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--force':
 				$force = true;
+				break;
+			case '--dynamic':
+				$dynamic = true;
 				break;
 			case '-form':
 			case '--form':
@@ -84,6 +88,12 @@ if (cacti_sizeof($tables)) {
 		print "Repairing Table -> '" . $table['Tables_in_' . $database_default] . "'";
 		$status = db_execute('REPAIR TABLE ' . $table['Tables_in_' . $database_default] . $form);
 		print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+
+		if ($dynamic) {
+			print "Changing Table Row Format to Dynamic -> '" . $table['Tables_in_' . $database_default] . "'";
+			$status = db_execute('ALTER TABLE ' . $table['Tables_in_' . $database_default] . ' ROW_FORMAT=DYNAMIC');
+			print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+		}
 	}
 }
 
@@ -112,7 +122,7 @@ if ($rows > 0) {
 /* remove invalid CDEF Items from the Database, validated */
 $rows = db_fetch_cell("SELECT count(*)
 	FROM cdef_items
-	LEFT JOIN cdef 
+	LEFT JOIN cdef
 	ON cdef_items.cdef_id=cdef.id
 	WHERE cdef.id IS NULL");
 
@@ -208,10 +218,11 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: repair_database.php [--debug] [--force] [--form]\n\n";
+	print "\nusage: repair_database.php [--dynamic] [--debug] [--force] [--form]\n\n";
 	print "A utility designed to repair the Cacti database if damaged, and optionally repair any\n";
 	print "corruption found in the Cacti databases various Templates.\n\n";
 	print "Optional:\n";
+	print "    --dynamic - Convert a table to Dynamic row format if available\n";
 	print "    --form    - Force rebuilding the indexes from the database creation syntax.\n";
 	print "    --force   - Remove Invalid Template records from the database.\n";
 	print "    --debug   - Display verbose output during execution.\n\n";
