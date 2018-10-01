@@ -614,7 +614,8 @@ $aggregation_levels = array(
 	14400   => __('%d Hours', 4),
 	21600   => __('%d Hours', 6),
 	43200   => __('%d Hours', 12),
-	86400   => __('Daily')
+	86400   => __('%d Day', 1),
+	604800  => __('%d Week', 1)
 );
 
 $sampling_intervals = array(
