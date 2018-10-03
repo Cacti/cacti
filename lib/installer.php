@@ -1124,7 +1124,7 @@ class Installer implements JsonSerializable {
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
 				$set = false;
 				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
-				$use = ($enabled || $param_all);
+				$use = ($set || $param_all);
 				$value = $use ? $name : '';
 				log_install_high('tables',"setTables(): Use: $use, Set: $set, All: $param_all, key: install_table_$name = " . $value);
 				set_config_option("install_table_$name", $value);
@@ -2281,8 +2281,7 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your databse default collation appears to be UTF8 compliant'));
 		} else {
 			$output .= Installer::sectionNormal(__('Your database default collaction does NOT appear to be UTF8 compliant'));
-			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched'));
-			$output .= Installer::sectionNormal(__('Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
+			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
 			$output .= Installer::sectionNormal(__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:'));
 			$output .= Installer::sectionCode(
 				'[mysqld]<br>' .
@@ -2296,7 +2295,6 @@ class Installer implements JsonSerializable {
 		$tables = install_setup_get_tables();
 
 		if (cacti_sizeof($tables)) {
-			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
 			$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
 
 			$show_warning=false;
@@ -2321,13 +2319,14 @@ class Installer implements JsonSerializable {
 				form_end_row();
 			}
 			html_end_box(false);
-			$output .= Installer::sectionNormal(ob_get_contents());
 
 			if ($show_warning) {
-				$output .= Installer::sectionTitleError(__('WARNING'));
-				$output .= Installer::sectionNormal(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion.'));
+				$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
 				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
 			}
+
+			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
+			$output .= Installer::sectionNormal(ob_get_contents());
 
 			ob_end_clean();
 		} else {
