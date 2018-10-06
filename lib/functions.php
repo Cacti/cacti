@@ -841,12 +841,12 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* Log to Logfile */
+	$message = clean_up_lines($prefix . $string) . "\n";
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
 		/* echo the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
-			$message = clean_up_lines($prefix . $string) . "\n";
 			@fwrite($fp, $message);
 			fclose($fp);
 		}
@@ -887,7 +887,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* print output to standard out if required */
 	if ($output == true && isset($_SERVER['argv'][0])) {
-		print $message;
+		print $message . "\n";
 	}
 
 	$database_log = $last_log;
