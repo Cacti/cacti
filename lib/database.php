@@ -708,7 +708,12 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_table_exists($table, $log = true, $db_conn = false) {
-	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
+	preg_match("/([`]{0,1}(?<database>[\w_]+)[`]{0,1}\.){0,1}[`]{0,1}(?<table>[\w_]+)[`]{0,1}/", $table, $matches);
+	if ($matches !== false && array_key_exists('table', $matches)) {
+		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
+		return (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
+	}
+	return false;
 }
 
 /* db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message

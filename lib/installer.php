@@ -156,6 +156,7 @@ class Installer implements JsonSerializable {
 		);
 
 		$this->errors        = array();
+		$this->templates     = array();
 		$this->eula          = read_config_option('install_eula', true);
 		$this->cronInterval  = read_config_option('cron_interval', true);
 		$this->locales       = get_installed_locales();
@@ -330,11 +331,12 @@ class Installer implements JsonSerializable {
 			)
 		);
 
-		$this->templates          = $this->getTemplates();
 		$this->tables             = $this->getTables();
 		$this->paths              = install_file_paths();
 		$this->permissions        = $this->getPermissions();
 		$this->modules            = $this->getModules();
+
+		$this->setTemplates($this->getTemplates());
 		$this->setProfile($this->getProfile());
 		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
@@ -359,7 +361,7 @@ class Installer implements JsonSerializable {
 	 * @param  - value to be set if it can be mapped to True or False
 	 * @field  - variable reference to be set
 	 * @option - name of the option */
-	private function setTrueFalse($param, &$field, $option) {
+	private function setTrueFalse($param, &$field, $option = '', $save = true) {
 		$value = null;
 		if ($param === true || $param === 'true' || $param === 'on' || $param === 1 || $param === '1') {
 			$value = true;
@@ -368,8 +370,10 @@ class Installer implements JsonSerializable {
 		}
 
 		if ($value !== null) {
-			set_config_option('install_' . $option, $param);
 			$field = $value;
+			if ($save) {
+				set_config_option('install_' . $option, $param);
+			}
 		}
 
 		$result = $value !== null;
@@ -1014,6 +1018,15 @@ class Installer implements JsonSerializable {
 			log_install_medium('templates',"setTemplates(): Updating templates");
 			log_install_debug('templates',"setTemplates(): Parameter data:" . clean_up_lines(var_export($param_templates, true)));
 			log_install_debug('templates',"setTemplates(): Template data:" . clean_up_lines(var_export($known_templates, true)));
+
+			$param_all = false;
+			if (array_key_exists('all', $param_templates)) {
+				$this->setTrueFalse($param_templates['all'], $param_all, 'param_all', false);
+				unset($param_templates['all']);
+				log_install_debug('templates',"setTemplates(): All flag:" . clean_up_lines(var_export($param_all, true)));
+			}
+
+			$count = 0;
 			foreach ($param_templates as $name => $enabled) {
 				$template = false;
 
@@ -1030,14 +1043,28 @@ class Installer implements JsonSerializable {
 				if ($template === false) {
 					$this->addError(Installer::STEP_TEMPLATE_INSTALL, 'Templates', $name, __('No matching template exists'));
 				} else {
+					$set = false;
 					$key = str_replace(".", "_", $template['filename']);
-					$value = ($enabled ? $template['filename'] : '');
-					log_install_high('templates',"setTemplates(): Using key: install_template_$key = " . $value);
-					if ($enabled) {
-						set_config_option("install_template_$key", $value);
-					}
+					$this->setTrueFalse($enabled, $set, $key, false);
+					$use = ($set) || ($param_all);
+					$value = ($use) ? $template['filename'] : '';
+					log_install_high('templates',"setTemplates(): Use: $use, Set: $set, All: $param_all, key: install_template_$key = " . $value);
+					set_config_option("install_template_$key", $value);
+					$this->templates[$name] = $use;
 				}
 			}
+
+			$all = true;
+			if (array_key_exists('all', $this->templates)) {
+				unset($this->templates['all']);
+			}
+
+			foreach ($this->templates as $use) {
+				if (!$use) {
+					$all = false;
+				}
+			}
+			$this->templates['all'] = $all;
 
 			set_config_option('install_has_templates', true);
 		}
@@ -1083,17 +1110,38 @@ class Installer implements JsonSerializable {
 			$known_tables = install_setup_get_tables();
 			log_install_medium('tables',"setTables(): Updating Tables");
 			log_install_debug('tables',"setTables(): Parameter data:" . clean_up_lines(var_export($param_tables, true)));
+
+			$param_all = false;
+			if (array_key_exists('all', $param_tables)) {
+				$this->setTrueFalse($param_tables['all'], $param_all, 'allTables', false);
+				unset($param_tables['all']);
+			}
+
 			foreach ($known_tables as $known) {
 				$name = $known['Name'];
 				$key = 'chk_table_' . $name;
 				log_install_high('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
-				if (!empty($param_tables[$key]) || !empty($param_tables["all"])) {
-					$table = $param_tables[$key];
-					log_install_high('tables',"setTables(): install_table_$name = $name");
-					set_config_option("install_table_$name", $name);
+				$set = false;
+				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
+				$use = ($set || $param_all);
+				$value = $use ? $name : '';
+				log_install_high('tables',"setTables(): Use: $use, Set: $set, All: $param_all, key: install_table_$name = " . $value);
+				set_config_option("install_table_$name", $value);
+				$this->tables[$key] = $use;
+			}
+
+			$all = true;
+			if (array_key_exists('all', $this->tables)) {
+				unset($this->tables['all']);
+			}
+
+			foreach ($this->tables as $use) {
+				if (!$use) {
+					$all = false;
 				}
 			}
+			$this->tables['all'] = $all;
 
 			set_config_option('install_has_tables', true);
 		}
@@ -2233,8 +2281,7 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('Your databse default collation appears to be UTF8 compliant'));
 		} else {
 			$output .= Installer::sectionNormal(__('Your database default collaction does NOT appear to be UTF8 compliant'));
-			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched'));
-			$output .= Installer::sectionNormal(__('Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
+			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
 			$output .= Installer::sectionNormal(__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:'));
 			$output .= Installer::sectionCode(
 				'[mysqld]<br>' .
@@ -2248,7 +2295,6 @@ class Installer implements JsonSerializable {
 		$tables = install_setup_get_tables();
 
 		if (cacti_sizeof($tables)) {
-			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
 			$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
 
 			$show_warning=false;
@@ -2273,13 +2319,14 @@ class Installer implements JsonSerializable {
 				form_end_row();
 			}
 			html_end_box(false);
-			$output .= Installer::sectionNormal(ob_get_contents());
 
 			if ($show_warning) {
-				$output .= Installer::sectionTitleError(__('WARNING'));
-				$output .= Installer::sectionNormal(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion.'));
+				$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
 				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
 			}
+
+			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
+			$output .= Installer::sectionNormal(ob_get_contents());
 
 			ob_end_clean();
 		} else {
