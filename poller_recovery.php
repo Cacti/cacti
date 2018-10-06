@@ -273,10 +273,13 @@ if ($run) {
 				}
 
 				/* remove the recovery records */
-				if ($purge_time == 0) {
-					db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
-				} else {
-					db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+				if (is_object($local_db_cnn_id)) {
+					// Only go through this if the local database is reachable
+					if ($purge_time == 0) {
+						db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
+					} else {
+						db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+					}
 				}
 			}
 
