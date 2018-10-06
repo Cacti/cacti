@@ -884,7 +884,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Support') => array(
 			'EXTERNAL::docs/index.php'           => __('Documentation'),
-			'EXTERNAL::https://forums.cacti.net' => __('Users Community'),
+			'EXTERNAL::https://forums.cacti.net' => __('User Community'),
 			)
 	);
 } else {
