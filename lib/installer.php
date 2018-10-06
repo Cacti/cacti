@@ -1833,6 +1833,7 @@ class Installer implements JsonSerializable {
 					'error_file' => 0,
 					'error_poller' => 0,
 					'poller_vars' => 0,
+					'poller_steps' => 0,
 				);
 
 				$this->buttonNext->Enabled = true;
@@ -1842,6 +1843,7 @@ class Installer implements JsonSerializable {
 						$selectedPoller = ' selected';
 						$sections['connection_local'] = 1;
 						$sections['connection_remote'] = 1;
+						$sections['poller_steps'] = 1;
 						$sections['error_file'] = !$this->isConfigurationWritable();
 						$sections['error_poller'] = !$this->isRemoteDatabaseGood();
 
@@ -1931,9 +1933,11 @@ class Installer implements JsonSerializable {
 
 				$output .= Installer::sectionSubTitleEnd();
 
-				$output .= Installer::sectionSubTitle(__('Additional Steps After Installation'), 'poller_vars');
+				$output .= Installer::sectionSubTitle(__('Additional Steps After Installation'), 'poller_steps');
 
 				$output .= Installer::sectionNormal(__('It is essential that the Central Cacti server can communicate via MySQL to each remote Cacti database server.  Once the install is complete, you must edit the Remote Data Collector and ensure the settings are correct.  You can verify using the \'Test Connection\' when editing the Remote Data Collector.'), 'config_remote_db');
+
+				$output .= Installer::sectionSubTitleEnd();
 
 				$this->stepData = array('Sections' => $sections);
 				$this->buttonNext->Enabled = ($this->mode != Installer::MODE_POLLER);
