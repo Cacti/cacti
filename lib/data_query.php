@@ -284,9 +284,10 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
 
+	update_reindex_cache($host_id, $snmp_query_id);
+
 	/* update the auto reindex cache */
 	if (sizeof($changed_ids)) {
-		update_reindex_cache($host_id, $snmp_query_id);
 		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete'));
 
 		/* update the poller cache */
