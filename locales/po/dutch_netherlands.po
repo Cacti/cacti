@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-09-30 11:12-0400\n"
+"POT-Creation-Date: 2018-10-06 13:38-0400\n"
 "PO-Revision-Date: 2018-04-23 11:38+0200\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.0.7\n"
 
-#: about.php:29 include/global_arrays.php:2301 include/global_session.php:148
+#: about.php:29 include/global_arrays.php:2315 include/global_session.php:148
 msgid "About Cacti"
 msgstr "Over Cacti"
 
@@ -82,7 +82,7 @@ msgstr "Licentie"
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti is gelicentieerd onder de GNU GPL:"
 
-#: about.php:75 lib/installer.php:1458
+#: about.php:75 lib/installer.php:1506
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -117,7 +117,7 @@ msgstr ""
 #: data_sources.php:997 data_templates.php:33 data_templates.php:641
 #: gprint_presets.php:28 graph_templates.php:33 graph_templates.php:441
 #: graphs.php:46 host.php:39 host_templates.php:30 host_templates.php:500
-#: host_templates.php:557 include/global_arrays.php:1394
+#: host_templates.php:557 include/global_arrays.php:1408
 #: include/global_settings.php:228 lib/api_automation.php:1279
 #: lib/api_automation.php:1341 lib/api_automation.php:1405 lib/html.php:1082
 #: lib/html_form.php:1172 lib/html_reports.php:1402 links.php:28
@@ -183,7 +183,7 @@ msgstr ""
 #: lib/clog_webapi.php:198 lib/html_form.php:1171 lib/html_form.php:1183
 #: lib/html_form.php:1194 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
-#: pollers.php:375 pollers.php:384 pollers.php:393 pollers.php:402
+#: pollers.php:376 pollers.php:385 pollers.php:394 pollers.php:403
 #: sites.php:317 tree.php:643 tree.php:652 tree.php:661 user_admin.php:340
 #: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:424
 #: user_domains.php:234 user_domains.php:243 user_domains.php:252
@@ -217,7 +217,7 @@ msgstr "Annuleer"
 #: include/global_session.php:177 lib/clog_webapi.php:199
 #: lib/html_reports.php:754 lib/html_utility.php:214 links.php:197
 #: links.php:206 links.php:215 managers.php:1005 managers.php:1063
-#: pollers.php:375 pollers.php:384 pollers.php:393 pollers.php:402
+#: pollers.php:376 pollers.php:385 pollers.php:394 pollers.php:403
 #: sites.php:317 tree.php:643 tree.php:652 tree.php:661 user_admin.php:340
 #: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:424
 #: user_domains.php:234 user_domains.php:243 user_domains.php:252
@@ -399,7 +399,7 @@ msgstr "Details"
 msgid "Items"
 msgstr "Items"
 
-#: aggregate_graphs.php:616 aggregate_graphs.php:622 lib/html.php:1716
+#: aggregate_graphs.php:616 aggregate_graphs.php:622 lib/html.php:1751
 #: lib/html_reports.php:1152
 msgid "Preview"
 msgstr "Voorbeeld"
@@ -475,7 +475,7 @@ msgstr "Overeenkomende grafieken"
 #: lib/html_graph.php:198 lib/html_graph.php:422 lib/html_reports.php:1487
 #: lib/html_tree.php:124 lib/html_tree.php:934 lib/html_tree.php:1207
 #: links.php:311 managers.php:150 managers.php:494 managers.php:726
-#: plugins.php:366 pollers.php:622 rrdcleaner.php:475 settings.php:373
+#: plugins.php:366 pollers.php:623 rrdcleaner.php:475 settings.php:373
 #: settings.php:392 settings.php:441 sites.php:425 tree.php:804 tree.php:839
 #: tree.php:874 tree.php:1887 user_admin.php:2214 user_admin.php:2552
 #: user_admin.php:2659 user_admin.php:2745 user_admin.php:2848
@@ -491,9 +491,9 @@ msgstr "Zoeken"
 #: aggregate_graphs.php:1084 aggregate_graphs.php:1181
 #: aggregate_graphs.php:1434 color_templates.php:561 graph_view.php:450
 #: graph_view.php:639 graph_view.php:686 graphs.php:1849 graphs.php:1950
-#: host.php:1649 include/global_arrays.php:830 include/global_arrays.php:1013
-#: include/global_arrays.php:1717 lib/api_automation.php:281 lib/html.php:1445
-#: lib/html.php:1447 lib/html.php:1525 lib/html_graph.php:204
+#: host.php:1649 include/global_arrays.php:839 include/global_arrays.php:1027
+#: include/global_arrays.php:1731 lib/api_automation.php:281 lib/html.php:1480
+#: lib/html.php:1482 lib/html.php:1560 lib/html_graph.php:204
 #: lib/html_tree.php:985 lib/html_tree.php:1359 tree.php:783 tree.php:1973
 #: user_admin.php:983 user_admin.php:1235 user_admin.php:2580
 #: user_group_admin.php:814 user_group_admin.php:967 user_group_admin.php:2191
@@ -514,7 +514,7 @@ msgstr "Grafieken"
 #: include/global_form.php:212 lib/api_automation.php:184
 #: lib/api_automation.php:479 lib/api_automation.php:709
 #: lib/api_automation.php:1064 lib/html_reports.php:1507 links.php:321
-#: managers.php:160 managers.php:504 plugins.php:390 pollers.php:632
+#: managers.php:160 managers.php:504 plugins.php:390 pollers.php:633
 #: rrdcleaner.php:501 sites.php:435 tree.php:1897 user_admin.php:2224
 #: user_admin.php:2584 user_admin.php:2669 user_admin.php:2773
 #: user_admin.php:2858 user_admin.php:2943 user_admin.php:3028
@@ -542,10 +542,10 @@ msgstr "Onderdeel van aggregatie"
 #: graphs.php:1834 graphs_new.php:367 host.php:1575 host_templates.php:747
 #: lib/api_automation.php:196 lib/api_automation.php:460
 #: lib/api_automation.php:721 lib/api_automation.php:1076
-#: lib/clog_webapi.php:418 lib/html.php:1267 lib/html_filter.php:81
+#: lib/clog_webapi.php:418 lib/html.php:1302 lib/html_filter.php:81
 #: lib/html_graph.php:185 lib/html_reports.php:1518 lib/html_tree.php:972
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
-#: plugins.php:402 pollers.php:644 sites.php:447 tree.php:1909
+#: plugins.php:402 pollers.php:645 sites.php:447 tree.php:1909
 #: user_admin.php:2236 user_admin.php:2602 user_admin.php:2687
 #: user_admin.php:2791 user_admin.php:2876 user_admin.php:2961
 #: user_admin.php:3046
@@ -559,7 +559,7 @@ msgstr "Ga"
 #: data_templates.php:888 gprint_presets.php:291 graph_templates.php:658
 #: graph_view.php:592 graphs.php:1834 graphs_new.php:367 host.php:1575
 #: host_templates.php:747 lib/html_graph.php:185 managers.php:172
-#: managers.php:516 managers.php:746 plugins.php:402 pollers.php:644
+#: managers.php:516 managers.php:746 plugins.php:402 pollers.php:645
 #: sites.php:447 tree.php:1909 user_admin.php:2236 user_admin.php:2602
 #: user_admin.php:2687 user_admin.php:2791 user_admin.php:2876
 #: user_admin.php:2961 user_admin.php:3046 user_domains.php:675
@@ -585,7 +585,7 @@ msgstr "Stel in/vernieuw filters"
 #: lib/clog_webapi.php:419 lib/html_filter.php:86 lib/html_graph.php:186
 #: lib/html_graph.php:302 lib/html_reports.php:1519 lib/html_tree.php:973
 #: lib/html_tree.php:1083 links.php:332 managers.php:173 managers.php:517
-#: managers.php:747 plugins.php:403 pollers.php:645 sites.php:448 tree.php:1910
+#: managers.php:747 plugins.php:403 pollers.php:646 sites.php:448 tree.php:1910
 #: user_admin.php:2237 user_admin.php:2603 user_admin.php:2688
 #: user_admin.php:2792 user_admin.php:2877 user_admin.php:2962
 #: user_admin.php:3047 user_domains.php:676
@@ -599,7 +599,7 @@ msgstr "Herstel"
 #: graph_view.php:593 graphs.php:1835 graphs_new.php:368 host.php:1576
 #: host_templates.php:748 lib/html_graph.php:186 lib/html_tree.php:973
 #: managers.php:173 managers.php:517 managers.php:747 plugins.php:403
-#: pollers.php:645 sites.php:448 tree.php:1910 user_admin.php:2237
+#: pollers.php:646 sites.php:448 tree.php:1910 user_admin.php:2237
 #: user_admin.php:2603 user_admin.php:2688 user_admin.php:2792
 #: user_admin.php:2877 user_admin.php:2962 user_admin.php:3047
 #: user_domains.php:676 user_group_admin.php:1861 user_group_admin.php:2214
@@ -620,7 +620,7 @@ msgstr "Grafiektitel"
 #: automation_graph_rules.php:901 automation_tree_rules.php:928
 #: data_debug.php:243 data_queries.php:1362 data_sources.php:1495
 #: data_templates.php:998 graph_templates.php:766 graphs.php:1966 host.php:1643
-#: host_templates.php:836 lib/api_automation.php:280 pollers.php:718
+#: host_templates.php:836 lib/api_automation.php:280 pollers.php:719
 #: sites.php:521 tree.php:1963 user_admin.php:991 user_admin.php:1090
 #: user_admin.php:1235 user_admin.php:1383 user_admin.php:1524
 #: user_group_admin.php:676 user_group_admin.php:822 user_group_admin.php:967
@@ -644,7 +644,7 @@ msgstr "Grootte"
 #: data_templates.php:1019 gprint_presets.php:414 graph_templates.php:787
 #: host_templates.php:855 include/global_settings.php:427
 #: include/global_settings.php:726 include/global_settings.php:1433
-#: lib/installer.php:1642 lib/installer.php:1676 tree.php:2001 tree.php:2002
+#: lib/installer.php:1690 lib/installer.php:1724 tree.php:2001 tree.php:2002
 #: user_admin.php:2305 user_domains.php:765 user_group_admin.php:1928
 #: vdef.php:900
 msgid "No"
@@ -657,8 +657,8 @@ msgstr "Nee"
 #: data_sources.php:1539 data_sources.php:1540 data_templates.php:1019
 #: gprint_presets.php:414 graph_templates.php:787 host_templates.php:855
 #: include/global_settings.php:428 include/global_settings.php:725
-#: include/global_settings.php:1432 lib/installer.php:1641
-#: lib/installer.php:1642 lib/installer.php:1675 lib/installer.php:1676
+#: include/global_settings.php:1432 lib/installer.php:1689
+#: lib/installer.php:1690 lib/installer.php:1723 lib/installer.php:1724
 #: tree.php:2001 tree.php:2002 user_admin.php:2303 user_domains.php:761
 #: user_domains.php:765 user_group_admin.php:1926 vdef.php:900
 msgid "Yes"
@@ -669,7 +669,7 @@ msgid "No Graphs Found"
 msgstr "Geen grafieken gevonden"
 
 #: aggregate_graphs.php:1397 aggregate_graphs.php:1505
-#: include/global_arrays.php:2427
+#: include/global_arrays.php:2441
 msgid "Aggregate Graphs"
 msgstr "Geaggregeerde grafieken"
 
@@ -690,8 +690,8 @@ msgstr "Template"
 #: host.php:1543 host.php:1560 host.php:1595 lib/api_automation.php:151
 #: lib/api_automation.php:169 lib/api_automation.php:428
 #: lib/api_automation.php:445 lib/api_automation.php:1031
-#: lib/api_automation.php:1049 lib/html.php:1790 lib/html.php:1811
-#: lib/html.php:1845 lib/html_reports.php:1497 managers.php:483
+#: lib/api_automation.php:1049 lib/html.php:1825 lib/html.php:1846
+#: lib/html.php:1880 lib/html_reports.php:1497 managers.php:483
 #: managers.php:736 user_admin.php:2562 user_admin.php:2755
 #: user_group_admin.php:2173 user_group_admin.php:2281 utilities.php:690
 #: utilities.php:1391 utilities.php:1673 utilities.php:1718 utilities.php:2395
@@ -707,8 +707,8 @@ msgstr "Alle"
 #: graphs.php:1454 graphs.php:1463 graphs.php:1814 graphs_items.php:331
 #: graphs_items.php:443 host.php:1147 host.php:1158 host.php:1526 host.php:1561
 #: include/global_arrays.php:429 include/global_arrays.php:487
-#: include/global_arrays.php:570 include/global_arrays.php:713
-#: include/global_arrays.php:736 include/global_arrays.php:1478
+#: include/global_arrays.php:570 include/global_arrays.php:722
+#: include/global_arrays.php:745 include/global_arrays.php:1492
 #: include/global_form.php:544 include/global_form.php:850
 #: include/global_form.php:858 include/global_form.php:866
 #: include/global_form.php:904 include/global_form.php:911
@@ -720,8 +720,8 @@ msgstr "Alle"
 #: include/global_settings.php:509 include/global_settings.php:1041
 #: include/global_settings.php:1505 lib/api_automation.php:152
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:584 lib/api_automation.php:1032 lib/html.php:1791
-#: lib/html.php:1809 lib/html.php:1846 lib/html_form.php:316
+#: lib/api_automation.php:584 lib/api_automation.php:1032 lib/html.php:1826
+#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:316
 #: lib/html_graph.php:386 lib/html_reports.php:347 lib/html_reports.php:399
 #: lib/html_reports.php:411 lib/html_reports.php:420 lib/html_reports.php:430
 #: lib/html_tree.php:1171 settings.php:366 settings.php:385 settings.php:411
@@ -779,14 +779,14 @@ msgid "Aggregate Template [new]"
 msgstr "Aggregeer template [nieuw]"
 
 #: aggregate_templates.php:535 aggregate_templates.php:634
-#: include/global_arrays.php:2409
+#: include/global_arrays.php:2423
 msgid "Aggregate Templates"
 msgstr "Aggregeer template"
 
 #: aggregate_templates.php:548 automation_templates.php:399
 #: automation_templates.php:482 color_templates.php:562
-#: include/global_arrays.php:839 include/global_arrays.php:898
-#: lib/installer.php:2195 user_admin.php:2854 user_group_admin.php:2380
+#: include/global_arrays.php:848 include/global_arrays.php:911
+#: lib/installer.php:2247 user_admin.php:2854 user_group_admin.php:2380
 msgid "Templates"
 msgstr "Templates"
 
@@ -822,8 +822,8 @@ msgstr "Verwijderbaar"
 msgid "Graphs Using"
 msgstr "Grafiek gebruikt"
 
-#: aggregate_templates.php:646 graph_view.php:692 include/global_arrays.php:799
-#: include/global_arrays.php:1140 include/global_form.php:1351
+#: aggregate_templates.php:646 graph_view.php:692 include/global_arrays.php:808
+#: include/global_arrays.php:1154 include/global_form.php:1351
 #: include/global_form.php:1575 lib/html_reports.php:416 tree.php:1636
 msgid "Graph Template"
 msgstr "Grafiektemplate"
@@ -992,11 +992,11 @@ msgid "Enter your Username and Password below"
 msgstr "Voer uw gebruikersnaam en wachtwoord in"
 
 #: auth_login.php:691 auth_login.php:694 include/global_settings.php:1339
-#: lib/functions.php:3478
+#: lib/functions.php:3591
 msgid "Username"
 msgstr "Gebruikersnaam"
 
-#: auth_login.php:699 include/global_form.php:1459 lib/functions.php:3479
+#: auth_login.php:699 include/global_form.php:1459 lib/functions.php:3592
 msgid "Password"
 msgstr "Wachtwoord"
 
@@ -1005,7 +1005,7 @@ msgstr "Wachtwoord"
 msgid "Local"
 msgstr "Lokaal"
 
-#: auth_login.php:715 include/global_arrays.php:724 lib/auth.php:375
+#: auth_login.php:715 include/global_arrays.php:733 lib/auth.php:375
 msgid "LDAP"
 msgstr "LDAP"
 
@@ -1033,19 +1033,19 @@ msgstr "Gebruikersaccount uitgeschakeld"
 msgid "User Account Details"
 msgstr "Details gebruikersaccount"
 
-#: auth_profile.php:230 include/global_arrays.php:707
+#: auth_profile.php:230 include/global_arrays.php:716
 #: include/global_session.php:141 include/global_settings.php:2079
-#: lib/html.php:1676 lib/html.php:1698
+#: lib/html.php:1711 lib/html.php:1733
 msgid "Tree View"
 msgstr "Boomstructuur"
 
-#: auth_profile.php:234 include/global_arrays.php:708
-#: include/global_session.php:142 lib/html.php:1683 lib/html.php:1707
+#: auth_profile.php:234 include/global_arrays.php:717
+#: include/global_session.php:142 lib/html.php:1718 lib/html.php:1742
 msgid "List View"
 msgstr "Lijstweergave"
 
-#: auth_profile.php:238 include/global_arrays.php:709
-#: include/global_session.php:143 lib/html.php:1690
+#: auth_profile.php:238 include/global_arrays.php:718
+#: include/global_session.php:143 lib/html.php:1725
 msgid "Preview View"
 msgstr "Voorbeeldweergave"
 
@@ -1159,10 +1159,10 @@ msgid "Added to Cacti"
 msgstr "Toegevoegd aan Cacti"
 
 #: automation_devices.php:106 automation_devices.php:108 data_sources.php:859
-#: graph_view.php:692 graphs.php:1459 include/global_arrays.php:795
-#: include/global_arrays.php:840 include/global_arrays.php:1594
-#: lib/api_automation.php:424 lib/functions.php:3473 lib/html.php:1786
-#: lib/html.php:1816 lib/html_reports.php:406 utilities.php:1524
+#: graph_view.php:692 graphs.php:1459 include/global_arrays.php:804
+#: include/global_arrays.php:849 include/global_arrays.php:1608
+#: lib/api_automation.php:424 lib/functions.php:3586 lib/html.php:1821
+#: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1524
 msgid "Device"
 msgstr "Apparaat"
 
@@ -1175,7 +1175,7 @@ msgid "Click 'Continue' to add the following Discovered device(s)."
 msgstr ""
 "Klik op 'Volgende' om de volgende gedetecteerde appara(a)t(en) toe te voegen."
 
-#: automation_devices.php:183 pollers.php:708
+#: automation_devices.php:183 pollers.php:709
 msgid "Pollers"
 msgstr "Pollers"
 
@@ -1193,11 +1193,11 @@ msgid "Add Device(s)"
 msgstr "Appara(a)t(en) toevoegen"
 
 #: automation_devices.php:240 automation_devices.php:530 host.php:1512
-#: host.php:1606 host.php:1706 include/global_arrays.php:827
-#: include/global_arrays.php:880 include/global_arrays.php:2007
+#: host.php:1606 host.php:1706 include/global_arrays.php:836
+#: include/global_arrays.php:893 include/global_arrays.php:2021
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:475 lib/api_automation.php:558
-#: lib/api_automation.php:1163 pollers.php:724 sites.php:522 tree.php:782
+#: lib/api_automation.php:1163 pollers.php:725 sites.php:522 tree.php:782
 #: tree.php:1972 user_admin.php:1227 user_admin.php:2769
 #: user_group_admin.php:959 user_group_admin.php:2295 utilities.php:297
 msgid "Devices"
@@ -1227,7 +1227,7 @@ msgstr "Contactgegevens"
 #: automation_devices.php:254 include/global_form.php:1094
 #: include/global_form.php:1130 include/global_form.php:1315
 #: include/global_form.php:1654 lib/api_automation.php:276
-#: lib/api_automation.php:1170 lib/installer.php:1596 lib/installer.php:2196
+#: lib/api_automation.php:1170 lib/installer.php:1644 lib/installer.php:2248
 #: managers.php:216 user_admin.php:1090 user_admin.php:1235
 #: user_group_admin.php:967 user_group_admin.php:1914
 msgid "Description"
@@ -1251,8 +1251,8 @@ msgstr "SNMP"
 #: data_templates.php:1003 host.php:782 host.php:881 host.php:1591
 #: host.php:1661 lib/api_automation.php:165 lib/api_automation.php:278
 #: lib/api_automation.php:568 lib/api_automation.php:1045
-#: lib/api_automation.php:1173 lib/html_reports.php:1493 lib/installer.php:1596
-#: managers.php:218 plugins.php:372 plugins.php:475 pollers.php:720
+#: lib/api_automation.php:1173 lib/html_reports.php:1493 lib/installer.php:1644
+#: managers.php:218 plugins.php:372 plugins.php:475 pollers.php:721
 #: user_admin.php:1235 user_group_admin.php:967
 msgid "Status"
 msgstr "Status"
@@ -1302,7 +1302,7 @@ msgstr "Ontdekte apparaten verwijderen"
 #: automation_devices.php:644 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: lib/html.php:1049 pollers.php:767 user_admin.php:2298 utilities.php:443
+#: lib/html.php:1049 pollers.php:768 user_admin.php:2298 utilities.php:443
 #: utilities.php:825 utilities.php:2139 utilities.php:2236 utilities.php:2244
 #: utilities.php:2247 utilities.php:2250 utilities.php:2256 utilities.php:2485
 msgid "N/A"
@@ -1311,13 +1311,13 @@ msgstr "N/B"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:32 data_templates.php:34 graph_templates.php:34 graphs.php:66
-#: host_templates.php:31 include/global_arrays.php:1391 vdef.php:30
+#: host_templates.php:31 include/global_arrays.php:1405 vdef.php:30
 msgid "Duplicate"
 msgstr "Dupliceer"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:38 host.php:40
-#: include/global_arrays.php:1392 include/global_settings.php:1295 links.php:29
+#: include/global_arrays.php:1406 include/global_settings.php:1295 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:31
 #: user_admin.php:30 user_domains.php:31 user_domains.php:410
 #: user_group_admin.php:32
@@ -1326,7 +1326,7 @@ msgstr "Inschakelen"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1393 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1407 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:30 user_admin.php:31 user_domains.php:30
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1414,13 +1414,13 @@ msgid "Graph Creation Criteria"
 msgstr "Criteria voor het maken van een grafiek"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
-#: automation_graph_rules.php:891 include/global_arrays.php:850
-#: include/global_arrays.php:2463
+#: automation_graph_rules.php:891 include/global_arrays.php:859
+#: include/global_arrays.php:2477
 msgid "Graph Rules"
 msgstr "Grafiekregels"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902
-#: graphs.php:1960 include/global_arrays.php:1143 include/global_form.php:1585
+#: graphs.php:1960 include/global_arrays.php:1157 include/global_form.php:1585
 #: include/global_form.php:2101
 msgid "Data Query"
 msgstr "Data query"
@@ -1429,7 +1429,7 @@ msgstr "Data query"
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:813 automation_tree_rules.php:933
 #: automation_tree_rules.php:951 data_sources.php:1335 host.php:1596
-#: include/global_arrays.php:758 include/global_form.php:1467
+#: include/global_arrays.php:767 include/global_form.php:1467
 #: include/global_settings.php:363 lib/api_automation.php:170
 #: lib/api_automation.php:1050 lib/html_reports.php:1498
 #: lib/html_reports.php:1590 lib/html_reports.php:1601
@@ -1444,8 +1444,8 @@ msgstr "Ingeschakeld"
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:814
 #: automation_tree_rules.php:951 data_sources.php:1336 data_templates.php:1023
-#: host.php:1597 include/global_arrays.php:757 include/global_arrays.php:1319
-#: include/global_arrays.php:1602 include/global_session.php:203
+#: host.php:1597 include/global_arrays.php:766 include/global_arrays.php:1333
+#: include/global_arrays.php:1616 include/global_session.php:203
 #: include/global_settings.php:362 include/global_settings.php:1169
 #: include/global_settings.php:1183 include/global_settings.php:1195
 #: include/global_settings.php:1220 include/global_settings.php:1234
@@ -1552,17 +1552,17 @@ msgid "Manual"
 msgstr "Handmatig"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:617 include/global_arrays.php:1616
+#: include/global_arrays.php:1630
 msgid "Daily"
 msgstr "Dagelijks"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1617
+#: include/global_arrays.php:1631
 msgid "Weekly"
 msgstr "Wekelijks"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1618
+#: include/global_arrays.php:1632
 msgid "Monthly"
 msgstr "Maandelijks"
 
@@ -1596,8 +1596,8 @@ msgstr "Algemene instellingen"
 #: include/global_form.php:1287 include/global_form.php:1307
 #: include/global_form.php:1373 include/global_form.php:1401
 #: include/global_form.php:1995 include/global_form.php:2093
-#: include/global_form.php:2138 lib/installer.php:1596 lib/installer.php:1634
-#: lib/installer.php:1670 lib/installer.php:2196 lib/installer.php:2257
+#: include/global_form.php:2138 lib/installer.php:1644 lib/installer.php:1682
+#: lib/installer.php:1718 lib/installer.php:2248 lib/installer.php:2307
 #: lib/vdef.php:74 managers.php:562 pollers.php:55 sites.php:40
 #: user_admin.php:1090 user_domains.php:325 utilities.php:503
 #: utilities.php:2465
@@ -1700,9 +1700,9 @@ msgstr "%d Thread"
 #: automation_networks.php:507 automation_networks.php:508
 #: automation_networks.php:509 automation_networks.php:510
 #: automation_networks.php:511 automation_networks.php:512
-#: automation_networks.php:513 include/global_arrays.php:690
-#: include/global_arrays.php:691 include/global_arrays.php:692
-#: include/global_arrays.php:693 include/global_arrays.php:694
+#: automation_networks.php:513 include/global_arrays.php:699
+#: include/global_arrays.php:700 include/global_arrays.php:701
+#: include/global_arrays.php:702 include/global_arrays.php:703
 #, php-format
 msgid "%d Threads"
 msgstr "%d Threads"
@@ -1716,7 +1716,7 @@ msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr "Na de opgegeven draaitijd zal de scanopdracht worden gestopt."
 
 #: automation_networks.php:523 automation_networks.php:1207
-#: include/global_arrays.php:642
+#: include/global_arrays.php:643
 #, php-format
 msgid "%d Minute"
 msgstr "%d Minuut"
@@ -1726,16 +1726,16 @@ msgstr "%d Minuut"
 #: automation_networks.php:1208 automation_networks.php:1209
 #: data_sources.php:1126 include/global_arrays.php:607
 #: include/global_arrays.php:608 include/global_arrays.php:609
-#: include/global_arrays.php:610 include/global_arrays.php:643
-#: include/global_arrays.php:644 include/global_arrays.php:645
-#: include/global_arrays.php:646 include/global_arrays.php:647
-#: include/global_arrays.php:648 include/global_arrays.php:992
-#: include/global_arrays.php:993 include/global_arrays.php:1326
-#: include/global_arrays.php:1330 include/global_arrays.php:1338
-#: include/global_arrays.php:1339 include/global_arrays.php:1361
-#: include/global_arrays.php:1362 include/global_arrays.php:1363
-#: include/global_arrays.php:1364 include/global_arrays.php:1365
-#: include/global_arrays.php:1376 include/global_settings.php:1236
+#: include/global_arrays.php:610 include/global_arrays.php:644
+#: include/global_arrays.php:645 include/global_arrays.php:646
+#: include/global_arrays.php:647 include/global_arrays.php:648
+#: include/global_arrays.php:649 include/global_arrays.php:1006
+#: include/global_arrays.php:1007 include/global_arrays.php:1340
+#: include/global_arrays.php:1344 include/global_arrays.php:1352
+#: include/global_arrays.php:1353 include/global_arrays.php:1375
+#: include/global_arrays.php:1376 include/global_arrays.php:1377
+#: include/global_arrays.php:1378 include/global_arrays.php:1379
+#: include/global_arrays.php:1390 include/global_settings.php:1236
 #: include/global_settings.php:1237 include/global_settings.php:1238
 #: include/global_settings.php:1239 include/global_settings.php:1240
 #: include/global_settings.php:2006
@@ -1743,8 +1743,8 @@ msgstr "%d Minuut"
 msgid "%d Minutes"
 msgstr "%d Minuten"
 
-#: automation_networks.php:528 include/global_arrays.php:649
-#: include/global_arrays.php:659 include/global_arrays.php:1230
+#: automation_networks.php:528 include/global_arrays.php:650
+#: include/global_arrays.php:660 include/global_arrays.php:1244
 #, php-format
 msgid "%d Hour"
 msgstr "%d Uur"
@@ -1753,18 +1753,18 @@ msgstr "%d Uur"
 #: automation_networks.php:531 data_source_profiles.php:770
 #: include/global_arrays.php:612 include/global_arrays.php:613
 #: include/global_arrays.php:614 include/global_arrays.php:615
-#: include/global_arrays.php:616 include/global_arrays.php:650
-#: include/global_arrays.php:651 include/global_arrays.php:652
-#: include/global_arrays.php:653 include/global_arrays.php:660
-#: include/global_arrays.php:661 include/global_arrays.php:662
-#: include/global_arrays.php:663 include/global_arrays.php:1231
-#: include/global_arrays.php:1232 include/global_arrays.php:1233
-#: include/global_arrays.php:1234 include/global_arrays.php:1278
-#: include/global_arrays.php:1279 include/global_arrays.php:1280
-#: include/global_arrays.php:1281 include/global_arrays.php:1282
-#: include/global_arrays.php:1299 include/global_arrays.php:1300
-#: include/global_arrays.php:1301 include/global_arrays.php:1302
-#: include/global_arrays.php:1303 include/global_settings.php:1242
+#: include/global_arrays.php:616 include/global_arrays.php:651
+#: include/global_arrays.php:652 include/global_arrays.php:653
+#: include/global_arrays.php:654 include/global_arrays.php:661
+#: include/global_arrays.php:662 include/global_arrays.php:663
+#: include/global_arrays.php:664 include/global_arrays.php:1245
+#: include/global_arrays.php:1246 include/global_arrays.php:1247
+#: include/global_arrays.php:1248 include/global_arrays.php:1292
+#: include/global_arrays.php:1293 include/global_arrays.php:1294
+#: include/global_arrays.php:1295 include/global_arrays.php:1296
+#: include/global_arrays.php:1313 include/global_arrays.php:1314
+#: include/global_arrays.php:1315 include/global_arrays.php:1316
+#: include/global_arrays.php:1317 include/global_settings.php:1242
 #: include/global_settings.php:1243 include/global_settings.php:1244
 #: include/global_settings.php:1245
 #, php-format
@@ -1894,37 +1894,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "Welke dag(en) van de week moet dit netwerk worden gescant."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1658
+#: include/global_arrays.php:1672
 msgid "Sunday"
 msgstr "Zondag"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1659
+#: include/global_arrays.php:1673
 msgid "Monday"
 msgstr "Maandag"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1660
+#: include/global_arrays.php:1674
 msgid "Tuesday"
 msgstr "Dinsdag"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1661
+#: include/global_arrays.php:1675
 msgid "Wednesday"
 msgstr "Woensdag"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1662
+#: include/global_arrays.php:1676
 msgid "Thursday"
 msgstr "Donderdag"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1663
+#: include/global_arrays.php:1677
 msgid "Friday"
 msgstr "Vrijdag"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1664
+#: include/global_arrays.php:1678
 msgid "Saturday"
 msgstr "Zaterdag"
 
@@ -1936,51 +1936,51 @@ msgstr "Maanden per jaar"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "Welke maand(en) van het jaar moet dit netwerk worden gescant."
 
-#: automation_networks.php:654 include/global_arrays.php:1628
+#: automation_networks.php:654 include/global_arrays.php:1642
 msgid "January"
 msgstr "Januari"
 
-#: automation_networks.php:655 include/global_arrays.php:1629
+#: automation_networks.php:655 include/global_arrays.php:1643
 msgid "February"
 msgstr "Februari"
 
-#: automation_networks.php:656 include/global_arrays.php:1630
+#: automation_networks.php:656 include/global_arrays.php:1644
 msgid "March"
 msgstr "Maart"
 
-#: automation_networks.php:657 include/global_arrays.php:1631
+#: automation_networks.php:657 include/global_arrays.php:1645
 msgid "April"
 msgstr "April"
 
-#: automation_networks.php:658 include/global_arrays.php:1632
+#: automation_networks.php:658 include/global_arrays.php:1646
 msgid "May"
 msgstr "Mei"
 
-#: automation_networks.php:659 include/global_arrays.php:1633
+#: automation_networks.php:659 include/global_arrays.php:1647
 msgid "June"
 msgstr "Juni"
 
-#: automation_networks.php:660 include/global_arrays.php:1634
+#: automation_networks.php:660 include/global_arrays.php:1648
 msgid "July"
 msgstr "Juli"
 
-#: automation_networks.php:661 include/global_arrays.php:1635
+#: automation_networks.php:661 include/global_arrays.php:1649
 msgid "August"
 msgstr "Augustus"
 
-#: automation_networks.php:662 include/global_arrays.php:1636
+#: automation_networks.php:662 include/global_arrays.php:1650
 msgid "September"
 msgstr "September"
 
-#: automation_networks.php:663 include/global_arrays.php:1637
+#: automation_networks.php:663 include/global_arrays.php:1651
 msgid "October"
 msgstr "Oktober"
 
-#: automation_networks.php:664 include/global_arrays.php:1638
+#: automation_networks.php:664 include/global_arrays.php:1652
 msgid "November"
 msgstr "November"
 
-#: automation_networks.php:665 include/global_arrays.php:1639
+#: automation_networks.php:665 include/global_arrays.php:1653
 msgid "December"
 msgstr "December"
 
@@ -2024,7 +2024,7 @@ msgstr "Dag(en) per week"
 msgid "Reachability Settings"
 msgstr "Bereikbaarheidsinstellingen"
 
-#: automation_networks.php:714 include/global_arrays.php:852
+#: automation_networks.php:714 include/global_arrays.php:861
 #: include/global_form.php:1197 include/global_form.php:1686
 msgid "SNMP Options"
 msgstr "SNMP opties"
@@ -2121,7 +2121,7 @@ msgid "Network Filters"
 msgstr "Netwerkfilters"
 
 #: automation_networks.php:1058 automation_networks.php:1182
-#: include/global_arrays.php:847
+#: include/global_arrays.php:856
 msgid "Networks"
 msgstr "Netwerken"
 
@@ -2190,16 +2190,16 @@ msgstr "Vernieuwen"
 #: automation_networks.php:1203 automation_networks.php:1204
 #: automation_networks.php:1205 automation_networks.php:1206
 #: data_sources.php:1122 include/global_arrays.php:605
-#: include/global_arrays.php:639 include/global_arrays.php:640
-#: include/global_arrays.php:641 include/global_arrays.php:987
-#: include/global_arrays.php:988 include/global_arrays.php:989
-#: include/global_arrays.php:990 include/global_arrays.php:1320
-#: include/global_arrays.php:1321 include/global_arrays.php:1322
-#: include/global_arrays.php:1323 include/global_arrays.php:1324
-#: include/global_arrays.php:1357 include/global_arrays.php:1358
-#: include/global_arrays.php:1370 include/global_arrays.php:1371
-#: include/global_arrays.php:1372 include/global_arrays.php:1373
-#: include/global_arrays.php:1374 include/global_settings.php:2002
+#: include/global_arrays.php:640 include/global_arrays.php:641
+#: include/global_arrays.php:642 include/global_arrays.php:1001
+#: include/global_arrays.php:1002 include/global_arrays.php:1003
+#: include/global_arrays.php:1004 include/global_arrays.php:1334
+#: include/global_arrays.php:1335 include/global_arrays.php:1336
+#: include/global_arrays.php:1337 include/global_arrays.php:1338
+#: include/global_arrays.php:1371 include/global_arrays.php:1372
+#: include/global_arrays.php:1384 include/global_arrays.php:1385
+#: include/global_arrays.php:1386 include/global_arrays.php:1387
+#: include/global_arrays.php:1388 include/global_settings.php:2002
 #: include/global_settings.php:2003 include/global_settings.php:2004
 #, php-format
 msgid "%d Seconds"
@@ -2304,7 +2304,7 @@ msgstr "Versie"
 msgid "Community"
 msgstr "Community"
 
-#: automation_snmp.php:507 lib/functions.php:3474
+#: automation_snmp.php:507 lib/functions.php:3587
 msgid "Port"
 msgstr "Poort"
 
@@ -2428,7 +2428,7 @@ msgstr ""
 msgid "Delete Automation Template(s)"
 msgstr "Verwijder automatiseringtemplate(s)"
 
-#: automation_templates.php:273 include/global_arrays.php:1144
+#: automation_templates.php:273 include/global_arrays.php:1158
 #: include/global_form.php:1172 include/global_form.php:1570
 #: lib/html_reports.php:396
 msgid "Device Template"
@@ -2570,7 +2570,7 @@ msgstr "Criteria voor het aanmaken van een menuitem"
 msgid "Change Leaf Type"
 msgstr "Wijzig grafiektemplate"
 
-#: automation_tree_rules.php:697 lib/installer.php:3254 utilities.php:2134
+#: automation_tree_rules.php:697 lib/installer.php:3305 utilities.php:2134
 #: utilities.php:2135 utilities.php:2138 utilities.php:2139
 msgid "WARNING:"
 msgstr "WAARSCHUWING:"
@@ -2593,8 +2593,8 @@ msgid "Are you sure you wish to continue?"
 msgstr "Weet u zeker dat u de installatie ongedaan wilt maken?"
 
 #: automation_tree_rules.php:793 automation_tree_rules.php:818
-#: automation_tree_rules.php:918 include/global_arrays.php:851
-#: include/global_arrays.php:2487
+#: automation_tree_rules.php:918 include/global_arrays.php:860
+#: include/global_arrays.php:2501
 msgid "Tree Rules"
 msgstr "Boomstructuur"
 
@@ -2707,7 +2707,7 @@ msgstr "CDEF [wijzig: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [nieuw]"
 
-#: cdef.php:603 include/global_arrays.php:1857
+#: cdef.php:603 include/global_arrays.php:1871
 msgid "CDEF Items"
 msgstr "CDEF Items"
 
@@ -2724,8 +2724,8 @@ msgstr "Item #%d"
 msgid "Delete CDEF Item"
 msgstr "Verwijder CDEF item"
 
-#: cdef.php:742 cdef.php:757 cdef.php:873 include/global_arrays.php:856
-#: include/global_arrays.php:1839
+#: cdef.php:742 cdef.php:757 cdef.php:873 include/global_arrays.php:865
+#: include/global_arrays.php:1853
 msgid "CDEFs"
 msgstr "CDEF's"
 
@@ -2847,8 +2847,8 @@ msgstr "Kleuren [wijzig: %s]"
 msgid "Colors [new]"
 msgstr "Kleuren [nieuw]"
 
-#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:858
-#: include/global_arrays.php:1905
+#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:867
+#: include/global_arrays.php:1919
 msgid "Colors"
 msgstr "Kleuren"
 
@@ -2888,7 +2888,7 @@ msgstr "Is deze kleur als alleen lezen benoemd."
 msgid "Named Color"
 msgstr "Benoemde kleur"
 
-#: color.php:702 color_templates.php:73 include/global_arrays.php:844
+#: color.php:702 color_templates.php:73 include/global_arrays.php:853
 #: include/global_form.php:941 include/global_form.php:1983
 msgid "Color"
 msgstr "Kleur"
@@ -2983,7 +2983,7 @@ msgid "Color Template [new]"
 msgstr "Kleurtemplate [nieuw]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2385
+#: include/global_arrays.php:2399
 msgid "Color Templates"
 msgstr "Kleurtemplates"
 
@@ -3043,7 +3043,7 @@ msgstr "Verwijder data bron"
 
 #: data_debug.php:198 data_debug.php:243 data_queries.php:708
 #: data_sources.php:922 data_templates.php:573 graphs_items.php:439
-#: include/global_arrays.php:842 include/global_form.php:926
+#: include/global_arrays.php:851 include/global_form.php:926
 #: lib/api_aggregate.php:1304 lib/html.php:968
 msgid "Data Source"
 msgstr "Data bron"
@@ -3095,7 +3095,7 @@ msgstr "Gebruiker"
 msgid "Valid Data"
 msgstr "Grafiekdata"
 
-#: data_debug.php:243 lib/installer.php:2006 lib/installer.php:2037
+#: data_debug.php:243 lib/installer.php:2058 lib/installer.php:2089
 msgid "Writable"
 msgstr "Schrijfbaar"
 
@@ -3325,8 +3325,8 @@ msgstr "Geen uitvoer velden"
 msgid "Delete Data Input Field"
 msgstr "Verwijder data invoer veld"
 
-#: data_input.php:791 include/global_arrays.php:837
-#: include/global_arrays.php:1009 include/global_arrays.php:2043
+#: data_input.php:791 include/global_arrays.php:846
+#: include/global_arrays.php:1023 include/global_arrays.php:2057
 msgid "Data Input Methods"
 msgstr "Data invoer methoden"
 
@@ -3363,7 +3363,7 @@ msgstr "Het aantal data bronnen dat deze data invoer methode gebruiken."
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Het aantal data templates dat deze data invoer methode gebruiken."
 
-#: data_input.php:907 data_queries.php:1366 include/global_arrays.php:1136
+#: data_input.php:907 data_queries.php:1366 include/global_arrays.php:1150
 #: include/global_form.php:540 include/global_form.php:1332
 msgid "Data Input Method"
 msgstr "Data invoer methode"
@@ -3476,7 +3476,7 @@ msgid "Could not locate XML file."
 msgstr "XML bestand niet gevonden."
 
 #: data_queries.php:1110 host.php:777 host_templates.php:481
-#: include/global_arrays.php:2097
+#: include/global_arrays.php:2111
 msgid "Associated Graph Templates"
 msgstr "Gekoppelde grafiektemplates"
 
@@ -3503,8 +3503,8 @@ msgid "Delete Associated Graph"
 msgstr "Verwijder gekoppelde grafiek"
 
 #: data_queries.php:1247 data_queries.php:1262 data_queries.php:1352
-#: include/global_arrays.php:836 include/global_arrays.php:1010
-#: include/global_arrays.php:2079 lib/api_automation.php:1060
+#: include/global_arrays.php:845 include/global_arrays.php:1024
+#: include/global_arrays.php:2093 lib/api_automation.php:1060
 msgid "Data Queries"
 msgstr "Data queries"
 
@@ -3646,7 +3646,7 @@ msgid "Steps"
 msgstr "Stappen"
 
 #: data_source_profiles.php:567 graphs_new.php:384 include/global_form.php:254
-#: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2257
+#: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2307
 #: lib/rrd.php:2751 utilities.php:505 utilities.php:1436
 msgid "Rows"
 msgstr "Rijen"
@@ -3669,8 +3669,12 @@ msgstr "%s KBytes per data bron en %s Bytes voor de header"
 msgid "%s KBytes per Data Source"
 msgstr "%s KBytes per data bron"
 
-#: data_source_profiles.php:735 include/global_arrays.php:676
-#: include/global_arrays.php:1247 include/global_settings.php:1175
+#: data_source_profiles.php:735 include/global_arrays.php:677
+#: include/global_arrays.php:678 include/global_arrays.php:679
+#: include/global_arrays.php:680 include/global_arrays.php:681
+#: include/global_arrays.php:682 include/global_arrays.php:683
+#: include/global_arrays.php:684 include/global_arrays.php:685
+#: include/global_arrays.php:1261 include/global_settings.php:1175
 #, php-format
 msgid "%d Years"
 msgstr "%d Jaren"
@@ -3679,45 +3683,47 @@ msgstr "%d Jaren"
 msgid "1 Year"
 msgstr "1 Jaar"
 
-#: data_source_profiles.php:744 include/global_arrays.php:670
-#: include/global_arrays.php:1241 rrdcleaner.php:489
+#: data_source_profiles.php:744 include/global_arrays.php:671
+#: include/global_arrays.php:1255 rrdcleaner.php:489
 #, php-format
 msgid "%d Month"
 msgstr "%d Maand"
 
-#: data_source_profiles.php:744 include/global_arrays.php:671
-#: include/global_arrays.php:672 include/global_arrays.php:673
-#: include/global_arrays.php:674 include/global_arrays.php:1242
-#: include/global_arrays.php:1243 include/global_arrays.php:1244
-#: include/global_arrays.php:1245 rrdcleaner.php:490 rrdcleaner.php:491
+#: data_source_profiles.php:744 include/global_arrays.php:672
+#: include/global_arrays.php:673 include/global_arrays.php:674
+#: include/global_arrays.php:675 include/global_arrays.php:1256
+#: include/global_arrays.php:1257 include/global_arrays.php:1258
+#: include/global_arrays.php:1259 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
 #, php-format
 msgid "%d Months"
 msgstr "%d Maanden"
 
-#: data_source_profiles.php:753 include/global_arrays.php:667
-#: include/global_arrays.php:1239 rrdcleaner.php:485 rrdcleaner.php:486
+#: data_source_profiles.php:753 include/global_arrays.php:618
+#: include/global_arrays.php:668 include/global_arrays.php:1253
+#: rrdcleaner.php:485 rrdcleaner.php:486
 #, php-format
 msgid "%d Week"
 msgstr "%d Week"
 
-#: data_source_profiles.php:753 include/global_arrays.php:668
-#: include/global_arrays.php:669 include/global_arrays.php:1240
+#: data_source_profiles.php:753 include/global_arrays.php:669
+#: include/global_arrays.php:670 include/global_arrays.php:1254
 #: rrdcleaner.php:487 rrdcleaner.php:488
 #, php-format
 msgid "%d Weeks"
 msgstr "%d Weken"
 
-#: data_source_profiles.php:762 include/global_arrays.php:654
-#: include/global_arrays.php:664 include/global_arrays.php:1235
+#: data_source_profiles.php:762 include/global_arrays.php:617
+#: include/global_arrays.php:655 include/global_arrays.php:665
+#: include/global_arrays.php:1249
 #, php-format
 msgid "%d Day"
 msgstr "%d Dag"
 
-#: data_source_profiles.php:762 include/global_arrays.php:655
-#: include/global_arrays.php:665 include/global_arrays.php:666
-#: include/global_arrays.php:1236 include/global_arrays.php:1237
-#: include/global_arrays.php:1238 include/global_settings.php:1170
+#: data_source_profiles.php:762 include/global_arrays.php:656
+#: include/global_arrays.php:666 include/global_arrays.php:667
+#: include/global_arrays.php:1250 include/global_arrays.php:1251
+#: include/global_arrays.php:1252 include/global_settings.php:1170
 #: include/global_settings.php:1171 include/global_settings.php:1172
 #: include/global_settings.php:1173 include/global_settings.php:1184
 #: include/global_settings.php:1185 include/global_settings.php:1186
@@ -3727,13 +3733,13 @@ msgid "%d Days"
 msgstr "%d Dagen"
 
 #: data_source_profiles.php:770 include/global_arrays.php:611
-#: include/global_arrays.php:1277 include/global_arrays.php:1298
-#: include/global_arrays.php:1331 include/global_arrays.php:1340
-#: include/global_arrays.php:1366 include/global_settings.php:1241
+#: include/global_arrays.php:1291 include/global_arrays.php:1312
+#: include/global_arrays.php:1345 include/global_arrays.php:1354
+#: include/global_arrays.php:1380 include/global_settings.php:1241
 msgid "1 Hour"
 msgstr "1 Uur"
 
-#: data_source_profiles.php:824 include/global_arrays.php:1017
+#: data_source_profiles.php:824 include/global_arrays.php:1031
 msgid "Data Source Profiles"
 msgstr "Data bron profielen"
 
@@ -4030,8 +4036,8 @@ msgid "External"
 msgstr "Extern"
 
 #: data_sources.php:1124 include/global_arrays.php:606
-#: include/global_arrays.php:991 include/global_arrays.php:1325
-#: include/global_arrays.php:1359 include/global_arrays.php:1375
+#: include/global_arrays.php:1005 include/global_arrays.php:1339
+#: include/global_arrays.php:1373 include/global_arrays.php:1389
 #: include/global_settings.php:1235 include/global_settings.php:2005
 msgid "1 Minute"
 msgstr "1 Minuut"
@@ -4062,7 +4068,7 @@ msgid "Orphaned"
 msgstr "Overerfd"
 
 #: data_sources.php:1360 data_sources.php:1485 host.php:1655
-#: include/global_arrays.php:831 include/global_arrays.php:1989
+#: include/global_arrays.php:840 include/global_arrays.php:2003
 #: lib/api_automation.php:282 user_admin.php:1235 user_group_admin.php:967
 #: utilities.php:307
 msgid "Data Sources"
@@ -4210,7 +4216,7 @@ msgstr ""
 "De waarde wordt over genomen van het apparaat als u dit veld leeg houdt."
 
 #: data_templates.php:835 data_templates.php:866 data_templates.php:988
-#: include/global_arrays.php:1021 include/global_arrays.php:1971
+#: include/global_arrays.php:1035 include/global_arrays.php:1985
 msgid "Data Templates"
 msgstr "Data templates"
 
@@ -4290,11 +4296,11 @@ msgstr "GPRINT voorinstelling [wijzig: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT voorinstelling [nieuw]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1821
+#: gprint_presets.php:254 include/global_arrays.php:1835
 msgid "GPRINT Presets"
 msgstr "GPRINT voorinstelling"
 
-#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:859
+#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:868
 msgid "GPRINTs"
 msgstr "GPRINTs"
 
@@ -4491,7 +4497,7 @@ msgstr "Synchroniseer grafieken naar (een) grafiektemplate(s)"
 msgid "Graph Template Items [edit: %s]"
 msgstr "Grafiektemplate items [wijzig %s]"
 
-#: graph_templates.php:421 include/global_arrays.php:1941
+#: graph_templates.php:421 include/global_arrays.php:1955
 msgid "Graph Item Inputs"
 msgstr "Grafiek item invoer"
 
@@ -4519,8 +4525,8 @@ msgid ""
 msgstr ""
 
 #: graph_templates.php:621 graph_templates.php:636 graph_templates.php:756
-#: graphs_new.php:440 include/global_arrays.php:1020
-#: include/global_arrays.php:1917 lib/html_tree.php:536 user_admin.php:1375
+#: graphs_new.php:440 include/global_arrays.php:1034
+#: include/global_arrays.php:1931 lib/html_tree.php:536 user_admin.php:1375
 #: user_group_admin.php:1102
 msgid "Graph Templates"
 msgstr "Grafiektemplates"
@@ -4635,7 +4641,7 @@ msgstr "[ Aangepaste grafieklijst toegepast - Filter VAN lijst ]"
 msgid "View"
 msgstr "Weergeven"
 
-#: graph_view.php:594 graph_view.php:769 include/global_arrays.php:999
+#: graph_view.php:594 graph_view.php:769 include/global_arrays.php:1013
 msgid "View Graphs"
 msgstr "Toon grafieken"
 
@@ -4675,7 +4681,7 @@ msgstr "Niet van toepassing"
 msgid "Select the Report to add the selected Graphs to."
 msgstr ""
 
-#: graph_view.php:833 include/global_arrays.php:1741
+#: graph_view.php:833 include/global_arrays.php:1755
 #: include/global_settings.php:2075
 msgid "Preview Mode"
 msgstr "Voorvertoning modus"
@@ -4695,7 +4701,7 @@ msgid "Templates Selected"
 msgstr "Templates geselecteerd"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1724
-#: include/global_form.php:1971 lib/html.php:1586 links.php:380
+#: include/global_form.php:1971 lib/html.php:1621 links.php:380
 msgid "Title"
 msgstr "Titel"
 
@@ -4743,7 +4749,7 @@ msgstr "Download"
 msgid "Summary Details"
 msgstr "Samenvatting details"
 
-#: graphs.php:51 graphs.php:925 include/global_arrays.php:1791
+#: graphs.php:51 graphs.php:925 include/global_arrays.php:1805
 msgid "Change Graph Template"
 msgstr "Wijzig grafiektemplate"
 
@@ -5000,7 +5006,7 @@ msgstr "Grafiekveld"
 msgid "Graph Item Fields"
 msgstr "Grafiek item veld"
 
-#: graphs.php:1792 include/global_arrays.php:1779
+#: graphs.php:1792 include/global_arrays.php:1793
 msgid "Graph Management"
 msgstr "Beheer grafiek"
 
@@ -5054,7 +5060,7 @@ msgstr "De afmetingen van deze grafiek wanneer niet in voorvertoning modus."
 msgid "Data Sources [No Device]"
 msgstr "Data bron [geen apparaat]"
 
-#: graphs_items.php:326 include/global_arrays.php:1135
+#: graphs_items.php:326 include/global_arrays.php:1149
 #: include/global_form.php:1580
 msgid "Data Template"
 msgstr "Data template"
@@ -5118,8 +5124,8 @@ msgstr "Selecteer alles"
 msgid "Select All Rows"
 msgstr "Selecteer alle rijen"
 
-#: graphs_new.php:533 include/global_arrays.php:823
-#: include/global_arrays.php:895 lib/html_form.php:1187 lib/html_form.php:1200
+#: graphs_new.php:533 include/global_arrays.php:832
+#: include/global_arrays.php:908 lib/html_form.php:1187 lib/html_form.php:1200
 #: tree.php:1354
 msgid "Create"
 msgstr "Maken"
@@ -5360,15 +5366,15 @@ msgstr "Gekoppelde data queries"
 msgid "Re-Index Method"
 msgstr "Herindexeringsmethode"
 
-#: host.php:882 include/global_arrays.php:1797 include/global_arrays.php:1863
-#: include/global_arrays.php:1929 include/global_arrays.php:1965
-#: include/global_arrays.php:1983 include/global_arrays.php:2001
-#: include/global_arrays.php:2019 include/global_arrays.php:2049
-#: include/global_arrays.php:2085 include/global_arrays.php:2115
-#: include/global_arrays.php:2205 include/global_arrays.php:2397
-#: include/global_arrays.php:2421 include/global_arrays.php:2439
-#: include/global_arrays.php:2457 include/global_arrays.php:2475
-#: include/global_arrays.php:2499 lib/api_automation.php:1245
+#: host.php:882 include/global_arrays.php:1811 include/global_arrays.php:1877
+#: include/global_arrays.php:1943 include/global_arrays.php:1979
+#: include/global_arrays.php:1997 include/global_arrays.php:2015
+#: include/global_arrays.php:2033 include/global_arrays.php:2063
+#: include/global_arrays.php:2099 include/global_arrays.php:2129
+#: include/global_arrays.php:2219 include/global_arrays.php:2411
+#: include/global_arrays.php:2435 include/global_arrays.php:2453
+#: include/global_arrays.php:2471 include/global_arrays.php:2489
+#: include/global_arrays.php:2513 lib/api_automation.php:1245
 #: lib/api_automation.php:1307 lib/api_automation.php:1370
 #: lib/html_reports.php:1327 links.php:378 plugins.php:472
 msgid "Actions"
@@ -5383,7 +5389,7 @@ msgstr " [%d items, %d rijen]"
 msgid "Fail"
 msgstr "Mislukt"
 
-#: host.php:943 lib/functions.php:3488 lib/functions.php:3493
+#: host.php:943 lib/functions.php:3601 lib/functions.php:3606
 msgid "Success"
 msgstr "Gelukt"
 
@@ -5435,7 +5441,7 @@ msgstr "SNMP Desc"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1521 include/global_settings.php:497 lib/html.php:1841
+#: host.php:1521 include/global_settings.php:497 lib/html.php:1876
 msgid "Site"
 msgstr "Website"
 
@@ -5469,7 +5475,7 @@ msgstr "De naam waarnaar dit apparaat zal refereren."
 #: host.php:1637 include/global_form.php:1137 include/global_form.php:1662
 #: lib/api_automation.php:277 lib/api_automation.php:566
 #: lib/api_automation.php:840 lib/api_automation.php:1171 managers.php:219
-#: pollers.php:116 pollers.php:719 user_admin.php:1235 user_group_admin.php:967
+#: pollers.php:116 pollers.php:720 user_admin.php:1235 user_group_admin.php:967
 msgid "Hostname"
 msgstr "Hostname"
 
@@ -5655,7 +5661,7 @@ msgid "Add Data Query to Device Template"
 msgstr "Data query aan apparaat template toevoegen"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:826
-#: include/global_arrays.php:1022 include/global_arrays.php:1953
+#: include/global_arrays.php:1036 include/global_arrays.php:1967
 msgid "Device Templates"
 msgstr "Apparaattemplate"
 
@@ -6148,19 +6154,19 @@ msgstr ""
 msgid "Unexpected error occurred"
 msgstr "Er heeft zich een onverwachte fout voorgedaan"
 
-#: include/global_arrays.php:405 include/global_arrays.php:763
+#: include/global_arrays.php:405 include/global_arrays.php:772
 msgid "Function"
 msgstr "Functie"
 
-#: include/global_arrays.php:406 include/global_arrays.php:765
+#: include/global_arrays.php:406 include/global_arrays.php:774
 msgid "Special Data Source"
 msgstr "Speciale data bron"
 
-#: include/global_arrays.php:407 include/global_arrays.php:767
+#: include/global_arrays.php:407 include/global_arrays.php:776
 msgid "Custom String"
 msgstr "Aangepaste waarde"
 
-#: include/global_arrays.php:411 include/global_arrays.php:804
+#: include/global_arrays.php:411 include/global_arrays.php:813
 msgid "Current Graph Item Data Source"
 msgstr "Huidige data bron van grafiek item"
 
@@ -6289,8 +6295,8 @@ msgid "Not In Use"
 msgstr "Niet in gebruik"
 
 #: include/global_arrays.php:541 include/global_arrays.php:542
-#: include/global_arrays.php:543 include/global_arrays.php:731
-#: include/global_arrays.php:732
+#: include/global_arrays.php:543 include/global_arrays.php:740
+#: include/global_arrays.php:741
 #, php-format
 msgid "Version %d"
 msgstr "Versie %d"
@@ -6372,1209 +6378,1223 @@ msgstr "DEVEL - Ontwikkelaar DEBUG meldingen"
 msgid "Selected Poller Interval"
 msgstr "Selecteer poller interval"
 
-#: include/global_arrays.php:621 include/global_arrays.php:622
-#: include/global_arrays.php:623 include/global_arrays.php:624
-#: include/global_arrays.php:680 include/global_arrays.php:681
-#: include/global_arrays.php:682 include/global_arrays.php:683
+#: include/global_arrays.php:622 include/global_arrays.php:623
+#: include/global_arrays.php:624 include/global_arrays.php:625
+#: include/global_arrays.php:689 include/global_arrays.php:690
+#: include/global_arrays.php:691 include/global_arrays.php:692
 #, php-format
 msgid "Every %d Seconds"
 msgstr "Iedere %d seconden"
 
-#: include/global_arrays.php:625 include/global_arrays.php:684
-#: include/global_arrays.php:698
+#: include/global_arrays.php:626 include/global_arrays.php:693
+#: include/global_arrays.php:707
 msgid "Every Minute"
 msgstr "Iedere minuut"
 
-#: include/global_arrays.php:626 include/global_arrays.php:627
-#: include/global_arrays.php:628 include/global_arrays.php:629
-#: include/global_arrays.php:685 include/global_arrays.php:699
+#: include/global_arrays.php:627 include/global_arrays.php:628
+#: include/global_arrays.php:629 include/global_arrays.php:630
+#: include/global_arrays.php:694 include/global_arrays.php:708
 #, php-format
 msgid "Every %d Minutes"
 msgstr "Iedere %d minuten"
 
-#: include/global_arrays.php:630
+#: include/global_arrays.php:631
 msgid "Every Hour"
 msgstr "Ieder uur"
 
-#: include/global_arrays.php:631 include/global_arrays.php:632
-#: include/global_arrays.php:633 include/global_arrays.php:634
-#: include/global_arrays.php:1604 include/global_arrays.php:1605
-#: include/global_arrays.php:1606 include/global_arrays.php:1607
-#: include/global_arrays.php:1608 include/global_settings.php:1925
+#: include/global_arrays.php:632 include/global_arrays.php:633
+#: include/global_arrays.php:634 include/global_arrays.php:635
+#: include/global_arrays.php:1618 include/global_arrays.php:1619
+#: include/global_arrays.php:1620 include/global_arrays.php:1621
+#: include/global_arrays.php:1622 include/global_settings.php:1925
 #: include/global_settings.php:1926
 #, php-format
 msgid "Every %d Hours"
 msgstr "Iedere %d uren"
 
-#: include/global_arrays.php:635
+#: include/global_arrays.php:636
 msgid "Every %1 Day"
 msgstr "Iedere %d dagen"
 
-#: include/global_arrays.php:675 include/global_arrays.php:1246
+#: include/global_arrays.php:676 include/global_arrays.php:1260
 #: include/global_settings.php:1174 rrdcleaner.php:493
 #, php-format
 msgid "%d Year"
 msgstr "%d Jaar"
 
-#: include/global_arrays.php:689
+#: include/global_arrays.php:698
 msgid "1 Thread (default)"
 msgstr "1 Thread (standaard)"
 
-#: include/global_arrays.php:714
+#: include/global_arrays.php:723
 msgid "Builtin Authentication"
 msgstr "Ingebouwde authenticatie"
 
-#: include/global_arrays.php:715
+#: include/global_arrays.php:724
 msgid "Web Basic Authentication"
 msgstr "Web basic authenticatie"
 
-#: include/global_arrays.php:719
+#: include/global_arrays.php:728
 msgid "LDAP Authentication"
 msgstr "LDAP authenticatie"
 
-#: include/global_arrays.php:720
+#: include/global_arrays.php:729
 msgid "Multiple LDAP/AD Domains"
 msgstr "Meerdere LDAP/AD domeinen"
 
-#: include/global_arrays.php:725
+#: include/global_arrays.php:734
 msgid "Active Directory"
 msgstr "Active Directory"
 
-#: include/global_arrays.php:737 include/global_settings.php:1506
+#: include/global_arrays.php:746 include/global_settings.php:1506
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_arrays.php:738 include/global_settings.php:1507
+#: include/global_arrays.php:747 include/global_settings.php:1507
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_arrays.php:742
+#: include/global_arrays.php:751
 msgid "No Searching"
 msgstr "Niet zoeken"
 
-#: include/global_arrays.php:743
+#: include/global_arrays.php:752
 msgid "Anonymous Searching"
 msgstr "Anoniem zoeken"
 
-#: include/global_arrays.php:744
+#: include/global_arrays.php:753
 msgid "Specific Searching"
 msgstr "Specifiek zoeken"
 
-#: include/global_arrays.php:759
+#: include/global_arrays.php:768
 msgid "Enabled (strict mode)"
 msgstr "Ingeschakeld (strikt modus)"
 
-#: include/global_arrays.php:764 include/global_form.php:2026
+#: include/global_arrays.php:773 include/global_form.php:2026
 #: include/global_form.php:2068 lib/api_automation.php:1243
 #: lib/api_automation.php:1305
 msgid "Operator"
 msgstr ""
 
-#: include/global_arrays.php:766
+#: include/global_arrays.php:775
 msgid "Another CDEF"
 msgstr "Nog een CDEF"
 
-#: include/global_arrays.php:785
+#: include/global_arrays.php:794
 msgid "Inherit Parent Sorting"
 msgstr "Overerf de sortering van een bovenliggend niveau"
 
-#: include/global_arrays.php:786
+#: include/global_arrays.php:795
 msgid "Manual Ordering (No Sorting)"
 msgstr "Handmatig sorteren (Geen sortering)"
 
-#: include/global_arrays.php:787
+#: include/global_arrays.php:796
 msgid "Alphabetic Ordering"
 msgstr "Alfabetisch sorteren"
 
-#: include/global_arrays.php:788
+#: include/global_arrays.php:797
 msgid "Natural Ordering"
 msgstr "Natuurlijke sortering"
 
-#: include/global_arrays.php:789
+#: include/global_arrays.php:798
 msgid "Numeric Ordering"
 msgstr "Numerieke sortering"
 
-#: include/global_arrays.php:793 lib/rrd.php:2686
+#: include/global_arrays.php:802 lib/rrd.php:2686
 msgid "Header"
 msgstr "Kolomkop"
 
-#: include/global_arrays.php:794 include/global_arrays.php:841
-#: include/global_arrays.php:1429 include/global_arrays.php:1593
+#: include/global_arrays.php:803 include/global_arrays.php:850
+#: include/global_arrays.php:1443 include/global_arrays.php:1607
 #: include/global_session.php:190
 msgid "Graph"
 msgstr "Grafiek"
 
-#: include/global_arrays.php:800 tree.php:1645
+#: include/global_arrays.php:809 tree.php:1645
 msgid "Data Query Index"
 msgstr "Data query index"
 
-#: include/global_arrays.php:805
+#: include/global_arrays.php:814
 msgid "Current Graph Item Polling Interval"
 msgstr "Huidige polling interval van dit grafiek item"
 
-#: include/global_arrays.php:806
+#: include/global_arrays.php:815
 msgid "All Data Sources (Do not Include Duplicates)"
 msgstr "Alle data bronnen (Dubbelen uitgesloten)"
 
-#: include/global_arrays.php:807
+#: include/global_arrays.php:816
 msgid "All Data Sources (Include Duplicates)"
 msgstr "Alle data bronnen (Inclusief dubbelen)"
 
-#: include/global_arrays.php:808
+#: include/global_arrays.php:817
 msgid "All Similar Data Sources (Do not Include Duplicates)"
 msgstr "Alle vergelijkbare data bronnen (Dubbelen uitgesloten)"
 
-#: include/global_arrays.php:809
+#: include/global_arrays.php:818
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
 msgstr "Alle vergelijkbare data bronnen (Dubbelen uitgesloten) Poller interval"
 
-#: include/global_arrays.php:810
+#: include/global_arrays.php:819
 msgid "All Similar Data Sources (Include Duplicates)"
 msgstr "Alle vergelijkbare data bronnen (Inclusief dubbelen)"
 
-#: include/global_arrays.php:811
+#: include/global_arrays.php:820
 msgid "Current Data Source Item: Minimum Value"
 msgstr "Huidige data bron item: minimale waarde"
 
-#: include/global_arrays.php:812
+#: include/global_arrays.php:821
 msgid "Current Data Source Item: Maximum Value"
 msgstr "Huidige data bron item: Maximale waarde"
 
-#: include/global_arrays.php:813
+#: include/global_arrays.php:822
 msgid "Graph: Lower Limit"
 msgstr "Grafiek: onder limiet"
 
-#: include/global_arrays.php:814
+#: include/global_arrays.php:823
 msgid "Graph: Upper Limit"
 msgstr "Grafiek: boven limiet"
 
-#: include/global_arrays.php:815
+#: include/global_arrays.php:824
 msgid "Count of All Data Sources (Do not Include Duplicates)"
 msgstr "Totaal van alle data bronnen (dubbelen niet meegeteld)"
 
-#: include/global_arrays.php:816
+#: include/global_arrays.php:825
 msgid "Count of All Data Sources (Include Duplicates)"
 msgstr "Totaal van alle data bronnen (dubbelen wel meegeteld)"
 
-#: include/global_arrays.php:817
+#: include/global_arrays.php:826
 msgid "Count of All Similar Data Sources (Do not Include Duplicates)"
 msgstr "Totaal van alle gelijke data bronnen (dubbelen niet meegeteld)"
 
-#: include/global_arrays.php:818
+#: include/global_arrays.php:827
 msgid "Count of All Similar Data Sources (Include Duplicates)"
 msgstr "Totaal van alle gelijke data bronnen (dubbelen wel meegeteld)"
 
-#: include/global_arrays.php:824 lib/html_form_template.php:602
+#: include/global_arrays.php:833 lib/html_form_template.php:602
 #: lib/html_form_template.php:618
 msgid "New Graphs"
 msgstr "Nieuwe grafieken"
 
-#: include/global_arrays.php:826 include/global_arrays.php:879
-#: include/global_arrays.php:896
+#: include/global_arrays.php:835 include/global_arrays.php:892
+#: include/global_arrays.php:909
 msgid "Management"
 msgstr "Onderhoud"
 
-#: include/global_arrays.php:828 sites.php:416 sites.php:431 sites.php:511
+#: include/global_arrays.php:837 sites.php:416 sites.php:431 sites.php:511
 #: tree.php:781 tree.php:1970
 msgid "Sites"
 msgstr "Locaties"
 
-#: include/global_arrays.php:829 include/global_arrays.php:1014 tree.php:1878
+#: include/global_arrays.php:838 include/global_arrays.php:1028 tree.php:1878
 #: tree.php:1893 tree.php:1953 user_admin.php:1516 user_admin.php:2939
 #: user_admin.php:3024 user_group_admin.php:1236 user_group_admin.php:2465
 msgid "Trees"
 msgstr "Boomstructuren"
 
-#: include/global_arrays.php:832
+#: include/global_arrays.php:841
 msgid "Aggregates"
 msgstr "Geaggregeerde"
 
-#: include/global_arrays.php:834 include/global_arrays.php:882
-#: include/global_arrays.php:897
+#: include/global_arrays.php:843 include/global_arrays.php:895
+#: include/global_arrays.php:910
 msgid "Data Collection"
 msgstr "Data verzameling"
 
-#: include/global_arrays.php:835 include/global_arrays.php:883 pollers.php:613
+#: include/global_arrays.php:844 include/global_arrays.php:896 pollers.php:614
 msgid "Data Collectors"
 msgstr "Data verzamelaars"
 
-#: include/global_arrays.php:843
+#: include/global_arrays.php:852
 msgid "Aggregate"
 msgstr "Aggregeer"
 
-#: include/global_arrays.php:846 include/global_arrays.php:899
-#: include/global_arrays.php:1006 include/global_settings.php:443
+#: include/global_arrays.php:855 include/global_arrays.php:912
+#: include/global_arrays.php:1020 include/global_settings.php:443
 msgid "Automation"
 msgstr "Automatisering"
 
-#: include/global_arrays.php:848
+#: include/global_arrays.php:857
 msgid "Discovered Devices"
 msgstr "Ontdekte apparaten"
 
-#: include/global_arrays.php:849
+#: include/global_arrays.php:858
 msgid "Device Rules"
 msgstr "Apparaatregels"
 
-#: include/global_arrays.php:854 include/global_arrays.php:900
-#: include/global_arrays.php:1018 lib/html_filter.php:178
+#: include/global_arrays.php:863 include/global_arrays.php:913
+#: include/global_arrays.php:1032 lib/html_filter.php:178
 #: lib/html_graph.php:247 lib/html_tree.php:1028
 msgid "Presets"
 msgstr "Voorinstellingen"
 
-#: include/global_arrays.php:855
+#: include/global_arrays.php:864
 msgid "Data Profiles"
 msgstr "Data profielen"
 
-#: include/global_arrays.php:857 include/global_arrays.php:2199 vdef.php:685
+#: include/global_arrays.php:866 include/global_arrays.php:2213 vdef.php:685
 #: vdef.php:699 vdef.php:872
 msgid "VDEFs"
 msgstr "VDEF's"
 
-#: include/global_arrays.php:861 include/global_arrays.php:901
+#: include/global_arrays.php:870 include/global_arrays.php:914
 msgid "Import/Export"
 msgstr "Importeren/exporteren"
 
-#: include/global_arrays.php:862 include/global_arrays.php:1025
-#: include/global_arrays.php:2319
+#: include/global_arrays.php:871 include/global_arrays.php:1039
+#: include/global_arrays.php:2333
 msgid "Import Templates"
 msgstr "Importeer templates"
 
-#: include/global_arrays.php:863 include/global_arrays.php:1024
-#: include/global_arrays.php:2307 templates_export.php:159
+#: include/global_arrays.php:872 include/global_arrays.php:1038
+#: include/global_arrays.php:2321 templates_export.php:159
 msgid "Export Templates"
 msgstr "Exporteer templates"
 
-#: include/global_arrays.php:865 include/global_arrays.php:885
-#: include/global_arrays.php:902 lib/plugins.php:838
+#: include/global_arrays.php:874 include/global_arrays.php:898
+#: include/global_arrays.php:915 lib/plugins.php:838
 msgid "Configuration"
 msgstr "Configuratie"
 
-#: include/global_arrays.php:866 include/global_arrays.php:886
-#: include/global_session.php:205 lib/html.php:1975
+#: include/global_arrays.php:875 include/global_arrays.php:899
+#: include/global_session.php:205 lib/html.php:2010
 msgid "Settings"
 msgstr "Instellingen"
 
-#: include/global_arrays.php:867 include/global_arrays.php:2253
+#: include/global_arrays.php:876 include/global_arrays.php:2267
 #: user_admin.php:2220 user_admin.php:2274 user_group_admin.php:668
 #: user_group_admin.php:2550
 msgid "Users"
 msgstr "Gebruikers"
 
-#: include/global_arrays.php:868 include/global_arrays.php:2283
+#: include/global_arrays.php:877 include/global_arrays.php:2297
 msgid "User Groups"
 msgstr "Gebruiker groepen"
 
-#: include/global_arrays.php:869 include/global_arrays.php:2271
+#: include/global_arrays.php:878 include/global_arrays.php:2285
 #: user_domains.php:644 user_domains.php:735
 msgid "User Domains"
 msgstr "Gebruiker domeinen"
 
-#: include/global_arrays.php:871 include/global_arrays.php:888
-#: include/global_arrays.php:903 include/global_arrays.php:2127
+#: include/global_arrays.php:880 include/global_arrays.php:901
+#: include/global_arrays.php:916 include/global_arrays.php:2141
 msgid "Utilities"
 msgstr "Gereedschappen"
 
-#: include/global_arrays.php:872 include/global_arrays.php:889
+#: include/global_arrays.php:881 include/global_arrays.php:902
 msgid "System Utilities"
 msgstr "Systeem gereedschappen"
 
-#: include/global_arrays.php:873
+#: include/global_arrays.php:882
 #, fuzzy
 msgid "Data Debug"
 msgstr "Data bron debug"
 
-#: include/global_arrays.php:874 include/global_arrays.php:904
-#: include/global_arrays.php:918 include/global_arrays.php:1002 links.php:91
+#: include/global_arrays.php:883 include/global_arrays.php:917
+#: include/global_arrays.php:932 include/global_arrays.php:1016 links.php:91
 #: links.php:303 links.php:371 links.php:484
 msgid "External Links"
 msgstr "Externe links"
 
-#: include/global_arrays.php:927
+#: include/global_arrays.php:885 include/global_arrays.php:918
+#, fuzzy
+msgid "Support"
+msgstr "Exporteer"
+
+#: include/global_arrays.php:886 lib/utility.php:931
+msgid "Documentation"
+msgstr "Documentatie"
+
+#: include/global_arrays.php:887
+#, fuzzy
+msgid "User Community"
+msgstr "Community"
+
+#: include/global_arrays.php:941
 msgid "All Lines"
 msgstr "Alle regels"
 
-#: include/global_arrays.php:928 include/global_arrays.php:929
-#: include/global_arrays.php:930 include/global_arrays.php:931
-#: include/global_arrays.php:932 include/global_arrays.php:933
-#: include/global_arrays.php:934 include/global_arrays.php:935
-#: include/global_arrays.php:936 include/global_arrays.php:937
-#: include/global_arrays.php:938 include/global_arrays.php:939
+#: include/global_arrays.php:942 include/global_arrays.php:943
+#: include/global_arrays.php:944 include/global_arrays.php:945
+#: include/global_arrays.php:946 include/global_arrays.php:947
+#: include/global_arrays.php:948 include/global_arrays.php:949
+#: include/global_arrays.php:950 include/global_arrays.php:951
+#: include/global_arrays.php:952 include/global_arrays.php:953
 #, php-format
 msgid "%d Lines"
 msgstr "%d Regels"
 
-#: include/global_arrays.php:994 lib/html_reports.php:1632
+#: include/global_arrays.php:1008 lib/html_reports.php:1632
 msgid "Never"
 msgstr "Nooit"
 
-#: include/global_arrays.php:998
+#: include/global_arrays.php:1012
 msgid "Console Access"
 msgstr "Console toegang"
 
-#: include/global_arrays.php:1000
+#: include/global_arrays.php:1014
 msgid "Realtime Graphs"
 msgstr "Realtime grafieken"
 
-#: include/global_arrays.php:1001
+#: include/global_arrays.php:1015
 msgid "Update Profile"
 msgstr "Profiel bijwerken"
 
-#: include/global_arrays.php:1004 user_admin.php:2199
+#: include/global_arrays.php:1018 user_admin.php:2199
 msgid "User Management"
 msgstr "Gebruikersbeheer"
 
-#: include/global_arrays.php:1005
+#: include/global_arrays.php:1019
 #, fuzzy
 msgid "Settings/Utilities"
 msgstr "Instellingen en gereedschappen"
 
-#: include/global_arrays.php:1007
+#: include/global_arrays.php:1021
 #, fuzzy
 msgid "Installation/Upgrades"
 msgstr "Cacti installatie/upgrade wizard"
 
-#: include/global_arrays.php:1012
+#: include/global_arrays.php:1026
 #, fuzzy
 msgid "Sites/Devices/Data"
 msgstr "Locaties/Apparaten/Data bronnen/Data collectoren"
 
-#: include/global_arrays.php:1015
+#: include/global_arrays.php:1029
 #, fuzzy
 msgid "Spike Management"
 msgstr "Gebruikersbeheer"
 
-#: include/global_arrays.php:1027 include/global_settings.php:771
+#: include/global_arrays.php:1041 include/global_settings.php:771
 msgid "Log Management"
 msgstr "Logbeheer"
 
-#: include/global_arrays.php:1028
+#: include/global_arrays.php:1042
 msgid "Log Viewing"
 msgstr "Log inzien"
 
-#: include/global_arrays.php:1030
+#: include/global_arrays.php:1044
 msgid "Reports Management"
 msgstr "Rapportage management"
 
-#: include/global_arrays.php:1031
+#: include/global_arrays.php:1045
 msgid "Reports Creation"
 msgstr "Rapportage creëren"
 
-#: include/global_arrays.php:1035
+#: include/global_arrays.php:1049
 #, fuzzy
 msgid "Normal User"
 msgstr "Geen gebruiker"
 
-#: include/global_arrays.php:1036
+#: include/global_arrays.php:1050
 #, fuzzy
 msgid "Template Editor"
 msgstr "Templatetitel"
 
-#: include/global_arrays.php:1037
+#: include/global_arrays.php:1051
 #, fuzzy
 msgid "General Administration"
 msgstr "Log beheer"
 
-#: include/global_arrays.php:1038
+#: include/global_arrays.php:1052
 #, fuzzy
 msgid "System Administration"
 msgstr "Log beheer"
 
-#: include/global_arrays.php:1132
+#: include/global_arrays.php:1146
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1133
+#: include/global_arrays.php:1147
 msgid "CDEF Item"
 msgstr "CDEF Item"
 
-#: include/global_arrays.php:1134
+#: include/global_arrays.php:1148
 msgid "GPRINT Preset"
 msgstr "GPRINT voorinstelling"
 
-#: include/global_arrays.php:1137
+#: include/global_arrays.php:1151
 msgid "Data Input Field"
 msgstr "Data invoer veld"
 
-#: include/global_arrays.php:1138 include/global_form.php:549
+#: include/global_arrays.php:1152 include/global_form.php:549
 #: include/global_form.php:1637
 msgid "Data Source Profile"
 msgstr "Data bron profiel"
 
-#: include/global_arrays.php:1139
+#: include/global_arrays.php:1153
 msgid "Data Template Item"
 msgstr "Data template item"
 
-#: include/global_arrays.php:1141
+#: include/global_arrays.php:1155
 msgid "Graph Template Item"
 msgstr "Grafiek template item"
 
-#: include/global_arrays.php:1142
+#: include/global_arrays.php:1156
 msgid "Graph Template Input"
 msgstr "Grafiek template invoer"
 
-#: include/global_arrays.php:1145
+#: include/global_arrays.php:1159
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1146
+#: include/global_arrays.php:1160
 msgid "VDEF Item"
 msgstr "VDEF item"
 
-#: include/global_arrays.php:1198
+#: include/global_arrays.php:1212
 msgid "Last Half Hour"
 msgstr "Afgelopen half uur"
 
-#: include/global_arrays.php:1199
+#: include/global_arrays.php:1213
 msgid "Last Hour"
 msgstr "Afgelopen uur"
 
-#: include/global_arrays.php:1200 include/global_arrays.php:1201
-#: include/global_arrays.php:1202 include/global_arrays.php:1203
+#: include/global_arrays.php:1214 include/global_arrays.php:1215
+#: include/global_arrays.php:1216 include/global_arrays.php:1217
 #, php-format
 msgid "Last %d Hours"
 msgstr "Afgelopen %d uren"
 
-#: include/global_arrays.php:1204
+#: include/global_arrays.php:1218
 msgid "Last Day"
 msgstr "Afgelopen dag"
 
-#: include/global_arrays.php:1205 include/global_arrays.php:1206
-#: include/global_arrays.php:1207
+#: include/global_arrays.php:1219 include/global_arrays.php:1220
+#: include/global_arrays.php:1221
 #, php-format
 msgid "Last %d Days"
 msgstr "Afgelopen %d dagen"
 
-#: include/global_arrays.php:1208
+#: include/global_arrays.php:1222
 msgid "Last Week"
 msgstr "Afgelopen week"
 
-#: include/global_arrays.php:1209
+#: include/global_arrays.php:1223
 #, php-format
 msgid "Last %d Weeks"
 msgstr "Afgelopen %d weken"
 
-#: include/global_arrays.php:1210
+#: include/global_arrays.php:1224
 msgid "Last Month"
 msgstr "Afgelopen maand"
 
-#: include/global_arrays.php:1211 include/global_arrays.php:1212
-#: include/global_arrays.php:1213 include/global_arrays.php:1214
+#: include/global_arrays.php:1225 include/global_arrays.php:1226
+#: include/global_arrays.php:1227 include/global_arrays.php:1228
 #, php-format
 msgid "Last %d Months"
 msgstr "Afgelopen %d maanden"
 
-#: include/global_arrays.php:1215
+#: include/global_arrays.php:1229
 msgid "Last Year"
 msgstr "Afgelopen jaar"
 
-#: include/global_arrays.php:1216
+#: include/global_arrays.php:1230
 #, php-format
 msgid "Last %d Years"
 msgstr "Afgelopen %d jaren"
 
-#: include/global_arrays.php:1217
+#: include/global_arrays.php:1231
 msgid "Day Shift"
 msgstr "Werkdag"
 
-#: include/global_arrays.php:1218
+#: include/global_arrays.php:1232
 msgid "This Day"
 msgstr "Vandaag"
 
-#: include/global_arrays.php:1219
+#: include/global_arrays.php:1233
 msgid "This Week"
 msgstr "Deze week"
 
-#: include/global_arrays.php:1220
+#: include/global_arrays.php:1234
 msgid "This Month"
 msgstr "Deze maand"
 
-#: include/global_arrays.php:1221
+#: include/global_arrays.php:1235
 msgid "This Year"
 msgstr "Dit jaar"
 
-#: include/global_arrays.php:1222
+#: include/global_arrays.php:1236
 msgid "Previous Day"
 msgstr "Vorige dag"
 
-#: include/global_arrays.php:1223
+#: include/global_arrays.php:1237
 msgid "Previous Week"
 msgstr "Vorige week"
 
-#: include/global_arrays.php:1224
+#: include/global_arrays.php:1238
 msgid "Previous Month"
 msgstr "Vorige maand"
 
-#: include/global_arrays.php:1225
+#: include/global_arrays.php:1239
 msgid "Previous Year"
 msgstr "Vorig jaar"
 
-#: include/global_arrays.php:1229
+#: include/global_arrays.php:1243
 #, php-format
 msgid "%d Min"
 msgstr "%d Min"
 
-#: include/global_arrays.php:1261
+#: include/global_arrays.php:1275
 msgid "Month Number, Day, Year"
 msgstr "Maand nummer, dag, jaar"
 
-#: include/global_arrays.php:1262
+#: include/global_arrays.php:1276
 msgid "Month Name, Day, Year"
 msgstr "Maand naam, dag, jaar"
 
-#: include/global_arrays.php:1263
+#: include/global_arrays.php:1277
 msgid "Day, Month Number, Year"
 msgstr "Dag, maand nummer, jaar"
 
-#: include/global_arrays.php:1264
+#: include/global_arrays.php:1278
 msgid "Day, Month Name, Year"
 msgstr "Dag, maand naam, jaar"
 
-#: include/global_arrays.php:1265
+#: include/global_arrays.php:1279
 msgid "Year, Month Number, Day"
 msgstr "Jaar, maand nummer, dag"
 
-#: include/global_arrays.php:1266
+#: include/global_arrays.php:1280
 msgid "Year, Month Name, Day"
 msgstr "Jaar, maand naam, dag"
 
-#: include/global_arrays.php:1276
+#: include/global_arrays.php:1290
 msgid "After Boost"
 msgstr "After Boost"
 
-#: include/global_arrays.php:1286 include/global_arrays.php:1287
-#: include/global_arrays.php:1288 include/global_arrays.php:1289
-#: include/global_arrays.php:1290 include/global_arrays.php:1345
-#: include/global_arrays.php:1346 include/global_arrays.php:1347
-#: include/global_arrays.php:1348 include/global_arrays.php:1349
+#: include/global_arrays.php:1300 include/global_arrays.php:1301
+#: include/global_arrays.php:1302 include/global_arrays.php:1303
+#: include/global_arrays.php:1304 include/global_arrays.php:1359
+#: include/global_arrays.php:1360 include/global_arrays.php:1361
+#: include/global_arrays.php:1362 include/global_arrays.php:1363
 #, php-format
 msgid "%d MBytes"
 msgstr "%d MBytes"
 
-#: include/global_arrays.php:1291 include/global_arrays.php:1350
+#: include/global_arrays.php:1305 include/global_arrays.php:1364
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1292 include/global_arrays.php:1351
+#: include/global_arrays.php:1306 include/global_arrays.php:1365
 #, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
-#: include/global_arrays.php:1293 include/global_arrays.php:1294
-#: include/global_arrays.php:1352 include/global_arrays.php:1353
+#: include/global_arrays.php:1307 include/global_arrays.php:1308
+#: include/global_arrays.php:1366 include/global_arrays.php:1367
 #, php-format
 msgid "%d GBytes"
 msgstr "%d GBytes"
 
-#: include/global_arrays.php:1307
+#: include/global_arrays.php:1321
 msgid "2,000 Data Source Items"
 msgstr "2000 Data bron items"
 
-#: include/global_arrays.php:1308
+#: include/global_arrays.php:1322
 msgid "5,000 Data Source Items"
 msgstr "5000 Data bron items"
 
-#: include/global_arrays.php:1309
+#: include/global_arrays.php:1323
 msgid "10,000 Data Source Items"
 msgstr "10000 Data bron items"
 
-#: include/global_arrays.php:1310
+#: include/global_arrays.php:1324
 msgid "15,000 Data Source Items"
 msgstr "15000 Data bron items"
 
-#: include/global_arrays.php:1311
+#: include/global_arrays.php:1325
 msgid "25,000 Data Source Items"
 msgstr "25000 Data bron items"
 
-#: include/global_arrays.php:1312
+#: include/global_arrays.php:1326
 msgid "50,000 Data Source Items (Default)"
 msgstr "50000 Data bron items (Standaard)"
 
-#: include/global_arrays.php:1313
+#: include/global_arrays.php:1327
 msgid "100,000 Data Source Items"
 msgstr "100000 Data bron items"
 
-#: include/global_arrays.php:1314
+#: include/global_arrays.php:1328
 msgid "200,000 Data Source Items"
 msgstr "200000 Data bron items"
 
-#: include/global_arrays.php:1315
+#: include/global_arrays.php:1329
 msgid "400,000 Data Source Items"
 msgstr "400000 Data bron items"
 
-#: include/global_arrays.php:1332
+#: include/global_arrays.php:1346
 msgid "2 Hours"
 msgstr "2 uur"
 
-#: include/global_arrays.php:1333
+#: include/global_arrays.php:1347
 msgid "4 Hours"
 msgstr "4 uur"
 
-#: include/global_arrays.php:1334
+#: include/global_arrays.php:1348
 msgid "6 Hours"
 msgstr "6 uur"
 
-#: include/global_arrays.php:1341
+#: include/global_arrays.php:1355
 #, php-format
 msgid "%s Hours"
 msgstr "%s Uren"
 
-#: include/global_arrays.php:1360
+#: include/global_arrays.php:1374
 #, php-format
 msgid "%s Minutes"
 msgstr "%s Minuten"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1394
 msgid "1 Megabyte"
 msgstr "1 Megabyte"
 
-#: include/global_arrays.php:1381 include/global_arrays.php:1382
-#: include/global_arrays.php:1383 include/global_arrays.php:1384
-#: include/global_arrays.php:1385 include/global_arrays.php:1386
+#: include/global_arrays.php:1395 include/global_arrays.php:1396
+#: include/global_arrays.php:1397 include/global_arrays.php:1398
+#: include/global_arrays.php:1399 include/global_arrays.php:1400
 #, php-format
 msgid "%d Megabytes"
 msgstr "%d Megabytes"
 
-#: include/global_arrays.php:1390
+#: include/global_arrays.php:1404
 msgid "Send Now"
 msgstr "Nu versturen"
 
-#: include/global_arrays.php:1398
+#: include/global_arrays.php:1412
 msgid "Take Ownership"
 msgstr "Word eigenaar"
 
-#: include/global_arrays.php:1402
+#: include/global_arrays.php:1416
 msgid "Inline PNG Image"
 msgstr "Inline PNG afbeelding"
 
-#: include/global_arrays.php:1407
+#: include/global_arrays.php:1421
 msgid "Inline JPEG Image"
 msgstr "Inline JPEG afbeelding"
 
-#: include/global_arrays.php:1408
+#: include/global_arrays.php:1422
 msgid "Inline GIF Image"
 msgstr "Inline GIF afbeelding"
 
-#: include/global_arrays.php:1411
+#: include/global_arrays.php:1425
 msgid "Attached PNG Image"
 msgstr "Bijgevoegd PNG afbeelding"
 
-#: include/global_arrays.php:1414
+#: include/global_arrays.php:1428
 msgid "Attached JPEG Image"
 msgstr "Bijgevoegd JPEG afbeelding"
 
-#: include/global_arrays.php:1415
+#: include/global_arrays.php:1429
 msgid "Attached GIF Image"
 msgstr "Bijgevoegd GIF afbeelding"
 
-#: include/global_arrays.php:1419
+#: include/global_arrays.php:1433
 msgid "Inline PNG Image, LN Style"
 msgstr "Inline PNG afbeelding, LN stijl"
 
-#: include/global_arrays.php:1421
+#: include/global_arrays.php:1435
 msgid "Inline JPEG Image, LN Style"
 msgstr "Inline JPG afbeelding, LN stijl"
 
-#: include/global_arrays.php:1422
+#: include/global_arrays.php:1436
 msgid "Inline GIF Image, LN Style"
 msgstr "Inline GIF afbeelding, LN stijl"
 
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1441
 msgid "Text"
 msgstr "Tekst"
 
-#: include/global_arrays.php:1428 include/global_form.php:2146
+#: include/global_arrays.php:1442 include/global_form.php:2146
 msgid "Tree"
 msgstr "Menu"
 
-#: include/global_arrays.php:1430
+#: include/global_arrays.php:1444
 msgid "Horizontal Rule"
 msgstr "Horizontale lijn"
 
-#: include/global_arrays.php:1434
+#: include/global_arrays.php:1448
 msgid "left"
 msgstr "links"
 
-#: include/global_arrays.php:1435
+#: include/global_arrays.php:1449
 msgid "center"
 msgstr "midden"
 
-#: include/global_arrays.php:1436
+#: include/global_arrays.php:1450
 msgid "right"
 msgstr "rechts"
 
-#: include/global_arrays.php:1440
+#: include/global_arrays.php:1454
 msgid "Minute(s)"
 msgstr "Minu(u)t(en)"
 
-#: include/global_arrays.php:1441
+#: include/global_arrays.php:1455
 msgid "Hour(s)"
 msgstr "U(u)r(en)"
 
-#: include/global_arrays.php:1442
+#: include/global_arrays.php:1456
 msgid "Day(s)"
 msgstr "Dag(en)"
 
-#: include/global_arrays.php:1443
+#: include/global_arrays.php:1457
 msgid "Week(s)"
 msgstr "We(e)k(en)"
 
-#: include/global_arrays.php:1444
+#: include/global_arrays.php:1458
 msgid "Month(s), Day of Month"
 msgstr "Maand(en), dag van de maand"
 
-#: include/global_arrays.php:1445
+#: include/global_arrays.php:1459
 msgid "Month(s), Day of Week"
 msgstr "Maand(en), dag van de week"
 
-#: include/global_arrays.php:1446
+#: include/global_arrays.php:1460
 msgid "Year(s)"
 msgstr "Ja(a)r(en)"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1464
 msgid "Keep Graph Types"
 msgstr "Behoud grafiektypen"
 
-#: include/global_arrays.php:1451
+#: include/global_arrays.php:1465
 msgid "Keep Type and STACK"
 msgstr "Behoud type en STACK"
 
-#: include/global_arrays.php:1452
+#: include/global_arrays.php:1466
 msgid "Convert to AREA/STACK Graph"
 msgstr "Converteer naar AREA/STACK grafiek"
 
-#: include/global_arrays.php:1453
+#: include/global_arrays.php:1467
 msgid "Convert to LINE1 Graph"
 msgstr "Converteer naar LINE1 grafiek"
 
-#: include/global_arrays.php:1454
+#: include/global_arrays.php:1468
 msgid "Convert to LINE2 Graph"
 msgstr "Converteer naar LINE2 grafiek"
 
-#: include/global_arrays.php:1455
+#: include/global_arrays.php:1469
 msgid "Convert to LINE3 Graph"
 msgstr "Converteer naar LINE3 grafiek"
 
-#: include/global_arrays.php:1459
+#: include/global_arrays.php:1473
 msgid "No Totals"
 msgstr "Geen totalen"
 
-#: include/global_arrays.php:1460
+#: include/global_arrays.php:1474
 msgid "Print all Legend Items"
 msgstr "Toon alle legenda items"
 
-#: include/global_arrays.php:1461
+#: include/global_arrays.php:1475
 msgid "Print totaling Legend Items Only"
 msgstr ""
 
-#: include/global_arrays.php:1465
+#: include/global_arrays.php:1479
 msgid "Total Similar Data Sources"
 msgstr ""
 
-#: include/global_arrays.php:1466
+#: include/global_arrays.php:1480
 msgid "Total All Data Sources"
 msgstr ""
 
-#: include/global_arrays.php:1470
+#: include/global_arrays.php:1484
 msgid "No Reordering"
 msgstr "Niet herstructureren"
 
-#: include/global_arrays.php:1471
+#: include/global_arrays.php:1485
 msgid "Data Source, Graph"
 msgstr "Data bron, grafiek"
 
-#: include/global_arrays.php:1472
+#: include/global_arrays.php:1486
 msgid "Graph, Data Source"
 msgstr "Grafiek, data bron"
 
-#: include/global_arrays.php:1479
+#: include/global_arrays.php:1493
 msgid "contains"
 msgstr "bevat"
 
-#: include/global_arrays.php:1480
+#: include/global_arrays.php:1494
 msgid "does not contain"
 msgstr "bevat niet"
 
-#: include/global_arrays.php:1481
+#: include/global_arrays.php:1495
 msgid "begins with"
 msgstr "begint met"
 
-#: include/global_arrays.php:1482
+#: include/global_arrays.php:1496
 msgid "does not begin with"
 msgstr "begint niet met"
 
-#: include/global_arrays.php:1483
+#: include/global_arrays.php:1497
 msgid "ends with"
 msgstr "eindigt met"
 
-#: include/global_arrays.php:1484
+#: include/global_arrays.php:1498
 msgid "does not end with"
 msgstr "eindigt niet met"
 
-#: include/global_arrays.php:1485
+#: include/global_arrays.php:1499
 msgid "matches"
 msgstr "komt overeen"
 
-#: include/global_arrays.php:1486
+#: include/global_arrays.php:1500
 #, fuzzy
 msgid "is not equal to"
 msgstr "is niet leeg"
 
-#: include/global_arrays.php:1487
+#: include/global_arrays.php:1501
 msgid "is less than"
 msgstr "is kleiner dan"
 
-#: include/global_arrays.php:1488
+#: include/global_arrays.php:1502
 msgid "is less than or equal"
 msgstr "is kleiner dan of gelijk aan"
 
-#: include/global_arrays.php:1489
+#: include/global_arrays.php:1503
 msgid "is greater than"
 msgstr "is groter dan"
 
-#: include/global_arrays.php:1490
+#: include/global_arrays.php:1504
 msgid "is greater than or equal"
 msgstr "is groter dan of gelijk aan"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1505
 msgid "is unknown"
 msgstr "is onbekend"
 
-#: include/global_arrays.php:1492
+#: include/global_arrays.php:1506
 msgid "is not unknown"
 msgstr "is niet onbekend"
 
-#: include/global_arrays.php:1493
+#: include/global_arrays.php:1507
 msgid "is empty"
 msgstr "is leeg"
 
-#: include/global_arrays.php:1494
+#: include/global_arrays.php:1508
 msgid "is not empty"
 msgstr "is niet leeg"
 
-#: include/global_arrays.php:1495
+#: include/global_arrays.php:1509
 msgid "matches regular expression"
 msgstr "komt overeen met reguliere expressie"
 
-#: include/global_arrays.php:1496
+#: include/global_arrays.php:1510
 msgid "does not match regular expression"
 msgstr "komt niet overeen met reguliere expressie"
 
-#: include/global_arrays.php:1598
+#: include/global_arrays.php:1612
 msgid "Fixed String"
 msgstr "Vaste waarde"
 
-#: include/global_arrays.php:1603
+#: include/global_arrays.php:1617
 msgid "Every 1 Hour"
 msgstr "Ieder uur"
 
-#: include/global_arrays.php:1609
+#: include/global_arrays.php:1623
 msgid "Every Day"
 msgstr "Iedere dag"
 
-#: include/global_arrays.php:1610
+#: include/global_arrays.php:1624
 msgid "Every Week"
 msgstr "Iedere week"
 
-#: include/global_arrays.php:1611 include/global_arrays.php:1612
+#: include/global_arrays.php:1625 include/global_arrays.php:1626
 #, php-format
 msgid "Every %d Weeks"
 msgstr "Iedere %d weken"
 
-#: include/global_arrays.php:1643
+#: include/global_arrays.php:1657
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "Jan"
 
-#: include/global_arrays.php:1644
+#: include/global_arrays.php:1658
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "Feb"
 
-#: include/global_arrays.php:1645
+#: include/global_arrays.php:1659
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "Maa"
 
-#: include/global_arrays.php:1646
+#: include/global_arrays.php:1660
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "Apr"
 
-#: include/global_arrays.php:1647
+#: include/global_arrays.php:1661
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "Mei"
 
-#: include/global_arrays.php:1648
+#: include/global_arrays.php:1662
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "Jun"
 
-#: include/global_arrays.php:1649
+#: include/global_arrays.php:1663
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "Jul"
 
-#: include/global_arrays.php:1650
+#: include/global_arrays.php:1664
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "Aug"
 
-#: include/global_arrays.php:1651
+#: include/global_arrays.php:1665
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "Sep"
 
-#: include/global_arrays.php:1652
+#: include/global_arrays.php:1666
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "Okt"
 
-#: include/global_arrays.php:1653
+#: include/global_arrays.php:1667
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "Nov"
 
-#: include/global_arrays.php:1654
+#: include/global_arrays.php:1668
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "Dec"
 
-#: include/global_arrays.php:1668
+#: include/global_arrays.php:1682
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "Zo"
 
-#: include/global_arrays.php:1669
+#: include/global_arrays.php:1683
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "Ma"
 
-#: include/global_arrays.php:1670
+#: include/global_arrays.php:1684
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "Di"
 
-#: include/global_arrays.php:1671
+#: include/global_arrays.php:1685
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "Wo"
 
-#: include/global_arrays.php:1672
+#: include/global_arrays.php:1686
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "Do"
 
-#: include/global_arrays.php:1673
+#: include/global_arrays.php:1687
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "Vr"
 
-#: include/global_arrays.php:1674
+#: include/global_arrays.php:1688
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "Za"
 
-#: include/global_arrays.php:1678
+#: include/global_arrays.php:1692
 msgid "[Fail]"
 msgstr "[Mislukt]"
 
-#: include/global_arrays.php:1679
+#: include/global_arrays.php:1693
 #, fuzzy
 msgid "[Warning]"
 msgstr "Waarschuwingen"
 
-#: include/global_arrays.php:1680
+#: include/global_arrays.php:1694
 msgid "[Success]"
 msgstr "[Succesvol]"
 
-#: include/global_arrays.php:1681
+#: include/global_arrays.php:1695
 msgid "[Skipped]"
 msgstr "[Overgeslagen]"
 
-#: include/global_arrays.php:1705 include/global_arrays.php:1711
+#: include/global_arrays.php:1719 include/global_arrays.php:1725
 msgid "User Profile (Edit)"
 msgstr "Gebruikersprofiel (bewerken)"
 
-#: include/global_arrays.php:1723 include/global_arrays.php:1729
+#: include/global_arrays.php:1737 include/global_arrays.php:1743
 msgid "Tree Mode"
 msgstr ""
 
-#: include/global_arrays.php:1735
+#: include/global_arrays.php:1749
 msgid "List Mode"
 msgstr "Lijst modus"
 
-#: include/global_arrays.php:1767 include/global_arrays.php:1773
-#: lib/functions.php:2362 lib/html.php:1436 lib/html.php:1513 links.php:345
+#: include/global_arrays.php:1781 include/global_arrays.php:1787
+#: lib/functions.php:2362 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "Console"
 
-#: include/global_arrays.php:1785 include/global_arrays.php:1827
-#: include/global_arrays.php:1845 include/global_arrays.php:1899
-#: include/global_arrays.php:1911 include/global_arrays.php:1923
-#: include/global_arrays.php:1959 include/global_arrays.php:1977
-#: include/global_arrays.php:1995 include/global_arrays.php:2013
-#: include/global_arrays.php:2031 include/global_arrays.php:2055
-#: include/global_arrays.php:2091 include/global_arrays.php:2211
-#: include/global_arrays.php:2235 include/global_arrays.php:2259
-#: include/global_arrays.php:2277 include/global_arrays.php:2289
-#: include/global_arrays.php:2391 include/global_arrays.php:2415
-#: include/global_arrays.php:2433 include/global_arrays.php:2451
-#: include/global_arrays.php:2469 include/global_arrays.php:2493
+#: include/global_arrays.php:1799 include/global_arrays.php:1841
+#: include/global_arrays.php:1859 include/global_arrays.php:1913
+#: include/global_arrays.php:1925 include/global_arrays.php:1937
+#: include/global_arrays.php:1973 include/global_arrays.php:1991
+#: include/global_arrays.php:2009 include/global_arrays.php:2027
+#: include/global_arrays.php:2045 include/global_arrays.php:2069
+#: include/global_arrays.php:2105 include/global_arrays.php:2225
+#: include/global_arrays.php:2249 include/global_arrays.php:2273
+#: include/global_arrays.php:2291 include/global_arrays.php:2303
+#: include/global_arrays.php:2405 include/global_arrays.php:2429
+#: include/global_arrays.php:2447 include/global_arrays.php:2465
+#: include/global_arrays.php:2483 include/global_arrays.php:2507
 msgid "(Edit)"
 msgstr "(Wijzig)"
 
-#: include/global_arrays.php:1803 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1817 lib/api_aggregate.php:1299
 msgid "Graph Items"
 msgstr "Grafiekitems"
 
-#: include/global_arrays.php:1809
+#: include/global_arrays.php:1823
 msgid "Create New Graphs"
 msgstr "Nieuwe grafieken maken"
 
-#: include/global_arrays.php:1815
+#: include/global_arrays.php:1829
 msgid "Create Graphs from Data Query"
 msgstr "Grafieken maken vanuit een data query"
 
-#: include/global_arrays.php:1833 include/global_arrays.php:1851
-#: include/global_arrays.php:1947 include/global_arrays.php:2037
-#: include/global_arrays.php:2061 include/global_arrays.php:2217
+#: include/global_arrays.php:1847 include/global_arrays.php:1865
+#: include/global_arrays.php:1961 include/global_arrays.php:2051
+#: include/global_arrays.php:2075 include/global_arrays.php:2231
 msgid "(Remove)"
 msgstr "(Verwijder)"
 
-#: include/global_arrays.php:1869 include/global_arrays.php:1875
-#: include/global_arrays.php:1881 include/global_arrays.php:1887
-#: include/global_arrays.php:2151
+#: include/global_arrays.php:1883 include/global_arrays.php:1889
+#: include/global_arrays.php:1895 include/global_arrays.php:1901
+#: include/global_arrays.php:2165
 #, fuzzy
 msgid "View Log"
 msgstr "Toon gebruikerslog"
 
-#: include/global_arrays.php:1893
+#: include/global_arrays.php:1907
 msgid "Graph Trees"
 msgstr ""
 
-#: include/global_arrays.php:1935 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1949 lib/api_aggregate.php:1299
 msgid "Graph Template Items"
 msgstr "Grafiektemplate items"
 
-#: include/global_arrays.php:2025
+#: include/global_arrays.php:2039
 msgid "Round Robin Archives"
 msgstr ""
 
-#: include/global_arrays.php:2067
+#: include/global_arrays.php:2081
 msgid "Data Input Fields"
 msgstr "Data invoer velden"
 
-#: include/global_arrays.php:2073 include/global_arrays.php:2103
+#: include/global_arrays.php:2087 include/global_arrays.php:2117
 msgid "(Remove Item)"
 msgstr "(Verwijder item)"
 
-#: include/global_arrays.php:2109 include/global_settings.php:213
+#: include/global_arrays.php:2123 include/global_settings.php:213
 #: rrdcleaner.php:296
 msgid "RRD Cleaner"
 msgstr "RRD Opruimen"
 
-#: include/global_arrays.php:2121
+#: include/global_arrays.php:2135
 msgid "List unused Files"
 msgstr "Lijst van ongebruikte bestanden"
 
-#: include/global_arrays.php:2133 include/global_arrays.php:2145
+#: include/global_arrays.php:2147 include/global_arrays.php:2159
 #: utilities.php:1898
 msgid "View Poller Cache"
 msgstr "Toon poller cache"
 
-#: include/global_arrays.php:2139 utilities.php:1902
+#: include/global_arrays.php:2153 utilities.php:1902
 msgid "View Data Query Cache"
 msgstr "Toon data query cache"
 
-#: include/global_arrays.php:2157
+#: include/global_arrays.php:2171
 #, fuzzy
 msgid "Clear Log"
 msgstr "Gebruikerslog leegmaken"
 
-#: include/global_arrays.php:2163 utilities.php:1891
+#: include/global_arrays.php:2177 utilities.php:1891
 msgid "View User Log"
 msgstr "Toon gebruikerslog"
 
-#: include/global_arrays.php:2169
+#: include/global_arrays.php:2183
 msgid "Clear User Log"
 msgstr "Gebruikerslog leegmaken"
 
-#: include/global_arrays.php:2175 utilities.php:1882 utilities.php:1883
+#: include/global_arrays.php:2189 utilities.php:1882 utilities.php:1883
 msgid "Technical Support"
 msgstr "Technische ondersteuning"
 
-#: include/global_arrays.php:2181 utilities.php:2001
+#: include/global_arrays.php:2195 utilities.php:2001
 msgid "Boost Status"
 msgstr ""
 
-#: include/global_arrays.php:2187
+#: include/global_arrays.php:2201
 msgid "View SNMP Agent Cache"
 msgstr "Toon SNMP agent cache"
 
-#: include/global_arrays.php:2193
+#: include/global_arrays.php:2207
 msgid "View SNMP Agent Notification Log"
 msgstr "Toon SNMP agent notificatie log"
 
-#: include/global_arrays.php:2223 vdef.php:586
+#: include/global_arrays.php:2237 vdef.php:586
 msgid "VDEF Items"
 msgstr "VDEF Items"
 
-#: include/global_arrays.php:2229
+#: include/global_arrays.php:2243
 msgid "View SNMP Notification Receivers"
 msgstr "Toon SNMP notificatie ontvangers"
 
-#: include/global_arrays.php:2241
+#: include/global_arrays.php:2255
 msgid "Cacti Settings"
 msgstr "Cacti instellingen"
 
-#: include/global_arrays.php:2247
+#: include/global_arrays.php:2261
 msgid "External Link"
 msgstr "Externe link"
 
-#: include/global_arrays.php:2265 include/global_arrays.php:2295
+#: include/global_arrays.php:2279 include/global_arrays.php:2309
 msgid "(Action)"
 msgstr "(Actie)"
 
-#: include/global_arrays.php:2313
+#: include/global_arrays.php:2327
 msgid "Export Results"
 msgstr "Exporteer resultaten"
 
-#: include/global_arrays.php:2325 include/global_arrays.php:2355
-#: lib/html.php:1457 lib/html.php:1459 lib/html.php:1538
+#: include/global_arrays.php:2339 include/global_arrays.php:2369
+#: lib/html.php:1492 lib/html.php:1494 lib/html.php:1573
 msgid "Reporting"
 msgstr "Rapportages"
 
-#: include/global_arrays.php:2331 include/global_arrays.php:2361
+#: include/global_arrays.php:2345 include/global_arrays.php:2375
 msgid "Report Add"
 msgstr "Rapportage toevoegen"
 
-#: include/global_arrays.php:2337 include/global_arrays.php:2367
+#: include/global_arrays.php:2351 include/global_arrays.php:2381
 msgid "Report Delete"
 msgstr "Rapportage verwijderen"
 
-#: include/global_arrays.php:2343 include/global_arrays.php:2373
+#: include/global_arrays.php:2357 include/global_arrays.php:2387
 msgid "Report Edit"
 msgstr "Rapportage wijzigen"
 
-#: include/global_arrays.php:2349 include/global_arrays.php:2379
+#: include/global_arrays.php:2363 include/global_arrays.php:2393
 msgid "Report Edit Item"
 msgstr "Rapportageitem wijzen"
 
-#: include/global_arrays.php:2403
+#: include/global_arrays.php:2417
 msgid "Color Template Items"
 msgstr "Kleur template items"
 
-#: include/global_arrays.php:2445
+#: include/global_arrays.php:2459
 msgid "Aggregate Items"
 msgstr "Geaggregeerde items"
 
-#: include/global_arrays.php:2481
+#: include/global_arrays.php:2495
 msgid "Graph Rule Items"
 msgstr ""
 
-#: include/global_arrays.php:2505
+#: include/global_arrays.php:2519
 msgid "Tree Rule Items"
 msgstr ""
 
@@ -9402,7 +9422,7 @@ msgstr "Data"
 msgid "Visual"
 msgstr "Visueel"
 
-#: include/global_settings.php:44 lib/functions.php:3477 lib/functions.php:3482
+#: include/global_settings.php:44 lib/functions.php:3590 lib/functions.php:3595
 msgid "Authentication"
 msgstr "Authenticatie"
 
@@ -10454,7 +10474,7 @@ msgid ""
 "data.</u></strong>"
 msgstr ""
 
-#: include/global_settings.php:972 lib/installer.php:2102
+#: include/global_settings.php:972 lib/installer.php:2154
 msgid "Cron Interval"
 msgstr "Cron interval"
 
@@ -11083,11 +11103,11 @@ msgstr ""
 msgid "PHP Mail() Function"
 msgstr "PHP mail() functie"
 
-#: include/global_settings.php:1423 lib/functions.php:3460
+#: include/global_settings.php:1423 lib/functions.php:3573
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:1424 lib/functions.php:3465
+#: include/global_settings.php:1424 lib/functions.php:3578
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11129,7 +11149,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Sendmail opties"
 
-#: include/global_settings.php:1461 lib/functions.php:3460
+#: include/global_settings.php:1461 lib/functions.php:3573
 msgid "Sendmail Path"
 msgstr "Sendmail path"
 
@@ -11590,7 +11610,7 @@ msgstr "Standaard afwijking"
 msgid "Variance Based w/Outliers Removed"
 msgstr ""
 
-#: include/global_settings.php:1826 lib/html.php:1935
+#: include/global_settings.php:1826 lib/html.php:1970
 msgid "Replacement Method"
 msgstr ""
 
@@ -11602,15 +11622,15 @@ msgid ""
 "good value found."
 msgstr ""
 
-#: include/global_settings.php:1831 lib/html.php:1931
+#: include/global_settings.php:1831 lib/html.php:1966
 msgid "Average"
 msgstr "Gemiddeld"
 
-#: include/global_settings.php:1832 lib/html.php:1932
+#: include/global_settings.php:1832 lib/html.php:1967
 msgid "NaN's"
 msgstr ""
 
-#: include/global_settings.php:1833 lib/html.php:1933
+#: include/global_settings.php:1833 lib/html.php:1968
 msgid "Last Known Good"
 msgstr ""
 
@@ -11634,7 +11654,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "%d standaardafwijkingen"
 
-#: include/global_settings.php:1854 lib/html.php:1947
+#: include/global_settings.php:1854 lib/html.php:1982
 msgid "Variance Percentage"
 msgstr ""
 
@@ -12364,8 +12384,8 @@ msgstr "Locatie:"
 msgid "Contact:"
 msgstr "Contactpersoon:"
 
-#: lib/api_device.php:559 lib/functions.php:3491 lib/functions.php:3493
-#: lib/functions.php:3497
+#: lib/api_device.php:559 lib/functions.php:3604 lib/functions.php:3606
+#: lib/functions.php:3610
 msgid "Ping Results"
 msgstr "Ping resultaten"
 
@@ -12531,287 +12551,287 @@ msgstr "Bijwerken van data query sortering cache is voltooid"
 msgid "Index Association with Local Data complete"
 msgstr ""
 
-#: lib/data_query.php:290
+#: lib/data_query.php:291
 #, fuzzy
 msgid "Update Re-Index Cache complete"
 msgstr "Bijwerken van data query sortering cache is voltooid"
 
-#: lib/data_query.php:294
+#: lib/data_query.php:295
 #, fuzzy
 msgid "Update Poller Cache for Query complete"
 msgstr "Bijwerken van data query sortering cache is voltooid"
 
-#: lib/data_query.php:296
+#: lib/data_query.php:297
 msgid ""
 "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
 msgstr ""
 
-#: lib/data_query.php:320
+#: lib/data_query.php:321
 #, fuzzy
 msgid "Automation Executing for Data Query complete"
 msgstr "Scantemplate voor [Verwijderd template]"
 
-#: lib/data_query.php:323
+#: lib/data_query.php:324
 msgid "Plugin hooks complete"
 msgstr ""
 
-#: lib/data_query.php:327
+#: lib/data_query.php:328
 #, fuzzy
 msgid "Automation Execution for Data Query complete"
 msgstr "Scantemplate voor [Verwijderd template]"
 
-#: lib/data_query.php:330
+#: lib/data_query.php:331
 #, fuzzy
 msgid "Plugin Hooks complete"
 msgstr "Plugin is niet compatible"
 
-#: lib/data_query.php:404
+#: lib/data_query.php:405
 #, php-format
 msgid "Could not find data query XML file at '%s'"
 msgstr "Het data query XML bestand kon niet worden gevonden in '%s'"
 
-#: lib/data_query.php:408
+#: lib/data_query.php:409
 #, php-format
 msgid "Found data query XML file at '%s'"
 msgstr ""
 
-#: lib/data_query.php:426 lib/data_query.php:576 lib/data_query.php:1781
+#: lib/data_query.php:427 lib/data_query.php:577 lib/data_query.php:1782
 msgid "Error parsing XML file into an array."
 msgstr ""
 
-#: lib/data_query.php:430 lib/data_query.php:580
+#: lib/data_query.php:431 lib/data_query.php:581
 msgid "XML file parsed ok."
 msgstr "XML bestand succesvol geparsed."
 
-#: lib/data_query.php:438 lib/data_query.php:583
+#: lib/data_query.php:439 lib/data_query.php:584
 #, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgstr ""
 
-#: lib/data_query.php:439 lib/data_query.php:584
+#: lib/data_query.php:440 lib/data_query.php:585
 msgid ""
 "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;"
 "input-output&lt;/direction&gt; fields only"
 msgstr ""
 
-#: lib/data_query.php:450
+#: lib/data_query.php:451
 #, php-format
 msgid "Executing script for num of indexes '%s'"
 msgstr ""
 
-#: lib/data_query.php:452
+#: lib/data_query.php:453
 #, php-format
 msgid "Found number of indexes: %s"
 msgstr "Aantal gevonden indexes: %s"
 
-#: lib/data_query.php:456
+#: lib/data_query.php:457
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not "
 "supported"
 msgstr ""
 
-#: lib/data_query.php:458
+#: lib/data_query.php:459
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
 "by counting arg_index entries"
 msgstr ""
 
-#: lib/data_query.php:468
+#: lib/data_query.php:469
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
 msgstr ""
 
-#: lib/data_query.php:470
+#: lib/data_query.php:471
 msgid "Click to show Data Query output for 'index'"
 msgstr ""
 
-#: lib/data_query.php:473
+#: lib/data_query.php:474
 #, php-format
 msgid "Found index: %s"
 msgstr "Gevonden index: %s"
 
-#: lib/data_query.php:486
+#: lib/data_query.php:487
 #, php-format
 msgid "Click to show Data Query output for sfield '%s'"
 msgstr ""
 
-#: lib/data_query.php:490
+#: lib/data_query.php:491
 #, php-format
 msgid "Executing script query '%s'"
 msgstr ""
 
-#: lib/data_query.php:499
+#: lib/data_query.php:500
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
 msgstr "Gevonden item [%s='%s'] index: %s"
 
-#: lib/data_query.php:535 lib/data_query.php:550
+#: lib/data_query.php:536 lib/data_query.php:551
 #, php-format
 msgid "Total: %f, Delta: %f, %s"
 msgstr ""
 
-#: lib/data_query.php:570
+#: lib/data_query.php:571
 #, php-format
 msgid "Invalid host_id: %s"
 msgstr ""
 
-#: lib/data_query.php:595
+#: lib/data_query.php:596
 msgid "Failed to load SNMP session."
 msgstr ""
 
-#: lib/data_query.php:604
+#: lib/data_query.php:605
 #, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr ""
 
-#: lib/data_query.php:606
+#: lib/data_query.php:607
 msgid ""
 "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
 "by counting oid_index entries"
 msgstr ""
 
-#: lib/data_query.php:612
+#: lib/data_query.php:613
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
 
-#: lib/data_query.php:616
+#: lib/data_query.php:617
 msgid "No SNMP data returned"
 msgstr "Geen SNMP data verkregen"
 
-#: lib/data_query.php:621
+#: lib/data_query.php:622
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
 msgstr ""
 
-#: lib/data_query.php:640
+#: lib/data_query.php:641
 #, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
 msgstr ""
 
-#: lib/data_query.php:644
+#: lib/data_query.php:645
 #, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
 msgstr ""
 
-#: lib/data_query.php:662
+#: lib/data_query.php:663
 #, php-format
 msgid ""
 "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' "
 "is defined"
 msgstr ""
 
-#: lib/data_query.php:669
+#: lib/data_query.php:670
 #, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
 msgstr ""
 
-#: lib/data_query.php:674
+#: lib/data_query.php:675
 #, php-format
 msgid "Located input field '%s' [get]"
 msgstr ""
 
-#: lib/data_query.php:683
+#: lib/data_query.php:684
 #, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
 msgstr ""
 
-#: lib/data_query.php:694
+#: lib/data_query.php:695
 #, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
 msgstr ""
 
-#: lib/data_query.php:715
+#: lib/data_query.php:716
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
 msgstr ""
 
-#: lib/data_query.php:725
+#: lib/data_query.php:726
 #, php-format
 msgid "Field '%s' %s"
 msgstr "Veld '%s' %s"
 
-#: lib/data_query.php:760
+#: lib/data_query.php:761
 #, php-format
 msgid "Executing SNMP get for %s oids (%s)"
 msgstr ""
 
-#: lib/data_query.php:787
+#: lib/data_query.php:788
 #, php-format
 msgid "Found result for data @ '%s' [value='%s']"
 msgstr ""
 
-#: lib/data_query.php:795
+#: lib/data_query.php:796
 #, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 
-#: lib/data_query.php:799
+#: lib/data_query.php:800
 #, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 
-#: lib/data_query.php:812
+#: lib/data_query.php:813
 #, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
 
-#: lib/data_query.php:841
+#: lib/data_query.php:842
 #, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
 msgstr ""
 
-#: lib/data_query.php:847
+#: lib/data_query.php:848
 #, php-format
 msgid "Click to show Data Query output for field '%s'"
 msgstr ""
 
-#: lib/data_query.php:849
+#: lib/data_query.php:850
 #, php-format
 msgid "Located input field '%s' [walk]"
 msgstr ""
 
-#: lib/data_query.php:876
+#: lib/data_query.php:877
 #, php-format
 msgid "Executing SNMP walk for data @ '%s'"
 msgstr ""
 
-#: lib/data_query.php:926
+#: lib/data_query.php:927
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
 msgstr "Gevonden item [%s='%s'] index: %s [van %s]"
 
-#: lib/data_query.php:964
+#: lib/data_query.php:965
 #, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
 msgstr ""
 
-#: lib/data_query.php:970
+#: lib/data_query.php:971
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid parse]"
 
-#: lib/data_query.php:994
+#: lib/data_query.php:995
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid parse]"
 
-#: lib/data_query.php:1358
+#: lib/data_query.php:1359
 msgid "Re-Indexing Data Query complete"
 msgstr ""
 
-#: lib/data_query.php:1506
+#: lib/data_query.php:1507
 #, fuzzy
 msgid "Unknown Index"
 msgstr "Onbekend"
 
-#: lib/database.php:1311
+#: lib/database.php:1316
 msgid ""
 "Failed to determine password field length, can not continue as may corrupt "
 "password"
 msgstr ""
 
-#: lib/database.php:1317
+#: lib/database.php:1322
 msgid ""
 "Failed to alter password field length, can not continue as may corrupt "
 "password"
@@ -12910,117 +12930,117 @@ msgstr "Niet query gebaseerd"
 msgid "Link %s"
 msgstr "Links"
 
-#: lib/functions.php:3109
+#: lib/functions.php:3131
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
 "link, please set the <b>Alert e-mail</b> setting."
 msgstr ""
 
-#: lib/functions.php:3424
+#: lib/functions.php:3537
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "Authenticatie mislukt: %s"
 
-#: lib/functions.php:3428
+#: lib/functions.php:3541
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO mislukt: %s"
 
-#: lib/functions.php:3431
+#: lib/functions.php:3544
 #, php-format
 msgid "Connect failed: %s"
 msgstr "Mislukte verbindingen: %s"
 
-#: lib/functions.php:3434
+#: lib/functions.php:3547
 msgid "SMTP error: "
 msgstr "SMTP fout: "
 
-#: lib/functions.php:3447
+#: lib/functions.php:3560
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
 "the configuration of your Mail Settings."
 msgstr ""
 
-#: lib/functions.php:3448
+#: lib/functions.php:3561
 msgid "Your email settings are currently set as follows"
 msgstr "Uw e-mail instellingen zijn momenteel als volgt"
 
-#: lib/functions.php:3449
+#: lib/functions.php:3562
 msgid "Method"
 msgstr "Methode"
 
-#: lib/functions.php:3451
+#: lib/functions.php:3564
 msgid "Checking Configuration...<br>"
 msgstr "Configuratie controleren…<br>"
 
-#: lib/functions.php:3458
+#: lib/functions.php:3571
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer Class"
 
-#: lib/functions.php:3464
+#: lib/functions.php:3577
 msgid "Method: SMTP"
 msgstr "Methode: SMTP"
 
-#: lib/functions.php:3479
+#: lib/functions.php:3592
 msgid "Not Shown for Security Reasons"
 msgstr "Wordt vanwege beveiligingsredenen niet getoond"
 
-#: lib/functions.php:3480
+#: lib/functions.php:3593
 msgid "Security"
 msgstr "Beveiliging"
 
-#: lib/functions.php:3488
+#: lib/functions.php:3601
 msgid "Ping Results:"
 msgstr "Ping resultaten:"
 
-#: lib/functions.php:3497
+#: lib/functions.php:3610
 msgid "Bypassed"
 msgstr "Overgeslagen"
 
-#: lib/functions.php:3505
+#: lib/functions.php:3618
 msgid "Creating Message Text..."
 msgstr ""
 
-#: lib/functions.php:3508
+#: lib/functions.php:3621
 msgid "Sending Message..."
 msgstr "Bericht wordt verstuurt..."
 
-#: lib/functions.php:3512
+#: lib/functions.php:3625
 msgid "Cacti Test Message"
 msgstr "Cacti testbericht"
 
-#: lib/functions.php:3514
+#: lib/functions.php:3627
 msgid "Success!"
 msgstr "Gelukt!"
 
-#: lib/functions.php:3517
+#: lib/functions.php:3630
 msgid "Message Not Sent due to ping failure."
 msgstr ""
 
-#: lib/functions.php:4070 lib/functions.php:4131 poller.php:321 poller.php:432
+#: lib/functions.php:4183 lib/functions.php:4244 poller.php:321 poller.php:432
 #: poller.php:494 poller.php:517 poller.php:658
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Cacti instellingen"
 
-#: lib/functions.php:4070 lib/functions.php:4131
+#: lib/functions.php:4183 lib/functions.php:4244
 #, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
 "logfile for more details."
 msgstr ""
 
-#: lib/functions.php:4507 lib/functions.php:4509
+#: lib/functions.php:4620 lib/functions.php:4622
 #, php-format
 msgid "- Beta %s"
 msgstr ""
 
-#: lib/functions.php:4507
+#: lib/functions.php:4620
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Versie %s"
 
-#: lib/functions.php:4509
+#: lib/functions.php:4622
 #, php-format
 msgid "%s %s"
 msgstr ""
@@ -13041,7 +13061,7 @@ msgstr "Wijzig apparaat"
 msgid "Kill Spikes in Graphs"
 msgstr ""
 
-#: lib/html.php:422 lib/installer.php:1328
+#: lib/html.php:422 lib/installer.php:1376
 msgid "Previous"
 msgstr "Vorige"
 
@@ -13050,7 +13070,7 @@ msgstr "Vorige"
 msgid "%d to %d of %s [ %s ]"
 msgstr "%d tot %d van %s [ %s ]"
 
-#: lib/html.php:428 lib/installer.php:1327
+#: lib/html.php:428 lib/installer.php:1375
 msgid "Next"
 msgstr "Volgende"
 
@@ -13072,75 +13092,75 @@ msgstr "Alpha %"
 msgid "No Task"
 msgstr "Geen taak"
 
-#: lib/html.php:1257
+#: lib/html.php:1292
 msgid "Choose an action"
 msgstr "Kies een actie"
 
-#: lib/html.php:1267
+#: lib/html.php:1302
 msgid "Execute Action"
 msgstr "Actie uitvoeren"
 
-#: lib/html.php:1466 lib/html.php:1468 lib/html.php:1548 managers.php:41
+#: lib/html.php:1501 lib/html.php:1503 lib/html.php:1583 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Logs"
 
-#: lib/html.php:1939
+#: lib/html.php:1974
 #, php-format
 msgid "%s Standard Deviations"
 msgstr "%s standaardafwijkingen"
 
-#: lib/html.php:1941
+#: lib/html.php:1976
 msgid "Standard Deviations"
 msgstr "Standaard afwijkingen"
 
-#: lib/html.php:1951
+#: lib/html.php:1986
 #, php-format
 msgid "%d Outliers"
 msgstr "%d Uitschieters"
 
-#: lib/html.php:1953
+#: lib/html.php:1988
 msgid "Variance Outliers"
 msgstr ""
 
-#: lib/html.php:1957
+#: lib/html.php:1992
 #, php-format
 msgid "%d Spikes"
 msgstr "%d Pieken"
 
-#: lib/html.php:1959
+#: lib/html.php:1994
 msgid "Kills Per RRA"
 msgstr ""
 
-#: lib/html.php:1965
+#: lib/html.php:2000
 msgid "Remove StdDev"
 msgstr ""
 
-#: lib/html.php:1966
+#: lib/html.php:2001
 msgid "Remove Variance"
 msgstr ""
 
-#: lib/html.php:1967
+#: lib/html.php:2002
 msgid "Gap Fill Range"
 msgstr ""
 
-#: lib/html.php:1968
+#: lib/html.php:2003
 msgid "Float Range"
 msgstr ""
 
-#: lib/html.php:1970
+#: lib/html.php:2005
 msgid "Dry Run StdDev"
 msgstr ""
 
-#: lib/html.php:1971
+#: lib/html.php:2006
 msgid "Dry Run Variance"
 msgstr ""
 
-#: lib/html.php:1972
+#: lib/html.php:2007
 msgid "Dry Run Gap Fill Range"
 msgstr ""
 
-#: lib/html.php:1973
+#: lib/html.php:2008
 msgid "Dry Run Float Range"
 msgstr ""
 
@@ -13852,7 +13872,7 @@ msgstr ""
 msgid "Bad UTF-8 offset error!"
 msgstr ""
 
-#: lib/html_utility.php:861 lib/installer.php:3179
+#: lib/html_utility.php:861 lib/installer.php:3230
 msgid "Error"
 msgstr "Fout"
 
@@ -13955,121 +13975,121 @@ msgstr "Gevonden afhankelijkheden:"
 msgid "Unmet Dependency:"
 msgstr ""
 
-#: lib/installer.php:484
+#: lib/installer.php:488
 #, fuzzy
 msgid "Path was not writable"
 msgstr "niet schrijfbaar"
 
-#: lib/installer.php:493
+#: lib/installer.php:497
 #, fuzzy
 msgid "Path is not writable"
 msgstr "niet schrijfbaar"
 
-#: lib/installer.php:574
+#: lib/installer.php:578
 #, php-format
 msgid "Failed to set specified %sRRDTool version: %s"
 msgstr ""
 
-#: lib/installer.php:603
+#: lib/installer.php:607
 msgid "Invalid Theme Specified"
 msgstr ""
 
-#: lib/installer.php:653
+#: lib/installer.php:657
 #, fuzzy
 msgid "Resource is not writable"
 msgstr "niet schrijfbaar"
 
-#: lib/installer.php:658
+#: lib/installer.php:662
 #, fuzzy
 msgid "File not found"
 msgstr "Bestand is niet gevonden"
 
-#: lib/installer.php:669
+#: lib/installer.php:673
 msgid "PHP did not return expected result"
 msgstr ""
 
-#: lib/installer.php:683
+#: lib/installer.php:687
 msgid "Unexpected path parameter"
 msgstr ""
 
-#: lib/installer.php:716
+#: lib/installer.php:720
 #, php-format
 msgid "Failed to apply specified profile %s != %s"
 msgstr ""
 
-#: lib/installer.php:753
+#: lib/installer.php:757
 #, php-format
 msgid "Failed to apply specified mode: %s"
 msgstr ""
 
-#: lib/installer.php:775
+#: lib/installer.php:779
 #, php-format
 msgid "Failed to apply specified automation override: %s"
 msgstr ""
 
-#: lib/installer.php:795
+#: lib/installer.php:799
 msgid "Failed to apply specified cron interval"
 msgstr ""
 
-#: lib/installer.php:833
+#: lib/installer.php:837
 msgid "Failed to apply specified Automation Range"
 msgstr ""
 
-#: lib/installer.php:903
+#: lib/installer.php:907
 msgid "No matching snmp option exists"
 msgstr ""
 
-#: lib/installer.php:1031
+#: lib/installer.php:1044
 #, fuzzy
 msgid "No matching template exists"
 msgstr "Scantemplate [wijzig: %s]"
 
-#: lib/installer.php:1275
+#: lib/installer.php:1323
 msgid "The Installer could not proceed due to an unexpected error."
 msgstr ""
 
-#: lib/installer.php:1276
+#: lib/installer.php:1324
 #, fuzzy
 msgid "Please report this to the Cacti Group."
 msgstr "Geef deze geaggregeerde grafiek een naam."
 
-#: lib/installer.php:1277
+#: lib/installer.php:1325
 #, fuzzy, php-format
 msgid "Unknown Reason: %s"
 msgstr "Onbekend type = '%s'."
 
-#: lib/installer.php:1283
+#: lib/installer.php:1331
 #, php-format
 msgid ""
 "You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, "
 "this can not be performed."
 msgstr ""
 
-#: lib/installer.php:1284
+#: lib/installer.php:1332
 msgid ""
 "To be able continue, you <b>MUST</b> create a new database, import \"cacti."
 "sql\" into it:"
 msgstr ""
 
-#: lib/installer.php:1286
+#: lib/installer.php:1334
 msgid ""
 "You <b>MUST</b> then update \"include/config.php\" to point to the new "
 "database."
 msgstr ""
 
-#: lib/installer.php:1287
+#: lib/installer.php:1335
 msgid ""
 "NOTE: Your existing data will not be modified, nor will it or any history be "
 "available to the new install"
 msgstr ""
 
-#: lib/installer.php:1294
+#: lib/installer.php:1342
 msgid ""
 "You have created a new database, but have not yet imported the 'cacti.sql' "
 "file. At the command line, execute the following to continue:"
 msgstr ""
 
-#: lib/installer.php:1296
+#: lib/installer.php:1344
 #, fuzzy
 msgid ""
 "This error may also be generated if the cacti database user does not have "
@@ -14085,7 +14105,7 @@ msgstr ""
 "mogelijkheid heeft om SELECT, INSERT, DELETE, UPDATE, CREATE, ALTER, DROP en "
 "INDEX op de Cacti database uit te voeren."
 
-#: lib/installer.php:1297
+#: lib/installer.php:1345
 #, fuzzy
 msgid ""
 "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant "
@@ -14094,12 +14114,12 @@ msgstr ""
 "In Cacti %s, moet u ook de MySQL tijdzone informatie importeren in MySQL en "
 "de Cacti user SELECT rechten geven op de mysql.time_zone_name tabel"
 
-#: lib/installer.php:1300
+#: lib/installer.php:1348
 #, fuzzy
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
 msgstr "Op Linux/UNIX, doe het volgende:"
 
-#: lib/installer.php:1303
+#: lib/installer.php:1351
 msgid ""
 "On Windows, you must follow the instructions here <a target='_blank' "
 "href='https://dev.mysql.com/downloads/timezones.html'>Time zone description "
@@ -14111,36 +14131,36 @@ msgstr ""
 "Als dat is voltooid, kunt u het volgende commando uitvoeren om de Cacti user "
 "toegang tot de tabellen te geven:"
 
-#: lib/installer.php:1306
+#: lib/installer.php:1354
 msgid "Then run the following within MySQL as an administrator:"
 msgstr ""
 
-#: lib/installer.php:1324 pollers.php:485
+#: lib/installer.php:1372 pollers.php:486
 msgid "Test Connection"
 msgstr "Test verbinding"
 
-#: lib/installer.php:1335
+#: lib/installer.php:1383
 msgid "Begin"
 msgstr "Start"
 
-#: lib/installer.php:1341 lib/installer.php:1752 lib/installer.php:1762
-#: lib/installer.php:2297
+#: lib/installer.php:1389 lib/installer.php:1800 lib/installer.php:1810
+#: lib/installer.php:2348
 msgid "Upgrade"
 msgstr "Upgrade"
 
-#: lib/installer.php:1343 lib/installer.php:2301
+#: lib/installer.php:1391 lib/installer.php:2352
 msgid "Downgrade"
 msgstr "Downgrade"
 
-#: lib/installer.php:1442 utilities.php:254
+#: lib/installer.php:1490 utilities.php:254
 msgid "Cacti Version"
 msgstr "Cacti versie"
 
-#: lib/installer.php:1442
+#: lib/installer.php:1490
 msgid "License Agreement"
 msgstr "Licentie overeenkomst"
 
-#: lib/installer.php:1443
+#: lib/installer.php:1491
 msgid ""
 "Thanks for taking the time to download and install Cacti, the complete "
 "graphing solution for your network. Before you can start making cool graphs, "
@@ -14151,7 +14171,7 @@ msgstr ""
 "u kunt beginnen met het maken van grafieken, zijn hier een paar zaken over "
 "Cacti die u moete weten."
 
-#: lib/installer.php:1444
+#: lib/installer.php:1492
 #, php-format
 msgid ""
 "Make sure you have read and followed the required steps needed to install "
@@ -14163,7 +14183,7 @@ msgstr ""
 "href=\"%1$s\">Unix</a> en <a href=\"%2$s\">Win32</a>-gebaseerde "
 "besturingssystemen."
 
-#: lib/installer.php:1447
+#: lib/installer.php:1495
 #, fuzzy, php-format
 msgid ""
 "This process will guide you through the steps for upgrading from version "
@@ -14172,7 +14192,7 @@ msgstr ""
 "Let op: Dit proces begeleidt u door de stappen voor het upgraden van versie "
 "'%s'. "
 
-#: lib/installer.php:1448
+#: lib/installer.php:1496
 #, php-format
 msgid ""
 "Also, if this is an upgrade, be sure to reading the <a href=\"%s\">Upgrade</"
@@ -14181,13 +14201,13 @@ msgstr ""
 "Tevens, als dit een upgrade is, zorg ervoor dat u de <a href=\"%s\">upgrade</"
 "a> informatie heeft gelezen."
 
-#: lib/installer.php:1452
+#: lib/installer.php:1500
 msgid ""
 "It is NOT recommended to downgrade as the database structure may be "
 "inconsistent"
 msgstr ""
 
-#: lib/installer.php:1455
+#: lib/installer.php:1503
 msgid ""
 "Cacti is licensed under the GNU General Public License, you must agree to "
 "its provisions before continuing:"
@@ -14195,7 +14215,7 @@ msgstr ""
 "Cacti is gelicentieerd onder de GNU Public License, u moet hiermee akkoord "
 "gaan voordat ik verder kunt gaan:"
 
-#: lib/installer.php:1459
+#: lib/installer.php:1507
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -14207,30 +14227,30 @@ msgstr ""
 "VERKOOPBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD DOEL. Zie de GNU General "
 "Public License voor meer details."
 
-#: lib/installer.php:1496
+#: lib/installer.php:1544
 msgid "Accept GPL License Agreement"
 msgstr "Accepteer de GPL licentie overeenkomst"
 
-#: lib/installer.php:1496
+#: lib/installer.php:1544
 #, fuzzy
 msgid "Select default theme: "
 msgstr "Stel in als standaard"
 
-#: lib/installer.php:1518
+#: lib/installer.php:1566
 msgid "Pre-installation Checks"
 msgstr "Pre installatie controle"
 
-#: lib/installer.php:1519
+#: lib/installer.php:1567
 msgid "Location checks"
 msgstr "Locatie controles"
 
-#: lib/installer.php:1550 lib/installer.php:1691 lib/installer.php:1704
-#: lib/installer.php:1708 lib/installer.php:1858 lib/installer.php:1863
-#: lib/installer.php:3268
+#: lib/installer.php:1598 lib/installer.php:1739 lib/installer.php:1752
+#: lib/installer.php:1756 lib/installer.php:1908 lib/installer.php:1913
+#: lib/installer.php:3319
 msgid "ERROR:"
 msgstr "FOUT:"
 
-#: lib/installer.php:1550
+#: lib/installer.php:1598
 msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
@@ -14238,7 +14258,7 @@ msgstr ""
 "Update alstublieft de config.php met de correcte relatieve URL van cacti "
 "(url_path)."
 
-#: lib/installer.php:1553
+#: lib/installer.php:1601
 msgid ""
 "Your Cacti configuration has the relative correct path (url_path) in config."
 "php."
@@ -14246,56 +14266,56 @@ msgstr ""
 "Uw Cacti configuratie heeft het relatieve pad (url_path) ingesteld in de "
 "config.php."
 
-#: lib/installer.php:1558
+#: lib/installer.php:1606
 #, fuzzy
 msgid "PHP - Recommendations"
 msgstr "PHP informatie"
 
-#: lib/installer.php:1575
+#: lib/installer.php:1623
 #, php-format
 msgid "PHP %s is the mimimum version"
 msgstr ""
 
-#: lib/installer.php:1582
+#: lib/installer.php:1630
 #, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr ""
 
-#: lib/installer.php:1589
+#: lib/installer.php:1637
 #, php-format
 msgid "A minimum of %s m execution time"
 msgstr ""
 
-#: lib/installer.php:1595
+#: lib/installer.php:1643
 #, fuzzy
 msgid "PHP Recommendations"
 msgstr "PHP informatie"
 
-#: lib/installer.php:1596
+#: lib/installer.php:1644
 msgid "Current"
 msgstr "Huidig"
 
-#: lib/installer.php:1596
+#: lib/installer.php:1644
 #, fuzzy
 msgid "Recommended"
 msgstr "Aanbevolen waarde"
 
-#: lib/installer.php:1602
+#: lib/installer.php:1650
 #, fuzzy
 msgid "Passed"
 msgstr "Overgeslagen"
 
-#: lib/installer.php:1605
+#: lib/installer.php:1653
 #, fuzzy
 msgid "Warning"
 msgstr "Waarschuwingen"
 
-#: lib/installer.php:1626
+#: lib/installer.php:1674
 #, fuzzy
 msgid "PHP - Module Support (Required)"
 msgstr "Benodigde PHP modules"
 
-#: lib/installer.php:1627
+#: lib/installer.php:1675
 msgid ""
 "Cacti requires several PHP Modules to be installed to work properly. If any "
 "of these are not installed, you will be unable to continue the installation "
@@ -14311,7 +14331,7 @@ msgstr ""
 "instellingen. Volg alstublieft de MySQL aanbevelingen. Raadpleeg de MySQL "
 "handleiding als u hierover vragen heeft."
 
-#: lib/installer.php:1629
+#: lib/installer.php:1677
 msgid ""
 "The following PHP extensions are mandatory, and MUST be installed before "
 "continuing your Cacti install."
@@ -14319,25 +14339,25 @@ msgstr ""
 "De volgende PHP extensies zijn verplicht, en MOETEN worden geïnstalleerd "
 "voordat u door kunt gaan met de installatie van Cacti."
 
-#: lib/installer.php:1633
+#: lib/installer.php:1681
 msgid "Required PHP Modules"
 msgstr "Benodigde PHP modules"
 
-#: lib/installer.php:1634 lib/installer.php:1670 plugins.php:40 plugins.php:379
+#: lib/installer.php:1682 lib/installer.php:1718 plugins.php:40 plugins.php:379
 #: utilities.php:452
 msgid "Installed"
 msgstr "Geïnstalleerd"
 
-#: lib/installer.php:1634
+#: lib/installer.php:1682
 msgid "Required"
 msgstr "Verplicht"
 
-#: lib/installer.php:1657
+#: lib/installer.php:1705
 #, fuzzy
 msgid "PHP - Module Support (Optional)"
 msgstr "PHP module informatie"
 
-#: lib/installer.php:1659
+#: lib/installer.php:1707
 #, fuzzy
 msgid ""
 "The following PHP extensions are recommended, and should be installed before "
@@ -14347,20 +14367,20 @@ msgstr ""
 "De volgende PHP extensies zijn aanbevolen en zouden moeten worden "
 "geïnstalleerd voordat u doorgaat met de installatie van Cacti."
 
-#: lib/installer.php:1669
+#: lib/installer.php:1717
 msgid "Optional Modules"
 msgstr "Optionele modules"
 
-#: lib/installer.php:1670
+#: lib/installer.php:1718
 msgid "Optional"
 msgstr "Optioneel"
 
-#: lib/installer.php:1689
+#: lib/installer.php:1737
 #, fuzzy
 msgid "PHP - Timezone Support"
 msgstr "PHP Timezone ondersteuning"
 
-#: lib/installer.php:1691
+#: lib/installer.php:1739
 msgid ""
 "Your Web Servers PHP Timezone settings have not been set.  Please edit php."
 "ini and uncomment the 'date.timezone' setting and set it to the Web Servers "
@@ -14370,16 +14390,16 @@ msgstr ""
 "alstublieft de php.ini en activeer de 'date.timezone' instelling en stel "
 "deze in op de tijdzone van de webserver voordat u Cacti gaat installeren."
 
-#: lib/installer.php:1694
+#: lib/installer.php:1742
 msgid "Your Web Servers PHP is properly setup with a Timezone."
 msgstr "Op uw webserver is PHP correct ingesteld met een tijdzone."
 
-#: lib/installer.php:1699
+#: lib/installer.php:1747
 #, fuzzy
 msgid "MySQL - TimeZone Support"
 msgstr "MySQL Timezone ondersteuning"
 
-#: lib/installer.php:1704
+#: lib/installer.php:1752
 msgid ""
 "Your MySQL TimeZone database is not populated.  Please populate this "
 "database before proceeding."
@@ -14387,7 +14407,7 @@ msgstr ""
 "Uw MySQL tijdzone database is niet ingevuld. Verrijk deze database "
 "alstublieft voordat u doorgaat."
 
-#: lib/installer.php:1708
+#: lib/installer.php:1756
 msgid ""
 "Your Cacti database login account does not have access to the MySQL TimeZone "
 "database.  Please provide the Cacti database account \"select\" access to "
@@ -14399,7 +14419,7 @@ msgstr ""
 "toegang heeft tot de \"time_zone_name\" tabe in de \"mysql\" database en "
 "verrijk MySQL’s tijdzone informatie voordat u doorgaat."
 
-#: lib/installer.php:1713
+#: lib/installer.php:1761
 msgid ""
 "Your Cacti database account has access to the MySQL TimeZone database and "
 "that database is populated with global TimeZone information."
@@ -14407,12 +14427,12 @@ msgstr ""
 "Uw Cacti database account heeft toegang tot de MySQL tijdzone database en de "
 "database is verrijkt met de globale tijdzone informatie."
 
-#: lib/installer.php:1718
+#: lib/installer.php:1766
 #, fuzzy
 msgid "MySQL - Settings"
 msgstr "Log instellingen"
 
-#: lib/installer.php:1719
+#: lib/installer.php:1767
 msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
@@ -14420,27 +14440,27 @@ msgstr ""
 "Deze MySQL performance optimalisatie instellingen helpen bij het optimaal "
 "presteren van uw Cacti systeem zonder problemen op de langere termijn."
 
-#: lib/installer.php:1721
+#: lib/installer.php:1769
 msgid "Recommended MySQL System Variable Settings"
 msgstr "Aanbevolen MySQL configuratie instellingen"
 
-#: lib/installer.php:1747
+#: lib/installer.php:1795
 msgid "Installation Type"
 msgstr "Installatie type"
 
-#: lib/installer.php:1753
+#: lib/installer.php:1801
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Upgrade van <strong>%s</strong> naar <strong>%s</strong>"
 
-#: lib/installer.php:1755
+#: lib/installer.php:1803
 msgid ""
 "In the event of issues, It is highly recommended that you clear your browser "
 "cache, closing then reopening your browser (not just the tab Cacti is on) "
 "and retrying, before raising an issue with The Cacti Group"
 msgstr ""
 
-#: lib/installer.php:1756
+#: lib/installer.php:1804
 msgid ""
 "On rare occasions, we have had reports from users who experience some minor "
 "issues due to changes in the code.  These issues are caused by the browser "
@@ -14451,45 +14471,45 @@ msgid ""
 "point."
 msgstr ""
 
-#: lib/installer.php:1757
+#: lib/installer.php:1805
 msgid ""
 "If after clearing your cache and restarting your browser, you still "
 "experience issues, please raise the issue with us and we will try to "
 "identify the cause of it."
 msgstr ""
 
-#: lib/installer.php:1763
+#: lib/installer.php:1811
 #, php-format
 msgid "Downgrade from <strong>%s</strong> to <strong>%s</strong>"
 msgstr "Downgrade van <strong>%s</strong> naar <strong>%s</strong>"
 
-#: lib/installer.php:1764
+#: lib/installer.php:1812
 msgid ""
 "You appears to be downgrading to a previous version.  Database changes made "
 "for the newer version will not be reversed and <i>could</i> cause issues."
 msgstr ""
 
-#: lib/installer.php:1769
+#: lib/installer.php:1817
 msgid "Please select the type of installation"
 msgstr "Selecteer het type installatie"
 
-#: lib/installer.php:1770
+#: lib/installer.php:1818
 msgid "Installation options:"
 msgstr "Installatie opties:"
 
-#: lib/installer.php:1774
+#: lib/installer.php:1822
 msgid "Choose this for the Primary site."
 msgstr "Kies deze optie voor de primaire Cacti locatie."
 
-#: lib/installer.php:1774 lib/installer.php:1823
+#: lib/installer.php:1822 lib/installer.php:1873
 msgid "New Primary Server"
 msgstr "Nieuwe primaire server"
 
-#: lib/installer.php:1775 lib/installer.php:1824
+#: lib/installer.php:1823 lib/installer.php:1874
 msgid "New Remote Poller"
 msgstr "Nieuwe externe poller"
 
-#: lib/installer.php:1775
+#: lib/installer.php:1823
 msgid ""
 "Remote Pollers are used to access networks that are not readily accessible "
 "to the Primary site."
@@ -14497,7 +14517,7 @@ msgstr ""
 "Externe pollers worden gebruikt op netwerken die niet direct toegankelijk "
 "zijn voor de primaire Cacti locatie."
 
-#: lib/installer.php:1828
+#: lib/installer.php:1878
 msgid ""
 "The following information has been determined from Cacti's configuration "
 "file. If it is not correct, please edit \"include/config.php\" before "
@@ -14507,47 +14527,47 @@ msgstr ""
 "Als dit niet correct is wijzig dan \"include/config.php\" voordat u verder "
 "gaat."
 
-#: lib/installer.php:1832
+#: lib/installer.php:1882
 #, fuzzy
 msgid "Local Database Connection Information"
 msgstr "Database verbinding testen"
 
-#: lib/installer.php:1835 lib/installer.php:1847
+#: lib/installer.php:1885 lib/installer.php:1897
 #, php-format
 msgid "Database: <b>%s</b>"
 msgstr "Database: <b>%s</b>"
 
-#: lib/installer.php:1836 lib/installer.php:1848
+#: lib/installer.php:1886 lib/installer.php:1898
 #, php-format
 msgid "Database User: <b>%s</b>"
 msgstr "Database gebruiker: <b>%s</b>"
 
-#: lib/installer.php:1837 lib/installer.php:1849
+#: lib/installer.php:1887 lib/installer.php:1899
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
 msgstr "Database hostname: <b>%s</b>"
 
-#: lib/installer.php:1838 lib/installer.php:1850
+#: lib/installer.php:1888 lib/installer.php:1900
 #, php-format
 msgid "Port: <b>%s</b>"
 msgstr "Poort: <b>%s</b>"
 
-#: lib/installer.php:1839 lib/installer.php:1851
+#: lib/installer.php:1889 lib/installer.php:1901
 #, php-format
 msgid "Server Operating System Type: <b>%s</b>"
 msgstr ""
 
-#: lib/installer.php:1844
+#: lib/installer.php:1894
 #, fuzzy
 msgid "Central Database Connection Information"
 msgstr "Database verbinding testen"
 
-#: lib/installer.php:1856
+#: lib/installer.php:1906
 #, fuzzy
 msgid "Configuration Readonly!"
 msgstr "Configuratie"
 
-#: lib/installer.php:1858
+#: lib/installer.php:1908
 msgid ""
 "Your config.php file must be writable by the web server during install in "
 "order to configure the Remote poller.  Once installation is complete, you "
@@ -14558,12 +14578,12 @@ msgstr ""
 "voltooid, moet u dit bestand op alleen-lezen rechten plaatsen om mogelijke "
 "beveiligingsrisico’s tegen te gaan."
 
-#: lib/installer.php:1862
+#: lib/installer.php:1912
 #, fuzzy
 msgid "Configuration of Poller"
 msgstr "Configuratie"
 
-#: lib/installer.php:1863
+#: lib/installer.php:1913
 msgid ""
 "Your Remote Cacti Poller information has not been included in your config."
 "php file.  Please review the config.php.dist, and set the variables: <i>"
@@ -14572,23 +14592,23 @@ msgid ""
 "try again."
 msgstr ""
 
-#: lib/installer.php:1867
+#: lib/installer.php:1917
 #, fuzzy
 msgid "Remote Poller Variables"
 msgstr "Nieuwe externe poller"
 
-#: lib/installer.php:1869
+#: lib/installer.php:1919
 msgid ""
 "The variables that must be set in the config.php file include the following:"
 msgstr ""
 
-#: lib/installer.php:1880
+#: lib/installer.php:1930
 msgid ""
 "The Installer automatically assigns a $poller_id and adds it to the config."
 "php file."
 msgstr ""
 
-#: lib/installer.php:1882
+#: lib/installer.php:1932
 msgid ""
 "Once the variables are all set in the config.php file, you must also grant "
 "the $rdatabase_username access to the main Cacti database server.  Follow "
@@ -14597,12 +14617,12 @@ msgid ""
 "able to proceed and complete the install."
 msgstr ""
 
-#: lib/installer.php:1886
+#: lib/installer.php:1936
 #, fuzzy
 msgid "Additional Steps After Installation"
 msgstr "Optionele adresgegevens"
 
-#: lib/installer.php:1888
+#: lib/installer.php:1938
 msgid ""
 "It is essential that the Central Cacti server can communicate via MySQL to "
 "each remote Cacti database server.  Once the install is complete, you must "
@@ -14610,23 +14630,23 @@ msgid ""
 "verify using the 'Test Connection' when editing the Remote Data Collector."
 msgstr ""
 
-#: lib/installer.php:1899
+#: lib/installer.php:1951
 msgid "Critical Binary Locations and Versions"
 msgstr "Noodzakelijke locaties en versies van applicaties"
 
-#: lib/installer.php:1900
+#: lib/installer.php:1952
 msgid "Make sure all of these values are correct before continuing."
 msgstr "Zorg ervoor dat al deze waarden correct zijn voordat u doorgaat."
 
-#: lib/installer.php:1903
+#: lib/installer.php:1955
 msgid "One or more paths appear to be incorrect, unable to proceed"
 msgstr ""
 
-#: lib/installer.php:1980
+#: lib/installer.php:2032
 msgid "Directory Permission Checks"
 msgstr "Rechten controle directories"
 
-#: lib/installer.php:1981
+#: lib/installer.php:2033
 msgid ""
 "Please ensure the directory permissions below are correct before "
 "proceeding.  During the install, these directories need to be owned by the "
@@ -14644,7 +14664,7 @@ msgstr ""
 "kiest om deze pakketten niet te installeren, dan is er een 'install_package."
 "php' cli script dat kan worden gebruikt als de installatie is voltooid."
 
-#: lib/installer.php:1984
+#: lib/installer.php:2036
 msgid ""
 "After the install is complete, you can make some of these directories read "
 "only to increase security."
@@ -14652,31 +14672,31 @@ msgstr ""
 "Nadat de installatie is voltooid, kunt u een aantal van deze directories "
 "alleen-lezen markeren om het beveiligingsniveau te verhogen."
 
-#: lib/installer.php:1986
+#: lib/installer.php:2038
 msgid ""
 "These directories will be required to stay read writable after the install "
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
 
-#: lib/installer.php:1991
+#: lib/installer.php:2043
 msgid "Required Writable at Install Time Only"
 msgstr "Locatie hoeft uitsluitend schrijfbaar te zijn tijdens de installatie"
 
-#: lib/installer.php:2010 lib/installer.php:2041
+#: lib/installer.php:2062 lib/installer.php:2093
 msgid "Not Writable"
 msgstr "Niet schrijfbaar"
 
-#: lib/installer.php:2022
+#: lib/installer.php:2074
 msgid "Required Writable after Install Complete"
 msgstr "Locatie moet schrijfbaar zijn ook nadat de installatie is voltooid"
 
-#: lib/installer.php:2056
+#: lib/installer.php:2108
 #, fuzzy
 msgid "Ensure Host Process Has Access"
 msgstr "Gelijktijdige processen"
 
-#: lib/installer.php:2057
+#: lib/installer.php:2109
 #, fuzzy
 msgid ""
 "Make sure your webserver has read and write access to the entire folder "
@@ -14685,30 +14705,30 @@ msgstr ""
 "Zorg ervoor dat de webserver lees en schrijf rechten heeft tot de volledige "
 "directoriestructuur.<br> Bijvoorbeeld: chown -R apache.apache %s/resource/"
 
-#: lib/installer.php:2058
+#: lib/installer.php:2110
 msgid "Example:"
 msgstr ""
 
-#: lib/installer.php:2060
+#: lib/installer.php:2112
 #, php-format
 msgid "%s should have MODIFY permission to the above directories"
 msgstr ""
 
-#: lib/installer.php:2063
+#: lib/installer.php:2115
 msgid ""
 "For SELINUX-users make sure that you have the correct permissions or set "
 "'setenforce 0' temporarily."
 msgstr ""
 
-#: lib/installer.php:2066
+#: lib/installer.php:2118
 msgid "Check Permissions"
 msgstr "Controleer rechten"
 
-#: lib/installer.php:2068
+#: lib/installer.php:2120
 msgid "All folders are writable"
 msgstr "Alle directories zijn schrijfbaar"
 
-#: lib/installer.php:2072
+#: lib/installer.php:2124
 msgid ""
 "If you are installing packages, once the packages are installed, you should "
 "change the scripts directory back to read only as this presents some "
@@ -14718,7 +14738,7 @@ msgstr ""
 "dient u de rechten van de script directorie terug te zetten naar alleen-"
 "lezen om blootstelling van buitenaf aan de website te voorkomen."
 
-#: lib/installer.php:2074
+#: lib/installer.php:2126
 msgid ""
 "For remote pollers, it is critical that the paths that you will be updating "
 "frequently, including the plugins, scripts, and resources paths have read/"
@@ -14726,12 +14746,12 @@ msgid ""
 "main web server content."
 msgstr ""
 
-#: lib/installer.php:2090 lib/installer.php:2096
+#: lib/installer.php:2142 lib/installer.php:2148
 #, fuzzy
 msgid "Default Profile"
 msgstr "Data profielen"
 
-#: lib/installer.php:2091
+#: lib/installer.php:2143
 msgid ""
 "Please select the default Data Source Profile to be used for polling "
 "sources.  This is the maximum amount of time between scanning devices for "
@@ -14740,12 +14760,12 @@ msgid ""
 "interval that you wish to use for Data Collection."
 msgstr ""
 
-#: lib/installer.php:2123
+#: lib/installer.php:2175
 #, fuzzy
 msgid "Default Automation Network"
 msgstr "Verwijder automatiseringtemplate(s)"
 
-#: lib/installer.php:2124
+#: lib/installer.php:2176
 msgid ""
 "Cacti can automatically scan the network once installation has completed. "
 "This will utilise the network range below to work out the range of IPs that "
@@ -14753,61 +14773,61 @@ msgid ""
 "include using both 'public' and 'private' communities."
 msgstr ""
 
-#: lib/installer.php:2125
+#: lib/installer.php:2177
 msgid ""
 "If your devices require a different set of options to be used first, you may "
 "define them below and they will be utilized before the defaults"
 msgstr ""
 
-#: lib/installer.php:2126
+#: lib/installer.php:2178
 msgid "All options may be adjusted post installation"
 msgstr ""
 
-#: lib/installer.php:2130
+#: lib/installer.php:2182
 #, fuzzy
 msgid "Default Options"
 msgstr "Standaard lettertype"
 
-#: lib/installer.php:2134
+#: lib/installer.php:2186
 #, fuzzy
 msgid "Scan Mode"
 msgstr "Modus"
 
-#: lib/installer.php:2139
+#: lib/installer.php:2191
 #, fuzzy
 msgid "Network Range"
 msgstr "Netwerknaam"
 
-#: lib/installer.php:2145
+#: lib/installer.php:2197
 #, fuzzy
 msgid "Additional Defaults"
 msgstr "Additionele opties"
 
-#: lib/installer.php:2166
+#: lib/installer.php:2218
 #, fuzzy
 msgid "Additional SNMP Options"
 msgstr "Additionele opties"
 
-#: lib/installer.php:2179
+#: lib/installer.php:2231
 #, fuzzy
 msgid "Error Locating Profiles"
 msgstr "Data profielen"
 
-#: lib/installer.php:2180
+#: lib/installer.php:2232
 msgid "The installation cannot continue because no profiles could be found."
 msgstr ""
 
-#: lib/installer.php:2181
+#: lib/installer.php:2233
 msgid ""
 "This may occur if you have a blank database and have not yet imported the "
 "cacti.sql file"
 msgstr ""
 
-#: lib/installer.php:2189
+#: lib/installer.php:2241
 msgid "Template Setup"
 msgstr "Template installatie"
 
-#: lib/installer.php:2191
+#: lib/installer.php:2243
 msgid ""
 "Please select the Device Templates that you wish to use after the Install.  "
 "If you Operating System is Windows, you need to ensure that you select the "
@@ -14820,15 +14840,15 @@ msgstr ""
 "UNIX is, let er dan op dat u de 'Local Linux Machine' apparaat template "
 "selecteert."
 
-#: lib/installer.php:2196 plugins.php:476
+#: lib/installer.php:2248 plugins.php:476
 msgid "Author"
 msgstr "Auteur"
 
-#: lib/installer.php:2196
+#: lib/installer.php:2248
 msgid "Homepage"
 msgstr "Homepage"
 
-#: lib/installer.php:2214
+#: lib/installer.php:2266
 msgid ""
 "Device Templates allow you to monitor and graph a vast assortment of data "
 "within Cacti.  After you select the desired Device Templates, press 'Finish' "
@@ -14841,51 +14861,41 @@ msgstr ""
 "geduld gedurende dit proces omdat het importeren van de apparaat templates "
 "enige minuten in beslag kan nemen."
 
-#: lib/installer.php:2221
+#: lib/installer.php:2273
 #, fuzzy
 msgid "Database Collation"
 msgstr "Data verzameling"
 
-#: lib/installer.php:2233
+#: lib/installer.php:2285
 msgid "Your databse default collation appears to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2235
+#: lib/installer.php:2287
 msgid "Your database default collaction does NOT appear to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2236
-msgid ""
-"Any tables created by plugins may have issues linked against Cacti Core "
-"tables if the collation is not matched"
-msgstr ""
-
-#: lib/installer.php:2237
+#: lib/installer.php:2288
 #, php-format
 msgid ""
-"Please ensure your database is changed from '%s' to 'utf8mb4_unicode_ci' by "
-"modifying your MySQL/MariaDB service' configuration file.  This is typically "
-"located in /etc/mysql/my.cnf or similar.  "
+"Any tables created by plugins may have issues linked against Cacti Core "
+"tables if the collation is not matched.   Please ensure your database is "
+"changed from '%s' to 'utf8mb4_unicode_ci' by modifying your MySQL/MariaDB "
+"service' configuration file.  This is typically located in /etc/mysql/my.cnf "
+"or similar.  "
 msgstr ""
 
-#: lib/installer.php:2238
+#: lib/installer.php:2289
 msgid ""
 "Under the [mysqld] section, locate the entries named 'character-set-server' "
 "and 'collation-server' and set them as follows:"
 msgstr ""
 
-#: lib/installer.php:2246
+#: lib/installer.php:2297
 #, fuzzy
 msgid "Table Setup"
 msgstr "Tabel instellingen"
 
-#: lib/installer.php:2251
-msgid ""
-"The following tables should be converted to UTF8 and InnoDB.  Please select "
-"the tables that you wish to convert during the installation process."
-msgstr ""
-
-#: lib/installer.php:2252
+#: lib/installer.php:2302
 msgid ""
 "Conversion of tables may take some time especially on larger tables.  The "
 "conversion of these tables will occur in the background but will not prevent "
@@ -14893,77 +14903,79 @@ msgid ""
 "not enough resources for MySQL to handle the conversion."
 msgstr ""
 
-#: lib/installer.php:2256
+#: lib/installer.php:2306
 #, fuzzy
 msgid "Tables"
 msgstr "Inschakelen"
 
-#: lib/installer.php:2257 utilities.php:509
+#: lib/installer.php:2307 utilities.php:509
 msgid "Collation"
 msgstr "Collatie"
 
-#: lib/installer.php:2257 utilities.php:504
+#: lib/installer.php:2307 utilities.php:504
 msgid "Engine"
 msgstr ""
 
-#: lib/installer.php:2279
-#, fuzzy
-msgid "WARNING"
-msgstr "WAARSCHUWING:"
-
-#: lib/installer.php:2280
+#: lib/installer.php:2328
 msgid ""
 "One or more tables are too large to convert during the installation.  You "
-"should use the cli/convert_tables.php script to perform the conversion."
+"should use the cli/convert_tables.php script to perform the conversion, then "
+"refresh this page. For example: "
 msgstr ""
 
-#: lib/installer.php:2286
+#: lib/installer.php:2332
+msgid ""
+"The following tables should be converted to UTF8 and InnoDB.  Please select "
+"the tables that you wish to convert during the installation process."
+msgstr ""
+
+#: lib/installer.php:2337
 msgid "All your tables appear to be UTF8 compliant"
 msgstr ""
 
-#: lib/installer.php:2296
+#: lib/installer.php:2347
 #, fuzzy
 msgid "Confirm Upgrade"
 msgstr "Upgrade"
 
-#: lib/installer.php:2300
+#: lib/installer.php:2351
 #, fuzzy
 msgid "Confirm Downgrade"
 msgstr "Downgrade"
 
-#: lib/installer.php:2304
+#: lib/installer.php:2355
 #, fuzzy
 msgid "Confirm Installation"
 msgstr "Cacti installatie wizard"
 
-#: lib/installer.php:2305 plugins.php:28
+#: lib/installer.php:2356 plugins.php:28
 msgid "Install"
 msgstr "Installeer"
 
-#: lib/installer.php:2310
+#: lib/installer.php:2361
 msgid "DOWNGRADE DETECTED"
 msgstr ""
 
-#: lib/installer.php:2311
+#: lib/installer.php:2362
 msgid ""
 "YOU MUST MANAUALLY CHANGE THE CACTI DATABASE TO REVERT ANY UPGRADE CHANGES "
 "THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS "
 "AUTOMATICALLY FOR YOU"
 msgstr ""
 
-#: lib/installer.php:2312
+#: lib/installer.php:2363
 msgid ""
 "Downgrading should only be performed when absolutely necessary and doing so "
 "may break your installlation"
 msgstr ""
 
-#: lib/installer.php:2315
+#: lib/installer.php:2366
 msgid ""
 "Your Cacti Server is almost ready.  Please check that you are happy to "
 "proceed."
 msgstr ""
 
-#: lib/installer.php:2318
+#: lib/installer.php:2369
 #, fuzzy, php-format
 msgid ""
 "Press '%s' then click '%s' to complete the installation process after "
@@ -14972,56 +14984,56 @@ msgstr ""
 "Nadat u de apparaat templates heeft geselecteerd, drukt u op 'Volgende' om "
 "het installatieproces af te ronden."
 
-#: lib/installer.php:2334
+#: lib/installer.php:2385
 #, fuzzy, php-format
 msgid "Installing Cacti Server v%s"
 msgstr "Ping mailserver"
 
-#: lib/installer.php:2335
+#: lib/installer.php:2386
 #, fuzzy
 msgid "Your Cacti Server is now installing"
 msgstr "Cacti installatie/upgrade wizard"
 
-#: lib/installer.php:2442
+#: lib/installer.php:2493
 msgid "Complete"
 msgstr ""
 
-#: lib/installer.php:2443
+#: lib/installer.php:2494
 #, php-format
 msgid ""
 "Your Cacti Server v%s has been installed/updated.  You may now start using "
 "the software."
 msgstr ""
 
-#: lib/installer.php:2446
+#: lib/installer.php:2497
 #, php-format
 msgid "Your Cacti Server v%s has been installed/updated with errors"
 msgstr ""
 
-#: lib/installer.php:2558
+#: lib/installer.php:2609
 msgid "Get Help"
 msgstr ""
 
-#: lib/installer.php:2563
+#: lib/installer.php:2614
 #, fuzzy
 msgid "Report Issue"
 msgstr "Rapportages"
 
-#: lib/installer.php:2566
+#: lib/installer.php:2617
 #, fuzzy
 msgid "Get Started"
 msgstr "Laatst gestart"
 
-#: lib/installer.php:3065
+#: lib/installer.php:3116
 msgid "Exception occurred during installation:  #"
 msgstr ""
 
-#: lib/installer.php:3074
+#: lib/installer.php:3125
 #, php-format
 msgid "Installation was started at %s, completed at %s"
 msgstr ""
 
-#: lib/installer.php:3240
+#: lib/installer.php:3291
 msgid "NOTE:"
 msgstr "LET OP:"
 
@@ -15033,11 +15045,11 @@ msgstr "Authenticatie succesvol"
 msgid "Authentication Failure"
 msgstr "Authenticatiefout"
 
-#: lib/ldap.php:257 lib/ldap.php:694
+#: lib/ldap.php:257 lib/ldap.php:707
 msgid "PHP LDAP not enabled"
 msgstr "PHP LDAP niet actief"
 
-#: lib/ldap.php:261 lib/ldap.php:702
+#: lib/ldap.php:261 lib/ldap.php:715
 msgid "No username defined"
 msgstr "Geen gebruikersnaam gedefinieerd"
 
@@ -15050,7 +15062,7 @@ msgstr "Protocol fout, instellen van versie niet mogelijk"
 msgid "Protocol Error, Unable to set referrals option"
 msgstr "Protocol fout, instellen van versie niet mogelijk"
 
-#: lib/ldap.php:273 lib/ldap.php:779
+#: lib/ldap.php:273 lib/ldap.php:798
 msgid "Protocol Error, unable to start TLS communications"
 msgstr "Protocol fout, starten van TLS communicatie niet mogelijk"
 
@@ -15064,11 +15076,11 @@ msgstr "Protocol fout, instellen van versie niet mogelijk"
 msgid "Protocol Error, Unable to bind, LDAP result: %s"
 msgstr "Protocol fout, instellen van versie niet mogelijk"
 
-#: lib/ldap.php:285 lib/ldap.php:844
+#: lib/ldap.php:285 lib/ldap.php:865
 msgid "Unable to Connect to Server"
 msgstr "Verbinding met de server mislukt"
 
-#: lib/ldap.php:289 lib/ldap.php:849
+#: lib/ldap.php:289 lib/ldap.php:870
 msgid "Connection Timeout"
 msgstr "Connectie timeout"
 
@@ -15092,11 +15104,11 @@ msgstr ""
 msgid "Unable to find users DN"
 msgstr ""
 
-#: lib/ldap.php:313 lib/ldap.php:861
+#: lib/ldap.php:313 lib/ldap.php:882
 msgid "Unable to create LDAP connection object"
 msgstr "Het was niet mogelijk om een LDAP connectie object te maken"
 
-#: lib/ldap.php:317 lib/ldap.php:725
+#: lib/ldap.php:317 lib/ldap.php:738
 msgid "Specific DN and Password required"
 msgstr ""
 
@@ -15105,44 +15117,44 @@ msgstr ""
 msgid "Unexpected error %s (Ldap Error: %s)"
 msgstr "Er heeft zich een onverwachte fout voorgedaan"
 
-#: lib/ldap.php:718
+#: lib/ldap.php:731
 msgid "User found"
 msgstr "Gebruiker gevonden"
 
-#: lib/ldap.php:754
+#: lib/ldap.php:769
 msgid "Protocol Error, unable to set version"
 msgstr "Protocol fout, instellen van versie niet mogelijk"
 
-#: lib/ldap.php:766
+#: lib/ldap.php:783
 msgid "Unable to set referrals option"
 msgstr ""
 
-#: lib/ldap.php:810
+#: lib/ldap.php:831
 #, fuzzy
 msgid "CN found"
 msgstr "Niet gevonden"
 
-#: lib/ldap.php:814
+#: lib/ldap.php:835
 msgid "To many records find"
 msgstr ""
 
-#: lib/ldap.php:820
+#: lib/ldap.php:841
 msgid "Unable to find this CN"
 msgstr ""
 
-#: lib/ldap.php:829
+#: lib/ldap.php:850
 msgid "Protocol Error"
 msgstr "Protocol fout"
 
-#: lib/ldap.php:834
+#: lib/ldap.php:855
 msgid "Invalid Credentials"
 msgstr "Ongeldige inloggegevens"
 
-#: lib/ldap.php:839
+#: lib/ldap.php:860
 msgid "Insufficient Access"
 msgstr "Onvoldoende toegang"
 
-#: lib/ldap.php:854
+#: lib/ldap.php:875
 msgid "General Bind Error, LDAP result:"
 msgstr ""
 
@@ -15714,10 +15726,6 @@ msgstr ""
 #, php-format
 msgid "%s Tuning"
 msgstr "%s Tuning"
-
-#: lib/utility.php:931
-msgid "Documentation"
-msgstr "Documentatie"
 
 #: lib/utility.php:931
 msgid "Note: Many changes below require a database restart"
@@ -16391,7 +16399,7 @@ msgstr ""
 msgid "If the remote database uses SSL to connect, check the checkbox below."
 msgstr ""
 
-#: pollers.php:370
+#: pollers.php:371
 msgid ""
 "Click 'Continue' to delete the following Data Collector.  Note, all devices "
 "will be disassociated from this Data Collector and mapped back to the Main "
@@ -16409,37 +16417,37 @@ msgstr[1] ""
 "alle apparaten die gebruik maken van deze data collectoren zullen worden "
 "ontkoppeld en worden gekoppeld aan de hoofd Cacti data collector."
 
-#: pollers.php:375
+#: pollers.php:376
 msgid "Delete Data Collector"
 msgid_plural "Delete Data Collectors"
 msgstr[0] ""
 msgstr[1] ""
 
-#: pollers.php:379
+#: pollers.php:380
 msgid "Click 'Continue' to disable the following Data Collector."
 msgid_plural "Click 'Continue' to disable the following Data Collectors."
 msgstr[0] ""
 msgstr[1] ""
 
-#: pollers.php:384
+#: pollers.php:385
 msgid "Disable Data Collector"
 msgid_plural "Disable Data Collectors"
 msgstr[0] "Data collector uitschakelen"
 msgstr[1] "Data collectoren uitschakelen"
 
-#: pollers.php:388
+#: pollers.php:389
 msgid "Click 'Continue' to enable the following Data Collector."
 msgid_plural "Click 'Continue' to enable the following Data Collectors."
 msgstr[0] ""
 msgstr[1] ""
 
-#: pollers.php:393 pollers.php:402
+#: pollers.php:394 pollers.php:403
 msgid "Enable Data Collector"
 msgid_plural "Enable Data Collectors"
 msgstr[0] "Data collector inschakelen"
 msgstr[1] "Data collectoren inschakelen"
 
-#: pollers.php:397
+#: pollers.php:398
 msgid ""
 "Click 'Continue' to Synchronize the Remote Data Collector for Offline "
 "Operation."
@@ -16449,129 +16457,129 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: pollers.php:443 sites.php:354
+#: pollers.php:444 sites.php:354
 #, php-format
 msgid "Site [edit: %s]"
 msgstr "Locatie [wijzig: %s]"
 
-#: pollers.php:447 sites.php:356
+#: pollers.php:448 sites.php:356
 msgid "Site [new]"
 msgstr "Locatie [nieuw]"
 
-#: pollers.php:477
+#: pollers.php:478
 msgid ""
 "Remote Data Collectors must be able to communicate to the Main Data "
 "Collector, and vice versa.  Use this button to verify that the Main Data "
 "Collector can communicate to this Remote Data Collector."
 msgstr ""
 
-#: pollers.php:485
+#: pollers.php:486
 msgid "Test Database Connection"
 msgstr "Database verbinding testen"
 
-#: pollers.php:628
+#: pollers.php:629
 msgid "Collectors"
 msgstr "Data verzamelaars"
 
-#: pollers.php:717
+#: pollers.php:718
 msgid "Collector Name"
 msgstr ""
 
-#: pollers.php:717
+#: pollers.php:718
 msgid "The Name of this Data Collector."
 msgstr ""
 
-#: pollers.php:718
+#: pollers.php:719
 msgid "The unique id associated with this Data Collector."
 msgstr ""
 
-#: pollers.php:719
+#: pollers.php:720
 msgid "The Hostname where the Data Collector is running."
 msgstr ""
 
-#: pollers.php:720
+#: pollers.php:721
 msgid "The Status of this Data Collector."
 msgstr ""
 
-#: pollers.php:721
+#: pollers.php:722
 #, fuzzy
 msgid "Proc/Threads"
 msgstr "Threads"
 
-#: pollers.php:721
+#: pollers.php:722
 msgid "The Number of Poller Processes and Threads for this Data Collector."
 msgstr ""
 
-#: pollers.php:722
+#: pollers.php:723
 msgid "Polling Time"
 msgstr "Polling tijd"
 
-#: pollers.php:722
+#: pollers.php:723
 msgid "The last data collection time for this Data Collector."
 msgstr ""
 
-#: pollers.php:723
+#: pollers.php:724
 msgid "Avg/Max"
 msgstr ""
 
-#: pollers.php:723
+#: pollers.php:724
 msgid "The Average and Maximum Collector timings for this Data Collector."
 msgstr ""
 
-#: pollers.php:724
+#: pollers.php:725
 msgid "The number of Devices associated with this Data Collector."
 msgstr ""
 
-#: pollers.php:725
+#: pollers.php:726
 msgid "SNMP Gets"
 msgstr ""
 
-#: pollers.php:725
+#: pollers.php:726
 msgid "The number of SNMP gets associated with this Collector."
 msgstr ""
 
-#: pollers.php:726
+#: pollers.php:727
 msgid "Scripts"
 msgstr "Scripts"
 
-#: pollers.php:726
+#: pollers.php:727
 msgid "The number of script calls associated with this Data Collector."
 msgstr ""
 
-#: pollers.php:727
+#: pollers.php:728
 msgid "Servers"
 msgstr "Servers"
 
-#: pollers.php:727
+#: pollers.php:728
 msgid "The number of script server calls associated with this Data Collector."
 msgstr ""
 
-#: pollers.php:728
+#: pollers.php:729
 msgid "Last Finished"
 msgstr "Laatst geëindigd"
 
-#: pollers.php:728
+#: pollers.php:729
 msgid "The last time this Data Collector completed."
 msgstr ""
 
-#: pollers.php:729
+#: pollers.php:730
 msgid "Last Update"
 msgstr "Laatste update"
 
-#: pollers.php:729
+#: pollers.php:730
 msgid "The last time this Data Collector checked in with the main Cacti site."
 msgstr ""
 
-#: pollers.php:730
+#: pollers.php:731
 #, fuzzy
 msgid "Last Sync"
 msgstr "Laatste scan:"
 
-#: pollers.php:730
+#: pollers.php:731
 msgid "The last time this Data Collector was full synced with main Cacti site."
 msgstr ""
 
-#: pollers.php:776
+#: pollers.php:777
 msgid "No Data Collectors Found"
 msgstr "Geen data verzamelaars gevonden"
 
@@ -18775,6 +18783,10 @@ msgstr "Het aantal grafiektemplates die deze VDEF gebruiken."
 #: vdef.php:907
 msgid "No VDEFs"
 msgstr "Geen VDEF's"
+
+#, fuzzy
+#~ msgid "WARNING"
+#~ msgstr "WAARSCHUWING:"
 
 #~ msgid "You must select at least one graph."
 #~ msgstr "U moet tenminste een grafiek selecteren."
