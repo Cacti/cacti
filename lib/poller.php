@@ -566,9 +566,6 @@ function update_resource_cache($poller_id = 1) {
 	$spath = $config['scripts_path'];
 	$rpath = $config['resource_path'];
 
-	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-	$excluded_dirs       = array('.git');
-
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
 		'scripts'  => array('recursive' => true,  'path' => $spath),
@@ -580,96 +577,29 @@ function update_resource_cache($poller_id = 1) {
 		'locales'  => array('recursive' => true,  'path' => $mpath . '/locales'),
 		'images'   => array('recursive' => true,  'path' => $mpath . '/images'),
 		'mibs'     => array('recursive' => true,  'path' => $mpath . '/mibs'),
-		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli')
+		'cli'      => array('recursive' => true,  'path' => $mpath . '/cli'),
+		'plugins'  => array('recursive' => true,  'path' => $mpath . '/plugins')
 	);
 
 	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""', '', true, $conn);
-
 	if ($poller_id == 1 && $pollers > 1) {
 		foreach($paths as $type => $path) {
-			if (is_readable($path['path'])) {
-				$pathinfo = pathinfo($path['path']);
-				if (isset($pathinfo['extension'])) {
-					$extension = strtolower($pathinfo['extension']);
-				} else {
-					$extension = '';
-				}
+			$tpath = rtrim($path['path'], '\\// ');
+			$recursive = $path['recursive'];
+			if (is_readable($tpath)) {
+				$settings_path = "md5dirsum_$type";
+				$curr_md5      = md5sum_path($tpath, $recursive);
+				$last_md5      = read_config_option($settings_path);
 
-				/* exclude spurious extensions directories */
-				$exclude = false;
-				if (array_search($extension, $excluded_extensions, true) !== false) {
-					$exclude = true;
-				}
+				if (empty($last_md5) || $last_md5 != $curr_md5) {
+					cacti_log('Type:' . $type . ', Path:' . $tpath . ', Last MD5:' . $last_md5 . ', Curr MD5:' . $curr_md5, false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+					cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$tpath'", false, 'POLLER');
+					cache_in_path($tpath, $type, $path['recursive']);
 
-				if (array_search(basename($path['path']), $excluded_dirs, true) !== false) {
-					$exclude = true;
-				}
-
-				if (!$exclude) {
-					cache_in_path($path['path'], $type, $path['recursive']);
+					set_config_option($settings_path, $curr_md5);
 				}
 			} else {
-				cacti_log("ERROR: Unable to read the " . $type . " path '" . $path['path'] . "'", false, 'POLLER');
-			}
-		}
-
-		/* handle plugin paths */
-		$files_and_dirs = array_diff(scandir($mpath . '/plugins'), array('..', '.'));
-
-		if (cacti_sizeof($files_and_dirs)) {
-			foreach($files_and_dirs as $path) {
-				if (is_dir($mpath . '/plugins/' . $path)) {
-					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
-						$info = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = array('..', '.', '.git');
-						$file_exclusions = $excluded_extensions;
-
-						if (isset($info['info']['nosync'])) {
-							$exclude_paths = explode(',', $info['info']['nosync']);
-							if (cacti_sizeof($exclude_paths)) {
-								foreach($exclude_paths as $epath) {
-									if (strpos($epath, '*.') !== false) {
-										$file_exclusions[] = trim(str_replace('*.', '', $epath));
-									} else {
-										$dir_exclusions[]  = trim($epath);
-									}
-								}
-							}
-						}
-
-						$fod = array_diff(scandir($mpath . '/plugins/' . $path), $dir_exclusions);
-						if (cacti_sizeof($fod)) {
-							foreach($fod as $file_or_dir) {
-								$fpath = $mpath . '/plugins/' . $path . '/' . $file_or_dir;
-								if (is_dir($fpath)) {
-									cache_in_path($fpath, $path . '_' . basename($file_or_dir), true);
-								} else {
-									$pathinfo = pathinfo($fpath);
-
-									if (isset($pathinfo['extension'])) {
-										$extension = strtolower($pathinfo['extension']);
-									} else {
-										$extension = '';
-									}
-
-									/* exclude spurious extensions */
-									$exclude = false;
-									if (array_search($extension, $file_exclusions, true) !== false) {
-										$exclude = true;
-									}
-
-									if (!$exclude) {
-										cache_in_path($fpath, 'plugins', false);
-									}
-								}
-							}
-						}
-					} else {
-						cacti_log("WARNING: INFO file does not exist for plugin directory '" . $mpath . '/plugins/' . $path . "'", false, 'POLLER');
-					}
-				} else {
-					cache_in_path($mpath . '/plugins/' . $path, 'plugins', false);
-				}
+				cacti_log("ERROR: Unable to read the " . $type . " path '" . $tpath . "'", false, 'POLLER');
 			}
 		}
 
@@ -720,58 +650,54 @@ function update_resource_cache($poller_id = 1) {
  * @param bool   $recursive - Should the path be scanned recursively
  * @return null             - No data is returned
  */
-function cache_in_path($path, $type, $recursive = true) {
+function cache_in_path($path, $type, $recursive = true, $extra_extensions = array(), $extra_dirs_files = array()) {
 	global $config;
 
-	if (is_dir($path)) {
-		$curr_md5      = md5sum_path($path, $recursive);
-		$settings_path = "md5dirsum_$type";
-		$last_md5      = read_config_option($settings_path);
+	if (!should_ignore_from_replication($path, $extra_extensions, $extra_dirs_files)) {
+		if ($type == 'plugins') {
+			if (file_exists($path . '/INFO')) {
+				$info = parse_ini_file($path . '/INFO', true);
+
+				if (isset($info['info']['nosync'])) {
+					$exclude_paths = explode(',', $info['info']['nosync']);
+					if (cacti_sizeof($exclude_paths)) {
+						foreach($exclude_paths as $epath) {
+							if (strpos($epath, '*.') !== false) {
+								$extra_dirs_files[] = trim(str_replace('*.', '', $epath));
+							} else {
+								$extra_dirs_files[]  = trim($epath);
+							}
+						}
+					}
+				} else {
+					cacti_log("WARNING: INFO file does not exist for plugin directory '" . $path . "'", false, 'POLLER');
+				}
+			}
+		}
+
+		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
+
+		$isdir = is_dir($path);
+		if ($isdir) {
+			$curr_md5 = md5sum_path($path, $recursive);
+		} else {
+			$curr_md5 = md5_file($path);
+		}
+		$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
 		if (empty($last_md5) || $last_md5 != $curr_md5) {
-			cacti_log('Type:' . $type . ', Path:' . $path . ', Last MD5:' . $last_md5 . ', Curr MD5:' . $curr_md5, false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
-			cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$path'", false, 'POLLER');
+			cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$spath'", false, 'POLLER');
+			if ($isdir) {
+				$pobject = dir($path);
+				while (($entry = $pobject->read()) !== false) {
+					$full_path = $path . DIRECTORY_SEPARATOR . $entry;
+					if ($recursive || !is_dir($full_path)) {
+						cache_in_path($full_path, $type, $recursive, $extra_extensions, $extra_dirs_files);
+					}
+				}
+				$pobject->close();
+			}
 			update_db_from_path($path, $type, $recursive);
-		}
-
-		set_config_option($settings_path, $curr_md5);
-	} else {
-		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
-		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-		$excluded_dirs_files = array('.git', '.travis.yml', 'config.php', '.gitattributes');
-		$pathinfo = pathinfo($path);
-
-		if (isset($pathinfo['extension'])) {
-			$extension = strtolower($pathinfo['extension']);
-		} else {
-			$extension = '';
-		}
-
-		/* exclude spurious extensions directories */
-		$exclude = false;
-		if (array_search($extension, $excluded_extensions, true) !== false) {
-			$exclude = true;
-		}
-
-		if (array_search(basename($path), $excluded_dirs_files, true) !== false) {
-			$exclude = true;
-		}
-
-		/* exclude spurious extensions */
-		if (!$exclude && basename($path) != 'config.php') {
-			$curr_md5 = md5_file($path);
-			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
-
-			if (substr($spath, 0, 8) == 'plugins/') {
-				$ppath = $config['base_path'] . $spath;
-			} else {
-				$ppath = $spath;
-			}
-
-			if (empty($last_md5) || $last_md5 != $curr_md5) {
-				cacti_log("NOTE: Detecting Resource Change.  Updating Resource Cache for '$ppath'", false, 'POLLER');
-				update_db_from_path($path, $type, $recursive);
-			}
 		}
 	}
 }
@@ -787,85 +713,22 @@ function cache_in_path($path, $type, $recursive = true) {
 function update_db_from_path($path, $type, $recursive = true) {
 	global $config;
 
-	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+	$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 
-	if (is_dir($path)) {
-		$pobject = dir($path);
-
-		while (($entry = $pobject->read()) !== false) {
-			if (!should_ignore_from_replication($entry)) {
-				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\') . '/' . $entry, '/ \\');
-				if (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
-					if ($recursive) {
-						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
-					}
-				} elseif (basename($path) == 'config.php') {
-					continue;
-				} elseif (basename($path) == '.travis.yml') {
-					continue;
-				} else {
-					$pathinfo = pathinfo($entry);
-					if (isset($pathinfo['extension'])) {
-						$extension = strtolower($pathinfo['extension']);
-					} else {
-						$extension = '';
-					}
-
-					/* exclude spurious extensions */
-					if (array_search($extension, $excluded_extensions, true) !== false) {
-						continue;
-					}
-
-					$save         = array();
-					$save['path'] = $spath;
-					$save['id']   = db_fetch_cell_prepared('SELECT id
+	$save         = array();
+	$save['path'] = $spath;
+	$save['id']   = db_fetch_cell_prepared('SELECT id
 						FROM poller_resource_cache
 						WHERE `path` = ?',
 						array($save['path']));
 
-					$entry_path = $path. DIRECTORY_SEPARATOR . $entry;
-					$save['resource_type'] = $type;
-					$save['md5sum']        = md5_file($entry_path);
-					$save['update_time']   = date('Y-m-d H:i:s');
-					$save['attributes']    = fileperms($entry_path);
-					$save['contents']      = base64_encode(file_get_contents($entry_path));
+	$save['resource_type'] = $type;
+	$save['update_time']   = date('Y-m-d H:i:s');
+	$save['attributes']    = fileperms($path);
+	$save['contents']      = base64_encode(file_get_contents($path));
+	$save['md5sum']        = is_dir($path) ? md5sum_path($path) : md5_file($path);
 
-					sql_save($save, 'poller_resource_cache');
-				}
-			}
-		}
-
-		$pobject->close();
-	} else {
-		if (!should_ignore_from_replication($path)) {
-			$pathinfo = pathinfo($path);
-			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
-			} else {
-				$extension = '';
-			}
-
-			/* exclude spurious extensions */
-			if (array_search($extension, $excluded_extensions, true) === false) {
-				$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
-
-				$save         = array();
-				$save['path'] = $spath;
-
-				$save['id']   = db_fetch_cell_prepared('SELECT id
-					FROM poller_resource_cache
-					WHERE `path` = ?',
-					array($save['path']));
-
-				$save['resource_type'] = $type;
-				$save['md5sum']        = md5_file($path);
-				$save['update_time']   = date('Y-m-d H:i:s');
-				$save['contents']      = base64_encode(file_get_contents($path));
-
-				sql_save($save, 'poller_resource_cache');
-			}
-		}
-	}
+	sql_save($save, 'poller_resource_cache');
 }
 
 /** resource_cache_out - push the cache from the cacti database to the
@@ -981,40 +844,28 @@ function resource_cache_out($type, $path) {
  * @return null             - No data is returned
  */
 function md5sum_path($path, $recursive = true) {
-    if (!is_dir($path)) {
-        return false;
-    }
+	if (!is_dir($path)) {
+		return false;
+	}
 
-    $filemd5s = array();
-    $pobject = dir($path);
+	$filemd5s = array();
+	$pobject = dir($path);
 
-	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-
-    while (($entry = $pobject->read()) !== false) {
-		if (!should_ignore_from_replication($entry)) {
-			$pathinfo = pathinfo($entry);
-			if (isset($pathinfo['extension'])) {
-				$extension = strtolower($pathinfo['extension']);
-			} else {
-				$extension = '';
-			}
-
-			/* exclude spurious extensions */
-			if (array_search($extension, $excluded_extensions, true) !== false) {
-				continue;
-			}
-
+	while (($entry = $pobject->read()) !== false) {
+		$full_path = $path . DIRECTORY_SEPARATOR . $entry;
+		$ignore = should_ignore_from_replication($full_path);
+		//printf("%4s - %s\n", !$ignore?'Yes':'No', $entry);
+		if (!$ignore) {
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
 				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
 			} else {
 				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
 			}
-         }
-    }
+		}
+	}
 
-    $pobject->close();
-
-    return md5(implode('', $filemd5s));
+	$pobject->close();
+	return md5(implode('', $filemd5s));
 }
 
 function replicate_out($remote_poller_id = 1) {
@@ -1426,7 +1277,29 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 	return sizeof($records);
 }
 
-function should_ignore_from_replication($path) {
+function should_ignore_from_replication($path, $extra_dirs_files = array(), $extra_extensions = array()) {
+	static $excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
+	static $excluded_dirs_files = array('.git', '.travis.yml', 'config.php', '.gitattributes', '.gitignore', '.', '..');
+
+	$merged_extensions = array_merge($excluded_extensions, $extra_extensions);
+	$merged_dirs_files = array_merge($excluded_dirs_files, $extra_dirs_files);
+
 	$entry = basename($path);
-	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '' || $entry == 'config.php');
+	$regexs = array();
+	if (cacti_sizeof($merged_dirs_files)) {
+		foreach ($merged_dirs_files as $banned) {
+			$regexs[] = '/' . preg_quote($banned) . '$';
+		}
+	}
+
+	if (cacti_sizeof($merged_extensions)) {
+		foreach ($merged_extensions as $banned) {
+			$regexs[] = '' . preg_quote('.' . $banned) . '$';
+		}
+	}
+
+	$regex = implode("|", $regexs);
+	$result = preg_match("~$regex~", $path, $matches);
+	//echo "$result = preg_match('~$regex~', $path)\n";
+	return $result;
 }
