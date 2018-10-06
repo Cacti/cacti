@@ -3291,8 +3291,8 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$i = 0;
 
 	// Handle Graph Attachments
-	if (!empty($attachments)) {
-		$attachments = array($attachments);
+	if (!empty($attachments) && !is_array($attachments)) {
+		$attachments = array('attachment' => $attachments);
 	}
 
 	if (is_array($attachments) && cacti_sizeof($attachments)) {
