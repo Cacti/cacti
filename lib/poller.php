@@ -621,7 +621,7 @@ function update_resource_cache($poller_id = 1) {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
 						$info = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = array('..', '.');
+						$dir_exclusions  = array('..', '.', '.git');
 						$file_exclusions = $excluded_extensions;
 
 						if (isset($info['info']['nosync'])) {
