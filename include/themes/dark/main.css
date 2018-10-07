@@ -483,8 +483,6 @@ label {
 }
 
 .menuoptions li a:hover {
-	display:block;
-	border: 1px solid #155413;
 	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
