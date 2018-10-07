@@ -2688,7 +2688,7 @@ class Installer implements JsonSerializable {
 
 	private function installTemplate() {
 		global $config;
-		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%'");
+		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%' and value <> ''");
 		if (cacti_sizeof($templates)) {
 			log_install_always('', sprintf('Found %s templates to install', cacti_sizeof($templates)));
 			$path = $config['base_path'] . '/install/templates/';
@@ -2698,10 +2698,12 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
-				set_config_option('install_updated', microtime(true));
-				log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));
-				import_package($path . $package, $this->profile, false, false, false);
-				$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+				if (!empty($package)) {
+					set_config_option('install_updated', microtime(true));
+					log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));
+					import_package($path . $package, $this->profile, false, false, false);
+					$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+				}
 			}
 
 			db_execute('TRUNCATE TABLE automation_templates');
