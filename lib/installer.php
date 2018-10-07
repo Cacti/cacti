@@ -829,17 +829,30 @@ class Installer implements JsonSerializable {
 	 *                        192.168.1.0/24 */
 	public function getAutomationRange() {
 		$range = read_config_option('install_automation_range', true);
+
+		if (!db_table_exists('automation_networks')) {
+			return false;
+		}
+
 		if (empty($range)) {
-			$row = db_fetch_row('SELECT id, subnet_range FROM automation_networks LIMIT 1');
+			$row = db_fetch_row('SELECT id, subnet_range
+				FROM automation_networks
+				LIMIT 1');
+
 			$enabled = 0;
 			$network = '';
+
 			log_install_debug('automation', "getAutomationRange(): found '" . clean_up_lines(var_export($row, true)));
+
 			if (!empty($row)) {
 				$range = $row['subnet_range'];
 			}
 		}
+
 		$result = empty($range) ? '192.168.0.1/24' : $range;
+
 		log_install_medium('automation',"getAutomationRange() returns '$result'");
+
 		return $result;
 	}
 
