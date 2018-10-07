@@ -164,10 +164,9 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 	/* get the host associated with this graph for data queries only
 	 * there's no "reapply suggested title" for "simple" graph templates */
-	$graph_local = db_fetch_row_prepared('SELECT host_id, graph_template_id, snmp_query_id, snmp_index
+	$graph_local = db_fetch_row_prepared('SELECT *
 		FROM graph_local
-		WHERE snmp_query_id>0
-		AND id = ?',
+		WHERE id = ?',
 		array($local_graph_id));
 
 	/* if this is not a data query graph, simply return */
@@ -175,28 +174,8 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		return;
 	}
 
-	/* get data source associated with the graph */
-	$data_local = db_fetch_cell_prepared('SELECT
-		data_template_data.local_data_id
-		FROM (data_template_rrd,data_template_data,graph_templates_item)
-		WHERE graph_templates_item.task_item_id=data_template_rrd.id
-		AND data_template_rrd.local_data_id=data_template_data.local_data_id
-		AND graph_templates_item.local_graph_id = ?
-		GROUP BY data_template_data.local_data_id',
-		array($local_graph_id));
-
-	$snmp_query_graph_id = db_fetch_cell_prepared("SELECT did.value
-		FROM data_input_data AS did
-		INNER JOIN data_input_fields AS dif
-		ON did.data_input_field_id=dif.id
-		INNER JOIN data_template_data AS dtd
-		ON dtd.id=did.data_template_data_id
-		WHERE dif.type_code = 'output_type'
-		AND dtd.local_data_id = ?",
-		array($data_local));
-
 	/* no snmp query graph id found */
-	if ($snmp_query_graph_id == 0) {
+	if ($graph_local['snmp_query_graph_id'] == 0) {
 		return;
 	}
 
@@ -205,7 +184,8 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		FROM snmp_query_graph_sv
 		WHERE snmp_query_graph_id = ?
 		AND field_name = 'title'
-		ORDER BY sequence", array($snmp_query_graph_id));
+		ORDER BY sequence",
+		array($graph_local['snmp_query_graph_id']));
 
 	$suggested_values_graph = array();
 	if (cacti_sizeof($suggested_values)) {
@@ -213,8 +193,9 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 			/* once we find a match; don't try to find more */
 			if (!isset($suggested_values_graph[$suggested_value['field_name']])) {
 				$subs_string = substitute_snmp_query_data($suggested_value['text'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
+
 				/* if there are no '|' characters, all of the substitutions were successful */
-				if ((!substr_count($subs_string, '|query'))) {
+				if (!substr_count($subs_string, '|query')) {
 					db_execute_prepared('UPDATE graph_templates_graph
 						SET ' . $suggested_value['field_name'] . ' = ?
 						WHERE local_graph_id = ?',
@@ -222,6 +203,8 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 					/* once we find a working value for this very field, stop */
 					$suggested_values_graph[$suggested_value['field_name']] = true;
+
+					return true;
 				}
 			}
 		}
