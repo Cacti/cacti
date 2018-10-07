@@ -128,7 +128,7 @@ class Installer implements JsonSerializable {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 				$step = Installer::STEP_COMPLETE;
 			}
-		} else if ($step >= Installer::STEP_COMPLETE) {
+		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 			if ($install_version === false || $install_version === null) {
@@ -365,7 +365,7 @@ class Installer implements JsonSerializable {
 		$value = null;
 		if ($param === true || $param === 'true' || $param === 'on' || $param === 1 || $param === '1') {
 			$value = true;
-		} else if ($param === false || $param === 'false' || $param === '' || $param === 0 || $param === '0') {
+		} elseif ($param === false || $param === 'false' || $param === '' || $param === 0 || $param === '0') {
 			$value = false;
 		}
 
@@ -432,7 +432,7 @@ class Installer implements JsonSerializable {
 					}
 				}
 			}
-		} else if (!empty($default_version)) {
+		} elseif (!empty($default_version)) {
 			$rrdver = $this->sanitizeRRDVersion($default_version,'1.3');
 		}
 
@@ -656,7 +656,7 @@ class Installer implements JsonSerializable {
 						if (!$should_set && !$optional) {
 							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Resource is not writable'));
 						}
-					} else if ($check == 'file_exists') {
+					} elseif ($check == 'file_exists') {
 						$should_set = file_exists($path) || $optional;
 						if (!$should_set) {
 							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('File not found'));
@@ -1157,7 +1157,7 @@ class Installer implements JsonSerializable {
 				if (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '=')) {
 					$equal = '=';
 					$mode = Installer::MODE_NONE;
-				} else if (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '<')) {
+				} elseif (cacti_version_compare($this->old_cacti_version, CACTI_VERSION, '<')) {
 					$equal = '<';
 					$mode = Installer::MODE_UPGRADE;
 				} else {
@@ -1195,7 +1195,7 @@ class Installer implements JsonSerializable {
 			set_config_option('install_mode', $param_mode);
 			$this->mode = $param_mode;
 			$this->updateButtons();
-		} else if ($param_mode != 0) {
+		} elseif ($param_mode != 0) {
 			$this->addError(Installer::STEP_INSTALL_TYPE, 'mode', 'Failed to apply mode: ' . $param_mode);
 		}
 	}
@@ -2116,7 +2116,7 @@ class Installer implements JsonSerializable {
 			}
 		} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
 			$output .= Installer::sectionNormal(__('Check Permissions'));
-		}else {
+		} else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
 		}
 
@@ -2660,7 +2660,7 @@ class Installer implements JsonSerializable {
 		} else {
 			if ($this->mode == Installer::MODE_INSTALL) {
 				$failure = $this->installServer();
-			} else if ($this->mode == Installer::MODE_UPGRADE) {
+			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
 			}
 			$this->disableInvalidPlugins();
