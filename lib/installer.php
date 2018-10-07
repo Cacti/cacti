@@ -164,6 +164,10 @@ class Installer implements JsonSerializable {
 		$this->stepData      = null;
 		$this->theme         = $this->getTheme();
 
+		if (empty($this->language)) {
+			$this->language = 'en-US';
+		}
+
 		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
 		}
@@ -518,6 +522,10 @@ class Installer implements JsonSerializable {
 	 *
 	 * Errors: will add an error at STEP_WELCOME if invalid language */
 	private function setLanguage($param_language = '') {
+		if (!db_table_exists('settings_user')) {
+			return false;
+		}
+
 		if (isset($param_language) && strlen($param_language)) {
 			$language = apply_locale($param_language);
 			if (empty($language)) {
@@ -696,12 +704,18 @@ class Installer implements JsonSerializable {
 	 *                the installed packages to this collector */
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
+
+		if (!db_table_exists('data_source_profiles')) {
+			return false;
+		}
+
 		if (empty($db_profile)) {
 			$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default` = \'on\' LIMIT 1');
 			if ($db_profile === false) {
 				$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 			}
 		}
+
 		log_install_medium('automation', 'getProfile() returns with ' . $db_profile);
 
 		return $db_profile;
@@ -731,6 +745,11 @@ class Installer implements JsonSerializable {
 	public function getAutomationMode() {
 		$enabled = read_config_option('install_automation_mode', true);
 		log_install_debug('automation', 'automation_mode: ' . clean_up_lines($enabled));
+
+		if (!db_table_exists('automation_networks')) {
+			return false;
+		}
+
 		if ($enabled == NULL) {
 			$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
 			log_install_debug('automation', 'Network data: ' . clean_up_lines(var_export($row, true)));
@@ -741,7 +760,9 @@ class Installer implements JsonSerializable {
 				}
 			}
 		}
+
 		log_install_medium('automation',"getAutomationMode() returns '$enabled'");
+
 		return $enabled;
 	}
 
@@ -2688,7 +2709,17 @@ class Installer implements JsonSerializable {
 
 	private function installTemplate() {
 		global $config;
-		$templates = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_template_%' and value <> ''");
+
+		$version = db_fetch_cell('SELECT cacti FROM version');
+		if (cacti_version_compare($version, '1.0.0', '<')) {
+			return false;
+		}
+
+		$templates = db_fetch_assoc("SELECT value
+			FROM settings
+			WHERE name LIKE 'install_template_%'
+			AND value <> ''");
+
 		if (cacti_sizeof($templates)) {
 			log_install_always('', sprintf('Found %s templates to install', cacti_sizeof($templates)));
 			$path = $config['base_path'] . '/install/templates/';
@@ -2698,6 +2729,7 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
+
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
 					log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));

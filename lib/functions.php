@@ -249,6 +249,9 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
+	if (!db_table_exists('settings_user')) {
+		return false;
+	}
 
 	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
@@ -451,6 +454,10 @@ function read_config_option($config_name, $force = false) {
  */
 function get_selected_theme() {
 	global $config, $themes;
+
+	if (!db_table_exists('settings_user')) {
+		return 'modern';
+	}
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
@@ -4783,13 +4790,17 @@ function get_installed_rrdtool_version() {
 }
 
 function get_md5_hash($path) {
-	$md5 = db_fetch_cell_prepared('SELECT md5sum
-		FROM poller_resource_cache
-		WHERE `path` = ?',
-		array($path));
+	if (db_table_exists('poller_resource_cache')) {
+		$md5 = db_fetch_cell_prepared('SELECT md5sum
+			FROM poller_resource_cache
+			WHERE `path` = ?',
+			array($path));
 
-	if (!isset($md5) || !strlen($md5)) {
-		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+		if (!isset($md5) || !strlen($md5)) {
+			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+		}
+	} else {
+		$md5 = 0;
 	}
 
 	return $md5;
