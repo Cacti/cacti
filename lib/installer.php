@@ -2670,7 +2670,7 @@ class Installer implements JsonSerializable {
 
 		$this->convertDatabase();
 
-		if (!$this->hasRemoteDatabaseInfo()) {
+		if (!$this->hasRemoteDatabaseInfo() && $which == 'INSTALL') {
 			$this->installTemplate();
 		}
 
