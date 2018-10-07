@@ -404,12 +404,13 @@ function utilities_view_tech($php_info = '') {
 					case 'Cached':
 					case 'MemTotal':
 					case 'MemFree':
+					case 'MemAvailable':
 					case 'Buffers':
 					case 'Active':
 					case 'Inactive':
 						form_alternate_row();
 						print "<td>$name</td>\n";
-						print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+						print '<td>' . number_format_i18n($value, 2) . "</td>\n";
 						form_end_row();
 					}
 				}
