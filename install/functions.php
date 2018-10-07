@@ -762,10 +762,10 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 	}
 
 	if ($can_log) {
-		$logfile = 'install';
-		if (!empty($section)) {
-			$logfile .= '-' . $section;
+		if (empty($section)) {
+			$section = 'general';
 		}
+		$logfile = 'install' . '-' . $section;
 		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 	}

@@ -475,7 +475,7 @@ function processStepInstallConfirm(StepData) {
 }
 
 function processStepInstallRefresh() {
-	performStep(STEP_INSTALL);
+	performStep(STEP_INSTALL, true);
 }
 
 function processStepInstallStatus(current, total) {
@@ -592,11 +592,13 @@ function setAddressBar(data, replace) {
 	}
 }
 
-function performStep(installStep) {
+function performStep(installStep, suppressRefresh) {
 	$.ajaxQ.abortAll();
 
-	$('#installContent').addClass('cactiInstallLoaderBlur');
-	$('#installLoader').show();
+	if (!suppressRefresh) {
+		$('#installContent').addClass('cactiInstallLoaderBlur');
+		$('#installLoader').show();
+	}
 
 	installData = prepareInstallData(installStep);
 	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
