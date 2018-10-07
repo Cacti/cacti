@@ -1610,7 +1610,7 @@ class Installer implements JsonSerializable {
 		$rec_execute_m  = 5;
 
 		$rec_memory	= $rec_memory_mb * 1024 * 1024;
-		$rec_execute    = $rec_execute_m * 60;
+		$rec_execute    = $rec_execute_m * 10;
 		$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
 		$execute_time   = ini_get('max_execution_time');
 
@@ -2855,14 +2855,14 @@ class Installer implements JsonSerializable {
 			$community    = 'public';
 			$avail        = 'snmp';
 			$ip           = 'localhost';
-			$description  = "Local Windows Machine";
+			$description  = 'Local Windows Machine';
 		} else {
 			$hash = '2d3e47f416738c2d22c87c40218cc55e';
 			$version      = 0;
 			$community    = 'public';
 			$avail        = 'none';
 			$ip           = 'localhost';
-			$description  = "Local Linux Machine";
+			$description  = 'Local Linux Machine';
 		}
 
 		$host_template_id = db_fetch_cell_prepared('SELECT id FROM host_template WHERE hash = ?', array($hash));
