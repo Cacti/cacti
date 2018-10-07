@@ -841,12 +841,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* Log to Logfile */
-	$message = clean_up_lines($prefix . $string) . "\n";
+	$message = clean_up_lines($string) . PHP_EOL;
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
 		/* echo the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
+			$message = $prefix . $message;
 			@fwrite($fp, $message);
 			fclose($fp);
 		}
@@ -887,7 +888,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 
 	/* print output to standard out if required */
 	if ($output == true && isset($_SERVER['argv'][0])) {
-		print $message . "\n";
+		print $message;
 	}
 
 	$database_log = $last_log;
@@ -2193,17 +2194,26 @@ function draw_login_status($using_guest_account = false) {
 
 	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == $guest_account) {
 		api_plugin_hook('nav_login_before');
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li></ul>\n";
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li>\n";
+		print "<li><hr class='menu'></li>";
+		print "<li><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "</ul>";
+
 		api_plugin_hook('nav_login_after');
 	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
-			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
-				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") .
-				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') .
-				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"") .
-			"</ul>\n";
+			"</span></div><div><ul class='menuoptions' style='display:none;'>";
+		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"");
+		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
+		print "<li><hr class='menu'></li>";
+		print "<li><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li><hr class='menu'></li>";
+		print ($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"");
+		print "</ul>\n";
 
 		api_plugin_hook('nav_login_after');
 	}

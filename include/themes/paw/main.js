@@ -66,9 +66,10 @@ function themeReady() {
 
 		$('<div class="dropdownMenu">'
 			+'<ul id="submenu-user-help" class="submenuoptions right" style="display:none;">'
-				+'<li><a href="http://www.cacti.net" target="_blank"><span>'+cactiHome+'</span></a></li>'
+				+'<li><a href="https://www.cacti.net" target="_blank"><span>'+cactiHome+'</span></a></li>'
 				+'<li><a href="https://github.com/cacti" target="_blank"><span>'+cactiProjectPage+'</span></a></li>'
-				+'<li><a href="http://forums.cacti.net/" target="_blank"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://forums.cacti.net/" target="_blank"><span>'+cactiCommunityForum+'</span></a></li>'
+				+'<li><a href="https://github.com/Cacti/documentation/blob/develop/README.md" target="_blank"><span>'+cactiDocumentation+'</span></a></li>'
 				+'<li><a href="https://github.com/Cacti/cacti/issues/new" target="_blank"><span>'+reportABug+'</span></a></li>'
 				+'<li><a href="'+urlPath+'about.php"><span>'+aboutCacti+'</span></a></li>'
 			+'</ul>'

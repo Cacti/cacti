@@ -78,6 +78,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #ccc;
+	background-image: linear-gradient(to right, #333, #ccc, #333);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
