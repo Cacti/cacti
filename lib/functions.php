@@ -2195,9 +2195,9 @@ function draw_login_status($using_guest_account = false) {
 	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == $guest_account) {
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li>\n";
-		print "<li><hr class='menu'></li>";
-		print "<li><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
-		print "<li><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li class='menuHr'><hr class='menu'></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
 		print "</ul>";
 
 		api_plugin_hook('nav_login_after');
@@ -2208,10 +2208,10 @@ function draw_login_status($using_guest_account = false) {
 			"</span></div><div><ul class='menuoptions' style='display:none;'>";
 		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"");
 		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
-		print "<li><hr class='menu'></li>";
-		print "<li><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
-		print "<li><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
-		print "<li><hr class='menu'></li>";
+		print "<li class='menuHr'><hr class='menu'></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li class='menuHr'><hr class='menu'></li>";
 		print ($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"");
 		print "</ul>\n";
 
