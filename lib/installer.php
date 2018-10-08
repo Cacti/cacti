@@ -2042,9 +2042,16 @@ class Installer implements JsonSerializable {
 			$output .= Installer::sectionNormal(__('These directories will be required to stay read writable after the install so that the Cacti remote synchronization process can update them as the Main Cacti Web Site changes'));
 		}
 
-		$sections = array();
 		if ($this->mode != Installer::MODE_POLLER) {
-			$output .= Installer::sectionSubTitle(__('Required Writable at Install Time Only'), 'writable_install');
+			$output .= Installer::sectionNote(__('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.'));
+		} else {
+			$output .= Installer::sectionNote(__('For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content.'));
+		}
+
+		$sections = array();
+		$permissions = '';
+		if ($this->mode != Installer::MODE_POLLER) {
+			$permissions .= Installer::sectionSubTitle(__('Required Writable at Install Time Only'), 'writable_install');
 
 			$sections['writable_install'] = DB_STATUS_SUCCESS;
 			$class = 'even';
@@ -2052,16 +2059,16 @@ class Installer implements JsonSerializable {
 				$class = ($class == 'even' ? 'odd':'even');
 
 				/* draw the acual header and textbox on the form */
-				$output .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
+				$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
-				$output .= "<div class='formColumnRight'><div class='formData' width='100%'>";
+				$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
 
 				if ($valid) {
-					$output .=
+					$permissions .=
 						'<i class="' . $this->iconClass[DB_STATUS_SUCCESS] . '"></i> ' .
 						'<font color="#008000">' . __('Writable') . '</font>';
 				} else {
-					$output .=
+					$permissions .=
 						'<i class="' . $this->iconClass[DB_STATUS_ERROR] . '"></i> ' .
 						'<font color="#FF0000">' . __('Not Writable') . '</font>';
 
@@ -2069,13 +2076,13 @@ class Installer implements JsonSerializable {
 					$sections['writable_install'] = DB_STATUS_ERROR;
 				}
 
-				$output .= "</div></div></div>";
+				$permissions .= "</div></div></div>";
 			}
 		}
 
-		$output .= Installer::sectionSubTitleEnd();
+		$permissions .= Installer::sectionSubTitleEnd();
 
-		$output .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
+		$permissions .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
 		$sections['writable_always'] = DB_STATUS_SUCCESS;
 
 		$class = 'even';
@@ -2083,52 +2090,64 @@ class Installer implements JsonSerializable {
 			$class = ($class == 'even' ? 'odd':'even');
 
 			/* draw the acual header and textbox on the form */
-			$output .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
+			$permissions .= "<div class='formRow $class'><div class='formColumnLeft'><div class='formFieldName'>" . $path . "</div></div>";
 
-			$output .= "<div class='formColumnRight'><div class='formData' width='100%'>";
+			$permissions .= "<div class='formColumnRight'><div class='formData' width='100%'>";
 
 			if ($valid) {
-				$output .=
+				$permissions .=
 					'<i class="' . $this->iconClass[DB_STATUS_SUCCESS] . '"></i> ' .
 					'<font color="#008000">' . __('Writable') . '</font>';
 			} else {
-				$output .=
+				$permissions .=
 					'<i class="' . $this->iconClass[DB_STATUS_ERROR] . '"></i> ' .
 					'<font color="#FF0000">' . __('Not Writable') . '</font>';
 				$sections['writable_always'] = DB_STATUS_ERROR;
 				$writable = false;
 			}
 
-			$output .= '</div></div></div>';
+			$permissions .= '</div></div></div>';
 		}
 
+		$output .= Installer::sectionSubTitleEnd();
+		$output .= Installer::sectionSubTitle(__('Potential permission issues'),'host_access');
+		$sections['host_access'] = DB_STATUS_SUCCESS;
+
 		/* Print help message for unix and windows if directory is not writable */
-		if (($config['cacti_server_os'] == 'unix') && isset($writable)) {
-			$output .= Installer::sectionSubTitleEnd();
+		if (isset($writable)) {
 
 			$running_user = get_running_user();
 
 			$sections['host_access'] = DB_STATUS_WARNING;
-			$output .= Installer::sectionSubTitle(__('Ensure Host Process Has Access'),'host_access');
-			$output .= Installer::sectionNormal(__('Make sure your webserver has read and write access to the entire folder structure.'));
-			$output .= Installer::sectionNormal(__('Example:'));
-			if ($config['cacti_server_os'] == 'win32') {
-				$output .= Installer::sectionCode(__('%s should have MODIFY permission to the above directories', $running_user));
+			$text = __('Please make sure that your webserver has read/write access to the cacti folders that show errors below.');
+			$paths = array_merge($this->permissions['install'],$this->permissions['always']);
+			if ($config['cacti_server_os'] == 'unix') {
+				$text .= '  ' . __('If SELinux is enabled on your server, you can either permenantly disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
+				$code = '';
+				foreach($this->permissions['install'] as $path => $valid) {
+					if (!$valid) {
+						$code .= sprintf("chown -R %s.%s %s<br />", $running_user, $running_user, $path);
+					}
+				}
 			} else {
-				$output .= Installer::sectionCode(sprintf('chown -R %s.%s %s/resource/', $running_user, $running_user, $config['base_path']));
-				$output .= Installer::sectionNormal(__('For SELINUX-users make sure that you have the correct permissions or set \'setenforce 0\' temporarily.'));
+				// NOTE: $code part needs updating with the correct command
+				$text .= '  ' . __('The user \'%s\' should have MODIFY permission to enable read/write.', $running_user);
+				$code = '';
+				foreach($this->permissions['install'] as $path => $valid) {
+					if (!$valid) {
+						$code = sprintf('icacls %s %s/resource/', $running_user, $config['base_path']);
+					}
+				}
 			}
-		} elseif (($config['cacti_server_os'] == 'win32') && isset($writable)){
-			$output .= Installer::sectionNormal(__('Check Permissions'));
-		} else {
+			$output .= Installer::sectionNormal($text);
+			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions'));
+			$output .= Installer::sectionNote('<span class="cactiInstallSectionCode" style="width: 95%; display: inline-flex;">' . $code . '</span>', '', '', __('EXAMPLE:'));
+		}else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
 		}
 
-		if ($this->mode != Installer::MODE_POLLER) {
-			$output .= Installer::sectionNote(__('If you are installing packages, once the packages are installed, you should change the scripts directory back to read only as this presents some exposure to the web site.'));
-		} else {
-			$output .= Installer::sectionNote(__('For remote pollers, it is critical that the paths that you will be updating frequently, including the plugins, scripts, and resources paths have read/write access as the data collector will have to update these paths from the main web server content.'));
-		}
+		$output .= Installer::sectionSubTitleEnd();
+		$output .= $permissions;
 
 		$this->buttonNext->Enabled = !isset($writable);
 		$this->stepData = array('Sections' => $sections);
@@ -3288,21 +3307,25 @@ class Installer implements JsonSerializable {
 		return Installer::section($text, $id, trim($class), 'cactiInstallSection', 'p');
 	}
 
-	public static function sectionNote($text = '', $id = '', $class = '') {
+	public static function sectionNote($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
 		}
 
 		if (empty($id)) {
 			$id = '';
+		}
+
+		if (empty($title)) {
+			$title = 'NOTE:';
 		}
 
 		$class .= ' cactiInstallSectionNote';
 
-		return Installer::section('<span class="cactiInstallSectionNoteTitle">' . __('NOTE:') . '</span><span class=\'cactiInstallSectionNoteBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
+		return Installer::section('<span class="cactiInstallSectionNoteTitle">' . $title . '</span><span class=\'cactiInstallSectionNoteBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
-	public static function sectionWarning($text = '', $id = '', $class = '') {
+	public static function sectionWarning($text = '', $id = '', $class = '', $title = '') {
 		if (empty($class)) {
 			$class = '';
 		}
@@ -3311,9 +3334,13 @@ class Installer implements JsonSerializable {
 			$id = '';
 		}
 
+		if (empty($title)) {
+			$title = __('WARNING:');
+		}
+
 		$class .= ' cactiInstallSectionWarning';
 
-		return Installer::section('<span class="cactiInstallSectionWarningTitle">' . __('WARNING:') . '</span><span class=\'cactiInstallSectionWarningBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
+		return Installer::section('<span class="cactiInstallSectionWarningTitle">' . $title . '</span><span class=\'cactiInstallSectionWarningBody\'>' . $text . '</span>', $id, trim($class), '', 'p');
 	}
 
 	public static function sectionError($text = '', $id = '', $class = '') {
