@@ -1212,7 +1212,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						INNER JOIN data_input_fields AS dif
 						ON di.id=dif.data_input_id
 						WHERE (dif.type_code="index_type"
-						OR dif.type_code="index_value" 
+						OR dif.type_code="index_value"
 						OR dif.type_code="output_type")
 						AND sq.id = ?',
 						array($snmp_query_array['snmp_query_id'])), 'type_code', 'id');
@@ -1475,7 +1475,7 @@ function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $value
 
 function data_source_exists($graph_template_id, $host_id, &$data_template, &$snmp_query_array) {
 	if (cacti_sizeof($snmp_query_array)) {
-		$input_fields = db_fetch_cell_prepared('SELECT 
+		$input_fields = db_fetch_cell_prepared('SELECT
 			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
 			FROM snmp_query_graph_rrd
 			WHERE snmp_query_graph_id = ?',
@@ -1497,10 +1497,14 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			AND dl.snmp_query_id = ?
 			AND dl.snmp_index = ?
 			GROUP BY dtd.local_data_id
-			HAVING local_data_id IS NOT NULL AND input_fields = ?',
-			array($host_id, $data_template['id'],
-				$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
-				$input_fields));
+			HAVING local_data_id IS NOT NULL
+			AND input_fields LIKE ?',
+			array(
+				$host_id,
+				$data_template['id'],
+				$snmp_query_array['snmp_query_id'],
+				$snmp_query_array['snmp_index'],
+				'%' . $input_fields . '%'));
 	} else {
 		/* create each data source, but don't duplicate */
 		$data_source = db_fetch_row_prepared('SELECT dl.*

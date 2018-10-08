@@ -1411,15 +1411,6 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 			WHERE id = ?',
 			array($data_query_id, $current_index, $local_graph_id));
 
-		/* clear out any additional index that may have contained this item */
-		db_execute_prepared('UPDATE graph_local
-			SET snmp_index = ""
-			WHERE snmp_index = ?
-			AND id != ?
-			AND host_id = ?
-			AND snmp_query_id = ?',
-			array($current_index, $local_graph_id, $host_id, $data_query_id));
-
 		/* update graph title cache */
 		update_graph_title_cache($local_graph_id);
 	}
@@ -1472,15 +1463,6 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
 			snmp_index = ?
 			WHERE id = ?',
 			array($data_query_id, $current_index, $local_data_id));
-
-		/* clear out any additional index that may have contained this item */
-		db_execute_prepared('UPDATE data_local
-			SET snmp_index = ""
-			WHERE snmp_index = ?
-			AND id != ?
-			AND host_id = ?
-			AND snmp_query_id = ?',
-			array($current_index, $local_data_id, $host_id, $data_query_id));
 
 		/* update data source title cache */
 		update_data_source_title_cache($local_data_id);
