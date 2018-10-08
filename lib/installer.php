@@ -164,10 +164,6 @@ class Installer implements JsonSerializable {
 		$this->stepData      = null;
 		$this->theme         = $this->getTheme();
 
-		if (empty($this->language)) {
-			$this->language = 'en-US';
-		}
-
 		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
 		}
@@ -522,10 +518,6 @@ class Installer implements JsonSerializable {
 	 *
 	 * Errors: will add an error at STEP_WELCOME if invalid language */
 	private function setLanguage($param_language = '') {
-		if (!db_table_exists('settings_user')) {
-			return false;
-		}
-
 		if (isset($param_language) && strlen($param_language)) {
 			$language = apply_locale($param_language);
 			if (empty($language)) {
@@ -704,18 +696,12 @@ class Installer implements JsonSerializable {
 	 *                the installed packages to this collector */
 	private function getProfile() {
 		$db_profile = read_config_option('install_profile', true);
-
-		if (!db_table_exists('data_source_profiles')) {
-			return false;
-		}
-
-		if (empty($db_profile)) {
+		if (empty($db_profile) && db_table_exists('data_source_profiles')) {
 			$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles WHERE `default` = \'on\' LIMIT 1');
 			if ($db_profile === false) {
 				$db_profile = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY id LIMIT 1');
 			}
 		}
-
 		log_install_medium('automation', 'getProfile() returns with ' . $db_profile);
 
 		return $db_profile;
@@ -745,12 +731,7 @@ class Installer implements JsonSerializable {
 	public function getAutomationMode() {
 		$enabled = read_config_option('install_automation_mode', true);
 		log_install_debug('automation', 'automation_mode: ' . clean_up_lines($enabled));
-
-		if (!db_table_exists('automation_networks')) {
-			return false;
-		}
-
-		if ($enabled == NULL) {
+		if ($enabled == NULL && db_table_exists('automation_networks')) {
 			$row = db_fetch_row('SELECT id, enabled FROM automation_networks LIMIT 1');
 			log_install_debug('automation', 'Network data: ' . clean_up_lines(var_export($row, true)));
 			$enabled = 0;
@@ -760,9 +741,7 @@ class Installer implements JsonSerializable {
 				}
 			}
 		}
-
 		log_install_medium('automation',"getAutomationMode() returns '$enabled'");
-
 		return $enabled;
 	}
 
@@ -829,30 +808,19 @@ class Installer implements JsonSerializable {
 	 *                        192.168.1.0/24 */
 	public function getAutomationRange() {
 		$range = read_config_option('install_automation_range', true);
-
-		if (!db_table_exists('automation_networks')) {
-			return false;
-		}
-
-		if (empty($range)) {
+		if (empty($range) && db_table_exists('automation_networks')) {
 			$row = db_fetch_row('SELECT id, subnet_range
 				FROM automation_networks
 				LIMIT 1');
-
 			$enabled = 0;
 			$network = '';
-
 			log_install_debug('automation', "getAutomationRange(): found '" . clean_up_lines(var_export($row, true)));
-
 			if (!empty($row)) {
 				$range = $row['subnet_range'];
 			}
 		}
-
 		$result = empty($range) ? '192.168.0.1/24' : $range;
-
 		log_install_medium('automation',"getAutomationRange() returns '$result'");
-
 		return $result;
 	}
 
@@ -1639,10 +1607,12 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitle(__('PHP - Recommendations'), 'php_recommends');
 
+		// _mb = megabytes, _m = minutes (used in displays)
 		$rec_version    = '5.4.0';
 		$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
-		$rec_execute_m  = 5;
+		$rec_execute_m  = 1;
 
+		// adjust above appropriately (used in configs)
 		$rec_memory	= $rec_memory_mb * 1024 * 1024;
 		$rec_execute    = $rec_execute_m * 10;
 		$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
@@ -2683,10 +2653,6 @@ class Installer implements JsonSerializable {
 
 		$this->convertDatabase();
 
-		if (!$this->hasRemoteDatabaseInfo() && $which == 'INSTALL') {
-			$this->installTemplate();
-		}
-
 		$this->setProgress(Installer::PROGRESS_TEMPLATES_END);
 
 		if ($this->mode == Installer::MODE_POLLER) {
@@ -2694,6 +2660,9 @@ class Installer implements JsonSerializable {
 		} else {
 			if ($this->mode == Installer::MODE_INSTALL) {
 				$failure = $this->installServer();
+				if (empty($failure)) {
+					$this->installTemplate();
+				}
 			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
 			}
@@ -2723,11 +2692,6 @@ class Installer implements JsonSerializable {
 	private function installTemplate() {
 		global $config;
 
-		$version = db_fetch_cell('SELECT cacti FROM version');
-		if (cacti_version_compare($version, '1.0.0', '<')) {
-			return false;
-		}
-
 		$templates = db_fetch_assoc("SELECT value
 			FROM settings
 			WHERE name LIKE 'install_template_%'
@@ -2742,7 +2706,6 @@ class Installer implements JsonSerializable {
 			foreach ($templates as $template) {
 				$i++;
 				$package = $template['value'];
-
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
 					log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));
@@ -2893,6 +2856,7 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_AUTOMATION_END);
 
 		$this->setProgress(Installer::PROGRESS_DEVICE_START);
+
 		// Add the correct device type
 		if ($config['cacti_server_os'] == 'win32') {
 			$hash = '5b8300be607dce4f030b026a381b91cd';
