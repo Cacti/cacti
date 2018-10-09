@@ -1031,10 +1031,18 @@ function tree_edit() {
 
 		$(function() {
 			<?php if ($editable == false) {?>
-			$('select, input').not('#lock, #element').prop('disabled', true);
+			$('select, input').not('#lock, #element').each(function() {
+				$(this).prop('disabled', true);
+				$(this).addClass('ui-state-disabled');
+				if ($(this).selectmenu('instance') !== undefined) {
+					$(this).selectmenu('disable');
+				}
+			});
 			disableTree();
 			<?php } else {?>
-			$('select, input').prop('disabled', false);
+			$('select, input').each(function() {
+				$(this).prop('disabled', false);
+			});
 			<?php }?>
 
 			$('form').unbind().submit(function(event) {
