@@ -162,7 +162,7 @@ function set_user_setting($config_name, $value, $user = -1) {
 
 	if ($user == -1) {
 		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
-	} else {
+	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
 			name = ?,
@@ -182,21 +182,25 @@ function set_user_setting($config_name, $value, $user = -1) {
 function user_setting_exists($config_name, $user_id) {
 	static $user_setting_values = array();
 
-	if (!isset($user_setting_values[$config_name])) {
-		$value = db_fetch_cell_prepared('SELECT COUNT(*)
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $user_id));
+	if (db_table_exists('settings_user')) {
+		if (!isset($user_setting_values[$config_name])) {
+			$value = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $user_id));
 
-		if ($value > 0) {
-			$user_setting_values[$config_name] = true;
-		} else {
-			$user_setting_values[$config_name] = false;
+			if ($value > 0) {
+				$user_setting_values[$config_name] = true;
+			} else {
+				$user_setting_values[$config_name] = false;
+			}
 		}
-	}
 
-	return $user_setting_values[$config_name];
+		return $user_setting_values[$config_name];
+	} else {
+		return false;
+	}
 }
 
 /* clear_user_setting - if a value exists for the current user/setting specified, removes it
@@ -466,6 +470,11 @@ function get_selected_theme() {
 
 	// default to system selected theme
 	$theme = read_config_option('selected_theme');
+
+	// check for a pre-1.x cacti being upgraded
+	if ($theme == '' && !db_table_exists('settings_user')) {
+		return 'modern';
+	}
 
 	// figure out user defined theme
 	if (isset($_SESSION['sess_user_id'])) {

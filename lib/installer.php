@@ -714,16 +714,18 @@ class Installer implements JsonSerializable {
 	 * Error: will add an error to STEP_PROFILE_AND_AUTOMATION when an
 	 *        invalid id is passed */
 	private function setProfile($param_profile = null) {
-		if (!empty($param_profile)) {
-			$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($param_profile));
-			if ($valid === false || $valid != $param_profile) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile %s != %s', $valid, $param_profile));
-			} else {
-				$this->profile = $valid;
-				set_config_option('install_profile', $valid);
+		if (db_table_exists('data_source_profiles')) {
+			if (!empty($param_profile)) {
+				$valid = db_fetch_cell_prepared('SELECT id FROM data_source_profiles WHERE id = ?', array($param_profile));
+				if ($valid === false || $valid != $param_profile) {
+					$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Profile', __('Failed to apply specified profile %s != %s', $valid, $param_profile));
+				} else {
+					$this->profile = $valid;
+					set_config_option('install_profile', $valid);
+				}
 			}
+			log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
 		}
-		log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
 	}
 
 	/* getAutomationMode() - Gets the automation mode option, if not found
