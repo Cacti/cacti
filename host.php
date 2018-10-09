@@ -1509,7 +1509,13 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box(__('Devices'), '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . html_escape_request_var('host_template_id') . '&host_status=' . html_escape_request_var('host_status'));
+	if (get_request_var('host_template_id') > 0) {
+		$url = 'host.php?action=edit&host_template_id=' . get_request_var('host_template_id');
+	} else {
+		$url = 'host.php?action=edit';
+	}
+
+	html_start_box(__('Devices'), '100%', '', '3', 'center', $url);
 
 	?>
 	<tr class='even noprint'>
