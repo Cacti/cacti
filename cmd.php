@@ -541,7 +541,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 								$output = 'U';
 							}
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID: ' . $index_item['arg1'] . ', (assert:' . $index_item['assert_value'] . ' ' . $index_item['op'] . ' output:' . $output . ')', $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID: ' . $index_item['arg1'] . ', (assert:' . $index_item['assert_value'] . ' ' . $index_item['op'] . ' output:' . $output . ')', $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SCRIPT: // script (popen)
@@ -555,11 +555,11 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 										$strout = strlen($output);
 									}
 
-									cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Warning: Result from Script not valid. Partial Result: ' . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+									cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE Warning: Result from Script not valid. Partial Result: ' . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
 								}
 							}
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE CMD: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SCRIPT_PHP: // script (php script server)
@@ -573,11 +573,11 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 										$strout = strlen($output);
 									}
 
-									cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] WARNING: Result from Script Server not valid. Partial Result: ' . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
+									cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE WARNING: Result from Script Server not valid. Partial Result: ' . substr($output, 0, $strout), $print_data_to_stdout, 'POLLER');
 								}
 							}
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script Server: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SNMP_COUNT: // snmp; count items
@@ -589,7 +589,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 								$output = 'U';
 							}
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] OID Count: ' . $index_item['arg1'] . ', output: ' . $output, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE OID COUNT: ' . $index_item['arg1'] . ', output: ' . $output, $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SCRIPT_COUNT: // script (popen); count items
@@ -597,18 +597,18 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 							$script_index_array = exec_into_array($index_item['arg1']);
 							$output = cacti_sizeof($script_index_array);
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script Count: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE CMD COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						case POLLER_ACTION_SCRIPT_PHP_COUNT: // script (php script server); count items
 							$output = exec_into_array($index_item['arg1']);
 							$output = cacti_sizeof($output);
 
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] Script Server Count: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE SERVER COUNT: ' . $index_item['arg1'] . ", output: $output", $print_data_to_stdout, 'POLLER', debug_level($host_id, POLLER_VERBOSITY_MEDIUM));
 
 							break;
 						default: // invalid reindex option
-							cacti_log("Device[$host_id] RECACHE DQ[" . $index_item['data_query_id'] . '] ERROR: Invalid reindex option: ' . $index_item['action'], $print_data_to_stdout, 'POLLER');
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . '] RECACHE ERROR: Invalid reindex option: ' . $index_item['action'], $print_data_to_stdout, 'POLLER');
 						}
 
 						/* assert the result with the expected value in the
@@ -616,9 +616,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 						 */
 						/* TODO: remove magic ":" from poller_command["command"]; this may interfere with scripts */
 						if (($index_item['op'] == '=') && ($index_item['assert_value'] != trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '=' . trim($output) .
-								"' failed. Recaching host '" . $item['hostname'] .
-								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
+							cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '=' . trim($output), $print_data_to_stdout, 'POLLER');
 
 							db_execute_prepared('REPLACE INTO poller_command
 								(poller_id, time, action, command)
@@ -627,9 +625,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 							$assert_fail = true;
 						} elseif (($index_item['op'] == '>') && ($index_item['assert_value'] < trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '>' . trim($output) .
-								"' failed. Recaching host '" . $item['hostname'] .
-								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
+							cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '>' . trim($output), $print_data_to_stdout, 'POLLER');
 
 							db_execute_prepared('REPLACE INTO poller_command
 								(poller_id, time, action, command)
@@ -638,9 +634,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 							$assert_fail = true;
 						} elseif (($index_item['op'] == '<') && ($index_item['assert_value'] > trim($output))) {
-							cacti_log("ASSERT: '" . $index_item['assert_value'] . '<' . trim($output) .
-								"' failed. Recaching host '" . $item['hostname'] .
-								"', data query #" . $index_item['data_query_id'], $print_data_to_stdout, 'POLLER');
+							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '<' . trim($output), $print_data_to_stdout, 'POLLER');
 
 							db_execute_prepared('REPLACE INTO poller_command
 								(poller_id, time, action, command)
