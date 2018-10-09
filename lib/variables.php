@@ -32,7 +32,7 @@ function update_data_source_title_cache_from_template($data_template_id) {
 		AND local_data_id > 0',
 		array($data_template_id));
 
-	if (cacti_sizeof($data) > 0) {
+	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
 			update_data_source_title_cache($item['local_data_id']);
 		}

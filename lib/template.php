@@ -1072,7 +1072,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 	}
 
-	/* suggested values: graph */
+	/* suggested values: graph, passed from parent */
 	if (isset($suggested_vals[$graph_template_id]['graph_template'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template'] as $field_name => $field_value) {
 			db_execute_prepared('UPDATE graph_templates_graph
@@ -1082,7 +1082,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 		}
 	}
 
-	/* suggested values: graph item */
+	/* suggested values: graph item, passed from parent */
 	if (isset($suggested_vals[$graph_template_id]['graph_template_item'])) {
 		foreach ($suggested_vals[$graph_template_id]['graph_template_item'] as $graph_template_item_id => $field_array) {
 			foreach ($field_array as $field_name => $field_value) {
@@ -1248,7 +1248,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					update_data_source_data_query_cache($cache_array['local_data_id'][$data_template['id']]);
 				}
 
-				/* suggested values: data source */
+				/* suggested values: data source, passed from parent */
 				if (isset($suggested_vals[$graph_template_id]['data_template'][$data_template['id']])) {
 					foreach ($suggested_vals[$graph_template_id]['data_template'][$data_template['id']] as $field_name => $field_value) {
 						db_execute_prepared("UPDATE data_template_data
@@ -1258,7 +1258,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					}
 				}
 
-				/* suggested values: data source item */
+				/* suggested values: data source item, passed from parent */
 				if (isset($suggested_vals[$graph_template_id]['data_template_item'])) {
 					foreach ($suggested_vals[$graph_template_id]['data_template_item'] as $data_template_item_id => $field_array) {
 						foreach ($field_array as $field_name => $field_value) {
@@ -1276,7 +1276,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					}
 				}
 
-				/* suggested values: custom data */
+				/* suggested values: custom data, passed from parent */
 				if (isset($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']])) {
 					foreach ($suggested_vals[$graph_template_id]['custom_data'][$data_template['id']] as $data_input_field_id => $field_value) {
 						db_execute_prepared('REPLACE INTO data_input_data

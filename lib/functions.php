@@ -1568,8 +1568,8 @@ function get_data_source_title($local_data_id) {
 		WHERE dl.id = ?',
 		array($local_data_id));
 
-	if (isset($data) && cacti_sizeof($data)) {
-		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
+	if (cacti_sizeof($data)) {
+		if (strstr($data['name'], '|') !== false && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
 			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
@@ -1607,7 +1607,7 @@ function get_graph_title($local_graph_id) {
 		array($local_graph_id));
 
 	if (cacti_sizeof($graph)) {
-		if (strstr($graph['title'], '|') && !empty($graph['host_id']) && empty($graph['t_title'])) {
+		if (strstr($graph['title'], '|') !== false && $graph['host_id'] > 0 && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
 		} else {
