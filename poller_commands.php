@@ -24,7 +24,10 @@
 */
 
 /* we are not talking to the browser */
-define('MAX_RECACHE_RUNTIME', 296);
+define('MAX_RECACHE_RUNTIME', 1800);
+
+ini_set('max_runtime', '-1');
+ini_set('memory_limit', '800M');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/api_device.php');
@@ -42,6 +45,8 @@ require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
 $poller_id = $config['poller_id'];
+
+$debug = false;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -84,20 +89,33 @@ if (cacti_sizeof($parms)) {
 /* Record Start Time */
 $start = microtime(true);
 
+$max_updated = db_fetch_cell_prepared('SELECT MAX(UNIX_TIMESTAMP(last_updated))
+	FROM poller_command
+	WHERE poller_id = ?',
+	array($poller_id));
+
 $poller_commands = db_fetch_assoc_prepared('SELECT action, command
 	FROM poller_command
-	WHERE poller_id = ?', array($poller_id));
+	WHERE poller_id = ?',
+	array($poller_id));
 
 $last_host_id   = 0;
 $first_host     = true;
 $recached_hosts = 0;
 
-if (cacti_sizeof($poller_commands) > 0) {
+if ($debug) {
+	$verbosity = POLLER_VERBOSITY_LOW;
+} else {
+	$verbosity = POLLER_VERBOSITY_MEDIUM;
+}
+
+if (cacti_sizeof($poller_commands)) {
 	foreach ($poller_commands as $command) {
 		switch ($command['action']) {
 		case POLLER_COMMAND_REINDEX:
 			list($host_id, $data_query_id) = explode(':', $command['command']);
-				if ($last_host_id != $host_id) {
+
+			if ($last_host_id != $host_id) {
 				$last_host_id = $host_id;
 				$first_host = true;
 				$recached_hosts++;
@@ -109,11 +127,11 @@ if (cacti_sizeof($poller_commands) > 0) {
 				cacti_log("Device[$host_id] WARNING: Recache Event Detected for Device", true, 'PCOMMAND');
 			}
 
-			cacti_log("Device[$host_id] RECACHE: Recache for Device, data query #$data_query_id", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
+			cacti_log("Device[$host_id] DQ[$data_query_id] RECACHE: Recache for Device started.", true, 'PCOMMAND', $verbosity);
 
 			run_data_query($host_id, $data_query_id);
 
-			cacti_log("Device[$host_id] RECACHE: Recache successful.", true, 'PCOMMAND', POLLER_VERBOSITY_DEBUG);
+			cacti_log("Device[$host_id] DQ[$data_query_id] RECACHE: Recache successful.", true, 'PCOMMAND', $verbosity);
 			break;
 		default:
 			cacti_log('ERROR: Unknown poller command issued', true, 'PCOMMAND');
@@ -124,12 +142,17 @@ if (cacti_sizeof($poller_commands) > 0) {
 
 		/* end if runtime has been exceeded */
 		if (($current-$start) > MAX_RECACHE_RUNTIME) {
-			cacti_log("ERROR: Poller Command processing timed out after processing '" . $command . "'",true,'PCOMMAND');
+			cacti_log("ERROR: Poller Command processing timed out after processing '$command'", true, 'PCOMMAND');
 			break;
 		}
 	}
 
-	db_execute_prepared('DELETE FROM poller_command WHERE poller_id = ?', array($poller_id));
+	db_execute_prepared('DELETE FROM poller_command
+		WHERE poller_id = ?
+		AND last_updated <= FROM_UNIXTIME(?)',
+		array($poller_id, $max_updated));
+} else {
+	cacti_log('NOTE: No Poller Commands found for processing', true, 'PCOMMAND', $verbosity);
 }
 
 /* take time to log performance data */

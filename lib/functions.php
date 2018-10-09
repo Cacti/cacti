@@ -249,10 +249,6 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-	if (!db_table_exists('settings_user')) {
-		return false;
-	}
-
 	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
 	} elseif (read_config_option('auth_method') == 0 || $user > 0) {
@@ -271,11 +267,14 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 			$effective_uid = $user;
 		}
 
-		$db_setting = db_fetch_row_prepared('SELECT value
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $effective_uid));
+		$db_setting = false;
+		if (db_table_exists('settings_user')) {
+			$db_setting = db_fetch_row_prepared('SELECT value
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $effective_uid));
+		}
 
 		if (cacti_sizeof($db_setting)) {
 			return $db_setting['value'];
@@ -295,11 +294,14 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	}
 
 	if (!isset($user_config_array[$config_name])) {
-		$db_setting = db_fetch_row_prepared('SELECT value
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $effective_uid));
+		$db_setting = false;
+		if (db_table_exists('settings_user')) {
+			$db_setting = db_fetch_row_prepared('SELECT value
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $effective_uid));
+		}
 
 		if (cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
@@ -454,10 +456,6 @@ function read_config_option($config_name, $force = false) {
  */
 function get_selected_theme() {
 	global $config, $themes;
-
-	if (!db_table_exists('settings_user')) {
-		return 'modern';
-	}
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
@@ -4795,10 +4793,10 @@ function get_md5_hash($path) {
 			FROM poller_resource_cache
 			WHERE `path` = ?',
 			array($path));
+	}
 
-		if (!isset($md5) || !strlen($md5)) {
-			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
-		}
+	if (!isset($md5) || !strlen($md5)) {
+		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
 	} else {
 		$md5 = 0;
 	}
