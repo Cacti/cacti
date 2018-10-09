@@ -97,7 +97,7 @@ if ($_SERVER['argc'] >= 2) {
 	else
 		if (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
 			$environ = 'cmd';
-		elseif ($_SERVER['argv'][1] == 'realtime') 
+		elseif ($_SERVER['argv'][1] == 'realtime')
 			$environ = 'realtime';
 		else
 			$environ = 'other';
@@ -164,7 +164,7 @@ while (1) {
 						break;
 					case 1:
 						/* cut off function as second part of input string and keep rest for further parsing */
-						$function = trim(substr($input_string,0,$pos));
+						$function = trim(substr($input_string,0,$pos), "' ");
 						$input_string = trim(strchr($input_string, ' ')) . ' ';
 						break;
 					case 2:
