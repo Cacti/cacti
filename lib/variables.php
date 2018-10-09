@@ -307,11 +307,12 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache
 			WHERE snmp_query_id = ?
-			AND snmp_index = ?',
+			AND snmp_index = ?
+			AND host_id = 0',
 			array($snmp_query_id, $snmp_index));
 	}
 
-	if (cacti_sizeof($snmp_cache_data) > 0) {
+	if (cacti_sizeof($snmp_cache_data)) {
 		foreach ($snmp_cache_data as $data) {
 			if ($data['field_value'] != '') {
 				if ($max_chars > 0) {
@@ -341,7 +342,9 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 				WHERE local_graph_id = ?', array($graph['local_graph_id'])), 'local_data_id', 'local_data_id');
 
 			if (cacti_sizeof($local_data_ids)) {
-				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
+				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_data
+					WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
 			} else {
 				$data_template_data_id = 0;
 			}
@@ -349,7 +352,10 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			$data_template_data_id = 0;
 		}
 	} else {
-		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($local_data_id));
 	}
 
 	if (!empty($data_template_data_id)) {
