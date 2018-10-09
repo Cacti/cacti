@@ -136,7 +136,8 @@ Cacti CHANGELOG
 -feature: Add Timezone support for Remote Data Collectors
 -feature: Add One Minute Sampling to the default Data Source Profiles
 -feature: Allow Top tabs to be Glyphs or Text or both
--feature: Update JavaScript library c3.js to version 0.5.4
+-feature: Update JavaScript library c3.js to version 0.6.8
+-feature: Update JavaScript library d3.js to version 5.7.0
 -feature: Update JavaScript library jquery.tablesorter.js to version 2.30.7
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
 -feature: Update JavaScript library screenfull.js to 3.3.3
