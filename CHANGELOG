@@ -139,6 +139,7 @@ Cacti CHANGELOG
 -feature: Update JavaScript library c3.js to version 0.5.4
 -feature: Update JavaScript library jquery.tablesorter.js to version 2.30.5
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
+-feature: Update JavaScript library jstree.js to 3.3.6
 -feature: Update phpseclib to version 2.0.11
 -feature: Update JavaScript library jquery.js to 3.3.1
 -feature: Make Top Tabs use Ajax Callback
