@@ -834,12 +834,6 @@ function utilities_get_mysql_recommendations() {
 			'measure' => 'ge',
 			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
 			),
-		'max_heap_table_size' => array(
-			'value'   => '5',
-			'measure' => 'pmem',
-			'class' => 'warning',
-			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
-			),
 		'table_cache' => array(
 			'value'   => '200',
 			'measure' => 'ge',
@@ -850,14 +844,22 @@ function utilities_get_mysql_recommendations() {
 			'measure' => 'ge',
 			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
 			),
+		'max_heap_table_size' => array(
+			'value'   => '1.6',
+			'measure' => 'pmem',
+			'class'   => 'warning',
+			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
+			),
 		'tmp_table_size' => array(
-			'value'   => '64M',
-			'measure' => 'gem',
+			'value'   => '1.6',
+			'measure' => 'pmem',
+			'class'   => 'warning',
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
-			'value'   => '64M',
-			'measure' => 'gem',
+			'value'   => '3.2',
+			'measure' => 'pmem',
+			'class'   => 'warning',
 			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
