@@ -1006,7 +1006,12 @@ $settings = array(
 			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
 			'method' => 'drop_array',
 			'default' => '5',
-			'array' => array(5, 10, 15, 20)
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
 			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),

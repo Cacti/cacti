@@ -433,10 +433,24 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	global $config, $snmp_error;
 
 	if (empty($device_id)) {
-		return "";
+		print __('ERROR: Device ID is Blank');
+		return;
 	}
 
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+	$host = db_fetch_row_prepared('SELECT *
+		FROM host
+		WHERE id = ?',
+		array($device_id));
+
+	if (!sizeof($host)) {
+		if ($from_remote) {
+			print __('ERROR: Device[' . $device_id . '] not found.  Please perform Full Sync!');
+		} else {
+			print __('ERROR: Device[' . $device_id . '] not found.  Please check database for errors.');
+		}
+		return;
+	}
+
 	$am   = $host['availability_method'];
 	$anym = false;
 
