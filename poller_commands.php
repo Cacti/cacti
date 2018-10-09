@@ -46,6 +46,8 @@ require_once($config['base_path'] . '/lib/utility.php');
 
 $poller_id = $config['poller_id'];
 
+$debug = false;
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
