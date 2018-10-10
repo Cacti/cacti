@@ -222,54 +222,55 @@ function run_data_query($host_id, $snmp_query_id) {
 					array($host_id, $snmp_query_id, $data_source['snmp_index']));
 
 				$removed_ids[] = $data_source['local_data_id'];
-			} else {
-				// Searching for previously unmapped index
-				$current_index = db_fetch_cell_prepared('SELECT snmp_index
-					FROM host_snmp_cache
-					WHERE host_id = ?
-					AND snmp_query_id = ?
-					AND field_name = ?
-					AND field_value = ?',
-					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
-
-				if ($current_index != '') {
-					// Found previous index
-					db_execute_prepared('UPDATE data_local
-						SET snmp_index = ?
-						WHERE host_id = ?
-						AND snmp_query_id = ?
-						AND id = ?',
-						array($current_index, $host_id, $snmp_query_id, $data_source['local_data_id']));
-
-					$graph_ids = array_rekey(
-						db_fetch_assoc_prepared('SELECT gti.local_graph_id
-							FROM graph_templates_item AS gti
-							INNER JOIN data_template_rrd AS dtr
-							ON gti.task_item_id=dtr.id
-							WHERE dtr.local_data_id = ?',
-							array($data_source['local_data_id'])),
-						'local_graph_id', 'local_graph_id');
-
-					if (sizeof($graph_ids)) {
-						db_execute_prepared('UPDATE graph_local
-							SET snmp_index = ?
-							WHERE id IN (' . implode(', ', $graph_ids) . ')',
-							array($current_index));
-					}
-
-					$changed_ids[] = $data_source['local_data_id'];
-				} else {
-					$poller_items = db_fetch_cell_prepared('SELECT COUNT(*)
-						FROM poller_item
-						WHERE local_data_id = ?',
-						array($data_source['local_data_id']));
-
-					if ($poller_items > 0) {
-						$removed_ids[] = $data_source['local_data_id'];
-					}
-				}
-
 			}
+//			} else {
+//				// Searching for previously unmapped index
+//				$current_index = db_fetch_cell_prepared('SELECT snmp_index
+//					FROM host_snmp_cache
+//					WHERE host_id = ?
+//					AND snmp_query_id = ?
+//					AND field_name = ?
+//					AND field_value = ?',
+//					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+//
+//				if ($current_index != '') {
+//					// Found previous index
+//					db_execute_prepared('UPDATE data_local
+//						SET snmp_index = ?
+//						WHERE host_id = ?
+//						AND snmp_query_id = ?
+//						AND id = ?',
+//						array($current_index, $host_id, $snmp_query_id, $data_source['local_data_id']));
+//
+//					$graph_ids = array_rekey(
+//						db_fetch_assoc_prepared('SELECT gti.local_graph_id
+//							FROM graph_templates_item AS gti
+//							INNER JOIN data_template_rrd AS dtr
+//							ON gti.task_item_id=dtr.id
+//							WHERE dtr.local_data_id = ?',
+//							array($data_source['local_data_id'])),
+//						'local_graph_id', 'local_graph_id');
+//
+//					if (sizeof($graph_ids)) {
+//						db_execute_prepared('UPDATE graph_local
+//							SET snmp_index = ?
+//							WHERE id IN (' . implode(', ', $graph_ids) . ')',
+//							array($current_index));
+//					}
+//
+//					$changed_ids[] = $data_source['local_data_id'];
+//				} else {
+//					$poller_items = db_fetch_cell_prepared('SELECT COUNT(*)
+//						FROM poller_item
+//						WHERE local_data_id = ?',
+//						array($data_source['local_data_id']));
+//
+//					if ($poller_items > 0) {
+//						$removed_ids[] = $data_source['local_data_id'];
+//					}
+//				}
+//
+//			}
 
 			if ($remap && trim($new_field_value) != '' && $new_sort_field != '') {
 				db_execute_prepared('UPDATE data_input_data
