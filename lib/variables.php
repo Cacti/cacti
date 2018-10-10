@@ -314,7 +314,7 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 
 	if (cacti_sizeof($snmp_cache_data)) {
 		foreach ($snmp_cache_data as $data) {
-			if ($data['field_value'] != '') {
+			if (trim($data['field_value']) != '') {
 				if ($max_chars > 0) {
 					$data['field_value'] = substr($data['field_value'], 0, $max_chars);
 				}
