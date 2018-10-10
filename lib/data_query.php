@@ -193,7 +193,7 @@ function run_data_query($host_id, $snmp_query_id) {
 				// Non blank index found
 				// Check to see if the index changed
 				if ($current_index != $data_source['snmp_index']) {
-					query_debug_timer_offset('data_query', __('CurrentIndex: %s, PreviousIndex: %s', $current_index, $data_source['query_index']));
+					query_debug_timer_offset('data_query', __('Index Change Detected! CurrentIndex: %s, PreviousIndex: %s', $current_index, $data_source['query_index']));
 
 					db_execute_prepared('UPDATE data_local
 						SET snmp_index = ?
@@ -204,6 +204,8 @@ function run_data_query($host_id, $snmp_query_id) {
 				}
 			} elseif ($data_source['snmp_index'] != '') {
 				// Found a deleted index, masking off to prevent issues
+				query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
+
 				db_execute_prepared('UPDATE data_local
 					SET snmp_index = ""
 					WHERE id = ?',
@@ -227,8 +229,11 @@ function run_data_query($host_id, $snmp_query_id) {
 			}
 		}
 
-		data_query_remap_indexes($changed_ids);
-		data_query_remap_indexes($removed_ids);
+		if (sizeof($changed_ids) || sizeof($removed_ids)) {
+			query_debug_timer_offset('data_query', __('Remapping Graphs to their new Indexes'));
+			data_query_remap_indexes($changed_ids);
+			data_query_remap_indexes($removed_ids);
+		}
 	}
 
 	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
