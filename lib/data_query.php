@@ -120,7 +120,7 @@ function run_data_query($host_id, $snmp_query_id) {
 	$new_sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
 
 	$remap = false;
-	if ($original_sort_field != $new_sort_field) {
+	if ($original_sort_field != $new_sort_field && $original_sort_field != '') {
 		query_debug_timer_offset('data_query', __('WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!'));
 		cacti_log('WARNING: Sort Field has Changed.  Old Sort:' . $original_sort_field . ', New Sort:' . $new_sort_field . '.  Re-mapping issues may occur!', false, 'REINDEX');
 		$remap = true;
