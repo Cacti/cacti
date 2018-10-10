@@ -160,10 +160,9 @@ function run_data_query($host_id, $snmp_query_id) {
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
-				AND snmp_index = ?
 				AND field_name = ?
 				AND field_value = ?',
-				array($host_id, $snmp_query_id, $data_source['snmp_index'], $data_source['sort_field'], $data_source['query_index']));
+				array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
 
 			if ($remap) {
 				$new_field_value = db_fetch_cell_prepared('SELECT field_value
