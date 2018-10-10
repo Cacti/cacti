@@ -182,25 +182,24 @@ function set_user_setting($config_name, $value, $user = -1) {
 function user_setting_exists($config_name, $user_id) {
 	static $user_setting_values = array();
 
-	if (db_table_exists('settings_user')) {
-		if (!isset($user_setting_values[$config_name])) {
+	if (!isset($user_setting_values[$config_name])) {
+		$value = 0;
+		if (db_table_exists('settings_user')) {
 			$value = db_fetch_cell_prepared('SELECT COUNT(*)
 				FROM settings_user
 				WHERE name = ?
 				AND user_id = ?',
 				array($config_name, $user_id));
-
-			if ($value > 0) {
-				$user_setting_values[$config_name] = true;
-			} else {
-				$user_setting_values[$config_name] = false;
-			}
 		}
 
-		return $user_setting_values[$config_name];
-	} else {
-		return false;
+		if ($value !== false && $value > 0) {
+			$user_setting_values[$config_name] = true;
+		} else {
+			$user_setting_values[$config_name] = false;
+		}
 	}
+
+	return $user_setting_values[$config_name];
 }
 
 /* clear_user_setting - if a value exists for the current user/setting specified, removes it
@@ -214,10 +213,12 @@ function clear_user_setting($config_name, $user = -1) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
-	db_execute_prepared('DELETE FROM settings_user
-		WHERE name = ?
-		AND user_id = ?',
-		array($config_name, $user));
+	if (db_table_exists('settings_user')) {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE name = ?
+			AND user_id = ?',
+			array($config_name, $user));
+	}
 
 	unset($_SESSION['sess_user_config_array']);
 }
