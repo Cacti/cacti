@@ -98,6 +98,18 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
+			$ver = db_fetch_cell('SHOW GLOBAL VARIABLES LIKE \'version\'');
+		        if (strpos($ver, 'MariaDB') !== false) {
+				$srv = 'MariaDB';
+				$ver  = str_replace('-MariaDB', '', $variables['version']);
+			} else {
+				$srv = 'MySQL';
+			}
+
+			if (version_compare('8.0.0', $ver, '<=')) {
+				$bad_modes[] = 'NO_AUTO_CREATE_USER';
+			}
+
 			// Get rid of bad modes
 			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = array();
