@@ -155,26 +155,43 @@ function run_data_query($host_id, $snmp_query_id) {
 	$removed_ids = array();
 	if (sizeof($local_data)) {
 		foreach($local_data as $data_source) {
-			// See if the index is in the host cache
-			$current_index = db_fetch_cell_prepared('SELECT snmp_index
-				FROM host_snmp_cache
-				WHERE host_id = ?
-				AND snmp_query_id = ?
-				AND field_name = ?
-				AND field_value = ?',
-				array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+			// Just in case there is a forced type from the data source page
+			$forced_type = false;
 
-			if ($remap) {
-				$new_field_value = db_fetch_cell_prepared('SELECT field_value
+			// Check to see if the user had manually set the index type
+			$previous_sort_field = $original_sort_field;
+
+			$previous_did = db_fetch_row_prepared('SELECT did.*
+				FROM data_local AS dl
+				INNER JOIN data_template_data AS dtd
+				ON dl.id = dtd.local_data_id
+				INNER JOIN data_input_fields AS dif
+				ON dtd.data_input_id = dif.data_input_id
+				LEFT JOIN data_input_data AS did
+				ON dtd.id = did.data_template_data_id
+				AND dif.id = did.data_input_field_id
+				WHERE dif.data_name="index_type"
+				AND dl.id = ?',
+				array($data_source['local_data_id']));
+
+			if (sizeof($previous_did)) {
+				if ($previous_did['value'] != $previous_sort_field) {
+					$forced_type = true;
+					$previous_sort_field = $previous_did['value'];
+				}
+			}
+
+			if (!$forced_type) {
+				// See if the index is in the host cache
+				$current_index = db_fetch_cell_prepared('SELECT snmp_index
 					FROM host_snmp_cache
 					WHERE host_id = ?
 					AND snmp_query_id = ?
 					AND field_name = ?
-					AND snmp_index = ?',
-					array($host_id, $snmp_query_id, $new_sort_field, $current_index));
-
-				$did_map_data = db_fetch_row('SELECT value, data_input_field_id, data_template_data_id,
-					host_id, snmp_query_id
+					AND field_value = ?',
+					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+			} else {
+				$current_index = db_fetch_cell_prepared('SELECT value
 					FROM data_input_data AS did
 					INNER JOIN data_input_fields AS dif
 					ON did.data_input_field_id=dif.id
@@ -182,11 +199,39 @@ function run_data_query($host_id, $snmp_query_id) {
 					ON dtd.id=did.data_template_data_id
 					INNER JOIN data_local AS dl
 					ON dl.id=dtd.local_data_id
-					WHERE value = ?
-					AND dl.id = ?
+					WHERE dl.id = ?
 					AND dl.snmp_query_id = ?
-					AND data_name="index_type"',
-					array($data_source['sort_field'], $data_source['local_data_id'], $snmp_query_id));
+					AND data_name="index_value"',
+					array($data_source['local_data_id'], $snmp_query_id));
+			}
+
+			if ($remap) {
+				if ($new_sort_field != $previous_sort_field) {
+					$new_field_value = db_fetch_cell_prepared('SELECT field_value
+						FROM host_snmp_cache
+						WHERE host_id = ?
+						AND snmp_query_id = ?
+						AND field_name = ?
+						AND snmp_index = ?',
+						array($host_id, $snmp_query_id, $new_sort_field, $current_index));
+
+					$did_map_data = db_fetch_row_prepared('SELECT value, data_input_field_id, data_template_data_id,
+						host_id, snmp_query_id
+						FROM data_input_data AS did
+						INNER JOIN data_input_fields AS dif
+						ON did.data_input_field_id=dif.id
+						INNER JOIN data_template_data AS dtd
+						ON dtd.id=did.data_template_data_id
+						INNER JOIN data_local AS dl
+						ON dl.id=dtd.local_data_id
+						WHERE value = ?
+						AND dl.id = ?
+						AND dl.snmp_query_id = ?
+						AND data_name="index_type"',
+						array($previous_sort_field, $data_source['local_data_id'], $snmp_query_id));
+				} else {
+					$remap = false;
+				}
 			}
 
 			if ($current_index != '') {
@@ -202,7 +247,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 					$changed_ids[] = $data_source['local_data_id'];
 				}
-			} elseif ($data_source['snmp_index'] != '') {
+			} elseif ($data_source['snmp_index'] != '' && !$forced_type) {
 				// Found a deleted index, masking off to prevent issues
 				query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
 
@@ -225,7 +270,7 @@ function run_data_query($host_id, $snmp_query_id) {
 					SET value = ?
 					WHERE data_input_field_id = ?
 					AND data_template_data_id = ?',
-					array($new_sort_field, $did_map_data['data_input_field_id'], $did_map_data['data_template_data_id']));
+					array($new_sort_field, $previous_did['data_input_field_id'], $previous_did['data_template_data_id']));
 			}
 		}
 
