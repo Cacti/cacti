@@ -112,6 +112,11 @@ function run_data_query($host_id, $snmp_query_id) {
 		}
 	}
 
+	// If re-indexing fails, don't continue
+	if (!$result) {
+		return false
+	}
+
 	$original_sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
 
 	/* update the sort cache */
@@ -466,6 +471,10 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
+
+	if (!sizeof($script_index_array)) {
+		return false;
+	}
 
 	query_debug_timer_offset('data_query', __('Executing script for list of indexes \'%s\', Index Count: %s', $script_path, cacti_sizeof($script_index_array)));
 
