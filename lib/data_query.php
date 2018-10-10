@@ -192,7 +192,9 @@ function run_data_query($host_id, $snmp_query_id) {
 			if ($current_index != '') {
 				// Non blank index found
 				// Check to see if the index changed
-				if ($current_index != $data_source['query_index']) {
+				if ($current_index != $data_source['snmp_index']) {
+					query_debug_timer_offset('data_query', __('CurrentIndex: %s, PreviousIndex: %s', $current_index, $data_source['query_index']));
+
 					db_execute_prepared('UPDATE data_local
 						SET snmp_index = ?
 						WHERE id = ?',
@@ -209,54 +211,6 @@ function run_data_query($host_id, $snmp_query_id) {
 
 				$removed_ids[] = $data_source['local_data_id'];
 			}
-//			} else {
-//				// Searching for previously unmapped index
-//				$current_index = db_fetch_cell_prepared('SELECT snmp_index
-//					FROM host_snmp_cache
-//					WHERE host_id = ?
-//					AND snmp_query_id = ?
-//					AND field_name = ?
-//					AND field_value = ?',
-//					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
-//
-//				if ($current_index != '') {
-//					// Found previous index
-//					db_execute_prepared('UPDATE data_local
-//						SET snmp_index = ?
-//						WHERE host_id = ?
-//						AND snmp_query_id = ?
-//						AND id = ?',
-//						array($current_index, $host_id, $snmp_query_id, $data_source['local_data_id']));
-//
-//					$graph_ids = array_rekey(
-//						db_fetch_assoc_prepared('SELECT gti.local_graph_id
-//							FROM graph_templates_item AS gti
-//							INNER JOIN data_template_rrd AS dtr
-//							ON gti.task_item_id=dtr.id
-//							WHERE dtr.local_data_id = ?',
-//							array($data_source['local_data_id'])),
-//						'local_graph_id', 'local_graph_id');
-//
-//					if (sizeof($graph_ids)) {
-//						db_execute_prepared('UPDATE graph_local
-//							SET snmp_index = ?
-//							WHERE id IN (' . implode(', ', $graph_ids) . ')',
-//							array($current_index));
-//					}
-//
-//					$changed_ids[] = $data_source['local_data_id'];
-//				} else {
-//					$poller_items = db_fetch_cell_prepared('SELECT COUNT(*)
-//						FROM poller_item
-//						WHERE local_data_id = ?',
-//						array($data_source['local_data_id']));
-//
-//					if ($poller_items > 0) {
-//						$removed_ids[] = $data_source['local_data_id'];
-//					}
-//				}
-//
-//			}
 
 			if ($remap && trim($new_field_value) != '' && $new_sort_field != '') {
 				db_execute_prepared('UPDATE data_input_data
@@ -283,7 +237,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	/* update the auto reindex cache */
 	if (sizeof($changed_ids)) {
-		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete'));
+		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . sizeof($changed_ids) . ' index changes, and ' . sizeof($removed_ids) . ' removed indexes.'));
 
 		/* update the poller cache */
 		update_poller_cache_from_query($host_id, $snmp_query_id, $changed_ids);
