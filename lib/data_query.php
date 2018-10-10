@@ -278,7 +278,7 @@ function run_data_query($host_id, $snmp_query_id) {
 					SET value = ?
 					WHERE data_input_field_id = ?
 					AND data_template_data_id = ?',
-					array($new_sort_field, $did_map_data['data_template_data_id'], $did_map_data['data_template_data_id']));
+					array($new_sort_field, $did_map_data['data_input_field_id'], $did_map_data['data_template_data_id']));
 			}
 		}
 	}
