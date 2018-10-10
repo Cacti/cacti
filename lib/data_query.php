@@ -198,13 +198,6 @@ function run_data_query($host_id, $snmp_query_id) {
 						WHERE id = ?',
 						array($current_index, $data_source['local_data_id']));
 
-					db_execute_prepared('UPDATE graph_local
-						SET snmp_index = ?
-						WHERE host_id = ?
-						AND snmp_query_id = ?
-						AND snmp_index = ?',
-						array($current_index, $host_id, $snmp_query_id, $data_source['snmp_index']));
-
 					$changed_ids[] = $data_source['local_data_id'];
 				}
 			} elseif ($data_source['snmp_index'] != '') {
@@ -213,13 +206,6 @@ function run_data_query($host_id, $snmp_query_id) {
 					SET snmp_index = ""
 					WHERE id = ?',
 					array($data_source['local_data_id']));
-
-				db_execute_prepared('UPDATE graph_local
-					SET snmp_index = ""
-					WHERE host_id = ?
-					AND snmp_query_id = ?
-					AND snmp_index = ?',
-					array($host_id, $snmp_query_id, $data_source['snmp_index']));
 
 				$removed_ids[] = $data_source['local_data_id'];
 			}
@@ -286,6 +272,9 @@ function run_data_query($host_id, $snmp_query_id) {
 					array($new_sort_field, $did_map_data['data_input_field_id'], $did_map_data['data_template_data_id']));
 			}
 		}
+
+		data_query_remap_indexes($changed_ids);
+		data_query_remap_indexes($removed_ids);
 	}
 
 	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
@@ -351,6 +340,34 @@ function run_data_query($host_id, $snmp_query_id) {
 	}
 
 	return (isset($result) ? $result : true);
+}
+
+function data_query_remap_indexes($local_data) {
+	if (sizeof($local_data)) {
+		foreach($local_data as $id) {
+			$index = db_fetch_cell_prepared('SELECT snmp_index
+				FROM data_local
+				WHERE id = ?',
+				array($id));
+
+			$local_graph_ids = array_rekey(
+				db_fetch_assoc_prepared('SELECT DISTINCT gti.local_graph_id
+					FROM graph_templates_item AS gti
+					INNER JOIN data_template_rrd AS dtr
+					ON gti.task_item_id=dtr.id
+					WHERE dtr.local_data_id = ?',
+					array($id)),
+				'local_graph_id', 'local_graph_id'
+			);
+
+			if (sizeof($local_graph_ids)) {
+				db_execute_prepared('UPDATE graph_local
+					SET snmp_index = ?
+					WHERE id IN(' . implode(', ', $local_graph_ids) . ')',
+					array($index));
+			}
+		}
+	}
 }
 
 function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
