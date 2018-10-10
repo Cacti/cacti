@@ -156,7 +156,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	throw new Exception($errstr, $errno);
 }
 
@@ -239,7 +239,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		} catch (Exception $ex) {
 			$code = $ex->getCode();
 			$en = $code;
-			$errorinfo = array(1=>$code,2=>$ex->getMessage());
+			$errorinfo = array(1=>$code, 2=>$ex->getMessage());
 		}
 		restore_error_handler();
 
