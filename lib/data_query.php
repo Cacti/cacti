@@ -114,7 +114,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 	// If re-indexing fails, don't continue
 	if (!$result) {
-		return false
+		return false;
 	}
 
 	$original_sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
