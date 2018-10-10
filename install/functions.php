@@ -687,7 +687,7 @@ function log_install_and_file($level, $string, $section = '') {
 }
 
 function log_install_section_level($section) {
-	$log_level = log_install_level('log_verbosity', POLLER_VERBOSITY_LOW);
+	$log_level = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
 	$log_section = log_install_level('log_install_'.$section, POLLER_VERBOSITY_NONE);
 
