@@ -137,7 +137,7 @@ foreach ($data_source_list as $data_source) {
 	if (!$debug)
 		print ".";
 	debug("Data Source Name '" . $data_source['name_cache'] . "' starting");
-	api_reapply_suggested_data_source_title($data_source['local_data_id']);
+	api_reapply_suggested_data_source_data($data_source['local_data_id']);
 	update_data_source_title_cache($data_source['local_data_id']);
 	debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
 	$i++;

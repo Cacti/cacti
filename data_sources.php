@@ -399,7 +399,7 @@ function form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					api_reapply_suggested_data_source_title($selected_items[$i]);
+					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
 			} else {

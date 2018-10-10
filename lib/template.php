@@ -264,7 +264,8 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 
 	$data_rrds_list = db_fetch_assoc_prepared('SELECT *
 		FROM data_template_rrd
-		WHERE local_data_id = ?', array($local_data_id));
+		WHERE local_data_id = ?',
+		array($local_data_id));
 
 	$template_rrds_list = (($data_template_id == '0') ? $data_rrds_list : db_fetch_assoc_prepared('SELECT * FROM data_template_rrd WHERE local_data_id=0 AND data_template_id = ?', array($data_template_id)));
 
@@ -299,7 +300,8 @@ function change_data_template($local_data_id, $data_template_id, $profile = arra
 	/* make sure to copy down script data (data_input_data) as well */
 	$data_input_data = db_fetch_assoc_prepared('SELECT data_input_field_id, t_value, value
 		FROM data_input_data
-		WHERE data_template_data_id = ?', array($template_data['id']));
+		WHERE data_template_data_id = ?',
+		array($template_data['id']));
 
 	/* this section is before most everthing else so we can determine if this is a new save, by checking
 	the status of the 'local_data_template_data_id' column */
@@ -1040,36 +1042,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	/* perform graph replacement based upon suggested values */
 	if (cacti_sizeof($snmp_query_array)) {
-		/* suggested values for snmp query code */
-		$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name
-			FROM snmp_query_graph_sv
-			WHERE snmp_query_graph_id = ?
-			ORDER BY sequence',
-			array($snmp_query_array['snmp_query_graph_id']));
-
-		if (cacti_sizeof($suggested_values)) {
-			foreach ($suggested_values as $suggested_value) {
-				/* once we find a match; don't try to find more */
-				$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id,
-					$snmp_query_array['snmp_query_id'], $snmp_query_array['snmp_index'],
-					read_config_option('max_data_query_field_length'));
-
-				/* if there are no '|' characters, all of the substitutions were successful */
-				if (!strstr($subs_string, '|query')) {
-					if (db_column_exists('graph_templates_graph', $suggested_value['field_name'])) {
-						db_execute_prepared('UPDATE graph_templates_graph
-							SET ' . $suggested_value['field_name'] . ' = ?
-							WHERE local_graph_id = ?',
-							array($suggested_value['text'], $cache_array['local_graph_id']));
-					} else {
-						cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Graph Template ID ' . $graph_template_id .  ' is not a compatible field name.  Please correct this suggested value mapping', false);
-					}
-
-					/* once the suggested values matches, break out of for loop */
-					break;
-				}
-			}
-		}
+		api_reapply_suggested_graph_title($cache_array['local_graph_id']);
 	}
 
 	/* suggested values: graph, passed from parent */
@@ -1126,12 +1099,26 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			if (cacti_sizeof($previous_data_source) && !$custom_data) {
 				$cache_array['local_data_id'][$data_template['id']] = $previous_data_source['id'];
 			} else {
+				// Save the data source
 				unset($save);
 
 				$save['id']               = 0;
 				$save['data_template_id'] = $data_template['id'];
 				$save['host_id']          = $host_id;
 
+				if (cacti_sizeof($snmp_query_array)) {
+					if (isset($snmp_query_array['snmp_query_id']) && $snmp_query_array['snmp_query_id'] > 0) {
+						$save['snmp_query_id'] = $snmp_query_array['snmp_query_id'];
+					}
+
+					if (isset($snmp_query_array['snmp_index']) && $snmp_query_array['snmp_index'] != '') {
+						$save['snmp_index'] = $snmp_query_array['snmp_index'];
+					}
+				}
+
+				$cache_array['local_data_id'][$data_template['id']] = sql_save($save, 'data_local');
+
+				// Determine the data source profile to use
 				if (isset($suggested_vals[$graph_template_id]['data_template'][$data_template['id']]['data_source_profile_id'])) {
 					$profile_id = $suggested_vals[$graph_template_id]['data_template'][$data_template['id']]['data_source_profile_id'];
 
@@ -1156,8 +1143,6 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					$profile    = array();
 				}
 
-				$cache_array['local_data_id'][$data_template['id']] = sql_save($save, 'data_local');
-
 				change_data_template($cache_array['local_data_id'][$data_template['id']], $data_template['id'], $profile);
 
 				$data_template_data_id = db_fetch_cell_prepared('SELECT id
@@ -1165,45 +1150,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 					WHERE local_data_id = ?',
 					array($cache_array['local_data_id'][$data_template['id']]));
 
-				if (cacti_sizeof($snmp_query_array)) {
-					/* suggested values for snmp query code */
-					$suggested_values = db_fetch_assoc_prepared('SELECT text, field_name
-						FROM snmp_query_graph_rrd_sv
-						WHERE snmp_query_graph_id = ?
-						AND data_template_id = ?
-						ORDER BY sequence',
-						array($snmp_query_array['snmp_query_graph_id'], $data_template['id']));
-
-					if (cacti_sizeof($suggested_values)) {
-						foreach ($suggested_values as $suggested_value) {
-							/* once we find a match; don't try to find more */
-							$subs_string = substitute_snmp_query_data($suggested_value['text'], $host_id,
-								$snmp_query_array['snmp_query_id'],
-								$snmp_query_array['snmp_index'], read_config_option('max_data_query_field_length'));
-
-							/* if there are no '|' characters, all of the substitutions were successful */
-							if (!strstr($subs_string, '|query')) {
-								if (db_column_exists('data_template_data', $suggested_value['field_name'])) {
-									db_execute_prepared('UPDATE data_template_data
-										SET ' . $suggested_value['field_name'] . ' = ?
-										WHERE local_data_id = ?',
-										array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
-								} elseif (db_column_exists('data_template_rrd', $suggested_value['field_name'])) {
-									db_execute_prepared('UPDATE data_template_rrd
-										SET ' . $suggested_value['field_name'] . ' = ?
-										WHERE local_data_id = ?',
-										array($suggested_value['text'], $cache_array['local_data_id'][$data_template['id']]));
-								} else {
-									cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Query ID ' . $snmp_query_array['snmp_query_id'] . ' and Data Template ID ' . $data_template['id'] .  ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
-								}
-
-								/* after a metch is found, stop searching */
-								break;
-							}
-						}
-					}
-				}
-
+				// Set suggested names and custom data
 				if (cacti_sizeof($snmp_query_array)) {
 					$data_input_field = array_rekey(db_fetch_assoc_prepared('SELECT dif.id, dif.type_code
 						FROM snmp_query AS sq
@@ -1243,6 +1190,8 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 						(data_input_field_id,data_template_data_id,t_value,value)
 						VALUES (?, ?, "", ?)',
 						array($data_input_field['output_type'], $data_template_data_id, $snmp_query_array['snmp_query_graph_id']));
+
+					api_reapply_suggested_data_source_data($cache_array['local_data_id'][$data_template['id']]);
 
 					/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
 					update_data_source_data_query_cache($cache_array['local_data_id'][$data_template['id']]);

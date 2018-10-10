@@ -234,7 +234,7 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
-function api_reapply_suggested_data_source_title($local_data_id) {
+function api_reapply_suggested_data_source_data($local_data_id) {
 	global $config;
 
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
