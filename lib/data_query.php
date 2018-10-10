@@ -267,7 +267,7 @@ function run_data_query($host_id, $snmp_query_id) {
 
 			}
 
-			if ($remap) {
+			if ($remap && trim($new_field_value) != '' && $new_sort_field != '') {
 				db_execute_prepared('UPDATE data_input_data
 					SET value = ?
 					WHERE data_input_field_id = ?
