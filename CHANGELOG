@@ -159,6 +159,7 @@ Cacti CHANGELOG
 -feature: Tree automation is now defaulted to on for new install
 -feature: Allow Import/Export to be hookable
 -feature: Add a Timeout setting for Remote Agent calls
+-feature: Make it easy to find Data Query based graphs that have lost indexes
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values

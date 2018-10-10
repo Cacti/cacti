@@ -1705,6 +1705,11 @@ function validate_graph_request_vars() {
 			'pageset' => true,
 			'default' => '',
 			),
+		'orphans' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '',
+			'options' => array('options' => 'sanitize_search_string')
+			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'title_cache',
@@ -1754,6 +1759,7 @@ function graph_management() {
 			'?host_id=' + $('#host_id').val() +
 			'&site_id=' + $('#site_id').val() +
 			'&rows=' + $('#rows').val() +
+			'&orphans=' + $('#orphans').is(':checked') +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
 			'&template_id=' + $('#template_id').val() +
 			'&header=false';
@@ -1831,6 +1837,12 @@ function graph_management() {
 					</td>
 					<td>
 						<span>
+							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
+   	                    	<label for='orphans'><?php print __('Orphaned');?></label>
+						</span>
+					</td>
+					<td>
+						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
@@ -1903,6 +1915,10 @@ function graph_management() {
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
 		}
+	}
+
+	if (get_request_var('orphans') == 'true') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (gl.snmp_index = "" AND gl.snmp_query_id > 0)';
 	}
 
 	/* don't allow aggregates to be view here */
