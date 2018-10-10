@@ -454,7 +454,14 @@ function query_script_host($host_id, $snmp_query_id) {
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
 
+		// don't continue if there are no indexes
+		if (!sizeof($script_num_index_array)) {
+			query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
+			return false;
+		}
+
 		query_debug_timer_offset('data_query', __('Executing script for num of indexes \'%s\'', $script_path));
+
 		foreach ($script_num_index_array as $element) {
 			query_debug_timer_offset('data_query', __('Found number of indexes: %s' , $element));
 		}
@@ -473,6 +480,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	$script_index_array = exec_into_array($script_path);
 
 	if (!sizeof($script_index_array)) {
+		query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
 		return false;
 	}
 
@@ -1051,7 +1059,7 @@ function data_query_ctype_print_unicode($value) {
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE host_snmp_cache
-		SET present=0
+		SET present = 0
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($host_id, $snmp_query_id));
