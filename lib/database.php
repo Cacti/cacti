@@ -156,7 +156,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+function db_warning_handler($errno, string $errstr, string $errfile, $errline, array $errcontext) {
 	throw new Exception($errstr, $errno);
 }
 
