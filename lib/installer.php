@@ -2680,9 +2680,9 @@ class Installer implements JsonSerializable {
 			$failure = $this->installPoller();
 		} else {
 			if ($this->mode == Installer::MODE_INSTALL) {
-				$failure = $this->installServer();
+				$failure = $this->installTemplate();
 				if (empty($failure)) {
-					$this->installTemplate();
+					$failure = $this->installServer();
 				}
 			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
