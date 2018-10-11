@@ -112,7 +112,7 @@ case 'countdown':
 		$graph_data_array['graph_nolegend'] = 'true';
 	}
 
-	if (isset_request_var('size') && get_request_var('size') != '') {
+	if (isset_request_var('size') && get_request_var('size') > 0) {
 		$_SESSION['sess_realtime_size'] = get_request_var('size');
 		$size = get_request_var('size');
 	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {
