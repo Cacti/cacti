@@ -871,7 +871,7 @@ function get_colored_device_status($disabled, $status) {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
-	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
+	if (isset($_SESSION['sess_current_timespan_begin_now']) && is_numeric($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
 	} else {
 		return '-' . DEFAULT_TIMESPAN;
@@ -882,7 +882,7 @@ function get_current_graph_start() {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
-	if (isset($_SESSION['sess_current_timespan_end_now'])) {
+	if (isset($_SESSION['sess_current_timespan_end_now']) && is_numeric($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
 	} else {
 		return '0';

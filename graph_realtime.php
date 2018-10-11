@@ -40,19 +40,6 @@ case 'countdown':
 
 	$guest_account = true;
 
-	/* ================= input validation ================= */
-	get_filter_request_var('graph_start');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_height');
-	get_filter_request_var('graph_width');
-	get_filter_request_var('local_graph_id');
-	get_filter_request_var('size');
-	get_filter_request_var('ds_step');
-	get_filter_request_var('count');
-	get_filter_request_var('top');
-	get_filter_request_var('left');
-	/* ==================================================== */
-
 	switch (get_request_var('action')) {
 	case 'init':
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
@@ -79,7 +66,27 @@ case 'countdown':
 		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
 
 		break;
+	default:
+		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('size',           'sess_realtime_size',        100);
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
+
+		break;
 	}
+
+	/* ================= input validation ================= */
+	get_filter_request_var('graph_start');
+	get_filter_request_var('graph_end');
+	get_filter_request_var('graph_height');
+	get_filter_request_var('graph_width');
+	get_filter_request_var('local_graph_id');
+	get_filter_request_var('size');
+	get_filter_request_var('ds_step');
+	get_filter_request_var('count');
+	get_filter_request_var('top');
+	get_filter_request_var('left');
+	/* ==================================================== */
 
 	$graph_data_array = array();
 

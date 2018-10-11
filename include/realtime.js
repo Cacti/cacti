@@ -51,9 +51,9 @@ function imageOptionsChanged(action) {
 	if (action == 'countdown') {
 		url="graph_realtime.php?action=countdown&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id;
 	} else if (action == 'initial') {
-		url="graph_realtime.php?action=initial&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count+"&size="+size;
+		url="graph_realtime.php?action=initial&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+(parseInt(graph_start) > 0 ? graph_start:'60')+"&ds_step="+ds_step+"&count="+count+"&size="+size;
 	} else {
-		url="graph_realtime.php?action="+action+"&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+graph_start+"&ds_step="+ds_step+"&count="+count+"&size="+size+"&graph_nolegend="+isThumb;
+		url="graph_realtime.php?action="+action+"&top=0&left=0&action="+action+"&local_graph_id="+local_graph_id+"&graph_start=-"+(parseInt(graph_start) > 0 ? graph_start:'60')+"&ds_step="+ds_step+"&count="+count+"&size="+size+"&graph_nolegend="+isThumb;
 	}
 
 	Pace.stop;
@@ -194,7 +194,7 @@ function realtimeGrapher() {
 			Pace.ignore(function() {
 				position = $('#wrapper_'+local_graph_id).find('img').position();
 
-				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+graph_start+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
+				$.get(urlPath+'graph_realtime.php?action=countdown&top='+parseInt(position.top)+'&left='+parseInt(position.left)+(isThumb ? '&graph_nolegend=true':'&graph_nolegend=false')+'&graph_end=0&graph_start=-'+(parseInt(graph_start) > 0 ? graph_start:'60')+'&local_graph_id='+local_graph_id+'&ds_step='+ds_step+'&count='+count+'&size='+size)
 					.done(function(data) {
 						results = $.parseJSON(data);
 
