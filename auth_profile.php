@@ -214,7 +214,7 @@ function settings() {
 		$_SESSION['profile_referer'] = ($referer != '' ? $referer:'graph_view.php');
 	}
 
-	form_start('auth_profile.php');
+	form_start('auth_profile.php', 'chk');
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
