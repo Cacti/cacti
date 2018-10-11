@@ -1482,7 +1482,7 @@ function ds() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_sources.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_sources.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 
 	form_start('data_sources.php', 'chk');
 
