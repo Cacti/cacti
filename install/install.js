@@ -202,7 +202,11 @@ function getDefaultInstallData() {
 	return { Step: STEP_NONE, Eula: 0 };
 }
 
-function toggleHeader(key, initial = null) {
+function toggleHeader(key, initial) {
+	if (typeof initial == 'undefined') {
+		initial = null;
+	}
+
 	if (key != null) {
 		header = $(key);
 		if (header != null && header.length > 0) {
@@ -221,7 +225,11 @@ function toggleHeader(key, initial = null) {
 	}
 }
 
-function toggleSection(key, initial = null) {
+function toggleSection(key, initial) {
+	if (typeof initial == 'undefined') {
+		initial = null;
+	}
+
 	if (key != null) {
 		header = $(key);
 		if (header != null && header.length > 0) {
