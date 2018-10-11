@@ -301,6 +301,7 @@ function find_best_path($binary_name) {
 			return $search_paths[$i] . '/' . $binary_name;
 		}
 	}
+	return '';
 }
 
 function install_setup_get_templates() {
@@ -403,6 +404,9 @@ function install_tool_path($name, $defaultPaths) {
 	global $config, $settings;
 
 	$os = $config['cacti_server_os'];
+	if (!isset($defaultPaths[$os])) {
+		return false;
+	}
 
 	$tool = array(
 		'friendly_name' => $name,
@@ -426,7 +430,7 @@ function install_tool_path($name, $defaultPaths) {
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
-		$defaultPath = $defaultPaths[$config['cacti_server_os']];
+		$defaultPath = $defaultPaths[$os];
 		$basename = basename($defaultPath);
 		log_install_debug('file', "Searching best path with location: $defaultPath");
 		$which_tool = find_best_path($basename);
@@ -500,7 +504,6 @@ function install_file_paths() {
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
 		array(
 			'unix'  => '/usr/sbin/sendmail',
-			'win32' => ''
 		));
 
 	/* spine Binary Path */
@@ -538,6 +541,12 @@ function install_file_paths() {
 					}
 				}
 			}
+		}
+	}
+
+	foreach (array_keys($input) as $key) {
+		if ($input[$key] === false) {
+			unset($input[$key]);
 		}
 	}
 

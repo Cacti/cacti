@@ -86,6 +86,16 @@ $logfiles['cmd_realtime.php']    = 'cmd_realtime.php';
 
 asort($logfiles);
 
+$mail_methods = array(
+	CACTI_MAIL_PHP      => __('PHP Mail() Function'),
+	CACTI_MAIL_SENDMAIL => __('Sendmail'),
+	CACTI_MAIL_SMTP     => __('SMTP')
+);
+
+if ($config['cacti_server_os'] == 'win32') {
+	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
+}
+
 /* setting information */
 $settings = array(
 	'path' => array(
@@ -1423,10 +1433,7 @@ $settings = array(
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
 			'default' => __('PHP Mail() Function'),
-			'array' => array(
-				__('PHP Mail() Function'),
-				__('Sendmail'),
-				__('SMTP') ),
+			'array' => $mail_methods,
 			),
 		'settings_ping_mail' => array(
 			'friendly_name' => __('Ping Mail Server'),
@@ -2213,6 +2220,11 @@ $settings_user = array(
 			)
 		)
 	);
+
+if ($config['cacti_server_os'] == 'win32') {
+	unset($settings['mail']['settings_sendmail_header']);
+	unset($settings['mail']['settings_sendmail_path']);
+}
 
 if (is_realm_allowed(25)) {
 	$settings_user['general']['realtime_mode'] = array(
