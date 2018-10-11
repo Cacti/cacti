@@ -3297,7 +3297,6 @@ function rrd_copy_rra($dom, $cf, $rra_parm) {
 function rrdtool_parse_error($string) {
 	global $config;
 
-	file_put_contents('/tmp/rrd',$string);
 	if (preg_match('/ERROR. opening \'(.*)\': (No such|Permiss).*/', $string, $matches)) {
 		if (cacti_sizeof($matches) >= 2) {
 			$filename = $matches[1];
