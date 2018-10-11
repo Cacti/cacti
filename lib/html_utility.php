@@ -250,6 +250,12 @@ function get_checkbox_style() {
 function set_default_action($default = '') {
 	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
+	} elseif (is_array(get_nfilter_request_var('action'))) {
+		if (read_config_option('log_validation') == 'on') {
+			cacti_log('WARNING: Request variable \'action\' was passed as array in ' . $_SERVER['SCRIPT_NAME'] . '.', false, 'WEBUI');
+		}
+
+		set_request_var('action', $_REQUEST['action'][0]);
 	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}

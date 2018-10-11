@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -security#1882: Bypass output validation in select cases
 -issue#186: Cacti does not support jQueryUI 1.12.x
 -issue#187: Remove the use of jQuery Migrate plugin
+-issue#454: Cacti Re-Index does not resolve index changes properly during re-index 
 -issue#983: Import Template Preview is misleading
 -issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
 -issue#1097: When copying template user, enable that user, also template users should be disabled by default
@@ -77,6 +78,7 @@ Cacti CHANGELOG
 -issue#1921: Data Query XML field method 'rewrite_index' does not correctly query for value
 -issue#1926: Deselecting items should present warning or disable GO button
 -issue#1948: Device Template should warn about need to re-sync
+-issue#1953: set_default_action() should warn if more than one action provided
 -issue#1973: SpikeKill Menu does not display properly
 -issue#1976: Default admin permissions do not allow everything
 -issue#1982: Certain hooks should occur within api functions rather than UI functions
