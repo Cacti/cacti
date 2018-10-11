@@ -269,9 +269,9 @@ function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER
 	# Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
 		if (function_exists('read_config_option')) {
-			define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
+			define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'));
 		} else {
-			define('REPORTS_DEBUG', 1, true);
+			define('REPORTS_DEBUG', 1);
 		}
 	}
 
