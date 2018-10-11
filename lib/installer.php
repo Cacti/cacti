@@ -1275,6 +1275,23 @@ class Installer implements JsonSerializable {
 		return false;
 	}
 
+	public function isValidCollation($collation_vars, $charset_vars, $type) {
+		$collation_value = '';
+		$charset_value   = '';
+
+		if (cacti_sizeof($collation_vars) &&
+		    array_key_exists('collation_' . $type, $collation_vars)) {
+			$collation_value = $collation_vars['collation_' . $type];
+		}
+
+		if (cacti_sizeof($charset_vars) &&
+		    array_key_exists('charset_' . $type, $charset_vars)) {
+			$charset_value = $charset_vars['charset_' . $type];
+		}
+		return ($collation_value == 'utf8mb4_unicode_ci' ||
+			$charset_value   == 'utf8mb4');
+	}
+
 	public function isDatabaseEmpty() {
 		return empty($this->old_cacti_version);
 	}
@@ -2295,27 +2312,37 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckTables() {
-		$output = Installer::sectionTitle(__('Database Collation'));
+		$output = Installer::sectionTitle(__('Server Collation'));
 
-		$collation_vars = db_fetch_assoc('SHOW VARIABLES LIKE "collation_database";');
+		$collation_vars = array_rekey(db_fetch_assoc('SHOW VARIABLES LIKE "collation_%";'), 'Variable_name', 'Value');
+		$charset_vars   = array_rekey(db_fetch_assoc('SHOW VARIABLES LIKE "character_set_%";'), 'Variable_name', 'Value');
 
-		$collation_value = '';
-		$collation_valid = false;
-		if (cacti_sizeof($collation_vars)) {
-			$collation_value = $collation_vars[0]['Value'];
-			$collation_valid = ($collation_value == 'utf8mb4_unicode_ci');
+		$collation_valid = $this->isValidCollation($collation_vars, $charset_vars, 'server');
+		if ($collation_valid) {
+			$output .= Installer::sectionNormal(__('Your server collation appears to be UTF8 compliant'));
+		} else {
+			$output .= Installer::sectionWarning(
+				__('Your server collation does NOT appear to be fully UTF8 compliant. ') .
+				__('Under the [mysqld] section, locate the entries named \'character&#8209;set&#8209;server\' and \'collation&#8209;server\' and set them as follows:') .
+				Installer::sectionCode('[mysqld]<br>' .
+				'character-set-server=utf8mb4<br>' .
+				'collation-server=utf8mb4_unicode_ci')
+			);
 		}
 
+		$output .= Installer::sectionTitle(__('Database Collation'));
+		$database = db_fetch_cell('SELECT DATABASE()');
+
+		$collation_valid = $this->isValidCollation($collation_vars, $charset_vars, 'database');
 		if ($collation_valid) {
-			$output .= Installer::sectionNormal(__('Your databse default collation appears to be UTF8 compliant'));
+			$output .= Installer::sectionNormal(__('Your database default collation appears to be UTF8 compliant'));
 		} else {
-			$output .= Installer::sectionNormal(__('Your database default collaction does NOT appear to be UTF8 compliant'));
-			$output .= Installer::sectionWarning(__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed from \'%s\' to \'utf8mb4_unicode_ci\' by modifying your MySQL/MariaDB service\' configuration file.  This is typically located in /etc/mysql/my.cnf or similar.  ', $collation_value));
-			$output .= Installer::sectionNormal(__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:'));
-			$output .= Installer::sectionCode(
-				'[mysqld]<br>' .
-				'character-set-server=utf8mb4<br>' .
-				'collation-server=utf8mb4_unicode_ci'
+			$output .= Installer::sectionWarning(
+				__('Your database default collation does NOT appear to be full UTF8 compliant. ') .
+				__('Any tables created by plugins may have issues linked against Cacti Core tables if the collation is not matched.   Please ensure your database is changed to \'utf8mb4_unicode_ci\' by running the following: ') .
+				Installer::sectionCode(
+					'mysql> ALTER DATABASE ' . $database . ' CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+				)
 			);
 		}
 
