@@ -331,7 +331,7 @@ function processStepWelcome(StepData) {
 	if (StepData.Theme != 'classic') {
 		$('select#theme').selectmenu({
 			change: function() {
-				document.location = location.pathname + '?theme='+$('#theme').val();
+				performStep(STEP_WELCOME, undefined, true);
 			}
 		});
 
@@ -353,15 +353,15 @@ function processStepWelcome(StepData) {
 
 		$("select#language").selectmenu('destroy').iconselectmenu({
 			change: function() {
-				document.location = location.pathname + '?language='+$('#language').val();
+				performStep(STEP_WELCOME, undefined, true);
 			}
 		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 	} else {
 		$('#theme').change(function() {
-			document.location = location.pathname + '?theme='+$('#theme').val();
+			performStep(STEP_WELCOME, undefined, true);
 		});
 		$('#language').change(function() {
-			document.location = location.pathname + '?language='+$('#language').val();
+			performStep(STEP_WELCOME, undefined, true);
 		});
 	}
 
@@ -600,7 +600,7 @@ function setAddressBar(data, replace) {
 	}
 }
 
-function performStep(installStep, suppressRefresh) {
+function performStep(installStep, suppressRefresh, forceReload) {
 	$.ajaxQ.abortAll();
 
 	if (!suppressRefresh) {
@@ -619,6 +619,10 @@ function performStep(installStep, suppressRefresh) {
 			$('#installLoader').hide();
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installData').data('installData', data);
+
+			if (forceReload) {
+				document.location = location.pathname + '?reload=' + Date.now();
+			}
 
 			setAddressBar(data, false);
 

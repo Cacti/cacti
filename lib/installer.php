@@ -160,9 +160,9 @@ class Installer implements JsonSerializable {
 		$this->eula          = read_config_option('install_eula', true);
 		$this->cronInterval  = read_config_option('cron_interval', true);
 		$this->locales       = get_installed_locales();
-		$this->language      = read_user_setting('user_language', get_new_user_default_language(), true);
 		$this->stepData      = null;
-		$this->theme         = $this->getTheme();
+		$this->setLanguage($this->getLanguage());
+		$this->setTheme($this->getTheme());
 
 		if ($this->theme === false || $this->theme === null) {
 			$this->setTheme('modern');
@@ -512,6 +512,18 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	private function getLanguage() {
+		$language = read_config_option('install_language');
+		if (empty($language)) {
+			$language = read_config_option('i18n_default_language');
+			if (empty($language)) {
+				$language = read_user_setting('user_language', get_new_user_default_language(), true);
+			}
+		}
+		log_install_medium('language', 'getLanguage(): ' . $language);
+		return $language;
+	}
+
 	/* setLanguage() - sets the langauge of the Installer
 	 * @param_language - Must be a valid language which is returned from
 	 *                   apply_locale() function located in Core
@@ -523,8 +535,12 @@ class Installer implements JsonSerializable {
 			if (empty($language)) {
 				$this->addError(Installer::STEP_WELCOME, 'Language', 'Failed to apply specified language');
 			} else {
+				log_install_debug('language','setLanguage(): ' . $param_language);
 				$this->language = $param_language;
 				set_user_setting('user_language', $param_language);
+				set_config_option('i18n_default_language', $param_language);
+				set_config_option('install_language', $param_language);
+				$_SESSION['sess_user_language'] = $param_language;
 			}
 		}
 	}
@@ -586,7 +602,16 @@ class Installer implements JsonSerializable {
 
 	/* getTheme() - gets the current theme */
 	private function getTheme() {
-		return (isset($_SESSION['install_theme']) ? $_SESSION['install_theme']:read_config_option('selected_theme', true));
+		$theme = read_config_option('install_theme');
+		if (empty($theme)) {
+			$theme = read_user_setting('selected_theme');
+			if (empty($theme)) {
+				$theme = read_config_option('selected_theme');
+			}
+		}
+		$theme = empty($theme) ? 'modern' : $theme;
+		log_install_medium('theme', 'getTheme(): ' . $theme);
+		return $theme;
 	}
 
 	/* setTheme() - sets the Theme installer option, override the system default.
@@ -600,9 +625,12 @@ class Installer implements JsonSerializable {
 			log_install_medium('theme','Checking theme: ' . $param_theme);
 			$themePath = $config['base_path'] . '/include/themes/' . $param_theme . '/main.css';
 			if (file_exists($themePath)) {
-				log_install_debug('theme','Setting theme: ' . $param_theme);
+				log_install_debug('theme','setTheme(): ' . $param_theme);
 				$this->theme = $param_theme;
+				set_config_option('install_theme', $this->theme);
 				set_config_option('selected_theme', $this->theme);
+				set_user_setting('selected_theme', $this->theme);
+				$_SESSION['selected_theme'] = $this->theme;
 			} else {
 				$this->addError(Installer::STEP_WELCOME, 'Theme', __('Invalid Theme Specified'));
 			}

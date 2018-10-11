@@ -44,28 +44,6 @@ set_default_action();
 
 prime_default_settings();
 
-if (isset_request_var('theme')) {
-	$theme = get_validated_theme(get_nfilter_request_var('theme'), read_config_option('selected_theme', true));
-	$_SESSION['install_theme'] = $theme;
-	set_user_setting('selected_theme', $theme);
-	set_config_option('install_theme', $theme);
-} elseif (isset($_SESSION['install_theme'])) {
-	$theme = $_SESSION['install_theme'];
-} else {
-	$theme = 'modern';
-}
-
-if (isset_request_var('language')) {
-	$language = get_validated_language(get_nfilter_request_var('language'), read_config_option('user_language', true));
-	$_SESSION['install_language'] = $language;
-	set_user_setting('user_language', $language);
-	set_config_option('install_language', $language);
-} elseif (isset($_SESSION['install_language'])) {
-	$language = $_SESSION['install_language'];
-} else {
-	$language = read_user_setting('user_language', get_new_user_default_language(), true);
-}
-
 $hasJson = false;
 if (interface_exists('JsonSerializable')) {
 	$hasJson = true;
@@ -76,7 +54,7 @@ if (interface_exists('JsonSerializable')) {
 <html>
 <head>
 <?php
-print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION), $theme);
+print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION));
 if ($hasJson) {
 	print get_md5_include_js('install/install.js');
 }
