@@ -1031,6 +1031,7 @@ function replicate_out($remote_poller_id = 1) {
 			array($remote_poller_id));
 
 		if (!cacti_sizeof($cinfo)) {
+			cacti_log('ERROR: Remote Data Collector ID[' . $remote_poller_id . '] to be Sync\'d does not exist!', false, 'POLLER');
 			raise_message('poller_notfound');
 			return false;
 		}
@@ -1049,6 +1050,7 @@ function replicate_out($remote_poller_id = 1) {
 			$cinfo['dbssl']);
 
 		if (!is_object($remote_db_cnn_id)) {
+			cacti_log('ERROR: Unable to connect to Remote Data Collector ' . $cinfo['name'], false, 'POLLER');
 			raise_message('poller_noconnect');
 			return false;
 		}
