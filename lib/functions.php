@@ -2331,7 +2331,6 @@ function draw_navigation_text($type = 'url') {
 	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
 		$tree_id = 0;
 		$leaf_id = 0;
-		$hgdata  = 0;
 
 		if (isset_request_var('node')) {
 			$parts = explode('-', get_request_var('node'));
@@ -2379,7 +2378,7 @@ function draw_navigation_text($type = 'url') {
 				$parts = explode(':', get_nfilter_request_var('hgd'));
 				input_validate_input_number($parts[1]);
 
-				if ($parts[0] == 'graph_template') {
+				if ($parts[0] == 'gt') {
 					$leaf_sub = db_fetch_cell_prepared('SELECT name
 						FROM graph_templates
 						WHERE id = ?',
