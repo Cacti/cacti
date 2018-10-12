@@ -296,12 +296,12 @@ case 'tree_content':
 
 	?>
 	<script type='text/javascript'>
-	var refreshIsLogout=false;
-	var refreshPage='<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
-	var timeOffset=<?php print date('Z');?>
+	var refreshIsLogout = false;
+	var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
+	var timeOffset      = <?php print date('Z');?>
 
 	// Adjust the height of the tree
 	$(function() {

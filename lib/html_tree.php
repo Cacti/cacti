@@ -163,12 +163,12 @@ function grow_dhtml_trees() {
 			var deffereds = $.Deferred(function (def) { def.resolve(); });
 			var lastNode  = nodes[nodes.length-1];
 
-			for (var j = 0; j <= nodes.length-1; j++) {  
+			for (var j = 0; j <= nodes.length-1; j++) {
 				deffereds = (function(name, deferreds) {
 					return deferreds.pipe(function () {
 						return $.Deferred(function(def) {
 							id = $('a[id^='+name+']').first().attr('id');
-							
+
 							//console.log('lastNode:'+lastNode+', Node:'+name);
 							if (lastNode == name) {
 								//console.log('lastNode:'+lastNode+', Node:'+name+', Id:'+id+', Select Node');
@@ -183,7 +183,7 @@ function grow_dhtml_trees() {
 							}
 						});
 					});
-				})(nodes[j], deffereds);      
+				})(nodes[j], deffereds);
 			}
 		}
 	}
@@ -1130,14 +1130,14 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	?>
 	<script type='text/javascript'>
 
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
-	var timeOffset=<?php print date('Z');?>;
-	var pageAction = 'tree';
-	var graphPage  = 'graph_view.php';
-	var hgd        = '<?php print $host_group_data;?>';
-	var date1Open  = false;
-	var date2Open  = false;
+	var graph_start = <?php print get_current_graph_start();?>;
+	var graph_end   = <?php print get_current_graph_end();?>;
+	var timeOffset  = <?php print date('Z');?>;
+	var pageAction  = 'tree';
+	var graphPage   = 'graph_view.php';
+	var hgd         = '<?php print $host_group_data;?>';
+	var date1Open   = false;
+	var date2Open   = false;
 
 	function initPage() {
 		var msWidth = 100;
@@ -1341,7 +1341,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		$graphs = get_allowed_graphs($sql_where);
 		$agg    = get_allowed_aggregate_graphs($sql_where);
 
-		$graphs = array_merge($graphs, $agg);   
+		$graphs = array_merge($graphs, $agg);
 
 		/* let's sort the graphs naturally */
 		usort($graphs, 'naturally_sort_graphs');

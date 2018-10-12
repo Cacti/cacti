@@ -344,15 +344,15 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 		</form>
 		<script type='text/javascript'>
 
-    	var refreshIsLogout=false;
-		var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-		var graph_start=<?php print get_current_graph_start();?>;
-		var graph_end=<?php print get_current_graph_end();?>;
-		var timeOffset=<?php print date('Z');?>;
-		var pageAction = '<?php print $action;?>';
-		var graphPage  = '<?php print $page;?>';
-		var date1Open = false;
-		var date2Open = false;
+    	var refreshIsLogout = false;
+		var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+		var graph_start     = <?php print get_current_graph_start();?>;
+		var graph_end       = <?php print get_current_graph_end();?>;
+		var timeOffset      = <?php print date('Z');?>;
+		var pageAction      = '<?php print $action;?>';
+		var graphPage       = '<?php print $page;?>';
+		var date1Open       = false;
+		var date2Open       = false;
 
 		function initPage() {
 			var msWidth = 100;
