@@ -618,6 +618,8 @@ function get_message_type() {
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $messages;
+
+	$need_session = (session_status() == PHP_SESSION_NONE);
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
@@ -635,11 +637,19 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 		}
 	}
 
+	if ($need_session) {
+		session_start();
+	}
+
 	if (!isset($_SESSION['sess_messages'])) {
 		$_SESSION['sess_messages'] = array();
 	}
 
 	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
+
+	if ($need_session) {
+		session_write_close();
+	}
 }
 
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
