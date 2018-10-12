@@ -2328,32 +2328,68 @@ function draw_navigation_text($type = 'url') {
 		}
 	}
 
-	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
-		if (isset_request_var('leaf_id') && get_nfilter_request_var('leaf_id') != '') {
-			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
+	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
+		$tree_id = 0;
+		$leaf_id = 0;
+		$hgdata  = 0;
+
+		if (isset_request_var('node')) {
+			$parts = explode('-', get_request_var('node'));
+
+			// Check for tree anchoe
+			if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+				$tree_id = $parts[1];
+				$leaf_id = 0;
+			} elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
+				// Check for branch
+				$leaf_id = $parts[1];
+				$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($leaf_id));
+			}
+		}
+
+		if ($leaf_id > 0) {
+			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id
+				FROM graph_tree_items
+				WHERE id = ?',
+				array($leaf_id));
 
 			if (cacti_sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
-					$leaf_name = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($leaf['host_id']));
+					$leaf_name = db_fetch_cell_prepared('SELECT description
+						FROM host
+						WHERE id = ?',
+						array($leaf['host_id']));
 				} else {
 					$leaf_name = $leaf['title'];
 				}
 
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($leaf['graph_tree_id']));
 			} else {
 				$leaf_name = __('Leaf');
 				$tree_name = '';
 			}
 
-			if (isset_request_var('host_group_data') && get_nfilter_request_var('host_group_data') != '') {
-				$parts = explode(':', get_nfilter_request_var('host_group_data'));
+			if (isset_request_var('hgd') && get_nfilter_request_var('hgd') != '') {
+				$parts = explode(':', get_nfilter_request_var('hgd'));
 				input_validate_input_number($parts[1]);
 
 				if ($parts[0] == 'graph_template') {
-					$leaf_sub = db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($parts[1]));
+					$leaf_sub = db_fetch_cell_prepared('SELECT name
+						FROM graph_templates
+						WHERE id = ?',
+						array($parts[1]));
 				} else {
 					if ($parts[1] > 0) {
-						$leaf_sub = db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($parts[1]));
+						$leaf_sub = db_fetch_cell_prepared('SELECT name
+							FROM snmp_query
+							WHERE id = ?',
+							array($parts[1]));
 					} else {
 						$leaf_sub = __('Non Query Based');
 					}
@@ -2365,8 +2401,11 @@ function draw_navigation_text($type = 'url') {
 			$leaf_name = '';
 			$leaf_sub  = '';
 
-			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
+			if ($tree_id > 0) {
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($tree_id));
 			} else {
 				$tree_name = '';
 			}
