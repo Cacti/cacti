@@ -4798,6 +4798,8 @@ function get_installed_rrdtool_version() {
 }
 
 function get_md5_hash($path) {
+	$md5 = 0;
+
 	if (db_table_exists('poller_resource_cache')) {
 		$md5 = db_fetch_cell_prepared('SELECT md5sum
 			FROM poller_resource_cache
@@ -4805,10 +4807,8 @@ function get_md5_hash($path) {
 			array($path));
 	}
 
-	if (!isset($md5) || !strlen($md5)) {
+	if (empty($md5)) {
 		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
-	} else {
-		$md5 = 0;
 	}
 
 	return $md5;
