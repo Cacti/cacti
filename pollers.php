@@ -310,8 +310,20 @@ function form_actions() {
 
 				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' enabled by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
 			} elseif (get_request_var('drp_action') == '4') { // full sync
-				session_write_close(); // Save&Close the session so the Interface is still responsive 
+				session_write_close(); // Save&Close the session so the Interface is still responsive
+
+				$success = array();
+				$failed  = array();
+				$ids     = array();
+
 				foreach($selected_items as $item) {
+					// Operation not allowed on the main poller
+					if ($item == 1) {
+						continue;
+					}
+
+					$ids[]   = $item;
+
 					$poller = db_fetch_row_prepared('SELECT *
 						FROM poller
 						WHERE id = ?',
@@ -324,16 +336,26 @@ function form_actions() {
 						raise_message('poller_nomain');
 						continue;
 					} else {
-						replicate_out($item);
+						if (replicate_out($item)) {
+							$success[] = $item;
 
-						db_execute_prepared('UPDATE poller
-							SET last_sync = NOW()
-							WHERE id = ?',
-							array($item));
+							db_execute_prepared('UPDATE poller
+								SET last_sync = NOW()
+								WHERE id = ?',
+								array($item));
+						} else {
+							$failed[] = $item;
+						}
 					}
 				}
+
 				session_start(); // Start the session again
-				cacti_log('NOTE: The poller(s) with the id(s): ' . implode(',', $selected_items) . ' synchronized by user ' . $_SESSION['sess_user_id'], false, 'WEBUI');
+
+				if (sizeof($failed)) {
+					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');
+				} else {
+					cacti_log('NOTE: All selected Remote Data Collectors in [' . implode(', ', $ids) . '] synchronized correctly by user ' . get_username($_SESSION['sess_user_id']), false, 'WEBUI');
+				}
 			}
 		}
 
