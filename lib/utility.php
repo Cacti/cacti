@@ -612,10 +612,6 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	} else {
 		/* only handle explicitely given local_data_ids */
 	}
-
-	if ($poller_id > 1 && $rcnn_id !== false) {
-		db_close($rcnn_id);
-	}
 }
 
 /** for a given data template, update all input data and the poller cache

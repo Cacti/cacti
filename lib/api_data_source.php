@@ -151,8 +151,6 @@ function api_data_source_remove($local_data_id) {
 
 		db_execute_prepared('DELETE FROM poller_output_boost
 			WHERE local_data_id = ?', array($local_data_id), true, $rcnn_id);
-
-		db_close($rcnn_id);
 	}
 
 	/* update the database to document the cache change */
@@ -293,8 +291,6 @@ function api_data_source_remove_multi($local_data_ids) {
 
 					db_execute('DELETE FROM poller_output_boost
 						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $rcnn_ids[$poller_id]);
-
-					db_close($rcnn_ids[$poller_id]);
 				}
 
 				api_data_source_cache_crc_update($poller_id);

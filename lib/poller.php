@@ -1231,8 +1231,6 @@ function replicate_out($remote_poller_id = 1) {
 
 	raise_message('poller_sync');
 
-	db_close($rcnn_id);
-
 	return true;
 }
 

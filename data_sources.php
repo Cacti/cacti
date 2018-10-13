@@ -373,8 +373,6 @@ function form_actions() {
 										db_execute('DELETE FROM graph_templates_item
 											WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 											AND local_graph_id > 0', true, $rcnn_id);
-
-										db_close($rcnn_id);
 									}
 								}
 							}
