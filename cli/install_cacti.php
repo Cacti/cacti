@@ -156,16 +156,15 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/lib/installer.php');
-include_once($config['base_path'] . '/lib/api_data_source.php');
-include_once($config['base_path'] . '/lib/api_device.php');
-include_once($config['base_path'] . '/lib/utility.php');
-include_once($config['base_path'] . '/lib/import.php');
-include_once($config['base_path'] . '/lib/data_query.php');
 include_once($config['base_path'] . '/lib/api_automation.php');
 include_once($config['base_path'] . '/lib/api_automation_tools.php');
+include_once($config['base_path'] . '/lib/api_data_source.php');
+include_once($config['base_path'] . '/lib/api_device.php');
+include_once($config['base_path'] . '/lib/data_query.php');
+include_once($config['base_path'] . '/lib/import.php');
 include_once($config['base_path'] . '/lib/installer.php');
+require_once($config['base_path'] . '/lib/poller.php');
+include_once($config['base_path'] . '/lib/utility.php');
 
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 

@@ -24,9 +24,10 @@
 
 include('./include/auth.php');
 include_once('./lib/api_data_source.php');
-include_once('./lib/utility.php');
-include_once('./lib/clog_webapi.php');
 include_once('./lib/boost.php');
+include_once('./lib/clog_webapi.php');
+include_once('./lib/poller.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();

@@ -25,6 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
 ini_set('max_execution_time', '0');

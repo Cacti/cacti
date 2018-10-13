@@ -29,6 +29,7 @@ include_once('./lib/data_query.php');
 include_once('./lib/html_form_template.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/sort.php');
+include_once('./lib/poller.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
 

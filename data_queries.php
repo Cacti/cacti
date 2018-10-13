@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/data_query.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $dq_actions = array(

@@ -25,6 +25,7 @@
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
@@ -84,7 +85,7 @@ if (cacti_sizeof($parms)) {
 				exit(1);
 		}
 	}
-	
+
 	if($profile_id > 0) {
 		if ($with_profile) {
 			print "WARNING: '--with-profile' and '--profile-id=N' are exclusive. Ignoring '--with-profile'\n";
