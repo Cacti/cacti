@@ -321,14 +321,12 @@ function run_data_query($host_id, $snmp_query_id) {
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
-	} else {
-		if ($config['connection'] == 'online') {
-			automation_execute_data_query($host_id, $snmp_query_id);
-			query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
+	} elseif ($config['connection'] == 'online' && $config['is_web'] == true) {
+		automation_execute_data_query($host_id, $snmp_query_id);
+		query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
 
-			api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
-			query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
-		}
+		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+		query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
 
 		if (!isset($_SESSION)) {
 			$config['debug_log']['result'] = $result;
@@ -339,8 +337,6 @@ function run_data_query($host_id, $snmp_query_id) {
 
 			kill_session_var('debug_log');
 		}
-
-		return true;
 	}
 
 	return (isset($result) ? $result : true);

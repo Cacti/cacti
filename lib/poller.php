@@ -1336,6 +1336,63 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 	}
 }
 
+function replicate_table_to_main($conn, &$data, $table) {
+	if (cacti_sizeof($data)) {
+		$prefix    = "INSERT INTO $table (";
+		$suffix    = ' ON DUPLICATE KEY UPDATE ';
+		$sql       = '';
+		$colcnt    = 0;
+		$rows_done = 0;
+		$columns   = array_keys($data[0]);
+		$skipcols  = array();
+
+		foreach($columns as $index => $c) {
+			if (!db_column_exists($table, $c, false, $conn)) {
+				$skipcols[$index] = $c;
+			} else {
+				$prefix .= ($colcnt > 0 ? ', ':'') . $c;
+				$suffix .= ($colcnd > 0 ? ', ':'') . "$c=VALUES($c)";
+				$colcnt++;
+			}
+		}
+		$prefix .= ') VALUES ';
+
+		$rowcnt = 0;
+		foreach($data as $row) {
+			$colcnt  = 0;
+			$sql_row = '(';
+			foreach($row as $col => $value) {
+				if (array_search($col, $skipcols) === false) {
+					$sql_row .= ($colcnt > 0 ? ', ':'') . db_qstr($value);
+					$colcnt++;
+				}
+			}
+			$sql_row .= ')';
+			$sql     .= ($rowcnt > 0 ? ', ':'') . $sql_row;
+
+			$rowcnt++;
+
+			if ($rowcnt > 1000) {
+				db_execute($prefix . $sql . $suffix, true, $conn);
+				$rows_done += db_affected_rows($conn);
+				$sql = '';
+				$rowcnt = 0;
+			}
+		}
+
+		if ($rowcnt > 0) {
+			db_execute($prefix . $sql . $suffix, true, $conn);
+			$rows_done += db_affected_rows($conn);
+		}
+
+		cacti_log('NOTE: Table ' . $table . ' Replicated to Remote Poller ' . $remote_poller_id . ' With ' . $rows_done . ' Rows Updated');
+	} else {
+		db_execute("TRUNCATE TABLE $table", true, $conn);
+
+		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+	}
+}
+
 function poller_recovery_flush_boost($poller_id) {
 	global $config;
 
