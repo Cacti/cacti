@@ -2093,6 +2093,10 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' Device[' . $host_id . "] - start - data query: $snmp_query_id", false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
+	if ($config['is_web'] == false && $config['poller_id'] > 1) {
+		return false;
+	}
+
 	# get all related rules for that data query that are enabled
 	$sql = "SELECT agr.id, agr.name,
 		agr.snmp_query_id, agr.graph_type_id
@@ -2104,7 +2108,9 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 
 	cacti_log($function . ' Device[' . $host_id . '] - sql: ' . str_replace("\n",' ', $sql) . ' - found: ' . cacti_sizeof($rules), false, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
-	if (!cacti_sizeof($rules)) return;
+	if (!cacti_sizeof($rules)) {
+		return;
+	}
 
 	# now walk all rules and create graphs
 	if (cacti_sizeof($rules)) {
