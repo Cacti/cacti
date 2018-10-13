@@ -178,42 +178,7 @@ if ($run) {
 		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
-	$min_reindex_cache = db_fetch_cell('SELECT MIN(last_updated)
-		FROM host_snmp_cache');
-
-	$recache_hosts = array_rekey(
-		db_fetch_assoc_prepared('SELECT DISTINCT host_id
-			FROM host_snmp_cache
-			WHERE last_updated > ?',
-			array($min_reindex_cache)),
-		'host_id', 'host_id'
-	);
-
-	if (sizeof($recache_hosts)) {
-		$local_data_ids = db_fetch_assoc('SELECT *
-			FROM data_local
-			WHERE host_id IN (' . implode(', ', $recache_hosts) . ')');
-
-		replicate_table_to_main($remote_db_cnn_id, $local_data_ids, 'data_local');
-
-		$local_graph_ids = db_fetch_assoc('SELECT *
-			FROM graph_local
-			WHERE host_id IN (' . implode(', ', $recache_hosts) . ')');
-
-		replicate_table_to_main($remote_db_cnn_id, $local_graph_ids, 'graph_local');
-
-		$host_snmp_cache = db_fetch_assoc('SELECT *
-			FROM host_snmp_cache
-			WHERE host_id IN (' . implode(', ', $recache_hosts) . ')');
-
-		replicate_table_to_main($remote_db_cnn_id, $host_snmp_cache, 'host_snmp_cache');
-
-		$poller_reindex = db_fetch_assoc('SELECT *
-			FROM poller_reindex
-			WHERE host_id IN (' . implode(', ', $recache_hosts) . ')');
-
-		replicate_table_to_main($remote_db_cnn_id, $poller_reindex, 'poller_reindex');
-	}
+	poller_push_reindex_data_to_main();
 
 	while (true) {
 		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries

@@ -71,7 +71,7 @@ function api_data_source_remove($local_data_id) {
 		WHERE dl.id = ?',
 		array($local_data_id));
 
-	if ($poller_id > 1) {
+	if ($poller_id > 1 && $config['poller_id'] == 1) {
 		$rcnn_id = poller_connect_to_remote($poller_id);
 	}
 
@@ -81,7 +81,7 @@ function api_data_source_remove($local_data_id) {
 			WHERE data_template_data_id = ?',
 				array($data_template_data_id));
 
-		if ($poller_id > 1 && $rcnn_id !== false) {
+		if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
 			db_execute_prepared('DELETE
 				FROM data_input_data
 				WHERE data_template_data_id = ?',
@@ -131,7 +131,7 @@ function api_data_source_remove($local_data_id) {
 	db_execute_prepared('DELETE FROM poller_output_boost
 		WHERE local_data_id = ?', array($local_data_id));
 
-	if ($poller_id > 1 && $rcnn_id !== false) {
+	if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
 		/* base data */
 		db_execute_prepared('DELETE FROM data_template_data
 			WHERE local_data_id = ?', array($local_data_id), true, $rcnn_id);
@@ -158,6 +158,8 @@ function api_data_source_remove($local_data_id) {
 }
 
 function api_data_source_remove_multi($local_data_ids) {
+	global $config;
+
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
@@ -186,7 +188,7 @@ function api_data_source_remove_multi($local_data_ids) {
 					db_execute('DELETE FROM data_input_data
 						WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 
-					if (sizeof($poller_ids)) {
+					if (sizeof($poller_ids) && $config['poller_id'] == 1) {
 						foreach($poller_ids as $poller_id) {
 							if (!isset($rcnn_ids[$poller_id])) {
 								$rcnn_ids[$poller_id] = poller_connect_to_remote($poller_id);
@@ -207,7 +209,7 @@ function api_data_source_remove_multi($local_data_ids) {
 				db_execute('DELETE FROM data_input_data
 					WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 
-				if (sizeof($poller_ids)) {
+				if (sizeof($poller_ids) && $config['poller_id'] == 1) {
 					foreach($poller_ids as $poller_id) {
 						if ($rcnn_ids[$poller_id] !== false) {
 							db_execute('DELETE FROM data_input_data
@@ -269,7 +271,7 @@ function api_data_source_remove_multi($local_data_ids) {
 				ON DUPLICATE KEY UPDATE action=VALUES(action)');
 		}
 
-		if (cacti_sizeof($poller_ids)) {
+		if (cacti_sizeof($poller_ids) && $config['poller_id'] == 1) {
 			foreach($poller_ids as $poller_id) {
 				if ($rcnn_ids[$poller_id] !== false) {
 					/* core data */
@@ -320,6 +322,8 @@ function api_data_source_disable($local_data_id) {
 }
 
 function api_data_source_disable_multi($local_data_ids) {
+	global $config;
+
 	/* initialize variables */
 	$ids_to_disable = '';
 	$i = 0;
@@ -343,6 +347,16 @@ function api_data_source_disable_multi($local_data_ids) {
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
 
+				if (sizeof($poller_ids) && $config['poller_id'] == 1) {
+					foreach($poller_ids as $poller_id) {
+						$rcnn_id = poller_connect_to_remote($poller_id);
+
+						if ($rcnn_id !== false) {
+							db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+							db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+						}
+				}
+
 				$i = 0;
 				$ids_to_disable = '';
 			}
@@ -355,6 +369,15 @@ function api_data_source_disable_multi($local_data_ids) {
 
 			db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 			db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
+
+			if (sizeof($poller_ids) && $config['poller_id'] == 1) {
+				$rcnn_id = poller_connect_to_remote($poller_id);
+
+				if ($rcnn_id !== false) {
+					db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+					db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)", true, $rcnn_id);
+				}
+			}
 		}
 	}
 
