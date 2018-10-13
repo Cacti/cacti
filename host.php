@@ -282,13 +282,6 @@ function form_actions() {
 				foreach ($selected_items as $selected_item) {
 					foreach ($fields_host_edit as $field_name => $field_array) {
 						if (isset_request_var("t_$field_name")) {
-							if ($field_name == 'poller_id') {
-								db_execute_prepared('UPDATE poller
-									SET requires_sync="on"
-									WHERE id = ?',
-									array(get_nfilter_request_var($field_name)));
-							}
-
 							db_execute_prepared("UPDATE host
 								SET $field_name = ?
 								WHERE id = ?",
