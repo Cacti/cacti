@@ -31,6 +31,7 @@ include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/ping.php');
+include_once('./lib/poller.php');
 include_once('./lib/snmp.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
@@ -320,52 +321,7 @@ function form_actions() {
 					set_request_var('delete_type', 2);
 				}
 
-				$data_sources_to_act_on = array();
-				$graphs_to_act_on       = array();
-				$devices_to_act_on      = array();
-
-				foreach ($selected_items as $selected_item) {
-					$data_sources = db_fetch_assoc('SELECT
-						data_local.id AS local_data_id
-						FROM data_local
-						WHERE ' . array_to_sql_or($selected_items, 'data_local.host_id'));
-
-					if (cacti_sizeof($data_sources)) {
-						foreach ($data_sources as $data_source) {
-							$data_sources_to_act_on[] = $data_source['local_data_id'];
-						}
-					}
-
-					if (get_nfilter_request_var('delete_type') == 2) {
-						$graphs = db_fetch_assoc('SELECT
-							graph_local.id AS local_graph_id
-							FROM graph_local
-							WHERE ' . array_to_sql_or($selected_items, 'graph_local.host_id'));
-
-						if (cacti_sizeof($graphs)) {
-							foreach ($graphs as $graph) {
-								$graphs_to_act_on[] = $graph['local_graph_id'];
-							}
-						}
-					}
-
-					$devices_to_act_on[] = $selected_item;
-				}
-
-				switch (get_nfilter_request_var('delete_type')) {
-					case '1': /* leave graphs and data_sources in place, but disable the data sources */
-						api_data_source_disable_multi($data_sources_to_act_on);
-
-						break;
-					case '2': /* delete graphs/data sources tied to this device */
-						api_data_source_remove_multi($data_sources_to_act_on);
-
-						api_graph_remove_multi($graphs_to_act_on);
-
-						break;
-				}
-
-				api_device_remove_multi($devices_to_act_on);
+				api_device_remove_multi($selected_items, get_request_var('delete_type'));
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');

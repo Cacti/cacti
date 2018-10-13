@@ -1017,10 +1017,10 @@ function md5sum_path($path, $recursive = true) {
     return md5(implode('', $filemd5s));
 }
 
-function replicate_out($remote_poller_id = 1) {
+function poller_connect_to_remote($poller_id) {
 	global $config;
 
-	if ($remote_poller_id == 1) {
+	if ($poller_id == 1) {
 		return false;
 	}
 
@@ -1028,10 +1028,10 @@ function replicate_out($remote_poller_id = 1) {
 		$cinfo = db_fetch_row_prepared('SELECT *
 			FROM poller
 			WHERE id = ?',
-			array($remote_poller_id));
+			array($poller_id));
 
 		if (!cacti_sizeof($cinfo)) {
-			cacti_log('ERROR: Remote Data Collector ID[' . $remote_poller_id . '] to be Sync\'d does not exist!', false, 'POLLER');
+			cacti_log('ERROR: Remote Data Collector ID[' . $poller_id . '] to be Sync\'d does not exist!', false, 'POLLER');
 			raise_message('poller_notfound');
 			return false;
 		}
@@ -1040,7 +1040,7 @@ function replicate_out($remote_poller_id = 1) {
 			return false;
 		}
 
-		$remote_db_cnn_id = db_connect_real(
+		$cnn_id = db_connect_real(
 			$cinfo['dbhost'],
 			$cinfo['dbuser'],
 			$cinfo['dbpass'],
@@ -1049,7 +1049,7 @@ function replicate_out($remote_poller_id = 1) {
 			$cinfo['dbport'],
 			$cinfo['dbssl']);
 
-		if (!is_object($remote_db_cnn_id)) {
+		if (!is_object($cnn_id)) {
 			cacti_log('ERROR: Unable to connect to Remote Data Collector ' . $cinfo['name'], false, 'POLLER');
 			raise_message('poller_noconnect');
 			return false;
@@ -1060,45 +1060,57 @@ function replicate_out($remote_poller_id = 1) {
 		return false;
 	}
 
+	return $cnn_id;
+}
+
+function replicate_out($remote_poller_id = 1) {
+	global $config;
+
+	$cnn_id = poller_connect_to_remote($remote_poller_id);
+
+	if ($cnn_id === false) {
+		return false;
+	}
+
 	// Start Push Replication
 	$data = db_fetch_assoc('SELECT * FROM settings WHERE name NOT LIKE "%_lastrun%"');
-	replicate_out_table($remote_db_cnn_id, $data, 'settings', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'settings', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM data_input');
-	replicate_out_table($remote_db_cnn_id, $data, 'data_input', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_input', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM snmp_query');
-	replicate_out_table($remote_db_cnn_id, $data, 'snmp_query', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'snmp_query', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM data_input_fields');
-	replicate_out_table($remote_db_cnn_id, $data, 'data_input_fields', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_input_fields', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM poller');
-	replicate_out_table($remote_db_cnn_id, $data, 'poller', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'poller', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth_group');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth_group', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth_group_members');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_members', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth_group_members', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth_group_perms');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_perms', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth_group_perms', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth_group_realm');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_auth_realm');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_auth_realm', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_auth_realm', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_domains');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_domains', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_domains', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
-	replicate_out_table($remote_db_cnn_id, $data, 'user_domains_ldap', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'user_domains_ldap', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT hsq.*
 		FROM host_snmp_query AS hsq
@@ -1106,25 +1118,25 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=hsq.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_query', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'host_snmp_query', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT pc.*
 		FROM poller_command AS pc
 		WHERE pc.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'poller_command', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'poller_command', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT pi.*
 		FROM poller_item AS pi
 		WHERE pi.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'poller_item', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'poller_item', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT h.*
 		FROM host AS h
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'host', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'host', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT hsc.*
 		FROM host_snmp_cache AS hsc
@@ -1132,7 +1144,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=hsc.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'host_snmp_cache', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT pri.*
 		FROM poller_reindex AS pri
@@ -1140,7 +1152,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=pri.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'poller_reindex', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'poller_reindex', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dl.*
 		FROM data_local AS dl
@@ -1148,7 +1160,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=dl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'data_local', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_local', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT gl.*
 		FROM graph_local AS gl
@@ -1156,7 +1168,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=gl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'graph_local', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'graph_local', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dtd.*
 		FROM data_template_data AS dtd
@@ -1166,7 +1178,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=dl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'data_template_data', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_template_data', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT dtr.*
 		FROM data_template_rrd AS dtr
@@ -1176,7 +1188,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=dl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'data_template_rrd', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_template_rrd', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT gti.*
 		FROM graph_templates_item AS gti
@@ -1186,7 +1198,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=gl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'graph_templates_item', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'graph_templates_item', $remote_poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT did.*
 		FROM data_input_data AS did
@@ -1198,7 +1210,7 @@ function replicate_out($remote_poller_id = 1) {
 		ON h.id=dl.host_id
 		WHERE h.poller_id = ?',
 		array($remote_poller_id));
-	replicate_out_table($remote_db_cnn_id, $data, 'data_input_data', $remote_poller_id);
+	replicate_out_table($cnn_id, $data, 'data_input_data', $remote_poller_id);
 
 	api_plugin_hook_function('replicate_out', $remote_poller_id);
 
@@ -1218,6 +1230,8 @@ function replicate_out($remote_poller_id = 1) {
 	}
 
 	raise_message('poller_sync');
+
+	db_close($cnn_id);
 
 	return true;
 }
@@ -1432,3 +1446,62 @@ function should_ignore_from_replication($path) {
 	$entry = basename($path);
 	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '' || $entry == 'config.php');
 }
+
+function get_remote_poller_ids_from_graphs(&$graphs) {
+	if (cacti_sizeof($graphs)) {
+		$graphs = implode(', ', $graphs);
+	}
+
+	if ($graphs != '') {
+		return array_rekey(
+			db_fetch_assoc('SELECT DISTINCT poller_id
+				FROM host AS h
+				INNER JOIN graph_local AS gl
+				ON h.id = gl.host_id
+				WHERE poller_id != 1
+				AND gl.id IN (' . $graphs . ')'),
+			'poller_id', 'poller_id'
+		);
+	} else {
+		return array();
+	}
+}
+
+function get_remote_poller_ids_from_data_sources(&$data_sources) {
+	if (cacti_sizeof($data_sources)) {
+		$data_sources = implode(', ', $data_sources);
+	}
+
+	if ($data_sources != '') {
+		return array_rekey(
+			db_fetch_assoc('SELECT DISTINCT poller_id
+				FROM host AS h
+				INNER JOIN data_local AS gl
+				ON h.id = dl.host_id
+				WHERE poller_id != 1
+				AND dl.id IN (' . $data_sources . ')'),
+			'poller_id', 'poller_id'
+		);
+	} else {
+		return array();
+	}
+}
+
+function get_remote_poller_ids_from_devices(&$devices) {
+	if (cacti_sizeof($devices)) {
+		$devices = implode(', ', $devices);
+	}
+
+	if ($devices != '') {
+		return array_rekey(
+			db_fetch_assoc('SELECT DISTINCT poller_id
+				FROM host AS h
+				WHERE poller_id != 1
+				AND id IN (' . $devices . ')'),
+			'poller_id', 'poller_id'
+		);
+	} else {
+		return array();
+	}
+}
+

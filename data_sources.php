@@ -23,13 +23,14 @@
 */
 
 include ('./include/auth.php');
-include_once('./lib/utility.php');
-include_once('./lib/api_graph.php');
 include_once('./lib/api_data_source.php');
-include_once('./lib/template.php');
-include_once('./lib/html_form_template.php');
-include_once('./lib/rrd.php');
+include_once('./lib/api_graph.php');
 include_once('./lib/data_query.php');
+include_once('./lib/html_form_template.php');
+include_once('./lib/poller.php');
+include_once('./lib/rrd.php');
+include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 $ds_actions = array(
 	1 => __('Delete'),
@@ -349,6 +350,13 @@ function form_actions() {
 							FROM data_template_rrd
 							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
+						$poller_ids = db_fetch_assoc('SELECT DISTINCT poller_id
+							FROM host AS h
+							INNER JOIN data_local AS dl
+							ON dl.host_id=h.id
+							WHERE poller_id > 1
+							AND id IN (' . implode(', ', $selected_items) . ')');
+
 						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
 
 						/* loop through each data source item */
@@ -356,6 +364,20 @@ function form_actions() {
 							db_execute('DELETE FROM graph_templates_item
 								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 								AND local_graph_id > 0');
+
+							if (sizeof($poller_ids)) {
+								foreach($poller_ids as $poller_id) {
+									$cnn_id = poller_connect_to_remote($poller_id);
+
+									if ($cnn_id !== false) {
+										db_execute('DELETE FROM graph_templates_item
+											WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
+											AND local_graph_id > 0', true, $cnn_id);
+
+										db_close($cnn_id);
+									}
+								}
+							}
 						}
 
 						break;

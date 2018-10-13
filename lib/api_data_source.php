@@ -64,32 +64,96 @@ function api_data_source_remove($local_data_id) {
 		FROM data_template_data
 		WHERE local_data_id = ?', array($local_data_id));
 
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host AS h
+		INNER JOIN data_local AS dl
+		ON h.id=dl.host_id
+		WHERE dl.id = ?',
+		array($local_data_id));
+
+	if ($poller_id > 1) {
+		$cnn_id = poller_connect_to_remote($poller_id);
+	}
+
 	if (!empty($data_template_data_id)) {
 		db_execute_prepared('DELETE
 			FROM data_input_data
-			WHERE data_template_data_id = ?', array($data_template_data_id));
+			WHERE data_template_data_id = ?',
+				array($data_template_data_id));
+
+		if ($poller_id > 1 && $cnn_id !== false) {
+			db_execute_prepared('DELETE
+				FROM data_input_data
+				WHERE data_template_data_id = ?',
+				array($data_template_data_id), true, $cnn_id);
+		}
 	}
 
-	/* update the database to document the cache change */
-	$poller_id = db_fetch_cell('SELECT poller_id FROM poller_item WHERE local_data_id = ?', array($local_data_id));
+	/* base data */
+	db_execute_prepared('DELETE FROM data_template_data
+		WHERE local_data_id = ?', array($local_data_id));
 
-	db_execute_prepared('DELETE FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_template_rrd WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM poller_item WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_local WHERE id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM data_template_rrd
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM poller_item
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_local
+		WHERE id = ?', array($local_data_id));
 
 	/* dsstats */
-	db_execute_prepared('DELETE FROM data_source_stats_daily WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_hourly WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_hourly_cache WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_hourly_last WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_monthly WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_weekly WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM data_source_stats_yearly WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM data_source_stats_daily
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_hourly
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_hourly_cache
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_hourly_last
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_monthly
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_weekly
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM data_source_stats_yearly
+		WHERE local_data_id = ?', array($local_data_id));
 
 	/* boost */
-	db_execute_prepared('DELETE FROM poller_output WHERE local_data_id = ?', array($local_data_id));
-	db_execute_prepared('DELETE FROM poller_output_boost WHERE local_data_id = ?', array($local_data_id));
+	db_execute_prepared('DELETE FROM poller_output
+		WHERE local_data_id = ?', array($local_data_id));
+
+	db_execute_prepared('DELETE FROM poller_output_boost
+		WHERE local_data_id = ?', array($local_data_id));
+
+	if ($poller_id > 1 && $cnn_id !== false) {
+		/* base data */
+		db_execute_prepared('DELETE FROM data_template_data
+			WHERE local_data_id = ?', array($local_data_id), true, $cnn_id);
+
+		db_execute_prepared('DELETE FROM data_template_rrd
+			WHERE local_data_id = ?', array($local_data_id), true, $cnn_id);
+
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE local_data_id = ?', array($local_data_id), true, $cnn_id);
+
+		db_execute_prepared('DELETE FROM data_local
+			WHERE id = ?', array($local_data_id), true, $cnn_id);
+
+		/* boost */
+		db_execute_prepared('DELETE FROM poller_output
+			WHERE local_data_id = ?', array($local_data_id), true, $cnn_id);
+
+		db_execute_prepared('DELETE FROM poller_output_boost
+			WHERE local_data_id = ?', array($local_data_id), true, $cnn_id);
+
+		db_close($cnn_id);
+	}
 
 	/* update the database to document the cache change */
 	api_data_source_cache_crc_update($poller_id);
@@ -108,48 +172,96 @@ function api_data_source_remove_multi($local_data_ids) {
 
 	$local_data_ids_chunks = array_chunk($local_data_ids, 1000);
 	foreach ($local_data_ids_chunks as $ids_to_delete) {
+		$poller_ids = get_remote_poller_ids_from_data_sources($ids_to_delete);
+
 		$data_template_data_ids = db_fetch_assoc('SELECT id
 			FROM data_template_data
 			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
 		if (cacti_sizeof($data_template_data_ids)) {
 			$dtd_ids_to_delete = array();
+
 			foreach($data_template_data_ids as $data_template_data_id) {
 				$dtd_ids_to_delete[] = $data_template_data_id['id'];
 
 				if (cacti_sizeof($dtd_ids_to_delete) >= 1000) {
-					db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
+					db_execute('DELETE FROM data_input_data
+						WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
+
+					if (sizeof($poller_ids)) {
+						foreach($poller_ids as $poller_id) {
+							if (!isset($cnn_ids[$poller_id])) {
+								$cnn_ids[$poller_id] = poller_connect_to_remote($poller_id);
+							}
+
+							if ($cnn_ids[$poller_id] !== false) {
+								db_execute('DELETE FROM data_input_data
+									WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+							}
+						}
+					}
+
 					$dtd_ids_to_delete = array();
 				}
 			}
 
 			if (cacti_sizeof($dtd_ids_to_delete)) {
-				db_execute('DELETE FROM data_input_data WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
+				db_execute('DELETE FROM data_input_data
+					WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
+
+				if (sizeof($poller_ids)) {
+					foreach($poller_ids as $poller_id) {
+						if ($cnn_ids[$poller_id] !== false) {
+							db_execute('DELETE FROM data_input_data
+								WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+						}
+					}
+				}
 			}
 
 		}
 
-		$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
-			FROM poller_item
-			WHERE local_data_id IN(' . implode(',', $ids_to_delete) .')'), 'poller_id', 'poller_id');
+		/* core data */
+		db_execute('DELETE FROM data_template_data
+			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
-		db_execute('DELETE FROM data_template_data WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_template_rrd WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM poller_item WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_local WHERE id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_template_rrd
+			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM poller_item
+			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_local
+			WHERE id IN (' . implode(',', $ids_to_delete) . ')');
 
 		/* dsstats */
-		db_execute('DELETE FROM data_source_stats_daily WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_hourly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_hourly_cache WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_hourly_last WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_monthly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_weekly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM data_source_stats_yearly WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM data_source_stats_daily
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_hourly
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_hourly_cache
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_hourly_last
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_monthly
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_weekly
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM data_source_stats_yearly
+			WHERE local_data_id IN(' . implode(',', $ids_to_delete) . ')');
 
 		/* boost */
-		db_execute('DELETE FROM poller_output WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
-		db_execute('DELETE FROM poller_output_boost WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+		db_execute('DELETE FROM poller_output
+			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
+
+		db_execute('DELETE FROM poller_output_boost
+			WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')');
 
 		if ($autoclean == 'on') {
 			db_execute("INSERT INTO data_source_purge_action (local_data_id, name, action)
@@ -161,10 +273,33 @@ function api_data_source_remove_multi($local_data_ids) {
 
 		if (cacti_sizeof($poller_ids)) {
 			foreach($poller_ids as $poller_id) {
+				if ($cnn_ids[$poller_id] !== false) {
+					/* core data */
+					db_execute('DELETE FROM data_template_data
+						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					db_execute('DELETE FROM data_template_rrd
+						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					db_execute('DELETE FROM poller_item
+						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					db_execute('DELETE FROM data_local
+						WHERE id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					/* boost */
+					db_execute('DELETE FROM poller_output
+						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					db_execute('DELETE FROM poller_output_boost
+						WHERE local_data_id IN (' . implode(',', $ids_to_delete) . ')', true, $cnn_ids[$poller_id]);
+
+					db_close($cnn_ids[$poller_id]);
+				}
+
 				api_data_source_cache_crc_update($poller_id);
 			}
 		}
-
 	}
 }
 

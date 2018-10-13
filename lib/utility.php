@@ -35,27 +35,42 @@ function update_replication_crc($poller_id, $variable) {
 }
 
 function repopulate_poller_cache() {
-	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM data_local');
+	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON dl.host_id=h.id
+		ORDER BY h.poller_id ASC');
+
 	$poller_items   = array();
 	$local_data_ids = array();
+	$poller_prev    = 1;
 	$i = 0;
+	$j = 0;
 
 	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
-			$poller_items     = array_merge($poller_items, update_poller_cache($data));
-			$local_data_ids[] = $data['id'];
-			$i++;
+			if ($j == 0) {
+				$poller_prev = $data['poller_id'];
+			}
 
-			if ($i > 500) {
+			$poller_id = $data['poller_id'];
+
+			if ($i > 500 || $poller_prev != $poller_id) {
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_prev);
 				$i = 0;
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
+
+			$poller_prev      = $poller_id;
+			$poller_items     = array_merge($poller_items, update_poller_cache($data));
+			$local_data_ids[] = $data['id'];
+			$i++;
+			$j++;
 		}
 
 		if ($i > 0) {
-			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 		}
 	}
 
@@ -91,6 +106,11 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 		AND id IN(' . implode(', ', $local_data_ids) . ')',
 		array($host_id, $data_query_id));
 
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
 	$i = 0;
 	$poller_items = $local_data_ids = array();
 
@@ -102,29 +122,19 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 
 			if ($i > 500) {
 				$i = 0;
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
 		}
 
 		if ($i > 0) {
-			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 		}
 	}
 
-	$poller_ids = array_rekey(
-		db_fetch_assoc_prepared('SELECT DISTINCT poller_id
-			FROM poller_item
-			WHERE host_id = ?',
-			array($host_id)),
-		'poller_id', 'poller_id'
-	);
-
-	if (cacti_sizeof($poller_ids)) {
-		foreach ($poller_ids as $poller_id) {
-			api_data_source_cache_crc_update($poller_id);
-		}
+	if ($poller_id > 1) {
+		api_data_source_cache_crc_update($poller_id);
 	}
 }
 
@@ -142,6 +152,17 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 
 	$poller_items = array();
+
+	if (!is_array($data_source)) {
+		return $poller_items;
+	}
+
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host AS h
+		INNER JOIN data_local AS dl
+		ON h.id=dl.host_id
+		WHERE dl.id = ?',
+		array($data_source['id']));
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -435,14 +456,14 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 
 	if ($commit && cacti_sizeof($poller_items)) {
-		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items);
+		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
 	} elseif (!$commit) {
 		return $poller_items;
 	}
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -450,21 +471,32 @@ function push_out_data_input_method($data_input_id) {
 			WHERE data_input_id = ?
 			AND local_data_id > 0
 		) AS dtd
-		ON dtd.local_data_id = dl.id',
+		ON dtd.local_data_id = dl.id
+		INNER JOIN host AS h
+		ON h.id = dl.host_id
+		ORDER BY h.poller_id ASC',
 		array($data_input_id));
 
 	$poller_items = array();
 	$_my_local_data_ids = array();
 
 	if (cacti_sizeof($data_sources)) {
+		$prev_poller = -1;
 		foreach ($data_sources as $data_source) {
-			$_my_local_data_ids[] = $data_source['id'];
+			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
+				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
+				$_my_local_data_ids = array();
+				$poller_items = array();
+			} else {
+				$_my_local_data_ids[] = $data_source['id'];
+				$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+			}
 
-			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+			$prev_poller = $data_source['poller_id'];
 		}
 
 		if (cacti_sizeof($_my_local_data_ids)) {
-			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 		}
 	}
 }
@@ -472,8 +504,13 @@ function push_out_data_input_method($data_input_id) {
 /** mass update of poller cache - can run in parallel to poller
  * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
  * @param array $poller_items - the new items for poller cache
+ * @param int $poller_id - the poller_id of the buffer
  */
-function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
+function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
+	if ($poller_id > 1) {
+		$cnn_id = poller_connect_to_remote($poller_id);
+	}
+
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = '';
 	if (cacti_sizeof($local_data_ids)) {
@@ -483,6 +520,12 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			db_execute("UPDATE poller_item
 				SET present=0
 				WHERE local_data_id IN ($ids)");
+
+			if ($poller_id > 1) {
+				db_execute("UPDATE poller_item
+					SET present=0
+					WHERE local_data_id IN ($ids)", true, $cnn_id);
+			}
 		}
 	} else {
 		/* don't mark anything in case we have no $local_data_ids =>
@@ -534,6 +577,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
+				if ($poller_id > 1) {
+					db_execute($sql_prefix . $buffer . $sql_suffix, true, $cnn_id);
+				}
+
 				$buffer    = '';
 				$buf_len   = 0;
 				$buf_count = 0;
@@ -545,6 +592,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 	if ($buf_count > 0) {
 		db_execute($sql_prefix . $buffer . $sql_suffix);
+
+		if ($poller_id > 1) {
+			db_execute($sql_prefix . $buffer . $sql_suffix, true, $cnn_id);
+		}
 	}
 
 	/* remove stale records FROM the poller cache */
@@ -552,8 +603,18 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 		db_execute("DELETE FROM poller_item
 			WHERE present=0
 			AND local_data_id IN ($ids)");
+
+		if ($poller_id > 1) {
+			db_execute("DELETE FROM poller_item
+				WHERE present=0
+				AND local_data_id IN ($ids)", true, $cnn_id);
+		}
 	} else {
 		/* only handle explicitely given local_data_ids */
+	}
+
+	if ($poller_id > 1 && $cnn_id !== false) {
+		db_close($cnn_id);
 	}
 }
 
@@ -660,14 +721,24 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+	if (cacti_sizeof($hosts)) {
+		foreach($hosts as $host) {
+			$poller_ids[$host['poller_id']] = $host['poller_id'];
+		}
+
+		if (cacti_sizeof($poller_ids > 1)) {
+			cacti_log('WARNING: function push_out_host() discovered more than a single host', false, 'POLLER');
+		}
 	}
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host
 		WHERE id = ?',
 		array($host_id));
+
+	if (cacti_sizeof($local_data_ids)) {
+		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+	}
 
 	api_data_source_cache_crc_update($poller_id);
 }
