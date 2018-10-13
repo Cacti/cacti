@@ -508,7 +508,7 @@ function push_out_data_input_method($data_input_id) {
  */
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
 	if ($poller_id > 1) {
-		$cnn_id = poller_connect_to_remote($poller_id);
+		$rcnn_id = poller_connect_to_remote($poller_id);
 	}
 
 	/* set all fields present value to 0, to mark the outliers when we are all done */
@@ -524,7 +524,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			if ($poller_id > 1) {
 				db_execute("UPDATE poller_item
 					SET present=0
-					WHERE local_data_id IN ($ids)", true, $cnn_id);
+					WHERE local_data_id IN ($ids)", true, $rcnn_id);
 			}
 		}
 	} else {
@@ -578,7 +578,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
 				if ($poller_id > 1) {
-					db_execute($sql_prefix . $buffer . $sql_suffix, true, $cnn_id);
+					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 				}
 
 				$buffer    = '';
@@ -594,7 +594,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 
 		if ($poller_id > 1) {
-			db_execute($sql_prefix . $buffer . $sql_suffix, true, $cnn_id);
+			db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 		}
 	}
 
@@ -607,14 +607,14 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 		if ($poller_id > 1) {
 			db_execute("DELETE FROM poller_item
 				WHERE present=0
-				AND local_data_id IN ($ids)", true, $cnn_id);
+				AND local_data_id IN ($ids)", true, $rcnn_id);
 		}
 	} else {
 		/* only handle explicitely given local_data_ids */
 	}
 
-	if ($poller_id > 1 && $cnn_id !== false) {
-		db_close($cnn_id);
+	if ($poller_id > 1 && $rcnn_id !== false) {
+		db_close($rcnn_id);
 	}
 }
 

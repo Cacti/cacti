@@ -367,14 +367,14 @@ function form_actions() {
 
 							if (sizeof($poller_ids)) {
 								foreach($poller_ids as $poller_id) {
-									$cnn_id = poller_connect_to_remote($poller_id);
+									$rcnn_id = poller_connect_to_remote($poller_id);
 
-									if ($cnn_id !== false) {
+									if ($rcnn_id !== false) {
 										db_execute('DELETE FROM graph_templates_item
 											WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
-											AND local_graph_id > 0', true, $cnn_id);
+											AND local_graph_id > 0', true, $rcnn_id);
 
-										db_close($cnn_id);
+										db_close($rcnn_id);
 									}
 								}
 							}
