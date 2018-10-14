@@ -35,6 +35,9 @@ function upgrade_to_1_2_0() {
 	db_install_add_column('poller', array('name' => 'processes', 'type' => 'int', 'after' => 'total_polls', 'default' => '1'));
 	db_install_add_column('poller', array('name' => 'threads', 'type' => 'double', 'after' => 'processes', 'default' => '1'));
 	db_install_add_column('poller', array('name' => 'timezone', 'type' => 'varchar(40)', 'default' => '', 'after' => 'status'));
+	db_install_add_column('poller', array('name' => 'dbsslkey', 'type' => 'varchar(255)', 'after' => 'dbssl'));
+	db_install_add_column('poller', array('name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbssl'));
+	db_install_add_column('poller', array('name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbssl'));
 
 	if ($poller_exists) {
 		// Take the value from the settings table and translate to

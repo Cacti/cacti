@@ -1047,7 +1047,10 @@ function poller_connect_to_remote($poller_id) {
 			$cinfo['dbdefault'],
 			'mysql',
 			$cinfo['dbport'],
-			$cinfo['dbssl']);
+			$cinfo['dbssl'],
+			$cinfo['dbsslkey'],
+			$cinfo['dbsslcert'],
+			$cinfo['dbsslca']);
 
 		if (!is_object($rcnn_id)) {
 			cacti_log('ERROR: Unable to connect to Remote Data Collector ' . $cinfo['name'], false, 'POLLER');

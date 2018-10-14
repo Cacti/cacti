@@ -85,7 +85,7 @@ $fields_poller_edit = array(
 		'textarea_rows' => 4,
 		'textarea_cols' => 50
 	),
-	'spacer1' => array(
+	'spacer_collection' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Collection Settings'),
 	),
@@ -107,7 +107,7 @@ $fields_poller_edit = array(
 		'default' => read_config_option('max_threads'),
 		'max_length' => '4'
 	),
-	'spacer2' => array(
+	'spacer_remotedb' => array(
 		'method' => 'spacer',
 		'friendly_name' => __('Remote Database Connection'),
 	),
@@ -162,6 +162,33 @@ $fields_poller_edit = array(
 		'description' => __('If the remote database uses SSL to connect, check the checkbox below.'),
 		'value' => '|arg1:dbssl|',
 		'default' => $database_ssl ? 'on':''
+	),
+	'dbsslkey' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database SSL Key'),
+		'description' => __('The file holding the SSL Key to use to connect to the remote database.'),
+		'value' => '|arg1:dbsslkey|',
+		'size' => '50',
+		'default' => $database_ssl_key,
+		'max_length' => '255'
+	),
+	'dbsslcert' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database SSL Certificate'),
+		'description' => __('The file holding the SSL Certificate to use to connect to the remote database.'),
+		'value' => '|arg1:dbsslcert|',
+		'size' => '50',
+		'default' => $database_ssl_cert,
+		'max_length' => '255'
+	),
+	'dbsslca' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Remote Database SSL Authority'),
+		'description' => __('The file holding the SSL Certificate Authority to use to connect to the remote database.'),
+		'value' => '|arg1:dbsslca|',
+		'size' => '50',
+		'default' => $database_ssl_ca,
+		'max_length' => '255'
 	),
 	'id' => array(
 		'method' => 'hidden',
@@ -243,6 +270,9 @@ function form_save() {
 		$save['dbpass']    = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
 		$save['dbport']    = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
 		$save['dbssl']     = isset_request_var('dbssl') ? 'on':'';
+		$save['dbsslkey']  = form_input_validate(get_nfilter_request_var('dbsslkey'), 'dbsslkey', '', true, 3);
+		$save['dbsslcert'] = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
+		$save['dbsslca']   = form_input_validate(get_nfilter_request_var('dbsslca'), 'dbsslca', '', true, 3);
 
 		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
@@ -476,13 +506,16 @@ function poller_edit() {
 
 	if (cacti_sizeof($poller)) {
 		if ($poller['id'] == 1) {
-			unset($fields_poller_edit['spacer1']);
+			unset($fields_poller_edit['spacer_remotedb']);
 			unset($fields_poller_edit['dbdefault']);
 			unset($fields_poller_edit['dbhost']);
 			unset($fields_poller_edit['dbuser']);
 			unset($fields_poller_edit['dbpass']);
 			unset($fields_poller_edit['dbport']);
 			unset($fields_poller_edit['dbssl']);
+			unset($fields_poller_edit['dbsslkey']);
+			unset($fields_poller_edit['dbsslcert']);
+			unset($fields_poller_edit['dbsslca']);
 		}
 
 		if ($poller['timezone'] == '' || $poller['id'] == 1) {
@@ -511,12 +544,30 @@ function poller_edit() {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
+			function showHideRemoteDB() {
+					var hasSSL = $('#dbssl').is(':checked');
+					if (hasSSL) {
+						$('#row_dbsslkey').show();
+						$('#row_dbsslcert').show();
+						$('#row_dbsslca').show();
+					} else {
+						$('#row_dbsslkey').hide();
+						$('#row_dbsslcert').hide();
+						$('#row_dbsslca').hide();
+					}
+			}
+
 			$(function() {
-				$('#row_dbssl').after('<?php print $row_html;?>');
+				$('#row_dbsslca').after('<?php print $row_html;?>');
+				$('#dbssl').click(function() {
+					showHideRemoteDB();
+				});
 
 				$('#dbtest').click(function() {
 					ping_database();
 				});
+
+				showHideRemoteDB();
 			});
 
 			function ping_database() {
@@ -530,8 +581,11 @@ function poller_edit() {
 					dbuser:       $('#dbuser').val(),
 					dbpass:       $('#dbpass').val(),
 					dbport:       $('#dbport').val(),
-					dbssl:        dbssl } )
-				.done(function(data) {
+					dbssl:        dbssl,
+					dbsslkey:     $('#dbsslkey').val(),
+					dbsslcert:    $('#dbsslcert').val(),
+					dbsslca:      $('#dbsslca').val()
+				}).done(function(data) {
 					$('#results').empty().show().html(data).fadeOut(2000);
 				});
 			}
@@ -557,7 +611,7 @@ function test_database_connection($poller = array()) {
 	if (!cacti_sizeof($poller)) {
 		$poller['dbtype'] = 'mysql';
 
-		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl');
+		$fields = array('dbhost', 'dbuser', 'dbpass', 'dbdefault', 'dbport', 'dbssl', 'dbsslkey', 'dbsslcert', 'dbsslca');
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
 				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
@@ -581,7 +635,10 @@ function test_database_connection($poller = array()) {
 		$poller['dbdefault'],
 		$poller['dbtype'],
 		$poller['dbport'],
-		$poller['dbssl']
+		$poller['dbssl'],
+		$poller['dbsslkey'],
+		$poller['dbsslcert'],
+		$poller['dbsslca']
 	);
 
     if (is_object($connection)) {
