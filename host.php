@@ -252,63 +252,15 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '2') { // Enable Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET disabled = '' WHERE id = ?", array($selected_item));
-
-					/* update poller cache */
-					$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_item));
-					$poller_items = $local_data_ids = array();
-
-					if (cacti_sizeof($data_sources)) {
-						foreach ($data_sources as $data_source) {
-							$local_data_ids[] = $data_source['id'];
-							$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
-						}
-					}
-
-					if (cacti_sizeof($local_data_ids)) {
-						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
-					}
-				}
+				api_device_enable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '3') { // Disable Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET disabled='on' WHERE id = ?", array($selected_item));
-
-					/* update poller cache */
-					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_item));
-					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_item));
-				}
+				api_device_disable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '4') { // change device options
-				foreach ($selected_items as $selected_item) {
-					foreach ($fields_host_edit as $field_name => $field_array) {
-						if (isset_request_var("t_$field_name")) {
-							db_execute_prepared("UPDATE host
-								SET $field_name = ?
-								WHERE id = ?",
-								array(get_nfilter_request_var($field_name), $selected_item));
-
-							if ($field_name == 'host_template_id') {
-								api_device_update_host_template($selected_item, get_nfilter_request_var($field_name));
-							}
-						}
-					}
-
-					push_out_host($selected_item);
-				}
+				api_device_change_options($selected_items, $_POST);
 			} elseif (get_request_var('drp_action') == '5') { // Clear Statisitics for Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
-						total_polls = '0', failed_polls = '0',	availability = '100.00'
-						where id = ?", array($selected_item));
-				}
+				api_device_clear_statistics($selected_items);
 			} elseif (get_request_var('drp_action') == '7') { // sync to device template
-				foreach ($selected_items as $selected_item) {
-					$device_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($selected_item));
-
-					if ($device_template_id > 0) {
-						api_device_update_host_template($selected_item, $device_template_id);
-					}
-				}
+				api_device_sync_device_templates($selected_items);
 			} elseif (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {
 					set_request_var('delete_type', 2);
