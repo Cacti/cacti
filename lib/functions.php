@@ -617,9 +617,9 @@ function get_message_type() {
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
-	global $messages;
+	global $messages, $no_http_headers;
 
-	$need_session = (session_status() == PHP_SESSION_NONE);
+	$need_session = (session_status() == PHP_SESSION_NONE) && !$no_http_headers;
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
