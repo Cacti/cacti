@@ -409,6 +409,28 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
+function api_data_source_change_host($data_sources, $device_id) {
+	if (cacti_sizeof($data_sources)) {
+		foreach($data_sources as $data_source) {
+			db_execute_prepared('UPDATE data_local
+				SET host_id = ?
+				WHERE id = ?',
+				array($device_id, $data_source));
+
+			if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+				db_execute_prepared('UPDATE data_local
+					SET host_id = ?
+					WHERE id = ?',
+					array($device_id, $data_source), true, $rcnn_id);
+			}
+
+			push_out_host($device_id, $data_source);
+
+			update_data_source_title_cache($data_source);
+		}
+	}
+}
+
 function api_reapply_suggested_data_source_data($local_data_id) {
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data

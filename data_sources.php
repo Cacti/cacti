@@ -398,15 +398,7 @@ function form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
 				get_filter_request_var('host_id');
 
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_local
-						SET host_id = ?
-						WHERE id = ?',
-						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
-
-					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
-					update_data_source_title_cache($selected_items[$i]);
-				}
+				api_data_source_change_host($selected_items, get_request_var('host_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
