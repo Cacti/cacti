@@ -444,7 +444,7 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 
 	db_execute_prepared('UPDATE poller_item
 		SET poller_id = ?
-		WHERE id = ?',
+		WHERE host_id = ?',
 		array($poller_id, $device_id));
 
 	// Start Push Replication
@@ -528,7 +528,7 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 		ON h.id=gl.host_id
 		WHERE h.id = ?',
 		array($device_id));
-	replicate_table_to_poller($rcnn_id, $data, 'data_template_item', $poller_id);
+	replicate_table_to_poller($rcnn_id, $data, 'graph_templates_item', $poller_id);
 
 	$data = db_fetch_assoc_prepared('SELECT did.*
 		FROM data_input_data AS did
@@ -550,7 +550,7 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 		SUM(CASE WHEN action=2 THEN 1 ELSE 0 END) AS server
 		FROM poller_item
 		WHERE poller_id = ?',
-		array($remote_poller_id));
+		array($poller_id));
 
 	if (cacti_sizeof($stats)) {
 		db_execute_prepared('UPDATE poller

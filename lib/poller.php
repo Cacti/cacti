@@ -1458,11 +1458,7 @@ function replicate_table_to_poller($conn, &$data, $table) {
 			$rows_done += db_affected_rows($conn);
 		}
 
-		cacti_log('NOTE: Table ' . $table . ' Replicated to Main Poller With ' . $rows_done . ' Rows Updated');
-	} else {
-		db_execute("TRUNCATE TABLE $table", true, $conn);
-
-		cacti_log('NOTE: Table ' . $table . ' Not Replicated to Remote Poller ' . $remote_poller_id . ' Due to No Rows Found');
+		cacti_log('NOTE: Table ' . $table . ' Replicated to Poller With ' . $rows_done . ' Rows Updated', true, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 	}
 }
 
