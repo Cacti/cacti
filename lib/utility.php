@@ -509,10 +509,6 @@ function push_out_data_input_method($data_input_id) {
 function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
 	global $config;
 
-	if ($poller_id > 1 && $config['poller_id'] == 1) {
-		$rcnn_id = poller_connect_to_remote($poller_id);
-	}
-
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = '';
 	if (cacti_sizeof($local_data_ids)) {
@@ -523,7 +519,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 				SET present=0
 				WHERE local_data_id IN ($ids)");
 
-			if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
+			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 				db_execute("UPDATE poller_item
 					SET present=0
 					WHERE local_data_id IN ($ids)", true, $rcnn_id);
@@ -579,7 +575,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
-				if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 				}
 
@@ -595,7 +591,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 	if ($buf_count > 0) {
 		db_execute($sql_prefix . $buffer . $sql_suffix);
 
-		if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
+		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 			db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
 		}
 	}
@@ -606,7 +602,7 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items,
 			WHERE present=0
 			AND local_data_id IN ($ids)");
 
-		if ($poller_id > 1 && $config['poller_id'] == 1 && $rcnn_id !== false) {
+		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 			db_execute("DELETE FROM poller_item
 				WHERE present=0
 				AND local_data_id IN ($ids)", true, $rcnn_id);

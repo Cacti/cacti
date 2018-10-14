@@ -1017,6 +1017,35 @@ function md5sum_path($path, $recursive = true) {
     return md5(implode('', $filemd5s));
 }
 
+function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false) {
+	global $config;
+	static $device_poller_ids = array();
+
+	$rcnn_id = false;
+
+	if ($is_poller) {
+		$poller_id = $device_or_poller;
+	} elseif (!isset($device_poller_ids[$device_or_poller])) {
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($device_or_poller));
+
+		if (!empty($poller_id)) {
+			$device_poller_ids[$device_or_poller] = $poller_id;
+		}
+	} else {
+		$poller_id = $device_poller_ids[$device_or_poller];
+	}
+
+	if ($poller_id > 1) {
+		$rcnn_id = poller_connect_to_remote($poller_id);
+	}
+
+	return $rcnn_id;
+}
+
+
 function poller_connect_to_remote($poller_id) {
 	global $config;
 
@@ -1575,7 +1604,7 @@ function get_remote_poller_ids_from_data_sources(&$data_sources) {
 		return array_rekey(
 			db_fetch_assoc('SELECT DISTINCT poller_id
 				FROM host AS h
-				INNER JOIN data_local AS gl
+				INNER JOIN data_local AS dl
 				ON h.id = dl.host_id
 				WHERE poller_id != 1
 				AND dl.id IN (' . $data_sources . ')'),
