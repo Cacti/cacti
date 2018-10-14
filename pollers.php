@@ -828,6 +828,10 @@ function pollers() {
 
 			$mma = round($poller['avg_time'], 2) . '/' .  round($poller['max_time'], 2);
 
+			if (empty($poller['name'])) {
+				$poller['name'] = '&lt;no name&gt;';
+			}
+
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
