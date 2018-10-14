@@ -63,6 +63,12 @@ function run_data_query($host_id, $snmp_query_id) {
 				$result = $_SESSION['debug_log']['response'];
 				unset($_SESSION['debug_log']['response']);
 
+				automation_execute_data_query($host_id, $snmp_query_id);
+				query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
+
+				api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+				query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
+
 				return $result;
 			}
 		}
