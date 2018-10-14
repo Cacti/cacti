@@ -35,8 +35,6 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
 }
 
 function api_data_source_remove($local_data_id) {
-	global $config;
-
 	if (empty($local_data_id)) {
 		return;
 	}
@@ -154,8 +152,6 @@ function api_data_source_remove($local_data_id) {
 }
 
 function api_data_source_remove_multi($local_data_ids) {
-	global $config;
-
 	// Shortcut out if no data
 	if (!cacti_sizeof($local_data_ids)) {
 		return;
@@ -189,7 +185,7 @@ function api_data_source_remove_multi($local_data_ids) {
 					db_execute('DELETE FROM data_input_data
 						WHERE data_template_data_id IN (' . implode(',', $dtd_ids_to_delete) . ')');
 
-					if (sizeof($poller_ids) && $config['poller_id'] == 1) {
+					if (sizeof($poller_ids)) {
 						foreach ($poller_ids as $poller_id) {
 							if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 								db_execute('DELETE FROM data_input_data
@@ -304,6 +300,18 @@ function api_data_source_enable($local_data_id) {
 		WHERE local_data_id = ?",
 		array($local_data_id));
 
+	$device_id = db_fetch_cell_prepared('SELECT host_id
+		FROM data_local
+		WHERE id = ?',
+		array($local_data_id));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared("UPDATE data_template_data
+			SET active = 'on'
+			WHERE local_data_id = ?",
+			array($local_data_id), true, $rcnn_id);
+	}
+
 	update_poller_cache($local_data_id, true);
  }
 
@@ -316,11 +324,25 @@ function api_data_source_disable($local_data_id) {
 		SET active=''
 		WHERE local_data_id = ?",
 		array($local_data_id));
+
+	$device_id = db_fetch_cell_prepared('SELECT host_id
+		FROM data_local
+		WHERE id = ?',
+		array($local_data_id));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE local_data_id = ?',
+			array($local_data_id), true, $rcnn_id);
+
+		db_execute_prepared("UPDATE data_template_data
+			SET active=''
+			WHERE local_data_id = ?",
+			array($local_data_id), true, $rcnn_id);
+	}
 }
 
 function api_data_source_disable_multi($local_data_ids) {
-	global $config;
-
 	/* initialize variables */
 	$ids_to_disable = '';
 	$i = 0;
@@ -388,8 +410,6 @@ function api_data_source_disable_multi($local_data_ids) {
 }
 
 function api_reapply_suggested_data_source_data($local_data_id) {
-	global $config;
-
 	$data_template_data_id = db_fetch_cell_prepared('SELECT id
 		FROM data_template_data
 		WHERE local_data_id = ?',
