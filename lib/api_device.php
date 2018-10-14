@@ -74,7 +74,7 @@ function api_device_remove($device_id) {
    @arg $device_id - device id of a host
    @arg $poller_id - the previous poller if it changed */
 function api_device_purge_from_remote($device_id, $poller_id = 0) {
-	if ($poller_id != 0) {
+	if ($poller_id > 1) {
 		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
 			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id), true, $rcnn_id);
 			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id), true, $rcnn_id);
@@ -235,9 +235,29 @@ function api_device_enable_devices($device_ids) {
 function api_device_change_options($device_ids, $post) {
 	global $config, $fields_host_edit;
 
+	$previous_poller = -1;
+
 	foreach ($device_ids as $device_id) {
 		foreach ($fields_host_edit as $field_name => $field_array) {
 			if (isset($post["t_$field_name"])) {
+				if ($field_name == 'poller_id') {
+					$old_poller = db_fetch_cell_prepared('SELECT poller_id
+						FROM host
+						WHERE id = ?',
+						array($device_id));
+
+					if ($old_poller > 1 && $old_poller != get_nfilter_request_var($field_name)) {
+						$previous_poller = get_nfilter_request_var($field_name);
+
+						api_device_purge_from_remote($device_id, $old_poller);
+					}
+
+					// Update the local device and replicate
+					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
+						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
+					}
+				}
+
 				db_execute_prepared("UPDATE host
 					SET $field_name = ?
 					WHERE id = ?",
@@ -405,6 +425,141 @@ function api_device_gt_remove($device_id, $graph_template_id) {
 			AND host_id = ?',
 			array($graph_template_id, $device_id), true, $rcnn_id);
 	}
+}
+
+function api_device_replicate_out($device_id, $poller_id = 1) {
+	global $config;
+
+	$rcnn_id = poller_connect_to_remote($poller_id);
+
+	if ($rcnn_id === false) {
+		return false;
+	}
+
+	// Update poller id where applicable
+	db_execute_prepared('UPDATE host
+		SET poller_id = ?
+		WHERE id = ?',
+		array($poller_id, $device_id));
+
+	db_execute_prepared('UPDATE poller_item
+		SET poller_id = ?
+		WHERE id = ?',
+		array($poller_id, $device_id));
+
+	// Start Push Replication
+	$data = db_fetch_assoc_prepared('SELECT hsq.*
+		FROM host_snmp_query AS hsq
+		INNER JOIN host AS h
+		ON h.id=hsq.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_query', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pi.*
+		FROM poller_item AS pi
+		WHERE pi.host_id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT h.*
+		FROM host AS h
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT hsc.*
+		FROM host_snmp_cache AS hsc
+		INNER JOIN host AS h
+		ON h.id=hsc.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_cache', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pri.*
+		FROM poller_reindex AS pri
+		INNER JOIN host AS h
+		ON h.id=pri.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'poller_reindex', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dl.*
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_local', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gl.*
+		FROM graph_local AS gl
+		INNER JOIN host AS h
+		ON h.id=gl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'graph_local', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtd.*
+		FROM data_template_data AS dtd
+		INNER JOIN data_local AS dl
+		ON dtd.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_data', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtr.*
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_local AS dl
+		ON dtr.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_rrd', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gti.*
+		FROM graph_templates_item AS gti
+		INNER JOIN graph_local AS gl
+		ON gti.local_graph_id=gl.id
+		INNER JOIN host AS h
+		ON h.id=gl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_item', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT did.*
+		FROM data_input_data AS did
+		INNER JOIN data_template_data AS dtd
+		ON did.data_template_data_id=dtd.id
+		INNER JOIN data_local AS dl
+		ON dl.id=dtd.local_data_id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
+
+	api_plugin_hook_function('replicate_out', $poller_id);
+
+	$stats = db_fetch_row_prepared('SELECT
+		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
+		SUM(CASE WHEN action=1 THEN 1 ELSE 0 END) AS script,
+		SUM(CASE WHEN action=2 THEN 1 ELSE 0 END) AS server
+		FROM poller_item
+		WHERE poller_id = ?',
+		array($remote_poller_id));
+
+	if (cacti_sizeof($stats)) {
+		db_execute_prepared('UPDATE poller
+			SET snmp = ?, script = ?, server = ?
+			WHERE id = ?',
+			array($stats['snmp'], $stats['script'], $stats['server'], $poller_id));
+	}
+
+	return true;
 }
 
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
