@@ -41,7 +41,8 @@ $poller_status = array(
 	2 => '<div class="deviceRecovering">' . __('Idle')         . '</div>',
 	3 => '<div class="deviceDown">'       . __('Down')         . '</div>',
 	4 => '<div class="deviceDisabled">'   . __('Disabled')     . '</div>',
-	5 => '<div class="deviceDown">'       . __('Recovering')   . '</div>'
+	5 => '<div class="deviceDown">'       . __('Recovering')   . '</div>',
+	6 => '<div class="deviceDown">'       . __('Heartbeat')    . '</div>',
 );
 
 /* file: pollers.php, action: edit */
@@ -106,6 +107,14 @@ $fields_poller_edit = array(
 		'size' => '10',
 		'default' => read_config_option('max_threads'),
 		'max_length' => '4'
+	),
+	'sync_interval' => array(
+		'method' => 'drop_array',
+		'friendly_name' => __('Sync Interval'),
+		'description' => __('The polling sync interval in use.  This setting will effect how often this poller is checked and updated.'),
+		'value' => '|arg1:sync_interval|',
+		'default' => read_config_option('poller_sync_interval'),
+		'array' => $poller_sync_intervals,
 	),
 	'spacer_remotedb' => array(
 		'method' => 'spacer',
@@ -254,25 +263,26 @@ function form_save() {
 		$save['id']        = get_filter_request_var('id');
 
 		// Common data
-		$save['name']      = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['hostname']  = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
-		$save['timezone']  = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
-		$save['notes']     = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['hostname']      = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
+		$save['timezone']      = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
+		$save['notes']         = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 		// Process settings
-		$save['processes'] = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
-		$save['threads']   = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+		$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
+		$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+		$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
 
 		// Database settings
-		$save['dbdefault'] = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
-		$save['dbhost']    = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
-		$save['dbuser']    = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
-		$save['dbpass']    = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
-		$save['dbport']    = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
-		$save['dbssl']     = isset_request_var('dbssl') ? 'on':'';
-		$save['dbsslkey']  = form_input_validate(get_nfilter_request_var('dbsslkey'), 'dbsslkey', '', true, 3);
-		$save['dbsslcert'] = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
-		$save['dbsslca']   = form_input_validate(get_nfilter_request_var('dbsslca'), 'dbsslca', '', true, 3);
+		$save['dbdefault']     = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
+		$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
+		$save['dbuser']        = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
+		$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
+		$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
+		$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
+		$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'), 'dbsslkey', '', true, 3);
+		$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
+		$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'), 'dbsslca', '', true, 3);
 
 		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
@@ -776,7 +786,7 @@ function pollers() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$pollers = db_fetch_assoc("SELECT poller.*, count(h.id) AS hosts
+	$pollers = db_fetch_assoc("SELECT poller.*, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(poller.last_status) as heartbeat, count(h.id) AS hosts
 		FROM poller
 		LEFT JOIN host AS h
 		ON h.poller_id=poller.id
@@ -822,8 +832,8 @@ function pollers() {
 
 			if ($poller['disabled'] == 'on') {
 				$poller['status'] = 4;
-			}else if (time()-strtotime($poller['last_status']) > 310) {
-				$poller['status'] = 3;
+			}else if ($poller['heartbeat'] > 310) {
+				$poller['status'] = 6;
 			}
 
 			$mma = round($poller['avg_time'], 2) . '/' .  round($poller['max_time'], 2);

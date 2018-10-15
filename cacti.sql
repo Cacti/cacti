@@ -2099,6 +2099,7 @@ CREATE TABLE `poller` (
   `total_polls` int(10) unsigned DEFAULT '0',
   `processes` int(10) unsigned DEFAULT '1',
   `threads` int(10) unsigned DEFAULT '1',
+  `sync_interval` int(10) unsigned DEFAULT '7200',
   `snmp` mediumint(8) unsigned DEFAULT '0',
   `script` mediumint(8) unsigned DEFAULT '0',
   `server` mediumint(8) unsigned DEFAULT '0',

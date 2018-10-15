@@ -695,6 +695,7 @@ $poller_intervals = array(
 );
 
 $poller_sync_intervals = array(
+	0     => __('Disabled/Manual'),
 	60    => __('Every Minute'),
 	300   => __('Every %d Minutes', 5),
 	600   => __('Every %d Minutes', 10),

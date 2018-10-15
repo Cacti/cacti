@@ -974,7 +974,7 @@ $settings = array(
 
 		'poller_sync_interval' => array(
 			'friendly_name' => __('Poller Sync Interval'),
-			'description' => __('The polling sync interval in use.  This setting will effect how often remote pollers are checked and updated.  '),
+			'description' => __('The default polling sync interval to use when creating a poller.  This setting will effect how often remote pollers are checked and updated.'),
 			'method' => 'drop_array',
 			'default' => 7200,
 			'array' => $poller_sync_intervals,

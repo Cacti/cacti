@@ -783,14 +783,14 @@ function poller_replicate_check() {
 	$pollers = db_fetch_assoc("SELECT id
 		FROM poller
 		WHERE id > 1
-		AND ((UNIX_TIMESTAMP()-$sync_interval) > UNIX_TIMESTAMP(last_sync)
-		OR last_sync='0000-00-00 00:00:00' OR requires_sync='on')
 		AND dbhost NOT IN ('localhost', '127.0.0.1', '')
-		AND disabled=''");
+		AND disabled=''
+		AND (last_sync='0000-00-00 00:00:00' OR requires_sync='on'
+		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, $sync_interval)))");
 
 	foreach($pollers as $poller) {
-    	$command_string = read_config_option('path_php_binary');
-	    $extra_args = '-q ' . $config['base_path'] . '/cli/poller_replicate.php --poller=' . $poller['id'];
+		$command_string = read_config_option('path_php_binary');
+		$extra_args = '-q ' . $config['base_path'] . '/cli/poller_replicate.php --poller=' . $poller['id'];
 		exec_background($command_string, $extra_args);
 	}
 }
