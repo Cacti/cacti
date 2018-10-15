@@ -694,6 +694,31 @@ $poller_intervals = array(
 	300 => __('Every %d Minutes', 5)
 );
 
+$poller_sync_intervals = array(
+	60    => __('Every Minute'),
+	300   => __('Every %d Minutes', 5),
+	600   => __('Every %d Minutes', 10),
+	900   => __('Every %d Minutes', 15),
+	1200  => __('Every %d Minutes', 20),
+	1500  => __('Every %d Minutes', 25),
+	1800  => __('Every %d Minutes', 30),
+	2700  => __('Every %d Minutes', 45),
+	3600  => __('Every Hour'),
+	5400  => __('Every Hour and %d Minutes', 30),
+	7200  => __('Every %d Hours', 2),
+	9000  => __('Every %d Hours and %d Minutes', 2, 30),
+	10800 => __('Every %d Hours', 3),
+	12600 => __('Every %d Hours and %d Minutes', 3, 30),
+	14400 => __('Every %d Hours', 4),
+	18000 => __('Every %d Hours', 5),
+	21600 => __('Every %d Hours', 6),
+	28800 => __('Every %d Hours', 8),
+	43200 => __('Every %d Hours', 12),
+	57600 => __('Every %d Hours', 16),
+	72000 => __('Every %d Hours', 20),
+	86400 => __('Every day'),
+);
+
 $device_threads = array(
 	1 => __('1 Thread (default)'),
 	2 => __('%d Threads', 2),

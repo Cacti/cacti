@@ -971,6 +971,14 @@ $settings = array(
 			'default' => 1,
 			'array' => $poller_options,
 			),
+
+		'poller_sync_interval' => array(
+			'friendly_name' => __('Poller Sync Interval'),
+			'description' => __('The polling sync interval in use.  This setting will effect how often remote pollers are checked and updated.  '),
+			'method' => 'drop_array',
+			'default' => 7200,
+			'array' => $poller_sync_intervals,
+			),
 		'poller_interval' => array(
 			'friendly_name' => __('Poller Interval'),
 			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
