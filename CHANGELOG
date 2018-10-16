@@ -83,6 +83,7 @@ Cacti CHANGELOG
 -issue#1976: Default admin permissions do not allow everything
 -issue#1982: Certain hooks should occur within api functions rather than UI functions
 -issue#2012: For kernel 3.2+, "Linux - Memory - Free" should grep for "MemAvailable:", not "MemFree:"
+-issue#2085: CLOG Regex Parser does not verify registered function exists
 -issue: Move Graph removal function to Graph API
 -issue: Fix issue with display_custom_error_message() causing problem with system error message handling
 -issue: Graph List View was not fully responsive
