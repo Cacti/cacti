@@ -1105,7 +1105,16 @@ function replicate_out($remote_poller_id = 1) {
 	}
 
 	// Start Push Replication
-	$data = db_fetch_assoc('SELECT * FROM settings WHERE name NOT LIKE "%_lastrun%"');
+	$data = db_fetch_assoc('SELECT *
+		FROM settings
+		WHERE name NOT LIKE "%_lastrun%"
+		AND name NOT LIKE "path_%"
+		AND name NOT LIKE "%_path"
+		AND name NOT LIKE "stats%"
+		AND name != "rrdtool_version"
+		AND name NOT LIKE "poller_replicate%"
+		AND name != "poller_enabled"
+		AND name NOT LIKE "md5dirsum%"');
 	replicate_out_table($rcnn_id, $data, 'settings', $remote_poller_id);
 
 	$data = db_fetch_assoc('SELECT * FROM data_input');
