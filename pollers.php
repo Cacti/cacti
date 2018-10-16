@@ -516,6 +516,7 @@ function poller_edit() {
 
 	if (cacti_sizeof($poller)) {
 		if ($poller['id'] == 1) {
+			unset($fields_poller_edit['sync_interval']);
 			unset($fields_poller_edit['spacer_remotedb']);
 			unset($fields_poller_edit['dbdefault']);
 			unset($fields_poller_edit['dbhost']);
