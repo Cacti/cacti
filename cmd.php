@@ -67,7 +67,7 @@ require($config['base_path'] . '/lib/ping.php');
 
 // let the poller server know about cmd.php being finished
 function record_cmdphp_done($pid = '') {
-	global $poller_id;
+	global $poller_id, $poller_db_cnn_id;
 
 	if ($pid == '') $pid = getmypid();
 
@@ -75,17 +75,17 @@ function record_cmdphp_done($pid = '') {
 		SET end_time=NOW()
 		WHERE poller_id = ?
 		AND pid = ?',
-		array($poller_id, $pid));
+		array($poller_id, $pid), true, $poller_db_cnn_id);
 }
 
 // let cacti processes know that a poller has started
 function record_cmdphp_started() {
-	global $poller_id;
+	global $poller_id, $poller_db_cnn_id;
 
 	db_execute_prepared("INSERT INTO poller_time
 		(poller_id, pid, start_time, end_time)
 		VALUES (?, ?, NOW(), '0000-00-00 00:00:00')",
-		array($poller_id, getmypid()));
+		array($poller_id, getmypid()), true, $poller_db_cnn_id);
 }
 
 function open_snmp_session($host_id, &$item) {
