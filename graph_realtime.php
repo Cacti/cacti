@@ -29,6 +29,19 @@ include_once('./lib/rrd.php');
 
 $config['force_storage_location_local'] = true;
 
+/* ================= input validation ================= */
+get_filter_request_var('graph_start');
+get_filter_request_var('graph_end');
+get_filter_request_var('graph_height');
+get_filter_request_var('graph_width');
+get_filter_request_var('local_graph_id');
+get_filter_request_var('size');
+get_filter_request_var('ds_step');
+get_filter_request_var('count');
+get_filter_request_var('top');
+get_filter_request_var('left');
+/* ==================================================== */
+
 set_default_action();
 
 switch (get_request_var('action')) {
@@ -74,19 +87,6 @@ case 'countdown':
 
 		break;
 	}
-
-	/* ================= input validation ================= */
-	get_filter_request_var('graph_start');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_height');
-	get_filter_request_var('graph_width');
-	get_filter_request_var('local_graph_id');
-	get_filter_request_var('size');
-	get_filter_request_var('ds_step');
-	get_filter_request_var('count');
-	get_filter_request_var('top');
-	get_filter_request_var('left');
-	/* ==================================================== */
 
 	$graph_data_array = array();
 
