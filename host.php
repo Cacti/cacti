@@ -372,6 +372,7 @@ function form_actions() {
 					$form_array[$field_name]['sub_checkbox'] = array(
 						'name' => 't_' . $field_name,
 						'friendly_name' => __('Update this Field'),
+						'class' => 'ui-state-disabled',
 						'value' => ''
 						);
 				}
