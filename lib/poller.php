@@ -928,12 +928,16 @@ function resource_cache_out($type, $path) {
 							if ((is_writeable($tmpdir) && !file_exists($tmpfile)) || (file_exists($tmpfile) && is_writable($tmpfile))) {
 								if (file_put_contents($tmpfile, $contents) !== false) {
 									$output = system($php_path . ' -l ' . $tmpfile, $exit);
+
 									if ($exit == 0) {
 										cacti_log("INFO: Updating '$mypath' from Cache!", false, 'POLLER');
+
 										if (is_writable($mypath) || (!file_exists($mypath) && is_writable(dirname($mypath)))) {
 											file_put_contents($mypath, $contents);
+
 											if ($attributes != 0) {
 												chmod($mypath, $attributes);
+
 												if (fileperms($mypath) != $attributes) {
 													cacti_log("WARNING: Cache cannot update permissions on '$mypath'", false, 'POLLER');
 												}
@@ -942,8 +946,8 @@ function resource_cache_out($type, $path) {
 											cacti_log("ERROR: Cache in cannot write to '$mypath', purge this location");
 										}
 									} else {
-										cacti_log("ERROR: PHP Source File '$mypath' from Cache has an error whilst checking syntax ($exit) whilst executing: $php_path -l $tmpfile", false, 'POLLER');
-										cacti_log("ERROR: PHP Source File '$mypath'': " . str_replace("\n"," ",str_replace("\t"," ", $output)), false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath' from Cache has an error while checking syntax ($exit) while executing: '$php_path -l $tmpfile'", false, 'POLLER');
+										cacti_log("ERROR: PHP Source File '$mypath'': " . str_replace("\n", ' ', str_replace("\t", ' ', $output)), false, 'POLLER');
 									}
 
 									unlink($tmpfile);
@@ -1115,7 +1119,7 @@ function replicate_out($remote_poller_id = 1) {
 		AND name NOT LIKE "poller_replicate%"
 		AND name != "poller_enabled"
 		AND name NOT LIKE "md5dirsum%"');
-	replicate_out_table($rcnn_id, $data, 'settings', $remote_poller_id);
+	replicate_table_to_poller($rcnn_id, $data, 'settings');
 
 	$data = db_fetch_assoc('SELECT * FROM data_input');
 	replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
