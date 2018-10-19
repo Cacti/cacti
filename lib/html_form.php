@@ -614,7 +614,11 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'" . ($title != '' ? ' title="' . $title . '"':'');
+	if ($type == 'password') {
+		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' value=''>";
+	}
+
+	print "<input type='$type'" . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="new-password"':'') . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
