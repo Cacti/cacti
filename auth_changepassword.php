@@ -30,7 +30,7 @@ switch (get_request_var('action')) {
 	case 'checkpass':
 		$error = secpass_check_pass(get_nfilter_request_var('password'));
 
-		if ($error == '') {
+		if ($error != '') {
 			print $error;
 		} else {
 			print 'ok';
@@ -53,9 +53,9 @@ switch (get_request_var('action')) {
 		}
 }
 
-$user    = db_fetch_row_prepared('SELECT * 
-	FROM user_auth 
-	WHERE id = ?', 
+$user    = db_fetch_row_prepared('SELECT *
+	FROM user_auth
+	WHERE id = ?',
 	array($_SESSION['sess_user_id']));
 
 $version = get_cacti_version();
@@ -278,9 +278,6 @@ $selectedTheme = get_selected_theme();
 <html>
 <head>
 	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
-	<script type='text/javascript'>
-	$(function() {
-	}
 </head>
 <body class='loginBody'>
 	<div class='loginLeft'></div>
@@ -370,8 +367,6 @@ $selectedTheme = get_selected_theme();
 
 	$(function() {
 		$('#current').focus();
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 
 		/* clear passwords */
 		$('#password').val('');
