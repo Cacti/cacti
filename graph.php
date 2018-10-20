@@ -110,11 +110,14 @@ case 'view':
 	</tr>
 	<?php
 
-	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array(get_request_var('local_graph_id')));
 
 	$i = 0;
 	if (cacti_sizeof($rras)) {
-		$graph_end   = time();
+		$graph_end   = time() - 30;
 		foreach ($rras as $rra) {
 			if (!empty($rra['timespan'])) {
 				$graph_start = $graph_end - $rra['timespan'];
