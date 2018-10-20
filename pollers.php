@@ -260,29 +260,31 @@ switch (get_request_var('action')) {
 
 function form_save() {
 	if (isset_request_var('save_component_poller')) {
-		$save['id']        = get_filter_request_var('id');
 
 		// Common data
-		$save['name']          = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
-		$save['hostname']      = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
-		$save['timezone']      = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
-		$save['notes']         = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
+		$save['id']       = get_filter_request_var('id');
+		$save['name']     = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
+		$save['hostname'] = form_input_validate(get_nfilter_request_var('hostname'), 'hostname', '', false, 3);
+		$save['timezone'] = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
+		$save['notes']    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
-		// Process settings
-		$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
-		$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
-		$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
+		if ($save['id'] != 1) {
+			// Process settings
+			$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
+			$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+			$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
 
-		// Database settings
-		$save['dbdefault']     = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
-		$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'), 'dbhost', '', true, 3);
-		$save['dbuser']        = form_input_validate(get_nfilter_request_var('dbuser'), 'dbuser', '', true, 3);
-		$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'), 'dbpass', '', true, 3);
-		$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'), 'dbport', '', true, 3);
-		$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
-		$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'), 'dbsslkey', '', true, 3);
-		$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
-		$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'), 'dbsslca', '', true, 3);
+			// Database settings
+			$save['dbdefault']     = form_input_validate(get_nfilter_request_var('dbdefault'), 'dbdefault', '', true, 3);
+			$save['dbhost']        = form_input_validate(get_nfilter_request_var('dbhost'),    'dbhost',    '', true, 3);
+			$save['dbuser']        = form_input_validate(get_nfilter_request_var('dbuser'),    'dbuser',    '', true, 3);
+			$save['dbpass']        = form_input_validate(get_nfilter_request_var('dbpass'),    'dbpass',    '', true, 3);
+			$save['dbport']        = form_input_validate(get_nfilter_request_var('dbport'),    'dbport',    '', true, 3);
+			$save['dbssl']         = isset_request_var('dbssl') ? 'on':'';
+			$save['dbsslkey']      = form_input_validate(get_nfilter_request_var('dbsslkey'),  'dbsslkey',  '', true, 3);
+			$save['dbsslcert']     = form_input_validate(get_nfilter_request_var('dbsslcert'), 'dbsslcert', '', true, 3);
+			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
+		}
 
 		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
