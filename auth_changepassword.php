@@ -294,17 +294,20 @@ $selectedTheme = get_selected_theme();
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
+						<tr style='display:none'>
+							<td><input type='text'><input type='password'></td>
+						</tr>
 						<tr>
 							<td><?php print __('Current password');?></td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
 							<td><?php print __('Confirm new password');?></td>
-							<td><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
 						</tr>
 						<tr>
 							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
