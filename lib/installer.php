@@ -2178,7 +2178,7 @@ class Installer implements JsonSerializable {
 			if ($config['cacti_server_os'] == 'unix') {
 				$text .= '  ' . __('If SELinux is enabled on your server, you can either permenantly disable this, or temporarily disable it and then add the appropriate permissions using the SELinux command-line tools.');
 				$code = '';
-				foreach($this->permissions['install'] as $path => $valid) {
+				foreach($paths as $path => $valid) {
 					if (!$valid) {
 						$code .= sprintf("chown -R %s.%s %s<br />", $running_user, $running_user, $path);
 					}
@@ -2187,7 +2187,7 @@ class Installer implements JsonSerializable {
 				// NOTE: $code part needs updating with the correct command
 				$text .= '  ' . __('The user \'%s\' should have MODIFY permission to enable read/write.', $running_user);
 				$code = '';
-				foreach($this->permissions['install'] as $path => $valid) {
+				foreach($paths as $path => $valid) {
 					if (!$valid) {
 						$code = sprintf('icacls %s %s/resource/', $running_user, $config['base_path']);
 					}
