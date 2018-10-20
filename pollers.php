@@ -268,10 +268,11 @@ function form_save() {
 		$save['timezone'] = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', false, 3);
 		$save['notes']    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
+		// Process settings
+		$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
+		$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+
 		if ($save['id'] != 1) {
-			// Process settings
-			$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
-			$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
 			$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
 
 			// Database settings
