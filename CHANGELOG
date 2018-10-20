@@ -163,6 +163,7 @@ Cacti CHANGELOG
 -feature: Allow Import/Export to be hookable
 -feature: Add a Timeout setting for Remote Agent calls
 -feature: Make it easy to find Data Query based graphs that have lost indexes
+-feature: Big Spanish translation update plus massive QA fixes
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values
