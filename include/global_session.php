@@ -205,4 +205,5 @@ if (isset($_SESSION['refresh'])) {
 	var zoom_i18n_close='<?php print __('Close');?>';
 	var zoom_i18n_settings='<?php print __('Settings');?>';
 	var zoom_i18n_3rd_button='<?php print __('3rd Mouse Button');?>';
+	var csrfMagicToken='<?php print 'sid:' . csrf_hash(session_id());?>';
 </script>
