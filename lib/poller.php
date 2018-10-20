@@ -688,8 +688,7 @@ function update_resource_cache($poller_id = 1) {
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
 		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
 			FROM poller_resource_cache
-			WHERE `path` LIKE "plugins/%"
-			GROUP BY resource_type', true, $conn);
+			WHERE `path` LIKE "plugins/%"', true, $conn);
 
 		if (cacti_sizeof($plugin_paths)) {
 			foreach ($plugin_paths as $path) {
