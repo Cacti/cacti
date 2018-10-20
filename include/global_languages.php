@@ -274,7 +274,7 @@ function load_i18n_gettext_wrappers() {
 			return __gettext($args[0]);
 
 		/* convert pure text strings by using a different textdomain */
-		} elseif ($num == 2 && isset($l10n[$args[1]])) {
+		} elseif ($num == 2 && isset($l10n[$args[1]]) && $args[1] != 'cacti') {
 			return __gettext($args[0], $args[1]);
 
 		/* convert stings including one or more placeholders */
@@ -284,8 +284,11 @@ function load_i18n_gettext_wrappers() {
 			the use of a different textdomain */
 
 			/* get gettext string */
-			$args[0] = isset($l10n[$args[$num-1]]) 	? __gettext($args[0], $args[$num-1])
-													: __gettext($args[0]);
+			if (isset($l10n[$args[$num-1]]) && $args[$num-1] != 'cacti') {
+				$args[0] = __gettext($args[0], $args[$num-1]);
+			} else {
+				$args[0] = __gettext($args[0]);
+			}
 
 			/* process return string against input arguments */
 			return call_user_func_array('sprintf', $args);
@@ -328,8 +331,8 @@ function load_i18n_gettext_wrappers() {
 				$msgstr = __gettext($args[0]);
 			} else {
 				/* get gettext string */
-				$msgstr = isset($l10n[$args[$num-1]]) 	? __gettext($args[0], $args[$num-1])
-														: __gettext($args[0]);
+				$msgstr = isset($l10n[$args[$num-1]]) && $args[$num-1] != 'cacti' ?
+					__gettext($args[0], $args[$num-1]) : __gettext($args[0]);
 			}
 
 			/* use the raw message id if language catalogue does not contain a context specific message string */
@@ -399,7 +402,7 @@ function load_i18n_fallback_wrappers() {
 			return $args[0];
 
 		/* convert pure text strings by using a different textdomain */
-		} elseif ($num == 2 && isset($l10n[$args[1]])) {
+		} elseif ($num == 2 && isset($l10n[$args[1]]) && $args[1] != 'cacti') {
 			return $args[0];
 
 		/* convert stings including one or more placeholders */
@@ -549,7 +552,7 @@ function read_user_i18n_setting($config_name) {
 		if (!isset($config_array[$config_name])) {
 			$effective_uid = db_fetch_cell_prepared('SELECT id
 				FROM user_auth
-				WHERE id = ?', 
+				WHERE id = ?',
 				array(get_guest_account()));
 		}
 
