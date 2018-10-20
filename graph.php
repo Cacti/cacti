@@ -170,12 +170,12 @@ case 'view':
 				itemGraph = itemWrapper;
 			}
 
-			graph_id=itemGraph.attr('graph_id');
-			rra_id=itemGraph.attr('rra_id');
-			graph_height=itemGraph.attr('graph_height');
-			graph_width=itemGraph.attr('graph_width');
-			graph_start=itemGraph.attr('graph_start');
-			graph_end=itemGraph.attr('graph_end');
+			graph_id     = itemGraph.attr('graph_id');
+			rra_id       = itemGraph.attr('rra_id');
+			graph_height = itemGraph.attr('graph_height');
+			graph_width  = itemGraph.attr('graph_width');
+			graph_start  = itemGraph.attr('graph_start');
+			graph_end    = itemGraph.attr('graph_end');
 
 			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
