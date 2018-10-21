@@ -45,7 +45,7 @@ $cacti_version = trim($cacti_version);
 
 /* define cacti version */
 define('CACTI_VERSION', $cacti_version);
-define('CACTI_VERSION_BETA', 1);
+define('CACTI_VERSION_BETA', 2);
 
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
