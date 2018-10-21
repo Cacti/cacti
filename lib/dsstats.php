@@ -70,9 +70,9 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 
 				$stats[$file['local_data_id']] = dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool_pipe);
 			} else {
-				$data_source_name = db_fetch_cell_prepared('SELECT name_cache 
-					FROM data_template_data 
-					WHERE local_data_id = ?', 
+				$data_source_name = db_fetch_cell_prepared('SELECT name_cache
+					FROM data_template_data
+					WHERE local_data_id = ?',
 					array($file['local_data_id']));
 
 				cacti_log("WARNING: Data Source '$data_source_name' is damaged and contains no path.  Please delete and re-create both the Graph and Data Source.", false, 'DSSTATS');
@@ -259,7 +259,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 			}
 
 			/* now execute the xport command */
-			$xport_cmd = 'xport --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($xport) . ' --maxrows 10';
+			$xport_cmd = 'xport --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($xport) . ' --maxrows 10000';
 
 			if ($use_proxy) {
 				$xport_data = rrdtool_execute($xport_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
