@@ -1668,7 +1668,7 @@ class Installer implements JsonSerializable {
 
 		// adjust above appropriately (used in configs)
 		$rec_memory	= $rec_memory_mb * 1024 * 1024;
-		$rec_execute    = $rec_execute_m * 10;
+		$rec_execute    = $rec_execute_m * 60;
 		$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
 		$execute_time   = ini_get('max_execution_time');
 
