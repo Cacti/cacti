@@ -2533,6 +2533,10 @@ input:focus + .checkboxSlider {
 	box-shadow: 0 0 1px #2196F3;
 }
 
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
 input:checked + .checkboxSlider:before {
 	-webkit-transform: translateX(20px);
 	-ms-transform: translateX(20px);

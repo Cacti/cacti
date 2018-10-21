@@ -2147,6 +2147,10 @@ input:checked + .checkboxSlider {
 	background-color: rgba(0,0,0,0.9);
 }
 
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
 input:focus + .checkboxSlider {
 	box-shadow: 0 0 1px #2196F3;
 }

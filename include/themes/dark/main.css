@@ -2320,6 +2320,10 @@ tr#realtime td:first-child {
 	transition: .4s;
 }
 
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
 input:checked + .checkboxSlider {
 	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
 }
