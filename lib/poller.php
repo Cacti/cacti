@@ -1156,6 +1156,9 @@ function replicate_out($remote_poller_id = 1) {
 	$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
 	replicate_out_table($rcnn_id, $data, 'user_domains_ldap', $remote_poller_id);
 
+	$data = db_fetch_assoc('SELECT * FROM version');
+	replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
+
 	$data = db_fetch_assoc_prepared('SELECT hsq.*
 		FROM host_snmp_query AS hsq
 		INNER JOIN host AS h
