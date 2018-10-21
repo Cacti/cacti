@@ -1060,11 +1060,16 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'pinst':
 				$compare = '>=';
+
 				// Divide the buffer pool size by 128MB, and ensure 1 or more
 				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+
 				if ($pool_instances < 1) {
 					$pool_instances = 1;
+				} elseif ($pool_instances > 64) {
+					$pool_instances = 64;
 				}
+
 				$passed = ($variables[$name] >= $pool_instances);
 				$value_recommend = $pool_instances;
 				break;
