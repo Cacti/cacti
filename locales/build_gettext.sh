@@ -58,7 +58,7 @@ echo "Merging updates to language files..."
 
 for file in `ls -1 locales/po/*.po`;do
 	echo "Updating $file from cacti.pot"
-	msgmerge --update $file locales/po/cacti.pot
+	msgmerge --backup off --update $file locales/po/cacti.pot
 done
 
 exit 0
