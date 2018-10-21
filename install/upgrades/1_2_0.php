@@ -40,7 +40,7 @@ function upgrade_to_1_2_0() {
 	db_install_add_column('poller', array('name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbssl'));
 	db_install_add_column('poller', array('name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbssl'));
 
-	if ($poller_exists) {
+	if (!$poller_exists) {
 		// Take the value from the settings table and translate to
 		// the new Data Collector table settings
 
