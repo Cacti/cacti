@@ -858,13 +858,13 @@ function pollers() {
 			form_selectable_cell(number_format_i18n($poller['snmp'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['script'], '-1'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['server'], '-1'), $poller['id'], '', 'right');
-			form_selectable_cell($poller['last_update'], $poller['id'], '', 'right');
-			form_selectable_cell($poller['last_status'], $poller['id'], '', 'right');
+			form_selectable_cell(substr($poller['last_update'], 5), $poller['id'], '', 'right');
+			form_selectable_cell(substr($poller['last_status'], 5), $poller['id'], '', 'right');
 
 			if ($poller['id'] == 1) {
 				form_selectable_cell(__('N/A'), $poller['id'], '', 'right');
 			} else {
-				form_selectable_cell($poller['last_sync'], $poller['id'], '', 'right');
+				form_selectable_cell(substr($poller['last_sync'], 5), $poller['id'], '', 'right');
 			}
 
 			form_checkbox_cell($poller['name'], $poller['id'], $disabled);
