@@ -394,7 +394,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
 					$sql .= ' default NULL';
 				if (isset($column['default']))
-					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+					$sql .= ' default ' . (is_numeric($column['default']) || preg_match('/\(.*\)/', $column['default']) ? $column['default'] : "'" . $column['default'] . "'");
 				if (isset($column['auto_increment']))
 					$sql .= ' auto_increment';
 				$c++;
