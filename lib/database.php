@@ -98,6 +98,18 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
+			$ver = db_fetch_cell('SHOW GLOBAL VARIABLES LIKE \'version\'');
+		        if (strpos($ver, 'MariaDB') !== false) {
+				$srv = 'MariaDB';
+				$ver  = str_replace('-MariaDB', '', $variables['version']);
+			} else {
+				$srv = 'MySQL';
+			}
+
+			if (version_compare('8.0.0', $ver, '<=')) {
+				$bad_modes[] = 'NO_AUTO_CREATE_USER';
+			}
+
 			// Get rid of bad modes
 			$modes = explode(',', db_fetch_cell('SELECT @@sql_mode', '', false));
 			$new_modes = array();
@@ -144,7 +156,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 	return false;
 }
 
-function db_warning_handler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext) {
+function db_warning_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 	throw new Exception($errstr, $errno);
 }
 
@@ -201,7 +213,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 	$sql = db_strip_control_chars($sql);
 
 	if (!empty($config['DEBUG_SQL_CMD'])) {
-		cacti_log('DEVEL: SQL ' . $execute_name . ': "' . $sql . '"', false, 'DBCALL', POLLER_VERBOSITY_DEVDBG);
+		db_echo_sql('db_' . $execute_name . ': "' . $sql . "\"\n");
 	}
 
 	$errors = 0;
@@ -213,6 +225,10 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		$code = 0;
 		$en = '';
 
+		if (!empty($config['DEBUG_SQL_CMD'])) {
+			db_echo_sql('db_' . $execute_name . ' Memory [Before]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
+		}
+
 		set_error_handler('db_warning_handler',E_WARNING | E_NOTICE);
 		try {
 			if (empty($params) || cacti_count($params) == 0) {
@@ -223,9 +239,13 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 		} catch (Exception $ex) {
 			$code = $ex->getCode();
 			$en = $code;
-			$errorinfo = array(1=>$code,2=>$ex->getMessage());
+			$errorinfo = array(1=>$code, 2=>$ex->getMessage());
 		}
 		restore_error_handler();
+
+		if (!empty($config['DEBUG_SQL_CMD'])) {
+			db_echo_sql('db_' . $execute_name . ' Memory [ After]: ' . memory_get_usage() . ' / ' . memory_get_peak_usage() . "\n");
+		}
 
 		if ($code == 0) {
 			$code = $query->errorCode();
@@ -295,13 +315,13 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Too Large!, Error: ' . $errorinfo[2], false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
-					cacti_debug_backtrace('SQL');
+					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Too Large!, Error ' . $en . ': ' . $errorinfo[2];
 				} else {
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $en . ', SQL: \'' . clean_up_lines($sql) . '\'', false, 'DBCALL', POLLER_VERBOSITY_DEBUG);
 					cacti_log('ERROR: A DB ' . $execute_name . ' Failed!, Error: ' . $errorinfo[2], false);
-					cacti_debug_backtrace('SQL');
+					cacti_debug_backtrace('SQL', false, true, 0, 1);
 
 					$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
 				}
@@ -700,7 +720,12 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_table_exists($table, $log = true, $db_conn = false) {
-	return (db_fetch_cell("SHOW TABLES LIKE '$table'", '', $log, $db_conn) ? true : false);
+	preg_match("/([`]{0,1}(?<database>[\w_]+)[`]{0,1}\.){0,1}[`]{0,1}(?<table>[\w_]+)[`]{0,1}/", $table, $matches);
+	if ($matches !== false && array_key_exists('table', $matches)) {
+		$sql = 'SHOW TABLES LIKE \'' . $matches['table'] . '\'';
+		return (db_fetch_cell($sql, '', $log, $db_conn) ? true : false);
+	}
+	return false;
 }
 
 /* db_cacti_initialized - checks whether cacti has been initialized properly and if not exits with a message
@@ -1174,7 +1199,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 		$error_message = "SQL Save on table '$table_name': Table does not exist, unable to save!";
 		raise_message('sql_save_table', $error_message, MESSAGE_LEVEL_ERROR);
 		cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
-		cacti_debug_backtrace('SQL');
+		cacti_debug_backtrace('SQL', false, true, 0, 1);
 		return false;
 	}
 
@@ -1187,7 +1212,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 			$error_message = "SQL Save on table '$table_name': Column '$key' does not exist, unable to save!";
 			raise_message('sql_save_key', $error_message, MESSAGE_LEVEL_ERROR);
 			cacti_log('ERROR: ' . $error_message, false, 'DBCALL');
-			cacti_debug_backtrace('SQL');
+			cacti_debug_backtrace('SQL', false, true, 0, 1);
 			return false;
 		}
 
@@ -1314,7 +1339,5 @@ function db_check_password_length() {
 function db_echo_sql($line, $force = false) {
 	global $config;
 
-	if (!empty($config['DEBUG_SQL_FLOW'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
-	}
+	file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 }

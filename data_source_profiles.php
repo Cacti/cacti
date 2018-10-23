@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $profile_actions = array(

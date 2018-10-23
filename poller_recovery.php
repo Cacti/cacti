@@ -178,6 +178,8 @@ if ($run) {
 		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
+	poller_push_reindex_data_to_main();
+
 	while (true) {
 		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
 			FROM poller_output_boost
@@ -273,10 +275,13 @@ if ($run) {
 				}
 
 				/* remove the recovery records */
-				if ($purge_time == 0) {
-					db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
-				} else {
-					db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+				if (is_object($local_db_cnn_id)) {
+					// Only go through this if the local database is reachable
+					if ($purge_time == 0) {
+						db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
+					} else {
+						db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+					}
 				}
 			}
 

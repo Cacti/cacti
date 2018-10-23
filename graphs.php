@@ -23,19 +23,20 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
-include_once('./lib/api_graph.php');
-include_once('./lib/api_tree.php');
-include_once('./lib/api_data_source.php');
 include_once('./lib/api_aggregate.php');
 include_once('./lib/api_automation.php');
+include_once('./lib/api_data_source.php');
+include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/html_form_template.php');
 include_once('./lib/html_tree.php');
+include_once('./lib/poller.php');
 include_once('./lib/reports.php');
 include_once('./lib/rrd.php');
 include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -83,12 +84,6 @@ switch (get_request_var('action')) {
 		top_header();
 		item();
 		bottom_footer();
-
-		break;
-	case 'graph_remove':
-		graph_remove();
-
-		header('Location: graphs.php?header=false');
 
 		break;
 	case 'ajax_graph_items':
@@ -1711,6 +1706,11 @@ function validate_graph_request_vars() {
 			'pageset' => true,
 			'default' => '',
 			),
+		'orphans' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '',
+			'options' => array('options' => 'sanitize_search_string')
+			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'title_cache',
@@ -1760,6 +1760,7 @@ function graph_management() {
 			'?host_id=' + $('#host_id').val() +
 			'&site_id=' + $('#site_id').val() +
 			'&rows=' + $('#rows').val() +
+			'&orphans=' + $('#orphans').is(':checked') +
 			'&rfilter=' + base64_encode($('#rfilter').val()) +
 			'&template_id=' + $('#template_id').val() +
 			'&header=false';
@@ -1837,6 +1838,12 @@ function graph_management() {
 					</td>
 					<td>
 						<span>
+							<input type='checkbox' id='orphans' onChange='applyFilter()' <?php print (get_request_var('orphans') == 'true' || get_request_var('orphans') == 'on' ? 'checked':'');?>>
+   	                    	<label for='orphans'><?php print __('Orphaned');?></label>
+						</span>
+					</td>
+					<td>
+						<span>
 							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
@@ -1911,6 +1918,10 @@ function graph_management() {
 		}
 	}
 
+	if (get_request_var('orphans') == 'true') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (gl.snmp_index = "" AND gl.snmp_query_id > 0)';
+	}
+
 	/* don't allow aggregates to be view here */
 	$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ag.local_graph_id IS NULL';
 
@@ -1953,7 +1964,7 @@ function graph_management() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('graphs.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar('graphs.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
 	form_start('graphs.php', 'chk');
 

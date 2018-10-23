@@ -78,6 +78,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #ccc;
+	background-image: linear-gradient(to right, #333, #ccc, #333);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
@@ -476,8 +483,6 @@ label {
 }
 
 .menuoptions li a:hover {
-	display:block;
-	border: 1px solid #155413;
 	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
@@ -2313,6 +2318,10 @@ tr#realtime td:first-child {
 	background-position: center; /*left 5px;*/
 	-webkit-transition: .4s;
 	transition: .4s;
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
 }
 
 input:checked + .checkboxSlider {

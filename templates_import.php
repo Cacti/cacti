@@ -24,6 +24,7 @@
 
 include('./include/auth.php');
 include_once('./lib/import.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 /* set default action */

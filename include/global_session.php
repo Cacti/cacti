@@ -143,7 +143,8 @@ if (isset($_SESSION['refresh'])) {
 	var previewView='<?php print __('Preview View');?>';
 	var cactiHome='<?php print __('Cacti Home');?>';
 	var cactiProjectPage='<?php print __('Cacti Project Page');?>';
-	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
+	var cactiCommunityForum='<?php print __('User Community');?>';
+	var cactiDocumentation='<?php print __('Documentation');?>';
 	var reportABug='<?php print __('Report a bug');?>';
 	var aboutCacti='<?php print __('About Cacti');?>';
 	var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
@@ -204,4 +205,5 @@ if (isset($_SESSION['refresh'])) {
 	var zoom_i18n_close='<?php print __('Close');?>';
 	var zoom_i18n_settings='<?php print __('Settings');?>';
 	var zoom_i18n_3rd_button='<?php print __('3rd Mouse Button');?>';
+	var csrfMagicToken='<?php print 'sid:' . csrf_hash(session_id());?>';
 </script>

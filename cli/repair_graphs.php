@@ -26,6 +26,7 @@
 /* Original script is located here https://forums.cacti.net/viewtopic.php?t=35816, but this one was modified quite a lot */
 
 require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 

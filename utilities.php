@@ -24,9 +24,10 @@
 
 include('./include/auth.php');
 include_once('./lib/api_data_source.php');
-include_once('./lib/utility.php');
-include_once('./lib/clog_webapi.php');
 include_once('./lib/boost.php');
+include_once('./lib/clog_webapi.php');
+include_once('./lib/poller.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -404,12 +405,13 @@ function utilities_view_tech($php_info = '') {
 					case 'Cached':
 					case 'MemTotal':
 					case 'MemFree':
+					case 'MemAvailable':
 					case 'Buffers':
 					case 'Active':
 					case 'Inactive':
 						form_alternate_row();
 						print "<td>$name</td>\n";
-						print '<td>' . number_format_i18n($value/1000/1000, 2) . " MB</td>\n";
+						print '<td>' . number_format_i18n($value, 2) . "</td>\n";
 						form_end_row();
 					}
 				}

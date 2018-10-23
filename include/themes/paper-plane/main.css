@@ -46,6 +46,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
@@ -2344,6 +2351,10 @@ tr#realtime td:first-child {
 
 input:checked + .checkboxSlider {
 	background-color: #3a3b3c;
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
 }
 
 input:focus + .checkboxSlider {

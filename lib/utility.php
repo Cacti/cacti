@@ -35,31 +35,51 @@ function update_replication_crc($poller_id, $variable) {
 }
 
 function repopulate_poller_cache() {
-	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' * FROM data_local');
+	$poller_data    = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON dl.host_id=h.id
+		ORDER BY h.poller_id ASC');
+
 	$poller_items   = array();
 	$local_data_ids = array();
+	$poller_prev    = 1;
 	$i = 0;
+	$j = 0;
 
 	if (cacti_sizeof($poller_data)) {
 		foreach ($poller_data as $data) {
-			$poller_items     = array_merge($poller_items, update_poller_cache($data));
-			$local_data_ids[] = $data['id'];
-			$i++;
+			if ($j == 0) {
+				$poller_prev = $data['poller_id'];
+			}
 
-			if ($i > 500) {
+			$poller_id = $data['poller_id'];
+
+			if ($i > 500 || $poller_prev != $poller_id) {
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_prev);
 				$i = 0;
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
+
+			$poller_prev      = $poller_id;
+			$poller_items     = array_merge($poller_items, update_poller_cache($data));
+			$local_data_ids[] = $data['id'];
+			$i++;
+			$j++;
 		}
 
 		if ($i > 0) {
-			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 		}
 	}
 
-	$poller_ids = array_rekey(db_fetch_assoc('SELECT DISTINCT poller_id FROM poller_item'), 'poller_id', 'poller_id');
+	$poller_ids = array_rekey(
+		db_fetch_assoc('SELECT DISTINCT poller_id
+			FROM poller_item'),
+		'poller_id', 'poller_id'
+	);
+
 	if (cacti_sizeof($poller_ids)) {
 		foreach ($poller_ids as $poller_id) {
 			api_data_source_cache_crc_update($poller_id);
@@ -67,22 +87,29 @@ function repopulate_poller_cache() {
 	}
 
 	/* update the field mappings for the poller */
-	db_execute("TRUNCATE TABLE poller_data_template_field_mappings");
-	db_execute("INSERT IGNORE INTO poller_data_template_field_mappings
-		SELECT dtr.data_template_id, dif.data_name, GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
+	db_execute('TRUNCATE TABLE poller_data_template_field_mappings');
+	db_execute('INSERT IGNORE INTO poller_data_template_field_mappings
+		SELECT dtr.data_template_id, dif.data_name,
+		GROUP_CONCAT(dtr.data_source_name ORDER BY dtr.data_source_name) AS data_source_names, NOW()
 		FROM data_template_rrd AS dtr
 		INNER JOIN data_input_fields AS dif
 		ON dtr.data_input_field_id = dif.id
-		WHERE dtr.local_data_id=0
-		GROUP BY dtr.data_template_id, dif.data_name");
+		WHERE dtr.local_data_id = 0
+		GROUP BY dtr.data_template_id, dif.data_name');
 }
 
-function update_poller_cache_from_query($host_id, $data_query_id) {
+function update_poller_cache_from_query($host_id, $data_query_id, $local_data_ids) {
 	$poller_data = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' *
 		FROM data_local
 		WHERE host_id = ?
-		AND snmp_query_id = ?',
+		AND snmp_query_id = ?
+		AND id IN(' . implode(', ', $local_data_ids) . ')',
 		array($host_id, $data_query_id));
+
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
 
 	$i = 0;
 	$poller_items = $local_data_ids = array();
@@ -95,29 +122,19 @@ function update_poller_cache_from_query($host_id, $data_query_id) {
 
 			if ($i > 500) {
 				$i = 0;
-				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+				poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 				$local_data_ids = array();
 				$poller_items   = array();
 			}
 		}
 
 		if ($i > 0) {
-			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
 		}
 	}
 
-	$poller_ids = array_rekey(
-		db_fetch_assoc_prepared('SELECT DISTINCT poller_id
-			FROM poller_item
-			WHERE host_id = ?',
-			array($host_id)),
-		'poller_id', 'poller_id'
-	);
-
-	if (cacti_sizeof($poller_ids)) {
-		foreach ($poller_ids as $poller_id) {
-			api_data_source_cache_crc_update($poller_id);
-		}
+	if ($poller_id > 1) {
+		api_data_source_cache_crc_update($poller_id);
 	}
 }
 
@@ -135,6 +152,17 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 
 	$poller_items = array();
+
+	if (!is_array($data_source)) {
+		return $poller_items;
+	}
+
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host AS h
+		INNER JOIN data_local AS dl
+		ON h.id=dl.host_id
+		WHERE dl.id = ?',
+		array($data_source['id']));
 
 	$data_input = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
 		di.id, di.type_id, dtd.id AS data_template_data_id,
@@ -428,14 +456,14 @@ function update_poller_cache($data_source, $commit = false) {
 	}
 
 	if ($commit && cacti_sizeof($poller_items)) {
-		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items);
+		poller_update_poller_cache_from_buffer((array)$data_source['id'], $poller_items, $poller_id);
 	} elseif (!$commit) {
 		return $poller_items;
 	}
 }
 
 function push_out_data_input_method($data_input_id) {
-	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*
+	$data_sources = db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' dl.*, h.poller_id
 		FROM data_local AS dl
 		INNER JOIN (
 			SELECT DISTINCT local_data_id
@@ -443,21 +471,32 @@ function push_out_data_input_method($data_input_id) {
 			WHERE data_input_id = ?
 			AND local_data_id > 0
 		) AS dtd
-		ON dtd.local_data_id = dl.id',
+		ON dtd.local_data_id = dl.id
+		INNER JOIN host AS h
+		ON h.id = dl.host_id
+		ORDER BY h.poller_id ASC',
 		array($data_input_id));
 
 	$poller_items = array();
 	$_my_local_data_ids = array();
 
 	if (cacti_sizeof($data_sources)) {
+		$prev_poller = -1;
 		foreach ($data_sources as $data_source) {
-			$_my_local_data_ids[] = $data_source['id'];
+			if ($prev_poller > 0 && $data_source['poller_id'] != $prev_poller) {
+				poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
+				$_my_local_data_ids = array();
+				$poller_items = array();
+			} else {
+				$_my_local_data_ids[] = $data_source['id'];
+				$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+			}
 
-			$poller_items = array_merge($poller_items, update_poller_cache($data_source));
+			$prev_poller = $data_source['poller_id'];
 		}
 
 		if (cacti_sizeof($_my_local_data_ids)) {
-			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items);
+			poller_update_poller_cache_from_buffer($_my_local_data_ids, $poller_items, $prev_poller);
 		}
 	}
 }
@@ -465,15 +504,26 @@ function push_out_data_input_method($data_input_id) {
 /** mass update of poller cache - can run in parallel to poller
  * @param array/int $local_data_ids - either a scalar (all ids) or an array of data source to act on
  * @param array $poller_items - the new items for poller cache
+ * @param int $poller_id - the poller_id of the buffer
  */
-function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items) {
+function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items, $poller_id = 1) {
+	global $config;
+
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	$ids = '';
 	if (cacti_sizeof($local_data_ids)) {
 		$ids = implode(', ', $local_data_ids);
 
 		if ($ids != '') {
-			db_execute("UPDATE poller_item SET present=0 WHERE local_data_id IN ($ids)");
+			db_execute("UPDATE poller_item
+				SET present=0
+				WHERE local_data_id IN ($ids)");
+
+			if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+				db_execute("UPDATE poller_item
+					SET present=0
+					WHERE local_data_id IN ($ids)", true, $rcnn_id);
+			}
 		}
 	} else {
 		/* don't mark anything in case we have no $local_data_ids =>
@@ -525,6 +575,10 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 			if ($overhead + $buf_len > $max_packet - 1024) {
 				db_execute($sql_prefix . $buffer . $sql_suffix);
 
+				if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+					db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+				}
+
 				$buffer    = '';
 				$buf_len   = 0;
 				$buf_count = 0;
@@ -536,11 +590,23 @@ function poller_update_poller_cache_from_buffer($local_data_ids, &$poller_items)
 
 	if ($buf_count > 0) {
 		db_execute($sql_prefix . $buffer . $sql_suffix);
+
+		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+			db_execute($sql_prefix . $buffer . $sql_suffix, true, $rcnn_id);
+		}
 	}
 
 	/* remove stale records FROM the poller cache */
 	if ($ids != '') {
-		db_execute("DELETE FROM poller_item WHERE present=0 AND local_data_id IN ($ids)");
+		db_execute("DELETE FROM poller_item
+			WHERE present=0
+			AND local_data_id IN ($ids)");
+
+		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+			db_execute("DELETE FROM poller_item
+				WHERE present=0
+				AND local_data_id IN ($ids)", true, $rcnn_id);
+		}
 	} else {
 		/* only handle explicitely given local_data_ids */
 	}
@@ -649,14 +715,24 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		}
 	}
 
-	if (cacti_sizeof($local_data_ids)) {
-		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
+	if (cacti_sizeof($hosts)) {
+		foreach($hosts as $host) {
+			$poller_ids[$host['poller_id']] = $host['poller_id'];
+		}
+
+		if (cacti_sizeof($poller_ids > 1)) {
+			cacti_log('WARNING: function push_out_host() discovered more than a single host', false, 'POLLER');
+		}
 	}
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
 		FROM host
 		WHERE id = ?',
 		array($host_id));
+
+	if (cacti_sizeof($local_data_ids)) {
+		poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+	}
 
 	api_data_source_cache_crc_update($poller_id);
 }
@@ -823,12 +899,6 @@ function utilities_get_mysql_recommendations() {
 			'measure' => 'ge',
 			'comment' => __('Depending on the number of logins and use of spine data collector, %s will need many connections.  The calculation for spine is: total_connections = total_processes * (total_threads + script_servers + 1), then you must leave headroom for user connections, which will change depending on the number of concurrent login accounts.', $database)
 			),
-		'max_heap_table_size' => array(
-			'value'   => '5',
-			'measure' => 'pmem',
-			'class' => 'warning',
-			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
-			),
 		'table_cache' => array(
 			'value'   => '200',
 			'measure' => 'ge',
@@ -839,14 +909,22 @@ function utilities_get_mysql_recommendations() {
 			'measure' => 'ge',
 			'comment' => __('With Remote polling capabilities, large amounts of data will be synced from the main server to the remote pollers.  Therefore, keep this value at or above 16M.')
 			),
+		'max_heap_table_size' => array(
+			'value'   => '1.6',
+			'measure' => 'pmem',
+			'class'   => 'warning',
+			'comment' => __('If using the Cacti Performance Booster and choosing a memory storage engine, you have to be careful to flush your Performance Booster buffer before the system runs out of memory table space.  This is done two ways, first reducing the size of your output column to just the right size.  This column is in the tables poller_output, and poller_output_boost.  The second thing you can do is allocate more memory to memory tables.  We have arbitrarily chosen a recommended value of 10% of system memory, but if you are using SSD disk drives, or have a smaller system, you may ignore this recommendation or choose a different storage engine.  You may see the expected consumption of the Performance Booster tables under Console -> System Utilities -> View Boost Status.')
+			),
 		'tmp_table_size' => array(
-			'value'   => '64M',
-			'measure' => 'gem',
+			'value'   => '1.6',
+			'measure' => 'pmem',
+			'class'   => 'warning',
 			'comment' => __('When executing subqueries, having a larger temporary table size, keep those temporary tables in memory.')
 			),
 		'join_buffer_size' => array(
-			'value'   => '64M',
-			'measure' => 'gem',
+			'value'   => '3.2',
+			'measure' => 'pmem',
+			'class'   => 'warning',
 			'comment' => __('When performing joins, if they are below this size, they will be kept in memory and never written to a temporary file.')
 			),
 		'innodb_file_per_table' => array(
@@ -982,11 +1060,16 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'pinst':
 				$compare = '>=';
+
 				// Divide the buffer pool size by 128MB, and ensure 1 or more
 				$pool_instances = round(($innodb_pool_size / 1024 / 1024 / 128) + 0.5);
+
 				if ($pool_instances < 1) {
 					$pool_instances = 1;
+				} elseif ($pool_instances > 64) {
+					$pool_instances = 64;
 				}
+
 				$passed = ($variables[$name] >= $pool_instances);
 				$value_recommend = $pool_instances;
 				break;

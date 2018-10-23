@@ -614,7 +614,11 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		$form_previous_value = $form_default_value;
 	}
 
-	print "<input type='$type'" . ($title != '' ? ' title="' . $title . '"':'');
+	if ($type == 'password') {
+		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' value=''>";
+	}
+
+	print "<input type='$type'" . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="new-password"':'') . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -1343,10 +1347,30 @@ function form_end($ajax = true) {
 				json =  $(this).serializeObject();
 				$.post(strURL, json).done(function(data) {
 					checkForLogout(data);
+					var htmlObject  = $(data);
+					var matches     = data.match(/<title>(.*?)<\/title>/);
 
-					$('#main').html(data);
-					applySkin();
-					window.scrollTo(0, 0);
+					if (matches != null) {
+						var htmlTitle   = matches[1];
+						var breadCrumbs = htmlObject.find('#breadcrumbs').html();
+						var data        = htmlObject.find('#main').html();
+
+						$('#main').empty().hide();
+						$('title').text(htmlTitle);
+						$('#breadcrumbs').html(breadCrumbs);
+						$('div[class^="ui-"]').remove();
+						$('#main').html(data);
+						applySkin();
+					} else {
+						$('#main').empty().hide().html(data);
+						applySkin();
+					}
+
+					if (isMobile.any() != null) {
+						window.scrollTo(0,1);
+					} else {
+						window.scrollTo(0,0);
+					}
 				});
 			});
 		});

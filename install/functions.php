@@ -52,9 +52,14 @@ function prime_default_settings() {
 }
 
 function install_test_local_database_connection() {
-	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl;
+	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
-	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl);
+	if (!isset($database_ssl)) $rdatabase_ssl = false;
+	if (!isset($database_ssl_key)) $rdatabase_ssl_key = false;
+	if (!isset($database_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($database_ssl_ca)) $rdatabase_ssl_ca = false;
+
+	$connection = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
 	if (is_object($connection)) {
 		db_close($connection);
@@ -65,9 +70,14 @@ function install_test_local_database_connection() {
 }
 
 function install_test_remote_database_connection() {
-	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl;
+	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
-	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl);
+	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
+	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
+	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
+	if (!isset($rdatabase_ssl_ca)) $rdatabase_ssl_ca = false;
+
+	$connection = db_connect_real($rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca);
 
 	if (is_object($connection)) {
 		db_close($connection);
@@ -301,6 +311,7 @@ function find_best_path($binary_name) {
 			return $search_paths[$i] . '/' . $binary_name;
 		}
 	}
+	return '';
 }
 
 function install_setup_get_templates() {
@@ -318,11 +329,28 @@ function install_setup_get_templates() {
 
 	$path = $config['base_path'] . '/install/templates';
 	$info = array();
+	$canUnpack = (extension_loaded('simplexml') && extension_loaded('zlib'));
+
 	foreach ($templates as $xmlfile) {
-		// Loading Template Information from package
-		$myinfo = json_decode(shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/import_package.php --filename=/$path/$xmlfile --info-only"), true);
-		$myinfo['filename'] = $xmlfile;
-		$info[] = $myinfo;
+		if ($canUnpack) {
+			//Loading Template Information from package
+			$filename = "compress.zlib://$path/$xmlfile";
+			$xml = file_get_contents($filename);;
+			$xmlget = simplexml_load_string($xml);
+			$data = to_array($xmlget);
+			if (is_array($data['info']['author'])) $data['info']['author'] = '1';
+			if (is_array($data['info']['email'])) $data['info']['email'] = '2';
+			if (is_array($data['info']['description'])) $data['info']['description'] = '3';
+			if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
+			$data['info']['filename'] = $xmlfile;
+			$info[] = $data['info'];
+		} else {
+			// Loading Template Information from package
+			$myinfo = @json_decode(shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/import_package.php --filename=/$path/$xmlfile --info-only"), true);
+			$myinfo['filename'] = $xmlfile;
+			$info[] = $myinfo;
+			$info[] = array('filename' => $xmlfile, 'name' => $xmlfile);
+		}
 	}
 
 	return $info;
@@ -386,6 +414,9 @@ function install_tool_path($name, $defaultPaths) {
 	global $config, $settings;
 
 	$os = $config['cacti_server_os'];
+	if (!isset($defaultPaths[$os])) {
+		return false;
+	}
 
 	$tool = array(
 		'friendly_name' => $name,
@@ -409,7 +440,7 @@ function install_tool_path($name, $defaultPaths) {
 	}
 
 	if (empty($which_tool) && isset($defaultPaths[$os])) {
-		$defaultPath = $defaultPaths[$config['cacti_server_os']];
+		$defaultPath = $defaultPaths[$os];
 		$basename = basename($defaultPath);
 		log_install_debug('file', "Searching best path with location: $defaultPath");
 		$which_tool = find_best_path($basename);
@@ -483,7 +514,6 @@ function install_file_paths() {
 	$input['settings_sendmail_path'] = install_tool_path('settings_sendmail_path',
 		array(
 			'unix'  => '/usr/sbin/sendmail',
-			'win32' => ''
 		));
 
 	/* spine Binary Path */
@@ -521,6 +551,12 @@ function install_file_paths() {
 					}
 				}
 			}
+		}
+	}
+
+	foreach (array_keys($input) as $key) {
+		if ($input[$key] === false) {
+			unset($input[$key]);
 		}
 	}
 
@@ -670,7 +706,7 @@ function log_install_and_file($level, $string, $section = '') {
 }
 
 function log_install_section_level($section) {
-	$log_level = log_install_level('log_verbosity', POLLER_VERBOSITY_LOW);
+	$log_level = POLLER_VERBOSITY_NONE;
 	$log_install = log_install_level('log_install', POLLER_VERBOSITY_NONE);
 	$log_section = log_install_level('log_install_'.$section, POLLER_VERBOSITY_NONE);
 
@@ -745,10 +781,10 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 	}
 
 	if ($can_log) {
-		$logfile = 'install';
-		if (!empty($section)) {
-			$logfile .= '-' . $section;
+		if (empty($section)) {
+			$section = 'general';
 		}
+		$logfile = 'install' . '-' . $section;
 		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
 	}

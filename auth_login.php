@@ -332,14 +332,16 @@ if (get_nfilter_request_var('action') == 'login') {
 			$_SESSION['sess_change_password'] = true;
 		}
 
-		$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
-			FROM user_auth_group AS uag
-			INNER JOIN user_auth_group_members AS uagm
-			ON uag.id=uagm.group_id
-			WHERE user_id=?', array($_SESSION['sess_user_id']));
+		if (db_table_exists('user_auth_group')) {
+			$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE user_id=?', array($_SESSION['sess_user_id']));
 
-		if ($group_options > 0) {
-			$user['login_opts'] = $group_options;
+			if ($group_options > 0) {
+				$user['login_opts'] = $group_options;
+			}
 		}
 
 		$newtheme = false;
@@ -495,9 +497,9 @@ function domains_login_process() {
 					cacti_log("WARN: User '" . $username . "' does not exist, copying template user", false, 'AUTH');
 
 					/* check that template user exists */
-					$user_template = db_fetch_row_prepared('SELECT * 
-						FROM user_auth 
-						WHERE id = ?', 
+					$user_template = db_fetch_row_prepared('SELECT *
+						FROM user_auth
+						WHERE id = ?',
 						array(get_template_account()));
 
 					if (!empty($user_template['id']) && $user_template['id'] > 0) {

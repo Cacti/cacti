@@ -44,6 +44,8 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 }
 
 function sig_handler($signo) {
+	global $poller_db_cnn_id;
+
 	switch ($signo) {
 		case SIGTERM:
 		case SIGINT:
@@ -51,7 +53,7 @@ function sig_handler($signo) {
 
 			$running_processes = db_fetch_assoc('SELECT ' . SQL_NO_CACHE . ' *
 				FROM poller_time
-				WHERE end_time=\'0000-00-00 00:00:00\'');
+				WHERE end_time=\'0000-00-00 00:00:00\'', true, $poller_db_cnn_id);
 
 			if (cacti_sizeof($running_processes)) {
 				foreach($running_processes as $process) {
@@ -62,7 +64,7 @@ function sig_handler($signo) {
 				}
 			}
 
-			db_execute('TRUNCATE TABLE poller_time');
+			db_execute('TRUNCATE TABLE poller_time', true, $poller_db_cnn_id);
 
 			exit;
 			break;
@@ -425,7 +427,7 @@ while ($poller_runs_completed < $poller_runs) {
 		FROM poller_time
 		WHERE poller_id = ?
 		AND end_time="0000-00-00 00:00:00"',
-		array($poller_id));
+		array($poller_id), '', true, $poller_db_cnn_id);
 
 	if ($running_processes) {
 		cacti_log("WARNING: There are '$running_processes' detected as overrunning a polling cycle, please investigate", true, 'POLLER');
@@ -434,7 +436,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 	db_execute_prepared('DELETE FROM poller_time
 		WHERE poller_id = ?',
-		array($poller_id));
+		array($poller_id), true, $poller_db_cnn_id);
 
 	/* only report issues for the main poller or from bad local
 	 * data ids, other pollers may insert somewhat asynchornously
@@ -624,7 +626,7 @@ while ($poller_runs_completed < $poller_runs) {
 				FROM poller_time
 				WHERE poller_id = ?
 				AND end_time >'0000-00-00 00:00:00'",
-				array($poller_id));
+				array($poller_id), '', true, $poller_db_cnn_id);
 
 			if ($finished_processes >= $started_processes) {
 				// all scheduled pollers are finished
@@ -783,14 +785,14 @@ function poller_replicate_check() {
 	$pollers = db_fetch_assoc("SELECT id
 		FROM poller
 		WHERE id > 1
-		AND ((UNIX_TIMESTAMP()-$sync_interval) > UNIX_TIMESTAMP(last_sync)
-		OR last_sync='0000-00-00 00:00:00' OR requires_sync='on')
 		AND dbhost NOT IN ('localhost', '127.0.0.1', '')
-		AND disabled=''");
+		AND disabled=''
+		AND (last_sync='0000-00-00 00:00:00' OR requires_sync='on'
+		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, $sync_interval)))");
 
 	foreach($pollers as $poller) {
-    	$command_string = read_config_option('path_php_binary');
-	    $extra_args = '-q ' . $config['base_path'] . '/cli/poller_replicate.php --poller=' . $poller['id'];
+		$command_string = read_config_option('path_php_binary');
+		$extra_args = '-q ' . $config['base_path'] . '/cli/poller_replicate.php --poller=' . $poller['id'];
 		exec_background($command_string, $extra_args);
 	}
 }

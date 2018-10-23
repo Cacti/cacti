@@ -31,6 +31,7 @@ include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/ping.php');
+include_once('./lib/poller.php');
 include_once('./lib/snmp.php');
 include_once('./lib/template.php');
 include_once('./lib/utility.php');
@@ -251,127 +252,21 @@ function form_actions() {
 
 		if ($selected_items != false) {
 			if (get_request_var('drp_action') == '2') { // Enable Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET disabled = '' WHERE id = ?", array($selected_item));
-
-					/* update poller cache */
-					$data_sources = db_fetch_assoc_prepared('SELECT id FROM data_local WHERE host_id = ?', array($selected_item));
-					$poller_items = $local_data_ids = array();
-
-					if (cacti_sizeof($data_sources)) {
-						foreach ($data_sources as $data_source) {
-							$local_data_ids[] = $data_source['id'];
-							$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
-						}
-					}
-
-					if (cacti_sizeof($local_data_ids)) {
-						poller_update_poller_cache_from_buffer($local_data_ids, $poller_items);
-					}
-				}
+				api_device_enable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '3') { // Disable Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET disabled='on' WHERE id = ?", array($selected_item));
-
-					/* update poller cache */
-					db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($selected_item));
-					db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($selected_item));
-				}
+				api_device_disable_devices($selected_items);
 			} elseif (get_request_var('drp_action') == '4') { // change device options
-				foreach ($selected_items as $selected_item) {
-					foreach ($fields_host_edit as $field_name => $field_array) {
-						if (isset_request_var("t_$field_name")) {
-							if ($field_name == 'poller_id') {
-								db_execute_prepared('UPDATE poller
-									SET requires_sync="on"
-									WHERE id = ?',
-									array(get_nfilter_request_var($field_name)));
-							}
-
-							db_execute_prepared("UPDATE host
-								SET $field_name = ?
-								WHERE id = ?",
-								array(get_nfilter_request_var($field_name), $selected_item));
-
-							if ($field_name == 'host_template_id') {
-								api_device_update_host_template($selected_item, get_nfilter_request_var($field_name));
-							}
-						}
-					}
-
-					push_out_host($selected_item);
-				}
+				api_device_change_options($selected_items, $_POST);
 			} elseif (get_request_var('drp_action') == '5') { // Clear Statisitics for Selected Devices
-				foreach ($selected_items as $selected_item) {
-					db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
-						total_polls = '0', failed_polls = '0',	availability = '100.00'
-						where id = ?", array($selected_item));
-				}
+				api_device_clear_statistics($selected_items);
 			} elseif (get_request_var('drp_action') == '7') { // sync to device template
-				foreach ($selected_items as $selected_item) {
-					$device_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($selected_item));
-
-					if ($device_template_id > 0) {
-						api_device_update_host_template($selected_item, $device_template_id);
-					}
-				}
+				api_device_sync_device_templates($selected_items);
 			} elseif (get_request_var('drp_action') == '1') { // delete
 				if (!isset_request_var('delete_type')) {
 					set_request_var('delete_type', 2);
 				}
 
-				$data_sources_to_act_on = array();
-				$graphs_to_act_on       = array();
-				$devices_to_act_on      = array();
-
-				foreach ($selected_items as $selected_item) {
-					$data_sources = db_fetch_assoc('SELECT
-						data_local.id AS local_data_id
-						FROM data_local
-						WHERE ' . array_to_sql_or($selected_items, 'data_local.host_id'));
-
-					if (cacti_sizeof($data_sources)) {
-						foreach ($data_sources as $data_source) {
-							$data_sources_to_act_on[] = $data_source['local_data_id'];
-						}
-					}
-
-					if (get_nfilter_request_var('delete_type') == 2) {
-						$graphs = db_fetch_assoc('SELECT
-							graph_local.id AS local_graph_id
-							FROM graph_local
-							WHERE ' . array_to_sql_or($selected_items, 'graph_local.host_id'));
-
-						if (cacti_sizeof($graphs)) {
-							foreach ($graphs as $graph) {
-								$graphs_to_act_on[] = $graph['local_graph_id'];
-							}
-						}
-					}
-
-					$devices_to_act_on[] = $selected_item;
-				}
-
-				switch (get_nfilter_request_var('delete_type')) {
-					case '1': /* leave graphs and data_sources in place, but disable the data sources */
-						api_data_source_disable_multi($data_sources_to_act_on);
-
-						api_plugin_hook_function('data_source_remove', $data_sources_to_act_on);
-
-						break;
-					case '2': /* delete graphs/data sources tied to this device */
-						api_data_source_remove_multi($data_sources_to_act_on);
-
-						api_graph_remove_multi($graphs_to_act_on);
-
-						api_plugin_hook_function('graphs_remove', $graphs_to_act_on);
-
-						break;
-				}
-
-				api_device_remove_multi($devices_to_act_on);
-
-				api_plugin_hook_function('device_remove', $devices_to_act_on);
+				api_device_remove_multi($selected_items, get_request_var('delete_type'));
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
@@ -477,6 +372,7 @@ function form_actions() {
 					$form_array[$field_name]['sub_checkbox'] = array(
 						'name' => 't_' . $field_name,
 						'friendly_name' => __('Update this Field'),
+						'class' => 'ui-state-disabled',
 						'value' => ''
 						);
 				}
@@ -1515,7 +1411,13 @@ function host() {
 	</script>
 	<?php
 
-	html_start_box(__('Devices'), '100%', '', '3', 'center', 'host.php?action=edit&host_template_id=' . html_escape_request_var('host_template_id') . '&host_status=' . html_escape_request_var('host_status'));
+	if (get_request_var('host_template_id') > 0) {
+		$url = 'host.php?action=edit&host_template_id=' . get_request_var('host_template_id');
+	} else {
+		$url = 'host.php?action=edit';
+	}
+
+	html_start_box(__('Devices'), '100%', '', '3', 'center', $url);
 
 	?>
 	<tr class='even noprint'>

@@ -161,8 +161,8 @@ function set_user_setting($config_name, $value, $user = -1) {
 	}
 
 	if ($user == -1) {
-		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false), false, 'WARNING:');
-	} else {
+		cacti_log('Attempt to set user setting \'' . $config_name . '\', with no user id: ' . cacti_debug_backtrace('', false, false, 0, 1), false, 'WARNING:');
+	} elseif (db_table_exists('settings_user')) {
 		db_execute_prepared('REPLACE INTO settings_user
 			SET user_id = ?,
 			name = ?,
@@ -183,13 +183,16 @@ function user_setting_exists($config_name, $user_id) {
 	static $user_setting_values = array();
 
 	if (!isset($user_setting_values[$config_name])) {
-		$value = db_fetch_cell_prepared('SELECT COUNT(*)
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $user_id));
+		$value = 0;
+		if (db_table_exists('settings_user')) {
+			$value = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $user_id));
+		}
 
-		if ($value > 0) {
+		if ($value !== false && $value > 0) {
 			$user_setting_values[$config_name] = true;
 		} else {
 			$user_setting_values[$config_name] = false;
@@ -210,10 +213,12 @@ function clear_user_setting($config_name, $user = -1) {
 		$user = $_SESSION['sess_user_id'];
 	}
 
-	db_execute_prepared('DELETE FROM settings_user
-		WHERE name = ?
-		AND user_id = ?',
-		array($config_name, $user));
+	if (db_table_exists('settings_user')) {
+		db_execute_prepared('DELETE FROM settings_user
+			WHERE name = ?
+			AND user_id = ?',
+			array($config_name, $user));
+	}
 
 	unset($_SESSION['sess_user_config_array']);
 }
@@ -249,7 +254,6 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	global $config;
 
 	/* users must have cacti user auth turned on to use this, or the guest account must be active */
-
 	if ($user == 0 && isset($_SESSION['sess_user_id'])) {
 		$effective_uid = $_SESSION['sess_user_id'];
 	} elseif (read_config_option('auth_method') == 0 || $user > 0) {
@@ -268,11 +272,14 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 			$effective_uid = $user;
 		}
 
-		$db_setting = db_fetch_row_prepared('SELECT value
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $effective_uid));
+		$db_setting = false;
+		if (db_table_exists('settings_user')) {
+			$db_setting = db_fetch_row_prepared('SELECT value
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $effective_uid));
+		}
 
 		if (cacti_sizeof($db_setting)) {
 			return $db_setting['value'];
@@ -292,11 +299,14 @@ function read_user_setting($config_name, $default = false, $force = false, $user
 	}
 
 	if (!isset($user_config_array[$config_name])) {
-		$db_setting = db_fetch_row_prepared('SELECT value
-			FROM settings_user
-			WHERE name = ?
-			AND user_id = ?',
-			array($config_name, $effective_uid));
+		$db_setting = false;
+		if (db_table_exists('settings_user')) {
+			$db_setting = db_fetch_row_prepared('SELECT value
+				FROM settings_user
+				WHERE name = ?
+				AND user_id = ?',
+				array($config_name, $effective_uid));
+		}
 
 		if (cacti_sizeof($db_setting)) {
 			$user_config_array[$config_name] = $db_setting['value'];
@@ -381,7 +391,7 @@ function read_config_option($config_name, $force = false) {
 	}
 
 	if (!empty($config['DEBUG_READ_CONFIG_OPTION'])) {
-		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false) . "\n", FILE_APPEND);
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
 	}
 
 	// Do we have a value already stored in the array, or
@@ -461,6 +471,11 @@ function get_selected_theme() {
 
 	// default to system selected theme
 	$theme = read_config_option('selected_theme');
+
+	// check for a pre-1.x cacti being upgraded
+	if ($theme == '' && !db_table_exists('settings_user')) {
+		return 'modern';
+	}
 
 	// figure out user defined theme
 	if (isset($_SESSION['sess_user_id'])) {
@@ -602,7 +617,9 @@ function get_message_type() {
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
-	global $messages;
+	global $messages, $no_http_headers;
+
+	$need_session = (session_status() == PHP_SESSION_NONE) && !$no_http_headers;
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
@@ -620,11 +637,19 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 		}
 	}
 
+	if ($need_session) {
+		session_start();
+	}
+
 	if (!isset($_SESSION['sess_messages'])) {
 		$_SESSION['sess_messages'] = array();
 	}
 
 	$_SESSION['sess_messages'][$message_id] = array('message' => $message, 'level' => $message_level);
+
+	if ($need_session) {
+		session_write_close();
+	}
 }
 
 /* display_output_messages - displays all of the cached messages from the raise_message() function and clears
@@ -747,6 +772,7 @@ function cacti_log_file() {
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
+	$config['log_path'] = $logfile;
 	return $logfile;
 }
 
@@ -840,12 +866,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	}
 
 	/* Log to Logfile */
+	$message = clean_up_lines($string) . PHP_EOL;
 	if (($logdestination == 1 || $logdestination == 2) && read_config_option('log_verbosity') != POLLER_VERBOSITY_NONE) {
 		/* echo the data to the log (append) */
 		$fp = @fopen($logfile, 'a');
 
 		if ($fp) {
-			$message = clean_up_lines($prefix . $string) . "\n";
+			$message = $prefix . $message;
 			@fwrite($fp, $message);
 			fclose($fp);
 		}
@@ -1169,7 +1196,7 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 				$issue_log_message = true;
 
 				/* update the recovery date only if the recovery count is 1 */
-				if ($ping_recovery_count == $ping_recovery_count) {
+				if ($hosts[$host_id]['status_event_count'] == $ping_recovery_count) {
 					$hosts[$host_id]['status_rec_date'] = date('Y-m-d H:i:s');
 				}
 
@@ -1554,25 +1581,22 @@ function clean_up_path($path) {
    @arg $local_data_id - (int) the ID of the data source to get a title for
    @returns - the data source title */
 function get_data_source_title($local_data_id) {
-	$data = db_fetch_row_prepared('SELECT
-		data_local.host_id,
-		data_local.snmp_query_id,
-		data_local.snmp_index,
-		data_template_data.name
-		FROM (data_template_data, data_local)
-		WHERE data_template_data.local_data_id = data_local.id
-		AND data_local.id = ?',
+	$data = db_fetch_row_prepared('SELECT dl.host_id, dl.snmp_query_id, dl.snmp_index, dtd.name
+		FROM data_local AS dl
+		INNER JOIN data_template_data AS dtd
+		ON dtd.local_data_id = dl.id
+		WHERE dl.id = ?',
 		array($local_data_id));
 
-	if (isset($data) && cacti_sizeof($data)) {
-		if ((strstr($data['name'], '|')) && (!empty($data['host_id']))) {
+	if (cacti_sizeof($data)) {
+		if (strstr($data['name'], '|') !== false && $data['host_id'] > 0) {
 			$data['name'] = substitute_data_input_data($data['name'], '', $local_data_id);
 			return expand_title($data['host_id'], $data['snmp_query_id'], $data['snmp_index'], $data['name']);
 		} else {
 			return $data['name'];
 		}
 	} else {
-		return 'Missing Datasource '.$local_data_id;
+		return 'Missing Datasource ' . $local_data_id;
 	}
 }
 
@@ -1603,7 +1627,7 @@ function get_graph_title($local_graph_id) {
 		array($local_graph_id));
 
 	if (cacti_sizeof($graph)) {
-		if (strstr($graph['title'], '|') && !empty($graph['host_id']) && empty($graph['t_title'])) {
+		if (strstr($graph['title'], '|') !== false && $graph['host_id'] > 0 && empty($graph['t_title'])) {
 			$graph['title'] = substitute_data_input_data($graph['title'], $graph, 0);
 			return expand_title($graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index'], $graph['title']);
 		} else {
@@ -2195,17 +2219,26 @@ function draw_login_status($using_guest_account = false) {
 
 	if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == $guest_account) {
 		api_plugin_hook('nav_login_before');
-		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li></ul>\n";
+		print __('Logged in as') . " <span id='user' class='user usermenuup'>". __('guest') . "</span></div><div><ul class='menuoptions' style='display:none;'><li><a href='" . $config['url_path'] . "index.php'>" . __('Login as Regular User') . "</a></li>\n";
+		print "<li class='menuHr'><hr class='menu'></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "</ul>";
+
 		api_plugin_hook('nav_login_after');
 	} elseif (isset($_SESSION['sess_user_id']) && $using_guest_account == false) {
 		$user = db_fetch_row_prepared('SELECT username, password_change, realm FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 		api_plugin_hook('nav_login_before');
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
-			"</span></div><div><ul class='menuoptions' style='display:none;'>" .
-				(is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"") .
-				($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'') .
-				($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"") .
-			"</ul>\n";
+			"</span></div><div><ul class='menuoptions' style='display:none;'>";
+		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"");
+		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
+		print "<li class='menuHr'><hr class='menu'></li>";
+		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
+		print "<li id='userDocumentation'><a href='https://github.com/Cacti/documentation/blob/develop/README.md' target='_blank'>" . __('Documentation') . "</a></li>";
+		print "<li class='menuHr'><hr class='menu'></li>";
+		print ($auth_method > 0 ? "<li><a href='" . $config['url_path'] . "logout.php'>" . __('Logout') . "</a></li>":"");
+		print "</ul>\n";
 
 		api_plugin_hook('nav_login_after');
 	}
@@ -2221,7 +2254,7 @@ function draw_navigation_text($type = 'url') {
 	global $config, $navigation;
 
 	$nav_level_cache = (isset($_SESSION['sess_nav_level_cache']) ? $_SESSION['sess_nav_level_cache'] : array());
-	$navigation      =  api_plugin_hook_function('draw_navigation_text', $navigation);
+	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
 
 	if (!isempty_request_var('action')) {
@@ -2305,32 +2338,67 @@ function draw_navigation_text($type = 'url') {
 		}
 	}
 
-	if (isset_request_var('tree_id') || isset_request_var('leaf_id')) {
-		if (isset_request_var('leaf_id') && get_nfilter_request_var('leaf_id') != '') {
-			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id FROM graph_tree_items WHERE id = ?', array(get_filter_request_var('leaf_id')));
+	if (isset_request_var('action') || get_nfilter_request_var('action') == 'tree_content') {
+		$tree_id = 0;
+		$leaf_id = 0;
+
+		if (isset_request_var('node')) {
+			$parts = explode('-', get_request_var('node'));
+
+			// Check for tree anchoe
+			if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+				$tree_id = $parts[1];
+				$leaf_id = 0;
+			} elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
+				// Check for branch
+				$leaf_id = $parts[1];
+				$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
+					FROM graph_tree_items
+					WHERE id = ?',
+					array($leaf_id));
+			}
+		}
+
+		if ($leaf_id > 0) {
+			$leaf = db_fetch_row_prepared('SELECT host_id, title, graph_tree_id
+				FROM graph_tree_items
+				WHERE id = ?',
+				array($leaf_id));
 
 			if (cacti_sizeof($leaf)) {
 				if ($leaf['host_id'] > 0) {
-					$leaf_name = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($leaf['host_id']));
+					$leaf_name = db_fetch_cell_prepared('SELECT description
+						FROM host
+						WHERE id = ?',
+						array($leaf['host_id']));
 				} else {
 					$leaf_name = $leaf['title'];
 				}
 
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array($leaf['graph_tree_id']));
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($leaf['graph_tree_id']));
 			} else {
 				$leaf_name = __('Leaf');
 				$tree_name = '';
 			}
 
-			if (isset_request_var('host_group_data') && get_nfilter_request_var('host_group_data') != '') {
-				$parts = explode(':', get_nfilter_request_var('host_group_data'));
+			if (isset_request_var('hgd') && get_nfilter_request_var('hgd') != '') {
+				$parts = explode(':', get_nfilter_request_var('hgd'));
 				input_validate_input_number($parts[1]);
 
-				if ($parts[0] == 'graph_template') {
-					$leaf_sub = db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array($parts[1]));
+				if ($parts[0] == 'gt') {
+					$leaf_sub = db_fetch_cell_prepared('SELECT name
+						FROM graph_templates
+						WHERE id = ?',
+						array($parts[1]));
 				} else {
 					if ($parts[1] > 0) {
-						$leaf_sub = db_fetch_cell_prepared('SELECT name FROM snmp_query WHERE id = ?', array($parts[1]));
+						$leaf_sub = db_fetch_cell_prepared('SELECT name
+							FROM snmp_query
+							WHERE id = ?',
+							array($parts[1]));
 					} else {
 						$leaf_sub = __('Non Query Based');
 					}
@@ -2342,8 +2410,11 @@ function draw_navigation_text($type = 'url') {
 			$leaf_name = '';
 			$leaf_sub  = '';
 
-			if (isset_request_var('tree_id')) {
-				$tree_name = db_fetch_cell_prepared('SELECT name FROM graph_tree WHERE id = ?', array(get_filter_request_var('tree_id')));
+			if ($tree_id > 0) {
+				$tree_name = db_fetch_cell_prepared('SELECT name
+					FROM graph_tree
+					WHERE id = ?',
+					array($tree_id));
 			} else {
 				$tree_name = '';
 			}
@@ -3088,18 +3159,40 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 }
 
 /** mailer - function to send mails to users
- *  @arg $from - a string email address, or an array in array(email_address, name format)
- *  @arg $to - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
- *  @arg $cc - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
- *  @arg $bcc - either a string of comma delimited email addresses, or an array of addresses in email_address => name format
- *  @arg $replyto - a string email address, or an array in array(email_address, name format)
- *  @arg $subject - the email subject
- *  @arg $body - the email body, in HTML format.  If content_text is not set, the function will attempt to extract
- *       from the HTML format.
- *  @arg $body_text - the email body in TEXT format.  If set, it will override the stripping tags method
+ *  @arg $from        - single contact (see below)
+ *  @arg $to          - single or multiple contacts (see below)
+ *  @arg $cc          - none, single or multiple contacts (see below)
+ *  @arg $bcc         - none, single or multiple contacts (see below)
+ *  @arg $replyto     - none, single or multiple contacts (see below)
+ *                      note that this value is used when hitting reply (overriding the default of using from)
+ *  @arg $subject     - the email subject
+ *  @arg $body        - the email body, in HTML format.  If content_text is not set, the function will attempt to extract
+ *                      from the HTML format.
+ *  @arg $body_text   - the email body in TEXT format.  If set, it will override the stripping tags method
  *  @arg $attachments - the emails attachments as an array
- *  @arg $headers - an array of name value pairs representing custom headers.
- *  @arg $html - if set to true, html is the default, otherwise text format will be used
+ *  @arg $headers     - an array of name value pairs representing custom headers.
+ *  @arg $html        - if set to true, html is the default, otherwise text format will be used
+ *
+ *  For contact parameters, they can accept arrays containing zero or more values in the forms of:
+ *      'email@email.com,email2@email.com,email3@email.com'
+ *      array('email1@email.com' => 'My email', 'email2@email.com' => 'Your email', 'email3@email.com' => 'Whose email')
+ *      array(array('email' => 'email1@email.com', 'name' => 'My email'), array('email' => 'email2@email.com',
+ *          'name' => 'Your email'), array('email' => 'email3@email.com', 'name' => 'Whose email'))
+ *
+ *  The $from field will only use the first contact specified.  If no contact is provided for $replyto
+ *  then $from is used for that too. If $from is empty, it will default to cacti@<server> or if no server name can
+ *  be found, it will use cacti@cacti.net
+ *
+ *  The $attachments parameter may either be a single string, or a list of attachments
+ *  either as strings or an array.  The array can have the following keys:
+ *
+ *  filename    : name of the file to attach (display name for graphs)
+ *  display     : displayed name of the attachment
+ *  mime_type   : MIME type to be set against the attachment.  If blank or missing mailer will attempt to auto detect
+ *  attachment  : String containing attachment for image-based attachments (<GRAPH> or <GRAPH:#> activates graph mode
+ *                and requires $body parameter is HTML containing one of those values)
+ *  inline      : Whether to attach 'inline' (default for graph mode) or as 'attachment' (default for all others)
+ *  encoding    : Encoding type, normally base64
  */
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config;
@@ -3107,55 +3200,9 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
 
 	// Set the to information
-	if ($to == '') {
+	if (empty($to)) {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
-
-	/* perform data substitution */
-	if (strpos($subject, '|date_time|') !== false) {
-	    $date = read_config_option('date');
-		if (!empty($date)) {
-			$time = strtotime($date);
-		} else {
-			$time = time();
-		}
-
-		$subject = str_replace('|date_time|', date(CACTI_DATE_TIME_FORMAT, $time), $subject);
-	}
-
-	if (is_array($to)) {
-		$toText = $to[1] . ' <' . $to[0] . '>';
-	} else {
-		$toText = $to;
-	}
-
-
-	// Set the from information
-	if (!is_array($from)) {
-		$fromname = '';
-		$fromemail = $from;
-		if ($fromemail == '') {
-			$fromname = read_config_option('settings_from_name');
-			if (isset($_SERVER['HOSTNAME'])) {
-				$fromemail = 'Cacti@' . $_SERVER['HOSTNAME'];
-			} else {
-				$fromemail = 'Cacti@cacti.net';
-			}
-
-			if ($fromname == '') {
-				$fromname = 'Cacti';
-			}
-		}
-
-		$fromText = $fromemail;
-		$from = array($fromemail, $fromname);
-	} else {
-		$fromText = $from[1] . ' <' . $from[0] . '>';
-	}
-
-	$body = str_replace('<SUBJECT>', $subject, $body);
-	$body = str_replace('<TO>',      $toText, $body);
-	$body = str_replace('<FROM>',    $fromText, $body);
 
 	// Create the PHPMailer instance
 	$mail = new PHPMailer;
@@ -3167,13 +3214,6 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	} else {
 		$mail->Timeout = $timeout;
 	}
-
-	// Set the subject
-	$mail->Subject = $subject;
-
-	// Support i18n
-	$mail->CharSet = 'UTF-8';
-	$mail->Encoding = 'base64';
 
 	$how = read_config_option('settings_how');
 	if ($how < 0 || $how > 2) {
@@ -3201,14 +3241,6 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 			$mail->SMTPAuth = false;
 		}
 
-		// Set a reasonable timeout of 5 seconds
-		$timeout = read_config_option('settings_smtp_timeout');
-		if (empty($timeout) || $timeout < 0 || $timeout > 300) {
-			$mail->Timeout = 10;
-		} else {
-			$mail->Timeout = $timeout;
-		}
-
 		$secure  = read_config_option('settings_smtp_secure');
 		if (!empty($secure) && $secure != 'none') {
 			$mail->SMTPSecure = true;
@@ -3221,58 +3253,100 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		}
 	}
 
-	$mail->setFrom($from[0], $from[1]);
-
-	if (!is_array($to)) {
-		$to = explode(',', $to);
-
-		foreach($to as $t) {
-			$t = trim($t);
-			if ($t != '') {
-				$mail->addAddress($t);
-			}
+	/* perform data substitution */
+	if (strpos($subject, '|date_time|') !== false) {
+		$date = read_config_option('date');
+		if (!empty($date)) {
+			$time = strtotime($date);
+		} else {
+			$time = time();
 		}
-	} else {
-		foreach($to as $email => $name) {
-			$mail->addAddress($email, $name);
+
+		$subject = str_replace('|date_time|', date(CACTI_DATE_TIME_FORMAT, $time), $subject);
+	}
+
+	/*
+	 * Set the from details using the variable passed in
+	 * - if name is blank, use setting's name
+	 * - if email is blank, use setting's email, otherwise default to
+	 *   cacti@<server> or cacti@cacti.net if no known server name
+	 */
+	$from = parse_email_details($from, 1);
+
+	// from name was empty, use value in settings
+	if (empty($from['name'])) {
+		$from['name'] = read_config_option('settings_from_name');
+	}
+
+	// from email was empty, use email in settings
+	if (empty($from['email'])) {
+		$from['email'] = read_config_option('settings_from_email');
+	}
+
+	if (empty($from['email'])) {
+		if (isset($_SERVER['HOSTNAME'])) {
+			$from['email'] = 'Cacti@' . $_SERVER['HOSTNAME'];
+		} else {
+			$from['email'] = 'Cacti@cacti.net';
+		}
+
+		if (empty($from['name'])) {
+			$from['name'] = 'Cacti';
 		}
 	}
 
-	if (!is_array($cc)) {
-		if ($cc != '') {
-			$cc = explode(',', $cc);
-			foreach($cc as $c) {
-				$c = trim($c);
-				$mail->addCC($c);
-			}
-		}
-	} else {
-		foreach($cc as $email => $name) {
-			$mail->addCC($email, $name);
-		}
+	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
+
+	if ($result == false) {
+		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
+		return $mail->ErrorInfo;
 	}
 
-	if (!is_array($bcc)) {
-		if ($bcc != '') {
-			$bcc = explode(',', $bcc);
-			foreach($bcc as $bc) {
-				$bc = trim($bc);
-				$mail->addBCC($bc);
-			}
-		}
-	} else {
-		foreach($bcc as $email => $name) {
-			$mail->addBCC($email, $name);
-		}
+	// Convert $to variable to proper array structure
+	$to        = parse_email_details($to);
+	$toText    = add_email_details($to, $result, array($mail,'addAddress'));
+
+	if ($result == false) {
+		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
+		return $mail->ErrorInfo;
 	}
 
-	if (!is_array($replyto)) {
-		if ($replyto != '') {
-			$mail->addReplyTo($replyto);
-		}
-	} else {
-		$mail->addReplyTo($replyto[0], $replyto[1]);
+	$cc        = parse_email_details($cc);
+	$ccText    = add_email_details($cc, $result, array($mail,'addCC'));
+
+	if ($result == false) {
+		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
+		return $mail->ErrorInfo;
 	}
+
+	$bcc       = parse_email_details($bcc);
+	$bccText   = add_email_details($bcc, $result, array($mail,'addBCC'));
+
+	if ($result == false) {
+		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
+		return $mail->ErrorInfo;
+	}
+
+	$replyto   = parse_email_details($replyto);
+	$replyText = add_email_details($replyto, $result, array($mail,'addReplyTo'));
+
+	if ($result == false) {
+		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
+		return $mail->ErrorInfo;
+	}
+
+	$body = str_replace('<SUBJECT>', $subject,   $body);
+	$body = str_replace('<TO>',      $toText,    $body);
+	$body = str_replace('<CC>',      $ccText,    $body);
+	$body = str_replace('<FROM>',    $fromText,  $body);
+	$body = str_replace('<REPLYTO>', $replyText, $body);
+
+	// Set the subject
+	$mail->Subject = $subject;
+
+	// Support i18n
+	$mail->CharSet = 'UTF-8';
+	$mail->Encoding = 'base64';
 
 	// Set the wordwrap limits
 	$wordwrap = read_config_option('settings_wordwrap');
@@ -3290,52 +3364,72 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$i = 0;
 
 	// Handle Graph Attachments
-	if (is_array($attachments) && cacti_sizeof($attachments) && substr_count($body, '<GRAPH>') > 0) {
+	if (!empty($attachments) && !is_array($attachments)) {
+		$attachments = array('attachment' => $attachments);
+	}
+
+	if (is_array($attachments) && cacti_sizeof($attachments)) {
+		$graph_mode = (substr_count($body, '<GRAPH>') > 0);
+		$graph_ids = (substr_count($body, '<GRAPH:') > 0);
+
+		$default_opts = array(
+			// MIME type to be set against the attachment
+			'mime_type'  => '',
+			// Display name of the attachment
+			'filename'    => '',
+			// String containing attachment for image-based attachments
+			'attachment' => '',
+			// Whether to attach inline or as attachment
+			'inline'     => ($graph_mode || $graph_ids) ? 'inline' : 'attachment',
+			// Encoding type, normally base64
+			'encoding'   => 'base64',
+		);
+
 		foreach($attachments as $attachment) {
-			if ($attachment['attachment'] != '') {
-				/* get content id and create attachment */
-				$cid = getmypid() . '_' . $i . '@' . 'localhost';
-
-				/* attempt to attach */
-				if ($mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']) === false) {
-					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
-
-					return $mail->ErrorInfo;
-				}
-
-				$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
-
-				$i++;
-			} else {
-				$body = str_replace('<GRAPH>' . $attachment['local_graph_id'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
+			if (!is_array($attachment)) {
+				$attachment = array('attachment' => $attachment);
 			}
-		}
-	} elseif (is_array($attachments) && cacti_sizeof($attachments) && substr_count($body, '<GRAPH:') > 0) {
-		foreach($attachments as $attachment) {
-			if ($attachment['attachment'] != '') {
+
+			foreach ($default_opts as $opt_name => $opt_default) {
+				if (!array_key_exists($opt_name, $attachment)) {
+					$attachment[$opt_name] = $opt_default;
+				}
+			}
+
+			if (!empty($attachment['attachment'])) {
 				/* get content id and create attachment */
 				$cid = getmypid() . '_' . $i . '@' . 'localhost';
 
-				/* attempt to attach */
-				if ($mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']) === false) {
-					cacti_log('ERROR: ' . $mail->ErrorInfo, false);
+				if (empty($attachment['filename'])) {
+					$attachment['filename'] = basename($attachment['attachment']);
+				}
 
+				/* attempt to attach */
+				if (!($graph_mode || $graph_ids)) {
+					$result = $mail->addAttachment($attachment['attachment'], $attachment['filename'], $attachment['encoding'], $attachment['mime_type'], $attachment['inline']);
+				} else {
+					$result = $mail->addStringEmbeddedImage($attachment['attachment'], $cid, $attachment['filename'], 'base64', $attachment['mime_type'], $attachment['inline']);
+				}
+
+				if ($result == false) {
+					cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
 					return $mail->ErrorInfo;
 				}
 
-				/* handle the body text */
-				switch ($attachment['inline']) {
-					case 'inline':
-						$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
-						break;
-					case 'attachment':
-						$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', '', $body);
-						break;
-				}
-
 				$i++;
-			} else {
-				$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='" . $attachment['filename'] . "' ><br>Could not open!<br>" . $attachment['filename'], $body);
+				if ($graph_mode) {
+					$body = str_replace('<GRAPH>', "<br><br><img src='cid:$cid'>", $body);
+				} else if ($graph_ids) {
+					/* handle the body text */
+					switch ($attachment['inline']) {
+						case 'inline':
+							$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', "<img src='cid:$cid' >", $body);
+							break;
+						case 'attachment':
+							$body = str_replace('<GRAPH:' . $attachment['local_graph_id'] . ':' . $attachment['timespan'] . '>', '', $body);
+							break;
+					}
+				}
 			}
 		}
 	}
@@ -3348,46 +3442,136 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	// Set both html and non-html bodies
-	$text = array('text' => '', 'html' => '');
-	if ($body_text != '' && $html == true) {
-		$text['html']  = $body . '<br>';
-		$text['text']  = $body_text;
-		$mail->isHTML(true);
-		$mail->Body    = $text['html'];
-		$mail->AltBody = $text['text'];
-	} elseif ($attachments == '' && $html == false) {
-		if ($body_text != '') {
-			$body = $body_text;
-		} else {
-			$body = str_replace('<br>',  "\n", $body);
-			$body = str_replace('<BR>',  "\n", $body);
-			$body = str_replace('</BR>', "\n", $body);
+	$brs = array('<br>', '<br />', '</br>');
+	if ($html) {
+		$body  = $body . '<br>';
+	}
+
+	if (empty($body_text)) {
+		$body_text = strip_tags(str_ireplace($brs, "\n", $body));
+	}
+
+	$mail->isHTML($html);
+	$mail->Body    = ($html?$body:$body_text);
+	if ($html && !empty($body_text)) {
+		$mail->AltBody = $body_text;
+	}
+
+	$result  = $mail->send();
+	$error   = $result ? '' : $mail->ErrorInfo;
+
+	$message = sprintf("%s: Mail %s from '%s', to '%s', cc '%s', Subject '%s'%s",
+		$result ? 'INFO' : 'WARNING',
+		$result ? 'successfully sent' : 'failed',
+		$fromText, $toText, $ccText, $subject,
+		$result ? '' : ", Message: $error");
+
+	cacti_log($message, false, 'MAILER');
+	return $error;
+}
+
+function add_email_details($emails, &$result, callable $addFunc) {
+	$arrText = array();
+	foreach ($emails as $e) {
+		if (!empty($e['email'])) {
+			//if (is_callable($addFunc)) {
+			if (!empty($addFunc)) {
+				$result = $addFunc($e['email'], $e['name']);
+			}
+			$arrText[] = create_emailtext($e);
 		}
+	}
+	$text = implode(',', $arrText);
+	//echo "add_email_sw_details(): $text\n";
+	return $text;
+}
 
-		$text['text']  = strip_tags($body);
-		$mail->isHTML(false);
-		$mail->Body    = $text['text'];
-	} elseif ($html == false) {
-		$text['text']  = strip_tags($body);
-		$mail->isHTML(false);
-		$mail->Body    = $text['text'];
-	} else {
-		$text['html']  = $body . '<br>';
-		$text['text']  = strip_tags(str_replace('<br>', "\n", $body));
-		$mail->isHTML(true);
-		$mail->Body    = $text['html'];
-		$mail->AltBody = $text['text'];
+function parse_email_details($emails, $max_records = 0, $details = array()) {
+	if (!is_array($emails)) {
+		$emails = array($emails);
 	}
 
-	if ($mail->send()) {
-		cacti_log("Mail Successfully Sent '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
-
-		return '';
-	} else {
-		cacti_log("Mail Failed from '" . $fromText . "' to '" . $toText . "', Subject: '" . $mail->Subject . "'", false, 'MAILER');
-
-		return $mail->ErrorInfo;
+	$update = array();
+	//echo "parse_email_details(): max is $max_records\n";
+	//var_dump($emails);
+	foreach ($emails as $key => $input) {
+		//echo "parse_email_details(): input is " . clean_up_lines(var_export($input, true)) . "\n";
+		if (!empty($input)) {
+			if (!is_array($input)) {
+				$emails = explode(',', $input);
+				foreach($emails as $email) {
+					//echo "parse_email_details(): checking '" . trim($email) . "' ... \n";
+					$e = trim($email);
+					$d = split_emaildetail($e);
+					$details[] = $d;
+				}
+			} else {
+				$has_name  = array_key_exists('name', $input);
+				$has_email = array_key_exists('email', $input);
+				if ($has_name || $has_email) {
+					$name  = $has_name  ? $input['name']  : '';
+					$email = $has_email ? $input['email'] : '';
+				} else {
+					$name  = array_key_exists(1, $input) ? $input[1] : '';
+					$email = array_key_exists(0, $input) ? $input[0] : '';
+				}
+				$details[] = array('name' => trim($name), 'email' => trim($email));
+			}
+		}
 	}
+
+	if ($max_records == 1) {
+		$results = count($details) ? $details[0] : array();
+	} elseif ($max_records != 0 && $max_records < count($details)) {
+		$results = array();
+		foreach ($details as $d) {
+			$results[] = $d;
+			$max_records--;
+			if ($max_records == 0) {
+				break;
+			}
+		}
+	} else {
+		$results = $details;
+	}
+
+	return $results;
+}
+
+function split_emaildetail($input) {
+	if (!is_array($input)) {
+		$sPattern = '/(?<address><[\w\.]+@([\w\d-]+\.)+[\w]{2,4}>)$/';
+		$aMatch = preg_split($sPattern, trim($input), -1, PREG_SPLIT_DELIM_CAPTURE);
+		//echo "\n------[REGEX]------\n";
+		//print_r($aMatch);
+		//echo "\n------[REGEX]------\n";
+		if (isset($aMatch[2])) {
+			$name = $aMatch[0];
+			$email = trim($aMatch[1],'<> ');
+		} else {
+			$name = '';
+			$email = trim($aMatch[0],'<> ');
+		}
+	} else {
+		$name = $input[1];
+		$mail = $input[0];
+	}
+
+	return array('name' => trim($name), 'email' => trim($email));
+}
+
+function create_emailtext($e) {
+	if (empty($e['email'])) {
+		$text = '';
+	} else {
+		if (empty($e['name'])) {
+			$text = $e['email'];
+		} else {
+			$text = $e['name'] . ' <' . $e['email'] . '>';
+		}
+	}
+
+	return $text;
 }
 
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
@@ -3711,14 +3895,18 @@ function update_system_mibs($host_id) {
 	}
 }
 
-function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 1) {
+function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limit = 0, $skip = 0) {
 	global $config;
 
-	$skip = $skip > 0 ? $skip : 1;
+	$skip = $skip >= 0 ? $skip : 1;
 	$limit = $limit > 0 ? ($limit + $skip) : 0;
 
 	$callers = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
-	array_shift($callers);
+	while ($skip > 0) {
+		array_shift($callers);
+		$skip--;
+	}
+
 	$s='';
 	foreach ($callers as $c) {
 		if (isset($c['line'])) {
@@ -4061,7 +4249,7 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_ERROR:
 		case E_PARSE:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR PARSE');
+			cacti_debug_backtrace('PHP ERROR PARSE', false, true, 0, 1);
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
 				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
@@ -4071,27 +4259,27 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		case E_RECOVERABLE_ERROR:
 		case E_USER_ERROR:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 			break;
 		case E_COMPILE_WARNING:
 		case E_CORE_WARNING:
 		case E_USER_WARNING:
 		case E_WARNING:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR WARNING');
+			cacti_debug_backtrace('PHP ERROR WARNING', false, true, 0, 1);
 			break;
 		case E_NOTICE:
 		case E_USER_NOTICE:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR NOTICE');
+			cacti_debug_backtrace('PHP ERROR NOTICE', false, true, 0, 1);
 			break;
 		case E_STRICT:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR STRICT');
+			cacti_debug_backtrace('PHP ERROR STRICT', false, true, 0, 1);
 			break;
 		default:
 			cacti_log($error, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 	}
 
 	return false;
@@ -4121,7 +4309,7 @@ function CactiShutdownHandler () {
 				' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
 
 			cacti_log($message, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR');
+			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 
 			if ($plugin != '') {
 				api_plugin_disable_all($plugin);
@@ -4210,7 +4398,9 @@ function get_default_contextoption($timeout = '') {
 
 	if ($timeout == '') {
 		$timeout = read_config_option('remote_agent_timeout');
-	} elseif (!is_numeric($timeout)) {
+	}
+
+	if (!is_numeric($timeout)) {
 		$timeout = 5;
 	}
 
@@ -4656,12 +4846,16 @@ function get_installed_rrdtool_version() {
 }
 
 function get_md5_hash($path) {
-	$md5 = db_fetch_cell_prepared('SELECT md5sum
-		FROM poller_resource_cache
-		WHERE `path` = ?',
-		array($path));
+	$md5 = 0;
 
-	if (!isset($md5) || !strlen($md5)) {
+	if (db_table_exists('poller_resource_cache')) {
+		$md5 = db_fetch_cell_prepared('SELECT md5sum
+			FROM poller_resource_cache
+			WHERE `path` = ?',
+			array($path));
+	}
+
+	if (empty($md5)) {
 		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
 	}
 

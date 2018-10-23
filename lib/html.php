@@ -175,9 +175,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -251,9 +251,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -1107,6 +1107,13 @@ function is_menu_pick_active($menu_url) {
 	}
 
 	$menu_array = parse_url($menu_url);
+	if ($menu_array === false) {
+		return false;
+	}
+
+	if (! array_key_exists('path', $menu_array)) {
+		return false;
+	}
 
 	if (basename($url_array['path']) == basename($menu_array['path'])) {
 		if (isset($menu_array['query'])) {
@@ -1143,9 +1150,6 @@ function draw_menu($user_menu = "") {
 		$user_menu = $menu;
 	}
 
-	//print "<pre>";print_r($_SERVER);print "</pre>";
-	//print "<pre>";print_r($user_menu);print "</pre>";exit;
-
 	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu'>\n";
 
 	/* loop through each header */
@@ -1176,8 +1180,7 @@ function draw_menu($user_menu = "") {
 			// Let's give our menu li's a unique id
 			$id = 'menu_' . strtolower(clean_up_name($header_name));
 			if (isset($headers[$id])) {
-				$id .= '_' . $i;
-				$i++;
+				$id .= '_' . $i++;
 			}
 			$headers[$id] = true;
 
@@ -1209,15 +1212,31 @@ function draw_menu($user_menu = "") {
 						}
 
 						foreach ($item_title as $item_sub_url => $item_sub_title) {
-							$item_sub_url = $config['url_path'] . $item_sub_url;
+							if (substr($item_sub_url, 0, 10) == "EXTERNAL::") {
+								$item_sub_external = true;
+								$item_sub_url = substr($item_sub_url, 10);
+							} else {
+								$item_sub_external = false;
+								$item_sub_url = $config['url_path'] . $item_sub_url;
+							}
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
 								if (is_menu_pick_active($item_sub_url)) {
-									print "<li><a role='menuitem' class='pic selected' href='" . html_escape($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic selected' href='";
+									print html_escape($item_sub_url) . "'";
+									if ($item_sub_external) {
+										print " target='_blank'";
+									}
+									print ">$item_sub_title</a></li>\n";
 								} else {
-									print "<li><a role='menuitem' class='pic' href='" . html_escape($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic' href='";
+									print html_escape($item_sub_url) . "'";
+									if ($item_sub_external) {
+										print " target='_blank'";
+									}
+									print ">$item_sub_title</a></li>\n";
 								}
 							}
 
@@ -1227,11 +1246,27 @@ function draw_menu($user_menu = "") {
 				} else {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						/* draw normal (non sub-item) menu item */
-						$item_url = $config['url_path'] . $item_url;
-						if (is_menu_pick_active($item_url)) {
-							print "<li><a role='menuitem' class='pic selected' href='" . html_escape($item_url) . "'>$item_title</a></li>\n";
+						if (substr($item_url, 0, 10) == "EXTERNAL::") {
+							$item_external = true;
+							$item_url = substr($item_url, 10);
 						} else {
-							print "<li><a role='menuitem' class='pic' href='" . html_escape($item_url) . "'>$item_title</a></li>\n";
+							$item_external = false;
+							$item_url = $config['url_path'] . $item_url;
+						}
+						if (is_menu_pick_active($item_url)) {
+							print "<li><a role='menuitem' class='pic selected' href='";
+							print html_escape($item_url) . "'";
+							if ($item_external) {
+								print " target='_blank'";
+							}
+							print ">$item_title</a></li>\n";
+						} else {
+							print "<li><a role='menuitem' class='pic' href='";
+							print html_escape($item_url) . "'";
+							if ($item_external) {
+								print " target='_blank'";
+							}
+							print ">$item_title</a></li>\n";
 						}
 					}
 				}

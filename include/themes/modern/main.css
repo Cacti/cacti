@@ -79,6 +79,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
@@ -477,7 +484,6 @@ label {
 }
 
 .menuoptions li a:hover {
-	display:block;
 	background: linear-gradient(to bottom, rgba(242, 246, 248, 1) 0%, rgba(216, 225, 231, 1) 50%, rgba(181, 198, 208, 1) 51%, rgba(224, 239, 249, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
 
@@ -2447,6 +2453,10 @@ tr#realtime td:first-child {
 
 input:checked + .checkboxSlider {
 	background-color: rgba(167,217,134,1);
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
 }
 
 input:focus + .checkboxSlider {

@@ -64,6 +64,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #93CEFF;
+	background-image: linear-gradient(to right, #333, #93CEFF, #333);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
@@ -2524,6 +2531,10 @@ input:checked + .checkboxSlider {
 
 input:focus + .checkboxSlider {
 	box-shadow: 0 0 1px #2196F3;
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
 }
 
 input:checked + .checkboxSlider:before {

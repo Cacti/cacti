@@ -1637,7 +1637,8 @@ $fields_template_import = array(
 		'friendly_name' => __('Data Source Profile'),
 		'method' => 'drop_sql',
 		'description' => __('Select the Data Source Profile.  The Data Source Profile controls polling interval, the data aggregation, and retention policy for the resulting Data Sources.'),
-		'sql' => "SELECT '0' AS id, 'Create New From Template' AS name UNION SELECT id, name FROM data_source_profiles ORDER BY name",
+		'sql' => "SELECT id, name FROM data_source_profiles ORDER BY name",
+		'none_value' => __('Create New from Template'),
 		'value' => '',
 		'default' => '1'
 		),

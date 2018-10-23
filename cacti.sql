@@ -2089,6 +2089,9 @@ CREATE TABLE `poller` (
   `dbpass` varchar(64) NOT NULL DEFAULT '',
   `dbport` int(10) unsigned DEFAULT '3306',
   `dbssl` char(3) DEFAULT '',
+  `dbsslkey` varchar(255) DEFAULT NULL,
+  `dbsslcert` varchar(255) DEFAULT NULL,
+  `dbsslca` varchar(255) DEFAULT NULL,
   `total_time` double DEFAULT '0',
   `max_time` double DEFAULT NULL,
   `min_time` double DEFAULT NULL,
@@ -2096,6 +2099,7 @@ CREATE TABLE `poller` (
   `total_polls` int(10) unsigned DEFAULT '0',
   `processes` int(10) unsigned DEFAULT '1',
   `threads` int(10) unsigned DEFAULT '1',
+  `sync_interval` int(10) unsigned DEFAULT '7200',
   `snmp` mediumint(8) unsigned DEFAULT '0',
   `script` mediumint(8) unsigned DEFAULT '0',
   `server` mediumint(8) unsigned DEFAULT '0',
@@ -2674,12 +2678,16 @@ INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
 INSERT INTO user_auth_realm VALUES (18,1);
+INSERT INTO user_auth_realm VALUES (19,1);
 INSERT INTO user_auth_realm VALUES (20,1);
 INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (22,1);
 INSERT INTO user_auth_realm VALUES (23,1);
+INSERT INTO user_auth_realm VALUES (24,1);
+INSERT INTO user_auth_realm VALUES (25,1);
 INSERT INTO user_auth_realm VALUES (26,1);
 INSERT INTO user_auth_realm VALUES (101,1);
+INSERT INTO user_auth_realm VALUES (1043,1);
 
 --
 -- Table structure for table `user_log`

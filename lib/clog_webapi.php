@@ -596,7 +596,11 @@ function clog_regex_parser($matches) {
 					$rekey_array[$j] = $matches[$key_match + $j];
 				}
 
-				$result=call_user_func_array($regex_setting['func'],array($rekey_array));
+				if (function_exists($regex_setting['func'])) {
+					$result=call_user_func_array($regex_setting['func'],array($rekey_array));
+				} else {
+					$result=$match;
+				}
 			}
 		}
 	}

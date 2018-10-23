@@ -29,6 +29,19 @@ include_once('./lib/rrd.php');
 
 $config['force_storage_location_local'] = true;
 
+/* ================= input validation ================= */
+get_filter_request_var('graph_start');
+get_filter_request_var('graph_end');
+get_filter_request_var('graph_height');
+get_filter_request_var('graph_width');
+get_filter_request_var('local_graph_id');
+get_filter_request_var('size');
+get_filter_request_var('ds_step');
+get_filter_request_var('count');
+get_filter_request_var('top');
+get_filter_request_var('left');
+/* ==================================================== */
+
 set_default_action();
 
 switch (get_request_var('action')) {
@@ -39,19 +52,6 @@ case 'countdown':
 	ob_start();
 
 	$guest_account = true;
-
-	/* ================= input validation ================= */
-	get_filter_request_var('graph_start');
-	get_filter_request_var('graph_end');
-	get_filter_request_var('graph_height');
-	get_filter_request_var('graph_width');
-	get_filter_request_var('local_graph_id');
-	get_filter_request_var('size');
-	get_filter_request_var('ds_step');
-	get_filter_request_var('count');
-	get_filter_request_var('top');
-	get_filter_request_var('left');
-	/* ==================================================== */
 
 	switch (get_request_var('action')) {
 	case 'init':
@@ -73,6 +73,13 @@ case 'countdown':
 
 		break;
 	case 'countdown':
+		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
+		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
+		load_current_session_value('size',           'sess_realtime_size',        100);
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    'false');
+
+		break;
+	default:
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_config_option('realtime_interval'));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_config_option('realtime_gwindow'));
 		load_current_session_value('size',           'sess_realtime_size',        100);
@@ -105,7 +112,7 @@ case 'countdown':
 		$graph_data_array['graph_nolegend'] = 'true';
 	}
 
-	if (isset_request_var('size') && get_request_var('size') != '') {
+	if (isset_request_var('size') && get_request_var('size') > 0) {
 		$_SESSION['sess_realtime_size'] = get_request_var('size');
 		$size = get_request_var('size');
 	} elseif (isset($_SESSION['sess_realtime_size']) && $_SESSION['sess_realtime_size'] != '') {

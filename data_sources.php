@@ -23,13 +23,14 @@
 */
 
 include ('./include/auth.php');
-include_once('./lib/utility.php');
-include_once('./lib/api_graph.php');
 include_once('./lib/api_data_source.php');
-include_once('./lib/template.php');
-include_once('./lib/html_form_template.php');
-include_once('./lib/rrd.php');
+include_once('./lib/api_graph.php');
 include_once('./lib/data_query.php');
+include_once('./lib/html_form_template.php');
+include_once('./lib/poller.php');
+include_once('./lib/rrd.php');
+include_once('./lib/template.php');
+include_once('./lib/utility.php');
 
 $ds_actions = array(
 	1 => __('Delete'),
@@ -136,22 +137,16 @@ function form_save() {
 		/* ==================================================== */
 
 		/* ok, first pull out all 'input' values so we know how much to save */
-		$input_fields = db_fetch_assoc_prepared("SELECT
-			data_template_data.data_input_id,
-			data_local.host_id,
-			data_input_fields.id,
-			data_input_fields.input_output,
-			data_input_fields.data_name,
-			data_input_fields.regexp_match,
-			data_input_fields.allow_nulls,
-			data_input_fields.type_code
-			FROM data_template_data
-			LEFT JOIN data_input_fields
-			ON (data_input_fields.data_input_id = data_template_data.data_input_id)
-			LEFT JOIN data_local
-			ON (data_template_data.local_data_id = data_local.id)
-			WHERE data_template_data.id = ?
-			AND data_input_fields.input_output='in'", array(get_request_var('data_template_data_id')));
+		$input_fields = db_fetch_assoc_prepared("SELECT dtd.data_input_id, dl.host_id, dif.id, dif.input_output,
+			dif.data_name, dif.regexp_match, dif.allow_nulls, dif.type_code
+			FROM data_template_data AS dtd
+			LEFT JOIN data_input_fields AS dif
+			ON dif.data_input_id = dtd.data_input_id
+			LEFT JOIN data_local AS dl
+			ON dtd.local_data_id = dl.id
+			WHERE dtd.id = ?
+			AND dif.input_output='in'",
+			array(get_request_var('data_template_data_id')));
 
 		if (cacti_sizeof($input_fields)) {
 			foreach ($input_fields as $input_field) {
@@ -355,14 +350,31 @@ function form_actions() {
 							FROM data_template_rrd
 							WHERE ' . array_to_sql_or($selected_items, 'local_data_id')), 'id', 'id');
 
+						$poller_ids = db_fetch_assoc('SELECT DISTINCT poller_id
+							FROM host AS h
+							INNER JOIN data_local AS dl
+							ON dl.host_id=h.id
+							WHERE poller_id > 1
+							AND id IN (' . implode(', ', $selected_items) . ')');
+
+						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+
 						/* loop through each data source item */
 						if (cacti_sizeof($data_template_rrds) > 0) {
 							db_execute('DELETE FROM graph_templates_item
 								WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
 								AND local_graph_id > 0');
-						}
 
-						api_plugin_hook_function('graph_items_remove', $data_template_rrds);
+							if (sizeof($poller_ids)) {
+								foreach($poller_ids as $poller_id) {
+									if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+										db_execute('DELETE FROM graph_templates_item
+											WHERE task_item_id IN (' . implode(',', $data_template_rrds) . ')
+											AND local_graph_id > 0', true, $rcnn_id);
+									}
+								}
+							}
+						}
 
 						break;
 					case '3': /* delete all graphs tied to this data source */
@@ -379,26 +391,14 @@ function form_actions() {
 							api_graph_remove_multi($graphs);
 						}
 
-						api_plugin_hook_function('graphs_remove', $graphs);
-
 						break;
 				}
 
 				api_data_source_remove_multi($selected_items);
-
-				api_plugin_hook_function('data_source_remove', $selected_items);
 			} elseif (get_nfilter_request_var('drp_action') == '3') { // change host
 				get_filter_request_var('host_id');
 
-				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					db_execute_prepared('UPDATE data_local
-						SET host_id = ?
-						WHERE id = ?',
-						array(get_nfilter_request_var('host_id'), $selected_items[$i]));
-
-					push_out_host(get_nfilter_request_var('host_id'), $selected_items[$i]);
-					update_data_source_title_cache($selected_items[$i]);
-				}
+				api_data_source_change_host($selected_items, get_request_var('host_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '6') { // data source enable
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_data_source_enable($selected_items[$i]);
@@ -409,7 +409,7 @@ function form_actions() {
 				}
 			} elseif (get_nfilter_request_var('drp_action') == '8') { // reapply suggested data source naming
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
-					api_reapply_suggested_data_source_title($selected_items[$i]);
+					api_reapply_suggested_data_source_data($selected_items[$i]);
 					update_data_source_title_cache($selected_items[$i]);
 				}
 			} else {
@@ -871,7 +871,7 @@ function ds_edit() {
 			'none_value' => __('None'),
 			'sql' => 'SELECT id, description AS name FROM host ORDER BY name',
 			'action' => 'ajax_hosts_noany',
-			'id' => (isset_request_var('host_id') ? get_request_var('host_id') : (isset($data_local['host_id']) ? $data_local['host_id'] : 0)),
+			'id' => (isset($data_local['host_id']) ? $data_local['host_id'] : 0),
 			'value' => $hostDescription
 			),
 		'_data_template_id' => array(
@@ -880,7 +880,7 @@ function ds_edit() {
 			),
 		'_host_id' => array(
 			'method' => 'hidden',
-			'value' => (empty($data_local['host_id']) ? (isset_request_var('host_id') ? get_request_var('host_id') : '0') : $data_local['host_id'])
+			'value' => (isset($data_local['host_id']) ? $data_local['host_id'] : '0')
 			),
 		'_data_input_id' => array(
 			'method' => 'hidden',
@@ -1492,7 +1492,7 @@ function ds() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_sources.php?rfilter=' . get_request_var('rfilter') . '&host_id=' . get_request_var('host_id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_sources.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 
 	form_start('data_sources.php', 'chk');
 

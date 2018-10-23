@@ -115,8 +115,6 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 			if (isset($arr_index[$index]) && isset($arr[$index])) {
 				return $arr[$index];
 			} else {
-				cacti_log('ERROR: Invalid Return Value in ss_host_cpu.php for get ' . $index . ' and host_id ' . $host_id, false);
-
 				return 'U';
 			}
 		} else {
@@ -151,13 +149,15 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 	$arr = ss_host_cpu_reindex(cacti_snmp_walk($hostname, $snmp_community, '.1.3.6.1.2.1.25.3.3.1.2', $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER));
 	$return_arr = array();
 
-	foreach($arr as $index => $value) {
-		if (is_numeric($value)) {
-			$return_arr[$index] = $index;
+	if (cacti_sizeof($arr)) {
+		foreach($arr as $index => $value) {
+			if (is_numeric($value)) {
+				$return_arr[$index] = $index;
+			}
 		}
-	}
 
-	$return_arr[4000] = 'Total';
+		$return_arr[4000] = 'Total';
+	}
 
 	return $return_arr;
 }

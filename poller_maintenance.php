@@ -26,6 +26,7 @@
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['library_path'] . '/api_graph.php');
 require_once($config['library_path'] . '/api_data_source.php');
+include_once($config['library_path'] . '/poller.php');
 require_once($config['library_path'] . '/rrd.php');
 require_once($config['library_path'] . '/utility.php');
 

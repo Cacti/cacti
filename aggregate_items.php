@@ -23,8 +23,9 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/api_aggregate.php');
+include_once('./lib/poller.php');
+include_once('./lib/utility.php');
 
 /* set default action */
 set_default_action();
@@ -184,7 +185,7 @@ function form_save_aggregate() {
 	$save['cdef_id']         = form_input_validate((($save['t_cdef_id']) ? get_filter_request_var('cdef_id') : 0), 'cdef_id', '', true, 3);
 
 	if (!is_error_message()) {
-		// sql_save will not give usefull return values when row key is 
+		// sql_save will not give usefull return values when row key is
 		// composed from multiple columns. need to manualy build query
 		$sql_set = 'SET ';
 		foreach ($save as $key => $value) {
@@ -302,17 +303,17 @@ function item_edit() {
 	}
 
 	if (!isempty_request_var('id')) {
-		$template_item = db_fetch_row_prepared('SELECT * 
-			FROM graph_templates_item 
-			WHERE id = ?', 
+		$template_item = db_fetch_row_prepared('SELECT *
+			FROM graph_templates_item
+			WHERE id = ?',
 			array(get_request_var('id')));
 	}
 
 	/* override some template_item values from aggregate tables */
 	$item_overrides = db_fetch_row_prepared("SELECT *
-		FROM $table_name 
+		FROM $table_name
 		WHERE $id_field = ?
-		AND graph_templates_item_id = ?", 
+		AND graph_templates_item_id = ?",
 		array(get_request_var($id_field), get_request_var("id")));
 
 	if (cacti_sizeof($item_overrides) == 0) {
@@ -329,9 +330,9 @@ function item_edit() {
 		aggregate_graph_items_save(array($item_new), $table_name);
 
 		$item_overrides = db_fetch_row_prepared("SELECT *
-			FROM $table_name 
+			FROM $table_name
 			WHERE $id_field = ?
-			AND graph_templates_item_id = ?", 
+			AND graph_templates_item_id = ?",
 			array(get_request_var($id_field), get_request_var("id")));
 	}
 
@@ -435,5 +436,5 @@ function item_edit() {
 
 	</script>
 	<?php
-} 
+}
 

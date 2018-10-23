@@ -58,7 +58,7 @@ switch (get_request_var('action')) {
 	case 'item_remove_gt':
 		template_item_remove_gt();
 
-		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'item_add_dq':
 		template_item_add_dq();
@@ -72,7 +72,7 @@ switch (get_request_var('action')) {
 	case 'item_remove_dq':
 		template_item_remove_dq();
 
-		header('Location: host_templates.php?action=edit&id=' . get_filter_request_var('host_template_id'));
+		header('Location: host_templates.php?header=false&action=edit&id=' . get_filter_request_var('host_template_id'));
 		break;
 	case 'edit':
 		top_header();
@@ -178,6 +178,8 @@ function template_item_add_dq() {
 		(host_template_id, snmp_query_id)
 		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('snmp_query_id')));
+
+	raise_message(41);
 }
 
 function template_item_add_gt() {
@@ -190,6 +192,8 @@ function template_item_add_gt() {
 		(host_template_id, graph_template_id)
 		VALUES (?, ?)',
 		array(get_request_var('host_template_id'), get_request_var('graph_template_id')));
+
+	raise_message(41);
 }
 
 function form_actions() {
@@ -351,7 +355,9 @@ function template_item_remove_gt_confirm() {
 			id: <?php print get_request_var('id');?>
 		}, function(data) {
 			$('#cdialog').dialog('close');
-			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
+			applySkin();
 		});
 	});
 	</script>
@@ -364,7 +370,12 @@ function template_item_remove_gt() {
 	get_filter_request_var('host_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_graph WHERE graph_template_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_graph
+		WHERE graph_template_id = ?
+		AND host_template_id = ?',
+		array(get_request_var('id'), get_request_var('host_template_id')));
+
+	raise_message(41);
 }
 
 function template_item_remove_dq_confirm() {
@@ -407,7 +418,9 @@ function template_item_remove_dq_confirm() {
 			id: <?php print get_request_var('id');?>
 		}, function(data) {
 			$('#cdialog').dialog('close');
-			loadPageNoHeader('host_templates.php?action=edit&header=false&id=<?php print get_request_var('host_template_id');?>');
+			$('div[class^="ui-"]').remove();
+			$('#main').html(data);
+			applySkin();
 		});
 	});
 	</script>
@@ -420,7 +433,12 @@ function template_item_remove_dq() {
 	get_filter_request_var('host_template_id');
 	/* ==================================================== */
 
-	db_execute_prepared('DELETE FROM host_template_snmp_query WHERE snmp_query_id = ? AND host_template_id = ?', array(get_request_var('id'), get_request_var('host_template_id')));
+	db_execute_prepared('DELETE FROM host_template_snmp_query
+		WHERE snmp_query_id = ?
+		AND host_template_id = ?',
+		array(get_request_var('id'), get_request_var('host_template_id')));
+
+	raise_message(41);
 }
 
 function template_edit() {
@@ -431,7 +449,11 @@ function template_edit() {
 	/* ==================================================== */
 
 	if (!isempty_request_var('id')) {
-		$host_template = db_fetch_row_prepared('SELECT * FROM host_template WHERE id = ?', array(get_request_var('id')));
+		$host_template = db_fetch_row_prepared('SELECT *
+			FROM host_template
+			WHERE id = ?',
+			array(get_request_var('id')));
+
 		$header_label = __('Device Templates [edit: %s]', html_escape($host_template['name']));
 	} else {
 		$header_label = __('Device Templates [new]');

@@ -19,7 +19,7 @@ Changes to the database are committed to the `cacti.sql` file which is used for 
 **Running Database Upgrade Script**
 
 ```
-sudo -u cacti php -q cli/upgrade_database.php --forever=`cat include/cacti_version`
+sudo -u cacti php -q cli/upgrade_database.php --forcever=`cat include/cacti_version`
 ```
 
 **Updating Cacti Version in Database**

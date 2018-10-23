@@ -34,9 +34,13 @@ function upgrade_to_1_2_0() {
 	db_install_add_column('poller', array('name' => 'total_polls', 'type' => 'int', 'after' => 'avg_time', 'default' => '0'));
 	db_install_add_column('poller', array('name' => 'processes', 'type' => 'int', 'after' => 'total_polls', 'default' => '1'));
 	db_install_add_column('poller', array('name' => 'threads', 'type' => 'double', 'after' => 'processes', 'default' => '1'));
+	db_install_add_column('poller', array('name' => 'sync_interval', 'type' => 'int', 'after' => 'threads', 'default' => '7200'));
 	db_install_add_column('poller', array('name' => 'timezone', 'type' => 'varchar(40)', 'default' => '', 'after' => 'status'));
+	db_install_add_column('poller', array('name' => 'dbsslkey', 'type' => 'varchar(255)', 'after' => 'dbssl'));
+	db_install_add_column('poller', array('name' => 'dbsslcert', 'type' => 'varchar(255)', 'after' => 'dbssl'));
+	db_install_add_column('poller', array('name' => 'dbsslca', 'type' => 'varchar(255)', 'after' => 'dbssl'));
 
-	if ($poller_exists) {
+	if (!$poller_exists) {
 		// Take the value from the settings table and translate to
 		// the new Data Collector table settings
 
@@ -187,4 +191,6 @@ function upgrade_to_1_2_0() {
 
 	db_install_add_column('poller', array('name' => 'last_sync', 'type' => 'timestamp', 'NULL' => false, 'default' => '0000-00-00 00:00:00'));
 	db_install_add_column('poller', array('name' => 'requires_sync', 'type' => 'char(3)', 'NULL' => false, 'default' => ''));
+
+	db_install_execute('UPDATE poller SET requires_sync = "on" WHERE id != 1');
 }

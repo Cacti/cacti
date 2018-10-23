@@ -139,7 +139,13 @@ function remote_client_authorized() {
 		return false;
 	}
 
-	$client_name = strip_domain(gethostbyaddr($client_addr));
+	$client_name = gethostbyaddr($client_addr);
+
+	if ($client_name == $client_addr) {
+		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
+	} else {
+		$client_name = strip_domain($client_name);
+	}
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller', true, $poller_db_cnn_id);
 

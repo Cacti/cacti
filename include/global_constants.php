@@ -425,3 +425,7 @@ define('MESSAGE_LEVEL_CSRF', 4);
 if (!defined('PASSWORD_DEFAULT')) {
 	define('PASSWORD_DEFAULT', 1);
 }
+
+define('CACTI_MAIL_PHP', 0);
+define('CACTI_MAIL_SENDMAIL', 1);
+define('CACTI_MAIL_SMTP', 2);

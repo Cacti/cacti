@@ -181,7 +181,7 @@ class MibCache{
 	}
 
 	public function count() {
-		return db_execute_prepared('UPDATE IGNORE snmpagent_cache
+		return db_execute_prepared('UPDATE snmpagent_cache
 			SET `value` = CASE
 			WHEN `type`="Counter32" AND `value`= 4294967295 THEN 0
 			WHEN `type`="Counter64" AND `value`= 18446744073709551615 THEN 0
@@ -203,7 +203,7 @@ class MibCache{
 						$column_params['value'] = $values[$column_params['name']];
 					}
 
-					db_execute_prepared('INSERT IGNORE INTO `snmpagent_cache`
+					db_execute_prepared('INSERT INTO `snmpagent_cache`
 						(`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `value`)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
 						array($column_params['oid'], $column_params['name'], $column_params['mib'],

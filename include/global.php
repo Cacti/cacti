@@ -45,7 +45,10 @@ $cacti_version = trim($cacti_version);
 
 /* define cacti version */
 define('CACTI_VERSION', $cacti_version);
-define('CACTI_VERSION_BETA', 0);
+define('CACTI_VERSION_BETA', 2);
+
+// define documentation table of contents
+define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
 
 /* Default database settings*/
 $database_type     = 'mysql';

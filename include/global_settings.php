@@ -86,6 +86,16 @@ $logfiles['cmd_realtime.php']    = 'cmd_realtime.php';
 
 asort($logfiles);
 
+$mail_methods = array(
+	CACTI_MAIL_PHP      => __('PHP Mail() Function'),
+	CACTI_MAIL_SENDMAIL => __('Sendmail'),
+	CACTI_MAIL_SMTP     => __('SMTP')
+);
+
+if ($config['cacti_server_os'] == 'win32') {
+	unset($mail_methods[CACTI_MAIL_SENDMAIL]);
+}
+
 /* setting information */
 $settings = array(
 	'path' => array(
@@ -961,6 +971,14 @@ $settings = array(
 			'default' => 1,
 			'array' => $poller_options,
 			),
+
+		'poller_sync_interval' => array(
+			'friendly_name' => __('Poller Sync Interval'),
+			'description' => __('The default polling sync interval to use when creating a poller.  This setting will effect how often remote pollers are checked and updated.'),
+			'method' => 'drop_array',
+			'default' => 7200,
+			'array' => $poller_sync_intervals,
+			),
 		'poller_interval' => array(
 			'friendly_name' => __('Poller Interval'),
 			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
@@ -977,7 +995,7 @@ $settings = array(
 			),
 		'concurrent_processes' => array(
 			'friendly_name' => __('Default Data Collector Processes'),
-			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: This setting maintained in the Data Collector starting with Cacti 1.2+.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
+			'description' => __('The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti 1.2, this setting is maintained in the Data Collector.  Moving forward, this value is only a preset for the Data Collector.  Using a higher number when using cmd.php will improve performance.  Performance improvements in Spine are best resolved with the threads parameter.  When using Spine, we recommend a lower number and leveraging threads instead.  When using cmd.php, use no more than 2x the number of CPU cores.'),
 			'method' => 'textbox',
 			'default' => '1',
 			'max_length' => '10',
@@ -1003,10 +1021,15 @@ $settings = array(
 			),
 		'remote_agent_timeout' => array(
 			'friendly_name' => __('Remote Agent Timeout'),
-			'description' => __('The amount of time, in seconds, that the web server will wait on the Remote Agent will wait before abandoning the request.  On systems that are connected to the Remote Agent over high latency connections, you should consider a higer default.'),
+			'description' => __('The amount of time, in seconds, that the Central Cacti web server will wait for a response from the Remote Data Collector to obtain various Device information before abandoning the request.  On Devices that are associated with Data Collectors other than the Central Cacti Data Collector, the Remote Agent must be used to gather Device information.'),
 			'method' => 'drop_array',
 			'default' => '5',
-			'array' => array(5, 10, 15, 20)
+			'array' => array(
+				5 => __('%d Seconds', 5),
+				10 => __('%d Seconds', 10),
+				15 => __('%d Seconds', 15),
+				20 => __('%d Seconds', 20)
+				)
 			),
 		'snmp_bulk_walk_size' => array(
 			'friendly_name' => __('SNMP Bulkwalk Fetch Size'),
@@ -1418,10 +1441,7 @@ $settings = array(
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
 			'default' => __('PHP Mail() Function'),
-			'array' => array(
-				__('PHP Mail() Function'),
-				__('Sendmail'),
-				__('SMTP') ),
+			'array' => $mail_methods,
 			),
 		'settings_ping_mail' => array(
 			'friendly_name' => __('Ping Mail Server'),
@@ -2208,6 +2228,11 @@ $settings_user = array(
 			)
 		)
 	);
+
+if ($config['cacti_server_os'] == 'win32') {
+	unset($settings['mail']['settings_sendmail_header']);
+	unset($settings['mail']['settings_sendmail_path']);
+}
 
 if (is_realm_allowed(25)) {
 	$settings_user['general']['realtime_mode'] = array(

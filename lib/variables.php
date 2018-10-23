@@ -32,7 +32,7 @@ function update_data_source_title_cache_from_template($data_template_id) {
 		AND local_data_id > 0',
 		array($data_template_id));
 
-	if (cacti_sizeof($data) > 0) {
+	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
 			update_data_source_title_cache($item['local_data_id']);
 		}
@@ -76,12 +76,16 @@ function update_data_source_title_cache_from_host($host_id) {
 /* update_data_source_title_cache - updates the title cache for a single data source
    @arg $local_data_id - (int) the ID of the data source to update the title cache for */
 function update_data_source_title_cache($local_data_id) {
-	db_execute_prepared('UPDATE data_template_data
-		SET name_cache = ?
-		WHERE local_data_id = ?',
-		array(get_data_source_title($local_data_id), $local_data_id));
+	$data_source = get_data_source_title($local_data_id);
 
-	api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+	if (strstr($data_source, '|query_') === false && strstr($data_source, '|host_') === false) {
+		db_execute_prepared('UPDATE data_template_data
+			SET name_cache = ?
+			WHERE local_data_id = ?',
+			array($data_source, $local_data_id));
+
+		api_plugin_hook_function('update_data_source_title_cache', $local_data_id);
+	}
 }
 
 /* update_graph_title_cache_from_template - updates the title cache for all graphs
@@ -138,10 +142,14 @@ function update_graph_title_cache_from_host($host_id) {
 /* update_graph_title_cache - updates the title cache for a single graph
    @arg $local_graph_id - (int) the ID of the graph to update the title cache for */
 function update_graph_title_cache($local_graph_id) {
-	db_execute_prepared('UPDATE graph_templates_graph
-		SET title_cache = ?
-		WHERE local_graph_id = ?',
-		array(get_graph_title($local_graph_id), $local_graph_id));
+	$graph_title = get_graph_title($local_graph_id);
+
+	if (strstr($graph_title, '|query_') === false && strstr($graph_title, '|host_') === false) {
+		db_execute_prepared('UPDATE graph_templates_graph
+			SET title_cache = ?
+			WHERE local_graph_id = ?',
+			array($graph_title, $local_graph_id));
+	}
 }
 
 /* null_out_substitutions - takes a string and cleans out any host variables that do not have values
@@ -299,13 +307,14 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 		$snmp_cache_data = db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' field_name, field_value
 			FROM host_snmp_cache
 			WHERE snmp_query_id = ?
-			AND snmp_index = ?',
+			AND snmp_index = ?
+			AND host_id = 0',
 			array($snmp_query_id, $snmp_index));
 	}
 
-	if (cacti_sizeof($snmp_cache_data) > 0) {
+	if (cacti_sizeof($snmp_cache_data)) {
 		foreach ($snmp_cache_data as $data) {
-			if ($data['field_value'] != '') {
+			if (trim($data['field_value']) != '') {
 				if ($max_chars > 0) {
 					$data['field_value'] = substr($data['field_value'], 0, $max_chars);
 				}
@@ -333,7 +342,9 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 				WHERE local_graph_id = ?', array($graph['local_graph_id'])), 'local_data_id', 'local_data_id');
 
 			if (cacti_sizeof($local_data_ids)) {
-				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
+				$data_template_data_id = db_fetch_cell('SELECT ' . SQL_NO_CACHE . ' id
+					FROM data_template_data
+					WHERE local_data_id IN (' . implode(',', $local_data_ids) . ')');
 			} else {
 				$data_template_data_id = 0;
 			}
@@ -341,7 +352,10 @@ function substitute_data_input_data($string, $graph, $local_data_id, $max_chars 
 			$data_template_data_id = 0;
 		}
 	} else {
-		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id FROM data_template_data WHERE local_data_id = ?', array($local_data_id));
+		$data_template_data_id = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' id
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($local_data_id));
 	}
 
 	if (!empty($data_template_data_id)) {

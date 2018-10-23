@@ -202,7 +202,11 @@ function getDefaultInstallData() {
 	return { Step: STEP_NONE, Eula: 0 };
 }
 
-function toggleHeader(key, initial = null) {
+function toggleHeader(key, initial) {
+	if (typeof initial == 'undefined') {
+		initial = null;
+	}
+
 	if (key != null) {
 		header = $(key);
 		if (header != null && header.length > 0) {
@@ -221,7 +225,11 @@ function toggleHeader(key, initial = null) {
 	}
 }
 
-function toggleSection(key, initial = null) {
+function toggleSection(key, initial) {
+	if (typeof initial == 'undefined') {
+		initial = null;
+	}
+
 	if (key != null) {
 		header = $(key);
 		if (header != null && header.length > 0) {
@@ -323,7 +331,7 @@ function processStepWelcome(StepData) {
 	if (StepData.Theme != 'classic') {
 		$('select#theme').selectmenu({
 			change: function() {
-				document.location = location.pathname + '?theme='+$('#theme').val();
+				performStep(STEP_WELCOME, undefined, true);
 			}
 		});
 
@@ -345,15 +353,15 @@ function processStepWelcome(StepData) {
 
 		$("select#language").selectmenu('destroy').iconselectmenu({
 			change: function() {
-				document.location = location.pathname + '?language='+$('#language').val();
+				performStep(STEP_WELCOME, undefined, true);
 			}
 		}).iconselectmenu( "menuWidget" ).addClass( "ui-menu-icons customicons" );
 	} else {
 		$('#theme').change(function() {
-			document.location = location.pathname + '?theme='+$('#theme').val();
+			performStep(STEP_WELCOME, undefined, true);
 		});
 		$('#language').change(function() {
-			document.location = location.pathname + '?language='+$('#language').val();
+			performStep(STEP_WELCOME, undefined, true);
 		});
 	}
 
@@ -475,7 +483,7 @@ function processStepInstallConfirm(StepData) {
 }
 
 function processStepInstallRefresh() {
-	performStep(STEP_INSTALL);
+	performStep(STEP_INSTALL, true);
 }
 
 function processStepInstallStatus(current, total) {
@@ -592,11 +600,13 @@ function setAddressBar(data, replace) {
 	}
 }
 
-function performStep(installStep) {
+function performStep(installStep, suppressRefresh, forceReload) {
 	$.ajaxQ.abortAll();
 
-	$('#installContent').addClass('cactiInstallLoaderBlur');
-	$('#installLoader').show();
+	if (!suppressRefresh) {
+		$('#installContent').addClass('cactiInstallLoaderBlur');
+		$('#installLoader').show();
+	}
 
 	installData = prepareInstallData(installStep);
 	installJson = JSON.parse('{"data":'+installData+', "__csrf_magic":"'+csrfMagicToken+'"}');
@@ -609,6 +619,10 @@ function performStep(installStep) {
 			$('#installLoader').hide();
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 			$('#installData').data('installData', data);
+
+			if (forceReload) {
+				document.location = location.pathname + '?reload=' + Date.now();
+			}
 
 			setAddressBar(data, false);
 

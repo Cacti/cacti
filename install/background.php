@@ -49,4 +49,4 @@ if (cacti_sizeof($params) == 0) {
 	exit();
 }
 
-Installer::processInstall($params[0]);
+Installer::beginInstall($params[0]);

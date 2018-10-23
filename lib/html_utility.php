@@ -250,6 +250,12 @@ function get_checkbox_style() {
 function set_default_action($default = '') {
 	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
+	} elseif (is_array(get_nfilter_request_var('action'))) {
+		if (read_config_option('log_validation') == 'on') {
+			cacti_log('WARNING: Request variable \'action\' was passed as array in ' . $_SERVER['SCRIPT_NAME'] . '.', false, 'WEBUI');
+		}
+
+		set_request_var('action', $_REQUEST['action'][0]);
 	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}
@@ -871,7 +877,7 @@ function get_colored_device_status($disabled, $status) {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
-	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
+	if (isset($_SESSION['sess_current_timespan_begin_now']) && is_numeric($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
 	} else {
 		return '-' . DEFAULT_TIMESPAN;
@@ -882,7 +888,7 @@ function get_current_graph_start() {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
-	if (isset($_SESSION['sess_current_timespan_end_now'])) {
+	if (isset($_SESSION['sess_current_timespan_end_now']) && is_numeric($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
 	} else {
 		return '0';

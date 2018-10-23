@@ -27,6 +27,7 @@ ini_set('zlib.output_compression', '0');
 
 require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/import.php');
+require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/utility.php');
 require_once($config['base_path'] . '/lib/template.php');
 

@@ -236,6 +236,9 @@ $messages = array(
 	40 => array(
 		'message' => __('You must select at least one object from the list.'),
 		'level' => MESSAGE_LEVEL_ERROR),
+	41 => array(
+		'message' => __('Device Template updated.  Remember to Sync Templates to push all changes to Devices that use this Device Template.'),
+		'level' => MESSAGE_LEVEL_INFO),
 	'input_save_wo_ds' => array(
 		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
 		'level' => MESSAGE_LEVEL_INFO),
@@ -611,7 +614,8 @@ $aggregation_levels = array(
 	14400   => __('%d Hours', 4),
 	21600   => __('%d Hours', 6),
 	43200   => __('%d Hours', 12),
-	86400   => __('Daily')
+	86400   => __('%d Day', 1),
+	604800  => __('%d Week', 1)
 );
 
 $sampling_intervals = array(
@@ -653,24 +657,32 @@ $heartbeats = array(
 );
 
 $timespans = array(
-	3600     => __('%d Hour', 1),
-	7200     => __('%d Hours', 2),
-	14400    => __('%d Hours', 4),
-	21600    => __('%d Hours', 6),
-	43200    => __('%d Hours', 12),
-	86400    => __('%d Day', 1),
-	172800   => __('%d Days', 2),
-	345600   => __('%d Days', 4),
-	604800   => __('%d Week', 1),
-	1209600  => __('%d Weeks', 2),
-	1814400  => __('%d Weeks', 3),
-	2618784  => __('%d Month', 1),
-	5237568  => __('%d Months', 2),
-	7856352  => __('%d Months', 3),
-	10475136 => __('%d Months', 4),
-	15712704 => __('%d Months', 6),
-	31536000 => __('%d Year', 1),
-	63072000 => __('%d Years', 2)
+	3600      => __('%d Hour', 1),
+	7200      => __('%d Hours', 2),
+	14400     => __('%d Hours', 4),
+	21600     => __('%d Hours', 6),
+	43200     => __('%d Hours', 12),
+	86400     => __('%d Day', 1),
+	172800    => __('%d Days', 2),
+	345600    => __('%d Days', 4),
+	604800    => __('%d Week', 1),
+	1209600   => __('%d Weeks', 2),
+	1814400   => __('%d Weeks', 3),
+	2618784   => __('%d Month', 1),
+	5237568   => __('%d Months', 2),
+	7856352   => __('%d Months', 3),
+	10475136  => __('%d Months', 4),
+	15712704  => __('%d Months', 6),
+	31536000  => __('%d Year', 1),
+	63072000  => __('%d Years', 2),
+	94608000  => __('%d Years', 3),
+	126144000 => __('%d Years', 4),
+	157680000 => __('%d Years', 5),
+	189216000 => __('%d Years', 6),
+	220752000 => __('%d Years', 7),
+	252288000 => __('%d Years', 8),
+	283824000 => __('%d Years', 9),
+	315360000 => __('%d Years', 10)
 );
 
 $poller_intervals = array(
@@ -680,6 +692,17 @@ $poller_intervals = array(
 	30  => __('Every %d Seconds', 30),
 	60  => __('Every Minute'),
 	300 => __('Every %d Minutes', 5)
+);
+
+$poller_sync_intervals = array(
+	0     => __('Disabled/Manual'),
+	1800  => __('Every %d Minutes', 30),
+	3600  => __('Every Hour'),
+	7200  => __('Every %d Hours', 2),
+	14400 => __('Every %d Hours', 4),
+	28800 => __('Every %d Hours', 8),
+	57600 => __('Every %d Hours', 16),
+	86400 => __('Every day'),
 );
 
 $device_threads = array(
@@ -874,7 +897,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 } else {
 	$menu = array(
 		__('Management') => array(
-			'host.php'             => __('Devices')
+			'host.php' => __('Devices')
 			),
 		__('Data Collection') => array(
 			'pollers.php' => __('Data Collectors')
@@ -883,7 +906,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			'settings.php' => __('Settings')
 			),
 		__('Utilities') => array(
-			'utilities.php'        => __('System Utilities')
+			'utilities.php' => __('System Utilities')
 			)
 	);
 }
@@ -898,7 +921,8 @@ $menu_glyphs = array(
 	__('Import/Export') => 'fa fa-exchange-alt',
 	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
-	__('External Links') => 'fa fa-external-link'
+	__('External Links') => 'fa fa-external-link',
+	__('Support') => 'fa fa-question-circle'
 );
 
 if ((isset($_SESSION['sess_user_id']))) {
@@ -949,11 +973,7 @@ $item_rows = array(
 	45   => '45',
 	50   => '50',
 	100  => '100',
-	250  => '250',
-	500  => '500',
-	1000 => '1000',
-	2000 => '2000',
-	5000 => '5000'
+	250  => '250'
 );
 
 $graphs_per_page = array(

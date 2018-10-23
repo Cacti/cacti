@@ -58,25 +58,30 @@ function clear_auth_cookie() {
 function set_auth_cookie($user) {
 	global $config;
 
-	clear_auth_cookie();
+	if (db_table_exists('user_auth_cache')) {
+		clear_auth_cookie();
 
-	$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr(''));
+		$nssecret = md5($_SERVER['REQUEST_TIME'] .  mt_rand(10000,10000000)) . md5(get_client_addr(''));
 
-	$secret = hash('sha512', $nssecret, false);
+		$secret = hash('sha512', $nssecret, false);
 
-	db_execute_prepared('REPLACE INTO user_auth_cache
-		(user_id, hostname, last_update, token)
-		VALUES
-		(?, ?, NOW(), ?);',
-		array($user['id'], get_client_addr(''), $secret));
+		db_execute_prepared('REPLACE INTO user_auth_cache
+			(user_id, hostname, last_update, token)
+			VALUES
+			(?, ?, NOW(), ?);',
+			array($user['id'], get_client_addr(''), $secret));
 
-	setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
+		setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
+	}
 }
 
 /* check_auth_cookie - clears a users security token
  * @return - (int) The user of the session cookie, otherwise false */
 function check_auth_cookie() {
-	if (isset($_COOKIE['cacti_remembers']) && read_config_option('auth_cache_enabled') == 'on') {
+	if (isset($_COOKIE['cacti_remembers']) &&
+		read_config_option('auth_cache_enabled') == 'on' &&
+		db_table_exists('user_auth_cache')) {
+
 		$parts = explode(',', $_COOKIE['cacti_remembers']);
 		$user  = $parts[0];
 
@@ -1257,7 +1262,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			$sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
-				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
 				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
@@ -1284,7 +1289,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 				SELECT gl.id, $sql_select
 				FROM graph_templates_graph AS gtg
 				INNER JOIN (
-					SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+					SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
 					gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
 					FROM aggregate_graphs AS ag
 					INNER JOIN aggregate_graphs_items AS agi
@@ -1307,7 +1312,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
-				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
 				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
@@ -1328,7 +1333,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id)
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
-				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id, 
+				SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
 				gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
 				FROM aggregate_graphs AS ag
 				INNER JOIN aggregate_graphs_items AS agi
