@@ -177,14 +177,14 @@ if (function_exists('pcntl_signal')) {
 	pcntl_signal(SIGINT, 'sig_handler');
 }
 
+// record the start time
+$poller_start    = microtime(true);
+$overhead_time   = 0;
+
 api_plugin_hook('poller_top');
 
 // prime the poller_resource_cache for multiple pollers
 update_resource_cache($poller_id);
-
-// record the start time
-$poller_start    = microtime(true);
-$overhead_time   = 0;
 
 // get number of polling items from the database
 $poller_interval = read_config_option('poller_interval');

@@ -567,7 +567,7 @@ function update_resource_cache($poller_id = 1) {
 	$rpath = $config['resource_path'];
 
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-	$excluded_dirs       = array('.git');
+	$excluded_dirs       = array('.git', 'log');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -880,9 +880,8 @@ function resource_cache_out($type, $path) {
 
 	$settings_path = "md5dirsum_$type";
 	$php_path      = read_config_option('path_php_binary');
-
 	$last_md5      = read_config_option($settings_path);
-	$curr_md5      = md5sum_path($path['path']);
+	$curr_md5      = md5sum_path($path['path'], $path['recursive']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
 		$entries = db_fetch_assoc_prepared('SELECT id, `path`, md5sum, attributes
@@ -1009,6 +1008,8 @@ function md5sum_path($path, $recursive = true) {
 
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
 				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
+			} elseif (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
+				// Ignore directories who are not recursive
 			} else {
 				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
 			}
