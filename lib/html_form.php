@@ -462,7 +462,7 @@ function form_submit($form_name, $value, $title = '', $action = '') {
    @arg $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
 	print "<div>\n";
-	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
+	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>\n";
 	print "<input type='file'";
 
 	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
