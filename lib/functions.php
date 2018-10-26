@@ -331,46 +331,9 @@ function read_user_setting($config_name, $default = false, $force = false, $user
    @arg $value       - the values to be saved
    @returns          - void */
 function set_config_option($config_name, $value) {
-	global $config;
-
-	include_once($config['base_path'] . '/lib/poller.php');
-
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
-
-	$pollers = array_rekey(
-		db_fetch_assoc('SELECT id FROM poller WHERE id > 1'),
-		'id', 'id'
-	);
-
-	if (cacti_sizeof($pollers)) {
-		// Check to see that this should be replicated
-		$data = db_fetch_row_prepared('SELECT *
-			FROM settings
-			WHERE name NOT LIKE "%_lastrun%"
-			AND name NOT LIKE "path_%"
-			AND name NOT LIKE "%_path"
-			AND name NOT LIKE "stats%"
-			AND name != "rrdtool_version"
-			AND name NOT LIKE "poller_replicate%"
-			AND name != "poller_enabled"
-			AND name NOT LIKE "md5dirsum%"
-			AND name = ?',
-			array($config_name));
-
-		if (sizeof($data)) {
-			foreach($pollers as $poller_id) {
-				$rcnn_id = poller_connect_to_remote($poller_id);
-
-				if ($rcnn_id !== false ) {
-					db_execute_prepared('REPLACE INTO settings
-						SET name = ?, value = ?',
-						array($config_name, $value), true, $rcnn_id);
-				}
-			}
-		}
-	}
 }
 
 /* config_value_exists - determines if a value exists for the current user/setting specified
