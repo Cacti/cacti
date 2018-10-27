@@ -1926,7 +1926,7 @@ function check_hash_version($hash_version) {
 		raise_message(16); /* error: hash version does not exist! */
 		return false;
 	} elseif ($hash_version_index > $current_version_index) {
-		cacti_log("ERROR: $hash_version hash version if for a newer Cacti!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
 	}
