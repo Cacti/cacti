@@ -27,6 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
 
 $poller_id = 0;
+$class     = 'all';
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -47,6 +48,11 @@ if (cacti_sizeof($parms)) {
 		case '-p':
 			$poller_id = $value;
 			break;
+		case '--class':
+		case '-C':
+		case '-c':
+			$class = $value;
+			break;
 		case '--version':
 		case '-V':
 		case '-v':
@@ -65,11 +71,16 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
+if (!preg_match('/(all|data|auth|settings)/', $class)) {
+	print 'FATAL: The class ' . $class . ' is NOT valid!' . PHP_EOL;
+	exit(1);
+}
+
 /* record the start time */
 $start = microtime(true);
 
-if ($poller_id < 1) {
-	print 'FATAL: The poller needs to be greater than 1!' . PHP_EOL;
+if ($poller_id < 0) {
+	print 'FATAL: The poller needs to be greater than 0!' . PHP_EOL;
 	exit(1);
 } elseif ($poller_id == 0) {
 	$pollers = db_fetch_assoc('SELECT id
@@ -87,7 +98,7 @@ if ($poller_id < 1) {
 
 if (sizeof($pollers)) {
 	foreach ($pollers as $poller) {
-		replicate_out($poller['id']);
+		replicate_out($poller['id'], $class);
 
 		db_execute_prepared('UPDATE poller
 			SET last_sync = NOW(), requires_sync=""
@@ -112,7 +123,10 @@ function display_help () {
 	display_version();
 
 	print "\nA utility to fully Synchronize Remote Data Collectors.\n\n";
-	print "usage: poller_output_empty.php [--poller=N]\n\n";
+	print "usage: poller_output_empty.php [--poller=N] [--class=all|data|auth|settings]\n\n";
 	print "Optional:\n";
-	print "    --poller=N  The numeric id of the poller to replicate out.\n";
+	print "    --poller=N  The numeric id of the poller to replicate out.  Otherwise all\n";
+	print "                pollers.  The default is all.\n";
+	print "    --class=S   The class of data to replicate.  Includes all, data, auth\n";
+	print "                settings.  The default is all.\n";
 }
