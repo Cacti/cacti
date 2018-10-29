@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-1.2.0 Beta 2
+1.2.0 Beta 3
 -issue#2002: api_plugin_db_table_create should support non-string defaults
 -issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()
 -issue#2127: Unable to save error when duplicating graph
