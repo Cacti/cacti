@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-require(__DIR__ . '/include/cli_check.php');
-require($config['base_path'] . '/lib/snmp.php');
-require($config['base_path'] . '/lib/poller.php');
-require($config['base_path'] . '/lib/rrd.php');
-require($config['base_path'] . '/lib/ping.php');
+require_once(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/ping.php');
 
 ini_set('max_execution_time', '0');
 

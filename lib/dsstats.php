@@ -817,6 +817,7 @@ function dsstats_rrdtool_init() {
    @arg $pipes - (array) An array of stdin and stdout pipes to read and write data from
    @returns - (string) The output from RRDtool */
 function dsstats_rrdtool_execute($command, $pipes) {
+	global $config;
 	$stdout = '';
 
 	if ($command == '') return;
@@ -824,18 +825,23 @@ function dsstats_rrdtool_execute($command, $pipes) {
 	$command .= "\r\n";
 	$return_code = fwrite($pipes[0], $command);
 
+	$return_reason = 'EOF';
 	while (!feof($pipes[1])) {
 		$stdout .= fgets($pipes[1], 4096);
 
 		if (substr_count($stdout, 'OK')) {
+			$return_reason = 'OK';
 			break;
 		}
 
 		if (substr_count($stdout, 'ERROR')) {
+			$return_reason = 'ERROR';
 			break;
 		}
 	}
 
+	$temp = tempnam($config['base_path'], 'dsstats');
+	file_put_contents("Command: $command\nReason: $return_reason\nOutput:\n$stdout", $temp);
 	if (strlen($stdout)) return $stdout;
 }
 
