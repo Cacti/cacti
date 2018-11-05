@@ -956,43 +956,47 @@ function utilities_get_mysql_recommendations() {
 			)
 	);
 
-	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
-		$recommendations += array(
-			'innodb_flush_log_at_trx_commit' => array(
-				'value'   => '2',
-				'measure' => 'equal',
-				'comment' => __('Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often.', $database)
-			),
-			'innodb_file_io_threads' => array(
-				'value'   => '16',
-				'measure' => 'ge',
-				'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
-				)
-		);
-	} else {
-		$recommendations += array(
-			'innodb_flush_log_at_timeout' => array(
-				'value'   => '3',
-				'measure'  => 'ge',
-				'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
+	if (isset($variables['innodb_version'])) {
+		if (version_compare($variables['innodb_version'], '5.6', '<')) {
+			$recommendations += array(
+				'innodb_flush_log_at_trx_commit' => array(
+					'value'   => '2',
+					'measure' => 'equal',
+					'comment' => __('Setting this value to 2 means that you will flush all transactions every second rather than at commit.  This allows %s to perform writing less often.', $database)
 				),
-			'innodb_read_io_threads' => array(
-				'value'   => '32',
-				'measure' => 'ge',
-				'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
-				),
-			'innodb_write_io_threads' => array(
-				'value'   => '16',
-				'measure' => 'ge',
-				'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
-				),
-			'innodb_buffer_pool_instances' => array(
-				'value' => '16',
-				'measure' => 'pinst',
-				'class' => 'warning',
-				'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
-				)
-		);
+				'innodb_file_io_threads' => array(
+					'value'   => '16',
+					'measure' => 'ge',
+					'comment' => __('With modern SSD type storage, having multiple io threads is advantageous for applications with high io characteristics.')
+					)
+			);
+		} else {
+			$recommendations += array(
+				'innodb_flush_log_at_timeout' => array(
+					'value'   => '3',
+					'measure'  => 'ge',
+					'comment'  => __('As of %s %s, the you can control how often %s flushes transactions to disk.  The default is 1 second, but in high I/O systems setting to a value greater than 1 can allow disk I/O to be more sequential', $database, $version, $database),
+					),
+				'innodb_read_io_threads' => array(
+					'value'   => '32',
+					'measure' => 'ge',
+					'comment' => __('With modern SSD type storage, having multiple read io threads is advantageous for applications with high io characteristics.')
+					),
+				'innodb_write_io_threads' => array(
+					'value'   => '16',
+					'measure' => 'ge',
+					'comment' => __('With modern SSD type storage, having multiple write io threads is advantageous for applications with high io characteristics.')
+					),
+				'innodb_buffer_pool_instances' => array(
+					'value' => '16',
+					'measure' => 'pinst',
+					'class' => 'warning',
+					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					)
+			);
+
+			unset($recommendations['innodb_additional_mem_pool_size']);
+		}
 	}
 
 	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
