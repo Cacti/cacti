@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()
 -issue#2127: Unable to save error when duplicating graph
 -issue#2143: export.php Illegal string offset 'method'
+-issue#2153: Utilities page issues the wrong hook for tabs
 
 1.2.0 Beta 1
 -security#1882: Bypass output validation in select cases
