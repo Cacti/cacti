@@ -1119,7 +1119,11 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			AND name != "rrdtool_version"
 			AND name NOT LIKE "poller_replicate%"
 			AND name != "poller_enabled"
-			AND name NOT LIKE "md5dirsum%"');
+			AND name NOT LIKE "md5dirsum%"
+			UNION
+			SELECT *
+			FROM settings
+			WHERE name LIKE "path_spine%"');
 		replicate_table_to_poller($rcnn_id, $data, 'settings');
 	}
 
