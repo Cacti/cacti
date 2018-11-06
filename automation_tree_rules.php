@@ -640,6 +640,15 @@ function automation_tree_rules_edit() {
 	?>
 	<script type='text/javascript'>
 	var automationLeafTypeOriginal = $('#leaf_type').val();
+
+	<?php
+	if (!empty($rule['id'])) {
+		print 'var isNew = false;';
+	} else {
+		print 'var isNew = true;';
+	}
+	?>
+
 	$(function() {
 		applyItemTypeChange();
 	});
@@ -666,7 +675,7 @@ function automation_tree_rules_edit() {
 
 	function applyItemTypeChange() {
 		var automationLeafTypeNew = $('#leaf_type').val();
-		if (automationLeafTypeOriginal != automationLeafTypeNew) {
+		if (automationLeafTypeOriginal != automationLeafTypeNew && !isNew) {
 			if (automationLeafTypeNew == 3) {
 				var automationLeafTypeButtons = {
 					'Yes': {
