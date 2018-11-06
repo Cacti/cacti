@@ -667,7 +667,7 @@ function template_edit() {
 			WHERE id = ?',
 			array($template_data['data_input_id']));
 
-		if ($input_type == 1 || $input_type == 2 || $input_type == 3 || $input_type == 4 || $input_type == 6) {
+		if ($input_type != 1 && $input_type != 5) {
 			unset($struct_data_source_item['data_input_field_id']);
 		} else {
 			$struct_data_source_item['data_input_field_id']['sql'] = "SELECT id, CONCAT(data_name, ' - ', name) AS name FROM data_input_fields WHERE data_input_id=" . $template_data['data_input_id'] . " AND input_output='out' AND update_rra='on' ORDER BY data_name, name";
