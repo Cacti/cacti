@@ -123,11 +123,15 @@ function api_auth_clear_user_settings() {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ?',
-			array($user));
+		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?',
+				array($user));
 
-		kill_session_var('sess_user_config_array');
+			kill_session_var('sess_user_config_array');
+		} elseif (isset_request_var('tab')) {
+			api_plugin_hook('auth_profile_reset');
+		}
 
 		raise_message('37');
 	}
@@ -139,25 +143,30 @@ function api_auth_clear_user_setting($name) {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ? AND name = ?',
-			array($user, $name));
+		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?
+				AND name = ?',
+				array($user, $name));
 
-		foreach($settings_user as $tab => $settings) {
-			if (isset($settings[$name])) {
-				if (isset($settings[$name]['default'])) {
-					db_execute_prepared('INSERT INTO settings_user
-						(name, value, user_id)
-						VALUES (?, ?, ?)',
-						array($name, $settings[$name]['default'], $user));
+			foreach($settings_user as $tab => $settings) {
+				if (isset($settings[$name])) {
+					if (isset($settings[$name]['default'])) {
+						db_execute_prepared('INSERT INTO settings_user
+							(name, value, user_id)
+							VALUES (?, ?, ?)',
+							array($name, $settings[$name]['default'], $user));
 
-					print $settings[$name]['default'];
+						print $settings[$name]['default'];
 
-					kill_session_var('sess_user_config_array');
+						kill_session_var('sess_user_config_array');
 
-					break;
+						break;
+					}
 				}
 			}
+		} else {
+			api_plugin_hook_function('auth_profile_reset_value', $name);
 		}
 	}
 }
@@ -554,7 +563,7 @@ function settings_javascript() {
 							var id = $(this).attr('data-id');
 
 							if (id != undefined) {
-								$.get('auth_profile.php?action=reset_default&name='+id, function(data) {
+								$.get('auth_profile.php?tab='+currentTab+'&action=reset_default&name='+id, function(data) {
 									if (id != 'selected_theme' && id != 'user_language') {
 										if ($('#'+id).is(':checkbox')) {
 											if (data == 'on') {
