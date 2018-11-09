@@ -633,6 +633,8 @@ function data_edit() {
 			WHERE di.id = ?",
 			array(get_request_var('id')));
 
+		$output_disabled  = false;
+		$save_alt_message = false;
 		if (!cacti_sizeof($counts)) {
 			$output_disabled  = false;
 			$save_alt_message = false;

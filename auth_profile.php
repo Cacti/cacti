@@ -61,7 +61,45 @@ switch (get_request_var('action')) {
 
 		unset($_SESSION['custom']);
 
-		settings();
+		/* ================= input validation ================= */
+		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z]+)$/')));
+		/* ==================================================== */
+
+		/* present a tabbed interface */
+		$tabs = array(
+			'general'  => array(
+				'display' => __('General'),
+				'url'     => $config['url_path'] . 'auth_profile.php?tab=general&header=false'
+			)
+		);
+
+		api_plugin_hook('auth_profile_tabs');
+
+		/* set the default tab */
+		load_current_session_value('tab', 'sess_profile_tabs', 'general');
+		$current_tab = get_nfilter_request_var('tab');
+
+		if (cacti_sizeof($tabs)) {
+			$i = 0;
+
+			/* draw the tabs */
+			print "<div class='tabs'><nav><ul role='tablist'>\n";
+
+			foreach ($tabs as $tab_short_name => $attribs) {
+				print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
+					" href='" . html_escape($attribs['url']) .
+					"'>" . $attribs['display'] . "</a></li>\n";
+
+				$i++;
+			}
+
+			print "</ul></nav></div>\n";
+		}
+
+		if ($current_tab == 'general') {
+			settings();
+			settings_javascript();
+		}
 
 		bottom_footer();
 		break;
@@ -85,11 +123,15 @@ function api_auth_clear_user_settings() {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ?',
-			array($user));
+		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?',
+				array($user));
 
-		kill_session_var('sess_user_config_array');
+			kill_session_var('sess_user_config_array');
+		} elseif (isset_request_var('tab')) {
+			api_plugin_hook('auth_profile_reset');
+		}
 
 		raise_message('37');
 	}
@@ -101,25 +143,30 @@ function api_auth_clear_user_setting($name) {
 	$user = $_SESSION['sess_user_id'];
 
 	if (!empty($user)) {
-		db_execute_prepared('DELETE FROM settings_user
-			WHERE user_id = ? AND name = ?',
-			array($user, $name));
+		if (isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
+			db_execute_prepared('DELETE FROM settings_user
+				WHERE user_id = ?
+				AND name = ?',
+				array($user, $name));
 
-		foreach($settings_user as $tab => $settings) {
-			if (isset($settings[$name])) {
-				if (isset($settings[$name]['default'])) {
-					db_execute_prepared('INSERT INTO settings_user
-						(name, value, user_id)
-						VALUES (?, ?, ?)',
-						array($name, $settings[$name]['default'], $user));
+			foreach($settings_user as $tab => $settings) {
+				if (isset($settings[$name])) {
+					if (isset($settings[$name]['default'])) {
+						db_execute_prepared('INSERT INTO settings_user
+							(name, value, user_id)
+							VALUES (?, ?, ?)',
+							array($name, $settings[$name]['default'], $user));
 
-					print $settings[$name]['default'];
+						print $settings[$name]['default'];
 
-					kill_session_var('sess_user_config_array');
+						kill_session_var('sess_user_config_array');
 
-					break;
+						break;
+					}
 				}
 			}
+		} else {
+			api_plugin_hook_function('auth_profile_reset_value', $name);
 		}
 	}
 }
@@ -162,20 +209,28 @@ function form_save() {
 		db_execute_prepared("UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?",
-			array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
+			array(
+				get_nfilter_request_var('full_name'),
+				get_nfilter_request_var('email_address'),
+				$_SESSION['sess_user_id']
+			)
+		);
 	}
 
 	$errors = array();
 
 	// Save the users graph settings if they have permission
-	if (is_view_allowed('graph_settings') == true) {
+	if (is_view_allowed('graph_settings') == true && isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
 		save_user_settings($_SESSION['sess_user_id']);
+	} elseif (isset_request_var('tab')) {
+		api_plugin_hook('auth_profile_save');
 	}
 
 	if (cacti_sizeof($errors) == 0) {
 		raise_message(1);
 	} else {
 		raise_message(35);
+
 		foreach($errors as $error) {
 			raise_message($error);
 		}
@@ -200,25 +255,31 @@ function settings() {
 		return;
 	}
 
-	$referer = '';
+	$_SESSION['profile_referer'] = 'auth_profile.php';
 
 	if (get_request_var('action') == 'edit') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
-			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
-			if ($timespan_sel_pos) {
-				$referer = substr($referer, 0, $timespan_sel_pos);
+			$referer = $_SERVER['HTTP_REFERER'];
+
+			if (strpos($referer, 'auth_profile.php') === false) {
+				$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+				if ($timespan_sel_pos) {
+					$referer = substr($referer, 0, $timespan_sel_pos);
+				}
+
+				$_SESSION['profile_referer'] = html_escape($referer);
 			}
 		}
-
-		$_SESSION['profile_referer'] = ($referer != '' ? $referer:'graph_view.php');
 	}
 
 	form_start('auth_profile.php', 'chk');
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($_SESSION['sess_user_id']));
 
 	if (!cacti_sizeof($current_user)) {
 		return;
@@ -368,10 +429,21 @@ function settings() {
 		html_end_box(true, true);
 	}
 
+	form_hidden_box('save_component_graph_config','1','');
+
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
+
+	form_end();
+}
+
+function settings_javascript() {
+	global $config;
+
 	?>
 	<script type='text/javascript'>
 
-	var themeFonts=<?php print read_config_option('font_method');?>;
+	var themeFonts   = <?php print read_config_option('font_method');?>;
+	var currentTab   = '<?php print get_nfilter_request_var('tab');?>';
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
 
@@ -491,7 +563,7 @@ function settings() {
 							var id = $(this).attr('data-id');
 
 							if (id != undefined) {
-								$.get('auth_profile.php?action=reset_default&name='+id, function(data) {
+								$.get('auth_profile.php?tab='+currentTab+'&action=reset_default&name='+id, function(data) {
 									if (id != 'selected_theme' && id != 'user_language') {
 										if ($('#'+id).is(':checkbox')) {
 											if (data == 'on') {
@@ -522,30 +594,23 @@ function settings() {
 		$('select, input[type!="button"]').unbind().keyup(function() {
 			name  = $(this).attr('id');
 			value = $(this).val();
-			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 			});
 		}).change(function() {
 			name  = $(this).attr('id');
 			value = $(this).val();
-			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 				if (name == 'selected_theme' || name == 'user_language') {
 					document.location = 'auth_profile.php?action=edit';
 				}
 			});
 		});
 
-		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print html_escape(isset($_SESSION['profile_referer']) ? $_SESSION['profile_referer']:'auth_profile.php');?>';
+		$('#return').click(function() {
+			cactiReturnTo('<?php print $_SESSION['profile_referer'];?>');
 		});
 	});
 
 	</script>
 	<?php
-
-	form_hidden_box('save_component_graph_config','1','');
-
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
-
-	form_end();
 }
-

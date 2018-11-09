@@ -1,5 +1,14 @@
 Cacti CHANGELOG
 
+1.2.0 Beta 3
+-issue#2002: api_plugin_db_table_create should support non-string defaults
+-issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()
+-issue#2127: Unable to save error when duplicating graph
+-issue#2135: api_tree_lock() and api_tree_unlock() forcing redirection incorrectly
+-issue#2143: export.php Illegal string offset 'method'
+-issue#2153: Utilities page issues the wrong hook for tabs
+-issue: Unable to display user profile tabs
+
 1.2.0 Beta 1
 -security#1882: Bypass output validation in select cases
 -issue#186: Cacti does not support jQueryUI 1.12.x
@@ -145,6 +154,7 @@ Cacti CHANGELOG
 -feature: Update JavaScript library jquery-migrate.js to 3.0.1
 -feature: Update JavaScript library screenfull.js to 3.3.3
 -feature: Update JavaScript library jstree.js to 3.3.6
+-feature: Update JavaScript library Chart.js to 2.7.3
 -feature: Update phpseclib to version 2.0.11
 -feature: Update JavaScript library jquery.js to 3.3.1
 -feature: Make Top Tabs use Ajax Callback

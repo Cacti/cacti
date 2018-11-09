@@ -1,5 +1,5 @@
 <?php
-include(dirname(__FILE__) . '/../lib/poller.php');
+include_once(dirname(__FILE__) . '/../lib/poller.php');
 
 class Installer implements JsonSerializable {
 	const EXIT_DB_EMPTY = 1;

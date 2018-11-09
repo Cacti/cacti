@@ -331,7 +331,9 @@ function read_user_setting($config_name, $default = false, $force = false, $user
    @arg $value       - the values to be saved
    @returns          - void */
 function set_config_option($config_name, $value) {
-	db_execute_prepared('REPLACE INTO settings SET name = ?, value = ?', array($config_name, $value));
+	db_execute_prepared('REPLACE INTO settings
+		SET name = ?, value = ?',
+		array($config_name, $value));
 }
 
 /* config_value_exists - determines if a value exists for the current user/setting specified

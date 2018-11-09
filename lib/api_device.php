@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once($config['base_path'] . '/lib/poller.php');
+
 /* api_device_crc_update - update hash stored in settings table to inform
    remote pollers to update their caches
    @arg $poller_id - the id of the poller impacted by hash update

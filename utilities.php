@@ -234,7 +234,7 @@ function utilities_view_tech($php_info = '') {
 			$i++;
 		}
 
-		api_plugin_hook('user_admin_tab');
+		api_plugin_hook('utilities_tab');
 
 		print "</ul></nav></div>\n";
 	}

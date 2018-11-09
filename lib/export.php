@@ -485,10 +485,8 @@ function vdef_to_xml($vdef_id) {
 
 			$xml_text .= "\t\t<hash_" . $hash['vdef_item'] . ">\n";
 			$fields_vdef_item_edit = preset_vdef_item_form_list();
-			foreach ($fields_vdef_item_edit as $field_name => $field_array) {
-				if (($field_array['method'] != 'hidden_zero') && ($field_array['method'] != 'hidden') && ($field_array['method'] != 'spacer')) {
-					$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
-				}
+			foreach ($fields_vdef_item_edit as $field_name) {
+				$xml_text .= "\t\t\t<$field_name>" . xml_character_encode($item[$field_name]) . "</$field_name>\n";
 			}
 			$xml_text .= "\t\t</hash_" . $hash['vdef_item'] . ">\n";
 

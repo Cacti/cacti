@@ -567,7 +567,7 @@ function update_resource_cache($poller_id = 1) {
 	$rpath = $config['resource_path'];
 
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-	$excluded_dirs       = array('.git');
+	$excluded_dirs       = array('.git', 'log');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -880,9 +880,8 @@ function resource_cache_out($type, $path) {
 
 	$settings_path = "md5dirsum_$type";
 	$php_path      = read_config_option('path_php_binary');
-
 	$last_md5      = read_config_option($settings_path);
-	$curr_md5      = md5sum_path($path['path']);
+	$curr_md5      = md5sum_path($path['path'], $path['recursive']);
 
 	if (empty($last_md5) || $last_md5 != $curr_md5) {
 		$entries = db_fetch_assoc_prepared('SELECT id, `path`, md5sum, attributes
@@ -1009,6 +1008,8 @@ function md5sum_path($path, $recursive = true) {
 
 			if (is_dir($path . DIRECTORY_SEPARATOR . $entry) && $recursive) {
 				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
+			} elseif (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
+				// Ignore directories who are not recursive
 			} else {
 				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
 			}
@@ -1098,7 +1099,7 @@ function poller_connect_to_remote($poller_id) {
 	return $rcnn_id;
 }
 
-function replicate_out($remote_poller_id = 1) {
+function replicate_out($remote_poller_id = 1, $class = 'all') {
 	global $config;
 
 	$rcnn_id = poller_connect_to_remote($remote_poller_id);
@@ -1108,156 +1109,170 @@ function replicate_out($remote_poller_id = 1) {
 	}
 
 	// Start Push Replication
-	$data = db_fetch_assoc('SELECT *
-		FROM settings
-		WHERE name NOT LIKE "%_lastrun%"
-		AND name NOT LIKE "path_%"
-		AND name NOT LIKE "%_path"
-		AND name NOT LIKE "stats%"
-		AND name != "rrdtool_version"
-		AND name NOT LIKE "poller_replicate%"
-		AND name != "poller_enabled"
-		AND name NOT LIKE "md5dirsum%"');
-	replicate_table_to_poller($rcnn_id, $data, 'settings');
+	if ($class == 'all' || $class == 'settings') {
+		$data = db_fetch_assoc('SELECT *
+			FROM settings
+			WHERE name NOT LIKE "%_lastrun%"
+			AND name NOT LIKE "path_%"
+			AND name NOT LIKE "%_path"
+			AND name NOT LIKE "stats%"
+			AND name != "rrdtool_version"
+			AND name NOT LIKE "poller_replicate%"
+			AND name != "poller_enabled"
+			AND name NOT LIKE "md5dirsum%"
+			UNION
+			SELECT *
+			FROM settings
+			WHERE name LIKE "path_spine%"');
+		replicate_table_to_poller($rcnn_id, $data, 'settings');
+	}
 
-	$data = db_fetch_assoc('SELECT * FROM data_input');
-	replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
+	// Core tables
+	if ($class == 'all') {
+		$data = db_fetch_assoc('SELECT * FROM data_input');
+		replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM snmp_query');
-	replicate_out_table($rcnn_id, $data, 'snmp_query', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM snmp_query');
+		replicate_out_table($rcnn_id, $data, 'snmp_query', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM data_input_fields');
-	replicate_out_table($rcnn_id, $data, 'data_input_fields', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM data_input_fields');
+		replicate_out_table($rcnn_id, $data, 'data_input_fields', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM poller');
-	replicate_out_table($rcnn_id, $data, 'poller', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM poller');
+		replicate_out_table($rcnn_id, $data, 'poller', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth');
-	replicate_out_table($rcnn_id, $data, 'user_auth', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM version');
+		replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
+	}
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth_group');
-	replicate_out_table($rcnn_id, $data, 'user_auth_group', $remote_poller_id);
+	// Auth tables
+	if ($class == 'all' || $class == 'auth') {
+		$data = db_fetch_assoc('SELECT * FROM user_auth');
+		replicate_out_table($rcnn_id, $data, 'user_auth', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth_group_members');
-	replicate_out_table($rcnn_id, $data, 'user_auth_group_members', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_auth_group');
+		replicate_out_table($rcnn_id, $data, 'user_auth_group', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth_group_perms');
-	replicate_out_table($rcnn_id, $data, 'user_auth_group_perms', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_auth_group_members');
+		replicate_out_table($rcnn_id, $data, 'user_auth_group_members', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth_group_realm');
-	replicate_out_table($rcnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_auth_group_perms');
+		replicate_out_table($rcnn_id, $data, 'user_auth_group_perms', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_auth_realm');
-	replicate_out_table($rcnn_id, $data, 'user_auth_realm', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_auth_group_realm');
+		replicate_out_table($rcnn_id, $data, 'user_auth_group_realm', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_domains');
-	replicate_out_table($rcnn_id, $data, 'user_domains', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_auth_realm');
+		replicate_out_table($rcnn_id, $data, 'user_auth_realm', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
-	replicate_out_table($rcnn_id, $data, 'user_domains_ldap', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_domains');
+		replicate_out_table($rcnn_id, $data, 'user_domains', $remote_poller_id);
 
-	$data = db_fetch_assoc('SELECT * FROM version');
-	replicate_out_table($rcnn_id, $data, 'version', $remote_poller_id);
+		$data = db_fetch_assoc('SELECT * FROM user_domains_ldap');
+		replicate_out_table($rcnn_id, $data, 'user_domains_ldap', $remote_poller_id);
+	}
 
-	$data = db_fetch_assoc_prepared('SELECT hsq.*
-		FROM host_snmp_query AS hsq
-		INNER JOIN host AS h
-		ON h.id=hsq.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'host_snmp_query', $remote_poller_id);
+	if ($class == 'all' || $class == 'data') {
+		$data = db_fetch_assoc_prepared('SELECT hsq.*
+			FROM host_snmp_query AS hsq
+			INNER JOIN host AS h
+			ON h.id=hsq.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'host_snmp_query', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pc.*
-		FROM poller_command AS pc
-		WHERE pc.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'poller_command', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT pc.*
+			FROM poller_command AS pc
+			WHERE pc.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'poller_command', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pi.*
-		FROM poller_item AS pi
-		WHERE pi.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT pi.*
+			FROM poller_item AS pi
+			WHERE pi.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'poller_item', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT h.*
-		FROM host AS h
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'host', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT h.*
+			FROM host AS h
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'host', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT hsc.*
-		FROM host_snmp_cache AS hsc
-		INNER JOIN host AS h
-		ON h.id=hsc.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'host_snmp_cache', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT hsc.*
+			FROM host_snmp_cache AS hsc
+			INNER JOIN host AS h
+			ON h.id=hsc.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'host_snmp_cache', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT pri.*
-		FROM poller_reindex AS pri
-		INNER JOIN host AS h
-		ON h.id=pri.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'poller_reindex', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT pri.*
+			FROM poller_reindex AS pri
+			INNER JOIN host AS h
+			ON h.id=pri.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'poller_reindex', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dl.*
-		FROM data_local AS dl
-		INNER JOIN host AS h
-		ON h.id=dl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'data_local', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT dl.*
+			FROM data_local AS dl
+			INNER JOIN host AS h
+			ON h.id=dl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'data_local', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT gl.*
-		FROM graph_local AS gl
-		INNER JOIN host AS h
-		ON h.id=gl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'graph_local', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT gl.*
+			FROM graph_local AS gl
+			INNER JOIN host AS h
+			ON h.id=gl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'graph_local', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dtd.*
-		FROM data_template_data AS dtd
-		INNER JOIN data_local AS dl
-		ON dtd.local_data_id=dl.id
-		INNER JOIN host AS h
-		ON h.id=dl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'data_template_data', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT dtd.*
+			FROM data_template_data AS dtd
+			INNER JOIN data_local AS dl
+			ON dtd.local_data_id=dl.id
+			INNER JOIN host AS h
+			ON h.id=dl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'data_template_data', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT dtr.*
-		FROM data_template_rrd AS dtr
-		INNER JOIN data_local AS dl
-		ON dtr.local_data_id=dl.id
-		INNER JOIN host AS h
-		ON h.id=dl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'data_template_rrd', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT dtr.*
+			FROM data_template_rrd AS dtr
+			INNER JOIN data_local AS dl
+			ON dtr.local_data_id=dl.id
+			INNER JOIN host AS h
+			ON h.id=dl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'data_template_rrd', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT gti.*
-		FROM graph_templates_item AS gti
-		INNER JOIN graph_local AS gl
-		ON gti.local_graph_id=gl.id
-		INNER JOIN host AS h
-		ON h.id=gl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'graph_templates_item', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT gti.*
+			FROM graph_templates_item AS gti
+			INNER JOIN graph_local AS gl
+			ON gti.local_graph_id=gl.id
+			INNER JOIN host AS h
+			ON h.id=gl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'graph_templates_item', $remote_poller_id);
 
-	$data = db_fetch_assoc_prepared('SELECT did.*
-		FROM data_input_data AS did
-		INNER JOIN data_template_data AS dtd
-		ON did.data_template_data_id=dtd.id
-		INNER JOIN data_local AS dl
-		ON dl.id=dtd.local_data_id
-		INNER JOIN host AS h
-		ON h.id=dl.host_id
-		WHERE h.poller_id = ?',
-		array($remote_poller_id));
-	replicate_out_table($rcnn_id, $data, 'data_input_data', $remote_poller_id);
+		$data = db_fetch_assoc_prepared('SELECT did.*
+			FROM data_input_data AS did
+			INNER JOIN data_template_data AS dtd
+			ON did.data_template_data_id=dtd.id
+			INNER JOIN data_local AS dl
+			ON dl.id=dtd.local_data_id
+			INNER JOIN host AS h
+			ON h.id=dl.host_id
+			WHERE h.poller_id = ?',
+			array($remote_poller_id));
+		replicate_out_table($rcnn_id, $data, 'data_input_data', $remote_poller_id);
+	}
 
 	api_plugin_hook_function('replicate_out', $remote_poller_id);
 

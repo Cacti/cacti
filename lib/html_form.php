@@ -462,7 +462,7 @@ function form_submit($form_name, $value, $title = '', $action = '') {
    @arg $form_size - the size (width) of the textbox */
 function form_file($form_name, $form_size = 30) {
 	print "<div>\n";
-	print "<label class='import_label' for='import_file'>" . __('Select a File'). "</label>\n";
+	print "<label class='import_label' for='$form_name'>" . __('Select a File'). "</label>\n";
 	print "<input type='file'";
 
 	if (isset($_SESSION['sess_error_fields']) && !empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -882,8 +882,10 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$labelClass = ' checkboxLabelWanted';
 	}
 
+	print "<span class='nowrap'>";
 	print "<label class='checkboxSwitch' " . ($title != "" ? " title='$title'":"") . "><input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
 	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . "</label>";
+	print "</span><br>";
 }
 
 /* form_radio_button - draws a standard html radio button
