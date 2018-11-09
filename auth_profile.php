@@ -246,25 +246,31 @@ function settings() {
 		return;
 	}
 
-	$referer = '';
+	$_SESSION['profile_referer'] = 'auth_profile.php';
 
 	if (get_request_var('action') == 'edit') {
 		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
-			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
-			if ($timespan_sel_pos) {
-				$referer = substr($referer, 0, $timespan_sel_pos);
+			$referer = $_SERVER['HTTP_REFERER'];
+
+			if (strpos($referer, 'auth_profile.php') === false) {
+				$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+				if ($timespan_sel_pos) {
+					$referer = substr($referer, 0, $timespan_sel_pos);
+				}
+
+				$_SESSION['profile_referer'] = html_escape($referer);
 			}
 		}
-
-		$_SESSION['profile_referer'] = ($referer != '' ? $referer:'graph_view.php');
 	}
 
 	form_start('auth_profile.php', 'chk');
 
 	html_start_box(__('User Account Details'), '100%', true, '3', 'center', '');
 
-	$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
+	$current_user = db_fetch_row_prepared('SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($_SESSION['sess_user_id']));
 
 	if (!cacti_sizeof($current_user)) {
 		return;
@@ -591,8 +597,8 @@ function settings_javascript() {
 			});
 		});
 
-		$('input[value="<?php print __esc('Return');?>"]').unbind().click(function(event) {
-			document.location = '<?php print html_escape(isset($_SESSION['profile_referer']) ? $_SESSION['profile_referer']:'auth_profile.php');?>';
+		$('#return').click(function() {
+			cactiReturnTo('<?php print $_SESSION['profile_referer'];?>');
 		});
 	});
 
