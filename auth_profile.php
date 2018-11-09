@@ -61,7 +61,45 @@ switch (get_request_var('action')) {
 
 		unset($_SESSION['custom']);
 
-		settings();
+		/* ================= input validation ================= */
+		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z]+)$/')));
+		/* ==================================================== */
+
+		/* present a tabbed interface */
+		$tabs = array(
+			'general'  => array(
+				'display' => __('General'),
+				'url'     => $config['url_path'] . 'auth_profile.php?tab=general&header=false'
+			)
+		);
+
+		api_plugin_hook('auth_profile_tabs');
+
+		/* set the default tab */
+		load_current_session_value('tab', 'sess_profile_tabs', 'general');
+		$current_tab = get_nfilter_request_var('tab');
+
+		if (cacti_sizeof($tabs)) {
+			$i = 0;
+
+			/* draw the tabs */
+			print "<div class='tabs'><nav><ul role='tablist'>\n";
+
+			foreach ($tabs as $tab_short_name => $attribs) {
+				print "<li class='subTab'><a class='tab" . (($tab_short_name == $current_tab) ? " selected'" : "'") .
+					" href='" . html_escape($attribs['url']) .
+					"'>" . $attribs['display'] . "</a></li>\n";
+
+				$i++;
+			}
+
+			print "</ul></nav></div>\n";
+		}
+
+		if ($current_tab == 'general') {
+			settings();
+			settings_javascript();
+		}
 
 		bottom_footer();
 		break;
@@ -162,20 +200,28 @@ function form_save() {
 		db_execute_prepared("UPDATE user_auth
 			SET full_name = ?, email_address = ?
 			WHERE id = ?",
-			array(get_nfilter_request_var('full_name'), get_nfilter_request_var('email_address'), $_SESSION['sess_user_id']));
+			array(
+				get_nfilter_request_var('full_name'),
+				get_nfilter_request_var('email_address'),
+				$_SESSION['sess_user_id']
+			)
+		);
 	}
 
 	$errors = array();
 
 	// Save the users graph settings if they have permission
-	if (is_view_allowed('graph_settings') == true) {
+	if (is_view_allowed('graph_settings') == true && isset_request_var('tab') && get_nfilter_request_var('tab') == 'general') {
 		save_user_settings($_SESSION['sess_user_id']);
+	} elseif (isset_request_var('tab')) {
+		api_plugin_hook('auth_profile_save');
 	}
 
 	if (cacti_sizeof($errors) == 0) {
 		raise_message(1);
 	} else {
 		raise_message(35);
+
 		foreach($errors as $error) {
 			raise_message($error);
 		}
@@ -368,10 +414,21 @@ function settings() {
 		html_end_box(true, true);
 	}
 
+	form_hidden_box('save_component_graph_config','1','');
+
+	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
+
+	form_end();
+}
+
+function settings_javascript() {
+	global $config;
+
 	?>
 	<script type='text/javascript'>
 
-	var themeFonts=<?php print read_config_option('font_method');?>;
+	var themeFonts   = <?php print read_config_option('font_method');?>;
+	var currentTab   = '<?php print get_nfilter_request_var('tab');?>';
 	var currentTheme = '<?php print get_selected_theme();?>';
 	var currentLang  = '<?php print read_config_option('user_language');?>';
 
@@ -522,12 +579,12 @@ function settings() {
 		$('select, input[type!="button"]').unbind().keyup(function() {
 			name  = $(this).attr('id');
 			value = $(this).val();
-			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 			});
 		}).change(function() {
 			name  = $(this).attr('id');
 			value = $(this).val();
-			$.get('auth_profile.php?action=update_data&name='+name+'&value='+value, function() {
+			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 				if (name == 'selected_theme' || name == 'user_language') {
 					document.location = 'auth_profile.php?action=edit';
 				}
@@ -541,11 +598,4 @@ function settings() {
 
 	</script>
 	<?php
-
-	form_hidden_box('save_component_graph_config','1','');
-
-	form_save_buttons(array(array('id' => 'return', 'value' => __esc('Return'))));
-
-	form_end();
 }
-
