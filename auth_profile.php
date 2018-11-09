@@ -73,7 +73,7 @@ switch (get_request_var('action')) {
 			)
 		);
 
-		api_plugin_hook('auth_profile_tabs');
+		$tabs = api_plugin_hook_function('auth_profile_tabs', $tabs);
 
 		/* set the default tab */
 		load_current_session_value('tab', 'sess_profile_tabs', 'general');
