@@ -28,6 +28,8 @@
  * @arg $web - is this a web operation
  * @returns - null unless in $web, in which case it redirects to the page */
 function api_tree_lock($tree_id, $user_id = 0, $web = true) {
+	global $config;
+
 	/* ================= input validation ================= */
 	input_validate_input_number($tree_id);
 	input_validate_input_number($user_id);
@@ -39,7 +41,7 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
 		array($user_id, $tree_id));
 
 	if ($web) {
-		header('Location: tree.php?action=edit&id=' . $tree_id);
+		header('Location: ' . $config['url_path'] . 'tree.php?action=edit&id=' . $tree_id);
 	}
 }
 
@@ -49,6 +51,8 @@ function api_tree_lock($tree_id, $user_id = 0, $web = true) {
  * @arg $web - is this a web operation
  * @returns - null unless in $web, in which case it redirects to the page */
 function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
+	global $config;
+
 	/* ================= input validation ================= */
 	input_validate_input_number($tree_id);
 	input_validate_input_number($user_id);
@@ -60,7 +64,7 @@ function api_tree_unlock($tree_id, $user_id = 0, $web = true) {
 		array($user_id, $tree_id));
 
 	if ($web) {
-		header('Location: tree.php?action=edit&id=' . $tree_id);
+		header('Location: ' . $config['url_path'] . 'tree.php?action=edit&id=' . $tree_id);
 	}
 }
 
