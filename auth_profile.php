@@ -62,7 +62,7 @@ switch (get_request_var('action')) {
 		unset($_SESSION['custom']);
 
 		/* ================= input validation ================= */
-		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z]+)$/')));
+		get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
 		/* ==================================================== */
 
 		/* present a tabbed interface */
