@@ -202,7 +202,7 @@ function utilities_view_tech($php_info = '') {
 	}
 
 	/* ================= input validation ================= */
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z]+)$/')));
+	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
 	/* ==================================================== */
 
 	/* present a tabbed interface */

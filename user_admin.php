@@ -1932,7 +1932,7 @@ function user_edit() {
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
-	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z]+)$/')));
+	get_filter_request_var('tab', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-z_A-Z]+)$/')));
 	/* ==================================================== */
 
 	/* present a tabbed interface */
