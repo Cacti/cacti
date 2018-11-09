@@ -882,8 +882,10 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 		$labelClass = ' checkboxLabelWanted';
 	}
 
+	print "<span class='nowrap'>";
 	print "<label class='checkboxSwitch' " . ($title != "" ? " title='$title'":"") . "><input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
 	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . "</label>";
+	print "</span><br>";
 }
 
 /* form_radio_button - draws a standard html radio button
