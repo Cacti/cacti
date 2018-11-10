@@ -171,13 +171,18 @@ function api_device_disable_devices($device_ids) {
 
 	foreach ($device_ids as $device_id) {
 		db_execute_prepared("UPDATE host
-			SET disabled='on'
+			SET disabled = 'on', status = 0
 			WHERE id = ?",
 			array($device_id));
 
 		/* update poller cache */
-		db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($device_id));
-		db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($device_id));
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE host_id = ?',
+			array($device_id));
+
+		db_execute_prepared('DELETE FROM poller_reindex
+			WHERE host_id = ?',
+			array($device_id));
 
 		$poller_id = db_fetch_cell_prepared('SELECT poller_id
 			FROM host
@@ -191,8 +196,13 @@ function api_device_disable_devices($device_ids) {
 				array($device_id), true, $rcnn_id);
 
 			/* update poller cache */
-			db_execute_prepared('DELETE FROM poller_item WHERE host_id = ?', array($device_id), true, $rcnn_id);
-			db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM poller_item
+				WHERE host_id = ?',
+				array($device_id), true, $rcnn_id);
+
+			db_execute_prepared('DELETE FROM poller_reindex
+				WHERE host_id = ?',
+				array($device_id), true, $rcnn_id);
 		}
 	}
 }
@@ -638,6 +648,12 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	/* disabled = 'on'   => regexp '^on$'
 	 * not disabled = '' => no regexp, but allow nulls */
 	$save['disabled']             = form_input_validate($disabled, 'disabled', '^on$', true, 3);
+
+	if ($save['disabled'] == 'on') {
+		if ($save['id'] > 0) {
+			api_device_disable_devices(array($save['id']));
+		}
+	}
 
 	$save['availability_method']  = form_input_validate($availability_method, 'availability_method', '^[0-9]+$', false, 3);
 	$save['ping_method']          = form_input_validate($ping_method, 'ping_method', '^[0-9]+$', false, 3);

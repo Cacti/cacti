@@ -6,6 +6,8 @@ Cacti CHANGELOG
 -issue#2127: Unable to save error when duplicating graph
 -issue#2135: api_tree_lock() and api_tree_unlock() forcing redirection incorrectly
 -issue#2143: export.php Illegal string offset 'method'
+-issue#2144: Device Management "Status" column does not sort properly
+-issue#2152: When editing a device, should show disable/enable option
 -issue#2153: Utilities page issues the wrong hook for tabs
 -issue: Unable to display user profile tabs
 
