@@ -55,7 +55,9 @@ function api_device_remove($device_id) {
 	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'));
 	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'));
 
-	api_device_purge_from_remote($device_id);
+	if ($poller_id > 1) {
+		api_device_purge_from_remote($device_id, $poller_id);
+	}
 
 	$graphs = array_rekey(
 		db_fetch_assoc_prepared('SELECT id
