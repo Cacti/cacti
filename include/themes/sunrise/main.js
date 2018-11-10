@@ -209,7 +209,7 @@ function themeReady() {
 
 		// hide the previously shown element
 		if (element.attr('id').replace('dd', '') != graphMenuElement && graphMenuElement > 0) {
-			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide('slide', { direction: 'left' }, 300);
+			$('#dd'+graphMenuElement).find('.iconWrapper:first').hide(300);
 		}
 
 		clearTimeout(graphMenuTimer);
@@ -223,7 +223,7 @@ function themeReady() {
 
 	function showGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').show('slide', { direction: 'left' }, 300, function() {
+		element.find('.iconWrapper').show(300, function() {
 			graphMenuElement = element.attr('id').replace('dd', '');;
 			$(this).find('.spikekillMenu').menu('enable');
 		});
@@ -231,7 +231,7 @@ function themeReady() {
 
 	function hideGraphMenu(element) {
 		element.find('.spikekillMenu').menu('disable');
-		element.find('.iconWrapper').hide('slide', { direction: 'left' }, 300, function() {
+		element.find('.iconWrapper').hide(300, function() {
 			$(this).find('.spikekillMenu').menu('enable');
 		});
 	}
