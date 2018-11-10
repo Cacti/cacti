@@ -260,7 +260,7 @@ function aggregate_color_item_remove_confirm() {
 		</td>
 	</tr>
 	<tr>
-		<td align='right'>
+		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
 		</td>

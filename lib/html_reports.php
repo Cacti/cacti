@@ -961,7 +961,7 @@ function reports_item_edit() {
 	form_hidden_box('report_id', (isset($reports_item['report_id']) ? $reports_item['report_id'] : '0'), '');
 	form_hidden_box('save_component_report_item', '1', '');
 
-	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td align='center' id='graph'></td></tr></table>";
+	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td class='center' id='graph'></td></tr></table>";
 
 	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
 
@@ -1064,7 +1064,7 @@ function reports_item_edit() {
 	function graphImage(graphId) {
 		if (graphId > 0) {
 			$('#graphdiv').show();
-			$('#graph').html("<img align='center' src='<?php print $config['url_path'];?>graph_image.php"+
+			$('#graph').html("<img class='center' src='<?php print $config['url_path'];?>graph_image.php"+
 					"?local_graph_id="+graphId+
 					"&image_format=png"+
 					"<?php print (($report['graph_width'] > 0) ? '&graph_width=' . $report['graph_width']:'');?>"+
@@ -1218,7 +1218,7 @@ function reports_edit() {
 		}
 
 		$(function() {
-	                $('#mailtime').datetimepicker({
+			$('#mailtime').datetimepicker({
 				minuteGrid: 10,
 				stepMinute: 1,
 				showAnim: 'slideDown',
@@ -1399,7 +1399,7 @@ function display_reports_items($report_id) {
 				$form_data .= '<td class="right nowrap"><span class="moveArrowNone"></span>' . '<a class="remover fa fa-caret-up moveArrow" title="' . __esc('Move Up') . '" href="' . html_escape(get_reports_page() . '?action=item_moveup&item_id=' . $item['id'] .	'&id=' . $report_id) . '"></a>' . '</td>';
 			}
 
-			$form_data .= '<td align="right"><a class="pic deleteMarker fa fa-times" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
+			$form_data .= '<td class="right"><a class="pic deleteMarker fa fa-times" href="' . html_escape(get_reports_page() . '?action=item_remove&item_id=' . $item['id'] . '&id=' . $report_id) . '" title="' . __esc('Delete') . '"></a>' . '</td></tr>';
 			print $form_data;
 
 			$i++;

@@ -194,7 +194,7 @@ function clog_view_logfile() {
 			</td>
 		</tr>
 		<tr class='saveRow'>
-			<td colspan='2' align='right'>
+			<td colspan='2' class='right'>
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='" . __esc('Cancel') . "'>&nbsp
 				<input type='button' class='ui-button ui-corner-all ui-widget' id='pc' name='purge_continue' value='" . __esc('Continue') . "' title='" . __esc('Purge Log') . "'>
 				<script type='text/javascript'>

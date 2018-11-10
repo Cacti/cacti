@@ -329,7 +329,7 @@ $sizes = array(
 				</td>
 			</tr>
 			<tr>
-				<td align='center' colspan='6'>
+				<td class='center' colspan='6'>
 					<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
 				</td>
 			</tr>

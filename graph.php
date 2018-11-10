@@ -128,7 +128,7 @@ case 'view':
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr class='tableRowGraph'>
-				<td align='center'>
+				<td class='center'>
 					<table>
 						<tr>
 							<td>
@@ -333,12 +333,12 @@ case 'zoom':
 		</td>
 	</tr>
 	<tr class='tableRowGraph'>
-		<td align='center'>
+		<td class='center'>
 			<table>
 				<tr>
-					<td align='center'>
+					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
+                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
 					</td>
 					<td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
 						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
@@ -527,7 +527,7 @@ case 'properties':
 	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 	$graph_data_array['print_source'] = 1;
 
-	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
+	print "<table class='center' width='100%' class='cactiTable'<tr><td>\n";
 	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>" . __('RRDtool Graph Syntax') . "</td></tr>\n";
 	print "<tr><td><pre>\n";

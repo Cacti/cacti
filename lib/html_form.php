@@ -1173,7 +1173,7 @@ function form_confirm_buttons($action_url, $cancel_url) {
 	global $config;
 	?>
 	<tr>
-		<td align='right'>
+		<td class='right'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $cancel_url);?>")' value='<?php print __esc('Cancel');?>'>
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo("<?php print html_escape($config['url_path'] . $action_url . '&confirm=true');?>")' value='<?php print __esc('Delete');?>'>
 		</td>

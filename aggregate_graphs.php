@@ -397,7 +397,7 @@ function form_actions() {
 						</td>
 					</tr>\n";
 
-					$save_html = "<tr><td colspan='2' align='right'><input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
+					$save_html = "<tr><td colspan='2' class='right'><input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
 				} else {
 					print "<tr>
 						<td class='textArea'>
