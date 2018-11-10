@@ -79,7 +79,7 @@ switch (get_request_var('action')) {
 		load_current_session_value('tab', 'sess_profile_tabs', 'general');
 		$current_tab = get_nfilter_request_var('tab');
 
-		if (cacti_sizeof($tabs)) {
+		if (cacti_sizeof($tabs) > 1) {
 			$i = 0;
 
 			/* draw the tabs */
