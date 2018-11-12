@@ -738,7 +738,7 @@ function clog_regex_dataquery($matches) {
 		}
 
 		foreach ($query_ids as $query_id) {
-			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_query.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'data_queries.php?action=edit&id=' . $query_id) . '\'>' . (isset($queryDescriptions[$query_id]) ? $queryDescriptions[$query_id]:$query_id) . '</a>' . $matches[3];
 		}
 	}
 
