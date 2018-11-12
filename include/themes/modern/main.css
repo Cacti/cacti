@@ -2498,10 +2498,12 @@ input:checked + .checkboxSlider:before {
 	margin-left: 5px;
 	margin-right: 5px;
 	vertical-align: middle;
+	height: 24px;
+	width: 24px;
 }
 
 .radioSwitch input {
-	/* display:none; */
+	display:none;
 }
 
 .radioSlider {

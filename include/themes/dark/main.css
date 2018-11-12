@@ -2370,11 +2370,13 @@ input:checked + .checkboxSlider:before {
 	display: inline-block;
 	margin-left: 5px;
 	margin-right: 5px;
+	height: 24px;
+	width: 24px;
 	vertical-align: middle;
 }
 
 .radioSwitch input {
-	/* display:none; */
+	display:none;
 }
 
 .radioSlider {
