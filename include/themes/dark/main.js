@@ -10,7 +10,6 @@ function themeReady() {
 	$('#navigation').css('height', ($(window).height()-80)+'px');
 	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 	$('.formItemDescription').hide();
-	$('input[type="radio"]').button();
 
 	keepWindowSize();
 

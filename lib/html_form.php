@@ -907,7 +907,7 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 	}
 
 	if ($class != '') {
-		$class = " class='$class' ";
+		$class = " $class";
 	}
 
 	if ($on_change != '') {
@@ -922,7 +922,13 @@ function form_radio_button($form_name, $form_previous_value, $form_current_value
 
 	$css_id = $form_name . '_' . $form_current_value;
 
-	print "<input type='radio' id='$css_id' name='$form_name' value='" . html_escape($form_current_value) . "'" . $class . $on_change . $checked . "><label class='formCheckboxLabel' for='$css_id'>" . html_escape($form_caption) . "</label>\n";
+
+	print "<span class='nowrap'>";
+	print "<label class='radioSwitch'><input value='" . html_escape($form_current_value) .
+		"' class='formCheckbox$class' type='radio' id='$css_id' name='$form_name'" .
+		$on_change . $checked . "><span class='radioSlider radioRound'></span></label>";
+	print "<label class='radioLabelWanted' for='$css_id'>" . html_escape($form_caption) . "</label>";
+	print "</span>";
 }
 
 /* form_text_area - draws a standard html text area box

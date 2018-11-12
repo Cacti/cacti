@@ -2491,3 +2491,82 @@ input:checked + .checkboxSlider:before {
 .center {
 	text-align: center;
 }
+
+.radioSwitch {
+	position: relative;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.radioSwitch input {
+	/* display:none; */
+}
+
+.radioSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 24px;
+	width: 24px;
+	background-color: rgba(98,125,77,1);
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.radioSlider:before {
+	display: none;
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .radioSlider {
+	background-color: rgba(167,217,134,1);
+}
+
+input:checked + .radioSlider:before {
+	display: inline-block;
+}
+
+input:disabled + .radioSlider {
+	cursor: not-allowed;
+}
+
+input:focus + .radioSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .radioSlider:before {
+	display: block;
+}
+
+/* Rounded.radioSliders */
+.radioSlider.radioRound {
+	border-radius: 24px;
+}
+
+.radioSlider.radioRound:before {
+	border-radius: 50%;
+}
+
+.radioLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
