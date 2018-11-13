@@ -99,6 +99,8 @@ switch (get_request_var('action')) {
 		if ($current_tab == 'general') {
 			settings();
 			settings_javascript();
+		} else {
+			api_plugin_hook_function('auth_profile_run_action', get_request_var('tab'));
 		}
 
 		bottom_footer();
