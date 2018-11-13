@@ -322,7 +322,7 @@ abstract class LdapError {
 				break;
 		}
 
-		return array('error_num' => $error_num, 'error_text' => $error_text, 'error_ldap' => $ldapError, 'dn' => '');
+		return array('error_num' => $error_num, 'error_text' => $error_text, 'error_ldap' => $ldapError, 'dn' => '', 'stack' => cacti_debug_backtrace('', false, false));
 	}
 }
 
@@ -385,6 +385,12 @@ class Ldap {
 		session_start();
 	}
 
+	function RecordError($output, $section = 'LDAP') {
+		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
+		cacti_log($section . ': ' . $output['error_text'] . $dn, false, 'AUTH');
+		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', POLLER_VERBOSITY_HIGH);
+	}
+
 	function Authenticate() {
 		$output = array();
 
@@ -409,18 +415,20 @@ class Ldap {
 
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+			cacti_log('LDAP: Connect using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
+			cacti_log('LDAP: Connect using '. $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
 		if ($ldap_conn) {
 			/* Set protocol version */
-			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH');
+			cacti_log('LDAP: Setting protocol version to ' . $this->version, false, 'AUTH', POLLER_VERBOSITY_MEDIUM);
 
 			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion);
-				cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+				Ldap::RecordError($output);
 				ldap_close($ldap_conn);
 				$this->RestoreCactiHandler();
 				return $output;
@@ -430,7 +438,7 @@ class Ldap {
 			if ($this->referrals == '0') {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral);
-					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
 					return $output;
@@ -441,7 +449,7 @@ class Ldap {
 			if ($this->encryption == '2') {
 				if (!ldap_start_tls($ldap_conn)) {
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls);
-					cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+					Ldap::RecordError($output);
 					ldap_close($ldap_conn);
 					$this->RestoreCactiHandler();
 					return $output;
@@ -449,6 +457,7 @@ class Ldap {
 			}
 
 			/* Bind to the LDAP directory */
+			cacti_log('LDAP: Binding with "' . $this->dn . '"', false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_response = ldap_bind($ldap_conn, $this->dn, $this->password);
 			if ($ldap_response) {
 				if ($this->group_require == 1) {
@@ -469,7 +478,7 @@ class Ldap {
 
 						/* we will test in two ways */
 						if ($first_entry !== false) {
-							$true_dn             = ldap_get_dn($ldap_conn, $first_entry);
+							$true_dn     = ldap_get_dn($ldap_conn, $first_entry);
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $true_dn);
 						} else {
 							$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->username);
@@ -481,13 +490,13 @@ class Ldap {
 						$output = LdapError::GetErrorDetails(LdapError::Success);
 					} else if ($ldap_group_response === false) {
 						$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
-						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+						Ldap::RecordError($output);
 						ldap_close($ldap_conn);
 						$this->RestoreCactiHandler();
 						return $output;
 					} else {
 						$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoGroup);
-						cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+						Ldap::RecordError($output);
 						ldap_close($ldap_conn);
 						$this->RestoreCactiHandler();
 						return $output;
@@ -501,7 +510,7 @@ class Ldap {
 				$ldap_error = ldap_errno($ldap_conn);
 				if ($ldap_error == 0x03) {
 					/* protocol error */
-					$ouptut = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, null, $ldap_error);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, null, $ldap_error);
 				} elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output = LdapError::GetErrorDetails(LdapError::Failure);
@@ -528,7 +537,7 @@ class Ldap {
 		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
-			cacti_log('LDAP: ' . $output['error_text'], false, 'AUTH');
+			Ldap::RecordError($output);
 		}
 
 		$this->RestoreCactiHandler();
@@ -554,8 +563,165 @@ class Ldap {
 
 		/* validation */
 		if (empty($this->username)) {
-			cacti_log('LDAP_SEARCH: No username defined', false, 'AUTH');
-			return LdapError::GetErrorDetails(LdapError::UndefinedUsername);
+			$output = LdapError::GetErrorDetails(LdapError::UndefinedUsername);
+			Ldap::RecordError($output);
+			return $output;
+		}
+
+		/* Encode username */
+		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
+
+		/* strip bad chars from username - prevent altering filter from username */
+		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
+		$this->dn = str_replace('<username>', $this->username, $this->dn);
+
+		if ($this->mode == '0') {
+			/* Just bind mode, make dn and return */
+			$output = LdapError::GetErrorDetails(LdapError::Success);
+			$output['dn'] = $this->dn;
+			return $output;
+		} elseif ($this->mode == '2') {
+			/* Specific */
+			if (empty($this->specific_dn) || empty($this->specific_password)) {
+				$output = LdapError::GetErrorDetails(LdapError::UndefinedDnOrPassword);
+				$output['dn'] = $this->dn;
+				Ldap::RecordError($output, 'LDAP_SEARCH');
+				return $output;
+			}
+		} elseif ($this->mode == '1'){
+			/* assume anonymous */
+			$this->specific_dn       = '';
+			$this->specific_password = '';
+		}
+
+		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
+
+		/* Fix encoding on ldap specific search DN and password */
+		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
+		$this->specific_dn       = html_entity_decode($this->specific_dn, $this->GetMask(), 'UTF-8');
+
+		/* Searching mode */
+		$this->SetLdapHandler();
+
+		if ($this->encryption == '1') {
+			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
+		} else {
+			$ldap_conn = ldap_connect($this->host, $this->port);
+		}
+
+		if ($ldap_conn) {
+			/* Set protocol version */
+			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
+				/* protocol error */
+				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion);
+				Ldap::RecordError($output, 'LDAP_SEARCH');
+				ldap_close($ldap_conn);
+
+				$this->RestoreCactiHandler();
+				return $output;
+			}
+
+			/* set referrals */
+			if ($this->referrals == '0') {
+				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
+					/* referrals set error */
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral);
+					Ldap::RecordError($output, 'LDAP_SEARCH');
+					ldap_close($ldap_conn);
+
+					$this->RestoreCactiHandler();
+					return $output;
+				}
+			}
+
+			/* start TLS if requested */
+			if ($this->encryption == '2') {
+				if (!ldap_start_tls($ldap_conn)) {
+					/* TLS startup error */
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls);
+					Ldap::RecordError($output, 'LDAP_SEARCH');
+					ldap_close($ldap_conn);
+
+					$this->RestoreCactiHandler();
+					return $output;
+				}
+			}
+
+			/* bind to the directory */
+			if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
+				/* Search */
+				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
+				if ($ldap_results) {
+					$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
+
+					if ($ldap_entries['count'] == '1') {
+						/* single response return user dn */
+						$output = LdapError::GetErrorDetails(LdapError::Success);
+						$output['dn'] = $ldap_entries['0']['dn'];
+						Ldap::RecordError($output, 'LDAP_SEARCH');
+					} elseif ($ldap_entries['count'] > 1) {
+						/* more than 1 result */
+						$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
+					} else {
+						/* no search results */
+						$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUserDN);
+					}
+				} else {
+					/* no search results, user not found*/
+					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUser);
+				}
+			} else {
+				/* unable to bind */
+				$ldap_error = ldap_errno($ldap_conn);
+				if ($ldap_error == 0x03) {
+					/* protocol error */
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral,null,$ldapError);
+				} elseif ($ldap_error == 0x31) {
+					/* invalid credentials */
+					$output = LdapError::GetErrorDetails(LdapError::Failure);
+				} elseif ($ldap_error == 0x32) {
+					/* insuffient access */
+					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
+				} elseif ($ldap_error == 0x51) {
+					/* unable to connect to server */
+					$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
+				} elseif ($ldap_error == 0x55) {
+					/* timeout */
+					$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
+				} else {
+					/* general bind error */
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, null, $ldap_error);
+				}
+			}
+		} else {
+			/* unable to setup connection */
+			$output = LdapError::GetErrorDetails(LdapError::MissingLdapObject);
+		}
+
+		ldap_close($ldap_conn);
+
+		if ($output['error_num'] > 0) {
+			Ldap::RecordError($output, 'LDAP_SEARCH');
+		}
+
+		$this->RestoreCactiHandler();
+		return $output;
+	}
+
+	function Getcn() {
+		$output = array();
+
+		/* function check */
+		if (!function_exists('ldap_connect')) {
+			return LdapError::GetErrorDetails(LdapError::Disabled);
+		}
+
+		/* validation */
+		if (empty($this->username)) {
+			$output = LdapError::GetErrorDetails(LdapError::Disabled);
+			Ldap::ReportError($output, 'LDAP_SEARCH');
+			return $output;
 		}
 
 		/* Encode username */
@@ -604,7 +770,7 @@ class Ldap {
 			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
 				/* protocol error */
 				$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorVersion);
-				cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
+				Ldap::RecordError($output, 'LDAP_SEARCH');
 				ldap_close($ldap_conn);
 
 				$this->RestoreCactiHandler();
@@ -616,7 +782,7 @@ class Ldap {
 				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
 					/* referrals set error */
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorReferral);
-					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
+					Ldap::RecordError($output, 'LDAP_SEARCH');
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
@@ -629,174 +795,7 @@ class Ldap {
 				if (!ldap_start_tls($ldap_conn)) {
 					/* TLS startup error */
 					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorTls);
-					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
-					ldap_close($ldap_conn);
-
-					$this->RestoreCactiHandler();
-					return $output;
-				}
-			}
-
-			/* bind to the directory */
-			if (ldap_bind($ldap_conn, $this->specific_dn, $this->specific_password)) {
-				/* Search */
-				$ldap_results = ldap_search($ldap_conn, $this->search_base, $this->search_filter, array('dn'));
-				if ($ldap_results) {
-					$ldap_entries = ldap_get_entries($ldap_conn, $ldap_results);
-
-					if ($ldap_entries['count'] == '1') {
-						/* single response return user dn */
-						$output = LdapError::GetErrorDetails(LdapError::Success);
-						$output['dn'] = $ldap_entries['0']['dn'];
-						cacti_log('LDAP_SEARCH: ' . $output['error_text'] . ', DN \'' . $output['dn'] . '\'', false, 'AUTH');
-					} elseif ($ldap_entries['count'] > 1) {
-						/* more than 1 result */
-						$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
-					} else {
-						/* no search results */
-						$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUserDN);
-					}
-				} else {
-					/* no search results, user not found*/
-					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUser);
-				}
-			} else {
-				/* unable to bind */
-				$ldap_error = ldap_errno($ldap_conn);
-				if ($ldap_error == 0x03) {
-					/* protocol error */
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral,null,$ldapError);
-				} elseif ($ldap_error == 0x31) {
-					/* invalid credentials */
-					$output = LdapError::GetErrorDetails(LdapError::Failure);
-				} elseif ($ldap_error == 0x32) {
-					/* insuffient access */
-					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
-				} elseif ($ldap_error == 0x51) {
-					/* unable to connect to server */
-					$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
-				} elseif ($ldap_error == 0x55) {
-					/* timeout */
-					$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
-				} else {
-					/* general bind error */
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, null, $ldap_error);
-				}
-			}
-		} else {
-			/* unable to setup connection */
-			$output = LdapError::GetErrorDetails(LdapError::MissingLdapObject);
-		}
-
-		ldap_close($ldap_conn);
-
-		if ($output['error_num'] > 0) {
-			cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
-		}
-
-		$this->RestoreCactiHandler();
-		return $output;
-	}
-
-	function Getcn() {
-		$output = array();
-
-		/* function check */
-		if (!function_exists('ldap_connect')) {
-			$output['error_num'] = '99';
-			$output['error_text'] = __('PHP LDAP not enabled');
-			return $output;
-		}
-
-		/* validation */
-		if (empty($this->username)) {
-			$output['dn'] = '';
-			$output['error_num'] = '1';
-			$output['error_text'] = __('No username defined');
-			cacti_log('LDAP_SEARCH: ' . $output['error_text'],  false, 'AUTH');
-			return $output;
-		}
-
-		/* Encode username */
-		$this->username = html_entity_decode($this->username, $this->GetMask(), 'UTF-8');
-
-		/* strip bad chars from username - prevent altering filter from username */
-		$this->username = str_replace(array('&', '|', '(', ')', '*', '>', '<', '!', '='), '', $this->username);
-		$this->dn = str_replace('<username>', $this->username, $this->dn);
-
-		if ($this->mode == '0') {
-			/* Just bind mode, make dn and return */
-			$output['dn'] = $this->dn;
-			$output['error_num'] = '0';
-			$output['error_text'] = __('User found');
-			return $output;
-		} elseif ($this->mode == '2') {
-			/* Specific */
-			if (empty($this->specific_dn) || empty($this->specific_password)) {
-				$output['dn'] = $this->dn;
-				$output['error_num'] = '14';
-				$output['error_text'] = __('Specific DN and Password required');
-				return $output;
-			}
-		} elseif ($this->mode == '1'){
-			/* assume anonymous */
-			$this->specific_dn       = '';
-			$this->specific_password = '';
-		}
-
-		$this->search_filter = str_replace('<username>', $this->username, $this->search_filter);
-
-		/* Fix encoding on ldap specific search DN and password */
-		$this->specific_password = html_entity_decode($this->specific_password, $this->GetMask(), 'UTF-8');
-		$this->specific_dn       = html_entity_decode($this->specific_dn, $this->GetMask(), 'UTF-8');
-
-		/* Searching mode */
-		$this->SetLdapHandler();
-
-		if ($this->encryption == '1') {
-			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
-			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
-		} else {
-			$ldap_conn = ldap_connect($this->host, $this->port);
-		}
-
-		if ($ldap_conn) {
-			/* Set protocol version */
-			if (!ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, $this->version)) {
-				/* protocol error */
-				$output['dn'] = '';
-				$output['error_num'] = '4';
-				$output['error_text'] = __('Protocol Error, unable to set version');
-				cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
-				ldap_close($ldap_conn);
-
-				$this->RestoreCactiHandler();
-				return $output;
-			}
-
-			/* set referrals */
-			if ($this->referrals == '0') {
-				if (!ldap_set_option($ldap_conn, LDAP_OPT_REFERRALS, 0)) {
-					/* referrals set error */
-					$output['dn'] = '';
-					$output['error_num'] = '13';
-					$output['error_text'] = __('Unable to set referrals option');
-					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
-					ldap_close($ldap_conn);
-
-					$this->RestoreCactiHandler();
-					return $output;
-				}
-			}
-
-			/* start TLS if requested */
-			if ($this->encryption == '2') {
-				if (!ldap_start_tls($ldap_conn)) {
-					/* TLS startup error */
-					$output['dn'] = '';
-					$output['error_num'] = '5';
-					$output['error_text'] = __('Protocol Error, unable to start TLS communications');
-					cacti_log('LDAP_SEARCH: ' . $output['error_text'], false, 'AUTH');
+					Ldap::RecordError($output, 'LDAP_SEARCH');
 					ldap_close($ldap_conn);
 
 					$this->RestoreCactiHandler();
@@ -827,65 +826,46 @@ class Ldap {
 							$output['cn'][$this->cn[1]] = '';
 						}
 
-						$output['error_num'] = '0';
-						$output['error_text'] = __('CN found');
+						$output = LdapError::GetErrorDetails(LdapError::Success);
 					} else {
-						$output['dn'] = '';
-						$output['error_num'] = '13';
-						$output['error_text'] = __('To many records find');
+						$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
 					}
 				} else {
 					/* no search results, user not found*/
-					$output['dn'] = '';
-					$output['error_num'] = '15';
-					$output['error_text'] = __('Unable to find this CN');
+					$output = LdapError::GetErrorDetails(LdapError::SearchFoundNoUserDN);
 				}
 			} else {
 				/* unable to bind */
 				$ldap_error = ldap_errno($ldap_conn);
 				if ($ldap_error == 0x03) {
 					/* protocol error */
-					$output['dn'] = '';
-					$output['error_num'] = '6';
-					$output['error_text'] = __('Protocol Error');
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral, null, $ldap_error);
 				} elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
-					$output['dn'] = '';
-					$output['error_num'] = '7';
-					$output['error_text'] = __('Invalid Credentials');
+					$output = LdapError::GetErrorDetails(LdapError::Failure);
 				} elseif ($ldap_error == 0x32) {
 					/* insuffient access */
-					$output['dn'] = '';
-					$output['error_num'] = '8';
-					$output['error_text'] = __('Insufficient Access');
+					$output = LdapError::GetErrorDetails(LdapError::InsufficientAccess);
 				} elseif ($ldap_error == 0x51) {
 					/* unable to connect to server */
-					$output['dn'] = '';
-					$output['error_num'] = '9';
-					$output['error_text'] = __('Unable to Connect to Server');
+					$output = LdapError::GetErrorDetails(LdapError::ConnectionUnavailable);
 				} elseif ($ldap_error == 0x55) {
 					/* timeout */
-					$output['dn'] = '';
-					$output['error_num'] = '10';
-					$output['error_text'] = __('Connection Timeout');
+					$output = LdapError::GetErrorDetails(LdapError::ConnectionTimeout);
 				} else {
 					/* general bind error */
-					$output['dn'] = '';
-					$output['error_num'] = '11';
-					$output['error_text'] = __('General Bind Error, LDAP result:') . ' ' . ldap_error($ldap_conn);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorBind, null, $ldap_error);
 				}
 			}
 		} else {
-			/* unable to setup connection */
-			$output['dn'] = '';
-			$output['error_num'] = '2';
-			$output['error_text'] = __('Unable to create LDAP connection object');
+			/* Error intializing LDAP */
+			$output = LdapError::GetErrorDetails(LdapError::MissingLdapObject);
 		}
 
 		ldap_close($ldap_conn);
 
 		if ($output['error_num'] > 0) {
-			cacti_log('LDAP_SEARCH_CN: ' . $output['error_text'], false, 'AUTH');
+			Ldap::RecordError($output, 'LDAP_SEARCH_CN');
 		}
 
 		$this->RestoreCactiHandler();

@@ -70,9 +70,9 @@ $user_enabled = 1;
 $ldap_error   = false;
 $ldap_error_message = '';
 $realm        = 0;
+$frv_realm    = get_nfilter_request_var('realm');
 
 if (get_nfilter_request_var('action') == 'login') {
-	$frv_realm = get_nfilter_request_var('realm');
 	if ($frv_realm == '1') {
 		$auth_method = 1;
 	} else {
@@ -661,11 +661,6 @@ $selectedTheme = get_selected_theme();
 <html>
 <head>
 	<?php html_common_header(api_plugin_hook_function('login_title', __('Login to Cacti')));?>
-	<script type='text/javascript'>
-	$(function() {
-			$('#login_username').focus();
-	});
-	</script>
 </head>
 <body class='loginBody'>
 	<div class='loginLeft'></div>
@@ -722,6 +717,13 @@ $selectedTheme = get_selected_theme();
 							} else {
 								$realms = get_auth_realms(true);
 							}
+
+							// try and remember previously selected realm
+							if ($frv_realm && array_key_exists($frv_realm, $realms)) {
+								foreach ($realms as $key => $realm) {
+									$realms[$key]['selected'] = ($frv_realm == $key);
+								}
+							}
 						?>
 						<tr>
 							<td>
@@ -731,7 +733,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm'><?php
 									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected':'') . '>' . html_escape($realm['name']) . "</option>\n";
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . $realm['selected'] . "</option>\n";
 										}
 									}
 									?>
@@ -741,7 +743,7 @@ $selectedTheme = get_selected_theme();
 					<?php } if (read_config_option('auth_cache_enabled') == 'on') { ?>
 						<tr>
 							<td colspan='2'>
-								<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) ? 'checked':'');?>>
+								<input style='vertical-align:-3px;' type='checkbox' id='remember_me' name='remember_me' <?php print (isset($_COOKIE['cacti_remembers']) || !isempty_request_var('remember_me') ? 'checked':'');?>>
 								<label for='remember_me'><?php print __('Keep me signed in');?></label>
 							</td>
 						</tr>
@@ -778,6 +780,11 @@ $selectedTheme = get_selected_theme();
 		$('body').css('height', $(window).height());
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
+<?php if (empty($username)) { ?>
+		$('#login_username').focus();
+<?php } else { ?>
+		$('#login_password').focus();
+<?php } ?>
 	});
 	</script>
 	<?php include_once(dirname(__FILE__) . '/include/global_session.php');?>

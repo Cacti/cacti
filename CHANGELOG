@@ -9,6 +9,8 @@ Cacti CHANGELOG
 -issue#2144: Device Management "Status" column does not sort properly
 -issue#2152: When editing a device, should show disable/enable option
 -issue#2153: Utilities page issues the wrong hook for tabs
+-issue#2163: LDAP functions are not consistent
+-issue#2164: Login page does not remember selected realm
 -issue: Unable to display user profile tabs
 
 1.2.0 Beta 1
