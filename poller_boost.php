@@ -60,7 +60,7 @@ if (cacti_sizeof($parms)) {
 			case '-f':
 			case '--force':
 				$forcerun = true;
-				cacti_log('WARNING: Boost Poller force by command line', false, 'BOOST');
+				cacti_log('WARNING: Boost Poller forced by command line', false, 'BOOST');
 				break;
 			case '--verbose':
 				$verbose = true;
