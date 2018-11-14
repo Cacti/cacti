@@ -733,7 +733,7 @@ $selectedTheme = get_selected_theme();
 								<select id='realm' name='realm'><?php
 									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
-											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . $realm['selected'] . "</option>\n";
+											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
 										}
 									}
 									?>
