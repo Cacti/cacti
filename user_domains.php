@@ -538,49 +538,50 @@ function domain_edit() {
 	?>
 	<script type='text/javascript'>
 	function initGroupMember() {
-		if ($('#group_require').is(':checked')) {
-			$('#row_group_header').show();
-			$('#row_group_dn').show();
-			$('#row_group_attrib').show();
-			$('#row_group_member_type').show();
-		} else {
-			$('#row_group_header').hide();
-			$('#row_group_dn').hide();
-			$('#row_group_attrib').hide();
-			$('#row_group_member_type').hide();
-		}
+		var isChecked = $('#group_require').is(':checked');
+		fields = {
+			row_group_header: isChecked,
+			row_group_dn: isChecked,
+			row_group_attrib: isChecked,
+			row_group_member_type: isChecked,
+		};
+
+		showHideFields(fields);
 	}
 
 	function initSearch() {
+		fields = {
+			row_search_base_header: false,
+			row_search_base: false,
+			row_search_filter: false,
+			row_specific_dn: false,
+			row_specific_password: false,
+			row_cn_header: false,
+			row_cn_full_name: false,
+			row_cn_email: false,
+		};
+
 		switch($('#mode').val()) {
 		case "0":
-			$('#row_search_base_header').hide();
-			$('#row_search_base').hide();
-			$('#row_search_filter').hide();
-			$('#row_specific_dn').hide();
-			$('#row_specific_password').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
 			break;
 		case "1":
-			$('#row_search_base_header').show();
-			$('#row_search_base').show();
-			$('#row_search_filter').show();
-			$('#row_specific_dn').hide();
-			$('#row_specific_password').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
+			fields['row_search_base_header'] = true;
+			fields['row_search_base'] = true;
+			fields['row_search_filter'] = true;
 			break;
 		case "2":
-			$('#row_search_base_header').show();
-			$('#row_search_base').show();
-			$('#row_search_filter').show();
-			$('#row_specific_dn').show();
-			$('#row_specific_password').show();
-			$('#row_cn_full_name').show();
-			$('#row_cn_email').show();
+			fields['row_search_base_header'] = true;
+			fields['row_search_base'] = true;
+			fields['row_search_filter'] = true;
+			fields['row_specific_dn'] = true;
+			fields['row_specific_password'] = true;
+			fields['row_cn_header'] = true;
+			fields['row_cn_full_name'] = true;
+			fields['row_cn_email'] = true;
 			break;
 		}
+
+		showHideFields(fields);
 	}
 
 	$(function() {

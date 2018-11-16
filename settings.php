@@ -547,19 +547,9 @@ default:
 			});
 		} else if (currentTab == 'authentication') {
 			initAuth();
-			initSearch();
-			initGroupMember();
 
 			$('#auth_method').change(function() {
 				initAuth();
-			});
-
-			$('#ldap_mode').change(function() {
-				initSearch();
-			});
-
-			$('#ldap_group_require').change(function() {
-				initGroupMember();
 			});
 		} else if (currentTab == 'path') {
 			initRRDClean();
@@ -750,317 +740,83 @@ default:
 		}
 	}
 
-	function initSearch() {
-		if ($('#auth_method').val() == 3) {
-			switch($('#ldap_mode').val()) {
-			case "0":
-				$('#row_ldap_search_base_header').hide();
-				$('#row_ldap_search_base').hide();
-				$('#row_ldap_search_filter').hide();
-				$('#row_ldap_specific_dn').hide();
-				$('#row_ldap_specific_password').hide();
-				break;
-			case "1":
-				$('#row_ldap_search_base_header').show();
-				$('#row_ldap_search_base').show();
-				$('#row_ldap_search_filter').show();
-				$('#row_ldap_specific_dn').hide();
-				$('#row_ldap_specific_password').hide();
-				break;
-			case "2":
-				$('#row_ldap_search_base_header').show();
-				$('#row_ldap_search_base').show();
-				$('#row_ldap_search_filter').show();
-				$('#row_ldap_specific_dn').show();
-				$('#row_ldap_specific_password').show();
-				break;
-			}
-		} else {
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-		}
-	}
-
-	function initGroupMember() {
-		if ($('#auth_method').val() == 3) {
-			if ($('#ldap_group_require').is(':checked')) {
-				$('#row_ldap_group_header').show();
-				$('#row_ldap_group_dn').show();
-				$('#row_ldap_group_attrib').show();
-				$('#row_ldap_group_member_type').show();
-			} else {
-				$('#row_ldap_group_header').hide();
-				$('#row_ldap_group_dn').hide();
-				$('#row_ldap_group_attrib').hide();
-				$('#row_ldap_group_member_type').hide();
-			}
-		} else {
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-		}
-	}
-
 	function initAuth() {
+		var fields = {
+			row_auth_cache_enabled: true,
+			row_guest_user: true,
+			row_ldap_general_header: true,
+			row_ldap_settings: true,
+			row_secpass_expireaccount: true,
+			row_secpass_expirepass: true,
+			row_secpass_forceold: true,
+			row_secpass_header: true,
+			row_secpass_history: true,
+			row_secpass_lockfailed: true,
+			row_secpass_lock_header: true,
+			row_secpass_minlen: true,
+			row_secpass_reqmixcase: true,
+			row_secpass_reqnum: true,
+			row_secpass_reqspec: true,
+			row_secpass_unlocktime: true,
+			row_special_users_header: true,
+			row_user_template: true,
+		};
+
 		switch($('#auth_method').val()) {
 		case "0": // None
-			$('#row_special_users_header').hide();
-			$('#row_auth_cache_enabled').hide();
-			$('#row_guest_user').hide();
-			$('#row_user_template').hide();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
-			$('#row_ldap_version').hide();
-			$('#row_ldap_encryption').hide();
-			$('#row_ldap_referrals').hide();
-			$('#row_ldap_mode').hide();
-			$('#row_ldap_dn').hide();
-			$('#row_ldap_group_require').hide();
-			$('#row_ldap_attrib').hide();
-			$('#row_ldap_member_type').hide();
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			$('#row_cn_header').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
-			$('#row_secpass_header').hide();
-			$('#row_secpass_minlen').hide();
-			$('#row_secpass_reqmixcase').hide();
-			$('#row_secpass_reqnum').hide();
-			$('#row_secpass_reqspec').hide();
-			$('#row_secpass_forceold').hide();
-			$('#row_secpass_expireaccount').hide();
-			$('#row_secpass_expirepass').hide();
-			$('#row_secpass_history').hide();
-			$('#row_secpass_lock_header').hide();
-			$('#row_secpass_lockfailed').hide();
-			$('#row_secpass_unlocktime').hide();
+			fields['row_auth_cache_enabled'] = false;
+			fields['row_guest_user'] = false;
+			fields['row_ldap_general_header'] = false;
+			fields['row_ldap_settings'] = false;
+			fields['row_user_template'] = false;
+			fields['row_secpass_header'] = false;
+			fields['row_secpass_minlen'] = false;
+			fields['row_secpass_reqmixcase'] = false;
+			fields['row_secpass_reqnum'] = false;
+			fields['row_secpass_reqspec'] = false;
+			fields['row_secpass_forceold'] = false;
+			fields['row_secpass_expireaccount'] = false;
+			fields['row_secpass_expirepass'] = false;
+			fields['row_secpass_history'] = false;
+			fields['row_secpass_lock_header'] = false;
+			fields['row_secpass_lockfailed'] = false;
+			fields['row_secpass_unlocktime'] = false;
 			break;
 		case "1": // Builtin
-			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').show();
-			$('#row_guest_user').show();
-			$('#row_user_template').show();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
-			$('#row_ldap_version').hide();
-			$('#row_ldap_encryption').hide();
-			$('#row_ldap_referrals').hide();
-			$('#row_ldap_mode').hide();
-			$('#row_ldap_dn').hide();
-			$('#row_ldap_group_require').hide();
-			$('#row_ldap_attrib').hide();
-			$('#row_ldap_member_type').hide();
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			$('#row_cn_header').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
-			$('#row_secpass_header').show();
-			$('#row_secpass_minlen').show();
-			$('#row_secpass_reqmixcase').show();
-			$('#row_secpass_reqnum').show();
-			$('#row_secpass_reqspec').show();
-			$('#row_secpass_forceold').show();
-			$('#row_secpass_expireaccount').show();
-			$('#row_secpass_expirepass').show();
-			$('#row_secpass_history').show();
-			$('#row_secpass_lock_header').show();
-			$('#row_secpass_lockfailed').show();
-			$('#row_secpass_unlocktime').show();
+			fields['row_ldap_general_header'] = false;
+			fields['row_ldap_settings'] = false;
 			break;
 		case "2": // Web Basic
-			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').hide();
-			$('#row_guest_user').show();
-			$('#row_user_template').show();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
-			$('#row_ldap_version').hide();
-			$('#row_ldap_encryption').hide();
-			$('#row_ldap_referrals').hide();
-			$('#row_ldap_mode').hide();
-			$('#row_ldap_dn').hide();
-			$('#row_ldap_group_require').hide();
-			$('#row_ldap_attrib').hide();
-			$('#row_ldap_member_type').hide();
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			$('#row_cn_header').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
-			$('#row_secpass_header').hide();
-			$('#row_secpass_minlen').hide();
-			$('#row_secpass_reqmixcase').hide();
-			$('#row_secpass_reqnum').hide();
-			$('#row_secpass_reqspec').hide();
-			$('#row_secpass_forceold').hide();
-			$('#row_secpass_expireaccount').hide();
-			$('#row_secpass_expirepass').hide();
-			$('#row_secpass_history').hide();
-			$('#row_secpass_lock_header').hide();
-			$('#row_secpass_lockfailed').hide();
-			$('#row_secpass_unlocktime').hide();
+			fields['row_auth_cache_enabled'] = false;
+			fields['row_ldap_general_header'] = false;
+			fields['row_ldap_settings'] = false;
+			fields['row_secpass_header'] = false;
+			fields['row_secpass_minlen'] = false;
+			fields['row_secpass_reqmixcase'] = false;
+			fields['row_secpass_reqnum'] = false;
+			fields['row_secpass_reqspec'] = false;
+			fields['row_secpass_forceold'] = false;
+			fields['row_secpass_expireaccount'] = false;
+			fields['row_secpass_expirepass'] = false;
+			fields['row_secpass_history'] = false;
+			fields['row_secpass_lock_header'] = false;
+			fields['row_secpass_lockfailed'] = false;
+			fields['row_secpass_unlocktime'] = false;
 			break;
+		case "3": // Single Domains
 		case "4": // Multiple Domains
-			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').show();
-			$('#row_guest_user').show();
-			$('#row_user_template').hide();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
-			$('#row_ldap_version').hide();
-			$('#row_ldap_encryption').hide();
-			$('#row_ldap_referrals').hide();
-			$('#row_ldap_mode').hide();
-			$('#row_ldap_dn').hide();
-			$('#row_ldap_group_require').hide();
-			$('#row_ldap_attrib').hide();
-			$('#row_ldap_member_type').hide();
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			$('#row_cn_header').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
-			$('#row_secpass_header').show();
-			$('#row_secpass_minlen').show();
-			$('#row_secpass_reqmixcase').show();
-			$('#row_secpass_reqnum').show();
-			$('#row_secpass_reqspec').show();
-			$('#row_secpass_forceold').show();
-			$('#row_secpass_expireaccount').show();
-			$('#row_secpass_expirepass').show();
-			$('#row_secpass_history').show();
-			$('#row_secpass_lock_header').show();
-			$('#row_secpass_lockfailed').show();
-			$('#row_secpass_unlocktime').show();
-			break;
-		case "3": // Single Domain
-			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').show();
-			$('#row_guest_user').show();
-			$('#row_user_template').show();
-			$('#row_ldap_general_header').show();
-			$('#row_ldap_server').show();
-			$('#row_ldap_port').show();
-			$('#row_ldap_port_ssl').show();
-			$('#row_ldap_version').show();
-			$('#row_ldap_encryption').show();
-			$('#row_ldap_referrals').show();
-			$('#row_ldap_mode').show();
-			$('#row_ldap_dn').show();
-			$('#row_ldap_group_require').show();
-			$('#row_ldap_attrib').show();
-			$('#row_ldap_member_type').show();
-			$('#row_ldap_group_header').show();
-			$('#row_ldap_group_dn').show();
-			$('#row_ldap_group_attrib').show();
-			$('#row_ldap_group_member_type').show();
-			$('#row_ldap_search_base_header').show();
-			$('#row_ldap_search_base').show();
-			$('#row_ldap_search_filter').show();
-			$('#row_ldap_specific_dn').show();
-			$('#row_ldap_specific_password').show();
-			$('#row_cn_header').show();
-			$('#row_cn_full_name').show();
-			$('#row_cn_email').show();
-			$('#row_secpass_header').show();
-			$('#row_secpass_minlen').show();
-			$('#row_secpass_reqmixcase').show();
-			$('#row_secpass_reqnum').show();
-			$('#row_secpass_reqspec').show();
-			$('#row_secpass_forceold').show();
-			$('#row_secpass_expireaccount').show();
-			$('#row_secpass_expirepass').show();
-			$('#row_secpass_history').show();
-			$('#row_secpass_lock_header').show();
-			$('#row_secpass_lockfailed').show();
-			$('#row_secpass_unlocktime').show();
-			initSearch();
-			initGroupMember();
 			break;
 		default:
-			$('#row_special_users_header').show();
-			$('#row_auth_cache_enabled').show();
-			$('#row_guest_user').show();
-			$('#row_user_template').show();
-			$('#row_ldap_general_header').hide();
-			$('#row_ldap_server').hide();
-			$('#row_ldap_port').hide();
-			$('#row_ldap_port_ssl').hide();
-			$('#row_ldap_version').hide();
-			$('#row_ldap_encryption').hide();
-			$('#row_ldap_referrals').hide();
-			$('#row_ldap_mode').hide();
-			$('#row_ldap_dn').hide();
-			$('#row_ldap_group_require').hide();
-			$('#row_ldap_attrib').hide();
-			$('#row_ldap_member_type').hide();
-			$('#row_ldap_group_header').hide();
-			$('#row_ldap_group_dn').hide();
-			$('#row_ldap_group_attrib').hide();
-			$('#row_ldap_group_member_type').hide();
-			$('#row_ldap_search_base_header').hide();
-			$('#row_ldap_search_base').hide();
-			$('#row_ldap_search_filter').hide();
-			$('#row_ldap_specific_dn').hide();
-			$('#row_ldap_specific_password').hide();
-			$('#row_cn_header').hide();
-			$('#row_cn_full_name').hide();
-			$('#row_cn_email').hide();
-			$('#row_secpass_header').show();
-			$('#row_secpass_minlen').show();
-			$('#row_secpass_reqmixcase').show();
-			$('#row_secpass_reqnum').show();
-			$('#row_secpass_reqspec').show();
-			$('#row_secpass_forceold').show();
-			$('#row_secpass_expireaccount').show();
-			$('#row_secpass_expirepass').show();
-			$('#row_secpass_history').show();
-			$('#row_secpass_lock_header').show();
-			$('#row_secpass_lockfailed').show();
-			$('#row_secpass_unlocktime').show();
 			break;
+		}
+
+		for (var key in fields) {
+			var element = $('#' + key);
+			if (fields[key]) {
+				element.show();
+			} else {
+				element.hide();
+			}
 		}
 	}
 

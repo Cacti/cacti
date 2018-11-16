@@ -26,6 +26,61 @@ function upgrade_to_1_2_0() {
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_full_name', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
 	db_install_add_column('user_domains_ldap', array('name' => 'cn_email', 'type' => 'varchar(50)', 'NULL' => true, 'default' => ''));
 
+	$auth_method = read_config_option('auth_method');
+	if ($auth_method == 3) {
+		$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
+		if (!$domain_id) {
+			cacti_log('NOTE: Created new LDAP domain', true, 'INSTALL');
+			db_install_execute('INSERT INTO user_domains (domain_name, type) VALUES (\'LDAP\', 1)');
+			$domain_id = db_fetch_cell('SELECT domain_id FROM user_domains WHERE domain_name = \'LDAP\'');
+		}
+
+		if (!$domain_id) {
+			cacti_log('WARNING: Failed to upgrade LDAP settings', true, 'INSTALL');
+		} else {
+			$ldap_id = db_fetch_cell_prepared('SELECT domain_id FROM user_domains_ldap WHERE domain_id = ?', array($domain_id));
+			if (!$ldap_id) {
+				$user_template = read_config_option('user_template');
+				$ldap_settings = array($domain_id,
+					read_config_option('ldap_server'), read_config_option('ldap_port'), read_config_option('ldap_port_ssl'),
+					read_config_option('ldap_version'), read_config_option('ldap_encryption'), read_config_option('ldap_referrals'),
+					read_config_option('ldap_mode'), read_config_option('ldap_dn'), read_config_option('ldap_group_require'),
+					read_config_option('ldap_group_dn'), read_config_option('ldap_group_attrib'), read_config_option('ldap_group_member_type'),
+					read_config_option('ldap_search_base'), read_config_option('ldap_search_filter'), read_config_option('ldap_specific_dn'),
+					read_config_option('ldap_specific_password'));
+
+				db_install_execute('INSERT INTO user_domains_ldap
+					(domain_id, server, port, port_ssl,
+					 proto_version, encryption, referrals,
+					 mode, dn, group_require,
+					 group_dn, group_attrib, group_member_type,
+					 search_base, search_filter, specific_dn,
+					 specific_password)
+					VALUES (?, ?, ?, ?,
+					?, ?, ?,
+					?, ?, ?,
+					?, ?, ?,
+					?, ?, ?,
+					?)',
+					$ldap_settings);
+
+				db_install_execute('UPDATE user_domains
+					SET enabled = IF(domain_id = ?, \'on\', \'\')',
+					array($domain_id));
+
+				db_install_execute('UPDATE user_domains
+					SET user_id = ?
+					WHERE domain_id = ?',
+					array($user_template, $domain_id));
+			} else {
+				cacti_log('WARNING: Existing LDAP settings found, not upgraded', true, 'INSTALL');
+			}
+
+			db_install_execute('UPDATE user_auth SET realm = ? WHERE realm = 3', array($domain_id + 1000));
+			set_config_option('auth_method', '4');
+		}
+	}
+
 	$poller_exists = db_column_exists('poller', 'processes');
 
 	db_install_add_column('poller', array('name' => 'max_time', 'type' => 'double', 'after' => 'total_time'));

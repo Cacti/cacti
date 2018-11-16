@@ -1106,7 +1106,7 @@ $settings = array(
 			),
 		'auth_method' => array(
 			'friendly_name' => __('Authentication Method'),
-			'description' => __('<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP Authentication</i> - Allows for authentication against a LDAP server. Users will be created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.  If PHPs LDAP module is not enabled, LDAP Authentication will not appear as a selectable option.<br><br><i>Multiple LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  Just as LDAP Authentication, the PHP LDAP module is required to utilize this method.</blockquote>'),
+			'description' => __('<blockquote><i>None</i> - No authentication will be used, all users will have full access.<br><br><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to create users and give them rights to different areas within Cacti.<br><br><i>Web Basic Authentication</i> - Authentication is handled by the web server. Users can be added or created automatically on first login if the Template User is defined, otherwise the defined guest permissions will be used.<br><br><i>LDAP/AD Domain Authentication</i> - Allows administrators to support multiple disparate groups from different LDAP/AD directories to access Cacti resources.  The PHP LDAP module is required to utilize this method.</blockquote>'),
 			'method' => 'drop_array',
 			'default' => 1,
 			'array' => $auth_methods
@@ -1269,19 +1269,23 @@ $settings = array(
 				'1440' => __('1 Day') )
 			),
 		'ldap_general_header' => array(
-			'friendly_name' => __('LDAP General Settings'),
+			'friendly_name' => __('LDAP Settings'),
 			'method' => 'spacer'
+			),
+		'ldap_settings' => array(
+			'friendly_name' => __('LDAP settings are now configured via User Domains'),
+			'description' => __('LDAP settings are now configured via Console -> User Domains.  A domain with the name \'LDAP\' will have been created with the settings previous stored here'),
 			),
 		'ldap_server' => array(
 			'friendly_name' => __('Server'),
 			'description' => __('The DNS hostname or IP address of the server.'),
-			'method' => 'textbox',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_port' => array(
 			'friendly_name' => __('Port Standard'),
 			'description' => __('TCP/UDP port for Non-SSL communications.'),
-			'method' => 'textbox',
+			'method' => 'hidden',
 			'max_length' => '5',
 			'default' => '389',
 			'size' => '5'
@@ -1289,7 +1293,7 @@ $settings = array(
 		'ldap_port_ssl' => array(
 			'friendly_name' => __('Port SSL'),
 			'description' => __('TCP/UDP port for SSL communications.'),
-			'method' => 'textbox',
+			'method' => 'hidden',
 			'max_length' => '5',
 			'default' => '636',
 			'size' => '5'
@@ -1297,21 +1301,21 @@ $settings = array(
 		'ldap_version' => array(
 			'friendly_name' => __('Protocol Version'),
 			'description' => __('Protocol Version that the server supports.'),
-			'method' => 'drop_array',
+			'method' => 'hidden',
 			'default' => '3',
 			'array' => $ldap_versions
 			),
 		'ldap_encryption' => array(
 			'friendly_name' => __('Encryption'),
 			'description' => __('Encryption that the server supports. TLS is only supported by Protocol Version 3.'),
-			'method' => 'drop_array',
+			'method' => 'hidden',
 			'default' => '0',
 			'array' => $ldap_encryption
 			),
 		'ldap_referrals' => array(
 			'friendly_name' => __('Referrals'),
 			'description' => __('Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches.'),
-			'method' => 'drop_array',
+			'method' => 'hidden',
 			'default' => '0',
 			'array' => array(
 				'0' => __('Disabled'),
@@ -1320,42 +1324,44 @@ $settings = array(
 		'ldap_mode' => array(
 			'friendly_name' => __('Mode'),
 		'description' => __('Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</i> - No Distinguished Name (DN) searching occurs, just attempt to bind with the provided Distinguished Name (DN) format.<br><br><i>Anonymous Searching</i> - Attempts to search for username against LDAP directory via anonymous binding to locate the user\'s Distinguished Name (DN).<br><br><i>Specific Searching</i> - Attempts search for username against LDAP directory via Specific Distinguished Name (DN) and Specific Password for binding to locate the user\'s Distinguished Name (DN).'),
-			'method' => 'drop_array',
+			'method' => 'hidden',
 			'default' => '0',
 			'array' => $ldap_modes
 			),
 		'ldap_dn' => array(
 			'friendly_name' => __('Distinguished Name (DN)'),
 			'description' => __('Distinguished Name syntax, such as for windows: <i>"&lt;username&gt;@win2kdomain.local"</i> or for OpenLDAP: <i>"uid=&lt;username&gt;,ou=people,dc=domain,dc=local"</i>.   "&lt;username&gt" is replaced with the username that was supplied at the login prompt.  This is only used when in "No Searching" mode.'),
-			'method' => 'textbox',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_group_require' => array(
 			'friendly_name' => __('Require Group Membership'),
 			'description' => __('Require user to be member of group to authenticate. Group settings must be set for this to work, enabling without proper group settings will cause authentication failure.'),
 			'default' => '',
-			'method' => 'checkbox'
+			'method' => 'hidden'
 			),
 		'ldap_group_header' => array(
 			'friendly_name' => __('LDAP Group Settings'),
-			'method' => 'spacer'
+			'method' => 'hidden'
 			),
 		'ldap_group_dn' => array(
 			'friendly_name' => __('Group Distinguished Name (DN)'),
 			'description' => __('Distinguished Name of the group that user must have membership.'),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_group_attrib' => array(
 			'friendly_name' => __('Group Member Attribute'),
 			'description' => __('Name of the attribute that contains the usernames of the members.'),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_group_member_type' => array(
 			'friendly_name' => __('Group Member Type'),
 			'description' => __('Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute.'),
-			'method' => 'drop_array',
+			'method' => 'hidden',
 			'default' => 1,
 			'array' => array(
 				1 => __('Distinguished Name'),
@@ -1363,46 +1369,52 @@ $settings = array(
 			),
 		'ldap_search_base_header' => array(
 			'friendly_name' => __('LDAP Specific Search Settings'),
-			'method' => 'spacer'
+			'method' => 'hidden'
 			),
 		'ldap_search_base' => array(
 			'friendly_name' => __('Search Base'),
 			'description' => __('Search base for searching the LDAP directory, such as <i>\'dc=win2kdomain,dc=local\'</i> or <i>\'ou=people,dc=domain,dc=local\'</i>.'),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_search_filter' => array(
 			'friendly_name' => __('Search Filter'),
 			'description' => __('Search filter to use to locate the user in the LDAP directory, such as for windows: <i>\'(&amp;(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;*))\'</i> or for OpenLDAP: <i>\'(&(objectClass=account)(uid=&lt;username&gt))\'</i>.  \'&lt;username&gt\' is replaced with the username that was supplied at the login prompt. '),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_specific_dn' => array(
 			'friendly_name' => __('Search Distinguished Name (DN)'),
 			'description' => __('Distinguished Name for Specific Searching binding to the LDAP directory.'),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'ldap_specific_password' => array(
 			'friendly_name' => __('Search Password'),
 			'description' => __('Password for Specific Searching binding to the LDAP directory.'),
-			'method' => 'textbox_password',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'cn_header' => array(
 			'friendly_name' => __('LDAP CN Settings'),
-			'method' => 'spacer'
+			'method' => 'hidden'
 			),
 		'cn_full_name' => array(
 			'friendly_name' => __('Full Name'),
 			'description' => __('Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: displayname) '),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		'cn_email' => array(
 			'friendly_name' => __('Email'),
 			'description' => __('Field that will replace the Email taken from LDAP. (on windows: mail)'),
-			'method' => 'textbox',
+			'default' => '',
+			'method' => 'hidden',
 			'max_length' => '255'
 			),
 		),

@@ -3478,78 +3478,51 @@ function setSNMP() {
 	storeSNMPSecurity();
 	setSNMPSecurity();
 
+	var fields = {
+		row_snmp_username: false,
+		row_snmp_password: false,
+		row_snmp_community: false,
+		row_snmp_security_level: false,
+		row_snmp_auth_password: false,
+		row_snmp_auth_protocol: false,
+		row_snmp_priv_passphrase: false,
+		row_snmp_priv_protocol: false,
+		row_snmp_engine_id: false,
+		row_snmp_context: false,
+		row_snmp_port: false,
+		row_snmp_timeout: false,
+		row_max_oids: false,
+		row_snmp_engine_id: false,
+		row_snmp_retries: false,
+	};
+
 	switch(snmp_version) {
 		case '0': // Not in Use
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_community').hide();
-			$('#row_snmp_security_level').hide();
-			$('#row_snmp_auth_password').hide();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_engine_id').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_port').hide();
-			$('#row_snmp_timeout').hide();
-			$('#row_max_oids').hide();
-
-			if ($('#row_snmp_engine_id')) {
-				$('#row_snmp_engine_id').hide();
-			}
-
-			if ($('#row_snmp_retries')) {
-				$('#row_snmp_retries').hide();
-			}
-
 			break;
 		case '1': // SNMP v1
 		case '2': // SNMP v2c
-			$('#row_snmp_username').hide();
-			$('#row_snmp_password').hide();
-			$('#row_snmp_community').show();
-			$('#row_snmp_security_level').hide();
-			$('#row_snmp_auth_password').hide();
-			$('#row_snmp_auth_protocol').hide();
-			$('#row_snmp_priv_passphrase').hide();
-			$('#row_snmp_priv_protocol').hide();
-			$('#row_snmp_engine_id').hide();
-			$('#row_snmp_context').hide();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_max_oids').show();
-
-			if ($('#row_snmp_engine_id')) {
-				$('#row_snmp_engine_id').hide();
-			}
-
-			if ($('#row_snmp_retries')) {
-				$('#row_snmp_retries').show();
-			}
+			fields['row_snmp_community'] = true;
+			fields['row_snmp_port'] = true;
+			fields['row_snmp_timeout'] = true;
+			fields['row_max_oids'] = true;
+			fields['row_snmp_retries'] = true;
 
 			break;
 		case '3': // SNMP v3
-			$('#row_snmp_username').show();
-			$('#row_snmp_password').show();
-			$('#row_snmp_community').hide();
-			$('#row_snmp_security_level').show();
-			$('#row_snmp_auth_password').show();
-			$('#row_snmp_auth_protocol').show();
-			$('#row_snmp_priv_passphrase').show();
-			$('#row_snmp_priv_protocol').show();
-			$('#row_snmp_engine_id').show();
-			$('#row_snmp_context').show();
-			$('#row_snmp_port').show();
-			$('#row_snmp_timeout').show();
-			$('#row_max_oids').show();
-
-			if ($('#row_snmp_engine_id')) {
-				$('#row_snmp_engine_id').show();
-			}
-
-			if ($('#row_snmp_retries')) {
-				$('#row_snmp_retries').show();
-			}
+			fields['row_snmp_username'] = true;
+			fields['row_snmp_password'] = true;
+			fields['row_snmp_security_level'] = true;
+			fields['row_snmp_auth_password'] = true;
+			fields['row_snmp_auth_protocol'] = true;
+			fields['row_snmp_priv_passphrase'] = true;
+			fields['row_snmp_priv_protocol'] = true;
+			fields['row_snmp_engine_id'] = true;
+			fields['row_snmp_context'] = true;
+			fields['row_snmp_port'] = true;
+			fields['row_snmp_timeout'] = true;
+			fields['row_max_oids'] = true;
+			fields['row_snmp_engine_id'] = true;
+			fields['row_snmp_retries'] = true;
 
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
@@ -3567,10 +3540,10 @@ function setSNMP() {
 
 				$('#snmp_auth_protocol').val('[None]');
 				$('#snmp_priv_protocol').val('[None]');
-				$('#row_snmp_auth_protocol').hide();
-				$('#row_snmp_priv_protocol').hide();
-				$('#row_snmp_password').hide();
-				$('#row_snmp_priv_passphrase').hide();
+				fields['row_snmp_auth_protocol'] = false;
+				fields['row_snmp_priv_protocol'] = false;
+				fields['row_snmp_password'] = false;
+				fields['row_snmp_priv_passphrase'] = false;
 			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
 				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
@@ -3593,8 +3566,8 @@ function setSNMP() {
 				}
 
 				$('#snmp_priv_protocol').val('[None]');
-				$('#row_snmp_priv_protocol').hide();
-				$('#row_snmp_priv_passphrase').hide();
+				fields['row_snmp_priv_protocol'] = false;
+				fields['row_snmp_priv_passphrase'] = false;
 
 				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
 				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
@@ -3633,13 +3606,13 @@ function setSNMP() {
 			}
 
 			if ($('#snmp_auth_protocol').val() == '[None]') {
-				$('#row_snmp_password').hide();
+				fields['row_snmp_password'] = false;
 				$('#snmp_password').val('');
 				$('#snmp_password_confirm').val('');
 			}
 
 			if ($('#snmp_priv_protocol').val() == '[None]') {
-				$('#row_snmp_priv_passphrase').hide();
+				fields['row_snmp_priv_passphrase'] = false;
 				$('#snmp_priv_passphrase').val('');
 			}
 
@@ -3652,6 +3625,7 @@ function setSNMP() {
 
 			break;
 	}
+	showHideFields(fields);
 }
 
 function checkSNMPPassphrase(type) {
@@ -3717,4 +3691,13 @@ function checkSNMPPassphraseConfirm(type) {
 	}
 }
 
-
+function showHideFields(fields) {
+	for (var key in fields) {
+		var element = $('#' + key);
+		if (fields[key]) {
+			element.show();
+		} else {
+			element.hide();
+		}
+	}
+}
