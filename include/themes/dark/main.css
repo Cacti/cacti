@@ -2361,10 +2361,6 @@ input:checked + .checkboxSlider:before {
 	text-align: right;
 }
 
-.center {
-	text-align: center;
-}
-
 .radioSwitch {
 	position: relative;
 	display: inline-block;
@@ -2446,4 +2442,8 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+}
+
+td.center > table {
+	margin: 0 auto;
 }

@@ -2008,6 +2008,6 @@ tr#realtime td:first-child {
 	text-align: right;
 }
 
-.center {
-	text-align: center;
+td.center > table {
+	margin: 0 auto;
 }
