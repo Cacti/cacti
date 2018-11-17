@@ -334,7 +334,8 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'checkbox_group':
-		print "<div id='${field_name}_group' class='checkboxgroup1'>\n";
+		print "<div id='${field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
+
 		foreach ($field_array['items'] as $check_name => $check_array) {
 			form_checkbox(
 				$check_name,
@@ -347,12 +348,16 @@ function draw_edit_control($field_name, &$field_array) {
 				$field_array['friendly_name'],
 				true
 			);
+
+			print '<br>';
 		}
-		print "</div>\n";
+
+		print '</div>' . PHP_EOL;
 
 		break;
 	case 'radio':
-		print "<div style='formRadio'>";
+		print "<div style='formRadio'>" . PHP_EOL;
+
 		foreach ($field_array['items'] as $radio_index => $radio_array) {
 			form_radio_button(
 				$field_name,
@@ -366,7 +371,8 @@ function draw_edit_control($field_name, &$field_array) {
 
 			print '<br>';
 		}
-		print "</div>";
+
+		print '</div>' . PHP_EOL;
 
 		break;
 	case 'custom':
@@ -515,7 +521,7 @@ function form_filepath_box($form_name, $form_previous_value, $form_default_value
 
 		if (isset($_SESSION['sess_error_fields'])) {
 			if (!empty($_SESSION['sess_error_fields'][$form_name])) {
-				$error_class = "txtErrorTextBox";
+				$error_class = 'txtErrorTextBox';
 				unset($_SESSION['sess_error_fields'][$form_name]);
 			}
 		}
@@ -885,7 +891,7 @@ function form_checkbox($form_name, $form_previous_value, $form_caption, $form_de
 	print "<span class='nowrap'>";
 	print "<label class='checkboxSwitch' " . ($title != "" ? " title='$title'":"") . "><input " . ($title != "" ? " title='$title'":"") . " class='formCheckbox$class' type='checkbox' id='$form_name' name='$form_name'" . $on_change . $checked . "><span class='checkboxSlider checkboxRound'></span></label>";
 	print "<label class='checkboxLabel$labelClass' for='$form_name'>" . html_escape($form_caption) . "</label>";
-	print "</span><br>";
+	print "</span>";
 }
 
 /* form_radio_button - draws a standard html radio button
