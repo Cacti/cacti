@@ -218,6 +218,19 @@ function draw_edit_control($field_name, &$field_array) {
 		);
 
 		break;
+	case 'drop_language':
+		form_droplanguage(
+			$field_name,
+			'',
+			'',
+			$field_array['value'],
+			((isset($field_array['none_value'])) ? $field_array['none_value'] : ''),
+			((isset($field_array['default'])) ? $field_array['default'] : ''),
+			((isset($field_array['class'])) ? $field_array['class'] : ''),
+			((isset($field_array['on_change'])) ? $field_array['on_change'] : '')
+		);
+
+		break;
 	case 'drop_files':
 		$array_files = array();
 
@@ -710,6 +723,56 @@ function form_dropdown($form_name, $form_data, $column_display, $column_id, $for
 	html_create_list($form_data, $column_display, $column_id, html_escape($form_previous_value));
 
 	print "</select>\n";
+}
+
+function form_droplanguage($form_name, $column_display, $column_id, $form_previous_value, $form_none_entry, $form_default_value, $class = '', $on_change = '') {
+	if ($form_previous_value == '') {
+		$form_previous_value = $form_default_value;
+	}
+
+	if (isset($_SESSION['sess_error_fields'])) {
+		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
+			$class .= ($class != '' ? ' ':'') . 'txtErrorTextBox';
+			unset($_SESSION['sess_error_fields'][$form_name]);
+		}
+	}
+
+	if (isset($_SESSION['sess_field_values'])) {
+		if (!empty($_SESSION['sess_field_values'][$form_name])) {
+			$form_previous_value = $_SESSION['sess_field_values'][$form_name];
+		}
+	}
+
+	if ($class != '') {
+		$class = " class='$class' ";
+	}
+
+	if ($on_change != '') {
+		$on_change = " onChange='$on_change' ";
+	}
+
+	$languages = get_installed_locales();
+
+	print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
+
+	foreach ($languages as $key => $value) {
+		$selected = '';
+		if ($form_previous_value == $key) {
+			$selected = ' selected';
+		}
+
+		$flags = explode('-', $key);
+
+		if (cacti_count($flags) > 1) {
+			$flagName = strtolower($flags[1]);
+		} else {
+			$flagName = strtolower($flags[0]);
+		}
+
+		print '<option value=\'' . $key . '\'' . $selected . ' data-class=\'flag-icon-' . $flagName . '\'><span class="flag-icon flag-icon-squared flag-icon-' . $flagName . '"></span>' . __($value) . '</option>';
+	}
+
+	print '</select>';
 }
 
 function form_callback($form_name, $classic_sql, $column_display, $column_id, $callback, $previous_id, $previous_value, $none_entry, $default_value, $class = '', $on_change = '') {

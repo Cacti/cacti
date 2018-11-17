@@ -740,6 +740,25 @@ function applySkin() {
 	keepWindowSize();
 
 	displayMessages();
+
+	renderLanguages();
+}
+
+function renderLanguages() {
+	$('select#user_language').selectmenu('destroy').languageselect({
+		change: function() {
+			name  = $(this).attr('id');
+			value = $(this).val();
+			page  = basename(location.pathname);
+			if (page == 'auth_profile.php') {
+				$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
+					if (name == 'selected_theme' || name == 'user_language') {
+						document.location = 'auth_profile.php?action=edit';
+					}
+				});
+			}
+		}
+	}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 }
 
 function setupButtonStyle() {
@@ -3132,6 +3151,23 @@ function initializeGraphs() {
 		});
 	});
 }
+
+$.widget('custom.languageselect', $.ui.selectmenu, {
+	_renderItem: function(ul, item) {
+		var li = $('<li>');
+		var wrapper = $('<div>', { text: item.label });
+		if (item.disabled) {
+			li.addClass( 'ui-state-disabled' );
+		}
+
+		$('<span>', {
+			style: item.element.attr('data-style') + ';float:right',
+			'class': 'right flag-icon flag-icon-squared ' + item.element.attr('data-class')
+		}).appendTo(wrapper);
+
+		return li.append(wrapper).appendTo(ul);
+	}
+});
 
 // combobox example borrowed from jqueryui
 $.widget('custom.dropcolor', {

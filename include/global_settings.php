@@ -1983,7 +1983,7 @@ $settings_user = array(
 		'user_language' => array(
 			'friendly_name' => __('User Language'),
 			'description' => __('Defines the preferred GUI language.'),
-			'method' => 'drop_array',
+			'method' => 'drop_language',
 			'default' => get_new_user_default_language(),
 			'array' => get_installed_locales()
 		),

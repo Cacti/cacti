@@ -1173,7 +1173,6 @@ $hash_system_data_inputs = array(
 	'332111d8b54ac8ce939af87a7eac0c06'  // Get Script Server Data (Indexed)
 );
 
-
 $host_struc = array(
 	'host_template_id',
 	'description',
@@ -1692,6 +1691,25 @@ $i18n_weekdays_short = array(
 	'Thu'	=> __x('A textual representation of a day, three letters', 'Thu'),
 	'Fri'	=> __x('A textual representation of a day, three letters', 'Fri'),
 	'Sat'	=> __x('A textual representation of a day, three letters', 'Sat')
+);
+
+$i18n_languages = array(
+	__('Arabic'),
+	__('Bulgarian'),
+	__('Chinese (China)'),
+	__('Chinese (Taiwan)'),
+	__('Dutch'),
+	__('English'),
+	__('French'),
+	__('German'),
+	__('Greek'),
+	__('Italian'),
+	__('Japanese'),
+	__('Korean'),
+	__('Polish'),
+	__('Russian'),
+	__('Spanish'),
+	__('Swedish')
 );
 
 $database_statuses = array(
