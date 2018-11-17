@@ -244,19 +244,23 @@ function load_i18n_gettext_wrappers() {
 	function __gettext($text, $domain = 'cacti') {
 		global $l10n;
 		if (isset($l10n[$domain])) {
-			return $l10n[$domain]->translate($text);
+			return __uf($l10n[$domain]->translate($text));
 		} else {
-			return $text;
+			return __uf($text);
 		}
 	}
 
 	function __n($singular, $plural, $number, $domain = 'cacti') {
 		global $l10n;
 		if (isset($l10n[$domain])) {
-    		return $l10n[$domain]->ngettext($singular, $plural, $number);
+    		return __uf($l10n[$domain]->ngettext($singular, $plural, $number));
     	} else {
-			return ($number == 1) ? $singular : $plural;
+			return ($number == 1) ? __uf($singular) : __uf($plural);
 		}
+	}
+
+	function __uf($text) {
+		return str_replace('%%', '%', $text);
 	}
 
 	function __() {
@@ -279,7 +283,6 @@ function load_i18n_gettext_wrappers() {
 
 		/* convert stings including one or more placeholders */
 		} else {
-
 			/* only the last argument is allowed to initiate
 			the use of a different textdomain */
 
@@ -291,7 +294,7 @@ function load_i18n_gettext_wrappers() {
 			}
 
 			/* process return string against input arguments */
-			return call_user_func_array('sprintf', $args);
+			return __uf(call_user_func_array('sprintf', $args));
 		}
 	}
 
@@ -302,9 +305,9 @@ function load_i18n_gettext_wrappers() {
 		$msgstr = __n($xsingular, $xplural, $number, $domain);
 
 		if ($number == 1 ) {
-			return ( $msgstr == $xsingular ) ? $singular : $msgstr;
+			return ( $msgstr == $xsingular ) ? __uf($singular) : __uf($msgstr);
 		} else {
-			return ( $msgstr == $xplural ) ? $plural : $msgstr;
+			return ( $msgstr == $xplural ) ? __uf($plural) : __uf($msgstr);
 		}
 	}
 
@@ -339,12 +342,11 @@ function load_i18n_gettext_wrappers() {
 			$args[0] = ( $msgstr == $xmsgid ) ? $msgid : $msgstr;
 
 			/* process return string against input arguments */
-			return call_user_func_array('sprintf', $args);
+			return __uf(call_user_func_array('sprintf', $args));
 		}
 	}
 
 	function __date($format, $timestamp = false, $domain = 'cacti') {
-
 		global $i18n_date_placeholders;
 
 		if (!$timestamp) {
@@ -371,7 +373,7 @@ function load_i18n_gettext_wrappers() {
 		/* fill in specific translations */
 		$date = str_replace(array_keys($i18n_date_placeholders), array_values($i18n_date_placeholders), $date);
 
-		return $date;
+		return __uf($date);
 	}
 }
 
@@ -382,11 +384,15 @@ function load_i18n_gettext_wrappers() {
  */
 function load_i18n_fallback_wrappers() {
 	function __gettext($text, $domain = 'cacti') {
-		return $text;
+		return __uf($text);
 	}
 
 	function __n($singular, $plural, $number, $domain = 'cacti') {
-		return ($number == 1) ? $singular : $plural;
+		return ($number == 1) ? __uf($singular) : __uf($plural);
+	}
+
+	function __uf($text) {
+		return str_replace('%%', '%', $text);
 	}
 
 	function __() {
@@ -399,20 +405,19 @@ function load_i18n_fallback_wrappers() {
 
 		/* convert pure text strings */
 		} elseif ($num == 1) {
-			return $args[0];
+			return __uf($args[0]);
 
 		/* convert pure text strings by using a different textdomain */
 		} elseif ($num == 2 && isset($l10n[$args[1]]) && $args[1] != 'cacti') {
-			return $args[0];
+			return __uf($args[0]);
 
 		/* convert stings including one or more placeholders */
 		} else {
-
 			/* only the last argument is allowed to initiate
 			the use of a different textdomain */
 
 			/* process return string against input arguments */
-			return call_user_func_array('sprintf', $args);
+			return __uf(call_user_func_array('sprintf', $args));
 		}
 	}
 
@@ -429,13 +434,13 @@ function load_i18n_fallback_wrappers() {
 			return false;
 		} else {
 			$context = array_shift($args);
-			return call_user_func_array('__', $args);
+			return __uf(call_user_func_array('__', $args));
 		}
 	}
 
 	function __date($format, $timestamp = false, $domain = 'cacti') {
 		if (!$timestamp) {$timestamp = time();}
-		return date($format, $timestamp);
+		return __uf(date($format, $timestamp));
 	}
 }
 
