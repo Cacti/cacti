@@ -859,7 +859,7 @@ function ds_edit() {
 		'data_template_id' => array(
 			'method' => 'drop_sql',
 			'friendly_name' => __('Selected Data Template'),
-			'description' => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100% compatible Graph Template, which means that it includes identical Data Sources.'),
+			'description' => __('The name given to this data template.  Please note that you may only change Graph Templates to a 100%& compatible Graph Template, which means that it includes identical Data Sources.'),
 			'value' => (cacti_sizeof($data_template) ? $data_template['id'] : '0'),
 			'none_value' => (cacti_sizeof($data_template) ? '' : 'None'),
 			'sql' => $dtsql

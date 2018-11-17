@@ -1872,7 +1872,7 @@ $settings = array(
 			),
 		'spikekill_percent' => array(
 			'friendly_name' => __('Variance Percentage'),
-			'description' => __('This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph.'),
+			'description' => __('This value represents the percentage above the adjusted sample average once outliers have been removed from the sample.  For example, a Variance Percentage of 100%% on an adjusted average of 50 would remove any sample above the quantity of 100 from the graph.'),
 			'method' => 'drop_array',
 			'default' => '1000',
 			'array' => array(

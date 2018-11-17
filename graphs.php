@@ -1450,7 +1450,7 @@ function graph_edit() {
 		'graph_template_id' => array(
 			'method' => 'drop_sql',
 			'friendly_name' => __('Selected Graph Template'),
-			'description' => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100% compatible Graph Template, which means that it includes identical Data Sources.'),
+			'description' => __('Choose a Graph Template to apply to this Graph. Please note that you may only change Graph Templates to a 100%% compatible Graph Template, which means that it includes identical Data Sources.'),
 			'value' => $graph_template_id,
 			'none_value' => (!isset($graph['graph_template_id']) || $graph['graph_template_id'] == 0 ? __('None'):''),
 			'sql' => $gtsql
