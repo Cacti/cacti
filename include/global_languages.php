@@ -465,6 +465,7 @@ function get_list_of_locales() {
 		'da-DK' => array('language' => 'Danish',              'country' => 'dk', 'filename' => 'danish_denmark'),
 		'nl-NL' => array('language' => 'Dutch',               'country' => 'nl', 'filename' => 'dutch_netherlands'),
 		'en-US' => array('language' => 'English',             'country' => 'us', 'filename' => 'english_usa'),
+		'en-GB' => array('language' => 'English (Britain)',   'country' => 'gb', 'filename' => 'english_gb'),
 		'et-EE' => array('language' => 'Estonian',            'country' => 'ee', 'filename' => 'estonian_estonia'),
 		'fi-FI' => array('language' => 'Finnish',             'country' => 'fi', 'filename' => 'finnish_finland'),
 		'fr-FR' => array('language' => 'French',              'country' => 'fr', 'filename' => 'french_france'),
