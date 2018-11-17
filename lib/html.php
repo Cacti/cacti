@@ -2268,6 +2268,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
+	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js');
 	print get_md5_include_js('include/js/jquery.js');

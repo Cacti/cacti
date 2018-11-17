@@ -59,7 +59,6 @@ if ($hasJson) {
 	print get_md5_include_js('install/install.js');
 }
 print get_md5_include_css('install/install.css');
-print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 ?>
 </head>
 <body>
