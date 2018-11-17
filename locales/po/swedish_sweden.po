@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 13:41-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
@@ -4472,10 +4472,10 @@ msgid "Selected Data Template"
 msgstr "Vald datamallad"
 
 #: data_sources.php:862
-#, fuzzy, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "Namnet ges till den här datamallen. Observera att du bara får ändra "
@@ -5634,8 +5634,8 @@ msgstr "Vald grafmall"
 #, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "Välj en grafmall som ska tillämpas på den här grafen. Observera att du bara "
 "får ändra grafmallar till en 100% kompatibel grafmall, vilket innebär att "
@@ -10663,22 +10663,22 @@ msgstr ""
 "Utskriftssträngmönstret för användning som trädhuvud. <br> Se en match av t."
 "ex. <strong>\\ $ {1}</strong> för den första matchen!"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 #, fuzzy
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 #, fuzzy
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 #, fuzzy
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 #, fuzzy
 msgid " K"
 msgstr "K"
@@ -13634,7 +13634,7 @@ msgstr "Variansprocent"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "Detta värde representerar procentsatsen över det justerade provmedlet när "
@@ -18482,11 +18482,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "Om du använder Cacti Performance Booster och väljer en minneslagringsmotor "
 "måste du vara försiktig med att spola din Performance Booster-buffert innan "

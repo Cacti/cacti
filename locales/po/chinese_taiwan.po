@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 13:42-0500\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.2\n"
-"Last-Translator: \n"
-"Language: zh_TW\n"
 
 #: about.php:29 include/global_arrays.php:2321 lib/html.php:2200
 #, fuzzy
@@ -4292,10 +4292,10 @@ msgid "Selected Data Template"
 msgstr "選定的數據模板"
 
 #: data_sources.php:862
-#, fuzzy, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "為此數據模板指定的名稱。請注意，您只能將圖形模板更改為100％兼容的圖形模板，這"
@@ -5390,8 +5390,8 @@ msgstr "選定的圖形模板"
 #, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "選擇要應用於此圖表的圖表模板。請注意，您只能將圖形模板更改為100％兼容的圖形模"
 "板，這意味著它包含相同的數據源。"
@@ -10206,22 +10206,22 @@ msgstr ""
 "替換字符串模式用作樹標題。 <br>第一場比賽請參考比賽，例如<strong>\\ $ {1}</"
 "strong> ！"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 #, fuzzy
 msgid " T"
 msgstr "Ť"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 #, fuzzy
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 #, fuzzy
 msgid " M"
 msgstr "中號"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 #, fuzzy
 msgid " K"
 msgstr "ķ"
@@ -12993,7 +12993,7 @@ msgstr "差異百分比"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "該值表示從樣本中移除異常值後高於調整後樣本平均值的百分比。例如，調整後的平均"
@@ -17611,11 +17611,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "如果使用Cacti Performance Booster並選擇內存存儲引擎，則必須小心在系統內存表空"
 "間耗盡之前刷新Performance Booster緩衝區。這有兩種方法，首先將輸出列的大小減小"

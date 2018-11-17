@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 13:40-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: KPbIC <Cacti>\n"
@@ -4446,10 +4446,10 @@ msgid "Selected Data Template"
 msgstr "Выбранный шаблон данных"
 
 #: data_sources.php:862
-#, fuzzy, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "Имя, присвоенное этому шаблону данных. Обратите внимание, что шаблон Graph "
@@ -5591,8 +5591,8 @@ msgstr "Выбранный шаблон графика"
 #, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "Выберите шаблон графика для применения к этому графику. Обратите внимание, "
 "что шаблон Graph Templates можно изменять только на 100% совместимом "
@@ -10628,22 +10628,22 @@ msgstr ""
 "Шаблон замены для использования в качестве заголовка дерева. <br> См. "
 "Соответствие, например, <strong>\\ $ {1}</strong> для первого матча!"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 #, fuzzy
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 #, fuzzy
 msgid " G"
 msgstr "г"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 #, fuzzy
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 #, fuzzy
 msgid " K"
 msgstr "К"
@@ -13611,7 +13611,7 @@ msgstr "Разница в процентах"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "Это значение представляет собой процентное соотношение выше "
@@ -18424,11 +18424,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "Если вы используете Cacti Performance Booster и выбираете механизм хранения "
 "памяти, вы должны быть осторожны, чтобы очистить буфер Performance Booster "

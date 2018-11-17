@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 12:35-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
@@ -4033,10 +4033,10 @@ msgid "Selected Data Template"
 msgstr "Geselecteerde data template"
 
 #: data_sources.php:862
-#, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "De naam van dit data template. Let op dat u alleen grafiek templates kunt "
@@ -5047,11 +5047,11 @@ msgid "Selected Graph Template"
 msgstr "Geselecteerde grafiektemplate"
 
 #: graphs.php:1453
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "Kies een grafiektemplate om toe te passen voor deze grafiek. Let op dat u "
 "alleen een grafiektemplate kunt wijzigen naar een 100% compatible "
@@ -9602,19 +9602,19 @@ msgstr ""
 "Het Replacement String Pattern voor gebruik als Tree Header.<br>Refer to a "
 "Match door bijv. <strong>String${1}</strong> voor de eerste wedstrijd!"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 msgid " T"
 msgstr " T"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 msgid " G"
 msgstr " G"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 msgid " M"
 msgstr " M"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 msgid " K"
 msgstr " K"
 
@@ -12419,7 +12419,7 @@ msgstr "Variantie Percentage"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "Deze waarde vertegenwoordigt het percentage boven het aangepaste gemiddelde "
@@ -17008,11 +17008,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "Als u de Cacti Performance Booster gebruikt en een geheugenopslag engine "
 "kiest, moet u voorzichtig zijn met het spoelen van uw Performance Booster "

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 12:35-0500\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: Cacti Developers <Cacti>\n"
@@ -4444,10 +4444,10 @@ msgid "Selected Data Template"
 msgstr "Ausgewählte Datenvorlage"
 
 #: data_sources.php:862
-#, fuzzy, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "Der Name, der dieser Datenvorlage gegeben wurde.  Bitte beachten Sie, dass "
@@ -5594,8 +5594,8 @@ msgstr "Ausgewählte Diagramm Schablonen"
 #, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "Wählen Sie eine Grafikvorlage, die auf diese Grafik angewendet werden soll. "
 "Bitte beachten Sie, dass Sie nur Grafikvorlagen in eine 100% kompatible "
@@ -10515,22 +10515,22 @@ msgstr ""
 "<br>Verweis auf ein Match durch z.B. <strong>\\${1}</strong> für das erste "
 "Match!"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 #, fuzzy
 msgid " T"
 msgstr " T"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 #, fuzzy
 msgid " G"
 msgstr " G"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 #, fuzzy
 msgid " M"
 msgstr " M"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 #, fuzzy
 msgid " K"
 msgstr " K"
@@ -13497,7 +13497,7 @@ msgstr "Abweichungsprozentsatz in Prozent"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "Dieser Wert stellt den Prozentsatz über dem angepassten "
@@ -18286,11 +18286,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "Wenn Sie den Cacti Performance Booster verwenden und eine Speicher-Engine "
 "wählen, müssen Sie darauf achten, dass Sie Ihren Performance Booster-Puffer "

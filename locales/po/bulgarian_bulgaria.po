@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:51-0500\n"
+"POT-Creation-Date: 2018-11-17 15:39-0500\n"
 "PO-Revision-Date: 2018-11-17 12:09-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -4555,10 +4555,10 @@ msgid "Selected Data Template"
 msgstr "Избран шаблон за данни"
 
 #: data_sources.php:862
-#, fuzzy, php-format
+#, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
-"Graph Templates to a 100% compatible Graph Template, which means that it "
+"Graph Templates to a 100%$ compatible Graph Template, which means that it "
 "includes identical Data Sources."
 msgstr ""
 "Името, дадено на този шаблон за данни. Моля, имайте предвид, че можете да "
@@ -5734,8 +5734,8 @@ msgstr "Избран шаблон за графика"
 #, fuzzy, php-format
 msgid ""
 "Choose a Graph Template to apply to this Graph. Please note that you may "
-"only change Graph Templates to a 100% compatible Graph Template, which means "
-"that it includes identical Data Sources."
+"only change Graph Templates to a 100%% compatible Graph Template, which "
+"means that it includes identical Data Sources."
 msgstr ""
 "Изберете шаблон за графика, който да приложите към тази графика. Моля, "
 "имайте предвид, че можете да промените шаблоните на графиката само до 100% "
@@ -10863,22 +10863,22 @@ msgstr ""
 "Обърнете се към съвпадение от например <strong>\\ $ {1}</strong> за първия "
 "мач!"
 
-#: include/global_languages.php:609
+#: include/global_languages.php:615
 #, fuzzy
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:611
+#: include/global_languages.php:617
 #, fuzzy
 msgid " G"
 msgstr "G"
 
-#: include/global_languages.php:613
+#: include/global_languages.php:619
 #, fuzzy
 msgid " M"
 msgstr "М"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:621
 #, fuzzy
 msgid " K"
 msgstr "K"
@@ -13901,7 +13901,7 @@ msgstr "Процент на отклонение"
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
-"Percentage of 100% on an adjusted average of 50 would remove any sample "
+"Percentage of 100%% on an adjusted average of 50 would remove any sample "
 "above the quantity of 100 from the graph."
 msgstr ""
 "Тази стойност представлява процента над коригираната средна величина на "
@@ -18830,11 +18830,11 @@ msgid ""
 "reducing the size of your output column to just the right size.  This column "
 "is in the tables poller_output, and poller_output_boost.  The second thing "
 "you can do is allocate more memory to memory tables.  We have arbitrarily "
-"chosen a recommended value of 10% of system memory, but if you are using SSD "
-"disk drives, or have a smaller system, you may ignore this recommendation or "
-"choose a different storage engine.  You may see the expected consumption of "
-"the Performance Booster tables under Console -> System Utilities -> View "
-"Boost Status."
+"chosen a recommended value of 10%% of system memory, but if you are using "
+"SSD disk drives, or have a smaller system, you may ignore this "
+"recommendation or choose a different storage engine.  You may see the "
+"expected consumption of the Performance Booster tables under Console -> "
+"System Utilities -> View Boost Status."
 msgstr ""
 "Ако използвате Cacti Performance Booster и избирате двигател за съхранение "
 "на памет, трябва да внимавате да изчистите буфера на Performance Booster, "
