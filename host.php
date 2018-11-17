@@ -374,7 +374,7 @@ function form_actions() {
 						'friendly_name' => __('Update this Field'),
 						'class' => 'ui-state-disabled',
 						'value' => ''
-						);
+					);
 				}
 			}
 
