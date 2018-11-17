@@ -13046,17 +13046,11 @@ msgstr "8X"
 
 #: lib/html.php:2237
 msgid "16x"
-msgstr ""
-"16x\n"
-"\n"
-"16字母x,罗马数字10"
+msgstr "16x"
 
 #: lib/html.php:2238
 msgid "32x"
-msgstr ""
-"32x\n"
-"\n"
-"32字母x,罗马数字10"
+msgstr "32x"
 
 #: lib/html.php:2239
 #, fuzzy
