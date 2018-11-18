@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 10:02-0500\n"
-"PO-Revision-Date: 2018-11-17 22:17-0500\n"
+"POT-Creation-Date: 2018-11-18 11:09-0500\n"
+"PO-Revision-Date: 2018-11-18 11:28-0500\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: Cacti Developers <Cacti>\n"
 "Language: de_DE\n"
@@ -192,7 +192,7 @@ msgstr ""
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
@@ -226,7 +226,7 @@ msgstr "Abbrechen"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:199 lib/html.php:2228 lib/html_reports.php:754
+#: lib/clog_webapi.php:199 lib/html.php:2230 lib/html_reports.php:754
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -946,7 +946,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "Kann nicht für %d Passwortänderungen wiederverwendet werden."
 
 #: auth_changepassword.php:280 auth_changepassword.php:287
-#: include/global_form.php:1492 lib/functions.php:2237
+#: include/global_form.php:1492 lib/functions.php:2269
 msgid "Change Password"
 msgstr "Kennwort ändern"
 
@@ -1061,11 +1061,11 @@ msgid "Enter your Username and Password below"
 msgstr "Geben Sie Ihren Benutzernamen und Kennwort ein"
 
 #: auth_login.php:688 auth_login.php:691 include/global_settings.php:1362
-#: lib/functions.php:3666
+#: lib/functions.php:3698
 msgid "Username"
 msgstr "Benutzername"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3667
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3699
 msgid "Password"
 msgstr "Kennwort"
 
@@ -1243,7 +1243,7 @@ msgstr "Zu Kakteen hinzugefügt"
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
-#: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
+#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
 msgstr "Zielsysteme"
@@ -1560,7 +1560,7 @@ msgstr "Aktiviert"
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
 #: include/global_settings.php:1944 lib/api_automation.php:171
-#: lib/api_automation.php:1051 lib/html.php:2254 lib/html_reports.php:1499
+#: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
 #: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
 #: user_domains.php:411 user_group_admin.php:691 utilities.php:2273
@@ -2537,7 +2537,7 @@ msgstr "Version"
 msgid "Community"
 msgstr "Community"
 
-#: automation_snmp.php:507 lib/functions.php:3662
+#: automation_snmp.php:507 lib/functions.php:3694
 msgid "Port"
 msgstr "Port"
 
@@ -5258,7 +5258,7 @@ msgstr "Vorschau Modus"
 msgid "Add Selected Graphs to Report"
 msgstr "Hinzufügen ausgewählter Grafiken zum Bericht"
 
-#: graph_view.php:886 lib/html.php:2226
+#: graph_view.php:886 lib/html.php:2228
 msgid "Ok"
 msgstr "Ok"
 
@@ -5984,7 +5984,7 @@ msgstr "Kontaktierendes Gerät"
 msgid "Data Query Debug Information"
 msgstr "Informationen zur Fehlersuche bei Datenabfragen"
 
-#: host.php:662 lib/functions.php:2787 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2819 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopieren"
@@ -6055,7 +6055,7 @@ msgstr " (%d Gegenstände, %d Zeilen)"
 msgid "Fail"
 msgstr "Fehlschlag"
 
-#: host.php:845 lib/functions.php:3676 lib/functions.php:3681
+#: host.php:845 lib/functions.php:3708 lib/functions.php:3713
 msgid "Success"
 msgstr "Erfolgreich"
 
@@ -7109,7 +7109,7 @@ msgstr "Rechts"
 msgid "Justified"
 msgstr "Ausgerichtet"
 
-#: include/global_arrays.php:494 lib/html.php:2252
+#: include/global_arrays.php:494 lib/html.php:2254
 msgid "Center"
 msgstr "Mitte"
 
@@ -7369,7 +7369,7 @@ msgstr "Header"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
 #: include/global_arrays.php:1448 include/global_arrays.php:1612
-#: lib/html.php:2241
+#: lib/html.php:2243
 msgid "Graph"
 msgstr "Diagramm"
 
@@ -7526,7 +7526,7 @@ msgid "Configuration"
 msgstr "Konfiguration"
 
 #: include/global_arrays.php:889 include/global_arrays.php:909
-#: lib/html.php:2010 lib/html.php:2256
+#: lib/html.php:2010 lib/html.php:2258
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -8450,7 +8450,7 @@ msgid "List Mode"
 msgstr "Listen Ansicht"
 
 #: include/global_arrays.php:1816 include/global_arrays.php:1822
-#: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
+#: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "Konsole"
@@ -10655,7 +10655,7 @@ msgstr "Daten"
 msgid "Visual"
 msgstr "Visuell"
 
-#: include/global_settings.php:44 lib/functions.php:3665 lib/functions.php:3670
+#: include/global_settings.php:44 lib/functions.php:3697 lib/functions.php:3702
 msgid "Authentication"
 msgstr "LDAP Authentifizierung"
 
@@ -10696,12 +10696,12 @@ msgstr "Schriftart für Diagramme"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() Funktion"
 
-#: include/global_settings.php:91 lib/functions.php:3648
+#: include/global_settings.php:91 lib/functions.php:3680
 #, fuzzy
 msgid "Sendmail"
 msgstr "Pfad zu Sendmail"
 
-#: include/global_settings.php:92 lib/functions.php:3653
+#: include/global_settings.php:92 lib/functions.php:3685
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11210,7 +11210,7 @@ msgstr ""
 msgid "Simple"
 msgstr "Einfach"
 
-#: include/global_settings.php:417 lib/html.php:2243
+#: include/global_settings.php:417 lib/html.php:2245
 msgid "Advanced"
 msgstr "Erweitert"
 
@@ -12913,7 +12913,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Sendmail-Optionen"
 
-#: include/global_settings.php:1481 lib/functions.php:3648
+#: include/global_settings.php:1481 lib/functions.php:3680
 msgid "Sendmail Path"
 msgstr "Pfad zu Sendmail"
 
@@ -14450,8 +14450,8 @@ msgstr "Umgebung:"
 msgid "Contact:"
 msgstr "Kontakt:"
 
-#: lib/api_device.php:1052 lib/functions.php:3679 lib/functions.php:3681
-#: lib/functions.php:3685
+#: lib/api_device.php:1052 lib/functions.php:3711 lib/functions.php:3713
+#: lib/functions.php:3717
 msgid "Ping Results"
 msgstr "Ping Ergebnisse"
 
@@ -15031,58 +15031,63 @@ msgstr "Datenquelle wurde nicht abgefragt"
 msgid "No issues found"
 msgstr "Keine Probleme gefunden"
 
-#: lib/functions.php:941
+#: lib/functions.php:607 lib/functions.php:683
+#, fuzzy
+msgid "Message Not Found."
+msgstr "Vorlage nicht gefunden"
+
+#: lib/functions.php:973
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "Fehler %s ist nicht lesbar."
 
-#: lib/functions.php:2224 lib/functions.php:2234
+#: lib/functions.php:2256 lib/functions.php:2266
 msgid "Logged in as"
 msgstr "Angemeldet als"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "Als normaler Benutzer anmelden"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 msgid "guest"
 msgstr "Gast"
 
-#: lib/functions.php:2226 lib/functions.php:2239 lib/html.php:2197
+#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2197
 #, fuzzy
 msgid "User Community"
 msgstr "Benutzer-Community"
 
-#: lib/functions.php:2227 lib/functions.php:2240 lib/html.php:2198
+#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2198
 #: lib/utility.php:1002
 msgid "Documentation"
 msgstr "Dokumentation"
 
-#: lib/functions.php:2236
+#: lib/functions.php:2268
 msgid "Edit Profile"
 msgstr "Profil bearbeiten"
 
-#: lib/functions.php:2242
+#: lib/functions.php:2274
 msgid "Logout"
 msgstr "Abmelden"
 
-#: lib/functions.php:2385
+#: lib/functions.php:2417
 msgid "Leaf"
 msgstr "Blatt"
 
-#: lib/functions.php:2405 lib/html_tree.php:632 lib/html_tree.php:660
+#: lib/functions.php:2437 lib/html_tree.php:632 lib/html_tree.php:660
 #: lib/html_tree.php:880 lib/html_tree.php:888 lib/html_tree.php:1476
 #, fuzzy
 msgid "Non Query Based"
 msgstr "Nicht abfragebasiert"
 
-#: lib/functions.php:2438
+#: lib/functions.php:2470
 #, php-format
 msgid "Link %s"
 msgstr "%s verbinden"
 
-#: lib/functions.php:3206
+#: lib/functions.php:3238
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15091,27 +15096,27 @@ msgstr ""
 "Mailer-Fehler: Nein <b>TO</b>Adresse gesetzt!<br>Wenn Sie den Link <i>Test "
 "Mail</i> verwenden, setzen Sie bitte die Einstellung <b>Alarmmail</b>."
 
-#: lib/functions.php:3612
+#: lib/functions.php:3644
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Authentifizierung fehlgeschlagen: %s"
 
-#: lib/functions.php:3616
+#: lib/functions.php:3648
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO fehlgeschlagen: %s"
 
-#: lib/functions.php:3619
+#: lib/functions.php:3651
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Verbindung fehlgeschlagen: %s"
 
-#: lib/functions.php:3622
+#: lib/functions.php:3654
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP-Fehler:"
 
-#: lib/functions.php:3635
+#: lib/functions.php:3667
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15120,79 +15125,79 @@ msgstr ""
 "Dies ist eine von Cacti generierte Testnachricht.  Diese Nachricht wurde "
 "gesendet, um die Konfiguration Ihrer Mail-Einstellungen zu testen."
 
-#: lib/functions.php:3636
+#: lib/functions.php:3668
 msgid "Your email settings are currently set as follows"
 msgstr "Ihre e-Mail-Einstellungen sind derzeit wie folgt festgelegt"
 
-#: lib/functions.php:3637
+#: lib/functions.php:3669
 msgid "Method"
 msgstr "Methode"
 
-#: lib/functions.php:3639
+#: lib/functions.php:3671
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Konfiguration prüfen....<br><br>"
 
-#: lib/functions.php:3646
+#: lib/functions.php:3678
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer-Klasse"
 
-#: lib/functions.php:3652
+#: lib/functions.php:3684
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Methode: SMTP"
 
-#: lib/functions.php:3667
+#: lib/functions.php:3699
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Aus Sicherheitsgründen nicht angezeigt"
 
-#: lib/functions.php:3668
+#: lib/functions.php:3700
 msgid "Security"
 msgstr "Sicherheit"
 
-#: lib/functions.php:3676
+#: lib/functions.php:3708
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping Ergebnisse"
 
-#: lib/functions.php:3685
+#: lib/functions.php:3717
 #, fuzzy
 msgid "Bypassed"
 msgstr "Bypassed"
 
-#: lib/functions.php:3693
+#: lib/functions.php:3725
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Nachrichtentext erstellen....."
 
-#: lib/functions.php:3696
+#: lib/functions.php:3728
 #, fuzzy
 msgid "Sending Message..."
 msgstr "Nachricht senden....."
 
-#: lib/functions.php:3700
+#: lib/functions.php:3732
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Kakteen-Testmeldung"
 
-#: lib/functions.php:3702
+#: lib/functions.php:3734
 msgid "Success!"
 msgstr "Erfolgreich!"
 
-#: lib/functions.php:3705
+#: lib/functions.php:3737
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Nachricht nicht gesendet aufgrund eines Ping-Fehlers."
 
-#: lib/functions.php:4258 lib/functions.php:4319 poller.php:323 poller.php:434
+#: lib/functions.php:4290 lib/functions.php:4351 poller.php:323 poller.php:434
 #: poller.php:496 poller.php:519 poller.php:660
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Warnung vor dem Kaktus-System"
 
-#: lib/functions.php:4258 lib/functions.php:4319
+#: lib/functions.php:4290 lib/functions.php:4351
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15201,17 +15206,17 @@ msgstr ""
 "Cacti hat das Plugin %s aufgrund des folgenden Fehlers deaktiviert: %s!  "
 "Weitere Informationen finden Sie in der Cacti-Logdatei."
 
-#: lib/functions.php:4695 lib/functions.php:4697
+#: lib/functions.php:4727 lib/functions.php:4729
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:4695
+#: lib/functions.php:4727
 #, php-format
 msgid "Version %s %s"
 msgstr "Version %s %s"
 
-#: lib/functions.php:4697
+#: lib/functions.php:4729
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15490,123 +15495,133 @@ msgid "The response to the last action was unexpected."
 msgstr "Die Reaktion auf die letzte Aktion war unerwartet."
 
 #: lib/html.php:2224
+msgid "Some Actions failed"
+msgstr "Einige Aktionen sind fehlgeschlagen"
+
+#: lib/html.php:2225
+msgid "Note, we could not process all your actions.  Details are below."
+msgstr ""
+"Beachten Sie, dass wir nicht alle Ihre Aktionen bearbeiten konnten.  Details "
+"dazu finden Sie unten."
+
+#: lib/html.php:2226
 #, fuzzy
 msgid "Operation successful"
 msgstr "Operation erfolgreich"
 
-#: lib/html.php:2225
+#: lib/html.php:2227
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "Die Operation war erfolgreich.  Details dazu finden Sie unten."
 
-#: lib/html.php:2227
+#: lib/html.php:2229
 msgid "Pause"
 msgstr "Pause"
 
-#: lib/html.php:2230
+#: lib/html.php:2232
 msgid "Zoom In"
 msgstr "Vergrößern"
 
-#: lib/html.php:2231
+#: lib/html.php:2233
 msgid "Zoom Out"
 msgstr "Verkleinern"
 
-#: lib/html.php:2232
+#: lib/html.php:2234
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Verkleinerungsfaktor"
 
-#: lib/html.php:2233
+#: lib/html.php:2235
 #, fuzzy
 msgid "Timestamps"
 msgstr "Zeitstempel"
 
-#: lib/html.php:2234
+#: lib/html.php:2236
 #, fuzzy
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2235
+#: lib/html.php:2237
 #, fuzzy
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2236
+#: lib/html.php:2238
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2237
+#: lib/html.php:2239
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2238
+#: lib/html.php:2240
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2239
+#: lib/html.php:2241
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Verkleinern der Position"
 
-#: lib/html.php:2240
+#: lib/html.php:2242
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "Zoom-Modus"
 
-#: lib/html.php:2242
+#: lib/html.php:2244
 msgid "Quick"
 msgstr "Schnell"
 
-#: lib/html.php:2244
+#: lib/html.php:2246
 msgid "Open in new tab"
 msgstr "Öffne in neuem Tab"
 
-#: lib/html.php:2245
+#: lib/html.php:2247
 #, fuzzy
 msgid "Save graph"
 msgstr "Grafik speichern"
 
-#: lib/html.php:2246
+#: lib/html.php:2248
 #, fuzzy
 msgid "Copy graph"
 msgstr "Grafik kopieren"
 
-#: lib/html.php:2247
+#: lib/html.php:2249
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Grafik-Link kopieren"
 
-#: lib/html.php:2248
+#: lib/html.php:2250
 msgid "Always On"
 msgstr "Immer an"
 
-#: lib/html.php:2249
+#: lib/html.php:2251
 msgid "Auto"
 msgstr "Auto"
 
-#: lib/html.php:2250
+#: lib/html.php:2252
 #, fuzzy
 msgid "Always Off"
 msgstr "Immer aus"
 
-#: lib/html.php:2251
+#: lib/html.php:2253
 #, fuzzy
 msgid "Begin with"
 msgstr "Beginnen Sie mit"
 
-#: lib/html.php:2253
+#: lib/html.php:2255
 #, fuzzy
 msgid "End with"
 msgstr "Enddatum"
 
-#: lib/html.php:2255 lib/html_form.php:1283
+#: lib/html.php:2257 lib/html_form.php:1283
 msgid "Close"
 msgstr "Schließen"
 
-#: lib/html.php:2257
+#: lib/html.php:2259
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3. Maustaste"

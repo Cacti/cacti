@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 10:02-0500\n"
-"PO-Revision-Date: 2018-11-17 21:58-0500\n"
+"POT-Creation-Date: 2018-11-18 11:09-0500\n"
+"PO-Revision-Date: 2018-11-18 11:30-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -187,7 +187,7 @@ msgstr "다음 집계 그래프를 삭제하려면 &#39;계속&#39;을 클릭하
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
@@ -221,7 +221,7 @@ msgstr "취소"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:199 lib/html.php:2228 lib/html_reports.php:754
+#: lib/clog_webapi.php:199 lib/html.php:2230 lib/html_reports.php:754
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -936,7 +936,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "% d 개의 암호 변경에 재사용 할 수 없습니다."
 
 #: auth_changepassword.php:280 auth_changepassword.php:287
-#: include/global_form.php:1492 lib/functions.php:2237
+#: include/global_form.php:1492 lib/functions.php:2269
 msgid "Change Password"
 msgstr "비밀번호 변경"
 
@@ -1057,11 +1057,11 @@ msgid "Enter your Username and Password below"
 msgstr "아래에 사용자 이름과 암호를 입력하십시오"
 
 #: auth_login.php:688 auth_login.php:691 include/global_settings.php:1362
-#: lib/functions.php:3666
+#: lib/functions.php:3698
 msgid "Username"
 msgstr "아이디"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3667
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3699
 msgid "Password"
 msgstr "비밀번호"
 
@@ -1252,7 +1252,7 @@ msgstr "선인장에 추가됨"
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
-#: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
+#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
 msgstr "장치"
@@ -1575,7 +1575,7 @@ msgstr "활성화"
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
 #: include/global_settings.php:1944 lib/api_automation.php:171
-#: lib/api_automation.php:1051 lib/html.php:2254 lib/html_reports.php:1499
+#: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
 #: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
 #: user_domains.php:411 user_group_admin.php:691 utilities.php:2273
@@ -2531,7 +2531,7 @@ msgstr "버전"
 msgid "Community"
 msgstr "커뮤니티"
 
-#: automation_snmp.php:507 lib/functions.php:3662
+#: automation_snmp.php:507 lib/functions.php:3694
 msgid "Port"
 msgstr "포트"
 
@@ -5220,7 +5220,7 @@ msgstr "RTL Mode"
 msgid "Add Selected Graphs to Report"
 msgstr "선택한 그래프를 보고서에 추가"
 
-#: graph_view.php:886 lib/html.php:2226
+#: graph_view.php:886 lib/html.php:2228
 msgid "Ok"
 msgstr "확인"
 
@@ -5944,7 +5944,7 @@ msgstr "장치 접촉"
 msgid "Data Query Debug Information"
 msgstr "데이터 쿼리 디버그 정보"
 
-#: host.php:662 lib/functions.php:2787 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2819 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "복사"
@@ -6020,7 +6020,7 @@ msgstr "[% d 개 항목, % d 개 행]"
 msgid "Fail"
 msgstr "실패"
 
-#: host.php:845 lib/functions.php:3676 lib/functions.php:3681
+#: host.php:845 lib/functions.php:3708 lib/functions.php:3713
 msgid "Success"
 msgstr "성공"
 
@@ -7055,7 +7055,7 @@ msgstr "오른쪽"
 msgid "Justified"
 msgstr "양쪽 맞춤"
 
-#: include/global_arrays.php:494 lib/html.php:2252
+#: include/global_arrays.php:494 lib/html.php:2254
 msgid "Center"
 msgstr "중앙"
 
@@ -7349,7 +7349,7 @@ msgstr "헤더"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
 #: include/global_arrays.php:1448 include/global_arrays.php:1612
-#: lib/html.php:2241
+#: lib/html.php:2243
 msgid "Graph"
 msgstr "그래프"
 
@@ -7525,7 +7525,7 @@ msgid "Configuration"
 msgstr "구성"
 
 #: include/global_arrays.php:889 include/global_arrays.php:909
-#: lib/html.php:2010 lib/html.php:2256
+#: lib/html.php:2010 lib/html.php:2258
 msgid "Settings"
 msgstr "설정"
 
@@ -8480,7 +8480,7 @@ msgid "List Mode"
 msgstr "목록 모드"
 
 #: include/global_arrays.php:1816 include/global_arrays.php:1822
-#: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
+#: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 #, fuzzy
 msgid "Console"
@@ -10680,7 +10680,7 @@ msgstr "데이터"
 msgid "Visual"
 msgstr "시각적"
 
-#: include/global_settings.php:44 lib/functions.php:3665 lib/functions.php:3670
+#: include/global_settings.php:44 lib/functions.php:3697 lib/functions.php:3702
 msgid "Authentication"
 msgstr "인증"
 
@@ -10723,12 +10723,12 @@ msgstr "그래프 글꼴"
 msgid "PHP Mail() Function"
 msgstr "PHP 메일 () 함수"
 
-#: include/global_settings.php:91 lib/functions.php:3648
+#: include/global_settings.php:91 lib/functions.php:3680
 #, fuzzy
 msgid "Sendmail"
 msgstr "메일을 보내다"
 
-#: include/global_settings.php:92 lib/functions.php:3653
+#: include/global_settings.php:92 lib/functions.php:3685
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11226,7 +11226,7 @@ msgstr ""
 msgid "Simple"
 msgstr "단순"
 
-#: include/global_settings.php:417 lib/html.php:2243
+#: include/global_settings.php:417 lib/html.php:2245
 msgid "Advanced"
 msgstr "고급"
 
@@ -12886,7 +12886,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "센드 메일 옵션"
 
-#: include/global_settings.php:1481 lib/functions.php:3648
+#: include/global_settings.php:1481 lib/functions.php:3680
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "센드 메일 경로"
@@ -14399,8 +14399,8 @@ msgstr "위치:"
 msgid "Contact:"
 msgstr "연락처:"
 
-#: lib/api_device.php:1052 lib/functions.php:3679 lib/functions.php:3681
-#: lib/functions.php:3685
+#: lib/api_device.php:1052 lib/functions.php:3711 lib/functions.php:3713
+#: lib/functions.php:3717
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping 결과"
@@ -14984,60 +14984,65 @@ msgstr "데이터 소스가 폴링되지 않았습니다."
 msgid "No issues found"
 msgstr "문제 없음"
 
-#: lib/functions.php:941
+#: lib/functions.php:607 lib/functions.php:683
+#, fuzzy
+msgid "Message Not Found."
+msgstr "템플릿을 찾을 수 없음"
+
+#: lib/functions.php:973
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "오류  %s을 (를) 읽을 수 없습니다."
 
-#: lib/functions.php:2224 lib/functions.php:2234
+#: lib/functions.php:2256 lib/functions.php:2266
 #, fuzzy
 msgid "Logged in as"
 msgstr "로그인하지 않았습니다."
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "일반 사용자로 로그인"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 msgid "guest"
 msgstr "명"
 
-#: lib/functions.php:2226 lib/functions.php:2239 lib/html.php:2197
+#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2197
 #, fuzzy
 msgid "User Community"
 msgstr "사용자 커뮤니티"
 
-#: lib/functions.php:2227 lib/functions.php:2240 lib/html.php:2198
+#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2198
 #: lib/utility.php:1002
 msgid "Documentation"
 msgstr "문서"
 
-#: lib/functions.php:2236
+#: lib/functions.php:2268
 msgid "Edit Profile"
 msgstr "프로필 수정"
 
-#: lib/functions.php:2242
+#: lib/functions.php:2274
 msgid "Logout"
 msgstr "로그아웃"
 
-#: lib/functions.php:2385
+#: lib/functions.php:2417
 #, fuzzy
 msgid "Leaf"
 msgstr "잎"
 
-#: lib/functions.php:2405 lib/html_tree.php:632 lib/html_tree.php:660
+#: lib/functions.php:2437 lib/html_tree.php:632 lib/html_tree.php:660
 #: lib/html_tree.php:880 lib/html_tree.php:888 lib/html_tree.php:1476
 #, fuzzy
 msgid "Non Query Based"
 msgstr "비 쿼리 기반"
 
-#: lib/functions.php:2438
+#: lib/functions.php:2470
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "%s 링크"
 
-#: lib/functions.php:3206
+#: lib/functions.php:3238
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15046,27 +15051,27 @@ msgstr ""
 "메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메일 테스트</i> 링크를 "
 "사용하는 경우 <b>경고 전자 메일</b> 설정을 지정하십시오."
 
-#: lib/functions.php:3612
+#: lib/functions.php:3644
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "인증 실패 :  %s"
 
-#: lib/functions.php:3616
+#: lib/functions.php:3648
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO 실패 :  %s"
 
-#: lib/functions.php:3619
+#: lib/functions.php:3651
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "연결 실패 :  %s"
 
-#: lib/functions.php:3622
+#: lib/functions.php:3654
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP 오류 :"
 
-#: lib/functions.php:3635
+#: lib/functions.php:3667
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15075,80 +15080,80 @@ msgstr ""
 "Cacti에서 생성 된 테스트 메시지입니다. 이 메시지는 메일 설정의 구성을 테스트"
 "하기 위해 전송되었습니다."
 
-#: lib/functions.php:3636
+#: lib/functions.php:3668
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다."
 
-#: lib/functions.php:3637
+#: lib/functions.php:3669
 msgid "Method"
 msgstr "방법"
 
-#: lib/functions.php:3639
+#: lib/functions.php:3671
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "구성 확인 중 ... <br>"
 
-#: lib/functions.php:3646
+#: lib/functions.php:3678
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP 메일러 클래스"
 
-#: lib/functions.php:3652
+#: lib/functions.php:3684
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "방법 : SMTP"
 
-#: lib/functions.php:3667
+#: lib/functions.php:3699
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "보안상의 이유로 표시되지 않음"
 
-#: lib/functions.php:3668
+#: lib/functions.php:3700
 msgid "Security"
 msgstr "보안"
 
-#: lib/functions.php:3676
+#: lib/functions.php:3708
 #, fuzzy
 msgid "Ping Results:"
 msgstr "핑 결과 :"
 
-#: lib/functions.php:3685
+#: lib/functions.php:3717
 #, fuzzy
 msgid "Bypassed"
 msgstr "우회"
 
-#: lib/functions.php:3693
+#: lib/functions.php:3725
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "메시지 텍스트 작성 중 ..."
 
-#: lib/functions.php:3696
+#: lib/functions.php:3728
 #, fuzzy
 msgid "Sending Message..."
 msgstr "메시지를 보내는 중 ..."
 
-#: lib/functions.php:3700
+#: lib/functions.php:3732
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "선인장 테스트 메시지"
 
-#: lib/functions.php:3702
+#: lib/functions.php:3734
 msgid "Success!"
 msgstr "성공!"
 
-#: lib/functions.php:3705
+#: lib/functions.php:3737
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "핑 실패로 인해 메시지가 전송되지 않았습니다."
 
-#: lib/functions.php:4258 lib/functions.php:4319 poller.php:323 poller.php:434
+#: lib/functions.php:4290 lib/functions.php:4351 poller.php:323 poller.php:434
 #: poller.php:496 poller.php:519 poller.php:660
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "선인장 시스템 경고"
 
-#: lib/functions.php:4258 lib/functions.php:4319
+#: lib/functions.php:4290 lib/functions.php:4351
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15157,17 +15162,17 @@ msgstr ""
 "Cacti 플러그인  %s이 (가) 다음 오류 때문에 비활성화되었습니다 :  %s! 자세한 "
 "내용은 Cacti 로그 파일을 참조하십시오."
 
-#: lib/functions.php:4695 lib/functions.php:4697
+#: lib/functions.php:4727 lib/functions.php:4729
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- 베타  %s"
 
-#: lib/functions.php:4695
+#: lib/functions.php:4727
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "버전  %s  %s"
 
-#: lib/functions.php:4697
+#: lib/functions.php:4729
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15453,125 +15458,133 @@ msgid "The response to the last action was unexpected."
 msgstr "마지막 행동에 대한 반응은 예상치 못했습니다."
 
 #: lib/html.php:2224
+msgid "Some Actions failed"
+msgstr "일부 조치가 실패했습니다."
+
+#: lib/html.php:2225
+msgid "Note, we could not process all your actions.  Details are below."
+msgstr "모든 행동을 처리 할 수는 없습니다. 세부 사항은 아래와 같습니다."
+
+#: lib/html.php:2226
 #, fuzzy
 msgid "Operation successful"
 msgstr "작업 성공"
 
-#: lib/html.php:2225
+#: lib/html.php:2227
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "작업이 성공적으로 완료되었습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2227
+#: lib/html.php:2229
 msgid "Pause"
 msgstr "일시 정지"
 
-#: lib/html.php:2230
+#: lib/html.php:2232
 msgid "Zoom In"
 msgstr "확대"
 
-#: lib/html.php:2231
+#: lib/html.php:2233
 msgid "Zoom Out"
 msgstr "축소"
 
-#: lib/html.php:2232
+#: lib/html.php:2234
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "축소 계수"
 
-#: lib/html.php:2233
+#: lib/html.php:2235
 #, fuzzy
 msgid "Timestamps"
 msgstr "타임 스탬프"
 
-#: lib/html.php:2234
+#: lib/html.php:2236
 #, fuzzy
 msgid "2x"
 msgstr "2 배"
 
-#: lib/html.php:2235
+#: lib/html.php:2237
 #, fuzzy
 msgid "4x"
 msgstr "4 배"
 
-#: lib/html.php:2236
+#: lib/html.php:2238
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2237
+#: lib/html.php:2239
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2238
+#: lib/html.php:2240
 #, fuzzy
 msgid "32x"
 msgstr "32 배"
 
-#: lib/html.php:2239
+#: lib/html.php:2241
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "위치 조정 축소"
 
-#: lib/html.php:2240
+#: lib/html.php:2242
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "줌 모드"
 
-#: lib/html.php:2242
+#: lib/html.php:2244
 msgid "Quick"
 msgstr "빨리"
 
-#: lib/html.php:2244
+#: lib/html.php:2246
 #, fuzzy
 msgid "Open in new tab"
 msgstr "새 탭에서 열기"
 
-#: lib/html.php:2245
+#: lib/html.php:2247
 #, fuzzy
 msgid "Save graph"
 msgstr "그래프 저장"
 
-#: lib/html.php:2246
+#: lib/html.php:2248
 #, fuzzy
 msgid "Copy graph"
 msgstr "그래프 복사"
 
-#: lib/html.php:2247
+#: lib/html.php:2249
 #, fuzzy
 msgid "Copy graph link"
 msgstr "그래프 링크 복사"
 
-#: lib/html.php:2248
+#: lib/html.php:2250
 #, fuzzy
 msgid "Always On"
 msgstr "항상 켜기"
 
-#: lib/html.php:2249
+#: lib/html.php:2251
 msgid "Auto"
 msgstr "자동"
 
-#: lib/html.php:2250
+#: lib/html.php:2252
 #, fuzzy
 msgid "Always Off"
 msgstr "항상 꺼짐"
 
-#: lib/html.php:2251
+#: lib/html.php:2253
 #, fuzzy
 msgid "Begin with"
 msgstr "시작하다"
 
-#: lib/html.php:2253
+#: lib/html.php:2255
 #, fuzzy
 msgid "End with"
 msgstr "종료일"
 
-#: lib/html.php:2255 lib/html_form.php:1283
+#: lib/html.php:2257 lib/html_form.php:1283
 msgid "Close"
 msgstr "닫기"
 
-#: lib/html.php:2257
+#: lib/html.php:2259
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "세 번째 마우스 버튼"

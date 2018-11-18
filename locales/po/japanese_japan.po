@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 10:02-0500\n"
-"PO-Revision-Date: 2018-11-17 21:56-0500\n"
+"POT-Creation-Date: 2018-11-18 11:09-0500\n"
+"PO-Revision-Date: 2018-11-18 11:29-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "Language: ja\n"
@@ -182,7 +182,7 @@ msgstr "次の集計グラフを削除するには、[続行]をクリックし�
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
@@ -216,7 +216,7 @@ msgstr "取り消し"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:199 lib/html.php:2228 lib/html_reports.php:754
+#: lib/clog_webapi.php:199 lib/html.php:2230 lib/html_reports.php:754
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -925,7 +925,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "％d個のパスワードの変更に再利用できません"
 
 #: auth_changepassword.php:280 auth_changepassword.php:287
-#: include/global_form.php:1492 lib/functions.php:2237
+#: include/global_form.php:1492 lib/functions.php:2269
 msgid "Change Password"
 msgstr "パスワードの変更"
 
@@ -1047,11 +1047,11 @@ msgid "Enter your Username and Password below"
 msgstr "以下のユーザー名とパスワードを入力してください"
 
 #: auth_login.php:688 auth_login.php:691 include/global_settings.php:1362
-#: lib/functions.php:3666
+#: lib/functions.php:3698
 msgid "Username"
 msgstr "ユーザー名"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3667
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3699
 msgid "Password"
 msgstr "パスワード"
 
@@ -1238,7 +1238,7 @@ msgstr "Cactiに追加されました"
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
-#: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
+#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
 msgstr "デバイス"
@@ -1554,7 +1554,7 @@ msgstr "有効"
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
 #: include/global_settings.php:1944 lib/api_automation.php:171
-#: lib/api_automation.php:1051 lib/html.php:2254 lib/html_reports.php:1499
+#: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
 #: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
 #: user_domains.php:411 user_group_admin.php:691 utilities.php:2273
@@ -2506,7 +2506,7 @@ msgstr "バージョン"
 msgid "Community"
 msgstr "コミュニティ"
 
-#: automation_snmp.php:507 lib/functions.php:3662
+#: automation_snmp.php:507 lib/functions.php:3694
 msgid "Port"
 msgstr "ポート"
 
@@ -5184,7 +5184,7 @@ msgstr "プレビューモード"
 msgid "Add Selected Graphs to Report"
 msgstr "選択したグラフをレポートに追加する"
 
-#: graph_view.php:886 lib/html.php:2226
+#: graph_view.php:886 lib/html.php:2228
 msgid "Ok"
 msgstr "OK"
 
@@ -5904,7 +5904,7 @@ msgstr "接触装置"
 msgid "Data Query Debug Information"
 msgstr "データクエリのデバッグ情報"
 
-#: host.php:662 lib/functions.php:2787 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2819 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "コピー"
@@ -5978,7 +5978,7 @@ msgstr "[％d個のアイテム、％d個の行]"
 msgid "Fail"
 msgstr "失敗"
 
-#: host.php:845 lib/functions.php:3676 lib/functions.php:3681
+#: host.php:845 lib/functions.php:3708 lib/functions.php:3713
 msgid "Success"
 msgstr "成功"
 
@@ -7028,7 +7028,7 @@ msgstr "右"
 msgid "Justified"
 msgstr "均等割付"
 
-#: include/global_arrays.php:494 lib/html.php:2252
+#: include/global_arrays.php:494 lib/html.php:2254
 msgid "Center"
 msgstr "中央"
 
@@ -7308,7 +7308,7 @@ msgstr "ヘッダー"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
 #: include/global_arrays.php:1448 include/global_arrays.php:1612
-#: lib/html.php:2241
+#: lib/html.php:2243
 msgid "Graph"
 msgstr "グラフ"
 
@@ -7478,7 +7478,7 @@ msgid "Configuration"
 msgstr "構成"
 
 #: include/global_arrays.php:889 include/global_arrays.php:909
-#: lib/html.php:2010 lib/html.php:2256
+#: lib/html.php:2010 lib/html.php:2258
 msgid "Settings"
 msgstr "設定"
 
@@ -8422,7 +8422,7 @@ msgid "List Mode"
 msgstr "一覧モード"
 
 #: include/global_arrays.php:1816 include/global_arrays.php:1822
-#: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
+#: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "コンソール"
@@ -10616,7 +10616,7 @@ msgstr "データ"
 msgid "Visual"
 msgstr "ビジュアル"
 
-#: include/global_settings.php:44 lib/functions.php:3665 lib/functions.php:3670
+#: include/global_settings.php:44 lib/functions.php:3697 lib/functions.php:3702
 msgid "Authentication"
 msgstr "認証"
 
@@ -10659,11 +10659,11 @@ msgstr "グラフフォント"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail（）関数"
 
-#: include/global_settings.php:91 lib/functions.php:3648
+#: include/global_settings.php:91 lib/functions.php:3680
 msgid "Sendmail"
 msgstr "注文確定"
 
-#: include/global_settings.php:92 lib/functions.php:3653
+#: include/global_settings.php:92 lib/functions.php:3685
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11159,7 +11159,7 @@ msgstr ""
 msgid "Simple"
 msgstr "シンプル"
 
-#: include/global_settings.php:417 lib/html.php:2243
+#: include/global_settings.php:417 lib/html.php:2245
 msgid "Advanced"
 msgstr "高度な設定"
 
@@ -12815,7 +12815,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Sendmailオプション"
 
-#: include/global_settings.php:1481 lib/functions.php:3648
+#: include/global_settings.php:1481 lib/functions.php:3680
 msgid "Sendmail Path"
 msgstr "Sendmailのパス"
 
@@ -14334,8 +14334,8 @@ msgstr "位置:"
 msgid "Contact:"
 msgstr "連絡先:"
 
-#: lib/api_device.php:1052 lib/functions.php:3679 lib/functions.php:3681
-#: lib/functions.php:3685
+#: lib/api_device.php:1052 lib/functions.php:3711 lib/functions.php:3713
+#: lib/functions.php:3717
 #, fuzzy
 msgid "Ping Results"
 msgstr "Pingの結果"
@@ -14935,58 +14935,63 @@ msgstr "データソースがポーリングされなかった"
 msgid "No issues found"
 msgstr "問題は見つかりませんでした"
 
-#: lib/functions.php:941
+#: lib/functions.php:607 lib/functions.php:683
+#, fuzzy
+msgid "Message Not Found."
+msgstr "テンプレートが見つかりません"
+
+#: lib/functions.php:973
 #, fuzzy, php-format
 msgid "Error %s is not readable"
 msgstr "エラー％sは読み取れません"
 
-#: lib/functions.php:2224 lib/functions.php:2234
+#: lib/functions.php:2256 lib/functions.php:2266
 msgid "Logged in as"
 msgstr "ログイン中"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "通常のユーザーとしてログイン"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 msgid "guest"
 msgstr "人"
 
-#: lib/functions.php:2226 lib/functions.php:2239 lib/html.php:2197
+#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2197
 #, fuzzy
 msgid "User Community"
 msgstr "ユーザーコミュニティ"
 
-#: lib/functions.php:2227 lib/functions.php:2240 lib/html.php:2198
+#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2198
 #: lib/utility.php:1002
 msgid "Documentation"
 msgstr "ドキュメント"
 
-#: lib/functions.php:2236
+#: lib/functions.php:2268
 msgid "Edit Profile"
 msgstr "プロフィールを編集"
 
-#: lib/functions.php:2242
+#: lib/functions.php:2274
 msgid "Logout"
 msgstr "ログアウト"
 
-#: lib/functions.php:2385
+#: lib/functions.php:2417
 msgid "Leaf"
 msgstr "葉っぱ"
 
-#: lib/functions.php:2405 lib/html_tree.php:632 lib/html_tree.php:660
+#: lib/functions.php:2437 lib/html_tree.php:632 lib/html_tree.php:660
 #: lib/html_tree.php:880 lib/html_tree.php:888 lib/html_tree.php:1476
 #, fuzzy
 msgid "Non Query Based"
 msgstr "非問合せベース"
 
-#: lib/functions.php:2438
+#: lib/functions.php:2470
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "リンク％s"
 
-#: lib/functions.php:3206
+#: lib/functions.php:3238
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -14996,27 +15001,27 @@ msgstr ""
 "テスト</i>リンクを使用している場合は、 <b>アラート電子メール</b>設定を設定し"
 "てください。"
 
-#: lib/functions.php:3612
+#: lib/functions.php:3644
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "認証に失敗しました：％s"
 
-#: lib/functions.php:3616
+#: lib/functions.php:3648
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELOが失敗しました：％s"
 
-#: lib/functions.php:3619
+#: lib/functions.php:3651
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "接続に失敗しました：％s"
 
-#: lib/functions.php:3622
+#: lib/functions.php:3654
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTPエラー："
 
-#: lib/functions.php:3635
+#: lib/functions.php:3667
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15025,80 +15030,80 @@ msgstr ""
 "これはCactiから生成されたテストメッセージです。このメッセージは、メール設定の"
 "構成をテストするために送信されました。"
 
-#: lib/functions.php:3636
+#: lib/functions.php:3668
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "あなたのメール設定は現在以下のように設定されています"
 
-#: lib/functions.php:3637
+#: lib/functions.php:3669
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:3639
+#: lib/functions.php:3671
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "設定の確認中... <br>"
 
-#: lib/functions.php:3646
+#: lib/functions.php:3678
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHPのメーラークラス"
 
-#: lib/functions.php:3652
+#: lib/functions.php:3684
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:3667
+#: lib/functions.php:3699
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "セキュリティ上の理由から示されていない"
 
-#: lib/functions.php:3668
+#: lib/functions.php:3700
 msgid "Security"
 msgstr "セキュリティ"
 
-#: lib/functions.php:3676
+#: lib/functions.php:3708
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Pingの結果："
 
-#: lib/functions.php:3685
+#: lib/functions.php:3717
 #, fuzzy
 msgid "Bypassed"
 msgstr "バイパスされた"
 
-#: lib/functions.php:3693
+#: lib/functions.php:3725
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "メッセージテキストの作成..."
 
-#: lib/functions.php:3696
+#: lib/functions.php:3728
 #, fuzzy
 msgid "Sending Message..."
 msgstr "メッセージを送信中..."
 
-#: lib/functions.php:3700
+#: lib/functions.php:3732
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "サボテンテストメッセージ"
 
-#: lib/functions.php:3702
+#: lib/functions.php:3734
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:3705
+#: lib/functions.php:3737
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "pingが失敗したためにメッセージが送信されませんでした。"
 
-#: lib/functions.php:4258 lib/functions.php:4319 poller.php:323 poller.php:434
+#: lib/functions.php:4290 lib/functions.php:4351 poller.php:323 poller.php:434
 #: poller.php:496 poller.php:519 poller.php:660
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "サボテンシステムの警告"
 
-#: lib/functions.php:4258 lib/functions.php:4319
+#: lib/functions.php:4290 lib/functions.php:4351
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15107,17 +15112,17 @@ msgstr ""
 "Cactiは％sのプラグインを無効にしました：％s！詳細は、Cactiのログファイルを参"
 "照してください。"
 
-#: lib/functions.php:4695 lib/functions.php:4697
+#: lib/functions.php:4727 lib/functions.php:4729
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- ベータ％s"
 
-#: lib/functions.php:4695
+#: lib/functions.php:4727
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "バージョン％s％s"
 
-#: lib/functions.php:4697
+#: lib/functions.php:4729
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15402,123 +15407,131 @@ msgid "The response to the last action was unexpected."
 msgstr "最後の行動への反応は予想外でした。"
 
 #: lib/html.php:2224
+msgid "Some Actions failed"
+msgstr "一部のアクションが失敗しました"
+
+#: lib/html.php:2225
+msgid "Note, we could not process all your actions.  Details are below."
+msgstr "すべての操作を処理することはできませんでした。詳細は次のとおりです。"
+
+#: lib/html.php:2226
 #, fuzzy
 msgid "Operation successful"
 msgstr "操作が成功しました"
 
-#: lib/html.php:2225
+#: lib/html.php:2227
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "操作は成功しました。詳細は次のとおりです。"
 
-#: lib/html.php:2227
+#: lib/html.php:2229
 msgid "Pause"
 msgstr "一時停止"
 
-#: lib/html.php:2230
+#: lib/html.php:2232
 msgid "Zoom In"
 msgstr "ズームイン"
 
-#: lib/html.php:2231
+#: lib/html.php:2233
 msgid "Zoom Out"
 msgstr "ズームアウト"
 
-#: lib/html.php:2232
+#: lib/html.php:2234
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "ズームアウト係数"
 
-#: lib/html.php:2233
+#: lib/html.php:2235
 #, fuzzy
 msgid "Timestamps"
 msgstr "タイムスタンプ"
 
-#: lib/html.php:2234
+#: lib/html.php:2236
 #, fuzzy
 msgid "2x"
 msgstr "2倍"
 
-#: lib/html.php:2235
+#: lib/html.php:2237
 #, fuzzy
 msgid "4x"
 msgstr "4倍"
 
-#: lib/html.php:2236
+#: lib/html.php:2238
 #, fuzzy
 msgid "8x"
 msgstr "8倍"
 
-#: lib/html.php:2237
+#: lib/html.php:2239
 #, fuzzy
 msgid "16x"
 msgstr "16倍"
 
-#: lib/html.php:2238
+#: lib/html.php:2240
 #, fuzzy
 msgid "32x"
 msgstr "32倍"
 
-#: lib/html.php:2239
+#: lib/html.php:2241
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "ズームアウトポジショニング"
 
-#: lib/html.php:2240
+#: lib/html.php:2242
 msgid "Zoom Mode"
 msgstr "表示倍率変更モード"
 
-#: lib/html.php:2242
+#: lib/html.php:2244
 msgid "Quick"
 msgstr "クイック"
 
-#: lib/html.php:2244
+#: lib/html.php:2246
 msgid "Open in new tab"
 msgstr "新しいタブで開く"
 
-#: lib/html.php:2245
+#: lib/html.php:2247
 #, fuzzy
 msgid "Save graph"
 msgstr "グラフを保存する"
 
-#: lib/html.php:2246
+#: lib/html.php:2248
 #, fuzzy
 msgid "Copy graph"
 msgstr "グラフをコピーする"
 
-#: lib/html.php:2247
+#: lib/html.php:2249
 #, fuzzy
 msgid "Copy graph link"
 msgstr "グラフリンクのコピー"
 
-#: lib/html.php:2248
+#: lib/html.php:2250
 #, fuzzy
 msgid "Always On"
 msgstr "常にオン"
 
-#: lib/html.php:2249
+#: lib/html.php:2251
 msgid "Auto"
 msgstr "自動"
 
-#: lib/html.php:2250
+#: lib/html.php:2252
 #, fuzzy
 msgid "Always Off"
 msgstr "常にオフ"
 
-#: lib/html.php:2251
+#: lib/html.php:2253
 #, fuzzy
 msgid "Begin with"
 msgstr "始めて"
 
-#: lib/html.php:2253
+#: lib/html.php:2255
 #, fuzzy
 msgid "End with"
 msgstr "終了日"
 
-#: lib/html.php:2255 lib/html_form.php:1283
+#: lib/html.php:2257 lib/html_form.php:1283
 msgid "Close"
 msgstr "閉じる"
 
-#: lib/html.php:2257
+#: lib/html.php:2259
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3番目のマウスボタン"

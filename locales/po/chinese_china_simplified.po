@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 10:02-0500\n"
-"PO-Revision-Date: 2018-11-17 22:15-0500\n"
+"POT-Creation-Date: 2018-11-18 11:09-0500\n"
+"PO-Revision-Date: 2018-11-18 11:26-0500\n"
 "Last-Translator: SFQAS\n"
 "Language-Team: sfqas <sfqas@163.com>\n"
 "Language: zh_CN\n"
@@ -169,7 +169,7 @@ msgstr "点击“继续”删除以下聚合图表。"
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
@@ -203,7 +203,7 @@ msgstr "取消"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:199 lib/html.php:2228 lib/html_reports.php:754
+#: lib/clog_webapi.php:199 lib/html.php:2230 lib/html_reports.php:754
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -844,7 +844,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "无法重复使用 %d 密码更改"
 
 #: auth_changepassword.php:280 auth_changepassword.php:287
-#: include/global_form.php:1492 lib/functions.php:2237
+#: include/global_form.php:1492 lib/functions.php:2269
 msgid "Change Password"
 msgstr "更改密码"
 
@@ -951,11 +951,11 @@ msgid "Enter your Username and Password below"
 msgstr "在下面输入您的用户名和密码"
 
 #: auth_login.php:688 auth_login.php:691 include/global_settings.php:1362
-#: lib/functions.php:3666
+#: lib/functions.php:3698
 msgid "Username"
 msgstr "用户名"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3667
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3699
 msgid "Password"
 msgstr "密码"
 
@@ -1123,7 +1123,7 @@ msgstr "添加到Cacti"
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
-#: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
+#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
 msgstr "设备模板"
@@ -1409,7 +1409,7 @@ msgstr "启用"
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
 #: include/global_settings.php:1944 lib/api_automation.php:171
-#: lib/api_automation.php:1051 lib/html.php:2254 lib/html_reports.php:1499
+#: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
 #: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
 #: user_domains.php:411 user_group_admin.php:691 utilities.php:2273
@@ -2248,7 +2248,7 @@ msgstr "版本"
 msgid "Community"
 msgstr "团体名"
 
-#: automation_snmp.php:507 lib/functions.php:3662
+#: automation_snmp.php:507 lib/functions.php:3694
 msgid "Port"
 msgstr "端口"
 
@@ -4510,7 +4510,7 @@ msgstr "预览模式"
 msgid "Add Selected Graphs to Report"
 msgstr "将所选图表添加到报告中"
 
-#: graph_view.php:886 lib/html.php:2226
+#: graph_view.php:886 lib/html.php:2228
 msgid "Ok"
 msgstr "确定"
 
@@ -5105,7 +5105,7 @@ msgstr "联系设备"
 msgid "Data Query Debug Information"
 msgstr "数据查询调试信息"
 
-#: host.php:662 lib/functions.php:2787 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2819 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "复制"
@@ -5173,7 +5173,7 @@ msgstr " [%d 个项目, %d行]"
 msgid "Fail"
 msgstr "失败"
 
-#: host.php:845 lib/functions.php:3676 lib/functions.php:3681
+#: host.php:845 lib/functions.php:3708 lib/functions.php:3713
 msgid "Success"
 msgstr "成功"
 
@@ -6015,7 +6015,7 @@ msgstr "右"
 msgid "Justified"
 msgstr "正当"
 
-#: include/global_arrays.php:494 lib/html.php:2252
+#: include/global_arrays.php:494 lib/html.php:2254
 msgid "Center"
 msgstr "Center"
 
@@ -6266,7 +6266,7 @@ msgstr "头部"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
 #: include/global_arrays.php:1448 include/global_arrays.php:1612
-#: lib/html.php:2241
+#: lib/html.php:2243
 msgid "Graph"
 msgstr "图形模板"
 
@@ -6416,7 +6416,7 @@ msgid "Configuration"
 msgstr "系统配置"
 
 #: include/global_arrays.php:889 include/global_arrays.php:909
-#: lib/html.php:2010 lib/html.php:2256
+#: lib/html.php:2010 lib/html.php:2258
 msgid "Settings"
 msgstr "设置"
 
@@ -7268,7 +7268,7 @@ msgid "List Mode"
 msgstr "列表模式"
 
 #: include/global_arrays.php:1816 include/global_arrays.php:1822
-#: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
+#: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "控制台"
@@ -9056,7 +9056,7 @@ msgstr "数据"
 msgid "Visual"
 msgstr "外观"
 
-#: include/global_settings.php:44 lib/functions.php:3665 lib/functions.php:3670
+#: include/global_settings.php:44 lib/functions.php:3697 lib/functions.php:3702
 msgid "Authentication"
 msgstr "认证"
 
@@ -9092,11 +9092,11 @@ msgstr "图形字体"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() 函数"
 
-#: include/global_settings.php:91 lib/functions.php:3648
+#: include/global_settings.php:91 lib/functions.php:3680
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:92 lib/functions.php:3653
+#: include/global_settings.php:92 lib/functions.php:3685
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -9511,7 +9511,7 @@ msgstr ""
 msgid "Simple"
 msgstr "简单"
 
-#: include/global_settings.php:417 lib/html.php:2243
+#: include/global_settings.php:417 lib/html.php:2245
 msgid "Advanced"
 msgstr "高级"
 
@@ -10900,7 +10900,7 @@ msgstr "这是在电子邮件中的一行被自动换行之前允许多少个字
 msgid "Sendmail Options"
 msgstr "Sendmail选项"
 
-#: include/global_settings.php:1481 lib/functions.php:3648
+#: include/global_settings.php:1481 lib/functions.php:3680
 msgid "Sendmail Path"
 msgstr "Sendmail路径"
 
@@ -12154,8 +12154,8 @@ msgstr "位置："
 msgid "Contact:"
 msgstr "联系："
 
-#: lib/api_device.php:1052 lib/functions.php:3679 lib/functions.php:3681
-#: lib/functions.php:3685
+#: lib/api_device.php:1052 lib/functions.php:3711 lib/functions.php:3713
+#: lib/functions.php:3717
 msgid "Ping Results"
 msgstr "Ping 结果"
 
@@ -12695,56 +12695,61 @@ msgstr "未对数据源进行调查"
 msgid "No issues found"
 msgstr "未发现问题"
 
-#: lib/functions.php:941
+#: lib/functions.php:607 lib/functions.php:683
+#, fuzzy
+msgid "Message Not Found."
+msgstr "找不到模板"
+
+#: lib/functions.php:973
 #, php-format
 msgid "Error %s is not readable"
 msgstr "错误%s不可读"
 
-#: lib/functions.php:2224 lib/functions.php:2234
+#: lib/functions.php:2256 lib/functions.php:2266
 msgid "Logged in as"
 msgstr "当前登录用户为："
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 msgid "Login as Regular User"
 msgstr "以普通用户身份登录"
 
-#: lib/functions.php:2224
+#: lib/functions.php:2256
 msgid "guest"
 msgstr "guest"
 
-#: lib/functions.php:2226 lib/functions.php:2239 lib/html.php:2197
+#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2197
 #, fuzzy
 msgid "User Community"
 msgstr "用户社区"
 
-#: lib/functions.php:2227 lib/functions.php:2240 lib/html.php:2198
+#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2198
 #: lib/utility.php:1002
 msgid "Documentation"
 msgstr "文档"
 
-#: lib/functions.php:2236
+#: lib/functions.php:2268
 msgid "Edit Profile"
 msgstr "编辑个人资料"
 
-#: lib/functions.php:2242
+#: lib/functions.php:2274
 msgid "Logout"
 msgstr "退出"
 
-#: lib/functions.php:2385
+#: lib/functions.php:2417
 msgid "Leaf"
 msgstr "Leaf"
 
-#: lib/functions.php:2405 lib/html_tree.php:632 lib/html_tree.php:660
+#: lib/functions.php:2437 lib/html_tree.php:632 lib/html_tree.php:660
 #: lib/html_tree.php:880 lib/html_tree.php:888 lib/html_tree.php:1476
 msgid "Non Query Based"
 msgstr "Non Query Based"
 
-#: lib/functions.php:2438
+#: lib/functions.php:2470
 #, php-format
 msgid "Link %s"
 msgstr "连接 %s"
 
-#: lib/functions.php:3206
+#: lib/functions.php:3238
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
 "link, please set the <b>Alert e-mail</b> setting."
@@ -12752,94 +12757,94 @@ msgstr ""
 "邮件程序错误：没有<b> 至 </b>地址设置!!如果使用<i>邮件测试 </i>链接，请设置"
 "<b> 报警邮件 </b>设置。"
 
-#: lib/functions.php:3612
+#: lib/functions.php:3644
 #, php-format
 msgid "Authentication failed: %s"
 msgstr "验证失败： %s"
 
-#: lib/functions.php:3616
+#: lib/functions.php:3648
 #, php-format
 msgid "HELO failed: %s"
 msgstr "HELO失败：%s"
 
-#: lib/functions.php:3619
+#: lib/functions.php:3651
 #, php-format
 msgid "Connect failed: %s"
 msgstr "连接失败： %s"
 
-#: lib/functions.php:3622
+#: lib/functions.php:3654
 msgid "SMTP error: "
 msgstr "SMTP错误："
 
-#: lib/functions.php:3635
+#: lib/functions.php:3667
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
 "the configuration of your Mail Settings."
 msgstr "这是从Cacti生成的测试消息。 发送此邮件是为了测试您的邮件设置的配置。"
 
-#: lib/functions.php:3636
+#: lib/functions.php:3668
 msgid "Your email settings are currently set as follows"
 msgstr "您的电子邮件设置目前设置如下"
 
-#: lib/functions.php:3637
+#: lib/functions.php:3669
 msgid "Method"
 msgstr "方法"
 
-#: lib/functions.php:3639
+#: lib/functions.php:3671
 msgid "Checking Configuration...<br>"
 msgstr "检查配置... <br>"
 
-#: lib/functions.php:3646
+#: lib/functions.php:3678
 msgid "PHP's Mailer Class"
 msgstr "PHP的邮件类"
 
-#: lib/functions.php:3652
+#: lib/functions.php:3684
 msgid "Method: SMTP"
 msgstr "方法：SMTP"
 
-#: lib/functions.php:3667
+#: lib/functions.php:3699
 msgid "Not Shown for Security Reasons"
 msgstr "由于安全原因没有显示"
 
-#: lib/functions.php:3668
+#: lib/functions.php:3700
 msgid "Security"
 msgstr "安全"
 
-#: lib/functions.php:3676
+#: lib/functions.php:3708
 msgid "Ping Results:"
 msgstr "Ping结果："
 
-#: lib/functions.php:3685
+#: lib/functions.php:3717
 msgid "Bypassed"
 msgstr "Bypassed"
 
-#: lib/functions.php:3693
+#: lib/functions.php:3725
 msgid "Creating Message Text..."
 msgstr "创建消息文本..."
 
-#: lib/functions.php:3696
+#: lib/functions.php:3728
 msgid "Sending Message..."
 msgstr "正在发送消息..."
 
-#: lib/functions.php:3700
+#: lib/functions.php:3732
 msgid "Cacti Test Message"
 msgstr "Cacti 测试消息"
 
-#: lib/functions.php:3702
+#: lib/functions.php:3734
 msgid "Success!"
 msgstr "成功！"
 
-#: lib/functions.php:3705
+#: lib/functions.php:3737
 msgid "Message Not Sent due to ping failure."
 msgstr "由于ping失败，邮件未发送。"
 
-#: lib/functions.php:4258 lib/functions.php:4319 poller.php:323 poller.php:434
+#: lib/functions.php:4290 lib/functions.php:4351 poller.php:323 poller.php:434
 #: poller.php:496 poller.php:519 poller.php:660
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "仙人掌系统警告"
 
-#: lib/functions.php:4258 lib/functions.php:4319
+#: lib/functions.php:4290 lib/functions.php:4351
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -12848,17 +12853,17 @@ msgstr ""
 "由于以下错误，Cacti禁用了插件％s：％s！有关更多详细信息，请参阅Cacti日志文"
 "件。"
 
-#: lib/functions.php:4695 lib/functions.php:4697
+#: lib/functions.php:4727 lib/functions.php:4729
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "-  Beta％s"
 
-#: lib/functions.php:4695
+#: lib/functions.php:4727
 #, php-format
 msgid "Version %s %s"
 msgstr "版本 %s %s"
 
-#: lib/functions.php:4697
+#: lib/functions.php:4729
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -13099,117 +13104,126 @@ msgid "The response to the last action was unexpected."
 msgstr "最后一次操作相应出现异常."
 
 #: lib/html.php:2224
+#, fuzzy
+msgid "Some Actions failed"
+msgstr "操作失败"
+
+#: lib/html.php:2225
+msgid "Note, we could not process all your actions.  Details are below."
+msgstr "请注意，我们无法处理您的所有操作。详情如下。"
+
+#: lib/html.php:2226
 msgid "Operation successful"
 msgstr "操作成功"
 
-#: lib/html.php:2225
+#: lib/html.php:2227
 msgid "The Operation was successful.  Details are below."
 msgstr "操作成功. 详情如下."
 
-#: lib/html.php:2227
+#: lib/html.php:2229
 msgid "Pause"
 msgstr "暂停"
 
-#: lib/html.php:2230
+#: lib/html.php:2232
 msgid "Zoom In"
 msgstr "放大"
 
-#: lib/html.php:2231
+#: lib/html.php:2233
 msgid "Zoom Out"
 msgstr "缩小"
 
-#: lib/html.php:2232
+#: lib/html.php:2234
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "缩小因子"
 
-#: lib/html.php:2233
+#: lib/html.php:2235
 #, fuzzy
 msgid "Timestamps"
 msgstr "时间戳"
 
-#: lib/html.php:2234
+#: lib/html.php:2236
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2235
+#: lib/html.php:2237
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2236
+#: lib/html.php:2238
 #, fuzzy
 msgid "8x"
 msgstr "8X"
 
-#: lib/html.php:2237
+#: lib/html.php:2239
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2238
+#: lib/html.php:2240
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2239
+#: lib/html.php:2241
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "缩小定位"
 
-#: lib/html.php:2240
+#: lib/html.php:2242
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "缩放模式"
 
-#: lib/html.php:2242
+#: lib/html.php:2244
 msgid "Quick"
 msgstr "快速"
 
-#: lib/html.php:2244
+#: lib/html.php:2246
 msgid "Open in new tab"
 msgstr "在新标签打开"
 
-#: lib/html.php:2245
+#: lib/html.php:2247
 #, fuzzy
 msgid "Save graph"
 msgstr "保存图表"
 
-#: lib/html.php:2246
+#: lib/html.php:2248
 #, fuzzy
 msgid "Copy graph"
 msgstr "复制图"
 
-#: lib/html.php:2247
+#: lib/html.php:2249
 #, fuzzy
 msgid "Copy graph link"
 msgstr "复制图表链接"
 
-#: lib/html.php:2248
+#: lib/html.php:2250
 msgid "Always On"
 msgstr "总是"
 
-#: lib/html.php:2249
+#: lib/html.php:2251
 msgid "Auto"
 msgstr "自动"
 
-#: lib/html.php:2250
+#: lib/html.php:2252
 #, fuzzy
 msgid "Always Off"
 msgstr "总是关闭"
 
-#: lib/html.php:2251
+#: lib/html.php:2253
 #, fuzzy
 msgid "Begin with"
 msgstr "首先"
 
-#: lib/html.php:2253
+#: lib/html.php:2255
 #, fuzzy
 msgid "End with"
 msgstr "结束日期"
 
-#: lib/html.php:2255 lib/html_form.php:1283
+#: lib/html.php:2257 lib/html_form.php:1283
 msgid "Close"
 msgstr "关闭"
 
-#: lib/html.php:2257
+#: lib/html.php:2259
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "第三个鼠标按钮"
