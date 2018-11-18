@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 18:58-0500\n"
+"PO-Revision-Date: 2018-11-17 20:51-0500\n"
 "Last-Translator: SFQAS\n"
 "Language-Team: sfqas <sfqas@163.com>\n"
 "Language: zh_CN\n"
@@ -7162,11 +7162,8 @@ msgid "Dutch"
 msgstr "荷兰语"
 
 #: include/global_arrays.php:1702
-#, fuzzy
 msgid "English"
-msgstr ""
-"选择“启用”以允许Cacti的本地化。 严格模式要求您的系统上安装的所有插件也支持所"
-"需的语言。 如果这不是事实，所有的东西都会以英文显示。"
+msgstr "英语"
 
 #: include/global_arrays.php:1703
 msgid "French"
@@ -7199,12 +7196,12 @@ msgstr "波兰语"
 #: include/global_arrays.php:1710
 #, fuzzy
 msgid "Portguguese"
-msgstr "Portuguese"
+msgstr "Portguguese"
 
 #: include/global_arrays.php:1711
 #, fuzzy
 msgid "Portguguese (Brazil)"
-msgstr "Portuguese (Brazil)"
+msgstr "Portguguese（巴西）"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -7220,28 +7217,28 @@ msgstr "瑞典语"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "经典"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "模式"
+msgstr "现代"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "黑暗"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "纸飞机"
 
 #: include/global_arrays.php:1722
 msgid "Paw"
-msgstr ""
+msgstr "爪子"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "日出"
 
 #: include/global_arrays.php:1727
 msgid "[Fail]"
