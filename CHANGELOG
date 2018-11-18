@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#2153: Utilities page issues the wrong hook for tabs
 -issue#2163: LDAP functions are not consistent
 -issue#2164: Login page does not remember selected realm
+-issue#2171: datepicker and timepick translation not available
 -issue: Unable to display user profile tabs
 
 1.2.0 Beta 1

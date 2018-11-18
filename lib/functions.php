@@ -4890,7 +4890,11 @@ function get_md5_hash($path) {
 	}
 
 	if (empty($md5)) {
-		$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+		if (file_exists($path)) {
+			$md5 = md5_file($path);
+		} else {
+			$md5 = md5_file(dirname(__FILE__) . '/../' . $path);
+		}
 	}
 
 	return $md5;
@@ -4899,7 +4903,13 @@ function get_md5_hash($path) {
 function get_md5_include_js($path) {
 	global $config;
 
-	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $path . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
+	if (file_exists($path)) {
+		$npath = str_replace($config['base_path'], '', $path);
+	} else {
+		$npath = $path;
+	}
+
+	return '<script type=\'text/javascript\' src=\'' . $config['url_path'] . $npath . '?' . get_md5_hash($path) . '\'></script>' . PHP_EOL;
 }
 
 function get_md5_include_css($path) {

@@ -2164,7 +2164,7 @@ function html_spikekill_js() {
 }
 
 function html_common_header($title, $selectedTheme = '') {
-	global $config;
+	global $config, $path2calendar, $path2timepicker;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2299,6 +2299,15 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
+
+	if (isset($path2calendar) && file_exists($path2calendar)) {
+		print get_md5_include_js($path2calendar);
+	}
+
+	if (isset($path2timepicker) && file_exists($path2timepicker)) {
+		print get_md5_include_js($path2timepicker);
+	}
+
 	api_plugin_hook('page_head');
 }
 

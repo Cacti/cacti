@@ -29,6 +29,8 @@ $cacti_country = 'us';
 /* an array that will contains all textdomains being in use. */
 $cacti_textdomains = array();
 
+global $path2calendar, $path2timepicker;
+
 /* get a list of locale settings */
 $lang2locale = get_list_of_locales();
 
@@ -69,10 +71,41 @@ if ($user_locale !== false && $user_locale !== '') {
 $path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
 
 /* define the path to the language file of the DHTML calendar */
-$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang2locale[$cacti_locale]['filename'] . '.js';
+if ($user_locale != '') {
+	$lang_parts = explode('-', $user_locale);
+
+	// Detect the calendar path
+	$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang2locale[$cacti_locale]['filename'] . '.js';
+
+	if (!file_exists($path2calendar)) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang_parts[0] . '.js';
+	}
+
+	if (!file_exists($path2calendar)) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $user_locale . '.js';
+	}
+
+	if (!file_exists($path2calendar)) {
+		$path2calendar = '';
+	}
+
+	// Detect the timepicker path
+	$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js';
+
+	if (!file_exists($path2timepicker)) {
+		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $user_locale . '.js';
+	}
+
+	if (!file_exists($path2timepicker)) {
+		$path2timepicker = '';
+	}
+} else {
+	$path2timepicker = '';
+	$path2calendar   = '';
+}
 
 /* use fallback procedure if requested language is not available */
-if (file_exists($path2catalogue) & file_exists($path2calendar)) {
+if (file_exists($path2catalogue)) {
 	$cacti_textdomains['cacti']['path2locales']   = $config['base_path'] . '/locales';
 	$cacti_textdomains['cacti']['path2catalogue'] = $path2catalogue;
 } else {
@@ -525,9 +558,7 @@ function get_installed_locales() {
 	$dhandle = opendir($config['base_path'] . '/locales/LC_MESSAGES');
 	if (is_resource($dhandle)) {
 		while (false !== ($filename = readdir($dhandle))) {
-			/* check if language file for DHTML calendar is also available */
-			$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . str_replace('.mo', '.js', $filename);
-			if (isset($locations[$filename]) & file_exists($path2calendar)) {
+			if (isset($locations[$filename]['language'])) {
 				$supported_languages[$locations[$filename]['locale']] = $locations[$filename]['language'];
 			}
 		}
