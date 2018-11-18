@@ -1266,9 +1266,15 @@ function utilities_clear_logfile() {
 	html_start_box(__('Clear Cacti Log'), '100%', '', '3', 'center', '');
 	if (file_exists($logfile)) {
 		if (is_writable($logfile)) {
-			$timestamp = date('Y-m-d H:i:s');
+			/* fill in the current date for printing in the log */
+			if (defined('CACTI_DATE_TIME_FORMAT')) {
+				$date = date(CACTI_DATE_TIME_FORMAT);
+			} else {
+				$date = date('Y-m-d H:i:s');
+			}
+
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $timestamp) . "\n");
+			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
 			fclose($log_fh);
 			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
 		} else {
