@@ -7508,13 +7508,8 @@ msgid "Dutch"
 msgstr "Holandés"
 
 #: include/global_arrays.php:1702
-#, fuzzy
 msgid "English"
-msgstr ""
-"Elija 'habilitado' para permitir la localización de Cacti. El modo estricto "
-"requiere que el idioma solicitado también sea soportado por todos los "
-"plugins que están instalados en su sistema. Si ese no es el caso, todo será "
-"mostrado en Inglés."
+msgstr "Inglés"
 
 #: include/global_arrays.php:1703
 msgid "French"
@@ -7538,19 +7533,21 @@ msgstr "Japonés"
 
 #: include/global_arrays.php:1708
 msgid "Korean"
-msgstr "Islas Georgia del Sur y Sandwich del Sur"
+msgstr "Koreano"
 
 #: include/global_arrays.php:1709
 msgid "Polish"
 msgstr "Polaco"
 
 #: include/global_arrays.php:1710
+#, fuzzy
 msgid "Portguguese"
-msgstr ""
+msgstr "Portgugués"
 
 #: include/global_arrays.php:1711
+#, fuzzy
 msgid "Portguguese (Brazil)"
-msgstr ""
+msgstr "Portguguese (Brasil)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -7566,28 +7563,28 @@ msgstr "Corona sueca"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Clásico"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Modo"
+msgstr "Moderno"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Oscuro"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Plano de papel"
 
 #: include/global_arrays.php:1722
 msgid "Paw"
-msgstr ""
+msgstr "Huella"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Amanecer"
 
 #: include/global_arrays.php:1727
 msgid "[Fail]"
