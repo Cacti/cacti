@@ -14716,7 +14716,7 @@ msgstr "上一個"
 #: lib/html.php:425
 #, fuzzy, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "％s的％d到％d [％s]"
+msgstr "％d 的％d 到％s [％s]"
 
 #: lib/html.php:428 lib/installer.php:1431
 msgid "Next"
