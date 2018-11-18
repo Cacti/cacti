@@ -188,19 +188,23 @@ case 'save':
 	api_plugin_hook_function('global_settings_update');
 
 	$pollers = array_rekey(
-		db_fetch_assoc('SELECT id FROM poller WHERE id > 1'),
+		db_fetch_assoc('SELECT id
+			FROM poller
+			WHERE id > 1
+			AND disabled=""'),
 		'id', 'id'
 	);
 
 	if (cacti_sizeof($errors) == 0) {
 		if (cacti_sizeof($pollers)) {
-			exec_background(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/poller_replicate.php --class=settings');
+			exec_background(read_config_option('path_php_binary'), ' -q ' . $config['base_path'] . '/cli/poller_replicate.php --class=settings');
 			raise_message(42);
 		} else {
 			raise_message(1);
 		}
 	} else {
 		raise_message(35);
+
 		foreach($errors as $error) {
 			raise_message($error);
 		}
