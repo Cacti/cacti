@@ -504,7 +504,7 @@ function get_list_of_locales() {
 		'fr-FR' => array('language' => 'French',              'country' => 'fr', 'filename' => 'french_france'),
 		'de-DE' => array('language' => 'German',              'country' => 'de', 'filename' => 'german_germany'),
 		'el-GR' => array('language' => 'Greek',               'country' => 'gr', 'filename' => 'greek_greece'),
-		'iw-IL' => array('language' => 'Hebrew',              'country' => 'il', 'filename' => 'hebrew_israel'),
+		'he-IL' => array('language' => 'Hebrew',              'country' => 'il', 'filename' => 'hebrew_israel'),
 		'hi-IN' => array('language' => 'Hindi',               'country' => 'in', 'filename' => 'hindi_india'),
 		'hu-HU' => array('language' => 'Hungarian',           'country' => 'hu', 'filename' => 'hungarian_hungary'),
 		'is-IS' => array('language' => 'Icelandic',           'country' => 'is', 'filename' => 'icelandic_iceland'),
