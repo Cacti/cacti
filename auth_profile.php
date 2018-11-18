@@ -269,7 +269,7 @@ function settings() {
 					$referer = substr($referer, 0, $timespan_sel_pos);
 				}
 
-				$_SESSION['profile_referer'] = html_escape($referer);
+				$_SESSION['profile_referer'] = $referer;
 			}
 		}
 	}
@@ -393,7 +393,11 @@ function settings() {
 							$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 						}
 
-						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value FROM settings_user WHERE name = ? AND user_id = ?', array($sub_field_name, $_SESSION['sess_user_id']));
+						$form_array[$field_name]['items'][$sub_field_name]['value'] =  db_fetch_cell_prepared('SELECT value
+							FROM settings_user
+							WHERE name = ?
+							AND user_id = ?',
+							array($sub_field_name, $_SESSION['sess_user_id']));
 					}
 				} else {
 					if (graph_config_value_exists($field_name, $_SESSION['sess_user_id'])) {
@@ -609,7 +613,7 @@ function settings_javascript() {
 		});
 
 		$('#return').click(function() {
-			cactiReturnTo('<?php print $_SESSION['profile_referer'];?>');
+			document.location = '<?php print $_SESSION['profile_referer'];?>';
 		});
 	});
 
