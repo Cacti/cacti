@@ -747,6 +747,7 @@ function applySkin() {
 
 function renderLanguages() {
 	$('select#user_language').selectmenu('destroy').languageselect({
+		width: '220',
 		change: function() {
 			name  = $(this).attr('id');
 			value = $(this).val();
