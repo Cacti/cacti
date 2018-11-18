@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 16:21-0500\n"
-"PO-Revision-Date: 2018-11-17 16:20-0500\n"
+"POT-Creation-Date: 2018-11-17 19:48-0500\n"
+"PO-Revision-Date: 2018-11-17 19:16-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.2\n"
 
-#: about.php:29 include/global_arrays.php:2321 lib/html.php:2200
+#: about.php:29 include/global_arrays.php:2350 lib/html.php:2200
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti 소개"
@@ -120,10 +120,10 @@ msgstr ""
 #: data_sources.php:1007 data_templates.php:34 data_templates.php:642
 #: gprint_presets.php:28 graph_templates.php:34 graph_templates.php:442
 #: graphs.php:47 host.php:40 host_templates.php:30 host_templates.php:500
-#: host_templates.php:557 include/global_arrays.php:1414
+#: host_templates.php:557 include/global_arrays.php:1413
 #: include/global_settings.php:238 lib/api_automation.php:1279
 #: lib/api_automation.php:1341 lib/api_automation.php:1405 lib/html.php:1082
-#: lib/html_form.php:1190 lib/html_reports.php:1402 links.php:28
+#: lib/html_form.php:1253 lib/html_reports.php:1402 links.php:28
 #: managers.php:28 pollers.php:29 sites.php:28 tree.php:1392 tree.php:1545
 #: tree.php:1605 tree.php:1626 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -187,8 +187,8 @@ msgstr "다음 집계 그래프를 삭제하려면 &#39;계속&#39;을 클릭하
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1189 lib/html_form.php:1201
-#: lib/html_form.php:1212 lib/html_utility.php:214 links.php:197 links.php:206
+#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
 #: sites.php:317 tree.php:647 tree.php:656 tree.php:665 user_admin.php:340
@@ -261,7 +261,7 @@ msgstr ""
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
 #: auth_changepassword.php:314 auth_profile.php:436 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1114 graphs.php:1164 graphs.php:1167
-#: graphs.php:1209 include/auth.php:186 lib/html_form.php:1210
+#: graphs.php:1209 include/auth.php:186 lib/html_form.php:1273
 #: lib/html_utility.php:212 managers.php:1066 permission_denied.php:30
 #: permission_denied.php:32
 #, fuzzy
@@ -516,7 +516,7 @@ msgstr "검색"
 #: aggregate_graphs.php:1435 color_templates.php:561 graph_view.php:450
 #: graph_view.php:639 graph_view.php:686 graphs.php:1862 graphs.php:1967
 #: host.php:1557 include/global_arrays.php:853 include/global_arrays.php:1033
-#: include/global_arrays.php:1737 lib/api_automation.php:281 lib/html.php:1480
+#: include/global_arrays.php:1766 lib/api_automation.php:281 lib/html.php:1480
 #: lib/html.php:1482 lib/html.php:1560 lib/html_graph.php:204
 #: lib/html_tree.php:985 lib/html_tree.php:1359 tree.php:787 tree.php:1985
 #: user_admin.php:983 user_admin.php:1235 user_admin.php:2580
@@ -700,7 +700,7 @@ msgid "No Graphs Found"
 msgstr "그래프가 없습니다"
 
 #: aggregate_graphs.php:1398 aggregate_graphs.php:1506
-#: include/global_arrays.php:2447
+#: include/global_arrays.php:2476
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "집계 그래프"
@@ -740,7 +740,7 @@ msgstr "일부"
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1434 host.php:1469
 #: include/global_arrays.php:432 include/global_arrays.php:490
 #: include/global_arrays.php:573 include/global_arrays.php:736
-#: include/global_arrays.php:759 include/global_arrays.php:1498
+#: include/global_arrays.php:759 include/global_arrays.php:1497
 #: include/global_form.php:544 include/global_form.php:850
 #: include/global_form.php:858 include/global_form.php:866
 #: include/global_form.php:904 include/global_form.php:911
@@ -753,7 +753,7 @@ msgstr "일부"
 #: include/global_settings.php:1525 lib/api_automation.php:152
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:584 lib/api_automation.php:1032 lib/html.php:1826
-#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:316
+#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:329
 #: lib/html_graph.php:386 lib/html_reports.php:347 lib/html_reports.php:399
 #: lib/html_reports.php:411 lib/html_reports.php:420 lib/html_reports.php:430
 #: lib/html_tree.php:1171 settings.php:377 settings.php:396 settings.php:422
@@ -818,7 +818,7 @@ msgid "Aggregate Template [new]"
 msgstr "집계 템플릿 [신규]"
 
 #: aggregate_templates.php:535 aggregate_templates.php:634
-#: include/global_arrays.php:2429
+#: include/global_arrays.php:2458
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "집계 템플릿"
@@ -959,7 +959,7 @@ msgid "Confirm new password"
 msgstr "새 비밀번호 확인"
 
 #: auth_changepassword.php:313 auth_profile.php:548 graphs_new.php:371
-#: lib/html_form.php:1207 lib/html_form.php:1216 lib/html_graph.php:188
+#: lib/html_form.php:1270 lib/html_form.php:1279 lib/html_graph.php:188
 #: lib/html_tree.php:975 settings.php:346
 msgid "Save"
 msgstr "저장"
@@ -1251,7 +1251,7 @@ msgstr "선인장에 추가됨"
 
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
-#: include/global_arrays.php:863 include/global_arrays.php:1614
+#: include/global_arrays.php:863 include/global_arrays.php:1613
 #: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
@@ -1290,7 +1290,7 @@ msgstr "장치 추가"
 
 #: automation_devices.php:241 automation_devices.php:531 host.php:1420
 #: host.php:1514 host.php:1614 include/global_arrays.php:850
-#: include/global_arrays.php:903 include/global_arrays.php:2027
+#: include/global_arrays.php:903 include/global_arrays.php:2056
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:475 lib/api_automation.php:558
 #: lib/api_automation.php:1163 pollers.php:818 sites.php:522 tree.php:786
@@ -1387,7 +1387,7 @@ msgid "Reset fields to defaults"
 msgstr "필드를 기본값으로 재설정"
 
 #: automation_devices.php:477 color.php:571 host.php:1485
-#: lib/html_form.php:1224
+#: lib/html_form.php:1287
 msgid "Export"
 msgstr "내보내기"
 
@@ -1419,13 +1419,13 @@ msgstr "N/A"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:67
-#: host_templates.php:31 include/global_arrays.php:1411 vdef.php:30
+#: host_templates.php:31 include/global_arrays.php:1410 vdef.php:30
 msgid "Duplicate"
 msgstr "복사"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1412 include/global_settings.php:1318 links.php:29
+#: include/global_arrays.php:1411 include/global_settings.php:1318 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:31
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1434,7 +1434,7 @@ msgstr "활성화"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1413 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1412 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:30 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1538,7 +1538,7 @@ msgstr "그래프 작성 기준"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
 #: automation_graph_rules.php:891 include/global_arrays.php:873
-#: include/global_arrays.php:2483
+#: include/global_arrays.php:2512
 #, fuzzy
 msgid "Graph Rules"
 msgstr "그래프 규칙"
@@ -1569,8 +1569,8 @@ msgstr "활성화"
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
 #: automation_tree_rules.php:960 data_sources.php:1346 data_templates.php:1024
-#: host.php:1505 include/global_arrays.php:780 include/global_arrays.php:1339
-#: include/global_arrays.php:1622 include/global_settings.php:372
+#: host.php:1505 include/global_arrays.php:780 include/global_arrays.php:1338
+#: include/global_arrays.php:1621 include/global_settings.php:372
 #: include/global_settings.php:1192 include/global_settings.php:1206
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
@@ -1682,17 +1682,17 @@ msgid "Manual"
 msgstr "수동"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:1636
+#: include/global_arrays.php:1635
 msgid "Daily"
 msgstr "매일"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1637
+#: include/global_arrays.php:1636
 msgid "Weekly"
 msgstr "매주"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1638
+#: include/global_arrays.php:1637
 msgid "Monthly"
 msgstr "매월"
 
@@ -1878,21 +1878,21 @@ msgstr "% d 분"
 #: include/global_arrays.php:648 include/global_arrays.php:649
 #: include/global_arrays.php:650 include/global_arrays.php:651
 #: include/global_arrays.php:652 include/global_arrays.php:1012
-#: include/global_arrays.php:1013 include/global_arrays.php:1346
-#: include/global_arrays.php:1350 include/global_arrays.php:1358
-#: include/global_arrays.php:1359 include/global_arrays.php:1381
-#: include/global_arrays.php:1382 include/global_arrays.php:1383
-#: include/global_arrays.php:1384 include/global_arrays.php:1385
-#: include/global_arrays.php:1396 include/global_settings.php:1259
+#: include/global_arrays.php:1013 include/global_arrays.php:1345
+#: include/global_arrays.php:1349 include/global_arrays.php:1357
+#: include/global_arrays.php:1358 include/global_arrays.php:1380
+#: include/global_arrays.php:1381 include/global_arrays.php:1382
+#: include/global_arrays.php:1383 include/global_arrays.php:1384
+#: include/global_arrays.php:1395 include/global_settings.php:1259
 #: include/global_settings.php:1260 include/global_settings.php:1261
 #: include/global_settings.php:1262 include/global_settings.php:1263
 #: include/global_settings.php:2026
 #, fuzzy, php-format
 msgid "%d Minutes"
-msgstr "% d 분"
+msgstr "%d 분"
 
 #: automation_networks.php:528 include/global_arrays.php:653
-#: include/global_arrays.php:663 include/global_arrays.php:1250
+#: include/global_arrays.php:663 include/global_arrays.php:1249
 #, fuzzy, php-format
 msgid "%d Hour"
 msgstr "% d 시간"
@@ -1905,14 +1905,14 @@ msgstr "% d 시간"
 #: include/global_arrays.php:655 include/global_arrays.php:656
 #: include/global_arrays.php:657 include/global_arrays.php:664
 #: include/global_arrays.php:665 include/global_arrays.php:666
-#: include/global_arrays.php:667 include/global_arrays.php:1251
-#: include/global_arrays.php:1252 include/global_arrays.php:1253
-#: include/global_arrays.php:1254 include/global_arrays.php:1298
-#: include/global_arrays.php:1299 include/global_arrays.php:1300
-#: include/global_arrays.php:1301 include/global_arrays.php:1302
-#: include/global_arrays.php:1319 include/global_arrays.php:1320
-#: include/global_arrays.php:1321 include/global_arrays.php:1322
-#: include/global_arrays.php:1323 include/global_settings.php:1265
+#: include/global_arrays.php:667 include/global_arrays.php:1250
+#: include/global_arrays.php:1251 include/global_arrays.php:1252
+#: include/global_arrays.php:1253 include/global_arrays.php:1297
+#: include/global_arrays.php:1298 include/global_arrays.php:1299
+#: include/global_arrays.php:1300 include/global_arrays.php:1301
+#: include/global_arrays.php:1318 include/global_arrays.php:1319
+#: include/global_arrays.php:1320 include/global_arrays.php:1321
+#: include/global_arrays.php:1322 include/global_settings.php:1265
 #: include/global_settings.php:1266 include/global_settings.php:1267
 #: include/global_settings.php:1268
 #, fuzzy, php-format
@@ -2069,37 +2069,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "이번 주 네트워크의 어떤 날 (일)이 발견 될 것입니다."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1678
+#: include/global_arrays.php:1677
 msgid "Sunday"
 msgstr "일요일"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1679
+#: include/global_arrays.php:1678
 msgid "Monday"
 msgstr "월요일"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1680
+#: include/global_arrays.php:1679
 msgid "Tuesday"
 msgstr "화요일"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1681
+#: include/global_arrays.php:1680
 msgid "Wednesday"
 msgstr "수요일"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1682
+#: include/global_arrays.php:1681
 msgid "Thursday"
 msgstr "목요일"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1683
+#: include/global_arrays.php:1682
 msgid "Friday"
 msgstr "금요일"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1684
+#: include/global_arrays.php:1683
 msgid "Saturday"
 msgstr "토요일"
 
@@ -2113,51 +2113,51 @@ msgstr "달의 달"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "이 네트워크 범위는 올해의 몇 달 (Months (s))에 발견 될 것입니다."
 
-#: automation_networks.php:654 include/global_arrays.php:1648
+#: automation_networks.php:654 include/global_arrays.php:1647
 msgid "January"
 msgstr "1월"
 
-#: automation_networks.php:655 include/global_arrays.php:1649
+#: automation_networks.php:655 include/global_arrays.php:1648
 msgid "February"
 msgstr "2월"
 
-#: automation_networks.php:656 include/global_arrays.php:1650
+#: automation_networks.php:656 include/global_arrays.php:1649
 msgid "March"
 msgstr "3월"
 
-#: automation_networks.php:657 include/global_arrays.php:1651
+#: automation_networks.php:657 include/global_arrays.php:1650
 msgid "April"
 msgstr "4월"
 
-#: automation_networks.php:658 include/global_arrays.php:1652
+#: automation_networks.php:658 include/global_arrays.php:1651
 msgid "May"
 msgstr "5월"
 
-#: automation_networks.php:659 include/global_arrays.php:1653
+#: automation_networks.php:659 include/global_arrays.php:1652
 msgid "June"
 msgstr "6월"
 
-#: automation_networks.php:660 include/global_arrays.php:1654
+#: automation_networks.php:660 include/global_arrays.php:1653
 msgid "July"
 msgstr "7월"
 
-#: automation_networks.php:661 include/global_arrays.php:1655
+#: automation_networks.php:661 include/global_arrays.php:1654
 msgid "August"
 msgstr "8월"
 
-#: automation_networks.php:662 include/global_arrays.php:1656
+#: automation_networks.php:662 include/global_arrays.php:1655
 msgid "September"
 msgstr "9월"
 
-#: automation_networks.php:663 include/global_arrays.php:1657
+#: automation_networks.php:663 include/global_arrays.php:1656
 msgid "October"
 msgstr "10월"
 
-#: automation_networks.php:664 include/global_arrays.php:1658
+#: automation_networks.php:664 include/global_arrays.php:1657
 msgid "November"
 msgstr "11월"
 
-#: automation_networks.php:665 include/global_arrays.php:1659
+#: automation_networks.php:665 include/global_arrays.php:1658
 msgid "December"
 msgstr "12월"
 
@@ -2405,19 +2405,19 @@ msgstr "새로고침"
 #: include/global_arrays.php:643 include/global_arrays.php:644
 #: include/global_arrays.php:645 include/global_arrays.php:1007
 #: include/global_arrays.php:1008 include/global_arrays.php:1009
-#: include/global_arrays.php:1010 include/global_arrays.php:1340
-#: include/global_arrays.php:1341 include/global_arrays.php:1342
-#: include/global_arrays.php:1343 include/global_arrays.php:1344
-#: include/global_arrays.php:1377 include/global_arrays.php:1378
-#: include/global_arrays.php:1390 include/global_arrays.php:1391
-#: include/global_arrays.php:1392 include/global_arrays.php:1393
-#: include/global_arrays.php:1394 include/global_settings.php:1028
+#: include/global_arrays.php:1010 include/global_arrays.php:1339
+#: include/global_arrays.php:1340 include/global_arrays.php:1341
+#: include/global_arrays.php:1342 include/global_arrays.php:1343
+#: include/global_arrays.php:1376 include/global_arrays.php:1377
+#: include/global_arrays.php:1389 include/global_arrays.php:1390
+#: include/global_arrays.php:1391 include/global_arrays.php:1392
+#: include/global_arrays.php:1393 include/global_settings.php:1028
 #: include/global_settings.php:1029 include/global_settings.php:1030
 #: include/global_settings.php:1031 include/global_settings.php:2022
 #: include/global_settings.php:2023 include/global_settings.php:2024
 #, fuzzy, php-format
 msgid "%d Seconds"
-msgstr "% d 초"
+msgstr "%d 초"
 
 #: automation_networks.php:1221
 #, fuzzy
@@ -2841,7 +2841,7 @@ msgstr "리프 유형 변경"
 #: utilities.php:2137 utilities.php:2140 utilities.php:2141
 #, fuzzy
 msgid "WARNING:"
-msgstr "경고:"
+msgstr "경고"
 
 #: automation_tree_rules.php:707
 #, fuzzy
@@ -2868,7 +2868,7 @@ msgstr "계속 하시겠습니까?"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
 #: automation_tree_rules.php:927 include/global_arrays.php:874
-#: include/global_arrays.php:2507
+#: include/global_arrays.php:2536
 #, fuzzy
 msgid "Tree Rules"
 msgstr "트리 규칙"
@@ -2995,7 +2995,7 @@ msgstr "CDEF [편집 :  %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [신규]"
 
-#: cdef.php:603 include/global_arrays.php:1877
+#: cdef.php:603 include/global_arrays.php:1906
 #, fuzzy
 msgid "CDEF Items"
 msgstr "CDEF 항목"
@@ -3016,7 +3016,7 @@ msgid "Delete CDEF Item"
 msgstr "CDEF 항목 삭제"
 
 #: cdef.php:742 cdef.php:757 cdef.php:873 include/global_arrays.php:879
-#: include/global_arrays.php:1859
+#: include/global_arrays.php:1888
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3105,7 +3105,7 @@ msgid ""
 "information."
 msgstr "색상 정보가 포함 된 CSV 파일의 위치를 ​​지정하십시오."
 
-#: color.php:374 lib/html_form.php:471
+#: color.php:374 lib/html_form.php:484
 #, fuzzy
 msgid "Select a File"
 msgstr "파일 선택"
@@ -3160,7 +3160,7 @@ msgid "Colors [new]"
 msgstr "색상 [신품]"
 
 #: color.php:521 color.php:536 color.php:690 include/global_arrays.php:881
-#: include/global_arrays.php:1925
+#: include/global_arrays.php:1954
 msgid "Colors"
 msgstr "색상"
 
@@ -3169,7 +3169,7 @@ msgstr "색상"
 msgid "Named Colors"
 msgstr "명명 된 색"
 
-#: color.php:570 lib/html_form.php:1222
+#: color.php:570 lib/html_form.php:1285
 msgid "Import"
 msgstr "가져오기"
 
@@ -3250,7 +3250,7 @@ msgstr "색상 항목"
 #: lib/api_aggregate.php:1444 lib/html.php:1090
 #, fuzzy
 msgid "No Items"
-msgstr "항목이 없습니다"
+msgstr "아이템"
 
 #: color_templates.php:227
 #, fuzzy
@@ -3308,7 +3308,7 @@ msgid "Color Template [new]"
 msgstr "색상 템플릿 [신규]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2405
+#: include/global_arrays.php:2434
 #, fuzzy
 msgid "Color Templates"
 msgstr "색상 템플릿"
@@ -3691,7 +3691,7 @@ msgid "Delete Data Input Field"
 msgstr "데이터 입력 필드 삭제"
 
 #: data_input.php:794 include/global_arrays.php:860
-#: include/global_arrays.php:1029 include/global_arrays.php:2063
+#: include/global_arrays.php:1029 include/global_arrays.php:2092
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "데이터 입력 방법"
@@ -3860,7 +3860,7 @@ msgid "Could not locate XML file."
 msgstr "XML 파일을 찾을 수 없습니다."
 
 #: data_queries.php:1111 host.php:679 host_templates.php:481
-#: include/global_arrays.php:2117
+#: include/global_arrays.php:2146
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "연결된 그래프 템플릿"
@@ -3893,7 +3893,7 @@ msgstr "연결된 그래프 삭제"
 
 #: data_queries.php:1248 data_queries.php:1263 data_queries.php:1353
 #: include/global_arrays.php:859 include/global_arrays.php:1030
-#: include/global_arrays.php:2099 lib/api_automation.php:1060
+#: include/global_arrays.php:2128 lib/api_automation.php:1060
 #, fuzzy
 msgid "Data Queries"
 msgstr "데이터 쿼리"
@@ -4077,7 +4077,7 @@ msgstr "%s 데이터 원본 당 KBytes"
 #: include/global_arrays.php:683 include/global_arrays.php:684
 #: include/global_arrays.php:685 include/global_arrays.php:686
 #: include/global_arrays.php:687 include/global_arrays.php:688
-#: include/global_arrays.php:1267 include/global_settings.php:1198
+#: include/global_arrays.php:1266 include/global_settings.php:1198
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "% d 년"
@@ -4087,30 +4087,30 @@ msgid "1 Year"
 msgstr "1년"
 
 #: data_source_profiles.php:745 include/global_arrays.php:674
-#: include/global_arrays.php:1261 rrdcleaner.php:489
+#: include/global_arrays.php:1260 rrdcleaner.php:489
 #, fuzzy, php-format
 msgid "%d Month"
 msgstr "% d 개월"
 
 #: data_source_profiles.php:745 include/global_arrays.php:675
 #: include/global_arrays.php:676 include/global_arrays.php:677
-#: include/global_arrays.php:678 include/global_arrays.php:1262
-#: include/global_arrays.php:1263 include/global_arrays.php:1264
-#: include/global_arrays.php:1265 rrdcleaner.php:490 rrdcleaner.php:491
+#: include/global_arrays.php:678 include/global_arrays.php:1261
+#: include/global_arrays.php:1262 include/global_arrays.php:1263
+#: include/global_arrays.php:1264 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
 #, fuzzy, php-format
 msgid "%d Months"
 msgstr "개월 % d 개월"
 
 #: data_source_profiles.php:754 include/global_arrays.php:621
-#: include/global_arrays.php:671 include/global_arrays.php:1259
+#: include/global_arrays.php:671 include/global_arrays.php:1258
 #: rrdcleaner.php:485 rrdcleaner.php:486
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "% d주의"
 
 #: data_source_profiles.php:754 include/global_arrays.php:672
-#: include/global_arrays.php:673 include/global_arrays.php:1260
+#: include/global_arrays.php:673 include/global_arrays.php:1259
 #: rrdcleaner.php:487 rrdcleaner.php:488
 #, fuzzy, php-format
 msgid "%d Weeks"
@@ -4118,15 +4118,15 @@ msgstr "% d 주"
 
 #: data_source_profiles.php:763 include/global_arrays.php:620
 #: include/global_arrays.php:658 include/global_arrays.php:668
-#: include/global_arrays.php:1255
+#: include/global_arrays.php:1254
 #, fuzzy, php-format
 msgid "%d Day"
 msgstr "% d 일"
 
 #: data_source_profiles.php:763 include/global_arrays.php:659
 #: include/global_arrays.php:669 include/global_arrays.php:670
-#: include/global_arrays.php:1256 include/global_arrays.php:1257
-#: include/global_arrays.php:1258 include/global_settings.php:1193
+#: include/global_arrays.php:1255 include/global_arrays.php:1256
+#: include/global_arrays.php:1257 include/global_settings.php:1193
 #: include/global_settings.php:1194 include/global_settings.php:1195
 #: include/global_settings.php:1196 include/global_settings.php:1207
 #: include/global_settings.php:1208 include/global_settings.php:1209
@@ -4136,9 +4136,9 @@ msgid "%d Days"
 msgstr "%d일"
 
 #: data_source_profiles.php:771 include/global_arrays.php:614
-#: include/global_arrays.php:1297 include/global_arrays.php:1318
-#: include/global_arrays.php:1351 include/global_arrays.php:1360
-#: include/global_arrays.php:1386 include/global_settings.php:1264
+#: include/global_arrays.php:1296 include/global_arrays.php:1317
+#: include/global_arrays.php:1350 include/global_arrays.php:1359
+#: include/global_arrays.php:1385 include/global_settings.php:1264
 msgid "1 Hour"
 msgstr "1시간"
 
@@ -4461,8 +4461,8 @@ msgid "External"
 msgstr "외부"
 
 #: data_sources.php:1134 include/global_arrays.php:609
-#: include/global_arrays.php:1011 include/global_arrays.php:1345
-#: include/global_arrays.php:1379 include/global_arrays.php:1395
+#: include/global_arrays.php:1011 include/global_arrays.php:1344
+#: include/global_arrays.php:1378 include/global_arrays.php:1394
 #: include/global_settings.php:1258 include/global_settings.php:2025
 #, fuzzy
 msgid "1 Minute"
@@ -4476,7 +4476,7 @@ msgstr "데이터 소스 [ %s]"
 #: data_sources.php:1278
 #, fuzzy
 msgid "No Device"
-msgstr "장치 없음"
+msgstr "장치"
 
 #: data_sources.php:1324 data_templates.php:851
 msgid "Profile"
@@ -4496,7 +4496,7 @@ msgid "Orphaned"
 msgstr "고아"
 
 #: data_sources.php:1370 data_sources.php:1495 host.php:1563
-#: include/global_arrays.php:854 include/global_arrays.php:2009
+#: include/global_arrays.php:854 include/global_arrays.php:2038
 #: lib/api_automation.php:282 user_admin.php:1235 user_group_admin.php:967
 #: utilities.php:308
 #, fuzzy
@@ -4668,7 +4668,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "이 필드를 비워두면 값이 장치에서 파생됩니다."
 
 #: data_templates.php:836 data_templates.php:867 data_templates.php:989
-#: include/global_arrays.php:1041 include/global_arrays.php:1991
+#: include/global_arrays.php:1041 include/global_arrays.php:2020
 #, fuzzy
 msgid "Data Templates"
 msgstr "데이터 템플릿"
@@ -4760,7 +4760,7 @@ msgstr "GPRINT 프리셋 [편집 :  %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT 사전 설정 [신규]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1841
+#: gprint_presets.php:254 include/global_arrays.php:1870
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "GPRINT 프리셋"
@@ -4993,7 +4993,7 @@ msgstr "그래프를 그래프 템플릿과 동기화"
 msgid "Graph Template Items [edit: %s]"
 msgstr "그래프 템플릿 항목 [편집 :  %s]"
 
-#: graph_templates.php:422 include/global_arrays.php:1961
+#: graph_templates.php:422 include/global_arrays.php:1990
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "그래프 항목 입력"
@@ -5029,7 +5029,7 @@ msgstr ""
 
 #: graph_templates.php:622 graph_templates.php:637 graph_templates.php:757
 #: graphs_new.php:442 include/global_arrays.php:1040
-#: include/global_arrays.php:1937 lib/html_tree.php:536 user_admin.php:1375
+#: include/global_arrays.php:1966 lib/html_tree.php:536 user_admin.php:1375
 #: user_group_admin.php:1102
 #, fuzzy
 msgid "Graph Templates"
@@ -5119,7 +5119,7 @@ msgstr "최대:"
 #: graph_templates_items.php:139 graphs_items.php:155
 #, fuzzy
 msgid "Min:"
-msgstr "최소 :"
+msgstr "최소"
 
 #: graph_templates_items.php:405
 #, fuzzy, php-format
@@ -5210,7 +5210,7 @@ msgstr "적용 할 수 없ㅇ"
 msgid "Select the Report to add the selected Graphs to."
 msgstr "선택한 그래프를 추가하려면 보고서를 선택하십시오."
 
-#: graph_view.php:833 include/global_arrays.php:1761
+#: graph_view.php:833 include/global_arrays.php:1790
 #: include/global_settings.php:2095
 msgid "Preview Mode"
 msgstr "RTL Mode"
@@ -5285,7 +5285,7 @@ msgstr "다운로드"
 msgid "Summary Details"
 msgstr "요약 세부 정보"
 
-#: graphs.php:52 graphs.php:926 include/global_arrays.php:1811
+#: graphs.php:52 graphs.php:926 include/global_arrays.php:1840
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "그래프 템플릿 변경"
@@ -5577,7 +5577,7 @@ msgstr "그래프 필드"
 msgid "Graph Item Fields"
 msgstr "그래프 항목 필드"
 
-#: graphs.php:1799 include/global_arrays.php:1799
+#: graphs.php:1799 include/global_arrays.php:1828
 #, fuzzy
 msgid "Graph Management"
 msgstr "그래프 관리"
@@ -5714,7 +5714,7 @@ msgid "Select All Rows"
 msgstr "모든 행 선택"
 
 #: graphs_new.php:535 include/global_arrays.php:846
-#: include/global_arrays.php:918 lib/html_form.php:1205 lib/html_form.php:1218
+#: include/global_arrays.php:918 lib/html_form.php:1268 lib/html_form.php:1281
 #: tree.php:1366
 msgid "Create"
 msgstr "생성"
@@ -5997,15 +5997,15 @@ msgstr "관련 데이터 쿼리"
 msgid "Re-Index Method"
 msgstr "색인 다시 생성 방법"
 
-#: host.php:784 include/global_arrays.php:1817 include/global_arrays.php:1883
-#: include/global_arrays.php:1949 include/global_arrays.php:1985
-#: include/global_arrays.php:2003 include/global_arrays.php:2021
-#: include/global_arrays.php:2039 include/global_arrays.php:2069
-#: include/global_arrays.php:2105 include/global_arrays.php:2135
-#: include/global_arrays.php:2225 include/global_arrays.php:2417
-#: include/global_arrays.php:2441 include/global_arrays.php:2459
-#: include/global_arrays.php:2477 include/global_arrays.php:2495
-#: include/global_arrays.php:2519 lib/api_automation.php:1245
+#: host.php:784 include/global_arrays.php:1846 include/global_arrays.php:1912
+#: include/global_arrays.php:1978 include/global_arrays.php:2014
+#: include/global_arrays.php:2032 include/global_arrays.php:2050
+#: include/global_arrays.php:2068 include/global_arrays.php:2098
+#: include/global_arrays.php:2134 include/global_arrays.php:2164
+#: include/global_arrays.php:2254 include/global_arrays.php:2446
+#: include/global_arrays.php:2470 include/global_arrays.php:2488
+#: include/global_arrays.php:2506 include/global_arrays.php:2524
+#: include/global_arrays.php:2548 lib/api_automation.php:1245
 #: lib/api_automation.php:1307 lib/api_automation.php:1370
 #: lib/html_reports.php:1327 links.php:378 plugins.php:472
 msgid "Actions"
@@ -6126,7 +6126,7 @@ msgstr "이 장치가 참조되는 이름입니다."
 #: pollers.php:125 pollers.php:813 user_admin.php:1235 user_group_admin.php:967
 #, fuzzy
 msgid "Hostname"
-msgstr "호스트 이름"
+msgstr "호스트이름:"
 
 #: host.php:1548
 #, fuzzy
@@ -6174,7 +6174,7 @@ msgstr ""
 #: host.php:1575
 #, fuzzy
 msgid "In State"
-msgstr "주에서"
+msgstr "주"
 
 #: host.php:1578
 #, fuzzy
@@ -6336,7 +6336,7 @@ msgid "Add Data Query to Device Template"
 msgstr "장치 템플릿에 데이터 쿼리 추가"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:826
-#: include/global_arrays.php:1042 include/global_arrays.php:1973
+#: include/global_arrays.php:1042 include/global_arrays.php:2002
 #, fuzzy
 msgid "Device Templates"
 msgstr "장치 템플릿"
@@ -7218,9 +7218,9 @@ msgstr "매시간"
 #: include/global_arrays.php:637 include/global_arrays.php:638
 #: include/global_arrays.php:704 include/global_arrays.php:705
 #: include/global_arrays.php:706 include/global_arrays.php:707
-#: include/global_arrays.php:1624 include/global_arrays.php:1625
-#: include/global_arrays.php:1626 include/global_arrays.php:1627
-#: include/global_arrays.php:1628 include/global_settings.php:1945
+#: include/global_arrays.php:1623 include/global_arrays.php:1624
+#: include/global_arrays.php:1625 include/global_arrays.php:1626
+#: include/global_arrays.php:1627 include/global_settings.php:1945
 #: include/global_settings.php:1946
 #, fuzzy, php-format
 msgid "Every %d Hours"
@@ -7231,7 +7231,7 @@ msgstr "% d 시간마다"
 msgid "Every %1 Day"
 msgstr "% 1 일마다"
 
-#: include/global_arrays.php:679 include/global_arrays.php:1266
+#: include/global_arrays.php:679 include/global_arrays.php:1265
 #: include/global_settings.php:1197 rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Year"
@@ -7348,7 +7348,7 @@ msgid "Header"
 msgstr "헤더"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
-#: include/global_arrays.php:1449 include/global_arrays.php:1613
+#: include/global_arrays.php:1448 include/global_arrays.php:1612
 #: lib/html.php:2241
 msgid "Graph"
 msgstr "그래프"
@@ -7498,7 +7498,7 @@ msgstr "사전 설정"
 msgid "Data Profiles"
 msgstr "데이터 프로파일"
 
-#: include/global_arrays.php:880 include/global_arrays.php:2219 vdef.php:685
+#: include/global_arrays.php:880 include/global_arrays.php:2248 vdef.php:685
 #: vdef.php:699 vdef.php:872
 #, fuzzy
 msgid "VDEFs"
@@ -7509,12 +7509,12 @@ msgid "Import/Export"
 msgstr "가져오기/내보내기"
 
 #: include/global_arrays.php:885 include/global_arrays.php:1045
-#: include/global_arrays.php:2339
+#: include/global_arrays.php:2368
 msgid "Import Templates"
 msgstr "템플릿 가져오기"
 
 #: include/global_arrays.php:886 include/global_arrays.php:1044
-#: include/global_arrays.php:2327 templates_export.php:159
+#: include/global_arrays.php:2356 templates_export.php:159
 #, fuzzy
 msgid "Export Templates"
 msgstr "템플릿 내보내기"
@@ -7529,24 +7529,24 @@ msgstr "구성"
 msgid "Settings"
 msgstr "설정"
 
-#: include/global_arrays.php:890 include/global_arrays.php:2273
+#: include/global_arrays.php:890 include/global_arrays.php:2302
 #: user_admin.php:2220 user_admin.php:2274 user_group_admin.php:668
 #: user_group_admin.php:2550
 msgid "Users"
 msgstr "사용자"
 
-#: include/global_arrays.php:891 include/global_arrays.php:2303
+#: include/global_arrays.php:891 include/global_arrays.php:2332
 msgid "User Groups"
 msgstr "사용자 소모임"
 
-#: include/global_arrays.php:892 include/global_arrays.php:2291
+#: include/global_arrays.php:892 include/global_arrays.php:2320
 #: user_domains.php:645 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "사용자 도메인"
 
 #: include/global_arrays.php:894 include/global_arrays.php:911
-#: include/global_arrays.php:926 include/global_arrays.php:2147
+#: include/global_arrays.php:926 include/global_arrays.php:2176
 msgid "Utilities"
 msgstr "도구 "
 
@@ -7719,863 +7719,962 @@ msgstr "VDEF"
 msgid "VDEF Item"
 msgstr "VDEF 항목"
 
-#: include/global_arrays.php:1218
+#: include/global_arrays.php:1217
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "지난 30 분"
 
-#: include/global_arrays.php:1219
+#: include/global_arrays.php:1218
 msgid "Last Hour"
 msgstr "최근"
 
-#: include/global_arrays.php:1220 include/global_arrays.php:1221
-#: include/global_arrays.php:1222 include/global_arrays.php:1223
+#: include/global_arrays.php:1219 include/global_arrays.php:1220
+#: include/global_arrays.php:1221 include/global_arrays.php:1222
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "마지막 % d 시간"
 
-#: include/global_arrays.php:1224
+#: include/global_arrays.php:1223
 #, fuzzy
 msgid "Last Day"
 msgstr "마지막 날"
 
-#: include/global_arrays.php:1225 include/global_arrays.php:1226
-#: include/global_arrays.php:1227
+#: include/global_arrays.php:1224 include/global_arrays.php:1225
+#: include/global_arrays.php:1226
 #, fuzzy, php-format
 msgid "Last %d Days"
 msgstr "마지막 % d 일"
 
-#: include/global_arrays.php:1228
+#: include/global_arrays.php:1227
 msgid "Last Week"
 msgstr "지난 주"
 
-#: include/global_arrays.php:1229
+#: include/global_arrays.php:1228
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "지난 % d 주"
 
-#: include/global_arrays.php:1230
+#: include/global_arrays.php:1229
 msgid "Last Month"
 msgstr "지난 달"
 
-#: include/global_arrays.php:1231 include/global_arrays.php:1232
-#: include/global_arrays.php:1233 include/global_arrays.php:1234
+#: include/global_arrays.php:1230 include/global_arrays.php:1231
+#: include/global_arrays.php:1232 include/global_arrays.php:1233
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "지난 % d 개월"
 
-#: include/global_arrays.php:1235
+#: include/global_arrays.php:1234
 msgid "Last Year"
 msgstr "지난해"
 
-#: include/global_arrays.php:1236
+#: include/global_arrays.php:1235
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "마지막 % d 년"
 
-#: include/global_arrays.php:1237
+#: include/global_arrays.php:1236
 #, fuzzy
 msgid "Day Shift"
 msgstr "낮의 시프트"
 
-#: include/global_arrays.php:1238
+#: include/global_arrays.php:1237
 #, fuzzy
 msgid "This Day"
-msgstr "오늘"
+msgstr "일"
 
-#: include/global_arrays.php:1239
+#: include/global_arrays.php:1238
 msgid "This Week"
 msgstr "이번 주"
 
-#: include/global_arrays.php:1240
+#: include/global_arrays.php:1239
 msgid "This Month"
 msgstr "이번 달"
 
-#: include/global_arrays.php:1241
+#: include/global_arrays.php:1240
 msgid "This Year"
 msgstr "올해"
 
-#: include/global_arrays.php:1242
+#: include/global_arrays.php:1241
 msgid "Previous Day"
 msgstr "전 날"
 
-#: include/global_arrays.php:1243
+#: include/global_arrays.php:1242
 #, fuzzy
 msgid "Previous Week"
 msgstr "지난주"
 
-#: include/global_arrays.php:1244
+#: include/global_arrays.php:1243
 msgid "Previous Month"
 msgstr "전달"
 
-#: include/global_arrays.php:1245
+#: include/global_arrays.php:1244
 #, fuzzy
 msgid "Previous Year"
 msgstr "작년"
 
-#: include/global_arrays.php:1249
+#: include/global_arrays.php:1248
 #, fuzzy, php-format
 msgid "%d Min"
 msgstr "% d 분"
 
-#: include/global_arrays.php:1281
+#: include/global_arrays.php:1280
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "월 번호, 일, 연도"
 
-#: include/global_arrays.php:1282
+#: include/global_arrays.php:1281
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "월 이름, 일, 연도"
 
-#: include/global_arrays.php:1283
+#: include/global_arrays.php:1282
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "일, 월 번호, 연도"
 
-#: include/global_arrays.php:1284
+#: include/global_arrays.php:1283
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "일, 월 이름, 연도"
 
-#: include/global_arrays.php:1285
+#: include/global_arrays.php:1284
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "년, 월, 일"
 
-#: include/global_arrays.php:1286
+#: include/global_arrays.php:1285
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "년, 월 이름, 일"
 
-#: include/global_arrays.php:1296
+#: include/global_arrays.php:1295
 #, fuzzy
 msgid "After Boost"
 msgstr "부스트 후"
 
-#: include/global_arrays.php:1306 include/global_arrays.php:1307
-#: include/global_arrays.php:1308 include/global_arrays.php:1309
-#: include/global_arrays.php:1310 include/global_arrays.php:1365
-#: include/global_arrays.php:1366 include/global_arrays.php:1367
-#: include/global_arrays.php:1368 include/global_arrays.php:1369
+#: include/global_arrays.php:1305 include/global_arrays.php:1306
+#: include/global_arrays.php:1307 include/global_arrays.php:1308
+#: include/global_arrays.php:1309 include/global_arrays.php:1364
+#: include/global_arrays.php:1365 include/global_arrays.php:1366
+#: include/global_arrays.php:1367 include/global_arrays.php:1368
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d MBytes"
 
-#: include/global_arrays.php:1311 include/global_arrays.php:1370
+#: include/global_arrays.php:1310 include/global_arrays.php:1369
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 기가 바이트"
 
-#: include/global_arrays.php:1312 include/global_arrays.php:1371
+#: include/global_arrays.php:1311 include/global_arrays.php:1370
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
-#: include/global_arrays.php:1313 include/global_arrays.php:1314
-#: include/global_arrays.php:1372 include/global_arrays.php:1373
+#: include/global_arrays.php:1312 include/global_arrays.php:1313
+#: include/global_arrays.php:1371 include/global_arrays.php:1372
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GBytes"
 
-#: include/global_arrays.php:1327
+#: include/global_arrays.php:1326
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1328
+#: include/global_arrays.php:1327
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1329
+#: include/global_arrays.php:1328
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1330
+#: include/global_arrays.php:1329
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1331
+#: include/global_arrays.php:1330
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1332
+#: include/global_arrays.php:1331
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50,000 개의 데이터 소스 항목 (기본값)"
 
-#: include/global_arrays.php:1333
+#: include/global_arrays.php:1332
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1334
+#: include/global_arrays.php:1333
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1335
+#: include/global_arrays.php:1334
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400,000 개의 데이터 소스 항목"
 
-#: include/global_arrays.php:1352
+#: include/global_arrays.php:1351
 #, fuzzy
 msgid "2 Hours"
 msgstr "2 시간"
 
-#: include/global_arrays.php:1353
+#: include/global_arrays.php:1352
 #, fuzzy
 msgid "4 Hours"
 msgstr "4 시간"
 
-#: include/global_arrays.php:1354
+#: include/global_arrays.php:1353
 #, fuzzy
 msgid "6 Hours"
 msgstr "6 시간"
 
-#: include/global_arrays.php:1361
+#: include/global_arrays.php:1360
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "%s 시간"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1379
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "%s 분"
 
-#: include/global_arrays.php:1400
+#: include/global_arrays.php:1399
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 메가 바이트"
 
-#: include/global_arrays.php:1401 include/global_arrays.php:1402
-#: include/global_arrays.php:1403 include/global_arrays.php:1404
-#: include/global_arrays.php:1405 include/global_arrays.php:1406
+#: include/global_arrays.php:1400 include/global_arrays.php:1401
+#: include/global_arrays.php:1402 include/global_arrays.php:1403
+#: include/global_arrays.php:1404 include/global_arrays.php:1405
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d 메가 바이트"
 
-#: include/global_arrays.php:1410
+#: include/global_arrays.php:1409
 #, fuzzy
 msgid "Send Now"
 msgstr "지금 보내"
 
-#: include/global_arrays.php:1418
+#: include/global_arrays.php:1417
 #, fuzzy
 msgid "Take Ownership"
 msgstr "소유권 가져 오기"
 
-#: include/global_arrays.php:1422
+#: include/global_arrays.php:1421
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "인라인 PNG 이미지"
 
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1426
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "인라인 JPEG 이미지"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1427
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "인라인 GIF 이미지"
 
-#: include/global_arrays.php:1431
+#: include/global_arrays.php:1430
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "첨부 된 PNG 이미지"
 
-#: include/global_arrays.php:1434
+#: include/global_arrays.php:1433
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "첨부 된 JPEG 이미지"
 
-#: include/global_arrays.php:1435
+#: include/global_arrays.php:1434
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "첨부 된 GIF 이미지"
 
-#: include/global_arrays.php:1439
+#: include/global_arrays.php:1438
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "인라인 PNG 이미지, LN 스타일"
 
-#: include/global_arrays.php:1441
+#: include/global_arrays.php:1440
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "인라인 JPEG 이미지, LN 스타일"
 
-#: include/global_arrays.php:1442
+#: include/global_arrays.php:1441
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "인라인 GIF 이미지, LN 스타일"
 
-#: include/global_arrays.php:1447
+#: include/global_arrays.php:1446
 msgid "Text"
 msgstr "텍스트"
 
-#: include/global_arrays.php:1448 include/global_form.php:2147
+#: include/global_arrays.php:1447 include/global_form.php:2147
 #, fuzzy
 msgid "Tree"
 msgstr "나무"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1449
 msgid "Horizontal Rule"
 msgstr "수평 규칙"
 
-#: include/global_arrays.php:1454
+#: include/global_arrays.php:1453
 msgid "left"
 msgstr "왼쪽"
 
-#: include/global_arrays.php:1455
+#: include/global_arrays.php:1454
 msgid "center"
 msgstr "가운데"
 
-#: include/global_arrays.php:1456
+#: include/global_arrays.php:1455
 msgid "right"
 msgstr "오른쪽"
 
-#: include/global_arrays.php:1460
+#: include/global_arrays.php:1459
 msgid "Minute(s)"
 msgstr "분"
 
-#: include/global_arrays.php:1461
+#: include/global_arrays.php:1460
 msgid "Hour(s)"
 msgstr "시간"
 
-#: include/global_arrays.php:1462
+#: include/global_arrays.php:1461
 msgid "Day(s)"
 msgstr "일"
 
-#: include/global_arrays.php:1463
+#: include/global_arrays.php:1462
 msgid "Week(s)"
 msgstr "주"
 
-#: include/global_arrays.php:1464
+#: include/global_arrays.php:1463
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "월, 일"
 
-#: include/global_arrays.php:1465
+#: include/global_arrays.php:1464
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "월, 요일"
 
-#: include/global_arrays.php:1466
+#: include/global_arrays.php:1465
 msgid "Year(s)"
 msgstr "년 "
 
-#: include/global_arrays.php:1470
+#: include/global_arrays.php:1469
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "그래프 유형 유지"
 
-#: include/global_arrays.php:1471
+#: include/global_arrays.php:1470
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "유형 및 스택 유지"
 
-#: include/global_arrays.php:1472
+#: include/global_arrays.php:1471
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "AREA / STACK 그래프로 변환"
 
-#: include/global_arrays.php:1473
+#: include/global_arrays.php:1472
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "LINE1 그래프로 변환"
 
-#: include/global_arrays.php:1474
+#: include/global_arrays.php:1473
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "LINE2 그래프로 변환"
 
-#: include/global_arrays.php:1475
+#: include/global_arrays.php:1474
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "LINE3 그래프로 변환"
 
-#: include/global_arrays.php:1479
+#: include/global_arrays.php:1478
 #, fuzzy
 msgid "No Totals"
 msgstr "합계 없음"
 
-#: include/global_arrays.php:1480
+#: include/global_arrays.php:1479
 #, fuzzy
 msgid "Print all Legend Items"
 msgstr "모든 범례 항목 인쇄"
 
-#: include/global_arrays.php:1481
+#: include/global_arrays.php:1480
 #, fuzzy
 msgid "Print totaling Legend Items Only"
 msgstr "총계 범례 항목 만 인쇄"
 
-#: include/global_arrays.php:1485
+#: include/global_arrays.php:1484
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "총 유사한 데이터 소스"
 
-#: include/global_arrays.php:1486
+#: include/global_arrays.php:1485
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "총 모든 데이터 소스"
 
-#: include/global_arrays.php:1490
+#: include/global_arrays.php:1489
 #, fuzzy
 msgid "No Reordering"
 msgstr "재주문 없음"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1490
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "데이터 소스, 그래프"
 
-#: include/global_arrays.php:1492
+#: include/global_arrays.php:1491
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "그래프, 데이터 소스"
 
-#: include/global_arrays.php:1499
+#: include/global_arrays.php:1498
 msgid "contains"
 msgstr "포함"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1499
 msgid "does not contain"
 msgstr "포함 않됨"
 
-#: include/global_arrays.php:1501
+#: include/global_arrays.php:1500
 #, fuzzy
 msgid "begins with"
 msgstr "~로 시작하다"
 
-#: include/global_arrays.php:1502
+#: include/global_arrays.php:1501
 #, fuzzy
 msgid "does not begin with"
 msgstr "~으로 시작하지 않습니다."
 
-#: include/global_arrays.php:1503
+#: include/global_arrays.php:1502
 msgid "ends with"
 msgstr "로 끝나다"
 
-#: include/global_arrays.php:1504
+#: include/global_arrays.php:1503
 #, fuzzy
 msgid "does not end with"
 msgstr "끝내지 않는다."
 
-#: include/global_arrays.php:1505
+#: include/global_arrays.php:1504
 msgid "matches"
 msgstr "일치"
 
-#: include/global_arrays.php:1506
+#: include/global_arrays.php:1505
 msgid "is not equal to"
 msgstr "같지 않음"
 
-#: include/global_arrays.php:1507
+#: include/global_arrays.php:1506
 msgid "is less than"
 msgstr "다음보다 미만"
 
-#: include/global_arrays.php:1508
+#: include/global_arrays.php:1507
 #, fuzzy
 msgid "is less than or equal"
 msgstr "작거나 같다"
 
-#: include/global_arrays.php:1509
+#: include/global_arrays.php:1508
 msgid "is greater than"
 msgstr "다음보다 초과 :"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1509
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "크거나 같음"
 
-#: include/global_arrays.php:1511
+#: include/global_arrays.php:1510
 #, fuzzy
 msgid "is unknown"
-msgstr "알 수 없다"
+msgstr "알 수 없음"
 
-#: include/global_arrays.php:1512
+#: include/global_arrays.php:1511
 #, fuzzy
 msgid "is not unknown"
 msgstr "알 수 없다"
 
-#: include/global_arrays.php:1513
+#: include/global_arrays.php:1512
 msgid "is empty"
 msgstr "비었다"
 
-#: include/global_arrays.php:1514
+#: include/global_arrays.php:1513
 msgid "is not empty"
 msgstr "비어 있지 않습니다."
 
-#: include/global_arrays.php:1515
+#: include/global_arrays.php:1514
 #, fuzzy
 msgid "matches regular expression"
 msgstr "정규식과 일치하다"
 
-#: include/global_arrays.php:1516
+#: include/global_arrays.php:1515
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "정규 표현식과 일치하지 않습니다."
 
-#: include/global_arrays.php:1618
+#: include/global_arrays.php:1617
 #, fuzzy
 msgid "Fixed String"
 msgstr "고정 문자열"
 
-#: include/global_arrays.php:1623
+#: include/global_arrays.php:1622
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "1 시간마다"
 
-#: include/global_arrays.php:1629
+#: include/global_arrays.php:1628
 #, fuzzy
 msgid "Every Day"
 msgstr "매일"
 
-#: include/global_arrays.php:1630
+#: include/global_arrays.php:1629
 #, fuzzy
 msgid "Every Week"
 msgstr "매주"
 
-#: include/global_arrays.php:1631 include/global_arrays.php:1632
+#: include/global_arrays.php:1630 include/global_arrays.php:1631
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "% d 주마다"
 
-#: include/global_arrays.php:1663
+#: include/global_arrays.php:1662
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "1월"
 
-#: include/global_arrays.php:1664
+#: include/global_arrays.php:1663
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "2월"
 
-#: include/global_arrays.php:1665
+#: include/global_arrays.php:1664
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "3월"
 
-#: include/global_arrays.php:1666
+#: include/global_arrays.php:1665
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "4월"
 
-#: include/global_arrays.php:1667
+#: include/global_arrays.php:1666
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "5월"
 
-#: include/global_arrays.php:1668
+#: include/global_arrays.php:1667
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "6월"
 
-#: include/global_arrays.php:1669
+#: include/global_arrays.php:1668
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "7월"
 
-#: include/global_arrays.php:1670
+#: include/global_arrays.php:1669
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "8월"
 
-#: include/global_arrays.php:1671
+#: include/global_arrays.php:1670
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "9월"
 
-#: include/global_arrays.php:1672
+#: include/global_arrays.php:1671
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "10월"
 
-#: include/global_arrays.php:1673
+#: include/global_arrays.php:1672
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "11월"
 
-#: include/global_arrays.php:1674
+#: include/global_arrays.php:1673
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "12월"
 
-#: include/global_arrays.php:1688
+#: include/global_arrays.php:1687
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "일"
 
-#: include/global_arrays.php:1689
+#: include/global_arrays.php:1688
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "월"
 
-#: include/global_arrays.php:1690
+#: include/global_arrays.php:1689
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "화"
 
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1690
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "수"
 
-#: include/global_arrays.php:1692
+#: include/global_arrays.php:1691
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "목"
 
-#: include/global_arrays.php:1693
+#: include/global_arrays.php:1692
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "금"
 
-#: include/global_arrays.php:1694
+#: include/global_arrays.php:1693
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "토"
 
+#: include/global_arrays.php:1697
+msgid "Arabic"
+msgstr "아랍어"
+
 #: include/global_arrays.php:1698
-#, fuzzy
-msgid "[Fail]"
-msgstr "[실패]"
+msgid "Bulgarian"
+msgstr "불가리어"
 
 #: include/global_arrays.php:1699
 #, fuzzy
-msgid "[Warning]"
-msgstr "[경고]"
+msgid "Chinese (China)"
+msgstr "중국어 (중국)"
 
 #: include/global_arrays.php:1700
 #, fuzzy
-msgid "[Success]"
-msgstr "[성공]"
+msgid "Chinese (Taiwan)"
+msgstr "중국어 (대만)"
 
 #: include/global_arrays.php:1701
+msgid "Dutch"
+msgstr "네덜란드어"
+
+#: include/global_arrays.php:1702
+msgid "English"
+msgstr "영어"
+
+#: include/global_arrays.php:1703
+msgid "French"
+msgstr "프랑스어"
+
+#: include/global_arrays.php:1704
+msgid "German"
+msgstr "독일어"
+
+#: include/global_arrays.php:1705
+msgid "Greek"
+msgstr "그리스 사람"
+
+#: include/global_arrays.php:1706
+msgid "Italian"
+msgstr "이탈리아어"
+
+#: include/global_arrays.php:1707
+msgid "Japanese"
+msgstr "일본어"
+
+#: include/global_arrays.php:1708
+msgid "Korean"
+msgstr "한국어"
+
+#: include/global_arrays.php:1709
+msgid "Polish"
+msgstr "폴란드어"
+
+#: include/global_arrays.php:1710
+msgid "Portguguese"
+msgstr ""
+
+#: include/global_arrays.php:1711
+msgid "Portguguese (Brazil)"
+msgstr ""
+
+#: include/global_arrays.php:1712
+msgid "Russian"
+msgstr "러시아어"
+
+#: include/global_arrays.php:1713
+msgid "Spanish"
+msgstr "스페인어"
+
+#: include/global_arrays.php:1714
+msgid "Swedish"
+msgstr "스웨덴어"
+
+#: include/global_arrays.php:1718
+msgid "Classic"
+msgstr ""
+
+#: include/global_arrays.php:1719
+#, fuzzy
+msgid "Modern"
+msgstr "모드"
+
+#: include/global_arrays.php:1720
+msgid "Dark"
+msgstr ""
+
+#: include/global_arrays.php:1721
+msgid "Paper-plane"
+msgstr ""
+
+#: include/global_arrays.php:1722
+msgid "Paw"
+msgstr ""
+
+#: include/global_arrays.php:1723
+msgid "Sunrise"
+msgstr ""
+
+#: include/global_arrays.php:1727
+#, fuzzy
+msgid "[Fail]"
+msgstr "실패"
+
+#: include/global_arrays.php:1728
+#, fuzzy
+msgid "[Warning]"
+msgstr "경고"
+
+#: include/global_arrays.php:1729
+#, fuzzy
+msgid "[Success]"
+msgstr "성공!"
+
+#: include/global_arrays.php:1730
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[건너 뛴]"
 
-#: include/global_arrays.php:1725 include/global_arrays.php:1731
+#: include/global_arrays.php:1754 include/global_arrays.php:1760
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "사용자 프로필 (편집)"
 
-#: include/global_arrays.php:1743 include/global_arrays.php:1749
+#: include/global_arrays.php:1772 include/global_arrays.php:1778
 #, fuzzy
 msgid "Tree Mode"
 msgstr "트리 모드"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1784
 #, fuzzy
 msgid "List Mode"
 msgstr "목록 모드"
 
-#: include/global_arrays.php:1787 include/global_arrays.php:1793
+#: include/global_arrays.php:1816 include/global_arrays.php:1822
 #: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 #, fuzzy
 msgid "Console"
 msgstr "콘솔"
 
-#: include/global_arrays.php:1805 include/global_arrays.php:1847
-#: include/global_arrays.php:1865 include/global_arrays.php:1919
-#: include/global_arrays.php:1931 include/global_arrays.php:1943
-#: include/global_arrays.php:1979 include/global_arrays.php:1997
-#: include/global_arrays.php:2015 include/global_arrays.php:2033
-#: include/global_arrays.php:2051 include/global_arrays.php:2075
-#: include/global_arrays.php:2111 include/global_arrays.php:2231
-#: include/global_arrays.php:2255 include/global_arrays.php:2279
-#: include/global_arrays.php:2297 include/global_arrays.php:2309
-#: include/global_arrays.php:2411 include/global_arrays.php:2435
-#: include/global_arrays.php:2453 include/global_arrays.php:2471
-#: include/global_arrays.php:2489 include/global_arrays.php:2513
+#: include/global_arrays.php:1834 include/global_arrays.php:1876
+#: include/global_arrays.php:1894 include/global_arrays.php:1948
+#: include/global_arrays.php:1960 include/global_arrays.php:1972
+#: include/global_arrays.php:2008 include/global_arrays.php:2026
+#: include/global_arrays.php:2044 include/global_arrays.php:2062
+#: include/global_arrays.php:2080 include/global_arrays.php:2104
+#: include/global_arrays.php:2140 include/global_arrays.php:2260
+#: include/global_arrays.php:2284 include/global_arrays.php:2308
+#: include/global_arrays.php:2326 include/global_arrays.php:2338
+#: include/global_arrays.php:2440 include/global_arrays.php:2464
+#: include/global_arrays.php:2482 include/global_arrays.php:2500
+#: include/global_arrays.php:2518 include/global_arrays.php:2542
 msgid "(Edit)"
 msgstr "(편집)"
 
-#: include/global_arrays.php:1823 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1852 lib/api_aggregate.php:1299
 #, fuzzy
 msgid "Graph Items"
 msgstr "그래프 항목"
 
-#: include/global_arrays.php:1829
+#: include/global_arrays.php:1858
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "새 그래프 만들기"
 
-#: include/global_arrays.php:1835
+#: include/global_arrays.php:1864
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "데이터 쿼리로 그래프 만들기"
 
-#: include/global_arrays.php:1853 include/global_arrays.php:1871
-#: include/global_arrays.php:1967 include/global_arrays.php:2057
-#: include/global_arrays.php:2081 include/global_arrays.php:2237
+#: include/global_arrays.php:1882 include/global_arrays.php:1900
+#: include/global_arrays.php:1996 include/global_arrays.php:2086
+#: include/global_arrays.php:2110 include/global_arrays.php:2266
 #, fuzzy
 msgid "(Remove)"
 msgstr "(풀다)"
 
-#: include/global_arrays.php:1889 include/global_arrays.php:1895
-#: include/global_arrays.php:1901 include/global_arrays.php:1907
-#: include/global_arrays.php:2171
+#: include/global_arrays.php:1918 include/global_arrays.php:1924
+#: include/global_arrays.php:1930 include/global_arrays.php:1936
+#: include/global_arrays.php:2200
 msgid "View Log"
 msgstr "로그 보기"
 
-#: include/global_arrays.php:1913
+#: include/global_arrays.php:1942
 #, fuzzy
 msgid "Graph Trees"
 msgstr "그래프 트리"
 
-#: include/global_arrays.php:1955 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1984 lib/api_aggregate.php:1299
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "그래프 템플릿 항목"
 
-#: include/global_arrays.php:2045
+#: include/global_arrays.php:2074
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "라운드 로빈 아카이브"
 
-#: include/global_arrays.php:2087
+#: include/global_arrays.php:2116
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "데이터 입력 필드"
 
-#: include/global_arrays.php:2093 include/global_arrays.php:2123
+#: include/global_arrays.php:2122 include/global_arrays.php:2152
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(항목 제거)"
 
-#: include/global_arrays.php:2129 include/global_settings.php:223
+#: include/global_arrays.php:2158 include/global_settings.php:223
 #: rrdcleaner.php:296
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "RRD 클리너"
 
-#: include/global_arrays.php:2141
+#: include/global_arrays.php:2170
 #, fuzzy
 msgid "List unused Files"
 msgstr "사용하지 않는 파일 나열"
 
-#: include/global_arrays.php:2153 include/global_arrays.php:2165
+#: include/global_arrays.php:2182 include/global_arrays.php:2194
 #: utilities.php:1900
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "폴러 캐시보기"
 
-#: include/global_arrays.php:2159 utilities.php:1904
+#: include/global_arrays.php:2188 utilities.php:1904
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "데이터 쿼리 캐시보기"
 
-#: include/global_arrays.php:2177
+#: include/global_arrays.php:2206
 msgid "Clear Log"
 msgstr "로그 지우기"
 
-#: include/global_arrays.php:2183 utilities.php:1893
+#: include/global_arrays.php:2212 utilities.php:1893
 #, fuzzy
 msgid "View User Log"
 msgstr "사용자 로그보기"
 
-#: include/global_arrays.php:2189
+#: include/global_arrays.php:2218
 #, fuzzy
 msgid "Clear User Log"
 msgstr "사용자 로그 지우기"
 
-#: include/global_arrays.php:2195 utilities.php:1884 utilities.php:1885
+#: include/global_arrays.php:2224 utilities.php:1884 utilities.php:1885
 msgid "Technical Support"
 msgstr "기술 지원"
 
-#: include/global_arrays.php:2201 utilities.php:2003
+#: include/global_arrays.php:2230 utilities.php:2003
 #, fuzzy
 msgid "Boost Status"
 msgstr "부스트 상태"
 
-#: include/global_arrays.php:2207
+#: include/global_arrays.php:2236
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "SNMP 에이전트 캐시보기"
 
-#: include/global_arrays.php:2213
+#: include/global_arrays.php:2242
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "SNMP 에이전트 알림 로그보기"
 
-#: include/global_arrays.php:2243 vdef.php:586
+#: include/global_arrays.php:2272 vdef.php:586
 #, fuzzy
 msgid "VDEF Items"
 msgstr "VDEF 항목"
 
-#: include/global_arrays.php:2249
+#: include/global_arrays.php:2278
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "SNMP 알림 수신자보기"
 
-#: include/global_arrays.php:2261
+#: include/global_arrays.php:2290
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "선인장 설정"
 
-#: include/global_arrays.php:2267
+#: include/global_arrays.php:2296
 msgid "External Link"
 msgstr "외부 링크"
 
-#: include/global_arrays.php:2285 include/global_arrays.php:2315
+#: include/global_arrays.php:2314 include/global_arrays.php:2344
 #, fuzzy
 msgid "(Action)"
-msgstr "(동작)"
+msgstr "실행"
 
-#: include/global_arrays.php:2333
+#: include/global_arrays.php:2362
 msgid "Export Results"
 msgstr "내보내기 결과"
 
-#: include/global_arrays.php:2345 include/global_arrays.php:2375
+#: include/global_arrays.php:2374 include/global_arrays.php:2404
 #: lib/html.php:1492 lib/html.php:1494 lib/html.php:1573
 #, fuzzy
 msgid "Reporting"
 msgstr "보고"
 
-#: include/global_arrays.php:2351 include/global_arrays.php:2381
+#: include/global_arrays.php:2380 include/global_arrays.php:2410
 #, fuzzy
 msgid "Report Add"
 msgstr "보고서 추가"
 
-#: include/global_arrays.php:2357 include/global_arrays.php:2387
+#: include/global_arrays.php:2386 include/global_arrays.php:2416
 #, fuzzy
 msgid "Report Delete"
 msgstr "보고서 삭제"
 
-#: include/global_arrays.php:2363 include/global_arrays.php:2393
+#: include/global_arrays.php:2392 include/global_arrays.php:2422
 #, fuzzy
 msgid "Report Edit"
 msgstr "보고서 수정"
 
-#: include/global_arrays.php:2369 include/global_arrays.php:2399
+#: include/global_arrays.php:2398 include/global_arrays.php:2428
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "보고서 편집 항목"
 
-#: include/global_arrays.php:2423
+#: include/global_arrays.php:2452
 #, fuzzy
 msgid "Color Template Items"
 msgstr "색상 템플릿 항목"
 
-#: include/global_arrays.php:2465
+#: include/global_arrays.php:2494
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "집계 항목"
 
-#: include/global_arrays.php:2501
+#: include/global_arrays.php:2530
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "그래프 규칙 항목"
 
-#: include/global_arrays.php:2525
+#: include/global_arrays.php:2554
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "트리 규칙 항목"
@@ -10401,7 +10500,7 @@ msgstr "이 규칙 항목에 사용될 필드 이름."
 #: include/global_form.php:2028 include/global_form.php:2070
 #, fuzzy
 msgid "Operator."
-msgstr "운영자."
+msgstr "운영자"
 
 #: include/global_form.php:2035 include/global_form.php:2077
 #: include/global_form.php:2220
@@ -12232,7 +12331,7 @@ msgstr ""
 #: include/global_settings.php:1145 user_domains.php:344
 #, fuzzy
 msgid "No User"
-msgstr "사용자 없음"
+msgstr "회원:"
 
 #: include/global_settings.php:1134
 msgid "Guest User"
@@ -13976,17 +14075,17 @@ msgstr "새 폴러"
 msgid "Cacti Server v%s - Maintenance"
 msgstr "Cacti Server v  %s - 유지 관리"
 
-#: install/install.php:68
+#: install/install.php:67
 #, fuzzy, php-format
 msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cacti Server v  %s - 설치 마법사"
 
-#: install/install.php:74
+#: install/install.php:73
 #, fuzzy
 msgid "Initializing"
 msgstr "초기화 중"
 
-#: install/install.php:75
+#: install/install.php:74
 #, fuzzy, php-format
 msgid ""
 "Please wait while the installation system for Cacti Version %s initializes.  "
@@ -14265,7 +14364,7 @@ msgstr "호스트"
 #: lib/api_device.php:1011
 #, fuzzy
 msgid "System:"
-msgstr "체계:"
+msgstr "시스템"
 
 #: lib/api_device.php:1017
 #, fuzzy
@@ -14335,7 +14434,7 @@ msgstr "분기:"
 #: lib/auth.php:1675 lib/auth.php:1706 lib/html_tree.php:916
 #, fuzzy
 msgid "Device:"
-msgstr "장치:"
+msgstr "장치"
 
 #: lib/auth.php:2343 lib/auth.php:2352
 #, fuzzy
@@ -14889,7 +14988,7 @@ msgstr "오류  %s을 (를) 읽을 수 없습니다."
 #: lib/functions.php:2224 lib/functions.php:2234
 #, fuzzy
 msgid "Logged in as"
-msgstr "로그인 상태"
+msgstr "로그인하지 않았습니다."
 
 #: lib/functions.php:2224
 #, fuzzy
@@ -15462,9 +15561,9 @@ msgstr "시작하다"
 #: lib/html.php:2253
 #, fuzzy
 msgid "End with"
-msgstr "끝"
+msgstr "종료일"
 
-#: lib/html.php:2255 lib/html_form.php:1220
+#: lib/html.php:2255 lib/html_form.php:1283
 msgid "Close"
 msgstr "닫기"
 
@@ -15483,66 +15582,66 @@ msgstr "표에 필터 적용"
 msgid "Reset filter to default values"
 msgstr "필터를 기본값으로 재설정"
 
-#: lib/html_form.php:534
+#: lib/html_form.php:547
 msgid "File Found"
 msgstr "파일 발견"
 
-#: lib/html_form.php:538
+#: lib/html_form.php:551
 #, fuzzy
 msgid "Path is a Directory and not a File"
 msgstr "경로는 파일이 아닌 디렉토리입니다."
 
-#: lib/html_form.php:542
+#: lib/html_form.php:555
 #, fuzzy
 msgid "File is Not Found"
 msgstr "파일을 찾을 수 없음"
 
-#: lib/html_form.php:553
+#: lib/html_form.php:566
 #, fuzzy
 msgid "Enter a valid file path"
 msgstr "유효한 파일 경로를 입력하십시오."
 
-#: lib/html_form.php:591
+#: lib/html_form.php:604
 #, fuzzy
 msgid "Directory Found"
 msgstr "디렉토리 발견"
 
-#: lib/html_form.php:593
+#: lib/html_form.php:606
 #, fuzzy
 msgid "Path is a File and not a Directory"
 msgstr "경로는 파일이면서 디렉토리가 아닙니다."
 
-#: lib/html_form.php:597
+#: lib/html_form.php:610
 #, fuzzy
 msgid "Directory is Not found"
 msgstr "디렉토리를 찾을 수 없음"
 
-#: lib/html_form.php:600
+#: lib/html_form.php:613
 #, fuzzy
 msgid "Enter a valid directory path"
 msgstr "올바른 디렉토리 경로를 입력하십시오."
 
-#: lib/html_form.php:1090
+#: lib/html_form.php:1153
 #, fuzzy, php-format
 msgid "Cacti Color (%s)"
 msgstr "선인장 색 ( %s)"
 
-#: lib/html_form.php:1150
+#: lib/html_form.php:1213
 #, fuzzy
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "가능하지 않은 인증 확인"
 
-#: lib/html_form.php:1297
+#: lib/html_form.php:1360
 #, fuzzy
 msgid "Warning Unsaved Form Data"
 msgstr "저장되지 않은 양식 데이터 경고"
 
-#: lib/html_form.php:1299
+#: lib/html_form.php:1362
 #, fuzzy
 msgid "Unsaved Changes Detected"
 msgstr "저장되지 않은 변경 사항이 감지되었습니다."
 
-#: lib/html_form.php:1300
+#: lib/html_form.php:1363
 #, fuzzy
 msgid ""
 "You have unsaved changes on this form.  If you press &#39;Continue&#39; "
@@ -16372,7 +16471,7 @@ msgstr "패키지 파일"
 #: lib/import.php:1984
 #, fuzzy
 msgid "[preview] "
-msgstr "[시사]"
+msgstr "미리보기"
 
 #: lib/import.php:1989
 #, fuzzy
@@ -16387,17 +16486,17 @@ msgstr "Cacti가 템플릿에 대해 다음 항목을 가져 왔습니다."
 #: lib/import.php:2000
 #, fuzzy
 msgid "[success]"
-msgstr "[성공]"
+msgstr "성공!"
 
 #: lib/import.php:2002
 #, fuzzy
 msgid "[fail]"
-msgstr "[실패]"
+msgstr "실패"
 
 #: lib/import.php:2004
 #, fuzzy
 msgid "[preview]"
-msgstr "[시사]"
+msgstr "미리보기"
 
 #: lib/import.php:2008
 #, fuzzy
@@ -17870,7 +17969,7 @@ msgstr ""
 #: lib/reports.php:1546
 #, fuzzy
 msgid "Report:"
-msgstr "보고서:"
+msgstr "보고서"
 
 #: lib/reports.php:1554
 #, fuzzy
@@ -18072,7 +18171,7 @@ msgstr ""
 #: lib/rrd.php:3316
 #, fuzzy
 msgid "(Custom)"
-msgstr "(관습)"
+msgstr "사용자 정의"
 
 #: lib/rrd.php:3322
 #, fuzzy
@@ -19957,7 +20056,7 @@ msgstr "상속 "
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "manual"
-msgstr "조작"
+msgstr "수동"
 
 #: tree.php:394
 #, fuzzy
@@ -19969,13 +20068,13 @@ msgstr "알파"
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "natural"
-msgstr "자연스러운"
+msgstr "뉴트럴"
 
 #: tree.php:400
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "numeric"
-msgstr "숫자의"
+msgstr "숫자"
 
 #: tree.php:642
 #, fuzzy
@@ -20258,7 +20357,7 @@ msgstr "사용자 이름:"
 #: user_admin.php:367
 #, fuzzy
 msgid "Full Name:"
-msgstr "성명 :"
+msgstr "성명"
 
 #: user_admin.php:374
 #, fuzzy
@@ -20423,7 +20522,7 @@ msgstr "허용"
 #: user_group_admin.php:1937
 #, fuzzy
 msgid "DENY"
-msgstr "부인"
+msgstr "거부"
 
 #: user_admin.php:1107
 #, fuzzy
@@ -21431,7 +21530,7 @@ msgstr "SNMP 버전 :"
 #: utilities.php:1843
 #, fuzzy
 msgid "Community:"
-msgstr "커뮤니티:"
+msgstr "커뮤니티"
 
 #: utilities.php:1844 utilities.php:1848
 #, fuzzy
@@ -21445,7 +21544,7 @@ msgstr "회원:"
 #: utilities.php:1851
 #, fuzzy
 msgid "Script:"
-msgstr "스크립트:"
+msgstr "스크립트"
 
 #: utilities.php:1853
 #, fuzzy

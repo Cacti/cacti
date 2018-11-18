@@ -26,7 +26,7 @@ $dir = dir($config['base_path'] . '/include/themes/');
 while (false !== ($entry = $dir->read())) {
 	if ($entry != '.' && $entry != '..') {
 		if (is_dir($config['base_path'] . '/include/themes/' . $entry)) {
-			$themes[$entry] = ucwords($entry);
+			$themes[$entry] = __(ucwords($entry));
 		}
 	}
 }

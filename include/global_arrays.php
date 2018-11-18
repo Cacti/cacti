@@ -1707,9 +1707,20 @@ $i18n_languages = array(
 	__('Japanese'),
 	__('Korean'),
 	__('Polish'),
+	__('Portguguese'),
+	__('Portguguese (Brazil)'),
 	__('Russian'),
 	__('Spanish'),
 	__('Swedish')
+);
+
+$i18n_themes = array(
+	_('Classic'),
+	_('Modern'),
+	_('Dark'),
+	_('Paper-plane'),
+	_('Paw'),
+	_('Sunrise'),
 );
 
 $database_statuses = array(

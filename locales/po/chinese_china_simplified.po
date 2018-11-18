@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 16:21-0500\n"
-"PO-Revision-Date: 2018-11-17 13:02-0500\n"
+"POT-Creation-Date: 2018-11-17 19:48-0500\n"
+"PO-Revision-Date: 2018-11-17 18:58-0500\n"
 "Last-Translator: SFQAS\n"
 "Language-Team: sfqas <sfqas@163.com>\n"
 "Language: zh_CN\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.2\n"
 
-#: about.php:29 include/global_arrays.php:2321 lib/html.php:2200
+#: about.php:29 include/global_arrays.php:2350 lib/html.php:2200
 msgid "About Cacti"
 msgstr "关于Cacti"
 
@@ -107,10 +107,10 @@ msgstr ""
 #: data_sources.php:1007 data_templates.php:34 data_templates.php:642
 #: gprint_presets.php:28 graph_templates.php:34 graph_templates.php:442
 #: graphs.php:47 host.php:40 host_templates.php:30 host_templates.php:500
-#: host_templates.php:557 include/global_arrays.php:1414
+#: host_templates.php:557 include/global_arrays.php:1413
 #: include/global_settings.php:238 lib/api_automation.php:1279
 #: lib/api_automation.php:1341 lib/api_automation.php:1405 lib/html.php:1082
-#: lib/html_form.php:1190 lib/html_reports.php:1402 links.php:28
+#: lib/html_form.php:1253 lib/html_reports.php:1402 links.php:28
 #: managers.php:28 pollers.php:29 sites.php:28 tree.php:1392 tree.php:1545
 #: tree.php:1605 tree.php:1626 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -169,8 +169,8 @@ msgstr "点击“继续”删除以下聚合图表。"
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
-#: lib/html.php:2229 lib/html_form.php:1189 lib/html_form.php:1201
-#: lib/html_form.php:1212 lib/html_utility.php:214 links.php:197 links.php:206
+#: lib/html.php:2229 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
 #: sites.php:317 tree.php:647 tree.php:656 tree.php:665 user_admin.php:340
@@ -239,7 +239,7 @@ msgstr ""
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
 #: auth_changepassword.php:314 auth_profile.php:436 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1114 graphs.php:1164 graphs.php:1167
-#: graphs.php:1209 include/auth.php:186 lib/html_form.php:1210
+#: graphs.php:1209 include/auth.php:186 lib/html_form.php:1273
 #: lib/html_utility.php:212 managers.php:1066 permission_denied.php:30
 #: permission_denied.php:32
 msgid "Return"
@@ -461,7 +461,7 @@ msgstr "搜索"
 #: aggregate_graphs.php:1435 color_templates.php:561 graph_view.php:450
 #: graph_view.php:639 graph_view.php:686 graphs.php:1862 graphs.php:1967
 #: host.php:1557 include/global_arrays.php:853 include/global_arrays.php:1033
-#: include/global_arrays.php:1737 lib/api_automation.php:281 lib/html.php:1480
+#: include/global_arrays.php:1766 lib/api_automation.php:281 lib/html.php:1480
 #: lib/html.php:1482 lib/html.php:1560 lib/html_graph.php:204
 #: lib/html_tree.php:985 lib/html_tree.php:1359 tree.php:787 tree.php:1985
 #: user_admin.php:983 user_admin.php:1235 user_admin.php:2580
@@ -638,7 +638,7 @@ msgid "No Graphs Found"
 msgstr "没有找到图形"
 
 #: aggregate_graphs.php:1398 aggregate_graphs.php:1506
-#: include/global_arrays.php:2447
+#: include/global_arrays.php:2476
 msgid "Aggregate Graphs"
 msgstr "聚合图表"
 
@@ -677,7 +677,7 @@ msgstr "任何"
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1434 host.php:1469
 #: include/global_arrays.php:432 include/global_arrays.php:490
 #: include/global_arrays.php:573 include/global_arrays.php:736
-#: include/global_arrays.php:759 include/global_arrays.php:1498
+#: include/global_arrays.php:759 include/global_arrays.php:1497
 #: include/global_form.php:544 include/global_form.php:850
 #: include/global_form.php:858 include/global_form.php:866
 #: include/global_form.php:904 include/global_form.php:911
@@ -690,7 +690,7 @@ msgstr "任何"
 #: include/global_settings.php:1525 lib/api_automation.php:152
 #: lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:584 lib/api_automation.php:1032 lib/html.php:1826
-#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:316
+#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:329
 #: lib/html_graph.php:386 lib/html_reports.php:347 lib/html_reports.php:399
 #: lib/html_reports.php:411 lib/html_reports.php:420 lib/html_reports.php:430
 #: lib/html_tree.php:1171 settings.php:377 settings.php:396 settings.php:422
@@ -745,7 +745,7 @@ msgid "Aggregate Template [new]"
 msgstr "聚合模板[新建]"
 
 #: aggregate_templates.php:535 aggregate_templates.php:634
-#: include/global_arrays.php:2429
+#: include/global_arrays.php:2458
 msgid "Aggregate Templates"
 msgstr "聚合模板"
 
@@ -865,7 +865,7 @@ msgid "Confirm new password"
 msgstr "确认新密码"
 
 #: auth_changepassword.php:313 auth_profile.php:548 graphs_new.php:371
-#: lib/html_form.php:1207 lib/html_form.php:1216 lib/html_graph.php:188
+#: lib/html_form.php:1270 lib/html_form.php:1279 lib/html_graph.php:188
 #: lib/html_tree.php:975 settings.php:346
 msgid "Save"
 msgstr "保存"
@@ -1122,7 +1122,7 @@ msgstr "添加到Cacti"
 
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
-#: include/global_arrays.php:863 include/global_arrays.php:1614
+#: include/global_arrays.php:863 include/global_arrays.php:1613
 #: lib/api_automation.php:424 lib/functions.php:3661 lib/html.php:1821
 #: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
 msgid "Device"
@@ -1155,7 +1155,7 @@ msgstr "添加设备"
 
 #: automation_devices.php:241 automation_devices.php:531 host.php:1420
 #: host.php:1514 host.php:1614 include/global_arrays.php:850
-#: include/global_arrays.php:903 include/global_arrays.php:2027
+#: include/global_arrays.php:903 include/global_arrays.php:2056
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:475 lib/api_automation.php:558
 #: lib/api_automation.php:1163 pollers.php:818 sites.php:522 tree.php:786
@@ -1243,7 +1243,7 @@ msgid "Reset fields to defaults"
 msgstr "将字段重置为默认值"
 
 #: automation_devices.php:477 color.php:571 host.php:1485
-#: lib/html_form.php:1224
+#: lib/html_form.php:1287
 msgid "Export"
 msgstr "导出"
 
@@ -1272,13 +1272,13 @@ msgstr "N/A"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:67
-#: host_templates.php:31 include/global_arrays.php:1411 vdef.php:30
+#: host_templates.php:31 include/global_arrays.php:1410 vdef.php:30
 msgid "Duplicate"
 msgstr "Duplicate"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1412 include/global_settings.php:1318 links.php:29
+#: include/global_arrays.php:1411 include/global_settings.php:1318 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:31
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1287,7 +1287,7 @@ msgstr "启用"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1413 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1412 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:30 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1374,7 +1374,7 @@ msgstr "图形创建标准"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
 #: automation_graph_rules.php:891 include/global_arrays.php:873
-#: include/global_arrays.php:2483
+#: include/global_arrays.php:2512
 msgid "Graph Rules"
 msgstr "图规则"
 
@@ -1403,8 +1403,8 @@ msgstr "启用"
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
 #: automation_tree_rules.php:960 data_sources.php:1346 data_templates.php:1024
-#: host.php:1505 include/global_arrays.php:780 include/global_arrays.php:1339
-#: include/global_arrays.php:1622 include/global_settings.php:372
+#: host.php:1505 include/global_arrays.php:780 include/global_arrays.php:1338
+#: include/global_arrays.php:1621 include/global_settings.php:372
 #: include/global_settings.php:1192 include/global_settings.php:1206
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
@@ -1501,17 +1501,17 @@ msgid "Manual"
 msgstr "手动"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:1636
+#: include/global_arrays.php:1635
 msgid "Daily"
 msgstr "每日"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1637
+#: include/global_arrays.php:1636
 msgid "Weekly"
 msgstr "每周"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1638
+#: include/global_arrays.php:1637
 msgid "Monthly"
 msgstr "每月一次"
 
@@ -1673,12 +1673,12 @@ msgstr "%d 分钟"
 #: include/global_arrays.php:648 include/global_arrays.php:649
 #: include/global_arrays.php:650 include/global_arrays.php:651
 #: include/global_arrays.php:652 include/global_arrays.php:1012
-#: include/global_arrays.php:1013 include/global_arrays.php:1346
-#: include/global_arrays.php:1350 include/global_arrays.php:1358
-#: include/global_arrays.php:1359 include/global_arrays.php:1381
-#: include/global_arrays.php:1382 include/global_arrays.php:1383
-#: include/global_arrays.php:1384 include/global_arrays.php:1385
-#: include/global_arrays.php:1396 include/global_settings.php:1259
+#: include/global_arrays.php:1013 include/global_arrays.php:1345
+#: include/global_arrays.php:1349 include/global_arrays.php:1357
+#: include/global_arrays.php:1358 include/global_arrays.php:1380
+#: include/global_arrays.php:1381 include/global_arrays.php:1382
+#: include/global_arrays.php:1383 include/global_arrays.php:1384
+#: include/global_arrays.php:1395 include/global_settings.php:1259
 #: include/global_settings.php:1260 include/global_settings.php:1261
 #: include/global_settings.php:1262 include/global_settings.php:1263
 #: include/global_settings.php:2026
@@ -1687,7 +1687,7 @@ msgid "%d Minutes"
 msgstr "%d 分"
 
 #: automation_networks.php:528 include/global_arrays.php:653
-#: include/global_arrays.php:663 include/global_arrays.php:1250
+#: include/global_arrays.php:663 include/global_arrays.php:1249
 #, php-format
 msgid "%d Hour"
 msgstr "%d小时"
@@ -1700,14 +1700,14 @@ msgstr "%d小时"
 #: include/global_arrays.php:655 include/global_arrays.php:656
 #: include/global_arrays.php:657 include/global_arrays.php:664
 #: include/global_arrays.php:665 include/global_arrays.php:666
-#: include/global_arrays.php:667 include/global_arrays.php:1251
-#: include/global_arrays.php:1252 include/global_arrays.php:1253
-#: include/global_arrays.php:1254 include/global_arrays.php:1298
-#: include/global_arrays.php:1299 include/global_arrays.php:1300
-#: include/global_arrays.php:1301 include/global_arrays.php:1302
-#: include/global_arrays.php:1319 include/global_arrays.php:1320
-#: include/global_arrays.php:1321 include/global_arrays.php:1322
-#: include/global_arrays.php:1323 include/global_settings.php:1265
+#: include/global_arrays.php:667 include/global_arrays.php:1250
+#: include/global_arrays.php:1251 include/global_arrays.php:1252
+#: include/global_arrays.php:1253 include/global_arrays.php:1297
+#: include/global_arrays.php:1298 include/global_arrays.php:1299
+#: include/global_arrays.php:1300 include/global_arrays.php:1301
+#: include/global_arrays.php:1318 include/global_arrays.php:1319
+#: include/global_arrays.php:1320 include/global_arrays.php:1321
+#: include/global_arrays.php:1322 include/global_settings.php:1265
 #: include/global_settings.php:1266 include/global_settings.php:1267
 #: include/global_settings.php:1268
 #, php-format
@@ -1842,37 +1842,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "这个网络范围将在一周中的哪一天被发现。"
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1678
+#: include/global_arrays.php:1677
 msgid "Sunday"
 msgstr "星期日"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1679
+#: include/global_arrays.php:1678
 msgid "Monday"
 msgstr "星期一"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1680
+#: include/global_arrays.php:1679
 msgid "Tuesday"
 msgstr "星期二"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1681
+#: include/global_arrays.php:1680
 msgid "Wednesday"
 msgstr "星期三"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1682
+#: include/global_arrays.php:1681
 msgid "Thursday"
 msgstr "星期四"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1683
+#: include/global_arrays.php:1682
 msgid "Friday"
 msgstr "星期五"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1684
+#: include/global_arrays.php:1683
 msgid "Saturday"
 msgstr "星期六"
 
@@ -1884,51 +1884,51 @@ msgstr "一年中的月份"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "本年度的哪几个月将会发现这个网络范围。"
 
-#: automation_networks.php:654 include/global_arrays.php:1648
+#: automation_networks.php:654 include/global_arrays.php:1647
 msgid "January"
 msgstr "一月"
 
-#: automation_networks.php:655 include/global_arrays.php:1649
+#: automation_networks.php:655 include/global_arrays.php:1648
 msgid "February"
 msgstr "二月"
 
-#: automation_networks.php:656 include/global_arrays.php:1650
+#: automation_networks.php:656 include/global_arrays.php:1649
 msgid "March"
 msgstr "三月"
 
-#: automation_networks.php:657 include/global_arrays.php:1651
+#: automation_networks.php:657 include/global_arrays.php:1650
 msgid "April"
 msgstr "四月"
 
-#: automation_networks.php:658 include/global_arrays.php:1652
+#: automation_networks.php:658 include/global_arrays.php:1651
 msgid "May"
 msgstr "五月"
 
-#: automation_networks.php:659 include/global_arrays.php:1653
+#: automation_networks.php:659 include/global_arrays.php:1652
 msgid "June"
 msgstr "六月"
 
-#: automation_networks.php:660 include/global_arrays.php:1654
+#: automation_networks.php:660 include/global_arrays.php:1653
 msgid "July"
 msgstr "七月"
 
-#: automation_networks.php:661 include/global_arrays.php:1655
+#: automation_networks.php:661 include/global_arrays.php:1654
 msgid "August"
 msgstr "八月"
 
-#: automation_networks.php:662 include/global_arrays.php:1656
+#: automation_networks.php:662 include/global_arrays.php:1655
 msgid "September"
 msgstr "九月"
 
-#: automation_networks.php:663 include/global_arrays.php:1657
+#: automation_networks.php:663 include/global_arrays.php:1656
 msgid "October"
 msgstr "十月"
 
-#: automation_networks.php:664 include/global_arrays.php:1658
+#: automation_networks.php:664 include/global_arrays.php:1657
 msgid "November"
 msgstr "十一月"
 
-#: automation_networks.php:665 include/global_arrays.php:1659
+#: automation_networks.php:665 include/global_arrays.php:1658
 msgid "December"
 msgstr "十二月"
 
@@ -2137,13 +2137,13 @@ msgstr "刷新"
 #: include/global_arrays.php:643 include/global_arrays.php:644
 #: include/global_arrays.php:645 include/global_arrays.php:1007
 #: include/global_arrays.php:1008 include/global_arrays.php:1009
-#: include/global_arrays.php:1010 include/global_arrays.php:1340
-#: include/global_arrays.php:1341 include/global_arrays.php:1342
-#: include/global_arrays.php:1343 include/global_arrays.php:1344
-#: include/global_arrays.php:1377 include/global_arrays.php:1378
-#: include/global_arrays.php:1390 include/global_arrays.php:1391
-#: include/global_arrays.php:1392 include/global_arrays.php:1393
-#: include/global_arrays.php:1394 include/global_settings.php:1028
+#: include/global_arrays.php:1010 include/global_arrays.php:1339
+#: include/global_arrays.php:1340 include/global_arrays.php:1341
+#: include/global_arrays.php:1342 include/global_arrays.php:1343
+#: include/global_arrays.php:1376 include/global_arrays.php:1377
+#: include/global_arrays.php:1389 include/global_arrays.php:1390
+#: include/global_arrays.php:1391 include/global_arrays.php:1392
+#: include/global_arrays.php:1393 include/global_settings.php:1028
 #: include/global_settings.php:1029 include/global_settings.php:1030
 #: include/global_settings.php:1031 include/global_settings.php:2022
 #: include/global_settings.php:2023 include/global_settings.php:2024
@@ -2534,7 +2534,7 @@ msgstr "你确定要继续吗？"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
 #: automation_tree_rules.php:927 include/global_arrays.php:874
-#: include/global_arrays.php:2507
+#: include/global_arrays.php:2536
 msgid "Tree Rules"
 msgstr "树规则"
 
@@ -2639,7 +2639,7 @@ msgstr "CDEF[编辑: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF[新建]"
 
-#: cdef.php:603 include/global_arrays.php:1877
+#: cdef.php:603 include/global_arrays.php:1906
 msgid "CDEF Items"
 msgstr "CDEF 項目"
 
@@ -2657,7 +2657,7 @@ msgid "Delete CDEF Item"
 msgstr "删除CDEF项目"
 
 #: cdef.php:742 cdef.php:757 cdef.php:873 include/global_arrays.php:879
-#: include/global_arrays.php:1859
+#: include/global_arrays.php:1888
 msgid "CDEFs"
 msgstr "CDEF"
 
@@ -2729,7 +2729,7 @@ msgid ""
 "information."
 msgstr "请指定包含您的颜色信息的CSV文件的位置。"
 
-#: color.php:374 lib/html_form.php:471
+#: color.php:374 lib/html_form.php:484
 msgid "Select a File"
 msgstr "选择一个文件"
 
@@ -2775,7 +2775,7 @@ msgid "Colors [new]"
 msgstr "颜色[新建]"
 
 #: color.php:521 color.php:536 color.php:690 include/global_arrays.php:881
-#: include/global_arrays.php:1925
+#: include/global_arrays.php:1954
 msgid "Colors"
 msgstr "颜色"
 
@@ -2783,7 +2783,7 @@ msgstr "颜色"
 msgid "Named Colors"
 msgstr "命名的颜色"
 
-#: color.php:570 lib/html_form.php:1222
+#: color.php:570 lib/html_form.php:1285
 msgid "Import"
 msgstr "导入"
 
@@ -2898,7 +2898,7 @@ msgid "Color Template [new]"
 msgstr "颜色模板[新建]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2405
+#: include/global_arrays.php:2434
 msgid "Color Templates"
 msgstr "颜色模板"
 
@@ -3013,7 +3013,7 @@ msgstr "可写"
 #: data_debug.php:278
 #, fuzzy
 msgid "No Checks"
-msgstr "没有检查"
+msgstr "预安装检查"
 
 #: data_debug.php:324
 #, fuzzy
@@ -3109,7 +3109,7 @@ msgstr ""
 #: data_input.php:300
 #, fuzzy
 msgid "Input Name:"
-msgstr "输入名称："
+msgstr "数据输入名称"
 
 #: data_input.php:305
 msgid "Delete Data Input Method"
@@ -3244,7 +3244,7 @@ msgid "Delete Data Input Field"
 msgstr "删除数据输入字段"
 
 #: data_input.php:794 include/global_arrays.php:860
-#: include/global_arrays.php:1029 include/global_arrays.php:2063
+#: include/global_arrays.php:1029 include/global_arrays.php:2092
 msgid "Data Input Methods"
 msgstr "数据导入方法"
 
@@ -3385,7 +3385,7 @@ msgid "Could not locate XML file."
 msgstr "找不到XML文件。"
 
 #: data_queries.php:1111 host.php:679 host_templates.php:481
-#: include/global_arrays.php:2117
+#: include/global_arrays.php:2146
 msgid "Associated Graph Templates"
 msgstr "关联图形模板"
 
@@ -3412,7 +3412,7 @@ msgstr "删除关联图"
 
 #: data_queries.php:1248 data_queries.php:1263 data_queries.php:1353
 #: include/global_arrays.php:859 include/global_arrays.php:1030
-#: include/global_arrays.php:2099 lib/api_automation.php:1060
+#: include/global_arrays.php:2128 lib/api_automation.php:1060
 msgid "Data Queries"
 msgstr "数据查询"
 
@@ -3564,7 +3564,7 @@ msgstr "每个数据源的%s KBytes"
 #: include/global_arrays.php:683 include/global_arrays.php:684
 #: include/global_arrays.php:685 include/global_arrays.php:686
 #: include/global_arrays.php:687 include/global_arrays.php:688
-#: include/global_arrays.php:1267 include/global_settings.php:1198
+#: include/global_arrays.php:1266 include/global_settings.php:1198
 #, php-format
 msgid "%d Years"
 msgstr "%d 年"
@@ -3574,30 +3574,30 @@ msgid "1 Year"
 msgstr "1 年"
 
 #: data_source_profiles.php:745 include/global_arrays.php:674
-#: include/global_arrays.php:1261 rrdcleaner.php:489
+#: include/global_arrays.php:1260 rrdcleaner.php:489
 #, php-format
 msgid "%d Month"
 msgstr "%d 月"
 
 #: data_source_profiles.php:745 include/global_arrays.php:675
 #: include/global_arrays.php:676 include/global_arrays.php:677
-#: include/global_arrays.php:678 include/global_arrays.php:1262
-#: include/global_arrays.php:1263 include/global_arrays.php:1264
-#: include/global_arrays.php:1265 rrdcleaner.php:490 rrdcleaner.php:491
+#: include/global_arrays.php:678 include/global_arrays.php:1261
+#: include/global_arrays.php:1262 include/global_arrays.php:1263
+#: include/global_arrays.php:1264 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
 #, php-format
 msgid "%d Months"
 msgstr "%d 月"
 
 #: data_source_profiles.php:754 include/global_arrays.php:621
-#: include/global_arrays.php:671 include/global_arrays.php:1259
+#: include/global_arrays.php:671 include/global_arrays.php:1258
 #: rrdcleaner.php:485 rrdcleaner.php:486
 #, php-format
 msgid "%d Week"
 msgstr "%d 周"
 
 #: data_source_profiles.php:754 include/global_arrays.php:672
-#: include/global_arrays.php:673 include/global_arrays.php:1260
+#: include/global_arrays.php:673 include/global_arrays.php:1259
 #: rrdcleaner.php:487 rrdcleaner.php:488
 #, php-format
 msgid "%d Weeks"
@@ -3605,15 +3605,15 @@ msgstr "%d 周"
 
 #: data_source_profiles.php:763 include/global_arrays.php:620
 #: include/global_arrays.php:658 include/global_arrays.php:668
-#: include/global_arrays.php:1255
+#: include/global_arrays.php:1254
 #, php-format
 msgid "%d Day"
 msgstr "%d 天"
 
 #: data_source_profiles.php:763 include/global_arrays.php:659
 #: include/global_arrays.php:669 include/global_arrays.php:670
-#: include/global_arrays.php:1256 include/global_arrays.php:1257
-#: include/global_arrays.php:1258 include/global_settings.php:1193
+#: include/global_arrays.php:1255 include/global_arrays.php:1256
+#: include/global_arrays.php:1257 include/global_settings.php:1193
 #: include/global_settings.php:1194 include/global_settings.php:1195
 #: include/global_settings.php:1196 include/global_settings.php:1207
 #: include/global_settings.php:1208 include/global_settings.php:1209
@@ -3623,9 +3623,9 @@ msgid "%d Days"
 msgstr "%d 天"
 
 #: data_source_profiles.php:771 include/global_arrays.php:614
-#: include/global_arrays.php:1297 include/global_arrays.php:1318
-#: include/global_arrays.php:1351 include/global_arrays.php:1360
-#: include/global_arrays.php:1386 include/global_settings.php:1264
+#: include/global_arrays.php:1296 include/global_arrays.php:1317
+#: include/global_arrays.php:1350 include/global_arrays.php:1359
+#: include/global_arrays.php:1385 include/global_settings.php:1264
 msgid "1 Hour"
 msgstr "1时"
 
@@ -3894,8 +3894,8 @@ msgid "External"
 msgstr "外部"
 
 #: data_sources.php:1134 include/global_arrays.php:609
-#: include/global_arrays.php:1011 include/global_arrays.php:1345
-#: include/global_arrays.php:1379 include/global_arrays.php:1395
+#: include/global_arrays.php:1011 include/global_arrays.php:1344
+#: include/global_arrays.php:1378 include/global_arrays.php:1394
 #: include/global_settings.php:1258 include/global_settings.php:2025
 msgid "1 Minute"
 msgstr "1 分钟"
@@ -3926,7 +3926,7 @@ msgid "Orphaned"
 msgstr "孤立的"
 
 #: data_sources.php:1370 data_sources.php:1495 host.php:1563
-#: include/global_arrays.php:854 include/global_arrays.php:2009
+#: include/global_arrays.php:854 include/global_arrays.php:2038
 #: lib/api_automation.php:282 user_admin.php:1235 user_group_admin.php:967
 #: utilities.php:308
 msgid "Data Sources"
@@ -4059,7 +4059,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "如果此字段为空，则值将从设备派生。"
 
 #: data_templates.php:836 data_templates.php:867 data_templates.php:989
-#: include/global_arrays.php:1041 include/global_arrays.php:1991
+#: include/global_arrays.php:1041 include/global_arrays.php:2020
 msgid "Data Templates"
 msgstr "数据模板"
 
@@ -4130,7 +4130,7 @@ msgstr "GPRINT预设[编辑：%s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT预设[新建]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1841
+#: gprint_presets.php:254 include/global_arrays.php:1870
 msgid "GPRINT Presets"
 msgstr "GPRINT预设"
 
@@ -4318,7 +4318,7 @@ msgstr "同步图形到图形模板。"
 msgid "Graph Template Items [edit: %s]"
 msgstr "图表模板项目[编辑： %s]"
 
-#: graph_templates.php:422 include/global_arrays.php:1961
+#: graph_templates.php:422 include/global_arrays.php:1990
 msgid "Graph Item Inputs"
 msgstr "图形项输入"
 
@@ -4347,7 +4347,7 @@ msgstr "如果您希望在创建图表时允许用户覆盖右侧的值，请选
 
 #: graph_templates.php:622 graph_templates.php:637 graph_templates.php:757
 #: graphs_new.php:442 include/global_arrays.php:1040
-#: include/global_arrays.php:1937 lib/html_tree.php:536 user_admin.php:1375
+#: include/global_arrays.php:1966 lib/html_tree.php:536 user_admin.php:1375
 #: user_group_admin.php:1102
 msgid "Graph Templates"
 msgstr "图形模板"
@@ -4467,7 +4467,7 @@ msgstr "查看图形"
 #: graph_view.php:596
 #, fuzzy
 msgid "Add to a Report"
-msgstr "添加到报告中"
+msgstr "添加到报告"
 
 #: graph_view.php:596
 msgid "Report"
@@ -4500,7 +4500,7 @@ msgstr "不适用"
 msgid "Select the Report to add the selected Graphs to."
 msgstr "选择“报告”以将选定的图形添加到。"
 
-#: graph_view.php:833 include/global_arrays.php:1761
+#: graph_view.php:833 include/global_arrays.php:1790
 #: include/global_settings.php:2095
 msgid "Preview Mode"
 msgstr "预览模式"
@@ -4568,7 +4568,7 @@ msgstr "下载"
 msgid "Summary Details"
 msgstr "总结详情"
 
-#: graphs.php:52 graphs.php:926 include/global_arrays.php:1811
+#: graphs.php:52 graphs.php:926 include/global_arrays.php:1840
 msgid "Change Graph Template"
 msgstr "修改图形模板"
 
@@ -4806,7 +4806,7 @@ msgstr "图形字段"
 msgid "Graph Item Fields"
 msgstr "图形项字段"
 
-#: graphs.php:1799 include/global_arrays.php:1799
+#: graphs.php:1799 include/global_arrays.php:1828
 msgid "Graph Management"
 msgstr "图形管理"
 
@@ -4921,7 +4921,7 @@ msgid "Select All Rows"
 msgstr "选择所有行"
 
 #: graphs_new.php:535 include/global_arrays.php:846
-#: include/global_arrays.php:918 lib/html_form.php:1205 lib/html_form.php:1218
+#: include/global_arrays.php:918 lib/html_form.php:1268 lib/html_form.php:1281
 #: tree.php:1366
 msgid "Create"
 msgstr "创建"
@@ -5150,15 +5150,15 @@ msgstr "关联数据查询"
 msgid "Re-Index Method"
 msgstr "重新编制索引方法"
 
-#: host.php:784 include/global_arrays.php:1817 include/global_arrays.php:1883
-#: include/global_arrays.php:1949 include/global_arrays.php:1985
-#: include/global_arrays.php:2003 include/global_arrays.php:2021
-#: include/global_arrays.php:2039 include/global_arrays.php:2069
-#: include/global_arrays.php:2105 include/global_arrays.php:2135
-#: include/global_arrays.php:2225 include/global_arrays.php:2417
-#: include/global_arrays.php:2441 include/global_arrays.php:2459
-#: include/global_arrays.php:2477 include/global_arrays.php:2495
-#: include/global_arrays.php:2519 lib/api_automation.php:1245
+#: host.php:784 include/global_arrays.php:1846 include/global_arrays.php:1912
+#: include/global_arrays.php:1978 include/global_arrays.php:2014
+#: include/global_arrays.php:2032 include/global_arrays.php:2050
+#: include/global_arrays.php:2068 include/global_arrays.php:2098
+#: include/global_arrays.php:2134 include/global_arrays.php:2164
+#: include/global_arrays.php:2254 include/global_arrays.php:2446
+#: include/global_arrays.php:2470 include/global_arrays.php:2488
+#: include/global_arrays.php:2506 include/global_arrays.php:2524
+#: include/global_arrays.php:2548 lib/api_automation.php:1245
 #: lib/api_automation.php:1307 lib/api_automation.php:1370
 #: lib/html_reports.php:1327 links.php:378 plugins.php:472
 msgid "Actions"
@@ -5426,7 +5426,7 @@ msgid "Add Data Query to Device Template"
 msgstr "将数据查询添加到设备模板"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:826
-#: include/global_arrays.php:1042 include/global_arrays.php:1973
+#: include/global_arrays.php:1042 include/global_arrays.php:2002
 msgid "Device Templates"
 msgstr "设备模板"
 
@@ -6155,9 +6155,9 @@ msgstr "每隔一小时"
 #: include/global_arrays.php:637 include/global_arrays.php:638
 #: include/global_arrays.php:704 include/global_arrays.php:705
 #: include/global_arrays.php:706 include/global_arrays.php:707
-#: include/global_arrays.php:1624 include/global_arrays.php:1625
-#: include/global_arrays.php:1626 include/global_arrays.php:1627
-#: include/global_arrays.php:1628 include/global_settings.php:1945
+#: include/global_arrays.php:1623 include/global_arrays.php:1624
+#: include/global_arrays.php:1625 include/global_arrays.php:1626
+#: include/global_arrays.php:1627 include/global_settings.php:1945
 #: include/global_settings.php:1946
 #, php-format
 msgid "Every %d Hours"
@@ -6167,7 +6167,7 @@ msgstr "每 %d小时"
 msgid "Every %1 Day"
 msgstr "每%1天"
 
-#: include/global_arrays.php:679 include/global_arrays.php:1266
+#: include/global_arrays.php:679 include/global_arrays.php:1265
 #: include/global_settings.php:1197 rrdcleaner.php:493
 #, php-format
 msgid "%d Year"
@@ -6265,7 +6265,7 @@ msgid "Header"
 msgstr "头部"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
-#: include/global_arrays.php:1449 include/global_arrays.php:1613
+#: include/global_arrays.php:1448 include/global_arrays.php:1612
 #: lib/html.php:2241
 msgid "Graph"
 msgstr "图形模板"
@@ -6391,7 +6391,7 @@ msgstr "预置"
 msgid "Data Profiles"
 msgstr "数据配置文件"
 
-#: include/global_arrays.php:880 include/global_arrays.php:2219 vdef.php:685
+#: include/global_arrays.php:880 include/global_arrays.php:2248 vdef.php:685
 #: vdef.php:699 vdef.php:872
 msgid "VDEFs"
 msgstr "VDEFs"
@@ -6401,12 +6401,12 @@ msgid "Import/Export"
 msgstr "导入/导出"
 
 #: include/global_arrays.php:885 include/global_arrays.php:1045
-#: include/global_arrays.php:2339
+#: include/global_arrays.php:2368
 msgid "Import Templates"
 msgstr "导入模板"
 
 #: include/global_arrays.php:886 include/global_arrays.php:1044
-#: include/global_arrays.php:2327 templates_export.php:159
+#: include/global_arrays.php:2356 templates_export.php:159
 msgid "Export Templates"
 msgstr "导出模板"
 
@@ -6420,23 +6420,23 @@ msgstr "系统配置"
 msgid "Settings"
 msgstr "设置"
 
-#: include/global_arrays.php:890 include/global_arrays.php:2273
+#: include/global_arrays.php:890 include/global_arrays.php:2302
 #: user_admin.php:2220 user_admin.php:2274 user_group_admin.php:668
 #: user_group_admin.php:2550
 msgid "Users"
 msgstr "用户"
 
-#: include/global_arrays.php:891 include/global_arrays.php:2303
+#: include/global_arrays.php:891 include/global_arrays.php:2332
 msgid "User Groups"
 msgstr "用户组"
 
-#: include/global_arrays.php:892 include/global_arrays.php:2291
+#: include/global_arrays.php:892 include/global_arrays.php:2320
 #: user_domains.php:645 user_domains.php:736
 msgid "User Domains"
 msgstr "用户域"
 
 #: include/global_arrays.php:894 include/global_arrays.php:911
-#: include/global_arrays.php:926 include/global_arrays.php:2147
+#: include/global_arrays.php:926 include/global_arrays.php:2176
 msgid "Utilities"
 msgstr "实用程序"
 
@@ -6447,7 +6447,7 @@ msgstr "系统工具"
 #: include/global_arrays.php:896
 #, fuzzy
 msgid "Data Debug"
-msgstr "数据调试"
+msgstr "打开数据源调试模式。"
 
 #: include/global_arrays.php:897 include/global_arrays.php:927
 #: include/global_arrays.php:942 include/global_arrays.php:1022 links.php:91
@@ -6587,758 +6587,860 @@ msgstr "VDEF"
 msgid "VDEF Item"
 msgstr "VDEF项目"
 
-#: include/global_arrays.php:1218
+#: include/global_arrays.php:1217
 msgid "Last Half Hour"
 msgstr "过去的半小时"
 
-#: include/global_arrays.php:1219
+#: include/global_arrays.php:1218
 msgid "Last Hour"
 msgstr "最后一小时"
 
-#: include/global_arrays.php:1220 include/global_arrays.php:1221
-#: include/global_arrays.php:1222 include/global_arrays.php:1223
+#: include/global_arrays.php:1219 include/global_arrays.php:1220
+#: include/global_arrays.php:1221 include/global_arrays.php:1222
 #, php-format
 msgid "Last %d Hours"
 msgstr "最后 %d 小时"
 
-#: include/global_arrays.php:1224
+#: include/global_arrays.php:1223
 msgid "Last Day"
 msgstr "最后一天"
 
-#: include/global_arrays.php:1225 include/global_arrays.php:1226
-#: include/global_arrays.php:1227
+#: include/global_arrays.php:1224 include/global_arrays.php:1225
+#: include/global_arrays.php:1226
 #, php-format
 msgid "Last %d Days"
 msgstr "最后 %d 天"
 
-#: include/global_arrays.php:1228
+#: include/global_arrays.php:1227
 msgid "Last Week"
 msgstr "最后一周"
 
-#: include/global_arrays.php:1229
+#: include/global_arrays.php:1228
 #, php-format
 msgid "Last %d Weeks"
 msgstr "最后 %d 周"
 
-#: include/global_arrays.php:1230
+#: include/global_arrays.php:1229
 msgid "Last Month"
 msgstr "最后一月"
 
-#: include/global_arrays.php:1231 include/global_arrays.php:1232
-#: include/global_arrays.php:1233 include/global_arrays.php:1234
+#: include/global_arrays.php:1230 include/global_arrays.php:1231
+#: include/global_arrays.php:1232 include/global_arrays.php:1233
 #, php-format
 msgid "Last %d Months"
 msgstr "最后 %d 月"
 
-#: include/global_arrays.php:1235
+#: include/global_arrays.php:1234
 msgid "Last Year"
 msgstr "最后一年"
 
-#: include/global_arrays.php:1236
+#: include/global_arrays.php:1235
 #, php-format
 msgid "Last %d Years"
 msgstr "最后 %d 年"
 
-#: include/global_arrays.php:1237
+#: include/global_arrays.php:1236
 msgid "Day Shift"
 msgstr "白班"
 
-#: include/global_arrays.php:1238
+#: include/global_arrays.php:1237
 msgid "This Day"
 msgstr "今天"
 
-#: include/global_arrays.php:1239
+#: include/global_arrays.php:1238
 msgid "This Week"
 msgstr "本周"
 
-#: include/global_arrays.php:1240
+#: include/global_arrays.php:1239
 msgid "This Month"
 msgstr "本月"
 
-#: include/global_arrays.php:1241
+#: include/global_arrays.php:1240
 msgid "This Year"
 msgstr "今年"
 
-#: include/global_arrays.php:1242
+#: include/global_arrays.php:1241
 msgid "Previous Day"
 msgstr "上一天"
 
-#: include/global_arrays.php:1243
+#: include/global_arrays.php:1242
 msgid "Previous Week"
 msgstr "上一周"
 
-#: include/global_arrays.php:1244
+#: include/global_arrays.php:1243
 msgid "Previous Month"
 msgstr "上一月"
 
-#: include/global_arrays.php:1245
+#: include/global_arrays.php:1244
 msgid "Previous Year"
 msgstr "上一年"
 
-#: include/global_arrays.php:1249
+#: include/global_arrays.php:1248
 #, php-format
 msgid "%d Min"
 msgstr "%d 分"
 
-#: include/global_arrays.php:1281
+#: include/global_arrays.php:1280
 msgid "Month Number, Day, Year"
 msgstr "月数，日，年"
 
-#: include/global_arrays.php:1282
+#: include/global_arrays.php:1281
 msgid "Month Name, Day, Year"
 msgstr "月份名称，日，年"
 
-#: include/global_arrays.php:1283
+#: include/global_arrays.php:1282
 msgid "Day, Month Number, Year"
 msgstr "日，月份编号，年"
 
-#: include/global_arrays.php:1284
+#: include/global_arrays.php:1283
 msgid "Day, Month Name, Year"
 msgstr "日，月份名称，年份"
 
-#: include/global_arrays.php:1285
+#: include/global_arrays.php:1284
 msgid "Year, Month Number, Day"
 msgstr "年，月份编号，日"
 
-#: include/global_arrays.php:1286
+#: include/global_arrays.php:1285
 msgid "Year, Month Name, Day"
 msgstr "年，月份名称，日"
 
-#: include/global_arrays.php:1296
+#: include/global_arrays.php:1295
 msgid "After Boost"
 msgstr "增强后"
 
-#: include/global_arrays.php:1306 include/global_arrays.php:1307
-#: include/global_arrays.php:1308 include/global_arrays.php:1309
-#: include/global_arrays.php:1310 include/global_arrays.php:1365
-#: include/global_arrays.php:1366 include/global_arrays.php:1367
-#: include/global_arrays.php:1368 include/global_arrays.php:1369
+#: include/global_arrays.php:1305 include/global_arrays.php:1306
+#: include/global_arrays.php:1307 include/global_arrays.php:1308
+#: include/global_arrays.php:1309 include/global_arrays.php:1364
+#: include/global_arrays.php:1365 include/global_arrays.php:1366
+#: include/global_arrays.php:1367 include/global_arrays.php:1368
 #, php-format
 msgid "%d MBytes"
 msgstr "%d MBytes"
 
-#: include/global_arrays.php:1311 include/global_arrays.php:1370
+#: include/global_arrays.php:1310 include/global_arrays.php:1369
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1312 include/global_arrays.php:1371
+#: include/global_arrays.php:1311 include/global_arrays.php:1370
 #, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
-#: include/global_arrays.php:1313 include/global_arrays.php:1314
-#: include/global_arrays.php:1372 include/global_arrays.php:1373
+#: include/global_arrays.php:1312 include/global_arrays.php:1313
+#: include/global_arrays.php:1371 include/global_arrays.php:1372
 #, php-format
 msgid "%d GBytes"
 msgstr "%d GBytes"
 
-#: include/global_arrays.php:1327
+#: include/global_arrays.php:1326
 msgid "2,000 Data Source Items"
 msgstr "2,000个数据源项目"
 
-#: include/global_arrays.php:1328
+#: include/global_arrays.php:1327
 msgid "5,000 Data Source Items"
 msgstr "5,000个数据源项目"
 
-#: include/global_arrays.php:1329
+#: include/global_arrays.php:1328
 msgid "10,000 Data Source Items"
 msgstr "15,000个数据源项目"
 
-#: include/global_arrays.php:1330
+#: include/global_arrays.php:1329
 msgid "15,000 Data Source Items"
 msgstr "15,000个数据源项目"
 
-#: include/global_arrays.php:1331
+#: include/global_arrays.php:1330
 msgid "25,000 Data Source Items"
 msgstr "25,000个数据源项目"
 
-#: include/global_arrays.php:1332
+#: include/global_arrays.php:1331
 msgid "50,000 Data Source Items (Default)"
 msgstr "50,0002,000个数据源项目（默认）"
 
-#: include/global_arrays.php:1333
+#: include/global_arrays.php:1332
 msgid "100,000 Data Source Items"
 msgstr "100,000个数据源项目"
 
-#: include/global_arrays.php:1334
+#: include/global_arrays.php:1333
 msgid "200,000 Data Source Items"
 msgstr "200,000个数据源项目"
 
-#: include/global_arrays.php:1335
+#: include/global_arrays.php:1334
 msgid "400,000 Data Source Items"
 msgstr "400,000 个数据源项目"
 
-#: include/global_arrays.php:1352
+#: include/global_arrays.php:1351
 msgid "2 Hours"
 msgstr "2 时"
 
-#: include/global_arrays.php:1353
+#: include/global_arrays.php:1352
 msgid "4 Hours"
 msgstr "4 时"
 
-#: include/global_arrays.php:1354
+#: include/global_arrays.php:1353
 msgid "6 Hours"
 msgstr "6 时"
 
-#: include/global_arrays.php:1361
+#: include/global_arrays.php:1360
 #, php-format
 msgid "%s Hours"
 msgstr "%s 小时"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1379
 #, php-format
 msgid "%s Minutes"
 msgstr "%s 分钟"
 
-#: include/global_arrays.php:1400
+#: include/global_arrays.php:1399
 msgid "1 Megabyte"
 msgstr "1 Megabyte"
 
-#: include/global_arrays.php:1401 include/global_arrays.php:1402
-#: include/global_arrays.php:1403 include/global_arrays.php:1404
-#: include/global_arrays.php:1405 include/global_arrays.php:1406
+#: include/global_arrays.php:1400 include/global_arrays.php:1401
+#: include/global_arrays.php:1402 include/global_arrays.php:1403
+#: include/global_arrays.php:1404 include/global_arrays.php:1405
 #, php-format
 msgid "%d Megabytes"
 msgstr "%d 兆字节"
 
-#: include/global_arrays.php:1410
+#: include/global_arrays.php:1409
 msgid "Send Now"
 msgstr "现在发送"
 
-#: include/global_arrays.php:1418
+#: include/global_arrays.php:1417
 msgid "Take Ownership"
 msgstr "取得所有权"
 
-#: include/global_arrays.php:1422
+#: include/global_arrays.php:1421
 msgid "Inline PNG Image"
 msgstr "内联PNG图像"
 
-#: include/global_arrays.php:1427
+#: include/global_arrays.php:1426
 msgid "Inline JPEG Image"
 msgstr "内联JPEG图像"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1427
 msgid "Inline GIF Image"
 msgstr "内联GIF图像"
 
-#: include/global_arrays.php:1431
+#: include/global_arrays.php:1430
 msgid "Attached PNG Image"
 msgstr "附加的PNG图像"
 
-#: include/global_arrays.php:1434
+#: include/global_arrays.php:1433
 msgid "Attached JPEG Image"
 msgstr "附加的JPEG图像"
 
-#: include/global_arrays.php:1435
+#: include/global_arrays.php:1434
 msgid "Attached GIF Image"
 msgstr "附加的GIF 图像"
 
-#: include/global_arrays.php:1439
+#: include/global_arrays.php:1438
 msgid "Inline PNG Image, LN Style"
 msgstr "嵌入的PNG图像，LN样式"
 
-#: include/global_arrays.php:1441
+#: include/global_arrays.php:1440
 msgid "Inline JPEG Image, LN Style"
 msgstr "嵌入的JPEG图像，LN样式"
 
-#: include/global_arrays.php:1442
+#: include/global_arrays.php:1441
 msgid "Inline GIF Image, LN Style"
 msgstr "嵌入的GIF图像，LN样式"
 
-#: include/global_arrays.php:1447
+#: include/global_arrays.php:1446
 msgid "Text"
 msgstr "文本"
 
-#: include/global_arrays.php:1448 include/global_form.php:2147
+#: include/global_arrays.php:1447 include/global_form.php:2147
 msgid "Tree"
 msgstr "Tree"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1449
 msgid "Horizontal Rule"
 msgstr "水平的规则"
 
-#: include/global_arrays.php:1454
+#: include/global_arrays.php:1453
 msgid "left"
 msgstr "左"
 
-#: include/global_arrays.php:1455
+#: include/global_arrays.php:1454
 msgid "center"
 msgstr "居中"
 
-#: include/global_arrays.php:1456
+#: include/global_arrays.php:1455
 msgid "right"
 msgstr "右"
 
-#: include/global_arrays.php:1460
+#: include/global_arrays.php:1459
 msgid "Minute(s)"
 msgstr "分钟"
 
-#: include/global_arrays.php:1461
+#: include/global_arrays.php:1460
 msgid "Hour(s)"
 msgstr "小时"
 
-#: include/global_arrays.php:1462
+#: include/global_arrays.php:1461
 msgid "Day(s)"
 msgstr "天"
 
-#: include/global_arrays.php:1463
+#: include/global_arrays.php:1462
 msgid "Week(s)"
 msgstr "周"
 
-#: include/global_arrays.php:1464
+#: include/global_arrays.php:1463
 msgid "Month(s), Day of Month"
 msgstr "月，每月某一天"
 
-#: include/global_arrays.php:1465
+#: include/global_arrays.php:1464
 msgid "Month(s), Day of Week"
 msgstr "月，星期几"
 
-#: include/global_arrays.php:1466
+#: include/global_arrays.php:1465
 msgid "Year(s)"
 msgstr "年"
 
-#: include/global_arrays.php:1470
+#: include/global_arrays.php:1469
 msgid "Keep Graph Types"
 msgstr "保持图形类型"
 
-#: include/global_arrays.php:1471
+#: include/global_arrays.php:1470
 msgid "Keep Type and STACK"
 msgstr "保持类型和堆栈"
 
-#: include/global_arrays.php:1472
+#: include/global_arrays.php:1471
 msgid "Convert to AREA/STACK Graph"
 msgstr "转换为AREA / STACK图"
 
-#: include/global_arrays.php:1473
+#: include/global_arrays.php:1472
 msgid "Convert to LINE1 Graph"
 msgstr "转换为LINE1图表"
 
-#: include/global_arrays.php:1474
+#: include/global_arrays.php:1473
 msgid "Convert to LINE2 Graph"
 msgstr "转换为LINE2图表"
 
-#: include/global_arrays.php:1475
+#: include/global_arrays.php:1474
 msgid "Convert to LINE3 Graph"
 msgstr "转换为LINE3图表"
 
-#: include/global_arrays.php:1479
+#: include/global_arrays.php:1478
 msgid "No Totals"
 msgstr "没有总计"
 
-#: include/global_arrays.php:1480
+#: include/global_arrays.php:1479
 msgid "Print all Legend Items"
 msgstr "打印所有图例项目"
 
-#: include/global_arrays.php:1481
+#: include/global_arrays.php:1480
 msgid "Print totaling Legend Items Only"
 msgstr "仅打印总计图例项目"
 
-#: include/global_arrays.php:1485
+#: include/global_arrays.php:1484
 msgid "Total Similar Data Sources"
 msgstr "总计相似的数据源"
 
-#: include/global_arrays.php:1486
+#: include/global_arrays.php:1485
 msgid "Total All Data Sources"
 msgstr "总计所有数据源"
 
-#: include/global_arrays.php:1490
+#: include/global_arrays.php:1489
 msgid "No Reordering"
 msgstr "不重新排序"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1490
 msgid "Data Source, Graph"
 msgstr "数据源，图"
 
-#: include/global_arrays.php:1492
+#: include/global_arrays.php:1491
 msgid "Graph, Data Source"
 msgstr "图表，数据源"
 
-#: include/global_arrays.php:1499
+#: include/global_arrays.php:1498
 msgid "contains"
 msgstr "包含"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1499
 msgid "does not contain"
 msgstr "不含"
 
-#: include/global_arrays.php:1501
+#: include/global_arrays.php:1500
 msgid "begins with"
 msgstr "开始于"
 
-#: include/global_arrays.php:1502
+#: include/global_arrays.php:1501
 msgid "does not begin with"
 msgstr "没有开头以"
 
-#: include/global_arrays.php:1503
+#: include/global_arrays.php:1502
 msgid "ends with"
 msgstr "结束于"
 
-#: include/global_arrays.php:1504
+#: include/global_arrays.php:1503
 msgid "does not end with"
 msgstr "没有结束以"
 
-#: include/global_arrays.php:1505
+#: include/global_arrays.php:1504
 msgid "matches"
 msgstr "匹配"
 
-#: include/global_arrays.php:1506
+#: include/global_arrays.php:1505
 msgid "is not equal to"
 msgstr "不等于"
 
-#: include/global_arrays.php:1507
+#: include/global_arrays.php:1506
 msgid "is less than"
 msgstr "小于"
 
-#: include/global_arrays.php:1508
+#: include/global_arrays.php:1507
 msgid "is less than or equal"
 msgstr "小于或等于"
 
-#: include/global_arrays.php:1509
+#: include/global_arrays.php:1508
 msgid "is greater than"
 msgstr "大于"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1509
 msgid "is greater than or equal"
 msgstr "大于或等于"
 
-#: include/global_arrays.php:1511
+#: include/global_arrays.php:1510
 msgid "is unknown"
 msgstr "是未知的"
 
-#: include/global_arrays.php:1512
+#: include/global_arrays.php:1511
 msgid "is not unknown"
 msgstr "并不是未知"
 
-#: include/global_arrays.php:1513
+#: include/global_arrays.php:1512
 msgid "is empty"
 msgstr "是空的"
 
-#: include/global_arrays.php:1514
+#: include/global_arrays.php:1513
 msgid "is not empty"
 msgstr "非空"
 
-#: include/global_arrays.php:1515
+#: include/global_arrays.php:1514
 msgid "matches regular expression"
 msgstr "匹配正则表达式"
 
-#: include/global_arrays.php:1516
+#: include/global_arrays.php:1515
 msgid "does not match regular expression"
 msgstr "不符合正则表达式"
 
-#: include/global_arrays.php:1618
+#: include/global_arrays.php:1617
 msgid "Fixed String"
 msgstr "固定字符串"
 
-#: include/global_arrays.php:1623
+#: include/global_arrays.php:1622
 msgid "Every 1 Hour"
 msgstr "每1小时"
 
-#: include/global_arrays.php:1629
+#: include/global_arrays.php:1628
 msgid "Every Day"
 msgstr "每天"
 
-#: include/global_arrays.php:1630
+#: include/global_arrays.php:1629
 msgid "Every Week"
 msgstr "每周"
 
-#: include/global_arrays.php:1631 include/global_arrays.php:1632
+#: include/global_arrays.php:1630 include/global_arrays.php:1631
 #, php-format
 msgid "Every %d Weeks"
 msgstr "每%d周"
 
-#: include/global_arrays.php:1663
+#: include/global_arrays.php:1662
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "一月"
 
-#: include/global_arrays.php:1664
+#: include/global_arrays.php:1663
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "二月"
 
-#: include/global_arrays.php:1665
+#: include/global_arrays.php:1664
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "三月"
 
-#: include/global_arrays.php:1666
+#: include/global_arrays.php:1665
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "四月"
 
-#: include/global_arrays.php:1667
+#: include/global_arrays.php:1666
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "五月"
 
-#: include/global_arrays.php:1668
+#: include/global_arrays.php:1667
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "六月"
 
-#: include/global_arrays.php:1669
+#: include/global_arrays.php:1668
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "七月"
 
-#: include/global_arrays.php:1670
+#: include/global_arrays.php:1669
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "八月"
 
-#: include/global_arrays.php:1671
+#: include/global_arrays.php:1670
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "九月"
 
-#: include/global_arrays.php:1672
+#: include/global_arrays.php:1671
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "十月"
 
-#: include/global_arrays.php:1673
+#: include/global_arrays.php:1672
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "十一月"
 
-#: include/global_arrays.php:1674
+#: include/global_arrays.php:1673
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "十二月"
 
-#: include/global_arrays.php:1688
+#: include/global_arrays.php:1687
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "周日"
 
-#: include/global_arrays.php:1689
+#: include/global_arrays.php:1688
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "星期一"
 
-#: include/global_arrays.php:1690
+#: include/global_arrays.php:1689
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "星期二"
 
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1690
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "星期三"
 
-#: include/global_arrays.php:1692
+#: include/global_arrays.php:1691
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "星期四"
 
-#: include/global_arrays.php:1693
+#: include/global_arrays.php:1692
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "星期五"
 
-#: include/global_arrays.php:1694
+#: include/global_arrays.php:1693
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "星期六"
 
+#: include/global_arrays.php:1697
+msgid "Arabic"
+msgstr "阿拉伯"
+
 #: include/global_arrays.php:1698
+msgid "Bulgarian"
+msgstr "保加利亚语"
+
+#: include/global_arrays.php:1699
+msgid "Chinese (China)"
+msgstr "中文（中国）"
+
+#: include/global_arrays.php:1700
+msgid "Chinese (Taiwan)"
+msgstr "中文（台湾）"
+
+#: include/global_arrays.php:1701
+msgid "Dutch"
+msgstr "荷兰语"
+
+#: include/global_arrays.php:1702
+#, fuzzy
+msgid "English"
+msgstr ""
+"选择“启用”以允许Cacti的本地化。 严格模式要求您的系统上安装的所有插件也支持所"
+"需的语言。 如果这不是事实，所有的东西都会以英文显示。"
+
+#: include/global_arrays.php:1703
+msgid "French"
+msgstr "法语"
+
+#: include/global_arrays.php:1704
+msgid "German"
+msgstr "German"
+
+#: include/global_arrays.php:1705
+msgid "Greek"
+msgstr "Greek"
+
+#: include/global_arrays.php:1706
+msgid "Italian"
+msgstr "意大利语"
+
+#: include/global_arrays.php:1707
+msgid "Japanese"
+msgstr "日语"
+
+#: include/global_arrays.php:1708
+msgid "Korean"
+msgstr "韩语"
+
+#: include/global_arrays.php:1709
+msgid "Polish"
+msgstr "波兰语"
+
+#: include/global_arrays.php:1710
+#, fuzzy
+msgid "Portguguese"
+msgstr "Portuguese"
+
+#: include/global_arrays.php:1711
+#, fuzzy
+msgid "Portguguese (Brazil)"
+msgstr "Portuguese (Brazil)"
+
+#: include/global_arrays.php:1712
+msgid "Russian"
+msgstr "俄语"
+
+#: include/global_arrays.php:1713
+msgid "Spanish"
+msgstr "西班牙语"
+
+#: include/global_arrays.php:1714
+msgid "Swedish"
+msgstr "瑞典语"
+
+#: include/global_arrays.php:1718
+msgid "Classic"
+msgstr ""
+
+#: include/global_arrays.php:1719
+#, fuzzy
+msgid "Modern"
+msgstr "模式"
+
+#: include/global_arrays.php:1720
+msgid "Dark"
+msgstr ""
+
+#: include/global_arrays.php:1721
+msgid "Paper-plane"
+msgstr ""
+
+#: include/global_arrays.php:1722
+msgid "Paw"
+msgstr ""
+
+#: include/global_arrays.php:1723
+msgid "Sunrise"
+msgstr ""
+
+#: include/global_arrays.php:1727
 msgid "[Fail]"
 msgstr "[失败]"
 
-#: include/global_arrays.php:1699
+#: include/global_arrays.php:1728
 #, fuzzy
 msgid "[Warning]"
-msgstr "[警告]"
+msgstr "警告："
 
-#: include/global_arrays.php:1700
+#: include/global_arrays.php:1729
 msgid "[Success]"
 msgstr "[成功]"
 
-#: include/global_arrays.php:1701
+#: include/global_arrays.php:1730
 msgid "[Skipped]"
 msgstr "[跳过]"
 
-#: include/global_arrays.php:1725 include/global_arrays.php:1731
+#: include/global_arrays.php:1754 include/global_arrays.php:1760
 msgid "User Profile (Edit)"
 msgstr "用户资料（编辑）"
 
-#: include/global_arrays.php:1743 include/global_arrays.php:1749
+#: include/global_arrays.php:1772 include/global_arrays.php:1778
 msgid "Tree Mode"
 msgstr "树模式"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1784
 msgid "List Mode"
 msgstr "列表模式"
 
-#: include/global_arrays.php:1787 include/global_arrays.php:1793
+#: include/global_arrays.php:1816 include/global_arrays.php:1822
 #: lib/functions.php:2437 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "控制台"
 
-#: include/global_arrays.php:1805 include/global_arrays.php:1847
-#: include/global_arrays.php:1865 include/global_arrays.php:1919
-#: include/global_arrays.php:1931 include/global_arrays.php:1943
-#: include/global_arrays.php:1979 include/global_arrays.php:1997
-#: include/global_arrays.php:2015 include/global_arrays.php:2033
-#: include/global_arrays.php:2051 include/global_arrays.php:2075
-#: include/global_arrays.php:2111 include/global_arrays.php:2231
-#: include/global_arrays.php:2255 include/global_arrays.php:2279
-#: include/global_arrays.php:2297 include/global_arrays.php:2309
-#: include/global_arrays.php:2411 include/global_arrays.php:2435
-#: include/global_arrays.php:2453 include/global_arrays.php:2471
-#: include/global_arrays.php:2489 include/global_arrays.php:2513
+#: include/global_arrays.php:1834 include/global_arrays.php:1876
+#: include/global_arrays.php:1894 include/global_arrays.php:1948
+#: include/global_arrays.php:1960 include/global_arrays.php:1972
+#: include/global_arrays.php:2008 include/global_arrays.php:2026
+#: include/global_arrays.php:2044 include/global_arrays.php:2062
+#: include/global_arrays.php:2080 include/global_arrays.php:2104
+#: include/global_arrays.php:2140 include/global_arrays.php:2260
+#: include/global_arrays.php:2284 include/global_arrays.php:2308
+#: include/global_arrays.php:2326 include/global_arrays.php:2338
+#: include/global_arrays.php:2440 include/global_arrays.php:2464
+#: include/global_arrays.php:2482 include/global_arrays.php:2500
+#: include/global_arrays.php:2518 include/global_arrays.php:2542
 msgid "(Edit)"
 msgstr "(编辑)"
 
-#: include/global_arrays.php:1823 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1852 lib/api_aggregate.php:1299
 msgid "Graph Items"
 msgstr "图形项"
 
-#: include/global_arrays.php:1829
+#: include/global_arrays.php:1858
 msgid "Create New Graphs"
 msgstr "创建新图形"
 
-#: include/global_arrays.php:1835
+#: include/global_arrays.php:1864
 msgid "Create Graphs from Data Query"
 msgstr "从数据查询创建图形"
 
-#: include/global_arrays.php:1853 include/global_arrays.php:1871
-#: include/global_arrays.php:1967 include/global_arrays.php:2057
-#: include/global_arrays.php:2081 include/global_arrays.php:2237
+#: include/global_arrays.php:1882 include/global_arrays.php:1900
+#: include/global_arrays.php:1996 include/global_arrays.php:2086
+#: include/global_arrays.php:2110 include/global_arrays.php:2266
 msgid "(Remove)"
 msgstr "(删除)"
 
-#: include/global_arrays.php:1889 include/global_arrays.php:1895
-#: include/global_arrays.php:1901 include/global_arrays.php:1907
-#: include/global_arrays.php:2171
+#: include/global_arrays.php:1918 include/global_arrays.php:1924
+#: include/global_arrays.php:1930 include/global_arrays.php:1936
+#: include/global_arrays.php:2200
 msgid "View Log"
 msgstr "查看日志"
 
-#: include/global_arrays.php:1913
+#: include/global_arrays.php:1942
 msgid "Graph Trees"
 msgstr "图形树"
 
-#: include/global_arrays.php:1955 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1984 lib/api_aggregate.php:1299
 msgid "Graph Template Items"
 msgstr "图形模板项"
 
-#: include/global_arrays.php:2045
+#: include/global_arrays.php:2074
 msgid "Round Robin Archives"
 msgstr "循环档案"
 
-#: include/global_arrays.php:2087
+#: include/global_arrays.php:2116
 msgid "Data Input Fields"
 msgstr "数据导入项"
 
-#: include/global_arrays.php:2093 include/global_arrays.php:2123
+#: include/global_arrays.php:2122 include/global_arrays.php:2152
 msgid "(Remove Item)"
 msgstr "（除去项目）"
 
-#: include/global_arrays.php:2129 include/global_settings.php:223
+#: include/global_arrays.php:2158 include/global_settings.php:223
 #: rrdcleaner.php:296
 msgid "RRD Cleaner"
 msgstr "RRD清除"
 
-#: include/global_arrays.php:2141
+#: include/global_arrays.php:2170
 msgid "List unused Files"
 msgstr "列出未使用的文件"
 
-#: include/global_arrays.php:2153 include/global_arrays.php:2165
+#: include/global_arrays.php:2182 include/global_arrays.php:2194
 #: utilities.php:1900
 msgid "View Poller Cache"
 msgstr "查看Poller缓存"
 
-#: include/global_arrays.php:2159 utilities.php:1904
+#: include/global_arrays.php:2188 utilities.php:1904
 msgid "View Data Query Cache"
 msgstr "查看数据查询缓存"
 
-#: include/global_arrays.php:2177
+#: include/global_arrays.php:2206
 msgid "Clear Log"
 msgstr "清除日志"
 
-#: include/global_arrays.php:2183 utilities.php:1893
+#: include/global_arrays.php:2212 utilities.php:1893
 msgid "View User Log"
 msgstr "查看用户登录日志"
 
-#: include/global_arrays.php:2189
+#: include/global_arrays.php:2218
 msgid "Clear User Log"
 msgstr "清除用户日志"
 
-#: include/global_arrays.php:2195 utilities.php:1884 utilities.php:1885
+#: include/global_arrays.php:2224 utilities.php:1884 utilities.php:1885
 msgid "Technical Support"
 msgstr "技术支持"
 
-#: include/global_arrays.php:2201 utilities.php:2003
+#: include/global_arrays.php:2230 utilities.php:2003
 msgid "Boost Status"
 msgstr "增强状态"
 
-#: include/global_arrays.php:2207
+#: include/global_arrays.php:2236
 msgid "View SNMP Agent Cache"
 msgstr "查看SNMP代理缓存"
 
-#: include/global_arrays.php:2213
+#: include/global_arrays.php:2242
 msgid "View SNMP Agent Notification Log"
 msgstr "查看SNMP代理通知日志"
 
-#: include/global_arrays.php:2243 vdef.php:586
+#: include/global_arrays.php:2272 vdef.php:586
 msgid "VDEF Items"
 msgstr "VDEF Items"
 
-#: include/global_arrays.php:2249
+#: include/global_arrays.php:2278
 msgid "View SNMP Notification Receivers"
 msgstr "查看SNMP通知接收器"
 
-#: include/global_arrays.php:2261
+#: include/global_arrays.php:2290
 msgid "Cacti Settings"
 msgstr "Cacti 设置"
 
-#: include/global_arrays.php:2267
+#: include/global_arrays.php:2296
 msgid "External Link"
 msgstr "外部链接"
 
-#: include/global_arrays.php:2285 include/global_arrays.php:2315
+#: include/global_arrays.php:2314 include/global_arrays.php:2344
 msgid "(Action)"
 msgstr "（启动）"
 
-#: include/global_arrays.php:2333
+#: include/global_arrays.php:2362
 msgid "Export Results"
 msgstr "导出结果"
 
-#: include/global_arrays.php:2345 include/global_arrays.php:2375
+#: include/global_arrays.php:2374 include/global_arrays.php:2404
 #: lib/html.php:1492 lib/html.php:1494 lib/html.php:1573
 msgid "Reporting"
 msgstr "报告"
 
-#: include/global_arrays.php:2351 include/global_arrays.php:2381
+#: include/global_arrays.php:2380 include/global_arrays.php:2410
 msgid "Report Add"
 msgstr "报告添加"
 
-#: include/global_arrays.php:2357 include/global_arrays.php:2387
+#: include/global_arrays.php:2386 include/global_arrays.php:2416
 msgid "Report Delete"
 msgstr "报告删除"
 
-#: include/global_arrays.php:2363 include/global_arrays.php:2393
+#: include/global_arrays.php:2392 include/global_arrays.php:2422
 msgid "Report Edit"
 msgstr "报告编辑"
 
-#: include/global_arrays.php:2369 include/global_arrays.php:2399
+#: include/global_arrays.php:2398 include/global_arrays.php:2428
 msgid "Report Edit Item"
 msgstr "报告编辑项目"
 
-#: include/global_arrays.php:2423
+#: include/global_arrays.php:2452
 msgid "Color Template Items"
 msgstr "颜色模板项目"
 
-#: include/global_arrays.php:2465
+#: include/global_arrays.php:2494
 msgid "Aggregate Items"
 msgstr "聚合项目"
 
-#: include/global_arrays.php:2501
+#: include/global_arrays.php:2530
 msgid "Graph Rule Items"
 msgstr "图规则项目"
 
-#: include/global_arrays.php:2525
+#: include/global_arrays.php:2554
 msgid "Tree Rule Items"
 msgstr "树规则项目"
 
@@ -11782,16 +11884,16 @@ msgstr "新轮询器"
 msgid "Cacti Server v%s - Maintenance"
 msgstr "Cacti Server v％s  - 维护"
 
-#: install/install.php:68
+#: install/install.php:67
 #, fuzzy, php-format
 msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cacti Server v％s  - 安装向导"
 
-#: install/install.php:74
+#: install/install.php:73
 msgid "Initializing"
 msgstr "初始化"
 
-#: install/install.php:75
+#: install/install.php:74
 #, fuzzy, php-format
 msgid ""
 "Please wait while the installation system for Cacti Version %s initializes.  "
@@ -12200,7 +12302,7 @@ msgstr "完成数据查询的自动化执行"
 #: lib/data_query.php:70 lib/data_query.php:337
 #, fuzzy
 msgid "Plugin Hooks complete"
-msgstr "插件挂钩完成"
+msgstr "插件钩子完成"
 
 #: lib/data_query.php:85
 #, fuzzy, php-format
@@ -12542,7 +12644,7 @@ msgstr "无法更改密码字段长度，无法继续，因为可能会损坏密
 #: lib/dsdebug.php:157
 #, fuzzy
 msgid "Data Source does not exist"
-msgstr "数据源不存在"
+msgstr "数据源不存在。"
 
 #: lib/dsdebug.php:231
 #, fuzzy
@@ -13106,9 +13208,9 @@ msgstr "首先"
 #: lib/html.php:2253
 #, fuzzy
 msgid "End with"
-msgstr "结束"
+msgstr "结束日期"
 
-#: lib/html.php:2255 lib/html_form.php:1220
+#: lib/html.php:2255 lib/html_form.php:1283
 msgid "Close"
 msgstr "关闭"
 
@@ -13125,58 +13227,58 @@ msgstr "将过滤器应用于表"
 msgid "Reset filter to default values"
 msgstr "将过滤器重置为默认值"
 
-#: lib/html_form.php:534
+#: lib/html_form.php:547
 msgid "File Found"
 msgstr "找到文件"
 
-#: lib/html_form.php:538
+#: lib/html_form.php:551
 msgid "Path is a Directory and not a File"
 msgstr "路径是一个目录而不是文件"
 
-#: lib/html_form.php:542
+#: lib/html_form.php:555
 msgid "File is Not Found"
 msgstr "文件未找到"
 
-#: lib/html_form.php:553
+#: lib/html_form.php:566
 msgid "Enter a valid file path"
 msgstr "输入有效的文件路径"
 
-#: lib/html_form.php:591
+#: lib/html_form.php:604
 msgid "Directory Found"
 msgstr "找到目录"
 
-#: lib/html_form.php:593
+#: lib/html_form.php:606
 msgid "Path is a File and not a Directory"
 msgstr "路径是一个文件，而不是一个目录"
 
-#: lib/html_form.php:597
+#: lib/html_form.php:610
 msgid "Directory is Not found"
 msgstr "目录未找到"
 
-#: lib/html_form.php:600
+#: lib/html_form.php:613
 msgid "Enter a valid directory path"
 msgstr "输入一个有效的目录路径"
 
-#: lib/html_form.php:1090
+#: lib/html_form.php:1153
 #, php-format
 msgid "Cacti Color (%s)"
 msgstr "Cacti 颜色 (%s)"
 
-#: lib/html_form.php:1150
+#: lib/html_form.php:1213
 msgid "NO FONT VERIFICATION POSSIBLE"
 msgstr "可能没有字体验证"
 
-#: lib/html_form.php:1297
+#: lib/html_form.php:1360
 #, fuzzy
 msgid "Warning Unsaved Form Data"
 msgstr "警告未保存的表单数据"
 
-#: lib/html_form.php:1299
+#: lib/html_form.php:1362
 #, fuzzy
 msgid "Unsaved Changes Detected"
 msgstr "检测到未保存的更改"
 
-#: lib/html_form.php:1300
+#: lib/html_form.php:1363
 #, fuzzy
 msgid ""
 "You have unsaved changes on this form.  If you press &#39;Continue&#39; "
@@ -13745,7 +13847,7 @@ msgstr "图形模板："
 #: lib/html_tree.php:888
 #, fuzzy
 msgid "Template Based"
-msgstr "基于模板"
+msgstr "图形模板基础"
 
 #: lib/html_tree.php:894 lib/reports.php:980
 msgid "Tree:"
@@ -15197,7 +15299,7 @@ msgstr "（无图形模板）"
 #: lib/reports.php:1162
 #, fuzzy
 msgid "(Non Query Based)"
-msgstr "（非查询）"
+msgstr "Non Query Based"
 
 #: lib/reports.php:1526
 msgid "Add to Report"
@@ -19167,9 +19269,6 @@ msgstr "没有VDEF's"
 #~ msgid "Test remote database connection"
 #~ msgstr "测试远程数据库连接"
 
-#~ msgid "Finish"
-#~ msgstr "结束"
-
 #~ msgid " - No Admin Filter in Affect"
 #~ msgstr "- 没有管理过滤器的影响"
 
@@ -20498,9 +20597,6 @@ msgstr "没有VDEF's"
 #~ msgid "Funafuti"
 #~ msgstr "Funafuti"
 
-#~ msgid "German"
-#~ msgstr "German"
-
 #~ msgid "Graph Color Tags"
 #~ msgstr "图形的颜色标签"
 
@@ -20554,9 +20650,6 @@ msgstr "没有VDEF's"
 
 #~ msgid "Graphs/Page:"
 #~ msgstr "图形/页："
-
-#~ msgid "Greek"
-#~ msgstr "Greek"
 
 #~ msgid "Green:"
 #~ msgstr "绿色："
@@ -20797,12 +20890,6 @@ msgstr "没有VDEF's"
 
 #~ msgid "Porto Velho"
 #~ msgstr "Porto Velho"
-
-#~ msgid "Portuguese"
-#~ msgstr "Portuguese"
-
-#~ msgid "Portuguese (Brazil)"
-#~ msgstr "Portuguese (Brazil)"
 
 #~ msgid "Prague"
 #~ msgstr "Prague"
