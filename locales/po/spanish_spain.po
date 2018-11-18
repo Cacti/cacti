@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"POT-Creation-Date: 2018-11-18 10:02-0500\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -16455,13 +16455,13 @@ msgstr ""
 "ejecutando una instrucción ALTER a todas las tablas InnoDB."
 
 #: lib/utility.php:939
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
 "possible.  Therefore, you should make the innodb_buffer_pool large enough to "
 "hold as much of the tables and index in memory.  Checking the size of the /"
 "var/lib/mysql/cacti directory will help in determining this value.  We are "
-"recommending 25% of your systems total memory, but your requirements will "
+"recommending 25%% of your systems total memory, but your requirements will "
 "vary depending on your systems size."
 msgstr ""
 "InnoDB contendrá tantas tablas e índices en la memoria del sistema como sea "
@@ -16472,10 +16472,10 @@ msgstr ""
 "requerimientos pueden variar dependiendo del tamaño del sistema."
 
 #: lib/utility.php:945
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
-"rapidly and adds a 50% overhead on all write operations."
+"rapidly and adds a 50%% overhead on all write operations."
 msgstr ""
 "Con tipos de almacenamiento SSD moderno, esta operación degrada el disco más "
 "rápido y agrega 50% de sobrecarga en todas las operaciones de escritura."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"POT-Creation-Date: 2018-11-18 10:02-0500\n"
 "PO-Revision-Date: 2018-11-17 22:15-0500\n"
 "Last-Translator: SFQAS\n"
 "Language-Team: sfqas <sfqas@163.com>\n"
@@ -15660,13 +15660,13 @@ msgstr ""
 "alter语句，从而迁移到每个文件存储。"
 
 #: lib/utility.php:939
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
 "possible.  Therefore, you should make the innodb_buffer_pool large enough to "
 "hold as much of the tables and index in memory.  Checking the size of the /"
 "var/lib/mysql/cacti directory will help in determining this value.  We are "
-"recommending 25% of your systems total memory, but your requirements will "
+"recommending 25%% of your systems total memory, but your requirements will "
 "vary depending on your systems size."
 msgstr ""
 "InnoDB将在系统内存中保存尽可能多的表和索引。 因此，你应该让innodb_buffer_pool"
@@ -15674,10 +15674,10 @@ msgstr ""
 "助于确定此值。 我们建议您的系统总内存的25％，但是您的要求会因系统大小而异。"
 
 #: lib/utility.php:945
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
-"rapidly and adds a 50% overhead on all write operations."
+"rapidly and adds a 50%% overhead on all write operations."
 msgstr ""
 "使用现代SSD类型的存储器，此操作实际上会更快速地降低磁盘，并在所有写入操作中增"
 "加50％的开销。"

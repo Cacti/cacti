@@ -936,13 +936,13 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '25',
 			'measure' => 'pmem',
 			'class' => 'warning',
-			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25% of your systems total memory, but your requirements will vary depending on your systems size.')
+			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'OFF',
 			'measure' => 'equal',
 			'class' => 'warning',
-			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50% overhead on all write operations.')
+			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
