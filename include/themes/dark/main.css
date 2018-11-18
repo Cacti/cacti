@@ -2447,3 +2447,7 @@ input:checked + .radioSlider:before {
 td.center > table {
 	margin: 0 auto;
 }
+
+.ui-menu-item-wrapper {
+	white-space: nowrap;
+}
