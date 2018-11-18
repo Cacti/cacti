@@ -1274,7 +1274,7 @@ function utilities_clear_logfile() {
 			}
 
 			$log_fh = fopen($logfile, 'w');
-			fwrite($log_fh, __('%s - WEBUI: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
+			fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
 			fclose($log_fh);
 			print '<tr><td>' . __('Cacti Log Cleared') . '</td></tr>';
 		} else {
