@@ -82,6 +82,12 @@ $cacti_session_name = 'Cacti';
 $cacti_db_session = false;
 
 /*
+ * Disable log rotation settings for packagers
+ */
+
+$disable_log_rotation = false;
+
+/*
  * Optional parameters to define scripts and resource paths. These
  * variables become important when using remote poller installs when the
  * scripts and resource files are not in the main Cacti web server path.

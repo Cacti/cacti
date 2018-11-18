@@ -70,6 +70,9 @@ $cacti_session_name = 'Cacti';
 /* define default url path */
 $url_path = '/cacti/';
 
+/* disable log rotation setting */
+$disable_log_rotation = false;
+
 /* allow upto 5000 items to be selected */
 ini_set('max_input_vars', '5000');
 

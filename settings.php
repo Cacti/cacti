@@ -30,6 +30,8 @@ set_default_action();
 
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
+global $disable_log_rotation;
+
 switch (get_request_var('action')) {
 case 'save':
 	$errors = array();
@@ -283,6 +285,13 @@ default:
 	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', true, '3', 'center', '');
 
 	$form_array = array();
+
+	// Remove log rotation is disabled by package maintainer
+	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+		unset($settings['path']['logrotate_enabled']);
+		unset($settings['path']['logrotate_frequency']);
+		unset($settings['path']['logrotate_retain']);
+	}
 
 	if (isset($settings[$current_tab])) {
 		foreach ($settings[$current_tab] as $field_name => $field_array) {

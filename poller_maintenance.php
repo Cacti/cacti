@@ -40,7 +40,7 @@ chdir($dir);
 /* record the start time */
 $poller_start = microtime(true);
 
-global $config, $database_default, $archived, $purged;
+global $config, $database_default, $archived, $purged, $disable_log_rotation;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -142,7 +142,9 @@ if ($config['poller_id'] == 1) {
 realtime_purge_cache();
 
 // Check whether the cacti log.  Rotations takes place around midnight
-if (read_config_option('logrotate_enabled') == 'on') {
+if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+	// Skip log rotation as it's handled by logrotate.d
+} elseif (read_config_option('logrotate_enabled') == 'on') {
 	$frequency  = read_config_option('logrotate_frequency');
 	if (empty($frequency)) {
 		$frequency = 1;
