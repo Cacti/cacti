@@ -2108,7 +2108,7 @@ function setupBreadcrumbs() {
 		event.stopPropagation();
 		href =  $(this).attr('href');
 		if (href != '#') {
-			href = href.replace('tree_content', 'tree');
+			href = href.replace('action=tree_content', 'action=tree');
 			$(this).prop('href', href);
 			document.location = href;
 		}
@@ -2519,12 +2519,10 @@ function checkForLogout(data) {
 }
 
 function clearGraphFilter() {
-	href = graphPage+'?action='+pageAction+'&clear=1';
-
-	new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+'&clear=1');
 
 	$.ajaxQ.abortAll();
-	$.get(new_href+'&header=false')
+	$.get(href)
 		.done(function(data) {
 			checkForLogout(data);
 
@@ -2563,18 +2561,16 @@ function saveGraphFilter(section) {
 }
 
 function applyGraphFilter() {
-	href = graphPage+'?action='+pageAction+
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
 		'&host_id='+$('#host_id').val()+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
-		'&thumbnails='+$('#thumbnails').is(':checked');
-
-	new_href = href.replace('action=tree&', 'action=tree_content&');
+		'&thumbnails='+$('#thumbnails').is(':checked'));
 
 	$.ajaxQ.abortAll();
-	$.get(new_href+'&header=false')
+	$.get(href)
 		.done(function(data) {
 			checkForLogout(data);
 
@@ -2636,13 +2632,12 @@ function handlePopState() {
 }
 
 function applyGraphTimespan() {
-	var href     = graphPage+'?action='+pageAction+'&header=false';
-	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
+		'&predefined_timespan='+$('#predefined_timespan').val()+
+		'&predefined_timeshift='+$('#predefined_timeshift').val());
 
 	$.ajaxQ.abortAll();
-	$.get(new_href+'?action='+pageAction+'&header=false'+
-		'&predefined_timespan='+$('#predefined_timespan').val()+
-		'&predefined_timeshift='+$('#predefined_timeshift').val())
+	$.get(href)
 		.done(function(data) {
 			checkForLogout(data);
 
@@ -2668,10 +2663,10 @@ function refreshGraphTimespanFilter() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href     = graphPage+'?action='+pageAction+'&header=false';
-	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
 	$.ajaxQ.abortAll();
-	$.post(new_href, json).done(function(data) {
+	$.post(href, json).done(function(data) {
 		checkForLogout(data);
 
 		$('#main').empty().hide();
@@ -2692,10 +2687,10 @@ function timeshiftGraphFilterLeft() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href     = graphPage+'?action='+pageAction+'&header=false';
-	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
 	$.ajaxQ.abortAll();
-	$.post(new_href, json).done(function(data) {
+	$.post(href, json).done(function(data) {
 		checkForLogout(data);
 
 		$('#main').empty().hide();
@@ -2716,10 +2711,10 @@ function timeshiftGraphFilterRight() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href     = graphPage+'?action='+pageAction+'&header=false';
-	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
 	$.ajaxQ.abortAll();
-	$.post(new_href, json).done(function(data) {
+	$.post(href, json).done(function(data) {
 		checkForLogout(data);
 
 		$('#main').empty().hide();
@@ -2739,10 +2734,10 @@ function clearGraphTimespanFilter() {
 		__csrf_magic: csrfMagicToken
 	};
 
-	var href     = graphPage+'?action='+pageAction+'&header=false';
-	var new_href = href.replace('action=tree&', 'action=tree_content&');
+	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
 	$.ajaxQ.abortAll();
-	$.post(new_href, json).done(function(data) {
+	$.post(href, json).done(function(data) {
 		checkForLogout(data);
 
 		$('#main').empty().hide();
