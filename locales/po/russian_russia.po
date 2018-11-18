@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 11:09-0500\n"
-"PO-Revision-Date: 2018-11-18 11:30-0500\n"
+"POT-Creation-Date: 2018-11-18 15:35-0500\n"
+"PO-Revision-Date: 2018-11-18 15:56-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: KPbIC <Cacti>\n"
 "Language: ru\n"
@@ -14,7 +14,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.2\n"
 
-#: about.php:29 include/global_arrays.php:2350 lib/html.php:2200
+#: about.php:29 include/global_arrays.php:2354 lib/html.php:2200
 msgid "About Cacti"
 msgstr "О Cacti"
 
@@ -178,7 +178,7 @@ msgstr "Нажмите «Продолжить», чтобы удалить сл�
 #: graphs.php:1673 host.php:334 host.php:343 host.php:392 host.php:401
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
-#: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:198
+#: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:204
 #: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
@@ -213,7 +213,7 @@ msgstr "Отмена"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:199 lib/html.php:2230 lib/html_reports.php:754
+#: lib/clog_webapi.php:205 lib/html.php:2230 lib/html_reports.php:754
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -400,7 +400,7 @@ msgid "Graph Items [edit: %s]"
 msgstr "Графики [редактировать %s]"
 
 #: aggregate_graphs.php:615 aggregate_graphs.php:622 lib/html_reports.php:1152
-#: lib/html_reports.php:1157 lib/html_reports.php:1196 utilities.php:1815
+#: lib/html_reports.php:1157 lib/html_reports.php:1196 utilities.php:1821
 msgid "Details"
 msgstr "Детали"
 
@@ -483,20 +483,20 @@ msgstr "Сопоставление графиков"
 #: graph_view.php:584 graph_view.php:996 graphs.php:1856 graphs_new.php:380
 #: host.php:1493 host_templates.php:719 lib/api_automation.php:141
 #: lib/api_automation.php:469 lib/api_automation.php:699
-#: lib/api_automation.php:1021 lib/clog_webapi.php:470 lib/html_filter.php:63
+#: lib/api_automation.php:1021 lib/clog_webapi.php:476 lib/html_filter.php:63
 #: lib/html_graph.php:198 lib/html_graph.php:422 lib/html_reports.php:1487
 #: lib/html_tree.php:124 lib/html_tree.php:934 lib/html_tree.php:1207
 #: links.php:311 managers.php:150 managers.php:494 managers.php:726
-#: plugins.php:366 pollers.php:716 rrdcleaner.php:475 settings.php:384
-#: settings.php:403 settings.php:452 sites.php:425 tree.php:808 tree.php:843
+#: plugins.php:366 pollers.php:716 rrdcleaner.php:475 settings.php:397
+#: settings.php:416 settings.php:465 sites.php:425 tree.php:808 tree.php:843
 #: tree.php:878 tree.php:1899 user_admin.php:2214 user_admin.php:2552
 #: user_admin.php:2659 user_admin.php:2745 user_admin.php:2848
 #: user_admin.php:2933 user_admin.php:3018 user_domains.php:654
 #: user_group_admin.php:1838 user_group_admin.php:2163
 #: user_group_admin.php:2271 user_group_admin.php:2374
 #: user_group_admin.php:2459 user_group_admin.php:2544 utilities.php:725
-#: utilities.php:1144 utilities.php:1432 utilities.php:1710 utilities.php:2387
-#: utilities.php:2638 vdef.php:693
+#: utilities.php:1144 utilities.php:1438 utilities.php:1716 utilities.php:2393
+#: utilities.php:2644 vdef.php:693
 msgid "Search"
 msgstr "Найти"
 
@@ -504,7 +504,7 @@ msgstr "Найти"
 #: aggregate_graphs.php:1435 color_templates.php:561 graph_view.php:450
 #: graph_view.php:639 graph_view.php:686 graphs.php:1862 graphs.php:1967
 #: host.php:1557 include/global_arrays.php:853 include/global_arrays.php:1033
-#: include/global_arrays.php:1766 lib/api_automation.php:281 lib/html.php:1480
+#: include/global_arrays.php:1770 lib/api_automation.php:281 lib/html.php:1480
 #: lib/html.php:1482 lib/html.php:1560 lib/html_graph.php:204
 #: lib/html_tree.php:985 lib/html_tree.php:1359 tree.php:787 tree.php:1985
 #: user_admin.php:983 user_admin.php:1235 user_admin.php:2580
@@ -534,7 +534,7 @@ msgstr "Графики"
 #: user_group_admin.php:1848 user_group_admin.php:2195
 #: user_group_admin.php:2299 user_group_admin.php:2384
 #: user_group_admin.php:2469 user_group_admin.php:2554 utilities.php:703
-#: utilities.php:1442 utilities.php:1731 utilities.php:2412 utilities.php:2674
+#: utilities.php:1448 utilities.php:1737 utilities.php:2418 utilities.php:2680
 #: vdef.php:703
 msgid "Default"
 msgstr "Стандартно"
@@ -554,7 +554,7 @@ msgstr "Часть совокупности"
 #: graphs.php:1847 graphs_new.php:369 host.php:1483 host_templates.php:747
 #: lib/api_automation.php:196 lib/api_automation.php:460
 #: lib/api_automation.php:721 lib/api_automation.php:1076
-#: lib/clog_webapi.php:418 lib/html.php:1302 lib/html_filter.php:81
+#: lib/clog_webapi.php:424 lib/html.php:1302 lib/html_filter.php:81
 #: lib/html_graph.php:185 lib/html_reports.php:1518 lib/html_tree.php:972
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:738 sites.php:447 tree.php:1921
@@ -578,8 +578,8 @@ msgstr "Выполнить"
 #: user_group_admin.php:1860 user_group_admin.php:2213
 #: user_group_admin.php:2317 user_group_admin.php:2402
 #: user_group_admin.php:2487 user_group_admin.php:2572 utilities.php:715
-#: utilities.php:1096 utilities.php:1423 utilities.php:1701 utilities.php:2424
-#: utilities.php:2686
+#: utilities.php:1096 utilities.php:1429 utilities.php:1707 utilities.php:2430
+#: utilities.php:2692
 msgid "Set/Refresh Filters"
 msgstr "Установить/Обновить фильтры"
 
@@ -594,7 +594,7 @@ msgstr "Установить/Обновить фильтры"
 #: graphs.php:1848 graphs_new.php:370 host.php:1484 host_templates.php:748
 #: lib/api_automation.php:197 lib/api_automation.php:461
 #: lib/api_automation.php:722 lib/api_automation.php:1077
-#: lib/clog_webapi.php:419 lib/html_filter.php:86 lib/html_graph.php:186
+#: lib/clog_webapi.php:425 lib/html_filter.php:86 lib/html_graph.php:186
 #: lib/html_graph.php:302 lib/html_reports.php:1519 lib/html_tree.php:973
 #: lib/html_tree.php:1083 links.php:332 managers.php:173 managers.php:517
 #: managers.php:747 plugins.php:403 pollers.php:739 sites.php:448 tree.php:1922
@@ -617,8 +617,8 @@ msgstr "Очистить"
 #: user_domains.php:677 user_group_admin.php:1861 user_group_admin.php:2214
 #: user_group_admin.php:2318 user_group_admin.php:2403
 #: user_group_admin.php:2488 user_group_admin.php:2573 utilities.php:716
-#: utilities.php:1097 utilities.php:1424 utilities.php:1702 utilities.php:2425
-#: utilities.php:2687
+#: utilities.php:1097 utilities.php:1430 utilities.php:1708 utilities.php:2431
+#: utilities.php:2693
 msgid "Clear Filters"
 msgstr "Очистить фильтры"
 
@@ -682,7 +682,7 @@ msgid "No Graphs Found"
 msgstr "Графики не найдены"
 
 #: aggregate_graphs.php:1398 aggregate_graphs.php:1506
-#: include/global_arrays.php:2476
+#: include/global_arrays.php:2480
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Совокупные графики"
@@ -692,7 +692,7 @@ msgstr "Совокупные графики"
 #: include/global_settings.php:499 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:940 rrdcleaner.php:351
 #: user_admin.php:2558 user_admin.php:2751 user_group_admin.php:2169
-#: user_group_admin.php:2277 utilities.php:1671
+#: user_group_admin.php:2277 utilities.php:1677
 msgid "Template"
 msgstr "Шаблон"
 
@@ -708,8 +708,8 @@ msgstr "Шаблон"
 #: lib/html.php:1880 lib/html_reports.php:1497 managers.php:483
 #: managers.php:736 user_admin.php:2562 user_admin.php:2755
 #: user_group_admin.php:2173 user_group_admin.php:2281 utilities.php:692
-#: utilities.php:1393 utilities.php:1675 utilities.php:1720 utilities.php:2397
-#: utilities.php:2648 utilities.php:2661
+#: utilities.php:1399 utilities.php:1681 utilities.php:1726 utilities.php:2403
+#: utilities.php:2654 utilities.php:2667
 msgid "Any"
 msgstr "Любой"
 
@@ -738,9 +738,9 @@ msgstr "Любой"
 #: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:329
 #: lib/html_graph.php:386 lib/html_reports.php:347 lib/html_reports.php:399
 #: lib/html_reports.php:411 lib/html_reports.php:420 lib/html_reports.php:430
-#: lib/html_tree.php:1171 settings.php:377 settings.php:396 settings.php:422
+#: lib/html_tree.php:1171 settings.php:390 settings.php:409 settings.php:435
 #: user_admin.php:2563 user_admin.php:2756 user_group_admin.php:2174
-#: user_group_admin.php:2282 utilities.php:1676
+#: user_group_admin.php:2282 utilities.php:1682
 msgid "None"
 msgstr "Нет"
 
@@ -801,7 +801,7 @@ msgid "Aggregate Template [new]"
 msgstr "Агрегатный шаблон [новый]"
 
 #: aggregate_templates.php:535 aggregate_templates.php:634
-#: include/global_arrays.php:2458
+#: include/global_arrays.php:2462
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "Совокупные шаблоны"
@@ -941,7 +941,7 @@ msgstr "Подтвердите новый пароль"
 
 #: auth_changepassword.php:313 auth_profile.php:548 graphs_new.php:371
 #: lib/html_form.php:1270 lib/html_form.php:1279 lib/html_graph.php:188
-#: lib/html_tree.php:975 settings.php:346
+#: lib/html_tree.php:975 settings.php:359
 msgid "Save"
 msgstr " Сохранить "
 
@@ -1232,7 +1232,7 @@ msgstr "Добавлено в Cacti"
 #: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
 #: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
-#: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1526
+#: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1532
 msgid "Device"
 msgstr "Устройство"
 
@@ -1268,7 +1268,7 @@ msgstr "Добавить устройство (устройства)"
 
 #: automation_devices.php:241 automation_devices.php:531 host.php:1420
 #: host.php:1514 host.php:1614 include/global_arrays.php:850
-#: include/global_arrays.php:903 include/global_arrays.php:2056
+#: include/global_arrays.php:903 include/global_arrays.php:2060
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:475 lib/api_automation.php:558
 #: lib/api_automation.php:1163 pollers.php:818 sites.php:522 tree.php:786
@@ -1316,7 +1316,7 @@ msgstr "ОС"
 msgid "Uptime"
 msgstr "Аптайм"
 
-#: automation_devices.php:258 automation_devices.php:516 utilities.php:1721
+#: automation_devices.php:258 automation_devices.php:516 utilities.php:1727
 msgid "SNMP"
 msgstr "SNMP"
 
@@ -1367,7 +1367,7 @@ msgstr "Экспорт"
 msgid "Export to a file"
 msgstr "Экспорт в файл"
 
-#: automation_devices.php:478 lib/clog_webapi.php:189 lib/clog_webapi.php:420
+#: automation_devices.php:478 lib/clog_webapi.php:195 lib/clog_webapi.php:426
 #: managers.php:748
 msgid "Purge"
 msgstr "Удалить"
@@ -1381,8 +1381,8 @@ msgstr "Очистить обнаруженные устройства"
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
 #: lib/html.php:1049 pollers.php:865 user_admin.php:2298 utilities.php:445
-#: utilities.php:827 utilities.php:2141 utilities.php:2238 utilities.php:2246
-#: utilities.php:2249 utilities.php:2252 utilities.php:2258 utilities.php:2487
+#: utilities.php:827 utilities.php:2147 utilities.php:2244 utilities.php:2252
+#: utilities.php:2255 utilities.php:2258 utilities.php:2264 utilities.php:2493
 msgid "N/A"
 msgstr "Н/Д"
 
@@ -1505,7 +1505,7 @@ msgstr "Критерий создания графика"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
 #: automation_graph_rules.php:891 include/global_arrays.php:873
-#: include/global_arrays.php:2512
+#: include/global_arrays.php:2516
 #, fuzzy
 msgid "Graph Rules"
 msgstr "Графические правила"
@@ -1529,7 +1529,7 @@ msgstr "Запрос данных"
 #: managers.php:598 user_admin.php:1090 user_admin.php:1102 user_admin.php:2285
 #: user_domains.php:350 user_domains.php:751 user_group_admin.php:87
 #: user_group_admin.php:676 user_group_admin.php:691 user_group_admin.php:1918
-#: utilities.php:2273
+#: utilities.php:2279
 msgid "Enabled"
 msgstr "Включено"
 
@@ -1545,7 +1545,7 @@ msgstr "Включено"
 #: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
 #: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
-#: user_domains.php:411 user_group_admin.php:691 utilities.php:2273
+#: user_domains.php:411 user_group_admin.php:691 utilities.php:2279
 msgid "Disabled"
 msgstr "Выключен"
 
@@ -1698,7 +1698,7 @@ msgstr "Основые Настройки"
 #: lib/installer.php:1776 lib/installer.php:2325 lib/installer.php:2394
 #: lib/vdef.php:74 managers.php:562 pollers.php:56 sites.php:40
 #: user_admin.php:1090 user_domains.php:326 utilities.php:505
-#: utilities.php:2467
+#: utilities.php:2473
 msgid "Name"
 msgstr "Имя"
 
@@ -2358,11 +2358,11 @@ msgstr "Следующий старт"
 msgid "Last Started"
 msgstr "Последний запуск"
 
-#: automation_networks.php:1110 pollers.php:40 utilities.php:2078
+#: automation_networks.php:1110 pollers.php:40 utilities.php:2084
 msgid "Running"
 msgstr "В процессе"
 
-#: automation_networks.php:1130 pollers.php:41 utilities.php:2077
+#: automation_networks.php:1130 pollers.php:41 utilities.php:2083
 msgid "Idle"
 msgstr "Неактивно"
 
@@ -2372,8 +2372,8 @@ msgid "No Networks Found"
 msgstr "Не найдено сетей"
 
 #: automation_networks.php:1197 graph.php:362 graph_realtime.php:293
-#: lib/clog_webapi.php:450 lib/html_graph.php:301 lib/html_tree.php:1082
-#: lib/html_tree.php:1103 utilities.php:1128 utilities.php:2030
+#: lib/clog_webapi.php:456 lib/html_graph.php:301 lib/html_tree.php:1082
+#: lib/html_tree.php:1103 utilities.php:1128 utilities.php:2036
 msgid "Refresh"
 msgstr "Обновить"
 
@@ -2554,7 +2554,7 @@ msgstr "Приватный протокол"
 msgid "Context"
 msgstr "Контекст"
 
-#: automation_snmp.php:517 data_queries.php:1118 utilities.php:1716
+#: automation_snmp.php:517 data_queries.php:1118 utilities.php:1722
 msgid "Action"
 msgstr "Действие"
 
@@ -2819,8 +2819,8 @@ msgstr "Критерий создания дерева"
 msgid "Change Leaf Type"
 msgstr "Изменить тип листа"
 
-#: automation_tree_rules.php:706 lib/installer.php:3402 utilities.php:2136
-#: utilities.php:2137 utilities.php:2140 utilities.php:2141
+#: automation_tree_rules.php:706 lib/installer.php:3402 utilities.php:2142
+#: utilities.php:2143 utilities.php:2146 utilities.php:2147
 msgid "WARNING:"
 msgstr "ВНИМАНИЕ:"
 
@@ -2849,7 +2849,7 @@ msgstr "Вы уверены, что хотите продолжить?"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
 #: automation_tree_rules.php:927 include/global_arrays.php:874
-#: include/global_arrays.php:2536
+#: include/global_arrays.php:2540
 #, fuzzy
 msgid "Tree Rules"
 msgstr "Правила дерева"
@@ -2984,7 +2984,7 @@ msgstr "CDEF [изменить: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [новый]"
 
-#: cdef.php:603 include/global_arrays.php:1906
+#: cdef.php:603 include/global_arrays.php:1910
 #, fuzzy
 msgid "CDEF Items"
 msgstr "Элементы CDEF"
@@ -3005,7 +3005,7 @@ msgid "Delete CDEF Item"
 msgstr "Удалить элемент CDEF"
 
 #: cdef.php:742 cdef.php:757 cdef.php:873 include/global_arrays.php:879
-#: include/global_arrays.php:1888
+#: include/global_arrays.php:1892
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3154,7 +3154,7 @@ msgid "Colors [new]"
 msgstr "Цвета [новый]"
 
 #: color.php:521 color.php:536 color.php:690 include/global_arrays.php:881
-#: include/global_arrays.php:1954
+#: include/global_arrays.php:1958
 msgid "Colors"
 msgstr "Цвета"
 
@@ -3311,7 +3311,7 @@ msgid "Color Template [new]"
 msgstr "Шаблон цвета [новый]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2434
+#: include/global_arrays.php:2438
 #, fuzzy
 msgid "Color Templates"
 msgstr "Цветные шаблоны"
@@ -3511,7 +3511,7 @@ msgid "Results"
 msgstr "Результаты"
 
 #: data_debug.php:341 include/global_form.php:984 lib/rrd.php:2720
-#: utilities.php:2467
+#: utilities.php:2473
 msgid "Value"
 msgstr "Значение"
 
@@ -3695,7 +3695,7 @@ msgid "Delete Data Input Field"
 msgstr "Удалить поле ввода данных"
 
 #: data_input.php:794 include/global_arrays.php:860
-#: include/global_arrays.php:1029 include/global_arrays.php:2092
+#: include/global_arrays.php:1029 include/global_arrays.php:2096
 msgid "Data Input Methods"
 msgstr "Метод Ввода Данных"
 
@@ -3818,7 +3818,7 @@ msgid "No Suggested Values Found"
 msgstr "Нет рекомендуемых значений"
 
 #: data_queries.php:818 data_queries.php:919 include/global_form.php:2019
-#: include/global_form.php:2061 lib/api_automation.php:1365 utilities.php:1526
+#: include/global_form.php:2061 lib/api_automation.php:1365 utilities.php:1532
 msgid "Field Name"
 msgstr "Имя поля"
 
@@ -3868,7 +3868,7 @@ msgid "Could not locate XML file."
 msgstr "Не удалось найти файл XML."
 
 #: data_queries.php:1111 host.php:679 host_templates.php:481
-#: include/global_arrays.php:2146
+#: include/global_arrays.php:2150
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "Нет ассоциированых шаблонов графиков"
@@ -3901,12 +3901,12 @@ msgstr "Удалить ассоциированный график"
 
 #: data_queries.php:1248 data_queries.php:1263 data_queries.php:1353
 #: include/global_arrays.php:859 include/global_arrays.php:1030
-#: include/global_arrays.php:2128 lib/api_automation.php:1060
+#: include/global_arrays.php:2132 lib/api_automation.php:1060
 #, fuzzy
 msgid "Data Queries"
 msgstr "Запросы данных"
 
-#: data_queries.php:1362 host.php:781 utilities.php:1526
+#: data_queries.php:1362 host.php:781 utilities.php:1532
 #, fuzzy
 msgid "Data Query Name"
 msgstr "Имя запроса данных"
@@ -4068,7 +4068,7 @@ msgstr "Шаги"
 
 #: data_source_profiles.php:568 graphs_new.php:386 include/global_form.php:254
 #: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2394
-#: lib/rrd.php:2751 utilities.php:507 utilities.php:1438
+#: lib/rrd.php:2751 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "Строк"
 
@@ -4531,9 +4531,9 @@ msgstr "Профиль"
 
 #: data_sources.php:1328 data_sources.php:1344 data_sources.php:1354
 #: data_templates.php:855 graph_view.php:959 graphs_new.php:346
-#: lib/clog_webapi.php:432 lib/html_graph.php:385 lib/html_reports.php:357
-#: lib/html_tree.php:1170 plugins.php:376 settings.php:376 settings.php:395
-#: settings.php:421 tree.php:784 utilities.php:674 utilities.php:1110
+#: lib/clog_webapi.php:438 lib/html_graph.php:385 lib/html_reports.php:357
+#: lib/html_tree.php:1170 plugins.php:376 settings.php:389 settings.php:408
+#: settings.php:434 tree.php:784 utilities.php:674 utilities.php:1110
 msgid "All"
 msgstr "Все"
 
@@ -4543,13 +4543,13 @@ msgid "Orphaned"
 msgstr "осиротевший"
 
 #: data_sources.php:1370 data_sources.php:1495 host.php:1563
-#: include/global_arrays.php:854 include/global_arrays.php:2038
+#: include/global_arrays.php:854 include/global_arrays.php:2042
 #: lib/api_automation.php:282 user_admin.php:1235 user_group_admin.php:967
 #: utilities.php:308
 msgid "Data Sources"
 msgstr "Источники Данных"
 
-#: data_sources.php:1504 utilities.php:1813
+#: data_sources.php:1504 utilities.php:1819
 #, fuzzy
 msgid "Data Source Name"
 msgstr "Имя источника данных"
@@ -4714,7 +4714,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "Значение будет выведено из устройства, если это поле осталось пустым."
 
 #: data_templates.php:836 data_templates.php:867 data_templates.php:989
-#: include/global_arrays.php:1041 include/global_arrays.php:2020
+#: include/global_arrays.php:1041 include/global_arrays.php:2024
 #, fuzzy
 msgid "Data Templates"
 msgstr "Шаблоны данных"
@@ -4807,7 +4807,7 @@ msgstr "GPRINT Presets [изменить: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT Presets [новый]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1870
+#: gprint_presets.php:254 include/global_arrays.php:1874
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "Предустановки GPRINT"
@@ -5037,7 +5037,7 @@ msgstr "Синхронизация графиков с графическими 
 msgid "Graph Template Items [edit: %s]"
 msgstr "Элементы шаблона графика [edit: %s]"
 
-#: graph_templates.php:422 include/global_arrays.php:1990
+#: graph_templates.php:422 include/global_arrays.php:1994
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "Ввод графических элементов"
@@ -5072,7 +5072,7 @@ msgstr ""
 
 #: graph_templates.php:622 graph_templates.php:637 graph_templates.php:757
 #: graphs_new.php:442 include/global_arrays.php:1040
-#: include/global_arrays.php:1966 lib/html_tree.php:536 user_admin.php:1375
+#: include/global_arrays.php:1970 lib/html_tree.php:536 user_admin.php:1375
 #: user_group_admin.php:1102
 msgid "Graph Templates"
 msgstr "Шаблоны Графиков"
@@ -5248,7 +5248,7 @@ msgstr "Непригодный"
 msgid "Select the Report to add the selected Graphs to."
 msgstr "Выберите Отчет, чтобы добавить выбранные графики."
 
-#: graph_view.php:833 include/global_arrays.php:1790
+#: graph_view.php:833 include/global_arrays.php:1794
 #: include/global_settings.php:2095
 msgid "Preview Mode"
 msgstr "Режим предварительного просмотра"
@@ -5263,7 +5263,7 @@ msgid "Ok"
 msgstr "Ок"
 
 #: graph_view.php:950 lib/html_graph.php:376 lib/html_tree.php:1161
-#: settings.php:412
+#: settings.php:425
 #, fuzzy
 msgid "Templates Selected"
 msgstr "Выбранные шаблоны"
@@ -5323,7 +5323,7 @@ msgstr "Скачать"
 msgid "Summary Details"
 msgstr "Краткие сведения"
 
-#: graphs.php:52 graphs.php:926 include/global_arrays.php:1840
+#: graphs.php:52 graphs.php:926 include/global_arrays.php:1844
 msgid "Change Graph Template"
 msgstr "Изменение Шаблона Графика"
 
@@ -5619,7 +5619,7 @@ msgstr "Графические поля"
 msgid "Graph Item Fields"
 msgstr "Поля графического объекта"
 
-#: graphs.php:1799 include/global_arrays.php:1828
+#: graphs.php:1799 include/global_arrays.php:1832
 msgid "Graph Management"
 msgstr "Управление графиками"
 
@@ -6040,15 +6040,15 @@ msgstr "Связанные запросы данных"
 msgid "Re-Index Method"
 msgstr "Метод переиндекса"
 
-#: host.php:784 include/global_arrays.php:1846 include/global_arrays.php:1912
-#: include/global_arrays.php:1978 include/global_arrays.php:2014
-#: include/global_arrays.php:2032 include/global_arrays.php:2050
-#: include/global_arrays.php:2068 include/global_arrays.php:2098
-#: include/global_arrays.php:2134 include/global_arrays.php:2164
-#: include/global_arrays.php:2254 include/global_arrays.php:2446
-#: include/global_arrays.php:2470 include/global_arrays.php:2488
-#: include/global_arrays.php:2506 include/global_arrays.php:2524
-#: include/global_arrays.php:2548 lib/api_automation.php:1245
+#: host.php:784 include/global_arrays.php:1850 include/global_arrays.php:1916
+#: include/global_arrays.php:1982 include/global_arrays.php:2018
+#: include/global_arrays.php:2036 include/global_arrays.php:2054
+#: include/global_arrays.php:2072 include/global_arrays.php:2102
+#: include/global_arrays.php:2138 include/global_arrays.php:2168
+#: include/global_arrays.php:2258 include/global_arrays.php:2450
+#: include/global_arrays.php:2474 include/global_arrays.php:2492
+#: include/global_arrays.php:2510 include/global_arrays.php:2528
+#: include/global_arrays.php:2552 lib/api_automation.php:1245
 #: lib/api_automation.php:1307 lib/api_automation.php:1370
 #: lib/html_reports.php:1327 links.php:378 plugins.php:472
 msgid "Actions"
@@ -6148,11 +6148,11 @@ msgstr "Восстановление"
 
 #: host.php:1510 lib/api_automation.php:176 lib/api_automation.php:1056
 #: lib/html_utility.php:870 plugins.php:180 plugins.php:184 plugins.php:203
-#: utilities.php:2137
+#: utilities.php:2143
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: host.php:1539 lib/api_automation.php:565 tree.php:857 utilities.php:1814
+#: host.php:1539 lib/api_automation.php:565 tree.php:857 utilities.php:1820
 #, fuzzy
 msgid "Device Description"
 msgstr "Описание устройства"
@@ -6379,7 +6379,7 @@ msgid "Add Data Query to Device Template"
 msgstr "Добавление запроса данных к шаблону устройства"
 
 #: host_templates.php:710 host_templates.php:725 host_templates.php:826
-#: include/global_arrays.php:1042 include/global_arrays.php:2002
+#: include/global_arrays.php:1042 include/global_arrays.php:2006
 msgid "Device Templates"
 msgstr "Шаблон Устройства"
 
@@ -7018,7 +7018,7 @@ msgid "Script/Command"
 msgstr "Сценарий / Command"
 
 #: include/global_arrays.php:422 include/global_arrays.php:428
-#: utilities.php:1723
+#: utilities.php:1729
 msgid "Script Server"
 msgstr "Сервер Скриптов"
 
@@ -7546,7 +7546,7 @@ msgstr "Предустановки"
 msgid "Data Profiles"
 msgstr "Профили данных"
 
-#: include/global_arrays.php:880 include/global_arrays.php:2248 vdef.php:685
+#: include/global_arrays.php:880 include/global_arrays.php:2252 vdef.php:685
 #: vdef.php:699 vdef.php:872
 #, fuzzy
 msgid "VDEFs"
@@ -7557,12 +7557,12 @@ msgid "Import/Export"
 msgstr "Импорт/Экспорт"
 
 #: include/global_arrays.php:885 include/global_arrays.php:1045
-#: include/global_arrays.php:2368
+#: include/global_arrays.php:2372
 msgid "Import Templates"
 msgstr "Импорт Шаблонов"
 
 #: include/global_arrays.php:886 include/global_arrays.php:1044
-#: include/global_arrays.php:2356 templates_export.php:159
+#: include/global_arrays.php:2360 templates_export.php:159
 msgid "Export Templates"
 msgstr "Экспорт Шаблонов"
 
@@ -7576,24 +7576,24 @@ msgstr "Конфигурация"
 msgid "Settings"
 msgstr "Настройки"
 
-#: include/global_arrays.php:890 include/global_arrays.php:2302
+#: include/global_arrays.php:890 include/global_arrays.php:2306
 #: user_admin.php:2220 user_admin.php:2274 user_group_admin.php:668
 #: user_group_admin.php:2550
 msgid "Users"
 msgstr "Пользователи"
 
-#: include/global_arrays.php:891 include/global_arrays.php:2332
+#: include/global_arrays.php:891 include/global_arrays.php:2336
 msgid "User Groups"
 msgstr "Группы пользователей"
 
-#: include/global_arrays.php:892 include/global_arrays.php:2320
+#: include/global_arrays.php:892 include/global_arrays.php:2324
 #: user_domains.php:645 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "Пользовательские домены"
 
 #: include/global_arrays.php:894 include/global_arrays.php:911
-#: include/global_arrays.php:926 include/global_arrays.php:2176
+#: include/global_arrays.php:926 include/global_arrays.php:2180
 msgid "Utilities"
 msgstr "Утилиты"
 
@@ -8418,298 +8418,314 @@ msgid "Greek"
 msgstr "Греческий"
 
 #: include/global_arrays.php:1706
+msgid "Hebrew"
+msgstr "Иврит"
+
+#: include/global_arrays.php:1707
+msgid "Hindi"
+msgstr "Хинди"
+
+#: include/global_arrays.php:1708
 msgid "Italian"
 msgstr "Итальянский"
 
-#: include/global_arrays.php:1707
+#: include/global_arrays.php:1709
 msgid "Japanese"
 msgstr "日本語"
 
-#: include/global_arrays.php:1708
+#: include/global_arrays.php:1710
 msgid "Korean"
 msgstr "Корейский"
 
-#: include/global_arrays.php:1709
+#: include/global_arrays.php:1711
 msgid "Polish"
 msgstr "Польский"
 
-#: include/global_arrays.php:1710
+#: include/global_arrays.php:1712
 msgid "Portuguese"
 msgstr "Португальский"
 
-#: include/global_arrays.php:1711
+#: include/global_arrays.php:1713
 msgid "Portuguese (Brazil)"
 msgstr "Португальский (Бразилия)"
 
-#: include/global_arrays.php:1712
+#: include/global_arrays.php:1714
 msgid "Russian"
 msgstr "Русский"
 
 # Translation for this string generated by http://littlesvr.ca/ostd/
 # based on translation from "claws-mail"
-#: include/global_arrays.php:1713
+#: include/global_arrays.php:1715
 msgid "Spanish"
 msgstr "Испанский"
 
-#: include/global_arrays.php:1714
+#: include/global_arrays.php:1716
 msgid "Swedish"
 msgstr "Шведский"
 
+#: include/global_arrays.php:1717
+msgid "Turkish"
+msgstr "Турецкий"
+
 #: include/global_arrays.php:1718
+msgid "Vietnamese"
+msgstr "Вьетнамский"
+
+#: include/global_arrays.php:1722
 msgid "Classic"
 msgstr "Классический"
 
-#: include/global_arrays.php:1719
+#: include/global_arrays.php:1723
 msgid "Modern"
 msgstr "Современный"
 
-#: include/global_arrays.php:1720
+#: include/global_arrays.php:1724
 msgid "Dark"
 msgstr "Темный"
 
-#: include/global_arrays.php:1721
+#: include/global_arrays.php:1725
 #, fuzzy
 msgid "Paper-plane"
 msgstr "Бумажный самолетик"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1726
 #, fuzzy
 msgid "Paw"
 msgstr "лапа"
 
-#: include/global_arrays.php:1723
+#: include/global_arrays.php:1727
 msgid "Sunrise"
 msgstr "Восход"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1731
 #, fuzzy
 msgid "[Fail]"
 msgstr "[ошибка]"
 
-#: include/global_arrays.php:1728
+#: include/global_arrays.php:1732
 #, fuzzy
 msgid "[Warning]"
 msgstr "ВНИМАНИЕ:"
 
-#: include/global_arrays.php:1729
+#: include/global_arrays.php:1733
 #, fuzzy
 msgid "[Success]"
 msgstr "[выполненно]"
 
-#: include/global_arrays.php:1730
+#: include/global_arrays.php:1734
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[Пропущено]"
 
-#: include/global_arrays.php:1754 include/global_arrays.php:1760
+#: include/global_arrays.php:1758 include/global_arrays.php:1764
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "Профиль пользователя (Изменить)"
 
-#: include/global_arrays.php:1772 include/global_arrays.php:1778
+#: include/global_arrays.php:1776 include/global_arrays.php:1782
 #, fuzzy
 msgid "Tree Mode"
 msgstr "Режим дерева"
 
-#: include/global_arrays.php:1784
+#: include/global_arrays.php:1788
 msgid "List Mode"
 msgstr "Режим списка"
 
-#: include/global_arrays.php:1816 include/global_arrays.php:1822
+#: include/global_arrays.php:1820 include/global_arrays.php:1826
 #: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 msgid "Console"
 msgstr "Консоль"
 
-#: include/global_arrays.php:1834 include/global_arrays.php:1876
-#: include/global_arrays.php:1894 include/global_arrays.php:1948
-#: include/global_arrays.php:1960 include/global_arrays.php:1972
-#: include/global_arrays.php:2008 include/global_arrays.php:2026
-#: include/global_arrays.php:2044 include/global_arrays.php:2062
-#: include/global_arrays.php:2080 include/global_arrays.php:2104
-#: include/global_arrays.php:2140 include/global_arrays.php:2260
-#: include/global_arrays.php:2284 include/global_arrays.php:2308
-#: include/global_arrays.php:2326 include/global_arrays.php:2338
-#: include/global_arrays.php:2440 include/global_arrays.php:2464
-#: include/global_arrays.php:2482 include/global_arrays.php:2500
-#: include/global_arrays.php:2518 include/global_arrays.php:2542
+#: include/global_arrays.php:1838 include/global_arrays.php:1880
+#: include/global_arrays.php:1898 include/global_arrays.php:1952
+#: include/global_arrays.php:1964 include/global_arrays.php:1976
+#: include/global_arrays.php:2012 include/global_arrays.php:2030
+#: include/global_arrays.php:2048 include/global_arrays.php:2066
+#: include/global_arrays.php:2084 include/global_arrays.php:2108
+#: include/global_arrays.php:2144 include/global_arrays.php:2264
+#: include/global_arrays.php:2288 include/global_arrays.php:2312
+#: include/global_arrays.php:2330 include/global_arrays.php:2342
+#: include/global_arrays.php:2444 include/global_arrays.php:2468
+#: include/global_arrays.php:2486 include/global_arrays.php:2504
+#: include/global_arrays.php:2522 include/global_arrays.php:2546
 msgid "(Edit)"
 msgstr "(Редактировать)"
 
-#: include/global_arrays.php:1852 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1856 lib/api_aggregate.php:1299
 #, fuzzy
 msgid "Graph Items"
 msgstr "Графики [новый]"
 
-#: include/global_arrays.php:1858
+#: include/global_arrays.php:1862
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "Создание новых графиков"
 
-#: include/global_arrays.php:1864
+#: include/global_arrays.php:1868
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "Создание графиков из запроса данных"
 
-#: include/global_arrays.php:1882 include/global_arrays.php:1900
-#: include/global_arrays.php:1996 include/global_arrays.php:2086
-#: include/global_arrays.php:2110 include/global_arrays.php:2266
+#: include/global_arrays.php:1886 include/global_arrays.php:1904
+#: include/global_arrays.php:2000 include/global_arrays.php:2090
+#: include/global_arrays.php:2114 include/global_arrays.php:2270
 #, fuzzy
 msgid "(Remove)"
 msgstr "(Удалить)"
 
-#: include/global_arrays.php:1918 include/global_arrays.php:1924
-#: include/global_arrays.php:1930 include/global_arrays.php:1936
-#: include/global_arrays.php:2200
+#: include/global_arrays.php:1922 include/global_arrays.php:1928
+#: include/global_arrays.php:1934 include/global_arrays.php:1940
+#: include/global_arrays.php:2204
 msgid "View Log"
 msgstr "Посмотреть лог"
 
-#: include/global_arrays.php:1942
+#: include/global_arrays.php:1946
 #, fuzzy
 msgid "Graph Trees"
 msgstr "Графические деревья"
 
-#: include/global_arrays.php:1984 lib/api_aggregate.php:1299
+#: include/global_arrays.php:1988 lib/api_aggregate.php:1299
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "Статьи шаблонов графа"
 
-#: include/global_arrays.php:2074
+#: include/global_arrays.php:2078
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "Круглые Робинские Архивы"
 
-#: include/global_arrays.php:2116
+#: include/global_arrays.php:2120
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "Поля ввода данных"
 
-#: include/global_arrays.php:2122 include/global_arrays.php:2152
+#: include/global_arrays.php:2126 include/global_arrays.php:2156
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(Удалить объект)"
 
-#: include/global_arrays.php:2158 include/global_settings.php:223
+#: include/global_arrays.php:2162 include/global_settings.php:223
 #: rrdcleaner.php:296
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "Очиститель RRD"
 
-#: include/global_arrays.php:2170
+#: include/global_arrays.php:2174
 #, fuzzy
 msgid "List unused Files"
 msgstr "Список неиспользуемых файлов"
 
-#: include/global_arrays.php:2182 include/global_arrays.php:2194
-#: utilities.php:1900
+#: include/global_arrays.php:2186 include/global_arrays.php:2198
+#: utilities.php:1906
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "Просмотр кеша полтора"
 
-#: include/global_arrays.php:2188 utilities.php:1904
+#: include/global_arrays.php:2192 utilities.php:1910
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "Просмотр кэша данных данных"
 
-#: include/global_arrays.php:2206
+#: include/global_arrays.php:2210
 msgid "Clear Log"
 msgstr "Очистить журнал"
 
-#: include/global_arrays.php:2212 utilities.php:1893
+#: include/global_arrays.php:2216 utilities.php:1899
 #, fuzzy
 msgid "View User Log"
 msgstr "Просмотр журнала пользователя"
 
-#: include/global_arrays.php:2218
+#: include/global_arrays.php:2222
 #, fuzzy
 msgid "Clear User Log"
 msgstr "Очистить журнал пользователя"
 
-#: include/global_arrays.php:2224 utilities.php:1884 utilities.php:1885
+#: include/global_arrays.php:2228 utilities.php:1890 utilities.php:1891
 msgid "Technical Support"
 msgstr "Техническая Поддержка"
 
-#: include/global_arrays.php:2230 utilities.php:2003
+#: include/global_arrays.php:2234 utilities.php:2009
 #, fuzzy
 msgid "Boost Status"
 msgstr "Состояние Boost"
 
-#: include/global_arrays.php:2236
+#: include/global_arrays.php:2240
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "Просмотр кэша агента SNMP"
 
-#: include/global_arrays.php:2242
+#: include/global_arrays.php:2246
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "Просмотр журнала уведомлений агента SNMP"
 
-#: include/global_arrays.php:2272 vdef.php:586
+#: include/global_arrays.php:2276 vdef.php:586
 #, fuzzy
 msgid "VDEF Items"
 msgstr "Предметы VDEF"
 
-#: include/global_arrays.php:2278
+#: include/global_arrays.php:2282
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "Просмотр приемников уведомлений SNMP"
 
-#: include/global_arrays.php:2290
+#: include/global_arrays.php:2294
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "Кактусы"
 
-#: include/global_arrays.php:2296
+#: include/global_arrays.php:2300
 msgid "External Link"
 msgstr "Внешняя ссылка"
 
-#: include/global_arrays.php:2314 include/global_arrays.php:2344
+#: include/global_arrays.php:2318 include/global_arrays.php:2348
 #, fuzzy
 msgid "(Action)"
 msgstr "Действие"
 
-#: include/global_arrays.php:2362
+#: include/global_arrays.php:2366
 msgid "Export Results"
 msgstr "Экспортировать результаты"
 
-#: include/global_arrays.php:2374 include/global_arrays.php:2404
+#: include/global_arrays.php:2378 include/global_arrays.php:2408
 #: lib/html.php:1492 lib/html.php:1494 lib/html.php:1573
 msgid "Reporting"
 msgstr "Отчёты"
 
-#: include/global_arrays.php:2380 include/global_arrays.php:2410
+#: include/global_arrays.php:2384 include/global_arrays.php:2414
 msgid "Report Add"
 msgstr "Добавить отчёт"
 
-#: include/global_arrays.php:2386 include/global_arrays.php:2416
+#: include/global_arrays.php:2390 include/global_arrays.php:2420
 msgid "Report Delete"
 msgstr "Удалить отчёт"
 
-#: include/global_arrays.php:2392 include/global_arrays.php:2422
+#: include/global_arrays.php:2396 include/global_arrays.php:2426
 msgid "Report Edit"
 msgstr "Изменить отчёт"
 
-#: include/global_arrays.php:2398 include/global_arrays.php:2428
+#: include/global_arrays.php:2402 include/global_arrays.php:2432
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "Редактировать отчет"
 
-#: include/global_arrays.php:2452
+#: include/global_arrays.php:2456
 #, fuzzy
 msgid "Color Template Items"
 msgstr "Цветные шаблоны"
 
-#: include/global_arrays.php:2494
+#: include/global_arrays.php:2498
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "Совокупные товары"
 
-#: include/global_arrays.php:2530
+#: include/global_arrays.php:2534
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "Элементы правила графа"
 
-#: include/global_arrays.php:2554
+#: include/global_arrays.php:2558
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "Элементы правила дерева"
@@ -10729,22 +10745,22 @@ msgstr ""
 "Шаблон замены для использования в качестве заголовка дерева. <br> См. "
 "Соответствие, например, <strong>\\ $ {1}</strong> для первого матча!"
 
-#: include/global_languages.php:615
+#: include/global_languages.php:646
 #, fuzzy
 msgid " T"
 msgstr "T"
 
-#: include/global_languages.php:617
+#: include/global_languages.php:648
 #, fuzzy
 msgid " G"
 msgstr "г"
 
-#: include/global_languages.php:619
+#: include/global_languages.php:650
 #, fuzzy
 msgid " M"
 msgstr "M"
 
-#: include/global_languages.php:621
+#: include/global_languages.php:652
 #, fuzzy
 msgid " K"
 msgstr "К"
@@ -11147,11 +11163,11 @@ msgstr ""
 msgid "Statistics"
 msgstr "Статистика"
 
-#: include/global_settings.php:309 lib/clog_webapi.php:434 utilities.php:1112
+#: include/global_settings.php:309 lib/clog_webapi.php:440 utilities.php:1112
 msgid "Warnings"
 msgstr "Предупреждения"
 
-#: include/global_settings.php:313 lib/clog_webapi.php:435 utilities.php:1113
+#: include/global_settings.php:313 lib/clog_webapi.php:441 utilities.php:1113
 msgid "Errors"
 msgstr "Ошибки"
 
@@ -11945,7 +11961,7 @@ msgstr ""
 msgid "This timespan you wish to see on the default graph."
 msgstr "Это время, которое вы хотите увидеть на графике по умолчанию."
 
-#: include/global_settings.php:852 utilities.php:2019
+#: include/global_settings.php:852 utilities.php:2025
 #, fuzzy
 msgid "Refresh Interval"
 msgstr "Интервал обновления"
@@ -13403,7 +13419,7 @@ msgstr ""
 "Если это поле не пустое, Boost будет регистрировать выход RRDupdate из "
 "процесса опрокидывания."
 
-#: include/global_settings.php:1692 utilities.php:2270
+#: include/global_settings.php:1692 utilities.php:2276
 #, fuzzy
 msgid "Image Caching"
 msgstr "Кэширование изображений"
@@ -14355,9 +14371,9 @@ msgid "Matching Devices"
 msgstr "Подходящие устройства"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1027
-#: lib/clog_webapi.php:428 lib/html_reports.php:335 lib/html_reports.php:1322
+#: lib/clog_webapi.php:434 lib/html_reports.php:335 lib/html_reports.php:1322
 #: lib/html_reports.php:1589 lib/html_reports.php:1600 lib/rrd.php:2715
-#: utilities.php:339 utilities.php:1106 utilities.php:2467
+#: utilities.php:339 utilities.php:1106 utilities.php:2473
 msgid "Type"
 msgstr "Тип"
 
@@ -14649,7 +14665,13 @@ msgstr "Ваш пароль должен содержать сочетание �
 msgid "Your password must contain at least 1 special character!"
 msgstr "Ваш пароль должен содержать не менее 1 специального символа!"
 
-#: lib/clog_webapi.php:193
+#: lib/clog_webapi.php:92 utilities.php:1277
+#, fuzzy, php-format
+msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
+msgstr ""
+"%s - ПРИМЕЧАНИЕ WEBUI: журнал Cacti очищен от веб-интерфейса управления."
+
+#: lib/clog_webapi.php:199
 #, fuzzy
 msgid ""
 "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set "
@@ -14659,77 +14681,77 @@ msgstr ""
 "Если протоколирование установлено как для Cacti, так и для Syslog, "
 "информация журнала останется в Syslog."
 
-#: lib/clog_webapi.php:199 utilities.php:1098
+#: lib/clog_webapi.php:205 utilities.php:1098
 #, fuzzy
 msgid "Purge Log"
 msgstr "Журнал очистки"
 
-#: lib/clog_webapi.php:223 utilities.php:1030
+#: lib/clog_webapi.php:229 utilities.php:1030
 #, fuzzy
 msgid "Log Filters"
 msgstr "Фильтры журналов"
 
-#: lib/clog_webapi.php:240
+#: lib/clog_webapi.php:246
 #, fuzzy
 msgid " - Admin Filter active"
 msgstr "- Фильтр Admin активен"
 
-#: lib/clog_webapi.php:242
+#: lib/clog_webapi.php:248
 #, fuzzy
 msgid " - Admin Unfiltered"
 msgstr "- Admin Нефильтрованный"
 
-#: lib/clog_webapi.php:245
+#: lib/clog_webapi.php:251
 #, fuzzy
 msgid " - Admin view"
 msgstr "- Вид администратора"
 
-#: lib/clog_webapi.php:250
+#: lib/clog_webapi.php:256
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Filter active]"
 msgstr "Журнал [Всего строк:% d %s - Фильтр активен]"
 
-#: lib/clog_webapi.php:252
+#: lib/clog_webapi.php:258
 #, fuzzy, php-format
 msgid "Log [Total Lines: %d %s - Unfiltered]"
 msgstr "Журнал [Всего строк:% d %s - Нефильтрованный]"
 
-#: lib/clog_webapi.php:262 utilities.php:1182 utilities.php:1520
-#: utilities.php:1727 utilities.php:1806 utilities.php:2461 utilities.php:2670
+#: lib/clog_webapi.php:268 utilities.php:1182 utilities.php:1526
+#: utilities.php:1733 utilities.php:1812 utilities.php:2467 utilities.php:2676
 msgid "Entries"
 msgstr "Записи"
 
-#: lib/clog_webapi.php:341 utilities.php:1039
+#: lib/clog_webapi.php:347 utilities.php:1039
 msgid "File"
 msgstr "Файл"
 
-#: lib/clog_webapi.php:401 utilities.php:1083
+#: lib/clog_webapi.php:407 utilities.php:1083
 #, fuzzy
 msgid "Tail Lines"
 msgstr "Линии хвоста"
 
-#: lib/clog_webapi.php:433 utilities.php:1111
+#: lib/clog_webapi.php:439 utilities.php:1111
 msgid "Stats"
 msgstr "Статистика"
 
-#: lib/clog_webapi.php:436 utilities.php:1114
+#: lib/clog_webapi.php:442 utilities.php:1114
 msgid "Debug"
 msgstr "Отладка"
 
-#: lib/clog_webapi.php:437 utilities.php:1115
+#: lib/clog_webapi.php:443 utilities.php:1115
 #, fuzzy
 msgid "SQL Calls"
 msgstr "SQL-запросы"
 
-#: lib/clog_webapi.php:441 utilities.php:1119
+#: lib/clog_webapi.php:447 utilities.php:1119
 msgid "Display Order"
 msgstr "Сортировать по"
 
-#: lib/clog_webapi.php:445 utilities.php:1123
+#: lib/clog_webapi.php:451 utilities.php:1123
 msgid "Newest First"
 msgstr "Новые Сначала"
 
-#: lib/clog_webapi.php:446 utilities.php:1124
+#: lib/clog_webapi.php:452 utilities.php:1124
 msgid "Oldest First"
 msgstr "Сначала старые"
 
@@ -15178,7 +15200,7 @@ msgstr "Выпуски не найдены"
 #: lib/functions.php:607 lib/functions.php:683
 #, fuzzy
 msgid "Message Not Found."
-msgstr "Шаблон не найден"
+msgstr "Сообщение не найдено."
 
 #: lib/functions.php:973
 #, fuzzy, php-format
@@ -15926,8 +15948,8 @@ msgstr "Интервал"
 msgid "Stop"
 msgstr "Стоп"
 
-#: lib/html_graph.php:423 lib/html_tree.php:1208 settings.php:385
-#: settings.php:404 settings.php:453
+#: lib/html_graph.php:423 lib/html_tree.php:1208 settings.php:398
+#: settings.php:417 settings.php:466
 msgid "Enter keyword"
 msgstr "Введите ключевое слово"
 
@@ -18604,9 +18626,9 @@ msgstr ""
 "InnoDB будет хранить как можно больше таблиц и индексов в системной памяти. "
 "Поэтому вы должны сделать innodb_buffer_pool достаточно большим, чтобы "
 "удерживать столько таблиц и индексов в памяти. Проверка размера каталога / "
-"var / lib / mysql / cacti поможет определить это значение. Мы рекомендуем "
-"25% общей памяти вашей системы, но ваши требования будут зависеть от размера "
-"вашей системы."
+"var / lib / mysql / cacti поможет определить это значение. Мы рекомендуем 25 "
+"%% вашей общей памяти вашей системы, но ваши требования будут различаться в "
+"зависимости от размера вашей системы."
 
 #: lib/utility.php:945
 #, fuzzy, php-format
@@ -18615,7 +18637,7 @@ msgid ""
 "rapidly and adds a 50%% overhead on all write operations."
 msgstr ""
 "Благодаря современному SSD-типу хранения эта операция на самом деле ухудшает "
-"работу диска быстрее и добавляет 50% накладных расходов на все операции "
+"работу диска быстрее и добавляет 50 %% накладные расходы на все операции "
 "записи."
 
 #: lib/utility.php:950
@@ -18959,7 +18981,7 @@ msgstr "Версия %s"
 msgid "Notifications"
 msgstr "Уведомления"
 
-#: managers.php:141 utilities.php:1946
+#: managers.php:141 utilities.php:1952
 #, fuzzy
 msgid "SNMP Notification Receivers"
 msgstr "Приемники уведомлений SNMP"
@@ -18987,12 +19009,12 @@ msgstr "Приемник уведомлений SNMP [изменить: %s]"
 msgid "SNMP Notification Receiver [new]"
 msgstr "Приемник уведомлений SNMP [новый]"
 
-#: managers.php:479 managers.php:564 utilities.php:2393 utilities.php:2467
+#: managers.php:479 managers.php:564 utilities.php:2399 utilities.php:2473
 #, fuzzy
 msgid "MIB"
 msgstr "MIB"
 
-#: managers.php:563 utilities.php:1526 utilities.php:2467
+#: managers.php:563 utilities.php:1532 utilities.php:2473
 #, fuzzy
 msgid "OID"
 msgstr "OID"
@@ -19001,7 +19023,7 @@ msgstr "OID"
 msgid "Kind"
 msgstr "Вид"
 
-#: managers.php:566 utilities.php:2467
+#: managers.php:566 utilities.php:2473
 #, fuzzy
 msgid "Max-Access"
 msgstr "Max-Access"
@@ -19016,24 +19038,24 @@ msgstr "контролируемый"
 msgid "No SNMP Notifications"
 msgstr "Нет уведомлений SNMP"
 
-#: managers.php:732 utilities.php:2644
+#: managers.php:732 utilities.php:2650
 msgid "Severity"
 msgstr "Важность"
 
-#: managers.php:748 utilities.php:2688
+#: managers.php:748 utilities.php:2694
 #, fuzzy
 msgid "Purge Notification Log"
 msgstr "Журнал уведомлений о чистке"
 
-#: managers.php:795 utilities.php:2742
+#: managers.php:795 utilities.php:2748
 msgid "Time"
 msgstr "Время"
 
-#: managers.php:796 utilities.php:2742
+#: managers.php:796 utilities.php:2748
 msgid "Notification"
 msgstr "Уведомление"
 
-#: managers.php:797 utilities.php:2742
+#: managers.php:797 utilities.php:2748
 #, fuzzy
 msgid "Varbinds"
 msgstr "Varbinds"
@@ -19043,7 +19065,7 @@ msgstr "Varbinds"
 msgid "Severity Level"
 msgstr "Уровень опасности"
 
-#: managers.php:831 utilities.php:2764
+#: managers.php:831 utilities.php:2770
 #, fuzzy
 msgid "No SNMP Notification Log Entries"
 msgstr "Нет записей журнала уведомлений SNMP"
@@ -19905,50 +19927,50 @@ msgstr "Архивировать все"
 msgid "Archive All Unknown RRDfiles"
 msgstr "Архив Все неизвестные файлы RRD"
 
-#: settings.php:283
+#: settings.php:289
 #, fuzzy, php-format
 msgid "Cacti Settings (%s)"
 msgstr "Настройки кактуса ( %s)"
 
-#: settings.php:350
+#: settings.php:363
 #, fuzzy
 msgid "Poller Interval must be less than Cron Interval"
 msgstr "Интервал Poller должен быть меньше интервала Cron"
 
-#: settings.php:371
+#: settings.php:384
 #, fuzzy
 msgid "Select Plugin(s)"
 msgstr "Выберите плагин (ы)"
 
-#: settings.php:373
+#: settings.php:386
 #, fuzzy
 msgid "Plugins Selected"
 msgstr "Выбранные плагины"
 
-#: settings.php:390
+#: settings.php:403
 msgid "Select File(s)"
 msgstr "Выберите Файл(ы)"
 
-#: settings.php:392
+#: settings.php:405
 #, fuzzy
 msgid "Files Selected"
 msgstr "Выбранные файлы"
 
-#: settings.php:410
+#: settings.php:423
 #, fuzzy
 msgid "Select Template(s)"
 msgstr "Выберите шаблон (ы)"
 
-#: settings.php:415
+#: settings.php:428
 #, fuzzy
 msgid "All Templates Selected"
 msgstr "Все выбранные шаблоны"
 
-#: settings.php:481
+#: settings.php:494
 msgid "Send a Test Email"
 msgstr "Отправить тестовое письмо"
 
-#: settings.php:492
+#: settings.php:505
 #, fuzzy
 msgid "Test Email Results"
 msgstr "Тестирование результатов электронной почты"
@@ -21734,19 +21756,19 @@ msgstr "Ошибка"
 msgid "Attempts"
 msgstr "Попыток"
 
-#: utilities.php:715 utilities.php:1096 utilities.php:1423 utilities.php:1701
-#: utilities.php:2424 utilities.php:2686 vdef.php:721
+#: utilities.php:715 utilities.php:1096 utilities.php:1429 utilities.php:1707
+#: utilities.php:2430 utilities.php:2692 vdef.php:721
 msgctxt "Button: use filter settings"
 msgid "Go"
 msgstr "Перейти"
 
-#: utilities.php:716 utilities.php:1097 utilities.php:1424 utilities.php:1702
-#: utilities.php:2425 utilities.php:2687 vdef.php:722
+#: utilities.php:716 utilities.php:1097 utilities.php:1430 utilities.php:1708
+#: utilities.php:2431 utilities.php:2693 vdef.php:722
 msgctxt "Button: reset filter settings"
 msgid "Clear"
 msgstr "Очистить"
 
-#: utilities.php:717 utilities.php:1098 utilities.php:2688
+#: utilities.php:717 utilities.php:1098 utilities.php:2694
 msgctxt "Button: delete all table entries"
 msgid "Purge"
 msgstr "Удалить"
@@ -21785,95 +21807,90 @@ msgstr "Журнал [Всего строк:% d - показаны все эле
 msgid "Clear Cacti Log"
 msgstr "Очистить журнал кактусов"
 
-#: utilities.php:1271
-#, fuzzy, php-format
-msgid "%s - WEBUI: Cacti Log Cleared from Web Management Interface."
-msgstr "%s - WEBUI: журнал кактусов очищен от интерфейса веб-управления."
-
-#: utilities.php:1273
+#: utilities.php:1279
 #, fuzzy
 msgid "Cacti Log Cleared"
 msgstr "Кактус очищен"
 
-#: utilities.php:1275
+#: utilities.php:1281
 #, fuzzy
 msgid "Error: Unable to clear log, no write permissions."
 msgstr "Ошибка: не удается очистить журнал, нет разрешений на запись."
 
-#: utilities.php:1278
+#: utilities.php:1284
 #, fuzzy
 msgid "Error: Unable to clear log, file does not exist."
 msgstr "Ошибка: не удается очистить журнал, файл не существует."
 
-#: utilities.php:1379
+#: utilities.php:1385
 #, fuzzy
 msgid "Data Query Cache Items"
 msgstr "Элементы кэша запросов данных"
 
-#: utilities.php:1389
+#: utilities.php:1395
 #, fuzzy
 msgid "Query Name"
 msgstr "Имя запроса"
 
-#: utilities.php:1453
+#: utilities.php:1459
 #, fuzzy
 msgid "Allow the search term to include the index column"
 msgstr "Разрешить поисковому термину включать индексный столбец"
 
-#: utilities.php:1454
+#: utilities.php:1460
 #, fuzzy
 msgid "Include Index"
 msgstr "Включить индекс"
 
-#: utilities.php:1526
+#: utilities.php:1532
 msgid "Field Value"
 msgstr "Значение поля"
 
-#: utilities.php:1526
+#: utilities.php:1532
 msgid "Index"
 msgstr "Индекс"
 
-#: utilities.php:1661
+#: utilities.php:1667
 #, fuzzy
 msgid "Poller Cache Items"
 msgstr "Элементы кеша Poller"
 
-#: utilities.php:1722
+#: utilities.php:1728
 msgid "Script"
 msgstr "Скрипт"
 
-#: utilities.php:1842 utilities.php:1847
+#: utilities.php:1848 utilities.php:1853
 msgid "SNMP Version:"
 msgstr "Версия SNMP:"
 
-#: utilities.php:1843
+#: utilities.php:1849
 msgid "Community:"
 msgstr "Сообщество:"
 
-#: utilities.php:1844 utilities.php:1848
+#: utilities.php:1850 utilities.php:1854
 #, fuzzy
 msgid "OID:"
 msgstr "OID:"
 
-#: utilities.php:1848
+#: utilities.php:1854
 msgid "User:"
 msgstr "Пользователь:"
 
-#: utilities.php:1851
+#: utilities.php:1857
 msgid "Script:"
 msgstr "Скрипт:"
 
-#: utilities.php:1853
+#: utilities.php:1859
 #, fuzzy
 msgid "Script Server:"
 msgstr "Сервер Скриптов"
 
-#: utilities.php:1866
+#: utilities.php:1872
 #, fuzzy
 msgid "RRD:"
 msgstr "RRD:"
 
-#: utilities.php:1887
+#: utilities.php:1893
 #, fuzzy
 msgid ""
 "Cacti technical support page.  Used by developers and technical support "
@@ -21884,12 +21901,12 @@ msgstr ""
 "персоналом технической поддержки для оказания помощи в вопросах кактусов. "
 "Включает проверки общих проблем с конфигурацией."
 
-#: utilities.php:1889
+#: utilities.php:1895
 #, fuzzy
 msgid "Log Administration"
 msgstr "Администрирование журнала"
 
-#: utilities.php:1891
+#: utilities.php:1897
 #, fuzzy
 msgid ""
 "The Cacti Log stores statistic, error and other message depending on system "
@@ -21900,7 +21917,7 @@ msgstr ""
 "зависимости от настроек системы. Эта информация может использоваться для "
 "выявления проблем с poller и приложением."
 
-#: utilities.php:1895
+#: utilities.php:1901
 #, fuzzy
 msgid ""
 "Allows Administrators to browse the user log.  Administrators can filter and "
@@ -21909,12 +21926,12 @@ msgstr ""
 "Позволяет администраторам просматривать журнал пользователя. Администраторы "
 "могут также фильтровать и экспортировать журнал."
 
-#: utilities.php:1899
+#: utilities.php:1905
 #, fuzzy
 msgid "Poller Cache Administration"
 msgstr "Управление кэшем Poller"
 
-#: utilities.php:1902
+#: utilities.php:1908
 #, fuzzy
 msgid ""
 "This is the data that is being passed to the poller each time it runs. This "
@@ -21926,7 +21943,7 @@ msgstr ""
 "подаются в файлы RRD для графического отображения или базы данных для "
 "отображения."
 
-#: utilities.php:1906
+#: utilities.php:1912
 #, fuzzy
 msgid ""
 "The Data Query Cache stores information gathered from Data Query input "
@@ -21937,12 +21954,12 @@ msgstr ""
 "данных. Значения из этих полей могут использоваться в текстовой области "
 "«Графики для легенд», «Вертикальные метки» и «GPRINTS», а также в CDEF."
 
-#: utilities.php:1908
+#: utilities.php:1914
 #, fuzzy
 msgid "Rebuild Poller Cache"
 msgstr "Восстановить кеш-кегль"
 
-#: utilities.php:1910
+#: utilities.php:1916
 #, fuzzy
 msgid ""
 "The Poller Cache will be re-generated if you select this option. Use this "
@@ -21969,12 +21986,12 @@ msgstr ""
 "rebuild_poller_cache.php --help» в командной строке для получения "
 "дополнительной информации.</i>"
 
-#: utilities.php:1912
+#: utilities.php:1918
 #, fuzzy
 msgid "Rebuild Resource Cache"
 msgstr "Восстановление кэша ресурсов"
 
-#: utilities.php:1914
+#: utilities.php:1920
 #, fuzzy
 msgid ""
 "When operating multiple Data Collectors in Cacti, Cacti will attempt to "
@@ -21993,17 +22010,17 @@ msgstr ""
 "коллекторы данных будут проверять их веб-сайт и файлы плагинов на "
 "согласованность."
 
-#: utilities.php:1918
+#: utilities.php:1924
 #, fuzzy
 msgid "Boost Utilities"
 msgstr "Утилиты для повышения эффективности"
 
-#: utilities.php:1919
+#: utilities.php:1925
 #, fuzzy
 msgid "View Boost Status"
 msgstr "Просмотр состояния Boost"
 
-#: utilities.php:1921
+#: utilities.php:1927
 #, fuzzy
 msgid ""
 "This menu pick allows you to view various boost settings and statistics "
@@ -22012,17 +22029,17 @@ msgstr ""
 "Этот выбор меню позволяет вам просматривать различные настройки форсирования "
 "и статистику, связанные с текущей настройкой Boost."
 
-#: utilities.php:1925
+#: utilities.php:1931
 #, fuzzy
 msgid "RRD Utilities"
 msgstr "Утилиты RRD"
 
-#: utilities.php:1926
+#: utilities.php:1932
 #, fuzzy
 msgid "RRDfile Cleaner"
 msgstr "Очиститель RRDfile"
 
-#: utilities.php:1928
+#: utilities.php:1934
 #, fuzzy
 msgid ""
 "When you delete Data Sources from Cacti, the corresponding RRDfiles are not "
@@ -22033,27 +22050,27 @@ msgstr ""
 "удаляются автоматически. Используйте эту утилиту для облегчения удаления "
 "этих старых файлов."
 
-#: utilities.php:1933
+#: utilities.php:1939
 #, fuzzy
 msgid "SNMPAgent Utilities"
 msgstr "Утилиты SNMPAgent"
 
-#: utilities.php:1934
+#: utilities.php:1940
 #, fuzzy
 msgid "View SNMPAgent Cache"
 msgstr "Просмотр кэша SNMPAgent"
 
-#: utilities.php:1936
+#: utilities.php:1942
 #, fuzzy
 msgid "This shows all objects being handled by the SNMPAgent."
 msgstr "Это показывает, что все объекты обрабатываются SNMPAgent."
 
-#: utilities.php:1938
+#: utilities.php:1944
 #, fuzzy
 msgid "Rebuild SNMPAgent Cache"
 msgstr "Восстановление кэша SNMPAgent"
 
-#: utilities.php:1940
+#: utilities.php:1946
 #, fuzzy
 msgid ""
 "The SNMP cache will be cleared and re-generated if you select this option. "
@@ -22063,12 +22080,12 @@ msgstr ""
 "параметр. Обратите внимание, что для полного восстановления кэша SNMP "
 "требуется еще один опросчик."
 
-#: utilities.php:1942
+#: utilities.php:1948
 #, fuzzy
 msgid "View SNMPAgent Notification Log"
 msgstr "Просмотр журнала уведомлений SNMPAgent"
 
-#: utilities.php:1944
+#: utilities.php:1950
 #, fuzzy
 msgid ""
 "This menu pick allows you to view the latest events SNMPAgent has handled in "
@@ -22077,256 +22094,256 @@ msgstr ""
 "Этот выбор меню позволяет просматривать последние события, которые SNMPAgent "
 "обрабатывал в отношении зарегистрированных получателей уведомлений."
 
-#: utilities.php:1948
+#: utilities.php:1954
 #, fuzzy
 msgid "Allows Administrators to maintain SNMP notification receivers."
 msgstr "Позволяет администраторам поддерживать приемники уведомлений SNMP."
 
-#: utilities.php:1955
+#: utilities.php:1961
 msgid "Cacti System Utilities"
 msgstr "Утилиты Cacti"
 
-#: utilities.php:2079
+#: utilities.php:2085
 #, fuzzy
 msgid "Overrun Warning"
 msgstr "Предупреждение о переполнении"
 
-#: utilities.php:2080
+#: utilities.php:2086
 #, fuzzy
 msgid "Timed Out"
 msgstr "Время вышло"
 
-#: utilities.php:2081
+#: utilities.php:2087
 msgid "Other"
 msgstr "Другое"
 
-#: utilities.php:2083
+#: utilities.php:2089
 #, fuzzy
 msgid "Never Run"
 msgstr "Никогда не запускать"
 
-#: utilities.php:2136
+#: utilities.php:2142
 #, fuzzy
 msgid "Cannot open directory"
 msgstr "Не удается открыть каталог"
 
-#: utilities.php:2140
+#: utilities.php:2146
 #, fuzzy
 msgid "Directory Does NOT Exist!!"
 msgstr "Каталог НЕ существует!"
 
-#: utilities.php:2147
+#: utilities.php:2153
 #, fuzzy
 msgid "Current Boost Status"
 msgstr "Текущий статус Boost"
 
-#: utilities.php:2150
+#: utilities.php:2156
 #, fuzzy
 msgid "Boost On-demand Updating:"
 msgstr "Обновление по требованию:"
 
-#: utilities.php:2153
+#: utilities.php:2159
 #, fuzzy
 msgid "Total Data Sources:"
 msgstr "Общие источники данных:"
 
-#: utilities.php:2157
+#: utilities.php:2163
 #, fuzzy
 msgid "Pending Boost Records:"
 msgstr "Ожидающие записи Boost:"
 
-#: utilities.php:2160
+#: utilities.php:2166
 #, fuzzy
 msgid "Archived Boost Records:"
 msgstr "Архивные записи Boost:"
 
-#: utilities.php:2163
+#: utilities.php:2169
 #, fuzzy
 msgid "Total Boost Records:"
 msgstr "Всего записей Boost:"
 
-#: utilities.php:2167
+#: utilities.php:2173
 #, fuzzy
 msgid "Boost Storage Statistics"
 msgstr "Повысить статистику хранения"
 
-#: utilities.php:2171
+#: utilities.php:2177
 #, fuzzy
 msgid "Database Engine:"
 msgstr "Двигатель базы данных:"
 
-#: utilities.php:2175
+#: utilities.php:2181
 #, fuzzy
 msgid "Current Boost Table(s) Size:"
 msgstr "Текущий Boost Table (s) Размер:"
 
-#: utilities.php:2179
+#: utilities.php:2185
 #, fuzzy
 msgid "Avg Bytes/Record:"
 msgstr "Средние байты / запись:"
 
-#: utilities.php:2207
+#: utilities.php:2213
 #, fuzzy, php-format
 msgid "%d Bytes"
 msgstr "% d Байты"
 
-#: utilities.php:2207
+#: utilities.php:2213
 #, fuzzy
 msgid "Max Record Length:"
 msgstr "Максимальная длина записи:"
 
-#: utilities.php:2213 utilities.php:2214
+#: utilities.php:2219 utilities.php:2220
 msgid "Unlimited"
 msgstr "Неограниченно"
 
-#: utilities.php:2219
+#: utilities.php:2225
 #, fuzzy
 msgid "Max Allowed Boost Table Size:"
 msgstr "Максимальный разрешенный размер таблицы:"
 
-#: utilities.php:2223
+#: utilities.php:2229
 #, fuzzy
 msgid "Estimated Maximum Records:"
 msgstr "Оценочные максимальные записи:"
 
-#: utilities.php:2226
+#: utilities.php:2232
 #, fuzzy
 msgid "Runtime Statistics"
 msgstr "Статистика времени выполнения"
 
-#: utilities.php:2229
+#: utilities.php:2235
 #, fuzzy
 msgid "Last Start Time:"
 msgstr "Время последнего запуска:"
 
-#: utilities.php:2232
+#: utilities.php:2238
 #, fuzzy
 msgid "Last Run Duration:"
 msgstr "Последний прогон Продолжительность:"
 
-#: utilities.php:2235
+#: utilities.php:2241
 #, php-format
 msgid "%d minutes"
 msgstr "%d минут"
 
-#: utilities.php:2235
+#: utilities.php:2241
 #, fuzzy, php-format
 msgid "%d seconds"
 msgstr "% d секунд"
 
-#: utilities.php:2236
+#: utilities.php:2242
 #, fuzzy, php-format
 msgid "%0.2f percent of update frequency)"
 msgstr "% 0,2% от частоты обновления)"
 
-#: utilities.php:2243
+#: utilities.php:2249
 #, fuzzy
 msgid "RRD Updates:"
 msgstr "Обновления RRD:"
 
-#: utilities.php:2246 utilities.php:2252
+#: utilities.php:2252 utilities.php:2258
 #, fuzzy
 msgid "MBytes"
 msgstr "MBytes"
 
-#: utilities.php:2246
+#: utilities.php:2252
 #, fuzzy
 msgid "Peak Poller Memory:"
 msgstr "Память пикового поляра:"
 
-#: utilities.php:2249
+#: utilities.php:2255
 #, fuzzy
 msgid "Detailed Runtime Timers:"
 msgstr "Подробные таймеры времени выполнения:"
 
-#: utilities.php:2252
+#: utilities.php:2258
 #, fuzzy
 msgid "Max Poller Memory Allowed:"
 msgstr "Максимальная допустимая память:"
 
-#: utilities.php:2255
+#: utilities.php:2261
 #, fuzzy
 msgid "Run Time Configuration"
 msgstr "Конфигурация времени выполнения"
 
-#: utilities.php:2258
+#: utilities.php:2264
 #, fuzzy
 msgid "Update Frequency:"
 msgstr "Частота обновления:"
 
-#: utilities.php:2261
+#: utilities.php:2267
 #, fuzzy
 msgid "Next Start Time:"
 msgstr "Дальше Время начала:"
 
-#: utilities.php:2264
+#: utilities.php:2270
 #, fuzzy
 msgid "Maximum Records:"
 msgstr "Максимальные записи:"
 
-#: utilities.php:2264
+#: utilities.php:2270
 msgid "Records"
 msgstr "Записи"
 
-#: utilities.php:2267
+#: utilities.php:2273
 #, fuzzy
 msgid "Maximum Allowed Runtime:"
 msgstr "Максимально допустимое время выполнения:"
 
-#: utilities.php:2273
+#: utilities.php:2279
 #, fuzzy
 msgid "Image Caching Status:"
 msgstr "Состояние кэширования изображений:"
 
-#: utilities.php:2276
+#: utilities.php:2282
 #, fuzzy
 msgid "Cache Directory:"
 msgstr "Директория кэша"
 
-#: utilities.php:2279
+#: utilities.php:2285
 #, fuzzy
 msgid "Cached Files:"
 msgstr "Кэшированные файлы:"
 
-#: utilities.php:2282
+#: utilities.php:2288
 #, fuzzy
 msgid "Cached Files Size:"
 msgstr "Размер файла:"
 
-#: utilities.php:2378
+#: utilities.php:2384
 #, fuzzy
 msgid "SNMPAgent Cache"
 msgstr "Кэш SNMPAgent"
 
-#: utilities.php:2408
+#: utilities.php:2414
 #, fuzzy
 msgid "OIDs"
 msgstr "OIDs"
 
-#: utilities.php:2487
+#: utilities.php:2493
 #, fuzzy
 msgid "Column Data"
 msgstr "Данные столбца"
 
-#: utilities.php:2487
+#: utilities.php:2493
 #, fuzzy
 msgid "Scalar"
 msgstr "скаляр"
 
-#: utilities.php:2629
+#: utilities.php:2635
 #, fuzzy
 msgid "SNMPAgent Notification Log"
 msgstr "Журнал уведомлений SNMPAgent"
 
-#: utilities.php:2657 utilities.php:2742
+#: utilities.php:2663 utilities.php:2748
 msgid "Receiver"
 msgstr "Получатель"
 
-#: utilities.php:2734
+#: utilities.php:2740
 msgid "Log Entries"
 msgstr "Записи в журнале"
 
-#: utilities.php:2749
+#: utilities.php:2755
 #, fuzzy, php-format
 msgid "Severity Level: %s"
 msgstr "Уровень серьезности: %s"
