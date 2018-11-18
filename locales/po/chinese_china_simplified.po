@@ -519,7 +519,7 @@ msgstr "部分聚合"
 #: user_admin.php:2791 user_admin.php:2876 user_admin.php:2961
 #: user_admin.php:3046
 msgid "Go"
-msgstr "Go"
+msgstr "启动"
 
 #: aggregate_graphs.php:1107 aggregate_graphs.php:1451
 #: automation_devices.php:471 automation_snmp.php:682
