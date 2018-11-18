@@ -295,7 +295,7 @@ $messages = array(
 		'level' => MESSAGE_LEVEL_ERROR),
 	'mg_mailtime_invalid' => array(
 		'message' => __('Invalid timestamp. Select timestamp in the future.'),
-		'level'    => MESSAGE_LEVEL_ERROR),
+		'level' => MESSAGE_LEVEL_ERROR),
 	'poller_sync' => array(
 		'message' => __('Data Collector(s) synchronized for offline operation'),
 		'level' => MESSAGE_LEVEL_INFO),
@@ -1707,8 +1707,8 @@ $i18n_languages = array(
 	__('Japanese'),
 	__('Korean'),
 	__('Polish'),
-	__('Portguguese'),
-	__('Portguguese (Brazil)'),
+	__('Portuguese'),
+	__('Portuguese (Brazil)'),
 	__('Russian'),
 	__('Spanish'),
 	__('Swedish')

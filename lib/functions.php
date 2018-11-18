@@ -572,11 +572,16 @@ function check_changed($request, $session) {
 function is_error_message() {
 	global $config, $messages;
 
-	return get_message_type() === MESSAGE_LEVEL_ERROR;
+	if (isset($_SESSION['sess_error_fields']) && sizeof($_SESSION['sess_error_fields'])) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function get_message_level($current_message) {
 	$current_level = MESSAGE_LEVEL_NONE;
+
 	if (isset($current_message['level'])) {
 		$current_level = $current_message['level'];
 	} elseif (isset($current_message['type'])) {
@@ -589,13 +594,51 @@ function get_message_level($current_message) {
 				break;
 		}
 	}
+
 	return $current_level;
 }
 
-/* get_message_type - finds the message and returns it's type
-   @returns - (string) the message type 'info', 'error' or 'csrf' */
-function get_message_type() {
-	global $config, $messages;
+/* get_format_message_instance - finds the level of the current message instance
+ * @arg message array the message instance
+ * @returns - (string) a formatted message
+ */
+function get_format_message_instance($current_message) {
+	if (is_array($current_message)) {
+		$fmessage = isset($current_message['message']) ? $current_message['message'] : __esc('Message Not Found.');
+	} else {
+		$fmessage = $current_message;
+	}
+
+	$level = get_message_level($current_message);
+
+	switch ($level) {
+		case MESSAGE_LEVEL_NONE:
+			$message = '<span>' . $fmessage . '</span>';
+			break;
+		case MESSAGE_LEVEL_INFO:
+			$message = '<span class="deviceUp">' . $fmessage . '</span>';
+			break;
+		case MESSAGE_LEVEL_WARN:
+			$message = '<span class="deviceWarning">' . $fmessage . '</span>';
+			break;
+		case MESSAGE_LEVEL_ERROR:
+			$message = '<span class="deviceDown">' . $fmessage . '</span>';
+			break;
+		case MESSAGE_LEVEL_CSRF:
+			$message = '<span class="deviceDown">' . $fmessage . '</span>';
+			break;
+		default;
+			$message = '<span class="deviceUnknown">' . $fmessage . '</span>';
+			break;
+	}
+
+	return $message;
+}
+
+/* get_message_max_type - finds the message and returns it's type
+   @returns - (string) the message type 'info', 'warn', 'error' or 'csrf' */
+function get_message_max_type() {
+	global $messages;
 
 	$level = MESSAGE_LEVEL_NONE;
 	if (isset($_SESSION['sess_messages'])) {
@@ -606,7 +649,9 @@ function get_message_type() {
 					$current_level = get_message_level($messages[$current_message_id]);
 				}
 
-				if ($current_level > $level) {
+				if ($current_level != $level && $level != MESSAGE_LEVEL_NONE) {
+					$level = MESSAGE_LEVEL_MIXED;
+				} else {
 					$level = $current_level;
 				}
 			}
@@ -635,7 +680,8 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 				$message_level = get_message_level($predefined);
 			}
 		} else {
-			$message = ''; //No message defined';
+			$message = __('Message Not Found.');
+			$message_level = MESSAGE_LEVEL_ERROR;
 		}
 	}
 
@@ -669,27 +715,13 @@ function display_output_messages() {
 		debug_log_clear('new_graphs');
 	} elseif (isset($_SESSION['sess_messages'])) {
 		if (!is_array($_SESSION['sess_messages'])) {
-			$_SESSION['sess_messages'] = array('custom_error' => $_SESSION['sess_messages']);
+			$_SESSION['sess_messages'] = array('custom_error' => array('level' => 3, 'message' => $_SESSION['sess_messages']));
 		}
 
-		$omessage['level'] = get_message_type();
+		$omessage['level'] = get_message_max_type();
 
 		foreach ($_SESSION['sess_messages'] as $current_message_id => $current_message) {
-			if (is_array($current_message)) {
-				$message = isset($current_message['message']) ? $current_message['message'] : null;
-			} else {
-				$message = $current_message;
-			}
-
-			if (empty($message) && isset($messages[$current_message_id])) {
-				if (is_array($messages[$current_message_id])) {
-					if (isset($messages[$current_message_id]['message'])) {
-						$message = $messages[$current_message_id]['message'];
-					}
-				} else {
-					$message = $messages[$current_message_id];
-				}
-			}
+			$message = get_format_message_instance($current_message);
 
 			if (!empty($message)) {
 				$omessage['message'] = (isset($omessage['message']) && $omessage['message'] != '' ? $omessage['message'] . '<br>':'') . $message;

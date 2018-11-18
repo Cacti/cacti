@@ -21,11 +21,12 @@
  +-------------------------------------------------------------------------+
 */
 
-const MESSAGE_LEVEL_NONE = 0;
-const MESSAGE_LEVEL_INFO = 1;
-const MESSAGE_LEVEL_WARN = 2;
+const MESSAGE_LEVEL_NONE  = 0;
+const MESSAGE_LEVEL_INFO  = 1;
+const MESSAGE_LEVEL_WARN  = 2;
 const MESSAGE_LEVEL_ERROR = 3;
-const MESSAGE_LEVEL_CSRF = 4;
+const MESSAGE_LEVEL_CSRF  = 4;
+const MESSAGE_LEVEL_MIXED = 5;
 
 var theme;
 var myRefresh;
@@ -796,6 +797,20 @@ function displayMessages() {
 		if (sessionMessage.level == MESSAGE_LEVEL_ERROR) {
 			title = errorReasonTitle;
 			header = errorOnPage;
+			var sessionMessageButtons = {
+				'Ok': {
+					text: sessionMessageOk,
+					id: 'btnSessionMessageOk',
+					click: function() {
+						$(this).dialog('close');
+					}
+				}
+			};
+
+			sessionMessageOpen = {};
+		} else if (sessionMessage.level == MESSAGE_LEVEL_MIXED) {
+			title  = mixedReasonTitle;
+			header = mixedOnPage;
 			var sessionMessageButtons = {
 				'Ok': {
 					text: sessionMessageOk,
