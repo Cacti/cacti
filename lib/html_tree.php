@@ -27,8 +27,15 @@ function process_tree_settings() {
 		if ((get_request_var('hide') == '0') || (get_request_var('hide') == '1')) {
 			/* only update expand/contract info is this user has rights to keep their own settings */
 			if ((isset($current_user)) && ($current_user['graph_settings'] == 'on')) {
-				db_execute_prepared('DELETE FROM settings_tree WHERE graph_tree_item_id = ? AND user_id = ?', array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
-				db_execute_prepared('INSERT INTO settings_tree (graph_tree_item_id, user_id,status) values (?, ?, ?)', array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
+				db_execute_prepared('DELETE FROM settings_tree
+					WHERE graph_tree_item_id = ?
+					AND user_id = ?',
+					array(get_request_var('branch_id'), $_SESSION['sess_user_id']));
+
+				db_execute_prepared('INSERT INTO settings_tree
+					(graph_tree_item_id, user_id,status)
+					VALUES (?, ?, ?)',
+					array(get_request_var('branch_id'), $_SESSION['sess_user_id'], get_request_var('hide')));
 			}
 		}
 	}
@@ -225,6 +232,7 @@ function grow_dhtml_trees() {
 						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node="+data.node.id.replace('tbranch-','');
 						href=$('#'+data.node.id).find('a:first').attr('href');
 					}
+
 					origHref = href;
 
 					if (typeof href !== 'undefined') {
@@ -250,10 +258,11 @@ function grow_dhtml_trees() {
 							.fail(function(data) {
 								getPresentHTTPError(data);
 							});
-
 					}
+
 					node = data.node.id;
 				}
+
 				resizeGraphContent();
 			})
 			.jstree({
