@@ -189,7 +189,7 @@ function cacti_snmp_get($hostname, $community, $oid, $version, $auth_user = '', 
 		}
 
 		if (substr_count($snmp_value, 'Timeout:')) {
-			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false);
+			cacti_log("WARNING: SNMP Error:'Timeout', Device:'$hostname', OID:'$oid'", false, 'SNMP', POLLER_VERBOSITY_HIGH);
 			$snmp_value = 'U';
 		} else {
 			$snmp_value = format_snmp_string($snmp_value, false, $value_output_format);
