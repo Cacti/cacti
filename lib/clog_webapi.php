@@ -81,9 +81,15 @@ function clog_purge_logfile() {
 				unlink($purgefile);
 				raise_message('clog_remove');
 			} else {
-				$timestamp = date('Y-m-d H:i:s');
+				/* fill in the current date for printing in the log */
+				if (defined('CACTI_DATE_TIME_FORMAT')) {
+					$date = date(CACTI_DATE_TIME_FORMAT);
+				} else {
+					$date = date('Y-m-d H:i:s');
+				}
+
 				$log_fh = fopen($logfile, 'w');
-				fwrite($log_fh, "$timestamp - WEBUI: Cacti Log Cleared from Web Management Interface\n");
+				fwrite($log_fh, __('%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface.', $date) . PHP_EOL);
 				fclose($log_fh);
 				raise_message('clog_purged');
 			}
