@@ -1123,7 +1123,8 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			UNION
 			SELECT *
 			FROM settings
-			WHERE name LIKE "path_spine%"');
+			WHERE name LIKE "path_spine%"
+			AND name="poller_type"');
 		replicate_table_to_poller($rcnn_id, $data, 'settings');
 	}
 
