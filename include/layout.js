@@ -759,6 +759,8 @@ function renderLanguages() {
 			}
 		}
 	}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+
+	$('#user_language-menu').css('max-height', '200px');
 }
 
 function setupButtonStyle() {
