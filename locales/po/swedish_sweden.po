@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:22-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:28-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: \n"
 "Language: sv\n"
@@ -8489,12 +8489,13 @@ msgid "Polish"
 msgstr "Polska"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+msgid "Portuguese"
+msgstr "Portugisiska"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+#, fuzzy
+msgid "Portuguese (Brazil)"
+msgstr "Portugisiska (Brasilien)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8511,28 +8512,29 @@ msgstr "Svenska"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Klassisk"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Läge"
+msgstr "Modern"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Mörk"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Pappersflygplan"
 
 #: include/global_arrays.php:1722
 msgid "Paw"
-msgstr ""
+msgstr "Par"
 
 #: include/global_arrays.php:1723
+#, fuzzy
 msgid "Sunrise"
-msgstr ""
+msgstr "Soluppgång"
 
 #: include/global_arrays.php:1727
 #, fuzzy

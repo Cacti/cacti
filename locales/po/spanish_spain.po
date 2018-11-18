@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -7541,13 +7541,12 @@ msgstr "Polaco"
 
 #: include/global_arrays.php:1710
 #, fuzzy
-msgid "Portguguese"
+msgid "Portuguese"
 msgstr "Portgugués"
 
 #: include/global_arrays.php:1711
-#, fuzzy
-msgid "Portguguese (Brazil)"
-msgstr "Portguguese (Brasil)"
+msgid "Portuguese (Brazil)"
+msgstr "Português (Brasil)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"

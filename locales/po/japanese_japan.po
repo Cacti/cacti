@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:09-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 21:56-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "Language: ja\n"
@@ -8341,12 +8341,14 @@ msgid "Polish"
 msgstr "ポーランド語"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+#, fuzzy
+msgid "Portuguese"
+msgstr "ポルトガル語"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+#, fuzzy
+msgid "Portuguese (Brazil)"
+msgstr "ポルトガル語（ブラジル）"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8362,28 +8364,29 @@ msgstr "スウェーデン語"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "クラシック"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "モード"
+msgstr "モダン"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "ダーク"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "紙飛行機"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "足"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "サンライズ"
 
 #: include/global_arrays.php:1727
 #, fuzzy

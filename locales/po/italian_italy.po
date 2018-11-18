@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:09-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:20-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it_IT\n"
@@ -8562,12 +8562,12 @@ msgid "Polish"
 msgstr "Polacco"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+msgid "Portuguese"
+msgstr "Portoghese"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+msgid "Portuguese (Brazil)"
+msgstr "Portoghese (Brasile)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8583,28 +8583,28 @@ msgstr "Svedese"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Classico"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Modalità"
+msgstr "Moderno"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Scuro"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Aeroplano di carta"
 
 #: include/global_arrays.php:1722
 msgid "Paw"
-msgstr ""
+msgstr "Zampa"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Alba"
 
 #: include/global_arrays.php:1727
 #, fuzzy

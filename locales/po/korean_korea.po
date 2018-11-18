@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:16-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 21:58-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -8396,12 +8396,14 @@ msgid "Polish"
 msgstr "폴란드어"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+#, fuzzy
+msgid "Portuguese"
+msgstr "포르 투갈"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+#, fuzzy
+msgid "Portuguese (Brazil)"
+msgstr "포르투갈어 (브라질)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8417,28 +8419,30 @@ msgstr "스웨덴어"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "클래식"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "모드"
+msgstr "모던"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "어두운"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "종이 비행기"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "앞발"
 
 #: include/global_arrays.php:1723
+#, fuzzy
 msgid "Sunrise"
-msgstr ""
+msgstr "해돋이"
 
 #: include/global_arrays.php:1727
 #, fuzzy

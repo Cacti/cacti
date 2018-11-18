@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 18:58-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:14-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
 "Language: bg\n"
@@ -74,9 +74,8 @@ msgstr ""
 "на всеки, който е допринесъл за поддържането на кактуси."
 
 #: about.php:71
-#, fuzzy
 msgid "License"
-msgstr "Разрешително"
+msgstr "Лиценз"
 
 #: about.php:73
 #, fuzzy
@@ -2952,7 +2951,7 @@ msgstr "Използване на групиране"
 #: automation_tree_rules.php:950
 #, fuzzy
 msgid "ROOT"
-msgstr "ROOT"
+msgstr "Root"
 
 #: automation_tree_rules.php:966
 #, fuzzy
@@ -8657,12 +8656,12 @@ msgid "Polish"
 msgstr "Полски"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+msgid "Portuguese"
+msgstr "Португалски"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+msgid "Portuguese (Brazil)"
+msgstr "Португалия (Бразилия)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8678,28 +8677,30 @@ msgstr "Шведски"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Класически"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Режим"
+msgstr "Модерно"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Тъмно"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Хартиено самолетче"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "лапа"
 
 #: include/global_arrays.php:1723
+#, fuzzy
 msgid "Sunrise"
-msgstr ""
+msgstr "изгрев"
 
 #: include/global_arrays.php:1727
 #, fuzzy
@@ -14862,7 +14863,7 @@ msgstr "Система"
 #: lib/api_device.php:1017
 #, fuzzy
 msgid "Uptime:"
-msgstr "Uptime:"
+msgstr "Време на работа"
 
 #: lib/api_device.php:1018
 msgid "days"

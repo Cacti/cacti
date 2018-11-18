@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:00-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 21:41-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
 "Language: nl_NL\n"
@@ -7596,12 +7596,14 @@ msgid "Polish"
 msgstr "Pools"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+#, fuzzy
+msgid "Portuguese"
+msgstr "Portugees"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+#, fuzzy
+msgid "Portuguese (Brazil)"
+msgstr "Portugees (Brazilië)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -7617,28 +7619,29 @@ msgstr "Zweeds"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Klassiek"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Modus"
+msgstr "Modern"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Donker"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Papier-vliegtuig"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "Paw"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Doel.nu"
 
 #: include/global_arrays.php:1727
 msgid "[Fail]"

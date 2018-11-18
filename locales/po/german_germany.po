@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti German Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:02-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:17-0500\n"
 "Last-Translator: Wolfgang Stoeggl <c72578@yahoo.de>\n"
 "Language-Team: Cacti Developers <Cacti>\n"
 "Language: de_DE\n"
@@ -8371,14 +8371,13 @@ msgid "Polish"
 msgstr "Polnisch"
 
 #: include/global_arrays.php:1710
-#, fuzzy
-msgid "Portguguese"
-msgstr "Portugisich"
+msgid "Portuguese"
+msgstr "Portugiesisch"
 
 #: include/global_arrays.php:1711
 #, fuzzy
-msgid "Portguguese (Brazil)"
-msgstr "Portugisich (Brasilien)"
+msgid "Portuguese (Brazil)"
+msgstr "Portgugiesisch (Brasilien)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8394,28 +8393,29 @@ msgstr "Schwedisch"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Klassisch"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Modus"
+msgstr "Modern"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Dunkel"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Papierbahn"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "Pfote"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Salida del sol"
 
 #: include/global_arrays.php:1727
 msgid "[Fail]"

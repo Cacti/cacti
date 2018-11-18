@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:01-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:16-0500\n"
 "Last-Translator: David Girón <contacto@duhowpi.net>\n"
 "Language-Team: fr <fr@li.org>\n"
 "Language: fr\n"
@@ -8508,12 +8508,12 @@ msgid "Polish"
 msgstr "Polonais"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+msgid "Portuguese"
+msgstr "Portugais"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+msgid "Portuguese (Brazil)"
+msgstr "Portugais (Brézil)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8529,28 +8529,28 @@ msgstr "Suédois"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Classique"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Mode"
+msgstr "Moderne"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Sombre"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Avion-papier"
 
 #: include/global_arrays.php:1722
 msgid "Paw"
-msgstr ""
+msgstr "Patte"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Lever du soleil"
 
 #: include/global_arrays.php:1727
 #, fuzzy

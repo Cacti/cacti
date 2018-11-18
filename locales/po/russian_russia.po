@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 19:48-0500\n"
-"PO-Revision-Date: 2018-11-17 19:21-0500\n"
+"POT-Creation-Date: 2018-11-17 22:11-0500\n"
+"PO-Revision-Date: 2018-11-17 22:23-0500\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: KPbIC <Cacti>\n"
 "Language: ru\n"
@@ -8434,12 +8434,12 @@ msgid "Polish"
 msgstr "Польский"
 
 #: include/global_arrays.php:1710
-msgid "Portguguese"
-msgstr ""
+msgid "Portuguese"
+msgstr "Португальский"
 
 #: include/global_arrays.php:1711
-msgid "Portguguese (Brazil)"
-msgstr ""
+msgid "Portuguese (Brazil)"
+msgstr "Португальский (Бразилия)"
 
 #: include/global_arrays.php:1712
 msgid "Russian"
@@ -8457,28 +8457,29 @@ msgstr "Шведский"
 
 #: include/global_arrays.php:1718
 msgid "Classic"
-msgstr ""
+msgstr "Классический"
 
 #: include/global_arrays.php:1719
-#, fuzzy
 msgid "Modern"
-msgstr "Режим"
+msgstr "Современный"
 
 #: include/global_arrays.php:1720
 msgid "Dark"
-msgstr ""
+msgstr "Темный"
 
 #: include/global_arrays.php:1721
+#, fuzzy
 msgid "Paper-plane"
-msgstr ""
+msgstr "Бумажный самолетик"
 
 #: include/global_arrays.php:1722
+#, fuzzy
 msgid "Paw"
-msgstr ""
+msgstr "лапа"
 
 #: include/global_arrays.php:1723
 msgid "Sunrise"
-msgstr ""
+msgstr "Восход"
 
 #: include/global_arrays.php:1727
 #, fuzzy
