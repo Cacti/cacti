@@ -2221,11 +2221,14 @@ function applyTableSizing() {
 }
 
 function appendHeaderSuppression(url) {
-	url = url.replace('action=tree&', 'action=tree_content&');
-	url = url.split('?header=false').join('?');
-	url = url.split('&header=false').join('');
-	url = url.replace('?&','?');
-	url += (url.indexOf('?') > 0 ? '&header=false':'?header=false');
+	if (url.indexOf('action=tree_content') < 0 && url.indexOf('action=tree') >= 0) {
+		url = url.replace('action=tree', 'action=tree_content');
+	}
+
+	if (url.indexOf('header=false') < 0) {
+		url += (url.indexOf('?') > 0 ? '&header=false':'?header=false');
+	}
+
 	return url;
 }
 

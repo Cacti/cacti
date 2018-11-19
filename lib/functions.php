@@ -4904,7 +4904,7 @@ function get_md5_include_js($path) {
 	global $config;
 
 	if (file_exists($path)) {
-		$npath = str_replace($config['base_path'], '', $path);
+		$npath = str_replace($config['base_path'] . '/', '', $path);
 	} else {
 		$npath = $path;
 	}
