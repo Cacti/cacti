@@ -445,12 +445,15 @@ function display_matching_graphs($rule, $rule_type, $url) {
 								<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 								<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 								<?php
-								$templates = get_allowed_graph_templates();
+								// suppress total rows collection
+								$total_rows = -1;
+
+								$templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 
 								if (cacti_sizeof($templates) > 0) {
-								foreach ($templates as $template) {
-									print "<option value=' " . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim($template['name'], 40) . "</option>\n";
-								}
+									foreach ($templates as $template) {
+										print "<option value=' " . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . title_trim($template['name'], 40) . "</option>\n";
+									}
 								}
 								?>
 							</select>

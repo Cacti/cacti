@@ -538,7 +538,10 @@ function create_site_branch($leaf) {
 		$dhtml_tree[] = "\t\t\t\t\t</ul>\n";
 	}
 
-	$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id']);
+	// suppress total rows collection
+	$total_rows = -1;
+
+	$graph_templates = get_allowed_graph_templates('h.site_id=' . $leaf['site_id'], 'name', '', $total_rows);
 
 	if (cacti_sizeof($graph_templates)) {
 		$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
@@ -609,7 +612,10 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 
 	$dhtml_tree = array();
 
-	$graph_templates = get_allowed_graph_templates('gl.host_id=' . $leaf['host_id']);
+	// suppress total rows collection
+	$total_rows = -1;
+
+	$graph_templates = get_allowed_graph_templates('gl.host_id=' . $leaf['host_id'], 'name', '', $total_rows);
 
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
@@ -952,7 +958,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
-							$graph_templates = get_allowed_graph_templates();
+							// suppress total rows collection
+							$total_rows = -1;
+
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
@@ -1163,8 +1173,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 
 		$('#graph_template_id').hide().multiselect({
 			height: 300,
-			menuWidth: 390,
-			buttonWidth: 390,
+			menuWidth: 420,
+			buttonWidth: 420,
 			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
@@ -1420,7 +1430,10 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
-		$graph_templates = get_allowed_graph_templates($sql_where);
+		// suppress total rows collection
+		$total_rows = -1;
+
+		$graph_templates = get_allowed_graph_templates($sql_where, 'name', '', $total_rows);
 
 		/* for graphs without a template */
 		array_push(

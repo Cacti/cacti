@@ -13,6 +13,7 @@ Cacti CHANGELOG
 -issue#2164: Login page does not remember selected realm
 -issue#2171: datepicker and timepick translation not available
 -issue: Unable to display user profile tabs
+-feature:#2173: Introduce Device and Graph Template Caching to Speed UI
 
 1.2.0 Beta 1
 -security#1882: Bypass output validation in select cases

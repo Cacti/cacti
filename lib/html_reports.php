@@ -249,16 +249,19 @@ if ($hosts == null) {
 	$hosts = array_rekey(get_allowed_devices(),'id','description');
 }
 
+// suppress total rows collection
+$total_rows = -1;
+
 $graph_templates = array();
 if (isset_request_var('host_id') && get_filter_request_var('host_id') > 0) {
 	$graph_templates = array_rekey(
 		get_allowed_graph_templates('h.id = ' . get_request_var('host_id')),
-		'id', 'name'
+		'id', 'name', $total_rows
 	);
 } elseif (cacti_sizeof($report_item) && $report_item['host_id'] > 0) {
 	$graph_templates = array_rekey(
 		get_allowed_graph_templates('h.id = ' . $report_item['host_id']),
-		'id', 'name'
+		'id', 'name', $total_rows
 	);
 }
 

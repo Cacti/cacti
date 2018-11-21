@@ -156,7 +156,11 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
-							$graph_templates = get_allowed_graph_templates();
+							// suppress total rows collection
+							$total_rows = -1;
+
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
@@ -369,8 +373,8 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 
 			$('#graph_template_id').hide().multiselect({
 				height: 300,
-				menuWidth: 390,
-				buttonWidth: 390,
+				menuWidth: 420,
+				buttonWidth: 420,
 				noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 				selectedText: function(numChecked, numTotal, checkedItems) {
 					myReturn = numChecked + ' <?php print __('Templates Selected');?>';

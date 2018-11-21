@@ -609,7 +609,10 @@ case 'list':
 							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
 							<?php
 
-							$graph_templates = get_allowed_graph_templates();
+							// suppress total rows collection
+							$total_rows = -1;
+
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
 							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
@@ -943,8 +946,8 @@ case 'list':
 
 		$('#graph_template_id').hide().multiselect({
 			height: 300,
-			menuWidth: 390,
-			buttonWidth: 390,
+			menuWidth: 420,
+			buttonWidth: 420,
 			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
