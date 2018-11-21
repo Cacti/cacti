@@ -1448,7 +1448,7 @@ function ds() {
 	if (get_request_var('orphans') == '0') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NOT NULL' . $orphan_where . ')';
 	} elseif (get_request_var('orphans') == 1) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NULL' . $orphan_where . ')';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NULL)';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
