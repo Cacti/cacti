@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-18 15:35-0500\n"
+"POT-Creation-Date: 2018-11-21 15:34-0500\n"
 "PO-Revision-Date: 2018-11-18 15:51-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,7 +18,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 2.2\n"
 
-#: about.php:29 include/global_arrays.php:2354 lib/html.php:2200
+#: about.php:29 include/global_arrays.php:2354 lib/html.php:2282
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti 소개"
@@ -121,9 +121,9 @@ msgstr ""
 #: gprint_presets.php:28 graph_templates.php:34 graph_templates.php:442
 #: graphs.php:47 host.php:40 host_templates.php:30 host_templates.php:500
 #: host_templates.php:557 include/global_arrays.php:1413
-#: include/global_settings.php:238 lib/api_automation.php:1279
-#: lib/api_automation.php:1341 lib/api_automation.php:1405 lib/html.php:1082
-#: lib/html_form.php:1253 lib/html_reports.php:1402 links.php:28
+#: include/global_settings.php:238 lib/api_automation.php:1282
+#: lib/api_automation.php:1344 lib/api_automation.php:1408 lib/html.php:1164
+#: lib/html_form.php:1253 lib/html_reports.php:1404 links.php:28
 #: managers.php:28 pollers.php:29 sites.php:28 tree.php:1392 tree.php:1545
 #: tree.php:1605 tree.php:1626 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
@@ -180,14 +180,14 @@ msgstr "다음 집계 그래프를 삭제하려면 &#39;계속&#39;을 클릭하
 #: data_sources.php:537 data_templates.php:364 data_templates.php:374
 #: data_templates.php:390 gprint_presets.php:153 graph_templates.php:318
 #: graph_templates.php:328 graph_templates.php:348 graph_templates.php:357
-#: graph_view.php:880 graphs.php:910 graphs.php:926 graphs.php:937
+#: graph_view.php:888 graphs.php:910 graphs.php:926 graphs.php:937
 #: graphs.php:948 graphs.php:963 graphs.php:977 graphs.php:986 graphs.php:1112
 #: graphs.php:1155 graphs.php:1177 graphs.php:1206 graphs.php:1218
 #: graphs.php:1673 host.php:334 host.php:343 host.php:392 host.php:401
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:265 host_templates.php:279 host_templates.php:290
 #: host_templates.php:339 host_templates.php:402 lib/clog_webapi.php:204
-#: lib/html.php:2231 lib/html_form.php:1252 lib/html_form.php:1264
+#: lib/html.php:2313 lib/html_form.php:1252 lib/html_form.php:1264
 #: lib/html_form.php:1275 lib/html_utility.php:214 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:441 pollers.php:450 pollers.php:459 pollers.php:468
@@ -221,7 +221,7 @@ msgstr "취소"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:265 host_templates.php:279
 #: host_templates.php:290 host_templates.php:340 host_templates.php:403
-#: lib/clog_webapi.php:205 lib/html.php:2230 lib/html_reports.php:754
+#: lib/clog_webapi.php:205 lib/html.php:2312 lib/html_reports.php:304
 #: lib/html_utility.php:214 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:441 pollers.php:450
 #: pollers.php:459 pollers.php:468 sites.php:317 tree.php:647 tree.php:656
@@ -259,7 +259,7 @@ msgstr ""
 "사용하는 집계 그래프 만 선택하십시오."
 
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
-#: auth_changepassword.php:314 auth_profile.php:436 automation_networks.php:400
+#: auth_changepassword.php:314 auth_profile.php:440 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1114 graphs.php:1164 graphs.php:1167
 #: graphs.php:1209 include/auth.php:186 lib/html_form.php:1273
 #: lib/html_utility.php:212 managers.php:1066 permission_denied.php:30
@@ -328,19 +328,19 @@ msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr ""
 "선택한 그래프를 아래의 보고서에 추가하려면 &#39;계속&#39;을 클릭하십시오."
 
-#: aggregate_graphs.php:442 graph_view.php:741 graphs.php:1194
-#: lib/html_reports.php:35 lib/html_reports.php:1582
+#: aggregate_graphs.php:442 graph_view.php:749 graphs.php:1194
+#: lib/html_reports.php:920 lib/html_reports.php:1584
 #, fuzzy
 msgid "Report Name"
 msgstr "보고서 이름"
 
-#: aggregate_graphs.php:446 graph_view.php:748 graphs.php:1198
-#: lib/html_reports.php:1324
+#: aggregate_graphs.php:446 graph_view.php:756 graphs.php:1198
+#: lib/html_reports.php:1326
 #, fuzzy
 msgid "Timespan"
 msgstr "시간 범위"
 
-#: aggregate_graphs.php:450 graph_view.php:755 graphs.php:1202
+#: aggregate_graphs.php:450 graph_view.php:763 graphs.php:1202
 msgid "Align"
 msgstr "정렬"
 
@@ -405,18 +405,18 @@ msgstr "그래프 항목 [새 항목]"
 msgid "Graph Items [edit: %s]"
 msgstr "그래프 항목 [편집 :  %s]"
 
-#: aggregate_graphs.php:615 aggregate_graphs.php:622 lib/html_reports.php:1152
-#: lib/html_reports.php:1157 lib/html_reports.php:1196 utilities.php:1821
+#: aggregate_graphs.php:615 aggregate_graphs.php:622 lib/html_reports.php:1154
+#: lib/html_reports.php:1159 lib/html_reports.php:1198 utilities.php:1821
 msgid "Details"
 msgstr "상세정보"
 
-#: aggregate_graphs.php:616 graphs_new.php:720 lib/html_reports.php:1152
-#: lib/html_reports.php:1243 utilities.php:344
+#: aggregate_graphs.php:616 graphs_new.php:720 lib/html_reports.php:1154
+#: lib/html_reports.php:1245 utilities.php:344
 msgid "Items"
 msgstr "아이템"
 
-#: aggregate_graphs.php:617 aggregate_graphs.php:623 lib/html.php:1751
-#: lib/html_reports.php:1152
+#: aggregate_graphs.php:617 aggregate_graphs.php:623 lib/html.php:1833
+#: lib/html_reports.php:1154
 msgid "Preview"
 msgstr "미리보기"
 
@@ -492,19 +492,18 @@ msgstr "매칭 그래프"
 #: color.php:530 color_templates.php:449 data_input.php:803
 #: data_queries.php:1257 data_source_profiles.php:834 data_sources.php:1364
 #: data_templates.php:845 gprint_presets.php:263 graph_templates.php:631
-#: graph_view.php:584 graph_view.php:996 graphs.php:1856 graphs_new.php:380
-#: host.php:1493 host_templates.php:719 lib/api_automation.php:141
-#: lib/api_automation.php:469 lib/api_automation.php:699
-#: lib/api_automation.php:1021 lib/clog_webapi.php:476 lib/html_filter.php:63
-#: lib/html_graph.php:198 lib/html_graph.php:422 lib/html_reports.php:1487
-#: lib/html_tree.php:124 lib/html_tree.php:934 lib/html_tree.php:1207
-#: links.php:311 managers.php:150 managers.php:494 managers.php:726
-#: plugins.php:366 pollers.php:716 rrdcleaner.php:475 settings.php:397
-#: settings.php:416 settings.php:465 sites.php:425 tree.php:808 tree.php:843
-#: tree.php:878 tree.php:1899 user_admin.php:2214 user_admin.php:2552
-#: user_admin.php:2659 user_admin.php:2745 user_admin.php:2848
-#: user_admin.php:2933 user_admin.php:3018 user_domains.php:654
-#: user_group_admin.php:1838 user_group_admin.php:2163
+#: graph_view.php:586 graphs.php:1860 graphs_new.php:380 host.php:1493
+#: host_templates.php:719 lib/api_automation.php:141 lib/api_automation.php:472
+#: lib/api_automation.php:702 lib/api_automation.php:1024
+#: lib/clog_webapi.php:476 lib/html.php:232 lib/html_filter.php:63
+#: lib/html_graph.php:203 lib/html_reports.php:1489 lib/html_tree.php:131
+#: lib/html_tree.php:949 links.php:311 managers.php:150 managers.php:494
+#: managers.php:726 plugins.php:366 pollers.php:716 rrdcleaner.php:475
+#: settings.php:397 settings.php:416 settings.php:465 sites.php:425
+#: tree.php:808 tree.php:843 tree.php:878 tree.php:1899 user_admin.php:2214
+#: user_admin.php:2552 user_admin.php:2659 user_admin.php:2745
+#: user_admin.php:2848 user_admin.php:2933 user_admin.php:3018
+#: user_domains.php:654 user_group_admin.php:1838 user_group_admin.php:2163
 #: user_group_admin.php:2271 user_group_admin.php:2374
 #: user_group_admin.php:2459 user_group_admin.php:2544 utilities.php:725
 #: utilities.php:1144 utilities.php:1438 utilities.php:1716 utilities.php:2393
@@ -513,12 +512,12 @@ msgid "Search"
 msgstr "검색"
 
 #: aggregate_graphs.php:1085 aggregate_graphs.php:1182
-#: aggregate_graphs.php:1435 color_templates.php:561 graph_view.php:450
-#: graph_view.php:639 graph_view.php:686 graphs.php:1862 graphs.php:1967
+#: aggregate_graphs.php:1435 color_templates.php:561 graph_view.php:452
+#: graph_view.php:645 graph_view.php:694 graphs.php:1866 graphs.php:1971
 #: host.php:1557 include/global_arrays.php:853 include/global_arrays.php:1033
-#: include/global_arrays.php:1770 lib/api_automation.php:281 lib/html.php:1480
-#: lib/html.php:1482 lib/html.php:1560 lib/html_graph.php:204
-#: lib/html_tree.php:985 lib/html_tree.php:1359 tree.php:787 tree.php:1985
+#: include/global_arrays.php:1770 lib/api_automation.php:281 lib/html.php:1562
+#: lib/html.php:1564 lib/html.php:1642 lib/html_graph.php:209
+#: lib/html_tree.php:1005 lib/html_tree.php:1318 tree.php:787 tree.php:1985
 #: user_admin.php:983 user_admin.php:1235 user_admin.php:2580
 #: user_group_admin.php:814 user_group_admin.php:967 user_group_admin.php:2191
 #: utilities.php:303
@@ -534,11 +533,11 @@ msgstr "그래프"
 #: color_templates.php:464 data_input.php:813 data_queries.php:1267
 #: data_source_profiles.php:844 data_source_profiles.php:965
 #: data_sources.php:1374 data_templates.php:871 gprint_presets.php:273
-#: graph_templates.php:641 graph_view.php:643 graphs.php:1866
+#: graph_templates.php:641 graph_view.php:649 graphs.php:1870
 #: graphs_new.php:390 host.php:1518 host_templates.php:729
 #: include/global_form.php:212 lib/api_automation.php:184
-#: lib/api_automation.php:479 lib/api_automation.php:709
-#: lib/api_automation.php:1064 lib/html_reports.php:1507 links.php:321
+#: lib/api_automation.php:482 lib/api_automation.php:712
+#: lib/api_automation.php:1067 lib/html_reports.php:1509 links.php:321
 #: managers.php:160 managers.php:504 plugins.php:390 pollers.php:726
 #: rrdcleaner.php:501 sites.php:435 tree.php:1909 user_admin.php:2224
 #: user_admin.php:2584 user_admin.php:2669 user_admin.php:2773
@@ -564,12 +563,12 @@ msgstr "집계의 일부"
 #: automation_tree_rules.php:843 cdef.php:779 color.php:564
 #: color_templates.php:486 data_input.php:825 data_queries.php:1279
 #: data_source_profiles.php:862 data_sources.php:1315 data_templates.php:889
-#: gprint_presets.php:291 graph_templates.php:659 graph_view.php:592
-#: graphs.php:1847 graphs_new.php:369 host.php:1483 host_templates.php:747
-#: lib/api_automation.php:196 lib/api_automation.php:460
-#: lib/api_automation.php:721 lib/api_automation.php:1076
-#: lib/clog_webapi.php:424 lib/html.php:1302 lib/html_filter.php:81
-#: lib/html_graph.php:185 lib/html_reports.php:1518 lib/html_tree.php:972
+#: gprint_presets.php:291 graph_templates.php:659 graph_view.php:594
+#: graphs.php:1851 graphs_new.php:369 host.php:1483 host_templates.php:747
+#: lib/api_automation.php:196 lib/api_automation.php:463
+#: lib/api_automation.php:724 lib/api_automation.php:1079
+#: lib/clog_webapi.php:424 lib/html.php:1384 lib/html_filter.php:81
+#: lib/html_graph.php:190 lib/html_reports.php:1520 lib/html_tree.php:992
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:738 sites.php:447 tree.php:1921
 #: user_admin.php:2236 user_admin.php:2602 user_admin.php:2687
@@ -583,8 +582,8 @@ msgstr "가기"
 #: automation_templates.php:416 cdef.php:779 color.php:564 data_input.php:825
 #: data_queries.php:1279 data_source_profiles.php:862 data_sources.php:1315
 #: data_templates.php:889 gprint_presets.php:291 graph_templates.php:659
-#: graph_view.php:592 graphs.php:1847 graphs_new.php:369 host.php:1483
-#: host_templates.php:747 lib/html_graph.php:185 managers.php:172
+#: graph_view.php:594 graphs.php:1851 graphs_new.php:369 host.php:1483
+#: host_templates.php:747 lib/html_graph.php:190 managers.php:172
 #: managers.php:516 managers.php:746 plugins.php:402 pollers.php:738
 #: sites.php:447 tree.php:1921 user_admin.php:2236 user_admin.php:2602
 #: user_admin.php:2687 user_admin.php:2791 user_admin.php:2876
@@ -605,13 +604,13 @@ msgstr "필터 설정 / 새로 고침"
 #: automation_tree_rules.php:844 cdef.php:780 color.php:565
 #: color_templates.php:487 data_input.php:826 data_queries.php:1280
 #: data_source_profiles.php:863 data_sources.php:1316 data_templates.php:890
-#: gprint_presets.php:292 graph_templates.php:660 graph_view.php:593
-#: graphs.php:1848 graphs_new.php:370 host.php:1484 host_templates.php:748
-#: lib/api_automation.php:197 lib/api_automation.php:461
-#: lib/api_automation.php:722 lib/api_automation.php:1077
-#: lib/clog_webapi.php:425 lib/html_filter.php:86 lib/html_graph.php:186
-#: lib/html_graph.php:302 lib/html_reports.php:1519 lib/html_tree.php:973
-#: lib/html_tree.php:1083 links.php:332 managers.php:173 managers.php:517
+#: gprint_presets.php:292 graph_templates.php:660 graph_view.php:595
+#: graphs.php:1852 graphs_new.php:370 host.php:1484 host_templates.php:748
+#: lib/api_automation.php:197 lib/api_automation.php:464
+#: lib/api_automation.php:725 lib/api_automation.php:1080
+#: lib/clog_webapi.php:425 lib/html_filter.php:86 lib/html_graph.php:191
+#: lib/html_graph.php:307 lib/html_reports.php:1521 lib/html_tree.php:993
+#: lib/html_tree.php:1103 links.php:332 managers.php:173 managers.php:517
 #: managers.php:747 plugins.php:403 pollers.php:739 sites.php:448 tree.php:1922
 #: user_admin.php:2237 user_admin.php:2603 user_admin.php:2688
 #: user_admin.php:2792 user_admin.php:2877 user_admin.php:2962
@@ -623,8 +622,8 @@ msgstr "지우기"
 #: automation_templates.php:417 cdef.php:780 color.php:565 data_input.php:826
 #: data_queries.php:1280 data_source_profiles.php:863 data_sources.php:1316
 #: data_templates.php:890 gprint_presets.php:292 graph_templates.php:660
-#: graph_view.php:593 graphs.php:1848 graphs_new.php:370 host.php:1484
-#: host_templates.php:748 lib/html_graph.php:186 lib/html_tree.php:973
+#: graph_view.php:595 graphs.php:1852 graphs_new.php:370 host.php:1484
+#: host_templates.php:748 lib/html_graph.php:191 lib/html_tree.php:993
 #: managers.php:173 managers.php:517 managers.php:747 plugins.php:403
 #: pollers.php:739 sites.php:448 tree.php:1922 user_admin.php:2237
 #: user_admin.php:2603 user_admin.php:2688 user_admin.php:2792
@@ -638,8 +637,8 @@ msgstr "지우기"
 msgid "Clear Filters"
 msgstr "필터 지우기"
 
-#: aggregate_graphs.php:1187 aggregate_graphs.php:1515 graph_view.php:692
-#: graphs.php:1141 lib/api_automation.php:569 user_admin.php:991
+#: aggregate_graphs.php:1187 aggregate_graphs.php:1515 graph_view.php:700
+#: graphs.php:1141 lib/api_automation.php:572 user_admin.php:991
 #: user_group_admin.php:822
 #, fuzzy
 msgid "Graph Title"
@@ -647,8 +646,8 @@ msgstr "그래프 제목"
 
 #: aggregate_graphs.php:1188 aggregate_graphs.php:1516
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:243 data_queries.php:1363 data_sources.php:1505
-#: data_templates.php:999 graph_templates.php:767 graphs.php:1983 host.php:1551
+#: data_debug.php:243 data_queries.php:1363 data_sources.php:1496
+#: data_templates.php:999 graph_templates.php:767 graphs.php:1993 host.php:1551
 #: host_templates.php:836 lib/api_automation.php:280 pollers.php:812
 #: sites.php:521 tree.php:1975 user_admin.php:991 user_admin.php:1090
 #: user_admin.php:1235 user_admin.php:1383 user_admin.php:1524
@@ -663,14 +662,14 @@ msgid "Included in Aggregate"
 msgstr "집계에 포함됨"
 
 #: aggregate_graphs.php:1190 aggregate_graphs.php:1518 graph_realtime.php:311
-#: graph_templates.php:770 graphs.php:1986
+#: graph_templates.php:770 graphs.php:2011
 msgid "Size"
 msgstr "크기"
 
 #: aggregate_graphs.php:1206 automation_tree_rules.php:689 cdef.php:900
 #: color.php:726 color.php:728 color_templates.php:578 data_input.php:925
 #: data_queries.php:1383 data_source_profiles.php:1005
-#: data_source_profiles.php:1006 data_sources.php:1549 data_sources.php:1550
+#: data_source_profiles.php:1006 data_sources.php:1565 data_sources.php:1566
 #: data_templates.php:1020 gprint_presets.php:414 graph_templates.php:788
 #: host_templates.php:855 include/global_settings.php:437
 #: include/global_settings.php:736 include/global_settings.php:1453
@@ -684,7 +683,7 @@ msgstr "아니오"
 #: color.php:726 color.php:728 color_templates.php:578 data_input.php:925
 #: data_queries.php:1383 data_source_profiles.php:1004
 #: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1549 data_sources.php:1550 data_templates.php:1020
+#: data_sources.php:1565 data_sources.php:1566 data_templates.php:1020
 #: gprint_presets.php:414 graph_templates.php:788 host_templates.php:855
 #: include/global_settings.php:438 include/global_settings.php:735
 #: include/global_settings.php:1452 lib/installer.php:1747
@@ -694,7 +693,7 @@ msgstr "아니오"
 msgid "Yes"
 msgstr "예"
 
-#: aggregate_graphs.php:1212 graphs.php:2017 lib/api_automation.php:596
+#: aggregate_graphs.php:1212 graphs.php:2046 lib/api_automation.php:599
 #, fuzzy
 msgid "No Graphs Found"
 msgstr "그래프가 없습니다"
@@ -705,10 +704,10 @@ msgstr "그래프가 없습니다"
 msgid "Aggregate Graphs"
 msgstr "집계 그래프"
 
-#: aggregate_graphs.php:1413 data_sources.php:1289 graph_view.php:605
-#: graphs.php:1816 graphs.php:1978 host.php:1464
+#: aggregate_graphs.php:1413 data_sources.php:1289 graph_view.php:607
+#: graphs.php:1816 graphs.php:1982 host.php:1464
 #: include/global_settings.php:499 lib/api_automation.php:441
-#: lib/html_graph.php:153 lib/html_tree.php:940 rrdcleaner.php:351
+#: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
 #: user_admin.php:2558 user_admin.php:2751 user_group_admin.php:2169
 #: user_group_admin.php:2277 utilities.php:1677
 msgid "Template"
@@ -721,9 +720,9 @@ msgstr "템플릿"
 #: data_sources.php:1293 graphs.php:1820 graphs_items.php:331 host.php:1433
 #: host.php:1451 host.php:1468 host.php:1503 lib/api_automation.php:151
 #: lib/api_automation.php:169 lib/api_automation.php:428
-#: lib/api_automation.php:445 lib/api_automation.php:1031
-#: lib/api_automation.php:1049 lib/html.php:1825 lib/html.php:1846
-#: lib/html.php:1880 lib/html_reports.php:1497 managers.php:483
+#: lib/api_automation.php:445 lib/api_automation.php:1034
+#: lib/api_automation.php:1052 lib/html.php:1907 lib/html.php:1928
+#: lib/html.php:1962 lib/html_reports.php:1499 managers.php:483
 #: managers.php:736 user_admin.php:2562 user_admin.php:2755
 #: user_group_admin.php:2173 user_group_admin.php:2281 utilities.php:692
 #: utilities.php:1399 utilities.php:1681 utilities.php:1726 utilities.php:2403
@@ -735,9 +734,9 @@ msgstr "일부"
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
 #: automation_tree_rules.php:949 data_sources.php:871 data_sources.php:1294
-#: data_sources.php:1535 data_templates.php:1022 graph_view.php:960
-#: graphs.php:1455 graphs.php:1464 graphs.php:1821 graphs_items.php:332
-#: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1434 host.php:1469
+#: data_sources.php:1551 data_templates.php:1022 graphs.php:1455
+#: graphs.php:1464 graphs.php:1821 graphs_items.php:332 graphs_items.php:444
+#: host.php:1049 host.php:1060 host.php:1434 host.php:1469
 #: include/global_arrays.php:432 include/global_arrays.php:490
 #: include/global_arrays.php:573 include/global_arrays.php:736
 #: include/global_arrays.php:759 include/global_arrays.php:1497
@@ -752,13 +751,12 @@ msgstr "일부"
 #: include/global_settings.php:519 include/global_settings.php:1064
 #: include/global_settings.php:1525 lib/api_automation.php:152
 #: lib/api_automation.php:429 lib/api_automation.php:446
-#: lib/api_automation.php:584 lib/api_automation.php:1032 lib/html.php:1826
-#: lib/html.php:1844 lib/html.php:1881 lib/html_form.php:329
-#: lib/html_graph.php:386 lib/html_reports.php:347 lib/html_reports.php:399
-#: lib/html_reports.php:411 lib/html_reports.php:420 lib/html_reports.php:430
-#: lib/html_tree.php:1171 settings.php:390 settings.php:409 settings.php:435
-#: user_admin.php:2563 user_admin.php:2756 user_group_admin.php:2174
-#: user_group_admin.php:2282 utilities.php:1682
+#: lib/api_automation.php:587 lib/api_automation.php:1035 lib/html.php:192
+#: lib/html.php:1908 lib/html.php:1926 lib/html.php:1963 lib/html_form.php:329
+#: lib/html_reports.php:595 lib/html_reports.php:631 lib/html_reports.php:643
+#: lib/html_reports.php:652 lib/html_reports.php:662 settings.php:390
+#: settings.php:409 settings.php:435 user_admin.php:2563 user_admin.php:2756
+#: user_group_admin.php:2174 user_group_admin.php:2282 utilities.php:1682
 msgid "None"
 msgstr "없음"
 
@@ -853,7 +851,7 @@ msgstr ""
 
 #: aggregate_templates.php:644 cdef.php:883 color.php:703
 #: color_templates.php:560 data_input.php:907 data_queries.php:1364
-#: data_source_profiles.php:966 data_sources.php:1507 data_templates.php:1000
+#: data_source_profiles.php:966 data_sources.php:1508 data_templates.php:1000
 #: gprint_presets.php:395 graph_templates.php:768 host_templates.php:837
 #: vdef.php:882
 #, fuzzy
@@ -867,9 +865,9 @@ msgstr "삭제 가능"
 msgid "Graphs Using"
 msgstr "그래프 사용"
 
-#: aggregate_templates.php:646 graph_view.php:692 include/global_arrays.php:822
+#: aggregate_templates.php:646 graph_view.php:700 include/global_arrays.php:822
 #: include/global_arrays.php:1160 include/global_form.php:1351
-#: include/global_form.php:1575 lib/html_reports.php:416 tree.php:1648
+#: include/global_form.php:1575 lib/html_reports.php:648 tree.php:1648
 #, fuzzy
 msgid "Graph Template"
 msgstr "그래프 템플릿"
@@ -958,9 +956,9 @@ msgstr "새 비밀번호"
 msgid "Confirm new password"
 msgstr "새 비밀번호 확인"
 
-#: auth_changepassword.php:313 auth_profile.php:548 graphs_new.php:371
-#: lib/html_form.php:1270 lib/html_form.php:1279 lib/html_graph.php:188
-#: lib/html_tree.php:975 settings.php:359
+#: auth_changepassword.php:313 auth_profile.php:552 graphs_new.php:371
+#: lib/html_form.php:1270 lib/html_form.php:1279 lib/html_graph.php:193
+#: lib/html_tree.php:995 settings.php:359
 msgid "Save"
 msgstr "저장"
 
@@ -1042,7 +1040,7 @@ msgstr "액세스가 거부되었습니다. Cacti 관리자에게 연락하십�
 msgid "Cacti"
 msgstr "선인장"
 
-#: auth_login.php:663 lib/html_tree.php:155
+#: auth_login.php:663 lib/html_tree.php:162
 #, fuzzy
 msgid "Login to Cacti"
 msgstr "Cacti에 로그인"
@@ -1110,19 +1108,19 @@ msgid "User Account Details"
 msgstr "사용자 계정 정보"
 
 #: auth_profile.php:293 include/global_arrays.php:730
-#: include/global_settings.php:2099 lib/html.php:1711 lib/html.php:1733
-#: lib/html.php:2192
+#: include/global_settings.php:2099 lib/html.php:1793 lib/html.php:1815
+#: lib/html.php:2274
 #, fuzzy
 msgid "Tree View"
 msgstr "트리보기"
 
-#: auth_profile.php:297 include/global_arrays.php:731 lib/html.php:1718
-#: lib/html.php:1742 lib/html.php:2193
+#: auth_profile.php:297 include/global_arrays.php:731 lib/html.php:1800
+#: lib/html.php:1824 lib/html.php:2275
 msgid "List View"
 msgstr "목록형식 보기"
 
-#: auth_profile.php:301 include/global_arrays.php:732 lib/html.php:1725
-#: lib/html.php:2194
+#: auth_profile.php:301 include/global_arrays.php:732 lib/html.php:1807
+#: lib/html.php:2276
 #, fuzzy
 msgid "Preview View"
 msgstr "미리보기"
@@ -1194,27 +1192,27 @@ msgstr "모든 로그인 세션 토큰을 지 웁니다."
 msgid "User Settings"
 msgstr "사용자 설정"
 
-#: auth_profile.php:462
+#: auth_profile.php:466
 #, fuzzy
 msgid "Private Data Cleared"
 msgstr "삭제 된 비공개 데이터"
 
-#: auth_profile.php:462
+#: auth_profile.php:466
 #, fuzzy
 msgid "Your Private Data has been cleared."
 msgstr "개인 정보가 삭제되었습니다."
 
-#: auth_profile.php:482
+#: auth_profile.php:486
 #, fuzzy
 msgid "All your login sessions have been cleared."
 msgstr "모든 로그인 세션이 지워졌습니다."
 
-#: auth_profile.php:482
+#: auth_profile.php:486
 #, fuzzy
 msgid "User Sessions Cleared"
 msgstr "사용자 세션이 삭제되었습니다."
 
-#: auth_profile.php:561
+#: auth_profile.php:565
 msgid "Reset"
 msgstr "초기화"
 
@@ -1226,7 +1224,7 @@ msgstr "기기 추가"
 #: automation_devices.php:40 automation_devices.php:273
 #: automation_devices.php:391 automation_devices.php:401
 #: automation_devices.php:623 automation_devices.php:624 host.php:1508
-#: lib/api_automation.php:174 lib/api_automation.php:1054
+#: lib/api_automation.php:174 lib/api_automation.php:1057
 #: lib/html_utility.php:858 pollers.php:42
 msgid "Down"
 msgstr "아래로"
@@ -1234,7 +1232,7 @@ msgstr "아래로"
 #: automation_devices.php:41 automation_devices.php:273
 #: automation_devices.php:393 automation_devices.php:403
 #: automation_devices.php:623 automation_devices.php:624 host.php:1507
-#: lib/api_automation.php:173 lib/api_automation.php:1053
+#: lib/api_automation.php:173 lib/api_automation.php:1056
 #: lib/html_utility.php:864
 msgid "Up"
 msgstr "위로"
@@ -1250,10 +1248,10 @@ msgid "Added to Cacti"
 msgstr "선인장에 추가됨"
 
 #: automation_devices.php:107 automation_devices.php:109 data_sources.php:869
-#: graph_view.php:692 graphs.php:1460 include/global_arrays.php:818
+#: graph_view.php:700 graphs.php:1460 include/global_arrays.php:818
 #: include/global_arrays.php:863 include/global_arrays.php:1613
-#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1821
-#: lib/html.php:1851 lib/html_reports.php:406 utilities.php:1532
+#: lib/api_automation.php:424 lib/functions.php:3693 lib/html.php:1903
+#: lib/html.php:1933 lib/html_reports.php:638 utilities.php:1532
 msgid "Device"
 msgstr "장치"
 
@@ -1292,8 +1290,8 @@ msgstr "장치 추가"
 #: host.php:1514 host.php:1614 include/global_arrays.php:850
 #: include/global_arrays.php:903 include/global_arrays.php:2060
 #: lib/api_automation.php:180 lib/api_automation.php:269
-#: lib/api_automation.php:475 lib/api_automation.php:558
-#: lib/api_automation.php:1163 pollers.php:818 sites.php:522 tree.php:786
+#: lib/api_automation.php:478 lib/api_automation.php:561
+#: lib/api_automation.php:1166 pollers.php:818 sites.php:522 tree.php:786
 #: tree.php:1984 user_admin.php:1227 user_admin.php:2769
 #: user_group_admin.php:959 user_group_admin.php:2295 utilities.php:298
 msgid "Devices"
@@ -1325,7 +1323,7 @@ msgstr "연락처"
 #: automation_devices.php:255 include/global_form.php:1094
 #: include/global_form.php:1130 include/global_form.php:1315
 #: include/global_form.php:1655 lib/api_automation.php:276
-#: lib/api_automation.php:1170 lib/installer.php:1702 lib/installer.php:2325
+#: lib/api_automation.php:1173 lib/installer.php:1702 lib/installer.php:2325
 #: managers.php:216 user_admin.php:1090 user_admin.php:1235
 #: user_group_admin.php:967 user_group_admin.php:1914
 msgid "Description"
@@ -1350,8 +1348,8 @@ msgstr "SNMP"
 #: automation_tree_rules.php:817 data_debug.php:243 data_sources.php:1340
 #: data_templates.php:1004 host.php:684 host.php:783 host.php:1499
 #: host.php:1569 lib/api_automation.php:165 lib/api_automation.php:278
-#: lib/api_automation.php:568 lib/api_automation.php:1045
-#: lib/api_automation.php:1173 lib/html_reports.php:1493 lib/installer.php:1702
+#: lib/api_automation.php:571 lib/api_automation.php:1048
+#: lib/api_automation.php:1176 lib/html_reports.php:1495 lib/installer.php:1702
 #: managers.php:218 plugins.php:372 plugins.php:475 pollers.php:814
 #: user_admin.php:1235 user_group_admin.php:967
 msgid "Status"
@@ -1410,7 +1408,7 @@ msgstr "검색된 장치 제거"
 #: automation_devices.php:645 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: lib/html.php:1049 pollers.php:865 user_admin.php:2298 utilities.php:445
+#: lib/html.php:1131 pollers.php:865 user_admin.php:2298 utilities.php:445
 #: utilities.php:827 utilities.php:2147 utilities.php:2244 utilities.php:2252
 #: utilities.php:2255 utilities.php:2258 utilities.php:2264 utilities.php:2493
 msgid "N/A"
@@ -1544,7 +1542,7 @@ msgid "Graph Rules"
 msgstr "그래프 규칙"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902
-#: graphs.php:1977 include/global_arrays.php:1163 include/global_form.php:1585
+#: graphs.php:1981 include/global_arrays.php:1163 include/global_form.php:1585
 #: include/global_form.php:2102
 #, fuzzy
 msgid "Data Query"
@@ -1556,9 +1554,9 @@ msgstr "데이터 쿼리"
 #: automation_tree_rules.php:960 data_sources.php:1345 host.php:1504
 #: include/global_arrays.php:781 include/global_form.php:1467
 #: include/global_settings.php:373 lib/api_automation.php:170
-#: lib/api_automation.php:1050 lib/html_reports.php:1498
-#: lib/html_reports.php:1590 lib/html_reports.php:1601
-#: lib/html_reports.php:1637 links.php:382 links.php:560 managers.php:243
+#: lib/api_automation.php:1053 lib/html_reports.php:1500
+#: lib/html_reports.php:1592 lib/html_reports.php:1603
+#: lib/html_reports.php:1639 links.php:382 links.php:560 managers.php:243
 #: managers.php:598 user_admin.php:1090 user_admin.php:1102 user_admin.php:2285
 #: user_domains.php:350 user_domains.php:751 user_group_admin.php:87
 #: user_group_admin.php:676 user_group_admin.php:691 user_group_admin.php:1918
@@ -1575,8 +1573,8 @@ msgstr "활성화"
 #: include/global_settings.php:1218 include/global_settings.php:1243
 #: include/global_settings.php:1257 include/global_settings.php:1317
 #: include/global_settings.php:1944 lib/api_automation.php:171
-#: lib/api_automation.php:1051 lib/html.php:2256 lib/html_reports.php:1499
-#: lib/html_reports.php:1637 lib/html_utility.php:854 links.php:499
+#: lib/api_automation.php:1054 lib/html.php:2338 lib/html_reports.php:1501
+#: lib/html_reports.php:1639 lib/html_utility.php:854 links.php:499
 #: managers.php:243 managers.php:598 pollers.php:43 user_admin.php:1102
 #: user_domains.php:411 user_group_admin.php:691 utilities.php:2279
 msgid "Disabled"
@@ -1713,7 +1711,7 @@ msgstr "네트워크 검색 범위 [신규]"
 
 #: automation_networks.php:436 include/global_form.php:1789
 #: include/global_form.php:1885 include/global_settings.php:50
-#: lib/html_reports.php:30
+#: lib/html_reports.php:915
 msgid "General Settings"
 msgstr "일반 설정"
 
@@ -2394,8 +2392,8 @@ msgid "No Networks Found"
 msgstr "네트워크를 찾을 수 없음"
 
 #: automation_networks.php:1197 graph.php:362 graph_realtime.php:293
-#: lib/clog_webapi.php:456 lib/html_graph.php:301 lib/html_tree.php:1082
-#: lib/html_tree.php:1103 utilities.php:1128 utilities.php:2036
+#: lib/clog_webapi.php:456 lib/html_graph.php:306 lib/html_tree.php:1102
+#: lib/html_tree.php:1123 utilities.php:1128 utilities.php:2036
 msgid "Refresh"
 msgstr "새로고침"
 
@@ -2484,14 +2482,14 @@ msgstr "SNMP 옵션 [신규]"
 
 #: automation_snmp.php:419 include/global_form.php:1045
 #: include/global_form.php:2043 include/global_form.php:2085
-#: include/global_form.php:2236 lib/api_automation.php:1240
-#: lib/api_automation.php:1302 lib/api_automation.php:1364
-#: lib/html_reports.php:469 lib/html_reports.php:1321
+#: include/global_form.php:2236 lib/api_automation.php:1243
+#: lib/api_automation.php:1305 lib/api_automation.php:1367
+#: lib/html_reports.php:701 lib/html_reports.php:1323
 #, fuzzy
 msgid "Sequence"
 msgstr "순서"
 
-#: automation_snmp.php:420 lib/html_reports.php:470
+#: automation_snmp.php:420 lib/html_reports.php:702
 #, fuzzy
 msgid "Sequence of Item."
 msgstr "항목의 순서."
@@ -2516,9 +2514,9 @@ msgstr "이 SNMP 옵션 세트의 이름을 입력하십시오."
 msgid "Automation SNMP Options"
 msgstr "자동화 SNMP 옵션"
 
-#: automation_snmp.php:504 cdef.php:606 lib/api_automation.php:1239
-#: lib/api_automation.php:1301 lib/api_automation.php:1363
-#: lib/html_reports.php:1320 vdef.php:589
+#: automation_snmp.php:504 cdef.php:606 lib/api_automation.php:1242
+#: lib/api_automation.php:1304 lib/api_automation.php:1366
+#: lib/html_reports.php:1322 vdef.php:589
 msgid "Item"
 msgstr "아이템"
 
@@ -2582,8 +2580,8 @@ msgid "Action"
 msgstr "실행"
 
 #: automation_snmp.php:527 color_templates.php:93 lib/api_aggregate.php:1384
-#: lib/api_aggregate.php:1387 lib/api_aggregate.php:1392 lib/html.php:1008
-#: lib/html_reports.php:1386
+#: lib/api_aggregate.php:1387 lib/api_aggregate.php:1392 lib/html.php:1090
+#: lib/html_reports.php:1388
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "항목 # % d"
@@ -2594,17 +2592,17 @@ msgstr "없음"
 
 #: automation_snmp.php:544 automation_templates.php:525 cdef.php:633
 #: color_templates.php:110 data_queries.php:786 data_queries.php:886
-#: lib/api_automation.php:1266 lib/api_automation.php:1328
-#: lib/api_automation.php:1392 lib/html.php:1071 lib/html_reports.php:1395
-#: lib/html_reports.php:1397 tree.php:1998 tree.php:2005 vdef.php:618
+#: lib/api_automation.php:1269 lib/api_automation.php:1331
+#: lib/api_automation.php:1395 lib/html.php:1153 lib/html_reports.php:1397
+#: lib/html_reports.php:1399 tree.php:1998 tree.php:2005 vdef.php:618
 msgid "Move Down"
 msgstr "아래로 이동"
 
 #: automation_snmp.php:550 automation_templates.php:531 cdef.php:639
 #: color_templates.php:116 data_queries.php:791 data_queries.php:891
-#: lib/api_automation.php:1272 lib/api_automation.php:1334
-#: lib/api_automation.php:1398 lib/html.php:1076 lib/html_reports.php:1397
-#: lib/html_reports.php:1399 tree.php:2002 tree.php:2006 vdef.php:624
+#: lib/api_automation.php:1275 lib/api_automation.php:1337
+#: lib/api_automation.php:1401 lib/html.php:1158 lib/html_reports.php:1399
+#: lib/html_reports.php:1401 tree.php:2002 tree.php:2006 vdef.php:624
 msgid "Move Up"
 msgstr "위로 이동"
 
@@ -2675,7 +2673,7 @@ msgstr "자동화 템플릿 삭제"
 
 #: automation_templates.php:274 include/global_arrays.php:1164
 #: include/global_form.php:1172 include/global_form.php:1570
-#: lib/html_reports.php:396
+#: lib/html_reports.php:628
 #, fuzzy
 msgid "Device Template"
 msgstr "기기 템플릿"
@@ -2758,7 +2756,7 @@ msgstr "자동화 템플릿 [신규]"
 msgid "Device Automation Templates"
 msgstr "장치 자동화 템플릿"
 
-#: automation_templates.php:492 data_sources.php:1509 user_admin.php:1383
+#: automation_templates.php:492 data_sources.php:1520 user_admin.php:1383
 #: user_group_admin.php:1110
 msgid "Template Name"
 msgstr "템플릿 이름"
@@ -3247,7 +3245,7 @@ msgid "Color Item"
 msgstr "색상 항목"
 
 #: color_templates.php:132 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1444 lib/html.php:1090
+#: lib/api_aggregate.php:1444 lib/html.php:1172
 #, fuzzy
 msgid "No Items"
 msgstr "아이템"
@@ -3375,7 +3373,7 @@ msgstr "데이터 소스 디버깅"
 #: data_debug.php:198 data_debug.php:243 data_queries.php:709
 #: data_sources.php:932 data_templates.php:574 graphs_items.php:440
 #: include/global_arrays.php:865 include/global_form.php:926
-#: lib/api_aggregate.php:1304 lib/html.php:968
+#: lib/api_aggregate.php:1304 lib/html.php:1050
 msgid "Data Source"
 msgstr "데이터 원본"
 
@@ -3389,7 +3387,7 @@ msgstr "유지 관리 일정에 의미있는 이름을 제공하십시오."
 msgid "Data Source Debugger"
 msgstr "데이터 소스 디버거"
 
-#: data_debug.php:243 data_sources.php:1508 data_templates.php:1024
+#: data_debug.php:243 data_sources.php:1514 data_templates.php:1024
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "활성화"
@@ -3809,7 +3807,7 @@ msgid "No Suggested Values Found"
 msgstr "제안 된 값 없음"
 
 #: data_queries.php:818 data_queries.php:919 include/global_form.php:2019
-#: include/global_form.php:2061 lib/api_automation.php:1365 utilities.php:1532
+#: include/global_form.php:2061 lib/api_automation.php:1368 utilities.php:1532
 msgid "Field Name"
 msgstr "Field Name"
 
@@ -3866,7 +3864,7 @@ msgid "Associated Graph Templates"
 msgstr "연결된 그래프 템플릿"
 
 #: data_queries.php:1115 graph_templates.php:766 graphs_new.php:447
-#: host.php:683 lib/api_automation.php:571
+#: host.php:683 lib/api_automation.php:574
 #, fuzzy
 msgid "Graph Template Name"
 msgstr "그래프 템플릿 이름"
@@ -3893,7 +3891,7 @@ msgstr "연결된 그래프 삭제"
 
 #: data_queries.php:1248 data_queries.php:1263 data_queries.php:1353
 #: include/global_arrays.php:859 include/global_arrays.php:1030
-#: include/global_arrays.php:2132 lib/api_automation.php:1060
+#: include/global_arrays.php:2132 lib/api_automation.php:1063
 #, fuzzy
 msgid "Data Queries"
 msgstr "데이터 쿼리"
@@ -4037,7 +4035,7 @@ msgid "Data Retention"
 msgstr "데이터 보존"
 
 #: data_source_profiles.php:566 include/global_settings.php:845
-#: lib/html_reports.php:436
+#: lib/html_reports.php:668
 #, fuzzy
 msgid "Graph Timespan"
 msgstr "그래프 시간"
@@ -4047,7 +4045,7 @@ msgid "Steps"
 msgstr "단계"
 
 #: data_source_profiles.php:568 graphs_new.php:386 include/global_form.php:254
-#: lib/html.php:409 lib/html_filter.php:73 lib/installer.php:2394
+#: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2394
 #: lib/rrd.php:2751 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "행"
@@ -4184,7 +4182,7 @@ msgstr "데이터 소스에서 사용중인 프로파일은 현재 읽기 전용
 msgid "Read Only"
 msgstr "읽기 전용"
 
-#: data_source_profiles.php:968 data_sources.php:1506
+#: data_source_profiles.php:968 data_sources.php:1502
 #: include/global_settings.php:983
 #, fuzzy
 msgid "Poller Interval"
@@ -4432,7 +4430,7 @@ msgstr "데이터 소스 항목 필드"
 msgid "Custom Data"
 msgstr "맞춤 데이터"
 
-#: data_sources.php:993 lib/html_reports.php:1151 user_admin.php:1956
+#: data_sources.php:993 lib/html_reports.php:1153 user_admin.php:1956
 #, fuzzy, php-format
 msgid "[edit: %s]"
 msgstr "[편집 :  %s]"
@@ -4483,19 +4481,19 @@ msgid "Profile"
 msgstr "프로필"
 
 #: data_sources.php:1328 data_sources.php:1344 data_sources.php:1354
-#: data_templates.php:855 graph_view.php:959 graphs_new.php:346
-#: lib/clog_webapi.php:438 lib/html_graph.php:385 lib/html_reports.php:357
-#: lib/html_tree.php:1170 plugins.php:376 settings.php:389 settings.php:408
-#: settings.php:434 tree.php:784 utilities.php:674 utilities.php:1110
+#: data_templates.php:855 graphs_new.php:346 lib/clog_webapi.php:438
+#: lib/html.php:191 lib/html_reports.php:605 plugins.php:376 settings.php:389
+#: settings.php:408 settings.php:434 tree.php:784 utilities.php:674
+#: utilities.php:1110
 msgid "All"
 msgstr "모두"
 
-#: data_sources.php:1350 data_sources.php:1356 graphs.php:1842
+#: data_sources.php:1350 data_sources.php:1356 graphs.php:1846
 #, fuzzy
 msgid "Orphaned"
 msgstr "고아"
 
-#: data_sources.php:1370 data_sources.php:1495 host.php:1563
+#: data_sources.php:1370 data_sources.php:1480 host.php:1563
 #: include/global_arrays.php:854 include/global_arrays.php:2042
 #: lib/api_automation.php:282 user_admin.php:1235 user_group_admin.php:967
 #: utilities.php:308
@@ -4503,12 +4501,12 @@ msgstr "고아"
 msgid "Data Sources"
 msgstr "데이터 소스"
 
-#: data_sources.php:1504 utilities.php:1819
+#: data_sources.php:1490 utilities.php:1819
 #, fuzzy
 msgid "Data Source Name"
 msgstr "데이터 소스 이름"
 
-#: data_sources.php:1504
+#: data_sources.php:1493
 #, fuzzy
 msgid ""
 "The name of this Data Source. Generally programtically generated from the "
@@ -4517,7 +4515,7 @@ msgstr ""
 "이 데이터 소스의 이름입니다. 일반적으로 데이터 템플릿 정의에서 프로그래밍 방"
 "식으로 생성됩니다."
 
-#: data_sources.php:1505
+#: data_sources.php:1499
 #, fuzzy
 msgid ""
 "The internal database ID for this Data Source. Useful when performing "
@@ -4526,18 +4524,18 @@ msgstr ""
 "이 데이터 소스의 내부 데이터베이스 ID입니다. 자동화 또는 디버깅을 수행 할 때 "
 "유용합니다."
 
-#: data_sources.php:1506
+#: data_sources.php:1505
 #, fuzzy
 msgid "The frequency that data is collected for this Data Source."
 msgstr "이 데이터 소스에 대해 수집 된 데이터의 빈도입니다."
 
-#: data_sources.php:1507
+#: data_sources.php:1511
 #, fuzzy
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
 msgstr ""
 "이 데이터 소스가 그래프에서 오랫동안 사용되지 않으면 삭제 될 수 있습니다."
 
-#: data_sources.php:1508
+#: data_sources.php:1517
 #, fuzzy
 msgid ""
 "Whether or not data will be collected for this Data Source. Controlled at "
@@ -4545,12 +4543,12 @@ msgid ""
 msgstr ""
 "이 데이터 소스에 대해 데이터 수집 여부. 데이터 템플릿 수준에서 제어됩니다."
 
-#: data_sources.php:1509
+#: data_sources.php:1523
 #, fuzzy
 msgid "The Data Template that this Data Source was based upon."
 msgstr "이 데이터 소스의 기반이 된 데이터 템플릿입니다."
 
-#: data_sources.php:1556
+#: data_sources.php:1572
 #, fuzzy
 msgid "No Data Sources Found"
 msgstr "데이터 소스 없음"
@@ -4818,7 +4816,7 @@ msgstr "GPRINT 프리셋 없음"
 msgid "Viewing Graph"
 msgstr "그래프보기"
 
-#: graph.php:138 lib/html.php:359
+#: graph.php:138 lib/html.php:441
 #, fuzzy
 msgid "Graph Details, Zooming and Debugging Utilities"
 msgstr "그래프 세부 정보, 확대 / 축소 및 디버깅 유틸리티"
@@ -4828,12 +4826,12 @@ msgstr "그래프 세부 정보, 확대 / 축소 및 디버깅 유틸리티"
 msgid "CSV Export"
 msgstr "CSV 내보내기"
 
-#: graph.php:140 lib/html.php:378 lib/html.php:380
+#: graph.php:140 lib/html.php:460 lib/html.php:462
 #, fuzzy
 msgid "Click to view just this Graph in Real-time"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: graph.php:230 lib/html.php:2189
+#: graph.php:230 lib/html.php:2271
 #, fuzzy
 msgid "Utility View"
 msgstr "유틸리티보기"
@@ -4891,12 +4889,12 @@ msgstr ""
 msgid "Cacti Real-time Graphing"
 msgstr "선인장 실시간 그래프"
 
-#: graph_realtime.php:279 lib/html_graph.php:310 lib/html_tree.php:1091
+#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1111
 msgid "Window"
 msgstr "창"
 
-#: graph_realtime.php:325 lib/html_graph.php:233 lib/html_reports.php:125
-#: lib/html_tree.php:1014
+#: graph_realtime.php:325 lib/html_graph.php:238 lib/html_reports.php:1009
+#: lib/html_tree.php:1034
 msgid "Thumbnails"
 msgstr "썸네일"
 
@@ -4956,12 +4954,12 @@ msgstr ""
 "다음 그래프 템플릿 및 그래프의 높이와 너비를 아래의 크기로 조정하려면 &#39;계"
 "속&#39;을 클릭하십시오. 아래의 기본값은 설정에서 유지 관리됩니다."
 
-#: graph_templates.php:341 lib/html_reports.php:117
+#: graph_templates.php:341 lib/html_reports.php:1001
 #, fuzzy
 msgid "Graph Height"
 msgstr "그래프 높이"
 
-#: graph_templates.php:343 lib/html_reports.php:109
+#: graph_templates.php:343 lib/html_reports.php:993
 #, fuzzy
 msgid "Graph Width"
 msgstr "그래프 너비"
@@ -5029,7 +5027,7 @@ msgstr ""
 
 #: graph_templates.php:622 graph_templates.php:637 graph_templates.php:757
 #: graphs_new.php:442 include/global_arrays.php:1040
-#: include/global_arrays.php:1970 lib/html_tree.php:536 user_admin.php:1375
+#: include/global_arrays.php:1970 lib/html_tree.php:548 user_admin.php:1375
 #: user_group_admin.php:1102
 #, fuzzy
 msgid "Graph Templates"
@@ -5146,92 +5144,91 @@ msgstr "그래프 미리보기 필터"
 msgid "[ Custom Graph List Applied - Filtering from List ]"
 msgstr "[맞춤 그래프 목록 적용 - 목록에서 필터링]"
 
-#: graph_view.php:477
+#: graph_view.php:479
 #, fuzzy
 msgid "YOU DO NOT HAVE RIGHTS FOR LIST VIEW"
 msgstr "당신은 목록보기에 대한 권리가 없다."
 
-#: graph_view.php:576
+#: graph_view.php:578
 #, fuzzy
 msgid "Graph List View Filters"
 msgstr "그래프 목록보기 필터"
 
-#: graph_view.php:576
+#: graph_view.php:578
 #, fuzzy
 msgid "[ Custom Graph List Applied - Filter FROM List ]"
 msgstr "[사용자 정의 그래프 목록 적용 - 필터 FROM 목록]"
 
-#: graph_view.php:594 graph_view.php:769
+#: graph_view.php:596 graph_view.php:777
 msgid "View"
 msgstr "보기"
 
-#: graph_view.php:594 graph_view.php:769 include/global_arrays.php:1019
+#: graph_view.php:596 graph_view.php:777 include/global_arrays.php:1019
 #, fuzzy
 msgid "View Graphs"
 msgstr "그래프보기"
 
-#: graph_view.php:596
+#: graph_view.php:598
 #, fuzzy
 msgid "Add to a Report"
 msgstr "보고서에 추가"
 
-#: graph_view.php:596
+#: graph_view.php:598
 msgid "Report"
 msgstr "보고서"
 
-#: graph_view.php:609 graph_view.php:948 graph_view.php:953
-#: lib/html_graph.php:157 lib/html_graph.php:374 lib/html_graph.php:379
-#: lib/html_tree.php:944 lib/html_tree.php:1159 lib/html_tree.php:1164
+#: graph_view.php:611 lib/html.php:177 lib/html.php:182 lib/html_graph.php:157
+#: lib/html_tree.php:959
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "모든 그래프 및 템플릿"
 
-#: graph_view.php:692
+#: graph_view.php:612 graphs.php:427 graphs.php:1980 lib/html.php:185
+#: lib/html_graph.php:158 lib/html_tree.php:960
+#, fuzzy
+msgid "Not Templated"
+msgstr "템플리트되지 않음"
+
+#: graph_view.php:700
 #, fuzzy
 msgid "Graph Size"
 msgstr "그래프 크기"
 
-#: graph_view.php:706
+#: graph_view.php:714
 #, fuzzy
 msgid "Aggregated Device"
 msgstr "집계 된 장치"
 
-#: graph_view.php:709
+#: graph_view.php:717
 #, fuzzy
 msgid "Non-Device"
 msgstr "비 기기"
 
-#: graph_view.php:710
+#: graph_view.php:718
 msgid "Not Applicable"
 msgstr "적용 할 수 없ㅇ"
 
-#: graph_view.php:738
+#: graph_view.php:746
 #, fuzzy
 msgid "Select the Report to add the selected Graphs to."
 msgstr "선택한 그래프를 추가하려면 보고서를 선택하십시오."
 
-#: graph_view.php:833 include/global_arrays.php:1794
+#: graph_view.php:841 include/global_arrays.php:1794
 #: include/global_settings.php:2095
 msgid "Preview Mode"
 msgstr "RTL Mode"
 
-#: graph_view.php:872
+#: graph_view.php:880
 #, fuzzy
 msgid "Add Selected Graphs to Report"
 msgstr "선택한 그래프를 보고서에 추가"
 
-#: graph_view.php:886 lib/html.php:2228
+#: graph_view.php:894 lib/html.php:2310
 msgid "Ok"
 msgstr "확인"
 
-#: graph_view.php:950 lib/html_graph.php:376 lib/html_tree.php:1161
-#: settings.php:425
-#, fuzzy
-msgid "Templates Selected"
-msgstr "선택한 템플릿"
-
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1725
-#: include/global_form.php:1972 lib/html.php:1621 links.php:380
+#: include/global_form.php:1972 lib/html.php:1703 links.php:380
 msgid "Title"
 msgstr "제목"
 
@@ -5252,7 +5249,7 @@ msgstr "단계"
 msgid "Total Rows"
 msgstr "총 행 수"
 
-#: graph_xport.php:127 graph_xport.php:159 lib/api_automation.php:570
+#: graph_xport.php:127 graph_xport.php:159 lib/api_automation.php:573
 #, fuzzy
 msgid "Graph ID"
 msgstr "그래프 ID"
@@ -5320,12 +5317,7 @@ msgstr "그래프 생성 :  %s"
 msgid "ERROR: No Data Source associated. Check Template"
 msgstr "오류 : 연결된 데이터 소스가 없습니다. 템플릿 확인"
 
-#: graphs.php:427 graphs.php:1976
-#, fuzzy
-msgid "Non Templated"
-msgstr "템플릿이없는"
-
-#: graphs.php:440 graphs.php:453 lib/api_automation.php:753
+#: graphs.php:440 graphs.php:453 lib/api_automation.php:756
 msgid "Not Found"
 msgstr "찾을 수 없습니다"
 
@@ -5582,13 +5574,13 @@ msgstr "그래프 항목 필드"
 msgid "Graph Management"
 msgstr "그래프 관리"
 
-#: graphs.php:1982 include/global_form.php:1793 lib/html_reports.php:426
+#: graphs.php:1987 include/global_form.php:1793 lib/html_reports.php:658
 #: tree.php:891
 #, fuzzy
 msgid "Graph Name"
 msgstr "그래프 이름"
 
-#: graphs.php:1982
+#: graphs.php:1990
 #, fuzzy
 msgid ""
 "The Title of this Graph.  Generally programatically generated from the Graph "
@@ -5599,7 +5591,7 @@ msgstr ""
 "로그래밍 방식으로 생성됩니다. 제목의 최대 길이는 설정 -&gt; 시각에서 조절됩니"
 "다."
 
-#: graphs.php:1983
+#: graphs.php:1996
 #, fuzzy
 msgid ""
 "The internal database ID for this Graph.  Useful when performing automation "
@@ -5608,26 +5600,26 @@ msgstr ""
 "이 그래프의 내부 데이터베이스 ID입니다. 자동화 또는 디버깅을 수행 할 때 유용"
 "합니다."
 
-#: graphs.php:1984
+#: graphs.php:1999
 #, fuzzy
 msgid "Source Type"
 msgstr "소스 유형"
 
-#: graphs.php:1984
+#: graphs.php:2002
 #, fuzzy
 msgid "The underlying source that this Graph was based upon."
 msgstr "이 그래프가 기초가 된 근본 원인."
 
-#: graphs.php:1985
+#: graphs.php:2005
 msgid "Source Name"
 msgstr "소스 이름"
 
-#: graphs.php:1985
+#: graphs.php:2008
 #, fuzzy
 msgid "The Graph Template or Data Query that this Graph was based upon."
 msgstr "이 그래프가 기반으로 한 그래프 템플릿 또는 데이터 쿼리"
 
-#: graphs.php:1986
+#: graphs.php:2014
 #, fuzzy
 msgid "The size of this Graph when not in Preview mode."
 msgstr "미리보기 모드가 아닌 경우이 그래프의 크기입니다."
@@ -5673,7 +5665,7 @@ msgstr "[모든 장치]의 새로운 그래프"
 msgid "New Graphs for None Host Type"
 msgstr "없음 호스트 유형에 대한 새 그래프"
 
-#: graphs_new.php:307 lib/html.php:2187
+#: graphs_new.php:307 lib/html.php:2269
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "저장된 필터 설정"
@@ -5703,12 +5695,12 @@ msgstr "이 기기 수정"
 msgid "Create New Device"
 msgstr "새 장치 만들기"
 
-#: graphs_new.php:448 graphs_new.php:742 lib/html.php:847 user_admin.php:1596
+#: graphs_new.php:448 graphs_new.php:742 lib/html.php:929 user_admin.php:1596
 #: user_group_admin.php:1317
 msgid "Select All"
 msgstr "모두 선택"
 
-#: graphs_new.php:448 graphs_new.php:742 lib/html.php:760 lib/html.php:847
+#: graphs_new.php:448 graphs_new.php:742 lib/html.php:842 lib/html.php:929
 #, fuzzy
 msgid "Select All Rows"
 msgstr "모든 행 선택"
@@ -6005,9 +5997,9 @@ msgstr "색인 다시 생성 방법"
 #: include/global_arrays.php:2258 include/global_arrays.php:2450
 #: include/global_arrays.php:2474 include/global_arrays.php:2492
 #: include/global_arrays.php:2510 include/global_arrays.php:2528
-#: include/global_arrays.php:2552 lib/api_automation.php:1245
-#: lib/api_automation.php:1307 lib/api_automation.php:1370
-#: lib/html_reports.php:1327 links.php:378 plugins.php:472
+#: include/global_arrays.php:2552 lib/api_automation.php:1248
+#: lib/api_automation.php:1310 lib/api_automation.php:1373
+#: lib/html_reports.php:1329 links.php:378 plugins.php:472
 msgid "Actions"
 msgstr "작업"
 
@@ -6084,7 +6076,7 @@ msgstr "SNMP 설명"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1429 include/global_settings.php:507 lib/html.php:1876
+#: host.php:1429 include/global_settings.php:507 lib/html.php:1958
 msgid "Site"
 msgstr "사이트"
 
@@ -6093,24 +6085,24 @@ msgstr "사이트"
 msgid "Export Devices"
 msgstr "장치 내보내기"
 
-#: host.php:1506 lib/api_automation.php:172 lib/api_automation.php:1052
+#: host.php:1506 lib/api_automation.php:172 lib/api_automation.php:1055
 #, fuzzy
 msgid "Not Up"
 msgstr "안 함"
 
-#: host.php:1509 lib/api_automation.php:175 lib/api_automation.php:1055
+#: host.php:1509 lib/api_automation.php:175 lib/api_automation.php:1058
 #: lib/html_utility.php:861 pollers.php:44
 #, fuzzy
 msgid "Recovering"
 msgstr "복구 중"
 
-#: host.php:1510 lib/api_automation.php:176 lib/api_automation.php:1056
+#: host.php:1510 lib/api_automation.php:176 lib/api_automation.php:1059
 #: lib/html_utility.php:870 plugins.php:180 plugins.php:184 plugins.php:203
 #: utilities.php:2143
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: host.php:1539 lib/api_automation.php:565 tree.php:857 utilities.php:1820
+#: host.php:1539 lib/api_automation.php:568 tree.php:857 utilities.php:1820
 #, fuzzy
 msgid "Device Description"
 msgstr "장치 설명"
@@ -6121,8 +6113,8 @@ msgid "The name by which this Device will be referred to."
 msgstr "이 장치가 참조되는 이름입니다."
 
 #: host.php:1545 include/global_form.php:1137 include/global_form.php:1663
-#: lib/api_automation.php:277 lib/api_automation.php:566
-#: lib/api_automation.php:840 lib/api_automation.php:1171 managers.php:219
+#: lib/api_automation.php:277 lib/api_automation.php:569
+#: lib/api_automation.php:843 lib/api_automation.php:1174 managers.php:219
 #: pollers.php:125 pollers.php:813 user_admin.php:1235 user_group_admin.php:967
 #, fuzzy
 msgid "Hostname"
@@ -6346,8 +6338,8 @@ msgstr "장치 템플릿"
 msgid "Has Devices"
 msgstr "장치 있음"
 
-#: host_templates.php:835 lib/api_automation.php:279 lib/api_automation.php:567
-#: lib/api_automation.php:1172
+#: host_templates.php:835 lib/api_automation.php:279 lib/api_automation.php:570
+#: lib/api_automation.php:1175
 #, fuzzy
 msgid "Device Template Name"
 msgstr "기기 템플릿 이름"
@@ -7055,7 +7047,7 @@ msgstr "오른쪽"
 msgid "Justified"
 msgstr "양쪽 맞춤"
 
-#: include/global_arrays.php:494 lib/html.php:2254
+#: include/global_arrays.php:494 lib/html.php:2336
 msgid "Center"
 msgstr "중앙"
 
@@ -7308,8 +7300,8 @@ msgid "Enabled (strict mode)"
 msgstr "사용 (엄격 모드)"
 
 #: include/global_arrays.php:787 include/global_form.php:2027
-#: include/global_form.php:2069 lib/api_automation.php:1243
-#: lib/api_automation.php:1305
+#: include/global_form.php:2069 lib/api_automation.php:1246
+#: lib/api_automation.php:1308
 msgid "Operator"
 msgstr "운영자"
 
@@ -7349,7 +7341,7 @@ msgstr "헤더"
 
 #: include/global_arrays.php:817 include/global_arrays.php:864
 #: include/global_arrays.php:1448 include/global_arrays.php:1612
-#: lib/html.php:2243
+#: lib/html.php:2325
 msgid "Graph"
 msgstr "그래프"
 
@@ -7489,7 +7481,7 @@ msgstr "기기 규칙"
 
 #: include/global_arrays.php:877 include/global_arrays.php:923
 #: include/global_arrays.php:1038 lib/html_filter.php:178
-#: lib/html_graph.php:247 lib/html_tree.php:1028
+#: lib/html_graph.php:252 lib/html_tree.php:1048
 msgid "Presets"
 msgstr "사전 설정"
 
@@ -7525,7 +7517,7 @@ msgid "Configuration"
 msgstr "구성"
 
 #: include/global_arrays.php:889 include/global_arrays.php:909
-#: lib/html.php:2010 lib/html.php:2258
+#: lib/html.php:2092 lib/html.php:2340
 msgid "Settings"
 msgstr "설정"
 
@@ -7586,7 +7578,7 @@ msgstr "모든 라인"
 msgid "%d Lines"
 msgstr "% d 개 라인"
 
-#: include/global_arrays.php:1014 lib/html_reports.php:1632
+#: include/global_arrays.php:1014 lib/html_reports.php:1634
 msgid "Never"
 msgstr "안함"
 
@@ -8495,7 +8487,7 @@ msgid "List Mode"
 msgstr "목록 모드"
 
 #: include/global_arrays.php:1820 include/global_arrays.php:1826
-#: lib/functions.php:2469 lib/html.php:1471 lib/html.php:1548 links.php:345
+#: lib/functions.php:2469 lib/html.php:1553 lib/html.php:1630 links.php:345
 #: user_admin.php:1656 user_group_admin.php:1391
 #, fuzzy
 msgid "Console"
@@ -8653,7 +8645,7 @@ msgid "Export Results"
 msgstr "내보내기 결과"
 
 #: include/global_arrays.php:2378 include/global_arrays.php:2408
-#: lib/html.php:1492 lib/html.php:1494 lib/html.php:1573
+#: lib/html.php:1574 lib/html.php:1576 lib/html.php:1655
 #, fuzzy
 msgid "Reporting"
 msgstr "보고"
@@ -9717,7 +9709,7 @@ msgstr "범례 방향 (--legend-direction = &lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "지정된 수직 순서로 범례 항목을 배치합니다."
 
-#: include/global_form.php:919 lib/api_aggregate.php:1305 lib/html.php:969
+#: include/global_form.php:919 lib/api_aggregate.php:1305 lib/html.php:1051
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "그래프 항목 유형"
@@ -10111,7 +10103,7 @@ msgid "A useful name for this graph tree."
 msgstr "이 그래프 트리의 유용한 이름."
 
 #: include/global_form.php:1409 include/global_form.php:2204
-#: lib/api_automation.php:1366 tree.php:1641
+#: lib/api_automation.php:1369 tree.php:1641
 #, fuzzy
 msgid "Sorting Type"
 msgstr "정렬 유형"
@@ -10501,7 +10493,7 @@ msgid "A useful name for this Template."
 msgstr "이 템플릿의 유용한 이름입니다."
 
 #: include/global_form.php:2011 include/global_form.php:2053
-#: lib/api_automation.php:1241 lib/api_automation.php:1303
+#: lib/api_automation.php:1244 lib/api_automation.php:1306
 #, fuzzy
 msgid "Operation"
 msgstr "조작"
@@ -11241,7 +11233,7 @@ msgstr ""
 msgid "Simple"
 msgstr "단순"
 
-#: include/global_settings.php:417 lib/html.php:2245
+#: include/global_settings.php:417 lib/html.php:2327
 msgid "Advanced"
 msgstr "고급"
 
@@ -12864,7 +12856,7 @@ msgstr "핑 메일 서버"
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "테스트 이메일을 보내기 전에 메일 서버에 핑 (ping) 하시겠습니까?"
 
-#: include/global_settings.php:1456 lib/html_reports.php:186
+#: include/global_settings.php:1456 lib/html_reports.php:1070
 msgid "From Email Address"
 msgstr "보낸 사람 이메일 주소"
 
@@ -12873,7 +12865,7 @@ msgstr "보낸 사람 이메일 주소"
 msgid "This is the Email address that the Email will appear from."
 msgstr "이메일이 표시 될 이메일 주소입니다."
 
-#: include/global_settings.php:1462 lib/html_reports.php:178
+#: include/global_settings.php:1462 lib/html_reports.php:1062
 msgid "From Name"
 msgstr "발신자 이름"
 
@@ -13493,7 +13485,7 @@ msgstr "표준 편차"
 msgid "Variance Based w/Outliers Removed"
 msgstr "차이가 제거 된 Outliers가 제거 된 분산"
 
-#: include/global_settings.php:1846 lib/html.php:1970
+#: include/global_settings.php:1846 lib/html.php:2052
 #, fuzzy
 msgid "Replacement Method"
 msgstr "교체 방법"
@@ -13510,16 +13502,16 @@ msgstr ""
 "균으로 바꿉니다. 두 번째 방법은 스파이크를 &#39;NaN&#39;으로 바꿉니다. 마지막"
 "으로 스파이크를 마지막으로 발견 된 양호한 값으로 대체합니다."
 
-#: include/global_settings.php:1851 lib/html.php:1966
+#: include/global_settings.php:1851 lib/html.php:2048
 msgid "Average"
 msgstr "평균"
 
-#: include/global_settings.php:1852 lib/html.php:1967
+#: include/global_settings.php:1852 lib/html.php:2049
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN"
 
-#: include/global_settings.php:1853 lib/html.php:1968
+#: include/global_settings.php:1853 lib/html.php:2050
 #, fuzzy
 msgid "Last Known Good"
 msgstr "마지막으로 성공한 좋은 점"
@@ -13548,7 +13540,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "% d 표준 편차"
 
-#: include/global_settings.php:1874 lib/html.php:1982
+#: include/global_settings.php:1874 lib/html.php:2064
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "분산 비율"
@@ -13855,10 +13847,10 @@ msgstr "1 열"
 #: include/global_settings.php:2115 include/global_settings.php:2124
 #: include/global_settings.php:2125 include/global_settings.php:2126
 #: include/global_settings.php:2127 include/global_settings.php:2128
-#: lib/html_graph.php:223 lib/html_graph.php:224 lib/html_graph.php:225
-#: lib/html_graph.php:226 lib/html_graph.php:227 lib/html_tree.php:1004
-#: lib/html_tree.php:1005 lib/html_tree.php:1006 lib/html_tree.php:1007
-#: lib/html_tree.php:1008
+#: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1024
+#: lib/html_tree.php:1025 lib/html_tree.php:1026 lib/html_tree.php:1027
+#: lib/html_tree.php:1028
 #, fuzzy, php-format
 msgid "%d Columns"
 msgstr "% d 개의 열"
@@ -14144,17 +14136,17 @@ msgstr ""
 "집계 그래프 용으로 선택된 그래프는 그래프 템플릿을 사용하지 않습니다. 집계는 "
 "템플릿이 아닌 그래프에서 집계 그래프를 만드는 것을 지원하지 않습니다."
 
-#: lib/api_aggregate.php:1303 lib/html.php:967
+#: lib/api_aggregate.php:1303 lib/html.php:1049
 #, fuzzy
 msgid "Graph Item"
 msgstr "그래프 항목"
 
-#: lib/api_aggregate.php:1306 lib/html.php:970
+#: lib/api_aggregate.php:1306 lib/html.php:1052
 #, fuzzy
 msgid "CF Type"
 msgstr "CF 유형"
 
-#: lib/api_aggregate.php:1307 lib/html.php:972
+#: lib/api_aggregate.php:1307 lib/html.php:1054
 msgid "Item Color"
 msgstr "이이템 색상"
 
@@ -14182,9 +14174,9 @@ msgstr "집계 항목을 편집 할 수 없습니다."
 msgid "Matching Devices"
 msgstr "매칭 장치"
 
-#: lib/api_automation.php:147 lib/api_automation.php:1027
-#: lib/clog_webapi.php:434 lib/html_reports.php:335 lib/html_reports.php:1322
-#: lib/html_reports.php:1589 lib/html_reports.php:1600 lib/rrd.php:2715
+#: lib/api_automation.php:147 lib/api_automation.php:1030
+#: lib/clog_webapi.php:434 lib/html_reports.php:583 lib/html_reports.php:1324
+#: lib/html_reports.php:1591 lib/html_reports.php:1602 lib/rrd.php:2715
 #: utilities.php:339 utilities.php:1106 utilities.php:2473
 msgid "Type"
 msgstr "유형"
@@ -14194,17 +14186,17 @@ msgstr "유형"
 msgid "No Matching Devices"
 msgstr "일치하는 장치 없음"
 
-#: lib/api_automation.php:415 lib/api_automation.php:690
-#: lib/api_automation.php:830
+#: lib/api_automation.php:415 lib/api_automation.php:693
+#: lib/api_automation.php:833
 #, fuzzy
 msgid "Matching Objects"
 msgstr "개체 일치"
 
-#: lib/api_automation.php:705
+#: lib/api_automation.php:708
 msgid "Objects"
 msgstr "객체"
 
-#: lib/api_automation.php:784
+#: lib/api_automation.php:787
 #, fuzzy
 msgid ""
 "A blue font color indicates that the rule will be applied to the objects in "
@@ -14213,121 +14205,121 @@ msgstr ""
 "파란색 글꼴 색은 규칙이 문제의 객체에 적용됨을 나타냅니다. 다른 오브젝트는 규"
 "칙의 적용을받지 않습니다."
 
-#: lib/api_automation.php:784
+#: lib/api_automation.php:787
 #, fuzzy, php-format
 msgid "Matching Objects [ %s ]"
 msgstr "개체 일치 [ %s]"
 
-#: lib/api_automation.php:841
+#: lib/api_automation.php:844
 #, fuzzy
 msgid "Device Status"
 msgstr "장치 상태"
 
-#: lib/api_automation.php:863
+#: lib/api_automation.php:866
 #, fuzzy
 msgid "There are no Objects that match this rule."
 msgstr "이 규칙과 일치하는 개체가 없습니다."
 
-#: lib/api_automation.php:908
+#: lib/api_automation.php:911
 #, fuzzy
 msgid "Error in data query"
 msgstr "데이터 쿼리 오류"
 
-#: lib/api_automation.php:1013
+#: lib/api_automation.php:1016
 #, fuzzy
 msgid "Matching Items"
 msgstr "일치하는 항목"
 
-#: lib/api_automation.php:1175
+#: lib/api_automation.php:1178
 #, fuzzy
 msgid "Resulting Branch"
 msgstr "결과 분기"
 
-#: lib/api_automation.php:1214
+#: lib/api_automation.php:1217
 #, fuzzy
 msgid "No Items Found"
 msgstr "제품을 찾지 못했습니다"
 
-#: lib/api_automation.php:1242 lib/api_automation.php:1304
+#: lib/api_automation.php:1245 lib/api_automation.php:1307
 msgid "Field"
 msgstr "필드"
 
-#: lib/api_automation.php:1244 lib/api_automation.php:1306
+#: lib/api_automation.php:1247 lib/api_automation.php:1309
 msgid "Pattern"
 msgstr "패턴"
 
-#: lib/api_automation.php:1256 lib/api_automation.php:1318
-#: lib/api_automation.php:1382
+#: lib/api_automation.php:1259 lib/api_automation.php:1321
+#: lib/api_automation.php:1385
 #, fuzzy, php-format
 msgid "Item#%d"
 msgstr "항목 # % d"
 
-#: lib/api_automation.php:1287
+#: lib/api_automation.php:1290
 #, fuzzy
 msgid "No Device Selection Criteria"
 msgstr "장치 선택 기준 없음"
 
-#: lib/api_automation.php:1348
+#: lib/api_automation.php:1351
 #, fuzzy
 msgid "No Graph Creation Criteria"
 msgstr "그래프 작성 기준 없음"
 
-#: lib/api_automation.php:1367
+#: lib/api_automation.php:1370
 #, fuzzy
 msgid "Propagate Change"
 msgstr "변경 전파"
 
-#: lib/api_automation.php:1368
+#: lib/api_automation.php:1371
 #, fuzzy
 msgid "Search Pattern"
 msgstr "검색 패턴"
 
-#: lib/api_automation.php:1369
+#: lib/api_automation.php:1372
 #, fuzzy
 msgid "Replace Pattern"
 msgstr "패턴 교체"
 
-#: lib/api_automation.php:1413
+#: lib/api_automation.php:1416
 #, fuzzy
 msgid "No Tree Creation Criteria"
 msgstr "트리 생성 기준 없음"
 
-#: lib/api_automation.php:1905 lib/api_automation.php:1955
+#: lib/api_automation.php:1908 lib/api_automation.php:1958
 #, fuzzy
 msgid "Device Match Rule"
 msgstr "기기 검색 규칙"
 
-#: lib/api_automation.php:1920
+#: lib/api_automation.php:1923
 #, fuzzy
 msgid "Create Graph Rule"
 msgstr "그래프 규칙 만들기"
 
-#: lib/api_automation.php:1959
+#: lib/api_automation.php:1962
 #, fuzzy
 msgid "Graph Match Rule"
 msgstr "그래프 일치 규칙"
 
-#: lib/api_automation.php:1984
+#: lib/api_automation.php:1987
 #, fuzzy
 msgid "Create Tree Rule (Device)"
 msgstr "트리 규칙 생성 (장치)"
 
-#: lib/api_automation.php:1988
+#: lib/api_automation.php:1991
 #, fuzzy
 msgid "Create Tree Rule (Graph)"
 msgstr "트리 규칙 생성 (그래프)"
 
-#: lib/api_automation.php:2025
+#: lib/api_automation.php:2028
 #, fuzzy, php-format
 msgid "Rule Item [edit rule item for %s: %s]"
 msgstr "규칙 항목 [ %s에 대한 규칙 항목 편집 :  %s]"
 
-#: lib/api_automation.php:2027
+#: lib/api_automation.php:2030
 #, fuzzy, php-format
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "규칙 항목 [ %s의 새 규칙 항목 :  %s]"
 
-#: lib/api_automation.php:2780
+#: lib/api_automation.php:2783
 #, fuzzy
 msgid "Added by Cacti Automation"
 msgstr "Cacti Automation에 의해 추가됨"
@@ -14435,48 +14427,38 @@ msgstr "새로운 지회"
 msgid "Web Basic"
 msgstr "웹 기본"
 
-#: lib/auth.php:1451 lib/auth.php:1478
-#, fuzzy
-msgid "Not Templated"
-msgstr "템플리트되지 않음"
-
-#: lib/auth.php:1451 lib/auth.php:1478 lib/auth.php:2166
-#, fuzzy
-msgid "Template Not Found"
-msgstr "템플릿을 찾을 수 없음"
-
-#: lib/auth.php:1666 lib/auth.php:1698
+#: lib/auth.php:1693 lib/auth.php:1725
 #, fuzzy
 msgid "Branch:"
 msgstr "분기:"
 
-#: lib/auth.php:1675 lib/auth.php:1706 lib/html_tree.php:916
+#: lib/auth.php:1702 lib/auth.php:1733 lib/html_tree.php:931
 #, fuzzy
 msgid "Device:"
 msgstr "장치"
 
-#: lib/auth.php:2343 lib/auth.php:2352
+#: lib/auth.php:2387 lib/auth.php:2396
 #, fuzzy
 msgid "This account has been locked."
 msgstr "이 계정은 잠겼습니다."
 
-#: lib/auth.php:2395
+#: lib/auth.php:2439
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "비밀번호는 % d 자 이상이어야합니다!"
 
-#: lib/auth.php:2401
+#: lib/auth.php:2445
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "비밀번호는 숫자가 1 자 이상이어야합니다!"
 
-#: lib/auth.php:2405
+#: lib/auth.php:2449
 #, fuzzy
 msgid ""
 "Your password must contain a mix of lower case and upper case characters!"
 msgstr "암호에는 소문자와 대문자가 혼합되어 있어야합니다."
 
-#: lib/auth.php:2411
+#: lib/auth.php:2455
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "비밀번호는 적어도 1 개의 특수 문자를 포함해야합니다!"
@@ -15028,12 +15010,12 @@ msgstr "일반 사용자로 로그인"
 msgid "guest"
 msgstr "명"
 
-#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2197
+#: lib/functions.php:2258 lib/functions.php:2271 lib/html.php:2279
 #, fuzzy
 msgid "User Community"
 msgstr "사용자 커뮤니티"
 
-#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2198
+#: lib/functions.php:2259 lib/functions.php:2272 lib/html.php:2280
 #: lib/utility.php:1002
 msgid "Documentation"
 msgstr "문서"
@@ -15051,8 +15033,8 @@ msgstr "로그아웃"
 msgid "Leaf"
 msgstr "잎"
 
-#: lib/functions.php:2437 lib/html_tree.php:632 lib/html_tree.php:660
-#: lib/html_tree.php:880 lib/html_tree.php:888 lib/html_tree.php:1476
+#: lib/functions.php:2437 lib/html_tree.php:647 lib/html_tree.php:675
+#: lib/html_tree.php:895 lib/html_tree.php:903 lib/html_tree.php:1454
 #, fuzzy
 msgid "Non Query Based"
 msgstr "비 쿼리 기반"
@@ -15197,414 +15179,424 @@ msgstr "버전  %s  %s"
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/html.php:299 lib/reports.php:1212 lib/reports.php:1216
+#: lib/html.php:179 settings.php:425
+#, fuzzy
+msgid "Templates Selected"
+msgstr "선택한 템플릿"
+
+#: lib/html.php:233 settings.php:398 settings.php:417 settings.php:466
+#, fuzzy
+msgid "Enter keyword"
+msgstr "키워드 입력"
+
+#: lib/html.php:381 lib/reports.php:1212 lib/reports.php:1216
 #, fuzzy
 msgid "Data Query:"
 msgstr "데이터 쿼리 :"
 
-#: lib/html.php:360
+#: lib/html.php:442
 #, fuzzy
 msgid "CSV Export of Graph Data"
 msgstr "그래프 데이터의 CSV 내보내기"
 
-#: lib/html.php:361 lib/html.php:2186
+#: lib/html.php:443 lib/html.php:2268
 #, fuzzy
 msgid "Time Graph View"
 msgstr "시간 그래프보기"
 
-#: lib/html.php:370
+#: lib/html.php:452
 #, fuzzy
 msgid "Edit Device"
 msgstr "장치 편집"
 
-#: lib/html.php:385
+#: lib/html.php:467
 #, fuzzy
 msgid "Kill Spikes in Graphs"
 msgstr "그래프로 스파이크를 제거합니다."
 
-#: lib/html.php:422 lib/installer.php:1432
+#: lib/html.php:504 lib/installer.php:1432
 msgid "Previous"
 msgstr "이전"
 
-#: lib/html.php:425
+#: lib/html.php:507
 #, fuzzy, php-format
 msgid "%d to %d of %s [ %s ]"
 msgstr "% d ~  %s [ %s]"
 
-#: lib/html.php:428 lib/installer.php:1431
+#: lib/html.php:510 lib/installer.php:1431
 msgid "Next"
 msgstr "다음"
 
-#: lib/html.php:434
+#: lib/html.php:516
 #, fuzzy, php-format
 msgid "All %d %s"
 msgstr "전체 % d  %s"
 
-#: lib/html.php:440
+#: lib/html.php:522
 #, php-format
 msgid "No %s Found"
 msgstr " %s을 찾을 수 없습니다."
 
-#: lib/html.php:971
+#: lib/html.php:1053
 #, fuzzy
 msgid "Alpha %"
 msgstr "알파 %"
 
-#: lib/html.php:1012
+#: lib/html.php:1094
 #, fuzzy
 msgid "No Task"
 msgstr "묻지 않는다"
 
-#: lib/html.php:1292
+#: lib/html.php:1374
 #, fuzzy
 msgid "Choose an action"
 msgstr "액션 선택"
 
-#: lib/html.php:1302
+#: lib/html.php:1384
 #, fuzzy
 msgid "Execute Action"
 msgstr "액션 실행"
 
-#: lib/html.php:1501 lib/html.php:1503 lib/html.php:1583 managers.php:41
+#: lib/html.php:1583 lib/html.php:1585 lib/html.php:1665 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "로그"
 
-#: lib/html.php:1974
+#: lib/html.php:2056
 #, fuzzy, php-format
 msgid "%s Standard Deviations"
 msgstr "%s 표준 편차"
 
-#: lib/html.php:1976
+#: lib/html.php:2058
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "표준 편차"
 
-#: lib/html.php:1986
+#: lib/html.php:2068
 #, fuzzy, php-format
 msgid "%d Outliers"
 msgstr "% d 이상 치"
 
-#: lib/html.php:1988
+#: lib/html.php:2070
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "분산 이상 치"
 
-#: lib/html.php:1992
+#: lib/html.php:2074
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d 개의 스파이크"
 
-#: lib/html.php:1994
+#: lib/html.php:2076
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "RRA 당 Kills"
 
-#: lib/html.php:2000
+#: lib/html.php:2082
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "StdDev 제거"
 
-#: lib/html.php:2001
+#: lib/html.php:2083
 #, fuzzy
 msgid "Remove Variance"
 msgstr "차이 제거"
 
-#: lib/html.php:2002
+#: lib/html.php:2084
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "갭 필 범위"
 
-#: lib/html.php:2003
+#: lib/html.php:2085
 #, fuzzy
 msgid "Float Range"
 msgstr "플로트 범위"
 
-#: lib/html.php:2005
+#: lib/html.php:2087
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "드라이 런 StdDev"
 
-#: lib/html.php:2006
+#: lib/html.php:2088
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "드라이 런 차이"
 
-#: lib/html.php:2007
+#: lib/html.php:2089
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "드라이 런 갭 충진 범위"
 
-#: lib/html.php:2008
+#: lib/html.php:2090
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "드라이 런 플로트 범위"
 
-#: lib/html.php:2183 lib/html_filter.php:66
+#: lib/html.php:2265 lib/html_filter.php:66
 #, fuzzy
 msgid "Enter a search term"
 msgstr "검색어 입력"
 
-#: lib/html.php:2184
+#: lib/html.php:2266
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "정규 표현식 입력"
 
-#: lib/html.php:2185
+#: lib/html.php:2267
 msgid "No file selected"
 msgstr "선택된 파일이 없음"
 
-#: lib/html.php:2188 lib/html.php:2201
+#: lib/html.php:2270 lib/html.php:2283
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "스파이크 킬 결과"
 
-#: lib/html.php:2190
+#: lib/html.php:2272
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: lib/html.php:2191
+#: lib/html.php:2273
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "이 그래프를 실시간으로 가져 오려면 다시 클릭하십시오."
 
-#: lib/html.php:2195
+#: lib/html.php:2277
 #, fuzzy
 msgid "Cacti Home"
 msgstr "선인장 홈"
 
-#: lib/html.php:2196
+#: lib/html.php:2278
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "선인장 프로젝트 페이지"
 
-#: lib/html.php:2199
+#: lib/html.php:2281
 msgid "Report a bug"
 msgstr "버그 보고하기"
 
-#: lib/html.php:2202
+#: lib/html.php:2284
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "클릭하여 필터 표시 / 숨기기"
 
-#: lib/html.php:2203
+#: lib/html.php:2285
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "현재 필터 지우기"
 
-#: lib/html.php:2204
+#: lib/html.php:2286
 #, fuzzy
 msgid "Clipboard"
 msgstr "클립 보드"
 
-#: lib/html.php:2205
+#: lib/html.php:2287
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "클립 보드 ID"
 
-#: lib/html.php:2206
+#: lib/html.php:2288
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "현재 복사 작업을 사용할 수 없습니다."
 
-#: lib/html.php:2207
+#: lib/html.php:2289
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "복사 할 데이터를 찾지 못했습니다!"
 
-#: lib/html.php:2208
+#: lib/html.php:2290
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "클립 보드가 업데이트되었습니다."
 
-#: lib/html.php:2209
+#: lib/html.php:2291
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "죄송합니다. 현재 클립 보드를 업데이트 할 수 없습니다."
 
-#: lib/html.php:2213
+#: lib/html.php:2295
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "암호 길이가 최소 8자를 충족시킵니다."
 
-#: lib/html.php:2214
+#: lib/html.php:2296
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "암호가 너무 짧다."
 
-#: lib/html.php:2215
+#: lib/html.php:2297
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "암호는 일치하지만 너무 짧습니다."
 
-#: lib/html.php:2216
+#: lib/html.php:2298
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "암호가 너무 짧고 일치하지 않습니다."
 
-#: lib/html.php:2217
+#: lib/html.php:2299
 #, fuzzy
 msgid "Passphrases match"
 msgstr "암호가 일치 함"
 
-#: lib/html.php:2218
+#: lib/html.php:2300
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "암호가 일치하지 않습니다."
 
-#: lib/html.php:2219
+#: lib/html.php:2301
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "죄송합니다. 마지막 작업을 처리 할 수 ​​없습니다."
 
-#: lib/html.php:2220
+#: lib/html.php:2302
 msgid "Error:"
 msgstr "오류:"
 
-#: lib/html.php:2221
+#: lib/html.php:2303
 #, fuzzy
 msgid "Reason:"
 msgstr "이유:"
 
-#: lib/html.php:2222
+#: lib/html.php:2304
 #, fuzzy
 msgid "Action failed"
 msgstr "작업이 실패했습니다."
 
-#: lib/html.php:2223
+#: lib/html.php:2305
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "마지막 행동에 대한 반응은 예상치 못했습니다."
 
-#: lib/html.php:2224
+#: lib/html.php:2306
 msgid "Some Actions failed"
 msgstr "일부 조치가 실패했습니다."
 
-#: lib/html.php:2225
+#: lib/html.php:2307
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "모든 행동을 처리 할 수는 없습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2226
+#: lib/html.php:2308
 #, fuzzy
 msgid "Operation successful"
 msgstr "작업 성공"
 
-#: lib/html.php:2227
+#: lib/html.php:2309
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "작업이 성공적으로 완료되었습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2229
+#: lib/html.php:2311
 msgid "Pause"
 msgstr "일시 정지"
 
-#: lib/html.php:2232
+#: lib/html.php:2314
 msgid "Zoom In"
 msgstr "확대"
 
-#: lib/html.php:2233
+#: lib/html.php:2315
 msgid "Zoom Out"
 msgstr "축소"
 
-#: lib/html.php:2234
+#: lib/html.php:2316
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "축소 계수"
 
-#: lib/html.php:2235
+#: lib/html.php:2317
 #, fuzzy
 msgid "Timestamps"
 msgstr "타임 스탬프"
 
-#: lib/html.php:2236
+#: lib/html.php:2318
 #, fuzzy
 msgid "2x"
 msgstr "2 배"
 
-#: lib/html.php:2237
+#: lib/html.php:2319
 #, fuzzy
 msgid "4x"
 msgstr "4 배"
 
-#: lib/html.php:2238
+#: lib/html.php:2320
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2239
+#: lib/html.php:2321
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2240
+#: lib/html.php:2322
 #, fuzzy
 msgid "32x"
 msgstr "32 배"
 
-#: lib/html.php:2241
+#: lib/html.php:2323
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "위치 조정 축소"
 
-#: lib/html.php:2242
+#: lib/html.php:2324
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "줌 모드"
 
-#: lib/html.php:2244
+#: lib/html.php:2326
 msgid "Quick"
 msgstr "빨리"
 
-#: lib/html.php:2246
+#: lib/html.php:2328
 #, fuzzy
 msgid "Open in new tab"
 msgstr "새 탭에서 열기"
 
-#: lib/html.php:2247
+#: lib/html.php:2329
 #, fuzzy
 msgid "Save graph"
 msgstr "그래프 저장"
 
-#: lib/html.php:2248
+#: lib/html.php:2330
 #, fuzzy
 msgid "Copy graph"
 msgstr "그래프 복사"
 
-#: lib/html.php:2249
+#: lib/html.php:2331
 #, fuzzy
 msgid "Copy graph link"
 msgstr "그래프 링크 복사"
 
-#: lib/html.php:2250
+#: lib/html.php:2332
 #, fuzzy
 msgid "Always On"
 msgstr "항상 켜기"
 
-#: lib/html.php:2251
+#: lib/html.php:2333
 msgid "Auto"
 msgstr "자동"
 
-#: lib/html.php:2252
+#: lib/html.php:2334
 #, fuzzy
 msgid "Always Off"
 msgstr "항상 꺼짐"
 
-#: lib/html.php:2253
+#: lib/html.php:2335
 #, fuzzy
 msgid "Begin with"
 msgstr "시작하다"
 
-#: lib/html.php:2255
+#: lib/html.php:2337
 #, fuzzy
 msgid "End with"
 msgstr "종료일"
 
-#: lib/html.php:2257 lib/html_form.php:1283
+#: lib/html.php:2339 lib/html_form.php:1283
 msgid "Close"
 msgstr "닫기"
 
-#: lib/html.php:2259
+#: lib/html.php:2341
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "세 번째 마우스 버튼"
@@ -15693,7 +15685,7 @@ msgstr ""
 msgid "Data Query Data Sources must be created through %s"
 msgstr "데이터 쿼리 데이터 소스는  %s을 (를) 통해 만들어야합니다."
 
-#: lib/html_graph.php:188 lib/html_tree.php:975
+#: lib/html_graph.php:193 lib/html_tree.php:995
 #, fuzzy
 msgid ""
 "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
@@ -15702,169 +15694,359 @@ msgstr ""
 "현재 Graphs, Columns, Thumbnail, Preset 및 Timeshift 환경 설정을 프로파일에 "
 "저장하십시오."
 
-#: lib/html_graph.php:218 lib/html_tree.php:999
+#: lib/html_graph.php:223 lib/html_tree.php:1019
 msgid "Columns"
 msgstr "열"
 
-#: lib/html_graph.php:222 lib/html_tree.php:1003
+#: lib/html_graph.php:227 lib/html_tree.php:1023
 #, fuzzy, php-format
 msgid "%d Column"
 msgstr "% d 열"
 
-#: lib/html_graph.php:252 lib/html_tree.php:1033
+#: lib/html_graph.php:257 lib/html_tree.php:1053
 msgid "Custom"
 msgstr "사용자 정의"
 
-#: lib/html_graph.php:265 lib/html_reports.php:1587 lib/html_reports.php:1598
-#: lib/html_tree.php:1046
+#: lib/html_graph.php:270 lib/html_reports.php:1589 lib/html_reports.php:1600
+#: lib/html_tree.php:1066
 msgid "From"
 msgstr "발신자"
 
-#: lib/html_graph.php:270 lib/html_tree.php:1051
+#: lib/html_graph.php:275 lib/html_tree.php:1071
 #, fuzzy
 msgid "Start Date Selector"
 msgstr "시작 날짜 선택기"
 
-#: lib/html_graph.php:274 lib/html_reports.php:1588 lib/html_reports.php:1599
-#: lib/html_tree.php:1055
+#: lib/html_graph.php:279 lib/html_reports.php:1590 lib/html_reports.php:1601
+#: lib/html_tree.php:1075
 msgid "To"
 msgstr "수신"
 
-#: lib/html_graph.php:279 lib/html_tree.php:1060
+#: lib/html_graph.php:284 lib/html_tree.php:1080
 #, fuzzy
 msgid "End Date Selector"
 msgstr "종료 날짜 선택기"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1065
+#: lib/html_graph.php:289 lib/html_tree.php:1085
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "시프트 시간 뒤로"
 
-#: lib/html_graph.php:285 lib/html_tree.php:1066
+#: lib/html_graph.php:290 lib/html_tree.php:1086
 #, fuzzy
 msgid "Define Shifting Interval"
 msgstr "이동 간격 정의"
 
-#: lib/html_graph.php:296 lib/html_tree.php:1077
+#: lib/html_graph.php:301 lib/html_tree.php:1097
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "시프트 타임 전달"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1082
+#: lib/html_graph.php:306 lib/html_tree.php:1102
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "선택한 시간대 새로 고침"
 
-#: lib/html_graph.php:302 lib/html_tree.php:1083
+#: lib/html_graph.php:307 lib/html_tree.php:1103
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "기본 시간 범위로 돌아 가기"
 
-#: lib/html_graph.php:322
+#: lib/html_graph.php:327
 #, fuzzy
 msgid "Interval"
 msgstr "간격"
 
-#: lib/html_graph.php:334 lib/html_tree.php:1115
+#: lib/html_graph.php:339 lib/html_tree.php:1135
 msgid "Stop"
 msgstr "중지"
 
-#: lib/html_graph.php:423 lib/html_tree.php:1208 settings.php:398
-#: settings.php:417 settings.php:466
-#, fuzzy
-msgid "Enter keyword"
-msgstr "키워드 입력"
-
-#: lib/html_graph.php:547 lib/html_graph.php:573
+#: lib/html_graph.php:485 lib/html_graph.php:511
 #, fuzzy, php-format
 msgid "Create Graph from %s"
 msgstr "%s에서 그래프 만들기"
 
-#: lib/html_graph.php:571
+#: lib/html_graph.php:509
 #, fuzzy, php-format
 msgid "Create %s Graphs from %s"
 msgstr "%s에서  %s 그래프 만들기"
 
-#: lib/html_graph.php:608
+#: lib/html_graph.php:546
 #, fuzzy, php-format
 msgid "Graph [Template: %s]"
 msgstr "그래프 [템플릿 :  %s]"
 
-#: lib/html_graph.php:609
+#: lib/html_graph.php:547
 #, fuzzy, php-format
 msgid "Graph Items [Template: %s]"
 msgstr "그래프 항목 [템플릿 :  %s]"
 
-#: lib/html_graph.php:614
+#: lib/html_graph.php:552
 #, fuzzy, php-format
 msgid "Data Source [Template: %s]"
 msgstr "데이터 소스 [템플릿 :  %s]"
 
-#: lib/html_graph.php:624
+#: lib/html_graph.php:562
 #, fuzzy, php-format
 msgid "Custom Data [Template: %s]"
 msgstr "맞춤 데이터 [템플릿 :  %s]"
 
-#: lib/html_reports.php:37
+#: lib/html_reports.php:104
+#, fuzzy
+msgid "Date/Time moved to the same time Tomorrow"
+msgstr "날짜 / 시간이 같은 시간으로 이동 됨 내일"
+
+#: lib/html_reports.php:309
+#, fuzzy
+msgid "Click 'Continue' to delete the following Report(s)."
+msgstr "다음 보고서를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
+
+#: lib/html_reports.php:316
+#, fuzzy
+msgid "Click 'Continue' to take ownership of the following Report(s)."
+msgstr "다음 보고서의 소유권을 가져 오려면 &#39;계속&#39;을 클릭하십시오."
+
+#: lib/html_reports.php:323
+#, fuzzy
+msgid ""
+"Click 'Continue' to duplicate the following Report(s).  You may optionally "
+"change the title for the new Reports"
+msgstr ""
+"다음 보고서를 복제하려면 &#39;계속&#39;을 클릭하십시오. 새로운 리포트의 제목"
+"을 선택적으로 변경할 수 있습니다."
+
+#: lib/html_reports.php:325
+#, fuzzy
+msgid "Name Format:"
+msgstr "이름 형식 :"
+
+#: lib/html_reports.php:335
+#, fuzzy
+msgid "Click 'Continue' to enable the following Report(s)."
+msgstr "다음 보고서를 사용하려면 &#39;계속&#39;을 클릭하십시오."
+
+#: lib/html_reports.php:337
+#, fuzzy
+msgid ""
+"Please be certain that those Report(s) have successfully been tested first!"
+msgstr "해당 보고서가 먼저 성공적으로 테스트되었는지 확인하십시오!"
+
+#: lib/html_reports.php:343
+#, fuzzy
+msgid "Click 'Continue' to disable the following Reports."
+msgstr "다음 보고서를 사용하지 않으려면 &#39;계속&#39;을 클릭하십시오."
+
+#: lib/html_reports.php:350
+#, fuzzy
+msgid "Click 'Continue' to send the following Report(s) now."
+msgstr "지금 다음 보고서를 보내려면 &#39;계속&#39;을 클릭하십시오."
+
+#: lib/html_reports.php:400
+#, fuzzy, php-format
+msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
+msgstr ""
+"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 대상 전자 메일 주소를 설정하십"
+"시오."
+
+#: lib/html_reports.php:405
+#, fuzzy, php-format
+msgid "Unable to send Report '%s'.  Please set an e-mail subject"
+msgstr ""
+"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이메일 제목을 설정하십시오."
+
+#: lib/html_reports.php:410
+#, fuzzy, php-format
+msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
+msgstr ""
+"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이름에서 전자 메일을 설정하십시"
+"오."
+
+#: lib/html_reports.php:415
+#, fuzzy, php-format
+msgid "Unable to send Report '%s'.  Please set an e-mail from address"
+msgstr ""
+"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 주소에서 전자 메일을 설정하십시"
+"오."
+
+#: lib/html_reports.php:586
+#, fuzzy
+msgid "Item Type to be added."
+msgstr "추가 할 항목 유형입니다."
+
+#: lib/html_reports.php:592
+#, fuzzy
+msgid "Graph Tree"
+msgstr "그래프 트리"
+
+#: lib/html_reports.php:596
+#, fuzzy
+msgid "Select a Tree to use."
+msgstr "사용할 트리를 선택하십시오."
+
+#: lib/html_reports.php:602
+#, fuzzy
+msgid "Graph Tree Branch"
+msgstr "그래프 트리 분기"
+
+#: lib/html_reports.php:606
+#, fuzzy
+msgid "Select a Tree Branch to use."
+msgstr "사용할 트리 분기를 선택하십시오."
+
+#: lib/html_reports.php:612
+#, fuzzy
+msgid "Cascade to Branches"
+msgstr "지점으로 계단식 연결"
+
+#: lib/html_reports.php:615
+#, fuzzy
+msgid "Should all children branch Graphs be rendered?"
+msgstr "모든 자식 분기 그래프를 렌더링해야합니까?"
+
+#: lib/html_reports.php:619
+#, fuzzy
+msgid "Graph Name Regular Expression"
+msgstr "그래프 이름 정규식"
+
+#: lib/html_reports.php:622
+#, fuzzy
+msgid ""
+"A Perl compatible regular expression (REGEXP) used to select graphs to "
+"include from the tree."
+msgstr ""
+"트리에서 포함 할 그래프를 선택하는 데 사용되는 Perl 호환 정규식 (REGEXP)입니"
+"다."
+
+#: lib/html_reports.php:632
+#, fuzzy
+msgid "Select a Device Template to use."
+msgstr "사용할 장치 템플릿을 선택하십시오."
+
+#: lib/html_reports.php:641
+#, fuzzy
+msgid "Select a Device to specify a Graph"
+msgstr "장치를 선택하여 그래프 지정"
+
+#: lib/html_reports.php:651
+#, fuzzy
+msgid "Select a Graph Template for the host"
+msgstr "호스트에 대한 그래프 템플릿 선택"
+
+#: lib/html_reports.php:661
+#, fuzzy
+msgid "The Graph to use for this report item."
+msgstr "이 보고서 항목에 사용할 그래프입니다."
+
+#: lib/html_reports.php:671
+#, fuzzy
+msgid ""
+"The Graph End time will be set to the scheduled report send time.  So, if "
+"you wish the end time on the various Graphs to be midnight, ensure you send "
+"the report at midnight.  The Graph Start time will be the End Time minus the "
+"Graph Timespan."
+msgstr ""
+"그래프 종료 시간은 예정된 보고서 전송 시간으로 설정됩니다. 따라서 다양한 그래"
+"프의 종료 시간을 자정으로 설정하려면 자정에 보고서를 보내십시오. 그래프 시작 "
+"시간은 종료 시간에서 그래프 시간 간격을 뺀 값입니다."
+
+#: lib/html_reports.php:676 lib/html_reports.php:1327
+msgid "Alignment"
+msgstr "정렬"
+
+#: lib/html_reports.php:679
+#, fuzzy
+msgid "Alignment of the Item"
+msgstr "항목의 정렬"
+
+#: lib/html_reports.php:684
+#, fuzzy
+msgid "Fixed Text"
+msgstr "고정 텍스트"
+
+#: lib/html_reports.php:687
+#, fuzzy
+msgid "Enter descriptive Text"
+msgstr "설명 텍스트 입력"
+
+#: lib/html_reports.php:692 lib/html_reports.php:1328
+msgid "Font Size"
+msgstr "폰트 크기"
+
+#: lib/html_reports.php:696
+#, fuzzy
+msgid "Font Size of the Item"
+msgstr "항목의 글자 크기"
+
+#: lib/html_reports.php:714
+#, fuzzy, php-format
+msgid "Report Item [edit Report: %s]"
+msgstr "보고서 항목 [보고서 편집 :  %s]"
+
+#: lib/html_reports.php:716
+#, fuzzy, php-format
+msgid "Report Item [new Report: %s]"
+msgstr "보고서 항목 [새 보고서 :  %s]"
+
+#: lib/html_reports.php:922
 #, fuzzy
 msgid "New Report"
 msgstr "새 보고서"
 
-#: lib/html_reports.php:38
+#: lib/html_reports.php:923
 #, fuzzy
 msgid "Give this Report a descriptive Name"
 msgstr "이 보고서에 설명적인 이름을 지정하십시오."
 
-#: lib/html_reports.php:43
+#: lib/html_reports.php:928
 #, fuzzy
 msgid "Enable Report"
 msgstr "보고서 사용"
 
-#: lib/html_reports.php:46
+#: lib/html_reports.php:931
 #, fuzzy
 msgid "Check this box to enable this Report."
 msgstr "이 보고서를 사용하려면이 확인란을 선택하십시오."
 
-#: lib/html_reports.php:51
+#: lib/html_reports.php:936
 #, fuzzy
 msgid "Output Formatting"
 msgstr "출력 형식 지정"
 
-#: lib/html_reports.php:56
+#: lib/html_reports.php:941
 #, fuzzy
 msgid "Use Custom Format HTML"
 msgstr "사용자 정의 형식 HTML 사용"
 
-#: lib/html_reports.php:59
+#: lib/html_reports.php:944
 #, fuzzy
 msgid "Check this box if you want to use custom html and CSS for the report."
 msgstr "보고서에 사용자 정의 HTML 및 CSS를 사용하려면이 상자를 선택하십시오."
 
-#: lib/html_reports.php:64
+#: lib/html_reports.php:949
 #, fuzzy
 msgid "Format File to Use"
 msgstr "사용할 서식 파일"
 
-#: lib/html_reports.php:67
+#: lib/html_reports.php:952
 #, fuzzy
 msgid ""
 "Choose the custom html wrapper and CSS file to use.  This file contains both "
-"html and CSS to wrap around your report.\n"
-"\t\tIf it contains more than simply CSS, you need to place a special "
-"<REPORT> tag inside of the file.  This format tag will be replaced by the "
-"report content.  These files are located in the 'formats' directory."
+"html and CSS to wrap around your report.  If it contains more than simply "
+"CSS, you need to place a special <REPORT> tag inside of the file.  This "
+"format tag will be replaced by the report content.  These files are located "
+"in the 'formats' directory."
 msgstr ""
 "사용할 맞춤 HTML 래퍼 및 CSS 파일을 선택하십시오. 이 파일에는 보고서를 둘러 "
 "쌀 수있는 HTML과 CSS가 모두 들어 있습니다. 단순한 CSS 이상을 포함하고 있다면 "
 "특별한 <REPORT> 파일 안의 태그. 이 형식 태그는 보고서 내용으로 바뀝니다. 이 "
 "파일들은 &#39;formats&#39;디렉토리에 있습니다."
 
-#: lib/html_reports.php:73
+#: lib/html_reports.php:957
 #, fuzzy
 msgid "Default Text Font Size"
 msgstr "기본 텍스트 글꼴 크기"
 
-#: lib/html_reports.php:74
+#: lib/html_reports.php:958
 #, fuzzy
 msgid ""
 "Defines the default font size for all text in the report including the "
@@ -15873,66 +16055,66 @@ msgstr ""
 "보고서 제목을 포함하여 보고서의 모든 텍스트에 대한 기본 글꼴 크기를 정의합니"
 "다."
 
-#: lib/html_reports.php:81
+#: lib/html_reports.php:965
 #, fuzzy
 msgid "Default Object Alignment"
 msgstr "기본 객체 정렬"
 
-#: lib/html_reports.php:82
+#: lib/html_reports.php:966
 #, fuzzy
 msgid "Defines the default Alignment for Text and Graphs."
 msgstr "텍스트 및 그래프의 기본 정렬을 정의합니다."
 
-#: lib/html_reports.php:89
+#: lib/html_reports.php:973
 #, fuzzy
 msgid "Graph Linked"
 msgstr "연결된 그래프"
 
-#: lib/html_reports.php:92
+#: lib/html_reports.php:976
 #, fuzzy
 msgid "Should the Graphs be linked back to the Cacti site?"
 msgstr "그래프를 Cacti 사이트에 다시 연결해야합니까?"
 
-#: lib/html_reports.php:96
+#: lib/html_reports.php:980
 #, fuzzy
 msgid "Graph Settings"
 msgstr "그래프 설정"
 
-#: lib/html_reports.php:101
+#: lib/html_reports.php:985
 #, fuzzy
 msgid "Graph Columns"
 msgstr "그래프 열"
 
-#: lib/html_reports.php:105
+#: lib/html_reports.php:989
 #, fuzzy
 msgid "The number of Graph columns."
 msgstr "그래프 열 수입니다."
 
-#: lib/html_reports.php:113
+#: lib/html_reports.php:997
 #, fuzzy
 msgid "The Graph width in pixels."
 msgstr "그래프 폭 (픽셀 단위)."
 
-#: lib/html_reports.php:121
+#: lib/html_reports.php:1005
 #, fuzzy
 msgid "The Graph height in pixels."
 msgstr "그래프 높이 (픽셀 단위)입니다."
 
-#: lib/html_reports.php:128
+#: lib/html_reports.php:1012
 #, fuzzy
 msgid "Should the Graphs be rendered as Thumbnails?"
 msgstr "그래프를 썸네일로 렌더링해야합니까?"
 
-#: lib/html_reports.php:132
+#: lib/html_reports.php:1016
 msgid "Email Frequency"
 msgstr "이메일 수신주기"
 
-#: lib/html_reports.php:137
+#: lib/html_reports.php:1021
 #, fuzzy
 msgid "Next Timestamp for Sending Mail Report"
 msgstr "다음 메일 보고서 보내기 타임 스탬프"
 
-#: lib/html_reports.php:138
+#: lib/html_reports.php:1022
 #, fuzzy
 msgid ""
 "Start time for [first|next] mail to take place. All future mailing times "
@@ -15944,34 +16126,34 @@ msgstr ""
 "으로합니다. 좋은 예가 오전 2 시가 될 것입니다. 미래의 시간이어야합니다. 분수 "
 "시간이 사용 된 경우, 예를 들어 오전 2시에 미래 시간으로 간주됩니다."
 
-#: lib/html_reports.php:146
+#: lib/html_reports.php:1030
 #, fuzzy
 msgid "Report Interval"
 msgstr "보고 간격"
 
-#: lib/html_reports.php:147
+#: lib/html_reports.php:1031
 #, fuzzy
 msgid "Defines a Report Frequency relative to the given Mailtime above."
 msgstr "위의 주어진 메일 시간을 기준으로 보고서 빈도를 정의합니다."
 
-#: lib/html_reports.php:148
+#: lib/html_reports.php:1032
 #, fuzzy
 msgid "e.g. 'Week(s)' represents a weekly Reporting Interval."
 msgstr "예 : &#39;주&#39;는 주간보고 간격을 나타냅니다."
 
-#: lib/html_reports.php:155
+#: lib/html_reports.php:1039
 #, fuzzy
 msgid "Interval Frequency"
 msgstr "간격 주파수"
 
-#: lib/html_reports.php:156
+#: lib/html_reports.php:1040
 #, fuzzy
 msgid ""
 "Based upon the Timespan of the Report Interval above, defines the Frequency "
 "within that Interval."
 msgstr "위 보고서 간격의 시간 간격에 따라 해당 간격 내의 빈도를 정의합니다."
 
-#: lib/html_reports.php:157
+#: lib/html_reports.php:1041
 #, fuzzy
 msgid ""
 "e.g. If the Report Interval is 'Month(s)', then '2' indicates Every '2 "
@@ -15984,21 +16166,21 @@ msgstr ""
 "&#39;요일&#39;과 &#39;월간&#39;은 위에 지정한 우편 업무 시간에 따라 계산됩니"
 "다."
 
-#: lib/html_reports.php:165
+#: lib/html_reports.php:1049
 #, fuzzy
 msgid "Email Sender/Receiver Details"
 msgstr "이메일 발신자 / 수신자 세부 정보"
 
-#: lib/html_reports.php:170
+#: lib/html_reports.php:1054
 msgid "Subject"
 msgstr "제목"
 
-#: lib/html_reports.php:172
+#: lib/html_reports.php:1056
 #, fuzzy
 msgid "Cacti Report"
 msgstr "선인장 보고서"
 
-#: lib/html_reports.php:173
+#: lib/html_reports.php:1057
 #, fuzzy
 msgid ""
 "This value will be used as the default Email subject.  The report name will "
@@ -16007,393 +16189,197 @@ msgstr ""
 "이 값은 기본 이메일 제목으로 사용됩니다. 공백으로 남겨두면 보고서 이름이 사용"
 "됩니다."
 
-#: lib/html_reports.php:181
+#: lib/html_reports.php:1065
 #, fuzzy
 msgid "This Name will be used as the default E-mail Sender"
 msgstr "이 이름은 기본 전자 메일 보낸 사람으로 사용됩니다."
 
-#: lib/html_reports.php:189
+#: lib/html_reports.php:1073
 #, fuzzy
 msgid "This Address will be used as the E-mail Senders address"
 msgstr "이 주소는 전자 메일 보낸 사람 주소로 사용됩니다."
 
-#: lib/html_reports.php:194
+#: lib/html_reports.php:1078
 #, fuzzy
 msgid "To Email Address(es)"
 msgstr "이메일 주소 (들)"
 
-#: lib/html_reports.php:200
+#: lib/html_reports.php:1084
 #, fuzzy
 msgid "Please separate multiple addresses by comma (,)"
 msgstr "여러 주소를 쉼표 (,)로 구분하십시오."
 
-#: lib/html_reports.php:205
+#: lib/html_reports.php:1089
 #, fuzzy
 msgid "BCC Address(es)"
 msgstr "숨은 참조 주소"
 
-#: lib/html_reports.php:211
+#: lib/html_reports.php:1095
 #, fuzzy
 msgid "Blind carbon copy. Please separate multiple addresses by comma (,)"
 msgstr "맹목적인 카본 복사. 여러 주소를 쉼표 (,)로 구분하십시오."
 
-#: lib/html_reports.php:216
+#: lib/html_reports.php:1100
 #, fuzzy
 msgid "Image attach type"
 msgstr "이미지 첨부 유형"
 
-#: lib/html_reports.php:219
+#: lib/html_reports.php:1103
 #, fuzzy
 msgid "Select one of the given Types for the Image Attachments"
 msgstr "Image Attachments에 대해 지정된 유형 중 하나를 선택하십시오."
 
-#: lib/html_reports.php:338
-#, fuzzy
-msgid "Item Type to be added."
-msgstr "추가 할 항목 유형입니다."
-
-#: lib/html_reports.php:344
-#, fuzzy
-msgid "Graph Tree"
-msgstr "그래프 트리"
-
-#: lib/html_reports.php:348
-#, fuzzy
-msgid "Select a Tree to use."
-msgstr "사용할 트리를 선택하십시오."
-
-#: lib/html_reports.php:354
-#, fuzzy
-msgid "Graph Tree Branch"
-msgstr "그래프 트리 분기"
-
-#: lib/html_reports.php:358
-#, fuzzy
-msgid "Select a Tree Branch to use."
-msgstr "사용할 트리 분기를 선택하십시오."
-
-#: lib/html_reports.php:380
-#, fuzzy
-msgid "Cascade to Branches"
-msgstr "지점으로 계단식 연결"
-
-#: lib/html_reports.php:383
-#, fuzzy
-msgid "Should all children branch Graphs be rendered?"
-msgstr "모든 자식 분기 그래프를 렌더링해야합니까?"
-
-#: lib/html_reports.php:387
-#, fuzzy
-msgid "Graph Name Regular Expression"
-msgstr "그래프 이름 정규식"
-
-#: lib/html_reports.php:390
-#, fuzzy
-msgid ""
-"A Perl compatible regular expression (REGEXP) used to select graphs to "
-"include from the tree."
-msgstr ""
-"트리에서 포함 할 그래프를 선택하는 데 사용되는 Perl 호환 정규식 (REGEXP)입니"
-"다."
-
-#: lib/html_reports.php:400
-#, fuzzy
-msgid "Select a Device Template to use."
-msgstr "사용할 장치 템플릿을 선택하십시오."
-
-#: lib/html_reports.php:409
-#, fuzzy
-msgid "Select a Device to specify a Graph"
-msgstr "장치를 선택하여 그래프 지정"
-
-#: lib/html_reports.php:419
-#, fuzzy
-msgid "Select a Graph Template for the host"
-msgstr "호스트에 대한 그래프 템플릿 선택"
-
-#: lib/html_reports.php:429
-#, fuzzy
-msgid "The Graph to use for this report item."
-msgstr "이 보고서 항목에 사용할 그래프입니다."
-
-#: lib/html_reports.php:439
-#, fuzzy
-msgid ""
-"The Graph End time will be set to the scheduled report send time.  So, if "
-"you wish the end time on the various Graphs to be midnight, ensure you send "
-"the report at midnight.  The Graph Start time will be the End Time minus the "
-"Graph Timespan."
-msgstr ""
-"그래프 종료 시간은 예정된 보고서 전송 시간으로 설정됩니다. 따라서 다양한 그래"
-"프의 종료 시간을 자정으로 설정하려면 자정에 보고서를 보내십시오. 그래프 시작 "
-"시간은 종료 시간에서 그래프 시간 간격을 뺀 값입니다."
-
-#: lib/html_reports.php:444 lib/html_reports.php:1325
-msgid "Alignment"
-msgstr "정렬"
-
-#: lib/html_reports.php:447
-#, fuzzy
-msgid "Alignment of the Item"
-msgstr "항목의 정렬"
-
-#: lib/html_reports.php:452
-#, fuzzy
-msgid "Fixed Text"
-msgstr "고정 텍스트"
-
-#: lib/html_reports.php:455
-#, fuzzy
-msgid "Enter descriptive Text"
-msgstr "설명 텍스트 입력"
-
-#: lib/html_reports.php:460 lib/html_reports.php:1326
-msgid "Font Size"
-msgstr "폰트 크기"
-
-#: lib/html_reports.php:464
-#, fuzzy
-msgid "Font Size of the Item"
-msgstr "항목의 글자 크기"
-
-#: lib/html_reports.php:554
-#, fuzzy
-msgid "Date/Time moved to the same time Tomorrow"
-msgstr "날짜 / 시간이 같은 시간으로 이동 됨 내일"
-
-#: lib/html_reports.php:759
-#, fuzzy
-msgid "Click 'Continue' to delete the following Report(s)."
-msgstr "다음 보고서를 삭제하려면 &#39;계속&#39;을 클릭하십시오."
-
-#: lib/html_reports.php:766
-#, fuzzy
-msgid "Click 'Continue' to take ownership of the following Report(s)."
-msgstr "다음 보고서의 소유권을 가져 오려면 &#39;계속&#39;을 클릭하십시오."
-
-#: lib/html_reports.php:773
-#, fuzzy
-msgid ""
-"Click 'Continue' to duplicate the following Report(s).  You may optionally "
-"change the title for the new Reports"
-msgstr ""
-"다음 보고서를 복제하려면 &#39;계속&#39;을 클릭하십시오. 새로운 리포트의 제목"
-"을 선택적으로 변경할 수 있습니다."
-
-#: lib/html_reports.php:775
-#, fuzzy
-msgid "Name Format:"
-msgstr "이름 형식 :"
-
-#: lib/html_reports.php:785
-#, fuzzy
-msgid "Click 'Continue' to enable the following Report(s)."
-msgstr "다음 보고서를 사용하려면 &#39;계속&#39;을 클릭하십시오."
-
-#: lib/html_reports.php:787
-#, fuzzy
-msgid ""
-"Please be certain that those Report(s) have successfully been tested first!"
-msgstr "해당 보고서가 먼저 성공적으로 테스트되었는지 확인하십시오!"
-
-#: lib/html_reports.php:793
-#, fuzzy
-msgid "Click 'Continue' to disable the following Reports."
-msgstr "다음 보고서를 사용하지 않으려면 &#39;계속&#39;을 클릭하십시오."
-
-#: lib/html_reports.php:800
-#, fuzzy
-msgid "Click 'Continue' to send the following Report(s) now."
-msgstr "지금 다음 보고서를 보내려면 &#39;계속&#39;을 클릭하십시오."
-
-#: lib/html_reports.php:850
-#, fuzzy, php-format
-msgid "Unable to send Report '%s'.  Please set destination e-mail addresses"
-msgstr ""
-"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 대상 전자 메일 주소를 설정하십"
-"시오."
-
-#: lib/html_reports.php:855
-#, fuzzy, php-format
-msgid "Unable to send Report '%s'.  Please set an e-mail subject"
-msgstr ""
-"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이메일 제목을 설정하십시오."
-
-#: lib/html_reports.php:860
-#, fuzzy, php-format
-msgid "Unable to send Report '%s'.  Please set an e-mail From Name"
-msgstr ""
-"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 이름에서 전자 메일을 설정하십시"
-"오."
-
-#: lib/html_reports.php:865
-#, fuzzy, php-format
-msgid "Unable to send Report '%s'.  Please set an e-mail from address"
-msgstr ""
-"보고서 &#39; %s&#39;을 (를) 보낼 수 없습니다. 주소에서 전자 메일을 설정하십시"
-"오."
-
-#: lib/html_reports.php:910
-#, fuzzy, php-format
-msgid "Report Item [edit Report: %s]"
-msgstr "보고서 항목 [보고서 편집 :  %s]"
-
-#: lib/html_reports.php:912
-#, fuzzy, php-format
-msgid "Report Item [new Report: %s]"
-msgstr "보고서 항목 [새 보고서 :  %s]"
-
-#: lib/html_reports.php:1152
+#: lib/html_reports.php:1154
 msgid "Events"
 msgstr "이벤트"
 
-#: lib/html_reports.php:1154 lib/import.php:2010 user_admin.php:1958
+#: lib/html_reports.php:1156 lib/import.php:2010 user_admin.php:1958
 #, fuzzy
 msgid "[new]"
 msgstr "[새로운]"
 
-#: lib/html_reports.php:1186
+#: lib/html_reports.php:1188
 msgid "Send Report"
 msgstr "보고 내용 발송"
 
-#: lib/html_reports.php:1283
+#: lib/html_reports.php:1285
 #, fuzzy
 msgid "Scheduled Events"
 msgstr "예정된 일정"
 
-#: lib/html_reports.php:1294
+#: lib/html_reports.php:1296
 #, fuzzy
 msgid "Report Preview"
 msgstr "보고서 미리보기"
 
-#: lib/html_reports.php:1323
+#: lib/html_reports.php:1325
 msgid "Item Details"
 msgstr "아이템 세부내역"
 
-#: lib/html_reports.php:1363
+#: lib/html_reports.php:1365
 #, fuzzy
 msgid "(All Branches)"
 msgstr "(모든 지점)"
 
-#: lib/html_reports.php:1365
+#: lib/html_reports.php:1367
 #, fuzzy
 msgid "(Current Branch)"
 msgstr "(현재 지점)"
 
-#: lib/html_reports.php:1408
+#: lib/html_reports.php:1410
 #, fuzzy
 msgid "No Report Items"
 msgstr "보고서 항목 없음"
 
-#: lib/html_reports.php:1480
+#: lib/html_reports.php:1482
 #, fuzzy
 msgid "Administrator Level"
 msgstr "관리자 수준"
 
-#: lib/html_reports.php:1480
+#: lib/html_reports.php:1482
 #, fuzzy, php-format
 msgid "Reports [%s]"
 msgstr "보고서 [ %s]"
 
-#: lib/html_reports.php:1480
+#: lib/html_reports.php:1482
 msgid "User Level"
 msgstr "사용자 레벨"
 
-#: lib/html_reports.php:1503 lib/html_reports.php:1574
+#: lib/html_reports.php:1505 lib/html_reports.php:1576
 msgid "Reports"
 msgstr "보고서"
 
-#: lib/html_reports.php:1583 tree.php:1978
+#: lib/html_reports.php:1585 tree.php:1978
 msgid "Owner"
 msgstr "소유자"
 
-#: lib/html_reports.php:1584 lib/html_reports.php:1595
+#: lib/html_reports.php:1586 lib/html_reports.php:1597
 msgid "Frequency"
 msgstr "회수"
 
-#: lib/html_reports.php:1585 lib/html_reports.php:1596
+#: lib/html_reports.php:1587 lib/html_reports.php:1598
 msgid "Last Run"
 msgstr "마지막 실행"
 
-#: lib/html_reports.php:1586 lib/html_reports.php:1597
+#: lib/html_reports.php:1588 lib/html_reports.php:1599
 msgid "Next Run"
 msgstr "다음 실행"
 
-#: lib/html_reports.php:1594
+#: lib/html_reports.php:1596
 #, fuzzy
 msgid "Report Title"
 msgstr "보고서 제목"
 
-#: lib/html_reports.php:1625
+#: lib/html_reports.php:1627
 #, fuzzy
 msgid "Report Disabled - No Owner"
 msgstr "사용 중지 된 보고서 - 소유자 없음"
 
-#: lib/html_reports.php:1629
+#: lib/html_reports.php:1631
 msgid "Every"
 msgstr "매일"
 
-#: lib/html_reports.php:1635
+#: lib/html_reports.php:1637
 msgid "Multiple"
 msgstr "멀티"
 
-#: lib/html_reports.php:1636
+#: lib/html_reports.php:1638
 msgid "Invalid"
 msgstr "유효하지 않은"
 
-#: lib/html_reports.php:1643
+#: lib/html_reports.php:1645
 #, fuzzy
 msgid "No Reports Found"
 msgstr "보고 없음"
 
-#: lib/html_tree.php:872 lib/html_tree.php:880 lib/html_tree.php:888
+#: lib/html_tree.php:887 lib/html_tree.php:895 lib/html_tree.php:903
 #, fuzzy
 msgid "Graph Template:"
 msgstr "그래프 템플릿 :"
 
-#: lib/html_tree.php:888
+#: lib/html_tree.php:903
 #, fuzzy
 msgid "Template Based"
 msgstr "템플릿 기반"
 
-#: lib/html_tree.php:894 lib/reports.php:980
+#: lib/html_tree.php:909 lib/reports.php:980
 #, fuzzy
 msgid "Tree:"
 msgstr "나무:"
 
-#: lib/html_tree.php:899
+#: lib/html_tree.php:914
 msgid "Site:"
 msgstr "사이트:"
 
-#: lib/html_tree.php:905 lib/reports.php:985
+#: lib/html_tree.php:920 lib/reports.php:985
 #, fuzzy
 msgid "Leaf:"
 msgstr "잎:"
 
-#: lib/html_tree.php:911
+#: lib/html_tree.php:926
 #, fuzzy
 msgid "Device Template:"
 msgstr "기기 템플릿 :"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:940
 msgid "Applied"
 msgstr "이미 지원함"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:940
 msgid "Filter"
 msgstr "필터"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:940
 #, fuzzy
 msgid "Graph Filters"
 msgstr "그래프 필터"
 
-#: lib/html_tree.php:972
+#: lib/html_tree.php:992
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "필터 설정 / 새로 고침"
 
-#: lib/html_tree.php:1420
+#: lib/html_tree.php:1398
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(비 그래프 템플릿)"
@@ -22156,3 +22142,11 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEF 없음"
+
+#, fuzzy
+#~ msgid "Non Templated"
+#~ msgstr "템플릿이없는"
+
+#, fuzzy
+#~ msgid "Template Not Found"
+#~ msgstr "템플릿을 찾을 수 없음"
