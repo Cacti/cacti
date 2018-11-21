@@ -305,7 +305,7 @@ case 'tree_content':
 
 	// Adjust the height of the tree
 	$(function() {
-		myGraphLocation='tree';
+		pageAction   = 'tree';
 		navHeight    = $('.cactiTreeNavigationArea').height();
 		windowHeight = $(window).height();
 		navOffset    = $('.cactiTreeNavigationArea').offset();
@@ -438,8 +438,10 @@ case 'preview':
 		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
+	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (get_request_var('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
 	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
@@ -503,7 +505,7 @@ case 'list':
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
-			'default' => '0'
+			'default' => '-1'
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -606,7 +608,8 @@ case 'list':
 					</td>
 					<td>
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
 
 							// suppress total rows collection
@@ -677,8 +680,10 @@ case 'list':
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
+	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (get_request_var('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
 	$total_rows = 0;
@@ -737,7 +742,7 @@ case 'list':
 	$report_text = '';
 
 	if (cacti_sizeof($reports)) {
-		$report_text = '<div id="addGraphs">
+		$report_text = '<div id="addGraphs" style="display:none;">
 			<p>' . __('Select the Report to add the selected Graphs to.') . '</p>
 			<table class="cactiTable">';
 
@@ -924,7 +929,7 @@ case 'list':
 	}
 
 	$(function() {
-		myGraphLocation='list';
+		pageAction = 'list';
 
 		initializeChecks();
 
@@ -932,73 +937,7 @@ case 'list':
 			addReport();
 		});
 
-		var msWidth = 100;
-		var maxWidth = 200;
-		$('#graph_template_id option').each(function() {
-			if ($(this).textWidth() > msWidth) {
-				msWidth = $(this).textWidth();
-				if (msWidth > maxWidth) {
-					msWidth = maxWidth;
-				}
-			}
-			$('#graph_template_id').css('width', msWidth+120+'px');
-		});
-
-		$('#graph_template_id').hide().multiselect({
-			height: 300,
-			menuWidth: 420,
-			buttonWidth: 420,
-			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
-			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-				$.each(checkedItems, function(index, value) {
-					if (value.value == '0') {
-						myReturn='<?php print __('All Graphs & Templates');?>';
-						return false;
-					}
-				});
-				return myReturn;
-			},
-			checkAllText: '<?php print __('All');?>',
-			uncheckAllText: '<?php print __('None');?>',
-			uncheckall: function() {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).prop('checked', true);
-				});
-			},
-			open: function(event, ui) {
-				$("input[type='search']:first").focus();
-			},
-			close: function(event, ui) {
-				applyFilter();
-			},
-			click: function(event, ui) {
-				checked=$(this).multiselect('widget').find('input:checked').length;
-
-				if (ui.value == 0) {
-					if (ui.checked == true) {
-						$('#graph_template_id').multiselect('uncheckAll');
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).prop('checked', true);
-						});
-					}
-				}else if (checked == 0) {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).trigger('click');
-					});
-				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
-					if (checked > 0) {
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).trigger('click');
-							$(this).prop('disable', true);
-						});
-					}
-				}
-			}
-		}).multiselectfilter({
-			label: '<?php print __('Search');?>',
-			width: msWidth
-		});
+		<?php html_graph_template_multiselect('list');?>
 
 		$('#chk').unbind().on('submit', function(event) {
 			event.preventDefault();

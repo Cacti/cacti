@@ -1437,58 +1437,43 @@ function ds() {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active=""';
 	}
 
+	$orphan_where = ' AND graph_type_id IN (' .
+		GRAPH_ITEM_TYPE_LINE1     . ', ' .
+		GRAPH_ITEM_TYPE_LINE2     . ', '.
+		GRAPH_ITEM_TYPE_LINE3     . ', ' .
+		GRAPH_ITEM_TYPE_LINESTACK . ', ' .
+		GRAPH_ITEM_TYPE_AREA      . ', ' .
+		GRAPH_ITEM_TYPE_STACK     . ')';
+
 	if (get_request_var('orphans') == '0') {
-		$sql_having = 'HAVING deletable>0';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NOT NULL' . $orphan_where . ')';
 	} elseif (get_request_var('orphans') == 1) {
-		$sql_having = 'HAVING deletable=0';
-	} else {
-		$sql_having = '';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NULL' . $orphan_where . ')';
 	}
 
-	$total_rows = cacti_sizeof(db_fetch_assoc("SELECT
-		dl.id,
-		COUNT(DISTINCT gti.local_graph_id) AS deletable
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_template AS dt
-		ON (dl.data_template_id=dt.id)
-		LEFT JOIN data_template_rrd AS dtr
-		ON dtr.local_data_id=dtd.local_data_id
-		LEFT JOIN graph_templates_item AS gti
-		ON gti.task_item_id=dtr.id
-		LEFT JOIN host AS h
-		ON h.id=dl.host_id
-		$sql_where1
-		GROUP BY dl.id
-		$sql_having"));
+		INNER JOIN data_template AS dt
+		ON dt.id=dl.data_template_id
+		INNER JOIN host AS h
+		ON h.id = dl.host_id
+		$sql_where1");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$data_sources = db_fetch_assoc("SELECT
-		dtd.local_data_id,
-		dtd.name_cache,
-		dtd.active,
-		dtd.rrd_step,
-		dt.name AS data_template_name,
-		dl.host_id,
-		dtd.data_source_profile_id,
-		COUNT(DISTINCT gti.local_graph_id) AS deletable
+	$data_sources = db_fetch_assoc("SELECT dtd.local_data_id, dtd.name_cache, dtd.active,
+		dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_template AS dt
-		ON dl.data_template_id=dt.id
-		LEFT JOIN data_template_rrd AS dtr
-		ON dtr.local_data_id=dtd.local_data_id
-		LEFT JOIN graph_templates_item AS gti
-		ON gti.task_item_id=dtr.id
-		LEFT JOIN host AS h
-		ON h.id=dl.host_id
+		INNER JOIN data_template AS dt
+		ON dt.id=dl.data_template_id
+		INNER JOIN host AS h
+		ON h.id = dl.host_id
 		$sql_where1
-		GROUP BY dl.id
-		$sql_having
 		$sql_order
 		$sql_limit");
 
@@ -1501,22 +1486,53 @@ function ds() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name_cache' => array('display' => __('Data Source Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Source. Generally programtically generated from the Data Template definition.')),
-		'local_data_id' => array('display' => __('ID'),'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Source. Useful when performing automation or debugging.')),
-		'nosort' => array('display' => __('Poller Interval'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The frequency that data is collected for this Data Source.')),
-		'nosort1' => array('display' => __('Deletable'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('If this Data Source is no long in use by Graphs, it can be Deleted.')),
-		'active' => array('display' => __('Active'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Whether or not data will be collected for this Data Source. Controlled at the Data Template level.')),
-		'data_template_name' => array('display' => __('Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Data Template that this Data Source was based upon.')));
+		'name_cache' => array(
+			'display' => __('Data Source Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The name of this Data Source. Generally programtically generated from the Data Template definition.')
+		),
+		'local_data_id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Data Source. Useful when performing automation or debugging.')
+		),
+		'nosort' => array(
+			'display' => __('Poller Interval'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The frequency that data is collected for this Data Source.')
+		),
+		'nosort1' => array(
+			'display' => __('Deletable'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('If this Data Source is no long in use by Graphs, it can be Deleted.')
+		),
+		'active' => array(
+			'display' => __('Active'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('Whether or not data will be collected for this Data Source. Controlled at the Data Template level.')
+		),
+		'data_template_name' => array(
+			'display' => __('Template Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The Data Template that this Data Source was based upon.')
+		)
+	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
 	if (cacti_sizeof($data_sources)) {
 		foreach ($data_sources as $data_source) {
-			if ($data_source['deletable'] > 0) {
-				$disabled = true;
-			} else {
+			if (api_data_source_deletable($data_source['local_data_id'])) {
 				$disabled = false;
+			} else {
+				$disabled = true;
 			}
 
 			$data_source['data_template_name'] = html_escape($data_source['data_template_name']);
@@ -1546,7 +1562,7 @@ function ds() {
 			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
 			form_selectable_cell(get_poller_interval($data_source['rrd_step'], $data_source['data_source_profile_id']), $data_source['local_data_id']);
-			form_selectable_cell(($data_source['deletable'] == '0' ? __('Yes') : __('No')), $data_source['local_data_id']);
+			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes') : __('No')), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
 			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id'], $disabled);

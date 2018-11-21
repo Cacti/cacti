@@ -723,7 +723,7 @@ function html_validate_tree_vars() {
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
-			'default' => '0'
+			'default' => '-1'
 			),
 		'columns' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -956,7 +956,8 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 					</td>
 					<td>
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow-y:auto;overflow-x:hide;height:0px;'>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
 							// suppress total rows collection
 							$total_rows = -1;
@@ -1179,8 +1180,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			selectedText: function(numChecked, numTotal, checkedItems) {
 				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
 				$.each(checkedItems, function(index, value) {
-					if (value.value == '0') {
+					if (value.value == '-1') {
 						myReturn='<?php print __('All Graphs & Templates');?>';
+						return false;
+					} else if (value.value == '0') {
+						myReturn='<?php print __('Non Templated');?>';
 						return false;
 					}
 				});
@@ -1202,24 +1206,28 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			click: function(event, ui) {
 				checked=$(this).multiselect('widget').find('input:checked').length;
 
-				if (ui.value == 0) {
+				if (ui.value == -1 || ui.value == 0) {
 					if (ui.checked == true) {
 						$('#graph_template_id').multiselect('uncheckAll');
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).prop('checked', true);
-						});
+						if (ui.value == -1) {
+							$(this).multiselect('widget').find(':checkbox:first').prop('checked', true);
+						} else {
+							$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', true);
+						}
 					}
-				}else if (checked == 0) {
+				} else if (checked == 0) {
 					$(this).multiselect('widget').find(':checkbox:first').each(function() {
 						$(this).click();
 					});
-				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
+				} else if ($(this).multiselect('widget').find('input:checked:first').val() == '-1') {
 					if (checked > 0) {
 						$(this).multiselect('widget').find(':checkbox:first').each(function() {
 							$(this).click();
 							$(this).prop('disable', true);
 						});
 					}
+				} else {
+					$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', false);
 				}
 			}
 		}).multiselectfilter({
@@ -1306,12 +1314,18 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
-		if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
+		if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') > '0') {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+		} elseif (get_request_var('graph_template_id') == 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
 		$graph_list = get_allowed_tree_header_graphs($tree_id, $leaf_id, $sql_where);
 	} elseif ($leaf_type == 'host') {
+		if ($graph_template_id == '-1') {
+			$graph_template_id = get_request_var('graph_template_id');
+		}
+
 		$graph_list = get_host_graph_list($leaf['host_id'], $graph_template_id, $data_query_id, $leaf['host_grouping_type'], $data_query_index);
 	} elseif ($leaf_type == 'site') {
 		$sql_where = '';
@@ -1422,29 +1436,45 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			$sql_where = 'gl.host_id=' . $host_id;
 		}
 
-		if ($graph_template_id > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $graph_template_id;
-		}
-
-		if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+		if ($graph_template_id != '' && $graph_template_id != '-1' && $graph_template_id != '0') {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . $graph_template_id . '))';
+		} elseif ($graph_template_id == 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . $graph_template_id . '))';
 		}
 
 		// suppress total rows collection
 		$total_rows = -1;
 
-		$graph_templates = get_allowed_graph_templates($sql_where, 'name', '', $total_rows);
+		$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+		$final_templates = array();
+		if ($graph_template_id != '' && $graph_template_id != '-1' && $graph_template_id != '0') {
+			$templates = explode(',', $graph_template_id);
+			foreach($templates as $id) {
+				$ptemplates[$id]['id'] = $id;
+			}
+
+			foreach($graph_templates as $template) {
+				if (isset($ptemplates[$template['id']])) {
+					$final_templates[$template['id']]['id']   = $template['id'];
+					$final_templates[$template['id']]['name'] = $template['name'];
+				}
+			}
+		} elseif ($graph_template_id == '0') {
+			$final_templates = array();
+		} else {
+			$final_templates = $graph_templates;
+		}
 
 		/* for graphs without a template */
 		array_push(
-			$graph_templates, array(
+			$final_templates, array(
 				'id'   => '0',
 				'name' => __('(Non Graph Template)')
 			)
 		);
 
-		if (cacti_sizeof($graph_templates)) {
-			foreach ($graph_templates as $graph_template) {
+		if (cacti_sizeof($final_templates)) {
+			foreach ($final_templates as $graph_template) {
 				$sql_where = '';
 
 				if (get_request_var('rfilter') != '') {

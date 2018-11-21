@@ -55,7 +55,6 @@ var lastWidth = {};
 var resizeDelta = 100;
 var resizeTime = 0;
 var resizeTimeout = false;
-var myGraphLocation = false;
 var formArray;
 
 var isMobile = {
@@ -2566,7 +2565,7 @@ function saveGraphFilter(section) {
 function applyGraphFilter() {
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction+
 		'&rfilter=' + base64_encode($('#rfilter').val())+
-		'&host_id='+$('#host_id').val()+
+		(typeof($('#host_id').val()) !== 'undefined' ? '&host_id='+$('#host_id').val():'')+
 		'&columns='+$('#columns').val()+
 		'&graphs='+$('#graphs').val()+
 		'&graph_template_id='+$('#graph_template_id').val()+
@@ -2608,7 +2607,6 @@ function pushState(myTitle, myHref) {
 		}
 	} else if (typeof window.history.popState === 'function') {
 		window.history.popState();
-	} else {
 	}
 
 	statePushed = true;

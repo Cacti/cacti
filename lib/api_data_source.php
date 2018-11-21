@@ -34,6 +34,26 @@ function api_data_source_cache_crc_update($poller_id, $variable = 'poller_replic
 		array($hash));
 }
 
+/* api_data_source_deletable - tells you if a data source can be removed
+   @arg $local_data_id - the id of the poller impacted by hash update */
+function api_data_source_deletable($local_data_id) {
+	$graphs = db_fetch_cell_prepared('SELECT COUNT(DISTINCT gti.local_graph_id)
+		FROM data_local AS dl
+		INNER JOIN data_template_rrd AS dtr
+		ON dl.id=dtr.local_data_id
+		LEFT JOIN graph_templates_item AS gti
+		ON gti.task_item_id=dtr.id
+		WHERE dl.id = ?
+		AND gti.id IS NOT NULL',
+		array($local_data_id));
+
+	if ($graphs > 0) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
 function api_data_source_remove($local_data_id) {
 	if (empty($local_data_id)) {
 		return;

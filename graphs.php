@@ -424,7 +424,7 @@ function get_current_graph_template_details($local_graph_id) {
 		array($local_graph_id));
 
 	if (!cacti_sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
-		return array('id' => 0, 'name' => __('Non Templated'), 'source' => 0);
+		return array('id' => 0, 'name' => __('Not Templated'), 'source' => 0);
 	} elseif ($graph_local['snmp_query_id'] > 0) {
 		$detail = db_fetch_row_prepared('SELECT sqg.id, sqg.name
 			FROM snmp_query_graph AS sqg
@@ -1820,12 +1820,16 @@ function graph_management() {
 							<option value='-1'<?php if (get_request_var('template_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
 							<option value='0'<?php if (get_request_var('template_id') == '0') {?> selected<?php }?>><?php print __('None');?></option>
 							<?php
+
+							// suppress total rows retrieval
+							$total_rows = -1;
+
 							if (get_request_var('host_id') == 0) {
-								$templates = get_allowed_graph_templates_normalized('gl.host_id=0');
+								$templates = get_allowed_graph_templates_normalized('gl.host_id=0', 'name', '', $total_rows);
 							} elseif (get_request_var('host_id') > 0) {
-								$templates = get_allowed_graph_templates_normalized('gl.host_id=' . get_filter_request_var('host_id'));
+								$templates = get_allowed_graph_templates_normalized('gl.host_id=' . get_filter_request_var('host_id'), 'name', '', $total_rows);
 							} else {
-								$templates = get_allowed_graph_templates_normalized();
+								$templates = get_allowed_graph_templates_normalized('', 'name', '', $total_rows);
 							}
 
 							if (cacti_sizeof($templates) > 0) {
@@ -1973,17 +1977,42 @@ function graph_management() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$sources = array(
-		0 => __('Non Templated'),
+		0 => __('Not Templated'),
 		1 => __('Data Query'),
 		2 => __('Template')
 	);
 
 	$display_text = array(
-		'title_cache'    => array('display' => __('Graph Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')),
-		'local_graph_id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')),
-		'source'         => array('display' => __('Source Type'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The underlying source that this Graph was based upon.')),
-		'name'           => array('display' => __('Source Name'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Graph Template or Data Query that this Graph was based upon.')),
-		'height'         => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The size of this Graph when not in Preview mode.'))
+		'title_cache' => array(
+			'display' => __('Graph Name'),
+			'align'   => 'left',
+			'sort'    => 'ASC',
+			'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+		),
+		'local_graph_id' => array(
+			'display' => __('ID'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')
+		),
+		'source' => array(
+			'display' => __('Source Type'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The underlying source that this Graph was based upon.')
+		),
+		'name' => array(
+			'display' => __('Source Name'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The Graph Template or Data Query that this Graph was based upon.')
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align'   => 'right',
+			'sort'    => 'ASC',
+			'tip'     => __('The size of this Graph when not in Preview mode.')
+		)
 	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);

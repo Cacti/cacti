@@ -237,7 +237,7 @@ case 'view':
 	}
 
 	$(function() {
-		myGraphLocation='graph';
+		pageAction = 'graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -501,7 +501,7 @@ case 'zoom':
 	}
 
 	$(function() {
-		myGraphLocation = 'graph';
+		pageAction = 'graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();

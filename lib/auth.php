@@ -1349,7 +1349,7 @@ function prime_devices_type_cache($hash, $user) {
 
 function get_cached_allowed_type($hash, $init_rows) {
 	if ($hash !== false) {
-		cacti_log('Fetch InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+		cacti_log('Fetch InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 		if (isset($_SESSION['sess_allowed_templates'][$hash]) && $init_rows == -1) {
 			return $_SESSION['sess_allowed_templates'][$hash];
 		}
@@ -1360,7 +1360,7 @@ function get_cached_allowed_type($hash, $init_rows) {
 
 function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 	if ($hash !== false && $init_rows == -1) {
-		cacti_log('Store InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+		cacti_log('Store InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
 
 		if ($type == 'devices') {
 			$_SESSION['sess_allowed_templates'][$hash] = array_rekey($items, 'id', 'id');
@@ -1374,12 +1374,15 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;
 
-	$cached = get_cached_allowed_type($hash, $init_rows);
+	if ($hash !== false) {
+		$cached = get_cached_allowed_type($hash, $init_rows);
 
-	if (sizeof($cached)) {
-		return $cached;
+		if (is_array($cached) && sizeof($cached)) {
+			return $cached;
+		}
 	}
 
+	$templates = array();
 
 	if ($limit != '') {
 		$limit = "LIMIT $limit";
@@ -1390,12 +1393,10 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 	}
 
 	if ($graph_template_id > 0) {
-		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . " gl.graph_template_id = $graph_template_id";
+		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . "(gl.graph_template_id = $graph_template_id)";
 	}
 
-	if ($sql_where != '') {
-		$sql_where = "WHERE $sql_where";
-	}
+	$sql_where = 'WHERE ' . ($sql_where != $sql_where . ' AND ' ? '':' ') . '(gt.id IS NOT NULL) ';
 
 	if ($user == -1) {
 		$auth_method = 0;
@@ -1472,8 +1473,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		}
 
 		if ($total_rows != -2) {
-			$templates = db_fetch_assoc("SELECT DISTINCT gl.graph_template_id AS id,
-				IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
+			$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
 				FROM graph_local AS gl
 				LEFT JOIN graph_templates AS gt
 				ON gt.id = gl.graph_template_id
@@ -1493,12 +1493,11 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 				LEFT JOIN host AS h
 				ON h.id=gl.host_id
 				$sql_join
-				$sql_where");
+				$sql_where") + 3;
 		}
 	} else {
 		if ($total_rows != -2) {
-			$templates = db_fetch_assoc("SELECT DISTINCT gl.graph_template_id AS id,
-				IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(gl.graph_template_id=0, '" . __('Not Templated') . "', gt.name)) AS name
+			$templates = db_fetch_assoc("SELECT DISTINCT gt.id, gt.name
 				FROM graph_local AS gl
 				LEFT JOIN graph_templates AS gt
 				ON gt.id=gl.graph_template_id
@@ -1518,6 +1517,10 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 				ON h.id=gl.host_id
 				$sql_where");
 		}
+	}
+
+	if ($templates === false) {
+		$templates = array();
 	}
 
 	set_cached_allowed_type('graph_templates', $templates, $hash, $init_rows);
@@ -1632,8 +1635,11 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 		$auth_method = read_config_option('auth_method');
 	}
 
-	$hosts = get_allowed_devices('', 'description', '', '-1');
-	$sql_hosts_where = "";
+	// suppress total rows
+	$total_rows = -1;
+
+	$hosts = get_allowed_devices('', 'description', '', $total_rows);
+	$sql_hosts_where = '';
 	if (cacti_sizeof($hosts) > 0) {
 		$sql_hosts_where =  'AND h.id IN (' . implode(',', array_keys(array_rekey($hosts, 'id', 'description'))) . ')';
 	}
@@ -1744,16 +1750,18 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 }
 
 function get_allowed_devices($sql_where = '', $order_by = 'description', $limit = '', &$total_rows = 0, $user = 0, $host_id = 0) {
-	$hash = get_allowed_type_hash('devices', '', '', '', 0, $user);
+	$hash      = get_allowed_type_hash('devices', '', '', '', 0, $user);
 	$init_rows = $total_rows;
+	$cached    = array();
 
 	if ($limit != -1) {
 		prime_devices_type_cache($hash, $user);
 
-		$cached = get_cached_allowed_type($hash, $init_rows);
+		if ($hash !== false) {
+			$cached = get_cached_allowed_type($hash, $init_rows);
+		}
 	} else {
 		$limit  = '';
-		$cached = array();
 	}
 
 	$host_list = array();
@@ -2180,9 +2188,9 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 	}
 
 	if ($sql_where != '') {
-		$sql_where     = 'WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
+		$sql_where = ' WHERE (' . $sql_where . ') AND gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL) AND (gt.name IS NOT NULL)';
 	} else {
-		$sql_where     = 'WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL)';
+		$sql_where = ' WHERE gl.graph_template_id IN(' . implode(', ', array_keys($templates)) . ') AND (gl.snmp_query_graph_id=0 OR sqg.name IS NOT NULL) AND (gt.name IS NOT NULL)';
 	}
 
 	if ($limit != '') {
@@ -2195,9 +2203,9 @@ function get_allowed_graph_templates_normalized($sql_where = '', $order_by = 'na
 
 	$templates = db_fetch_assoc("SELECT DISTINCT
 		IF(snmp_query_graph_id=0, CONCAT('cg_',gl.graph_template_id), CONCAT('dq_', gl.snmp_query_graph_id)) AS id,
-		IF(gt.name IS NULL, '" . __('Template Not Found') . "', IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']'))) AS name
+		IF(snmp_query_graph_id=0, gt.name, CONCAT(gt.name, ' [', sqg.name, ']')) AS name
 		FROM graph_local AS gl
-		INNER JOIN graph_templates AS gt
+		LEFT JOIN graph_templates AS gt
 		ON gt.id=gl.graph_template_id
 		LEFT JOIN snmp_query_graph AS sqg
 		ON gl.snmp_query_graph_id=sqg.id
