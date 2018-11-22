@@ -1923,7 +1923,15 @@ function graph_management() {
 	}
 
 	if (get_request_var('orphans') == 'true') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ((gl.snmp_index = "" AND gl.snmp_query_id > 0) OR (gl.id IN (SELECT gti.local_graph_id FROM graph_templates_item AS gti LEFT JOIN data_template_rrd AS dtr ON gti.task_item_id=dtr.id WHERE dtr.local_data_id IS NULL)))';
+		$orphan_where = ' AND graph_type_id IN (' .
+			GRAPH_ITEM_TYPE_LINE1     . ', ' .
+			GRAPH_ITEM_TYPE_LINE2     . ', '.
+			GRAPH_ITEM_TYPE_LINE3     . ', ' .
+			GRAPH_ITEM_TYPE_LINESTACK . ', ' .
+			GRAPH_ITEM_TYPE_AREA      . ', ' .
+			GRAPH_ITEM_TYPE_STACK     . ')';
+
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ((gl.snmp_index = "" AND gl.snmp_query_id > 0) OR (gl.id IN (SELECT gti.local_graph_id FROM graph_templates_item AS gti LEFT JOIN data_template_rrd AS dtr ON gti.task_item_id=dtr.id WHERE gti.task_item_id > 0 AND dtr.local_data_id IS NULL ' . $orphan_where . ')))';
 	}
 
 	/* don't allow aggregates to be view here */
