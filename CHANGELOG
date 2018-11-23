@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#2163: LDAP functions are not consistent
 -issue#2164: Login page does not remember selected realm
 -issue#2171: datepicker and timepick translation not available
+-issue#2178: Header/Footer included more than once
 -issue: Unable to display user profile tabs
 -feature:#2173: Introduce Device and Graph Template Caching to Speed UI
 -feature: Update JavaScript library jstree.js to 3.3.7

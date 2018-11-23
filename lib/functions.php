@@ -3087,10 +3087,10 @@ function set_page_refresh($refresh) {
 function bottom_footer() {
 	global $config, $no_session_write;
 
-	include($config['base_path'] . '/include/global_session.php');
+	include_once($config['base_path'] . '/include/global_session.php');
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/bottom_footer.php');
+		include_once($config['base_path'] . '/include/bottom_footer.php');
 	}
 
 	/* we use this session var to store field values for when a save fails,
@@ -3115,7 +3115,7 @@ function top_header() {
 	global $config;
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/top_header.php');
+		include_once($config['base_path'] . '/include/top_header.php');
 	}
 }
 
@@ -3123,14 +3123,14 @@ function top_graph_header() {
 	global $config;
 
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/top_graph_header.php');
+		include_once($config['base_path'] . '/include/top_graph_header.php');
 	}
 }
 
 function general_header() {
 	global $config;
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
-		include($config['base_path'] . '/include/top_general_header.php');
+		include_once($config['base_path'] . '/include/top_general_header.php');
 	}
 }
 
