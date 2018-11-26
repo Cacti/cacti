@@ -705,7 +705,7 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
-					if (myGraphLocation != 'graph') {
+					if (pageAction != 'graph') {
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
 
@@ -812,7 +812,7 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
-					if (myGraphLocation != 'graph') {
+					if (pageAction != 'graph') {
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
 

@@ -154,6 +154,88 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
+/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+function html_graph_template_multiselect() {
+	?>
+	var msWidth = 100;
+	var maxWidth = 200;
+	$('#graph_template_id option').each(function() {
+		if ($(this).textWidth() > msWidth) {
+			msWidth = $(this).textWidth();
+			if (msWidth > maxWidth) {
+				msWidth = maxWidth;
+			}
+		}
+
+		$('#graph_template_id').css('width', msWidth+120+'px');
+	});
+
+	$('#graph_template_id').hide().multiselect({
+		height: 300,
+		menuWidth: 420,
+		buttonWidth: 420,
+		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
+		selectedText: function(numChecked, numTotal, checkedItems) {
+			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+			$.each(checkedItems, function(index, value) {
+				if (value.value == '-1') {
+					myReturn='<?php print __('All Graphs & Templates');?>';
+					return false;
+				} else if (value.value == '0') {
+					myReturn='<?php print __('Not Templated');?>';
+					return false;
+				}
+			});
+			return myReturn;
+		},
+		checkAllText: '<?php print __('All');?>',
+		uncheckAllText: '<?php print __('None');?>',
+		uncheckall: function() {
+			$(this).multiselect('widget').find(':checkbox:first').each(function() {
+				$(this).prop('checked', true);
+			});
+		},
+		close: function(event, ui) {
+			applyGraphFilter();
+		},
+		open: function(event, ui) {
+			$("input[type='search']:first").focus();
+		},
+		click: function(event, ui) {
+			checked=$(this).multiselect('widget').find('input:checked').length;
+
+			if (ui.value == -1 || ui.value == 0) {
+				if (ui.checked == true) {
+					$('#graph_template_id').multiselect('uncheckAll');
+					if (ui.value == -1) {
+						$(this).multiselect('widget').find(':checkbox:first').prop('checked', true);
+					} else {
+						$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', true);
+					}
+				}
+			} else if (checked == 0) {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).click();
+				});
+			} else if ($(this).multiselect('widget').find('input:checked:first').val() == '-1') {
+				if (checked > 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+						$(this).prop('disable', true);
+					});
+				}
+			} else {
+				$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', false);
+			}
+		}
+	}).multiselectfilter({
+		label: '<?php print __('Search');?>',
+		placeholder: '<?php print __('Enter keyword');?>',
+		width: msWidth
+	});
+	<?php
+}
+
 /* html_graph_area - draws an area the contains full sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
      array, the following two keys must exist
