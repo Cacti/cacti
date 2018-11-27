@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+1.2.0 Beta 4
+-issue#2186: Boost generates invalid SQL during on demand update
+-issue#2182: Graph View missing 'html_graph_template_multiselect()' function
+
 1.2.0 Beta 3
 -issue#2002: api_plugin_db_table_create should support non-string defaults
 -issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()

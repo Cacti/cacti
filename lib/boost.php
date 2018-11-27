@@ -134,10 +134,12 @@ function boost_poller_on_demand(&$results) {
 		/* install the boost error handler */
 		set_error_handler('boost_error_handler');
 
-		$outbuf      = '';
+		$out_buffer  = '';
 		$sql_prefix  = 'INSERT INTO poller_output_boost (local_data_id, rrd_name, time, output) VALUES ';
 		$sql_suffix  = ' ON DUPLICATE KEY UPDATE output=VALUES(output)';
-		$overhead    = strlen($sql_prefix) + strlen($sql_suffix);
+
+		// Add 1 here for potential delimiter
+		$overhead    = strlen($sql_prefix) + strlen($sql_suffix) + 1;
 
 		if (boost_check_correct_enabled()) {
 			/* if boost redirect is on, rows are being inserted directly */
@@ -150,38 +152,55 @@ function boost_poller_on_demand(&$results) {
 			$max_allowed_packet = $max_allowed_packet['Value'];
 
 			if (cacti_sizeof($results)) {
-				$i          = 1;
+				$delim      = '';
+				$delim_len  = 0;
 				$out_length = 0;
 
 				foreach($results as $result) {
-					if ($i == 1) {
-						$delim = '';
-					} else {
-						$delim = ',';
-					}
-
-					$outbuf2 =
-						$delim . "('" .
+					$tmp_buffer =
+						"('" .
 						$result['local_data_id'] . "','" .
 						$result['rrd_name'] . "','" .
 						$result['time'] . "','" .
 						$result['output'] .	"')";
 
-					$out_length += strlen($outbuf2);
+					$tmp_length = strlen($tmp_buffer);
 
-					if (($out_length + $overhead) > $max_allowed_packet) {
-						db_execute($sql_prefix . $outbuf . $sql_suffix, true, $conn);
-						$outbuf     = $outbuf2;
-						$out_length = strlen($outbuf2);
-						$i          = 1;
+					// Calculate length of output buffer, plus overhead, plus the temp buffer
+					// is it greater than what SQL allows?
+					if (($out_length + $overhead + $tmp_length) > $max_allowed_packet) {
+
+						// Overall length was greater, but do we actually have anything
+						// already buffered? Or was it just the temp buffer that overflowed
+						// things?
+						if ($out_length > 0) {
+							db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
+						}
+
+						// Make the temp buffer the starting point for the output buffer, but
+						// we don't need a delimiter at this point, so don't include it
+						$out_buffer = $tmp_buffer;
+						$out_length = $tmp_length;
 					} else {
-						$outbuf .= $outbuf2;
-						$i++;
+						// We didn't overflow so lets add the temp buffer to the output buffer
+						// and include the delimiter string/length.  This will be a blank
+						// delimiter on the first iteration as the output buffer will always
+						// be blank.
+						$out_buffer .= $delim . $tmp_buffer;
+						$out_length += $delim_length + $tmp_length;
+					}
+
+					// Only on the first iteration do we need to set the delimiter as
+					// after that, we will always need it when we are not overflowing
+					if ($delim_len == 0) {
+						$delim     = ',';
+						$delim_len = strlen($delim);
 					}
 				}
 
-				if ($outbuf != '') {
-					db_execute($sql_prefix . $outbuf . $sql_suffix, true, $conn);
+				// output buffer had something left, lets flush it
+				if ($out_buffer != '') {
+					db_execute($sql_prefix . $out_buffer . $sql_suffix, true, $conn);
 				}
 			}
 
