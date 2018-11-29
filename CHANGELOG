@@ -1,5 +1,7 @@
 Cacti CHANGELOG
 
+-issue#2191: i18n_themes is not properly primed in global_arrays.php
+
 1.2.0 Beta 4
 -issue#2186: Boost generates invalid SQL during on demand update
 -issue#2182: Graph View missing 'html_graph_template_multiselect()' function

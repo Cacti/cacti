@@ -1715,12 +1715,12 @@ $i18n_languages = array(
 );
 
 $i18n_themes = array(
-	_('Classic'),
-	_('Modern'),
-	_('Dark'),
-	_('Paper-plane'),
-	_('Paw'),
-	_('Sunrise'),
+	__('Classic'),
+	__('Modern'),
+	__('Dark'),
+	__('Paper-plane'),
+	__('Paw'),
+	__('Sunrise'),
 );
 
 $database_statuses = array(
