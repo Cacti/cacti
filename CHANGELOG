@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+-issue#2188: SNMP timeout errors are being duplicated
 -issue#2191: i18n_themes is not properly primed in global_arrays.php
 
 1.2.0 Beta 4
