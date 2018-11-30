@@ -150,8 +150,10 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	db_execute("INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		(SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
-		FROM (SELECT local_data_id, rrd_name, `value` FROM data_source_stats_hourly_cache WHERE `value` IS NOT NULL) AS sally
-		GROUP BY local_data_id, rrd_name)
+		 FROM data_source_stats_hourly_cache 
+		 WHERE `value` IS NOT NULL
+		 GROUP BY local_data_id, rrd_name
+		)
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
 
 	log_dsstats_statistics('HOURLY');
