@@ -745,21 +745,25 @@ function applySkin() {
 }
 
 function renderLanguages() {
-	$('select#user_language').selectmenu('destroy').languageselect({
-		width: '220',
-		change: function() {
-			name  = $(this).attr('id');
-			value = $(this).val();
-			page  = basename(location.pathname);
-			if (page == 'auth_profile.php') {
-				$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
-					if (name == 'selected_theme' || name == 'user_language') {
-						document.location = 'auth_profile.php?action=edit';
-					}
-				});
+	if ($('select#user_language').selectmenu('instance') !== undefined) {
+		$('select#user_language').selectmenu('destroy');
+
+		$('select#user_language').languageselect({
+			width: '220',
+			change: function() {
+				name  = $(this).attr('id');
+				value = $(this).val();
+				page  = basename(location.pathname);
+				if (page == 'auth_profile.php') {
+					$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
+						if (name == 'selected_theme' || name == 'user_language') {
+							document.location = 'auth_profile.php?action=edit';
+						}
+					});
+				}
 			}
-		}
-	}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+	}
 
 	$('#user_language-menu').css('max-height', '200px');
 }
