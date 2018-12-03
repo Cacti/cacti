@@ -1600,7 +1600,7 @@ function loadTopTab(href, id, force) {
 	}
 
 	if (cont) {
-		thref = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+		thref = stripHeaderSuppression(href);
 		url   = thref+(thref.indexOf('?') > 0 ? '&':'?') + 'headercontent=true';
 
 		$('.submenuoptions').slideUp(120);
@@ -1642,7 +1642,7 @@ function loadTopTab(href, id, force) {
 
 					$('#cactiContent').replaceWith(html);
 
-					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?&', '');
+					thref = stripHeaderSuppression(href);
 
 					pushState(myTitle, href);
 				}
@@ -1731,7 +1731,7 @@ function loadPage(href, force) {
 					$('#main').empty().hide();
 					$('#main').html(html);
 
-					href = href.replace('?header=false&', '?').replace('&header=false', '').replace('?header=false', '');
+					thref = stripHeaderSuppression(href);
 
 					pushState(myTitle, href);
 				}
@@ -2235,6 +2235,10 @@ function appendHeaderSuppression(url) {
 	return url;
 }
 
+function stripHeaderSuppression(url) {
+	return url.replace('header=false', '').replace('?&', '?').replace('&&', '&');
+}
+
 /** setupPageTimeout - This function will setup the page timeout based upon
  *  the plugin developers $refresh requirements.  It also sets up a location
  *  to redirect the user to upon timeout.  This is generally done for automatically
@@ -2594,7 +2598,7 @@ function applyGraphFilter() {
 }
 
 function cleanHeader(href) {
-	href = href.replace('?header=false', '?').replace('&header=false', '').replace('?&', '?');
+	href = stripHeaderSuppression(href);
 	href = href.replace('action=tree_content', 'action=tree');
 	href = href.replace('?nostate=true', '?').replace('&nostate=true', '').replace('?&', '?');
 
@@ -2623,7 +2627,7 @@ function handlePopState() {
 		if (href.indexOf('#') == -1) {
 			if (href.indexOf('header=false') > 0) {
 				loadPageNoHeader(href + '&nostate=true');
-			} else if  (basename(href) == lastPage) {
+			} else if (basename(href) == lastPage) {
 				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
 			} else {
 				href.replace('header=false').replace('?&', '?').replace('&&', '&');
@@ -2961,9 +2965,10 @@ function initializeGraphs() {
 
 		$(this).unbind('click').click(function(event) {
 			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+
 			event.preventDefault();
 			event.stopPropagation();
-			graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
+
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?local_graph_id='+graph_id+'&header=false')
 				.done(function(data) {
@@ -3112,9 +3117,11 @@ function initializeGraphs() {
 			'&graph_end='+getTimestampFromDate($('#date2').val())).addClass('linkEditMain');
 
 		$(this).unbind('click').click(function(event) {
+			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+
 			event.preventDefault();
 			event.stopPropagation();
-			graph_id=$(this).attr('id').replace('graph_','').replace('_util','');
+
 			$.ajaxQ.abortAll();
 			$.get(urlPath+'graph.php?action=zoom&header=false&local_graph_id='+graph_id+'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+'&graph_end='+getTimestampFromDate($('#date2').val()))
 				.done(function(data) {

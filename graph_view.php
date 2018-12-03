@@ -904,11 +904,12 @@ case 'list':
 
 						$(this).dialog('close');
 
-						strURL = 'graph_view.php?action=ajax_reports&header=false' +
-							'&report_id='  + $('#report_id').val()  +
-							'&timespan='   + $('#timespan').val()   +
-							'&align='      + $('#align').val()      +
-							'&graph_list=' + $('#graph_list').val();
+						strURL = 'graph_view.php?action=ajax_reports';
+							'&header=false' +
+							'&report_id='   + $('#report_id').val()  +
+							'&timespan='    + $('#timespan').val()   +
+							'&align='       + $('#align').val()      +
+							'&graph_list='  + $('#graph_list').val();
 
 						loadPageNoHeader(strURL);
 					}

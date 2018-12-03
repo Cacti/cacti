@@ -97,11 +97,11 @@ if (isset($_SESSION['refresh'])) {
 	unset($_SESSION['refresh']);
 } elseif (isset($refresh) && is_array($refresh)) {
 	$myrefresh['seconds'] = $refresh['seconds'];
-	$myrefresh['page']    = sanitize_uri($refresh['page'] . (strpos($refresh['page'], '?') ? '&':'?') . 'header=false');
+	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($refresh['page']));
 	$refreshIsLogout      = 'false';
 } elseif (isset($refresh)) {
 	$myrefresh['seconds'] = $refresh;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false');
+	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($_SERVER['REQUEST_URI']));
 	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;

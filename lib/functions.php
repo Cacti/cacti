@@ -3134,6 +3134,14 @@ function general_header() {
 	}
 }
 
+function appendHeaderSuppression($url) {
+	if (strpos($url, 'header=false') < 0) {
+		return $url . (strpos($url, '?') ? '&':'?') . 'header=false';
+	}
+
+	return $url;
+}
+
 function admin_email($subject, $message) {
 	if (read_config_option('admin_user')) {
 		if (read_config_option('notify_admin')) {
