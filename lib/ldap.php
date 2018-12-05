@@ -418,7 +418,7 @@ class Ldap {
 			cacti_log('LDAP: Connect using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
-			cacti_log('LDAP: Connect using '. $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
+			cacti_log('LDAP: Connect using ldap://'. $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
@@ -605,8 +605,10 @@ class Ldap {
 
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+			cacti_log('LDAP: Search using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
+			cacti_log('LDAP: Search using ldap://' . $this->host . ':' . $this->port, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 
@@ -760,8 +762,10 @@ class Ldap {
 
 		if ($this->encryption == '1') {
 			/* This only works with OpenLDAP, I'm pretty sure this will not work with Solaris, Tony */
+			cacti_log('LDAP: GetCN using ldaps://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect('ldaps://' . $this->host . ':' . $this->port_ssl);
 		} else {
+			cacti_log('LDAP: GetCN using ldap://' . $this->host . ':' . $this->port_ssl, false, 'AUTH', POLLER_VERBOSITY_HIGH);
 			$ldap_conn = ldap_connect($this->host, $this->port);
 		}
 

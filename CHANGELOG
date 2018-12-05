@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 -issue#2188: SNMP timeout errors are being duplicated
 -issue#2191: i18n_themes is not properly primed in global_arrays.php
+-issue#2202: Can't create more than one graph with add_graphs.php from one template
 -feature: Update phpseclib to version 2.0.12
 
 1.2.0 Beta 4
