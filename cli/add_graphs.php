@@ -550,10 +550,13 @@ if (cacti_sizeof($parms)) {
 	$returnArray = array();
 
 	if ($graph_type == 'cg') {
-		$existsAlready = db_fetch_cell_prepared('SELECT id
-			FROM graph_local
+		$existsAlready = db_fetch_cell_prepared('SELECT gl.id
+			FROM graph_local gl
+			INNER JOIN graph_templates gt on gt.id = gl.graph_template_id
 			WHERE graph_template_id = ?
-			AND host_id = ?', array($template_id, $host_id));
+			AND host_id = ?
+			AND multiple = \'\'',
+			array($template_id, $host_id));
 
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
@@ -646,12 +649,14 @@ if (cacti_sizeof($parms)) {
 			foreach ($snmp_indexes as $snmp_index) {
 				$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
-				$existsAlready = db_fetch_cell_prepared('SELECT id
-					FROM graph_local
+				$existsAlready = db_fetch_cell_prepared('SELECT gl.id
+					FROM graph_local gl
+					INNER JOIN graph_templates on gt.id = gl.graph_template_id
 					WHERE graph_template_id = ?
 					AND host_id = ?
 					AND snmp_query_id = ?
-					AND snmp_index = ?',
+					AND snmp_index = ?
+					AND multiple = \'\'',
 					array($template_id, $host_id, $dsGraph['snmpQueryId'], $snmp_query_array['snmp_index']));
 
 				if (isset($existsAlready) && $existsAlready > 0) {
