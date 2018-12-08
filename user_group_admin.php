@@ -731,7 +731,10 @@ function user_group_graph_perms_edit($tab, $header_label) {
 	);
 
 	if (!isempty_request_var('id')) {
-		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
+		$policy = db_fetch_row_prepared('SELECT policy_graphs, policy_trees, policy_hosts, policy_graph_templates
+			FROM user_auth_group
+			WHERE id = ?',
+			array(get_request_var('id')));
 	}
 
 	switch($tab) {
@@ -750,7 +753,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			<td><table><tr>
 			<td class='nowrap'><? print __('Default Graph Policy for this User Group');?></td>
 			<td>
-				<?php form_dropdown('policy_graphs',$policy_array,'','',$policy['policy_graphs'],'',''); ?>
+				<?php form_dropdown('policy_graphs', $policy_array, '', '', $policy['policy_graphs'], '', ''); ?>
 			</td>
 			<td>
 				<input type='submit' class='ui-button ui-corner-all ui-widget' name='update_policy' value='<?php print __esc('Update');?>'>

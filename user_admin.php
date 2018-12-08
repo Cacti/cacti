@@ -326,7 +326,7 @@ function form_actions() {
 
 	form_start('user_admin.php');
 
-	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '40%', '', '3', 'center', '');
+	html_start_box($user_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
 	if (isset($user_array) && cacti_sizeof($user_array)) {
 		if ((get_nfilter_request_var('drp_action') == '1') && (cacti_sizeof($user_array))) { // delete
@@ -408,7 +408,8 @@ function form_actions() {
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to overwrite the User(s) settings with the selected template User settings and permissions.  The original users Full Name, Password, Realm and Enable status will be retained, all other fields will be overwritten from Template User.') . "<br><br></td>
-				</tr><tr>
+				</tr>
+				<tr>
 					<td class='textArea'>
 						<p>" . __('Template User:') . " ";
 			print form_dropdown('template_user', $usernames, 'username', 'id', '', '', 0);
@@ -417,7 +418,7 @@ function form_actions() {
 				</tr><tr>
 					<td class='textArea'>
 						<p>" . __('User(s) to update:') . "</p>
-						<p><ul>$user_list</ul></p>
+						<ul>$user_list</ul>
 					</td>
 				</tr>\n";
 
@@ -822,7 +823,7 @@ function graph_perms_edit($tab, $header_label) {
 		if (read_config_option('graph_auth_method') == 1) {
 			$policy_note = __('<b>Note:</b> System Graph Policy is \'Permissive\' meaning the User must have access to at least one of Graph, Device, or Graph Template to gain access to the Graph');
 		} else {
-			$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User must have access to the Graph, Device, and Graph Template to gain access to the Graph');
+			$policy_note = __('<b>Note:</b> System Graph Policy is \'Restrictive\' meaning the User must have access to either the Graph or the Device and Graph Template to gain access to the Graph');
 		}
 
 		/* box: device permissions */

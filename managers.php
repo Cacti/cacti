@@ -1056,7 +1056,7 @@ function form_actions(){
 				print "<tr>
 					<td class='textArea'>
 						<p>$msg</p>
-						<p><ul>$list</ul></p>
+						<ul>$list</ul>
 					</td>
 				</tr>";
 
