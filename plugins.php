@@ -541,7 +541,7 @@ function update_show_current () {
 					id: 'btnUninstall',
 					click: function() {
 						$('#uninstalldialog').dialog('close');
-						loadPageNoHeader(url + '&header=false');
+						document.location = url;
 					}
 				}
 			};
