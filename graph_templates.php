@@ -221,6 +221,30 @@ function form_actions() {
 				db_execute('DELETE FROM graph_templates
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
 
+				$snmp_graph_ids = array_rekey(
+					db_fetch_assoc('SELECT id
+						FROM snmp_query_graph
+						WHERE ' . array_to_sql_or($selected_items, 'graph_template_id')),
+					'id', 'id'
+				);
+
+				if (cacti_sizeof($snmp_graph_ids)) {
+					db_execute('DELETE FROM snmp_query_graph
+						WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+
+					db_execute('DELETE FROM snmp_query_graph_rrd
+						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
+
+					db_execute('DELETE FROM snmp_query_graph_rrd_sv
+						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
+
+					db_execute('DELETE FROM snmp_query_graph_rrd_sv
+						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
+
+					db_execute('DELETE FROM snmp_query_graph_sv
+						WHERE snmp_query_graph_id IN (' . implode(', ', $snmp_graph_ids) . ')');
+				}
+
 				$graph_template_input = db_fetch_assoc('SELECT id
 					FROM graph_template_input
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
