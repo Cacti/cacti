@@ -579,7 +579,7 @@ if (cacti_sizeof($parms)) {
 		if ($graphTitle != '') {
 			if (isset($returnArray['local_graph_id'])) {
 				db_execute_prepared('UPDATE graph_templates_graph
-					SET title_cache = ?
+					SET title = ?
 					WHERE local_graph_id = ?',
 					array($graphTitle, $returnArray['local_graph_id']));
 
@@ -662,7 +662,7 @@ if (cacti_sizeof($parms)) {
 				if (isset($existsAlready) && $existsAlready > 0) {
 					if ($graphTitle != '') {
 						db_execute_prepared('UPDATE graph_templates_graph
-							SET title_cache = ?
+							SET title = ?
 							WHERE local_graph_id = ?',
 							array($graphTitle, $existsAlready));
 
@@ -689,7 +689,7 @@ if (cacti_sizeof($parms)) {
 				if ($returnArray !== false) {
 					if ($graphTitle != '') {
 						db_execute_prepared('UPDATE graph_templates_graph
-							SET title_cache = ?
+							SET title = ?
 							WHERE local_graph_id = ?',
 							array($graphTitle, $returnArray['local_graph_id']));
 
