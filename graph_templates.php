@@ -514,9 +514,9 @@ function template_edit() {
 			AND local_graph_id=0',
 			array(get_request_var('id')));
 
-		$header_label = __('Template [edit: %s]', html_escape($template['name']));
+		$header_label = __('Graph Template [edit: %s]', html_escape($template['name']));
 	} else {
-		$header_label = __('Template [new]');
+		$header_label = __('Graph Template [new]');
 	}
 
 	form_start('graph_templates.php', 'graph_templates');
