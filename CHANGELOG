@@ -1,5 +1,6 @@
 Cacti CHANGELOG
 
+-issue#2184: html_host_filter() does not handle host_id consequently
 -issue#2188: SNMP timeout errors are being duplicated
 -issue#2191: i18n_themes is not properly primed in global_arrays.php
 -issue#2202: Can't create more than one graph with add_graphs.php from one template

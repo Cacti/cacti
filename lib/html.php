@@ -1897,6 +1897,10 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
+	if ($host_id == '-1' && isset_request_var('host_id')) {
+		$host_id = get_filter_request_var('host_id');
+	}
+
 	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
@@ -1904,15 +1908,15 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		</td>
 		<td>
 			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>'>
-				<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
 
 				$devices = get_allowed_devices($sql_where);
 
 				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
+						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
 				}
 				?>
@@ -1921,7 +1925,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<?php
 	} else {
 		if ($host_id > 0) {
-			$hostname = db_fetch_cell_prepared("SELECT description FROM host WHERE id = ?", array($host_id));
+			$hostname = db_fetch_cell_prepared("SELECT description
+				FROM host WHERE id = ?",
+				array($host_id));
 		} elseif ($host_id == 0) {
 			$hostname = __('None');
 		} else {
@@ -1953,21 +1959,25 @@ function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
+	if ($site_id == '-1' && isset_request_var('site_id')) {
+		$site_id = get_filter_request_var('site_id');
+	}
+
 	?>
 	<td>
 		<?php print __('Site');?>
 	</td>
 	<td>
 		<select id='site_id' onChange='<?php print $call_back;?>'>
-			<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('site_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-			<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('site_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 			<?php
 
 			$sites = get_allowed_sites($sql_where);
 
 			if (cacti_sizeof($sites)) {
 				foreach ($sites as $site) {
-					print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
+					print "<option value='" . $site['id'] . "'"; if ($site_id == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
 				}
 			}
 			?>
