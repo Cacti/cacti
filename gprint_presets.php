@@ -410,7 +410,7 @@ function gprint_presets() {
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
-            form_selectable_cell($gp['gprint_text'], $gp['id'], '', 'right');
+            form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
             form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'right');
             form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'right');
             form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'right');
