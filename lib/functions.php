@@ -679,6 +679,9 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 			if ($message_level == MESSAGE_LEVEL_NONE) {
 				$message_level = get_message_level($predefined);
 			}
+		} elseif (isset($_SESSION[$message_id])) {
+			$message = $_SESSION[$message_id];
+			$message_level = MESSAGE_LEVEL_ERROR;
 		} else {
 			$message = __('Message Not Found.');
 			$message_level = MESSAGE_LEVEL_ERROR;
