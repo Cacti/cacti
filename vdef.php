@@ -273,7 +273,7 @@ function vdef_form_actions() {
 					<td class='topBoxAlt'>
 						<p>" . __n('Click \'Continue\' to duplicate the following VDEF. You can optionally change the title format for the new VDEF.', 'Click \'Continue\' to duplicate following VDEFs. You can optionally change the title format for the new VDEFs.', cacti_sizeof($vdef_array)) . "</p>
 						<div class='itemlist'><ul>$vdef_list</ul></div>
-						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box("title_format", "<vdef_title> (1)", "", "255", "30", "text"); print "</p>
+						<p><strong>" . __('Title Format:') . "</strong><br>"; form_text_box('title_format', '<vdef_title> (1)', '', '255', '30', 'text'); print "</p>
 					</td>
 				</tr>\n";
 
@@ -324,8 +324,8 @@ function vdef_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following VDEF\'s.'); ?></p>
-			<p>VDEF Name: '<?php print $vdef['name'];?>'<br>
-			<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong></p>
+			<p>VDEF Name: <?php print html_escape($vdef['name']);?><br>
+			<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong></p>
 		</td>
 	</tr>
 	<tr>
@@ -609,7 +609,7 @@ function vdef_edit() {
 					<a class='linkEditMain' href='<?php print html_escape('vdef.php?action=item_edit&id=' . $vdef_item['id'] . '&vdef_id=' . $vdef['id']);?>'><?php print __('Item #%d', $i);?></a>
 				</td>
 				<td>
-					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print get_vdef_item_name($vdef_item['id']);?></strong>
+					<em><?php $vdef_item_type = $vdef_item['type']; print $vdef_item_types[$vdef_item_type];?></em>: <strong><?php print html_escape(get_vdef_item_name($vdef_item['id']));?></strong>
 				</td>
 				<td class='right'>
 					<?php
