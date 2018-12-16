@@ -66,7 +66,7 @@ switch (get_request_var('action')) {
 }
 
 function manager(){
-	global $manager_actions, $item_rows;
+	global $config, $manager_actions, $item_rows;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -238,12 +238,12 @@ function manager(){
 			$description = filter_value($item['description'], get_request_var('filter'));
 			$hostname    = filter_value($item['hostname'], get_request_var('filter'));
 			form_alternate_row('line' . $item['id'], false);
-			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&id=' . $item['id'] . '">' . $description . '</a>', $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($config['url_path'] . 'managers.php?action=edit&id=' . $item['id']) . '">' . html_escape($description) . '</a>', $item['id']);
 			form_selectable_cell($item['id'], $item['id']);
 			form_selectable_cell($item['disabled'] ? '<span class="deviceDown">' . __('Disabled') . '</span>' : '<span class="deviceUp">' . __('Enabled') . '</span>', $item['id']);
-			form_selectable_cell($hostname, $item['id']);
-			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&tab=notifications&id=' . $item['id'] . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
-			form_selectable_cell('<a class="linkEditMain" href="managers.php?action=edit&tab=logs&id=' . $item['id'] . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
+			form_selectable_ecell($hostname, $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($config['url_path'] . 'managers.php?action=edit&tab=notifications&id=' . $item['id']) . '">' . ($item['count_notify'] ? $item['count_notify'] : 0) . '</a>' , $item['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($config['url_path'] . 'managers.php?action=edit&tab=logs&id=' . $item['id']) . '">' . ($item['count_log'] ? $item['count_log'] : 0 ) . '</a>', $item['id']);
 			form_checkbox_cell($item['description'], $item['id']);
 			form_end_row();
 		}
@@ -595,7 +595,7 @@ function manager_notifications($id, $header_label) {
 			form_selectable_cell($mib, $row_id);
 			form_selectable_cell($item['kind'], $row_id);
 			form_selectable_cell($item['max-access'],$row_id);
-			form_selectable_cell(((isset($notifications[$item['mib']]) && isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' .__('Enabled') : '<span class="deviceDown">' .  __('Disabled')) . '</span>', $row_id);
+			form_selectable_cell(((isset($notifications[$item['mib']]) && isset($notifications[$item['mib']][$item['name']])) ? '<span class="deviceUp">' . __('Enabled'):'<span class="deviceDown">' . __('Disabled')) . '</span>', $row_id);
 			form_checkbox_cell($item['oid'], $row_id);
 			form_end_row();
 		}

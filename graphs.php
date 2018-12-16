@@ -2043,10 +2043,10 @@ function graph_management() {
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
-			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'text-align:right');
+			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell(filter_value($sources[$graph['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
 			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $url), $graph['local_graph_id'], '', 'right');
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
+			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}

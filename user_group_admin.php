@@ -688,7 +688,7 @@ function user_group_members_edit($header_label) {
 			} else {
 				form_selectable_cell('<span class="accessRestricted">' . __('Non Member') . '</span>', $g['id']);
 			}
-			form_selectable_cell(($g['enabled'] == 'on' ? __('Enabled'): __('Disabled') ), $g['id']);
+			form_selectable_cell(($g['enabled'] == 'on' ? __('Enabled'):__('Disabled') ), $g['id']);
 			form_selectable_cell((isset($auth_realms[$g['realm']]) ? $auth_realms[$g['realm']]:'Unknown'), $g['id']);
 			form_checkbox_cell($g['full_name'], $g['id']);
 			form_end_row();
@@ -975,7 +975,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 			foreach ($hosts as $host) {
 				form_alternate_row('line' . $host['id'], true);
 				form_selectable_cell(filter_value($host['description'], get_request_var('filter')), $host['id']);
-				form_selectable_cell(round(($host['id']), 2), $host['id']);
+				form_selectable_cell($host['id'], $host['id']);
 				if (empty($host['group_id']) || $host['group_id'] == NULL) {
 					if ($policy['policy_hosts'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);

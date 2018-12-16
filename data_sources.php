@@ -1560,10 +1560,10 @@ function ds() {
 
 			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);
 			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
-			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'text-align:right');
+			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'right');
 			form_selectable_cell(get_poller_interval($data_source['rrd_step'], $data_source['data_source_profile_id']), $data_source['local_data_id']);
 			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'), $data_source['local_data_id']);
-			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes') : __('No')), $data_source['local_data_id']);
+			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes'):__('No')), $data_source['local_data_id']);
 			form_selectable_cell($data_template_name, $data_source['local_data_id']);
 			form_checkbox_cell($data_source['name_cache'], $data_source['local_data_id'], $disabled);
 			form_end_row();

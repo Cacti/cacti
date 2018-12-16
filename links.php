@@ -397,10 +397,10 @@ function pages() {
 			}
 
 			form_selectable_cell($actions, $page['id'], '50');
-			form_selectable_cell(html_escape($page['contentfile']), $page['id']);
-			form_selectable_cell(html_escape($page['title']), $page['id']);
-			form_selectable_cell(html_escape($style_translate[$page['style']]) . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? 'External Links':$page['extendedstyle']) . ' )':''), $page['id']);
-			form_selectable_cell(($page['enabled'] == 'on' ? 'Yes':'No'), $page['id']);
+			form_selectable_ecell($page['contentfile'], $page['id']);
+			form_selectable_ecell($page['title'], $page['id']);
+			form_selectable_ecell($style_translate[$page['style']] . ($page['style'] == 'CONSOLE' ? ' ( ' . ($page['extendedstyle'] == '' ? __('External Links'):$page['extendedstyle']) . ' )':''), $page['id']);
+			form_selectable_cell(($page['enabled'] == 'on' ? __('Yes'):__('No')), $page['id']);
 
 			if (get_request_var('sort_column') == 'sortorder') {
 				if ($i != 0) {

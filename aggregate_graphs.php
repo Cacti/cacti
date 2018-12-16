@@ -1199,12 +1199,12 @@ function aggregate_items() {
 			if (validate_is_regex(get_request_var('rfilter'))) {
 				form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter')), $graph['local_graph_id']);
 			} else {
-				form_selectable_cell(get_request_var('rfilter') != '' ? aggregate_format_text(html_escape($graph['title_cache']), get_request_var('rfilter')) : html_escape($graph['title_cache']), $graph['local_graph_id']);
+				form_selectable_ecell(get_request_var('rfilter') != '' ? aggregate_format_text($graph['title_cache'], get_request_var('rfilter')) : $graph['title_cache'], $graph['local_graph_id']);
 			}
 
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell(($graph['agg_graph_id'] != '' ? "<span class='associated'>" . __('Yes') . '</span>':"<span class='notAssociated'>" . __('No') . "</span>"), $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
+			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
@@ -1528,7 +1528,7 @@ function aggregate_graph() {
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('filter'), 'aggregate_graphs.php?action=edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
 			form_selectable_cell((empty($graph['name']) ? '<em>' . __('None') . '</em>' : filter_value($template_name, get_request_var('filter'))), $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
+			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}

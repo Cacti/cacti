@@ -6,6 +6,9 @@ Cacti CHANGELOG
 -issue#2202: Can't create more than one graph with add_graphs.php from one template
 -issue#2207: Removing Graph Template does not Remove Data Query Associations
 -issue#2212: Stored XSS in "Website Hostname" field
+-issue#2213: Stored XSS in "Website Hostname" field - Devices
+-issue#2214: Stored XSS in "Vertical Label" field - Graph
+-issue#2215: Stored XSS in "Name" field - Color 
 -feature: Update phpseclib to version 2.0.12
 
 1.2.0 Beta 4

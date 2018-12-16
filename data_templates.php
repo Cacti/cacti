@@ -1016,9 +1016,9 @@ function template() {
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'data_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
-			form_selectable_cell($template['id'], $template['id'], '', 'text-align:right');
-			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'text-align:right');
-			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('data_sources.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['data_sources']) . '</a>', $template['id'], '', 'text-align:right');
+			form_selectable_cell($template['id'], $template['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('data_sources.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['data_sources']) . '</a>', $template['id'], '', 'right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') .'</em>': html_escape($template['data_input_method'])), $template['id']);
 			form_selectable_cell((empty($template['profile_name']) ? __('External'):html_escape($template['profile_name'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);

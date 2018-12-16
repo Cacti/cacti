@@ -529,14 +529,14 @@ function sites() {
 	$i = 0;
 	if (cacti_sizeof($site_list)) {
 		foreach ($site_list as $site) {
-			$devices_url = $config['url_path'] . 'host.php?reset=1&site_id=' . $site['id'];
+			$devices_url = html_escape($config['url_path'] . 'host.php?reset=1&site_id=' . $site['id']);
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $devices_url . '">' . number_format_i18n($site['hosts'], '-1') . '</a>', $site['id'], '', 'right');
-			form_selectable_cell($site['city'], $site['id'], '', 'left');
-			form_selectable_cell($site['state'], $site['id'], '', 'left');
-			form_selectable_cell($site['country'], $site['id'], '', 'left');
+			form_selectable_ecell($site['city'], $site['id'], '', 'left');
+			form_selectable_ecell($site['state'], $site['id'], '', 'left');
+			form_selectable_ecell($site['country'], $site['id'], '', 'left');
 			form_checkbox_cell($site['name'], $site['id']);
 			form_end_row();
 		}

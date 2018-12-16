@@ -1622,7 +1622,7 @@ function reports() {
 
 			if (is_reports_admin()) {
 				if (reports_html_account_exists($report['user_id'])) {
-					form_selectable_cell($report['full_name'], $report['id']);
+					form_selectable_ecell($report['full_name'], $report['id']);
 				} else {
 					form_selectable_cell(__('Report Disabled - No Owner'), $report['id']);
 				}
@@ -1633,10 +1633,10 @@ function reports() {
 			form_selectable_cell($interval, $report['id']);
 			form_selectable_cell(($report['lastsent'] == 0) ? __('Never') : date($date_format, $report['lastsent']), $report['lastsent']);
 			form_selectable_cell(date($date_format, $report['mailtime']), $report['id']);
-			form_selectable_cell($report['from_name'], $report['id']);
-			form_selectable_cell((substr_count($report['email'], ',') ? __('Multiple'): $report['email']), $report['id']);
+			form_selectable_ecell($report['from_name'], $report['id']);
+			form_selectable_ecell((substr_count($report['email'], ',') ? __('Multiple'): $report['email']), $report['id']);
 			form_selectable_cell((isset($attach_types[$report['attachment_type']])) ? $attach_types[$report['attachment_type']] : __('Invalid'), $report['id']);
-			form_selectable_cell($report['enabled'] ? __('Enabled'): __('Disabled'), $report['id']);
+			form_selectable_cell($report['enabled'] ? __('Enabled'):__('Disabled'), $report['id']);
 			form_checkbox_cell($report['name'], $report['id']);
 
 			form_end_row();

@@ -106,7 +106,7 @@ function draw_cdef_preview($cdef_id) {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>cdef=<?php print get_cdef($cdef_id, true);?></pre>
+			<pre>cdef=<?php print html_escape(get_cdef($cdef_id, true));?></pre>
 		</td>
 	</tr>
 	<?php
@@ -433,7 +433,7 @@ function item_edit() {
 	draw_cdef_preview(get_request_var('cdef_id'));
 	html_end_box();
 
-	form_start('cdef.php', 'form_cdef');
+	form_start('cdef.php', 'chk');
 
 	$cdef_name = db_fetch_cell_prepared('SELECT name
 		FROM cdef
@@ -897,9 +897,9 @@ function cdef() {
 
 			form_alternate_row('line' . $cdef['id'], false, $disabled);
 			form_selectable_cell(filter_value($cdef['name'], get_request_var('filter'), 'cdef.php?action=edit&id=' . $cdef['id']), $cdef['id']);
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $cdef['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($cdef['graphs'], '-1'), $cdef['id'], '', 'text-align:right');
-			form_selectable_cell(number_format_i18n($cdef['templates'], '-1'), $cdef['id'], '', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $cdef['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($cdef['graphs'], '-1'), $cdef['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($cdef['templates'], '-1'), $cdef['id'], '', 'right');
 			form_checkbox_cell($cdef['name'], $cdef['id'], $disabled);
 			form_end_row();
 		}

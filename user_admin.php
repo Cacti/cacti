@@ -1241,7 +1241,7 @@ function graph_perms_edit($tab, $header_label) {
 			foreach ($hosts as $host) {
 				form_alternate_row('line' . $host['id'], true);
 				form_selectable_cell(filter_value($host['description'], get_request_var('filter')), $host['id']);
-				form_selectable_cell(round(($host['id']), 2), $host['id']);
+				form_selectable_cell($host['id'], $host['id']);
 				if (empty($host['user_id']) || $host['user_id'] == NULL) {
 					if ($policy['policy_hosts'] == 1) {
 						form_selectable_cell('<span class="accessGranted">' . __('Access Granted') . '</span>', $host['id']);

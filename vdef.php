@@ -99,7 +99,7 @@ function draw_vdef_preview($vdef_id) {
 	?>
 	<tr class='even'>
 		<td style='padding:4px'>
-			<pre>vdef=<?php print get_vdef($vdef_id, true);?></pre>
+			<pre>vdef=<?php print html_escape(get_vdef($vdef_id, true));?></pre>
 		</td>
 	</tr>
 	<?php
@@ -404,7 +404,7 @@ function vdef_item_edit() {
 		$header_label = __('VDEF Items [new]');
 	}
 
-	form_start('vdef.php', 'form_vdef');
+	form_start('vdef.php', 'chk');
 
 	html_start_box($header_label, '100%', '', '3', 'center', '');
 
@@ -897,9 +897,9 @@ function vdef($refresh = true) {
 
             form_alternate_row('line' . $vdef['id'], false, $disabled);
 			form_selectable_cell(filter_value($vdef['name'], get_request_var('filter'), 'vdef.php?action=edit&id=' . $vdef['id']), $vdef['id']);
-            form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($vdef['graphs'], '-1'), $vdef['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($vdef['templates'], '-1'), $vdef['id'], '', 'text-align:right');
+            form_selectable_cell($disabled ? __('No'):__('Yes'), $vdef['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($vdef['graphs'], '-1'), $vdef['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($vdef['templates'], '-1'), $vdef['id'], '', 'right');
             form_checkbox_cell($vdef['name'], $vdef['id'], $disabled);
             form_end_row();
         }

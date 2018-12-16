@@ -149,6 +149,16 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	}
 }
 
+/* form_selectable_ecell - a wrapper to form_selectable_cell that escapes the contents
+   @arg $contents - the readable portion of the
+   @arg $id - the id of the object that will be highlighted
+   @arg $width - the width of the table element
+   @arg $style_or_class - the style or class to apply to the table element
+   @arg $title - optional title for the column */
+function form_selectable_ecell($contents, $id, $width = '', $style_or_class = '', $title = '') {
+	form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
+}
+
 /* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted

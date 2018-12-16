@@ -575,9 +575,9 @@ function aggregate_color_template() {
 			form_alternate_row('line' . $template['color_template_id'], true);
 
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1'), $template['color_template_id']);
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['color_template_id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
-            form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'text-align:right;');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['color_template_id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'right');
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
 		}

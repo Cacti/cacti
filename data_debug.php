@@ -259,18 +259,18 @@ function debug_wizard() {
 			if (strlen($name) > 50) {
 				$name = substr($name, 0, 50);
 			}
-			form_selectable_cell('<a class="linkEditMain" title="' . $title .'" href="' . htmlspecialchars('data_debug.php?action=view&id=' . $check['id']) . '">' . $name . '</a>', $check['id']);
-			form_selectable_cell($user, $check['id']);
+			form_selectable_cell('<a class="linkEditMain" title="' . $title .'" href="' . html_escape('data_debug.php?action=view&id=' . $check['id']) . '">' . html_escape($name) . '</a>', $check['id']);
+			form_selectable_ecell($user, $check['id']);
 			form_selectable_cell(date('F j, Y, G:i', $check['started']), $check['id']);
-			form_selectable_cell($check['datasource'], $check['id']);
-			form_selectable_cell(debug_icon(($check['done'] ? (strlen($issue_line) ? 'off' : 'on' ) : '')), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon($info['rrd_writable']), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon($info['rrd_exists']), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon($info['active']), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon($info['rrd_match']), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon($info['valid_data']), $check['id'], '', 'text-align: center;');
-			form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['id'], '', 'text-align: center;');
-			form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . html_escape(strlen(trim($issue_line)) ? $issue_line : '<none>') . '</a>', $check['id']);
+			form_selectable_ecell($check['datasource'], $check['id']);
+			form_selectable_cell(debug_icon(($check['done'] ? (strlen($issue_line) ? 'off' : 'on' ) : '')), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon($info['rrd_writable']), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon($info['rrd_exists']), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon($info['active']), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon($info['rrd_match']), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon($info['valid_data']), $check['id'], '', 'center');
+			form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['id'], '', 'center');
+			form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . html_escape(strlen(trim($issue_line)) ? $issue_line : __('<none>')) . '</a>', $check['id']);
 			form_checkbox_cell($check['id'], $check['id']);
 			form_end_row();
 		}
@@ -345,9 +345,9 @@ function debug_view() {
 		$field_name = $field['name'];
 
 		form_alternate_row('line' . $i);
-		form_selectable_cell($field['title'], $i);
+		form_selectable_ecell($field['title'], $i);
 
-		$value = '<not set>';
+		$value = __('<not set>');
 		$icon  = '';
 
 		if (array_key_exists($field_name, $check['info'])) {
@@ -368,7 +368,7 @@ function debug_view() {
 			$value = substr($value, 0, 100);
 		}
 
-		form_selectable_cell($value, $i, '', '', $value_title);
+		form_selectable_ecell($value, $i, '', '', $value_title);
 		form_selectable_cell($icon, $i);
 
 		form_end_row();
@@ -377,15 +377,6 @@ function debug_view() {
 
 
 	html_end_box(false);
-
-/*
-	print "<pre>";
-	if (isset($check) && is_array($check)) {
-		print_r($check);
-	}
-	print "</pre>";
-*/
-
 }
 
 function debug_icon($result) {

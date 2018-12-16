@@ -2481,7 +2481,7 @@ function snmpagent_utilities_run_cache() {
 			$max_access = filter_value($item['max-access'], get_request_var('filter'));
 
 			form_alternate_row('line' . $item['oid'], false);
-			form_selectable_cell( $oid, $item['oid']);
+			form_selectable_cell($oid, $item['oid']);
 			if($item['description']) {
 				print '<td><a href="#" title="<div class=\'header\'>' . $name . '</div><div class=\'content preformatted\'>' . html_escape($item['description']) . '</div>" class="tooltip">' . $name . '</a></td>';
 			}else {
@@ -2490,7 +2490,7 @@ function snmpagent_utilities_run_cache() {
 			form_selectable_cell($mib, $item['oid']);
 			form_selectable_cell($item['kind'], $item['oid']);
 			form_selectable_cell($max_access, $item['oid']);
-			form_selectable_cell((in_array($item['kind'], array(__('Scalar'), __('Column Data'))) ? $item['value'] : __('N/A')), $item['oid']);
+			form_selectable_ecell((in_array($item['kind'], array(__('Scalar'), __('Column Data'))) ? $item['value'] : __('N/A')), $item['oid']);
 			form_end_row();
 		}
 	}

@@ -1001,13 +1001,13 @@ function profile() {
 
 			form_alternate_row('line' . $profile['id'], false, $disabled);
 			form_selectable_cell(filter_value($profile['name'], get_request_var('filter'), 'data_source_profiles.php?action=edit&id=' . $profile['id']), $profile['id']);
-			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'text-align:right');
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $profile['id'], '', 'text-align:right');
-			form_selectable_cell($readonly ? __('Yes') : __('No'), $profile['id'], '', 'text-align:right');
-			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'text-align:right');
-			form_selectable_cell($ds, $profile['id'], '', 'text-align:right');
-			form_selectable_cell($dt, $profile['id'], '', 'text-align:right');
+			form_selectable_cell($profile['default'] == 'on' ? __('Yes'):'', $profile['id'], '', 'right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $profile['id'], '', 'right');
+			form_selectable_cell($readonly ? __('Yes'):__('No'), $profile['id'], '', 'right');
+			form_selectable_cell($sampling_intervals[$profile['step']], $profile['id'], '', 'right');
+			form_selectable_cell($heartbeats[$profile['heartbeat']], $profile['id'], '', 'right');
+			form_selectable_cell($ds, $profile['id'], '', 'right');
+			form_selectable_cell($dt, $profile['id'], '', 'right');
 			form_checkbox_cell($profile['name'], $profile['id'], $disabled);
 			form_end_row();
 		}

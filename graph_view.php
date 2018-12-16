@@ -721,9 +721,9 @@ case 'list':
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
-			form_selectable_cell($graph['description'], $graph['local_graph_id']);
-			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['description'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['template_name'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
