@@ -335,7 +335,7 @@ function profile_item_remove_confirm() {
 	<tr>
 		<td class='topBoxAlt'>
 			<p><?php print __('Click \'Continue\' to delete the following Data Source Profile RRA.');?></p>
-			<p><?php print __('Profile Name: %s', $profile['name']);?><br>
+			<p><?php print __('Profile Name: %s', html_escape($profile['name']));?><br>
 		</td>
 	</tr>
 	<tr>
