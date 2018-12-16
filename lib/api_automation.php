@@ -1259,9 +1259,9 @@ function display_match_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
-			$form_data .= '<td>' . 	$item['field'] . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['field']) . '</td>';
 			$form_data .= '<td>' . 	((isset($item['operator']) && $item['operator'] > 0) ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
-			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['pattern']) . '</td>';
 
 			$form_data .= '<td class="right nowrap">';
 
@@ -1321,9 +1321,9 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data = '<td><a class="linkEditMain" href="' . html_escape($module . '?action=item_edit&id=' . $rule_id. '&item_id=' . $item['id'] . '&rule_type=' . $rule_type) . '">' . __('Item#%d', $i+1) . '</a></td>';
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$operation . '</td>';
-			$form_data .= '<td>' . 	$item['field'] . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['field']) . '</td>';
 			$form_data .= '<td>' . 	(($item['operator'] > 0 || $item['operator'] == '') ? $automation_op_array['display'][$item['operator']] : '') . '</td>';
-			$form_data .= '<td>' . 	$item['pattern'] . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['pattern']) . '</td>';
 
 			$form_data .= '<td class="right nowrap">';
 
@@ -1358,7 +1358,11 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $module) {
 	global $automation_tree_header_types, $tree_sort_types, $host_group_types;
 
-	$items = db_fetch_assoc_prepared('SELECT * FROM automation_tree_rule_items WHERE rule_id = ? ORDER BY sequence', array($rule_id));
+	$items = db_fetch_assoc_prepared('SELECT *
+		FROM automation_tree_rule_items
+		WHERE rule_id = ?
+		ORDER BY sequence',
+		array($rule_id));
 
 	html_start_box($title, '100%', '', '3', 'center', $module . '?action=item_edit&id=' . $rule_id . '&rule_type=' . $rule_type);
 
@@ -1386,9 +1390,9 @@ function display_tree_rule_items($title, $rule_id, $item_type, $rule_type, $modu
 			$form_data .= '<td>' . 	$item['sequence'] . '</td>';
 			$form_data .= '<td>' . 	$field_name . '</td>';
 			$form_data .= '<td>' . 	$tree_sort_types[$item['sort_type']] . '</td>';
-			$form_data .= '<td>' . 	($item['propagate_changes'] ? 'Yes' : 'No') . '</td>';
-			$form_data .= '<td>' . 	$item['search_pattern'] . '</td>';
-			$form_data .= '<td>' . 	$item['replace_pattern'] . '</td>';
+			$form_data .= '<td>' . 	($item['propagate_changes'] ? __('Yes'):__('No')) . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['search_pattern']) . '</td>';
+			$form_data .= '<td>' . 	html_escape($item['replace_pattern']) . '</td>';
 
 			$form_data .= '<td class="right">';
 			if ($i != cacti_sizeof($items)-1) {
@@ -3071,7 +3075,11 @@ function automation_get_next_host ($start, $total, $count, $networks, $position)
 }
 
 function automation_primeIPAddressTable($network_id) {
-	$subNets    = db_fetch_cell_prepared('SELECT subnet_range FROM automation_networks WHERE id = ?', array($network_id));
+	$subNets    = db_fetch_cell_prepared('SELECT subnet_range
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
+
 	$subNets    = explode(',', trim($subNets));
 	$total      = 0;
 
@@ -3098,13 +3106,17 @@ function automation_primeIPAddressTable($network_id) {
 				}
 
 				if ($count % 1000 == 0) {
-					db_execute("INSERT INTO automation_ips (ip_address, hostname, network_id, pid, status, thread) VALUES " . implode(',', $sql));
+					db_execute("INSERT INTO automation_ips
+						(ip_address, hostname, network_id, pid, status, thread)
+						VALUES " . implode(',', $sql));
 					$sql = array();
 				}
 			}
 
 			if (cacti_sizeof($sql)) {
-				db_execute("INSERT INTO automation_ips (ip_address, hostname, network_id, pid, status, thread) VALUES " . implode(',', $sql));
+				db_execute("INSERT INTO automation_ips
+					(ip_address, hostname, network_id, pid, status, thread)
+					VALUES " . implode(',', $sql));
 			}
 		}
 	}
@@ -3344,7 +3356,10 @@ function automation_get_dns_from_ip($ip, $dns, $timeout = 1000) {
 }
 
 function api_automation_is_time_to_start($network_id) {
-	$net = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($network_id));
+	$net = db_fetch_row_prepared('SELECT *
+		FROM automation_networks
+		WHERE id = ?',
+		array($network_id));
 
 	switch($net['sched_type']) {
 	case '1':
@@ -3363,7 +3378,10 @@ function api_automation_is_time_to_start($network_id) {
 					$start += $recur;
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $start), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $start), $network_id));
 
 				return true;
 
@@ -3375,7 +3393,10 @@ function api_automation_is_time_to_start($network_id) {
 					$next += $recur;
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $next), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $next), $network_id));
 
 				return true;
 			}
@@ -3405,7 +3426,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $start), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $start), $network_id));
 
 				return true;
 			}
@@ -3424,7 +3448,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $next), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $next), $network_id));
 
 				return true;
 			}
@@ -3469,7 +3496,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $start), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $start), $network_id));
 
 				return true;
 			}
@@ -3493,7 +3523,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $next), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $next), $network_id));
 
 				return true;
 			}
@@ -3585,7 +3618,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $time), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $time), $network_id));
 
 				return true;
 			}
@@ -3663,7 +3699,10 @@ function api_automation_is_time_to_start($network_id) {
 					}
 				}
 
-				db_execute_prepared('UPDATE automation_networks SET next_start = ? WHERE id = ?', array(date('Y-m-d H:i', $time), $network_id));
+				db_execute_prepared('UPDATE automation_networks
+					SET next_start = ?
+					WHERE id = ?',
+					array(date('Y-m-d H:i', $time), $network_id));
 
 				return true;
 			}
@@ -3774,8 +3813,7 @@ function automation_update_device($host_id) {
 	automation_execute_device_create_tree($host_id);
 }
 
-function automation_function_with_pid($functionName)
-{
+function automation_function_with_pid($functionName) {
 	return automation_get_pid() . ' ' . $functionName . '()';
 }
 
@@ -3789,50 +3827,55 @@ function automation_get_pid() {
 
 function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 	$function = automation_function_with_pid(__FUNCTION__);
-	$leaf_old = db_fetch_cell_prepared('SELECT leaf_type
-					FROM automation_tree_rules
-					WHERE id = ?',
-					array($rule_id));
 
+	$leaf_old = db_fetch_cell_prepared('SELECT leaf_type
+		FROM automation_tree_rules
+		WHERE id = ?',
+		array($rule_id));
 
 	if ($leaf_old != $leaf_type) {
 		cacti_log($function . ' Found leaf change from Leaf[' . $leaf_old . '] to Leaf[' . $leaf_type . '] for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
+
 		if ($leaf_type == 3) {
 			cacti_log($function . ' Found leaf changed to \'Device\' for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 			$rule_items = db_fetch_assoc_prepared('SELECT *
-							FROM automation_tree_rule_items
-							WHERE rule_id = ?
-							AND (field like \'gtg.%\' or field like \'gt.%\')',
-							array($rule_id));
+				FROM automation_tree_rule_items
+				WHERE rule_id = ?
+				AND (field like \'gtg.%\' or field like \'gt.%\')',
+				array($rule_id));
 
 			if (cacti_sizeof($rule_items)) {
 				cacti_log($function . ' ' . cacti_sizeof($rule_items) . ' invalid Tree Creation rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 				foreach($rule_items as $rule_item) {
-					cacti_log($function . ' Removing invalid Tree Creation rule item TreeRule[' . $rule_id . '] TreeRuleItem[' . $rule_item['id'] . '] Field[' . $rule_item['field'] . '] with Search[' . $rule_item['search_pattern'] . '] Replace[' . $rule_item['replace_pattern'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
-					db_execute_prepared('DELETE FROM automation_tree_rule_items
-							WHERE id = ?',
-							array($rule_item['id']));
+					cacti_log($function . ' Removing invalid Tree Creation rule item TreeRule[' . $rule_id . '] TreeRuleItem[' . $rule_item['id'] . '] Field[' . html_escape($rule_item['field']) . '] with Search[' . html_escape($rule_item['search_pattern']) . '] Replace[' . html_escape($rule_item['replace_pattern']) . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
+					db_execute_prepared('DELETE
+						FROM automation_tree_rule_items
+						WHERE id = ?',
+						array($rule_item['id']));
 				}
 			} else {
 				cacti_log($function . ' No invalid Tree Creation rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 			}
 
 			$match_items = db_fetch_assoc_prepared('SELECT *
-							FROM automation_match_rule_items
-							WHERE rule_id = ?
-							AND (field like \'gtg.%\' or field like \'gt.%\')',
-							array($rule_id));
+				FROM automation_match_rule_items
+				WHERE rule_id = ?
+				AND (field like \'gtg.%\' or field like \'gt.%\')',
+				array($rule_id));
 
 			if (cacti_sizeof($match_items)) {
 				cacti_log($function . ' ' . cacti_sizeof($match_items) . ' invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
 
 				foreach($match_items as $match_item) {
-					cacti_log($function . ' Removing invalid Object Selection rule item TreeRule[' . $rule_id . '] TreeMatchItem[' . $match_item['id'] . '] Field[' . $match_item['field'] . '] with Pattern[' . $match_item['pattern'] . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
-					db_execute_prepared('DELETE FROM automation_match_rule_items
-							WHERE id = ?',
-							array($match_item['id']));
+					cacti_log($function . ' Removing invalid Object Selection rule item TreeRule[' . $rule_id . '] TreeMatchItem[' . $match_item['id'] . '] Field[' . html_escape($match_item['field']) . '] with Pattern[' . html_escpae($match_item['pattern']) . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
+
+					db_execute_prepared('DELETE
+						FROM automation_match_rule_items
+						WHERE id = ?',
+						array($match_item['id']));
 				}
 			} else {
 				cacti_log($function . ' No invalid Object Selection rule items found for TreeRule[' . $rule_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_DEBUG);
@@ -3841,8 +3884,8 @@ function automation_change_tree_rule_leaf_type($leaf_type, $rule_id) {
 		}
 
 		db_execute_prepared('UPDATE automation_tree_rules
-				SET leaf_type = ?
-				WHERE id = ?',
-				array($leaf_type, $rule_id));
+			SET leaf_type = ?
+			WHERE id = ?',
+			array($leaf_type, $rule_id));
 	}
 }
