@@ -472,7 +472,7 @@ function template() {
 		ON ht.id=at.host_template
 		$sql_where");
 
-	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
+	$dts = db_fetch_assoc("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
@@ -500,7 +500,7 @@ function template() {
 		$display_text[] = array('display' => __('Order'), 'align' => 'center');
 	}
 
-	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_checkbox($display_text, false);
 
 	$i = 1;
 	$total_items = cacti_sizeof($dts);
