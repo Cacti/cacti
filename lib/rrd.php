@@ -2402,7 +2402,7 @@ function rrdtool_function_info($data_source_id) {
 	/* Execute rrdtool info command */
 	$cmd_line = ' info ' . $data_source_path;
 	$output = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT);
-	if (cacti_sizeof($output) == 0) {
+	if ($output == '') {
 		return false;
 	}
 
@@ -2458,7 +2458,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 		dspc.consolidation_function_id AS cf,
 		dsp.x_files_factor AS xff,
 		dspr.steps AS steps,
-		dspr.rows AS `rows` 
+		dspr.rows AS `rows`
 		FROM data_source_profiles AS dsp
 		INNER JOIN data_source_profiles_cf AS dspc
 		ON dsp.id=dspc.data_source_profile_id
