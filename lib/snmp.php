@@ -698,6 +698,9 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 		$string = trim($string);
 	}
 
+	/* remove quotes and extranious data */
+	$string = trim($string, "\n\r\"'");
+
 	/* return the easiest value */
 	if ($string == '') {
 		return $string;

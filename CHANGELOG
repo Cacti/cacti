@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#2213: Stored XSS in "Website Hostname" field - Devices
 -issue#2214: Stored XSS in "Vertical Label" field - Graph
 -issue#2215: Stored XSS in "Name" field - Color 
+-issue#2217: cmd.php not handling quoted snmp values properly
 -feature: Update phpseclib to version 2.0.12
 
 1.2.0 Beta 4
