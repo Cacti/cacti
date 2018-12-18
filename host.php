@@ -1182,6 +1182,11 @@ function device_javascript() {
 			changeHostForm();
 		});
 
+		$('#snmp_version').change(function() {
+			setAvailability();
+			setPing();
+		});
+
 		$('#location_input').keyup(function() {
 			$('#location').val($('#location_input').val());
 		}).mouseup(function() {
