@@ -116,6 +116,9 @@ function api_data_source_remove($local_data_id) {
 	db_execute_prepared('DELETE FROM data_local
 		WHERE id = ?', array($local_data_id));
 
+	db_execute_prepared('DELETE FROM data_debug
+		WHERE datasource = ?', array($local_data_id));
+
 	/* dsstats */
 	db_execute_prepared('DELETE FROM data_source_stats_daily
 		WHERE local_data_id = ?', array($local_data_id));
