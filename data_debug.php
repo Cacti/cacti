@@ -434,7 +434,7 @@ function debug_wizard() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'));
+	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	if (cacti_sizeof($checks)) {
 		foreach ($checks as $check) {
@@ -490,7 +490,7 @@ function debug_wizard() {
 		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
 	}
 
-	html_end_box();
+	html_end_box(false);
 
 	if (cacti_sizeof($checks)) {
 		print $nav;
