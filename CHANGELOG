@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#2215: Stored XSS in "Name" field - Color 
 -issue#2217: cmd.php not handling quoted snmp values properly
 -feature: Update phpseclib to version 2.0.12
+-feature: Removed the Authentication Method of 'None'
 
 1.2.0 Beta 4
 -issue#2186: Boost generates invalid SQL during on demand update
