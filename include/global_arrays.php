@@ -733,7 +733,6 @@ $graph_views = array(1 =>
 );
 
 $auth_methods = array(
-	0 => __('None'),
 	1 => __('Builtin Authentication'),
 	2 => __('Web Basic Authentication')
 );
@@ -1703,6 +1702,8 @@ $i18n_languages = array(
 	__('French'),
 	__('German'),
 	__('Greek'),
+	__('Hebrew'),
+	__('Hindi'),
 	__('Italian'),
 	__('Japanese'),
 	__('Korean'),
@@ -1711,7 +1712,9 @@ $i18n_languages = array(
 	__('Portuguese (Brazil)'),
 	__('Russian'),
 	__('Spanish'),
-	__('Swedish')
+	__('Swedish'),
+	__('Turkish'),
+	__('Vietnamese')
 );
 
 $i18n_themes = array(
