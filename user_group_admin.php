@@ -920,9 +920,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = "WHERE host.deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
 		} else {
-			$sql_where = '';
+			$sql_where = "WHERE host.deleted = ''";
 		}
 
 		if (get_request_var('host_template_id') == '-1') {

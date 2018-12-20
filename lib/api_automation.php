@@ -208,9 +208,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
-		$sql_where = "WHERE (h.hostname LIKE '%" . get_request_var('filterd') . "%' OR h.description LIKE '%" . get_request_var('filterd') . "%' OR ht.name LIKE '%" . get_request_var('filterd') . "%')";
+		$sql_where = "WHERE h.deleted = '' AND (h.hostname LIKE '%" . get_request_var('filterd') . "%' OR h.description LIKE '%" . get_request_var('filterd') . "%' OR ht.name LIKE '%" . get_request_var('filterd') . "%')";
 	} else {
-		$sql_where = '';
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if (get_request_var('host_status') == '-1') {
@@ -243,7 +243,7 @@ function display_matching_hosts($rule, $rule_type, $url) {
 		LEFT JOIN host_template AS ht
 		ON (h.host_template_id=ht.id) ';
 
-	$hosts = db_fetch_assoc($sql_query);
+	$hosts = db_fetch_assoc($sql_query . 'WHERE h.deleted = ""');
 
 	/* get the WHERE clause for matching hosts */
 	if ($sql_where != '') {
@@ -1096,7 +1096,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			LEFT JOIN host_template AS ht
 			ON (h.host_template_id=ht.id)';
 
-		$sql_where = 'WHERE 1=1 ';
+		$sql_where = 'WHERE h.deleted = ""';
 	} elseif ($leaf_type == TREE_ITEM_TYPE_GRAPH) {
 		$sql_tables = 'FROM host AS h
 			LEFT JOIN host_template AS ht
@@ -1108,7 +1108,7 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			LEFT JOIN graph_templates_graph AS gtg
 			ON (gl.id=gtg.local_graph_id)';
 
-		$sql_where = 'WHERE gtg.local_graph_id>0 ';
+		$sql_where = 'WHERE gtg.local_graph_id>0 AND h.deleted = "" ';
 	}
 
 	/* form the 'where' clause for our main sql query */
@@ -1693,7 +1693,7 @@ function get_matching_hosts($rule, $rule_type, $sql_where='') {
 		ON (h.host_template_id=ht.id) ';
 
 	/* get the WHERE clause for matching hosts */
-	$sql_filter = ' WHERE (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
+	$sql_filter = ' WHERE h.deleted = "" AND (' . build_matching_objects_filter($rule['id'], $rule_type) .')';
 	if ($sql_where != '') {
 		$sql_filter .= ' AND ' . $sql_where;
 	}
@@ -2135,7 +2135,7 @@ function automation_execute_data_query($host_id, $snmp_query_id) {
 			$sql_filter = build_matching_objects_filter($rule['id'], AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 
 			/* now we build up a new query for counting the rows */
-			$rows_query = $sql_query . ' WHERE (' . $sql_filter . ') AND h.id=' . $host_id;
+			$rows_query = $sql_query . ' WHERE (' . $sql_filter . ') AND h.id=' . $host_id . ' AND h.deleted = ""';
 
 			$hosts = db_fetch_assoc($rows_query, false);
 
@@ -2511,7 +2511,7 @@ function create_all_header_nodes ($item_id, $rule) {
 				LEFT JOIN host_template AS ht
 				ON h.host_template_id=ht.id ';
 
-			$sql_where = 'WHERE h.id='. $item_id . ' ';
+			$sql_where = 'WHERE h.id='. $item_id . ' AND h.deleted = "" ';
 		} elseif ($rule['leaf_type'] == TREE_ITEM_TYPE_GRAPH) {
 			/* graphs require a different set of tables to be joined */
 			$sql_tables = 'FROM host AS h
@@ -2524,7 +2524,7 @@ function create_all_header_nodes ($item_id, $rule) {
 				LEFT JOIN graph_templates_graph AS gtg
 				ON gl.id=gtg.local_graph_id ';
 
-			$sql_where = 'WHERE gl.id=' . $item_id . ' ';
+			$sql_where = 'WHERE gl.id=' . $item_id . ' AND h.deleted = "" ';
 		}
 
 		/* get the WHERE clause for matching hosts */

@@ -273,7 +273,11 @@ function clog_view_logfile() {
 
 	$linecolor = false;
 
-	$hosts = db_fetch_assoc_prepared('SELECT id, description FROM host');
+	$hosts = db_fetch_assoc('SELECT id, description
+		FROM host
+		WHERE disabled = ""
+		AND deleted = ""');
+
 	$hostDescriptions = array();
 	foreach ($hosts as $host) {
 		$hostDescriptions[$host['id']] = html_escape($host['description']);

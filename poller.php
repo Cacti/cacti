@@ -345,6 +345,7 @@ while ($poller_runs_completed < $poller_runs) {
 				FROM host
 				WHERE poller_id = ?
 				AND disabled=""
+				AND deleted=""
 				ORDER BY id',
 				array($poller_id)));
 	} else {
@@ -352,6 +353,7 @@ while ($poller_runs_completed < $poller_runs) {
 			FROM host
 			WHERE poller_id = ?
 			AND disabled=""
+			AND deleted=""
 			ORDER BY id',
 			array($poller_id));
 	}

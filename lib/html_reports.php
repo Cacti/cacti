@@ -632,7 +632,7 @@ function reports_item_edit() {
 			'description' => __('Select a Device Template to use.'),
 			'value' => '|arg1:host_template_id|',
 			'on_change' => 'applyChange()',
-			'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id ORDER BY name"
+			'sql' => "SELECT DISTINCT ht.id, ht.name FROM host_template AS ht INNER JOIN host AS h ON h.host_template_id=ht.id WHERE h.deleted = '' AND h.disabled = '' ORDER BY name"
 		),
 		'host_id' => array(
 			'friendly_name' => __('Device'),

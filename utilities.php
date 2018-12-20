@@ -150,7 +150,7 @@ function utilities_view_tech($php_info = '') {
 		GROUP BY action');
 
 	/* Get system stats */
-	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host');
+	$host_count  = db_fetch_cell('SELECT COUNT(*) FROM host WHERE deleted = ""');
 	$graph_count = db_fetch_cell('SELECT COUNT(*) FROM graph_local');
 	$data_count  = db_fetch_assoc('SELECT i.type_id, COUNT(i.type_id) AS total
 		FROM data_template_data AS d, data_input AS i
