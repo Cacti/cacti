@@ -1280,9 +1280,9 @@ function host_validate_vars() {
 function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE (deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%'))";
 	} else {
-		$sql_where = '';
+		$sql_where = "WHERE deleted = ''";
 	}
 
 	if (get_request_var('host_status') == '-1') {

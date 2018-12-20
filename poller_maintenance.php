@@ -24,8 +24,9 @@
 */
 
 require(__DIR__ . '/include/cli_check.php');
-require_once($config['library_path'] . '/api_graph.php');
 require_once($config['library_path'] . '/api_data_source.php');
+require_once($config['library_path'] . '/api_device.php');
+require_once($config['library_path'] . '/api_graph.php');
 include_once($config['library_path'] . '/poller.php');
 require_once($config['library_path'] . '/rrd.php');
 require_once($config['library_path'] . '/utility.php');
@@ -140,6 +141,9 @@ if ($config['poller_id'] == 1) {
 
 // Check the realtime cache and poller
 realtime_purge_cache();
+
+// Remove deleted devices
+api_device_purge_deleted_devices();
 
 // Check whether the cacti log.  Rotations takes place around midnight
 if (isset($disable_log_rotation) && $disable_log_rotation == true) {

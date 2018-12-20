@@ -195,4 +195,6 @@ function upgrade_to_1_2_0() {
 	db_install_execute('UPDATE poller SET requires_sync = "on" WHERE id != 1');
 
 	db_install_execute('UPDATE host SET status = 0 WHERE disabled = "on"');
+
+	db_install_add_column('host', array('name' => 'deleted', 'type' => 'char(2)', 'default' => '', 'NULL' => true, 'after' => 'device_threads'));
 }

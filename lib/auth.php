@@ -1005,7 +1005,9 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+	} else {
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($user == -1) {
@@ -1160,7 +1162,9 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+	} else {
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($user == -1) {
@@ -1716,9 +1720,9 @@ function get_allowed_branches($sql_where = '', $order_by = 'name', $limit = '', 
 		$total_rows = db_fetch_cell('SELECT COUNT(*) FROM (' . $sql . ') AS rower');
 	} else {
 		if ($sql_where != '') {
-			$sql_where = "WHERE gt.enabled='on' AND h.disabled='' AND $sql_where";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled=''  AND h.deleted = '' AND $sql_where";
 		} else {
-			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on'";
+			$sql_where = "WHERE gt.enabled='on' AND h.disabled='on' AND h.deleted = ''";
 		}
 
 		$sql = "(
@@ -1779,7 +1783,9 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+	} else {
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($host_id > 0) {
@@ -2013,7 +2019,9 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE $sql_where";
+		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+	} else {
+		$sql_where = "WHERE h.deleted = ''";
 	}
 
 	if ($site_id > 0) {

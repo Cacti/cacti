@@ -1871,6 +1871,7 @@ CREATE TABLE host (
   ping_retries int(12) unsigned default '2',
   max_oids int(12) unsigned default '10',
   device_threads tinyint(2) unsigned NOT NULL DEFAULT '1',
+  deleted char(2) default '',
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',
   status_event_count mediumint(8) unsigned NOT NULL default '0',
