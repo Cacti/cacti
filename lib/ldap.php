@@ -387,7 +387,7 @@ class Ldap {
 
 	function RecordError($output, $section = 'LDAP') {
 		$logDN = empty($output['dn']) ? '' : (', DN: ' . $output['dn']);
-		cacti_log($section . ': ' . $output['error_text'] . $dn, false, 'AUTH');
+		cacti_log($section . ': ' . $output['error_text'] . $logDN, false, 'AUTH');
 		cacti_log($section . ': ' . $output['stack'], false, 'AUTH', POLLER_VERBOSITY_HIGH);
 	}
 
