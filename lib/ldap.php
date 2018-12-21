@@ -193,7 +193,7 @@ Error codes:
 15      CN unknown on LDAP
 99      PHP LDAP not enabled
 */
-function cacti_ldap_search_cn($username, $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
+function cacti_ldap_search_cn($username, $cn = array(), $dn = '', $host = '', $port = '', $port_ssl = '', $version = '', $encryption = '',
 	$referrals = '', $mode = '', $search_base = '', $search_filter = '', $specific_dn = '', $specific_password = '') {
 
 	$ldap = new Ldap;
@@ -816,6 +816,7 @@ class Ldap {
 					$ldap_entries =  ldap_get_entries($ldap_conn, $ldap_results);
 					/* We find 1 entries */
 					if ($ldap_entries['count'] == 1) {
+						$output = LdapError::GetErrorDetails(LdapError::Success);
 						// check if we got an full username entry
 						if (array_key_exists($this->cn[0], $ldap_entries[0])) {
 							$output['cn'][$this->cn[0]] = $ldap_entries[0][$this->cn[0]][0];
@@ -829,8 +830,6 @@ class Ldap {
 						} else {
 							$output['cn'][$this->cn[1]] = '';
 						}
-
-						$output = LdapError::GetErrorDetails(LdapError::Success);
 					} else {
 						$output = LdapError::GetErrorDetails(LdapError::SearchFoundMultiUser);
 					}
