@@ -1,61 +1,109 @@
 Cacti CHANGELOG
 
--issue#2184: html_host_filter() does not handle host_id consequently
--issue#2188: SNMP timeout errors are being duplicated
--issue#2191: i18n_themes is not properly primed in global_arrays.php
--issue#2202: Can't create more than one graph with add_graphs.php from one template
--issue#2207: Removing Graph Template does not Remove Data Query Associations
--issue#2212: Stored XSS in "Website Hostname" field
--issue#2213: Stored XSS in "Website Hostname" field - Devices
--issue#2214: Stored XSS in "Vertical Label" field - Graph
--issue#2215: Stored XSS in "Name" field - Color 
--issue#2217: cmd.php not handling quoted snmp values properly
--feature: Update phpseclib to version 2.0.12
+1.2.0
+-feature: Add a Timeout setting for Remote Agent calls
+-feature: Add Graphs and Data Sources hyperlinks on Device page
+-feature: Add One Minute Sampling to the default Data Source Profiles
+-feature: Add support for DDERIVE and DCOUNTER to Cacti
+-feature: Add Timezone support for Remote Data Collectors
+-feature: Allow Adding Aggregate Graphs to a Report
+-feature: Allow ASCII filepath paths to not be found on settings save
+-feature: Allow drill down from Graphs to Data Queries or Templates
+-feature: Allow Import/Export to be hookable
+-feature: Allow snmpagent to be disabled for very large installs
+-feature: Allow Top tabs to be Glyphs or Text or both
+-feature: Big Spanish translation update plus massive QA fixes
+-feature: Change password page provides visible confirmation of password rules
+-feature: Do not allow second data source to be added to an SNMP Get data template
+-feature: Don't allow removal of Data Sources from Data Template once its in use
+-feature: Inform the primary Cacti administrator of problems by Email
+-feature: Make all user settings dynamic and allow resetting to default.
+-feature: Make Graph and Data Source suggested naming more efficient
+-feature: Make it easy to find Data Query based graphs that have lost indexes
+-feature: Make Top Tabs use Ajax Callback
+-feature: Make tree editing responive
+-feature: New Install/Upgrade user permission to limit access to being able to upgrade
+-feature: Provide option to debug width errors where output exceeds column width
 -feature: Removed the Authentication Method of 'None'
-
-1.2.0 Beta 4
--issue#2186: Boost generates invalid SQL during on demand update
--issue#2182: Graph View missing 'html_graph_template_multiselect()' function
-
-1.2.0 Beta 3
--issue#2002: api_plugin_db_table_create should support non-string defaults
--issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()
--issue#2127: Unable to save error when duplicating graph
--issue#2135: api_tree_lock() and api_tree_unlock() forcing redirection incorrectly
--issue#2143: export.php Illegal string offset 'method'
--issue#2144: Device Management "Status" column does not sort properly
--issue#2152: When editing a device, should show disable/enable option
--issue#2153: Utilities page issues the wrong hook for tabs
--issue#2163: LDAP functions are not consistent
--issue#2164: Login page does not remember selected realm
--issue#2171: datepicker and timepick translation not available
--issue#2178: Header/Footer included more than once
--issue: Unable to display user profile tabs
--feature:#2173: Introduce Device and Graph Template Caching to Speed UI
+-feature: Tree automation is now defaulted to on for new install
+-feature: Update JavaScript library c3.js to version 0.6.8
+-feature: Update JavaScript library Chart.js to 2.7.3
+-feature: Update JavaScript library d3.js to version 5.7.0
+-feature: Update JavaScript library jquery.js to 3.3.1
+-feature: Update JavaScript library jquery-migrate.js to 3.0.1
+-feature: Update JavaScript library jquery.tablesorter.js to version 2.30.7
 -feature: Update JavaScript library jstree.js to 3.3.7
-
-1.2.0 Beta 1
--security#1882: Bypass output validation in select cases
+-feature: Update JavaScript library screenfull.js to 3.3.3
+-feature: Update phpseclib to version 2.0.12
+-feature#289: Allow external nologin access for Realtime Graphs
+-feature#553: When display a host, include Aggregated Graphs as well as standard graphs
+-feature#614: Allow users to duplicate Data Input Methods
+-feature#973: When creating a new user authenticated via LDAP, attempt to retrieve users email and full name
+-feature#122: Support a Site Branch Type
+-feature#1060: Design Enhancement for Large scale Cacti Implementations
+-feature#1142: Add Site dropdown to the Graphs and Data Source pages
+-feature#1184: Improve Data Input Methods editability and message handling
+-feature#1200: Aggregate Graphs can now include COMMENT
+-feature#1282: Email notification for Automation Network discovery process
+-feature#1347: Update automation logging to work better
+-feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
+-feature#1399: Allow 'requires' to include version against a plugin
+-feature#1400: User settings are now dynamic and can be reset (removed) to return to global settings
+-feature#1422: Automatically select the next unused data input field when clicking add on data input method
+-feature#1505: When displaying a graph, provide breadcrumb link to edit device
+-feature#1527: Update Fontawesome from 4.7 to 5.0.10
+-feature#1580: Support Drag & Drop for Builtin Report Items
+-feature#1581: Allow Mass Adding of Graphs to Reports
+-feature#1584: Allow theme selection when installing
+-feature#1588: Check that PHP can run a test file
+-feature#1593: Allow External links to auto refresh
+-feature#1597: Ensure synchronised files have same attributes as originals
+-feature#1610: On Unix, redirect error messages to log files when running external scripts
+-feature#1628: Allow the User to define an initial Automation Network for discovery when installing
+-feature#1670: Improve Graph Management to show type of source for a graph
+-feature#1671: When duplicating a Graph Template, properly duplicate Data Query Graph Template Mappings
+-feature#1677: Default Tree nodes sorting to be inherited
+-feature#1691: On Graph context menu, add a 'Copy graph' option to copy graph image
+-feature#1692: Separate option for logging Input Validation issues
+-feature#1703: On Graph context menu, text is now multi-lingual
+-feature#1708: Allow the User to override global Automation email recipients at the Automation Network level
+-feature#1709: Suppress warning from RRDTool when attempting to make updates in the past
+-feature#1711: Add support for SSL connections to MySQL
+-feature#1731: Prevent loss of changes by warning user about unsaved items
+-feature#1734: When displaying a graph, provide more information when error image is displayed (see also #1428)
+-feature#1763: Enable automatic refresh for Time Graph View
+-feature#1806: Control low level debug routines via config.php (Develoepr Use)
+-feature#1819: Provide CLI program to enable graphs to be removed by scripts
+-feature#1969: Graph previews can now be linked using a host's external id
+-feature#2006: Introduce new Data Source Profile to handle decade long graphs
+-feature#2173: Introduce Device and Graph Template Caching to Speed UI
+-issue: Fix issue with display_custom_error_message() causing problem with system error message handling
+-issue: Graph List View was not fully responsive
+-issue: Move Graph removal function to Graph API
+-issue: On the Data Sources page, if there is no filtered Device and a Data Source is edited, device association is lost
+-issue: Typo in Dutch translations when an error occurred while downgrading
+-issue: Unable to display user profile tabs
+-issue: Verify all Fields not working due to Cacti 1.x upgrade error
 -issue#186: Cacti does not support jQueryUI 1.12.x
 -issue#187: Remove the use of jQuery Migrate plugin
--issue#454: Cacti Re-Index does not resolve index changes properly during re-index 
+-issue#948: Do not create a new datasource when adding a new Graph for the same device/field
+-issue#454: Cacti Re-Index does not resolve index changes properly during re-index
 -issue#983: Import Template Preview is misleading
--issue#1072: CVE-2009-4112 with regard to exploiting Data Input methods
--issue#1097: When copying template user, enable that user, also template users should be disabled by default
--issue#1174: Disable drag and drop when tree is not in edit mode
--issue#1200: Aggregate Graphs can not include some classes of COMMENT
--issue#1298: Prevent system running if system log is not writable
+-issue#1097: When copying template user, newly created user should always be enabled to allow logging in
+-issue#1097: When copying template user, it should be disable to prevent logging in as template user directly
+-issue#1174: When display a tree, disable drag and drop unless in edit mode
+-issue#1298: Display fatal error to prevent issues caused when system log is not writable
 -issue#1350: When switching an Automation Tree Rule's leaf type, remove invalid Automation Rule Items
 -issue#1383: CSRF Timeout does not obey session timeout
 -issue#1408: Update SQL / Backtrace to use new clean_up_lines() function
 -issue#1414: DSSTATS reports incorrectly that a data source does not exist
--issue#1420: Debian test suite reports issues 
+-issue#1420: Fix issues found by Debian package builds
 -issue#1421: Fix issue when SQL had all bad modes, missing variable warning was generated
 -issue#1426: Fix issue where remote poller was not using unique filenames when attempting to verify files
 -issue#1437: Plugin install hover message sometimes shows line breaks rather than formatted text
+-issue#1454: When using oid_regexp_parse, filter indexes to those that match
 -issue#1473: Recovery Date overwritten by subsequent checks
 -issue#1494: Unable to Deep Link/Bookmark Trees
--issue#1454: When using oid_regexp_parse, filter indexes to those that match
 -issue#1503: Undefined function clearstatscache in DSSTATS
 -issue#1507: When saving graph settings from the graph page, the graph template id should not be included
 -issue#1510: New Graphs Undefined Variable $graph_template_name
@@ -116,89 +164,35 @@ Cacti CHANGELOG
 -issue#1973: SpikeKill Menu does not display properly
 -issue#1976: Default admin permissions do not allow everything
 -issue#1982: Certain hooks should occur within api functions rather than UI functions
+-issue#2002: api_plugin_db_table_create should support non-string defaults
 -issue#2012: For kernel 3.2+, "Linux - Memory - Free" should grep for "MemAvailable:", not "MemFree:"
 -issue#2085: CLOG Regex Parser does not verify registered function exists
--issue: Move Graph removal function to Graph API
--issue: Fix issue with display_custom_error_message() causing problem with system error message handling
--issue: Graph List View was not fully responsive
--issue: Typo in Dutch translations when an error occurred while downgrading
--issue: Verify all Fields not working due to Cacti 1.x upgrade error
--issue: On the Data Sources page, if there is no filtered Device and a Data Source is edited, device association is lost
--feature#122: Support a Site Branch Type
--feature#289: Allow external nologin access for Realtime Graphs
--feature#553: Aggregated graph does not belong to host
--feature#614: Duplicate Data Input Methods
--feature#948: Every time when creating new graph Cacti creates new datasource
--feature#973: Obtain users email and full name from ldap 
--feature#1060: Design Enhancement for Large scale Cacti Implementations
--feature#1347: Update automation logging to work better
--feature#1142: Add Site dropdown to the Graphs and Data Source pages
--feature#1184: Improve Data Input Methods editability and message handling
--feature#1282: Email notification for Automation Network discovery process
--feature#1395: Ensure messages have each new line keep the same prefix in cacti_log()
--feature#1399: Allow 'requires' to include version against a plugin
--feature#1400: User settings should have checkbox to enable overriding of global settings
--feature#1422: Automatically select the next unused data input field when clicking add on data input method
--feature#1428: Graphs: Add more information to error image
--feature#1505: Allow Device Edit from Graphs page
--feature#1527: Update Fontawesome from 4.7 to 5.0.10
--feature#1580: Support Drag & Drop for Report Items
--feature#1581: Allow Mass Adding of Graphs to Reports
--feature#1584: Allow theme selection when installing
--feature#1588: Check that PHP can run a test file
--feature#1597: Ensure synchronised files have same attributes as originals
--feature#1593: Allow External links to auto refresh
--feature#1610: Script STDERR logging
--feature#1628: Allow the User to define a initial Network Discovery during Setup
--feature#1670: Improve Graph Management to show type of source for a graph
--feature#1671: Duplicate Graph Template does not duplicate Data Query Graph Template Mappings
--feature#1677: Default Tree nodes sorting to be inherited
--feature#1692: Separate option for logging Input Validation issues
--feature#1691: Add a 'Copy graph' option to context menu of graphs
--feature#1703: Provide i18n for the graph right context menu
--feature#1708: Automation: Email settings should have network level overrides
--feature#1709: Dont warn when attempting to make updates in the past
--feature#1711: Support specifying MySQL SSL file paths in the database API
--feature#1731: Warn a user if they are going off page and there are unsaved changes
--feature#1734: Visual enhancements to RRD error message when file not found
--feature#1763: Automatic refresh for Time Graph View - Enhancement
--feature#1806: Control low level debug routines via config.php
--feature#1819: Removing Graphs using CLI
--feature#1969: Allow linking to graph previews of a host by it's external id
--feature#2006: Data Source Profile RRAs: Aggregation Level and Default Timespan for a Decade long graph
--feature: New Install/Upgrade user permission to limit access to being able to upgrade
--feature: Make Graph and Data Source suggested naming more efficient
--feature: Make tree editing responive
--feature: Add support for DDERIVE and DCOUNTER to Cacti
--feature: Add Timezone support for Remote Data Collectors
--feature: Add One Minute Sampling to the default Data Source Profiles
--feature: Allow Top tabs to be Glyphs or Text or both
--feature: Update JavaScript library c3.js to version 0.6.8
--feature: Update JavaScript library d3.js to version 5.7.0
--feature: Update JavaScript library jquery.tablesorter.js to version 2.30.7
--feature: Update JavaScript library jquery-migrate.js to 3.0.1
--feature: Update JavaScript library screenfull.js to 3.3.3
--feature: Update JavaScript library jstree.js to 3.3.6
--feature: Update JavaScript library Chart.js to 2.7.3
--feature: Update phpseclib to version 2.0.11
--feature: Update JavaScript library jquery.js to 3.3.1
--feature: Make Top Tabs use Ajax Callback
--feature: Make all user settings dynamic and allow resetting to default.
--feature: Change password page provides visible confirmation of password rules
--feature: Allow ASCII filepath paths to not be found on settings save
--feature: Provide option to debug width errors where output exceeds column width
--feature: Allow snmpagent to be disabled for very large installs
--feature: Inform the primary Cacti administrator of problems by Email
--feature: Add Graphs and Data Sources hyperlinks on Device page
--feature: Do not allow second data source to be added to an SNMP Get data template
--feature: Allow drill down from Graphs to Data Queries or Templates
--feature: Allow Adding Aggregate Graphs to a Report 
--feature: Don't allow removal of Data Sources from Data Template once its in use
--feature: Tree automation is now defaulted to on for new install
--feature: Allow Import/Export to be hookable
--feature: Add a Timeout setting for Remote Agent calls
--feature: Make it easy to find Data Query based graphs that have lost indexes
--feature: Big Spanish translation update plus massive QA fixes
+-issue#2126: api_device.php generates undefined function poller_push_to_remote_db_connect()
+-issue#2127: Unable to save error when duplicating graph
+-issue#2135: api_tree_lock() and api_tree_unlock() forcing redirection incorrectly
+-issue#2143: export.php Illegal string offset 'method'
+-issue#2144: Device Management "Status" column does not sort properly
+-issue#2152: When editing a device, should show disable/enable option
+-issue#2153: Utilities page issues the wrong hook for tabs
+-issue#2163: LDAP functions are not consistent
+-issue#2164: Login page does not remember selected realm
+-issue#2171: datepicker and timepick translation not available
+-issue#2178: Header/Footer included more than once
+-issue#2182: Graph View missing 'html_graph_template_multiselect()' function
+-issue#2184: html_host_filter() does not handle host_id consequently
+-issue#2186: Boost generates invalid SQL during on demand update
+-issue#2188: SNMP timeout errors are being duplicated
+-issue#2191: i18n_themes is not properly primed in global_arrays.php
+-issue#2202: Can't create more than one graph with add_graphs.php from one template
+-issue#2207: Removing Graph Template does not Remove Data Query Associations
+-issue#2217: cmd.php not handling quoted snmp values properly
+-security#1072: Prevent exploitation of Data Input Methods to escalate privileges (CVE-2009-4112)
+-security#1882: Bypass output validation in select cases
+-security#2212: Stored XSS in "Website Hostname" field
+-security#2213: Stored XSS in "Website Hostname" field - Devices
+-security#2214: Stored XSS in "Vertical Label" field - Graph
+-security#2215: Stored XSS in "Name" field - Color
+
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values
@@ -235,7 +229,7 @@ Cacti CHANGELOG
 -feature#1489: Add ability to use parts of OID as value via regex
 -feature: Updated Chinese Simplified translations
 -feature: Updated Dutch translations
--feature: JavaScript library Chart.js updated 2.7.2 
+-feature: JavaScript library Chart.js updated 2.7.2
 -feature: Allow snmp formatting functions to detect UTF-8 output
 
 1.1.36
@@ -872,7 +866,7 @@ Cacti CHANGELOG
 -issue: The Device dropdown on the Graph View page was unreliable
 -issue: Aggregate and non-Device Graphs in list view had not Device or Title description
 -issue: Re-engineer back button design to accomocate ajax and native navigation
--issue: Make Graph Template filter wider 
+-issue: Make Graph Template filter wider
 -issue: Resolve some visual issues in Classic theme
 -feature: Add page refresh API to make page refreshing in Ajax easier to accomplish
 -feature: Update fontawesome to version 4.7
@@ -1136,7 +1130,7 @@ Cacti CHANGELOG
 -bug:0002629: Cacti lacks tab icons in chrome from android
 -bug:0002619: Fix incorrect placement of htmlspecialchars() in tree.php
 -bug:0002642: ping.pl does not take into account host port numbers
--bug:0002567: RRDtool 1.5.x Support 
+-bug:0002567: RRDtool 1.5.x Support
 -bug:0002269: |query_ifSpeed| in --upper-limit for graph template does not work with empty ifSpee
 
 0.8.8f
@@ -1184,7 +1178,7 @@ Cacti CHANGELOG
 -bug#0002542: [FG-VD-15-017] Cacti Cross-Site Scripting Vulnerability Notification
 -bug#0002543: Unable to switch pages within graphs_new.php due to invalid URL generation
 -bug#0002544: Duplicate entry in $nav_url during list view
--bug#0002571: SQL Injection and Location header injection from cdef id CVE-2015-4342 
+-bug#0002571: SQL Injection and Location header injection from cdef id CVE-2015-4342
 -bug#0002572: SQL injection in graph templates CVE-2015-4454
 
 0.8.8c
