@@ -59,6 +59,11 @@ render_external_links('FRONTTOP');
 if (read_config_option('hide_console') != '1') {
 ?>
 <table class='cactiTable'>
+<?php
+    $intropage_lopts = db_fetch_cell('SELECT intropage_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+    $system_lopts    = db_fetch_cell('SELECT login_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+    if ($system_lopts != 1 && $intropage_lopts == 1)	{
+?>
 	<tr>
 		<td class='textAreaNotes top left'>
 			<?php print __('You are now logged into <a href="%s"><b>Cacti</b></a>. You can follow these basic steps to get started.', 'about.php');?>
@@ -73,6 +78,9 @@ if (read_config_option('hide_console') != '1') {
 			<strong><?php print get_cacti_version_text();?></strong>
 		</td>
 	</tr>
+<?php
+    }
+?>
 	<?php if ($config['poller_id'] > 1) {?>
 	<tr><td colspan='2'><hr></td></tr>
 	<tr><td colspan='2'><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online'):($config['connection'] == 'recovery' ? __('Recovery'):__('Offline'))) . '</i>';?></td></tr>
