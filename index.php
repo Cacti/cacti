@@ -60,9 +60,10 @@ if (read_config_option('hide_console') != '1') {
 ?>
 <table class='cactiTable'>
 <?php
-    $intropage_lopts = db_fetch_cell('SELECT intropage_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
-    $system_lopts    = db_fetch_cell('SELECT login_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
-    if ($system_lopts != 1 && $intropage_lopts == 1)	{
+    if (db_fetch_cell("SELECT directory FROM plugin_config where directory='intropage' and status=1"))	{
+	$intropage_lopts = db_fetch_cell('SELECT intropage_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+	$system_lopts    = db_fetch_cell('SELECT login_opts FROM user_auth WHERE id=' . $_SESSION['sess_user_id']);
+	if ($system_lopts != 1 && $intropage_lopts == 1)	{
 ?>
 	<tr>
 		<td class='textAreaNotes top left'>
@@ -79,6 +80,7 @@ if (read_config_option('hide_console') != '1') {
 		</td>
 	</tr>
 <?php
+	}
     }
 ?>
 	<?php if ($config['poller_id'] > 1) {?>
