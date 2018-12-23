@@ -1400,7 +1400,7 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 		$sql_where .= ($sql_where != '' ? ' AND ' : ' ') . "(gl.graph_template_id = $graph_template_id)";
 	}
 
-	$sql_where = 'WHERE ' . ($sql_where != $sql_where . ' AND ' ? '':' ') . '(gt.id IS NOT NULL) ';
+	$sql_where = 'WHERE ' . ($sql_where != '' ? $sql_where . ' AND ':' ') . '(gt.id IS NOT NULL) ';
 
 	if ($user == -1) {
 		$auth_method = 0;
