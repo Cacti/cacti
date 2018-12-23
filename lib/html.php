@@ -1550,7 +1550,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a <?php print (is_console_page(get_current_page()) ? " id='maintab-anchor" . rand() . "' class='selected'":"");?> href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
+			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":"");?> href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
 		if ($realm_allowed[7]) {
@@ -1559,9 +1559,9 @@ function html_show_tabs_left() {
 			} else {
 				$file = get_current_page();
 				if ($file == "graph_view.php" || $file == "graph.php") {
-					print "<a id='maintab-anchor" . rand() . "' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
+					print "<a id='tab-graphs' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
 				} else {
-					print "<a href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
+					print "<a id='tab-graphs' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
 				}
 			}
 		}
@@ -1571,18 +1571,18 @@ function html_show_tabs_left() {
 				// Don't show reports tabe if not poller 1
 			} else {
 				if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 				} else {
-					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
 				}
 			}
 		}
 
 		if ($realm_allowed[18] || $realm_allowed[19]) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
+				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
 			} else {
-				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
+				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
 			}
 		}
 
@@ -1618,7 +1618,7 @@ function html_show_tabs_left() {
 							}
 						}
 
-						print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
+						print '<a id="tab-link' . $tab['id'] . '" href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 					}
 				}
 			}
