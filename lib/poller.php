@@ -1404,13 +1404,20 @@ function replicate_out_table($conn, &$data, $table, $remote_poller_id) {
 function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	global $remote_db_cnn_id;
 
-	$sql_where  = 'WHERE host_id = ' . $device_id . ' AND data_query_id = ' . $data_query_id;
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host
+		WHERE id = ?',
+		array($device_id));
 
-	$poller_reindex = db_fetch_assoc("SELECT *
-		FROM poller_reindex
-		$sql_where");
+	if ($poller_id > 1) {
+		$sql_where  = 'WHERE host_id = ' . $device_id . ' AND data_query_id = ' . $data_query_id;
 
-	replicate_table_to_poller($remote_db_cnn_id, $poller_reindex, 'poller_reindex');
+		$poller_reindex = db_fetch_assoc("SELECT *
+			FROM poller_reindex
+			$sql_where");
+
+		replicate_table_to_poller($remote_db_cnn_id, $poller_reindex, 'poller_reindex');
+	}
 }
 
 function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0) {
