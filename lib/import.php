@@ -164,7 +164,13 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				cacti_log('$cacti_version_codes[$dep_hash_cache[$type][$i][\'version\']]: ' . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				cacti_log('$dep_hash_cache[$type][$i][\'hash\']: ' . $dep_hash_cache[$type][$i]['hash'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 
-				$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']] . $dep_hash_cache[$type][$i]['hash']];
+				if (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']] . $dep_hash_cache[$type][$i]['hash']])) {
+					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']] . $dep_hash_cache[$type][$i]['hash']];
+				} elseif (isset($xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']])) {
+					$hash_array = $xml_array['hash_' . $hash_type_codes[$dep_hash_cache[$type][$i]['type']] . $dep_hash_cache[$type][$i]['hash']];
+				} else {
+					return false;
+				}
 
 				switch($type) {
 				case 'graph_template':
@@ -1722,6 +1728,10 @@ function compare_data($save, $previous_data, $table) {
 
 					if (empty($previous_data[$column]) && empty($value)) {
 						continue;
+					} elseif ($table == 'data_template_rrd' && $column == 'rrd_heartbeat') {
+						continue;
+					} elseif ($table == 'data_template_data' && $column == 'rrd_step') {
+						continue;
 					}
 				} elseif (empty($previous_data[$column]) && empty($value)) {
 					continue;
@@ -1858,6 +1868,16 @@ function parse_xml_hash($hash) {
 		$parsed_hash['type']    = check_hash_type($matches[1]);
 		$parsed_hash['version'] = strval(check_hash_version($matches[2]));
 		$parsed_hash['hash']    = $matches[3];
+
+		/* an error has occurred */
+		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
+			cacti_log(__FUNCTION__ . ' ERROR type or version not found for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+			return false;
+		}
+	} elseif (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{32})/', $hash, $matches)) {
+		$parsed_hash['type']    = check_hash_type($matches[1]);
+		$parsed_hash['version'] = strval(check_hash_version('0101'));
+		$parsed_hash['hash']    = $matches[2];
 
 		/* an error has occurred */
 		if (($parsed_hash['type'] === false) || ($parsed_hash['version'] === false)) {
