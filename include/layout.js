@@ -1167,17 +1167,18 @@ function responsiveUI(event) {
 	}
 
 	if ($('#navigation').length) {
-		if ($(window).width() < 640 && loadMenuStateOpen(page)) {
-			menuHide(false);
-			menuHideResponsive = true;
-		} else if (menuHideResponsive == true) {
+		if (theme != 'classic') {
 			if (loadMenuStateOpen(page)) {
-				menuShow();
+				if ($(window).width() < 640) {
+					menuHide(false);
+					menuHideResponsive = true;
+				} else {
+					menuShow();
+				}
 			} else {
-				menuHide(true);
+				menuHide(false);
 			}
-			menuHideResponsive = false;
-		} else if (loadMenuStateOpen(page)) {
+		} else {
 			menuShow();
 		}
 	}
@@ -1259,9 +1260,13 @@ function responsiveResizeGraphs() {
 		graph_id = $(this).attr('graph_id');
 		if (!(graph_id > 0)) {
 			graph_id = $(this).attr('id').replace('wrapper_','');
+			graph_id = $(this).attr('id').replace('graph_','');
 		}
 
 		rra_id = $(this).attr('rra_id');
+
+		original_cwidth  = $('#wrapper_'+graph_id).attr('graph_width');
+		original_cheight = $('#wrapper_'+graph_id).attr('graph_height');
 
 		/* original image attributes */
 		image_width   = $(this).attr('image_width');
@@ -1271,10 +1276,13 @@ function responsiveResizeGraphs() {
 		canvas_width  = $(this).attr('canvas_width');
 		canvas_height = $(this).attr('canvas_height');
 
-		if (myWidth < image_width) {
-			ratio = myWidth / image_width;
-		} else {
-			ratio = 1;
+		remove_whcss = false;
+		ratio = myWidth / image_width;
+
+		/* optimize display and set correct ratio if image is full size */
+		if (image_width * original_cwidth / canvas_width < myWidth) {
+			remove_whcss = true;
+			ratio = original_cwidth / canvas_width;
 		}
 
 		new_image_width       = parseInt(image_width * ratio)
@@ -1289,8 +1297,15 @@ function responsiveResizeGraphs() {
 		$(this).attr('graph_top', new_canvas_graph_top);
 		$(this).attr('graph_left', new_canvas_graph_left);
 
-		$(this).css('width', new_image_width);
-		$(this).css('height', new_image_height);
+		if (!remove_whcss) {
+			$(this).css('width', new_image_width);
+			$(this).css('height', new_image_height);
+		} else {
+			$(this).css('width', '');
+			$(this).css('height', '');
+			$(this).removeAttr('width');
+			$(this).removeAttr('height');
+		}
 
 		$('#zoom-container').remove();
 		$(this).zoom({
@@ -1551,6 +1566,8 @@ function menuHide(store) {
 		});
 	}
 
+	$('#navigation').hide();
+
 	if (store) {
 		storage.set('menuState_' + page, 'hidden');
 	}
@@ -1581,6 +1598,8 @@ function menuShow() {
 			responsiveResizeGraphs();
 		});
 	}
+
+	$('#navigation').show();
 
 	storage.set('menuState_' + page, 'visible');
 }
@@ -1913,9 +1932,17 @@ function getPresentHTTPError(data) {
 }
 
 function ajaxAnchors() {
+	page = basename(location.pathname);
+
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').unbind('click').click(function(event) {
 		event.preventDefault();
 		event.stopPropagation();
+
+		if ($(window).width() < 640) {
+			if (theme != 'classic') {
+				menuHide(false);
+			}
+		}
 
 		/* determine the page name */
 		href = $(this).attr('href');
@@ -2507,7 +2534,9 @@ function keepWindowSize() {
 				$('.ellipsis').show();
 			}
 		}, 300, 'resize-content');
-	}).resize();
+	});
+
+	$(window).trigger('resize');
 }
 
 /* Graph related javascript functions */
