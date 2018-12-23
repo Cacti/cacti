@@ -328,7 +328,7 @@ function run_data_query($host_id, $snmp_query_id) {
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
 	} elseif ($config['connection'] == 'online') {
-		poller_push_reindex_data_to_main();
+		poller_push_reindex_data_to_main($host_id, $snmp_query_id);
 
 		automation_execute_data_query($host_id, $snmp_query_id);
 		query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
