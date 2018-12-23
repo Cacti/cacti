@@ -48,7 +48,7 @@ function api_device_remove($device_id) {
 	if ($poller_id == 1) {
 		db_execute_prepared('DELETE FROM host         WHERE      id = ?', array($device_id));
 	} else {
-		db_execute_prepared('UPDATE host SET deleted = "on", poller_id = 1 WHERE id = ?', array($device_id));
+		db_execute_prepared('UPDATE host SET deleted = "on" WHERE id = ?', array($device_id));
 	}
 
 	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id));
@@ -101,14 +101,26 @@ function api_device_purge_from_remote($device_id, $poller_id = 0) {
 }
 
 function api_device_purge_deleted_devices() {
-	$devices = db_fetch_assoc_prepared('SELECT id
+	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
 		WHERE deleted = "on"
 		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-86400');
 
 	if (cacti_sizeof($devices)) {
 		foreach($devices as $d) {
-			api_device_remove($d['id']);
+			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($d['id'] . ':%'));
+			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($d['id'] . ':%'));
+			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($d['id']));
+
+			api_device_purge_from_remote($d['id'], $d['poller_id']);
 		}
 	}
 }
@@ -164,7 +176,7 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 
 		// handle removal or mark for removal as required
 		db_execute("DELETE FROM host WHERE id IN ($devices_to_delete) AND poller_id = 1");
-		db_execute("UPDATE host SET deleted = 'on', poller_id = 1 WHERE id IN ($devices_to_delete) AND poller_id != 1");
+		db_execute("UPDATE host SET deleted = 'on' WHERE id IN ($devices_to_delete) AND poller_id != 1");
 
 		db_execute("DELETE FROM host_graph       WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_query  WHERE host_id IN ($devices_to_delete)");
