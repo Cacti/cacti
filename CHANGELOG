@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -feature: Update JavaScript library jquery.tablesorter.js to version 2.30.7
 -feature: Update JavaScript library jstree.js to 3.3.7
 -feature: Update JavaScript library screenfull.js to 3.3.3
+-feature: Update phpmailer to version 6.0.6
 -feature: Update phpseclib to version 2.0.12
 -feature#289: Allow external nologin access for Realtime Graphs
 -feature#553: When display a host, include Aggregated Graphs as well as standard graphs

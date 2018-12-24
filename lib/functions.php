@@ -3242,15 +3242,17 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config;
 
-	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
-
 	// Set the to information
 	if (empty($to)) {
 		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
 
+    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+
 	// Create the PHPMailer instance
-	$mail = new PHPMailer;
+	$mail = new PHPMailer\PHPMailer\PHPMailer;
 
 	// Set a reasonable timeout of 5 seconds
 	$timeout = read_config_option('settings_smtp_timeout');
@@ -3622,10 +3624,12 @@ function create_emailtext($e) {
 function ping_mail_server($host, $port, $user, $password, $timeout = 10, $secure = 'none') {
 	global $config;
 
-	include_once($config['include_path'] . '/vendor/phpmailer/PHPMailerAutoload.php');
+    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 
 	//Create a new SMTP instance
-	$smtp = new SMTP;
+	$smtp = new PHPMailer\PHPMailer\SMTP;
 
 	if (!empty($secure) && $secure != 'none') {
 		$smtp->SMTPSecure = $secure;
