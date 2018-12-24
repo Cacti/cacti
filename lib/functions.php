@@ -3240,7 +3240,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *  encoding    : Encoding type, normally base64
  */
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
-	global $config;
+	global $config, $cacti_locale;
 
 	// Set the to information
 	if (empty($to)) {
@@ -3260,6 +3260,11 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$mail->Timeout = 5;
 	} else {
 		$mail->Timeout = $timeout;
+	}
+
+	$langparts = explode('-', $cacti_locale);
+	if (file_exists($config['include_path'] . '/vendor/phpmailer/language/phpmailer.lang-' . $langparts[0] . '.php')) {
+		$mail->setLanguage($langparts[0], $config['include_path'] . '/vendor/phpmailer/language/');
 	}
 
 	$how = read_config_option('settings_how');
