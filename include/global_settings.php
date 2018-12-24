@@ -457,13 +457,13 @@ $settings = array(
 		'automation_graphs_enabled' => array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Enable Automatic Graph Creation'),
-			'description' => __('When disabled, Cacti Automation will not actively create any Graph.  This is useful when adjusting Host settings so as to avoid creating new Graphs each time you save an object.  Invoking Automation Rules manually will still be possible.'),
+			'description' => __('When disabled, Cacti Automation will not actively create any Graph.  This is useful when adjusting Device settings so as to avoid creating new Graphs each time you save an object.  Invoking Automation Rules manually will still be possible.'),
 			'default' => 'on',
 			),
 		'automation_tree_enabled' => array(
 			'method' => 'checkbox',
 			'friendly_name' => __('Enable Automatic Tree Item Creation'),
-			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Host or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible.'),
+			'description' => __('When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when adjusting Device or Graph settings so as to avoid creating new Tree Entries each time you save an object.  Invoking Rules manually will still be possible.'),
 			'default' => 'on',
 			),
 		'automation_email' => array(
@@ -2042,15 +2042,15 @@ $settings_user = array(
 			'default' => '1'
 			),
 		'default_timespan' => array(
-			'friendly_name' => __('Default Graph View Timespan'),
-			'description' => __('The default timespan you wish to be displayed when you display graphs'),
+			'friendly_name' => __('Default Timespan'),
+			'description' => __('The default Timespan displayed when viewing Graphs and other time specific data.'),
 			'method' => 'drop_array',
 			'array' => $graph_timespans,
 			'default' => GT_LAST_DAY
 			),
 		'default_timeshift' => array(
-			'friendly_name' => __('Default Graph View Timeshift'),
-			'description' => __('The default timeshift you wish to be displayed when you display graphs'),
+			'friendly_name' => __('Default Timeshift'),
+			'description' => __('The default Timeshift displayed when viewing Graphs and other time specific data.'),
 			'method' => 'drop_array',
 			'array' => $graph_timeshifts,
 			'default' => GTS_1_DAY
