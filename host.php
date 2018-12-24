@@ -1280,7 +1280,7 @@ function host_validate_vars() {
 function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%'))";
+		$sql_where = "WHERE (deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%' OR host.id LIKE '%" . get_request_var('filter') . "%'))";
 	} else {
 		$sql_where = "WHERE deleted = ''";
 	}
@@ -1648,7 +1648,7 @@ function host() {
 			form_alternate_row('line' . $host['id'], true);
 			form_selectable_cell(filter_value($host['description'], get_request_var('filter'), 'host.php?action=edit&id=' . $host['id']), $host['id']);
 			form_selectable_cell(filter_value($host['hostname'], get_request_var('filter')), $host['id']);
-			form_selectable_cell($host['id'], $host['id'], '', 'right');
+			form_selectable_cell(filter_value($host['id'], get_request_var('filter')), $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $graphs_url . '">' . number_format_i18n($host['graphs'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell('<a class="linkEditMain" href="' . $data_source_url . '">' . number_format_i18n($host['data_sources'], '-1') . '</a>', $host['id'], '', 'right');
 			form_selectable_cell(get_colored_device_status(($host['disabled'] == 'on' ? true : false), $host['status']), $host['id'], '', 'center');
