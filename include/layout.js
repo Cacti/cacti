@@ -1993,7 +1993,7 @@ function checkFormStatus(href, type, scroll_or_id) {
 				$.each(submitData, function(index, value) {
 					if (typeof formData[index] != 'undefined') {
 						if (formData[index] != value) {
-							if (index == 'settings_sendmail_path' || index == 'rrd_archive' || index == '__csrf_magicSubmit' || index == '__csrf_magic') {
+							if (index == 'settings_sendmail_path' || index == 'rrd_archive' || index == '__csrf_magicSubmit' || index == '__csrf_magic' || index == 'settings_smtp_password' || index == 'settings_smtp_password_confirm') {
 								// Ignore this entry
 							} else if (index.indexOf('[]') > 0) {
 								// Ignore this entry
