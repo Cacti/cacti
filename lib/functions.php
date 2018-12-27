@@ -666,7 +666,7 @@ function get_message_max_type() {
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $messages, $no_http_headers;
 
-	$need_session = (session_status() == PHP_SESSION_NONE) && !$no_http_headers;
+	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
@@ -745,7 +745,7 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
-	$need_session = (session_status() == PHP_SESSION_NONE) && !$no_http_headers;
+	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
 
 	if ($need_session) {
 		session_start();
