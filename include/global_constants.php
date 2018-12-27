@@ -106,6 +106,7 @@ define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);
 define('POLLER_ACTION_SCRIPT_PHP', 2);
+
 /* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
  * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found
@@ -117,6 +118,7 @@ define('POLLER_ACTION_SCRIPT_PHP_COUNT', 12);
 
 define('POLLER_COMMAND_REINDEX', 1);
 define('POLLER_COMMAND_RRDPURGE', 2);
+define('POLLER_COMMAND_PURGE', 3);
 
 define('POLLER_VERBOSITY_NONE', 1);
 define('POLLER_VERBOSITY_LOW', 2);

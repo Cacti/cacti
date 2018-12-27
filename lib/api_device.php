@@ -97,6 +97,11 @@ function api_device_purge_from_remote($device_id, $poller_id = 0) {
 			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($device_id), true, $rcnn_id);
 			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($device_id), true, $rcnn_id);
 		}
+
+		db_execute_prepared('INSERT INTO poller_command
+			(poller_id, time, action, command)
+			VALUES (?, NOW(), ?, ?)',
+			array($poller_id, POLLER_COMMAND_PURGE, $device_id));
 	}
 }
 

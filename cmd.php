@@ -618,49 +618,28 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 						if (($index_item['op'] == '=') && ($index_item['assert_value'] != trim($output))) {
 							cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '=' . trim($output), $print_data_to_stdout, 'POLLER');
 
-							if ($poller_id > 1 && $config['connection'] == 'online') {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $remote_db_cnn_id);
-							} else {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
-							}
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
+								VALUES (?, NOW(), ?, ?)',
+								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
 
 							$assert_fail = true;
 						} elseif (($index_item['op'] == '>') && ($index_item['assert_value'] < trim($output))) {
 							cacti_log("Device[$host_id] HT[1] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '>' . trim($output), $print_data_to_stdout, 'POLLER');
 
-							if ($poller_id > 1 && $config['connection'] == 'online') {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $remote_db_cnn_id);
-							} else {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
-							}
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
+								VALUES (?, NOW(), ?, ?)',
+								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
 
 							$assert_fail = true;
 						} elseif (($index_item['op'] == '<') && ($index_item['assert_value'] > trim($output))) {
 							cacti_log("Device[$host_id] DQ[" . $index_item['data_query_id'] . "] RECACHE ASSERT FAILED '" . $index_item['assert_value'] . '<' . trim($output), $print_data_to_stdout, 'POLLER');
 
-							if ($poller_id > 1 && $config['connection'] == 'online') {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $remote_db_cnn_id);
-							} else {
-								db_execute_prepared('REPLACE INTO poller_command
-									(poller_id, time, action, command)
-									VALUES (?, NOW(), ?, ?)',
-									array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']));
-							}
+							db_execute_prepared('REPLACE INTO poller_command
+								(poller_id, time, action, command)
+								VALUES (?, NOW(), ?, ?)',
+								array($poller_id, POLLER_COMMAND_REINDEX, $item['host_id'] . ':' . $index_item['data_query_id']), true, $poller_db_cnn_id);
 
 							$assert_fail = true;
 						}
