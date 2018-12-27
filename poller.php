@@ -680,7 +680,12 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		// process poller commands
-		if (db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*) FROM poller_command WHERE poller_id = ?', array($poller_id)) > 0) {
+		$commands = db_fetch_cell_prepared('SELECT ' . SQL_NO_CACHE . ' COUNT(*)
+			FROM poller_command
+			WHERE poller_id = ?',
+			array($poller_id), '', true, $poller_db_cnn_id);
+
+		if ($commands > 0) {
 			$command_string = read_config_option('path_php_binary');
 			$extra_args = '-q "' . $config['base_path'] . "/poller_commands.php\" --poller=$poller_id";
 			exec_background($command_string, $extra_args);
@@ -688,7 +693,7 @@ while ($poller_runs_completed < $poller_runs) {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			set_config_option('stats_recache_' . $poller_id,'RecacheTime:0.0 DevicesRecached:0');
+			set_config_option('stats_recache_' . $poller_id, 'RecacheTime:0.0 DevicesRecached:0');
 		}
 
 		if ($method == 'spine') {
