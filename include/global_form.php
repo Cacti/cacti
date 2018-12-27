@@ -1624,7 +1624,7 @@ $fields_template_import = array(
 		'method' => 'checkbox',
 		'description' => __('If checked, Cacti will not import the template, but rather compare the imported Template to the existing Template data.  If you are acceptable of the change, you can them import.'),
 		'value' => '',
-		'default' => '0'
+		'default' => 'on'
 		),
 	'remove_orphans' => array(
 		'friendly_name' => __('Remove Orphaned Graph Items'),
