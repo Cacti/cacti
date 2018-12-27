@@ -843,7 +843,8 @@ $custom_data_source_types = array(
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
 		__('Create') => array(
-			'graphs_new.php' => __('New Graphs')
+			'graphs_new.php' => __('New Graphs'),
+			'host.php?action=edit' => __('New Device')
 			),
 		__('Management') => array(
 			'host.php'             => __('Devices'),
