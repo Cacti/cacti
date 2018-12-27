@@ -745,13 +745,24 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
+	$need_session = (session_status() == PHP_SESSION_NONE) && !$no_http_headers;
+
+	if ($need_session) {
+		session_start();
+	}
+
 	kill_session_var('sess_messages');
+
+	if ($need_session) {
+		session_write_close();
+	}
 }
 
 /* kill_session_var - kills a session variable using unset() */
 function kill_session_var($var_name) {
 	/* register_global = on: reset local settings cache so the user sees the new settings */
 	unset($_SESSION[$var_name]);
+
 	/* register_global = off: reset local settings cache so the user sees the new settings */
 	/* session_unregister is deprecated in PHP 5.3.0, unset is sufficient */
 	if (version_compare(PHP_VERSION, '5.3.0', '<')) {
