@@ -907,7 +907,7 @@ function graph_to_graph_template($local_graph_id, $graph_title) {
 		WHERE local_graph_id = ?',
 		array($graph_template_id, $local_graph_id));
 
-	db_execute_pepared('UPDATE graph_templates_item
+	db_execute_prepared('UPDATE graph_templates_item
 		SET local_graph_id=0, local_graph_template_item_id=0, graph_template_id = ?, task_item_id=0
 		WHERE local_graph_id = ?',
 		array($graph_template_id, $local_graph_id));
