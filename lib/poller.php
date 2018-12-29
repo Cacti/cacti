@@ -1135,6 +1135,15 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		$data = db_fetch_assoc('SELECT * FROM data_input');
 		replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
 
+		$data = db_fetch_assoc('SELECT * FROM host_template');
+		replicate_out_table($rcnn_id, $data, 'host_template', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM host_template_graph');
+		replicate_out_table($rcnn_id, $data, 'host_template_graph', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM host_template_snmp_query');
+		replicate_out_table($rcnn_id, $data, 'host_template_snmp_query', $remote_poller_id);
+
 		$data = db_fetch_assoc('SELECT * FROM snmp_query');
 		replicate_out_table($rcnn_id, $data, 'snmp_query', $remote_poller_id);
 
