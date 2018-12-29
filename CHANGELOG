@@ -188,6 +188,7 @@ Cacti CHANGELOG
 -issue#2202: Can't create more than one graph with add_graphs.php from one template
 -issue#2207: Removing Graph Template does not Remove Data Query Associations
 -issue#2217: cmd.php not handling quoted snmp values properly
+-issue#2240: SNMP system Data Input Methods should not be modified on import
 -security#1072: Prevent exploitation of Data Input Methods to escalate privileges (CVE-2009-4112)
 -security#1882: Bypass output validation in select cases
 -security#2212: Stored XSS in "Website Hostname" field
