@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once($config['base_path'] . '/lib/spikekill.php');
 
 $debug = false;
 
@@ -54,25 +55,54 @@ if (is_realm_allowed(1043)) {
 			$data_source_path = get_data_source_path($local_data_id['local_data_id'], true);
 
 			if ($data_source_path != '') {
-				if ($debug) {
-					cacti_log(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
-						' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
-						(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
-						(isset_request_var('avgnan') ? ' -A=' . escapeshellarg(get_nfilter_request_var('avgnan')):'') .
-						(isset_request_var('outlier-start') ? ' --outlier-start=' . escapeshellarg(get_nfilter_request_var('outlier-start')):'') .
-						(isset_request_var('outlier-end') ? ' --outlier-end=' . escapeshellarg(get_nfilter_request_var('outlier-end')):'') .
-						' -U=' . $_SESSION['sess_user_id'] .
-						' --html', false);
+				$html      = true;
+				$dryrun    = false;
+				$out_start = '';
+				$out_end   = '';
+				$avgnan    = '';
+				$method    = '';
+				$rrdfile   = $data_source_path;
+
+				if (isset_request_var('dryrun')) {
+					$dryrun = true;
 				}
 
-				$results .= shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/removespikes.php ' .
-					' -R=' . $data_source_path . (isset_request_var('dryrun') ? ' --dryrun' : '') .
-					(isset_request_var('method') ? ' -M=' . get_nfilter_request_var('method'):'') .
-					(isset_request_var('avgnan') ? ' -A=' . escapeshellarg(get_nfilter_request_var('avgnan')):'') .
-					(isset_request_var('outlier-start') ? ' --outlier-start=' . escapeshellarg(get_nfilter_request_var('outlier-start')):'') .
-					(isset_request_var('outlier-end') ? ' --outlier-end=' . escapeshellarg(get_nfilter_request_var('outlier-end')):'') .
-					' -U=' . $_SESSION['sess_user_id'] .
-					' --html');
+				if (isset_request_var('method')) {
+					$method = get_nfilter_request_var('method');
+				}
+
+				if (isset_request_var('avgnan')) {
+					$avgnan = get_nfilter_request_var('avgnan');
+				}
+
+				if (isset_request_var('outlier-start')) {
+					$out_start = get_nfilter_request_var('outlier-start');
+				}
+
+				if (isset_request_var('outlier-end')) {
+					$out_end = get_nfilter_request_var('outlier-end');
+				}
+
+				$spiker = new spikekill($rrdfile, $method, $avgnan, '', $out_start, $out_end);
+
+				$spiker->dryrun = $dryrun;
+				$spiker->html   = $html;
+
+				$result = $spiker->remove_spikes();
+
+				if ($debug) {
+					if (!$result) {
+						cacti_log("ERROR: SpikeKill failed for $rrdfile.  Message is " . $spiker->get_errors(), false, 'SPIKEKILL');
+					} else {
+						cacti_log("NOTICE: SpikeKill succeeded for $rrdfile.  Message is " . $spiker->get_output(), false, 'SPIKEKILL');
+					}
+				} else {
+					if (!$result) {
+						$results = $spiker->get_errors();
+					} else {
+						$results = $spiker->get_output();
+					}
+				}
 			}
 		}
 	}
