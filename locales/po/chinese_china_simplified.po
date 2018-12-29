@@ -618,7 +618,7 @@ msgstr "大小"
 #: tree.php:2014 user_admin.php:2306 user_domains.php:769
 #: user_group_admin.php:1931 vdef.php:900
 msgid "No"
-msgstr "不"
+msgstr "否"
 
 #: aggregate_graphs.php:1206 aggregate_templates.php:661
 #: automation_tree_rules.php:682 cdef.php:900 color.php:726 color.php:728
@@ -634,7 +634,7 @@ msgstr "不"
 #: user_admin.php:2304 user_domains.php:765 user_domains.php:769
 #: user_group_admin.php:1929 vdef.php:900
 msgid "Yes"
-msgstr "确定"
+msgstr "是"
 
 #: aggregate_graphs.php:1212 graphs.php:2054 lib/api_automation.php:599
 msgid "No Graphs Found"
@@ -1004,7 +1004,7 @@ msgstr "用户帐户详情"
 #: include/global_settings.php:2099 lib/html.php:1793 lib/html.php:1815
 #: lib/html.php:2284
 msgid "Tree View"
-msgstr "Tree View"
+msgstr "树形视图"
 
 #: auth_profile.php:297 include/global_arrays.php:731 lib/html.php:1800
 #: lib/html.php:1824 lib/html.php:2285
@@ -1014,7 +1014,7 @@ msgstr "列表视图"
 #: auth_profile.php:301 include/global_arrays.php:732 lib/html.php:1807
 #: lib/html.php:2286
 msgid "Preview View"
-msgstr "预览查看"
+msgstr "预览视图"
 
 #: auth_profile.php:314 include/global_form.php:1435 user_admin.php:2284
 msgid "User Name"
@@ -1052,7 +1052,7 @@ msgstr "清除用户设置"
 #: auth_profile.php:339
 #, fuzzy
 msgid "Return all User Settings to Default values."
-msgstr "将所有用户设置恢复为默认值。"
+msgstr "将所有用户设置重置为默认值。"
 
 #: auth_profile.php:345 auth_profile.php:347
 msgid "Clear Private Data"
@@ -1185,7 +1185,7 @@ msgstr "位置"
 
 #: automation_devices.php:254
 msgid "Contact"
-msgstr "联系"
+msgstr "联系人"
 
 #: automation_devices.php:255 include/global_form.php:1094
 #: include/global_form.php:1130 include/global_form.php:1315
@@ -1202,7 +1202,7 @@ msgstr "OS"
 
 #: automation_devices.php:257 host.php:1586 include/global_arrays.php:433
 msgid "Uptime"
-msgstr "正常运行时间"
+msgstr "运行时间"
 
 #: automation_devices.php:258 automation_devices.php:516 utilities.php:1727
 msgid "SNMP"
@@ -1257,11 +1257,11 @@ msgstr "导出到文件"
 #: automation_devices.php:478 lib/clog_webapi.php:195 lib/clog_webapi.php:430
 #: managers.php:748
 msgid "Purge"
-msgstr "清除"
+msgstr "清空"
 
 #: automation_devices.php:478
 msgid "Purge Discovered Devices"
-msgstr "清除发现的设备"
+msgstr "清空已发现的设备"
 
 #: automation_devices.php:645 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
@@ -1295,7 +1295,7 @@ msgstr "启用"
 #: plugins.php:30 pollers.php:30 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
-msgstr "关闭"
+msgstr "禁用"
 
 #: automation_graph_rules.php:256
 msgid "Press 'Continue' to delete the following Graph Rules."
@@ -1354,7 +1354,7 @@ msgstr "规则选择[新建]"
 #: automation_graph_rules.php:586 automation_tree_rules.php:394
 #: automation_tree_rules.php:544
 msgid "Don't Show"
-msgstr "不要显示"
+msgstr "不显示"
 
 #: automation_graph_rules.php:555
 msgid "Rule Details."
@@ -1380,7 +1380,7 @@ msgstr "图形创建标准"
 #: automation_graph_rules.php:891 include/global_arrays.php:872
 #: include/global_arrays.php:2515
 msgid "Graph Rules"
-msgstr "图规则"
+msgstr "画图规则"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902
 #: graphs.php:1989 include/global_arrays.php:1162 include/global_form.php:1585
@@ -1419,7 +1419,7 @@ msgstr "启用"
 #: user_admin.php:1103 user_domains.php:411 user_group_admin.php:691
 #: utilities.php:2279
 msgid "Disabled"
-msgstr "关闭"
+msgstr "禁用"
 
 #: automation_graph_rules.php:900 automation_tree_rules.php:936
 msgid "Rule Name"
@@ -1443,7 +1443,7 @@ msgstr "图表类型"
 
 #: automation_graph_rules.php:926
 msgid "No Graph Rules Found"
-msgstr "找不到图规则"
+msgstr "找不到画图规则"
 
 #: automation_networks.php:34
 msgid "Discover Now"
@@ -1528,7 +1528,7 @@ msgstr "每周"
 #: automation_networks.php:422 automation_networks.php:1070
 #: include/global_arrays.php:1636
 msgid "Monthly"
-msgstr "每月一次"
+msgstr "每月"
 
 #: automation_networks.php:423 automation_networks.php:1071
 msgid "Monthly on Day"
@@ -1547,7 +1547,7 @@ msgstr "网络发现范围[新建]"
 #: include/global_form.php:1885 include/global_settings.php:50
 #: lib/html_reports.php:915
 msgid "General Settings"
-msgstr "一般设定"
+msgstr "常规设置"
 
 #: automation_networks.php:441 automation_snmp.php:475 data_input.php:615
 #: data_input.php:676 data_queries.php:754 data_queries.php:852
@@ -1638,7 +1638,7 @@ msgstr "计划类型"
 
 #: automation_networks.php:491
 msgid "Define the collection frequency."
-msgstr "定义收集频率。"
+msgstr "定义采集频率。"
 
 #: automation_networks.php:498
 msgid "Discovery Threads"
@@ -1830,7 +1830,7 @@ msgstr ""
 
 #: automation_networks.php:605
 msgid "Discovery Timing"
-msgstr "发现时机"
+msgstr "发现耗时"
 
 #: automation_networks.php:610
 msgid "Starting Date/Time"
@@ -1990,7 +1990,7 @@ msgstr "可达性设置"
 #: automation_networks.php:714 include/global_arrays.php:874
 #: include/global_form.php:1197 include/global_form.php:1687
 msgid "SNMP Options"
-msgstr "SNMP的选项"
+msgstr "SNMP 选项"
 
 #: automation_networks.php:715
 msgid "Select the SNMP Options to use for discovery of this Network Range."
@@ -2027,7 +2027,7 @@ msgstr "用于主机ICMP和UDP pinging的超时值。此主机SNMP超时值适�
 #: automation_networks.php:747 include/global_form.php:1242
 #: include/global_settings.php:675
 msgid "Ping Retry Count"
-msgstr "Ping 重复次数"
+msgstr "Ping 重试次数"
 
 #: automation_networks.php:748 include/global_form.php:1243
 msgid ""
@@ -2098,7 +2098,7 @@ msgstr "总IP"
 
 #: automation_networks.php:1079
 msgid "The Current Status of this Networks Discovery"
-msgstr "这个网络发现的现状"
+msgstr "这个网络发现的状态"
 
 #: automation_networks.php:1080
 msgid "Pending/Running/Done"
@@ -2122,15 +2122,15 @@ msgstr "上次运行时间"
 
 #: automation_networks.php:1084
 msgid "Next Start"
-msgstr "下一次开始"
+msgstr "下次开始时间"
 
 #: automation_networks.php:1085
 msgid "Last Started"
-msgstr "最后开始"
+msgstr "上次开始时间"
 
 #: automation_networks.php:1110 pollers.php:40 utilities.php:2084
 msgid "Running"
-msgstr "运行"
+msgstr "运行中"
 
 #: automation_networks.php:1130 pollers.php:41 utilities.php:2083
 msgid "Idle"
@@ -2455,7 +2455,7 @@ msgstr "[已删除模板]的自动化模板"
 
 #: automation_templates.php:334
 msgid "Automation Templates [new]"
-msgstr "动化模板[新建]"
+msgstr "自动化模板[新建]"
 
 #: automation_templates.php:385
 msgid "Device Automation Templates"
@@ -2504,7 +2504,7 @@ msgstr "你确定要删除规则 '%s'吗？"
 
 #: automation_tree_rules.php:544
 msgid "Eligible Objects"
-msgstr "合格对象"
+msgstr "合格的对象"
 
 #: automation_tree_rules.php:557
 #, php-format
@@ -2751,7 +2751,7 @@ msgstr "请指定包含您的颜色信息的CSV文件的位置。"
 
 #: color.php:374 lib/html_form.php:484
 msgid "Select a File"
-msgstr "选择一个文件"
+msgstr "选择文件"
 
 #: color.php:381
 msgid "Overwrite Existing Data?"
@@ -3368,7 +3368,7 @@ msgstr "数据导入方法"
 
 #: data_input.php:809 data_input.php:897
 msgid "Input Methods"
-msgstr "输入法"
+msgstr "输入方法"
 
 #: data_input.php:906
 msgid "Data Input Name"
@@ -3997,7 +3997,7 @@ msgstr "数据源的项目%s"
 
 #: data_sources.php:1025 data_templates.php:656
 msgid "New"
-msgstr "新"
+msgstr "新建"
 
 #: data_sources.php:1084
 msgid "Data Source Debug"
@@ -5855,7 +5855,7 @@ msgstr "指定的日志文件是Cacti归档文件并被删除。"
 
 #: include/global_arrays.php:264
 msgid "Cacti log purged successfully"
-msgstr "Cacti 日志清除成功"
+msgstr "Cacti 日志清空成功"
 
 #: include/global_arrays.php:267
 msgid ""
@@ -10991,7 +10991,7 @@ msgstr "这是电子邮件将显示的实际名称。"
 
 #: include/global_settings.php:1468
 msgid "Word Wrap"
-msgstr "单词包装"
+msgstr "字数限制"
 
 #: include/global_settings.php:1469
 msgid ""
@@ -11311,7 +11311,7 @@ msgstr "图像文件的位置"
 msgid ""
 "Specify the location where Boost should place your image files.  These files "
 "will be automatically purged by the poller when they expire."
-msgstr "指定增强应放置图像文件的位置。 这些文件在到期时将被轮询器自动清除。"
+msgstr "指定增强应放置图像文件的位置。 这些文件在到期时将被轮询器自动清空。"
 
 #: include/global_settings.php:1712
 msgid "Data Sources Statistics"
@@ -12311,12 +12311,12 @@ msgid ""
 "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set "
 "to both Cacti and Syslog, the log information will remain in Syslog."
 msgstr ""
-"单击“继续”以清除日志文件。<br> <br> <br>注意：如果将日志记录设置为Cacti和"
+"单击“继续”以清空日志文件。<br> <br> <br>注意：如果将日志记录设置为Cacti和"
 "Syslog，则日志信息将保留在Syslog中。"
 
 #: lib/clog_webapi.php:205 utilities.php:1098
 msgid "Purge Log"
-msgstr "清除日志"
+msgstr "清空日志"
 
 #: lib/clog_webapi.php:229 utilities.php:1030
 msgid "Log Filters"
@@ -16136,7 +16136,7 @@ msgstr "严重"
 
 #: managers.php:748 utilities.php:2694
 msgid "Purge Notification Log"
-msgstr "清除通知日志"
+msgstr "清空通知日志"
 
 #: managers.php:795 utilities.php:2748
 msgid "Time"
@@ -18371,11 +18371,11 @@ msgstr "清除"
 #: utilities.php:717 utilities.php:1098 utilities.php:2694
 msgctxt "Button: delete all table entries"
 msgid "Purge"
-msgstr "清除"
+msgstr "清空"
 
 #: utilities.php:717
 msgid "Purge User Log"
-msgstr "清除用户日志"
+msgstr "清空用户日志"
 
 #: utilities.php:791
 msgid "User Logins"
@@ -19576,7 +19576,7 @@ msgstr "没有VDEF's"
 #~ msgstr ""
 #~ "为此数据源选择一个名称。 它可以包含替换变量，如| host_description | 或| "
 #~ "query_fieldName |。\n"
-#~ "             有关支持的替换标签的完整列表，请参阅Cacti文档。"
+#~ "             有关支持的替换标签的完整列表，请参阅Cacti文档。"
 
 #~ msgid ""
 #~ "The name that is printed on the graph.  It can include replacement "
@@ -20058,11 +20058,11 @@ msgstr "没有VDEF's"
 #~ "Click 'Continue' to purge the Cacti log file.<br><br><br>Note: If logging "
 #~ "is set to Cacti and Syslog, the log information will remain in Syslog."
 #~ msgstr ""
-#~ "单击“继续”以清除Cacti日志文件。<br> <br> <br>注意：如果将日志记录设置为"
+#~ "单击“继续”以清空Cacti日志文件。<br> <br> <br>注意：如果将日志记录设置为"
 #~ "Cacti和Syslog，则日志信息将保留在Syslog中。"
 
 #~ msgid "Purge cacti.log"
-#~ msgstr "清除cacti.log"
+#~ msgstr "清空cacti.log"
 
 #~ msgid "Message Type"
 #~ msgstr "消息类型"
