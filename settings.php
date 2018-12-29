@@ -35,17 +35,20 @@ global $disable_log_rotation;
 switch (get_request_var('action')) {
 case 'save':
 	$errors = array();
+	$inserts = array();
 
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		} elseif ($field_array['method'] == 'checkbox') {
 			if (isset_request_var($field_name)) {
+				$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
 					array($field_name));
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
@@ -54,11 +57,13 @@ case 'save':
 		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
+					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
 					array($sub_field_name));
 				} else {
+					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
@@ -71,6 +76,7 @@ case 'save':
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[8] = 8;
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -99,6 +105,7 @@ case 'save':
 				}
 
 				if ($continue) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
@@ -112,6 +119,7 @@ case 'save':
 				$errors[4] = 4;
 				break;
 			} elseif (!isempty_request_var($field_name)) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -120,6 +128,7 @@ case 'save':
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($sub_field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -129,17 +138,20 @@ case 'save':
 		} elseif ($field_array['method'] == 'drop_multi') {
 			if (isset_request_var($field_name)) {
 				if (is_array(get_nfilter_request_var($field_name))) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 				} else {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, get_nfilter_request_var($field_name)));
 				}
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, "")',
@@ -147,11 +159,13 @@ case 'save':
 			}
 		} elseif (isset_request_var($field_name)) {
 			if (is_array(get_nfilter_request_var($field_name))) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -162,12 +176,14 @@ case 'save':
 
 	if (isset_request_var('log_verbosity')) {
 		if (!isset_request_var('selective_debug')) {
+			$inserts[] = '("selective_debug", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_debug", "")');
 		}
 
 		if (!isset_request_var('selective_plugin_debug')) {
+			$inserts[] = '("selective_debug_plugin", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_plugin_debug", "")');
@@ -197,7 +213,21 @@ case 'save':
 
 	if (cacti_sizeof($errors) == 0) {
 		if (cacti_sizeof($pollers)) {
-			exec_background(read_config_option('path_php_binary'), ' -q ' . $config['base_path'] . '/cli/poller_replicate.php --class=settings');
+			$sql = 'INSERT INTO settings
+				(name, value)
+				VALUES . ' . implode(', ', $inserts) . '
+				ON DUPLICATE KEY UPDATE value=VALUES(value)';
+
+			foreach($pollers as $p) {
+				$rcnn_id = poller_connect_to_remote($p);
+
+				if ($rcnn_id) {
+					if (db_execute($sql, false, $rcnn_id)) {
+						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+					}
+				}
+			}
+
 			raise_message(42);
 		} else {
 			raise_message(1);
