@@ -456,7 +456,12 @@ function reports_item_edit() {
 	$graphs          = array();
 
 	$report_item = array();
-	if (isset_request_var('item_id')) {
+	$report_item['item_type'] = REPORTS_ITEM_GRAPH;
+	$report_item['host_template_id'] = 0;
+	$report_item['graph_template_id'] = 0;
+	$report_item['host_id'] = 0;
+
+	if (isset_request_var('item_id') && get_request_var('item_id') > 0) {
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
 			array(get_filter_request_var('item_id')));
@@ -532,22 +537,36 @@ function reports_item_edit() {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $report_item['graph_template_id'];
 		}
 
+		$skip_agg_where = false;
+		if ($sql_where == '') {
+			$skip_agg_where = true;
+			$sql_where = 'gl.graph_template_id = 0';
+		}
+
 		if ($sql_where != '') {
 			$graphs = array_rekey(
 				get_allowed_graphs($sql_where),
 				'local_graph_id', 'title_cache'
 			);
-			$agg   = array_rekey(
-				get_allowed_aggregate_graphs($sql_where),
-				'local_graph_id', 'title_cache'
-			);
+
+			if (!$skip_agg_where) {
+				$agg = array_rekey(
+					get_allowed_aggregate_graphs($sql_where),
+					'local_graph_id', 'title_cache'
+				);
+			} else {
+				$agg = array_rekey(
+					get_allowed_aggregate_graphs(),
+					'local_graph_id', 'title_cache'
+				);
+			}
 		} else {
 			$sql_where = 'gl.graph_template_id=0';
 			$graphs = array_rekey(
 				get_allowed_graphs($sql_where),
 				'local_graph_id', 'title_cache'
 			);
-			$agg   = array_rekey(
+			$agg = array_rekey(
 				get_allowed_aggregate_graphs($sql_where),
 				'local_graph_id', 'title_cache'
 			);
@@ -555,7 +574,6 @@ function reports_item_edit() {
 
 		$graphs = array_merge($graphs, $agg);
 	}
-
 
 	if (!isset($report_item) || $report_item['item_type'] == REPORTS_ITEM_TREE) {
 		$trees = array_rekey(
