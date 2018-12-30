@@ -183,6 +183,10 @@ function upgrade_to_1_2_0() {
 		SET host_grouping_type = 1
 		WHERE host_grouping_type = 0');
 
+	db_install_execute("UPDATE settings
+		SET value = IF(value = '1', 'on', '')
+		WHERE name = 'hide_console' and value != 'on'");
+
 	db_install_add_column('sites', array('name' => 'zoom', 'type' => 'tinyint', 'unsigned' => true, 'NULL' => true));
 
 	db_install_drop_key('poller_reindex', 'key', 'PRIMARY');

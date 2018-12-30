@@ -56,7 +56,7 @@ function render_external_links($style = 'FRONT') {
 
 render_external_links('FRONTTOP');
 
-if (read_config_option('hide_console') != '1') {
+if (read_config_option('hide_console') != 'on') {
 ?>
 <table class='cactiTable'>
 	<tr>
