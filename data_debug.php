@@ -616,7 +616,7 @@ function debug_view() {
 		),
 	);
 
-	html_start_box(__('Data Source Debugger'), '', '', '2', 'center', '');
+	html_start_box(__('Data Source Troubleshooter'), '', '', '2', 'center', '');
 
 	html_header(
 		array(
@@ -689,7 +689,7 @@ function data_debug_filter() {
 		$host_where = '';
 	}
 
-	html_start_box(__('Data Source Debugger [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', '');
+	html_start_box(__('Data Source Troubleshooter [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>
