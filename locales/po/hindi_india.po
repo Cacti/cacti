@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-12-30 14:36-0500\n"
-"PO-Revision-Date: 2018-12-30 15:09-0500\n"
+"POT-Creation-Date: 2018-12-30 15:41-0500\n"
+"PO-Revision-Date: 2018-12-30 15:55-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -589,10 +589,10 @@ msgstr "आकार"
 #: color.php:726 color.php:728 color_templates.php:578 data_input.php:925 data_queries.php:1383
 #: data_source_profiles.php:1005 data_source_profiles.php:1006 data_sources.php:1565
 #: data_sources.php:1566 data_templates.php:1020 gprint_presets.php:414 graph_templates.php:812
-#: host_templates.php:855 include/global_settings.php:437 include/global_settings.php:736
-#: include/global_settings.php:1453 lib/api_automation.php:1393 lib/installer.php:1748
-#: lib/installer.php:1782 links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2306
-#: user_domains.php:769 user_group_admin.php:1931 vdef.php:900
+#: host_templates.php:855 include/global_settings.php:733 include/global_settings.php:1450
+#: lib/api_automation.php:1393 lib/installer.php:1748 lib/installer.php:1782 links.php:403
+#: tree.php:2013 tree.php:2014 user_admin.php:2306 user_domains.php:769 user_group_admin.php:1931
+#: vdef.php:900
 #, fuzzy
 msgid "No"
 msgstr "नहीं"
@@ -602,10 +602,10 @@ msgstr "नहीं"
 #: data_queries.php:1383 data_source_profiles.php:1004 data_source_profiles.php:1005
 #: data_source_profiles.php:1006 data_sources.php:1565 data_sources.php:1566 data_templates.php:1020
 #: gprint_presets.php:414 graph_templates.php:812 host_templates.php:855
-#: include/global_settings.php:438 include/global_settings.php:735 include/global_settings.php:1452
-#: lib/api_automation.php:1393 lib/installer.php:1747 lib/installer.php:1748 lib/installer.php:1781
-#: lib/installer.php:1782 links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2304
-#: user_domains.php:765 user_domains.php:769 user_group_admin.php:1929 vdef.php:900
+#: include/global_settings.php:732 include/global_settings.php:1449 lib/api_automation.php:1393
+#: lib/installer.php:1747 lib/installer.php:1748 lib/installer.php:1781 lib/installer.php:1782
+#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2304 user_domains.php:765
+#: user_domains.php:769 user_group_admin.php:1929 vdef.php:900
 #, fuzzy
 msgid "Yes"
 msgstr "हाँ"
@@ -621,7 +621,7 @@ msgid "Aggregate Graphs"
 msgstr "सकल रेखांकन"
 
 #: aggregate_graphs.php:1413 data_debug.php:703 data_sources.php:1289 graph_view.php:607
-#: graphs.php:1816 graphs.php:1990 host.php:1469 include/global_settings.php:499
+#: graphs.php:1816 graphs.php:1990 host.php:1469 include/global_settings.php:496
 #: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
 #: user_admin.php:2559 user_admin.php:2752 user_group_admin.php:2172 user_group_admin.php:2280
 #: utilities.php:1677
@@ -653,8 +653,8 @@ msgstr "कोई भी"
 #: include/global_form.php:904 include/global_form.php:911 include/global_form.php:937
 #: include/global_form.php:966 include/global_form.php:974 include/global_form.php:1147
 #: include/global_form.php:1166 include/global_form.php:1175 include/global_form.php:2023
-#: include/global_form.php:2065 include/global_settings.php:503 include/global_settings.php:511
-#: include/global_settings.php:519 include/global_settings.php:1064 include/global_settings.php:1525
+#: include/global_form.php:2065 include/global_settings.php:500 include/global_settings.php:508
+#: include/global_settings.php:516 include/global_settings.php:1061 include/global_settings.php:1522
 #: lib/api_automation.php:152 lib/api_automation.php:429 lib/api_automation.php:446
 #: lib/api_automation.php:587 lib/api_automation.php:1035 lib/html.php:192 lib/html.php:1912
 #: lib/html.php:1932 lib/html.php:1973 lib/html_form.php:329 lib/html_reports.php:613
@@ -949,7 +949,7 @@ msgstr "उपयोगकर्ता लॉगिन"
 msgid "Enter your Username and Password below"
 msgstr "नीचे अपना यूजरनेम और पासवर्ड डालें"
 
-#: auth_login.php:688 auth_login.php:691 include/global_settings.php:1362 lib/functions.php:3729
+#: auth_login.php:688 auth_login.php:691 include/global_settings.php:1359 lib/functions.php:3729
 msgid "Username"
 msgstr "उपयोगकर्ता नाम"
 
@@ -957,7 +957,7 @@ msgstr "उपयोगकर्ता नाम"
 msgid "Password"
 msgstr "पासवर्ड"
 
-#: auth_login.php:708 include/global_settings.php:1762 lib/auth.php:346 lib/auth.php:368
+#: auth_login.php:708 include/global_settings.php:1759 lib/auth.php:346 lib/auth.php:368
 #: lib/auth.php:379
 #, fuzzy
 msgid "Local"
@@ -992,8 +992,8 @@ msgstr "अमान्य उपयोगकर्ता नाम / पास�
 msgid "User Account Disabled"
 msgstr "उपयोगकर्ता खाता अक्षम किया गया"
 
-#: auth_profile.php:71 include/global_settings.php:38 include/global_settings.php:950
-#: include/global_settings.php:1103 managers.php:39 user_admin.php:1941 user_group_admin.php:1662
+#: auth_profile.php:71 include/global_settings.php:38 include/global_settings.php:947
+#: include/global_settings.php:1100 managers.php:39 user_admin.php:1941 user_group_admin.php:1662
 msgid "General"
 msgstr "सामान्य"
 
@@ -1002,7 +1002,7 @@ msgstr "सामान्य"
 msgid "User Account Details"
 msgstr "उपयोगकर्ता खाता विवरण"
 
-#: auth_profile.php:293 include/global_arrays.php:730 include/global_settings.php:2099
+#: auth_profile.php:293 include/global_arrays.php:730 include/global_settings.php:2096
 #: lib/html.php:1793 lib/html.php:1815 lib/html.php:2284
 #, fuzzy
 msgid "Tree View"
@@ -1029,7 +1029,7 @@ msgstr "उपयोगकर्ता नाम"
 msgid "The login name for this user."
 msgstr "इस उपयोगकर्ता के लिए लॉगिन नाम।"
 
-#: auth_profile.php:322 include/global_form.php:1443 include/global_settings.php:1397
+#: auth_profile.php:322 include/global_form.php:1443 include/global_settings.php:1394
 #: user_admin.php:2285 user_domains.php:495 user_group_admin.php:676 utilities.php:799
 msgid "Full Name"
 msgstr "पूरा नाम"
@@ -1200,7 +1200,7 @@ msgstr "आईपी"
 msgid "SNMP Name"
 msgstr "SNMP का नाम"
 
-#: automation_devices.php:253 include/global_form.php:1145 include/global_settings.php:1757
+#: automation_devices.php:253 include/global_form.php:1145 include/global_settings.php:1754
 msgid "Location"
 msgstr "स्थान"
 
@@ -1307,7 +1307,7 @@ msgid "Duplicate"
 msgstr "प्रतिलिपि"
 
 #: automation_graph_rules.php:30 automation_networks.php:33 automation_tree_rules.php:30
-#: data_sources.php:39 host.php:41 include/global_arrays.php:1414 include/global_settings.php:1318
+#: data_sources.php:39 host.php:41 include/global_arrays.php:1414 include/global_settings.php:1315
 #: links.php:29 managers.php:29 managers.php:35 plugins.php:29 pollers.php:31 user_admin.php:30
 #: user_domains.php:32 user_domains.php:411 user_group_admin.php:32
 #, fuzzy
@@ -1444,9 +1444,9 @@ msgstr "सक्षम"
 #: automation_graph_rules.php:782 automation_graph_rules.php:920 automation_networks.php:1094
 #: automation_tree_rules.php:823 automation_tree_rules.php:960 data_debug.php:760 data_sources.php:1346
 #: data_templates.php:1024 host.php:1510 include/global_arrays.php:779 include/global_arrays.php:1341
-#: include/global_arrays.php:1624 include/global_settings.php:372 include/global_settings.php:1192
-#: include/global_settings.php:1206 include/global_settings.php:1218 include/global_settings.php:1243
-#: include/global_settings.php:1257 include/global_settings.php:1317 include/global_settings.php:1944
+#: include/global_arrays.php:1624 include/global_settings.php:372 include/global_settings.php:1189
+#: include/global_settings.php:1203 include/global_settings.php:1215 include/global_settings.php:1240
+#: include/global_settings.php:1254 include/global_settings.php:1314 include/global_settings.php:1941
 #: lib/api_automation.php:171 lib/api_automation.php:1054 lib/html.php:2348 lib/html_reports.php:1519
 #: lib/html_reports.php:1657 lib/html_utility.php:864 links.php:499 managers.php:243 managers.php:598
 #: pollers.php:43 user_admin.php:1103 user_domains.php:411 user_group_admin.php:691 utilities.php:2279
@@ -1735,9 +1735,9 @@ msgstr "% d मिनट"
 #: include/global_arrays.php:1016 include/global_arrays.php:1348 include/global_arrays.php:1352
 #: include/global_arrays.php:1360 include/global_arrays.php:1361 include/global_arrays.php:1383
 #: include/global_arrays.php:1384 include/global_arrays.php:1385 include/global_arrays.php:1386
-#: include/global_arrays.php:1387 include/global_arrays.php:1398 include/global_settings.php:1259
-#: include/global_settings.php:1260 include/global_settings.php:1261 include/global_settings.php:1262
-#: include/global_settings.php:1263 include/global_settings.php:2026
+#: include/global_arrays.php:1387 include/global_arrays.php:1398 include/global_settings.php:1256
+#: include/global_settings.php:1257 include/global_settings.php:1258 include/global_settings.php:1259
+#: include/global_settings.php:1260 include/global_settings.php:2023
 #, fuzzy, php-format
 msgid "%d Minutes"
 msgstr "% d मिनट"
@@ -1758,8 +1758,8 @@ msgstr "% d घंटा"
 #: include/global_arrays.php:1300 include/global_arrays.php:1301 include/global_arrays.php:1302
 #: include/global_arrays.php:1303 include/global_arrays.php:1304 include/global_arrays.php:1321
 #: include/global_arrays.php:1322 include/global_arrays.php:1323 include/global_arrays.php:1324
-#: include/global_arrays.php:1325 include/global_settings.php:1265 include/global_settings.php:1266
-#: include/global_settings.php:1267 include/global_settings.php:1268
+#: include/global_arrays.php:1325 include/global_settings.php:1262 include/global_settings.php:1263
+#: include/global_settings.php:1264 include/global_settings.php:1265
 #, fuzzy, php-format
 msgid "%d Hours"
 msgstr "% d घंटे"
@@ -2083,7 +2083,7 @@ msgstr "पिंग विधि"
 msgid "The type of ping packet to send."
 msgstr "भेजने के लिए पिंग पैकेट का प्रकार।"
 
-#: automation_networks.php:730 include/global_form.php:1225 include/global_settings.php:659
+#: automation_networks.php:730 include/global_form.php:1225 include/global_settings.php:656
 #, fuzzy
 msgid "Ping Port"
 msgstr "पिंग पोर्ट"
@@ -2093,7 +2093,7 @@ msgstr "पिंग पोर्ट"
 msgid "TCP or UDP port to attempt connection."
 msgstr "कनेक्शन का प्रयास करने के लिए टीसीपी या यूडीपी पोर्ट।"
 
-#: automation_networks.php:738 include/global_form.php:1233 include/global_settings.php:667
+#: automation_networks.php:738 include/global_form.php:1233 include/global_settings.php:664
 #, fuzzy
 msgid "Ping Timeout Value"
 msgstr "पिंग टाइमआउट मान"
@@ -2107,7 +2107,7 @@ msgstr ""
 "होस्ट ICMP और UDP पिंगिंग के लिए उपयोग करने का टाइमआउट मान। यह होस्ट SNMP टाइमआउट मान SNMP पिंग्स के लिए लागू "
 "होता है।"
 
-#: automation_networks.php:747 include/global_form.php:1242 include/global_settings.php:675
+#: automation_networks.php:747 include/global_form.php:1242 include/global_settings.php:672
 #, fuzzy
 msgid "Ping Retry Count"
 msgstr "पिंग रिट्री काउंट"
@@ -2266,9 +2266,9 @@ msgstr "ताज़ा करना"
 #: include/global_arrays.php:1344 include/global_arrays.php:1345 include/global_arrays.php:1346
 #: include/global_arrays.php:1379 include/global_arrays.php:1380 include/global_arrays.php:1392
 #: include/global_arrays.php:1393 include/global_arrays.php:1394 include/global_arrays.php:1395
-#: include/global_arrays.php:1396 include/global_settings.php:1028 include/global_settings.php:1029
-#: include/global_settings.php:1030 include/global_settings.php:1031 include/global_settings.php:2022
-#: include/global_settings.php:2023 include/global_settings.php:2024
+#: include/global_arrays.php:1396 include/global_settings.php:1025 include/global_settings.php:1026
+#: include/global_settings.php:1027 include/global_settings.php:1028 include/global_settings.php:2019
+#: include/global_settings.php:2020 include/global_settings.php:2021
 #, fuzzy, php-format
 msgid "%d Seconds"
 msgstr "% d सेकंड्स"
@@ -2376,13 +2376,13 @@ msgstr "स्वचालन SNMP विकल्प"
 msgid "Item"
 msgstr "मद"
 
-#: automation_snmp.php:505 include/auth.php:216 include/global_settings.php:542
+#: automation_snmp.php:505 include/auth.php:216 include/global_settings.php:539
 #: permission_denied.php:52 plugins.php:478
 #, fuzzy
 msgid "Version"
 msgstr "संस्करण %s"
 
-#: automation_snmp.php:506 include/global_settings.php:549
+#: automation_snmp.php:506 include/global_settings.php:546
 #, fuzzy
 msgid "Community"
 msgstr "समुदाय"
@@ -2392,12 +2392,12 @@ msgstr "समुदाय"
 msgid "Port"
 msgstr "बंदरगाह"
 
-#: automation_snmp.php:508 include/global_settings.php:624
+#: automation_snmp.php:508 include/global_settings.php:621
 #, fuzzy
 msgid "Timeout"
 msgstr "समय समाप्त"
 
-#: automation_snmp.php:509 include/global_settings.php:632
+#: automation_snmp.php:509 include/global_settings.php:629
 #, fuzzy
 msgid "Retries"
 msgstr "पुनर्प्रयास"
@@ -3996,7 +3996,7 @@ msgstr "डेटा स्रोत प्रोफ़ाइल RRAs (केव
 msgid "Data Retention"
 msgstr "डेटा प्रतिधारण"
 
-#: data_source_profiles.php:566 include/global_settings.php:845 lib/html_reports.php:686
+#: data_source_profiles.php:566 include/global_settings.php:842 lib/html_reports.php:686
 #, fuzzy
 msgid "Graph Timespan"
 msgstr "ग्राफ टाइमपेन"
@@ -4035,7 +4035,7 @@ msgstr "डेटा स्रोत प्रति %s KBytes"
 #: data_source_profiles.php:736 include/global_arrays.php:680 include/global_arrays.php:681
 #: include/global_arrays.php:682 include/global_arrays.php:683 include/global_arrays.php:684
 #: include/global_arrays.php:685 include/global_arrays.php:686 include/global_arrays.php:687
-#: include/global_arrays.php:688 include/global_arrays.php:1269 include/global_settings.php:1198
+#: include/global_arrays.php:688 include/global_arrays.php:1269 include/global_settings.php:1195
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "% d वष"
@@ -4079,16 +4079,16 @@ msgstr "% द डे"
 
 #: data_source_profiles.php:763 include/global_arrays.php:659 include/global_arrays.php:669
 #: include/global_arrays.php:670 include/global_arrays.php:1258 include/global_arrays.php:1259
-#: include/global_arrays.php:1260 include/global_settings.php:1193 include/global_settings.php:1194
-#: include/global_settings.php:1195 include/global_settings.php:1196 include/global_settings.php:1207
-#: include/global_settings.php:1208 include/global_settings.php:1209 include/global_settings.php:1210
+#: include/global_arrays.php:1260 include/global_settings.php:1190 include/global_settings.php:1191
+#: include/global_settings.php:1192 include/global_settings.php:1193 include/global_settings.php:1204
+#: include/global_settings.php:1205 include/global_settings.php:1206 include/global_settings.php:1207
 #, fuzzy, php-format
 msgid "%d Days"
 msgstr "% ड डय"
 
 #: data_source_profiles.php:771 include/global_arrays.php:614 include/global_arrays.php:1299
 #: include/global_arrays.php:1320 include/global_arrays.php:1353 include/global_arrays.php:1362
-#: include/global_arrays.php:1388 include/global_settings.php:1264
+#: include/global_arrays.php:1388 include/global_settings.php:1261
 #, fuzzy
 msgid "1 Hour"
 msgstr "1 घंटा"
@@ -4137,7 +4137,7 @@ msgstr "डेटा स्रोतों द्वारा उपयोग �
 msgid "Read Only"
 msgstr "सिफ़ पढ़िये"
 
-#: data_source_profiles.php:968 data_sources.php:1502 include/global_settings.php:983
+#: data_source_profiles.php:968 data_sources.php:1502 include/global_settings.php:980
 #, fuzzy
 msgid "Poller Interval"
 msgstr "पोलर इंटरवल"
@@ -4414,7 +4414,7 @@ msgstr "बाहरी"
 
 #: data_sources.php:1134 include/global_arrays.php:609 include/global_arrays.php:1014
 #: include/global_arrays.php:1347 include/global_arrays.php:1381 include/global_arrays.php:1397
-#: include/global_settings.php:1258 include/global_settings.php:2025
+#: include/global_settings.php:1255 include/global_settings.php:2022
 #, fuzzy
 msgid "1 Minute"
 msgstr "1 मिनट"
@@ -5109,7 +5109,7 @@ msgstr "लागू नहीं है"
 msgid "Select the Report to add the selected Graphs to."
 msgstr "चयनित ग्राफ़ को जोड़ने के लिए रिपोर्ट का चयन करें।"
 
-#: graph_view.php:841 include/global_arrays.php:1797 include/global_settings.php:2095
+#: graph_view.php:841 include/global_arrays.php:1797 include/global_settings.php:2092
 #, fuzzy
 msgid "Preview Mode"
 msgstr "पूर्वावलोकन मोड"
@@ -5933,7 +5933,7 @@ msgstr "एसएनएमपी डेसक"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1434 include/global_settings.php:507 lib/html.php:1968
+#: host.php:1434 include/global_settings.php:504 lib/html.php:1968
 msgid "Site"
 msgstr "साइट"
 
@@ -6977,7 +6977,7 @@ msgstr "प्रत्येक घंटे"
 #: include/global_arrays.php:638 include/global_arrays.php:704 include/global_arrays.php:705
 #: include/global_arrays.php:706 include/global_arrays.php:707 include/global_arrays.php:1626
 #: include/global_arrays.php:1627 include/global_arrays.php:1628 include/global_arrays.php:1629
-#: include/global_arrays.php:1630 include/global_settings.php:1945 include/global_settings.php:1946
+#: include/global_arrays.php:1630 include/global_settings.php:1942 include/global_settings.php:1943
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "हर द% ख ड"
@@ -6987,7 +6987,7 @@ msgstr "हर द% ख ड"
 msgid "Every %1 Day"
 msgstr "हर% 1 दन"
 
-#: include/global_arrays.php:679 include/global_arrays.php:1268 include/global_settings.php:1197
+#: include/global_arrays.php:679 include/global_arrays.php:1268 include/global_settings.php:1194
 #: rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Year"
@@ -7033,12 +7033,12 @@ msgstr "एकाधिक LDAP / AD डोमेन"
 msgid "Active Directory"
 msgstr "सक्रिय निर्देशिका"
 
-#: include/global_arrays.php:759 include/global_settings.php:1526
+#: include/global_arrays.php:759 include/global_settings.php:1523
 #, fuzzy
 msgid "SSL"
 msgstr "एसएसएल"
 
-#: include/global_arrays.php:760 include/global_settings.php:1527
+#: include/global_arrays.php:760 include/global_settings.php:1524
 #, fuzzy
 msgid "TLS"
 msgstr "टीएलएस"
@@ -7228,7 +7228,7 @@ msgid "Aggregate"
 msgstr "कुल"
 
 #: include/global_arrays.php:869 include/global_arrays.php:924 include/global_arrays.php:1029
-#: include/global_settings.php:453
+#: include/global_settings.php:450
 #, fuzzy
 msgid "Automation"
 msgstr "स्वचालन"
@@ -7380,7 +7380,7 @@ msgstr "साइटें / उपकरणों / डेटा"
 msgid "Spike Management"
 msgstr "स्पाइक प्रबंधन"
 
-#: include/global_arrays.php:1050 include/global_settings.php:781
+#: include/global_arrays.php:1050 include/global_settings.php:778
 #, fuzzy
 msgid "Log Management"
 msgstr "लॉग प्रबंधन"
@@ -8575,7 +8575,7 @@ msgstr "SNMP गोपनीयता पासफ़्रेज़ (v3)"
 msgid "Choose the SNMPv3 Privacy Passphrase."
 msgstr "SNMPv3 गोपनीयता पासफ़्रेज़ चुनें।"
 
-#: include/global_form.php:108 include/global_settings.php:599
+#: include/global_form.php:108 include/global_settings.php:596
 #, fuzzy
 msgid "SNMP Context (v3)"
 msgstr "SNMP संदर्भ (v3)"
@@ -8585,7 +8585,7 @@ msgstr "SNMP संदर्भ (v3)"
 msgid "Enter the SNMP Context to use for this device."
 msgstr "इस उपकरण का उपयोग करने के लिए SNMP संदर्भ दर्ज करें।"
 
-#: include/global_form.php:117 include/global_settings.php:608
+#: include/global_form.php:117 include/global_settings.php:605
 #, fuzzy
 msgid "SNMP Engine ID (v3)"
 msgstr "SNMP इंजन आईडी (v3)"
@@ -8732,7 +8732,7 @@ msgstr "आरआरए विनिर्देश में एक पंक�
 msgid "How many generations data is kept in the RRA."
 msgstr "RRA में कितनी पीढ़ियों का डेटा रखा जाता है।"
 
-#: include/global_form.php:263 include/global_settings.php:2045
+#: include/global_form.php:263 include/global_settings.php:2042
 #, fuzzy
 msgid "Default Timespan"
 msgstr "डिफ़ॉल्ट Timespan"
@@ -9727,7 +9727,7 @@ msgstr "इस होस्ट के सभी चेक को अक्षम
 msgid "Availability/Reachability Options"
 msgstr "उपलब्धता / प्रतिक्रियाशीलता विकल्प"
 
-#: include/global_form.php:1206 include/global_settings.php:645
+#: include/global_form.php:1206 include/global_settings.php:642
 #, fuzzy
 msgid "Downed Device Detection"
 msgstr "डाउनड डिवाइस डिटेक्शन"
@@ -10359,7 +10359,7 @@ msgstr "पथ"
 msgid "Device Defaults"
 msgstr "डिवाइस की कमी"
 
-#: include/global_settings.php:41 include/global_settings.php:515
+#: include/global_settings.php:41 include/global_settings.php:512
 #, fuzzy
 msgid "Poller"
 msgstr "Poller"
@@ -10413,7 +10413,7 @@ msgstr "ट्री सेटिंग्स"
 msgid "Graph Fonts"
 msgstr "ग्राफ फ़ॉन्ट्स"
 
-#: include/global_settings.php:90 include/global_settings.php:1443
+#: include/global_settings.php:90 include/global_settings.php:1440
 #, fuzzy
 msgid "PHP Mail() Function"
 msgstr "PHP मेल () फ़ंक्शन"
@@ -10816,7 +10816,7 @@ msgstr ""
 "यदि वह भाषा कैक्टि द्वारा समर्थित है। यदि अक्षम है, तो डिफ़ॉल्ट भाषा लागू होगी जब तक कि उपयोगकर्ता किसी अन्य "
 "भाषा का चुनाव नहीं करता।"
 
-#: include/global_settings.php:376 include/global_settings.php:2003
+#: include/global_settings.php:376 include/global_settings.php:2000
 #, fuzzy
 msgid "Date Display Format"
 msgstr "दिनांक प्रदर्शन प्रारूप"
@@ -10826,7 +10826,7 @@ msgstr "दिनांक प्रदर्शन प्रारूप"
 msgid "The System default date format to use in Cacti."
 msgstr "Cacti में उपयोग करने के लिए सिस्टम डिफ़ॉल्ट तिथि प्रारूप।"
 
-#: include/global_settings.php:383 include/global_settings.php:2010
+#: include/global_settings.php:383 include/global_settings.php:2007
 #, fuzzy
 msgid "Date Separator"
 msgstr "दिनांक विभाजक"
@@ -10928,23 +10928,24 @@ msgstr "आइटम हटाने से पहले शीघ्र उप�
 
 #: include/global_settings.php:432
 #, fuzzy
-msgid "Hide Cacti Console"
-msgstr "कैक्टि कंसोल छिपाएँ"
+msgid "Hide Cacti Dashboard"
+msgstr "कैक्टि डैशबोर्ड छिपाएँ"
 
 #: include/global_settings.php:433
 #, fuzzy
 msgid ""
-"For use with Cacti's External Link Support.  Using this setting, you can replace the Cacti Console "
-"with your own page."
+"For use with Cacti's External Link Support.  Using this setting, you can hide the Cacti Dashboard, "
+"so you can display just your own page."
 msgstr ""
-"Cacti के बाहरी लिंक समर्थन के साथ उपयोग के लिए। इस सेटिंग का उपयोग करके, आप कैक्टि कंसोल को अपने पेज से बदल सकते हैं।"
+"Cacti के बाहरी लिंक समर्थन के साथ उपयोग के लिए। इस सेटिंग का उपयोग करके, आप कैक्टि डैशबोर्ड को छिपा सकते हैं, जिससे "
+"आप बस अपना पेज प्रदर्शित कर सकते हैं"
 
-#: include/global_settings.php:441
+#: include/global_settings.php:438
 #, fuzzy
 msgid "Enable Drag-N-Drop"
 msgstr "खींचें-एन-ड्रॉप सक्षम करें"
 
-#: include/global_settings.php:442
+#: include/global_settings.php:439
 #, fuzzy
 msgid ""
 "Some of Cacti's interfaces support Drag-N-Drop.  If checked this option will be enabled.  Note: For "
@@ -10953,24 +10954,24 @@ msgstr ""
 "कैक्टि के कुछ इंटरफेस ड्रैग-एन-ड्रॉप का समर्थन करते हैं। यदि जाँच की जाए तो यह विकल्प सक्षम हो जाएगा। नोट: दृष्टिबाधित "
 "उपयोगकर्ता के लिए, यह विकल्प अक्षम हो सकता है।"
 
-#: include/global_settings.php:447
+#: include/global_settings.php:444
 #, fuzzy
 msgid "Force Connections over HTTPS"
 msgstr "HTTPS पर बल कनेक्शन"
 
-#: include/global_settings.php:448
+#: include/global_settings.php:445
 #, fuzzy
 msgid "When checked, any attempts to access Cacti will be redirected to HTTPS to ensure high security."
 msgstr ""
 "जब जाँच की जाती है, तो उच्च सुरक्षा सुनिश्चित करने के लिए Cacti तक पहुँचने के किसी भी प्रयास को HTTPS पर पुनः "
 "निर्देशित किया जाएगा।"
 
-#: include/global_settings.php:459
+#: include/global_settings.php:456
 #, fuzzy
 msgid "Enable Automatic Graph Creation"
 msgstr "स्वचालित ग्राफ़ निर्माण सक्षम करें"
 
-#: include/global_settings.php:460
+#: include/global_settings.php:457
 #, fuzzy
 msgid ""
 "When disabled, Cacti Automation will not actively create any Graph.  This is useful when adjusting "
@@ -10981,12 +10982,12 @@ msgstr ""
 "ग्राफ़ बनाने से बचने के लिए डिवाइस सेटिंग्स समायोजित करते समय यह उपयोगी होता है। स्वचालन नियमों को मैन्युअल रूप से लागू "
 "करना अभी भी संभव होगा।"
 
-#: include/global_settings.php:465
+#: include/global_settings.php:462
 #, fuzzy
 msgid "Enable Automatic Tree Item Creation"
 msgstr "स्वचालित ट्री आइटम निर्माण सक्षम करें"
 
-#: include/global_settings.php:466
+#: include/global_settings.php:463
 #, fuzzy
 msgid ""
 "When disabled, Cacti Automation will not actively create any Tree Item.  This is useful when "
@@ -10997,12 +10998,12 @@ msgstr ""
 "समय यह उपयोगी है ताकि जब आप किसी ऑब्जेक्ट को सहेजते हैं तो हर बार नए ट्री एंट्री बनाने से बचें। मैन्युअल रूप से नियम लागू "
 "करना अभी भी संभव होगा।"
 
-#: include/global_settings.php:470
+#: include/global_settings.php:467
 #, fuzzy
 msgid "Automation Notification To Email"
 msgstr "ईमेल के लिए स्वचालन अधिसूचना"
 
-#: include/global_settings.php:471
+#: include/global_settings.php:468
 #, fuzzy
 msgid ""
 "The Email Address to send Automation Notification Emails to if not specified at the Automation "
@@ -11012,12 +11013,12 @@ msgstr ""
 "ऑटोमेशन नेटवर्क स्तर पर निर्दिष्ट नहीं होने पर स्वचालन अधिसूचना भेजने के लिए ईमेल पता। यदि या तो यह फ़ील्ड, या "
 "ऑटोमेशन नेटवर्क मान रिक्त है, तो Cacti प्राथमिक Cacti Admins ईमेल खाते का उपयोग करेगा।"
 
-#: include/global_settings.php:477
+#: include/global_settings.php:474
 #, fuzzy
 msgid "Automation Notification From Name"
 msgstr "नाम से स्वचालन अधिसूचना"
 
-#: include/global_settings.php:478
+#: include/global_settings.php:475
 #, fuzzy
 msgid ""
 "The Email Name to use for Automation Notification Emails to if not specified at the Automation "
@@ -11027,12 +11028,12 @@ msgstr ""
 "ऑटोमेशन नेटवर्क स्तर पर निर्दिष्ट नहीं होने पर ऑटोमेशन अधिसूचना ईमेल का उपयोग करने के लिए ईमेल नाम। यदि या तो यह "
 "फ़ील्ड, या स्वचालन नेटवर्क मान रिक्त छोड़ दिया जाता है, तो Cacti सिस्टम डिफ़ॉल्ट नाम से उपयोग करेगा।"
 
-#: include/global_settings.php:485
+#: include/global_settings.php:482
 #, fuzzy
 msgid "Automation Notification From Email"
 msgstr "ईमेल से स्वचालन अधिसूचना"
 
-#: include/global_settings.php:486
+#: include/global_settings.php:483
 #, fuzzy
 msgid ""
 "The Email Address to use for Automation Notification Emails to if not specified at the Automation "
@@ -11042,128 +11043,128 @@ msgstr ""
 "ऑटोमेशन नेटवर्क स्तर पर निर्दिष्ट नहीं होने पर ऑटोमेशन अधिसूचना ईमेल का उपयोग करने के लिए ईमेल पता। यदि या तो यह "
 "फ़ील्ड, या स्वचालन नेटवर्क मान रिक्त है, तो Cacti ईमेल पते से सिस्टम डिफ़ॉल्ट का उपयोग करेगा।"
 
-#: include/global_settings.php:494
+#: include/global_settings.php:491
 #, fuzzy
 msgid "General Defaults"
 msgstr "सामान्य चूक"
 
-#: include/global_settings.php:500
+#: include/global_settings.php:497
 #, fuzzy
 msgid "The default Device Template used on all new Devices."
 msgstr "सभी नए डिवाइस पर डिफ़ॉल्ट डिवाइस टेम्पलेट का उपयोग किया जाता है।"
 
-#: include/global_settings.php:508
+#: include/global_settings.php:505
 #, fuzzy
 msgid "The default Site for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट साइट।"
 
-#: include/global_settings.php:516
+#: include/global_settings.php:513
 #, fuzzy
 msgid "The default Poller for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट पोलर।"
 
-#: include/global_settings.php:523
+#: include/global_settings.php:520
 #, fuzzy
 msgid "Device Threads"
 msgstr "डिवाइस थ्रेड्स"
 
-#: include/global_settings.php:524
+#: include/global_settings.php:521
 #, fuzzy
 msgid ""
 "The default number of Device Threads.  This is only applicable when using the Spine Data Collector."
 msgstr "डिवाइस थ्रेड्स की डिफ़ॉल्ट संख्या। यह केवल स्पाइन डेटा कलेक्टर का उपयोग करते समय लागू होता है।"
 
-#: include/global_settings.php:530
+#: include/global_settings.php:527
 #, fuzzy
 msgid "Re-index Method for Data Queries"
 msgstr "डेटा क्वेरी के लिए पुन: अनुक्रमणिका विधि"
 
-#: include/global_settings.php:531
+#: include/global_settings.php:528
 #, fuzzy
 msgid "The default Re-index Method to use for all Data Queries."
 msgstr "सभी डेटा क्वेरी के लिए उपयोग करने के लिए डिफ़ॉल्ट पुन: अनुक्रमणिका विधि।"
 
-#: include/global_settings.php:537
+#: include/global_settings.php:534
 #, fuzzy
 msgid "SNMP Defaults"
 msgstr "SNMP चूक"
 
-#: include/global_settings.php:543
+#: include/global_settings.php:540
 #, fuzzy
 msgid "Default SNMP version for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP संस्करण।"
 
-#: include/global_settings.php:550
+#: include/global_settings.php:547
 #, fuzzy
 msgid "Default SNMP read community for all new Devices."
 msgstr "डिफ़ॉल्ट SNMP सभी नए उपकरणों के लिए समुदाय को पढ़ता है।"
 
-#: include/global_settings.php:556
+#: include/global_settings.php:553
 #, fuzzy
 msgid "Security Level"
 msgstr "सुरक्षा स्तर"
 
-#: include/global_settings.php:557
+#: include/global_settings.php:554
 #, fuzzy
 msgid "Default SNMP v3 Security Level for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 सुरक्षा स्तर।"
 
-#: include/global_settings.php:563
+#: include/global_settings.php:560
 #, fuzzy
 msgid "Auth User (v3)"
 msgstr "प्रामाणिक उपयोगकर्ता (v3)"
 
-#: include/global_settings.php:564
+#: include/global_settings.php:561
 #, fuzzy
 msgid "Default SNMP v3 Authorization User for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 प्राधिकरण उपयोगकर्ता।"
 
-#: include/global_settings.php:571
+#: include/global_settings.php:568
 #, fuzzy
 msgid "Auth Protocol (v3)"
 msgstr "प्रामाणिक प्रोटोकॉल (v3)"
 
-#: include/global_settings.php:572
+#: include/global_settings.php:569
 #, fuzzy
 msgid "Default SNMPv3 Authorization Protocol for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMPv3 प्राधिकरण प्रोटोकॉल।"
 
-#: include/global_settings.php:577
+#: include/global_settings.php:574
 #, fuzzy
 msgid "Auth Passphrase (v3)"
 msgstr "प्रामाणिक पासफ़्रेज़ (v3)"
 
-#: include/global_settings.php:578
+#: include/global_settings.php:575
 #, fuzzy
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 प्राधिकरण पासफ़्रेज़।"
 
-#: include/global_settings.php:585
+#: include/global_settings.php:582
 #, fuzzy
 msgid "Privacy Protocol (v3)"
 msgstr "गोपनीयता प्रोटोकॉल (v3)"
 
-#: include/global_settings.php:586
+#: include/global_settings.php:583
 #, fuzzy
 msgid "Default SNMPv3 Privacy Protocol for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMPv3 गोपनीयता प्रोटोकॉल।"
 
-#: include/global_settings.php:592
+#: include/global_settings.php:589
 #, fuzzy
 msgid "Privacy Passphrase (v3)."
 msgstr "गोपनीयता पासफ़्रेज़ (v3)।"
 
-#: include/global_settings.php:593
+#: include/global_settings.php:590
 #, fuzzy
 msgid "Default SNMPv3 Privacy Passphrase for all new Devices."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMPv3 गोपनीयता पासफ़्रेज़।"
 
-#: include/global_settings.php:600
+#: include/global_settings.php:597
 #, fuzzy
 msgid "Enter the SNMP v3 Context for all new Devices."
 msgstr "सभी नए उपकरणों के लिए SNMP v3 संदर्भ दर्ज करें।"
 
-#: include/global_settings.php:609
+#: include/global_settings.php:606
 #, fuzzy
 msgid ""
 "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use the SNMP Engine ID "
@@ -11172,32 +11173,32 @@ msgstr ""
 "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 इंजन आईडी। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का "
 "उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें"
 
-#: include/global_settings.php:616
+#: include/global_settings.php:613
 #, fuzzy
 msgid "Port Number"
 msgstr "पोर्ट नंबर"
 
-#: include/global_settings.php:617
+#: include/global_settings.php:614
 #, fuzzy
 msgid "Default UDP Port for all new Devices.  Typically 161."
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट यूडीपी पोर्ट। आमतौर पर 161।"
 
-#: include/global_settings.php:625
+#: include/global_settings.php:622
 #, fuzzy
 msgid "Default SNMP timeout in milli-seconds for all new Devices."
 msgstr "सभी नए उपकरणों के लिए मिली सेकेंड में डिफ़ॉल्ट SNMP टाइमआउट।"
 
-#: include/global_settings.php:633
+#: include/global_settings.php:630
 #, fuzzy
 msgid "Default SNMP retries for all new Devices."
 msgstr "डिफ़ॉल्ट SNMP सभी नए उपकरणों के लिए पुन: प्रयास करता है।"
 
-#: include/global_settings.php:640
+#: include/global_settings.php:637
 #, fuzzy
 msgid "Availability/Reachability"
 msgstr "उपलब्धता / गम्यता"
 
-#: include/global_settings.php:646
+#: include/global_settings.php:643
 #, fuzzy
 msgid ""
 "Default Availability/Reachability for all new Devices.  The method Cacti will use to determine if a "
@@ -11207,17 +11208,17 @@ msgstr ""
 "सभी नए उपकरणों के लिए डिफ़ॉल्ट उपलब्धता / रीचबिलिटी। अगर डिवाइस किसी मतदान के लिए उपलब्ध है, यह निर्धारित करने "
 "के लिए Cacti का उपयोग करेगा। <br> <i>नोट: यह अनुशंसा की जाती है कि, कम से कम, SNMP को हमेशा चुना जाए।</i>"
 
-#: include/global_settings.php:652
+#: include/global_settings.php:649
 #, fuzzy
 msgid "Ping Type"
 msgstr "पिंग प्रकार"
 
-#: include/global_settings.php:653
+#: include/global_settings.php:650
 #, fuzzy
 msgid "Default Ping type for all new Devices.</i>"
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट पिंग टाइप।"
 
-#: include/global_settings.php:660
+#: include/global_settings.php:657
 #, fuzzy
 msgid ""
 "Default Ping Port for all new Devices.  With TCP, Cacti will attempt to Syn the port.  With UDP, "
@@ -11228,7 +11229,7 @@ msgstr ""
 "कैक्टि को या तो एक सफल कनेक्शन की आवश्यकता होती है, या डिवाइस पोर्ट है या नहीं यह निर्धारित करने के लिए एक &#39;"
 "पोर्ट नहीं पहुंच पा रहा&#39; त्रुटि।"
 
-#: include/global_settings.php:668
+#: include/global_settings.php:665
 #, fuzzy
 msgid ""
 "Default Ping Timeout value in milli-seconds for all new Devices.  The timeout values to use for "
@@ -11240,22 +11241,22 @@ msgstr ""
 "उपयोग किए जाने वाले टाइमआउट मान। आईसीएमपी पिंग्स को निकटतम दूसरे पर गोल किया जाएगा। विंडोज पर टीसीपी और "
 "यूडीपी कनेक्शन टाइमआउट ऑपरेटिंग सिस्टम द्वारा नियंत्रित होते हैं, और इसलिए विंडोज पर अनुशंसित नहीं होते हैं।"
 
-#: include/global_settings.php:676
+#: include/global_settings.php:673
 #, fuzzy
 msgid "The number of times Cacti will attempt to ping a Device before marking it as down."
 msgstr "Cacti किसी डिवाइस को नीचे चिह्नित करने से पहले पिंग करने का प्रयास करेगा।"
 
-#: include/global_settings.php:683
+#: include/global_settings.php:680
 #, fuzzy
 msgid "Up/Down Settings"
 msgstr "ऊपर / नीचे सेटिंग्स"
 
-#: include/global_settings.php:688
+#: include/global_settings.php:685
 #, fuzzy
 msgid "Failure Count"
 msgstr "असफलता की गिनती"
 
-#: include/global_settings.php:689
+#: include/global_settings.php:686
 #, fuzzy
 msgid ""
 "The number of polling intervals a Device must be down before logging an error and reporting Device "
@@ -11263,12 +11264,12 @@ msgid ""
 msgstr ""
 "मतदान में अंतराल की संख्या एक उपकरण को लॉग करने से पहले नीचे होना चाहिए और डिवाइस को नीचे रिपोर्ट करना चाहिए।"
 
-#: include/global_settings.php:696
+#: include/global_settings.php:693
 #, fuzzy
 msgid "Recovery Count"
 msgstr "रिकवरी गणना"
 
-#: include/global_settings.php:697
+#: include/global_settings.php:694
 #, fuzzy
 msgid ""
 "The number of polling intervals a Device must remain up before returning Device to an up status and "
@@ -11276,42 +11277,42 @@ msgid ""
 msgstr ""
 "किसी डिवाइस को अप स्टेटस पर लौटने और नोटिस जारी करने से पहले एक डिवाइस को पोलिंग अंतराल की संख्या में रहना चाहिए।"
 
-#: include/global_settings.php:706
+#: include/global_settings.php:703
 #, fuzzy
 msgid "Theme Settings"
 msgstr "विषय सेटिंग"
 
-#: include/global_settings.php:711 include/global_settings.php:878 include/global_settings.php:1970
+#: include/global_settings.php:708 include/global_settings.php:875 include/global_settings.php:1967
 #, fuzzy
 msgid "Theme"
 msgstr "विषय"
 
-#: include/global_settings.php:712 include/global_settings.php:1971
+#: include/global_settings.php:709 include/global_settings.php:1968
 #, fuzzy
 msgid "Please select one of the available Themes to skin your Cacti with."
 msgstr "कृपया अपने Cacti को त्वचा के साथ उपलब्ध थीम में से एक का चयन करें"
 
-#: include/global_settings.php:718
+#: include/global_settings.php:715
 #, fuzzy
 msgid "Table Settings"
 msgstr "तालिका सेटिंग्स"
 
-#: include/global_settings.php:723
+#: include/global_settings.php:720
 #, fuzzy
 msgid "Rows Per Page"
 msgstr "प्रति पृष्ठ पंक्तियाँ"
 
-#: include/global_settings.php:724
+#: include/global_settings.php:721
 #, fuzzy
 msgid "The default number of rows to display on for a table."
 msgstr "किसी तालिका के लिए प्रदर्शित करने के लिए पंक्तियों की डिफ़ॉल्ट संख्या।"
 
-#: include/global_settings.php:730
+#: include/global_settings.php:727
 #, fuzzy
 msgid "Autocomplete Enabled"
 msgstr "स्वतः पूर्ण सक्षम"
 
-#: include/global_settings.php:731
+#: include/global_settings.php:728
 #, fuzzy
 msgid ""
 "In very large systems, select lists can slow the user interface significantly.  If this option is "
@@ -11322,122 +11323,122 @@ msgstr ""
 "स्वत: पूर्ण कॉलबैक का उपयोग करके व्यवस्थित रूप से चयन सूची को पॉप्युलेट करेगा। नोट: स्वत: पूर्ण क्लासिक विषय पर जबरन "
 "अक्षम है।"
 
-#: include/global_settings.php:739
+#: include/global_settings.php:736
 #, fuzzy
 msgid "Autocomplete Rows"
 msgstr "स्वत: पूर्ण पंक्तियाँ"
 
-#: include/global_settings.php:740
+#: include/global_settings.php:737
 #, fuzzy
 msgid "The default number of rows to return from an autocomplete based select pattern match."
 msgstr "स्वत: पूर्ण आधारित चयन पैटर्न मैच से लौटने के लिए पंक्तियों की डिफ़ॉल्ट संख्या।"
 
-#: include/global_settings.php:746
+#: include/global_settings.php:743
 #, fuzzy
 msgid "Graph/Data Source/Data Query Settings"
 msgstr "ग्राफ़ / डेटा स्रोत / डेटा क्वेरी सेटिंग्स"
 
-#: include/global_settings.php:751
+#: include/global_settings.php:748
 #, fuzzy
 msgid "Maximum Title Length"
 msgstr "अधिकतम शीर्षक लंबाई"
 
-#: include/global_settings.php:752
+#: include/global_settings.php:749
 #, fuzzy
 msgid "The maximum allowable Graph or Data Source titles."
 msgstr "अधिकतम स्वीकार्य ग्राफ़ या डेटा स्रोत शीर्षक।"
 
-#: include/global_settings.php:759
+#: include/global_settings.php:756
 #, fuzzy
 msgid "Data Source Field Length"
 msgstr "डेटा स्रोत फ़ील्ड लंबाई"
 
-#: include/global_settings.php:760
+#: include/global_settings.php:757
 #, fuzzy
 msgid "The maximum Data Query field length."
 msgstr "अधिकतम डेटा क्वेरी फ़ील्ड लंबाई।"
 
-#: include/global_settings.php:767
+#: include/global_settings.php:764
 #, fuzzy
 msgid "Graph Creation"
 msgstr "ग्राफ निर्माण"
 
-#: include/global_settings.php:772
+#: include/global_settings.php:769
 #, fuzzy
 msgid "Default Graph Type"
 msgstr "डिफ़ॉल्ट ग्राफ़ प्रकार"
 
-#: include/global_settings.php:773
+#: include/global_settings.php:770
 #, fuzzy
 msgid "When creating graphs, what Graph Type would you like pre-selected?"
 msgstr "ग्राफ़ बनाते समय, आप पहले से चयनित किस ग्राफ़ प्रकार को पसंद करेंगे?"
 
-#: include/global_settings.php:777
+#: include/global_settings.php:774
 #, fuzzy
 msgid "All Types"
 msgstr "सभी प्रकार के"
 
-#: include/global_settings.php:778
+#: include/global_settings.php:775
 #, fuzzy
 msgid "By Template/Data Query"
 msgstr "टेम्प्लेट / डेटा क्वेरी द्वारा"
 
-#: include/global_settings.php:786
+#: include/global_settings.php:783
 #, fuzzy
 msgid "Default Log Tail Lines"
 msgstr "डिफ़ॉल्ट लॉग टेल लाइन्स"
 
-#: include/global_settings.php:787
+#: include/global_settings.php:784
 #, fuzzy
 msgid "Default number of lines of the Cacti log file to tail."
 msgstr "पूंछ करने के लिए कैक्टि लॉग फ़ाइल की लाइनों की डिफ़ॉल्ट संख्या।"
 
-#: include/global_settings.php:793
+#: include/global_settings.php:790
 #, fuzzy
 msgid "Maximum number of rows per page"
 msgstr "प्रति पृष्ठ पंक्तियों की अधिकतम संख्या"
 
-#: include/global_settings.php:794
+#: include/global_settings.php:791
 #, fuzzy
 msgid "User defined number of lines for the CLOG to tail when selecting 'All lines'."
 msgstr "&#39;ऑल लाइन्स&#39; का चयन करते समय उपयोगकर्ता सीएलओजी को पूंछ के लिए लाइनों की संख्या निर्धारित करता है।"
 
-#: include/global_settings.php:801
+#: include/global_settings.php:798
 #, fuzzy
 msgid "Log Tail Refresh"
 msgstr "लॉग रीफ़्रेश करें"
 
-#: include/global_settings.php:802
+#: include/global_settings.php:799
 #, fuzzy
 msgid "How often do you want the Cacti log display to update."
 msgstr "आप कितनी बार Cacti लॉग डिस्प्ले को अपडेट करना चाहते हैं।"
 
-#: include/global_settings.php:808
+#: include/global_settings.php:805
 #, fuzzy
 msgid "RRDtool Graph Watermark"
 msgstr "RRDtool ग्राफ़ वॉटरमार्क"
 
-#: include/global_settings.php:813
+#: include/global_settings.php:810
 #, fuzzy
 msgid "Watermark Text"
 msgstr "वॉटरमार्क पाठ"
 
-#: include/global_settings.php:814
+#: include/global_settings.php:811
 #, fuzzy
 msgid "Text placed at the bottom center of every Graph."
 msgstr "टेक्स्ट हर ग्राफ के निचले केंद्र में रखा गया है।"
 
-#: include/global_settings.php:821
+#: include/global_settings.php:818
 #, fuzzy
 msgid "Log Viewer Settings"
 msgstr "व्यूअर सेटिंग्स को लॉग करें"
 
-#: include/global_settings.php:826
+#: include/global_settings.php:823
 #, fuzzy
 msgid "Exclusion Regex"
 msgstr "अपवर्जन Regex"
 
-#: include/global_settings.php:827
+#: include/global_settings.php:824
 #, fuzzy
 msgid ""
 "Any strings that match this regex will be excluded from the user display.  <strong>For example, if "
@@ -11448,42 +11449,42 @@ msgstr ""
 "उन सभी लॉग लाइनों को बाहर करना चाहते हैं, जिनमें &#39;एडमिन&#39; या &#39;लॉगिन&#39; आप टाइप करेंगे &#39;"
 "(एडमिन लॉग इन) शब्द शामिल हैं</strong>"
 
-#: include/global_settings.php:834
+#: include/global_settings.php:831
 #, fuzzy
 msgid "Real-time Graphs"
 msgstr "वास्तविक समय रेखांकन"
 
-#: include/global_settings.php:839
+#: include/global_settings.php:836
 #, fuzzy
 msgid "Enable Real-time Graphing"
 msgstr "वास्तविक समय रेखांकन सक्षम करें"
 
-#: include/global_settings.php:840
+#: include/global_settings.php:837
 #, fuzzy
 msgid "When an option is checked, users will be able to put Cacti into Real-time mode."
 msgstr "जब एक विकल्प की जाँच की जाती है, तो उपयोगकर्ता कैक्टि को रियल-टाइम मोड में डाल सकेंगे।"
 
-#: include/global_settings.php:846
+#: include/global_settings.php:843
 #, fuzzy
 msgid "This timespan you wish to see on the default graph."
 msgstr "यह समयरेखा आप डिफ़ॉल्ट ग्राफ़ पर देखना चाहते हैं।"
 
-#: include/global_settings.php:852 utilities.php:2025
+#: include/global_settings.php:849 utilities.php:2025
 #, fuzzy
 msgid "Refresh Interval"
 msgstr "ताजा अंतराल"
 
-#: include/global_settings.php:853
+#: include/global_settings.php:850
 #, fuzzy
 msgid "This is the time between graph updates."
 msgstr "यह ग्राफ अपडेट के बीच का समय है।"
 
-#: include/global_settings.php:859
+#: include/global_settings.php:856
 #, fuzzy
 msgid "Cache Directory"
 msgstr "कैश निर्देशिका"
 
-#: include/global_settings.php:860
+#: include/global_settings.php:857
 #, fuzzy
 msgid ""
 "This is the location, on the web server where the RRDfiles and PNG files will be cached.  This cache "
@@ -11493,32 +11494,32 @@ msgstr ""
 "यह वह स्थान है, जहां वेब सर्वर पर जहां RRDfiles और PNG फाइलें कैश की जाएंगी। यह कैश पोलर द्वारा प्रबंधित किया "
 "जाएगा। सुनिश्चित करें कि आपके पास इस फ़ोल्डर पर सही पढ़ने और लिखने की अनुमति है"
 
-#: include/global_settings.php:867
+#: include/global_settings.php:864
 #, fuzzy
 msgid "RRDtool Graph Font Control"
 msgstr "RRDtool Graph फ़ॉन्ट नियंत्रण"
 
-#: include/global_settings.php:872
+#: include/global_settings.php:869
 #, fuzzy
 msgid "Font Selection Method"
 msgstr "फ़ॉन्ट चयन विधि"
 
-#: include/global_settings.php:873
+#: include/global_settings.php:870
 #, fuzzy
 msgid "How do you wish fonts to be handled by default?"
 msgstr "आप फोंट को डिफ़ॉल्ट रूप से कैसे नियंत्रित करना चाहते हैं?"
 
-#: include/global_settings.php:877 lib/api_device.php:1023
+#: include/global_settings.php:874 lib/api_device.php:1023
 #, fuzzy
 msgid "System"
 msgstr "प्रणाली"
 
-#: include/global_settings.php:881
+#: include/global_settings.php:878
 #, fuzzy
 msgid "Default Font"
 msgstr "मूलभूत अक्षर"
 
-#: include/global_settings.php:882
+#: include/global_settings.php:879
 #, fuzzy
 msgid ""
 "When not using Theme based font control, the Pangon font-config font name to use for all Graphs. "
@@ -11527,28 +11528,28 @@ msgstr ""
 "जब थीम आधारित फ़ॉन्ट नियंत्रण का उपयोग नहीं किया जाता है, तो सभी ग्राफ़ के लिए उपयोग करने के लिए पैंगॉन फ़ॉन्ट-"
 "कॉन्फ़िगर फ़ॉन्ट नाम। वैकल्पिक रूप से, आप प्रति ऑब्जेक्ट के आधार पर रिक्त और नियंत्रण फ़ॉन्ट सेटिंग्स छोड़ सकते हैं।"
 
-#: include/global_settings.php:884 include/global_settings.php:899 include/global_settings.php:914
-#: include/global_settings.php:929 include/global_settings.php:944
+#: include/global_settings.php:881 include/global_settings.php:896 include/global_settings.php:911
+#: include/global_settings.php:926 include/global_settings.php:941
 #, fuzzy
 msgid "Enter Valid Font Config Value"
 msgstr "मान्य फ़ॉन्ट कॉन्फ़िगरेशन मान दर्ज करें"
 
-#: include/global_settings.php:888 include/global_settings.php:2178
+#: include/global_settings.php:885 include/global_settings.php:2175
 #, fuzzy
 msgid "Title Font Size"
 msgstr "शीर्षक फ़ॉन्ट आकार"
 
-#: include/global_settings.php:889 include/global_settings.php:2179
+#: include/global_settings.php:886 include/global_settings.php:2176
 #, fuzzy
 msgid "The size of the font used for Graph Titles"
 msgstr "ग्राफ टाइटल के लिए प्रयुक्त फ़ॉन्ट का आकार"
 
-#: include/global_settings.php:896
+#: include/global_settings.php:893
 #, fuzzy
 msgid "Title Font Setting"
 msgstr "शीर्षक फ़ॉन्ट सेटिंग"
 
-#: include/global_settings.php:897
+#: include/global_settings.php:894
 #, fuzzy
 msgid ""
 "The font to use for Graph Titles.  Enter either a valid True Type Font file or valid Pango font-"
@@ -11557,22 +11558,22 @@ msgstr ""
 "ग्राफ टाइटल के लिए उपयोग करने के लिए फ़ॉन्ट। या तो एक सही ट्रू टाइप फ़ॉन्ट फ़ाइल या मान्य पंगो फ़ॉन्ट-कॉन्फिगर मान "
 "दर्ज करें।"
 
-#: include/global_settings.php:903 include/global_settings.php:2191
+#: include/global_settings.php:900 include/global_settings.php:2188
 #, fuzzy
 msgid "Legend Font Size"
 msgstr "किंवदंती फ़ॉन्ट आकार"
 
-#: include/global_settings.php:904 include/global_settings.php:2192
+#: include/global_settings.php:901 include/global_settings.php:2189
 #, fuzzy
 msgid "The size of the font used for Graph Legend items"
 msgstr "ग्राफ लीजेंड आइटम के लिए उपयोग किए जाने वाले फ़ॉन्ट का आकार"
 
-#: include/global_settings.php:911
+#: include/global_settings.php:908
 #, fuzzy
 msgid "Legend Font Setting"
 msgstr "किंवदंती फ़ॉन्ट सेटिंग"
 
-#: include/global_settings.php:912
+#: include/global_settings.php:909
 #, fuzzy
 msgid ""
 "The font to use for Graph Legends.  Enter either a valid True Type Font file or valid Pango font-"
@@ -11581,22 +11582,22 @@ msgstr ""
 "ग्राफ किंवदंतियों के लिए उपयोग करने के लिए फ़ॉन्ट। या तो एक सही ट्रू टाइप फ़ॉन्ट फ़ाइल या मान्य पंगो फ़ॉन्ट-कॉन्फिगर "
 "मान दर्ज करें।"
 
-#: include/global_settings.php:918 include/global_settings.php:2204
+#: include/global_settings.php:915 include/global_settings.php:2201
 #, fuzzy
 msgid "Axis Font Size"
 msgstr "अक्ष फ़ॉन्ट आकार"
 
-#: include/global_settings.php:919 include/global_settings.php:2205
+#: include/global_settings.php:916 include/global_settings.php:2202
 #, fuzzy
 msgid "The size of the font used for Graph Axis"
 msgstr "ग्राफ एक्सिस के लिए प्रयुक्त फ़ॉन्ट का आकार"
 
-#: include/global_settings.php:926
+#: include/global_settings.php:923
 #, fuzzy
 msgid "Axis Font Setting"
 msgstr "अक्ष फ़ॉन्ट सेटिंग"
 
-#: include/global_settings.php:927
+#: include/global_settings.php:924
 #, fuzzy
 msgid ""
 "The font to use for Graph Axis items.  Enter either a valid True Type Font file or valid Pango font-"
@@ -11605,22 +11606,22 @@ msgstr ""
 "ग्राफ अक्ष आइटम के लिए उपयोग करने के लिए फ़ॉन्ट। या तो एक सही ट्रू टाइप फ़ॉन्ट फ़ाइल या मान्य पंगो फ़ॉन्ट-कॉन्फिगर "
 "मान दर्ज करें।"
 
-#: include/global_settings.php:933 include/global_settings.php:2217
+#: include/global_settings.php:930 include/global_settings.php:2214
 #, fuzzy
 msgid "Unit Font Size"
 msgstr "यूनिट फ़ॉन्ट आकार"
 
-#: include/global_settings.php:934 include/global_settings.php:2218
+#: include/global_settings.php:931 include/global_settings.php:2215
 #, fuzzy
 msgid "The size of the font used for Graph Units"
 msgstr "ग्राफ इकाइयों के लिए उपयोग किए जाने वाले फ़ॉन्ट का आकार"
 
-#: include/global_settings.php:941
+#: include/global_settings.php:938
 #, fuzzy
 msgid "Unit Font Setting"
 msgstr "यूनिट फ़ॉन्ट सेटिंग"
 
-#: include/global_settings.php:942
+#: include/global_settings.php:939
 #, fuzzy
 msgid ""
 "The font to use for Graph Unit items.  Enter either a valid True Type Font file or valid Pango font-"
@@ -11629,22 +11630,22 @@ msgstr ""
 "ग्राफ यूनिट आइटम के लिए उपयोग करने के लिए फ़ॉन्ट। या तो एक सही ट्रू टाइप फ़ॉन्ट फ़ाइल या मान्य पंगो फ़ॉन्ट-कॉन्फिगर "
 "मान दर्ज करें।"
 
-#: include/global_settings.php:955
+#: include/global_settings.php:952
 #, fuzzy
 msgid "Data Collection Enabled"
 msgstr "डेटा संग्रह सक्षम किया गया"
 
-#: include/global_settings.php:956
+#: include/global_settings.php:953
 #, fuzzy
 msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr "यदि आप मतदान प्रक्रिया को पूरी तरह से रोकना चाहते हैं, तो इस बॉक्स को अनचेक करें।"
 
-#: include/global_settings.php:962
+#: include/global_settings.php:959
 #, fuzzy
 msgid "SNMP Agent Support Enabled"
 msgstr "SNMP एजेंट समर्थन सक्षम है"
 
-#: include/global_settings.php:963
+#: include/global_settings.php:960
 #, fuzzy
 msgid ""
 "If this option is checked, Cacti will populate SNMP Agent tables with Cacti device and system "
@@ -11653,22 +11654,22 @@ msgstr ""
 "यदि इस विकल्प की जाँच की जाती है, तो Cacti SNMP एजेंट तालिकाओं को Cacti डिवाइस और सिस्टम जानकारी के साथ आबाद "
 "करेगा। यह स्वयं SNMP एजेंट को सक्षम नहीं करता है।"
 
-#: include/global_settings.php:968
+#: include/global_settings.php:965
 #, fuzzy
 msgid "Poller Type"
 msgstr "पोलर टाइप"
 
-#: include/global_settings.php:969
+#: include/global_settings.php:966
 #, fuzzy
 msgid "The poller type to use.  This setting will take effect at next polling interval."
 msgstr "उपयोग करने के लिए पोलर प्रकार। यह सेटिंग अगले मतदान अंतराल पर प्रभावी होगी।"
 
-#: include/global_settings.php:976
+#: include/global_settings.php:973
 #, fuzzy
 msgid "Poller Sync Interval"
 msgstr "पोल सिंक इंटरवल"
 
-#: include/global_settings.php:977
+#: include/global_settings.php:974
 #, fuzzy
 msgid ""
 "The default polling sync interval to use when creating a poller.  This setting will effect how often "
@@ -11677,7 +11678,7 @@ msgstr ""
 "एक पोल बनाते समय उपयोग करने के लिए डिफ़ॉल्ट मतदान सिंक अंतराल। यह सेटिंग प्रभावी होगी कि कितनी बार दूरस्थ "
 "मतदाताओं की जाँच और अद्यतन किया जाता है।"
 
-#: include/global_settings.php:984
+#: include/global_settings.php:981
 #, fuzzy
 msgid ""
 "The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.  "
@@ -11688,12 +11689,12 @@ msgstr ""
 "<strong><u>नोट: यदि आप इस मान को बदलते हैं, तो आपको पोलर कैश को फिर से भरना होगा। ऐसा करने में विफलता, खो "
 "डेटा में परिणाम हो सकता है।</u></strong>"
 
-#: include/global_settings.php:990 lib/installer.php:2231
+#: include/global_settings.php:987 lib/installer.php:2231
 #, fuzzy
 msgid "Cron Interval"
 msgstr "क्रोन अंतराल"
 
-#: include/global_settings.php:991
+#: include/global_settings.php:988
 #, fuzzy
 msgid ""
 "The cron interval in use.  You need to set this setting to the interval that your cron or scheduled "
@@ -11702,12 +11703,12 @@ msgstr ""
 "उपयोग में क्रोन अंतराल। आपको यह सेटिंग उस अंतराल पर सेट करने की आवश्यकता है जो आपका क्रोन या शेड्यूल किया गया कार्य "
 "वर्तमान में चल रहा है।"
 
-#: include/global_settings.php:997
+#: include/global_settings.php:994
 #, fuzzy
 msgid "Default Data Collector Processes"
 msgstr "डिफ़ॉल्ट डेटा संग्राहक प्रक्रियाएँ"
 
-#: include/global_settings.php:998
+#: include/global_settings.php:995
 #, fuzzy
 msgid ""
 "The default number of concurrent processes to execute per Data Collector.  NOTE: Starting from Cacti "
@@ -11723,12 +11724,12 @@ msgstr ""
 "हल किया जाता है। स्पाइन का उपयोग करते समय, हम इसके बजाय कम संख्या और लीवरेजिंग थ्रेड की सलाह देते हैं। Cmd.php का "
 "उपयोग करते समय, CPU कोर की संख्या 2x से अधिक का उपयोग न करें।"
 
-#: include/global_settings.php:1005
+#: include/global_settings.php:1002
 #, fuzzy
 msgid "Balance Process Load"
 msgstr "शेष प्रक्रिया भार"
 
-#: include/global_settings.php:1006
+#: include/global_settings.php:1003
 #, fuzzy
 msgid ""
 "If you choose this option, Cacti will attempt to balance the load of each poller process by equally "
@@ -11737,12 +11738,12 @@ msgstr ""
 "यदि आप इस विकल्प को चुनते हैं, तो Cacti प्रत्येक प्रक्रिया के लिए समान रूप से पोलर आइटम वितरित करके प्रत्येक मतदाता "
 "प्रक्रिया के भार को संतुलित करने का प्रयास करेगा।"
 
-#: include/global_settings.php:1011
+#: include/global_settings.php:1008
 #, fuzzy
 msgid "Debug Output Width"
 msgstr "डिबग आउटपुट चौड़ाई"
 
-#: include/global_settings.php:1012
+#: include/global_settings.php:1009
 #, fuzzy
 msgid ""
 "If you choose this option, Cacti will check for output that exceeds Cacti's ability to store it and "
@@ -11751,22 +11752,22 @@ msgstr ""
 "यदि आप इस विकल्प को चुनते हैं, तो कैक्टि आउटपुट के लिए जांच करेगा जो कि कैक्टि की क्षमता को संग्रहीत करने और उसे ढूंढने "
 "पर चेतावनी जारी करने की क्षमता से अधिक है।"
 
-#: include/global_settings.php:1017
+#: include/global_settings.php:1014
 #, fuzzy
 msgid "Disable increasing OID Check"
 msgstr "बढ़ती OID जाँच अक्षम करें"
 
-#: include/global_settings.php:1018
+#: include/global_settings.php:1015
 #, fuzzy
 msgid "Controls disabling check for increasing OID while walking OID tree."
 msgstr "OID ट्री चलते समय OID बढ़ाने के लिए चेक को अक्षम करने पर नियंत्रण।"
 
-#: include/global_settings.php:1023
+#: include/global_settings.php:1020
 #, fuzzy
 msgid "Remote Agent Timeout"
 msgstr "रिमोट एजेंट टाइमआउट"
 
-#: include/global_settings.php:1024
+#: include/global_settings.php:1021
 #, fuzzy
 msgid ""
 "The amount of time, in seconds, that the Central Cacti web server will wait for a response from the "
@@ -11778,12 +11779,12 @@ msgstr ""
 "रिमोट डेटा कलेक्टर से प्रतिक्रिया की प्रतीक्षा करेगा। सेंट्रल कैक्टि डेटा कलेक्टर के अलावा अन्य डेटा कलेक्टर्स से जुड़े डिवाइसेस "
 "पर, रिमोट एजेंट का उपयोग डिवाइस की जानकारी इकट्ठा करने के लिए किया जाना चाहिए।"
 
-#: include/global_settings.php:1035
+#: include/global_settings.php:1032
 #, fuzzy
 msgid "SNMP Bulkwalk Fetch Size"
 msgstr "SNMP बल्कवॉक फ़ेच साइज़"
 
-#: include/global_settings.php:1036
+#: include/global_settings.php:1033
 #, fuzzy
 msgid ""
 "How many OID's should be returned per snmpbulkwalk request?  For Devices with large SNMP trees, "
@@ -11792,17 +11793,17 @@ msgstr ""
 "कितने स्निपबुलवॉक अनुरोध के अनुसार ओआईडी लौटाया जाना चाहिए? बड़े एसएनएमपी पेड़ों वाले उपकरणों के लिए, इस आकार को "
 "बढ़ाने से WAN पर पुन: सूचकांक प्रदर्शन बढ़ जाएगा।"
 
-#: include/global_settings.php:1054
+#: include/global_settings.php:1051
 #, fuzzy
 msgid "Spine Specific Execution Parameters"
 msgstr "स्पाइन स्पेसिफिक एक्ज़ीक्यूशन पैरामीटर"
 
-#: include/global_settings.php:1059
+#: include/global_settings.php:1056
 #, fuzzy
 msgid "Invalid Data Logging"
 msgstr "अमान्य डेटा लॉगिंग"
 
-#: include/global_settings.php:1060
+#: include/global_settings.php:1057
 #, fuzzy
 msgid ""
 "How would you like Spine output errors logged?  The options are: 'Detailed' which is similar to cmd."
@@ -11813,22 +11814,22 @@ msgstr ""
 "सारांश&#39; जो प्रति उपकरण आउटपुट त्रुटियों की संख्या प्रदान करता है; और &#39;कोई नहीं&#39;, जो त्रुटि गणना प्रदान "
 "नहीं करता है।"
 
-#: include/global_settings.php:1065 utilities.php:210
+#: include/global_settings.php:1062 utilities.php:210
 #, fuzzy
 msgid "Summary"
 msgstr "सारांश"
 
-#: include/global_settings.php:1066
+#: include/global_settings.php:1063
 #, fuzzy
 msgid "Detailed"
 msgstr "विस्तृत"
 
-#: include/global_settings.php:1069
+#: include/global_settings.php:1066
 #, fuzzy
 msgid "Default Threads per Process"
 msgstr "डिफ़ॉल्ट प्रक्रिया प्रति सूत्र"
 
-#: include/global_settings.php:1070
+#: include/global_settings.php:1067
 #, fuzzy
 msgid ""
 "The Default Threads allowed per process.  NOTE: Starting in Cacti 1.2+, this setting is maintained "
@@ -11843,12 +11844,12 @@ msgstr ""
 "संग्राहक * प्रक्रिया * (थ्रेड्स + स्क्रिप्ट कोड)। आपको यह भी सुनिश्चित करना होगा कि आपके पास उपयोगकर्ता लॉगिन "
 "कनेक्शन के लिए पर्याप्त अतिरिक्त कनेक्शन हैं।"
 
-#: include/global_settings.php:1077
+#: include/global_settings.php:1074
 #, fuzzy
 msgid "Number of PHP Script Servers"
 msgstr "PHP स्क्रिप्ट सर्वर की संख्या"
 
-#: include/global_settings.php:1078
+#: include/global_settings.php:1075
 #, fuzzy
 msgid ""
 "The number of concurrent script server processes to run per Spine process.  Settings between 1 and "
@@ -11858,23 +11859,23 @@ msgstr ""
 "रीढ़ की प्रक्रिया के अनुसार समवर्ती स्क्रिप्ट सर्वर प्रक्रियाओं की संख्या। 1 और 10 के बीच सेटिंग स्वीकार की जाती है। यदि "
 "आप कई थ्रेड और स्क्रिप्ट सर्वर स्क्रिप्ट चला रहे हैं तो यह पैरामीटर मदद करेगा।"
 
-#: include/global_settings.php:1085
+#: include/global_settings.php:1082
 #, fuzzy
 msgid "Script and Script Server Timeout Value"
 msgstr "स्क्रिप्ट और स्क्रिप्ट सर्वर टाइमआउट मान"
 
-#: include/global_settings.php:1086
+#: include/global_settings.php:1083
 #, fuzzy
 msgid ""
 "The maximum time that Cacti will wait on a script to complete.  This timeout value is in seconds"
 msgstr "कैक्टि एक स्क्रिप्ट पर पूरा होने के लिए इंतजार करेगा। यह टाइमआउट मान सेकंड में है"
 
-#: include/global_settings.php:1093
+#: include/global_settings.php:1090
 #, fuzzy
 msgid "The Maximum SNMP OIDs Per SNMP Get Request"
 msgstr "अधिकतम SNMP OIDs प्रति SNMP अनुरोध प्राप्त करें"
 
-#: include/global_settings.php:1094
+#: include/global_settings.php:1091
 #, fuzzy
 msgid ""
 "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  Increasing this value speeds "
@@ -11885,12 +11886,12 @@ msgstr ""
 "गति से अधिक पराग प्रदर्शन को गति देती है। अधिकतम मूल्य 100 ओआईडी है। इस मान को 0 या 1 पर कम करने से "
 "snmpbulkwalk अक्षम हो जाएगा"
 
-#: include/global_settings.php:1108
+#: include/global_settings.php:1105
 #, fuzzy
 msgid "Authentication Method"
 msgstr "प्रमाणन विधि"
 
-#: include/global_settings.php:1109
+#: include/global_settings.php:1106
 #, fuzzy
 msgid ""
 "<blockquote><i>Built-in Authentication</i> - Cacti handles user authentication, which allows you to "
@@ -11916,12 +11917,12 @@ msgstr ""
 "का समर्थन करने की अनुमति देता है। LDAP प्रमाणीकरण के रूप में, इस विधि का उपयोग करने के लिए PHP LDAP मॉड्यूल की "
 "आवश्यकता होती है। </blockquote>"
 
-#: include/global_settings.php:1115
+#: include/global_settings.php:1112
 #, fuzzy
 msgid "Support Authentication Cookies"
 msgstr "समर्थन प्रमाणीकरण कुकीज़"
 
-#: include/global_settings.php:1116
+#: include/global_settings.php:1113
 #, fuzzy
 msgid ""
 "If a user authenticates and selects 'Keep me signed in', an authentication cookie will be created on "
@@ -11932,17 +11933,17 @@ msgstr ""
 "पर एक प्रमाणीकरण कुकी बनाई जाएगी जिससे उपयोगकर्ता लॉग इन रह सकता है। 90 दिनों के उपयोग के बाद प्रमाणीकरण कुकी "
 "समाप्त हो जाती है"
 
-#: include/global_settings.php:1121
+#: include/global_settings.php:1118
 #, fuzzy
 msgid "Special Users"
 msgstr "विशेष उपयोगकर्ता"
 
-#: include/global_settings.php:1126
+#: include/global_settings.php:1123
 #, fuzzy
 msgid "Primary Admin"
 msgstr "प्राथमिक व्यवस्थापक"
 
-#: include/global_settings.php:1127
+#: include/global_settings.php:1124
 #, fuzzy
 msgid ""
 "The name of the primary administrative account that will automatically receive Emails when the Cacti "
@@ -11952,28 +11953,28 @@ msgstr ""
 "प्राथमिक प्रशासनिक खाते का नाम जो स्वचालित रूप से ईमेल प्राप्त करेगा जब कैक्टी सिस्टम मुद्दों का अनुभव करता है। ये ईमेल "
 "प्राप्त करने के लिए, सुनिश्चित करें कि आपकी मेल सेटिंग्स सही हैं, और प्रशासनिक खाते में एक ईमेल पता है जो सेट है।"
 
-#: include/global_settings.php:1129 include/global_settings.php:1137 include/global_settings.php:1145
+#: include/global_settings.php:1126 include/global_settings.php:1134 include/global_settings.php:1142
 #: user_domains.php:344
 #, fuzzy
 msgid "No User"
 msgstr "उपयोगकर्ता प्रबंधन"
 
-#: include/global_settings.php:1134
+#: include/global_settings.php:1131
 #, fuzzy
 msgid "Guest User"
 msgstr "अतिथि उपयेागकर्ता"
 
-#: include/global_settings.php:1135
+#: include/global_settings.php:1132
 #, fuzzy
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
 msgstr "रेखांकन देखने के लिए अतिथि उपयोगकर्ता का नाम; डिफ़ॉल्ट रूप से &#39;नो यूजर&#39; है।"
 
-#: include/global_settings.php:1142 user_domains.php:340
+#: include/global_settings.php:1139 user_domains.php:340
 #, fuzzy
 msgid "User Template"
 msgstr "उपयोगकर्ता टेम्पलेट"
 
-#: include/global_settings.php:1143
+#: include/global_settings.php:1140
 #, fuzzy
 msgid ""
 "The name of the user that Cacti will use as a template for new Web Basic and LDAP users; is 'guest' "
@@ -11982,57 +11983,57 @@ msgstr ""
 "उपयोगकर्ता का नाम जिसे कैक्टी नए वेब बेसिक और एलडीएपी उपयोगकर्ताओं के लिए टेम्पलेट के रूप में उपयोग करेगा; डिफ़ॉल्ट रूप "
 "से &#39;अतिथि&#39; है। यह उपयोगकर्ता खाता चयनित होने पर लॉगिंग से अक्षम हो जाएगा।"
 
-#: include/global_settings.php:1150
+#: include/global_settings.php:1147
 #, fuzzy
 msgid "Local Account Complexity Requirements"
 msgstr "स्थानीय खाता जटिलता आवश्यकताएँ"
 
-#: include/global_settings.php:1155
+#: include/global_settings.php:1152
 #, fuzzy
 msgid "Minimum Length"
 msgstr "न्यूनतम लंबाई"
 
-#: include/global_settings.php:1156
+#: include/global_settings.php:1153
 #, fuzzy
 msgid "This is minimal length of allowed passwords."
 msgstr "यह अनुमत पासवर्ड की न्यूनतम लंबाई है।"
 
-#: include/global_settings.php:1163
+#: include/global_settings.php:1160
 #, fuzzy
 msgid "Require Mix Case"
 msgstr "मिक्स केस की आवश्यकता है"
 
-#: include/global_settings.php:1164
+#: include/global_settings.php:1161
 #, fuzzy
 msgid "This will require new passwords to contains both lower and upper-case characters."
 msgstr "इसके लिए नए पासवर्ड की आवश्यकता होगी जिसमें निचले और ऊपरी-दोनों प्रकार के वर्ण हों"
 
-#: include/global_settings.php:1169
+#: include/global_settings.php:1166
 #, fuzzy
 msgid "Require Number"
 msgstr "नंबर की आवश्यकता है"
 
-#: include/global_settings.php:1170
+#: include/global_settings.php:1167
 #, fuzzy
 msgid "This will require new passwords to contain at least 1 numerical character."
 msgstr "इसके लिए कम से कम 1 संख्यात्मक चरित्र वाले नए पासवर्ड की आवश्यकता होगी।"
 
-#: include/global_settings.php:1175
+#: include/global_settings.php:1172
 #, fuzzy
 msgid "Require Special Character"
 msgstr "विशेष चरित्र की आवश्यकता है"
 
-#: include/global_settings.php:1176
+#: include/global_settings.php:1173
 #, fuzzy
 msgid "This will require new passwords to contain at least 1 special character."
 msgstr "इसके लिए कम से कम 1 विशेष वर्ण वाले नए पासवर्ड की आवश्यकता होगी"
 
-#: include/global_settings.php:1181
+#: include/global_settings.php:1178
 #, fuzzy
 msgid "Force Complexity Upon Old Passwords"
 msgstr "पुराने पासवर्ड पर बल जटिलता"
 
-#: include/global_settings.php:1182
+#: include/global_settings.php:1179
 #, fuzzy
 msgid ""
 "This will require all old passwords to also meet the new complexity requirements upon login.  If not "
@@ -12041,12 +12042,12 @@ msgstr ""
 "इसके लिए सभी पुराने पासवर्डों को भी लॉगिन पर नई जटिलता आवश्यकताओं को पूरा करना होगा। यदि नहीं मिले हैं, तो यह "
 "पासवर्ड परिवर्तन के लिए बाध्य करेगा।"
 
-#: include/global_settings.php:1187
+#: include/global_settings.php:1184
 #, fuzzy
 msgid "Expire Inactive Accounts"
 msgstr "निष्क्रिय खातों की समाप्ति"
 
-#: include/global_settings.php:1188
+#: include/global_settings.php:1185
 #, fuzzy
 msgid ""
 "This is maximum number of days before inactive accounts are disabled.  The Admin account is excluded "
@@ -12054,71 +12055,71 @@ msgid ""
 msgstr ""
 "निष्क्रिय खातों को निष्क्रिय करने से पहले यह अधिकतम दिनों की संख्या है। व्यवस्थापक खाते को इस नीति से बाहर रखा गया है।"
 
-#: include/global_settings.php:1201
+#: include/global_settings.php:1198
 #, fuzzy
 msgid "Expire Password"
 msgstr "एक्सपायर पासवर्ड"
 
-#: include/global_settings.php:1202
+#: include/global_settings.php:1199
 #, fuzzy
 msgid "This is maximum number of days before a password is set to expire."
 msgstr "पासवर्ड की समय सीमा समाप्त होने से पहले यह अधिकतम दिनों की संख्या है।"
 
-#: include/global_settings.php:1213
+#: include/global_settings.php:1210
 #, fuzzy
 msgid "Password History"
 msgstr "पासवर्ड इतिहास"
 
-#: include/global_settings.php:1214
+#: include/global_settings.php:1211
 #, fuzzy
 msgid "Remember this number of old passwords and disallow re-using them."
 msgstr "पुराने पासवर्ड की इस संख्या को याद रखें और उन्हें फिर से उपयोग न करें।"
 
-#: include/global_settings.php:1219
+#: include/global_settings.php:1216
 #, fuzzy
 msgid "1 Change"
 msgstr "1 बदलें"
 
+#: include/global_settings.php:1217 include/global_settings.php:1218 include/global_settings.php:1219
 #: include/global_settings.php:1220 include/global_settings.php:1221 include/global_settings.php:1222
 #: include/global_settings.php:1223 include/global_settings.php:1224 include/global_settings.php:1225
-#: include/global_settings.php:1226 include/global_settings.php:1227 include/global_settings.php:1228
-#: include/global_settings.php:1229 include/global_settings.php:1230
+#: include/global_settings.php:1226 include/global_settings.php:1227
 #, fuzzy, php-format
 msgid "%d Changes"
 msgstr "% d चेंज"
 
-#: include/global_settings.php:1233
+#: include/global_settings.php:1230
 #, fuzzy
 msgid "Account Locking"
 msgstr "खाता लॉक करना"
 
-#: include/global_settings.php:1238
+#: include/global_settings.php:1235
 #, fuzzy
 msgid "Lock Accounts"
 msgstr "खाते लॉक करें"
 
-#: include/global_settings.php:1239
+#: include/global_settings.php:1236
 #, fuzzy
 msgid "Lock an account after this many failed attempts in 1 hour."
 msgstr "1 घंटे में कई असफल प्रयासों के बाद एक खाता लॉक करें।"
 
-#: include/global_settings.php:1244
+#: include/global_settings.php:1241
 #, fuzzy
 msgid "1 Attempt"
 msgstr "1 प्रयास"
 
-#: include/global_settings.php:1245 include/global_settings.php:1246 include/global_settings.php:1247
-#: include/global_settings.php:1248 include/global_settings.php:1249
+#: include/global_settings.php:1242 include/global_settings.php:1243 include/global_settings.php:1244
+#: include/global_settings.php:1245 include/global_settings.php:1246
 #, fuzzy, php-format
 msgid "%d Attempts"
 msgstr "% d प्रयास"
 
-#: include/global_settings.php:1252
+#: include/global_settings.php:1249
 #, fuzzy
 msgid "Auto Unlock"
 msgstr "ऑटो अनलॉक"
 
-#: include/global_settings.php:1253
+#: include/global_settings.php:1250
 #, fuzzy
 msgid ""
 "An account will automatically be unlocked after this many minutes.  Even if the correct password is "
@@ -12127,82 +12128,82 @@ msgstr ""
 "कई मिनटों के बाद एक खाता अपने आप अनलॉक हो जाएगा। यदि सही पासवर्ड दर्ज किया गया है, तो भी यह समय सीमा पूरी "
 "नहीं होने तक खाता अनलॉक नहीं होगा। अधिकतम 1440 मिनट (1 दिन)"
 
-#: include/global_settings.php:1269
+#: include/global_settings.php:1266
 #, fuzzy
 msgid "1 Day"
 msgstr "एक दिन"
 
-#: include/global_settings.php:1272
+#: include/global_settings.php:1269
 #, fuzzy
 msgid "LDAP General Settings"
 msgstr "LDAP सामान्य सेटिंग्स"
 
-#: include/global_settings.php:1276 user_domains.php:367
+#: include/global_settings.php:1273 user_domains.php:367
 #, fuzzy
 msgid "Server"
 msgstr "सर्वर"
 
-#: include/global_settings.php:1277
+#: include/global_settings.php:1274
 #, fuzzy
 msgid "The DNS hostname or IP address of the server."
 msgstr "DNS होस्टनाम या सर्वर का IP पता।"
 
-#: include/global_settings.php:1282 user_domains.php:375
+#: include/global_settings.php:1279 user_domains.php:375
 #, fuzzy
 msgid "Port Standard"
 msgstr "पोर्ट मानक"
 
-#: include/global_settings.php:1283
+#: include/global_settings.php:1280
 #, fuzzy
 msgid "TCP/UDP port for Non-SSL communications."
 msgstr "गैर-एसएसएल संचार के लिए टीसीपी / यूडीपी पोर्ट।"
 
-#: include/global_settings.php:1290 user_domains.php:384
+#: include/global_settings.php:1287 user_domains.php:384
 #, fuzzy
 msgid "Port SSL"
 msgstr "पोर्ट एसएसएल"
 
-#: include/global_settings.php:1291 user_domains.php:385
+#: include/global_settings.php:1288 user_domains.php:385
 #, fuzzy
 msgid "TCP/UDP port for SSL communications."
 msgstr "एसएसएल संचार के लिए टीसीपी / यूडीपी पोर्ट।"
 
-#: include/global_settings.php:1298 user_domains.php:393
+#: include/global_settings.php:1295 user_domains.php:393
 #, fuzzy
 msgid "Protocol Version"
 msgstr "प्रोटोकॉल संस्करण"
 
-#: include/global_settings.php:1299 user_domains.php:394
+#: include/global_settings.php:1296 user_domains.php:394
 #, fuzzy
 msgid "Protocol Version that the server supports."
 msgstr "प्रोटोकॉल संस्करण जो सर्वर का समर्थन करता है।"
 
-#: include/global_settings.php:1305 user_domains.php:400
+#: include/global_settings.php:1302 user_domains.php:400
 #, fuzzy
 msgid "Encryption"
 msgstr "एन्क्रिप्शन"
 
-#: include/global_settings.php:1306 user_domains.php:401
+#: include/global_settings.php:1303 user_domains.php:401
 #, fuzzy
 msgid "Encryption that the server supports. TLS is only supported by Protocol Version 3."
 msgstr "एन्क्रिप्शन जो सर्वर का समर्थन करता है। TLS केवल प्रोटोकॉल संस्करण 3 द्वारा समर्थित है।"
 
-#: include/global_settings.php:1312 user_domains.php:407
+#: include/global_settings.php:1309 user_domains.php:407
 #, fuzzy
 msgid "Referrals"
 msgstr "रेफ़रल"
 
-#: include/global_settings.php:1313 user_domains.php:408
+#: include/global_settings.php:1310 user_domains.php:408
 #, fuzzy
 msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed of searches."
 msgstr "LDAP रेफरल सक्षम या अक्षम करें। अक्षम होने पर, यह खोजों की गति बढ़ा सकता है।"
 
-#: include/global_settings.php:1321 user_domains.php:414
+#: include/global_settings.php:1318 user_domains.php:414
 #, fuzzy
 msgid "Mode"
 msgstr "मोड"
 
-#: include/global_settings.php:1322
+#: include/global_settings.php:1319
 #, fuzzy
 msgid ""
 "Mode which cacti will attempt to authenticate against the LDAP server.<blockquote><i>No Searching</"
@@ -12220,12 +12221,12 @@ msgstr ""
 "विशिष्ट नाम (डीएन) का पता लगाने के लिए विशिष्ट विशिष्ट नाम (डीएन) और बाइंडिंग के लिए विशिष्ट पासवर्ड के माध्यम से "
 "एलडीएपी निर्देशिका के खिलाफ उपयोगकर्ता नाम की खोज।"
 
-#: include/global_settings.php:1328 user_domains.php:421
+#: include/global_settings.php:1325 user_domains.php:421
 #, fuzzy
 msgid "Distinguished Name (DN)"
 msgstr "विशिष्ट नाम (DN)"
 
-#: include/global_settings.php:1329 user_domains.php:422
+#: include/global_settings.php:1326 user_domains.php:422
 #, fuzzy
 msgid ""
 "Distinguished Name syntax, such as for windows: <i>\"&lt;username&gt;@win2kdomain.local\"</i> or for "
@@ -12238,12 +12239,12 @@ msgstr ""
 "। &quot;&lt;username&gt;&quot; को उस उपयोगकर्ता नाम से बदला जाता है जिसे लॉगिन प्रॉम्प्ट पर आपूर्ति किया गया "
 "था। इसका उपयोग केवल &quot;नो सर्चिंग&quot; मोड में किया जाता है।"
 
-#: include/global_settings.php:1334 user_domains.php:428
+#: include/global_settings.php:1331 user_domains.php:428
 #, fuzzy
 msgid "Require Group Membership"
 msgstr "समूह सदस्यता की आवश्यकता है"
 
-#: include/global_settings.php:1335 user_domains.php:429
+#: include/global_settings.php:1332 user_domains.php:429
 #, fuzzy
 msgid ""
 "Require user to be member of group to authenticate. Group settings must be set for this to work, "
@@ -12252,37 +12253,37 @@ msgstr ""
 "प्रमाणित करने के लिए उपयोगकर्ता को समूह का सदस्य होना आवश्यक है। इसके लिए काम करने के लिए समूह सेटिंग्स निर्धारित की "
 "जानी चाहिए, उचित समूह सेटिंग्स के बिना सक्षम करने से प्रमाणीकरण विफलता होगी।"
 
-#: include/global_settings.php:1340 user_domains.php:434
+#: include/global_settings.php:1337 user_domains.php:434
 #, fuzzy
 msgid "LDAP Group Settings"
 msgstr "LDAP समूह सेटिंग्स"
 
-#: include/global_settings.php:1344 user_domains.php:438
+#: include/global_settings.php:1341 user_domains.php:438
 #, fuzzy
 msgid "Group Distinguished Name (DN)"
 msgstr "समूह विशिष्ट नाम (DN)"
 
-#: include/global_settings.php:1345 user_domains.php:439
+#: include/global_settings.php:1342 user_domains.php:439
 #, fuzzy
 msgid "Distinguished Name of the group that user must have membership."
 msgstr "उस समूह का विशिष्ट नाम जो उपयोगकर्ता की सदस्यता होनी चाहिए।"
 
-#: include/global_settings.php:1350 user_domains.php:445
+#: include/global_settings.php:1347 user_domains.php:445
 #, fuzzy
 msgid "Group Member Attribute"
 msgstr "समूह के सदस्य विशेषता"
 
-#: include/global_settings.php:1351 user_domains.php:446
+#: include/global_settings.php:1348 user_domains.php:446
 #, fuzzy
 msgid "Name of the attribute that contains the usernames of the members."
 msgstr "उस विशेषता का नाम जिसमें सदस्यों के उपयोगकर्ता नाम होते हैं।"
 
-#: include/global_settings.php:1356 user_domains.php:452
+#: include/global_settings.php:1353 user_domains.php:452
 #, fuzzy
 msgid "Group Member Type"
 msgstr "समूह सदस्य प्रकार"
 
-#: include/global_settings.php:1357 user_domains.php:453
+#: include/global_settings.php:1354 user_domains.php:453
 #, fuzzy
 msgid ""
 "Defines if users use full Distinguished Name or just Username in the defined Group Member Attribute."
@@ -12290,22 +12291,22 @@ msgstr ""
 "परिभाषित करता है कि उपयोगकर्ता परिभाषित समूह सदस्य गुण में पूर्ण विशिष्ट नाम या केवल उपयोगकर्ता नाम का उपयोग करते "
 "हैं।"
 
-#: include/global_settings.php:1361
+#: include/global_settings.php:1358
 #, fuzzy
 msgid "Distinguished Name"
 msgstr "विशिष्ट नाम"
 
-#: include/global_settings.php:1365 user_domains.php:459
+#: include/global_settings.php:1362 user_domains.php:459
 #, fuzzy
 msgid "LDAP Specific Search Settings"
 msgstr "LDAP विशिष्ट खोज सेटिंग्स"
 
-#: include/global_settings.php:1369 user_domains.php:463
+#: include/global_settings.php:1366 user_domains.php:463
 #, fuzzy
 msgid "Search Base"
 msgstr "आधार खोजें"
 
-#: include/global_settings.php:1370
+#: include/global_settings.php:1367
 #, fuzzy
 msgid ""
 "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,dc=local'</i> or "
@@ -12314,12 +12315,12 @@ msgstr ""
 "LDAP निर्देशिका को खोजने के लिए खोज आधार, जैसे <i>&#39;dc = win2kdomain, dc = local&#39;</i> या <i>&#39;ou "
 "= people, dc = domain, dc = local&#39;</i> ।"
 
-#: include/global_settings.php:1375 user_domains.php:470
+#: include/global_settings.php:1372 user_domains.php:470
 #, fuzzy
 msgid "Search Filter"
 msgstr "फ़िल्टर खोजें"
 
-#: include/global_settings.php:1376
+#: include/global_settings.php:1373
 #, fuzzy
 msgid ""
 "Search filter to use to locate the user in the LDAP directory, such as for windows: <i>'(&amp;"
@@ -12333,32 +12334,32 @@ msgstr ""
 "username&gt;)) &#39;</i> । &#39;&lt;username&gt;&#39; को उस उपयोगकर्ता नाम से बदला जाता है जिसे लॉगिन "
 "प्रॉम्प्ट पर आपूर्ति किया गया था।"
 
-#: include/global_settings.php:1381 user_domains.php:477
+#: include/global_settings.php:1378 user_domains.php:477
 #, fuzzy
 msgid "Search Distinguished Name (DN)"
 msgstr "विशिष्ट नाम खोजें (DN)"
 
-#: include/global_settings.php:1382 user_domains.php:478
+#: include/global_settings.php:1379 user_domains.php:478
 #, fuzzy
 msgid "Distinguished Name for Specific Searching binding to the LDAP directory."
 msgstr "विशिष्ट खोज के लिए विशिष्ट नाम LDAP निर्देशिका के लिए बाध्यकारी।"
 
-#: include/global_settings.php:1387 user_domains.php:484
+#: include/global_settings.php:1384 user_domains.php:484
 #, fuzzy
 msgid "Search Password"
 msgstr "पासवर्ड खोजें"
 
-#: include/global_settings.php:1388 user_domains.php:485
+#: include/global_settings.php:1385 user_domains.php:485
 #, fuzzy
 msgid "Password for Specific Searching binding to the LDAP directory."
 msgstr "विशिष्ट खोज के लिए पासवर्ड LDAP निर्देशिका के लिए बाध्यकारी है।"
 
-#: include/global_settings.php:1393 user_domains.php:491
+#: include/global_settings.php:1390 user_domains.php:491
 #, fuzzy
 msgid "LDAP CN Settings"
 msgstr "LDAP CN सेटिंग्स"
 
-#: include/global_settings.php:1398 user_domains.php:496
+#: include/global_settings.php:1395 user_domains.php:496
 #, fuzzy
 msgid ""
 "Field that will replace the Full Name when creating a new user, taken from LDAP. (on windows: "
@@ -12366,42 +12367,42 @@ msgid ""
 msgstr ""
 "वह फ़ील्ड जो LDAP से लिया गया एक नया उपयोगकर्ता बनाते समय पूरा नाम बदल देगा। (खिड़कियों पर: displayname)"
 
-#: include/global_settings.php:1403
+#: include/global_settings.php:1400
 #, fuzzy
 msgid "Email"
 msgstr "ईमेल"
 
-#: include/global_settings.php:1404
+#: include/global_settings.php:1401
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
 msgstr "फ़ील्ड जो LDAP से लिए गए ईमेल को प्रतिस्थापित करेगा। (खिड़कियों पर: मेल)"
 
-#: include/global_settings.php:1411
+#: include/global_settings.php:1408
 #, fuzzy
 msgid "URL Linking"
 msgstr "यूआरएल लिंकिंग"
 
-#: include/global_settings.php:1416
+#: include/global_settings.php:1413
 #, fuzzy
 msgid "Server Base URL"
 msgstr "सर्वर बेस URL"
 
-#: include/global_settings.php:1417
+#: include/global_settings.php:1414
 #, fuzzy
 msgid "This is a the server location that will be used for links to the Cacti site."
 msgstr "यह एक सर्वर स्थान है जिसका उपयोग कैक्टि साइट के लिंक के लिए किया जाएगा।"
 
-#: include/global_settings.php:1424
+#: include/global_settings.php:1421
 #, fuzzy
 msgid "Emailing Options"
 msgstr "ईमेल विकल्प"
 
-#: include/global_settings.php:1428
+#: include/global_settings.php:1425
 #, fuzzy
 msgid "Notify Primary Admin of Issues"
 msgstr "प्राथमिक व्यवस्थापक मुद्दों को सूचित करें"
 
-#: include/global_settings.php:1429
+#: include/global_settings.php:1426
 #, fuzzy
 msgid ""
 "In cases where the Cacti server is experiencing problems, should the Primary Administrator be "
@@ -12412,12 +12413,12 @@ msgstr ""
 "चाहिए? प्राथमिक प्रशासक का Cacti उपयोगकर्ता खाता Cacti के सेटिंग पृष्ठ पर प्रमाणीकरण टैब के अंतर्गत निर्दिष्ट किया "
 "गया है। यह &#39;व्यवस्थापक&#39; खाते में चूक करता है।"
 
-#: include/global_settings.php:1434
+#: include/global_settings.php:1431
 #, fuzzy
 msgid "Test Email"
 msgstr "ईमेल का परीक्षण करें"
 
-#: include/global_settings.php:1435
+#: include/global_settings.php:1432
 #, fuzzy
 msgid ""
 "This is a Email account used for sending a test message to ensure everything is working properly."
@@ -12425,85 +12426,85 @@ msgstr ""
 "यह एक ईमेल खाता है जिसका उपयोग परीक्षण संदेश भेजने के लिए किया जाता है ताकि यह सुनिश्चित हो सके कि सब कुछ ठीक से "
 "काम कर रहा है।"
 
-#: include/global_settings.php:1440
+#: include/global_settings.php:1437
 #, fuzzy
 msgid "Mail Services"
 msgstr "मेल सेवाएँ"
 
-#: include/global_settings.php:1441
+#: include/global_settings.php:1438
 #, fuzzy
 msgid "Which mail service to use in order to send mail"
 msgstr "मेल भेजने के लिए किस मेल सेवा का उपयोग करना है"
 
-#: include/global_settings.php:1447
+#: include/global_settings.php:1444
 #, fuzzy
 msgid "Ping Mail Server"
 msgstr "पिंग मेल सर्वर"
 
-#: include/global_settings.php:1448
+#: include/global_settings.php:1445
 #, fuzzy
 msgid "Ping the Mail Server before sending test Email?"
 msgstr "परीक्षण ईमेल भेजने से पहले मेल सर्वर को पिंग करें?"
 
-#: include/global_settings.php:1456 lib/html_reports.php:1088
+#: include/global_settings.php:1453 lib/html_reports.php:1088
 #, fuzzy
 msgid "From Email Address"
 msgstr "ईमेल पते से"
 
-#: include/global_settings.php:1457
+#: include/global_settings.php:1454
 #, fuzzy
 msgid "This is the Email address that the Email will appear from."
 msgstr "यह ईमेल पता है जो ईमेल से दिखाई देगा।"
 
-#: include/global_settings.php:1462 lib/html_reports.php:1080
+#: include/global_settings.php:1459 lib/html_reports.php:1080
 #, fuzzy
 msgid "From Name"
 msgstr "नाम से"
 
-#: include/global_settings.php:1463
+#: include/global_settings.php:1460
 #, fuzzy
 msgid "This is the actual name that the Email will appear from."
 msgstr "यह वास्तविक नाम है जिससे ईमेल दिखाई देगा।"
 
-#: include/global_settings.php:1468
+#: include/global_settings.php:1465
 #, fuzzy
 msgid "Word Wrap"
 msgstr "वर्ड रैप"
 
-#: include/global_settings.php:1469
+#: include/global_settings.php:1466
 #, fuzzy
 msgid ""
 "This is how many characters will be allowed before a line in the Email is automatically word "
 "wrapped. (0 = Disabled)"
 msgstr "यह है कि ईमेल में एक पंक्ति से पहले कितने वर्णों को अनुमति दी जाएगी स्वचालित रूप से शब्द लिपटे हुए हैं। (0 = अक्षम)"
 
-#: include/global_settings.php:1476
+#: include/global_settings.php:1473
 #, fuzzy
 msgid "Sendmail Options"
 msgstr "Sendmail विकल्प"
 
-#: include/global_settings.php:1481 lib/functions.php:3711
+#: include/global_settings.php:1478 lib/functions.php:3711
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "सेंडमेल पथ"
 
-#: include/global_settings.php:1482
+#: include/global_settings.php:1479
 #, fuzzy
 msgid ""
 "This is the path to sendmail on your server. (Only used if Sendmail is selected as the Mail Service)"
 msgstr "यह आपके सर्वर पर भेजने का मार्ग है। (केवल Sendmail मेल सेवा के रूप में चयनित होने पर उपयोग किया जाता है)"
 
-#: include/global_settings.php:1489
+#: include/global_settings.php:1486
 #, fuzzy
 msgid "SMTP Options"
 msgstr "SMTP विकल्प"
 
-#: include/global_settings.php:1494
+#: include/global_settings.php:1491
 #, fuzzy
 msgid "SMTP Hostname"
 msgstr "SMTP होस्टनाम"
 
-#: include/global_settings.php:1495
+#: include/global_settings.php:1492
 #, fuzzy
 msgid ""
 "This is the hostname/IP of the SMTP Server you will send the Email to. For failover, separate your "
@@ -12512,22 +12513,22 @@ msgstr ""
 "यह SMTP सर्वर का होस्टनाम / IP है जिसे आप ईमेल भेजेंगे। विफलता के लिए, अर्ध-बृहदान्त्र का उपयोग करके अपने मेजबानों को "
 "अलग करें।"
 
-#: include/global_settings.php:1501
+#: include/global_settings.php:1498
 #, fuzzy
 msgid "SMTP Port"
 msgstr "SMTP पोर्ट"
 
-#: include/global_settings.php:1502
+#: include/global_settings.php:1499
 #, fuzzy
 msgid "The port on the SMTP Server to use."
 msgstr "उपयोग करने के लिए SMTP सर्वर पर पोर्ट।"
 
-#: include/global_settings.php:1509
+#: include/global_settings.php:1506
 #, fuzzy
 msgid "SMTP Username"
 msgstr "SMTP उपयोगकर्ता नाम"
 
-#: include/global_settings.php:1510
+#: include/global_settings.php:1507
 #, fuzzy
 msgid ""
 "The username to authenticate with when sending via SMTP. (Leave blank if you do not require "
@@ -12536,12 +12537,12 @@ msgstr ""
 "SMTP के माध्यम से भेजने के साथ प्रमाणित करने के लिए उपयोगकर्ता नाम। (यदि आपको प्रमाणीकरण की आवश्यकता नहीं है तो "
 "खाली छोड़ दें।)"
 
-#: include/global_settings.php:1515
+#: include/global_settings.php:1512
 #, fuzzy
 msgid "SMTP Password"
 msgstr "SMTP पासवर्ड"
 
-#: include/global_settings.php:1516
+#: include/global_settings.php:1513
 #, fuzzy
 msgid ""
 "The password to authenticate with when sending via SMTP. (Leave blank if you do not require "
@@ -12549,57 +12550,57 @@ msgid ""
 msgstr ""
 "SMTP के माध्यम से भेजते समय प्रमाणित करने का पासवर्ड। (यदि आपको प्रमाणीकरण की आवश्यकता नहीं है तो खाली छोड़ दें।)"
 
-#: include/global_settings.php:1521
+#: include/global_settings.php:1518
 #, fuzzy
 msgid "SMTP Security"
 msgstr "SMTP सुरक्षा"
 
-#: include/global_settings.php:1522
+#: include/global_settings.php:1519
 #, fuzzy
 msgid "The encryption method to use for the Email."
 msgstr "ईमेल के लिए उपयोग करने के लिए एन्क्रिप्शन विधि।"
 
-#: include/global_settings.php:1531
+#: include/global_settings.php:1528
 #, fuzzy
 msgid "SMTP Timeout"
 msgstr "SMTP टाइमआउट"
 
-#: include/global_settings.php:1532
+#: include/global_settings.php:1529
 #, fuzzy
 msgid "Please enter the SMTP timeout in seconds."
 msgstr "कृपया सेकंड में SMTP टाइमआउट दर्ज करें।"
 
-#: include/global_settings.php:1539
+#: include/global_settings.php:1536
 #, fuzzy
 msgid "Reporting Presets"
 msgstr "रिपोर्टिंग प्रीसेट"
 
-#: include/global_settings.php:1544
+#: include/global_settings.php:1541
 #, fuzzy
 msgid "Default Graph Image Format"
 msgstr "डिफ़ॉल्ट ग्राफ़ छवि प्रारूप"
 
-#: include/global_settings.php:1545
+#: include/global_settings.php:1542
 #, fuzzy
 msgid "When creating a new report, what image type should be used for the inline graphs."
 msgstr "एक नई रिपोर्ट बनाते समय, इनलाइन ग्राफ के लिए किस छवि प्रकार का उपयोग किया जाना चाहिए।"
 
-#: include/global_settings.php:1551
+#: include/global_settings.php:1548
 #, fuzzy
 msgid "Maximum E-Mail Size"
 msgstr "अधिकतम ई-मेल का आकार"
 
-#: include/global_settings.php:1552
+#: include/global_settings.php:1549
 #, fuzzy
 msgid "The maximum size of the E-Mail message including all attachements."
 msgstr "ई-मेल संदेश का अधिकतम आकार जिसमें सभी अटैचमेंट शामिल हैं।"
 
-#: include/global_settings.php:1558
+#: include/global_settings.php:1555
 #, fuzzy
 msgid "Poller Logging Level for Cacti Reporting"
 msgstr "कैक्टि रिपोर्टिंग के लिए पोलर लॉगिंग स्तर"
 
-#: include/global_settings.php:1559
+#: include/global_settings.php:1556
 #, fuzzy
 msgid ""
 "What level of detail do you want sent to the log file. WARNING: Leaving in any other status than "
@@ -12608,62 +12609,62 @@ msgstr ""
 "आप लॉग फ़ाइल में किस स्तर का विवरण भेजना चाहते हैं। चेतावनी: किसी भी अन्य स्थिति में कोई भी नहीं छोड़ रहा है, जो आपके "
 "डिस्क स्थान को तेजी से समाप्त कर सकता है।"
 
-#: include/global_settings.php:1565
+#: include/global_settings.php:1562
 #, fuzzy
 msgid "Enable Lotus Notes (R) tweak"
 msgstr "लोटस नोट्स (आर) को सक्षम करें"
 
-#: include/global_settings.php:1566
+#: include/global_settings.php:1563
 #, fuzzy
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
 msgstr "लोटस नोट्स मेल ग्राहकों की विशिष्ट हैंडलिंग के लिए कोड ट्वीक सक्षम करें।"
 
-#: include/global_settings.php:1571
+#: include/global_settings.php:1568
 #, fuzzy
 msgid "DNS Options"
 msgstr "डीएनएस विकल्प"
 
-#: include/global_settings.php:1576
+#: include/global_settings.php:1573
 #, fuzzy
 msgid "Primary DNS IP Address"
 msgstr "प्राथमिक DNS IP पता"
 
-#: include/global_settings.php:1577
+#: include/global_settings.php:1574
 #, fuzzy
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
 msgstr "रिवर्स लुकअप के लिए उपयोग करने के लिए प्राथमिक DNS आईपी पता दर्ज करें।"
 
-#: include/global_settings.php:1583
+#: include/global_settings.php:1580
 #, fuzzy
 msgid "Secondary DNS IP Address"
 msgstr "द्वितीयक DNS IP पता"
 
-#: include/global_settings.php:1584
+#: include/global_settings.php:1581
 #, fuzzy
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
 msgstr "रिवर्स लुकअप के लिए उपयोग करने के लिए द्वितीयक DNS IP पता दर्ज करें।"
 
-#: include/global_settings.php:1590
+#: include/global_settings.php:1587
 #, fuzzy
 msgid "DNS Timeout"
 msgstr "डीएनएस टाइमआउट"
 
-#: include/global_settings.php:1591
+#: include/global_settings.php:1588
 #, fuzzy
 msgid "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS resolver."
 msgstr "कृपया मिलीसेकंड में DNS टाइमआउट दर्ज करें। Cacti एक PHP आधारित DNS रिज़ॉल्वर का उपयोग करता है।"
 
-#: include/global_settings.php:1600
+#: include/global_settings.php:1597
 #, fuzzy
 msgid "On-demand RRD Update Settings"
 msgstr "ऑन-डिमांड आरआरडी अपडेट सेटिंग्स"
 
-#: include/global_settings.php:1605
+#: include/global_settings.php:1602
 #, fuzzy
 msgid "Enable On-demand RRD Updating"
 msgstr "ऑन-डिमांड आरआरडी अपडेट करना सक्षम करें"
 
-#: include/global_settings.php:1606
+#: include/global_settings.php:1603
 #, fuzzy
 msgid ""
 "Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take "
@@ -12673,22 +12674,22 @@ msgstr ""
 "क्या Cacti में RRD अपडेट की मांग पर बूस्ट सक्षम होना चाहिए? यदि आप अक्षम करते हैं, तो यह परिवर्तन अगले मतदान चक्र के "
 "बाद तक प्रभावी नहीं होगा। जब आपके पास दूरस्थ डेटा संग्राहक होते हैं, तो यह सेटिंग्स चालू होना आवश्यक है।"
 
-#: include/global_settings.php:1611
+#: include/global_settings.php:1608
 #, fuzzy
 msgid "System Level RRD Updater"
 msgstr "सिस्टम स्तर आरआरडी अपडेटर"
 
-#: include/global_settings.php:1612
+#: include/global_settings.php:1609
 #, fuzzy
 msgid "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
 msgstr "आरआरडी ऑन-डिमांड अपडेट क्लियर किया जा सकता है, इससे पहले एक मतदाता रन हमेशा पास होना चाहिए"
 
-#: include/global_settings.php:1617
+#: include/global_settings.php:1614
 #, fuzzy
 msgid "How Often Should Boost Update All RRDs"
 msgstr "कितनी बार सभी आरआरडी को अपडेट करना चाहिए"
 
-#: include/global_settings.php:1618
+#: include/global_settings.php:1615
 #, fuzzy
 msgid ""
 "When you enable boost, your RRD files are only updated when they are requested by a user, or when "
@@ -12697,45 +12698,45 @@ msgstr ""
 "जब आप बढ़ावा देने में सक्षम होते हैं, तो आपकी आरआरडी फाइलें केवल तभी अपडेट होती हैं, जब वे किसी उपयोगकर्ता द्वारा "
 "अनुरोध किए जाते हैं, या जब यह समय अवधि समाप्त हो जाती है।"
 
-#: include/global_settings.php:1624
+#: include/global_settings.php:1621
 #, fuzzy
 msgid "Number of Boost Processes"
 msgstr "बूस्ट प्रक्रियाओं की संख्या"
 
-#: include/global_settings.php:1625
+#: include/global_settings.php:1622
 #, fuzzy
 msgid ""
 "The number of concurrent boost processes to use to use to process all of the RRDs in the boost table."
 msgstr "बूस्ट टेबल में सभी आरआरडी को संसाधित करने के लिए उपयोग करने के लिए समवर्ती बूस्ट प्रक्रियाओं की संख्या।"
 
-#: include/global_settings.php:1629
+#: include/global_settings.php:1626
 #, fuzzy
 msgid "1 Process"
 msgstr "1 प्रक्रिया"
 
+#: include/global_settings.php:1627 include/global_settings.php:1628 include/global_settings.php:1629
 #: include/global_settings.php:1630 include/global_settings.php:1631 include/global_settings.php:1632
 #: include/global_settings.php:1633 include/global_settings.php:1634 include/global_settings.php:1635
-#: include/global_settings.php:1636 include/global_settings.php:1637 include/global_settings.php:1638
 #, fuzzy, php-format
 msgid "%d Processes"
 msgstr "% d प्रक्रियाएं"
 
-#: include/global_settings.php:1641
+#: include/global_settings.php:1638
 #, fuzzy
 msgid "Maximum Records"
 msgstr "अधिकतम रिकॉर्ड"
 
-#: include/global_settings.php:1642
+#: include/global_settings.php:1639
 #, fuzzy
 msgid "If the boost output table exceeds this size, in records, an update will take place."
 msgstr "यदि रिकॉर्ड में बूस्ट आउटपुट तालिका इस आकार से अधिक हो जाती है, तो एक अपडेट होगा।"
 
-#: include/global_settings.php:1649
+#: include/global_settings.php:1646
 #, fuzzy
 msgid "Maximum Data Source Items Per Pass"
 msgstr "अधिकतम डेटा स्रोत आइटम प्रति पास"
 
-#: include/global_settings.php:1650
+#: include/global_settings.php:1647
 #, fuzzy
 msgid ""
 "To optimize performance, the boost RRD updater needs to know how many Data Source Items should be "
@@ -12747,12 +12748,12 @@ msgstr ""
 "पुनर्प्राप्त किए जाने चाहिए। कृपया सावधान रहें कि बड़े अपडेट के दौरान ग्राफिंग प्रदर्शन को बहुत अधिक सेट न किया जाए। "
 "यदि आप अपडेट के दौरान ग्राफिंग या मतदान सुस्ती का सामना करते हैं, तो इस संख्या को कम करें। डिफ़ॉल्ट मान 50000 है।"
 
-#: include/global_settings.php:1656
+#: include/global_settings.php:1653
 #, fuzzy
 msgid "Maximum Argument Length"
 msgstr "अधिकतम तर्क लंबाई"
 
-#: include/global_settings.php:1657
+#: include/global_settings.php:1654
 #, fuzzy
 msgid ""
 "When boost sends update commands to RRDtool, it must not exceed the operating systems Maximum "
@@ -12763,32 +12764,32 @@ msgstr ""
 "ऑपरेटिंग सिस्टम और कर्नेल स्तर से भिन्न होता है। उदाहरण के लिए: विंडोज 2000 &lt;= 2048, फ्रीबीएसडी &lt;= 65535, "
 "लिनक्स 2.6.22-- &lt;= 131072, लिनक्स 2.6.23 ++ असीमित"
 
-#: include/global_settings.php:1664
+#: include/global_settings.php:1661
 #, fuzzy
 msgid "Memory Limit for Boost and Poller"
 msgstr "बूस्ट और पोलर के लिए मेमोरी लिमिट"
 
-#: include/global_settings.php:1665
+#: include/global_settings.php:1662
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
 msgstr "कैक्टि पोलर और बूस्ट्स पोलर के लिए अधिकतम मात्रा में मेमोरी"
 
-#: include/global_settings.php:1671
+#: include/global_settings.php:1668
 #, fuzzy
 msgid "Maximum RRD Update Script Run Time"
 msgstr "अधिकतम आरआरडी अपडेट स्क्रिप्ट रन टाइम"
 
-#: include/global_settings.php:1672
+#: include/global_settings.php:1669
 #, fuzzy
 msgid "If the boost poller excceds this runtime, a warning will be placed in the cacti log,"
 msgstr "अगर बूस्टर पोल इस रनटाइम को छोड़ देता है, तो कैक्टि लॉग में एक चेतावनी रखी जाएगी,"
 
-#: include/global_settings.php:1678
+#: include/global_settings.php:1675
 #, fuzzy
 msgid "Enable direct population of poller_output_boost table"
 msgstr "मतदाताओं की प्रत्यक्ष जनसंख्या_आउटपुट_बॉस्ट तालिका सक्षम करें"
 
-#: include/global_settings.php:1679
+#: include/global_settings.php:1676
 #, fuzzy
 msgid ""
 "Enables direct insert of records into poller output boost with results in a 25% time reduction in "
@@ -12796,37 +12797,37 @@ msgid ""
 msgstr ""
 "प्रत्येक पोल में 25% समय की कमी में परिणाम के साथ पोलर आउटपुट में रिकॉर्ड को सीधे सम्मिलित करने में सक्षम बनाता है।"
 
-#: include/global_settings.php:1684
+#: include/global_settings.php:1681
 #, fuzzy
 msgid "Boost Debug Log"
 msgstr "डीबग लॉग को बूस्ट करें"
 
-#: include/global_settings.php:1685
+#: include/global_settings.php:1682
 #, fuzzy
 msgid "If this field is non-blank, Boost will log RRDupdate output from the boost\tpoller process."
 msgstr "यदि यह फ़ील्ड गैर-रिक्त है, तो बूस्टर आरओडुपडेट आउटपुट को बूस्टर पोलर प्रक्रिया से लॉग करेगा।"
 
-#: include/global_settings.php:1692 utilities.php:2276
+#: include/global_settings.php:1689 utilities.php:2276
 #, fuzzy
 msgid "Image Caching"
 msgstr "छवि कैशिंग"
 
-#: include/global_settings.php:1697
+#: include/global_settings.php:1694
 #, fuzzy
 msgid "Enable Image Caching"
 msgstr "छवि कैशिंग सक्षम करें"
 
-#: include/global_settings.php:1698
+#: include/global_settings.php:1695
 #, fuzzy
 msgid "Should image caching be enabled?"
 msgstr "क्या छवि कैशिंग सक्षम होना चाहिए?"
 
-#: include/global_settings.php:1703
+#: include/global_settings.php:1700
 #, fuzzy
 msgid "Location for Image Files"
 msgstr "छवि फ़ाइलों के लिए स्थान"
 
-#: include/global_settings.php:1704
+#: include/global_settings.php:1701
 #, fuzzy
 msgid ""
 "Specify the location where Boost should place your image files.  These files will be automatically "
@@ -12835,37 +12836,37 @@ msgstr ""
 "उस स्थान को निर्दिष्ट करें जहां बूस्ट को आपकी छवि फ़ाइलों को रखना चाहिए। ये फाइलें समाप्त होने पर स्वचालित रूप से "
 "मतदाता द्वारा शुद्ध की जाएंगी।"
 
-#: include/global_settings.php:1712
+#: include/global_settings.php:1709
 #, fuzzy
 msgid "Data Sources Statistics"
 msgstr "डेटा स्रोत सांख्यिकी"
 
-#: include/global_settings.php:1717
+#: include/global_settings.php:1714
 #, fuzzy
 msgid "Enable Data Source Statistics Collection"
 msgstr "डेटा स्रोत सांख्यिकी संग्रह सक्षम करें"
 
-#: include/global_settings.php:1718
+#: include/global_settings.php:1715
 #, fuzzy
 msgid "Should Data Source Statistics be collected for this Cacti system?"
 msgstr "क्या इस Cacti प्रणाली के लिए डेटा स्रोत सांख्यिकी एकत्र की जानी चाहिए?"
 
-#: include/global_settings.php:1723
+#: include/global_settings.php:1720
 #, fuzzy
 msgid "Daily Update Frequency"
 msgstr "दैनिक अद्यतन आवृत्ति"
 
-#: include/global_settings.php:1724
+#: include/global_settings.php:1721
 #, fuzzy
 msgid "How frequent should Daily Stats be updated?"
 msgstr "डेली स्टैट्स को कितनी बार अपडेट किया जाना चाहिए?"
 
-#: include/global_settings.php:1730
+#: include/global_settings.php:1727
 #, fuzzy
 msgid "Hourly Average Window"
 msgstr "प्रति घंटा औसत खिड़की"
 
-#: include/global_settings.php:1731
+#: include/global_settings.php:1728
 #, fuzzy
 msgid ""
 "The number of consecutive hours that represent the hourly average.  Keep in mind that a setting too "
@@ -12874,49 +12875,49 @@ msgstr ""
 "लगातार घंटों की संख्या जो प्रति घंटा औसत का प्रतिनिधित्व करती है। ध्यान रखें कि बहुत अधिक सेटिंग बहुत बड़ी मेमोरी "
 "तालिकाओं में हो सकती है"
 
-#: include/global_settings.php:1737
+#: include/global_settings.php:1734
 #, fuzzy
 msgid "Maintenance Time"
 msgstr "रखरखाव समय"
 
-#: include/global_settings.php:1738
+#: include/global_settings.php:1735
 #, fuzzy
 msgid "What time of day should Weekly, Monthly, and Yearly Data be updated?  Format is HH:MM [am/pm]"
 msgstr "साप्ताहिक, मासिक और वार्षिक डेटा दिन के किस समय को अपडेट किया जाना चाहिए? प्रारूप HH है: MM [am / pm]"
 
-#: include/global_settings.php:1745
+#: include/global_settings.php:1742
 #, fuzzy
 msgid "Memory Limit for Data Source Statistics Data Collector"
 msgstr "डेटा स्रोत सांख्यिकी डेटा कलेक्टर के लिए मेमोरी सीमा"
 
-#: include/global_settings.php:1746
+#: include/global_settings.php:1743
 #, fuzzy
 msgid "The maximum amount of memory for the Cacti Poller and Data Source Statistics Poller"
 msgstr "कैक्टि पोलर और डेटा स्रोत सांख्यिकी पोलर के लिए अधिकतम मात्रा में मेमोरी"
 
-#: include/global_settings.php:1752
+#: include/global_settings.php:1749
 #, fuzzy
 msgid "Data Storage Settings"
 msgstr "डेटा संग्रहण सेटिंग्स"
 
-#: include/global_settings.php:1758
+#: include/global_settings.php:1755
 #, fuzzy
 msgid "Choose if RRDs will be stored locally or being handled by an external RRDtool proxy server."
 msgstr ""
 "चुनें कि क्या आरआरडी को स्थानीय रूप से संग्रहीत किया जाएगा या किसी बाहरी आरआरडीटूल प्रॉक्सी सर्वर द्वारा संभाला "
 "जाएगा।"
 
-#: include/global_settings.php:1763 include/global_settings.php:1771
+#: include/global_settings.php:1760 include/global_settings.php:1768
 #, fuzzy
 msgid "RRDtool Proxy Server"
 msgstr "RRDtool प्रॉक्सी सर्वर"
 
-#: include/global_settings.php:1766
+#: include/global_settings.php:1763
 #, fuzzy
 msgid "Structured RRD Paths"
 msgstr "संरचित आरआरडी पथ"
 
-#: include/global_settings.php:1767
+#: include/global_settings.php:1764
 #, fuzzy
 msgid ""
 "Use a separate subfolder for each hosts RRD files.  The naming of the RRDfiles will be &lt;"
@@ -12925,32 +12926,32 @@ msgstr ""
 "प्रत्येक होस्ट RRD फ़ाइलों के लिए एक अलग सबफ़ोल्डर का उपयोग करें। RRDfiles का नामकरण &lt;path_cacti&gt; /rra/"
 "host_id/local_data_id.rrd होगा।"
 
-#: include/global_settings.php:1776 include/global_settings.php:1808
+#: include/global_settings.php:1773 include/global_settings.php:1805
 #, fuzzy
 msgid "Proxy Server"
 msgstr "प्रतिनिधि सर्वर"
 
-#: include/global_settings.php:1777
+#: include/global_settings.php:1774
 #, fuzzy
 msgid "The DNS hostname or IP address of the RRDtool proxy server."
 msgstr "DNS होस्टनाम या RRDtool प्रॉक्सी सर्वर का IP पता।"
 
-#: include/global_settings.php:1782 include/global_settings.php:1814
+#: include/global_settings.php:1779 include/global_settings.php:1811
 #, fuzzy
 msgid "Proxy Port Number"
 msgstr "प्रॉक्सी पोर्ट नंबर"
 
-#: include/global_settings.php:1783
+#: include/global_settings.php:1780
 #, fuzzy
 msgid "TCP port for encrypted communication."
 msgstr "एन्क्रिप्टेड संचार के लिए टीसीपी पोर्ट।"
 
-#: include/global_settings.php:1790 include/global_settings.php:1822 utilities.php:265
+#: include/global_settings.php:1787 include/global_settings.php:1819 utilities.php:265
 #, fuzzy
 msgid "RSA Fingerprint"
 msgstr "आरएसए फिंगरप्रिंट"
 
-#: include/global_settings.php:1791
+#: include/global_settings.php:1788
 #, fuzzy
 msgid ""
 "The fingerprint of the current public RSA key the proxy is using. This is required to establish a "
@@ -12959,17 +12960,17 @@ msgstr ""
 "वर्तमान सार्वजनिक RSA कुंजी का फिंगरप्रिंट प्रॉक्सी का उपयोग कर रहा है। यह एक विश्वसनीय कनेक्शन स्थापित करने के लिए "
 "आवश्यक है।"
 
-#: include/global_settings.php:1798
+#: include/global_settings.php:1795
 #, fuzzy
 msgid "RRDtool Proxy Server - Backup"
 msgstr "RRDtool प्रॉक्सी सर्वर - बैकअप"
 
-#: include/global_settings.php:1803
+#: include/global_settings.php:1800
 #, fuzzy
 msgid "Load Balancing"
 msgstr "भार संतुलन"
 
-#: include/global_settings.php:1804
+#: include/global_settings.php:1801
 #, fuzzy
 msgid ""
 "If both main and backup proxy are receivable this option allows to spread all requests against "
@@ -12977,18 +12978,18 @@ msgid ""
 msgstr ""
 "यदि दोनों मुख्य और बैकअप प्रॉक्सी प्राप्य हैं तो यह विकल्प RRDtool के खिलाफ सभी अनुरोधों को फैलाने की अनुमति देता है।"
 
-#: include/global_settings.php:1809
+#: include/global_settings.php:1806
 #, fuzzy
 msgid ""
 "The DNS hostname or IP address of the RRDtool backup proxy server if proxy is running in MSR mode."
 msgstr "यदि DNS MSR मोड में चल रहा हो तो DNS होस्टनाम या RRDtool बैकअप प्रॉक्सी सर्वर का IP पता"
 
-#: include/global_settings.php:1815
+#: include/global_settings.php:1812
 #, fuzzy
 msgid "TCP port for encrypted communication with the backup proxy."
 msgstr "बैकअप प्रॉक्सी के साथ एन्क्रिप्टेड संचार के लिए टीसीपी पोर्ट।"
 
-#: include/global_settings.php:1823
+#: include/global_settings.php:1820
 #, fuzzy
 msgid ""
 "The fingerprint of the current public RSA key the backup proxy is using. This required to establish "
@@ -12997,17 +12998,17 @@ msgstr ""
 "वर्तमान सार्वजनिक RSA कुंजी का फिंगरप्रिंट बैकअप प्रॉक्सी उपयोग कर रहा है। यह एक विश्वसनीय कनेक्शन स्थापित करने के "
 "लिए आवश्यक है।"
 
-#: include/global_settings.php:1832
+#: include/global_settings.php:1829
 #, fuzzy
 msgid "Spike Kill Settings"
 msgstr "स्पाइक किल सेटिंग्स"
 
-#: include/global_settings.php:1837
+#: include/global_settings.php:1834
 #, fuzzy
 msgid "Removal Method"
 msgstr "निष्कासन विधि"
 
-#: include/global_settings.php:1838
+#: include/global_settings.php:1835
 #, fuzzy
 msgid ""
 "There are two removal methods.  The first, Standard Deviation, will remove any sample that is X "
@@ -13021,22 +13022,22 @@ msgstr ""
 "संख्या में &#39;आउटलेर्स&#39; को ध्यान में रखती है। वे असाधारण नमूने हैं, स्पाइक की तरह, जिन्हें वैरियनस औसत गणना से बाहर "
 "रखा जाना चाहिए।"
 
-#: include/global_settings.php:1842
+#: include/global_settings.php:1839
 #, fuzzy
 msgid "Standard Deviation"
 msgstr "मानक विचलन"
 
-#: include/global_settings.php:1843
+#: include/global_settings.php:1840
 #, fuzzy
 msgid "Variance Based w/Outliers Removed"
 msgstr "वर्जन आधारित डब्ल्यू / आउटलेर्स को हटा दिया गया"
 
-#: include/global_settings.php:1846 lib/html.php:2062
+#: include/global_settings.php:1843 lib/html.php:2062
 #, fuzzy
 msgid "Replacement Method"
 msgstr "प्रतिस्थापन विधि"
 
-#: include/global_settings.php:1847
+#: include/global_settings.php:1844
 #, fuzzy
 msgid ""
 "There are three replacement methods.  The first method replaces the spike with the average of the "
@@ -13046,27 +13047,27 @@ msgstr ""
 "तीन प्रतिस्थापन तरीके हैं। पहली विधि स्पाइक को प्रश्न में डेटा स्रोत के औसत से बदल देती है। दूसरी विधि स्पाइक को &#39;"
 "NaN&#39; से बदल देती है। अंतिम स्पाइक को अंतिम ज्ञात अच्छे मान के साथ बदलता है।"
 
-#: include/global_settings.php:1851 lib/html.php:2058
+#: include/global_settings.php:1848 lib/html.php:2058
 #, fuzzy
 msgid "Average"
 msgstr "औसत"
 
-#: include/global_settings.php:1852 lib/html.php:2059
+#: include/global_settings.php:1849 lib/html.php:2059
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN के"
 
-#: include/global_settings.php:1853 lib/html.php:2060
+#: include/global_settings.php:1850 lib/html.php:2060
 #, fuzzy
 msgid "Last Known Good"
 msgstr "आखिरी ज्ञात अच्छाई"
 
-#: include/global_settings.php:1856
+#: include/global_settings.php:1853
 #, fuzzy
 msgid "Number of Standard Deviations"
 msgstr "मानक विचलन की संख्या"
 
-#: include/global_settings.php:1857
+#: include/global_settings.php:1854
 #, fuzzy
 msgid ""
 "Any value that is this many standard deviations above the average will be excluded.  A good number "
@@ -13076,20 +13077,20 @@ msgstr ""
 "किसी भी मूल्य जो औसत से ऊपर कई मानक विचलन हैं, उन्हें बाहर रखा जाएगा। एक अच्छी संख्या डेटा के प्रकार पर निर्भर होगी "
 "जिसे चालू किया जाना है। हम 5 मानक विचलन से कम नहीं की संख्या की सलाह देते हैं।"
 
+#: include/global_settings.php:1858 include/global_settings.php:1859 include/global_settings.php:1860
 #: include/global_settings.php:1861 include/global_settings.php:1862 include/global_settings.php:1863
 #: include/global_settings.php:1864 include/global_settings.php:1865 include/global_settings.php:1866
-#: include/global_settings.php:1867 include/global_settings.php:1868 include/global_settings.php:1869
-#: include/global_settings.php:1870
+#: include/global_settings.php:1867
 #, fuzzy, php-format
 msgid "%d Standard Deviations"
 msgstr "% d मानक विचलन"
 
-#: include/global_settings.php:1874 lib/html.php:2074
+#: include/global_settings.php:1871 lib/html.php:2074
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "भिन्नता का प्रतिशत"
 
-#: include/global_settings.php:1875
+#: include/global_settings.php:1872
 #, fuzzy, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once outliers have been "
@@ -13100,12 +13101,12 @@ msgstr ""
 "उदाहरण के लिए, 50 के समायोजित औसत पर 100% प्रति वर्ष का एक भिन्न प्रतिशत ग्राफ से 100 की मात्रा के ऊपर किसी भी "
 "नमूने को हटा देगा।"
 
-#: include/global_settings.php:1894
+#: include/global_settings.php:1891
 #, fuzzy
 msgid "Variance Number of Outliers"
 msgstr "बाहरी लोगों की भिन्न संख्या"
 
-#: include/global_settings.php:1895
+#: include/global_settings.php:1892
 #, fuzzy
 msgid ""
 "This value represents the number of high and low average samples will be removed from the sample set "
@@ -13115,71 +13116,71 @@ msgstr ""
 "यह मान उच्च और निम्न औसत नमूनों की संख्या को दर्शाता है जो कि वैरिएस औसत की गणना करने से पहले नमूना सेट से हटा दिया "
 "जाएगा। यदि आप 5 का एक बाह्य मान चुनते हैं, तो शीर्ष और नीचे दोनों 5 औसत निकाल दिए जाते हैं।"
 
+#: include/global_settings.php:1896 include/global_settings.php:1897 include/global_settings.php:1898
 #: include/global_settings.php:1899 include/global_settings.php:1900 include/global_settings.php:1901
-#: include/global_settings.php:1902 include/global_settings.php:1903 include/global_settings.php:1904
-#: include/global_settings.php:1905 include/global_settings.php:1906
+#: include/global_settings.php:1902 include/global_settings.php:1903
 #, fuzzy, php-format
 msgid "%d High/Low Samples"
 msgstr "% d उच्च / निम्न नमूने"
 
-#: include/global_settings.php:1910
+#: include/global_settings.php:1907
 #, fuzzy
 msgid "Max Kills Per RRA"
 msgstr "मैक्स प्रति आरआरए को मारता है"
 
-#: include/global_settings.php:1911
+#: include/global_settings.php:1908
 #, fuzzy
 msgid "This value represents the maximum number of spikes to remove from a Graph RRA."
 msgstr "यह मान ग्राफ़ RRA से निकालने के लिए स्पाइक्स की अधिकतम संख्या दर्शाता है।"
 
+#: include/global_settings.php:1912 include/global_settings.php:1913 include/global_settings.php:1914
 #: include/global_settings.php:1915 include/global_settings.php:1916 include/global_settings.php:1917
-#: include/global_settings.php:1918 include/global_settings.php:1919 include/global_settings.php:1920
-#: include/global_settings.php:1921 include/global_settings.php:1922
+#: include/global_settings.php:1918 include/global_settings.php:1919
 #, fuzzy, php-format
 msgid "%d Samples"
 msgstr "% d नमूने"
 
-#: include/global_settings.php:1926
+#: include/global_settings.php:1923
 #, fuzzy
 msgid "RRDfile Backup Directory"
 msgstr "RRDfile बैकअप निर्देशिका"
 
-#: include/global_settings.php:1927
+#: include/global_settings.php:1924
 #, fuzzy
 msgid "If this directory is not empty, then your original RRDfiles will be backed up to this location."
 msgstr "यदि यह निर्देशिका खाली नहीं है, तो आपके मूल RRDfiles को इस स्थान पर बैकअप दिया जाएगा।"
 
-#: include/global_settings.php:1934
+#: include/global_settings.php:1931
 #, fuzzy
 msgid "Batch Spike Kill Settings"
 msgstr "बैच स्पाइक किल सेटिंग्स"
 
-#: include/global_settings.php:1939
+#: include/global_settings.php:1936
 #, fuzzy
 msgid "Removal Schedule"
 msgstr "निष्कासन अनुसूची"
 
-#: include/global_settings.php:1940
+#: include/global_settings.php:1937
 #, fuzzy
 msgid "Do you wish to periodically remove spikes from your graphs?  If so, select the frequency below."
 msgstr "क्या आप अपने ग्राफ़ से समय-समय पर स्पाइक्स निकालना चाहते हैं? यदि ऐसा है, तो नीचे दी गई आवृत्ति का चयन करें।"
 
-#: include/global_settings.php:1947
+#: include/global_settings.php:1944
 #, fuzzy
 msgid "Once a Day"
 msgstr "दिन में एक बार"
 
-#: include/global_settings.php:1948
+#: include/global_settings.php:1945
 #, fuzzy
 msgid "Every Other Day"
 msgstr "हर दूसरे दिन"
 
-#: include/global_settings.php:1951
+#: include/global_settings.php:1948
 #, fuzzy
 msgid "Base Time"
 msgstr "आधार समय"
 
-#: include/global_settings.php:1952
+#: include/global_settings.php:1949
 #, fuzzy
 msgid ""
 "The Base Time for Spike removal to occur.  For example, if you use '12:00am' and you choose once per "
@@ -13188,306 +13189,306 @@ msgstr ""
 "स्पाइक हटाने के लिए आधार समय घटित होता है। उदाहरण के लिए, यदि आप &#39;12: 00am &#39;का उपयोग करते हैं और आप "
 "प्रति दिन एक बार चुनते हैं, तो बैच निकालना हर दिन लगभग आधी रात को शुरू होगा।"
 
-#: include/global_settings.php:1959
+#: include/global_settings.php:1956
 #, fuzzy
 msgid "Graph Templates to Spike Kill"
 msgstr "ग्राफ टेम्पलेट्स स्पाइक को मारने के लिए"
 
-#: include/global_settings.php:1961
+#: include/global_settings.php:1958
 #, fuzzy
 msgid "When performing batch spike removal, only the templates selected below will be acted on."
 msgstr "बैच स्पाइक हटाने का प्रदर्शन करते समय, केवल नीचे चयनित टेम्पलेट्स पर ही काम किया जाएगा।"
 
-#: include/global_settings.php:1977
+#: include/global_settings.php:1974
 #, fuzzy
 msgid "Default View Mode"
 msgstr "डिफ़ॉल्ट दृश्य मोड"
 
-#: include/global_settings.php:1978
+#: include/global_settings.php:1975
 #, fuzzy
 msgid "Which Graph mode you want displayed by default when you first visit the Graphs page?"
 msgstr "जब आप पहली बार रेखांकन पृष्ठ पर जाते हैं, तो आप किस ग्राफ़ मोड को डिफ़ॉल्ट रूप से प्रदर्शित करना चाहते हैं?"
 
-#: include/global_settings.php:1984
+#: include/global_settings.php:1981
 #, fuzzy
 msgid "User Language"
 msgstr "उपयोगकर्ता भाषा"
 
-#: include/global_settings.php:1985
+#: include/global_settings.php:1982
 #, fuzzy
 msgid "Defines the preferred GUI language."
 msgstr "पसंदीदा GUI भाषा को परिभाषित करता है।"
 
-#: include/global_settings.php:1991
+#: include/global_settings.php:1988
 #, fuzzy
 msgid "Show Graph Title"
 msgstr "ग्राफ का शीर्षक दिखाएं"
 
-#: include/global_settings.php:1992
+#: include/global_settings.php:1989
 #, fuzzy
 msgid "Display the graph title on the page so that it may be searched using the browser."
 msgstr "पृष्ठ पर ग्राफ़ शीर्षक प्रदर्शित करें ताकि इसे ब्राउज़र का उपयोग करके खोजा जा सके।"
 
-#: include/global_settings.php:1997
+#: include/global_settings.php:1994
 #, fuzzy
 msgid "Hide Disabled"
 msgstr "अक्षम छिपाएँ"
 
-#: include/global_settings.php:1998
+#: include/global_settings.php:1995
 #, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "कंसोल टैब के बाहर देखने पर डिसेबल्ड डिवाइसेस और ग्राफ़ छिपाता है।"
 
-#: include/global_settings.php:2004
+#: include/global_settings.php:2001
 #, fuzzy
 msgid "The date format to use in Cacti."
 msgstr "कैक्टि में उपयोग करने की तिथि प्रारूप।"
 
-#: include/global_settings.php:2011
+#: include/global_settings.php:2008
 #, fuzzy
 msgid "The date separator to be used in Cacti."
 msgstr "कैक्टि में उपयोग किए जाने वाले दिनांक विभाजक।"
 
-#: include/global_settings.php:2017
+#: include/global_settings.php:2014
 #, fuzzy
 msgid "Page Refresh"
 msgstr "पेज ताज़ा करें"
 
-#: include/global_settings.php:2018
+#: include/global_settings.php:2015
 #, fuzzy
 msgid "The number of seconds between automatic page refreshes."
 msgstr "स्वचालित पेज रिफ्रेश के बीच सेकंड की संख्या।"
 
-#: include/global_settings.php:2029
+#: include/global_settings.php:2026
 #, fuzzy
 msgid "Preview Graphs Per Page"
 msgstr "प्रति पृष्ठ ग्राफ़ का पूर्वावलोकन करें"
 
-#: include/global_settings.php:2030 include/global_settings.php:2157
+#: include/global_settings.php:2027 include/global_settings.php:2154
 #, fuzzy
 msgid "The number of graphs to display on one page in preview mode."
 msgstr "पूर्वावलोकन मोड में एक पृष्ठ पर प्रदर्शित करने के लिए ग्राफ़ की संख्या।"
 
-#: include/global_settings.php:2038
+#: include/global_settings.php:2035
 #, fuzzy
 msgid "Default Time Range"
 msgstr "डिफ़ॉल्ट समय सीमा"
 
-#: include/global_settings.php:2039
+#: include/global_settings.php:2036
 #, fuzzy
 msgid "The default RRA to use in rare occasions."
 msgstr "दुर्लभ अवसरों में उपयोग करने के लिए डिफ़ॉल्ट RRA।"
 
-#: include/global_settings.php:2046
+#: include/global_settings.php:2043
 #, fuzzy
 msgid "The default Timespan displayed when viewing Graphs and other time specific data."
 msgstr "रेखांकन और अन्य समय विशिष्ट डेटा को देखने पर डिफ़ॉल्ट Timespan प्रदर्शित होता है।"
 
-#: include/global_settings.php:2052
+#: include/global_settings.php:2049
 #, fuzzy
 msgid "Default Timeshift"
 msgstr "डिफ़ॉल्ट टाइमशिफ्ट"
 
-#: include/global_settings.php:2053
+#: include/global_settings.php:2050
 #, fuzzy
 msgid "The default Timeshift displayed when viewing Graphs and other time specific data."
 msgstr "रेखांकन और अन्य समय विशिष्ट डेटा को देखते समय डिफ़ॉल्ट टाइमशिफ्ट प्रदर्शित होता है।"
 
-#: include/global_settings.php:2059
+#: include/global_settings.php:2056
 #, fuzzy
 msgid "Allow Graph to extend to Future"
 msgstr "ग्राफ़ को भविष्य में विस्तारित करने की अनुमति दें"
 
-#: include/global_settings.php:2060
+#: include/global_settings.php:2057
 #, fuzzy
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
 msgstr "ग्राफ़ प्रदर्शित करते समय, ग्राफ़ तिथियों को &#39;भविष्य तक&#39; विस्तारित करने की अनुमति दें"
 
-#: include/global_settings.php:2065
+#: include/global_settings.php:2062
 #, fuzzy
 msgid "First Day of the Week"
 msgstr "सप्ताह का पहला दिन"
 
-#: include/global_settings.php:2066
+#: include/global_settings.php:2063
 #, fuzzy
 msgid "The first Day of the Week for weekly Graph Displays"
 msgstr "साप्ताहिक ग्राफ प्रदर्शन के लिए सप्ताह का पहला दिन"
 
-#: include/global_settings.php:2072
+#: include/global_settings.php:2069
 #, fuzzy
 msgid "Start of Daily Shift"
 msgstr "डेली शिफ्ट की शुरुआत"
 
-#: include/global_settings.php:2073
+#: include/global_settings.php:2070
 #, fuzzy
 msgid "Start Time of the Daily Shift."
 msgstr "डेली शिफ्ट का टाइम शुरू करें।"
 
-#: include/global_settings.php:2080
+#: include/global_settings.php:2077
 #, fuzzy
 msgid "End of Daily Shift"
 msgstr "डेली शिफ्ट का अंत"
 
-#: include/global_settings.php:2081
+#: include/global_settings.php:2078
 #, fuzzy
 msgid "End Time of the Daily Shift."
 msgstr "डेली शिफ्ट का एंड टाइम।"
 
-#: include/global_settings.php:2090
+#: include/global_settings.php:2087
 #, fuzzy
 msgid "Thumbnail Sections"
 msgstr "थंबनेल अनुभाग"
 
-#: include/global_settings.php:2091
+#: include/global_settings.php:2088
 #, fuzzy
 msgid "Which portions of Cacti display Thumbnails by default."
 msgstr "Cacti के कौन से भाग डिफ़ॉल्ट रूप से थंबनेल प्रदर्शित करते हैं।"
 
-#: include/global_settings.php:2105
+#: include/global_settings.php:2102
 #, fuzzy
 msgid "Preview Thumbnail Columns"
 msgstr "थंबनेल कॉलम का पूर्वावलोकन करें"
 
-#: include/global_settings.php:2106
+#: include/global_settings.php:2103
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Preview mode."
 msgstr "पूर्वावलोकन मोड में थंबनेल ग्राफ़ प्रदर्शित करते समय उपयोग किए जाने वाले कॉलम की संख्या।"
 
-#: include/global_settings.php:2110 include/global_settings.php:2123
+#: include/global_settings.php:2107 include/global_settings.php:2120
 msgid "1 Column"
 msgstr "1 स्तंभ"
 
-#: include/global_settings.php:2111 include/global_settings.php:2112 include/global_settings.php:2113
-#: include/global_settings.php:2114 include/global_settings.php:2115 include/global_settings.php:2124
-#: include/global_settings.php:2125 include/global_settings.php:2126 include/global_settings.php:2127
-#: include/global_settings.php:2128 lib/html_graph.php:228 lib/html_graph.php:229
+#: include/global_settings.php:2108 include/global_settings.php:2109 include/global_settings.php:2110
+#: include/global_settings.php:2111 include/global_settings.php:2112 include/global_settings.php:2121
+#: include/global_settings.php:2122 include/global_settings.php:2123 include/global_settings.php:2124
+#: include/global_settings.php:2125 lib/html_graph.php:228 lib/html_graph.php:229
 #: lib/html_graph.php:230 lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1024
 #: lib/html_tree.php:1025 lib/html_tree.php:1026 lib/html_tree.php:1027 lib/html_tree.php:1028
 #, fuzzy, php-format
 msgid "%d Columns"
 msgstr "% d कॉलम"
 
-#: include/global_settings.php:2118
+#: include/global_settings.php:2115
 #, fuzzy
 msgid "Tree View Thumbnail Columns"
 msgstr "ट्री व्यू थंबनेल कॉलम"
 
-#: include/global_settings.php:2119
+#: include/global_settings.php:2116
 #, fuzzy
 msgid "The number of columns to use when displaying Thumbnail graphs in Tree mode."
 msgstr "ट्री मोड में थंबनेल ग्राफ़ प्रदर्शित करते समय उपयोग किए जाने वाले कॉलम की संख्या।"
 
-#: include/global_settings.php:2131
+#: include/global_settings.php:2128
 #, fuzzy
 msgid "Thumbnail Height"
 msgstr "थंबनेल ऊँचाई"
 
-#: include/global_settings.php:2132
+#: include/global_settings.php:2129
 #, fuzzy
 msgid "The height of Thumbnail graphs in pixels."
 msgstr "पिक्सेल में थंबनेल ग्राफ़ की ऊंचाई।"
 
-#: include/global_settings.php:2139
+#: include/global_settings.php:2136
 #, fuzzy
 msgid "Thumbnail Width"
 msgstr "थंबनेल की चौड़ाई"
 
-#: include/global_settings.php:2140
+#: include/global_settings.php:2137
 #, fuzzy
 msgid "The width of Thumbnail graphs in pixels."
 msgstr "पिक्सेल में थंबनेल ग्राफ़ की चौड़ाई।"
 
-#: include/global_settings.php:2149
+#: include/global_settings.php:2146
 #, fuzzy
 msgid "Default Tree"
 msgstr "डिफ़ॉल्ट पेड़"
 
-#: include/global_settings.php:2150
+#: include/global_settings.php:2147
 #, fuzzy
 msgid "The default graph tree to use when displaying graphs in tree mode."
 msgstr "ट्री मोड में रेखांकन प्रदर्शित करते समय उपयोग करने के लिए डिफ़ॉल्ट ग्राफ ट्री"
 
-#: include/global_settings.php:2156
+#: include/global_settings.php:2153
 #, fuzzy
 msgid "Graphs Per Page"
 msgstr "प्रति पेज रेखांकन"
 
-#: include/global_settings.php:2163
+#: include/global_settings.php:2160
 #, fuzzy
 msgid "Expand Devices"
 msgstr "डिवाइस का विस्तार करें"
 
-#: include/global_settings.php:2164
+#: include/global_settings.php:2161
 #, fuzzy
 msgid "Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree."
 msgstr "चुनें कि क्या ट्री पर एक उपकरण द्वारा उपयोग किए गए ग्राफ़ टेम्पलेट और डेटा क्वेरी का विस्तार करना है।"
 
-#: include/global_settings.php:2171
+#: include/global_settings.php:2168
 #, fuzzy
 msgid "Use Custom Fonts"
 msgstr "कस्टम फ़ॉन्ट्स का उपयोग करें"
 
-#: include/global_settings.php:2172
+#: include/global_settings.php:2169
 #, fuzzy
 msgid "Choose whether to use your own custom fonts and font sizes or utilize the system defaults."
 msgstr "चुनें कि क्या अपने स्वयं के कस्टम फ़ॉन्ट और फ़ॉन्ट आकार का उपयोग करें या सिस्टम डिफ़ॉल्ट का उपयोग करें"
 
-#: include/global_settings.php:2185
+#: include/global_settings.php:2182
 #, fuzzy
 msgid "Title Font File"
 msgstr "शीर्षक फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2186
+#: include/global_settings.php:2183
 #, fuzzy
 msgid "The font file to use for Graph Titles"
 msgstr "ग्राफ टाइटल के लिए उपयोग करने के लिए फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2198
+#: include/global_settings.php:2195
 #, fuzzy
 msgid "Legend Font File"
 msgstr "किंवदंती फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2199
+#: include/global_settings.php:2196
 #, fuzzy
 msgid "The font file to be used for Graph Legend items"
 msgstr "ग्राफ किंवदंती वस्तुओं के लिए उपयोग की जाने वाली फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2211
+#: include/global_settings.php:2208
 #, fuzzy
 msgid "Axis Font File"
 msgstr "एक्सिस फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2212
+#: include/global_settings.php:2209
 #, fuzzy
 msgid "The font file to be used for Graph Axis items"
 msgstr "फ़ॉन्ट फ़ाइल का उपयोग ग्राफ़ एक्सिस आइटम के लिए किया जाएगा"
 
-#: include/global_settings.php:2224
+#: include/global_settings.php:2221
 #, fuzzy
 msgid "Unit Font File"
 msgstr "यूनिट फ़ॉन्ट फ़ाइल"
 
-#: include/global_settings.php:2225
+#: include/global_settings.php:2222
 #, fuzzy
 msgid "The font file to be used for Graph Unit items"
 msgstr "फ़ॉन्ट फ़ाइल का उपयोग ग्राफ यूनिट आइटम के लिए किया जाना है"
 
-#: include/global_settings.php:2239
+#: include/global_settings.php:2236
 #, fuzzy
 msgid "Realtime View Mode"
 msgstr "रीयलटाइम व्यू मोड"
 
-#: include/global_settings.php:2240
+#: include/global_settings.php:2237
 #, fuzzy
 msgid "How do you wish to view Realtime Graphs?"
 msgstr "आप रियलटाइम ग्राफ़ कैसे देखना चाहते हैं?"
 
-#: include/global_settings.php:2243
+#: include/global_settings.php:2240
 #, fuzzy
 msgid "Inline"
 msgstr "पंक्ति में"
 
-#: include/global_settings.php:2244
+#: include/global_settings.php:2241
 #, fuzzy
 msgid "New Window"
 msgstr "नयी खिड़की"
@@ -13900,7 +13901,7 @@ msgstr "होस्ट का नाम:"
 #: lib/api_device.php:1058
 #, fuzzy
 msgid "Location:"
-msgstr "स्थान:"
+msgstr "स्थान"
 
 #: lib/api_device.php:1059
 #, fuzzy
@@ -15105,7 +15106,7 @@ msgstr "से शुरू"
 #: lib/html.php:2347
 #, fuzzy
 msgid "End with"
-msgstr "के साथ समाप्त करना"
+msgstr "अंतिम दिनांक"
 
 #: lib/html.php:2349 lib/html_form.php:1283
 msgid "Close"
