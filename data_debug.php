@@ -468,7 +468,7 @@ function debug_wizard() {
 				form_selectable_cell(debug_icon($info['rrd_match']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['valid_data']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['local_data_id'], '', 'center');
-				form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . html_escape(strlen(trim($issue_line)) ? $issue_line : __('N/A')) . '</a>', $check['local_data_id'], '', 'right');
+				form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . ($issue_line != '' ? __esc('Issues') : __esc('N/A')) . '</a>', $check['local_data_id'], '', 'right');
 			} else {
 				form_selectable_cell('-', $check['local_data_id']);
 				form_selectable_cell(__('Not Debugging'), $check['local_data_id'], '', 'right');
