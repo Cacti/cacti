@@ -927,7 +927,8 @@ $menu_glyphs = array(
 	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
 	__('External Links') => 'fa fa-external-link',
-	__('Support') => 'fa fa-question-circle'
+	__('Support') => 'fa fa-question-circle',
+	__('Troubleshooting') => 'fa fa-bug'
 );
 
 if ((isset($_SESSION['sess_user_id']))) {
