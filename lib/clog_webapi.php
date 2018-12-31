@@ -371,7 +371,10 @@ function filter_sort($a, $b) {
 		$b_date = $b_parts[1];
 	}
 
-	return strcmp($b_date . '-' . $b_parts[0], $a_date . '-' . $a_parts[0]);
+	// Invert the order, replace _'s with +'s to make them sort after .'s, prefix the date
+	// This makes cacti_stderr.log appear after cacti.log in date descending order with
+	// no date files first
+	return strcmp($b_date . '-' . str_replace('_','+',$b_parts[0]), $a_date . '-' . str_replace('_','+',$a_parts[0]));
 }
 
 function filter($clogAdmin) {
@@ -428,16 +431,11 @@ function filter($clogAdmin) {
 									continue;
 								}
 
-								if (strcmp($logFile, 'cacti.log') == 0) {
-									continue;
-								}
-
 								$logFileArray[] = $logFile;
 							}
 
 							$logFileArray = array_unique($logFileArray);
 							usort($logFileArray, 'filter_sort');
-							array_unshift($logFileArray,'cacti.log');
 
 							foreach ($logFileArray as $logFile) {
 								print "<option value='" . $logFile . "'";
@@ -446,7 +444,12 @@ function filter($clogAdmin) {
 									print ' selected';
 								}
 
-								print '>' . $logFile . "</option>\n";
+								$logParts = explode('-', $logFile);
+
+								$logDate = count($logParts) < 2 ? '' : ('[' . $logParts[1] . '] ');
+								$logName = $logParts[0];
+
+								print '>' . $logDate . $logName . "</option>\n";
 							}
 						}
 						?>
