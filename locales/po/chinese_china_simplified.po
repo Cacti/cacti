@@ -29,15 +29,14 @@ msgid ""
 "taking care of all the necessary details necessary to create meaningful "
 "graphs."
 msgstr ""
-"Cacti被设计成基于RRDtool框架的完整的图形解决方案. 其目标是通过照顾创建有意义"
-"的图形所需的所有必要细节,使网络管理员的工作更轻松."
+"Cacti 被设计成基于RRDtool 框架的完整的画图解决方案. 其目标是通过创建有意义的图形所需的所有必要细节,使网络管理员的工作更轻松."
 
 #: about.php:44
 #, php-format
 msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
-msgstr "请查看%sCacti官方网站%s获取信息,支持和更新."
+msgstr "请查看 %s Cacti 官方网站 %s 获取信息,支持和更新."
 
 #: about.php:46
 msgid "Cacti Developers"
@@ -45,7 +44,7 @@ msgstr "Cacti 开发者"
 
 #: about.php:59
 msgid "Thanks"
-msgstr "谢谢"
+msgstr "致谢"
 
 #: about.php:62
 #, php-format
@@ -53,11 +52,11 @@ msgid ""
 "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and "
 "the very popular %sMRTG%s."
 msgstr ""
-"非常特别感谢%s Tobi Oetiker%s,%sRRDtool%s的创建者和非常受欢迎的%sMRTG%s."
+"非常特别感谢 %sTobi Oetiker%s, %sRRDtool%s 的创建者以及非常受欢迎的 %sMRTG%s 的作者."
 
 #: about.php:65
 msgid "The users of Cacti"
-msgstr "Cacti的用户"
+msgstr "Cacti 的用户"
 
 #: about.php:66
 msgid ""
@@ -65,8 +64,7 @@ msgid ""
 "otherwise help fix a Cacti related problems. Also to anyone who has "
 "contributed to supporting Cacti."
 msgstr ""
-"特别是谁花了时间创造一个问题报告,或以其他方式帮助解决Cacti相关的问题. 也对"
-"任何支持Cacti做出贡献的人."
+"特别是那些花时间提问题,或以其他方式帮助Cacti 修复问题的人. 也包括任何支持Cacti 并做出贡献的人."
 
 #: about.php:71
 msgid "License"
@@ -74,7 +72,7 @@ msgstr "授权"
 
 #: about.php:73
 msgid "Cacti is licensed under the GNU GPL:"
-msgstr "Cacti根据GNU GPL许可:"
+msgstr "Cacti 根据GNU GPL 许可:"
 
 #: about.php:75 lib/installer.php:1562
 msgid ""
@@ -83,8 +81,8 @@ msgid ""
 "Software Foundation; either version 2 of the License, or (at your option) "
 "any later version."
 msgstr ""
-"这个程序是免费的软件; 您可以根据自由软件基金会发布的GNU通用公共许可条款重新分"
-"发和/或修改它; 版本2的许可证,或者(根据您的选择)任何更新的版本."
+"这个程序是免费的软件; 您可以根据自由软件基金会发布的GNU 通用公共许可条款重新分发或修改它"
+"并以GPL v2及之后的许可证(根据您的选择)公布出来."
 
 #: about.php:77
 msgid ""
@@ -93,8 +91,8 @@ msgid ""
 "FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for "
 "more details."
 msgstr ""
-"这个程序是分发的,希望它会有用,但没有任何的保证; 甚至没有对适销性或特定用途"
-"的适用性的暗示保证. 有关更多详细信息,请参阅GNU通用公共许可证."
+"这个程序是基于帮助别人的想法而分发的,但它没有任何的保证; 甚至没对商用或特定用途"
+"的适用性有暗示性保证. 有关更多详细信息,请参阅GNU 通用公共许可证."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:29
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -132,16 +130,16 @@ msgstr "从聚合创建新聚合"
 
 #: aggregate_graphs.php:49
 msgid "Associate with Aggregate"
-msgstr "与Aggregate关联"
+msgstr "与聚合关联"
 
 #: aggregate_graphs.php:50
 msgid "Disassociate with Aggregate"
-msgstr "与聚合解除关联"
+msgstr "解除与聚合的关联"
 
 #: aggregate_graphs.php:83 graphs.php:197
 #, php-format
 msgid "Place on a Tree (%s)"
-msgstr "放在树上 (%s)"
+msgstr "放在树形上 (%s)"
 
 #: aggregate_graphs.php:334
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
@@ -224,7 +222,7 @@ msgstr "删除图形"
 msgid ""
 "The selected Aggregate Graphs represent elements from more than one Graph "
 "Template."
-msgstr "选定的聚合图形示来自多个图形模板的元素."
+msgstr "选定的聚合图形是来自多个图形模板的元素."
 
 #: aggregate_graphs.php:366
 msgid ""
@@ -233,7 +231,7 @@ msgid ""
 "'Return' and then select only Aggregate Graph that utilize the same Graph "
 "Template."
 msgstr ""
-"为了将下面的聚合图迁移到基于模板的聚合,他们只能使用一个图模板. 请按“返回”,"
+"为了将下面的聚合图迁移到基于模板的聚合,他们只能使用一个图模板. 请按 '返回',"
 "然后选择仅使用相同图形模板的聚合图."
 
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
@@ -249,7 +247,7 @@ msgstr "返回"
 msgid ""
 "Click 'Continue' and the following Aggregate Graph(s) will be migrated to "
 "use the Aggregate Template that you choose below."
-msgstr "点击“继续”,下面的聚合图将被迁移到使用您在下面选择的聚合模板."
+msgstr "点击 '继续',下面的聚合图将被迁移到使用您在下面选择的聚合模板."
 
 #: aggregate_graphs.php:390
 msgid "Aggregate Template:"
@@ -271,13 +269,13 @@ msgstr ""
 
 #: aggregate_graphs.php:406
 msgid "Please press 'Return' to continue."
-msgstr "请按“返回”继续."
+msgstr "请按 '返回' 继续."
 
 #: aggregate_graphs.php:417
 msgid ""
 "Click 'Continue' to combine the following Aggregate Graph(s) into a single "
 "Aggregate Graph."
-msgstr "点击“继续”,将下面的聚合图组合成一个聚合图."
+msgstr "点击 '继续',将下面的聚合图组合成一个聚合图."
 
 #: aggregate_graphs.php:422
 msgid "Aggregate Name:"
@@ -290,7 +288,7 @@ msgstr "新建聚合"
 #: aggregate_graphs.php:438 graphs.php:1190
 #, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
-msgstr "点击“继续”将选定的图形添加到下面的报告中."
+msgstr "点击 '继续' 将选定的图形添加到下面的报告中."
 
 #: aggregate_graphs.php:442 graph_view.php:749 graphs.php:1194
 #: lib/html_reports.php:938 lib/html_reports.php:1602
@@ -320,7 +318,7 @@ msgstr "您目前没有定义报告."
 msgid ""
 "Click 'Continue' to associate the following Graph(s) with the Aggregate "
 "Graph."
-msgstr "点击“继续”将以下图形与聚合图相关联."
+msgstr "点击 '继续' 将以下图形与聚合图相关联."
 
 #: aggregate_graphs.php:467
 msgid "Associate Graph(s)"
@@ -329,7 +327,7 @@ msgstr "关联图"
 #: aggregate_graphs.php:471
 msgid ""
 "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
-msgstr "点击“继续”从聚合中取消关联以下图形."
+msgstr "点击 '继续' 从聚合中取消关联以下图形."
 
 #: aggregate_graphs.php:476
 msgid "Dis-Associate Graph(s)"
@@ -339,7 +337,7 @@ msgstr "分散关联图"
 msgid ""
 "Click 'Continue' to place the following Aggregate Graph(s) under the Tree "
 "Branch."
-msgstr "点击“继续”,在树形分支下放置下面的聚合图."
+msgstr "点击 '继续',在树形分支下放置下面的聚合图."
 
 #: aggregate_graphs.php:482 host.php:430
 msgid "Destination Branch:"
@@ -729,7 +727,7 @@ msgstr "覆盖此值"
 
 #: aggregate_templates.php:307
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "点击“继续”删除下面的聚合图模板"
+msgstr "点击 '继续' 删除下面的聚合图模板"
 
 #: aggregate_templates.php:312
 msgid "Delete Color Template(s)"
@@ -904,17 +902,17 @@ msgstr ""
 msgid ""
 "%s authenticated by Web Server, but both Template and Guest Users are not "
 "defined in Cacti."
-msgstr "%s 通过Web Server进行身份验证,但“模板”和“访客用户”在Cacti中未定义."
+msgstr "%s 通过Web 服务器进行身份验证, 但 '模板'和'来宾用户'在Cacti 中未定义."
 
 #: auth_login.php:132 auth_login.php:457
 #, php-format
 msgid "LDAP Search Error: %s"
-msgstr "LDAP搜寻错误: %s"
+msgstr "LDAP 搜索错误: %s"
 
 #: auth_login.php:158 auth_login.php:562
 #, php-format
 msgid "LDAP Error: %s"
-msgstr "LDAP错误:%s"
+msgstr "LDAP 错误: %s"
 
 #: auth_login.php:270 auth_login.php:552
 #, fuzzy, php-format
@@ -924,7 +922,7 @@ msgstr "模板用户ID %s 不存在."
 #: auth_login.php:292
 #, fuzzy, php-format
 msgid "Guest user id %s does not exist."
-msgstr "Guest 用户ID %s 不存在."
+msgstr "来宾用户ID %s 不存在."
 
 #: auth_login.php:314
 msgid "Access Denied, user account disabled."
@@ -1102,7 +1100,7 @@ msgstr "添加设备"
 #: lib/api_automation.php:174 lib/api_automation.php:1057
 #: lib/html_utility.php:868 pollers.php:42
 msgid "Down"
-msgstr "断开"
+msgstr "Down"
 
 #: automation_devices.php:41 automation_devices.php:273
 #: automation_devices.php:393 automation_devices.php:403
@@ -1110,7 +1108,7 @@ msgstr "断开"
 #: lib/api_automation.php:173 lib/api_automation.php:1056
 #: lib/html_utility.php:874
 msgid "Up"
-msgstr "起来"
+msgstr "Up"
 
 #: automation_devices.php:91
 msgid "Added manually through device automation interface."
@@ -1134,7 +1132,7 @@ msgstr "没有添加到Cacti"
 
 #: automation_devices.php:178
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "点击“继续”添加以下发现的设备."
+msgstr "点击 '继续' 添加以下发现的设备."
 
 #: automation_devices.php:184 pollers.php:802
 msgid "Pollers"
@@ -1303,7 +1301,7 @@ msgstr "按'继续'删除以下图形规则."
 msgid ""
 "Click 'Continue' to duplicate the following Rule(s). You can optionally "
 "change the title format for the new Graph Rules."
-msgstr "点击“继续”复制以下规则. 您可以选择更改新图规则的标题格式."
+msgstr "点击 '继续' 复制以下规则. 您可以选择更改新图规则的标题格式."
 
 #: automation_graph_rules.php:265 automation_tree_rules.php:267 graphs.php:932
 #: graphs.php:943
@@ -5689,11 +5687,11 @@ msgstr "用户名已经存在."
 
 #: include/global_arrays.php:177
 msgid "Username change not permitted for designated template or guest user."
-msgstr "指定模板或访客用户不允许更改用户名."
+msgstr "指定模板或来宾用户不允许更改用户名."
 
 #: include/global_arrays.php:180
 msgid "User delete not permitted for designated template or guest user."
-msgstr "用户删除不允许指定模板或访客用户."
+msgstr "用户删除不允许指定模板或来宾用户."
 
 #: include/global_arrays.php:183
 msgid "User delete not permitted for designated graph export user."
@@ -10504,14 +10502,14 @@ msgid ""
 "directories to access Cacti resources.  Just as LDAP Authentication, the PHP "
 "LDAP module is required to utilize this method.</blockquote>"
 msgstr ""
-"<blockquote> <i>内置身份验证</i> -  Cacti处理用户身份验证,允许您创建用户并授"
-"予他们对Cacti内不同区域的权限. <br><br> <i>Web基本身份验证</i> - 身份验证由"
+"<blockquote> <i>内置身份验证</i> -  Cacti 处理用户身份验证,允许您创建用户并授"
+"予他们对Cacti 内不同区域的权限. <br><br> <i>Web基本身份验证</i> - 身份验证由"
 "Web服务器处理.如果定义了模板用户,则可以在首次登录时自动添加或创建用户,否则"
-"将使用定义的访客权限. <br><br> <i>LDAP身份验证</i> - 允许对LDAP服务器进行身"
-"份验证.如果定义了模板用户,将在首次登录时自动创建用户,否则将使用定义的访客"
-"权限.如果未启用PHPs LDAP模块,则LDAP身份验证不会显示为可选选项. <br><br> "
-"<i>多个LDAP / AD域身份验证</i> - 允许管理员支持来自不同LDAP / AD目录的多个不"
-"同组以访问Cacti资源.与LDAP身份验证一样,PHP LDAP模块也需要使用此方法. </"
+"将使用定义的来宾权限. <br><br> <i>LDAP 身份验证</i> - 允许对LDAP服务器进行身"
+"份验证.如果定义了模板用户,将在首次登录时自动创建用户,否则将使用定义的来宾"
+"权限.如果未启用PHP LDAP 模块,则LDAP 身份验证不会显示为可选选项. <br><br> "
+"<i>多个LDAP/AD 域身份验证</i> - 允许管理员支持来自不同LDAP/AD 目录的多个不"
+"同组以访问Cacti 资源.与LDAP 身份验证一样,PHP LDAP 模块也需要使用此方法. </"
 "blockquote>"
 
 #: include/global_settings.php:1112
@@ -10544,7 +10542,7 @@ msgid ""
 "Emails, ensure that your mail settings are correct, and the administrative "
 "account has an Email address that is set."
 msgstr ""
-"当Cacti系统遇到问题时将自动接收电子邮件的主管理帐户的名称.要接收这些电子邮"
+"当Cacti 系统遇到问题时将自动接收电子邮件的主管理帐户的名称.要接收这些电子邮"
 "件,请确保您的邮件设置正确,并且管理帐户具有已设置的电子邮件地址."
 
 #: include/global_settings.php:1126 include/global_settings.php:1134
@@ -10558,7 +10556,7 @@ msgstr "来宾用户"
 
 #: include/global_settings.php:1132
 msgid "The name of the guest user for viewing graphs; is 'No User' by default."
-msgstr "访客用户查看图形的名称; 默认情况下是 'No User'."
+msgstr "来宾用户查看图形的名称; 默认情况下是 'No User'."
 
 #: include/global_settings.php:1139 user_domains.php:340
 msgid "User Template"
@@ -10571,7 +10569,7 @@ msgid ""
 "LDAP users; is 'guest' by default.  This user account will be disabled from "
 "logging in upon being selected."
 msgstr ""
-"Cacti将用作新Web Basic和LDAP用户模板的用户名; 默认为 'guest' 被选中时,"
+"Cacti 将用作新Web Basic和LDAP 用户模板的用户名; 默认为 'guest' 被选中时,"
 "将禁止此用户帐户登录."
 
 #: include/global_settings.php:1147
@@ -10776,7 +10774,7 @@ msgid ""
 "for username against LDAP directory via Specific Distinguished Name (DN) and "
 "Specific Password for binding to locate the user's Distinguished Name (DN)."
 msgstr ""
-"模式:cacti将尝试对LDAP服务器进行身份验证.<blockquote><i>不搜索</i> 没有可分"
+"模式: Cacti 将尝试对LDAP服务器进行身份验证.<blockquote><i>不搜索</i> 没有可分"
 "辨名称(DN)搜索,只是尝试使用提供的专有名称(DN)格式进行绑定.<br><br><i>匿"
 "名搜索</i>- 尝试通过匿名绑定搜索LDAP目录的用户名以找到用户的专有名称(DN)."
 "<br><br><i>特定搜索</i> - 尝试通过特定专有名称(DN)和特定密码搜索LDAP目录的"
@@ -10925,7 +10923,7 @@ msgstr "服务器根URL"
 #: include/global_settings.php:1414
 msgid ""
 "This is a the server location that will be used for links to the Cacti site."
-msgstr "这是一个服务器位置,将用于链接到Cacti网站."
+msgstr "这是一个服务器位置,将用于链接到Cacti 网站."
 
 #: include/global_settings.php:1421
 msgid "Emailing Options"
@@ -10944,8 +10942,8 @@ msgid ""
 "account is specified under the Authentication tab on Cacti's settings page. "
 "It defaults to the 'admin' account."
 msgstr ""
-"如果Cacti服务器遇到问题,是否应通过电子邮件通知主管理员?主管理员的Cacti用户"
-"帐户在Cacti设置页面的Authentication选项卡下指定.它默认为 'admin' 帐户."
+"如果Cacti 服务器遇到问题,是否应通过电子邮件通知主管理员?主管理员的Cacti 用户"
+"帐户在Cacti 设置页面的Authentication选项卡下指定.它默认为 'admin' 帐户."
 
 #: include/global_settings.php:1431
 msgid "Test Email"
@@ -11099,7 +11097,7 @@ msgstr "电子邮件的最大大小,包括所有附件."
 
 #: include/global_settings.php:1555
 msgid "Poller Logging Level for Cacti Reporting"
-msgstr "Cacti报告的轮询日志记录级别"
+msgstr "Cacti 报告的轮询日志记录级别"
 
 #: include/global_settings.php:1556
 msgid ""
@@ -11119,37 +11117,37 @@ msgstr "启用代码调整,为进行特定的Lotus Notes邮件客户端处理."
 
 #: include/global_settings.php:1568
 msgid "DNS Options"
-msgstr "DNS选项"
+msgstr "DNS 选项"
 
 #: include/global_settings.php:1573
 msgid "Primary DNS IP Address"
-msgstr "主DNS的IP地址"
+msgstr "主DNS 的IP 地址"
 
 #: include/global_settings.php:1574
 msgid "Enter the primary DNS IP Address to utilize for reverse lookups."
-msgstr "输入用于反向查找的主要DNS IP地址."
+msgstr "输入用于反向查找的主要DNS IP 地址."
 
 #: include/global_settings.php:1580
 msgid "Secondary DNS IP Address"
-msgstr "备用DNS IP地址"
+msgstr "备用DNS IP 地址"
 
 #: include/global_settings.php:1581
 msgid "Enter the secondary DNS IP Address to utilize for reverse lookups."
-msgstr "输入辅助DNS IP地址以用于反向查找."
+msgstr "输入辅助DNS IP 地址以用于反向查找."
 
 #: include/global_settings.php:1587
 msgid "DNS Timeout"
-msgstr "DNS超时"
+msgstr "DNS 超时"
 
 #: include/global_settings.php:1588
 msgid ""
 "Please enter the DNS timeout in milliseconds.  Cacti uses a PHP based DNS "
 "resolver."
-msgstr "请输入以毫秒为单位的DNS超时. Cacti使用基于PHP的DNS解析器."
+msgstr "请输入以毫秒为单位的DNS超时. Cacti 使用基于PHP 的DNS 解析器."
 
 #: include/global_settings.php:1597
 msgid "On-demand RRD Update Settings"
-msgstr "按需RRD更新设置"
+msgstr "按需RRD 更新设置"
 
 #: include/global_settings.php:1602
 msgid "Enable On-demand RRD Updating"
@@ -11162,17 +11160,17 @@ msgid ""
 "change will not take effect until after the next polling cycle.  When you "
 "have Remote Data Collectors, this settings is required to be on."
 msgstr ""
-"是否应该在Cacti中按需启用RRD更新?如果禁用,则此更改将在下一个轮询周期之后生"
+"是否应该在Cacti 中按需启用RRD 更新? 如果禁用,则此更改将在下一个轮询周期之后生"
 "效.如果您有远程数据采集器,则需要启用此设置."
 
 #: include/global_settings.php:1608
 msgid "System Level RRD Updater"
-msgstr "系统级RRD更新程序"
+msgstr "系统级RRD 更新程序"
 
 #: include/global_settings.php:1609
 msgid ""
 "Before RRD On-demand Update Can be Cleared, a poller run must always pass"
-msgstr "在RRD按需更新可以清除之前,必须始终通过轮询器运行"
+msgstr "在RRD 按需更新可以清除之前,必须始终通过轮询器运行"
 
 #: include/global_settings.php:1614
 msgid "How Often Should Boost Update All RRDs"
@@ -11182,19 +11180,19 @@ msgstr "多久如何增强更新所有RRD"
 msgid ""
 "When you enable boost, your RRD files are only updated when they are "
 "requested by a user, or when this time period elapses."
-msgstr "启用boost时,只有在用户请求或者经过了这段时间后,才会更新RRD文件."
+msgstr "启用boost 时,只有在用户请求或者经过了这段时间后,才会更新RRD 文件."
 
 #: include/global_settings.php:1621
 #, fuzzy
 msgid "Number of Boost Processes"
-msgstr "Boost进程数"
+msgstr "Boost 进程数"
 
 #: include/global_settings.php:1622
 #, fuzzy
 msgid ""
 "The number of concurrent boost processes to use to use to process all of the "
 "RRDs in the boost table."
-msgstr "用于处理boost表中所有RRD的并发boost进程数."
+msgstr "用于处理boost 表中所有RRD的并发boost 进程数."
 
 #: include/global_settings.php:1626
 #, fuzzy
@@ -11268,7 +11266,7 @@ msgstr "最大RRD更新脚本运行时间"
 msgid ""
 "If the boost poller excceds this runtime, a warning will be placed in the "
 "cacti log,"
-msgstr "如果boost poller删除了此运行时,则会在cacti日志中发出警告,"
+msgstr "如果boost poller删除了此运行时,则会在Cacti 日志中发出警告,"
 
 #: include/global_settings.php:1675
 msgid "Enable direct population of poller_output_boost table"
@@ -11323,7 +11321,7 @@ msgstr "启用数据源统计信息收集"
 
 #: include/global_settings.php:1715
 msgid "Should Data Source Statistics be collected for this Cacti system?"
-msgstr "应该收集这个Cacti系统的数据源统计数据吗?"
+msgstr "应该收集这个Cacti 系统的数据源统计数据吗?"
 
 #: include/global_settings.php:1720
 msgid "Daily Update Frequency"
@@ -11361,7 +11359,7 @@ msgstr "数据源统计数据采集器的内存限制"
 msgid ""
 "The maximum amount of memory for the Cacti Poller and Data Source Statistics "
 "Poller"
-msgstr "Cacti轮询器和数据源统计轮询器的最大内存量"
+msgstr "Cacti 轮询器和数据源统计轮询器的最大内存量"
 
 #: include/global_settings.php:1749
 msgid "Data Storage Settings"
@@ -11673,11 +11671,11 @@ msgstr "在 '控制台' 选项卡外查看时隐藏已禁用的设备和图形."
 
 #: include/global_settings.php:2001
 msgid "The date format to use in Cacti."
-msgstr "在Cacti中使用的日期格式."
+msgstr "在Cacti 中使用的日期格式."
 
 #: include/global_settings.php:2008
 msgid "The date separator to be used in Cacti."
-msgstr "在Cacti中使用的日期分隔符."
+msgstr "在Cacti 中使用的日期分隔符."
 
 #: include/global_settings.php:2014
 msgid "Page Refresh"
@@ -11760,7 +11758,7 @@ msgstr "缩略图"
 
 #: include/global_settings.php:2088
 msgid "Which portions of Cacti display Thumbnails by default."
-msgstr "Cacti的哪个部分默认显示缩略图."
+msgstr "Cacti 的哪个部分默认显示缩略图."
 
 #: include/global_settings.php:2102
 msgid "Preview Thumbnail Columns"
@@ -11952,11 +11950,11 @@ msgid ""
 "Main Cacti Database for updating."
 msgstr ""
 "<strong>注意:</ strong>您已登录到远程数据采集器. 当<b>'在线'</ b>时,您将能"
-"够查看和控制大部分主要的Cacti网站,就像您登录该网站一样. 此外,重要的是要注"
-"意,远程数据采集器需要使用Cacti的性能增强服务<b>'按需更新'</ b>功能,并且我们"
+"够查看和控制大部分主要的Cacti 网站,就像您登录该网站一样. 此外,重要的是要注"
+"意,远程数据采集器需要使用Cacti 的性能增强服务<b>'按需更新'</ b>功能,并且我们"
 "始终建议使用Spine. 当远程数据采集器<b>'离线'</ b>时,远程数据采集器网站将包"
-"含更少的信息. 但是,它将缓存所有更新,直到主Cacti数据库和Web服务器可达. 然"
-"后它会将它的转储表输出转储回主Cacti数据库进行更新."
+"含更少的信息. 但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然"
+"后它会将它的转储表输出转储回主Cacti 数据库进行更新."
 
 #: index.php:90
 msgid ""
@@ -11966,7 +11964,7 @@ msgid ""
 "with Remote Data Collectors at this time.  However, plugins such as Thold "
 "will work so long as the Remote Data Collector is in <b>'online'</b> mode."
 msgstr ""
-"<strong>注意:</strong> 迄今为止,Core Cacti插件都没有重新设计为可与Remote "
+"<strong>注意:</strong> 迄今为止,Core Cacti 插件都没有重新设计为可与Remote "
 "Data Collector一起使用. 因此,需要直接访问设备的插件(如MacTrack和HMIB)目前"
 "无法与远程数据采集器配合使用. 但是,只要远程数据采集器处于<b>'联机'</b>模"
 "式,Thold等插件就可以工作."
@@ -11983,12 +11981,12 @@ msgstr "新轮询器"
 #: install/install.php:57
 #, fuzzy, php-format
 msgid "Cacti Server v%s - Maintenance"
-msgstr "Cacti Server v%s  - 维护"
+msgstr "Cacti Server v%s - 维护"
 
 #: install/install.php:67
 #, fuzzy, php-format
 msgid "Cacti Server v%s - Installation Wizard"
-msgstr "Cacti Server v%s  - 安装向导"
+msgstr "Cacti Server v%s - 安装向导"
 
 #: install/install.php:73
 msgid "Initializing"
@@ -12000,7 +11998,7 @@ msgid ""
 "Please wait while the installation system for Cacti Version %s initializes.  "
 "You must have JavaScript enabled for this to work."
 msgstr ""
-"请等待Cacti Version %s的安装系统初始化.您必须启用JavaScript才能使用此功能."
+"请等待Cacti Version %s 的安装系统初始化.您必须启用JavaScript 才能使用此功能."
 
 #: lib/aggregate.php:51
 msgid "Display Graphs from this Aggregate"
@@ -12178,21 +12176,21 @@ msgstr "规则项目[新的规则项目%s: %s]"
 
 #: lib/api_automation.php:2787
 msgid "Added by Cacti Automation"
-msgstr "由Cacti自动化添加"
+msgstr "由Cacti 自动化添加"
 
 #: lib/api_device.php:953
 #, fuzzy
 msgid "ERROR: Device ID is Blank"
-msgstr "错误:设备ID为空"
+msgstr "错误:设备ID 为空"
 
 #: lib/api_device.php:964 lib/api_device.php:966
 #, fuzzy
 msgid "ERROR: Device["
-msgstr "错误:设备["
+msgstr "错误: 设备["
 
 #: lib/api_device.php:987
 msgid "ERROR: Failed to connect to remote collector."
-msgstr "错误:无法连接到远程采集器."
+msgstr "错误: 无法连接到远程采集器."
 
 #: lib/api_device.php:994
 msgid "Device is Disabled"
@@ -12204,15 +12202,15 @@ msgstr "设备可用性检测旁路"
 
 #: lib/api_device.php:1002
 msgid "SNMP Information"
-msgstr "SNMP信息"
+msgstr "SNMP 信息"
 
 #: lib/api_device.php:1006
 msgid "SNMP not in use"
-msgstr "SNMP未被使用"
+msgstr "SNMP 未被使用"
 
 #: lib/api_device.php:1015 lib/api_device.php:1023 lib/api_device.php:1038
 msgid "SNMP error"
-msgstr "SNMP错误"
+msgstr "SNMP 错误"
 
 #: lib/api_device.php:1015
 msgid "Session"
@@ -12252,7 +12250,7 @@ msgstr "位置:"
 
 #: lib/api_device.php:1059
 msgid "Contact:"
-msgstr "联系:"
+msgstr "联系人:"
 
 #: lib/api_device.php:1090 lib/functions.php:3742 lib/functions.php:3744
 #: lib/functions.php:3748
@@ -12261,7 +12259,7 @@ msgstr "Ping 结果"
 
 #: lib/api_device.php:1095
 msgid "No Ping or SNMP Availability Check in Use"
-msgstr "不使用Ping或SNMP可用性检查"
+msgstr "不使用Ping 或SNMP 可用性检查"
 
 #: lib/api_tree.php:195
 msgid "New Branch"
@@ -12304,15 +12302,15 @@ msgstr "您的密码必须至少包含1个特殊字符!"
 #: lib/clog_webapi.php:92 utilities.php:1277
 #, fuzzy, php-format
 msgid "%s - WEBUI NOTE: Cacti Log Cleared from Web Management Interface."
-msgstr "%s  -  WEBUI注意:从Web管理界面清除Cacti日志."
+msgstr "%s  -  WEBUI注意:从Web管理界面清除Cacti 日志."
 
 #: lib/clog_webapi.php:199
 msgid ""
 "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set "
 "to both Cacti and Syslog, the log information will remain in Syslog."
 msgstr ""
-"单击 '继续' 以清空日志文件.<br> <br> <br>注意:如果将日志记录设置为Cacti和"
-"Syslog,则日志信息将保留在Syslog中."
+"单击 '继续' 以清空日志文件.<br> <br> <br>注意:如果将日志记录设置为Cacti 和"
+"Syslog,则日志信息将保留在Syslog 中."
 
 #: lib/clog_webapi.php:205 utilities.php:1098
 msgid "Purge Log"
@@ -12905,7 +12903,7 @@ msgstr "SMTP错误:"
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
 "the configuration of your Mail Settings."
-msgstr "这是从Cacti生成的测试消息. 发送此邮件是为了测试您的邮件设置的配置."
+msgstr "这是从Cacti 生成的测试消息. 发送此邮件是为了测试您的邮件设置的配置."
 
 #: lib/functions.php:3699
 msgid "Your email settings are currently set as follows"
@@ -12921,11 +12919,11 @@ msgstr "检查配置... <br>"
 
 #: lib/functions.php:3709
 msgid "PHP's Mailer Class"
-msgstr "PHP的邮件类"
+msgstr "PHP Mailer 的类"
 
 #: lib/functions.php:3715
 msgid "Method: SMTP"
-msgstr "方法:SMTP"
+msgstr "方法: SMTP"
 
 #: lib/functions.php:3730
 msgid "Not Shown for Security Reasons"
@@ -12937,7 +12935,7 @@ msgstr "安全"
 
 #: lib/functions.php:3739
 msgid "Ping Results:"
-msgstr "Ping结果:"
+msgstr "Ping 结果:"
 
 #: lib/functions.php:3748
 msgid "Bypassed"
@@ -12975,8 +12973,7 @@ msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
 "logfile for more details."
 msgstr ""
-"由于以下错误,Cacti禁用了插件%s:%s!有关更多详细信息,请参阅Cacti日志文"
-"件."
+"由于以下错误,Cacti 禁用了插件 %s:%s!有关更多详细信息,请参阅Cacti 日志文件."
 
 #: lib/functions.php:4758 lib/functions.php:4760
 #, fuzzy, php-format
@@ -12999,7 +12996,7 @@ msgstr "选择的模板"
 
 #: lib/html.php:233 settings.php:428 settings.php:447 settings.php:496
 msgid "Enter keyword"
-msgstr "输入关键字"
+msgstr "请输入关键字"
 
 #: lib/html.php:381 lib/reports.php:1212 lib/reports.php:1216
 msgid "Data Query:"
@@ -13007,7 +13004,7 @@ msgstr "数据查询:"
 
 #: lib/html.php:442
 msgid "CSV Export of Graph Data"
-msgstr "CSV数据导出"
+msgstr "CSV 数据导出"
 
 #: lib/html.php:443 lib/html.php:2278
 msgid "Time Graph View"
@@ -13032,7 +13029,7 @@ msgstr "%d [ %d ] 中 %s 到 %s"
 
 #: lib/html.php:510 lib/installer.php:1431
 msgid "Next"
-msgstr "下一步"
+msgstr "下一页"
 
 #: lib/html.php:516
 #, php-format
@@ -13042,7 +13039,7 @@ msgstr "全部 %d %s"
 #: lib/html.php:522
 #, php-format
 msgid "No %s Found"
-msgstr "找不到%s"
+msgstr "找不到 %s"
 
 #: lib/html.php:1053
 msgid "Alpha %"
@@ -13150,11 +13147,11 @@ msgstr "再次点击可将此图形从Realtime中删除"
 
 #: lib/html.php:2287
 msgid "Cacti Home"
-msgstr "Cacti之家"
+msgstr "Cacti 首页"
 
 #: lib/html.php:2288
 msgid "Cacti Project Page"
-msgstr "Cacti项目页面"
+msgstr "Cacti 项目页面"
 
 #: lib/html.php:2291
 msgid "Report a bug"
@@ -13757,7 +13754,7 @@ msgstr "图形链接"
 
 #: lib/html_reports.php:994
 msgid "Should the Graphs be linked back to the Cacti site?"
-msgstr "图形是否应该链接到Cacti网站?"
+msgstr "图形是否应该链接到Cacti 网站?"
 
 #: lib/html_reports.php:998
 msgid "Graph Settings"
@@ -14102,7 +14099,7 @@ msgstr "导入结果"
 
 #: lib/import.php:2015
 msgid "Cacti would make the following changes if the Package was imported:"
-msgstr "如果导入包,Cacti将做出以下更改:"
+msgstr "如果导入包,Cacti 将做出以下更改:"
 
 #: lib/import.php:2017
 msgid "Cacti has imported the following items for the Package:"
@@ -14118,11 +14115,11 @@ msgstr "[预览]"
 
 #: lib/import.php:2029
 msgid "Cacti would make the following changes if the Template was imported:"
-msgstr "如果导入模板,Cacti将做出以下更改:"
+msgstr "如果导入模板,Cacti 将做出以下更改:"
 
 #: lib/import.php:2031
 msgid "Cacti has imported the following items for the Template:"
-msgstr "Cacti已为模板导入以下项目:"
+msgstr "Cacti 已为模板导入以下项目:"
 
 #: lib/import.php:2040
 msgid "[success]"
@@ -14234,7 +14231,7 @@ msgstr "由于意外错误,安装程序无法继续."
 #: lib/installer.php:1380
 #, fuzzy
 msgid "Please report this to the Cacti Group."
-msgstr "请向Cacti集团报告."
+msgstr "请向Cacti Group 报告."
 
 #: lib/installer.php:1381
 #, fuzzy, php-format
@@ -14286,8 +14283,8 @@ msgid ""
 "database user has the ability to SELECT, INSERT, DELETE, UPDATE, CREATE, "
 "ALTER, DROP, INDEX on the Cacti database."
 msgstr ""
-"如果cacti数据库用户对Cacti数据库没有正确的权限,也可能会生成此错误.请确保"
-"Cacti数据库用户能够在Cacti数据库上进行SELECT,INSERT,DELETE,UPDATE,"
+"如果cacti 数据库用户对Cacti 数据库没有正确的权限,也可能会生成此错误.请确保"
+"Cacti 数据库用户能够在Cacti 数据库上进行SELECT,INSERT,DELETE,UPDATE,"
 "CREATE,ALTER,DROP,INDEX."
 
 #: lib/installer.php:1401
@@ -14296,13 +14293,13 @@ msgid ""
 "You <b>MUST</b> also import MySQL TimeZone information into MySQL and grant "
 "the Cacti user SELECT access to the mysql.time_zone_name table"
 msgstr ""
-"您还<b>必须</b>将MySQL TimeZone信息导入MySQL并授予Cacti用户SELECT访问mysql."
-"time_zone_name表的权限"
+"您还<b>必须</b>将MySQL TimeZone信息导入MySQL并授予Cacti 用户SELECT 访问mysql."
+"time_zone_name 表的权限"
 
 #: lib/installer.php:1404
 #, fuzzy
 msgid "On Linux/UNIX, run the following as 'root' in a shell:"
-msgstr "在Linux/UNIX上,在shell中以 'root' 身份运行以下命令:"
+msgstr "在Linux/UNIX上,在shell 中以 'root' 身份运行以下命令:"
 
 #: lib/installer.php:1407
 msgid ""
@@ -14313,12 +14310,12 @@ msgid ""
 msgstr ""
 "在Windows上,您必须按照 <a target='_blank' href='https://dev.mysql.com/"
 "downloads/timezones.html'>时区描述表</a>中的说明进行操作. 一旦完成,您可以发"
-"出以下命令来授予Cacti用户访问表的权限:"
+"出以下命令来授予Cacti 用户访问表的权限:"
 
 #: lib/installer.php:1410
 #, fuzzy
 msgid "Then run the following within MySQL as an administrator:"
-msgstr "然后在MySQL中以管理员身份运行以下命令:"
+msgstr "然后在MySQL 中以管理员身份运行以下命令:"
 
 #: lib/installer.php:1428 pollers.php:555
 msgid "Test Connection"
@@ -14335,7 +14332,7 @@ msgstr "升级"
 
 #: lib/installer.php:1447 lib/installer.php:2439
 msgid "Downgrade"
-msgstr "下坡"
+msgstr "降级"
 
 #: lib/installer.php:1546 utilities.php:255
 msgid "Cacti Version"
@@ -14351,8 +14348,7 @@ msgid ""
 "graphing solution for your network. Before you can start making cool graphs, "
 "there are a few pieces of data that Cacti needs to know."
 msgstr ""
-"感谢您抽出时间下载并安装Cacti,这是您网络的完整制图解决方案. 在你开始制作很"
-"酷的图形之前,Cacti需要知道一些数据."
+"感谢您抽出时间下载并安装Cacti, 这是您网络的完整画图解决方案. 在你开始制作很酷的图形之前,Cacti 需要知道一些数据."
 
 #: lib/installer.php:1548
 #, php-format
@@ -14361,7 +14357,7 @@ msgid ""
 "Cacti before continuing. Install information can be found for <a href=\"%1$s"
 "\">Unix</a> and <a href=\"%2$s\">Win32</a>-based operating systems."
 msgstr ""
-"确保您已阅读并遵循安装Cacti所需的步骤,然后再继续. 可以在<a href=\"%1$s\"> "
+"确保您已阅读并遵循安装Cacti 所需的步骤,然后再继续. 可以在<a href=\"%1$s\"> "
 "Unix </a>和基于<a href=\"%2$s\"> Win32 </a>的操作系统上找到安装信息."
 
 #: lib/installer.php:1551
@@ -14389,7 +14385,7 @@ msgstr "不建议降级,因为数据库结构可能不一致"
 msgid ""
 "Cacti is licensed under the GNU General Public License, you must agree to "
 "its provisions before continuing:"
-msgstr "Cacti根据GNU通用公共许可证进行许可,您必须同意其规定,然后再继续:"
+msgstr "Cacti 根据GNU GPL 许可证进行许可,您必须同意其规定,然后再继续:"
 
 #: lib/installer.php:1563
 msgid ""
@@ -14398,12 +14394,12 @@ msgid ""
 "FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
 "more details."
 msgstr ""
-"这个程序的发布希望它会有用,但没有任何担保; 甚至没有适销性或针对特定用途的适"
+"这个程序基于帮助他人的目的而发布,但没有任何担保; 甚至没有适销性或针对特定用途的适"
 "用性的暗示保证. 有关更多详细信息,请参阅GNU通用公共许可证."
 
 #: lib/installer.php:1600
 msgid "Accept GPL License Agreement"
-msgstr "接受GPL许可协议"
+msgstr "接受GPL 许可协议"
 
 #: lib/installer.php:1600
 #, fuzzy
@@ -14428,23 +14424,23 @@ msgstr "错误:"
 msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
-msgstr "请使用正确的Cacti相对URI位置(url_path)更新config.php."
+msgstr "请使用正确的Cacti 相对URI位置(url_path)更新config.php."
 
 #: lib/installer.php:1657
 msgid ""
 "Your Cacti configuration has the relative correct path (url_path) in config."
 "php."
-msgstr "您的Cacti配置在config.php中具有相对正确的路径(url_path)."
+msgstr "您的Cacti 配置在config.php 中具有相对正确的路径(url_path)."
 
 #: lib/installer.php:1662
 #, fuzzy
 msgid "PHP - Recommendations"
-msgstr "PHP  - 推荐"
+msgstr "PHP - 推荐"
 
 #: lib/installer.php:1681
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
-msgstr "PHP %s 是最小版本"
+msgstr "PHP %s 是最低版本"
 
 #: lib/installer.php:1688
 #, fuzzy, php-format
@@ -14491,20 +14487,19 @@ msgid ""
 "recommendations at your discretion.  Always seek the MySQL documentation if "
 "you have any questions."
 msgstr ""
-"Cacti需要安装好几个PHP模块才能正常工作. 如果其中任何一个没有安装,您将无法继"
-"续安装,直到更正. 另外,为了获得最佳的系统性能,Cacti应该使用特定的MySQL系统"
-"变量来运行. 请根据您的意愿遵循MySQL建议. 如果您有任何问题,请务必查阅MySQL"
-"文档."
+"Cacti 需要安装好几个PHP模块才能正常工作. 如果其中任何一个没有安装,您将无法继"
+"续安装,直到更正. 另外,为了获得最佳的系统性能,Cacti 应该使用特定的MySQL 系统"
+"变量来运行. 请根据您的意愿遵循MySQL建议. 如果您有任何问题,请务必查阅MySQL 文档."
 
 #: lib/installer.php:1735
 msgid ""
 "The following PHP extensions are mandatory, and MUST be installed before "
 "continuing your Cacti install."
-msgstr "以下PHP扩展是强制性的,必须在继续安装Cacti之前安装."
+msgstr "以下PHP 扩展是强制性的,必须在继续安装Cacti 之前安装."
 
 #: lib/installer.php:1739
 msgid "Required PHP Modules"
-msgstr "所需的PHP模块"
+msgstr "所需的PHP 模块"
 
 #: lib/installer.php:1740 lib/installer.php:1776 plugins.php:40 plugins.php:379
 #: utilities.php:454
@@ -14527,8 +14522,8 @@ msgid ""
 "continuing your Cacti install.  NOTE: If you are planning on supporting "
 "SNMPv3 with IPv6, you should not install the php-snmp module at this time."
 msgstr ""
-"建议使用以下PHP扩展,并应在继续安装Cacti之前安装.注意:如果您计划使用IPv6支"
-"持SNMPv3,则此时不应安装php-snmp模块."
+"建议使用以下PHP 扩展,并应在继续安装Cacti 之前安装.注意:如果您计划使用IPv6 支"
+"持SNMPv3,则此时不应安装php-snmp 模块."
 
 #: lib/installer.php:1775
 msgid "Optional Modules"
@@ -14549,23 +14544,23 @@ msgid ""
 "ini and uncomment the 'date.timezone' setting and set it to the Web Servers "
 "Timezone per the PHP installation instructions prior to installing Cacti."
 msgstr ""
-"您的Web服务器PHP时区设置尚未设置. 在安装Cacti之前,请编辑php.ini并取消注"
-"释'date.timezone'设置,并根据PHP安装说明将其设置为Web服务器时区."
+"您的Web 服务器PHP 时区设置尚未设置. 在安装Cacti 之前,请编辑 php.ini 并取消注"
+"释 'date.timezone' 设置,并根据PHP 安装说明将其设置为Web 服务器时区."
 
 #: lib/installer.php:1800
 msgid "Your Web Servers PHP is properly setup with a Timezone."
-msgstr "您的Web服务器PHP使用时区正确设置."
+msgstr "您的Web 服务器PHP 使用时区正确设置."
 
 #: lib/installer.php:1805
 #, fuzzy
 msgid "MySQL - TimeZone Support"
-msgstr "MySQL  -  TimeZone支持"
+msgstr "MySQL - 时区支持"
 
 #: lib/installer.php:1810
 msgid ""
 "Your MySQL TimeZone database is not populated.  Please populate this "
 "database before proceeding."
-msgstr "您的MySQL TimeZone数据库未被填充. 请在继续之前填入此数据库."
+msgstr "您的MySQL TimeZone 数据库未被填充. 请在继续之前填入此数据库."
 
 #: lib/installer.php:1814
 msgid ""
@@ -14574,32 +14569,32 @@ msgid ""
 "the \"time_zone_name\" table in the \"mysql\" database, and populate MySQL's "
 "TimeZone information before proceeding."
 msgstr ""
-"您的Cacti数据库登录帐户无权访问MySQL TimeZone数据库. 请提供Cacti数据库帐户"
+"您的Cacti 数据库登录帐户无权访问MySQL TimeZone 数据库. 请提供Cacti 数据库帐户"
 "对 \"mysql\" 数据库中 \"time_zone_name\" 表的 \"select\" 访问权,并在继续之前"
-"填充MySQL的TimeZone信息."
+"填充MySQL 的TimeZone 信息."
 
 #: lib/installer.php:1819
 msgid ""
 "Your Cacti database account has access to the MySQL TimeZone database and "
 "that database is populated with global TimeZone information."
 msgstr ""
-"您的Cacti数据库帐户可以访问MySQL TimeZone数据库,并且该数据库使用全球TimeZone"
+"您的Cacti 数据库帐户可以访问MySQL TimeZone 数据库,并且该数据库使用全球TimeZone"
 "信息填充."
 
 #: lib/installer.php:1824
 #, fuzzy
 msgid "MySQL - Settings"
-msgstr "MySQL  - 设置"
+msgstr "MySQL - 设置"
 
 #: lib/installer.php:1825
 msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
-msgstr "这些MySQL性能调整设置将帮助您的Cacti系统在更长的时间内运行得更好."
+msgstr "这些MySQL 性能调整设置将帮助您的Cacti 系统在更长的时间内运行得更好."
 
 #: lib/installer.php:1827
 msgid "Recommended MySQL System Variable Settings"
-msgstr "推荐的MySQL系统变量设置"
+msgstr "推荐的MySQL 系统变量设置"
 
 #: lib/installer.php:1853
 msgid "Installation Type"
@@ -14608,7 +14603,7 @@ msgstr "安装类型"
 #: lib/installer.php:1859
 #, php-format
 msgid "Upgrade from <strong>%s</strong> to <strong>%s</strong>"
-msgstr "从<strong>%s</strong> 到 <strong>%s</strong>升级"
+msgstr "从 <strong>%s</strong> 到 <strong>%s</strong> 升级"
 
 #: lib/installer.php:1861
 #, fuzzy
@@ -14618,7 +14613,7 @@ msgid ""
 "and retrying, before raising an issue with The Cacti Group"
 msgstr ""
 "如果出现问题,强烈建议您清除浏览器缓存,关闭然后重新打开浏览器(不只"
-"是 'Cacti' 选项卡)并重试, 然后再向The Cacti Group提出问题"
+"是 'Cacti' 选项卡)并重试, 然后再向Cacti Group 提出问题"
 
 #: lib/installer.php:1862
 #, fuzzy
@@ -14644,8 +14639,7 @@ msgid ""
 "experience issues, please raise the issue with us and we will try to "
 "identify the cause of it."
 msgstr ""
-"如果在清除缓存并重新启动浏览器后仍然遇到问题,请向我们提出问题,我们会尝试确"
-"定问题的原因."
+"如果在清除缓存并重新启动浏览器后仍然遇到问题,请向我们提出问题,我们会尝试确定问题的原因."
 
 #: lib/installer.php:1869
 #, php-format
@@ -14693,8 +14687,7 @@ msgid ""
 "file. If it is not correct, please edit \"include/config.php\" before "
 "continuing."
 msgstr ""
-"以下信息已经从Cacti的配置文件中确定. 如果不正确,请在继续之前编辑 \"include/"
-"config.php\" ."
+"以下信息已经从Cacti 的配置文件中确定. 如果不正确,请在继续之前编辑 \"include/config.php\" ."
 
 #: lib/installer.php:1940
 #, fuzzy
@@ -14709,22 +14702,22 @@ msgstr "数据库:<b>%s</b>"
 #: lib/installer.php:1944 lib/installer.php:1956
 #, php-format
 msgid "Database User: <b>%s</b>"
-msgstr "数据库用户:<b>%s</b>"
+msgstr "数据库用户: <b>%s</b>"
 
 #: lib/installer.php:1945 lib/installer.php:1957
 #, php-format
 msgid "Database Hostname: <b>%s</b>"
-msgstr "数据库主机名称:<b>%s</b>"
+msgstr "数据库主机名称: <b>%s</b>"
 
 #: lib/installer.php:1946 lib/installer.php:1958
 #, php-format
 msgid "Port: <b>%s</b>"
-msgstr "端口:<b>%s</b>"
+msgstr "端口: <b>%s</b>"
 
 #: lib/installer.php:1947 lib/installer.php:1959
 #, php-format
 msgid "Server Operating System Type: <b>%s</b>"
-msgstr "服务器操作系统类型:<b>%s</b>"
+msgstr "服务器操作系统类型: <b>%s</b>"
 
 #: lib/installer.php:1952
 #, fuzzy
@@ -14742,13 +14735,13 @@ msgid ""
 "order to configure the Remote poller.  Once installation is complete, you "
 "must set this file to Read Only to prevent possible security issues."
 msgstr ""
-"安装期间,您的config.php文件必须可由Web服务器写入,以配置远程轮询器. 安装完"
-"成后,您必须将此文件设置为只读以防止可能的安全问题."
+"安装期间,您的config.php 文件必须可由Web 服务器写入,以配置远程轮询器."
+"安装完成后,您必须将此文件设置为只读以防止可能的安全问题."
 
 #: lib/installer.php:1970
 #, fuzzy
 msgid "Configuration of Poller"
-msgstr "Poller的配置"
+msgstr "Poller 的配置"
 
 #: lib/installer.php:1971
 msgid ""
@@ -14758,9 +14751,9 @@ msgid ""
 "set and point back to your Primary Cacti database server.  Correct this and "
 "try again."
 msgstr ""
-"您的远程Cacti轮询信息尚未包含在您的config.php文件中. 请查看config.php.dist,"
+"您的远程Cacti 轮询信息尚未包含在您的config.php 文件中. 请查看config.php.dist,"
 "并设置变量:<i> $ rdatabase_default,$ rdatabase_username </ i>等.必须设置这"
-"些变量并指向您的主Cacti数据库服务器. 纠正这一点,然后再试一次."
+"些变量并指向您的主Cacti 数据库服务器. 纠正这一点,然后再试一次."
 
 #: lib/installer.php:1975
 #, fuzzy
@@ -14771,14 +14764,14 @@ msgstr "远程轮询变量"
 #, fuzzy
 msgid ""
 "The variables that must be set in the config.php file include the following:"
-msgstr "必须在config.php文件中设置的变量包括以下内容:"
+msgstr "必须在config.php 文件中设置的变量包括以下内容:"
 
 #: lib/installer.php:1988
 #, fuzzy
 msgid ""
 "The Installer automatically assigns a $poller_id and adds it to the config."
 "php file."
-msgstr "安装程序自动分配$ poller_id并将其添加到config.php文件中."
+msgstr "安装程序自动分配$poller_id 并将其添加到config.php 文件中."
 
 #: lib/installer.php:1990
 #, fuzzy
@@ -14789,8 +14782,8 @@ msgid ""
 "press the 'Test Connection' button.  If the test is successful you will be "
 "able to proceed and complete the install."
 msgstr ""
-"一旦变量全部在config.php文件中设置,您还必须授予$ rdatabase_username访问主"
-"Cacti数据库服务器的权限.按照与任何其他Cacti安装相同的步骤进行操作.然后,您"
+"一旦变量全部在config.php 文件中设置,您还必须授予$ rdatabase_username访问主"
+"Cacti 数据库服务器的权限.按照与任何其他Cacti 安装相同的步骤进行操作.然后,您"
 "可以按 '测试连接' 按钮.如果测试成功,您将能够继续并完成安装."
 
 #: lib/installer.php:1994
@@ -14806,7 +14799,7 @@ msgid ""
 "edit the Remote Data Collector and ensure the settings are correct.  You can "
 "verify using the 'Test Connection' when editing the Remote Data Collector."
 msgstr ""
-"Central Cacti服务器必须能够通过MySQL与每个远程Cacti数据库服务器进行通信.安装"
+"Central Cacti 服务器必须能够通过MySQL 与每个远程Cacti 数据库服务器进行通信.安装"
 "完成后,您必须编辑远程数据采集器并确保设置正确.编辑远程数据采集器时,可以使"
 "用 '测试连接' 进行验证."
 
@@ -14854,7 +14847,7 @@ msgid ""
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
-"在安装后,这些目录将被要求保持可读写状态,以便Cacti远程同步过程可以在主Cacti"
+"在安装后,这些目录将被要求保持可读写状态,以便Cacti 远程同步过程可以在主Cacti"
 "网站更改时更新它们"
 
 #: lib/installer.php:2100
@@ -14898,7 +14891,7 @@ msgstr "潜在的许可问题"
 msgid ""
 "Please make sure that your webserver has read/write access to the cacti "
 "folders that show errors below."
-msgstr "请确保您的网络服务器对以下显示错误的cacti文件夹具有读/写权限."
+msgstr "请确保您的网络服务器对以下显示错误的cacti 文件夹具有读/写权限."
 
 #: lib/installer.php:2179
 #, fuzzy
@@ -14948,8 +14941,8 @@ msgid ""
 "interval that you wish to use for Data Collection."
 msgstr ""
 "请选择用于轮询源的默认数据源配置文件.这是扫描设备之间获取信息的最长时间,因"
-"此轮询间隔越小,Cacti Server主机上的工作就越多.此外,选择要用于数据收集的预"
-"期或配置的Cron间隔."
+"此轮询间隔越小,Cacti Server 主机上的工作就越多.此外,选择要用于数据收集的预"
+"期或配置的Cron 间隔."
 
 #: lib/installer.php:2252
 #, fuzzy
@@ -14964,7 +14957,7 @@ msgid ""
 "can be scanned.  A predefined set of options are defined for scanning which "
 "include using both 'public' and 'private' communities."
 msgstr ""
-"安装完成后, Cacti可以自动扫描网络.这将利用下面的网络范围来计算可扫描的IP范围."
+"安装完成后, Cacti 可以自动扫描网络.这将利用下面的网络范围来计算可扫描的IP范围."
 "为扫描定义了一组预定义的选项,包括使用 'public' 和 'private' communities."
 
 #: lib/installer.php:2254
@@ -15019,7 +15012,7 @@ msgstr "安装无法继续,因为找不到配置文件."
 msgid ""
 "This may occur if you have a blank database and have not yet imported the "
 "cacti.sql file"
-msgstr "如果您有一个空数据库并且尚未导入cacti.sql文件,则可能会发生这种情况"
+msgstr "如果您有一个空数据库并且尚未导入cacti.sql 文件,则可能会发生这种情况"
 
 #: lib/installer.php:2318
 msgid "Template Setup"
@@ -15050,7 +15043,7 @@ msgid ""
 "and the installation will complete.  Please be patient on this step, as the "
 "importation of the Device Templates can take a few minutes."
 msgstr ""
-"设备模板允许您监视和绘制Cacti内的大量数据. 选择所需的设备模板后,按'完成',"
+"设备模板允许您监视和绘制Cacti 内的大量数据. 选择所需的设备模板后,按'完成',"
 "安装完成. 请耐心等待,因为输入设备模板可能需要几分钟的时间."
 
 #: lib/installer.php:2350
@@ -15066,7 +15059,7 @@ msgstr "您的服务器排序规则似乎符合UTF8标准"
 #: lib/installer.php:2360
 #, fuzzy
 msgid "Your server collation does NOT appear to be fully UTF8 compliant. "
-msgstr "您的服务器排序规则似乎不完全符合UTF8标准."
+msgstr "您的服务器排序规则似乎不完全符合UTF8 标准."
 
 #: lib/installer.php:2361
 #, fuzzy
@@ -15100,7 +15093,7 @@ msgid ""
 "tables if the collation is not matched.   Please ensure your database is "
 "changed to 'utf8mb4_unicode_ci' by running the following: "
 msgstr ""
-"如果排序规则不匹配,则插件创建的任何表都可能存在与Cacti Core表链接的问题.请"
+"如果排序规则不匹配,则插件创建的任何表都可能存在与Cacti Core 表链接的问题.请"
 "运行以下命令,确保将数据库更改为 'utf8mb4_unicode_ci':"
 
 #: lib/installer.php:2384
@@ -15152,7 +15145,7 @@ msgstr "以下表格应转换为UTF8和InnoDB.请在安装过程中选择要转�
 #: lib/installer.php:2424
 #, fuzzy
 msgid "All your tables appear to be UTF8 compliant"
-msgstr "您的所有表格似乎都符合UTF8标准"
+msgstr "您的所有表格似乎都符合UTF8 标准"
 
 #: lib/installer.php:2434
 #, fuzzy
@@ -15175,7 +15168,7 @@ msgstr "安装"
 #: lib/installer.php:2448
 #, fuzzy
 msgid "DOWNGRADE DETECTED"
-msgstr "DOWNGRADE被检测到"
+msgstr "DOWNGRADE 被检测到"
 
 #: lib/installer.php:2449
 #, fuzzy
@@ -15184,7 +15177,7 @@ msgid ""
 "THAT HAVE BEEN MADE.<br/>THE INSTALLER HAS NO METHOD TO DO THIS "
 "AUTOMATICALLY FOR YOU"
 msgstr ""
-"您必须手动更改CACTI数据库以修改已经进行的任何升级更改. <br/>安装人员没有办法"
+"您必须手动更改CACTI 数据库以修改已经进行的任何升级更改. <br/>安装人员没有办法"
 "自动为您做这件事"
 
 #: lib/installer.php:2450
@@ -15199,7 +15192,7 @@ msgstr "降级只应在绝对必要时执行,这样做可能会破坏您的安�
 msgid ""
 "Your Cacti Server is almost ready.  Please check that you are happy to "
 "proceed."
-msgstr "您的Cacti服务器几乎准备就绪.请检查您是否乐意继续."
+msgstr "您的Cacti 服务器几乎准备就绪.请检查您是否乐意继续."
 
 #: lib/installer.php:2456
 #, fuzzy, php-format
@@ -15216,7 +15209,7 @@ msgstr "安装Cacti Server v%s"
 #: lib/installer.php:2473
 #, fuzzy
 msgid "Your Cacti Server is now installing"
-msgstr "您的Cacti服务器现在正在安装"
+msgstr "您的Cacti 服务器现在正在安装"
 
 #: lib/installer.php:2580
 msgid "Complete"
@@ -15292,7 +15285,7 @@ msgstr "协议错误, 一般故障(%s)"
 #: lib/ldap.php:281
 #, php-format
 msgid "Protocol Error, Unable to bind, LDAP result: %s"
-msgstr "协议错误, 无法绑定,LDAP结果: %s"
+msgstr "协议错误, 无法绑定,LDAP 结果: %s"
 
 #: lib/ldap.php:285
 msgid "Unable to Connect to Server"
@@ -15337,7 +15330,7 @@ msgstr "意外的错误 %s(LDAP 错误: %s )"
 
 #: lib/ping.php:130
 msgid "ICMP Ping timed out"
-msgstr "ICMP Ping超时"
+msgstr "ICMP Ping 超时"
 
 #: lib/ping.php:202 lib/ping.php:220
 #, php-format
@@ -15346,7 +15339,7 @@ msgstr "ICMP Ping成功 (%s ms)"
 
 #: lib/ping.php:207 lib/ping.php:225
 msgid "ICMP ping Timed out"
-msgstr "ICMP ping超时"
+msgstr "ICMP ping 超时"
 
 #: lib/ping.php:232 lib/ping.php:451 lib/ping.php:580
 msgid "Destination address not specified"
@@ -15363,12 +15356,12 @@ msgstr "请升级到PHP 5.5.4+以支持IPv6!"
 #: lib/ping.php:389
 #, php-format
 msgid "UDP ping error: %s"
-msgstr "UDP ping错误:%s"
+msgstr "UDP ping 错误: %s"
 
 #: lib/ping.php:429
 #, php-format
 msgid "UDP Ping Success (%s ms)"
-msgstr "UDP Ping成功 (%s ms)"
+msgstr "UDP Ping 成功 (%s ms)"
 
 #: lib/ping.php:526
 #, php-format
@@ -15383,20 +15376,20 @@ msgstr "TCP ping:socket_select()失败,原因:%s"
 #: lib/ping.php:559
 #, php-format
 msgid "TCP Ping Success (%s ms)"
-msgstr "TCP Ping成功(%s ms)"
+msgstr "TCP Ping 成功(%s ms)"
 
 #: lib/ping.php:569
 msgid "TCP ping timed out"
-msgstr "TCP ping超时"
+msgstr "TCP ping 超时"
 
 #: lib/ping.php:596
 msgid "Ping not performed due to setting."
-msgstr "由于设置Ping不能执行."
+msgstr "由于设置Ping 不能执行."
 
 #: lib/plugins.php:510
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
-msgstr "%s 版本 %s或以上是 %s所必需的."
+msgstr "%s 版本 %s 或以上是 %s 所必需的."
 
 #: lib/plugins.php:514
 #, fuzzy, php-format
@@ -15508,12 +15501,12 @@ msgstr " RRD文件中缺少DS '%s' "
 #: lib/rrd.php:2570
 #, php-format
 msgid "DS '%s' missing in Cacti definition"
-msgstr "DS'%s' 在Cacti定义中缺失"
+msgstr "DS'%s' 在Cacti 定义中缺失"
 
 #: lib/rrd.php:2587 lib/rrd.php:2588
 #, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
-msgstr "Cacti RRA'%s'具有与'%s'相同的CF /步数(%s,%s)"
+msgstr "Cacti RRA '%s' 具有与 '%s' 相同的CF /步数(%s,%s)"
 
 #: lib/rrd.php:2602 lib/rrd.php:2603
 #, php-format
@@ -15538,11 +15531,11 @@ msgstr "在RRDfile中缺少RRA '%s'"
 #: lib/rrd.php:2663
 #, php-format
 msgid "RRA '%s' missing in Cacti definition"
-msgstr "在Cacti定义中缺少RRA'%s' "
+msgstr "在Cacti 定义中缺少RRA'%s' "
 
 #: lib/rrd.php:2682
 msgid "RRD File Information"
-msgstr "RRD文件信息"
+msgstr "RRD 文件信息"
 
 #: lib/rrd.php:2714
 msgid "Data Source Items"
@@ -15685,9 +15678,9 @@ msgid ""
 "production, see the internet for instructions on converting your databases "
 "and tables if you plan on supporting other languages."
 msgstr ""
-"当将Cacti与英语以外的其他语言一起使用时,使用utf8_general_ci排序规则类型非常"
-"重要,因为某些字符的取值不止一个字节. 如果你是第一个刚刚安装Cacti的人,请停"
-"止,进行更改并重新开始. 如果您的Cacti已经运行并且正在投入生产,请参阅互联网"
+"当将Cacti 与英语以外的其他语言一起使用时,使用utf8_general_ci 排序规则类型非常"
+"重要,因为某些字符的取值不止一个字节. 如果你是第一个刚刚安装Cacti 的人,请停"
+"止,进行更改并重新开始. 如果您的Cacti 已经运行并且正在投入生产,请参阅互联网"
 "了解如果您计划支持其他语言,请转换数据库和表格."
 
 #: lib/utility.php:862
@@ -15699,9 +15692,9 @@ msgid ""
 "internet for instructions on converting your databases and tables if you "
 "plan on supporting other languages."
 msgstr ""
-"当使用除英语以外的语言的Cacti时,使用utf8字符集非常重要,因为某些字符需要多个"
-"字节. 如果你是第一个刚刚安装Cacti的人,请停止,进行更改并重新开始. 如果您的"
-"Cacti已经运行并且正在投入生产,请参阅互联网了解如果您计划支持其他语言,请转换"
+"当使用除英语以外的语言的Cacti 时,使用utf8字符集非常重要,因为某些字符需要多个"
+"字节. 如果你是第一个刚刚安装Cacti 的人,请停止,进行更改并重新开始. 如果您的"
+"Cacti 已经运行并且正在投入生产,请参阅互联网了解如果您计划支持其他语言,请转换"
 "数据库和表格."
 
 #: lib/utility.php:885
@@ -15710,7 +15703,7 @@ msgid ""
 "the utf8mb4_unicode_ci collation type as some characters take more than a "
 "single byte."
 msgstr ""
-"当将Cacti与英语以外的其他语言一起使用时,使用utf8mb4_unicode_ci排序规则类型非"
+"当将Cacti 与英语以外的其他语言一起使用时,使用utf8mb4_unicode_ci 排序规则类型非"
 "常重要,因为某些字符的取值不止一个字节."
 
 #: lib/utility.php:891
@@ -15718,7 +15711,7 @@ msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8mb4 character set as some characters take more than a single byte."
 msgstr ""
-"当使用Cacti与英语以外的语言时,重要的是使用它utf8mb4字符集作为一些字符需要多个"
+"当使用Cacti 与英语以外的语言时,重要的是使用它utf8mb4 字符集作为一些字符需要多个"
 "单字节."
 
 #: lib/utility.php:900
@@ -15730,7 +15723,7 @@ msgid ""
 "headroom for user connections, which will change depending on the number of "
 "concurrent login accounts."
 msgstr ""
-"根据登录次数和使用脊柱数据采集器, %s将需要许多连接. spine的计算是:"
+"根据登录次数和使用spine 数据采集器, %s 将需要许多连接. spine的计算是:"
 "total_connections = total_processes *(total_threads + script_servers + 1),"
 "那么您必须留下用于用户连接的空间,这将根据并发登录帐户的数量而改变."
 
@@ -15739,7 +15732,7 @@ msgid ""
 "Keeping the table cache larger means less file open/close operations when "
 "using innodb_file_per_table."
 msgstr ""
-"使用innodb_file_per_table时,保持表缓存的大小意味着更少的文件打开/关闭操作."
+"使用innodb_file_per_table 时,保持表缓存的大小意味着更少的文件打开/关闭操作."
 
 #: lib/utility.php:910
 msgid ""
@@ -15765,9 +15758,9 @@ msgid ""
 "expected consumption of the Performance Booster tables under Console -> "
 "System Utilities -> View Boost Status."
 msgstr ""
-"如果使用Cacti Performance Booster并选择内存存储引擎,则在系统内存表空间用完之"
-"前,必须小心刷新Performance Booster缓冲区. 这通过两种方式完成,首先将输出列"
-"的大小减小到合适的大小. 此列位于表poller_output和poller_output_boost中. 你"
+"如果使用Cacti Performance Booster 并选择内存存储引擎,则在系统内存表空间用完之"
+"前,必须小心刷新Performance Booster 缓冲区. 这通过两种方式完成,首先将输出列"
+"的大小减小到合适的大小. 此列位于表poller_output 和poller_output_boost 中. 你"
 "可以做的第二件事是分配更多的内存到内存表中. 我们已经任意选择了系统内存10%的"
 "建议值,但是如果您使用的是SSD磁盘驱动器,或者系统较小,则可以忽略此建议或选择"
 "其他存储引擎. 您可以在Console - > System Utilities - > View Boost Status下看"
@@ -15811,7 +15804,7 @@ msgid ""
 "vary depending on your systems size."
 msgstr ""
 "InnoDB将在系统内存中保存尽可能多的表和索引. 因此,你应该让innodb_buffer_pool"
-"大到足以容纳内存中的表和索引. 检查/ var / lib / mysql / cacti目录的大小将有"
+"大到足以容纳内存中的表和索引. 检查/var/lib/mysql/cacti 目录的大小将有"
 "助于确定此值. 我们建议您的系统总内存的25%,但是您的要求会因系统大小而异."
 
 #: lib/utility.php:945
@@ -15820,8 +15813,7 @@ msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
 "rapidly and adds a 50%% overhead on all write operations."
 msgstr ""
-"使用现代SSD类型的存储器,此操作实际上会更快速地降低磁盘,并在所有写入操作中增"
-"加50%的开销."
+"使用现代SSD 类型的存储器,此操作实际上会更快速地降低磁盘,并在所有写入操作中增加50%的开销."
 
 #: lib/utility.php:950
 msgid ""
@@ -15848,7 +15840,7 @@ msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
 "applications with high io characteristics."
 msgstr ""
-"采用现代SSD类型的存储器,具有多个IO线程对于具有高IO特性的应用是有利的."
+"采用现代SSD 类型的存储器,具有多个IO 线程对于具有高IO 特性的应用是有利的."
 
 #: lib/utility.php:978
 #, php-format
@@ -15889,7 +15881,7 @@ msgstr ""
 #: lib/utility.php:1002
 #, php-format
 msgid "%s Tuning"
-msgstr "%s 调整"
+msgstr "%s 调优"
 
 #: lib/utility.php:1002
 msgid "Note: Many changes below require a database restart"
@@ -16439,7 +16431,7 @@ msgstr "警告:Poller输出表不为空.问题: %d,%s."
 #: poller.php:521
 #, fuzzy, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
-msgstr "错误: spine路径: %s 无效. Poller 无法继续!"
+msgstr "错误: spine 路径: %s 无效. Poller 无法继续!"
 
 #: poller.php:662
 #, fuzzy, php-format
@@ -17718,7 +17710,7 @@ msgstr "插件权限"
 
 #: user_admin.php:1776
 msgid "Legacy 1.x Plugins"
-msgstr "Legacy 1.x插件"
+msgstr "Legacy 1.x 插件"
 
 #: user_admin.php:1827 user_group_admin.php:1548
 #, php-format
@@ -17776,7 +17768,7 @@ msgstr "不可用"
 
 #: user_admin.php:2328
 msgid "No Users Found"
-msgstr "未找到相应的用户"
+msgstr "未找到用户"
 
 #: user_admin.php:2544 user_group_admin.php:2157
 #, php-format
@@ -18028,7 +18020,7 @@ msgstr "允许此用户组用户使用自定义的用户设置"
 
 #: user_group_admin.php:106
 msgid "Tree Rights"
-msgstr "树权限"
+msgstr "树形权限"
 
 #: user_group_admin.php:108
 msgid "Should Users of this Group have access to the Tree?"
@@ -18044,7 +18036,7 @@ msgstr "该组的用户是否可以访问图形列表?"
 
 #: user_group_admin.php:122
 msgid "Graph Preview Rights"
-msgstr "图预览权限"
+msgstr "图形预览权限"
 
 #: user_group_admin.php:124
 msgid "Should Users of this Group have access to the Graph Preview?"
@@ -18096,7 +18088,7 @@ msgstr[0] "启用用户组"
 #: user_group_admin.php:482
 msgid "Click 'Continue' to disable the following User Group."
 msgid_plural "Click 'Continue' to disable following User Groups."
-msgstr[0] "点击“继续”以禁用以下用户组。"
+msgstr[0] "点击 '继续' 以禁用以下用户组."
 
 #: user_group_admin.php:487
 msgid "Disable User Group"
@@ -18178,7 +18170,7 @@ msgstr "清除"
 msgid ""
 "NET-SNMP Not Installed or its paths are not set.  Please install if you wish "
 "to monitor SNMP enabled devices."
-msgstr "未安装NET-SNMP或其路径未设置。 如果您希望监视启用SNMP的设备，请安装。"
+msgstr "未安装NET-SNMP 或者其路径未设置. 如果您希望监视启用SNMP的设备，请安装NET-SNMP."
 
 #: utilities.php:186
 msgid "Configuration Settings"
@@ -18190,8 +18182,8 @@ msgid ""
 "ERROR: Installed RRDtool version does not exceed configured version."
 "<br>Please visit the %s and select the correct RRDtool Utility Version."
 msgstr ""
-"错误：已安装的RRDtool版本不超过已配置的版本。 <br>请访问％s并选择正确的"
-"RRDtool实用程序版本。"
+"错误：已安装的RRDtool版本不超过已配置的版本. <br>请访问％s并选择正确的"
+"RRDtool实用程序版本."
 
 #: utilities.php:191
 #, php-format
@@ -18199,8 +18191,7 @@ msgid ""
 "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" "
 "graph(s) and/or templates have GIF set as the image format."
 msgstr ""
-"错误：RRDtool 1.2.x +不支持GIF图像格式，但 %d\"图形和/或模板将GIF设置为图像格"
-"式。"
+"错误：RRDtool 1.2.x+ 不支持GIF 图像格式，但 %d\"图形和/或模板将GIF设置为图像格式."
 
 #: utilities.php:211
 msgid "Database"
@@ -18247,7 +18238,7 @@ msgstr "轮询信息"
 #: utilities.php:331
 #, fuzzy
 msgid "Different version of Cacti and Spine!"
-msgstr "不同版本的仙人掌和脊椎！"
+msgstr "不同版本的Cacti 和 Spine !"
 
 #: utilities.php:349
 #, php-format
@@ -18297,7 +18288,7 @@ msgstr "PHP 版本"
 #: utilities.php:430
 msgid ""
 "PHP Version 5.5.0+ is recommended due to strong password hashing support."
-msgstr "由于强大的密码散列支持，建议使用PHP版本5.5.0以上的版本。"
+msgstr "由于强大的密码散列支持，建议使用PHP版本5.5.0以上的版本."
 
 #: utilities.php:435
 msgid "PHP OS"
@@ -18313,14 +18304,14 @@ msgstr "PHP SNMP"
 
 #: utilities.php:486
 msgid "You've set memory limit to 'unlimited'."
-msgstr "您已将内存限制设置为“unlimited”。"
+msgstr "您已将内存限制设置为 'unlimited'."
 
 #: utilities.php:488
 #, php-format
 msgid ""
 "It is highly suggested that you alter you php.ini memory_limit to %s or "
 "higher."
-msgstr "强烈建议您将php.ini的memory_limit改为%s或更高。"
+msgstr "强烈建议您将 php.ini 的 memory_limit 改为 %s 或更高."
 
 #: utilities.php:489
 msgid ""
@@ -18329,7 +18320,7 @@ msgid ""
 "system to system based on requirements."
 msgstr ""
 "这个建议的内存值是根据数据源的数量来计算的，只是作为一个建议，根据需要，实际"
-"值可能会随系统的不同而不同。"
+"值可能会随系统的不同而不同."
 
 #: utilities.php:497
 msgid "MySQL Table Information - Sizes in KBytes"
@@ -18414,7 +18405,7 @@ msgstr "用户登录"
 
 #: utilities.php:803
 msgid "IP Address"
-msgstr "IP地址"
+msgstr "IP 地址"
 
 #: utilities.php:819
 msgid "(User Removed)"
@@ -18432,19 +18423,19 @@ msgstr "日志[总行数：%d - 显示的所有项目]"
 
 #: utilities.php:1266
 msgid "Clear Cacti Log"
-msgstr "清除Cacti日志"
+msgstr "清除Cacti 日志"
 
 #: utilities.php:1279
 msgid "Cacti Log Cleared"
-msgstr "Cacti 日志清除"
+msgstr "Cacti 日志已清除"
 
 #: utilities.php:1281
 msgid "Error: Unable to clear log, no write permissions."
-msgstr "错误：无法清除日志，没有写入权限。"
+msgstr "错误：无法清除日志，没有写入权限."
 
 #: utilities.php:1284
 msgid "Error: Unable to clear log, file does not exist."
-msgstr "错误：无法清除日志，文件不存在。"
+msgstr "错误：无法清除日志，文件不存在."
 
 #: utilities.php:1385
 msgid "Data Query Cache Items"
@@ -18512,8 +18503,7 @@ msgid ""
 "persons to assist with issues in Cacti.  Includes checks for common "
 "configuration issues."
 msgstr ""
-"Cacti技术支持页面。 由开发人员和技术支持人员用来协助处理仙人掌中的问题。 包括"
-"检查常见的配置问题。"
+"Cacti技术支持页面. 由开发人员和技术支持人员用来协助处理Cacti 中的问题.包括检查常见的配置问题."
 
 #: utilities.php:1895
 msgid "Log Administration"
@@ -18524,15 +18514,13 @@ msgid ""
 "The Cacti Log stores statistic, error and other message depending on system "
 "settings.  This information can be used to identify problems with the poller "
 "and application."
-msgstr ""
-"Cacti Log根据系统设置存储统计信息，错误信息和其他信息。 这些信息可以用来识别"
-"轮询器和应用程序的问题。"
+msgstr "Cacti Log 根据系统设置存储统计信息，错误信息和其他信息.这些信息可以用来识别轮询器和应用程序的问题."
 
 #: utilities.php:1901
 msgid ""
 "Allows Administrators to browse the user log.  Administrators can filter and "
 "export the log as well."
-msgstr "允许管理员浏览用户日志。 管理员也可以过滤和导出日志。"
+msgstr "允许管理员浏览用户日志. 管理员也可以过滤和导出日志."
 
 #: utilities.php:1905
 msgid "Poller Cache Administration"
@@ -18544,8 +18532,7 @@ msgid ""
 "data is then in turn executed/interpreted and the results are fed into the "
 "RRDfiles for graphing or the database for display."
 msgstr ""
-"这是每次运行时传递给轮询器的数据。 然后依次执行/解释这些数据，并将结果输入到"
-"RRD文件中进行绘图或显示数据库。"
+"这是每次运行时传递给轮询器的数据.然后依次执行/解释这些数据，并将结果输入到RRD 文件中进行绘图或显示数据库."
 
 #: utilities.php:1912
 msgid ""
@@ -18553,8 +18540,7 @@ msgid ""
 "types. The values from these fields can be used in the text area of Graphs "
 "for Legends, Vertical Labels, and GPRINTS as well as in CDEF's."
 msgstr ""
-"数据查询缓存存储从数据查询输入类型收集的信息。 来自这些字段的值可以在图形的图"
-"例，垂直标签和GPRINTS以及CDEF中使用。"
+"数据查询缓存存储从数据查询输入类型收集的信息.来自这些字段的值可以在图形的图例，垂直标签和GPRINTS以及CDEF中使用."
 
 #: utilities.php:1914
 msgid "Rebuild Poller Cache"
@@ -18573,12 +18559,12 @@ msgid ""
 "the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --"
 "help' at the command line for more information.</i>"
 msgstr ""
-"如果您选择此选项，则将重新生成轮询缓存。如果在崩溃后遇到问题并且已经运行数据"
+"如果您选择此选项，则将重新生成轮询缓存.如果在崩溃后遇到问题并且已经运行数据"
 "库修复工具，则只有在发生数据库崩溃的情况下才使用此选项;或者，如果您遇到问题 "
-"使用特定的设备，只需重新保存该设备以重建其轮询缓存即可。还有一个与此命令等效"
-"的命令行界面，建议用于大型系统。<i class = “deviceDown ”>注意：在大型系统 ，"
-"这个命令可能需要几分钟到几个小时才能完成，因此不应该从Cacti UI运行。您可以在"
-"命令行运行'php -q cli / rebuild_poller_cache.php --help'以获取更多信息。</ i>"
+"使用特定的设备，只需重新保存该设备以重建其轮询缓存即可.还有一个与此命令等效"
+"的命令行界面，建议用于大型系统.<i class=\"deviceDown\">注意：在大型系统 ，"
+"这个命令可能需要几分钟到几个小时才能完成，因此不应该从Cacti UI运行.您可以在"
+"命令行运行 'php -q cli/rebuild_poller_cache.php --help' 以获取更多信息.</ i>"
 
 #: utilities.php:1918
 msgid "Rebuild Resource Cache"
@@ -18595,9 +18581,9 @@ msgid ""
 "Data Collectors to recheck their website and plugin files for consistency."
 msgstr ""
 "在Cacti中操作多个数据收集器时，Cacti将尝试维护所有数据收集器上的密钥文件的状"
-"态。这包括所有核心，非安装相关的网站和插件文件。强制执行资源缓存重建时，Cacti"
-"将清除本地资源缓存，然后在下一个计划的轮询器启动时重建它。这将触发所有远程数"
-"据收集器重新检查其网站和插件文件的一致性。"
+"态.这包括所有核心，非安装相关的网站和插件文件.强制执行资源缓存重建时，Cacti"
+"将清除本地资源缓存，然后在下一个计划的轮询器启动时重建它.这将触发所有远程数"
+"据收集器重新检查其网站和插件文件的一致性."
 
 #: utilities.php:1924
 msgid "Boost Utilities"
@@ -18611,8 +18597,7 @@ msgstr "查看增强状态"
 msgid ""
 "This menu pick allows you to view various boost settings and statistics "
 "associated with the current running Boost configuration."
-msgstr ""
-"通过此菜单，您可以查看与当前运行的增强配置相关的各种升压设置和统计信息。"
+msgstr "通过此菜单，您可以查看与当前运行的增强配置相关的各种升压设置和统计信息."
 
 #: utilities.php:1931
 msgid "RRD Utilities"
@@ -18627,9 +18612,7 @@ msgid ""
 "When you delete Data Sources from Cacti, the corresponding RRDfiles are not "
 "removed automatically.  Use this utility to facilitate the removal of these "
 "old files."
-msgstr ""
-"从Cacti中删除数据源时，相应的RRD文件不会自动删除。 使用此实用程序来帮助删除这"
-"些旧文件。"
+msgstr "从Cacti中删除数据源时，相应的RRD文件不会自动删除. 使用此实用程序来帮助删除这些旧文件."
 
 #: utilities.php:1939
 msgid "SNMPAgent Utilities"
@@ -18641,7 +18624,7 @@ msgstr "查看SNMPAgent缓存"
 
 #: utilities.php:1942
 msgid "This shows all objects being handled by the SNMPAgent."
-msgstr "这显示了SNMPAgent处理的所有对象。"
+msgstr "这显示了SNMPAgent处理的所有对象."
 
 #: utilities.php:1944
 msgid "Rebuild SNMPAgent Cache"
@@ -18651,9 +18634,7 @@ msgstr "重建SNMPAgent缓存"
 msgid ""
 "The SNMP cache will be cleared and re-generated if you select this option. "
 "Note that it takes another poller run to restore the SNMP cache completely."
-msgstr ""
-"如果您选择此选项，SNMP缓存将被清除并重新生成。 请注意，它需要另一个轮询器才能"
-"完全恢复SNMP缓存"
+msgstr "如果您选择此选项，SNMP缓存将被清除并重新生成. 请注意，它需要另一个轮询器才能完全恢复SNMP缓存"
 
 #: utilities.php:1948
 msgid "View SNMPAgent Notification Log"
@@ -18663,12 +18644,11 @@ msgstr "查看SNMPAgent通知日志"
 msgid ""
 "This menu pick allows you to view the latest events SNMPAgent has handled in "
 "relation to the registered notification receivers."
-msgstr ""
-"通过此菜单，您可以查看SNMPAgent处理的与注册的通知接收方有关的最新事件。"
+msgstr "通过此菜单，您可以查看SNMPAgent处理的与注册的通知接收方有关的最新事件."
 
 #: utilities.php:1954
 msgid "Allows Administrators to maintain SNMP notification receivers."
-msgstr "允许管理员维护SNMP通知接收者。"
+msgstr "允许管理员维护SNMP通知接收者."
 
 #: utilities.php:1961
 msgid "Cacti System Utilities"
@@ -18882,7 +18862,7 @@ msgstr "严重级别： %s"
 #: vdef.php:265
 msgid "Click 'Continue' to delete the following VDEF."
 msgid_plural "Click 'Continue' to delete following VDEFs."
-msgstr[0] "点击“继续”删除以下VDEF。"
+msgstr[0] "点击 '继续' 删除以下VDEF."
 
 #: vdef.php:270
 msgid "Delete VDEF"
@@ -18896,7 +18876,7 @@ msgid ""
 msgid_plural ""
 "Click 'Continue' to duplicate following VDEFs. You can optionally change the "
 "title format for the new VDEFs."
-msgstr[0] "点击“继续”复制下面的VDEF。 您可以选择更改新VDEF的标题格式。"
+msgstr[0] "点击 '继续' 复制下面的VDEF. 您可以选择更改新VDEF的标题格式."
 
 #: vdef.php:280
 msgid "Duplicate VDEF"
@@ -18905,7 +18885,7 @@ msgstr[0] "重复VDEF"
 
 #: vdef.php:326
 msgid "Click 'Continue' to delete the following VDEF's."
-msgstr "点击“继续”删除下面的VDEF。"
+msgstr "点击 '继续' 删除下面的VDEF."
 
 #: vdef.php:327
 #, fuzzy, php-format
@@ -18931,7 +18911,7 @@ msgstr "VDEF Item Type"
 
 #: vdef.php:423
 msgid "Choose what type of VDEF item this is."
-msgstr "选择这是什么类型的VDEF项目。"
+msgstr "选择这是什么类型的VDEF项目."
 
 #: vdef.php:429
 msgid "VDEF Item Value"
@@ -18939,7 +18919,7 @@ msgstr "VDEF Item Value"
 
 #: vdef.php:430
 msgid "Enter a value for this VDEF item."
-msgstr "为 VDEF 输入一个值。"
+msgstr "为 VDEF 输入一个值."
 
 #: vdef.php:559
 #, php-format
@@ -18956,7 +18936,7 @@ msgstr "删除此VDEF项目"
 
 #: vdef.php:881
 msgid "The name of this VDEF."
-msgstr "VDEF的名称。"
+msgstr "VDEF的名称."
 
 #: vdef.php:881
 msgid "VDEF Name"
@@ -18966,15 +18946,15 @@ msgstr "VDEF全名"
 msgid ""
 "VDEFs that are in use cannot be Deleted. In use is defined as being "
 "referenced by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的VDEF不能被删除。 "
+msgstr "正在由图形或图形模板引用的VDEF不能被删除. "
 
 #: vdef.php:883
 msgid "The number of Graphs using this VDEF."
-msgstr "使用此VDEF的图的数量。"
+msgstr "使用此VDEF的图的数量."
 
 #: vdef.php:884
 msgid "The number of Graphs Templates using this VDEF."
-msgstr "使用此VDEF的图形模板的数量。"
+msgstr "使用此VDEF的图形模板的数量."
 
 #: vdef.php:907
 msgid "No VDEFs"
