@@ -128,25 +128,6 @@ function clog_view_logfile() {
 	$exclude_reported = false;
 
 	$clogAdmin = clog_admin();
-	$logfile   = read_config_option('path_cactilog');
-
-	$requestedFile = '';
-	if (isset_request_var('filename')) {
-		$requestedFile = basename(get_nfilter_request_var('filename'));
-	}
-
-	if (empty($requestedFile)) {
-		$requestedFile = $logfile;
-	}
-
-	if (clog_validate_filename($requestedFile, $logpath, $logname, true)) {
-		$logfile = $logpath . '/'.  $requestedFile;
-	}
-
-	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
-	}
-	$requestedFile = basename($logfile);
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -163,6 +144,12 @@ function clog_view_logfile() {
 			'filter'  => FILTER_VALIDATE_INT,
 			'default' => '-1',
 			'pageset' => true
+		),
+		'filename' => array(
+			'filter'  => FILTER_CALLBACK,
+			'default' => read_config_option('path_cactilog'),
+			'pageset' => true,
+			'options' => array('options' => 'sanitize_search_string')
 		),
 		'refresh' => array(
 			'filter'  => FILTER_VALIDATE_INT,
@@ -188,9 +175,18 @@ function clog_view_logfile() {
 	set_request_var('page_referrer', 'view_logfile');
 	load_current_session_value('page_referrer', 'page_referrer', 'view_logfile');
 
+	$logfile = basename(get_nfilter_request_var('filename'));
+	$logname = '';
+
+	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
+		$logfile = read_config_option('path_cactilog');
+	}
+
+	$logfile = $logpath . '/' . $logfile;
+
 	if ($clogAdmin && isset_request_var('purge_continue')) {
 		clog_purge_logfile();
-		$logfile   = read_config_option('path_cactilog');
+		$logfile = read_config_option('path_cactilog');
 	}
 
 	$page_nr = get_request_var('page');
@@ -246,7 +242,7 @@ function clog_view_logfile() {
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
-	filter($clogAdmin, $requestedFile);
+	filter($clogAdmin, basename($logfile));
 	html_end_box();
 
 	/* read logfile into an array and display */
@@ -284,7 +280,7 @@ function clog_view_logfile() {
 	$tail_lines   = get_request_var('tail_lines');
 	$base_url     = 'clog.php?rfilter='.$rfilter.'&reverse='.$reverse.'&refresh='.$refreshTime.'&message_type='.$message_type.'&tail_lines='.$tail_lines.'&filename='.basename($logfile);
 
-	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 13, __('Entries'), 'page', 'main');
+	$nav = html_nav_bar($base_url, MAX_DISPLAY_PAGES, $page_nr, $number_of_lines, $total_rows, 1, __('Entries'), 'page', 'main');
 
 	print $nav;
 
@@ -392,8 +388,11 @@ function filter($clogAdmin, $selectedFile) {
 					<td>
 						<select id='filename'>
 						<?php
+						$stdFileArray = $stdLogFileArray = $stdErrFileArray = array();
 						$configLogPath = read_config_option('path_cactilog');
 						$configLogBase = basename($configLogPath);
+						$stderrLogPath = read_config_option('path_stderrlog');
+						$stderrLogBase = basename($stderrLogPath);
 
 						if ($configLogPath == '') {
 							$logPath = $config['base_path'] . '/log/';
@@ -407,18 +406,14 @@ function filter($clogAdmin, $selectedFile) {
 							$files = array('cacti.log');
 						}
 
-						$stderrLogPath = read_config_option('path_stderrlog');
-						if (!empty($stderrLogPath)) {
-							if (dirname($stderrLogPath) != $logPath) {
-								$errFiles = scandir($stderrLogPath);
-								$files = array_merge($files, $errFiles);
-							}
-						}
+						// Defaults go first and second
+						$stdFileArray[] = basename($configLogPath);
 
+						// After Defaults, do Cacti log first (of archived)
 						if (cacti_sizeof($files)) {
-							$logFileArray = array();
+							$stdLogFileArray = array();
 							foreach ($files as $logFile) {
-								if (in_array($logFile, array('.', '..', '.htaccess'))) {
+								if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase))) {
 									continue;
 								}
 
@@ -431,12 +426,47 @@ function filter($clogAdmin, $selectedFile) {
 									continue;
 								}
 
-								$logFileArray[] = $logFile;
+								$stdLogFileArray[] = $logFile;
 							}
 
-							$logFileArray = array_unique($logFileArray);
-							usort($logFileArray, 'filter_sort');
+							$stdLogFileArray = array_unique($stdLogFileArray);
+						}
 
+						// Defaults go first and second
+						if (!empty($stderrLogPath)) {
+							$stdFileArray[] = basename($stderrLogPath);
+
+							// After Defaults, do Cacti StdErr log second (of archived)
+							if (dirname($stderrLogPath) != $logPath) {
+								$errFiles = scandir(dirname($stderrLogPath));
+								$files = $errFiles;
+								if (cacti_sizeof($files)) {
+									$stdErrFileArray = array();
+									foreach ($files as $logFile) {
+										if (in_array($logFile, array('.', '..', '.htaccess', $configLogBase, $stderrLogBase))) {
+											continue;
+										}
+
+										$explode = explode('.', $logFile);
+										if (substr($explode[max(array_keys($explode))], 0, 3) != 'log') {
+											continue;
+										}
+
+										if (!clog_validate_filename($logFile, $logPath, $logName)) {
+											continue;
+										}
+
+										$stdErrFileArray[] = $logFile;
+									}
+
+									$stdErrFileArray = array_unique($stdErrFileArray);
+								}
+							}
+						}
+
+						$logFileArray = $stdFileArray + $stdLogFileArray + $stdErrFileArray;
+
+						if (cacti_sizeof($logFileArray)) {
 							foreach ($logFileArray as $logFile) {
 								print "<option value='" . $logFile . "'";
 
@@ -446,10 +476,10 @@ function filter($clogAdmin, $selectedFile) {
 
 								$logParts = explode('-', $logFile);
 
-								$logDate = count($logParts) < 2 ? '' : ('[' . $logParts[1] . '] ');
+								$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
 								$logName = $logParts[0];
 
-								print '>' . $logDate . $logName . "</option>\n";
+								print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
 							}
 						}
 						?>
