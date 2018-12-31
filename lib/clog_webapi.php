@@ -245,7 +245,7 @@ function clog_view_logfile() {
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
-	filter($clogAdmin);
+	filter($clogAdmin, $logname);
 	html_end_box();
 
 	/* read logfile into an array and display */
@@ -377,7 +377,7 @@ function filter_sort($a, $b) {
 	return strcmp($b_date . '-' . str_replace('_','+',$b_parts[0]), $a_date . '-' . str_replace('_','+',$a_parts[0]));
 }
 
-function filter($clogAdmin) {
+function filter($clogAdmin, $selectedFile) {
 	global $page_refresh_interval, $log_tail_lines, $config;
 	?>
 	<tr class='even'>
@@ -393,7 +393,6 @@ function filter($clogAdmin) {
 						<?php
 						$configLogPath = read_config_option('path_cactilog');
 						$configLogBase = basename($configLogPath);
-						$selectedFile  = basename(get_nfilter_request_var('filename'));
 
 						if ($configLogPath == '') {
 							$logPath = $config['base_path'] . '/log/';
