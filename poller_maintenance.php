@@ -219,7 +219,7 @@ function realtime_purge_cache() {
  * logrotate_rotatenow
  * Rotates the cacti log
  */
-function logrotate_rotatenow () {
+function logrotate_rotatenow() {
 	global $config;
 
 	$poller_start = microtime(true);
@@ -258,6 +258,8 @@ function logrotate_rotatenow () {
 		$rotated += logrotate_file_rotate($name, $log, $date);
 		$cleaned += logrotate_file_clean($name, $log, $date, $days);
 	}
+
+	$cleaned += logrotate_file_clean($name, $log, $date, $days);
 
 	/* record the start time */
 	$poller_end = microtime(true);
@@ -322,16 +324,15 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 	global $config;
 
 	if (empty($log)) {
-		return 0;
+		return false;
 	}
 
 	if ($rotation <= 0) {
-		return 0;
+		return false;
 	}
 
-	$baselogfile = basename($log) . '-';
-	$baseloglen  = strlen($baselogfile);
 	$baselogdir  = dirname($log) . '/';
+	$baselogname = basename($log);
 
 	clearstatcache();
 	$dir = scandir($baselogdir);
@@ -339,22 +340,35 @@ function logrotate_file_clean($name, $log, $date, $rotation) {
 		$date_log = clone $date;
 		$date_log->modify('-'.$rotation.'day');
 		$e = $date_log->format('Ymd');
-		cacti_log('Cacti Log Rotation - Purging all ' . $name . ' logs before '.$e, true, 'MAINT');
-		foreach ($dir as $d) {
-			if (substr($d, 0, $baseloglen) == $baselogfile && strlen($d) >= $baseloglen + 8) {
-				$f = substr($d, 10, 8);
 
-				if ($f < $e) {
-					if (is_writable($baselogdir . $d)) {
-						@unlink($baselogdir . $d);
-						cacti_log('Cacti Log Rotation - Purging ' . $name  . ' Log : ' . $d, true, 'MAINT');
-					} else {
-						cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name  . ' Log : ' . $d, true, 'MAINT');
+		cacti_log('Cacti Log Rotation - Purging all ' . $name . ' logs before '. $e, true, 'MAINT');
+
+		foreach ($dir as $d) {
+			$fileparts = explode('-', $d);
+			$matches   = false;
+
+			if (strpos($d, $baselogname) !== false) {
+				if ($fileparts > 1) {
+					foreach($fileparts as $p) {
+						// Is it in the form YYYYMMDD?
+						if (is_numeric($p) && strlen($p) == 8) {
+							$matches = true;
+							if ($p < $e) {
+								if (is_writable($baselogdir . $d)) {
+									@unlink($baselogdir . $d);
+									cacti_log('Cacti Log Rotation - Purging ' . $name  . ' Log : ' . $d, true, 'MAINT');
+								} else {
+									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name  . ' Log : ' . $d, true, 'MAINT');
+								}
+							} else {
+								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
+							}
+						}
 					}
-				} else {
-					cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
 				}
-			} else {
+			}
+
+			if ($matches) {
 				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_DEBUG);
 			}
 		}
