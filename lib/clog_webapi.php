@@ -146,6 +146,7 @@ function clog_view_logfile() {
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
+	$requestedFile = basename($logfile);
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -245,7 +246,7 @@ function clog_view_logfile() {
 	}
 
 	html_start_box(__('Log Filters'), '100%', '', '3', 'center', '');
-	filter($clogAdmin, $logname);
+	filter($clogAdmin, $requestedFile);
 	html_end_box();
 
 	/* read logfile into an array and display */
