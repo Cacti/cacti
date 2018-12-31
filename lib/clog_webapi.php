@@ -51,29 +51,48 @@ function clog_get_graphs_from_datasource($local_data_id) {
 		array($local_data_id)), 'id', 'name');
 }
 
-function clog_purge_logfile() {
-	global $config;
-
+function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
 	$logfile = read_config_option('path_cactilog');
 	$logbase = basename($logfile);
+
 	if ($logfile == '') {
 		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?filename=' . $logbase);
-			exit(0);
-		}
+	$errfile = read_config_option('path_stderrlog');
+	$errbase = basename($errfile);
+
+	$file = basename($file);
+	$filepath = '';
+	$filename = '';
+	$filefull = '';
+
+	if (!empty($errfile) && strpos($file, $errbase) === 0) {
+		$filepath = dirname($errfile);
+		$filename = $errbase;
+		$filefull = $filepath . '/' . $file;
+	} elseif (!empty($logfile) && strpos($file, $logbase) === 0) {
+		$filepath = dirname($logfile);
+		$filename = $logbase;
+		$filefull = $filepath . '/' . $file;
 	}
 
-	$purgefile = dirname($logfile) . '/' . get_nfilter_request_var('filename');
-	if (strstr($purgefile, $logfile) === false) {
+	return ($filecheck ? file_exists($filefull) : !empty($filefull));
+}
+
+function clog_purge_logfile() {
+	global $config;
+
+	$filename = get_nfilter_request_var('filename');
+
+	if (!clog_validate_filename($filename, $logpath, $logname)) {
 		raise_message('clog_invalid');
-		header('Location: ' . get_current_page() . '?header=false');
+		header('Location: ' . get_current_page());
 		exit(0);
 	}
+
+	$purgefile = $logpath . '/' . $filename;
+	$logfile = $logpath . '/'. $logname;
 
 	if (file_exists($purgefile)) {
 		if (is_writable($purgefile)) {
@@ -110,23 +129,22 @@ function clog_view_logfile() {
 
 	$clogAdmin = clog_admin();
 	$logfile   = read_config_option('path_cactilog');
-	$logbase   = basename($logfile);
 
+	$requestedFile = '';
 	if (isset_request_var('filename')) {
-		$requestedFile = dirname($logfile) . '/' . basename(get_nfilter_request_var('filename'));
-		if (file_exists($requestedFile)) {
-			$logfile = $requestedFile;
-		}
-	} elseif ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+		$requestedFile = basename(get_nfilter_request_var('filename'));
 	}
 
-	if (get_nfilter_request_var('filename') != '') {
-		if (strpos(get_nfilter_request_var('filename'), $logbase) === false) {
-			raise_message('clog_invalid');
-			header('Location: ' . get_current_page() . '?filename=' . $logbase);
-			exit(0);
-		}
+	if (empty($requestedFile)) {
+		$requestedFile = $logfile;
+	}
+
+	if (clog_validate_filename($requestedFile, $logpath, $logname, true)) {
+		$logfile = $logpath . '/'.  $requestedFile;
+	}
+
+	if ($logfile == '') {
+		$logfile = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* ================= input validation and session storage ================= */
@@ -339,6 +357,23 @@ function clog_view_logfile() {
 	bottom_footer();
 }
 
+function filter_sort($a, $b) {
+	$a_parts = explode('-', $a);
+	$b_parts = explode('-', $b);
+
+	$a_date = '99999999';
+	if (count($a_parts) > 1) {
+		$a_date = $a_parts[1];
+	}
+
+	$b_date = '99999999';
+	if (count($b_parts) > 1) {
+		$b_date = $b_parts[1];
+	}
+
+	return strcmp($b_date . '-' . $b_parts[0], $a_date . '-' . $a_parts[0]);
+}
+
 function filter($clogAdmin) {
 	global $page_refresh_interval, $log_tail_lines, $config;
 	?>
@@ -369,6 +404,14 @@ function filter($clogAdmin) {
 							$files = array('cacti.log');
 						}
 
+						$stderrLogPath = read_config_option('path_stderrlog');
+						if (!empty($stderrLogPath)) {
+							if (dirname($stderrLogPath) != $logPath) {
+								$errFiles = scandir($stderrLogPath);
+								$files = array_merge($files, $errFiles);
+							}
+						}
+
 						if (cacti_sizeof($files)) {
 							$logFileArray = array();
 							foreach ($files as $logFile) {
@@ -381,17 +424,19 @@ function filter($clogAdmin) {
 									continue;
 								}
 
-								if (strpos($logFile, $configLogBase) === false) {
+								if (!clog_validate_filename($logFile, $logPath, $logName)) {
 									continue;
 								}
 
 								if (strcmp($logFile, 'cacti.log') == 0) {
 									continue;
 								}
+
 								$logFileArray[] = $logFile;
 							}
 
-							arsort($logFileArray);
+							$logFileArray = array_unique($logFileArray);
+							usort($logFileArray, 'filter_sort');
 							array_unshift($logFileArray,'cacti.log');
 
 							foreach ($logFileArray as $logFile) {
