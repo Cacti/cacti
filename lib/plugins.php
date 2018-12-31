@@ -408,7 +408,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		if (isset($data['keys']) && cacti_sizeof($data['keys'])) {
 			foreach ($data['keys'] as $key) {
 				if (isset($key['name'])) {
-					$sql .= ",\n INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+					$sql .= ",\n INDEX `" . $key['name'] . '` (' . db_format_index_create($key['columns']) . ')';
 				}
 			}
 		}
@@ -416,7 +416,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		if (isset($data['unique_keys'])) {
 			foreach ($data['unique_keys'] as $key) {
 				if (isset($key['name'])) {
-					$sql .= ",\n UNIQUE INDEX `" . $key['name'] . '` (`' . $key['columns'] . '`)';
+					$sql .= ",\n UNIQUE INDEX `" . $key['name'] . '` (' . db_format_index_create($key['columns']) . ')';
 				}
 			}
 		}
@@ -425,6 +425,10 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 
 		if (isset($data['comment'])) {
 			$sql .= " COMMENT = '" . $data['comment'] . "'";
+		}
+
+		if (isset($data['charset'])) {
+			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
 		if (db_execute($sql)) {
