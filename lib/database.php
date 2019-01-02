@@ -291,8 +291,7 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 			return $return_value;
 		} else {
 			$database_last_error = 'DB ' . $execute_name . ' Failed!, Error ' . $en . ': ' . (isset($errorinfo[2]) ? $errorinfo[2] : '<no error>');
-			if (isset($query))
-			{
+			if (isset($query)) {
 				$query->closeCursor();
 			}
 			unset($query);
@@ -1375,3 +1374,12 @@ function db_echo_sql($line, $force = false) {
 
 	file_put_contents(sys_get_temp_dir() . '/cacti-sql.log', get_debug_prefix() . $line, FILE_APPEND);
 }
+
+/* db_error - return the last error from the database
+   @returns - string - the last database error if any */
+function db_error() {
+	global $database_last_error;
+
+	return $database_last_error;
+}
+
