@@ -60,6 +60,11 @@ th {
 	white-space: nowrap;
 }
 
+p {
+	padding: 3px 5px;
+	margin: 3px;
+}
+
 img {
 	border:none;
 	vertical-align:middle;
@@ -75,6 +80,13 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
@@ -84,7 +96,12 @@ fieldset {
 }
 
 .checkboxLabel {
+	display: none;
 	color: #000000;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
 }
 
 /* links */
@@ -118,10 +135,6 @@ input {
 	padding: 0.4em;
 	font-size: 12px;
 	max-width: 400px;
-}
-
-#host_id_wrap {
-	line-height: 25px;
 }
 
 select {
@@ -298,10 +311,6 @@ label {
 	font-family: monospace;
 }
 
-.autodrop {
-	line-height: 22px;
-}
-
 .utilityPick {
 	width: 200px;
 }
@@ -315,6 +324,11 @@ label {
 	width:20%;
 	vertical-align:top;
 	white-space:nowrap;
+}
+
+.spikeKillMenuItem {
+	padding-left: 0.5em !important;
+	display: block;
 }
 
 .deviceUp {
@@ -452,8 +466,8 @@ label {
 	border-width: 0px 1px 1px 1px;
 	z-index:5;
 	display:block;
+	position: absolute;
 	float:right;
-	position:absolute;
 	right:26px;
 	top:22px;
   	list-style: none;
@@ -463,7 +477,6 @@ label {
 }
 
 .menuoptions li a {
-	border-top: 1px solid #ccc;
 	font-weight:normal;
 	display:block;
 	padding:2px;
@@ -472,7 +485,6 @@ label {
 }
 
 .menuoptions li a:hover {
-	display:block;
 	background: linear-gradient(to bottom, rgba(242, 246, 248, 1) 0%, rgba(216, 225, 231, 1) 50%, rgba(181, 198, 208, 1) 51%, rgba(224, 239, 249, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
 }
 
@@ -561,7 +573,7 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -625,12 +637,24 @@ label {
 .cactiPageHead {
 	background-color: #a9a9a9;
 	height:30px;
-	width:100%;
 	position:fixed;
+	display: table-row;
+	width: 100%;
 	padding-top:5px;
 	top:0px;
 	left:0px;
 	z-index:4;
+}
+
+.cactiPageHead #tabs {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.cactiPageHead div:first-child {
+	top: 0;
+	left: 0;
+	display: table-cell;
 }
 
 .cactiGraphPageHeadBackdrop {
@@ -669,7 +693,7 @@ label {
 	height:18px;
 	width:100%;
 	position:fixed;
-	padding:4px;
+	padding: 4px;
 	top:30px;
 	left:0px;
 	z-index:5;
@@ -940,7 +964,6 @@ legend {
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
-	margin-top: 1px;
 	margin-left: 3px;
 	display: table-cell;
 }
@@ -1038,7 +1061,6 @@ legend {
 	padding-right: 5px;
 	padding-left: 5px;
 	vertical-align: top;
-	display:none;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 }
@@ -1212,6 +1234,12 @@ legend {
 	white-space: nowrap;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: rgba(98,125,77,1);
+	border-style: solid;
+}
+
 .cactiTable {
 	display: table;
 	width: 100%;
@@ -1219,7 +1247,11 @@ legend {
 	margin-right:auto;
 	display: table;
 	line-height: 16px;
-	color: snow;
+	color: rgb(68, 68, 68);
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(98,125,77,1) !important;
 }
 
 .cactiTableTitleRow {
@@ -1315,10 +1347,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1338,7 +1366,7 @@ legend {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 49%;
+	width: 44%;
 	text-align: left;
 	padding-left: 3px;
 }
@@ -1346,7 +1374,7 @@ legend {
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1425,6 +1453,7 @@ legend {
 
 .formHeaderText {
 	padding-left: 3px;
+	color: snow;
 }
 
 .formHeaderAnchor {
@@ -1455,7 +1484,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		text-align: left;
 	}
 
@@ -1488,6 +1517,18 @@ legend {
 
 	.ui-button-text-only .ui-button-text {
 		padding: 0.4em;
+	}
+
+	/* dropdown menus */
+	.menuoptions, .submenuoptions {
+		width: 100%;
+		left: 0 !important;
+		border-left: none !important;
+		border-right: none !important;
+	}
+
+	.menuoptions li a, .submenuoptions li a {
+		padding-right: 25px;
 	}
 }
 
@@ -1567,12 +1608,20 @@ th.secondarySort {
 	font-size:11px;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: snow;
 	vertical-align: middle;
 	text-align: left;
 	cursor:pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .graphSubHeaderColumn {
@@ -1841,29 +1890,19 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
-div#tabs {
-	padding-bottom: 0px;
-	vertical-align: bottom;
-	position: fixed;
-	left: 5px;
-	top: 5px;
-	height: 30px;
-	width: 70%;
-}
-
 td#tabs {
-	padding:0px !important;
+	padding: 0px !important;
 }
 
 .cactiGraphHeaderBackground {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 10% / 380px auto;
 	height: 35px;
-	width:500px;
-	float:right;
-	position:fixed;
+	width: 400px;
+	float: right;
+	position: fixed;
 	top: 0px;
 	right: 0px;
-	z-index:-1;
+	z-index: -1;
 }
 
 div#gtabs {
@@ -1875,8 +1914,87 @@ div#gtabs {
 	height: 30px;
 }
 
+.ellipsis {
+	width: 25px !important;
+	float: left;
+	display: none;
+}
+
 .maintabs {
+	float: left;
 	overflow: hidden;
+	height: 25px;
+}
+
+.maintabs-submenu {
+	display: none;
+}
+
+.maintabs-submenu-ellipsis a {
+	display: block;
+}
+
+.maintabs-submenu a {
+	padding: 5px 8px 5px 0px;
+}
+
+.maintabs-submenu i {
+	font-size: 18px;
+}
+
+div.submenu {
+	display: none;
+	position: absolute;
+	border: 2px solid #2d4ca8;
+	top: 0;
+	left: 0;
+	z-index: 200;
+}
+
+div.submenu span {
+	display: block;
+}
+
+.submenuoptions {
+	border-width: 0px 1px 1px 1px;
+	border-color:#eee #ccc #ccc #eee;
+	color:#333;
+	border-style: solid;
+	position:absolute;
+	top:30px;
+  	list-style: none;
+	text-align: left;
+	margin:0px;
+	padding: 10px 0px 10px 0px;
+	background: snow;
+	z-index: 200;
+}
+
+.submenuoptions li a {
+	display:block;
+	padding: 4px 15px;
+	font-size: 12px;
+	font-weight: 500;
+	color:#333;
+	text-decoration: none;
+}
+
+.submenuoptions li a:hover {
+	display:block;
+	color:#333;
+	background: rgba(242,246,248,1);
+	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
+	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -o-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: -ms-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	background: linear-gradient(to bottom, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2f6f8', endColorstr='#e0eff9', GradientType=0 );
+}
+
+.tabs {
+	border: 0px;
+	margin: 0px;
 	height: 25px;
 }
 
@@ -1931,27 +2049,26 @@ div#gtabs {
 }
 
 .tabs li.current a:hover, .maintabs li.current a:hover {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
 
 .tabs nav, .maintabs nav {
-	border-bottom:1px solid #ccc;
-	padding:0 0 0 4px;
-	zoom:1;
+	border-bottom: 1px solid #ccc;
+	padding: 0 0 0 4px;
+	height: 25px;
 }
 
 .tabs nav:after, .maintabs nav:after {
-	clear:both;
-	content:".";
-	display:block;
-	height:0;
-	visibility:hidden;
+	clear: both;
+	content: ".";
+	visibility: hidden;
 }
 .tabs ul, .maintabs ul {
-	list-style:none;
-	margin:0;
-	padding:0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: block;
 }
 
 /* Navigation Area */
@@ -1961,7 +2078,7 @@ div#gtabs {
 	border-top: 0px solid #999;
 	border-right: 0px solid #999;
 	border-left: 0px solid #999;
-	font-size:12px;
+	font-size: 12px;
 	margin: 0px 0;
 }
 
@@ -2260,4 +2377,208 @@ tr#realtime td:first-child {
 
 .note a:hover {
 	text-decoration: underline;
+}
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+	background: rgba(98,125,77,1);
+	background: -moz-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(98,125,77,1)), color-stop(100%, rgba(31,59,8,1)));
+	background: -webkit-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -o-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	background: -ms-linear-gradient(top, rgba(98,125,77,1) 0%, rgba(31,59,8,1) 100%);
+	color: snow;
+}
+
+/* New Checkbox Stuff */
+.checkboxSwitch {
+	position: relative;
+	display: inline-block;
+	width: 45px;
+	height: 24px;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.checkboxSwitch input {
+	display:none;
+}
+
+.checkboxSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(98,125,77,1);
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.checkboxSlider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .checkboxSlider {
+	background-color: rgba(167,217,134,1);
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
+input:focus + .checkboxSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .checkboxSlider:before {
+	-webkit-transform: translateX(20px);
+	-ms-transform: translateX(20px);
+	transform: translateX(20px);
+}
+
+/* Rounded.checkboxSliders */
+.checkboxSlider.checkboxRound {
+	border-radius: 24px;
+}
+
+.checkboxSlider.checkboxRound:before {
+	border-radius: 50%;
+}
+
+.checkboxLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+.right {
+	text-align: right;
+}
+
+.radioSwitch {
+	position: relative;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+	height: 24px;
+	width: 24px;
+}
+
+.radioSwitch input {
+	display:none;
+}
+
+.radioSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 24px;
+	width: 24px;
+	background-color: rgba(98,125,77,1);
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.radioSlider:before {
+	display: none;
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .radioSlider {
+	background-color: rgba(167,217,134,1);
+}
+
+input:checked + .radioSlider:before {
+	display: inline-block;
+}
+
+input:disabled + .radioSlider {
+	cursor: not-allowed;
+}
+
+input:focus + .radioSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .radioSlider:before {
+	display: block;
+}
+
+/* Rounded.radioSliders */
+.radioSlider.radioRound {
+	border-radius: 24px;
+}
+
+.radioSlider.radioRound:before {
+	border-radius: 50%;
+}
+
+.radioLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+td.center > table {
+	margin: 0 auto;
+}
+
+.ui-menu-item-wrapper {
+	white-space: nowrap;
 }

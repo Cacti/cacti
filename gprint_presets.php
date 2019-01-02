@@ -128,7 +128,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$gprint_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
+			$gprint_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates_gprint WHERE id = ?', array($matches[1]))) . '</li>';
 			$gprint_array[$i] = $matches[1];
 
 			$i++;
@@ -141,7 +141,7 @@ function form_actions() {
 
 	html_start_box($gprint_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
-	if (isset($gprint_array) && sizeof($gprint_array)) {
+	if (isset($gprint_array) && cacti_sizeof($gprint_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -150,11 +150,12 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') ."' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete GPRINT Preset(s)') ."'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one GPRINT Preset.') ."</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') ."' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: gprint_presets.php?header=false');
+        exit;
 	}
 
 	print "<tr>
@@ -182,7 +183,7 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('GPRINT Presets [edit: %s]', htmlspecialchars($gprint_preset['name']));
+		$header_label = __('GPRINT Presets [edit: %s]', html_escape($gprint_preset['name']));
 	} else {
 		$header_label = __('GPRINT Presets [new]');
 	}
@@ -262,7 +263,7 @@ function gprint_presets() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('GPRINTs');?>
@@ -271,9 +272,9 @@ function gprint_presets() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -287,8 +288,8 @@ function gprint_presets() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -399,7 +400,7 @@ function gprint_presets() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		foreach ($gprint_list as $gp) {
 			if ($gp['graphs'] == 0 && $gp['templates'] == 0) {
 				$disabled = false;
@@ -409,10 +410,10 @@ function gprint_presets() {
 
             form_alternate_row('line' . $gp['id'], false, $disabled);
 			form_selectable_cell(filter_value($gp['name'], get_request_var('filter'), 'gprint_presets.php?action=edit&id=' . $gp['id']), $gp['id']);
-            form_selectable_cell($gp['gprint_text'], $gp['id'], '', 'text-align:right');
-            form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'text-align:right');
+            form_selectable_ecell($gp['gprint_text'], $gp['id'], '', 'right');
+            form_selectable_cell($disabled ? __('No'):__('Yes'), $gp['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($gp['graphs'], '-1'), $gp['id'], '', 'right');
+            form_selectable_cell(number_format_i18n($gp['templates'], '-1'), $gp['id'], '', 'right');
             form_checkbox_cell($gp['name'], $gp['id'], $disabled);
             form_end_row();
 		}
@@ -422,7 +423,7 @@ function gprint_presets() {
 
 	html_end_box(false);
 
-	if (sizeof($gprint_list)) {
+	if (cacti_sizeof($gprint_list)) {
 		print $nav;
 	}
 

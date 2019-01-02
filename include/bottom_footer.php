@@ -22,9 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
-$oper_mode = api_plugin_hook_function('bottom_footer', OPER_MODE_NATIVE);
-if ($oper_mode == OPER_MODE_NATIVE || $oper_mode == OPER_MODE_IFRAME_NONAV) {
-	print "\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+print "\t\t\t</div>\n\t\t</div>\n\t</div>\n";
+if (!isset_request_var('pagecontent')) {
 	api_plugin_hook('page_bottom');
 	print "\t</body>\n</html>\n";
 }

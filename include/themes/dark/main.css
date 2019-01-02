@@ -78,12 +78,27 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #ccc;
+	background-image: linear-gradient(to right, #333, #ccc, #333);
+}
+
 .reindex_methods span {
 	font-size: 9px;
 }
 
 .checkbox {
 	text-align:center;
+}
+
+.checkboxLabel {
+	display:none;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
 }
 
 /* links */
@@ -115,14 +130,9 @@ th i.fa {
 }
 
 input {
-	padding: 0.5em 0.5em 0.5em 0.5em;
+	padding: 5px;
 	font-size: 12px;
 	max-width: 400px;
-}
-
-#host_id_wrap {
-	line-height: 25px;
-	padding-left: 4px;
 }
 
 select {
@@ -300,10 +310,6 @@ label {
 	color: snow;
 }
 
-.autodrop {
-	line-height: 22px;
-}
-
 .utilityPick {
 	width: 200px;
 }
@@ -317,6 +323,11 @@ label {
 	width:20%;
 	vertical-align:top;
 	white-space:nowrap;
+}
+
+.spikeKillMenuItem {
+	padding-left: 0.5em !important;
+	display: block;
 }
 
 .deviceUp {
@@ -453,32 +464,26 @@ label {
 	border-color: #161606;
 	border-style: solid;
 	border-width: 0px 1px 1px 1px;
-	z-index:4;
-	display:block;
-	float:right;
-	position:absolute;
-	right:26px;
-	top:22px;
+	z-index: 4;
+	position: absolute;
+	display: block;
+	float: right;
+	right: 26px;
+	top: 22px;
   	list-style: none;
-	text-align:right;
-	margin:0px;
-	padding:0px;
+	text-align: right;
+	margin: 0px;
+	padding: 0px 5px;
 }
 
 .menuoptions li a {
-	border-top: 1px solid #161606;
+	border-top: 1px solid #161616;
 	display:block;
 	height:14px;
 }
 
 .menuoptions li a:hover {
-	display:block;
-	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#45484d), color-stop(100%,#000000)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
-	background: linear-gradient(to bottom,  #45484d 0%,#000000 100%); /* W3C */
+	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
 .import_label {
@@ -566,7 +571,7 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid rgba(148, 179, 107, 0.8);
 	vertical-align: top;
 }
@@ -629,45 +634,44 @@ label {
 
 .cactiPageHead {
 	background: #161616 none repeat scroll 0 0;
-	height:30px;
-	width:100%;
-	position:fixed;
-	padding-top:5px;
-	top:0px;
-	left:0px;
-	z-index:4;
+	height: 30px;
+	position: fixed;
+	padding-top: 5px;
+	top: 0px;
+	left: 0px;
+	z-index: 4;
 }
 
 .cactiGraphPageHeadBackdrop {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
 	padding-bottom: 0px;
-	float:right;
-	width:400px;
-	height:35px;
-	top:0px;
-	position:fixed;
-	right:0px;
-	z-index:-1;
+	float: right;
+	width: 400px;
+	height: 35px;
+	top: 0px;
+	position: fixed;
+	right: 0px;
+	z-index: -1;
 }
 
 .cactiConsolePageHeadBackdrop {
 	background: transparent url("./images/cacti_logo.svg") no-repeat scroll left 40% / 380px auto;
-	padding-bottom:0px;
-	float:right;
-	width:400px;
-	height:35px;
-	top:0px;
-	position:fixed;
-	right:0px;
-	z-index:-1;
+	padding-bottom: 0px;
+	float: right;
+	width: 400px;
+	height: 35px;
+	top: 0px;
+	position: fixed;
+	right: 0px;
+	z-index: -1;
 }
 
 .navigation {
 }
 
 .debug td {
-	padding:3px;
-	margin:0px;
+	padding: 3px;
+	margin: 0px;
 }
 
 .breadCrumbBar {
@@ -946,7 +950,6 @@ legend {
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
-	margin-top: 1px;
 	margin-left: 3px;
 	display: table-cell;
 }
@@ -1208,12 +1211,45 @@ legend {
 	white-space: nowrap;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #154313;
+	border-style: solid;
+}
+
 .cactiTable {
 	display: table;
 	width: 100%;
 	margin-left:auto;
 	margin-right:auto;
 	color: snow;
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: #252426 !important;
+}
+
+.cactiTableTitleRow {
+	float: left;
+	text-align: left;
+	padding: 5px 0px;
+	display: table-column;
+	width: 100%;
+	background: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
+	background: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	background: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	background: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	background: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	background: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
+}
+
+.cactiInstallTableTitleRow {
+	border-color: -webkit-gradient( linear, left top, left bottom, color-stop(0, #252426), color-stop(1, #0C0D0D));
+	border-color: -o-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -moz-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -webkit-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: -ms-linear-gradient(bottom, #252426 0%, #0C0D0D 100%);
+	border-color: linear-gradient(to bottom, #252426 0%, #0C0D0D 100%);
 }
 
 .cactiTableTitle {
@@ -1286,10 +1322,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1309,14 +1341,14 @@ legend {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1411,7 +1443,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		text-align: left;
 	}
 
@@ -1444,6 +1476,18 @@ legend {
 
 	.ui-button-text-only .ui-button-text {
 		padding: 0.4em;
+	}
+
+	/* dropdown menus */
+	.menuoptions, .submenuoptions {
+		width: 100%;
+		left: 0 !important;
+		border-left: none !important;
+		border-right: none !important;
+	}
+
+	.menuoptions li a, .submenuoptions li a {
+		padding-right: 25px;
 	}
 }
 
@@ -1527,12 +1571,20 @@ th.secondarySort {
 	white-space: nowrap;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: snow;
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .graphSubHeaderColumn {
@@ -1788,13 +1840,6 @@ td.tab {
 	-moz-border-radius-topleft: 4px;
 }
 
-div#tabs {
-	vertical-align: bottom;
-	position: fixed;
-	top: 5px;
-	width: 70%;
-}
-
 td#tabs {
 	padding:0px !important;
 }
@@ -1824,13 +1869,51 @@ div#gtabs {
 	height: 25px;
 }
 
+.maintabs-submenu {
+	display: none;
+}
+
+.ellipsis {
+	display: none;
+}
+
+.submenuoptions {
+	border: 0px solid #155413;
+	background: #161616;
+	color: snow;
+	border-style: solid;
+	position: absolute;
+	top: 30px;
+  	list-style: none;
+	text-align: left;
+	margin: 0px;
+	padding: 10px 0px 10px 0px;
+	z-index: 200;
+}
+
+.submenuoptions li a {
+	display:block;
+	padding: 4px 15px;
+	font-size: 12px;
+	font-weight: 500;
+	color: snow;
+	text-decoration: none;
+}
+
+.submenuoptions li a:hover {
+	display: block;
+	border: 1px solid #155413;
+	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
+	color: snow;
+}
+
 .tabs a, .maintabs a {
-	-moz-border-radius:5px 5px 0 0;
-	border-radius:5px 5px 0 0;
+	-moz-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
 	background: #222222 url("images/ui-bg_highlight-soft_35_222222_1x100.png") repeat-x scroll 50% 50%;
-	color:snow;
-	float:left !important;
-	padding:5px;
+	color: snow;
+	float: left !important;
+	padding: 5px;
 	text-decoration:none;
 	font-size: 11px;
 	vertical-align:bottom;
@@ -1846,21 +1929,23 @@ div#gtabs {
 }
 
 .tabs li, .maintabs li {
-	bottom:-1px;
-	float:left;
-	margin:0 3px 0 0;
-	position:relative;
+	bottom: -1px;
+	float: left;
+	margin: 0 3px 0 0;
+	position: relative;
 	line-height: 14px;
 }
 
 .tabs li.current a, .maintabs li.current a {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
+
 .tabs nav, .maintabs nav {
 	padding:0 0 0 4px;
 	zoom:1;
@@ -1873,6 +1958,7 @@ div#gtabs {
 	height:0;
 	visibility:hidden;
 }
+
 .tabs ul, .maintabs ul {
 	list-style:none;
 	margin:0;
@@ -1894,7 +1980,6 @@ div#gtabs {
 	display: block;
 	padding: 2px 4px;
 	background: #ccc;
-	border-bottom: 1px solid #151515;
 	text-decoration: none;
 	color: #fff;
 }
@@ -2154,12 +2239,215 @@ tr#realtime td:first-child {
 	vertical-align: 20%;
 }
 
+.graphWrapper {
+	position: relative;
+}
+
 .ui-autocomplete {
 	height: 300px;
 	overflow-y: scroll;
 	overflow-x: hidden;
 }
 
-.graphWrapper {
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+
+/* New Checkbox Stuff */
+.checkboxSwitch {
 	position: relative;
+	display: inline-block;
+	width: 45px;
+	height: 24px;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.checkboxSwitch input {
+	display:none;
+}
+
+.checkboxSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
+	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.checkboxSlider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
+input:checked + .checkboxSlider {
+	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
+}
+
+input:focus + .checkboxSlider {
+	box-shadow: -moz-linear-gradient(top,  #45484d 100%, #000000 100%); /* FF3.6+ */
+	box-shadow: -webkit-linear-gradient(top,  #45484d 100%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	box-shadow: -o-linear-gradient(top,  #45484d 100%,#000000 100%); /* Opera 11.10+ */
+	box-shadow: -ms-linear-gradient(top,  #45484d 100%,#000000 100%); /* IE10+ */
+}
+
+input:checked + .checkboxSlider:before {
+	-webkit-transform: translateX(20px);
+	-ms-transform: translateX(20px);
+	transform: translateX(20px);
+}
+
+/* Rounded.checkboxSliders */
+.checkboxSlider.checkboxRound {
+	border-radius: 5px;
+}
+
+.checkboxSlider.checkboxRound:before {
+	border-radius: 50%;
+}
+
+.checkboxLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+.right {
+	text-align: right;
+}
+
+.radioSwitch {
+	position: relative;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	height: 24px;
+	width: 24px;
+	vertical-align: middle;
+}
+
+.radioSwitch input {
+	display:none;
+}
+
+.radioSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 24px;
+	width: 24px;
+	background: -moz-linear-gradient(top,  #45484d 0%, #000000 100%); /* FF3.6+ */
+	background: -webkit-linear-gradient(top,  #45484d 0%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #45484d 0%,#000000 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #45484d 0%,#000000 100%); /* IE10+ */
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.radioSlider:before {
+	display: none;
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:disabled + .radioSlider {
+	cursor: not-allowed;
+}
+
+input:checked + .radioSlider {
+	background: #31442b url("images/ui-bg_highlight-hard_20_31442b_1x100.png") repeat-x scroll 50% 50%;
+}
+
+input:focus + .radioSlider {
+	box-shadow: -moz-linear-gradient(top,  #45484d 100%, #000000 100%); /* FF3.6+ */
+	box-shadow: -webkit-linear-gradient(top,  #45484d 100%,#000000 100%); /* Chrome10+,Safari5.1+ */
+	box-shadow: -o-linear-gradient(top,  #45484d 100%,#000000 100%); /* Opera 11.10+ */
+	box-shadow: -ms-linear-gradient(top,  #45484d 100%,#000000 100%); /* IE10+ */
+}
+
+input:checked + .radioSlider:before {
+	display: block;
+}
+
+/* Rounded.radioSliders */
+.radioSlider.radioRound {
+	border-radius: 24px;
+}
+
+.radioSlider.radioRound:before {
+	border-radius: 50%;
+}
+
+.radioLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+td.center > table {
+	margin: 0 auto;
+}
+
+.ui-menu-item-wrapper {
+	white-space: nowrap;
 }

@@ -23,10 +23,14 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/api_data_source.php');
+include_once('./lib/poller.php');
+include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
 $di_actions = array(
-	1 => __('Delete')
+	1 => __('Delete'),
+	2 => __('Duplicate')
 );
 
 /* set default action */
@@ -77,6 +81,50 @@ switch (get_request_var('action')) {
     The Save Function
    -------------------------- */
 
+function duplicate_data_input($_data_input_id, $input_title) {
+	$orig_input = db_fetch_row_prepared('SELECT *
+		FROM data_input
+		WHERE id = ?',
+		array($_data_input_id));
+
+	if (cacti_sizeof($orig_input)) {
+		unset($save);
+		$save['id']           = 0;
+		$save['hash']         = get_hash_data_input(0);
+		$save['name']         = str_replace('<input_title>', $orig_input['name'], $input_title);
+		$save['input_string'] = $orig_input['input_string'];
+		$save['type_id']      = $orig_input['type_id'];
+
+		$data_input_id = sql_save($save, 'data_input');
+
+		if (!empty($data_input_id)) {
+			$data_input_fields = db_fetch_assoc_prepared('SELECT *
+				FROM data_input_fields
+				WHERE data_input_id = ?',
+				array($_data_input_id));
+
+			if (cacti_sizeof($data_input_fields)) {
+				foreach($data_input_fields as $dif) {
+					unset($save);
+					$save['id']            = 0;
+					$save['hash']          = get_hash_data_input(0, 'data_input_field');
+					$save['data_input_id'] = $data_input_id;
+					$save['name']          = $dif['name'];
+					$save['data_name']     = $dif['data_name'];
+					$save['input_output']  = $dif['input_output'];
+					$save['update_rra']    = $dif['update_rra'];
+					$save['sequence']      = $dif['sequence'];
+					$save['type_code']     = $dif['type_code'];
+					$save['regexp_match']  = $dif['regexp_match'];
+					$save['allow_nulls']   = $dif['allow_nulls'];
+
+					$data_input_field_id = sql_save($save, 'data_input_fields');
+				}
+			}
+		}
+	}
+}
+
 function form_save() {
 	global $registered_cacti_names;
 
@@ -95,7 +143,7 @@ function form_save() {
 			$data_input_id = sql_save($save, 'data_input');
 
 			if ($data_input_id) {
-				raise_message(1);
+				data_input_save_message($data_input_id);
 
 				/* get a list of each field so we can note their sequence of occurrence in the database */
 				if (!isempty_request_var('id')) {
@@ -137,7 +185,7 @@ function form_save() {
 			$data_input_field_id = sql_save($save, 'data_input_fields');
 
 			if ($data_input_field_id) {
-				raise_message(1);
+				data_input_save_message(get_request_var('data_input_id'), 'field');
 
 				if ((!empty($data_input_field_id)) && (get_request_var('input_output') == 'in')) {
 					generate_data_input_field_sequences(db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(get_request_var('data_input_id'))), get_request_var('data_input_id'));
@@ -157,6 +205,33 @@ function form_save() {
 	}
 }
 
+function data_input_save_message($data_input_id, $type = 'input') {
+	$counts = db_fetch_row_prepared("SELECT
+		SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
+		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+		FROM data_input AS di
+		LEFT JOIN data_template_data AS dtd
+		ON di.id=dtd.data_input_id
+		WHERE di.id = ?",
+		array($data_input_id));
+
+	if ($counts['templates'] == 0 && $counts['data_sources'] == 0) {
+		raise_message(1);
+	} elseif ($counts['templates'] > 0 && $counts['data_sources'] == 0) {
+		if ($type == 'input') {
+			raise_message('input_save_wo_ds');
+		} else {
+			raise_message('input_field_save_wo_ds');
+		}
+	} else {
+		if ($type == 'input') {
+			raise_message('input_save_w_ds');
+		} else {
+			raise_message('input_field_save_w_ds');
+		}
+	}
+}
+
 function form_actions() {
 	global $di_actions;
 
@@ -169,9 +244,13 @@ function form_actions() {
 		$selected_items = sanitize_unserialize_selected_items(get_nfilter_request_var('selected_items'));
 
 		if ($selected_items != false) {
-			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
-				for ($i=0;($i<count($selected_items));$i++) {
+			if (get_request_var('drp_action') == '1') { // delete
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					data_remove($selected_items[$i]);
+				}
+			} elseif (get_request_var('drp_action') == '2') { // duplicate
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
+					duplicate_data_input($selected_items[$i], get_nfilter_request_var('input_title'));
 				}
 			}
 		}
@@ -183,7 +262,7 @@ function form_actions() {
 	/* setup some variables */
 	$di_list = ''; $i = 0;
 
-	/* loop through each of the data queries and process them */
+	/* loop through each of the data inputs and process them */
 	foreach ($_POST as $var => $val) {
 		if (preg_match('/^chk_([0-9]+)$/', $var, $matches)) {
 			/* ================= input validation ================= */
@@ -203,29 +282,38 @@ function form_actions() {
 
 	html_start_box($di_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($di_array) && sizeof($di_array)) {
-		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
+	if (isset($di_array) && cacti_sizeof($di_array)) {
+		if (get_request_var('drp_action') == '1') { // delete
 			$graphs = array();
 
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', sizeof($di_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Data Input Method', 'Click \'Continue\' to delete the following Data Input Method', cacti_sizeof($di_array)) . "</p>
 					<div class='itemlist'><ul>$di_list</ul></div>
 				</td>
 			</tr>\n";
+		} elseif (get_request_var('drp_action') == '2') { // duplicate
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __('Click \'Continue\' to duplicate the following Data Input Method(s). You can optionally change the title format for the new Data Input Method(s).') . "</p>
+                    <div class='itemlist'><ul>$di_list</ul></div>
+                    <p><strong>" . __('Input Name:'). "</strong><br>"; form_text_box('input_title', '<input_title> (1)', '', '255', '30', 'text'); print "</p>
+                </td>
+			</tr>\n";
 		}
 
-		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', sizeof($di_array)) . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Data Input Method', 'Delete Data Input Methods', cacti_sizeof($di_array)) . "'>";
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one data input method.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: data_input.php?header=none');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($di_array) ? serialize($di_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -266,8 +354,8 @@ function field_remove_confirm() {
 	</tr>
 	<tr>
 		<td class='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Data Input Field');?>'>
 		</td>
 	</tr>
 	<?php
@@ -279,13 +367,12 @@ function field_remove_confirm() {
 	?>
 	<script type='text/javascript'>
 	$(function() {
-		$('#continue').unbind().click(function(data) {
+		$('#continue').unbind('click').click(function(data) {
 			$.post('data_input.php?action=field_remove', {
 				__csrf_magic: csrfMagicToken,
 				data_input_id: <?php print get_request_var('data_input_id');?>,
 				id: <?php print get_request_var('id');?>
 			}, function(data) {
-				$('#cdialog').dialog('close');
 				loadPageNoHeader('data_input.php?action=edit&header=false&id=<?php print get_request_var('data_input_id');?>');
 			});
 		});
@@ -315,7 +402,7 @@ function field_remove() {
 	/* when a field is deleted; we need to re-order the field sequences */
 	if (($field['input_output'] == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array($field['data_input_id'])), $matches))) {
 		$j = 0;
-		for ($i=0; ($i < count($matches[1])); $i++) {
+		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$j++;
 				db_execute_prepared("UPDATE data_input_fields SET sequence = ? WHERE data_input_id = ? AND input_output = 'in' AND data_name = ?", array($j, $field['data_input_id'], $matches[1][$i]));
@@ -355,10 +442,21 @@ function field_edit() {
 
 	/* obtain a list of available fields for this given field type (input/output) */
 	if (($current_field_type == 'in') && (preg_match_all('/<([_a-zA-Z0-9]+)>/', db_fetch_cell_prepared('SELECT input_string FROM data_input WHERE id = ?', array(!isempty_request_var('data_input_id') ? get_request_var('data_input_id') : $field['data_input_id'])), $matches))) {
-		for ($i=0; ($i < count($matches[1])); $i++) {
+		for ($i=0; ($i < cacti_count($matches[1])); $i++) {
 			if (in_array($matches[1][$i], $registered_cacti_names) == false) {
 				$current_field_name = $matches[1][$i];
 				$array_field_names[$current_field_name] = $current_field_name;
+				if (!isset($field)) {
+					$field_id = db_fetch_cell_prepared('SELECT id FROM data_input_fields
+						WHERE data_name = ?
+						AND data_input_id = ?',
+						array($current_field_name, get_filter_request_var('data_input_id')));
+					if (!$field_id > 0) {
+						$field = array();
+						$field['name'] = ucwords($current_field_name);
+						$field['data_name'] = $current_field_name;
+					}
+				}
 			}
 		}
 	}
@@ -378,6 +476,9 @@ function field_edit() {
 		$dfield      = __('Input Field');
 	}
 
+	if (isset($field)) {
+		$dfield .= ' ' . $field['data_name'];
+	}
 	form_start('data_input.php', 'data_input');
 
 	html_start_box($header_name, '100%', true, '3', 'center', '');
@@ -436,7 +537,7 @@ function data_remove($id) {
 }
 
 function data_edit() {
-	global $fields_data_input_edit;
+	global $config, $fields_data_input_edit;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -461,11 +562,15 @@ function data_edit() {
 		$header_label = __('Data Input Methods [new]');
 	}
 
+	if (!isset($config['input_whitelist'])) {
+		unset($fields_data_input_edit['whitelist_verification']);
+	}
+
 	form_start('data_input.php', 'data_input');
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
-	if (sizeof($data_input)) {
+	if (cacti_sizeof($data_input)) {
 		switch ($data_input['type_id']) {
 		case DATA_INPUT_TYPE_SNMP:
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_SNMP] = __('SNMP Get');
@@ -480,6 +585,18 @@ function data_edit() {
 			$fields_data_input_edit['type_id']['array'][DATA_INPUT_TYPE_QUERY_SCRIPT_SERVER] = __('Script Query - Script Server');
 			break;
 		}
+
+		if (isset($config['input_whitelist']) && isset($data_input['hash'])) {
+			$aud = verify_data_input_whitelist($data_input['hash'], $data_input['input_string']);
+
+			if ($aud === true) {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Succeeded.');
+			} elseif ($aud == false) {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('White List Verification Failed.  Run CLI script input_whitelist.php to correct.');
+			} elseif ($aud == '-1') {
+				$fields_data_input_edit['whitelist_verification']['value'] = __('Input String does not exist in White List.  Run CLI script input_whitelist.php to correct.');
+			}
+		}
 	}
 
 	draw_edit_form(
@@ -492,7 +609,7 @@ function data_edit() {
 	html_end_box(true, true);
 
 	if (!isempty_request_var('id')) {
-		html_start_box( __('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . html_escape_request_var('id'));
+		html_start_box(__('Input Fields'), '100%', '', '3', 'center', 'data_input.php?action=field_edit&type=in&data_input_id=' . get_request_var('id'));
 
 		print "<tr class='tableHeader'>";
 		DrawMatrixHeaderItem(__('Name'), '', 1);
@@ -507,8 +624,30 @@ function data_edit() {
 			ORDER BY sequence, data_name",
 			array(get_request_var('id')));
 
+		$counts = db_fetch_row_prepared("SELECT
+			SUM(CASE WHEN dtd.local_data_id=0 THEN 1 ELSE 0 END) AS templates,
+			SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
+			FROM data_input AS di
+			LEFT JOIN data_template_data AS dtd
+			ON di.id=dtd.data_input_id
+			WHERE di.id = ?",
+			array(get_request_var('id')));
+
+		$output_disabled  = false;
+		$save_alt_message = false;
+		if (!cacti_sizeof($counts)) {
+			$output_disabled  = false;
+			$save_alt_message = false;
+		} elseif ($counts['data_sources'] > 0) {
+			$output_disabled  = true;
+			$save_alt_message = true;
+		} elseif ($counts['templates'] > 0) {
+			$output_disabled  = false;
+			$save_alt_message = true;
+		}
+
 		$i = 0;
-		if (sizeof($fields)) {
+		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
 				?>
@@ -522,7 +661,7 @@ function data_edit() {
 					<?php print $field['sequence']; if ($field['sequence'] == '0') { print ' ' . __('(Not In Use)'); }?>
 				</td>
 				<td class="right">
-					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
 				</td>
 				<?php
 				form_end_row();
@@ -547,7 +686,7 @@ function data_edit() {
 			array(get_request_var('id')));
 
 		$i = 0;
-		if (sizeof($fields)) {
+		if (cacti_sizeof($fields)) {
 			foreach ($fields as $field) {
 				form_alternate_row('', true);
 				?>
@@ -561,7 +700,11 @@ function data_edit() {
 					<?php print html_boolean_friendly($field['update_rra']);?>
 				</td>
 				<td class='right'>
-					<a class='delete deleteMarker fa fa-remove' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<?php if ($output_disabled) {?>
+					<a class='deleteMarkerDisabled fa fa-times' href='#' title='<?php print __esc('Output Fields can not be removed when Data Sources are present');?>'></a>
+					<?php } else { ?>
+					<a class='delete deleteMarker fa fa-times' href='<?php print html_escape('data_input.php?action=field_remove_confirm&id=' . $field['id'] . '&data_input_id=' . get_request_var('id'));?>' title='<?php print __esc('Delete');?>'></a>
+					<?php } ?>
 				</td>
 				<?php
 				form_end_row();
@@ -592,7 +735,7 @@ function data_edit() {
 					$('#cdialog').dialog({
 						title: '<?php print __('Delete Data Input Field');?>',
 						close: function () { $('.delete').blur(); $('.selectable').removeClass('selected'); },
-						modal: true,
+						modal: false,
 						minHeight: 80,
 						minWidth: 500
 					});
@@ -648,7 +791,7 @@ function data() {
 		$rows = get_request_var('rows');
 	}
 
-	html_start_box( __('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
+	html_start_box(__('Data Input Methods'), '100%', '', '3', 'center', 'data_input.php?action=edit');
 
 	?>
 	<tr class='even noprint'>
@@ -660,7 +803,7 @@ function data() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Input Methods');?>
@@ -669,7 +812,7 @@ function data() {
 						<select id='rows' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -679,8 +822,8 @@ function data() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -733,8 +876,7 @@ function data() {
 
 	$sql_where  = api_plugin_hook_function('data_input_sql_where', $sql_where);
 
-	$total_rows = db_fetch_cell("SELECT
-		count(*)
+	$total_rows = db_fetch_cell("SELECT count(*)
 		FROM data_input AS di
 		$sql_where");
 
@@ -770,7 +912,7 @@ function data() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($data_inputs)) {
+	if (cacti_sizeof($data_inputs)) {
 		foreach ($data_inputs as $data_input) {
 			/* hide system types */
 			if ($data_input['templates'] > 0 || $data_input['data_sources'] > 0) {
@@ -780,20 +922,20 @@ function data() {
 			}
 			form_alternate_row('line' . $data_input['id'], true, $disabled);
 			form_selectable_cell(filter_value($data_input['name'], get_request_var('filter'), 'data_input.php?action=edit&id=' . $data_input['id']), $data_input['id']);
-			form_selectable_cell($disabled ? __('No'): __('Yes'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'text-align:right');
-			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'text-align:right');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $data_input['id'],'', 'right');
+			form_selectable_cell(number_format_i18n($data_input['data_sources'], '-1'), $data_input['id'],'', 'right');
+			form_selectable_cell(number_format_i18n($data_input['templates'], '-1'), $data_input['id'],'', 'right');
 			form_selectable_cell($input_types[$data_input['type_id']], $data_input['id']);
 			form_checkbox_cell($data_input['name'], $data_input['id'], $disabled);
 			form_end_row();
 		}
 	} else {
-		print '<tr><td colspan="' . (sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Data Input Methods Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
 
-	if (sizeof($data_inputs)) {
+	if (cacti_sizeof($data_inputs)) {
 		print $nav;
 	}
 

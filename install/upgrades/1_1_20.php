@@ -35,27 +35,23 @@ function upgrade_to_1_1_20() {
 	db_install_execute('ALTER TABLE snmpagent_mibs
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL DEFAULT ""');
 
-	if (db_index_exists('snmpagent_cache_notifications', 'PRIMARY')) {
-		db_execute('ALTER TABLE snmpagent_cache_notifications
-			DROP PRIMARY KEY');
-	}
+	db_install_drop_key('snmpagent_cache_notifications', 'key', 'PRIMARY');
 
 	db_install_execute('ALTER TABLE snmpagent_cache_notifications
 		MODIFY COLUMN `name` VARCHAR(50) NOT NULL,
 		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL,
-		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL,
-		ADD PRIMARY KEY (`name`,`mib`,`attribute`,`sequence_id`)');
+		MODIFY COLUMN `attribute` VARCHAR(50) NOT NULL');
 
-	if (db_index_exists('snmpagent_cache_textual_conventions', 'PRIMARY')) {
-		db_execute('ALTER TABLE snmpagent_cache_textual_conventions
-			DROP PRIMARY KEY');
-	}
+	db_install_add_key('snmpagent_cache_notifications', 'key', 'PRIMARY', array('name', 'mib', 'attribute', 'sequence_id'));
+
+	db_install_drop_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY');
 
 	db_install_execute('ALTER TABLE snmpagent_cache_textual_conventions
 		MODIFY COLUMN name VARCHAR(50) NOT NULL,
 		MODIFY COLUMN mib VARCHAR(50) NOT NULL,
-		MODIFY COLUMN type VARCHAR(50) NOT NULL,
-		ADD PRIMARY KEY (`name`,`mib`,`type`)');
+		MODIFY COLUMN type VARCHAR(50) NOT NULL');
+
+	db_install_add_key('snmpagent_cache_textual_conventions', 'key', 'PRIMARY', array('name' , 'mib', 'type'));
 
 	/* correct dumplicate notifications */
 	$notifications = db_fetch_assoc('SELECT *, COUNT(*) AS totals
@@ -63,11 +59,11 @@ function upgrade_to_1_1_20() {
 		GROUP BY manager_id, notification, mib
 		HAVING totals > 1');
 
-	if (sizeof($notifications)) {
+	if (cacti_sizeof($notifications)) {
 		foreach($notifications as $n) {
 			$totals = $n['totals'];
 
-			db_execute_prepared("DELETE FROM snmpagent_managers_notifications
+			db_install_execute("DELETE FROM snmpagent_managers_notifications
 				WHERE manager_id = ?
 				AND notification = ?
 				AND mib = ?
@@ -76,13 +72,11 @@ function upgrade_to_1_1_20() {
 		}
 	}
 
-	if (db_index_exists('snmpagent_managers_notifications', 'PRIMARY')) {
-		db_execute('ALTER TABLE snmpagent_managers_notifications
-			DROP PRIMARY KEY');
-	}
+	db_install_drop_key('snmpagent_managers_notifications', 'key', 'PRIMARY');
 
 	db_install_execute('ALTER TABLE snmpagent_managers_notifications
 		MODIFY COLUMN `notification` VARCHAR(50) NOT NULL,
-		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL,
-		ADD PRIMARY KEY (`manager_id`,`notification`,`mib`)');
+		MODIFY COLUMN `mib` VARCHAR(50) NOT NULL');
+
+	db_install_add_key('snmpagent_managers_notifications', 'key', 'PRIMARY', array('manager_id', 'notification', 'mib'));
 }

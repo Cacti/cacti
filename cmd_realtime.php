@@ -22,26 +22,18 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br>This script is only meant to run at the command line.');
-}
-
-$start = date('Y-m-d H:i:s'); // for runtime measurement
+require_once(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/ping.php');
 
 ini_set('max_execution_time', '0');
 
-/* we are not talking to the browser */
-$no_http_headers = true;
-
-include('./include/global.php');
-include_once($config['base_path'] . '/lib/snmp.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/ping.php');
+$start = date('Y-m-d H:i:s'); // for runtime measurement
 
 /* correct for a windows PHP bug. fixed in 5.2.0 */
-if (count($_SERVER['argv']) < 4) {
+if (cacti_count($_SERVER['argv']) < 4) {
 	echo "No graph_id, interval, pollerid specified.\n\n";
 	echo "Usage: cmd_rt.php POLLER_ID GRAPH_ID INTERVAL\n\n";
 	exit(-1);
@@ -75,10 +67,10 @@ $local_data_ids = db_fetch_assoc_prepared('SELECT DISTINCT dtr.local_data_id, dl
 	INNER JOIN data_local AS dl
 	ON dl.id=dtr.local_data_id
 	WHERE gti.local_graph_id = ?
-	AND dtr.local_data_id > 0', 
+	AND dtr.local_data_id > 0',
 	array($graph_id));
 
-if (!count($local_data_ids)) {
+if (!cacti_count($local_data_ids)) {
 	echo "No local_graph_id found\n\n";
 	exit(-1);
 }
@@ -98,7 +90,7 @@ foreach ($local_data_ids as $row) {
 
 $print_data_to_stdout = true;
 
-if (sizeof($idbyhost)) {
+if (cacti_sizeof($idbyhost)) {
 	$polling_items = db_fetch_assoc('SELECT *
 		FROM poller_item
 		WHERE local_data_id IN (' . implode(',', $ids) . ')
@@ -155,11 +147,11 @@ if (sizeof($idbyhost)) {
 				'&' . http_build_query($local_data_ids) .
 				'&poller_id=' . $poller_id;
 
-			$fgc_contextoption = get_default_contextoption(4);
+			$fgc_contextoption = get_default_contextoption();
 			$fgc_context       = stream_context_create($fgc_contextoption);
 			$output            = json_decode(@file_get_contents($url, FALSE, $fgc_context), true);
 
-			if (sizeof($output)) {
+			if (cacti_sizeof($output)) {
 				$sql = '';
 				foreach($output as $item) {
 					$sql .= ($sql != '' ? ', ':'')      . '(' .
@@ -181,7 +173,7 @@ if (sizeof($idbyhost)) {
 				AND local_data_id IN(' . implode(',', $local_data_ids['local_data_ids']) . ')',
 				array($host_id));
 
-			if (sizeof($poller_items)) {
+			if (cacti_sizeof($poller_items)) {
 				foreach($poller_items as $item) {
 					switch ($item['action']) {
 					case POLLER_ACTION_SNMP: /* snmp */
@@ -193,7 +185,7 @@ if (sizeof($idbyhost)) {
 								WHERE id = ?',
 								array($host_id));
 
-							if (!sizeof($host)) {
+							if (!cacti_sizeof($host)) {
 								$host['ping_retries'] = 1;
 								$host['max_oids'] = 1;
 							}

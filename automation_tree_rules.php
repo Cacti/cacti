@@ -44,6 +44,11 @@ switch (get_request_var('action')) {
 		automation_tree_rules_form_actions();
 
 		break;
+	case 'change_leaf':
+		automation_tree_rules_change_leaf();
+
+		header('Location: automation_tree_rules.php?header=false&action=edit&id=' . get_request_var('id'));
+		break;
 	case 'item_movedown':
 		automation_tree_rules_item_movedown();
 
@@ -201,19 +206,19 @@ function automation_tree_rules_form_actions() {
 				db_execute('DELETE FROM automation_tree_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 				db_execute('DELETE FROM automation_match_rule_items WHERE ' . array_to_sql_or($selected_items, 'rule_id'));
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DUPLICATE) { /* duplicate */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions duplicate: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					duplicate_automation_tree_rules($selected_items[$i], get_nfilter_request_var('name_format'));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_ENABLE) { /* enable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions enable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='on' WHERE id = ?", array($selected_items[$i]));
 				}
 			} elseif (get_nfilter_request_var('drp_action') == AUTOMATION_ACTION_TREE_DISABLE) { /* disable */
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					cacti_log('form_actions disable: ' . $selected_items[$i], true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 					db_execute_prepared("UPDATE automation_tree_rules SET enabled='' WHERE id = ?", array($selected_items[$i]));
@@ -236,7 +241,7 @@ function automation_tree_rules_form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$automation_tree_rules_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1])) . '</li>';
+			$automation_tree_rules_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM automation_tree_rules WHERE id = ?', array($matches[1]))) . '</li>';
 			$automation_tree_rules_array[] = $matches[1];
 		}
 	}
@@ -280,17 +285,18 @@ function automation_tree_rules_form_actions() {
 	}
 
 	if (!isset($automation_tree_rules_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Rule.') . "</span></td></tr>";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: automation_tree_rules.php?header=false');
+		exit;
 	}else {
-		$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
+		$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Apply requested action') . "'>";
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($automation_tree_rules_array) ? serialize($automation_tree_rules_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -300,6 +306,15 @@ function automation_tree_rules_form_actions() {
 	form_end();
 
 	bottom_footer();
+}
+
+function automation_tree_rules_change_leaf() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	get_filter_request_var('leaf_type');
+	/* ==================================================== */
+
+	automation_change_tree_rule_leaf_type(get_request_var('leaf_type'), get_request_var('id'));
 }
 
 /* --------------------------
@@ -376,7 +391,7 @@ function automation_tree_rules_item_edit() {
 				?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=item_edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&item_id=' . (isset_request_var('item_id') ? get_request_var('item_id') : 0) . '&rule_type=' . (isset_request_var('rule_type') ? get_request_var('rule_type') : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Created Trees');?></a><br>
+		<td class='textInfo' style='text-align:right;vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_tree_rules.php?action=item_edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&item_id=' . (isset_request_var('item_id') ? get_request_var('item_id') : 0) . '&rule_type=' . (isset_request_var('rule_type') ? get_request_var('rule_type') : 0) .'&show_trees=') . (isset($_SESSION['automation_tree_rules_show_trees']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_trees']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Created Trees');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -526,7 +541,7 @@ function automation_tree_rules_edit() {
 		?>
 <table style='width:100%;text-align:center;'>
 	<tr>
-		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print htmlspecialchars('automation_tree_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Eligible Objects');?></a><br>
+		<td class='textInfo right' style='vertical-align:top;'><span class='linkMarker'>*</span><a class='linkEditMain' href='<?php print html_escape('automation_tree_rules.php?action=edit&id=' . (isset_request_var('id') ? get_request_var('id') : 0) . '&show_hosts=') . (isset($_SESSION['automation_tree_rules_show_objects']) ? '0' : '1');?>'><?php print (isset($_SESSION['automation_tree_rules_show_objects']) ? __('Don\'t Show'):__('Show'));?> <?php print __('Eligible Objects');?></a><br>
 		</td>
 	</tr>
 </table>
@@ -539,7 +554,7 @@ function automation_tree_rules_edit() {
 	$rule = array();
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Tree Rule Selection [edit: %s]', htmlspecialchars($rule['name']));
+		$header_label = __('Tree Rule Selection [edit: %s]', html_escape($rule['name']));
 	} else {
 		$header_label = __('Tree Rules Selection [new]');
 	}
@@ -624,26 +639,107 @@ function automation_tree_rules_edit() {
 
 	?>
 	<script type='text/javascript'>
+	var automationLeafTypeOriginal = $('#leaf_type').val();
+
+	<?php
+	if (!empty($rule['id'])) {
+		print 'var isNew = false;';
+	} else {
+		print 'var isNew = true;';
+	}
+	?>
+
 	$(function() {
 		applyItemTypeChange();
 	});
 
-	function applyTreeChange() {
-		strURL  = 'automation_tree_rules.php?header=false&action=edit&id=' + $('#id').val();
+	function applyTreeChange(action,force) {
+		if (force == undefined) {
+			force = false;
+		}
+
+		if (action == undefined) {
+			action = 'edit';
+		}
+
+		strURL  = 'automation_tree_rules.php?header=false&action=' + action;
+		strURL += '&id=' + $('#id').val();
 		strURL += '&name=' + $('#name').val();
 		strURL += '&tree_id=' + $('#tree_id').val();
 		strURL += '&tree_item_id=' + $('#tree_item_id').val();
 		strURL += '&leaf_type=' + $('#leaf_type').val();
 		strURL += '&enabled=' + $('#enabled').val();
 
-		loadPageNoHeader(strURL);
+		loadPageNoHeader(strURL,undefined,force);
 	}
 
 	function applyItemTypeChange() {
-		if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
-			$('#row_host_grouping_type').show();
-		} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
-			$('#row_host_grouping_type').hide();
+		var automationLeafTypeNew = $('#leaf_type').val();
+		if (automationLeafTypeOriginal != automationLeafTypeNew && !isNew) {
+			if (automationLeafTypeNew == 3) {
+				var automationLeafTypeButtons = {
+					'Yes': {
+						text: '<?php print __('Yes'); ?>',
+						id: 'btnAutomationLeafTypeYes',
+						click: function() {
+							applyTreeChange('change_leaf',true);
+						}
+					},
+					'No': {
+						text: '<?php print __('No'); ?>',
+						id: 'btnAutomationLeafTypeNo',
+						click: function() {
+							$(this).dialog('close');
+							var leaf = $('#leaf_type');
+							if (leaf != null) {
+								leaf.val(automationLeafTypeOriginal);
+								leaf.selectmenu("refresh");
+								leaf.change();
+							}
+						}
+					}
+				};
+
+				var automationLeafTypeTitle = '<?php print __('Change Leaf Type'); ?>';
+				var automationLeafTypeContainer = '<div id="automationLeafTypeContainer" style="display:none">' +
+					'<p style="display:table-cell;overflow:auto"> ' +
+					'<b><?php print __('WARNING:'); ?></b>' +
+					'<?php print __('You are changing the leaf type to "Device" which does not support Graph-based object matching/creation.');?>' +
+					'<?php print __('By changing the leaf type, all invalid rules will be automatically removed and will not be recoverable.');?> <br/><br/>' +
+					'<?php print __('Are you sure you wish to continue?');?>' +
+					'</p>' +
+					'</div>';
+
+				$('#automationLeafTypeContainer').remove();
+				$('body').append(automationLeafTypeContainer);
+
+				var automationLeafTypeWidth = $(window).width();
+				if (automationLeafTypeWidth > 600) {
+					automationLeafTypeWidth = 600;
+				} else {
+					automationLeafTypeWidth -= 50;
+				}
+
+				$('#automationLeafTypeContainer').dialog({
+					draggable: true,
+					resizable: false,
+					height: 'auto',
+					minWidth: automationLeafTypeWidth,
+					maxWidth: 800,
+					maxHeight: 600,
+					title: automationLeafTypeTitle,
+					buttons: automationLeafTypeButtons
+				});
+			} else {
+				applyTreeChange('change_leaf',true);
+			}
+		} else {
+			if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_HOST;?>') {
+				$('#row_host_grouping_type').show();
+			} else if ($('#leaf_type').val() == '<?php print TREE_ITEM_TYPE_GRAPH;?>') {
+				$('#row_host_grouping_type').hide();
+			}
+			$('#leaf_type').selectmenu("refresh");
 		}
 	}
 	</script>
@@ -715,7 +811,7 @@ function automation_tree_rules() {
 							<?php print __('Search');?>
 						</td>
 						<td>
-							<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+							<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 						</td>
 						<td>
 							<?php print __('Status');?>
@@ -734,7 +830,7 @@ function automation_tree_rules() {
 							<select id='rows'>
 								<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 								<?php
-								if (sizeof($item_rows) > 0) {
+								if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'" . (get_request_var('rows') == $key ? ' selected':'') . '>' . $value . "</option>\n";
 								}
@@ -744,8 +840,8 @@ function automation_tree_rules() {
 						</td>
 						<td>
 							<span>
-								<input id='refresh' type='button' value='<?php print __esc('Go');?>'>
-								<input id='clear' type='button' value='<?php print __esc('Clear');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>'>
+								<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>'>
 							</span>
 						</td>
 					</tr>
@@ -848,16 +944,16 @@ function automation_tree_rules() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($automation_tree_rules)) {
+	if (cacti_sizeof($automation_tree_rules)) {
 		foreach ($automation_tree_rules as 	$automation_tree_rule) {
 			$tree_item_type_name = ((empty($automation_tree_rule['leaf_type'])) ? '<em>' . __('None') . '</em>' : $automation_tree_item_types[$automation_tree_rule['leaf_type']]);
-			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : $automation_tree_rule['subtree_name']);
+			$subtree_name = ((empty($automation_tree_rule['subtree_name'])) ? '<em>' . __('ROOT') . '</em>' : html_escape($automation_tree_rule['subtree_name']));
 			$tree_host_grouping_type = ((empty($host_group_types[$automation_tree_rule['host_grouping_type']])) ? '' : $host_group_types[$automation_tree_rule['host_grouping_type']]);
 			form_alternate_row('line' .  $automation_tree_rule['id'], true);
 
 			form_selectable_cell(filter_value($automation_tree_rule['name'], get_request_var('filter'), 'automation_tree_rules.php?action=edit&id=' . $automation_tree_rule['id'] . '&page=1'), $automation_tree_rule['id']);
 			form_selectable_cell($automation_tree_rule['id'], $automation_tree_rule['id'], '', 'text-align:right');
-			form_selectable_cell($automation_tree_rule['tree_name'], $automation_tree_rule['id']);
+			form_selectable_ecell($automation_tree_rule['tree_name'], $automation_tree_rule['id']);
 			form_selectable_cell($subtree_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_item_type_name, $automation_tree_rule['id']);
 			form_selectable_cell($tree_host_grouping_type, $automation_tree_rule['id']);
@@ -872,7 +968,7 @@ function automation_tree_rules() {
 
 	html_end_box(false);
 
-	if (sizeof($automation_tree_rules)) {
+	if (cacti_sizeof($automation_tree_rules)) {
 		print $nav;
 	}
 

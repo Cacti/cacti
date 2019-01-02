@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $at_actions = array(
@@ -154,7 +155,7 @@ function form_actions() {
 
 	html_start_box($at_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($at_array) && sizeof($at_array)) {
+	if (isset($at_array) && cacti_sizeof($at_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
@@ -163,18 +164,19 @@ function form_actions() {
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Automation Template(s)') . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Automation Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: automation_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($at_array) ? serialize($at_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -231,7 +233,7 @@ function automation_get_child_branches($tree_id, $id, $spaces, $headers) {
 
 	$spaces .= '--';
 
-	if (sizeof($items)) {
+	if (cacti_sizeof($items)) {
 	foreach($items as $i) {
 		$headers['tr_' . $tree_id . '_bi_' . $i['id']] = $spaces . ' ' . $i['title'];
 		$headers = automation_get_child_branches($tree_id, $i['id'], $spaces, $headers);
@@ -260,7 +262,7 @@ function template_edit() {
 
 	$template_names = array();
 
-	if (sizeof($host_template_names)) {
+	if (cacti_sizeof($host_template_names)) {
 		foreach ($host_template_names as $ht) {
 			$template_names[$ht['id']] = $ht['name'];
 		}
@@ -392,7 +394,7 @@ function template() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Templates');?>
@@ -401,7 +403,7 @@ function template() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
@@ -411,8 +413,8 @@ function template() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -470,7 +472,7 @@ function template() {
 		ON ht.id=at.host_template
 		$sql_where");
 
-	$dts = db_fetch_assoc("SELECT at.*, '' AS sysName, ht.name
+	$dts = db_fetch_assoc("SELECT at.*, ht.name
 		FROM automation_templates AS at
 		LEFT JOIN host_template AS ht
 		ON ht.id=at.host_template
@@ -498,11 +500,11 @@ function template() {
 		$display_text[] = array('display' => __('Order'), 'align' => 'center');
 	}
 
-	html_header_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
+	html_header_checkbox($display_text, false);
 
 	$i = 1;
-	$total_items = sizeof($dts);
-	if (sizeof($dts)) {
+	$total_items = cacti_sizeof($dts);
+	if (cacti_sizeof($dts)) {
 		foreach ($dts as $dt) {
 			if ($dt['name'] == '') {
 				$name = __('Unknown Template');
@@ -545,7 +547,7 @@ function template() {
 
 	html_end_box(false);
 
-	if (sizeof($dts)) {
+	if (cacti_sizeof($dts)) {
 		print $nav;
 	}
 

@@ -47,11 +47,6 @@ define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
 
-define('RRD_VERSION_1_3', 'rrd-1.3.x');
-define('RRD_VERSION_1_4', 'rrd-1.4.x');
-define('RRD_VERSION_1_5', 'rrd-1.5.x');
-define('RRD_VERSION_1_6', 'rrd-1.6.x');
-
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
 define('RRD_FONT_RENDER_MONO',    'mono');
@@ -111,6 +106,7 @@ define('GRAPH_ITEM_TYPE_TEXTALIGN',         40);
 define('POLLER_ACTION_SNMP', 0);
 define('POLLER_ACTION_SCRIPT', 1);
 define('POLLER_ACTION_SCRIPT_PHP', 2);
+
 /* used for reindexing only:
  * in case we do not have OID_NUM_INDEXES|ARG_NUM_INDEXES
  * we simply use the OID_INDEX|ARG_INDEX and count number of indexes found
@@ -122,6 +118,7 @@ define('POLLER_ACTION_SCRIPT_PHP_COUNT', 12);
 
 define('POLLER_COMMAND_REINDEX', 1);
 define('POLLER_COMMAND_RRDPURGE', 2);
+define('POLLER_COMMAND_PURGE', 3);
 
 define('POLLER_VERBOSITY_NONE', 1);
 define('POLLER_VERBOSITY_LOW', 2);
@@ -305,11 +302,6 @@ define('REPORTS_TREE_NONE', 0);
 define('REPORTS_TIMESPAN_DEFAULT', GT_LAST_DAY);
 
 define('REPORTS_EXTENSION_GD', 'gd');
-if (function_exists('read_config_option')) {
-	define('REPORTS_DEBUG', read_config_option('reports_log_verbosity'), true);
-} else {
-	define('REPORTS_DEBUG', 1, true);
-}
 
 define('REPORTS_OUTPUT_STDOUT', 1);
 define('REPORTS_OUTPUT_EMAIL',  2);
@@ -421,6 +413,22 @@ define('EINPROGRESS',     115);
 define('EREMOTEIO',       121);
 define('ECANCELED',       125);
 
+define('DB_STATUS_ERROR'  , 0);
+define('DB_STATUS_WARNING', 1);
+define('DB_STATUS_SUCCESS', 2);
+define('DB_STATUS_SKIPPED', 3);
+
+define('MESSAGE_LEVEL_NONE',  0);
+define('MESSAGE_LEVEL_INFO',  1);
+define('MESSAGE_LEVEL_WARN',  2);
+define('MESSAGE_LEVEL_ERROR', 3);
+define('MESSAGE_LEVEL_CSRF',  4);
+define('MESSAGE_LEVEL_MIXED', 5);
+
 if (!defined('PASSWORD_DEFAULT')) {
 	define('PASSWORD_DEFAULT', 1);
 }
+
+define('CACTI_MAIL_PHP', 0);
+define('CACTI_MAIL_SENDMAIL', 1);
+define('CACTI_MAIL_SMTP', 2);

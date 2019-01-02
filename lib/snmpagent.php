@@ -22,8 +22,16 @@
    +-------------------------------------------------------------------------+
 */
 
+function snmpagent_enabled() {
+	return read_config_option('enable_snmp_agent') == 'on';
+}
+
 function snmpagent_cacti_stats_update($data){
 	$mc = new MibCache();
+
+	if (!snmpagent_enabled()) {
+		return false;
+	}
 
 	/* refresh total stats */
 	$mc->object('cactiStatsTotalsDevices')->set( snmpagent_read('cactiStatsTotalsDevices') );
@@ -60,7 +68,7 @@ function snmpagent_global_settings_update(){
 	$mc = new MibCache();
 	$mc->object('cactiApplVersion')->set( snmpagent_read('cactiApplVersion') );
 	$mc->object('cactiApplSnmpVersion')->set( snmpagent_read('cactiApplSnmpVersion') );
-	$mc->object('cactiApplRrdtoolVersion')->set( read_config_option('rrdtool_version', true) );
+	$mc->object('cactiApplRrdtoolVersion')->set( get_rrdtool_version() );
 	$mc->object('cactiApplPollerEnabled')->set( (read_config_option('poller_enabled', true) == 'on') ? 1 : 2 );
 	$mc->object('cactiApplPollerType')->set( read_config_option('poller_type', true) );
 	$mc->object('cactiApplPollerInterval')->set( read_config_option('poller_interval', true) );
@@ -88,6 +96,10 @@ function snmpagent_global_settings_update(){
 }
 
 function snmpagent_api_device_new($device){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	/* add device to cactiApplDeviceTable and cactiStatsDeviceTable*/
 	$device_data = db_fetch_row_prepared('SELECT * FROM `host` WHERE id = ?', array($device['id']));
@@ -138,6 +150,10 @@ function snmpagent_api_device_new($device){
 
 
 function snmpagent_data_source_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	if ($action == '1') {
@@ -153,6 +169,10 @@ function snmpagent_data_source_action_bottom($data){
 }
 
 function snmpagent_graphs_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	if ($action == '1') {
@@ -168,6 +188,10 @@ function snmpagent_graphs_action_bottom($data){
 }
 
 function snmpagent_device_action_bottom($data){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 	$action = $data[0];
 	$selected_items = $data[1];
@@ -263,6 +287,10 @@ function snmpagent_device_action_bottom($data){
 }
 
 function snmpagent_poller_exiting($poller_index = 1){
+	if (!snmpagent_enabled()) {
+		return false;
+	}
+
 	$mc = new MibCache();
 
 	try
@@ -286,6 +314,14 @@ function snmpagent_poller_exiting($poller_index = 1){
 function snmpagent_poller_bottom() {
 	global $config;
 
+	if (!snmpagent_enabled()) {
+		snmpagent_cache_unistall();
+
+		return false;
+	} elseif (!snmpagent_cache_initialized()) {
+		snmpagent_cache_rebuilt();
+	}
+
 	if (api_plugin_is_enabled('maint')) {
 		include_once($config['base_path'] . '/plugins/maint/functions.php');
 	}
@@ -299,7 +335,7 @@ function snmpagent_poller_bottom() {
 	$devicestatus_indices = array(0 => 0, 1 => 1, 2 => 2, 3 => 3, 4 => 4);
 	$current_states       = db_fetch_assoc('SELECT status, COUNT(*) as cnt FROM `host` GROUP BY status');
 
-	if ($current_states && sizeof($current_states)>0) {
+	if ($current_states && cacti_sizeof($current_states)>0) {
 		foreach($current_states as $current_state) {
 			$index = $devicestatus_indices[$current_state['status']];
 			$values = array(
@@ -319,7 +355,7 @@ function snmpagent_poller_bottom() {
 		}
 	}
 
-	if (sizeof($devicestatus_indices)>0) {
+	if (cacti_sizeof($devicestatus_indices)>0) {
 		foreach($devicestatus_indices as $status => $index) {
 			$values = array(
 				'cactiStatsTotalsDeviceStatusIndex'   => $status,
@@ -351,7 +387,7 @@ function snmpagent_poller_bottom() {
 	try
 	{
 		$mc_devices = $mc->table('cactiApplDeviceTable')->select(array('cactiApplDeviceIndex', 'cactiApplDeviceStatus'));
-		if ($mc_devices && sizeof($mc_devices)) {
+		if ($mc_devices && cacti_sizeof($mc_devices)) {
 			foreach($mc_devices as $mc_device) {
 				if (isset($mc_device['cactiApplDeviceStatus']) && isset($mc_device['cactiApplDeviceIndex'])) {
 					$mc_dstatus[$mc_device['cactiApplDeviceIndex']] = $mc_device['cactiApplDeviceStatus'];
@@ -368,7 +404,7 @@ function snmpagent_poller_bottom() {
 	try
 	{
 		$mc_device_stats = $mc->table('cactiStatsDeviceTable')->select(array('cactiStatsDeviceIndex','cactiStatsDeviceFailedPolls'));
-		if ($mc_device_stats && sizeof($mc_device_stats)>0) {
+		if ($mc_device_stats && cacti_sizeof($mc_device_stats)>0) {
 			foreach($mc_device_stats as $mc_device_stat) {
 				if (isset($mc_device_stat['cactiStatsDeviceFailedPolls'])) {
 					$mc_dfailed[$mc_device_stat['cactiStatsDeviceIndex']] = $mc_device_stat['cactiStatsDeviceFailedPolls'];
@@ -388,7 +424,7 @@ function snmpagent_poller_bottom() {
 		FROM host
 		ORDER BY id ASC');
 
-	if (sizeof($devices)) {
+	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
 			if (function_exists('plugin_maint_check_cacti_host')) {
 				$device_in_maintenance = plugin_maint_check_cacti_host($index);
@@ -467,7 +503,7 @@ function snmpagent_poller_bottom() {
 	}
 
 	/* refill plugin mib table */
-	if ($pluginslist && sizeof($pluginslist)>0) {
+	if ($pluginslist && cacti_sizeof($pluginslist)>0) {
 		$i = 1;
 		foreach($pluginslist as $plugin) {
 			$values = array(
@@ -507,7 +543,7 @@ function snmpagent_poller_bottom() {
 
 	/* clean up the notification log */
 	$snmp_notification_managers = db_fetch_assoc('SELECT id, max_log_size FROM snmpagent_managers');
-	if ($snmp_notification_managers && sizeof($snmp_notification_managers)>0) {
+	if ($snmp_notification_managers && cacti_sizeof($snmp_notification_managers)>0) {
 		foreach($snmp_notification_managers as $snmp_notification_manager) {
 			db_execute_prepared('DELETE FROM snmpagent_notifications_log
 				WHERE manager_id = ?
@@ -560,12 +596,16 @@ function snmpagent_get_pluginslist(){
 }
 
 /**
- * snmpagent_cache_setup()
+ * snmpagent_cache_install()
  * Generates a SNMP caching tables reflecting all objects of the Cacti MIB
  * @return
  */
-function snmpagent_cache_install(){
+function snmpagent_cache_install() {
 	global $config;
+
+	if (!snmpagent_enabled()) {
+		return false;
+	}
 
 	/* drop everything */
 	db_execute('TRUNCATE `snmpagent_cache`');
@@ -581,6 +621,18 @@ function snmpagent_cache_install(){
 
 	/* call install routine of plugins supporting the SNMPagent */
 	api_plugin_hook('snmpagent_cache_install');
+}
+
+function snmpagent_cache_uninstall() {
+	/* drop everything */
+	db_execute('TRUNCATE `snmpagent_cache`');
+	db_execute('TRUNCATE `snmpagent_mibs`;');
+	db_execute('TRUNCATE `snmpagent_cache_notifications`;');
+	db_execute('TRUNCATE `snmpagent_cache_textual_conventions`;');
+}
+
+function snmpagent_cache_initialized() {
+	return db_fetch_cell('SELECT COUNT(*) FROM `snmpagent_cache`') > 0;
 }
 
 function snmpagent_cache_rebuilt(){
@@ -602,11 +654,11 @@ function snmpagent_cache_init(){
 
 	/* add pollers of a distributed system (future) */
 	$pollers = db_fetch_assoc('SELECT id FROM poller ORDER BY id ASC');
-	if ($pollers && sizeof($pollers)>0) {
+	if ($pollers && cacti_sizeof($pollers)>0) {
 		foreach($pollers as $poller){
 			$poller_data = db_fetch_row_prepared('SELECT * FROM poller WHERE id = ?', array($poller['id']));
 		}
-	}else {
+	} else {
 		/* this is NOT a distributed system, but it should have at least one local poller. */
 		$poller_lastrun = read_config_option('poller_lastrun', true);
 		$values = array(
@@ -648,12 +700,12 @@ function snmpagent_cache_init(){
 		FROM host
 		ORDER BY id ASC');
 
-	if (sizeof($devices)) {
+	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
 			$device = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device['id']));
 
 			/* add device to cactiApplDeviceTable */
-			if (sizeof($device)) {
+			if (cacti_sizeof($device)) {
 				$values = array(
 					'cactiApplDeviceIndex'        => $device['id'],
 					'cactiApplDeviceDescription'  => $device['description'],
@@ -749,7 +801,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		return false;
 	}
 
-	$path_snmptrap = read_config_option('snmpagent_path_snmptrap');
+	$path_snmptrap = read_config_option('path_snmptrap');
 
 	if (!in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_LOW, SNMPAGENT_EVENT_SEVERITY_MEDIUM, SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
 		cacti_log('ERROR: Unknown event severity: "' . $severity . '" for ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
@@ -767,7 +819,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		cacti_log('ERROR: Unknown event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 
 		return false;
-	}else {
+	} else {
 		$branches = explode('.', $enterprise_oid);
 		$specific_trap_number = array_pop($branches);
 	}
@@ -782,11 +834,11 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		AND snmpagent_managers_notifications.mib = ?',
 		array($notification, $mib));
 
-	if (sizeof($notification_managers)) {
+	if (cacti_sizeof($notification_managers) == 0) {
 		/* To bad! Nobody wants to hear our message. :( */
 		if (in_array($severity, array(SNMPAGENT_EVENT_SEVERITY_HIGH, SNMPAGENT_EVENT_SEVERITY_CRITICAL))) {
 			cacti_log('WARNING: No notification receivers configured for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
-		}else {
+		} else {
 			/* keep notifications of a lower/medium severity in mind to make a quicker decision next time */
 			$config['snmpagent']['notifications']['ignore'][$notification] = 1;
 		}
@@ -808,7 +860,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 		ORDER BY scn.sequence_id',
 		array($notification, $mib));
 
-	if (sizeof($reg_var_binds)) {
+	if (cacti_sizeof($reg_var_binds)) {
 		foreach($reg_var_binds as $reg_var_bind) {
 			$registered_var_binds[$reg_var_bind['attribute']] = array(
 				'oid' => $reg_var_bind['oid'],
@@ -819,7 +871,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 
 	$difference = array_diff(array_keys($registered_var_binds), array_keys($varbinds));
 
-	if (sizeof($difference) == 0) {
+	if (cacti_sizeof($difference) == 0) {
 		/* order the managers by message type to send out all notifications immmediately. Informs
 		   will take more processing time.
 		*/
@@ -831,7 +883,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 			AND smn.mib = ?
 			ORDER BY sm.snmp_message_type', array($notification, $mib));
 
-		if (sizeof($notification_managers)) {
+		if (cacti_sizeof($notification_managers)) {
 			include_once($config['library_path'] . '/poller.php');
 
 			/*
@@ -900,7 +952,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 						$snmp_security_level = 'authPriv';
 					} elseif ( $notification_manager['snmp_password'] && !$notification_manager['snmp_priv_passphrase']) {
 						$snmp_security_level = 'authNoPriv';
-					}else {
+					} else {
 						$snmp_security_level = 'noAuthNoPriv';
 					}
 					$args .= ' -l ' . $snmp_security_level . (($snmp_security_level != 'noAuthNoPriv') ? ' -a ' . $notification_manager['snmp_auth_protocol'] . ' -A ' . $notification_manager['snmp_password'] : '' ) . (($snmp_security_level == 'authPriv')? ' -x ' . $notification_manager['snmp_priv_protocol'] . ' -X ' . $notification_manager['snmp_priv_passphrase'] : '')  . ' ' . $notification_manager['hostname'] . ':' . $notification_manager['snmp_port'] . " \"\" " . $enterprise_oid . $snmp_notification_varbinds;
@@ -925,7 +977,7 @@ function snmpagent_notification($notification, $mib, $varbinds, $severity = SNMP
 				cacti_log("NOTE: $path_snmptrap " . str_replace(array($notification_manager['snmp_password'], $notification_manager['snmp_priv_passphrase']), '********', $args), false, 'SNMPAGENT', POLLER_VERBOSITY_MEDIUM);
 			}
 		}
-	}else {
+	} else {
 		/* mismatching number of var binds */
 		cacti_log('ERROR: Incomplete number of varbinds given for event: ' . $notification . ' (' . $mib . ')', false, 'SNMPAGENT', POLLER_VERBOSITY_NONE);
 		return false;

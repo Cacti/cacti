@@ -23,34 +23,29 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset ($_SERVER['argv'][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 ini_set('max_execution_time', '0');
-
-$no_http_headers = true;
-
-include (dirname(__FILE__) . '/../include/global.php');
-include_once ($config['base_path'] . '/lib/api_data_source.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
 /* utility requires input parameters */
-if (sizeof($parms) == 0) {
+if (cacti_sizeof($parms) == 0) {
 	print "ERROR: You must supply input parameters\n\n";
 	display_help();
-	exit;
+	exit(1);
 }
 
 $debug   = false;
 $host_id = '';
 $filter  = '';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -77,16 +72,16 @@ if (sizeof($parms)) {
 			case '-v' :
 			case '-V' :
 				display_version();
-				exit;
+				exit(0);
 			case '--help' :
 			case '-H' :
 			case '-h' :
 				display_help();
-				exit;
+				exit(0);
 			default :
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -124,8 +119,8 @@ if (strtolower($host_id) == 'all') {
 	exit;
 }
 
-$data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active, 
-	data_input.name as data_input_name, data_template.name as data_template_name, data_local.host_id 
+$data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active,
+	data_input.name as data_input_name, data_template.name as data_template_name, data_local.host_id
 	FROM (data_local,data_template_data)
 	LEFT JOIN data_input
 	ON (data_input.id=data_template_data.data_input_id)
@@ -136,14 +131,14 @@ $data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, dat
 
 /* issue warnings and start message if applicable */
 print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
-debug("There are '" . sizeof($data_source_list) . "' Data Sources to rename");
+debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
 
 $i = 1;
 foreach ($data_source_list as $data_source) {
 	if (!$debug)
 		print ".";
 	debug("Data Source Name '" . $data_source['name_cache'] . "' starting");
-	api_reapply_suggested_data_source_title($data_source['local_data_id']);
+	api_reapply_suggested_data_source_data($data_source['local_data_id']);
 	update_data_source_title_cache($data_source['local_data_id']);
 	debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
 	$i++;
@@ -151,21 +146,21 @@ foreach ($data_source_list as $data_source) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
-	echo "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Reapply Data Source Names Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*	display_help - displays the usage of the function */
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]\n\n";
-	echo "A utility that will recalculate Data Source names for the selected Data Templates.\n\n";
-	echo "Required:\n";
-	echo "    --host-id=N|all|N1,N2,... - The deivces id, 'all' or a comma delimited list of id's\n\n";
-	echo "Optional:\n";
-	echo "    --filter=search           - A Data Template name or Data Source Title to search for\n";
-	echo "    --debug                   - Display verbose output during execution\n\n";
+	print "\nusage: poller_data_sources_reapply_names.php --host-id=[id|all][N1,N2,...] [--filter=string] [--debug]\n\n";
+	print "A utility that will recalculate Data Source names for the selected Data Templates.\n\n";
+	print "Required:\n";
+	print "    --host-id=N|all|N1,N2,... - The deivces id, 'all' or a comma delimited list of id's\n\n";
+	print "Optional:\n";
+	print "    --filter=search           - A Data Template name or Data Source Title to search for\n";
+	print "    --debug                   - Display verbose output during execution\n\n";
 }
 
 function debug($message) {

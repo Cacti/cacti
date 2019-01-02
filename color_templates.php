@@ -77,9 +77,9 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 	html_header($display_text, 2);
 
 	$i = 1;
-	$total_items = sizeof($item_list);
+	$total_items = cacti_sizeof($item_list);
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* alternating row color */
 			form_alternate_row('line' . $item['color_template_item_id'], true, true);
@@ -87,7 +87,7 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 			print '<td>';
 
 			if ($disable_controls == false) {
-				print "<a class='linkEditMain' href='" . htmlspecialchars($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
+				print "<a class='linkEditMain' href='" . html_escape($filename . '?action=item_edit&color_template_item_id=' . $item['color_template_item_id'] . "&$url_data") . "'>";
 			}
 
 			print __('Item # %d', $i);
@@ -107,19 +107,19 @@ function draw_color_template_items_list($item_list, $filename, $url_data, $disab
 
 				if (read_config_option('drag_and_drop') == '') {
 					if ($i < $total_items && $total_items > 1) {
-						echo '<a class="pic fa fa-caret-down moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
+						echo '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape('color_templates_items.php?action=item_movedown&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Down') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 
 					if ($i > 1 && $i <= $total_items) {
-						echo '<a class="pic fa fa-caret-up moveArrow" href="' . htmlspecialchars('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
+						echo '<a class="pic fa fa-caret-up moveArrow" href="' . html_escape('color_templates_items.php?action=item_moveup&color_template_item_id=' . $item['color_template_item_id'] . '&color_template_id=' . $item['color_template_id']) . '" title="' . __esc('Move Up') . '"></a>';
 					} else {
 						echo '<span class="moveArrowNone"></span>';
 					}
 				}
 
-				print "<a class='delete deleteMarker fa fa-remove' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
+				print "<a class='delete deleteMarker fa fa-times' id='" .  $item['color_template_id'] . '_' . $item['color_template_item_id'] . "' title='" . __esc('Delete') . "'></a>";
 
 				print "</td>\n";
 			}
@@ -190,7 +190,7 @@ function aggregate_color_form_actions() {
 				db_execute('DELETE FROM color_templates WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 				db_execute('DELETE FROM color_template_items WHERE ' . array_to_sql_or($selected_items, 'color_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
-				for ($i=0;($i<count($selected_items));$i++) {
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
 			}
@@ -209,7 +209,7 @@ function aggregate_color_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$color_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
+			$color_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array($matches[1]))) . '</li>';
 			$color_array[] = $matches[1];
 		}
 	}
@@ -220,30 +220,31 @@ function aggregate_color_form_actions() {
 
 	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($color_array) && sizeof($color_array)) {
+	if (isset($color_array) && cacti_sizeof($color_array)) {
 		if (get_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', sizeof($color_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
 			print "<tr>
 				<td class='textArea'>
-					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', sizeof($color_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Color Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: color_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -286,12 +287,17 @@ function aggregate_color_item() {
 			ORDER BY cti.sequence ASC',
 			array(get_request_var('color_template_id')));
 
-		$header_label = __('Color Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id'))));
+		$name = db_fetch_cell_prepared('SELECT name
+			FROM color_templates
+			WHERE color_template_id = ?',
+			array(get_request_var('color_template_id')));
+
+		$header_label = __('Color Template Items [edit: %s]', html_escape($name));
 	}
 
-	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . htmlspecialchars(get_request_var('color_template_id')));
+	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
 
-	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . htmlspecialchars(get_request_var('color_template_id')), false);
+	draw_color_template_items_list($template_item_list, 'color_templates_items.php', 'color_template_id=' . html_escape_request_var('color_template_id'), false);
 
 	html_end_box();
 
@@ -350,7 +356,7 @@ function aggregate_color_template_edit() {
 
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
-		$header_label = __('Color Template [edit: %s]', $template['name']);
+		$header_label = __('Color Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Color Template [new]');
 	}
@@ -433,29 +439,31 @@ function aggregate_color_template() {
 
 	form_start('color_templates.php', 'form_template');
 
-	html_start_box( __('Color Templates'), '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
+	html_start_box(__('Color Templates'), '100%', '', '3', 'center', 'color_templates.php?action=template_edit');
 
 	$filter_html = '<tr class="even">
+		<td>
+			<table class="filterTable">
+				<tr>
 					<td>
-					<table class="filterTable">
-						<tr>
-							<td>
-								' . __('Search') . '
-							</td>
-							<td>
-								<input type="text" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
-							</td>
-							<td>
-								' . __('Color Templates') . '
-							</td>
-							<td>
-								<select id="rows" onChange="applyFilter()">
-								<option value="-1" ';
+						' . __('Search') . '
+					</td>
+					<td>
+						<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
+					</td>
+					<td>
+						' . __('Color Templates') . '
+					</td>
+					<td>
+						<select id="rows" onChange="applyFilter()">
+							<option value="-1" ';
 	if (get_request_var('rows') == '-1') {
 		$filter_html .= 'selected';
 	}
+
 	$filter_html .= '>' . __('Default') . '</option>';
-	if (sizeof($item_rows) > 0) {
+
+	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
 			if (get_request_var('rows') == $key) {
@@ -464,30 +472,31 @@ function aggregate_color_template() {
 			$filter_html .= '>' . $value . "</option>\n";
 		}
 	}
-	$filter_html .= '					</select>
-							</td>
-							<td>
-								<span>
-									<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
-									<label for="has_graphs">' . __('Has Graphs') . '</label>
-								</span>
-							</td>
-							<td>
-								<span>
-									<input type="button" id="refresh" value="' . __esc('Go') . '">
-									<input type="button" id="clear" value="' . __esc('Clear') . '">
-								</span>
-							</td>
-						</tr>
-					</table>
+
+	$filter_html .= '			</select>
 					</td>
-				</tr>';
+					<td>
+						<span>
+							<input type="checkbox" id="has_graphs" ' . (get_request_var('has_graphs') == 'true' ? 'checked':'') . ' onChange="applyFilter()">
+							<label for="has_graphs">' . __('Has Graphs') . '</label>
+						</span>
+					</td>
+					<td>
+						<span>
+							<input type="button" class="ui-button ui-corner-all ui-widget" id="refresh" value="' . __esc('Go') . '">
+							<input type="button" class="ui-button ui-corner-all ui-widget" id="clear" value="' . __esc('Clear') . '">
+						</span>
+					</td>
+				</tr>
+			</table>
+			</td>
+		</tr>';
 
 	print $filter_html;
 
 	html_end_box();
 
-	print "</form>\n";
+	form_end();
 
 	/* form the 'where' clause for our main sql query */
 	$sql_where = '';
@@ -547,7 +556,7 @@ function aggregate_color_template() {
 	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
-		'name'      => array( __('Template Title'), 'ASC'),
+		'name'      => array(__('Template Title'), 'ASC'),
 		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Color Templates that are in use cannot be Deleted. In use is defined as being referenced by an Aggregate Template.')),
 		'graphs'    => array('display' => __('Graphs'), 'align' => 'right', 'sort' => 'DESC'),
 		'templates' => array('display' => __('Templates'), 'align' => 'right', 'sort' => 'DESC')
@@ -555,7 +564,7 @@ function aggregate_color_template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['templates'] > 0) {
 				$disabled = true;
@@ -566,19 +575,19 @@ function aggregate_color_template() {
 			form_alternate_row('line' . $template['color_template_id'], true);
 
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'color_templates.php?action=template_edit&color_template_id=' . $template['color_template_id'] . '&page=1'), $template['color_template_id']);
-			form_selectable_cell($disabled ? __('No') : __('Yes'), $template['color_template_id'], '', 'text-align:right');
-            form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'text-align:right;');
-            form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'text-align:right;');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['color_template_id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['graphs']), $template['color_template_id'], '', 'right');
+			form_selectable_cell(number_format_i18n($template['templates']), $template['color_template_id'], '', 'right');
 			form_checkbox_cell($template['name'], $template['color_template_id'], $disabled);
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		print $nav;
 	}
 

@@ -23,19 +23,10 @@
  +-------------------------------------------------------------------------+
 */
 
-/* we are not talking to the browser */
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* start initialization section */
-include('./include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/data_query.php');
-include_once($config['base_path'] . '/lib/rrd.php');
+require(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/rrd.php');
 
 /* force Cacti to store realtime data locally */
 $config['force_storage_location_local'] = true;
@@ -51,7 +42,7 @@ $poller_id = '';
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -64,7 +55,7 @@ if (sizeof($parms)) {
 			case '-d':
 			case '--debug':
 				$debug = true;
-	
+
 				break;
 			case '--force':
 				$force = true;
@@ -89,7 +80,7 @@ if (sizeof($parms)) {
 				display_help();
 				exit;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -97,13 +88,13 @@ if (sizeof($parms)) {
 }
 
 if ($graph_id === false || $graph_id < 0) {
-	echo "ERROR: No --graph=ID specified\n\n";
+	print "ERROR: No --graph=ID specified\n\n";
 	display_help();
 	exit(1);
 }
 
 if ($interval === false || $interval < 0) {
-	echo "ERROR: No --interval=SEC specified\n\n";
+	print "ERROR: No --interval=SEC specified\n\n";
 	display_help();
 	exit(1);
 }
@@ -167,22 +158,22 @@ db_close();
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Realtime Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_rt.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
-	echo "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
-	echo "to Cacti's main poller with the exception that it only polls data source\n";
-	echo "that are specific to the graph being rendered in the Cacti UI.\n\n";
-	echo "Required:\n";
-	echo "    --graph=ID     Specify the graph id to convert (realtime)\n\n";
-	echo "Optional:\n";
-	echo "    --interval=SEC Specify the graph interval (realtime)\n";
-	echo "    --force        Override poller overrun detection and force a poller run\n";
-	echo "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
+	print "\nusage: poller_rt.php --graph=ID [--interval=SEC] [--force] [--debug]\n\n";
+	print "Cacti's Realtime graphing poller.  This poller behavies very similary\n";
+	print "to Cacti's main poller with the exception that it only polls data source\n";
+	print "that are specific to the graph being rendered in the Cacti UI.\n\n";
+	print "Required:\n";
+	print "    --graph=ID     Specify the graph id to convert (realtime)\n\n";
+	print "Optional:\n";
+	print "    --interval=SEC Specify the graph interval (realtime)\n";
+	print "    --force        Override poller overrun detection and force a poller run\n";
+	print "    --debug|-d     Output debug information.  Similar to cacti's DEBUG logging level.\n\n";
 }
 
 /* process_poller_output REAL TIME MODIFIED */
@@ -195,15 +186,15 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 	$rrds_processed = 0;
 
 	/* create/update the rrd files */
-	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id, 
+	$results = db_fetch_assoc_prepared('SELECT port.output, port.time, port.local_data_id,
 		poller_item.rrd_path, poller_item.rrd_name, poller_item.rrd_num
 		FROM (poller_output_realtime AS port, poller_item)
 		WHERE (port.local_data_id=poller_item.local_data_id
 		AND port.rrd_name=poller_item.rrd_name)
-		AND port.poller_id = ?', 
+		AND port.poller_id = ?',
 		array($poller_id));
 
-	if (sizeof($results) > 0) {
+	if (cacti_sizeof($results) > 0) {
 		/* create an array keyed off of each .rrd file */
 		foreach ($results as $item) {
 			$rt_graph_path    = read_config_option('realtime_cache_path') . '/user_' . $poller_id . '_' . $item['local_data_id'] . '.rrd';
@@ -212,7 +203,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 			/* create rt rrd */
 			if (!file_exists($rt_graph_path)) {
 				/* get the syntax */
-				$command = @rrdtool_function_create($item['local_data_id'], true);
+				$command = @rrdtool_function_create($item['local_data_id'], '-60', true);
 
 				/* replace path */
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
@@ -260,7 +251,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 					WHERE data_template_rrd.data_input_field_id=data_input_fields.id
 					AND data_template_rrd.local_data_id = ?', array($item['local_data_id'])), 'data_name', 'data_source_name');
 
-				for ($i=0; $i<count($values); $i++) {
+				for ($i=0; $i<cacti_count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$rrd_field_names[$matches[1]]] = $matches[2];
@@ -280,9 +271,9 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 		/* make sure each .rrd file has complete data */
 		foreach ($results as $item) {
 			db_execute_prepared('DELETE FROM poller_output_realtime
-				WHERE local_data_id = ? 
-				AND rrd_name = ? 
-				AND time = ? 
+				WHERE local_data_id = ?
+				AND rrd_name = ?
+				AND time = ?
 				AND poller_id = ?',
 				array($item['local_data_id'], $item['rrd_name'], $item['time'], $poller_id));
 		}

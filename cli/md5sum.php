@@ -23,10 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/../include/cli_check.php');
 
 $fail_msg = array();
 define_exit('EXIT_UNKNOWN',-1, "ERROR: Failed due to unknown reason\n");
@@ -38,8 +35,6 @@ define_exit('EXIT_MD5WRI',  4, "ERROR: Failed to write to MD5 file '%s'\n");
 define_exit('EXIT_MD5MIS',  5, "ERROR: MD5 file '%s' is missing, cannot verify\n");
 define_exit('EXIT_MD5CON',  6, "ERROR: Failed to read from MD5 file '%s'\n");
 define_exit('EXIT_MD5LIN',  7, "ERROR: Failed to parse line %d:\n      %s\n");
-
-include(dirname(__FILE__).'/../include/global_constants.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -54,7 +49,7 @@ $md5_file = '';
 $show_hash = false;
 $base_dir = dirname(__FILE__).'/../';
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 
 	foreach($parms as $parameter) {
 
@@ -101,14 +96,14 @@ if (sizeof($parms)) {
 		        case '--version':
 		        case '-V':
 		        case '-v':
-		                display_version();
-		                fail(EXIT_NORMAL);
+	                display_version();
+	                fail(EXIT_NORMAL);
 
 		        case '--help':
 		        case '-H':
 		        case '-h':
-		                display_help();
-		                fail(EXIT_NORMAL);
+	                display_help();
+	                fail(EXIT_NORMAL);
 
 		        default:
 				if (strlen($md5_file)) {
@@ -174,7 +169,7 @@ if ($create) {
 	}
 
 	if (!$quiet) {
-		echo 'Writing '.sizeof($file_array)." entries to $md5_file\n";
+		print 'Writing '.cacti_sizeof($file_array)." entries to $md5_file\n";
 	}
 
 	if (!$confirm && file_exists($md5_file)) {
@@ -226,10 +221,10 @@ if ($create) {
 				fail(EXIT_MD5ERR);
 			}
 
-			echo "$filename: FAILED\n";
+			print "$filename: FAILED\n";
 			if ($debug || $show_hash) {
-				echo "  Read: [$hash_read]\n";
-				echo "  File: [$hash_file]\n";
+				print "  Read: [$hash_read]\n";
+				print "  File: [$hash_file]\n";
 			}
 		}
 	}
@@ -253,7 +248,7 @@ function dirToArray($dir,$base,$ignore) {
 		}
 
 		if (!$quiet && $debug) {
-			echo "\nSearching '$fulldir' ... \n";
+			print "\nSearching '$fulldir' ... \n";
 		}
 
 		$dir_list = array();
@@ -267,13 +262,13 @@ function dirToArray($dir,$base,$ignore) {
 				} else {
 					$md5_sum = @md5_file($fullpath);
 					if (!$quiet && $debug) {
-						echo "[$md5_sum] $value\n";
+						print "[$md5_sum] $value\n";
 					}
 					$result[substr($partpath,1)] = $md5_sum;
 				}
 			} else {
 				if (!$quiet && $debug) {
-					echo "[                         Ignored] $value\n";
+					print "[                         Ignored] $value\n";
 				}
 			}
 		}
@@ -283,7 +278,7 @@ function dirToArray($dir,$base,$ignore) {
 		}
 	} else if (!$quiet && ($debug || !strlen($dir))) {
 		$value = substr($dir,strlen(dirname($dir))+1);
-		echo "[           Outside Base, Ignored] $value\n";
+		print "[           Outside Base, Ignored] $value\n";
 	}
 
 
@@ -292,46 +287,30 @@ function dirToArray($dir,$base,$ignore) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
-	echo "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti md5sum Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: md5sum.php [option] [filename]\n";
-	echo "\nOptions:\n";
-	echo "     -c          When specified used creates a file containing the md5 hash\n";
-	echo "    --create     followed by the name. Otherwise, the file is verified\n\n";
-	echo "     -d          logs additional ouptut to the screen to aid in dignosising\n";
-	echo "    --debug      potential issues\n\n";
-	echo "     -b          When specified, sets the base directory to search from. If\n";
-	echo "    --basedir    not specified, defaults to the directory above this script\n\n";
-	echo "     -q          When specified, quiet mode only returns an exit value that\n";
-	echo "    --quiet      corresponds to the point of exit.  Suppresess debug option\n\n";
-	echo "     -s          When specified, adds extra output to the verify mode which\n";
-	echo "    --show       shows both the stored and computed hash value that failed\n";
-	echo "    --show_hash  to match\n\n";
-	echo "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
+	print "\nusage: md5sum.php [option] [filename]\n";
+	print "\nOptions:\n";
+	print "     -c          When specified used creates a file containing the md5 hash\n";
+	print "    --create     followed by the name. Otherwise, the file is verified\n\n";
+	print "     -d          logs additional ouptut to the screen to aid in dignosising\n";
+	print "    --debug      potential issues\n\n";
+	print "     -b          When specified, sets the base directory to search from. If\n";
+	print "    --basedir    not specified, defaults to the directory above this script\n\n";
+	print "     -q          When specified, quiet mode only returns an exit value that\n";
+	print "    --quiet      corresponds to the point of exit.  Suppresess debug option\n\n";
+	print "     -s          When specified, adds extra output to the verify mode which\n";
+	print "    --show       shows both the stored and computed hash value that failed\n";
+	print "    --show_hash  to match\n\n";
+	print "\nWhen no filename is passed, .md5sum is assumed. Only one filename allowed\n";
 }
 
-function get_cacti_version() {
-	$cacti_version_file = dirname(__FILE__) . '/../include/cacti_version';
-
-	if (! file_exists($cacti_version_file)) {
-	        die ("ERROR: failed to find cacti version file\n");
-	}
-
-	$cacti_version = file_get_contents($cacti_version_file, false);
-	if ($cacti_version === false) {
-	        die ("ERROR: failed to load cacti version file\n");
-	}
-	$cacti_version = trim($cacti_version);
-
-	return $cacti_version;
-}
-
-function fail($exit_value,$args,$display_help = 0) {
+function fail($exit_value,$args = array(),$display_help = 0) {
 	global $quiet,$fail_msg;
 
 	if (!$quiet) {

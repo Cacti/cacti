@@ -24,12 +24,13 @@
 
 $guest_account = true;
 include('./include/auth.php');
-include_once('./lib/utility.php');
 include_once('./lib/clog_webapi.php');
+include_once('./lib/poller.php');
+include_once('./lib/utility.php');
 
 /* check edit/alter permissions */
 if (!clog_authorized()) {
-	echo __('FATAL: YOU DO NO HAVE ACCESS TO THIS AREA OF CACTI');
+	echo __('FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI');
 	exit;
 }
 

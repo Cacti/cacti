@@ -49,7 +49,7 @@ function get_cdef($cdef_id) {
 
 	$i = 0; $cdef_string = '';
 
-	if (sizeof($cdef_items) > 0) {
+	if (cacti_sizeof($cdef_items) > 0) {
 		foreach ($cdef_items as $cdef_item) {
 			if ($i > 0) {
 				$cdef_string .= ',';

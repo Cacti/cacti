@@ -23,14 +23,7 @@
  +-------------------------------------------------------------------------+
 */
 
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-    die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-include('./include/global.php');
+require(__DIR__ . '/include/cli_check.php');
 
 ini_set('memory_limit', '512M');
 
@@ -45,7 +38,7 @@ $forcerun  = false;
 $templates = false;
 $kills     = 0;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -93,7 +86,7 @@ if (!$templates) {
 	$templates = explode(',', $templates);
 }
 
-if (!sizeof($templates)) {
+if (!cacti_sizeof($templates)) {
 	print "ERROR: No valid Graph Templates selected\n\n";
 	exit(1);
 } else {
@@ -118,7 +111,7 @@ if (timeToRun()) {
 
     $cacti_stats = sprintf(
         'Time:%01.4f ' .
-        'Graphs:%s ' . 
+        'Graphs:%s ' .
 		'Kills:%s',
         round($end-$start,2),
         $graphs,
@@ -183,7 +176,7 @@ function debug($message) {
 function kill_spikes($templates, &$found) {
 	global $debug, $config;
 
-	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path 
+	$rrdfiles = array_rekey(db_fetch_assoc('SELECT DISTINCT rrd_path
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_item AS gti
 		ON gt.id=gti.graph_template_id
@@ -192,10 +185,10 @@ function kill_spikes($templates, &$found) {
 		INNER JOIN poller_item AS pi ON pi.local_data_id=dtr.local_data_id
 		WHERE gt.id IN (' . implode(',', $templates) . ')'), 'rrd_path', 'rrd_path');
 
-	if (sizeof($rrdfiles)) {
+	if (cacti_sizeof($rrdfiles)) {
 	foreach($rrdfiles as $f) {
 		debug("Removing Spikes from '$f'");
-		$response = exec(read_config_option('path_php_binary') . ' -q ' . 
+		$response = exec(read_config_option('path_php_binary') . ' -q ' .
 			$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
 		if (substr_count($response, 'Spikes Found and Remediated')) {
 			$found++;
@@ -205,7 +198,7 @@ function kill_spikes($templates, &$found) {
 	}
 	}
 
-	return sizeof($rrdfiles);
+	return cacti_sizeof($rrdfiles);
 }
 
 /*  display_version - displays version information */

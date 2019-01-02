@@ -43,7 +43,9 @@
       multipleRow: false,
       multipleRowWidth: 55,
       position: {},
-      appendTo: "body"
+      appendTo: "body",
+      menuWidth:null,
+      buttonWidth:null
     },
 
     _create: function() {
@@ -424,24 +426,48 @@
         setTimeout($.proxy(self.refresh, self), 10);
       });
     },
+    // Determines the minimum width for the button and menu
+    // Can be a number, a digit string, or a percentage
+    _getMinWidth: function() {
+      var minVal = this.options.minWidth;
+      var width = 0;
+      switch (typeof minVal) {
+        case 'number':
+          width = minVal;
+          break;
+        case 'string':
+          var lastChar = minVal[ minVal.length -1 ];
+          width = minVal.match(/\d+/);
+          if(lastChar === '%') {
+            width = this.element.parent().outerWidth() * (width/100);
+          } else {
+            width = parseInt(minVal, 10);
+          }
+          break;
+      }
+      return width;
+    },
 
     // set button width
     _setButtonWidth: function() {
       var width = this.element.outerWidth();
-      var o = this.options;
+      var minVal = this._getMinWidth();
 
-      if(/\d/.test(o.minWidth) && width < o.minWidth) {
-        width = o.minWidth;
+      if(width < minVal) {
+        width = minVal;
       }
 
+      var buttonWidth = this.options.buttonWidth;
+
       // set widths
-      this.button.outerWidth(width);
+      this.button.outerWidth(buttonWidth ? buttonWidth:width);
     },
 
     // set menu width
     _setMenuWidth: function() {
       var m = this.menu;
-      m.outerWidth(this.button.outerWidth());
+      var width = (this.button.outerWidth() <= 0) ? this._getMinWidth() : this.button.outerWidth();
+      m.outerWidth(this.options.menuWidth || width);
     },
 
     // move up or down within the menu
@@ -708,6 +734,8 @@
           menu.find('ul').last().height(parseInt(value, 10));
           break;
         case 'minWidth':
+        case 'menuWidth':
+        case 'buttonWidth':
           this.options[key] = parseInt(value, 10);
           this._setButtonWidth();
           this._setMenuWidth();

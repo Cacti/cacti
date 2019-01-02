@@ -104,7 +104,7 @@ function rrdclean_fill_table() {
 function rrdcleaner_lastupdate() {
 	$status = db_fetch_row("SHOW TABLE STATUS LIKE 'data_source_purge_temp'");
 
-	if (sizeof($status)) {
+	if (cacti_sizeof($status)) {
 		return $status['Update_time'];
 	}
 }
@@ -355,7 +355,7 @@ function list_rrd() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($file_list)) {
+	if (cacti_sizeof($file_list)) {
 		foreach($file_list as $file) {
 			$data_template_name = ((empty($file['data_template_name'])) ? '<em>None</em>' : $file['data_template_name']);
 			form_alternate_row('line' . $file['id'], true);
@@ -375,7 +375,7 @@ function list_rrd() {
 
 	html_end_box(false);
 
-	if (sizeof($file_list)) {
+	if (cacti_sizeof($file_list)) {
 		print $nav;
 	}
 
@@ -475,7 +475,7 @@ function filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Time Since Update');?>
@@ -500,7 +500,7 @@ function filter() {
 						<select id='rows'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print '<option value="' . $key . '"'; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
@@ -510,15 +510,15 @@ function filter() {
 					</td>
 					<td>
 						<span>
-							<input id='go' type='submit' value='<?php print __x('filter: use', 'Go');?>'>
-							<input id='clear' type='button' value='<?php print __x('filter: reset', 'Clear');?>'>
-							<input id='rescan' type='button' value='<?php print __esc('Rescan');?>' name='rescan'>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __x('filter: use', 'Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __x('filter: reset', 'Clear');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='rescan' value='<?php print __esc('Rescan');?>' name='rescan'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input id='remall' type='button' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
-							<input id='arcall' type='button' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='remall' value='<?php print __esc('Delete All');?>' title='<?php print __esc('Delete All Unknown RRDfiles');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='arcall' value='<?php print __esc('Archive All');?>' title='<?php print __esc('Archive All Unknown RRDfiles');?>'>
 						</span>
 					</td>
 					<td id='text'></td>

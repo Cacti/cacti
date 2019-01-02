@@ -136,7 +136,7 @@ function color_templates_item_dnd() {
     if (isset_request_var('color_item') && is_array(get_nfilter_request_var('color_item'))) {
 		$color_items = get_nfilter_request_var('color_item');
 
-		if (sizeof($color_items)) {
+		if (cacti_sizeof($color_items)) {
 			$sequence = 1;
 
 		    foreach($color_items as $option_id) {
@@ -260,9 +260,9 @@ function aggregate_color_item_remove_confirm() {
 		</td>
 	</tr>
 	<tr>
-		<td align='right'>
-			<input id='cancel' type='button' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
-			<input id='continue' type='button' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
+		<td class='right'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='cancel' value='<?php print __esc('Cancel');?>' onClick='$("#cdialog").dialog("close");' name='cancel'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' id='continue' value='<?php print __esc('Continue');?>' name='continue' title='<?php print __esc('Remove Color Item');?>'>
 		</td>
 	</tr>
 	<?php

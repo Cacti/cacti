@@ -23,70 +23,62 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
-
-include(dirname(__FILE__) . '/../include/global.php');
-include_once($config['base_path'] . '/lib/auth.php');
+require(__DIR__ . '/../include/cli_check.php');
 
 if (empty($_SERVER['argv'][1]) ){
 	display_help();
-	exit;
+	exit(1);
 } else {
 	switch($_SERVER['argv'][1]) {
 		case '--help':
 		case '-H':
 		case '-h':
 			display_help();
-			exit;
+			exit(0);
 		case '--version':
 		case '-V':
 		case '-v':
 			display_version();
-			exit;
+			exit(0);
 	}
 }
 
 $template_user = $_SERVER['argv'][1];
 $new_user      = $_SERVER['argv'][2];
 
-print 'Template User: ' . $template_user . "\n";
-print 'New User:      ' . $new_user . "\n";
+print 'Template User: ' . $template_user . PHP_EOL;
+print 'New User:      ' . $new_user . PHP_EOL;
 
 /* Check that user exists */
 $user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $template_user . "' AND realm = 0");
 if (! isset($user_auth)) {
-	die("Error: Template user does not exist!\n\n");
+	die("Error: Template user does not exist!" . PHP_EOL . PHP_EOL);
 }
 
-print "\nCopying User...\n";
+print PHP_EOL . 'Copying User...' . PHP_EOL;
 
 if (user_copy($template_user, $new_user) === false) {
-	die("Error: User not copied!\n\n");
+	die('Error: User not copied!' . PHP_EOL . PHP_EOL);
 }
 
 $user_auth = db_fetch_row("SELECT * FROM user_auth WHERE username = '" . $new_user . "' AND realm = 0");
 if (! isset($user_auth)) {
-	die("Error: User not copied!\n\n");
+	die('Error: User not copied!' . PHP_EOL . PHP_EOL);
 }
 
-print "User copied...\n";
+print "User copied..." . PHP_EOL;
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
-	echo "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Copy User Utility, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
 	display_version();
 
-	print "\nusage: copy_cacti_user.php <template user> <new user>\n\n";
-	print "A utility to copy on local Cacti user and their settings to a new one\n\n";
-	print "NOTE: It is highly recommended that you use the web interface to copy users as\n";
-	print "this script will only copy Local Cacti users.\n\n";
+	print 'usage: copy_cacti_user.php <template user> <new user>' . PHP_EOL . PHP_EOL;
+	print 'A utility to copy on local Cacti user and their settings to a new one.' . PHP_EOL . PHP_EOL;
+	print 'NOTE: It is highly recommended that you use the web interface to copy users as' . PHP_EOL;
+	print 'this script will only copy Local Cacti users.' . PHP_EOL . PHP_EOL;
 }

@@ -23,21 +23,14 @@
    +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* we are not talking to the browser */
-$no_http_headers = true;
-
 /* let's report all errors */
 error_reporting(E_ALL);
+
+require(__DIR__ . '/include/cli_check.php');
 
 /* allow the script to hang around waiting for connections. */
 set_time_limit(0);
 chdir(dirname(__FILE__));
-include_once('./include/global.php');
 
 /* translate well-known textual conventions and SNMP base types to net-snmp */
 $smi_base_datatypes = array(
@@ -89,7 +82,7 @@ if(strstr(PHP_OS, 'WIN')) {
 	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
-	if(!sizeof($output)) {
+	if(!cacti_sizeof($output)) {
 		exec($php . " " . $extra_args . " > /dev/null &");
 	}
 }

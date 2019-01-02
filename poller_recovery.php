@@ -26,8 +26,10 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/boost.php');
+require_once($config['base_path'] . '/lib/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -73,24 +75,6 @@ function debug($string) {
 	}
 }
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-if (strpos($dir, 'boost') !== false) {
-	chdir('../../');
-}
-
-/* include important functions */
-include_once('./include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/boost.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
-
 global $local_db_cnn_id, $remote_db_cnn_id;
 
 $recovery_pid = db_fetch_cell("SELECT value FROM settings WHERE name='recovery_pid'", true, $local_db_cnn_id);
@@ -111,7 +95,7 @@ $forcerun       = false;
 $verbose        = false;
 $poller_id      = $config['poller_id'];
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -190,21 +174,23 @@ if ($run) {
 	$end_count = 0;
 
 	/* let the console know you are in recovery mode */
-	db_execute_prepared('UPDATE poller 
-		SET status="5" 
+	db_execute_prepared('UPDATE poller
+		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
+	poller_push_reindex_data_to_main();
+
 	while (true) {
-		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries 
-			FROM poller_output_boost 
+		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
+			FROM poller_output_boost
 			GROUP BY time', true, $local_db_cnn_id);
 
-		debug('There are ' . sizeof($time_records) . ' in the recovery database');
+		debug('There are ' . cacti_sizeof($time_records) . ' in the recovery database');
 
 		$total_records = db_affected_rows();
 		$found         = 0;
 
-		if (!sizeof($time_records)) {
+		if (!cacti_sizeof($time_records)) {
 			// This should happen, but only after purging at least some records
 			break;
 		} else {
@@ -250,17 +236,17 @@ if ($run) {
 			}
 
 			if ($purge_time == 0) {
-				$rows = db_fetch_assoc("SELECT * 
-					FROM poller_output_boost 
+				$rows = db_fetch_assoc("SELECT *
+					FROM poller_output_boost
 					ORDER BY time ASC", true, $local_db_cnn_id);
 			} else {
-				$rows = db_fetch_assoc("SELECT * 
-					FROM poller_output_boost 
-					WHERE time $operator '$purge_time' 
+				$rows = db_fetch_assoc("SELECT *
+					FROM poller_output_boost
+					WHERE time $operator '$purge_time'
 					ORDER BY time ASC", true, $local_db_cnn_id);
 			}
 
-			if (sizeof($rows)) {
+			if (cacti_sizeof($rows)) {
 				$count     = 0;
 				$sql_array = array();
 
@@ -269,11 +255,11 @@ if ($run) {
 					$count += strlen($sql);
 
 					if ($count >= $max_allowed_packet) {
-						db_execute('INSERT IGNORE INTO poller_output_boost 
-							(local_data_id, rrd_name, time, output) 
+						db_execute('INSERT IGNORE INTO poller_output_boost
+							(local_data_id, rrd_name, time, output)
 							VALUES ' . implode(',', $sql_array), true, $remote_db_cnn_id);
 
-						$inserted += sizeof($sql_array);
+						$inserted += cacti_sizeof($sql_array);
 						$sql_array = array();
 						$count = 0;
 					}
@@ -282,17 +268,20 @@ if ($run) {
 				}
 
 				if ($count > 0) {
-					db_execute("INSERT IGNORE INTO poller_output_boost 
-						(local_data_id, rrd_name, time, output) 
+					db_execute("INSERT IGNORE INTO poller_output_boost
+						(local_data_id, rrd_name, time, output)
 						VALUES " . implode(',', $sql_array), true, $remote_db_cnn_id);
 					$inserted += $count;
 				}
 
 				/* remove the recovery records */
-				if ($purge_time == 0) {
-					db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
-				} else {
-					db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+				if (is_object($local_db_cnn_id)) {
+					// Only go through this if the local database is reachable
+					if ($purge_time == 0) {
+						db_execute("DELETE FROM poller_output_boost", true, $local_db_cnn_id);
+					} else {
+						db_execute("DELETE FROM poller_output_boost WHERE time $operator '$purge_time'", true, $local_db_cnn_id);
+					}
 				}
 			}
 
@@ -301,8 +290,8 @@ if ($run) {
 	}
 
 	/* let the console know you are in online mode */
-	db_execute_prepared('UPDATE poller 
-		SET status="2" 
+	db_execute_prepared('UPDATE poller
+		SET status="2"
 		WHERE id= ?', array($poller_id), false, $remote_db_cnn_id);
 } else {
 	debug('Recovery process still running, exiting');

@@ -28,6 +28,7 @@ include('./include/auth.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/api_tree.php');
+include_once('./lib/reports.php');
 include_once('./lib/timespan_settings.php');
 
 /* set the default graph action */
@@ -64,7 +65,7 @@ function get_matching_nodes() {
 		$matching = db_fetch_assoc("SELECT parent, graph_tree_id FROM graph_tree_items");
 	}
 
-	if (sizeof($matching)) {
+	if (cacti_sizeof($matching)) {
 		foreach($matching as $row) {
 			while ($row['parent'] != '0') {
 				$match[] = 'tbranch-' . $row['parent'];
@@ -74,12 +75,12 @@ function get_matching_nodes() {
 					WHERE id = ?',
 					array($row['parent']));
 
-				if (!sizeof($row)) {
-					break;
+				if (!cacti_sizeof($row)) {
+				    break;
 				}
 			}
 
-			if (sizeof($row)) {
+			if (cacti_sizeof($row)) {
 				$match[]      = 'tree_anchor-' . $row['graph_tree_id'];
 				$my_matches[] = array_reverse($match);
 				$match        = array();
@@ -104,11 +105,11 @@ function get_matching_nodes() {
 			$level++;
 
 			if ($found == 0) {
-				break;
+			    break;
 			}
 		}
 
-		if (sizeof($final_array)) {
+		if (cacti_sizeof($final_array)) {
 			$fa = array();
 
 			foreach($final_array as $key => $matches) {
@@ -134,6 +135,37 @@ case 'ajax_search':
 	exit;
 
 	break;
+case 'ajax_reports':
+	// Add to a report
+	get_filter_request_var('report_id');
+	get_filter_request_var('timespan');
+	get_filter_request_var('align');
+
+	if (isset_request_var('graph_list')) {
+		$items = explode(',', get_request_var('graph_list'));
+
+		if (cacti_sizeof($items)) {
+			$good = true;
+
+			foreach($items as $item) {
+				if (!reports_add_graphs(get_filter_request_var('report_id'), $item, get_request_var('timespan'), get_request_var('align'))) {
+					raise_message('reports_add_error');
+					$good = false;
+					break;
+				}
+			}
+
+			if ($good) {
+				raise_message('reports_graphs_added');
+			}
+		}
+	} else {
+		raise_message('reports_no_graph');
+	}
+
+	header('Location: graph_view.php?action=list&header=false');
+
+	break;
 case 'update_timespan':
 	// we really don't need to do anything.  The session variables have already been updated
 
@@ -144,7 +176,6 @@ case 'save':
 		get_filter_request_var('predefined_timespan');
 		get_filter_request_var('predefined_timeshift');
 		get_filter_request_var('graphs');
-		get_filter_request_var('graph_template_id', FILTER_VALIDATE_IS_NUMERIC_LIST);
 		get_filter_request_var('thumbnails', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
 
 		if (isset_request_var('predefined_timespan')) {
@@ -153,10 +184,6 @@ case 'save':
 
 		if (isset_request_var('predefined_timeshift')) {
 			set_graph_config_option('default_timeshift', get_request_var('predefined_timeshift'));
-		}
-
-		if (isset_request_var('graph_template_id')) {
-			set_graph_config_option('graph_template_id', get_request_var('graph_template_id'));
 		}
 
 		if (isset_request_var('section') && get_nfilter_request_var('section') == 'preview') {
@@ -269,16 +296,16 @@ case 'tree_content':
 
 	?>
 	<script type='text/javascript'>
-	var refreshIsLogout=false;
-	var refreshPage='<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
-	var timeOffset=<?php print date('Z');?>
+	var refreshIsLogout = false;
+	var refreshPage     = '<?php print str_replace('tree_content', 'tree', sanitize_uri($_SERVER['REQUEST_URI']));?>';
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
+	var timeOffset      = <?php print date('Z');?>
 
 	// Adjust the height of the tree
 	$(function() {
-		myGraphLocation='tree';
+		pageAction   = 'tree';
 		navHeight    = $('.cactiTreeNavigationArea').height();
 		windowHeight = $(window).height();
 		navOffset    = $('.cactiTreeNavigationArea').offset();
@@ -337,6 +364,14 @@ case 'preview':
 		exit;
 	}
 
+	if (isset_request_var('external_id')) {
+		$host_id = db_fetch_cell_prepared('SELECT id FROM host WHERE external_id = ?', array(get_nfilter_request_var('external_id')));
+		if (!empty($host_id)) {
+			set_request_var('host_id', $host_id);
+			set_request_var('reset',true);
+		}
+	}
+
 	html_graph_validate_preview_request_vars();
 
 	/* include graph view filter selector */
@@ -380,7 +415,7 @@ case 'preview':
 				$i++;
 			}
 
-			if ((isset($graph_array)) && (sizeof($graph_array) > 0)) {
+			if ((isset($graph_array)) && (cacti_sizeof($graph_array) > 0)) {
 				/* build sql string including each graph the user checked */
 				$sql_or = array_to_sql_or($graph_array, 'gtg.local_graph_id');
 			}
@@ -403,14 +438,16 @@ case 'preview':
 		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= (empty($sql_where) ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
+	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (get_request_var('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
-	$limit = (get_request_var('graphs') * (get_request_var('page') - 1)) . ',' . get_request_var('graphs');
-	$order = 'gtg.title_cache';
+	$limit      = (get_request_var('graphs')*(get_request_var('page')-1)) . ',' . get_request_var('graphs');
+	$order      = 'gtg.title_cache';
 
-	$graphs = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
+	$graphs     = get_allowed_graphs($sql_where, $order, $limit, $total_graphs);
 
 	$nav = html_nav_bar('graph_view.php', MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_graphs, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
@@ -468,7 +505,7 @@ case 'list':
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
 			'pageset' => true,
-			'default' => '0'
+			'default' => '-1'
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -525,12 +562,17 @@ case 'list':
 	}
 
 	/* update the revised graph list session variable */
-	if (sizeof($graph_list)) {
+	if (cacti_sizeof($graph_list)) {
 		set_request_var('graph_list', implode(',', array_keys($graph_list)));
 	}
 	load_current_session_value('graph_list', 'sess_gl_graph_list', '');
 
-	form_start('graph_view.php', 'form_graph_list');
+	$reports = db_fetch_assoc_prepared('SELECT *
+		FROM reports
+		WHERE user_id = ?',
+		array($_SESSION['sess_user_id']));
+
+	form_start('graph_view.php', 'chk');
 
 	/* display graph view filter selector */
 	html_start_box(__('Graph List View Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filter FROM List ]'):''), '100%', '', '3', 'center', '');
@@ -544,19 +586,37 @@ case 'list':
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='rfilter' type='text' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='rfilter' size='30' value='<?php print html_escape_request_var('rfilter');?>'>
 					</td>
 					<?php html_host_filter(get_request_var('host_id'));?>
+					<td>
+						<span>
+							<input type='submit' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
+							<?php if (cacti_sizeof($reports)) {?>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='addreport' value='<?php print __esc('Report');?>' title='<?php print __esc('Add to a Report');?>'>
+							<?php } ?>
+						</span>
+					</td>
+				</tr>
+			</table>
+			<table class='filterTable'>
+				<tr>
 					<td>
 						<?php print __('Template');?>
 					</td>
 					<td>
 						<select id='graph_template_id' multiple style='opacity:0.1;overflow:hide;height:0px;'>
-							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='-1'<?php if (get_request_var('graph_template_id') == '-1') {?> selected<?php }?>><?php print __('All Graphs & Templates');?></option>
+							<option value='0'<?php if (get_request_var('graph_template_id') == '0') {?> selected<?php }?>><?php print __('Not Templated');?></option>
 							<?php
 
-							$graph_templates = get_allowed_graph_templates();
-							if (sizeof($graph_templates)) {
+							// suppress total rows collection
+							$total_rows = -1;
+
+							$graph_templates = get_allowed_graph_templates('', 'name', '', $total_rows);
+							if (cacti_sizeof($graph_templates)) {
 								$selected    = explode(',', get_request_var('graph_template_id'));
 								foreach ($graph_templates as $gt) {
 									if ($gt['id'] != 0) {
@@ -567,7 +627,7 @@ case 'list':
 
 										if ($found) {
 											print "<option value='" . $gt['id'] . "'";
-											if (sizeof($selected)) {
+											if (cacti_sizeof($selected)) {
 												if (in_array($gt['id'], $selected)) {
 													print ' selected';
 												}
@@ -588,20 +648,13 @@ case 'list':
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
 							}
 							?>
 						</select>
-					</td>
-					<td>
-						<span>
-							<input type='submit' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>' onClick='clearFilter()'>
-							<input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'>
-						</span>
 					</td>
 				</tr>
 			</table>
@@ -627,8 +680,10 @@ case 'list':
 		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.host_id=0';
 	}
 
-	if (!isempty_request_var('graph_template_id')) {
-		$sql_where .= ($sql_where == '' ? '' : ' AND') . ' gl.graph_template_id IN (' . get_request_var('graph_template_id') . ')';
+	if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') != '-1' && get_request_var('graph_template_id') != '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
+	} elseif (get_request_var('graph_template_id') == '0') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 	}
 
 	$total_rows = 0;
@@ -645,7 +700,7 @@ case 'list':
 	html_header_checkbox(array(__('Graph Title'), __('Device'), __('Graph Template'), __('Graph Size')), false);
 
 	$i = 0;
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			if ($graph['description'] == '' && $graph['template_name'] == '') {
 				$aggregate = db_fetch_cell_prepared('SELECT agt.name
@@ -666,30 +721,62 @@ case 'list':
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
-			form_selectable_cell($graph['description'], $graph['local_graph_id']);
-			form_selectable_cell($graph['template_name'], $graph['local_graph_id']);
-			form_selectable_cell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['description'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['template_name'], $graph['local_graph_id']);
+			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
 		}
 	}
 
-	?>
-	<tr>
-		<td style='text-align:right' colspan='3'><img src='images/arrow.gif' alt=''>&nbsp;</td>
-		<td style='text-align:right' colspan='2'><input type='button' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></td>
-	</tr>
-	<?php
-
 	html_end_box(false);
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		print $nav;
 	}
 
 	form_end();
 
+	global $graph_timespans, $alignment;
+
+	$report_text = '';
+
+	if (cacti_sizeof($reports)) {
+		$report_text = '<div id="addGraphs" style="display:none;">
+			<p>' . __('Select the Report to add the selected Graphs to.') . '</p>
+			<table class="cactiTable">';
+
+		$report_text .= '<tr><td>' . __('Report Name') . '</td>';
+		$report_text .= '<td><select id="report_id">';
+		foreach($reports as $report) {
+			$report_text .= '<option value="' . $report['id'] . '">' . $report['name'] . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '<tr><td>' . __('Timespan') . '</td>';
+		$report_text .= '<td><select id="timespan">';
+		foreach($graph_timespans as $key => $value) {
+			$report_text .= '<option value="' . $key . '"' . ($key == read_user_setting('default_timespan') ? ' selected':'') . '>' . $value . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '<tr><td>' . __('Align') . '</td>';
+		$report_text .= '<td><select id="align">';
+		foreach($alignment as $key => $value) {
+			$report_text .= '<option value="' . $key . '"' . ($key == REPORTS_ALIGN_CENTER ? ' selected':'') . '>' . $value . '</option>';
+		}
+		$report_text .= '</select></td></tr>';
+
+		$report_text .= '</table></div>';
+	}
+
 	?>
+	<div class='break'></div>
+	<div class='cactiTable'>
+		<div style='float:left'><img src='images/arrow.gif' alt=''>&nbsp;</div>
+		<div style='float:right'><input type='button' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('View');?>' title='<?php print __esc('View Graphs');?>' onClick='viewGraphs()'></div>
+	</div>
+	<?php print $report_text;?>
 	<script type='text/javascript'>
 	var refreshMSeconds=999999999;
 	var graph_list_array = new Array(<?php print get_request_var('graph_list');?>);
@@ -728,7 +815,7 @@ case 'list':
 		$('#graph_list').val(graphList);
 
 		strURL = urlPath+'graph_view.php?action=preview';
-		$('#form_graph_list').find('select, input').each(function() {
+		$('#chk').find('select, input').each(function() {
 			switch($(this).attr('id')) {
 			case 'graph_template_id':
 				strURL += '&' + $(this).attr('id') + '=' + $(this).val();
@@ -788,74 +875,72 @@ case 'list':
 		return false;
 	}
 
+	function addReport() {
+		$('#addGraphs').dialog({
+			title: '<?php print __('Add Selected Graphs to Report');?>',
+			minHeight: 80,
+			minWidth: 400,
+			modal: true,
+			resizable: false,
+			draggable: false,
+			buttons: [
+				{
+					text: '<?php print __('Cancel');?>',
+					click: function() {
+						$(this).dialog('close');
+					}
+				},
+				{
+					text: '<?php print __('Ok');?>',
+					click: function() {
+						graphList = $('#graph_list').val();
+						$('input[id^=chk_]').each(function(data) {
+							graphID = $(this).attr('id').replace('chk_','');
+							if ($(this).is(':checked')) {
+								graphList += (graphList.length > 0 ? ',':'') + graphID;
+							}
+						});
+						$('#graph_list').val(graphList);
+
+						$(this).dialog('close');
+
+						strURL = 'graph_view.php?action=ajax_reports';
+							'&header=false' +
+							'&report_id='   + $('#report_id').val()  +
+							'&timespan='    + $('#timespan').val()   +
+							'&align='       + $('#align').val()      +
+							'&graph_list='  + $('#graph_list').val();
+
+						loadPageNoHeader(strURL);
+					}
+				}
+			],
+			open: function() {
+				$('.ui-dialog').css('z-index', 99);
+				$('.ui-widget-overlay').css('z-index', 98);
+			},
+			close: function() {
+				$('[title]').each(function() {
+					if ($(this).tooltip('instance')) {
+						$(this).tooltip('close');
+					}
+				});
+			}
+		});
+	}
+
 	$(function() {
-		myGraphLocation='list';
+		pageAction = 'list';
 
 		initializeChecks();
 
-		var msWidth = 100;
-		$('#graph_template_id option').each(function() {
-			if ($(this).textWidth() > msWidth) {
-				msWidth = $(this).textWidth();
-			}
-			$('#graph_template_id').css('width', msWidth+120+'px');
+		$('#addreport').click(function() {
+			addReport();
 		});
 
-		$('#graph_template_id').hide().multiselect({
-			height: 300,
-			noneSelectedText: '<?php print __('All Graphs & Templates');?>',
-			selectedText: function(numChecked, numTotal, checkedItems) {
-				myReturn = numChecked + ' <?php print __('Templates Selected');?>';
-				$.each(checkedItems, function(index, value) {
-					if (value.value == '0') {
-						myReturn='<?php print __('All Graphs & Templates');?>';
-						return false;
-					}
-				});
-				return myReturn;
-			},
-			checkAllText: '<?php print __('All');?>',
-			uncheckAllText: '<?php print __('None');?>',
-			uncheckall: function() {
-				$(this).multiselect('widget').find(':checkbox:first').each(function() {
-					$(this).prop('checked', true);
-				});
-			},
-			open: function(event, ui) {
-				$("input[type='search']:first").focus();
-			},
-			close: function(event, ui) {
-				applyFilter();
-			},
-			click: function(event, ui) {
-				checked=$(this).multiselect('widget').find('input:checked').length;
+		<?php html_graph_template_multiselect('list');?>
 
-				if (ui.value == 0) {
-					if (ui.checked == true) {
-						$('#graph_template_id').multiselect('uncheckAll');
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).prop('checked', true);
-						});
-					}
-				}else if (checked == 0) {
-					$(this).multiselect('widget').find(':checkbox:first').each(function() {
-						$(this).click();
-					});
-				}else if ($(this).multiselect('widget').find('input:checked:first').val() == '0') {
-					if (checked > 0) {
-						$(this).multiselect('widget').find(':checkbox:first').each(function() {
-							$(this).click();
-							$(this).prop('disable', true);
-						});
-					}
-				}
-			}
-		}).multiselectfilter({
-			label: '<?php print __('Search');?>',
-			width: msWidth
-		});
-
-		$('#form_graph_list').unbind().on('submit', function(event) {
+		$('#chk').unbind().on('submit', function(event) {
 			event.preventDefault();
 			applyFilter();
 		});

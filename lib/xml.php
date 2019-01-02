@@ -50,7 +50,7 @@ function get_children($vals, &$i) {
 
 	$prevtag = ''; $j = 0;
 
-	while (++$i < count($vals)) {
+	while (++$i < cacti_count($vals)) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);
@@ -89,7 +89,7 @@ function rrdxport2array($data) {
 	/* scan XML for bad data RRDtool 1.2.30 */
 	$array = explode("\n", $data);
 
-	if (sizeof($array)){
+	if (cacti_sizeof($array)){
 		if ((substr(trim($array[0]),0,1)) == '<') {
 			/* continue */
 		} else {
@@ -136,7 +136,7 @@ function get_rrd_children($vals, &$i, &$column, &$row) {
 
 	$prevtag = ''; $j = 0;
 
-	while (++$i < count($vals)) {
+	while (++$i < cacti_count($vals)) {
 		switch ($vals[$i]['type']) {
 		case 'cdata':
 			array_push($children, $vals[$i]['value']);

@@ -25,6 +25,7 @@
 include('./include/auth.php');
 include_once('./lib/api_device.php');
 include_once('./lib/api_data_source.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 $device_actions = array(
@@ -92,7 +93,7 @@ function form_actions() {
 
 					// pull ping options from network_id
 					$n = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array($d['network_id']));
-					if (sizeof($n)) {
+					if (cacti_sizeof($n)) {
 						$d['ping_method']  = $n['ping_method'];
 						$d['ping_port']    = $n['ping_port'];
 						$d['ping_timeout'] = $n['ping_timeout'];
@@ -145,7 +146,7 @@ function form_actions() {
 
 	$available_host_templates = db_fetch_assoc_prepared('SELECT id, name FROM host_template ORDER BY name');
 
-	if (isset($device_array) && sizeof($device_array)) {
+	if (isset($device_array) && cacti_sizeof($device_array)) {
 		if (get_request_var('drp_action') == '1') { /* add */
 
 			$pollers = db_fetch_assoc_prepared('SELECT id, name FROM poller ORDER BY name');
@@ -196,11 +197,12 @@ function form_actions() {
 
 			print "</td></tr></table></td></tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Device.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: automation_devices.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -238,7 +240,7 @@ function display_discovery_page() {
 	/* generate page list */
 	$nav = html_nav_bar('automation_devices.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 12, __('Devices'), 'page', 'main');
 
-	form_start('automation_devices.php', 'automation_devices');
+	form_start('automation_devices.php', 'chk');
 
 	print $nav;
 
@@ -269,7 +271,7 @@ function display_discovery_page() {
 	$availability_method = read_config_option('availability_method');
 
 	$status = array("<span class='deviceDown'>" . __('Down') . '</span>',"<span class='deviceUp'>" . __('Up') . '</span>');
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		foreach($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
@@ -305,7 +307,7 @@ function display_discovery_page() {
 
 	html_end_box(false);
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		print $nav;
 	}
 
@@ -448,7 +450,7 @@ function draw_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Network');?>
@@ -457,7 +459,7 @@ function draw_filter() {
 						<select id='network' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($networks)) {
+							if (cacti_sizeof($networks)) {
 							foreach ($networks as $key => $name) {
 								print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
 							}
@@ -466,14 +468,14 @@ function draw_filter() {
 						</select>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Reset fields to defaults');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Reset fields to defaults');?>'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' id='export' value='<?php print __esc('Export');?>' title='<?php print __esc('Export to a file');?>'>
-							<input type='button' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Purge Discovered Devices');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='export' value='<?php print __esc('Export');?>' title='<?php print __esc('Export to a file');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Purge Discovered Devices');?>'>
 						</span>
 					</td>
 				</tr>
@@ -487,7 +489,7 @@ function draw_filter() {
 						<select id='status' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($status_arr)) {
+							if (cacti_sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -502,7 +504,7 @@ function draw_filter() {
 						<select id='os' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($os_arr)) {
+							if (cacti_sizeof($os_arr)) {
 							foreach ($os_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -517,7 +519,7 @@ function draw_filter() {
 						<select id='snmp' onChange='applyFilter()'>
 							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
-							if (sizeof($status_arr)) {
+							if (cacti_sizeof($status_arr)) {
 							foreach ($status_arr as $st) {
 								print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
 							}
@@ -532,7 +534,7 @@ function draw_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 							foreach ($item_rows as $key => $value) {
 								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 							}
@@ -598,7 +600,7 @@ function export_discovery_results() {
 	header('Content-Disposition: attachment; filename=discovery_results.csv');
 	print "Host,IP,System Name,System Location,System Contact,System Description,OS,Uptime,SNMP,Status\n";
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 	foreach ($results as $host) {
 		if ($host['sysUptime'] != 0) {
 			$days = intval($host['sysUptime']/8640000);

@@ -260,7 +260,7 @@ function form_save() {
 								AND task_item_id = ?',
 								array($save['graph_template_id'], get_nfilter_request_var('task_item_id')));
 
-							if (sizeof($graph_items)) {
+							if (cacti_sizeof($graph_items)) {
 								foreach ($graph_items as $graph_item) {
 									db_execute_prepared('REPLACE INTO graph_template_input_defs
 										(graph_template_input_id, graph_template_item_id)
@@ -381,9 +381,9 @@ function item_remove() {
 		AND graph_template_input_defs.graph_template_item_id = ?
 		GROUP BY graph_template_input.id', array(get_request_var('graph_template_id'), get_request_var('id')));
 
-	if (sizeof($graph_item_inputs) > 0) {
+	if (cacti_sizeof($graph_item_inputs) > 0) {
 		foreach ($graph_item_inputs as $graph_item_input) {
-			if (sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_item_input['id']))) == 1) {
+			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT graph_template_input_id FROM graph_template_input_defs WHERE graph_template_input_id = ?', array($graph_item_input['id']))) == 1) {
 				db_execute_prepared('DELETE FROM graph_template_input WHERE id = ?', array($graph_item_input['id']));
 			}
 		}
@@ -402,7 +402,7 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = __('Graph Template Items [edit graph: %s]', htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __('Graph Template Items [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 
@@ -422,7 +422,7 @@ function item_edit() {
 			ORDER BY sequence DESC',
 			array(get_request_var('graph_template_id')));
 
-		if (sizeof($default) > 0) {
+		if (cacti_sizeof($default) > 0) {
 			$struct_graph_item['task_item_id']['default'] = $default['task_item_id'];
 		} else {
 			$struct_graph_item['task_item_id']['default'] = 0;
@@ -465,7 +465,7 @@ function item_edit() {
 	form_hidden_box('_task_item_id', (isset($template_item) ? $template_item['task_item_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
 	form_save_button('graph_templates.php?action=template_edit&id=' . get_request_var('graph_template_id'));
 

@@ -51,8 +51,23 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
 .reindex_methods span {
 	font-size: 9px;
+}
+
+.checkboxLabel {
+	display: none;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
 }
 
 /* links */
@@ -90,6 +105,13 @@ label {
 	white-space: nowrap;
 }
 
+.glyph_tab-console:before {
+	content: "\f1b0";
+}
+
+.text_tab-console {
+	display: none;
+}
 
 .nowrap {
 	white-space: nowrap;
@@ -234,10 +256,6 @@ label {
 	font-family: monospace;
 }
 
-.autodrop {
-	line-height: 22px;
-}
-
 .utilityPick {
 	width: 200px;
 }
@@ -251,6 +269,11 @@ label {
 	width:20%;
 	vertical-align:top;
 	white-space:nowrap;
+}
+
+.spikeKillMenuItem {
+	display: block;
+	width: 100%:
 }
 
 .deviceUp {
@@ -527,7 +550,7 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -796,7 +819,6 @@ legend {
 .actionsDropdownButton {
 	vertical-align: top;
 	float: right;
-	margin-top: 1px;
 	margin-left: 3px;
 	display: table-cell;
 }
@@ -1030,6 +1052,12 @@ legend {
 	white-space: nowrap;
 }
 
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #E5E5E5;
+	border-style: solid;
+}
+
 .cactiTable {
 	display: table;
 	width: 100%;
@@ -1037,6 +1065,21 @@ legend {
 	margin-right:auto;
 }
 
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color: rgba(0,0,0,0.9) !important;
+}
+
+.cactiTableTitleRow {
+	color: white;
+	float: left;
+	text-align: left;
+	line-height: 22px;
+	display: table-column;
+	width: 100%;
+	font-size: 1em;
+	font-weight: 700;
+	background: rgba(0,0,0,0.9);
+}
 
 .cactiTableTitle {
 	color: white;
@@ -1101,10 +1144,6 @@ legend {
 	white-space:nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1124,14 +1163,14 @@ legend {
 .formColumnLeft {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 50%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1226,7 +1265,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		color: #000000;
 		text-align: left;
 	}
@@ -1330,12 +1369,20 @@ th.sortable {
 	background: rgba(0,0,0,0.4);
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	font-weight:bold;
 	vertical-align:middle;
 	text-align:left;
 	cursor:pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align:center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align:right;
 }
 
 .graphSubHeaderColumn {
@@ -1592,6 +1639,7 @@ td.tab {
 div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
+	display: none !important;
 	position:fixed;
 	right: 5px;
 	top: 5px;
@@ -1605,29 +1653,21 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 30px !important;
-	overflow:hidden;
-	right: 0;
 }
 
 .maintabs {
 	line-height: 35px;
 	float: left;
-	width:80%;
-	overflow:hidden;
+	overflow: hidden;
 }
 
-.maintabs a {
+.maintabs a.lefttab, .usertabs a {
 	color: #fff;
-	float:left !important;
-	padding:5px 8px;
-	text-decoration:none;
+	float: left !important;
+	padding: 5px 8px;
+	text-decoration: none;
 	font-size: 18px;
-	vertical-align:bottom;
-}
-
-.maintabs-has-submenu a {
-	padding: 5px 4px 5px 9px;
+	vertical-align: bottom;
 }
 
 .maintabs a:hover {
@@ -1638,21 +1678,37 @@ div#gtabs {
 	background-color: rgba(63,117,162,0.8);
 }
 
+.maintabs a:active {
+	font-size: 18px;
+}
+
 .maintabs nav {
 	display: block;
 }
 
 .maintabs li {
-	bottom:-1px;
-	float:left;
+	bottom: -1px;
+	float: left;
 }
 
-.maintabs-submenu a{
-	padding: 5px 8px 5px 0px;
+.maintabs-submenu {
+	display: none;
 }
 
-.maintabs-submenu i{
+#menu-tab-graphs.maintabs-submenu, .maintabs-submenu-ellipsis a {
+	padding: 5px 5px 5px 0px;
+	color: #fff;
+	float: left !important;
+	text-decoration: none;
+	font-size: 18px;
+	vertical-align: bottom;
+	display: block;
+}
+
+.maintabs-submenu i, .maintabs-submenu-ellipsis i {
+	color: #fff;
 	padding-left: 2px;
+	font-size: 18px;
 	border-left: 1px solid #ccc;
 }
 
@@ -1665,9 +1721,8 @@ div.submenu {
 	z-index: 200;
 }
 
-div.submenu span{
+div.submenu span {
 	display: block;
-
 }
 
 .tabs a {
@@ -1713,25 +1768,28 @@ div.submenu span{
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs li.current a:hover, .maintabs li.current a:hover {
 	background:#fff;
 	border-bottom:1px solid #fff;
 }
+
 .tabs nav {
 	border-bottom:1px solid #ccc;
 }
 
 .tabs nav:after, .maintabs nav:after {
 	clear:both;
-	content:".";
-	display:block;
-	height:0;
-	visibility:hidden;
+	content: ".";
+	display: block;
+	height: 0;
+	visibility: hidden;
 }
+
 .tabs ul, .maintabs ul {
-	list-style:none;
-	margin:0;
-	padding:0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 
 /* Navigation Area */
@@ -2010,4 +2068,199 @@ tr#realtime td:first-child {
 	height: 300px;
 	overflow-y: scroll;
 	overflow-x: hidden;
+}
+
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
+.ui-checkboxradio-icon {
+	display: none;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+	color: white;
+	background: rgba(0,0,0,0.9);
+}
+
+/* New Checkbox Stuff */
+.checkboxSwitch {
+	position: relative;
+	display: inline-block;
+	width: 45px;
+	height: 24px;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: middle;
+}
+
+.checkboxSwitch input {
+	display:none;
+}
+
+.checkboxSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.55);
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.checkboxSlider:before {
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .checkboxSlider {
+	background-color: rgba(0,0,0,0.9);
+}
+
+input:disabled + .checkboxSlider {
+	cursor: not-allowed;
+}
+
+input:focus + .checkboxSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .checkboxSlider:before {
+	-webkit-transform: translateX(20px);
+	-ms-transform: translateX(20px);
+	transform: translateX(20px);
+}
+
+/* Rounded.checkboxSliders */
+.checkboxSlider.checkboxRound {
+	border-radius: 24px;
+}
+
+.checkboxSlider.checkboxRound:before {
+	border-radius: 50%;
+}
+
+.checkboxLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+}
+
+.right {
+	text-align: right;
+}
+
+.radioSwitch {
+	position: relative;
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 5px;
+	height: 24px;
+	width: 24px;
+	vertical-align: middle;
+}
+
+.radioSwitch input {
+	display:none;
+}
+
+.radioSlider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 24px;
+	width: 24px;
+	background-color: rgba(0, 0, 0, 0.55);
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+.radioSlider:before {
+	display:none;
+	position: absolute;
+	content: "";
+	height: 16px;
+	width: 16px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	background-image: url('./images/cacti_logo.svg');
+	background-repeat: no-repeat;
+	background-size: 7px;
+	background-position: center; /*left 5px;*/
+	-webkit-transition: .4s;
+	transition: .4s;
+}
+
+input:checked + .radioSlider {
+	background-color: rgba(0,0,0,0.9);
+}
+
+input:disabled + .radioSlider {
+	cursor: not-allowed;
+}
+
+input:focus + .radioSlider {
+	box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .radioSlider:before {
+	display: block;
+}
+
+/* Rounded.radioSliders */
+.radioSlider.radioRound {
+	border-radius: 24px;
+}
+
+.radioSlider.radioRound:before {
+	border-radius: 50%;
+}
+
+.radioLabelWanted {
+	display: inline-block;
+	margin-left: 5px;
+	margin-right: 10px;
+	vertical-align: middle;
+}
+
+td.center > table {
+	margin: 0 auto;
+}
+
+.ui-menu-item-wrapper {
+	white-space: nowrap;
 }

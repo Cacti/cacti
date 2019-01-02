@@ -27,22 +27,22 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 	if (!isset($hosts[$host_id])) {
 		$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-			host.id, host.poller_id, host.hostname, host.snmp_community, host.snmp_version,
-			host.snmp_username, host.snmp_password, host.snmp_auth_protocol, host.snmp_priv_passphrase,
-			host.snmp_priv_protocol, host.snmp_context, host.snmp_engine_id, host.snmp_port,
-			host.snmp_timeout, host.disabled
+			id, poller_id, hostname, snmp_community, snmp_version,
+			snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase,
+			snmp_priv_protocol, snmp_context, snmp_engine_id, snmp_port,
+			snmp_timeout, disabled
 			FROM host
-			WHERE host.id = ?', array($host_id));
+			WHERE id = ?',
+			array($host_id));
 
-		if (sizeof($host)) {
+		if (cacti_sizeof($host)) {
 			$hosts[$host_id] = $host;
 		}
 	} else {
 		$host = $hosts[$host_id];
 	}
 
-
-	if (sizeof($host) || (isset($host_id))) {
+	if (cacti_sizeof($host) || (isset($host_id))) {
 		if (isset($host['disabled']) && $host['disabled'] == 'on') {
 			return;
 		}
@@ -72,7 +72,7 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 		}
 
 		/* the $host_field_override array can be used to override certain host fields in the poller cache */
-		if (sizeof($host_field_override)) {
+		if (cacti_sizeof($host_field_override)) {
 			$host = array_merge($host, $host_field_override);
 		}
 
@@ -86,27 +86,28 @@ function api_poller_cache_item_add($host_id, $host_field_override, $local_data_i
 
 		$rrd_next_step = api_poller_get_rrd_next_step($rrd_step, $num_rrd_items);
 
-		return "($local_data_id, " . $host['poller_id'] . ', ' . 
-			$host['id'] . ", $poller_action_id," . 
-			db_qstr($host['hostname'])           . ', ' . db_qstr($host['snmp_community'])       . ', ' . 
-			db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout'])         . ', ' . 
-			db_qstr($host['snmp_username'])      . ', ' . db_qstr($host['snmp_password'])        . ', ' . 
-			db_qstr($host['snmp_auth_protocol']) . ', ' . db_qstr($host['snmp_priv_passphrase']) . ', ' . 
-			db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context'])         . ', ' . 
-			db_qstr($host['snmp_engine_id'])     . ', ' . db_qstr($host['snmp_port'])            . ', ' . 
-			db_qstr($data_source_item_name)      . ', ' . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ', ' . 
-			db_qstr($num_rrd_items)              . ', ' . db_qstr($rrd_step)                     . ', ' . 
-			db_qstr($rrd_next_step)              . ', ' . db_qstr($arg1)                         . ', ' . 
+		return "($local_data_id, " . $host['poller_id'] . ', ' .
+			$host['id'] . ", $poller_action_id," .
+			db_qstr($host['hostname'])           . ', ' . db_qstr($host['snmp_community'])       . ', ' .
+			db_qstr($host['snmp_version'])       . ', ' . db_qstr($host['snmp_timeout'])         . ', ' .
+			db_qstr($host['snmp_username'])      . ', ' . db_qstr($host['snmp_password'])        . ', ' .
+			db_qstr($host['snmp_auth_protocol']) . ', ' . db_qstr($host['snmp_priv_passphrase']) . ', ' .
+			db_qstr($host['snmp_priv_protocol']) . ', ' . db_qstr($host['snmp_context'])         . ', ' .
+			db_qstr($host['snmp_engine_id'])     . ', ' . db_qstr($host['snmp_port'])            . ', ' .
+			db_qstr($data_source_item_name)      . ', ' . db_qstr(clean_up_path(get_data_source_path($local_data_id, true))) . ', ' .
+			db_qstr($num_rrd_items)              . ', ' . db_qstr($rrd_step)                     . ', ' .
+			db_qstr($rrd_next_step)              . ', ' . db_qstr($arg1)                         . ', ' .
 			db_qstr($arg2)                       . ', ' . db_qstr($arg3) . ", '1')";
 	}
 }
 
-function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
+function api_poller_get_rrd_next_step($rrd_step = 300, $num_rrd_items = 1) {
 	global $config;
 
 	$poller_interval = read_config_option('poller_interval');
-	$rrd_next_step = 0;
-	if (($rrd_step != $poller_interval) && (isset($poller_interval))){
+	$rrd_next_step   = 0;
+
+	if ($rrd_step != $poller_interval && isset($poller_interval)) {
 		if (!isset($config['rrd_step_counter'])) {
 			$rrd_step_counter = read_config_option('rrd_step_counter');
 		} else {
@@ -125,7 +126,7 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		$modulus = $rrd_step / $poller_interval;
 
-		if (($modulus < 1) || ($rrd_step_counter == 0)) {
+		if ($modulus < 1 || empty($rrd_step_counter)) {
 			$rrd_next_step = 0;
 		} else {
 			$rrd_next_step = $poller_interval * ($rrd_step_counter % $modulus);
@@ -146,7 +147,8 @@ function api_poller_get_rrd_next_step($rrd_step=300, $num_rrd_items=1) {
 
 		/* save rrd_step_counter */
 		$config['rrd_step_counter'] = $rrd_step_counter;
-		db_execute_prepared("REPLACE INTO settings (name, value) VALUES ('rrd_step_counter', ?)", array($rrd_step_counter));
+
+		set_config_option('rrd_step_counter', $rrd_step_counter);
 	}
 
 	return $rrd_next_step;

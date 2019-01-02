@@ -23,25 +23,32 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 
 /* set default action */
 set_default_action();
 
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
+global $disable_log_rotation;
+
 switch (get_request_var('action')) {
 case 'save':
 	$errors = array();
+	$inserts = array();
+
 	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		} elseif ($field_array['method'] == 'checkbox') {
 			if (isset_request_var($field_name)) {
+				$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
 					array($field_name));
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
@@ -50,11 +57,13 @@ case 'save':
 		} elseif ($field_array['method'] == 'checkbox_group') {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
+					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, 'on')",
 					array($sub_field_name));
 				} else {
+					$inserts[] = '(' . db_qstr($field_name) . ', "on")';
 					db_execute_prepared("REPLACE INTO settings
 					(name, value)
 					VALUES (?, '')",
@@ -67,13 +76,17 @@ case 'save':
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[8] = 8;
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, get_nfilter_request_var($field_name)));
 			}
 		} elseif ($field_array['method'] == 'filepath') {
-			if (get_nfilter_request_var($field_name) != '' && !is_file(get_nfilter_request_var($field_name))) {
+			if (isset($field_array['file_type']) &&
+				$field_array['file_type'] == 'binary' &&
+				get_nfilter_request_var($field_name) != '' &&
+				file_exists(get_nfilter_request_var($field_name)) === false) {
 				$_SESSION['sess_error_fields'][$field_name] = $field_name;
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[36] = 36;
@@ -92,6 +105,7 @@ case 'save':
 				}
 
 				if ($continue) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 						(name, value)
 						VALUES (?, ?)',
@@ -105,6 +119,7 @@ case 'save':
 				$errors[4] = 4;
 				break;
 			} elseif (!isempty_request_var($field_name)) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -113,6 +128,7 @@ case 'save':
 		} elseif ((isset($field_array['items'])) && (is_array($field_array['items']))) {
 			foreach ($field_array['items'] as $sub_field_name => $sub_field_array) {
 				if (isset_request_var($sub_field_name)) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($sub_field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -122,17 +138,20 @@ case 'save':
 		} elseif ($field_array['method'] == 'drop_multi') {
 			if (isset_request_var($field_name)) {
 				if (is_array(get_nfilter_request_var($field_name))) {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 				} else {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 					db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, get_nfilter_request_var($field_name)));
 				}
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', "")';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, "")',
@@ -140,11 +159,13 @@ case 'save':
 			}
 		} elseif (isset_request_var($field_name)) {
 			if (is_array(get_nfilter_request_var($field_name))) {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(implode(',', get_nfilter_request_var($field_name))) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
 					array($field_name, implode(',', get_nfilter_request_var($field_name))));
 			} else {
+				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
 				db_execute_prepared('REPLACE INTO settings
 					(name, value)
 					VALUES (?, ?)',
@@ -155,27 +176,65 @@ case 'save':
 
 	if (isset_request_var('log_verbosity')) {
 		if (!isset_request_var('selective_debug')) {
+			$inserts[] = '("selective_debug", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_debug", "")');
 		}
 
 		if (!isset_request_var('selective_plugin_debug')) {
+			$inserts[] = '("selective_debug_plugin", "")';
 			db_execute('REPLACE INTO settings
 				(name, value)
 				VALUES ("selective_plugin_debug", "")');
 		}
 	}
 
-	/* update snmpcache */
+	// Disable template user from being able to login
+	if (isset_request_var('user_template')) {
+		db_execute_prepared('UPDATE user_auth
+			SET enabled=""
+			WHERE id = ?',
+			array(get_nfilter_request_var('user_template')));
+	}
+
+	// Update snmpcache
 	snmpagent_global_settings_update();
 
 	api_plugin_hook_function('global_settings_update');
 
-	if (sizeof($errors) == 0) {
-		raise_message(1);
+	$pollers = array_rekey(
+		db_fetch_assoc('SELECT id
+			FROM poller
+			WHERE id > 1
+			AND disabled=""'),
+		'id', 'id'
+	);
+
+	if (cacti_sizeof($errors) == 0) {
+		if (cacti_sizeof($pollers)) {
+			$sql = 'INSERT INTO settings
+				(name, value)
+				VALUES . ' . implode(', ', $inserts) . '
+				ON DUPLICATE KEY UPDATE value=VALUES(value)';
+
+			foreach($pollers as $p) {
+				$rcnn_id = poller_connect_to_remote($p);
+
+				if ($rcnn_id) {
+					if (db_execute($sql, false, $rcnn_id)) {
+						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
+					}
+				}
+			}
+
+			raise_message(42);
+		} else {
+			raise_message(1);
+		}
 	} else {
 		raise_message(35);
+
 		foreach($errors as $error) {
 			raise_message($error);
 		}
@@ -218,13 +277,31 @@ default:
 
 	$_SESSION['sess_settings_tab'] = $current_tab;
 
-	$system_tabs = array('general', 'path', 'snmp', 'poller', 'data', 'visual', 'authentication', 'boost', 'spikes', 'mail');
+	$data_collectors = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled=""');
+
+	if ($data_collectors > 1) {
+		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_redirect', 'on');
+	}
+
+	$system_tabs = array(
+		'general',
+		'path',
+		'snmp',
+		'poller',
+		'data',
+		'visual',
+		'authentication',
+		'boost',
+		'spikes',
+		'mail'
+	);
 
 	/* draw the categories tabs on the top of the page */
 	print "<div>\n";
 	print "<div class='tabs' style='float:left;'><nav><ul role='tablist'>\n";
 
-	if (sizeof($tabs) > 0) {
+	if (cacti_sizeof($tabs) > 0) {
 		$i = 0;
 
 		foreach (array_keys($tabs) as $tab_short_name) {
@@ -237,11 +314,18 @@ default:
 	print "</ul></nav></div>\n";
 	print "</div>\n";
 
-	form_start('settings.php', 'chk');
+	form_start('settings.php', 'form_settings');
 
 	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', true, '3', 'center', '');
 
 	$form_array = array();
+
+	// Remove log rotation is disabled by package maintainer
+	if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+		unset($settings['path']['logrotate_enabled']);
+		unset($settings['path']['logrotate_frequency']);
+		unset($settings['path']['logrotate_retain']);
+	}
 
 	if (isset($settings[$current_tab])) {
 		foreach ($settings[$current_tab] as $field_name => $field_array) {
@@ -292,13 +376,14 @@ default:
 	var rrdArchivePath = '';
 	var smtpPath = '';
 	var currentTab = '<?php print $current_tab;?>';
+	var dataCollectors = '<?php print $data_collectors;?>';
 
 	$(function() {
 		$('.subTab').find('a').click(function(event) {
 			event.preventDefault();
 			strURL = $(this).attr('href');
 			strURL += (strURL.indexOf('?') > 0 ? '&':'?') + 'header=false';
-			loadPageNoHeader(strURL);
+			loadPageNoHeader(strURL, true, false);
 		});
 
 		$('input[value="<?php print __esc('Save');?>"]').click(function(event) {
@@ -494,6 +579,7 @@ default:
 			snmp_security_initialized = false;
 
 			setSNMP();
+
 			$('#snmp_version, #snmp_auth_protocol, #snmp_priv_protocol, #snmp_security_level').change(function() {
 				setSNMP();
 			});
@@ -525,10 +611,21 @@ default:
 				initRRDClean();
 			});
 
+			if (cactiServerOS == 'win32') {
+				$('#row_path_stderrlog').hide();
+			}
+
 			$('#rrd_autoclean_method').change(function() {
 				initRRDClean();
 			});
 		} else if (currentTab == 'boost') {
+			if (dataCollectors > 1) {
+				$('#boost_rrd_update_enable').prop('checked', true);
+				$('#boost_rrd_update_enable').prop('disabled', true);
+				$('#boost_redirect').prop('checked', true);
+				$('#boost_redirect').prop('disabled', true);
+			}
+
 			initBoostOD();
 			initBoostCache();
 
@@ -605,6 +702,8 @@ default:
 	function initBoostOD() {
 		if ($('#boost_rrd_update_enable').is(':checked')){
 			$('#row_boost_rrd_update_interval').show();
+			$('#row_boost_parallel').show();
+			$('#row_path_boost_log').show();
 			$('#row_boost_rrd_update_max_records').show();
 			$('#row_boost_rrd_update_max_records_per_select').show();
 			$('#row_boost_rrd_update_string_length').show();
@@ -613,6 +712,8 @@ default:
 			$('#row_boost_redirect').show();
 		} else {
 			$('#row_boost_rrd_update_interval').hide();
+			$('#row_boost_parallel').hide();
+			$('#row_path_boost_log').hide();
 			$('#row_boost_rrd_update_max_records').hide();
 			$('#row_boost_rrd_update_max_records_per_select').hide();
 			$('#row_boost_rrd_update_string_length').hide();
@@ -775,6 +876,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').hide();
 			$('#row_secpass_minlen').hide();
 			$('#row_secpass_reqmixcase').hide();
@@ -814,6 +918,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -853,6 +960,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').hide();
 			$('#row_secpass_minlen').hide();
 			$('#row_secpass_reqmixcase').hide();
@@ -892,6 +1002,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -931,6 +1044,9 @@ default:
 			$('#row_ldap_search_filter').show();
 			$('#row_ldap_specific_dn').show();
 			$('#row_ldap_specific_password').show();
+			$('#row_cn_header').show();
+			$('#row_cn_full_name').show();
+			$('#row_cn_email').show();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();
@@ -972,6 +1088,9 @@ default:
 			$('#row_ldap_search_filter').hide();
 			$('#row_ldap_specific_dn').hide();
 			$('#row_ldap_specific_password').hide();
+			$('#row_cn_header').hide();
+			$('#row_cn_full_name').hide();
+			$('#row_cn_email').hide();
 			$('#row_secpass_header').show();
 			$('#row_secpass_minlen').show();
 			$('#row_secpass_reqmixcase').show();

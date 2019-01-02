@@ -62,6 +62,10 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$add_label = __('Add');
 	}
 
+	if (defined('CACTI_VERSION_BETA') && $title != '') {
+		$title .= ' [ ' . get_cacti_version_text(false) . ' ]';
+	}
+
 	$table_prefix = basename(get_current_page(), '.php');;
 	if (!isempty_request_var('report')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
@@ -81,7 +85,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 			print "<span class='cactiFilterAdd' title='$add_label'><a class='linkOverDark' href='" . html_escape($add_text) . "'><i class='fa fa-plus'></i></a></span>";
 		} else {
 			if (is_array($add_text)) {
-				if (sizeof($add_text)) {
+				if (cacti_sizeof($add_text)) {
 					foreach($add_text as $icon) {
 						if (isset($icon['callback']) && $icon['callback'] === true) {
 							$classo = 'linkOverDark';
@@ -150,6 +154,88 @@ function html_end_box($trailing_br = true, $div = false) {
 	}
 }
 
+/* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
+function html_graph_template_multiselect() {
+	?>
+	var msWidth = 100;
+	var maxWidth = 200;
+	$('#graph_template_id option').each(function() {
+		if ($(this).textWidth() > msWidth) {
+			msWidth = $(this).textWidth();
+			if (msWidth > maxWidth) {
+				msWidth = maxWidth;
+			}
+		}
+
+		$('#graph_template_id').css('width', msWidth+120+'px');
+	});
+
+	$('#graph_template_id').hide().multiselect({
+		height: 300,
+		menuWidth: 420,
+		buttonWidth: 420,
+		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
+		selectedText: function(numChecked, numTotal, checkedItems) {
+			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
+			$.each(checkedItems, function(index, value) {
+				if (value.value == '-1') {
+					myReturn='<?php print __('All Graphs & Templates');?>';
+					return false;
+				} else if (value.value == '0') {
+					myReturn='<?php print __('Not Templated');?>';
+					return false;
+				}
+			});
+			return myReturn;
+		},
+		checkAllText: '<?php print __('All');?>',
+		uncheckAllText: '<?php print __('None');?>',
+		uncheckall: function() {
+			$(this).multiselect('widget').find(':checkbox:first').each(function() {
+				$(this).prop('checked', true);
+			});
+		},
+		close: function(event, ui) {
+			applyGraphFilter();
+		},
+		open: function(event, ui) {
+			$("input[type='search']:first").focus();
+		},
+		click: function(event, ui) {
+			checked=$(this).multiselect('widget').find('input:checked').length;
+
+			if (ui.value == -1 || ui.value == 0) {
+				if (ui.checked == true) {
+					$('#graph_template_id').multiselect('uncheckAll');
+					if (ui.value == -1) {
+						$(this).multiselect('widget').find(':checkbox:first').prop('checked', true);
+					} else {
+						$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', true);
+					}
+				}
+			} else if (checked == 0) {
+				$(this).multiselect('widget').find(':checkbox:first').each(function() {
+					$(this).click();
+				});
+			} else if ($(this).multiselect('widget').find('input:checked:first').val() == '-1') {
+				if (checked > 0) {
+					$(this).multiselect('widget').find(':checkbox:first').each(function() {
+						$(this).click();
+						$(this).prop('disable', true);
+					});
+				}
+			} else {
+				$(this).multiselect('widget').find(':checkbox[value="0"]').prop('checked', false);
+			}
+		}
+	}).multiselectfilter({
+		label: '<?php print __('Search');?>',
+		placeholder: '<?php print __('Enter keyword');?>',
+		width: msWidth
+	});
+	<?php
+}
+
 /* html_graph_area - draws an area the contains full sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
      array, the following two keys must exist
@@ -163,7 +249,7 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -171,9 +257,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -239,7 +325,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 	global $config;
 	$i = 0; $k = 0; $j = 0;
 
-	$num_graphs = sizeof($graph_array);
+	$num_graphs = cacti_sizeof($graph_array);
 
 	if ($columns == 0) {
 		$columns = read_user_setting('num_columns');
@@ -247,9 +333,9 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 	?>
 	<script type='text/javascript'>
-	var refreshMSeconds=<?php print read_user_setting('page_refresh')*1000;?>;
-	var graph_start=<?php print get_current_graph_start();?>;
-	var graph_end=<?php print get_current_graph_end();?>;
+	var refreshMSeconds = <?php print read_user_setting('page_refresh')*1000;?>;
+	var graph_start     = <?php print get_current_graph_start();?>;
+	var graph_end       = <?php print get_current_graph_end();?>;
 	</script>
 	<?php
 
@@ -347,6 +433,7 @@ function html_graph_thumbnail_area(&$graph_array, $no_graphs_message = '', $extr
 
 function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	global $config;
+	static $rand = 0;
 
 	$aggregate_url = aggregate_build_children_url($local_graph_id);
 
@@ -355,11 +442,24 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 	print "<a class='iconLink csvexport' href='#' role='link' id='graph_" . $local_graph_id . "_csv'><img class='drillDown' src='" . $config['url_path'] . "images/table_go.png' alt='' title='" . __esc('CSV Export of Graph Data'). "'></a><br>\n";
 	print "<a class='iconLink mrgt' href='#' role='link' id='graph_" . $local_graph_id . "_mrtg'><img class='drillDown' src='" . $config['url_path'] . "images/timeview.png' alt='' title='" . __esc('Time Graph View'). "'></a><br>\n";
 
+	if (is_realm_allowed(3)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id
+			FROM graph_local
+			WHERE id = ?',
+			array($local_graph_id));
+
+		if ($host_id > 0) {
+			print "<a class='iconLink' href='" . html_escape($config['url_path'] . "host.php?action=edit&id=$host_id") . "' data-graph='" . $local_graph_id . "' id='graph_" . $local_graph_id . "_de'><img id='de" . $host_id . '_' . $rand . "' class='drillDown' src='" . $config['url_path'] . "images/server_edit.png' title='" . __esc('Edit Device') . "'></a>";
+			print '<br/>';
+			$rand++;
+		}
+	}
+
 	if (read_config_option('realtime_enabled') == 'on' && is_realm_allowed(25)) {
 		if (read_user_setting('realtime_mode') == '' || read_user_setting('realtime_mode') == '1') {
 			print "<a class='iconLink realtime' href='#' role='link' id='graph_" . $local_graph_id . "_realtime'><img class='drillDown' src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time'). "'></a><br/>\n";
 		} else {
-			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'toolbar=no,menubar=no,resizable=yes,location=no,scrollbars=no,status=no,titlebar=no,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time') . "'></a><br/>\n";
+			print "<a class='iconLink' href='#' onclick=\"window.open('" . $config['url_path'] . 'graph_realtime.php?top=0&left=0&local_graph_id=' . $local_graph_id . "', 'popup_" . $local_graph_id . "', 'directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=yes,width=650,height=300');return false\"><img src='" . $config['url_path'] . "images/chart_curve_go.png' alt='' title='" . __esc('Click to view just this Graph in Real-time') . "'></a><br/>\n";
 		}
 	}
 
@@ -563,15 +663,15 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-up';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-down';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
 			print "<div class='sortinfo' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
@@ -724,11 +824,11 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (strtolower($icon) == 'asc') {
-			$icon = 'fa fa-sort-asc';
+			$icon = 'fa fa-sort-up';
 		} elseif (strtolower($icon) == 'desc') {
-			$icon = 'fa fa-sort-desc';
+			$icon = 'fa fa-sort-down';
 		} else {
-			$icon = 'fa fa-unsorted';
+			$icon = 'fa fa-sort';
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
@@ -767,9 +867,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 				$align = 'left';
 			}
 
-			print "<th class='$nohide $align' " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
+			print "<th class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item['display'] . "</th>\n";
 		} else {
-			print "<th " . ((($i+1) == count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
+			print "<th " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : "") . ">" . $item . "</th>\n";
 		}
 
 		$i++;
@@ -844,7 +944,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach (array_keys($form_data) as $id) {
 				print '<option value="' . html_escape($id) . '"';
 
@@ -856,7 +956,7 @@ function html_create_list($form_data, $column_display, $column_id, $form_previou
 			}
 		}
 	} else {
-		if (sizeof($form_data)) {
+		if (cacti_sizeof($form_data)) {
 			foreach ($form_data as $row) {
 				print "<option value='" . html_escape($row[$column_id]) . "'";
 
@@ -956,7 +1056,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 	$group_counter = 0; $_graph_type_name = ''; $i = 0;
 
-	if (sizeof($item_list)) {
+	if (cacti_sizeof($item_list)) {
 		foreach ($item_list as $item) {
 			/* graph grouping display logic */
 			$this_row_style   = '';
@@ -1049,7 +1149,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 
 			if ($disable_controls == false) {
 				print "<td style='text-align:right;padding-right:10px;'>\n";
-				if ($i != sizeof($item_list)-1) {
+				if ($i != cacti_sizeof($item_list)-1) {
 					print "<a class='moveArrow fa fa-caret-down' title='" . __esc('Move Down'). "' href='" . html_escape("$filename?action=item_movedown&id=" . $item["id"] . "&$url_data") . "'></a>\n";
 				} else {
 					print "<span class='moveArrowNone'></span>\n";
@@ -1061,7 +1161,7 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				}
 				print "</td>\n";
 
-				print "<td style='text-align:right;'><a class='deleteMarker fa fa-remove' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
+				print "<td style='text-align:right;'><a class='deleteMarker fa fa-times' title='" . __esc('Delete') . "' href='" . html_escape("$filename?action=item_remove&id=" . $item["id"] . "&$url_data") . "'></a></td>\n";
 			}
 
 			print "</tr>";
@@ -1079,7 +1179,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* break out the URL and variables */
-	if (!is_array($url_array) || (is_array($url_array) && !sizeof($url_array))) {
+	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
 		if (isset($url_array['query'])) {
 			parse_str($url_array['query'], $url_parts);
@@ -1089,6 +1189,13 @@ function is_menu_pick_active($menu_url) {
 	}
 
 	$menu_array = parse_url($menu_url);
+	if ($menu_array === false) {
+		return false;
+	}
+
+	if (! array_key_exists('path', $menu_array)) {
+		return false;
+	}
 
 	if (basename($url_array['path']) == basename($menu_array['path'])) {
 		if (isset($menu_array['query'])) {
@@ -1125,9 +1232,6 @@ function draw_menu($user_menu = "") {
 		$user_menu = $menu;
 	}
 
-	//print "<pre>";print_r($_SERVER);print "</pre>";
-	//print "<pre>";print_r($user_menu);print "</pre>";exit;
-
 	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu'>\n";
 
 	/* loop through each header */
@@ -1158,15 +1262,14 @@ function draw_menu($user_menu = "") {
 			// Let's give our menu li's a unique id
 			$id = 'menu_' . strtolower(clean_up_name($header_name));
 			if (isset($headers[$id])) {
-				$id .= '_' . $i;
-				$i++;
+				$id .= '_' . $i++;
 			}
 			$headers[$id] = true;
 
 			if (isset($menu_glyphs[$header_name])) {
 				$glyph = '<i class="menu_glyph ' . $menu_glyphs[$header_name] . '"></i>';
 			} else {
-				$glyph = '<i class="menu_glyph fa fa-folder-o"></i>';
+				$glyph = '<i class="menu_glyph fa fa-folder"></i>';
 			}
 
 			print "<li class='menuitem' role='menuitem' aria-haspopup='true' id='$id'><a class='menu_parent active' href='#'>$glyph<span>$header_name</span></a>\n";
@@ -1191,15 +1294,31 @@ function draw_menu($user_menu = "") {
 						}
 
 						foreach ($item_title as $item_sub_url => $item_sub_title) {
-							$item_sub_url = $config['url_path'] . $item_sub_url;
+							if (substr($item_sub_url, 0, 10) == "EXTERNAL::") {
+								$item_sub_external = true;
+								$item_sub_url = substr($item_sub_url, 10);
+							} else {
+								$item_sub_external = false;
+								$item_sub_url = $config['url_path'] . $item_sub_url;
+							}
 
 							/* always draw the first item (parent), only draw the children if we are viewing a page
 							that is contained in the sub-items array */
 							if (($i == 0) || ($draw_sub_items)) {
 								if (is_menu_pick_active($item_sub_url)) {
-									print "<li><a role='menuitem' class='pic selected' href='" . html_escape($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic selected' href='";
+									print html_escape($item_sub_url) . "'";
+									if ($item_sub_external) {
+										print " target='_blank'";
+									}
+									print ">$item_sub_title</a></li>\n";
 								} else {
-									print "<li><a role='menuitem' class='pic' href='" . html_escape($item_sub_url) . "'>$item_sub_title</a></li>\n";
+									print "<li><a role='menuitem' class='pic' href='";
+									print html_escape($item_sub_url) . "'";
+									if ($item_sub_external) {
+										print " target='_blank'";
+									}
+									print ">$item_sub_title</a></li>\n";
 								}
 							}
 
@@ -1209,11 +1328,27 @@ function draw_menu($user_menu = "") {
 				} else {
 					if ($current_realm_id == -1 || is_realm_allowed($current_realm_id) || !isset($user_auth_realm_filenames[$basename])) {
 						/* draw normal (non sub-item) menu item */
-						$item_url = $config['url_path'] . $item_url;
-						if (is_menu_pick_active($item_url)) {
-							print "<li><a role='menuitem' class='pic selected' href='" . html_escape($item_url) . "'>$item_title</a></li>\n";
+						if (substr($item_url, 0, 10) == "EXTERNAL::") {
+							$item_external = true;
+							$item_url = substr($item_url, 10);
 						} else {
-							print "<li><a role='menuitem' class='pic' href='" . html_escape($item_url) . "'>$item_title</a></li>\n";
+							$item_external = false;
+							$item_url = $config['url_path'] . $item_url;
+						}
+						if (is_menu_pick_active($item_url)) {
+							print "<li><a role='menuitem' class='pic selected' href='";
+							print html_escape($item_url) . "'";
+							if ($item_external) {
+								print " target='_blank'";
+							}
+							print ">$item_title</a></li>\n";
+						} else {
+							print "<li><a role='menuitem' class='pic' href='";
+							print html_escape($item_url) . "'";
+							if ($item_external) {
+								print " target='_blank'";
+							}
+							print ">$item_title</a></li>\n";
 						}
 					}
 				}
@@ -1246,7 +1381,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 		<div>
 			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
-			<span class='actionsDropdownButton'><input id='submit' type='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
+			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
@@ -1381,9 +1516,9 @@ function is_console_page($url) {
 		return true;
 	}
 
-	if (sizeof($menu)) {
+	if (cacti_sizeof($menu)) {
 		foreach($menu as $section => $children) {
-			if (sizeof($children)) {
+			if (cacti_sizeof($children)) {
 				foreach($children as $page => $name) {
 					if (basename($page) == $basename) {
 						return true;
@@ -1415,7 +1550,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a <?php print (is_console_page(get_current_page()) ? " id='maintab-anchor" . rand() . "' class='selected'":"");?> href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
+			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":"");?> href="<?php echo $config['url_path']; ?>index.php"><img src="<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif" alt="<?php print __('Console');?>"></a><?php
 		}
 
 		if ($realm_allowed[7]) {
@@ -1424,9 +1559,9 @@ function html_show_tabs_left() {
 			} else {
 				$file = get_current_page();
 				if ($file == "graph_view.php" || $file == "graph.php") {
-					print "<a id='maintab-anchor" . rand() . "' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
+					print "<a id='tab-graphs' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
 				} else {
-					print "<a href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
+					print "<a id='tab-graphs' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
 				}
 			}
 		}
@@ -1436,18 +1571,18 @@ function html_show_tabs_left() {
 				// Don't show reports tabe if not poller 1
 			} else {
 				if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
-					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 				} else {
-					print '<a href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
+					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
 				}
 			}
 		}
 
 		if ($realm_allowed[18] || $realm_allowed[19]) {
 			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
-				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
+				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
 			} else {
-				print '<a href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
+				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';
 			}
 		}
 
@@ -1462,7 +1597,7 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$parsed_url = parse_url($_SERVER['REQUEST_URI']);
@@ -1483,7 +1618,7 @@ function html_show_tabs_left() {
 							}
 						}
 
-						print '<a href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
+						print '<a id="tab-link' . $tab['id'] . '" href="' . $config['url_path'] . 'link.php?id=' . $tab['id'] . '"><img src="' . get_classic_tabimage($tab['title'], $down) . '" alt="' . $tab['title'] . '"></a>';
 					}
 				}
 			}
@@ -1493,8 +1628,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 			array(
 				'title' => __('Console'),
-				'id'	=> 'maintab-anchor-console',
-				'image' => '',
+				'id'	=> 'tab-console',
 				'url'   => $config['url_path'] . 'index.php',
 			);
 		}
@@ -1506,8 +1640,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Graphs'),
-						'id'	=> 'maintab-anchor-graphs',
-						'image' => '',
+						'id'	=> 'tab-graphs',
 						'url'   => $config['url_path'] . 'graph_view.php',
 					);
 			}
@@ -1520,8 +1653,7 @@ function html_show_tabs_left() {
 				$tabs_left[] =
 					array(
 						'title' => __('Reporting'),
-						'id'	=> 'maintab-anchor-reports',
-						'image' => '',
+						'id'	=> 'tab-reports',
 						'url'   => $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php'),
 					);
 			}
@@ -1531,8 +1663,7 @@ function html_show_tabs_left() {
 			$tabs_left[] =
 				array(
 					'title' => __('Logs'),
-					'id'	=> 'maintab-anchor-logs',
-					'image' => '',
+					'id'	=> 'tab-logs',
 					'url'   => $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php'),
 				);
 		}
@@ -1596,14 +1727,13 @@ function html_show_tabs_left() {
 				AND enabled="on"
 				ORDER BY sortorder');
 
-			if (sizeof($external_links)) {
+			if (cacti_sizeof($external_links)) {
 				foreach($external_links as $tab) {
 					if (is_realm_allowed($tab['id']+10000)) {
 						$tabs_left[] =
 							array(
 								'title' => $tab['title'],
-								'id'    => 'maintab-anchor-link' . $tab['id'],
-								'image' => '',
+								'id'    => 'tab-link' . $tab['id'],
 								'url'   => $config['url_path'] . 'link.php?id=' . $tab['id']
 							);
 					}
@@ -1632,16 +1762,25 @@ function html_show_tabs_left() {
 		$i = 0;
 
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
-		foreach($tabs_left as $tab) {
-			print "<li><a id='" . (isset($tab['id']) ? $tab['id'] : 'maintab-anchor-' . $i) . "' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'>" . html_escape($tab['title']) . "</a></li>\n";
 
-			$i++;
+		foreach($tabs_left as $tab) {
+			if (isset($tab['id'])) {
+				$id = $tab['id'];
+			} else {
+				$id = 'anchor' . $i;
+				$i++;
+			}
+
+			print "<li><a id='$id' class='lefttab" . (isset($tab['selected']) ? ' selected':'') . "' href='" . html_escape($tab['url']) . "'><span class='fa glyph_$id'></span><span class='text_$id'>" . html_escape($tab['title']) . "</span></a><a id='menu-$id' class='maintabs-submenu' href='#'><i class='fa fa-angle-down'></i></a></li>\n";
 		}
+
+		print "<li class='ellipsis maintabs-submenu-ellipsis'><a id='menu-ellipsis' class='submenu-ellipsis' href='#'><i class='fa fa-angle-down'></i></a></li>";
+
 		print "</ul></nav></div>\n";
 	}
 }
 
-function html_graph_tabs_right($current_user) {
+function html_graph_tabs_right() {
 	global $config, $tabs_right;
 
 	$theme = get_selected_theme();
@@ -1758,6 +1897,10 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		$call_back .= '()';
 	}
 
+	if ($host_id == '-1' && isset_request_var('host_id')) {
+		$host_id = get_filter_request_var('host_id');
+	}
+
 	if ($theme == 'classic' || !read_config_option('autocomplete_enabled')) {
 		?>
 		<td>
@@ -1765,15 +1908,15 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		</td>
 		<td>
 			<select id='host_id' name='host_id' onChange='<?php print $call_back;?>'>
-				<?php if (!$noany) {?><option value='-1'<?php if (get_request_var('host_id') == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
-				<?php if (!$nonone) {?><option value='0'<?php if (get_request_var('host_id') == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+				<?php if (!$noany) {?><option value='-1'<?php if ($host_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+				<?php if (!$nonone) {?><option value='0'<?php if ($host_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
 				<?php
 
 				$devices = get_allowed_devices($sql_where);
 
-				if (sizeof($devices)) {
+				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if (get_request_var('host_id') == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
+						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . "</option>\n";
 					}
 				}
 				?>
@@ -1782,7 +1925,9 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 		<?php
 	} else {
 		if ($host_id > 0) {
-			$hostname = db_fetch_cell_prepared("SELECT description FROM host WHERE id = ?", array($host_id));
+			$hostname = db_fetch_cell_prepared("SELECT description
+				FROM host WHERE id = ?",
+				array($host_id));
 		} elseif ($host_id == 0) {
 			$hostname = __('None');
 		} else {
@@ -1794,15 +1939,51 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 			<?php print __('Device');?>
 		</td>
 		<td>
-			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-widget ui-state-default ui-corner-all'>
-				<span id='host_click' class='ui-icon ui-icon-triangle-1-s'></span>
-				<input size='28' id='host' value='<?php print html_escape($hostname);?>'>
+			<span id='host_wrapper' style='width:200px;' class='ui-selectmenu-button ui-selectmenu-button-closed ui-corner-all ui-corner-all ui-button ui-widget'>
+				<span id='host_click' class='ui-selectmenu-icon ui-icon ui-icon-triangle-1-s'></span>
+				<span class='ui-select-text'>
+					<input type='text' size='28' id='host' value='<?php print html_escape($hostname);?>'>
+				</span>
 			</span>
 			<input type='hidden' id='host_id' name='host_id' value='<?php print $host_id;?>'>
 			<input type='hidden' id='call_back' value='<?php print $call_back;?>'>
 		</td>
 	<?php
 	}
+}
+
+function html_site_filter($site_id = '-1', $call_back = 'applyFilter', $sql_where = '', $noany = false, $nonone = false) {
+	$theme = get_selected_theme();
+
+	if (strpos($call_back, '()') === false) {
+		$call_back .= '()';
+	}
+
+	if ($site_id == '-1' && isset_request_var('site_id')) {
+		$site_id = get_filter_request_var('site_id');
+	}
+
+	?>
+	<td>
+		<?php print __('Site');?>
+	</td>
+	<td>
+		<select id='site_id' onChange='<?php print $call_back;?>'>
+			<?php if (!$noany) {?><option value='-1'<?php if ($site_id == '-1') {?> selected<?php }?>><?php print __('Any');?></option><?php }?>
+			<?php if (!$nonone) {?><option value='0'<?php if ($site_id == '0') {?> selected<?php }?>><?php print __('None');?></option><?php }?>
+			<?php
+
+			$sites = get_allowed_sites($sql_where);
+
+			if (cacti_sizeof($sites)) {
+				foreach ($sites as $site) {
+					print "<option value='" . $site['id'] . "'"; if ($site_id == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
+				}
+			}
+			?>
+		</select>
+	</td>
+	<?php
 }
 
 function html_spikekill_actions() {
@@ -1846,60 +2027,79 @@ function html_spikekill_setting($name) {
 	return read_user_setting($name, read_config_option($name), true);
 }
 
+function html_spikekill_menu_item($text, $icon = '', $class = '', $id = '', $data_graph = '', $subitem = '') {
+	$output = '<li ';
+
+	if (!empty($id)) {
+		$output .= "id='$id' ";
+	}
+
+	if (!empty($data_graph)) {
+		$output .= "data-graph='$data_graph' ";
+	}
+
+	$output .= 'class=\'' . (empty($class)?'': " $class") . '\'>';
+	$output .= '<span class=\'spikeKillMenuItem\'>';
+	if (!empty($icon)) {
+		$output .= "<i class='$icon'></i>";
+	}
+
+	$output .= "$text</span>";
+
+	if (!empty($subitem)) {
+		$output .= "<ul>$subitem</ul>";
+	}
+
+	$output .= '</li>';
+	return $output;
+}
+
 function html_spikekill_menu($local_graph_id) {
-	$ravgnan  = '<li>' . __('Replacement Method') . '<ul>';
-	$ravgnan .= '<li class="skmethod" id="method_avg"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Average') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_nan"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('NaN\'s') . '</li>';
-	$ravgnan .= '<li class="skmethod" id="method_last"><i ' . (html_spikekill_setting('spikekill_avgnan') == 'last' ? 'class="fa fa-check"':'') . '></i><span></span>' . __('Last Known Good') . '</li>';
-	$ravgnan .= '</ul></li>';
+	$ravgnan1 = html_spikekill_menu_item(__('Average'), html_spikekill_setting('spikekill_avgnan') == 'avg' ? 'fa fa-check':'fa', 'skmethod', 'method_avg');
+	$ravgnan2 = html_spikekill_menu_item(__('NaN\'s'), html_spikekill_setting('spikekill_avgnan') == 'nan' ? 'fa fa-check':'fa', 'skmethod', 'method_nan');
+	$ravgnan3 = html_spikekill_menu_item(__('Last Known Good'), html_spikekill_setting('spikekill_avgnan') == 'last' ? 'fa fa-check':'fa', 'skmethod', 'method_last');
 
-	$rstddev  = '<li>' . __('Standard Deviations') . '<ul>';
+	$ravgnan = html_spikekill_menu_item(__('Replacement Method'), '', '', '', '', $ravgnan1 . $ravgnan2 . $ravgnan3);
+
+	$rstddev = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rstddev .= '<li class="skstddev" id="stddev_' . $i . '"><i ' . (html_spikekill_setting('spikekill_deviations') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%s Standard Deviations', $i) . '</li>';
+		$rstddev .= html_spikekill_menu_item(__('%s Standard Deviations', $i), html_spikekill_setting('spikekill_deviations') == $i ? 'fa fa-check':'fa', 'skstddev', 'stddev_' . $i);
 	}
-	$rstddev .= '</ul></li>';
+	$rstddev  = html_spikekill_menu_item(__('Standard Deviations'), '', '', '', '', $rstddev);
 
-	$rvarpct  = '<li>' . __('Variance Percentage') . '<ul>';
+	$rvarpct = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rvarpct .= '<li class="skvarpct" id="varpct_' . ($i * 100) . '"><i ' . (html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'class="fa fa-check"':'') . '></i><span></span>' . round($i * 100,0) . ' %</li>';
+		$rvarpct .= html_spikekill_menu_item(round($i * 100,0) . ' %', html_spikekill_setting('spikekill_percent') == ($i * 100) ? 'fa fa-check':'fa', 'skvarpct', 'varpct_' . ($i * 100));
 	}
-	$rvarpct .= '</ul></li>';
+	$rvarpct = html_spikekill_menu_item(__('Variance Percentage'), '', '', '', '', $rvarpct);
 
-	$rvarout  = '<li>' . __('Variance Outliers') . '<ul>';
+	$rvarout  = '';
 	for($i = 3; $i <= 10; $i++) {
-		$rvarout .= '<li class="skvarout" id="varout_' . $i . '"><i ' . (html_spikekill_setting('spikekill_outliers') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Outliers', $i) . '</li>';
+		$rvarout .= html_spikekill_menu_item(__('%d Outliers', $i), html_spikekill_setting('spikekill_outliers') == $i ? 'fa fa-check':'fa', 'skvarout', 'varout_' . $i);
 	}
-	$rvarout .= '</ul></li>';
+	$rvarout  = html_spikekill_menu_item(__('Variance Outliers'), '', '', '', '', $rvarout);
 
-	$rkills  = '<li>' . __('Kills Per RRA') . '<ul>';
+	$rkills  = '';
 	for($i = 1; $i <= 10; $i++) {
-		$rkills .= '<li class="skkills" id="kills_' . $i . '"><i ' . (html_spikekill_setting('spikekill_number') == $i ? 'class="fa fa-check"':'') . '></i><span></span>' . __('%d Spikes', $i) . '</li>';
+		$rkills .= html_spikekill_menu_item(__('%d Spikes', $i),html_spikekill_setting('spikekill_number') == $i ? 'fa fa-check':'fa', 'skkills', 'kills_' . $i);
 	}
-	$rkills .= '</ul></li>';
+	$rkills  = html_spikekill_menu_item(__('Kills Per RRA'), '', '', '', '', $rkills);
 
 	?>
 	<div class='spikekillParent' style='display:none;z-index:20;position:absolute;text-align:left;white-space:nowrap;padding-right:2px;'>
 	<ul class='spikekillMenu' style='font-size:1em;'>
-		<li data-graph='<?php print $local_graph_id;?>' class='rstddev'><i class='deviceUp fa fa-support'></i><span></span><?php print __('Remove StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rvariance'><i class='deviceRecovering fa fa-support'></i><span></span><?php print __('Remove Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='routlier'><i class='deviceUnknown fa fa-support'></i><span></span><?php print __('Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='rrangefill'><i class='deviceDown fa fa-support'></i><span></span><?php print __('Float Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dstddev'><i class='deviceUp fa fa-check'></i><span></span><?php print __('Dry Run StdDev');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='dvariance'><i class='deviceRecovering fa fa-check'></i><span></span><?php print __('Dry Run Variance');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='doutlier'><i class='deviceUnknown fa fa-check'></i><span></span><?php print __('Dry Run Gap Fill Range');?></li>
-		<li data-graph='<?php print $local_graph_id;?>' class='drangefill'><i class='deviceDown fa fa-check'></i><span></span><?php print __('Dry Run Float Range');?></li>
-		<li><i class='fa fa-cog'></i><span></span>Settings
-			<ul>
-				<?php print $ravgnan;?>
-				<?php print $rstddev;?>
-				<?php print $rvarpct;?>
-				<?php print $rvarout;?>
-				<?php print $rkills;?>
-			</ul>
-		</li>
-	</ul>
-	</div>
 	<?php
+	print html_spikekill_menu_item(__('Remove StdDev'), 'deviceUp fa fa-life-ring', 'rstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Remove Variance'), 'deviceRecovering fa fa-life-ring', 'rvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Gap Fill Range'), 'deviceUnknown fa fa-life-ring', 'routlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Float Range'), 'deviceDown fa fa-life-ring', 'rrangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Dry Run StdDev'), 'deviceUp fa fa-check', 'dstddev', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Variance'), 'deviceRecovering fa fa-check', 'dvariance', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Gap Fill Range'), 'deviceUnknown fa fa-check', 'doutlier', '',  $local_graph_id);
+	print html_spikekill_menu_item(__('Dry Run Float Range'), 'deviceDown fa fa-check', 'drangefill', '',  $local_graph_id);
+
+	print html_spikekill_menu_item(__('Settings'), 'fa fa-cog', '', '', '', $ravgnan . $rstddev . $rvarpct . $rvarout . $rkills);
 }
 
 function html_spikekill_js() {
@@ -2056,7 +2256,7 @@ function html_spikekill_js() {
 }
 
 function html_common_header($title, $selectedTheme = '') {
-	global $config;
+	global $config, $path2calendar, $path2timepicker;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2070,7 +2270,86 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php echo $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
-	<script type='text/javascript'>var theme='<?php print $selectedTheme;?>';</script>
+	<script type='text/javascript'>
+		var theme='<?php print $selectedTheme;?>';
+		var searchFilter='<?php print __esc('Enter a search term');?>';
+		var searchRFilter='<?php print __esc('Enter a regular expression');?>';
+		var noFileSelected='<?php print __esc('No file selected');?>';
+		var timeGraphView='<?php print __esc('Time Graph View');?>';
+		var filterSettingsSaved='<?php print __esc('Filter Settings Saved');?>';
+		var spikeKillResuls='<?php print __esc('SpikeKill Results');?>';
+		var utilityView='<?php print __esc('Utility View');?>';
+		var realtimeClickOn='<?php print __esc('Click to view just this Graph in Realtime');?>';
+		var realtimeClickOff='<?php print __esc('Click again to take this Graph out of Realtime');?>';
+		var treeView='<?php print __esc('Tree View');?>';
+		var listView='<?php print __esc('List View');?>';
+		var previewView='<?php print __esc('Preview View');?>';
+		var cactiHome='<?php print __esc('Cacti Home');?>';
+		var cactiProjectPage='<?php print __esc('Cacti Project Page');?>';
+		var cactiCommunityForum='<?php print __esc('User Community');?>';
+		var cactiDocumentation='<?php print __esc('Documentation');?>';
+		var reportABug='<?php print __esc('Report a bug');?>';
+		var aboutCacti='<?php print __esc('About Cacti');?>';
+		var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
+		var showHideFilter='<?php print __esc('Click to Show/Hide Filter');?>';
+		var clearFilterTitle='<?php print __esc('Clear Current Filter');?>';
+		var clipboard='<?php print __esc('Clipboard');?>';
+		var clipboardID='<?php print __esc('Clipboard ID');?>';
+		var clipboardNotAvailable='<?php print __esc('Copy operation is unavailable at this time');?>';
+		var clipboardCopyFailed='<?php print __esc('Failed to find data to copy!');?>';
+		var clipboardUpdated='<?php print __esc('Clipboard has been updated');?>';
+		var clipboardNotUpdated='<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
+		var defaultSNMPSecurityLevel='<?php print read_config_option('snmp_security_level');?>';
+		var defaultSNMPAuthProtocol='<?php print read_config_option('snmp_auth_protocol');?>';
+		var defaultSNMPPrivProtocol='<?php print read_config_option('snmp_priv_protocol');?>';
+		var passwordPass='<?php print __esc('Passphrase length meets 8 character minimum');?>';
+		var passwordTooShort='<?php print __esc('Passphrase too short');?>';
+		var passwordMatchTooShort='<?php print __esc('Passphrase matches but too short');?>';
+		var passwordNotMatchTooShort='<?php print __esc('Passphrase too short and not matching');?>';
+		var passwordMatch='<?php print __esc('Passphrases match');?>';
+		var passwordNotMatch='<?php print __esc('Passphrases do not match');?>';
+		var errorOnPage='<?php print __esc('Sorry, we could not process your last action.');?>';
+		var errorNumberPrefix='<?php print __esc('Error:');?>';
+		var errorReasonPrefix='<?php print __esc('Reason:');?>';
+		var errorReasonTitle='<?php print __esc('Action failed');?>';
+		var errorReasonUnexpected='<?php print __esc('The response to the last action was unexpected.');?>';
+		var mixedReasonTitle='<?php print __esc('Some Actions failed');?>';
+		var mixedOnPage='<?php print __esc('Note, we could not process all your actions.  Details are below.');?>';
+		var sessionMessageTitle='<?php print __esc('Operation successful');?>';
+		var sessionMessageSave='<?php print __esc('The Operation was successful.  Details are below.');?>';
+		var sessionMessageOk='<?php print __esc('Ok');?>';
+		var sessionMessagePause='<?php print __esc('Pause');?>';
+		var sessionMessageContinue='<?php print __esc('Continue');?>';
+		var sessionMessageCancel='<?php print __esc('Cancel');?>';
+		var zoom_i18n_zoom_in='<?php print __esc('Zoom In');?>';
+		var zoom_i18n_zoom_out='<?php print __esc('Zoom Out');?>';
+		var zoom_i18n_zoom_out_factor='<?php print __esc('Zoom Out Factor');?>';
+		var zoom_i18n_timestamps='<?php print __esc('Timestamps');?>';
+		var zoom_i18n_zoom_2='<?php print __esc('2x');?>';
+		var zoom_i18n_zoom_4='<?php print __esc('4x');?>';
+		var zoom_i18n_zoom_8='<?php print __esc('8x');?>';
+		var zoom_i18n_zoom_16='<?php print __esc('16x');?>';
+		var zoom_i18n_zoom_32='<?php print __esc('32x');?>';
+		var zoom_i18n_zoom_out_positioning='<?php print __esc('Zoom Out Positioning');?>';
+		var zoom_i18n_mode='<?php print __esc('Zoom Mode');?>';
+		var zoom_i18n_graph='<?php print __esc('Graph');?>';
+		var zoom_i18n_quick='<?php print __esc('Quick');?>';
+		var zoom_i18n_advanced='<?php print __esc('Advanced');?>';
+		var zoom_i18n_newTab='<?php print __esc('Open in new tab');?>';
+		var zoom_i18n_save_graph='<?php print __esc('Save graph');?>';
+		var zoom_i18n_copy_graph='<?php print __esc('Copy graph');?>';
+		var zoom_i18n_copy_graph_link='<?php print __esc('Copy graph link');?>';
+		var zoom_i18n_on='<?php print __esc('Always On');?>';
+		var zoom_i18n_auto='<?php print __esc('Auto');?>';
+		var zoom_i18n_off='<?php print __esc('Always Off');?>';
+		var zoom_i18n_begin='<?php print __esc('Begin with');?>';
+		var zoom_i18n_center='<?php print __esc('Center');?>';
+		var zoom_i18n_end='<?php print __esc('End with');?>';
+		var zoom_i18n_disabled='<?php print __esc('Disabled');?>';
+		var zoom_i18n_close='<?php print __esc('Close');?>';
+		var zoom_i18n_settings='<?php print __esc('Settings');?>';
+		var zoom_i18n_3rd_button='<?php print __esc('3rd Mouse Button');?>';
+	</script>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
 	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php
@@ -2082,11 +2361,11 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
-	print get_md5_include_css('include/fa/css/font-awesome.css');
+	print get_md5_include_css('include/fa/css/fontawesome.css');
+	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
 	print get_md5_include_js('include/js/screenfull.js');
 	print get_md5_include_js('include/js/jquery.js');
-	print get_md5_include_js('include/js/jquery-migrate.js');
 	print get_md5_include_js('include/js/jquery-ui.js');
 	print get_md5_include_js('include/js/jquery.ui.touch.punch.js');
 	print get_md5_include_js('include/js/jquery.cookie.js');
@@ -2112,6 +2391,15 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/realtime.js');
 	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
+
+	if (isset($path2calendar) && file_exists($path2calendar)) {
+		print get_md5_include_js($path2calendar);
+	}
+
+	if (isset($path2timepicker) && file_exists($path2timepicker)) {
+		print get_md5_include_js($path2timepicker);
+	}
+
 	api_plugin_hook('page_head');
 }
 

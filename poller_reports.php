@@ -26,13 +26,15 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/reports.php');
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Reporting Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /** display_help - generic help screen for utilities
@@ -64,21 +66,6 @@ function sig_handler($signo) {
 	}
 }
 
-
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$dir = dirname(__FILE__);
-chdir($dir);
-
-/* include important functions */
-include_once('./include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/reports.php');
-
 global $current_user;
 
 /* process calling arguments */
@@ -88,7 +75,7 @@ array_shift($parms);
 $debug = false;
 $force = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -145,10 +132,10 @@ if (!$force) {
 } else {
 	$reports = db_fetch_assoc("SELECT * FROM reports WHERE enabled='on'");
 }
-reports_log('Cacti Reports reports found: ' . sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
+reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 
 # execute each of those reports
-if (sizeof($reports)) {
+if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($report['user_id']));

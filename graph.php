@@ -45,6 +45,11 @@ api_plugin_hook_function('graph');
 
 include_once('./lib/html_tree.php');
 
+$refresh['seconds'] = read_config_option('page_refresh');
+$refresh['page']    = 'graph.php?local_graph_id=' . get_request_var('local_graph_id') . '&header=false';
+$refresh['logout']  = 'false';
+set_page_refresh($refresh);
+
 top_graph_header();
 
 if (!isset_request_var('rra_id')) {
@@ -105,11 +110,14 @@ case 'view':
 	</tr>
 	<?php
 
-	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height FROM graph_templates_graph WHERE local_graph_id = ?', array(get_request_var('local_graph_id')));
+	$graph = db_fetch_row_prepared('SELECT local_graph_id, width, height
+		FROM graph_templates_graph
+		WHERE local_graph_id = ?',
+		array(get_request_var('local_graph_id')));
 
 	$i = 0;
-	if (sizeof($rras)) {
-		$graph_end   = time();
+	if (cacti_sizeof($rras)) {
+		$graph_end   = time() - 30;
 		foreach ($rras as $rra) {
 			if (!empty($rra['timespan'])) {
 				$graph_start = $graph_end - $rra['timespan'];
@@ -120,7 +128,7 @@ case 'view':
 			$aggregate_url = aggregate_build_children_url(get_request_var('local_graph_id'), $graph_start, $graph_end, $rra['id']);
 			?>
 			<tr class='tableRowGraph'>
-				<td align='center'>
+				<td class='center'>
 					<table>
 						<tr>
 							<td>
@@ -162,12 +170,12 @@ case 'view':
 				itemGraph = itemWrapper;
 			}
 
-			graph_id=itemGraph.attr('graph_id');
-			rra_id=itemGraph.attr('rra_id');
-			graph_height=itemGraph.attr('graph_height');
-			graph_width=itemGraph.attr('graph_width');
-			graph_start=itemGraph.attr('graph_start');
-			graph_end=itemGraph.attr('graph_end');
+			graph_id     = itemGraph.attr('graph_id');
+			rra_id       = itemGraph.attr('rra_id');
+			graph_height = itemGraph.attr('graph_height');
+			graph_width  = itemGraph.attr('graph_width');
+			graph_start  = itemGraph.attr('graph_start');
+			graph_end    = itemGraph.attr('graph_end');
 
 			$.getJSON(urlPath+'graph_json.php?'+
 				'local_graph_id='+graph_id+
@@ -229,7 +237,7 @@ case 'view':
 	}
 
 	$(function() {
-		myGraphLocation='graph';
+		pageAction = 'graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -241,7 +249,7 @@ case 'view':
 case 'zoom':
 	/* find the maximum time span a graph can show */
 	$max_timespan=1;
-	if (sizeof($rras)) {
+	if (cacti_sizeof($rras)) {
 		foreach ($rras as $rra) {
 			if ($rra['steps'] * $rra['rows'] * $rra['rrd_step'] > $max_timespan) {
 				$max_timespan = $rra['steps'] * $rra['rows'] * $rra['rrd_step'];
@@ -325,12 +333,12 @@ case 'zoom':
 		</td>
 	</tr>
 	<tr class='tableRowGraph'>
-		<td align='center'>
+		<td class='center'>
 			<table>
 				<tr>
-					<td align='center'>
+					<td class='center'>
 						<div class='graphWrapper' id='wrapper_<?php print $graph['local_graph_id']?>' rra_id='<?php print $rra['id'];?>' graph_width='<?php print $graph['width'];?>' graph_height='<?php print $graph['height'];?>' title_font_size='<?php print ((read_user_setting('custom_fonts') == 'on') ? read_user_setting('title_size') : read_config_option('title_size'));?>'></div>
-                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span align='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
+                            <?php print (read_user_setting('show_graph_title') == 'on' ? "<span class='center'><strong>" . html_escape($graph['title_cache']) . '</strong></span>' : '');?>
 					</td>
 					<td id='dd<?php print $graph['local_graph_id'];?>' style='vertical-align:top;' class='graphDrillDown noprint'>
 						<a href='#' id='graph_<?php print $graph['local_graph_id'];?>_properties' class='iconLink properties'>
@@ -351,11 +359,11 @@ case 'zoom':
 	</tr>
 	<tr>
 		<td style='display:none;'>
-			<input type='button' name='button_refresh_x' value='<?php print __esc('Refresh');?>' onClick='refreshGraph()'>
-			<input type='textbox' id='date1' value=''>
-			<input type='textbox' id='date2' value=''>
-			<input type='textbox' id='graph_start' value='<?php print $graph_start;?>'>
-			<input type='textbox' id='graph_end' value='<?php print $graph_end;?>'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' name='button_refresh_x' value='<?php print __esc('Refresh');?>' onClick='refreshGraph()'>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='date1' value=''>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='date2' value=''>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='graph_start' value='<?php print $graph_start;?>'>
+			<input type='textbox' class='ui-state-default ui-corner-all' id='graph_end' value='<?php print $graph_end;?>'>
 		</td>
 	</tr>
 	<tr class='odd'>
@@ -493,7 +501,7 @@ case 'zoom':
 	}
 
 	$(function() {
-		myGraphLocation = 'graph';
+		pageAction = 'graph';
 		initializeGraph();
 		$('#navigation').show();
 		$('#navigation_right').show();
@@ -519,7 +527,7 @@ case 'properties':
 	$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 	$graph_data_array['print_source'] = 1;
 
-	print "<table align='center' width='100%' class='cactiTable'<tr><td>\n";
+	print "<table class='center' width='100%' class='cactiTable'<tr><td>\n";
 	print "<table class='cactiTable' width='100%'>\n";
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>" . __('RRDtool Graph Syntax') . "</td></tr>\n";
 	print "<tr><td><pre>\n";

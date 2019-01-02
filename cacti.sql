@@ -240,7 +240,7 @@ CREATE TABLE `automation_graph_rules` (
 -- Dumping data for table `automation_graph_rules`
 --
 
-INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,12,''),(2,'Traffic 64 bit Server Linux',1,12,''),(3,'Disk Space',3,17,'');
+INSERT INTO `automation_graph_rules` VALUES (1,'Traffic 64 bit Server',1,12,'on'),(2,'Traffic 64 bit Server Linux',1,12,'on'),(3,'Disk Space',3,17,'on');
 
 --
 -- Table structure for table `automation_ips`
@@ -277,7 +277,7 @@ CREATE TABLE `automation_match_rule_items` (
 -- Dumping data for table `automation_match_rule_items`
 --
 
-INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.description',14,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic');
+INSERT INTO `automation_match_rule_items` VALUES (1,1,1,1,0,'h.snmp_sysDescr',8,''),(2,1,1,2,1,'h.snmp_version',12,'2'),(3,1,3,1,0,'ht.name',1,'Linux'),(4,2,1,1,0,'ht.name',1,'Linux'),(5,2,1,2,1,'h.snmp_version',12,'2'),(6,2,3,1,0,'ht.name',1,'SNMP'),(7,2,3,2,1,'gt.name',1,'Traffic'),(8,1,1,3,1,'h.snmp_sysDescr',2,'Windows');
 
 --
 -- Table structure for table `automation_networks`
@@ -291,9 +291,14 @@ CREATE TABLE `automation_networks` (
   `subnet_range` varchar(1024) NOT NULL DEFAULT '' COMMENT 'Defined subnet ranges for discovery',
   `dns_servers` varchar(128) NOT NULL DEFAULT '' COMMENT 'DNS Servers to use for name resolution',
   `enabled` char(2) DEFAULT '',
+  `notification_enabled` char(2) DEFAULT '',
+  `notification_email` varchar(255) DEFAULT '',
+  `notification_fromname` varchar(32) DEFAULT '',
+  `notification_fromemail` varchar(128) DEFAULT '',
   `snmp_id` int(10) unsigned DEFAULT NULL,
   `enable_netbios` char(2) DEFAULT '',
   `add_to_cacti` char(2) DEFAULT '',
+  `same_sysname` char(2) DEFAULT '',
   `total_ips` int(10) unsigned DEFAULT '0',
   `up_hosts` int(10) unsigned NOT NULL DEFAULT '0',
   `snmp_hosts` int(10) unsigned NOT NULL DEFAULT '0',
@@ -324,7 +329,7 @@ CREATE TABLE `automation_networks` (
 -- Dumping data for table `automation_networks`
 --
 
-INSERT INTO `automation_networks` VALUES (1,1,1,'Test Network','192.168.1.0/24','','',1,'on','',254,14,8,2,22,400,1,2,10,1200,'2015-05-17 16:15','0000-00-00 00:00:00',2,'4','1,2,6','1,2,3,4,6,7,11,12,14,15,17,19,26,32','','',40.178689002991,'2015-05-19 02:23:22','','on');
+INSERT INTO `automation_networks` VALUES (1,1,0,'Test Network','192.168.1.0/24','','on','','','','',1,'on','on','',254,0,0,1,22,400,1,2,10,1200,'0000-00-00 00:00:00','0000-00-00 00:00:00',2,'4','','','','',0,'0000-00-00 00:00:00','','on');
 
 --
 -- Table structure for table `automation_processes`
@@ -452,17 +457,17 @@ CREATE TABLE `automation_tree_rules` (
 -- Dumping data for table `automation_tree_rules`
 --
 
-INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,0,''),(2,'New Graph',1,0,2,0,'');
+INSERT INTO `automation_tree_rules` VALUES (1,'New Device',1,0,3,1,'on'),(2,'New Graph',1,0,2,1,'');
 
 --
 -- Table structure for table `cdef`
 --
 
 CREATE TABLE cdef (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  hash varchar(32) NOT NULL default '',
-  system mediumint(8) unsigned NOT NULL DEFAULT '0',
-  name varchar(255) NOT NULL default '',
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `hash` varchar(32) NOT NULL default '',
+  `system` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL default '',
   PRIMARY KEY (id),
   KEY `hash` (`hash`),
   KEY `name` (`name`(171))
@@ -1240,6 +1245,29 @@ CREATE TABLE data_local (
 --
 
 --
+-- Table structure for table `data_debug`
+--
+
+CREATE TABLE `data_debug` (
+  `id` int(11) unsigned NOT NULL auto_increment,
+  `started` int(11) NOT NULL default '0',
+  `done` int(11) NOT NULL default '0',
+  `user` int(11) NOT NULL default '0',
+  `datasource` int(11) NOT NULL default '0',
+  `info` text NOT NULL default '',
+  `issue` text NOT NULL NULL default '',
+  PRIMARY KEY (`id`),
+  KEY `user` (`user`),
+  KEY `done` (`done`),
+  KEY `datasource` (`datasource`),
+  KEY `started` (`started`)
+) ENGINE=InnoDB COMMENT='Datasource Debugger Information';
+
+--
+-- Dumping data for table `data_debug`
+--
+
+--
 -- Table structure for table `data_source_profiles`
 --
 
@@ -1259,8 +1287,9 @@ CREATE TABLE `data_source_profiles` (
 -- Dumping data for table `data_source_profiles`
 --
 
-INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','System Default',300,600,0.5,'on');
-INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','High Collection Rate',30,1200,0.5,'');
+INSERT INTO `data_source_profiles` VALUES (1,'d62c52891f4f9688729a5bc9fad91b18','5 Minute Collection',300,600,0.5,'on');
+INSERT INTO `data_source_profiles` VALUES (2,'c0dd0e46b9ca268e7ed4162d329f9215','30 Second Collection',30,1200,0.5,'');
+INSERT INTO `data_source_profiles` VALUES (3,'66d35da8f75c912ede3dbe901fedcae0','1 Minute Collection',60,600,0.5,'');
 
 --
 -- Table structure for table `data_source_profiles_cf`
@@ -1277,8 +1306,18 @@ CREATE TABLE `data_source_profiles_cf` (
 -- Dumping data for table `data_source_profiles_cf`
 --
 
-INSERT INTO `data_source_profiles_cf` VALUES (1,1),(1,2),(1,3),(1,4);
-INSERT INTO `data_source_profiles_cf` VALUES (2,1),(2,2),(2,3),(2,4);
+INSERT INTO `data_source_profiles_cf` VALUES (1,1);
+INSERT INTO `data_source_profiles_cf` VALUES (1,2);
+INSERT INTO `data_source_profiles_cf` VALUES (1,3);
+INSERT INTO `data_source_profiles_cf` VALUES (1,4);
+INSERT INTO `data_source_profiles_cf` VALUES (2,1);
+INSERT INTO `data_source_profiles_cf` VALUES (2,2);
+INSERT INTO `data_source_profiles_cf` VALUES (2,3);
+INSERT INTO `data_source_profiles_cf` VALUES (2,4);
+INSERT INTO `data_source_profiles_cf` VALUES (3,1);
+INSERT INTO `data_source_profiles_cf` VALUES (3,2);
+INSERT INTO `data_source_profiles_cf` VALUES (3,3);
+INSERT INTO `data_source_profiles_cf` VALUES (3,4);
 
 --
 -- Table structure for table `data_source_profiles_rra`
@@ -1303,10 +1342,14 @@ INSERT INTO `data_source_profiles_rra` VALUES (1,1,'Daily (5 Minute Average)',1,
 INSERT INTO `data_source_profiles_rra` VALUES (2,1,'Weekly (30 Minute Average)',6,700,604800);
 INSERT INTO `data_source_profiles_rra` VALUES (3,1,'Monthly (2 Hour Average)',24,775,2618784);
 INSERT INTO `data_source_profiles_rra` VALUES (4,1,'Yearly (1 Day Average)',288,797,31536000);
-INSERT INTO `data_source_profiles_rra` VALUES (5,2,'30 Second Samples',1,1500,86400);
-INSERT INTO `data_source_profiles_rra` VALUES (6,2,'15 Minute Average',30,1346,604800);
-INSERT INTO `data_source_profiles_rra` VALUES (7,2,'1 Hour Average',120,1445,2618784);
-INSERT INTO `data_source_profiles_rra` VALUES (8,2,'4 Hour Average',480,4380,31536000);
+INSERT INTO `data_source_profiles_rra` VALUES (5,2,'Daily (30 Second Average)',1,1500,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (6,2,'Weekly (15 Minute Average)',30,1346,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (7,2,'Monthly (1 Hour Average)',120,1445,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (8,2,'Yearly (4 Hour Average)',480,4380,31536000);
+INSERT INTO `data_source_profiles_rra` VALUES (9,3,'Daily (1 Minute Average)',1,2900,86400);
+INSERT INTO `data_source_profiles_rra` VALUES (10,3,'Weekly (15 Minute Average)',15,1400,604800);
+INSERT INTO `data_source_profiles_rra` VALUES (11,3,'Monthly (1 Hour Average)',60,1465,2618784);
+INSERT INTO `data_source_profiles_rra` VALUES (12,3,'Yearly (4 Hour Average)',240,4380,31536000);
 
 --
 -- Table structure for table `data_source_purge_action`
@@ -1516,6 +1559,7 @@ CREATE TABLE external_links (
   title varchar(20) NOT NULL default '',
   style varchar(10) NOT NULL DEFAULT '',
   extendedstyle varchar(50) NOT NULL DEFAULT '',
+  refresh int unsigned default NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB COMMENT='Contains external links that are embedded into Cacti';
 
@@ -1739,17 +1783,17 @@ CREATE TABLE graph_templates_item (
 --
 
 CREATE TABLE graph_tree (
-  id smallint(5) unsigned NOT NULL auto_increment,
-  enabled char(2) DEFAULT 'on',
-  locked tinyint(4) DEFAULT '0',
-  locked_date timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  sort_type tinyint(3) unsigned NOT NULL default '1',
-  name varchar(255) NOT NULL default '',
-  sequence int(10) unsigned DEFAULT '1',
-  user_id int(10) unsigned DEFAULT '1',
-  last_modified timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  modified_by int(10) unsigned DEFAULT '1',
-  PRIMARY KEY (id),
+  `id` smallint(5) unsigned NOT NULL auto_increment,
+  `enabled` char(2) DEFAULT 'on',
+  `locked` tinyint(4) DEFAULT '0',
+  `locked_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `sort_type` tinyint(3) unsigned NOT NULL default '1',
+  `name` varchar(255) NOT NULL default '',
+  `sequence` int(10) unsigned DEFAULT '1',
+  `user_id` int(10) unsigned DEFAULT '1',
+  `last_modified` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `modified_by` int(10) unsigned DEFAULT '1',
+  PRIMARY KEY (`id`),
   KEY `sequence` (`sequence`),
   KEY `name` (`name`(171))
 ) ENGINE=InnoDB;
@@ -1774,7 +1818,7 @@ CREATE TABLE graph_tree_items (
   host_id mediumint(8) unsigned NOT NULL DEFAULT '0',
   site_id int unsigned DEFAULT '0',
   host_grouping_type tinyint(3) unsigned NOT NULL DEFAULT '1',
-  sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '1',
+  sort_children_type tinyint(3) unsigned NOT NULL DEFAULT '0',
   graph_regex varchar(60) DEFAULT '',
   host_regex varchar(60) DEFAULT '',
   PRIMARY KEY (`id`),
@@ -1800,6 +1844,7 @@ CREATE TABLE host (
   host_template_id mediumint(8) unsigned NOT NULL default '0',
   description varchar(150) NOT NULL default '',
   hostname varchar(100) default NULL,
+  location varchar(40) default NULL,
   notes text,
   external_id varchar(40) default NULL,
   snmp_community varchar(100) default NULL,
@@ -1826,6 +1871,7 @@ CREATE TABLE host (
   ping_retries int(12) unsigned default '2',
   max_oids int(12) unsigned default '10',
   device_threads tinyint(2) unsigned NOT NULL DEFAULT '1',
+  deleted char(2) default '',
   disabled char(2) default NULL,
   status tinyint(2) NOT NULL default '0',
   status_event_count mediumint(8) unsigned NOT NULL default '0',
@@ -1847,6 +1893,7 @@ CREATE TABLE host (
   KEY external_id (external_id),
   KEY disabled (disabled),
   KEY status (status),
+  KEY site_id_location (site_id, location),
   KEY hostname (hostname),
   KEY poller_id_last_updated (poller_id, last_updated)
 ) ENGINE=InnoDB;
@@ -2035,19 +2082,32 @@ CREATE TABLE `poller` (
   `name` varchar(30) DEFAULT NULL,
   `notes` varchar(1024) DEFAULT '',
   `status` int(10) unsigned NOT NULL DEFAULT '0',
+  `timezone` varchar(40) DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
-  `dbdefault` varchar(20) NOT NULL DEFAULT 'cacti',
-  `dbhost` varchar(64) NOT NULL DEFAULT 'cacti',
+  `dbdefault` varchar(20) NOT NULL DEFAULT '',
+  `dbhost` varchar(64) NOT NULL DEFAULT '',
   `dbuser` varchar(20) NOT NULL DEFAULT '',
   `dbpass` varchar(64) NOT NULL DEFAULT '',
   `dbport` int(10) unsigned DEFAULT '3306',
   `dbssl` char(3) DEFAULT '',
+  `dbsslkey` varchar(255) DEFAULT NULL,
+  `dbsslcert` varchar(255) DEFAULT NULL,
+  `dbsslca` varchar(255) DEFAULT NULL,
   `total_time` double DEFAULT '0',
+  `max_time` double DEFAULT NULL,
+  `min_time` double DEFAULT NULL,
+  `avg_time` double DEFAULT NULL,
+  `total_polls` int(10) unsigned DEFAULT '0',
+  `processes` int(10) unsigned DEFAULT '1',
+  `threads` int(10) unsigned DEFAULT '1',
+  `sync_interval` int(10) unsigned DEFAULT '7200',
   `snmp` mediumint(8) unsigned DEFAULT '0',
   `script` mediumint(8) unsigned DEFAULT '0',
   `server` mediumint(8) unsigned DEFAULT '0',
   `last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_sync` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `requires_sync` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `disabled` (`disabled`)
@@ -2183,7 +2243,7 @@ CREATE TABLE poller_reindex (
   op char(1) NOT NULL default '',
   assert_value varchar(100) NOT NULL default '',
   arg1 varchar(255) NOT NULL default '',
-  PRIMARY KEY (host_id, data_query_id),
+  PRIMARY KEY (host_id, data_query_id, arg1(187)),
   KEY present (present)
 ) ENGINE=InnoDB;
 
@@ -2192,14 +2252,15 @@ CREATE TABLE poller_reindex (
 --
 
 CREATE TABLE poller_resource_cache (
-  id int(10) unsigned NOT NULL AUTO_INCREMENT,
-  resource_type varchar(20) DEFAULT NULL,
-  md5sum varchar(32) DEFAULT NULL,
-  path varchar(191) DEFAULT NULL,
-  update_time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  contents longblob,
-  PRIMARY KEY (id),
-  UNIQUE KEY path (path)
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `resource_type` varchar(20) DEFAULT NULL,
+  `md5sum` varchar(32) DEFAULT NULL,
+  `path` varchar(191) DEFAULT NULL,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `contents` longblob,
+  `attributes` INT unsigned DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `path` (`path`)
 ) ENGINE=InnoDB COMMENT='Caches all scripts, resources files, and plugins';
 
 --
@@ -2290,6 +2351,8 @@ CREATE TABLE settings (
 -- Dumping data for table `settings`
 --
 
+INSERT INTO settings VALUES ('auth_method', 1);
+INSERT INTO settings VALUES ('selected_theme', 'modern');
 
 --
 -- Table structure for table `settings_user`
@@ -2436,35 +2499,35 @@ CREATE TABLE snmp_query_graph_sv (
 --
 
 CREATE TABLE user_auth (
-  id mediumint(8) unsigned NOT NULL auto_increment,
-  username varchar(50) NOT NULL default '0',
-  password varchar(2048) NOT NULL default '',
-  realm mediumint(8) NOT NULL default '0',
-  full_name varchar(100) default '0',
-  email_address varchar(128) NULL,
-  must_change_password char(2) default NULL,
-  password_change char(2) default 'on',
-  show_tree char(2) default 'on',
-  show_list char(2) default 'on',
-  show_preview char(2) NOT NULL default 'on',
-  graph_settings char(2) default NULL,
-  login_opts tinyint(1) NOT NULL default '1',
-  policy_graphs tinyint(1) unsigned NOT NULL default '1',
-  policy_trees tinyint(1) unsigned NOT NULL default '1',
-  policy_hosts tinyint(1) unsigned NOT NULL default '1',
-  policy_graph_templates tinyint(1) unsigned NOT NULL default '1',
-  enabled char(2) NOT NULL DEFAULT 'on',
-  lastchange int(12) NOT NULL DEFAULT '-1',
-  lastlogin int(12) NOT NULL DEFAULT '-1',
-  password_history varchar(4096) NOT NULL DEFAULT '-1',
-  locked varchar(3) NOT NULL DEFAULT '',
-  failed_attempts int(5) NOT NULL DEFAULT '0',
-  lastfail int(12) NOT NULL DEFAULT '0',
-  reset_perms int(12) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (id),
-  KEY username (username),
-  KEY realm (realm),
-  KEY enabled (enabled)
+  `id` mediumint(8) unsigned NOT NULL auto_increment,
+  `username` varchar(50) NOT NULL default '0',
+  `password` varchar(256) NOT NULL default '',
+  `realm` mediumint(8) NOT NULL default '0',
+  `full_name` varchar(100) default '0',
+  `email_address` varchar(128) NULL,
+  `must_change_password` char(2) default NULL,
+  `password_change` char(2) default 'on',
+  `show_tree` char(2) default 'on',
+  `show_list` char(2) default 'on',
+  `show_preview` char(2) NOT NULL default 'on',
+  `graph_settings` char(2) default NULL,
+  `login_opts` tinyint(1) NOT NULL default '1',
+  `policy_graphs` tinyint(1) unsigned NOT NULL default '1',
+  `policy_trees` tinyint(1) unsigned NOT NULL default '1',
+  `policy_hosts` tinyint(1) unsigned NOT NULL default '1',
+  `policy_graph_templates` tinyint(1) unsigned NOT NULL default '1',
+  `enabled` char(2) NOT NULL DEFAULT 'on',
+  `lastchange` int(12) NOT NULL DEFAULT '-1',
+  `lastlogin` int(12) NOT NULL DEFAULT '-1',
+  `password_history` varchar(4096) NOT NULL DEFAULT '-1',
+  `locked` varchar(3) NOT NULL DEFAULT '',
+  `failed_attempts` int(5) NOT NULL DEFAULT '0',
+  `lastfail` int(12) NOT NULL DEFAULT '0',
+  `reset_perms` int(12) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `username` (`username`),
+  KEY `realm` (`realm`),
+  KEY `enabled` (`enabled`)
 ) ENGINE=InnoDB;
 
 --
@@ -2616,11 +2679,16 @@ INSERT INTO user_auth_realm VALUES (15,1);
 INSERT INTO user_auth_realm VALUES (16,1);
 INSERT INTO user_auth_realm VALUES (17,1);
 INSERT INTO user_auth_realm VALUES (18,1);
+INSERT INTO user_auth_realm VALUES (19,1);
 INSERT INTO user_auth_realm VALUES (20,1);
 INSERT INTO user_auth_realm VALUES (21,1);
 INSERT INTO user_auth_realm VALUES (22,1);
 INSERT INTO user_auth_realm VALUES (23,1);
+INSERT INTO user_auth_realm VALUES (24,1);
+INSERT INTO user_auth_realm VALUES (25,1);
+INSERT INTO user_auth_realm VALUES (26,1);
 INSERT INTO user_auth_realm VALUES (101,1);
+INSERT INTO user_auth_realm VALUES (1043,1);
 
 --
 -- Table structure for table `user_log`
@@ -2680,6 +2748,8 @@ CREATE TABLE `user_domains_ldap` (
   `search_filter` varchar(128) NOT NULL,
   `specific_dn` varchar(128) NOT NULL,
   `specific_password` varchar(128) NOT NULL,
+  `cn_full_name` varchar(50) NULL DEFAULT '',
+  `cn_email` varchar (50) NULL DEFAULT '',
   PRIMARY KEY (`domain_id`)
 ) ENGINE=InnoDB COMMENT='Table to Hold Login Domains for LDAP';
 
@@ -2719,6 +2789,7 @@ CREATE TABLE `sites` (
   `timezone` varchar(40) DEFAULT '',
   `latitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
   `longitude` decimal(13,10) NOT NULL DEFAULT '0.0000000000',
+  `zoom` tinyint unsigned default NULL,
   `alternate_id` varchar(30) DEFAULT '',
   `notes` varchar(1024),
   PRIMARY KEY (`id`),
@@ -2733,6 +2804,9 @@ CREATE TABLE `sites` (
 --
 -- Dumping data for table `sites`
 --
+
+INSERT INTO `sites` VALUES (1,'Edge','','','','','','','',0.0000000000,0.0000000000,'','','');
+INSERT INTO `sites` VALUES (2,'Core','','','','','','','',0.0000000000,0.0000000000,'','','');
 
 --
 -- Table structure for table `snmpagent_cache`

@@ -23,6 +23,7 @@
 */
 
 include('./include/auth.php');
+include_once('./lib/poller.php');
 include_once('./lib/utility.php');
 
 /* set default action */
@@ -72,12 +73,12 @@ switch (get_request_var('action')) {
 	case 'ajax_graph_items':
 		$sql_where = '';
 
-		if (get_filter_request_var('host_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.host_id=' . get_request_var('host_id');
+		if (!isempty_request_var('host_id')) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dl.host_id=' . get_filter_request_var('host_id');
 		}
 
-		if (get_filter_request_var('data_template_id') > 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dtd.data_template_id=' . get_request_var('data_template_id');
+		if (!isempty_request_var('data_template_id')) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'dtd.data_template_id=' . get_filter_request_var('data_template_id');
 		}
 
 		get_allowed_ajax_graph_items(true, $sql_where);
@@ -344,9 +345,9 @@ function item_edit() {
 									array(get_request_var('host_id')));
 							}
 
-							if (sizeof($data_templates)) {
+							if (cacti_sizeof($data_templates)) {
 								foreach ($data_templates as $data_template) {
-									print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected':'') . '>' . htmlspecialchars($data_template['name']) . "</option>\n";
+									print "<option value='" . $data_template['id'] . "'" . (get_request_var('data_template_id') == $data_template['id'] ? ' selected':'') . '>' . html_escape($data_template['name']) . "</option>\n";
 								}
 							}
 							?>
@@ -396,7 +397,7 @@ function item_edit() {
 		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
-	$header_label = __('Graph Items [graph: %s]', htmlspecialchars($title));
+	$header_label = __('Graph Items [graph: %s]', html_escape($title));
 
 	form_start('graphs_items.php', 'greph_edit');
 
@@ -499,7 +500,7 @@ function item_edit() {
 	form_hidden_box('_graph_type_id', (!empty($template_item) ? $template_item['graph_type_id'] : '0'), '');
 	form_hidden_box('save_component_item', '1', '');
 	form_hidden_box('invisible_alpha', $form_array['alpha']['value'], 'FF');
-	form_hidden_box('rrdtool_version', read_config_option('rrdtool_version'), '');
+	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
 	html_end_box(true, true);
 

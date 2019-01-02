@@ -44,6 +44,11 @@ $fields_site_edit = array(
 		'default' => __('New Site'),
 		'max_length' => '100'
 	),
+	'spacer1' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Address Information'),
+		'collapsible' => 'true'
+	),
 	'address1' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Address1'),
@@ -107,6 +112,11 @@ $fields_site_edit = array(
 		'id' => '|arg1:timezone|',
 		'value' => '|arg1:timezone|'
 		),
+	'spacer2' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Geolocation Information'),
+		'collapsible' => 'true'
+	),
 	'latitude' => array(
 		'method' => 'textbox',
 		'friendly_name' => __('Latitude'),
@@ -125,9 +135,24 @@ $fields_site_edit = array(
 		'size' => '20',
 		'max_length' => '30'
 	),
+	'zoom' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Zoom'),
+		'description' => __('The default Map Zoom for this Site.  Values can be from 0 to 23. Note that some regions of the planet have a max Zoom of 15.'),
+		'value' => '|arg1:zoom|',
+		'placeholder' => __('0 - 23'),
+		'default' => '12',
+		'size' => '4',
+		'max_length' => '4'
+	),
+	'spacer3' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Additional Information'),
+		'collapsible' => 'true'
+	),
 	'notes' => array(
 		'method' => 'textarea',
-		'friendly_name' => __('Site Notes'),
+		'friendly_name' => __('Notes'),
 		'textarea_rows' => '3',
 		'textarea_cols' => '70',
 		'description' => __('Additional area use for random notes related to this Site.'),
@@ -213,6 +238,7 @@ function form_save() {
 		$save['timezone']     = form_input_validate(get_nfilter_request_var('timezone'), 'timezone', '', true, 3);
 		$save['latitude']     = form_input_validate(get_nfilter_request_var('latitude'), 'latitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
 		$save['longitude']    = form_input_validate(get_nfilter_request_var('longitude'), 'longitude', '^-?[0-9]\d*(\.\d+)?$', true, 3);
+		$save['zoom']         = form_input_validate(get_nfilter_request_var('zoom'), 'zoom', '^[0-9]+$', true, 3);
 		$save['alternate_id'] = form_input_validate(get_nfilter_request_var('alternate_id'), 'alternate_id', '', true, 3);
 		$save['notes']        = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
@@ -266,7 +292,7 @@ function form_actions() {
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
 
-			$site_list .= '<li>' . htmlspecialchars(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
+			$site_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM sites WHERE id = ?', array($matches[1]))) . '</li>';
 			$site_array[$i] = $matches[1];
 
 			$i++;
@@ -279,27 +305,28 @@ function form_actions() {
 
 	html_start_box($site_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($site_array) && sizeof($site_array)) {
+	if (isset($site_array) && cacti_sizeof($site_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', sizeof($site_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Site.  Note, all devices will be disassociated from this site.', 'Click \'Continue\' to delete all following Sites.  Note, all devices will be disassociated from this site.', cacti_sizeof($site_array)) . "</p>
 					<div class='itemlist'><ul>$site_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', sizeof($site_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Site', 'Delete Sites', cacti_sizeof($site_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Site.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: sites.php?header=false');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($site_array) ? serialize($site_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -324,7 +351,7 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', htmlspecialchars($site['name']));
+		$header_label = __('Site [edit: %s]', html_escape($site['name']));
 	} else {
 		$header_label = __('Site [new]');
 	}
@@ -346,7 +373,7 @@ function site_edit() {
 }
 
 function sites() {
-	global $site_actions, $item_rows;
+	global $site_actions, $item_rows, $config;
 
 	/* ================= input validation and session storage ================= */
 	$filters = array(
@@ -398,7 +425,7 @@ function sites() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Sites');?>
@@ -407,9 +434,9 @@ function sites() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -417,8 +444,8 @@ function sites() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 				</tr>
@@ -500,15 +527,16 @@ function sites() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($site_list)) {
+	if (cacti_sizeof($site_list)) {
 		foreach ($site_list as $site) {
+			$devices_url = html_escape($config['url_path'] . 'host.php?reset=1&site_id=' . $site['id']);
 			form_alternate_row('line' . $site['id'], true);
 			form_selectable_cell(filter_value($site['name'], get_request_var('filter'), 'sites.php?action=edit&id=' . $site['id']), $site['id']);
 			form_selectable_cell($site['id'], $site['id'], '', 'right');
-			form_selectable_cell(number_format_i18n($site['hosts'], '-1'), $site['id'], '', 'right');
-			form_selectable_cell($site['city'], $site['id'], '', 'left');
-			form_selectable_cell($site['state'], $site['id'], '', 'left');
-			form_selectable_cell($site['country'], $site['id'], '', 'left');
+			form_selectable_cell('<a class="linkEditMain" href="' . $devices_url . '">' . number_format_i18n($site['hosts'], '-1') . '</a>', $site['id'], '', 'right');
+			form_selectable_ecell($site['city'], $site['id'], '', 'left');
+			form_selectable_ecell($site['state'], $site['id'], '', 'left');
+			form_selectable_ecell($site['country'], $site['id'], '', 'left');
 			form_checkbox_cell($site['name'], $site['id']);
 			form_end_row();
 		}
@@ -518,7 +546,7 @@ function sites() {
 
 	html_end_box(false);
 
-	if (sizeof($site_list)) {
+	if (cacti_sizeof($site_list)) {
 		print $nav;
 	}
 

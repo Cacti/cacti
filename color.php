@@ -113,7 +113,7 @@ function form_save() {
 				$csv_data = file($_FILES['import_file']['tmp_name']);
 				$debug_data = color_import_processor($csv_data);
 
-				if (sizeof($debug_data)) {
+				if (cacti_sizeof($debug_data)) {
 					$_SESSION['import_debug_info'] = $debug_data;
 				}
 
@@ -167,7 +167,7 @@ function form_actions() {
 
 			$color = db_fetch_row_prepared('SELECT name, hex FROM colors WHERE id = ?', array($matches[1]));
 
-			$color_list .= '<li>' . ($color['name'] != '' ? htmlspecialchars($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
+			$color_list .= '<li>' . ($color['name'] != '' ? html_escape($color['name']): __('Unnamed Color')) . ' (<span style="background-color:#' . $color['hex'] . '">' . $color['hex'] . '</span>)</li>';
 			$color_array[$i] = $matches[1];
 
 			$i++;
@@ -180,20 +180,21 @@ function form_actions() {
 
 	html_start_box($color_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($color_array) && sizeof($color_array)) {
+	if (isset($color_array) && cacti_sizeof($color_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 				<td class='textArea' class='odd'>
-					<p>" . __n('Click \'Continue\' to delete the following Color', 'Click \'Continue\' to delete the following Colors', sizeof($color_array)) . "</p>
+					<p>" . __n('Click \'Continue\' to delete the following Color', 'Click \'Continue\' to delete the following Colors', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
 			</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __n('Delete Color', 'Delete Colors', sizeof($color_array)) . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color', 'Delete Colors', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
-		print "<tr><td class='odd'><span class='textError'>" . __('You must select at least one Color.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: color.php?header=false');
+		exit;
 	}
 
 	print "<tr>
@@ -217,7 +218,7 @@ function color_import_processor(&$colors) {
 	$hexcol = 0;
 	$return_array = array();
 
-	if (sizeof($colors)) {
+	if (cacti_sizeof($colors)) {
 		foreach($colors as $color_line) {
 			/* parse line */
 			$line_array = explode(',', $color_line);
@@ -230,7 +231,7 @@ function color_import_processor(&$colors) {
 				$required = 0;
 				$update_suffix = '';
 
-				if (sizeof($line_array)) {
+				if (cacti_sizeof($line_array)) {
 				foreach($line_array as $line_item) {
 					$line_item = trim(str_replace("'", '', $line_item));
 					$line_item = trim(str_replace('"', '', $line_item));
@@ -279,7 +280,7 @@ function color_import_processor(&$colors) {
 			$first_column = true;
 			$sql_where = '';
 
-			if (sizeof($line_array)) {
+			if (cacti_sizeof($line_array)) {
 			foreach($line_array as $line_item) {
 				if (in_array($j, $insert_columns)) {
 					$line_item = trim(str_replace("'", '', $line_item));
@@ -318,7 +319,7 @@ function color_import_processor(&$colors) {
 					/* perform check to see if the row exists */
 					$existing_row = db_fetch_row("SELECT * FROM colors $sql_where");
 
-					if (sizeof($existing_row)) {
+					if (cacti_sizeof($existing_row)) {
 						array_push($return_array,"<strong>INSERT SKIPPED, EXISTING:</strong> $save_value");
 					} else {
 						$sql_execute = 'INSERT INTO colors ' . $save_order .
@@ -351,7 +352,7 @@ function color_import() {
 			<p class='textArea'>" . __('Cacti has imported the following items:') . "</p>
 		</td></tr>\n";
 
-		if (sizeof($_SESSION['import_debug_info'])) {
+		if (cacti_sizeof($_SESSION['import_debug_info'])) {
 			foreach($_SESSION['import_debug_info'] as $import_result) {
 				print "<tr class='even'><td>" . $import_result . "</td></tr>\n";
 			}
@@ -368,7 +369,7 @@ function color_import() {
 		<td width='50%'><font class='textEditTitle'><?php print __('Import Colors from Local File'); ?></font><br>
 			<?php print __('Please specify the location of the CSV file containing your Color information.');?>
 		</td>
-		<td align='left'>
+		<td class='left'>
 			<div>
 				<label class='import_label' for='import_file'><?php print __('Select a File'); ?></label>
 				<input class='import_button' type='file' id='import_file' name='import_file'>
@@ -380,7 +381,7 @@ function color_import() {
 		<td width='50%'><font class='textEditTitle'><?php print __('Overwrite Existing Data?');?></font><br>
 			<?php print __('Should the import process be allowed to overwrite existing data?  Please note, this does not mean delete old rows, only update duplicate rows.');?>
 		</td>
-		<td align='left'>
+		<td class='left'>
 			<input type='checkbox' name='allow_update' id='allow_update'><?php print __('Allow Existing Rows to be Updated?');?>
 		</td><?php
 
@@ -413,7 +414,7 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Colors [edit: %s]', $color['hex']);
+		$header_label = __('Colors [edit: %s]', html_escape($color['hex']));
 	} else {
 		$header_label = __('Colors [new]');
 	}
@@ -529,7 +530,7 @@ function color() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input id='filter' type='text' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Colors');?>
@@ -538,9 +539,9 @@ function color() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
-							if (sizeof($item_rows) > 0) {
+							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . htmlspecialchars($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
 								}
 							}
 							?>
@@ -560,14 +561,14 @@ function color() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
-							<input type='button' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
 						</span>
 					</td>
 					<td>
 						<span>
-							<input type='button' id='import' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Colors');?>'>
-							<input type='button' id='export' value='<?php print __esc('Export');?>' title='<?php print __esc('Export Colors');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='import' value='<?php print __esc('Import');?>' title='<?php print __esc('Import Colors');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='export' value='<?php print __esc('Export');?>' title='<?php print __esc('Export Colors');?>'>
 						</span>
 					</td>
 				</tr>
@@ -707,7 +708,7 @@ function color() {
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
 	$i = 0;
-	if (sizeof($colors)) {
+	if (cacti_sizeof($colors)) {
 		foreach ($colors as $color) {
 			if ($color['graphs'] == 0 && $color['templates'] == 0) {
 				$disabled = false;
@@ -720,7 +721,7 @@ function color() {
 			}
 
 			form_alternate_row('line' . $color['id'], false, $disabled);
-			form_selectable_cell("<a class='linkEditMain' href='" . htmlspecialchars('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
+			form_selectable_cell("<a class='linkEditMain' href='" . html_escape('color.php?action=edit&id=' . $color['id']) . "'>" . $color['hex'] . '</a>', $color['id']);
 			form_selectable_cell(filter_value($color['name'], get_request_var('filter')), $color['id']);
 			form_selectable_cell($color['read_only'] == 'on' ? __('Yes'):__('No'), $color['id']);
 			form_selectable_cell('', $color['id'], '', 'text-align:right;background-color:#' . $color['hex'] . ';min-width:30%');
@@ -736,7 +737,7 @@ function color() {
 
 	html_end_box(false);
 
-	if (sizeof($colors)) {
+	if (cacti_sizeof($colors)) {
 		print $nav;
 	}
 
@@ -784,7 +785,7 @@ function color_export() {
 		GROUP BY rs.id
 		$sql_having");
 
-	if (sizeof($colors)) {
+	if (cacti_sizeof($colors)) {
 		header('Content-type: application/csv');
 		header('Content-Disposition: attachment; filename=colors.csv');
 

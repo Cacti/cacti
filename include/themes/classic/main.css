@@ -57,8 +57,23 @@ fieldset {
 	margin: 0px;
 }
 
+hr.menu {
+	border: 0;
+	height: 1px;
+	background: #333;
+	background-image: linear-gradient(to right, #ccc, #333, #ccc);
+}
+
 .reindex_methods span {
 	font-size: 9px;
+}
+
+.checkboxLabel {
+	display:none;
+}
+
+.realms .checkboxLabel {
+	display: inline !important;
 }
 
 /* links */
@@ -335,6 +350,11 @@ label {
 	white-space: nowrap;
 }
 
+.spikeKillMenuItem {
+	padding-left: 0.5em !important;
+	display: block;
+}
+
 .deviceUp {
 	color: rgba(148, 179, 107, 0.8) !important;
 }
@@ -482,7 +502,6 @@ label {
 }
 
 .menuoptions li a {
-	border-top: 1px solid #CCC;
 	display: block;
 	height: 14px;
 	padding: 4px;
@@ -576,7 +595,7 @@ label {
 }
 
 .treeArea, .treeItemsArea {
-	width: 33%;
+	width: 25%;
 	border: 1px solid #006400;
 	vertical-align: top;
 }
@@ -1080,8 +1099,13 @@ legend {
 	background-color: #E1E1E1;
 }
 
-.cactiTable {
+.cactiBorderWall {
+	border-width: 1px;
+	border-color: #00438C;
+	border-style: solid;
+}
 
+.cactiTable {
 	width: 100%;
 	border-width: 0px;
 	border-color: #00438C;
@@ -1089,6 +1113,26 @@ legend {
 	margin-left:auto;
 	margin-right:auto;
 	display: table;
+}
+
+.cactiInstallLoaderSpinnerTheme {
+	border-top-color:  #00438c !important;
+}
+
+.cactiTableTitleRow {
+	color: white;
+	float: left;
+	line-height: 22px;
+	height: 22px;
+	text-align: left;
+	display: table-column;
+	width: 100%;
+	background-color: #00438C;
+	font-size: 12px;
+}
+
+.cactiInstallTableTitleRow {
+	border-color: #00438C;
 }
 
 .cactiTableTitle {
@@ -1163,10 +1207,6 @@ legend {
 	white-space: nowrap;
 }
 
-.filterTable td span {
-	padding: 0px 2px 0px 0px;
-}
-
 .filterTable label {
 	vertical-align: 10%;
 }
@@ -1187,14 +1227,14 @@ legend {
 	float: left;
 	display: table-column;
 	padding-left: 4px;
-	width: 40%;
+	width: 45%;
 	text-align: left;
 }
 
 .formColumnRight {
 	float: left;
 	display: table-column;
-	width: 58%;
+	width: 45%;
 	text-align: left;
 }
 
@@ -1292,7 +1332,7 @@ legend {
 	.formColumnLeft {
 		float: left;
 		display: table-row;
-		width: 100%;
+		width: 90%;
 		text-align: left;
 	}
 
@@ -1388,13 +1428,21 @@ legend {
 	font-size: 10px;
 }
 
-.tableSubHeaderColumn {
+.tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
 	color: #FFFFFF;
 	font-weight: bold;
 	vertical-align: middle;
 	text-align: left;
 	cursor: pointer;
 	padding: 3px;
+}
+
+.tableSubHeaderColumnCenter {
+	text-align: center;
+}
+
+.tableSubHeaderColumnRight {
+	text-align: right;
 }
 
 .graphSubHeaderColumn {
@@ -1891,10 +1939,27 @@ tr#realtime td:first-child {
 	display: none;
 }
 
-.ui-multiselect {
+.ui-multiselect, .ui-multiselect span {
 	padding: 1px;
 	color: black;
 	font-size: 12px;
+}
+
+.ui-widget {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding: 0.4em;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
+}
+
+.ui-state-default {
+	background: #FFFFFF !important;
+	border: none;
+	font-weight: normal;
+	padding: 2px;
 }
 
 .ui-multiselect-checkboxes span {
@@ -1910,6 +1975,43 @@ tr#realtime td:first-child {
 	width: 100%;
 }
 
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
+.ui-multiselect {
+	padding: 0.4em 1em;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-widget {
+	font-size: unset;
+}
+
 .graphWrapper {
 	position: relative;
+}
+
+.checkboxLabelWanted {
+	display: inline-block;
+}
+
+.right {
+	text-align: right;
+}
+
+td.center > table {
+	margin: 0 auto;
+}
+
+.ui-menu-item-wrapper {
+	white-space: nowrap;
 }

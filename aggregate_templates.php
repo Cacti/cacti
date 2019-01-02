@@ -289,7 +289,7 @@ function aggregate_form_actions() {
 			/* ================= input validation ================= */
 			input_validate_input_number($matches[1]);
 			/* ==================================================== */
-			$aggregate_list .= '<li>' . db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1])) . '</li>';
+			$aggregate_list .= '<li>' . html_escape(db_fetch_cell_prepared('SELECT name FROM aggregate_graph_templates WHERE id = ?', array($matches[1]))) . '</li>';
 			$aggregate_array[] = $matches[1];
 		}
 	}
@@ -300,7 +300,7 @@ function aggregate_form_actions() {
 
 	html_start_box($aggregate_actions[get_nfilter_request_var('drp_action')], '60%', '', '3', 'center', '');
 
-	if (isset($aggregate_array) && sizeof($aggregate_array)) {
+	if (isset($aggregate_array) && cacti_sizeof($aggregate_array)) {
 		if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 			print "<tr>
 					<td class='textArea'>
@@ -309,18 +309,19 @@ function aggregate_form_actions() {
 					</td>
 				</tr>\n";
 
-			$save_html = "<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Color Template(s)') . "'>";
 		}
 	} else {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Aggregate Graph Template.') . "</span></td></tr>\n";
-		$save_html = "<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+		raise_message(40);
+		header('Location: aggregate_templates.php?header=false');
+		exit;
 	}
 
 	print "<tr>
 		<td class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($aggregate_array) ? serialize($aggregate_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
 	</tr>\n";
@@ -348,7 +349,7 @@ function aggregate_template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Aggregate Template [edit: %s]', $template['name']);
+		$header_label = __('Aggregate Template [edit: %s]', html_escape($template['name']));
 	} else {
 		$header_label = __('Aggregate Template [new]');
 	}
@@ -410,6 +411,9 @@ function aggregate_template_edit() {
 			$('#save_component_template').parent().next('table').css('display', 'none');
 		} else {
 			$('#graph_template_id').prop('disabled', true);
+			if ($('#graph_template_id').selectmenu('instance') !== undefined) {
+				$('#graph_template_id').selectmenu('disable');
+			}
 		}
 
 		$('#total').change(function() {
@@ -538,7 +542,7 @@ function aggregate_template() {
 						' . __('Search') . '
 					</td>
 					<td>
-						<input type="text" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
+						<input type="text" class="ui-state-default ui-corner-all" id="filter" size="25" value="' . html_escape_request_var('filter') . '">
 					</td>
 					<td>
 						' . __('Templates') . '
@@ -552,7 +556,7 @@ function aggregate_template() {
 	}
 
 	$filter_html .= '>' . __('Default') . '</option>';
-	if (sizeof($item_rows)) {
+	if (cacti_sizeof($item_rows)) {
 		foreach ($item_rows as $key => $value) {
 			$filter_html .= "<option value='" . $key . "'";
 			if (get_request_var("rows") == $key) {
@@ -572,8 +576,8 @@ function aggregate_template() {
 					</td>
 					<td>
 						<span>
-							<input type="button" value="' . __esc('Go') . '" id="refresh">
-							<input type="button" value="' . __esc('Clear') . '" id="clear">
+							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Go') . '" id="refresh">
+							<input type="button" class="ui-button ui-corner-all ui-widget" value="' . __esc('Clear') . '" id="clear">
 						</span>
 					</td>
 				</tr>
@@ -644,7 +648,7 @@ function aggregate_template() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		foreach ($template_list as $template) {
 			if ($template['graphs'] > 0) {
 				$disabled = true;
@@ -654,19 +658,19 @@ function aggregate_template() {
 
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'aggregate_templates.php?action=edit&id=' . $template['id'] . '&page=1'), $template['id']);
-			form_selectable_cell($disabled ? 'No':'Yes', $template['id'], '', 'text-align:right');
-			form_selectable_cell('<a class="linkEditMain" href="' . htmlspecialchars('aggregate_graphs.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'text-align:right;');
+			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('aggregate_graphs.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['graphs'], '-1') . '</a>', $template['id'], '', 'right');
 			form_selectable_cell(filter_value($template['graph_template_name'], get_request_var('filter')), $template['id']);
 			form_checkbox_cell($template['graph_template_name'], $template['id'], $disabled);
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
 
-	if (sizeof($template_list)) {
+	if (cacti_sizeof($template_list)) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}

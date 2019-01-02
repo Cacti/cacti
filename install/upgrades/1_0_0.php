@@ -26,11 +26,11 @@ function upgrade_to_1_0_0() {
 	global $config, $plugins_integrated;
 
 	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
-	if (!sizeof($default_engine)) {
+	if (!cacti_sizeof($default_engine)) {
 		$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
 	}
 
-	if (sizeof($default_engine)) {
+	if (cacti_sizeof($default_engine)) {
 		$engine = $default_engine['Value'];
 	} else {
 		$engine = 'MyISAM';
@@ -122,7 +122,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
 		) ENGINE=MEMORY;');
 
-	db_install_add_column ('data_source_stats_hourly_last', array('name' => 'calculated', 'type' => 'DOUBLE', 'NULL' => true, 'default' => 'NULL', 'after' => 'value'));
+	db_install_add_column('data_source_stats_hourly_last', array('name' => 'calculated', 'type' => 'DOUBLE', 'NULL' => true, 'default' => 'NULL', 'after' => 'value'));
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_monthly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -349,21 +349,21 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine
 		COMMENT='RRD Cleaner File Actions';");
 
-	db_install_add_column ('graph_tree', array('name' => 'enabled', 'type' => 'char(2)', 'default' => 'on', 'after' => 'id'));
-	db_install_add_column ('graph_tree', array('name' => 'locked', 'type' => 'TINYINT', 'default' => 0, 'after' => 'enabled'));
-	db_install_add_column ('graph_tree', array('name' => 'locked_date', 'type' => 'TIMESTAMP', 'default' => '0000-00-00', 'after' => 'locked'));
-	db_install_add_column ('graph_tree', array('name' => 'last_modified', 'type' => 'TIMESTAMP', 'default' => '0000-00-00', 'after' => 'name'));
-	db_install_add_column ('graph_tree', array('name' => 'user_id', 'type' => 'INT UNSIGNED', 'default' => 1, 'after' => 'name'));
-	db_install_add_column ('graph_tree', array('name' => 'modified_by', 'type' => 'INT UNSIGNED', 'default' => 1));
+	db_install_add_column('graph_tree', array('name' => 'enabled', 'type' => 'char(2)', 'default' => 'on', 'after' => 'id'));
+	db_install_add_column('graph_tree', array('name' => 'locked', 'type' => 'TINYINT', 'default' => 0, 'after' => 'enabled'));
+	db_install_add_column('graph_tree', array('name' => 'locked_date', 'type' => 'TIMESTAMP', 'default' => '0000-00-00', 'after' => 'locked'));
+	db_install_add_column('graph_tree', array('name' => 'last_modified', 'type' => 'TIMESTAMP', 'default' => '0000-00-00', 'after' => 'name'));
+	db_install_add_column('graph_tree', array('name' => 'user_id', 'type' => 'INT UNSIGNED', 'default' => 1, 'after' => 'name'));
+	db_install_add_column('graph_tree', array('name' => 'modified_by', 'type' => 'INT UNSIGNED', 'default' => 1));
 
-	db_install_add_column ('graph_tree_items', array('name' => 'parent', 'type' => 'BIGINT UNSIGNED', 'NULL' => true, 'after' => 'id'));
-	db_install_add_column ('graph_tree_items', array('name' => 'position', 'type' => 'int UNSIGNED', 'NULL' => true, 'after' => 'parent'));
+	db_install_add_column('graph_tree_items', array('name' => 'parent', 'type' => 'BIGINT UNSIGNED', 'NULL' => true, 'after' => 'id'));
+	db_install_add_column('graph_tree_items', array('name' => 'position', 'type' => 'int UNSIGNED', 'NULL' => true, 'after' => 'parent'));
 
 	db_install_execute("ALTER TABLE graph_tree_items MODIFY COLUMN id BIGINT UNSIGNED NOT NULL auto_increment");
 
 	db_install_add_key('graph_tree_items', 'INDEX', 'parent', array('parent'));
 
-	db_install_execute("DROP TABLE IF EXISTS `user_auth_cache`");
+	db_install_drop_table('user_auth_cache');
 	db_install_execute("CREATE TABLE `user_auth_cache` (
 		`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 		`user_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -397,20 +397,19 @@ function upgrade_to_1_0_0() {
 	db_install_execute("ALTER TABLE user_log
 		MODIFY COLUMN time timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'");
 
-
 	// Add secpass fields
-	db_install_add_column ('user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => '-1'));
-	db_install_add_column ('user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
-	db_install_add_column ('user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
-	db_install_add_column ('user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
+	db_install_add_column('user_auth', array('name' => 'lastchange', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
+	db_install_add_column('user_auth', array('name' => 'lastlogin', 'type' => 'int(12)', 'NULL' => false, 'default' => '-1'));
+	db_install_add_column('user_auth', array('name' => 'password_history', 'type' => 'varchar(4096)', 'NULL' => false, 'default' => '-1'));
+	db_install_add_column('user_auth', array('name' => 'locked', 'type' => 'varchar(3)', 'NULL' => false, 'default' => ''));
+	db_install_add_column('user_auth', array('name' => 'failed_attempts', 'type' => 'int(5)', 'NULL' => false, 'default' => '0'));
+	db_install_add_column('user_auth', array('name' => 'lastfail', 'type' => 'int(12)', 'NULL' => false, 'default' => '0'));
 
 	// Convert all trees to new format, but never run more than once
 	if (db_column_exists('graph_tree_items', 'order_key', false)) {
 		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
 
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			foreach($trees as $t) {
 				$tree_items = db_fetch_assoc("SELECT *
 					FROM graph_tree_items
@@ -419,13 +418,13 @@ function upgrade_to_1_0_0() {
 					ORDER BY order_key");
 
 				/* reset the position variable in case we run more than once */
-				db_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
+				db_install_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
 
 				$prev_parent = 0;
 				$prev_id     = 0;
 				$position    = 0;
 
-				if (sizeof($tree_items)) {
+				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items AS $item) {
 						$translated_key = rtrim($item["order_key"], "0\r\n");
 						$missing_len    = strlen($translated_key) % CHARS_PER_TIER;
@@ -447,9 +446,9 @@ function upgrade_to_1_0_0() {
 								WHERE graph_tree_id=" . $item['graph_tree_id'] . "
 								AND parent=" . $parent_id) + 1;
 
-							db_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
+							db_install_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
 						} else {
-							db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
+							db_install_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
 						}
 
 						$prev_parent = $parent_id;
@@ -464,9 +463,9 @@ function upgrade_to_1_0_0() {
 					ORDER BY order_key");
 
 				$position = 0;
-				if (sizeof($tree_items)) {
+				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items as $item) {
-						db_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
+						db_install_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
 						$position++;
 					}
 				}
@@ -480,12 +479,12 @@ function upgrade_to_1_0_0() {
 	/* clog user = 19 */
 	/* dlog admin = 18 */
 	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugin = 'clog'");
-	if (sizeof($realms)) {
+	if (cacti_sizeof($realms)) {
 		foreach($realms as $r) {
 			if ($r['file'] == 'clog.php') {
-				db_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
+				db_install_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
 			} elseif ($r['file'] == 'clog_user.php') {
-				db_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
+				db_install_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
 			}
 		}
 	}
@@ -497,8 +496,8 @@ function upgrade_to_1_0_0() {
 	snmpagent_cache_install();
 
 	// Adding email column for future user
-	db_install_add_column ('user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
-	db_install_add_column ('user_auth', array('name' => 'password_change', 'type' => 'char(2)', 'NULL' => true, 'default' => 'on', 'after' => 'must_change_password'));
+	db_install_add_column('user_auth', array('name' => 'email_address', 'type' => 'varchar(128)', 'NULL' => true, 'after' => 'full_name'));
+	db_install_add_column('user_auth', array('name' => 'password_change', 'type' => 'char(2)', 'NULL' => true, 'default' => 'on', 'after' => 'must_change_password'));
 
 	db_install_drop_table('poller_output_realtime');
 	db_install_execute("CREATE TABLE poller_output_realtime (
@@ -518,7 +517,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("DELETE FROM plugin_hooks WHERE name='realtime'");
 
 	// If we have never install Nectar before, we can simply install
-	if (!sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
+	if (!cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports` (
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -575,32 +574,32 @@ function upgrade_to_1_0_0() {
 		db_install_rename_table('plugin_nectar_items', 'reports_items');
 		db_install_execute("UPDATE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
 
-		db_install_add_column ('reports', array('name' => 'bcc',           'type' => 'TEXT', 'after' => 'email'));
-		db_install_add_column ('reports', array('name' => 'from_name',     'type' => 'VARCHAR(40)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
-		db_install_add_column ('reports', array('name' => 'user_id',       'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'id'));
-		db_install_add_column ('reports', array('name' => 'graph_width',   'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'attachment_type'));
-		db_install_add_column ('reports', array('name' => 'graph_height',  'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_width'));
-		db_install_add_column ('reports', array('name' => 'graph_columns', 'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_height'));
-		db_install_add_column ('reports', array('name' => 'thumbnails',    'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'graph_columns'));
-		db_install_add_column ('reports', array('name' => 'font_size',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '16', 'after' => 'name'));
-		db_install_add_column ('reports', array('name' => 'alignment',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '0', 'after' => 'font_size'));
-		db_install_add_column ('reports', array('name' => 'cformat',       'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'name'));
-		db_install_add_column ('reports', array('name' => 'format_file',   'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'cformat'));
-		db_install_add_column ('reports', array('name' => 'graph_linked',  'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'alignment'));
-		db_install_add_column ('reports', array('name' => 'subject',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
+		db_install_add_column('reports', array('name' => 'bcc',           'type' => 'TEXT', 'after' => 'email'));
+		db_install_add_column('reports', array('name' => 'from_name',     'type' => 'VARCHAR(40)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
+		db_install_add_column('reports', array('name' => 'user_id',       'type' => 'mediumint(8)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'id'));
+		db_install_add_column('reports', array('name' => 'graph_width',   'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'attachment_type'));
+		db_install_add_column('reports', array('name' => 'graph_height',  'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_width'));
+		db_install_add_column('reports', array('name' => 'graph_columns', 'type' => 'smallint(2)',  'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'graph_height'));
+		db_install_add_column('reports', array('name' => 'thumbnails',    'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'graph_columns'));
+		db_install_add_column('reports', array('name' => 'font_size',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '16', 'after' => 'name'));
+		db_install_add_column('reports', array('name' => 'alignment',     'type' => 'smallint(2)',  'NULL' => false, 'default' => '0', 'after' => 'font_size'));
+		db_install_add_column('reports', array('name' => 'cformat',       'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'name'));
+		db_install_add_column('reports', array('name' => 'format_file',   'type' => 'varchar(255)', 'NULL' => false, 'default' => '', 'after' => 'cformat'));
+		db_install_add_column('reports', array('name' => 'graph_linked',  'type' => 'char(2)',      'NULL' => false, 'default' => '', 'after' => 'alignment'));
+		db_install_add_column('reports', array('name' => 'subject',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
 
 		/* plugin_reports_items upgrade */
-		db_install_add_column ('reports_items', array('name' => 'host_template_id',  'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
-		db_install_add_column ('reports_items', array('name' => 'graph_template_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'host_id'));
-		db_install_add_column ('reports_items', array('name' => 'tree_id',           'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
-		db_install_add_column ('reports_items', array('name' => 'branch_id',         'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'tree_id'));
-		db_install_add_column ('reports_items', array('name' => 'tree_cascade',      'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'branch_id'));
-		db_install_add_column ('reports_items', array('name' => 'graph_name_regexp', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '', 'after' => 'tree_cascade'));
+		db_install_add_column('reports_items', array('name' => 'host_template_id',  'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
+		db_install_add_column('reports_items', array('name' => 'graph_template_id', 'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'host_id'));
+		db_install_add_column('reports_items', array('name' => 'tree_id',           'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'item_type'));
+		db_install_add_column('reports_items', array('name' => 'branch_id',         'type' => 'int(10)', 'unsigned' => true, 'NULL' => false, 'default' => '0', 'after' => 'tree_id'));
+		db_install_add_column('reports_items', array('name' => 'tree_cascade',      'type' => 'char(2)', 'NULL' => false, 'default' => '', 'after' => 'branch_id'));
+		db_install_add_column('reports_items', array('name' => 'graph_name_regexp', 'type' => 'varchar(128)', 'NULL' => false, 'default' => '', 'after' => 'tree_cascade'));
 
 
 		/* fix host templates and graph template ids */
 		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
-		if (sizeof($items)) {
+		if (cacti_sizeof($items)) {
 			foreach ($items as $row) {
 				$host = db_fetch_row('SELECT host.*
 					FROM graph_local
@@ -608,14 +607,14 @@ function upgrade_to_1_0_0() {
 					ON (graph_local.host_id=host.id)
 					WHERE graph_local.id=' . $row['local_graph_id']);
 
-				if (sizeof($host)) {
+				if (cacti_sizeof($host)) {
 					$graph_template = db_fetch_cell('SELECT graph_template_id
 						FROM graph_local
 						WHERE id=' . $row['local_graph_id']);
 
-					db_execute('UPDATE reports_items SET 
-						host_id=' . $host['id'] . ', 
-						host_template_id=' . $host['host_template_id'] . ', 
+					db_install_execute('UPDATE reports_items SET
+						host_id=' . $host['id'] . ',
+						host_template_id=' . $host['host_template_id'] . ',
 						graph_template_id=' . $graph_template . '
 						WHERE id=' . $row['id']);
 				}
@@ -623,16 +622,16 @@ function upgrade_to_1_0_0() {
 		}
 	}
 
-	db_install_add_column ('host', array('name' => 'snmp_sysDescr',          'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_timeout'));
-	db_install_add_column ('host', array('name' => 'snmp_sysObjectID',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '',  'after' => 'snmp_sysDescr'));
-	db_install_add_column ('host', array('name' => 'snmp_sysUpTimeInstance', 'type' => 'int',          'NULL' => false, 'default' => '0', 'after' => 'snmp_sysObjectID', 'unsigned' => true));
-	db_install_add_column ('host', array('name' => 'snmp_sysContact',        'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysUpTimeInstance'));
-	db_install_add_column ('host', array('name' => 'snmp_sysName',           'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysContact'));
-	db_install_add_column ('host', array('name' => 'snmp_sysLocation',       'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysName'));
-	db_install_add_column ('host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
+	db_install_add_column('host', array('name' => 'snmp_sysDescr',          'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_timeout'));
+	db_install_add_column('host', array('name' => 'snmp_sysObjectID',       'type' => 'varchar(64)',  'NULL' => false, 'default' => '',  'after' => 'snmp_sysDescr'));
+	db_install_add_column('host', array('name' => 'snmp_sysUpTimeInstance', 'type' => 'int',          'NULL' => false, 'default' => '0', 'after' => 'snmp_sysObjectID', 'unsigned' => true));
+	db_install_add_column('host', array('name' => 'snmp_sysContact',        'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysUpTimeInstance'));
+	db_install_add_column('host', array('name' => 'snmp_sysName',           'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysContact'));
+	db_install_add_column('host', array('name' => 'snmp_sysLocation',       'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysName'));
+	db_install_add_column('host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
 
 	// Add realms to the admin user if it exists
-	if (sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
+	if (cacti_sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
@@ -688,9 +687,9 @@ function upgrade_to_1_0_0() {
 			'(37, 4, 96, 9), (38, 4, 93, 10), (39, 4, 91, 11), (40, 4, 22, 12), (41, 4, 12, 13), (42, 4, 95, 14), (43, 4, 6, 15), (44, 4, 92, 16);';
 
 		# now run all SQL commands
-		if (sizeof($sql)) {
+		if (cacti_sizeof($sql)) {
 			foreach ($sql as $query) {
-				$result = db_execute($query);
+				$result = db_install_execute($query);
 			}
 		$sql = array();
 		}
@@ -844,8 +843,8 @@ function upgrade_to_1_0_0() {
 
 		$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='aggregate'");
 		if (!empty($id)) {
-			db_execute('UPDATE IGNORE user_auth_realm SET realm_id=5 WHERE realm_id=' . (100 + $id));
-			db_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
+			db_install_execute('UPDATE IGNORE user_auth_realm SET realm_id=5 WHERE realm_id=' . (100 + $id));
+			db_install_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
 		}
 
 		db_install_execute("DELETE FROM plugin_config WHERE directory='aggregate'");
@@ -992,9 +991,9 @@ function upgrade_to_1_0_0() {
 	}
 
 	# now run all SQL commands
-	if (sizeof($sql)) {
+	if (cacti_sizeof($sql)) {
 		foreach($sql as $query) {
-			$result = db_execute($query);
+			$result = db_install_execute($query);
 		}
 		$sql = array();
 	}
@@ -1011,15 +1010,16 @@ function upgrade_to_1_0_0() {
 	foreach($autom8_tables as $table) {
 		$new_table = str_replace('plugin_autom8', 'automation', $table);
 
-		if (!db_table_exists($new_table)) {
-			db_install_rename_table ($table, str_replace('plugin_autom8', 'automation', $table));
+		if (db_table_exists($table)) {
+			db_install_execute("DROP TABLE IF EXISTS $new_table");
+			db_install_rename_table($table, str_replace('plugin_autom8', 'automation', $table));
 		}
 	}
 
 	$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='autom8'");
 	if (!empty($id)) {
-		db_execute('UPDATE IGNORE user_auth_realm SET realm_id=23 WHERE realm_id=' . (100 + $id));
-		db_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
+		db_install_execute('UPDATE IGNORE user_auth_realm SET realm_id=23 WHERE realm_id=' . (100 + $id));
+		db_install_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
 	}
 
 	db_install_execute("DELETE FROM plugin_config WHERE directory='autom8'");
@@ -1053,10 +1053,10 @@ function upgrade_to_1_0_0() {
 			db_install_rename_table('plugin_discover_template', 'automation_templates');
 			db_install_execute("ALTER TABLE automation_templates
 				CHANGE COLUMN sysdescr sysDescr VARCHAR(255) DEFAULT ''");
-			db_install_add_column ('automation_templates', array('name' => 'availability_method', 'type' => 'int(10)', 'default' => 2, 'after' => 'host_template'));
-			db_install_add_column ('automation_templates', array('name' => 'sysName', 'type' => 'VARCHAR(255)', 'default' => '', 'after' => 'sysdescr'));
-			db_install_add_column ('automation_templates', array('name' => 'sysOid', 'type' => 'VARCHAR(60)', 'default' => '', 'after' => 'sysname'));
-			db_install_add_column ('automation_templates', array('name' => 'sequence', 'type' => 'INT UNSIGNED', 'default' => 0, 'after' => 'sysoid'));
+			db_install_add_column('automation_templates', array('name' => 'availability_method', 'type' => 'int(10)', 'default' => 2, 'after' => 'host_template'));
+			db_install_add_column('automation_templates', array('name' => 'sysName', 'type' => 'VARCHAR(255)', 'default' => '', 'after' => 'sysdescr'));
+			db_install_add_column('automation_templates', array('name' => 'sysOid', 'type' => 'VARCHAR(60)', 'default' => '', 'after' => 'sysname'));
+			db_install_add_column('automation_templates', array('name' => 'sequence', 'type' => 'INT UNSIGNED', 'default' => 0, 'after' => 'sysoid'));
 			db_install_drop_column('automation_templates', 'tree');
 			db_install_drop_column('automation_templates', 'snmp_version');
 			db_install_execute("UPDATE automation_templates SET sequence=id");
@@ -1216,7 +1216,7 @@ function upgrade_to_1_0_0() {
 		GROUP BY hex
 		HAVING totals > 1');
 
-	if (sizeof($duplicates)) {
+	if (cacti_sizeof($duplicates)) {
 		foreach($duplicates as $duplicate) {
 			$hexes = db_fetch_assoc_prepared('SELECT id, hex
 				FROM colors
@@ -1231,27 +1231,27 @@ function upgrade_to_1_0_0() {
 					$keephex = $hex['id'];
 					$first   = false;
 				} else {
-					db_execute_prepared('UPDATE graph_templates_item
+					db_install_execute('UPDATE graph_templates_item
 						SET color_id = ?
 						WHERE color_id = ?',
 						array($keephex, $hex['id']));
 
 					if (db_table_exists('color_template_items')) {
-						db_execute_prepared('UPDATE color_template_item
+						db_install_execute('UPDATE color_template_item
 							SET color_id = ?
 							WHERE color_id = ?',
 							array($keephex, $hex['id']));
 					}
 
-					db_execute_prepared('DELECT FROM colors WHERE id = ?', array($hex['id']));
+					db_install_execute('DELECT FROM colors WHERE id = ?', array($hex['id']));
 				}
 			}
 		}
 	}
 
 	db_install_add_key('colors', 'UNIQUE INDEX', 'hex', array('hex'));
-	db_install_add_column ('colors', array('name' => 'name', 'type' => 'varchar(40)', 'default' => '', 'after' => 'id'));
-	db_install_add_column ('colors', array('name' => 'read_only', 'type' => 'char(2)', 'default' => '', 'after' => 'hex'));
+	db_install_add_column('colors', array('name' => 'name', 'type' => 'varchar(40)', 'default' => '', 'after' => 'id'));
+	db_install_add_column('colors', array('name' => 'read_only', 'type' => 'char(2)', 'default' => '', 'after' => 'hex'));
 
 	// import remaining colors into database
 	import_colors();
@@ -1264,43 +1264,43 @@ function upgrade_to_1_0_0() {
 
 	db_install_rename_table('settings_graphs', 'settings_user');
 
-	db_install_add_column ('user_auth', array('name' => 'reset_perms', 'type' => 'INT(12) unsigned', 'default' => '0', 'after' => 'lastfail'));
+	db_install_add_column('user_auth', array('name' => 'reset_perms', 'type' => 'INT(12) unsigned', 'default' => '0', 'after' => 'lastfail'));
 
 	rsa_check_keypair();
 
-	db_install_add_column ('graph_templates_item', array('name' => 'vdef_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => 0, 'after' => 'cdef_id'));
-	db_install_add_column ('graph_templates_item', array('name' => 'line_width', 'type' => 'DECIMAL(4,2)', 'default' => 0, 'after' => 'graph_type_id'));
-	db_install_add_column ('graph_templates_item', array('name' => 'dashes', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 'line_width'));
-	db_install_add_column ('graph_templates_item', array('name' => 'dash_offset', 'type' => 'mediumint(4)', 'NULL' => true, 'after' => 'dashes'));
-	db_install_add_column ('graph_templates_item', array('name' => 'shift', 'type' => 'char(2)', 'NULL' => true, 'after' => 'vdef_id'));
-	db_install_add_column ('graph_templates_item', array('name' => 'textalign', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 'consolidation_function_id'));
+	db_install_add_column('graph_templates_item', array('name' => 'vdef_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => 0, 'after' => 'cdef_id'));
+	db_install_add_column('graph_templates_item', array('name' => 'line_width', 'type' => 'DECIMAL(4,2)', 'default' => 0, 'after' => 'graph_type_id'));
+	db_install_add_column('graph_templates_item', array('name' => 'dashes', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 'line_width'));
+	db_install_add_column('graph_templates_item', array('name' => 'dash_offset', 'type' => 'mediumint(4)', 'NULL' => true, 'after' => 'dashes'));
+	db_install_add_column('graph_templates_item', array('name' => 'shift', 'type' => 'char(2)', 'NULL' => true, 'after' => 'vdef_id'));
+	db_install_add_column('graph_templates_item', array('name' => 'textalign', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 'consolidation_function_id'));
 
-	db_install_add_column ('graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_exponent_value'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'alt_y_grid', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_alt_y_grid'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '', 'after' => 'alt_y_grid'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_right_axis'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_label', 'type' => 'varchar(200)', 'NULL' => true, 'after' => 't_right_axis_label'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_label'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_right_axis_format'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_format'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'right_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_right_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'left_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_left_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '', 'after' => 'left_axis_formatter'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'no_gridfit', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_no_gridfit'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '', 'after' => 'no_gridfit'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'unit_length', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_unit_length'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_length'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'default' => '30', 'NULL' => true, 'after' => 't_tab_width'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '', 'after' => 'tab_width'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '', 'after' => 'dynamic_labels'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '', 'after' => 'force_rules_legend'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
-	db_install_add_column ('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '', 'after' => 'legend_position'));
-	db_install_add_column ('graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_exponent_value'));
+	db_install_add_column('graph_templates_graph', array('name' => 'alt_y_grid', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_alt_y_grid'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '', 'after' => 'alt_y_grid'));
+	db_install_add_column('graph_templates_graph', array('name' => 'right_axis', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_right_axis'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis'));
+	db_install_add_column('graph_templates_graph', array('name' => 'right_axis_label', 'type' => 'varchar(200)', 'NULL' => true, 'after' => 't_right_axis_label'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_label'));
+	db_install_add_column('graph_templates_graph', array('name' => 'right_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_right_axis_format'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_format'));
+	db_install_add_column('graph_templates_graph', array('name' => 'right_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_right_axis_formatter'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '', 'after' => 'right_axis_formatter'));
+	db_install_add_column('graph_templates_graph', array('name' => 'left_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_left_axis_formatter'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '', 'after' => 'left_axis_formatter'));
+	db_install_add_column('graph_templates_graph', array('name' => 'no_gridfit', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_no_gridfit'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '', 'after' => 'no_gridfit'));
+	db_install_add_column('graph_templates_graph', array('name' => 'unit_length', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_unit_length'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '', 'after' => 'unit_length'));
+	db_install_add_column('graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'default' => '30', 'NULL' => true, 'after' => 't_tab_width'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '', 'after' => 'tab_width'));
+	db_install_add_column('graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '', 'after' => 'dynamic_labels'));
+	db_install_add_column('graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '', 'after' => 'force_rules_legend'));
+	db_install_add_column('graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
+	db_install_add_column('graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '', 'after' => 'legend_position'));
+	db_install_add_column('graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
 
 	/* create new table sessions */
 	$data = array();
@@ -1341,8 +1341,8 @@ function upgrade_to_1_0_0() {
 	/* add admin permissions */
 	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
 	if (!empty($userid)) {
-	db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
-	db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
+		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
+		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
 	}
 
 	/* fill table VDEF */
@@ -1371,9 +1371,8 @@ function upgrade_to_1_0_0() {
 	db_install_execute("REPLACE INTO `vdef_items` VALUES (14, '11a26f18feba3919be3af426670cba95', 7, 2, 6, '95');");
 	db_install_execute("REPLACE INTO `vdef_items` VALUES (15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '8');");
 
-	db_install_add_column ('data_template_data', array('name' => 't_data_source_profile_id', 'type' => 'CHAR(2)',  'default' => ''));
-	db_install_add_column ('data_template_data', array('name' => 'data_source_profile_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0'));
-
+	db_install_add_column('data_template_data', array('name' => 't_data_source_profile_id', 'type' => 'CHAR(2)',  'default' => ''));
+	db_install_add_column('data_template_data', array('name' => 'data_source_profile_id', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0'));
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles` (
 		`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -1424,7 +1423,7 @@ function upgrade_to_1_0_0() {
 			GROUP BY pattern, rrd_step, rrd_heartbeat, x_files_factor");
 
 		$i = 1;
-		if (sizeof($profiles)) {
+		if (cacti_sizeof($profiles)) {
 			foreach($profiles as $profile) {
 				$pattern = $profile['pattern'];
 
@@ -1474,35 +1473,35 @@ function upgrade_to_1_0_0() {
 	db_install_drop_column('automation_tree_rules', 'rra_id');
 	db_install_drop_column('graph_tree_items', 'rra_id');
 
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '0', 'after' => 'unit_exponent_value'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'alt_y_grid', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_alt_y_grid'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '0', 'after' => 'alt_y_grid'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'right_axis', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_right_axis'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'right_axis_label', 'type' => 'varchar(200)', 'NULL' => true, 'after' => 't_right_axis_label'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_label'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'right_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_right_axis_format'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_format'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'right_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_right_axis_formatter'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_formatter'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'left_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_left_axis_formatter'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '0', 'after' => 'left_axis_formatter'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'no_gridfit', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_no_gridfit'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '0', 'after' => 'no_gridfit'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'unit_length', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_unit_length'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '30', 'after' => 'unit_length'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_tab_width'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '0', 'after' => 'tab_width'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '0', 'after' => 'force_rules_legend'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
-	db_install_add_column ('aggregate_graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_alt_y_grid', 'type' => 'char(2)',  'default' => '0', 'after' => 'unit_exponent_value'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'alt_y_grid', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_alt_y_grid'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_right_axis', 'type' => 'char(2)',  'default' => '0', 'after' => 'alt_y_grid'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'right_axis', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_right_axis'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_right_axis_label', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'right_axis_label', 'type' => 'varchar(200)', 'NULL' => true, 'after' => 't_right_axis_label'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_right_axis_format', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_label'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'right_axis_format', 'type' => 'mediumint(8)', 'NULL' => true, 'after' => 't_right_axis_format'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_right_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_format'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'right_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_right_axis_formatter'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_left_axis_formatter', 'type' => 'char(2)',  'default' => '0', 'after' => 'right_axis_formatter'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'left_axis_formatter', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_left_axis_formatter'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_no_gridfit', 'type' => 'char(2)',  'default' => '0', 'after' => 'left_axis_formatter'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'no_gridfit', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_no_gridfit'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_unit_length', 'type' => 'char(2)',  'default' => '0', 'after' => 'no_gridfit'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'unit_length', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_unit_length'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_tab_width', 'type' => 'char(2)',  'default' => '30', 'after' => 'unit_length'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'tab_width', 'type' => 'varchar(20)', 'NULL' => true, 'after' => 't_tab_width'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_dynamic_labels', 'type' => 'char(2)',  'default' => '0', 'after' => 'tab_width'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'dynamic_labels', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_dynamic_labels'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_force_rules_legend', 'type' => 'char(2)',  'default' => '0', 'after' => 'dynamic_labels'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'force_rules_legend', 'type' => 'char(2)', 'NULL' => true, 'after' => 't_force_rules_legend'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_legend_position', 'type' => 'char(2)',  'default' => '0', 'after' => 'force_rules_legend'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'legend_position', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_position'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
+	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
 
 	// Update Aggregate CDEF's to become system level
-	db_install_add_column ('cdef', array('name' => 'system', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0', 'after' => 'hash'));
+	db_install_add_column('cdef', array('name' => 'system', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0', 'after' => 'hash'));
 	db_install_execute("UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
 
 	// Add some important missing indexes
@@ -1524,7 +1523,7 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine
 		COMMENT='Caches all scripts, resources files, and plugins'");
 
-	db_install_add_column ('host', array('name' => 'poller_id', 'type' => 'INT UNSIGNED', 'default' => '0', 'after' => 'id'));
+	db_install_add_column('host', array('name' => 'poller_id', 'type' => 'INT UNSIGNED', 'default' => '0', 'after' => 'id'));
 	db_install_add_key('host', 'INDEX', 'poller_id', array('poller_id'));
 
 	if (db_table_exists('plugin_spikekill_templates', false)) {
@@ -1538,12 +1537,14 @@ function upgrade_to_1_0_0() {
 
 		db_install_drop_column('external_links', 'imagecache');
 
-		db_install_add_column ('external_links', array('name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 'disabled'));
-		db_install_execute('UPDATE external_links SET enabled="on" WHERE disabled=""');
-		db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
+		db_install_add_column('external_links', array('name' => 'enabled', 'type' => 'CHAR(2)', 'default' => 'on', 'after' => 'disabled'));
+		if (db_column_exists('external_links', 'disabled')) {
+			db_install_execute('UPDATE external_links SET enabled="on" WHERE disabled=""');
+			db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
+			db_install_drop_column('external_links', 'disabled');
+		}
 		db_install_execute('DELETE FROM external_links WHERE style NOT IN ("TAB", "CONSOLE", "FRONT", "FRONTTOP")');
 
-		db_install_drop_column('external_links', 'disabled');
 		db_install_execute('ALTER TABLE external_links
 			MODIFY COLUMN contentfile VARCHAR(255) NOT NULL default "",
 			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
@@ -1591,7 +1592,7 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine
 		COMMENT='Contains information about customer sites';");
 
-	db_install_add_column ('host', array('name' => 'site_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'poller_id'));
+	db_install_add_column('host', array('name' => 'site_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'poller_id'));
 	db_install_execute("ALTER TABLE host MODIFY COLUMN poller_id mediumint(8) unsigned default '1'");
 	db_install_add_key('host', 'INDEX', 'site_id', array('site_id'));
 
@@ -1630,24 +1631,24 @@ function upgrade_to_1_0_0() {
 
 	db_install_execute('ALTER TABLE sessions MODIFY COLUMN data MEDIUMBLOB');
 
-	db_install_add_column ('host', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
-	db_install_add_column ('poller_item', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
-	db_install_add_column ('automation_snmp_items', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
+	db_install_add_column('host', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
+	db_install_add_column('poller_item', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
+	db_install_add_column('automation_snmp_items', array('name' => 'snmp_engine_id', 'type' => 'varchar(30)', 'default' => '', 'after' => 'snmp_context'));
 
 	db_install_execute('ALTER TABLE host MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 	db_install_execute('ALTER TABLE host MODIFY COLUMN site_id int(10) unsigned DEFAULT "1"');
 
 	/* adding columns for remote poller sync */
-	db_install_add_column ('host', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'availability'));
+	db_install_add_column('host', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'availability'));
 	db_install_add_key('host', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_add_column ('host_snmp_cache', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
+	db_install_add_column('host_snmp_cache', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
 	db_install_add_key('host_snmp_cache', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_add_column ('poller_item', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
+	db_install_add_column('poller_item', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'present'));
 	db_install_add_key('poller_item', 'INDEX', 'last_updated', array('last_updated'));
 
-	db_install_add_column ('poller_command', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'command'));
+	db_install_add_column('poller_command', array('name' => 'last_updated', 'type' => 'timestamp', 'default' => 'CURRENT_TIMESTAMP', 'on_update' => 'CURRENT_TIMESTAMP', 'after' => 'command'));
 	db_install_add_key('poller_command', 'INDEX', 'last_updated', array('last_updated'));
 
 	db_install_execute('ALTER TABLE automation_networks MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
@@ -1657,7 +1658,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute('ALTER TABLE poller_time MODIFY COLUMN poller_id int(10) unsigned DEFAULT "1"');
 
 	/* add new column to make data query graphs easier to manage */
-	db_install_add_column ('graph_local', array('name' => 'snmp_query_graph_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'snmp_query_id'));
+	db_install_add_column('graph_local', array('name' => 'snmp_query_graph_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'snmp_query_id'));
 	db_install_add_key('graph_local', 'INDEX', 'snmp_query_graph_id', array('snmp_query_graph_id'));
 
 	/* add the snmp query graph id to graph local */
@@ -1685,39 +1686,11 @@ function upgrade_to_1_0_0() {
 
 	if (!db_column_exists('graph_tree', 'sequence', false)) {
 		/* allow sorting of trees */
-		db_install_add_column ('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
+		db_install_add_column('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
 		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
-		if (sizeof($trees)) {
+		if (cacti_sizeof($trees)) {
 			foreach($trees as $sequence => $tree) {
-				db_execute_prepared('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
-			}
-		}
-	}
-
-	$plugins = array_rekey(
-		db_fetch_assoc('SELECT directory AS plugin, version
-			FROM plugin_config
-			WHERE status IN(1,2)'),
-		'plugin', 'version'
-	);
-
-	if (sizeof($plugins)) {
-		foreach ($plugins as $plugin => $version) {
-			$disable = true;
-			if (is_dir($config['base_path'] . '/plugins/' . $plugin)
-				&& file_exists($config['base_path'] . "/plugins/$plugin/setup.php")
-				&& file_exists($config['base_path'] . "/plugins/$plugin/INFO")
-				&& !in_array($plugin, $plugins_integrated)) {
-					$info = parse_ini_file($config['base_path'] . "/plugins/$plugin/INFO", true);
-					if (isset($info['info']['compat']) && version_compare(CACTI_VERSION, $info['info']['compat']) > -1) {
-						$disable = false;
-					}
-			}
-
-			if ($disable) {
-				cacti_log("Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
-				db_install_add_cache(1, "Disabling $plugin version $version as it is not compatible with Cacti " . CACTI_VERSION);
-				api_plugin_disable_all($plugin);
+				db_install_execute('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
 			}
 		}
 	}

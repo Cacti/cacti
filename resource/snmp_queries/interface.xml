@@ -3,7 +3,7 @@
 	<description>Queries a host for a list of monitorable interfaces</description>
 	<oid_index>.1.3.6.1.2.1.2.2.1.1</oid_index>
 	<oid_num_indexes>.1.3.6.1.2.1.2.1.0</oid_num_indexes>
-	<index_order>ifDescr:ifName:ifHwAddr:ifIndex</index_order>
+	<index_order>ifName:ifDescr:ifHwAddr:ifIndex</index_order>
 	<index_order_type>numeric</index_order_type>
 	<index_title_format>|chosen_order_field|</index_title_format>
 
@@ -39,6 +39,7 @@
 		<ifAlias>
 			<name>Alias (IF-MIB)</name>
 			<method>walk</method>
+			<output_format>ascii</output_format>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.31.1.1.1.18</oid>
@@ -46,6 +47,7 @@
 		<ifType>
 			<name>Type</name>
 			<method>walk</method>
+			<output_format>ascii</output_format>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.3</oid>
@@ -184,19 +186,33 @@
 			<oid>.1.3.6.1.2.1.2.2.1.18</oid>
 		</ifOutNUcastPkts>
 		<ifInUcastPkts>
-			<name>Unicast Packets In</name>
+			<name>Unicast Packets In (Legacy)</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.11</oid>
 		</ifInUcastPkts>
 		<ifOutUcastPkts>
-			<name>Unicast Packets Out</name>
+			<name>Unicast Packets Out (Legacy)</name>
 			<method>walk</method>
 			<source>value</source>
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.17</oid>
 		</ifOutUcastPkts>
+		<ifHCInUcastPkts>
+			<name>Unicast Packets In - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.7</oid>
+		</ifHCInUcastPkts>
+		<ifHCOutUcastPkts>
+			<name>Unicast Packets Out - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.11</oid>
+		</ifHCOutUcastPkts>
 		<ifInMulticastPkts>
 			<name>Multicast Packets In (Legacy)</name>
 			<method>walk</method>
@@ -211,6 +227,20 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.31.1.1.1.4</oid>
 		</ifOutMulticastPkts>
+		<ifHCInMulticastPkts>
+			<name>Multicast Packets In - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.8</oid>
+		</ifHCInMulticastPkts>
+		<ifHCOutMulticastPkts>
+			<name>Multicast Packets Out - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.12</oid>
+		</ifHCOutMulticastPkts>
 		<ifInBroadcastPkts>
 			<name>Broadcast Packets In (Legacy)</name>
 			<method>walk</method>
@@ -225,6 +255,20 @@
 			<direction>output</direction>
 			<oid>.1.3.6.1.2.1.31.1.1.1.5</oid>
 		</ifOutBroadcastPkts>
+		<ifHCInBroadcastPkts>
+			<name>Broadcast Packets In - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.9</oid>
+		</ifHCInBroadcastPkts>
+		<ifHCOutBroadcastPkts>
+			<name>Broadcast Packets Out - 64-bit Counters</name>
+			<method>walk</method>
+			<source>value</source>
+			<direction>output</direction>
+			<oid>.1.3.6.1.2.1.31.1.1.1.13</oid>
+		</ifHCOutBroadcastPkts>
 		<ifInErrors>
 			<name>Errors In</name>
 			<method>walk</method>

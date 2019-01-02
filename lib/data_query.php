@@ -31,8 +31,12 @@ function run_data_query($host_id, $snmp_query_id) {
 	}
 
 	/* don't run/rerun the query if the host is down, or disabled */
-	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id FROM host WHERE id = ?', array($host_id));
-	if (!sizeof($status)) {
+	$status = db_fetch_row_prepared('SELECT status, disabled, poller_id
+		FROM host
+		WHERE id = ?',
+		array($host_id));
+
+	if (!cacti_sizeof($status)) {
 		return false;
 	} elseif ($status['status'] == HOST_DOWN || $status['disabled'] == 'on') {
 		return true;
@@ -59,6 +63,12 @@ function run_data_query($host_id, $snmp_query_id) {
 				$result = $_SESSION['debug_log']['response'];
 				unset($_SESSION['debug_log']['response']);
 
+				automation_execute_data_query($host_id, $snmp_query_id);
+				query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
+
+				api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+				query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
+
 				return $result;
 			}
 		}
@@ -72,16 +82,17 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config['library_path'] . '/api_data_source.php');
 	include_once($config['library_path'] . '/utility.php');
 
-	query_debug_timer_offset('data_query', __('Running data query [%s].', $snmp_query_id));
+	query_debug_timer_offset('data_query', __('Running Data Query [%s].', $snmp_query_id));
 
 	$type_id = db_fetch_cell_prepared('SELECT data_input.type_id
 		FROM snmp_query
 		INNER JOIN data_input
-		ON snmp_query.data_input_id=data_input.id
-		WHERE snmp_query.id = ?', array($snmp_query_id));
+		ON snmp_query.data_input_id = data_input.id
+		WHERE snmp_query.id = ?',
+		array($snmp_query_id));
 
 	if (isset($input_types[$type_id])) {
-		query_debug_timer_offset('data_query', __('Found type = \'%s\' [%s].', $type_id, $input_types[$type_id]));
+		query_debug_timer_offset('data_query', __('Found Type = \'%s\' [%s].', $type_id, $input_types[$type_id]));
 	}
 
 	if ($type_id == DATA_INPUT_TYPE_SNMP_QUERY) {
@@ -103,19 +114,46 @@ function run_data_query($host_id, $snmp_query_id) {
 		if (isset($arguments['result']) && $arguments['result'] !== false) {
 			$result = $arguments['result'];
 		} else {
-			query_debug_timer_offset('data_query', __('Unknown type = \'%s\'.', $type_id));
+			query_debug_timer_offset('data_query', __('Unknown Type = \'%s\'.', $type_id));
 			unset($result);
 		}
 	}
 
+	// If re-indexing fails, don't continue
+	if (!$result) {
+		return false;
+	}
+
+	$old_sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
+
 	/* update the sort cache */
-	update_data_query_sort_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', __('Update data query sort cache complete'));
+	$new_sort_field = update_data_query_sort_cache($host_id, $snmp_query_id);
+
+	if ($new_sort_field === false) {
+		cacti_log('ERROR: Re-Indexing failed due to a NULL sort field for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Can not continue with Re-Index.', false, 'REINDEX');
+		return false;
+	}
+
+	$remap = false;
+	if (query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id)) {
+		if ($old_sort_field != $new_sort_field) {
+			query_debug_timer_offset('data_query', __('WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!'));
+
+			cacti_log('WARNING: Sort Field has Changed for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Old Sort:' . $old_sort_field . ', New Sort:' . $new_sort_field . '.  Re-mapping issues may occur!', false, 'REINDEX');
+
+			$remap = true;
+		}
+	} else {
+		$new_sort_field = $old_sort_field;
+	}
+
+	query_debug_timer_offset('data_query', __('Update Data Query Sort Cache complete'));
 
 	/* recalculate/change sort order */
-	$data_queries = db_fetch_assoc_prepared('SELECT dl.host_id, dl.snmp_query_id,
-		dl.snmp_index, dtd.local_data_id, dtd.data_input_id,
-		did.data_template_data_id, did.data_input_field_id, did.value
+	$local_data = db_fetch_assoc_prepared('SELECT dl.id AS local_data_id, dl.host_id,
+		dl.snmp_query_id, dl.snmp_index,
+		did.data_input_field_id, did.data_template_data_id,
+		did.value AS query_index, "' . $old_sort_field . '" AS sort_field
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id = dtd.local_data_id
@@ -124,51 +162,189 @@ function run_data_query($host_id, $snmp_query_id) {
 		LEFT JOIN data_input_data AS did
 		ON dtd.id = did.data_template_data_id
 		AND dif.id = did.data_input_field_id
-		WHERE dif.type_code = "output_type"
+		WHERE dif.data_name="index_value"
 		AND dl.snmp_query_id = ?
 		AND dl.host_id = ?',
-		array($host_id, $snmp_query_id));
+		array($snmp_query_id, $host_id));
 
-	$bestDataQueryIndexType = get_best_data_query_index_type($host_id, $snmp_query_id);
-	if (sizeof($data_queries)) {
-		foreach ($data_queries as $data_query) {
-			/* build array required for function call */
-			$data_query['snmp_index_on']       = $bestDataQueryIndexType;
+	$changed_ids = array();
+	$removed_ids = array();
+	if (cacti_sizeof($local_data)) {
+		foreach($local_data as $data_source) {
+			// Just in case there is a forced type from the data source page
+			$forced_type = false;
 
-			/* as we request the output_type, 'value' gives the snmp_query_graph_id */
-			$data_query['snmp_query_graph_id'] = $data_query['value'];
-			update_snmp_index_order($data_query);
+			// Check to see if the user had manually set the index type
+			$previous_sort_field = $old_sort_field;
+
+			$previous_did = db_fetch_row_prepared('SELECT did.*
+				FROM data_local AS dl
+				INNER JOIN data_template_data AS dtd
+				ON dl.id = dtd.local_data_id
+				INNER JOIN data_input_fields AS dif
+				ON dtd.data_input_id = dif.data_input_id
+				LEFT JOIN data_input_data AS did
+				ON dtd.id = did.data_template_data_id
+				AND dif.id = did.data_input_field_id
+				WHERE dif.data_name="index_type"
+				AND dl.id = ?',
+				array($data_source['local_data_id']));
+
+			if (cacti_sizeof($previous_did)) {
+				if ($previous_did['value'] != $previous_sort_field) {
+					$forced_type = true;
+					$previous_sort_field = $previous_did['value'];
+				}
+			}
+
+			if (!$forced_type) {
+				// See if the index is in the host cache
+				$current_index = db_fetch_cell_prepared('SELECT snmp_index
+					FROM host_snmp_cache
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND field_name = ?
+					AND field_value = ?',
+					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
+			} else {
+				$current_index = db_fetch_cell_prepared('SELECT value
+					FROM data_input_data AS did
+					INNER JOIN data_input_fields AS dif
+					ON did.data_input_field_id=dif.id
+					INNER JOIN data_template_data AS dtd
+					ON dtd.id=did.data_template_data_id
+					INNER JOIN data_local AS dl
+					ON dl.id=dtd.local_data_id
+					WHERE dl.id = ?
+					AND dl.snmp_query_id = ?
+					AND data_name="index_value"',
+					array($data_source['local_data_id'], $snmp_query_id));
+			}
+
+			if ($remap) {
+				if ($new_sort_field != $previous_sort_field) {
+					$new_field_value = db_fetch_cell_prepared('SELECT field_value
+						FROM host_snmp_cache
+						WHERE host_id = ?
+						AND snmp_query_id = ?
+						AND field_name = ?
+						AND snmp_index = ?',
+						array($host_id, $snmp_query_id, $new_sort_field, $current_index));
+
+					$did_map_data = db_fetch_row_prepared('SELECT value, data_input_field_id, data_template_data_id,
+						host_id, snmp_query_id
+						FROM data_input_data AS did
+						INNER JOIN data_input_fields AS dif
+						ON did.data_input_field_id=dif.id
+						INNER JOIN data_template_data AS dtd
+						ON dtd.id=did.data_template_data_id
+						INNER JOIN data_local AS dl
+						ON dl.id=dtd.local_data_id
+						WHERE value = ?
+						AND dl.id = ?
+						AND dl.snmp_query_id = ?
+						AND data_name="index_type"',
+						array($previous_sort_field, $data_source['local_data_id'], $snmp_query_id));
+				} else {
+					$remap = false;
+				}
+			}
+
+			if ($current_index != '') {
+				// Non blank index found
+				// Check to see if the index changed
+				if ($current_index != $data_source['snmp_index']) {
+					query_debug_timer_offset('data_query', __('Index Change Detected! CurrentIndex: %s, PreviousIndex: %s', $current_index, $data_source['query_index']));
+
+					db_execute_prepared('UPDATE data_local
+						SET snmp_index = ?
+						WHERE id = ?',
+						array($current_index, $data_source['local_data_id']));
+
+					$changed_ids[] = $data_source['local_data_id'];
+				}
+			} elseif ($data_source['snmp_index'] != '' && !$forced_type) {
+				// Found a deleted index, masking off to prevent issues
+				query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
+
+				db_execute_prepared('UPDATE data_local
+					SET snmp_index = ""
+					WHERE id = ?',
+					array($data_source['local_data_id']));
+
+				$removed_ids[] = $data_source['local_data_id'];
+			}
+
+			if ($remap && trim($new_field_value) != '' && $new_sort_field != '') {
+				db_execute_prepared('UPDATE data_input_data
+					SET value = ?
+					WHERE data_input_field_id = ?
+					AND data_template_data_id = ?',
+					array($new_field_value, $data_source['data_input_field_id'], $data_source['data_template_data_id']));
+
+				db_execute_prepared('UPDATE data_input_data
+					SET value = ?
+					WHERE data_input_field_id = ?
+					AND data_template_data_id = ?',
+					array($new_sort_field, $previous_did['data_input_field_id'], $previous_did['data_template_data_id']));
+			}
+		}
+
+		if (cacti_sizeof($changed_ids) || sizeof($removed_ids)) {
+			query_debug_timer_offset('data_query', __('Remapping Graphs to their new Indexes'));
+			data_query_remap_indexes($changed_ids);
+			data_query_remap_indexes($removed_ids);
 		}
 	}
-	query_debug_timer_offset('data_query', __('Updated data query index ordering'));
+
+	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
+
+	update_reindex_cache($host_id, $snmp_query_id);
 
 	/* update the auto reindex cache */
-	update_reindex_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', __('Update re-index cache complete'));
+	if (cacti_sizeof($changed_ids)) {
+		query_debug_timer_offset('data_query', __('Update Re-Index Cache complete. There were ' . sizeof($changed_ids) . ' index changes, and ' . sizeof($removed_ids) . ' removed indexes.'));
 
-	/* update the the 'local' data query cache */
-	update_data_query_cache($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', __('Update data query cache complete'));
+		/* update the poller cache */
+		update_poller_cache_from_query($host_id, $snmp_query_id, $changed_ids);
+		query_debug_timer_offset('data_query', __('Update Poller Cache for Query complete'));
+	} else {
+		query_debug_timer_offset('data_query', __('No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population'));
+	}
 
-	/* update the poller cache */
-	update_poller_cache_from_query($host_id, $snmp_query_id);
-	query_debug_timer_offset('data_query', __('Update poller cache from query complete'));
+	if (cacti_sizeof($removed_ids)) {
+		$poller_ids = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT poller_id
+				FROM poller_item
+				WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')'),
+			'poller_id', 'poller_id'
+		);
+
+		if (cacti_sizeof($poller_ids)) {
+			foreach ($poller_ids as $poller_id) {
+				api_data_source_cache_crc_update($poller_id);
+			}
+		}
+
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE local_data_id IN (' . implode(', ', $removed_ids) . ')');
+	}
 
 	if ($config['poller_id'] == 1) {
 		/* perform any automation on reindex */
 		automation_execute_data_query($host_id, $snmp_query_id);
-		query_debug_timer_offset('data_query', __('Automation execute data query complete'));
+		query_debug_timer_offset('data_query', __('Automation Executing for Data Query complete'));
 
 		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
 		query_debug_timer_offset('data_query', __('Plugin hooks complete'));
-	} else {
-		if ($config['connection'] == 'online') {
-			automation_execute_data_query($host_id, $snmp_query_id);
-			query_debug_timer_offset('data_query', __('Automation execute data query complete'));
+	} elseif ($config['connection'] == 'online') {
+		poller_push_reindex_data_to_main($host_id, $snmp_query_id);
 
-			api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
-			query_debug_timer_offset('data_query', __('Plugin hooks complete'));
-		}
+		automation_execute_data_query($host_id, $snmp_query_id);
+		query_debug_timer_offset('data_query', __('Automation Execution for Data Query complete'));
+
+		api_plugin_hook_function('run_data_query', array('host_id' => $host_id, 'snmp_query_id' => $snmp_query_id));
+		query_debug_timer_offset('data_query', __('Plugin Hooks complete'));
 
 		if (!isset($_SESSION)) {
 			$config['debug_log']['result'] = $result;
@@ -179,11 +355,78 @@ function run_data_query($host_id, $snmp_query_id) {
 
 			kill_session_var('debug_log');
 		}
+	}
+
+	return (isset($result) ? $result : true);
+}
+
+function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id) {
+	if ($new_sort_field == $old_sort_field) {
+		query_debug_timer_offset('data_query', __('Checking for Sort Field change.  No changes detected.'));
 
 		return true;
 	}
 
-	return (isset($result) ? $result : true);
+	query_debug_timer_offset('data_query', __('Detected New Sort Field: \'%s\' Old Sort Field \'%s\'', $new_sort_field, $old_sort_field));
+
+	$new_sort_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND field_name = ?',
+		array($host_id, $snmp_query_id, $new_sort_field));
+
+	$old_sort_count = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND field_name = ?',
+		array($host_id, $snmp_query_id, $old_sort_field));
+
+	if ($new_sort_count < $old_sort_count) {
+		query_debug_timer_offset('data_query', __('ERROR: New Sort Field not suitable.  Sort Field will not change.'));
+
+		/* update the cache */
+		db_execute_prepared('UPDATE host_snmp_query
+			SET sort_field = ?,
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($old_sort_field, $host_id, $data_query_id));
+
+		return false;
+	}
+
+	query_debug_timer_offset('data_query', __('New Sort Field validated.  Sort Field be updated.'));
+
+	return true;
+}
+
+function data_query_remap_indexes($local_data) {
+	if (cacti_sizeof($local_data)) {
+		foreach($local_data as $id) {
+			$index = db_fetch_cell_prepared('SELECT snmp_index
+				FROM data_local
+				WHERE id = ?',
+				array($id));
+
+			$local_graph_ids = array_rekey(
+				db_fetch_assoc_prepared('SELECT DISTINCT gti.local_graph_id
+					FROM graph_templates_item AS gti
+					INNER JOIN data_template_rrd AS dtr
+					ON gti.task_item_id=dtr.id
+					WHERE dtr.local_data_id = ?',
+					array($id)),
+				'local_graph_id', 'local_graph_id'
+			);
+
+			if (cacti_sizeof($local_graph_ids)) {
+				db_execute_prepared('UPDATE graph_local
+					SET snmp_index = ?
+					WHERE id IN(' . implode(', ', $local_graph_ids) . ')',
+					array($index));
+			}
+		}
+	}
 }
 
 function data_query_update_input_method($snmp_query_id, $previous_input_id, $new_input_id = '') {
@@ -201,20 +444,20 @@ function data_query_update_input_method($snmp_query_id, $previous_input_id, $new
 		'data_template_id', 'data_template_id'
 	);
 
-	if (sizeof($data_templates)) {
+	if (cacti_sizeof($data_templates)) {
 		// Look for messed up templates
 		$data_inputs = db_fetch_assoc('SELECT DISTINCT data_input_id
 			FROM data_template_data
 			WHERE data_template_id IN (' . implode(', ', array_keys($data_templates)) . ')');
 
-		if (sizeof($data_inputs) > 1) {
+		if (cacti_sizeof($data_inputs) > 1) {
 			$change_data_input = true;
-		} elseif (sizeof($data_inputs) && $new_input_id != '' && $data_inputs[0]['data_input_id'] != $new_input_id) {
+		} elseif (cacti_sizeof($data_inputs) && $new_input_id != '' && $data_inputs[0]['data_input_id'] != $new_input_id) {
 			$change_data_input = true;
 		}
 
 		if ($change_data_input) {
-			if (sizeof($data_templates)) {
+			if (cacti_sizeof($data_templates)) {
 				db_execute_prepared('UPDATE data_template_data
 					SET data_input_id = ?
 					WHERE data_input_id = ?
@@ -262,7 +505,7 @@ function query_script_host($host_id, $snmp_query_id) {
 	$script_queries = get_data_query_array($snmp_query_id);
 
 	/* invalid xml check */
-	if ((!is_array($script_queries)) || (sizeof($script_queries) == 0)) {
+	if ((!is_array($script_queries)) || (cacti_sizeof($script_queries) == 0)) {
 		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
@@ -280,6 +523,10 @@ function query_script_host($host_id, $snmp_query_id) {
 		return false;
 	}
 
+	// We get the current sort field.  If for some reason the query
+	// fails for this field, or the snmp indexes we will give up.
+	$sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
+
 	/* provide data for arg_num_indexes, if given */
 	if (isset($script_queries['arg_num_indexes'])) {
 		$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_num_indexes'], $script_queries['script_path'], $host_id);
@@ -287,7 +534,14 @@ function query_script_host($host_id, $snmp_query_id) {
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
 
+		// don't continue if there are no indexes
+		if (!sizeof($script_num_index_array)) {
+			query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
+			return false;
+		}
+
 		query_debug_timer_offset('data_query', __('Executing script for num of indexes \'%s\'', $script_path));
+
 		foreach ($script_num_index_array as $element) {
 			query_debug_timer_offset('data_query', __('Found number of indexes: %s' , $element));
 		}
@@ -305,7 +559,12 @@ function query_script_host($host_id, $snmp_query_id) {
 	/* fetch specified index */
 	$script_index_array = exec_into_array($script_path);
 
-	query_debug_timer_offset('data_query', __('Executing script for list of indexes \'%s\', Index Count: %s', $script_path, sizeof($script_index_array)));
+	if (!sizeof($script_index_array)) {
+		query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
+		return false;
+	}
+
+	query_debug_timer_offset('data_query', __('Executing script for list of indexes \'%s\', Index Count: %s', $script_path, cacti_sizeof($script_index_array)));
 
 	debug_log_insert_section_start('data_query', __('Click to show Data Query output for \'index\''), true);
 
@@ -320,23 +579,30 @@ function query_script_host($host_id, $snmp_query_id) {
 
 	foreach ($script_queries['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
+			$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : null;
 			$script_path = get_script_query_path((isset($script_queries['arg_prepend']) ? $script_queries['arg_prepend'] . ' ': '') . $script_queries['arg_query'] . ' ' . $field_array['query_name'], $script_queries['script_path'], $host_id);
 
-			debug_log_insert_section_start('data_query', __('Click to show Data Query output for sfield \'%s\'', $field_name), true);
+			debug_log_insert_section_start('data_query', __('Click to show Data Query output for field \'%s\'', $field_name), true);
 
 			$script_data_array = exec_into_array($script_path);
 
+			if (!cacti_sizeof($script_data_array) && $field_name == $sort_field) {
+				query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
+				return false;
+			}
+
 			debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
 
-			foreach ($script_data_array as $element) {
-				if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
-					$script_index = $matches[1];
-					$field_value  = $matches[2];
+			if (cacti_sizeof($script_data_array)) {
+				foreach ($script_data_array as $element) {
+					if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
+						$script_index = $matches[1];
+						$field_value  = $matches[2];
 
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
 
-					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+					}
 				}
 			}
 
@@ -344,7 +610,7 @@ function query_script_host($host_id, $snmp_query_id) {
 		}
 	}
 
-	if (sizeof($output_array)) {
+	if (cacti_sizeof($output_array)) {
 		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 	}
 
@@ -402,17 +668,22 @@ function query_snmp_host($host_id, $snmp_query_id) {
 		snmp_priv_protocol, snmp_context, snmp_engine_id, snmp_port, snmp_timeout,
 		ping_retries, max_oids
 		FROM host
-		WHERE id = ?', array($host_id));
+		WHERE id = ?',
+		array($host_id));
 
 	$snmp_queries = get_data_query_array($snmp_query_id);
 
-	if (!sizeof($host) || $host['hostname'] == '') {
+	// We get the current sort field.  If for some reason the query
+	// fails for this field, or the snmp indexes we will give up.
+	$sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
+
+	if (!cacti_sizeof($host) || $host['hostname'] == '') {
 		query_debug_timer_offset('data_query', __('Invalid host_id: %s', $host_id));
 		return false;
 	}
 
 	/* invalid xml check */
-	if ((!is_array($snmp_queries)) || (sizeof($snmp_queries) == 0)) {
+	if ((!is_array($snmp_queries)) || (cacti_sizeof($snmp_queries) == 0)) {
 		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
@@ -449,10 +720,10 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	/* fetch specified index at specified OID */
 	$snmp_indexes = cacti_snmp_session_walk($session, $snmp_queries['oid_index']);
 
-	query_debug_timer_offset('data_query', __('Executing SNMP walk for list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , sizeof($snmp_indexes)));
+	query_debug_timer_offset('data_query', __('Executing SNMP walk for list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , cacti_sizeof($snmp_indexes)));
 
 	/* no data found; get out */
-	if (!sizeof($snmp_indexes)) {
+	if (!cacti_sizeof($snmp_indexes)) {
 		query_debug_timer_offset('data_query', __('No SNMP data returned'));
 		return false;
 	} else {
@@ -469,9 +740,19 @@ function query_snmp_host($host_id, $snmp_query_id) {
 	if (isset($snmp_queries['oid_index_parse'])) {
 		$index_parse_regexp = '/' . str_replace('OID/REGEXP:', '', $snmp_queries['oid_index_parse']) . '/';
 
+		$parsed_indexes = array();
 		foreach ($snmp_indexes as $oid => $value) {
-			$snmp_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
-			query_debug_timer_offset('data_query', __('index_parse at OID: \'%s\' results: \'%s\'', $oid , $snmp_indexes[$oid]));
+			if (preg_match($index_parse_regexp, $oid)) {
+				$parsed_indexes[$oid] = preg_replace($index_parse_regexp, "\\1", $oid);
+			}
+		}
+
+		$snmp_indexes = $parsed_indexes;
+		query_debug_timer_offset('data_query', __('Filtering list of indexes @ \'%s\' Index Count: %s', $snmp_queries['oid_index'] , cacti_sizeof($snmp_indexes)));
+
+		/* show list of indices found */
+		foreach ($snmp_indexes as $oid => $value) {
+			query_debug_timer_offset('data_query', __('Filtered Index found at OID: \'%s\' value: \'%s\'', $oid , $value));
 		}
 	}
 
@@ -483,7 +764,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	$fields_processed = array();
 
-	rewrite_snmp_enum_value(NULL);
+	rewrite_snmp_enum_value(null);
 
 	foreach ($snmp_queries['fields'] as $field_name => $field_array) {
 		if ($field_array['source'] != 'index' && ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') && $field_array['method'] != 'get' &&
@@ -492,7 +773,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			debug_log_insert('data_query', __('Fixing wrong \'method\' field for \'%s\' since \'rewrite_index\' or \'oid_suffix\' is defined',$field_name));
 		}
 
-		$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : NULL;
+		$rewrite_value = isset($field_array['rewrite_value']) ? $field_array['rewrite_value'] : null;
 
 		if ((!isset($field_array['oid'])) && ($field_array['source'] == 'index')) {
 			foreach ($snmp_indexes as $oid => $value) {
@@ -521,7 +802,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					if (isset($oid_rewrite_pattern)) {
 						$orig_oid = $oid;
 						$oid = preg_replace($oid_rewrite_pattern, $oid_rewrite_replacement, $oid);
-						query_debug_timer_offset('data_query', __('oid_rewrite at OID: \'%s\' new OI: \'%s\'', $orig_oid , $oid));
+						query_debug_timer_offset('data_query', __('oid_rewrite at OID: \'%s\' new OID: \'%s\'', $orig_oid , $oid));
 					}
 
 					if (isset($field_array['output_format'])) {
@@ -548,10 +829,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 			} elseif (isset($field_array['rewrite_index'])) {
 				$rewritten_indexes = array();
-				if (isset($field_array['rewrite_index'])){
+
+				if (isset($field_array['rewrite_index'])) {
 					$rewritten_indexes = data_query_rewrite_indexes($errmsg, $host_id, $snmp_query_id, $field_array['rewrite_index'], $snmp_indexes, $fields_processed);
-					if (sizeof($errmsg)){
-						foreach ($errmsg as $message){
+					if (cacti_sizeof($errmsg)) {
+						foreach ($errmsg as $message) {
 							debug_log_insert('data_query', __('Field \'%s\' %s', $field_name,$message));
 						}
 					}
@@ -560,8 +842,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$values = array();
 				foreach ($snmp_indexes as $index_oid => $index) {
 					$oid = $field_array['oid'];
-					if (isset($field_array['rewrite_index'])){
-						if (isset($rewritten_indexes[$index])){
+					if (isset($field_array['rewrite_index'])) {
+						if (isset($rewritten_indexes[$index])) {
 							$oid_suffix = $rewritten_indexes[$index];
 						} else {
 							// we failed to build rewritten index. warnings are sent already, just skip this index silently
@@ -573,22 +855,23 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					}
 
 					$oid .= isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '';
-					$value = NULL;
-					if (substr($field_array['source'], 0, 11) == 'OID/REGEXP:'){
+					$value = null;
+					if (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
 						$value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
 					}
 
 					$values[] = array('value' => $value, 'index' => $index, 'oid' => $oid);
 				}
 
-				if (sizeof($values) > 0 && (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:' || $field_array['source'] == 'value')) {
+				if (cacti_sizeof($values) > 0 && (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:' || $field_array['source'] == 'value')) {
 					$oids = array();
-					foreach ($values as $key => $value){
+					foreach ($values as $key => $value) {
 						$oids[] = $value['oid'];
 					}
 
-					debug_log_insert('data_query', __('Executing SNMP get for %s oids' , count($oids)));
+					debug_log_insert('data_query', __('Executing SNMP get for %s oids (%s)' , count($oids), implode(', ', $oids)));
 
+					$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 					if (isset($field_array['output_format'])) {
 						if ($field_array['output_format'] == 'hex') {
 							$value_output_format = SNMP_STRING_OUTPUT_HEX;
@@ -597,7 +880,9 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						} else {
 							$value_output_format = SNMP_STRING_OUTPUT_GUESS;
 						}
+					}
 
+					if (!empty($value_output_format)) {
 						foreach ($oids as $oid) {
 							$results[$oid] = cacti_snmp_get($host['hostname'], $host['snmp_community'], $oid, $host['snmp_version'],
 								$host['snmp_username'], $host['snmp_password'], $host['snmp_auth_protocol'],
@@ -609,9 +894,29 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$results = cacti_snmp_session_walk($session, $oids);
 					}
 
-					foreach (array_keys($values) as $key){
-						if (isset($results[$values[$key]['oid']])) {
-							$values[$key]['value'] = $results[$values[$key]['oid']];
+					if (!cacti_sizeof($results) && $field_name == $sort_field) {
+						query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
+						return false;
+					}
+
+					if (cacti_sizeof($results)) {
+						foreach ($results as $key => $value) {
+							debug_log_insert('data_query',
+								__('Found result for data @ \'%s\' [value=\'%s\']',
+								$key, $value));
+						}
+
+						foreach (array_keys($values) as $key) {
+							if (isset($results[$values[$key]['oid']])) {
+								$values[$key]['value'] = $results[$values[$key]['oid']];
+								debug_log_insert('data_query',
+									__('Setting result for data @ \'%s\' [key=\'%s\', value=\'%s\']',
+									$values[$key]['oid'], $key, $values[$key]['value']));
+							} else {
+								debug_log_insert('data_query',
+									__('Skipped result for data @ \'%s\' [key=\'%s\', value=\'%s\']',
+									$values[$key]['oid'], $key, $values[$key]['value']));
+							}
 						}
 					}
 
@@ -626,7 +931,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					debug_log_insert('data_query', __('Got SNMP get result for data @ \'%s\' [value=\'%s\'] (index: %s)', $item['oid'], $item['value'], $item['index']));
 					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $item['value'], $item['index'], $item['oid']);
 				}
-				$values = NULL;
+
+				$values = null;
 			} elseif (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
 				foreach ($snmp_indexes as $oid => $index) {
 					$oid = $field_array['oid'] .  '.' . $index;
@@ -678,13 +984,21 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					$host['snmp_engine_id'], $value_output_format);
 
 				$snmp_data = array();
-				if (sizeof($data)) {
+				if (cacti_sizeof($data)) {
 					foreach ($data as $d) {
 						$snmp_data[$d['oid']] = $d['value'];
 					}
+				} elseif ($field_name == $sort_field) {
+					query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index for GET data..'));
+					return false;
 				}
 			} else {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
+
+				if (!cacti_sizeof($snmp_data) && $field_name == $sort_field) {
+					query_debug_timer_offset('data_query', __('Sort field returned not data.  Can not continue Re-Index for OID[%s]', $field_array['oid']));
+					return false;
+				}
 			}
 
 			query_debug_timer_offset('data_query', __('Executing SNMP walk for data @ \'%s\'', $field_array['oid']));
@@ -695,119 +1009,125 @@ function query_snmp_host($host_id, $snmp_query_id) {
 			}
 
 			if (preg_match('/^value/i', $field_array['source'])) {
-				foreach ($snmp_data as $oid => $value) {
-					$index_regex = (isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp) . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
-					if (!preg_match($index_regex, $oid)) {
-						continue;
-					}
-
-					$snmp_index = preg_replace($index_regex,"\\1", $oid);
-					$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
-					if ($field_name == 'ifOperStatus') {
-						switch(true) {
-							case preg_match('/^(down|2)/i',$value):
-								$value = 'Down';
-								break;
-							case preg_match('/^(up|1)/i',$value):
-								$value = 'Up';
-								break;
-							case preg_match('/^(notpresent|6)/i',$value):
-								$value = 'notPresent';
-								break;
-							default:
-								$value = 'Testing';
+				if (cacti_sizeof($snmp_data)) {
+					foreach ($snmp_data as $oid => $value) {
+						$index_regex = (isset($field_array['oid_index_parse']) ? $field_array['oid_index_parse'] : $index_parse_regexp) . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
+						if (!preg_match($index_regex, $oid)) {
+							continue;
 						}
-						$mode = 'value';
-					} elseif (preg_match('/VALUE\/REGEXP:(.*)/', $field_array['source'], $matches)) {
-						$modified_value = preg_replace('/' . $matches[1] . '/', "\\1", $value);
-						$mode = 'regexp value parse';
-					} elseif (preg_match('/^VALUE\/TEST:(.*):(.*):(.*)/', $field_array['source'], $matches)) {
-						$modified_value = (strcmp($matches[1], $value) !== 0) ? $matches[3]:$matches[2];
-						$mode = 'test value parse';
-					} elseif (preg_match('/^VALUE\/TABLE:(.*)/',$field_array['source'])) {
-						$modified_value = (array_key_exists($value, $const_table)) ? $const_table[$value]:'N/A';
-						$mode = 'table value parse';
-					} elseif (preg_match('/^VALUE\/HEX2IP:(\d+):(\d+)/', $field_array['source'], $matches)) {
-						#$modified_value = substr(str_replace(':','',$value),$matches[1],$matches[2]);
-						$modified_value = substr(preg_replace('/(:|HEX-)/','', $value), $matches[1], $matches[2]);
-						$modified_value = implode('.', unpack ('C*', pack('H*', $modified_value)));
-						$mode = 'hex2ip value parse';
-					} else {
-						$mode = 'value';
-					}
 
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, isset($modified_value)?$modified_value:$value , $snmp_index, $oid);
-					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from %s]',$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
-					unset($modified_value);
+						$snmp_index = preg_replace($index_regex,"\\1", $oid);
+						$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
+						if ($field_name == 'ifOperStatus') {
+							switch(true) {
+								case preg_match('/^(down|2)/i',$value):
+									$value = 'Down';
+									break;
+								case preg_match('/^(up|1)/i',$value):
+									$value = 'Up';
+									break;
+								case preg_match('/^(notpresent|6)/i',$value):
+									$value = 'notPresent';
+									break;
+								default:
+									$value = 'Testing';
+							}
+							$mode = 'value';
+						} elseif (preg_match('/VALUE\/REGEXP:(.*)/', $field_array['source'], $matches)) {
+							$modified_value = preg_replace('/' . $matches[1] . '/', "\\1", $value);
+							$mode = 'regexp value parse';
+						} elseif (preg_match('/^VALUE\/TEST:(.*):(.*):(.*)/', $field_array['source'], $matches)) {
+							$modified_value = (strcmp($matches[1], $value) !== 0) ? $matches[3]:$matches[2];
+							$mode = 'test value parse';
+						} elseif (preg_match('/^VALUE\/TABLE:(.*)/',$field_array['source'])) {
+							$modified_value = (array_key_exists($value, $const_table)) ? $const_table[$value]:'N/A';
+							$mode = 'table value parse';
+						} elseif (preg_match('/^VALUE\/HEX2IP:(\d+):(\d+)/', $field_array['source'], $matches)) {
+							#$modified_value = substr(str_replace(':','',$value),$matches[1],$matches[2]);
+							$modified_value = substr(preg_replace('/(:|HEX-)/','', $value), $matches[1], $matches[2]);
+							$modified_value = implode('.', unpack ('C*', pack('H*', $modified_value)));
+							$mode = 'hex2ip value parse';
+						} else {
+							$mode = 'value';
+						}
+
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, isset($modified_value)?$modified_value:$value , $snmp_index, $oid);
+						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from %s]',$field_name,isset($modified_value)?"$modified_value ($value)":$value,$snmp_index,$mode));
+						unset($modified_value);
+					}
 				}
 			} elseif (substr($field_array['source'], 0, 11) == 'OID/REGEXP:') {
-				foreach ($snmp_data as $oid => $value) {
-					$parse_value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
+				if (cacti_sizeof($snmp_data)) {
+					foreach ($snmp_data as $oid => $value) {
+						$parse_value = preg_replace('/' . str_replace('OID/REGEXP:', '', $field_array['source']) . '/', "\\1", $oid);
 
-					if (isset($snmp_queries['oid_index_parse'])) {
-						$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
-					} elseif ((isset($value)) && ($value != '')) {
-						$snmp_index = $value;
-					}
+						if (isset($snmp_queries['oid_index_parse'])) {
+							$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
+						} elseif ((isset($value)) && ($value != '')) {
+							$snmp_index = $value;
+						}
 
-					/* correct bogus index value */
-					/* found in some devices such as an EMC Cellera */
-					if ($snmp_index == 0) {
-						$snmp_index = 1;
-					}
+						/* correct bogus index value */
+						/* found in some devices such as an EMC Cellera */
+						if ($snmp_index == 0) {
+							$snmp_index = 1;
+						}
 
-					$oid = $field_array['oid'] .  '.' . $parse_value;
+						$oid = $field_array['oid'] .  '.' . $parse_value;
 
-					/* rewrite octet strings */
-					if (preg_match('/^\d{1,3}(\.\d{1,3}){2,}$/', $parse_value)) {
-						$octets = explode('.', $parse_value);
-						$size = array_shift($octets);
+						/* rewrite octet strings */
+						if (preg_match('/^\d{1,3}(\.\d{1,3}) {2,}$/', $parse_value)) {
+							$octets = explode('.', $parse_value);
+							$size = array_shift($octets);
 
-						if (count($octets) == $size) {
-							$decoded = '';
-							$isascii = true;
+							if (cacti_count($octets) == $size) {
+								$decoded = '';
+								$isascii = true;
 
-							foreach ($octets as $octet) {
-								if (($octet <= 31) || ($octet >= 127)) {
-									$isascii = false;
-								} else {
-									$decoded .= chr($octet);
+								foreach ($octets as $octet) {
+									if (($octet <= 31) || ($octet >= 127)) {
+										$isascii = false;
+									} else {
+										$decoded .= chr($octet);
+									}
+								}
+								if ($isascii) {
+									query_debug_timer_offset('data_query', __('Found OCTET STRING \'%s\' decoded value: \'%s\'', $parse_value, $decoded));
+									$parse_value = $decoded;
 								}
 							}
-							if ($isascii) {
-								query_debug_timer_offset('data_query', __('Found OCTET STRING \'%s\' decoded value: \'%s\'', $parse_value, $decoded));
-								$parse_value = $decoded;
-							}
 						}
+
+						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
+
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 					}
-
-					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid parse]', $field_name, $parse_value, $snmp_index));
-
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 				}
 			} elseif (substr($field_array['source'], 0, 16) == 'OIDVALUE/REGEXP:') {
 				$regex_array = explode(':', str_replace('OIDVALUE/REGEXP:', '', $field_array['source']));
 
-				foreach($snmp_data as $oid => $value) {
-					$parse_value = preg_replace('/' . $regex_array[0] . '/', $regex_array[1], $oid);
+				if (cacti_sizeof($snmp_data)) {
+					foreach($snmp_data as $oid => $value) {
+						$parse_value = preg_replace('/' . $regex_array[0] . '/', $regex_array[1], $oid);
 
-					if (isset($snmp_queries['oid_index_parse'])) {
-						$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
-					} elseif ((isset($value)) && ($value != '')) {
-						$snmp_index = $value;
+						if (isset($snmp_queries['oid_index_parse'])) {
+							$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
+						} elseif ((isset($value)) && ($value != '')) {
+							$snmp_index = $value;
+						}
+
+						/* correct bogus index value */
+						/* found in some devices such as an EMC Cellera */
+						if ($snmp_index == 0) {
+							$snmp_index = 1;
+						}
+
+						$oid = $field_array['oid'];
+
+						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid value parse]', $field_name, $parse_value, $snmp_index));
+
+						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 					}
-
-					/* correct bogus index value */
-					/* found in some devices such as an EMC Cellera */
-					if ($snmp_index == 0) {
-						$snmp_index = 1;
-					}
-
-					$oid = $field_array['oid'];
-
-					debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s [from regexp oid value parse]', $field_name, $parse_value, $snmp_index));
-
-					$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $parse_value, $snmp_index, $oid);
 				}
 			}
 
@@ -819,7 +1139,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 	$session->close();
 
-	if (sizeof($output_array)) {
+	if (cacti_sizeof($output_array)) {
 		data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, $output_array);
 	}
 
@@ -828,7 +1148,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 function data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $value, $snmp_index, $oid) {
 	global $data_query_rewrite_indexes_cache;
-	if ($rewrite_value !== NULL) {
+	if ($rewrite_value !== null) {
 		$value = rewrite_snmp_enum_value($field_name, $value, $rewrite_value);
 	}
 
@@ -854,7 +1174,7 @@ function data_query_ctype_print_unicode($value) {
 function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$output_array) {
 	/* set all fields present value to 0, to mark the outliers when we are all done */
 	db_execute_prepared('UPDATE host_snmp_cache
-		SET present=0
+		SET present = 0
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($host_id, $snmp_query_id));
@@ -913,7 +1233,7 @@ function data_query_update_host_cache_from_buffer($host_id, $snmp_query_id, &$ou
 	@returns - (array) of original snmp indexes associated with rewritten ones
 */
 
-function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = false){
+function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite_index, $snmp_indexes, $fields_processed = false) {
 	global $data_query_rewrite_indexes_cache;
 
 	$errmsg = array();
@@ -923,12 +1243,12 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	if (!is_array($data_query_rewrite_indexes_cache))
 		$data_query_rewrite_indexes_cache = array();
 
-	if (sizeof($oid_items)){
-		foreach ($oid_items as $item){
+	if (cacti_sizeof($oid_items)) {
+		foreach ($oid_items as $item) {
 			$matches = array();
-			if (preg_match('/^\|query_([^|]+)\|$/', $item, $matches)){
+			if (preg_match('/^\|query_([^|]+)\|$/', $item, $matches)) {
 				$iv = $matches[1];
-				if (is_array($fields_processed) && !in_array($iv, $fields_processed)){
+				if (is_array($fields_processed) && !in_array($iv, $fields_processed)) {
 					$errmsg[] = "rewrite_index='$rewrite_index': '$iv' is not processed yet, could not use it as index source";
 						continue;
 				}
@@ -946,8 +1266,8 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 							AND field_name = ?",
 							array($host_id, $snmp_query_id, $iv));
 
-						if (sizeof($field_values)){
-							foreach ($field_values as $item){
+						if (cacti_sizeof($field_values)) {
+							foreach ($field_values as $item) {
 								$data_query_rewrite_indexes_cache[$hash][$item['snmp_index']] = $item['field_value'];
 							}
 						} else {
@@ -962,14 +1282,14 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 
 	$out = array();
 	$numeric_output = false;
-	if (!is_array($snmp_indexes)){
+	if (!is_array($snmp_indexes)) {
 		$snmp_indexes = array($snmp_indexes);
 		$numeric_output = true;
 	}
 	foreach ($snmp_indexes as $oid => $num_index) {
 		$index = $rewrite_index;
-		foreach ($chain_indexes as $key => $values){
-			if (isset($values[$num_index]) && preg_match('/^[0-9.]+$/', $values[$num_index])){
+		foreach ($chain_indexes as $key => $values) {
+			if (isset($values[$num_index]) && preg_match('/^[0-9.]+$/', $values[$num_index])) {
 				$index = str_replace("|query_$key|", trim($values[$num_index]), $index);
 			} else {
 				$errmsg[] = "@'" . $num_index . "': could not load value of '$key'";
@@ -977,17 +1297,17 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 		}
 
 		$index = str_replace('|index|', trim($num_index), $index);
-		if (!preg_match('/^[0-9.]*$/', $index)){
+		if (!preg_match('/^[0-9.]*$/', $index)) {
 			$errmsg[] = "@'" . $num_index ."': some portions of rewrite_index field were not parsed: '$index'";
 			continue;
 		}
-		if ($numeric_output){
+		if ($numeric_output) {
 			return $index;
 		}
 		$out[$num_index] = $index;
 	}
-	if ($numeric_output){
-		return NULL;
+	if ($numeric_output) {
+		return null;
 	}
 	return $out;
 }
@@ -997,19 +1317,19 @@ function data_query_rewrite_indexes(&$errmsg, $host_id, $snmp_query_id, $rewrite
 	@arg $value - value to be translated
 	@arg $map - translation map in serialize()/array form
 	@returns - rewritten value if possible, original one otherwise*/
-function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
+function rewrite_snmp_enum_value($field_name, $value=null, $map=null) {
 	static $mapcache = array();
 
-	if ($field_name === NULL){
+	if ($field_name === null) {
 		$mapcache = array();
 
-		return NULL;
+		return null;
 	}
 
-	if (is_array($map)){ # produced from XML, needs to be reformatted
+	if (is_array($map)) { # produced from XML, needs to be reformatted
 		$newmap = array();
-		foreach ($map as $index => $item){
-			if (!isset($item['match']) || !isset($item['replace'])){
+		foreach ($map as $index => $item) {
+			if (!isset($item['match']) || !isset($item['replace'])) {
 				debug_log_insert('data_query', "Bogus rewrite_value item found, index='$index'");
 				continue;
 			}
@@ -1022,15 +1342,15 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
 		$map = unserialize($map);
 	}
 
-	if ($map === false || !is_array($map)){
+	if ($map === false || !is_array($map)) {
 		debug_log_insert('data_query', 'Could not parse translation map (rewrite_value)');
 		return $value;
 	}
 
-	if (!isset($mapcache[$field_name])){
+	if (!isset($mapcache[$field_name])) {
 		$mapcache[$field_name] = array();
-		foreach ($map as $src => $dst){
-			if (preg_match('/^REGEXP(NC)?:(.*)$/', $src, $matches)){
+		foreach ($map as $src => $dst) {
+			if (preg_match('/^REGEXP(NC)?:(.*)$/', $src, $matches)) {
 				if ($matches[1] == 'NC') {
 					$src = '/' . str_replace('/', '\/', $matches[2]) . '/i';
 				} else {
@@ -1044,8 +1364,8 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
 		}
 	}
 
-	foreach ($mapcache[$field_name] as $src => $dst){
-		if (preg_match($src, $value)){
+	foreach ($mapcache[$field_name] as $src => $dst) {
+		if (preg_match($src, $value)) {
 			$nvalue = preg_replace($src, $dst, $value);
 			debug_log_insert('data_query', "rewrite_value: '$value' => '$nvalue'");
 			$value = $nvalue;
@@ -1064,13 +1384,12 @@ function rewrite_snmp_enum_value($field_name, $value=NULL, $map=NULL){
    @arg $data_query_id - (int) the data query ID to match
    @returns - (array) the data query ID and index that matches the three arguments */
 function data_query_index($index_type, $index_value, $host_id, $data_query_id) {
-	return db_fetch_cell_prepared("SELECT
-		host_snmp_cache.snmp_index
+	return db_fetch_cell_prepared("SELECT snmp_index
 		FROM host_snmp_cache
-		WHERE host_snmp_cache.field_name = ?
-		AND host_snmp_cache.field_value = ?
-		AND host_snmp_cache.host_id = ?
-		AND host_snmp_cache.snmp_query_id = ?",
+		WHERE field_name = ?
+		AND field_value = ?
+		AND host_id = ?
+		AND snmp_query_id = ?",
 		array($index_type, $index_value, $host_id, $data_query_id));
 }
 
@@ -1127,7 +1446,7 @@ function decode_data_query_index($encoded_index, $data_query_id, $host_id) {
 		AND snmp_query_id = ?
 		GROUP BY snmp_index', array($host_id, $data_query_id));
 
-	if (sizeof($indexes)) {
+	if (cacti_sizeof($indexes)) {
 		foreach ($indexes as $index) {
 			if (encode_data_query_index($index['snmp_index']) == $encoded_index) {
 				return $index['snmp_index'];
@@ -1147,7 +1466,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 		AND snmp_query_id = ?',
 		array($host_id, $data_query_id));
 
-	if (sizeof($graphs)) {
+	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
 			update_graph_data_query_cache($graph['id'], $host_id, $data_query_id, $graph['snmp_index']);
 		}
@@ -1161,7 +1480,7 @@ function update_data_query_cache($host_id, $data_query_id) {
 		AND snmp_query_id = ?',
 		array($host_id, $data_query_id));
 
-	if (sizeof($data_sources) > 0) {
+	if (cacti_sizeof($data_sources) > 0) {
 		foreach ($data_sources as $data_source) {
 			$changed = update_data_source_data_query_cache($data_source['id'], $host_id, $data_query_id, $data_source['snmp_index']);
 			if ($changed) {
@@ -1170,17 +1489,21 @@ function update_data_query_cache($host_id, $data_query_id) {
 		}
 	}
 
-	query_debug_timer_offset('data_query', __('Update data source data query cache complete'));
+	query_debug_timer_offset('data_query', __('Re-Indexing Data Query complete'));
 }
 
 /* update_graph_data_query_cache - updates the local data query cache for a particular
 	graph
    @arg $local_graph_id - the id of the graph to update the data query cache for */
-function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $data_query_index = '') {
+function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_query_id = '', $previous_index = '') {
 	global $data_query_id_cache;
 
-	if ((!is_array($data_query_id_cache)) || sizeof($data_query_id_cache) == 0) {
-		$data_query_id_cache = array_rekey(db_fetch_assoc('SELECT id, snmp_query_id FROM snmp_query_graph'), 'id', 'snmp_query_id');
+	if ((!is_array($data_query_id_cache)) || cacti_sizeof($data_query_id_cache) == 0) {
+		$data_query_id_cache = array_rekey(
+			db_fetch_assoc('SELECT id, snmp_query_id
+				FROM snmp_query_graph'),
+			'id', 'snmp_query_id'
+		);
 	}
 
 	if (empty($host_id)) {
@@ -1190,56 +1513,15 @@ function update_graph_data_query_cache($local_graph_id, $host_id = '', $data_que
 			array($local_graph_id));
 	}
 
-	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
-		data_template_data.id
-		FROM (graph_templates_item,data_template_rrd,data_template_data)
-		WHERE graph_templates_item.task_item_id=data_template_rrd.id
-		AND data_template_rrd.local_data_id=data_template_data.local_data_id
-		AND graph_templates_item.local_graph_id = ?
+	$field = data_query_field_list(db_fetch_cell_prepared('SELECT dtd.id
+		FROM graph_templates_item AS gti
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id=dtr.id
+		INNER JOIN data_template_data AS dtd
+		ON dtr.local_data_id=dtd.local_data_id
+		WHERE gti.local_graph_id = ?
 		LIMIT 1',
 		array($local_graph_id)));
-
-	if (empty($field)) { return; }
-
-	if (empty($data_query_id)) {
-		$data_query_id = db_fetch_cell_prepared('SELECT snmp_query_id
-			FROM snmp_query_graph
-			WHERE id = ?',
-			array($field['output_type']));
-	}
-
-	$index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
-
-	if ($data_query_id != 0 && $index != '' && $index != $data_query_index) {
-		db_execute_prepared('UPDATE graph_local
-			SET snmp_query_id = ?,
-			snmp_index = ?
-			WHERE id = ?',
-			array($data_query_id, $index, $local_graph_id));
-
-		/* update graph title cache */
-		update_graph_title_cache($local_graph_id);
-	}
-}
-
-/* update_data_source_data_query_cache - updates the local data query cache for a particular
-	data source
-   @arg $local_data_id - the id of the data source to update the data query cache for */
-function update_data_source_data_query_cache($local_data_id, $host_id = '', $data_query_id = '', $data_query_index = '') {
-	global $data_query_id_cache;
-
-	if ((!is_array($data_query_id_cache)) || sizeof($data_query_id_cache) == 0) {
-		$data_query_id_cache = array_rekey(db_fetch_assoc('SELECT id, snmp_query_id FROM snmp_query_graph'), 'id', 'snmp_query_id');
-	}
-
-	if (empty($host_id)) {
-		$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', array($local_data_id));
-	}
-
-	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
-		data_template_data.id
-		FROM data_template_data
-		WHERE data_template_data.local_data_id = ?', array($local_data_id)));
 
 	if (empty($field)) {
 		return;
@@ -1252,14 +1534,68 @@ function update_data_source_data_query_cache($local_data_id, $host_id = '', $dat
 			array($field['output_type']));
 	}
 
-	$index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
+	$current_index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
 
-	if ($data_query_id != 0 && $index != '' && $index != $data_query_index) {
+	if ($data_query_id != 0 && $current_index != '' && $current_index != $previous_index) {
+		/* set the index to the new index */
+		db_execute_prepared('UPDATE graph_local
+			SET snmp_query_id = ?,
+			snmp_index = ?
+			WHERE id = ?',
+			array($data_query_id, $current_index, $local_graph_id));
+
+		/* update graph title cache */
+		update_graph_title_cache($local_graph_id);
+	}
+}
+
+/* update_data_source_data_query_cache - updates the local data query cache for a particular
+	data source
+   @arg $local_data_id - the id of the data source to update the data query cache for */
+function update_data_source_data_query_cache($local_data_id, $host_id = '', $data_query_id = '', $previous_index = '') {
+	global $data_query_id_cache;
+
+	if ((!is_array($data_query_id_cache)) || cacti_sizeof($data_query_id_cache) == 0) {
+		$data_query_id_cache = array_rekey(
+			db_fetch_assoc('SELECT id, snmp_query_id
+				FROM snmp_query_graph'),
+			'id', 'snmp_query_id'
+		);
+	}
+
+	if (empty($host_id)) {
+		$host_id = db_fetch_cell_prepared('SELECT host_id
+			FROM data_local
+			WHERE id = ?',
+			array($local_data_id));
+	}
+
+	$field = data_query_field_list(db_fetch_cell_prepared('SELECT
+		data_template_data.id
+		FROM data_template_data
+		WHERE data_template_data.local_data_id = ?',
+		array($local_data_id)));
+
+	if (empty($field)) {
+		return false;
+	}
+
+	if (empty($data_query_id)) {
+		$data_query_id = db_fetch_cell_prepared('SELECT snmp_query_id
+			FROM snmp_query_graph
+			WHERE id = ?',
+			array($field['output_type']));
+	}
+
+	$current_index = data_query_index($field['index_type'], $field['index_value'], $host_id, $data_query_id);
+
+	if ($data_query_id != 0 && $current_index != '' && $current_index != $previous_index) {
+		/* set the index to the new index */
 		db_execute_prepared('UPDATE data_local
 			SET snmp_query_id = ?,
 			snmp_index = ?
 			WHERE id = ?',
-			array($data_query_id, $index, $local_data_id));
+			array($data_query_id, $current_index, $local_data_id));
 
 		/* update data source title cache */
 		update_data_source_title_cache($local_data_id);
@@ -1283,22 +1619,30 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	include_once($config['library_path'] . '/sort.php');
 
 	if (empty($data_query_id)) {
-		return array('' => 'Unknown Index');
+		return array('' => __('Unknown Index'));
 	}
 
 	/* from the xml; cached in 'host_snmp_query' */
-	$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
-		FROM host_snmp_query
-		WHERE host_id = ?
-		AND snmp_query_id = ?',
-		array($host_id, $data_query_id));
+	if ($host_id > 0) {
+		$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
+			FROM host_snmp_query
+			WHERE host_id = ?
+			AND snmp_query_id = ?',
+			array($host_id, $data_query_id));
+	} else {
+		$sort_cache = db_fetch_row_prepared('SELECT sort_field, title_format
+			FROM host_snmp_query
+			WHERE snmp_query_id = ?
+			LIMIT 1',
+			array($data_query_id));
+	}
 
 	/* in case no unique index is available, fallback to first field in XML */
-	if ($sort_cache['sort_field'] == ''){
+	if ($sort_cache['sort_field'] == '') {
 		$snmp_queries = get_data_query_array($data_query_id);
-		if (sizeof($snmp_queries) && isset($snmp_queries['index_order'])){
+		if (cacti_sizeof($snmp_queries) && isset($snmp_queries['index_order'])) {
 			$i = explode(':', $snmp_queries['index_order']);
-			if (sizeof($i) > 0){
+			if (cacti_sizeof($i) > 0) {
 				$sort_cache['sort_field'] = array_shift($i);
 			}
 		}
@@ -1306,17 +1650,30 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 
 	/* get a list of data query indexes AND the field value that we are supposed
 	to sort */
-	$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT gl.snmp_index, hsc.field_value
-		FROM graph_local AS gl
-		INNER JOIN host_snmp_cache AS hsc
-		ON gl.host_id=hsc.host_id
-		AND gl.snmp_query_id=hsc.snmp_query_id
-		AND gl.snmp_index=hsc.snmp_index
-		WHERE gl.snmp_query_id = ?
-		AND gl.host_id = ?
-		AND hsc.field_name = ?
-		GROUP BY gl.snmp_index',
-		array($data_query_id, $host_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	if ($host_id > 0) {
+		$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT gl.snmp_index, hsc.field_value
+			FROM graph_local AS gl
+			INNER JOIN host_snmp_cache AS hsc
+			ON gl.host_id=hsc.host_id
+			AND gl.snmp_query_id=hsc.snmp_query_id
+			AND gl.snmp_index=hsc.snmp_index
+			WHERE gl.snmp_query_id = ?
+			AND gl.host_id = ?
+			AND hsc.field_name = ?
+			GROUP BY gl.snmp_index',
+			array($data_query_id, $host_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	} else {
+		$sort_field_data = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT gl.snmp_index, hsc.field_value
+			FROM graph_local AS gl
+			INNER JOIN host_snmp_cache AS hsc
+			ON gl.host_id=hsc.host_id
+			AND gl.snmp_query_id=hsc.snmp_query_id
+			AND gl.snmp_index=hsc.snmp_index
+			WHERE gl.snmp_query_id = ?
+			AND hsc.field_name = ?
+			GROUP BY gl.snmp_index',
+			array($data_query_id, $sort_cache['sort_field'])), 'snmp_index', 'field_value');
+	}
 
 	/* sort the data using the 'data query index' sort algorithm */
 	uasort($sort_field_data, 'usort_data_query_index');
@@ -1361,7 +1718,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 	$raw_xml = get_data_query_array($data_query_id);
 
 	/* invalid xml check */
-	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+	if ((!is_array($raw_xml)) || (cacti_sizeof($raw_xml) == 0)) {
 		return array();
 	}
 
@@ -1385,7 +1742,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
 			/* create a list of all values for this index */
-			if (sizeof($data_query_index_array) == 0) {
+			if (cacti_sizeof($data_query_index_array) == 0) {
 				$field_values = db_fetch_assoc_prepared('SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
@@ -1406,7 +1763,7 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 			$aggregate_field_values = array_rekey($field_values, 'field_value', 'field_value');
 
 			/* fields that contain duplicate or empty values are not suitable to index off of */
-			if (!((sizeof($aggregate_field_values) < sizeof($field_values)) || (in_array('', $aggregate_field_values) == true) || (sizeof($aggregate_field_values) == 0)) || ($nonunique)) {
+			if (!((cacti_sizeof($aggregate_field_values) < cacti_sizeof($field_values)) || (in_array('', $aggregate_field_values) == true) || (cacti_sizeof($aggregate_field_values) == 0)) || ($nonunique)) {
 				array_push($xml_outputs, $field_name);
 			}
 		}
@@ -1446,15 +1803,16 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 	$valid_index_types = get_ordered_index_type_list($host_id, $data_query_id);
 
 	/* something is probably wrong with the data query */
-	if (sizeof($valid_index_types) == 0) {
+	if (cacti_sizeof($valid_index_types) == 0) {
 		$sort_field = '';
+		return false;
 	} else {
 		/* grab the first field off the list */
 		$sort_field = $valid_index_types[0];
 	}
 
 	/* substitute variables */
-	if (sizeof($raw_xml) && isset($raw_xml['index_title_format'])) {
+	if (cacti_sizeof($raw_xml) && isset($raw_xml['index_title_format'])) {
 		$title_format = str_replace('|chosen_order_field|', "|query_$sort_field|", $raw_xml['index_title_format']);
 	} else {
 		$title_format = "|query_$sort_field|";
@@ -1468,6 +1826,8 @@ function update_data_query_sort_cache($host_id, $data_query_id) {
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($sort_field, $title_format, $host_id, $data_query_id));
+
+	return $sort_field;
 }
 
 /* update_data_query_sort_cache_by_host - updates the sort cache for all data queries associated
@@ -1479,7 +1839,7 @@ function update_data_query_sort_cache_by_host($host_id) {
 		WHERE host_id = ?',
 		array($host_id));
 
-	if (sizeof($data_queries) > 0) {
+	if (cacti_sizeof($data_queries) > 0) {
 		foreach ($data_queries as $data_query) {
 			update_data_query_sort_cache($host_id, $data_query['snmp_query_id']);
 		}
@@ -1536,7 +1896,7 @@ function get_script_query_path($args, $script_path, $host_id) {
 function verify_index_order($raw_xml) {
 
 	/* invalid xml check */
-	if ((!is_array($raw_xml)) || (sizeof($raw_xml) == 0)) {
+	if ((!is_array($raw_xml)) || (cacti_sizeof($raw_xml) == 0)) {
 		query_debug_timer_offset('data_query', __('Error parsing XML file into an array.'));
 		return false;
 	}
@@ -1574,8 +1934,8 @@ function verify_index_order($raw_xml) {
  *
  * this code stems from lib/template.php, function create_complete_graph_from_template
  */
-function update_snmp_index_order($data_query) {
-	if (sizeof($data_query)) {
+function update_snmp_index_order($local_data) {
+	if (cacti_sizeof($local_data)) {
 		$data_input_field = array_rekey(db_fetch_assoc_prepared("SELECT
 			data_input_fields.id,
 			data_input_fields.type_code
@@ -1586,7 +1946,7 @@ function update_snmp_index_order($data_query) {
 			ON data_input.id = data_input_fields.data_input_id
 			WHERE data_input_fields.type_code IN('index_type', 'index_value', 'output_type')
 			AND snmp_query.id = ?",
-			array($data_query['snmp_query_id'])), 'type_code', 'id');
+			array($local_data['snmp_query_id'])), 'type_code', 'id');
 
 		$snmp_cache_value = db_fetch_cell_prepared('SELECT field_value
 			FROM host_snmp_cache
@@ -1594,26 +1954,29 @@ function update_snmp_index_order($data_query) {
 			AND snmp_query_id = ?
 			AND field_name = ?
 			AND snmp_index = ?',
-			array($data_query['host_id'], $data_query['snmp_query_id'], $data_query['snmp_index_on'], $data_query['snmp_index']));
+			array($local_data['host_id'], $local_data['snmp_query_id'], $local_data['snmp_index_on'], $local_data['snmp_index']));
 
-		db_execute_prepared('REPLACE INTO data_input_data
-			(data_input_field_id, data_template_data_id, t_value, value)
-			VALUES
-			(?, ?, "", ?),
-			(?, ?, "", ?),
-			(?, ?, "", ?)',
-			array(
-				/* save the value to index on (ie. ifindex, ifip, etc) */
-				$data_input_field['index_type'], $data_query['data_template_data_id'], $data_query['snmp_index_on'],
-				/* save the actual value (ie. 3, 192.168.1.101, etc) */
-				$data_input_field['index_value'], $data_query['data_template_data_id'], $snmp_cache_value,
-				/* set the expected output type (ie. bytes, errors, packets) */
-				$data_input_field['output_type'], $data_query['data_template_data_id'], $data_query['snmp_query_graph_id']
-			)
-		);
+		/* only update data source index if there actually *is* an index returned from host_snmp_cache */
+		if (!empty($snmp_cache_value)) {
+			db_execute_prepared('REPLACE INTO data_input_data
+				(data_input_field_id, data_template_data_id, t_value, value)
+				VALUES
+				(?, ?, "", ?),
+				(?, ?, "", ?),
+				(?, ?, "", ?)',
+				array(
+					/* save the value to index on (ie. ifindex, ifip, etc) */
+					$data_input_field['index_type'], $local_data['data_template_data_id'], $local_data['snmp_index_on'],
+					/* save the actual value (ie. 3, 192.168.1.101, etc) */
+					$data_input_field['index_value'], $local_data['data_template_data_id'], $snmp_cache_value,
+					/* set the expected output type (ie. bytes, errors, packets) */
+					$data_input_field['output_type'], $local_data['data_template_data_id'], $local_data['snmp_query_graph_id']
+				)
+			);
+		}
 
 		/* now that we have put data into the 'data_input_data' table, update the snmp cache for ds's */
-		update_data_source_data_query_cache($data_query['local_data_id']);
+		//update_data_source_data_query_cache($local_data['local_data_id']);
 	}
 }
 

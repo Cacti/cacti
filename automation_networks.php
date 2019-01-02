@@ -140,18 +140,20 @@ function api_networks_discover($network_id, $discover_debug) {
 					WHERE id = ?',
 					array($poller_id));
 
-				$fgc_contextoption = get_default_contextoption(5);
+				$fgc_contextoption = get_default_contextoption();
 				$fgc_context       = stream_context_create($fgc_contextoption);
 				$response          = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=discover&network=' . $network_id . $args_debug, false, $fgc_context);
 			}
 		} else {
-			$_SESSION['automation_message'] = "Can Not Restart Discovery for Discovery in Progress for Network '$name'";
+			$_SESSION['automation_message'] = __esc('Can Not Restart Discovery for Discovery in Progress for Network \'%s\'', $name);
 			raise_message('automation_message');
 		}
 	} else {
-		$_SESSION['automation_message'] = "Can Not Perform Discovery for Disabled Network '$name'";
+		$_SESSION['automation_message'] = __esc('Can Not Perform Discovery for Disabled Network \'%s\'', $name);
 		raise_message('automation_message');
 	}
+
+	force_session_data();
 }
 
 function api_networks_save($post) {
@@ -168,10 +170,19 @@ function api_networks_save($post) {
 		$save['threads']       = form_input_validate($post['threads'], 'threads', '^[0-9]+$', false, 3);
 		$save['run_limit']     = form_input_validate($post['run_limit'], 'run_limit', '^[0-9]+$', false, 3);
 
-		$save['enabled']            = (isset($post['enabled']) ? 'on':'');
-		$save['enable_netbios']     = (isset($post['enable_netbios']) ? 'on':'');
-		$save['add_to_cacti']       = (isset($post['add_to_cacti']) ? 'on':'');
-		$save['rerun_data_queries'] = (isset($post['rerun_data_queries']) ? 'on':'');
+		$save['enabled']              = (isset($post['enabled']) ? 'on':'');
+
+		/* notification settings */
+		$save['notification_enabled'] = (isset($post['notification_enabled']) ? 'on':'');
+		$save['notification_email']   = form_input_validate($post['notification_email'], 'notification_email', '', true, 3);
+
+		$save['notification_fromname']  = form_input_validate($post['notification_fromname'], 'notification_fromname', '', true, 3);
+		$save['notification_fromemail'] = form_input_validate($post['notification_fromemail'], 'notification_fromemail', '', true, 3);
+
+		$save['enable_netbios']       = (isset($post['enable_netbios']) ? 'on':'');
+		$save['add_to_cacti']         = (isset($post['add_to_cacti']) ? 'on':'');
+		$save['same_sysname']         = (isset($post['same_sysname']) ? 'on':'');
+		$save['rerun_data_queries']   = (isset($post['rerun_data_queries']) ? 'on':'');
 
 		/* discovery connectivity settings */
 		$save['snmp_id']       = form_input_validate($post['snmp_id'], 'snmp_id', '^[0-9]+$', false, 3);
@@ -205,19 +216,19 @@ function api_networks_save($post) {
 		if ($save['sched_type'] == '3') {
 			if ($save['day_of_week'] == '') {
 				$save['enabled'] = '';
-				$_SESSION['automation_message'] = __('ERROR: You must specify the day of the week.  Disabling Network %s!.', $net);
+				$_SESSION['automation_message'] = __esc('ERROR: You must specify the day of the week.  Disabling Network %s!.', $net);
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '4') {
 			if ($save['month'] == '' || $save['day_of_month'] == '') {
 				$save['enabled'] = '';
-				$_SESSION['automation_message'] = __('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $net);
+				$_SESSION['automation_message'] = __esc('ERROR: You must specify both the Months and Days of Month.  Disabling Network %s!', $net);
 				raise_message('automation_message');
 			}
 		} elseif ($save['sched_type'] == '5') {
 			if ($save['month'] == '' || $save['monthly_day'] == '' || $save['monthly_week'] == '') {
 				$save['enabled'] = '';
-				$_SESSION['automation_message'] = __('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $net);
+				$_SESSION['automation_message'] = __esc('ERROR: You must specify the Months, Weeks of Months, and Days of Week.  Disabling Network %s!', $net);
 				raise_message('automation_message');
 			}
 		}
@@ -228,19 +239,19 @@ function api_networks_save($post) {
 		$networks  = explode(',', $save['subnet_range']);
 
 		$i = 0;
-		if (sizeof($networks)) {
-		foreach($networks as $net) {
-			$ips = automation_calculate_total_ips($networks, $i);
-			if ($ips !== false) {
-				$total_ips += $ips;
-			} else {
-				$continue = false;
-				$_SESSION['automation_message'] = __("ERROR: Network '%s' is Invalid.", $net);
-				raise_message('automation_message');
-				break;
+		if (cacti_sizeof($networks)) {
+			foreach($networks as $net) {
+				$ips = automation_calculate_total_ips($networks, $i);
+				if ($ips !== false) {
+					$total_ips += $ips;
+				} else {
+					$continue = false;
+					$_SESSION['automation_message'] = __esc('ERROR: Network \'%s\' is Invalid.', $net);
+					raise_message('automation_message');
+					break;
+				}
+				$i++;
 			}
-			$i++;
-		}
 		}
 
 		if ($continue) {
@@ -295,6 +306,8 @@ function form_actions() {
 				foreach($selected_items as $item) {
 					api_networks_discover($item, $discover_debug);
 				}
+
+				sleep(2);
 			} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel */
 				foreach($selected_items as $item) {
 					api_networks_cancel($item);
@@ -318,7 +331,7 @@ function form_actions() {
 			/* ==================================================== */
 
 			$networks_info = db_fetch_row_prepared('SELECT name FROM automation_networks WHERE id = ?', array($matches[1]));
-			$networks_list .= '<li>' . $networks_info['name'] . '</li>';
+			$networks_list .= '<li>' . html_escape($networks_info['name']) . '</li>';
 			$networks_array[$i] = $matches[1];
 		}
 
@@ -371,19 +384,20 @@ function form_actions() {
 	}
 
 	if (!isset($networks_array)) {
-		print "<tr><td class='even'><span class='textError'>" . __('You must select at least one Network.') . "</span></td></tr>\n";
-		$save_html = '';
+		raise_message(40);
+		header('Location: automation_networks.php?header=false');
+		exit;
 	} else {
-		$save_html = "<input type='submit' value='" . __esc('Continue') . "' name='save'>";
+		$save_html = "<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' name='save'>";
 	}
 
 	print "<tr>
 		<td colspan='2' class='saveRow'>
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
-			<input type='hidden' name='drp_action' value='" . get_nfilter_request_var('drp_action') . "'>" . ($save_html != '' ? "
-			<input type='submit' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='submit' name='cancel' value='" . __esc('Return') . "'>") . "
+			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
+			<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>\n";
 
@@ -537,11 +551,54 @@ function network_edit() {
 		'description' => __('For any newly discovered Devices that are reachable using SNMP and who match a Device Rule, add them to Cacti.'),
 		'value' => '|arg1:add_to_cacti|'
 		),
+	'same_sysname' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Allow same sysName on different hosts'),
+		'description' => __('When discovering devices, allow duplicate sysnames to be added on different hosts'),
+		'value' => '|arg1:same_sysname|'
+		),
 	'rerun_data_queries' => array(
 		'method' => 'checkbox',
 		'friendly_name' => __('Rerun Data Queries'),
 		'description' => __('If a device previously added to Cacti is found, rerun its data queries.'),
 		'value' => '|arg1:rerun_data_queries|'
+		),
+	'spacern' => array(
+		'method' => 'spacer',
+		'friendly_name' => __('Notification Settings'),
+		'collapsible' => 'true'
+		),
+	'notification_enabled' => array(
+		'method' => 'checkbox',
+		'friendly_name' => __('Notification Enabled'),
+		'description' => __('If checked, when the Automation Network is scanned, a report will be sent to the Notification Email account..'),
+		'value' => '|arg1:notification_enabled|',
+		'default' => ''
+		),
+	'notification_email' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification Email'),
+		'description' => __('The Email account to be used to send the Notification Email to.'),
+		'value' => '|arg1:notification_email|',
+		'max_length' => '250',
+		'default' => ''
+		),
+	'notification_fromname' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification From Name'),
+		'description' => __('The Email account name to be used as the senders name for the Notification Email.  If left blank, Cacti will use the default Automation Notification Name if specified, otherwise, it will use the Cacti system default Email name'),
+		'value' => '|arg1:notification_fromname|',
+		'max_length' => '32',
+		'size' => '30',
+		'default' => ''
+		),
+	'notification_fromemail' => array(
+		'method' => 'textbox',
+		'friendly_name' => __('Notification From Email Address'),
+		'description' => __('The Email Address to be used as the senders Email for the Notification Email.  If left blank, Cacti will use the default Automation Notification Email Address if specified, otherwise, it will use the Cacti system default Email Address'),
+		'value' => '|arg1:notification_fromemail|',
+		'max_length' => '128',
+		'default' => ''
 		),
 	'spacer2' => array(
 		'method' => 'spacer',
@@ -790,6 +847,12 @@ function network_edit() {
 
 		setSchedule();
 
+		$('#notification_enabled').click(function() {
+			setNotification();
+		});
+
+		setNotification();
+
 		$('#ping_method').change(function() {
 			setPing();
 		});
@@ -797,7 +860,22 @@ function network_edit() {
 		setPing();
 	});
 
+	function setNotification() {
+		if ($('#notification_enabled').is(':checked')) {
+			$('#row_notification_email').show();
+			$('#row_notification_fromname').show();
+			$('#row_notification_fromemail').show();
+		} else {
+			$('#row_notification_email').hide();
+			$('#row_notification_fromname').hide();
+			$('#row_notification_fromemail').hide();
+		}
+	}
+
 	function setPing() {
+		$('#row_snmp_id').show();
+		$('#row_ping_method').show();
+
 		switch($('#ping_method').val()) {
 		case '0':
 			$('#row_ping_port').hide();
@@ -1010,7 +1088,7 @@ function networks() {
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		foreach ($networks as $network) {
 			if ($network['enabled'] == '') {
 				$mystat   = "<span class='disabled'>" . __('Disabled') . "</span>";
@@ -1055,17 +1133,17 @@ function networks() {
 			}
 
 			form_alternate_row('line' . $network['id'], true);
-			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . $network['name'] . '</a>', $network['id']);
-			form_selectable_cell($network['data_collector'], $network['id']);
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('automation_networks.php?action=edit&id=' . $network['id']) . '">' . html_escape($network['name']) . '</a>', $network['id']);
+			form_selectable_ecell($network['data_collector'], $network['id']);
 			form_selectable_cell($sched_types[$network['sched_type']], $network['id']);
-			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'text-align:right;');
-			form_selectable_cell($mystat, $network['id'], '', 'text-align:right;');
-			form_selectable_cell($progress, $network['id'], '', 'text-align:right;');
-			form_selectable_cell(number_format_i18n($updown['up']) . '/' . number_format_i18n($updown['snmp']), $network['id'], '', 'text-align:right;');
-			form_selectable_cell(number_format_i18n($network['threads']), $network['id'], '', 'text-align:right;');
-			form_selectable_cell(round($network['last_runtime'],2), $network['id'], '', 'text-align:right;');
-			form_selectable_cell($network['enabled'] == '' || $network['sched_type'] == '1' ? __('N/A'):($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],0,16):substr($network['next_start'],0,16)), $network['id'], '', 'text-align:right;');
-			form_selectable_cell($network['last_started'] == '0000-00-00 00:00:00' ? 'Never':substr($network['last_started'],0,16), $network['id'], '', 'text-align:right;');
+			form_selectable_cell(number_format_i18n($network['total_ips']), $network['id'], '', 'right');
+			form_selectable_cell($mystat, $network['id'], '', 'right');
+			form_selectable_cell($progress, $network['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($updown['up']) . '/' . number_format_i18n($updown['snmp']), $network['id'], '', 'right');
+			form_selectable_cell(number_format_i18n($network['threads']), $network['id'], '', 'right');
+			form_selectable_cell(round($network['last_runtime'],2), $network['id'], '', 'right');
+			form_selectable_cell($network['enabled'] == '' || $network['sched_type'] == '1' ? __('N/A'):($network['next_start'] == '0000-00-00 00:00:00' ? substr($network['start_at'],0,16):substr($network['next_start'],0,16)), $network['id'], '', 'right');
+			form_selectable_cell($network['last_started'] == '0000-00-00 00:00:00' ? __('Never'):substr($network['last_started'],0,16), $network['id'], '', 'right');
 			form_checkbox_cell($network['name'], $network['id']);
 			form_end_row();
 		}
@@ -1074,7 +1152,7 @@ function networks() {
 	}
 	html_end_box(false);
 
-	if (sizeof($networks)) {
+	if (cacti_sizeof($networks)) {
 		/* put the nav bar on the bottom as well */
 		print $nav;
 	}
@@ -1098,7 +1176,7 @@ function networks_filter() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Networks');?>
@@ -1107,7 +1185,7 @@ function networks_filter() {
 						<select id='rows' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 							<?php
-							if (sizeof($item_rows)) {
+							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
 									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
 								}
@@ -1139,8 +1217,8 @@ function networks_filter() {
 					</td>
 					<td>
 						<span>
-							<input type='button' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
-							<input type='button' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' title='<?php print __esc('Search');?>' value='<?php print __esc('Go');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' title='<?php print __esc('Clear Filtered');?>' value='<?php print __esc('Clear');?>'>
 						</span>
 					</td>
 				</tr>

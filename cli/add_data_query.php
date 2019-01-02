@@ -23,23 +23,23 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* We are not talking to the browser */
-$no_http_headers = true;
-
-include(dirname(__FILE__).'/../include/global.php');
-include_once($config['base_path'].'/lib/api_automation_tools.php');
-include_once($config['base_path'].'/lib/data_query.php');
+require(__DIR__ . '/../include/cli_check.php');
+require_once($config['base_path'] . '/lib/api_automation.php');
+require_once($config['base_path'] . '/lib/api_data_source.php');
+require_once($config['base_path'] . '/lib/api_graph.php');
+require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/data_query.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/snmp.php');
+require_once($config['base_path'] . '/lib/sort.php');
+require_once($config['base_path'] . '/lib/template.php');
+require_once($config['base_path'] . '/lib/utility.php');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	$displayHosts 		= false;
 	$displayDataQueries = false;
 	$quietMode			= false;
@@ -64,15 +64,15 @@ if (sizeof($parms)) {
 			case '--host-id':
 				$host_id = trim($value);
 				if (!is_numeric($host_id)) {
-					echo "ERROR: You must supply a valid host-id to run this script!\n";
+					print "ERROR: You must supply a valid host-id to run this script!\n";
 					exit(1);
 				}
-	
+
 				break;
 			case '--data-query-id':
 				$data_query_id = $value;
 				if (!is_numeric($data_query_id)) {
-					echo "ERROR: You must supply a numeric data-query-id for all hosts!\n";
+					print "ERROR: You must supply a numeric data-query-id for all hosts!\n";
 					exit(1);
 				}
 
@@ -97,7 +97,7 @@ if (sizeof($parms)) {
 							$reindex_method = DATA_QUERY_AUTOINDEX_FIELD_VERIFICATION;
 							break;
 						default:
-							echo "ERROR: You must supply a valid reindex method for all hosts!\n";
+							print "ERROR: You must supply a valid reindex method for all hosts!\n";
 							exit(1);
 					}
 				}
@@ -106,12 +106,12 @@ if (sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			case '--list-hosts':
 				$displayHosts = true;
 				break;
@@ -122,7 +122,7 @@ if (sizeof($parms)) {
 				$quietMode = true;
 				break;
 			default:
-				echo "ERROR: Invalid Argument: ($arg)\n\n";
+				print "ERROR: Invalid Argument: ($arg)\n\n";
 				display_help();
 				exit(1);
 		}
@@ -145,17 +145,17 @@ if (sizeof($parms)) {
 	 * for update / insert options
 	 */
 	if (!isset($host_id)) {
-		echo "ERROR: You must supply a valid host-id for all hosts!\n";
+		print "ERROR: You must supply a valid host-id for all hosts!\n";
 		exit(1);
 	}
 
 	if (!isset($data_query_id)) {
-		echo "ERROR: You must supply a valid data-query-id for all hosts!\n";
+		print "ERROR: You must supply a valid data-query-id for all hosts!\n";
 		exit(1);
 	}
 
 	if (!isset($reindex_method)) {
-		echo "ERROR: You must supply a valid reindex-method for all hosts!\n";
+		print "ERROR: You must supply a valid reindex-method for all hosts!\n";
 		exit(1);
 	}
 
@@ -165,7 +165,7 @@ if (sizeof($parms)) {
 	 */
 	$host_name = db_fetch_cell('SELECT hostname FROM host WHERE id = ' . $host_id);
 	if (!isset($host_name)) {
-		echo "ERROR: Unknown Host Id ($host_id)\n";
+		print "ERROR: Unknown Host Id ($host_id)\n";
 		exit(1);
 	}
 
@@ -174,7 +174,7 @@ if (sizeof($parms)) {
 	 */
 	$data_query_name = db_fetch_cell('SELECT name FROM snmp_query WHERE id = ' . $data_query_id);
 	if (!isset($data_query_name)) {
-		echo "ERROR: Unknown Data Query Id ($data_query_id)\n";
+		print "ERROR: Unknown Data Query Id ($data_query_id)\n";
 		exit(1);
 	}
 
@@ -184,14 +184,14 @@ if (sizeof($parms)) {
 	$exists_already = db_fetch_cell("SELECT host_id FROM host_snmp_query WHERE host_id=$host_id AND snmp_query_id=$data_query_id AND reindex_method=$reindex_method");
 	if ((isset($exists_already)) &&
 		($exists_already > 0)) {
-		echo "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "ERROR: Data Query is already associated for host: ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
 		exit(1);
 	} else {
-		db_execute('REPLACE INTO host_snmp_query 
-			(host_id,snmp_query_id,reindex_method) 
-			VALUES (' . 
-				$host_id        . ',' . 
-				$data_query_id  . ',' . 
+		db_execute('REPLACE INTO host_snmp_query
+			(host_id,snmp_query_id,reindex_method)
+			VALUES (' .
+				$host_id        . ',' .
+				$data_query_id  . ',' .
 				$reindex_method . ')');
 
 		/* recache snmp data */
@@ -199,10 +199,10 @@ if (sizeof($parms)) {
 	}
 
 	if (is_error_message()) {
-		echo "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "ERROR: Failed to add this data query for host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
 		exit(1);
 	} else {
-		echo "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
+		print "Success - Host ($host_id: $host_name) data query ($data_query_id: $data_query_name) reindex method ($reindex_method: " . $reindex_types[$reindex_method] . ")\n";
 		exit;
 	}
 } else {
@@ -212,25 +212,25 @@ if (sizeof($parms)) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
-	echo "Cacti Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
+	$version = get_cacti_cli_version();
+	print "Cacti Add Data Query Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]\n\n";
-	echo "Required Options:\n";
-	echo "    --host-id         the numerical ID of the host\n";
-	echo "    --data-query-id   the numerical ID of the data_query to be added\n";
-	echo "    --reindex-method  the reindex method to be used for that data query\n";
-	echo "                      0|None   = no reindexing\n";
-	echo "                      1|Uptime = Uptime goes Backwards\n";
-	echo "                      2|Index  = Index Count Changed\n";
-	echo "                      3|Fields = Verify all Fields\n\n";
-	echo "List Options:\n";
-	echo "    --list-hosts\n";
-	echo "    --list-data-queries\n";
-	echo "    --quiet - batch mode value return\n\n";
-	echo "If the data query was already associated, it will be reindexed.\n\n";
+	print "\nusage: add_data_query.php --host-id=[ID] --data-query-id=[dq_id] --reindex-method=[method] [--quiet]\n\n";
+	print "Required Options:\n";
+	print "    --host-id         the numerical ID of the host\n";
+	print "    --data-query-id   the numerical ID of the data_query to be added\n";
+	print "    --reindex-method  the reindex method to be used for that data query\n";
+	print "                      0|None   = no reindexing\n";
+	print "                      1|Uptime = Uptime goes Backwards\n";
+	print "                      2|Index  = Index Count Changed\n";
+	print "                      3|Fields = Verify all Fields\n\n";
+	print "List Options:\n";
+	print "    --list-hosts\n";
+	print "    --list-data-queries\n";
+	print "    --quiet - batch mode value return\n\n";
+	print "If the data query was already associated, it will be reindexed.\n\n";
 }

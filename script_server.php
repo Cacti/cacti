@@ -22,12 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
 
 declare(ticks = 1);
 
@@ -64,7 +59,6 @@ if (function_exists('pcntl_signal')) {
 }
 
 error_reporting(0);
-include_once(dirname(__FILE__) . '/include/global.php');
 
 /* define STDOUT/STDIN file descriptors if not running under CLI */
 if (php_sapi_name() != 'cli') {
@@ -103,7 +97,7 @@ if ($_SERVER['argc'] >= 2) {
 	else
 		if (($_SERVER['argv'][1] == 'cmd.php') || ($_SERVER['argv'][1] == 'cmd'))
 			$environ = 'cmd';
-		elseif ($_SERVER['argv'][1] == 'realtime') 
+		elseif ($_SERVER['argv'][1] == 'realtime')
 			$environ = 'realtime';
 		else
 			$environ = 'other';
@@ -148,7 +142,7 @@ while (1) {
 		$input_string = trim($input_string);
 
 		if (substr($input_string,0,4) == 'quit') {
-			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting\n');
+			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
 			fflush(STDOUT);
 			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
 			db_close();
@@ -170,7 +164,7 @@ while (1) {
 						break;
 					case 1:
 						/* cut off function as second part of input string and keep rest for further parsing */
-						$function = trim(substr($input_string,0,$pos));
+						$function = trim(substr($input_string,0,$pos), "' ");
 						$input_string = trim(strchr($input_string, ' ')) . ' ';
 						break;
 					case 2:

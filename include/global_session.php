@@ -22,7 +22,39 @@
  +-------------------------------------------------------------------------+
 */
 
-global $config, $refresh;
+global $config, $refresh, $messages;
+
+if (isset($_SESSION['automation_message']) && $_SESSION['automation_message'] != '') {
+	$messages['automation_message'] = array(
+		'message' => $_SESSION['automation_message'],
+		'type' => 'info'
+	);
+	kill_session_var('automation_message');
+}
+
+if (isset($_SESSION['clog_message']) && $_SESSION['clog_message'] != '') {
+	$messages['clog_message'] = array(
+		'message' => $_SESSION['clog_message'],
+		'type' => 'info'
+	);
+	kill_session_var('clog_message');
+}
+
+if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
+	$messages['clog_error'] = array(
+		'message' => $_SESSION['clog_error'],
+		'type' => 'error'
+	);
+	kill_session_var('clog_error');
+}
+
+if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
+	$messages['reports_message'] = array(
+		'message' => $_SESSION['reports_message'],
+		'type' => 'info'
+	);
+	kill_session_var('reports_message');
+}
 
 $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
@@ -65,11 +97,11 @@ if (isset($_SESSION['refresh'])) {
 	unset($_SESSION['refresh']);
 } elseif (isset($refresh) && is_array($refresh)) {
 	$myrefresh['seconds'] = $refresh['seconds'];
-	$myrefresh['page']    = sanitize_uri(strpos($refresh['page'], '?') ? '&':'?' . 'header=false');
+	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($refresh['page']));
 	$refreshIsLogout      = 'false';
 } elseif (isset($refresh)) {
 	$myrefresh['seconds'] = $refresh;
-	$myrefresh['page']    = sanitize_uri($_SERVER['REQUEST_URI'] . (strpos($_SERVER['REQUEST_URI'], '?') ? '&':'?') . 'header=false');
+	$myrefresh['page']    = sanitize_uri(appendHeaderSuppression($_SERVER['REQUEST_URI']));
 	$refreshIsLogout      = 'false';
 } elseif (read_config_option('auth_cache_enabled') == 'on' && isset($_COOKIE['cacti_remembers'])) {
 	$myrefresh['seconds'] = 99999999;
@@ -90,55 +122,13 @@ if (isset($_SESSION['refresh'])) {
 } ?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
+	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
 	var theme='<?php print get_selected_theme();?>';
 	var refreshIsLogout=<?php print $refreshIsLogout;?>;
 	var refreshPage='<?php print $myrefresh['page'];?>';
 	var refreshMSeconds=<?php print $myrefresh['seconds']*1000;?>;
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
-	var searchFilter='<?php print __('Enter a search term');?>';
-	var searchRFilter='<?php print __('Enter a regular expression');?>';
-	var noFileSelected='<?php print __('No file selected');?>';
-	var timeGraphView='<?php print __('Time Graph View');?>';
-	var filterSettingsSaved='<?php print __('Filter Settings Saved');?>';
-	var spikeKillResuls='<?php print __('SpikeKill Results');?>';
-	var utilityView='<?php print __('Utility View');?>';
-	var realtimeClickOn='<?php print __('Click to view just this Graph in Realtime');?>';
-	var realtimeClickOff='<?php print __('Click again to take this Graph out of Realtime');?>';
-	var treeView='<?php print __('Tree View');?>';
-	var listView='<?php print __('List View');?>';
-	var previewView='<?php print __('Preview View');?>';
-	var cactiHome='<?php print __('Cacti Home');?>';
-	var cactiProjectPage='<?php print __('Cacti Project Page');?>';
-	var cactiCommunityForum='<?php print __('Cacti Community Forum');?>';
-	var reportABug='<?php print __('Report a bug');?>';
-	var aboutCacti='<?php print __('About Cacti');?>';
-	var spikeKillResults='<?php print __esc('SpikeKill Results');?>';
-	var showHideFilter='<?php print __esc('Click to Show/Hide Filter');?>';
-	var clearFilterTitle='<?php print __esc('Clear Current Filter');?>';
-	var clipboard='<?php print __esc('Clipboard');?>';
-	var clipboardID='<?php print __esc('Clipboard ID');?>';
-	var clipboardNotAvailable='<?php print __esc('Copy operation is unavailable at this time');?>';
-	var clipboardCopyFailed='<?php print __esc('Failed to find data to copy!');?>';
-	var clipboardUpdated='<?php print __esc('Clipboard has been updated');?>';
-	var clipboardNotUpdated='<?php print __esc('Sorry, your clipboard could not be updated at this time');?>';
-	var defaultSNMPSecurityLevel='<?php print read_config_option('snmp_security_level');?>';
-	var defaultSNMPAuthProtocol='<?php print read_config_option('snmp_auth_protocol');?>';
-	var defaultSNMPPrivProtocol='<?php print read_config_option('snmp_priv_protocol');?>';
-	var passwordPass='<?php print __('Passphrase length meets 8 character minimum');?>';
-	var passwordTooShort='<?php print __('Passphrase too short');?>';
-	var passwordMatchTooShort='<?php print __('Passphrase matches but too short');?>';
-	var passwordNotMatchTooShort='<?php print __('Passphrase too short and not matching');?>';
-	var passwordMatch='<?php print __('Passphrases match');?>';
-	var passwordNotMatch='<?php print __('Passphrases do not match');?>';
-	var errorOnPage='<?php print __('Sorry, we could not process your last action.');?>';
-	var errorNumberPrefix='<?php print __('Error:');?>';
-	var errorReasonPrefix='<?php print __('Reason:');?>';
-	var errorReasonTitle='<?php print __('Action failed');?>';
-	var errorReasonUnexpected='<?php print __('The response to the last action was unexpected.');?>';
-	var sessionMessageTitle='<?php print __('Operation successful');?>';
-	var sessionMessageSave='<?php print __('The Operation was successful.  Details are below.');?>';
 	var sessionMessage=<?php print display_output_messages(false);?>;
-	var sessionMessageOk='<?php print __('Ok');?>';
-	var sessionMessagePause='<?php print __('Pause');?>';
+	var csrfMagicToken='<?php print 'sid:' . csrf_hash(session_id());?>';
 </script>

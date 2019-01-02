@@ -186,7 +186,7 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 		$url .= '&' . $variable . '=' . $value;
 	}
 
-	$fgc_contextoption = get_default_contextoption(5);
+	$fgc_contextoption = get_default_contextoption();
 	$fgc_context       = stream_context_create($fgc_contextoption);
 	$output            = @file_get_contents($url, false, $fgc_context);
 }
@@ -222,6 +222,10 @@ if ($output !== false && $output != '') {
 	$error = ob_get_contents();
 
 	ob_end_clean();
+
+	if (read_config_option('stats_poller') == '') {
+		$error = __('The Cacti Poller has not run yet.');
+	}
 
 	if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
 		$image = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);

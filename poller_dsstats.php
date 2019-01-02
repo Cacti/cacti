@@ -26,8 +26,10 @@
 /* tick use required as of PHP 4.3.0 to accomodate signal handling */
 declare(ticks = 1);
 
-/* we are not talking to the browser */
-$no_http_headers = true;
+require(__DIR__ . '/include/cli_check.php');
+require_once($config['base_path'] . '/lib/poller.php');
+require_once($config['base_path'] . '/lib/rrd.php');
+require_once($config['base_path'] . '/lib/dsstats.php');
 
 /*  display_version - displays version information */
 function display_version() {
@@ -68,17 +70,6 @@ function sig_handler($signo) {
 	}
 }
 
-/* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
-/* include important functions */
-include_once('./include/global.php');
-include_once($config['base_path'] . '/lib/poller.php');
-include_once($config['base_path'] . '/lib/rrd.php');
-include_once($config['base_path'] . '/lib/dsstats.php');
-
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);
@@ -87,7 +78,7 @@ $debug          = false;
 $forcerun       = false;
 $forcerun_maint = false;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -159,8 +150,10 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	db_execute("INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		(SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
-		FROM (SELECT local_data_id, rrd_name, `value` FROM data_source_stats_hourly_cache WHERE `value` IS NOT NULL) AS sally
-		GROUP BY local_data_id, rrd_name)
+		 FROM data_source_stats_hourly_cache 
+		 WHERE `value` IS NOT NULL
+		 GROUP BY local_data_id, rrd_name
+		)
 		ON DUPLICATE KEY UPDATE average=VALUES(average), peak=VALUES(peak)");
 
 	log_dsstats_statistics('HOURLY');

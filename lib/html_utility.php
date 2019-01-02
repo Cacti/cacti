@@ -41,7 +41,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 	$check_fields = array('id', 'value', 'array', 'friendly_name', 'description', 'sql', 'sql_print', 'form_id', 'items', 'tree_id');
 
 	/* loop through each available field */
-	if (sizeof($form_array)) {
+	if (cacti_sizeof($form_array)) {
 		foreach ($form_array as $field_name => $field_array) {
 			/* loop through each sub-field that we are going to check for variables */
 			foreach ($check_fields as $field_to_check) {
@@ -72,7 +72,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
 
-							if (!sizeof($matches)) {
+							if (!cacti_sizeof($matches)) {
 								$form_array[$field_name][$field_to_check] = $string;
 								break;
 							}
@@ -149,6 +149,16 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	}
 }
 
+/* form_selectable_ecell - a wrapper to form_selectable_cell that escapes the contents
+   @arg $contents - the readable portion of the
+   @arg $id - the id of the object that will be highlighted
+   @arg $width - the width of the table element
+   @arg $style_or_class - the style or class to apply to the table element
+   @arg $title - optional title for the column */
+function form_selectable_ecell($contents, $id, $width = '', $style_or_class = '', $title = '') {
+	form_selectable_cell(html_escape($contents), $id, $width, $style_or_class, $title);
+}
+
 /* form_selectable_cell - format's a table row such that it can be highlighted using cacti's js actions
    @arg $contents - the readable portion of the
    @arg $id - the id of the object that will be highlighted
@@ -192,7 +202,7 @@ function form_selectable_cell($contents, $id, $width = '', $style_or_class = '',
    @arg $title - the text that will be displayed if your hover over the checkbox */
 function form_checkbox_cell($title, $id, $disabled = false) {
 	print "\t<td class='checkbox' style='width:1%;'>\n";
-	print "\t\t<input type='checkbox' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? "disabled='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
+	print "\t\t<input type='checkbox' title='" . html_escape($title) . "' class='checkbox" . ($disabled ? ' disabled':'') . "' " . ($disabled ? "disabled='disabled'":'') . " id='chk_" . $id . "' name='chk_" . $id . "'><label class='formCheckboxLabel' for='chk_" . $id . "'></label>\n";
 	print "\t</td>\n";
 }
 
@@ -209,9 +219,9 @@ function form_confim_buttons($post_variable, $item_array, $save_message, $return
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($item_array) ? serialize($item_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . $post_variable . "'>" . ($return ? "
-			<input type='button' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>
 			":"
-			<input type='button' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' value='" . __esc('Continue') ."' title='$save_message'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') ."' title='$save_message'>") . "
 		</td>
 	</tr>\n";
 }
@@ -250,6 +260,12 @@ function get_checkbox_style() {
 function set_default_action($default = '') {
 	if (!isset_request_var('action')) {
 		set_request_var('action', $default);
+	} elseif (is_array(get_nfilter_request_var('action'))) {
+		if (read_config_option('log_validation') == 'on') {
+			cacti_log('WARNING: Request variable \'action\' was passed as array in ' . $_SERVER['SCRIPT_NAME'] . '.', false, 'WEBUI');
+		}
+
+		set_request_var('action', $_REQUEST['action'][0]);
 	} else {
 		set_request_var('action', $_REQUEST['action']);
 	}
@@ -309,7 +325,7 @@ function set_request_var($variable, $value) {
 
 /* get_request_var - returns the current value of a PHP $_REQUEST variable, optionally
      returning a default value if the request variable does not exist.  When Cacti
-     is set to 'developer_mode', it will log all instances where a request variable
+     has 'log_validation' set on, it will log all instances where a request variable
      has not first been filtered.
    @arg $name - the name of the request variable. this should be a valid key in the
      $_REQUEST array
@@ -319,12 +335,12 @@ function set_request_var($variable, $value) {
 function get_request_var($name, $default = '') {
 	global $_CACTI_REQUEST;
 
-	$developer = read_config_option('developer_mode');
+	$log_validation = read_config_option('log_validation');
 
 	if (isset($_CACTI_REQUEST[$name])) {
 		return $_CACTI_REQUEST[$name];
 	} elseif (isset_request_var($name)) {
-		if ($developer == 'on') {
+		if ($log_validation == 'on') {
 			html_log_input_error($name);
 		}
 
@@ -427,7 +443,7 @@ function get_filter_request_var($name, $filter = FILTER_VALIDATE_INT, $options =
 				} else {
 					$value = false;
 				}
-			} elseif (!sizeof($options)) {
+			} elseif (!cacti_sizeof($options)) {
 				$value = filter_var($_REQUEST[$name], $filter);
 			} else {
 				$value = filter_var($_REQUEST[$name], $filter, $options);
@@ -526,7 +542,7 @@ function get_request_var_post($name, $default = '') {
    allows for the concept of global session variables such as
    'sess_default_rows'.
 
-   Validateion 'filter' follow PHP conventions including:
+   Validation 'filter' follow PHP conventions including:
 
      FILTER_VALIDATE_BOOLEAN          - Validate that the variable is boolean
      FILTER_VALIDATE_EMAIL            - Validate that the variable is an email
@@ -560,7 +576,7 @@ function validate_store_request_vars($filters, $sess_prefix = '') {
 	$changed = 0;
 	$custom_error = '';
 
-	if (sizeof($filters)) {
+	if (cacti_sizeof($filters)) {
 		foreach($filters as $variable => $options) {
 			// Establish the session variable first
 			if ($sess_prefix != '') {
@@ -871,7 +887,7 @@ function get_colored_device_status($disabled, $status) {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should begin */
 function get_current_graph_start() {
-	if (isset($_SESSION['sess_current_timespan_begin_now'])) {
+	if (isset($_SESSION['sess_current_timespan_begin_now']) && is_numeric($_SESSION['sess_current_timespan_begin_now'])) {
 		return $_SESSION['sess_current_timespan_begin_now'];
 	} else {
 		return '-' . DEFAULT_TIMESPAN;
@@ -882,7 +898,7 @@ function get_current_graph_start() {
      the timespan selector
    @returns - the number of seconds relative to now where the graph should end */
 function get_current_graph_end() {
-	if (isset($_SESSION['sess_current_timespan_end_now'])) {
+	if (isset($_SESSION['sess_current_timespan_end_now']) && is_numeric($_SESSION['sess_current_timespan_end_now'])) {
 		return $_SESSION['sess_current_timespan_end_now'];
 	} else {
 		return '0';

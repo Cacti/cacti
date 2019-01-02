@@ -28,19 +28,10 @@ function upgrade_to_0_8_8() {
 		db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `host_id` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0'");
 	}
 
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `poller_output`"), "Key_name", "Key_name");
-	if (in_array("PRIMARY", $_keys)) {
-		db_install_execute("ALTER TABLE `poller_output` DROP PRIMARY KEY");
-	}
-	/* now the KEY we want to create is definitively NOT present 
-	 * MySQL < 5.00.60 requires a different syntax, this was fixed in MySQL 5.00.60, so take care */
-	db_install_execute("ALTER TABLE `poller_output` ADD PRIMARY KEY (`local_data_id`, `rrd_name`, `time`) /*!50060 USING BTREE */");
+	db_install_add_key('poller_output', 'key', 'PRIMARY', array('local_data_id', 'rrd_name', 'time'));
 
 	/* speed up user management */
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `user_log`"), "Key_name", "Key_name");
-	if (!in_array("user_id", $_keys)) {
-		db_install_execute("ALTER TABLE `user_log` ADD KEY `user_id` (`user_id`)");
-	}
+	db_install_add_key('user_log', 'key', 'user_id', array('user_id'));
 
 	/* Plugin Architecture
 	 * be prepared to find those data already present
@@ -104,8 +95,5 @@ function upgrade_to_0_8_8() {
 	db_install_execute("REPLACE INTO user_auth_realm VALUES (101,1)");
 
 	/* create index on data_template_data on data_input_id */
-	$_keys = array_rekey(db_fetch_assoc("SHOW KEYS FROM `data_template_data`"), "Key_name", "Key_name");
-	if (!in_array("data_input_id", $_keys)) {
-		db_install_execute("ALTER TABLE `data_template_data` ADD KEY `data_input_id` (`data_input_id`)");
-	}
+	db_install_add_key('data_template_data', 'key', 'data_input_id', array('data_input_id'));
 }

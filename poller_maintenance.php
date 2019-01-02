@@ -23,13 +23,13 @@
  +-------------------------------------------------------------------------+
 */
 
-/* we are not talking to the browser */
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
-if (!isset ($_SERVER['argv'][0]) || isset ($_SERVER['REQUEST_METHOD']) || isset ($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+require(__DIR__ . '/include/cli_check.php');
+require_once($config['library_path'] . '/api_data_source.php');
+require_once($config['library_path'] . '/api_device.php');
+require_once($config['library_path'] . '/api_graph.php');
+include_once($config['library_path'] . '/poller.php');
+require_once($config['library_path'] . '/rrd.php');
+require_once($config['library_path'] . '/utility.php');
 
 /* let PHP run just as long as it has to */
 ini_set('max_execution_time', '0');
@@ -41,9 +41,7 @@ chdir($dir);
 /* record the start time */
 $poller_start = microtime(true);
 
-include ('./include/global.php');
-
-global $config, $database_default, $archived, $purged;
+global $config, $database_default, $archived, $purged, $disable_log_rotation;
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -54,7 +52,7 @@ $force    = false;
 $archived = 0;
 $purged   = 0;
 
-if (sizeof($parms)) {
+if (cacti_sizeof($parms)) {
 	foreach ($parms as $parameter) {
 		if (strpos($parameter, '=')) {
 			list($arg, $value) = explode('=', $parameter);
@@ -81,7 +79,7 @@ if (sizeof($parms)) {
 				$debug = true;
 				break;
 			default :
-				echo 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
+				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
 				exit;
 		}
@@ -108,11 +106,11 @@ if ($config['poller_id'] == 1) {
 				ORDER BY name
 				LIMIT 1000');
 
-			if (sizeof($file_array) == 0) {
+			if (cacti_sizeof($file_array) == 0) {
 				break;
 			}
 
-			if (sizeof($file_array) || $force) {
+			if (cacti_sizeof($file_array) || $force) {
 				/* there's something to do for us now */
 				remove_files($file_array);
 
@@ -144,8 +142,13 @@ if ($config['poller_id'] == 1) {
 // Check the realtime cache and poller
 realtime_purge_cache();
 
+// Remove deleted devices
+api_device_purge_deleted_devices();
+
 // Check whether the cacti log.  Rotations takes place around midnight
-if (read_config_option('logrotate_enabled') == 'on') {
+if (isset($disable_log_rotation) && $disable_log_rotation == true) {
+	// Skip log rotation as it's handled by logrotate.d
+} elseif (read_config_option('logrotate_enabled') == 'on') {
 	$frequency  = read_config_option('logrotate_frequency');
 	if (empty($frequency)) {
 		$frequency = 1;
@@ -177,7 +180,7 @@ if (read_config_option('logrotate_enabled') == 'on') {
 		. ', Now: ' . $date_now->format('Y-m-d H:i:s')
 		. ', Next: ' . $date_next->format('Y-m-d H:i:s'), true, 'MAINT', POLLER_VERBOSITY_HIGH);
 
-	if ($date_next < $date_now) {
+	if ($date_next < $date_now || $force) {
 		logrotate_rotatenow();
 	}
 }
@@ -216,22 +219,67 @@ function realtime_purge_cache() {
  * logrotate_rotatenow
  * Rotates the cacti log
  */
-function logrotate_rotatenow () {
+function logrotate_rotatenow() {
 	global $config;
 
 	$poller_start = microtime(true);
 
+	$logs = array();
 	$log = read_config_option('path_cactilog');
-	if ($log == '') {
+	if (empty($log)) {
 		$log = $config['base_path'] . '/log/cacti.log';
+	}
+	$logs['Cacti'] = $log;
+
+	$log = read_config_option('path_stderrlog');
+	if (!empty($log)) {
+		$logs['Cacti StdErr'] = $log;
 	}
 
 	$run_time = time();
 	set_config_option('logrotate_lastrun', $run_time);
 
 	$date     = new DateTime();
-	$date_log = $date->setTimestamp($run_time)->modify('-1day');
+	$date->setTimestamp($run_time)->modify('-1day');
+
+	$rotated = 0;
+	$cleaned = 0;
+
+	$days = read_config_option('logrotate_retain');
+	if ($days == '' || $days < 0) {
+		$days = 7;
+	}
+
+	if ($days > 365) {
+		$days = 365;
+	}
+
+	foreach ($logs as $name => $log) {
+		$rotated += logrotate_file_rotate($name, $log, $date);
+		$cleaned += logrotate_file_clean($name, $log, $date, $days);
+	}
+
+	$cleaned += logrotate_file_clean($name, $log, $date, $days);
+
+	/* record the start time */
+	$poller_end = microtime(true);
+	$string = sprintf('LOGMAINT STATS: Time:%4.4f, Rotated:%d, Removed:%d, Days Retained:%d', ($poller_end - $poller_start), $rotated, $cleaned, $days);
+	cacti_log($string, true, 'SYSTEM');
+}
+
+/* logrotate_file_rotate()
+ * rotates the specified log file, appending date given
+ */
+function logrotate_file_rotate($name, $log, $date) {
+	if (empty($log)) {
+		return 0;
+	}
+
 	clearstatcache();
+	if (!file_exists($log)) {
+		cacti_log('Cacti Log Rotation - Skipped missing ' . $name . ' Log : ' . $log, true, 'MAINT');
+		return 0;
+	}
 
 	if (is_writable(dirname($log) . '/') && is_writable($log)) {
 		$perms = octdec(substr(decoct( fileperms($log) ), 2));
@@ -239,7 +287,7 @@ function logrotate_rotatenow () {
 		$group = filegroup($log);
 
 		if ($owner !== false) {
-			$ext = $date_log->format('Ymd');
+			$ext = $date->format('Ymd');
 
 			if (file_exists($log . '-' . $ext)) {
 				$ext_inc = 1;
@@ -254,76 +302,74 @@ function logrotate_rotatenow () {
 				chown($log, $owner);
 				chgrp($log, $group);
 				chmod($log, $perms);
-				cacti_log('Cacti Log Rotation - Created Log ' . basename($log) . '-' . $ext, true, 'MAINT');
+				cacti_log('Cacti Log Rotation - Created ' . $name . ' Log : ' . basename($log) . '-' . $ext, true, 'MAINT');
+				return 1;
 			} else {
-				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . basename($log) . ' to ' . basename($log) . '-' . $ext, true, 'MAINT');
+				cacti_log('Cacti Log Rotation - ERROR: Could not rename ' . $name . ' Log "' . basename($log) . '" to "' . basename($log) . '-' . $ext . '"', true, 'MAINT');
 			}
 		} else {
-			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your log directory', true, 'MAINT');
+			cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name  . ' Log directory : ' . basename($log), true, 'MAINT');
 		}
 	} else {
-		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Directory / Log not writable.', true, 'MAINT');
+		cacti_log('Cacti Log Rotation - ERROR: Permissions issue.  Please check your ' . $name . ' Log as directory or file are not writable : ' . $log, true, 'MAINT');
 	}
-
-	logrotate_cleanold();
-
-	/* record the start time */
-	$poller_end = microtime(true);
-	$string = sprintf('LOGMAINT STATS: Time:%4.4f', ($poller_end - $poller_start));
-	cacti_log($string, true, 'SYSTEM');
+	return 0;
 }
 
 /*
- * logrotate_cleanold
+ * logrotate_file_clean
  * Cleans up any old log files that should be removed
  */
-function logrotate_cleanold () {
+function logrotate_file_clean($name, $log, $date, $rotation) {
 	global $config;
 
-	$logfile = read_config_option('path_cactilog');
-	if ($logfile == '') {
-		$logfile = $config['base_path'] . '/log/cacti.log';
+	if (empty($log)) {
+		return false;
 	}
 
-	$baselogfile = basename($logfile) . '-';
-	$baseloglen  = strlen($baselogfile);
-	$dir = scandir(dirname($logfile));
-
-	$r = read_config_option('logrotate_retain');
-	if ($r == '' || $r < 0) {
-		$r = 7;
+	if ($rotation <= 0) {
+		return false;
 	}
 
-	if ($r > 365) {
-		$r = 365;
-	}
+	$baselogdir  = dirname($log) . '/';
+	$baselogname = basename($log);
 
-	if ($r == 0) {
-		return;
-	}
-
-	if (sizeof($dir)) {
-		$run_time = time();
-		$date     = new DateTime();
-		$date_log = $date->setTimestamp($run_time)->modify('-'.$r.'day');
+	clearstatcache();
+	$dir = scandir($baselogdir);
+	if (cacti_sizeof($dir)) {
+		$date_log = clone $date;
+		$date_log->modify('-'.$rotation.'day');
 		$e = $date_log->format('Ymd');
-		cacti_log('Cacti Log Rotation - Purging all logs before '.$e, true, 'MAINT');
-		foreach ($dir as $d) {
-			if (substr($d, 0, $baseloglen) == $baselogfile && strlen($d) >= $baseloglen + 8) {
-				$f = substr($d, 10, 8);
 
-				if ($f < $e) {
-					if (is_writable(dirname($logfile) . '/' . $d)) {
-						@unlink(dirname($logfile) . '/' . $d);
-						cacti_log('Cacti Log Rotation - Purging Log : ' . $d, true, 'MAINT');
-					} else {
-						cacti_log('Cacti Log Rotation - ERROR: Can not purge log : ' . $d, true, 'MAINT');
+		cacti_log('Cacti Log Rotation - Purging all ' . $name . ' logs before '. $e, true, 'MAINT');
+
+		foreach ($dir as $d) {
+			$fileparts = explode('-', $d);
+			$matches   = false;
+
+			if (strpos($d, $baselogname) !== false) {
+				if ($fileparts > 1) {
+					foreach($fileparts as $p) {
+						// Is it in the form YYYYMMDD?
+						if (is_numeric($p) && strlen($p) == 8) {
+							$matches = true;
+							if ($p < $e) {
+								if (is_writable($baselogdir . $d)) {
+									@unlink($baselogdir . $d);
+									cacti_log('Cacti Log Rotation - Purging ' . $name  . ' Log : ' . $d, true, 'MAINT');
+								} else {
+									cacti_log('Cacti Log Rotation - ERROR: Can not purge ' . $name  . ' Log : ' . $d, true, 'MAINT');
+								}
+							} else {
+								cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
+							}
+						}
 					}
-				} else {
-					cacti_log('Cacti Log Rotation - NOTE: Not expired, keeping log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
 				}
-			} else {
-				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring : ' . $d, true, 'MAINT', POLLER_VERBOSITY_HIGH);
+			}
+
+			if ($matches) {
+				cacti_log('Cacti Log Rotation - NOTE: File not in expected naming format, ignoring ' . $name . ' Log : ' . $d, true, 'MAINT', POLLER_VERBOSITY_DEBUG);
 			}
 		}
 	}
@@ -387,10 +433,7 @@ function secpass_check_expired () {
 function remove_files($file_array) {
 	global $config, $debug, $archived, $purged;
 
-	include_once ($config['library_path'] . '/api_graph.php');
-	include_once ($config['library_path'] . '/api_data_source.php');
-
-	maint_debug('RRDClean is now running on ' . sizeof($file_array) . ' items');
+	maint_debug('RRDClean is now running on ' . cacti_sizeof($file_array) . ' items');
 
 	/* determine the location of the RRA files */
 	if (isset ($config['rra_path'])) {
@@ -453,9 +496,9 @@ function remove_files($file_array) {
 			WHERE (local_data_id=?)',
 			array($file['local_data_id']));
 
-		if (sizeof($lgis)) {
+		if (cacti_sizeof($lgis)) {
 			/* anything found? */
-			maint_debug('Processing ' . sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
+			maint_debug('Processing ' . cacti_sizeof($lgis) . ' Graphs for data source id: ' . $file['local_data_id']);
 
 			/* get them all */
 			foreach ($lgis as $item) {
@@ -476,7 +519,7 @@ function remove_files($file_array) {
 		}
 	}
 
-	maint_debug('RRDClean has finished a purge pass of ' . sizeof($file_array) . ' items');
+	maint_debug('RRDClean has finished a purge pass of ' . cacti_sizeof($file_array) . ' items');
 }
 
 function rrdclean_create_path($path) {
@@ -507,12 +550,6 @@ function rrdclean_create_path($path) {
  */
 function cleanup_ds_and_graphs() {
 	global $config;
-
-	include_once ($config['library_path'] . '/rrd.php');
-	include_once ($config['library_path'] . '/utility.php');
-	include_once ($config['library_path'] . '/api_graph.php');
-	include_once ($config['library_path'] . '/api_data_source.php');
-	include_once ($config['library_path'] . '/functions.php');
 
 	$remove_ldis = array ();
 	$remove_lgis = array ();
@@ -568,21 +605,21 @@ function cleanup_ds_and_graphs() {
 	maint_debug('removing data sources');
 	api_data_source_remove_multi($remove_ldis);
 
-	maint_debug('removed graphs:' . count($remove_lgis) . ' removed data-sources:' . count($remove_ldis));
+	maint_debug('removed graphs:' . cacti_count($remove_lgis) . ' removed data-sources:' . cacti_count($remove_ldis));
 }
 
 function maint_debug($message) {
 	global $debug;
 
 	if ($debug) {
-		echo trim($message) . "\n";
+		print trim($message) . "\n";
 	}
 }
 
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti Maintenance Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 /*
@@ -592,10 +629,10 @@ function display_version() {
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
-	echo "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
-	echo "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
-	echo "Optional:\n";
-	echo "    --force   - Force immediate execution, e.g. for testing.\n";
-	echo "    --debug   - Display verbose output during execution.\n\n";
+	print "\nusage: poller_maintenance.php [--force] [--debug]\n\n";
+	print "Cacti's maintenance poller.  This poller is repsonsible for executing periodic\n";
+	print "maintenance activities for Cacti including log rotation, deactivating accounts, etc.\n\n";
+	print "Optional:\n";
+	print "    --force   - Force immediate execution, e.g. for testing.\n";
+	print "    --debug   - Display verbose output during execution.\n\n";
 }

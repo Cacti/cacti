@@ -22,6 +22,8 @@
  +-------------------------------------------------------------------------+
 */
 
+include_once($config['base_path'] . '/lib/poller.php');
+
 /* api_device_crc_update - update hash stored in settings table to inform
    remote pollers to update their caches
    @arg $poller_id - the id of the poller impacted by hash update
@@ -35,9 +37,20 @@ function api_device_cache_crc_update($poller_id, $variable = 'poller_replicate_d
 /* api_device_remove - removes a device
    @arg $device_id - the id of the device to remove */
 function api_device_remove($device_id) {
-	$poller_id = db_fetch_cell_prepared('SELECT poller_id FROM host WHERE id = ?', array($device_id));
+	global $config;
 
-	db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id));
+	$poller_id = db_fetch_cell_prepared('SELECT poller_id
+		FROM host WHERE id = ?',
+		array($device_id));
+
+	api_plugin_hook_function('device_remove', array($device_id));
+
+	if ($poller_id == 1) {
+		db_execute_prepared('DELETE FROM host         WHERE      id = ?', array($device_id));
+	} else {
+		db_execute_prepared('UPDATE host SET deleted = "on" WHERE id = ?', array($device_id));
+	}
+
 	db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id));
 	db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($device_id));
@@ -47,19 +60,105 @@ function api_device_remove($device_id) {
 	db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'));
 	db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'));
 
-	db_execute_prepared('UPDATE data_local  SET host_id = 0 WHERE host_id = ?', array($device_id));
-	db_execute_prepared('UPDATE graph_local SET host_id = 0 WHERE host_id = ?', array($device_id));
+	if ($poller_id > 1) {
+		api_device_purge_from_remote($device_id, $poller_id);
+	}
+
+	$graphs = array_rekey(
+		db_fetch_assoc_prepared('SELECT id
+			FROM graph_local
+			WHERE host_id = ?',
+			array($device_id)),
+		'id', 'id'
+	);
+
+	if (sizeof($graphs)) {
+		api_delete_graphs($graphs);
+	}
 
 	api_device_cache_crc_update($poller_id);
 }
 
+/* api_device_purge_from_remote - removes a device from a remote data collectors
+   @arg $device_id - device id of a host
+   @arg $poller_id - the previous poller if it changed */
+function api_device_purge_from_remote($device_id, $poller_id = 0) {
+	if ($poller_id > 1) {
+		if (($rcnn_id = poller_push_to_remote_db_connect($poller_id, true)) !== false) {
+			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($device_id . ':%'), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($device_id . ':%'), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($device_id), true, $rcnn_id);
+			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($device_id), true, $rcnn_id);
+		}
+
+		db_execute_prepared('INSERT INTO poller_command
+			(poller_id, time, action, command)
+			VALUES (?, NOW(), ?, ?)',
+			array($poller_id, POLLER_COMMAND_PURGE, $device_id));
+	}
+}
+
+function api_device_purge_deleted_devices() {
+	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
+		FROM host
+		WHERE deleted = "on"
+		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-86400');
+
+	if (cacti_sizeof($devices)) {
+		foreach($devices as $d) {
+			db_execute_prepared('DELETE FROM host             WHERE      id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_graph       WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_snmp_query  WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM host_snmp_cache  WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM poller_item      WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM poller_reindex   WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM graph_tree_items WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM reports_items    WHERE host_id = ?', array($d['id'] . ':%'));
+			db_execute_prepared('DELETE FROM poller_command   WHERE command LIKE ?', array($d['id'] . ':%'));
+			db_execute_prepared('DELETE FROM data_local       WHERE host_id = ?', array($d['id']));
+			db_execute_prepared('DELETE FROM graph_local      WHERE host_id = ?', array($d['id']));
+
+			api_device_purge_from_remote($d['id'], $d['poller_id']);
+		}
+	}
+}
+
 /* api_device_remove_multi - removes multiple devices in one call
-   @arg $device_ids - an array of device id's to remove */
-function api_device_remove_multi($device_ids) {
+   @arg $device_ids - an array of device id's to remove
+   @arg $delete_type - boolean to keep data source and graphs or remove */
+function api_device_remove_multi($device_ids, $delete_type = 2) {
+	global $config;
+
 	$devices_to_delete = '';
 	$i = 0;
 
-	if (sizeof($device_ids)) {
+	if (cacti_sizeof($device_ids)) {
+		api_plugin_hook_function('device_remove', $device_ids);
+
+		$data_sources = array();
+		$graphs       = array();
+
+		$data_sources = array_rekey(
+			db_fetch_assoc('SELECT id
+				FROM data_local
+				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+			'id', 'id'
+		);
+
+		$graphs = array_rekey(
+			db_fetch_assoc('SELECT id
+				FROM graph_local
+				WHERE host_id IN (' . implode(', ', $device_ids) . ')'),
+			'id', 'id'
+		);
+
 		/* build the list */
 		foreach($device_ids as $device_id) {
 			if ($i == 0) {
@@ -72,30 +171,196 @@ function api_device_remove_multi($device_ids) {
 			db_execute_prepared('DELETE FROM poller_item    WHERE host_id = ?', array($device_id));
 			db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($device_id));
 			db_execute_prepared('DELETE FROM poller_command WHERE command LIKE ?', array($device_id . ':%'));
+
+			api_device_purge_from_remote($device_id);
+
 			$i++;
 		}
 
-		$poller_ids = array_rekey(db_fetch_assoc("SELECT DISTINCT poller_id
-			FROM host
-			WHERE id IN ($devices_to_delete)"), 'poller_id', 'poller_id');
+		$poller_ids = get_remote_poller_ids_from_devices($devices_to_delete);
 
-		db_execute("DELETE FROM host             WHERE id IN ($devices_to_delete)");
+		// handle removal or mark for removal as required
+		db_execute("DELETE FROM host WHERE id IN ($devices_to_delete) AND poller_id = 1");
+		db_execute("UPDATE host SET deleted = 'on' WHERE id IN ($devices_to_delete) AND poller_id != 1");
+
 		db_execute("DELETE FROM host_graph       WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_query  WHERE host_id IN ($devices_to_delete)");
 		db_execute("DELETE FROM host_snmp_cache  WHERE host_id IN ($devices_to_delete)");
-
 		db_execute("DELETE FROM graph_tree_items WHERE host_id IN ($devices_to_delete)");
-
 		db_execute("DELETE FROM reports_items    WHERE host_id IN ($devices_to_delete)");
 
-		/* for people who choose to leave data sources around */
-		db_execute("UPDATE data_local  SET host_id=0 WHERE host_id IN ($devices_to_delete)");
-		db_execute("UPDATE graph_local SET host_id=0 WHERE host_id IN ($devices_to_delete)");
-	}
+		if ($delete_type == 2) {
+			api_delete_graphs($graphs, $delete_type);
+		} else {
+			api_data_source_disable_multi($data_sources);
 
-	if (sizeof($poller_ids)) {
-		foreach($poller_ids as $poller_id) {
-			api_device_cache_crc_update($poller_id);
+			db_execute("UPDATE graph_local SET host_id = 0 WHERE host_id IN($devices_to_delete)");
+			db_execute("UPDATE data_local  SET host_id = 0 WHERE host_id IN($devices_to_delete)");
+		}
+
+		if (cacti_sizeof($poller_ids)) {
+			foreach($poller_ids as $poller_id) {
+				api_device_cache_crc_update($poller_id);
+			}
+		}
+	}
+}
+
+function api_device_disable_devices($device_ids) {
+	global $config;
+
+	foreach ($device_ids as $device_id) {
+		db_execute_prepared("UPDATE host
+			SET disabled = 'on', status = 0
+			WHERE id = ?",
+			array($device_id));
+
+		/* update poller cache */
+		db_execute_prepared('DELETE FROM poller_item
+			WHERE host_id = ?',
+			array($device_id));
+
+		db_execute_prepared('DELETE FROM poller_reindex
+			WHERE host_id = ?',
+			array($device_id));
+
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($device_id));
+
+		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+			db_execute_prepared("UPDATE host
+				SET disabled='on'
+				WHERE id = ?",
+				array($device_id), true, $rcnn_id);
+
+			/* update poller cache */
+			db_execute_prepared('DELETE FROM poller_item
+				WHERE host_id = ?',
+				array($device_id), true, $rcnn_id);
+
+			db_execute_prepared('DELETE FROM poller_reindex
+				WHERE host_id = ?',
+				array($device_id), true, $rcnn_id);
+		}
+	}
+}
+
+function api_device_enable_devices($device_ids) {
+	global $config;
+
+	foreach ($device_ids as $device_id) {
+		db_execute_prepared("UPDATE host
+			SET disabled = ''
+			WHERE id = ?",
+			array($device_id));
+
+		/* update poller cache */
+		$data_sources = db_fetch_assoc_prepared('SELECT id
+			FROM data_local
+			WHERE host_id = ?',
+			array($device_id));
+
+		$poller_items = $local_data_ids = array();
+
+		if (cacti_sizeof($data_sources)) {
+			foreach ($data_sources as $data_source) {
+				$local_data_ids[] = $data_source['id'];
+				$poller_items     = array_merge($poller_items, update_poller_cache($data_source['id']));
+			}
+		}
+
+		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+			db_execute_prepared("UPDATE host
+				SET disabled = ''
+				WHERE id = ?",
+				array($device_id), true, $rcnn_id);
+		}
+
+		if (cacti_sizeof($local_data_ids)) {
+			poller_update_poller_cache_from_buffer($local_data_ids, $poller_items, $poller_id);
+		}
+	}
+}
+
+function api_device_change_options($device_ids, $post) {
+	global $config, $fields_host_edit;
+
+	$previous_poller = -1;
+
+	foreach ($device_ids as $device_id) {
+		foreach ($fields_host_edit as $field_name => $field_array) {
+			if (isset($post["t_$field_name"])) {
+				if ($field_name == 'poller_id') {
+					$old_poller = db_fetch_cell_prepared('SELECT poller_id
+						FROM host
+						WHERE id = ?',
+						array($device_id));
+
+					if ($old_poller > 1 && $old_poller != get_nfilter_request_var($field_name)) {
+						$previous_poller = get_nfilter_request_var($field_name);
+
+						api_device_purge_from_remote($device_id, $old_poller);
+					}
+
+					// Update the local device and replicate
+					if ($old_poller !=  get_nfilter_request_var($field_name && get_nfilter_request_var($field_name) > 1)) {
+						api_device_replicate_out($device_id, get_nfilter_request_var($field_name));
+					}
+				}
+
+				db_execute_prepared("UPDATE host
+					SET $field_name = ?
+					WHERE id = ?",
+					array(get_nfilter_request_var($field_name), $device_id));
+
+				if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+					db_execute_prepared("UPDATE host
+						SET $field_name = ?
+						WHERE id = ?",
+						array(get_nfilter_request_var($field_name), $device_id), true, $rcnn_id);
+				}
+
+				if ($field_name == 'host_template_id') {
+					api_device_update_host_template($device_id, get_nfilter_request_var($field_name));
+				}
+			}
+		}
+
+		push_out_host($device_id);
+	}
+}
+
+function api_device_clear_statistics($device_ids) {
+	global $config;
+
+	foreach ($device_ids as $device_id) {
+		db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
+			total_polls = '0', failed_polls = '0',  availability = '100.00'
+			WHERE id = ?",
+			array($device_id));
+
+		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+			db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
+				total_polls = '0', failed_polls = '0',  availability = '100.00'
+				WHERE id = ?",
+				array($device_id), true, $rcnn_id);
+		}
+	}
+}
+
+function api_device_sync_device_templates($device_ids) {
+	global $config;
+
+	foreach ($device_ids as $device_id) {
+		$device_template_id = db_fetch_cell_prepared('SELECT host_template_id
+			FROM host
+ 			WHERE id = ?',
+			array($device_id));
+
+		if ($device_template_id > 0) {
+			api_device_update_host_template($device_id, $device_template_id);
 		}
 	}
 }
@@ -105,10 +370,19 @@ function api_device_remove_multi($device_ids) {
    @arg $data_query_id - the id of the data query to remove the mapping for
    @arg $reindex_method - the reindex method to user when adding the data query */
 function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
-    db_execute_prepared('REPLACE INTO host_snmp_query
-        (host_id, snmp_query_id, reindex_method)
-        VALUES (?, ?, ?)',
-        array($device_id, $data_query_id, $reindex_method));
+	global $config;
+
+	db_execute_prepared('REPLACE INTO host_snmp_query
+		(host_id, snmp_query_id, reindex_method)
+		VALUES (?, ?, ?)',
+		array($device_id, $data_query_id, $reindex_method));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared('REPLACE INTO host_snmp_query
+			(host_id, snmp_query_id, reindex_method)
+			VALUES (?, ?, ?)',
+			array($device_id, $data_query_id, $reindex_method), true, $rcnn_id);
+	}
 
     /* recache snmp data */
 	run_data_query($device_id, $data_query_id);
@@ -118,6 +392,8 @@ function api_device_dq_add($device_id, $data_query_id, $reindex_method) {
    @arg $device_id - the id of the device which contains the mapping
    @arg $data_query_id - the id of the data query to remove the mapping for */
 function api_device_dq_remove($device_id, $data_query_id) {
+	global $config;
+
 	db_execute_prepared('DELETE FROM host_snmp_cache
 		WHERE snmp_query_id = ?
 		AND host_id = ?',
@@ -132,6 +408,23 @@ function api_device_dq_remove($device_id, $data_query_id) {
 		WHERE data_query_id = ?
 		AND host_id = ?',
 		array($data_query_id, $device_id));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared('DELETE FROM host_snmp_cache
+			WHERE snmp_query_id = ?
+			AND host_id = ?',
+			array($data_query_id, $device_id), true, $rcnn_id);
+
+		db_execute_prepared('DELETE FROM host_snmp_query
+			WHERE snmp_query_id = ?
+			AND host_id = ?',
+			array($data_query_id, $device_id), true, $rcnn_id);
+
+		db_execute_prepared('DELETE FROM poller_reindex
+			WHERE data_query_id = ?
+			AND host_id = ?',
+			array($data_query_id, $device_id), true, $rcnn_id);
+	}
 }
 
 /* api_device_dq_change - changes a device->data query mapping
@@ -139,6 +432,8 @@ function api_device_dq_remove($device_id, $data_query_id) {
    @arg $data_query_id - the id of the data query to remove the mapping for
    @arg $reindex_method - the reindex method to use when changing the data query */
 function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
+	global $config;
+
 	db_execute_prepared('INSERT INTO host_snmp_query
 		(host_id, snmp_query_id, reindex_method)
 		VALUES (?, ?, ?)
@@ -149,6 +444,18 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
 		WHERE data_query_id = ?
 		AND host_id = ?', array($data_query_id, $device_id));
 
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared('INSERT INTO host_snmp_query
+			(host_id, snmp_query_id, reindex_method)
+			VALUES (?, ?, ?)
+			ON DUPLICATE KEY UPDATE reindex_method=VALUES(reindex_method)',
+			array($device_id, $data_query_id, $reindex_method), true, $rcnn_id);
+
+		db_execute_prepared('DELETE FROM poller_reindex
+			WHERE data_query_id = ?
+			AND host_id = ?', array($data_query_id, $device_id), true, $rcnn_id);
+	}
+
 	/* finally rerun the data query */
 	run_data_query($device_id, $data_query_id);
 }
@@ -157,27 +464,184 @@ function api_device_dq_change($device_id, $data_query_id, $reindex_method) {
    @arg $device_id - the id of the device which contains the mapping
    @arg $graph_template_id - the id of the graph template to remove the mapping for */
 function api_device_gt_remove($device_id, $graph_template_id) {
+	global $config;
+
 	db_execute_prepared('DELETE FROM host_graph
 		WHERE graph_template_id = ?
 		AND host_id = ?',
 		array($graph_template_id, $device_id));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
+		db_execute_prepared('DELETE FROM host_graph
+			WHERE graph_template_id = ?
+			AND host_id = ?',
+			array($graph_template_id, $device_id), true, $rcnn_id);
+	}
+}
+
+function api_device_replicate_out($device_id, $poller_id = 1) {
+	global $config;
+
+	$rcnn_id = poller_connect_to_remote($poller_id);
+
+	if ($rcnn_id === false) {
+		return false;
+	}
+
+	// Update poller id where applicable
+	db_execute_prepared('UPDATE host
+		SET poller_id = ?
+		WHERE id = ?',
+		array($poller_id, $device_id));
+
+	db_execute_prepared('UPDATE poller_item
+		SET poller_id = ?
+		WHERE host_id = ?',
+		array($poller_id, $device_id));
+
+	// Start Push Replication
+	$data = db_fetch_assoc_prepared('SELECT hsq.*
+		FROM host_snmp_query AS hsq
+		INNER JOIN host AS h
+		ON h.id=hsq.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_query', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pi.*
+		FROM poller_item AS pi
+		WHERE pi.host_id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'poller_item', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT h.*
+		FROM host AS h
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT hsc.*
+		FROM host_snmp_cache AS hsc
+		INNER JOIN host AS h
+		ON h.id=hsc.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'host_snmp_cache', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT pri.*
+		FROM poller_reindex AS pri
+		INNER JOIN host AS h
+		ON h.id=pri.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'poller_reindex', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dl.*
+		FROM data_local AS dl
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_local', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gl.*
+		FROM graph_local AS gl
+		INNER JOIN host AS h
+		ON h.id=gl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'graph_local', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtd.*
+		FROM data_template_data AS dtd
+		INNER JOIN data_local AS dl
+		ON dtd.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_data', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT dtr.*
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_local AS dl
+		ON dtr.local_data_id=dl.id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_template_rrd', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT gti.*
+		FROM graph_templates_item AS gti
+		INNER JOIN graph_local AS gl
+		ON gti.local_graph_id=gl.id
+		INNER JOIN host AS h
+		ON h.id=gl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'graph_templates_item', $poller_id);
+
+	$data = db_fetch_assoc_prepared('SELECT did.*
+		FROM data_input_data AS did
+		INNER JOIN data_template_data AS dtd
+		ON did.data_template_data_id=dtd.id
+		INNER JOIN data_local AS dl
+		ON dl.id=dtd.local_data_id
+		INNER JOIN host AS h
+		ON h.id=dl.host_id
+		WHERE h.id = ?',
+		array($device_id));
+	replicate_table_to_poller($rcnn_id, $data, 'data_input_data', $poller_id);
+
+	api_plugin_hook_function('replicate_out', $poller_id);
+
+	$stats = db_fetch_row_prepared('SELECT
+		SUM(CASE WHEN action=0 THEN 1 ELSE 0 END) AS snmp,
+		SUM(CASE WHEN action=1 THEN 1 ELSE 0 END) AS script,
+		SUM(CASE WHEN action=2 THEN 1 ELSE 0 END) AS server
+		FROM poller_item
+		WHERE poller_id = ?',
+		array($poller_id));
+
+	if (cacti_sizeof($stats)) {
+		db_execute_prepared('UPDATE poller
+			SET snmp = ?, script = ?, server = ?
+			WHERE id = ?',
+			array($stats['snmp'], $stats['script'], $stats['server'], $poller_id));
+	}
+
+	return true;
 }
 
 function api_device_save($id, $host_template_id, $description, $hostname, $snmp_community, $snmp_version,
 	$snmp_username, $snmp_password, $snmp_port, $snmp_timeout, $disabled,
 	$availability_method, $ping_method, $ping_port, $ping_timeout, $ping_retries,
-	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id, $max_oids, $device_threads, $poller_id = 1, $site_id = 1, $external_id = '') {
+	$notes, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_engine_id,
+	$max_oids = 5, $device_threads = 1, $poller_id = 1, $site_id = 1, $external_id = '', $location = '') {
 	global $config;
 
 	include_once($config['base_path'] . '/lib/utility.php');
 	include_once($config['base_path'] . '/lib/variables.php');
 	include_once($config['base_path'] . '/lib/data_query.php');
 
+	if ($id > 0) {
+		$previous_poller = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($id));
+	} else {
+		$previous_poller = 0;
+	}
+
 	/* fetch some cache variables */
 	if (empty($id)) {
 		$_host_template_id = 0;
 	} else {
-		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id FROM host WHERE id = ?', array($id));
+		$_host_template_id = db_fetch_cell_prepared('SELECT host_template_id
+			FROM host
+			WHERE id = ?',
+			array($id));
 	}
 
 	$save['id']                   = form_input_validate($id, 'id', '^[0-9]+$', false, 3);
@@ -190,6 +654,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save['description']          = form_input_validate($description, 'description', '', false, 3);
 	$save['hostname']             = form_input_validate(trim($hostname), 'hostname', '', false, 3);
 	$save['notes']                = form_input_validate($notes, 'notes', '', true, 3);
+	$save['location']             = form_input_validate($location, 'location', '', true, 3);
 
 	$save['snmp_version']         = form_input_validate($snmp_version, 'snmp_version', '', true, 3);
 	$save['snmp_community']       = form_input_validate($snmp_community, 'snmp_community', '', true, 3);
@@ -224,6 +689,12 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	 * not disabled = '' => no regexp, but allow nulls */
 	$save['disabled']             = form_input_validate($disabled, 'disabled', '^on$', true, 3);
 
+	if ($save['disabled'] == 'on') {
+		if ($save['id'] > 0) {
+			api_device_disable_devices(array($save['id']));
+		}
+	}
+
 	$save['availability_method']  = form_input_validate($availability_method, 'availability_method', '^[0-9]+$', false, 3);
 	$save['ping_method']          = form_input_validate($ping_method, 'ping_method', '^[0-9]+$', false, 3);
 	$save['ping_port']            = form_input_validate($ping_port, 'ping_port', '^[0-9]+$', true, 3);
@@ -232,14 +703,21 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 	$save['max_oids']             = form_input_validate($max_oids, 'max_oids', '^[0-9]+$', true, 3);
 	$save['device_threads']       = form_input_validate($device_threads, 'device_threads', '^[0-9]+$', true, 3);
 
-	$save = api_plugin_hook_function('api_device_save', $save);
-
 	$host_id = 0;
 
 	if (!is_error_message()) {
+		$save = api_plugin_hook_function('api_device_save', $save);
+
 		$host_id = sql_save($save, 'host');
 
 		if ($host_id) {
+			api_device_purge_from_remote($host_id, $previous_poller);
+
+			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+				$save['id'] = $host_id;
+				sql_save($save, 'host', 'id', true, $rcnn_id);
+			}
+
 			raise_message(1);
 
 			/* clear the host session data for poller cache repopulation */
@@ -249,8 +727,25 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 
 			/* change reindex method for 'None' for non-snmp devices */
 			if ($save['snmp_version'] == 0) {
-				db_execute_prepared('UPDATE host_snmp_query SET reindex_method = 0 WHERE host_id = ?', array($host_id));
-				db_execute_prepared('DELETE FROM poller_reindex WHERE host_id = ?', array($host_id));
+				db_execute_prepared('UPDATE host_snmp_query
+					SET reindex_method = 0
+					WHERE host_id = ?',
+					array($host_id));
+
+				db_execute_prepared('DELETE FROM poller_reindex
+					WHERE host_id = ?',
+					array($host_id));
+
+				if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+					db_execute_prepared('UPDATE host_snmp_query
+						SET reindex_method = 0
+						WHERE host_id = ?',
+						array($host_id), true, $rcnn_id);
+
+					db_execute_prepared('DELETE FROM poller_reindex
+						WHERE host_id = ?',
+						array($host_id), true, $rcnn_id);
+				}
 			}
 
 			api_device_cache_crc_update($save['poller_id']);
@@ -269,7 +764,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		}
 
 		/* if the user changes the host template, add each snmp query associated with it */
-		if (($host_template_id != $_host_template_id) && (!empty($host_template_id))) {
+		if ($host_template_id > 0 && $host_template_id != $_host_template_id) {
 			api_device_update_host_template($host_id, $host_template_id);
 		}
 	}
@@ -317,39 +812,110 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
    @arg $host_id - the id of the device which contains the mapping
    @arg $host_template_id - the id of the host template alter the device to */
 function api_device_update_host_template($host_id, $host_template_id) {
-	db_execute_prepared('UPDATE host SET host_template_id = ? WHERE id = ?', array($host_template_id, $host_id));
+	global $config;
 
+	db_execute_prepared('UPDATE host
+		SET host_template_id = ?
+		WHERE id = ?',
+		array($host_template_id, $host_id));
+
+	if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+		db_execute_prepared('UPDATE host
+			SET host_template_id = ?
+			WHERE id = ?',
+			array($host_template_id, $host_id), true, $rcnn_id);
+	}
+
+	/* add all snmp queries assigned to the device template */
 	$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
 		FROM host_template_snmp_query
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
-	if (sizeof($snmp_queries)) {
+	if (cacti_sizeof($snmp_queries)) {
 		foreach ($snmp_queries as $snmp_query) {
 			db_execute_prepared('REPLACE INTO host_snmp_query
 				(host_id, snmp_query_id, reindex_method)
 				VALUES (?, ?, ?)',
 				array($host_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')));
 
+			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+				db_execute_prepared('REPLACE INTO host_snmp_query
+					(host_id, snmp_query_id, reindex_method)
+					VALUES (?, ?, ?)',
+					array($host_id, $snmp_query['snmp_query_id'], read_config_option('reindex_method')), true, $rcnn_id);
+			}
+
 			/* recache snmp data */
 			run_data_query($host_id, $snmp_query['snmp_query_id']);
 		}
 	}
 
+	/* add all graph templates assigned to the device template */
 	$graph_templates = db_fetch_assoc_prepared('SELECT graph_template_id
 		FROM host_template_graph
-		WHERE host_template_id = ?', array($host_template_id));
+		WHERE host_template_id = ?',
+		array($host_template_id));
 
-	if (sizeof($graph_templates)) {
+	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
 			db_execute_prepared('REPLACE INTO host_graph
 				(host_id, graph_template_id)
 				VALUES (?, ?)',
 				array($host_id, $graph_template['graph_template_id']));
 
+			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+				db_execute_prepared('REPLACE INTO host_graph
+					(host_id, graph_template_id)
+					VALUES (?, ?)',
+					array($host_id, $graph_template['graph_template_id']), true, $rcnn_id);
+			}
+
 			automation_hook_graph_template($host_id, $graph_template['graph_template_id']);
 
 			api_plugin_hook_function('add_graph_template_to_host',
 				array('host_id' => $host_id, 'graph_template_id' => $graph_template['graph_template_id']));
+		}
+	}
+
+	/* remove unused graph templates not assigned to the device template */
+	$unused_graph_templates = db_fetch_assoc_prepared('SELECT
+		hg.graph_template_id AS id, gt.name, result.gtid
+		FROM host_graph AS hg
+		LEFT JOIN graph_templates AS gt
+		ON gt.id=hg.graph_template_id
+		LEFT JOIN (
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM graph_local AS gl
+			WHERE gl.host_id = ?
+			AND snmp_query_id = 0
+			UNION
+			SELECT DISTINCT graph_template_id AS gtid
+			FROM host_template_graph AS htg
+			WHERE htg.host_template_id = ?
+		) AS result
+		ON hg.graph_template_id=result.gtid
+		WHERE gt.id NOT IN (SELECT graph_template_id FROM snmp_query_graph)
+	    HAVING gtid IS NULL
+	    ORDER BY gt.name',
+	    array($host_id, $host_template_id)
+	);
+
+	if (cacti_sizeof($unused_graph_templates)) {
+		foreach ($unused_graph_templates as $unused_graph_template) {
+			db_execute_prepared('DELETE
+				FROM host_graph
+				WHERE host_id = ?
+				AND graph_template_id = ?',
+				array($host_id, $unused_graph_template['id']));
+
+			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+				db_execute_prepared('DELETE
+					FROM host_graph
+					WHERE host_id = ?
+					AND graph_template_id = ?',
+					array($host_id, $unused_graph_template['id']), true, $rcnn_id);
+			}
 		}
 	}
 }
@@ -373,7 +939,7 @@ function api_device_template_sync_template($device_template, $down_devices = fal
 		'id', 'id'
 	);
 
-	if (sizeof($devices)) {
+	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
 			api_device_update_host_template($device, $device_template);
 		}
@@ -384,10 +950,24 @@ function api_device_ping_device($device_id, $from_remote = false) {
 	global $config, $snmp_error;
 
 	if (empty($device_id)) {
-		return "";
+		print __('ERROR: Device ID is Blank');
+		return;
 	}
 
-	$host = db_fetch_row_prepared('SELECT * FROM host WHERE id = ?', array($device_id));
+	$host = db_fetch_row_prepared('SELECT *
+		FROM host
+		WHERE id = ?',
+		array($device_id));
+
+	if (!sizeof($host)) {
+		if ($from_remote) {
+			print __('ERROR: Device[' . $device_id . '] not found.  Please perform Full Sync!');
+		} else {
+			print __('ERROR: Device[' . $device_id . '] not found.  Please check database for errors.');
+		}
+		return;
+	}
+
 	$am   = $host['availability_method'];
 	$anym = false;
 
@@ -397,7 +977,7 @@ function api_device_ping_device($device_id, $from_remote = false) {
 			WHERE id = ?',
 			array($host['poller_id']));
 
-		$fgc_contextoption = get_default_contextoption(5);
+		$fgc_contextoption = get_default_contextoption();
 		$fgc_context       = stream_context_create($fgc_contextoption);
 		$results           = @file_get_contents(get_url_type() .'://' . $hostname . $config['url_path'] . 'remote_agent.php?action=ping&host_id=' . $host['id'], false, $fgc_context);
 
