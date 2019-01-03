@@ -231,8 +231,8 @@ msgid ""
 "'Return' and then select only Aggregate Graph that utilize the same Graph "
 "Template."
 msgstr ""
-"为了将下面的聚合图迁移到基于模板的聚合,他们只能使用一个图模板. 请按 '返回',"
-"然后选择仅使用相同图形模板的聚合图."
+"为了将下面的聚合图迁移到基于模板的聚合,他们只能使用一个图形模板. 请按 '返回',"
+"然后选择仅使用相同图形模板的聚合图形."
 
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
 #: auth_changepassword.php:314 auth_profile.php:440 automation_networks.php:400
@@ -247,7 +247,7 @@ msgstr "返回"
 msgid ""
 "Click 'Continue' and the following Aggregate Graph(s) will be migrated to "
 "use the Aggregate Template that you choose below."
-msgstr "点击 '继续',下面的聚合图将被迁移到使用您在下面选择的聚合模板."
+msgstr "点击 '继续',下面的聚合图形将被迁移到使用您在下面选择的聚合模板."
 
 #: aggregate_graphs.php:390
 msgid "Aggregate Template:"
@@ -265,7 +265,7 @@ msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr ""
-"为了将下面的聚合图迁移到基于模板的聚合,首先为图模板 '%s'创建一个聚合模板."
+"为了将下面的聚合图形迁移到基于模板的聚合,首先为图形模板 '%s'创建一个聚合模板."
 
 #: aggregate_graphs.php:406
 msgid "Please press 'Return' to continue."
@@ -275,7 +275,7 @@ msgstr "请按 '返回' 继续."
 msgid ""
 "Click 'Continue' to combine the following Aggregate Graph(s) into a single "
 "Aggregate Graph."
-msgstr "点击 '继续',将下面的聚合图组合成一个聚合图."
+msgstr "点击 '继续',将下面的聚合图形组合成一个聚合图形."
 
 #: aggregate_graphs.php:422
 msgid "Aggregate Name:"
@@ -318,7 +318,7 @@ msgstr "您目前没有定义报告."
 msgid ""
 "Click 'Continue' to associate the following Graph(s) with the Aggregate "
 "Graph."
-msgstr "点击 '继续' 将以下图形与聚合图相关联."
+msgstr "点击 '继续' 将以下图形与聚合图形相关联."
 
 #: aggregate_graphs.php:467
 msgid "Associate Graph(s)"
@@ -337,11 +337,11 @@ msgstr "分散关联图"
 msgid ""
 "Click 'Continue' to place the following Aggregate Graph(s) under the Tree "
 "Branch."
-msgstr "点击 '继续',在树形分支下放置下面的聚合图."
+msgstr "点击 '继续',在树形分支下放置下面的聚合图形."
 
 #: aggregate_graphs.php:482 host.php:430
 msgid "Destination Branch:"
-msgstr "目的地分行:"
+msgstr "目标分支:"
 
 #: aggregate_graphs.php:487 graphs.php:963
 msgid "Place Graph(s) on Tree"
@@ -390,11 +390,11 @@ msgstr "聚合预览 [%s]"
 
 #: aggregate_graphs.php:707 graph.php:534 graphs.php:1528
 msgid "RRDtool Command:"
-msgstr "RRDtool命令:"
+msgstr "RRDtool 命令:"
 
 #: aggregate_graphs.php:709 graph.php:537 graphs.php:1530
 msgid "RRDtool Says:"
-msgstr "RRDtool说:"
+msgstr "RRDtool Says:"
 
 #: aggregate_graphs.php:734
 #, php-format
@@ -634,7 +634,7 @@ msgstr "是"
 
 #: aggregate_graphs.php:1212 graphs.php:2054 lib/api_automation.php:599
 msgid "No Graphs Found"
-msgstr "没有找到图形"
+msgstr "未找到图形"
 
 #: aggregate_graphs.php:1398 aggregate_graphs.php:1506
 #: include/global_arrays.php:2483
@@ -695,11 +695,11 @@ msgstr "任何"
 #: settings.php:439 settings.php:465 user_admin.php:2564 user_admin.php:2757
 #: user_group_admin.php:2177 user_group_admin.php:2285 utilities.php:1682
 msgid "None"
-msgstr "空"
+msgstr "无"
 
 #: aggregate_graphs.php:1515
 msgid "The title for the Aggregate Graphs"
-msgstr "聚合图的标题"
+msgstr "聚合图形的标题"
 
 #: aggregate_graphs.php:1516
 msgid "The internal database identifier for this object"
@@ -711,15 +711,15 @@ msgstr "聚合模板"
 
 #: aggregate_graphs.php:1517
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "此聚合图所基于的聚合模板"
+msgstr "此聚合图形所基于的聚合模板"
 
 #: aggregate_graphs.php:1536
 msgid "No Aggregate Graphs Found"
-msgstr "没有找到聚合图"
+msgstr "未找到聚合图形"
 
 #: aggregate_items.php:347
 msgid "Override Values for Graph Item"
-msgstr "图形项目的重写值"
+msgstr "图形项目的覆盖值"
 
 #: aggregate_items.php:358 lib/api_aggregate.php:1494
 msgid "Override this Value"
@@ -727,7 +727,7 @@ msgstr "覆盖此值"
 
 #: aggregate_templates.php:307
 msgid "Click 'Continue' to Delete the following Aggregate Graph Template(s)."
-msgstr "点击 '继续' 删除下面的聚合图模板"
+msgstr "点击 '继续' 删除下面的聚合图形模板"
 
 #: aggregate_templates.php:312
 msgid "Delete Color Template(s)"
@@ -792,7 +792,7 @@ msgstr "图形模板"
 
 #: aggregate_templates.php:668
 msgid "No Aggregate Templates Found"
-msgstr "没有找到聚合模板"
+msgstr "未找到聚合模板"
 
 #: auth_changepassword.php:127
 msgid "You cannot use a previously entered password!"
@@ -1131,7 +1131,7 @@ msgstr "没有添加到Cacti"
 
 #: automation_devices.php:178
 msgid "Click 'Continue' to add the following Discovered device(s)."
-msgstr "点击 '继续' 添加以下发现的设备."
+msgstr "点击 '继续' 添加以下已发现的设备."
 
 #: automation_devices.php:184 pollers.php:802
 msgid "Pollers"
@@ -1197,7 +1197,7 @@ msgstr "OS"
 
 #: automation_devices.php:257 host.php:1586 include/global_arrays.php:433
 msgid "Uptime"
-msgstr "运行时间"
+msgstr "Uptime"
 
 #: automation_devices.php:258 automation_devices.php:516 utilities.php:1727
 msgid "SNMP"
@@ -1438,7 +1438,7 @@ msgstr "图形类型"
 
 #: automation_graph_rules.php:926
 msgid "No Graph Rules Found"
-msgstr "找不到画图规则"
+msgstr "未找到画图规则"
 
 #: automation_networks.php:34
 msgid "Discover Now"
@@ -1588,7 +1588,7 @@ msgstr "相关站点"
 #: automation_networks.php:458
 msgid ""
 "Choose the Cacti Site that you wish to associate discovered Devices with."
-msgstr "选择您想要将发现的设备与之关联的Cact 站点."
+msgstr "选择您想要将已发现的设备与之关联的Cact 站点."
 
 #: automation_networks.php:466
 msgid "Subnet Range"
@@ -1996,7 +1996,7 @@ msgstr "Ping 模式"
 
 #: automation_networks.php:722
 msgid "The type of ping packet to send."
-msgstr "要发送的ping包的类型."
+msgstr "要发送的ping 包的类型."
 
 #: automation_networks.php:730 include/global_form.php:1225
 #: include/global_settings.php:656
@@ -2137,7 +2137,7 @@ msgstr "从不"
 
 #: automation_networks.php:1151
 msgid "No Networks Found"
-msgstr "找不到网络"
+msgstr "未找到网络"
 
 #: automation_networks.php:1197 data_debug.php:774 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:460 lib/html_graph.php:306
@@ -2277,7 +2277,7 @@ msgstr "重试"
 
 #: automation_snmp.php:510
 msgid "Max OIDS"
-msgstr "最大OIDS"
+msgstr "最大OID"
 
 #: automation_snmp.php:511
 msgid "Auth Username"
@@ -2375,7 +2375,7 @@ msgstr "V3条目"
 
 #: automation_snmp.php:792
 msgid "No SNMP Option Sets Found"
-msgstr "找不到SNMP 选项集"
+msgstr "未找到SNMP 选项集"
 
 #: automation_templates.php:162
 msgid "Click 'Continue' to delete the folling Automation Template(s)."
@@ -2397,7 +2397,7 @@ msgstr "选择设备将与之匹配的设备模板."
 
 #: automation_templates.php:282
 msgid "Choose the Availability Method to use for Discovered Devices."
-msgstr "选择用于发现的设备的可用性方法."
+msgstr "选择用于已发现的设备的可用性方法."
 
 #: automation_templates.php:289 automation_templates.php:494
 msgid "System Description Match"
@@ -2574,7 +2574,7 @@ msgstr "ROOT"
 
 #: automation_tree_rules.php:966
 msgid "No Tree Rules Found"
-msgstr "找不到树规则"
+msgstr "未找到树规则"
 
 #: cdef.php:277
 msgid "Click 'Continue' to delete the following CDEF."
@@ -2854,7 +2854,7 @@ msgstr "使用此颜色的图形模板的数量."
 
 #: color.php:735
 msgid "No Colors Found"
-msgstr "找不到颜色"
+msgstr "未找到颜色"
 
 #: color_templates.php:72
 msgid "Color Item"
@@ -2930,7 +2930,7 @@ msgstr "正在被聚合模板引用的颜色模板不能被删除. "
 
 #: color_templates.php:585
 msgid "No Color Templates Found"
-msgstr "没有找到颜色模板"
+msgstr "未找到颜色模板"
 
 #: color_templates_items.php:257
 msgid "Click 'Continue' to delete the following Color Template Color."
@@ -3166,7 +3166,7 @@ msgstr "<未设置>"
 #: data_debug.php:692
 #, fuzzy, php-format
 msgid "Data Source Troubleshooter [%s]"
-msgstr "数据源排障[%s]"
+msgstr "数据源排障工具 [%s]"
 
 #: data_debug.php:692 data_sources.php:1278
 msgid "No Device"
@@ -3385,7 +3385,7 @@ msgstr "用于收集此数据输入方法信息的方法."
 
 #: data_input.php:933
 msgid "No Data Input Methods Found"
-msgstr "没有找到数据输入方法"
+msgstr "未找到数据输入方法"
 
 #: data_queries.php:396
 msgid "Click 'Continue' to delete the following Data Query."
@@ -3434,7 +3434,7 @@ msgstr "方程"
 
 #: data_queries.php:809 data_queries.php:910
 msgid "No Suggested Values Found"
-msgstr "找不到建议的值"
+msgstr "未找到建议的值"
 
 #: data_queries.php:818 data_queries.php:919 include/global_form.php:2019
 #: include/global_form.php:2061 lib/api_automation.php:1372 utilities.php:1532
@@ -3478,7 +3478,7 @@ msgstr "成功找到XML文件"
 
 #: data_queries.php:1103
 msgid "Could not locate XML file."
-msgstr "找不到XML文件."
+msgstr "未找到XML文件."
 
 #: data_queries.php:1111 host.php:679 host_templates.php:481
 #: include/global_arrays.php:2153
@@ -3548,7 +3548,7 @@ msgstr "用于收集与此数据查询关联的数据源的数据的数据输入
 
 #: data_queries.php:1391
 msgid "No Data Queries Found"
-msgstr "没有找到数据查询"
+msgstr "未找到数据查询"
 
 #: data_source_profiles.php:276
 msgid "Click 'Continue' to delete the following Data Source Profile"
@@ -3789,7 +3789,7 @@ msgstr "使用此配置文件的数据模板的数量."
 
 #: data_source_profiles.php:1015
 msgid "No Data Source Profiles Found"
-msgstr "找不到数据源配置文件"
+msgstr "未找到数据源配置文件"
 
 #: data_sources.php:37 data_sources.php:504 graphs.php:57
 msgid "Change Device"
@@ -4184,7 +4184,7 @@ msgstr "poller 运行时,基于非活动数据模板的数据源将不会更新.
 
 #: data_templates.php:1029
 msgid "No Data Templates Found"
-msgstr "找不到数据模板"
+msgstr "未找到数据模板"
 
 #: gprint_presets.php:148
 msgid "Click 'Continue' to delete the folling GPRINT Preset(s)."
@@ -4251,7 +4251,7 @@ msgstr "查看图形"
 
 #: graph.php:138 lib/html.php:441
 msgid "Graph Details, Zooming and Debugging Utilities"
-msgstr "图形细节,缩放和调试实用程序"
+msgstr "图形细节,缩放和调试工具"
 
 #: graph.php:139
 msgid "CSV Export"
@@ -4462,7 +4462,7 @@ msgstr "垂直标签"
 
 #: graph_templates.php:821
 msgid "No Graph Templates Found"
-msgstr "找不到图形模板"
+msgstr "未找到图形模板"
 
 #: graph_templates_inputs.php:145
 #, php-format
@@ -4648,7 +4648,7 @@ msgstr "修改图形模板"
 
 #: graphs.php:60
 msgid "Create Aggregate Graph"
-msgstr "创建聚合图"
+msgstr "创建聚合图形"
 
 #: graphs.php:61
 msgid "Create Aggregate from Template"
@@ -4774,7 +4774,7 @@ msgstr "重新向图形重新应用建议的命名"
 #: graphs.php:1002
 msgid ""
 "Click 'Continue' to create an Aggregate Graph from the selected Graph(s)."
-msgstr "点击 '继续',从选定的图形创建一个聚合图."
+msgstr "点击 '继续',从选定的图形创建一个聚合图形."
 
 #: graphs.php:1011
 msgid "The following data sources are in use by these graphs:"
@@ -4792,7 +4792,7 @@ msgstr "调整所选图形的大小"
 msgid ""
 "Select the Aggregate Template to use and press 'Continue' to create your "
 "Aggregate Graph.  Otherwise press 'Cancel' to return."
-msgstr "选择要使用的聚合模板,然后按 '继续' 创建聚合图. 否则按 '取消' 返回."
+msgstr "选择要使用的聚合模板,然后按 '继续' 创建聚合图形. 否则按 '取消' 返回."
 
 #: graphs.php:1155
 msgid "Create Aggregate"
@@ -4919,7 +4919,7 @@ msgstr "此图形所基于的图形模板或数据查询."
 
 #: graphs.php:2022
 msgid "The size of this Graph when not in Preview mode."
-msgstr "未处于 '预览' 模式时此图形的大小."
+msgstr "未处于预览模式时此图形的大小."
 
 #: graphs_items.php:310
 msgid "Data Sources [No Device]"
@@ -5276,15 +5276,15 @@ msgstr "Ping"
 
 #: host.php:1061 include/global_arrays.php:574
 msgid "Ping and SNMP Uptime"
-msgstr "Ping 和SNMP 运行时长"
+msgstr "Ping 和SNMP Uptime"
 
 #: host.php:1062 include/global_arrays.php:576
 msgid "SNMP Uptime"
-msgstr "SNMP 运行时长"
+msgstr "SNMP Uptime"
 
 #: host.php:1064 include/global_arrays.php:575
 msgid "Ping or SNMP Uptime"
-msgstr "Ping 或SNMP 运行时长"
+msgstr "Ping 或SNMP Uptime"
 
 #: host.php:1065 include/global_arrays.php:577
 msgid "SNMP Desc"
@@ -5655,7 +5655,7 @@ msgstr "XML: 此xml是用新版本的Cacti生成的."
 
 #: include/global_arrays.php:171
 msgid "XML: Cannot locate type code."
-msgstr "XML:找不到类型代码."
+msgstr "XML:未找到类型代码."
 
 #: include/global_arrays.php:174
 msgid "Username already exists."
@@ -5703,30 +5703,30 @@ msgstr "图形模板包括删除的数据输入法.  请运行数据库修复脚
 msgid ""
 "Data Template not found during Export.  Please run database repair script to "
 "identify."
-msgstr "导出时找不到数据模板.  请运行数据库修复脚本来识别."
+msgstr "导出时未找到数据模板.  请运行数据库修复脚本来识别."
 
 #: include/global_arrays.php:201
 msgid ""
 "Device Template not found during Export.  Please run database repair script "
 "to identify."
-msgstr "导出时找不到设备模板.  请运行数据库修复脚本来识别."
+msgstr "导出时未找到设备模板.  请运行数据库修复脚本来识别."
 
 #: include/global_arrays.php:204
 msgid ""
 "Data Query not found during Export.  Please run database repair script to "
 "identify."
-msgstr "导出时找不到数据查询.  请运行数据库修复脚本来识别."
+msgstr "导出时未找到数据查询.  请运行数据库修复脚本来识别."
 
 #: include/global_arrays.php:207
 msgid ""
 "Graph Template not found during Export.  Please run database repair script "
 "to identify."
-msgstr "导出时找不到图形模板.  请运行数据库修复脚本来识别."
+msgstr "导出时未找到图形模板.  请运行数据库修复脚本来识别."
 
 #: include/global_arrays.php:210
 msgid ""
 "Graph not found.  Either it has been deleted or your database needs repair."
-msgstr "没有找到图形. 要么它已被删除或您的数据库需要修复."
+msgstr "未找到图形. 要么它已被删除或您的数据库需要修复."
 
 #: include/global_arrays.php:213
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
@@ -5854,7 +5854,7 @@ msgstr "无法确定密码字段的大小,请检查db用户的权限"
 #, fuzzy
 msgid ""
 "Unable to increase size of password field, pleas check permission of db user"
-msgstr "无法增加密码字段的大小,请求db用户的检查权限"
+msgstr "无法增加密码字段的大小,请检查数据库用户的权限"
 
 #: include/global_arrays.php:279
 msgid "LDAP/AD based password change not supported."
@@ -6019,7 +6019,7 @@ msgstr "所有重新索引都将通过脚本或设备自动化进行手动或管
 #: include/global_arrays.php:440
 msgid ""
 "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
-msgstr "设备SNMP 运行时长后退时,将执行重新索引"
+msgstr "设备SNMP Uptime 减少时,将执行重新索引"
 
 #: include/global_arrays.php:441
 msgid "When the Data Query index count changes, a Re-Index will be performed."
@@ -6182,11 +6182,11 @@ msgstr "高 - 统计,错误,结果和主要I/O 事件"
 
 #: include/global_arrays.php:593
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
-msgstr "DEBUG - 统计,错误,结果,I/O和程序流程"
+msgstr "DEBUG - 统计,错误,结果,I/O 和程序流"
 
 #: include/global_arrays.php:594
 msgid "DEVEL - Developer DEBUG Level"
-msgstr "DEVEL - 开发人员DEBUG级别"
+msgstr "DEVEL - 开发人员DEBUG 级别"
 
 #: include/global_arrays.php:607
 msgid "Selected Poller Interval"
@@ -6440,7 +6440,7 @@ msgstr "自动化"
 
 #: include/global_arrays.php:871
 msgid "Discovered Devices"
-msgstr "发现的设备"
+msgstr "已发现的设备"
 
 #: include/global_arrays.php:872
 msgid "Device Rules"
@@ -6503,7 +6503,7 @@ msgstr "用户域"
 #: include/global_arrays.php:894 include/global_arrays.php:913
 #: include/global_arrays.php:928 include/global_arrays.php:2183
 msgid "Utilities"
-msgstr "实用程序"
+msgstr "实用工具"
 
 #: include/global_arrays.php:895 include/global_arrays.php:914
 msgid "System Utilities"
@@ -6517,7 +6517,7 @@ msgstr "外部链接"
 
 #: include/global_arrays.php:898 include/global_arrays.php:931
 msgid "Troubleshooting"
-msgstr "故障排除"
+msgstr "排障"
 
 #: include/global_arrays.php:930
 msgid "Support"
@@ -6543,7 +6543,7 @@ msgstr "控制台访问"
 
 #: include/global_arrays.php:1023
 msgid "Realtime Graphs"
-msgstr "实时图"
+msgstr "实时图形"
 
 #: include/global_arrays.php:1024
 msgid "Update Profile"
@@ -6640,59 +6640,59 @@ msgstr "VDEF"
 
 #: include/global_arrays.php:1169
 msgid "VDEF Item"
-msgstr "VDEF项目"
+msgstr "VDEF 项目"
 
 #: include/global_arrays.php:1220
 msgid "Last Half Hour"
-msgstr "过去的半小时"
+msgstr "前半小时"
 
 #: include/global_arrays.php:1221
 msgid "Last Hour"
-msgstr "最后一小时"
+msgstr "前 1 小时"
 
 #: include/global_arrays.php:1222 include/global_arrays.php:1223
 #: include/global_arrays.php:1224 include/global_arrays.php:1225
 #, php-format
 msgid "Last %d Hours"
-msgstr "最后 %d 小时"
+msgstr "前 %d 小时"
 
 #: include/global_arrays.php:1226
 msgid "Last Day"
-msgstr "最后一天"
+msgstr "前 1 天"
 
 #: include/global_arrays.php:1227 include/global_arrays.php:1228
 #: include/global_arrays.php:1229
 #, php-format
 msgid "Last %d Days"
-msgstr "最后 %d 天"
+msgstr "前 %d 天"
 
 #: include/global_arrays.php:1230
 msgid "Last Week"
-msgstr "最后一周"
+msgstr "前 1 周"
 
 #: include/global_arrays.php:1231
 #, php-format
 msgid "Last %d Weeks"
-msgstr "最后 %d 周"
+msgstr "前 %d 周"
 
 #: include/global_arrays.php:1232
 msgid "Last Month"
-msgstr "最后一月"
+msgstr "前 1 个月"
 
 #: include/global_arrays.php:1233 include/global_arrays.php:1234
 #: include/global_arrays.php:1235 include/global_arrays.php:1236
 #, php-format
 msgid "Last %d Months"
-msgstr "最后 %d 月"
+msgstr "前 %d 个月"
 
 #: include/global_arrays.php:1237
 msgid "Last Year"
-msgstr "最后一年"
+msgstr "前 1 年"
 
 #: include/global_arrays.php:1238
 #, php-format
 msgid "Last %d Years"
-msgstr "最后 %d 年"
+msgstr "前 %d 年"
 
 #: include/global_arrays.php:1239
 msgid "Day Shift"
@@ -6716,19 +6716,19 @@ msgstr "今年"
 
 #: include/global_arrays.php:1244
 msgid "Previous Day"
-msgstr "上一天"
+msgstr "昨天"
 
 #: include/global_arrays.php:1245
 msgid "Previous Week"
-msgstr "上一周"
+msgstr "上周"
 
 #: include/global_arrays.php:1246
 msgid "Previous Month"
-msgstr "上一月"
+msgstr "上个月"
 
 #: include/global_arrays.php:1247
 msgid "Previous Year"
-msgstr "上一年"
+msgstr "去年"
 
 #: include/global_arrays.php:1251
 #, php-format
@@ -6737,31 +6737,31 @@ msgstr "%d 分"
 
 #: include/global_arrays.php:1283
 msgid "Month Number, Day, Year"
-msgstr "月数,日,年"
+msgstr "月,日,年"
 
 #: include/global_arrays.php:1284
 msgid "Month Name, Day, Year"
-msgstr "月份名称,日,年"
+msgstr "月,日,年"
 
 #: include/global_arrays.php:1285
 msgid "Day, Month Number, Year"
-msgstr "日,月份编号,年"
+msgstr "日,月,年"
 
 #: include/global_arrays.php:1286
 msgid "Day, Month Name, Year"
-msgstr "日,月份名称,年份"
+msgstr "日,月,年"
 
 #: include/global_arrays.php:1287
 msgid "Year, Month Number, Day"
-msgstr "年,月份编号,日"
+msgstr "年,月,日"
 
 #: include/global_arrays.php:1288
 msgid "Year, Month Name, Day"
-msgstr "年,月份名称,日"
+msgstr "年,月,日"
 
 #: include/global_arrays.php:1298
 msgid "After Boost"
-msgstr "增强后"
+msgstr "Boost 后"
 
 #: include/global_arrays.php:1308 include/global_arrays.php:1309
 #: include/global_arrays.php:1310 include/global_arrays.php:1311
@@ -6825,15 +6825,15 @@ msgstr "400,000 个数据源项目"
 
 #: include/global_arrays.php:1354
 msgid "2 Hours"
-msgstr "2 时"
+msgstr "2 小时"
 
 #: include/global_arrays.php:1355
 msgid "4 Hours"
-msgstr "4 时"
+msgstr "4 小时"
 
 #: include/global_arrays.php:1356
 msgid "6 Hours"
-msgstr "6 时"
+msgstr "6 小时"
 
 #: include/global_arrays.php:1363
 #, php-format
@@ -7392,20 +7392,20 @@ msgstr "图形模板项"
 
 #: include/global_arrays.php:2081
 msgid "Round Robin Archives"
-msgstr "循环档案"
+msgstr "循环归档"
 
 #: include/global_arrays.php:2123
 msgid "Data Input Fields"
-msgstr "数据导入项"
+msgstr "数据导入字段"
 
 #: include/global_arrays.php:2129 include/global_arrays.php:2159
 msgid "(Remove Item)"
-msgstr "(除去项目)"
+msgstr "(删除项目)"
 
 #: include/global_arrays.php:2165 include/global_settings.php:223
 #: rrdcleaner.php:296
 msgid "RRD Cleaner"
-msgstr "RRD清除"
+msgstr "RRD 清除"
 
 #: include/global_arrays.php:2177
 msgid "List unused Files"
@@ -7414,7 +7414,7 @@ msgstr "列出未使用的文件"
 #: include/global_arrays.php:2189 include/global_arrays.php:2201
 #: utilities.php:1906
 msgid "View Poller Cache"
-msgstr "查看Poller缓存"
+msgstr "查看Poller 缓存"
 
 #: include/global_arrays.php:2195 utilities.php:1910
 msgid "View Data Query Cache"
@@ -7438,7 +7438,7 @@ msgstr "技术支持"
 
 #: include/global_arrays.php:2237 utilities.php:2009
 msgid "Boost Status"
-msgstr "增强状态"
+msgstr "Boost 状态"
 
 #: include/global_arrays.php:2243
 msgid "View SNMP Agent Cache"
@@ -8524,7 +8524,7 @@ msgstr "此设备的合法主机名或者IP地址."
 msgid ""
 "The physical location of the Device.  This free form text can be a room, "
 "rack location, etc."
-msgstr "设备的物理位置. 文本格式自由，可以是房间,机架位置等."
+msgstr "设备的物理位置. 文本格式自由,可以是房间,机架位置等."
 
 #: include/global_form.php:1155
 msgid "Poller Association"
@@ -8584,7 +8584,7 @@ msgid ""
 "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires "
 "root privileges.</i>"
 msgstr ""
-"要发送的ping包的类型. <br> <i>注意:Linux / UNIX上的ICMP需要root权限.</i>"
+"要发送的ping 包的类型. <br> <i>注意:Linux/UNIX 上的ICMP 需要root 权限.</i>"
 
 #: include/global_form.php:1253 include/global_form.php:1701
 msgid "Additional Options"
@@ -8849,7 +8849,7 @@ msgstr ""
 
 #: include/global_form.php:1726
 msgid "The new Title of the aggregated Graph."
-msgstr "聚合图的新标题."
+msgstr "聚合图形的新标题."
 
 #: include/global_form.php:1733 include/global_form.php:1812
 #: include/global_form.php:1910
@@ -8870,7 +8870,7 @@ msgid ""
 msgstr ""
 "使用此选项来创建例如 STACKED图形.<br>AREA/STACK: 第一个图形保留 AREA/STACK项"
 "目, 其他转换为STACK<br>LINE1:所有项目都转换为LINE1项目<br>LINE2:所有项目都转"
-"换为LINE2项目<br>LINE3: 全部 项目转换为LINE3项目"
+"换为LINE2 项目<br>LINE3: 全部项目转换为LINE3 项目"
 
 #: include/global_form.php:1749 include/global_form.php:1828
 #: include/global_form.php:1926
@@ -8916,7 +8916,7 @@ msgstr "图的重新排序."
 
 #: include/global_form.php:1794
 msgid "Please name this Aggregate Graph."
-msgstr "请命名这个聚合图."
+msgstr "请命名这个聚合图形."
 
 #: include/global_form.php:1801
 msgid "Propagation Enabled"
@@ -9305,7 +9305,7 @@ msgid ""
 "The path to Spine configuration file.  By default, in the cwd of Spine, or /"
 "etc if not specified."
 msgstr ""
-"Spine 配置文件的路径.默认情况下,在Spine 的cwd中,如果未指定,则为/etc."
+"Spine 配置文件的路径.默认情况下,在Spine 的cwd 中,如果未指定,则为/etc."
 
 #: include/global_settings.php:228
 msgid "RRDfile Auto Clean"
@@ -9377,7 +9377,7 @@ msgstr "记录何时访问请求字段而不进行适当的输入验证"
 
 #: include/global_settings.php:277
 msgid "Selective File Debug"
-msgstr "选择性文件调试"
+msgstr "选择文件调试"
 
 #: include/global_settings.php:278
 msgid ""
@@ -9390,7 +9390,7 @@ msgstr ""
 
 #: include/global_settings.php:284
 msgid "Selective Plugin Debug"
-msgstr "选择性插件调试"
+msgstr "选择插件调试"
 
 #: include/global_settings.php:285
 msgid ""
@@ -9403,7 +9403,7 @@ msgstr ""
 
 #: include/global_settings.php:291
 msgid "Selective Device Debug"
-msgstr "选择性设备调试"
+msgstr "选择设备调试"
 
 #: include/global_settings.php:292
 msgid ""
@@ -9442,7 +9442,7 @@ msgstr "错误"
 
 #: include/global_settings.php:319
 msgid "Other Defaults"
-msgstr "Other Defaults"
+msgstr "其他默认项"
 
 #: include/global_settings.php:324
 msgid "Has Graphs/Data Sources Checked"
@@ -9514,7 +9514,7 @@ msgstr "日期显示格式"
 
 #: include/global_settings.php:377
 msgid "The System default date format to use in Cacti."
-msgstr "在Cacti中使用的系统默认日期格式."
+msgstr "在Cacti 中使用的系统默认日期格式."
 
 #: include/global_settings.php:383 include/global_settings.php:2007
 msgid "Date Separator"
@@ -9522,7 +9522,7 @@ msgstr "日期分隔符"
 
 #: include/global_settings.php:384
 msgid "The System default date separator to be used in Cacti."
-msgstr "在Cacti中使用的系统默认日期分隔符."
+msgstr "在Cacti 中使用的系统默认日期分隔符."
 
 #: include/global_settings.php:390
 msgid "Other Settings"
@@ -9530,11 +9530,11 @@ msgstr "其他设置"
 
 #: include/global_settings.php:395 utilities.php:275 utilities.php:280
 msgid "RRDtool Version"
-msgstr "RRDTool 的版本"
+msgstr "RRDTool 版本"
 
 #: include/global_settings.php:396
 msgid "The version of RRDtool that you have installed."
-msgstr "您已安装的RRDtool的版本."
+msgstr "您已安装的RRDtool 版本."
 
 #: include/global_settings.php:402
 msgid "Graph Permission Method"
@@ -9667,7 +9667,7 @@ msgstr ""
 #: include/global_settings.php:467
 #, fuzzy
 msgid "Automation Notification To Email"
-msgstr "电子邮件的自动化通知"
+msgstr "自动通知到邮件"
 
 #: include/global_settings.php:468
 #, fuzzy
@@ -9683,7 +9683,7 @@ msgstr ""
 #: include/global_settings.php:474
 #, fuzzy
 msgid "Automation Notification From Name"
-msgstr "名称的自动化通知"
+msgstr "自动通知来自谁"
 
 #: include/global_settings.php:475
 #, fuzzy
@@ -9698,7 +9698,7 @@ msgstr ""
 #: include/global_settings.php:482
 #, fuzzy
 msgid "Automation Notification From Email"
-msgstr "电子邮件中的自动化通知"
+msgstr "自动通知来自哪个邮件地址"
 
 #: include/global_settings.php:483
 #, fuzzy
@@ -9713,7 +9713,7 @@ msgstr ""
 
 #: include/global_settings.php:491
 msgid "General Defaults"
-msgstr "默认值"
+msgstr "常规默认值"
 
 #: include/global_settings.php:497
 #, fuzzy
@@ -9863,8 +9863,8 @@ msgid ""
 "the port.  With UDP, Cacti requires either a successful connection, or a "
 "'port not reachable' error to determine if the Device is up or not."
 msgstr ""
-"所有新设备的默认Ping端口.使用TCP,Cacti将尝试同步端口.使用UDP,Cacti要求成"
-"功连接或 '端口无法访问' 错误, 以确定设备是否已启动."
+"所有新设备的默认Ping 端口.如使用TCP, Cacti 将尝试发送syn包到端口.如使用UDP,Cacti 则要么成"
+"功连接，要么 '端口无法访问' 错误, 以确定设备是否已启动."
 
 #: include/global_settings.php:665
 #, fuzzy
@@ -9875,19 +9875,19 @@ msgid ""
 "timeouts on Windows are controlled by the operating system, and are "
 "therefore not recommended on Windows."
 msgstr ""
-"所有新设备的默认Ping超时值(以毫秒为单位).用于设备SNMP,ICMP,UDP和TCP ping"
-"的超时值. ICMP Pings将四舍五入到最接近的秒数. Windows上的TCP和UDP连接超时由"
-"操作系统控制,因此不建议在Windows上使用."
+"所有新设备的默认Ping 超时值(以毫秒为单位).用于设备SNMP,ICMP,UDP和TCP ping"
+"的超时值. ICMP Pings 将四舍五入到最接近的秒数. Windows 上的TCP 和UDP 连接超时由"
+"操作系统控制,因此不建议在Windows 上使用."
 
 #: include/global_settings.php:673
 msgid ""
 "The number of times Cacti will attempt to ping a Device before marking it as "
 "down."
-msgstr "Cacti 将在失败之前尝试 ping 主机的次数."
+msgstr "Cacti 将在失败之前尝试ping 主机的次数."
 
 #: include/global_settings.php:680
 msgid "Up/Down Settings"
-msgstr "UP/DOWN设定"
+msgstr "UP/DOWN 设定"
 
 #: include/global_settings.php:685
 msgid "Failure Count"
@@ -10143,7 +10143,7 @@ msgid ""
 "The font to use for Graph Titles.  Enter either a valid True Type Font file "
 "or valid Pango font-config value."
 msgstr ""
-"用于图形标题的字体. 输入有效的True Type字体文件或有效的Pango font-config值."
+"用于图形标题的字体. 输入有效的True Type字体文件或有效的Pango font-config 值."
 
 #: include/global_settings.php:900 include/global_settings.php:2188
 msgid "Legend Font Size"
@@ -10182,8 +10182,7 @@ msgid ""
 "The font to use for Graph Axis items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
-"用于Graph Axis项目的字体. 输入有效的True Type字体文件或有效的Pango font-"
-"config值."
+"用于Graph Axis项目的字体. 输入有效的True Type 字体文件或有效的Pango font-config 值."
 
 #: include/global_settings.php:930 include/global_settings.php:2214
 msgid "Unit Font Size"
@@ -10202,8 +10201,7 @@ msgid ""
 "The font to use for Graph Unit items.  Enter either a valid True Type Font "
 "file or valid Pango font-config value."
 msgstr ""
-"用于Graph Unit项目的字体. 输入有效的True Type字体文件或有效的Pango font-"
-"config值."
+"用于Graph Unit项目的字体. 输入有效的True Type 字体文件或有效的Pango font-config值."
 
 #: include/global_settings.php:952
 msgid "Data Collection Enabled"
@@ -10288,11 +10286,9 @@ msgid ""
 "leveraging threads instead.  When using cmd.php, use no more than 2x the "
 "number of CPU cores."
 msgstr ""
-"每个Data Collector要执行的默认并发进程数.注意:从Cacti 1.2开始,此设置在"
-"Data Collector中维护.继续前进,此值仅是Data Collector的预设值.使用cmd.php时"
-"使用更高的数字将提高性能.使用threads参数可以最好地解决Spine中的性能改进.使"
-"用Spine时,我们建议使用较低的数字并利用线程.使用cmd.php时,使用的CPU核心数不"
-"应超过2倍."
+"每个数据采集器的默认并发进程数.注意:从Cacti 1.2 开始,此设置在数据采集器中维护.此后,这个值仅是数据采集器的预设值."
+"使用cmd.php 时,使用较大的数字可提高性能. Spine 中的性能问题最好通过多线程参数解决."
+"使用Spine 时,我们建议使用较低的数字并充分利用线程.使用cmd.php时, 数字不应该超过CPU 核心数的2倍."
 
 #: include/global_settings.php:1002
 msgid "Balance Process Load"
@@ -10316,11 +10312,11 @@ msgid ""
 "If you choose this option, Cacti will check for output that exceeds Cacti's "
 "ability to store it and issue a warning when it finds it."
 msgstr ""
-"如果选择此选项,Cacti将检查超出Cacti存储能力的输出,并在找到时发出警告."
+"如果选择此选项,Cacti 将检查超出Cacti 存储能力的输出,并在找到时发出警告."
 
 #: include/global_settings.php:1014
 msgid "Disable increasing OID Check"
-msgstr "禁用增加的OID检查"
+msgstr "禁用增加的OID 检查"
 
 #: include/global_settings.php:1015
 msgid "Controls disabling check for increasing OID while walking OID tree."
@@ -10398,9 +10394,9 @@ msgid ""
 "script servers).  You must also ensure that you have enough spare "
 "connections for user login connections as well."
 msgstr ""
-"每个进程允许的默认线程.注意:从Cacti 1.2+开始,此设置在Data Collector中维"
-"护,这只是预设.使用Spine时使用更高的数字将提高性能.但是,请确保您有足够的"
-"MySQL / MariaDB连接以支持以下等式:connections = data collectorors * "
+"每个进程允许的默认线程.注意:从Cacti 1.2+开始,此设置在数据采集器中维"
+"护,这只是预设.使用Spine 时使用较高的数字可提高性能.但是,请确保您有足够的"
+"MySQL/MariaDB 连接数来支撑以下等式: connections = data collectorors * "
 "processes *(threads + script servers).您还必须确保为用户登录连接提供足够的"
 "备用连接."
 
@@ -10414,7 +10410,7 @@ msgid ""
 "Settings between 1 and 10 are accepted.  This parameter will help if you are "
 "running several threads and script server scripts."
 msgstr ""
-"每个Spine进程运行的并发脚本服务器进程的数量. 1和10之间的设置被接受. 如果您"
+"每个Spine 进程运行的并发脚本服务器进程的数量. 设置在1和10之间是合适的. 如果您"
 "正在运行多个线程和脚本服务器脚本,此参数将有所帮助."
 
 #: include/global_settings.php:1082
@@ -10527,8 +10523,7 @@ msgid ""
 "LDAP users; is 'guest' by default.  This user account will be disabled from "
 "logging in upon being selected."
 msgstr ""
-"Cacti 将用作新Web Basic和LDAP 用户模板的用户名; 默认为 'guest' 被选中时,"
-"将禁止此用户帐户登录."
+"Cacti 将用作新Web Basic 和LDAP 用户模板的用户名; 默认为 'guest', 被选中时,将禁止此用户帐户登录."
 
 #: include/global_settings.php:1147
 msgid "Local Account Complexity Requirements"
@@ -10544,7 +10539,7 @@ msgstr "这是允许的密码的最小长度."
 
 #: include/global_settings.php:1160
 msgid "Require Mix Case"
-msgstr "需要混合案例"
+msgstr "需要混合使用"
 
 #: include/global_settings.php:1161
 msgid ""
@@ -10554,16 +10549,16 @@ msgstr "这将要求新密码包含小写和大写字符."
 
 #: include/global_settings.php:1166
 msgid "Require Number"
-msgstr "需要号码"
+msgstr "需要数字"
 
 #: include/global_settings.php:1167
 msgid ""
 "This will require new passwords to contain at least 1 numerical character."
-msgstr "这将需要新的密码至少包含1个数字字符."
+msgstr "这将需要新的密码至少包含1个数字."
 
 #: include/global_settings.php:1172
 msgid "Require Special Character"
-msgstr "需要特殊的字符"
+msgstr "需要特殊字符"
 
 #: include/global_settings.php:1173
 msgid ""
@@ -10593,7 +10588,7 @@ msgstr "这是停用非活动帐户前的最长天数. 管理员帐户被排除�
 
 #: include/global_settings.php:1198
 msgid "Expire Password"
-msgstr "到期密码"
+msgstr "密码过期"
 
 #: include/global_settings.php:1199
 msgid "This is maximum number of days before a password is set to expire."
@@ -10654,8 +10649,8 @@ msgid ""
 "the correct password is entered, the account will not unlock until this time "
 "limit has been met.  Max of 1440 minutes (1 Day)"
 msgstr ""
-"在这么多分钟后,帐户将自动解锁. 即使输入了正确的密码,该帐户也不会解锁,直到"
-"达到这个时间限制. 最大1440分钟(1天)"
+"过多久之后,帐户将会自动解锁. 即使输入了正确的密码,该帐户也不会解锁,直到"
+"达到这个时间限制. 最大1440 分钟(1天)"
 
 #: include/global_settings.php:1266
 msgid "1 Day"
@@ -10764,7 +10759,7 @@ msgid ""
 "set for this to work, enabling without proper group settings will cause "
 "authentication failure."
 msgstr ""
-"要求用户成为组的成员进行身份认证. 组设置必须设置为这个工作,启用没有适当的组"
+"要求用户成为组的成员进行身份认证. 组设置必须设置为这个工作,启用不合适的组"
 "设置将导致身份认证失败."
 
 #: include/global_settings.php:1337 user_domains.php:434
@@ -10829,7 +10824,7 @@ msgid ""
 "<i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' "
 "is replaced with the username that was supplied at the login prompt. "
 msgstr ""
-"用于在LDAP目录中找到用户的搜索过滤器,例如用于Windows的: <i>'(&amp;"
+"用于在LDAP 目录中找到用户的搜索过滤器,例如用于Windows的: <i>'(&amp;"
 "(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;"
 "*))'</i> 或者用于OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;"
 "username&gt))'</i>.  '&lt;用户名&gt' 被在登录提示符处提供的用户名替换."
@@ -10859,7 +10854,7 @@ msgstr "LDAP CN 设置"
 msgid ""
 "Field that will replace the Full Name when creating a new user, taken from "
 "LDAP. (on windows: displayname) "
-msgstr "创建新用户时, 将从LDAP中取出全名的字段. ( windows: displayname ) "
+msgstr "创建新用户时, 将从LDAP 中取出全名的字段. ( windows: displayname ) "
 
 #: include/global_settings.php:1400
 msgid "Email"
@@ -10927,7 +10922,7 @@ msgstr "Ping 邮件服务器"
 
 #: include/global_settings.php:1445
 msgid "Ping the Mail Server before sending test Email?"
-msgstr "在发送测试电子邮件之前Ping邮件服务器?"
+msgstr "在发送测试电子邮件之前Ping 邮件服务器?"
 
 #: include/global_settings.php:1453 lib/html_reports.php:1088
 msgid "From Email Address"
@@ -11066,7 +11061,7 @@ msgstr ""
 
 #: include/global_settings.php:1562
 msgid "Enable Lotus Notes (R) tweak"
-msgstr "启用Lotus Notes调整"
+msgstr "启用Lotus Notes (R) 优化"
 
 #: include/global_settings.php:1563
 msgid "Enable code tweak for specific handling of Lotus Notes Mail Clients."
@@ -11131,7 +11126,7 @@ msgstr "在RRD 按需更新可以清除之前,必须始终通过poller 运行"
 
 #: include/global_settings.php:1614
 msgid "How Often Should Boost Update All RRDs"
-msgstr "多久如何增强更新所有RRD"
+msgstr "Boost 多久更新RRD"
 
 #: include/global_settings.php:1615
 msgid ""
@@ -11149,12 +11144,12 @@ msgstr "Boost 进程数"
 msgid ""
 "The number of concurrent boost processes to use to use to process all of the "
 "RRDs in the boost table."
-msgstr "用于处理boost 表中所有RRD的并发boost 进程数."
+msgstr "用于处理boost 表中所有RRD 的并发boost 进程数."
 
 #: include/global_settings.php:1626
 #, fuzzy
 msgid "1 Process"
-msgstr "1流程"
+msgstr "1个进程"
 
 #: include/global_settings.php:1627 include/global_settings.php:1628
 #: include/global_settings.php:1629 include/global_settings.php:1630
@@ -11163,7 +11158,7 @@ msgstr "1流程"
 #: include/global_settings.php:1635
 #, fuzzy, php-format
 msgid "%d Processes"
-msgstr "%d 进程"
+msgstr "%d 个进程"
 
 #: include/global_settings.php:1638
 msgid "Maximum Records"
@@ -11173,7 +11168,7 @@ msgstr "最大记录"
 msgid ""
 "If the boost output table exceeds this size, in records, an update will take "
 "place."
-msgstr "如果增强输出表超出此大小,则记录中将进行更新."
+msgstr "如果Boost 输出表超出此大小,则记录中将进行更新."
 
 #: include/global_settings.php:1646
 msgid "Maximum Data Source Items Per Pass"
@@ -11187,9 +11182,9 @@ msgid ""
 "If you encounter graphing or polling slowness during updates, lower this "
 "number.  The default value is 50000."
 msgstr ""
-"为了优化性能,boost RRD更新程序需要知道应该在一次传递中检索多少个数据源项"
-"目. 请注意不要设置太高,因为在重大更新期间的图形性能可能会受到影响. 如果您"
-"在更新期间遇到图形或轮询迟缓,请降低此数字. 默认值是50000."
+"为了优化性能,boost RRD 更新程序需要知道应该在一次传递中检索多少个数据源项目."
+"请注意不要设置太高,因为在重大更新期间的图形性能可能会受到影响."
+"如果您在更新期间遇到图形或轮询迟缓,请降低此数字. 默认值是50000."
 
 #: include/global_settings.php:1653
 msgid "Maximum Argument Length"
@@ -11208,11 +11203,11 @@ msgstr ""
 
 #: include/global_settings.php:1661
 msgid "Memory Limit for Boost and Poller"
-msgstr "增强和轮询的内存限制的"
+msgstr "Boost 和poller 的内存限制"
 
 #: include/global_settings.php:1662
 msgid "The maximum amount of memory for the Cacti Poller and Boosts Poller"
-msgstr "Cacti Poller和增强 Poller的最大内存量"
+msgstr "Cacti Poller 和Boost Poller 的最大内存"
 
 #: include/global_settings.php:1668
 msgid "Maximum RRD Update Script Run Time"
@@ -11234,17 +11229,17 @@ msgid ""
 "Enables direct insert of records into poller output boost with results in a "
 "25% time reduction in each poll cycle."
 msgstr ""
-"允许将记录直接插入到poller 输出增强中,从而使每个轮询周期的时间缩短25%."
+"允许将记录直接插入到poller 输出Boost 中,从而使每个轮询周期的时间缩短25%."
 
 #: include/global_settings.php:1681
 msgid "Boost Debug Log"
-msgstr "增强调试日志"
+msgstr "Boost 调试日志"
 
 #: include/global_settings.php:1682
 msgid ""
 "If this field is non-blank, Boost will log RRDupdate output from the boost"
 "\tpoller process."
-msgstr "如果此字段不是空白,则增强将记录增强\tpoller 进程的RRDupdate 输出."
+msgstr "如果此字段不是空白,则Boost 将记录Boost\tpoller 进程的RRDupdate 输出."
 
 #: include/global_settings.php:1689 utilities.php:2276
 msgid "Image Caching"
@@ -11266,7 +11261,7 @@ msgstr "图像文件的位置"
 msgid ""
 "Specify the location where Boost should place your image files.  These files "
 "will be automatically purged by the poller when they expire."
-msgstr "指定增强应放置图像文件的位置. 这些文件在到期时将被poller 自动清空."
+msgstr "指定Boost 存放图像文件的位置. 这些文件在到期时将被poller 自动清空."
 
 #: include/global_settings.php:1709
 msgid "Data Sources Statistics"
@@ -11383,17 +11378,17 @@ msgstr "负载均衡"
 msgid ""
 "If both main and backup proxy are receivable this option allows to spread "
 "all requests against RRDtool."
-msgstr "如果主代理和备份代理均可接收,则此选项允许传播针对RRDtool的所有请求."
+msgstr "如果主代理和备份代理均可接收,则此选项允许传播针对RRDtool 的所有请求."
 
 #: include/global_settings.php:1806
 msgid ""
 "The DNS hostname or IP address of the RRDtool backup proxy server if proxy "
 "is running in MSR mode."
-msgstr "如果代理运行在MSR模式下,RRDtool备份代理服务器的DNS主机名或IP地址."
+msgstr "如果代理运行在MSR 模式下,RRDtool 备份代理服务器的DNS主机名或IP地址."
 
 #: include/global_settings.php:1812
 msgid "TCP port for encrypted communication with the backup proxy."
-msgstr "TCP端口用于与备份代理进行加密通信."
+msgstr "TCP 端口用于与备份代理进行加密通信."
 
 #: include/global_settings.php:1820
 msgid ""
@@ -11403,11 +11398,11 @@ msgstr "备份代理正在使用的当前公共RSA密钥的指纹. 这需要建�
 
 #: include/global_settings.php:1829
 msgid "Spike Kill Settings"
-msgstr "去除波峰设置"
+msgstr "尖峰削除设置"
 
 #: include/global_settings.php:1834
 msgid "Removal Method"
-msgstr "去除方法"
+msgstr "删除方法"
 
 #: include/global_settings.php:1835
 msgid ""
@@ -11418,17 +11413,17 @@ msgid ""
 "certain number of 'outliers'.  Those are exceptional samples, like the "
 "spike, that need to be excluded from the Variance Average calculation."
 msgstr ""
-"有两种删除方法. 第一个标准偏差将移除距离样品平均值X个标准偏差的任何样品. 第"
-"二种方法Variance将删除比方差平均值多 X% 的样本. 方差方法考虑了一定数量的 '异常值'"
-"这些都是特殊样本,如峰值,需要从方差平均值计算中排除."
+"有两种删除方法. 第一种，基于标准偏差，将删除距离样品平均值X个标准偏差的任何样品. 第"
+"二种,基于差异, 这将删除任何比差异平均值多 X% 的样本. 差异方法考虑了一定数量的 '异常值'"
+"这些都是特殊样本,如峰值,需要从差异平均值计算中排除."
 
 #: include/global_settings.php:1839
 msgid "Standard Deviation"
-msgstr "标准偏差"
+msgstr "基于标准偏差"
 
 #: include/global_settings.php:1840
 msgid "Variance Based w/Outliers Removed"
-msgstr "基于差异基于W /异常值删除"
+msgstr "基于差异平均值"
 
 #: include/global_settings.php:1843 lib/html.php:2062
 msgid "Replacement Method"
@@ -11447,7 +11442,7 @@ msgstr ""
 
 #: include/global_settings.php:1848 lib/html.php:2058
 msgid "Average"
-msgstr "平均"
+msgstr "平均值"
 
 #: include/global_settings.php:1849 lib/html.php:2059
 msgid "NaN's"
@@ -11459,7 +11454,7 @@ msgstr "最后一个好的"
 
 #: include/global_settings.php:1853
 msgid "Number of Standard Deviations"
-msgstr "标准差的数量"
+msgstr "标准偏差的数量"
 
 #: include/global_settings.php:1854
 msgid ""
@@ -11484,7 +11479,7 @@ msgid "Variance Percentage"
 msgstr "差异百分比"
 
 #: include/global_settings.php:1872
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "This value represents the percentage above the adjusted sample average once "
 "outliers have been removed from the sample.  For example, a Variance "
@@ -11496,7 +11491,7 @@ msgstr ""
 
 #: include/global_settings.php:1891
 msgid "Variance Number of Outliers"
-msgstr "差异离群数量"
+msgstr "极端差异值的数量"
 
 #: include/global_settings.php:1892
 msgid ""
@@ -11505,8 +11500,8 @@ msgid ""
 "you choose an outlier value of 5, then both the top and bottom 5 averages "
 "are removed."
 msgstr ""
-"该值表示在计算方差平均值之前将从样本集中移除的高平均样本和低平均样本的数量. "
-"如果选择5的离群值,那么顶部和底部的5均值都将被移除."
+"该值表示在计算方差平均值之前将从样本中删除的高于平均样本和低于平均样本的数量. "
+"如果选择5为的差异值,那么顶部和底部的5个值都将被删除."
 
 #: include/global_settings.php:1896 include/global_settings.php:1897
 #: include/global_settings.php:1898 include/global_settings.php:1899
@@ -11514,17 +11509,17 @@ msgstr ""
 #: include/global_settings.php:1902 include/global_settings.php:1903
 #, php-format
 msgid "%d High/Low Samples"
-msgstr "%d 高/低样例"
+msgstr "%d 高/低 样本"
 
 #: include/global_settings.php:1907
 msgid "Max Kills Per RRA"
-msgstr "每个RRA的最大杀死数"
+msgstr "每个RRA 最大削除"
 
 #: include/global_settings.php:1908
 msgid ""
 "This value represents the maximum number of spikes to remove from a Graph "
 "RRA."
-msgstr "此值表示从图形RRA中删除的最大尖峰数."
+msgstr "此值表示从图形RRA 中删除的最大尖峰数."
 
 #: include/global_settings.php:1912 include/global_settings.php:1913
 #: include/global_settings.php:1914 include/global_settings.php:1915
@@ -11532,11 +11527,11 @@ msgstr "此值表示从图形RRA中删除的最大尖峰数."
 #: include/global_settings.php:1918 include/global_settings.php:1919
 #, php-format
 msgid "%d Samples"
-msgstr "%d 样品"
+msgstr "%d 个样品"
 
 #: include/global_settings.php:1923
 msgid "RRDfile Backup Directory"
-msgstr "RRD文件备份目录"
+msgstr "RRD 文件备份目录"
 
 #: include/global_settings.php:1924
 msgid ""
@@ -11546,11 +11541,11 @@ msgstr "如果此目录不为空,那么您的原始RRD文件将被备份直到�
 
 #: include/global_settings.php:1931
 msgid "Batch Spike Kill Settings"
-msgstr "批量去掉尖峰设置"
+msgstr "批量消除尖峰设置"
 
 #: include/global_settings.php:1936
 msgid "Removal Schedule"
-msgstr "去除时间表"
+msgstr "删除计划"
 
 #: include/global_settings.php:1937
 msgid ""
@@ -11564,7 +11559,7 @@ msgstr "一天一次"
 
 #: include/global_settings.php:1945
 msgid "Every Other Day"
-msgstr "每个另一天"
+msgstr "隔天一次"
 
 #: include/global_settings.php:1948
 msgid "Base Time"
@@ -11576,7 +11571,7 @@ msgid ""
 "and you choose once per day, the batch removal would begin at approximately "
 "midnight every day."
 msgstr ""
-"Spike删除的基准时间发生. 例如,如果您使用'12:00am'并且每天选择一次,则批量"
+"Spike 删除的基准时间发生. 例如,如果您使用'12:00am'并且每天选择一次,则批量"
 "移除将在每天大约午夜开始."
 
 #: include/global_settings.php:1956
@@ -11622,7 +11617,6 @@ msgid "Hide Disabled"
 msgstr "隐藏已禁用"
 
 #: include/global_settings.php:1995
-#, fuzzy
 msgid "Hides Disabled Devices and Graphs when viewing outside of Console tab."
 msgstr "在 '控制台' 选项卡外查看时隐藏已禁用的设备和图形."
 
@@ -11659,23 +11653,20 @@ msgid "The default RRA to use in rare occasions."
 msgstr "在极少数情况下使用的默认RRA."
 
 #: include/global_settings.php:2043
-#, fuzzy
 msgid ""
 "The default Timespan displayed when viewing Graphs and other time specific "
 "data."
-msgstr "查看图形和其他特定时间数据时显示的默认Timespan."
+msgstr "查看图形和其他特定时间数据时显示的默认时间跨度."
 
 #: include/global_settings.php:2049
-#, fuzzy
 msgid "Default Timeshift"
-msgstr "默认时间转换"
+msgstr "默认时间回放"
 
 #: include/global_settings.php:2050
-#, fuzzy
 msgid ""
 "The default Timeshift displayed when viewing Graphs and other time specific "
 "data."
-msgstr "查看图形和其他特定时间数据时显示的默认Timeshift."
+msgstr "查看图形和其他特定时间数据时显示的默认时间回放."
 
 #: include/global_settings.php:2056
 msgid "Allow Graph to extend to Future"
@@ -11687,7 +11678,7 @@ msgstr "显示图形时,允许图形日期延长到'将来'"
 
 #: include/global_settings.php:2062
 msgid "First Day of the Week"
-msgstr "本周的第一天"
+msgstr "每周的第一天"
 
 #: include/global_settings.php:2063
 msgid "The first Day of the Week for weekly Graph Displays"
@@ -11695,19 +11686,19 @@ msgstr "每周图形显示的第一天"
 
 #: include/global_settings.php:2069
 msgid "Start of Daily Shift"
-msgstr "每日轮班开始"
+msgstr "每天的上班时间"
 
 #: include/global_settings.php:2070
 msgid "Start Time of the Daily Shift."
-msgstr "每日班次的开始时间."
+msgstr "每天的上班开始时间."
 
 #: include/global_settings.php:2077
 msgid "End of Daily Shift"
-msgstr "每日班次结束"
+msgstr "每天的下班时间"
 
 #: include/global_settings.php:2078
 msgid "End Time of the Daily Shift."
-msgstr "每日班次的结束时间."
+msgstr "每天的下班结束时间."
 
 #: include/global_settings.php:2087
 msgid "Thumbnail Sections"
@@ -11746,12 +11737,12 @@ msgstr "%d 列"
 
 #: include/global_settings.php:2115
 msgid "Tree View Thumbnail Columns"
-msgstr "树视图缩略图列"
+msgstr "树形视图缩略图列"
 
 #: include/global_settings.php:2116
 msgid ""
 "The number of columns to use when displaying Thumbnail graphs in Tree mode."
-msgstr "以树状模式显示缩略图时使用的列数."
+msgstr "以树形模式显示缩略图时使用的列数."
 
 #: include/global_settings.php:2128
 msgid "Thumbnail Height"
@@ -11907,7 +11898,7 @@ msgid ""
 msgstr ""
 "<strong>注意:</ strong>您已登录到远程数据采集器. 当<b>'在线'</ b>时,您将能"
 "够查看和控制大部分主要的Cacti 网站,就像您登录该网站一样. 此外,重要的是要注"
-"意,远程数据采集器需要使用Cacti 的性能增强服务<b>'按需更新'</ b>功能,并且我们"
+"意,远程数据采集器需要使用Cacti 的Boost 服务<b>'按需更新'</ b>功能,并且我们"
 "始终建议使用Spine. 当远程数据采集器<b>'离线'</ b>时,远程数据采集器网站将包"
 "含更少的信息. 但是,它将缓存所有更新,直到主Cacti 数据库和Web服务器可达. 然"
 "后它会将它的转储表输出转储回主Cacti 数据库进行更新."
@@ -11926,7 +11917,7 @@ msgstr ""
 "式,Thold等插件就可以工作."
 
 #: install/functions.php:423
-#, fuzzy, php-format
+#, php-format
 msgid "Path for %s"
 msgstr "%s 的路径"
 
@@ -11949,12 +11940,12 @@ msgid "Initializing"
 msgstr "初始化"
 
 #: install/install.php:74
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please wait while the installation system for Cacti Version %s initializes.  "
 "You must have JavaScript enabled for this to work."
 msgstr ""
-"请等待Cacti Version %s 的安装系统初始化.您必须启用JavaScript 才能使用此功能."
+"Cacti Version %s 的安装程序初始化时请耐心等待.您必须启用JavaScript 才能进行."
 
 #: lib/aggregate.php:51
 msgid "Display Graphs from this Aggregate"
@@ -11966,8 +11957,8 @@ msgid ""
 "multiple Graph Templates.  Aggregate does not support creating Aggregate "
 "Graphs from multiple Graph Templates."
 msgstr ""
-"为下面的聚合图选择的图形表示来自多个图形模板的图形. 聚合不支持从多个图形模板"
-"创建聚合图."
+"为下面的聚合图形选择的图形表示来自多个图形模板的图形. 聚合不支持从多个图形模板"
+"创建聚合图形."
 
 #: lib/api_aggregate.php:1173 lib/api_aggregate.php:1192
 msgid "Press 'Return' to return and select different Graphs"
@@ -11978,7 +11969,7 @@ msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
 "Aggregate does not support creating Aggregate Graphs from non-templated "
 "graphs."
-msgstr "为聚合图选择的图形不使用图形模板. 聚合不支持从非模板图创建聚合图."
+msgstr "为聚合图形选择的图形不使用图形模板. 聚合不支持从非模板图创建聚合图形."
 
 #: lib/api_aggregate.php:1303 lib/html.php:1049
 msgid "Graph Item"
@@ -12086,7 +12077,7 @@ msgstr "没有图形创建标准"
 
 #: lib/api_automation.php:1374
 msgid "Propagate Change"
-msgstr "宣传改变"
+msgstr "传播改变"
 
 #: lib/api_automation.php:1375
 msgid "Search Pattern"
@@ -12180,7 +12171,7 @@ msgstr "系统:"
 
 #: lib/api_device.php:1055
 msgid "Uptime:"
-msgstr "运行时间:"
+msgstr "Uptime:"
 
 #: lib/api_device.php:1056
 msgid "days"
@@ -12213,7 +12204,7 @@ msgstr "Ping 结果"
 
 #: lib/api_device.php:1095
 msgid "No Ping or SNMP Availability Check in Use"
-msgstr "不使用Ping 或SNMP 可用性检查"
+msgstr "没有使用Ping 或SNMP 可用性检查"
 
 #: lib/api_tree.php:195
 msgid "New Branch"
@@ -12336,7 +12327,6 @@ msgid "Oldest First"
 msgstr "最早的优先"
 
 #: lib/data_query.php:67 lib/data_query.php:344
-#, fuzzy
 msgid "Automation Execution for Data Query complete"
 msgstr "数据查询的自动化已执行完毕"
 
@@ -12364,7 +12354,7 @@ msgstr "未知类型 = '%s'."
 #, fuzzy
 msgid ""
 "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
-msgstr "警告:排序字段关联已更改.可能会出现重新映射问题!"
+msgstr "警告: 排序字段关联已更改.可能会出现重新映射的问题!"
 
 #: lib/data_query.php:150
 #, fuzzy
@@ -12392,12 +12382,12 @@ msgstr "索引与本地数据关联完毕"
 #: lib/data_query.php:306
 #, fuzzy
 msgid "Update Re-Index Cache complete. There were "
-msgstr "更新重新索引缓存完成.曾经有"
+msgstr "更新重新索引缓存完毕.曾经有"
 
 #: lib/data_query.php:310
 #, fuzzy
 msgid "Update Poller Cache for Query complete"
-msgstr "更新poller 缓存以查询完成"
+msgstr "更新poller 缓存以查询完毕"
 
 #: lib/data_query.php:312
 #, fuzzy
@@ -12408,7 +12398,7 @@ msgstr "未检测到索引更改,跳过重新索引和poller 缓存重新填充"
 #: lib/data_query.php:336
 #, fuzzy
 msgid "Automation Executing for Data Query complete"
-msgstr "自动化执行数据查询完成"
+msgstr "自动化执行数据查询已完毕"
 
 #: lib/data_query.php:339
 msgid "Plugin hooks complete"
@@ -12437,7 +12427,7 @@ msgstr "新的排序字段已验证.排序字段将更新."
 #: lib/data_query.php:487
 #, php-format
 msgid "Could not find data query XML file at '%s'"
-msgstr "找不到数据查询XML 文件'%s'"
+msgstr "未找到数据查询XML 文件'%s'"
 
 #: lib/data_query.php:491
 #, php-format
@@ -12483,20 +12473,20 @@ msgstr "发现索引数量: %s"
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not "
 "supported"
-msgstr "&lt;arg_num_indexes&gt; 在XML文件中丢失, 不支持 索引计数已更改"
+msgstr "&lt;arg_num_indexes&gt; 在XML 文件中丢失, 不支持 '索引计数'"
 
 #: lib/data_query.php:552
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
 "by counting arg_index entries"
 msgstr ""
-"&lt;arg_num_indexes&gt; 在XML文件中缺少通过对 arg_index 条目进行计数仿真的索"
+"&lt;arg_num_indexes&gt; 在XML 文件中缺少通过对 arg_index 条目进行计数仿真的索"
 "引计数已更改"
 
 #: lib/data_query.php:567
 #, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
-msgstr "为索引 '%s'列表执行脚本,索引计数: %s"
+msgstr "为索引 '%s' 列表执行脚本,索引计数: %s"
 
 #: lib/data_query.php:569
 msgid "Click to show Data Query output for 'index'"
@@ -12550,13 +12540,13 @@ msgid ""
 "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
 "by counting oid_index entries"
 msgstr ""
-"&lt;oid_num_indexes&gt; 在XML文件中缺少'通过计数oid_index条目来模拟'索引计数"
+"&lt;oid_num_indexes&gt; 在XML 文件中缺少'通过计数oid_index条目来模拟'索引计数"
 "已更改'"
 
 #: lib/data_query.php:723
 #, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
-msgstr "对索引列表执行SNMP遍历 @ '%s' 索引计数: %s"
+msgstr "对索引列表执行SNMP 遍历 @ '%s' 索引计数: %s"
 
 #: lib/data_query.php:727
 msgid "No SNMP data returned"
@@ -12565,7 +12555,7 @@ msgstr "没有返回SNMP 数据"
 #: lib/data_query.php:732
 #, php-format
 msgid "Index found at OID: '%s' value: '%s'"
-msgstr "在OID处找到的索引: '%s' 值: '%s'"
+msgstr "在OID 中找到的索引: '%s' 值: '%s'"
 
 #: lib/data_query.php:751
 #, fuzzy, php-format
@@ -12575,14 +12565,14 @@ msgstr "过滤索引列表 @ '%s' 索引计数:%s"
 #: lib/data_query.php:755
 #, fuzzy, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
-msgstr "在OID找到过滤的索引: '%s' 值:'%s'"
+msgstr "在OID 中找到已过滤的索引: '%s' 值:'%s'"
 
 #: lib/data_query.php:773
 #, php-format
 msgid ""
 "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' "
 "is defined"
-msgstr "修复 '%s' 错误的'方法'字段,因为定义了'rewrite_index'或'oid_suffix'"
+msgstr "修复 '%s' 错误的 '方法' 字段, 因为定义了 'rewrite_index' 或 'oid_suffix'"
 
 #: lib/data_query.php:780
 #, php-format
@@ -12617,7 +12607,7 @@ msgstr "字段 '%s' %s"
 #: lib/data_query.php:872
 #, fuzzy, php-format
 msgid "Executing SNMP get for %s oids (%s)"
-msgstr "执行SNMP 获取 %s oids (%s)"
+msgstr "执行SNMP 获取 %s oid (%s)"
 
 #: lib/data_query.php:905
 #, fuzzy, php-format
@@ -12907,7 +12897,7 @@ msgstr "成功!"
 
 #: lib/functions.php:3768
 msgid "Message Not Sent due to ping failure."
-msgstr "由于ping失败,邮件未发送."
+msgstr "由于ping 失败,邮件未发送."
 
 #: lib/functions.php:4321 lib/functions.php:4382 poller.php:323 poller.php:436
 #: poller.php:498 poller.php:521 poller.php:662
@@ -12972,7 +12962,7 @@ msgstr "上一页"
 #: lib/html.php:507
 #, php-format
 msgid "%d to %d of %s [ %s ]"
-msgstr "%d [ %d ] 中 %s 到 %s"
+msgstr "%d to %d of %s [ %s ]"
 
 #: lib/html.php:510 lib/installer.php:1431
 msgid "Next"
@@ -12981,12 +12971,12 @@ msgstr "下一页"
 #: lib/html.php:516
 #, php-format
 msgid "All %d %s"
-msgstr "全部 %d %s"
+msgstr "一共 %d 个 %s"
 
 #: lib/html.php:522
 #, php-format
 msgid "No %s Found"
-msgstr "找不到 %s"
+msgstr "未找到 %s"
 
 #: lib/html.php:1053
 msgid "Alpha %"
@@ -14711,7 +14701,7 @@ msgstr ""
 
 #: lib/installer.php:2009
 msgid "Critical Binary Locations and Versions"
-msgstr "关键的执行程序位置和版本"
+msgstr "关键的可执行程序位置和版本"
 
 #: lib/installer.php:2010
 msgid "Make sure all of these values are correct before continuing."
@@ -14735,10 +14725,10 @@ msgid ""
 "install the packages, there is an 'install_package.php' cli script that can "
 "be used from the command line after the install is complete."
 msgstr ""
-"在继续之前,请确保以下目录权限是正确的. 在安装过程中,这些目录需要由Web服务"
+"在继续之前,请确保以下目录权限是正确的. 在安装过程中,这些目录需要由Web 服务"
 "器用户拥有. 这些权限更改是必需的,以允许安装程序安装包含将放置在这些目录中的"
-"XML和脚本文件的设备模板包. 如果您选择不安装软件包,则在安装完成后,会有一个"
-"可从命令行使用的 'install_package.php' cli脚本."
+"XML 和脚本文件的设备模板包. 如果您选择不安装软件包,则在安装完成后,会有一个"
+"可从命令行使用的 'install_package.php' 脚本."
 
 #: lib/installer.php:2094
 msgid ""
@@ -14900,7 +14890,7 @@ msgstr "查找配置文件时出错"
 
 #: lib/installer.php:2309
 msgid "The installation cannot continue because no profiles could be found."
-msgstr "安装无法继续,因为找不到配置文件."
+msgstr "安装无法继续,因为未找到配置文件."
 
 #: lib/installer.php:2310
 msgid ""
@@ -15178,7 +15168,7 @@ msgstr "访问不足"
 
 #: lib/ldap.php:297
 msgid "Group DN could not be found to compare"
-msgstr "找不到组DN"
+msgstr "未找到group DN"
 
 #: lib/ldap.php:301
 msgid "More than one matching user found"
@@ -15212,7 +15202,7 @@ msgstr "ICMP Ping 超时"
 #: lib/ping.php:202 lib/ping.php:220
 #, php-format
 msgid "ICMP Ping Success (%s ms)"
-msgstr "ICMP Ping成功 (%s ms)"
+msgstr "ICMP Ping 成功 (%s ms)"
 
 #: lib/ping.php:207 lib/ping.php:225
 msgid "ICMP ping Timed out"
@@ -15850,7 +15840,7 @@ msgstr "排序排序"
 
 #: links.php:429
 msgid "No Pages Found"
-msgstr "找不到网页"
+msgstr "未找到页面"
 
 #: links.php:513
 msgid "Console Menu"
@@ -15877,8 +15867,7 @@ msgid ""
 "Under which Console heading should this item appear? (All External Link "
 "menus will appear between Configuration and Utilities)"
 msgstr ""
-"这个项目出现在哪个控制台标题下? (所有外部链接菜单将出现在配置和实用程序之"
-"间)"
+"这个项目出现在哪个控制台标题下? (所有外部链接菜单将出现在配置和实用程序之间)"
 
 #: links.php:528
 msgid "New Console Section"
@@ -16596,11 +16585,11 @@ msgstr "与此数据采集器关联的设备数量."
 
 #: pollers.php:819
 msgid "SNMP Gets"
-msgstr "SNMP 获取"
+msgstr "SNMP 已获取"
 
 #: pollers.php:819
 msgid "The number of SNMP gets associated with this Collector."
-msgstr "SNMP 的数量与此采集器相关联."
+msgstr "SNMP 获取到的OID 数量有多少与此采集器相关."
 
 #: pollers.php:820
 msgid "Scripts"
@@ -16645,7 +16634,7 @@ msgstr "此数据采集器最后一次与主Cacti 站点完全同步."
 
 #: pollers.php:874
 msgid "No Data Collectors Found"
-msgstr "找不到数据采集器"
+msgstr "未找到数据采集器"
 
 #: rrdcleaner.php:30 tree.php:31
 msgctxt "dropdown action"
@@ -16994,7 +16983,7 @@ msgstr "与本站点相关的国家/地区."
 
 #: sites.php:544
 msgid "No Sites Found"
-msgstr "找不到站点"
+msgstr "未找到站点"
 
 #: spikekill.php:38
 #, php-format
@@ -17312,7 +17301,7 @@ msgstr "此树中单个图的总数."
 
 #: tree.php:2029
 msgid "No Trees Found"
-msgstr "找不到树"
+msgstr "未找到树"
 
 #: user_admin.php:32
 msgid "Batch Copy"
@@ -17436,7 +17425,7 @@ msgstr "有效的策略"
 
 #: user_admin.php:1006 user_group_admin.php:851
 msgid "No Matching Graphs Found"
-msgstr "找不到匹配的图形"
+msgstr "未找到匹配的图形"
 
 #: user_admin.php:1021 user_admin.php:1027 user_admin.php:1281
 #: user_admin.php:1287 user_admin.php:1426 user_admin.php:1432
@@ -17488,7 +17477,7 @@ msgstr "拒绝"
 
 #: user_admin.php:1108
 msgid "No Matching User Groups Found"
-msgstr "找不到匹配的用户组"
+msgstr "未找到匹配的用户组"
 
 #: user_admin.php:1122
 msgid "Assign Membership"
@@ -17524,7 +17513,7 @@ msgstr "访问受限"
 
 #: user_admin.php:1266 user_group_admin.php:1000
 msgid "No Matching Devices Found"
-msgstr "找不到匹配的设备"
+msgstr "未找到匹配的设备"
 
 #: user_admin.php:1308 user_group_admin.php:1038
 msgid "Default Graph Template Policy"
@@ -17540,7 +17529,7 @@ msgstr "总图数"
 
 #: user_admin.php:1411 user_group_admin.php:1140
 msgid "No Matching Graph Templates Found"
-msgstr "找不到匹配的图形模板"
+msgstr "未找到匹配的图形模板"
 
 #: user_admin.php:1453 user_group_admin.php:1179
 msgid "Default Tree Policy"
@@ -17552,7 +17541,7 @@ msgstr "此用户的默认树策略"
 
 #: user_admin.php:1551 user_group_admin.php:1273
 msgid "No Matching Trees Found"
-msgstr "找不到匹配的树"
+msgstr "未找到匹配的树"
 
 #: user_admin.php:1596 user_group_admin.php:1319
 msgid "User Permissions"
@@ -17967,7 +17956,7 @@ msgstr "组成员"
 
 #: user_group_admin.php:697
 msgid "No Matching Group Members Found"
-msgstr "找不到匹配的群组成员"
+msgstr "未找到匹配的群组成员"
 
 #: user_group_admin.php:711
 msgid "Add to Group"
@@ -18008,7 +17997,7 @@ msgstr "用户组管理"
 
 #: user_group_admin.php:1946
 msgid "No User Groups Found"
-msgstr "找不到用户组"
+msgstr "未找到用户组"
 
 #: user_group_admin.php:2538
 #, php-format
@@ -18028,7 +18017,7 @@ msgstr "清除"
 msgid ""
 "NET-SNMP Not Installed or its paths are not set.  Please install if you wish "
 "to monitor SNMP enabled devices."
-msgstr "未安装NET-SNMP 或者其路径未设置. 如果您希望监视启用SNMP 的设备，请安装NET-SNMP."
+msgstr "未安装NET-SNMP 或者其路径未设置. 如果您希望监视启用SNMP 的设备,请安装NET-SNMP."
 
 #: utilities.php:186
 msgid "Configuration Settings"
@@ -18040,8 +18029,7 @@ msgid ""
 "ERROR: Installed RRDtool version does not exceed configured version."
 "<br>Please visit the %s and select the correct RRDtool Utility Version."
 msgstr ""
-"错误：已安装的RRDtool版本不超过已配置的版本. <br>请访问 %s并选择正确的"
-"RRDtool实用程序版本."
+"错误：已安装的RRDtool 版本没达到要求. <br>请访问 %s 并选择正确的RRDtool 版本."
 
 #: utilities.php:191
 #, php-format
@@ -18049,7 +18037,7 @@ msgid ""
 "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" "
 "graph(s) and/or templates have GIF set as the image format."
 msgstr ""
-"错误：RRDtool 1.2.x+不支持GIF 图像格式，但 %d\"图形和/或模板将GIF 设置为图像格式."
+"错误：RRDtool 1.2.x+不支持GIF 图像格式,但 %d\"图形和/或模板将GIF 设置为图像格式."
 
 #: utilities.php:211
 msgid "Database"
@@ -18145,7 +18133,7 @@ msgstr "PHP 版本"
 #: utilities.php:430
 msgid ""
 "PHP Version 5.5.0+ is recommended due to strong password hashing support."
-msgstr "由于强大的密码散列支持，建议使用PHP版本5.5.0以上的版本."
+msgstr "由于强大的密码散列支持,建议使用PHP版本5.5.0以上的版本."
 
 #: utilities.php:435
 msgid "PHP OS"
@@ -18176,8 +18164,7 @@ msgid ""
 "present and is only to be used as a suggestion, actual values may vary "
 "system to system based on requirements."
 msgstr ""
-"这个建议的内存值是根据数据源的数量来计算的，只是作为一个建议，根据需要，实际"
-"值可能会随系统的不同而不同."
+"这个建议的内存值是根据数据源的数量来计算的,只是作为一个建议,根据需要,实际值可能会随系统的不同而不同."
 
 #: utilities.php:497
 msgid "MySQL Table Information - Sizes in KBytes"
@@ -18288,11 +18275,11 @@ msgstr "Cacti 日志已清除"
 
 #: utilities.php:1281
 msgid "Error: Unable to clear log, no write permissions."
-msgstr "错误：无法清除日志，没有写入权限."
+msgstr "错误：无法清除日志,没有写入权限."
 
 #: utilities.php:1284
 msgid "Error: Unable to clear log, file does not exist."
-msgstr "错误：无法清除日志，文件不存在."
+msgstr "错误：无法清除日志,文件不存在."
 
 #: utilities.php:1385
 msgid "Data Query Cache Items"
@@ -18371,7 +18358,7 @@ msgid ""
 "The Cacti Log stores statistic, error and other message depending on system "
 "settings.  This information can be used to identify problems with the poller "
 "and application."
-msgstr "Cacti Log 根据系统设置存储统计信息，错误信息和其他信息.这些信息可以用来识别poller 和应用程序的问题."
+msgstr "Cacti Log 根据系统设置存储统计信息,错误信息和其他信息.这些信息可以用来识别poller 和应用程序的问题."
 
 #: utilities.php:1901
 msgid ""
@@ -18389,7 +18376,7 @@ msgid ""
 "data is then in turn executed/interpreted and the results are fed into the "
 "RRDfiles for graphing or the database for display."
 msgstr ""
-"这是每次运行时传递给poller 的数据.然后依次执行/解释这些数据，并将结果输入到RRD 文件中进行绘图或显示数据库."
+"这是每次运行时传递给poller 的数据.然后依次执行/解释这些数据,并将结果输入到RRD 文件中进行绘图或显示数据库."
 
 #: utilities.php:1912
 msgid ""
@@ -18397,7 +18384,7 @@ msgid ""
 "types. The values from these fields can be used in the text area of Graphs "
 "for Legends, Vertical Labels, and GPRINTS as well as in CDEF's."
 msgstr ""
-"数据查询缓存存储从数据查询输入类型收集的信息.来自这些字段的值可以在图形的图例，垂直标签和GPRINTS以及CDEF中使用."
+"数据查询缓存存储从数据查询输入类型收集的信息.来自这些字段的值可以在图形的图例,垂直标签和GPRINTS以及CDEF中使用."
 
 #: utilities.php:1914
 msgid "Rebuild Poller Cache"
@@ -18416,11 +18403,11 @@ msgid ""
 "the Cacti UI.  You can simply run 'php -q cli/rebuild_poller_cache.php --"
 "help' at the command line for more information.</i>"
 msgstr ""
-"如果您选择此选项，则将重新生成轮询缓存.如果在崩溃后遇到问题并且已经运行数据"
-"库修复工具，则只有在发生数据库崩溃的情况下才使用此选项;或者，如果您遇到问题 "
-"使用特定的设备，只需重新保存该设备以重建其轮询缓存即可.还有一个与此命令等效"
-"的命令行界面，建议用于大型系统.<i class=\"deviceDown\">注意：在大型系统 ，"
-"这个命令可能需要几分钟到几个小时才能完成，因此不应该从Cacti UI运行.您可以在"
+"如果您选择此选项,则将重新生成轮询缓存.如果在崩溃后遇到问题并且已经运行数据"
+"库修复工具,则只有在发生数据库崩溃的情况下才使用此选项;或者,如果您遇到问题 "
+"使用特定的设备,只需重新保存该设备以重建其轮询缓存即可.还有一个与此命令等效"
+"的命令行界面,建议用于大型系统.<i class=\"deviceDown\"> 注意：在大型系统 ,"
+"这个命令可能需要几分钟到几个小时才能完成,因此不应该从Cacti 界面运行.您可以在"
 "命令行运行 'php -q cli/rebuild_poller_cache.php --help' 以获取更多信息.</ i>"
 
 #: utilities.php:1918
@@ -18437,39 +18424,39 @@ msgid ""
 "rebuild it at the next scheduled poller start.  This will trigger all Remote "
 "Data Collectors to recheck their website and plugin files for consistency."
 msgstr ""
-"在Cacti中操作多个数据采集器时，Cacti将尝试维护所有数据采集器上的密钥文件的状"
-"态.这包括所有核心，非安装相关的网站和插件文件.强制执行资源缓存重建时，Cacti"
-"将清除本地资源缓存，然后在下一个计划的poller 启动时重建它.这将触发所有远程数"
+"在Cacti中操作多个数据采集器时,Cacti将尝试维护所有数据采集器上的密钥文件的状"
+"态.这包括所有核心,非安装相关的网站和插件文件.强制执行资源缓存重建时,Cacti"
+"将清除本地资源缓存,然后在下一个计划的poller 启动时重建它.这将触发所有远程数"
 "据采集器重新检查其网站和插件文件的一致性."
 
 #: utilities.php:1924
 msgid "Boost Utilities"
-msgstr "增强Utilities"
+msgstr "Boost 工具"
 
 #: utilities.php:1925
 msgid "View Boost Status"
-msgstr "查看增强状态"
+msgstr "查看Boost 状态"
 
 #: utilities.php:1927
 msgid ""
 "This menu pick allows you to view various boost settings and statistics "
 "associated with the current running Boost configuration."
-msgstr "通过此菜单，您可以查看与当前运行的增强配置相关的各种升压设置和统计信息."
+msgstr "通过此菜单,您可以查看与当前Boost 相关的各种设置和统计信息."
 
 #: utilities.php:1931
 msgid "RRD Utilities"
-msgstr "RRD实用程序"
+msgstr "RRD 工具"
 
 #: utilities.php:1932
 msgid "RRDfile Cleaner"
-msgstr "RRDfile清理程序"
+msgstr "RRD 文件清理"
 
 #: utilities.php:1934
 msgid ""
 "When you delete Data Sources from Cacti, the corresponding RRDfiles are not "
 "removed automatically.  Use this utility to facilitate the removal of these "
 "old files."
-msgstr "从Cacti中删除数据源时，相应的RRD文件不会自动删除. 使用此实用程序来帮助删除这些旧文件."
+msgstr "从Cacti中删除数据源时,相应的RRD文件不会自动删除. 使用此工具来帮助删除这些旧文件."
 
 #: utilities.php:1939
 msgid "SNMPAgent Utilities"
@@ -18491,7 +18478,7 @@ msgstr "重建SNMPAgent 缓存"
 msgid ""
 "The SNMP cache will be cleared and re-generated if you select this option. "
 "Note that it takes another poller run to restore the SNMP cache completely."
-msgstr "如果您选择此选项，SNMP 缓存将被清除并重新生成. 请注意，它需要另一个poller 才能完全恢复SNMP 缓存"
+msgstr "如果您选择此选项,SNMP 缓存将被清除并重新生成. 请注意,它需要另一个poller 才能完全恢复SNMP 缓存"
 
 #: utilities.php:1948
 msgid "View SNMPAgent Notification Log"
@@ -18501,7 +18488,7 @@ msgstr "查看SNMPAgent 通知日志"
 msgid ""
 "This menu pick allows you to view the latest events SNMPAgent has handled in "
 "relation to the registered notification receivers."
-msgstr "通过此菜单，您可以查看SNMPAgent 处理的与注册的通知接收方有关的最新事件."
+msgstr "通过此菜单,您可以查看SNMPAgent 处理的与注册的通知接收方有关的最新事件."
 
 #: utilities.php:1954
 msgid "Allows Administrators to maintain SNMP notification receivers."
@@ -18537,11 +18524,11 @@ msgstr "目录不存在！"
 
 #: utilities.php:2153
 msgid "Current Boost Status"
-msgstr "当前增强状态"
+msgstr "当前Boost 状态"
 
 #: utilities.php:2156
 msgid "Boost On-demand Updating:"
-msgstr "增强按需更新："
+msgstr "Boost 按需更新："
 
 #: utilities.php:2159
 msgid "Total Data Sources:"
@@ -18549,19 +18536,19 @@ msgstr "总数据来源："
 
 #: utilities.php:2163
 msgid "Pending Boost Records:"
-msgstr "等待增强记录："
+msgstr "等待Boost 记录："
 
 #: utilities.php:2166
 msgid "Archived Boost Records:"
-msgstr "存档的增强记录："
+msgstr "存档的Boost 记录："
 
 #: utilities.php:2169
 msgid "Total Boost Records:"
-msgstr "总增强记录："
+msgstr "Boost 总记录："
 
 #: utilities.php:2173
 msgid "Boost Storage Statistics"
-msgstr "增强存储统计"
+msgstr "Boost 存储统计"
 
 #: utilities.php:2177
 msgid "Database Engine:"
@@ -18569,7 +18556,7 @@ msgstr "数据库引擎："
 
 #: utilities.php:2181
 msgid "Current Boost Table(s) Size:"
-msgstr "目前的增强表尺寸："
+msgstr "目前Boost 表的大小："
 
 #: utilities.php:2185
 msgid "Avg Bytes/Record:"
@@ -18590,7 +18577,7 @@ msgstr "无限"
 
 #: utilities.php:2225
 msgid "Max Allowed Boost Table Size:"
-msgstr "最大允许增强表大小："
+msgstr "Boost 表的最大大小："
 
 #: utilities.php:2229
 msgid "Estimated Maximum Records:"
@@ -18689,7 +18676,7 @@ msgstr "SNMP Agent缓存"
 
 #: utilities.php:2414
 msgid "OIDs"
-msgstr "OIDs"
+msgstr "OID"
 
 #: utilities.php:2493
 msgid "Column Data"
@@ -18751,24 +18738,24 @@ msgstr "VDEF 名称：%s"
 
 #: vdef.php:392
 msgid "VDEF Preview"
-msgstr "VDEF预览"
+msgstr "VDEF 预览"
 
 #: vdef.php:402
 #, php-format
 msgid "VDEF Items [edit: %s]"
-msgstr "VDEF项目[编辑：%s]"
+msgstr "VDEF 项目[编辑：%s]"
 
 #: vdef.php:404
 msgid "VDEF Items [new]"
-msgstr "VDEF项目[新建]"
+msgstr "VDEF 项目[新建]"
 
 #: vdef.php:422
 msgid "VDEF Item Type"
-msgstr "VDEF Item Type"
+msgstr "VDEF 项目类型"
 
 #: vdef.php:423
 msgid "Choose what type of VDEF item this is."
-msgstr "选择这是什么类型的VDEF项目."
+msgstr "选择这是什么类型的VDEF 项目."
 
 #: vdef.php:429
 msgid "VDEF Item Value"
@@ -18797,21 +18784,21 @@ msgstr "VDEF 的名称."
 
 #: vdef.php:881
 msgid "VDEF Name"
-msgstr "VDEF全名"
+msgstr "VDEF 全名"
 
 #: vdef.php:882
 msgid ""
 "VDEFs that are in use cannot be Deleted. In use is defined as being "
 "referenced by a Graph or a Graph Template."
-msgstr "正在由图形或图形模板引用的VDEF不能被删除. "
+msgstr "正在由图形或图形模板引用的VDEF 不能被删除. "
 
 #: vdef.php:883
 msgid "The number of Graphs using this VDEF."
-msgstr "使用此VDEF的图的数量."
+msgstr "使用此VDEF 的图的数量."
 
 #: vdef.php:884
 msgid "The number of Graphs Templates using this VDEF."
-msgstr "使用此VDEF的图形模板的数量."
+msgstr "使用此VDEF 的图形模板的数量."
 
 #: vdef.php:907
 msgid "No VDEFs"
