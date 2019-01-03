@@ -1001,13 +1001,13 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($user == -1) {
@@ -1086,7 +1086,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
+		$graphs_sql = "SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1098,23 +1098,15 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
-			$sql_having
+			$sql_having";
+
+		$graphs = db_fetch_assoc("$graphs_sql
 			$order_by
 			$limit");
 
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg
-				INNER JOIN graph_local AS gl
-				ON gl.id=gtg.local_graph_id
-				LEFT JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
-				ON h.id=gl.host_id
-				$sql_join
-				$sql_where
-				$sql_having
+				$graphs_sql
 			) AS rower");
 	} else {
 		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
@@ -1158,13 +1150,13 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($user == -1) {
@@ -1243,7 +1235,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+		$graphs_sql = "SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1265,31 +1257,15 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
-			$sql_having
+			$sql_having";
+
+		$graphs = db_fetch_assoc("$graphs_sql
 			$order_by
 			$limit");
 
 		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.id)
 			FROM (
-				SELECT gl.id, $sql_select
-				FROM graph_templates_graph AS gtg
-				INNER JOIN (
-					SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
-					gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
-					FROM aggregate_graphs AS ag
-					INNER JOIN aggregate_graphs_items AS agi
-					ON ag.id=agi.aggregate_graph_id
-					INNER JOIN graph_local AS gl
-					ON gl.id=agi.local_graph_id
-				) AS gl
-				ON gl.id=gtg.local_graph_id
-				LEFT JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
-				ON h.id=gl.host_id
-				$sql_join
-				$sql_where
-				$sql_having
+				$graphs_sql
 			) AS rower");
 	} else {
 		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
