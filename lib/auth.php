@@ -1263,7 +1263,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.id)
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.local_graph_id)
 			FROM (
 				$graphs_sql
 			) AS rower");
