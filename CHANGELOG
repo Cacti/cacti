@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+develop
+-issue#2267: Remove unnecessary includes in aggregate template code
+
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
 -feature: Add Graphs and Data Sources hyperlinks on Device page
