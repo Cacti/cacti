@@ -581,8 +581,19 @@ function format_plugin_row($plugin, $last_plugin, $include_ordering, $table) {
 		$row .= "<td class='nowrap'>" . $status_names[$plugin['status']] . "</td>\n";
 	}
 
+	if ($plugin['requires'] != '') {
+		$requires = explode(' ', $plugin['requires']);
+		foreach($requires as $r) {
+			$nr[] = ucfirst($r);
+		}
+
+		$requires = implode(', ', $nr);
+	} else {
+		$requires = $plugin['requires'];
+	}
+
 	$row .= "<td class='nowrap'>" . $plugin['author'] . "</td>\n";
-	$row .= "<td class='nowrap'>" . ucfirst($plugin['requires']) . "</td>\n";
+	$row .= "<td class='nowrap'>" . $requires . "</td>\n";
 	$row .= "<td class='right'>"  . $plugin['version'] . "</td>\n";
 
 	if ($include_ordering) {
