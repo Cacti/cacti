@@ -139,6 +139,10 @@ label {
 	display: none;
 }
 
+input[type="checkbox"] {
+	display: none;
+}
+
 input[type="checkbox"] + label:before {
 	border: 1px solid #7f83a2;
 	content: "\00a0";
