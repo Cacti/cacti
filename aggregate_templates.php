@@ -256,7 +256,6 @@ function aggregate_get_graph_items($table, $id) {
  */
 function aggregate_form_actions() {
 	global $aggregate_actions, $config;
-	include_once($config['base_path'] . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
