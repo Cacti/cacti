@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 develop
+-issue#2259: Unable to View Aggregate Graphs
 -issue#2267: Remove unnecessary includes in aggregate template code
 
 1.2.0
