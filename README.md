@@ -4,6 +4,8 @@
 [![Project Status](http://opensource.box.com/badges/active.svg)](http://opensource.box.com/badges)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Average time to resolve an issue")
 [![Percentage of open issues](http://isitmaintained.com/badge/open/cacti/cacti.svg)](http://isitmaintained.com/project/cacti/cacti "Percentage of issues still open")
+[!Percentage of translated test](http://translate.cacti.net/widgets/cacti/-/svg-badge.svg)](http://translate.cacti.net/engage/cacti/?utm_source=widget "Percentage of translated pages")
+
 
 -----------------------------------------------------------------------------
 
