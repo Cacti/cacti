@@ -197,7 +197,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 					<td id='text'></td>
 				</tr>
 			</table>
-			<table class='filterTable'>
+			<table id='search' class='filterTable'>
 				<tr>
 					<td>
 						<?php print __('Search');?>
@@ -315,7 +315,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Window');?>
 					</td>
 					<td>
-						<select name='graph_start' id='graph_start' onChange='imageOptionsChanged("timespan")'>
+						<select name='graph_start' id='graph_start' onChange='realtimeGrapher()'>
 						<?php
 						foreach ($realtime_window as $interval => $text) {
 							printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? 'selected="selected"' : '', $text);
@@ -327,7 +327,7 @@ function html_graph_preview_filter($page, $action, $devices_where = '', $templat
 						<?php print __('Interval');?>
 					</td>
 					<td>
-						<select name='ds_step' id='ds_step' onChange="imageOptionsChanged('interval')">
+						<select name='ds_step' id='ds_step' onChange="realtimeGrapher()">
 							<?php
 							foreach ($realtime_refresh as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
