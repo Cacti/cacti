@@ -757,9 +757,14 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id AND (" . $sql_where . ')';
+		$sql_where = "WHERE gti.local_graph_id=0
+			AND gti.parent=$parent
+			AND gti.graph_tree_id=$tree_id
+			AND (" . $sql_where . ')';
 	} else {
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
+		$sql_where = "WHERE gti.local_graph_id=0
+			AND gti.parent=$parent
+			AND gti.graph_tree_id=$tree_id";
 	}
 
 	$trees = array_rekey(
@@ -1755,13 +1760,13 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($host_id > 0) {
@@ -1991,13 +1996,13 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($site_id > 0) {
