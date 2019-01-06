@@ -833,7 +833,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
 
 	if (!isset($database_log)) {
-		$databsae_log = false;
+		$database_log = false;
 	}
 
 	$last_log = $database_log;
