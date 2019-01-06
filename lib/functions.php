@@ -827,7 +827,7 @@ function cacti_log_file() {
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
-   @arg $environ - (string) tell's from where the script was called from
+   @arg $environ - (string) tells from where the script was called from
    @arg $level - (int) only log if above the specified log level */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
@@ -1081,7 +1081,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
 	return $display;
 }
 
-/* update_host_status - updates the host table with informaton about it's status.
+/* update_host_status - updates the host table with information about its status.
 	  It will also output to the appropriate log file when an event occurs.
 
 	@arg $status - (int constant) the status of the host (Up/Down)
@@ -1351,7 +1351,7 @@ function is_hexadecimal($result) {
 	return true;
 }
 
-/* is_mac_address - determine's if the result value is a mac address
+/* is_mac_address - determines if the result value is a mac address
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
@@ -1391,7 +1391,7 @@ function is_hex_string($result) {
 	return true;
 }
 
-/* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
+/* prepare_validate_result - determines if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll, the result can be modified in the call
    @returns - (bool) either to result is valid or not */
 function prepare_validate_result(&$result) {
@@ -1649,7 +1649,7 @@ function get_data_source_title($local_data_id) {
 }
 
 /* get_device_name - returns the description of the device in cacti host table
-   @arg $host_id - (int) the ID of the device to get a decription for
+   @arg $host_id - (int) the ID of the device to get a description for
    @returns - the device name */
 function get_device_name($host_id) {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
@@ -1782,7 +1782,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 	return '1';
 }
 
-/* get_rrd_cfs - reads the RRDfile and get's the RRA's stored in it.
+/* get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
     @arg $local_data_id
     @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
@@ -2393,7 +2393,7 @@ function draw_navigation_text($type = 'url') {
 		if (isset_request_var('node')) {
 			$parts = explode('-', get_request_var('node'));
 
-			// Check for tree anchoe
+			// Check for tree anchor
 			if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
 				$tree_id = $parts[1];
 				$leaf_id = 0;
@@ -2610,7 +2610,7 @@ function get_current_page($basename = true) {
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
    @arg $graph_template_id - (int) the ID of the graph template to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template') {
 	switch ($sub_type) {
@@ -2637,7 +2637,7 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 
 /* get_hash_data_template - returns the current unique hash for a data template
    @arg $graph_template_id - (int) the ID of the data template to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_template($data_template_id, $sub_type = 'data_template') {
 	switch ($sub_type) {
@@ -2661,7 +2661,7 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 
 /* get_hash_data_input - returns the current unique hash for a data input method
    @arg $graph_template_id - (int) the ID of the data input method to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 	switch ($sub_type) {
@@ -2685,7 +2685,7 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 
 /* get_hash_cdef - returns the current unique hash for a cdef
    @arg $graph_template_id - (int) the ID of the cdef to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 	if (!is_numeric($cdef_id)) {
@@ -2727,7 +2727,7 @@ function get_hash_gprint($gprint_id) {
 /**
  * returns the current unique hash for a vdef
  * @param $graph_template_id - (int) the ID of the vdef to return a hash for
- * @param $sub_type (optional) return the hash for a particlar sub-type of this type
+ * @param $sub_type (optional) return the hash for a particular subtype of this type
  * @returns - a 128-bit, hexadecimal hash */
 function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 	switch ($sub_type) {
@@ -2778,7 +2778,7 @@ function get_hash_host_template($host_template_id) {
 
 /* get_hash_data_query - returns the current unique hash for a data query
    @arg $graph_template_id - (int) the ID of the data query to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 	switch ($sub_type) {
@@ -2932,8 +2932,8 @@ function sanitize_search_string($string) {
 }
 
 /** cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING
- * in case of XSS attac, expect the result to be broken
- * we do NOT sanitize in a way, that attacs are converted to valid HTML
+ * in case of XSS attack, expect the result to be broken
+ * we do NOT sanitize in a way, that attacks are converted to valid HTML
  * it is ok, when the result is broken but the application stays alive
  * @arg string $uri   - the uri to be sanitized
  * @returns string    - the sanitized uri
@@ -4019,8 +4019,8 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
  *
  *  @arg $data       - an array of data
  *  @arg $percentile - the Nth percentile to calculate.  By default 95th.
- *  #arg $whisker    - if whisker is true, an array of values will be returne
- *                     including 25th, median, 75th, and 90th perecentiles.
+ *  #arg $whisker    - if whisker is true, an array of values will be returned
+ *                     including 25th, median, 75th, and 90th percentiles.
  *
  *  @returns - either the Nth percentile, the elements for a whisker chart,
  *            or false if there is insufficient data to determine. */
@@ -4453,8 +4453,8 @@ function get_url_type() {
 }
 
 /** get_default_contextoption - Sets default context options for self-signed SSL
- *  related protocols if necessary. Allows plugins to add addional header information
- *  to fullfill system setup related requirements like the usage of Web Single Login
+ *  related protocols if necessary. Allows plugins to add additional header information
+ *  to fulfill system setup related requirements like the usage of Web Single Login
  *  cookies for example.
  *
  *  @returns - an array of stream context options or false */
