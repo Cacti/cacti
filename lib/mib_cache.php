@@ -205,7 +205,10 @@ class MibCache{
 
 					db_execute_prepared('INSERT INTO `snmpagent_cache`
 						(`oid`, `name`, `mib`, `type`, `otype`, `kind`, `max-access`, `value`)
-						VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+						VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+						ON DUPLICATE KEY UPDATE `name`=VALUES(`name`), `mib`=VALUES(`mib`),
+						`type`=VALUES(`type`), `otype`=VALUES(`otype`), `kind`=VALUES(`kind`),
+						`max-access`=VALUES(`max-access`), `value`=VALUES(`value`)',
 						array($column_params['oid'], $column_params['name'], $column_params['mib'],
 							$column_params['type'], $column_params['otype'], 'Column Data',
 							$column_params['max-access'], trim($column_params['value'])));

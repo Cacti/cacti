@@ -5,6 +5,7 @@ develop
 -issue#2267: Remove unnecessary includes in aggregate template code
 -issue#2270: Realtime Graphs consuming too much memory
 -issue#2272: Site Tree Branches not showing Graphs
+-issue#2280: SQL Errors in snmpagent cache table inserts
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login
