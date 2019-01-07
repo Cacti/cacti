@@ -5,6 +5,7 @@ develop
 -issue#2267: Remove unnecessary includes in aggregate template code
 -issue#2270: Realtime Graphs consuming too much memory
 -issue#2272: Site Tree Branches not showing Graphs
+-issue: Correct undefined variable error in graph creation logic
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

@@ -456,9 +456,9 @@ function html_graph_new_graphs($page, $host_id, $host_template_id, $selected_gra
 	form_hidden_box('host_template_id', $host_template_id, '0');
 	form_hidden_box('host_id', $host_id, '0');
 	form_hidden_box('save_component_new_graphs', '1', '');
-	print "<input type='hidden' name='selected_graphs_array' value='" . serialize($selected_graphs_array) . "'>\n";
+	form_hidden_box('selected_graphs_array', serialize($selected_graphs_array), '');
 
-	if (!substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
+	if (isset($_SERVER['HTTP_REFERER']) && !substr_count($_SERVER['HTTP_REFERER'], 'graphs_new')) {
 		set_request_var('returnto', basename(sanitize_uri($_SERVER['HTTP_REFERER'])));
 	}
 	load_current_session_value('returnto', 'sess_grn_returnto', '');
