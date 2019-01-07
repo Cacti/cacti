@@ -76,6 +76,7 @@ function api_device_remove($device_id) {
 		api_delete_graphs($graphs);
 	}
 
+	clear_cached_allowed_types();
 	api_device_cache_crc_update($poller_id);
 }
 
@@ -204,6 +205,8 @@ function api_device_remove_multi($device_ids, $delete_type = 2) {
 			}
 		}
 	}
+
+	clear_cached_allowed_types();
 }
 
 function api_device_disable_devices($device_ids) {
@@ -759,6 +762,9 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 			/* update title cache for graph and data source */
 			update_data_source_title_cache_from_host($host_id);
 			update_graph_title_cache_from_host($host_id);
+
+			/* clear the device cache */
+			clear_cached_allowed_types();
 		} else {
 			raise_message(2);
 		}

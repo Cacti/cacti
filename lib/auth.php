@@ -1355,6 +1355,10 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 	}
 }
 
+function clear_cached_allowed_types() {
+	kill_session_var('sess_allowed_templates');
+}
+
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
 	$hash      = get_allowed_type_hash('graph_templates', $sql_where, $order_by, $limit, $graph_template_id, $user);
 	$init_rows = $total_rows;

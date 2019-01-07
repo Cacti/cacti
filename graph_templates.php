@@ -49,11 +49,6 @@ switch (get_request_var('action')) {
 		form_actions();
 
 		break;
-	case 'template_remove':
-		template_remove();
-
-		header('Location: graph_templates.php?header=false');
-		break;
 	case 'input_remove':
 		get_filter_request_var('graph_template_id');
 
@@ -280,6 +275,8 @@ function form_actions() {
 				db_execute('UPDATE graph_local
 					SET graph_template_id=0
 					WHERE ' . array_to_sql_or($selected_items, 'graph_template_id'));
+
+				clear_cached_allowed_types();
 			} elseif (get_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					api_duplicate_graph(0, $selected_items[$i], get_nfilter_request_var('title_format'));
