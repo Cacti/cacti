@@ -551,8 +551,9 @@ if (cacti_sizeof($parms)) {
 
 	if ($graph_type == 'cg') {
 		$existsAlready = db_fetch_cell_prepared('SELECT gl.id
-			FROM graph_local gl
-			INNER JOIN graph_templates gt on gt.id = gl.graph_template_id
+			FROM graph_local AS gl
+			INNER JOIN graph_templates AS gt
+			ON gt.id = gl.graph_template_id
 			WHERE graph_template_id = ?
 			AND host_id = ?
 			AND multiple = \'\'',
@@ -561,11 +562,11 @@ if (cacti_sizeof($parms)) {
 		if ((isset($existsAlready)) &&
 			($existsAlready > 0) &&
 			(!$force)) {
-			$dataSourceId  = db_fetch_cell_prepared('SELECT
-				data_template_rrd.local_data_id
-				FROM graph_templates_item, data_template_rrd
-				WHERE graph_templates_item.local_graph_id = ?
-				AND graph_templates_item.task_item_id = data_template_rrd.id
+			$dataSourceId  = db_fetch_cell_prepared('SELECT dtr.local_data_id
+				FROM graph_templates_item AS gti
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id = dtr.id
+				WHERE gti.local_graph_id = ?
 				LIMIT 1',
 				array($existsAlready));
 
@@ -650,8 +651,9 @@ if (cacti_sizeof($parms)) {
 				$snmp_query_array['snmp_index'] = $snmp_index['snmp_index'];
 
 				$existsAlready = db_fetch_cell_prepared('SELECT gl.id
-					FROM graph_local gl
-					INNER JOIN graph_templates on gt.id = gl.graph_template_id
+					FROM graph_local AS gl
+					INNER JOIN graph_templates AS gt
+					ON gt.id = gl.graph_template_id
 					WHERE graph_template_id = ?
 					AND host_id = ?
 					AND snmp_query_id = ?
@@ -669,11 +671,11 @@ if (cacti_sizeof($parms)) {
 						update_graph_title_cache($existsAlready);
 					}
 
-					$dataSourceId = db_fetch_cell_prepared('SELECT
-						data_template_rrd.local_data_id
-						FROM graph_templates_item, data_template_rrd
-						WHERE graph_templates_item.local_graph_id = ?
-						AND graph_templates_item.task_item_id = data_template_rrd.id
+					$dataSourceId = db_fetch_cell_prepared('SELECT dtr.local_data_id
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id = dtr.id
+						WHERE gti.local_graph_id = ?
 						LIMIT 1',
 						array($existsAlready));
 
@@ -696,11 +698,11 @@ if (cacti_sizeof($parms)) {
 						update_graph_title_cache($returnArray['local_graph_id']);
 					}
 
-					$dataSourceId = db_fetch_cell_prepared('SELECT
-						data_template_rrd.local_data_id
-						FROM graph_templates_item, data_template_rrd
-						WHERE graph_templates_item.local_graph_id = ?
-						AND graph_templates_item.task_item_id = data_template_rrd.id
+					$dataSourceId = db_fetch_cell_prepared('SELECT dtr.local_data_id
+						FROM graph_templates_item AS gti
+						INNER JOIN data_template_rrd AS dtr
+						ON gti.task_item_id = dtr.id
+						WHERE gti.local_graph_id = ?
 						LIMIT 1',
 						array($returnArray['local_graph_id']));
 
