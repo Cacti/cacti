@@ -797,13 +797,9 @@ function form_callback($form_name, $classic_sql, $column_display, $column_id, $c
 		$class = " class='$class' ";
 	}
 
-	if ($on_change != '') {
-		$on_change = " onChange='$on_change' ";
-	}
-
 	$theme = get_selected_theme();
 	if ($theme == 'classic' || read_config_option('autocomplete') > 0) {
-		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . $on_change . '>';
+		print "<select id='" . html_escape($form_name) . "' name='" . html_escape($form_name) . "'" . $class . '>';
 
 		if (!empty($none_entry)) {
 			print "<option value='0'" . (empty($previous_value) ? ' selected' : '') . ">$none_entry</option>\n";

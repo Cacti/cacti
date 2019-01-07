@@ -6,6 +6,7 @@ develop
 -issue#2270: Realtime Graphs consuming too much memory
 -issue#2272: Site Tree Branches not showing Graphs
 -issue: Correct undefined variable error in graph creation logic
+-issue: Form method 'drop_callback' did not respect 'on_change' attribute
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
