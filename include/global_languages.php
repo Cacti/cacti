@@ -68,10 +68,10 @@ if ($user_locale !== false && $user_locale !== '') {
 }
 
 /* define the path to the language file */
-if (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $user_locale . '.mo')) {
-	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $user_locale . '.mo';
-} elseif (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$user_locale]['filename'] . '.mo')) {
-	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$user_locale]['filename'] . '.mo';
+if (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo')) {
+	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
+} elseif (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
 } else {
 	$path2catalogue = '';
 }
@@ -79,21 +79,21 @@ if (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $user_locale . 
 $catalogue = $path2catalogue;
 
 /* define the path to the language file of the DHTML calendar */
-if ($user_locale != '') {
-	$lang_parts = explode('-', $user_locale);
+if ($cacti_locale != '') {
+	$lang_parts = explode('-', $cacti_locale);
 
 	// Detect the calendar path
-	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $user_locale . '.js')) {
-		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $user_locale . '.js';
-	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang_parts[0] . '.js')) {
-		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang_parts[0] . '.js';
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js')) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js';
+	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js')) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js';
 	} else {
 		$path2calendar = '';
 	}
 
 	// Detect the timepicker path
-	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.timepicker-' . $user_locale . '.js')) {
-		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $user_locale . '.js';
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js')) {
+		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js';
 	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js')) {
 		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js';
 	} else {
@@ -122,10 +122,10 @@ if ($plugins && cacti_sizeof($plugins) > 0) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 
-		if (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$user_locale]['filename'] . '.mo')) {
-			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $user_locale . '.mo';
-		} elseif (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$user_locale]['filename'] . '.mo')) {
-			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$user_locale]['filename'] . '.mo';
+		if (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
+		} elseif (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
 		}
 
 		if (file_exists($path2catalogue)) {
