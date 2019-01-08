@@ -552,10 +552,10 @@ function draw_nontemplated_fields_custom_data($data_template_data_id, $field_nam
 				}
 			} else {
 				if (($draw_any_items == false) && ($header_title != '')) {
-					print "<div class='tableHeader'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
+					print "<div class='tableHeader' style='width:100%'><div class='tableSubHeaderColumn'>$header_title</div></div>\n";
 				}
 
-				print "<div class='formRow'>\n";
+				print "<div class='formRow " . ($alternate_colors ? ($i % 2 ? 'even':'odd'): 'odd') . "'>\n";
 
 				print "<div class='formColumnLeft'><div class='formFieldName'>" . html_escape($field['name']) . "</div></div>\n";
 				print "<div class='formColumnRight'>";
