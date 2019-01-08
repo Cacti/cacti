@@ -209,7 +209,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				$command = str_replace($data_source_path, $rt_graph_path, $command);
 
 				/* replace step */
-				$command = preg_replace('/--step\s(\d+)/', '--step ' . $interval, $command);
+				$command = preg_replace('/--step\s(\d+)/', '--step 1', $command);
 
 				/* WIN32: before sending this command off to rrdtool, get rid
 				of all of the '\' characters. Unix does not care; win32 does.

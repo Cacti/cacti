@@ -8,6 +8,7 @@ develop
 -issue#2273: Error when saving changes to Data Collectors
 -issue#2279: SQL Errors in add_graphs.php 
 -issue#2280: SQL Errors in snmpagent cache table inserts
+-issue#2292: Allow Realtime to use 1 second data collection
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login
