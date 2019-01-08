@@ -4299,7 +4299,8 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 		return true;
 	}
 
-	if (error_reporting() == 0) {
+	$level &= error_reporting();
+	if ($level == 0) {
 		return true;
 	}
 
