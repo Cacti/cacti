@@ -287,7 +287,7 @@ function form_save() {
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
 		}
 
-		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
+		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
 		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
@@ -849,7 +849,7 @@ function pollers() {
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
-			form_selectable_cell(html_escape($poller['hostname']), $poller['id'], '', 'right');
+			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
 			form_selectable_cell($poller['processes'] . '/' . $poller['threads'], $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
