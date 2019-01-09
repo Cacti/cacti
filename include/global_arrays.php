@@ -1398,6 +1398,8 @@ $realtime_window = array(
 );
 
 $realtime_refresh = array(
+	1   => __('%d Seconds', 1),
+	2   => __('%d Seconds', 2),
 	5   => __('%d Seconds', 5),
 	10  => __('%d Seconds', 10),
 	15  => __('%d Seconds', 15),
