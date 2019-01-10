@@ -14,6 +14,7 @@ develop
 -issue: Removing a Device or Graph Template can not be seen till next login
 -issue: Language naming causing problems with tools to solicit translations
 -issue: Visual issues with custom data when using paper-plane theme
+-issue: Undefined function errors attempting to sync device templates
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
