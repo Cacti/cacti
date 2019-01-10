@@ -17,6 +17,7 @@ develop
 -issue: Undefined function errors attempting to sync device templates
 -issue: Plugin dependency handling inconsistant
 -issue: Editing a report shows incorrect graphs from dropdown
+-issue: Issues with messages clearing too soon
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

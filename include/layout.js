@@ -791,7 +791,7 @@ function displayMessages() {
 	var title   = '';
 	var header  = '';
 
-	if (typeof sessionMessageTimer === 'function') {
+	if (typeof sessionMessageTimer === 'function' || sessionMessageTimer !== null) {
 		clearInterval(sessionMessageTimer);
 	}
 
@@ -855,6 +855,7 @@ function displayMessages() {
 					click: function() {
 						$(this).dialog('close');
 						$('#messageContainer').remove();
+						clearInterval(sessionMessageTimer);
 					}
 				}
 			};
