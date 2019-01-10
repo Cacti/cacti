@@ -913,15 +913,20 @@ function display_tooltip($text) {
 }
 
 /* get_page_list - generates the html necessary to present the user with a list of pages limited
-     in length and number of rows per page
-   @arg $current_page - the current page number
-   @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
-     values for this argument are prefered for equality reasons
-   @arg $current_page - the current page number
-   @arg $total_rows - the total number of available rows
-   @arg $url - the url string to prepend to each page click
-   @returns - a string containing html that represents the a page list */
+	  in length and number of rows per page
+	@arg $current_page - the current page number
+	@arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
+	  values for this argument are prefered for equality reasons
+	@arg $current_page - the current page number
+	@arg $total_rows - the total number of available rows
+	@arg $url - the url string to prepend to each page click
+	@returns - a string containing html that represents the a page list */
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
+
+	//Fake: By current design, $pages_per_screen means number of page no in mid of nav bar 
+	//  when $total_pages is larger than $pages_per_screen + 2(first and last)
+    //  So ctual $pages_per_screen should be $pages_per_screen+2
+	$pages_per_screen += 2;
 	$url_page_select = "<ul class='pagination'>";
 
 	if (strpos($url, '?') !== false) {
@@ -929,6 +934,8 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	} else {
 		$url . '?';
 	}
+
+	$url_ellipsis = '<li><span>...</span></li>';
 
 	$total_pages = ceil($total_rows / $rows_per_page);
 
@@ -941,27 +948,43 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
 	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
 
-	/* adjust if we are close to the beginning of the page list */
-	if ($current_page > ceil($pages_per_screen/2)) {
-		$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
-		$url_page_select .= '<li><span>...</span></li>';
-	}
-	if ($current_page <= ceil(($pages_per_screen) / 2)) {
-		$end_page += ($pages_per_screen - $end_page);
+	if($total_pages <= $pages_per_screen){
+		$start_page = 2;
+		$end_page = $total_pages - 1;
+	}else{
+		$start_page = max(2, ($current_page - floor(($pages_per_screen - 3) / 2)));
+		/*When current_page > (pages_per_screen - 1) / 2*/
+		$end_page = min($total_pages - 1, ($current_page + floor(($pages_per_screen - 3) / 2)));
+		
+		/* adjust if we are close to the beginning of the page list */
+		if ($current_page <= ceil(($pages_per_screen) / 2)) {
+			$end_page += ($pages_per_screen - $end_page - 1);
+		}
+
+		/* adjust if we are close to the end of the page list */
+		if (($total_pages - $current_page) < ceil(($pages_per_screen) / 2)) {
+			$start_page -= (($pages_per_screen - ($end_page - $start_page)) - 3);
+		}
+
+		/* stay within limits */
+		$start_page = max(2, $start_page);
+		$end_page = min($total_pages - 1, $end_page);
 	}
 
-	/* adjust if we are close to the end of the page list */
-	if (($total_pages - $current_page) < ceil(($pages_per_screen) / 2)) {
-		$start_page -= (($pages_per_screen - ($end_page - $start_page)) - 1);
+	if($total_pages > 0){
+		if ($current_page == 1) {
+			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
+		}else{
+			$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
+		}
 	}
-
-	/* stay within limits */
-	$start_page = max(1, $start_page);
-	$end_page = min($total_pages, $end_page);
 
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
+			if($page_number == 0 && $start_page > 2)
+				$url_page_select .= $url_ellipsis;
+
 			if ($current_page == $page) {
 				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
 			} else {
@@ -970,9 +993,16 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		}
 	}
 
-	if (($total_pages - $current_page) >= ceil(($pages_per_screen) / 2)) {
-		$url_page_select .= '<li><span>...</span></li>';
-		$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+	if($total_pages - 1 > $end_page){
+		$url_page_select .= $url_ellipsis;
+	}
+
+	if($total_pages > 1){
+		if ($current_page == $total_pages) {
+			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+		}else{
+			$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
+		}
 	}
 
 	$url_page_select .= '</ul>';
