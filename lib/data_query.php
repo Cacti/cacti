@@ -1980,3 +1980,43 @@ function update_snmp_index_order($local_data) {
 	}
 }
 
+/**
+ * verify that a Data Query Graph Template is properly mapped
+ * @param int $snmp_query_graph_id - the snmp query graph id
+ * @param array $post - the save post data
+ * @return bool - whether the check passed or not
+ */
+function api_data_query_errors($snmp_query_graph_id, $post) {
+	$graph_template_id = db_fetch_cell_prepared('SELECT gt.id
+		FROM graph_templates AS gt
+		INNER JOIN snmp_query_graph AS sqg
+		ON gt.id = sqg.graph_template_id
+		WHERE sqg.id = ?',
+		array($snmp_query_graph_id));
+
+	$data_sources = db_fetch_assoc_prepared('SELECT DISTINCT dtr.id, dtr.data_source_name, dtr.data_template_id
+		FROM data_template_rrd AS dtr
+		INNER JOIN graph_templates_item AS gti
+		ON dtr.id = gti.task_item_id
+		WHERE dtr.local_data_id = 0
+		AND gti.graph_template_id = ?',
+		array($graph_template_id));
+
+	$errors = false;
+
+	if (sizeof($data_sources)) {
+		foreach($data_sources as $ds) {
+			if (!isset($post['dsdt_' . $ds['data_template_id'] . '_' . $ds['id'] . '_check'])) {
+				raise_message('mapping_error', __('You must select an XML output column for Data Source \'%s\' and toggle the checkbox to its right', $ds['data_source_name']), MESSAGE_LEVEL_ERROR);
+
+				$errors = true;
+			}
+		}
+	} else {
+		raise_message('assign_error', __('Your Graph Template has not Data Templates in use.  Please correct your Graph Template'), MESSAGE_LEVEL_ERROR);
+		$errors = true;
+	}
+
+	return $errors;
+}
+

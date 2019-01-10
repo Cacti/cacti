@@ -18,6 +18,7 @@ develop
 -issue: Plugin dependency handling inconsistant
 -issue: Editing a report shows incorrect graphs from dropdown
 -issue: Issues with messages clearing too soon
+-issue: Issue an error when Graph Template to a Data Query mapping incorrect
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
