@@ -15,6 +15,7 @@ develop
 -issue: Language naming causing problems with tools to solicit translations
 -issue: Visual issues with custom data when using paper-plane theme
 -issue: Undefined function errors attempting to sync device templates
+-issue: Plugin dependency handling inconsistant
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

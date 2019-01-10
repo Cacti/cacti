@@ -241,13 +241,20 @@ function api_plugin_get_dependencies($plugin) {
 
 	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
 
+	$returndeps = array();
+
 	if (file_exists($file)) {
 		$info = parse_ini_file($file, true);
 
-		if (isset($info['info']['requires'])) {
-			if (preg_match_all('~([ ]*([\w\-]+)([ ]([\d\.]+))?)~', $info['info']['requires'], $components)) {
-				foreach($components[2] as $k=>$c) {
-					$returndeps[trim($c)] = $components[4][$k];
+		if (isset($info['info']['requires']) && trim($info['info']['requires']) != '') {
+			$parts = explode(' ', trim($info['info']['requires']));
+
+			foreach ($parts as $p) {
+				$vparts = explode(':', $p);
+				if (isset($vparts[1])) {
+					$returndeps[$vparts[0]] = $vparts[1];
+				} else {
+					$returndeps[$p] = true;
 				}
 			}
 
@@ -509,7 +516,7 @@ function api_plugin_can_install($plugin, &$message) {
 	$message = '';
 	$proceed = true;
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
-		foreach($dependencies as $dependency=>$version) {
+		foreach($dependencies as $dependency => $version) {
 			if (!api_plugin_minimum_version($dependency, $version)) {
 				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
 

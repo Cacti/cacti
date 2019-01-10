@@ -629,7 +629,12 @@ function plugin_required_for_others($plugin, $table) {
 		AND status IN (1,4)");
 
 	if ($required_for_others) {
-		return $required_for_others;
+		$parts = explode(',', $required_for_others);
+		foreach($parts as $p) {
+			$np[] = ucfirst($p);
+		}
+
+		return implode(', ', $np);
 	} else {
 		return false;
 	}
