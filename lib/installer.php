@@ -2360,7 +2360,7 @@ class Installer implements JsonSerializable {
 		} else {
 			$output .= Installer::sectionWarning(
 				__('Your server collation does NOT appear to be fully UTF8 compliant. ') .
-				__('Under the [mysqld] section, locate the entries named \'character&#8209;set&#8209;server\' and \'collation&#8209;server\' and set them as follows:') .
+				__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:') .
 				Installer::sectionCode('[mysqld]<br>' .
 				'character-set-server=utf8mb4<br>' .
 				'collation-server=utf8mb4_unicode_ci')
