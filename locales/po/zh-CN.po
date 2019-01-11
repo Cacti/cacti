@@ -911,7 +911,7 @@ msgstr "LDAP 搜索错误: %s"
 #: auth_login.php:158 auth_login.php:562
 #, php-format
 msgid "LDAP Error: %s"
-msgstr "LDAP 错误: %s"
+msgstr "LDAP Error: %s"
 
 #: auth_login.php:270 auth_login.php:552
 #, fuzzy, php-format
@@ -1461,26 +1461,26 @@ msgstr "无法为禁用的网络 %s 执行发现"
 #: automation_networks.php:219
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "错误:您必须指定周几. 禁用网络 %s!."
+msgstr "ERROR: 您必须指定周几. 禁用网络 %s!."
 
 #: automation_networks.php:225
 #, php-format
 msgid ""
 "ERROR: You must specify both the Months and Days of Month.  Disabling "
 "Network %s!"
-msgstr "错误:您必须同时指定月份和月份的天数. 禁用网络 %s!"
+msgstr "ERROR: 您必须同时指定月份和月份的天数. 禁用网络 %s!"
 
 #: automation_networks.php:231
 #, php-format
 msgid ""
 "ERROR: You must specify the Months, Weeks of Months, and Days of Week.  "
 "Disabling Network %s!"
-msgstr "错误:您必须指定月份,几个月和几周. 禁用网络 %s!"
+msgstr "ERROR: 您必须指定月份,几个月和几周. 禁用网络 %s!"
 
 #: automation_networks.php:249
 #, php-format
 msgid "ERROR: Network '%s' is Invalid."
-msgstr "错误:网络'%s'无效."
+msgstr "ERROR: 网络 '%s' 无效."
 
 #: automation_networks.php:350
 msgid "Click 'Continue' to delete the following Network(s)."
@@ -2016,7 +2016,7 @@ msgstr "Ping 超时时间"
 msgid ""
 "The timeout value to use for host ICMP and UDP pinging.  This host SNMP "
 "timeout value applies for SNMP pings."
-msgstr "用于主机ICMP和UDP pinging的超时值.此主机SNMP 超时值适用于SNMP ping."
+msgstr "用于主机ICMP 和UDP ping 的超时值.此主机SNMP 超时值适用于SNMP ping."
 
 #: automation_networks.php:747 include/global_form.php:1242
 #: include/global_settings.php:672
@@ -2027,7 +2027,7 @@ msgstr "Ping 重试次数"
 msgid ""
 "After an initial failure, the number of ping retries Cacti will attempt "
 "before failing."
-msgstr "初始失败后,在失败之前尝试重试Cacti的次数将."
+msgstr "首次失败之后,Cacti 重试多少次之后才确定为真的失败."
 
 #: automation_networks.php:788
 msgid "Select the days(s) of the week"
@@ -2525,7 +2525,7 @@ msgstr "改变叶子类型"
 #: automation_tree_rules.php:706 lib/installer.php:3402 utilities.php:2142
 #: utilities.php:2143 utilities.php:2146 utilities.php:2147
 msgid "WARNING:"
-msgstr "警告:"
+msgstr "WARNING:"
 
 #: automation_tree_rules.php:707
 #, fuzzy
@@ -2709,7 +2709,7 @@ msgstr "No CDEFs"
 #: clog.php:34 clog_user.php:33
 #, fuzzy
 msgid "FATAL: YOU DO NOT HAVE ACCESS TO THIS AREA OF CACTI"
-msgstr "致命:您无法访问CACTI的这个区域"
+msgstr "FATAL: 您无法访问CACTI 的这个区域"
 
 #: color.php:170
 msgid "Unnamed Color"
@@ -3083,7 +3083,7 @@ msgstr "问题"
 #: data_debug.php:474 data_debug.php:770
 #, fuzzy
 msgid "Not Debugging"
-msgstr "调试"
+msgstr "不调试"
 
 #: data_debug.php:490
 msgid "No Checks"
@@ -4053,8 +4053,7 @@ msgid ""
 "attached to these templates will become individual Data Source(s) and all "
 "Templating benefits will be removed."
 msgstr ""
-"点击 '继续' 删除以下数据模板. 附加到这些模板的任何数据源将成为单独的数据源,所"
-"有模板优势将被删除."
+"点击 '继续' 删除以下数据模板. 任何关联到这些模板的数据源都将变成孤立的数据源,模板带来的所有好处都将失去."
 
 #: data_templates.php:364
 msgid "Delete Data Template(s)"
@@ -4304,7 +4303,7 @@ msgstr "图像缓存目录不可写入. 请设置权限,然后尝试打开另一
 
 #: graph_realtime.php:270
 msgid "Cacti Real-time Graphing"
-msgstr "Cacti实时图形"
+msgstr "Cacti 实时画图"
 
 #: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1111
 msgid "Window"
@@ -4670,7 +4669,7 @@ msgstr "创建图形: '%s'"
 #: graphs.php:254 lib/template.php:1396 lib/template.php:1416
 #, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
-msgstr "错误:没有数据源关联.检查模板"
+msgstr "ERROR: 没有数据源关联.检查模板"
 
 #: graphs.php:440 graphs.php:453 lib/api_automation.php:756
 msgid "Not Found"
@@ -5545,7 +5544,7 @@ msgstr "您必须先登录才能访问该区域的Cacti."
 
 #: include/auth.php:93
 msgid "FATAL: You must be logged in to access this area of Cacti."
-msgstr "致命错误:您必须先登录才能访问该区域的Cacti."
+msgstr "FATAL: 您必须先登录才能访问Cacti 的那个区域."
 
 #: include/auth.php:186 include/auth.php:188 permission_denied.php:30
 #: permission_denied.php:32
@@ -5563,7 +5562,7 @@ msgstr "如果您觉得这是一个报错,请联系Cacti 管理员."
 
 #: include/auth.php:192 permission_denied.php:47
 msgid "You are not permitted to access this section of Cacti."
-msgstr "您不能访问这部分的Cacti."
+msgstr "您不能访问Cacti 的这个部分."
 
 #: include/auth.php:195
 #, fuzzy
@@ -5975,7 +5974,7 @@ msgstr ""
 
 #: include/global_arrays.php:351
 msgid "Unexpected error occurred"
-msgstr "发生意外错误"
+msgstr "Unexpected error occurred"
 
 #: include/global_arrays.php:408 include/global_arrays.php:785
 msgid "Function"
@@ -6166,19 +6165,19 @@ msgstr "UDP Ping"
 
 #: include/global_arrays.php:589
 msgid "NONE - Syslog Only if Selected"
-msgstr "无 - 仅系统日志"
+msgstr "NONE - 仅系统日志"
 
 #: include/global_arrays.php:590
 msgid "LOW - Statistics and Errors"
-msgstr "低 - 统计和报错"
+msgstr "LOW - 统计和报错"
 
 #: include/global_arrays.php:591
 msgid "MEDIUM - Statistics, Errors and Results"
-msgstr "中 - 统计数据,报错和结果"
+msgstr "MEDIUM - 统计数据,报错和结果"
 
 #: include/global_arrays.php:592
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
-msgstr "高 - 统计,报错,结果和主要I/O 事件"
+msgstr "HIGH - 统计,报错,结果和主要I/O 事件"
 
 #: include/global_arrays.php:593
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
@@ -9357,7 +9356,7 @@ msgid ""
 "What level of detail do you want sent to the log file.  WARNING: Leaving in "
 "any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
-"日志文件的详细级别. 警告:如果设置为 '无' 或 '低' 之外的状态,可能会迅速耗尽磁盘空间."
+"日志文件的详细级别. WARNING: 如果设置为 'NONE' 或 'LOW' 之外的状态,可能会迅速耗尽磁盘空间."
 
 #: include/global_settings.php:271
 #, fuzzy
@@ -10358,7 +10357,7 @@ msgid ""
 "which is similar to cmd.php logging; 'Summary' which provides the number of "
 "output errors per Device; and 'None', which does not provide error counts."
 msgstr ""
-"想如何记录Spine 的输出错误?  选项有: '详细', 类似于cmd.php 日志记录;  '摘要' "
+"想如何记录Spine 的输出错误?  选项有: '详细', 类似于cmd.php 日志记录;  '概要' "
 "提供了每个设备输出错误的数量;  和'无'. 它不提供错误计数."
 
 #: include/global_settings.php:1062 utilities.php:210
@@ -10370,7 +10369,6 @@ msgid "Detailed"
 msgstr "详细"
 
 #: include/global_settings.php:1066
-#, fuzzy
 msgid "Default Threads per Process"
 msgstr "每个进程的默认线程数"
 
@@ -11047,7 +11045,7 @@ msgid ""
 "What level of detail do you want sent to the log file. WARNING: Leaving in "
 "any other status than NONE or LOW can exhaust your disk space rapidly."
 msgstr ""
-"您想要发送到日志文件的详细级别. 警告:如果不是处于 '无' 或 '低' 状态, 可能会迅速耗尽磁盘空间."
+"您想要发送到日志文件的详细级别. WARNING: 如果处于 'NONE' 或 'LOW' 以外的状态, 可能会迅速耗尽磁盘空间."
 
 #: include/global_settings.php:1562
 msgid "Enable Lotus Notes (R) tweak"
@@ -12116,15 +12114,15 @@ msgstr "由Cacti 自动化添加"
 
 #: lib/api_device.php:953
 msgid "ERROR: Device ID is Blank"
-msgstr "出错: 设备ID 为空"
+msgstr "ERROR: 设备ID 为空"
 
 #: lib/api_device.php:964 lib/api_device.php:966
 msgid "ERROR: Device["
-msgstr "出错: 设备["
+msgstr "ERROR: 设备["
 
 #: lib/api_device.php:987
 msgid "ERROR: Failed to connect to remote collector."
-msgstr "出错: 无法连接到远程采集器."
+msgstr "ERROR: 无法连接到远程采集器."
 
 #: lib/api_device.php:994
 msgid "Device is Disabled"
@@ -12297,7 +12295,7 @@ msgstr "状态"
 
 #: lib/clog_webapi.php:446 utilities.php:1114
 msgid "Debug"
-msgstr "调试"
+msgstr "Debug"
 
 #: lib/clog_webapi.php:447 utilities.php:1115
 msgid "SQL Calls"
@@ -12343,7 +12341,7 @@ msgstr "未知类型 = '%s'."
 #, fuzzy
 msgid ""
 "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
-msgstr "警告: 排序字段关联已更改.可能会出现重新映射的问题!"
+msgstr "WARNING: 排序字段关联已更改.可能会出现重新映射的问题!"
 
 #: lib/data_query.php:150
 #, fuzzy
@@ -12406,7 +12404,7 @@ msgstr "检测到新的排序字段:'%s' 旧排序字段 '%s'"
 #: lib/data_query.php:387
 #, fuzzy
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
-msgstr "出错: 新的排序字段不适合.排序字段不会更改."
+msgstr "ERROR: 新的排序字段不适合.排序字段不会更改."
 
 #: lib/data_query.php:399
 #, fuzzy
@@ -12446,7 +12444,7 @@ msgstr ""
 
 #: lib/data_query.php:539 lib/data_query.php:563
 msgid "ERROR: Data Query returned no indexes."
-msgstr "出错: 数据查询未返回任何索引."
+msgstr "ERROR: 数据查询未返回任何索引."
 
 #: lib/data_query.php:543
 #, php-format
@@ -12804,7 +12802,7 @@ msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
 "link, please set the <b>Alert e-mail</b> setting."
 msgstr ""
-"邮件程序出错: 没有设置<b> 收件人 </b>地址!! 如果使用 <i>邮件测试</i> 链接,请设置"
+"Mailer Error: 没有设置<b> 收件人 </b>地址!! 如果使用 <i>邮件测试</i> 链接,请设置"
 "<b> 报警邮件 </b>设置."
 
 #: lib/functions.php:3675
@@ -12824,7 +12822,7 @@ msgstr "连接失败: %s"
 
 #: lib/functions.php:3685
 msgid "SMTP error: "
-msgstr "SMTP 出错:"
+msgstr "SMTP error:"
 
 #: lib/functions.php:3698
 msgid ""
@@ -13145,7 +13143,7 @@ msgstr "对不起, 我们无法处理您最后的操作."
 
 #: lib/html.php:2312
 msgid "Error:"
-msgstr "出错:"
+msgstr "ERROR:"
 
 #: lib/html.php:2313
 msgid "Reason:"
@@ -14097,7 +14095,7 @@ msgstr "PHP 没有返回预期的结果"
 
 #: lib/installer.php:722
 msgid "Unexpected path parameter"
-msgstr "意外的路径参数"
+msgstr "Unexpected path parameter"
 
 #: lib/installer.php:756
 #, fuzzy, php-format
@@ -14317,7 +14315,7 @@ msgstr "位置检查"
 #: lib/installer.php:1814 lib/installer.php:1966 lib/installer.php:1971
 #: lib/installer.php:3421
 msgid "ERROR:"
-msgstr "错误:"
+msgstr "ERROR:"
 
 #: lib/installer.php:1654
 msgid ""
@@ -15178,7 +15176,7 @@ msgstr "需要特定的DN和密码"
 #: lib/ldap.php:321
 #, php-format
 msgid "Unexpected error %s (Ldap Error: %s)"
-msgstr "意外的错误 %s(LDAP 错误: %s )"
+msgstr "Unexpected error %s (Ldap Error: %s )"
 
 #: lib/ping.php:130
 msgid "ICMP Ping timed out"
@@ -15208,7 +15206,7 @@ msgstr "请升级到PHP 5.5.4+以支持IPv6!"
 #: lib/ping.php:389
 #, php-format
 msgid "UDP ping error: %s"
-msgstr "UDP ping 错误: %s"
+msgstr "UDP ping error: %s"
 
 #: lib/ping.php:429
 #, php-format
@@ -15218,17 +15216,17 @@ msgstr "UDP Ping 成功 (%s ms)"
 #: lib/ping.php:526
 #, php-format
 msgid "TCP ping: socket_connect(), reason: %s"
-msgstr "TCP ping:socket_connect(),原因: %s"
+msgstr "TCP ping: socket_connect(), 原因: %s"
 
 #: lib/ping.php:544
 #, php-format
 msgid "TCP ping: socket_select() failed, reason: %s"
-msgstr "TCP ping:socket_select()失败,原因: %s"
+msgstr "TCP ping: socket_select()失败, 原因: %s"
 
 #: lib/ping.php:559
 #, php-format
 msgid "TCP Ping Success (%s ms)"
-msgstr "TCP Ping 成功(%s ms)"
+msgstr "TCP Ping 成功 (%s ms)"
 
 #: lib/ping.php:569
 msgid "TCP ping timed out"
@@ -15236,7 +15234,7 @@ msgstr "TCP ping 超时"
 
 #: lib/ping.php:596
 msgid "Ping not performed due to setting."
-msgstr "由于设置Ping 不能执行."
+msgstr "由于设置原因, Ping 不能执行."
 
 #: lib/plugins.php:510
 #, php-format
@@ -15450,7 +15448,7 @@ msgstr "写入XML文件时出错: %s"
 #: lib/rrd.php:2926 lib/rrd.php:2981 lib/rrd.php:3037
 #, php-format
 msgid "ERROR: RRDfile %s not writeable"
-msgstr "错误: RRD 文件 %s 不可写入"
+msgstr "ERROR: RRD 文件 %s 不可写入"
 
 #: lib/rrd.php:2953 lib/rrd.php:3009
 msgid "Error while parsing the XML of RRDtool dump"
@@ -15500,7 +15498,7 @@ msgstr "已创建图形: %s"
 #: lib/template.php:1399 lib/template.php:1419
 #, fuzzy
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
-msgstr "错误: 白名单验证失败.请检查数据输入方法"
+msgstr "ERROR: 白名单验证失败.请检查数据输入方法"
 
 #: lib/utility.php:831
 msgid ""
@@ -16249,7 +16247,7 @@ msgid ""
 "'%d' seconds, with a maximum of a '%d' seconds, but %d seconds have passed "
 "since the last poll!"
 msgstr ""
-"警告: %s 与Poller 采集周期时间不一致! 采集周期为 %d 秒,最大值为 %d 秒,"
+"WARNING: %s 与Poller 采集周期时间不一致! 采集周期为 %d 秒,最大值为 %d 秒,"
 "但自上次采集以来已经过了 %d 秒!"
 
 #: poller.php:436
@@ -16257,22 +16255,22 @@ msgstr ""
 msgid ""
 "WARNING: There are '%d' detected as overrunning a polling cycle, please "
 "investigate."
-msgstr "警告:检测到 '%d' 个超出采集周期,请进行调查."
+msgstr "WARNING: 检测到 '%d' 个超出采集周期,请进行调查."
 
 #: poller.php:498
 #, php-format
 msgid "WARNING: Poller Output Table not Empty.  Issues: %d, %s."
-msgstr "警告: Poller 输出表不为空.问题: %d, %s."
+msgstr "WARNING: Poller 输出表不为空.问题: %d, %s."
 
 #: poller.php:521
 #, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
-msgstr "错误: spine 路径: %s 无效. Poller 无法继续!"
+msgstr "ERROR: spine 路径: %s 无效. Poller 无法继续!"
 
 #: poller.php:662
 #, fuzzy, php-format
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
-msgstr "超出 %d 秒的最大运行时间.退出."
+msgstr "超出 %d 秒的最大运行时间. 退出."
 
 #: poller_automation.php:864 poller_automation.php:915
 #, fuzzy
@@ -16966,15 +16964,15 @@ msgstr "未找到站点"
 #: spikekill.php:38
 #, php-format
 msgid "FATAL: Spike Kill method '%s' is Invalid\n"
-msgstr "致命: 尖峰消除方法 '%s' 无效\n"
+msgstr "FATAL: 尖峰消除方法 '%s' 无效\n"
 
 #: spikekill.php:112
 msgid "FATAL: Spike Kill Not Allowed\n"
-msgstr "致命: 不允许尖峰消除\n"
+msgstr "FATAL: 不允许尖峰消除\n"
 
 #: templates_export.php:68
 msgid "WARNING: Export Errors Encountered. Refresh Browser Window for Details!"
-msgstr "警告: 遇到导出错误. 请刷新浏览器窗口查看细节!"
+msgstr "WARNING: 遇到导出错误. 请刷新浏览器窗口查看细节!"
 
 #: templates_export.php:109
 msgid "What would you like to export?"
@@ -18007,7 +18005,7 @@ msgid ""
 "ERROR: Installed RRDtool version does not exceed configured version."
 "<br>Please visit the %s and select the correct RRDtool Utility Version."
 msgstr ""
-"错误:已安装的RRDtool 版本没达到要求. <br>请访问 %s 并选择正确的RRDtool 版本."
+"ERROR: 已安装的RRDtool 版本没达到要求. <br>请访问 %s 并选择正确的RRDtool 版本."
 
 #: utilities.php:191
 #, php-format
@@ -18015,7 +18013,7 @@ msgid ""
 "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" "
 "graph(s) and/or templates have GIF set as the image format."
 msgstr ""
-"错误:RRDtool 1.2.x+不支持GIF 图像格式,但 %d\"图形和/或模板将GIF 设置为图像格式."
+"ERROR: RRDtool 1.2.x+不支持GIF 图像格式,但 %d\"图形和/或模板将GIF 设置为图像格式."
 
 #: utilities.php:211
 msgid "Database"
@@ -18253,11 +18251,11 @@ msgstr "Cacti 日志已清除"
 
 #: utilities.php:1281
 msgid "Error: Unable to clear log, no write permissions."
-msgstr "错误:无法清除日志,没有写入权限."
+msgstr "Error: 无法清除日志,没有写入权限."
 
 #: utilities.php:1284
 msgid "Error: Unable to clear log, file does not exist."
-msgstr "错误:无法清除日志,文件不存在."
+msgstr "Error: 无法清除日志,文件不存在."
 
 #: utilities.php:1385
 msgid "Data Query Cache Items"
