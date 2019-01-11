@@ -913,19 +913,19 @@ function display_tooltip($text) {
 }
 
 /* get_page_list - generates the html necessary to present the user with a list of pages limited
-	  in length and number of rows per page
-	@arg $current_page - the current page number
-	@arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
-	  values for this argument are prefered for equality reasons
-	@arg $current_page - the current page number
-	@arg $total_rows - the total number of available rows
-	@arg $url - the url string to prepend to each page click
-	@returns - a string containing html that represents the a page list */
+     in length and number of rows per page
+   @arg $current_page - the current page number
+   @arg $pages_per_screen - the maximum number of pages allowed on a single screen. odd numbered
+     values for this argument are prefered for equality reasons
+   @arg $current_page - the current page number
+   @arg $total_rows - the total number of available rows
+   @arg $url - the url string to prepend to each page click
+   @returns - a string containing html that represents the a page list */
 function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_rows, $url, $page_var = 'page', $return_to = '') {
 
-	//Fake: By current design, $pages_per_screen means number of page no in mid of nav bar 
-	//  when $total_pages is larger than $pages_per_screen + 2(first and last)
-    //  So ctual $pages_per_screen should be $pages_per_screen+2
+	// By current design, $pages_per_screen means number of page no in mid of nav bar
+	// when $total_pages is larger than $pages_per_screen + 2(first and last)
+	// So actual $pages_per_screen should be $pages_per_screen+2
 	$pages_per_screen += 2;
 	$url_page_select = "<ul class='pagination'>";
 
@@ -955,7 +955,7 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$start_page = max(2, ($current_page - floor(($pages_per_screen - 3) / 2)));
 		/*When current_page > (pages_per_screen - 1) / 2*/
 		$end_page = min($total_pages - 1, ($current_page + floor(($pages_per_screen - 3) / 2)));
-		
+
 		/* adjust if we are close to the beginning of the page list */
 		if ($current_page <= ceil(($pages_per_screen) / 2)) {
 			$end_page += ($pages_per_screen - $end_page - 1);
@@ -1015,4 +1015,3 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 
 	return $url_page_select;
 }
-
