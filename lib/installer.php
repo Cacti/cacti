@@ -113,6 +113,8 @@ class Installer implements JsonSerializable {
 		if ($step === false || $step === null) {
 			$step = $this->getStepDefault();
 		}
+		$this->stepError = false;
+
 		if ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
@@ -131,22 +133,17 @@ class Installer implements JsonSerializable {
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
-			if ($install_version === false || $install_version === null) {
-				$install_version = CACTI_VERSION;
-			}
 
-			if (!cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
-				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
-				$step = Installer::STEP_WELCOME;
+			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
+				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION, true)));
+				$this->stepError = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
 			} else {
 				$install_params = array();
 			}
 		}
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
-
 		$this->setStep($step);
-		$this->stepError = false;
 
 		$this->iconClass = array(
 			DB_STATUS_ERROR   => 'fa fa-thumbs-down',
@@ -1541,9 +1538,14 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepWelcome() {
-		global $config;
+		global $config, $cacti_version_codes;
 
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
+
+		if (!array_key_exists(CACTI_VERSION, $cacti_version_codes)) {
+			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
+		}
+
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
 		$output .= Installer::sectionNormal(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
 
