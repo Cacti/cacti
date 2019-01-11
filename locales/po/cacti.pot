@@ -14391,8 +14391,8 @@ msgstr ""
 
 #: lib/installer.php:2361
 msgid ""
-"Under the [mysqld] section, locate the entries named 'character&#8209;"
-"set&#8209;server' and 'collation&#8209;server' and set them as follows:"
+"Under the [mysqld] section, locate the entries named 'character-set-server' "
+"and 'collation-server' and set them as follows:"
 msgstr ""
 
 #: lib/installer.php:2368
