@@ -3,6 +3,8 @@
 html {
 	height: 100%;
 	width: 100%;
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 body, table, tr, td, textarea {
@@ -1037,7 +1039,6 @@ legend {
 
 .hyperLink {
 	color: #2d4ca8;
-	font-size: 12px;
 	padding: 3px;
 	cursor:pointer;
 	text-decoration: none;
@@ -1193,11 +1194,6 @@ tr>td.textInfo.right{
 	border-top-color: #3a3b3c !important;
 }
 
-table.cactiTable {
-	background: #f7f7f7;
-	color: black;
-}
-
 .cactiTableTitleRow {
 	color: white;
 	float: left;
@@ -1325,7 +1321,6 @@ table.cactiTable {
 	color: #000;
 	float: left;
 	text-align: left;
-	font-weight: bold;
 	padding-left: 3px;
 }
 
@@ -1446,7 +1441,6 @@ table.cactiTable {
 .tableHeader {
 	display: table-row;
 	color: #000000;
-	background: #FFFFFF;
 	font-weight: 700;
 	text-transform: uppercase;
 	border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -2461,6 +2455,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {
