@@ -464,6 +464,9 @@ function filter($clogAdmin, $selectedFile) {
 							}
 						}
 
+						arsort($stdLogFileArray, SORT_NATURAL);
+						arsort($stdErrFileArray, SORT_NATURAL);
+
 						$logFileArray = $stdFileArray + $stdLogFileArray + $stdErrFileArray;
 
 						if (cacti_sizeof($logFileArray)) {
