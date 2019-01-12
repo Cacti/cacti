@@ -38,7 +38,8 @@ td, th {
 
 th {
 	white-space: nowrap;
-	height: 18px;
+	height: 20px;
+	line-height: 20px;
 }
 
 img {
@@ -529,7 +530,8 @@ label {
 }
 
 .odd td, .even td, .even-alternate td {
-	padding: 2px;
+	min-height: 20px !important;
+	line-height: 20px;
 }
 
 .even {
@@ -1187,6 +1189,7 @@ legend {
 
 .formSubCheckbox {
 	line-height: 20px;
+	height: 20px;
 	float: left;
 }
 
@@ -1403,6 +1406,10 @@ th.sortable {
 .tableRowGraph td {
 	padding: 3px;
 	vertical-align: top;
+}
+
+.tableRow td {
+	line-height: 25px !important;
 }
 
 .image_table {
@@ -1845,6 +1852,10 @@ tr.selectable a.linkEditMain:hover {
 
 tr.selectable:hover:not(.selected){
 	background: rgba(0,0,0,0.3);
+}
+
+tr.selectable td {
+	height: 25px;
 }
 
 tr.selected a {
