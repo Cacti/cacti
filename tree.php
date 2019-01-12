@@ -2026,7 +2026,7 @@ function tree() {
 			$i++;
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Trees Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Trees Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
 

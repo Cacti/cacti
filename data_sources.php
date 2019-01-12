@@ -1569,7 +1569,7 @@ function ds() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='7'><em>" . __('No Data Sources Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Sources Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

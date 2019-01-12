@@ -1003,7 +1003,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1105,7 +1105,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching User Groups Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching User Groups Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1263,7 +1263,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Devices Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Devices Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1408,7 +1408,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1548,7 +1548,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Trees Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Trees Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);

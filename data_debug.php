@@ -426,7 +426,7 @@ function debug_wizard() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
 
 	form_start('data_debug.php', 'chk');
 
@@ -487,7 +487,7 @@ function debug_wizard() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
