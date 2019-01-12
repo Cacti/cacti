@@ -665,7 +665,7 @@ function host_edit() {
 				</div>
 			</div>
 			<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
-				<tr>
+				<tr class='tableRow'>
 					<td class='debug'>
 						<span><?php print debug_log_return('data_query');?></span>
 					</td>
