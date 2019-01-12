@@ -694,7 +694,7 @@ function graph_edit() {
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
 		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
-		<tr class='even'><td class='center'>
+		<tr><td class='center'>
 			<img src='<?php print html_escape($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
 		</td></tr>
 		<?php
@@ -705,10 +705,10 @@ function graph_edit() {
 			<tr><td class='left'>
 				<div style='overflow:auto;'>
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-				<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre class='monoSpace tableRow'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre class='monoSpace'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre class='monoSpace tableRow'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 				</div>
 			</td></tr>
 			<?php
