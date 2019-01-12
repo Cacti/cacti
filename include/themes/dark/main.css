@@ -1046,7 +1046,6 @@ legend {
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
 	color: rgba(148, 179, 107, 0.8) !important;
-	font-size: 1.1em;
 	cursor:pointer;
 	text-decoration: none;
 }
@@ -1915,7 +1914,7 @@ div#gtabs {
 	float: left !important;
 	padding: 5px;
 	text-decoration:none;
-	font-size: 11px;
+	font-size: 12px;
 	vertical-align:bottom;
 }
 
@@ -2442,6 +2441,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {
