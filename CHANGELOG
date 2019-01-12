@@ -23,6 +23,7 @@ develop
 -issue: Issue an error when Graph Template to a Data Query mapping incorrect
 -issue: When going to the graphs.php page, SQL errors can occur
 -issue: You can not return from editing profile
+-issue: Do not display form hint icon if there is no hint
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

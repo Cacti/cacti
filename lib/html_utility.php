@@ -909,7 +909,11 @@ function get_current_graph_end() {
    @arg $text - the text to display in the tooltip
    @returns - null */
 function display_tooltip($text) {
-	return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";
+	if ($text != '') {
+		return '<div class="cactiTooltipHint fa fa-question-circle"><span style="display:none;">' . $text . "</span></div>\n";
+	} else {
+		return '';
+	}
 }
 
 /* get_page_list - generates the html necessary to present the user with a list of pages limited
