@@ -1298,8 +1298,8 @@ table.cactiTable {
 .formRow {
 	display: table;
 	width: 100%;
-	line-height: 35px;
 	padding-left: 15px;
+	line-height: 30px;
 }
 
 .formColumn {
