@@ -1212,7 +1212,8 @@ tr>td.textInfo.right{
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
+	padding: 0px 0px 4px 0px;
+	vertical-align: middle;
 	display: table-column;
 	width: 70%;
 	font-size: 13px;
@@ -1224,9 +1225,10 @@ tr>td.textInfo.right{
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
+	padding: 0px 0px 4px 0px;
 	display: table-column;
 	text-align: right;
+	vertical-align: middle;
 	font-size: 13px;
 	width: 30%;
 	border-color: #222;
