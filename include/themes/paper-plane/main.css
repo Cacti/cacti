@@ -1678,6 +1678,10 @@ th.sortable {
 	padding: 10px;
 }
 
+.cactiInstallArea {
+	background-color:#e5e5e5;
+}
+
 .textAreaNotes {
 	font-size: 12px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
