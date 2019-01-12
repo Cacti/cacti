@@ -19,6 +19,8 @@ body {
 	background-color: white;
 	background-repeat: repeat-y;
 	overflow: hidden;
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 table {
@@ -88,7 +90,6 @@ th .fa {
 }
 
 pre {
-	color: #f7f7f7;
 }
 
 form#tree_edit>div{
@@ -1183,7 +1184,6 @@ tr>td.textInfo.right{
 }
 
 .cactiTable {
-	color: #f7f7f7;
 	width: 100%;
 	margin-left:auto;
 	margin-right:auto;
