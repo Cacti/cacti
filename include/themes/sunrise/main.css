@@ -1057,7 +1057,6 @@ legend {
 	background: none !important;
 }
 
-
 .hyperLink {
 	color: #93CEFF;
 	font-size: 12px;
@@ -1926,7 +1925,7 @@ div.submenu span {
 	color: #93CEFF;
 	float:left !important;
 	padding:5px 8px;
-	font-size: 14px;
+	font-size: 13px;
 	vertical-align: bottom;
 	text-decoration: none;
 	outline-style: none;
@@ -2469,13 +2468,7 @@ tr#realtime td:first-child {
 	background-color: #FFAA00;
 	-webkit-transition: .4s;
 	transition: .4s;
-
-	border: 1px solid #7f83a2;
-	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #000000 1%, #04335b 35%, #000000 65%);
-	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	border: 1px solid #7F83A2;
 }
 
 .checkboxSlider:before {
@@ -2484,7 +2477,7 @@ tr#realtime td:first-child {
 	height: 16px;
 	width: 16px;
 	left: 4px;
-	bottom: 4px;
+	bottom: 3px;
 	background-color: white;
 	background-image: url('./images/cacti_logo.svg');
 	background-repeat: no-repeat;
@@ -2495,11 +2488,7 @@ tr#realtime td:first-child {
 }
 
 input:checked + .checkboxSlider {
-	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-color: #93CEFF;
 }
 
 input:focus + .checkboxSlider {
@@ -2615,6 +2604,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {
