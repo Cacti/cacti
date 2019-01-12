@@ -787,11 +787,11 @@ function tree_edit() {
 		print "<option id='3'>" . __('Graphs') . "</option>";
 		print "</select></td></tr></table></td></tr>";
 
-		print "<tr><td class='treeArea'>\n";
+		print "<tr class='tableRow'><td class='treeArea'>\n";
 
 		html_start_box(__('Tree Items'), '100%', '', '3', 'center', '');
 
-		print "<tr><td style='padding:7px;'><div id='ctree'></div></td></tr>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='ctree'></div></td></tr>\n";
 
 		html_end_box();
 
@@ -824,7 +824,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr><td style='padding:7px;'><div id='sites'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='sites'>\n";
 		display_sites();
 		print "</div></td></tr>\n";
 
@@ -859,7 +859,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr><td style='padding:7px;'><div id='hosts'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='hosts'>\n";
 		display_hosts();
 		print "</div></td></tr>\n";
 
@@ -893,7 +893,7 @@ function tree_edit() {
 		html_start_box('', '100%', '', '3', 'center', '');
 		html_header($display_text);
 
-		print "<tr><td style='padding:7px;'><div id='graphs'>\n";
+		print "<tr class='tableRow'><td style='padding:7px;'><div id='graphs'>\n";
 		display_graphs();
 		print "</div></td></tr>\n";
 
