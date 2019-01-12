@@ -35,6 +35,10 @@ td, th {
 	margin: 0px;
 }
 
+tr {
+	background-color: snow;
+}
+
 th {
 	white-space: nowrap;
 }
@@ -535,6 +539,10 @@ label {
 	text-decoration: none;
 	padding: 2px;
 	vertical-align: middle;
+}
+
+.tableRow {
+	background: none repeat scroll 0 0 #EBEDEF;
 }
 
 .odd {
