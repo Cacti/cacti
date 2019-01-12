@@ -203,6 +203,10 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 			$_SESSION['sess_host_cache_array'][$host_id] = $host;
 		}
 
+		if (!cacti_sizeof($host)) {
+			return $string;
+		}
+
 		$search  = array();
 		$replace = array();
 
