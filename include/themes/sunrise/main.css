@@ -43,6 +43,7 @@ td, th {
 
 th {
 	white-space: nowrap;
+	height: 18px;
 }
 
 p {
