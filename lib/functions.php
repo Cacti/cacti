@@ -4274,6 +4274,7 @@ function IgnoreErrorHandler($message) {
 		'Error in packet',
 		'This name does not exist',
 		'End of MIB',
+		'Timeout',
 		'Unknown host',
 		'Invalid object identifier',
 		'Name or service not known'

@@ -69,6 +69,7 @@
 		<ifHwAddr>
 			<name>Hardware Address</name>
 			<method>walk</method>
+			<output_format>hex</output_format>
 			<source>value</source>
 			<direction>input</direction>
 			<oid>.1.3.6.1.2.1.2.2.1.6</oid>

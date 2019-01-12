@@ -71,10 +71,10 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 
 	if (defined('SNMP_OID_OUTPUT_NUMERIC')) {
 		$session->oid_output_format = SNMP_OID_OUTPUT_NUMERIC;
-		$session->valueretrieval = SNMP_VALUE_LIBRARY;
+		$session->valueretrieval = SNMP_VALUE_PLAIN;
 	}
 
-	$session->quick_print = false;
+	$session->quick_print = true;
 	$session->max_oids = $max_oids;
 
 	if (read_config_option('oid_increasing_check_disable') == 'on') {
@@ -433,7 +433,7 @@ function cacti_snmp_session_walk($session, $oid, $dummy = false, $max_repetition
 		$max_repetitions = 10;
 
 	try {
-		$out = @$session->walk($oid, false, $max_repetitions, $non_repeaters);
+		$out = $session->walk($oid, false, $max_repetitions, $non_repeaters);
 	} catch (Exception $e) {
 		$out = false;
 	}
@@ -470,7 +470,7 @@ function cacti_snmp_session_get($session, $oid, $strip_alpha = false) {
 	}
 
 	try {
-		$out = @$session->get($oid);
+		$out = $session->get($oid);
 	} catch (Exception $e) {
 		$out = false;
 	}
@@ -505,7 +505,7 @@ function cacti_snmp_session_getnext($session, $oid) {
 	}
 
 	try {
-		$out = @$session->getnext($oid);
+		$out = $session->getnext($oid);
 	} catch (Exception $e) {
 		$out = false;
 	}
