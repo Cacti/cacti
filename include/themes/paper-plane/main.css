@@ -496,6 +496,10 @@ label {
 	background-image:none !important;
 }
 
+#dbghide {
+	color: orange !important;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;
@@ -1999,6 +2003,7 @@ div.submenu span{
 
 th {
 	border-right: 1px groove #9d9d9d;
+	height: 18px;
 }
 
 th:last-child {
