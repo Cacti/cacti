@@ -38,6 +38,7 @@ td, th {
 
 th {
 	white-space: nowrap;
+	height: 18px;
 }
 
 img {
@@ -2255,6 +2256,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {
