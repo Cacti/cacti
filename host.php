@@ -1135,23 +1135,23 @@ function device_javascript() {
 
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="remove"]').click(function(data) {
-			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
-			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
