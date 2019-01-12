@@ -3165,14 +3165,23 @@ function admin_email($subject, $message) {
 				array(read_config_option('admin_user')));
 
 			if (cacti_sizeof($admin_details)) {
-				$from[0] = read_config_option('settings_from_email');
-				$from[1] = read_config_option('settings_from_name');
+				$email = read_config_option('settings_from_email');
+				$name  = read_config_option('settings_from_name');
+
+				if ($name != '') {
+					$from = '"' . $name . '" <' . $email . '>';
+				} else {
+					$from = $email;
+				}
 
 				if ($admin_details['email_address'] != '') {
-					$to[0]   = $admin_details['email_address'];
-					$to[1]   = $admin_details['full_name'];
+					if ($admin_details['full_name'] != '') {
+						$to = '"' . $admin_details['full_name'] . '" <' . $admin_details['email_address'] . '>';
+					} else {
+						$to = $admin_details['email_address'];
+					}
 
-					send_mail($to, $from, $subject, $message, strip_tags($message), '', true);
+					send_mail($to, $from, $subject, $message, '', '', true);
 				} else {
 					cacti_log('WARNING: Primary Admin account does not have an email address!  Unable to send administrative Email.', false, 'SYSTEM');
 				}
@@ -3211,6 +3220,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	}
 
 	$from = array(0 => $from, 1 => $fromname);
+
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
@@ -3367,7 +3377,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
-	$toText    = add_email_details($to, $result, array($mail,'addAddress'));
+	$toText    = add_email_details($to, $result, array($mail, 'addAddress'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3375,7 +3385,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$cc        = parse_email_details($cc);
-	$ccText    = add_email_details($cc, $result, array($mail,'addCC'));
+	$ccText    = add_email_details($cc, $result, array($mail, 'addCC'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3383,7 +3393,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$bcc       = parse_email_details($bcc);
-	$bccText   = add_email_details($bcc, $result, array($mail,'addBCC'));
+	$bccText   = add_email_details($bcc, $result, array($mail, 'addBCC'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3391,7 +3401,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$replyto   = parse_email_details($replyto);
-	$replyText = add_email_details($replyto, $result, array($mail,'addReplyTo'));
+	$replyText = add_email_details($replyto, $result, array($mail, 'addReplyTo'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3555,29 +3565,27 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	}
 
 	$update = array();
-	//echo "parse_email_details(): max is $max_records\n";
-	//var_dump($emails);
-	foreach ($emails as $key => $input) {
-		//echo "parse_email_details(): input is " . clean_up_lines(var_export($input, true)) . "\n";
-		if (!empty($input)) {
-			if (!is_array($input)) {
-				$emails = explode(',', $input);
+	foreach ($emails as $check_email) {
+		if (!empty($check_email)) {
+			if (!is_array($check_email)) {
+				$emails = explode(',', $check_email);
+
 				foreach($emails as $email) {
-					//echo "parse_email_details(): checking '" . trim($email) . "' ... \n";
-					$e = trim($email);
-					$d = split_emaildetail($e);
-					$details[] = $d;
+					$email_array = split_emaildetail($email);
+					$details[] = $email_array;
 				}
 			} else {
-				$has_name  = array_key_exists('name', $input);
-				$has_email = array_key_exists('email', $input);
+				$has_name  = array_key_exists('name', $check_email);
+				$has_email = array_key_exists('email', $check_email);
+
 				if ($has_name || $has_email) {
-					$name  = $has_name  ? $input['name']  : '';
-					$email = $has_email ? $input['email'] : '';
+					$name  = $has_name  ? $check_email['name']  : '';
+					$email = $has_email ? $check_email['email'] : '';
 				} else {
-					$name  = array_key_exists(1, $input) ? $input[1] : '';
-					$email = array_key_exists(0, $input) ? $input[0] : '';
+					$name  = array_key_exists(1, $check_email) ? $check_email[1] : '';
+					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
+
 				$details[] = array('name' => trim($name), 'email' => trim($email));
 			}
 		}
@@ -3601,26 +3609,29 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	return $results;
 }
 
-function split_emaildetail($input) {
-	if (!is_array($input)) {
-		$sPattern = '/(?<address><[\w\.]+@([\w\d-]+\.)+[\w]{2,4}>)$/';
-		$aMatch = preg_split($sPattern, trim($input), -1, PREG_SPLIT_DELIM_CAPTURE);
-		//echo "\n------[REGEX]------\n";
-		//print_r($aMatch);
-		//echo "\n------[REGEX]------\n";
-		if (isset($aMatch[2])) {
-			$name = $aMatch[0];
-			$email = trim($aMatch[1],'<> ');
-		} else {
-			$name = '';
-			$email = trim($aMatch[0],'<> ');
+function split_emaildetail($email) {
+	$rname  = '';
+	$rmail = '';
+
+	if (!is_array($email)) {
+		$email = trim($email);
+
+		$sPattern = '/([\w\s\'\"]+[\s]+)?(<)?(([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		preg_match($sPattern, $email, $aMatch);
+
+		if (isset($aMatch[1])) {
+			$rname = trim($aMatch[1]);
+		}
+
+		if (isset($aMatch[3])) {
+			$rmail = trim($aMatch[3]);
 		}
 	} else {
-		$name = $input[1];
-		$mail = $input[0];
+		$rmail = $email[0];
+		$rname = $email[1];
 	}
 
-	return array('name' => trim($name), 'email' => trim($email));
+	return array('name' => $rname, 'email' => $rmail);
 }
 
 function create_emailtext($e) {
