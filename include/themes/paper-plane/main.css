@@ -2003,6 +2003,9 @@ th:last-child {
 
 tr.selected {
 	background: #d3dce5 !important;
+}
+
+tr.selected td:first-child {
 	border-left: 10px solid #5CB85C !important;
 }
 
