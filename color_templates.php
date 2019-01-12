@@ -582,7 +582,7 @@ function aggregate_color_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Color Templates Found') ."</em></td></tr>\n";
 	}
 
 	html_end_box(false);

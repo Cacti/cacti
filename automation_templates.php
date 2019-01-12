@@ -542,7 +542,7 @@ function template() {
 			$i++;
 		}
 	} else {
-		print "<tr><td><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Automation Device Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);
