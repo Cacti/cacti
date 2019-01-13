@@ -2466,7 +2466,7 @@ tr#realtime td:first-child {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: rgba(255, 170, 0, 0.2) !important;
+	background-color: rgba(147, 206, 255, 0.2) !important;
 	-webkit-transition: .4s;
 	transition: .4s;
 	border: 1px solid #7F83A2;
@@ -2489,7 +2489,7 @@ tr#realtime td:first-child {
 }
 
 input:checked + .checkboxSlider {
-	background-color: rgba(147, 206, 255, 0.8) !important;
+	background-color: rgba(255, 170, 0, 0.9) !important;
 }
 
 input:focus + .checkboxSlider {
