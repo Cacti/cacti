@@ -187,7 +187,7 @@ function boost_poller_on_demand(&$results) {
 						// delimiter on the first iteration as the output buffer will always
 						// be blank.
 						$out_buffer .= $delim . $tmp_buffer;
-						$out_length += $delim_length + $tmp_length;
+						$out_length += $delim_len + $tmp_length;
 					}
 
 					// Only on the first iteration do we need to set the delimiter as

@@ -12,6 +12,7 @@ develop
 -issue#2292: Allow Realtime to use 1 second data collection
 -issue#2298: Ambiguous Toggle Switches in Sunrise Theme
 -issue#2303: Problem with "Notify Primary Admin of Issues" function
+-issue#2305: BOOST PROGERR: ERRNO:'8'
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login
