@@ -930,13 +930,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* Syslog is currently Unstable in Win32 */
 	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
-		if (strpos($string,'ERROR:') !== false) {
+		if (strpos($string, 'ERROR:') !== false) {
 			$log_type = 'err';
-		} elseif (strpos($string,'WARNING:') !== false) {
+		} elseif (strpos($string, 'WARNING:') !== false) {
 			$log_type = 'warn';
-		} elseif (strpos($string,'STATS:') !== false) {
+		} elseif (strpos($string, 'STATS:') !== false) {
 			$log_type = 'stat';
-		} elseif (strpos($string,'NOTICE:') !== false) {
+		} elseif (strpos($string, 'NOTICE:') !== false) {
 			$log_type = 'note';
 		}
 
@@ -5005,6 +5005,19 @@ function get_validated_language($language, $defaultLanguage) {
 
 function get_running_user() {
 	global $config;
+
+	// Easy way first
+	$user = get_current_user();
+	if ($user != '') {
+		return $user;
+	}
+
+	$user = getenv('USERNAME') ?: getenv('USER');
+	if ($user != '') {
+		return $user;
+	}
+
+	// Falback method
 	if ($config['cacti_server_os'] == 'win32') {
 		return getenv('username');
 	} else {
@@ -5016,6 +5029,7 @@ function get_running_user() {
 			if (file_exists($tmp_file)) {
 				unlink($tmp_file);
 			}
+
 			file_put_contents($tmp_file, 'cacti');
 
 			$f_owner = fileowner($tmp_file);
