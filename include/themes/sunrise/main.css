@@ -2489,7 +2489,7 @@ tr#realtime td:first-child {
 }
 
 input:checked + .checkboxSlider {
-	background-color: rgba(255, 170, 0, 0.9) !important;
+	background-color: rgba(255, 170, 0, 0.5) !important;
 }
 
 input:focus + .checkboxSlider {
