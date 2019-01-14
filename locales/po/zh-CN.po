@@ -66,8 +66,7 @@ msgid ""
 "otherwise help fix a Cacti related problems. Also to anyone who has "
 "contributed to supporting Cacti."
 msgstr ""
-"特别是那些花时间提问题,或以其他方式帮助Cacti 修复问题的人. 也包括任何支持"
-"Cacti 并做出贡献的人."
+"特别是那些花时间提问题,或以其他方式帮助Cacti 修复问题的人. 也包括任何支持Cacti 并做出贡献的人."
 
 #: about.php:71
 msgid "License"
@@ -851,7 +850,7 @@ msgstr "更改密码"
 
 #: auth_changepassword.php:293
 msgid "Please enter your current password and your new<br>Cacti password."
-msgstr "请输入您当前的密码和新的<br>Cacti密码."
+msgstr "请输入您当前的密码和新的<br>Cacti 密码."
 
 #: auth_changepassword.php:301
 msgid "Current password"
@@ -897,8 +896,7 @@ msgid ""
 "Web Basic Authentication configured, but no username was passed from the web "
 "server. Please make sure you have authentication enabled on the web server."
 msgstr ""
-"已配置Web 基本身份认证,但没有从Web 服务器传递用户名. 请确保您在Web服务器上启"
-"用了身份认证."
+"已配置Web 基本身份认证,但没有从Web 服务器传递用户名. 请确保您在Web服务器上启用了身份认证."
 
 #: auth_login.php:112
 #, php-format
@@ -933,7 +931,7 @@ msgstr "拒绝访问,用户帐号被禁用."
 
 #: auth_login.php:407
 msgid "Access Denied, please contact you Cacti Administrator."
-msgstr "访问拒绝,请联系Cacti管理员."
+msgstr "访问被拒绝,请联系Cacti 管理员."
 
 #: auth_login.php:435
 msgid "Cacti"
@@ -1455,7 +1453,7 @@ msgstr "取消发现"
 #: automation_networks.php:148
 #, fuzzy, php-format
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
-msgstr "无法为网络 %s 正在进行的发现重新启动发现"
+msgstr "无法为网络 %s 正在进行的发现重启发现"
 
 #: automation_networks.php:152
 #, fuzzy, php-format
@@ -1604,8 +1602,8 @@ msgid ""
 "a Network range such as 192.168.1.0/24 or 192.168.1.0/255.255.255.0, or "
 "using wildcards such as 192.168.*.*"
 msgstr ""
-"输入以逗号分隔的有效网络范围. 您可以使用IP地址,网络范围(如192.168.1.0/24或"
-"192.168.1.0/255.255.255.0),或使用通配符(如192.168.*.*)"
+"请输入以逗号分隔的有效网络范围. 您可以使用IP地址,网络范围(比如 192.168.1.0/24或"
+"192.168.1.0/255.255.255.0),或使用通配符(比如 192.168.*.*)"
 
 #: automation_networks.php:476
 msgid "Total IP Addresses"
@@ -1624,12 +1622,11 @@ msgid ""
 "A space delimited list of alternate DNS Servers to use for DNS resolution. "
 "If blank, the poller OS will be used to resolve DNS names."
 msgstr ""
-"用于DNS 解析的备用DNS服务器的空格分隔列表. 如果为空,则使用poller 所在的操作系"
-"统来解析DNS名称."
+"用于DNS 解析的备用DNS服务器列表,用空格分隔. 如果为空,则使用poller 所在的操作系统来解析DNS名称."
 
 #: automation_networks.php:486
 msgid "Enter IPs or FQDNs of DNS Servers"
-msgstr "输入DNS 服务器的IP或FQDN"
+msgstr "请输入DNS 服务器的IP 或FQDN"
 
 #: automation_networks.php:490
 msgid "Schedule Type"
@@ -1753,7 +1750,7 @@ msgstr "对于任何可以使用SNMP 访问且匹配设备规则的新发现设�
 #: automation_networks.php:556
 #, fuzzy
 msgid "Allow same sysName on different hosts"
-msgstr "在不同的主机上允许相同的sysName"
+msgstr "允许不同的主机拥有相同的主机名"
 
 #: automation_networks.php:557
 #, fuzzy
@@ -1768,7 +1765,7 @@ msgstr "重新运行数据查询"
 
 #: automation_networks.php:563
 msgid "If a device previously added to Cacti is found, rerun its data queries."
-msgstr "如果找到先前添加到Cacti的设备,请重新运行其数据查询."
+msgstr "如果找到先前添加到Cacti 的设备,请重新运行其数据查询."
 
 #: automation_networks.php:568
 msgid "Notification Settings"
@@ -1807,8 +1804,8 @@ msgid ""
 "Email.  If left blank, Cacti will use the default Automation Notification "
 "Name if specified, otherwise, it will use the Cacti system default Email name"
 msgstr ""
-"电子邮件帐户名称,用作通知电子邮件的发件人名称.如果留空,Cacti将使用默认的自动"
-"化通知名称(如果已指定),否则,它将使用Cacti系统默认的电子邮件名称"
+"电子邮件帐户名称,用作通知电子邮件的发件人名称.如果留空,Cacti 将使用默认的自动"
+"化通知名称(如果已指定),否则,它将使用Cacti 系统默认的电子邮件名称"
 
 #: automation_networks.php:597
 #, fuzzy
@@ -1823,8 +1820,8 @@ msgid ""
 "Email Address if specified, otherwise, it will use the Cacti system default "
 "Email Address"
 msgstr ""
-"电子邮件地址将用作发件人电子邮件通知电子邮件.如果留空,Cacti将使用默认的自动化"
-"通知电子邮件地址(如果已指定),否则,它将使用Cacti系统默认电子邮件地址"
+"电子邮件地址将用作发件人电子邮件通知电子邮件.如果留空,Cacti 将使用默认的自动化"
+"通知电子邮件地址(如果已指定),否则,它将使用Cacti 系统默认电子邮件地址"
 
 #: automation_networks.php:605
 msgid "Discovery Timing"
@@ -2732,7 +2729,7 @@ msgstr[0] "删除颜色"
 
 #: color.php:352
 msgid "Cacti has imported the following items:"
-msgstr "Cacti导入了以下条目:"
+msgstr "Cacti 导入了以下条目:"
 
 #: color.php:366 color.php:570
 msgid "Import Colors"
@@ -3347,7 +3344,7 @@ msgstr "删除数据输入字段"
 #: data_input.php:794 include/global_arrays.php:861
 #: include/global_arrays.php:1042 include/global_arrays.php:2111
 msgid "Data Input Methods"
-msgstr "数据导入方法"
+msgstr "数据输入方法"
 
 #: data_input.php:809 data_input.php:897
 msgid "Input Methods"
@@ -3382,7 +3379,7 @@ msgstr "使用此数据输入方法的数据模板的数量."
 #: data_input.php:910 data_queries.php:1375 include/global_arrays.php:1169
 #: include/global_form.php:540 include/global_form.php:1332
 msgid "Data Input Method"
-msgstr "数据导入方法"
+msgstr "数据输入方法"
 
 #: data_input.php:910
 msgid "The method used to gather information for this Data Input Method."
@@ -3809,7 +3806,7 @@ msgstr "更改设备"
 
 #: data_sources.php:38 graphs.php:58
 msgid "Reapply Suggested Names"
-msgstr "重新申请建议的名称"
+msgstr "重新使用建议的名称"
 
 #: data_sources.php:472
 msgid "Click 'Continue' to delete the following Data Source"
@@ -4177,7 +4174,7 @@ msgstr "输入方法"
 
 #: data_templates.php:1002
 msgid "The method that is used to place Data into the Data Source RRDfile."
-msgstr "用于将数据放入数据源RRD文件的方法."
+msgstr "用于将数据放入数据源RRD 文件的方法."
 
 #: data_templates.php:1003
 msgid "Profile Name"
@@ -4392,7 +4389,7 @@ msgid ""
 "appearance."
 msgstr ""
 "点击 '继续' 以使您的图形与以下图形模板同步. 如果图形存在多个图形模板版本并希"
-"望使其在外观上都很常见,则此功能非常重要."
+"望使其在外观上表现一致,那么则此功能非常重要."
 
 #: graph_templates.php:378
 msgid "Synchronize Graphs to Graph Template(s)"
@@ -7912,7 +7909,7 @@ msgstr "内部数据源名称"
 #: include/global_form.php:582
 msgid ""
 "Choose unique name to represent this piece of data inside of the RRDfile."
-msgstr "选择唯一的名称来表示RRD文件中的这部分数据."
+msgstr "选择唯一的名称来表示RRD 文件中的这部分数据."
 
 #: include/global_form.php:585
 msgid "Minimum Value (\"U\" for No Minimum)"
@@ -8054,7 +8051,7 @@ msgid ""
 "Auto scale the y-axis instead of defining an upper and lower limit. Note: if "
 "this is check both the Upper and Lower limit will be ignored."
 msgstr ""
-"自动缩放y轴而不是定义上限和下限. 注意:如果这是检查,上限和下限都将被忽略."
+"自动缩放y轴而不是定义上限和下限. 注意: 如果这是检查,上限和下限都将被忽略."
 
 #: include/global_form.php:725
 msgid "Auto Scale Options"
@@ -8105,7 +8102,7 @@ msgid ""
 "Use SI Units for Logarithmic Scaling instead of using exponential notation."
 "<br> Note: Linear graphs use SI notation by default."
 msgstr ""
-"使用SI单位进行对数比例缩放而不是使用指数符号.<br>注意:线性图形默认使用SI符号."
+"使用SI单位进行对数比例缩放而不是使用指数符号.<br>注意: 线性图形默认使用SI符号."
 
 #: include/global_form.php:762
 msgid "Rigid Boundaries Mode (--rigid)"
@@ -8148,7 +8145,7 @@ msgid ""
 "lines appear at each grid step interval.  Labels are placed every label "
 "factor lines."
 msgstr ""
-"在Y轴上为数字设置指数值. 注意:此选项已弃用,并由--y-grid选项取代. 在此选项中,Y"
+"在Y轴上为数字设置指数值. 注意: 此选项已弃用,并由--y-grid选项取代. 在此选项中,Y"
 "轴网格线出现在每个网格步骤间隔处. 标签放置在每个标签因子线上."
 
 #: include/global_form.php:797
@@ -8189,7 +8186,7 @@ msgid ""
 "output by default."
 msgstr ""
 "为了避免消除锯齿模糊效果RRDtool 将点指向设备分辨率像素,这会让外观更加清晰.如"
-"果这不符合您的要求,您可以使用此开关来关闭此功能.<br> <strong>注意:</strong> "
+"果这不符合您的要求,您可以使用此开关来关闭此功能.<br> <strong>注意: </strong> "
 "默认情况下,PDF,EPS,SVG 输出关闭了Gridfitting."
 
 #: include/global_form.php:819
@@ -8300,7 +8297,7 @@ msgid ""
 "Auto Padding may not be accurate on all types of graphs, consistent labeling "
 "usually helps."
 msgstr ""
-"填充文本,以便图例和图形数据始终排列. 注意:由于较大的开销,这可能会导致图形渲染"
+"填充文本,以便图例和图形数据始终排列. 注意: 由于较大的开销,这可能会导致图形渲染"
 "时间较长. 在所有类型的图形上,自动填充可能不准确,一致的标签通常有帮助."
 
 #: include/global_form.php:881
@@ -8434,8 +8431,8 @@ msgid ""
 "HR&gt; on this legend line will obsolete this setting!"
 msgstr ""
 "所有后续的图例行将按照此处给出的方式对齐. 您可以在单个图形中多次使用此命令. "
-"此命令不会生成表格式布局.<strong>注意:</ strong>您可能需要插入＆lt; HR＆gt; "
-"在前面的图形项目中.<br/> <strong>注意:</ strong> A＆lt; HR＆gt; 在这个传奇线"
+"此命令不会生成表格式布局.<strong>注意: </ strong>您可能需要插入＆lt; HR＆gt; "
+"在前面的图形项目中.<br/> <strong>注意: </ strong> A＆lt; HR＆gt; 在这个传奇线"
 "上会过时这个设置!"
 
 #: include/global_form.php:1007
@@ -8584,14 +8581,14 @@ msgid ""
 "<br><i>NOTE: It is recommended that, at a minimum, SNMP always be selected.</"
 "i>"
 msgstr ""
-"Cacti 将使用该方法来确定主机是否可采集. <br> <i>注意:建议至少选择SNMP.</i>"
+"Cacti 将使用该方法来确定主机是否可采集. <br> <i>注意: 建议至少选择SNMP.</i>"
 
 #: include/global_form.php:1216
 msgid ""
 "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX requires "
 "root privileges.</i>"
 msgstr ""
-"要发送的ping 包的类型. <br> <i>注意:Linux/UNIX 上的ICMP 需要root 权限.</i>"
+"要发送的ping 包的类型. <br> <i>注意: Linux/UNIX 上的ICMP 需要root 权限.</i>"
 
 #: include/global_form.php:1253 include/global_form.php:1701
 msgid "Additional Options"
@@ -9330,7 +9327,7 @@ msgstr "RRD 文件自动清理方法"
 msgid ""
 "The method used to Clean RRDfiles from Cacti after their Data Sources are "
 "deleted."
-msgstr "数据源删除后, 用于从Cacti 清除RRD文件的方法."
+msgstr "数据源删除后, 用于从Cacti 清除RRD 文件的方法."
 
 #: include/global_settings.php:239
 msgid "Archive"
@@ -9429,7 +9426,7 @@ msgid ""
 "When using Syslog/Eventlog for logging, the Cacti log messages that will be "
 "forwarded to the Syslog/Eventlog."
 msgstr ""
-"使用Syslog/Eventlog 进行日志记录时,会将Cacti日志消息转发到Syslog/Eventlog."
+"使用Syslog/Eventlog 进行日志记录时,会将Cacti 日志消息转发到Syslog/Eventlog."
 
 #: include/global_settings.php:305
 msgid "Statistics"
@@ -9613,7 +9610,7 @@ msgid ""
 "For use with Cacti's External Link Support.  Using this setting, you can "
 "hide the Cacti Dashboard, so you can display just your own page."
 msgstr ""
-"用于Cacti的外部链接支持.使用此设置,您可以隐藏Cacti 仪表板,这样您就可以只显"
+"用于Cacti 的外部链接支持.使用此设置,您可以隐藏Cacti 仪表板,这样您就可以只显"
 "示自己的页面."
 
 #: include/global_settings.php:438
@@ -9681,7 +9678,7 @@ msgid ""
 "account."
 msgstr ""
 "如果未在自动化网络级别指定,则发送自动化通知电子邮件的电子邮件地址.如果此字段"
-"或自动化网络值保留为空,Cacti将使用Primary Cacti Admins Email帐户."
+"或自动化网络值保留为空,Cacti 将使用Primary Cacti Admins Email帐户."
 
 #: include/global_settings.php:474
 #, fuzzy
@@ -9696,7 +9693,7 @@ msgid ""
 "Network value are left blank, Cacti will use the system default From Name."
 msgstr ""
 "如果未在自动化网络级别指定,则用于自动化通知的电子邮件名称将发送电子邮件.如果"
-"此字段或自动化网络值保留为空,Cacti将使用名称作为系统默认."
+"此字段或自动化网络值保留为空,Cacti 将使用名称作为系统默认."
 
 #: include/global_settings.php:482
 #, fuzzy
@@ -9712,7 +9709,7 @@ msgid ""
 "From Email Address."
 msgstr ""
 "如果未在自动化网络级别指定,则用于自动化通知的电子邮件地址将发送电子邮件.如果"
-"此字段或自动化网络值保留为空,Cacti将使用系统默认的 '来自电子邮件地址'."
+"此字段或自动化网络值保留为空,Cacti 将使用系统默认的 '发件人'."
 
 #: include/global_settings.php:491
 msgid "General Defaults"
@@ -9849,7 +9846,7 @@ msgid ""
 "is recommended that, at a minimum, SNMP always be selected.</i>"
 msgstr ""
 "新设备的默认可用性/可达性. Cacti 将使用该方法来确定设备是否可采集."
-"<br><i>注意:建议至少选择SNMP.</i>"
+"<br><i>注意: 建议至少选择SNMP.</i>"
 
 #: include/global_settings.php:649
 msgid "Ping Type"
@@ -10092,7 +10089,7 @@ msgid ""
 "will be cached.  This cache will be managed by the poller.  Make sure you "
 "have the correct read and write permissions on this folder"
 msgstr ""
-"这是RRD文件和PNG文件将被缓存的Web服务器上的位置. 该缓存将由poller 管理. 确保"
+"这是RRD 文件和PNG 文件将被缓存的Web 服务器上的位置. 该缓存将由poller 管理. 请确保"
 "您对此文件夹具有正确的读写权限"
 
 #: include/global_settings.php:864
@@ -10259,7 +10256,7 @@ msgid ""
 "must re-populate the poller cache.  Failure to do so, may result in lost "
 "data.</u></strong>"
 msgstr ""
-"采集周期在使用中. 此设置将影响检查和更新RRD文件的频率."
+"采集周期在使用中. 此设置将影响检查和更新RRD 文件的频率."
 "<strong><u>注意: 如果更改此值,则必须重新填充poller 缓存. 否则可能导致数据丢失</u></strong>"
 
 #: include/global_settings.php:987 lib/installer.php:2233
@@ -10290,10 +10287,10 @@ msgid ""
 "leveraging threads instead.  When using cmd.php, use no more than 2x the "
 "number of CPU cores."
 msgstr ""
-"每个数据采集器的默认并发进程数.注意:从Cacti 1.2 开始,此设置在数据采集器中维"
+"每个数据采集器的默认并发进程数.注意: 从Cacti 1.2开始,此设置在数据采集器中维"
 "护.此后,这个值仅是数据采集器的预设值.使用cmd.php 时,使用较大的数字可提高性"
 "能. Spine 中的性能问题最好通过多线程参数解决.使用Spine 时,我们建议使用较低的"
-"数字并充分利用线程.使用cmd.php时, 数字不应该超过CPU 核心数的2倍."
+"数字并充分利用线程.使用cmd.php 时, 数字不应该超过CPU 核心数的2倍."
 
 #: include/global_settings.php:1002
 msgid "Balance Process Load"
@@ -10398,7 +10395,7 @@ msgid ""
 "script servers).  You must also ensure that you have enough spare "
 "connections for user login connections as well."
 msgstr ""
-"每个进程允许的默认线程.注意:从Cacti 1.2+开始,此设置在数据采集器中维护,这只是"
+"每个进程允许的默认线程.注意: 从Cacti 1.2+开始,此设置在数据采集器中维护,这只是"
 "预设.使用Spine 时使用较高的数字可提高性能.但是,请确保您有足够的MySQL/MariaDB "
 "连接数来支撑以下等式: connections = data collectorors * processes *(threads "
 "+ script servers).您还必须确保为用户登录连接提供足够的备用连接."
@@ -10424,7 +10421,7 @@ msgstr "脚本和脚本服务器超时值"
 msgid ""
 "The maximum time that Cacti will wait on a script to complete.  This timeout "
 "value is in seconds"
-msgstr "Cacti将等待脚本完成的最长时间. 此超时值以秒为单位"
+msgstr "Cacti 将等待脚本完成的最长时间. 此超时值以秒为单位"
 
 #: include/global_settings.php:1090
 msgid "The Maximum SNMP OIDs Per SNMP Get Request"
@@ -10558,7 +10555,7 @@ msgstr "必须包含数字"
 #: include/global_settings.php:1167
 msgid ""
 "This will require new passwords to contain at least 1 numerical character."
-msgstr "这将需要新的密码至少包含1个数字."
+msgstr "这要求新的密码至少包含1个数字."
 
 #: include/global_settings.php:1172
 msgid "Require Special Character"
@@ -10567,7 +10564,7 @@ msgstr "必须包含特殊字符"
 #: include/global_settings.php:1173
 msgid ""
 "This will require new passwords to contain at least 1 special character."
-msgstr "这将需要新的密码至少包含一个特殊字符."
+msgstr "这要求新的密码至少包含一个特殊字符."
 
 #: include/global_settings.php:1178
 msgid "Force Complexity Upon Old Passwords"
@@ -11010,7 +11007,7 @@ msgstr "SMTP 密码"
 msgid ""
 "The password to authenticate with when sending via SMTP. (Leave blank if you "
 "do not require authentication.)"
-msgstr "通过SMTP 发送时进行身份认证的密码. (如果不需要认证,请留空.)"
+msgstr "通过SMTP 发送时进行身份认证的密码. (如果不要求认证,请留空.)"
 
 #: include/global_settings.php:1518
 msgid "SMTP Security"
@@ -12254,7 +12251,7 @@ msgid ""
 "Click 'Continue' to purge the Log File.<br><br><br>Note: If logging is set "
 "to both Cacti and Syslog, the log information will remain in Syslog."
 msgstr ""
-"单击 '继续' 以清空日志文件.<br> <br> <br>注意:如果将日志记录设置为Cacti 和"
+"单击 '继续' 以清空日志文件.<br> <br> <br>注意: 如果将日志记录设置为Cacti 和"
 "Syslog,则日志信息将保留在Syslog 中."
 
 #: lib/clog_webapi.php:220 utilities.php:1098
@@ -14196,7 +14193,7 @@ msgstr "然后,您<b>必须</b>更新 \"include/config.php\" 以指向新的数�
 msgid ""
 "NOTE: Your existing data will not be modified, nor will it or any history be "
 "available to the new install"
-msgstr "注意:您的现有数据不会被修改,新安装也不会修改它或任何历史记录"
+msgstr "注意: 您的现有数据不会被修改,新安装也不会修改它或任何历史记录"
 
 #: lib/installer.php:1395
 #, fuzzy
@@ -14565,7 +14562,7 @@ msgid ""
 "experience issues, please raise the issue with us and we will try to "
 "identify the cause of it."
 msgstr ""
-"如果在清除缓存并重新启动浏览器后仍然遇到问题,请向我们提出问题,我们会尝试确定"
+"如果在清除缓存并重启浏览器后仍然遇到问题,请向我们提出问题,我们会尝试确定"
 "问题的原因."
 
 #: lib/installer.php:1871
@@ -14765,7 +14762,7 @@ msgid ""
 "so that the Cacti remote synchronization process can update them as the Main "
 "Cacti Web Site changes"
 msgstr ""
-"在安装后,这些目录将被要求保持可读写状态,以便Cacti 远程同步过程可以在主Cacti网"
+"在安装后,这些目录将被要求保持可读写状态,以便Cacti 远程同步过程可以在主Cacti 网"
 "站更改时更新它们"
 
 #: lib/installer.php:2102
@@ -15387,7 +15384,7 @@ msgstr "数据源'%s'的RRD最大值应为'%s'"
 #: lib/rrd.php:2561
 #, php-format
 msgid "DS '%s' missing in RRDfile"
-msgstr " RRD文件中缺少DS '%s' "
+msgstr " RRD 文件中缺少DS '%s' "
 
 #: lib/rrd.php:2570
 #, php-format
@@ -15498,12 +15495,12 @@ msgstr "解析RRDtool 转储的XML 时出错"
 #: lib/rrd.php:3242
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD文件中删除\n"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) 从RRD 文件中删除\n"
 
 #: lib/rrd.php:3276
 #, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
-msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD文件\n"
+msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f)添加到RRD 文件\n"
 
 #: lib/rrd.php:3306 lib/rrd.php:3320
 #, php-format
@@ -15769,7 +15766,7 @@ msgstr "%s 调优"
 
 #: lib/utility.php:1002
 msgid "Note: Many changes below require a database restart"
-msgstr "注意:下面的许多更改需要重新启动数据库"
+msgstr "注意: 下面的许多修改要求重启数据库才能生效"
 
 #: lib/utility.php:1009
 msgid "Variable"
@@ -15918,7 +15915,7 @@ msgstr "网址在下面"
 msgid ""
 "The file that contains the content for this page. This file needs to be in "
 "the Cacti 'include/content/' directory."
-msgstr "包含此页面内容的文件. 这个文件需要在Cacti的 'include/content/' 目录下."
+msgstr "包含此页面内容的文件. 这个文件必须在Cacti 的 'include/content/' 目录下."
 
 #: links.php:551
 msgid "Web URL Location"
@@ -16491,7 +16488,7 @@ msgid_plural ""
 "will be disassociated from these Data Collectors and mapped back to the Main "
 "Cacti Data Collector."
 msgstr[0] ""
-"点击 '继续' 删除以下数据采集器. 请注意,所有设备都将从此数据采集器取消关联并映射回主Cacti数据采集器."
+"点击 '继续' 删除以下数据采集器. 请注意,所有设备都将从此数据采集器取消关联并映射回主Cacti 数据采集器."
 
 #: pollers.php:441
 msgid "Delete Data Collector"
@@ -16640,7 +16637,7 @@ msgstr "最后更新"
 
 #: pollers.php:823
 msgid "The last time this Data Collector checked in with the main Cacti site."
-msgstr "这个数据采集器最后一次与主要的Cacti站点签入."
+msgstr "这个数据采集器最后一次与主要的Cacti 站点签入."
 
 #: pollers.php:824
 msgid "Last Sync"
@@ -16663,15 +16660,15 @@ msgstr "删除"
 #: rrdcleaner.php:31
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "归档顺序"
+msgstr "归档"
 
 #: rrdcleaner.php:338
 msgid "RRD Files"
-msgstr "RRD文件"
+msgstr "RRD 文件"
 
 #: rrdcleaner.php:347
 msgid "RRD File Name"
-msgstr "RRD文件名"
+msgstr "RRD 文件名"
 
 #: rrdcleaner.php:348
 msgid "DS Name"
@@ -16699,7 +16696,7 @@ msgstr "已删除"
 
 #: rrdcleaner.php:373
 msgid "No unused RRD Files"
-msgstr "没有未使用的RRD文件"
+msgstr "没有未使用的RRD 文件"
 
 #: rrdcleaner.php:395
 msgid "Total Size [MB]:"
@@ -16742,7 +16739,7 @@ msgstr "删除所有"
 
 #: rrdcleaner.php:520
 msgid "Delete All Unknown RRDfiles"
-msgstr "删除所有未知的RRD文件"
+msgstr "删除所有未知的RRD 文件"
 
 #: rrdcleaner.php:521
 msgid "Archive All"
@@ -16750,7 +16747,7 @@ msgstr "归档所有"
 
 #: rrdcleaner.php:521
 msgid "Archive All Unknown RRDfiles"
-msgstr "存档所有未知的RRD文件"
+msgstr "存档所有未知的RRD 文件"
 
 #: settings.php:226
 #, php-format
@@ -17023,7 +17020,7 @@ msgstr "What would you like to export?"
 
 #: templates_export.php:110
 msgid "Select the Template type that you wish to export from Cacti."
-msgstr "选择您希望从Cacti导出的模板类型."
+msgstr "选择您希望从Cacti 导出的模板类型."
 
 #: templates_export.php:120
 msgid "Device Template to Export"
@@ -17055,7 +17052,7 @@ msgstr "选择格式以输出结果XML文件."
 
 #: templates_export.php:143
 msgid "Output to the Browser (within Cacti)"
-msgstr "输出到浏览器 (Cacti内)"
+msgstr "输出到浏览器 (Cacti 内)"
 
 #: templates_export.php:147
 msgid "Output to the Browser (raw XML)"
@@ -17738,7 +17735,7 @@ msgstr "选择这是什么类型的域."
 #: user_domains.php:341
 msgid ""
 "The name of the user that Cacti will use as a template for new user accounts."
-msgstr "Cacti将用作新用户帐户的模板的用户名称."
+msgstr "Cacti 将用作新用户帐户的模板的用户名称."
 
 #: user_domains.php:351
 msgid ""
@@ -18371,7 +18368,7 @@ msgid ""
 "persons to assist with issues in Cacti.  Includes checks for common "
 "configuration issues."
 msgstr ""
-"Cacti技术支持页面. 由开发人员和技术支持人员用来协助处理Cacti 中的问题.包括检"
+"Cacti 技术支持页面. 由开发人员和技术支持人员用来协助处理Cacti 中的问题.包括检"
 "查常见的配置问题."
 
 #: utilities.php:1895
@@ -18452,8 +18449,8 @@ msgid ""
 "rebuild it at the next scheduled poller start.  This will trigger all Remote "
 "Data Collectors to recheck their website and plugin files for consistency."
 msgstr ""
-"在Cacti中操作多个数据采集器时,Cacti将尝试维护所有数据采集器上的密钥文件的状"
-"态.这包括所有核心,非安装相关的网站和插件文件.强制执行资源缓存重建时,Cacti将清"
+"在Cacti 中操作多个数据采集器时,Cacti 将尝试维护所有数据采集器上的密钥文件的状"
+"态.这包括所有核心,非安装相关的网站和插件文件.强制执行资源缓存重建时,Cacti 将清"
 "除本地资源缓存,然后在下一个计划的poller 启动时重建它.这将触发所有远程数据采集"
 "器重新检查其网站和插件文件的一致性."
 
@@ -18477,7 +18474,7 @@ msgstr "RRD 工具"
 
 #: utilities.php:1932
 msgid "RRDfile Cleaner"
-msgstr "RRD 文件清理"
+msgstr "RRD 文件清理器"
 
 #: utilities.php:1934
 msgid ""
@@ -18485,8 +18482,7 @@ msgid ""
 "removed automatically.  Use this utility to facilitate the removal of these "
 "old files."
 msgstr ""
-"从Cacti中删除数据源时,相应的RRD文件不会自动删除. 使用此工具来帮助删除这些旧文"
-"件."
+"从Cacti 中删除数据源时,相应的RRD 文件不会自动删除. 使用此工具来帮助删除这些旧文件."
 
 #: utilities.php:1939
 msgid "SNMPAgent Utilities"
