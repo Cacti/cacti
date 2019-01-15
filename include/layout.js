@@ -31,6 +31,7 @@ const MESSAGE_LEVEL_MIXED = 5;
 var theme;
 var myRefresh;
 var userMenuTimer;
+var userMenuOpenTimer = null;
 var graphMenuTimer;
 var graphMenuElement = 0;
 var pulsating = true;
@@ -2429,11 +2430,7 @@ function setupEllipsis() {
 			$('.menuoptions').slideUp(120);
 
 			/* re-position */
-			var position = $(this).parent().position();
-
-			if (!position) {
-				position = $(this).position();
-			}
+			var position = $(this).position();
 
 			if (position.left - parseInt(submenu.outerWidth()) < 0) {
 				submenu.css({'left': 0}).slideDown(120);
