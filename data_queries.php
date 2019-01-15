@@ -644,7 +644,11 @@ function data_query_item_edit() {
 		WHERE id = ?',
 		array(get_request_var('snmp_query_id')));
 
-	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
+	if (cacti_sizeof($snmp_query)) {
+		$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
+	} else {
+		$header_label = __('Associated Graph/Data Templates [new]');
+	}
 
 	form_start('data_queries.php', 'data_queries');
 
