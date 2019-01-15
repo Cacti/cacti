@@ -29,7 +29,7 @@ $cacti_country = 'us';
 /* an array that will contains all textdomains being in use. */
 $cacti_textdomains = array();
 
-global $path2calendar, $path2timepicker;
+global $path2calendar, $path2timepicker, $path2colorpicker;
 
 /* get a list of locale settings */
 $lang2locale = get_list_of_locales();
@@ -99,9 +99,19 @@ if ($cacti_locale != '') {
 	} else {
 		$path2timepicker = '';
 	}
+
+	// Detect the colorpicker path
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js')) {
+		$path2colorpicker = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js';
+	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js')) {
+		$path2colorpicker = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js';
+	} else {
+		$path2colorpicker = '';
+	}
 } else {
-	$path2timepicker = '';
-	$path2calendar   = '';
+	$path2timepicker  = '';
+	$path2calendar    = '';
+	$path2colorpicker = '';
 }
 
 /* use fallback procedure if requested language is not available */

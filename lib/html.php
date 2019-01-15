@@ -2256,7 +2256,7 @@ function html_spikekill_js() {
 }
 
 function html_common_header($title, $selectedTheme = '') {
-	global $config, $path2calendar, $path2timepicker;
+	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2398,6 +2398,10 @@ function html_common_header($title, $selectedTheme = '') {
 
 	if (isset($path2timepicker) && file_exists($path2timepicker)) {
 		print get_md5_include_js($path2timepicker);
+	}
+
+	if (isset($path2colorpicker) && file_exists($path2colorpicker)) {
+		print get_md5_include_js($path2colorpicker);
 	}
 
 	api_plugin_hook('page_head');
