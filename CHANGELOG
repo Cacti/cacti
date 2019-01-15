@@ -27,6 +27,7 @@ develop
 -issue: You can not return from editing profile
 -issue: Do not display form hint icon if there is no hint
 -issue: Data Debug was not logging, fixed a few additional UI bugs
+-issue: Legacy Cacti CLI check function proving unreliable on modern php
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
