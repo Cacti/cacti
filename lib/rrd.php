@@ -2803,7 +2803,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 
 	$cmd = array();
 	# for html/cli mode
-	if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	if (CACTI_CLI) {
 		$nl = '<br/>';
 	} else {
 		$nl = "\n";

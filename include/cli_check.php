@@ -23,9 +23,7 @@
 */
 
 /* do NOT run this script through a web browser */
-if (strpos(php_sapi_name(), 'cli') === false) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
+define('CACTI_CLI_ONLY', true);
 
 /* We are not talking to the browser */
 $no_http_headers = true;

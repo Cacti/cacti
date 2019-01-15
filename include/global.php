@@ -47,6 +47,12 @@ $cacti_version = trim($cacti_version);
 define('CACTI_VERSION', $cacti_version);
 #define('CACTI_VERSION_BETA', 1);
 
+/* define if cacti is in CLI mode */
+define('CACTI_CLI', (php_sapi_name() == 'cli'));
+if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
+	die('<br><strong>This script is only meant to run at the command line.</strong>');
+}
+
 // define documentation table of contents
 define('CACTI_DOCUMENTATION_TOC', 'docs/Table-of-Contents.html');
 

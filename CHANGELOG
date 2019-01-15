@@ -12,7 +12,9 @@ develop
 -issue#2292: Allow Realtime to use 1 second data collection
 -issue#2298: Ambiguous Toggle Switches in Sunrise Theme
 -issue#2303: Problem with "Notify Primary Admin of Issues" function
+-issue#2304: Installation progress stays at 0%
 -issue#2305: BOOST PROGERR: ERRNO:'8'
+-issue#2311: Unable to update PHP location during installation due to incorrect CLI environment
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login
@@ -27,7 +29,6 @@ develop
 -issue: You can not return from editing profile
 -issue: Do not display form hint icon if there is no hint
 -issue: Data Debug was not logging, fixed a few additional UI bugs
--issue: Legacy Cacti CLI check function proving unreliable on modern php
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

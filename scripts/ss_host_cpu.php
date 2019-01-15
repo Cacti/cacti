@@ -1,10 +1,6 @@
 <?php
 
 /* do NOT run this script through a web browser */
-if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
-	die('<br><strong>This script is only meant to run at the command line.</strong>');
-}
-
 global $config;
 
 $no_http_headers = true;
@@ -13,7 +9,7 @@ $no_http_headers = true;
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
-	include_once(dirname(__FILE__) . '/../include/global.php');
+	include_once(dirname(__FILE__) . '/../include/cli_check.php');
 	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
