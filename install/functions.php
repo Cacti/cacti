@@ -101,17 +101,6 @@ function install_test_temporary_table() {
 	return true;
 }
 
-function verify_php_extensions($extensions) {
-	//FIXME: More to foreach loop
-	for ($i = 0; $i < cacti_count($extensions); $i++) {
-		if (extension_loaded($extensions[$i]['name'])){
-			$extensions[$i]['installed'] = true;
-		}
-	}
-
-	return $extensions;
-}
-
 function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
