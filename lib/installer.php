@@ -1644,10 +1644,18 @@ class Installer implements JsonSerializable {
 				if ($recommend['status'] == DB_STATUS_SUCCESS) {
 					$status_font = 'green';
 					$status_text = __('Passed');
+				} elseif ($recommend['status'] == DB_STATUS_WARNING) {
+					$status_font = 'orange';
+					$status_text = __('Warning');
+					if ($status > DB_STATUS_WARNING) {
+						$status = DB_STATUS_WARNING;
+					}
 				} else {
 					$status_font = 'red';
-					$status_text = __('Warning');
-					$status = DB_STATUS_WARNING;
+					$status_text = __('Error');
+					if ($status > DB_STATUS_ERROR) {
+						$status = DB_STATUS_ERROR;
+					}
 				}
 
 				form_alternate_row('php_' . $recommend['name'],true);
@@ -3170,9 +3178,9 @@ class Installer implements JsonSerializable {
 		} elseif (!($module['web'] || $module['cli'])) {
 			return '<font color=' . $badColor . '>' . __('No - %s', __('Both')) . '</font>';
 		} elseif (!$module['web']) {
-			return '<font color=orange>' . __('No - %s', __('Web')) . '</font>';
+			return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';
 		} elseif (!$module['cli']) {
-			return '<font color=orange>' . __('No - %s', __('Cli')) . '</font>';
+			return '<font color=orange>' . __('%s - No', __('Cli')) . '</font>';
 		}
 	}
 

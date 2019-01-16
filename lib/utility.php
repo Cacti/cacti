@@ -1346,21 +1346,18 @@ function utility_php_verify_recommends(&$recommends, $source) {
 			'value'       => $rec_version,
 			'current'     => PHP_VERSION,
 			'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-//			'description' => __('PHP %s is the mimimum version', $rec_version),
 		),
 		array(
 			'name'        => 'memory_limit',
 			'value'       => $rec_memory_mb . 'M',
 			'current'     => $memory_limit . 'M',
-			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-//			'description' => __('A minimum of %s MB memory limit', $rec_memory_mb),
+			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
 		),
 		array(
 			'name'        => 'max_execution_time',
 			'value'       => $rec_execute,
 			'current'     => $execute_time,
-			'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-//			'description' => __('A minimum of %s m execution time', $rec_execute_m),
+			'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
 		),
 		array(
 			'name'        => 'date.timezone',
@@ -1375,11 +1372,11 @@ function utility_php_set_recommends_text(&$recs) {
 	foreach ($recs as $name=>$recommends) {
 		foreach ($recommends as $index=>$recommend) {
 			if ($recommend['name'] == 'version') {
-				$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['current']);
+				$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
 			} elseif ($recommend['name'] == 'memory_limit') {
-				$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['current']);
+				$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
 			} elseif ($recommend['name'] == 'max_execution_time') {
-				$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['current']);
+				$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
 			} elseif ($recommend['name'] == 'date.timezone') {
 				$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
 			}
