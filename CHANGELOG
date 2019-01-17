@@ -16,6 +16,7 @@ develop
 -issue#2304: Installation progress stays at 0%
 -issue#2305: BOOST PROGERR: ERRNO:'8'
 -issue#2311: Unable to update PHP location during installation due to incorrect CLI environment
+-issue#2319: Primary admin account not always given access to a plugin when that plugin is enabled
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login

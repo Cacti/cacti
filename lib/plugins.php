@@ -767,10 +767,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 
 			$realm_id = $realm_id + 100;
 
-			$user_ids[] = db_fetch_cell("SELECT id
-				FROM user_auth
-				WHERE username = 'admin'", false);
-
+			$user_ids[] = read_config_option('admin_user');
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_ids[] = $_SESSION['sess_user_id'];
 			}
