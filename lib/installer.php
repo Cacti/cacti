@@ -1776,7 +1776,8 @@ class Installer implements JsonSerializable {
 		$this->stepData = array('Sections' => $enabled);
 		$this->buttonNext->Enabled = ($enabled['php_modules'] != DB_STATUS_ERROR) &&
 		                             ($enabled['php_recommends_cli'] != DB_STATUS_ERROR) &&
-		                             ($enabled['php_recommends_web'] != DB_STATUS_ERROR);
+		                             ($enabled['php_recommends_web'] != DB_STATUS_ERROR) &&
+		                             ($enabled['mysql_timezone']     != DB_STATUS_ERROR);
 		return $output;
 	}
 
