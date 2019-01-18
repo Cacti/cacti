@@ -2226,7 +2226,7 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
-	if (empty($dateCharSetting)) {
+	if ($dateCharSetting == '') {
 		$dateCharSetting = GDC_SLASH;
 	}
 	$datecharacter = $datechar[$dateCharSetting];
