@@ -786,8 +786,8 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$exists = db_fetch_cell_prepared('SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?
-		AND file = ?',
-		array($plugin, $file));
+		AND (file LIKE ? OR display LIKE ?)',
+		array($plugin, "%$file%", "%$display%"));
 
 	if ($exists === false) {
 		db_execute_prepared('REPLACE INTO plugin_realms
@@ -820,10 +820,10 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		}
 	} else {
 		db_execute_prepared('UPDATE plugin_realms
-			SET display = ?
+			SET display = ?, file = ?
 			WHERE plugin = ?
-			AND file = ?',
-			array($display, $plugin, $file));
+			AND id = ?',
+			array($display, $file, $plugin, $exists));
 	}
 }
 
