@@ -254,6 +254,11 @@ function api_device_enable_devices($device_ids) {
 	global $config;
 
 	foreach ($device_ids as $device_id) {
+		$poller_id = db_fetch_cell_prepared('SELECT poller_id
+			FROM host
+			WHERE id = ?',
+			array($device_id));
+
 		db_execute_prepared("UPDATE host
 			SET disabled = ''
 			WHERE id = ?",
