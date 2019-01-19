@@ -585,9 +585,15 @@ function api_plugin_install($plugin) {
 
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
-	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
+	$exists = db_fetch_assoc_prepared('SELECT id
+		FROM plugin_config
+		WHERE directory = ?',
+		array($plugin), false);
+
 	if (cacti_sizeof($exists)) {
-		db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
+		db_execute_prepared('DELETE FROM plugin_config
+			WHERE directory = ?',
+			array($plugin));
 	}
 
 	$name = $author = $webpage = $version = '';
@@ -783,13 +789,31 @@ function api_plugin_disable_hooks_all($plugin) {
 }
 
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
-	$exists = db_fetch_cell_prepared('SELECT id
+	$files = explode(':', $file);
+
+	$i = 0;
+	$sql_where = '(';
+	foreach($files as $tfile) {
+		$sql_where .= ($sql_where != '(' ? ' OR ':'') . ' (file LIKE "%' . $tfile . '%")';
+	}
+	$sql_where .= ')';
+
+	$realm_ids = db_fetch_assoc_prepared("SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?
-		AND file = ?',
-		array($plugin, $file));
+		AND $sql_where",
+		array($plugin));
 
-	if ($exists === false) {
+	if (cacti_sizeof($realm_ids) == 1) {
+		$realm_id = $realm_ids[0]['id'];
+	} elseif (cacti_sizeof($realm_ids) > 1) {
+		$realm_id = $realm_ids[0]['id'];
+		cacti_log('WARNING: Registering Realm for Plugin ' . $plugin . ' and Filenames ' . $file . ' is ambiguous.  Using first matching Realm.  Contact the plugin owner to resolve this issue.');
+	} else {
+		$realm_id = false;
+	}
+
+	if ($realm_id === false) {
 		db_execute_prepared('REPLACE INTO plugin_realms
 			(plugin, file, display)
 			VALUES (?, ?, ?)',
@@ -820,10 +844,10 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		}
 	} else {
 		db_execute_prepared('UPDATE plugin_realms
-			SET display = ?
-			WHERE plugin = ?
-			AND file = ?',
-			array($display, $plugin, $file));
+			SET display = ?,
+			file = ?
+			WHERE id = ?',
+			array($display, $file, $realm_id));
 	}
 }
 
@@ -880,14 +904,14 @@ function plugin_config_arrays() {
 	global $config, $menu;
 
 	if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
-		$menu[__('Configuration')]['plugins.php'] = __('Plugin Management');
+		$menu[__('Configuration')]['plugins.php'] = __('Plugins');
 	}
 
 	api_plugin_load_realms();
 }
 
 function plugin_draw_navigation_text($nav) {
-	$nav['plugins.php:'] = array('title' => __('Plugin Management'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
+	$nav['plugins.php:'] = array('title' => __('Plugins'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
 }
 
