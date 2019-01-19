@@ -73,8 +73,8 @@ if ($hasJson) {
 				print Installer::sectionTitle(__('Initializing'));
 				print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes.  You must have JavaScript enabled for this to work.', CACTI_VERSION));
 } else {
-				print '<p>ERROR: PHP Json module is not enabled. This is required for the installer to work</p>';
-				print '<p>See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation </p>';
+				print '<p>' . __('FATAL: Either PHP is not at the required version of php-json is not installed. In order to install Cacti, PHP must be at version 5.4 or later, and the php-json module must also be installed.') . '</p>';
+				print '<p>' . __('See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation.') .'</p>';
 }
 ?>
 			</div>

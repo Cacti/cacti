@@ -666,7 +666,14 @@ function get_message_max_type() {
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $messages, $no_http_headers;
 
-	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	if (function_exists('session_status')) {
+		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	} elseif (isset($_SESSION)) {
+		$need_session = true;
+	} else {
+		$need_session = false;
+	}
+
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
@@ -745,7 +752,13 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
-	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	if (function_exists('session_status')) {
+		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	} elseif (isset($_SESSION)) {
+		$need_session = true;
+	} else {
+		$need_session = false;
+	}
 
 	if ($need_session) {
 		session_start();
@@ -774,7 +787,7 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
-	if (session_status() == PHP_SESSION_NONE) {
+	if ((function_exists('session_status') && session_status() == PHP_SESSION_NONE) || (isset($_SESSION))) {
 		$data = $_SESSION;
 
 		session_start();
