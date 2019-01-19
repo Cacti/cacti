@@ -2001,7 +2001,7 @@ div.submenu span {
 	color: #93CEFF !important;
 }
 
-#nav li a.active:hover {
+#nav li a.active, #nav li a.active:hover {
 	color: white !important;
 }
 
