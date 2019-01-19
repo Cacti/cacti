@@ -3026,6 +3026,13 @@ function redrawGraph(graph_id) {
 					" value_min='"+data.value_min+"'"+
 					" value_max='"+data.value_max+"'>"
 				);
+
+				$('#zoom-container').remove();
+				$('#graph_'+data.local_graph_id).zoom({
+					inputfieldStartTime : 'date1',
+					inputfieldEndTime : 'date2',
+					serverTimeOffset : timeOffset
+				});
 			} else {
 				getPresentHTTPError(data);
 			}

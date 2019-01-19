@@ -35,6 +35,7 @@ develop
 -issue: Do not display form hint icon if there is no hint
 -issue: Data Debug was not logging, fixed a few additional UI bugs
 -issue: Timestamp columns with CURRENT_TIMESTAMP default can not be created
+-issue: SpikeKill float and gap fill not functioning.  Zoom not re-initializing
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls

@@ -275,10 +275,6 @@ class spikekill {
 			}
 		}
 
-		if ((!empty($this->out_start) || !empty($this->out_end)) && $this->out_set == true) {
-			$this->set_error("FATAL: Outlier time range and outliers are mutually exclusive options");
-		}
-
 		if ((!empty($this->out_start) && empty($this->out_end)) || (!empty($this->out_end) && empty($this->out_start))) {
 			$this->set_error("FATAL: Outlier time range requires outlier-start and outlier-end to be specified.");
 		}
