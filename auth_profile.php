@@ -597,12 +597,30 @@ function settings_javascript() {
 
 		$('select, input[type!="button"]').unbind().keyup(function() {
 			name  = $(this).attr('id');
-			value = $(this).val();
+			if ($(this).attr('type') == 'checkbox') {
+				if ($(this).is(':checked')) {
+					value = 'on';
+				} else {
+					value = '';
+				}
+			} else {
+				value = $(this).val();
+			}
+
 			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 			});
 		}).change(function() {
 			name  = $(this).attr('id');
-			value = $(this).val();
+			if ($(this).attr('type') == 'checkbox') {
+				if ($(this).is(':checked')) {
+					value = 'on';
+				} else {
+					value = '';
+				}
+			} else {
+				value = $(this).val();
+			}
+
 			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 				if (name == 'selected_theme' || name == 'user_language') {
 					document.location = 'auth_profile.php?action=edit';
