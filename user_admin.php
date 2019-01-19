@@ -1711,7 +1711,7 @@ function user_realms_edit($header_label) {
 	print "</tr></table></td></tr>\n";
 
 	/* do plugin realms */
-	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
+	$realms = db_fetch_assoc('SELECT pc.directory, pc.name, pr.id AS realm_id, pr.display
 		FROM plugin_config AS pc
 		INNER JOIN plugin_realms AS pr
 		ON pc.directory = pr.plugin
@@ -1744,7 +1744,7 @@ function user_realms_edit($header_label) {
 			}
 
 			if ($break || $i == 1) {
-				print "<i>" . html_escape($r['name']) . "</i><br>\n";
+				print "<i>" . html_escape(__($r['name'], $r['directory'])) . "</i><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;
@@ -1757,9 +1757,11 @@ function user_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
+			$local_user_auth_realms = __($user_auth_realms[$realm], $r['directory']);
 
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+			$pos = (strpos($local_user_auth_realms, '->') !== false ? strpos($local_user_auth_realms, '->')+2:0);
+
+			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
 
 			$last_plugin = $r['name'];
 
