@@ -843,6 +843,9 @@ $custom_data_source_types = array(
 
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
+		__('Console') => array(
+			'index.php' => __('Cosole Page')
+			),
 		__('Create') => array(
 			'graphs_new.php' => __('New Graphs'),
 			'host.php?action=edit' => __('New Device')
@@ -918,6 +921,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 $menu_glyphs = array(
+	__('Console') => 'fa fa-map',
 	__('Create') => 'fa fa-chart-area',
 	__('Management') => 'fa fa-home',
 	__('Data Collection') => 'fa fa-database',

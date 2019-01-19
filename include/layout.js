@@ -1696,6 +1696,8 @@ function loadTopTab(href, id, force) {
 					window.scrollTo(0,0);
 				}
 
+				handleConsole(pageName);
+
 				return false;
 			})
 			.fail(function(data) {
@@ -1789,6 +1791,8 @@ function loadPage(href, force) {
 					window.scrollTo(0,0);
 				}
 
+				handleConsole(pageName);
+
 				return false;
 			})
 			.fail(function(data) {
@@ -1871,6 +1875,8 @@ function loadPageNoHeader(href, scroll, force) {
 				} else {
 					window.scrollTo(0,0);
 				}
+
+				handleConsole(pageName);
 
 				return false;
 			})
@@ -2072,7 +2078,22 @@ function closeUserMenu() {
 	$('.menuoptions').slideUp(120, 'easeInOutCubic');
 }
 
+function handleConsole(pageName = null) {
+	if (pageName == null) {
+		pageName = basename($(location).attr('pathname'));
+	}
+
+	// Modify the console pic
+	$('#menu_console').find('.menu_parent').attr('href', 'index.php').addClass('pic');
+	$('#menu_console_div').remove();
+	if (pageName == 'index.php') {
+		$('#menu_console').find('.menu_parent').addClass('selected');
+	}
+}
+
 function setupUserMenu() {
+	handleConsole();
+
 	$('.menuoptions').mouseenter(function() {
 		clearTimeout(userMenuTimer);
 	}).mouseleave(function() {
