@@ -546,6 +546,7 @@ function settings_javascript() {
 		graphSettings();
 
 		$('#navigation, #navigation_right').show();
+		$('#tabs').find('li a.selected').removeClass('selected');
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
