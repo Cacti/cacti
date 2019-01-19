@@ -389,21 +389,40 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
 		foreach ($data['columns'] as $column) {
 			if (isset($column['name'])) {
-				if ($c > 0)
+				if ($c > 0) {
 					$sql .= ",\n";
+				}
+
 				$sql .= '`' . $column['name'] . '`';
-				if (isset($column['type']))
+
+				if (isset($column['type'])) {
 					$sql .= ' ' . $column['type'];
-				if (isset($column['unsigned']))
+				}
+
+				if (isset($column['unsigned'])) {
 					$sql .= ' unsigned';
-				if (isset($column['NULL']) && $column['NULL'] == false)
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] == false) {
 					$sql .= ' NOT NULL';
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
 					$sql .= ' default NULL';
-				if (isset($column['default']))
-					$sql .= ' default ' . (is_numeric($column['default']) || preg_match('/\(.*\)/', $column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-				if (isset($column['auto_increment']))
+				}
+
+				if (isset($column['default'])) {
+					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+						$sql .= ' default CURRENT_TIMESTAMP';
+					} else {
+						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+					}
+				}
+
+				if (isset($column['auto_increment'])) {
 					$sql .= ' auto_increment';
+				}
+
 				$c++;
 			}
 		}
@@ -490,20 +509,38 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type']))
+
+		if (isset($column['type'])) {
 			$sql .= ' ' . $column['type'];
-		if (isset($column['unsigned']))
+		}
+
+		if (isset($column['unsigned'])) {
 			$sql .= ' unsigned';
-		if (isset($column['NULL']) && $column['NULL'] == false)
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] == false) {
 			$sql .= ' NOT NULL';
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
 			$sql .= ' default NULL';
-		if (isset($column['default']))
-			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-		if (isset($column['auto_increment']))
+		}
+
+		if (isset($column['default'])) {
+			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+				$sql .= ' default CURRENT_TIMESTAMP';
+			} else {
+				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+			}
+		}
+
+		if (isset($column['auto_increment'])) {
 			$sql .= ' auto_increment';
-		if (isset($column['after']))
+		}
+
+		if (isset($column['after'])) {
 			$sql .= ' AFTER ' . $column['after'];
+		}
 
 		if (db_execute($sql)) {
 			db_execute_prepared("INSERT INTO plugin_db_changes (plugin, `table`, `column`, `method`) VALUES (?, ?, ?, 'addcolumn')", array($plugin, $table, $column['name']));
