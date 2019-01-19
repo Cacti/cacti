@@ -666,12 +666,11 @@ function get_message_max_type() {
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $messages, $no_http_headers;
 
+	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
-	} elseif (isset($_SESSION)) {
-		$need_session = true;
 	} else {
-		$need_session = false;
+		return false;
 	}
 
 	if (empty($message)) {
@@ -752,12 +751,11 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
+	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
-	} elseif (isset($_SESSION)) {
-		$need_session = true;
 	} else {
-		$need_session = false;
+		return false;
 	}
 
 	if ($need_session) {
@@ -787,7 +785,10 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
-	if ((function_exists('session_status') && session_status() == PHP_SESSION_NONE) || (isset($_SESSION))) {
+	// This function should always exist, if not its an invalid install
+	if (!function_exists('session_status')) {
+		return false;
+	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
 		session_start();
