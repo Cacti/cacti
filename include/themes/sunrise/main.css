@@ -1995,11 +1995,14 @@ div.submenu span {
 #nav li a.active {
 	font-weight: 600;
 	font-size: 14px;
-	color: #93CEFF;
+}
+
+#nav li a.active:not(.selected) {
+	color: #93CEFF !important;
 }
 
 #nav li a.active:hover {
-	color: white;
+	color: white !important;
 }
 
 th {
@@ -2036,13 +2039,8 @@ tr.selected a {
 	color: #FFFFFF;
 }
 
-#nav li a.pic:hover:not(.selected) {
-	//background: rgba(224,224,224,1);
-}
-
-#nav li a.selected {
+#nav li ul li a.selected {
 	color: white;
-	//background: #3F75A2;
 }
 
 #nav li ul {

@@ -1749,13 +1749,13 @@ div#gtabs {
 }
 
 #nav li a.active {
-	color: snow;
+	color: snow !important;
 	background-color: #9c9c9c;
 	border-bottom: 1px solid #666;
   	font-weight: bold;
 }
 
-#nav li a.pic:hover, #nav li a.selected {
+#nav li a.pic:hover, #nav li ul li a.selected {
 	background-color: #e1e1e1;
 }
 

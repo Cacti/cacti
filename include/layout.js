@@ -2084,9 +2084,11 @@ function handleConsole(pageName = null) {
 	}
 
 	// Modify the console pic
-	$('#menu_main_console').find('.menu_parent').attr('href', 'index.php').addClass('console');
+	$('#menu_main_console').find('.menu_parent').attr('href', 'index.php').addClass('console selected');
 	$('#menu_main_console_div').remove();
-	$('#menu_main_console').find('.menu_parent').removeClass('selected');
+	if (pageName != 'index.php') {
+		$('#menu_main_console').find('.menu_parent').removeClass('selected');
+	}
 }
 
 function setupUserMenu() {
