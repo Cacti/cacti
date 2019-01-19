@@ -844,7 +844,7 @@ $custom_data_source_types = array(
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
 		__('Main Console') => array(
-			'index.php' => __('Cosole Page')
+			'index.php' => __('Console Page')
 			),
 		__('Create') => array(
 			'graphs_new.php' => __('New Graphs'),
