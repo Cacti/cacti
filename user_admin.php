@@ -1775,7 +1775,7 @@ function user_realms_edit($header_label) {
 			print "</td><td class='realms'>\n";
 		}
 
-		print '<strong>' . __('Legacy 1.x Plugins') . '</strong><br>';
+		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
 		foreach($all_realms as $realm => $name) {
 			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';
