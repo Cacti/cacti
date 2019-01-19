@@ -2166,8 +2166,9 @@ tr.selected a {
 
 ul#nav {
 	list-style: none;
-	padding:0;
-	width:100%;
+	padding: 0;
+	padding-top: 4px;
+	width: 100%;
 }
 
 .clogError {
