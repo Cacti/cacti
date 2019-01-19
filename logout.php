@@ -22,6 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
+define('CACTI_IN_INSTALL', 1);
 include('./include/auth.php');
 
 global $config;
