@@ -296,3 +296,15 @@ label {
   vertical-align: middle;
   margin: 5px;
 }
+
+.installErrorImage {
+  padding: 20px;
+  vertical-align: top;
+  display: table-cell;
+}
+
+.installErrorText {
+  padding: 10px;
+  vertical-align: top;
+  display: table-cell;
+}

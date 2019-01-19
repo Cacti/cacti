@@ -19,6 +19,7 @@ develop
 -issue#2319: Primary admin account not always given access to a plugin when that plugin is enabled
 -issue#2321: Date separator not being used properly for graphs
 -issue#2322: Modifying realm registration files and description not supported
+-issue: Installer does not identify when shell_exec()/exec() are disabled
 -issue: Correct undefined variable error in graph creation logic
 -issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login

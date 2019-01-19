@@ -5209,3 +5209,9 @@ function cacti_sizeof($array) {
 function cacti_count($array) {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
 }
+
+function is_function_enabled($name) {
+	return function_exists($name) &&
+		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions')))) &&
+		strtolower(ini_get('safe_mode')) != 1;
+}
