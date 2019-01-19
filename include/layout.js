@@ -1949,7 +1949,7 @@ function getPresentHTTPError(data) {
 function ajaxAnchors() {
 	var page = basename(location.pathname);
 
-	$('a.pic, a.linkOverDark, a.linkEditMain, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
+	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -2084,11 +2084,9 @@ function handleConsole(pageName = null) {
 	}
 
 	// Modify the console pic
-	$('#menu_console').find('.menu_parent').attr('href', 'index.php').addClass('pic');
-	$('#menu_console_div').remove();
-	if (pageName == 'index.php') {
-		$('#menu_console').find('.menu_parent').addClass('selected');
-	}
+	$('#menu_main_console').find('.menu_parent').attr('href', 'index.php').addClass('console');
+	$('#menu_main_console_div').remove();
+	$('#menu_main_console').find('.menu_parent').removeClass('selected');
 }
 
 function setupUserMenu() {
