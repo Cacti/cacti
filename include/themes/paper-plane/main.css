@@ -35,12 +35,12 @@ td, th {
 	margin: 0px;
 }
 
-td span {
-	color: #FFF;
-}
-
 th {
 	white-space: nowrap;
+}
+
+.tableRowGraph td span {
+	color: #FFF;
 }
 
 img {
@@ -1242,6 +1242,7 @@ tr>td.textInfo.right{
 	text-align: right;
 	vertical-align: middle;
 	font-size: 13px;
+	color: #FFF;
 	width: 30%;
 	border-color: #222;
 	background-image: linear-gradient(to bottom, #3a3b3c 0%, #100000 100%);
