@@ -1690,8 +1690,9 @@ function html_show_tabs_left() {
 
 			$altpos  = strpos($p, 'alt=');
 			$hrefpos = strpos($p, 'href=');
+			$idpos   = strpos($p, 'id=');
 
-			if ($altpos >= 0) {
+			if ($altpos !== false) {
 				$alt = substr($p, $altpos+4);
 				$parts = explode("'", $alt);
 				if ($parts[0] == '') {
@@ -1703,7 +1704,7 @@ function html_show_tabs_left() {
 				$alt = __('Title');
 			}
 
-			if ($hrefpos >= 0) {
+			if ($hrefpos !== false) {
 				$href = substr($p, $hrefpos+5);
 				$parts = explode("'", $href);
 				if ($parts[0] == '') {
@@ -1715,7 +1716,19 @@ function html_show_tabs_left() {
 				$href = 'unknown';
 			}
 
-			$tabs_left[] = array('title' => ucwords($alt), 'url' => $href);
+			if ($idpos !== false) {
+				$id = substr($p, $idpos+3);
+				$parts = explode("'", $id);
+				if ($parts[0] == '') {
+					$id = $parts[1];
+				} else {
+					$id = $parts[0];
+				}
+			} else {
+				$id = 'unknown';
+			}
+
+			$tabs_left[] = array('title' => ucwords($alt), 'id' => $id, 'url' => $href);
 		}
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
@@ -1764,7 +1777,7 @@ function html_show_tabs_left() {
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 
 		foreach($tabs_left as $tab) {
-			if (isset($tab['id'])) {
+			if (isset($tab['id']) && $tab['id'] !== 'unknown') {
 				$id = $tab['id'];
 			} else {
 				$id = 'anchor' . $i;
