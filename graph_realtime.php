@@ -350,6 +350,8 @@ $sizes = array(
 	var refreshIsLogout= false;
 	var refreshPage=urlPath+'/graph_realtime.php?action=countdown';
 	var refreshMSeconds=999999999;
+	var myCountdown = {};
+	var secondsLeft = '<?php print __(' seconds left.');?>';
 
 	function countdown_update() {
 		ds_step--;
@@ -362,16 +364,18 @@ $sizes = array(
 
 		setRealtimeWindowSize();
 
-		$('#countdown').html(ds_step + ' <?php print __('seconds left.');?>');
+		$('#countdown').empty().html(ds_step + secondsLeft);
 
 		count++;
 
-		setTimeout('countdown_update()', 1000);
+		destroy(myCountdown);
+
+		myCountdown = setTimeout('countdown_update()', 1000);
 	}
 
 	$(function() {
 		imageOptionsChanged('init');
-		setTimeout('countdown_update()', 1000);
+		myCountdown = setTimeout('countdown_update()', 1000);
 	});
 
 	</script>

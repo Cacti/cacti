@@ -113,6 +113,8 @@ class Installer implements JsonSerializable {
 		if ($step === false || $step === null) {
 			$step = $this->getStepDefault();
 		}
+		$this->stepError = false;
+
 		if ($step == Installer::STEP_INSTALL) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
@@ -131,22 +133,17 @@ class Installer implements JsonSerializable {
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version',true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
-			if ($install_version === false || $install_version === null) {
-				$install_version = CACTI_VERSION;
-			}
 
-			if (!cacti_version_compare($this->old_cacti_version, $install_version, '==')) {
-				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
-				$step = Installer::STEP_WELCOME;
+			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
+				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION, true)));
+				$this->stepError = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
 			} else {
 				$install_params = array();
 			}
 		}
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
-
 		$this->setStep($step);
-		$this->stepError = false;
 
 		$this->iconClass = array(
 			DB_STATUS_ERROR   => 'fa fa-thumbs-down',
@@ -955,46 +952,15 @@ class Installer implements JsonSerializable {
 		global $config;
 
 		if (isset($this->extensions) || empty($this->extensions)) {
-			$extensions = array(
-				array('name' => 'ctype',     'installed' => false),
-				array('name' => 'date',      'installed' => false),
-				array('name' => 'filter',    'installed' => false),
-				array('name' => 'gettext',   'installed' => false),
-				array('name' => 'gd',        'installed' => false),
-				array('name' => 'gmp',       'installed' => false),
-				array('name' => 'hash',      'installed' => false),
-				array('name' => 'json',      'installed' => false),
-				array('name' => 'ldap',      'installed' => false),
-				array('name' => 'mbstring',  'installed' => false),
-				array('name' => 'openssl',   'installed' => false),
-				array('name' => 'pcre',      'installed' => false),
-				array('name' => 'PDO',       'installed' => false),
-				array('name' => 'pdo_mysql', 'installed' => false),
-				array('name' => 'session',   'installed' => false),
-				array('name' => 'simplexml', 'installed' => false),
-				array('name' => 'sockets',   'installed' => false),
-				array('name' => 'spl',       'installed' => false),
-				array('name' => 'standard',  'installed' => false),
-				array('name' => 'xml',       'installed' => false),
-				array('name' => 'zlib',      'installed' => false)
-			);
+			$extensions = utility_php_extensions();
 
-			if ($config['cacti_server_os'] == 'unix') {
-				$extensions = array_merge($extensions, array(array('name' => 'posix', 'installed' => false)));
-			} else {
-				$extensions = array_merge($extensions, array(array('name' => 'com_dotnet', 'installed' => false)));
-			}
-
-			usort($extensions, "Installer::sortModules");
-
-			$ext = verify_php_extensions($extensions);
-			foreach ($ext as $e) {
+			foreach ($extensions as $e) {
 				if (!$e['installed']) {
 					$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $e['name'] . ' is missing');
 				}
 			}
 
-			$this->extensions = $ext;
+			$this->extensions = $extensions;
 		}
 		return $this->extensions;
 	}
@@ -1541,9 +1507,14 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepWelcome() {
-		global $config;
+		global $config, $cacti_version_codes;
 
 		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
+
+		if (!array_key_exists(CACTI_VERSION, $cacti_version_codes)) {
+			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
+		}
+
 		$output .= Installer::sectionNormal(__('Thanks for taking the time to download and install Cacti, the complete graphing solution for your network. Before you can start making cool graphs, there are a few pieces of data that Cacti needs to know.'));
 		$output .= Installer::sectionNormal(__('Make sure you have read and followed the required steps needed to install Cacti before continuing. Install information can be found for <a href="%1$s">Unix</a> and <a href="%2$s">Win32</a>-based operating systems.', '../docs/html/install_unix.html', '../docs/html/install_windows.html'));
 
@@ -1612,7 +1583,6 @@ class Installer implements JsonSerializable {
 
 		$enabled = array(
 			'location'          => DB_STATUS_SUCCESS,
-			'php_timezone'      => DB_STATUS_SUCCESS,
 			'php_modules'       => DB_STATUS_SUCCESS,
 			'php_optional'      => DB_STATUS_SUCCESS,
 			'mysql_timezone'    => DB_STATUS_SUCCESS,
@@ -1659,75 +1629,52 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionSubTitleEnd();
 
-		$output .= Installer::sectionSubTitle(__('PHP - Recommendations'), 'php_recommends');
+		$recs = utility_php_recommends();
 
-		// _mb = megabytes, _m = minutes (used in displays)
-		$rec_version    = '5.4.0';
-		$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
-		$rec_execute_m  = 1;
+		foreach ($recs as $rec_title=>$recommends) {
+			$output .= Installer::sectionSubTitle(__('PHP - Recommendations (%s)', $rec_title), 'php_recommends_'.$rec_title);
 
-		// adjust above appropriately (used in configs)
-		$rec_memory	= $rec_memory_mb * 1024 * 1024;
-		$rec_execute    = $rec_execute_m * 60;
-		$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
-		$execute_time   = ini_get('max_execution_time');
+			ob_start();
 
-		$recommends = array(
-			array(
-				'name'        => 'version',
-				'value'       => $rec_version,
-				'current'     => PHP_VERSION,
-				'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-				'description' => __('PHP %s is the mimimum version', $rec_version),
-			),
-			array(
-				'name'        => 'memory_limit',
-				'value'       => $rec_memory_mb . 'M',
-				'current'     => $memory_limit . 'M',
-				'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-				'description' => __('A minimum of %s MB memory limit', $rec_memory_mb),
-			),
-			array(
-				'name'        => 'max_execution_time',
-				'value'       => $rec_execute,
-				'current'     => $execute_time,
-				'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
-				'description' => __('A minimum of %s m execution time', $rec_execute_m),
-			),
-		);
+			html_start_box(__('PHP Recommendations'), '100%', false, '4', '', false);
+			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
-		ob_start();
+			$status = DB_STATUS_SUCCESS;
+			foreach ($recommends as $recommend) {
+				if ($recommend['status'] == DB_STATUS_SUCCESS) {
+					$status_font = 'green';
+					$status_text = __('Passed');
+				} elseif ($recommend['status'] == DB_STATUS_WARNING) {
+					$status_font = 'orange';
+					$status_text = __('Warning');
+					if ($status > DB_STATUS_WARNING) {
+						$status = DB_STATUS_WARNING;
+					}
+				} else {
+					$status_font = 'red';
+					$status_text = __('Error');
+					if ($status > DB_STATUS_ERROR) {
+						$status = DB_STATUS_ERROR;
+					}
+				}
 
-		html_start_box(__('PHP Recommendations'), '100%', false, '4', '', false);
-		html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
-
-		$status = DB_STATUS_SUCCESS;
-		foreach ($recommends as $recommend) {
-			if ($recommend['status'] == DB_STATUS_SUCCESS) {
-				$status_font = 'green';
-				$status_text = __('Passed');
-			} else {
-				$status_font = 'red';
-				$status_text = __('Warning');
-				$status = DB_STATUS_WARNING;
+				form_alternate_row('php_' . $recommend['name'],true);
+				form_selectable_cell($recommend['name'], '');
+				form_selectable_cell($recommend['current'], '');
+				form_selectable_cell('>= ' . $recommend['value'], '');
+				form_selectable_cell("<font color='$status_text'>$status_text</font>", '');
+				form_selectable_cell($recommend['description'], '');
+				form_end_row();
 			}
 
-			form_alternate_row('php_' . $recommend['name'],true);
-			form_selectable_cell($recommend['name'], '');
-			form_selectable_cell($recommend['current'], '');
-			form_selectable_cell('>= ' . $recommend['value'], '');
-			form_selectable_cell("<font color='$status_text'>$status_text</font>", '');
-			form_selectable_cell($recommend['description'], '');
-			form_end_row();
+			html_end_box(false);
+
+			$output .= Installer::sectionNormal(ob_get_contents());
+			ob_clean();
+
+			$output .= Installer::sectionSubTitleEnd();
+			$enabled['php_recommends_' . $rec_title] = $status;
 		}
-
-		html_end_box(false);
-
-		$output .= Installer::sectionNormal(ob_get_contents());
-		ob_clean();
-
-		$output .= Installer::sectionSubTitleEnd();
-		$enabled['php_recommends'] = $status;
 
 		$output .= Installer::sectionSubTitle(__('PHP - Module Support (Required)'), 'php_modules');
 		$output .= Installer::sectionNormal(__('Cacti requires several PHP Modules to be installed to work properly. If any of these are not installed, you will be unable to continue the installation until corrected. In addition, for optimal system performance Cacti should be run with certain MySQL system variables set.  Please follow the MySQL recommendations at your discretion.  Always seek the MySQL documentation if you have any questions.'));
@@ -1743,9 +1690,9 @@ class Installer implements JsonSerializable {
 
 		foreach ($this->modules as $id =>$e) {
 			form_alternate_row('line' . $id);
-			form_selectable_cell($e['name'], '');
+			form_selectable_cell($id, '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
-			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=red>' . __('No') . '</font>'), '');
+			form_selectable_cell(Installer::formatModuleStatus($e), '');
 			form_end_row();
 
 			if (!$e['installed']) {
@@ -1764,41 +1711,27 @@ class Installer implements JsonSerializable {
 
 		$output .= Installer::sectionNormal(__('The following PHP extensions are recommended, and should be installed before continuing your Cacti install.  NOTE: If you are planning on supporting SNMPv3 with IPv6, you should not install the php-snmp module at this time.'));
 
-		$extensions = array(
-			array('name' => 'snmp', 'installed' => false),
-		);
-
-		$ext = verify_php_extensions($extensions);
-		$ext[] = array('name' => 'TrueType Text', 'installed' => function_exists('imagettftext'));
-		$ext[] = array('name' => 'TrueType Box', 'installed' => function_exists('imagettfbbox'));
+		$ext = utility_php_optionals();
 
 		html_start_box(__('Optional Modules'), '100%', false, '3', '', false);
 		html_header(array(__('Name'), __('Optional'), __('Installed')));
 
 		foreach ($ext as $id => $e) {
 			form_alternate_row('line' . $id, true);
-			form_selectable_cell($e['name'], '');
+			form_selectable_cell($id, '');
 			form_selectable_cell('<font color=green>' . __('Yes') . '</font>', '');
-			form_selectable_cell(($e['installed'] ? '<font color=green>' . __('Yes') . '</font>' : '<font color=orange>' . __('No') . '</font>'), '');
+			form_selectable_cell(Installer::formatModuleStatus($e, 'orange'), '');
 			form_end_row();
 
-			if (!$e['installed']) $enabled['php_optional'] = DB_STATUS_WARNING;
+			if (!$e['installed']) {
+				$enabled['php_optional'] = DB_STATUS_WARNING;
+			}
 		}
 
 		html_end_box();
 
 		$output .= Installer::sectionNormal(ob_get_contents());
 		ob_clean();
-
-		$output .= Installer::sectionSubTitleEnd();
-
-		$output .= Installer::sectionSubTitle(__('PHP - Timezone Support'), 'php_timezone');
-		if (ini_get('date.timezone') == '') {
-			$output .= Installer::sectionNormal('<span class="textError"><strong>' . __('ERROR:') . '</strong> ' .  __('Your Web Servers PHP Timezone settings have not been set.  Please edit php.ini and uncomment the \'date.timezone\' setting and set it to the Web Servers Timezone per the PHP installation instructions prior to installing Cacti.') . '</span>');
-			$enabled['php_timezone'] = DB_STATUS_ERROR;
-		} else {
-			$output .= Installer::sectionNormal(__('Your Web Servers PHP is properly setup with a Timezone.'));
-		}
 
 		$output .= Installer::sectionSubTitleEnd();
 
@@ -1841,7 +1774,10 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitleEnd();
 
 		$this->stepData = array('Sections' => $enabled);
-		$this->buttonNext->Enabled = $enabled['php_modules'] != DB_STATUS_ERROR;
+		$this->buttonNext->Enabled = ($enabled['php_modules'] != DB_STATUS_ERROR) &&
+		                             ($enabled['php_recommends_cli'] != DB_STATUS_ERROR) &&
+		                             ($enabled['php_recommends_web'] != DB_STATUS_ERROR) &&
+		                             ($enabled['mysql_timezone']     != DB_STATUS_ERROR);
 		return $output;
 	}
 
@@ -2358,7 +2294,7 @@ class Installer implements JsonSerializable {
 		} else {
 			$output .= Installer::sectionWarning(
 				__('Your server collation does NOT appear to be fully UTF8 compliant. ') .
-				__('Under the [mysqld] section, locate the entries named \'character&#8209;set&#8209;server\' and \'collation&#8209;server\' and set them as follows:') .
+				__('Under the [mysqld] section, locate the entries named \'character-set-server\' and \'collation-server\' and set them as follows:') .
 				Installer::sectionCode('[mysqld]<br>' .
 				'character-set-server=utf8mb4<br>' .
 				'collation-server=utf8mb4_unicode_ci')
@@ -3237,6 +3173,18 @@ class Installer implements JsonSerializable {
 		return $output;
 	}
 
+	public static function formatModuleStatus($module, $badColor = 'red') {
+		if ($module['installed']) {
+			return '<font color=green>' . __('Yes') . '</font>';
+		} elseif (!($module['web'] || $module['cli'])) {
+			return '<font color=' . $badColor . '>' . __('No - %s', __('Both')) . '</font>';
+		} elseif (!$module['web']) {
+			return '<font color=orange>' . __('%s - No', __('Web')) . '</font>';
+		} elseif (!$module['cli']) {
+			return '<font color=orange>' . __('%s - No', __('Cli')) . '</font>';
+		}
+	}
+
 	public static function setPhpOption($option_name, $option_value) {
 		log_install_always('', 'Setting PHP Option ' . $option_name . ' = ' . $option_value);
 		$value = ini_get($option_name);
@@ -3247,12 +3195,6 @@ class Installer implements JsonSerializable {
 				log_install_always('', 'Failed to set PHP option ' . $option_name . ', is ' . $value . ' (should be ' . $option_value . ')');
 			}
 		}
-	}
-
-	public static function sortModules($a, $b) {
-		$name_a = isset($a['name']) ? $a['name'] : '';
-		$name_b = isset($b['name']) ? $b['name'] : '';
-		return strcasecmp($name_a, $name_b);
 	}
 
 	private static function disableInvalidPlugins() {

@@ -572,7 +572,9 @@ function reports_item_edit() {
 			);
 		}
 
-		$graphs = array_merge($graphs, $agg);
+		$graphs += $agg;
+
+		asort($graphs);
 	}
 
 	if (!isset($report_item) || $report_item['item_type'] == REPORTS_ITEM_TREE) {

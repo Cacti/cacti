@@ -107,10 +107,12 @@ if (cacti_sizeof($parms)) {
 				break;
 			case '--ini':
 			case '-i':
-				get_install_options($options, false);
+				get_install_option($options, $value, false);
 				break;
 			case '--json':
 			case '-j':
+				get_install_option($options, $value, true);
+				break;
 			case '--install':
 				$should_install = true;
 				break;

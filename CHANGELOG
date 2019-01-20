@@ -1,5 +1,31 @@
 Cacti CHANGELOG
 
+1.2.1
+-issue#2259: Unable to View Aggregate Graphs
+-issue#2267: Remove unnecessary includes in aggregate template code
+-issue#2270: Realtime Graphs consuming too much memory
+-issue#2272: Site Tree Branches not showing Graphs
+-issue#2273: Error when saving changes to Data Collectors
+-issue#2279: SQL Errors in add_graphs.php 
+-issue#2280: SQL Errors in snmpagent cache table inserts
+-issue#2281: Database audit cli giving incorrect results
+-issue#2285: Allow HRULEs for bandwith and ptile
+-issue#2292: Allow Realtime to use 1 second data collection
+-issue#2298: Ambiguous Toggle Switches in Sunrise Theme
+-issue#2303: Problem with "Notify Primary Admin of Issues" function
+-issue#2304: Installation progress stays at 0%
+-issue#2305: BOOST PROGERR: ERRNO:'8'
+-issue#2311: Unable to update PHP location during installation due to incorrect CLI environment
+-issue#2319: Primary admin account not always given access to a plugin when that plugin is enabled
+-issue#2321: Date separator not being used properly for graphs
+-issue#2322: Modifying plugin realm registration files and description not supported
+-issue: Installer does not identify when shell_exec()/exec() are disabled
+-issue: Removing a Device or Graph Template can not be seen till next login
+-issue: Visual issues with custom data when using paper-plane theme
+-issue: Undefined function errors attempting to sync device templates
+-issue: Plugin dependency handling inconsistant
+-issue: Editing a report shows incorrect graphs from dropdown
+
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
 -feature: Add Graphs and Data Sources hyperlinks on Device page

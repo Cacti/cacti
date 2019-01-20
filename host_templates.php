@@ -25,6 +25,8 @@
 include('./include/auth.php');
 include_once('./lib/api_device.php');
 include_once('./lib/data_query.php');
+include_once('./lib/template.php');
+include_once('./lib/api_graph.php');
 
 $host_actions = array(
 	1 => __('Delete'),
@@ -858,7 +860,7 @@ function template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Device Templates Found') . "</em></td></tr>\n";
 	}
 	html_end_box(false);
 

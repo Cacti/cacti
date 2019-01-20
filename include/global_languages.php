@@ -29,7 +29,7 @@ $cacti_country = 'us';
 /* an array that will contains all textdomains being in use. */
 $cacti_textdomains = array();
 
-global $path2calendar, $path2timepicker;
+global $path2calendar, $path2timepicker, $path2colorpicker;
 
 /* get a list of locale settings */
 $lang2locale = get_list_of_locales();
@@ -68,40 +68,50 @@ if ($user_locale !== false && $user_locale !== '') {
 }
 
 /* define the path to the language file */
-$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
+if (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo')) {
+	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
+} elseif (file_exists($config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+	$path2catalogue = $config['base_path'] . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
+} else {
+	$path2catalogue = '';
+}
+
+$catalogue = $path2catalogue;
 
 /* define the path to the language file of the DHTML calendar */
-if ($user_locale != '') {
-	$lang_parts = explode('-', $user_locale);
+if ($cacti_locale != '') {
+	$lang_parts = explode('-', $cacti_locale);
 
 	// Detect the calendar path
-	$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang2locale[$cacti_locale]['filename'] . '.js';
-
-	if (!file_exists($path2calendar)) {
-		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $lang_parts[0] . '.js';
-	}
-
-	if (!file_exists($path2calendar)) {
-		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.datepicker-' . $user_locale . '.js';
-	}
-
-	if (!file_exists($path2calendar)) {
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js')) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $cacti_locale . '.js';
+	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js')) {
+		$path2calendar = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-datepicker-' . $lang_parts[0] . '.js';
+	} else {
 		$path2calendar = '';
 	}
 
 	// Detect the timepicker path
-	$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js';
-
-	if (!file_exists($path2timepicker)) {
-		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $user_locale . '.js';
-	}
-
-	if (!file_exists($path2timepicker)) {
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js')) {
+		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $cacti_locale . '.js';
+	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js')) {
+		$path2timepicker = $config['include_path'] . '/js/LC_MESSAGES/jquery-ui-timepicker-' . $lang_parts[0] . '.js';
+	} else {
 		$path2timepicker = '';
 	}
+
+	// Detect the colorpicker path
+	if (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js')) {
+		$path2colorpicker = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $cacti_locale . '.js';
+	} elseif (file_exists($config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js')) {
+		$path2colorpicker = $config['include_path'] . '/js/LC_MESSAGES/jquery.ui.colorpicker-' . $lang_parts[0] . '.js';
+	} else {
+		$path2colorpicker = '';
+	}
 } else {
-	$path2timepicker = '';
-	$path2calendar   = '';
+	$path2timepicker  = '';
+	$path2calendar    = '';
+	$path2colorpicker = '';
 }
 
 /* use fallback procedure if requested language is not available */
@@ -121,7 +131,12 @@ $plugins = db_fetch_assoc('SELECT `directory`
 if ($plugins && cacti_sizeof($plugins) > 0) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
-		$path2catalogue =  $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
+
+		if (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
+		} elseif (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
+		}
 
 		if (file_exists($path2catalogue)) {
 			$cacti_textdomains[$plugin]['path2locales'] = $config['base_path'] . '/plugins/' . $plugin . '/locales';
@@ -165,7 +180,7 @@ load_i18n_gettext_wrappers();
 define('CACTI_LOCALE', $cacti_locale);
 define('CACTI_COUNTRY', $cacti_country);
 define('CACTI_LANGUAGE', $lang2locale[CACTI_LOCALE]['language']);
-define('CACTI_LANGUAGE_FILE', $lang2locale[CACTI_LOCALE]['filename']);
+define('CACTI_LANGUAGE_FILE', $catalogue);
 
 function apply_locale($language) {
 	global $cacti_locale, $cacti_country, $lang2locale;
@@ -549,6 +564,10 @@ function get_installed_locales() {
 	$supported_languages['en-US'] = $lang2locale['en-US']['language'];
 	foreach ($lang2locale as $locale => $properties) {
 		$locations[$properties['filename'] . '.mo'] = array(
+			'locale'   => $locale,
+			'language' => $properties['language']
+		);
+		$locations[$locale . '.mo'] = array(
 			'locale'   => $locale,
 			'language' => $properties['language']
 		);

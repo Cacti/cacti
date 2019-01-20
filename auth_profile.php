@@ -257,21 +257,19 @@ function settings() {
 		return;
 	}
 
-	$_SESSION['profile_referer'] = 'auth_profile.php';
+	if (isset($_SERVER['HTTP_REFERER'])) {
+		$referer = $_SERVER['HTTP_REFERER'];
 
-	if (get_request_var('action') == 'edit') {
-		if (isset($_SERVER['HTTP_REFERER'])) {
-			$referer = $_SERVER['HTTP_REFERER'];
-
-			if (strpos($referer, 'auth_profile.php') === false) {
-				$timespan_sel_pos = strpos($referer, '&predefined_timespan');
-				if ($timespan_sel_pos) {
-					$referer = substr($referer, 0, $timespan_sel_pos);
-				}
-
-				$_SESSION['profile_referer'] = $referer;
+		if (strpos($referer, 'auth_profile.php') === false) {
+			$timespan_sel_pos = strpos($referer, '&predefined_timespan');
+			if ($timespan_sel_pos) {
+				$referer = substr($referer, 0, $timespan_sel_pos);
 			}
+
+			$_SESSION['profile_referer'] = $referer;
 		}
+	} elseif (!isset($_SESSION['profile_referer'])) {
+		$_SESSION['profile_referer'] = 'graph_view.php';
 	}
 
 	form_start('auth_profile.php', 'chk');
@@ -548,6 +546,7 @@ function settings_javascript() {
 		graphSettings();
 
 		$('#navigation, #navigation_right').show();
+		$('#tabs').find('li a.selected').removeClass('selected');
 
 		$('input[value="<?php print __esc('Save');?>"]').unbind().click(function(event) {
 			event.preventDefault();
@@ -599,12 +598,30 @@ function settings_javascript() {
 
 		$('select, input[type!="button"]').unbind().keyup(function() {
 			name  = $(this).attr('id');
-			value = $(this).val();
+			if ($(this).attr('type') == 'checkbox') {
+				if ($(this).is(':checked')) {
+					value = 'on';
+				} else {
+					value = '';
+				}
+			} else {
+				value = $(this).val();
+			}
+
 			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 			});
 		}).change(function() {
 			name  = $(this).attr('id');
-			value = $(this).val();
+			if ($(this).attr('type') == 'checkbox') {
+				if ($(this).is(':checked')) {
+					value = 'on';
+				} else {
+					value = '';
+				}
+			} else {
+				value = $(this).val();
+			}
+
 			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
 				if (name == 'selected_theme' || name == 'user_language') {
 					document.location = 'auth_profile.php?action=edit';

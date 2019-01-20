@@ -315,7 +315,7 @@ function snmpagent_poller_bottom() {
 	global $config;
 
 	if (!snmpagent_enabled()) {
-		snmpagent_cache_unistall();
+		snmpagent_cache_uninstall();
 
 		return false;
 	} elseif (!snmpagent_cache_initialized()) {

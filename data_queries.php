@@ -165,62 +165,70 @@ function form_save() {
 		$header = '';
 
 		if (!is_error_message()) {
-			$snmp_query_graph_id = sql_save($save, 'snmp_query_graph');
+			if ($save['id'] > 0) {
+				$errors = api_data_query_errors($save['id'], $_POST);
+			}
 
-			if ($snmp_query_graph_id) {
-				raise_message(1);
+			if ($errors === false) {
+				$snmp_query_graph_id = sql_save($save, 'snmp_query_graph');
 
-				/* if the user changed the graph template, go through and delete everything that
-				was associated with the old graph template */
-				if (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) {
+				if ($snmp_query_graph_id) {
+					raise_message(1);
+
+					/* if the user changed the graph template, go through and delete everything that
+					was associated with the old graph template */
+					if (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) {
+						db_execute_prepared('DELETE
+							FROM snmp_query_graph_rrd_sv
+							WHERE snmp_query_graph_id = ?',
+							array($snmp_query_graph_id));
+
+						db_execute_prepared('DELETE
+							FROM snmp_query_graph_sv
+							WHERE snmp_query_graph_id = ?',
+							array($snmp_query_graph_id));
+					}
+
 					db_execute_prepared('DELETE
-						FROM snmp_query_graph_rrd_sv
+						FROM snmp_query_graph_rrd
 						WHERE snmp_query_graph_id = ?',
 						array($snmp_query_graph_id));
 
-					db_execute_prepared('DELETE
-						FROM snmp_query_graph_sv
-						WHERE snmp_query_graph_id = ?',
-						array($snmp_query_graph_id));
-				}
+					foreach ($_POST as $var => $val) {
+						if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
+							$data_template_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\1", $var);
+							$data_template_rrd_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\2", $var);
+							/* ================= input validation ================= */
+							input_validate_input_number($data_template_id);
+							input_validate_input_number($data_template_rrd_id);
+							/* ==================================================== */
 
-				db_execute_prepared('DELETE
-					FROM snmp_query_graph_rrd
-					WHERE snmp_query_graph_id = ?',
-					array($snmp_query_graph_id));
-
-				foreach ($_POST as $var => $val) {
-					if (preg_match('/^dsdt_([0-9]+)_([0-9]+)_check/i', $var)) {
-						$data_template_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\1", $var);
-						$data_template_rrd_id = preg_replace('/^dsdt_([0-9]+)_([0-9]+).+/', "\\2", $var);
-						/* ================= input validation ================= */
-						input_validate_input_number($data_template_id);
-						input_validate_input_number($data_template_rrd_id);
-						/* ==================================================== */
-
-						db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
-							(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
-							VALUES (?, ?, ?, ?)',
-							array(
-								$snmp_query_graph_id,
-								$data_template_id,
-								$data_template_rrd_id,
-								get_nfilter_request_var('dsdt_' .
+							db_execute_prepared('REPLACE INTO snmp_query_graph_rrd
+								(snmp_query_graph_id, data_template_id, data_template_rrd_id, snmp_field_name)
+								VALUES (?, ?, ?, ?)',
+								array(
+									$snmp_query_graph_id,
+									$data_template_id,
+									$data_template_rrd_id,
+									get_nfilter_request_var('dsdt_' .
 									$data_template_id . '_' .
 									$data_template_rrd_id . '_snmp_field_output')
-							)
-						);
+								)
+							);
+						}
 					}
-				}
 
-				if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
-					$header = '&header=false';
+					if (isset_request_var('header') && get_nfilter_request_var('header') == 'false') {
+						$header = '&header=false';
+					} else {
+						$header = '&header=fasle';
+					}
 				} else {
-					$header = '';
+					raise_message(2);
+					$header = '&header=false';
 				}
 			} else {
-				raise_message(2);
-				$header = '';
+				$header = '&header=false';
 			}
 		}
 
@@ -636,7 +644,11 @@ function data_query_item_edit() {
 		WHERE id = ?',
 		array(get_request_var('snmp_query_id')));
 
-	$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
+	if (cacti_sizeof($snmp_query)) {
+		$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
+	} else {
+		$header_label = __('Associated Graph/Data Templates [new]');
+	}
 
 	form_start('data_queries.php', 'data_queries');
 
@@ -727,7 +739,7 @@ function data_query_item_edit() {
 										form_dropdown('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_snmp_field_output',$xml_outputs,'','',$data_template_rrd['snmp_field_name'],'','');?>
 									</td>
 									<td class='right'>
-										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id')); print '<br>';?>
+										<?php form_checkbox('dsdt_' . $data_template['id'] . '_' . $data_template_rrd['id'] . '_check', $old_value, '', '', '', get_request_var('id'), '', _('If this Graph Template requires the Data Template Data Source to the left, select the correct XML output column and then to enable the mapping either check or toggle here.')); print '<br>';?>
 									</td>
 								</tr>
 							</table>
@@ -1388,7 +1400,7 @@ function data_query() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='5'><em>" . __('No Data Queries Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Queries Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

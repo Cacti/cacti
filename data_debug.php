@@ -106,7 +106,7 @@ function form_actions() {
 				debug_rerun($selected_items);
 			}
 
-			header('Location: data_debug.php?header=false');
+			header('Location: data_debug.php?header=false&debug=1');
 			exit;
 		}
 	}
@@ -323,6 +323,10 @@ function debug_wizard() {
 		)
 	);
 
+	if (isset_request_var('purge')) {
+		db_execute('TRUNCATE TABLE data_debug');
+	}
+
 	/* fill in the current date for printing in the log */
 	if (defined('CACTI_DATE_TIME_FORMAT')) {
 		$datefmt = CACTI_DATE_TIME_FORMAT;
@@ -382,6 +386,8 @@ function debug_wizard() {
 
 	if (get_request_var('status') == '-1') {
 		/* Show all items */
+	} elseif (get_request_var('status') == '0') {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dd.issue != ""';
 	} elseif (get_request_var('status') == '1') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active="on"';
 	} else {
@@ -426,7 +432,7 @@ function debug_wizard() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
+	$nav = html_nav_bar('data_debug.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, cacti_sizeof($display_text) + 1, __('Data Sources'), 'page', 'main');
 
 	form_start('data_debug.php', 'chk');
 
@@ -467,7 +473,13 @@ function debug_wizard() {
 				form_selectable_cell(debug_icon($info['active']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['rrd_match']), $check['local_data_id'], '', 'center');
 				form_selectable_cell(debug_icon($info['valid_data']), $check['local_data_id'], '', 'center');
-				form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['local_data_id'], '', 'center');
+
+				if ($check['done'] && $info['rrd_writable'] == '') {
+					form_selectable_cell(debug_icon('blah'), $check['local_data_id'], '', 'center');
+				} else {
+					form_selectable_cell(debug_icon(($info['rra_timestamp2'] != '' ? 1 : '')), $check['local_data_id'], '', 'center');
+				}
+
 				form_selectable_cell('<a class=\'linkEditMain\' href=\'#\' title="' . html_escape($issue_title) . '">' . ($issue_line != '' ? __esc('Issues') : __esc('N/A')) . '</a>', $check['local_data_id'], '', 'right');
 			} else {
 				form_selectable_cell('-', $check['local_data_id']);
@@ -487,7 +499,7 @@ function debug_wizard() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
+		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Checks') . "</em></td></tr>";
 	}
 
 	html_end_box(false);
@@ -666,18 +678,22 @@ function debug_view() {
 
 function debug_icon($result) {
 	if ($result === '' || $result === false) {
-			return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
+		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
 	}
+
 	if ($result === '-') {
-			return '<i class="fa fa-info-circle"></i>';
+		return '<i class="fa fa-info-circle"></i>';
 	}
+
 	if ($result === 1 || $result === 'on') {
-			return '<i class="fa fa-check" style="color:green"></i>';
+		return '<i class="fa fa-check" style="color:green"></i>';
 	}
+
 	if ($result === 0 || $result === 'off') {
-			return '<i class="fa fa-times" style="color:red"></i>';
+		return '<i class="fa fa-times" style="color:red"></i>';
 	}
-	return '<i class="fa fa-warn-triagle" style="color:orange"></i>';
+
+	return '<i class="fa fa-exclamation-triangle" style="color:orange"></i>';
 }
 
 function data_debug_filter() {
@@ -728,6 +744,7 @@ function data_debug_filter() {
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='go' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
+							<input type='button' class='ui-button ui-corner-all ui-widget' id='purge' value='<?php print __esc('Purge');?>' title='<?php print __esc('Delete All Checks');?>'>
 						</span>
 					</td>
 				</tr>
@@ -756,6 +773,7 @@ function data_debug_filter() {
 					<td>
 						<select id='status' name='status' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<option value='0'<?php if (get_request_var('status') == '0') {?> selected<?php }?>><?php print __('Failed');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
 						</select>
@@ -839,6 +857,11 @@ function data_debug_filter() {
 			loadPageNoHeader(strURL);
 		}
 
+		function purgeFilter() {
+			strURL = 'data_debug.php?purge=1&debug=-1&header=false';
+			loadPageNoHeader(strURL);
+		}
+
 		$(function() {
 			$('#go').click(function() {
 				applyFilter()
@@ -846,6 +869,10 @@ function data_debug_filter() {
 
 			$('#clear').click(function() {
 				clearFilter()
+			});
+
+			$('#purge').click(function() {
+				purgeFilter()
 			});
 
 			$('#form_data_debug').submit(function(event) {

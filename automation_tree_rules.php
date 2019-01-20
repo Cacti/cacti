@@ -963,7 +963,7 @@ function automation_tree_rules() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='9'><em>" . __('No Tree Rules Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Tree Rules Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

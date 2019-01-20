@@ -43,6 +43,7 @@ td, th {
 
 th {
 	white-space: nowrap;
+	height: 18px;
 }
 
 p {
@@ -136,6 +137,10 @@ label {
 }
 
 .text_tab-console {
+	display: none;
+}
+
+input[type="checkbox"] {
 	display: none;
 }
 
@@ -994,7 +999,7 @@ legend {
 }
 
 .cactiGraphContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
@@ -1018,7 +1023,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 }
 
@@ -1031,7 +1036,7 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
@@ -1052,7 +1057,6 @@ legend {
 #graph_view_tree_content2 .tableRow{
 	background: none !important;
 }
-
 
 .hyperLink {
 	color: #93CEFF;
@@ -1294,8 +1298,8 @@ table.cactiTable {
 .formRow {
 	display: table;
 	width: 100%;
-	line-height: 35px;
 	padding-left: 15px;
+	line-height: 30px;
 }
 
 .formColumn {
@@ -1922,7 +1926,7 @@ div.submenu span {
 	color: #93CEFF;
 	float:left !important;
 	padding:5px 8px;
-	font-size: 14px;
+	font-size: 13px;
 	vertical-align: bottom;
 	text-decoration: none;
 	outline-style: none;
@@ -1991,11 +1995,14 @@ div.submenu span {
 #nav li a.active {
 	font-weight: 600;
 	font-size: 14px;
-	color: #93CEFF;
 }
 
-#nav li a.active:hover {
-	color: white;
+#nav li a.active:not(.selected) {
+	color: #93CEFF !important;
+}
+
+#nav li a.active, #nav li a.active:hover {
+	color: white !important;
 }
 
 th {
@@ -2032,13 +2039,8 @@ tr.selected a {
 	color: #FFFFFF;
 }
 
-#nav li a.pic:hover:not(.selected) {
-	//background: rgba(224,224,224,1);
-}
-
-#nav li a.selected {
+#nav li ul li a.selected {
 	color: white;
-	//background: #3F75A2;
 }
 
 #nav li ul {
@@ -2462,16 +2464,15 @@ tr#realtime td:first-child {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #FFAA00;
+	background-color: rgba(147, 206, 255, 0.2);
+	background-image: -webkit-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
+	background-image: -moz-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
+	background-image: -o-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
+	background-image: -ms-linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
+	background-image: linear-gradient(left, rgba(147, 206, 255, 0.2) 0%, rgba(147, 206, 255, 0.2) 60%, black 100%) !important;
 	-webkit-transition: .4s;
 	transition: .4s;
-
-	border: 1px solid #7f83a2;
-	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #000000 1%, #04335b 35%, #000000 65%);
-	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	border: 1px solid #7F83A2;
 }
 
 .checkboxSlider:before {
@@ -2480,7 +2481,7 @@ tr#realtime td:first-child {
 	height: 16px;
 	width: 16px;
 	left: 4px;
-	bottom: 4px;
+	bottom: 3px;
 	background-color: white;
 	background-image: url('./images/cacti_logo.svg');
 	background-repeat: no-repeat;
@@ -2491,11 +2492,12 @@ tr#realtime td:first-child {
 }
 
 input:checked + .checkboxSlider {
-	background-image: -webkit-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -moz-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -o-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: -ms-radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
-	background-image: radial-gradient(50% 50%, ellipse cover, #ffa254 1%, #04335b 35%, #000000 65%);
+	background-color: rgba(255, 170, 0, 0.5) !important;
+	background-image: -webkit-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
+	background-image: -moz-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
+	background-image: -o-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
+	background-image: -ms-linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
+	background-image: linear-gradient(to right, black, rgba(255, 170, 0, 0.5)) !important;
 }
 
 input:focus + .checkboxSlider {
@@ -2611,6 +2613,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {

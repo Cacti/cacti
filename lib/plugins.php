@@ -241,13 +241,20 @@ function api_plugin_get_dependencies($plugin) {
 
 	$file = $config['base_path'] . '/plugins/' . $plugin . '/INFO';
 
+	$returndeps = array();
+
 	if (file_exists($file)) {
 		$info = parse_ini_file($file, true);
 
-		if (isset($info['info']['requires'])) {
-			if (preg_match_all('~([ ]*([\w\-]+)([ ]([\d\.]+))?)~', $info['info']['requires'], $components)) {
-				foreach($components[2] as $k=>$c) {
-					$returndeps[trim($c)] = $components[4][$k];
+		if (isset($info['info']['requires']) && trim($info['info']['requires']) != '') {
+			$parts = explode(' ', trim($info['info']['requires']));
+
+			foreach ($parts as $p) {
+				$vparts = explode(':', $p);
+				if (isset($vparts[1])) {
+					$returndeps[$vparts[0]] = $vparts[1];
+				} else {
+					$returndeps[$p] = true;
 				}
 			}
 
@@ -382,21 +389,40 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 		$sql = 'CREATE TABLE `' . $table . "` (\n";
 		foreach ($data['columns'] as $column) {
 			if (isset($column['name'])) {
-				if ($c > 0)
+				if ($c > 0) {
 					$sql .= ",\n";
+				}
+
 				$sql .= '`' . $column['name'] . '`';
-				if (isset($column['type']))
+
+				if (isset($column['type'])) {
 					$sql .= ' ' . $column['type'];
-				if (isset($column['unsigned']))
+				}
+
+				if (isset($column['unsigned'])) {
 					$sql .= ' unsigned';
-				if (isset($column['NULL']) && $column['NULL'] == false)
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] == false) {
 					$sql .= ' NOT NULL';
-				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
 					$sql .= ' default NULL';
-				if (isset($column['default']))
-					$sql .= ' default ' . (is_numeric($column['default']) || preg_match('/\(.*\)/', $column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-				if (isset($column['auto_increment']))
+				}
+
+				if (isset($column['default'])) {
+					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+						$sql .= ' default CURRENT_TIMESTAMP';
+					} else {
+						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+					}
+				}
+
+				if (isset($column['auto_increment'])) {
 					$sql .= ' auto_increment';
+				}
+
 				$c++;
 			}
 		}
@@ -483,20 +509,38 @@ function api_plugin_db_add_column ($plugin, $table, $column) {
 	}
 	if (isset($column['name']) && !in_array($column['name'], $columns)) {
 		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type']))
+
+		if (isset($column['type'])) {
 			$sql .= ' ' . $column['type'];
-		if (isset($column['unsigned']))
+		}
+
+		if (isset($column['unsigned'])) {
 			$sql .= ' unsigned';
-		if (isset($column['NULL']) && $column['NULL'] == false)
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] == false) {
 			$sql .= ' NOT NULL';
-		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default']))
+		}
+
+		if (isset($column['NULL']) && $column['NULL'] == true && !isset($column['default'])) {
 			$sql .= ' default NULL';
-		if (isset($column['default']))
-			$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
-		if (isset($column['auto_increment']))
+		}
+
+		if (isset($column['default'])) {
+			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+				$sql .= ' default CURRENT_TIMESTAMP';
+			} else {
+				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+			}
+		}
+
+		if (isset($column['auto_increment'])) {
 			$sql .= ' auto_increment';
-		if (isset($column['after']))
+		}
+
+		if (isset($column['after'])) {
 			$sql .= ' AFTER ' . $column['after'];
+		}
 
 		if (db_execute($sql)) {
 			db_execute_prepared("INSERT INTO plugin_db_changes (plugin, `table`, `column`, `method`) VALUES (?, ?, ?, 'addcolumn')", array($plugin, $table, $column['name']));
@@ -509,7 +553,7 @@ function api_plugin_can_install($plugin, &$message) {
 	$message = '';
 	$proceed = true;
 	if (is_array($dependencies) && cacti_sizeof($dependencies)) {
-		foreach($dependencies as $dependency=>$version) {
+		foreach($dependencies as $dependency => $version) {
 			if (!api_plugin_minimum_version($dependency, $version)) {
 				$message .= __('%s Version %s or above is required for %s. ', ucwords($dependency), $version, ucwords($plugin));
 
@@ -541,9 +585,15 @@ function api_plugin_install($plugin) {
 
 	include_once($config['base_path'] . "/plugins/$plugin/setup.php");
 
-	$exists = db_fetch_assoc_prepared('SELECT id FROM plugin_config WHERE directory = ?', array($plugin), false);
+	$exists = db_fetch_assoc_prepared('SELECT id
+		FROM plugin_config
+		WHERE directory = ?',
+		array($plugin), false);
+
 	if (cacti_sizeof($exists)) {
-		db_execute_prepared('DELETE FROM plugin_config WHERE directory = ?', array($plugin));
+		db_execute_prepared('DELETE FROM plugin_config
+			WHERE directory = ?',
+			array($plugin));
 	}
 
 	$name = $author = $webpage = $version = '';
@@ -739,13 +789,31 @@ function api_plugin_disable_hooks_all($plugin) {
 }
 
 function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
-	$exists = db_fetch_cell_prepared('SELECT id
+	$files = explode(':', $file);
+
+	$i = 0;
+	$sql_where = '(';
+	foreach($files as $tfile) {
+		$sql_where .= ($sql_where != '(' ? ' OR ':'') . ' (file LIKE "%' . $tfile . '%")';
+	}
+	$sql_where .= ')';
+
+	$realm_ids = db_fetch_assoc_prepared("SELECT id
 		FROM plugin_realms
 		WHERE plugin = ?
-		AND file = ?',
-		array($plugin, $file));
+		AND $sql_where",
+		array($plugin));
 
-	if ($exists === false) {
+	if (cacti_sizeof($realm_ids) == 1) {
+		$realm_id = $realm_ids[0]['id'];
+	} elseif (cacti_sizeof($realm_ids) > 1) {
+		$realm_id = $realm_ids[0]['id'];
+		cacti_log('WARNING: Registering Realm for Plugin ' . $plugin . ' and Filenames ' . $file . ' is ambiguous.  Using first matching Realm.  Contact the plugin owner to resolve this issue.');
+	} else {
+		$realm_id = false;
+	}
+
+	if ($realm_id === false) {
 		db_execute_prepared('REPLACE INTO plugin_realms
 			(plugin, file, display)
 			VALUES (?, ?, ?)',
@@ -760,10 +828,7 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 
 			$realm_id = $realm_id + 100;
 
-			$user_ids[] = db_fetch_cell("SELECT id
-				FROM user_auth
-				WHERE username = 'admin'", false);
-
+			$user_ids[] = read_config_option('admin_user');
 			if (isset($_SESSION['sess_user_id'])) {
 				$user_ids[] = $_SESSION['sess_user_id'];
 			}
@@ -779,10 +844,10 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 		}
 	} else {
 		db_execute_prepared('UPDATE plugin_realms
-			SET display = ?
-			WHERE plugin = ?
-			AND file = ?',
-			array($display, $plugin, $file));
+			SET display = ?,
+			file = ?
+			WHERE id = ?',
+			array($display, $file, $realm_id));
 	}
 }
 
@@ -839,14 +904,14 @@ function plugin_config_arrays() {
 	global $config, $menu;
 
 	if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
-		$menu[__('Configuration')]['plugins.php'] = __('Plugin Management');
+		$menu[__('Configuration')]['plugins.php'] = __('Plugins');
 	}
 
 	api_plugin_load_realms();
 }
 
 function plugin_draw_navigation_text($nav) {
-	$nav['plugins.php:'] = array('title' => __('Plugin Management'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
+	$nav['plugins.php:'] = array('title' => __('Plugins'), 'mapping' => 'index.php:', 'url' => 'plugins.php', 'level' => '1');
 	return $nav;
 }
 

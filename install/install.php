@@ -44,18 +44,23 @@ set_default_action();
 
 prime_default_settings();
 
-$hasJson = false;
-if (interface_exists('JsonSerializable')) {
-	$hasJson = true;
+/***** SAFETY CHECKS FOR OLDER OR SECURED SYSTEMS ****/
+$hasShellExec  = is_function_enabled('shell_exec');
+$hasExec       = is_function_enabled('exec');
+$hasJson       = interface_exists('JsonSerializable');
+$hasEverything = $hasJson && $hasShellExec && $hasExec;
+
+if ($hasEverything) {
 	include_once('../lib/installer.php');
 }
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <?php
 print html_common_header(__('Cacti Server v%s - Maintenance', CACTI_VERSION));
-if ($hasJson) {
+if ($hasEverything) {
 	print get_md5_include_js('install/install.js');
 }
 print get_md5_include_css('install/install.css');
@@ -69,12 +74,22 @@ print get_md5_include_css('install/install.css');
 		<div class='cactiInstallArea cactiBorderWall'>
 			<div class='cactiInstallAreaContent' id='installContent'>
 <?php
-if ($hasJson) {
-				print Installer::sectionTitle(__('Initializing'));
-				print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes.  You must have JavaScript enabled for this to work.', CACTI_VERSION));
+if ($hasEverything) {
+	print Installer::sectionTitle(__('Initializing'));
+	print Installer::sectionNormal(__('Please wait while the installation system for Cacti Version %s initializes. You must have JavaScript enabled for this to work.', CACTI_VERSION));
 } else {
-				print '<p>ERROR: PHP Json module is not enabled. This is required for the installer to work</p>';
-				print '<p>See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation </p>';
+	print '<div class="installErrorImage"><img src=\'../images/cacti_logo.svg\'></div>';
+	print '<div class="installErrorText">';
+	print '<p>' . __('FATAL: We are unable to continue with this installation. In order to install Cacti, PHP must be at version 5.4 or later.') . '</p>';
+	print '<ul>';
+	if ($hasJson) {
+		print '<li>' . __('The php-json module must also be installed.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/book.json.php">JavaScript Object Notation</a>.') . '</li>';
+		print '<br>';
+	}
+	if (!($hasExec && $hasShellExec)) {
+		print '<li>' . __('The shell_exec() and/or exec() functions are currently blocked.') . '<br>' . __('See the PHP Manual: <a href="http://php.net/manual/en/ini.core.php#ini.disable-functions">Disable Functions</a>.') .'</li>';
+	}
+	print '</ul></div>';
 }
 ?>
 			</div>

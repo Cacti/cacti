@@ -200,8 +200,13 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 	if (!empty($host_id)) {
 		if (!isset($_SESSION['sess_host_cache_array'][$host_id])) {
 			$host = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' * FROM host WHERE id = ?', array($host_id));
+			if (!cacti_sizeof($host)) {
+				return $string;
+			}
+
 			$_SESSION['sess_host_cache_array'][$host_id] = $host;
 		}
+
 
 		$search  = array();
 		$replace = array();

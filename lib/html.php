@@ -1680,6 +1680,7 @@ function html_show_tabs_left() {
 		$tab_text = str_replace('"', "'", $tab_text);
 		$tab_text = str_replace('>', '', $tab_text);
 		$elements = explode('|', $tab_text);
+		$count    = 0;
 
 		foreach($elements as $p) {
 			$p = trim($p);
@@ -1690,8 +1691,9 @@ function html_show_tabs_left() {
 
 			$altpos  = strpos($p, 'alt=');
 			$hrefpos = strpos($p, 'href=');
+			$idpos   = strpos($p, 'id=');
 
-			if ($altpos >= 0) {
+			if ($altpos !== false) {
 				$alt = substr($p, $altpos+4);
 				$parts = explode("'", $alt);
 				if ($parts[0] == '') {
@@ -1703,7 +1705,7 @@ function html_show_tabs_left() {
 				$alt = __('Title');
 			}
 
-			if ($hrefpos >= 0) {
+			if ($hrefpos !== false) {
 				$href = substr($p, $hrefpos+5);
 				$parts = explode("'", $href);
 				if ($parts[0] == '') {
@@ -1715,7 +1717,20 @@ function html_show_tabs_left() {
 				$href = 'unknown';
 			}
 
-			$tabs_left[] = array('title' => ucwords($alt), 'url' => $href);
+			if ($idpos !== false) {
+				$id = substr($p, $idpos+3);
+				$parts = explode("'", $id);
+				if ($parts[0] == '') {
+					$id = $parts[1];
+				} else {
+					$id = $parts[0];
+				}
+			} else {
+				$id = 'unknown' . $count;
+				$count++;
+			}
+
+			$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
 		}
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
@@ -2256,7 +2271,7 @@ function html_spikekill_js() {
 }
 
 function html_common_header($title, $selectedTheme = '') {
-	global $config, $path2calendar, $path2timepicker;
+	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
 
 	if ($selectedTheme == '') {
 		$selectedTheme = get_selected_theme();
@@ -2398,6 +2413,10 @@ function html_common_header($title, $selectedTheme = '') {
 
 	if (isset($path2timepicker) && file_exists($path2timepicker)) {
 		print get_md5_include_js($path2timepicker);
+	}
+
+	if (isset($path2colorpicker) && file_exists($path2colorpicker)) {
+		print get_md5_include_js($path2colorpicker);
 	}
 
 	api_plugin_hook('page_head');

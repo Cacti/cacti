@@ -3,6 +3,8 @@
 html {
 	height: 100%;
 	width: 100%;
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 body, table, tr, td, textarea {
@@ -17,6 +19,8 @@ body {
 	background-color: white;
 	background-repeat: repeat-y;
 	overflow: hidden;
+	background: #1D1F21;
+	background-image: linear-gradient(#1D1F21,#000000);
 }
 
 table {
@@ -29,6 +33,10 @@ table {
 td, th {
 	padding: 2px 2px;
 	margin: 0px;
+}
+
+td span {
+	color: #FFF;
 }
 
 th {
@@ -86,7 +94,6 @@ th .fa {
 }
 
 pre {
-	color: #f7f7f7;
 }
 
 form#tree_edit>div{
@@ -493,6 +500,10 @@ label {
 	background-image:none !important;
 }
 
+#dbghide {
+	color: orange !important;
+}
+
 .emailtest {
 	cursor:pointer;
 	display:block;
@@ -532,6 +543,10 @@ label {
 	text-decoration: none;
 	padding: 2px;
 	vertical-align: middle;
+}
+
+.tableRow {
+	background: none repeat scroll 0 0 #EBEDEF;
 }
 
 .odd {
@@ -976,10 +991,11 @@ legend {
 }
 
 .cactiGraphContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
+	height: 100vh;
 }
 
 .cactiGraphContentArea span[align="center"] {
@@ -1000,7 +1016,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 }
 
@@ -1013,7 +1029,7 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
@@ -1037,7 +1053,6 @@ legend {
 
 .hyperLink {
 	color: #2d4ca8;
-	font-size: 12px;
 	padding: 3px;
 	cursor:pointer;
 	text-decoration: none;
@@ -1054,7 +1069,6 @@ legend {
 	color: #2d4ca8;
 	text-decoration: none;
 	font-size: 12px;
-	padding: 3px;
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -1182,7 +1196,6 @@ tr>td.textInfo.right{
 }
 
 .cactiTable {
-	color: #f7f7f7;
 	width: 100%;
 	margin-left:auto;
 	margin-right:auto;
@@ -1191,11 +1204,6 @@ tr>td.textInfo.right{
 
 .cactiInstallLoaderSpinnerTheme {
 	border-top-color: #3a3b3c !important;
-}
-
-table.cactiTable {
-	background: #f7f7f7;
-	color: black;
 }
 
 .cactiTableTitleRow {
@@ -1216,7 +1224,8 @@ table.cactiTable {
 	color: white;
 	float: left;
 	text-align: left;
-	padding: 3px 0px;
+	padding: 0px 0px 4px 0px;
+	vertical-align: middle;
 	display: table-column;
 	width: 70%;
 	font-size: 13px;
@@ -1228,9 +1237,10 @@ table.cactiTable {
 
 .cactiTableButton {
 	float: right;
-	padding: 3px 0px;
+	padding: 0px 0px 4px 0px;
 	display: table-column;
 	text-align: right;
+	vertical-align: middle;
 	font-size: 13px;
 	width: 30%;
 	border-color: #222;
@@ -1325,7 +1335,6 @@ table.cactiTable {
 	color: #000;
 	float: left;
 	text-align: left;
-	font-weight: bold;
 	padding-left: 3px;
 }
 
@@ -1361,6 +1370,7 @@ table.cactiTable {
 
 .formHeaderText {
 	padding-left: 3px;
+	color: #FFF;
 }
 
 .hostInfoHeader {
@@ -1446,7 +1456,6 @@ table.cactiTable {
 .tableHeader {
 	display: table-row;
 	color: #000000;
-	background: #FFFFFF;
 	font-weight: 700;
 	text-transform: uppercase;
 	border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -1672,6 +1681,10 @@ th.sortable {
 .installArea {
 	background-color: white;
 	padding: 10px;
+}
+
+.cactiInstallArea {
+	background-color:#e5e5e5;
 }
 
 .textAreaNotes {
@@ -1999,6 +2012,7 @@ div.submenu span{
 
 th {
 	border-right: 1px groove #9d9d9d;
+	height: 18px;
 }
 
 th:last-child {
@@ -2007,6 +2021,9 @@ th:last-child {
 
 tr.selected {
 	background: #d3dce5 !important;
+}
+
+tr.selected td:first-child {
 	border-left: 10px solid #5CB85C !important;
 }
 
@@ -2461,6 +2478,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {

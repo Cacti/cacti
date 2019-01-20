@@ -1148,7 +1148,7 @@ function networks() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='10'><em>" . __('No Networks Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Networks Found') . "</em></td></tr>";
 	}
 	html_end_box(false);
 

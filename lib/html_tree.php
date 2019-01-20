@@ -1111,7 +1111,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Window');?>
 					</td>
 					<td>
-						<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
+						<select id='graph_start' onChange='realtimeGrapher()'>
 							<?php
 							foreach ($realtime_window as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_window'] ? ' selected="selected"' : '', $text);
@@ -1123,7 +1123,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 						<?php print __('Refresh');?>
 					</td>
 					<td>
-						<select id='ds_step' onChange="imageOptionsChanged('interval')">
+						<select id='ds_step' onChange="realtimeGrapher()">
 							<?php
 							foreach ($realtime_refresh as $interval => $text) {
 								printf('<option value="%d"%s>%s</option>', $interval, $interval == $_SESSION['sess_realtime_dsstep'] ? ' selected="selected"' : '', $text);
@@ -1240,9 +1240,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "' OR gtg.title RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
-		if (!isempty_request_var('graph_template_id') && get_request_var('graph_template_id') > '0') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
-		} elseif (get_request_var('graph_template_id') == 0) {
+		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . ' (gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 
@@ -1293,7 +1291,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . "(gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
 		}
 
-		if (get_request_var('graph_template_id') != '' && get_request_var('graph_template_id') != '0') {
+		if (isset_request_var('graph_template_id') && get_request_var('graph_template_id') >= 0) {
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . '(gl.graph_template_id IN (' . get_request_var('graph_template_id') . '))';
 		}
 

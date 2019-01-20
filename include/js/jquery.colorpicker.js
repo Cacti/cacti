@@ -1,18 +1,29 @@
 /*jslint devel: true, bitwise: true, regexp: true, browser: true, confusion: true, unparam: true, eqeq: true, white: true, nomen: true, plusplus: true, maxerr: 50, indent: 4 */
-/*globals jQuery,Color */
+/*globals jQuery,Color,define */
 
 /*!
  * ColorPicker
  *
- * Copyright (c) 2011-2015 Martijn W. van der Lee
+ * Copyright (c) 2011-2017 Martijn W. van der Lee
  * Licensed under the MIT.
  */
 /* Full-featured colorpicker for jQueryUI with full theming support.
  * Most images from jPicker by Christopher T. Tillman.
  * Sourcecode created from scratch by Martijn W. van der Lee.
  */
+(function( factory ) {
+	if ( typeof define === "function" && define.amd ) {
 
-;(function ($) {
+		// AMD. Register as an anonymous module.
+		define([
+			"jquery"
+		], factory );
+	} else {
+
+		// Browser globals
+		factory( jQuery );
+	}
+} (function ($) {
 	"use strict";
 
 	var _colorpicker_index = 0,
@@ -22,30 +33,28 @@
 		_container_inline = '<div class="ui-colorpicker ui-colorpicker-inline"></div>',
 
 		_intToHex = function (dec) {
-			var result = Math.floor(dec).toString(16);
+			var result = Math.round(dec).toString(16);
 			if (result.length === 1) {
 				result = ('0' + result);
 			}
 			return result.toLowerCase();
 		},
-
-        _parseHex = function(color) {
-            var c,
-                m;
-
-            // {#}rrggbb
-            m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
-            if (m) {
-                c = parseInt(m[1], 16);
-                return new $.colorpicker.Color(
-					((c >> 16) & 0xFF) / 255,
-                    ((c >>  8) & 0xFF) / 255,
-                    (c & 0xFF) / 255
-				);
-            }
-
-            return new $.colorpicker.Color();
-        },
+		
+		_keycode = {
+			isPrint: function(keycode) {
+				return keycode == 32						// spacebar
+					|| (keycode >= 48 && keycode <= 57)		// number keys
+					|| (keycode >= 65 && keycode <= 90)		// letter keys
+					|| (keycode >= 96 && keycode <= 111)	// numpad keys
+					|| (keycode >= 186 && keycode < 192)	// ;=,-./` (in order)
+					|| (keycode >= 219 && keycode < 222);	// [\]' (in order)
+			},			
+			isHex: function(keycode) {
+				return (keycode >= 48 && keycode <= 57)		// number keys
+					|| (keycode >= 96 && keycode <= 105)	// numpad keys
+					|| (keycode >= 65 && keycode <= 70);	// a-f
+			}
+		},
 
 		_layoutTable = function(layout, callback) {
 			var bitmap,
@@ -329,9 +338,9 @@
 						}
 		,	'HEX3':		function(color, that) {
 							var rgb = color.getRGB(),
-								r = Math.floor(rgb.r * 255),
-								g = Math.floor(rgb.g * 255),
-								b = Math.floor(rgb.b * 255);
+								r = Math.round(rgb.r * 255),
+								g = Math.round(rgb.g * 255),
+								b = Math.round(rgb.b * 255);
 
 							if (((r >>> 4) === (r &= 0xf))
 							 && ((g >>> 4) === (g &= 0xf))
@@ -351,7 +360,7 @@
 							return that._formatColor('rxgxbxax', color);
 						}		
 		,	'HEXA4':		function(color, that) {
-							var a = Math.floor(color.getAlpha() * 255);
+							var a = Math.round(color.getAlpha() * 255);
 						
 							if ((a >>> 4) === (a &= 0xf)) {
 								return $.colorpicker.writers.HEX3(color, that)+a.toString(16);
@@ -562,8 +571,8 @@
 		this.parts = {
 			header: function (inst) {
 				var that	= this,
-					e		= null,
-					_html	=function() {
+					part	= null,
+					_html	= function() {
 						var title = inst.options.title || inst._getRegional('title'),
 							html = '<span class="ui-dialog-title">' + title + '</span>';
 
@@ -573,22 +582,23 @@
 						}
 
 						return '<div class="ui-dialog-titlebar ui-widget-header ui-corner-all ui-helper-clearfix">' + html + '</div>';
+					},
+					_onclick = function(event) {
+						event.preventDefault();
+						inst.close(inst.options.revert);
 					};
 
 				this.init = function() {
-					e = $(_html()).prependTo(inst.dialog);
+					part = $(_html()).prependTo(inst.dialog);
 
-					var close = $('.ui-dialog-titlebar-close', e);
+					var close = $('.ui-dialog-titlebar-close', part);
 					inst._hoverable(close);
 					inst._focusable(close);
-					close.click(function(event) {
-						event.preventDefault();
-						inst.close(inst.options.revert);
-					});
+					close.on('click', _onclick);
 
 					if (!inst.inline && inst.options.draggable) {
 						var draggableOptions = {
-							handle: e,
+							handle: part,
 						}
 						if (inst.options.containment) {
 							draggableOptions.containment = inst.options.containment;
@@ -596,13 +606,17 @@
 						inst.dialog.draggable(draggableOptions);
 					}
 				};
+
+				this.disable = function (disable) {
+					$('.ui-dialog-titlebar-close', part)[disable ? 'off' : 'on']('click', _onclick);
+				};
 			},
 
 			map: function (inst) {
 				var that	= this,
-					e		= null,
+					part	= null,
 					pointer, width, height, layers = {},
-					_mousedown, _mouseup, _mousemove, _html;
+					_mousedown, _mouseup, _mousemove, _keydown, _html;
 
 				_mousedown = function (event) {
 					if (!inst.opened) {
@@ -616,9 +630,9 @@
 					if (x >= 0 && x < width && y >= 0 && y < height) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						e.unbind('mousedown', _mousedown);
-						$(document).bind('mouseup', _mouseup);
-						$(document).bind('mousemove', _mousemove);
+						part.off('mousedown', _mousedown).focus();
+						$(document).on('mouseup', _mouseup);
+						$(document).on('mousemove', _mousemove);
 						_mousemove(event);
 					}
 				};
@@ -626,9 +640,9 @@
 				_mouseup = function (event) {
 					event.stopImmediatePropagation();
 					event.preventDefault();
-					$(document).unbind('mouseup', _mouseup);
-					$(document).unbind('mousemove', _mousemove);
-					e.bind('mousedown', _mousedown);
+					$(document).off('mouseup', _mouseup);
+					$(document).off('mousemove', _mousemove);
+					part.on('mousedown', _mousedown);
 					
 					inst._callback('stop');
 				};
@@ -652,37 +666,97 @@
 
 					// interpret values
 					switch (inst.mode) {
-					case 'h':
-						inst.color.setHSV(null, x, 1 - y);
-						break;
+						case 'h':
+							inst.color.setHSV(null, x, 1 - y);
+							break;
 
-					case 's':
-					case 'a':
-						inst.color.setHSV(x, null, 1 - y);
-						break;
+						case 's':
+						case 'a':
+							inst.color.setHSV(x, null, 1 - y);
+							break;
 
-					case 'v':
-						inst.color.setHSV(x, 1 - y, null);
-						break;
+						case 'v':
+							inst.color.setHSV(x, 1 - y, null);
+							break;
 
-					case 'r':
-						inst.color.setRGB(null, 1 - y, x);
-						break;
+						case 'r':
+							inst.color.setRGB(null, 1 - y, x);
+							break;
 
-					case 'g':
-						inst.color.setRGB(1 - y, null, x);
-						break;
+						case 'g':
+							inst.color.setRGB(1 - y, null, x);
+							break;
 
-					case 'b':
-						inst.color.setRGB(x, 1 - y, null);
-						break;
+						case 'b':
+							inst.color.setRGB(x, 1 - y, null);
+							break;
 					}
 
 					inst._change(false);
 				};
 
+				_keydown = function(event) {
+					var x_channel_map = {
+							'h': 's',
+							's': 'h',
+							'v': 'h',
+							'r': 'b',
+							'g': 'b',
+							'b': 'r',
+							'a': 'h'
+						},
+						x_change = {
+							37: -1,
+							39: 1,
+						},
+						y_channel_map = {
+							'h': 'v',
+							's': 'v',
+							'v': 's',
+							'r': 'g',
+							'g': 'r',
+							'b': 'g',
+							'a': 'v'
+						},
+						y_change = {
+							38: 1,
+							40: -1
+						},
+						set = {
+							35: 0,
+							36: 1
+						},
+						change, value;
+
+						if (typeof x_change[event.which] !== 'undefined') {
+							value = inst.color.getChannel(x_channel_map[inst.mode]) * width;
+							change = x_change[event.which];
+							if (event.shiftKey) {
+								change *= 10;
+							} else if (event.ctrlKey || event.metaKey) {
+								change *= width;
+							}
+							inst.color.setChannel(x_channel_map[inst.mode], (value + change) / width);
+							inst._change(false);
+						} else if (typeof y_change[event.which] !== 'undefined') {
+							value = inst.color.getChannel(y_channel_map[inst.mode]) * height;
+							change = y_change[event.which];
+							if (event.shiftKey) {
+								change *= 10;
+							} else if (event.ctrlKey || event.metaKey) {
+								change *= height;
+							}
+							inst.color.setChannel(y_channel_map[inst.mode], (value + change) / height);
+							inst._change(false);
+						} else if (typeof set[event.which] !== 'undefined') {
+							inst.color.setChannel(x_channel_map[inst.mode], 1 - set[event.which]);
+							inst.color.setChannel(y_channel_map[inst.mode], set[event.which]);
+							inst._change(false);							
+						}					
+				};
+
 				_html = function () {
-					var html = '<div class="ui-colorpicker-map ui-colorpicker-map-'+(inst.options.part.map.size || 256)+' ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-map ui-colorpicker-map-'+(inst.options.part.map.size || 256)+' ui-colorpicker-border" taonex="0">'
 							+ '<span class="ui-colorpicker-map-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-map-layer-2">&nbsp;</span>'
 							+ (inst.options.alpha ? '<span class="ui-colorpicker-map-layer-alpha">&nbsp;</span>' : '')
@@ -691,57 +765,59 @@
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
+					part = $(_html()).appendTo($('.ui-colorpicker-map-container', inst.dialog));
 
-					e.bind('mousedown', _mousedown);
+					part.on('mousedown', _mousedown);
+					part.on('keydown', _keydown);
 					
 					// cache					
-					layers[1]	= $('.ui-colorpicker-map-layer-1', e);
-					layers[2]	= $('.ui-colorpicker-map-layer-2', e);
-					layers.a	= $('.ui-colorpicker-map-layer-alpha', e);
-					layers.p	= $('.ui-colorpicker-map-layer-pointer', e);
+					layers[1]	= $('.ui-colorpicker-map-layer-1', part);
+					layers[2]	= $('.ui-colorpicker-map-layer-2', part);
+					layers.a	= $('.ui-colorpicker-map-layer-alpha', part);
+					layers.p	= $('.ui-colorpicker-map-layer-pointer', part);
 					width		= layers.p.width();
 					height		= layers.p.height();
 					
-					pointer		= $('.ui-colorpicker-map-pointer', e);
+					pointer		= $('.ui-colorpicker-map-pointer', part);
 				};
 
 				this.update = function () {
 					var step = ((inst.options.part.map.size || 256) * 65 / 64);
 
 					switch (inst.mode) {
-					case 'h':
-						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
-						layers[2].hide();
-						break;
+						case 'h':
+							layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+							layers[2].hide();
+							break;
 
-					case 's':
-					case 'a':
-						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						break;
+						case 's':
+						case 'a':
+							layers[1].css({'background-position': '0 ' + (-step) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'v':
-						e.css('background-color', 'black');
-						layers[1].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						layers[2].hide();
-						break;
+						case 'v':
+							part.css('background-color', 'black');
+							layers[1].css({'background-position': '0 ' + (-step * 3) + 'px', 'opacity': ''}).show();
+							layers[2].hide();
+							break;
 
-					case 'r':
-						layers[1].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
-						break;
+						case 'r':
+							layers[1].css({'background-position': '0 ' + (-step * 4) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 5) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'g':
-						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
-						break;
+						case 'g':
+							layers[1].css({'background-position': '0 ' + (-step * 6) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 7) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'b':
-						layers[1].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
-						break;
+						case 'b':
+							layers[1].css({'background-position': '0 ' + (-step * 8) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 9) + 'px', 'opacity': ''}).show();
+							break;
 					}
+					
 					that.repaint();
 				};
 
@@ -750,48 +826,48 @@
 						y = 0;
 
 					switch (inst.mode) {
-					case 'h':
-						var hsv = inst.color.getHSV();
-						x = hsv.s * width;
-						y = (1 - hsv.v) * width;
-						e.css('background-color', inst.color.copy().setHSV(null, 1, 1).toCSS());
-						break;
+						case 'h':
+							var hsv = inst.color.getHSV();
+							x = hsv.s * width;
+							y = (1 - hsv.v) * width;
+							part.css('background-color', inst.color.copy().setHSV(null, 1, 1).toCSS());
+							break;
 
-					case 's':
-					case 'a':
-						var hsv = inst.color.getHSV();
-						x = hsv.h * width;
-						y = (1 - hsv.v) * width;
-						layers[2].css('opacity', 1 - hsv.s);
-						break;
+						case 's':
+						case 'a':
+							var hsv = inst.color.getHSV();
+							x = hsv.h * width;
+							y = (1 - hsv.v) * width;
+							layers[2].css('opacity', 1 - hsv.s);
+							break;
 
-					case 'v':
-						var hsv = inst.color.getHSV();
-						x = hsv.h * width;
-						y = (1 - hsv.s) * width;
-						layers[1].css('opacity', hsv.v);
-						break;
+						case 'v':
+							var hsv = inst.color.getHSV();
+							x = hsv.h * width;
+							y = (1 - hsv.s) * width;
+							layers[1].css('opacity', hsv.v);
+							break;
 
-					case 'r':
-						var rgb = inst.color.getRGB()
-						x = rgb.b * width;
-						y = (1 - rgb.g) * width;
-						layers[2].css('opacity', rgb.r);
-						break;
+						case 'r':
+							var rgb = inst.color.getRGB()
+							x = rgb.b * width;
+							y = (1 - rgb.g) * width;
+							layers[2].css('opacity', rgb.r);
+							break;
 
-					case 'g':
-						var rgb = inst.color.getRGB();
-						x = rgb.b * width;
-						y = (1 - rgb.r) * width;
-						layers[2].css('opacity', rgb.g);
-						break;
+						case 'g':
+							var rgb = inst.color.getRGB();
+							x = rgb.b * width;
+							y = (1 - rgb.r) * width;
+							layers[2].css('opacity', rgb.g);
+							break;
 
-					case 'b':
-						var rgb = inst.color.getRGB()
-						x = rgb.r * width;
-						y = (1 - rgb.g) * width;
-						layers[2].css('opacity', rgb.b);
-						break;
+						case 'b':
+							var rgb = inst.color.getRGB()
+							x = rgb.r * width;
+							y = (1 - rgb.g) * width;
+							layers[2].css('opacity', rgb.b);
+							break;
 					}
 
 					if (inst.options.alpha) {
@@ -803,13 +879,18 @@
 						'top': y - 7
 					});
 				};
+
+				this.disable = function (disable) {
+					part[disable ? 'off' : 'on']('mousedown', _mousedown);
+					part[disable ? 'off' : 'on']('keydown', _keydown);
+				};
 			},
 
 			bar: function (inst) {
 				var that		= this,
-					e			= null,
+					part		= null,
 					pointer, width, height, layers = {},
-					_mousedown, _mouseup, _mousemove, _html;
+					_mousedown, _mouseup, _mousemove, _keydown, _html;
 
 				_mousedown = function (event) {
 					if (!inst.opened) {
@@ -823,9 +904,9 @@
 					if (x >= 0 && x < width && y >= 0 && y < height) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						e.unbind('mousedown', _mousedown);
-						$(document).bind('mouseup', _mouseup);
-						$(document).bind('mousemove', _mousemove);
+						part.off('mousedown', _mousedown).focus();
+						$(document).on('mouseup', _mouseup);
+						$(document).on('mousemove', _mousemove);
 						_mousemove(event);
 					}
 				};
@@ -833,9 +914,9 @@
 				_mouseup = function (event) {
 					event.stopImmediatePropagation();
 					event.preventDefault();
-					$(document).unbind('mouseup', _mouseup);
-					$(document).unbind('mousemove', _mousemove);
-					e.bind('mousedown', _mousedown);
+					$(document).off('mouseup', _mouseup);
+					$(document).off('mousemove', _mousemove);
+					part.on('mousedown', _mousedown);
 					
 					inst._callback('stop');					
 				};
@@ -856,40 +937,69 @@
 
 					// interpret values
 					switch (inst.mode) {
-					case 'h':
-						inst.color.setHSV(1 - y, null, null);
-						break;
+						case 'h':
+							inst.color.setHSV(1 - y, null, null);
+							break;
 
-					case 's':
-						inst.color.setHSV(null, 1 - y, null);
-						break;
+						case 's':
+							inst.color.setHSV(null, 1 - y, null);
+							break;
 
-					case 'v':
-						inst.color.setHSV(null, null, 1 - y);
-						break;
+						case 'v':
+							inst.color.setHSV(null, null, 1 - y);
+							break;
 
-					case 'r':
-						inst.color.setRGB(1 - y, null, null);
-						break;
+						case 'r':
+							inst.color.setRGB(1 - y, null, null);
+							break;
 
-					case 'g':
-						inst.color.setRGB(null, 1 - y, null);
-						break;
+						case 'g':
+							inst.color.setRGB(null, 1 - y, null);
+							break;
 
-					case 'b':
-						inst.color.setRGB(null, null, 1 - y);
-						break;
+						case 'b':
+							inst.color.setRGB(null, null, 1 - y);
+							break;
 
-					case 'a':
-						inst.color.setAlpha(1 - y);
-						break;
+						case 'a':
+							inst.color.setAlpha(1 - y);
+							break;
 					}
 
 					inst._change(false);
 				};
+				
+				_keydown = function(event) {
+					var change = {
+							38: 1,
+							40: -1,
+							33: 10,
+							34: -10
+						},
+						set = {
+							35: 0,
+							36: 1
+						},
+						change, value;
+
+					if (typeof change[event.which] !== 'undefined') {
+						value = inst.color.getChannel(inst.mode) * height;
+						change = change[event.which];
+						if (event.shiftKey) {
+							change *= 10;
+						} else if (event.ctrlKey || event.metaKey) {
+							change *= height;
+						}
+						inst.color.setChannel(inst.mode, (value + change) / height);
+						inst._change(false);
+					} else if (typeof set[event.which] !== 'undefined') {
+						inst.color.setChannel(inst.mode, set[event.which]);
+						inst._change(false);							
+					}					
+				};
 
 				_html = function () {
-					var html = '<div class="ui-colorpicker-bar ui-colorpicker-bar-'+(inst.options.part.bar.size || 256)+'  ui-colorpicker-border">'
+					var html = '<div class="ui-colorpicker-bar ui-colorpicker-bar-'+(inst.options.part.bar.size || 256)+'  ui-colorpicker-border" taonex="0">'
 							+ '<span class="ui-colorpicker-bar-layer-1">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-2">&nbsp;</span>'
 							+ '<span class="ui-colorpicker-bar-layer-3">&nbsp;</span>'
@@ -906,94 +1016,96 @@
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
+					part = $(_html()).appendTo($('.ui-colorpicker-bar-container', inst.dialog));
 
-					e.bind('mousedown', _mousedown);
+					part.on('mousedown', _mousedown);
+					part.on('keydown', _keydown);
 					
 					// cache				
-					layers[1]	= $('.ui-colorpicker-bar-layer-1', e);
-					layers[2]	= $('.ui-colorpicker-bar-layer-2', e);
-					layers[3]	= $('.ui-colorpicker-bar-layer-3', e);
-					layers[4]	= $('.ui-colorpicker-bar-layer-4', e);
-					layers.a	= $('.ui-colorpicker-bar-layer-alpha', e);
-					layers.ab	= $('.ui-colorpicker-bar-layer-alphabar', e);
-					layers.p	= $('.ui-colorpicker-bar-layer-pointer', e);					
+					layers[1]	= $('.ui-colorpicker-bar-layer-1', part);
+					layers[2]	= $('.ui-colorpicker-bar-layer-2', part);
+					layers[3]	= $('.ui-colorpicker-bar-layer-3', part);
+					layers[4]	= $('.ui-colorpicker-bar-layer-4', part);
+					layers.a	= $('.ui-colorpicker-bar-layer-alpha', part);
+					layers.ab	= $('.ui-colorpicker-bar-layer-alphabar', part);
+					layers.p	= $('.ui-colorpicker-bar-layer-pointer', part);
 					width		= layers.p.width();
 					height		= layers.p.height();		
 					
-					pointer		= $('.ui-colorpicker-bar-pointer', e);
+					pointer		= $('.ui-colorpicker-bar-pointer', part);
 				};
 				
 				this.update = function () {
 					var step = ((inst.options.part.bar.size || 256) * 65 / 64);
 
 					switch (inst.mode) {
-					case 'h':
-					case 's':
-					case 'v':
-					case 'r':
-					case 'g':
-					case 'b':
-						layers.a.show();
-						layers.ab.hide();
-						break;
+						case 'h':
+						case 's':
+						case 'v':
+						case 'r':
+						case 'g':
+						case 'b':
+							layers.a.show();
+							layers.ab.hide();
+							break;
 
-					case 'a':
-						layers.a.hide();
-						layers.ab.show();
-						break;
+						case 'a':
+							layers.a.hide();
+							layers.ab.show();
+							break;
 					}
 
 					switch (inst.mode) {
-					case 'h':
-						layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'h':
+							layers[1].css({'background-position': '0 0', 'opacity': ''}).show();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 's':
-						layers[1].css({'background-position': '0 '+(-step)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 's':
+							layers[1].css({'background-position': '0 ' + (-step) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 'v':
-						layers[1].css({'background-position': '0 '+(-step*2)+'px', 'opacity': ''}).show();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'v':
+							layers[1].css({'background-position': '0 ' + (-step * 2) + 'px', 'opacity': ''}).show();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 
-					case 'r':
-						layers[1].css({'background-position': '0 '+(-step*6)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*5)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*3)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*4)+'px', 'opacity': ''}).show();
-						break;
+						case 'r':
+							layers[1].css({'background-position': '0 ' + (-step * 6) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 5) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 3) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 4) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'g':
-						layers[1].css({'background-position': '0 '+(-step*10)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*9)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*7)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*8)+'px', 'opacity': ''}).show();
-						break;
+						case 'g':
+							layers[1].css({'background-position': '0 ' + (-step * 10) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 9) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 7) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 8) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'b':
-						layers[1].css({'background-position': '0 '+(-step*14)+'px', 'opacity': ''}).show();
-						layers[2].css({'background-position': '0 '+(-step*13)+'px', 'opacity': ''}).show();
-						layers[3].css({'background-position': '0 '+(-step*11)+'px', 'opacity': ''}).show();
-						layers[4].css({'background-position': '0 '+(-step*12)+'px', 'opacity': ''}).show();
-						break;
+						case 'b':
+							layers[1].css({'background-position': '0 ' + (-step * 14) + 'px', 'opacity': ''}).show();
+							layers[2].css({'background-position': '0 ' + (-step * 13) + 'px', 'opacity': ''}).show();
+							layers[3].css({'background-position': '0 ' + (-step * 11) + 'px', 'opacity': ''}).show();
+							layers[4].css({'background-position': '0 ' + (-step * 12) + 'px', 'opacity': ''}).show();
+							break;
 
-					case 'a':
-						layers[1].hide();
-						layers[2].hide();
-						layers[3].hide();
-						layers[4].hide();
-						break;
+						case 'a':
+							layers[1].hide();
+							layers[2].hide();
+							layers[3].hide();
+							layers[4].hide();
+							break;
 					}
+					
 					that.repaint();
 				};
 
@@ -1001,50 +1113,50 @@
 					var y = 0;
 
 					switch (inst.mode) {
-					case 'h':
-						y = (1 - inst.color.getHSV().h) *  height;
-						break;
+						case 'h':
+							y = (1 - inst.color.getHSV().h) * height;
+							break;
 
-					case 's':
-						var hsv = inst.color.getHSV();
-						y = (1 - hsv.s) *  height;
-						layers[2].css('opacity', 1 - hsv.v);
-						e.css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
-						break;
+						case 's':
+							var hsv = inst.color.getHSV();
+							y = (1 - hsv.s) * height;
+							layers[2].css('opacity', 1 - hsv.v);
+							part.css('background-color', inst.color.copy().setHSV(null, 1, null).toCSS());
+							break;
 
-					case 'v':
-						y = (1 - inst.color.getHSV().v) *  height;
-						e.css('background-color', inst.color.copy().setHSV(null, null, 1).toCSS());
-						break;
+						case 'v':
+							y = (1 - inst.color.getHSV().v) * height;
+							part.css('background-color', inst.color.copy().setHSV(null, null, 1).toCSS());
+							break;
 
-					case 'r':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.r) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.g)));
-						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.b)));
-						layers[4].css('opacity', Math.min(rgb.b, rgb.g));
-						break;
+						case 'r':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.r) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.b - rgb.g)));
+							layers[3].css('opacity', Math.max(0, (rgb.g - rgb.b)));
+							layers[4].css('opacity', Math.min(rgb.b, rgb.g));
+							break;
 
-					case 'g':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.g) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.b - rgb.r)));
-						layers[3].css('opacity', Math.max(0, (rgb.r - rgb.b)));
-						layers[4].css('opacity', Math.min(rgb.r, rgb.b));
-						break;
+						case 'g':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.g) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.b - rgb.r)));
+							layers[3].css('opacity', Math.max(0, (rgb.r - rgb.b)));
+							layers[4].css('opacity', Math.min(rgb.r, rgb.b));
+							break;
 
-					case 'b':
-						var rgb = inst.color.getRGB();
-						y = (1 - rgb.b) *  height;
-						layers[2].css('opacity', Math.max(0, (rgb.r - rgb.g)));
-						layers[3].css('opacity', Math.max(0, (rgb.g - rgb.r)));
-						layers[4].css('opacity', Math.min(rgb.r, rgb.g));
-						break;
+						case 'b':
+							var rgb = inst.color.getRGB();
+							y = (1 - rgb.b) * height;
+							layers[2].css('opacity', Math.max(0, (rgb.r - rgb.g)));
+							layers[3].css('opacity', Math.max(0, (rgb.g - rgb.r)));
+							layers[4].css('opacity', Math.min(rgb.r, rgb.g));
+							break;
 
-					case 'a':
-						y = (1 - inst.color.getAlpha()) *  height;
-						e.css('background-color', inst.color.copy().toCSS());
-						break;
+						case 'a':
+							y = (1 - inst.color.getAlpha()) * height;
+							part.css('background-color', inst.color.copy().toCSS());
+							break;
 					}
 
 					if (inst.mode !== 'a') {
@@ -1053,15 +1165,24 @@
 
 					pointer.css('top', y - 3);
 				};
+
+				this.disable = function (disable) {
+					part[disable ? 'off' : 'on']('mousedown', _mousedown);
+					part[disable ? 'off' : 'on']('keydown', _keydown);
+				};
 			},
 
 			preview: function (inst) {
 				var that = this,
-					e = null,
+					part = null,
 					both,
 					initial, initial_alpha,
 					current, current_alpha,
-					_html;
+					_html,
+					onclick = function () {
+						inst.color = inst.currentColor.copy();
+						inst._change();
+					};
 
 				_html = function () {
 					return '<div class="ui-colorpicker-preview ui-colorpicker-border">'
@@ -1071,19 +1192,16 @@
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
+					part = $(_html()).appendTo($('.ui-colorpicker-preview-container', inst.dialog));
 
-					$('.ui-colorpicker-preview-initial', e).click(function () {
-						inst.color = inst.currentColor.copy();
-						inst._change();
-					});
+					$('.ui-colorpicker-preview-initial', part).on('click', onclick);
 
 					// cache
-					initial			= $('.ui-colorpicker-preview-initial', e);
-					initial_alpha	= $('.ui-colorpicker-preview-initial-alpha', e);
-					current			= $('.ui-colorpicker-preview-current', e);
-					current_alpha	= $('.ui-colorpicker-preview-current-alpha', e);
-					both			= $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', e);					
+					initial			= $('.ui-colorpicker-preview-initial', part);
+					initial_alpha	= $('.ui-colorpicker-preview-initial-alpha', part);
+					current			= $('.ui-colorpicker-preview-current', part);
+					current_alpha	= $('.ui-colorpicker-preview-current-alpha', part);
+					both			= $('.ui-colorpicker-preview-initial-alpha, .ui-colorpicker-preview-current-alpha', part);
 				};
 
 				this.update = function () {
@@ -1098,11 +1216,15 @@
 					current.css('background-color', inst.color.set ? inst.color.toCSS() : '').attr('title', inst.color.set ? inst.color.toCSS() : '');
 					current_alpha.css('opacity', 1 - inst.color.getAlpha());
 				};
+
+				this.disable = function (disable) {
+					$('.ui-colorpicker-preview-initial', part)[disable ? 'off' : 'on']('click', onclick);
+				};
 			},
 
 			hsv: function (inst) {
 				var that = this,
-					e = null,
+					part = null,
 					inputs = {},
 					_html;
 
@@ -1119,18 +1241,18 @@
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-hsv-container', inst.dialog));
+					part = $(_html()).appendTo($('.ui-colorpicker-hsv-container', inst.dialog));
 
-					$('.ui-colorpicker-mode', e).click(function () {
+					$('.ui-colorpicker-mode', part).click(function () {
 						inst.mode = $(this).val();
 						inst._updateAllParts();
 					});
 					
-					inputs.h = $('.ui-colorpicker-hsv-h .ui-colorpicker-number', e);
-					inputs.s = $('.ui-colorpicker-hsv-s .ui-colorpicker-number', e);
-					inputs.v = $('.ui-colorpicker-hsv-v .ui-colorpicker-number', e);
+					inputs.h = $('.ui-colorpicker-hsv-h .ui-colorpicker-number', part);
+					inputs.s = $('.ui-colorpicker-hsv-s .ui-colorpicker-number', part);
+					inputs.v = $('.ui-colorpicker-hsv-v .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
 						inst.color.setHSV(
 							inputs.h.val() / 360,
 							inputs.s.val() / 100,
@@ -1148,17 +1270,21 @@
 				};
 
 				this.update = function () {
-					$('.ui-colorpicker-mode', e).each(function () {
+					$('.ui-colorpicker-mode', part).each(function () {
 						var $this = $(this);
-						$this.attr('checked', $this.val() === inst.mode);
+						$this.prop('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
+				};
+
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
 				};
 			},
 
 			rgb: function (inst) {
 				var that = this,
-					e = null,
+					part = null,
 					inputs = {},
 					_html;
 
@@ -1175,19 +1301,19 @@
 				};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-rgb-container', inst.dialog));
+					part = $(_html()).appendTo($('.ui-colorpicker-rgb-container', inst.dialog));
 
-					$('.ui-colorpicker-mode', e).click(function () {
+					$('.ui-colorpicker-mode', part).click(function () {
 						inst.mode = $(this).val();
 						inst._updateAllParts();
 					});
 					
-					inputs.r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e);
-					inputs.g = $('.ui-colorpicker-rgb-g .ui-colorpicker-number', e);
-					inputs.b = $('.ui-colorpicker-rgb-b .ui-colorpicker-number', e);					
+					inputs.r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', part);
+					inputs.g = $('.ui-colorpicker-rgb-g .ui-colorpicker-number', part);
+					inputs.b = $('.ui-colorpicker-rgb-b .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', e).bind('change keyup', function () {
-						var r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', e).val();
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
+						var r = $('.ui-colorpicker-rgb-r .ui-colorpicker-number', part).val();
 						inst.color.setRGB(
 							inputs.r.val() / 255,
 							inputs.g.val() / 255,
@@ -1200,17 +1326,21 @@
 
 				this.repaint = function () {
 					var rgb = inst.color.getRGB();
-					inputs.r.val(Math.floor(rgb.r * 255));
-					inputs.g.val(Math.floor(rgb.g * 255));
-					inputs.b.val(Math.floor(rgb.b * 255));
+					inputs.r.val(Math.round(rgb.r * 255));
+					inputs.g.val(Math.round(rgb.g * 255));
+					inputs.b.val(Math.round(rgb.b * 255));
 				};
 
 				this.update = function () {
-					$('.ui-colorpicker-mode', e).each(function () {
+					$('.ui-colorpicker-mode', part).each(function () {
 						var $this = $(this);
-						$this.attr('checked', $this.val() === inst.mode);
+						$this.prop('checked', $this.val() === inst.mode);
 					});
 					this.repaint();
+				};
+
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
 				};
 			},
 
@@ -1239,7 +1369,7 @@
 					inputs.a = $('.ui-colorpicker-lab-a .ui-colorpicker-number', part);
 					inputs.b = $('.ui-colorpicker-lab-b .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).on('input change keyup', function (event) {
 						inst.color.setLAB(
 							parseInt(inputs.l.val(), 10) / 100,
 							(parseInt(inputs.a.val(), 10) + 128) / 255,
@@ -1257,6 +1387,10 @@
 				};
 
 				this.update = this.repaint;
+				
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
+				};
 			},
 
 			cmyk: function (inst) {
@@ -1284,7 +1418,7 @@
 					inputs.y = $('.ui-colorpicker-cmyk-y .ui-colorpicker-number', part);
 					inputs.k = $('.ui-colorpicker-cmyk-k .ui-colorpicker-number', part);
 					
-					$('.ui-colorpicker-number', part).bind('change keyup', function (event) {
+					$('.ui-colorpicker-number', part).on('input change keyup', function (event) {
 						inst.color.setCMYK(
 							parseInt(inputs.c.val(), 10) / 100,
 							parseInt(inputs.m.val(), 10) / 100,
@@ -1304,11 +1438,15 @@
 				};
 
 				this.update = this.repaint;
+
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
+				};
 			},
 
 			alpha: function (inst) {
 				var that = this,
-					e = null,
+					part = null,
 					input,
 					html = function () {
 						var html = '';
@@ -1321,24 +1459,24 @@
 					};
 
 				this.init = function () {
-					e = $(html()).appendTo($('.ui-colorpicker-alpha-container', inst.dialog));
+					part = $(html()).appendTo($('.ui-colorpicker-alpha-container', inst.dialog));
 
-					$('.ui-colorpicker-mode', e).click(function () {
+					$('.ui-colorpicker-mode', part).click(function () {
 						inst.mode = $(this).val();
 						inst._updateAllParts();
 					});
 					
-					input = $('.ui-colorpicker-a .ui-colorpicker-number', e);
+					input = $('.ui-colorpicker-a .ui-colorpicker-number', part);
 
-					$('.ui-colorpicker-number', e).bind('change keyup', function () {
+					$('.ui-colorpicker-number', part).on('input change keyup', function () {
 						inst.color.setAlpha(input.val() / 100);
 						inst._change();
 					});
 				};
 
 				this.update = function () {
-					$('.ui-colorpicker-mode', e).each(function () {
-						$(this).attr('checked', $(this).val() === inst.mode);
+					$('.ui-colorpicker-mode', part).each(function () {
+						$(this).prop('checked', $(this).val() === inst.mode);
 					});
 					this.repaint();
 				};
@@ -1346,52 +1484,90 @@
 				this.repaint = function () {
 					input.val(Math.round(inst.color.getAlpha() * 100));
 				};
+				
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
+				};
 			},
 
 			hex: function (inst) {
 				var that = this,
-					e = null,
+					part = null,
 					inputs = {},
-					_html;
+					parseHex = function(color) {
+						var c,
+							m;
 
-				_html = function () {
-					var html = '';
+						// {#}rgb
+						m = /^#?([a-fA-F0-9]{1,3})$/.exec(color);
+						if (m) {
+							c = parseInt(m[1], 16);
+							return new $.colorpicker.Color(
+								((c >> 8) & 0xF) / 15,
+								((c >> 4) & 0xF) / 15,
+								(c & 0xF) / 15
+							);
+						}
 
-					if (inst.options.alpha) {
-						html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
-					}
+						// {#}rrggbb
+						m = /^#?([a-fA-F0-9]{1,6})$/.exec(color);
+						if (m) {
+							c = parseInt(m[1], 16);
+							return new $.colorpicker.Color(
+								((c >> 16) & 0xFF) / 255,
+								((c >>  8) & 0xFF) / 255,
+								(c & 0xFF) / 255
+							);
+						}
+						
+						return new $.colorpicker.Color();
+					},
+					html = function () {
+						var html = '';
 
-					html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
+						if (inst.options.alpha) {
+							html += '<input class="ui-colorpicker-hex-alpha" type="text" maxlength="2" size="2"/>';
+						}
 
-					return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
-				};
+						html += '<input class="ui-colorpicker-hex-input" type="text" maxlength="6" size="6"/>';
+
+						return '<div class="ui-colorpicker-hex"><label>#</label>' + html + '</div>';
+					};
 
 				this.init = function () {
-					e = $(_html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
+					part = $(html()).appendTo($('.ui-colorpicker-hex-container', inst.dialog));
 
-					inputs.color = $('.ui-colorpicker-hex-input', e);
-					inputs.alpha = $('.ui-colorpicker-hex-alpha', e);
+					inputs.color = $('.ui-colorpicker-hex-input', part);
+					inputs.alpha = $('.ui-colorpicker-hex-alpha', part);
+
+					inputs.color.on('keydown keyup', function(e) {	
+						return e.ctrlKey || e.metaKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+					});
 
 					// repeat here makes the invalid input disappear faster
-					inputs.color.bind('change keydown keyup', function (a, b, c) {
+					inputs.color.on('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.color.val())) {
-							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/, ''));
+							inputs.color.val(inputs.color.val().replace(/[^a-fA-F0-9]/g, ''));
 						}
 					});
 
-					inputs.color.bind('change keyup', function () {
+					inputs.color.on('change keyup', function () {
 						// repeat here makes sure that the invalid input doesn't get parsed
-						inst.color = _parseHex(inputs.color.val()).setAlpha(inst.color.getAlpha());
+						inst.color = parseHex(inputs.color.val()).setAlpha(inst.color.getAlpha());
 						inst._change();
 					});
 
-					inputs.alpha.bind('change keydown keyup', function () {
+					inputs.alpha.on('keydown keyup', function(e) {
+						return e.ctrlKey || e.metaKey || _keycode.isHex(e.which) || !_keycode.isPrint(e.which);
+					});
+					
+					inputs.alpha.on('change', function () {
 						if (/[^a-fA-F0-9]/.test(inputs.alpha)) {
-							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/, ''));
+							inputs.alpha.val(inputs.alpha.val().replace(/[^a-fA-F0-9]/g, ''));
 						}
 					});
 
-					inputs.alpha.bind('change keyup', function () {
+					inputs.alpha.on('change keyup', function () {
 						inst.color.setAlpha(parseInt(inputs.alpha.val(), 16) / 255);
 						inst._change();
 					});
@@ -1408,10 +1584,15 @@
 				};
 
 				this.update = this.repaint;
+
+				this.disable = function (disable) {
+					$(':input', part).prop('disabled', disable);
+				};
 			},
 
 			swatches: function (inst) {
 				var that = this,
+					part = null,
 					html = function () {
 						var html = '';
 
@@ -1422,24 +1603,28 @@
 						});
 
 						return '<div class="ui-colorpicker-swatches ui-colorpicker-border" style="width:' + inst.options.swatchesWidth + 'px">' + html + '</div>';
+					},
+					onclick = function () {
+						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();
+						inst._change();
 					};
 
 				this.init = function () {
-					var part = $(html());
+					part = $(html());
 					$('.ui-colorpicker-swatches-container', inst.dialog).html(part);
+					$('.ui-colorpicker-swatch', part).on('click', onclick);
+				};
 
-					$('.ui-colorpicker-swatch', part).click(function () {
-						inst.color	= inst._parseColor($(this).css('background-color')) || new $.colorpicker.Color();						
-						inst._change();
-					});
+				this.disable = function (disable) {
+					$('.ui-colorpicker-swatch', part)[disable ? 'off' : 'on']('click', onclick);
 				};
 			},
 
 			footer: function (inst) {
 				var that = this,
 					part = null,
-					id_transparent = 'ui-colorpicker-special-transparent-'+_colorpicker_index,
-					id_none = 'ui-colorpicker-special-none-'+_colorpicker_index,
+					id_transparent = 'ui-colorpicker-special-transparent-' + inst.colorpicker_index,
+					id_none = 'ui-colorpicker-special-none-' + inst.colorpicker_index,
 					html = function () {
 						var html = '';
 
@@ -1478,8 +1663,7 @@
 						inst.close(true);   //cancel
 					});
 
-					//inst._getRegional('transparent')
-					$('.ui-colorpicker-buttonset', part).buttonset();
+					$('.ui-colorpicker-buttonset', part)[$.fn.controlgroup ? 'controlgroup' : 'buttonset']();
 
 					$('.ui-colorpicker-special-color', part).click(function () {
 						inst._change();
@@ -1497,18 +1681,19 @@
 				};
 
 				this.repaint = function () {
-					if (!inst.color.set) {
-						$('.ui-colorpicker-special-none', part).attr('checked', true).button( "refresh" );
-					} else if (inst.color.getAlpha() === 0) {
-						$('.ui-colorpicker-special-transparent', part).attr('checked', true).button( "refresh" );
-					} else {
-						$('input', part).attr('checked', false).button( "refresh" );
-					}
-
-					$('.ui-colorpicker-cancel', part).button(inst.changed ? 'enable' : 'disable');
+					$('.ui-colorpicker-special-none', part).prop('checked', !inst.color.set).button('refresh');
+					$('.ui-colorpicker-special-transparent', part).prop('checked', inst.color.set && inst.color.getAlpha() === 0).button('refresh');
+					$('.ui-colorpicker-ok', part).button(inst.changed ? 'enable' : 'disable');
 				};
 
 				this.update = function () {};
+
+				this.disable = function (disabled) {
+					$(':input, :button', part).button(disabled ? 'disable' : 'enable');
+					if (!disabled) {
+						$('.ui-colorpicker-ok', part).button(inst.changed ? 'enable' : 'disable');
+					}
+				};
 			}
 		};
 
@@ -1846,7 +2031,53 @@
 					spaces.rgb.b = _clip(b);
 				}
 				this.set = true;
+				
+				return this;
+			};
+			
+			this.getChannel = function(channel) {
+				switch (channel) {
+					case 'h':
+					case 's':
+					case 'v':
+						return this.getHSV()[channel];
 
+					case 'r':
+					case 'g':
+					case 'b':
+						return this.getRGB()[channel];
+
+					case 'a':
+						return this.getAlpha();
+				}			
+				
+				return null;
+			};
+			
+			this.setChannel = function(channel, value) {
+				switch (channel) {
+					case 'h':
+						return this.setHSV(value, null, null);
+						
+					case 's':
+						return this.setHSV(null, value, null);
+						
+					case 'v':
+						return this.setHSV(null, null, value);
+
+					case 'r':
+						return this.setRGB(value, null, null);
+						
+					case 'g':
+						return this.setRGB(null, value, null);
+						
+					case 'b':
+						return this.setRGB(null, null, value);
+
+					case 'a':
+						return this.setAlpha(value);
+				}
+				
 				return this;
 			};
 
@@ -2096,6 +2327,7 @@
 			closeOnOutside:		true,		// Close the dialog when clicking outside the dialog (not for inline)
 			color:				'#00FF00',	// Initial color (for inline only)
 			colorFormat:		'HEX',		// Format string for output color format
+			disabled:			false,		// Disable or enable the colorpicker initially
 			draggable:			true,		// Make popup dialog draggable if header is visible.
 			containment:		null,		// Constrains dragging to within the bounds of the specified element or region.
 			duration:			'fast',
@@ -2144,14 +2376,15 @@
             ok:                 null,
 			open:               null,
 			select:             null,
-			stop:				null
+			stop:				null,
+			ready:		null
 		},
 		
 		_create: function () {
 			var that = this,
 				text;
 
-			++_colorpicker_index;
+			that.colorpicker_index = _colorpicker_index++;
 
 			that.widgetEventPrefix = 'colorpicker';
 
@@ -2180,19 +2413,19 @@
 
 				// showOn focus
 				if (/\bfocus|all|both\b/.test(that.options.showOn)) {
-					that.element.bind('focus', function () {
+					that.element.on('focus', function () {
 						that.open();
 					});
 				}
 				if (/\bfocus|all|both\b/.test(that.options.hideOn)) {
-					that.element.bind('focusout', function (e) {
+					that.element.on('focusout', function (e) {
 						that.close();
 					});
 				}
 
 				// showOn click
 				if (/\bclick|all|both\b/.test(that.options.showOn)) {
-					that.element.bind('click', function (e) {						
+					that.element.on('click', function (e) {						
 						if (that.opened && /\bclick|all|both\b/.test(that.options.hideOn)) {
 							that.close();
 						} else {
@@ -2225,17 +2458,19 @@
 						that.image = that.image ? $('img', that.button).first() : null;
 					}
 					that.button.insertAfter(that.element).click(function () {
-						if (that.opened && /\bbutton|all|both\b/.test(that.options.hideOn)) {
-							that.close();
-						} else {
-							that.open();
+						if (!that.options.disabled) {
+							if (that.opened && /\bbutton|all|both\b/.test(that.options.hideOn)) {
+								that.close();
+							} else {
+								that.open();
+							}
 						}
 					});
 				}
 
 				// showOn alt
 				if (/\balt|all|both\b/.test(that.options.showOn)) {					
-					$(that.options.altField).bind('click', function () {
+					$(that.options.altField).on('click', function () {
 						if (that.opened && /\balt|all|both\b/.test(that.options.hideOn)) {
 							that.close();
 						} else {
@@ -2247,6 +2482,7 @@
 				if (that.options.autoOpen) {
 					that.open();
 				}
+
 			} else {
 				that.inline = true;
 
@@ -2254,17 +2490,19 @@
 				that.opened = true;
 			}
 
+			// Disable Widget-style
+			(that.element.is(':disabled') || that.options.disabled) && that.disable();
+			
+			// Set callback just before creation ending
+			that._callback('ready');
+
 			return this;
 		},
 
-		_setOption: function(key, value){
+		_setOption: function(key, value) {
 			switch (key) {
 				case 'disabled':
-					if (value) {
-						this.dialog.addClass('ui-colorpicker-disabled');
-					} else {
-						this.dialog.removeClass('ui-colorpicker-disabled');
-					}
+					this[value ? 'disable' : 'enable']();
 					break;
 
 				case 'swatches':
@@ -2274,6 +2512,30 @@
 			}
 
 			$.Widget.prototype._setOption.apply(this, arguments);
+		},
+
+		enable: function () {
+			//$.Widget.prototype.enable.call(this);
+			this.element && this.element.prop('disabled', false);
+			this.button && this.button.prop('disabled', false);
+			this.dialog && this.dialog.removeClass('ui-colorpicker-disabled');
+			this.options.disabled = false;
+
+			this.parts && $.each(this.parts, function (index, part) {
+				part.disable && part.disable(false);
+			});
+		},
+		
+		disable: function () {
+			//$.Widget.prototype.disable.call(this);
+			this.element && this.element.prop('disabled', true);
+			this.button && this.button.prop('disabled', true);
+			this.dialog && this.dialog.addClass('ui-colorpicker-disabled');
+			this.options.disabled = true;
+
+			this.parts && $.each(this.parts, function (index, part) {
+				part.disable && part.disable(true);
+			});
 		},
 
 		_setImageBackground: function() {
@@ -2306,9 +2568,8 @@
 					}
 				}
 
-				if (this.options.altAlpha) {
+				this.options.altAlpha && 
 					$(this.options.altField).css('opacity', this.color.set? this.color.getAlpha() : '');
-				}
 			}
 		},
 
@@ -2344,54 +2605,54 @@
 
 			// Close on clicking outside window and controls
 			if (that.events.document_click_html === null) {
-				$(document).delegate('html', 'touchstart click', that.events.document_click_html = function (event) {
-				if (!that.opened || event.target === that.element[0] || that.overlay) {
-					return;
-				}
-
-				// Check if clicked on any part of dialog
-				if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
-					that.element.blur();	// inside window!
-					return;
-				}
-
-				// Check if clicked on known external elements
-				var p,
-					parents = $(event.target).parents();
-				// add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
-				parents.push(event.target);
-				for (p = 0; p <= parents.length; ++p) {
-					// button
-					if (that.button !== null && parents[p] === that.button[0]) {
+				$(document).on('touchstart click', 'html', that.events.document_click_html = function (event) {
+					if (!that.opened || event.target === that.element[0] || that.overlay) {
 						return;
 					}
-					// showOn alt
-					if (/\balt|all|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+
+					// Check if clicked on any part of dialog
+					if (that.dialog.is(event.target) || that.dialog.has(event.target).length > 0) {
+						that.element.blur();	// inside window!
 						return;
 					}
-				}
 
-				// no closeOnOutside
-				if (!that.options.closeOnOutside) {
-					return;
-				}
+					// Check if clicked on known external elements
+					var p,
+						parents = $(event.target).parents();
+					// add the event.target in case of buttonImageOnly and closeOnOutside both are set to true
+					parents.push(event.target);
+					for (p = 0; p <= parents.length; ++p) {
+						// button
+						if (that.button !== null && parents[p] === that.button[0]) {
+							return;
+						}
+						// showOn alt
+						if (/\balt|all|both\b/.test(that.options.showOn) && $(that.options.altField).is(parents[p])) {
+							return;
+						}
+					}
 
-				that.close(that.options.revert);
-			});
+					// no closeOnOutside
+					if (!that.options.closeOnOutside) {
+						return;
+					}
+
+					that.close(that.options.revert);
+				});
 			}
 
 			if (that.events.document_keydown === null) {
-				$(document).bind('keydown', that.events.document_keydown = function (event) {
-				// close on ESC key
-				if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
-					that.close(that.options.revert);
-				}
+				$(document).on('keydown', that.events.document_keydown = function (event) {
+					// close on ESC key
+					if (that.opened && event.keyCode === 27 && that.options.closeOnEscape) {
+						that.close(that.options.revert);
+					}
 
-				// OK on Enter key
-				if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
-					that.close();
-				}
-			});
+					// OK on Enter key
+					if (that.opened && event.keyCode === 13 && that.options.okOnEnter) {
+						that.close();
+					}
+				});
 			}
 
 			// Close (with OK) on tab key in element
@@ -2490,7 +2751,7 @@
 							:	(that.options.showAnim === 'fadeIn' ?
 									fade
 								:	show))]((that.options.showAnim ? that.options.duration : null), callback);
-				if (!that.options.showAnim || !that.options.duration) {
+				if ($.isFunction(callback) && (!that.options.showAnim || !that.options.duration)) {
 					callback();
 				}
 			}
@@ -2521,23 +2782,7 @@
 					element = $('<div/>').insertBefore(that.element);
 				} else {
 					element = that.element;
-				}
-				
-				if (that.options.position) {
-					position = $.extend({}, that.options.position);
-					if (position.of === 'element') {
-						position.of = element;
-					}
-				} else {					
-					position = {
-						my:			'left top',
-						at:			'left bottom',
-						of:			element,
-						collision:	'flip'
-					};
-				}
-				
-				that.dialog.position(position);				
+				}			
 				
 				if (that.element.is(':hidden')) {
 					element.remove();
@@ -2572,7 +2817,7 @@
 					that.overlay = $('<div class="ui-widget-overlay"></div>').appendTo('body').css('z-index', zIndex - 1);										
 
 					if (that.events.window_resize !== null) {
-						$(window).unbind('resize', that.events.window_resize);					
+						$(window).off('resize', that.events.window_resize);					
 					}
 					
 					that.events.window_resize = function() {
@@ -2582,13 +2827,29 @@
 						}
 					},
 															
-					$(window).bind('resize', that.events.window_resize);
+					$(window).on('resize', that.events.window_resize);
 					that.events.window_resize();			
 				}
 
 				that._effectShow(this.dialog);
+
+				if (that.options.position) {
+					position = $.extend({}, that.options.position);
+					if (position.of === 'element') {
+						position.of = element;
+					}
+				} else {
+					position = {
+						my:			'left top',
+						at:			'left bottom',
+						of:			element,
+						collision:	'flip'
+					};
+				}
+				that.dialog.position(position);
+				
 				that.opened = true;
-				that._callback('open', true);
+				that._callback('open');
 
 				// Without waiting for domready the width of the map is 0 and we
 				// wind up with the cursor stuck in the upper left corner
@@ -2608,15 +2869,15 @@
             if (cancel) {
 				that.color = that.currentColor.copy();
                 that._change();
-                that._callback('cancel', true);
+                that._callback('cancel');
             } else {
 				that.currentColor	= that.color.copy();
-                that._callback('ok', true);
+                that._callback('ok');
             }
 			that.changed		= false;
 
 			if (that.overlay) {
-				$(window).unbind('resize', that.events.window_resize);					
+				$(window).off('resize', that.events.window_resize);					
 				that.overlay.remove();
 			}
 			
@@ -2627,24 +2888,25 @@
 				that.generated	= false;
 
 				that.opened		= false;
-				that._callback('close', true);
+				that._callback('close');
 			});
 		},
 
 		destroy: function() {
+			var that = this;
 			if (that.events.document_click_html !== null) {
-				$(document).undelegate('html', 'touchstart click', that.events.document_click_html);
+				$(document).off('touchstart click', 'html', that.events.document_click_html);
 			}
 			
 			if (that.events.document_keydown !== null) {
-				$(document).unbind('keydown', that.events.document_keydown);
+				$(document).off('keydown', that.events.document_keydown);
 			}
 			
-			if (that.events.resizeOverlay !== null) {
-				$(window).unbind('resize', that.events.resizeOverlay);					
+			if (that.events.window_resize !== null) {
+				$(window).off('resize', that.events.window_resize);					
 			}			
 			
-			this.element.unbind();
+			this.element.off();
 
 			if (this.overlay) {
 				this.overlay.remove();
@@ -2663,7 +2925,7 @@
 			}
 		},
 
-		_callback: function (callback, spaces) {
+		_callback: function (callback) {
 			var that = this,
 				data,
 				lab;
@@ -2674,18 +2936,18 @@
 					colorPicker: that
 				};
 
+				data.hex	= that.color.toHex();
+				data.css	= that.color.toCSS();
+				data.a		= that.color.getAlpha();
+				data.rgb	= that.color.getRGB();
+				data.hsv	= that.color.getHSV();
+				data.cmyk	= that.color.getCMYK();
+				data.hsl	= that.color.getHSL();
+
 				lab = that.color.getLAB();
 				lab.a = (lab.a * 2) - 1;
 				lab.b = (lab.b * 2) - 1;
-
-				if (spaces === true) {
-					data.a		= that.color.getAlpha();
-					data.rgb	= that.color.getRGB();
-					data.hsv	= that.color.getHSV();
-					data.cmyk	= that.color.getCMYK();
-					data.hsl	= that.color.getHSL();
-					data.lab	= lab;
-				}
+				data.lab	= lab;
 
 				return that._trigger(callback, null, data);
 			} else {
@@ -2720,15 +2982,14 @@
 			});
 		},
 		
-		_change: function (stop /* = true */) {
-			this.changed = true;	
-			
-			stop = typeof stop !== 'undefined' ? !!stop : true;
-
+		_change: function (stoppedChanging /* = true */) {
 			// Limit color palette
-			if (this.options.limit && $.colorpicker.limits[this.options.limit]) {
+			if (this.color.set && this.options.limit && $.colorpicker.limits[this.options.limit]) {
 				$.colorpicker.limits[this.options.limit](this.color, this);
 			}
+
+			// Set changed if different from starting color
+			this.changed = !this.color.equals(this.currentColor);
 
 			// update input element content
 			if (!this.inline) {
@@ -2741,8 +3002,10 @@
 				}
 
 				this._setImageBackground();
-				this._setAltField();
 			}
+
+			// Set the alt field
+			this._setAltField();
 
 			// update color option
 			this.options.color = this.color.set ? this.color.toCSS() : '';
@@ -2751,9 +3014,10 @@
 				this._repaintAllParts();
 			}
 
-			// callback
+			// callbacks
 			this._callback('select');
-			if (stop) {
+
+			if (typeof stoppedChanging === 'undefined' ? true : !!stoppedChanging) {
 				this._callback('stop');
 			}
 		},
@@ -2824,7 +3088,7 @@
 				,	p:	function() {return '([0-9]*\\.?[0-9]*)';}
 				},
 				typeConverters = {
-					x:	function(v)	{return parseInt(v, 16);}
+					x:	function(v)	{return parseInt(v, 16) / 255.;}
 				,	d:	function(v)	{return v / 255.;}
 				,	f:	function(v)	{return v;}
 				,	p:	function(v)	{return v * 0.01;}
@@ -2860,6 +3124,7 @@
 			pattern = format.replace(/[()\\^$.|?*+[\]]/g, function(m) {
 				return '\\'+m;
 			});
+
 
 			pattern = pattern.replace(/\\?[argbhsvcmykLAB][xdfp]/g, function(variable) {
 				if (variable.match(/^\\/)) {
@@ -2906,7 +3171,7 @@
 			var formats = $.isArray(that.options.colorFormat)
 					? that.options.colorFormat
 					: [ that.options.colorFormat ];
-			
+
 			$.each(formats, function(index, format) {
 				if ($.colorpicker.parsers[format]) {
 					color = $.colorpicker.parsers[format](text, that);
@@ -2973,7 +3238,7 @@
 			var that		= this,
 				text		= null,
 				types		= {	'x':	function(v) {return _intToHex(v * 255);}
-							,	'd':	function(v) {return Math.floor(v * 255);}
+							,	'd':	function(v) {return Math.round(v * 255);}
 							,	'f':	function(v) {return v;}
 							,	'p':	function(v) {return v * 100.;}
 							},
@@ -3001,4 +3266,6 @@
 			return text;
 		}
 	});
-}(jQuery));
+	
+	return $.vanderlee.colorpicker;
+}));

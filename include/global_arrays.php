@@ -113,6 +113,7 @@ $cacti_version_codes = array(
 	'1.1.37' => '0101',
 	'1.1.38' => '0101',
 	'1.2.0'  => '0101',
+	'1.2.1'  => '0101',
 );
 
 $messages = array(
@@ -842,6 +843,9 @@ $custom_data_source_types = array(
 
 if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 	$menu = array(
+		__('Main Console') => array(
+			'index.php' => __('Console Page')
+			),
 		__('Create') => array(
 			'graphs_new.php' => __('New Graphs'),
 			'host.php?action=edit' => __('New Device')
@@ -917,6 +921,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 }
 
 $menu_glyphs = array(
+	__('Main Console') => 'fa fa-map',
 	__('Create') => 'fa fa-chart-area',
 	__('Management') => 'fa fa-home',
 	__('Data Collection') => 'fa fa-database',
@@ -969,7 +974,15 @@ $log_tail_lines = array(
 $item_rows = array(
 	10   => '10',
 	15   => '15',
+	16   => '16',
+	17   => '17',
+	18   => '18',
+	19   => '19',
 	20   => '20',
+	21   => '21',
+	22   => '22',
+	23   => '23',
+	24   => '24',
 	25   => '25',
 	26   => '26',
 	27   => '27',
@@ -979,7 +992,8 @@ $item_rows = array(
 	45   => '45',
 	50   => '50',
 	100  => '100',
-	250  => '250'
+	250  => '250',
+	500  => '500'
 );
 
 $graphs_per_page = array(
@@ -1389,6 +1403,8 @@ $realtime_window = array(
 );
 
 $realtime_refresh = array(
+	1   => __('%d Seconds', 1),
+	2   => __('%d Seconds', 2),
 	5   => __('%d Seconds', 5),
 	10  => __('%d Seconds', 10),
 	15  => __('%d Seconds', 15),

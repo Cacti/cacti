@@ -256,7 +256,6 @@ function aggregate_get_graph_items($table, $id) {
  */
 function aggregate_form_actions() {
 	global $aggregate_actions, $config;
-	include_once($config['base_path'] . '/api_aggregate.php');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action');
@@ -468,11 +467,11 @@ function aggregate_template_edit() {
 	function changeTotalsType() {
 		if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_SIMILAR;?>) {
 			if ($('#total_prefix').val() == '') {
-				$('#total_prefix').attr('value', 'Total');
+				$('#total_prefix').attr('value', '<?php print __('Total');?>');
 			}
 		} else if ($('#total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>) {
 			if ($('#total_prefix').val() == '') {
-				$('#total_prefix').attr('value', 'All Items');
+				$('#total_prefix').attr('value', '<?php print __('All Items');?>');
 			}
 		}
 	}
@@ -665,7 +664,7 @@ function aggregate_template() {
 			form_end_row();
 		}
 	} else {
-		print "<tr><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Aggregate Templates Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

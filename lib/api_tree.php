@@ -363,7 +363,7 @@ function api_tree_delete_node_content($tree_id, $leaf_id) {
 
 	if (cacti_sizeof($children)) {
 		foreach($children as $child) {
-			if ($child['host_id'] == 0 && $child['graph_id'] == 0) {
+			if ($child['host_id'] == 0 && $child['local_graph_id'] == 0) {
 				api_tree_delete_node_content($tree_id, $child['id']);
 			}
 

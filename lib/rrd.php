@@ -2226,7 +2226,7 @@ function rrdtool_function_format_graph_date(&$graph_data_array) {
 	/* setup date format */
 	$date_fmt = read_user_setting('default_date_format');
 	$dateCharSetting = read_config_option('default_datechar');
-	if (empty($dateCharSetting)) {
+	if ($dateCharSetting == '') {
 		$dateCharSetting = GDC_SLASH;
 	}
 	$datecharacter = $datechar[$dateCharSetting];
@@ -2803,7 +2803,7 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 
 	$cmd = array();
 	# for html/cli mode
-	if (!isset($_SERVER['argv'][0]) || isset($_SERVER['REQUEST_METHOD'])  || isset($_SERVER['REMOTE_ADDR'])) {
+	if (CACTI_CLI) {
 		$nl = '<br/>';
 	} else {
 		$nl = "\n";

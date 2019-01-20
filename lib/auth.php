@@ -757,9 +757,14 @@ function get_allowed_tree_content($tree_id, $parent = 0, $sql_where = '', $order
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id AND (" . $sql_where . ')';
+		$sql_where = "WHERE gti.local_graph_id=0
+			AND gti.parent=$parent
+			AND gti.graph_tree_id=$tree_id
+			AND (" . $sql_where . ')';
 	} else {
-		$sql_where = "WHERE gti.local_graph_id=0 AND gti.parent=$parent AND gti.graph_tree_id=$tree_id";
+		$sql_where = "WHERE gti.local_graph_id=0
+			AND gti.parent=$parent
+			AND gti.graph_tree_id=$tree_id";
 	}
 
 	$trees = array_rekey(
@@ -1001,13 +1006,13 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($user == -1) {
@@ -1086,7 +1091,7 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
+		$graphs_sql = "SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1098,23 +1103,15 @@ function get_allowed_graphs($sql_where = '', $order_by = 'gtg.title_cache', $lim
 			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
-			$sql_having
+			$sql_having";
+
+		$graphs = db_fetch_assoc("$graphs_sql
 			$order_by
 			$limit");
 
 		$total_rows = db_fetch_cell("SELECT COUNT(*)
 			FROM (
-				SELECT $sql_select
-				FROM graph_templates_graph AS gtg
-				INNER JOIN graph_local AS gl
-				ON gl.id=gtg.local_graph_id
-				LEFT JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
-				ON h.id=gl.host_id
-				$sql_join
-				$sql_where
-				$sql_having
+				$graphs_sql
 			) AS rower");
 	} else {
 		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
@@ -1158,13 +1155,13 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . '(h.disabled="" OR h.disabled IS NULL)';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($user == -1) {
@@ -1243,7 +1240,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 
 		$sql_having = "HAVING $sql_having";
 
-		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
+		$graphs_sql = "SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1265,31 +1262,15 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 			ON h.id=gl.host_id
 			$sql_join
 			$sql_where
-			$sql_having
+			$sql_having";
+
+		$graphs = db_fetch_assoc("$graphs_sql
 			$order_by
 			$limit");
 
-		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.id)
+		$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT rower.local_graph_id)
 			FROM (
-				SELECT gl.id, $sql_select
-				FROM graph_templates_graph AS gtg
-				INNER JOIN (
-					SELECT ag.local_graph_id AS id, gl.host_id, gl.graph_template_id,
-					gl.snmp_query_id, gl.snmp_query_graph_id, gl.snmp_index
-					FROM aggregate_graphs AS ag
-					INNER JOIN aggregate_graphs_items AS agi
-					ON ag.id=agi.aggregate_graph_id
-					INNER JOIN graph_local AS gl
-					ON gl.id=agi.local_graph_id
-				) AS gl
-				ON gl.id=gtg.local_graph_id
-				LEFT JOIN graph_templates AS gt
-				ON gt.id=gl.graph_template_id
-				LEFT JOIN host AS h
-				ON h.id=gl.host_id
-				$sql_join
-				$sql_where
-				$sql_having
+				$graphs_sql
 			) AS rower");
 	} else {
 		$graphs = db_fetch_assoc("SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
@@ -1372,6 +1353,10 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 			$_SESSION['sess_allowed_templates'][$hash] = $items;
 		}
 	}
+}
+
+function clear_cached_allowed_types() {
+	kill_session_var('sess_allowed_templates');
 }
 
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
@@ -1779,13 +1764,13 @@ function get_allowed_devices($sql_where = '', $order_by = 'description', $limit 
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($host_id > 0) {
@@ -2015,13 +2000,13 @@ function get_allowed_site_devices($site_id, $sql_where = '', $order_by = 'descri
 	}
 
 	if (read_user_setting('hide_disabled') == 'on') {
-		$sql_where .= ($sql_where != '' ? ' AND':'') . ' h.disabled=""';
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . '(IFNULL(h.disabled,"")="")';
 	}
 
 	if ($sql_where != '') {
-		$sql_where = "WHERE h.deleted = '' AND $sql_where";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = '' AND $sql_where";
 	} else {
-		$sql_where = "WHERE h.deleted = ''";
+		$sql_where = "WHERE IFNULL(h.deleted,'') = ''";
 	}
 
 	if ($site_id > 0) {

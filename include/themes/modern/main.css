@@ -1036,6 +1036,7 @@ legend {
 }
 
 .cactiGraphContentArea {
+	height: 100vh;
 	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -1046,6 +1047,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
+	height: 100vh;
 	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
@@ -1063,6 +1065,7 @@ legend {
 	vertical-align: top;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
+	height: 100vh;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
@@ -1094,7 +1097,6 @@ legend {
 	text-decoration: none;
 	font-size: 12px;
 	font-weight: normal;
-	padding: 0px;
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -1766,7 +1768,7 @@ th.secondarySort {
 }
 
 .textAreaNotes {
-	font-size: 12px;
+	font-size: 11px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
@@ -2140,7 +2142,7 @@ tr.selected a {
 	color:black;
 }
 
-#nav li a.pic:hover, #nav li a.selected {
+#nav li a.pic:hover, #nav li ul li a.selected {
 	background: -moz-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(242,246,248,1)), color-stop(50%, rgba(216,225,231,1)), color-stop(51%, rgba(181,198,208,1)), color-stop(100%, rgba(224,239,249,1)));
 	background: -webkit-linear-gradient(top, rgba(242,246,248,1) 0%, rgba(216,225,231,1) 50%, rgba(181,198,208,1) 51%, rgba(224,239,249,1) 100%);
@@ -2167,8 +2169,9 @@ tr.selected a {
 
 ul#nav {
 	list-style: none;
-	padding:0;
-	width:100%;
+	padding: 0;
+	padding-top: 4px;
+	width: 100%;
 }
 
 .clogError {

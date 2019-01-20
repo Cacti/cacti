@@ -80,6 +80,7 @@
     position:				absolute;
 	left:					0;
 }
+
 /* Map */
 .ui-colorpicker-map,
 .ui-colorpicker-map > * {
@@ -224,4 +225,15 @@
 	height:					11px;
     border-right:			1px solid black;
     border-bottom:			1px solid black;
+}
+
+.ui-colorpicker-disabled {
+	opacity:				.5;
+	-ms-filter:				"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	filter:					alpha(opacity=50);
+	pointer-events:			none;
+}
+
+.ui-colorpicker-disabled * {
+	cursor:					default !important;
 }

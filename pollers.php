@@ -287,7 +287,7 @@ function form_save() {
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
 		}
 
-		if ($save['dbhost'] == 'localhost' && $save['id'] > 1) {
+		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
 		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
@@ -554,10 +554,14 @@ function poller_edit() {
 
 	$row_html = '<div class="formRow odd"><div class="formColumnLeft"><div class="formFieldName">' . __('Test Database Connection') . $tooltip . '</div></div><div class="formColumnRight"><input type="button" class="ui-button ui-corner-all ui-widget" id="dbtest" value="' . __esc('Test Connection') . '"><span id="results"></span></div></div>';
 
+	$pt = read_config_option('poller_type');
+
 	if (isset($poller) && cacti_sizeof($poller)) {
 		if ($poller['id'] > 1) {
 			?>
 			<script type='text/javascript'>
+			pt = <?php print $pt;?>;
+
 			function showHideRemoteDB() {
 					var hasSSL = $('#dbssl').is(':checked');
 					if (hasSSL) {
@@ -582,6 +586,10 @@ function poller_edit() {
 				});
 
 				showHideRemoteDB();
+
+				if (pt == 1) {
+					$('#row_threads').hide();
+				}
 			});
 
 			function ping_database() {
@@ -608,8 +616,14 @@ function poller_edit() {
 		} else {
 			?>
 			<script type='text/javascript'>
+			pt = <?php print $pt;?>;
+
 			$(function() {
 				$('#row_timezone').hide();
+
+				if (pt == 1) {
+					$('#row_threads').hide();
+				}
 			});
 			</script>
 			<?php
@@ -846,12 +860,14 @@ function pollers() {
 				$poller['name'] = '&lt;no name&gt;';
 			}
 
+			$pt = read_config_option('poller_type');
+
 			form_alternate_row('line' . $poller['id'], true, $disabled);
 			form_selectable_cell(filter_value($poller['name'], get_request_var('filter'), 'pollers.php?action=edit&id=' . $poller['id']), $poller['id']);
 			form_selectable_cell($poller['id'], $poller['id'], '', 'right');
-			form_selectable_cell(html_escape($poller['hostname']), $poller['id'], '', 'right');
+			form_selectable_ecell($poller['hostname'], $poller['id'], '', 'right');
 			form_selectable_cell($poller_status[$poller['status']], $poller['id'], '', 'center');
-			form_selectable_cell($poller['processes'] . '/' . $poller['threads'], $poller['id'], '', 'right');
+			form_selectable_cell($poller['processes'] . '/' . ($pt == 2 ? $poller['threads']:'-'), $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['total_time'], 2), $poller['id'], '', 'right');
 			form_selectable_cell($mma, $poller['id'], '', 'right');
 			form_selectable_cell(number_format_i18n($poller['hosts'], '-1'), $poller['id'], '', 'right');
@@ -871,7 +887,7 @@ function pollers() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='4'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Data Collectors Found') . "</em></td></tr>\n";
 	}
 
 	html_end_box(false);

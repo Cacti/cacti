@@ -1181,7 +1181,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			<script type='text/javascript'>
 			$().ready(function() {
 				$('#continue').hide();
-				$('#cancel').attr('value', 'Return');
+				$('#cancel').attr('value', '<?php print __esc('Return');?>');
 			});
 			</script>
 			<?php
@@ -1196,7 +1196,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			<script type='text/javascript'>
 			$(function() {
 				$('#continue').hide();
-				$('#cancel').attr('value', 'Return');
+				$('#cancel').attr('value', '<?php print __esc('Return');?>');
 			});
 			</script>
 			<?php
@@ -1348,19 +1348,23 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					$matrix_title = $item['text_format'];
 					break;
 				case preg_match('/(HRULE)/', $_graph_type_name):
-					$force_skip = true;
 					$matrix_title = 'HRULE: ' . $item['value'];
+					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['value'])) {
+						$force_skip = false;
+					} else {
+						$force_skip = true;
+					}
 					break;
 				case preg_match('/(VRULE)/', $_graph_type_name):
 					$force_skip = true;
 					$matrix_title = 'VRULE: ' . $item['value'];
 					break;
 				case preg_match('/(COMMENT)/', $_graph_type_name):
+					$matrix_title = 'COMMENT: ' . $item['text_format'];
 					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
-						$matrix_title = 'COMMENT: ' . $item['text_format'];
+						$force_skip = false;
 					} else {
 						$force_skip = true;
-						$matrix_title = 'COMMENT: ' . $item['text_format'];
 					}
 					break;
 			}

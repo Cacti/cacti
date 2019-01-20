@@ -1003,7 +1003,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1105,7 +1105,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching User Groups Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching User Groups Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1263,7 +1263,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Devices Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Devices Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1408,7 +1408,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1548,7 +1548,7 @@ function graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Trees Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Trees Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1711,7 +1711,7 @@ function user_realms_edit($header_label) {
 	print "</tr></table></td></tr>\n";
 
 	/* do plugin realms */
-	$realms = db_fetch_assoc('SELECT pc.name, pr.id AS realm_id, pr.display
+	$realms = db_fetch_assoc('SELECT pc.directory, pc.name, pr.id AS realm_id, pr.display
 		FROM plugin_config AS pc
 		INNER JOIN plugin_realms AS pr
 		ON pc.directory = pr.plugin
@@ -1744,7 +1744,7 @@ function user_realms_edit($header_label) {
 			}
 
 			if ($break || $i == 1) {
-				print "<i>" . html_escape($r['name']) . "</i><br>\n";
+				print "<i>" . html_escape(__($r['name'], $r['directory'])) . "</i><br>\n";
 			}
 
 			$realm = $r['realm_id'] + 100;
@@ -1757,9 +1757,11 @@ function user_realms_edit($header_label) {
 
 			unset($all_realms[$realm]);
 
-			$pos = (strpos($user_auth_realms[$realm], '->') !== false ? strpos($user_auth_realms[$realm], '->')+2:0);
+			$local_user_auth_realms = __($user_auth_realms[$realm], $r['directory']);
 
-			form_checkbox('section' . $realm, $old_value, substr($user_auth_realms[$realm], $pos), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
+			$pos = (strpos($local_user_auth_realms, '->') !== false ? strpos($local_user_auth_realms, '->')+2:0);
+
+			form_checkbox('section' . $realm, $old_value, trim(substr($local_user_auth_realms, $pos)), '', '', '', (!isempty_request_var('id') ? 1 : 0)); print '<br>';
 
 			$last_plugin = $r['name'];
 
@@ -1773,7 +1775,7 @@ function user_realms_edit($header_label) {
 			print "</td><td class='realms'>\n";
 		}
 
-		print '<strong>' . __('Legacy 1.x Plugins') . '</strong><br>';
+		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
 		foreach($all_realms as $realm => $name) {
 			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_realm WHERE user_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';

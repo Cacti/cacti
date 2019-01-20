@@ -666,7 +666,13 @@ function get_message_max_type() {
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
 	global $messages, $no_http_headers;
 
-	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	// This function should always exist, if not its an invalid install
+	if (function_exists('session_status')) {
+		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	} else {
+		return false;
+	}
+
 	if (empty($message)) {
 		if (array_key_exists($message_id, $messages)) {
 			$predefined = $messages[$message_id];
@@ -745,7 +751,12 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
-	$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	// This function should always exist, if not its an invalid install
+	if (function_exists('session_status')) {
+		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
+	} else {
+		return false;
+	}
 
 	if ($need_session) {
 		session_start();
@@ -774,7 +785,10 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
-	if (session_status() == PHP_SESSION_NONE) {
+	// This function should always exist, if not its an invalid install
+	if (!function_exists('session_status')) {
+		return false;
+	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
 		session_start();
@@ -827,13 +841,13 @@ function cacti_log_file() {
 /* cacti_log - logs a string to Cacti's log file or optionally to the browser
    @arg $string - the string to append to the log file
    @arg $output - (bool) whether to output the log line to the browser using print() or not
-   @arg $environ - (string) tell's from where the script was called from
+   @arg $environ - (string) tells from where the script was called from
    @arg $level - (int) only log if above the specified log level */
 function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	global $config, $database_log;
 
 	if (!isset($database_log)) {
-		$databsae_log = false;
+		$database_log = false;
 	}
 
 	$last_log = $database_log;
@@ -930,13 +944,13 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 	/* Syslog is currently Unstable in Win32 */
 	if ($logdestination == 2 || $logdestination == 3) {
 		$log_type = '';
-		if (strpos($string,'ERROR:') !== false) {
+		if (strpos($string, 'ERROR:') !== false) {
 			$log_type = 'err';
-		} elseif (strpos($string,'WARNING:') !== false) {
+		} elseif (strpos($string, 'WARNING:') !== false) {
 			$log_type = 'warn';
-		} elseif (strpos($string,'STATS:') !== false) {
+		} elseif (strpos($string, 'STATS:') !== false) {
 			$log_type = 'stat';
-		} elseif (strpos($string,'NOTICE:') !== false) {
+		} elseif (strpos($string, 'NOTICE:') !== false) {
 			$log_type = 'note';
 		}
 
@@ -1081,7 +1095,7 @@ function determine_display_log_entry($message_type, $line, $filter) {
 	return $display;
 }
 
-/* update_host_status - updates the host table with informaton about it's status.
+/* update_host_status - updates the host table with information about its status.
 	  It will also output to the appropriate log file when an event occurs.
 
 	@arg $status - (int constant) the status of the host (Up/Down)
@@ -1351,7 +1365,7 @@ function is_hexadecimal($result) {
 	return true;
 }
 
-/* is_mac_address - determine's if the result value is a mac address
+/* is_mac_address - determines if the result value is a mac address
    @arg $result - (string) some string to be evaluated
    @returns - (bool) either to result is a mac address of not */
 function is_mac_address($result) {
@@ -1391,7 +1405,7 @@ function is_hex_string($result) {
 	return true;
 }
 
-/* prepare_validate_result - determine's if the result value is valid or not.  If not valid returns a "U"
+/* prepare_validate_result - determines if the result value is valid or not.  If not valid returns a "U"
    @arg $result - (string) the result from the poll, the result can be modified in the call
    @returns - (bool) either to result is valid or not */
 function prepare_validate_result(&$result) {
@@ -1649,7 +1663,7 @@ function get_data_source_title($local_data_id) {
 }
 
 /* get_device_name - returns the description of the device in cacti host table
-   @arg $host_id - (int) the ID of the device to get a decription for
+   @arg $host_id - (int) the ID of the device to get a description for
    @returns - the device name */
 function get_device_name($host_id) {
 	return db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array($host_id));
@@ -1782,7 +1796,7 @@ function generate_graph_best_cf($local_data_id, $requested_cf) {
 	return '1';
 }
 
-/* get_rrd_cfs - reads the RRDfile and get's the RRA's stored in it.
+/* get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
     @arg $local_data_id
     @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
@@ -2393,7 +2407,7 @@ function draw_navigation_text($type = 'url') {
 		if (isset_request_var('node')) {
 			$parts = explode('-', get_request_var('node'));
 
-			// Check for tree anchoe
+			// Check for tree anchor
 			if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
 				$tree_id = $parts[1];
 				$leaf_id = 0;
@@ -2610,7 +2624,7 @@ function get_current_page($basename = true) {
 
 /* get_hash_graph_template - returns the current unique hash for a graph template
    @arg $graph_template_id - (int) the ID of the graph template to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template') {
 	switch ($sub_type) {
@@ -2637,7 +2651,7 @@ function get_hash_graph_template($graph_template_id, $sub_type = 'graph_template
 
 /* get_hash_data_template - returns the current unique hash for a data template
    @arg $graph_template_id - (int) the ID of the data template to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_template($data_template_id, $sub_type = 'data_template') {
 	switch ($sub_type) {
@@ -2661,7 +2675,7 @@ function get_hash_data_template($data_template_id, $sub_type = 'data_template') 
 
 /* get_hash_data_input - returns the current unique hash for a data input method
    @arg $graph_template_id - (int) the ID of the data input method to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 	switch ($sub_type) {
@@ -2685,7 +2699,7 @@ function get_hash_data_input($data_input_id, $sub_type = 'data_input_method') {
 
 /* get_hash_cdef - returns the current unique hash for a cdef
    @arg $graph_template_id - (int) the ID of the cdef to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_cdef($cdef_id, $sub_type = 'cdef') {
 	if (!is_numeric($cdef_id)) {
@@ -2727,7 +2741,7 @@ function get_hash_gprint($gprint_id) {
 /**
  * returns the current unique hash for a vdef
  * @param $graph_template_id - (int) the ID of the vdef to return a hash for
- * @param $sub_type (optional) return the hash for a particlar sub-type of this type
+ * @param $sub_type (optional) return the hash for a particular subtype of this type
  * @returns - a 128-bit, hexadecimal hash */
 function get_hash_vdef($vdef_id, $sub_type = "vdef") {
 	switch ($sub_type) {
@@ -2778,7 +2792,7 @@ function get_hash_host_template($host_template_id) {
 
 /* get_hash_data_query - returns the current unique hash for a data query
    @arg $graph_template_id - (int) the ID of the data query to return a hash for
-   @arg $sub_type (optional) return the hash for a particlar sub-type of this type
+   @arg $sub_type (optional) return the hash for a particular subtype of this type
    @returns - a 128-bit, hexadecimal hash */
 function get_hash_data_query($data_query_id, $sub_type = 'data_query') {
 	switch ($sub_type) {
@@ -2932,8 +2946,8 @@ function sanitize_search_string($string) {
 }
 
 /** cleans up a URI, e.g. from REQUEST_URI and/or QUERY_STRING
- * in case of XSS attac, expect the result to be broken
- * we do NOT sanitize in a way, that attacs are converted to valid HTML
+ * in case of XSS attack, expect the result to be broken
+ * we do NOT sanitize in a way, that attacks are converted to valid HTML
  * it is ok, when the result is broken but the application stays alive
  * @arg string $uri   - the uri to be sanitized
  * @returns string    - the sanitized uri
@@ -3165,14 +3179,23 @@ function admin_email($subject, $message) {
 				array(read_config_option('admin_user')));
 
 			if (cacti_sizeof($admin_details)) {
-				$from[0] = read_config_option('settings_from_email');
-				$from[1] = read_config_option('settings_from_name');
+				$email = read_config_option('settings_from_email');
+				$name  = read_config_option('settings_from_name');
+
+				if ($name != '') {
+					$from = '"' . $name . '" <' . $email . '>';
+				} else {
+					$from = $email;
+				}
 
 				if ($admin_details['email_address'] != '') {
-					$to[0]   = $admin_details['email_address'];
-					$to[1]   = $admin_details['full_name'];
+					if ($admin_details['full_name'] != '') {
+						$to = '"' . $admin_details['full_name'] . '" <' . $admin_details['email_address'] . '>';
+					} else {
+						$to = $admin_details['email_address'];
+					}
 
-					send_mail($to, $from, $subject, $message, strip_tags($message), '', true);
+					send_mail($to, $from, $subject, $message, '', '', true);
 				} else {
 					cacti_log('WARNING: Primary Admin account does not have an email address!  Unable to send administrative Email.', false, 'SYSTEM');
 				}
@@ -3211,6 +3234,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	}
 
 	$from = array(0 => $from, 1 => $fromname);
+
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
@@ -3367,7 +3391,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
-	$toText    = add_email_details($to, $result, array($mail,'addAddress'));
+	$toText    = add_email_details($to, $result, array($mail, 'addAddress'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3375,7 +3399,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$cc        = parse_email_details($cc);
-	$ccText    = add_email_details($cc, $result, array($mail,'addCC'));
+	$ccText    = add_email_details($cc, $result, array($mail, 'addCC'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3383,7 +3407,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$bcc       = parse_email_details($bcc);
-	$bccText   = add_email_details($bcc, $result, array($mail,'addBCC'));
+	$bccText   = add_email_details($bcc, $result, array($mail, 'addBCC'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3391,7 +3415,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$replyto   = parse_email_details($replyto);
-	$replyText = add_email_details($replyto, $result, array($mail,'addReplyTo'));
+	$replyText = add_email_details($replyto, $result, array($mail, 'addReplyTo'));
 
 	if ($result == false) {
 		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
@@ -3555,29 +3579,27 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	}
 
 	$update = array();
-	//echo "parse_email_details(): max is $max_records\n";
-	//var_dump($emails);
-	foreach ($emails as $key => $input) {
-		//echo "parse_email_details(): input is " . clean_up_lines(var_export($input, true)) . "\n";
-		if (!empty($input)) {
-			if (!is_array($input)) {
-				$emails = explode(',', $input);
+	foreach ($emails as $check_email) {
+		if (!empty($check_email)) {
+			if (!is_array($check_email)) {
+				$emails = explode(',', $check_email);
+
 				foreach($emails as $email) {
-					//echo "parse_email_details(): checking '" . trim($email) . "' ... \n";
-					$e = trim($email);
-					$d = split_emaildetail($e);
-					$details[] = $d;
+					$email_array = split_emaildetail($email);
+					$details[] = $email_array;
 				}
 			} else {
-				$has_name  = array_key_exists('name', $input);
-				$has_email = array_key_exists('email', $input);
+				$has_name  = array_key_exists('name', $check_email);
+				$has_email = array_key_exists('email', $check_email);
+
 				if ($has_name || $has_email) {
-					$name  = $has_name  ? $input['name']  : '';
-					$email = $has_email ? $input['email'] : '';
+					$name  = $has_name  ? $check_email['name']  : '';
+					$email = $has_email ? $check_email['email'] : '';
 				} else {
-					$name  = array_key_exists(1, $input) ? $input[1] : '';
-					$email = array_key_exists(0, $input) ? $input[0] : '';
+					$name  = array_key_exists(1, $check_email) ? $check_email[1] : '';
+					$email = array_key_exists(0, $check_email) ? $check_email[0] : '';
 				}
+
 				$details[] = array('name' => trim($name), 'email' => trim($email));
 			}
 		}
@@ -3601,26 +3623,29 @@ function parse_email_details($emails, $max_records = 0, $details = array()) {
 	return $results;
 }
 
-function split_emaildetail($input) {
-	if (!is_array($input)) {
-		$sPattern = '/(?<address><[\w\.]+@([\w\d-]+\.)+[\w]{2,4}>)$/';
-		$aMatch = preg_split($sPattern, trim($input), -1, PREG_SPLIT_DELIM_CAPTURE);
-		//echo "\n------[REGEX]------\n";
-		//print_r($aMatch);
-		//echo "\n------[REGEX]------\n";
-		if (isset($aMatch[2])) {
-			$name = $aMatch[0];
-			$email = trim($aMatch[1],'<> ');
-		} else {
-			$name = '';
-			$email = trim($aMatch[0],'<> ');
+function split_emaildetail($email) {
+	$rname  = '';
+	$rmail = '';
+
+	if (!is_array($email)) {
+		$email = trim($email);
+
+		$sPattern = '/([\w\s\'\"]+[\s]+)?(<)?(([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		preg_match($sPattern, $email, $aMatch);
+
+		if (isset($aMatch[1])) {
+			$rname = trim($aMatch[1]);
+		}
+
+		if (isset($aMatch[3])) {
+			$rmail = trim($aMatch[3]);
 		}
 	} else {
-		$name = $input[1];
-		$mail = $input[0];
+		$rmail = $email[0];
+		$rname = $email[1];
 	}
 
-	return array('name' => trim($name), 'email' => trim($email));
+	return array('name' => $rname, 'email' => $rmail);
 }
 
 function create_emailtext($e) {
@@ -4019,8 +4044,8 @@ function cacti_debug_backtrace($entry = '', $html = false, $record = true, $limi
  *
  *  @arg $data       - an array of data
  *  @arg $percentile - the Nth percentile to calculate.  By default 95th.
- *  #arg $whisker    - if whisker is true, an array of values will be returne
- *                     including 25th, median, 75th, and 90th perecentiles.
+ *  #arg $whisker    - if whisker is true, an array of values will be returned
+ *                     including 25th, median, 75th, and 90th percentiles.
  *
  *  @returns - either the Nth percentile, the elements for a whisker chart,
  *            or false if there is insufficient data to determine. */
@@ -4263,6 +4288,7 @@ function IgnoreErrorHandler($message) {
 		'Error in packet',
 		'This name does not exist',
 		'End of MIB',
+		'Timeout',
 		'Unknown host',
 		'Invalid object identifier',
 		'Name or service not known'
@@ -4453,8 +4479,8 @@ function get_url_type() {
 }
 
 /** get_default_contextoption - Sets default context options for self-signed SSL
- *  related protocols if necessary. Allows plugins to add addional header information
- *  to fullfill system setup related requirements like the usage of Web Single Login
+ *  related protocols if necessary. Allows plugins to add additional header information
+ *  to fulfill system setup related requirements like the usage of Web Single Login
  *  cookies for example.
  *
  *  @returns - an array of stream context options or false */
@@ -4993,6 +5019,19 @@ function get_validated_language($language, $defaultLanguage) {
 
 function get_running_user() {
 	global $config;
+
+	// Easy way first
+	$user = get_current_user();
+	if ($user != '') {
+		return $user;
+	}
+
+	$user = getenv('USERNAME') ?: getenv('USER');
+	if ($user != '') {
+		return $user;
+	}
+
+	// Falback method
 	if ($config['cacti_server_os'] == 'win32') {
 		return getenv('username');
 	} else {
@@ -5004,6 +5043,7 @@ function get_running_user() {
 			if (file_exists($tmp_file)) {
 				unlink($tmp_file);
 			}
+
 			file_put_contents($tmp_file, 'cacti');
 
 			$f_owner = fileowner($tmp_file);
@@ -5168,4 +5208,10 @@ function cacti_sizeof($array) {
 
 function cacti_count($array) {
 	return ($array === false || !is_array($array)) ? 0 : count($array);
+}
+
+function is_function_enabled($name) {
+	return function_exists($name) &&
+		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions')))) &&
+		strtolower(ini_get('safe_mode')) != 1;
 }

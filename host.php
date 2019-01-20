@@ -665,7 +665,7 @@ function host_edit() {
 				</div>
 			</div>
 			<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
-				<tr>
+				<tr class='tableRow'>
 					<td class='debug'>
 						<span><?php print debug_log_return('data_query');?></span>
 					</td>
@@ -1135,23 +1135,23 @@ function device_javascript() {
 
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="verbose"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_verbose&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="remove"]').click(function(data) {
-			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=query_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
 		$('[id^="gtremove"]').click(function(data) {
-			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val();
+			strURL = 'host.php?action=gt_remove&id='+$(this).attr('data-id')+'&host_id='+$('#id').val()+'&nostate=true';
 			loadPageNoHeader(strURL, true);
 		});
 
@@ -1662,7 +1662,7 @@ function host() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='11'><em>" . __('No Devices Found') . "</em></td></tr>";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No Devices Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

@@ -1245,3 +1245,179 @@ function utilities_get_system_memory() {
 
 	return $memInfo;
 }
+
+function utility_php_sort_extensions($a, $b) {
+	$name_a = isset($a['name']) ? $a['name'] : '';
+	$name_b = isset($b['name']) ? $b['name'] : '';
+	return strcasecmp($name_a, $name_b);
+}
+
+
+function utility_php_extensions() {
+	global $config;
+
+	$php = read_config_option('path_php_binary', true);
+	$php_file = $config['base_path'] . '/install/cli_check.php extensions';
+	$json = shell_exec($php . ' -q ' . $php_file);
+	$ext = @json_decode($json, true);
+
+	utility_php_verify_extensions($ext, 'web');
+	utility_php_set_installed($ext);
+
+	return $ext;
+}
+
+function utility_php_verify_extensions(&$extensions, $source) {
+	global $config;
+
+	if (empty($extensions)) {
+		$extensions = array(
+			'ctype'     => array('cli' => false, 'web' => false),
+			'date'      => array('cli' => false, 'web' => false),
+			'filter'    => array('cli' => false, 'web' => false),
+			'gettext'   => array('cli' => false, 'web' => false),
+			'gd'        => array('cli' => false, 'web' => false),
+			'gmp'       => array('cli' => false, 'web' => false),
+			'hash'      => array('cli' => false, 'web' => false),
+			'json'      => array('cli' => false, 'web' => false),
+			'ldap'      => array('cli' => false, 'web' => false),
+			'mbstring'  => array('cli' => false, 'web' => false),
+			'openssl'   => array('cli' => false, 'web' => false),
+			'pcre'      => array('cli' => false, 'web' => false),
+			'PDO'       => array('cli' => false, 'web' => false),
+			'pdo_mysql' => array('cli' => false, 'web' => false),
+			'session'   => array('cli' => false, 'web' => false),
+			'simplexml' => array('cli' => false, 'web' => false),
+			'sockets'   => array('cli' => false, 'web' => false),
+			'spl'       => array('cli' => false, 'web' => false),
+			'standard'  => array('cli' => false, 'web' => false),
+			'xml'       => array('cli' => false, 'web' => false),
+			'zlib'      => array('cli' => false, 'web' => false)
+		);
+
+		if ($config['cacti_server_os'] == 'unix') {
+			$extensions['posix'] = array('cli' => false, 'web' => false);
+		} else {
+			$extensions['com_dotnet'] = array('cli' => false, 'web' => false);
+		}
+	}
+
+	uksort($extensions, "utility_php_sort_extensions");
+
+	foreach ($extensions as $name=>$extension) {
+		if (extension_loaded($name)){
+			$extensions[$name][$source] = true;
+		}
+	}
+}
+
+function utility_php_recommends() {
+	global $config;
+
+	$php = read_config_option('path_php_binary', true);
+	$php_file = $config['base_path'] . '/install/cli_check.php recommends';
+	$json = shell_exec($php . ' -q ' . $php_file);
+	$ext = array('web'=>'','cli'=>'');
+	$ext['cli'] = @json_decode($json, true);
+
+	utility_php_verify_recommends($ext['web'], 'web');
+	utility_php_set_recommends_text($ext);
+	return $ext;
+}
+
+function utility_php_verify_recommends(&$recommends, $source) {
+
+	// _mb = megabytes, _m = minutes (used in displays)
+	$rec_version    = '5.4.0';
+	$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
+	$rec_execute_m  = 1;
+
+	// adjust above appropriately (used in configs)
+	$rec_memory	= $rec_memory_mb * 1024 * 1024;
+	$rec_execute    = $rec_execute_m * 60;
+	$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
+	$execute_time   = ini_get('max_execution_time');
+
+	$timezone       = ini_get('date.timezone');
+
+	$recommends = array(
+		array(
+			'name'        => 'version',
+			'value'       => $rec_version,
+			'current'     => PHP_VERSION,
+			'status'      => version_compare(PHP_VERSION, $rec_version, '>=') ? DB_STATUS_SUCCESS : DB_STATUS_ERROR,
+		),
+		array(
+			'name'        => 'memory_limit',
+			'value'       => $rec_memory_mb . 'M',
+			'current'     => $memory_limit . 'M',
+			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
+		),
+		array(
+			'name'        => 'max_execution_time',
+			'value'       => $rec_execute,
+			'current'     => $execute_time,
+			'status'      => ($execute_time <= 0 || $execute_time >= $rec_execute) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
+		),
+		array(
+			'name'        => 'date.timezone',
+			'value'       => '<timezone>',
+			'current'     => $timezone,
+			'status'      => ($timezone ? DB_STATUS_SUCCESS : DB_STATUS_ERROR),
+		),
+	);
+}
+
+function utility_php_set_recommends_text(&$recs) {
+	foreach ($recs as $name=>$recommends) {
+		foreach ($recommends as $index=>$recommend) {
+			if ($recommend['name'] == 'version') {
+				$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+			} elseif ($recommend['name'] == 'memory_limit') {
+				$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
+			} elseif ($recommend['name'] == 'max_execution_time') {
+				$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
+			} elseif ($recommend['name'] == 'date.timezone') {
+				$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+			}
+		}
+	}
+}
+
+function utility_php_optionals() {
+	global $config;
+
+	$php = read_config_option('path_php_binary', true);
+	$php_file = $config['base_path'] . '/install/cli_check.php optionals';
+	$json = shell_exec($php . ' -q ' . $php_file);
+	$opt = @json_decode($json, true);
+
+	utility_php_verify_optionals($opt, 'web');
+	utility_php_set_installed($opt);
+	return $opt;
+}
+
+function utility_php_verify_optionals(&$optionals, $source) {
+	if (empty($optionals)) {
+		$optionals = array(
+			'snmp'          => array('web' => false, 'cli' => false),
+			'TrueType Box'  => array('web' => false, 'cli' => false),
+			'TrueType Text' => array('web' => false, 'cli' => false),
+		);
+	}
+
+	foreach ($optionals as $name => $optional) {
+		if (extension_loaded($name)){
+			$optionals[$name][$source] = true;
+		}
+	}
+
+	$optionals['TrueType Box'][$source] = function_exists('imagettfbbox');
+	$optionals['TrueType Text'][$source] = function_exists('imagettftext');
+}
+
+function utility_php_set_installed(&$extensions) {
+	foreach ($extensions as $name=>$extension) {
+		$extensions[$name]['installed'] = $extension['web'] && $extension['cli'];
+	}
+}

@@ -694,7 +694,7 @@ function user_group_members_edit($header_label) {
 			form_end_row();
 		}
 	} else {
-		print '<tr><td><em>' . __('No Matching Group Members Found') . '</em></td></tr>';
+		print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Group Members Found') . '</em></td></tr>';
 	}
 
 	html_end_box(false);
@@ -848,7 +848,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graphs Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -997,7 +997,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Devices Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Devices Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1137,7 +1137,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Graph Templates Found') . '</em></td></tr>';
 		}
 
 		html_end_box(false);
@@ -1270,7 +1270,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 				form_end_row();
 			}
 		} else {
-			print '<tr><td><em>' . __('No Matching Trees Found') . '</em></td></tr>';
+			print '<tr><td colspan="' . (cacti_sizeof($display_text)+1) . '"><em>' . __('No Matching Trees Found') . '</em></td></tr>';
 		}
 		html_end_box(false);
 
@@ -1510,7 +1510,7 @@ function user_group_realms_edit($header_label) {
 			print "</td><td class='realms'>\n";
 		}
 
-		print "<strong>Legacy 1.x Plugins</strong><br>\n";
+		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
 		foreach($all_realms as $realm => $name) {
 			if (cacti_sizeof(db_fetch_assoc_prepared('SELECT realm_id FROM user_auth_group_realm WHERE group_id = ? AND realm_id = ?', array(get_request_var('id', 0), $realm))) > 0) {
 				$old_value = 'on';

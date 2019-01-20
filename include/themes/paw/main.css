@@ -38,6 +38,8 @@ td, th {
 
 th {
 	white-space: nowrap;
+	height: 20px;
+	line-height: 20px;
 }
 
 img {
@@ -528,7 +530,8 @@ label {
 }
 
 .odd td, .even td, .even-alternate td {
-	padding: 2px;
+	min-height: 20px !important;
+	line-height: 20px;
 }
 
 .even {
@@ -641,6 +644,9 @@ label {
 	background-color: rgba(0,0,0,0.7);
 	height: 15px;
 	width: 100%;
+	position: fixed;
+	bottom: 0;
+	left: 0;
 }
 
 .cactiConsolePageHeadBackdrop {
@@ -885,7 +891,7 @@ legend {
 }
 
 .cactiGraphContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	margin-right: 5px;
@@ -896,7 +902,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	padding-left: 10px;
@@ -908,7 +914,7 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	padding-left: 10px;
@@ -939,7 +945,6 @@ legend {
 	color: #2d4ca8;
 	text-decoration: none;
 	font-size: 12px;
-	padding: 3px;
 	white-space: nowrap;
 	cursor:pointer;
 }
@@ -1151,7 +1156,7 @@ legend {
 .formRow {
 	display: table;
 	width: 100%;
-	line-height: 35px;
+	line-height: 30px;
 }
 
 .formColumn {
@@ -1186,6 +1191,7 @@ legend {
 
 .formSubCheckbox {
 	line-height: 20px;
+	height: 20px;
 	float: left;
 }
 
@@ -1402,6 +1408,10 @@ th.sortable {
 .tableRowGraph td {
 	padding: 3px;
 	vertical-align: top;
+}
+
+.tableRow td {
+	line-height: 25px !important;
 }
 
 .image_table {
@@ -1846,6 +1856,10 @@ tr.selectable:hover:not(.selected){
 	background: rgba(0,0,0,0.3);
 }
 
+tr.selectable td {
+	height: 25px;
+}
+
 tr.selected a {
 	color: yellow;
 }
@@ -2255,6 +2269,7 @@ input:checked + .radioSlider:before {
 	margin-left: 5px;
 	margin-right: 10px;
 	vertical-align: middle;
+	line-height: 20px;
 }
 
 td.center > table {

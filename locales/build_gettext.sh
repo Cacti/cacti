@@ -61,4 +61,10 @@ for file in `ls -1 locales/po/*.po`;do
 	msgmerge --backup off --update $file locales/po/cacti.pot
 done
 
+for file in `ls -1 locales/po/*.po`;do
+  ofile=$(basename --suffix=.po ${file})
+  echo "Converting $file to LC_MESSAGES/${ofile}.mo"
+  msgfmt ${file} -o locales/LC_MESSAGES/${ofile}.mo
+done
+
 exit 0

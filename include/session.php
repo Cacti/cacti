@@ -1,19 +1,19 @@
 <?php
 
 /*
- * Have Cacti user the database for PHP session storage.
+ * Have Cacti use the database for PHP session storage.
  * This allows for easier distrubution of Web UI.
  */
 
 // Don't run from the database if using the command line
-if (isset($_SERVER['argv'][0]) || (!isset($_SERVER['REQUEST_METHOD']) && !isset($_SERVER['REMOTE_ADDR']))) {
+if (php_sapi_name() == 'cli') {
 	return;
 }
 
 function cacti_session_open() {
 	// Cacti database is already active
 	return true;
-} 
+}
 
 function cacti_session_close() {
 	// Cacti database is not closed by sessions
