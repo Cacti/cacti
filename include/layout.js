@@ -2260,12 +2260,15 @@ function saveTableWidths(initial) {
  *  the jQueryUI function resizable.  It also calls the saveTableWidths function
  *  to store the widths in localStorage every time a column is resized. */
 function applyTableSizing() {
+	var originalSize = 0;
+	var colWidth = 0;
+
 	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {
-			var colWidth     = $(this).width();
-			var originalSize = ui.size.width;
+			colWidth     = $(this).width();
+			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
 				originalSize = $(this).width();
