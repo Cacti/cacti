@@ -1680,6 +1680,7 @@ function html_show_tabs_left() {
 		$tab_text = str_replace('"', "'", $tab_text);
 		$tab_text = str_replace('>', '', $tab_text);
 		$elements = explode('|', $tab_text);
+		$count    = 0;
 
 		foreach($elements as $p) {
 			$p = trim($p);
@@ -1725,7 +1726,8 @@ function html_show_tabs_left() {
 					$id = $parts[0];
 				}
 			} else {
-				$id = 'unknown';
+				$id = 'unknown' . $count;
+				$count++;
 			}
 
 			$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
@@ -1777,7 +1779,7 @@ function html_show_tabs_left() {
 		print "<div class='maintabs'><nav><ul role='tablist'>\n";
 
 		foreach($tabs_left as $tab) {
-			if (isset($tab['id']) && $tab['id'] !== 'unknown') {
+			if (isset($tab['id'])) {
 				$id = $tab['id'];
 			} else {
 				$id = 'anchor' . $i;
