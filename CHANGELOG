@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-develop
+1.2.1
 -issue#2259: Unable to View Aggregate Graphs
 -issue#2267: Remove unnecessary includes in aggregate template code
 -issue#2270: Realtime Graphs consuming too much memory
@@ -18,24 +18,13 @@ develop
 -issue#2311: Unable to update PHP location during installation due to incorrect CLI environment
 -issue#2319: Primary admin account not always given access to a plugin when that plugin is enabled
 -issue#2321: Date separator not being used properly for graphs
--issue#2322: Modifying realm registration files and description not supported
+-issue#2322: Modifying plugin realm registration files and description not supported
 -issue: Installer does not identify when shell_exec()/exec() are disabled
--issue: Correct undefined variable error in graph creation logic
--issue: Form method 'drop_callback' did not respect 'on_change' attribute
 -issue: Removing a Device or Graph Template can not be seen till next login
--issue: Language naming causing problems with tools to solicit translations
 -issue: Visual issues with custom data when using paper-plane theme
 -issue: Undefined function errors attempting to sync device templates
 -issue: Plugin dependency handling inconsistant
 -issue: Editing a report shows incorrect graphs from dropdown
--issue: Issues with messages clearing too soon
--issue: Issue an error when Graph Template to a Data Query mapping incorrect
--issue: When going to the graphs.php page, SQL errors can occur
--issue: You can not return from editing profile
--issue: Do not display form hint icon if there is no hint
--issue: Data Debug was not logging, fixed a few additional UI bugs
--issue: Timestamp columns with CURRENT_TIMESTAMP default can not be created
--issue: SpikeKill float and gap fill not functioning.  Zoom not re-initializing
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
@@ -233,7 +222,6 @@ develop
 -security#2213: Stored XSS in "Website Hostname" field - Devices
 -security#2214: Stored XSS in "Vertical Label" field - Graph
 -security#2215: Stored XSS in "Name" field - Color
-
 
 1.1.38
 -issue#1501: cmd.php poller not stripping alpha from snmp get values
