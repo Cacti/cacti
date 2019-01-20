@@ -999,7 +999,7 @@ legend {
 }
 
 .cactiGraphContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;
@@ -1023,7 +1023,7 @@ legend {
 }
 
 .cactiGraphContentAreaPreview {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 }
 
@@ -1036,7 +1036,7 @@ legend {
 }
 
 .cactiConsoleContentArea {
-	height: 100%;
+	height: 100vh;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
 	border-left: 1px solid #000000;

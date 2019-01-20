@@ -1021,9 +1021,11 @@ legend {
 	vertical-align: top;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
+	height: 100vh;
 }
 
 .cactiGraphContentAreaPreview {
+	height: 100vh;
 	background: #161616;
 	padding-top: 10px;
 	padding-right: 5px;
@@ -1042,6 +1044,7 @@ legend {
 	vertical-align: top;
 	overflow-y: auto !important;
 	overflow-x: hidden !important;
+	height: 100vh;
 }
 
 .hyperLink, .hyperLink:hover, .hyperLink:visited {
