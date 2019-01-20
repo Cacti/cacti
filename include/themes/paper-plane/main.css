@@ -35,6 +35,10 @@ td, th {
 	margin: 0px;
 }
 
+td span {
+	color: #FFF;
+}
+
 th {
 	white-space: nowrap;
 }
@@ -1366,6 +1370,7 @@ tr>td.textInfo.right{
 
 .formHeaderText {
 	padding-left: 3px;
+	color: #FFF;
 }
 
 .hostInfoHeader {
