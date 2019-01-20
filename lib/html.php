@@ -1728,7 +1728,7 @@ function html_show_tabs_left() {
 				$id = 'unknown';
 			}
 
-			$tabs_left[] = array('title' => ucwords($alt), 'id' => $id, 'url' => $href);
+			$tabs_left[] = array('title' => ucwords($alt), 'id' => 'tab-' . $id, 'url' => $href);
 		}
 
 		if ($config['poller_id'] > 1 && $config['connection'] != 'online') {
