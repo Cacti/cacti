@@ -2561,6 +2561,7 @@ function keepWindowSize() {
 				userTabPos = mainTabPos;
 			}
 
+			var shrinking = true;
 			if (pageWidth === null) {
 				shrinking = true;
 				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
@@ -2580,7 +2581,7 @@ function keepWindowSize() {
 
 			pageWidth  = bodyWidth;
 
-			done = false;
+			var done = false;
 
 			items.each(function() {
 				var id = $(this).attr('id');
@@ -2655,8 +2656,8 @@ function tabsWrapping() {
 	var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
 	var mtabsWidth  = $('.maintabs:not(.usertabs)').outerWidth();
 
-	if ($('#gtabs').length) {
-		var gtabsWidth = $('#gtabs').outerWidth();
+	if ($('#gtabs>.tabs').length) {
+		var gtabsWidth = $('#gtabs>.tabs').outerWidth();
 	} else {
 		var gtabsWidth = 0;
 	}
@@ -2667,7 +2668,7 @@ function tabsWrapping() {
 		var utabsWidth  = 0;
 	}
 
-	//console.log(mtabsWidth+' '+utabsWidth+' '+gtabsWidth+' '+otherWidth+' '+ellipsisWidth);
+	//console.log('mtabsWidth: ' +mtabsWidth+', utabsWidth: '+utabsWidth+', gtabsWidth: '+gtabsWidth+', otherWidth: '+otherWidth+', ellipsisWidth: '+ellipsisWidth);
 	if (gtabsWidth + mtabsWidth + utabsWidth + otherWidth + ellipsisWidth > bodyWidth - 20) {
 		return true;
 	}
