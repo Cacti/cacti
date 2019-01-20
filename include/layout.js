@@ -2647,10 +2647,21 @@ function tabsWrapping() {
 	});
 
 	var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
-	var gtabsWidth = $('#gtabs').outerWidth();
 	var mtabsWidth  = $('.maintabs:not(.usertabs)').outerWidth();
-	var utabsWidth  = $('.usertabs').outerWidth();
 
+	if ($('#gtabs').length) {
+		var gtabsWidth = $('#gtabs').outerWidth();
+	} else {
+		var gtabsWidth = 0;
+	}
+
+	if ($('.usertabs').length) {
+		var utabsWidth  = $('.usertabs').outerWidth();
+	} else {
+		var utabsWidth  = 0;
+	}
+
+	//console.log(mtabsWidth+' '+utabsWidth+' '+gtabsWidth+' '+otherWidth+' '+ellipsisWidth);
 	if (gtabsWidth + mtabsWidth + utabsWidth + otherWidth + ellipsisWidth > bodyWidth - 20) {
 		return true;
 	}
