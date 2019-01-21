@@ -1042,7 +1042,6 @@ msgid "An Email Address you be reached at."
 msgstr "您的电子邮件地址."
 
 #: auth_profile.php:338 auth_profile.php:340
-#, fuzzy
 msgid "Clear User Settings"
 msgstr "清除用户设置"
 
@@ -2089,7 +2088,7 @@ msgstr "计划"
 
 #: automation_networks.php:1078
 msgid "Total IPs"
-msgstr "总IP"
+msgstr "IP 数"
 
 #: automation_networks.php:1079
 msgid "The Current Status of this Networks Discovery"
@@ -2101,7 +2100,7 @@ msgstr "等待/运行/完成"
 
 #: automation_networks.php:1080
 msgid "Progress"
-msgstr "进展"
+msgstr "进度"
 
 #: automation_networks.php:1081
 msgid "Up/SNMP Hosts"
@@ -2556,15 +2555,15 @@ msgstr "树规则"
 
 #: automation_tree_rules.php:938
 msgid "Hook into Tree"
-msgstr "钩入树"
+msgstr "关联树"
 
 #: automation_tree_rules.php:939
 msgid "At Subtree"
-msgstr "在子树"
+msgstr "子树"
 
 #: automation_tree_rules.php:940
 msgid "This Type"
-msgstr "这个类型"
+msgstr "类型"
 
 #: automation_tree_rules.php:941
 msgid "Using Grouping"
@@ -5153,7 +5152,7 @@ msgstr "设备[新建]"
 #: host.php:596
 #, php-format
 msgid "Device [edit: %s]"
-msgstr "设备[编辑: %s]"
+msgstr "设备 [编辑: %s]"
 
 #: host.php:598
 msgid "Disable Device Debug"
@@ -5214,7 +5213,7 @@ msgstr "没有相关的图形模板."
 
 #: host.php:761 host_templates.php:519
 msgid "Add Graph Template"
-msgstr "添加图片模板"
+msgstr "添加图形模板"
 
 #: host.php:767
 msgid "Add Graph Template to Device"
@@ -5226,7 +5225,7 @@ msgstr "关联数据查询"
 
 #: host.php:782 host.php:878
 msgid "Re-Index Method"
-msgstr "重新编制索引方法"
+msgstr "索引重建方法"
 
 #: host.php:784 include/global_arrays.php:1865 include/global_arrays.php:1931
 #: include/global_arrays.php:1997 include/global_arrays.php:2033
@@ -6024,20 +6023,20 @@ msgstr "全部验证"
 msgid ""
 "All Re-Indexing will be manual or managed through scripts or Device "
 "Automation."
-msgstr "所有重新索引都将通过脚本或设备自动化进行手动或管理."
+msgstr "索引重建可通过手动运行脚本或设备自动化进行."
 
 #: include/global_arrays.php:441
 msgid ""
 "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
-msgstr "设备SNMP Uptime 减少时,将执行重新索引"
+msgstr "设备SNMP Uptime 减少时,将重建索引"
 
 #: include/global_arrays.php:442
 msgid "When the Data Query index count changes, a Re-Index will be performed."
-msgstr "当数据查询索引计数改变时,将执行重新索引."
+msgstr "当数据查询索引计数改变时,将重建索引."
 
 #: include/global_arrays.php:443
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
-msgstr "每个采集都将执行重新索引. 非常费时."
+msgstr "每次采集都将执行重新索引. 非常费时."
 
 #: include/global_arrays.php:447
 msgid "SNMP Field Name (Dropdown)"
@@ -7304,7 +7303,7 @@ msgstr "现代"
 
 #: include/global_arrays.php:1739
 msgid "Dark"
-msgstr "黑暗"
+msgstr "暗黑"
 
 #: include/global_arrays.php:1740
 msgid "Paper-plane"
@@ -7529,7 +7528,7 @@ msgstr "选择该主机的SNMP 版本."
 
 #: include/global_form.php:44
 msgid "SNMP Community String"
-msgstr "SNMP 团体字符串"
+msgstr "SNMP 团体"
 
 #: include/global_form.php:45
 msgid "Fill in the SNMP read community for this device."
@@ -7618,17 +7617,17 @@ msgstr "SNMP 超时"
 msgid ""
 "The maximum number of milliseconds Cacti will wait for an SNMP response "
 "(does not work with php-snmp support)."
-msgstr "Cacti 将等待SNMP 响应的最大毫秒数(不支持php-snmp)."
+msgstr "Cacti 将等待SNMP 响应的最大毫秒数 (不支持php-snmp)."
 
 #: include/global_form.php:146
 msgid "Maximum OID's Per Get Request"
-msgstr "每个请求获取的最大OID"
+msgstr "每次请求最多采集多少个OID"
 
 #: include/global_form.php:147
 msgid ""
 "Specified the number of OIDs that can be obtained in a single SNMP Get "
 "request."
-msgstr "指定可在单个SNMP 获取请求中获取的OID 数量."
+msgstr "指定可在单次SNMP 请求中采集的OID 数量."
 
 #: include/global_form.php:158
 msgid "SNMP Retries"
@@ -8537,7 +8536,7 @@ msgstr "poller 信息"
 
 #: include/global_form.php:1163
 msgid "Device Site Association"
-msgstr "设备节点的选择"
+msgstr "选择设备站点"
 
 #: include/global_form.php:1164
 msgid "What Site is this Device associated with."
@@ -8573,7 +8572,7 @@ msgstr "可用性/可达性选项"
 
 #: include/global_form.php:1206 include/global_settings.php:642
 msgid "Downed Device Detection"
-msgstr "设备检测失败"
+msgstr "设备宕机探测"
 
 #: include/global_form.php:1207
 msgid ""
@@ -8601,7 +8600,7 @@ msgstr "注释"
 
 #: include/global_form.php:1258 include/global_form.php:1707
 msgid "Enter notes to this host."
-msgstr "为此主机输入注释."
+msgstr "请为主机填写注释."
 
 #: include/global_form.php:1265
 msgid "External ID"
@@ -8609,7 +8608,7 @@ msgstr "外部ID"
 
 #: include/global_form.php:1266
 msgid "External ID for linking Cacti data to external monitoring systems."
-msgstr "用于将Cacti数据链接到外部监控系统的外部ID."
+msgstr "用于将Cacti 数据链接到外部监控系统的外部ID."
 
 #: include/global_form.php:1288
 msgid "A useful name for this host template."
@@ -9017,7 +9016,7 @@ msgstr "选择任何可用的图形类型以应用于此规则."
 
 #: include/global_form.php:2127 include/global_form.php:2184
 msgid "Enable Rule"
-msgstr "开启规则"
+msgstr "启用规则"
 
 #: include/global_form.php:2128 include/global_form.php:2185
 msgid "Check this box to enable this rule."
@@ -9025,7 +9024,7 @@ msgstr "选中此框以启用此规则."
 
 #: include/global_form.php:2148
 msgid "Choose a Tree for the new Tree Items."
-msgstr "为新的树项目选择一棵树."
+msgstr "请为项目选择树."
 
 #: include/global_form.php:2155
 msgid "Leaf Item Type"
@@ -9816,8 +9815,8 @@ msgid ""
 "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to use "
 "the SNMP Engine ID being defined per SNMPv3 Notification receiver."
 msgstr ""
-"所有新设备的默认SNMP v3引擎ID. 将此字段留空以使用每个SNMPv3通知接收器定义的"
-"SNMP引擎ID."
+"所有新设备的默认SNMPv3 引擎ID. 将此字段留空以使用每个SNMPv3 通知接收器定义的"
+"SNMP 引擎ID."
 
 #: include/global_settings.php:613
 msgid "Port Number"
@@ -11669,7 +11668,7 @@ msgstr "查看图形和其他特定时间数据时显示的默认时间回放."
 
 #: include/global_settings.php:2056
 msgid "Allow Graph to extend to Future"
-msgstr "允许图片延伸到将来"
+msgstr "允许图形延伸到将来"
 
 #: include/global_settings.php:2057
 msgid "When displaying Graphs, allow Graph Dates to extend 'to future'"
@@ -11845,7 +11844,7 @@ msgid ""
 "You are now logged into <a href=\"%s\"><b>Cacti</b></a>. You can follow "
 "these basic steps to get started."
 msgstr ""
-"您现在已经登录到 <a href=\"%s\"><b>Cacti</b></a>. 您可以按照这些基本步骤开始."
+"您已登录 <a href=\"%s\"><b>Cacti</b></a>. 您可以从下列基本步骤开始."
 
 #: index.php:67
 #, php-format
@@ -11855,12 +11854,12 @@ msgstr "为网络<a href=\"%s\">创建设备</a>"
 #: index.php:68
 #, php-format
 msgid "<a href=\"%s\">Create graphs</a> for your new devices"
-msgstr "为您的新设备<a href=\"%s\">创建图形</a> "
+msgstr "为新设备<a href=\"%s\">创建图形</a> "
 
 #: index.php:69
 #, php-format
 msgid "<a href=\"%s\">View</a> your new graphs"
-msgstr "<a href=\"%s\">查看</a>您新创建的图形"
+msgstr "<a href=\"%s\">查看</a> 新创建的图形"
 
 #: index.php:78
 msgid "Offline"
@@ -12078,11 +12077,11 @@ msgstr "传播改变"
 
 #: lib/api_automation.php:1375
 msgid "Search Pattern"
-msgstr "搜索模式"
+msgstr "查询样式"
 
 #: lib/api_automation.php:1376
 msgid "Replace Pattern"
-msgstr "替换模式"
+msgstr "替换样式"
 
 #: lib/api_automation.php:1420
 msgid "No Tree Creation Criteria"
@@ -12791,7 +12790,7 @@ msgstr "guest"
 
 #: lib/functions.php:2272 lib/functions.php:2285 lib/html.php:2289
 msgid "User Community"
-msgstr "用户社区"
+msgstr "社区"
 
 #: lib/functions.php:2273 lib/functions.php:2286 lib/html.php:2290
 #: lib/utility.php:1002
@@ -13632,7 +13631,7 @@ msgstr "新报告"
 
 #: lib/html_reports.php:943
 msgid "Give this Report a descriptive Name"
-msgstr "给这个报告一个描述性的名字"
+msgstr "给报告起一个具有描述性的名字"
 
 #: lib/html_reports.php:948
 msgid "Enable Report"
@@ -14404,7 +14403,7 @@ msgstr "警告"
 
 #: lib/installer.php:1734
 msgid "PHP - Module Support (Required)"
-msgstr "PHP - 模块支持(必填)"
+msgstr "PHP - 模块支持 (必须)"
 
 #: lib/installer.php:1735
 msgid ""
@@ -14415,9 +14414,9 @@ msgid ""
 "recommendations at your discretion.  Always seek the MySQL documentation if "
 "you have any questions."
 msgstr ""
-"Cacti 需要安装好几个PHP模块才能正常工作. 如果其中任何一个没有安装,您将无法继"
-"续安装,直到更正. 另外,为了获得最佳的系统性能,Cacti 应该使用特定的MySQL 系统变"
-"量来运行. 请根据您的意愿遵循MySQL建议. 如果您有任何问题,请务必查阅MySQL 文档."
+"Cacti 的安装对一些PHP 模块有要求. 如果缺少其中任何一个,您将无法继续,直到条件满足."
+"另外, 为了获得更佳的系统性能, Cacti 应该运行在特定的MySQL 配置之下."
+"请根据您的意愿遵循MySQL 配置建议. 如果您有任何问题, 请务必查阅MySQL 文档."
 
 #: lib/installer.php:1737
 msgid ""
@@ -14503,7 +14502,7 @@ msgid ""
 "that database is populated with global TimeZone information."
 msgstr ""
 "您的Cacti 数据库帐户可以访问MySQL TimeZone 数据库,并且该数据库使用全球"
-"TimeZone信息填充."
+"时区信息填充."
 
 #: lib/installer.php:1826
 msgid "MySQL - Settings"
@@ -14513,7 +14512,7 @@ msgstr "MySQL - 设置"
 msgid ""
 "These MySQL performance tuning settings will help your Cacti system perform "
 "better without issues for a longer time."
-msgstr "这些MySQL 性能调整设置将帮助您的Cacti 系统在更长的时间内运行得更好."
+msgstr "这些MySQL 性能调整设置将帮助您的Cacti 系统更好的长期运行."
 
 #: lib/installer.php:1829
 msgid "Recommended MySQL System Variable Settings"
@@ -15545,15 +15544,15 @@ msgid ""
 "long standing low level networking issue that was causing spine many issues "
 "with reliability."
 msgstr ""
-"MySQL 5.6+和MariaDB 10.0+都是很棒的版本,并且是非常好的可供选择的版本.请确保运"
-"行的是最新的版本,它修复了一个长期存在的底层网络问题,那个问题会导致spine 遭遇"
+"MySQL 5.6+ 和MariaDB 10.0+ 都是很棒的版本,并且是非常好的可供选择的版本.请确保运"
+"行的是最新的版本,它们修复了一个长期存在的底层网络问题,那个问题会导致spine 遭遇"
 "很多可靠性问题."
 
 #: lib/utility.php:843 lib/utility.php:873
 #, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
-msgstr "建议在任何版本大于5.1的 %s 版本中启用InnoDB."
+msgstr "建议在任何版本大于5.1的 %s 中启用InnoDB."
 
 #: lib/utility.php:856
 msgid ""
@@ -16552,7 +16551,7 @@ msgstr "采集器"
 
 #: pollers.php:811
 msgid "Collector Name"
-msgstr "采集器的名字"
+msgstr "采集器名称"
 
 #: pollers.php:811
 msgid "The Name of this Data Collector."
@@ -17807,7 +17806,7 @@ msgstr "域"
 
 #: user_domains.php:748
 msgid "Domain Name"
-msgstr "域名"
+msgstr "域的名称"
 
 #: user_domains.php:749
 msgid "Domain Type"
@@ -17855,15 +17854,15 @@ msgstr "限制访问"
 
 #: user_group_admin.php:73 user_group_admin.php:1915
 msgid "Group Name"
-msgstr "组的名字"
+msgstr "用户组名称"
 
 #: user_group_admin.php:74
 msgid "The name of this Group."
-msgstr "这个组的名字."
+msgstr "这个用户组的名称."
 
 #: user_group_admin.php:80
 msgid "Group Description"
-msgstr "组描述"
+msgstr "用户组描述"
 
 #: user_group_admin.php:81
 msgid ""
