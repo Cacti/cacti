@@ -2079,7 +2079,7 @@ function closeUserMenu() {
 	$('.menuoptions').slideUp(120, 'easeInOutCubic');
 }
 
-function handleConsole(pageName = null) {
+function handleConsole(pageName) {
 	if (pageName == null) {
 		pageName = basename($(location).attr('pathname'));
 	}

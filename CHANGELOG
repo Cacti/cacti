@@ -1,5 +1,9 @@
 Cacti CHANGELOG
 
+develop
+-issue: Resizing table throws a JavaScript error
+-issue#2334: JavaScript issues with IE and older Chrome browsers
+
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs
 -issue#2267: Remove unnecessary includes in aggregate template code
@@ -25,9 +29,6 @@ Cacti CHANGELOG
 -issue: Undefined function errors attempting to sync device templates
 -issue: Plugin dependency handling inconsistant
 -issue: Editing a report shows incorrect graphs from dropdown
-
-develop
--issue: Resizing table throws a JavaScript error
 
 1.2.0
 -feature: Add a Timeout setting for Remote Agent calls
