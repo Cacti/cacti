@@ -233,7 +233,7 @@ msgid ""
 "'Return' and then select only Aggregate Graph that utilize the same Graph "
 "Template."
 msgstr ""
-"为了将下面的聚合图迁移到基于模板的聚合,他们只能使用一个图形模板. 请按 '返回',"
+"为了将下面的聚合图迁移到基于模板的聚合,它们只能使用一个图形模板. 请按 '返回',"
 "然后选择仅使用相同图形模板的聚合图形."
 
 #: aggregate_graphs.php:371 aggregate_graphs.php:411 aggregate_graphs.php:457
@@ -1462,7 +1462,7 @@ msgstr "无法为禁用的网络 %s 执行发现"
 #: automation_networks.php:219
 #, php-format
 msgid "ERROR: You must specify the day of the week.  Disabling Network %s!."
-msgstr "ERROR: 您必须指定周几. 禁用网络 %s!."
+msgstr "ERROR: 您必须指定工作日. 禁用网络 %s!."
 
 #: automation_networks.php:225
 #, php-format
@@ -1844,7 +1844,7 @@ msgstr "每X 重新运行此网络范围的发现."
 
 #: automation_networks.php:635
 msgid "Days of Week"
-msgstr "周几"
+msgstr "工作日"
 
 #: automation_networks.php:636 automation_networks.php:694
 msgid "What Day(s) of the week will this Network Range be discovered."
@@ -1975,7 +1975,7 @@ msgstr "第三"
 
 #: automation_networks.php:693
 msgid "Day(s) of Week"
-msgstr "一周几天"
+msgstr "工作日"
 
 #: automation_networks.php:709
 msgid "Reachability Settings"
@@ -5040,7 +5040,7 @@ msgstr "选择要创建的图形类型"
 
 #: graphs_new.php:813
 msgid "Make selection default"
-msgstr "使选择默认"
+msgstr "选择默认"
 
 #: graphs_new.php:813
 msgid "Set Default"
@@ -5056,7 +5056,7 @@ msgstr "清除统计"
 
 #: host.php:46
 msgid "Sync to Device Template"
-msgstr "同步到设备模板"
+msgstr "与设备模板同步"
 
 #: host.php:329
 msgid "Click 'Continue' to enable the following Device(s)."
@@ -5103,7 +5103,7 @@ msgstr "清除设备上的统计信息"
 msgid ""
 "Click 'Continue' to Synchronize the following Device(s) to their Device "
 "Template."
-msgstr "点击 '继续' ,将以下设备同步到他们的设备模板."
+msgstr "点击 '继续' ,将以下设备与它们的设备模板同步."
 
 #: host.php:410
 msgid "Synchronize Device(s)"
@@ -5574,9 +5574,8 @@ msgid "You are not permitted to access this section of Cacti."
 msgstr "您不能访问Cacti 的这个部分."
 
 #: include/auth.php:195
-#, fuzzy
 msgid "Installation In Progress"
-msgstr "正在安装中"
+msgstr "安装进行中"
 
 #: include/auth.php:196
 #, fuzzy
@@ -5586,7 +5585,6 @@ msgid ""
 msgstr "此时只有具有安装/升级权限的Cacti 管理员才能登录"
 
 #: include/auth.php:196
-#, fuzzy
 msgid "There is an Installation or Upgrade in progress."
 msgstr "正在进行安装或升级."
 
@@ -5631,7 +5629,7 @@ msgstr "Cacti 日志文件必须具有扩展名'.log'"
 #: include/global_arrays.php:148
 #, fuzzy
 msgid "Data Input for method does not appear to be whitelisted."
-msgstr "方法的数据输入似乎未列入白名单."
+msgstr "数据输入的方法似乎未列入白名单."
 
 #: include/global_arrays.php:151
 msgid "Data Source does not exist."
@@ -5738,7 +5736,7 @@ msgstr "未找到图形. 要么它已被删除或您的数据库需要修复."
 
 #: include/global_arrays.php:214
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
-msgstr "SNMPv3身份认证密码必须是8个字符或更大."
+msgstr "SNMPv3 身份认证密码必须是8个字符或更大."
 
 #: include/global_arrays.php:217
 msgid ""
@@ -6955,7 +6953,7 @@ msgstr "月,每月某一天"
 
 #: include/global_arrays.php:1479
 msgid "Month(s), Day of Week"
-msgstr "月,周几"
+msgstr "月,工作日"
 
 #: include/global_arrays.php:1480
 msgid "Year(s)"
@@ -7108,7 +7106,7 @@ msgstr "每周"
 #: include/global_arrays.php:1645 include/global_arrays.php:1646
 #, php-format
 msgid "Every %d Weeks"
-msgstr "每%d周"
+msgstr "每 %d 周"
 
 #: include/global_arrays.php:1677
 msgctxt "A short textual representation of a month, three letters"
@@ -7235,11 +7233,11 @@ msgstr "法语"
 
 #: include/global_arrays.php:1719
 msgid "German"
-msgstr "German"
+msgstr "德语"
 
 #: include/global_arrays.php:1720
 msgid "Greek"
-msgstr "Greek"
+msgstr "希腊语"
 
 #: include/global_arrays.php:1721
 msgid "Hebrew"
@@ -7322,7 +7320,6 @@ msgid "[Fail]"
 msgstr "[失败]"
 
 #: include/global_arrays.php:1747
-#, fuzzy
 msgid "[Warning]"
 msgstr "[警告]"
 
@@ -8805,7 +8802,6 @@ msgstr ""
 "目."
 
 #: include/global_form.php:1641
-#, fuzzy
 msgid "Create New from Template"
 msgstr "从模板新建"
 
@@ -9599,7 +9595,6 @@ msgid "Prompt user before item deletion."
 msgstr "在删除项目之前提示用户."
 
 #: include/global_settings.php:432
-#, fuzzy
 msgid "Hide Cacti Dashboard"
 msgstr "隐藏Cacti 仪表板"
 
@@ -9666,7 +9661,7 @@ msgstr ""
 #: include/global_settings.php:467
 #, fuzzy
 msgid "Automation Notification To Email"
-msgstr "自动通知到邮件"
+msgstr "自动通知的收件人"
 
 #: include/global_settings.php:468
 #, fuzzy
@@ -9682,7 +9677,7 @@ msgstr ""
 #: include/global_settings.php:474
 #, fuzzy
 msgid "Automation Notification From Name"
-msgstr "自动通知来自谁"
+msgstr "自动通知的发件人"
 
 #: include/global_settings.php:475
 #, fuzzy
@@ -9764,7 +9759,7 @@ msgstr "安全级别"
 
 #: include/global_settings.php:554
 msgid "Default SNMP v3 Security Level for all new Devices."
-msgstr "所有新设备的默认SNMP v3 安全级别."
+msgstr "所有新设备的默认SNMPv3 安全级别."
 
 #: include/global_settings.php:560
 msgid "Auth User (v3)"
@@ -9772,7 +9767,7 @@ msgstr "认证用户 (v3)"
 
 #: include/global_settings.php:561
 msgid "Default SNMP v3 Authorization User for all new Devices."
-msgstr "所有新设备的默认SNMP v3 认证用户."
+msgstr "所有新设备的默认SNMPv3 认证用户."
 
 #: include/global_settings.php:568
 msgid "Auth Protocol (v3)"
@@ -9788,7 +9783,7 @@ msgstr "认证密码短语 (v3)"
 
 #: include/global_settings.php:575
 msgid "Default SNMP v3 Authorization Passphrase for all new Devices."
-msgstr "所有新设备的SNMP v3 认证密码短语."
+msgstr "所有新设备的SNMPv3 认证密码短语."
 
 #: include/global_settings.php:582
 msgid "Privacy Protocol (v3)"
@@ -9808,7 +9803,7 @@ msgstr "所有新设备的默认SNMPv3 隐私密码."
 
 #: include/global_settings.php:597
 msgid "Enter the SNMP v3 Context for all new Devices."
-msgstr "所有新设备的 SNMP v3 上下文."
+msgstr "所有新设备的 SNMPv3 上下文."
 
 #: include/global_settings.php:606
 msgid ""
@@ -10213,7 +10208,6 @@ msgid "If you wish to stop the polling process completely, uncheck this box."
 msgstr "如果您希望完全停止采集, 请取消选中此框."
 
 #: include/global_settings.php:959
-#, fuzzy
 msgid "SNMP Agent Support Enabled"
 msgstr "开启SNMP Agent支持"
 
@@ -10322,10 +10316,9 @@ msgstr "禁用增加的OID 检查"
 
 #: include/global_settings.php:1015
 msgid "Controls disabling check for increasing OID while walking OID tree."
-msgstr "控制在行走OID树时禁用增加OID的检查."
+msgstr "控制在遍历OID 树时禁止增加OID 的检查."
 
 #: include/global_settings.php:1020
-#, fuzzy
 msgid "Remote Agent Timeout"
 msgstr "远程Agent 超时"
 
@@ -10825,7 +10818,7 @@ msgid ""
 "<i>'(&(objectClass=account)(uid=&lt;username&gt))'</i>.  '&lt;username&gt' "
 "is replaced with the username that was supplied at the login prompt. "
 msgstr ""
-"用于在LDAP 目录中找到用户的搜索过滤器,例如用于Windows的: <i>'(&amp;"
+"用于在LDAP 目录中找到用户的搜索过滤器,例如用于Windows 的: <i>'(&amp;"
 "(objectclass=user)(objectcategory=user)(userPrincipalName=&lt;username&gt;"
 "*))'</i> 或者用于OpenLDAP: <i>'(&(objectClass=account)(uid=&lt;"
 "username&gt))'</i>.  '&lt;用户名&gt' 被在登录提示符处提供的用户名替换."
@@ -10864,11 +10857,11 @@ msgstr "邮箱"
 #: include/global_settings.php:1401
 #, fuzzy
 msgid "Field that will replace the Email taken from LDAP. (on windows: mail)"
-msgstr "将替换从LDAP获取的电子邮件的字段. (在Windows上:邮件)"
+msgstr "将替换从LDAP 获取的电子邮件的字段. (Windows: 邮件)"
 
 #: include/global_settings.php:1408
 msgid "URL Linking"
-msgstr "URL链接"
+msgstr "URL 链接"
 
 #: include/global_settings.php:1413
 msgid "Server Base URL"
@@ -10935,7 +10928,7 @@ msgstr "这是电子邮件将显示的电子邮件地址."
 
 #: include/global_settings.php:1459 lib/html_reports.php:1082
 msgid "From Name"
-msgstr "发件人姓名"
+msgstr "发件人"
 
 #: include/global_settings.php:1460
 msgid "This is the actual name that the Email will appear from."
@@ -14232,7 +14225,7 @@ msgid ""
 "table</a>.  Once that is complete, you can issue the following command to "
 "grant the Cacti user access to the tables:"
 msgstr ""
-"在Windows上,您必须按照 <a target='_blank' href='https://dev.mysql.com/"
+"在Windows 上,您必须按照 <a target='_blank' href='https://dev.mysql.com/"
 "downloads/timezones.html'>时区描述表</a>中的说明进行操作. 一旦完成,您可以发出"
 "以下命令来授予Cacti 用户访问表的权限:"
 
@@ -14354,7 +14347,7 @@ msgstr "ERROR:"
 msgid ""
 "Please update config.php with the correct relative URI location of Cacti "
 "(url_path)."
-msgstr "请使用正确的Cacti 相对URI位置(url_path)更新config.php."
+msgstr "请使用正确的Cacti 相对URI 位置(url_path)更新config.php."
 
 #: lib/installer.php:1659
 msgid ""
@@ -14535,7 +14528,7 @@ msgid ""
 "and retrying, before raising an issue with The Cacti Group"
 msgstr ""
 "如果出现问题,强烈建议您清除浏览器缓存,关闭然后重新打开浏览器(不只是 'Cacti' "
-"选项卡)并重试, 然后再向Cacti Group 提出问题"
+"选项卡)并重试, 然后再向Cacti Group 报告问题"
 
 #: lib/installer.php:1864
 #, fuzzy
@@ -14929,7 +14922,7 @@ msgid ""
 "sure you select the 'Local Linux Machine' Device Template."
 msgstr ""
 "请在安装后选择您想要使用的设备模板. 如果您的操作系统是Windows,则需要确保选择 "
-"'Windows设备' 模板.如果您的操作系统是Linux/UNIX,请确保选择 ' Local Linux "
+"'Windows 设备' 模板.如果您的操作系统是Linux/UNIX,请确保选择 ' Local Linux "
 "Machine' 设备模板."
 
 #: lib/installer.php:2327 plugins.php:476
@@ -17794,7 +17787,7 @@ msgstr "邮件"
 #: user_domains.php:503
 #, fuzzy
 msgid "Field that will replace the email taken from LDAP. (on windows: mail) "
-msgstr "将替换从LDAP获取的电子邮件的字段. (在Windows上:邮件)"
+msgstr "将替换从LDAP获取的电子邮件的字段. (Windows: 邮件)"
 
 #: user_domains.php:528
 msgid "Domain Properties"
