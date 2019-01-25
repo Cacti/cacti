@@ -356,7 +356,7 @@ msgstr "图形项[新建]"
 #: aggregate_graphs.php:542 graphs.php:1299
 #, php-format
 msgid "Graph Items [edit: %s]"
-msgstr "图形项目[编辑: %s]"
+msgstr "图形项目 [编辑: %s]"
 
 #: aggregate_graphs.php:615 aggregate_graphs.php:622 lib/html_reports.php:1174
 #: lib/html_reports.php:1179 lib/html_reports.php:1218 utilities.php:1821
@@ -738,7 +738,7 @@ msgstr "删除颜色模板"
 #: aggregate_templates.php:351
 #, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "图形模板限制聚合模板[编辑: %s]"
+msgstr "聚合模板 [编辑: %s]"
 
 #: aggregate_templates.php:353
 msgid "Aggregate Template [new]"
@@ -784,7 +784,7 @@ msgstr "可删除"
 #: data_queries.php:1373 gprint_presets.php:396 graph_templates.php:790
 #: vdef.php:883
 msgid "Graphs Using"
-msgstr "图形使用"
+msgstr "图形正在使用"
 
 #: aggregate_templates.php:645 graph_view.php:700 include/global_arrays.php:822
 #: include/global_arrays.php:1173 include/global_form.php:1351
@@ -1340,7 +1340,7 @@ msgstr "您确定要删除规则'%s'吗?"
 #: automation_graph_rules.php:539
 #, php-format
 msgid "Rule Selection [edit: %s]"
-msgstr "规则选择[编辑: %s]"
+msgstr "规则选择 [编辑: %s]"
 
 #: automation_graph_rules.php:545
 msgid "Rule Selection [new]"
@@ -1533,7 +1533,7 @@ msgstr "每月的某一天"
 #: automation_networks.php:427
 #, php-format
 msgid "Network Discovery Range [edit: %s]"
-msgstr "网络发现范围[编辑: %s]"
+msgstr "网络发现范围 [编辑: %s]"
 
 #: automation_networks.php:429
 msgid "Network Discovery Range [new]"
@@ -2214,7 +2214,7 @@ msgstr "删除SNMP 项目"
 #: automation_snmp.php:398
 #, php-format
 msgid "SNMP Options [edit: %s]"
-msgstr "SNMP 选项[编辑: %s]"
+msgstr "SNMP 选项 [编辑: %s]"
 
 #: automation_snmp.php:400
 msgid "SNMP Options [new]"
@@ -2235,7 +2235,7 @@ msgstr "项目顺序."
 #: automation_snmp.php:462
 #, php-format
 msgid "SNMP Option Set [edit: %s]"
-msgstr "SNMP 选项集[编辑: %s]"
+msgstr "SNMP 选项集 [编辑: %s]"
 
 #: automation_snmp.php:464
 msgid "SNMP Option Set [new]"
@@ -2442,7 +2442,7 @@ msgstr ""
 #: automation_templates.php:329
 #, php-format
 msgid "Automation Templates [edit: %s]"
-msgstr "自动化模板[编辑: %s]"
+msgstr "自动化模板 [编辑: %s]"
 
 #: automation_templates.php:331
 msgid "Automation Templates for [Deleted Template]"
@@ -2504,7 +2504,7 @@ msgstr "合格的对象"
 #: automation_tree_rules.php:557
 #, php-format
 msgid "Tree Rule Selection [edit: %s]"
-msgstr "树规则选择[编辑: %s]"
+msgstr "树规则选择 [编辑: %s]"
 
 #: automation_tree_rules.php:559
 msgid "Tree Rules Selection [new]"
@@ -2627,7 +2627,7 @@ msgstr "CDEF 预览"
 #: cdef.php:443
 #, php-format
 msgid "CDEF Items [edit: %s]"
-msgstr "CDEF项目[编辑: %s]"
+msgstr "CDEF项目 [编辑: %s]"
 
 #: cdef.php:456
 msgid "CDEF Item Type"
@@ -2648,7 +2648,7 @@ msgstr "为 CDEF 输入一个值."
 #: cdef.php:580
 #, php-format
 msgid "CDEF [edit: %s]"
-msgstr "CDEF[编辑: %s]"
+msgstr "CDEF [编辑: %s]"
 
 #: cdef.php:582
 msgid "CDEF [new]"
@@ -2783,7 +2783,7 @@ msgstr "<strong>十六进制</strong> - 十六进制值"
 #: color.php:417
 #, php-format
 msgid "Colors [edit: %s]"
-msgstr "颜色[编辑: %s]"
+msgstr "颜色 [编辑: %s]"
 
 #: color.php:419
 msgid "Colors [new]"
@@ -2903,7 +2903,7 @@ msgstr "颜色模板项目[新建]"
 #: color_templates.php:295
 #, php-format
 msgid "Color Template Items [edit: %s]"
-msgstr "颜色模板项目[编辑: %s]"
+msgstr "颜色模板项目 [编辑: %s]"
 
 #: color_templates.php:329
 msgid "Delete Color Item"
@@ -2912,7 +2912,7 @@ msgstr "删除颜色项目"
 #: color_templates.php:359
 #, php-format
 msgid "Color Template [edit: %s]"
-msgstr "颜色模板[编辑: %s]"
+msgstr "颜色模板 [编辑: %s]"
 
 #: color_templates.php:361
 msgid "Color Template [new]"
@@ -3042,21 +3042,18 @@ msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr "请确定RRD 文件是否与数据源模板匹配."
 
 #: data_debug.php:307
-#, fuzzy
 msgid "Valid Data"
 msgstr "有效数据"
 
 #: data_debug.php:310
-#, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
-msgstr "请确定RRD 文件是否已获得良好的最新数据."
+msgstr "请确定RRD 文件是否已获得正确的最新数据."
 
 #: data_debug.php:313
 msgid "RRD Updated"
 msgstr "RRD 更新"
 
 #: data_debug.php:316
-#, fuzzy
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "请确定RRD 文件是否已正确写入."
 
@@ -3084,7 +3081,7 @@ msgstr "问题"
 #: data_debug.php:474 data_debug.php:770
 #, fuzzy
 msgid "Not Debugging"
-msgstr "不调试"
+msgstr "非调试"
 
 #: data_debug.php:490
 msgid "No Checks"
@@ -3165,7 +3162,7 @@ msgid "<not set>"
 msgstr "<未设置>"
 
 #: data_debug.php:692
-#, fuzzy, php-format
+#, php-format
 msgid "Data Source Troubleshooter [%s]"
 msgstr "数据源排障工具 [%s]"
 
@@ -3240,7 +3237,7 @@ msgstr "该脚本似乎没有输入值,因此没有什么要添加的."
 #: data_input.php:472
 #, php-format
 msgid "Output Fields [edit: %s]"
-msgstr "输出字段[编辑: %s]"
+msgstr "输出字段 [编辑: %s]"
 
 #: data_input.php:473 include/global_form.php:616
 msgid "Output Field"
@@ -3249,7 +3246,7 @@ msgstr "Output Field"
 #: data_input.php:475
 #, php-format
 msgid "Input Fields [edit: %s]"
-msgstr "输入字段[编辑: %s]"
+msgstr "输入字段 [编辑: %s]"
 
 #: data_input.php:476
 msgid "Input Field"
@@ -3258,7 +3255,7 @@ msgstr "输入字段"
 #: data_input.php:558
 #, php-format
 msgid "Data Input Methods [edit: %s]"
-msgstr "数据输入方法[编辑: %s]"
+msgstr "数据输入方法 [编辑: %s]"
 
 #: data_input.php:562
 msgid "Data Input Methods [new]"
@@ -3414,7 +3411,7 @@ msgstr "删除VDEF项目"
 #: data_queries.php:647
 #, php-format
 msgid "Associated Graph/Data Templates [edit: %s]"
-msgstr "关联的图形/数据模板[编辑: %s]"
+msgstr "关联的图形/数据模板 [编辑: %s]"
 
 #: data_queries.php:671
 msgid "Associated Data Templates"
@@ -3474,7 +3471,7 @@ msgstr "添加数据源名称建议的名称"
 #: data_queries.php:1084
 #, php-format
 msgid "Data Queries [edit: %s]"
-msgstr "数据查询[编辑: %s]"
+msgstr "数据查询 [编辑: %s]"
 
 #: data_queries.php:1086
 msgid "Data Queries [new]"
@@ -3482,11 +3479,11 @@ msgstr "数据查询[新建]"
 
 #: data_queries.php:1108
 msgid "Successfully located XML file"
-msgstr "成功找到XML文件"
+msgstr "成功找到XML 文件"
 
 #: data_queries.php:1111
 msgid "Could not locate XML file."
-msgstr "未找到XML文件."
+msgstr "未找到XML 文件."
 
 #: data_queries.php:1119 host.php:679 host_templates.php:483
 #: include/global_arrays.php:2165
@@ -3590,7 +3587,7 @@ msgstr "点击 '继续' 删除以下数据源配置文件RRA."
 #: data_source_profiles.php:338
 #, php-format
 msgid "Profile Name: %s"
-msgstr "模块名称: %s"
+msgstr "配置名称: %s"
 
 #: data_source_profiles.php:344
 msgid "Remove Data Source Profile RRA"
@@ -3598,7 +3595,7 @@ msgstr "删除数据源配置文件RRA"
 
 #: data_source_profiles.php:405 data_source_profiles.php:424
 msgid "Each Insert is New Row"
-msgstr "每个插入是新行"
+msgstr "每次插入都是新列"
 
 #: data_source_profiles.php:443
 msgid "(Some Elements Read Only)"
@@ -3612,7 +3609,7 @@ msgstr "RRA [编辑: %s %s]"
 #: data_source_profiles.php:538
 #, php-format
 msgid "Data Source Profile [edit: %s]"
-msgstr "数据源配置文件[编辑: %s]"
+msgstr "数据源配置文件 [编辑: %s]"
 
 #: data_source_profiles.php:540
 msgid "Data Source Profile [new]"
@@ -3907,7 +3904,7 @@ msgstr "所选数据输入源没有输入字段"
 #: data_sources.php:752
 #, php-format
 msgid "Data Template Selection [edit: %s]"
-msgstr "数据模板选择[编辑: %s]"
+msgstr "数据模板选择 [编辑: %s]"
 
 #: data_sources.php:758
 msgid "Data Template Selection [new]"
@@ -4104,7 +4101,7 @@ msgstr "更改数据源配置文件"
 #: data_templates.php:531
 #, php-format
 msgid "Data Templates [edit: %s]"
-msgstr "数据模板[编辑: %s]"
+msgstr "数据模板 [编辑: %s]"
 
 #: data_templates.php:550
 msgid "Edit Data Input Method."
@@ -4204,7 +4201,7 @@ msgstr "删除GPRINT 预设"
 #: gprint_presets.php:186
 #, php-format
 msgid "GPRINT Presets [edit: %s]"
-msgstr "GPRINT 预设[编辑: %s]"
+msgstr "GPRINT 预设 [编辑: %s]"
 
 #: gprint_presets.php:188
 msgid "GPRINT Presets [new]"
@@ -4295,7 +4292,7 @@ msgstr "Cacti Poller 尚未运行."
 
 #: graph_realtime.php:235
 msgid "Real-time has been disabled by your administrator."
-msgstr "实时已被您的管理员禁用."
+msgstr "实时功能已被管理员禁用."
 
 #: graph_realtime.php:242
 msgid ""
@@ -4397,7 +4394,7 @@ msgstr "同步图形到图形模板."
 #: graph_templates.php:436
 #, php-format
 msgid "Graph Template Items [edit: %s]"
-msgstr "图形模板项目[编辑: %s]"
+msgstr "图形模板项目 [编辑: %s]"
 
 #: graph_templates.php:443 include/global_arrays.php:2009
 msgid "Graph Item Inputs"
@@ -4408,14 +4405,13 @@ msgid "No Inputs"
 msgstr "无法导入"
 
 #: graph_templates.php:514
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Template [edit: %s]"
-msgstr "图形模板[编辑: %s]"
+msgstr "图形模板 [编辑: %s]"
 
 #: graph_templates.php:516
-#, fuzzy
 msgid "Graph Template [new]"
-msgstr "图形模板[新]"
+msgstr "图形模板[新建]"
 
 #: graph_templates.php:532
 msgid "Graph Template Options"
@@ -4482,7 +4478,7 @@ msgid "Associated Graph Items"
 msgstr "关联相关图形"
 
 #: graph_templates_inputs.php:220
-#, fuzzy, php-format
+#, php-format
 msgid "Item #%s"
 msgstr "项目 #%s"
 
@@ -4547,7 +4543,6 @@ msgid "View Graphs"
 msgstr "查看图形"
 
 #: graph_view.php:598
-#, fuzzy
 msgid "Add to a Report"
 msgstr "添加到报告"
 
@@ -4562,7 +4557,6 @@ msgstr "所有图形和模板"
 
 #: graph_view.php:612 graphs.php:427 graphs.php:1998 lib/html.php:185
 #: lib/html_graph.php:158 lib/html_tree.php:960
-#, fuzzy
 msgid "Not Templated"
 msgstr "没有模板化"
 
@@ -4572,7 +4566,7 @@ msgstr "图形大小"
 
 #: graph_view.php:714
 msgid "Aggregated Device"
-msgstr "聚合设备"
+msgstr "已聚合的设备"
 
 #: graph_view.php:717
 msgid "Non-Device"
@@ -4585,7 +4579,7 @@ msgstr "不适用"
 #: graph_view.php:746
 #, fuzzy
 msgid "Select the Report to add the selected Graphs to."
-msgstr "选择'报告'以将选定的图形添加到."
+msgstr "选择将所选图形添加到哪个报告中."
 
 #: graph_view.php:841 include/global_arrays.php:1809
 #: include/global_settings.php:2092
@@ -4593,7 +4587,6 @@ msgid "Preview Mode"
 msgstr "预览模式"
 
 #: graph_view.php:880
-#, fuzzy
 msgid "Add Selected Graphs to Report"
 msgstr "将所选图形添加到报告中"
 
@@ -4676,9 +4669,8 @@ msgid "Created graph: %s"
 msgstr "创建图形: '%s'"
 
 #: graphs.php:254 lib/template.php:1396 lib/template.php:1416
-#, fuzzy
 msgid "ERROR: No Data Source associated. Check Template"
-msgstr "ERROR: 没有数据源关联.检查模板"
+msgstr "ERROR: 没有关联数据源. 请检查模板"
 
 #: graphs.php:440 graphs.php:453 lib/api_automation.php:756
 msgid "Not Found"
@@ -4827,7 +4819,7 @@ msgstr "点击 '继续' 以将自动化规则应用于以下图形."
 #: graphs.php:1381
 #, php-format
 msgid "Graph [edit: %s]"
-msgstr "图形[编辑: %s]"
+msgstr "图形 [编辑: %s]"
 
 #: graphs.php:1387
 msgid "Graph [new]"
@@ -4914,7 +4906,7 @@ msgstr "来源类型"
 #: graphs.php:2020
 #, fuzzy
 msgid "The underlying source that this Graph was based upon."
-msgstr "此Graph基于的基础源."
+msgstr "这个图形基于的数据源."
 
 #: graphs.php:2023
 msgid "Source Name"
@@ -4931,7 +4923,7 @@ msgstr "未处于预览模式时此图形的大小."
 
 #: graphs_items.php:310
 msgid "Data Sources [No Device]"
-msgstr "数据源[无设备]"
+msgstr "数据源 [无设备]"
 
 #: graphs_items.php:327 include/global_arrays.php:1168
 #: include/global_form.php:1580
@@ -4941,7 +4933,7 @@ msgstr "数据模板"
 #: graphs_items.php:400
 #, php-format
 msgid "Graph Items [graph: %s]"
-msgstr "图形项目[图形: %s]"
+msgstr "图形项目 [图形: %s]"
 
 #: graphs_items.php:441
 msgid "Choose the Data Source to associate with this Graph Item."
@@ -4954,7 +4946,7 @@ msgstr "默认设置已保存"
 #: graphs_new.php:269
 #, php-format
 msgid "New Graphs for [ %s ]"
-msgstr "新的图形为[ %s ]"
+msgstr "新图形 [ %s ]"
 
 #: graphs_new.php:272
 msgid "New Graphs for [ All Devices ]"
@@ -5010,7 +5002,7 @@ msgstr "(选择要创建的图形类型)"
 #: graphs_new.php:621
 #, php-format
 msgid "Data Query [%s]"
-msgstr "数据查询[%s]"
+msgstr "数据查询 [%s]"
 
 #: graphs_new.php:738
 msgid "From there you can get more information."
@@ -5147,7 +5139,7 @@ msgstr "在设备上运行自动化"
 
 #: host.php:585
 msgid "Device [new]"
-msgstr "设备[新建]"
+msgstr "设备 [新建]"
 
 #: host.php:596
 #, php-format
@@ -5244,7 +5236,7 @@ msgstr "操作"
 #: host.php:845
 #, php-format
 msgid " [%d Items, %d Rows]"
-msgstr " [%d 个项目, %d行]"
+msgstr " [%d 个项目, %d 列]"
 
 #: host.php:845
 msgid "Fail"
@@ -5479,11 +5471,11 @@ msgstr "数据查询名称: %s"
 #: host_templates.php:459
 #, php-format
 msgid "Device Templates [edit: %s]"
-msgstr "设备模板[编辑: %s]"
+msgstr "设备模板 [编辑: %s]"
 
 #: host_templates.php:461
 msgid "Device Templates [new]"
-msgstr "设备模板[新建]"
+msgstr "设备模板 [新建]"
 
 #: host_templates.php:478
 msgid "Default Submit Button"
@@ -5773,7 +5765,6 @@ msgid ""
 msgstr "建议的值未输入.  请输入一个值名称,然后重试."
 
 #: include/global_arrays.php:238
-#, fuzzy
 msgid "You must select at least one object from the list."
 msgstr "您必须从列表中选择至少一个对象."
 
@@ -5946,24 +5937,20 @@ msgid "Report Item Save Failed"
 msgstr "报告项目保存失败"
 
 #: include/global_arrays.php:334
-#, fuzzy
 msgid "Graph was not found attempting to Add to Report"
-msgstr "未找到图形尝试添加到报告"
+msgstr "未找到要添加到报告中的图形"
 
 #: include/global_arrays.php:337
-#, fuzzy
 msgid "Unable to Add Graphs.  Current user is not owner"
 msgstr "无法添加图形.当前用户不是所有者"
 
 #: include/global_arrays.php:340
-#, fuzzy
 msgid "Unable to Add all Graphs.  See error message for details."
-msgstr "无法添加所有图形.有关详细信息,请参见错"
+msgstr "无法添加所有图形.详情请参考报错信息"
 
 #: include/global_arrays.php:343
-#, fuzzy
 msgid "You must select at least one Graph to add to a Report."
-msgstr "您必须至少选择一个图形才能添加到报告中."
+msgstr "您必须至少选择一个图形添加到报告中."
 
 #: include/global_arrays.php:346
 #, fuzzy
@@ -7411,7 +7398,7 @@ msgstr "(删除项目)"
 #: include/global_arrays.php:2177 include/global_settings.php:223
 #: rrdcleaner.php:296
 msgid "RRD Cleaner"
-msgstr "RRD 清除"
+msgstr "RRD 清除器"
 
 #: include/global_arrays.php:2189
 msgid "List unused Files"
@@ -8626,7 +8613,7 @@ msgstr "XML 路径"
 #: include/global_form.php:1324
 msgid ""
 "The full path to the XML file containing definitions for this data query."
-msgstr "包含此数据查询定义的XML文件的完整路径."
+msgstr "包含此数据查询定义的XML 文件的完整路径."
 
 #: include/global_form.php:1333
 msgid ""
@@ -8774,7 +8761,7 @@ msgstr "从文本导入模板"
 msgid ""
 "If you have the XML file containing template data as text, you can paste it "
 "into this box to import it."
-msgstr "如果您将包含模板数据的XML文件作为文本,则可以将其粘贴到此框中以导入它."
+msgstr "如果您将包含模板数据的XML 文件作为文本,则可以将其粘贴到此框中以导入它."
 
 #: include/global_form.php:1623
 msgid "Preview Import Only"
@@ -9361,7 +9348,6 @@ msgstr ""
 "日志文件的详细级别. WARNING: 如果设置为 'NONE' 或 'LOW' 之外的状态,可能会迅速耗尽磁盘空间."
 
 #: include/global_settings.php:271
-#, fuzzy
 msgid "Log Input Validation Issues"
 msgstr "日志输入验证问题"
 
@@ -9675,7 +9661,6 @@ msgstr ""
 "或自动化网络值保留为空,Cacti 将使用Primary Cacti Admins Email帐户."
 
 #: include/global_settings.php:474
-#, fuzzy
 msgid "Automation Notification From Name"
 msgstr "自动通知的发件人"
 
@@ -12108,7 +12093,7 @@ msgstr "规则项目[编辑规则项目 %s: %s]"
 #: lib/api_automation.php:2034
 #, php-format
 msgid "Rule Item [new rule item for %s: %s]"
-msgstr "规则项目[新的规则项目%s: %s]"
+msgstr "规则项目[新的规则项目 %s: %s]"
 
 #: lib/api_automation.php:2787
 msgid "Added by Cacti Automation"
@@ -12503,7 +12488,7 @@ msgstr "执行脚本查询 '%s'"
 #: lib/data_query.php:604
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
-msgstr "找到项目 [%s='%s']索引: %s"
+msgstr "找到项目 [%s='%s'] 索引: %s"
 
 #: lib/data_query.php:641 lib/data_query.php:656
 #, php-format
@@ -15473,7 +15458,7 @@ msgstr "解析rrdtool 转储的XML 时出错"
 #: lib/rrd.php:2915 lib/rrd.php:2970 lib/rrd.php:3026
 #, php-format
 msgid "ERROR while writing XML file: %s"
-msgstr "写入XML文件时出错: %s"
+msgstr "写入XML 文件时出错: %s"
 
 #: lib/rrd.php:2926 lib/rrd.php:2981 lib/rrd.php:3037
 #, php-format
@@ -15830,7 +15815,7 @@ msgstr "顶级控制台"
 
 #: links.php:379
 msgid "Page"
-msgstr "页"
+msgstr "网页"
 
 #: links.php:381 links.php:504 links.php:509
 msgid "Style"
@@ -15938,7 +15923,7 @@ msgstr "页面自动刷新的频率."
 #: links.php:578
 #, php-format
 msgid "External Links [edit: %s]"
-msgstr "外部链接[编辑: %s]"
+msgstr "外部链接 [编辑: %s]"
 
 #: links.php:580
 msgid "External Links [new]"
@@ -15989,7 +15974,7 @@ msgstr "没有SNMP 通知接收器"
 #: managers.php:282
 #, php-format
 msgid "SNMP Notification Receiver [edit: %s]"
-msgstr "SNMP 通知接收器[编辑: %s]"
+msgstr "SNMP 通知接收器 [编辑: %s]"
 
 #: managers.php:284
 msgid "SNMP Notification Receiver [new]"
@@ -16519,7 +16504,7 @@ msgstr[0] "单击 '继续' 以同步远程数据采集器进行离线操作."
 #: pollers.php:509 sites.php:354
 #, php-format
 msgid "Site [edit: %s]"
-msgstr "站点[编辑: %s]"
+msgstr "站点 [编辑: %s]"
 
 #: pollers.php:513 sites.php:356
 msgid "Site [new]"
@@ -16704,7 +16689,7 @@ msgstr "自更新以来的时间"
 
 #: rrdcleaner.php:497
 msgid "RRDfiles"
-msgstr "RRDfiles"
+msgstr "RRD 文件"
 
 #: rrdcleaner.php:513 user_domains.php:679 user_group_admin.php:1863
 #: user_group_admin.php:2216 user_group_admin.php:2320
@@ -17040,7 +17025,7 @@ msgstr "输出方法"
 
 #: templates_export.php:136
 msgid "Choose the format to output the resulting XML file in."
-msgstr "选择格式以输出结果XML文件."
+msgstr "选择格式以输出结果XML 文件."
 
 #: templates_export.php:143
 msgid "Output to the Browser (within Cacti)"
@@ -17057,7 +17042,7 @@ msgstr "局部保存文件"
 #: templates_export.php:170
 #, php-format
 msgid "Available Templates [%s]"
-msgstr "可用模板[%s]"
+msgstr "可用的模板 [%s]"
 
 #: templates_import.php:106 templates_import.php:128
 msgid "Import Template"
@@ -17065,7 +17050,7 @@ msgstr "导入模板"
 
 #: templates_import.php:108
 msgid "ERROR"
-msgstr "错误"
+msgstr "ERROR"
 
 #: templates_import.php:108
 msgid "Failed to access temporary folder, import functionality is disabled"
@@ -17139,7 +17124,7 @@ msgstr[0] "取消发布树"
 #: tree.php:715
 #, php-format
 msgid "Trees [edit: %s]"
-msgstr "树[编辑: %s]"
+msgstr "树 [编辑: %s]"
 
 #: tree.php:728
 msgid "Trees [new]"
@@ -17704,7 +17689,7 @@ msgstr "使选定的域默认"
 #: user_domains.php:317
 #, php-format
 msgid "User Domain [edit: %s]"
-msgstr "用户域[编辑: %s]"
+msgstr "用户域 [编辑: %s]"
 
 #: user_domains.php:319
 msgid "User Domain [new]"
@@ -17995,7 +17980,7 @@ msgstr "成员"
 #: user_group_admin.php:1675
 #, php-format
 msgid "User Group Management [edit: %s]"
-msgstr "用户组管理[编辑: %s]"
+msgstr "用户组管理 [编辑: %s]"
 
 #: user_group_admin.php:1677
 msgid "User Group Management [new]"
@@ -18213,7 +18198,7 @@ msgstr "用户登录历史"
 
 #: utilities.php:675
 msgid "Deleted/Invalid"
-msgstr "删除/无效"
+msgstr "已删除/无效"
 
 #: utilities.php:688 utilities.php:802
 msgid "Result"
@@ -18266,7 +18251,7 @@ msgstr "IP 地址"
 
 #: utilities.php:819
 msgid "(User Removed)"
-msgstr "用户删除"
+msgstr "用户已删除"
 
 #: utilities.php:1170
 #, php-format
@@ -18552,7 +18537,7 @@ msgstr "Boost 按需更新:"
 
 #: utilities.php:2159
 msgid "Total Data Sources:"
-msgstr "总数据来源:"
+msgstr "数据源计数:"
 
 #: utilities.php:2163
 msgid "Pending Boost Records:"
@@ -18763,7 +18748,7 @@ msgstr "VDEF 预览"
 #: vdef.php:402
 #, php-format
 msgid "VDEF Items [edit: %s]"
-msgstr "VDEF 项目[编辑: %s]"
+msgstr "VDEF 项目 [编辑: %s]"
 
 #: vdef.php:404
 msgid "VDEF Items [new]"
@@ -18788,7 +18773,7 @@ msgstr "为VDEF 输入一个值."
 #: vdef.php:559
 #, php-format
 msgid "VDEFs [edit: %s]"
-msgstr "VDEFs[编辑: %s]"
+msgstr "VDEF [编辑: %s]"
 
 #: vdef.php:561
 msgid "VDEFs [new]"
