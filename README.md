@@ -165,4 +165,4 @@ Cacti supports more RRDtool Graph options including:
 * Text alignment
  
 -----------------------------------------------------------------------------
-Copyright (c) 2018 - The Cacti Group, Inc.
+Copyright (c) 2019 - The Cacti Group, Inc.
