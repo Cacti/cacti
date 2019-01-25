@@ -1,8 +1,9 @@
 Cacti CHANGELOG
 
-develop
+1.2.2
 -issue: Resizing table throws a JavaScript error
 -issue#2334: JavaScript issues with IE and older Chrome browsers
+-issue#2343: Export hooks no longer work due to missing default keyword
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs

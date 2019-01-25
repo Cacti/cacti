@@ -1117,6 +1117,7 @@ function get_item_xml($type, $id, $follow_deps) {
 					$xml_text .= "\n" . data_source_profile_to_xml($dep_id);
 					break;
 
+				default:
 					$param = array();
 					$param['dep_id']   = $dep_id;
 					$param['dep_type'] = $dep_type;
