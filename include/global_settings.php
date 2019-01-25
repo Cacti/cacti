@@ -1501,6 +1501,7 @@ $settings = array(
 			'file_type' => 'binary',
 			'max_length' => 255,
 			'default' => '',
+			'install_optional' => true
 			),
 		'settings_smtp_header' => array(
 			'friendly_name' => __('SMTP Options'),
