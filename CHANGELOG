@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.2
+-issue#2343: Export hooks no longer work due to missing default keyword
+
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs
 -issue#2267: Remove unnecessary includes in aggregate template code
