@@ -932,6 +932,11 @@ function utilities_get_mysql_recommendations() {
 			'measure' => 'equal',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
+		'innodb_file_format' => array(
+			'value'   => 'Barracuda',
+			'measure' => 'equal',
+			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
+			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
 			'measure' => 'pmem',

@@ -457,7 +457,7 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
-		if (isset($data['row_format'])) {
+		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format') == 'Barracuda') {
 			$sql .= ' ROW_FORMAT=' . $data['row_format'];
 		}
 

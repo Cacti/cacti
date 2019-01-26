@@ -98,8 +98,9 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$ver = db_fetch_cell('SHOW GLOBAL VARIABLES LIKE \'version\'');
-		        if (strpos($ver, 'MariaDB') !== false) {
+			$ver = db_get_global_variable('version', $cnn_id);
+
+	        if (strpos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
 				$ver  = str_replace('-MariaDB', '', $variables['version']);
 			} else {
@@ -819,14 +820,14 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
-		return db_table_create ($table, $data, $log, $db_conn);
+		return db_table_create($table, $data, $log, $db_conn);
 	}
 
 	$allcolumns = array();
 	foreach ($data['columns'] as $column) {
 		$allcolumns[] = $column['name'];
 		if (!db_column_exists($table, $column['name'], $log, $db_conn)) {
-			if (!db_add_column ($table, $column, $log, $db_conn)) {
+			if (!db_add_column($table, $column, $log, $db_conn)) {
 				return false;
 			}
 		} else {
@@ -883,7 +884,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 		foreach($result as $arr) {
 			if (!in_array($arr['Field'], $allcolumns)) {
-				if (!db_remove_column ($table, $arr['Field'], $log, $db_conn)) {
+				if (!db_remove_column($table, $arr['Field'], $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -976,8 +977,8 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
-	if (isset($data['row_format'])) {
-		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format']);
+	if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
+		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format'], $log, $db_conn);
 	}
 
 	$charset= '';
@@ -986,7 +987,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	if ($charset != '') {
-		db_execute("ALTER TABLE `$table` " . $charset);
+		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
 	}
 
 	return true;
@@ -1112,11 +1113,36 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
-		if (isset($data['row_format'])) {
+		if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
 			$sql .= ' ROW_FORMAT=' . $data['row_format'];
 		}
 
 		return db_execute($sql, $log, $db_conn);
+	}
+}
+
+/* db_get_global_variable - get the value of a global variable
+   @param $variable - the variable to obtain
+   @param $db_conn - the database connection to use
+   @returns - (string) the value of the variable if found */
+function db_get_global_variable($variable, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	$data = db_fetch_row("SHOW GLOBAL VARIABLES LIKE '$variable'", true, $db_conn);
+
+	if (cacti_sizeof($data)) {
+		return $data['Value'];
+	} else {
+		return false;
 	}
 }
 
