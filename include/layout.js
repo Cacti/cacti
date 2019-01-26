@@ -3804,8 +3804,8 @@ function setSNMP() {
 			}
 
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if ($('#snmp_auth_protocol').val() != '[None]') {
 					snmp_auth_protocol   = $('#snmp_auth_protocol').val();
@@ -3824,8 +3824,8 @@ function setSNMP() {
 				$('#row_snmp_password').hide();
 				$('#row_snmp_priv_passphrase').hide();
 			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if ($('#snmp_priv_protocol').val() != '[None]') {
 					snmp_priv_protocol   = $('#snmp_priv_protocol').val();
@@ -3848,12 +3848,12 @@ function setSNMP() {
 				$('#row_snmp_priv_protocol').hide();
 				$('#row_snmp_priv_passphrase').hide();
 
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 				checkSNMPPassphrase('auth');
 			} else {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if (snmp_auth_protocol != '' && $('#snmp_auth_protocol').val() == '[None]') {
 					$('#snmp_auth_protocol').val(snmp_auth_protocol);
@@ -3878,8 +3878,8 @@ function setSNMP() {
 					}
 				}
 
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', true);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', true);
 				checkSNMPPassphrase('auth');
 				checkSNMPPassphrase('priv');
 			}
