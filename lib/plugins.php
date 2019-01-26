@@ -457,6 +457,10 @@ function api_plugin_db_table_create($plugin, $table, $data) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
+		if (isset($data['row_format'])) {
+			$sql .= ' ROW_FORMAT=' . $data['row_format'];
+		}
+
 		if (db_execute($sql)) {
 			db_execute_prepared("REPLACE INTO plugin_db_changes
 				(plugin, `table`, `column`, `method`)

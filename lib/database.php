@@ -976,6 +976,10 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
+	if (isset($data['row_format'])) {
+		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format']);
+	}
+
 	$charset= '';
 	if (isset($data['charset'])) {
 		$charset = ' DEFAULT CHARSET=' . $data['charset'];
@@ -1106,6 +1110,10 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 
 		if (isset($data['charset'])) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
+		}
+
+		if (isset($data['row_format'])) {
+			$sql .= ' ROW_FORMAT=' . $data['row_format'];
 		}
 
 		return db_execute($sql, $log, $db_conn);
