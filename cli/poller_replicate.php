@@ -29,6 +29,10 @@ require_once($config['base_path'] . '/lib/poller.php');
 $poller_id = 0;
 $class     = 'all';
 
+/* performing a full sync can take a lot of memory and time */
+ini_set('memory_limit', '-1');
+ini_set('max_execution_time', '900');
+
 /* process calling arguments */
 $parms = $_SERVER['argv'];
 array_shift($parms);

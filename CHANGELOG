@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.2
 -issue: Resizing table throws a JavaScript error
+-issue#2327: Poller Replicate Memory Issue
 -issue#2334: JavaScript issues with IE and older Chrome browsers
 -issue#2339: MAILER WARNING: Mail failed from ... Message: You must provide at least one recipient email address.
 -issue#2343: Export hooks no longer work due to missing default keyword
