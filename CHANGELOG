@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue: Resizing table throws a JavaScript error
 -issue#2334: JavaScript issues with IE and older Chrome browsers
 -issue#2343: Export hooks no longer work due to missing default keyword
+-issue#2346: User(edit)->Permissions(tab)->Plugin Permissions(section) put "Legacy 1.x Plugins" to incorrect cell'<td>'
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs
