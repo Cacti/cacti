@@ -538,8 +538,9 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row
-   @arg $url - a base url to redirect sort actions to */
-function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '') {
+   @arg $url - a base url to redirect sort actions to
+   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+function html_header_sort($header_items, $sort_column, $sort_direction, $last_item_colspan = 1, $url = '', $return_to = '') {
 	/* reverse the sort direction */
 	if ($sort_direction == 'ASC') {
 		$new_sort_direction = 'DESC';
@@ -671,16 +672,16 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$nohide $align' " . ((($i+1) == cacti_count($header_items)) ? "colspan='$last_item_colspan' " : '') . '>' . $display_text . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . ($url == '' ? html_escape(get_current_page(false)):$url) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 
 		$i++;
 	}
 
-	print "</tr>\n";
+	print '</tr>';
 }
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
@@ -694,8 +695,9 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
-   @arg $form_action - the url to post the 'select all' form to */
-function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '') {
+   @arg $form_action - the url to post the 'select all' form to
+   @arg $return_to - the id of the object to inject output into as a result of the sort action */
+function html_header_sort_checkbox($header_items, $sort_column, $sort_direction, $include_form = true, $form_action = '', $return_to = '') {
 	static $page = 0;
 
 	/* reverse the sort direction */
@@ -832,15 +834,15 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 
 		if (($db_column == '') || (substr_count($db_column, 'nosort'))) {
-			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$align $nohide'>" . $display_text . "</th>\n";
+			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='$align $nohide'>" . $display_text . '</th>';
 		} else {
 			print '<th ' . ($tip != '' ? "title='" . html_escape($tip) . "'":'') . " class='sortable $align $nohide $isSort'>";
-			print "<div class='sortinfo' sort-page='" . html_escape($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>\n";
+			print "<div class='sortinfo' sort-return='" . ($return_to == '' ? 'main':$return_to) . "' sort-page='" . html_escape($form_action) . "' sort-column='$db_column' sort-direction='$direction'><div class='textSubHeaderDark'>" . $display_text . "<i class='$icon'></i></div></div></th>";
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
-	print "</tr>\n";
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":'');
+	print '</tr>';
 
 	$page++;
 }

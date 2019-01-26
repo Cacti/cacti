@@ -2138,6 +2138,7 @@ function setupSortable() {
 			var page      = $(this).find('.sortinfo').attr('sort-page');
 			var column    = $(this).find('.sortinfo').attr('sort-column');
 			var direction = $(this).find('.sortinfo').attr('sort-direction');
+			var returnto  = $(this).find('.sortinfo').attr('sort-return');
 
 			if (shiftPressed) {
 				sortAdd='&add=true';
@@ -2156,9 +2157,9 @@ function setupSortable() {
 				.done(function(data) {
 					checkForLogout(data);
 
-					$('#main').empty().hide();
+					$('#'+returnto).empty().hide();
 					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
+					$('#'+returnto).html(data);
 
 					applySkin();
 				})
