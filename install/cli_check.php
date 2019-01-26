@@ -32,7 +32,7 @@ $no_http_headers = true;
 include(dirname(__FILE__) . '/../include/global.php');
 include(dirname(__FILE__) . '/../lib/utility.php');
 
-if ($argv !== false && sizeof($argv)) {
+if ($argv !== false && sizeof($argv) > 1) {
 	$value = strtolower($argv[1]);
 
 	if ($value == 'extensions') {
