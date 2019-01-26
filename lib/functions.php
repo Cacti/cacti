@@ -3391,6 +3391,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
+
 	$toText    = add_email_details($to, $result, array($mail, 'addAddress'));
 
 	if ($result == false) {
@@ -3630,7 +3631,7 @@ function split_emaildetail($email) {
 	if (!is_array($email)) {
 		$email = trim($email);
 
-		$sPattern = '/([\w\s\'\"]+[\s]+)?(<)?(([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w-\.\+]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
 		preg_match($sPattern, $email, $aMatch);
 
 		if (isset($aMatch[1])) {
