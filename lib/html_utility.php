@@ -808,7 +808,7 @@ function validate_is_regex($regex) {
 	$track_errors = ini_get('track_errors');
 	ini_set('track_errors', 1);
 
-    if(@preg_match("'" . $regex . "'", NULL) !== false) {
+    if (@preg_match("'" . $regex . "'", NULL) !== false) {
 		ini_set('track_errors', $track_errors);
 		return true;
 	}
@@ -952,10 +952,10 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	$start_page = max(1, ($current_page - floor(($pages_per_screen - 1) / 2)));
 	$end_page = min($total_pages, ($current_page + floor(($pages_per_screen - 1) / 2)));
 
-	if($total_pages <= $pages_per_screen){
+	if ($total_pages <= $pages_per_screen) {
 		$start_page = 2;
 		$end_page = $total_pages - 1;
-	}else{
+	} else {
 		$start_page = max(2, ($current_page - floor(($pages_per_screen - 3) / 2)));
 		/*When current_page > (pages_per_screen - 1) / 2*/
 		$end_page = min($total_pages - 1, ($current_page + floor(($pages_per_screen - 3) / 2)));
@@ -975,10 +975,10 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		$end_page = min($total_pages - 1, $end_page);
 	}
 
-	if($total_pages > 0){
+	if ($total_pages > 0) {
 		if ($current_page == 1) {
 			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var(1);return false'>1</a></li>";
-		}else{
+		} else {
 			$url_page_select .= "<li><a href='#' onClick='goto$page_var(1);return false'>1</a></li>";
 		}
 	}
@@ -986,8 +986,9 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 	for ($page_number=0; (($page_number+$start_page) <= $end_page); $page_number++) {
 		$page = $page_number + $start_page;
 		if ($page_number < $pages_per_screen) {
-			if($page_number == 0 && $start_page > 2)
+			if ($page_number == 0 && $start_page > 2) {
 				$url_page_select .= $url_ellipsis;
+			}
 
 			if ($current_page == $page) {
 				$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($page);return false'>$page</a></li>";
@@ -997,14 +998,14 @@ function get_page_list($current_page, $pages_per_screen, $rows_per_page, $total_
 		}
 	}
 
-	if($total_pages - 1 > $end_page){
+	if ($total_pages - 1 > $end_page) {
 		$url_page_select .= $url_ellipsis;
 	}
 
-	if($total_pages > 1){
+	if ($total_pages > 1) {
 		if ($current_page == $total_pages) {
 			$url_page_select .= "<li><a href='#' class='active' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
-		}else{
+		} else {
 			$url_page_select .= "<li><a href='#' onClick='goto$page_var($total_pages);return false'>$total_pages</a></li>";
 		}
 	}
