@@ -520,7 +520,7 @@ function item_edit() {
 			$('#row_shift').hide();
 			$('#row_alpha').hide();
 			$('#row_consolidation_function_id').hide();
-			$('#row_cdef_id').show();
+			$('#row_cdef_id').hide();
 			$('#row_vdef_id').hide();
 			$('#row_value').hide();
 			$('#row_gprint_id').hide();
@@ -537,7 +537,7 @@ function item_edit() {
 			$('#row_shift').hide();
 			$('#row_alpha').hide();
 			$('#row_consolidation_function_id').hide();
-			$('#row_cdef_id').show();
+			$('#row_cdef_id').hide();
 			$('#row_vdef_id').hide();
 			$('#row_value').show();
 			$('#row_gprint_id').hide();
