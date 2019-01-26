@@ -1,7 +1,6 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -22,7 +21,6 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_2_1() {
-	db_install_execute("UPDATE host SET deleted='' WHERE deleted IS NULL");
-	db_install_execute("ALTER TABLE host MODIFY COLUMN deleted char(3) NOT NULL default ''");
+function upgrade_to_1_2_2() {
+	db_install_execute("ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment");
 }

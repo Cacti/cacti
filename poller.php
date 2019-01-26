@@ -774,9 +774,6 @@ if ($poller_id == 1) {
 	automation_poller_bottom();
 	poller_maintenance();
 	api_plugin_hook('poller_bottom');
-
-	/* truncate the poller_time table to stop running out of keys */
-	db_execute('TRUNCATE TABLE poller_time', true, $poller_db_cnn_id);
 } else {
 	automation_poller_bottom();
 	poller_maintenance();
