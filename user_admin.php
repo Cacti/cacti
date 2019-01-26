@@ -1724,15 +1724,13 @@ function user_realms_edit($header_label) {
 		$i = 1;
 		$j = 1;
 
+		$break = false;
 		foreach($realms as $r) {
-			$break = false;
-
 			if ($last_plugin != $r['name'] && $last_plugin != 'none') {
 				$break = true;
 
 				if ($j == 5) {
-					print "</tr><tr>\n";
-					$break = true;;
+					print "</td></tr><tr>\n";
 					$j = 1;
 				} else {
 					$j++;
@@ -1740,7 +1738,10 @@ function user_realms_edit($header_label) {
 			}
 
 			if ($break) {
-				print "</td><td class='realms'>\n";
+				if($j != 1) {
+					print "</td>\n";
+				}
+				print "<td class='realms'>\n";
 			}
 
 			if ($break || $i == 1) {
@@ -1765,15 +1766,18 @@ function user_realms_edit($header_label) {
 
 			$last_plugin = $r['name'];
 
+			$break = false;
 			$i++;
 		}
 	}
 
 	/* get the old PIA 1.x realms */
 	if (cacti_sizeof($all_realms)) {
-		if ($break) {
-			print "</td><td class='realms'>\n";
+		print "</td>\n";
+		if ($j == 5) {
+			print "</tr><tr>\n";
 		}
+		print "<td class='realms'>\n";
 
 		print '<i>' . __('Legacy 1.x Plugins') . '</i><br>';
 		foreach($all_realms as $realm => $name) {
