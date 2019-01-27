@@ -30,16 +30,30 @@ function prime_default_settings() {
 			if (cacti_sizeof($tab_array)) {
 				foreach($tab_array as $setting => $attributes) {
 					if (isset($attributes['default'])) {
-						db_execute_prepared('INSERT IGNORE INTO settings
-							(name, value) VALUES (?, ?)',
-							array($setting, $attributes['default']));
+						$current = db_fetch_cell_prepared('SELECT value
+							FROM settings
+							WHERE name = ?',
+							array($setting));
+
+						if ($current == '' || $current == null) {
+							db_execute_prepared('INSERT IGNORE INTO settings
+								(name, value) VALUES (?, ?)',
+								array($setting, $attributes['default']));
+						}
 					} elseif (isset($attributes['items'])) {
 						foreach($attributes['items'] as $isetting => $iattributes) {
 							if (isset($iattributes['default'])) {
-								db_execute_prepared('INSERT IGNORE INTO settings
-									(name, value)
-									VALUES (?, ?)',
-									array($isetting, $iattributes['default']));
+								$current = db_fetch_cell_prepared('SELECT value
+									FROM settings
+									WHERE name = ?',
+									array($issetting));
+
+								if ($current == '' || $current == null) {
+									db_execute_prepared('INSERT IGNORE INTO settings
+										(name, value)
+										VALUES (?, ?)',
+										array($isetting, $iattributes['default']));
+								}
 							}
 						}
 					}
@@ -423,7 +437,7 @@ function install_tool_path($name, $defaultPaths) {
 	}
 
 	$which_tool = '';
-	if (config_value_exists('path_'.$name)) {
+	if (config_value_exists('path_' . $name)) {
 		$which_tool = read_config_option('path_'.$name, true);
 		log_install_high('file', "Using config location: $which_tool");
 	}
@@ -515,13 +529,24 @@ function install_file_paths() {
 	$input['path_spine_config'] = $settings['path']['path_spine_config'];
 
 	/* log file path */
-	$input['path_cactilog'] = $settings['path']['path_cactilog'];
-	if (empty($input['path_cactilog']['default'])) {
-		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
+	if (!config_value_exists('path_cactilog')) {
+		$input['path_cactilog'] = $settings['path']['path_cactilog'];
+		if (empty($input['path_cactilog']['default'])) {
+			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
+		}
+	} else {
+		$input['path_cactilog'] = read_config_option('path_cactilog');
+		if (empty($input['path_cactilog']['default'])) {
+			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
+		}
 	}
 
 	/* stderr log file path */
-	$input['path_stderrrlog'] = $settings['path']['path_stderrlog'];
+	if (!config_value_exists('path_cactilog')) {
+		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
+	} else {
+		$input['path_stderrlog'] = read_config_option('path_stderrlog');
+	}
 
 	/* RRDtool Version */
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
