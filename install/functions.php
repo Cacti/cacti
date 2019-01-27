@@ -535,17 +535,19 @@ function install_file_paths() {
 			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 		}
 	} else {
-		$input['path_cactilog'] = read_config_option('path_cactilog');
-		if (empty($input['path_cactilog']['default'])) {
-			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
-		}
+		$input['path_cactilog'] = $settings['path']['path_cactilog'];
+		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
 	}
 
 	/* stderr log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
+		if (empty($input['path_stderrlog']['default'])) {
+			$input['path_stderrlog']['default'] = $config['base_path'] . '/log/cacti.stderr.log';
+		}
 	} else {
-		$input['path_stderrlog'] = read_config_option('path_stderrlog');
+		$input['path_stderrlog'] = $settings['path']['path_stderrlog'];
+		$input['path_stderrlog']['default'] = read_config_option('path_stderrlog');
 	}
 
 	/* RRDtool Version */
