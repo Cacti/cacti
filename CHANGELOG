@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.2
 -issue: Resizing table throws a JavaScript error
+-issue#1062: use UTC when inserting to poller_output in cmd.php
 -issue#2312: Chrome completes "Contacting Device", Safari Doesn't
 -issue#2317: Poller time table running out of auto increment keys
 -issue#2327: Poller Replicate Memory Issue

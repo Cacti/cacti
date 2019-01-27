@@ -466,6 +466,10 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 		$using_proc_function = false;
 	}
 
+	// to avoid DST ambiguity, always use UTC for inserting TIMESTAMP data
+	$previous_timezone = db_get_global_variable('time_zone');
+	db_execute('SET SESSION time_zone = "+0:00"');
+
 	foreach ($polling_items as $item) {
 		$data_source  = $item['local_data_id'];
 		$current_host = $item['host_id'];
@@ -479,7 +483,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			// assume we don't have to spike prevent
 			$set_spike_kill = false;
 
-			$host_update_time = date('Y-m-d H:i:s'); // for poller update time
+			$host_update_time = gmdate('Y-m-d H:i:s'); // UTC for poller update time
 
 			if ($last_host != '') {
 				if (cacti_sizeof($error_ds)) {
@@ -795,6 +799,10 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			break;
 		}
 	}
+
+	// Return previous timezone setting
+	$previous_timezone = db_get_global_variable('time_zone');
+	db_execute('SET SESSION time_zone = "' . $previous_timezone . '"');
 
 	if (cacti_sizeof($error_ds)) {
 		cacti_log('WARNING: Invalid Response(s), Errors[' . cacti_sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
