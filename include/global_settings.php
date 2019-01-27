@@ -356,13 +356,13 @@ $settings = array(
             'default' => '1',
             'array' => $i18n_modes
             ),
-        'i18n_default_language' => array(
-            'friendly_name' => __('Language'),
+		'i18n_default_language' => array(
+			'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
-            'method' => 'drop_array',
-            'default' => 'en-US',
-            'array' => get_installed_locales()
-            ),
+			'method' => 'drop_language',
+			'default' => 'en-US',
+			'array' => get_installed_locales()
+		),
         'i18n_auto_detection' => array(
             'friendly_name' => __('Auto Language Detection'),
             'description' => __('Allow to automatically determine the \'default\' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language.'),
