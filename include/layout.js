@@ -610,12 +610,12 @@ function SelectAll(attrib, checked) {
 }
 
 /* graph filtering */
-function applyTimespanFilterChange(objForm) {
+function applyTimespanFilterChange() {
 	var strURL;
 
-	strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-	strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-	document.location = strURL;
+	strURL = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
+	strURL = strURL + '&predefined_timeshift=' + $('#predefined_timeshift').val();
+	loadPageNoHeader(strURL);
 }
 
 /** cactiReturnTo - This function simply returns to the previous page
