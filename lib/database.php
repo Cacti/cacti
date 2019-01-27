@@ -102,7 +102,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	        if (strpos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
-				$ver  = str_replace('-MariaDB', '', $variables['version']);
+				$ver  = str_replace('-MariaDB', '', $ver);
 			} else {
 				$srv = 'MySQL';
 			}
