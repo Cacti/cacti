@@ -3631,7 +3631,7 @@ function split_emaildetail($email) {
 	if (!is_array($email)) {
 		$email = trim($email);
 
-		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w-\.\+]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w-\.\+]+)@((?:[\w\-]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
 		preg_match($sPattern, $email, $aMatch);
 
 		if (isset($aMatch[1])) {
