@@ -961,7 +961,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('value');
-					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"></i></span>');
 
 					$('.cactiFilterExport').off('click').on('click', function(event) {
 						event.stopPropagation();
