@@ -1094,9 +1094,23 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 			/* check if the data source already exists */
 			$previous_data_source = data_source_exists($graph_template_id, $host_id, $data_template, $snmp_query_array);
 
-			$custom_data = create_graph_has_custom_data_properties($suggested_vals);
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Data Source previous ' . ($previous_data_source ? 'exists':'does not exist'));
+				cacti_log('Data Source keys "' . implode(', ', array_keys($previous_data_source)) . '"');
+				cacti_log('Data Source values "' . implode(', ', array_values($previous_data_source)) . '"');
+			}
 
-			if (cacti_sizeof($previous_data_source) && !$custom_data) {
+			if (sizeof($previous_data_source) && $suggested_vals !== false) {
+				$use_previous_data = create_graph_custom_data_compatible($suggested_vals, $previous_data_source);
+			} else {
+				$use_previous_data = false;
+			}
+
+			if (read_config_option('data_source_trace') == 'on' && $use_previous_data) {
+				cacti_log('Existing Data Source compatible');
+			}
+
+			if (cacti_sizeof($previous_data_source) && $use_previous_data) {
 				$cache_array['local_data_id'][$data_template['id']] = $previous_data_source['id'];
 			} else {
 				// Save the data source
@@ -1310,7 +1324,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	return $cache_array;
 }
 
-/* create_graph_has_custom_data_properties - checks to see if this graphs data sources have custom
+/* create_graph_custom_data_compatible - checks to see if this graphs data sources have custom
    data source properties.  If so, then you must duplicate the Data Source and not use
    the existing one.
    @arg $sugested_vals - any additional information to be included in the new graphs or
@@ -1322,25 +1336,221 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 	  $values['sg'][data_query_id][graph_template_id]['graph_template'][field_name] = $value  // graph template (w/ data query)
 	  $values['sg'][data_query_id][graph_template_id]['graph_template_item'][graph_template_item_id][field_name] = $value  // graph template item (w/ data query)
 	  $values['sg'][data_query_id][data_template_id]['data_template'][field_name] = $value  // data template (w/ data query)
-	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query) */
-function create_graph_has_custom_data_properties($suggested_vals) {
-	if ($suggested_vals !== false && !cacti_sizeof($suggested_vals)) {
-		return false;
-	} else {
-		foreach($suggested_vals as $template => $items) {
-			if (cacti_sizeof($items)) {
-				foreach($items as $type => $item) {
+	  $values['sg'][data_query_id][data_template_id]['data_template_item'][data_template_item_id][field_name] = $value  // data template item (w/ data query)
+   @arg $previous_data_source - the previous data source if this data source id duplicate. */
+function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
+	$compatible = true;
+
+	foreach($suggested_vals as $template => $items) {
+		if (cacti_sizeof($items)) {
+			foreach($items as $type => $item) {
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log('Type: "' . $type . '"');
+					cacti_log('Item Keys: "' . implode('", "', array_keys($item)) . '"');
+				}
+
+				foreach($item as $key => $values) {
 					if ($type == 'data_template') {
-						return true;
+						if (read_config_option('data_source_trace') == 'on') {
+							cacti_log('Item Element Key1: "' . $key . '"');
+						}
+
+						if (is_array($values)) {
+							foreach($values as $vkey => $vvalue) {
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Item Sub Element Key: "' . $vkey . '"');
+									cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+								}
+
+								$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
+									FROM data_template_data
+									WHERE local_data_id = ?
+									AND `$vkey` = ?",
+									array($previous_data_source['id'], $vvalue));
+
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+								}
+
+								if ($previous_value != $vvalue) {
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Not Compatible');
+									}
+
+									return false;
+								}
+							}
+						}
 					} elseif ($type == 'data_template_item') {
-						return true;
+						if (read_config_option('data_source_trace') == 'on') {
+							cacti_log('Item Element Key2: "' . $key . '"');
+						}
+
+						if (is_array($values)) {
+							foreach($values as $vkey => $vvalue) {
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Item Sub Element Key: "' . $vkey . '"');
+									cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+								}
+
+								$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
+									FROM data_template_rrd
+									WHERE local_data_id = ?
+									AND `$vkey` = ?",
+									array($previous_data_source['id'], $vvalue));
+
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+								}
+
+								if ($previous_value != $vvalue) {
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Not Compatible');
+									}
+
+									return false;
+								}
+							}
+						}
+					} elseif ($type == 'custom_data') {
+						if (read_config_option('data_source_trace') == 'on') {
+							cacti_log('Item Element Key3: "' . $key . '"');
+						}
+
+						if (is_array($values)) {
+							foreach($values as $vkey => $vvalue) {
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Item Sub Element Key: "' . $vkey . '"');
+									cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+								}
+
+								$data_template_data_id = db_fetch_cell_prepared('SELECT id
+									FROM data_template_data
+									WHERE local_data_id = ?',
+									array($previous_data_source['id']));
+
+								$previous_value = db_fetch_cell_prepared("SELECT value
+									FROM data_input_data
+									WHERE data_template_data_id = ?
+									AND data_input_field_id = ?
+									AND value = ?",
+									array($data_template_data_id, $vkey, $vvalue));
+
+								if (read_config_option('data_source_trace') == 'on') {
+									cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+								}
+
+								if ($previous_value != $vvalue) {
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Not Compatible');
+									}
+
+									return false;
+								}
+							}
+						}
 					} elseif (is_numeric($type)) {
 						if (cacti_sizeof($item)) {
 							foreach($item as $ftype => $fitem) {
 								if ($ftype == 'data_template') {
-									return true;
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Item Element Key4: "' . $key . '"');
+									}
+
+									if (is_array($fitem)) {
+										foreach($fitem as $vkey => $vvalue) {
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Item Sub Element Key: "' . $vkey . '"');
+												cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+											}
+
+											$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
+												FROM data_template_data
+												WHERE local_data_id = ?
+												AND `$vkey` = ?",
+												array($previous_data_source['id'], $vvalue));
+
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+											}
+
+											if ($previous_value != $vvalue) {
+												if (read_config_option('data_source_trace') == 'on') {
+													cacti_log('Not Compatible');
+												}
+
+												return false;
+											}
+										}
+									}
 								} elseif ($ftype == 'data_template_item') {
-									return true;
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Item Element Key5: "' . $key . '"');
+									}
+
+									if (is_array($fitem)) {
+										foreach($fitem as $vkey => $vvalue) {
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Item Sub Element Key: "' . $vkey . '"');
+												cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+											}
+
+											$previous_value = db_fetch_cell_prepared("SELECT `$vkey`
+												FROM data_template_rrd
+												WHERE local_data_id = ?
+												AND `$vkey` = ?",
+												array($previous_data_source['id'], $vvalue));
+
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+											}
+
+											if ($previous_value != $vvalue) {
+												if (read_config_option('data_source_trace') == 'on') {
+													cacti_log('Not Compatible');
+												}
+
+												return false;
+											}
+										}
+									}
+								} elseif ($ftype == 'custom_data') {
+									if (read_config_option('data_source_trace') == 'on') {
+										cacti_log('Item Element Key6: "' . $key . '"');
+									}
+
+									if (is_array($fitem)) {
+										foreach($fitem as $vkey => $vvalue) {
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Item Sub Element Key: "' . $vkey . '"');
+												cacti_log('Item Sub Element Value: "' . $vvalue . '"');
+											}
+
+											$data_template_data_id = db_fetch_cell_prepared('SELECT id
+												FROM data_template_data
+												WHERE local_data_id = ?',
+												array($previous_data_source['id']));
+
+											$previous_value = db_fetch_cell_prepared("SELECT value
+												FROM data_input_data
+												WHERE data_template_data_id = ?
+												AND data_input_field_id = ?
+												AND value = ?",
+												array($data_template_data_id, $vkey, $vvalue));
+
+											if (read_config_option('data_source_trace') == 'on') {
+												cacti_log('Previous Sub Element Value: "' . $previous_value . '"');
+											}
+
+											if ($previous_value != $vvalue) {
+												if (read_config_option('data_source_trace') == 'on') {
+													cacti_log('Not Compatible');
+												}
+
+												return false;
+											}
+										}
+									}
 								}
 							}
 						}
@@ -1350,7 +1560,7 @@ function create_graph_has_custom_data_properties($suggested_vals) {
 		}
 	}
 
-	return false;
+	return $compatible;
 }
 
 function create_save_graph($host_id, $form_type, $form_id1, $form_array2, $values) {

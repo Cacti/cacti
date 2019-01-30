@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#2346: User(edit)->Permissions(tab)->Plugin Permissions(section) put "Legacy 1.x Plugins" to incorrect cell'<td>'
 -issue#2347: Allow sort output to inject returned data into a specific object
 -issue#2350: For HRULES and COMMENTS that include nth Percentile and Bandwidth Unable to Select Data Source
+-issue#2355: Duplicated Data Sources created when Custom Data is specified
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs

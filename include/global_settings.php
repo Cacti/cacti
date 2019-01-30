@@ -273,6 +273,12 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'data_source_trace' => array(
+			'friendly_name' => __('Data Source Tracing'),
+			'description' => __('A developer only option to trace the creation of Data Sources mainly around checks for uniqueness'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'selective_debug' => array(
 			'friendly_name' => __('Selective File Debug'),
 			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
