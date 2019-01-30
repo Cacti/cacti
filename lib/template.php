@@ -1100,7 +1100,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				cacti_log('Data Source values "' . implode(', ', array_values($previous_data_source)) . '"');
 			}
 
-			if (sizeof($previous_data_source) && $suggested_vals !== false) {
+			if (sizeof($previous_data_source) && cacti_sizeof($suggested_vals)) {
 				$use_previous_data = create_graph_custom_data_compatible($suggested_vals, $previous_data_source);
 			} else {
 				$use_previous_data = false;
