@@ -1146,6 +1146,31 @@ function db_get_global_variable($variable, $db_conn = false) {
 	}
 }
 
+/* db_get_session_variable - get the value of a session variable
+   @param $variable - the variable to obtain
+   @param $db_conn - the database connection to use
+   @returns - (string) the value of the variable if found */
+function db_get_session_variable($variable, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	$data = db_fetch_row("SHOW SESSION VARIABLES LIKE '$variable'", true, $db_conn);
+
+	if (cacti_sizeof($data)) {
+		return $data['Value'];
+	} else {
+		return false;
+	}
+}
+
 /* db_begin_transaction - start a transaction
    @param $db_conn - the database connection to use
    @returns - (bool) if the begin transaction was successful */
