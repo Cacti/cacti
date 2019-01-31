@@ -23,28 +23,38 @@
 */
 
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
+	api_graph_remove_aggregate_items($local_graph_ids);
+
 	switch ($delete_type) {
 	case '2': // delete all data sources referenced by this graph
-		$all_data_sources = array_rekey(db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-			FROM data_template_data AS dtd
-			INNER JOIN data_template_rrd AS dtr
-			ON dtd.local_data_id=dtr.local_data_id
-			INNER JOIN graph_templates_item AS gti
-			ON dtr.id=gti.task_item_id
-			WHERE ' . array_to_sql_or($local_graph_ids, 'gti.local_graph_id') . '
-			AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
+		$all_data_sources = array_rekey(
+			db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+				FROM data_template_data AS dtd
+				INNER JOIN data_template_rrd AS dtr
+				ON dtd.local_data_id=dtr.local_data_id
+				INNER JOIN graph_templates_item AS gti
+				ON dtr.id=gti.task_item_id
+				WHERE ' . array_to_sql_or($local_graph_ids, 'gti.local_graph_id') . '
+				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
+				AND dtd.local_data_id > 0'),
+			'local_data_id', 'local_data_id'
+		);
 
-		$data_sources = array_rekey(db_fetch_assoc('SELECT dtd.local_data_id,
-			COUNT(DISTINCT gti.local_graph_id) AS graphs
-			FROM data_template_data AS dtd
-			INNER JOIN data_template_rrd AS dtr
-			ON dtd.local_data_id=dtr.local_data_id
-			INNER JOIN graph_templates_item AS gti
-			ON dtr.id=gti.task_item_id
-			WHERE dtd.local_data_id > 0
-			GROUP BY dtd.local_data_id
-			HAVING graphs = 1
-			AND ' . array_to_sql_or($all_data_sources, 'local_data_id')), 'local_data_id', 'local_data_id');
+		$data_sources = array_rekey(
+			db_fetch_assoc('SELECT dtd.local_data_id,
+				COUNT(DISTINCT gti.local_graph_id) AS graphs
+				FROM data_template_data AS dtd
+				INNER JOIN data_template_rrd AS dtr
+				ON dtd.local_data_id=dtr.local_data_id
+				INNER JOIN graph_templates_item AS gti
+				ON dtr.id=gti.task_item_id
+				WHERE dtd.local_data_id > 0
+				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
+				GROUP BY dtd.local_data_id
+				HAVING graphs = 1
+				AND ' . array_to_sql_or($all_data_sources, 'local_data_id')),
+			'local_data_id', 'local_data_id'
+		);
 
 		if (cacti_sizeof($data_sources)) {
 			api_data_source_remove_multi($data_sources);
@@ -53,15 +63,19 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 		api_graph_remove_multi($local_graph_ids);
 
 		/* Remove orphaned data sources */
-		$data_sources = array_rekey(db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-			FROM data_template_data AS dtd
-			INNER JOIN data_template_rrd AS dtr
-			ON dtd.local_data_id=dtr.local_data_id
-			LEFT JOIN graph_templates_item AS gti
-			ON dtr.id=gti.task_item_id
-			WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
-			AND gti.local_graph_id IS NULL
-			AND dtd.local_data_id > 0'), 'local_data_id', 'local_data_id');
+		$data_sources = array_rekey(
+			db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+				FROM data_template_data AS dtd
+				INNER JOIN data_template_rrd AS dtr
+				ON dtd.local_data_id=dtr.local_data_id
+				LEFT JOIN graph_templates_item AS gti
+				ON dtr.id=gti.task_item_id
+				WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
+				AND gti.local_graph_id IS NULL
+				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
+				AND dtd.local_data_id > 0'),
+			'local_data_id', 'local_data_id'
+		);
 
 		if (cacti_sizeof($data_sources)) {
 			api_data_source_remove_multi($data_sources);
@@ -82,12 +96,35 @@ function api_graph_remove($local_graph_id) {
 
 	api_plugin_hook_function('graphs_remove', array($local_graph_id));
 
+	api_graph_remove_aggregate_items($local_graph_id);
+
 	db_execute_prepared('DELETE FROM graph_templates_graph WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_tree_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM reports_items WHERE local_graph_id = ?', array($local_graph_id));
 	db_execute_prepared('DELETE FROM graph_local WHERE id = ?', array($local_graph_id));
-	db_execute_prepared('DELETE FROM aggregate_graphs_items WHERE local_graph_id = ?', array($local_graph_id));
+}
+
+function api_graph_remove_aggregate_items($local_graph_ids) {
+	if (!is_array($local_graph_ids)) {
+		$local_graph_ids = explode(',', $local_graph_ids);
+	}
+
+	foreach($local_graph_ids as $lgid) {
+		$aggregate_graphs = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT aggregate_graph_id
+				FROM aggregate_graphs_items
+				WHERE local_graph_id = ?',
+				array($lgid)),
+			'aggregate_graph_id', 'aggregate_graph_id'
+		);
+
+		if (cacti_sizeof($aggregate_graphs)) {
+			foreach($aggregate_graphs as $ag) {
+				api_aggregate_disassociate($ag, $lgid);
+			}
+		}
+	}
 }
 
 function api_graph_remove_multi($local_graph_ids) {
@@ -109,12 +146,13 @@ function api_graph_remove_multi($local_graph_ids) {
 			$i++;
 
 			if (($i % 1000) == 0) {
+				api_graph_remove_aggregate_items($ids_to_delete);
+
 				db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 				db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
-				db_execute("DELETE FROM aggregate_graphs_items WHERE local_graph_id IN ($ids_to_delete)");
 
 				$i = 0;
 				$ids_to_delete = '';
@@ -122,12 +160,13 @@ function api_graph_remove_multi($local_graph_ids) {
 		}
 
 		if ($i > 0) {
+			api_graph_remove_aggregate_items($ids_to_delete);
+
 			db_execute("DELETE FROM graph_templates_graph WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_templates_item WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_tree_items WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM reports_items WHERE local_graph_id IN ($ids_to_delete)");
 			db_execute("DELETE FROM graph_local WHERE id IN ($ids_to_delete)");
-			db_execute("DELETE FROM aggregate_graphs_items WHERE local_graph_id IN ($ids_to_delete)");
 		}
 	}
 }

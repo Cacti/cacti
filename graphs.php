@@ -870,6 +870,7 @@ function form_actions() {
 							INNER JOIN graph_templates_item AS gti
 							ON dtr.id=gti.task_item_id
 							WHERE gti.local_graph_id NOT IN(' . implode(',', $graph_array) . ')
+							AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 							AND dtr.local_data_id IN(' . implode(',', $data_array) . ')
 							AND dtd.local_data_id > 0'),
 						'local_data_id', 'local_data_id');
@@ -886,6 +887,7 @@ function form_actions() {
 							INNER JOIN graph_templates_item AS gti
 							ON dtr.id=gti.task_item_id
 							WHERE gti.local_graph_id IN (' . implode(',', $graph_array) . ')
+							AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 							AND dtr.local_data_id NOT IN (' . implode(',', $not_deletable) . ')
 							AND dtd.local_data_id > 0'),
 						'local_data_id', array('local_data_id', 'name_cache'));
