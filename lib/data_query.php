@@ -25,6 +25,10 @@
 function run_data_query($host_id, $snmp_query_id) {
 	global $config, $input_types;
 
+	if (read_config_option('data_source_trace') == 'on') {
+		cacti_log("Running Re-Index for Device[$host_id], DQ[$snmp_query_id]", false, 'DSTRACE');
+	}
+
 	/* required for upgrading old versions of cacti */
 	if (!db_column_exists('host', 'poller_id')) {
 		return false;
