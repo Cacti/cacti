@@ -761,7 +761,22 @@ function rrdtool_function_tune($rrd_tune_array) {
    @arg $rrdtool_pipe - a pipe to an rrdtool command
    @returns - (array) an array containing all data in this data source broken down
      by each data source item. the maximum of all data source items is included in
-     an item called 'ninety_fifth_percentile_maximum' */
+     an item called 'nth_percentile_maximum'.  The array will look as follows:
+
+     $fetch_array['data_source_names'][0] = 'ds1'
+     $fetch_array['data_source_names'][1] = 'ds2'
+     $fetch_array['data_source_names'][2] = 'nth_percentile_maximum'
+     $fetch_array['start_time'] = $timestamp;
+     $fetch_array['end_time']   = $timestamp;
+     $fetch_array['values'][$dsindex1][...]  = $value;
+     $fetch_array['values'][$dsindex2][...]  = $value;
+     $fetch_array['values'][$nth_index][...] = $value;
+
+     Again, the 'nth_percentile_maximum' will have the maximum value amoungst all the
+     data sources for each set of data.  So, if you have traffic_in and traffic_out,
+     each member element in the array will have the maximum of traffic_in and traffic_out
+     in it.
+ */
 function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = '') {
 	global $config;
 
@@ -772,6 +787,8 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 		return array();
 	}
 
+	$time = time();
+
 	/* initialize fetch array */
 	$fetch_array = array();
 
@@ -780,6 +797,11 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 		$data_source_path = get_data_source_path($local_data_id, true);
 	} else {
 		$data_source_path = $rrdtool_file;
+	}
+
+	// Find the correct resolution
+	if ($resolution == 0) {
+		$resolution = rrdtool_function_get_resstep($local_data_id, $graph_start, $graph_end, 'res');
 	}
 
 	/* update the rrdfile if performing a fetch */
@@ -792,7 +814,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 
 	$output = rrdtool_execute($cmd_line, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe);
-
 	$output = explode("\n", $output);
 
 	$first  = true;
@@ -808,10 +829,6 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 				/* get the data source names */
 				$fetch_array['data_source_names'] = preg_split('/\s+/', $line);
 				$first = false;
-
-				/* set the nth percentile source, and index */
-				$fetch_array['data_source_names'][] = 'nth_percentile_maximum';
-				$nthindex = cacti_sizeof($fetch_array['data_source_names']) - 1;
 			} elseif ($line != '') {
 				/* process the data sources into an array */
 				$parts     = explode(':', $line);
@@ -826,21 +843,12 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 				foreach($data as $index => $number) {
 					if (strtolower($number) == 'nan' || strtolower($number) == '-nan') {
 						if ($show_unknown) {
-							$fetch_array['values'][$index][$count] = 'U';
+							$fetch_array['values'][$index][$timestamp] = 'U';
 						}
 					} else {
-						$fetch_array['values'][$index][$count] = $number + 0;
-						$max_array[] = $number + 0;
+						$fetch_array['values'][$index][$timestamp] = $number + 0;
 					}
 				}
-
-				if (cacti_sizeof($max_array)) {
-					$fetch_array['values'][$nthindex][$count] = max($max_array);
-				} else {
-					$fetch_array['values'][$nthindex][$count] = 0;
-				}
-
-				$count++;
 			}
 		}
 
@@ -850,7 +858,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
+function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array, $ds_step) {
 	global $config, $image_types;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -1160,18 +1168,23 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		return $graph_data;
 	}
 
-	/* find the step and how often this graph is updated with new data */
-	$ds_step = db_fetch_cell_prepared('SELECT
-		data_template_data.rrd_step
-		FROM (data_template_data,data_template_rrd,graph_templates_item)
-		WHERE graph_templates_item.task_item_id=data_template_rrd.id
-		AND data_template_rrd.local_data_id=data_template_data.local_data_id
-		AND graph_templates_item.local_graph_id = ?
-		LIMIT 1',
-		array($local_graph_id)
+	if (empty($graph_data_array['graph_start']) || empty($graph_data_array['graph_end'])) {
+		$graph_data_array['graph_start'] = -86400;
+		$graph_data_array['graph_end']   = -300;
+	}
+
+	$local_data_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT dtr.local_data_id
+			FROM graph_templates_item AS gti
+			INNER JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE dtr.local_data_id > 0
+			AND gti.local_graph_id = ?',
+			array($local_graph_id)),
+		'local_data_id', 'local_data_id'
 	);
 
-	$ds_step = empty($ds_step) ? 300 : $ds_step;
+	$ds_step = rrdtool_function_get_resstep($local_data_ids, $graph_data_array['graph_start'], $graph_data_array['graph_end'], 'step');
 
 	/* if no rra was specified, we need to figure out which one RRDtool will choose using
 	 * "best-fit" resolution fit algorithm */
@@ -1296,7 +1309,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
 	if (!isset($graph_data_array['export_csv'])) {
-		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
+		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array, $ds_step);
 	} else {
 		/* basic export options */
 		$graph_opts =
@@ -1341,13 +1354,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_TIC:
 				case GRAPH_ITEM_TYPE_AREA:
 				case GRAPH_ITEM_TYPE_STACK:
-					$graph_cf = $graph_item['consolidation_function_id'];
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
 					$last_graph_cf['data_source_name']['local_data_template_rrd_id'] = $graph_cf;
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
+
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT:
 					/* ATTENTION!
@@ -1361,7 +1375,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
-						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
+						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					}
@@ -1384,7 +1398,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				default:
 					/* all other types are based on the best matching CF */
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id']);
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 					break;
@@ -1470,7 +1484,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_variables[$field_name][$graph_item_id] = rrd_substitute_host_query_data($graph_variables[$field_name][$graph_item_id], $graph, $graph_item);
 
 				/* Nth percentile */
-				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
+				if (preg_match_all('/\|([0-9]{1,2}):(bits|bytes):(\d):(current|total|max|total_peak|all_max_current|all_max_peak|aggregate_max|aggregate_sum|aggregate_current|aggregate_peak|aggregate):(\d)?\|/', $graph_variables[$field_name][$graph_item_id], $matches, PREG_SET_ORDER)) {
 					foreach ($matches as $match) {
 						$search[]  = $match[0];
 						$replace[] = variable_nth_percentile($match, $graph, $graph_item, $graph_items, $graph_start, $graph_end);
@@ -1499,13 +1513,30 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				} else {
 					$hardreturn[$graph_item_id] = '';
 				}
+			}
 
-				/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
+			$j++;
+		}
+	}
 
+	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
+	if (cacti_sizeof($graph_items)) {
+		/* we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach
+		 * syntax is required
+		 */
+		foreach ($graph_items as $key => $graph_item) {
+			/* note the current item_id for easy access */
+			$graph_item_id = $graph_item['graph_templates_item_id'];
+
+			/* if we are not displaying a legend there is no point in us even processing the
+			 * auto padding, text format stuff.
+			 */
+			if (!isset($graph_data_array['graph_nolegend'])) {
 				/* PADDING: remember this is not perfect! its main use is for the basic graph setup of:
-				AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
-				of course it can be used in other situations, however may not work as intended.
-				If you have any additions to this small peice of code, feel free to send them to me. */
+				 * AREA - GPRINT-CURRENT - GPRINT-AVERAGE - GPRINT-MAXIMUM \n
+				 * of course it can be used in other situations, however may not work as intended.
+				 * If you have any additions to this small peice of code, feel free to send them to me.
+				 */
 				if ($graph['auto_padding'] == 'on') {
 					/* only applies to AREA, STACK and LINEs */
 					if (preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_item['graph_type_id']])) {
@@ -1517,10 +1548,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					}
 				}
 			}
-
-			$j++;
 		}
 	}
+	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
 
 	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
 
@@ -1531,9 +1561,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
+			/* hack around RRDtool behavior in first RRA */
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+
 			/* first we need to check if there is a DEF for the current data source/cf combination. if so,
 			we will use that */
-			if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_item['consolidation_function_id']])) {
+			if (isset($cf_ds_cache[$graph_item['data_template_rrd_id']][$graph_cf])) {
 				$cf_id = $graph_item['consolidation_function_id'];
 			} else {
 			/* if there is not a DEF defined for the current data source/cf combination, then we will have to
@@ -1570,8 +1603,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$count_all_ds_nodups     = 0;
 				$count_similar_ds_dups   = 0;
 				$count_similar_ds_nodups = 0;
-
-				//cacti_log('Original:' . $cdef_string);
 
 				/* if any of those magic variables are requested ... */
 				if (preg_match('/(ALL_DATA_SOURCES_(NO)?DUPS|SIMILAR_DATA_SOURCES_(NO)?DUPS)/', $cdef_string) ||
@@ -1788,8 +1819,6 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 				/* replace query variables in cdefs */
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
-
-				//cacti_log('Final:' . $cdef_string);
 
 				/* make the initial 'virtual' cdef name: 'cdef' + [a,b,c,d...] */
 				$cdef_graph_defs .= 'CDEF:cdef' . generate_graph_def_name(strval($i)) . '=';
@@ -2323,7 +2352,10 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
-			$host_id = db_fetch_cell_prepared('SELECT host_id FROM data_local WHERE id = ?', array($graph_item['local_data_id']));
+			$host_id = db_fetch_cell_prepared('SELECT host_id
+				FROM data_local
+				WHERE id = ?',
+				array($graph_item['local_data_id']));
 		}
 	} else {
 		$host_id = $graph['host_id'];
@@ -2337,7 +2369,11 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
 		/* use the data query information from the data source if possible */
 		} else {
-			$data_local = db_fetch_row_prepared('SELECT snmp_index, snmp_query_id, host_id FROM data_local WHERE id = ?', array($graph_item['local_data_id']));
+			$data_local = db_fetch_row_prepared('SELECT snmp_index, snmp_query_id, host_id
+				FROM data_local
+				WHERE id = ?',
+				array($graph_item['local_data_id']));
+
 			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 		}
 	}
@@ -2350,13 +2386,57 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	return $txt_graph_item;
 }
 
+function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end, $type = 'res') {
+	if (!is_array($local_data_ids)) {
+		$local_data_ids = array($local_data_ids);
+	}
+
+	$time = time();
+
+	if ($graph_start < 0) {
+		$graph_start = $time + $graph_start;
+	}
+
+	if ($graph_end < 0) {
+		$graph_end = $time + $graph_end;
+	}
+
+	if (cacti_sizeof($local_data_ids)) {
+		foreach($local_data_ids as $local_data_id) {
+			$data_source_info = db_fetch_assoc_prepared('SELECT dsp.step, dspr.steps, dspr.rows, dspr.timespan
+				FROM data_source_profiles AS dsp
+				INNER JOIN data_source_profiles_rra AS dspr
+				ON dspr.data_source_profile_id=dsp.id
+				INNER JOIN data_template_data AS dtd
+				ON dtd.data_source_profile_id=dsp.id
+				WHERE dtd.local_data_id = ?
+				ORDER BY step ASC',
+				array($local_data_id));
+
+			if (cacti_sizeof($data_source_info)) {
+				foreach($data_source_info as $resolution) {
+					if ($graph_start > ($time - ($resolution['step'] * $resolution['steps'] * $resolution['rows']))) {
+						if ($type = 'res') {
+							return $resolution['step'] * $resolution['steps'];
+						} else {
+							return $resolution['step'];
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
 /** given a data source id, return rrdtool info array
- * @param $data_source_id - data source id
+ * @param $local_data_id - data source id
  * @return - (array) an array containing all data from rrdtool info command
  */
-function rrdtool_function_info($data_source_id) {
+function rrdtool_function_info($local_data_id) {
 	/* Get the path to rrdtool file */
-	$data_source_path = get_data_source_path($data_source_id, true);
+	$data_source_path = get_data_source_path($local_data_id, true);
 
 	/* Execute rrdtool info command */
 	$cmd_line = ' info ' . $data_source_path;
@@ -2390,6 +2470,27 @@ function rrdtool_function_info($data_source_id) {
 
 	/* Return parsed values */
 	return $rrd_info;
+}
+
+/** rrdtool_function_contains_cf  verifies if the RRDfile contains the 'MAX' consolidation function
+ * @param $local_data_id    the id of the data source
+ * @param $cf               the consolidation function to search for
+ * @return					boolean true or false depending on the result
+ */
+function rrdtool_function_contains_cf($local_data_id, $cf) {
+	$info = rrdtool_function_info($local_data_id);
+
+	if (cacti_sizeof($info)) {
+		if (isset($info['rra'])) {
+			foreach($info['rra'] as $ds) {
+				if ($ds['cf'] == $cf) {
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 /** rrdtool_cacti_compare 	compares cacti information to rrd file information

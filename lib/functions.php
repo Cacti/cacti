@@ -1773,44 +1773,49 @@ function generate_data_source_path($local_data_id) {
      the most appropriate.  Typically, this will be the requested value
     @arg $data_template_id
     @arg $requested_cf
+    @arg $ds_step
     @returns - the best cf to use */
-function generate_graph_best_cf($local_data_id, $requested_cf) {
+function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
+	static $best_cf;
 
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
-		/* workaround until we have RRA presets in 0.8.8 */
-		if (cacti_sizeof($avail_cf_functions)) {
+
+		/* hack for odd RRDtool behavior in first RRA */
+		if ($ds_step < 300 && isset($avail_cf_functions[1])) {
+			$best_cf = '3';
+		} elseif (cacti_sizeof($avail_cf_functions)) {
+			/* workaround until we have RRA presets in 0.8.8 */
 			/* check through the cf's and get the best */
+			/* if none was found, take the first */
+			$best_cf = $avail_cf_functions[1];
+
 			foreach($avail_cf_functions as $cf) {
 				if ($cf == $requested_cf) {
-					return $requested_cf;
+					$best_cf = $requested_cf;
 				}
 			}
-
-			/* if none was found, take the first */
-			return $avail_cf_functions[0];
 		}
 	}
 
 	/* if you can not figure it out return average */
-	return '1';
+	return $best_cf;
 }
 
 /* get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
     @arg $local_data_id
     @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
-	global $rrd_cfs, $consolidation_functions;
+	global $consolidation_functions;
+	static $rrd_cfs = array();
 
-	$rrdfile = get_data_source_path($local_data_id, true);
-
-	if (!isset($rrd_cfs)) {
-		$rrd_cfs = array();
-	} elseif (array_key_exists($local_data_id, $rrd_cfs)) {
+	if (array_key_exists($local_data_id, $rrd_cfs)) {
 		return $rrd_cfs[$local_data_id];
 	}
 
 	$cfs = array();
+
+	$rrdfile = get_data_source_path($local_data_id, true);
 
 	$output = @rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
 
@@ -1841,16 +1846,16 @@ function get_rrd_cfs($local_data_id) {
 			switch($cf) {
 			case 'AVG':
 			case 'AVERAGE':
-				$new_cfs[] = array_search('AVERAGE', $consolidation_functions);
+				$new_cfs[1] = array_search('AVERAGE', $consolidation_functions);
 				break;
 			case 'MIN':
-				$new_cfs[] = array_search('MIN', $consolidation_functions);
+				$new_cfs[2] = array_search('MIN', $consolidation_functions);
 				break;
 			case 'MAX':
-				$new_cfs[] = array_search('MAX', $consolidation_functions);
+				$new_cfs[3] = array_search('MAX', $consolidation_functions);
 				break;
 			case 'LAST':
-				$new_cfs[] = array_search('LAST', $consolidation_functions);
+				$new_cfs[4] = array_search('LAST', $consolidation_functions);
 				break;
 			}
 		}

@@ -248,6 +248,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 		# next entry will have to have a prepended text format
 		$prepend    = true;
+		$prepend_ct = 0;
 		$skip_graph = false;
 		$make0_cdef = aggregate_cdef_make0();
 		$i = 0;
@@ -369,28 +370,50 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 			$save['graph_type_id'] = aggregate_change_graph_type($_selected_graph_index, $save['graph_type_id'], $_graph_type);
 
 			# new item text format required?
-			if ($prepend && $_total_type != '') {
-				# pointless to add any data source item name here, cause ALL are totaled
-				$save['text_format'] = $_gprint_prefix;
+			if ($_total_type != '') {
+				if ($prepend) {
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL && $prepend_cnt > 0) {
+						continue;
+					}
 
-				# no more prepending until next line break is encountered
-				$prepend = false;
-			} elseif (!$prepend && $_total_type != '' && strpos($save['text_format'], ':current:')) {
-				// Accomodate gprint summation types
-				$save['text_format'] = str_replace(':current:', ':total:', $save['text_format']);
-			} elseif ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
-				$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
-				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+					# pointless to add any data source item name here, cause ALL are totaled
+					$save['text_format'] = $_gprint_prefix;
 
-				/* if this is a data query graph type, try to substitute */
-				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
-					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
-
-					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+					# no more prepending until next line break is encountered
+					$prepend = false;
+					$prepend_cnt++;
+				} elseif (strpos($save['text_format'], ':current:')) {
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+						// All so use sum functions
+						$save['text_format'] = str_replace(':current:', ':aggregate_sum:', $save['text_format']);
+					} else {
+						// Similar to separate
+						$save['text_format'] = str_replace(':current:', ':current:', $save['text_format']);
+					}
+				} elseif (strpos($save['text_format'], ':max:')) {
+					if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+						// All so use sum functions
+						$save['text_format'] = str_replace(':max:', ':aggregate_sum:', $save['text_format']);
+					} else {
+						// Similar to separate
+						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
+					}
 				}
+			} else {
+				if ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
+					$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
+					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-				# no more prepending until next line break is encountered
-				$prepend = false;
+					/* if this is a data query graph type, try to substitute */
+					if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
+						$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
+
+						cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
+					}
+
+					# no more prepending until next line break is encountered
+					$prepend = false;
+				}
 			}
 
 			# <HR> wanted?
@@ -1082,7 +1105,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 
 				$cf_id = db_fetch_cell('SELECT consolidation_function_id
 					FROM graph_templates_item
-					WHERE color_id>0' .
+					WHERE color_id > 0' .
 					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
 					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
 					LIMIT 1');
@@ -1165,7 +1188,9 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix);
 
 		// Handle aggregate nth percentiles
-		aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_orig_graph_type, $_total, $_total_type);
+		if ($_total != AGGREGATE_TOTAL_NONE) {
+			aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_graph_id, $_total, $_total_type);
+		}
 	}
 
 	/* restore original error handler */
@@ -1201,28 +1226,38 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+										// All so use sum functions
+										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_sum', $pparts[3]);
+									} else {
+										// Similar to separate
+										$pparts[3] = str_replace('current', 'aggregate', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_peak', $pparts[3]);
+									}
+
 									switch($pparts[3]) {
 										case 'current':
-											$new_ppart = 'aggregate';
+											$new_ppart = 'current';
 											break;
 										case 'total':
-											$new_ppart = 'aggregate';
+											$new_ppart = 'aggregate_sum';
 											break;
 										case 'max':
-											$new_ppart = 'aggregate';
+											$new_ppart = 'max';
 											break;
 										case 'total_peak':
-											$new_ppart = 'aggregate';
+											$new_ppart = 'total_peak';
 											break;
 										case 'all_max_current':
 										case 'all_max_peak':
-										case 'aggregate_sum':
-											$new_ppart = 'aggregate';
-											break;
-										case 'all_max_current':
 										case 'aggregate_max':
+											$new_ppart = 'aggregate_peak';
+											break;
+										case 'aggregate_sum':
 										case 'aggregate_current':
 										case 'aggregate':
+										case 'aggregate_peak':
 											$new_ppart = $pparts[3];
 											break;
 									}
@@ -1258,25 +1293,35 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 								$pparts = explode(':', $parts[1]);
 
 								if (isset($pparts[3])) {
+									if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
+										// All so use sum functions
+										$pparts[3] = str_replace('current', 'aggregate_sum', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_sum', $pparts[3]);
+									} else {
+										// Similar to separate
+										$pparts[3] = str_replace('current', 'aggregate', $pparts[3]);
+										$pparts[3] = str_replace('max',     'aggregate_peak', $pparts[3]);
+									}
+
 									switch($pparts[3]) {
 										case 'current':
-											$new_ppart = 'aggregate_sum';
+											$new_ppart = 'current';
 											break;
 										case 'total':
 											$new_ppart = 'aggregate_sum';
 											break;
 										case 'max':
-											$new_ppart = 'aggregate_sum';
+											$new_ppart = 'max';
 											break;
 										case 'total_peak':
-											$new_ppart = 'aggregate_sum';
+											$new_ppart = 'total_peak';
 											break;
 										case 'all_max_current':
 										case 'all_max_peak':
-											$new_ppart = 'aggregate_sum';
-											break;
-										case 'all_max_current':
 										case 'aggregate_max':
+											$new_ppart = 'aggregate_peak';
+											break;
+										case 'aggregate_peak':
 										case 'aggregate_sum':
 										case 'aggregate_current':
 										case 'aggregate':
@@ -1322,7 +1367,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 
 function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_total, $_total_type, $_total_prefix) {
 	// Handle the stcked line cases switch line widths
-	$width = '';
+	$width = '0.01';
 	$special_type = '';
 	$special_line = false;
 
@@ -1347,7 +1392,7 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 	if ($special_line) {
 		if ($_total == AGGREGATE_TOTAL_NONE) {
 			db_execute_prepared('UPDATE graph_templates_item
-				SET line_width = ?
+				SET line_width = ?,
 				WHERE local_graph_id = ?
 				AND graph_type_id IN (?)',
 				array($width, $local_graph_id, GRAPH_ITEM_TYPE_LINESTACK));
@@ -1362,7 +1407,7 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 
 		if ($_total == AGGREGATE_TOTAL_ALL) {
 			db_execute_prepared('UPDATE graph_templates_item
-				SET graph_type_id = ?, line_width = "0.00"
+				SET graph_type_id = ?, line_width = "0.01"
 				WHERE local_graph_id = ?
 				AND graph_type_id = ?
 				AND text_format != ?',
@@ -1375,6 +1420,14 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 			);
 		}
 	}
+
+	/* handle any missing lines */
+	db_execute_prepared('UPDATE graph_templates_item
+		SET line_width="0.01"
+		WHERE graph_type_id = ?
+		AND line_width="0.00"
+		AND local_graph_id = ?',
+		array(GRAPH_ITEM_TYPE_LINESTACK, $local_graph_id));
 }
 
 function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_template) {
