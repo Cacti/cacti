@@ -263,17 +263,25 @@ function graphs() {
 	}
 
 	if (!isempty_request_var('host_id')) {
-		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id FROM host WHERE id = ?', array(get_request_var('host_id')));
+		$host   = db_fetch_row_prepared('SELECT id, description, hostname, host_template_id
+			FROM host
+			WHERE id = ?',
+			array(get_request_var('host_id')));
 
 		if (cacti_sizeof($host)) {
-			$header =  __('New Graphs for [ %s ]', html_escape($host['description']) . ' (' . html_escape($host['hostname']) . ') ' .
-			(!empty($host['host_template_id']) ? html_escape(db_fetch_cell_prepared('SELECT name FROM host_template WHERE id = ?', array($host['host_template_id']))):''));
+			$name = db_fetch_cell_prepared('SELECT name
+				FROM host_template
+				WHERE id = ?',
+				array($host['host_template_id']));
+
+			$header =  __('New Graphs for [ %s ] (%s %s)', html_escape($host['description']), html_escape($host['hostname']), (!empty($host['host_template_id']) ? html_escape($name):''));
 		} else {
 			$header =  __('New Graphs for [ All Devices ]');
 			$host['id'] = -1;
 		}
 	} else {
 		$host['id'] = 0;
+		$host['host_template_id'] = 0;
 		$header = __('New Graphs for None Host Type');
 	}
 
@@ -314,7 +322,7 @@ function graphs() {
 	$(function() {
 		$('[id^="reload"]').click(function(data) {
 			$(this).addClass('fa-spin');
-			loadPageNoHeader('graphs_new.php?action=query_reload&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
+			loadPageNoHeader('graphs_new.php?action=query_reload&header=false&id='+$(this).attr('data-id')+'&host_id='+$('#host_id').val());
 		});
 
 		$('#clear').click(function() {
