@@ -74,7 +74,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 		$session->valueretrieval = SNMP_VALUE_PLAIN;
 	}
 
-	$session->quick_print = true;
+	$session->quick_print = false;
 	$session->max_oids = $max_oids;
 
 	if (read_config_option('oid_increasing_check_disable') == 'on') {
