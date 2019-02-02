@@ -57,8 +57,10 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 		if (is_array($value)) {
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 
-			foreach($arr_index as $value) {
-				print $value . "\n";
+			if (cacti_sizeof($arr_index)) {
+				foreach($arr_index as $value) {
+					print $value . "\n";
+				}
 			}
 		} else {
 			$indexes = explode(',', $value);
@@ -86,11 +88,13 @@ function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = 
 			$arr_index = ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 			$arr = ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids);
 
-			foreach ($arr_index as $index => $value) {
-				if ($arg == 'usage') {
-					print $index . '!' . $arr[$index] . "\n";
-				} elseif ($arg == 'index') {
-					print $index . '!' . $value . "\n";
+			if (cacti_sizeof($arr_index)) {
+				foreach ($arr_index as $index => $value) {
+					if ($arg == 'usage') {
+						print $index . '!' . $arr[$index] . "\n";
+					} elseif ($arg == 'index') {
+						print $index . '!' . $value . "\n";
+					}
 				}
 			}
 		} else {
@@ -125,20 +129,24 @@ function ss_host_cpu_get_cpu_usage($hostname, $snmp_community, $snmp_version, $s
 
 	$sum = 0;
 
-	foreach($arr as $index => $value) {
-		if (is_numeric($value)) {
-			$return_arr[$index] = $value;
-			$sum += $value;
+	if (cacti_sizeof($arr)) {
+		foreach($arr as $index => $value) {
+			if (is_numeric($value)) {
+				$return_arr[$index] = $value;
+				$sum += $value;
+			}
 		}
-	}
 
-	if (cacti_sizeof($return_arr)) {
-		$return_arr[4000] = round($sum / cacti_sizeof($return_arr));
+		if (cacti_sizeof($return_arr)) {
+			$return_arr[4000] = round($sum / cacti_sizeof($return_arr));
+		} else {
+			$return_arr[4000] = 0;
+		}
+
+		return $return_arr;
 	} else {
-		$return_arr[4000] = 0;
+		return array();
 	}
-
-	return $return_arr;
 }
 
 function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snmp_auth_username, $snmp_auth_password, $snmp_auth_protocol, $snmp_priv_passphrase, $snmp_priv_protocol, $snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids) {
@@ -161,8 +169,10 @@ function ss_host_cpu_get_indexes($hostname, $snmp_community, $snmp_version, $snm
 function ss_host_cpu_reindex($arr) {
 	$return_arr = array();
 
-	foreach($arr as $index => $value) {
-		$return_arr[$index] = $value['value'];
+	if (cacti_sizeof($arr)) {
+		foreach($arr as $index => $value) {
+			$return_arr[$index] = $value['value'];
+		}
 	}
 
 	return $return_arr;
