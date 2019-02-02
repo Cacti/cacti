@@ -39,6 +39,7 @@ function repopulate_poller_cache() {
 		FROM data_local AS dl
 		INNER JOIN host AS h
 		ON dl.host_id=h.id
+		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
 		ORDER BY h.poller_id ASC');
 
 	$poller_items   = array();
@@ -103,7 +104,8 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 		FROM data_local
 		WHERE host_id = ?
 		AND snmp_query_id = ?
-		AND id IN(' . implode(', ', $local_data_ids) . ')',
+		AND id IN(' . implode(', ', $local_data_ids) . ')
+		AND dl.snmp_index != ""',
 		array($host_id, $data_query_id));
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
@@ -146,8 +148,9 @@ function update_poller_cache($data_source, $commit = false) {
 
 	if (!is_array($data_source)) {
 		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM data_local
-			WHERE id = ?',
+			FROM data_local AS dl
+			WHERE id = ?
+			AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ""))',
 			array($data_source));
 	}
 
@@ -474,6 +477,7 @@ function push_out_data_input_method($data_input_id) {
 		ON dtd.local_data_id = dl.id
 		INNER JOIN host AS h
 		ON h.id = dl.host_id
+		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
 		ORDER BY h.poller_id ASC',
 		array($data_input_id));
 
@@ -656,6 +660,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
 		WHERE dtd.data_input_id>0
+		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
 		$sql_where");
 
 	/* loop through each matching data source */

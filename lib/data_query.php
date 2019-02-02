@@ -271,9 +271,15 @@ function run_data_query($host_id, $snmp_query_id) {
 				// Found a deleted index, masking off to prevent issues
 				query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
 
+				// Set the index to Null, note that the Data Source still has the value
 				db_execute_prepared('UPDATE data_local
 					SET snmp_index = ""
 					WHERE id = ?',
+					array($data_source['local_data_id']));
+
+				// Remove this item from the poller cache as it will cause wranings
+				db_execute_prepared('DELETE FROM poller_item
+					WHERE local_data_id = ?',
 					array($data_source['local_data_id']));
 
 				$removed_ids[] = $data_source['local_data_id'];

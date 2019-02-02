@@ -1,7 +1,6 @@
 Cacti CHANGELOG
 
 1.2.2
--issue: Resizing table throws a JavaScript error
 -issue#599: Aggregate graph templates assume AVG consolidation function resulting in RRDtool error in certain cases
 -issue#2312: Chrome completes "Contacting Device", Safari Doesn't
 -issue#2317: Poller time table running out of auto increment keys
@@ -14,7 +13,9 @@ Cacti CHANGELOG
 -issue#2347: Allow sort output to inject returned data into a specific object
 -issue#2350: For HRULES and COMMENTS that include nth Percentile and Bandwidth Unable to Select Data Source
 -issue#2355: Duplicated Data Sources created when Custom Data is specified
+-issue#2357: Poller issuing warnings with little way to diagnose
 -issue#2365: Graphs included in aggregate that are removed are not managed properly
+-issue: Resizing table throws a JavaScript error
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs

@@ -1344,6 +1344,7 @@ function ds() {
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
+							<option value='3'<?php if (get_request_var('status') == '3') {?> selected<?php }?>><?php print __('Bad Indexes');?></option>
 						</select>
 					</td>
 					<td>
@@ -1433,8 +1434,10 @@ function ds() {
 		/* Show all items */
 	} elseif (get_request_var('status') == '1') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active="on"';
-	} else {
+	} elseif (get_request_var('status') == '2') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active=""';
+	} elseif (get_request_var('status') == '3') {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
 
 	$orphan_where = ' AND graph_type_id IN (' .
