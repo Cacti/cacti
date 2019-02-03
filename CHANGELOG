@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#2350: For HRULES and COMMENTS that include nth Percentile and Bandwidth Unable to Select Data Source
 -issue#2355: Duplicated Data Sources created when Custom Data is specified
 -issue#2357: Poller issuing warnings with little way to diagnose
+-issue#2362: No way to default an interface speed when ifSpeed and ifHighSpeed come back as zero
 -issue#2365: Graphs included in aggregate that are removed are not managed properly
 -issue: Resizing table throws a JavaScript error
 

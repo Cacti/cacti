@@ -472,6 +472,42 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	}
 }
 
+function rrdtool_function_interface_speed($data_local) {
+	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND snmp_index = ?
+		AND field_name="ifHighSpeed"',
+		array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
+	);
+
+	$ifSpeed = db_fetch_cell_prepared('SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND snmp_index = ?
+		AND field_name="ifSpeed"',
+		array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
+	);
+
+	if (!empty($ifHighSpeed)) {
+		$speed = $ifHighSpeed * 1000000;
+	} elseif (!empty($ifSpeed)) {
+		$speed = $ifSpeed;
+	} else {
+		$speed = read_config_option('default_interface_speed');
+
+		if (empty($speed)) {
+			$speed = '10000000000000';
+		} else {
+			$speed = $speed * 1000000;
+		}
+	}
+
+	return $speed;
+}
+
 function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
 	global $config, $data_source_types, $consolidation_functions;
 
@@ -547,16 +583,7 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 			array($local_data_id)
 		);
 
-		$highSpeed = db_fetch_cell_prepared('SELECT field_value
-			FROM host_snmp_cache
-			WHERE host_id = ?
-			AND snmp_query_id = ?
-			AND snmp_index = ?
-			AND field_name="ifHighSpeed"',
-			array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
-		);
-
-		$ssqdIfSpeed = substitute_snmp_query_data('|query_ifSpeed|', $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+		$speed = rrdtool_function_interface_speed($data_local);
 
 		foreach ($data_sources as $data_source) {
 			/* use the cacti ds name by default or the user defined one, if entered */
@@ -568,15 +595,7 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 			} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
 				/* in case a query variable is given, evaluate it */
 				if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-					if (!empty($highSpeed)) {
-						$data_source['rrd_maximum'] = $highSpeed * 1000000;
-					} else {
-						$data_source['rrd_maximum'] = $ssqdIfSpeed;
-
-						if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
-							$data_source['rrd_maximum'] = '10000000000000';
-						}
-					}
+					$data_source['rrd_maximum'] = $speed;
 				} else {
 					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
@@ -2547,16 +2566,7 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 			array($data_source_id)
 		);
 
-		$highSpeed = db_fetch_cell_prepared('SELECT field_value
-			FROM host_snmp_cache
-			WHERE host_id = ?
-			AND snmp_query_id = ?
-			AND snmp_index = ?
-			AND field_name="ifHighSpeed"',
-			array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
-		);
-
-		$ssqdIfSpeed = substitute_snmp_query_data('|query_ifSpeed|', $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
+		$speed = rrdtool_function_interface_speed($data_local);
 
 		foreach ($cacti_ds_array as $key => $data_source) {
 			$ds_name = $data_source['data_source_name'];
@@ -2591,19 +2601,11 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
 					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-						if (!empty($highSpeed)) {
-							$data_source['rrd_maximum'] = $highSpeed * 1000000;
-						} else {
-							$data_source['rrd_maximum'] = $ssqdIfSpeed;
-						}
+						$data_source['rrd_maximum'] = $speed;
 					} elseif ($data_source['rrd_maximum'] == '0' || $data_source['rrd_maximum'] == 'U') {
 						$data_source['rrd_maximum'] = 'NaN';
 					} else {
 						$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
-					}
-
-					if (empty($data_source['rrd_maximum']) || $data_source['rrd_maximum'] == '|query_ifSpeed|') {
-						$data_source['rrd_maximum'] = '10000000000000';
 					}
 				}
 

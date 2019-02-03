@@ -536,6 +536,20 @@ $settings = array(
 			'default' => '1',
 			'array' => $reindex_types,
 			),
+		'default_interface_speed' => array(
+			'friendly_name' => __('Default Interface Speed'),
+			'description' => __('If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles.'),
+			'method' => 'drop_array',
+			'default' => '1000',
+			'array' => array(
+				'100'    => __('100 Mbps Ethernet'),
+				'1000'   => __('1 Gbps Ethernet'),
+				'10000'  => __('10 Gbps Ethernet'),
+				'25000'  => __('25 Gbps Ethernet'),
+				'40000'  => __('40 Gbps Ethernet'),
+				'56000'  => __('56 Gbps Ethernet'),
+				'100000' => __('100 Gbps Ethernet'))
+			),
 		'snmp_header' => array(
 			'friendly_name' => __('SNMP Defaults'),
 			'method' => 'spacer',
