@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#2346: User(edit)->Permissions(tab)->Plugin Permissions(section) put "Legacy 1.x Plugins" to incorrect cell'<td>'
 -issue#2347: Allow sort output to inject returned data into a specific object
 -issue#2350: For HRULES and COMMENTS that include nth Percentile and Bandwidth Unable to Select Data Source
+-issue#2354: Reindexing in Automation Not Updating Graph and Data Source Titles
 -issue#2355: Duplicated Data Sources created when Custom Data is specified
 -issue#2357: Poller issuing warnings with little way to diagnose
 -issue#2362: No way to default an interface speed when ifSpeed and ifHighSpeed come back as zero

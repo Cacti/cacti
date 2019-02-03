@@ -305,6 +305,10 @@ function run_data_query($host_id, $snmp_query_id) {
 			data_query_remap_indexes($changed_ids);
 			data_query_remap_indexes($removed_ids);
 		}
+
+		/* update title cache for graph and data source */
+		update_data_source_title_cache_from_host($host_id);
+		update_graph_title_cache_from_host($host_id);
 	}
 
 	query_debug_timer_offset('data_query', __('Index Association with Local Data complete'));
