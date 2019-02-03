@@ -1380,12 +1380,26 @@ function is_mac_address($result) {
 	}
 }
 
-function is_hex_string($result) {
+function is_hex_string(&$result) {
 	if ($result == '') {
 		return false;
 	}
 
-	$parts = explode(' ', $result);
+	$compare = strtolower($result);
+
+	/* strip off the 'Hex:, Hex-, and Hex-STRING:'
+	 * Hex- is considered due to the stripping of 'String:' in
+	 * lib/snmp.php
+	 */
+	if (substr($compare, 0, 4) == 'hex-') {
+		$check = trim(str_ireplace('hex-', '', $result));
+	} elseif (substr($compare, 0, 11) == 'hex-string:') {
+		$check = trim(str_ireplace('hex-string:', '', $result));
+	} else {
+		return false;
+	}
+
+	$parts = explode(' ', $check);
 
 	/* assume if something is a hex string
 	   it will have a length > 1 */
@@ -1397,10 +1411,13 @@ function is_hex_string($result) {
 		if (strlen($part) != 2) {
 			return false;
 		}
+
 		if (ctype_xdigit($part) == false) {
 			return false;
 		}
 	}
+
+	$result = $check;
 
 	return true;
 }
@@ -1512,11 +1529,12 @@ function get_data_source_item_name($data_template_rrd_id) {
 	}
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-		data_template_rrd.data_source_name,
-		data_template_data.name
-		FROM data_template_rrd
-		INNER JOIN data_template_data ON data_template_rrd.local_data_id = data_template_data.local_data_id
-		WHERE data_template_rrd.id = ?', array($data_template_rrd_id)
+		dtr.data_source_name, dtd.name
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_template_data AS dtd
+		ON dtr.local_data_id = dtd.local_data_id
+		WHERE dtr.id = ?',
+		array($data_template_rrd_id)
 	);
 
 	/* use the cacti ds name by default or the user defined one, if entered */
