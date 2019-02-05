@@ -211,7 +211,7 @@ function run_data_query($host_id, $snmp_query_id) {
 					AND field_value = ?',
 					array($host_id, $snmp_query_id, $data_source['sort_field'], $data_source['query_index']));
 			} else {
-				$current_index = db_fetch_cell_prepared('SELECT value
+				$current_value = db_fetch_cell_prepared('SELECT value
 					FROM data_input_data AS did
 					INNER JOIN data_input_fields AS dif
 					ON did.data_input_field_id=dif.id
@@ -223,6 +223,14 @@ function run_data_query($host_id, $snmp_query_id) {
 					AND dl.snmp_query_id = ?
 					AND data_name="index_value"',
 					array($data_source['local_data_id'], $snmp_query_id));
+
+				$current_index = db_fetch_assoc('SELECT snmp_index
+					FROM host_snmp_cache
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND field_name = ?
+					AND field_value = ?',
+					array($host_id, $snmp_query_id, $previous_sort_field, $current_value));
 			}
 
 			if ($remap) {
@@ -1723,12 +1731,9 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 	cache
    @arg $host_id - the id of the host which contains the data query
    @arg $data_query_id - the id of the data query to build the type list from
-   @arg $data_query_index_array - an array containing each data query index to use when checking
-	each data query type for validity. a valid data query type will contain no empty or duplicate
-	values for each row in the cache that matches one of the $data_query_index_array
    @returns - an array of data query types either ordered or unordered depending on whether
 	the xml file has a manual ordering preference specified */
-function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index_array = array()) {
+function get_ordered_index_type_list($host_id, $data_query_id) {
 	$raw_xml = get_data_query_array($data_query_id);
 
 	/* invalid xml check */
@@ -1736,69 +1741,155 @@ function get_ordered_index_type_list($host_id, $data_query_id, $data_query_index
 		return array();
 	}
 
+	$must_be_numeric = false;
+	$must_be_alpha   = false;
+	$order_found     = true;
+	$order_unknown   = false;
+	$nonunique       = false;
+	$oid_index       = false;
+	$avail_indexes   = array();
+
+	if (isset($raw_xml['oid_index'])) {
+		$oid_index = $raw_xml['oid_index'];
+	}
+
+	if (isset($raw_xml['index_order_type'])) {
+		switch ($raw_xml['index_order_type']) {
+		case 'numeric':
+			$mustbenumeric = true;
+			break;
+		case 'alpha':
+			$mustbealpha = true;
+			break;
+		case 'alphanumeric':
+			break;
+		default:
+			cacti_log('WARNING: Unknown index_order_type of ' . $raw_xml['index_order_type'] . " found for Device[$host_id], DQ[$data_query_id].  Permitted types are [alpha:numeric:alphanumeric].  Data collection can be impacted.", false, 'REINDEX');
+			$order_unknown = true;
+
+		}
+
+		$avail_indexes = explode(':', $raw_xml['index_order']);
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log("Available Sort Fields for Re-Index for Device[$host_id], DQ[$data_query_id] are [" . $raw_xml['index_order'] . "]", false, 'DSTRACE');
+		}
+
+	} elseif (!isset($raw_xml['arg_index'])) {
+		cacti_log("WARNING: Missing index_order_type XML tag for Device[$host_id], DQ[$data_query_id].  Permitted types [alpha:numeric:alphanumeric].  If a monitored object changes it's index, those changes will not be detected.", false, 'REINDEX');
+		$order_found = false;
+	}
+
+	if (cacti_sizeof($avail_indexes) == 1) {
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log("Only One possible Sort Field found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+		}
+
+		return $avail_indexes;
+	}
+
 	$xml_outputs = array();
 
-	/* create an SQL string that contains each index in this snmp_index_id */
-	$sql_or = array_to_sql_or($data_query_index_array, 'snmp_index');
-
 	/* check for nonunique query parameter, set value */
-	if (isset($raw_xml['index_type'])) {
-		if ($raw_xml['index_type'] == 'nonunique') {
-			$nonunique = 1;
-		} else {
-			$nonunique = 0;
+	if (isset($raw_xml['index_type']) && $raw_xml['index_type'] == 'nonunique') {
+		$nonunique = true;
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log("Non-Uniqueue Specified during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 		}
-	} else {
-		$nonunique = 0;
 	}
 
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
-			/* create a list of all values for this index */
-			if (cacti_sizeof($data_query_index_array) == 0) {
+			if (isset($field_array['oid']) && $oid_index == $field_array['oid']) {
+				// this is a suitable sort_field
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log("Field Name '$field_name' is an SNMP index and suitable Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+				}
+
+				array_push($xml_outputs, $field_name);
+				continue;
+			} elseif ($order_found && array_search($field_name, $avail_indexes) === false) {
+				// This is not a suitable index field
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log("Field Name '$field_name' found not suitable during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+				}
+
+				continue;
+			}
+
+			// Check for a non-unique sort field
+			$unique = db_fetch_cell_prepared('SELECT COUNT(*)
+				FROM (
+					SELECT field_value, COUNT(*) AS totals
+					FROM host_snmp_cache
+					WHERE host_id = ?
+					AND snmp_query_id = ?
+					AND field_name = ?
+					GROUP BY field_value
+					HAVING totals > 1
+				) AS totals',
+				array($host_id, $data_query_id, $field_name));
+
+			/* If the entries are not unique and non-unique is
+			 * not specified, skip this sort field
+			 */
+			if ($unique > 0 && !$nonunique) {
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log("Field Name '$field_name' found not suitable.  Non-unique and nonunique not specified during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+				}
+
+				continue;
+			}
+
+			if ($must_be_alpha || $must_be_numeric) {
+				/* create a list of all values for this index */
 				$field_values = db_fetch_assoc_prepared('SELECT field_value
 					FROM host_snmp_cache
 					WHERE host_id = ?
 					AND snmp_query_id = ?
 					AND field_name = ?',
 					array($host_id, $data_query_id, $field_name));
-			} else {
-				$field_values = db_fetch_assoc_prepared("SELECT field_value
-					FROM host_snmp_cache
-					WHERE host_id = ?
-					AND snmp_query_id = ?
-					AND field_name = ?
-					AND $sql_or",
-					array($host_id, $data_query_id, $field_name));
+
+				if (cacti_sizeof($field_values)) {
+					foreach ($field_values as $value) {
+						if ($must_be_numeric && !is_numeric($value)) {
+							if (read_config_option('data_source_trace') == 'on') {
+								cacti_log("Field Name '$field_name' found not suitable.  Must be numeric and non-numeric data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+							}
+
+							continue;
+						} elseif ($must_be_alpha && is_numeric($value)) {
+							if (read_config_option('data_source_trace') == 'on') {
+								cacti_log("Field Name '$field_name' found not suitable.  Must be alphabetic and alphabetic data found during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+							}
+
+							continue;
+						}
+					}
+				}
 			}
 
-			/* aggregate the above list so there is no duplicates */
-			$aggregate_field_values = array_rekey($field_values, 'field_value', 'field_value');
-
-			/* fields that contain duplicate or empty values are not suitable to index off of */
-			if (!((cacti_sizeof($aggregate_field_values) < cacti_sizeof($field_values)) || (in_array('', $aggregate_field_values) == true) || (cacti_sizeof($aggregate_field_values) == 0)) || ($nonunique)) {
-				array_push($xml_outputs, $field_name);
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log("Field Name '$field_name' found suitable during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 			}
+
+			array_push($xml_outputs, $field_name);
 		}
 	}
 
 	$return_array = array();
 
-	/* the xml file contains an ordered list of 'indexable' fields */
-	if (isset($raw_xml['index_order'])) {
-		$index_order_array = explode(':', $raw_xml['index_order']);
-
-		foreach ($index_order_array as $element) {
-			if (in_array($element, $xml_outputs)) {
-				$return_array[] = $element;
+	// Reorder the sort fields by desired order
+	if (sizeof($avail_indexes)) {
+		foreach($avail_indexes as $index) {
+			if (array_search($index, $xml_outputs) !== false) {
+				$return_array[] = $index;
 			}
 		}
-	/* the xml file does not contain a field list, ignore the order */
 	} else {
-		foreach ($xml_outputs as $output) {
-			$return_array[] = $output;
-		}
+		$return_array = $xml_outputs;
 	}
 
 	return $return_array;
