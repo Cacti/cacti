@@ -797,17 +797,53 @@ function display_new_graphs($rule, $url) {
 			WHERE rule_id = ?
 			ORDER BY sequence', array($rule['id']));
 
-		/* main sql */
-		if (isset($xml_array['index_order_type'])) {
-			$sql_order = build_sort_order($xml_array['index_order_type'], 'automation_host');
-			$sql_query = build_data_query_sql($rule) . ' ' . $sql_order;
-		} else {
-			$sql_query = build_data_query_sql($rule);
+		$automation_rule_fields = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT field
+				FROM automation_graph_rule_items AS agri
+				WHERE field != ""
+				AND rule_id = ?',
+				array($rule['id'])),
+			'field', 'field'
+		);
+
+		$rule_name = db_fetch_cell_prepared('SELECT name
+			FROM automation_graph_rules
+			WHERE id = ?',
+			array($rule['id']));
+
+		/* get the unique field values from the database */
+		$field_names = array_rekey(
+			db_fetch_assoc_prepared('SELECT DISTINCT field_name
+				FROM host_snmp_cache AS hsc
+				WHERE snmp_query_id= ?',
+				array($rule['snmp_query_id'])),
+			'field_name', 'field_name'
+		);
+
+		$run_query = true;
+
+		/* check for possible SQL errors */
+		foreach($automation_rule_fields as $column) {
+			if (array_search($column, $field_names) === false) {
+				$run_query = false;
+			}
 		}
 
-		$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a", '', false);
+		if ($run_query) {
+			/* main sql */
+			if (isset($xml_array['index_order_type'])) {
+				$sql_order = build_sort_order($xml_array['index_order_type'], 'automation_host');
+				$sql_query = build_data_query_sql($rule) . ' ' . $sql_order;
+			} else {
+				$sql_query = build_data_query_sql($rule);
+			}
 
-		if ($results > 0) {
+			$results = db_fetch_cell("SELECT COUNT(*) FROM ($sql_query) AS a", '', false);
+		} else {
+			$results = array();
+		}
+
+		if ($results) {
 			/* rule item filter first */
 			$sql_filter	= build_rule_item_filter($rule_items, ' a.');
 
@@ -1328,7 +1364,7 @@ function display_graph_rule_items($title, $rule_id, $rule_type, $module) {
 			$form_data .= '<td class="right nowrap">';
 
 			if ($i != cacti_sizeof($items)-1) {
-				$form_data .= '<a class="pic fa fa-awwow-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
+				$form_data .= '<a class="pic fa fa-caret-down moveArrow" href="' . html_escape($module . '?action=item_movedown&item_id=' . $item['id'] . '&id=' . $rule_id .	'&rule_type=' . $rule_type) . '" title="' . __esc('Move Down') . '"></a>';
 			} else {
 				$form_data .= '<span class="moveArrowNone"></span>';
 			}
@@ -2362,27 +2398,47 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 		ORDER BY sequence',
 		array($rule['id']));
 
+	$automation_rule_fields = array_rekey(
+		db_fetch_assoc_prepared('SELECT field
+			FROM automation_graph_rule_items AS agri
+			WHERE field != ""
+			AND rule_id = ?',
+			array($rule['id'])),
+		'field', 'field'
+	);
+
 	# and all matching snmp_indices from snmp_cache
+	$rule_name = db_fetch_cell_prepared('SELECT name
+		FROM automation_graph_rules
+		WHERE id = ?',
+		array($rule['id']));
 
 	/* get the unique field values from the database */
-	$field_names = db_fetch_assoc_prepared('SELECT DISTINCT
-		field_name
-		FROM host_snmp_cache AS hsc
-		WHERE snmp_query_id= ?
-		AND host_id = ?',
-		array($snmp_query_id, $host_id));
-
-	#print '<pre>Field Names: $sql<br>'; print_r($field_names); print '</pre>';
+	$field_names = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT field_name
+			FROM host_snmp_cache AS hsc
+			WHERE snmp_query_id= ?
+			AND host_id = ?',
+			array($snmp_query_id, $host_id)),
+		'field_name', 'field_name'
+	);
 
 	/* build magic query */
 	$sql_query  = 'SELECT host_id, snmp_query_id, snmp_index';
+
+	/* check for possible SQL errors */
+	foreach($automation_rule_fields as $column) {
+		if (array_search($column, $field_names) === false) {
+			cacti_log('WARNING: Automation Rule[' . $rule_name . '] for Device[' . $host_id . '] - DQ[' . $snmp_query_id . '] includes a SQL column ' . $column . ' that is not found for the Device.  Can not continue.', false, 'AUTOM8');
+			return false;
+		}
+	}
 
 	$num_visible_fields = cacti_sizeof($field_names);
 	$i = 0;
 	if (cacti_sizeof($field_names) > 0) {
 		foreach($field_names as $column) {
-			$field_name = $column['field_name'];
-			$sql_query .= ", MAX(CASE WHEN field_name ='$field_name' THEN field_value ELSE NULL END) AS '$field_name'";
+			$sql_query .= ", MAX(CASE WHEN field_name ='$column' THEN field_value ELSE NULL END) AS '$column'";
 			$i++;
 		}
 	}
@@ -2394,7 +2450,9 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 	$sql_filter = build_rule_item_filter($automation_rule_items, ' a.');
 
-	if (strlen($sql_filter)) $sql_filter = ' WHERE' . $sql_filter;
+	if (strlen($sql_filter)) {
+		$sql_filter = ' WHERE' . $sql_filter;
+	}
 
 	/* add the additional filter settings to the original data query.
 	 IMO it's better for the MySQL server to use the original one
