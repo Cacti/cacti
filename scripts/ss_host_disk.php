@@ -63,8 +63,8 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 				$snmp_context, $snmp_port, $snmp_timeout, $ping_retries, $max_oids, SNMP_POLLER)
 			);
 
-		if (cacti_sizeof($return_array)) {
-			foreach ($return_array as $item) {
+		if (cacti_sizeof($return_arr)) {
+			foreach ($return_arr as $item) {
 				print $item . "\n";
 			}
 		}
