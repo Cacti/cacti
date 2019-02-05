@@ -79,7 +79,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			if (is_file($device) && filetype($device) == 'socket') {
+			if (strpos($device, '/') !== false && filetype($device) == 'socket') {
 				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
@@ -1444,27 +1444,32 @@ function db_get_column_attributes($table, $columns) {
 	$sql .= ')';
 
 	$params = array_merge(array($table), $column_names);
+
 	return db_fetch_assoc_prepared($sql, $params);
 }
 
 function db_get_columns_length($table, $columns) {
 	$column_data = db_get_column_attributes($table, $columns);
+
 	if (!empty($column_data)) {
 		return array_rekey($column_data, 'COLUMN_NAME','CHARACTER_MAXIMUM_LENGTH');
 	}
+
 	return false;
 }
 
 function db_get_column_length($table, $column) {
 	$column_data = db_get_columns_length($table, $column);
+
 	if (!empty($column_data) && isset($column_data[$column])) {
 		return $column_data[$column];
 	}
+
 	return false;
 }
 
 function db_check_password_length() {
-	$len = db_get_column_length('user_auth','password');
+	$len = db_get_column_length('user_auth', 'password');
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
 	} else if ($len < 80) {
