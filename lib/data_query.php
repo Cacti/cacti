@@ -413,7 +413,7 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 			SET sort_field = ?,
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
-			array($old_sort_field, $host_id, $data_query_id));
+			array($old_sort_field, $host_id, $snmp_query_id));
 
 		return false;
 	}
@@ -1769,7 +1769,9 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 
 		}
 
-		$avail_indexes = explode(':', $raw_xml['index_order']);
+		if (isset($raw_xml['index_order'])) {
+			$avail_indexes = explode(':', $raw_xml['index_order']);
+		}
 
 		if (read_config_option('data_source_trace') == 'on') {
 			cacti_log("Available Sort Fields for Re-Index for Device[$host_id], DQ[$data_query_id] are [" . $raw_xml['index_order'] . "]", false, 'DSTRACE');
