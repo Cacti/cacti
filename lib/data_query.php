@@ -224,7 +224,7 @@ function run_data_query($host_id, $snmp_query_id) {
 					AND data_name="index_value"',
 					array($data_source['local_data_id'], $snmp_query_id));
 
-				$current_index = db_fetch_assoc('SELECT snmp_index
+				$current_index = db_fetch_assoc_prepared('SELECT snmp_index
 					FROM host_snmp_cache
 					WHERE host_id = ?
 					AND snmp_query_id = ?
