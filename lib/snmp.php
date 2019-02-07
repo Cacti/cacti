@@ -636,7 +636,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				cacti_escapeshellarg($oid));
 		} else {
 			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option('path_snmpwalk')) .
-				' -O QnU ' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
 				' -v '     . $version .
 				' -t '     . $timeout .
 				' -r '     . $retries .
