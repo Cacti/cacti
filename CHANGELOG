@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#2362: No way to default an interface speed when ifSpeed and ifHighSpeed come back as zero
 -issue#2365: Graphs included in aggregate that are removed are not managed properly
 -issue#2372: SNMP DS with dskPath Index Type does not work
+-issue#2376: Error when adding a device discovered by Automation manually
 -issue: Resizing table throws a JavaScript error
 
 1.2.1

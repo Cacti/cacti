@@ -23,9 +23,19 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/api_device.php');
+include_once('./lib/api_aggregate.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/api_data_source.php');
+include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
+include_once('./lib/data_query.php');
+include_once('./lib/html_graph.php');
+include_once('./lib/html_form_template.php');
+include_once('./lib/html_tree.php');
 include_once('./lib/poller.php');
+include_once('./lib/reports.php');
+include_once('./lib/rrd.php');
+include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
 $device_actions = array(
