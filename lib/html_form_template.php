@@ -588,31 +588,29 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 		WHERE id = ?',
 		array($data_input_field_id));
 
-	if (($field['type_code'] == 'index_type') && (db_fetch_cell_prepared('SELECT local_data_id FROM data_template_data WHERE id = ?', array($data_template_data_id)) > 0)) {
-		$index_type = db_fetch_assoc_prepared('SELECT
-			host_snmp_cache.field_name
-			FROM (data_template_data,data_local,host_snmp_cache)
-			WHERE data_template_data.local_data_id=data_local.id
-			AND data_local.snmp_query_id=host_snmp_cache.snmp_query_id
-			AND data_template_data.id = ?
-			GROUP BY host_snmp_cache.field_name',
-			array($data_template_data_id));
+	$local_data = db_fetch_cell_prepared('SELECT local_data_id
+		FROM data_template_data
+		WHERE id = ?',
+		array($data_template_data_id));
+
+	if ($field['type_code'] == 'index_type' && cacti_sizeof($local_data)) {
+		$index_type = db_fetch_assoc_prepared('SELECT DISTINCT hsc.field_name
+			FROM host_snmp_cache AS hsc
+			WHERE hsc.host_id = ?
+			AND hsc.snmp_query_id = ?',
+			array($local_data['host_id'], $local_data('snmp_query_id')));
 
 		if (cacti_sizeof($index_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
 		} else {
 			form_dropdown($field_name, $index_type, 'field_name', 'field_name', $current_value, '', '', '');
 		}
-	} elseif (($field['type_code'] == 'output_type') && (db_fetch_cell_prepared('SELECT local_data_id FROM data_template_data WHERE id = ?', array($data_template_data_id)) > 0)) {
-		$output_type = db_fetch_assoc_prepared('SELECT
-			snmp_query_graph.id,
-			snmp_query_graph.name
-			FROM (data_template_data,data_local,snmp_query_graph)
-			WHERE data_template_data.local_data_id=data_local.id
-			AND data_local.snmp_query_id=snmp_query_graph.snmp_query_id
-			AND data_template_data.id = ?
-			GROUP BY snmp_query_graph.id',
-			array($data_template_data_id));
+	} elseif ($field['type_code'] == 'output_type' && cacti_sizeof($local_data)) {
+		$output_type = db_fetch_assoc_prepared('SELECT id, name
+			FROM snmp_query_graph AS sqg
+			WHERE snmp_query_id = ?
+			ORDER BY name',
+			array($local_data['snmp_query_id']));
 
 		if (cacti_sizeof($output_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
