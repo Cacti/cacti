@@ -20,6 +20,7 @@ Cacti CHANGELOG
 -issue#2365: Graphs included in aggregate that are removed are not managed properly
 -issue#2372: SNMP DS with dskPath Index Type does not work
 -issue#2376: Error when adding a device discovered by Automation manually
+-issue#2380: reindex constantly triggered for some devices
 -issue: Resizing table throws a JavaScript error
 
 1.2.1
