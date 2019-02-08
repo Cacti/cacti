@@ -48,10 +48,11 @@ function boost_file_size_display($file_size, $digits = 2) {
 }
 
 function boost_get_total_rows() {
-	return db_fetch_cell("SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES
-		WHERE table_schema=SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')
-		GROUP BY table_schema");
+	return db_fetch_cell("SELECT SUM(TABLE_ROWS)
+		FROM information_schema.tables
+		WHERE table_schema = SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%'
+		OR table_name LIKE 'poller_output_boost'");
 }
 
 function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
@@ -582,11 +583,9 @@ function boost_timer_get_overhead() {
 
 /* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
 function boost_get_arch_table_name() {
-	global $database_default;
-
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema = '$database_default'
+		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
@@ -653,7 +652,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$query_string = '';
 		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema = '$database_default'
+			WHERE table_schema = SCHEMA()
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if (cacti_count($arch_tables)) {
@@ -687,7 +686,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$query_string = '';
 		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema = '$database_default'
+			WHERE table_schema = SCHEMA()
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if (cacti_count($arch_tables)) {
@@ -1341,9 +1340,10 @@ function boost_update_snmp_statistics () {
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT *
-		FROM INFORMATION_SCHEMA.TABLES
-		WHERE table_schema=SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+		FROM information_schema.tables
+		WHERE table_schema = SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%'
+		OR table_name LIKE 'poller_output_boost')");
 
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 

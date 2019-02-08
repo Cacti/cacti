@@ -273,9 +273,9 @@ function output_rrd_data($start_time, $force = false) {
 
 	$more_arch_tables = db_fetch_assoc_prepared("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema = ?
+		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name != ?", array($database_default, $archive_table));
+		AND table_name != ?", array($archive_table));
 
 	if (cacti_count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
@@ -336,7 +336,7 @@ function output_rrd_data($start_time, $force = false) {
 	/* cleanup  - remove empty arch tables */
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema=SCHEMA()
+		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	if (cacti_count($tables)) {

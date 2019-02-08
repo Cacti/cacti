@@ -891,7 +891,11 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
-	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'", $log, $db_conn);
+	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = '$table'", $log, $db_conn);
+
 	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
 		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
 			return false;
@@ -1433,7 +1437,11 @@ function db_get_column_attributes($table, $columns) {
 		$columns = explode(',', $columns);
 	}
 
-	$sql = 'SELECT * FROM information_schema.columns WHERE table_name = ? and column_name IN (';
+	$sql = 'SELECT * FROM information_schema.columns
+		WHERE table_schema = SCHEMA()
+		AND table_name = ?
+		AND column_name IN (';
+
 	$column_names = array();
 	foreach ($columns as $column) {
 		if (!empty($column)) {
@@ -1496,3 +1504,13 @@ function db_error() {
 	return $database_last_error;
 }
 
+// db_get_default_database - Get the database name of the current database or return the default database name
+// @returns - string - either current db name or configuration default if no connection/name
+function db_get_default_database($db_conn = false) {
+	global $database_default;
+
+	$database = db_fetch_cell('SELECT DATABASE()', '', true, $db_conn);
+	if (empty($database)) {
+		$database = $database_default;
+	}
+}

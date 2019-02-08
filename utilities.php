@@ -142,7 +142,7 @@ function utilities_view_tech($php_info = '') {
 	/* Get table status */
 	$tables = db_fetch_assoc_prepared('SELECT *
 		FROM information_schema.tables
-		WHERE table_schema = ?', array($database_default));
+		WHERE table_schema = SCHEMA()');
 
 	/* Get poller stats */
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
@@ -2047,8 +2047,10 @@ function boost_display_run_status() {
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT *
-		FROM INFORMATION_SCHEMA.TABLES WHERE table_schema=SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+		FROM INFORMATION_SCHEMA.TABLES
+		WHERE table_schema = SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%'
+		OR table_name LIKE 'poller_output_boost')");
 
 	$pending_records = 0;
 	$arch_records    = 0;
