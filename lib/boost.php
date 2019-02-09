@@ -31,20 +31,16 @@ function boost_file_size_display($file_size, $digits = 2) {
 
 			if ($file_size > 1024) {
 				$file_size = $file_size / 1024;
-				$file_suffix = ' GBytes';
+				return __('%s GBytes', number_format_i18n($file_size, $digits));
 			} else {
-				$file_suffix = ' MBytes';
+				return __('%s MBytes', number_format_i18n($file_size, $digits));
 			}
 		} else {
-			$file_suffix = ' KBytes';
+			return __('%s KBytes', number_format_i18n($file_size, $digits));
 		}
 	} else {
-		$file_suffix = ' Bytes';
+		return __('%s Bytes', number_format_i18n($file_size, $digits));
 	}
-
-	$file_size = number_format_i18n($file_size, $digits) . $file_suffix;
-
-	return $file_size;
 }
 
 function boost_get_total_rows() {
