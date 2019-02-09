@@ -798,7 +798,8 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	$i = 0;
 	$sql_where = '(';
 	foreach($files as $tfile) {
-		$sql_where .= ($sql_where != '(' ? ' OR ':'') . ' (file LIKE "%' . $tfile . '%")';
+		$sql_where .= ($sql_where != '(' ? ' OR ':'') .
+			' (file = "' . $tfile . '" OR file LIKE "' . $tfile . ',%" OR file LIKE "%,' . $tfile . ',%" OR file LIKE "%,' . $tfile . '")';
 	}
 	$sql_where .= ')';
 
@@ -813,6 +814,43 @@ function api_plugin_register_realm($plugin, $file, $display, $admin = true) {
 	} elseif (cacti_sizeof($realm_ids) > 1) {
 		$realm_id = $realm_ids[0]['id'];
 		cacti_log('WARNING: Registering Realm for Plugin ' . $plugin . ' and Filenames ' . $file . ' is ambiguous.  Using first matching Realm.  Contact the plugin owner to resolve this issue.');
+
+		unset($realm_ids[0]);
+
+		foreach ($realm_ids as $id) {
+			$realm_info = db_fetch_row_prepared('SELECT *
+				FROM plugin_realms
+				WHERE id = ?',
+				array($id['id']));
+
+			if ($file == $realm_info['file']) {
+				db_execute_prepared('UPDATE IGNORE user_auth_realm
+					SET realm_id = ?
+					WHERE realm_id = ?',
+					array($realm_id+100, $realm_info['id']+100));
+
+				db_execute_prepared('UPDATE IGNORE user_auth_group_realm
+					SET realm_id = ?
+					WHERE realm_id = ?',
+					array($realm_id+100, $realm_info['id']+100));
+
+				db_execute_prepared('DELETE FROM plugin_realms
+					WHERE id = ?',
+					array($realm_info['id']));
+			} elseif (strpos($realm_info['file'], $file)) {
+				if (substr($realm_info['file'], 0, strlen($file)) == $file) {
+					$file = substr($file, strlen($file)-1);
+				} else {
+					$file = str_replace(',' . $file, '', $realm_info['file']);
+					$file = str_replace(',,', ',', $file);
+				}
+
+				db_execute_prepared('UPDATE plugin_realms
+					SET file = ?
+					WHERE id = ?',
+					array($file, $realm_info['id']));
+			}
+		}
 	} else {
 		$realm_id = false;
 	}
