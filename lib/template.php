@@ -1100,7 +1100,7 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 				cacti_log('Data Source values "' . implode(', ', array_values($previous_data_source)) . '"', false, 'DSTRACE');
 			}
 
-			if (sizeof($previous_data_source) && cacti_sizeof($suggested_vals)) {
+			if (sizeof($previous_data_source)) {
 				$use_previous_data = create_graph_custom_data_compatible($suggested_vals, $previous_data_source);
 			} else {
 				$use_previous_data = false;
@@ -1340,6 +1340,10 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
    @arg $previous_data_source - the previous data source if this data source id duplicate. */
 function create_graph_custom_data_compatible($suggested_vals, $previous_data_source) {
 	$compatible = true;
+
+	if (!cacti_sizeof($suggested_vals)) {
+		return $compatible;
+	}
 
 	foreach($suggested_vals as $template => $items) {
 		if (cacti_sizeof($items)) {
@@ -1640,11 +1644,23 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			WHERE snmp_query_graph_id = ?',
 			array($snmp_query_array['snmp_query_graph_id']));
 
+		$find_data_source_names = db_fetch_cell_prepared('SELECT
+			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
+			FROM data_template_rrd AS dtr
+			INNER JOIN snmp_query_graph_rrd AS sqgr
+			ON sqgr.data_template_id=dtr.data_template_id
+			WHERE dtr.data_template_id = ?
+			AND dtr.local_data_id = 0',
+			array($data_template['id']));
+
 		return db_fetch_row_prepared('SELECT dl.*,
-			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields
+			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields,
+			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
 			ON dl.id=dtd.local_data_id
+			INNER JOIN data_template_rrd AS dtr
+			ON dtd.local_data_id=dtr.local_data_id
 			INNER JOIN data_input_fields AS dif
 			ON dif.data_input_id=dtd.data_input_id
 			INNER JOIN snmp_query_graph_rrd AS sqgr
@@ -1657,13 +1673,17 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			AND dl.snmp_index = ?
 			GROUP BY dtd.local_data_id
 			HAVING local_data_id IS NOT NULL
-			AND input_fields LIKE ?',
+			AND input_fields LIKE ?
+			AND data_source_names = ?',
 			array(
 				$host_id,
 				$data_template['id'],
 				$snmp_query_array['snmp_query_id'],
 				$snmp_query_array['snmp_index'],
-				'%' . $input_fields . '%'));
+				'%' . $input_fields . '%',
+				$find_data_source_names
+			)
+		);
 	} else {
 		/* create each data source, but don't duplicate */
 		$data_source = db_fetch_row_prepared('SELECT dl.*
