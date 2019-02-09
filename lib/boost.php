@@ -52,7 +52,7 @@ function boost_get_total_rows() {
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
 		AND (table_name LIKE 'poller_output_boost_arch_%'
-		OR table_name LIKE 'poller_output_boost'");
+		OR table_name LIKE 'poller_output_boost')");
 }
 
 function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
