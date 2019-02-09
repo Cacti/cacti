@@ -106,12 +106,12 @@ hr.menu {
 a, a:active {
 	color: #e3e3e3;
 	text-decoration: none;
-	padding: 3px;
+	padding: 0px;
 }
 
 a:hover {
 	text-decoration: none;
-	padding: 3px;
+	padding: 0px;
 	color: #fff;
 }
 
