@@ -23,6 +23,10 @@
 */
 
 function api_delete_graphs(&$local_graph_ids, $delete_type) {
+	if (!cacti_sizeof($local_graph_ids)) {
+		return;
+	}
+
 	api_graph_remove_aggregate_items($local_graph_ids);
 
 	switch ($delete_type) {
@@ -128,6 +132,10 @@ function api_graph_remove_aggregate_items($local_graph_ids) {
 }
 
 function api_graph_remove_multi($local_graph_ids) {
+	if (!cacti_sizeof($local_graph_ids)) {
+		return;
+	}
+
 	/* initialize variables */
 	$ids_to_delete = '';
 	$i = 0;
