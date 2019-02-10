@@ -493,15 +493,31 @@ function rrdtool_function_interface_speed($data_local) {
 
 	if (!empty($ifHighSpeed)) {
 		$speed = $ifHighSpeed * 1000000;
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log('Interface Speed Detected by ifHighSpeed: "' . $speed . '"', false, 'DSTRACE');
+		}
 	} elseif (!empty($ifSpeed)) {
 		$speed = $ifSpeed;
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log('Interface Speed Detected by ifSpeed: "' . $speed . '"', false, 'DSTRACE');
+		}
 	} else {
 		$speed = read_config_option('default_interface_speed');
 
 		if (empty($speed)) {
 			$speed = '10000000000000';
+
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Interface Speed Detected by Default: "' . $speed . '"', false, 'DSTRACE');
+			}
 		} else {
 			$speed = $speed * 1000000;
+
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Interface Speed Detected by Settings: "' . $speed . '"', false, 'DSTRACE');
+			}
 		}
 	}
 
