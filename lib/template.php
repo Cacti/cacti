@@ -1653,7 +1653,39 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			AND dtr.local_data_id = 0',
 			array($data_template['id']));
 
-		return db_fetch_row_prepared('SELECT dl.*,
+		// Interfaces are a special case where we can change from 32 to 64 bits on the fly
+		if (strpos($input_fields, 'ifHCInOctets,ifHCOutOctets') !== false ||
+			strpos($input_fields, 'ifInOctets,ifOutOctets') !== false) {
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Data Source Exists Special Case "' . $input_fields . '"', false, 'DSTRACE');
+			}
+
+			$case_where = "AND input_fields LIKE ?";
+			$case_array = array(
+				$host_id,
+				$data_template['id'],
+				$snmp_query_array['snmp_query_id'],
+				$snmp_query_array['snmp_index'],
+				'%' . $input_fields . '%',
+				$find_data_source_names
+			);
+		} else {
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Data Source Exists NOT Special Case "' . $input_fields . '"', false, 'DSTRACE');
+			}
+
+			$case_where = "AND input_fields = ?";
+			$case_array = array(
+				$host_id,
+				$data_template['id'],
+				$snmp_query_array['snmp_query_id'],
+				$snmp_query_array['snmp_index'],
+				$input_fields,
+				$find_data_source_names
+			);
+		}
+
+		return db_fetch_row_prepared("SELECT dl.*,
 			GROUP_CONCAT(DISTINCT snmp_field_name ORDER BY snmp_field_name) AS input_fields,
 			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_local AS dl
@@ -1665,24 +1697,17 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			ON dif.data_input_id=dtd.data_input_id
 			INNER JOIN snmp_query_graph_rrd AS sqgr
 			ON sqgr.data_template_id=dtd.data_template_id
-			WHERE input_output = "in"
-			AND type_code="output_type"
+			WHERE input_output = 'in'
+			AND type_code='output_type'
 			AND dl.host_id = ?
 			AND dl.data_template_id = ?
 			AND dl.snmp_query_id = ?
 			AND dl.snmp_index = ?
 			GROUP BY dtd.local_data_id
 			HAVING local_data_id IS NOT NULL
-			AND input_fields LIKE ?
-			AND data_source_names = ?',
-			array(
-				$host_id,
-				$data_template['id'],
-				$snmp_query_array['snmp_query_id'],
-				$snmp_query_array['snmp_index'],
-				'%' . $input_fields . '%',
-				$find_data_source_names
-			)
+			$case_where
+			AND data_source_names = ?",
+			$case_array
 		);
 	} else {
 		/* create each data source, but don't duplicate */
