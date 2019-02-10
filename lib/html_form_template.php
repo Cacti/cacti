@@ -588,9 +588,11 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 		WHERE id = ?',
 		array($data_input_field_id));
 
-	$local_data = db_fetch_cell_prepared('SELECT local_data_id
-		FROM data_template_data
-		WHERE id = ?',
+	$local_data = db_fetch_row_prepared('SELECT dl.*
+		FROM data_template_data AS dtd
+		INNER JOIN data_local AS dl
+		ON dl.id=dtd.local_data_id
+		WHERE dtd.id = ?',
 		array($data_template_data_id));
 
 	if ($field['type_code'] == 'index_type' && cacti_sizeof($local_data)) {
@@ -598,7 +600,7 @@ function draw_custom_data_row($field_name, $data_input_field_id, $data_template_
 			FROM host_snmp_cache AS hsc
 			WHERE hsc.host_id = ?
 			AND hsc.snmp_query_id = ?',
-			array($local_data['host_id'], $local_data('snmp_query_id')));
+			array($local_data['host_id'], $local_data['snmp_query_id']));
 
 		if (cacti_sizeof($index_type) == 0) {
 			print "<em>" . __('Data Query Data Sources must be created through %s', "<a href='graphs_new.php'>" . __('New Graphs') . ".</a>") . "</em>\n";
