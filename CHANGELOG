@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#2380: reindex constantly triggered for some devices
 -issue: Resizing table throws a JavaScript error
 -feature: Update JavaScript library c3.js to version 0.6.12
+-feature: Update JavaScript library d3.js to version 5.9.1
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs
