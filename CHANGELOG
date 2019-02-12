@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#2372: SNMP DS with dskPath Index Type does not work
 -issue#2376: Error when adding a device discovered by Automation manually
 -issue#2380: reindex constantly triggered for some devices
+-issue#2394: getHostsByDescription() uses wrong field for indexed join
 -issue: Resizing table throws a JavaScript error
 -feature: Update JavaScript library c3.js to version 0.6.12
 -feature: Update phpseclib to version 2.0.14
