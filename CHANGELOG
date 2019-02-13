@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -feature: Update phpseclib to version 2.0.14
 -feature: Update PHPMailer to version 6.0.7
 -feature: Update JavaScript library d3.js to version 5.9.1
+-feature: Replace Javascript libraries d3.js / c3.js / Chart.js with minimal version
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs
