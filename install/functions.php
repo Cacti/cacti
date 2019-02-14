@@ -46,7 +46,7 @@ function prime_default_settings() {
 								$current = db_fetch_cell_prepared('SELECT value
 									FROM settings
 									WHERE name = ?',
-									array($issetting));
+									array($isetting));
 
 								if ($current == '' || $current == null) {
 									db_execute_prepared('INSERT IGNORE INTO settings
