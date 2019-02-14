@@ -26,7 +26,8 @@ include('./include/global.php');
 
 set_default_action();
 
-switch (get_request_var('action')) {
+$action = get_request_var('action');
+switch ($action) {
 	case 'checkpass':
 		$error = secpass_check_pass(get_nfilter_request_var('password'));
 
@@ -96,10 +97,7 @@ if (cacti_sizeof($user) && $user['id'] == get_guest_account()) {
 $bad_password = false;
 $errorMessage = '';
 
-/* set default action */
-set_default_action();
-
-switch (get_request_var('action')) {
+switch ($action) {
 case 'changepassword':
 	// Get current user
 	$user_id = intval($_SESSION['sess_user_id']);
@@ -136,7 +134,7 @@ case 'changepassword':
 	}
 
 	// Compare current password with stored password
-	if (!compat_password_verify($current_password, $user['password'])) {
+	if ((!empty($user['password']) || !empty($current_password)) && !compat_password_verify($current_password, $user['password'])) {
 		$bad_password = true;
 		$errorMessage = "<span class='badpassword_message'>" . __('Your current password is not correct. Please try again.') . "</span>";
 		break;
@@ -290,7 +288,15 @@ $selectedTheme = get_selected_theme();
 				<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
 				<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
 				<div class='loginTitle'>
-					<p><?php print __('Please enter your current password and your new<br>Cacti password.');?></p>
+<?php
+$skip_current = (empty($user['password']));
+
+if ($skip_current) {
+	$title_message = __('Please enter your current password and your new<br>Cacti password.');
+} else {
+	$title_message = __('Please enter your new Cacti password.');
+}
+?>					<p><?php print $title_message;?></p>
 				</div>
 				<div class='cactiLogin'>
 					<table class='cactiLoginTable'>
@@ -298,8 +304,13 @@ $selectedTheme = get_selected_theme();
 							<td><input type='text'><input type='password'></td>
 						</tr>
 						<tr>
+<?php if ($skip_current) { ?>
+							<td><?php print __('Username');?></td>
+							<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
+<?php } else { ?>
 							<td><?php print __('Current password');?></td>
 							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+<?php } ?>
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
@@ -330,7 +341,7 @@ $selectedTheme = get_selected_theme();
 		if ($('#password').val().length == 0) {
 			$('#pass').remove();
 			$('#passconfirm').remove();
-		}else if ($('#password').val().length < minChars) {
+		} else if ($('#password').val().length < minChars) {
 			$('#pass').remove();
 			$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="<?php print __esc('Password Too Short');?>"></div>');
 			$('.password').tooltip();
