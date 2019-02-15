@@ -2582,4 +2582,11 @@ $navigation = array(
 	)
 );
 
+$snmpagent_event_severity = array(
+	SNMPAGENT_EVENT_SEVERITY_LOW      => 'low',
+	SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'medium',
+	SNMPAGENT_EVENT_SEVERITY_HIGH     => 'high',
+	SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'critical'
+);
+
 api_plugin_hook('config_arrays');
