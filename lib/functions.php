@@ -5005,7 +5005,7 @@ function is_resource_writable($path) {
 	}
 
 	if (file_exists($path)) {
-		if (($f = @fopen($path, 'r+'))) {
+		if (($f = @fopen($path, 'a'))) {
 			fclose($f);
 			return true;
 		}
