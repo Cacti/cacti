@@ -28,6 +28,10 @@ if (php_sapi_name() != 'cli') {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
+global $original_memory_limit;
+$original_memory_limit = ini_get('memory_limit');
+ini_set('memory_limit','256M');
+
 $no_http_headers = true;
 include(dirname(__FILE__) . '/../include/global.php');
 include(dirname(__FILE__) . '/../lib/utility.php');

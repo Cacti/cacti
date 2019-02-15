@@ -1336,6 +1336,7 @@ function utility_php_recommends() {
 }
 
 function utility_php_verify_recommends(&$recommends, $source) {
+	global $original_memory_limit;
 
 	// _mb = megabytes, _m = minutes (used in displays)
 	$rec_version    = '5.4.0';
@@ -1345,7 +1346,8 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	// adjust above appropriately (used in configs)
 	$rec_memory	= $rec_memory_mb * 1024 * 1024;
 	$rec_execute    = $rec_execute_m * 60;
-	$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
+	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
+	$memory_limit   = str_replace('M', '', $memory_ini);
 	$execute_time   = ini_get('max_execution_time');
 
 	$timezone       = ini_get('date.timezone');
