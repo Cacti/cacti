@@ -401,7 +401,7 @@ function filter($clogAdmin, $selectedFile) {
 						}
 
 						if (is_readable($logPath)) {
-							$files = scandir($logPath);
+							$files = @scandir($logPath);
 						} else {
 							$files = array('cacti.log');
 						}
@@ -438,7 +438,7 @@ function filter($clogAdmin, $selectedFile) {
 
 							// After Defaults, do Cacti StdErr log second (of archived)
 							if (dirname($stderrLogPath) != $logPath) {
-								$errFiles = scandir(dirname($stderrLogPath));
+								$errFiles = @scandir(dirname($stderrLogPath));
 								$files = $errFiles;
 								if (cacti_sizeof($files)) {
 									$stdErrFileArray = array();
