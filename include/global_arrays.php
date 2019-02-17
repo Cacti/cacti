@@ -1492,6 +1492,9 @@ $agg_graph_types = array(
 	GRAPH_ITEM_TYPE_LINE1             => __('Convert to LINE1 Graph'),
 	GRAPH_ITEM_TYPE_LINE2             => __('Convert to LINE2 Graph'),
 	GRAPH_ITEM_TYPE_LINE3             => __('Convert to LINE3 Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE1_STACK  => __('Convert to LINE1/STACK Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE2_STACK  => __('Convert to LINE2/STACK Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE3_STACK  => __('Convert to LINE3/STACK Graph'),
 );
 
 $agg_totals = array(
