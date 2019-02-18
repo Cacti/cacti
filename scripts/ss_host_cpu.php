@@ -1,11 +1,7 @@
 <?php
 
-/* do NOT run this script through a web browser */
 global $config;
 
-$no_http_headers = true;
-
-/* display No errors */
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -15,7 +11,7 @@ if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_host_cpu', $_SERVER['argv']);
-}else{
+} else {
 	include_once($config['library_path'] . '/snmp.php');
 }
 
