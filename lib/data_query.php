@@ -410,7 +410,7 @@ function query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_
 
 		/* update the cache */
 		db_execute_prepared('UPDATE host_snmp_query
-			SET sort_field = ?,
+			SET sort_field = ?
 			WHERE host_id = ?
 			AND snmp_query_id = ?',
 			array($old_sort_field, $host_id, $snmp_query_id));
