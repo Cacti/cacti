@@ -3570,7 +3570,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	$result  = $mail->send();
 	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
-	$method  = read_config_option('settings_how');
+	$method  = $mail_methods[intval(read_config_option('settings_how'))];
 
 	$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
 		$result ? 'INFO' : 'WARNING',
