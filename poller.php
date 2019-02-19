@@ -782,17 +782,24 @@ if ($poller_id == 1) {
 
 function bad_index_check($mibs) {
 	if ($mibs == true) {
-		$bad_index_devices = db_fetch_cell('SELECT GROUP_CONCAT(DISTINCT host_id)
-			FROM data_local
-			WHERE snmp_query_id > 0
-			AND snmp_index = ""');
-
-		$bad_indexes = db_fetch_cell('SELECT COUNT(*)
-			FROM data_local
-			WHERE snmp_query_id > 0
-			AND snmp_index = ""');
+		$bad_index_devices = db_fetch_cell('SELECT GROUP_CONCAT(DISTINCT dl.host_id)
+			FROM data_local dl
+			LEFT JOIN data_template_data dtd
+			ON dtd.local_data_id = dl.id
+			WHERE dl.snmp_query_id > 0
+			AND dl.snmp_index = ""
+			AND dtd.active != ""');
 
 		if ($bad_index_devices != '') {
+			$bad_indexes = db_fetch_cell('SELECT COUNT(*)
+				FROM data_local dl
+				LEFT JOIN data_template_data dtd
+				ON dtd.local_data_id = dl.id
+				WHERE dl.snmp_query_id > 0
+				AND dl.snmp_index = ""
+				AND dtd.active != ""');
+
+
 			$devices = explode(',', $bad_index_devices);
 			$device_str = 'Device[' . implode('], Device[', $devices) . ']';
 
