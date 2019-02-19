@@ -3298,7 +3298,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *  encoding    : Encoding type, normally base64
  */
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
-	global $config, $cacti_locale;
+	global $config, $cacti_locale, $mail_methods;
 
 	// Set the to information
 	if (empty($to)) {
@@ -3569,13 +3569,15 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	}
 
 	$result  = $mail->send();
-	$error   = $result ? '' : $mail->ErrorInfo;
+	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
+	$method  = read_config_option('settings_how');
 
-	$message = sprintf("%s: Mail %s from '%s', to '%s', cc '%s', Subject '%s'%s",
+	$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
 		$result ? 'INFO' : 'WARNING',
 		$result ? 'successfully sent' : 'failed',
+		$method,
 		$fromText, $toText, $ccText, $subject,
-		$result ? '' : ", Message: $error");
+		", Message: $error");
 
 	cacti_log($message, false, 'MAILER');
 	return $error;

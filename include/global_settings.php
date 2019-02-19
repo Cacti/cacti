@@ -1457,7 +1457,7 @@ $settings = array(
 			'friendly_name' => __('Mail Services'),
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
-			'default' => __('PHP Mail() Function'),
+			'default' => 0,
 			'array' => $mail_methods,
 			),
 		'settings_ping_mail' => array(
