@@ -4130,7 +4130,9 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 
 function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
-	if ($host['status_event_count'] > 0) {
+	if (isset($host['instate'])) {
+		$time = $host['instate'];
+	} elseif ($host['status_event_count'] > 0) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
