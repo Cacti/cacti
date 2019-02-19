@@ -10,7 +10,7 @@ if (!isset($called_by_script_server)) {
 
 	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
 } else {
-	include_once($config['base_path'] . '/../lib/snmp.php');
+	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
 function ss_net_snmp_disk_bytes($host_id_or_hostname) {
