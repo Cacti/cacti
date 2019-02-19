@@ -1,17 +1,16 @@
 <?php
 
-global $config;
-
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
 	include(dirname(__FILE__) . '/../include/cli_check.php');
+	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_count_oids', $_SERVER['argv']);
 } else {
-	include_once($config['base_path'] . '/lib/snmp.php');
+	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
 function ss_count_oids($hostid = '', $oid = '') {

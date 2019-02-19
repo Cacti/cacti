@@ -1,7 +1,5 @@
 <?php
 
-global $config;
-
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {
@@ -12,7 +10,7 @@ if (!isset($called_by_script_server)) {
 
 	print call_user_func_array('ss_host_cpu', $_SERVER['argv']);
 } else {
-	include_once($config['library_path'] . '/snmp.php');
+	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
 function ss_host_cpu($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 = '') {
