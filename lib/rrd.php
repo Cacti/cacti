@@ -820,7 +820,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 
 	// Find the correct resolution
 	if ($resolution == 0) {
-		$resolution = rrdtool_function_get_resstep($local_data_id, $graph_start, $graph_end, 'res');
+		$resolution = rrdtool_function_get_resstep($local_data_id, $start_time, $end_time, 'res');
 	}
 
 	/* update the rrdfile if performing a fetch */

@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue#2419: Host state time was not correctly calculated
 -issue#2420: Fix selinux issues with cacti.log write check
 -issue#2431: Default value is text for which mail method to use, should be integer
+-issue#2432: Undefined variable: graph_start and Undefined variable: graph_end in lib/rrd.php
 -issue: Resizing table throws a JavaScript error
 -feature: Update JavaScript library c3.js to version 0.6.12
 -feature: Update phpseclib to version 2.0.14
