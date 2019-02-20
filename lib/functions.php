@@ -3452,6 +3452,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$body = str_replace('<FROM>',    $fromText,  $body);
 	$body = str_replace('<REPLYTO>', $replyText, $body);
 
+	$body_text = str_replace('<SUBJECT>', $subject,   $body_text);
+	$body_text = str_replace('<TO>',      $toText,    $body_text);
+	$body_text = str_replace('<CC>',      $ccText,    $body_text);
+	$body_text = str_replace('<FROM>',    $fromText,  $body_text);
+	$body_text = str_replace('<REPLYTO>', $replyText, $body_text);
+
 	// Set the subject
 	$mail->Subject = $subject;
 
@@ -3558,13 +3564,13 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$body  = $body . '<br>';
 	}
 
-	if (empty($body_text)) {
+	if ($body_text == '') {
 		$body_text = strip_tags(str_ireplace($brs, "\n", $body));
 	}
 
 	$mail->isHTML($html);
-	$mail->Body    = ($html?$body:$body_text);
-	if ($html && !empty($body_text)) {
+	$mail->Body = ($html ? $body : $body_text);
+	if ($html && $body_text != '') {
 		$mail->AltBody = $body_text;
 	}
 
@@ -4142,6 +4148,32 @@ function get_timeinstate($host) {
 		$time = $host['snmp_sysUpTimeInstance']/100;
 	} else {
 		$time = 0;
+	}
+
+	if ($time > 86400) {
+		$days  = floor($time/86400);
+		$time %= 86400;
+	} else {
+		$days  = 0;
+	}
+
+	if ($time > 3600) {
+		$hours = floor($time/3600);
+		$time  %= 3600;
+	} else {
+		$hours = 0;
+	}
+
+	$minutes = floor($time/60);
+
+	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+}
+
+function get_uptime($host) {
+	if ($host['snmp_sysUpTimeInstance'] > 0) {
+		$time = $host['snmp_sysUpTimeInstance']/100;
+	} else {
+		return __('N/A');
 	}
 
 	if ($time > 86400) {
