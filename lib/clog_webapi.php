@@ -180,9 +180,9 @@ function clog_view_logfile() {
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		$logfile = read_config_option('path_cactilog');
+	} else {
+		$logfile = $logpath . '/' . $logfile;
 	}
-
-	$logfile = $logpath . '/' . $logfile;
 
 	if ($clogAdmin && isset_request_var('purge_continue')) {
 		clog_purge_logfile();
