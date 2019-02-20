@@ -1820,12 +1820,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (isset($magic_item['COUNT_ALL_DS_DUPS'])) {
 					$cdef_string = str_replace('COUNT_ALL_DS_DUPS', $magic_item['COUNT_ALL_DS_DUPS'], $cdef_string);
 				}
+
 				if (isset($magic_item['COUNT_ALL_DS_NODUPS'])) {
 					$cdef_string = str_replace('COUNT_ALL_DS_NODUPS', $magic_item['COUNT_ALL_DS_NODUPS'], $cdef_string);
 				}
+
 				if (isset($magic_item['COUNT_SIMILAR_DS_DUPS'])) {
 					$cdef_string = str_replace('COUNT_SIMILAR_DS_DUPS', $magic_item['COUNT_SIMILAR_DS_DUPS'], $cdef_string);
 				}
+
 				if (isset($magic_item['COUNT_SIMILAR_DS_NODUPS'])) {
 					$cdef_string = str_replace('COUNT_SIMILAR_DS_NODUPS', $magic_item['COUNT_SIMILAR_DS_NODUPS'], $cdef_string);
 				}
@@ -1835,6 +1838,26 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cdef_string = str_replace('CURRENT_DS_MAXIMUM_VALUE', (empty($graph_item['rrd_maximum']) ? '0' : $graph_item['rrd_maximum']), $cdef_string);
 				$cdef_string = str_replace('CURRENT_GRAPH_MINIMUM_VALUE', (empty($graph['lower_limit']) ? '0' : $graph['lower_limit']), $cdef_string);
 				$cdef_string = str_replace('CURRENT_GRAPH_MAXIMUM_VALUE', (empty($graph['upper_limit']) ? '0' : $graph['upper_limit']), $cdef_string);
+
+				if (strpos($cdef_string, '|query_ifHighSpeed|') !== false) {
+					$local_data = db_fetch_row_prepared('SELECT *
+						FROM data_local
+						WHERE id = ?',
+						array($graph_item['local_data_id']));
+
+					$speed = rrdtool_function_interface_speed($local_data);
+
+					$cdef_string = str_replace('|query_ifHighSpeed|', $speed, $cdef_string);
+				} elseif (strpos($cdef_string, '|query_ifSpeed|') !== false) {
+					$local_data = db_fetch_row_prepared('SELECT *
+						FROM data_local
+						WHERE id = ?',
+						array($graph_item['local_data_id']));
+
+					$speed = rrdtool_function_interface_speed($local_data);
+
+					$cdef_string = str_replace('|query_ifSpeed|', $speed, $cdef_string);
+				}
 
 				/* replace query variables in cdefs */
 				$cdef_string = rrd_substitute_host_query_data($cdef_string, $graph, $graph_item);
