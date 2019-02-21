@@ -105,7 +105,7 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 		WHERE host_id = ?
 		AND snmp_query_id = ?
 		AND id IN(' . implode(', ', $local_data_ids) . ')
-		AND dl.snmp_index != ""',
+		AND snmp_index != ""',
 		array($host_id, $data_query_id));
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
