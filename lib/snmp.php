@@ -783,12 +783,30 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 		$parts  = explode(' ', $string);
 
+		if (sizeof($parts) == 4) {
+			$possible_ip = true;
+		} else {
+			$possible_ip = false;
+		}
+
+		$ip_address = '';
+
 		/* convert the hex string into an ascii string */
 		foreach($parts as $part) {
+			if ($possible_ip && hexdec($part) >= 0 && hexdec($part) <= 255) {
+				$ip_address .= ($ip_address != '' ? '.':'') . hexdec($part);
+			} else {
+				$possible_ip = false;
+			}
+
 			$output .= chr(hexdec($part));
 		}
 
-		$string = $output;
+		if ($possible_ip && is_ipaddress($ip_address)) {
+			$string = $ip_address;
+		} else {
+			$string = $output;
+		}
 	} elseif (substr(strtolower($string), 0, 4) == 'hex:') {
 		$output = '';
 
