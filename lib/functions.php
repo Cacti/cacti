@@ -4201,26 +4201,38 @@ function get_daysfromtime($time, $secs = false, $pad = '', $all = false) {
 
 	$result = '';
 	if ($all || $days > 0) {
-		$result .= substr($pad . $days, -2) .'d:';
+		$result .= padleft($pad, $days, 2) .'d:';
 		$all = true;
 	}
 
 	if ($all || $hours > 0) {
-		$result .= substr($pad . $hours, -2) .'h:';
+		$result .= padleft($pad, $hours, 2) .'h:';
 		$all = true;
 	}
 
 	if ($all || $minutes > 0) {
-		$result .= substr($pad . $minutes, -2) .'m:';
+		$result .= padleft($pad, $minutes, 2) .'m:';
 		$all = true;
 	}
 
 	if ($secs) {
-		$result .= substr($pad . $seconds, -2) .'s:';
+		$result .= padleft($pad, $seconds, -2) .'s:';
 		$all = true;
 	}
 
 	return trim($result,':');
+}
+
+function padleft($pad = '', $value, $min = 2) {
+	$result = "$value";
+	if (strlen($result) < $min && $pad != '') {
+		$padded = $pad . $result;
+		while ($padded != $result && strlen($result) < $min) {
+			$padded = $pad . $result;
+		}
+		$result = $padded;
+	}
+	return $result;
 }
 
 function get_classic_tabimage($text, $down = false) {
