@@ -4170,7 +4170,7 @@ function get_timeinstate($host) {
 
 function get_uptime($host) {
 	if ($host['snmp_sysUpTimeInstance'] > 0) {
-		return get_timefromdays($host['snmp_sysUpTimeInstance']/100);
+		return get_daysfromtime($host['snmp_sysUpTimeInstance']/100);
 	} else {
 		return __('N/A');
 	}
