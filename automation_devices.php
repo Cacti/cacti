@@ -288,14 +288,6 @@ function display_discovery_page() {
 		foreach($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
-			if ($host['sysUptime'] != 0) {
-				$days = intval($host['sysUptime']/8640000);
-				$hours = intval(($host['sysUptime'] - ($days * 8640000)) / 360000);
-				$uptime = $days . 'd:' . $hours . 'h';
-			} else {
-				$uptime = '';
-			}
-
 			if ($host['hostname'] == '') {
 				$host['hostname'] = __('Not Detected');
 			}
@@ -307,7 +299,7 @@ function display_discovery_page() {
 			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left;white-space:normal;');
 			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
+			form_selectable_cell(snmp_data(get_uptime($host)), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
 			form_selectable_cell(substr($host['mytime'],0,16), $host['id'], '', 'text-align:right');

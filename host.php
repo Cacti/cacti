@@ -1631,13 +1631,7 @@ function host() {
 			if ($host['disabled'] == '' &&
 				($host['status'] == HOST_RECOVERING || $host['status'] == HOST_UP) &&
 				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) {
-				$snmp_uptime = $host['snmp_sysUpTimeInstance'];
-				$days      = intval($snmp_uptime / (60*60*24*100));
-				$remainder = $snmp_uptime % (60*60*24*100);
-				$hours     = intval($remainder / (60*60*100));
-				$remainder = $remainder % (60*60*100);
-				$minutes   = intval($remainder / (60*100));
-				$uptime    = $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+				$uptime    = get_uptime($host);
 			} else {
 				$uptime    = "N/A";
 			}

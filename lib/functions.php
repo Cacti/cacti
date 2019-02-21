@@ -4165,49 +4165,62 @@ function get_timeinstate($host) {
 		$time = 0;
 	}
 
-	if ($time > 86400) {
-		$days  = floor($time/86400);
-		$time %= 86400;
-	} else {
-		$days  = 0;
-	}
-
-	if ($time > 3600) {
-		$hours = floor($time/3600);
-		$time  %= 3600;
-	} else {
-		$hours = 0;
-	}
-
-	$minutes = floor($time/60);
-
-	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+	return get_daysfromtime($time);
 }
 
 function get_uptime($host) {
 	if ($host['snmp_sysUpTimeInstance'] > 0) {
-		$time = $host['snmp_sysUpTimeInstance']/100;
+		return get_timefromdays($host['snmp_sysUpTimeInstance']/100);
 	} else {
 		return __('N/A');
 	}
+}
 
-	if ($time > 86400) {
+function get_daysfromtime($time, $secs = false, $pad = '', $all = false) {
+	if ($time >= 86400) {
 		$days  = floor($time/86400);
 		$time %= 86400;
 	} else {
 		$days  = 0;
 	}
 
-	if ($time > 3600) {
+	if ($time >= 3600) {
 		$hours = floor($time/3600);
-		$time  %= 3600;
+		$time %= 3600;
 	} else {
 		$hours = 0;
 	}
 
-	$minutes = floor($time/60);
+	if ($time >= 60) {
+		$minutes = floor($time/60);
+		$time   %= 60;
+	} else {
+		$minutes = 0;
+	}
+	$seconds = $time;
 
-	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+	$result = '';
+	if ($all || $days > 0) {
+		$result .= substr($pad . $days, -2) .'d:';
+		$all = true;
+	}
+
+	if ($all || $hours > 0) {
+		$result .= substr($pad . $hours, -2) .'h:';
+		$all = true;
+	}
+
+	if ($all || $minutes > 0) {
+		$result .= substr($pad . $minutes, -2) .'m:';
+		$all = true;
+	}
+
+	if ($secs) {
+		$result .= substr($pad . $seconds, -2) .'s:';
+		$all = true;
+	}
+
+	return trim($result,':');
 }
 
 function get_classic_tabimage($text, $down = false) {
