@@ -156,7 +156,7 @@ function update_poller_cache($data_source, $commit = false) {
 
 	$poller_items = array();
 
-	if (!is_array($data_source)) {
+	if (!cacti_sizeof($data_source)) {
 		return $poller_items;
 	}
 
