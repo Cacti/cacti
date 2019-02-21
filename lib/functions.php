@@ -3478,6 +3478,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$mail->WordWrap = $wordwrap;
 	$mail->setWordWrap();
 
+	if (!$html) {
+		$mail->ContentType = 'text/plain';
+	} else {
+		$mail->ContentType = 'text/html';
+	}
+
 	$i = 0;
 
 	// Handle Graph Attachments
@@ -3578,14 +3584,23 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
 	$method  = $mail_methods[intval(read_config_option('settings_how'))];
 
-	$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
-		$result ? 'INFO' : 'WARNING',
-		$result ? 'successfully sent' : 'failed',
-		$method,
-		$fromText, $toText, $ccText, $subject,
-		", Message: $error");
+	if ($error != '') {
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
+			$result ? 'INFO' : 'WARNING',
+			$result ? 'successfully sent' : 'failed',
+			$method,
+			$fromText, $toText, $ccText, $subject,
+			", Error: $error");
+	} else {
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'",
+			$result ? 'INFO' : 'WARNING',
+			$result ? 'successfully sent' : 'failed',
+			$method,
+			$fromText, $toText, $ccText, $subject);
+	}
 
 	cacti_log($message, false, 'MAILER');
+
 	return $error;
 }
 
