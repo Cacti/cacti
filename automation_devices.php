@@ -430,7 +430,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 		$sql_order = get_order_string();
 		$sql_limit = ' LIMIT ' . ($rows*($page-1)) . ',' . $rows;
 
-		$sql_query = "SELECT *, FROM_UNIXTIME(time) AS mytime
+		$sql_query = "SELECT *,sysUptime snmp_sysUpTimeInstance, FROM_UNIXTIME(time) AS mytime
 			FROM automation_devices
 			$sql_where
 			$sql_order
