@@ -40,7 +40,7 @@ $version = get_cacti_version();
 api_plugin_hook('logout_post_session_destroy');
 
 /* allow for plugin based logout page */
-if (api_plugin_hook_function('custom_logout_message', get_request_var('action')) === true) {
+if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
 	exit;
 }
 
@@ -77,10 +77,6 @@ if (get_request_var('action') == 'timeout') {
 	</html>\n";
 } elseif (read_config_option('auth_method') == '2') {
 	clear_auth_cookie();
-
-	if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) == OPER_MODE_RESKIN) {
-		exit;
-	}
 
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 	print "<html>\n";

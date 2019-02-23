@@ -33,7 +33,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 }
 
 /* allow for plugin based permissiion denied page */
-if (api_plugin_hook_function('custom_denied', $goBack) === true) {
+if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) === OPER_MODE_RESKIN) {
 	exit;
 }
 
