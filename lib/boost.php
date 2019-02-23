@@ -766,7 +766,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 			if ($first_ds == $last_ds) {
 				if (cacti_sizeof($results) == $data_ids_to_get) {
-					cacti_log("FALURE: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
+					cacti_log("ERROR: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
 				}
 
 				restore_error_handler();
