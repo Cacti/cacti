@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#2394: getHostsByDescription() uses wrong field for indexed join
 -issue#2419: Host state time was not correctly calculated
 -issue#2420: Fix selinux issues with cacti.log write check
+-issue#2426: various issues about hook 'custom_logout_message'
 -issue#2431: Default value is text for which mail method to use, should be integer
 -issue#2432: Undefined variable: graph_start and Undefined variable: graph_end in lib/rrd.php
 -issue#2433: Bad SNMP Index warning despite all data sources disabled

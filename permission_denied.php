@@ -32,6 +32,11 @@ if (isset($_SERVER['HTTP_REFERER'])) {
 	$goBack = "<td colspan='2' class='center'>[<a href='#' onClick='window.history.back()'>" . __('Return') . "</a> | <a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 }
 
+/* allow for plugin based permissiion denied page */
+if (api_plugin_hook_function('custom_denied', $goBack) === true) {
+	exit;
+}
+
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
 print "<head>\n";
