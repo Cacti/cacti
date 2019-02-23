@@ -1633,7 +1633,7 @@ function host() {
 				($host['availability_method'] != AVAIL_NONE && $host['availability_method'] != AVAIL_PING)) {
 				$uptime    = get_uptime($host);
 			} else {
-				$uptime    = "N/A";
+				$uptime    = __('N/A');
 			}
 
 			$graphs_url      = $config['url_path'] . 'graphs.php?reset=1&host_id=' . $host['id'];
