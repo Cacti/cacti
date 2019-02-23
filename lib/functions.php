@@ -4153,7 +4153,7 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 
 function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
-	if ($host['availability_method'] == 0 && $host['snmp_sysUpTimeInstance'] == 0) {
+	if ($host['availability_method'] == 0) {
 		return __('N/A');
 	} elseif (isset($host['instate'])) {
 		$time = $host['instate'];
