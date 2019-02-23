@@ -1332,8 +1332,8 @@ function get_device_records(&$total_rows, $rows) {
 	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$sql_query = "SELECT host.*, graphs, data_sources,
-		IF(status_event_count > 0 && status IN (1), status_event_count*$poller_interval,
-			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 && status IN (0,2,3), total_polls*$poller_interval,
+		IF(status_event_count > 0 && status IN (1, 2), status_event_count*$poller_interval,
+			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 && status IN (0, 3), total_polls*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
 			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP())))) AS instate
 		FROM host
