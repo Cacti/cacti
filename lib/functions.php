@@ -4161,8 +4161,10 @@ function get_timeinstate($host) {
 		} else {
 			$time = $host['instate'];
 		}
-	} elseif ($host['status_event_count'] > 0) {
+	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2)) {
 		$time = $host['status_event_count'] * $interval;
+	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
+		$time = $host['total_polls'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
 	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
