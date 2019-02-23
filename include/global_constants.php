@@ -435,3 +435,9 @@ if (!defined('PASSWORD_DEFAULT')) {
 define('CACTI_MAIL_PHP', 0);
 define('CACTI_MAIL_SENDMAIL', 1);
 define('CACTI_MAIL_SMTP', 2);
+
+define('DAYS_FORMAT_SHORT', 0);
+define('DAYS_FORMAT_MEDIUM', 1);
+define('DAYS_FORMAT_MEDIUM_LOG', 2);
+define('DAYS_FORMAT_LONG', 3);
+define('DAYS_FORMAT_LONG_LOG', 4);

@@ -2592,4 +2592,55 @@ $snmpagent_event_severity = array(
 	SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'critical'
 );
 
+$days_from_time_settings = array(
+	'mods' => array(
+		'd' => 86400,
+		'h' => 3600,
+		'm' => '60',
+		's' => 0,
+	),
+	'text' => array(
+		DAYS_FORMAT_SHORT => array(
+			'd' => 'd',
+		        'h' => 'h',
+		        'm' => 'm',
+			's' => 's',
+			'suffix' => ':',
+			'prefix' => '',
+		),
+		DAYS_FORMAT_MEDIUM => array(
+			'd' => __('days'),
+			'h' => __('hrs'),
+			'm' => __('mins'),
+			's' => __('secs'),
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_MEDIUM_LOG => array(
+			'd' => 'days',
+			'h' => 'hrs',
+			'm' => 'mins',
+			's' => 'secs',
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_LONG => array(
+			'd' => __('days'),
+			'h' => __('hours'),
+			'm' => __('minutes'),
+			's' => __('seconds'),
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_LONG_LOG => array(
+			'd' => 'days',
+			'h' => 'hours',
+			'm' => 'minutes',
+			's' => 'seconds',
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+	),
+);
+
 api_plugin_hook('config_arrays');

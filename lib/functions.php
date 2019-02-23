@@ -4154,13 +4154,9 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
 	if ($host['availability_method'] == 0) {
-		return __('N/A');
+		$time = 0;
 	} elseif (isset($host['instate'])) {
-		if ($host['instate'] == 0) {
-			return __('N/A');
-		} else {
-			$time = $host['instate'];
-		}
+		$time = $host['instate'];
 	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2)) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
@@ -4173,62 +4169,45 @@ function get_timeinstate($host) {
 		$time = 0;
 	}
 
-	return get_daysfromtime($time);
+	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
 }
 
 function get_uptime($host) {
-	if ($host['snmp_sysUpTimeInstance'] > 0) {
-		return get_daysfromtime($host['snmp_sysUpTimeInstance']/100);
-	} else {
-		return __('N/A');
-	}
+	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime($host['snmp_sysUpTimeInstance']/100) : __('N/A');
 }
 
-function get_daysfromtime($time, $secs = false, $pad = '', $all = false) {
-	if ($time >= 86400) {
-		$days  = floor($time/86400);
-		$time %= 86400;
-	} else {
-		$days  = 0;
+function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
+	global $days_from_time_settings;
+
+	// Ensure we use an existing format or we'll end up with no text at all
+	if (!isset($days_from_time_settings['text'][$format])) {
+		$format = DAYS_FORMAT_SHORT;
 	}
 
-	if ($time >= 3600) {
-		$hours = floor($time/3600);
-		$time %= 3600;
-	} else {
-		$hours = 0;
-	}
-
-	if ($time >= 60) {
-		$minutes = floor($time/60);
-		$time   %= 60;
-	} else {
-		$minutes = 0;
-	}
-	$seconds = $time;
+	$mods = $days_from_time_settings['mods'];
+	$text = $days_from_time_settings['text'][$format];
 
 	$result = '';
-	if ($all || $days > 0) {
-		$result .= padleft($pad, $days, 2) .'d:';
-		$all = true;
+	foreach ($mods as $index => $mod) {
+		if ($mod > 0 || $secs) {
+			if ($time >= $mod) {
+				if ($mod < 1) {
+					$mod = 1;
+				}
+				$val   = floor($time/$mod);
+				$time %= $mod;
+			} else {
+				$val   = 0;
+			}
+
+			if ($all || $val > 0) {
+				$result .= padleft($pad, $val, 2) . $text['prefix'] . $text[$index] . $text['suffix'];
+				$all = true;
+			}
+		}
 	}
 
-	if ($all || $hours > 0) {
-		$result .= padleft($pad, $hours, 2) .'h:';
-		$all = true;
-	}
-
-	if ($all || $minutes > 0) {
-		$result .= padleft($pad, $minutes, 2) .'m:';
-		$all = true;
-	}
-
-	if ($secs) {
-		$result .= padleft($pad, $seconds, -2) .'s:';
-		$all = true;
-	}
-
-	return trim($result,':');
+	return trim($result,$text['suffix']);
 }
 
 function padleft($pad = '', $value, $min = 2) {
