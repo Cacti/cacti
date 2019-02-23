@@ -4156,7 +4156,11 @@ function get_timeinstate($host) {
 	if ($host['availability_method'] == 0) {
 		return __('N/A');
 	} elseif (isset($host['instate'])) {
-		$time = $host['instate'];
+		if ($host['instate'] == 0) {
+			return __('N/A');
+		} else {
+			$time = $host['instate'];
+		}
 	} elseif ($host['status_event_count'] > 0) {
 		$time = $host['status_event_count'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
