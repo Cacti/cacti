@@ -1800,19 +1800,27 @@ function get_created_graphs($rule) {
 	$sql_where = build_matching_objects_filter($rule['id'], AUTOMATION_RULE_TYPE_GRAPH_MATCH);
 
 	/* build magic query, for matching hosts JOIN tables host and host_template */
-	$sql = "SELECT DISTINCT dl.host_id, dl.snmp_index
-		FROM (data_local AS dl,data_template_data AS dtd)
+	$sql = "SELECT DISTINCT gl.host_id, gl.snmp_index
+		FROM graph_local AS gl
+		INNER JOIN graph_templates_item AS gti
+		ON gl.id = gti.local_graph_id
+		INNER JOIN data_template_rrd AS dtr
+		ON gti.task_item_id = dtr.id
+		INNER JOIN data_local AS dl
+		on dtr.local_data_id = dl.id
+		INNER JOIN data_template_data AS dtd
+		ON dl.id=dtd.local_data_id
 		LEFT JOIN host As h
-		ON (dl.host_id=h.id)
+		ON dl.host_id=h.id
 		LEFT JOIN host_template AS ht
-		ON (h.host_template_id=ht.id)
+		ON h.host_template_id=ht.id
 		LEFT JOIN data_input_data AS did
-		ON (dtd.id=did.data_template_data_id)
+		ON dtd.id=did.data_template_data_id
 		LEFT JOIN data_input_fields AS dif
-		ON (did.data_input_field_id=dif.id)
+		ON did.data_input_field_id=dif.id
 		WHERE dl.id=dtd.local_data_id
 		AND dif.type_code='output_type'
-		AND did.value='" . $snmp_query_graph_id . "'
+		AND gl.snmp_query_graph_id='" . $snmp_query_graph_id . "'
 		AND ($sql_where)";
 
 	$graphs = db_fetch_assoc($sql, false);
@@ -2477,8 +2485,14 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 			cacti_log($function . ' Device[' . $host_id . '] - checking index: ' . $snmp_index['snmp_index'], false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-			$existsAlready = db_fetch_cell_prepared('SELECT DISTINCT dl.id
-				FROM data_local AS dl
+			$existsAlready = db_fetch_cell_prepared('SELECT DISTINCT gl.id
+				FROM graph_local AS gl
+				INNER JOIN graph_templates_item AS gti
+				ON gl.id = gti.local_graph_id
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id = dtr.id
+				INNER JOIN data_local AS dl
+				ON dtr.local_data_id = dl.id
 				LEFT JOIN data_template_data AS dtd
 				ON dl.id=dtd.local_data_id
 				LEFT JOIN data_input_data AS did
@@ -2488,14 +2502,14 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 				LEFT JOIN snmp_query_graph AS sqg
 				ON did.value=sqg.id
 				WHERE dif.type_code="output_type"
-				AND sqg.id = ?
-				AND dl.host_id = ?
-				AND dl.snmp_query_id = ?
-				AND dl.snmp_index = ?',
+				AND gl.snmp_query_graph_id = ?
+				AND gl.host_id = ?
+				AND gl.snmp_query_id = ?
+				AND gl.snmp_index = ?',
 				array($rule['graph_type_id'], $host_id, $rule['snmp_query_id'], $snmp_query_array['snmp_index']));
 
 			if (isset($existsAlready) && $existsAlready > 0) {
-				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - DS[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
+				cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready]", false, 'AUTOM8', POLLER_VERBOSITY_HIGH);
 				continue;
 			}
 

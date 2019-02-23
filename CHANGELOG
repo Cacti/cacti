@@ -24,6 +24,7 @@ Cacti CHANGELOG
 -issue#2376: Error when adding a device discovered by Automation manually
 -issue#2380: reindex constantly triggered for some devices
 -issue#2384: If current authentication method is set to None, change to Builtin
+-issue#2393: Graph Automation creates duplicate graphs every time reindex the host
 -issue#2394: getHostsByDescription() uses wrong field for indexed join
 -issue#2419: Host state time was not correctly calculated
 -issue#2420: Fix selinux issues with cacti.log write check
