@@ -67,12 +67,12 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 	}
 
 	$table_prefix = basename(get_current_page(), '.php');;
-	if (!isempty_request_var('report')) {
+	if (!isempty_request_var('action')) {
+		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
+	} elseif (!isempty_request_var('report')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('report'));
 	} elseif (!isempty_request_var('tab')) {
 		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('tab'));
-	} elseif (!isempty_request_var('action')) {
-		$table_prefix .= '_' . clean_up_name(get_nfilter_request_var('action'));
 	}
 	$table_id = $table_prefix . $table_suffix;
 
