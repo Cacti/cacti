@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#2426: Reinstate missing plugin hooks for 'custom_logout_message' and 'custom_denied'
 -issue#2431: Default value for 'Mail Method' (settings_how) is incorrect resulting in errors
 -issue#2432: Undefined variable warnings when updating RRD data
+-issue#2451: Drag and drop does not always function correctly
 -feature: Update JavaScript library c3.js to version 0.6.12
 -feature: Update phpseclib to version 2.0.14
 -feature: Update PHPMailer to version 6.0.7
