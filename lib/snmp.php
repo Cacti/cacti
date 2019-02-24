@@ -23,7 +23,8 @@
  +-------------------------------------------------------------------------+
 */
 
-define('REGEXP_SNMP_TRIM', '/(hex|counter(32|64)|gauge|gauge(32|64)|float|ipaddress|string|integer):|(up|down)\(|\)$/i');
+/* trim all but hex-string:, which will return 'hex-' */
+define('REGEXP_SNMP_TRIM', '/(counter(32|64):|gauge|gauge(32|64):|float:|ipaddress:|string:|integer:)|(up|down)\(|\)$/i');
 
 define('SNMP_METHOD_PHP', 1);
 define('SNMP_METHOD_BINARY', 2);
@@ -74,7 +75,7 @@ function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $a
 		$session->valueretrieval = SNMP_VALUE_PLAIN;
 	}
 
-	$session->quick_print = true;
+	$session->quick_print = false;
 	$session->max_oids = $max_oids;
 
 	if (read_config_option('oid_increasing_check_disable') == 'on') {
@@ -635,7 +636,7 @@ function cacti_snmp_walk($hostname, $community, $oid, $version, $auth_user = '',
 				cacti_escapeshellarg($oid));
 		} else {
 			$temp_array = exec_into_array(cacti_escapeshellcmd(read_config_option('path_snmpwalk')) .
-				' -O QnU ' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
+				' -O QnU' . ($value_output_format == SNMP_STRING_OUTPUT_HEX ? 'x ':' ') . $snmp_auth .
 				' -v '     . $version .
 				' -t '     . $timeout .
 				' -r '     . $retries .
@@ -699,7 +700,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 	}
 
 	/* remove quotes and extranious data */
-	$string = trim($string, "\n\r\"'");
+	$string = trim($string, " \n\r\v\"'");
 
 	/* return the easiest value */
 	if ($string == '') {
@@ -726,7 +727,7 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 	/* Remove invalid chars, if the string output is to be numeric */
 	if ($strip_alpha && $value_output_format == SNMP_STRING_OUTPUT_GUESS) {
-		$string = trim($string, "\"' \n\r\v");
+		$string = trim(str_ireplace('hex:', '', $string));
 		$len    = strlen($string);
 		$pos    = $len - 1;
 
@@ -767,32 +768,50 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 	/* Remove non-printable characters, allow UTF-8 */
 	if ($value_output_format == SNMP_STRING_OUTPUT_GUESS) {
-		$string = preg_replace('/[^\PC\s]/u', '', $string);
+		$string = preg_replace('/[^[:print:]\r\n]/', '', $string);
 	}
 
 	/* Trim the string of trailing and leading spaces */
 	$string = trim($string);
 
 	/* convert hex strings to numeric values */
-	if (is_hex_string($string) && $value_output_format == SNMP_STRING_OUTPUT_GUESS) {
+	if (is_hex_string($string)) {
+		/* the is_hex_string() function will remove the hex:
+		 * and hex-string: from the passed value
+		 */
 		$output = '';
+
 		$parts  = explode(' ', $string);
+
+		if (sizeof($parts) == 4) {
+			$possible_ip = true;
+		} else {
+			$possible_ip = false;
+		}
+
+		$ip_address = '';
 
 		/* convert the hex string into an ascii string */
 		foreach($parts as $part) {
+			if ($possible_ip && hexdec($part) >= 0 && hexdec($part) <= 255) {
+				$ip_address .= ($ip_address != '' ? '.':'') . hexdec($part);
+			} else {
+				$possible_ip = false;
+			}
+
 			$output .= chr(hexdec($part));
 		}
 
-		if (is_numeric($output)) {
-			$string = number_format($output, 0, '', '');
+		if ($possible_ip && is_ipaddress($ip_address)) {
+			$string = $ip_address;
 		} else {
 			$string = $output;
 		}
-	} elseif (preg_match('/hex-/i', $string)) {
+	} elseif (substr(strtolower($string), 0, 4) == 'hex:') {
 		$output = '';
 
-		/* strip off the 'Hex-STRING:' */
-		$string = preg_replace('/hex- ?/i', '', $string);
+		/* strip off the 'Hex:' */
+		$string = trim(str_ireplace('hex:', '', $string));
 
 		/* normalize some forms */
 		$string = str_replace(array(' ', '-', '.'), ':', $string);
@@ -815,26 +834,6 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 				$string = $output;
 			}
 		}
-	} elseif (preg_match('/(hex:\?)?([a-fA-F0-9]{1,2}(:|\s)){5}/i', $string)) {
-		$octet = '';
-
-		/* strip off the 'hex:' */
-		$string = preg_replace('/hex: ?/i', '', $string);
-
-		/* split the hex on the delimiter */
-		$octets = preg_split('/\s|:/', $string);
-
-		/* loop through each octet and format it accordingly */
-		for ($i=0;($i<cacti_count($octets));$i++) {
-			$octet .= str_pad($octets[$i], 2, '0', STR_PAD_LEFT);
-
-			if (($i+1) < cacti_count($octets)) {
-				$octet .= ':';
-			}
-		}
-
-		/* copy the final result and make it upper case */
-		$string = strtoupper($octet);
 	} elseif (preg_match('/Timeticks:\s\((\d+)\)\s/', $string, $matches)) {
 		$string = $matches[1];
 	}

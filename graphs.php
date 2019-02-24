@@ -870,6 +870,7 @@ function form_actions() {
 							INNER JOIN graph_templates_item AS gti
 							ON dtr.id=gti.task_item_id
 							WHERE gti.local_graph_id NOT IN(' . implode(',', $graph_array) . ')
+							AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 							AND dtr.local_data_id IN(' . implode(',', $data_array) . ')
 							AND dtd.local_data_id > 0'),
 						'local_data_id', 'local_data_id');
@@ -886,6 +887,7 @@ function form_actions() {
 							INNER JOIN graph_templates_item AS gti
 							ON dtr.id=gti.task_item_id
 							WHERE gti.local_graph_id IN (' . implode(',', $graph_array) . ')
+							AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
 							AND dtr.local_data_id NOT IN (' . implode(',', $not_deletable) . ')
 							AND dtd.local_data_id > 0'),
 						'local_data_id', array('local_data_id', 'name_cache'));
@@ -1521,7 +1523,10 @@ function graph_edit() {
 		item();
 	}
 
-	$graph['src'] = html_escape($config['url_path'] . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . (time()-86400) . '&graph_end=-300&v=' . mt_rand());
+	$graph_start = -86400;
+	$graph_end   = '-' . read_config_option('poller_interval');
+
+	$graph['src'] = html_escape($config['url_path'] . 'graph_json.php?local_graph_id=' . get_request_var('id') . '&rra_id=0&graph_start=' . $graph_start . '&graph_end=' . $graph_end . '&v=' . mt_rand());
 
 	if (!isempty_request_var('id')) {
 		?>
@@ -1531,6 +1536,8 @@ function graph_edit() {
 		if ((isset($_SESSION['graph_debug_mode'])) && (isset_request_var('id'))) {
 			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 			$graph_data_array['print_source'] = 1;
+			$graph_data_array['graph_end']    = $graph_end;
+			$graph_data_array['graph_start']  = $graph_start;
 		?>
 		</div>
 		<div class='cactiTable'>

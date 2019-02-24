@@ -180,9 +180,9 @@ function clog_view_logfile() {
 
 	if (!clog_validate_filename($logfile, $logpath, $logname, true)) {
 		$logfile = read_config_option('path_cactilog');
+	} else {
+		$logfile = $logpath . '/' . $logfile;
 	}
-
-	$logfile = $logpath . '/' . $logfile;
 
 	if ($clogAdmin && isset_request_var('purge_continue')) {
 		clog_purge_logfile();
@@ -401,7 +401,7 @@ function filter($clogAdmin, $selectedFile) {
 						}
 
 						if (is_readable($logPath)) {
-							$files = scandir($logPath);
+							$files = @scandir($logPath);
 						} else {
 							$files = array('cacti.log');
 						}
@@ -438,7 +438,7 @@ function filter($clogAdmin, $selectedFile) {
 
 							// After Defaults, do Cacti StdErr log second (of archived)
 							if (dirname($stderrLogPath) != $logPath) {
-								$errFiles = scandir(dirname($stderrLogPath));
+								$errFiles = @scandir(dirname($stderrLogPath));
 								$files = $errFiles;
 								if (cacti_sizeof($files)) {
 									$stdErrFileArray = array();
@@ -640,14 +640,16 @@ function clog_get_regex_array() {
 
 	if (!cacti_sizeof($regex_array)) {
 		$regex_array = array(
-			1 => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',       'func' => 'clog_regex_datasource'),
-			2 => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',       'func' => 'clog_regex_dataquery'),
-			3 => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',   'func' => 'clog_regex_device'),
-			4 => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',   'func' => 'clog_regex_poller'),
-			5 => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)",  'func' => 'clog_regex_rra'),
-			6 => array('name' => 'GT',     'regex' => '( GT\[)([, \d]+)(\])',        'func' => 'clog_regex_graphtemplates'),
-			7 => array('name' => 'Graph',  'regex' => '( Graph\[)([, \d]+)(\])',     'func' => 'clog_regex_graphs'),
-			8 => array('name' => 'Graphs', 'regex' => '( Graphs\[)([, \d]+)(\])',    'func' => 'clog_regex_graphs')
+			1  => array('name' => 'DS',     'regex' => '( DS\[)([, \d]+)(\])',       'func' => 'clog_regex_datasource'),
+			2  => array('name' => 'DQ',     'regex' => '( DQ\[)([, \d]+)(\])',       'func' => 'clog_regex_dataquery'),
+			3  => array('name' => 'Device', 'regex' => '( Device\[)([, \d]+)(\])',   'func' => 'clog_regex_device'),
+			4  => array('name' => 'Poller', 'regex' => '( Poller\[)([, \d]+)(\])',   'func' => 'clog_regex_poller'),
+			5  => array('name' => 'RRA',    'regex' => "([_\/])(\d+)(\.rrd&#039;)",  'func' => 'clog_regex_rra'),
+			6  => array('name' => 'GT',     'regex' => '( GT\[)([, \d]+)(\])',       'func' => 'clog_regex_graphtemplates'),
+			7  => array('name' => 'Graph',  'regex' => '( Graph\[)([, \d]+)(\])',    'func' => 'clog_regex_graphs'),
+			8  => array('name' => 'Graphs', 'regex' => '( Graphs\[)([, \d]+)(\])',   'func' => 'clog_regex_graphs'),
+			9  => array('name' => 'User',   'regex' => '( User\[)([, \d]+)(\])',     'func' => 'clog_regex_users'),
+			10 => array('name' => 'User',   'regex' => '( Users\[)([, \d]+)(\])',    'func' => 'clog_regex_users'),
 		);
 
 		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
@@ -707,10 +709,9 @@ function clog_regex_device($matches) {
 	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($dev_ids)) {
 		$result = '';
-		$hosts = db_fetch_assoc_prepared('SELECT id, description
+		$hosts = db_fetch_assoc('SELECT id, description
 			FROM host
-			WHERE id in (?)',
-			array(implode(',',$dev_ids)));
+			WHERE id in (' . implode(',',$dev_ids) . ')');
 
 		$hostDescriptions = array();
 		if (cacti_sizeof($hosts)) {
@@ -736,7 +737,7 @@ function clog_regex_datasource($matches) {
 	if (cacti_sizeof($ds_ids)) {
 		$result = '';
 
-		$graph_rows = array_rekey(db_fetch_assoc_prepared('SELECT DISTINCT
+		$graph_rows = array_rekey(db_fetch_assoc('SELECT DISTINCT
 			gtg.local_graph_id AS id
 			FROM graph_templates_graph AS gtg
 			INNER JOIN graph_templates_item AS gti
@@ -744,8 +745,7 @@ function clog_regex_datasource($matches) {
 			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
 			WHERE gtg.local_graph_id>0
-			AND dtr.local_data_id iN (?)',
-			array($matches[2])),'id','id');
+			AND dtr.local_data_id IN (' . $matches[2] . ')'),'id','id');
 
 		$graph_results = '';
 		if (cacti_sizeof($graph_rows)) {
@@ -790,8 +790,7 @@ function clog_regex_poller($matches) {
 		$result = '';
 		$pollers = db_fetch_assoc_prepared('SELECT id, name
 			FROM poller
-			WHERE id in (?)',
-			array(implode(',',$poller_ids)));
+			WHERE id in (' . implode(',',$poller_ids) . ')');
 
 		$pollerDescriptions = array();
 		if (cacti_sizeof($pollers)) {
@@ -816,10 +815,9 @@ function clog_regex_dataquery($matches) {
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
-		$querys = db_fetch_assoc_prepared('SELECT id, name
+		$querys = db_fetch_assoc('SELECT id, name
 			FROM snmp_query
-			WHERE id in (?)',
-			array(implode(',',$query_ids)));
+			WHERE id in (' . implode(',',$query_ids) . ')');
 
 		$queryDescriptions = array();
 		if (cacti_sizeof($querys)) {
@@ -866,7 +864,7 @@ function clog_regex_graphs($matches) {
 		$title = '';
 		$i     = 0;
 
-		$querys = db_fetch_assoc_prepared('SELECT DISTINCT
+		$querys = db_fetch_assoc('SELECT DISTINCT
 			gtg.local_graph_id AS id,
 			gtg.title_cache AS title
 			FROM graph_templates_graph AS gtg
@@ -874,8 +872,7 @@ function clog_regex_graphs($matches) {
 			ON gtg.local_graph_id=gti.local_graph_id
 			INNER JOIN data_template_rrd AS dtr
 			ON gti.task_item_id=dtr.id
-			WHERE gtg.local_graph_id in (?)',
-			array(implode(',',$query_ids)));
+			WHERE gtg.local_graph_id in (' . implode(',',$query_ids) . ')');
 
 		$result .= $matches[1] . "<a href='";
 
@@ -906,10 +903,9 @@ function clog_regex_graphtemplates($matches) {
 	$query_ids = explode(',',str_replace(" ","",$matches[2]));
 	if (cacti_sizeof($query_ids)) {
 		$result = '';
-		$querys = db_fetch_assoc_prepared('SELECT id, name
+		$querys = db_fetch_assoc('SELECT id, name
 			FROM graph_templates
-			WHERE id in (?)',
-			array(implode(',',$query_ids)));
+			WHERE id in ('  . implode(',',$query_ids) . ')');
 
 		$queryDescriptions = array();
 		if (cacti_sizeof($querys)) {
@@ -926,3 +922,36 @@ function clog_regex_graphtemplates($matches) {
 	return $result;
 }
 
+function clog_regex_users($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$query_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (cacti_sizeof($query_ids)) {
+		$result = '';
+
+		$querys = db_fetch_assoc('SELECT DISTINCT
+			id, username
+			FROM user_auth
+			WHERE id in (' . implode(',',$query_ids) . ')');
+
+		$queryDescriptions = array();
+		if (cacti_sizeof($querys)) {
+			foreach ($querys as $query) {
+				$queryDescriptions[$query['id']] = html_escape($query['username']);
+			}
+		}
+
+		foreach ($query_ids as $query_id) {
+			$result .= $matches[1];
+			if (isset($queryDescriptions[$query_id])) {
+				$result .= '<a href=\'' . html_escape($config['url_path'] . 'user_admin.php?action=user_edit&tab=general&id=' . $query_id) . '\'>' . $queryDescriptions[$query_id] . '</a>';
+			} else {
+				$result .= $query_id;
+			}
+			$result .= $matches[3];
+		}
+	}
+	return $result;
+}

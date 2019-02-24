@@ -39,6 +39,7 @@ function repopulate_poller_cache() {
 		FROM data_local AS dl
 		INNER JOIN host AS h
 		ON dl.host_id=h.id
+		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
 		ORDER BY h.poller_id ASC');
 
 	$poller_items   = array();
@@ -103,7 +104,8 @@ function update_poller_cache_from_query($host_id, $data_query_id, $local_data_id
 		FROM data_local
 		WHERE host_id = ?
 		AND snmp_query_id = ?
-		AND id IN(' . implode(', ', $local_data_ids) . ')',
+		AND id IN(' . implode(', ', $local_data_ids) . ')
+		AND snmp_index != ""',
 		array($host_id, $data_query_id));
 
 	$poller_id = db_fetch_cell_prepared('SELECT poller_id
@@ -146,14 +148,15 @@ function update_poller_cache($data_source, $commit = false) {
 
 	if (!is_array($data_source)) {
 		$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . ' *
-			FROM data_local
-			WHERE id = ?',
+			FROM data_local AS dl
+			WHERE id = ?
+			AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ""))',
 			array($data_source));
 	}
 
 	$poller_items = array();
 
-	if (!is_array($data_source)) {
+	if (!cacti_sizeof($data_source)) {
 		return $poller_items;
 	}
 
@@ -474,6 +477,7 @@ function push_out_data_input_method($data_input_id) {
 		ON dtd.local_data_id = dl.id
 		INNER JOIN host AS h
 		ON h.id = dl.host_id
+		WHERE dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != "")
 		ORDER BY h.poller_id ASC',
 		array($data_input_id));
 
@@ -656,6 +660,7 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
 		WHERE dtd.data_input_id>0
+		AND (dl.snmp_query_id = 0 OR (dl.snmp_query_id > 0 AND dl.snmp_index != ''))
 		$sql_where");
 
 	/* loop through each matching data source */
@@ -931,6 +936,11 @@ function utilities_get_mysql_recommendations() {
 			'value'   => 'ON',
 			'measure' => 'equal',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
+			),
+		'innodb_file_format' => array(
+			'value'   => 'Barracuda',
+			'measure' => 'equal',
+			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
@@ -1326,6 +1336,7 @@ function utility_php_recommends() {
 }
 
 function utility_php_verify_recommends(&$recommends, $source) {
+	global $original_memory_limit;
 
 	// _mb = megabytes, _m = minutes (used in displays)
 	$rec_version    = '5.4.0';
@@ -1335,7 +1346,8 @@ function utility_php_verify_recommends(&$recommends, $source) {
 	// adjust above appropriately (used in configs)
 	$rec_memory	= $rec_memory_mb * 1024 * 1024;
 	$rec_execute    = $rec_execute_m * 60;
-	$memory_limit   = str_replace('M', '', ini_get('memory_limit'));
+	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
+	$memory_limit   = str_replace('M', '', $memory_ini);
 	$execute_time   = ini_get('max_execution_time');
 
 	$timezone       = ini_get('date.timezone');

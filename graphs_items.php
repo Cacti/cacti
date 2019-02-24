@@ -557,7 +557,7 @@ function item_edit() {
 	function setRowVisibility() {
 		switch($('#graph_type_id').val()) {
 		case '1': // COMMENT
-			$('#row_task_item_id').hide();
+			$('#row_task_item_id').show();
 			$('#row_color_id').hide();
 			$('#row_line_width').hide();
 			$('#row_dashes').hide();
@@ -574,6 +574,22 @@ function item_edit() {
 			$('#row_hard_return').show();
 			break;
 		case '2': // HRULE
+			$('#row_task_item_id').show();
+			$('#row_color_id').hide();
+			$('#row_line_width').hide();
+			$('#row_dashes').show();
+			$('#row_dash_offset').show();
+			$('#row_textalign').hide();
+			$('#row_shift').hide();
+			$('#row_alpha').hide();
+			$('#row_consolidation_function_id').hide();
+			$('#row_cdef_id').hide();
+			$('#row_vdef_id').hide();
+			$('#row_value').show();
+			$('#row_gprint_id').hide();
+			$('#row_text_format').hide();
+			$('#row_hard_return').show();
+			break;
 		case '3': // VRULE
 			$('#row_task_item_id').hide();
 			$('#row_color_id').hide();

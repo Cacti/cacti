@@ -1,11 +1,6 @@
 <?php
 
-/* do NOT run this script through a web browser */
-$no_http_headers = true;
-
-if (isset($config)) {
-	include_once(dirname(__FILE__) . '/../lib/snmp.php');
-}
+global $config;
 
 if (!isset($called_by_script_server)) {
 	include_once(dirname(__FILE__) . '/../include/cli_check.php');
@@ -14,6 +9,8 @@ if (!isset($called_by_script_server)) {
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_net_snmp_disk_bytes', $_SERVER['argv']);
+} else {
+	include_once(dirname(__FILE__) . '/../lib/snmp.php');
 }
 
 function ss_net_snmp_disk_bytes($host_id_or_hostname) {

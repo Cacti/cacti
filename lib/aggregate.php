@@ -48,7 +48,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=0&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
+			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
 		}
 	}
 }
@@ -106,8 +106,7 @@ function api_aggregate_convert_template($graphs) {
 	}
 }
 
-function api_aggregate_associate($graphs) {
-	$local_graph_id     = get_nfilter_request_var('local_graph_id');
+function api_aggregate_associate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
@@ -118,32 +117,30 @@ function api_aggregate_associate($graphs) {
 		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
-	$max_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
-		FROM aggregate_graphs_items
-		WHERE aggregate_graph_id = ?',
-		array($aggregate_id));
+	if (!empty($aggregate_id)) {
+		$max_sequence = db_fetch_cell_prepared('SELECT MAX(sequence)
+			FROM aggregate_graphs_items
+			WHERE aggregate_graph_id = ?',
+			array($aggregate_id));
 
-	if ($max_sequence == '') $max_sequence = 1;
+		if ($max_sequence == '') {
+			$max_sequence = 1;
+		}
 
-	foreach($graphs as $graph) {
-		db_execute_prepared('REPLACE INTO aggregate_graphs_items
-			(aggregate_graph_id, local_graph_id, sequence)
-			VALUES (?, ?, ?)',
-			array($aggregate_id, $graph, $max_sequence));
+		foreach($graphs as $graph) {
+			db_execute_prepared('REPLACE INTO aggregate_graphs_items
+				(aggregate_graph_id, local_graph_id, sequence)
+				VALUES (?, ?, ?)',
+				array($aggregate_id, $graph, $max_sequence));
 
-		$max_sequence++;
+			$max_sequence++;
+		}
+
+		push_out_aggregates($aggregate_template, $local_graph_id);
 	}
-
-	push_out_aggregates($aggregate_template, $local_graph_id);
-
-	header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
-
-	exit;
 }
 
-function api_aggregate_disassociate($graphs) {
-	$local_graph_id     = get_nfilter_request_var('local_graph_id');
-
+function api_aggregate_disassociate($local_graph_id, $graphs) {
 	$aggregate_template = db_fetch_cell_prepared('SELECT aggregate_template_id
 		FROM aggregate_graphs
 		WHERE local_graph_id = ?',
@@ -154,18 +151,16 @@ function api_aggregate_disassociate($graphs) {
 		WHERE local_graph_id = ?',
 		array($local_graph_id));
 
-	foreach($graphs as $graph) {
-		db_execute_prepared('DELETE FROM aggregate_graphs_items
-			WHERE aggregate_graph_id = ?
-			AND local_graph_id = ?',
-			array($aggregate_id, $graph));
+	if (!empty($aggregate_id)) {
+		foreach($graphs as $graph) {
+			db_execute_prepared('DELETE FROM aggregate_graphs_items
+				WHERE aggregate_graph_id = ?
+				AND local_graph_id = ?',
+				array($aggregate_id, $graph));
+		}
+
+		push_out_aggregates($aggregate_template, $local_graph_id);
 	}
-
-	push_out_aggregates($aggregate_template, $local_graph_id);
-
-	header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
-
-	exit;
 }
 
 function api_aggregate_create($aggregate_name, $graphs, $agg_template_id = 0) {
@@ -487,7 +482,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 	switch ($old_graph_type) {
 		case GRAPH_ITEM_TYPE_GPRINT:
 		case GRAPH_ITEM_TYPE_GPRINT_LAST:
-		case GRAPH_ITEM_TYPE_GPRINT_MAX:
+		case GRAPH_ITEM_TYPE_GPRINT_MIN:
 		case GRAPH_ITEM_TYPE_GPRINT_MAX:
 		case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
 		case GRAPH_ITEM_TYPE_GPRINT_TEXTALIGN:
@@ -549,11 +544,31 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 				return GRAPH_ITEM_TYPE_STACK;
 			}
 			break;
+		case AGGREGATE_GRAPH_TYPE_LINE1_STACK:
+			if ($graph_index == 0) {
+				return GRAPH_ITEM_TYPE_LINE1;
+			} else {
+				return GRAPH_ITEM_TYPE_LINESTACK;
+			}
+			break;
+		case AGGREGATE_GRAPH_TYPE_LINE2_STACK:
+			if ($graph_index == 0) {
+				return GRAPH_ITEM_TYPE_LINE2;
+			} else {
+				return GRAPH_ITEM_TYPE_LINESTACK;
+			}
+			break;
+		case AGGREGATE_GRAPH_TYPE_LINE3_STACK:
+			if ($graph_index == 0) {
+				return GRAPH_ITEM_TYPE_LINE3;
+			} else {
+				return GRAPH_ITEM_TYPE_LINESTACK;
+			}
+			break;
 		case GRAPH_ITEM_TYPE_LINE1:
 		case GRAPH_ITEM_TYPE_LINE2:
 		case GRAPH_ITEM_TYPE_LINE3:
 		case GRAPH_ITEM_TYPE_LINESTACK:
-			/* create a LINEx graph */
 			return $new_graph_type;
 			break;
 	}

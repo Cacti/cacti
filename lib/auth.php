@@ -2234,10 +2234,10 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 
 	if (get_request_var('term') == '') {
 		if ($include_any) {
-			$return[] = array('label' => 'Any', 'value' => 'Any', 'id' => '-1');
+			$return[] = array('label' => __('Any'), 'value' => __('Any'), 'id' => '-1');
 		}
 		if ($include_none) {
-			$return[] = array('label' => 'None', 'value' => 'None', 'id' => '0');
+			$return[] = array('label' => __('None'), 'value' => __('None'), 'id' => '0');
 		}
 	}
 

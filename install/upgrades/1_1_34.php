@@ -244,6 +244,8 @@ function upgrade_to_1_1_34() {
 	db_install_execute('ALTER TABLE `version`
 		MODIFY COLUMN `cacti` char(20) NOT NULL DEFAULT ""');
 
+	db_install_execute('ALTER IGNORE TABLE version DROP PRIMARY KEY');
+
 	db_install_add_key('version', 'key', 'PRIMARY', array('cacti'), 'BTREE');
 }
 

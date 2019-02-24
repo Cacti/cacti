@@ -28,11 +28,15 @@ if (php_sapi_name() != 'cli') {
 	die('<br><strong>This script is only meant to run at the command line.</strong>');
 }
 
+global $original_memory_limit;
+$original_memory_limit = ini_get('memory_limit');
+ini_set('memory_limit','256M');
+
 $no_http_headers = true;
 include(dirname(__FILE__) . '/../include/global.php');
 include(dirname(__FILE__) . '/../lib/utility.php');
 
-if ($argv !== false && sizeof($argv)) {
+if ($argv !== false && $argc != false && $argc > 1) {
 	$value = strtolower($argv[1]);
 
 	if ($value == 'extensions') {

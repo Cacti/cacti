@@ -2268,7 +2268,7 @@ CREATE TABLE poller_resource_cache (
 --
 
 CREATE TABLE poller_time (
-  id mediumint(8) unsigned NOT NULL auto_increment,
+  id bigint(20) unsigned NOT NULL auto_increment,
   pid int(11) unsigned NOT NULL default '0',
   poller_id int(10) unsigned NOT NULL default '1',
   start_time timestamp NOT NULL default '0000-00-00 00:00:00',

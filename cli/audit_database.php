@@ -139,7 +139,7 @@ function report_audit_results($output = true) {
 			$columns = db_fetch_assoc('SHOW COLUMNS IN ' . $table_name);
 
 			$status  = db_fetch_row('SHOW TABLE STATUS LIKE "' . $table_name . '"');
-			if ($status['Collation'] == 'utf8mb4_unicode_ci') {
+			if ($status['Collation'] == 'utf8mb4_unicode_ci' || $status['Collation'] == 'utf8_general_ci') {
 				$text = 'mediumtext';
 			} else {
 				$text = 'text';
@@ -458,12 +458,12 @@ function create_tables($load = true) {
 		$error  = 0;
 
 		if (file_exists($config['base_path'] . '/docs/audit_schema.sql')) {
-			exec('mysql' . 
-				' -u' . $database_username . 
-				' -p' . $database_password . 
-				' -h' . $database_hostname . 
-				' -P' . $database_port . 
-				' ' . $database_default . 
+			exec('mysql' .
+				' -u' . $database_username .
+				' -p' . $database_password .
+				' -h' . $database_hostname .
+				' -P' . $database_port .
+				' ' . $database_default .
 				' < ' . $config['base_path'] . '/docs/audit_schema.sql', $output, $error);
 
 			if ($error == 0) {

@@ -234,11 +234,11 @@ function update_reindex_cache($host_id, $data_query_id) {
 			 * we do NOT make use of <oid_num_indexes> or the like!
 			 * this works, even if no <oid_num_indexes> was given
 			 */
-			$assert_value = cacti_sizeof(db_fetch_assoc_prepared('SELECT ' . SQL_NO_CACHE . ' snmp_index
+			$assert_value = cacti_sizeof(db_fetch_assoc_prepared('SELECT DISTINCT ' . SQL_NO_CACHE . ' snmp_index
 				FROM host_snmp_cache
 				WHERE host_id = ?
 				AND snmp_query_id = ?
-				GROUP BY snmp_index',
+				AND snmp_index != ""',
 				array($host_id, $data_query_id)));
 
 			/* now, we have to build the (list of) commands that are later used on a recache event

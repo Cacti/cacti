@@ -174,7 +174,12 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			//exit;
 		}
 
-		$result = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'");
+		$result = db_fetch_row_prepared('select ENGINE, TABLE_COMMENT
+			FROM information_schema.TABLES
+			WHERE TABLE_SCHEMA = SCHEMA()
+			AND TABLE_NAME = ?',
+			array($table));
+
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";

@@ -309,8 +309,11 @@ define('REPORTS_OUTPUT_EMAIL',  2);
 define('REPORTS_DEFAULT_MAX_SIZE', 10485760);
 
 # unless a hook for 'global_constants' is available, all DEFINEs go here
-define('AGGREGATE_GRAPH_TYPE_KEEP', 0);
+define('AGGREGATE_GRAPH_TYPE_KEEP',          0);
 define('AGGREGATE_GRAPH_TYPE_KEEP_STACKED', 50);
+define('AGGREGATE_GRAPH_TYPE_LINE1_STACK',  51);
+define('AGGREGATE_GRAPH_TYPE_LINE2_STACK',  52);
+define('AGGREGATE_GRAPH_TYPE_LINE3_STACK',  53);
 
 define('AGGREGATE_TOTAL_NONE', 1);
 define('AGGREGATE_TOTAL_ALL', 2);
@@ -432,3 +435,9 @@ if (!defined('PASSWORD_DEFAULT')) {
 define('CACTI_MAIL_PHP', 0);
 define('CACTI_MAIL_SENDMAIL', 1);
 define('CACTI_MAIL_SMTP', 2);
+
+define('DAYS_FORMAT_SHORT', 0);
+define('DAYS_FORMAT_MEDIUM', 1);
+define('DAYS_FORMAT_MEDIUM_LOG', 2);
+define('DAYS_FORMAT_LONG', 3);
+define('DAYS_FORMAT_LONG_LOG', 4);

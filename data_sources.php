@@ -71,6 +71,12 @@ switch (get_request_var('action')) {
 
 		bottom_footer();
 		break;
+	case 'ds_disable':
+		ds_disable();
+		break;
+	case 'ds_enable':
+		ds_enable();
+		break;
 	case 'ds_remove':
 		ds_remove();
 
@@ -708,6 +714,24 @@ function ds_rrd_add() {
 	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id') . "&view_rrd=$data_template_rrd_id");
 }
 
+function ds_disable() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	api_data_source_disable(get_request_var('id'));
+	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
+}
+
+function ds_enable() {
+	/* ================= input validation ================= */
+	get_filter_request_var('id');
+	/* ==================================================== */
+
+	api_data_source_enable(get_request_var('id'));
+	header('Location: data_sources.php?header=false&action=ds_edit&id=' . get_request_var('id'));
+}
+
 function ds_edit() {
 	global $struct_data_source, $struct_data_source_item;
 
@@ -791,11 +815,15 @@ function ds_edit() {
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&debug=' . (isset($_SESSION['ds_debug_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_debug_mode']) ? __('Turn Off Data Source Debug Mode.') : __('Turn On Data Source Debug Mode.'));?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_edit&id=' . (isset_request_var('id') ? get_request_var('id') : '0') . '&info=' . (isset($_SESSION['ds_info_mode']) ? '0' : '1'));?>'><?php print (isset($_SESSION['ds_info_mode']) ? __('Turn Off Data Source Info Mode.') : __('Turn On Data Source Info Mode.'));?></a><br>
 					<?php
+						if (!empty($data_local['host_id'])) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
+						}
 						if (!empty($data_template['id'])) {
 							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_templates.php?action=template_edit&id=' . (isset($data_template['id']) ? $data_template['id'] : '0'));?>'><?php print __('Edit Data Template.');?></a><br><?php
 						}
-						if (!empty($data_local['host_id'])) {
-							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit&id=' . $data_local['host_id']);?>'><?php print __('Edit Device.');?></a><br><?php
+						if (isset_request_var('id') && get_request_var('id') > 0) {
+							?><span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?action=ds_' . ($data['active'] == 'on' ? 'dis' : 'en') . 'able&id=' . get_request_var('id')) ?>'><?php print ($data['active'] == 'on' ? __('Disable Data Source') : __('Enable Data Source'));?></a><br>
+					<?php
 						}
 					?>
 				</td>
@@ -1344,6 +1372,7 @@ function ds() {
 							<option value='-1'<?php if (get_request_var('status') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
 							<option value='1'<?php if (get_request_var('status') == '1') {?> selected<?php }?>><?php print __('Enabled');?></option>
 							<option value='2'<?php if (get_request_var('status') == '2') {?> selected<?php }?>><?php print __('Disabled');?></option>
+							<option value='3'<?php if (get_request_var('status') == '3') {?> selected<?php }?>><?php print __('Bad Indexes');?></option>
 						</select>
 					</td>
 					<td>
@@ -1433,8 +1462,10 @@ function ds() {
 		/* Show all items */
 	} elseif (get_request_var('status') == '1') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active="on"';
-	} else {
+	} elseif (get_request_var('status') == '2') {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dtd.active=""';
+	} elseif (get_request_var('status') == '3') {
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
 
 	$orphan_where = ' AND graph_type_id IN (' .

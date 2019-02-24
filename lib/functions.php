@@ -1380,12 +1380,26 @@ function is_mac_address($result) {
 	}
 }
 
-function is_hex_string($result) {
+function is_hex_string(&$result) {
 	if ($result == '') {
 		return false;
 	}
 
-	$parts = explode(' ', $result);
+	$compare = strtolower($result);
+
+	/* strip off the 'Hex:, Hex-, and Hex-STRING:'
+	 * Hex- is considered due to the stripping of 'String:' in
+	 * lib/snmp.php
+	 */
+	if (substr($compare, 0, 4) == 'hex-') {
+		$check = trim(str_ireplace('hex-', '', $result));
+	} elseif (substr($compare, 0, 11) == 'hex-string:') {
+		$check = trim(str_ireplace('hex-string:', '', $result));
+	} else {
+		return false;
+	}
+
+	$parts = explode(' ', $check);
 
 	/* assume if something is a hex string
 	   it will have a length > 1 */
@@ -1397,10 +1411,13 @@ function is_hex_string($result) {
 		if (strlen($part) != 2) {
 			return false;
 		}
+
 		if (ctype_xdigit($part) == false) {
 			return false;
 		}
 	}
+
+	$result = $check;
 
 	return true;
 }
@@ -1512,11 +1529,12 @@ function get_data_source_item_name($data_template_rrd_id) {
 	}
 
 	$data_source = db_fetch_row_prepared('SELECT ' . SQL_NO_CACHE . '
-		data_template_rrd.data_source_name,
-		data_template_data.name
-		FROM data_template_rrd
-		INNER JOIN data_template_data ON data_template_rrd.local_data_id = data_template_data.local_data_id
-		WHERE data_template_rrd.id = ?', array($data_template_rrd_id)
+		dtr.data_source_name, dtd.name
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_template_data AS dtd
+		ON dtr.local_data_id = dtd.local_data_id
+		WHERE dtr.id = ?',
+		array($data_template_rrd_id)
 	);
 
 	/* use the cacti ds name by default or the user defined one, if entered */
@@ -1773,44 +1791,51 @@ function generate_data_source_path($local_data_id) {
      the most appropriate.  Typically, this will be the requested value
     @arg $data_template_id
     @arg $requested_cf
+    @arg $ds_step
     @returns - the best cf to use */
-function generate_graph_best_cf($local_data_id, $requested_cf) {
+function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
+	static $best_cf;
 
 	if ($local_data_id > 0) {
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
-		/* workaround until we have RRA presets in 0.8.8 */
-		if (cacti_sizeof($avail_cf_functions)) {
+
+		/* hack for odd RRDtool behavior in first RRA */
+		if ($ds_step < 300 && isset($avail_cf_functions[1])) {
+			$best_cf = '3';
+		} elseif (cacti_sizeof($avail_cf_functions)) {
+			/* workaround until we have RRA presets in 0.8.8 */
 			/* check through the cf's and get the best */
+			/* if none was found, take the first */
+			$best_cf = $avail_cf_functions[1];
+
 			foreach($avail_cf_functions as $cf) {
 				if ($cf == $requested_cf) {
-					return $requested_cf;
+					$best_cf = $requested_cf;
 				}
 			}
-
-			/* if none was found, take the first */
-			return $avail_cf_functions[0];
+		} else {
+			$best_cf = '1';
 		}
 	}
 
 	/* if you can not figure it out return average */
-	return '1';
+	return $best_cf;
 }
 
 /* get_rrd_cfs - reads the RRDfile and gets the RRAs stored in it.
     @arg $local_data_id
     @returns - array of the CF functions */
 function get_rrd_cfs($local_data_id) {
-	global $rrd_cfs, $consolidation_functions;
+	global $consolidation_functions;
+	static $rrd_cfs = array();
 
-	$rrdfile = get_data_source_path($local_data_id, true);
-
-	if (!isset($rrd_cfs)) {
-		$rrd_cfs = array();
-	} elseif (array_key_exists($local_data_id, $rrd_cfs)) {
+	if (array_key_exists($local_data_id, $rrd_cfs)) {
 		return $rrd_cfs[$local_data_id];
 	}
 
 	$cfs = array();
+
+	$rrdfile = get_data_source_path($local_data_id, true);
 
 	$output = @rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT);
 
@@ -1841,16 +1866,16 @@ function get_rrd_cfs($local_data_id) {
 			switch($cf) {
 			case 'AVG':
 			case 'AVERAGE':
-				$new_cfs[] = array_search('AVERAGE', $consolidation_functions);
+				$new_cfs[1] = array_search('AVERAGE', $consolidation_functions);
 				break;
 			case 'MIN':
-				$new_cfs[] = array_search('MIN', $consolidation_functions);
+				$new_cfs[2] = array_search('MIN', $consolidation_functions);
 				break;
 			case 'MAX':
-				$new_cfs[] = array_search('MAX', $consolidation_functions);
+				$new_cfs[3] = array_search('MAX', $consolidation_functions);
 				break;
 			case 'LAST':
-				$new_cfs[] = array_search('LAST', $consolidation_functions);
+				$new_cfs[4] = array_search('LAST', $consolidation_functions);
 				break;
 			}
 		}
@@ -3275,7 +3300,7 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
  *  encoding    : Encoding type, normally base64
  */
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
-	global $config, $cacti_locale;
+	global $config, $cacti_locale, $mail_methods;
 
 	// Set the to information
 	if (empty($to)) {
@@ -3391,6 +3416,7 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
+
 	$toText    = add_email_details($to, $result, array($mail, 'addAddress'));
 
 	if ($result == false) {
@@ -3428,6 +3454,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$body = str_replace('<FROM>',    $fromText,  $body);
 	$body = str_replace('<REPLYTO>', $replyText, $body);
 
+	$body_text = str_replace('<SUBJECT>', $subject,   $body_text);
+	$body_text = str_replace('<TO>',      $toText,    $body_text);
+	$body_text = str_replace('<CC>',      $ccText,    $body_text);
+	$body_text = str_replace('<FROM>',    $fromText,  $body_text);
+	$body_text = str_replace('<REPLYTO>', $replyText, $body_text);
+
 	// Set the subject
 	$mail->Subject = $subject;
 
@@ -3447,6 +3479,12 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 
 	$mail->WordWrap = $wordwrap;
 	$mail->setWordWrap();
+
+	if (!$html) {
+		$mail->ContentType = 'text/plain';
+	} else {
+		$mail->ContentType = 'text/html';
+	}
 
 	$i = 0;
 
@@ -3534,26 +3572,37 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 		$body  = $body . '<br>';
 	}
 
-	if (empty($body_text)) {
+	if ($body_text == '') {
 		$body_text = strip_tags(str_ireplace($brs, "\n", $body));
 	}
 
 	$mail->isHTML($html);
-	$mail->Body    = ($html?$body:$body_text);
-	if ($html && !empty($body_text)) {
+	$mail->Body = ($html ? $body : $body_text);
+	if ($html && $body_text != '') {
 		$mail->AltBody = $body_text;
 	}
 
 	$result  = $mail->send();
-	$error   = $result ? '' : $mail->ErrorInfo;
+	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
+	$method  = $mail_methods[intval(read_config_option('settings_how'))];
 
-	$message = sprintf("%s: Mail %s from '%s', to '%s', cc '%s', Subject '%s'%s",
-		$result ? 'INFO' : 'WARNING',
-		$result ? 'successfully sent' : 'failed',
-		$fromText, $toText, $ccText, $subject,
-		$result ? '' : ", Message: $error");
+	if ($error != '') {
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
+			$result ? 'INFO' : 'WARNING',
+			$result ? 'successfully sent' : 'failed',
+			$method,
+			$fromText, $toText, $ccText, $subject,
+			", Error: $error");
+	} else {
+		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'",
+			$result ? 'INFO' : 'WARNING',
+			$result ? 'successfully sent' : 'failed',
+			$method,
+			$fromText, $toText, $ccText, $subject);
+	}
 
 	cacti_log($message, false, 'MAILER');
+
 	return $error;
 }
 
@@ -3630,7 +3679,7 @@ function split_emaildetail($email) {
 	if (!is_array($email)) {
 		$email = trim($email);
 
-		$sPattern = '/([\w\s\'\"]+[\s]+)?(<)?(([\w-\.]+)@((?:[\w]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w-\.\+]+)@((?:[\w\-]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
 		preg_match($sPattern, $email, $aMatch);
 
 		if (isset($aMatch[1])) {
@@ -4106,8 +4155,14 @@ function calculate_percentiles($data, $percentile = 95, $whisker = false) {
 
 function get_timeinstate($host) {
 	$interval = read_config_option('poller_interval');
-	if ($host['status_event_count'] > 0) {
+	if ($host['availability_method'] == 0) {
+		$time = 0;
+	} elseif (isset($host['instate'])) {
+		$time = $host['instate'];
+	} elseif ($host['status_event_count'] > 0 && ($host['status'] == 1 || $host['status'] == 2)) {
 		$time = $host['status_event_count'] * $interval;
+	} elseif (strtotime($host['status_rec_date']) < 943916400 && ($host['status'] == 0 || $host['status'] == 3)) {
+		$time = $host['total_polls'] * $interval;
 	} elseif (strtotime($host['status_rec_date']) > 943916400) {
 		$time = time() - strtotime($host['status_rec_date']);
 	} elseif ($host['snmp_sysUpTimeInstance'] > 0) {
@@ -4116,23 +4171,57 @@ function get_timeinstate($host) {
 		$time = 0;
 	}
 
-	if ($time > 86400) {
-		$days  = floor($time/86400);
-		$time %= 86400;
-	} else {
-		$days  = 0;
+	return ($time > 0) ? get_daysfromtime($time) : __('N/A');
+}
+
+function get_uptime($host) {
+	return ($host['snmp_sysUpTimeInstance'] > 0) ? get_daysfromtime($host['snmp_sysUpTimeInstance']/100) : __('N/A');
+}
+
+function get_daysfromtime($time, $secs = false, $pad = '', $format = DAYS_FORMAT_SHORT, $all = false) {
+	global $days_from_time_settings;
+
+	// Ensure we use an existing format or we'll end up with no text at all
+	if (!isset($days_from_time_settings['text'][$format])) {
+		$format = DAYS_FORMAT_SHORT;
 	}
 
-	if ($time > 3600) {
-		$hours = floor($time/3600);
-		$time  %= 3600;
-	} else {
-		$hours = 0;
+	$mods = $days_from_time_settings['mods'];
+	$text = $days_from_time_settings['text'][$format];
+
+	$result = '';
+	foreach ($mods as $index => $mod) {
+		if ($mod > 0 || $secs) {
+			if ($time >= $mod) {
+				if ($mod < 1) {
+					$mod = 1;
+				}
+				$val   = floor($time/$mod);
+				$time %= $mod;
+			} else {
+				$val   = 0;
+			}
+
+			if ($all || $val > 0) {
+				$result .= padleft($pad, $val, 2) . $text['prefix'] . $text[$index] . $text['suffix'];
+				$all = true;
+			}
+		}
 	}
 
-	$minutes = floor($time/60);
+	return trim($result,$text['suffix']);
+}
 
-	return $days . 'd:' . $hours . 'h:' . $minutes . 'm';
+function padleft($pad = '', $value, $min = 2) {
+	$result = "$value";
+	if (strlen($result) < $min && $pad != '') {
+		$padded = $pad . $result;
+		while ($padded != $result && strlen($result) < $min) {
+			$padded = $pad . $result;
+		}
+		$result = $padded;
+	}
+	return $result;
 }
 
 function get_classic_tabimage($text, $down = false) {
@@ -4981,7 +5070,7 @@ function is_resource_writable($path) {
 	}
 
 	if (file_exists($path)) {
-		if (($f = @fopen($path, 'r+'))) {
+		if (($f = @fopen($path, 'a'))) {
 			fclose($f);
 			return true;
 		}

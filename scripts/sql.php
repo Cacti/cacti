@@ -1,7 +1,4 @@
-<?
-
-/* do NOT run this script through a web browser */
-$no_http_headers = true;
+<?php
 
 error_reporting(0);
 

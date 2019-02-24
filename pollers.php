@@ -25,6 +25,10 @@
 require('./include/auth.php');
 require_once($config['base_path'] . '/lib/poller.php');
 
+/* performing a full sync can take a lot of memory and time */
+ini_set('memory_limit', '-1');
+ini_set('max_execution_time', '900');
+
 $poller_actions = array(
 	1 => __('Delete'),
 	2 => __('Disable'),

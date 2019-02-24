@@ -1,7 +1,40 @@
 Cacti CHANGELOG
 
 1.2.2
+-issue#599: Aggregate graph templates assume AVG consolidation function
+-issue#2312: Retrieving Device Information appears to fail on Safari
+-issue#2317: Unabe to add new records to 'poller_time' table
+-issue#2327: Memory exhausted whilst running poller replication
+-issue#2334: Some browsers report JavaScript errors when switching to console
+-issue#2337: When running an upgrade, the path of the log file is reset
+-issue#2339: Certain characters in recipient address can cause email to fail
 -issue#2343: Export hooks no longer work due to missing default keyword
+-issue#2346: When listing plugin permissions, "Legacy 1.x Plugins" can appear in the wrong cell
+-issue#2347: Allow sort output to inject returned data into a specific object
+-issue#2350: Unable to Select Data Source for HRULES and COMMENTS that include nth Percentile and Bandwidth 
+-issue#2352: SNMP description field can sometimes contain mangled data
+-issue#2354: When reindexing in Automation, titles are not updated for Graph and Data Source
+-issue#2355: Data Sources are sometimes duplicated when Custom Data is specified
+-issue#2357: When indexes are incorrect, poller should log more information
+-issue#2359: When upgrading, "Install/Upgrade" privilege may have been previously lost
+-issue#2360: When retrieving database / table / column information, schema name is not always applied
+-issue#2362: No way to default an interface speed when ifSpeed and ifHighSpeed come back as zero
+-issue#2365: When editing Aggregate Graphs, orphaned items were not always removed
+-issue#2372: Data Query reindexing leads gaps in Graphs
+-issue#2376: Manually adding a device discovered by Automation causes errors to be logged
+-issue#2380: Devices may experience constant reindexing 
+-issue#2384: When authentication method is set to None, change to Builtin as None has been removed
+-issue#2393: When reindexing a device, Graph Automation creates duplicate graphs every time
+-issue#2416: SELinux wants APPEND not WRITE permission for Fedora/EPEL (RHEL, Centos) 
+-issue#2419: Host state time was not correctly calculated
+-issue#2426: Reinstate missing plugin hooks for 'custom_logout_message' and 'custom_denied'
+-issue#2431: Default value for 'Mail Method' (settings_how) is incorrect resulting in errors
+-issue#2432: Undefined variable warnings when updating RRD data
+-issue#2451: Drag and drop does not always function correctly
+-feature: Update JavaScript library c3.js to version 0.6.12
+-feature: Update phpseclib to version 2.0.14
+-feature: Update PHPMailer to version 6.0.7
+-feature: Update JavaScript library d3.js to version 5.9.1
 
 1.2.1
 -issue#2259: Unable to View Aggregate Graphs

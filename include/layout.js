@@ -610,12 +610,12 @@ function SelectAll(attrib, checked) {
 }
 
 /* graph filtering */
-function applyTimespanFilterChange(objForm) {
+function applyTimespanFilterChange() {
 	var strURL;
 
-	strURL = '?predefined_timespan=' + objForm.predefined_timespan.value;
-	strURL = strURL + '&predefined_timeshift=' + objForm.predefined_timeshift.value;
-	document.location = strURL;
+	strURL = '?header=false&predefined_timespan=' + $('#predefined_timespan').val();
+	strURL = strURL + '&predefined_timeshift=' + $('#predefined_timeshift').val();
+	loadPageNoHeader(strURL);
 }
 
 /** cactiReturnTo - This function simply returns to the previous page
@@ -769,7 +769,16 @@ function renderLanguages() {
 		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
 	}
 
+	if ($('select#i18n_default_language').selectmenu('instance') !== undefined) {
+		$('select#i18n_default_language').selectmenu('destroy');
+
+		$('select#i18n_default_language').languageselect({
+			width: '220'
+		}).languageselect('menuWidget').addClass('ui-menu-icons customicons');
+	}
+
 	$('#user_language-menu').css('max-height', '200px');
+	$('#i18n_default_language-menu').css('max-height', '200px');
 }
 
 function setupButtonStyle() {
@@ -952,7 +961,7 @@ function makeFiltersResponsive() {
 
 				if (filterContents.find('#export').length) {
 					title = $('#export').attr('value');
-					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"</i></span>');
+					filterHeader.find('div.cactiTableButton').append('<span title="'+title+'" style="display:none;" class="cactiFilterExport"><i class="fa fa-arrow-down"></i></span>');
 
 					$('.cactiFilterExport').off('click').on('click', function(event) {
 						event.stopPropagation();
@@ -2079,7 +2088,7 @@ function closeUserMenu() {
 	$('.menuoptions').slideUp(120, 'easeInOutCubic');
 }
 
-function handleConsole(pageName = null) {
+function handleConsole(pageName) {
 	if (pageName == null) {
 		pageName = basename($(location).attr('pathname'));
 	}
@@ -2138,6 +2147,7 @@ function setupSortable() {
 			var page      = $(this).find('.sortinfo').attr('sort-page');
 			var column    = $(this).find('.sortinfo').attr('sort-column');
 			var direction = $(this).find('.sortinfo').attr('sort-direction');
+			var returnto  = $(this).find('.sortinfo').attr('sort-return');
 
 			if (shiftPressed) {
 				sortAdd='&add=true';
@@ -2156,9 +2166,9 @@ function setupSortable() {
 				.done(function(data) {
 					checkForLogout(data);
 
-					$('#main').empty().hide();
+					$('#'+returnto).empty().hide();
 					$('div[class^="ui-"]').remove();
-					$('#main').html(data);
+					$('#'+returnto).html(data);
 
 					applySkin();
 				})
@@ -2260,12 +2270,15 @@ function saveTableWidths(initial) {
  *  the jQueryUI function resizable.  It also calls the saveTableWidths function
  *  to store the widths in localStorage every time a column is resized. */
 function applyTableSizing() {
+	var originalSize = 0;
+	var colWidth = 0;
+
 	$('.tableHeader').not('.tableFixed').find('th').resizable({
 		handles: 'e',
 
 		start: function(event, ui) {
-			var colWidth     = $(this).width();
-			var originalSize = ui.size.width;
+			colWidth     = $(this).width();
+			originalSize = ui.size.width;
 
 			if (originalSize == 0) {
 				originalSize = $(this).width();
@@ -2551,12 +2564,16 @@ function keepWindowSize() {
 
 			var ellipsisWidth = $('.maintabs-submenu-ellipsis').outerWidth();
 			var tabHeight     = $('#tabs').outerHeight();
+			var mainTabPos    = false;
 
-			mainTabPos = $('.maintabs:first').position();
+			if ($('.maintabs').length) {
+				mainTabPos    = $('.maintabs:first').position();
+			}
+
 			if ($('.usertabs').length) {
 				mainTabHeight = tabHeight;
 				userTabPos = $('.usertabs').position();
-			} else {
+			} else if (mainTabPos != false) {
 				mainTabHeight = $('.maintabs:first nav').outerHeight();
 				userTabPos = mainTabPos;
 			}
@@ -2568,7 +2585,7 @@ function keepWindowSize() {
 			} else if (bodyWidth > pageWidth) {
 				shrinking = false;
 				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get());
-			} else if (mainTabPos.top != userTabPos.top || mainTabHeight > tabHeight) {
+			} else if (mainTabPos != false && (mainTabPos.top != userTabPos.top || mainTabHeight > tabHeight)) {
 				shrinking = true;
 				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
 			} else if (pageWidth != null && bodyWidth < pageWidth) {
@@ -3800,8 +3817,8 @@ function setSNMP() {
 			}
 
 			if ($('#snmp_security_level').val() == 'noAuthNoPriv') {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if ($('#snmp_auth_protocol').val() != '[None]') {
 					snmp_auth_protocol   = $('#snmp_auth_protocol').val();
@@ -3820,8 +3837,8 @@ function setSNMP() {
 				$('#row_snmp_password').hide();
 				$('#row_snmp_priv_passphrase').hide();
 			} else if ($('#snmp_security_level').val() == 'authNoPriv') {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if ($('#snmp_priv_protocol').val() != '[None]') {
 					snmp_priv_protocol   = $('#snmp_priv_protocol').val();
@@ -3844,12 +3861,12 @@ function setSNMP() {
 				$('#row_snmp_priv_protocol').hide();
 				$('#row_snmp_priv_passphrase').hide();
 
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 				checkSNMPPassphrase('auth');
 			} else {
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', false);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', false);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', false);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', false);
 
 				if (snmp_auth_protocol != '' && $('#snmp_auth_protocol').val() == '[None]') {
 					$('#snmp_auth_protocol').val(snmp_auth_protocol);
@@ -3874,8 +3891,8 @@ function setSNMP() {
 					}
 				}
 
-				$('#snmp_auth_protocol option[value="[None]"').prop('disabled', true);
-				$('#snmp_priv_protocol option[value="[None]"').prop('disabled', true);
+				$('#snmp_auth_protocol option[value*="None"').prop('disabled', true);
+				$('#snmp_priv_protocol option[value*="None"').prop('disabled', true);
 				checkSNMPPassphrase('auth');
 				checkSNMPPassphrase('priv');
 			}

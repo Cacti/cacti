@@ -2696,7 +2696,8 @@ class Installer implements JsonSerializable {
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 		if (empty($failure)) {
-			db_execute('UPDATE version SET cacti = \'' . CACTI_VERSION . '\'');
+			db_execute('TRUNCATE TABLE version');
+			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
 
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);

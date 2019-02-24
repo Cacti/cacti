@@ -31,27 +31,24 @@ function boost_file_size_display($file_size, $digits = 2) {
 
 			if ($file_size > 1024) {
 				$file_size = $file_size / 1024;
-				$file_suffix = ' GBytes';
+				return __('%s GBytes', number_format_i18n($file_size, $digits));
 			} else {
-				$file_suffix = ' MBytes';
+				return __('%s MBytes', number_format_i18n($file_size, $digits));
 			}
 		} else {
-			$file_suffix = ' KBytes';
+			return __('%s KBytes', number_format_i18n($file_size, $digits));
 		}
 	} else {
-		$file_suffix = ' Bytes';
+		return __('%s Bytes', number_format_i18n($file_size, $digits));
 	}
-
-	$file_size = number_format_i18n($file_size, $digits) . $file_suffix;
-
-	return $file_size;
 }
 
 function boost_get_total_rows() {
-	return db_fetch_cell("SELECT SUM(TABLE_ROWS) FROM INFORMATION_SCHEMA.TABLES
-		WHERE table_schema=SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')
-		GROUP BY table_schema");
+	return db_fetch_cell("SELECT SUM(TABLE_ROWS)
+		FROM information_schema.tables
+		WHERE table_schema = SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%'
+		OR table_name LIKE 'poller_output_boost')");
 }
 
 function boost_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
@@ -582,11 +579,9 @@ function boost_timer_get_overhead() {
 
 /* boost_get_arch_table_name - returns current archive boost table or false if no arch table is present currently */
 function boost_get_arch_table_name() {
-	global $database_default;
-
 	$tables = db_fetch_assoc("SELECT table_name AS name
 		FROM information_schema.tables
-		WHERE table_schema = '$database_default'
+		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
@@ -653,7 +648,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$query_string = '';
 		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema = '$database_default'
+			WHERE table_schema = SCHEMA()
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if (cacti_count($arch_tables)) {
@@ -687,7 +682,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		$query_string = '';
 		$arch_tables  = db_fetch_assoc("SELECT table_name AS name
 			FROM information_schema.tables
-			WHERE table_schema = '$database_default'
+			WHERE table_schema = SCHEMA()
 			AND table_name LIKE 'poller_output_boost_arch_%'");
 
 		if (cacti_count($arch_tables)) {
@@ -771,7 +766,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 			if ($first_ds == $last_ds) {
 				if (cacti_sizeof($results) == $data_ids_to_get) {
-					cacti_log("FALURE: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
+					cacti_log("ERROR: Current LIMIT ($data_ids_to_get) is too low to run multiple DS RRD writes, consider raising it", false, 'BOOST');
 				}
 
 				restore_error_handler();
@@ -1191,19 +1186,11 @@ function boost_rrdtool_function_create($local_data_id, $initial_time, $show_sour
 				$data_source['rrd_maximum'] = 'U';
 			} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
 				$data_local = db_fetch_row_prepared('SELECT * FROM data_local WHERE id = ?', array($local_data_id));
-				if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
-					$highSpeed = db_fetch_cell_prepared("SELECT field_value
-						FROM host_snmp_cache
-						WHERE host_id = ?
-						AND snmp_query_id = ?
-						AND snmp_index = ?
-						AND field_name = 'ifHighSpeed'", array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']));
 
-					if (!empty($highSpeed)) {
-						$data_source['rrd_maximum'] = $highSpeed * 1000000;
-					} else {
-						$data_source['rrd_maximum'] = substitute_snmp_query_data('|query_ifSpeed|',$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
-					}
+				$speed = rrdtool_function_interface_speed($data_local);
+
+				if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
+					$data_source['rrd_maximum'] = $speed;
 				} else {
 					$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'],$data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 				}
@@ -1349,9 +1336,10 @@ function boost_update_snmp_statistics () {
 
 	/* get the boost table status */
 	$boost_table_status = db_fetch_assoc("SELECT *
-		FROM INFORMATION_SCHEMA.TABLES
-		WHERE table_schema=SCHEMA()
-		AND (table_name LIKE 'poller_output_boost_arch_%' OR table_name LIKE 'poller_output_boost')");
+		FROM information_schema.tables
+		WHERE table_schema = SCHEMA()
+		AND (table_name LIKE 'poller_output_boost_arch_%'
+		OR table_name LIKE 'poller_output_boost')");
 
 	$total_data_sources = db_fetch_cell('SELECT COUNT(*) FROM poller_item');
 

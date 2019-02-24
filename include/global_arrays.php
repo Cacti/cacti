@@ -1492,6 +1492,9 @@ $agg_graph_types = array(
 	GRAPH_ITEM_TYPE_LINE1             => __('Convert to LINE1 Graph'),
 	GRAPH_ITEM_TYPE_LINE2             => __('Convert to LINE2 Graph'),
 	GRAPH_ITEM_TYPE_LINE3             => __('Convert to LINE3 Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE1_STACK  => __('Convert to LINE1/STACK Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE2_STACK  => __('Convert to LINE2/STACK Graph'),
+	AGGREGATE_GRAPH_TYPE_LINE3_STACK  => __('Convert to LINE3/STACK Graph'),
 );
 
 $agg_totals = array(
@@ -2580,6 +2583,64 @@ $navigation = array(
 		'url' => '',
 		'level' => '3'
 	)
+);
+
+$snmpagent_event_severity = array(
+	SNMPAGENT_EVENT_SEVERITY_LOW      => 'low',
+	SNMPAGENT_EVENT_SEVERITY_MEDIUM   => 'medium',
+	SNMPAGENT_EVENT_SEVERITY_HIGH     => 'high',
+	SNMPAGENT_EVENT_SEVERITY_CRITICAL => 'critical'
+);
+
+$days_from_time_settings = array(
+	'mods' => array(
+		'd' => 86400,
+		'h' => 3600,
+		'm' => '60',
+		's' => 0,
+	),
+	'text' => array(
+		DAYS_FORMAT_SHORT => array(
+			'd' => 'd',
+		        'h' => 'h',
+		        'm' => 'm',
+			's' => 's',
+			'suffix' => ':',
+			'prefix' => '',
+		),
+		DAYS_FORMAT_MEDIUM => array(
+			'd' => __('days'),
+			'h' => __('hrs'),
+			'm' => __('mins'),
+			's' => __('secs'),
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_MEDIUM_LOG => array(
+			'd' => 'days',
+			'h' => 'hrs',
+			'm' => 'mins',
+			's' => 'secs',
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_LONG => array(
+			'd' => __('days'),
+			'h' => __('hours'),
+			'm' => __('minutes'),
+			's' => __('seconds'),
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+		DAYS_FORMAT_LONG_LOG => array(
+			'd' => 'days',
+			'h' => 'hours',
+			'm' => 'minutes',
+			's' => 'seconds',
+			'suffix' => ', ',
+			'prefix' => ' ',
+		),
+	),
 );
 
 api_plugin_hook('config_arrays');

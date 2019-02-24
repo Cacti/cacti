@@ -15,10 +15,9 @@
   display: inline-block;
   color: black;
   white-space: nowrap;
-/* padding: 0 4px 0 1px; */
-  margin: 0;
+  margin: 0px;
   vertical-align: top;
-  padding: 3px !important;
+  padding: 0px !important;
 }
 .jstree-anchor:focus {
   outline: 0;
@@ -404,7 +403,7 @@
   margin-right: 24px;
 }
 .jstree-default .jstree-wholerow {
-  height: 22px;
+  height: 20px;
 }
 .jstree-default .jstree-node,
 .jstree-default .jstree-icon {

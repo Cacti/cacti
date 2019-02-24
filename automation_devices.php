@@ -23,9 +23,22 @@
 */
 
 include('./include/auth.php');
-include_once('./lib/api_device.php');
+include_once('./lib/api_aggregate.php');
+include_once('./lib/api_automation.php');
 include_once('./lib/api_data_source.php');
+include_once('./lib/api_device.php');
+include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
+include_once('./lib/html_form_template.php');
+include_once('./lib/data_query.php');
+include_once('./lib/html_graph.php');
+include_once('./lib/html_tree.php');
+include_once('./lib/ping.php');
 include_once('./lib/poller.php');
+include_once('./lib/reports.php');
+include_once('./lib/rrd.php');
+include_once('./lib/snmp.php');
+include_once('./lib/template.php');
 include_once('./lib/utility.php');
 
 $device_actions = array(
@@ -275,14 +288,6 @@ function display_discovery_page() {
 		foreach($results as $host) {
 			form_alternate_row('line' . base64_encode($host['ip']), true);
 
-			if ($host['sysUptime'] != 0) {
-				$days = intval($host['sysUptime']/8640000);
-				$hours = intval(($host['sysUptime'] - ($days * 8640000)) / 360000);
-				$uptime = $days . 'd:' . $hours . 'h';
-			} else {
-				$uptime = '';
-			}
-
 			if ($host['hostname'] == '') {
 				$host['hostname'] = __('Not Detected');
 			}
@@ -294,7 +299,7 @@ function display_discovery_page() {
 			form_selectable_cell(snmp_data($host['sysContact']), $host['id'], '', 'text-align:left');
 			form_selectable_cell(snmp_data($host['sysDescr']), $host['id'], '', 'text-align:left;white-space:normal;');
 			form_selectable_cell(snmp_data($host['os']), $host['id'], '', 'text-align:left');
-			form_selectable_cell(snmp_data($uptime), $host['id'], '', 'text-align:right');
+			form_selectable_cell(snmp_data(get_uptime($host)), $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['snmp']], $host['id'], '', 'text-align:right');
 			form_selectable_cell($status[$host['up']], $host['id'], '', 'text-align:right');
 			form_selectable_cell(substr($host['mytime'],0,16), $host['id'], '', 'text-align:right');
@@ -425,7 +430,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 		$sql_order = get_order_string();
 		$sql_limit = ' LIMIT ' . ($rows*($page-1)) . ',' . $rows;
 
-		$sql_query = "SELECT *, FROM_UNIXTIME(time) AS mytime
+		$sql_query = "SELECT *,sysUptime snmp_sysUpTimeInstance, FROM_UNIXTIME(time) AS mytime
 			FROM automation_devices
 			$sql_where
 			$sql_order

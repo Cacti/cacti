@@ -273,6 +273,12 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'data_source_trace' => array(
+			'friendly_name' => __('Data Source Tracing'),
+			'description' => __('A developer only option to trace the creation of Data Sources mainly around checks for uniqueness'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'selective_debug' => array(
 			'friendly_name' => __('Selective File Debug'),
 			'description' => __('Select which files you wish to place in Debug mode regardless of the Generic Log Level setting.  Any files selected will be treated as they are in Debug mode.'),
@@ -356,13 +362,13 @@ $settings = array(
             'default' => '1',
             'array' => $i18n_modes
             ),
-        'i18n_default_language' => array(
-            'friendly_name' => __('Language'),
+		'i18n_default_language' => array(
+			'friendly_name' => __('Language'),
             'description' => __('Default language for this system.'),
-            'method' => 'drop_array',
-            'default' => 'en-US',
-            'array' => get_installed_locales()
-            ),
+			'method' => 'drop_language',
+			'default' => 'en-US',
+			'array' => get_installed_locales()
+		),
         'i18n_auto_detection' => array(
             'friendly_name' => __('Auto Language Detection'),
             'description' => __('Allow to automatically determine the \'default\' language of the user and provide it at login time if that language is supported by Cacti. If disabled, the default language will be in force until the user elects another language.'),
@@ -529,6 +535,20 @@ $settings = array(
 			'method' => 'drop_array',
 			'default' => '1',
 			'array' => $reindex_types,
+			),
+		'default_interface_speed' => array(
+			'friendly_name' => __('Default Interface Speed'),
+			'description' => __('If Cacti can not determine the interface speed due to either ifSpeed or ifHighSpeed not being set or being zero, what maximum value do you wish on the resulting RRDfiles.'),
+			'method' => 'drop_array',
+			'default' => '1000',
+			'array' => array(
+				'100'    => __('100 Mbps Ethernet'),
+				'1000'   => __('1 Gbps Ethernet'),
+				'10000'  => __('10 Gbps Ethernet'),
+				'25000'  => __('25 Gbps Ethernet'),
+				'40000'  => __('40 Gbps Ethernet'),
+				'56000'  => __('56 Gbps Ethernet'),
+				'100000' => __('100 Gbps Ethernet'))
 			),
 		'snmp_header' => array(
 			'friendly_name' => __('SNMP Defaults'),
@@ -1437,7 +1457,7 @@ $settings = array(
 			'friendly_name' => __('Mail Services'),
 			'description' => __('Which mail service to use in order to send mail'),
 			'method' => 'drop_array',
-			'default' => __('PHP Mail() Function'),
+			'default' => 0,
 			'array' => $mail_methods,
 			),
 		'settings_ping_mail' => array(
@@ -1481,6 +1501,7 @@ $settings = array(
 			'file_type' => 'binary',
 			'max_length' => 255,
 			'default' => '',
+			'install_optional' => true
 			),
 		'settings_smtp_header' => array(
 			'friendly_name' => __('SMTP Options'),

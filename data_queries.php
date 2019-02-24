@@ -163,7 +163,7 @@ function form_save() {
 		$save['graph_template_id'] = get_request_var('graph_template_id');
 
 		$header = '';
-
+		$errors = false;
 		if (!is_error_message()) {
 			if ($save['id'] > 0) {
 				$errors = api_data_query_errors($save['id'], $_POST);

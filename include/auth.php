@@ -24,13 +24,85 @@
 
 global $current_user;
 
+$included_files = get_included_files();
 require_once('global.php');
+//cacti_log('After global.php (' . implode(', ', $included_files) . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 
 if (!isset($config['cacti_db_version'])) {
 	$version = get_cacti_version();
 	$config['cacti_db_version'] = $version;
 } else {
 	$version = $config['cacti_db_version'];
+}
+
+$auth_method = read_config_option('auth_method', true);
+if (read_config_option('auth_method') == 0) {
+	$admin_id = db_execute_prepared('SELECT id
+		FROM user_auth
+		WHERE id = ?',
+		array(read_config_option('admin_user')));
+
+	cacti_log('Admin User (' . read_config_option('admin_user') . ' vs ' . $admin_id . ')', true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+	if (!$admin_id) {
+		$admin_sql_query = 'SELECT TOP 1 id FROM (
+			SELECT ua.id
+			FROM user_auth AS ua
+                        INNER JOIN user_auth_realm AS uar
+			ON uar.user_id = ua.id
+			WHERE uar.realm_id = ?';
+
+		$admin_sql_params = array(15);
+
+		if (db_table_exists('user_auth_group_realm')) {
+			$admin_sql_query .= '
+			UNION
+			SELECT ua.id
+			FROM user_auth AS ua
+			INNER JOIN user_auth_group_members AS uagm
+			ON uagm.user_id = ua.id
+                        INNER JOIN user_auth_group AS uag
+                        ON uag.id = uagm.group_id
+			INNER JOIN user_auth_group_realm AS uagr
+                        ON uagr.group_id=uag.group_id
+                        WHERE uag.enabled="on" AND ua.enabled="on"
+                        AND uagr.realm_id = ?';
+			$admin_sql_params[] = 15;
+		}
+
+		$admin_sql_query .= '
+	                ) AS id';
+
+		cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+		cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+		$admin_id = db_fetch_cell_prepared($admin_sql_query, $admin_sql_params);
+		cacti_log('SQL result ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+	}
+
+	if (!$admin_id) {
+		$admin_id = db_fetch_cell('SELECT id FROM user_auth WHERE username = \'admin\'');
+		cacti_log('Final attempt ' . $admin_id, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
+	}
+
+	if (!$admin_id) {
+		die('Failed to find a valid admin account with console access');
+	}
+
+	// Authentication method is currently set to none
+	// lets switch this to basic and allow setting of
+	// a password.
+	db_execute_prepared("UPDATE user_auth SET
+		password = '',
+		must_change_password = 'on',
+		password_change = 'on'
+		WHERE id = ?",
+		array($admin_id));
+
+	set_config_option('auth_method', 1);
+
+	$_SESSION['sess_user_id'] = $admin_id;
+	$_SESSION['sess_change_password'] = true;
+	header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? sanitize_uri($_SERVER['HTTP_REFERER']) : 'index.php'));
+	exit;
 }
 
 if ($version != CACTI_VERSION && $config['poller_id'] == 1 && !defined('IN_CACTI_INSTALL')) {
@@ -104,7 +176,7 @@ if (read_config_option('auth_method') != 0) {
 		}
 
 		/* Are we upgrading from a version before 1.2 which has the Install/Upgrade realm 26 */
-		if ($realm_id == 26 && cacti_version_compare(get_cacti_version(), '1.2', '<')) {
+		if ($realm_id == 26) {
 			/* See if we can find any users that are allowed to upgrade */
 			$install_sql_query = '
 					SELECT COUNT(*)
@@ -231,4 +303,3 @@ if (read_config_option('auth_method') != 0) {
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 	}
 }
-

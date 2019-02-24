@@ -1,9 +1,5 @@
 <?php
 
-/* do NOT run this script through a web browser */
-$no_http_headers = true;
-
-/* display no errors */
 error_reporting(0);
 
 if (!isset($called_by_script_server)) {

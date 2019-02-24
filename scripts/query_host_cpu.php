@@ -1,8 +1,5 @@
 <?php
 
-$no_http_headers = true;
-
-/* do NOT run this script through a web browser */
 error_reporting(0);
 
 include(dirname(__FILE__) . '/../include/cli_check.php');

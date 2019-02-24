@@ -432,6 +432,58 @@ function api_data_source_disable_multi($local_data_ids) {
 	}
 }
 
+function api_data_source_get_interface_speed($data_local) {
+	$ifHighSpeed = db_fetch_cell_prepared('SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND snmp_index = ?
+		AND field_name="ifHighSpeed"',
+		array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
+	);
+
+	$ifSpeed = db_fetch_cell_prepared('SELECT field_value
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?
+		AND snmp_index = ?
+		AND field_name="ifSpeed"',
+		array($data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index'])
+	);
+
+	if (!empty($ifHighSpeed)) {
+		$speed = $ifHighSpeed * 1000000;
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log('Interface Speed Detected by ifHighSpeed: "' . $speed . '"', false, 'DSTRACE');
+		}
+	} elseif (!empty($ifSpeed)) {
+		$speed = $ifSpeed;
+
+		if (read_config_option('data_source_trace') == 'on') {
+			cacti_log('Interface Speed Detected by ifSpeed: "' . $speed . '"', false, 'DSTRACE');
+		}
+	} else {
+		$speed = read_config_option('default_interface_speed');
+
+		if (empty($speed)) {
+			$speed = '10000000000000';
+
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Interface Speed Detected by Default: "' . $speed . '"', false, 'DSTRACE');
+			}
+		} else {
+			$speed = $speed * 1000000;
+
+			if (read_config_option('data_source_trace') == 'on') {
+				cacti_log('Interface Speed Detected by Settings: "' . $speed . '"', false, 'DSTRACE');
+			}
+		}
+	}
+
+	return $speed;
+}
+
 function api_data_source_change_host($data_sources, $device_id) {
 	if (cacti_sizeof($data_sources)) {
 		foreach($data_sources as $data_source) {
@@ -492,35 +544,39 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 		return;
 	}
 
-	$suggested_values = db_fetch_assoc_prepared("SELECT
+	$svs = db_fetch_assoc_prepared("SELECT
 		text, field_name
 		FROM snmp_query_graph_rrd_sv
 		WHERE snmp_query_graph_id = ?
 		AND data_template_id = ?
-		AND field_name = 'name'
 		ORDER BY sequence",
 		array($snmp_query_graph_id, $data_local['data_template_id']));
 
-	if (cacti_sizeof($suggested_values)) {
-		foreach ($suggested_values as $suggested_value) {
-			$subs_string = substitute_snmp_query_data($suggested_value['text'],$data_local['host_id'],
-				$data_local['snmp_query_id'], $data_local['snmp_index'],
-				read_config_option('max_data_query_field_length'));
+	if (cacti_sizeof($svs)) {
+		foreach ($svs as $sv) {
+			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
+				$subs_string = api_data_source_get_interface_speed($data_local);
+				$sv['text']  = $subs_string;
+			} else {
+				$subs_string = substitute_snmp_query_data($sv['text'],$data_local['host_id'],
+					$data_local['snmp_query_id'], $data_local['snmp_index'],
+					read_config_option('max_data_query_field_length'));
+			}
 
 			/* if there are no '|query' characters, all of the substitutions were successful */
 			if (!substr_count($subs_string, '|query')) {
-				if (db_column_exists('data_template_data', $suggested_value['field_name'])) {
+				if (db_column_exists('data_template_data', $sv['field_name'])) {
 					db_execute_prepared('UPDATE data_template_data
-						SET ' . $suggested_value['field_name'] . ' = ?
+						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
-						array($suggested_value['text'], $local_data_id));
-				} elseif (db_column_exists('data_template_rrd', $suggested_value['field_name'])) {
+						array($sv['text'], $local_data_id));
+				} elseif (db_column_exists('data_template_rrd', $sv['field_name'])) {
 					db_execute_prepared('UPDATE data_template_rrd
-						SET ' . $suggested_value['field_name'] . ' = ?
+						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
-						array($suggested_value['text'], $local_data_id));
+						array($sv['text'], $local_data_id));
 				} else {
-					cacti_log('ERROR: Suggested value column error.  Column ' . $suggested_value['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
+					cacti_log('ERROR: Suggested value column error.  Column ' . $sv['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
 				}
 
 				/* once we find a working value for that very field, stop */

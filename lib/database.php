@@ -79,7 +79,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 	while ($i <= $retries) {
 		try {
-			if (is_file($device) && filetype($device) == 'socket') {
+			if (strpos($device, '/') !== false && filetype($device) == 'socket') {
 				$cnn_id = new PDO("$db_type:unix_socket=$device;dbname=$db_name;charset=utf8", $user, $pass, $flags);
 			} else {
 				$cnn_id = new PDO("$db_type:host=$device;port=$port;dbname=$db_name;charset=utf8", $user, $pass, $flags);
@@ -98,10 +98,11 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$database_sessions["$odevice:$port:$db_name"] = $cnn_id;
 
-			$ver = db_fetch_cell('SHOW GLOBAL VARIABLES LIKE \'version\'');
-		        if (strpos($ver, 'MariaDB') !== false) {
+			$ver = db_get_global_variable('version', $cnn_id);
+
+	        if (strpos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
-				$ver  = str_replace('-MariaDB', '', $variables['version']);
+				$ver  = str_replace('-MariaDB', '', $ver);
 			} else {
 				$srv = 'MySQL';
 			}
@@ -819,14 +820,14 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	}
 
 	if (!db_table_exists($table, $log, $db_conn)) {
-		return db_table_create ($table, $data, $log, $db_conn);
+		return db_table_create($table, $data, $log, $db_conn);
 	}
 
 	$allcolumns = array();
 	foreach ($data['columns'] as $column) {
 		$allcolumns[] = $column['name'];
 		if (!db_column_exists($table, $column['name'], $log, $db_conn)) {
-			if (!db_add_column ($table, $column, $log, $db_conn)) {
+			if (!db_add_column($table, $column, $log, $db_conn)) {
 				return false;
 			}
 		} else {
@@ -883,14 +884,18 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
 		foreach($result as $arr) {
 			if (!in_array($arr['Field'], $allcolumns)) {
-				if (!db_remove_column ($table, $arr['Field'], $log, $db_conn)) {
+				if (!db_remove_column($table, $arr['Field'], $log, $db_conn)) {
 					return false;
 				}
 			}
 		}
 	}
 
-	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_NAME = '$table'", $log, $db_conn);
+	$info = db_fetch_row("SELECT ENGINE, TABLE_COMMENT
+		FROM information_schema.TABLES
+		WHERE TABLE_SCHEMA = SCHEMA()
+		AND TABLE_NAME = '$table'", $log, $db_conn);
+
 	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
 		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
 			return false;
@@ -976,13 +981,17 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
+	if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
+		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format'], $log, $db_conn);
+	}
+
 	$charset= '';
 	if (isset($data['charset'])) {
 		$charset = ' DEFAULT CHARSET=' . $data['charset'];
 	}
 
 	if ($charset != '') {
-		db_execute("ALTER TABLE `$table` " . $charset);
+		db_execute("ALTER TABLE `$table` " . $charset, $log, $db_conn);
 	}
 
 	return true;
@@ -1108,7 +1117,61 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
+		if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
+			$sql .= ' ROW_FORMAT=' . $data['row_format'];
+		}
+
 		return db_execute($sql, $log, $db_conn);
+	}
+}
+
+/* db_get_global_variable - get the value of a global variable
+   @param $variable - the variable to obtain
+   @param $db_conn - the database connection to use
+   @returns - (string) the value of the variable if found */
+function db_get_global_variable($variable, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	$data = db_fetch_row("SHOW GLOBAL VARIABLES LIKE '$variable'", true, $db_conn);
+
+	if (cacti_sizeof($data)) {
+		return $data['Value'];
+	} else {
+		return false;
+	}
+}
+
+/* db_get_session_variable - get the value of a session variable
+   @param $variable - the variable to obtain
+   @param $db_conn - the database connection to use
+   @returns - (string) the value of the variable if found */
+function db_get_session_variable($variable, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
+
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+
+		if (!is_object($db_conn)) {
+			return false;
+		}
+	}
+
+	$data = db_fetch_row("SHOW SESSION VARIABLES LIKE '$variable'", true, $db_conn);
+
+	if (cacti_sizeof($data)) {
+		return $data['Value'];
+	} else {
+		return false;
 	}
 }
 
@@ -1374,7 +1437,11 @@ function db_get_column_attributes($table, $columns) {
 		$columns = explode(',', $columns);
 	}
 
-	$sql = 'SELECT * FROM information_schema.columns WHERE table_name = ? and column_name IN (';
+	$sql = 'SELECT * FROM information_schema.columns
+		WHERE table_schema = SCHEMA()
+		AND table_name = ?
+		AND column_name IN (';
+
 	$column_names = array();
 	foreach ($columns as $column) {
 		if (!empty($column)) {
@@ -1385,27 +1452,32 @@ function db_get_column_attributes($table, $columns) {
 	$sql .= ')';
 
 	$params = array_merge(array($table), $column_names);
+
 	return db_fetch_assoc_prepared($sql, $params);
 }
 
 function db_get_columns_length($table, $columns) {
 	$column_data = db_get_column_attributes($table, $columns);
+
 	if (!empty($column_data)) {
 		return array_rekey($column_data, 'COLUMN_NAME','CHARACTER_MAXIMUM_LENGTH');
 	}
+
 	return false;
 }
 
 function db_get_column_length($table, $column) {
 	$column_data = db_get_columns_length($table, $column);
+
 	if (!empty($column_data) && isset($column_data[$column])) {
 		return $column_data[$column];
 	}
+
 	return false;
 }
 
 function db_check_password_length() {
-	$len = db_get_column_length('user_auth','password');
+	$len = db_get_column_length('user_auth', 'password');
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
 	} else if ($len < 80) {
@@ -1432,3 +1504,13 @@ function db_error() {
 	return $database_last_error;
 }
 
+// db_get_default_database - Get the database name of the current database or return the default database name
+// @returns - string - either current db name or configuration default if no connection/name
+function db_get_default_database($db_conn = false) {
+	global $database_default;
+
+	$database = db_fetch_cell('SELECT DATABASE()', '', true, $db_conn);
+	if (empty($database)) {
+		$database = $database_default;
+	}
+}

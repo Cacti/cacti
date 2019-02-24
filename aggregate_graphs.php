@@ -285,9 +285,17 @@ function form_actions() {
                     raise_message('reports_graphs_added');
                 }
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
-				api_aggregate_associate($selected_items);
+				$local_graph_id = get_filter_request_var('local_graph_id');
+				api_aggregate_associate($local_graph_id, $selected_items);
+
+				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
+				exit;
 			} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
-				api_aggregate_disassociate($selected_items);
+				$local_graph_id = get_filter_request_var('local_graph_id');
+				api_aggregate_disassociate($local_graph_id, $selected_items);
+
+				header('Location: aggregate_graphs.php?header=false&action=edit&tab=items&id=' . $local_graph_id);
+				exit;
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
@@ -694,7 +702,7 @@ function graph_edit() {
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
 		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
 		?>
-		<tr><td class='center'>
+		<tr><td id='imagewindow' class='center'>
 			<img src='<?php print html_escape($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
 		</td></tr>
 		<?php
@@ -702,14 +710,18 @@ function graph_edit() {
 			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 			$graph_data_array['print_source'] = 1;
 			?>
-			<tr><td class='left'>
+			<tr><td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 				<div style='overflow:auto;'>
-				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-				<pre class='monoSpace tableRow'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
-				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
-				<?php unset($graph_data_array['print_source']);?>
-				<pre class='monoSpace tableRow'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
+					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
 				</div>
+				<script type='text/javascript'>
+				$(function() {
+					var width = $(window).width() - $('.cactiConsoleNavigationArea').width();
+					$('#rrdtoolinfo, #imagewindow').css('max-width', width);
+				});
+				</script>
 			</td></tr>
 			<?php
 		}

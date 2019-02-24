@@ -106,12 +106,12 @@ hr.menu {
 a, a:active {
 	color: #e3e3e3;
 	text-decoration: none;
-	padding: 3px;
+	padding: 0px;
 }
 
 a:hover {
 	text-decoration: none;
-	padding: 3px;
+	padding: 0px;
 	color: #fff;
 }
 
@@ -224,7 +224,7 @@ label {
 }
 
 .disabled {
-	color:grey;
+	color: grey;
 }
 
 .idle {
@@ -232,27 +232,27 @@ label {
 }
 
 .running {
-	color:orange;
+	color: orange;
 }
 
 .errored {
-	color:red;
+	color: red;
 }
 
 .newObject{
-	color:blue;
+	color: yellow;
 }
 
 .updateObject {
-	color:grey;
+	color: grey;
 }
 
 .unmetDependency {
-	color:red;
+	color: red;
 }
 
 .foundDependency {
-	color:navy;
+	color: navy;
 }
 
 .success {
@@ -2093,27 +2093,6 @@ ul#nav {
 	.noprint { display:none }
 }
 
-.ui-tooltip {
-	max-width: none !important;
-}
-
-.ui-tooltip-content div.header {
-	color: rgba(148, 179, 107, 0.8);
-}
-
-.ui-tooltip-content div.content {
-	font-size: 10px;
-	color: #333333;
-}
-
-.ui-tooltip-content {
-	max-width: 500px !important;
-	overflow:auto !important;
-	opacity: 0.95;
-	border-radius: 5px !important;
-	border: transparent;
-}
-
 div.preformatted {
 	color: snow !important;
 	font-size: 11px !important;
@@ -2257,14 +2236,43 @@ tr#realtime td:first-child {
 	background: transparent;
 }
 
-.ui-multiselect {
-	padding: 0.4em 1em;
+.ui-multiselect .ui-icon {
+	margin-top: 0px;
+}
+
+.ui-button {
+	padding: 0.3em 1em !important;
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
 	text-align: left;
 	line-height: initial;
 }
 
-.ui-multiselect .ui-icon {
-	margin-top: 0px;
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+}
+
+.ui-tooltip {
+	max-width: none !important;
+}
+
+.ui-tooltip-content div.header {
+	color: rgba(148, 179, 107, 0.8);
+}
+
+.ui-tooltip-content div.content {
+	font-size: 10px;
+	color: #333333;
+}
+
+.ui-tooltip-content {
+	max-width: 500px !important;
+	overflow:auto !important;
+	opacity: 0.95;
+	border-radius: 5px !important;
+	border: transparent;
 }
 
 .ui-widget {

@@ -22,189 +22,243 @@
  +-------------------------------------------------------------------------+
 */
 
-/* nth_percentile - given a data source, calculate the Nth percentile for a given
-     time period
-   @arg $local_data_id - the data source to perform the Nth percentile calculation
+/* nth_percentile - given a data source, calculate the Nth percentile for a given over a time period
+   @arg $local_data_ids - the data source array to perform the Nth percentile calculation
    @arg $start_seconds - start seconds of time range
    @arg $stop_seconds - stop seconds of time range
    @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
    @arg $resolution - the accuracy of the data measured in seconds
    @returns - (array) an array containing each data source item, and its 95th percentile */
-function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
+function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
+	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
+
+	return $stats['avg'];
+}
+
+/* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
+   over a specified time time period
+   @arg $local_data_ids - the data source array to perform the Nth percentile calculation
+   @arg $start_seconds - start seconds of time range
+   @arg $stop_seconds - stop seconds of time range
+   @arg $percentile - Nth Percentile to calculate, integer between 1 and 99
+   @arg $resolution - the accuracy of the data measured in seconds
+   @returns - (array) an array containing each data source item, and its 95th percentile */
+function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	global $config;
 
 	include_once($config['library_path'] . '/rrd.php');
 
-	/* Check to see if we have array, if array, we are doing complex 95th calculations */
-	if (is_array($local_data_id)) {
-		$sum_array   = array();
-		$fetch_array = array();
-
-		$i = 0;
-		/* do a fetch for each data source */
-		foreach ($local_data_id as $ldi => $ldi_value) {
-			if ($peak) {
-				$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, 'MAX');
-
-				if (!cacti_sizeof($fetch_array[$i])) {
-					$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
-				}
-			} else {
-				$fetch_array[$i] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
-			}
-			/* clean up unwanted data source items */
-			if (!empty($fetch_array[$i])) {
-				foreach ($fetch_array[$i]['data_source_names'] as $id => $name) {
-					/* get rid of the Nth max for now since we'll need to re-calculate it later */
-					if ($name == 'nth_percentile_maximum') {
-						unset($fetch_array[$i]['data_source_names'][$id], $fetch_array[$i]['values'][$id]);
-						continue;
-					}
-					/* clean up DS items that aren't defined on the graph */
-					if (!in_array($name, $local_data_id[$ldi])) {
-						unset($fetch_array[$i]['data_source_names'][$id], $fetch_array[$i]['values'][$id]);
-					}
-				}
-				$i++;
-			}
-		}
-
-		/* Create our array for working  */
-		if (empty($fetch_array[0]['data_source_names'])) {
-			/* here to avoid warning on non-exist file */
-			$fetch_array = array();
-		} else {
-			$sum_array['data_source_names'] = $fetch_array[0]['data_source_names'];
-		}
-
-		if (cacti_sizeof($fetch_array)) {
-			/* Create hash of ds_item_name => array or fetch_array indexes */
-			/* this is used to later sum, max and total the data sources used on the graph */
-			/* Loop fetch array index  */
-			$dsi_name_to_id = array();
-			for ($i=0; $i<cacti_count($fetch_array); $i++) {
-				/* Go through data souce names */
-				foreach ($fetch_array[$i]['data_source_names'] as $ds_name) {
-					$dsi_name_to_id[$ds_name][] = $i;
-				}
-			}
-
-			/* Sum up the like data sources */
-			$sum_array = array();
-			$i = 0;
-
-			foreach ($dsi_name_to_id as $ds_name => $id_array) {
-				$sum_array['data_source_names'][$i] = $ds_name;
-
-				foreach ($id_array as $id) {
-					$fetch_id = array_search($ds_name,$fetch_array[$id]['data_source_names']);
-
-					/* Sum up like ds names */
-					for ($j=0; $j<cacti_count($fetch_array[$id]['values'][$fetch_id]); $j++) {
-						if (isset($fetch_array[$id]['values'][$fetch_id][$j])) {
-							$value = $fetch_array[$id]['values'][$fetch_id][$j];
-						} else {
-							$value = 0;
-						}
-
-						if (isset($sum_array['values'][$i][$j])) {
-							$sum_array['values'][$i][$j] += $value;
-						} else {
-							$sum_array['values'][$i][$j] = $value;
-						}
-					}
-				}
-
-				$i++;
-			}
-		}
-
-		/* calculate extra data, max, sum */
-		if (isset($sum_array['values'])) {
-			$num_ds = cacti_count($sum_array['values']);
-			$total_ds = cacti_count($sum_array['values']);
-
-			for ($j=0; $j<$total_ds; $j++) { /* each data source item */
-				for ($k=0; $k<cacti_count($sum_array['values'][$j]); $k++) { /* each rrd row */
-					/* now we must re-calculate the 95th max */
-					$value = 0;
-					if (isset($sum_array['values'][$j][$k])) {
-						$value = $sum_array['values'][$j][$k];
-					}
-
-					if (isset($sum_array['values'][$num_ds][$k])) {
-						$sum_array['values'][$num_ds][$k] = max($value, $sum_array['values'][$num_ds][$k]);
-					} else {
-						$sum_array['values'][$num_ds][$k] = max($value, 0);
-					}
-
-					/* sum of all ds rows */
-					$value = 0;
-					if (isset($sum_array['values'][$j][$k])) {
-						$value = $sum_array['values'][$j][$k];
-					}
-
-					if (isset($sum_array['values'][$num_ds + 1][$k])) {
-						$sum_array['values'][$num_ds + 1][$k] += $value;
-					} else {
-						$sum_array['values'][$num_ds + 1][$k] = $value;
-					}
-				}
-			}
-
-			$sum_array['data_source_names'][$num_ds] = 'nth_percentile_aggregate_max';
-			$sum_array['data_source_names'][$num_ds + 1] = 'nth_percentile_aggregate_sum';
-		}
-
-		$fetch_array = $sum_array;
-	} else {
-		/* No array, just calculate the 95th for the data source */
-		$fetch_array = @rrdtool_function_fetch($local_data_id, $start_seconds, $end_seconds, $resolution);
-	}
-
-	/* loop through each data source */
-	if (empty($fetch_array['data_source_names'])) {
+	if (!is_array($local_data_ids)) {
 		return array();
 	}
 
-	$values_array = array();
-	for ($i=0; $i<cacti_count($fetch_array['data_source_names']); $i++) {
-		if (isset($fetch_array['values'][$i])) {
-			$values_array = $fetch_array['values'][$i];
+	/* initialize some variables */
+	$sum_array       = array();
+	$fetch_array_avg = array();
+	$fetch_array_max = array();
+	$good_data       = false;
 
-			/* sort the array in descending order */
-			rsort($values_array, SORT_NUMERIC);
+	/* Do a fetch for each data source and discard
+	 * nth_percentile_maximum and any invalid data sources
+	 *
+	 * After this loop is finished, all data will have
+	 * been retrieved from the RRDfiles.
+	 */
+	foreach ($local_data_ids as $ldi => $data_source_name) {
+		/* more error checking for invalid data */
+		if ($ldi == 0) {
+			continue;
 		}
 
-		/* grab the N% row (or 1 - N% in reverse) and use that as our Nth percentile value */
-		$inverse_percentile = 1 - ($percentile / 100);
-		$target = ((cacti_count($values_array) + 1) * $inverse_percentile);
-		$target = sprintf('%d', $target);
-
-		if (empty($values_array[$target])) {
-			$values_array[$target] = 0;
+		// See if the RRDfile contains the MAX consolidation function, if so prime the array with the fetch data
+		if (rrdtool_function_contains_cf($ldi, 'MAX')) {
+			$fetch_array_max[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution, false, null, 'MAX');
 		}
 
-		/* collect Nth percentile values in this array so we can return them */
-		$return_array[$fetch_array['data_source_names'][$i]] = $values_array[$target];
+		// See if the RRDfile contains the AVERAGE consolidation function, if so prime the array with the fetch data
+		if (rrdtool_function_contains_cf($ldi, 'AVERAGE')) {
+			$fetch_array[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+		}
 
-		/* get max Nth calculation for aggregate */
-		if ($fetch_array['data_source_names'][$i] != 'nth_percentile_aggregate_max' &&
-			$fetch_array['data_source_names'][$i] != 'nth_percentile_aggregate_sum' &&
-			$fetch_array['data_source_names'][$i] != 'nth_percentile_maximum') {
-			if (isset($return_array['nth_percentile_aggregate_total'])) {
-				if ($return_array['nth_percentile_aggregate_total'] < $values_array[$target]) {
-					$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
-				}
+		/* clean up unwanted data source items from the AVERAGE cf data */
+		if (cacti_sizeof($fetch_array[$ldi])) {
+			if (isset($fetch_array[$ldi]['data_source_names'])) {
+				$good_data = true;
 			} else {
-				$return_array['nth_percentile_aggregate_total'] = $values_array[$target];
+				unset($fetch_array[$ldi]);
+
+				continue;
+			}
+
+			/* discard the unused data sources, we will figure it out ourselves */
+			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $name) {
+				/* clean up DS items that aren't defined on the graph */
+				if (!in_array($name, $local_data_ids[$ldi])) {
+					unset($fetch_array[$ldi]['data_source_names'][$index], $fetch_array[$ldi]['values'][$index]);
+				}
+			}
+		}
+
+		/* clean up unwanted data source items from the MAX cf data */
+		if (cacti_sizeof($fetch_array_max[$ldi])) {
+			if (isset($fetch_array_max[$ldi]['data_source_names'])) {
+				$good_data = true;
+			} else {
+				unset($fetch_array_max[$ldi]);
+
+				continue;
+			}
+
+			/* discard the unused data sources, we will figure it out ourselves */
+			foreach ($fetch_array_max[$ldi]['data_source_names'] as $index => $name) {
+				/* clean up DS items that aren't defined on the graph */
+				if (!in_array($name, $local_data_ids[$ldi])) {
+					unset($fetch_array_max[$ldi]['data_source_names'][$index], $fetch_array_max[$ldi]['values'][$index]);
+				}
 			}
 		}
 	}
 
-	if (isset($return_array)) {
-		return $return_array;
+	/* Do a sanity check, return right away if we don't have
+	 * good data.  Else prepare a new array with summary data.
+	 */
+	if (!$good_data) {
+		return array();
 	}
+
+	$stats = $stats_max = array();
+
+	if (cacti_sizeof($fetch_array)) {
+		$stats['avg'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array, 'AVERAGE');
+	}
+
+	if (cacti_sizeof($fetch_array_max)) {
+		$stats['peak'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array_max, 'MAX');
+	}
+
+	return json_encode($stats);
+}
+
+function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_array, $cf) {
+	/* start by summing the data across local data ids, for the average cf */
+	$asum_array = array();
+
+	foreach ($local_data_ids as $ldi => $data_source_name) {
+		if (isset($fetch_array[$ldi]['data_source_names'])) {
+			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $ds_name) {
+				foreach ($fetch_array[$ldi]['values'][$index] as $timestamp => $data) {
+					if (isset($asum_array[$ds_name][$timestamp])) {
+						$asum_array[$ds_name][$timestamp] += $data;
+					} else {
+						$asum_array[$ds_name][$timestamp]  = $data;
+					}
+				}
+			}
+		}
+	}
+
+	//print '<pre>';print_r($asum_array);print '</pre>';
+
+	/* next get the max values of all the data sources */
+	$max_values_array = array();
+	if (cacti_sizeof($asum_array)) {
+		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
+			foreach ($sum_by_timestamp as $timestamp => $data) {
+				if (!isset($max_values_array[$timestamp])) {
+					$max_values_array[$timestamp] = $data;
+				} else {
+					$max_values_array[$timestamp] = max($data, $max_values_array[$timestamp]);
+				}
+			}
+		}
+	}
+
+	/* store some known information for legacy cacti behavior */
+	$asum_array['nth_percentile_maximum'] = $max_values_array;
+
+	/* get the sum data now across all data sources */
+	$sum_values_array = array();
+	if (cacti_sizeof($asum_array)) {
+		foreach ($asum_array as $ds_name => $sum_by_timestamp) {
+			if ($ds_name == 'nth_percentile_maximum') {
+				continue;
+			}
+
+			foreach ($sum_by_timestamp as $timestamp => $data) {
+				if (!isset($sum_values_array[$timestamp])) {
+					$sum_values_array[$timestamp] = $data;
+				} else {
+					$sum_values_array[$timestamp] += $data;
+				}
+			}
+		}
+	}
+
+	/* store some known information for legacy cacti behavior */
+	$asum_array['nth_percentile_sum'] = $sum_values_array;
+
+	/* get some nice analytical statistics about the data */
+	$stats = array();
+	$agg_total = 0;
+
+	foreach ($asum_array as $ds_name => $data_by_timestamp) {
+		$cstats['stats_' . $ds_name] = cacti_stats_calc($data_by_timestamp, $percentile);
+		$stats[$ds_name] = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
+
+		/* scan all non built-in data sources for aggregate total data */
+		if ($ds_name != 'nth_percentile_sum' &&
+			$ds_name != 'nth_percentile_maximum') {
+
+			if ($agg_total < $cstats['stats_' . $ds_name]['p' . $percentile . 'n']) {
+				$agg_total = $cstats['stats_' . $ds_name]['p' . $percentile . 'n'];
+			}
+		}
+	}
+
+	/* store some known information for legacy cacti behavior */
+	$stats['nth_percentile_aggregate_total'] = $agg_total;
+
+	$stats += $cstats;
+
+	return($stats);
+}
+
+function cacti_stats_calc($array, $ptile = 95) {
+	rsort($array, SORT_NUMERIC);
+
+	$elements = cacti_sizeof($array);
+
+	if ($elements == 0) {
+		return array();
+	}
+
+	$variance = 0;
+	$sum      = array_sum($array);
+	$average  = $sum/$elements;
+	$var      = 'p' . $ptile . 'n';
+
+	foreach ($array as $number) {
+		$variance += pow(abs($number - $average), 2);
+	}
+
+	$ptile_index = floor($elements * (1 - ($ptile/100)));
+	$p90n_index  = floor($elements * 0.1);
+	$p75n_index  = floor($elements * 0.25);
+	$p50n_index  = floor($elements * 0.50);
+	$p25n_index  = floor($elements * 0.75);
+
+	return array(
+		$var       => $array[$ptile_index],
+		'p90n'     => $array[$p90n_index],
+		'p75n'     => $array[$p75n_index],
+		'p50n'     => $array[$p50n_index],
+		'p25n'     => $array[$p25n_index],
+		'average'  => $average,
+		'sum'      => $sum,
+		'elements' => $elements,
+		'variance' => $variance,
+		'stddev'   => sqrt($variance/$elements)
+	);
 }
 
 /* bandwidth_summation - given a data source, sums all data in the rrd for a given
@@ -220,6 +274,13 @@ function nth_percentile($local_data_id, $start_seconds, $end_seconds, $percentil
    @arg $ds_steps - how many seconds each period represents
    @returns - (array) an array containing each data source item, and its sum */
 function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps, $ds_steps) {
+	static $vstats = array();
+
+	// Check the cache for data
+	if (isset($vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps])) {
+		return $vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps];
+	}
+
 	$fetch_array = @rrdtool_function_fetch($local_data_id, $start_time, $end_time, $rra_steps * $ds_steps);
 
 	if (!isset($fetch_array['data_source_names']) || cacti_count($fetch_array['data_source_names']) == 0) {
@@ -244,7 +305,18 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 		}
 	}
 
+	// Cache the fetch data
+	$vstats[$local_data_id . '_' . $start_time . '_' . $end_time . '_' . $rra_steps . '_' . $ds_steps] = $return_array;
+
 	return $return_array;
+}
+
+function is_graphable_item($item) {
+	if (preg_match('/(AREA|STACK|LINE[123])/', $item)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 /* variable_nth_percentile - given a Nth percentile variable, calculate the Nth percentile
@@ -270,195 +342,26 @@ function bandwidth_summation($local_data_id, $start_time, $end_time, $rra_steps,
 function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end) {
 	global $graph_item_types;
 
+	static $vstats = array();
+
+	$nth_cache = array();
+
 	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
 
 	if ($graph['base_value'] == 1024) {
-		$pow = 10.24;
+		$base = 10.24;
 	} else {
-		$pow = 10;
+		$base = 10;
 	}
 
-	if ($regexp_match_array[1] < 1 || $regexp_match_array[1] > 99) {
-		/* error Nth Percentile variable is incorrect */
-		return -1;
-	}
-
-	/* Get the Nth percentile values */
-	switch ($regexp_match_array[4]) {
-		case 'current':
-			$nth_cache[$graph_item['local_data_id']] = nth_percentile($graph_item['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
-
-			break;
-		case 'max':
-			$nth_cache[$graph_item['local_data_id']] = nth_percentile($graph_item['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1], 0, true);
-
-			break;
-		case 'total':
-		case 'all_max_current':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['local_data_id'])) {
-					$nth_cache[$graph_element['local_data_id']] = nth_percentile($graph_element['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1]);
-				}
-			}
-
-			break;
-		case 'total_peak':
-		case 'all_max_peak':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['local_data_id'])) {
-					$nth_cache[$graph_element['local_data_id']] = nth_percentile($graph_element['local_data_id'], $graph_start, $graph_end, $regexp_match_array[1], 0, true);
-				}
-			}
-
-			break;
-		case 'aggregate':
-		case 'aggregate_sum':
-			$local_data_array = array();
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
-				}
-			}
-			$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
-
-			break;
-		case 'aggregate_max':
-			$local_data_array = array();
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
-				}
-			}
-			$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1], 0, true);
-
-			break;
-		case 'aggregate_current':
-			$local_data_array = array();
-			if (!empty($graph_item['data_source_name'])) {
-				foreach ($graph_items as $graph_element) {
-					if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
-						!empty($graph_element['data_template_rrd_id']) &&
-						preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-						$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
-					}
-				}
-				$nth_cache[0] = nth_percentile($local_data_array, $graph_start, $graph_end, $regexp_match_array[1]);
-			}
-
-			break;
-	}
-
-	$nth = 0;
-
-	/* format the output according to args passed to the variable */
-	switch($regexp_match_array[4]) {
-		case 'current':
-			if (!empty($nth_cache[$graph_item['local_data_id']][$graph_item['data_source_name']])) {
-				$nth = $nth_cache[$graph_item['local_data_id']][$graph_item['data_source_name']];
-				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($pow, intval($regexp_match_array[3]));
-			}
-
-			break;
-		case 'total':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					if (!empty($nth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']])) {
-						$local_nth = $nth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
-						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow($pow, intval($regexp_match_array[3]));
-
-						$nth += $local_nth;
-					}
-				}
-			}
-
-			break;
-		case 'max':
-			if (!empty($nth_cache[$graph_item['local_data_id']]['nth_percentile_maximum'])) {
-				$nth = $nth_cache[$graph_item['local_data_id']]['nth_percentile_maximum'];
-				$nth = ($regexp_match_array[2] == 'bits') ? $nth * 8 : $nth;
-				$nth /= pow($pow, intval($regexp_match_array[3]));
-			}
-
-			break;
-		case 'total_peak':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					if (!empty($nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'])) {
-						$local_nth = $nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'];
-						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow($pow, intval($regexp_match_array[3]));
-
-						$nth += $local_nth;
-					}
-				}
-			}
-
-			break;
-		case 'all_max_current':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					if (!empty($ninety_fifth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']])) {
-						$local_nth = $ninety_fifth_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
-						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow($pow, intval($regexp_match_array[3]));
-
-						if ($local_nth > $nth) {
-							$nth = $local_nth;
-						}
-					}
-				}
-			}
-
-			break;
-		case 'all_max_peak':
-			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['data_template_rrd_id']) && preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
-					if (!empty($nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'])) {
-						$local_nth = $nth_cache[$graph_element['local_data_id']]['nth_percentile_maximum'];
-						$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-						$local_nth /= pow($pow, intval($regexp_match_array[3]));
-
-						if ($local_nth > $nth) {
-							$nth = $local_nth;
-						}
-					}
-				}
-			}
-
-			break;
-		case 'aggregate':
-		case 'aggregate_current':
-			if (!empty($nth_cache[0]['nth_percentile_aggregate_total'])) {
-				$local_nth = $nth_cache[0]['nth_percentile_aggregate_total'];
-				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow($pow, intval($regexp_match_array[3]));
-				$nth = $local_nth;
-			}
-
-			break;
-		case 'aggregate_max':
-			if (!empty($nth_cache[0]['nth_percentile_aggregate_max'])) {
-				$local_nth = $nth_cache[0]['nth_percentile_aggregate_max'];
-				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow($pow, intval($regexp_match_array[3]));
-				$nth = $local_nth;
-			}
-
-			break;
-		case 'aggregate_sum':
-			if (!empty($nth_cache[0]['nth_percentile_aggregate_sum'])) {
-				$local_nth = $nth_cache[0]['nth_percentile_aggregate_sum'];
-				$local_nth = ($regexp_match_array[2] == 'bits') ? $local_nth * 8 : $local_nth;
-				$local_nth /= pow($pow, intval($regexp_match_array[3]));
-				$nth = $local_nth;
-			}
-
-			break;
-	}
+	// Convert the regex matches to human readable
+	// Unexploded format is |95:bits:6:max:2|
+	$percentile = $regexp_match_array[1];
+	$bytebit    = $regexp_match_array[2];
+	$power      = $regexp_match_array[3];
+	$type       = $regexp_match_array[4];
 
 	/* determine the floating point precision */
 	if (is_numeric($regexp_match_array[5])) {
@@ -466,6 +369,152 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 	} else {
 		$round_to = 2;
 	}
+
+	// error Nth Percentile variable is incorrect
+	if ($percentile < 1 || $percentile > 99) {
+		return -1;
+	}
+
+	if (empty($graph_item['local_data_id'])) {
+		$graph_item['local_data_id'] = 0;
+	}
+
+	$gi = array();
+	if (sizeof($graph_items)) {
+		foreach ($graph_items as $item) {
+			if ($item['local_data_id'] > 0 && $item['data_source_name'] != '') {
+				if (!empty($item['data_template_rrd_id']) &&
+					!empty($item['local_data_id']) &&
+					is_graphable_item($graph_item_types[$item['graph_type_id']])) {
+					$gi[$item['data_source_name'] . '|||' . $item['local_data_id']] = true;
+				}
+			}
+		}
+
+		foreach ($gi as $data_source => $true) {
+			list($data_source_name, $local_data_id) = explode('|||', $data_source);
+			$local_data_array[$local_data_id][] = $data_source_name;
+		}
+	}
+
+	// Returned the cached value if it exists
+	if (isset($vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end])) {
+		$nth_cache = $vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end];
+	}
+
+	/* Get the Nth percentile values */
+	if (!sizeof($nth_cache)) {
+		switch ($type) {
+			case 'current':
+				// Query data for the individual case
+				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+
+				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+
+				break;
+			case 'max':
+				// Query data for the individual case
+				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+
+				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+
+				break;
+			case 'total':
+			case 'all_max_current':
+				if (sizeof($local_data_array)) {
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+				}
+
+				break;
+			case 'total_peak':
+			case 'all_max_peak':
+				if (sizeof($local_data_array)) {
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+				}
+
+				break;
+			case 'aggregate':
+			case 'aggregate_sum':
+				if (sizeof($local_data_array)) {
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+				}
+
+				break;
+			case 'aggregate_peak':
+			case 'aggregate_max':
+				if (sizeof($local_data_array)) {
+					$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
+				}
+
+				break;
+			case 'aggregate_current':
+				$local_data_array = array();
+				if (!empty($graph_item['data_source_name'])) {
+					foreach ($graph_items as $graph_element) {
+						if ($graph_item['data_source_name'] == $graph_element['data_source_name'] &&
+							!empty($graph_element['data_template_rrd_id']) &&
+							!empty($graph_element['local_data_id']) &&
+							is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
+
+							$local_data_array[$graph_element['local_data_id']][] = $graph_element['data_source_name'];
+						}
+					}
+
+					if (sizeof($local_data_array)) {
+						$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
+					}
+				}
+
+				break;
+		}
+	}
+
+	$nth = 0;
+
+	/* format the output according to args passed to the variable */
+	switch($type) {
+		case 'current': // Total of current data source from AVERAGE or MAX consolidation function
+			if (!empty($nth_cache[$graph_item['data_source_name']])) {
+				$nth = $nth_cache[$graph_item['data_source_name']];
+				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
+				$nth /= pow($base, $power);
+			}
+
+			break;
+		case 'total':          // Total of the current data source name
+		case 'total_peak':
+		case 'aggregate_sum':
+			if (!empty($nth_cache['nth_percentile_sum'])) {
+				$nth = $nth_cache['nth_percentile_sum'];
+				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
+				$nth /= pow($base, $power);
+			}
+
+			break;
+		case 'all_max_current': // Max of all data sources
+		case 'all_max_peak':
+		case 'aggregate_max':
+		case 'aggregate_peak':
+		case 'max':
+			if (!empty($nth_cache['nth_percentile_maximum'])) {
+				$nth = $nth_cache['nth_percentile_maximum'];
+				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
+				$nth /= pow($base, $power);
+			}
+
+			break;
+		case 'aggregate':
+		case 'aggregate_current':
+			if (!empty($nth_cache['nth_percentile_aggregate_total'])) {
+				$nth = $nth_cache['nth_percentile_aggregate_total'];
+				$nth = ($bytebit == 'bits') ? $nth * 8 : $nth;
+				$nth /= pow($base, $power);
+			}
+
+			break;
+	}
+
+	$vstats[$graph_item['local_data_id'] . '_' . $percentile . '_' . $type . '_' . $graph_start . '_' . $graph_end] = $nth_cache;
 
 	/* return the final result and round off to two decimal digits */
 	return round($nth, $round_to);
@@ -496,14 +545,21 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_item, &$graph_items, $graph_start, $graph_end, $rra_step, $ds_step) {
 	global $graph_item_types;
 
+	static $vstats = array();
+
 	if (cacti_sizeof($regexp_match_array) == 0) {
 		return 0;
 	}
 
+	if (empty($graph_item['local_data_id'])) {
+		$graph_item['local_data_id'] = 0;
+		$regexp_match_array[2] = 'total';
+	}
+
 	if ($graph['base_value'] == 1024) {
-		$pow = 10.24;
+		$base = 10.24;
 	} else {
-		$pow = 10;
+		$base = 10;
 	}
 
 	if (is_numeric($regexp_match_array[4])) {
@@ -520,7 +576,9 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 			break;
 		case 'total':
 			foreach ($graph_items as $graph_element) {
-				if (!empty($graph_element['local_data_id'])) {
+				if (!empty($graph_element['data_template_rrd_id']) &&
+					!empty($graph_element['local_data_id']) &&
+					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
 					$summation_cache[$graph_element['local_data_id']] = bandwidth_summation($graph_element['local_data_id'], $summation_timespan_start, $graph_end, $rra_step, $ds_step);
 				}
 			}
@@ -546,8 +604,8 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 		case 'total':
 			foreach ($graph_items as $graph_element) {
 				if (!empty($graph_element['data_template_rrd_id']) &&
-					isset($summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']]) &&
-					preg_match('/(AREA|STACK|LINE[123])/', $graph_item_types[$graph_element['graph_type_id']])) {
+					!empty($graph_element['local_data_id']) &&
+					is_graphable_item($graph_item_types[$graph_element['graph_type_id']])) {
 					$summation += $summation_cache[$graph_element['local_data_id']][$graph_element['data_source_name']];
 				}
 			}
@@ -556,7 +614,7 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 	}
 
 	if (preg_match('/\d+/', $regexp_match_array[1])) {
-		$summation /= pow($pow, intval($regexp_match_array[1]));
+		$summation /= pow($base, $regexp_match_array[1]);
 	} elseif ($regexp_match_array[1] == 'auto') {
 		if ($graph['base_value'] == 1000) {
 			if ($summation < 1000) {
@@ -602,8 +660,9 @@ function variable_bandwidth_summation(&$regexp_match_array, &$graph, &$graph_ite
 
 	/* substitute in the final result and round off to two decimal digits */
 	if (isset($summation_label)) {
-		return number_format_i18n($summation, $round_to) . " $summation_label";
+		return sprintf('%10s', number_format_i18n($summation, $round_to) . " $summation_label");
 	} else {
-		return number_format_i18n($summation, $round_to);
+		return sprintf('%10s', number_format_i18n($summation, $round_to));
 	}
 }
+

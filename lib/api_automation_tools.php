@@ -57,10 +57,10 @@ function getHostsByDescription($hostTemplateIds = false) {
 		$sql_where = '';
 	}
 
-	$tmpArray = db_fetch_assoc("SELECT h.id, h.description 
+	$tmpArray = db_fetch_assoc("SELECT h.id, h.description
 		FROM host AS h
 		INNER JOIN host_template AS ht
-		ON h.host_template_id = h.id
+		ON h.host_template_id = ht.id
 		$sql_where
 		ORDER BY h.description");
 
