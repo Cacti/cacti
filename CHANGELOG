@@ -1,38 +1,35 @@
 Cacti CHANGELOG
 
 1.2.2
--issue#599: Aggregate graph templates assume AVG consolidation function resulting in RRDtool error in certain cases
--issue#2312: Chrome completes "Contacting Device", Safari Doesn't
--issue#2317: Poller time table running out of auto increment keys
--issue#2327: Poller Replicate Memory Issue
--issue#2334: JavaScript issues with IE and older Chrome browsers
--issue#2337: After updating the previous path of the log file is changed.
--issue#2339: MAILER WARNING: Mail failed from ... Message: You must provide at least one recipient email address.
+-issue#599: Aggregate graph templates assume AVG consolidation function
+-issue#2312: Retrieving Device Information appears to fail on Safari
+-issue#2317: Unabe to add new records to 'poller_time' table
+-issue#2327: Memory exhausted whilst running poller replication
+-issue#2334: Some browsers report JavaScript errors when switching to console
+-issue#2337: When running an upgrade, the path of the log file is reset
+-issue#2339: Certain characters in recipient address can cause email to fail
 -issue#2343: Export hooks no longer work due to missing default keyword
--issue#2346: User(edit)->Permissions(tab)->Plugin Permissions(section) put "Legacy 1.x Plugins" to incorrect cell'<td>'
+-issue#2346: When listing plugin permissions, "Legacy 1.x Plugins" can appear in the wrong cell
 -issue#2347: Allow sort output to inject returned data into a specific object
--issue#2350: For HRULES and COMMENTS that include nth Percentile and Bandwidth Unable to Select Data Source
--issue#2352: snmp_sysDescr field contains mangled data
--issue#2354: Reindexing in Automation Not Updating Graph and Data Source Titles
--issue#2355: Duplicated Data Sources created when Custom Data is specified
--issue#2357: Poller issuing warnings with little way to diagnose
--issue#2359: "Install/Upgrade" privilege lost, blocking upgrades
+-issue#2350: Unable to Select Data Source for HRULES and COMMENTS that include nth Percentile and Bandwidth 
+-issue#2352: SNMP description field can sometimes contain mangled data
+-issue#2354: When reindexing in Automation, titles are not updated for Graph and Data Source
+-issue#2355: Data Sources are sometimes duplicated when Custom Data is specified
+-issue#2357: When indexes are incorrect, poller should log more information
+-issue#2359: When upgrading, "Install/Upgrade" privilege may have been previously lost
 -issue#2360: When retrieving database / table / column information, schema name is not always applied
 -issue#2362: No way to default an interface speed when ifSpeed and ifHighSpeed come back as zero
--issue#2365: Graphs included in aggregate that are removed are not managed properly
--issue#2372: SNMP DS with dskPath Index Type does not work
--issue#2376: Error when adding a device discovered by Automation manually
--issue#2380: reindex constantly triggered for some devices
--issue#2384: If current authentication method is set to None, change to Builtin
--issue#2393: Graph Automation creates duplicate graphs every time reindex the host
--issue#2394: getHostsByDescription() uses wrong field for indexed join
+-issue#2365: When editing Aggregate Graphs, orphaned items were not always removed
+-issue#2372: Data Query reindexing leads gaps in Graphs
+-issue#2376: Manually adding a device discovered by Automation causes errors to be logged
+-issue#2380: Devices may experience constant reindexing 
+-issue#2384: When authentication method is set to None, change to Builtin as None has been removed
+-issue#2393: When reindexing a device, Graph Automation creates duplicate graphs every time
+-issue#2416: SELinux wants APPEND not WRITE permission for Fedora/EPEL (RHEL, Centos) 
 -issue#2419: Host state time was not correctly calculated
--issue#2420: Fix selinux issues with cacti.log write check
--issue#2426: various issues about hook 'custom_logout_message'
--issue#2431: Default value is text for which mail method to use, should be integer
--issue#2432: Undefined variable: graph_start and Undefined variable: graph_end in lib/rrd.php
--issue#2433: Bad SNMP Index warning despite all data sources disabled
--issue: Resizing table throws a JavaScript error
+-issue#2426: Reinstate missing plugin hooks for 'custom_logout_message' and 'custom_denied'
+-issue#2431: Default value for 'Mail Method' (settings_how) is incorrect resulting in errors
+-issue#2432: Undefined variable warnings when updating RRD data
 -feature: Update JavaScript library c3.js to version 0.6.12
 -feature: Update phpseclib to version 2.0.14
 -feature: Update PHPMailer to version 6.0.7
