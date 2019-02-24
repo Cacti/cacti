@@ -2118,7 +2118,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
 					$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
 
-					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
+					$text_format = rrdtool_escape_string(html_escape(rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item)));
 
 					if (is_numeric($substitute)) {
 						$graph_variables['value'][$graph_item_id] = $substitute;
@@ -2391,6 +2391,7 @@ function rrdtool_function_set_font($type, $no_legend, $themefonts) {
 function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	/* replace host variables in graph elements */
 	$host_id = 0;
+
 	if (empty($graph['host_id'])) {
 		/* if graph has no associated host determine host_id from graph item data source */
 		if (isset($graph_item['local_data_id']) && !empty($graph_item['local_data_id'])) {
@@ -2402,30 +2403,20 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	} else {
 		$host_id = $graph['host_id'];
 	}
-	$txt_graph_item = substitute_host_data($txt_graph_item, '|','|', $host_id);
+
+	$txt_graph_item = substitute_host_data($txt_graph_item, '|', '|', $host_id);
 
 	/* replace query variables in graph elements */
-	if (preg_match('/\|query_[a-zA-Z0-9_]+\|/', $txt_graph_item)) {
-		/* default to the graph data query information from the graph */
-		if (!isset($graph_item['local_data_id']) || empty($graph_item['local_data_id'])) {
-			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
-		/* use the data query information from the data source if possible */
-		} else {
-			$data_local = db_fetch_row_prepared('SELECT snmp_index, snmp_query_id, host_id
-				FROM data_local
-				WHERE id = ?',
-				array($graph_item['local_data_id']));
-
-			$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
-		}
+	if (strpos($text_graph_item, '|query_') !== false) {
+		$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
 	}
 
 	/* replace query variables in graph elements */
-	if (preg_match('/\|input_[a-zA-Z0-9_]+\|/', $txt_graph_item)) {
+	if (strpos($txt_graph_item, '|input_') !== false) {
 		return substitute_data_input_data($txt_graph_item, $graph, $graph_item['local_data_id']);
+	} else {
+		return $txt_graph_item;
 	}
-
-	return $txt_graph_item;
 }
 
 function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end, $type = 'res') {
