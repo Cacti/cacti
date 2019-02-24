@@ -1813,6 +1813,8 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 					$best_cf = $requested_cf;
 				}
 			}
+		} else {
+			$best_cf = '1';
 		}
 	}
 
