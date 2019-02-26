@@ -403,7 +403,7 @@ if (cacti_sizeof($parms)) {
 				print "ERROR: number of --snmp-field ($nbSnmpFields) and --snmp-value-regex ($nbSnmpValuesRegex) does not match\n";
 				exit(1);
 			}
-		} else {
+		} elseif (!$listSNMPValues) {
 			print "ERROR: You must supply a --snmp-value or --snmp-value-regex option with --snmp-field\n";
 			exit(1);
 		}

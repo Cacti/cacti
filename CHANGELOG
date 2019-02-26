@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.3
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
+-issue#2453: Cannot retrieve list of snmp values via CLI
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
