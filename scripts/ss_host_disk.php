@@ -95,10 +95,10 @@ function ss_host_disk($hostname, $host_id, $snmp_auth, $cmd, $arg1 = '', $arg2 =
 					}
 				}
 			} else {
-				return array();
+				return '';
 			}
 		} else {
-			return array();
+			return '';
 		}
 	} elseif ($cmd == 'get') {
 		$arg   = $arg1;
