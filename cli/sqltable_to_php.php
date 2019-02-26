@@ -120,6 +120,8 @@ function sqltable_to_php($table, $create, $plugin = '') {
 
 				if (trim($r['Default']) != '') {
 					$text .= ", 'default' => '" . $r['Default'] . "'";
+				} elseif (stripos($r['Type'], 'char') !== false) {
+					$text .= ", 'default' => ''";
 				}
 
 				if (trim($r['Extra']) != '') {
