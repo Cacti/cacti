@@ -1372,6 +1372,10 @@ function draw_menu($user_menu = "") {
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
+	if ($actions_array === NULL || cacti_sizeof($actions_array) == 0) {
+		return;
+	}
+
 	if (!isset($actions_array[0])) {
 		$my_actions[0]  = __('Choose an action');
 		$my_actions    += $actions_array;

@@ -4,6 +4,8 @@ Cacti CHANGELOG
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
 -issue#2453: Cannot retrieve list of snmp values via CLI
 -issue#2460: CLI script sqltable_to_php.php does not set proper default in its output
+-issue#2456: When attempting to display actions that can be taken, having no actions caused error
+-issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
