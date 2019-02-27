@@ -7,6 +7,7 @@ php:
 - '7.0'
 - '7.1'
 - '7.2'
+- '7.3'
 
 before_script:
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
