@@ -166,6 +166,11 @@ function form_save() {
 		$save2['left_axis_formatter']    = form_input_validate((isset_request_var('left_axis_formatter') ? get_nfilter_request_var('left_axis_formatter') : ''), 'left_axis_formatter', '', true, 3);
 
 		if (!is_error_message()) {
+			// Clear the Graph Template cache
+			if (empty($graph_template_id)) {
+				clear_cached_allowed_types();
+			}
+
 			$graph_template_id = sql_save($save1, 'graph_templates');
 
 			if ($graph_template_id) {
