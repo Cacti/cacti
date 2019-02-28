@@ -662,7 +662,7 @@ function display_new_graphs($rule, $url) {
 	<script type='text/javascript'>
 	function applyObjectFilter() {
 		strURL  = '<?php print $url;?>';
-		strURL += '&rows=' + $('#rows').val();
+		strURL += '&rows=' + $('#orows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
 		loadPageNoHeader(strURL);
@@ -682,7 +682,7 @@ function display_new_graphs($rule, $url) {
 			clearObjectFilter();
 		});
 
-		$('#rows').change(function() {
+		$('#orows').change(function() {
 			applyObjectFilter();
 		});
 
@@ -712,7 +712,7 @@ function display_new_graphs($rule, $url) {
 							<?php print __('Objects');?>
 						</td>
 						<td>
-							<select id='rows' onChange='applyFilter()'>
+							<select id='orows'>
 								<option value='-1'<?php if (get_request_var('rows') == '-1') {?> selected<?php }?>><?php print __('Default');?></option>
 								<?php
 								if (cacti_sizeof($item_rows)) {
