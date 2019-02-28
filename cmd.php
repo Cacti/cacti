@@ -482,12 +482,21 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			$host_update_time = date('Y-m-d H:i:s'); // for poller update time
 
 			if ($last_host != '') {
+				$host_end = microtime(true);
+
+				db_execute_prepared('UPDATE host
+					SET polling_time = ?
+					WHERE id = ?',
+					array(($host_end - $host_start), $last_host));
+
 				if (cacti_sizeof($error_ds)) {
 					cacti_log('WARNING: Invalid Response(s), Errors[' . cacti_sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
 				}
 
 				$error_ds = array();
 			}
+
+			$host_start = microtime(true);
 		}
 
 		$host_id = $item['host_id'];
@@ -535,10 +544,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 						case POLLER_ACTION_SNMP: // snmp
 							open_snmp_session($host_id, $item);
 
-
 							if (isset($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']])) {
-								$sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']]->quick_print = true;
-								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1'], true);
+								$output = cacti_snmp_session_get($sessions[$host_id . '_' . $item['snmp_version'] . '_' . $item['snmp_port']], $index_item['arg1']);
 							} else {
 								$output = 'U';
 							}
@@ -797,6 +804,14 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 			break;
 		}
 	}
+
+	// Record the last hosts polling time
+	$host_end = microtime(true);
+
+	db_execute_prepared('UPDATE host
+		SET polling_time = ?
+		WHERE id = ?',
+		array(($host_end - $host_start), $last_host));
 
 	if (cacti_sizeof($error_ds)) {
 		cacti_log('WARNING: Invalid Response(s), Errors[' . cacti_sizeof($error_ds) . '] Device[' . $last_host . '] Thread[1] DS[' . implode(', ', $error_ds) . ']', false, 'POLLER');
