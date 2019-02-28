@@ -1,4 +1,4 @@
-#!/bin/php -q
+#!/usr/bin/php -q
 <?php
 
 error_reporting(0);
