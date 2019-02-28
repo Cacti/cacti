@@ -682,6 +682,10 @@ function display_new_graphs($rule, $url) {
 			clearObjectFilter();
 		});
 
+		$('#rows').change(function() {
+			applyObjectFilter();
+		});
+
 		$('#form_automation_objects').submit(function(event) {
 			event.preventDefault();
 			applyObjectFilter();

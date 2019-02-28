@@ -8,6 +8,7 @@ Cacti CHANGELOG
 -issue#2457: Not seeing confirmation when creating a new graph
 -issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
 -issue#2466: Manual data source creation is broken
+-issue#2469: Automation - Graph rules - matching object filter - unexpected redirect
 -issue#2471: When Creating a new Graph Template, clear the Graph Template permissions cache
 -issue: cmd.php not updating Device polling times
 -issue: Multiple sort not working properly using functions and not reseting
