@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#2456: When attempting to display actions that can be taken, having no actions caused error
 -issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
 -issue: cmd.php not updating Device polling times
+-issue: Multiple sort not working properly using functions and not reseting
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function

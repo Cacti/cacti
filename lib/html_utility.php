@@ -738,8 +738,23 @@ function update_order_string($inplace = false) {
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ' . $del . implode($del . '.'. $del, explode('.', get_request_var('sort_column'))) . $del . ' ' . get_request_var('sort_direction');
 		} elseif (isset_request_var('sort_column')) {
+			if (isset_request_var('reset')) {
+				unset($_SESSION['sort_data'][$page]);
+				unset($_SESSION['sort_string'][$page]);
+			}
+
 			$_SESSION['sort_data'][$page][get_request_var('sort_column')] = get_nfilter_request_var('sort_direction');
 			$_SESSION['sort_string'][$page] = 'ORDER BY ';
+
+			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
+				if (strpos($column, '(') === false && strpos($column, '`') === false) {
+					$del = '`';
+				} else {
+					$del = '';
+					break;
+				}
+			}
+
 			foreach($_SESSION['sort_data'][$page] as $column => $direction) {
 				if ($column == 'hostname' || $column == 'ip' || $column == 'ip_address') {
 					$order .= ($order != '' ? ', ':'') . 'INET_ATON(' . $column . ") " . $direction;
