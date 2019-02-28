@@ -1349,6 +1349,9 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 
 		if ($type == 'devices') {
 			$_SESSION['sess_allowed_templates'][$hash] = array_rekey($items, 'id', 'id');
+
+			// Handle special case of host_id 0
+			$_SESSION['sess_allowed_templates'][$hash][0] = '0';
 		} else {
 			$_SESSION['sess_allowed_templates'][$hash] = $items;
 		}
