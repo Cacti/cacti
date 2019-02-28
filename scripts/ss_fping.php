@@ -3,15 +3,15 @@
 
 error_reporting(0);
 
-include_once(dirname(__FILE__) . '/../include/cli_check.php');
-include_once(dirname(__FILE__) . '/../lib/snmp.php');
-include_once(dirname(__FILE__) . '/../lib/ping.php');
-
 if (!isset($called_by_script_server)) {
+	include_once(dirname(__FILE__) . '/../include/cli_check.php');
 	array_shift($_SERVER['argv']);
 
 	print call_user_func_array('ss_fping', $_SERVER['argv']);
 }
+
+include_once(dirname(__FILE__) . '/../lib/snmp.php');
+include_once(dirname(__FILE__) . '/../lib/ping.php');
 
 function ss_fping($hostname, $ping_sweeps=6, $ping_type='ICMP', $port=80) {
 	/* record start time */
