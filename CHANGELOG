@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#2453: Cannot retrieve list of snmp values via CLI
 -issue#2460: CLI script sqltable_to_php.php does not set proper default in its output
 -issue#2456: When attempting to display actions that can be taken, having no actions caused error
+-issue#2457: Not seeing confirmation when creating a new graph
 -issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
 -issue: cmd.php not updating Device polling times
 -issue: Multiple sort not working properly using functions and not reseting
