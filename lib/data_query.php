@@ -1091,12 +1091,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$snmp_index = $value;
 						}
 
-						/* correct bogus index value */
-						/* found in some devices such as an EMC Cellera */
-						if ($snmp_index == 0) {
-							$snmp_index = 1;
-						}
-
 						$oid = $field_array['oid'] .  '.' . $parse_value;
 
 						/* rewrite octet strings */
@@ -1138,12 +1132,6 @@ function query_snmp_host($host_id, $snmp_query_id) {
 							$snmp_index = preg_replace($index_parse_regexp, "\\1", $oid);
 						} elseif ((isset($value)) && ($value != '')) {
 							$snmp_index = $value;
-						}
-
-						/* correct bogus index value */
-						/* found in some devices such as an EMC Cellera */
-						if ($snmp_index == 0) {
-							$snmp_index = 1;
 						}
 
 						$oid = $field_array['oid'];

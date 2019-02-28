@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.3
+-issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when <source> OID/REGEXP: or OIDVALUE/REGEXP:
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
 -issue#2453: Cannot retrieve list of snmp values via CLI
 -issue#2460: CLI script sqltable_to_php.php does not set proper default in its output
