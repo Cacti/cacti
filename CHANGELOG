@@ -14,7 +14,7 @@ Cacti CHANGELOG
 -issue#2472: Bad navigation items cause Array to string conversion errors
 -issue#2474: REGEXP_SNMP_TRIM does not handle Gauge fields properly
 -issue#2475: Multiple sort does not always reset properly
--issue: cmd.php not updating Device polling times
+-issue#2476: When using CMD.PHP for polling, device polling time is not updated
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
