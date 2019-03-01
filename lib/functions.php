@@ -2534,11 +2534,28 @@ function draw_navigation_text($type = 'url') {
 	}
 
 	// keep a cache for each level we encounter
-	$nav_level_cache[$current_array['level']] = array(
-		'id' => $current_page . ':' . $current_action,
-		'url' => get_browser_query_string()
-	);
+	$hasNavError = false;
+	if (is_array($current_page)) {
+		cacti_log('WARNING: Navigation item suppressed - current page is not a string: ' . var_export($current_page,true));
+		$hasNavError = true;
+	}
 
+	if (is_array($current_page)) {
+		cacti_log('WARNING: Navigation item suppressed - current action is not a string: '. var_export($current_action,true));
+		$hasNavError = true;
+	}
+
+	if (is_array($current_array['level'])) {
+		cacti_log('WARNING: Navigation item suppressed - current level is not a string: ' . var_export($current_array['level'],true));
+		$hasNavError = true;
+	}
+
+	if (!$hasNavError) {
+		$nav_level_cache[$current_array['level']] = array(
+			'id' => $current_page . ':' . $current_action,
+			'url' => get_browser_query_string()
+		);
+	}
 	$current_nav .= '</ul>';
 
 	$_SESSION['sess_nav_level_cache'] = $nav_level_cache;
