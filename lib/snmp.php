@@ -24,7 +24,7 @@
 */
 
 /* trim all but hex-string:, which will return 'hex-' */
-define('REGEXP_SNMP_TRIM', '/(counter(32|64):|guage:|gauge(32|64):|float:|ipaddress:|string:|integer:)|(up|down)\(|\)$/i');
+define('REGEXP_SNMP_TRIM', '/(counter(32|64):|gauge:|gauge(32|64):|float:|ipaddress:|string:|integer:)|(up|down)\(|\)$/i');
 
 define('SNMP_METHOD_PHP', 1);
 define('SNMP_METHOD_BINARY', 2);
