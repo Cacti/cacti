@@ -2540,7 +2540,7 @@ function draw_navigation_text($type = 'url') {
 		$hasNavError = true;
 	}
 
-	if (is_array($current_page)) {
+	if (is_array($current_action)) {
 		cacti_log('WARNING: Navigation item suppressed - current action is not a string: '. var_export($current_action,true));
 		$hasNavError = true;
 	}
