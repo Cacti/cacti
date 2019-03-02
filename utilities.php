@@ -748,10 +748,10 @@ function utilities_view_user_log() {
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		if ($sql_where != '') {
-			$sql_where .= ' AND ul.result=' . get_request_var('result');
+		if (get_request_var('result') == 0) {
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result IN (0, 3)';
 		} else {
-			$sql_where = 'WHERE ul.result=' . get_request_var('result');
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result=' . get_request_var('result');
 		}
 	}
 
@@ -805,9 +805,10 @@ function utilities_view_user_log() {
 
 	html_header_sort($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), 1, 'utilities.php?action=view_user_log');
 
+	$i = 0;
 	if (cacti_sizeof($user_log)) {
 		foreach ($user_log as $item) {
-			form_alternate_row('', true);
+			form_alternate_row('line' . $i, true);
 			?>
 			<td class='nowrap'>
 				<?php print filter_value($item['username'], get_request_var('filter'));?>
@@ -832,13 +833,15 @@ function utilities_view_user_log() {
 				<?php print filter_value($item['time'], get_request_var('filter'));?>
 			</td>
 			<td class='nowrap'>
-				<?php print ($item['result'] == 0 ? 'Failed':($item['result'] == 1 ? 'Success - Pswd':'Success - Token'));?>
+				<?php print ($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Pswd'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
 			</td>
 			<td class='nowrap'>
 				<?php print filter_value($item['ip'], get_request_var('filter'));?>
 			</td>
 			</tr>
 			<?php
+
+			$i++;
 		}
 	}
 

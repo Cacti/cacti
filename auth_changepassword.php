@@ -160,24 +160,29 @@ case 'changepassword':
 
 		$history = intval(read_config_option('secpass_history'));
 		if ($history > 0) {
-				$h = db_fetch_row_prepared("SELECT password, password_history
-					FROM user_auth
-					WHERE id = ?
-					AND realm = 0
-					AND enabled = 'on'",
-					array($user_id));
+			$h = db_fetch_row_prepared("SELECT password, password_history
+				FROM user_auth
+				WHERE id = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($user_id));
 
-				$op = $h['password'];
-				$h = explode('|', $h['password_history']);
-				while (cacti_count($h) > $history - 1) {
-					array_shift($h);
-				}
-				$h[] = $op;
-				$h = implode('|', $h);
+			$op = $h['password'];
+			$h = explode('|', $h['password_history']);
 
-				db_execute_prepared("UPDATE user_auth
-					SET password_history = ? WHERE id = ? AND realm = 0 AND enabled = 'on'",
-					array($h, $user_id));
+			while (cacti_count($h) > $history - 1) {
+				array_shift($h);
+			}
+
+			$h[] = $op;
+			$h = implode('|', $h);
+
+			db_execute_prepared("UPDATE user_auth
+				SET password_history = ?
+				WHERE id = ?
+				AND realm = 0
+				AND enabled = 'on'",
+				array($h, $user_id));
 		}
 
 		db_execute_prepared('INSERT IGNORE INTO user_log
@@ -186,6 +191,7 @@ case 'changepassword':
 			array($user['username'], get_client_addr()));
 
 		db_check_password_length();
+
 		db_execute_prepared("UPDATE user_auth
 			SET must_change_password = '', password = ?
 			WHERE id = ?",

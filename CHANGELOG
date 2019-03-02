@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#2476: When using CMD.PHP for polling, device polling time is not updated
 -issue#2477: When Saving a Data Input Method Output Field Data Input Name Changes
 -issue#2478: When Saving a LINEX Type Graph Item the Line Width Value is too Restrictive
+-issue# Some missing i18n in User Login History
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
