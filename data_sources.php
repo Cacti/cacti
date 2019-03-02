@@ -1486,9 +1486,9 @@ function ds() {
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		INNER JOIN data_template AS dt
+		LEFT JOIN data_template AS dt
 		ON dt.id=dl.data_template_id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		$sql_where1");
 
@@ -1500,9 +1500,9 @@ function ds() {
 		FROM data_local AS dl
 		INNER JOIN data_template_data AS dtd
 		ON dl.id=dtd.local_data_id
-		INNER JOIN data_template AS dt
+		LEFT JOIN data_template AS dt
 		ON dt.id=dl.data_template_id
-		INNER JOIN host AS h
+		LEFT JOIN host AS h
 		ON h.id = dl.host_id
 		$sql_where1
 		$sql_order
