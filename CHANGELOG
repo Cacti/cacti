@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#2474: REGEXP_SNMP_TRIM does not handle Gauge fields properly
 -issue#2475: Multiple sort does not always reset properly
 -issue#2476: When using CMD.PHP for polling, device polling time is not updated
+-issue#2478: When Saving a LINEX Type Graph Item the Line Width Value is too Restrictive
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
