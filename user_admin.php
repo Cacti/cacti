@@ -682,13 +682,19 @@ function perm_remove() {
 }
 
 function get_permission_string(&$graph, &$policies) {
-	$grantStr  = '';
-	$rejectStr = '';
+	$grantStr   = '';
+	$rejectStr  = '';
+	$reasonStr  = '';
+	$drejectStr = '';
 
 	if (read_config_option('graph_auth_method') == 1) {
 		$method = 'loose';
 	} else {
 		$method = 'strong';
+	}
+
+	if ($graph['disabled'] == 'on' && read_user_setting('hide_disabled', false, false, get_request_var('user_id'))) {
+		$drejectStr .= __esc('Device:(Hide Disabled)');
 	}
 
 	$i = 1;
@@ -698,32 +704,32 @@ function get_permission_string(&$graph, &$policies) {
 
 		if ($p['policy_graphs'] == 1) {
 			if ($graph["user$i"] == '') {
-				$grantStr  = $grantStr . ($grantStr != '' ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr .= $grantStr . ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr .= $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			}
 		} elseif ($graph["user$i"] != '') {
-			$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+			$grantStr .= $grantStr . ($grantStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 		} elseif ($method == 'loose') {
 			$rejected++;
 		} else {
-			$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Graph:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+			$rejectStr .= $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 		}
 		$i++;
 
 		if ($p['policy_hosts'] == 1) {
 			if ($graph["user$i"] == '') {
 				if ($method == 'loose') {
-					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 				} else {
 					$allowed++;
 				}
 			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			}
 		} elseif ($graph["user$i"] != '') {
 			if ($method == 'loose') {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Device:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
 				$allowed++;
 			}
@@ -735,16 +741,16 @@ function get_permission_string(&$graph, &$policies) {
 		if ($p['policy_graph_templates'] == 1) {
 			if ($graph["user$i"] == '') {
 				if ($method == 'loose') {
-					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+					$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 				} else {
 					$allowed++;
 				}
 			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			}
 		} elseif ($graph["user$i"] != '') {
 			if ($method == 'loose') {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
 				$allowed++;
 			}
@@ -755,26 +761,39 @@ function get_permission_string(&$graph, &$policies) {
 
 		if ($method != 'loose') {
 			if ($allowed == 2) {
-				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . 'Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$grantStr = $grantStr . ($grantStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			} else {
-				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+				$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 			}
 		} elseif ($rejected == 3) {
-			$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . 'Graph+Device+Template:(' . ucfirst($p['type']) . ($p['type'] != 'user' ? '/' . $p['name'] . ')':')');
+			$rejectStr = $rejectStr . ($rejectStr != '' ? ', ':'') . __esc('Graph+Device+Template:(%s%s)', ucfirst($p['type']), ($p['type'] != 'user' ? '/' . $p['name']:''));
 		}
 	}
 
 	$permStr = '';
-	if ($grantStr != '') {
-		$permStr = "<span class='accessGranted'>Granted:</span> <span class='accessGrantedItem'>" . trim($grantStr,',') . '</span>';
+
+	if ($drejectStr != '') {
+		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Restricted By: ') . $drejectStr;
 	}
 
-	if ($rejectStr != '') {
-		if ($grantStr == '') {
-			$permStr = "<span class='accessRestricted'>Restricted:</span> <span class='accessRestrictedItem'>" . trim($rejectStr,',') . '</span>';
-		} else {
-			$permStr .= ", <span class='accessRestrictedItem'>" . trim($rejectStr,',') . '</span>';
+	if ($grantStr != '') {
+		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Granted By: ') . trim($grantStr, ',');
+
+		if ($rejectStr != '') {
+			$reasonStr .= ', ' . __esc('Restricted By: ') . trim($rejectStr, ',');
 		}
+
+		if ($drejectStr == '') {
+			$permStr = "<span data-tooltip='" . trim($reasonStr) . "' class='accessGranted'>" . __('Granted') . '</span>';
+		} else {
+			$permStr = "<span data-tooltip='" . trim($reasonStr) . "' class='accessRestricted'>" . __('Restricted') . '</span>';
+		}
+	} elseif ($rejectStr != '') {
+		$reasonStr .= ($reasonStr != '' ? ', ':'') . __esc('Restricted By: ') . trim($rejectStr, ',');
+
+		$permStr   = "<span data-tooltip='" . $reasonStr . "' class='accessRestricted'>" . __('Restricted') . '</span>';
+	} else {
+		$permStr = __('Unknown');
 	}
 
 	return $permStr;
@@ -950,7 +969,8 @@ function graph_perms_edit($tab, $header_label) {
 			$sql_having = 'HAVING ' . $sql_having;
 		}
 
-		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description, gt.name AS template_name,
+		$graphs = db_fetch_assoc("SELECT gtg.local_graph_id, h.description,
+			h.disabled, h.deleted, gt.name AS template_name,
 			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
@@ -1027,6 +1047,20 @@ function graph_perms_edit($tab, $header_label) {
 				2 => __('Revoke Access')
 			);
 		}
+
+		?>
+		<script type='text/javascript'>
+		$(function() {
+			$(document).tooltip({
+				items: '[data-tooltip]',
+				content: function() {
+					console.log('this');
+					return $(this).attr('data-tooltip');
+				}
+			});
+		});
+		</script>
+		<?php
 
 		/* draw the dropdown containing a list of available actions for this form */
 		draw_actions_dropdown($assoc_actions);

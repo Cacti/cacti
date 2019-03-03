@@ -8,6 +8,8 @@ Cacti CHANGELOG
 -issue#2456: When attempting to display actions that can be taken, having no actions caused error
 -issue#2457: Not seeing confirmation when creating a new graph
 -issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
+-issue#2464: User Admin - Effective Permissions - Disable Devices should show denied 
+-issue#2465: User Admin - Effective Permissions - Too many groups hide effective permission column
 -issue#2466: Manual data source creation is broken
 -issue#2469: Automation - Graph rules - matching object filter - unexpected redirect
 -issue#2471: When Creating a new Graph Template, clear the Graph Template permissions cache
