@@ -313,6 +313,9 @@ function vdef_item_remove_confirm() {
 	get_filter_request_var('vdef_id');
 	/* ==================================================== */
 
+	/* sort the vdef functions */
+	asort($vdef_functions);
+
 	form_start('vdef.php');
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -374,6 +377,9 @@ function vdef_item_edit() {
 	get_filter_request_var('vdef_id');
 	get_filter_request_var('type_select');
 	/* ==================================================== */
+
+	/* sort the vdef functions */
+	asort($vdef_functions);
 
 	if (!isempty_request_var('id')) {
 		$vdef = db_fetch_row_prepared('SELECT *

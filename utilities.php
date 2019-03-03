@@ -166,9 +166,9 @@ function utilities_view_tech($php_info = '') {
 		exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')), $out_array);
 		if (cacti_sizeof($out_array) > 0) {
 			if (preg_match('/^RRDtool ([0-9.]+)/', $out_array[0], $m)) {
-				preg_match('/^([0-9]+\.[0-9]+)\./', $m[1], $m2);
+				preg_match('/^([0-9]+\.[0-9]+\.[0.9]+)/', $m[1], $m2);
 				$rrdtool_release = $m[1];
-				$rrdtool_version = $m2[1];
+				$rrdtool_version = $rrdtool_release;
 			}
 		}
 	}
@@ -690,8 +690,9 @@ function utilities_view_user_log() {
 					<td>
 						<select id='result' onChange='applyFilter()'>
 							<option value='-1'<?php if (get_request_var('result') == '-1') {?> selected<?php }?>><?php print __('Any');?></option>
-							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>><?php print __('Success - Pswd');?></option>
+							<option value='1'<?php if (get_request_var('result') == '1') {?> selected<?php }?>><?php print __('Success - Password');?></option>
 							<option value='2'<?php if (get_request_var('result') == '2') {?> selected<?php }?>><?php print __('Success - Token');?></option>
+							<option value='3'<?php if (get_request_var('result') == '3') {?> selected<?php }?>><?php print __('Success - Password Change');?></option>
 							<option value='0'<?php if (get_request_var('result') == '0') {?> selected<?php }?>><?php print __('Failed');?></option>
 						</select>
 					</td>
@@ -748,11 +749,7 @@ function utilities_view_user_log() {
 
 	/* filter by result */
 	if (get_request_var('result') != '-1') {
-		if (get_request_var('result') == 0) {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result IN (0, 3)';
-		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result=' . get_request_var('result');
-		}
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' ul.result=' . get_request_var('result');
 	}
 
 	/* filter by search string */
@@ -833,7 +830,7 @@ function utilities_view_user_log() {
 				<?php print filter_value($item['time'], get_request_var('filter'));?>
 			</td>
 			<td class='nowrap'>
-				<?php print ($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Pswd'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
+				<?php print ($item['result'] == 0 ? __('Failed'):($item['result'] == 1 ? __('Success - Password'):($item['result'] == 3 ? __('Success - Password Change'):__('Success - Token'))));?>
 			</td>
 			<td class='nowrap'>
 				<?php print filter_value($item['ip'], get_request_var('filter'));?>

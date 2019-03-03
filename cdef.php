@@ -326,6 +326,9 @@ function cdef_item_remove_confirm() {
 	get_filter_request_var('cdef_id');
 	/* ==================================================== */
 
+	/* sort the cdef functions */
+	asort($cdef_functions);
+
 	form_start('cdef.php');
 
 	html_start_box('', '100%', '', '3', 'center', '');
@@ -414,6 +417,9 @@ function item_edit() {
 	get_filter_request_var('id');
 	get_filter_request_var('cdef_id');
 	/* ==================================================== */
+
+	/* sort the cdef functions */
+	asort($cdef_functions);
 
 	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT *

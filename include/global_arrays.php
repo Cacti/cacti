@@ -391,6 +391,10 @@ $cdef_functions = array(1 =>
 	'LTIME'
 );
 
+if (cacti_version_compare(get_rrdtool_version(), '1.7.2', '>=')) {
+	$cdef_functions[] = 'ROUND';
+}
+
 $vdef_functions = array(1 =>
 	'MAXIMUM',
 	'MINIMUM',
@@ -774,6 +778,8 @@ $rrdtool_versions = array(
 	'1.5.0' => 'RRDtool 1.5+',
 	'1.6.0' => 'RRDtool 1.6+',
 	'1.7.0' => 'RRDtool 1.7+',
+	'1.7.1' => 'RRDtool 1.7.1+',
+	'1.7.2' => 'RRDtool 1.7.2+',
 	'1.8.0' => 'RRDtool 1.8+'
 );
 
