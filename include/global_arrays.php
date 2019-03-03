@@ -391,7 +391,7 @@ $cdef_functions = array(1 =>
 	'LTIME'
 );
 
-if (cacti_version_compare(get_rrdtool_version(), '1.7.2', '>=')) {
+if (cacti_version_compare(get_rrdtool_version(), '1.8.0', '>=')) {
 	$cdef_functions[] = 'ROUND';
 }
 
