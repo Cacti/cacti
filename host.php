@@ -1348,7 +1348,6 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_order
 		$sql_limit";
 
-	cacti_log($sql_query);
 	return db_fetch_assoc($sql_query);
 }
 
