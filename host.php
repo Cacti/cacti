@@ -1332,11 +1332,12 @@ function get_device_records(&$total_rows, $rows) {
 	$sql_limit = 'LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
 	$sql_query = "SELECT host.*, graphs, data_sources,
-		IF(availability_method = 0, '0',
-		IF(status_event_count > 0 AND status IN (1, 2), status_event_count*$poller_interval,
+		CAST(IF(availability_method = 0, '0',
+			IF(status_event_count > 0 AND status IN (1, 2), status_event_count*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) < 943916400 AND status IN (0, 3), total_polls*$poller_interval,
 			IF(UNIX_TIMESTAMP(status_rec_date) > 943916400, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(status_rec_date),
-			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()))))) AS instate
+			IF(snmp_sysUptimeInstance>0 AND snmp_version > 0, snmp_sysUptimeInstance/100, UNIX_TIMESTAMP()
+		))))) AS unsigned) AS instate
 		FROM host
 		LEFT JOIN (SELECT host_id, COUNT(*) AS graphs FROM graph_local GROUP BY host_id) AS gl
 		ON host.id=gl.host_id
@@ -1347,6 +1348,7 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_order
 		$sql_limit";
 
+	cacti_log($sql_query);
 	return db_fetch_assoc($sql_query);
 }
 
