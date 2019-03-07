@@ -24,7 +24,7 @@ Cacti CHANGELOG
 -issue#2482: When upgrading past 1.1.34, upgrade attempts to drop a non-existing primary key
 -issue#2491: Data Source Info suggests commands RRDTool can't honor
 -issue#2493: Data Source Info is not separated properly
--issue# Some missing i18n in User Login History
+-issue#2494: Some missing i18n in User Login History
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
