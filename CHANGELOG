@@ -22,6 +22,8 @@ Cacti CHANGELOG
 -issue#2479: CDEF and VDEF RPN Functions not Sorted
 -issue#2480: RRDtool Versions in Cacti not Granular Enough
 -issue#2482: When upgrading past 1.1.34, upgrade attempts to drop a non-existing primary key
+-issue#2491: Data Source Info suggests commands RRDTool can't honor
+-issue#2493: Data Source Info is not separated properly
 -issue# Some missing i18n in User Login History
 
 1.2.2

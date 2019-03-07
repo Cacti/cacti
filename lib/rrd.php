@@ -1839,7 +1839,8 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$cdef_string = str_replace('CURRENT_GRAPH_MINIMUM_VALUE', (empty($graph['lower_limit']) ? '0' : $graph['lower_limit']), $cdef_string);
 				$cdef_string = str_replace('CURRENT_GRAPH_MAXIMUM_VALUE', (empty($graph['upper_limit']) ? '0' : $graph['upper_limit']), $cdef_string);
 
-				if (strpos($cdef_string, '|query_ifHighSpeed|') !== false) {
+				if ((strpos($cdef_string, '|query_ifHighSpeed|') !== false) ||
+					(strpos($cdef_string, '|query_ifSpeed|') !== false)) {
 					$local_data = db_fetch_row_prepared('SELECT *
 						FROM data_local
 						WHERE id = ?',
@@ -1847,16 +1848,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					$speed = rrdtool_function_interface_speed($local_data);
 
-					$cdef_string = str_replace('|query_ifHighSpeed|', $speed, $cdef_string);
-				} elseif (strpos($cdef_string, '|query_ifSpeed|') !== false) {
-					$local_data = db_fetch_row_prepared('SELECT *
-						FROM data_local
-						WHERE id = ?',
-						array($graph_item['local_data_id']));
-
-					$speed = rrdtool_function_interface_speed($local_data);
-
-					$cdef_string = str_replace('|query_ifSpeed|', $speed, $cdef_string);
+					$cdef_string = str_replace(array('|query_ifHighSpeed|','|query_ifSpeed|'), array($speed, $speed), $cdef_string);
 				}
 
 				/* replace query variables in cdefs */
@@ -2605,19 +2597,24 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 				}
 
 				if ($data_source['rrd_minimum'] != $info['ds'][$ds_name]['min']) {
-					if ($data_source['rrd_minimum'] == 'U' && $info['ds'][$ds_name]['min'] == 'NaN') {
-						$data_source['rrd_minimum'] = 'NaN';
-					} else {
-						$diff['ds'][$ds_name]['min'] = __("RRD minimum for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
-						$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+					if (($data_source['rrd_minimum'] == '0' || $data_source['rrd_maximum'] == 'U') &&
+						$info['ds'][$ds_name]['min'] == 'NaN') {
+						$info['ds'][$ds_name]['min'] = 'U';
 					}
 				}
 
+				if ($data_source['rrd_minimum'] != $info['ds'][$ds_name]['min']) {
+					$diff['ds'][$ds_name]['min'] = __("RRD minimum for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
+					$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
+				}
+
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
-					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' || $data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
+					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' ||
+						$data_source['rrd_maximum'] == '|query_ifHighSpeed|') {
 						$data_source['rrd_maximum'] = $speed;
-					} elseif ($data_source['rrd_maximum'] == '0' || $data_source['rrd_maximum'] == 'U') {
-						$data_source['rrd_maximum'] = 'NaN';
+					} elseif (($data_source['rrd_maximum'] == '0' || $data_source['rrd_maximum'] == 'U') &&
+						$info['ds'][$ds_name]['max'] == 'NaN') {
+						$info['ds'][$ds_name]['max'] = 'U';
 					} else {
 						$data_source['rrd_maximum'] = substitute_snmp_query_data($data_source['rrd_maximum'], $data_local['host_id'], $data_local['snmp_query_id'], $data_local['snmp_index']);
 					}
@@ -2880,9 +2877,9 @@ function rrdtool_tune($rrd_file, $diff, $show_source = true) {
 	$cmd = array();
 	# for html/cli mode
 	if (CACTI_CLI) {
-		$nl = '<br/>';
-	} else {
 		$nl = "\n";
+	} else {
+		$nl = '<br/>';
 	}
 
 	if ($show_source && cacti_sizeof($diff)) {
