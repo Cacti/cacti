@@ -970,7 +970,7 @@ function template() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$template_list = db_fetch_assoc("SELECT dt.id, dt.name,
+	$template_list_sql = "SELECT dt.id, dt.name,
 		di.name AS data_input_method, dtd.active AS active, dsp.name AS profile_name,
 		SUM(CASE WHEN dtd.local_data_id>0 THEN 1 ELSE 0 END) AS data_sources
 		FROM data_template AS dt
@@ -984,7 +984,8 @@ function template() {
 		GROUP BY dt.id
 		$sql_having
 		$sql_order
-		$sql_limit");
+		$sql_limit";
+	$template_list = db_fetch_assoc($template_list_sql);
 
 	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Templates'), 'page', 'main');
 
@@ -1014,11 +1015,15 @@ function template() {
 				$disabled = false;
 			}
 
+			$ds_url = 'data_sources.php?reset=true&template_id=' . $template['id'];
+			if (get_request_var('profile') != '-1') {
+				$ds_url .= '&profile=' . get_request_var('profile');
+			}
 			form_alternate_row('line' . $template['id'], true, $disabled);
 			form_selectable_cell(filter_value($template['name'], get_request_var('filter'), 'data_templates.php?action=template_edit&id=' . $template['id']), $template['id']);
 			form_selectable_cell($template['id'], $template['id'], '', 'right');
 			form_selectable_cell($disabled ? __('No'):__('Yes'), $template['id'], '', 'right');
-			form_selectable_cell('<a class="linkEditMain" href="' . html_escape('data_sources.php?reset=true&template_id=' . $template['id']) . '">' . number_format_i18n($template['data_sources']) . '</a>', $template['id'], '', 'right');
+			form_selectable_cell('<a class="linkEditMain" href="' . html_escape($ds_url) . '">' . number_format_i18n($template['data_sources']) . '</a>', $template['id'], '', 'right');
 			form_selectable_cell((empty($template['data_input_method']) ? '<em>' . __('None') .'</em>': html_escape($template['data_input_method'])), $template['id']);
 			form_selectable_cell((empty($template['profile_name']) ? __('External'):html_escape($template['profile_name'])), $template['id']);
 			form_selectable_cell((($template['active'] == 'on') ? __('Active'):__('Disabled')), $template['id']);
