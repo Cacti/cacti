@@ -205,6 +205,10 @@ if (cacti_sizeof($parms)) {
 				$avail = AVAIL_SNMP_AND_PING;
 
 				break;
+			case 'pingorsnmp':
+				$avail = AVAIL_SNMP_OR_PING;
+				
+				break;
 			default:
 				print "ERROR: Invalid Availability Parameter: ($value)\n\n";
 				display_help();
@@ -478,7 +482,7 @@ function display_help() {
 	print "    --poller       0, numeric poller id that will perform data collection for the device.\n";
 	print "    --site         0, numeric site id that will be associated with the device.\n";
 	print "    --threads      1, numeric number of threads to poll device with.\n";
-	print "    --avail        pingsnmp, [ping][none, snmp, pingsnmp]\n";
+	print "    --avail        pingsnmp, [ping][none, snmp, pingsnmp, pingorsnmp]\n";
 	print "    --ping_method  tcp, icmp|tcp|udp\n";
 	print "    --ping_port    '', 1-65534\n";
 	print "    --ping_retries 2, the number of time to attempt to communicate with a host\n";
