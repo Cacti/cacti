@@ -1187,8 +1187,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		return $graph_data;
 	}
 
-	if (empty($graph_data_array['graph_start']) || empty($graph_data_array['graph_end'])) {
+	if (empty($graph_data_array['graph_start'])) {
 		$graph_data_array['graph_start'] = -86400;
+	}
+
+	if (empty($graph_data_array['graph_end'])) {
 		$graph_data_array['graph_end']   = -300;
 	}
 
