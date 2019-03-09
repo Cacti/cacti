@@ -30,6 +30,8 @@ $actions = array(
 	2 => __('Delete Check')
 );
 
+ini_set('memory_limit', '-1');
+
 set_default_action();
 
 switch (get_request_var('action')) {
