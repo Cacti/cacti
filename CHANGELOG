@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#2493: Data Source Info is not separated properly
 -issue#2494: Some missing i18n in User Login History
 -issue#2497: Graph URL's missing either graph_start or graph_end but not both result in both taking defaults
+-issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function

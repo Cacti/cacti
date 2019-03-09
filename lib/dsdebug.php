@@ -143,8 +143,8 @@ function dsdebug_poller_bottom() {
 	/* take time and log performance data */
 	$start = microtime(true);
 
-	$checks = db_fetch_assoc('SELECT * 
-		FROM data_debug 
+	$checks = db_fetch_assoc('SELECT *
+		FROM data_debug
 		WHERE `done` = 0');
 
 	if (!empty($checks)) {
@@ -155,9 +155,9 @@ function dsdebug_poller_bottom() {
 			$c['issue'] = array();
 			$info = unserialize($c['info']);
 
-			$dtd = db_fetch_row_prepared('SELECT * 
-				FROM data_template_data 
-				WHERE local_data_id = ?', 
+			$dtd = db_fetch_row_prepared('SELECT *
+				FROM data_template_data
+				WHERE local_data_id = ?',
 				array($c['datasource']));
 
 			if (!isset($dtd['local_data_id'])) {
@@ -222,8 +222,8 @@ function dsdebug_poller_bottom() {
 				$info['rrd_info']        = $rrdinfo;
 
 				// rra_timestamp
-				if ($info['rra_timestamp'] != '' 
-					&& isset($rrdinfo['last_update']) 
+				if ($info['rra_timestamp'] != ''
+					&& isset($rrdinfo['last_update'])
 					&& $info['rra_timestamp'] != $rrdinfo['last_update']) {
 
 					$info['rra_timestamp2'] = $rrdinfo['last_update'];
@@ -276,7 +276,7 @@ function dsdebug_poller_bottom() {
 				// For errors that only appear after so many errors next
 				if ($c['done'] == 1) {
 					if ($info['rrd_match'] == 0) {
-						$c['issue'][] = __('RRDfile does not match Data Profile');
+						$c['issue'][] = __('RRDfile does not match Data Source');
 						$total_issues++;
 					}
 
@@ -305,9 +305,9 @@ function dsdebug_poller_bottom() {
 
 			$info = serialize($info);
 
-			db_execute_prepared('UPDATE data_debug 
-				SET `done` = ?, `info` = ?, `issue` = ? 
-				WHERE id = ?', 
+			db_execute_prepared('UPDATE data_debug
+				SET `done` = ?, `info` = ?, `issue` = ?
+				WHERE id = ?',
 				array($c['done'], $info, trim(implode("\n", $c['issue'])), $c['id']));
 		}
 
@@ -315,5 +315,51 @@ function dsdebug_poller_bottom() {
 	}
 
 	restore_error_handler();
+}
+
+function dsdebug_run_repair($id) {
+	$check = db_fetch_row_prepared('SELECT *
+		FROM data_debug
+		WHERE datasource = ?',
+		array($id));
+
+	if (cacti_sizeof($check)) {
+		$check['info'] = unserialize($check['info']);
+
+		if (isset($check['info']['rrd_match_array']['tune'])) {
+			$path = get_data_source_path($id, true);
+
+			if (is_writeable($path)) {
+				$rrdtool_path = read_config_option('path_rrdtool');
+				$failures = 0;
+				$failure_data = '';
+
+				foreach($check['info']['rrd_match_array']['tune'] AS $options) {
+					$command    = $rrdtool_path . ' tune ' . $options;
+
+					$output = rrdtool_execute('tune ' . $options, false, RRDTOOL_OUTPUT_RETURN_STDERR);
+
+					if ($output == '') {
+						cacti_log("RRDfile repair command succeeded for DS[$id] Command[$command]", false, 'DSDEBUG');
+					} else {
+						cacti_log("ERROR: RRDfile repair command failed for DS[$id] Command[$command] Output[$output]", false, 'DSDEBUG');
+						$failures++;
+					}
+				}
+
+				if ($failures == 0) {
+					return true;
+				}
+			} else {
+				cacti_log("ERROR: RRDfile Repair Command Failed for DS[$id] Output[Unable to write RRDfile]", false, 'DSDEBUG');
+			}
+		} else {
+			cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No tune recommendation found]", false, 'DSDEBUG');
+		}
+	} else {
+		cacti_log("ERROR: RRDfile Repair Command Could not be run for DS[$id] Output[No Data Source debug information found]", false, 'DSDEBUG');
+	}
+
+	return false;
 }
 

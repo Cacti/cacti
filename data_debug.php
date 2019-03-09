@@ -24,6 +24,8 @@
 */
 
 include_once('include/auth.php');
+include_once('lib/rrd.php');
+include_once('lib/dsdebug.php');
 
 $actions = array(
 	1 => __('Run Check'),
@@ -37,11 +39,71 @@ set_default_action();
 switch (get_request_var('action')) {
 	case 'actions':
 		form_actions();
+
+		break;
+	case 'run_debug':
+		$id = get_filter_request_var('id');
+
+		if ($id > 0) {
+			$selected_items = array($id);
+			debug_delete($selected_items);
+			debug_rerun($selected_items);
+			raise_message('rerun', __('Data Source debug started.'), MESSAGE_LEVEL_INFO);
+			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+		} else {
+			raise_message('repair_error', __('Data Source debug received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
+		}
+
+		break;
+	case 'run_repair':
+		$id = get_filter_request_var('id');
+
+		if ($id > 0) {
+			if (dsdebug_run_repair($id)) {
+				raise_message('repair', __('All RRDfile repairs succeeded.'), MESSAGE_LEVEL_INFO);
+			} else {
+				raise_message('repair', __('One or more RRDfile repairs failed.  See Cacti log for errors.'), MESSAGE_LEVEL_ERROR);
+			}
+
+			$selected_items = array($id);
+
+			debug_delete($selected_items);
+			debug_rerun($selected_items);
+
+			raise_message('rerun', __('Automatic Data Source debug being rerun after repair.'), MESSAGE_LEVEL_INFO);
+
+			header('Location: data_debug.php?action=view&id=' . get_filter_request_var('id'));
+		} else {
+			raise_message('repair_error', __('Data Source repair received an invalid Data Source ID.'), MESSAGE_LEVEL_ERROR);
+		}
+
 		break;
 	case 'view':
+		$id = get_filter_request_var('id');
+
+		$debug_status = debug_process_status($id);
+
+		if ($debug_status == 'notset') {
+			$selected_items = array($id);
+			debug_delete($selected_items);
+			debug_rerun($selected_items);
+			$debug_status = 'waiting';
+		}
+
+		if ($debug_status == 'waiting' || $debug_status == 'analysis') {
+			$refresh = array(
+				'seconds' => 30,
+				'page'    => 'data_debug.php?action=view&id=' . $id . '&header=false',
+				'logout'  => 'false'
+			);
+
+			set_page_refresh($refresh);
+		}
+
 		top_header();
 		debug_view();
 		bottom_footer();
+
 		break;
 	case 'ajax_hosts':
 		$sql_where = '';
@@ -53,7 +115,6 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_hosts_noany':
-
 		$sql_where = '';
 		if (get_request_var('site_id') > 0) {
 			$sql_where = 'site_id = ' . get_request_var('site_id');
@@ -77,6 +138,23 @@ switch (get_request_var('action')) {
 		debug_wizard();
 		bottom_footer();
 		break;
+}
+
+function debug_process_status($id) {
+	$status = db_fetch_row_prepared('SELECT done, IFNULL(issue, "waiting") AS issue
+		FROM data_debug
+		WHERE datasource = ?',
+		array($id));
+
+	if (cacti_sizeof($status) == 0) {
+		return 'notset';
+	} elseif ($status['issue'] == 'waiting') {
+		return 'waiting';
+	} elseif ($status['done'] == 1) {
+		return 'complete';
+	} else {
+		return 'analysis';
+	}
 }
 
 function form_actions() {
@@ -104,11 +182,12 @@ function form_actions() {
 		if (isset_request_var('save_list')) {
 			if (get_request_var('drp_action') == '2') { /* delete */
 				debug_delete($selected_items);
+				header('Location: data_debug.php?header=false');
 			} elseif (get_request_var('drp_action') == '1') { /* Rerun */
 				debug_rerun($selected_items);
+				header('Location: data_debug.php?header=false&debug=1');
 			}
 
-			header('Location: data_debug.php?header=false&debug=1');
 			exit;
 		}
 	}
@@ -162,9 +241,6 @@ function debug_rerun($selected_items) {
 			}
 		}
 	}
-
-	header('Location: data_debug.php?header=false');
-	exit;
 }
 
 function debug_delete($selected_items) {
@@ -176,9 +252,6 @@ function debug_delete($selected_items) {
 				array($id));
 		}
 	}
-
-	header('Location: data_debug.php?header=false');
-	exit;
 }
 
 function validate_request_vars() {
@@ -318,10 +391,10 @@ function debug_wizard() {
 			'tip'     => __('Determines if the RRDfile has been writted to properly.'),
 		),
 		'nosort8' => array(
-			'display' => __('Issue'),
+			'display' => __('Issues'),
 			'align'   => 'right',
 			'sort'    => '',
-			'tip'     => __('Any summary issues found for the Data Source.'),
+			'tip'     => __('Summary of issues found for the Data Source.'),
 		)
 	);
 
@@ -530,6 +603,8 @@ function debug_view() {
 		WHERE datasource = ?',
 		array($id));
 
+	$check_exists = cacti_sizeof($check);
+
 	if (isset($check) && is_array($check)) {
 		$check['info'] = unserialize($check['info']);
 	}
@@ -544,7 +619,7 @@ function debug_view() {
 	$poller_data = array();
 	if (!empty($check['info']['last_result'])) {
 		foreach ($check['info']['last_result'] as $a => $l) {
-			$poller_data[] = "$a: $l";
+			$poller_data[] = "$a = $l";
 		}
 	}
 	$poller_data = implode('<br>', $poller_data);
@@ -554,9 +629,40 @@ function debug_view() {
 		$rra_updated = $check['info']['rra_timestamp2'] != '' ? __('Yes') : '';
 	}
 
+	$rrd_exists = '';
+	if (isset($check['info']['rrd_exists'])) {
+		$rrd_exists = $check['info']['rrd_exists'] == '1' ? __('Yes') : __('Not Checked Yet');
+	}
+
+	$active = '';
+	if (isset($check['info']['active'])) {
+		$active = $check['info']['active'] == 'on' ? __('Yes') : __('Not Checked Yet');
+	}
+
 	$issue = '';
 	if (isset($check['issue'])) {
 		$issue = $check['issue'];
+	}
+
+	if ($check['done'] == 1) {
+		if ($issue != '') {
+			$issue_icon = debug_icon(0);
+		} else {
+			$issue_icon = debug_icon(1);
+		}
+	} else {
+		if (isset($check['info']['rrd_match_array']['ds'])) {
+			if ($check['info']['rrd_match'] == 0) {
+				$issue_icon = debug_icon('blah');
+				$issue = __('Issues found!  Waiting on RRDfile update');
+			} else {
+				$issue_icon = debug_icon('');
+				$issue = __('No Initial found!  Waiting on RRDfile update');
+			}
+		} else {
+			$issue_icon = debug_icon('');
+			$issue = __('Waiting on analysis and RRDfile update');
+		}
 	}
 
 	$fields = array(
@@ -567,11 +673,13 @@ function debug_view() {
 		),
 		array(
 			'name' => 'runas_website',
-			'title' => __('Website runs as')
+			'title' => __('Website runs as'),
+			'icon' => '-'
 		),
 		array(
 			'name' => 'runas_poller',
-			'title' => __('Poller runs as')
+			'title' => __('Poller runs as'),
+			'icon' => '-'
 		),
 		array(
 			'name' => 'rrd_folder_writable',
@@ -585,11 +693,13 @@ function debug_view() {
 		),
 		array(
 			'name' => 'rrd_exists',
-			'title' => __('Does the RRDfile Exist?')
+			'title' => __('Does the RRDfile Exist?'),
+			'value' => $rrd_exists
 		),
 		array(
 			'name' => 'active',
-			'title' => __('Is the Data Source set as Active?')
+			'title' => __('Is the Data Source set as Active?'),
+			'value' => $active
 		),
 		array(
 			'name' => 'last_result',
@@ -619,18 +729,26 @@ function debug_view() {
 		),
 		array(
 			'name' => 'rrd_match',
-			'title' => __('Does the RRA Profile match the RRDfile structure?'),
+			'title' => __('Data Source matches the RRDfile?'),
 			'value' => ''
 		),
 		array(
 			'name' => 'issue',
-			'title' => __('Issue'),
+			'title' => __('Issues'),
 			'value' => $issue,
-			'icon' => '-'
+			'icon' => $issue_icon
 		),
 	);
 
-	html_start_box(__('Data Source Troubleshooter'), '', '', '2', 'center', '');
+	$debug_status = debug_process_status($id);
+
+	if ($debug_status == 'waiting') {
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till Complete ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', '', '3', 'center', '');
+	} elseif ($debug_status == 'analysis') {
+		html_start_box(__('Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s', '<i class="reloadquery fa fa-sync" data-id="' . $id . '" title="' . __esc('Refresh Now') . '"></i>'), '100%', '', '3', 'center', '');
+	} else {
+		html_start_box(__('Data Source Troubleshooter [ Analysis Complete! %s ]', '<a href="#" class="rerun linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Rerun Analysis') . '</a>'), '100%', '', '3', 'center', '');
+	}
 
 	html_header(
 		array(
@@ -652,7 +770,11 @@ function debug_view() {
 
 		if (array_key_exists($field_name, $check['info'])) {
 			$value = $check['info'][$field_name];
-			$icon  = debug_icon($check['info'][$field_name]);
+			if ($field_name == 'last_result') {
+				$icon  = debug_icon_valid_result($value);
+			} else {
+				$icon  = debug_icon($value);
+			}
 		}
 
 		if (array_key_exists('value', $field)) {
@@ -675,7 +797,113 @@ function debug_view() {
 		$i++;
 	}
 
-	html_end_box(false);
+	html_end_box();
+
+	if ($check_exists > 0 && isset($check['info']['rrd_match_array']['ds']) && $check['info']['rrd_match'] == 0) {
+		html_start_box(__('Data Source Repair Recommendations'), '', '', '2', 'center', '');
+
+		html_header(
+			array(
+				__('Data Source'),
+				__('Issue')
+			)
+		);
+
+		if (isset($check['info']['rrd_match_array']['ds'])) {
+			$i = 0;
+			foreach($check['info']['rrd_match_array']['ds'] AS $data_source => $details) {
+				form_alternate_row('line2_' . $i, true);
+				form_selectable_cell($data_source, $i);
+
+				$output = '';
+				foreach($details as $attribute => $recommendation) {
+					$output .= __('For attrbitute \'%s\', issue found \'%s\'', $attribute, $recommendation);
+				}
+
+				form_selectable_cell($output, 'line_2' . $i);
+				form_end_row();
+				$i++;
+			}
+		}
+
+		html_end_box();
+
+		if (isset($check['info']['rrd_match_array']['tune'])) {
+			$path = get_data_source_path($id, true);
+
+			if (is_writeable($path)) {
+				html_start_box(__('Repair Steps [ %s ]', '<a href="#" class="repairme linkEditMain" data-id="' . $id . '" style="cursor:pointer;">' . __('Apply Suggested Fixes') . '</a>'), '', '', '2', 'center', '');
+			} else {
+				html_start_box(__('Repair Steps [ Run Fix from Command Line ]', $path), '', '', '2', 'center', '');
+			}
+
+			html_header(array(__('Command')));
+			$rrdtool_path = read_config_option('path_rrdtool');
+
+			$i = 0;
+			foreach($check['info']['rrd_match_array']['tune'] AS $options) {
+				form_alternate_row('line3_' . $i, true);
+				form_selectable_cell($rrdtool_path . ' tune ' . $options, 'line3_' . $i);
+				form_end_row();
+				$i++;
+			}
+
+			html_end_box();
+		}
+	} else {
+		html_start_box(__('Data Source Repair Recommendations'), '', '', '2', 'center', '');
+		form_alternate_row('line3_0', true);
+		form_selectable_cell(__('Waiting on Data Source Check to Complete'), 'line3_0');
+		form_end_row();
+		html_end_box();
+	}
+
+	?>
+	<script type='text/javascript'>
+	$(function() {
+		$('.repairme').click(function(event) {
+			event.preventDefault();
+			id = $(this).attr('data-id');
+			loadPage('data_debug.php?action=run_repair&id=' + id);
+		});
+
+		$('.reloadquery').click(function() {
+			id = $(this).attr('data-id');
+			loadPage('data_debug.php?action=view&id=' + id);
+		});
+
+		$('.rerun').click(function(event) {
+			event.preventDefault();
+			id = $(this).attr('data-id');
+			loadPage('data_debug.php?action=run_debug&id=' + id);
+		});
+	});
+	</script>
+	<?php
+}
+
+function debug_icon_valid_result($result) {
+	if ($result === '' || $result === false) {
+		return '<i class="fa fa-spinner fa-pulse fa-fw"></i>';
+	}
+
+	if ($result === '-') {
+		return '<i class="fa fa-info-circle"></i>';
+	}
+
+	if (is_array($result)) {
+		foreach($result as $variable => $value) {
+			if (!prepare_validate_result($value)) {
+				return '<i class="fa fa-times" style="color:red"></i>';
+			}
+		}
+
+		return '<i class="fa fa-check" style="color:green"></i>';
+	} elseif (prepare_validate_result($result)) {
+		return '<i class="fa fa-check" style="color:green"></i>';
+	} else {
+		return '<i class="fa fa-times" style="color:red"></i>';
+	}
 }
 
 function debug_icon($result) {
@@ -707,7 +935,7 @@ function data_debug_filter() {
 		$host_where = '';
 	}
 
-	html_start_box(__('Data Source Troubleshooter [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', '');
+	html_start_box(__('Data Source Troubleshooter [ %s ]', (empty($host['hostname']) ? (get_request_var('host_id') == -1 ? __('All Devices') :__('No Device')) : html_escape($host['hostname']))), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

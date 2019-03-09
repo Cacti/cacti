@@ -263,7 +263,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* if we want to see the error output from rrdtool; make sure to specify this */
 	if ($config['cacti_server_os'] != 'win32') {
-		if ($output_flag == RRDTOOL_OUTPUT_STDERR && !is_resource($rrdtool_pipe)) {
+		if (($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) && !is_resource($rrdtool_pipe)) {
 			$command_line .= ' 2>&1';
 		}
 	}
@@ -285,6 +285,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 		session_write_close();
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
+cacti_log(read_config_option('path_rrdtool') . escape_command(" $command_line"));
 			$fp = popen(read_config_option('path_rrdtool') . escape_command(" $command_line"), $pipe_mode);
 			if (!is_resource($fp)) {
 				unset($fp);
@@ -343,6 +344,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			return $output;
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
+		case RRDTOOL_OUTPUT_RETURN_STDERR:
 			$output = fgets($fp, 1000000);
 
 			pclose($fp);
@@ -359,7 +361,12 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				return 'SVG/XML Output OK';
 			}
 
-			print $output;
+			if ($output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) {
+				return $output;
+			} else {
+				print $output;
+			}
+
 			break;
 		default:
 		case RRDTOOL_OUTPUT_NULL:
@@ -2810,20 +2817,24 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
 
 			if (isset($value['min'])) {
-				if (!is_numeric($value['min'])) {
-					form_selectable_cell($value['min'], 'min', '', ($value == ’U’ ? '':'color:red;') . 'text-align:right');
+				if ($value['min'] == 'U') {
+					form_selectable_cell($value['min'], 'min', '', 'right');
+				} elseif (is_numeric($value['min'])) {
+					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'right');
 				} else {
-					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'text-align:right');
+					form_selectable_cell($value['min'], 'min', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'min', '', 'color:red;text-align:right');
 			}
 
 			if (isset($value['max'])) {
-				if (!is_numeric($value['max'])) {
-					form_selectable_cell($value['max'], 'max', '', ($value == ’U’ ? '':'color:red;') . 'text-align:right');
+				if ($value['max'] == 'U') {
+					form_selectable_cell($value['max'], 'max', '', 'right');
+				} elseif (is_numeric($value['max'])) {
+					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'right');
 				} else {
-					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'text-align:right');
+					form_selectable_cell($value['max'], 'max', '', 'color:red;text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');

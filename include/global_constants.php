@@ -46,6 +46,7 @@ define('RRDTOOL_OUTPUT_STDOUT', 1);
 define('RRDTOOL_OUTPUT_STDERR', 2);
 define('RRDTOOL_OUTPUT_GRAPH_DATA', 3);
 define('RRDTOOL_OUTPUT_BOOLEAN', 4);
+define('RRDTOOL_OUTPUT_RETURN_STDERR', 5);
 
 define('RRD_FONT_RENDER_NORMAL',  'normal');
 define('RRD_FONT_RENDER_LIGHT',   'light');
