@@ -2810,20 +2810,20 @@ function rrdtool_info2html($info_array, $diff=array()) {
 			form_selectable_cell((isset($value['minimal_heartbeat']) ? $value['minimal_heartbeat'] : ''), 'minimal_heartbeat', '', (isset($diff['ds'][$key]['minimal_heartbeat']) ? 'color:red, text-align:right' : 'text-align:right'));
 
 			if (isset($value['min'])) {
-				if ($value['min'] == 'U') {
-					form_selectable_cell($value['min'], 'min', '', 'right');
+				if (!is_numeric($value['min'])) {
+					form_selectable_cell($value['min'], 'min', '', ($value == ’U’ ? '':'color:red;') . 'text-align:right');
 				} else {
-					form_selectable_cell(is_numeric($value['min']) ? number_format_i18n($value['min']) : $value['min'], 'min', '', !is_numeric($value['min']) ? 'color:red;text-align:right' : 'right');
+					form_selectable_cell(number_format_i18n($value['min']), 'min', '', 'text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'min', '', 'color:red;text-align:right');
 			}
 
 			if (isset($value['max'])) {
-				if ($value['max'] == 'U') {
-					form_selectable_cell($value['max'], 'max', '', 'right');
+				if (!is_numeric($value['max'])) {
+					form_selectable_cell($value['max'], 'max', '', ($value == ’U’ ? '':'color:red;') . 'text-align:right');
 				} else {
-					form_selectable_cell(is_numeric($value['max']) ? number_format_i18n($value['max']) : $value['max'], 'max', '', !is_numeric($value['max']) ? 'color:red;text-align:right' : 'right');
+					form_selectable_cell(number_format_i18n($value['max']), 'max', '', 'text-align:right');
 				}
 			} else {
 				form_selectable_cell(__('Unknown'), 'max', '', 'color:red;text-align:right');
