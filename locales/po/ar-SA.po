@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 09:38-0400\n"
-"PO-Revision-Date: 2019-03-10 09:43-0400\n"
+"POT-Creation-Date: 2019-03-10 11:18-0400\n"
+"PO-Revision-Date: 2019-03-10 11:20-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ar_SA\n"
@@ -19,7 +19,7 @@ msgstr ""
 "n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2383 lib/html.php:2309
+#: about.php:29 include/global_arrays.php:2387 lib/html.php:2309
 #, fuzzy
 msgid "About Cacti"
 msgstr "حول الصبار"
@@ -116,11 +116,11 @@ msgstr ""
 #: color_templates.php:28 color_templates.php:122 data_input.php:32
 #: data_input.php:664 data_input.php:706 data_queries.php:31 data_queries.php:820
 #: data_queries.php:920 data_queries.php:1175 data_source_profiles.php:30
-#: data_source_profiles.php:599 data_sources.php:36 data_sources.php:1035
-#: data_templates.php:34 data_templates.php:642 gprint_presets.php:28
+#: data_source_profiles.php:599 data_sources.php:36 data_sources.php:1053
+#: data_templates.php:34 data_templates.php:661 gprint_presets.php:28
 #: graph_templates.php:34 graph_templates.php:468 graphs.php:47 host.php:40
 #: host_templates.php:32 host_templates.php:502 host_templates.php:559
-#: include/global_arrays.php:1439 include/global_settings.php:238
+#: include/global_arrays.php:1443 include/global_settings.php:238
 #: lib/api_automation.php:1322 lib/api_automation.php:1384
 #: lib/api_automation.php:1452 lib/html.php:1166 lib/html_form.php:1249
 #: lib/html_reports.php:1424 links.php:28 managers.php:28 pollers.php:33
@@ -175,10 +175,10 @@ msgstr ""
 #: color_templates.php:242 color_templates_items.php:264 data_input.php:305
 #: data_input.php:357 data_queries.php:410 data_queries.php:573
 #: data_source_profiles.php:281 data_source_profiles.php:291
-#: data_source_profiles.php:343 data_sources.php:500 data_sources.php:510
-#: data_sources.php:519 data_sources.php:528 data_sources.php:537
-#: data_sources.php:543 data_templates.php:364 data_templates.php:374
-#: data_templates.php:390 gprint_presets.php:153 graph_templates.php:344
+#: data_source_profiles.php:343 data_sources.php:518 data_sources.php:528
+#: data_sources.php:537 data_sources.php:546 data_sources.php:555
+#: data_sources.php:561 data_templates.php:383 data_templates.php:393
+#: data_templates.php:409 gprint_presets.php:153 graph_templates.php:344
 #: graph_templates.php:354 graph_templates.php:374 graph_templates.php:383
 #: graph_view.php:888 graphs.php:922 graphs.php:938 graphs.php:949 graphs.php:960
 #: graphs.php:975 graphs.php:989 graphs.php:998 graphs.php:1124 graphs.php:1167
@@ -209,10 +209,10 @@ msgstr "إلغاء"
 #: color_templates.php:242 color_templates_items.php:265 data_input.php:305
 #: data_input.php:358 data_queries.php:410 data_queries.php:574
 #: data_source_profiles.php:281 data_source_profiles.php:291
-#: data_source_profiles.php:344 data_sources.php:500 data_sources.php:510
-#: data_sources.php:519 data_sources.php:528 data_sources.php:537
-#: data_sources.php:543 data_templates.php:364 data_templates.php:374
-#: data_templates.php:390 gprint_presets.php:153 graph_templates.php:344
+#: data_source_profiles.php:344 data_sources.php:518 data_sources.php:528
+#: data_sources.php:537 data_sources.php:546 data_sources.php:555
+#: data_sources.php:561 data_templates.php:383 data_templates.php:393
+#: data_templates.php:409 gprint_presets.php:153 graph_templates.php:344
 #: graph_templates.php:354 graph_templates.php:374 graph_templates.php:383
 #: graphs.php:922 graphs.php:938 graphs.php:949 graphs.php:960 graphs.php:975
 #: graphs.php:989 graphs.php:998 graphs.php:1124 graphs.php:1167 graphs.php:1189
@@ -490,8 +490,8 @@ msgstr "مطابقة الرسوم البيانية"
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
 #: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
-#: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1395
-#: data_templates.php:845 gprint_presets.php:263 graph_templates.php:657
+#: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1413
+#: data_templates.php:864 gprint_presets.php:263 graph_templates.php:657
 #: graph_view.php:586 graphs.php:1877 graphs_new.php:389 host.php:1501
 #: host_templates.php:721 lib/api_automation.php:141 lib/api_automation.php:472
 #: lib/api_automation.php:706 lib/api_automation.php:1064 lib/clog_webapi.php:561
@@ -513,8 +513,8 @@ msgstr "بحث"
 #: aggregate_graphs.php:1097 aggregate_graphs.php:1194 aggregate_graphs.php:1447
 #: color_templates.php:561 graph_view.php:452 graph_view.php:645
 #: graph_view.php:694 graphs.php:1883 graphs.php:1996 host.php:1565
-#: include/global_arrays.php:864 include/global_arrays.php:1057
-#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1564
+#: include/global_arrays.php:868 include/global_arrays.php:1061
+#: include/global_arrays.php:1803 lib/api_automation.php:281 lib/html.php:1564
 #: lib/html.php:1566 lib/html.php:1644 lib/html_graph.php:209
 #: lib/html_tree.php:1005 lib/html_tree.php:1316 tree.php:787 tree.php:1985
 #: user_admin.php:1004 user_admin.php:1270 user_admin.php:2621
@@ -531,7 +531,7 @@ msgstr "الرسوم البيانية"
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
 #: color_templates.php:464 data_debug.php:1056 data_input.php:813
 #: data_queries.php:1287 data_source_profiles.php:844
-#: data_source_profiles.php:965 data_sources.php:1405 data_templates.php:871
+#: data_source_profiles.php:965 data_sources.php:1423 data_templates.php:890
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:649
 #: graphs.php:1887 graphs_new.php:399 host.php:1526 host_templates.php:731
 #: include/global_form.php:212 lib/api_automation.php:184
@@ -560,8 +560,8 @@ msgstr "جزء من التجميع"
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
 #: color_templates.php:486 data_debug.php:975 data_input.php:825
-#: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1345
-#: data_templates.php:889 gprint_presets.php:291 graph_templates.php:685
+#: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1363
+#: data_templates.php:908 gprint_presets.php:291 graph_templates.php:685
 #: graph_view.php:594 graphs.php:1868 graphs_new.php:378 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119 lib/clog_webapi.php:509
@@ -577,7 +577,7 @@ msgstr "أذهب"
 #: aggregate_graphs.php:1119 aggregate_graphs.php:1463 automation_devices.php:476
 #: automation_snmp.php:682 automation_templates.php:416 cdef.php:785
 #: color.php:564 data_debug.php:975 data_input.php:825 data_queries.php:1299
-#: data_source_profiles.php:862 data_sources.php:1345 data_templates.php:889
+#: data_source_profiles.php:862 data_sources.php:1363 data_templates.php:908
 #: gprint_presets.php:291 graph_templates.php:685 graph_view.php:594
 #: graphs.php:1868 graphs_new.php:378 host.php:1491 host_templates.php:749
 #: lib/html_graph.php:190 managers.php:172 managers.php:516 managers.php:746
@@ -599,8 +599,8 @@ msgstr "مجموعة / تحديث الفلاتر"
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
 #: color_templates.php:487 data_debug.php:976 data_input.php:826
-#: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1346
-#: data_templates.php:890 gprint_presets.php:292 graph_templates.php:686
+#: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1364
+#: data_templates.php:909 gprint_presets.php:292 graph_templates.php:686
 #: graph_view.php:595 graphs.php:1869 graphs_new.php:379 host.php:1492
 #: host_templates.php:750 lib/api_automation.php:197 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1120 lib/clog_webapi.php:510
@@ -617,7 +617,7 @@ msgstr "واضح"
 #: aggregate_graphs.php:1120 aggregate_graphs.php:1464 automation_snmp.php:683
 #: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
 #: data_input.php:826 data_queries.php:1300 data_source_profiles.php:863
-#: data_sources.php:1346 data_templates.php:890 gprint_presets.php:292
+#: data_sources.php:1364 data_templates.php:909 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:595 graphs.php:1869 graphs_new.php:379
 #: host.php:1492 host_templates.php:750 lib/html_graph.php:191
 #: lib/html_tree.php:993 managers.php:173 managers.php:517 managers.php:747
@@ -642,8 +642,8 @@ msgstr "عنوان الرسم البياني"
 
 #: aggregate_graphs.php:1200 aggregate_graphs.php:1528
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:346 data_queries.php:1383 data_sources.php:1529
-#: data_templates.php:1000 graph_templates.php:793 graphs.php:2018 host.php:1559
+#: data_debug.php:346 data_queries.php:1383 data_sources.php:1547
+#: data_templates.php:1019 graph_templates.php:793 graphs.php:2018 host.php:1559
 #: host_templates.php:838 lib/api_automation.php:280 pollers.php:830
 #: sites.php:521 tree.php:1975 user_admin.php:1012 user_admin.php:1125
 #: user_admin.php:1270 user_admin.php:1418 user_admin.php:1559
@@ -666,7 +666,7 @@ msgstr "مداخل خلفية الحجم"
 #: automation_tree_rules.php:689 cdef.php:906 color.php:726 color.php:728
 #: color_templates.php:578 data_input.php:925 data_queries.php:1403
 #: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1598 data_sources.php:1599 data_templates.php:1025
+#: data_sources.php:1616 data_sources.php:1617 data_templates.php:1044
 #: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
 #: include/global_settings.php:753 include/global_settings.php:1470
 #: lib/api_automation.php:1433 links.php:403 tree.php:2013 tree.php:2014
@@ -680,8 +680,8 @@ msgstr "لا"
 #: color_templates.php:578 data_debug.php:629 data_debug.php:634
 #: data_debug.php:639 data_input.php:925 data_queries.php:1403
 #: data_source_profiles.php:1004 data_source_profiles.php:1005
-#: data_source_profiles.php:1006 data_sources.php:1598 data_sources.php:1599
-#: data_templates.php:1025 gprint_presets.php:414 graph_templates.php:814
+#: data_source_profiles.php:1006 data_sources.php:1616 data_sources.php:1617
+#: data_templates.php:1044 gprint_presets.php:414 graph_templates.php:814
 #: host_templates.php:857 include/global_settings.php:752
 #: include/global_settings.php:1469 lib/api_automation.php:1433
 #: lib/installer.php:1694 lib/installer.php:1722 lib/installer.php:3179
@@ -697,12 +697,12 @@ msgid "No Graphs Found"
 msgstr "لا توجد الرسوم البيانية"
 
 #: aggregate_graphs.php:1410 aggregate_graphs.php:1518
-#: include/global_arrays.php:2509
+#: include/global_arrays.php:2513
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "الرسوم البيانية الإجمالية"
 
-#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1319
+#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1337
 #: graph_view.php:607 graphs.php:1833 graphs.php:2007 host.php:1472
 #: include/global_settings.php:502 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
@@ -715,7 +715,7 @@ msgstr "قالب"
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
-#: data_debug.php:953 data_sources.php:1323 graphs.php:1837 graphs_items.php:331
+#: data_debug.php:953 data_sources.php:1341 graphs.php:1837 graphs_items.php:331
 #: host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
@@ -732,13 +732,13 @@ msgstr "الجميع"
 #: aggregate_graphs.php:1430 aggregate_graphs.php:1542
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
-#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:899
-#: data_sources.php:1324 data_sources.php:1584 data_templates.php:1027
+#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:917
+#: data_sources.php:1342 data_sources.php:1602 data_templates.php:1046
 #: graphs.php:1467 graphs.php:1476 graphs.php:1838 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
-#: include/global_arrays.php:438 include/global_arrays.php:496
-#: include/global_arrays.php:579 include/global_arrays.php:764
-#: include/global_arrays.php:1526 include/global_form.php:544
+#: include/global_arrays.php:442 include/global_arrays.php:500
+#: include/global_arrays.php:583 include/global_arrays.php:768
+#: include/global_arrays.php:1530 include/global_form.php:544
 #: include/global_form.php:850 include/global_form.php:858
 #: include/global_form.php:866 include/global_form.php:904
 #: include/global_form.php:911 include/global_form.php:937
@@ -816,21 +816,21 @@ msgid "Aggregate Template [new]"
 msgstr "قالب التجميع [جديد]"
 
 #: aggregate_templates.php:534 aggregate_templates.php:633
-#: include/global_arrays.php:2491
+#: include/global_arrays.php:2495
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "قوالب التجميع"
 
 #: aggregate_templates.php:547 automation_templates.php:400
 #: automation_templates.php:483 color_templates.php:562
-#: include/global_arrays.php:873 include/global_arrays.php:935
+#: include/global_arrays.php:877 include/global_arrays.php:939
 #: lib/installer.php:2260 user_admin.php:2895 user_group_admin.php:2383
 #, fuzzy
 msgid "Templates"
 msgstr "قوالب"
 
 #: aggregate_templates.php:573 cdef.php:780 color.php:559 color_templates.php:481
-#: data_sources.php:1386 gprint_presets.php:286 graph_templates.php:680
+#: data_sources.php:1404 gprint_presets.php:286 graph_templates.php:680
 #: vdef.php:722
 #, fuzzy
 msgid "Has Graphs"
@@ -852,7 +852,7 @@ msgstr ""
 
 #: aggregate_templates.php:643 cdef.php:889 color.php:703 color_templates.php:560
 #: data_input.php:907 data_queries.php:1384 data_source_profiles.php:966
-#: data_sources.php:1541 data_templates.php:1001 gprint_presets.php:395
+#: data_sources.php:1559 data_templates.php:1020 gprint_presets.php:395
 #: graph_templates.php:794 host_templates.php:839 vdef.php:888
 #, fuzzy
 msgid "Deletable"
@@ -865,8 +865,8 @@ msgstr "به deletable"
 msgid "Graphs Using"
 msgstr "الرسوم البيانية عن طريق"
 
-#: aggregate_templates.php:645 graph_view.php:700 include/global_arrays.php:829
-#: include/global_arrays.php:1184 include/global_form.php:1351
+#: aggregate_templates.php:645 graph_view.php:700 include/global_arrays.php:833
+#: include/global_arrays.php:1188 include/global_form.php:1351
 #: include/global_form.php:1575 lib/html_reports.php:668 tree.php:1648
 #, fuzzy
 msgid "Graph Template"
@@ -1076,7 +1076,7 @@ msgstr "كلمة المرور"
 msgid "Local"
 msgstr "محلي"
 
-#: auth_login.php:712 include/global_arrays.php:752 lib/auth.php:380
+#: auth_login.php:712 include/global_arrays.php:756 lib/auth.php:380
 #, fuzzy
 msgid "LDAP"
 msgstr "LDAP"
@@ -1115,20 +1115,20 @@ msgstr "عام"
 msgid "User Account Details"
 msgstr "تفاصيل حساب المستخدم"
 
-#: auth_profile.php:291 include/global_arrays.php:736
+#: auth_profile.php:291 include/global_arrays.php:740
 #: include/global_settings.php:2117 lib/html.php:1810 lib/html.php:1832
 #: lib/html.php:2301
 #, fuzzy
 msgid "Tree View"
 msgstr "عرض الشجرة"
 
-#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1817
+#: auth_profile.php:295 include/global_arrays.php:741 lib/html.php:1817
 #: lib/html.php:1841 lib/html.php:2302
 #, fuzzy
 msgid "List View"
 msgstr "عرض القائمة"
 
-#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1824
+#: auth_profile.php:299 include/global_arrays.php:742 lib/html.php:1824
 #: lib/html.php:2303
 #, fuzzy
 msgid "Preview View"
@@ -1256,9 +1256,9 @@ msgstr "يضاف يدويا من خلال واجهة التشغيل الآلي �
 msgid "Added to Cacti"
 msgstr "يضاف إلى الصبار"
 
-#: automation_devices.php:120 automation_devices.php:122 data_sources.php:897
-#: graph_view.php:700 graphs.php:1472 include/global_arrays.php:825
-#: include/global_arrays.php:874 include/global_arrays.php:1642
+#: automation_devices.php:120 automation_devices.php:122 data_sources.php:915
+#: graph_view.php:700 graphs.php:1472 include/global_arrays.php:829
+#: include/global_arrays.php:878 include/global_arrays.php:1646
 #: lib/api_automation.php:424 lib/functions.php:3798 lib/html.php:1924
 #: lib/html.php:1956 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
@@ -1295,8 +1295,8 @@ msgid "Add Device(s)"
 msgstr "إضافة جهاز (أجهزة)"
 
 #: automation_devices.php:254 automation_devices.php:536 host.php:1428
-#: host.php:1522 host.php:1622 include/global_arrays.php:861
-#: include/global_arrays.php:916 include/global_arrays.php:2089
+#: host.php:1522 host.php:1622 include/global_arrays.php:865
+#: include/global_arrays.php:920 include/global_arrays.php:2093
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:478 lib/api_automation.php:561
 #: lib/api_automation.php:1206 pollers.php:836 sites.php:522 tree.php:786
@@ -1343,7 +1343,7 @@ msgstr "الوصف"
 msgid "OS"
 msgstr "OS"
 
-#: automation_devices.php:270 host.php:1589 include/global_arrays.php:439
+#: automation_devices.php:270 host.php:1589 include/global_arrays.php:443
 #, fuzzy
 msgid "Uptime"
 msgstr "مدة التشغيل"
@@ -1356,7 +1356,7 @@ msgstr "SNMP"
 #: automation_devices.php:272 automation_devices.php:491
 #: automation_graph_rules.php:776 automation_networks.php:1079
 #: automation_tree_rules.php:817 data_debug.php:352 data_debug.php:1001
-#: data_sources.php:1370 data_templates.php:1005 host.php:684 host.php:783
+#: data_sources.php:1388 data_templates.php:1024 host.php:684 host.php:783
 #: host.php:1507 host.php:1577 lib/api_automation.php:165
 #: lib/api_automation.php:278 lib/api_automation.php:571
 #: lib/api_automation.php:1088 lib/api_automation.php:1216
@@ -1428,13 +1428,13 @@ msgstr "N/A"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:67
-#: host_templates.php:33 include/global_arrays.php:1436 vdef.php:30
+#: host_templates.php:33 include/global_arrays.php:1440 vdef.php:30
 msgid "Duplicate"
 msgstr "تكرار"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1437 include/global_settings.php:1335 links.php:29
+#: include/global_arrays.php:1441 include/global_settings.php:1335 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1443,7 +1443,7 @@ msgstr "تفعيل"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1438 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1442 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1547,14 +1547,14 @@ msgid "Graph Creation Criteria"
 msgstr "معايير إنشاء الرسم البياني"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
-#: automation_graph_rules.php:891 include/global_arrays.php:884
-#: include/global_arrays.php:2545
+#: automation_graph_rules.php:891 include/global_arrays.php:888
+#: include/global_arrays.php:2549
 #, fuzzy
 msgid "Graph Rules"
 msgstr "قواعد الرسم البياني"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902 graphs.php:2006
-#: include/global_arrays.php:1187 include/global_form.php:1585
+#: include/global_arrays.php:1191 include/global_form.php:1585
 #: include/global_form.php:2102
 #, fuzzy
 msgid "Data Query"
@@ -1563,8 +1563,8 @@ msgstr "استعلام البيانات"
 #: automation_graph_rules.php:781 automation_graph_rules.php:904
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
-#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1375
-#: host.php:1512 include/global_arrays.php:788 include/global_form.php:1467
+#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1393
+#: host.php:1512 include/global_arrays.php:792 include/global_form.php:1467
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1520
 #: lib/html_reports.php:1612 lib/html_reports.php:1623 lib/html_reports.php:1659
@@ -1578,9 +1578,9 @@ msgstr "مفعل"
 
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
-#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1376
-#: data_templates.php:1029 host.php:1513 include/global_arrays.php:787
-#: include/global_arrays.php:1362 include/global_arrays.php:1650
+#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1394
+#: data_templates.php:1048 host.php:1513 include/global_arrays.php:791
+#: include/global_arrays.php:1366 include/global_arrays.php:1654
 #: include/global_settings.php:378 include/global_settings.php:1209
 #: include/global_settings.php:1223 include/global_settings.php:1235
 #: include/global_settings.php:1260 include/global_settings.php:1274
@@ -1704,18 +1704,18 @@ msgid "Manual"
 msgstr "كتيب"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:1664
+#: include/global_arrays.php:1668
 msgid "Daily"
 msgstr "يومي"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1665
+#: include/global_arrays.php:1669
 #, fuzzy
 msgid "Weekly"
 msgstr "أسبوعي"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1666
+#: include/global_arrays.php:1670
 msgid "Monthly"
 msgstr "شهري"
 
@@ -1865,9 +1865,9 @@ msgstr "٪ d مؤشر ترابط"
 #: automation_networks.php:507 automation_networks.php:508
 #: automation_networks.php:509 automation_networks.php:510
 #: automation_networks.php:511 automation_networks.php:512
-#: automation_networks.php:513 include/global_arrays.php:719
-#: include/global_arrays.php:720 include/global_arrays.php:721
-#: include/global_arrays.php:722 include/global_arrays.php:723
+#: automation_networks.php:513 include/global_arrays.php:723
+#: include/global_arrays.php:724 include/global_arrays.php:725
+#: include/global_arrays.php:726 include/global_arrays.php:727
 #, fuzzy, php-format
 msgid "%d Threads"
 msgstr "٪ d مؤشرات"
@@ -1883,7 +1883,7 @@ msgid "After the selected Run Limit, the discovery process will be terminated."
 msgstr "بعد &quot;حد التشغيل&quot; المحدد ، سيتم إنهاء عملية الاكتشاف."
 
 #: automation_networks.php:523 automation_networks.php:1207
-#: include/global_arrays.php:652
+#: include/global_arrays.php:656
 #, fuzzy, php-format
 msgid "%d Minute"
 msgstr "٪ d دقيقة"
@@ -1891,18 +1891,18 @@ msgstr "٪ d دقيقة"
 #: automation_networks.php:524 automation_networks.php:525
 #: automation_networks.php:526 automation_networks.php:527
 #: automation_networks.php:1208 automation_networks.php:1209
-#: data_sources.php:1166 include/global_arrays.php:616
-#: include/global_arrays.php:617 include/global_arrays.php:618
-#: include/global_arrays.php:619 include/global_arrays.php:653
-#: include/global_arrays.php:654 include/global_arrays.php:655
-#: include/global_arrays.php:656 include/global_arrays.php:657
-#: include/global_arrays.php:658 include/global_arrays.php:1036
-#: include/global_arrays.php:1037 include/global_arrays.php:1369
-#: include/global_arrays.php:1373 include/global_arrays.php:1381
-#: include/global_arrays.php:1382 include/global_arrays.php:1404
-#: include/global_arrays.php:1405 include/global_arrays.php:1406
-#: include/global_arrays.php:1407 include/global_arrays.php:1408
-#: include/global_arrays.php:1421 include/global_settings.php:1276
+#: data_sources.php:1184 include/global_arrays.php:620
+#: include/global_arrays.php:621 include/global_arrays.php:622
+#: include/global_arrays.php:623 include/global_arrays.php:657
+#: include/global_arrays.php:658 include/global_arrays.php:659
+#: include/global_arrays.php:660 include/global_arrays.php:661
+#: include/global_arrays.php:662 include/global_arrays.php:1040
+#: include/global_arrays.php:1041 include/global_arrays.php:1373
+#: include/global_arrays.php:1377 include/global_arrays.php:1385
+#: include/global_arrays.php:1386 include/global_arrays.php:1408
+#: include/global_arrays.php:1409 include/global_arrays.php:1410
+#: include/global_arrays.php:1411 include/global_arrays.php:1412
+#: include/global_arrays.php:1425 include/global_settings.php:1276
 #: include/global_settings.php:1277 include/global_settings.php:1278
 #: include/global_settings.php:1279 include/global_settings.php:1280
 #: include/global_settings.php:2044
@@ -1910,28 +1910,28 @@ msgstr "٪ d دقيقة"
 msgid "%d Minutes"
 msgstr "٪ d دقيقة"
 
-#: automation_networks.php:528 include/global_arrays.php:659
-#: include/global_arrays.php:669 include/global_arrays.php:1273
+#: automation_networks.php:528 include/global_arrays.php:663
+#: include/global_arrays.php:673 include/global_arrays.php:1277
 #, fuzzy, php-format
 msgid "%d Hour"
 msgstr "٪ د ساعة"
 
 #: automation_networks.php:529 automation_networks.php:530
 #: automation_networks.php:531 data_source_profiles.php:771
-#: include/global_arrays.php:621 include/global_arrays.php:622
-#: include/global_arrays.php:623 include/global_arrays.php:624
-#: include/global_arrays.php:625 include/global_arrays.php:660
-#: include/global_arrays.php:661 include/global_arrays.php:662
-#: include/global_arrays.php:663 include/global_arrays.php:670
-#: include/global_arrays.php:671 include/global_arrays.php:672
-#: include/global_arrays.php:673 include/global_arrays.php:1274
-#: include/global_arrays.php:1275 include/global_arrays.php:1276
-#: include/global_arrays.php:1277 include/global_arrays.php:1321
-#: include/global_arrays.php:1322 include/global_arrays.php:1323
-#: include/global_arrays.php:1324 include/global_arrays.php:1325
-#: include/global_arrays.php:1342 include/global_arrays.php:1343
-#: include/global_arrays.php:1344 include/global_arrays.php:1345
-#: include/global_arrays.php:1346 include/global_settings.php:1282
+#: include/global_arrays.php:625 include/global_arrays.php:626
+#: include/global_arrays.php:627 include/global_arrays.php:628
+#: include/global_arrays.php:629 include/global_arrays.php:664
+#: include/global_arrays.php:665 include/global_arrays.php:666
+#: include/global_arrays.php:667 include/global_arrays.php:674
+#: include/global_arrays.php:675 include/global_arrays.php:676
+#: include/global_arrays.php:677 include/global_arrays.php:1278
+#: include/global_arrays.php:1279 include/global_arrays.php:1280
+#: include/global_arrays.php:1281 include/global_arrays.php:1325
+#: include/global_arrays.php:1326 include/global_arrays.php:1327
+#: include/global_arrays.php:1328 include/global_arrays.php:1329
+#: include/global_arrays.php:1346 include/global_arrays.php:1347
+#: include/global_arrays.php:1348 include/global_arrays.php:1349
+#: include/global_arrays.php:1350 include/global_settings.php:1282
 #: include/global_settings.php:1283 include/global_settings.php:1284
 #: include/global_settings.php:1285
 #, fuzzy, php-format
@@ -2090,37 +2090,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "في أي يوم (أيام) من الأسبوع سيتم اكتشاف نطاق الشبكة هذا."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1706
+#: include/global_arrays.php:1710
 msgid "Sunday"
 msgstr "الأحد"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1707
+#: include/global_arrays.php:1711
 msgid "Monday"
 msgstr "الاثنين"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1708
+#: include/global_arrays.php:1712
 msgid "Tuesday"
 msgstr "الثلاثاء"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1709
+#: include/global_arrays.php:1713
 msgid "Wednesday"
 msgstr "الأربعاء"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1710
+#: include/global_arrays.php:1714
 msgid "Thursday"
 msgstr "الخميس"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1711
+#: include/global_arrays.php:1715
 msgid "Friday"
 msgstr "الجمعة"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1712
+#: include/global_arrays.php:1716
 msgid "Saturday"
 msgstr "السبت"
 
@@ -2134,58 +2134,58 @@ msgstr "أشهر من العام"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "ما أشهر (أشهر) السنة سيتم اكتشاف نطاق الشبكة هذا."
 
-#: automation_networks.php:654 include/global_arrays.php:1676
+#: automation_networks.php:654 include/global_arrays.php:1680
 #, fuzzy
 msgid "January"
 msgstr "كانون الثاني"
 
-#: automation_networks.php:655 include/global_arrays.php:1677
+#: automation_networks.php:655 include/global_arrays.php:1681
 #, fuzzy
 msgid "February"
 msgstr "شهر فبراير"
 
-#: automation_networks.php:656 include/global_arrays.php:1678
+#: automation_networks.php:656 include/global_arrays.php:1682
 #, fuzzy
 msgid "March"
 msgstr "مارس"
 
-#: automation_networks.php:657 include/global_arrays.php:1679
+#: automation_networks.php:657 include/global_arrays.php:1683
 #, fuzzy
 msgid "April"
 msgstr "أبريل"
 
-#: automation_networks.php:658 include/global_arrays.php:1680
+#: automation_networks.php:658 include/global_arrays.php:1684
 msgid "May"
 msgstr "مايو"
 
-#: automation_networks.php:659 include/global_arrays.php:1681
+#: automation_networks.php:659 include/global_arrays.php:1685
 #, fuzzy
 msgid "June"
 msgstr "يونيو"
 
-#: automation_networks.php:660 include/global_arrays.php:1682
+#: automation_networks.php:660 include/global_arrays.php:1686
 msgid "July"
 msgstr "يوليو"
 
-#: automation_networks.php:661 include/global_arrays.php:1683
+#: automation_networks.php:661 include/global_arrays.php:1687
 msgid "August"
 msgstr "أغسطس"
 
-#: automation_networks.php:662 include/global_arrays.php:1684
+#: automation_networks.php:662 include/global_arrays.php:1688
 #, fuzzy
 msgid "September"
 msgstr "سبتمبر"
 
-#: automation_networks.php:663 include/global_arrays.php:1685
+#: automation_networks.php:663 include/global_arrays.php:1689
 #, fuzzy
 msgid "October"
 msgstr "شهر اكتوبر"
 
-#: automation_networks.php:664 include/global_arrays.php:1686
+#: automation_networks.php:664 include/global_arrays.php:1690
 msgid "November"
 msgstr "نوفمبر"
 
-#: automation_networks.php:665 include/global_arrays.php:1687
+#: automation_networks.php:665 include/global_arrays.php:1691
 msgid "December"
 msgstr "ديسمبر"
 
@@ -2236,7 +2236,7 @@ msgstr "ايام الاسبوع"
 msgid "Reachability Settings"
 msgstr "إعدادات قابلية الوصول"
 
-#: automation_networks.php:714 include/global_arrays.php:886
+#: automation_networks.php:714 include/global_arrays.php:890
 #: include/global_form.php:1197 include/global_form.php:1687
 #, fuzzy
 msgid "SNMP Options"
@@ -2352,7 +2352,7 @@ msgid "Network Filters"
 msgstr "مرشحات الشبكة"
 
 #: automation_networks.php:1058 automation_networks.php:1182
-#: include/global_arrays.php:881
+#: include/global_arrays.php:885
 msgid "Networks"
 msgstr "شبكات"
 
@@ -2419,7 +2419,7 @@ msgstr "جري"
 msgid "Idle"
 msgstr "خامل"
 
-#: automation_networks.php:1146 include/global_arrays.php:1038
+#: automation_networks.php:1146 include/global_arrays.php:1042
 #: lib/html_reports.php:1654 plugins/thold_functions.php:74
 msgid "Never"
 msgstr "أبدا"
@@ -2438,18 +2438,18 @@ msgstr "تحديث"
 
 #: automation_networks.php:1203 automation_networks.php:1204
 #: automation_networks.php:1205 automation_networks.php:1206
-#: data_sources.php:1162 include/global_arrays.php:614
-#: include/global_arrays.php:649 include/global_arrays.php:650
-#: include/global_arrays.php:651 include/global_arrays.php:1031
-#: include/global_arrays.php:1032 include/global_arrays.php:1033
-#: include/global_arrays.php:1034 include/global_arrays.php:1363
-#: include/global_arrays.php:1364 include/global_arrays.php:1365
-#: include/global_arrays.php:1366 include/global_arrays.php:1367
-#: include/global_arrays.php:1400 include/global_arrays.php:1401
-#: include/global_arrays.php:1413 include/global_arrays.php:1414
-#: include/global_arrays.php:1415 include/global_arrays.php:1416
+#: data_sources.php:1180 include/global_arrays.php:618
+#: include/global_arrays.php:653 include/global_arrays.php:654
+#: include/global_arrays.php:655 include/global_arrays.php:1035
+#: include/global_arrays.php:1036 include/global_arrays.php:1037
+#: include/global_arrays.php:1038 include/global_arrays.php:1367
+#: include/global_arrays.php:1368 include/global_arrays.php:1369
+#: include/global_arrays.php:1370 include/global_arrays.php:1371
+#: include/global_arrays.php:1404 include/global_arrays.php:1405
 #: include/global_arrays.php:1417 include/global_arrays.php:1418
-#: include/global_arrays.php:1419 include/global_settings.php:1045
+#: include/global_arrays.php:1419 include/global_arrays.php:1420
+#: include/global_arrays.php:1421 include/global_arrays.php:1422
+#: include/global_arrays.php:1423 include/global_settings.php:1045
 #: include/global_settings.php:1046 include/global_settings.php:1047
 #: include/global_settings.php:1048 include/global_settings.php:2040
 #: include/global_settings.php:2041 include/global_settings.php:2042
@@ -2717,7 +2717,7 @@ msgstr "انقر فوق &quot;متابعة&quot; لحذف قالب (قوالب) 
 msgid "Delete Automation Template(s)"
 msgstr "حذف قالب (قوالب) التنفيذ التلقائي"
 
-#: automation_templates.php:274 include/global_arrays.php:1188
+#: automation_templates.php:274 include/global_arrays.php:1192
 #: include/global_form.php:1172 include/global_form.php:1570
 #: lib/html_reports.php:648
 #, fuzzy
@@ -2799,7 +2799,7 @@ msgstr "قوالب أتمتة [جديد]"
 msgid "Device Automation Templates"
 msgstr "قوالب أتمتة الجهاز"
 
-#: automation_templates.php:492 data_sources.php:1553 user_admin.php:1418
+#: automation_templates.php:492 data_sources.php:1571 user_admin.php:1418
 #: user_group_admin.php:1113
 msgid "Template Name"
 msgstr "إسم القالب"
@@ -2908,8 +2908,8 @@ msgid "Are you sure you wish to continue?"
 msgstr "هل أنت متأكد أنك تريد المتابعة؟"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
-#: automation_tree_rules.php:927 include/global_arrays.php:885
-#: include/global_arrays.php:2569
+#: automation_tree_rules.php:927 include/global_arrays.php:889
+#: include/global_arrays.php:2573
 #, fuzzy
 msgid "Tree Rules"
 msgstr "قواعد الشجرة"
@@ -2984,7 +2984,7 @@ msgstr[4] ""
 msgstr[5] ""
 
 #: cdef.php:288 color_templates.php:238 data_source_profiles.php:287
-#: data_templates.php:370 graph_templates.php:350 host_templates.php:273
+#: data_templates.php:389 graph_templates.php:350 host_templates.php:273
 #: vdef.php:276
 #, fuzzy
 msgid "Title Format:"
@@ -3056,7 +3056,7 @@ msgstr "CDEF [تحرير:٪ s]"
 msgid "CDEF [new]"
 msgstr "CDEF [جديد]"
 
-#: cdef.php:609 include/global_arrays.php:1939
+#: cdef.php:609 include/global_arrays.php:1943
 #, fuzzy
 msgid "CDEF Items"
 msgstr "عناصر CDEF"
@@ -3076,8 +3076,8 @@ msgstr "البند #٪ د"
 msgid "Delete CDEF Item"
 msgstr "حذف البند CDEF"
 
-#: cdef.php:748 cdef.php:763 cdef.php:879 include/global_arrays.php:890
-#: include/global_arrays.php:1921
+#: cdef.php:748 cdef.php:763 cdef.php:879 include/global_arrays.php:894
+#: include/global_arrays.php:1925
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3229,8 +3229,8 @@ msgstr "الألوان [تحرير:٪ s]"
 msgid "Colors [new]"
 msgstr "الألوان [جديد]"
 
-#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:892
-#: include/global_arrays.php:1987
+#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:896
+#: include/global_arrays.php:1991
 msgid "Colors"
 msgstr "ألوان"
 
@@ -3278,7 +3278,7 @@ msgstr "هل هذا اللون لون مسمى للقراءة فقط."
 msgid "Named Color"
 msgstr "مسمى اللون"
 
-#: color.php:702 color_templates.php:73 include/global_arrays.php:878
+#: color.php:702 color_templates.php:73 include/global_arrays.php:882
 #: include/global_form.php:941 include/global_form.php:1984
 msgid "Color"
 msgstr "اللون"
@@ -3405,7 +3405,7 @@ msgid "Color Template [new]"
 msgstr "قالب اللون [جديد]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2467
+#: include/global_arrays.php:2471
 #, fuzzy
 msgid "Color Templates"
 msgstr "قوالب اللون"
@@ -3495,8 +3495,8 @@ msgid "Data Source repair received an invalid Data Source ID."
 msgstr "تلقى إصلاح مصدر البيانات معرف مصدر بيانات غير صالح."
 
 #: data_debug.php:330 data_debug.php:807 data_queries.php:729
-#: data_sources.php:960 data_templates.php:574 graphs_items.php:440
-#: include/global_arrays.php:876 include/global_form.php:926
+#: data_sources.php:978 data_templates.php:593 graphs_items.php:440
+#: include/global_arrays.php:880 include/global_form.php:926
 #: lib/api_aggregate.php:1592 lib/html.php:1052
 #, fuzzy
 msgid "Data Source"
@@ -3557,7 +3557,7 @@ msgstr "موجود"
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "تحديد ما إذا كان مصدر البيانات موجودًا في مخزن Poller."
 
-#: data_debug.php:370 data_sources.php:1547 data_templates.php:1029
+#: data_debug.php:370 data_sources.php:1565 data_templates.php:1048
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "نشط"
@@ -3607,9 +3607,9 @@ msgstr "مسائل"
 msgid "Summary of issues found for the Data Source."
 msgstr "أي مشاكل ملخص وجدت لمصدر البيانات."
 
-#: data_debug.php:510 data_debug.php:1052 data_sources.php:1401
-#: data_sources.php:1513 host.php:1571 include/global_arrays.php:865
-#: include/global_arrays.php:910 include/global_arrays.php:2071
+#: data_debug.php:510 data_debug.php:1052 data_sources.php:1419
+#: data_sources.php:1531 host.php:1571 include/global_arrays.php:869
+#: include/global_arrays.php:914 include/global_arrays.php:2075
 #: lib/api_automation.php:282 user_admin.php:1270 user_group_admin.php:970
 #: utilities.php:308
 #, fuzzy
@@ -3740,7 +3740,7 @@ msgstr "إعادة تشغيل التحليل"
 msgid "Check"
 msgstr "التحقق من"
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2804
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2808
 #: utilities.php:2475
 msgid "Value"
 msgstr "القيمة"
@@ -3804,7 +3804,7 @@ msgstr "الأجهزة المتاحة"
 msgid "Data Source Troubleshooter [ %s ]"
 msgstr "أداة حل مشكلات مصدر البيانات [٪ s]"
 
-#: data_debug.php:938 data_sources.php:1308
+#: data_debug.php:938 data_sources.php:1326
 #, fuzzy
 msgid "No Device"
 msgstr "جهاز"
@@ -3814,13 +3814,13 @@ msgstr "جهاز"
 msgid "Delete All Checks"
 msgstr "حذف الشيك"
 
-#: data_debug.php:985 data_sources.php:1354 data_templates.php:851
+#: data_debug.php:985 data_sources.php:1372 data_templates.php:870
 msgid "Profile"
 msgstr "الملف الشخصي"
 
 #: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
-#: data_sources.php:1358 data_sources.php:1374 data_sources.php:1385
-#: data_templates.php:855 graphs_new.php:355 lib/clog_webapi.php:523
+#: data_sources.php:1376 data_sources.php:1392 data_sources.php:1403
+#: data_templates.php:874 graphs_new.php:355 lib/clog_webapi.php:523
 #: lib/html.php:191 lib/html_reports.php:625 plugins.php:376 settings.php:419
 #: settings.php:438 settings.php:464 tree.php:784 utilities.php:674
 #: utilities.php:1110
@@ -3931,22 +3931,22 @@ msgstr "طرق إدخال البيانات [تحرير:٪ s]"
 msgid "Data Input Methods [new]"
 msgstr "طرق إدخال البيانات [جديد]"
 
-#: data_input.php:576 include/global_arrays.php:424
+#: data_input.php:576 include/global_arrays.php:428
 #, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP"
 
-#: data_input.php:579 include/global_arrays.php:425
+#: data_input.php:579 include/global_arrays.php:429
 #, fuzzy
 msgid "SNMP Query"
 msgstr "استعلام SNMP"
 
-#: data_input.php:582 include/global_arrays.php:427
+#: data_input.php:582 include/global_arrays.php:431
 #, fuzzy
 msgid "Script Query"
 msgstr "استعلام البرنامج النصي"
 
-#: data_input.php:585 include/global_arrays.php:429
+#: data_input.php:585 include/global_arrays.php:433
 #, fuzzy
 msgid "Script Query - Script Server"
 msgstr "استعلام Script - خادم Script"
@@ -4023,8 +4023,8 @@ msgstr "لا حقول الإخراج"
 msgid "Delete Data Input Field"
 msgstr "حذف حقل إدخال البيانات"
 
-#: data_input.php:794 include/global_arrays.php:871
-#: include/global_arrays.php:1053 include/global_arrays.php:2125
+#: data_input.php:794 include/global_arrays.php:875
+#: include/global_arrays.php:1057 include/global_arrays.php:2129
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "طرق إدخال البيانات"
@@ -4053,7 +4053,7 @@ msgstr ""
 "لا يمكن حذف مدخلات البيانات المستخدمة. يتم تعريف الاستخدام على أنه مرجع إما "
 "بواسطة مصدر بيانات أو قالب بيانات."
 
-#: data_input.php:908 data_source_profiles.php:970 data_templates.php:1002
+#: data_input.php:908 data_source_profiles.php:970 data_templates.php:1021
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "مصادر البيانات باستخدام"
@@ -4068,7 +4068,7 @@ msgstr "عدد مصادر البيانات التي تستخدم طريقة إد
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "عدد قوالب البيانات التي تستخدم طريقة إدخال البيانات هذه."
 
-#: data_input.php:910 data_queries.php:1387 include/global_arrays.php:1180
+#: data_input.php:910 data_queries.php:1387 include/global_arrays.php:1184
 #: include/global_form.php:540 include/global_form.php:1332
 #, fuzzy
 msgid "Data Input Method"
@@ -4221,7 +4221,7 @@ msgid "Could not locate XML file."
 msgstr "لا يمكن تحديد موقع ملف XML."
 
 #: data_queries.php:1131 host.php:679 host_templates.php:483
-#: include/global_arrays.php:2179
+#: include/global_arrays.php:2183
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "قوالب الرسم البياني المرتبطة"
@@ -4253,8 +4253,8 @@ msgid "Delete Associated Graph"
 msgstr "حذف الرسم البياني المرتبط"
 
 #: data_queries.php:1268 data_queries.php:1283 data_queries.php:1373
-#: include/global_arrays.php:870 include/global_arrays.php:1054
-#: include/global_arrays.php:2161 lib/api_automation.php:1103
+#: include/global_arrays.php:874 include/global_arrays.php:1058
+#: include/global_arrays.php:2165 lib/api_automation.php:1103
 #, fuzzy
 msgid "Data Queries"
 msgstr "استعلامات البيانات"
@@ -4428,7 +4428,7 @@ msgstr "خطوات"
 
 #: data_source_profiles.php:568 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2330
-#: lib/rrd.php:2858 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2862 utilities.php:507 utilities.php:1444
 #, fuzzy
 msgid "Rows"
 msgstr "الصفوف"
@@ -4453,12 +4453,12 @@ msgstr "٪ s kbytes لكل &quot;مصادر البيانات&quot; و٪ s باي
 msgid "%s KBytes per Data Source"
 msgstr "٪ s kbytes لكل مصدر بيانات"
 
-#: data_source_profiles.php:736 include/global_arrays.php:686
-#: include/global_arrays.php:687 include/global_arrays.php:688
-#: include/global_arrays.php:689 include/global_arrays.php:690
+#: data_source_profiles.php:736 include/global_arrays.php:690
 #: include/global_arrays.php:691 include/global_arrays.php:692
 #: include/global_arrays.php:693 include/global_arrays.php:694
-#: include/global_arrays.php:1290 include/global_settings.php:1215
+#: include/global_arrays.php:695 include/global_arrays.php:696
+#: include/global_arrays.php:697 include/global_arrays.php:698
+#: include/global_arrays.php:1294 include/global_settings.php:1215
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "٪ d سنوات"
@@ -4467,47 +4467,47 @@ msgstr "٪ d سنوات"
 msgid "1 Year"
 msgstr "سنة واحدة"
 
-#: data_source_profiles.php:745 include/global_arrays.php:680
-#: include/global_arrays.php:1284 rrdcleaner.php:489
+#: data_source_profiles.php:745 include/global_arrays.php:684
+#: include/global_arrays.php:1288 rrdcleaner.php:489
 #, fuzzy, php-format
 msgid "%d Month"
 msgstr "٪ d شهر"
 
-#: data_source_profiles.php:745 include/global_arrays.php:681
-#: include/global_arrays.php:682 include/global_arrays.php:683
-#: include/global_arrays.php:684 include/global_arrays.php:1285
-#: include/global_arrays.php:1286 include/global_arrays.php:1287
-#: include/global_arrays.php:1288 rrdcleaner.php:490 rrdcleaner.php:491
+#: data_source_profiles.php:745 include/global_arrays.php:685
+#: include/global_arrays.php:686 include/global_arrays.php:687
+#: include/global_arrays.php:688 include/global_arrays.php:1289
+#: include/global_arrays.php:1290 include/global_arrays.php:1291
+#: include/global_arrays.php:1292 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
 #, fuzzy, php-format
 msgid "%d Months"
 msgstr "٪ d شهر"
 
-#: data_source_profiles.php:754 include/global_arrays.php:627
-#: include/global_arrays.php:677 include/global_arrays.php:1282
+#: data_source_profiles.php:754 include/global_arrays.php:631
+#: include/global_arrays.php:681 include/global_arrays.php:1286
 #: rrdcleaner.php:485 rrdcleaner.php:486
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "٪ d أسبوع"
 
-#: data_source_profiles.php:754 include/global_arrays.php:678
-#: include/global_arrays.php:679 include/global_arrays.php:1283
+#: data_source_profiles.php:754 include/global_arrays.php:682
+#: include/global_arrays.php:683 include/global_arrays.php:1287
 #: rrdcleaner.php:487 rrdcleaner.php:488
 #, fuzzy, php-format
 msgid "%d Weeks"
 msgstr "٪ d أسابيع"
 
-#: data_source_profiles.php:763 include/global_arrays.php:626
-#: include/global_arrays.php:664 include/global_arrays.php:674
-#: include/global_arrays.php:1278
+#: data_source_profiles.php:763 include/global_arrays.php:630
+#: include/global_arrays.php:668 include/global_arrays.php:678
+#: include/global_arrays.php:1282
 #, fuzzy, php-format
 msgid "%d Day"
 msgstr "٪ d يوم"
 
-#: data_source_profiles.php:763 include/global_arrays.php:665
-#: include/global_arrays.php:675 include/global_arrays.php:676
-#: include/global_arrays.php:1279 include/global_arrays.php:1280
-#: include/global_arrays.php:1281 include/global_settings.php:1210
+#: data_source_profiles.php:763 include/global_arrays.php:669
+#: include/global_arrays.php:679 include/global_arrays.php:680
+#: include/global_arrays.php:1283 include/global_arrays.php:1284
+#: include/global_arrays.php:1285 include/global_settings.php:1210
 #: include/global_settings.php:1211 include/global_settings.php:1212
 #: include/global_settings.php:1213 include/global_settings.php:1224
 #: include/global_settings.php:1225 include/global_settings.php:1226
@@ -4516,15 +4516,15 @@ msgstr "٪ d يوم"
 msgid "%d Days"
 msgstr "٪ d يوم"
 
-#: data_source_profiles.php:771 include/global_arrays.php:620
-#: include/global_arrays.php:1320 include/global_arrays.php:1341
-#: include/global_arrays.php:1374 include/global_arrays.php:1383
-#: include/global_arrays.php:1409 include/global_settings.php:1281
+#: data_source_profiles.php:771 include/global_arrays.php:624
+#: include/global_arrays.php:1324 include/global_arrays.php:1345
+#: include/global_arrays.php:1378 include/global_arrays.php:1387
+#: include/global_arrays.php:1413 include/global_settings.php:1281
 #, fuzzy
 msgid "1 Hour"
 msgstr "ساعة واحدة"
 
-#: data_source_profiles.php:825 include/global_arrays.php:1061
+#: data_source_profiles.php:825 include/global_arrays.php:1065
 #, fuzzy
 msgid "Data Source Profiles"
 msgstr "ملفات مصدر البيانات"
@@ -4533,7 +4533,7 @@ msgstr "ملفات مصدر البيانات"
 msgid "Profiles"
 msgstr "ملفات شخصية"
 
-#: data_source_profiles.php:857 data_templates.php:884
+#: data_source_profiles.php:857 data_templates.php:903
 #, fuzzy
 msgid "Has Data Sources"
 msgstr "لديه مصادر البيانات"
@@ -4568,7 +4568,7 @@ msgstr ""
 msgid "Read Only"
 msgstr "يقرأ فقط"
 
-#: data_source_profiles.php:968 data_sources.php:1535
+#: data_source_profiles.php:968 data_sources.php:1553
 #: include/global_settings.php:1000
 #, fuzzy
 msgid "Poller Interval"
@@ -4608,7 +4608,7 @@ msgstr "عدد قوالب البيانات باستخدام هذا الملف ا
 msgid "No Data Source Profiles Found"
 msgstr "لم يتم العثور على ملفات تعريف مصدر البيانات"
 
-#: data_sources.php:37 data_sources.php:510 graphs.php:57
+#: data_sources.php:37 data_sources.php:528 graphs.php:57
 #, fuzzy
 msgid "Change Device"
 msgstr "تغيير الجهاز"
@@ -4618,7 +4618,7 @@ msgstr "تغيير الجهاز"
 msgid "Reapply Suggested Names"
 msgstr "إعادة تطبيق الأسماء المقترحة"
 
-#: data_sources.php:478
+#: data_sources.php:496
 #, fuzzy
 msgid "Click 'Continue' to delete the following Data Source"
 msgid_plural "Click 'Continue' to delete following Data Sources"
@@ -4629,7 +4629,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:482
+#: data_sources.php:500
 #, fuzzy
 msgid "The following graph is using these data sources:"
 msgid_plural "The following graphs are using these data sources:"
@@ -4640,7 +4640,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:491
+#: data_sources.php:509
 #, fuzzy
 msgid "Leave the <strong>Graph</strong> untouched."
 msgid_plural "Leave all <strong>Graphs</strong> untouched."
@@ -4651,7 +4651,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:492
+#: data_sources.php:510
 #, fuzzy
 msgid "Delete all <strong>Graph Items</strong> that reference this Data Source."
 msgid_plural ""
@@ -4664,7 +4664,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:493
+#: data_sources.php:511
 #, fuzzy
 msgid "Delete all <strong>Graphs</strong> that reference this Data Source."
 msgid_plural ""
@@ -4677,7 +4677,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:500
+#: data_sources.php:518
 #, fuzzy
 msgid "Delete Data Source"
 msgid_plural "Delete Data Sources"
@@ -4688,7 +4688,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:504
+#: data_sources.php:522
 #, fuzzy
 msgid "Choose a new Device for this Data Source and click 'Continue'."
 msgid_plural "Choose a new Device for these Data Sources and click 'Continue'"
@@ -4699,12 +4699,12 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:506
+#: data_sources.php:524
 #, fuzzy
 msgid "New Device:"
 msgstr "جهاز جديد:"
 
-#: data_sources.php:514
+#: data_sources.php:532
 #, fuzzy
 msgid "Click 'Continue' to enable the following Data Source."
 msgid_plural "Click 'Continue' to enable all following Data Sources."
@@ -4715,7 +4715,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:519 data_sources.php:825
+#: data_sources.php:537 data_sources.php:843
 #, fuzzy
 msgid "Enable Data Source"
 msgid_plural "Enable Data Sources"
@@ -4726,7 +4726,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:523
+#: data_sources.php:541
 #, fuzzy
 msgid "Click 'Continue' to disable the following Data Source."
 msgid_plural "Click 'Continue' to disable all following Data Sources."
@@ -4737,7 +4737,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:528 data_sources.php:825
+#: data_sources.php:546 data_sources.php:843
 #, fuzzy
 msgid "Disable Data Source"
 msgid_plural "Disable Data Sources"
@@ -4748,7 +4748,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:532
+#: data_sources.php:550
 #, fuzzy
 msgid ""
 "Click 'Continue' to re-apply the suggested name to the following Data Source."
@@ -4763,7 +4763,7 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:537
+#: data_sources.php:555
 #, fuzzy
 msgid "Reapply Suggested Naming to Data Source"
 msgid_plural "Reapply Suggested Naming to Data Sources"
@@ -4774,77 +4774,77 @@ msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
 
-#: data_sources.php:615 data_templates.php:718
+#: data_sources.php:633 data_templates.php:737
 #, fuzzy, php-format
 msgid "Custom Data [data input: %s]"
 msgstr "البيانات المخصصة [إدخال البيانات:٪ s]"
 
-#: data_sources.php:648
+#: data_sources.php:666
 #, fuzzy, php-format
 msgid "(From Device: %s)"
 msgstr "(من الجهاز:٪ s)"
 
-#: data_sources.php:651
+#: data_sources.php:669
 #, fuzzy
 msgid "(From Data Template)"
 msgstr "(من قالب البيانات)"
 
-#: data_sources.php:652
+#: data_sources.php:670
 #, fuzzy
 msgid "Nothing Entered"
 msgstr "لا شيء دخل"
 
-#: data_sources.php:667 data_templates.php:775
+#: data_sources.php:685 data_templates.php:794
 #, fuzzy
 msgid "No Input Fields for the Selected Data Input Source"
 msgstr "لا حقول الإدخال لمصدر إدخال البيانات المحددة"
 
-#: data_sources.php:776
+#: data_sources.php:794
 #, fuzzy, php-format
 msgid "Data Template Selection [edit: %s]"
 msgstr "اختيار قالب البيانات [تحرير:٪ s]"
 
-#: data_sources.php:782
+#: data_sources.php:800
 #, fuzzy
 msgid "Data Template Selection [new]"
 msgstr "اختيار قالب البيانات [جديد]"
 
-#: data_sources.php:815
+#: data_sources.php:833
 #, fuzzy
 msgid "Turn Off Data Source Debug Mode."
 msgstr "إيقاف تشغيل وضع Debug مصدر البيانات."
 
-#: data_sources.php:815
+#: data_sources.php:833
 #, fuzzy
 msgid "Turn On Data Source Debug Mode."
 msgstr "بدوره على وضع مصدر البيانات التصحيح."
 
-#: data_sources.php:816
+#: data_sources.php:834
 #, fuzzy
 msgid "Turn Off Data Source Info Mode."
 msgstr "إيقاف تشغيل وضع معلومات مصدر البيانات."
 
-#: data_sources.php:816
+#: data_sources.php:834
 #, fuzzy
 msgid "Turn On Data Source Info Mode."
 msgstr "قم بتشغيل وضع معلومات مصدر البيانات."
 
-#: data_sources.php:819 graphs.php:1432
+#: data_sources.php:837 graphs.php:1432
 #, fuzzy
 msgid "Edit Device."
 msgstr "تحرير الجهاز."
 
-#: data_sources.php:822
+#: data_sources.php:840
 #, fuzzy
 msgid "Edit Data Template."
 msgstr "تحرير قالب البيانات."
 
-#: data_sources.php:889
+#: data_sources.php:907
 #, fuzzy
 msgid "Selected Data Template"
 msgstr "قالب البيانات المحدد"
 
-#: data_sources.php:890
+#: data_sources.php:908
 #, fuzzy
 msgid ""
 "The name given to this data template.  Please note that you may only change "
@@ -4855,88 +4855,88 @@ msgstr ""
 "البياني إلى قالب الرسم البياني المتوافق بنسبة 100٪ ، مما يعني أنه يحتوي على "
 "مصادر بيانات متطابقة."
 
-#: data_sources.php:898
+#: data_sources.php:916
 #, fuzzy
 msgid "Choose the Device that this Data Source belongs to."
 msgstr "اختر الجهاز الذي ينتمي إليه مصدر البيانات هذا."
 
-#: data_sources.php:948
+#: data_sources.php:966
 #, fuzzy
 msgid "Supplemental Data Template Data"
 msgstr "بيانات قالب البيانات التكميلية"
 
-#: data_sources.php:950
+#: data_sources.php:968
 #, fuzzy
 msgid "Data Source Fields"
 msgstr "حقول مصدر البيانات"
 
-#: data_sources.php:951
+#: data_sources.php:969
 #, fuzzy
 msgid "Data Source Item Fields"
 msgstr "حقول عناصر مصدر البيانات"
 
-#: data_sources.php:952
+#: data_sources.php:970
 #, fuzzy
 msgid "Custom Data"
 msgstr "البيانات المخصصة"
 
-#: data_sources.php:1021 lib/html_reports.php:1173 user_admin.php:1997
+#: data_sources.php:1039 lib/html_reports.php:1173 user_admin.php:1997
 #, fuzzy, php-format
 msgid "[edit: %s]"
 msgstr "[تحرير:٪ s]"
 
-#: data_sources.php:1050
+#: data_sources.php:1068
 #, fuzzy, php-format
 msgid "Data Source Item %s"
 msgstr "عنصر مصدر البيانات٪ s"
 
-#: data_sources.php:1053 data_templates.php:656
+#: data_sources.php:1071 data_templates.php:675
 msgid "New"
 msgstr "جديد"
 
-#: data_sources.php:1112
+#: data_sources.php:1130
 #, fuzzy
 msgid "Data Source Debug"
 msgstr "تصحيح مصدر البيانات"
 
-#: data_sources.php:1132
+#: data_sources.php:1150
 #, fuzzy
 msgid "RRDtool Tune Info"
 msgstr "RRDtool معلومات اللحن"
 
-#: data_sources.php:1160 data_templates.php:1028 include/global_form.php:552
+#: data_sources.php:1178 data_templates.php:1047 include/global_form.php:552
 msgid "External"
 msgstr "خارجي"
 
-#: data_sources.php:1164 include/global_arrays.php:615
-#: include/global_arrays.php:1035 include/global_arrays.php:1368
-#: include/global_arrays.php:1402 include/global_arrays.php:1420
+#: data_sources.php:1182 include/global_arrays.php:619
+#: include/global_arrays.php:1039 include/global_arrays.php:1372
+#: include/global_arrays.php:1406 include/global_arrays.php:1424
 #: include/global_settings.php:1275 include/global_settings.php:2043
 #, fuzzy
 msgid "1 Minute"
 msgstr "1 دقيقة"
 
-#: data_sources.php:1308 graphs_items.php:312
+#: data_sources.php:1326 graphs_items.php:312
 #, fuzzy, php-format
 msgid "Data Sources [%s]"
 msgstr "مصادر البيانات [٪ s]"
 
-#: data_sources.php:1377
+#: data_sources.php:1395
 #, fuzzy
 msgid "Bad Indexes"
 msgstr "فهرس"
 
-#: data_sources.php:1381 data_sources.php:1387 graphs.php:1863
+#: data_sources.php:1399 data_sources.php:1405 graphs.php:1863
 #, fuzzy
 msgid "Orphaned"
 msgstr "اليتامى"
 
-#: data_sources.php:1523 utilities.php:1819
+#: data_sources.php:1541 utilities.php:1819
 #, fuzzy
 msgid "Data Source Name"
 msgstr "اسم مصدر البيانات"
 
-#: data_sources.php:1526
+#: data_sources.php:1544
 #, fuzzy
 msgid ""
 "The name of this Data Source. Generally programtically generated from the Data "
@@ -4944,7 +4944,7 @@ msgid ""
 msgstr ""
 "اسم مصدر البيانات هذا. بشكل عام يتم تكوينها برمجيًا من تعريف قالب البيانات."
 
-#: data_sources.php:1532
+#: data_sources.php:1550
 #, fuzzy
 msgid ""
 "The internal database ID for this Data Source. Useful when performing "
@@ -4953,18 +4953,18 @@ msgstr ""
 "معرف قاعدة البيانات الداخلية لمصدر البيانات هذا. مفيد عند تنفيذ التشغيل الآلي "
 "أو التصحيح."
 
-#: data_sources.php:1538
+#: data_sources.php:1556
 #, fuzzy
 msgid "The frequency that data is collected for this Data Source."
 msgstr "معدل تكرار جمع البيانات لمصدر البيانات هذا."
 
-#: data_sources.php:1544
+#: data_sources.php:1562
 #, fuzzy
 msgid "If this Data Source is no long in use by Graphs, it can be Deleted."
 msgstr ""
 "إذا لم يعد مصدر البيانات هذا قيد الاستخدام بواسطة الرسوم البيانية ، فيمكن حذفه."
 
-#: data_sources.php:1550
+#: data_sources.php:1568
 #, fuzzy
 msgid ""
 "Whether or not data will be collected for this Data Source. Controlled at the "
@@ -4973,12 +4973,12 @@ msgstr ""
 "ما إذا كانت البيانات سيتم تجميعها لمصدر البيانات هذا أم لا. يتحكم في مستوى "
 "قالب البيانات."
 
-#: data_sources.php:1556
+#: data_sources.php:1574
 #, fuzzy
 msgid "The Data Template that this Data Source was based upon."
 msgstr "قالب البيانات الذي يستند إليه مصدر البيانات هذا."
 
-#: data_sources.php:1605
+#: data_sources.php:1623
 #, fuzzy
 msgid "No Data Sources Found"
 msgstr "لم يتم العثور على مصادر البيانات"
@@ -4988,7 +4988,7 @@ msgstr "لم يتم العثور على مصادر البيانات"
 msgid "Change Profile"
 msgstr "تغيير الملف الشخصي"
 
-#: data_templates.php:359
+#: data_templates.php:378
 #, fuzzy
 msgid ""
 "Click 'Continue' to delete the following Data Template(s).  Any data sources "
@@ -4999,12 +4999,12 @@ msgstr ""
 "بيانات مرفقة بهذه القوالب مصدرًا فرديًا للبيانات وستتم إزالة جميع مزايا "
 "Templating."
 
-#: data_templates.php:364
+#: data_templates.php:383
 #, fuzzy
 msgid "Delete Data Template(s)"
 msgstr "حذف قالب (نماذج) البيانات"
 
-#: data_templates.php:368
+#: data_templates.php:387
 #, fuzzy
 msgid ""
 "Click 'Continue' to duplicate the following Data Template(s). You can "
@@ -5013,17 +5013,17 @@ msgstr ""
 "انقر فوق &quot;متابعة&quot; لتكرار قالب (نماذج) البيانات التالية. يمكنك بشكل "
 "اختياري تغيير تنسيق العنوان الخاص بقالب (نماذج) البيانات الجديدة."
 
-#: data_templates.php:370
+#: data_templates.php:389
 #, fuzzy
 msgid "template_title"
 msgstr "template_title"
 
-#: data_templates.php:374
+#: data_templates.php:393
 #, fuzzy
 msgid "Duplicate Data Template(s)"
 msgstr "قالب (ملفات) بيانات مكررة"
 
-#: data_templates.php:378
+#: data_templates.php:397
 #, fuzzy
 msgid ""
 "Click 'Continue' to change the default Data Source Profile for the following "
@@ -5032,12 +5032,12 @@ msgstr ""
 "انقر فوق &quot;متابعة&quot; لتغيير ملف تعريف مصدر البيانات الافتراضي للقالب "
 "(ق) البيانات التالية."
 
-#: data_templates.php:380
+#: data_templates.php:399
 #, fuzzy
 msgid "New Data Source Profile"
 msgstr "ملف مصدر بيانات جديد"
 
-#: data_templates.php:386
+#: data_templates.php:405
 #, fuzzy
 msgid ""
 "NOTE: This change only will affect future Data Sources and does not alter "
@@ -5046,32 +5046,32 @@ msgstr ""
 "ملاحظة: هذا التغيير سيؤثر فقط على مصادر البيانات المستقبلية ولا يغير مصادر "
 "البيانات الحالية."
 
-#: data_templates.php:390
+#: data_templates.php:409
 #, fuzzy
 msgid "Change Data Source Profile"
 msgstr "تغيير ملف تعريف مصدر البيانات"
 
-#: data_templates.php:531
+#: data_templates.php:550
 #, fuzzy, php-format
 msgid "Data Templates [edit: %s]"
 msgstr "قوالب البيانات [تحرير:٪ s]"
 
-#: data_templates.php:550
+#: data_templates.php:569
 #, fuzzy
 msgid "Edit Data Input Method."
 msgstr "تحرير طريقة إدخال البيانات."
 
-#: data_templates.php:559
+#: data_templates.php:578
 #, fuzzy
 msgid "Data Templates [new]"
 msgstr "قوالب البيانات [جديد]"
 
-#: data_templates.php:591
+#: data_templates.php:610
 #, fuzzy
 msgid "This field is always templated."
 msgstr "هذا الحقل دائمًا يتم إعداده وفقًا للنموذج."
 
-#: data_templates.php:595 data_templates.php:685 data_templates.php:763
+#: data_templates.php:614 data_templates.php:704 data_templates.php:782
 #, fuzzy
 msgid ""
 "Check this checkbox if you wish to allow the user to override the value on the "
@@ -5080,38 +5080,38 @@ msgstr ""
 "حدد مربع الاختيار هذا إذا كنت ترغب في السماح للمستخدم بتجاوز القيمة على اليمين "
 "أثناء إنشاء مصدر البيانات."
 
-#: data_templates.php:642
+#: data_templates.php:661
 #, fuzzy
 msgid "Data Templates in use can not be modified"
 msgstr "لا يمكن تعديل قوالب البيانات المستخدمة"
 
-#: data_templates.php:656 data_templates.php:658
+#: data_templates.php:675 data_templates.php:677
 #, fuzzy, php-format
 msgid "Data Source Item [%s]"
 msgstr "عنصر مصدر البيانات [٪ s]"
 
-#: data_templates.php:756
+#: data_templates.php:775
 #, fuzzy
 msgid "Value will be derived from the device if this field is left empty."
 msgstr "سيتم اشتقاق القيمة من الجهاز إذا تم ترك هذا الحقل فارغًا."
 
-#: data_templates.php:836 data_templates.php:867 data_templates.php:990
-#: include/global_arrays.php:1065 include/global_arrays.php:2053
+#: data_templates.php:855 data_templates.php:886 data_templates.php:1009
+#: include/global_arrays.php:1069 include/global_arrays.php:2057
 #, fuzzy
 msgid "Data Templates"
 msgstr "قوالب البيانات"
 
-#: data_templates.php:999
+#: data_templates.php:1018
 #, fuzzy
 msgid "Data Template Name"
 msgstr "اسم قالب البيانات"
 
-#: data_templates.php:999
+#: data_templates.php:1018
 #, fuzzy
 msgid "The name of this Data Template."
 msgstr "اسم قالب البيانات هذا."
 
-#: data_templates.php:1000
+#: data_templates.php:1019
 #, fuzzy
 msgid ""
 "The internal database ID for this Data Template.  Useful when performing "
@@ -5120,7 +5120,7 @@ msgstr ""
 "معرف قاعدة البيانات الداخلي لهذا قالب البيانات. مفيد عند تنفيذ التشغيل الآلي "
 "أو التصحيح."
 
-#: data_templates.php:1001
+#: data_templates.php:1020
 #, fuzzy
 msgid ""
 "Data Templates that are in use cannot be Deleted.  In use is defined as being "
@@ -5129,32 +5129,32 @@ msgstr ""
 "لا يمكن حذف قوالب البيانات المستخدمة. يتم تعريف الاستخدام على أنه مرجع من قبل "
 "مصدر بيانات."
 
-#: data_templates.php:1002
+#: data_templates.php:1021
 #, fuzzy
 msgid "The number of Data Sources using this Data Template."
 msgstr "عدد مصادر البيانات التي تستخدم قالب البيانات هذا."
 
-#: data_templates.php:1003
+#: data_templates.php:1022
 #, fuzzy
 msgid "Input Method"
 msgstr "طريقة الادخال"
 
-#: data_templates.php:1003
+#: data_templates.php:1022
 #, fuzzy
 msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "الأسلوب المستخدم لوضع البيانات في RRDfile مصدر البيانات."
 
-#: data_templates.php:1004
+#: data_templates.php:1023
 #, fuzzy
 msgid "Profile Name"
 msgstr "اسم الملف الشخصي"
 
-#: data_templates.php:1004
+#: data_templates.php:1023
 #, fuzzy
 msgid "The default Data Source Profile for this Data Template."
 msgstr "ملف تعريف مصدر البيانات الافتراضي لهذا القالب البيانات."
 
-#: data_templates.php:1005
+#: data_templates.php:1024
 #, fuzzy
 msgid ""
 "Data Sources based on Inactive Data Templates will not be updated when the "
@@ -5163,7 +5163,7 @@ msgstr ""
 "لن يتم تحديث مصادر البيانات المستندة إلى قوالب البيانات غير النشطة عند تشغيل "
 "أداة التلقيم."
 
-#: data_templates.php:1034
+#: data_templates.php:1053
 #, fuzzy
 msgid "No Data Templates Found"
 msgstr "لا توجد قوالب بيانات"
@@ -5188,12 +5188,12 @@ msgstr "إعدادات GPRINT المسبقة [تحرير:٪ s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT المسبقة [جديد]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1903
+#: gprint_presets.php:254 include/global_arrays.php:1907
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "المسبقة GPRINT"
 
-#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:893
+#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:897
 #, fuzzy
 msgid "GPRINTs"
 msgstr "GPRINTs"
@@ -5424,7 +5424,7 @@ msgstr "مزامنة الرسوم البيانية إلى قالب (نماذج) 
 msgid "Graph Template Items [edit: %s]"
 msgstr "عناصر قالب الرسم البياني [تحرير:٪ s]"
 
-#: graph_templates.php:448 include/global_arrays.php:2023
+#: graph_templates.php:448 include/global_arrays.php:2027
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "مدخلات البند الرسم البياني"
@@ -5459,8 +5459,8 @@ msgstr ""
 "على اليمين أثناء إنشاء الرسم البياني."
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
-#: graphs_new.php:451 include/global_arrays.php:1064
-#: include/global_arrays.php:1999 lib/html_tree.php:548 user_admin.php:1410
+#: graphs_new.php:451 include/global_arrays.php:1068
+#: include/global_arrays.php:2003 lib/html_tree.php:548 user_admin.php:1410
 #: user_group_admin.php:1105
 #, fuzzy
 msgid "Graph Templates"
@@ -5597,7 +5597,7 @@ msgstr "[تطبيق قائمة الرسم البياني المخصص - تصفي
 msgid "View"
 msgstr "عرض"
 
-#: graph_view.php:596 graph_view.php:777 include/global_arrays.php:1043
+#: graph_view.php:596 graph_view.php:777 include/global_arrays.php:1047
 #, fuzzy
 msgid "View Graphs"
 msgstr "عرض الرسوم البيانية"
@@ -5648,7 +5648,7 @@ msgstr "لايمكن تطبيقه"
 msgid "Select the Report to add the selected Graphs to."
 msgstr "حدد التقرير لإضافة الرسوم البيانية المحددة إلى."
 
-#: graph_view.php:841 include/global_arrays.php:1823
+#: graph_view.php:841 include/global_arrays.php:1827
 #: include/global_settings.php:2113
 #, fuzzy
 msgid "Preview Mode"
@@ -5719,7 +5719,7 @@ msgstr "تحميل"
 msgid "Summary Details"
 msgstr "تفاصيل موجزة"
 
-#: graphs.php:52 graphs.php:938 include/global_arrays.php:1873
+#: graphs.php:52 graphs.php:938 include/global_arrays.php:1877
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "تغيير قالب الرسم البياني"
@@ -5858,7 +5858,7 @@ msgstr "فرع الوجهة"
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
 msgstr "اختر جهازًا جديدًا لهذه الرسوم (الرسوم) وانقر فوق &quot;متابعة&quot;."
 
-#: graphs.php:981 include/global_arrays.php:858
+#: graphs.php:981 include/global_arrays.php:862
 #, fuzzy
 msgid "New Device"
 msgstr "جهاز جديد"
@@ -6006,7 +6006,7 @@ msgstr "حقول الرسم البياني"
 msgid "Graph Item Fields"
 msgstr "مجالات البند الرسم البياني"
 
-#: graphs.php:1816 include/global_arrays.php:1861
+#: graphs.php:1816 include/global_arrays.php:1865
 #, fuzzy
 msgid "Graph Management"
 msgstr "إدارة الرسم البياني"
@@ -6068,7 +6068,7 @@ msgstr "حجم هذا الرسم البياني عندما لا يكون في و
 msgid "Data Sources [No Device]"
 msgstr "مصادر البيانات [لا يوجد جهاز]"
 
-#: graphs_items.php:327 include/global_arrays.php:1179
+#: graphs_items.php:327 include/global_arrays.php:1183
 #: include/global_form.php:1580
 #, fuzzy
 msgid "Data Template"
@@ -6145,7 +6145,7 @@ msgstr "حدد الكل"
 msgid "Select All Rows"
 msgstr "حدد كل الصفوف"
 
-#: graphs_new.php:544 include/global_arrays.php:856 include/global_arrays.php:932
+#: graphs_new.php:544 include/global_arrays.php:860 include/global_arrays.php:936
 #: lib/html_form.php:1264 lib/html_form.php:1277 tree.php:1366
 msgid "Create"
 msgstr "أنشأ"
@@ -6430,15 +6430,15 @@ msgstr "استعلامات البيانات المرتبطة"
 msgid "Re-Index Method"
 msgstr "طريقة إعادة الفهرسة"
 
-#: host.php:784 include/global_arrays.php:1879 include/global_arrays.php:1945
-#: include/global_arrays.php:2011 include/global_arrays.php:2047
-#: include/global_arrays.php:2065 include/global_arrays.php:2083
-#: include/global_arrays.php:2101 include/global_arrays.php:2131
-#: include/global_arrays.php:2167 include/global_arrays.php:2197
-#: include/global_arrays.php:2287 include/global_arrays.php:2479
-#: include/global_arrays.php:2503 include/global_arrays.php:2521
-#: include/global_arrays.php:2539 include/global_arrays.php:2557
-#: include/global_arrays.php:2581 lib/api_automation.php:1288
+#: host.php:784 include/global_arrays.php:1883 include/global_arrays.php:1949
+#: include/global_arrays.php:2015 include/global_arrays.php:2051
+#: include/global_arrays.php:2069 include/global_arrays.php:2087
+#: include/global_arrays.php:2105 include/global_arrays.php:2135
+#: include/global_arrays.php:2171 include/global_arrays.php:2201
+#: include/global_arrays.php:2291 include/global_arrays.php:2483
+#: include/global_arrays.php:2507 include/global_arrays.php:2525
+#: include/global_arrays.php:2543 include/global_arrays.php:2561
+#: include/global_arrays.php:2585 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1417
 #: lib/html_reports.php:1349 links.php:378 plugins.php:472
 msgid "Actions"
@@ -6488,27 +6488,27 @@ msgstr "إضافة استعلام بيانات"
 msgid "Add Data Query to Device"
 msgstr "إضافة استعلام بيانات إلى جهاز"
 
-#: host.php:1050 host.php:1063 include/global_arrays.php:585
+#: host.php:1050 host.php:1063 include/global_arrays.php:589
 #, fuzzy
 msgid "Ping"
 msgstr "بينغ"
 
-#: host.php:1061 include/global_arrays.php:580
+#: host.php:1061 include/global_arrays.php:584
 #, fuzzy
 msgid "Ping and SNMP Uptime"
 msgstr "Ping و SNMP Uptime"
 
-#: host.php:1062 include/global_arrays.php:582
+#: host.php:1062 include/global_arrays.php:586
 #, fuzzy
 msgid "SNMP Uptime"
 msgstr "وقت تشغيل SNMP"
 
-#: host.php:1064 include/global_arrays.php:581
+#: host.php:1064 include/global_arrays.php:585
 #, fuzzy
 msgid "Ping or SNMP Uptime"
 msgstr "Ping أو SNMP Uptime"
 
-#: host.php:1065 include/global_arrays.php:583
+#: host.php:1065 include/global_arrays.php:587
 #, fuzzy
 msgid "SNMP Desc"
 msgstr "SNMP Desc"
@@ -6540,7 +6540,7 @@ msgid "Recovering"
 msgstr "يتعافى"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/rrd.php:2829 lib/rrd.php:2841 plugins.php:180
+#: lib/html_utility.php:895 lib/rrd.php:2833 lib/rrd.php:2845 plugins.php:180
 #: plugins.php:184 plugins.php:203 user_admin.php:796 utilities.php:2145
 msgid "Unknown"
 msgstr "غير معروف"
@@ -6768,7 +6768,7 @@ msgid "Add Data Query to Device Template"
 msgstr "إضافة استعلام بيانات إلى قالب الجهاز"
 
 #: host_templates.php:712 host_templates.php:727 host_templates.php:828
-#: include/global_arrays.php:1066 include/global_arrays.php:2035
+#: include/global_arrays.php:1070 include/global_arrays.php:2039
 #, fuzzy
 msgid "Device Templates"
 msgstr "قوالب الجهاز"
@@ -6875,118 +6875,118 @@ msgstr "يمكن لمسؤولي Cacti فقط مع امتياز تثبيت / تر
 msgid "There is an Installation or Upgrade in progress."
 msgstr "يوجد تثبيت أو ترقية قيد التقدم."
 
-#: include/global_arrays.php:122
+#: include/global_arrays.php:123
 #, fuzzy
 msgid "Save Successful."
 msgstr "تم الحفظ بنجاح."
 
-#: include/global_arrays.php:125
+#: include/global_arrays.php:126
 #, fuzzy
 msgid "Save Failed."
 msgstr "فشل عملية الحفظ."
 
-#: include/global_arrays.php:128
+#: include/global_arrays.php:129
 #, fuzzy
 msgid "Save Failed due to field input errors (Check red fields)."
 msgstr "فشل الحفظ بسبب أخطاء إدخال الحقل (تحقق من الحقول الحمراء)."
 
-#: include/global_arrays.php:131
+#: include/global_arrays.php:132
 #, fuzzy
 msgid "Passwords do not match, please retype."
 msgstr "لا تتطابق كلمات المرور ، يرجى إعادة كتابتها."
 
-#: include/global_arrays.php:134
+#: include/global_arrays.php:135
 #, fuzzy
 msgid "You must select at least one field."
 msgstr "يجب عليك تحديد حقل واحد على الأقل."
 
-#: include/global_arrays.php:137
+#: include/global_arrays.php:138
 #, fuzzy
 msgid "You must have built in user authentication turned on to use this feature."
 msgstr "يجب أن تكون بنيت في مصادقة المستخدم قيد التشغيل لاستخدام هذه الميزة."
 
-#: include/global_arrays.php:140
+#: include/global_arrays.php:141
 #, fuzzy
 msgid "XML parse error."
 msgstr "خطأ في تحليل XML."
 
-#: include/global_arrays.php:143
+#: include/global_arrays.php:144
 #, fuzzy
 msgid ""
 "The directory highlighted does not exist.  Please enter a valid directory."
 msgstr "الدليل المميز غير موجود. الرجاء إدخال دليل صالح."
 
-#: include/global_arrays.php:146
+#: include/global_arrays.php:147
 #, fuzzy
 msgid "The Cacti log file must have the extension '.log'"
 msgstr "يجب أن يكون ملف السجل Cacti الملحق &quot;.log&quot;"
 
-#: include/global_arrays.php:149
+#: include/global_arrays.php:150
 #, fuzzy
 msgid "Data Input for method does not appear to be whitelisted."
 msgstr "يبدو أن إدخال البيانات للأسلوب غير مدرج في القائمة البيضاء."
 
-#: include/global_arrays.php:152
+#: include/global_arrays.php:153
 #, fuzzy
 msgid "Data Source does not exist."
 msgstr "مصدر البيانات غير موجود."
 
-#: include/global_arrays.php:155
+#: include/global_arrays.php:156
 #, fuzzy
 msgid "Username already in use."
 msgstr "اسم المستخدم قيد الاستخدام بالفعل."
 
-#: include/global_arrays.php:158
+#: include/global_arrays.php:159
 #, fuzzy
 msgid "The SNMP v3 Privacy Passphrases do not match"
 msgstr "لا تتطابق عبارات مرور الخصوصية لـ SNMP v3"
 
-#: include/global_arrays.php:161
+#: include/global_arrays.php:162
 #, fuzzy
 msgid "The SNMP v3 Authentication Passphrases do not match"
 msgstr "لا تتطابق عبارات دخول المصادقة لـ SNMP v3"
 
-#: include/global_arrays.php:164
+#: include/global_arrays.php:165
 #, fuzzy
 msgid "XML: Cacti version does not exist."
 msgstr "XML: إصدار Cacti غير موجود."
 
-#: include/global_arrays.php:167
+#: include/global_arrays.php:168
 #, fuzzy
 msgid "XML: Hash version does not exist."
 msgstr "XML: إصدار تجزئة غير موجود."
 
-#: include/global_arrays.php:170
+#: include/global_arrays.php:171
 #, fuzzy
 msgid "XML: Generated with a newer version of Cacti."
 msgstr "XML: يتم إنشاؤها باستخدام إصدار أحدث من Cacti."
 
-#: include/global_arrays.php:173
+#: include/global_arrays.php:174
 #, fuzzy
 msgid "XML: Cannot locate type code."
 msgstr "XML: لا يمكن تحديد موقع رمز الكتابة."
 
-#: include/global_arrays.php:176
+#: include/global_arrays.php:177
 #, fuzzy
 msgid "Username already exists."
 msgstr "اسم المستخدم موجود بالفعل."
 
-#: include/global_arrays.php:179
+#: include/global_arrays.php:180
 #, fuzzy
 msgid "Username change not permitted for designated template or guest user."
 msgstr "تغيير اسم المستخدم غير مسموح به للقالب المحدد أو للمستخدم الضيف."
 
-#: include/global_arrays.php:182
+#: include/global_arrays.php:183
 #, fuzzy
 msgid "User delete not permitted for designated template or guest user."
 msgstr "حذف المستخدم غير مسموح به للقالب المحدد أو للمستخدم الضيف."
 
-#: include/global_arrays.php:185
+#: include/global_arrays.php:186
 #, fuzzy
 msgid "User delete not permitted for designated graph export user."
 msgstr "حذف المستخدم غير مسموح به لمستخدم تصدير الرسم البياني المعين."
 
-#: include/global_arrays.php:188
+#: include/global_arrays.php:189
 #, fuzzy
 msgid ""
 "Data Template includes deleted Data Source Profile.  Please resave the Data "
@@ -6995,7 +6995,7 @@ msgstr ""
 "يتضمن قالب البيانات ملف تعريف مصدر البيانات المحذوف. الرجاء حفظ قالب البيانات "
 "مع ملف تعريف مصدر بيانات موجود."
 
-#: include/global_arrays.php:191
+#: include/global_arrays.php:192
 #, fuzzy
 msgid ""
 "Graph Template includes deleted GPrint Prefix.  Please run database repair "
@@ -7004,7 +7004,7 @@ msgstr ""
 "يتضمن قالب الرسم البياني بادئة GPrint المحذوفة. الرجاء تشغيل برنامج نصي لإصلاح "
 "قاعدة البيانات لتحديد و / أو تصحيح."
 
-#: include/global_arrays.php:194
+#: include/global_arrays.php:195
 #, fuzzy
 msgid ""
 "Graph Template includes deleted CDEFs.  Please run database repair script to "
@@ -7013,7 +7013,7 @@ msgstr ""
 "يتضمن قالب الرسم البياني حذف CDEFs. الرجاء تشغيل برنامج نصي لإصلاح قاعدة "
 "البيانات لتحديد و / أو تصحيح."
 
-#: include/global_arrays.php:197
+#: include/global_arrays.php:198
 #, fuzzy
 msgid ""
 "Graph Template includes deleted Data Input Method.  Please run database repair "
@@ -7022,7 +7022,7 @@ msgstr ""
 "يتضمن قالب الرسم البياني طريقة إدخال البيانات المحذوفة. الرجاء تشغيل برنامج "
 "نصي لإصلاح قاعدة البيانات لتحديده."
 
-#: include/global_arrays.php:200
+#: include/global_arrays.php:201
 #, fuzzy
 msgid ""
 "Data Template not found during Export.  Please run database repair script to "
@@ -7031,7 +7031,7 @@ msgstr ""
 "نموذج البيانات غير موجود أثناء التصدير. الرجاء تشغيل برنامج نصي لإصلاح قاعدة "
 "البيانات لتحديده."
 
-#: include/global_arrays.php:203
+#: include/global_arrays.php:204
 #, fuzzy
 msgid ""
 "Device Template not found during Export.  Please run database repair script to "
@@ -7040,7 +7040,7 @@ msgstr ""
 "لم يتم العثور على قالب الجهاز أثناء التصدير. الرجاء تشغيل برنامج نصي لإصلاح "
 "قاعدة البيانات لتحديده."
 
-#: include/global_arrays.php:206
+#: include/global_arrays.php:207
 #, fuzzy
 msgid ""
 "Data Query not found during Export.  Please run database repair script to "
@@ -7049,7 +7049,7 @@ msgstr ""
 "استعلام البيانات غير موجود أثناء التصدير. الرجاء تشغيل برنامج نصي لإصلاح قاعدة "
 "البيانات لتحديده."
 
-#: include/global_arrays.php:209
+#: include/global_arrays.php:210
 #, fuzzy
 msgid ""
 "Graph Template not found during Export.  Please run database repair script to "
@@ -7058,7 +7058,7 @@ msgstr ""
 "لم يتم العثور على قالب الرسم البياني أثناء التصدير. الرجاء تشغيل برنامج نصي "
 "لإصلاح قاعدة البيانات لتحديده."
 
-#: include/global_arrays.php:212
+#: include/global_arrays.php:213
 #, fuzzy
 msgid ""
 "Graph not found.  Either it has been deleted or your database needs repair."
@@ -7066,12 +7066,12 @@ msgstr ""
 "لم يتم العثور على الرسم البياني. إما أنه تم حذفه أو قاعدة البيانات الخاصة بك "
 "يحتاج إصلاح."
 
-#: include/global_arrays.php:215
+#: include/global_arrays.php:216
 #, fuzzy
 msgid "SNMPv3 Auth Passphrases must be 8 characters or greater."
 msgstr "يجب أن تكون عبارة مرور المصادقة SNMPv3 8 أحرف أو أكبر."
 
-#: include/global_arrays.php:218
+#: include/global_arrays.php:219
 #, fuzzy
 msgid ""
 "Some Graphs not updated. Unable to change device for Data Query based Graphs."
@@ -7079,12 +7079,12 @@ msgstr ""
 "بعض الرسوم البيانية لم يتم تحديثها. يتعذر تغيير الجهاز للرسومات البيانية "
 "المستندة إلى استعلام البيانات."
 
-#: include/global_arrays.php:221
+#: include/global_arrays.php:222
 #, fuzzy
 msgid "Unable to change device for Data Query based Graphs."
 msgstr "يتعذر تغيير الجهاز للرسومات البيانية المستندة إلى استعلام البيانات."
 
-#: include/global_arrays.php:224
+#: include/global_arrays.php:225
 #, fuzzy
 msgid ""
 "Some settings not saved. Check messages below.  Check red fields for errors."
@@ -7092,34 +7092,34 @@ msgstr ""
 "بعض الإعدادات لم يتم حفظها. تحقق من الرسائل أدناه. تحقق من الحقول الحمراء بحثًا "
 "عن الأخطاء."
 
-#: include/global_arrays.php:227
+#: include/global_arrays.php:228
 #, fuzzy
 msgid "The file highlighted does not exist.  Please enter a valid file name."
 msgstr "الملف المميز غير موجود. يرجى إدخال اسم ملف صالح."
 
-#: include/global_arrays.php:230
+#: include/global_arrays.php:231
 #, fuzzy
 msgid "All User Settings have been returned to their default values."
 msgstr "تم إرجاع جميع إعدادات المستخدم إلى قيمها الافتراضية."
 
-#: include/global_arrays.php:233
+#: include/global_arrays.php:234
 #, fuzzy
 msgid ""
 "Suggested Field Name was not entered.  Please enter a field name and try again."
 msgstr "لم يتم إدخال اسم الحقل المقترح. يرجى إدخال اسم الحقل والمحاولة مرة أخرى."
 
-#: include/global_arrays.php:236
+#: include/global_arrays.php:237
 #, fuzzy
 msgid ""
 "Suggested Value was not entered.  Please enter a suggested value and try again."
 msgstr "لم يتم إدخال القيمة المقترحة. يرجى إدخال قيمة مقترحة والمحاولة مرة أخرى."
 
-#: include/global_arrays.php:239
+#: include/global_arrays.php:240
 #, fuzzy
 msgid "You must select at least one object from the list."
 msgstr "يجب عليك تحديد كائن واحد على الأقل من القائمة."
 
-#: include/global_arrays.php:242
+#: include/global_arrays.php:243
 #, fuzzy
 msgid ""
 "Device Template updated.  Remember to Sync Templates to push all changes to "
@@ -7128,12 +7128,18 @@ msgstr ""
 "تم تحديث قالب الجهاز. تذكر أن تقوم قوالب المزامنة بدفع جميع التغييرات إلى "
 "الأجهزة التي تستخدم قالب الجهاز هذا."
 
-#: include/global_arrays.php:245
+#: include/global_arrays.php:246
 #, fuzzy
 msgid "Save Successful. Settings replicated to Remote Data Collectors."
 msgstr "تم الحفظ بنجاح. الإعدادات المنسوخة إلى جامع البيانات البعيد."
 
-#: include/global_arrays.php:248
+#: include/global_arrays.php:249
+#, fuzzy
+msgid "Save Failed.  Minimum Values must be less than Maximum Value."
+msgstr ""
+"فشل عملية الحفظ. يجب أن يكون الحد الأدنى للقيم أقل من الحد الأقصى للقيمة."
+
+#: include/global_arrays.php:252
 #, fuzzy
 msgid ""
 "Data Input Saved.  You must update the Data Templates referencing this Data "
@@ -7142,7 +7148,7 @@ msgstr ""
 "إدخال البيانات المحفوظة. يجب عليك تحديث قوالب البيانات التي تشير إلى طريقة "
 "إدخال البيانات هذه قبل إنشاء الرسوم البيانية أو مصادر البيانات."
 
-#: include/global_arrays.php:251
+#: include/global_arrays.php:255
 #, fuzzy
 msgid ""
 "Data Input Saved.  You must update the Data Templates referencing this Data "
@@ -7153,7 +7159,7 @@ msgstr ""
 "إدخال البيانات هذه قبل أن يبدأ جامع البيانات في استخدام أي حقول إدخال إدخال "
 "بيانات جديدة أو معدلة."
 
-#: include/global_arrays.php:254
+#: include/global_arrays.php:258
 #, fuzzy
 msgid ""
 "Data Input Field Saved.  You must update the Data Templates referencing this "
@@ -7162,7 +7168,7 @@ msgstr ""
 "حقل إدخال البيانات المحفوظة. يجب عليك تحديث قوالب البيانات التي تشير إلى طريقة "
 "إدخال البيانات هذه قبل إنشاء الرسوم البيانية أو مصادر البيانات."
 
-#: include/global_arrays.php:257
+#: include/global_arrays.php:261
 #, fuzzy
 msgid ""
 "Data Input Field Saved.  You must update the Data Templates referencing this "
@@ -7173,22 +7179,22 @@ msgstr ""
 "إدخال البيانات هذه قبل أن يبدأ جامع البيانات في استخدام أي حقول إدخال إدخال "
 "بيانات جديدة أو معدلة."
 
-#: include/global_arrays.php:260
+#: include/global_arrays.php:264
 #, fuzzy
 msgid "Log file specified is not a Cacti log or archive file."
 msgstr "ملف السجل المحدد ليس ملف سجل أو ملف Cacti."
 
-#: include/global_arrays.php:263
+#: include/global_arrays.php:267
 #, fuzzy
 msgid "Log file specified was Cacti archive file and was removed."
 msgstr "كان ملف السجل المحدد ملف أرشيف Cacti وتمت إزالته."
 
-#: include/global_arrays.php:266
+#: include/global_arrays.php:270
 #, fuzzy
 msgid "Cacti log purged successfully"
 msgstr "إزالة سجل Cacti بنجاح"
 
-#: include/global_arrays.php:269
+#: include/global_arrays.php:273
 #, fuzzy
 msgid ""
 "If you force a password change, you must also allow the user to change their "
@@ -7197,85 +7203,85 @@ msgstr ""
 "في حالة فرض تغيير كلمة المرور ، يجب أيضًا السماح للمستخدم بتغيير كلمة المرور "
 "الخاصة به."
 
-#: include/global_arrays.php:272
+#: include/global_arrays.php:276
 #, fuzzy
 msgid "You are not allowed to change your password."
 msgstr "غير مسموح لك بتغيير كلمة المرور الخاصة بك."
 
-#: include/global_arrays.php:275
+#: include/global_arrays.php:279
 #, fuzzy
 msgid ""
 "Unable to determine size of password field, please check permissions of db user"
 msgstr "يتعذر تحديد حجم حقل كلمة المرور ، يرجى التحقق من أذونات مستخدم db"
 
-#: include/global_arrays.php:278
+#: include/global_arrays.php:282
 #, fuzzy
 msgid ""
 "Unable to increase size of password field, pleas check permission of db user"
 msgstr "غير قادر على زيادة حجم حقل كلمة المرور ، يرجى التحقق من إذن المستخدم db"
 
-#: include/global_arrays.php:281
+#: include/global_arrays.php:285
 #, fuzzy
 msgid "LDAP/AD based password change not supported."
 msgstr "تغيير كلمة المرور المستندة إلى LDAP / AD غير مدعوم."
 
-#: include/global_arrays.php:284
+#: include/global_arrays.php:288
 #, fuzzy
 msgid "Password successfully changed."
 msgstr "الرقم السري تغير بنجاح."
 
-#: include/global_arrays.php:287
+#: include/global_arrays.php:291
 #, fuzzy
 msgid "Unable to clear log, no write permissions"
 msgstr "غير قادر على مسح السجل ، لا أذونات الكتابة"
 
-#: include/global_arrays.php:290
+#: include/global_arrays.php:294
 #, fuzzy
 msgid "Unable to clear log, file does not exist"
 msgstr "غير قادر على مسح السجل ، الملف غير موجود"
 
-#: include/global_arrays.php:293
+#: include/global_arrays.php:297
 #, fuzzy
 msgid "CSRF Timeout, refreshing page."
 msgstr "CSRF Timeout ، صفحة منعشة."
 
-#: include/global_arrays.php:296
+#: include/global_arrays.php:300
 #, fuzzy
 msgid "CSRF Timeout occurred due to inactivity, page refreshed."
 msgstr "حدث مهلة CSRF بسبب عدم النشاط ، تم تحديث الصفحة."
 
-#: include/global_arrays.php:299
+#: include/global_arrays.php:303
 #, fuzzy
 msgid "Invalid timestamp. Select timestamp in the future."
 msgstr "طابع زمني غير صالح. حدد الطابع الزمني في المستقبل."
 
-#: include/global_arrays.php:302
+#: include/global_arrays.php:306
 #, fuzzy
 msgid "Data Collector(s) synchronized for offline operation"
 msgstr "جمع البيانات (ق) متزامنة للتشغيل دون اتصال"
 
-#: include/global_arrays.php:305
+#: include/global_arrays.php:309
 #, fuzzy
 msgid "Data Collector(s) not found when attempting synchronization"
 msgstr "لم يتم العثور على مجمّع بيانات (ق) عند محاولة المزامنة"
 
-#: include/global_arrays.php:308
+#: include/global_arrays.php:312
 #, fuzzy
 msgid "Unable to establish MySQL connection with Remote Data Collector."
 msgstr "غير قادر على إنشاء اتصال MySQL مع جامع البيانات البعيد."
 
-#: include/global_arrays.php:311
+#: include/global_arrays.php:315
 #, fuzzy
 msgid ""
 "Data Collector synchronization must be initiated from the main Cacti server."
 msgstr "يجب البدء في مزامنة Data Collector من خادم Cacti الرئيسي."
 
-#: include/global_arrays.php:314
+#: include/global_arrays.php:318
 #, fuzzy
 msgid "Synchronization does not include the Central Cacti Database server."
 msgstr "لا يتضمن التزامن خادم قاعدة البيانات Cacti المركزية."
 
-#: include/global_arrays.php:317
+#: include/global_arrays.php:321
 #, fuzzy
 msgid ""
 "When saving a Remote Data Collector, the Database Hostname must be unique from "
@@ -7284,7 +7290,7 @@ msgstr ""
 "عند حفظ مجمّع بيانات عن بعد ، يجب أن يكون اسم مضيف قاعدة البيانات فريدًا من "
 "غيرها."
 
-#: include/global_arrays.php:320
+#: include/global_arrays.php:324
 #, fuzzy
 msgid ""
 "Your Remote Database Hostname must be something other than 'localhost' for "
@@ -7293,48 +7299,48 @@ msgstr ""
 "يجب أن يكون &quot;اسم مضيف قاعدة البيانات عن بُعد&quot; الخاص بك شيئًا آخر غير "
 "&quot;localhost&quot; لكل أداة تجميع بيانات عن بُعد."
 
-#: include/global_arrays.php:323
+#: include/global_arrays.php:327
 #, fuzzy
 msgid "Report Saved"
 msgstr "تم حفظ التقرير"
 
-#: include/global_arrays.php:326
+#: include/global_arrays.php:330
 #, fuzzy
 msgid "Report Save Failed"
 msgstr "تقرير حفظ فشل"
 
-#: include/global_arrays.php:329
+#: include/global_arrays.php:333
 #, fuzzy
 msgid "Report Item Saved"
 msgstr "تقرير البند المحفوظة"
 
-#: include/global_arrays.php:332
+#: include/global_arrays.php:336
 #, fuzzy
 msgid "Report Item Save Failed"
 msgstr "فشل حفظ تقرير العنصر"
 
-#: include/global_arrays.php:335
+#: include/global_arrays.php:339
 #, fuzzy
 msgid "Graph was not found attempting to Add to Report"
 msgstr "لم يتم العثور على الرسم البياني محاولة إضافة إلى تقرير"
 
-#: include/global_arrays.php:338
+#: include/global_arrays.php:342
 #, fuzzy
 msgid "Unable to Add Graphs.  Current user is not owner"
 msgstr "غير قادر على إضافة الرسوم البيانية. المستخدم الحالي ليس المالك"
 
-#: include/global_arrays.php:341
+#: include/global_arrays.php:345
 #, fuzzy
 msgid "Unable to Add all Graphs.  See error message for details."
 msgstr ""
 "غير قادر على إضافة كل الرسوم البيانية. انظر رسالة الخطأ للحصول على التفاصيل."
 
-#: include/global_arrays.php:344
+#: include/global_arrays.php:348
 #, fuzzy
 msgid "You must select at least one Graph to add to a Report."
 msgstr "يجب تحديد رسم بياني واحد على الأقل لإضافته إلى تقرير."
 
-#: include/global_arrays.php:347
+#: include/global_arrays.php:351
 #, fuzzy
 msgid ""
 "All Graphs have been added to the Report.  Duplicate Graphs with the same "
@@ -7343,7 +7349,7 @@ msgstr ""
 "تمت إضافة جميع الرسوم البيانية إلى التقرير. تم تخطي الرسوم البيانية مكررة مع "
 "نفس Timespan."
 
-#: include/global_arrays.php:350
+#: include/global_arrays.php:354
 #, fuzzy
 msgid ""
 "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next "
@@ -7352,52 +7358,52 @@ msgstr ""
 "مسح ذاكرة الموارد Poller. سيتم إعادة تجميع أداة تجميع البيانات الرئيسية في "
 "بداية برنامج التلقي التالي ، وستقوم مجمعات البيانات عن بُعد بالمزامنة بعد ذلك."
 
-#: include/global_arrays.php:353
+#: include/global_arrays.php:357
 #, fuzzy
 msgid "Unexpected error occurred"
 msgstr "حدث خطأ غير متوقع"
 
-#: include/global_arrays.php:414 include/global_arrays.php:793
+#: include/global_arrays.php:418 include/global_arrays.php:797
 #, fuzzy
 msgid "Function"
 msgstr "وظيفة"
 
-#: include/global_arrays.php:415 include/global_arrays.php:795
+#: include/global_arrays.php:419 include/global_arrays.php:799
 #, fuzzy
 msgid "Special Data Source"
 msgstr "مصدر البيانات الخاص"
 
-#: include/global_arrays.php:416 include/global_arrays.php:797
+#: include/global_arrays.php:420 include/global_arrays.php:801
 #, fuzzy
 msgid "Custom String"
 msgstr "سلسلة مخصصة"
 
-#: include/global_arrays.php:420 include/global_arrays.php:834
+#: include/global_arrays.php:424 include/global_arrays.php:838
 #, fuzzy
 msgid "Current Graph Item Data Source"
 msgstr "مصدر بيانات البند البياني الحالي"
 
-#: include/global_arrays.php:426 include/global_arrays.php:433
+#: include/global_arrays.php:430 include/global_arrays.php:437
 #, fuzzy
 msgid "Script/Command"
 msgstr "النصي / القيادة"
 
-#: include/global_arrays.php:428 include/global_arrays.php:434 utilities.php:1729
+#: include/global_arrays.php:432 include/global_arrays.php:438 utilities.php:1729
 #, fuzzy
 msgid "Script Server"
 msgstr "خادم سيناريو"
 
-#: include/global_arrays.php:440
+#: include/global_arrays.php:444
 #, fuzzy
 msgid "Index Count"
 msgstr "عد مؤشر"
 
-#: include/global_arrays.php:441
+#: include/global_arrays.php:445
 #, fuzzy
 msgid "Verify All"
 msgstr "تحقق من الكل"
 
-#: include/global_arrays.php:445
+#: include/global_arrays.php:449
 #, fuzzy
 msgid ""
 "All Re-Indexing will be manual or managed through scripts or Device Automation."
@@ -7405,1817 +7411,1817 @@ msgstr ""
 "ستكون جميع إعادة الفهرسة يدويًا أو تتم إدارتها من خلال النصوص البرمجية أو أتمتة "
 "الأجهزة."
 
-#: include/global_arrays.php:446
+#: include/global_arrays.php:450
 #, fuzzy
 msgid "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
 msgstr "عندما تنتقل مدة تشغيل SNMP للأجهزة إلى الخلف ، سيتم تنفيذ Re-Index."
 
-#: include/global_arrays.php:447
+#: include/global_arrays.php:451
 #, fuzzy
 msgid "When the Data Query index count changes, a Re-Index will be performed."
 msgstr "عندما يتغير عدد فهرس استعلام البيانات ، سيتم تنفيذ Re-Index."
 
-#: include/global_arrays.php:448
+#: include/global_arrays.php:452
 #, fuzzy
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
 msgstr "كل دورة اقتراع ، سيتم إجراء إعادة مؤشر. غالي جدا."
 
-#: include/global_arrays.php:452
+#: include/global_arrays.php:456
 #, fuzzy
 msgid "SNMP Field Name (Dropdown)"
 msgstr "اسم حقل SNMP (قائمة منسدلة)"
 
-#: include/global_arrays.php:453
+#: include/global_arrays.php:457
 #, fuzzy
 msgid "SNMP Field Value (From User)"
 msgstr "قيمة حقل SNMP (من المستخدم)"
 
-#: include/global_arrays.php:454
+#: include/global_arrays.php:458
 #, fuzzy
 msgid "SNMP Output Type (Dropdown)"
 msgstr "SNMP نوع المخرجات (المنسدلة)"
 
-#: include/global_arrays.php:478 include/global_arrays.php:484
+#: include/global_arrays.php:482 include/global_arrays.php:488
 msgid "Normal"
 msgstr "عادي"
 
-#: include/global_arrays.php:479
+#: include/global_arrays.php:483
 msgid "Light"
 msgstr "فاتح"
 
-#: include/global_arrays.php:480 include/global_arrays.php:485
+#: include/global_arrays.php:484 include/global_arrays.php:489
 #, fuzzy
 msgid "Mono"
 msgstr "مونو"
 
-#: include/global_arrays.php:489
+#: include/global_arrays.php:493
 #, fuzzy
 msgid "North"
 msgstr "شمال"
 
-#: include/global_arrays.php:490
+#: include/global_arrays.php:494
 #, fuzzy
 msgid "South"
 msgstr "جنوب"
 
-#: include/global_arrays.php:491
+#: include/global_arrays.php:495
 #, fuzzy
 msgid "West"
 msgstr "غرب"
 
-#: include/global_arrays.php:492
+#: include/global_arrays.php:496
 #, fuzzy
 msgid "East"
 msgstr "الشرق"
 
-#: include/global_arrays.php:497
+#: include/global_arrays.php:501
 msgid "Left"
 msgstr "يسار"
 
-#: include/global_arrays.php:498
+#: include/global_arrays.php:502
 msgid "Right"
 msgstr "يمين"
 
-#: include/global_arrays.php:499
+#: include/global_arrays.php:503
 msgid "Justified"
 msgstr "ضبط"
 
-#: include/global_arrays.php:500 lib/html.php:2363
+#: include/global_arrays.php:504 lib/html.php:2363
 msgid "Center"
 msgstr "وسط"
 
-#: include/global_arrays.php:504
+#: include/global_arrays.php:508
 #, fuzzy
 msgid "Top -> Down"
 msgstr "أعلى -&gt; أسفل"
 
-#: include/global_arrays.php:505
+#: include/global_arrays.php:509
 #, fuzzy
 msgid "Bottom -> Up"
 msgstr "أسفل -&gt; لأعلى"
 
-#: include/global_arrays.php:509 tree.php:1470
+#: include/global_arrays.php:513 tree.php:1470
 #, fuzzy
 msgid "Numeric"
 msgstr "رقمية"
 
-#: include/global_arrays.php:510
+#: include/global_arrays.php:514
 msgid "Timestamp"
 msgstr "الطابع الزمني"
 
-#: include/global_arrays.php:511
+#: include/global_arrays.php:515
 msgid "Duration"
 msgstr "المدة الزمنية"
 
-#: include/global_arrays.php:549
+#: include/global_arrays.php:553
 #, fuzzy
 msgid "Not In Use"
 msgstr "غير مستخدم"
 
-#: include/global_arrays.php:550 include/global_arrays.php:551
-#: include/global_arrays.php:552 include/global_arrays.php:759
-#: include/global_arrays.php:760
+#: include/global_arrays.php:554 include/global_arrays.php:555
+#: include/global_arrays.php:556 include/global_arrays.php:763
+#: include/global_arrays.php:764
 #, fuzzy, php-format
 msgid "Version %d"
 msgstr "الإصدار٪ d"
 
-#: include/global_arrays.php:556 include/global_arrays.php:562
+#: include/global_arrays.php:560 include/global_arrays.php:566
 #, fuzzy
 msgid "[None]"
 msgstr "لا شيء"
 
-#: include/global_arrays.php:557
+#: include/global_arrays.php:561
 #, fuzzy
 msgid "MD5"
 msgstr "MD5"
 
-#: include/global_arrays.php:558
+#: include/global_arrays.php:562
 #, fuzzy
 msgid "SHA"
 msgstr "SHA"
 
-#: include/global_arrays.php:563
+#: include/global_arrays.php:567
 #, fuzzy
 msgid "DES"
 msgstr "DES"
 
-#: include/global_arrays.php:564
+#: include/global_arrays.php:568
 #, fuzzy
 msgid "AES"
 msgstr "AES"
 
-#: include/global_arrays.php:573
+#: include/global_arrays.php:577
 #, fuzzy
 msgid "Logfile Only"
 msgstr "Logfile فقط"
 
-#: include/global_arrays.php:574
+#: include/global_arrays.php:578
 #, fuzzy
 msgid "Logfile and Syslog/Eventlog"
 msgstr "Logfile و Syslog / Eventlog"
 
-#: include/global_arrays.php:575
+#: include/global_arrays.php:579
 #, fuzzy
 msgid "Syslog/Eventlog Only"
 msgstr "Syslog / سجل الأحداث فقط"
 
-#: include/global_arrays.php:584
+#: include/global_arrays.php:588
 #, fuzzy
 msgid "SNMP getNext"
 msgstr "SNMP getNext"
 
-#: include/global_arrays.php:589
+#: include/global_arrays.php:593
 #, fuzzy
 msgid "ICMP Ping"
 msgstr "ICMP بينغ"
 
-#: include/global_arrays.php:590
+#: include/global_arrays.php:594
 #, fuzzy
 msgid "TCP Ping"
 msgstr "برنامج التعاون الفني بينغ"
 
-#: include/global_arrays.php:591
+#: include/global_arrays.php:595
 #, fuzzy
 msgid "UDP Ping"
 msgstr "UDP بينغ"
 
-#: include/global_arrays.php:595
+#: include/global_arrays.php:599
 #, fuzzy
 msgid "NONE - Syslog Only if Selected"
 msgstr "لا شيء - Syslog فقط إذا كان محددًا"
 
-#: include/global_arrays.php:596
+#: include/global_arrays.php:600
 #, fuzzy
 msgid "LOW - Statistics and Errors"
 msgstr "منخفض - الاحصائيات والأخطاء"
 
-#: include/global_arrays.php:597
+#: include/global_arrays.php:601
 #, fuzzy
 msgid "MEDIUM - Statistics, Errors and Results"
 msgstr "متوسطة - الاحصائيات ، الأخطاء والنتائج"
 
-#: include/global_arrays.php:598
+#: include/global_arrays.php:602
 #, fuzzy
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
 msgstr "عالية - إحصائيات ، أخطاء ، نتائج وأحداث I / O الرئيسية"
 
-#: include/global_arrays.php:599
+#: include/global_arrays.php:603
 #, fuzzy
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
 msgstr "تصحيح - الاحصائيات ، الأخطاء ، النتائج ، I / O وتدفق البرنامج"
 
-#: include/global_arrays.php:600
+#: include/global_arrays.php:604
 #, fuzzy
 msgid "DEVEL - Developer DEBUG Level"
 msgstr "DEVEL - المطور DEBUG Level"
 
-#: include/global_arrays.php:613
+#: include/global_arrays.php:617
 #, fuzzy
 msgid "Selected Poller Interval"
 msgstr "اختيار الفاصل الزمني Poller"
 
-#: include/global_arrays.php:631 include/global_arrays.php:632
-#: include/global_arrays.php:633 include/global_arrays.php:634
-#: include/global_arrays.php:698 include/global_arrays.php:699
-#: include/global_arrays.php:700 include/global_arrays.php:701
+#: include/global_arrays.php:635 include/global_arrays.php:636
+#: include/global_arrays.php:637 include/global_arrays.php:638
+#: include/global_arrays.php:702 include/global_arrays.php:703
+#: include/global_arrays.php:704 include/global_arrays.php:705
 #, fuzzy, php-format
 msgid "Every %d Seconds"
 msgstr "كل٪ d ثانية"
 
-#: include/global_arrays.php:635 include/global_arrays.php:702
-#: include/global_arrays.php:727
+#: include/global_arrays.php:639 include/global_arrays.php:706
+#: include/global_arrays.php:731
 msgid "Every Minute"
 msgstr "كل دقيقة"
 
-#: include/global_arrays.php:636 include/global_arrays.php:637
-#: include/global_arrays.php:638 include/global_arrays.php:639
-#: include/global_arrays.php:703 include/global_arrays.php:708
-#: include/global_arrays.php:728
+#: include/global_arrays.php:640 include/global_arrays.php:641
+#: include/global_arrays.php:642 include/global_arrays.php:643
+#: include/global_arrays.php:707 include/global_arrays.php:712
+#: include/global_arrays.php:732
 #, fuzzy, php-format
 msgid "Every %d Minutes"
 msgstr "كل٪ d دقيقة"
 
-#: include/global_arrays.php:640 include/global_arrays.php:709
+#: include/global_arrays.php:644 include/global_arrays.php:713
 #, fuzzy
 msgid "Every Hour"
 msgstr "كل ساعة"
 
-#: include/global_arrays.php:641 include/global_arrays.php:642
-#: include/global_arrays.php:643 include/global_arrays.php:644
-#: include/global_arrays.php:710 include/global_arrays.php:711
-#: include/global_arrays.php:712 include/global_arrays.php:713
-#: include/global_arrays.php:1652 include/global_arrays.php:1653
-#: include/global_arrays.php:1654 include/global_arrays.php:1655
-#: include/global_arrays.php:1656 include/global_settings.php:1963
+#: include/global_arrays.php:645 include/global_arrays.php:646
+#: include/global_arrays.php:647 include/global_arrays.php:648
+#: include/global_arrays.php:714 include/global_arrays.php:715
+#: include/global_arrays.php:716 include/global_arrays.php:717
+#: include/global_arrays.php:1656 include/global_arrays.php:1657
+#: include/global_arrays.php:1658 include/global_arrays.php:1659
+#: include/global_arrays.php:1660 include/global_settings.php:1963
 #: include/global_settings.php:1964
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "كل٪ d ساعات"
 
-#: include/global_arrays.php:645
+#: include/global_arrays.php:649
 #, fuzzy
 msgid "Every %1 Day"
 msgstr "كل يوم٪ 1"
 
-#: include/global_arrays.php:685 include/global_arrays.php:1289
+#: include/global_arrays.php:689 include/global_arrays.php:1293
 #: include/global_settings.php:1214 rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Year"
 msgstr "٪ d سنة"
 
-#: include/global_arrays.php:707
+#: include/global_arrays.php:711
 #, fuzzy
 msgid "Disabled/Manual"
 msgstr "تعطيل / دليل"
 
-#: include/global_arrays.php:714
+#: include/global_arrays.php:718
 #, fuzzy
 msgid "Every day"
 msgstr "كل يوم"
 
-#: include/global_arrays.php:718
+#: include/global_arrays.php:722
 #, fuzzy
 msgid "1 Thread (default)"
 msgstr "موضوع واحد (افتراضي)"
 
-#: include/global_arrays.php:742
+#: include/global_arrays.php:746
 #, fuzzy
 msgid "Builtin Authentication"
 msgstr "مصادقة مدمجة"
 
-#: include/global_arrays.php:743
+#: include/global_arrays.php:747
 #, fuzzy
 msgid "Web Basic Authentication"
 msgstr "مصادقة الويب الأساسية"
 
-#: include/global_arrays.php:747
+#: include/global_arrays.php:751
 #, fuzzy
 msgid "LDAP Authentication"
 msgstr "مصادقة LDAP"
 
-#: include/global_arrays.php:748
+#: include/global_arrays.php:752
 #, fuzzy
 msgid "Multiple LDAP/AD Domains"
 msgstr "نطاقات LDAP / AD متعددة"
 
-#: include/global_arrays.php:753
+#: include/global_arrays.php:757
 #, fuzzy
 msgid "Active Directory"
 msgstr "الدليل النشط"
 
-#: include/global_arrays.php:765 include/global_settings.php:1544
+#: include/global_arrays.php:769 include/global_settings.php:1544
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_arrays.php:766 include/global_settings.php:1545
+#: include/global_arrays.php:770 include/global_settings.php:1545
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_arrays.php:770
+#: include/global_arrays.php:774
 #, fuzzy
 msgid "No Searching"
 msgstr "لا البحث"
 
-#: include/global_arrays.php:771
+#: include/global_arrays.php:775
 #, fuzzy
 msgid "Anonymous Searching"
 msgstr "البحث المجهول"
 
-#: include/global_arrays.php:772
+#: include/global_arrays.php:776
 #, fuzzy
 msgid "Specific Searching"
 msgstr "البحث محددة"
 
-#: include/global_arrays.php:789
+#: include/global_arrays.php:793
 #, fuzzy
 msgid "Enabled (strict mode)"
 msgstr "ممكن (الوضع المقيد)"
 
-#: include/global_arrays.php:794 include/global_form.php:2027
+#: include/global_arrays.php:798 include/global_form.php:2027
 #: include/global_form.php:2069 lib/api_automation.php:1286
 #: lib/api_automation.php:1348
 #, fuzzy
 msgid "Operator"
 msgstr "المشغل أو العامل"
 
-#: include/global_arrays.php:796
+#: include/global_arrays.php:800
 #, fuzzy
 msgid "Another CDEF"
 msgstr "آخر CDEF"
 
-#: include/global_arrays.php:815
+#: include/global_arrays.php:819
 #, fuzzy
 msgid "Inherit Parent Sorting"
 msgstr "اكتساب الفرز الأم"
 
-#: include/global_arrays.php:816
+#: include/global_arrays.php:820
 #, fuzzy
 msgid "Manual Ordering (No Sorting)"
 msgstr "الطلب اليدوي (بدون فرز)"
 
-#: include/global_arrays.php:817
+#: include/global_arrays.php:821
 #, fuzzy
 msgid "Alphabetic Ordering"
 msgstr "الترتيب الأبجدي"
 
-#: include/global_arrays.php:818
+#: include/global_arrays.php:822
 #, fuzzy
 msgid "Natural Ordering"
 msgstr "الترتيب الطبيعي"
 
-#: include/global_arrays.php:819
+#: include/global_arrays.php:823
 #, fuzzy
 msgid "Numeric Ordering"
 msgstr "طلب رقمي"
 
-#: include/global_arrays.php:823 lib/rrd.php:2770
+#: include/global_arrays.php:827 lib/rrd.php:2774
 msgid "Header"
 msgstr "رأس"
 
-#: include/global_arrays.php:824 include/global_arrays.php:875
-#: include/global_arrays.php:1474 include/global_arrays.php:1641
+#: include/global_arrays.php:828 include/global_arrays.php:879
+#: include/global_arrays.php:1478 include/global_arrays.php:1645
 #: lib/html.php:2352
 #, fuzzy
 msgid "Graph"
 msgstr "رسم بياني"
 
-#: include/global_arrays.php:830 tree.php:1657
+#: include/global_arrays.php:834 tree.php:1657
 #, fuzzy
 msgid "Data Query Index"
 msgstr "فهرس استعلام البيانات"
 
-#: include/global_arrays.php:835
+#: include/global_arrays.php:839
 #, fuzzy
 msgid "Current Graph Item Polling Interval"
 msgstr "الرسم البياني الحالي البند الاقتراع الفاصل الزمني"
 
-#: include/global_arrays.php:836
+#: include/global_arrays.php:840
 #, fuzzy
 msgid "All Data Sources (Do not Include Duplicates)"
 msgstr "جميع مصادر البيانات (لا تتضمن التكرارات)"
 
-#: include/global_arrays.php:837
+#: include/global_arrays.php:841
 #, fuzzy
 msgid "All Data Sources (Include Duplicates)"
 msgstr "جميع مصادر البيانات (تضمين التكرارات)"
 
-#: include/global_arrays.php:838
+#: include/global_arrays.php:842
 #, fuzzy
 msgid "All Similar Data Sources (Do not Include Duplicates)"
 msgstr "جميع مصادر البيانات المشابهة (لا تتضمن التكرارات)"
 
-#: include/global_arrays.php:839
+#: include/global_arrays.php:843
 #, fuzzy
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
 msgstr "كافة مصادر بيانات مشابهة (لا تتضمن التكرار) الفاصل الزمني للاستقصاء"
 
-#: include/global_arrays.php:840
+#: include/global_arrays.php:844
 #, fuzzy
 msgid "All Similar Data Sources (Include Duplicates)"
 msgstr "جميع مصادر البيانات المشابهة (تضمين التكرارات)"
 
-#: include/global_arrays.php:841
+#: include/global_arrays.php:845
 #, fuzzy
 msgid "Current Data Source Item: Minimum Value"
 msgstr "عنصر مصدر البيانات الحالي: الحد الأدنى للقيمة"
 
-#: include/global_arrays.php:842
+#: include/global_arrays.php:846
 #, fuzzy
 msgid "Current Data Source Item: Maximum Value"
 msgstr "عنصر مصدر البيانات الحالي: القيمة القصوى"
 
-#: include/global_arrays.php:843
+#: include/global_arrays.php:847
 #, fuzzy
 msgid "Graph: Lower Limit"
 msgstr "الرسم البياني: الحد الأدنى"
 
-#: include/global_arrays.php:844
+#: include/global_arrays.php:848
 #, fuzzy
 msgid "Graph: Upper Limit"
 msgstr "الرسم البياني: الحد الأعلى"
 
-#: include/global_arrays.php:845
+#: include/global_arrays.php:849
 #, fuzzy
 msgid "Count of All Data Sources (Do not Include Duplicates)"
 msgstr "حساب جميع مصادر البيانات (لا تتضمن التكرارات)"
 
-#: include/global_arrays.php:846
+#: include/global_arrays.php:850
 #, fuzzy
 msgid "Count of All Data Sources (Include Duplicates)"
 msgstr "حساب جميع مصادر البيانات (تضمين التكرارات)"
 
-#: include/global_arrays.php:847
+#: include/global_arrays.php:851
 #, fuzzy
 msgid "Count of All Similar Data Sources (Do not Include Duplicates)"
 msgstr "حساب جميع مصادر البيانات المماثلة (لا تتضمن التكرارات)"
 
-#: include/global_arrays.php:848
+#: include/global_arrays.php:852
 #, fuzzy
 msgid "Count of All Similar Data Sources (Include Duplicates)"
 msgstr "حساب جميع مصادر البيانات المماثلة (تضمين التكرارات)"
 
-#: include/global_arrays.php:853 include/global_arrays.php:931
+#: include/global_arrays.php:857 include/global_arrays.php:935
 #, fuzzy
 msgid "Main Console"
 msgstr "وحدة التحكم"
 
-#: include/global_arrays.php:854
+#: include/global_arrays.php:858
 #, fuzzy
 msgid "Console Page"
 msgstr "أعلى صفحة وحدة التحكم"
 
-#: include/global_arrays.php:857 lib/html_form_template.php:606
+#: include/global_arrays.php:861 lib/html_form_template.php:606
 #: lib/html_form_template.php:618
 #, fuzzy
 msgid "New Graphs"
 msgstr "الرسوم البيانية الجديدة"
 
-#: include/global_arrays.php:860 include/global_arrays.php:915
-#: include/global_arrays.php:933
+#: include/global_arrays.php:864 include/global_arrays.php:919
+#: include/global_arrays.php:937
 #, fuzzy
 msgid "Management"
 msgstr "إدارة"
 
-#: include/global_arrays.php:862 sites.php:416 sites.php:431 sites.php:511
+#: include/global_arrays.php:866 sites.php:416 sites.php:431 sites.php:511
 #: tree.php:785 tree.php:1982
 msgid "Sites"
 msgstr "المواقع"
 
-#: include/global_arrays.php:863 include/global_arrays.php:1058 tree.php:1890
+#: include/global_arrays.php:867 include/global_arrays.php:1062 tree.php:1890
 #: tree.php:1905 tree.php:1965 user_admin.php:1551 user_admin.php:2980
 #: user_admin.php:3065 user_group_admin.php:1239 user_group_admin.php:2468
 #, fuzzy
 msgid "Trees"
 msgstr "الأشجار"
 
-#: include/global_arrays.php:866
+#: include/global_arrays.php:870
 #, fuzzy
 msgid "Aggregates"
 msgstr "تجمعات"
 
-#: include/global_arrays.php:868 include/global_arrays.php:918
-#: include/global_arrays.php:934
+#: include/global_arrays.php:872 include/global_arrays.php:922
+#: include/global_arrays.php:938
 #, fuzzy
 msgid "Data Collection"
 msgstr "جمع البيانات"
 
-#: include/global_arrays.php:869 include/global_arrays.php:919 pollers.php:725
+#: include/global_arrays.php:873 include/global_arrays.php:923 pollers.php:725
 #, fuzzy
 msgid "Data Collectors"
 msgstr "جامعي البيانات"
 
-#: include/global_arrays.php:877
+#: include/global_arrays.php:881
 #, fuzzy
 msgid "Aggregate"
 msgstr "مجموع"
 
-#: include/global_arrays.php:880 include/global_arrays.php:936
-#: include/global_arrays.php:1050 include/global_settings.php:456
+#: include/global_arrays.php:884 include/global_arrays.php:940
+#: include/global_arrays.php:1054 include/global_settings.php:456
 #, fuzzy
 msgid "Automation"
 msgstr "التشغيل الآلي"
 
-#: include/global_arrays.php:882
+#: include/global_arrays.php:886
 #, fuzzy
 msgid "Discovered Devices"
 msgstr "الأجهزة المكتشفة"
 
-#: include/global_arrays.php:883
+#: include/global_arrays.php:887
 #, fuzzy
 msgid "Device Rules"
 msgstr "قواعد الجهاز"
 
-#: include/global_arrays.php:888 include/global_arrays.php:937
-#: include/global_arrays.php:1062 lib/html_filter.php:178 lib/html_graph.php:252
+#: include/global_arrays.php:892 include/global_arrays.php:941
+#: include/global_arrays.php:1066 lib/html_filter.php:178 lib/html_graph.php:252
 #: lib/html_tree.php:1048
 #, fuzzy
 msgid "Presets"
 msgstr "المسبقة"
 
-#: include/global_arrays.php:889
+#: include/global_arrays.php:893
 #, fuzzy
 msgid "Data Profiles"
 msgstr "ملفات تعريف البيانات"
 
-#: include/global_arrays.php:891 include/global_arrays.php:2281 vdef.php:691
+#: include/global_arrays.php:895 include/global_arrays.php:2285 vdef.php:691
 #: vdef.php:705 vdef.php:878
 #, fuzzy
 msgid "VDEFs"
 msgstr "VDEFs"
 
-#: include/global_arrays.php:895 include/global_arrays.php:938
+#: include/global_arrays.php:899 include/global_arrays.php:942
 msgid "Import/Export"
 msgstr "استيراد و تصدير"
 
-#: include/global_arrays.php:896 include/global_arrays.php:1069
-#: include/global_arrays.php:2401
+#: include/global_arrays.php:900 include/global_arrays.php:1073
+#: include/global_arrays.php:2405
 #, fuzzy
 msgid "Import Templates"
 msgstr "قوالب الاستيراد"
 
-#: include/global_arrays.php:897 include/global_arrays.php:1068
-#: include/global_arrays.php:2389 templates_export.php:159
+#: include/global_arrays.php:901 include/global_arrays.php:1072
+#: include/global_arrays.php:2393 templates_export.php:159
 #, fuzzy
 msgid "Export Templates"
 msgstr "قوالب التصدير"
 
-#: include/global_arrays.php:899 include/global_arrays.php:921
-#: include/global_arrays.php:939 lib/plugins.php:951
+#: include/global_arrays.php:903 include/global_arrays.php:925
+#: include/global_arrays.php:943 lib/plugins.php:951
 msgid "Configuration"
 msgstr "التكوين"
 
-#: include/global_arrays.php:900 include/global_arrays.php:922 lib/html.php:2119
+#: include/global_arrays.php:904 include/global_arrays.php:926 lib/html.php:2119
 #: lib/html.php:2367
 msgid "Settings"
 msgstr "إعدادات"
 
-#: include/global_arrays.php:901 include/global_arrays.php:2335
+#: include/global_arrays.php:905 include/global_arrays.php:2339
 #: user_admin.php:2261 user_admin.php:2315 user_group_admin.php:668
 #: user_group_admin.php:2553
 msgid "Users"
 msgstr "المستخدمين"
 
-#: include/global_arrays.php:902 include/global_arrays.php:2365
+#: include/global_arrays.php:906 include/global_arrays.php:2369
 msgid "User Groups"
 msgstr "مجموعات الطالب"
 
-#: include/global_arrays.php:903 include/global_arrays.php:2353
+#: include/global_arrays.php:907 include/global_arrays.php:2357
 #: user_domains.php:645 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "مجالات المستخدم"
 
-#: include/global_arrays.php:905 include/global_arrays.php:924
-#: include/global_arrays.php:940 include/global_arrays.php:2209
+#: include/global_arrays.php:909 include/global_arrays.php:928
+#: include/global_arrays.php:944 include/global_arrays.php:2213
 #, fuzzy
 msgid "Utilities"
 msgstr "خدمات"
 
-#: include/global_arrays.php:906 include/global_arrays.php:925
+#: include/global_arrays.php:910 include/global_arrays.php:929
 #, fuzzy
 msgid "System Utilities"
 msgstr "نظام المرافق"
 
-#: include/global_arrays.php:907 include/global_arrays.php:941
-#: include/global_arrays.php:957 include/global_arrays.php:1046 links.php:91
+#: include/global_arrays.php:911 include/global_arrays.php:945
+#: include/global_arrays.php:961 include/global_arrays.php:1050 links.php:91
 #: links.php:303 links.php:371 links.php:402 links.php:484
 #, fuzzy
 msgid "External Links"
 msgstr "روابط خارجية"
 
-#: include/global_arrays.php:909 include/global_arrays.php:943
+#: include/global_arrays.php:913 include/global_arrays.php:947
 #, fuzzy
 msgid "Troubleshooting"
 msgstr "استكشاف الأخطاء وإصلاحها"
 
-#: include/global_arrays.php:942
+#: include/global_arrays.php:946
 msgid "Support"
 msgstr "الدعم"
 
-#: include/global_arrays.php:966
+#: include/global_arrays.php:970
 #, fuzzy
 msgid "All Lines"
 msgstr "كل الخطوط"
 
-#: include/global_arrays.php:967 include/global_arrays.php:968
-#: include/global_arrays.php:969 include/global_arrays.php:970
 #: include/global_arrays.php:971 include/global_arrays.php:972
 #: include/global_arrays.php:973 include/global_arrays.php:974
 #: include/global_arrays.php:975 include/global_arrays.php:976
 #: include/global_arrays.php:977 include/global_arrays.php:978
+#: include/global_arrays.php:979 include/global_arrays.php:980
+#: include/global_arrays.php:981 include/global_arrays.php:982
 #, fuzzy, php-format
 msgid "%d Lines"
 msgstr "٪ d خطوط"
 
-#: include/global_arrays.php:1042
+#: include/global_arrays.php:1046
 #, fuzzy
 msgid "Console Access"
 msgstr "وصول وحدة التحكم"
 
-#: include/global_arrays.php:1044
+#: include/global_arrays.php:1048
 #, fuzzy
 msgid "Realtime Graphs"
 msgstr "الرسوم البيانية في الوقت الفعلي"
 
-#: include/global_arrays.php:1045
+#: include/global_arrays.php:1049
 msgid "Update Profile"
 msgstr "تحديث الملف الشخصي"
 
-#: include/global_arrays.php:1048 user_admin.php:2240
+#: include/global_arrays.php:1052 user_admin.php:2240
 #, fuzzy
 msgid "User Management"
 msgstr "إدارةالمستخدم"
 
-#: include/global_arrays.php:1049
+#: include/global_arrays.php:1053
 #, fuzzy
 msgid "Settings/Utilities"
 msgstr "إعدادات / المرافق"
 
-#: include/global_arrays.php:1051
+#: include/global_arrays.php:1055
 #, fuzzy
 msgid "Installation/Upgrades"
 msgstr "تركيب / ترقية"
 
-#: include/global_arrays.php:1056
+#: include/global_arrays.php:1060
 #, fuzzy
 msgid "Sites/Devices/Data"
 msgstr "مواقع / الأجهزة / بيانات"
 
-#: include/global_arrays.php:1059
+#: include/global_arrays.php:1063
 #, fuzzy
 msgid "Spike Management"
 msgstr "إدارة سبايك"
 
-#: include/global_arrays.php:1071 include/global_settings.php:798
+#: include/global_arrays.php:1075 include/global_settings.php:798
 #, fuzzy
 msgid "Log Management"
 msgstr "إدارة السجل"
 
-#: include/global_arrays.php:1072
+#: include/global_arrays.php:1076
 #, fuzzy
 msgid "Log Viewing"
 msgstr "عرض السجل"
 
-#: include/global_arrays.php:1074
+#: include/global_arrays.php:1078
 #, fuzzy
 msgid "Reports Management"
 msgstr "إدارة التقارير"
 
-#: include/global_arrays.php:1075
+#: include/global_arrays.php:1079
 #, fuzzy
 msgid "Reports Creation"
 msgstr "إنشاء التقارير"
 
-#: include/global_arrays.php:1079
+#: include/global_arrays.php:1083
 #, fuzzy
 msgid "Normal User"
 msgstr "مستخدم عادي"
 
-#: include/global_arrays.php:1080
+#: include/global_arrays.php:1084
 #, fuzzy
 msgid "Template Editor"
 msgstr "محرر القالب"
 
-#: include/global_arrays.php:1081
+#: include/global_arrays.php:1085
 #, fuzzy
 msgid "General Administration"
 msgstr "الادارة العامة"
 
-#: include/global_arrays.php:1082
+#: include/global_arrays.php:1086
 #, fuzzy
 msgid "System Administration"
 msgstr "إدارة النظام"
 
-#: include/global_arrays.php:1176
+#: include/global_arrays.php:1180
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1177
+#: include/global_arrays.php:1181
 #, fuzzy
 msgid "CDEF Item"
 msgstr "بند CDEF"
 
-#: include/global_arrays.php:1178
+#: include/global_arrays.php:1182
 #, fuzzy
 msgid "GPRINT Preset"
 msgstr "GPRINT مسبقا"
 
-#: include/global_arrays.php:1181
+#: include/global_arrays.php:1185
 #, fuzzy
 msgid "Data Input Field"
 msgstr "حقل إدخال البيانات"
 
-#: include/global_arrays.php:1182 include/global_form.php:549
+#: include/global_arrays.php:1186 include/global_form.php:549
 #: include/global_form.php:1637
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "ملف مصدر البيانات"
 
-#: include/global_arrays.php:1183
+#: include/global_arrays.php:1187
 #, fuzzy
 msgid "Data Template Item"
 msgstr "عنصر قالب البيانات"
 
-#: include/global_arrays.php:1185
+#: include/global_arrays.php:1189
 #, fuzzy
 msgid "Graph Template Item"
 msgstr "البند قالب الرسم البياني"
 
-#: include/global_arrays.php:1186
+#: include/global_arrays.php:1190
 #, fuzzy
 msgid "Graph Template Input"
 msgstr "إدخال قالب الرسم البياني"
 
-#: include/global_arrays.php:1189
+#: include/global_arrays.php:1193
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1190
+#: include/global_arrays.php:1194
 #, fuzzy
 msgid "VDEF Item"
 msgstr "بند VDEF"
 
-#: include/global_arrays.php:1241
+#: include/global_arrays.php:1245
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "آخر نصف ساعة"
 
-#: include/global_arrays.php:1242
+#: include/global_arrays.php:1246
 #, fuzzy
 msgid "Last Hour"
 msgstr "الساعة الأخيرة"
 
-#: include/global_arrays.php:1243 include/global_arrays.php:1244
-#: include/global_arrays.php:1245 include/global_arrays.php:1246
+#: include/global_arrays.php:1247 include/global_arrays.php:1248
+#: include/global_arrays.php:1249 include/global_arrays.php:1250
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "آخر٪ d ساعات"
 
-#: include/global_arrays.php:1247
+#: include/global_arrays.php:1251
 #, fuzzy
 msgid "Last Day"
 msgstr "بالأمس"
 
-#: include/global_arrays.php:1248 include/global_arrays.php:1249
-#: include/global_arrays.php:1250
+#: include/global_arrays.php:1252 include/global_arrays.php:1253
+#: include/global_arrays.php:1254
 #, fuzzy, php-format
 msgid "Last %d Days"
 msgstr "آخر٪ d يوم"
 
-#: include/global_arrays.php:1251
+#: include/global_arrays.php:1255
 #, fuzzy
 msgid "Last Week"
 msgstr "الاسبوع الماضي"
 
-#: include/global_arrays.php:1252
+#: include/global_arrays.php:1256
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "آخر٪ d أسابيع"
 
-#: include/global_arrays.php:1253
+#: include/global_arrays.php:1257
 #, fuzzy
 msgid "Last Month"
 msgstr "الشهر الماضي"
 
-#: include/global_arrays.php:1254 include/global_arrays.php:1255
-#: include/global_arrays.php:1256 include/global_arrays.php:1257
+#: include/global_arrays.php:1258 include/global_arrays.php:1259
+#: include/global_arrays.php:1260 include/global_arrays.php:1261
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "آخر٪ d شهر"
 
-#: include/global_arrays.php:1258
+#: include/global_arrays.php:1262
 #, fuzzy
 msgid "Last Year"
 msgstr "العام الماضي"
 
-#: include/global_arrays.php:1259
+#: include/global_arrays.php:1263
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "آخر٪ d سنوات"
 
-#: include/global_arrays.php:1260
+#: include/global_arrays.php:1264
 #, fuzzy
 msgid "Day Shift"
 msgstr "وردية نهارية"
 
-#: include/global_arrays.php:1261
+#: include/global_arrays.php:1265
 #, fuzzy
 msgid "This Day"
 msgstr "يوم/أيام"
 
-#: include/global_arrays.php:1262
+#: include/global_arrays.php:1266
 msgid "This Week"
 msgstr "هذا الأسبوع"
 
-#: include/global_arrays.php:1263
+#: include/global_arrays.php:1267
 #, fuzzy
 msgid "This Month"
 msgstr "هذا الشهر"
 
-#: include/global_arrays.php:1264
+#: include/global_arrays.php:1268
 #, fuzzy
 msgid "This Year"
 msgstr "سنة واحدة"
 
-#: include/global_arrays.php:1265
+#: include/global_arrays.php:1269
 msgid "Previous Day"
 msgstr "اليوم السابق"
 
-#: include/global_arrays.php:1266
+#: include/global_arrays.php:1270
 #, fuzzy
 msgid "Previous Week"
 msgstr "الأسبوع السابق"
 
-#: include/global_arrays.php:1267
+#: include/global_arrays.php:1271
 #, fuzzy
 msgid "Previous Month"
 msgstr "الشهر الماضى"
 
-#: include/global_arrays.php:1268
+#: include/global_arrays.php:1272
 #, fuzzy
 msgid "Previous Year"
 msgstr "السنة الماضية"
 
-#: include/global_arrays.php:1272
+#: include/global_arrays.php:1276
 #, php-format
 msgid "%d Min"
 msgstr "%d دقيقة"
 
-#: include/global_arrays.php:1304
+#: include/global_arrays.php:1308
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "عدد الشهر واليوم والسنة"
 
-#: include/global_arrays.php:1305
+#: include/global_arrays.php:1309
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "اسم الشهر واليوم والسنة"
 
-#: include/global_arrays.php:1306
+#: include/global_arrays.php:1310
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "يوم ، رقم الشهر ، السنة"
 
-#: include/global_arrays.php:1307
+#: include/global_arrays.php:1311
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "اليوم ، اسم الشهر ، السنة"
 
-#: include/global_arrays.php:1308
+#: include/global_arrays.php:1312
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "السنة ، رقم الشهر ، اليوم"
 
-#: include/global_arrays.php:1309
+#: include/global_arrays.php:1313
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "السنة ، اسم الشهر ، اليوم"
 
-#: include/global_arrays.php:1319
+#: include/global_arrays.php:1323
 #, fuzzy
 msgid "After Boost"
 msgstr "بعد التعزيز"
 
-#: include/global_arrays.php:1329 include/global_arrays.php:1330
-#: include/global_arrays.php:1331 include/global_arrays.php:1332
-#: include/global_arrays.php:1333 include/global_arrays.php:1388
-#: include/global_arrays.php:1389 include/global_arrays.php:1390
-#: include/global_arrays.php:1391 include/global_arrays.php:1392
+#: include/global_arrays.php:1333 include/global_arrays.php:1334
+#: include/global_arrays.php:1335 include/global_arrays.php:1336
+#: include/global_arrays.php:1337 include/global_arrays.php:1392
+#: include/global_arrays.php:1393 include/global_arrays.php:1394
+#: include/global_arrays.php:1395 include/global_arrays.php:1396
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "٪ d ميغابايت"
 
-#: include/global_arrays.php:1334 include/global_arrays.php:1393
+#: include/global_arrays.php:1338 include/global_arrays.php:1397
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 جيجابايت"
 
-#: include/global_arrays.php:1335 include/global_arrays.php:1394 lib/boost.php:34
+#: include/global_arrays.php:1339 include/global_arrays.php:1398 lib/boost.php:34
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "٪ s GBytes"
 
-#: include/global_arrays.php:1336 include/global_arrays.php:1337
-#: include/global_arrays.php:1395 include/global_arrays.php:1396
+#: include/global_arrays.php:1340 include/global_arrays.php:1341
+#: include/global_arrays.php:1399 include/global_arrays.php:1400
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "٪ d GBytes"
 
-#: include/global_arrays.php:1350
+#: include/global_arrays.php:1354
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2000 عناصر مصدر البيانات"
 
-#: include/global_arrays.php:1351
+#: include/global_arrays.php:1355
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5000 عنصر مصدر البيانات"
 
-#: include/global_arrays.php:1352
+#: include/global_arrays.php:1356
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10،000 عنصر مصدر بيانات"
 
-#: include/global_arrays.php:1353
+#: include/global_arrays.php:1357
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15،000 عنصر مصدر بيانات"
 
-#: include/global_arrays.php:1354
+#: include/global_arrays.php:1358
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25،000 عناصر مصدر البيانات"
 
-#: include/global_arrays.php:1355
+#: include/global_arrays.php:1359
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50000 عنصر مصدر بيانات (افتراضي)"
 
-#: include/global_arrays.php:1356
+#: include/global_arrays.php:1360
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100000 عنصر مصدر البيانات"
 
-#: include/global_arrays.php:1357
+#: include/global_arrays.php:1361
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200،000 عناصر مصدر البيانات"
 
-#: include/global_arrays.php:1358
+#: include/global_arrays.php:1362
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400،000 عناصر مصدر البيانات"
 
-#: include/global_arrays.php:1375
+#: include/global_arrays.php:1379
 #, fuzzy
 msgid "2 Hours"
 msgstr "ساعاتين"
 
-#: include/global_arrays.php:1376
+#: include/global_arrays.php:1380
 #, fuzzy
 msgid "4 Hours"
 msgstr "4 ساعات"
 
-#: include/global_arrays.php:1377
+#: include/global_arrays.php:1381
 #, fuzzy
 msgid "6 Hours"
 msgstr "6 ساعات"
 
-#: include/global_arrays.php:1384
+#: include/global_arrays.php:1388
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "٪ s ساعات"
 
-#: include/global_arrays.php:1403
+#: include/global_arrays.php:1407
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "٪ s دقائق"
 
-#: include/global_arrays.php:1425
+#: include/global_arrays.php:1429
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 ميجابايت"
 
-#: include/global_arrays.php:1426 include/global_arrays.php:1427
-#: include/global_arrays.php:1428 include/global_arrays.php:1429
 #: include/global_arrays.php:1430 include/global_arrays.php:1431
+#: include/global_arrays.php:1432 include/global_arrays.php:1433
+#: include/global_arrays.php:1434 include/global_arrays.php:1435
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "٪ d ميجابايت"
 
-#: include/global_arrays.php:1435
+#: include/global_arrays.php:1439
 #, fuzzy
 msgid "Send Now"
 msgstr "ارسل الان"
 
-#: include/global_arrays.php:1443
+#: include/global_arrays.php:1447
 #, fuzzy
 msgid "Take Ownership"
 msgstr "ألحصول على الملكية"
 
-#: include/global_arrays.php:1447
+#: include/global_arrays.php:1451
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "صورة PNG مضمنة"
 
-#: include/global_arrays.php:1452
+#: include/global_arrays.php:1456
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "مضمن صورة JPEG"
 
-#: include/global_arrays.php:1453
+#: include/global_arrays.php:1457
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "مضمنة صورة GIF"
 
-#: include/global_arrays.php:1456
+#: include/global_arrays.php:1460
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "صورة PNG مرفقة"
 
-#: include/global_arrays.php:1459
+#: include/global_arrays.php:1463
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "مرفق صورة JPEG"
 
-#: include/global_arrays.php:1460
+#: include/global_arrays.php:1464
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "صورة GIF المرفقة"
 
-#: include/global_arrays.php:1464
+#: include/global_arrays.php:1468
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "Inline PNG Image، LN Style"
 
-#: include/global_arrays.php:1466
+#: include/global_arrays.php:1470
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "Inline JPEG Image، LN Style"
 
-#: include/global_arrays.php:1467
+#: include/global_arrays.php:1471
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "Inline GIF Image، LN Style"
 
-#: include/global_arrays.php:1472
+#: include/global_arrays.php:1476
 msgid "Text"
 msgstr "نص"
 
-#: include/global_arrays.php:1473 include/global_form.php:2147
+#: include/global_arrays.php:1477 include/global_form.php:2147
 #, fuzzy
 msgid "Tree"
 msgstr "شجرة"
 
-#: include/global_arrays.php:1475
+#: include/global_arrays.php:1479
 #, fuzzy
 msgid "Horizontal Rule"
 msgstr "قاعدة افقية"
 
-#: include/global_arrays.php:1479
+#: include/global_arrays.php:1483
 msgid "left"
 msgstr "يسار"
 
-#: include/global_arrays.php:1480
+#: include/global_arrays.php:1484
 msgid "center"
 msgstr "وسط"
 
-#: include/global_arrays.php:1481
+#: include/global_arrays.php:1485
 msgid "right"
 msgstr "اليمين"
 
-#: include/global_arrays.php:1485
+#: include/global_arrays.php:1489
 msgid "Minute(s)"
 msgstr "دقائق(s)"
 
-#: include/global_arrays.php:1486
+#: include/global_arrays.php:1490
 msgid "Hour(s)"
 msgstr "ساعة(ساعات)"
 
-#: include/global_arrays.php:1487
+#: include/global_arrays.php:1491
 msgid "Day(s)"
 msgstr "يوم/أيام"
 
-#: include/global_arrays.php:1488
+#: include/global_arrays.php:1492
 msgid "Week(s)"
 msgstr "أسبوع/أسابيع"
 
-#: include/global_arrays.php:1489
+#: include/global_arrays.php:1493
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "شهر (ق) ، يوم الشهر"
 
-#: include/global_arrays.php:1490
+#: include/global_arrays.php:1494
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "الشهر (الشهور) ، يوم الأسبوع"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1495
 #, fuzzy
 msgid "Year(s)"
 msgstr "سنوات)"
 
-#: include/global_arrays.php:1495
+#: include/global_arrays.php:1499
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "الحفاظ على أنواع الرسم البياني"
 
-#: include/global_arrays.php:1496
+#: include/global_arrays.php:1500
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "حافظ على النوع و STACK"
 
-#: include/global_arrays.php:1497
+#: include/global_arrays.php:1501
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "تحويل إلى AREA / STACK Graph"
 
-#: include/global_arrays.php:1498
+#: include/global_arrays.php:1502
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "تحويل إلى LINE1 Graph"
 
-#: include/global_arrays.php:1499
+#: include/global_arrays.php:1503
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "تحويل إلى LINE2 Graph"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1504
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "تحويل إلى LINE3 Graph"
 
-#: include/global_arrays.php:1501
+#: include/global_arrays.php:1505
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "تحويل إلى LINE1 Graph"
 
-#: include/global_arrays.php:1502
+#: include/global_arrays.php:1506
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "تحويل إلى LINE2 Graph"
 
-#: include/global_arrays.php:1503
+#: include/global_arrays.php:1507
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "تحويل إلى LINE3 Graph"
 
-#: include/global_arrays.php:1507
+#: include/global_arrays.php:1511
 #, fuzzy
 msgid "No Totals"
 msgstr "لا المجاميع"
 
-#: include/global_arrays.php:1508
+#: include/global_arrays.php:1512
 #, fuzzy
 msgid "Print all Legend Items"
 msgstr "طباعة جميع عناصر الأسطورة"
 
-#: include/global_arrays.php:1509
+#: include/global_arrays.php:1513
 #, fuzzy
 msgid "Print totaling Legend Items Only"
 msgstr "طباعة إجمالي عناصر Legend فقط"
 
-#: include/global_arrays.php:1513
+#: include/global_arrays.php:1517
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "مجموع مصادر البيانات المماثلة"
 
-#: include/global_arrays.php:1514
+#: include/global_arrays.php:1518
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "مجموع جميع مصادر البيانات"
 
-#: include/global_arrays.php:1518
+#: include/global_arrays.php:1522
 #, fuzzy
 msgid "No Reordering"
 msgstr "لا إعادة ترتيب"
 
-#: include/global_arrays.php:1519
+#: include/global_arrays.php:1523
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "مصدر البيانات ، الرسم البياني"
 
-#: include/global_arrays.php:1520
+#: include/global_arrays.php:1524
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "الرسم البياني ، مصدر البيانات"
 
-#: include/global_arrays.php:1527
+#: include/global_arrays.php:1531
 msgid "contains"
 msgstr "يحتوي"
 
-#: include/global_arrays.php:1528
+#: include/global_arrays.php:1532
 #, fuzzy
 msgid "does not contain"
 msgstr "لا يحتوي"
 
-#: include/global_arrays.php:1529
+#: include/global_arrays.php:1533
 msgid "begins with"
 msgstr "يبدأ مع"
 
-#: include/global_arrays.php:1530
+#: include/global_arrays.php:1534
 #, fuzzy
 msgid "does not begin with"
 msgstr "لا يبدأ"
 
-#: include/global_arrays.php:1531
+#: include/global_arrays.php:1535
 msgid "ends with"
 msgstr "ينتهي مع"
 
-#: include/global_arrays.php:1532
+#: include/global_arrays.php:1536
 #, fuzzy
 msgid "does not end with"
 msgstr "لا ينتهي مع"
 
-#: include/global_arrays.php:1533
+#: include/global_arrays.php:1537
 #, fuzzy
 msgid "matches"
 msgstr "اعواد الكبريت"
 
-#: include/global_arrays.php:1534
+#: include/global_arrays.php:1538
 #, fuzzy
 msgid "is not equal to"
 msgstr "لا يساوي"
 
-#: include/global_arrays.php:1535
+#: include/global_arrays.php:1539
 #, fuzzy
 msgid "is less than"
 msgstr "اقل من"
 
-#: include/global_arrays.php:1536
+#: include/global_arrays.php:1540
 #, fuzzy
 msgid "is less than or equal"
 msgstr "أقل من أو يساوي"
 
-#: include/global_arrays.php:1537
+#: include/global_arrays.php:1541
 #, fuzzy
 msgid "is greater than"
 msgstr "أكبر من"
 
-#: include/global_arrays.php:1538
+#: include/global_arrays.php:1542
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "أكبر من أو يساوي"
 
-#: include/global_arrays.php:1539
+#: include/global_arrays.php:1543
 #, fuzzy
 msgid "is unknown"
 msgstr "غير معروف"
 
-#: include/global_arrays.php:1540
+#: include/global_arrays.php:1544
 #, fuzzy
 msgid "is not unknown"
 msgstr "غير معروف"
 
-#: include/global_arrays.php:1541
+#: include/global_arrays.php:1545
 #, fuzzy
 msgid "is empty"
 msgstr "فارغ"
 
-#: include/global_arrays.php:1542
+#: include/global_arrays.php:1546
 #, fuzzy
 msgid "is not empty"
 msgstr "ليس فارغا"
 
-#: include/global_arrays.php:1543
+#: include/global_arrays.php:1547
 #, fuzzy
 msgid "matches regular expression"
 msgstr "يطابق التعبير العادي"
 
-#: include/global_arrays.php:1544
+#: include/global_arrays.php:1548
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "لا يتطابق مع التعبير العادي"
 
-#: include/global_arrays.php:1646
+#: include/global_arrays.php:1650
 #, fuzzy
 msgid "Fixed String"
 msgstr "سلسلة ثابتة"
 
-#: include/global_arrays.php:1651
+#: include/global_arrays.php:1655
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "كل ساعة"
 
-#: include/global_arrays.php:1657
+#: include/global_arrays.php:1661
 #, fuzzy
 msgid "Every Day"
 msgstr "كل يوم"
 
-#: include/global_arrays.php:1658
+#: include/global_arrays.php:1662
 #, fuzzy
 msgid "Every Week"
 msgstr "كل اسبوع"
 
-#: include/global_arrays.php:1659 include/global_arrays.php:1660
+#: include/global_arrays.php:1663 include/global_arrays.php:1664
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "كل٪ d أسابيع"
 
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1695
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "يناير"
 
-#: include/global_arrays.php:1692
+#: include/global_arrays.php:1696
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "فبراير"
 
-#: include/global_arrays.php:1693
+#: include/global_arrays.php:1697
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "مارس"
 
-#: include/global_arrays.php:1694
+#: include/global_arrays.php:1698
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "ابريل"
 
-#: include/global_arrays.php:1695
+#: include/global_arrays.php:1699
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "مايو"
 
-#: include/global_arrays.php:1696
+#: include/global_arrays.php:1700
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "يونيو"
 
-#: include/global_arrays.php:1697
+#: include/global_arrays.php:1701
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "يوليو"
 
-#: include/global_arrays.php:1698
+#: include/global_arrays.php:1702
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "اغسطس"
 
-#: include/global_arrays.php:1699
+#: include/global_arrays.php:1703
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "سبتمبر"
 
-#: include/global_arrays.php:1700
+#: include/global_arrays.php:1704
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "اوكتوبر"
 
-#: include/global_arrays.php:1701
+#: include/global_arrays.php:1705
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "نوفمبر"
 
-#: include/global_arrays.php:1702
+#: include/global_arrays.php:1706
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "ديسمبر"
 
-#: include/global_arrays.php:1716
+#: include/global_arrays.php:1720
 #, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "شمس"
 
-#: include/global_arrays.php:1717
+#: include/global_arrays.php:1721
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "الاثنين"
 
-#: include/global_arrays.php:1718
+#: include/global_arrays.php:1722
 #, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "الثلاثاء"
 
-#: include/global_arrays.php:1719
+#: include/global_arrays.php:1723
 #, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "تزوج"
 
-#: include/global_arrays.php:1720
+#: include/global_arrays.php:1724
 #, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "الخميس"
 
-#: include/global_arrays.php:1721
+#: include/global_arrays.php:1725
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "الجمعة"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1726
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "السبت"
 
-#: include/global_arrays.php:1726
+#: include/global_arrays.php:1730
 #, fuzzy
 msgid "Arabic"
 msgstr "عربى"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1731
 #, fuzzy
 msgid "Bulgarian"
 msgstr "البلغارية"
 
-#: include/global_arrays.php:1728
+#: include/global_arrays.php:1732
 #, fuzzy
 msgid "Chinese (China)"
 msgstr "الصينية (الصين)"
 
-#: include/global_arrays.php:1729
+#: include/global_arrays.php:1733
 #, fuzzy
 msgid "Chinese (Taiwan)"
 msgstr "الصينية (تايوان)"
 
-#: include/global_arrays.php:1730
+#: include/global_arrays.php:1734
 #, fuzzy
 msgid "Dutch"
 msgstr "هولندي"
 
-#: include/global_arrays.php:1731
+#: include/global_arrays.php:1735
 msgid "English"
 msgstr "English"
 
-#: include/global_arrays.php:1732
+#: include/global_arrays.php:1736
 msgid "French"
 msgstr "الفرنسية"
 
-#: include/global_arrays.php:1733
+#: include/global_arrays.php:1737
 #, fuzzy
 msgid "German"
 msgstr "ألمانية"
 
-#: include/global_arrays.php:1734
+#: include/global_arrays.php:1738
 #, fuzzy
 msgid "Greek"
 msgstr "الإغريقي"
 
-#: include/global_arrays.php:1735
+#: include/global_arrays.php:1739
 #, fuzzy
 msgid "Hebrew"
 msgstr "اللغة العبرية"
 
-#: include/global_arrays.php:1736
+#: include/global_arrays.php:1740
 #, fuzzy
 msgid "Hindi"
 msgstr "الهندية"
 
-#: include/global_arrays.php:1737
+#: include/global_arrays.php:1741
 msgid "Italian"
 msgstr "الإيطالية"
 
-#: include/global_arrays.php:1738
+#: include/global_arrays.php:1742
 #, fuzzy
 msgid "Japanese"
 msgstr "اليابانية"
 
-#: include/global_arrays.php:1739
+#: include/global_arrays.php:1743
 #, fuzzy
 msgid "Korean"
 msgstr "الكورية"
 
-#: include/global_arrays.php:1740
+#: include/global_arrays.php:1744
 #, fuzzy
 msgid "Polish"
 msgstr "البولندي"
 
-#: include/global_arrays.php:1741
+#: include/global_arrays.php:1745
 msgid "Portuguese"
 msgstr "البرتغالية"
 
-#: include/global_arrays.php:1742
+#: include/global_arrays.php:1746
 msgid "Portuguese (Brazil)"
 msgstr "البرتغالية (البرازيل)."
 
-#: include/global_arrays.php:1743
+#: include/global_arrays.php:1747
 #, fuzzy
 msgid "Russian"
 msgstr "الروسية"
 
-#: include/global_arrays.php:1744
+#: include/global_arrays.php:1748
 #, fuzzy
 msgid "Spanish"
 msgstr "الأسبانية"
 
-#: include/global_arrays.php:1745
+#: include/global_arrays.php:1749
 #, fuzzy
 msgid "Swedish"
 msgstr "اللغة السويدية"
 
-#: include/global_arrays.php:1746
+#: include/global_arrays.php:1750
 msgid "Turkish"
 msgstr "التركية"
 
-#: include/global_arrays.php:1747
+#: include/global_arrays.php:1751
 #, fuzzy
 msgid "Vietnamese"
 msgstr "الفيتنامية"
 
-#: include/global_arrays.php:1751
+#: include/global_arrays.php:1755
 #, fuzzy
 msgid "Classic"
 msgstr "كلاسيكي"
 
-#: include/global_arrays.php:1752
+#: include/global_arrays.php:1756
 #, fuzzy
 msgid "Modern"
 msgstr "حديث"
 
-#: include/global_arrays.php:1753
+#: include/global_arrays.php:1757
 msgid "Dark"
 msgstr "أسود"
 
-#: include/global_arrays.php:1754
+#: include/global_arrays.php:1758
 #, fuzzy
 msgid "Paper-plane"
 msgstr "طائرة ورقية"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1759
 msgid "Paw"
 msgstr "كف"
 
-#: include/global_arrays.php:1756
+#: include/global_arrays.php:1760
 #, fuzzy
 msgid "Sunrise"
 msgstr "شروق الشمس"
 
-#: include/global_arrays.php:1760
+#: include/global_arrays.php:1764
 #, fuzzy
 msgid "[Fail]"
 msgstr "[فشل]"
 
-#: include/global_arrays.php:1761
+#: include/global_arrays.php:1765
 #, fuzzy
 msgid "[Warning]"
 msgstr "[تحذير]"
 
-#: include/global_arrays.php:1762
+#: include/global_arrays.php:1766
 #, fuzzy
 msgid "[Success]"
 msgstr "نجح!"
 
-#: include/global_arrays.php:1763
+#: include/global_arrays.php:1767
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[تخطي]"
 
-#: include/global_arrays.php:1787 include/global_arrays.php:1793
+#: include/global_arrays.php:1791 include/global_arrays.php:1797
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "ملف تعريف المستخدم (تحرير)"
 
-#: include/global_arrays.php:1805 include/global_arrays.php:1811
+#: include/global_arrays.php:1809 include/global_arrays.php:1815
 #, fuzzy
 msgid "Tree Mode"
 msgstr "وضع شجرة"
 
-#: include/global_arrays.php:1817
+#: include/global_arrays.php:1821
 #, fuzzy
 msgid "List Mode"
 msgstr "وضع قائمة"
 
-#: include/global_arrays.php:1849 include/global_arrays.php:1855
+#: include/global_arrays.php:1853 include/global_arrays.php:1859
 #: lib/functions.php:2522 lib/html.php:1555 lib/html.php:1632 links.php:345
 #: user_admin.php:1691 user_group_admin.php:1394
 #, fuzzy
 msgid "Console"
 msgstr "وحدة التحكم"
 
-#: include/global_arrays.php:1867 include/global_arrays.php:1909
-#: include/global_arrays.php:1927 include/global_arrays.php:1981
-#: include/global_arrays.php:1993 include/global_arrays.php:2005
-#: include/global_arrays.php:2041 include/global_arrays.php:2059
-#: include/global_arrays.php:2077 include/global_arrays.php:2095
-#: include/global_arrays.php:2113 include/global_arrays.php:2137
-#: include/global_arrays.php:2173 include/global_arrays.php:2293
-#: include/global_arrays.php:2317 include/global_arrays.php:2341
-#: include/global_arrays.php:2359 include/global_arrays.php:2371
-#: include/global_arrays.php:2473 include/global_arrays.php:2497
-#: include/global_arrays.php:2515 include/global_arrays.php:2533
-#: include/global_arrays.php:2551 include/global_arrays.php:2575
+#: include/global_arrays.php:1871 include/global_arrays.php:1913
+#: include/global_arrays.php:1931 include/global_arrays.php:1985
+#: include/global_arrays.php:1997 include/global_arrays.php:2009
+#: include/global_arrays.php:2045 include/global_arrays.php:2063
+#: include/global_arrays.php:2081 include/global_arrays.php:2099
+#: include/global_arrays.php:2117 include/global_arrays.php:2141
+#: include/global_arrays.php:2177 include/global_arrays.php:2297
+#: include/global_arrays.php:2321 include/global_arrays.php:2345
+#: include/global_arrays.php:2363 include/global_arrays.php:2375
+#: include/global_arrays.php:2477 include/global_arrays.php:2501
+#: include/global_arrays.php:2519 include/global_arrays.php:2537
+#: include/global_arrays.php:2555 include/global_arrays.php:2579
 msgid "(Edit)"
 msgstr "(تعديل)"
 
-#: include/global_arrays.php:1885 lib/api_aggregate.php:1587
+#: include/global_arrays.php:1889 lib/api_aggregate.php:1587
 #, fuzzy
 msgid "Graph Items"
 msgstr "عناصر الرسم البياني"
 
-#: include/global_arrays.php:1891
+#: include/global_arrays.php:1895
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "إنشاء رسوم بيانية جديدة"
 
-#: include/global_arrays.php:1897
+#: include/global_arrays.php:1901
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "إنشاء الرسوم البيانية من استعلام البيانات"
 
-#: include/global_arrays.php:1915 include/global_arrays.php:1933
-#: include/global_arrays.php:2029 include/global_arrays.php:2119
-#: include/global_arrays.php:2143 include/global_arrays.php:2299
+#: include/global_arrays.php:1919 include/global_arrays.php:1937
+#: include/global_arrays.php:2033 include/global_arrays.php:2123
+#: include/global_arrays.php:2147 include/global_arrays.php:2303
 #, fuzzy
 msgid "(Remove)"
 msgstr "(إزالة)"
 
-#: include/global_arrays.php:1951 include/global_arrays.php:1957
-#: include/global_arrays.php:1963 include/global_arrays.php:1969
-#: include/global_arrays.php:2233
+#: include/global_arrays.php:1955 include/global_arrays.php:1961
+#: include/global_arrays.php:1967 include/global_arrays.php:1973
+#: include/global_arrays.php:2237
 #, fuzzy
 msgid "View Log"
 msgstr "سجل عرض"
 
-#: include/global_arrays.php:1975
+#: include/global_arrays.php:1979
 #, fuzzy
 msgid "Graph Trees"
 msgstr "أشجار الرسم البياني"
 
-#: include/global_arrays.php:2017 lib/api_aggregate.php:1587
+#: include/global_arrays.php:2021 lib/api_aggregate.php:1587
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "عناصر قالب الرسم البياني"
 
-#: include/global_arrays.php:2107
+#: include/global_arrays.php:2111
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "جولة روبن المحفوظات"
 
-#: include/global_arrays.php:2149
+#: include/global_arrays.php:2153
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "حقول إدخال البيانات"
 
-#: include/global_arrays.php:2155 include/global_arrays.php:2185
+#: include/global_arrays.php:2159 include/global_arrays.php:2189
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(إزالة بند)"
 
-#: include/global_arrays.php:2191 include/global_settings.php:223
+#: include/global_arrays.php:2195 include/global_settings.php:223
 #: rrdcleaner.php:296
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "نظافة RRD"
 
-#: include/global_arrays.php:2203
+#: include/global_arrays.php:2207
 #, fuzzy
 msgid "List unused Files"
 msgstr "قائمة الملفات غير المستخدمة"
 
-#: include/global_arrays.php:2215 include/global_arrays.php:2227
+#: include/global_arrays.php:2219 include/global_arrays.php:2231
 #: utilities.php:1906
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "عرض Poller Cache"
 
-#: include/global_arrays.php:2221 utilities.php:1910
+#: include/global_arrays.php:2225 utilities.php:1910
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "عرض بيانات استعلام ذاكرة التخزين المؤقت"
 
-#: include/global_arrays.php:2239
+#: include/global_arrays.php:2243
 #, fuzzy
 msgid "Clear Log"
 msgstr "سجل نظيف"
 
-#: include/global_arrays.php:2245 utilities.php:1899
+#: include/global_arrays.php:2249 utilities.php:1899
 #, fuzzy
 msgid "View User Log"
 msgstr "عرض سجل المستخدم"
 
-#: include/global_arrays.php:2251
+#: include/global_arrays.php:2255
 #, fuzzy
 msgid "Clear User Log"
 msgstr "مسح سجل المستخدم"
 
-#: include/global_arrays.php:2257 utilities.php:1890 utilities.php:1891
+#: include/global_arrays.php:2261 utilities.php:1890 utilities.php:1891
 #, fuzzy
 msgid "Technical Support"
 msgstr "دعم فني"
 
-#: include/global_arrays.php:2263 utilities.php:2009
+#: include/global_arrays.php:2267 utilities.php:2009
 #, fuzzy
 msgid "Boost Status"
 msgstr "تعزيز الوضع"
 
-#: include/global_arrays.php:2269
+#: include/global_arrays.php:2273
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "عرض SNMP Agent Cache"
 
-#: include/global_arrays.php:2275
+#: include/global_arrays.php:2279
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "عرض سجل إعلام العميل SNMP"
 
-#: include/global_arrays.php:2305 vdef.php:592
+#: include/global_arrays.php:2309 vdef.php:592
 #, fuzzy
 msgid "VDEF Items"
 msgstr "عناصر VDEF"
 
-#: include/global_arrays.php:2311
+#: include/global_arrays.php:2315
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "عرض استقبال إشعارات SNMP"
 
-#: include/global_arrays.php:2323
+#: include/global_arrays.php:2327
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "إعدادات الصبار"
 
-#: include/global_arrays.php:2329
+#: include/global_arrays.php:2333
 #, fuzzy
 msgid "External Link"
 msgstr "رابط خارجي"
 
-#: include/global_arrays.php:2347 include/global_arrays.php:2377
+#: include/global_arrays.php:2351 include/global_arrays.php:2381
 #, fuzzy
 msgid "(Action)"
 msgstr "الإجراء"
 
-#: include/global_arrays.php:2395
+#: include/global_arrays.php:2399
 msgid "Export Results"
 msgstr "تصدير النتائج"
 
-#: include/global_arrays.php:2407 include/global_arrays.php:2437
+#: include/global_arrays.php:2411 include/global_arrays.php:2441
 #: lib/html.php:1576 lib/html.php:1578 lib/html.php:1657
 msgid "Reporting"
 msgstr "التقارير"
 
-#: include/global_arrays.php:2413 include/global_arrays.php:2443
+#: include/global_arrays.php:2417 include/global_arrays.php:2447
 #, fuzzy
 msgid "Report Add"
 msgstr "تقرير إضافة"
 
-#: include/global_arrays.php:2419 include/global_arrays.php:2449
+#: include/global_arrays.php:2423 include/global_arrays.php:2453
 #, fuzzy
 msgid "Report Delete"
 msgstr "تقرير حذف"
 
-#: include/global_arrays.php:2425 include/global_arrays.php:2455
+#: include/global_arrays.php:2429 include/global_arrays.php:2459
 #, fuzzy
 msgid "Report Edit"
 msgstr "تحرير التقرير"
 
-#: include/global_arrays.php:2431 include/global_arrays.php:2461
+#: include/global_arrays.php:2435 include/global_arrays.php:2465
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "تقرير تحرير عنصر"
 
-#: include/global_arrays.php:2485
+#: include/global_arrays.php:2489
 #, fuzzy
 msgid "Color Template Items"
 msgstr "عناصر قالب اللون"
 
-#: include/global_arrays.php:2527
+#: include/global_arrays.php:2531
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "عناصر التجميع"
 
-#: include/global_arrays.php:2563
+#: include/global_arrays.php:2567
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "عناصر القاعدة الرسم البياني"
 
-#: include/global_arrays.php:2587
+#: include/global_arrays.php:2591
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "عناصر القاعدة الشجرية"
 
-#: include/global_arrays.php:2618 include/global_arrays.php:2634
+#: include/global_arrays.php:2622 include/global_arrays.php:2638
 #: lib/api_device.php:1067
 msgid "days"
 msgstr "أيام"
 
-#: include/global_arrays.php:2619
+#: include/global_arrays.php:2623
 #, fuzzy
 msgid "hrs"
 msgstr "ساعات"
 
-#: include/global_arrays.php:2620
+#: include/global_arrays.php:2624
 #, fuzzy
 msgid "mins"
 msgstr "دقيقة"
 
-#: include/global_arrays.php:2621
+#: include/global_arrays.php:2625
 #, fuzzy
 msgid "secs"
 msgstr "ثانية"
 
-#: include/global_arrays.php:2635 lib/api_device.php:1067
+#: include/global_arrays.php:2639 lib/api_device.php:1067
 msgid "hours"
 msgstr "ساعات"
 
-#: include/global_arrays.php:2636 lib/api_device.php:1067
+#: include/global_arrays.php:2640 lib/api_device.php:1067
 msgid "minutes"
 msgstr "دقيقة"
 
-#: include/global_arrays.php:2637
+#: include/global_arrays.php:2641
 #, fuzzy
 msgid "seconds"
 msgstr "ثواني"
@@ -9405,7 +9411,7 @@ msgstr ""
 "البيانات القديمة بدلاً من إظهار الفجوات في الرسومات البيانية. يتم ضرب هذه "
 "القيمة بواسطة X-Files Factor لتحديد مقدار الوقت الفعلي."
 
-#: include/global_form.php:196 lib/rrd.php:2861
+#: include/global_form.php:196 lib/rrd.php:2865
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X-Files Factor"
@@ -10278,7 +10284,7 @@ msgstr "تعتيم / قناة ألفا"
 msgid "The opacity/alpha channel of the color."
 msgstr "قناة التعتيم / ألفا للون."
 
-#: include/global_form.php:955 lib/rrd.php:2857
+#: include/global_form.php:955 lib/rrd.php:2861
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "وظيفة توحيد"
@@ -14854,7 +14860,7 @@ msgstr "أجهزة المطابقة"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070 lib/clog_webapi.php:519
 #: lib/html_reports.php:603 lib/html_reports.php:1344 lib/html_reports.php:1611
-#: lib/html_reports.php:1622 lib/rrd.php:2799 utilities.php:339
+#: lib/html_reports.php:1622 lib/rrd.php:2803 utilities.php:339
 #: utilities.php:1106 utilities.php:2475
 msgid "Type"
 msgstr "النوع"
@@ -16971,7 +16977,7 @@ msgstr "حدد أحد الأنواع المحددة لمرفقات الصور"
 msgid "Events"
 msgstr "الفعاليات"
 
-#: lib/html_reports.php:1176 lib/import.php:2050 user_admin.php:1999
+#: lib/html_reports.php:1176 lib/import.php:2075 user_admin.php:1999
 #, fuzzy
 msgid "[new]"
 msgstr "[الجديد]"
@@ -17184,107 +17190,107 @@ msgstr ""
 msgid "Validation Error"
 msgstr "خطئ في التحقق"
 
-#: lib/import.php:348
+#: lib/import.php:350
 #, fuzzy
 msgid "written"
 msgstr "مكتوبة"
 
-#: lib/import.php:350
+#: lib/import.php:352
 #, fuzzy
 msgid "could not open"
 msgstr "لا يمكن فتحه"
 
-#: lib/import.php:356
+#: lib/import.php:358
 #, fuzzy
 msgid "not exists"
 msgstr "لا يوجد"
 
-#: lib/import.php:359 lib/import.php:363
+#: lib/import.php:361 lib/import.php:365
 #, fuzzy
 msgid "not writable"
 msgstr "غير قابل للكتابة"
 
-#: lib/import.php:365
+#: lib/import.php:367
 #, fuzzy
 msgid "writable"
 msgstr "للكتابة"
 
-#: lib/import.php:1770
+#: lib/import.php:1789
 #, fuzzy
 msgid "Unknown Field"
 msgstr "حقل غير معروف"
 
-#: lib/import.php:2011
+#: lib/import.php:2036
 #, fuzzy
 msgid "Import Preview Results"
 msgstr "استيراد نتائج المعاينة"
 
-#: lib/import.php:2011
+#: lib/import.php:2036
 #, fuzzy
 msgid "Import Results"
 msgstr "نتائج الاستيراد"
 
-#: lib/import.php:2015
+#: lib/import.php:2040
 #, fuzzy
 msgid "Cacti would make the following changes if the Package was imported:"
 msgstr "الصبار سيجعل التغييرات التالية إذا تم استيراد الحزمة:"
 
-#: lib/import.php:2017
+#: lib/import.php:2042
 #, fuzzy
 msgid "Cacti has imported the following items for the Package:"
 msgstr "قامت Cacti باستيراد العناصر التالية للحزمة:"
 
-#: lib/import.php:2020
+#: lib/import.php:2045
 #, fuzzy
 msgid "Package Files"
 msgstr "ملفات الحزمة"
 
-#: lib/import.php:2024
+#: lib/import.php:2049
 #, fuzzy
 msgid "[preview] "
 msgstr "معاينة"
 
-#: lib/import.php:2029
+#: lib/import.php:2054
 #, fuzzy
 msgid "Cacti would make the following changes if the Template was imported:"
 msgstr "الصبار سيجعل التغييرات التالية إذا تم استيراد القالب:"
 
-#: lib/import.php:2031
+#: lib/import.php:2056
 #, fuzzy
 msgid "Cacti has imported the following items for the Template:"
 msgstr "قامت Cacti باستيراد العناصر التالية للقالب:"
 
-#: lib/import.php:2040
+#: lib/import.php:2065
 #, fuzzy
 msgid "[success]"
 msgstr "نجح!"
 
-#: lib/import.php:2042
+#: lib/import.php:2067
 #, fuzzy
 msgid "[fail]"
 msgstr "[فشل]"
 
-#: lib/import.php:2044
+#: lib/import.php:2069
 #, fuzzy
 msgid "[preview]"
 msgstr "معاينة"
 
-#: lib/import.php:2048
+#: lib/import.php:2073
 #, fuzzy
 msgid "[updated]"
 msgstr "[محدث]"
 
-#: lib/import.php:2052
+#: lib/import.php:2077
 #, fuzzy
 msgid "[unchanged]"
 msgstr "[دون تغيير]"
 
-#: lib/import.php:2088
+#: lib/import.php:2113
 #, fuzzy
 msgid "Found Dependency:"
 msgstr "وجدت التبعية:"
 
-#: lib/import.php:2090
+#: lib/import.php:2115
 #, fuzzy
 msgid "Unmet Dependency:"
 msgstr "الإعالة غير الملباة:"
@@ -18763,170 +18769,170 @@ msgstr "أخفق إضافة عنصر رسومي تقرير &#39; <i>٪ s</i> &#3
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "تم تخطي عنصر Graph Report &#39; <i>٪ s</i> &#39; بالفعل"
 
-#: lib/rrd.php:2572
+#: lib/rrd.php:2576
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "حجم خطوة RRD المطلوب هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2601
+#: lib/rrd.php:2605
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نوع مصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2606
+#: lib/rrd.php:2610
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "يجب أن يكون نبض القلب لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2618
+#: lib/rrd.php:2622
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr ""
 "يجب أن يكون الحد الأدنى لتقليل وقت الاستجابة (RRD) لمصدر البيانات &#39;٪ "
 "s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2635
+#: lib/rrd.php:2639
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr ""
 "يجب أن يكون الحد الأقصى RRD لمصدر البيانات &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2645
+#: lib/rrd.php:2649
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "DS &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2654
+#: lib/rrd.php:2658
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39;٪ s&#39; مفقود في تعريف Cacti"
 
-#: lib/rrd.php:2671 lib/rrd.php:2672
+#: lib/rrd.php:2675 lib/rrd.php:2676
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2686 lib/rrd.php:2687
+#: lib/rrd.php:2690 lib/rrd.php:2691
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "الملف RRA &#39;٪ s&#39; له نفس CF / steps (٪ s،٪ s) كـ &#39;٪ s&#39;"
 
-#: lib/rrd.php:2718
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون XFF لمعرف cacti RRA &#39;٪ s&#39; &#39;٪ s&#39;"
 
-#: lib/rrd.php:2722
+#: lib/rrd.php:2726
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "يجب أن يكون عدد الصفوف لمعرف Cacti RRA &#39;٪ s&#39; هو &#39;٪ s&#39;"
 
-#: lib/rrd.php:2738
+#: lib/rrd.php:2742
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39;٪ s&#39; مفقودة في RRDfile"
 
-#: lib/rrd.php:2747
+#: lib/rrd.php:2751
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA &#39;٪ s&#39; مفقودة في تعريف Cacti"
 
-#: lib/rrd.php:2766
+#: lib/rrd.php:2770
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RRD ملف المعلومات"
 
-#: lib/rrd.php:2798
+#: lib/rrd.php:2802
 #, fuzzy
 msgid "Data Source Items"
 msgstr "عناصر مصدر البيانات"
 
-#: lib/rrd.php:2800
+#: lib/rrd.php:2804
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "أدنى ضربات القلب"
 
-#: lib/rrd.php:2801
+#: lib/rrd.php:2805
 msgid "Min"
 msgstr "بحد أدنى"
 
-#: lib/rrd.php:2802
+#: lib/rrd.php:2806
 msgid "Max"
 msgstr "الحد الأعلى"
 
-#: lib/rrd.php:2803
+#: lib/rrd.php:2807
 #, fuzzy
 msgid "Last DS"
 msgstr "آخر DS"
 
-#: lib/rrd.php:2805
+#: lib/rrd.php:2809
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "غير معروف"
 
-#: lib/rrd.php:2856
+#: lib/rrd.php:2860
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "جولة روبن الأرشيف"
 
-#: lib/rrd.php:2859
+#: lib/rrd.php:2863
 #, fuzzy
 msgid "Cur Row"
 msgstr "صف كو"
 
-#: lib/rrd.php:2860
+#: lib/rrd.php:2864
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP لكل صف"
 
-#: lib/rrd.php:2862
+#: lib/rrd.php:2866
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "قيمة الإعداد المسبق لـ CDP (0)"
 
-#: lib/rrd.php:2863
+#: lib/rrd.php:2867
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP نقاط بيانات غير معروفة (0)"
 
-#: lib/rrd.php:2940
+#: lib/rrd.php:2944
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "إعادة تسمية٪ s إلى٪ s"
 
-#: lib/rrd.php:2990
+#: lib/rrd.php:2994
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "خطأ أثناء تحليل XML من تفريغ rrdtool"
 
-#: lib/rrd.php:3022 lib/rrd.php:3077 lib/rrd.php:3133
+#: lib/rrd.php:3026 lib/rrd.php:3081 lib/rrd.php:3137
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "خطأ أثناء كتابة ملف XML:٪ s"
 
-#: lib/rrd.php:3033 lib/rrd.php:3088 lib/rrd.php:3144
+#: lib/rrd.php:3037 lib/rrd.php:3092 lib/rrd.php:3148
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "خطأ: RRDfile٪ s غير قابل للكتابة"
 
-#: lib/rrd.php:3060 lib/rrd.php:3116
+#: lib/rrd.php:3064 lib/rrd.php:3120
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "خطأ أثناء تحليل XML تفريغ RRDtool"
 
-#: lib/rrd.php:3349
+#: lib/rrd.php:3353
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
 "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) تمت إزالتها من ملف RRD"
 
-#: lib/rrd.php:3383
+#: lib/rrd.php:3387
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 "RRA (CF =٪ s، ROWS =٪ d، PDP_PER_ROW =٪ d، XFF =٪ 1.2f) إضافة إلى ملف RRD"
 
-#: lib/rrd.php:3413 lib/rrd.php:3427
+#: lib/rrd.php:3417 lib/rrd.php:3431
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
@@ -18934,27 +18940,27 @@ msgstr ""
 "لا يمتلك موقع الويب حق الوصول للكتابة إلى٪ s ، وقد يتعذر إنشاء / تحديث ملفات "
 "RRD"
 
-#: lib/rrd.php:3423
+#: lib/rrd.php:3427
 #, fuzzy
 msgid "(Custom)"
 msgstr "مخصص"
 
-#: lib/rrd.php:3429
+#: lib/rrd.php:3433
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "فشل في فتح ملف البيانات ، ربما لم يتم تشغيل برنامج التلقيم حتى الآن"
 
-#: lib/rrd.php:3432
+#: lib/rrd.php:3436
 #, fuzzy
 msgid "RRA Folder"
 msgstr "مجلد RRA"
 
-#: lib/rrd.php:3432
+#: lib/rrd.php:3436
 #, fuzzy
 msgid "Root"
 msgstr "الجذر"
 
-#: lib/rrd.php:3535
+#: lib/rrd.php:3539
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "خطأ RRDtool غير معروف"
