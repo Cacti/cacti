@@ -595,7 +595,7 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 			/* use the cacti ds name by default or the user defined one, if entered */
 			$data_source_name = get_data_source_item_name($data_source['id']);
 
-			if (empty($data_source['rrd_maximum'])) {
+			if ($data_source['rrd_maximum'] == 'U') {
 				/* in case no maximum is given, use "Undef" value */
 				$data_source['rrd_maximum'] = 'U';
 			} elseif (strpos($data_source['rrd_maximum'], '|query_') !== false) {
@@ -607,7 +607,11 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 				}
 			} elseif ($data_source['rrd_maximum'] != 'U' && (int)$data_source['rrd_maximum'] <= (int)$data_source['rrd_minimum']) {
 				/* max > min required, but take care of an "Undef" value */
-				$data_source['rrd_maximum'] = (int)$data_source['rrd_minimum']+1;
+				if ($data_source['data_source_type_id'] == 1 || $data_source['data_source_type_id'] == 4) {
+					$data_source['rrd_maximum'] = 'U';
+				} else {
+					$data_source['rrd_maximum'] = (int)$data_source['rrd_minimum'] + 1;
+				}
 			}
 
 			/* min==max==0 won't work with rrdtool */
@@ -2539,13 +2543,15 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 	$cacti_header_array = db_fetch_row_prepared('SELECT
 		local_data_template_data_id, rrd_step, data_source_profile_id
 		FROM data_template_data
-		WHERE local_data_id = ?', array($data_source_id));
+		WHERE local_data_id = ?',
+		array($data_source_id));
 
 	/* get cacti DS information */
 	$cacti_ds_array = db_fetch_assoc_prepared('SELECT data_source_name, data_source_type_id,
 		rrd_heartbeat, rrd_maximum, rrd_minimum
 		FROM data_template_rrd
-		WHERE local_data_id = ?', array($data_source_id));
+		WHERE local_data_id = ?',
+		array($data_source_id));
 
 	/* get cacti RRA information */
 	$cacti_rra_array = db_fetch_assoc_prepared('SELECT

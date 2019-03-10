@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
-	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info;
+	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info, $legacy_templates;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -42,7 +42,9 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		$parsed_hash = parse_xml_hash($hash);
 
 		/* invalid/wrong hash */
-		if ($parsed_hash == false) { return $info_array; }
+		if ($parsed_hash == false) {
+			return $info_array;
+		}
 
 		if (isset($dep_hash_cache[$parsed_hash['type']])) {
 			array_push($dep_hash_cache[$parsed_hash['type']], $parsed_hash);
@@ -669,7 +671,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 }
 
 function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, $profile_id) {
-	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only, $import_debug_info;
+	global $struct_data_source, $struct_data_source_item, $import_template_id, $preview_only, $import_debug_info, $legacy_template;
 
 	/* track changes */
 	$status = 0;
@@ -838,6 +840,23 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 			if (!$preview_only) {
 				$data_template_rrd_id = sql_save($save, 'data_template_rrd');
+
+				if ($legacy_template) {
+					// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
+					db_install_execute("UPDATE data_template_rrd
+						SET rrd_maximum='U'
+						WHERE rrd_maximum = '0'
+						AND rrd_minimum = '0'
+						AND data_template_id = $data_template_id
+						AND data_source_type_id IN(1,4)");
+
+					// Correct min/max values in templates and data sources: DERIVE/DDERIVE (3,7)
+					db_install_execute("UPDATE data_template_rrd
+						SET rrd_maximum='U', rrd_minimum='U'
+						WHERE (rrd_maximum = '0' OR rrd_minimum = '0')
+						AND data_template_id = $data_template_id
+						AND data_source_type_id IN(3,7)");
+				}
 
 				$hash_cache['data_template_item'][$parsed_hash['hash']] = $data_template_rrd_id;
 			} else {
@@ -1877,6 +1896,8 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 }
 
 function parse_xml_hash($hash) {
+	global $legacy_template;
+
 	if (preg_match('/hash_([a-f0-9]{2})([a-f0-9]{4})([a-f0-9]{32})/', $hash, $matches)) {
 		$parsed_hash['type']    = check_hash_type($matches[1]);
 		$parsed_hash['version'] = strval(check_hash_version($matches[2]));
@@ -1914,6 +1935,10 @@ function parse_xml_hash($hash) {
 		cacti_log(__FUNCTION__ . ' ERROR wrong hash format for hash: ' . $hash, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 		return false;
+	}
+
+	if ($parsed_hash['version'] < '0101') {
+		$legacy_template = true;
 	}
 
 	return $parsed_hash;

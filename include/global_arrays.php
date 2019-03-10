@@ -115,6 +115,7 @@ $cacti_version_codes = array(
 	'1.2.0'  => '0101',
 	'1.2.1'  => '0101',
 	'1.2.2'  => '0101',
+	'1.2.3'  => '0102',
 );
 
 $messages = array(
@@ -244,6 +245,9 @@ $messages = array(
 	42 => array(
 		'message' => __('Save Successful. Settings replicated to Remote Data Collectors.'),
 		'level' => MESSAGE_LEVEL_INFO),
+	43 => array(
+		'message' => __('Save Failed.  Minimum Values must be less than Maximum Value.'),
+		'level' => MESSAGE_LEVEL_ERROR),
 	'input_save_wo_ds' => array(
 		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),
 		'level' => MESSAGE_LEVEL_INFO),

@@ -268,12 +268,30 @@ function form_save() {
 							array($rrd['id']));
 
 						$save3['data_template_id'] = get_filter_request_var('data_template_id');
+
 						$save3['rrd_maximum'] = form_input_validate(get_nfilter_request_var("rrd_maximum$name_modifier"), "rrd_maximum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
+
 						$save3['rrd_minimum'] = form_input_validate(get_nfilter_request_var("rrd_minimum$name_modifier"), "rrd_minimum$name_modifier", "^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$|\|query_ifSpeed\||\|query_ifHighSpeed\|", false, 3);
+
 						$save3['rrd_heartbeat'] = form_input_validate(get_nfilter_request_var("rrd_heartbeat$name_modifier"), "rrd_heartbeat$name_modifier", '^[0-9]+$', false, 3);
+
 						$save3['data_source_type_id'] = form_input_validate(get_nfilter_request_var("data_source_type_id$name_modifier"), "data_source_type_id$name_modifier", '^[0-9]+$', false, 3);
+
 						$save3['data_source_name'] = form_input_validate(get_nfilter_request_var("data_source_name$name_modifier"), "data_source_name$name_modifier", '^[a-zA-Z0-9_-]{1,19}$', false, 3);
+
 						$save3['data_input_field_id'] = form_input_validate((isset_request_var("data_input_field_id$name_modifier") ? get_nfilter_request_var("data_input_field_id$name_modifier") : '0'), "data_input_field_id$name_modifier", '', true, 3);
+
+						if ($save3['rrd_minimum'] != 'U' && $save3['rrd_maximum'] != 'U') {
+							if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
+								raise_message(43);
+
+								$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
+
+								header('Location: data_sources.php?header=false&action=ds_edit&id=' . (empty($local_data_id) ? get_filter_request_var('local_data_id') : $local_data_id) . '&host_id=' . get_request_var('host_id') . '&view_rrd=' . (isset_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : '0'));
+
+								exit;
+							}
+						}
 
 						$data_template_rrd_id = sql_save($save3, 'data_template_rrd');
 

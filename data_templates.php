@@ -123,18 +123,37 @@ function form_save() {
 		$save3['local_data_id']         = 0;
 
 		$save3['t_rrd_maximum']         = form_input_validate((isset_request_var('t_rrd_maximum') ? get_nfilter_request_var('t_rrd_maximum') : ''), 't_rrd_maximum', '', true, 3);
+
 		$save3['rrd_maximum']           = form_input_validate(get_nfilter_request_var('rrd_maximum'), 'rrd_maximum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_maximum') ? true : false), 3);
+
 		$save3['t_rrd_minimum']         = form_input_validate((isset_request_var('t_rrd_minimum') ? get_nfilter_request_var('t_rrd_minimum') : ''), 't_rrd_minimum', '', true, 3);
+
 		$save3['rrd_minimum']           = form_input_validate(get_nfilter_request_var('rrd_minimum'), 'rrd_minimum', '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$', (isset_request_var('t_rrd_minimum') ? true : false), 3);
 
 		$save3['rrd_heartbeat']         = $rrd_heartbeat;
 
 		$save3['t_data_source_type_id'] = form_input_validate((isset_request_var('t_data_source_type_id') ? get_nfilter_request_var('t_data_source_type_id') : ''), 't_data_source_type_id', '', true, 3);
+
 		$save3['data_source_type_id']   = form_input_validate(get_request_var('data_source_type_id'), 'data_source_type_id', '^[0-9]+$', true, 3);
+
 		$save3['t_data_source_name']    = form_input_validate((isset_request_var('t_data_source_name') ? get_nfilter_request_var('t_data_source_name') : ''), 't_data_source_name', '', true, 3);
+
 		$save3['data_source_name']      = form_input_validate(get_nfilter_request_var('data_source_name'), 'data_source_name', '^[a-zA-Z0-9_]{1,19}$', (isset_request_var('t_data_source_name') ? true : false), 3);
+
 		$save3['t_data_input_field_id'] = form_input_validate((isset_request_var('t_data_input_field_id') ? get_nfilter_request_var('t_data_input_field_id') : ''), 't_data_input_field_id', '', true, 3);
+
 		$save3['data_input_field_id']   = form_input_validate((isset_request_var('data_input_field_id') ? get_nfilter_request_var('data_input_field_id') : '0'), 'data_input_field_id', '', true, 3);
+
+		if ($save3['rrd_minimum'] != 'U' && $save3['rrd_maximum'] != 'U') {
+			if ($save3['rrd_minimum'] >= $save3['rrd_maximum']) {
+				raise_message(43);
+
+				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
+
+				header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
+				exit;
+			}
+		}
 
 		/* ok, first pull out all 'input' values so we know how much to save */
 		$input_fields = db_fetch_assoc_prepared("SELECT id, input_output, regexp_match,
