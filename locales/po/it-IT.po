@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 11:18-0400\n"
-"PO-Revision-Date: 2019-03-10 11:30-0400\n"
+"POT-Creation-Date: 2019-03-10 13:25-0400\n"
+"PO-Revision-Date: 2019-03-10 13:37-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it_IT\n"
@@ -15905,7 +15905,7 @@ msgid "User Community"
 msgstr "Comunità di utenti"
 
 #: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 msgid "Documentation"
 msgstr "Documentazione"
 
@@ -19177,7 +19177,7 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr ""
 "Convalida Whitelist fallita. Metodo di inserimento dei dati di controllo"
 
-#: lib/utility.php:836
+#: lib/utility.php:837
 #, fuzzy
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
@@ -19190,14 +19190,14 @@ msgstr ""
 "problema di rete di basso livello che stava causando molti problemi alla "
 "colonna vertebrale."
 
-#: lib/utility.php:848 lib/utility.php:878
+#: lib/utility.php:849 lib/utility.php:879
 #, fuzzy, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr ""
 "Si raccomanda di abilitare InnoDB in qualsiasi versione %s superiore a 5.1."
 
-#: lib/utility.php:861
+#: lib/utility.php:862
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19215,7 +19215,7 @@ msgstr ""
 "Internet per le istruzioni sulla conversione dei vostri database e tabelle "
 "se avete intenzione di supportare altre lingue."
 
-#: lib/utility.php:867
+#: lib/utility.php:868
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19233,7 +19233,7 @@ msgstr ""
 "istruzioni sulla conversione dei vostri database e tabelle se avete "
 "intenzione di supportare altre lingue."
 
-#: lib/utility.php:890
+#: lib/utility.php:891
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19244,7 +19244,7 @@ msgstr ""
 "tipo di ordinamento utf8mb4_unicode_ci, dato che alcuni caratteri richiedono "
 "più di un singolo byte."
 
-#: lib/utility.php:896
+#: lib/utility.php:897
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19254,7 +19254,7 @@ msgstr ""
 "utilizzare il set di caratteri utf8mb4, poiché alcuni caratteri richiedono "
 "più di un singolo byte."
 
-#: lib/utility.php:905
+#: lib/utility.php:906
 #, fuzzy, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -19270,7 +19270,7 @@ msgstr ""
 "connessioni utente, che cambierà a seconda del numero di account di login "
 "simultanei."
 
-#: lib/utility.php:910
+#: lib/utility.php:911
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -19279,7 +19279,7 @@ msgstr ""
 "Mantenere la cache della tabella più grande significa meno operazioni di "
 "apertura/chiusura di file quando si usa innodb_file_per_table."
 
-#: lib/utility.php:915
+#: lib/utility.php:916
 #, fuzzy
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
@@ -19290,7 +19290,7 @@ msgstr ""
 "sincronizzati dal server principale ai sondaggi remoti.  Pertanto, mantenere "
 "questo valore a 16M o superiore."
 
-#: lib/utility.php:921
+#: lib/utility.php:922
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -19318,7 +19318,7 @@ msgstr ""
 "possibile visualizzare il consumo previsto delle tabelle del Performance "
 "Booster in Console -> System Utilities -> View Boost Status."
 
-#: lib/utility.php:927
+#: lib/utility.php:928
 #, fuzzy
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
@@ -19327,7 +19327,7 @@ msgstr ""
 "Quando si eseguono delle sottoquery, che hanno una dimensione di tabella "
 "temporanea più grande, mantenere in memoria le tabelle temporanee."
 
-#: lib/utility.php:933
+#: lib/utility.php:934
 #, fuzzy
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
@@ -19336,7 +19336,7 @@ msgstr ""
 "Quando si eseguono le giunzioni, se sono al di sotto di queste dimensioni, "
 "saranno tenute in memoria e mai scritte in un file temporaneo."
 
-#: lib/utility.php:938
+#: lib/utility.php:939
 #, fuzzy, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -19352,7 +19352,7 @@ msgstr ""
 "funzione e quindi eseguire un'istruzione di modifica su tutte le tabelle di "
 "InnoDB."
 
-#: lib/utility.php:943
+#: lib/utility.php:944
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -19363,7 +19363,7 @@ msgstr ""
 "innodb_file_format su Barracuda.  Questa impostazione consente di ottenere "
 "indici più lunghi, importanti per alcune tabelle Cacti."
 
-#: lib/utility.php:949
+#: lib/utility.php:950
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -19381,7 +19381,7 @@ msgstr ""
 "vostro sistema, ma le vostre esigenze variano a seconda delle dimensioni del "
 "sistema."
 
-#: lib/utility.php:955
+#: lib/utility.php:956
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -19391,7 +19391,7 @@ msgstr ""
 "rapidamente e aggiunge il 50% di overhead su tutte le operazioni di "
 "scrittura."
 
-#: lib/utility.php:960
+#: lib/utility.php:961
 #, fuzzy
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
@@ -19400,7 +19400,7 @@ msgstr ""
 "Qui è dove sono memorizzati i metadati. Se si disponeva di molte tabelle, "
 "sarebbe stato utile aumentarlo."
 
-#: lib/utility.php:965
+#: lib/utility.php:966
 #, fuzzy
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
@@ -19409,7 +19409,16 @@ msgstr ""
 "Le richieste di Rogue non dovrebbero far sì che il database vada offline ad "
 "altri.  Uccidi queste domande prima che uccidano il tuo sistema."
 
-#: lib/utility.php:975
+#: lib/utility.php:971
+#, fuzzy
+msgid ""
+"Maximum I/O performance happens when you use the O_DIRECT method to flush "
+"pages."
+msgstr ""
+"Le massime prestazioni I/O si ottengono quando si utilizza il metodo "
+"O_DIRECT per il lavaggio delle pagine."
+
+#: lib/utility.php:981
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -19419,7 +19428,7 @@ msgstr ""
 "lavate ogni secondo piuttosto che al commit.  Questo permette a %s di "
 "scrivere meno spesso."
 
-#: lib/utility.php:980
+#: lib/utility.php:986
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
@@ -19428,7 +19437,7 @@ msgstr ""
 "Con la moderna memorizzazione di tipo SSD, avere più filettature io è "
 "vantaggioso per applicazioni con elevate caratteristiche io."
 
-#: lib/utility.php:988
+#: lib/utility.php:994
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -19440,7 +19449,7 @@ msgstr ""
 "sistemi di I/O elevati, l'impostazione di un valore superiore a 1 può "
 "consentire all'I/O del disco di essere più sequenziale."
 
-#: lib/utility.php:993
+#: lib/utility.php:999
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
@@ -19449,7 +19458,7 @@ msgstr ""
 "Con la moderna memorizzazione di tipo SSD, avere più filettature read io è "
 "vantaggioso per applicazioni con elevate caratteristiche io."
 
-#: lib/utility.php:998
+#: lib/utility.php:1004
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
@@ -19458,7 +19467,7 @@ msgstr ""
 "Con la moderna memorizzazione di tipo SSD, avere più fili io a scrittura "
 "multipla è vantaggioso per applicazioni con elevate caratteristiche io."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1010
 #, fuzzy, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -19471,49 +19480,82 @@ msgstr ""
 "inferiore a 1GB, dovresti usare la dimensione del pool diviso per 128MB.  "
 "Continuare ad utilizzare questa equazione fino ad un massimo di 64."
 
-#: lib/utility.php:1012
+#: lib/utility.php:1016
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 200 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 100000 can be used."
+msgstr ""
+"Se si dispone di dischi SSD, utilizzare questo suggerimento.  Se si dispone "
+"di dischi rigidi fisici, utilizzare 200 * il numero di unità attive "
+"nell'array.  Se si utilizzano NVMe o PCIe Flash, è possibile utilizzare "
+"numeri molto più grandi, fino a 100000."
+
+#: lib/utility.php:1022
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 2000 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 200000 can be used."
+msgstr ""
+"Se si dispone di dischi SSD, utilizzare questo suggerimento.  Se si dispone "
+"di dischi rigidi fisici, utilizzare 2000 * il numero di unità attive "
+"nell'array.  Se si utilizzano NVMe o PCIe Flash, è possibile utilizzare "
+"numeri molto più grandi, fino a 200000."
+
+#: lib/utility.php:1028
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion. Otherwise, do not set this "
+"setting."
+msgstr ""
+"Se si dispone di dischi SSD, utilizzare questo suggerimento. In caso "
+"contrario, non impostare questa impostazione."
+
+#: lib/utility.php:1036
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s Sintonizzazione"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr ""
 "Nota: molte delle seguenti modifiche richiedono il riavvio del database"
 
-#: lib/utility.php:1019
+#: lib/utility.php:1043
 msgid "Variable"
 msgstr "Variabile"
 
-#: lib/utility.php:1020
+#: lib/utility.php:1044
 msgid "Current Value"
 msgstr "Valore Attuale"
 
-#: lib/utility.php:1022
+#: lib/utility.php:1046
 msgid "Recommended Value"
 msgstr "Valore consigliato"
 
-#: lib/utility.php:1023
+#: lib/utility.php:1047
 msgid "Comments"
 msgstr "Commenti"
 
-#: lib/utility.php:1387
+#: lib/utility.php:1411
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s è la versione minima"
 
-#: lib/utility.php:1389
+#: lib/utility.php:1413
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "Un limite di memoria minimo di %s MB di memoria"
 
-#: lib/utility.php:1391
+#: lib/utility.php:1415
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Un minimo di %s m di tempo di esecuzione"
 
-#: lib/utility.php:1393
+#: lib/utility.php:1417
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Un fuso orario valido che corrisponde a MySQL e al sistema"

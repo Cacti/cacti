@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 11:18-0400\n"
-"PO-Revision-Date: 2019-03-10 11:43-0400\n"
+"POT-Creation-Date: 2019-03-10 13:25-0400\n"
+"PO-Revision-Date: 2019-03-10 13:56-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_TW\n"
@@ -14969,7 +14969,7 @@ msgid "User Community"
 msgstr "用戶社區"
 
 #: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 msgid "Documentation"
 msgstr "文件"
 
@@ -18066,7 +18066,7 @@ msgstr "已建立%s"
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "錯誤：白名單驗證失敗。檢查數據輸入方法"
 
-#: lib/utility.php:836
+#: lib/utility.php:837
 #, fuzzy
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
@@ -18078,13 +18078,13 @@ msgstr ""
 "雖然它解決了一個長期存在的低級別網絡問題，這個問題導致脊柱出現許多可靠性問"
 "題。"
 
-#: lib/utility.php:848 lib/utility.php:878
+#: lib/utility.php:849 lib/utility.php:879
 #, fuzzy, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "建議您在大於5.1的任何％s版本中啟用InnoDB。"
 
-#: lib/utility.php:861
+#: lib/utility.php:862
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18099,7 +18099,7 @@ msgstr ""
 "果您的Cacti已經運行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取"
 "有關轉換數據庫和表格的說明。"
 
-#: lib/utility.php:867
+#: lib/utility.php:868
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18114,7 +18114,7 @@ msgstr ""
 "行並且正在生產中，如果您計劃支持其他語言，請訪問互聯網以獲取有關轉換數據庫和"
 "表格的說明。"
 
-#: lib/utility.php:890
+#: lib/utility.php:891
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18124,7 +18124,7 @@ msgstr ""
 "將Cacti與英語以外的語言一起使用時，使用utf8mb4_unicode_ci校對類型非常重要，因"
 "為某些字符需要多個字節。"
 
-#: lib/utility.php:896
+#: lib/utility.php:897
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18133,7 +18133,7 @@ msgstr ""
 "將Cacti與英語以外的語言一起使用時，使用utf8mb4字符集非常重要，因為某些字符需"
 "要多個字節。"
 
-#: lib/utility.php:905
+#: lib/utility.php:906
 #, fuzzy, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -18146,7 +18146,7 @@ msgstr ""
 "total_connections = total_processes *（total_threads + script_servers + 1），"
 "然後您必須為用戶連接留出空間，這將根據並發登錄帳戶的數量而變化。"
 
-#: lib/utility.php:910
+#: lib/utility.php:911
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -18154,7 +18154,7 @@ msgid ""
 msgstr ""
 "使用innodb_file_per_table時，保持表緩存更大意味著更少的文件打開/關閉操作。"
 
-#: lib/utility.php:915
+#: lib/utility.php:916
 #, fuzzy
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
@@ -18164,7 +18164,7 @@ msgstr ""
 "使用遠程輪詢功能，大量數據將從主服務器同步到遠程輪詢器。因此，請將此值保持在"
 "16M或以上。"
 
-#: lib/utility.php:921
+#: lib/utility.php:922
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -18187,14 +18187,14 @@ msgstr ""
 "能會在Console  - &gt; System Utilities  - &gt; View Boost Status下看到"
 "Performance Booster表的預期消耗。"
 
-#: lib/utility.php:927
+#: lib/utility.php:928
 #, fuzzy
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
 "temporary tables in memory."
 msgstr "執行子查詢時，臨時表大小較大時，請將這些臨時表保留在內存中。"
 
-#: lib/utility.php:933
+#: lib/utility.php:934
 #, fuzzy
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
@@ -18203,7 +18203,7 @@ msgstr ""
 "執行連接時，如果它們低於此大小，它們將保留在內存中，並且永遠不會寫入臨時文"
 "件。"
 
-#: lib/utility.php:938
+#: lib/utility.php:939
 #, fuzzy, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -18216,7 +18216,7 @@ msgstr ""
 "表更簡單。如果您當前正在運行此服務，則可以通過啟用該功能，然後在所有InnoDB表"
 "上運行alter語句來遷移到每個文件存儲。"
 
-#: lib/utility.php:943
+#: lib/utility.php:944
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -18226,7 +18226,7 @@ msgstr ""
 "使用innodb_file_per_table時，將innodb_file_format設置為Barracuda非常重要。此"
 "設置將允許更長的索引對某些Cacti表很重要。"
 
-#: lib/utility.php:949
+#: lib/utility.php:950
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -18241,7 +18241,7 @@ msgstr ""
 "錄的大小將有助於確定此值。我們建議您的系統總內存佔25 %%，但您的要求會因係統大"
 "小而異。"
 
-#: lib/utility.php:955
+#: lib/utility.php:956
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -18250,21 +18250,28 @@ msgstr ""
 "使用現代SSD類型存儲，此操作實際上會使磁盤更快速地降級，並在所有寫入操作上增加"
 "50 %%的開銷。"
 
-#: lib/utility.php:960
+#: lib/utility.php:961
 #, fuzzy
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
 "useful to increase this."
 msgstr "這是存儲元數據的地方。如果你有很多表，那麼增加它會很有用。"
 
-#: lib/utility.php:965
+#: lib/utility.php:966
 #, fuzzy
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
 "these queries before they kill your system."
 msgstr "Rogue查詢不應該讓數據庫脫機到其他人。在殺死您的系統之前殺死這些查詢。"
 
-#: lib/utility.php:975
+#: lib/utility.php:971
+#, fuzzy
+msgid ""
+"Maximum I/O performance happens when you use the O_DIRECT method to flush "
+"pages."
+msgstr "使用O_DIRECT方法刷新頁面時，會發生最大I / O性能。"
+
+#: lib/utility.php:981
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -18272,14 +18279,14 @@ msgid ""
 msgstr ""
 "將此值設置為2意味著您將每秒刷新所有事務而不是提交。這允許％s更少地執行寫入。"
 
-#: lib/utility.php:980
+#: lib/utility.php:986
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
 "applications with high io characteristics."
 msgstr "使用現代SSD類型存儲，具有多個io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:988
+#: lib/utility.php:994
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -18289,7 +18296,7 @@ msgstr ""
 "從％s％s開始，您可以控制％s將事務刷新到磁盤的頻率。默認值為1秒，但在高I / O系"
 "統中設置為大於1的值可以允許磁盤I / O更順序"
 
-#: lib/utility.php:993
+#: lib/utility.php:999
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
@@ -18297,7 +18304,7 @@ msgid ""
 msgstr ""
 "使用現代SSD類型存儲，具有多個讀取io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:998
+#: lib/utility.php:1004
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
@@ -18305,7 +18312,7 @@ msgid ""
 msgstr ""
 "使用現代SSD類型存儲，具有多個寫入io線程對於具有高io特性的應用是有利的。"
 
-#: lib/utility.php:1004
+#: lib/utility.php:1010
 #, fuzzy, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -18317,49 +18324,76 @@ msgstr ""
 "innodb_buffer_pool小於1GB時，你應該使用池大小除以128MB。繼續使用此公式，最大"
 "值為64。"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1016
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 200 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 100000 can be used."
+msgstr ""
+"如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用200 *陣列中的活"
+"動驅動器數量。如果使用NVMe或PCIe閃存，可以使用高達100000的更大數字。"
+
+#: lib/utility.php:1022
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 2000 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 200000 can be used."
+msgstr ""
+"如果您有SSD磁盤，請使用此建議。如果您有物理硬盤驅動器，請使用2000 *陣列中的活"
+"動驅動器數量。如果使用NVMe或PCIe Flash，則可以使用高達200000的更大數字。"
+
+#: lib/utility.php:1028
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion. Otherwise, do not set this "
+"setting."
+msgstr "如果您有SSD磁盤，請使用此建議。否則，請勿設置此設置。"
+
+#: lib/utility.php:1036
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "％s調整"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "注意：以下許多更改都需要重新啟動數據庫"
 
-#: lib/utility.php:1019
+#: lib/utility.php:1043
 msgid "Variable"
 msgstr "变数"
 
-#: lib/utility.php:1020
+#: lib/utility.php:1044
 msgid "Current Value"
 msgstr "當前的數值"
 
-#: lib/utility.php:1022
+#: lib/utility.php:1046
 #, fuzzy
 msgid "Recommended Value"
 msgstr "推薦值"
 
-#: lib/utility.php:1023
+#: lib/utility.php:1047
 msgid "Comments"
 msgstr "評論"
 
-#: lib/utility.php:1387
+#: lib/utility.php:1411
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP％s是最小版本"
 
-#: lib/utility.php:1389
+#: lib/utility.php:1413
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "至少％s MB內存限制"
 
-#: lib/utility.php:1391
+#: lib/utility.php:1415
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "至少％sm執行時間"
 
-#: lib/utility.php:1393
+#: lib/utility.php:1417
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "與MySQL和系統匹配的有效時區"

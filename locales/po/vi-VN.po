@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 11:18-0400\n"
-"PO-Revision-Date: 2019-03-10 11:41-0400\n"
+"POT-Creation-Date: 2019-03-10 13:25-0400\n"
+"PO-Revision-Date: 2019-03-10 13:53-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: vi_VN\n"
@@ -15640,7 +15640,7 @@ msgid "User Community"
 msgstr "Cộng đồng người dùng"
 
 #: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 msgid "Documentation"
 msgstr "Tài liệu"
 
@@ -18874,7 +18874,7 @@ msgstr ""
 "LRI: Xác thực danh sách trắng không thành công. Kiểm tra phương thức nhập dữ "
 "liệu"
 
-#: lib/utility.php:836
+#: lib/utility.php:837
 #, fuzzy
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
@@ -18887,13 +18887,13 @@ msgstr ""
 "dù đã khắc phục được sự cố mạng cấp độ thấp đã gây ra nhiều vấn đề về độ tin "
 "cậy."
 
-#: lib/utility.php:848 lib/utility.php:878
+#: lib/utility.php:849 lib/utility.php:879
 #, fuzzy, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "Bạn nên bật InnoDB ở bất kỳ phiên bản %s nào lớn hơn 5.1."
 
-#: lib/utility.php:861
+#: lib/utility.php:862
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18910,7 +18910,7 @@ msgstr ""
 "xem internet để biết hướng dẫn về chuyển đổi cơ sở dữ liệu và bảng của bạn "
 "nếu bạn có kế hoạch hỗ trợ các ngôn ngữ khác."
 
-#: lib/utility.php:867
+#: lib/utility.php:868
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18927,7 +18927,7 @@ msgstr ""
 "biết hướng dẫn về chuyển đổi cơ sở dữ liệu và bảng của bạn nếu bạn có kế "
 "hoạch hỗ trợ các ngôn ngữ khác."
 
-#: lib/utility.php:890
+#: lib/utility.php:891
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18938,7 +18938,7 @@ msgstr ""
 "dụng loại đối chiếu utf8mb4_unicode_ci vì một số ký tự mất nhiều hơn một "
 "byte."
 
-#: lib/utility.php:896
+#: lib/utility.php:897
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18947,7 +18947,7 @@ msgstr ""
 "Khi sử dụng Cacti với các ngôn ngữ khác tiếng Anh, điều quan trọng là sử "
 "dụng bộ ký tự utf8mb4 vì một số ký tự mất nhiều hơn một byte."
 
-#: lib/utility.php:905
+#: lib/utility.php:906
 #, fuzzy, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -18962,7 +18962,7 @@ msgstr ""
 "lại khoảng trống cho các kết nối người dùng, sẽ thay đổi tùy thuộc vào số "
 "lượng tài khoản đăng nhập đồng thời."
 
-#: lib/utility.php:910
+#: lib/utility.php:911
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -18971,7 +18971,7 @@ msgstr ""
 "Giữ bộ đệm của bảng lớn hơn có nghĩa là các thao tác mở / đóng tệp ít hơn "
 "khi sử dụng innodb_file_per_table."
 
-#: lib/utility.php:915
+#: lib/utility.php:916
 #, fuzzy
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
@@ -18982,7 +18982,7 @@ msgstr ""
 "máy chủ chính đến các công cụ bỏ phiếu từ xa. Do đó, giữ giá trị này ở mức "
 "hoặc trên 16M."
 
-#: lib/utility.php:921
+#: lib/utility.php:922
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -19008,7 +19008,7 @@ msgstr ""
 "Bạn có thể thấy mức tiêu thụ dự kiến của các bảng Performance Booster trong "
 "Bảng điều khiển -&gt; Tiện ích hệ thống -&gt; Xem Trạng thái tăng."
 
-#: lib/utility.php:927
+#: lib/utility.php:928
 #, fuzzy
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
@@ -19017,7 +19017,7 @@ msgstr ""
 "Khi thực hiện các truy vấn con, có kích thước bảng tạm thời lớn hơn, hãy giữ "
 "các bảng tạm thời đó trong bộ nhớ."
 
-#: lib/utility.php:933
+#: lib/utility.php:934
 #, fuzzy
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
@@ -19026,7 +19026,7 @@ msgstr ""
 "Khi thực hiện các phép nối, nếu chúng ở dưới kích thước này, chúng sẽ được "
 "giữ trong bộ nhớ và không bao giờ được ghi vào một tệp tạm thời."
 
-#: lib/utility.php:938
+#: lib/utility.php:939
 #, fuzzy, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -19041,7 +19041,7 @@ msgstr ""
 "hiện đang tắt, bạn có thể di chuyển đến mỗi bộ lưu trữ tệp bằng cách bật "
 "tính năng và sau đó chạy câu lệnh thay đổi trên tất cả các bảng InnoDB."
 
-#: lib/utility.php:943
+#: lib/utility.php:944
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -19052,7 +19052,7 @@ msgstr ""
 "innodb_file_format thành Barracuda. Cài đặt này sẽ cho phép các chỉ mục dài "
 "hơn quan trọng đối với các bảng Cacti nhất định."
 
-#: lib/utility.php:949
+#: lib/utility.php:950
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -19069,7 +19069,7 @@ msgstr ""
 "hệ thống của bạn, nhưng yêu cầu của bạn sẽ thay đổi tùy thuộc vào kích thước "
 "hệ thống của bạn."
 
-#: lib/utility.php:955
+#: lib/utility.php:956
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -19078,7 +19078,7 @@ msgstr ""
 "Với bộ lưu trữ loại SSD hiện đại, thao tác này thực sự làm suy giảm ổ đĩa "
 "nhanh hơn và thêm 50% phí trên tất cả các hoạt động ghi."
 
-#: lib/utility.php:960
+#: lib/utility.php:961
 #, fuzzy
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
@@ -19087,7 +19087,7 @@ msgstr ""
 "Đây là nơi siêu dữ liệu được lưu trữ. Nếu bạn có nhiều bảng, sẽ rất hữu ích "
 "khi tăng cái này."
 
-#: lib/utility.php:965
+#: lib/utility.php:966
 #, fuzzy
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
@@ -19096,7 +19096,16 @@ msgstr ""
 "Các truy vấn giả không nên để cơ sở dữ liệu ngoại tuyến với người khác. Giết "
 "các truy vấn này trước khi chúng giết hệ thống của bạn."
 
-#: lib/utility.php:975
+#: lib/utility.php:971
+#, fuzzy
+msgid ""
+"Maximum I/O performance happens when you use the O_DIRECT method to flush "
+"pages."
+msgstr ""
+"Hiệu suất I / O tối đa xảy ra khi bạn sử dụng phương pháp O_DIRECT để xóa "
+"trang."
+
+#: lib/utility.php:981
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -19105,7 +19114,7 @@ msgstr ""
 "Đặt giá trị này thành 2 có nghĩa là bạn sẽ xóa tất cả các giao dịch mỗi giây "
 "thay vì tại cam kết. Điều này cho phép %s thực hiện viết ít thường xuyên hơn."
 
-#: lib/utility.php:980
+#: lib/utility.php:986
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
@@ -19114,7 +19123,7 @@ msgstr ""
 "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io là lợi thế cho các ứng "
 "dụng có đặc tính io cao."
 
-#: lib/utility.php:988
+#: lib/utility.php:994
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -19125,7 +19134,7 @@ msgstr ""
 "định là 1 giây, nhưng trong các hệ thống I / O cao, cài đặt giá trị lớn hơn "
 "1 có thể cho phép I / O của đĩa được tuần tự hơn"
 
-#: lib/utility.php:993
+#: lib/utility.php:999
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
@@ -19134,7 +19143,7 @@ msgstr ""
 "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io đọc là lợi thế cho các "
 "ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:998
+#: lib/utility.php:1004
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
@@ -19143,7 +19152,7 @@ msgstr ""
 "Với lưu trữ loại SSD hiện đại, việc có nhiều luồng io ghi là lợi thế cho các "
 "ứng dụng có đặc tính io cao."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1010
 #, fuzzy, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -19156,50 +19165,81 @@ msgstr ""
 "dụng kích thước nhóm chia cho 128MB. Tiếp tục sử dụng phương trình này tối "
 "đa 64."
 
-#: lib/utility.php:1012
+#: lib/utility.php:1016
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 200 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 100000 can be used."
+msgstr ""
+"Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu bạn có ổ cứng vật lý, hãy "
+"sử dụng 200 * số lượng ổ đĩa hoạt động trong mảng. Nếu sử dụng NVMe hoặc "
+"PCIe Flash, có thể sử dụng số lượng lớn hơn nhiều tới 100000."
+
+#: lib/utility.php:1022
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 2000 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 200000 can be used."
+msgstr ""
+"Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu bạn có ổ đĩa cứng vật lý, "
+"hãy sử dụng 2000 * số lượng ổ đĩa hoạt động trong mảng. Nếu sử dụng NVMe "
+"hoặc PCIe Flash, có thể sử dụng số lượng lớn hơn nhiều tới 200000."
+
+#: lib/utility.php:1028
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion. Otherwise, do not set this "
+"setting."
+msgstr ""
+"Nếu bạn có đĩa SSD, hãy sử dụng đề xuất này. Nếu không, không đặt cài đặt "
+"này."
+
+#: lib/utility.php:1036
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "%s Điều chỉnh"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "Lưu ý: Nhiều thay đổi dưới đây yêu cầu khởi động lại cơ sở dữ liệu"
 
-#: lib/utility.php:1019
+#: lib/utility.php:1043
 msgid "Variable"
 msgstr "Biến thể"
 
-#: lib/utility.php:1020
+#: lib/utility.php:1044
 #, fuzzy
 msgid "Current Value"
 msgstr "Giá trị hiện tại"
 
-#: lib/utility.php:1022
+#: lib/utility.php:1046
 #, fuzzy
 msgid "Recommended Value"
 msgstr "Giá trị đề xuất"
 
-#: lib/utility.php:1023
+#: lib/utility.php:1047
 msgid "Comments"
 msgstr "Bình luận"
 
-#: lib/utility.php:1387
+#: lib/utility.php:1411
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s là phiên bản tối thiểu"
 
-#: lib/utility.php:1389
+#: lib/utility.php:1413
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "Giới hạn bộ nhớ tối thiểu %s MB"
 
-#: lib/utility.php:1391
+#: lib/utility.php:1415
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Tối thiểu %sm thời gian thực hiện"
 
-#: lib/utility.php:1393
+#: lib/utility.php:1417
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Một múi giờ hợp lệ phù hợp với MySQL và hệ thống"

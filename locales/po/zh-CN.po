@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-10 11:18-0400\n"
-"PO-Revision-Date: 2019-03-10 11:42-0400\n"
+"POT-Creation-Date: 2019-03-10 13:25-0400\n"
+"PO-Revision-Date: 2019-03-10 13:54-0400\n"
 "Last-Translator: SFQAS\n"
 "Language-Team: sfqas <sfqas@163.com>\n"
 "Language: zh_CN\n"
@@ -13097,7 +13097,7 @@ msgid "User Community"
 msgstr "社区"
 
 #: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 msgid "Documentation"
 msgstr "文档"
 
@@ -15844,7 +15844,7 @@ msgstr "已创建图形: %s"
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "ERROR: 白名单验证失败.请检查数据输入方法"
 
-#: lib/utility.php:836
+#: lib/utility.php:837
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
 "to choose. Make sure you run the very latest release though which fixes a "
@@ -15855,13 +15855,13 @@ msgstr ""
 "运行的是最新的版本,它们修复了一个长期存在的底层网络问题,那个问题会导致spine "
 "遭遇很多可靠性问题."
 
-#: lib/utility.php:848 lib/utility.php:878
+#: lib/utility.php:849 lib/utility.php:879
 #, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "建议在任何版本大于5.1的 %s 中启用InnoDB."
 
-#: lib/utility.php:861
+#: lib/utility.php:862
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8_general_ci collation type as some characters take more than a "
@@ -15875,7 +15875,7 @@ msgstr ""
 "库排序规则进行修改,再重新安装Cacti.如果您的Cacti 已经运行并且已投入生产,如需"
 "支持其他语言,请参考互联网上的有关说明,转换数据库和表的排序规则."
 
-#: lib/utility.php:867
+#: lib/utility.php:868
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8 character set as some characters take more than a single byte. If "
@@ -15889,7 +15889,7 @@ msgstr ""
 "库排序规则进行修改,再重新安装Cacti.如果您的Cacti 已经运行并且已投入生产,如需"
 "支持其他语言,请参考互联网上的有关说明,转换数据库和表的排序规则."
 
-#: lib/utility.php:890
+#: lib/utility.php:891
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8mb4_unicode_ci collation type as some characters take more than a "
@@ -15898,7 +15898,7 @@ msgstr ""
 "当Cacti 用于非英语的其它语言环境时, 数据库使用utf8mb4_general_ci 排序规则非常"
 "重要,因为某些字符的值不止一个字节."
 
-#: lib/utility.php:896
+#: lib/utility.php:897
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8mb4 character set as some characters take more than a single byte."
@@ -15906,7 +15906,7 @@ msgstr ""
 "当Cacti 用于非英语的其它语言环境时,数据库使用utf8mb4 字符集非常重要,因为某些"
 "字符会使用不止一个字节."
 
-#: lib/utility.php:905
+#: lib/utility.php:906
 #, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -15919,14 +15919,14 @@ msgstr ""
 "total_connections = total_processes *(total_threads + script_servers + 1),那"
 "么您必须留下用于用户连接的空间,这取决于并发登录的帐户数."
 
-#: lib/utility.php:910
+#: lib/utility.php:911
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
 "using innodb_file_per_table."
 msgstr ""
 "使用innodb_file_per_table 时,使用更大的表缓存意味着更少的文件打开/关闭操作."
 
-#: lib/utility.php:915
+#: lib/utility.php:916
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
 "the main server to the remote pollers.  Therefore, keep this value at or "
@@ -15935,7 +15935,7 @@ msgstr ""
 "通过远程poller 功能,大量数据将从主服务器同步到远程poller. 因此,请将此值保持在"
 "16M 或以上."
 
-#: lib/utility.php:921
+#: lib/utility.php:922
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -15958,20 +15958,20 @@ msgstr ""
 "其他存储引擎。 您可以在Console - > System Utilities - > View Boost Status下看"
 "到Performance Booster表的预期消耗量。"
 
-#: lib/utility.php:927
+#: lib/utility.php:928
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
 "temporary tables in memory."
 msgstr "执行具有较大临时表大小的子查询时,请将这些临时表保存在内存中."
 
-#: lib/utility.php:933
+#: lib/utility.php:934
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
 "memory and never written to a temporary file."
 msgstr ""
 "在执行连接时,如果它们低于此大小,它们将被保存在内存中,并且不会写入临时文件."
 
-#: lib/utility.php:938
+#: lib/utility.php:939
 #, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -15984,7 +15984,7 @@ msgstr ""
 "得更简单.如果您尚未开启此功能, 可以通过在所有InnoDB 表上运行alter 语句来开启"
 "此功能."
 
-#: lib/utility.php:943
+#: lib/utility.php:944
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -15994,7 +15994,7 @@ msgstr ""
 "使用innodb_file_per_table时，将innodb_file_format设置为Barracuda非常重要。此"
 "设置将允许更长的索引对某些Cacti表很重要。"
 
-#: lib/utility.php:949
+#: lib/utility.php:950
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -16008,7 +16008,7 @@ msgstr ""
 "大到足以容纳内存中的表和索引。 检查/ var / lib / mysql / cacti目录的大小将有"
 "助于确定此值。 我们建议您的系统总内存的25％，但是您的要求会因系统大小而异。"
 
-#: lib/utility.php:955
+#: lib/utility.php:956
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -16017,19 +16017,26 @@ msgstr ""
 "使用现代SSD类型的存储器，此操作实际上会更快速地降低磁盘，并在所有写入操作中增"
 "加50％的开销。"
 
-#: lib/utility.php:960
+#: lib/utility.php:961
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
 "useful to increase this."
 msgstr "这是元数据存储的地方. 如果您有很多表,那么增加这个值会很有用."
 
-#: lib/utility.php:965
+#: lib/utility.php:966
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
 "these queries before they kill your system."
 msgstr "恶意查询不应该让数据库脱机给其他人. 请在杀死您的系统之前杀死这些查询."
 
-#: lib/utility.php:975
+#: lib/utility.php:971
+#, fuzzy
+msgid ""
+"Maximum I/O performance happens when you use the O_DIRECT method to flush "
+"pages."
+msgstr "使用O_DIRECT方法刷新页面时，会发生最大I / O性能。"
+
+#: lib/utility.php:981
 #, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -16038,14 +16045,14 @@ msgstr ""
 "将此值设置为2 意味着您将每秒刷新所有事务,而不是在提交时刷新. 这使得 %s 可以减"
 "少写入次数."
 
-#: lib/utility.php:980
+#: lib/utility.php:986
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
 "applications with high io characteristics."
 msgstr ""
 "采用现代SSD 类型的存储器,具有多个IO 线程对于具有高IO 特性的应用是有利的."
 
-#: lib/utility.php:988
+#: lib/utility.php:994
 #, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -16055,21 +16062,21 @@ msgstr ""
 "从 %s %s开始,您可以控制 %s将交易刷新到磁盘的频率. 默认值是1秒,但是在高I/O系统"
 "中设置为大于1的值可以允许磁盘I/O更有序"
 
-#: lib/utility.php:993
+#: lib/utility.php:999
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
 "advantageous for applications with high io characteristics."
 msgstr ""
 "采用现代SSD类型的存储器,具有多个读取IO线程对于具有高IO特性的应用是有利的."
 
-#: lib/utility.php:998
+#: lib/utility.php:1004
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
 "advantageous for applications with high io characteristics."
 msgstr ""
 "采用现代SSD类型的存储器,具有多个写入IO线程对于具有高IO特性的应用是有利的."
 
-#: lib/utility.php:1004
+#: lib/utility.php:1010
 #, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -16081,47 +16088,74 @@ msgstr ""
 "innodb_buffer_pool小于1GB时,您应该使用池大小除以128MB. 继续使用这个等式,最大"
 "值为64."
 
-#: lib/utility.php:1012
+#: lib/utility.php:1016
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 200 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 100000 can be used."
+msgstr ""
+"如果您有SSD磁盘，请使用此建议。如果您有物理硬盘驱动器，请使用200 *阵列中的活"
+"动驱动器数量。如果使用NVMe或PCIe闪存，可以使用高达100000的更大数字。"
+
+#: lib/utility.php:1022
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion.  If you have physical hard "
+"drives, use 2000 * the number of active drives in the array.  If using NVMe "
+"or PCIe Flash, much larger numbers as high as 200000 can be used."
+msgstr ""
+"如果您有SSD磁盘，请使用此建议。如果您有物理硬盘驱动器，请使用2000 *阵列中的活"
+"动驱动器数量。如果使用NVMe或PCIe Flash，则可以使用高达200000的更大数字。"
+
+#: lib/utility.php:1028
+#, fuzzy
+msgid ""
+"If you have SSD disks, use this suggestion. Otherwise, do not set this "
+"setting."
+msgstr "如果您有SSD磁盘，请使用此建议。否则，请勿设置此设置。"
+
+#: lib/utility.php:1036
 #, php-format
 msgid "%s Tuning"
 msgstr "%s 调优"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1036
 msgid "Note: Many changes below require a database restart"
 msgstr "注意: 下面的许多修改要求重启数据库才能生效"
 
-#: lib/utility.php:1019
+#: lib/utility.php:1043
 msgid "Variable"
 msgstr "变量"
 
-#: lib/utility.php:1020
+#: lib/utility.php:1044
 msgid "Current Value"
 msgstr "当前值"
 
-#: lib/utility.php:1022
+#: lib/utility.php:1046
 msgid "Recommended Value"
 msgstr "推荐值"
 
-#: lib/utility.php:1023
+#: lib/utility.php:1047
 msgid "Comments"
 msgstr "注释"
 
-#: lib/utility.php:1387
+#: lib/utility.php:1411
 #, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s 是最低版本要求"
 
-#: lib/utility.php:1389
+#: lib/utility.php:1413
 #, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "至少 %s MB 内存"
 
-#: lib/utility.php:1391
+#: lib/utility.php:1415
 #, php-format
 msgid "A minimum of %s m execution time"
 msgstr "至少 %s m 执行时间"
 
-#: lib/utility.php:1393
+#: lib/utility.php:1417
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "与MySQL和系统匹配的有效时区"
