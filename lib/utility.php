@@ -810,6 +810,7 @@ function utilities_get_mysql_recommendations() {
 	// MySQL/MariaDB Important Variables
 	// Assume we are successfully, until we aren't!
 	$result = DB_STATUS_SUCCESS;
+
 	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
 
 	$memInfo = utilities_get_system_memory();
@@ -963,6 +964,11 @@ function utilities_get_mysql_recommendations() {
 			'value'   => '50',
 			'measure' => 'ge',
 			'comment' => __('Rogue queries should not for the database to go offline to others.  Kill these queries before they kill your system.')
+			),
+		'innodb_flush_method' => array(
+			'value'   => 'O_DIRECT',
+			'measure' => 'eq',
+			'comment' => __('Maximum I/O performance happens when you use the O_DIRECT method to flush pages.')
 			)
 	);
 
@@ -1002,6 +1008,24 @@ function utilities_get_mysql_recommendations() {
 					'measure' => 'pinst',
 					'class' => 'warning',
 					'comment' => __('%s will divide the innodb_buffer_pool into memory regions to improve performance.  The max value is 64.  When your innodb_buffer_pool is less than 1GB, you should use the pool size divided by 128MB.  Continue to use this equation upto the max of 64.', $database)
+					),
+				'innodb_io_capacity' => array(
+					'value' => '5000',
+					'measure' => 'ge',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 200 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 100000 can be used.')
+					),
+				'innodb_io_capacity_max' => array(
+					'value' => '10000',
+					'measure' => 'ge',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion.  If you have physical hard drives, use 2000 * the number of active drives in the array.  If using NVMe or PCIe Flash, much larger numbers as high as 200000 can be used.')
+					),
+				'innodb_flush_neighbor_pages' => array(
+					'value' => 'none',
+					'measure' => 'eq',
+					'class' => 'warning',
+					'comment' => __('If you have SSD disks, use this suggestion. Otherwise, do not set this setting.')
 					)
 			);
 
