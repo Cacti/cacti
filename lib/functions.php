@@ -5035,10 +5035,18 @@ function get_rrdtool_version() {
 }
 
 function get_installed_rrdtool_version() {
-	$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool') . ' -v 2>&1'));
+	global $config;
+
+	if ($config['cacti_server_os'] == 'win32') {
+		$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v');
+	} else {
+		$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
+	}
+
 	if (preg_match('/^RRDtool ([0-9.]+)$/', $shell, $matches)) {
 		return $matches[1];
 	}
+
 	return false;
 }
 
