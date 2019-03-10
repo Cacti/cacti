@@ -1587,6 +1587,11 @@ th.sortable {
 	width:1%;
 }
 
+.subTab a {
+	height: 14px;
+	border-bottom: 1px solid #555 !important;
+}
+
 .deleteMarker {
 	color: rgba(0,0,0,0.6);
 	vertical-align: middle;
