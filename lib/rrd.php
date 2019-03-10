@@ -285,7 +285,6 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 		session_write_close();
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-cacti_log(read_config_option('path_rrdtool') . escape_command(" $command_line"));
 			$fp = popen(read_config_option('path_rrdtool') . escape_command(" $command_line"), $pipe_mode);
 			if (!is_resource($fp)) {
 				unset($fp);
