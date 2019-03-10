@@ -713,7 +713,7 @@ while ($poller_runs_completed < $poller_runs) {
 			/* no re-index or Rechache present on this run
 			 * in case, we have more PCOMMANDS than recaching, this has to be moved to poller_commands.php
 			 * but then we'll have to call it each time to make sure, stats are updated */
-			set_config_option('stats_recache_' . $poller_id, 'RecacheTime:0.0 DevicesRecached:0');
+			set_config_option('stats_recache_' . $poller_id, 'Poller:' . $poller_id . ' RecacheTime:0.0 DevicesRecached:0');
 		}
 
 		if ($method == 'spine') {

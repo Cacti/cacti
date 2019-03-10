@@ -172,7 +172,7 @@ if (cacti_sizeof($poller_commands)) {
 /* take time to log performance data */
 $recache = microtime(true);
 
-$recache_stats = sprintf('Poller:%i RecacheTime:%01.4f DevicesRecached:%s',	$poller_id, round($recache - $start, 4), $recached_hosts);
+$recache_stats = sprintf('Poller:%s RecacheTime:%01.4f DevicesRecached:%s',	$poller_id, round($recache - $start, 4), $recached_hosts);
 
 if ($recached_hosts > 0) {
 	cacti_log('STATS: ' . $recache_stats, true, 'RECACHE');

@@ -487,7 +487,7 @@ function template_rrd_add() {
 
 	db_execute_prepared('INSERT IGNORE INTO data_template_rrd
 		(hash, data_template_id, rrd_maximum, rrd_minimum, rrd_heartbeat, data_source_type_id, data_source_name)
-	    VALUES (?, ?, 0, 0, 600, 1, ?)', array($hash, get_request_var('id'), $dsname));
+	    VALUES (?, ?, "U", 0, 600, 1, ?)', array($hash, get_request_var('id'), $dsname));
 
 	$data_template_rrd_id = db_fetch_insert_id();
 
