@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-09 16:31+0100\n"
-"PO-Revision-Date: 2018-12-30 15:51-0500\n"
+"POT-Creation-Date: 2019-03-10 09:38-0400\n"
+"PO-Revision-Date: 2019-03-10 09:47-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: el_GR\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2383 lib/html.php:2313
+#: about.php:29 include/global_arrays.php:2383 lib/html.php:2309
 #, fuzzy
 msgid "About Cacti"
 msgstr "Σχετικά με το Cacti"
@@ -194,7 +194,7 @@ msgstr ""
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:267 host_templates.php:281 host_templates.php:292
 #: host_templates.php:341 host_templates.php:404 lib/clog_webapi.php:219
-#: lib/html.php:2344 lib/html_form.php:1248 lib/html_form.php:1260
+#: lib/html.php:2340 lib/html_form.php:1248 lib/html_form.php:1260
 #: lib/html_form.php:1271 lib/html_utility.php:224 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:445 pollers.php:454 pollers.php:463 pollers.php:472
@@ -228,7 +228,7 @@ msgstr "Ακύρωση"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:267 host_templates.php:281
 #: host_templates.php:292 host_templates.php:342 host_templates.php:405
-#: lib/clog_webapi.php:220 lib/html.php:2343 lib/html_reports.php:304
+#: lib/clog_webapi.php:220 lib/html.php:2339 lib/html_reports.php:304
 #: lib/html_utility.php:224 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:445 pollers.php:454
 #: pollers.php:463 pollers.php:472 sites.php:317 tree.php:647 tree.php:656
@@ -435,7 +435,7 @@ msgstr "Λεπτομέρειες"
 msgid "Items"
 msgstr "Στοιχεία"
 
-#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1854
+#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1850
 #: lib/html_reports.php:1174
 msgid "Preview"
 msgstr "Προεπισκόπηση"
@@ -510,7 +510,7 @@ msgstr "Ταίριασμα των γραφημάτων"
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:818 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
 #: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1395
 #: data_templates.php:845 gprint_presets.php:263 graph_templates.php:657
 #: graph_view.php:586 graphs.php:1877 graphs_new.php:389 host.php:1501
@@ -536,22 +536,22 @@ msgstr "Αναζήτηση"
 #: aggregate_graphs.php:1447 color_templates.php:561 graph_view.php:452
 #: graph_view.php:645 graph_view.php:694 graphs.php:1883 graphs.php:1996
 #: host.php:1565 include/global_arrays.php:864 include/global_arrays.php:1057
-#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1568
-#: lib/html.php:1570 lib/html.php:1648 lib/html_graph.php:209
+#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1564
+#: lib/html.php:1566 lib/html.php:1644 lib/html_graph.php:209
 #: lib/html_tree.php:1005 lib/html_tree.php:1316 tree.php:787 tree.php:1985
 #: user_admin.php:1004 user_admin.php:1270 user_admin.php:2621
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
 #, fuzzy
 msgid "Graphs"
-msgstr "Γραφικές παραστάσεις"
+msgstr "Γραφήματα"
 
 #: aggregate_graphs.php:1101 aggregate_graphs.php:1451
 #: aggregate_templates.php:557 automation_devices.php:540
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:828 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:813
 #: data_queries.php:1287 data_source_profiles.php:844
 #: data_source_profiles.php:965 data_sources.php:1405 data_templates.php:871
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:649
@@ -582,13 +582,13 @@ msgstr "Μέρος του συνόλου"
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:747 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:825
 #: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1345
 #: data_templates.php:889 gprint_presets.php:291 graph_templates.php:685
 #: graph_view.php:594 graphs.php:1868 graphs_new.php:378 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
-#: lib/clog_webapi.php:509 lib/html.php:1390 lib/html_filter.php:81
+#: lib/clog_webapi.php:509 lib/html.php:1386 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1540 lib/html_tree.php:992
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:756 sites.php:447 tree.php:1921
@@ -600,7 +600,7 @@ msgstr "Πήγαινε"
 
 #: aggregate_graphs.php:1119 aggregate_graphs.php:1463
 #: automation_devices.php:476 automation_snmp.php:682
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:747
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
 #: data_input.php:825 data_queries.php:1299 data_source_profiles.php:862
 #: data_sources.php:1345 data_templates.php:889 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:594 graphs.php:1868
@@ -623,7 +623,7 @@ msgstr "Ρύθμιση / Ανανέωση φίλτρων"
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:748 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:826
 #: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1346
 #: data_templates.php:890 gprint_presets.php:292 graph_templates.php:686
 #: graph_view.php:595 graphs.php:1869 graphs_new.php:379 host.php:1492
@@ -640,7 +640,7 @@ msgid "Clear"
 msgstr "Καθαρισμός"
 
 #: aggregate_graphs.php:1120 aggregate_graphs.php:1464 automation_snmp.php:683
-#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:748
+#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
 #: data_input.php:826 data_queries.php:1300 data_source_profiles.php:863
 #: data_sources.php:1346 data_templates.php:890 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:595 graphs.php:1869
@@ -667,7 +667,7 @@ msgstr "Τίτλος γραφήματος"
 
 #: aggregate_graphs.php:1200 aggregate_graphs.php:1528
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:273 data_queries.php:1383 data_sources.php:1529
+#: data_debug.php:346 data_queries.php:1383 data_sources.php:1529
 #: data_templates.php:1000 graph_templates.php:793 graphs.php:2018
 #: host.php:1559 host_templates.php:838 lib/api_automation.php:280
 #: pollers.php:830 sites.php:521 tree.php:1975 user_admin.php:1012
@@ -702,16 +702,17 @@ msgstr "Όχι"
 
 #: aggregate_graphs.php:1218 aggregate_templates.php:660
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_debug.php:554 data_input.php:925
-#: data_queries.php:1403 data_source_profiles.php:1004
-#: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1598 data_sources.php:1599 data_templates.php:1025
-#: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
-#: include/global_settings.php:752 include/global_settings.php:1469
-#: lib/api_automation.php:1433 lib/installer.php:1694 lib/installer.php:1722
-#: lib/installer.php:3179 links.php:403 tree.php:2013 tree.php:2014
-#: user_admin.php:2344 user_domains.php:762 user_domains.php:766
-#: user_group_admin.php:1929 vdef.php:906
+#: color_templates.php:578 data_debug.php:629 data_debug.php:634
+#: data_debug.php:639 data_input.php:925 data_queries.php:1403
+#: data_source_profiles.php:1004 data_source_profiles.php:1005
+#: data_source_profiles.php:1006 data_sources.php:1598 data_sources.php:1599
+#: data_templates.php:1025 gprint_presets.php:414 graph_templates.php:814
+#: host_templates.php:857 include/global_settings.php:752
+#: include/global_settings.php:1469 lib/api_automation.php:1433
+#: lib/installer.php:1694 lib/installer.php:1722 lib/installer.php:3179
+#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2344
+#: user_domains.php:762 user_domains.php:766 user_group_admin.php:1929
+#: vdef.php:906
 msgid "Yes"
 msgstr "Ναι"
 
@@ -726,7 +727,7 @@ msgstr "Δεν βρέθηκαν γραφήματα"
 msgid "Aggregate Graphs"
 msgstr "Συγκεντρωτικά γραφήματα"
 
-#: aggregate_graphs.php:1425 data_debug.php:721 data_sources.php:1319
+#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1319
 #: graph_view.php:607 graphs.php:1833 graphs.php:2007 host.php:1472
 #: include/global_settings.php:502 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
@@ -739,12 +740,12 @@ msgstr "Πρότυπο"
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
-#: data_debug.php:725 data_sources.php:1323 graphs.php:1837
+#: data_debug.php:953 data_sources.php:1323 graphs.php:1837
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
 #: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2240
-#: lib/html.php:1932 lib/html.php:1955 lib/html.php:1993
+#: lib/html.php:1928 lib/html.php:1951 lib/html.php:1989
 #: lib/html_reports.php:1519 managers.php:483 managers.php:736
 #: user_admin.php:2603 user_admin.php:2796 user_group_admin.php:2176
 #: user_group_admin.php:2284 utilities.php:692 utilities.php:1399
@@ -756,7 +757,7 @@ msgstr "Οποιοδήποτε"
 #: aggregate_graphs.php:1430 aggregate_graphs.php:1542
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
-#: automation_tree_rules.php:949 data_debug.php:726 data_sources.php:899
+#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:899
 #: data_sources.php:1324 data_sources.php:1584 data_templates.php:1027
 #: graphs.php:1467 graphs.php:1476 graphs.php:1838 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
@@ -775,7 +776,7 @@ msgstr "Οποιοδήποτε"
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
 #: lib/api_automation.php:1075 lib/auth.php:2243 lib/html.php:192
-#: lib/html.php:1933 lib/html.php:1953 lib/html.php:1994 lib/html_form.php:329
+#: lib/html.php:1929 lib/html.php:1949 lib/html.php:1990 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
 #: settings.php:439 settings.php:465 user_admin.php:2604 user_admin.php:2797
@@ -983,7 +984,7 @@ msgstr ""
 "Cacti."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
-#: include/global_settings.php:1379 lib/functions.php:3820
+#: include/global_settings.php:1379 lib/functions.php:3803
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
@@ -1100,7 +1101,7 @@ msgstr "Είσοδος χρήστη"
 msgid "Enter your Username and Password below"
 msgstr "Εισαγάγετε το όνομα χρήστη και τον κωδικό σας παρακάτω"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3821
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3804
 msgid "Password"
 msgstr "Κωδικός"
 
@@ -1149,19 +1150,19 @@ msgid "User Account Details"
 msgstr "Στοιχεία λογαριασμού χρήστη"
 
 #: auth_profile.php:291 include/global_arrays.php:736
-#: include/global_settings.php:2117 lib/html.php:1814 lib/html.php:1836
-#: lib/html.php:2305
+#: include/global_settings.php:2117 lib/html.php:1810 lib/html.php:1832
+#: lib/html.php:2301
 #, fuzzy
 msgid "Tree View"
 msgstr "Προβολή δέντρου"
 
-#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1821
-#: lib/html.php:1845 lib/html.php:2306
+#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1817
+#: lib/html.php:1841 lib/html.php:2302
 msgid "List View"
 msgstr "Προβολή Λίστας"
 
-#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1828
-#: lib/html.php:2307
+#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1824
+#: lib/html.php:2303
 #, fuzzy
 msgid "Preview View"
 msgstr "Προβολή προεπισκόπησης"
@@ -1293,8 +1294,8 @@ msgstr "Προστέθηκε στο Cacti"
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:897
 #: graph_view.php:700 graphs.php:1472 include/global_arrays.php:825
 #: include/global_arrays.php:874 include/global_arrays.php:1642
-#: lib/api_automation.php:424 lib/functions.php:3815 lib/html.php:1928
-#: lib/html.php:1960 lib/html_reports.php:658 utilities.php:1532
+#: lib/api_automation.php:424 lib/functions.php:3798 lib/html.php:1924
+#: lib/html.php:1956 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
 msgstr "Συσκευή"
 
@@ -1388,7 +1389,7 @@ msgstr "SNMP"
 
 #: automation_devices.php:272 automation_devices.php:491
 #: automation_graph_rules.php:776 automation_networks.php:1079
-#: automation_tree_rules.php:817 data_debug.php:279 data_debug.php:773
+#: automation_tree_rules.php:817 data_debug.php:352 data_debug.php:1001
 #: data_sources.php:1370 data_templates.php:1005 host.php:684 host.php:783
 #: host.php:1507 host.php:1577 lib/api_automation.php:165
 #: lib/api_automation.php:278 lib/api_automation.php:571
@@ -1439,7 +1440,7 @@ msgstr "Εξαγωγή"
 msgid "Export to a file"
 msgstr "Εξαγωγή σε αρχείο"
 
-#: automation_devices.php:483 data_debug.php:749 lib/clog_webapi.php:210
+#: automation_devices.php:483 data_debug.php:977 lib/clog_webapi.php:210
 #: lib/clog_webapi.php:511 managers.php:748
 msgid "Purge"
 msgstr "Διαγραφή"
@@ -1452,8 +1453,8 @@ msgstr "Κατεβάστε τις ανακαλυφθείσες συσκευές"
 #: automation_devices.php:650 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: data_debug.php:485 host.php:1639 lib/functions.php:4191
-#: lib/functions.php:4195 lib/html.php:1133 pollers.php:885 user_admin.php:2339
+#: data_debug.php:558 host.php:1639 lib/functions.php:4174
+#: lib/functions.php:4178 lib/html.php:1133 pollers.php:885 user_admin.php:2339
 #: utilities.php:445 utilities.php:825 utilities.php:2149 utilities.php:2246
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
@@ -1561,7 +1562,7 @@ msgstr "Επιλογή κανόνων [νέο]"
 #: automation_tree_rules.php:544
 #, fuzzy
 msgid "Don't Show"
-msgstr "Μην εμφανίζετε"
+msgstr "Μην εμφανίζεται"
 
 #: automation_graph_rules.php:555
 #, fuzzy
@@ -1605,7 +1606,7 @@ msgstr "Ερώτημα δεδομένων"
 #: automation_graph_rules.php:781 automation_graph_rules.php:904
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
-#: automation_tree_rules.php:960 data_debug.php:779 data_sources.php:1375
+#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1375
 #: host.php:1512 include/global_arrays.php:788 include/global_form.php:1467
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1520
@@ -1620,14 +1621,14 @@ msgstr "Ενεργοποιημένο"
 
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
-#: automation_tree_rules.php:960 data_debug.php:780 data_sources.php:1376
+#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1376
 #: data_templates.php:1029 host.php:1513 include/global_arrays.php:787
 #: include/global_arrays.php:1362 include/global_arrays.php:1650
 #: include/global_settings.php:378 include/global_settings.php:1209
 #: include/global_settings.php:1223 include/global_settings.php:1235
 #: include/global_settings.php:1260 include/global_settings.php:1274
 #: include/global_settings.php:1334 include/global_settings.php:1962
-#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2369
+#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2365
 #: lib/html_reports.php:1521 lib/html_reports.php:1659 lib/html_utility.php:879
 #: links.php:499 managers.php:243 managers.php:598 pollers.php:47
 #: user_admin.php:1137 user_domains.php:411 user_group_admin.php:691
@@ -2490,7 +2491,7 @@ msgid "Idle"
 msgstr "Αεργος"
 
 #: automation_networks.php:1146 include/global_arrays.php:1038
-#: lib/html_reports.php:1654
+#: lib/html_reports.php:1654 plugins/thold_functions.php:74
 msgid "Never"
 msgstr "Ποτέ"
 
@@ -2499,7 +2500,7 @@ msgstr "Ποτέ"
 msgid "No Networks Found"
 msgstr "Δεν βρέθηκαν δίκτυα"
 
-#: automation_networks.php:1197 data_debug.php:794 graph.php:362
+#: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:541 lib/html_graph.php:306
 #: lib/html_tree.php:1102 lib/html_tree.php:1123 utilities.php:1128
 #: utilities.php:2036
@@ -2643,7 +2644,7 @@ msgstr "Έκδοση"
 msgid "Community"
 msgstr "Κοινότητα"
 
-#: automation_snmp.php:507 lib/functions.php:3816
+#: automation_snmp.php:507 lib/functions.php:3799
 msgid "Port"
 msgstr "Θύρα"
 
@@ -2690,7 +2691,7 @@ msgstr "Πρωτόκολλο Priv"
 #: automation_snmp.php:516
 #, fuzzy
 msgid "Context"
-msgstr "Συμφραζόμενα"
+msgstr "Γενικό πλαίσιο"
 
 #: automation_snmp.php:517 data_queries.php:1138 utilities.php:1722
 msgid "Action"
@@ -3521,130 +3522,170 @@ msgstr "Έγγραφα προτύπων χρώματος [επεξεργασία
 msgid "Color Template Items [new Report Item: %s]"
 msgstr "Έγγραφα προτύπων χρώματος [νέο στοιχείο αναφοράς: %s]"
 
-#: data_debug.php:29
+#: data_debug.php:31
 #, fuzzy
 msgid "Run Check"
 msgstr "Εκτέλεση ελέγχου"
 
-#: data_debug.php:30
+#: data_debug.php:32
 #, fuzzy
 msgid "Delete Check"
 msgstr "Διαγραφή ελέγχου"
 
-#: data_debug.php:257 data_queries.php:729 data_sources.php:960
-#: data_templates.php:574 graphs_items.php:440 include/global_arrays.php:876
-#: include/global_form.php:926 lib/api_aggregate.php:1592 lib/html.php:1052
+#: data_debug.php:51
+#, fuzzy
+msgid "Data Source debug started."
+msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων"
+
+#: data_debug.php:54
+#, fuzzy
+msgid "Data Source debug received an invalid Data Source ID."
+msgstr ""
+"Η επιδιόρθωση πηγής δεδομένων έλαβε ένα μη έγκυρο αναγνωριστικό προέλευσης "
+"δεδομένων."
+
+#: data_debug.php:63
+#, fuzzy
+msgid "All RRDfile repairs succeeded."
+msgstr "Όλες οι επισκευές RRDfile πέτυχαν."
+
+#: data_debug.php:65
+#, fuzzy
+msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
+msgstr ""
+"Μία ή περισσότερες επισκευές RRDfile απέτυχαν. Δείτε το αρχείο καταγραφής "
+"Cacti για σφάλματα."
+
+#: data_debug.php:73
+#, fuzzy
+msgid "Automatic Data Source debug being rerun after repair."
+msgstr ""
+"Η αυτόματη εντοπισμός σφαλμάτων πηγής δεδομένων επαναλαμβάνεται μετά την "
+"επισκευή."
+
+#: data_debug.php:77
+#, fuzzy
+msgid "Data Source repair received an invalid Data Source ID."
+msgstr ""
+"Η επιδιόρθωση της προέλευσης δεδομένων έλαβε ένα μη έγκυρο αναγνωριστικό "
+"προέλευσης δεδομένων."
+
+#: data_debug.php:330 data_debug.php:807 data_queries.php:729
+#: data_sources.php:960 data_templates.php:574 graphs_items.php:440
+#: include/global_arrays.php:876 include/global_form.php:926
+#: lib/api_aggregate.php:1592 lib/html.php:1052
 #, fuzzy
 msgid "Data Source"
 msgstr "Πηγή δεδομένων"
 
-#: data_debug.php:259
+#: data_debug.php:332
 #, fuzzy
 msgid "The Data Source to Debug"
 msgstr "Η πηγή δεδομένων για την επιδιόρθωση"
 
-#: data_debug.php:262 utilities.php:670 utilities.php:795
+#: data_debug.php:335 utilities.php:670 utilities.php:795
 msgid "User"
 msgstr "Χρήστης"
 
-#: data_debug.php:264
+#: data_debug.php:337
 #, fuzzy
 msgid "The User who requested the Debug."
 msgstr "Ο χρήστης που ζήτησε το Debug."
 
-#: data_debug.php:267
+#: data_debug.php:340
 #, fuzzy
 msgid "Started"
 msgstr "Ξεκίνα"
 
-#: data_debug.php:270
+#: data_debug.php:343
 #, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "Η ημερομηνία που ξεκίνησε το Debug."
 
-#: data_debug.php:276
+#: data_debug.php:349
 #, fuzzy
 msgid "The Data Source internal ID."
 msgstr "Το εσωτερικό αναγνωριστικό πηγής δεδομένων."
 
-#: data_debug.php:282
+#: data_debug.php:355
 #, fuzzy
 msgid "The Status of the Data Source Debug Check."
 msgstr "Η κατάσταση του ελέγχου σφαλμάτων πηγής δεδομένων."
 
-#: data_debug.php:285 lib/installer.php:2059 lib/installer.php:2090
+#: data_debug.php:358 lib/installer.php:2059 lib/installer.php:2090
 msgid "Writable"
 msgstr "Εγγράψιμος"
 
-#: data_debug.php:288
+#: data_debug.php:361
 #, fuzzy
 msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr ""
 "Προσδιορίζει εάν ο συλλέκτης δεδομένων ή ο ιστότοπος έχουν πρόσβαση στην "
 "εγγραφή."
 
-#: data_debug.php:291
+#: data_debug.php:364
 msgid "Exists"
 msgstr "Υπάρχει"
 
-#: data_debug.php:294
+#: data_debug.php:367
 #, fuzzy
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr ""
 "Προσδιορίζει αν η πηγή δεδομένων βρίσκεται στην προσωρινή μνήμη Poller."
 
-#: data_debug.php:297 data_sources.php:1547 data_templates.php:1029
+#: data_debug.php:370 data_sources.php:1547 data_templates.php:1029
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "Ενεργό"
 
-#: data_debug.php:300
+#: data_debug.php:373
 #, fuzzy
 msgid "Determines if the Data Source is Enabled."
 msgstr "Προσδιορίζει εάν είναι ενεργοποιημένη η πηγή δεδομένων."
 
-#: data_debug.php:303
+#: data_debug.php:376
 #, fuzzy
 msgid "RRD Match"
 msgstr "Αγώνας RRD"
 
-#: data_debug.php:306
+#: data_debug.php:379
 #, fuzzy
 msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr ""
 "Προσδιορίζει αν το αρχείο RRD αντιστοιχεί στο πρότυπο προέλευσης δεδομένων."
 
-#: data_debug.php:309
+#: data_debug.php:382
 #, fuzzy
 msgid "Valid Data"
 msgstr "Ισχύοντα δεδομένα"
 
-#: data_debug.php:312
+#: data_debug.php:385
 #, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "Καθορίζει αν το αρχείο RRD έχει πάρει καλά πρόσφατα δεδομένα."
 
-#: data_debug.php:315
+#: data_debug.php:388
 #, fuzzy
 msgid "RRD Updated"
 msgstr "RRD Ενημερώθηκε"
 
-#: data_debug.php:318
+#: data_debug.php:391
 #, fuzzy
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "Προσδιορίζει αν έχει καταχωρηθεί σωστά το αρχείο RRD."
 
-#: data_debug.php:321 data_debug.php:627
-msgid "Issue"
-msgstr "Πρόβλημα"
-
-#: data_debug.php:324
+#: data_debug.php:394 data_debug.php:558 data_debug.php:737
 #, fuzzy
-msgid "Any summary issues found for the Data Source."
+msgid "Issues"
+msgstr "Θέματα"
+
+#: data_debug.php:397
+#, fuzzy
+msgid "Summary of issues found for the Data Source."
 msgstr ""
 "Οποιαδήποτε τυχόν περιληπτικά ζητήματα βρέθηκαν για την Πηγή δεδομένων."
 
-#: data_debug.php:437 data_debug.php:824 data_sources.php:1401
+#: data_debug.php:510 data_debug.php:1052 data_sources.php:1401
 #: data_sources.php:1513 host.php:1571 include/global_arrays.php:865
 #: include/global_arrays.php:910 include/global_arrays.php:2071
 #: lib/api_automation.php:282 user_admin.php:1270 user_group_admin.php:970
@@ -3653,129 +3694,208 @@ msgstr ""
 msgid "Data Sources"
 msgstr "Πηγές δεδομένων"
 
-#: data_debug.php:485
-#, fuzzy
-msgid "Issues"
-msgstr "Θέματα"
-
-#: data_debug.php:488 data_debug.php:790
+#: data_debug.php:561 data_debug.php:1018
 #, fuzzy
 msgid "Not Debugging"
 msgstr "Δεν Debugging"
 
-#: data_debug.php:504
+#: data_debug.php:577
 #, fuzzy
 msgid "No Checks"
 msgstr "Δεν υπάρχουν έλεγχοι"
 
-#: data_debug.php:565
+#: data_debug.php:634 data_debug.php:639
+#, fuzzy
+msgid "Not Checked Yet"
+msgstr "Δεν υπάρχουν έλεγχοι"
+
+#: data_debug.php:657
+#, fuzzy
+msgid "Issues found!  Waiting on RRDfile update"
+msgstr "Εντοπίστηκαν ζητήματα! Αναμονή για την ενημέρωση του RRDfile"
+
+#: data_debug.php:660
+#, fuzzy
+msgid "No Initial found!  Waiting on RRDfile update"
+msgstr "Δεν βρέθηκε αρχικά! Αναμονή για την ενημέρωση του RRDfile"
+
+#: data_debug.php:664
+#, fuzzy
+msgid "Waiting on analysis and RRDfile update"
+msgstr "Το ενημερωμένο αρχείο RRD ενημερώθηκε;"
+
+#: data_debug.php:671
 #, fuzzy
 msgid "RRDfile Owner"
 msgstr "Ιδιοκτήτης RRDfile"
 
-#: data_debug.php:570
+#: data_debug.php:676
 #, fuzzy
 msgid "Website runs as"
 msgstr "Ο ιστότοπος λειτουργεί ως"
 
-#: data_debug.php:574
+#: data_debug.php:681
 #, fuzzy
 msgid "Poller runs as"
 msgstr "Ο Poller τρέχει ως"
 
-#: data_debug.php:578
+#: data_debug.php:686
 #, fuzzy
 msgid "Is RRA Folder writeable by poller?"
 msgstr "Είναι ο φάκελος RRA εγγράψιμος από το poller;"
 
-#: data_debug.php:583
+#: data_debug.php:691
 #, fuzzy
 msgid "Is RRDfile writeable by poller?"
 msgstr "Είναι το RRDfile εγγράψιμο από poller;"
 
-#: data_debug.php:588
+#: data_debug.php:696
 #, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "Υπάρχει το αρχείο RRD;"
 
-#: data_debug.php:592
+#: data_debug.php:701
 #, fuzzy
 msgid "Is the Data Source set as Active?"
 msgstr "Η πηγή δεδομένων είναι ενεργή;"
 
-#: data_debug.php:596
+#: data_debug.php:706
 #, fuzzy
 msgid "Did the poller receive valid data?"
 msgstr "Το poller έλαβε έγκυρα δεδομένα;"
 
-#: data_debug.php:601
+#: data_debug.php:711
 #, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "Το ενημερωμένο αρχείο RRD ενημερώθηκε;"
 
-#: data_debug.php:607
+#: data_debug.php:717
 #, fuzzy
 msgid "First Check TimeStamp"
 msgstr "Πρώτα έλεγχος χρόνου"
 
-#: data_debug.php:612
+#: data_debug.php:722
 #, fuzzy
 msgid "Second Check TimeStamp"
 msgstr "Δεύτερο χρονικό σημείο ελέγχου"
 
-#: data_debug.php:617
+#: data_debug.php:727
 #, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "Μπορέσαμε να μετατρέψουμε τον τίτλο;"
 
-#: data_debug.php:622
+#: data_debug.php:732
 #, fuzzy
-msgid "Does the RRA Profile match the RRDfile structure?"
-msgstr "Το προφίλ RRA ταιριάζει με τη δομή RRDfile;"
+msgid "Data Source matches the RRDfile?"
+msgstr "Η πηγή δεδομένων δεν ερωτήθηκε"
 
-#: data_debug.php:633
+#: data_debug.php:746
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
+msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων [ %s]"
+
+#: data_debug.php:746 data_debug.php:748
 #, fuzzy
-msgid "Data Source Troubleshooter"
-msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων"
+msgid "Refresh Now"
+msgstr "Ανανέωση"
 
-#: data_debug.php:637
+#: data_debug.php:748
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
+msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων [ %s]"
+
+#: data_debug.php:750
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
+msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων [ %s]"
+
+#: data_debug.php:750
+#, fuzzy
+msgid "Rerun Analysis"
+msgstr "Ανάλυση αναστροφής"
+
+#: data_debug.php:755
 msgid "Check"
 msgstr "Ελεγχος"
 
-#: data_debug.php:638 include/global_form.php:984 lib/rrd.php:2796
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2804
 #: utilities.php:2475
 msgid "Value"
 msgstr "Αξία"
 
-#: data_debug.php:639
+#: data_debug.php:757
 msgid "Results"
 msgstr "Αποτελέσματα"
 
-#: data_debug.php:650
+#: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
 msgstr "Ορισμός ως Προεπιλογή"
 
-#: data_debug.php:710
+#: data_debug.php:803 data_debug.php:854
+#, fuzzy
+msgid "Data Source Repair Recommendations"
+msgstr "Πεδία προέλευσης δεδομένων"
+
+#: data_debug.php:808
+msgid "Issue"
+msgstr "Πρόβλημα"
+
+#: data_debug.php:820
 #, fuzzy, php-format
-msgid "Data Source Troubleshooter [%s]"
+msgid "For attrbitute '%s', issue found '%s'"
+msgstr "Για το attrbitute ' %s', βρέθηκε το θέμα ' %s'"
+
+#: data_debug.php:835
+#, fuzzy
+msgid "Apply Suggested Fixes"
+msgstr "Επαναπροσδιορισμός προτεινόμενων ονομάτων"
+
+#: data_debug.php:835
+#, fuzzy, php-format
+msgid "Repair Steps [ %s ]"
+msgstr "Βήματα επιδιόρθωσης [ %s]"
+
+#: data_debug.php:837
+#, fuzzy
+msgid "Repair Steps [ Run Fix from Command Line ]"
+msgstr "Βήματα επιδιόρθωσης [Εκτέλεση επιδιόρθωσης από γραμμή εντολών]"
+
+#: data_debug.php:840
+#, fuzzy
+msgid "Command"
+msgstr "Εντολή"
+
+#: data_debug.php:856
+#, fuzzy
+msgid "Waiting on Data Source Check to Complete"
+msgstr "Αναμονή για την Πηγή δεδομένων Έλεγχος για ολοκλήρωση"
+
+#: data_debug.php:938
+#, fuzzy
+msgid "All Devices"
+msgstr "Διαθέσιμες συσκευές"
+
+#: data_debug.php:938
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ %s ]"
 msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων [ %s]"
 
-#: data_debug.php:710 data_sources.php:1308
+#: data_debug.php:938 data_sources.php:1308
 #, fuzzy
 msgid "No Device"
 msgstr "Συσκευή"
 
-#: data_debug.php:749
+#: data_debug.php:977
 #, fuzzy
 msgid "Delete All Checks"
 msgstr "Διαγραφή ελέγχου"
 
-#: data_debug.php:757 data_sources.php:1354 data_templates.php:851
+#: data_debug.php:985 data_sources.php:1354 data_templates.php:851
 msgid "Profile"
 msgstr "Προφίλ"
 
-#: data_debug.php:761 data_debug.php:777 data_debug.php:788
+#: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1358 data_sources.php:1374 data_sources.php:1385
 #: data_templates.php:855 graphs_new.php:355 lib/clog_webapi.php:523
 #: lib/html.php:191 lib/html_reports.php:625 plugins.php:376 settings.php:419
@@ -3784,11 +3904,11 @@ msgstr "Προφίλ"
 msgid "All"
 msgstr "Όλα"
 
-#: data_debug.php:778 utilities.php:696 utilities.php:833
+#: data_debug.php:1006 utilities.php:696 utilities.php:833
 msgid "Failed"
 msgstr "Απέτυχε"
 
-#: data_debug.php:784 data_debug.php:789
+#: data_debug.php:1012 data_debug.php:1017
 #, fuzzy
 msgid "Debugging"
 msgstr "Debugging"
@@ -4104,11 +4224,15 @@ msgid "Data Template - %s"
 msgstr "Πρότυπο δεδομένων - %s"
 
 #: data_queries.php:750
+#, fuzzy
 msgid ""
 "If this Graph Template requires the Data Template Data Source to the left, "
 "select the correct XML output column and then to enable the mapping either "
 "check or toggle here."
 msgstr ""
+"Εάν αυτό το πρότυπο γραφήματος απαιτεί την προέλευση δεδομένων προτύπου "
+"δεδομένων στα αριστερά, επιλέξτε τη σωστή στήλη εξόδου XML και, στη "
+"συνέχεια, για να ενεργοποιήσετε τη χαρτογράφηση, ελέγξτε ή εναλλαγή εδώ."
 
 #: data_queries.php:764
 #, fuzzy
@@ -4381,7 +4505,7 @@ msgstr "Βήματα"
 
 #: data_source_profiles.php:568 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2330
-#: lib/rrd.php:2846 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2858 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "Σειρές"
 
@@ -5198,7 +5322,7 @@ msgstr "Εξαγωγή CSV"
 msgid "Click to view just this Graph in Real-time"
 msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 
-#: graph.php:230 lib/html.php:2302
+#: graph.php:230 lib/html.php:2298
 #, fuzzy
 msgid "Utility View"
 msgstr "Προβολή βοηθητικού προγράμματος"
@@ -5600,12 +5724,12 @@ msgstr "Λειτουργία προεπισκόπησης"
 msgid "Add Selected Graphs to Report"
 msgstr "Προσθήκη επιλεγμένων γραφημάτων στην αναφορά"
 
-#: graph_view.php:894 lib/html.php:2341
+#: graph_view.php:894 lib/html.php:2337
 msgid "Ok"
 msgstr "Εντάξει"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1725
-#: include/global_form.php:1972 lib/html.php:1711 links.php:380
+#: include/global_form.php:1972 lib/html.php:1707 links.php:380
 msgid "Title"
 msgstr "Τίτλος"
 
@@ -6064,7 +6188,7 @@ msgstr "Νέα γραφήματα για [Όλες οι συσκευές]"
 msgid "New Graphs for None Host Type"
 msgstr "Νέα γραφήματα για κανένα τύπο κεντρικού υπολογιστή"
 
-#: graphs_new.php:316 lib/html.php:2300
+#: graphs_new.php:316 lib/html.php:2296
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "Οι ρυθμίσεις φίλτρου αποθηκεύτηκαν"
@@ -6348,12 +6472,12 @@ msgstr "Επικοινωνία με τη συσκευή"
 msgid "Data Query Debug Information"
 msgstr "Στοιχεία εντοπισμού σφαλμάτων δεδομένων ερωτήματος"
 
-#: host.php:662 lib/functions.php:2889 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2872 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Αντιγραφή"
 
-#: host.php:663 templates_import.php:154
+#: host.php:663 templates_import.php:160
 msgid "Hide"
 msgstr "Απόκρυψη"
 
@@ -6424,7 +6548,7 @@ msgstr "[% d Στοιχεία,% d Γραμμές]"
 msgid "Fail"
 msgstr "Αποτυχία"
 
-#: host.php:845 lib/functions.php:3830 lib/functions.php:3835
+#: host.php:845 lib/functions.php:3813 lib/functions.php:3818
 msgid "Success"
 msgstr "Επιτυχία"
 
@@ -6488,7 +6612,7 @@ msgstr "SNMP Desc"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1437 include/global_settings.php:510 lib/html.php:1989
+#: host.php:1437 include/global_settings.php:510 lib/html.php:1985
 msgid "Site"
 msgstr "Ιστοσελίδα"
 
@@ -6509,7 +6633,7 @@ msgid "Recovering"
 msgstr "Ανάκτηση"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/rrd.php:2819 lib/rrd.php:2829 plugins.php:180
+#: lib/html_utility.php:895 lib/rrd.php:2829 lib/rrd.php:2841 plugins.php:180
 #: plugins.php:184 plugins.php:203 user_admin.php:796 utilities.php:2145
 msgid "Unknown"
 msgstr "Άγνωστο"
@@ -6829,6 +6953,7 @@ msgid "Login Again"
 msgstr "Είσοδος ξανά"
 
 #: include/auth.php:263 permission_denied.php:43 permission_denied.php:50
+#: plugins/thold_functions.php:4015
 #, fuzzy
 msgid "Permission Denied"
 msgstr "Η άδεια αρνήθηκε"
@@ -7511,7 +7636,7 @@ msgstr "Δυτικά"
 #: include/global_arrays.php:492
 #, fuzzy
 msgid "East"
-msgstr "Ανατολή"
+msgstr "Ανατολικός"
 
 #: include/global_arrays.php:497
 msgid "Left"
@@ -7525,7 +7650,7 @@ msgstr "Δεξιά"
 msgid "Justified"
 msgstr "Πλήρης στοίχιση"
 
-#: include/global_arrays.php:500 lib/html.php:2367
+#: include/global_arrays.php:500 lib/html.php:2363
 msgid "Center"
 msgstr "Κέντρο"
 
@@ -7814,13 +7939,13 @@ msgstr "Φυσική παραγγελία"
 msgid "Numeric Ordering"
 msgstr "Αριθμητική παραγγελία"
 
-#: include/global_arrays.php:823 lib/rrd.php:2762
+#: include/global_arrays.php:823 lib/rrd.php:2770
 msgid "Header"
 msgstr "Κεφαλίδα"
 
 #: include/global_arrays.php:824 include/global_arrays.php:875
 #: include/global_arrays.php:1474 include/global_arrays.php:1641
-#: lib/html.php:2356
+#: lib/html.php:2352
 msgid "Graph"
 msgstr "Γραφικό Σχήμα"
 
@@ -8008,12 +8133,12 @@ msgid "Export Templates"
 msgstr "Εξαγωγή προτύπων"
 
 #: include/global_arrays.php:899 include/global_arrays.php:921
-#: include/global_arrays.php:939 lib/plugins.php:949
+#: include/global_arrays.php:939 lib/plugins.php:951
 msgid "Configuration"
 msgstr "Παραμετροποίηση"
 
 #: include/global_arrays.php:900 include/global_arrays.php:922
-#: lib/html.php:2123 lib/html.php:2371
+#: lib/html.php:2119 lib/html.php:2367
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
@@ -8999,7 +9124,7 @@ msgid "List Mode"
 msgstr "Λειτουργία λίστας"
 
 #: include/global_arrays.php:1849 include/global_arrays.php:1855
-#: lib/functions.php:2522 lib/html.php:1559 lib/html.php:1636 links.php:345
+#: lib/functions.php:2522 lib/html.php:1555 lib/html.php:1632 links.php:345
 #: user_admin.php:1691 user_group_admin.php:1394
 #, fuzzy
 msgid "Console"
@@ -9161,7 +9286,7 @@ msgid "Export Results"
 msgstr "Εξαγωγή Αποτελεσμάτων"
 
 #: include/global_arrays.php:2407 include/global_arrays.php:2437
-#: lib/html.php:1580 lib/html.php:1582 lib/html.php:1661
+#: lib/html.php:1576 lib/html.php:1578 lib/html.php:1657
 msgid "Reporting"
 msgstr "Αναφορές"
 
@@ -9216,12 +9341,14 @@ msgid "hrs"
 msgstr "ώρες"
 
 #: include/global_arrays.php:2620
+#, fuzzy
 msgid "mins"
-msgstr ""
+msgstr "λεπτά"
 
 #: include/global_arrays.php:2621
+#, fuzzy
 msgid "secs"
-msgstr ""
+msgstr "δευτερόλεπτα"
 
 #: include/global_arrays.php:2635 lib/api_device.php:1067
 msgid "hours"
@@ -9434,7 +9561,7 @@ msgstr ""
 "Αυτή η τιμή πολλαπλασιάζεται με το συντελεστή αρχείων X για να προσδιοριστεί "
 "το πραγματικό χρονικό διάστημα."
 
-#: include/global_form.php:196 lib/rrd.php:2849
+#: include/global_form.php:196 lib/rrd.php:2861
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X-Files Factor"
@@ -10354,7 +10481,7 @@ msgstr "Κανάλι αδιαφάνειας / άλφα"
 msgid "The opacity/alpha channel of the color."
 msgstr "Το κανάλι αδιαφάνειας / άλφα του χρώματος."
 
-#: include/global_form.php:955 lib/rrd.php:2845
+#: include/global_form.php:955 lib/rrd.php:2857
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "Λειτουργία ενοποίησης"
@@ -11343,7 +11470,7 @@ msgstr "Ημερομηνία"
 msgid "Visual"
 msgstr "Οπτικό"
 
-#: include/global_settings.php:44 lib/functions.php:3819 lib/functions.php:3824
+#: include/global_settings.php:44 lib/functions.php:3802 lib/functions.php:3807
 msgid "Authentication"
 msgstr "Πιστοποίηση"
 
@@ -11386,12 +11513,12 @@ msgstr "Γραμματοσειρές γραφήματος"
 msgid "PHP Mail() Function"
 msgstr "Λειτουργία PHP Mail ()"
 
-#: include/global_settings.php:91 lib/functions.php:3802
+#: include/global_settings.php:91 lib/functions.php:3785
 #, fuzzy
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:92 lib/functions.php:3807
+#: include/global_settings.php:92 lib/functions.php:3790
 #, fuzzy
 msgid "SMTP"
 msgstr "SMTP"
@@ -11667,10 +11794,13 @@ msgid "Data Source Tracing"
 msgstr "Χρήση πηγών δεδομένων"
 
 #: include/global_settings.php:278
+#, fuzzy
 msgid ""
 "A developer only option to trace the creation of Data Sources mainly around "
 "checks for uniqueness"
 msgstr ""
+"Μια επιλογή για προγραμματιστές μόνο για τον εντοπισμό της δημιουργίας των "
+"Πηγών Δεδομένων κυρίως γύρω από ελέγχους για μοναδικότητα"
 
 #: include/global_settings.php:283
 #, fuzzy
@@ -11926,7 +12056,7 @@ msgstr ""
 msgid "Simple"
 msgstr "Απλό"
 
-#: include/global_settings.php:423 lib/html.php:2358
+#: include/global_settings.php:423 lib/html.php:2354
 msgid "Advanced"
 msgstr "Προχωρημένος"
 
@@ -12145,39 +12275,50 @@ msgid "Default Interface Speed"
 msgstr "Προεπιλεγμένος τύπος γράφου"
 
 #: include/global_settings.php:541
+#, fuzzy
 msgid ""
 "If Cacti can not determine the interface speed due to either ifSpeed or "
 "ifHighSpeed not being set or being zero, what maximum value do you wish on "
 "the resulting RRDfiles."
 msgstr ""
+"Εάν ο Cacti δεν μπορεί να καθορίσει την ταχύτητα διασύνδεσης λόγω είτε "
+"ifSpeed είτε ifHighSpeed δεν έχει οριστεί ή είναι μηδέν, ποια μέγιστη τιμή "
+"επιθυμείτε στα προκύπτοντα αρχεία RRD."
 
 #: include/global_settings.php:545
+#, fuzzy
 msgid "100 Mbps Ethernet"
-msgstr ""
+msgstr "100 Mbps Ethernet"
 
 #: include/global_settings.php:546
+#, fuzzy
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 Gbps Ethernet"
 
 #: include/global_settings.php:547
+#, fuzzy
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10 Gbps Ethernet"
 
 #: include/global_settings.php:548
+#, fuzzy
 msgid "25 Gbps Ethernet"
-msgstr ""
+msgstr "25 Gbps Ethernet"
 
 #: include/global_settings.php:549
+#, fuzzy
 msgid "40 Gbps Ethernet"
-msgstr ""
+msgstr "40 Gbps Ethernet"
 
 #: include/global_settings.php:550
+#, fuzzy
 msgid "56 Gbps Ethernet"
-msgstr ""
+msgstr "56 Gbps Ethernet"
 
 #: include/global_settings.php:551
+#, fuzzy
 msgid "100 Gbps Ethernet"
-msgstr ""
+msgstr "100 Gbps Ethernet"
 
 #: include/global_settings.php:554
 #, fuzzy
@@ -13747,7 +13888,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Επιλογές Sendmail"
 
-#: include/global_settings.php:1498 lib/functions.php:3802
+#: include/global_settings.php:1498 lib/functions.php:3785
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "Διαδρομή Sendmail"
@@ -14374,7 +14515,7 @@ msgstr "Τυπική απόκλιση"
 msgid "Variance Based w/Outliers Removed"
 msgstr "Αλλαγές βασισμένες σε παραλλαγές w / Outliers"
 
-#: include/global_settings.php:1864 lib/html.php:2083
+#: include/global_settings.php:1864 lib/html.php:2079
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Μέθοδος αντικατάστασης"
@@ -14392,16 +14533,16 @@ msgstr ""
 "την ακίδα με ένα &#39;NaN&#39;. Το τελευταίο αντικαθιστά την ακίδα με την "
 "τελευταία γνωστή καλή τιμή που βρέθηκε."
 
-#: include/global_settings.php:1869 lib/html.php:2079
+#: include/global_settings.php:1869 lib/html.php:2075
 msgid "Average"
 msgstr "Μέτριο"
 
-#: include/global_settings.php:1870 lib/html.php:2080
+#: include/global_settings.php:1870 lib/html.php:2076
 #, fuzzy
 msgid "NaN's"
 msgstr "ΝαN&#39;s"
 
-#: include/global_settings.php:1871 lib/html.php:2081
+#: include/global_settings.php:1871 lib/html.php:2077
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Τελευταίο γνωστό καλό"
@@ -14432,7 +14573,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "% d τυπικές αποκλίσεις"
 
-#: include/global_settings.php:1892 lib/html.php:2095
+#: include/global_settings.php:1892 lib/html.php:2091
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Ποσοστό απόκλισης"
@@ -14768,7 +14909,7 @@ msgstr "1 Στήλη"
 #: lib/html_tree.php:1028
 #, fuzzy, php-format
 msgid "%d Columns"
-msgstr "% d στήλες"
+msgstr "Στήλες"
 
 #: include/global_settings.php:2136
 #, fuzzy
@@ -15038,16 +15179,23 @@ msgstr ""
 "JavaScript."
 
 #: install/install.php:83
+#, fuzzy
 msgid ""
 "FATAL: We are unable to continue with this installation. In order to install "
 "Cacti, PHP must be at version 5.4 or later."
 msgstr ""
+"FATAL: Δεν μπορούμε να συνεχίσουμε με αυτήν την εγκατάσταση. Για να "
+"εγκαταστήσετε το Cacti, η PHP πρέπει να είναι στην έκδοση 5.4 ή "
+"μεταγενέστερη."
 
 #: install/install.php:86
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php"
 "\">JavaScript Object Notation</a>."
 msgstr ""
+"Δείτε το εγχειρίδιο PHP: <a href=\"http://php.net/manual/en/book.json.php"
+"\">Σημείωση του αντικειμένου JavaScript</a> ."
 
 #: install/install.php:86
 #, fuzzy
@@ -15055,14 +15203,20 @@ msgid "The php-json module must also be installed."
 msgstr "Η έκδοση του RRDtool που έχετε εγκαταστήσει."
 
 #: install/install.php:90
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini."
 "disable-functions\">Disable Functions</a>."
 msgstr ""
+"Δείτε το εγχειρίδιο PHP: <a href=\"http://php.net/manual/en/ini.core.php#ini."
+"disable-functions\">Απενεργοποίηση λειτουργιών</a> ."
 
 #: install/install.php:90
+#, fuzzy
 msgid "The shell_exec() and/or exec() functions are currently blocked."
 msgstr ""
+"Οι λειτουργίες shell_exec () και / ή exec () είναι προς το παρόν "
+"αποκλεισμένες."
 
 #: lib/aggregate.php:51
 #, fuzzy
@@ -15139,7 +15293,7 @@ msgstr "Συσκευές αντιστοίχισης"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070
 #: lib/clog_webapi.php:519 lib/html_reports.php:603 lib/html_reports.php:1344
-#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2791
+#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2799
 #: utilities.php:339 utilities.php:1106 utilities.php:2475
 msgid "Type"
 msgstr "Τύπος"
@@ -15173,7 +15327,7 @@ msgstr ""
 msgid "Matching Objects [ %s ]"
 msgstr "Αντιστοιχία αντικειμένων [ %s]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:884 plugins/thold_functions.php:128
 #, fuzzy
 msgid "Device Status"
 msgstr "Κατάσταση συσκευής"
@@ -15330,7 +15484,7 @@ msgstr "Συνεδρία"
 msgid "Host"
 msgstr "Διακομιστής"
 
-#: lib/api_device.php:1060
+#: lib/api_device.php:1060 plugins/thold_functions.php:253
 #, fuzzy
 msgid "System:"
 msgstr "Σύστημα"
@@ -15353,8 +15507,8 @@ msgstr "Τοποθεσία:"
 msgid "Contact:"
 msgstr "Επαφή"
 
-#: lib/api_device.php:1101 lib/functions.php:3833 lib/functions.php:3835
-#: lib/functions.php:3839
+#: lib/api_device.php:1101 lib/functions.php:3816 lib/functions.php:3818
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Ping Results"
 msgstr "Αποτελέσματα Ping"
@@ -15941,17 +16095,22 @@ msgid "Unknown Index"
 msgstr "Άγνωστος ευρετήριο"
 
 #: lib/data_query.php:2108
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
 "checkbox to its right"
 msgstr ""
+"Πρέπει να επιλέξετε μια στήλη εξόδου XML για την προέλευση δεδομένων ' %s' "
+"και να αλλάξετε το πλαίσιο ελέγχου στα δεξιά της"
 
 #: lib/data_query.php:2114
+#, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
 "Graph Template"
 msgstr ""
+"Το πρότυπο γραφήματος δεν χρησιμοποιεί πρότυπα δεδομένων. Διορθώστε το "
+"πρότυπο γραφήματος"
 
 #: lib/database.php:1482
 #, fuzzy
@@ -16006,7 +16165,7 @@ msgstr "Το αρχείο RRD δεν είναι εγγράψιμο από τον
 
 #: lib/dsdebug.php:279
 #, fuzzy
-msgid "RRDfile does not match Data Profile"
+msgid "RRDfile does not match Data Source"
 msgstr "Το αρχείο RRD δεν ταιριάζει με το Προφίλ δεδομένων"
 
 #: lib/dsdebug.php:284
@@ -16052,12 +16211,12 @@ msgstr "Είσοδος ως τακτικός χρήστης"
 msgid "guest"
 msgstr "άτομο"
 
-#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2310
+#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2306
 #, fuzzy
 msgid "User Community"
 msgstr "Κοινότητα χρηστών"
 
-#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2311
+#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
 #: lib/utility.php:1012
 msgid "Documentation"
 msgstr "Τεκμηρίωση"
@@ -16086,7 +16245,7 @@ msgstr "Μη βασισμένο σε ερωτήματα"
 msgid "Link %s"
 msgstr "Συνδέσεις"
 
-#: lib/functions.php:3324
+#: lib/functions.php:3307
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -16096,27 +16255,27 @@ msgstr ""
 "χρησιμοποιείτε το σύνδεσμο <i>Δοκιμαστική αλληλογραφία</i> , ορίστε τη "
 "ρύθμιση <b>E-mail ειδοποίησης</b> ."
 
-#: lib/functions.php:3766
+#: lib/functions.php:3749
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Ο έλεγχος ταυτότητας απέτυχε: %s"
 
-#: lib/functions.php:3770
+#: lib/functions.php:3753
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO απέτυχε: %s"
 
-#: lib/functions.php:3773
+#: lib/functions.php:3756
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Η σύνδεση απέτυχε: %s"
 
-#: lib/functions.php:3776
+#: lib/functions.php:3759
 #, fuzzy
 msgid "SMTP error: "
 msgstr "Σφάλμα SMTP:"
 
-#: lib/functions.php:3789
+#: lib/functions.php:3772
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -16125,80 +16284,80 @@ msgstr ""
 "Αυτό είναι ένα μήνυμα δοκιμής που δημιουργήθηκε από το Cacti. Αυτό το μήνυμα "
 "εστάλη για να ελέγξει τη διαμόρφωση των ρυθμίσεων αλληλογραφίας σας."
 
-#: lib/functions.php:3790
+#: lib/functions.php:3773
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "Οι ρυθμίσεις email σας ρυθμίζονται αυτήν τη στιγμή ως εξής"
 
-#: lib/functions.php:3791
+#: lib/functions.php:3774
 msgid "Method"
 msgstr "Μέθοδος"
 
-#: lib/functions.php:3793
+#: lib/functions.php:3776
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Έλεγχος διαμόρφωσης ... <br>"
 
-#: lib/functions.php:3800
+#: lib/functions.php:3783
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "Η τάξη Mailer της PHP"
 
-#: lib/functions.php:3806
+#: lib/functions.php:3789
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Μέθοδος: SMTP"
 
-#: lib/functions.php:3821
+#: lib/functions.php:3804
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Δεν εμφανίζεται για λόγους ασφάλειας"
 
-#: lib/functions.php:3822
+#: lib/functions.php:3805
 msgid "Security"
 msgstr "Ασφάλεια"
 
-#: lib/functions.php:3830
+#: lib/functions.php:3813
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Αποτελέσματα Ping:"
 
-#: lib/functions.php:3839
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Bypassed"
 msgstr "Παράκαμψη"
 
-#: lib/functions.php:3847
+#: lib/functions.php:3830
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Δημιουργία κειμένου μηνύματος ..."
 
-#: lib/functions.php:3850
+#: lib/functions.php:3833
 #, fuzzy
 msgid "Sending Message..."
 msgstr "Αποστολή μηνύματος ..."
 
-#: lib/functions.php:3854
+#: lib/functions.php:3837
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Μήνυμα δοκιμής κάκτων"
 
-#: lib/functions.php:3856
+#: lib/functions.php:3839
 msgid "Success!"
 msgstr "Επιτυχία!"
 
-#: lib/functions.php:3859
+#: lib/functions.php:3842
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Μήνυμα δεν έχει σταλεί λόγω βλάβης του ping."
 
-#: lib/functions.php:4453 lib/functions.php:4514 poller.php:343 poller.php:456
-#: poller.php:518 poller.php:541 poller.php:682
+#: lib/functions.php:4436 lib/functions.php:4497 poller.php:323 poller.php:436
+#: poller.php:498 poller.php:521 poller.php:662
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Προειδοποίηση συστήματος Cacti"
 
-#: lib/functions.php:4453 lib/functions.php:4514
+#: lib/functions.php:4436 lib/functions.php:4497
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -16207,17 +16366,17 @@ msgstr ""
 "Το plugin Cacti έχει απενεργοποιηθεί %s λόγω του ακόλουθου σφάλματος: %s! "
 "Δείτε το αρχείο καταγραφής Cacti για περισσότερες λεπτομέρειες."
 
-#: lib/functions.php:4890 lib/functions.php:4892
+#: lib/functions.php:4873 lib/functions.php:4875
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:4890
+#: lib/functions.php:4873
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Έκδοση %s %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4875
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -16241,7 +16400,7 @@ msgstr "Ερώτημα δεδομένων:"
 msgid "CSV Export of Graph Data"
 msgstr "CSV Εξαγωγή δεδομένων γραφήματος"
 
-#: lib/html.php:443 lib/html.php:2299
+#: lib/html.php:443 lib/html.php:2295
 #, fuzzy
 msgid "Time Graph View"
 msgstr "Προβολή χρονικού γραφήματος"
@@ -16289,360 +16448,360 @@ msgstr "Alpha%"
 msgid "No Task"
 msgstr "Δεν υπάρχει εργασία"
 
-#: lib/html.php:1380
+#: lib/html.php:1376
 #, fuzzy
 msgid "Choose an action"
 msgstr "Επιλέξτε μια ενέργεια"
 
-#: lib/html.php:1390
+#: lib/html.php:1386
 #, fuzzy
 msgid "Execute Action"
 msgstr "Εκτέλεση ενέργειας"
 
-#: lib/html.php:1589 lib/html.php:1591 lib/html.php:1671 managers.php:41
+#: lib/html.php:1585 lib/html.php:1587 lib/html.php:1667 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Αρχεία καταγραφής"
 
-#: lib/html.php:2087
+#: lib/html.php:2083
 #, fuzzy, php-format
 msgid "%s Standard Deviations"
 msgstr "%s Τυπικές αποκλίσεις"
 
-#: lib/html.php:2089
+#: lib/html.php:2085
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "Τυπικές αποκλίσεις"
 
-#: lib/html.php:2099
+#: lib/html.php:2095
 #, fuzzy, php-format
 msgid "%d Outliers"
 msgstr "% d Απόκριες"
 
-#: lib/html.php:2101
+#: lib/html.php:2097
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "Απόκλιση απόκλισης"
 
-#: lib/html.php:2105
+#: lib/html.php:2101
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d Spikes"
 
-#: lib/html.php:2107
+#: lib/html.php:2103
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "Σκοτώνει ανά RRA"
 
-#: lib/html.php:2113
+#: lib/html.php:2109
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "Καταργήστε το StdDev"
 
-#: lib/html.php:2114
+#: lib/html.php:2110
 #, fuzzy
 msgid "Remove Variance"
 msgstr "Αφαιρέστε την Απόκλιση"
 
-#: lib/html.php:2115
+#: lib/html.php:2111
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "Εύρος πλήρωσης χάσματος"
 
-#: lib/html.php:2116
+#: lib/html.php:2112
 #, fuzzy
 msgid "Float Range"
 msgstr "Εύρος πλεύσης"
 
-#: lib/html.php:2118
+#: lib/html.php:2114
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Dry Run StdDev"
 
-#: lib/html.php:2119
+#: lib/html.php:2115
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "Διακύμανση ξηρής λειτουργίας"
 
-#: lib/html.php:2120
+#: lib/html.php:2116
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Σειρά γεμίσματος γεμίσματος ξηρής λειτουργίας"
 
-#: lib/html.php:2121
+#: lib/html.php:2117
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Σειρά πλωτών επιφανειών ξηρής λειτουργίας"
 
-#: lib/html.php:2296 lib/html_filter.php:66
+#: lib/html.php:2292 lib/html_filter.php:66
 #, fuzzy
 msgid "Enter a search term"
 msgstr "Εισαγάγετε έναν όρο αναζήτησης"
 
-#: lib/html.php:2297
+#: lib/html.php:2293
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "Εισαγάγετε μια κανονική έκφραση"
 
-#: lib/html.php:2298
+#: lib/html.php:2294
 #, fuzzy
 msgid "No file selected"
 msgstr "Κανένα επιλεγμένο αρχείο"
 
-#: lib/html.php:2301 lib/html.php:2314
+#: lib/html.php:2297 lib/html.php:2310
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill Αποτελέσματα"
 
-#: lib/html.php:2303
+#: lib/html.php:2299
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "Κάντε κλικ για να δείτε μόνο αυτό το γράφημα σε πραγματικό χρόνο"
 
-#: lib/html.php:2304
+#: lib/html.php:2300
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "Κάντε ξανά κλικ για να πάρετε αυτό το γράφημα από το Realtime"
 
-#: lib/html.php:2308
+#: lib/html.php:2304
 #, fuzzy
 msgid "Cacti Home"
 msgstr "Cacti Home"
 
-#: lib/html.php:2309
+#: lib/html.php:2305
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "Cacti Project Page"
 
-#: lib/html.php:2312
+#: lib/html.php:2308
 msgid "Report a bug"
 msgstr "Αναφορά ενός σφάλματος"
 
-#: lib/html.php:2315
+#: lib/html.php:2311
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "Κάντε κλικ για εμφάνιση / απόκρυψη φίλτρου"
 
-#: lib/html.php:2316
+#: lib/html.php:2312
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "Διαγραφή τρέχοντος φίλτρου"
 
-#: lib/html.php:2317
+#: lib/html.php:2313
 #, fuzzy
 msgid "Clipboard"
 msgstr "Πρόχειρο"
 
-#: lib/html.php:2318
+#: lib/html.php:2314
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "Αναγνωριστικό πρόχειρου"
 
-#: lib/html.php:2319
+#: lib/html.php:2315
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "Η λειτουργία αντιγραφής δεν είναι διαθέσιμη αυτή τη στιγμή"
 
-#: lib/html.php:2320
+#: lib/html.php:2316
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "Αποτυχία εύρεσης δεδομένων για αντιγραφή!"
 
-#: lib/html.php:2321
+#: lib/html.php:2317
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "Το Πρόχειρο έχει ενημερωθεί"
 
-#: lib/html.php:2322
+#: lib/html.php:2318
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr ""
 "Λυπούμαστε, το πρόχειρο σας δεν ήταν δυνατό να ενημερωθεί αυτή τη στιγμή"
 
-#: lib/html.php:2326
+#: lib/html.php:2322
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "Το μήκος της διεύθυνσης πρόσβασης πληρεί ελάχιστο όριο 8 χαρακτήρων"
 
-#: lib/html.php:2327
+#: lib/html.php:2323
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "Η φράση πρόσβασης είναι πολύ μικρή"
 
-#: lib/html.php:2328
+#: lib/html.php:2324
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "Η φράση πρόσβασης είναι πολύ μικρή"
 
-#: lib/html.php:2329
+#: lib/html.php:2325
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "Η φράση πρόσβασης είναι πολύ μικρή και δεν ταιριάζει"
 
-#: lib/html.php:2330
+#: lib/html.php:2326
 #, fuzzy
 msgid "Passphrases match"
 msgstr "Ταίριασμα φράσεων"
 
-#: lib/html.php:2331
+#: lib/html.php:2327
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "Οι φράσεις πρόσβασης δεν ταιριάζουν"
 
-#: lib/html.php:2332
+#: lib/html.php:2328
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr ""
 "Λυπούμαστε, δεν ήταν δυνατή η επεξεργασία της τελευταίας σας ενέργειας."
 
-#: lib/html.php:2333
+#: lib/html.php:2329
 msgid "Error:"
 msgstr "Σφάλμα :"
 
-#: lib/html.php:2334
+#: lib/html.php:2330
 msgid "Reason:"
 msgstr "Αιτία:"
 
-#: lib/html.php:2335
+#: lib/html.php:2331
 #, fuzzy
 msgid "Action failed"
 msgstr "Η ενέργεια απέτυχε"
 
-#: lib/html.php:2336
+#: lib/html.php:2332
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "Η απάντηση στην τελευταία ενέργεια ήταν απροσδόκητη."
 
-#: lib/html.php:2337
+#: lib/html.php:2333
 msgid "Some Actions failed"
 msgstr "Ορισμένες ενέργειες απέτυχαν"
 
-#: lib/html.php:2338
+#: lib/html.php:2334
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr ""
 "Σημειώστε ότι δεν μπορούσαμε να επεξεργαστούμε όλες τις ενέργειές σας. Τα "
 "στοιχεία είναι παρακάτω."
 
-#: lib/html.php:2339
+#: lib/html.php:2335
 #, fuzzy
 msgid "Operation successful"
 msgstr "Λειτουργία επιτυχής"
 
-#: lib/html.php:2340
+#: lib/html.php:2336
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "Η λειτουργία ήταν επιτυχής. Τα στοιχεία είναι παρακάτω."
 
-#: lib/html.php:2342
+#: lib/html.php:2338
 msgid "Pause"
 msgstr "Παύση"
 
-#: lib/html.php:2345
+#: lib/html.php:2341
 msgid "Zoom In"
 msgstr "Μεγέθυνση"
 
-#: lib/html.php:2346
+#: lib/html.php:2342
 msgid "Zoom Out"
 msgstr "Σμίκρινση"
 
-#: lib/html.php:2347
+#: lib/html.php:2343
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Παράγοντας σμίκρυνσης"
 
-#: lib/html.php:2348
+#: lib/html.php:2344
 #, fuzzy
 msgid "Timestamps"
 msgstr "Χρονοδιακόπτες"
 
-#: lib/html.php:2349
+#: lib/html.php:2345
 #, fuzzy
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2350
+#: lib/html.php:2346
 #, fuzzy
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2351
+#: lib/html.php:2347
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2352
+#: lib/html.php:2348
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2353
+#: lib/html.php:2349
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2354
+#: lib/html.php:2350
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Σμίκρυνση θέσης"
 
-#: lib/html.php:2355
+#: lib/html.php:2351
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "Λειτουργία ζουμ"
 
-#: lib/html.php:2357
+#: lib/html.php:2353
 #, fuzzy
 msgid "Quick"
 msgstr "Γρήγορα"
 
-#: lib/html.php:2359
+#: lib/html.php:2355
 msgid "Open in new tab"
 msgstr "Άνοιγμα σε νέα καρτέλα"
 
-#: lib/html.php:2360
+#: lib/html.php:2356
 #, fuzzy
 msgid "Save graph"
 msgstr "Αποθήκευση γραφήματος"
 
-#: lib/html.php:2361
+#: lib/html.php:2357
 #, fuzzy
 msgid "Copy graph"
 msgstr "Αντιγράψτε το γράφημα"
 
-#: lib/html.php:2362
+#: lib/html.php:2358
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Αντιγραφή συνδέσμου γραφημάτων"
 
-#: lib/html.php:2363
+#: lib/html.php:2359
 #, fuzzy
 msgid "Always On"
 msgstr "Πάντα ανοιχτό"
 
-#: lib/html.php:2364
+#: lib/html.php:2360
 msgid "Auto"
 msgstr "Αυτόματα"
 
-#: lib/html.php:2365
+#: lib/html.php:2361
 #, fuzzy
 msgid "Always Off"
 msgstr "Πάντα εκτός λειτουργίας"
 
-#: lib/html.php:2366
+#: lib/html.php:2362
 #, fuzzy
 msgid "Begin with"
 msgstr "Ξεκινάω με"
 
-#: lib/html.php:2368
+#: lib/html.php:2364
 #, fuzzy
 msgid "End with"
 msgstr "Ημερομηνία Λήξης"
 
-#: lib/html.php:2370 lib/html_form.php:1279
+#: lib/html.php:2366 lib/html_form.php:1279
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: lib/html.php:2372
+#: lib/html.php:2368
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3ο κουμπί του ποντικιού"
@@ -16750,7 +16909,7 @@ msgstr "Στήλες"
 #: lib/html_graph.php:227 lib/html_tree.php:1023
 #, fuzzy, php-format
 msgid "%d Column"
-msgstr "% d Στήλη"
+msgstr "Στήλη"
 
 #: lib/html_graph.php:257 lib/html_tree.php:1053
 msgid "Custom"
@@ -17848,13 +18007,17 @@ msgid "License Agreement"
 msgstr "Συμφωνία άδειας"
 
 #: lib/installer.php:1515
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "This version of Cacti (%s) does not appear to have a valid version code, "
 "please contact the Cacti Development Team to ensure this is corected.  If "
 "you are seeing this error in a release, please raise a report immediately on "
 "GitHub"
 msgstr ""
+"Αυτή η έκδοση του Cacti ( %s) δεν φαίνεται να έχει έγκυρο κωδικό έκδοσης, "
+"επικοινωνήστε με την ομάδα ανάπτυξης του Cacti για να βεβαιωθείτε ότι αυτό "
+"έχει διορθωθεί. Εάν βλέπετε αυτό το σφάλμα σε μια έκδοση, παρακαλούμε "
+"δημιουργήστε μια αναφορά αμέσως στο GitHub"
 
 #: lib/installer.php:1518
 #, fuzzy
@@ -18898,23 +19061,24 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "Η εγκατάσταση ξεκίνησε στο %s, ολοκληρώθηκε στο %s"
 
 #: lib/installer.php:3181
+#, fuzzy
 msgid "Both"
-msgstr ""
+msgstr "Και τα δυο"
 
 #: lib/installer.php:3181
-#, php-format
+#, fuzzy, php-format
 msgid "No - %s"
-msgstr ""
+msgstr "Λεπτό(α)"
 
 #: lib/installer.php:3183 lib/installer.php:3185
-#, php-format
+#, fuzzy, php-format
 msgid "%s - No"
-msgstr ""
+msgstr "Λεπτό(α)"
 
 #: lib/installer.php:3183
 #, fuzzy
 msgid "Web"
-msgstr "Φεβ"
+msgstr "Ιστότοπος"
 
 #: lib/installer.php:3185
 #, fuzzy
@@ -19079,31 +19243,31 @@ msgstr "Το ping του TCP έληξε"
 msgid "Ping not performed due to setting."
 msgstr "Το Ping δεν εκτελέστηκε λόγω ρύθμισης."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:564
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s Έκδοση %s ή παραπάνω απαιτείται για το %s."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:568
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "Το %s απαιτείται για το %s και δεν είναι εγκατεστημένο."
 
-#: lib/plugins.php:581
+#: lib/plugins.php:583
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "Δεν είναι δυνατή η εγκατάσταση της προσθήκης."
 
-#: lib/plugins.php:949 lib/plugins.php:956 plugins.php:386 plugins.php:463
+#: lib/plugins.php:951 lib/plugins.php:958 plugins.php:386 plugins.php:463
 msgid "Plugins"
 msgstr "Πρόσθετα"
 
-#: lib/plugins.php:967 lib/plugins.php:973
+#: lib/plugins.php:969 lib/plugins.php:975
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Απαιτεί: Cacti&gt; = %s"
 
-#: lib/plugins.php:970
+#: lib/plugins.php:972
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Plugin Legacy"
@@ -19174,185 +19338,185 @@ msgstr ""
 "Παράλειψη του στοιχείου γραφήματος αναφοράς &#39; <i> %s</i> &#39; υπάρχει "
 "ήδη"
 
-#: lib/rrd.php:2564
+#: lib/rrd.php:2572
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Το απαιτούμενο μέγεθος βημάτων RRD είναι &#39; %s&#39;"
 
-#: lib/rrd.php:2593
+#: lib/rrd.php:2601
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr ""
 "Τύπος για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι &#39; "
 "%s&#39;"
 
-#: lib/rrd.php:2598
+#: lib/rrd.php:2606
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr ""
 "Καρδιά για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι &#39; "
 "%s&#39;"
 
-#: lib/rrd.php:2610
+#: lib/rrd.php:2618
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr ""
 "Το ελάχιστο RRD για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι "
 "&#39; %s&#39;"
 
-#: lib/rrd.php:2627
+#: lib/rrd.php:2635
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr ""
 "Το μέγιστο RRD για την προέλευση δεδομένων &#39; %s&#39; θα πρέπει να είναι "
 "&#39; %s&#39;"
 
-#: lib/rrd.php:2637
+#: lib/rrd.php:2645
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "Το DS &#39; %s&#39; λείπει στο αρχείο RRD"
 
-#: lib/rrd.php:2646
+#: lib/rrd.php:2654
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "Το DS &#39; %s&#39; λείπει από τον ορισμό του Cacti"
 
-#: lib/rrd.php:2663 lib/rrd.php:2664
+#: lib/rrd.php:2671 lib/rrd.php:2672
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "Το Cacti RRA &#39; %s&#39; έχει τα ίδια CF / βήματα ( %s, %s) ως &#39; "
 "%s&#39;"
 
-#: lib/rrd.php:2678 lib/rrd.php:2679
+#: lib/rrd.php:2686 lib/rrd.php:2687
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "Το αρχείο RRA &#39; %s&#39; έχει τα ίδια CF / βήματα ( %s, %s) ως &#39; "
 "%s&#39;"
 
-#: lib/rrd.php:2710
+#: lib/rrd.php:2718
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr ""
 "Το XFF για τον κάτοχο RRA id &#39; %s&#39; θα πρέπει να είναι &#39; %s&#39;"
 
-#: lib/rrd.php:2714
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr ""
 "Ο αριθμός των γραμμών για το αναγνωριστικό CACTI RRA &#39; %s&#39; θα πρέπει "
 "να είναι &#39; %s&#39;"
 
-#: lib/rrd.php:2730
+#: lib/rrd.php:2738
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "Το RRA &#39; %s&#39; λείπει στο αρχείο RRD"
 
-#: lib/rrd.php:2739
+#: lib/rrd.php:2747
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Το RRA &#39; %s&#39; λείπει από τον ορισμό του Cacti"
 
-#: lib/rrd.php:2758
+#: lib/rrd.php:2766
 #, fuzzy
 msgid "RRD File Information"
 msgstr "Πληροφορίες αρχείου RRD"
 
-#: lib/rrd.php:2790
+#: lib/rrd.php:2798
 #, fuzzy
 msgid "Data Source Items"
 msgstr "Στοιχεία πηγής δεδομένων"
 
-#: lib/rrd.php:2792
+#: lib/rrd.php:2800
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Ελάχιστη καρδιακή αρρυθμία"
 
-#: lib/rrd.php:2793
+#: lib/rrd.php:2801
 msgid "Min"
 msgstr "Ελάχιστο"
 
-#: lib/rrd.php:2794
+#: lib/rrd.php:2802
 msgid "Max"
 msgstr "Μέγιστο"
 
-#: lib/rrd.php:2795
+#: lib/rrd.php:2803
 #, fuzzy
 msgid "Last DS"
 msgstr "Τελευταίο DS"
 
-#: lib/rrd.php:2797
+#: lib/rrd.php:2805
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Άγνωστη ενότητα"
 
-#: lib/rrd.php:2844
+#: lib/rrd.php:2856
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Αρχείο Robin Round"
 
-#: lib/rrd.php:2847
+#: lib/rrd.php:2859
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2860
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP ανά σειρά"
 
-#: lib/rrd.php:2850
+#: lib/rrd.php:2862
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "Τιμή προεπιλογής CDP (0)"
 
-#: lib/rrd.php:2851
+#: lib/rrd.php:2863
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Άγνωστα Σημεία δεδομένων (0)"
 
-#: lib/rrd.php:2928
+#: lib/rrd.php:2940
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "μετονομάστε %s σε %s"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr ""
 "Παρουσιάστηκε σφάλμα κατά την ανάλυση της XML της σφαλτικής μνήμης rrdtool"
 
-#: lib/rrd.php:3010 lib/rrd.php:3065 lib/rrd.php:3121
+#: lib/rrd.php:3022 lib/rrd.php:3077 lib/rrd.php:3133
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "Σφάλμα κατά την εγγραφή αρχείου XML: %s"
 
-#: lib/rrd.php:3021 lib/rrd.php:3076 lib/rrd.php:3132
+#: lib/rrd.php:3033 lib/rrd.php:3088 lib/rrd.php:3144
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "Σφάλμα: Το αρχείο RRD δεν είναι δυνατό να εγγραφεί"
 
-#: lib/rrd.php:3048 lib/rrd.php:3104
+#: lib/rrd.php:3060 lib/rrd.php:3116
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Σφάλμα κατά την ανάλυση της XML της απόρριψης RRDtool"
 
-#: lib/rrd.php:3337
+#: lib/rrd.php:3349
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
 "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) αφαιρεθεί από το "
 "αρχείο RRD"
 
-#: lib/rrd.php:3371
+#: lib/rrd.php:3383
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) προσθήκη στο αρχείο "
 "RRD"
 
-#: lib/rrd.php:3401 lib/rrd.php:3415
+#: lib/rrd.php:3413 lib/rrd.php:3427
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
@@ -19360,29 +19524,29 @@ msgstr ""
 "Ο ιστότοπος δεν έχει πρόσβαση εγγραφής στο %s, ίσως δεν είναι δυνατή η "
 "δημιουργία / ενημέρωση RRD"
 
-#: lib/rrd.php:3411
+#: lib/rrd.php:3423
 #, fuzzy
 msgid "(Custom)"
 msgstr "Προσαρμογή"
 
-#: lib/rrd.php:3417
+#: lib/rrd.php:3429
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr ""
 "Δεν ήταν δυνατή η εκκίνηση αρχείου δεδομένων, ενδέχεται να μην έχει "
 "εκτελεστεί ακόμα το poller"
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "RRA Folder"
 msgstr "Φάκελος RRA"
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "Root"
 msgstr "Ρίζα"
 
-#: lib/rrd.php:3523
+#: lib/rrd.php:3535
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Άγνωστο σφάλμα RRDtool"
@@ -19576,11 +19740,15 @@ msgstr ""
 "τρέχοντας μια μεταβολή δήλωση σε όλους τους πίνακες InnoDB."
 
 #: lib/utility.php:943
+#, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
 "innodb_file_format to Barracuda.  This setting will allow longer indexes "
 "important for certain Cacti tables."
 msgstr ""
+"Όταν χρησιμοποιείτε το innodb_file_per_table, είναι σημαντικό να ρυθμίσετε "
+"το innodb_file_format στο Barracuda. Αυτή η ρύθμιση θα επιτρέψει μεγαλύτερα "
+"ευρετήρια σημαντικά για ορισμένους πίνακες Cacti."
 
 #: lib/utility.php:949
 #, fuzzy, php-format
@@ -19738,8 +19906,9 @@ msgid "A minimum of %s m execution time"
 msgstr "Ένα ελάχιστο% χρόνου εκτέλεσης"
 
 #: lib/utility.php:1393
+#, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
-msgstr ""
+msgstr "Μια έγκυρη ζώνη ώρας που ταιριάζει με τη MySQL και το σύστημα"
 
 #: lib/vdef.php:75
 #, fuzzy
@@ -20386,7 +20555,191 @@ msgstr "Το πρόσθετο είναι ενσωματωμένο στον πυ�
 msgid "Plugin is not compatible"
 msgstr "Το πρόσθετο δεν είναι συμβατό"
 
-#: poller.php:343
+#: plugins/thold_functions.php:126
+#, fuzzy
+msgid "Thresholds"
+msgstr "Θέματα"
+
+#: plugins/thold_functions.php:127
+#, fuzzy
+msgid "Log"
+msgstr "Αρχείο Καταγραφής"
+
+#: plugins/thold_functions.php:251
+#, fuzzy
+msgid "Time:"
+msgstr "Ώρα"
+
+#: plugins/thold_functions.php:252 utilities.php:1854
+#, fuzzy
+msgid "User:"
+msgstr "Χρήστης"
+
+#: plugins/thold_functions.php:254
+#, fuzzy
+msgid "Swaps:"
+msgstr "Ανταλλαγές:"
+
+#: plugins/thold_functions.php:255
+#, fuzzy
+msgid "Pages:"
+msgstr "Σελίδες:"
+
+#: plugins/thold_functions.php:3193
+#, fuzzy
+msgid "Link to Graph in Cacti"
+msgstr "Σύνδεση στο Cacti"
+
+#: plugins/thold_functions.php:3214
+#, fuzzy
+msgid ""
+"<html><body>An alert has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> Έχει εκδοθεί μια προειδοποίηση που απαιτεί την προσοχή σας. "
+"<br><br> <b>Συσκευή</b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : "
+"<URL><br> <b>Μήνυμα</b> : <SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3240
+#, fuzzy
+msgid ""
+"<html><body>A warning has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> Έχει εκδοθεί μια προειδοποίηση που απαιτεί την προσοχή σας. "
+"<br><br> <b>Συσκευή</b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : "
+"<URL><br> <b>Μήνυμα</b> : <SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3909
+#, fuzzy
+msgid "The Device ID was not set while trying to create Graph and Threshold"
+msgstr ""
+"Το αναγνωριστικό συσκευής δεν έχει οριστεί κατά την προσπάθεια δημιουργίας "
+"γραφήματος και κατωφλίου"
+
+#: plugins/thold_functions.php:3923
+#, fuzzy
+msgid ""
+"The Threshold Template ID was not set while trying to create Graph and "
+"Threshold"
+msgstr ""
+"Το αναγνωριστικό προτύπου ουράς δεν έχει οριστεί κατά την προσπάθεια "
+"δημιουργίας γραφήματος και κατωφλίου"
+
+#: plugins/thold_functions.php:3961
+#, fuzzy
+msgid "The Graph Creation failed for Threshold Template"
+msgstr ""
+"Το γράφημα που θέλετε να χρησιμοποιήσετε για αυτό το στοιχείο αναφοράς."
+
+#: plugins/thold_functions.php:3991
+#, fuzzy
+msgid "Threshold was Autocreated due to Device Template mapping"
+msgstr "Προσθήκη ερώτησης δεδομένων σε πρότυπο συσκευής"
+
+#: plugins/thold_functions.php:4029 plugins/thold_functions.php:4377
+#, fuzzy
+msgid "Record Updated"
+msgstr "RRD Ενημερώθηκε"
+
+#: plugins/thold_functions.php:4079
+#, fuzzy
+msgid ""
+"You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or "
+"both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"Πρέπει να ορίσετε είτε το \"Κατώτατο όριο ειδοποίησης\" είτε το κατώτατο "
+"όριο ειδοποίησης ή και τα δύο! <br> Η εγγραφή δεν ενημερώθηκε!"
+
+#: plugins/thold_functions.php:4091
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Threshold' smaller than or equal to 'Low "
+"Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"Αδύνατα κατώτατα όρια: \"Υψηλό όριο\" μικρότερο ή ίσο με το \"Χαμηλό όριο\" "
+"<br> Η εγγραφή δεν ενημερώθηκε!"
+
+#: plugins/thold_functions.php:4103
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Warning Threshold' smaller than or equal to "
+"'Low Warning Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"Αδύνατα κατώτατα όρια: «Όριο υψηλής προειδοποίησης» μικρότερο ή ίσο με το "
+"«χαμηλό όριο προειδοποίησης» <br> Η εγγραφή δεν ενημερώθηκε!"
+
+#: plugins/thold_functions.php:4111
+#, fuzzy
+msgid "With baseline thresholds enabled."
+msgstr "Με τα βασικά όρια ενεργοποιημένα."
+
+#: plugins/thold_functions.php:4120
+#, fuzzy
+msgid ""
+"You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' "
+"or both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"Πρέπει να καθορίσετε είτε την \"Απόκλιση βασικής γραμμής UP\" είτε την "
+"\"Απόκλιση βασικής γραμμής κάτω\" ή και τα δύο! <br> Η εγγραφή δεν "
+"ενημερώθηκε!"
+
+#: plugins/thold_functions.php:4321
+#, fuzzy, php-format
+msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
+msgstr ""
+"Αποτυχία εύρεσης συνδεδεμένου στοιχείου πρότυπου γραφήματος '% d' στο "
+"κατώφλι '% d'"
+
+#: plugins/thold_functions.php:4331
+#, fuzzy
+msgid " What? Permission Denied"
+msgstr "Η άδεια αρνήθηκε"
+
+#: plugins/thold_functions.php:4375
+#, fuzzy, php-format
+msgid "Created threshold: %s"
+msgstr "Δημιουργήθηκε γράφημα: %s"
+
+#: plugins/thold_functions.php:4444
+#, fuzzy, php-format
+msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
+msgstr ""
+"Το ' %s' πρέπει να ρυθμιστεί σε θετική ακέραια τιμή! <br> Η εγγραφή δεν "
+"ενημερώθηκε!"
+
+#: plugins/thold_functions.php:4591
+#, fuzzy
+msgid "No Thresholds Templates associated with the Device's Template."
+msgstr "Το κράτος που συνδέεται με αυτόν τον ιστότοπο."
+
+#: plugins/thold_functions.php:4666
+#, fuzzy
+msgid ""
+"No Threshold(s) Created.  They either already exist, or there were not "
+"matching combinations found."
+msgstr ""
+"Δεν δημιουργήθηκαν κατώτατα όρια. Αυτά είτε υπάρχουν ήδη, είτε δεν βρέθηκαν "
+"συνδυασμοί που να ταιριάζουν."
+
+#: plugins/thold_functions.php:4736
+#, fuzzy, php-format
+msgid "Created Threshold: %s<br>"
+msgstr "Δημιουργήθηκε γράφημα: %s"
+
+#: plugins/thold_functions.php:4771
+#, fuzzy
+msgid ""
+"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
+"link, please set the <b>Alert Email</b> setting."
+msgstr ""
+"Mailer Σφάλμα: Δεν <b>Για την</b> αντιμετώπιση που !! <br> Εάν "
+"χρησιμοποιείτε το σύνδεσμο <i>Δοκιμαστική αλληλογραφία</i> , ορίστε τη "
+"ρύθμιση <b>E-mail ειδοποίησης</b> ."
+
+#: poller.php:323
 #, fuzzy, php-format
 msgid ""
 "WARNING: %s is out of sync with the Poller Interval!  The Poller Interval is "
@@ -20398,7 +20751,7 @@ msgstr ""
 "% d&#39; δευτερόλεπτα, αλλά% d δευτερόλεπτα έχουν περάσει από την τελευταία "
 "δημοσκόπηση!"
 
-#: poller.php:456
+#: poller.php:436
 #, fuzzy, php-format
 msgid ""
 "WARNING: There are '%d' detected as overrunning a polling cycle, please "
@@ -20407,20 +20760,20 @@ msgstr ""
 "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Υπάρχουν &#39;% d&#39; που ανιχνεύονται ως υπέρβαση ενός "
 "κύκλου ψηφοφορίας, παρακαλώ ερευνήστε."
 
-#: poller.php:518
+#: poller.php:498
 #, fuzzy, php-format
 msgid "WARNING: Poller Output Table not Empty.  Issues: %d, %s."
 msgstr ""
 "ΠΡΟΕΙΔΟΠΟΙΗΣΗ: Ο Πίνακας εξόδου Poller δεν είναι κενός. Θέματα:% d, %s."
 
-#: poller.php:541
+#: poller.php:521
 #, fuzzy, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
 msgstr ""
 "Σφάλμα: Η διαδρομή της σπονδυλικής στήλης: %s δεν είναι έγκυρη. Ο Poller δεν "
 "μπορεί να συνεχίσει!"
 
-#: poller.php:682
+#: poller.php:662
 #, fuzzy, php-format
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
 msgstr "Ο μέγιστος χρόνος εκτέλεσης% d δευτερόλεπτα υπερέβη. Έξοδος."
@@ -21401,16 +21754,16 @@ msgstr "Αποθήκευση αρχείου τοπικά"
 msgid "Available Templates [%s]"
 msgstr "Διαθέσιμα πρότυπα [ %s]"
 
-#: templates_import.php:106 templates_import.php:128
+#: templates_import.php:108 templates_import.php:130
 #, fuzzy
 msgid "Import Template"
 msgstr "Εισαγωγή προτύπου"
 
-#: templates_import.php:108
+#: templates_import.php:110
 msgid "ERROR"
 msgstr "Σφάλμα"
 
-#: templates_import.php:108
+#: templates_import.php:110
 #, fuzzy
 msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr ""
@@ -21861,11 +22214,12 @@ msgstr "Πρότυπο συσκευής:"
 #: user_admin.php:776 user_admin.php:783 user_admin.php:792
 #, fuzzy
 msgid "Restricted By: "
-msgstr "Περιοριστικός"
+msgstr "Περιορισμένη πρόσβαση"
 
 #: user_admin.php:780
+#, fuzzy
 msgid "Granted By: "
-msgstr ""
+msgstr "Χορηγείται από:"
 
 #: user_admin.php:787
 #, fuzzy
@@ -21875,7 +22229,7 @@ msgstr "Πρόσβαση επετράπη"
 #: user_admin.php:789 user_admin.php:794
 #, fuzzy
 msgid "Restricted"
-msgstr "Περιοριστικός"
+msgstr "Περιορισμένη"
 
 #: user_admin.php:813 user_group_admin.php:729
 msgid "Allow"
@@ -21884,7 +22238,7 @@ msgstr "允许"
 #: user_admin.php:814 user_group_admin.php:730
 #, fuzzy
 msgid "Deny"
-msgstr "Αρνούμαι"
+msgstr "Άρνηση"
 
 #: user_admin.php:843
 #, fuzzy
@@ -23063,11 +23417,6 @@ msgstr "Κοινότητα:"
 msgid "OID:"
 msgstr "OID:"
 
-#: utilities.php:1854
-#, fuzzy
-msgid "User:"
-msgstr "Χρήστης"
-
 #: utilities.php:1857
 #, fuzzy
 msgid "Script:"
@@ -23681,6 +24030,14 @@ msgstr "Ο αριθμός των προτύπων γραφημάτων που χ
 #, fuzzy
 msgid "No VDEFs"
 msgstr "Δεν υπάρχουν VDEF"
+
+#, fuzzy
+#~ msgid "Does the RRA Profile match the RRDfile structure?"
+#~ msgstr "Το προφίλ RRA ταιριάζει με τη δομή RRDfile;"
+
+#, fuzzy
+#~ msgid "Data Source Troubleshooter"
+#~ msgstr "Αντιμετώπιση προβλημάτων πηγής δεδομένων"
 
 #, fuzzy
 #~ msgid " Poller RunAs: "

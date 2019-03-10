@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-09 16:31+0100\n"
-"PO-Revision-Date: 2018-12-30 15:59-0500\n"
+"POT-Creation-Date: 2019-03-10 09:38-0400\n"
+"PO-Revision-Date: 2019-03-10 10:01-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: ko\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2383 lib/html.php:2313
+#: about.php:29 include/global_arrays.php:2383 lib/html.php:2309
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti 소개"
@@ -187,7 +187,7 @@ msgstr "다음 집계 그래프를 삭제하려면 &#39;계속&#39;을 클릭하
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:267 host_templates.php:281 host_templates.php:292
 #: host_templates.php:341 host_templates.php:404 lib/clog_webapi.php:219
-#: lib/html.php:2344 lib/html_form.php:1248 lib/html_form.php:1260
+#: lib/html.php:2340 lib/html_form.php:1248 lib/html_form.php:1260
 #: lib/html_form.php:1271 lib/html_utility.php:224 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:445 pollers.php:454 pollers.php:463 pollers.php:472
@@ -221,7 +221,7 @@ msgstr "취소"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:267 host_templates.php:281
 #: host_templates.php:292 host_templates.php:342 host_templates.php:405
-#: lib/clog_webapi.php:220 lib/html.php:2343 lib/html_reports.php:304
+#: lib/clog_webapi.php:220 lib/html.php:2339 lib/html_reports.php:304
 #: lib/html_utility.php:224 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:445 pollers.php:454
 #: pollers.php:463 pollers.php:472 sites.php:317 tree.php:647 tree.php:656
@@ -415,7 +415,7 @@ msgstr "상세정보"
 msgid "Items"
 msgstr "아이템"
 
-#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1854
+#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1850
 #: lib/html_reports.php:1174
 msgid "Preview"
 msgstr "미리보기"
@@ -490,7 +490,7 @@ msgstr "매칭 그래프"
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:818 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
 #: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1395
 #: data_templates.php:845 gprint_presets.php:263 graph_templates.php:657
 #: graph_view.php:586 graphs.php:1877 graphs_new.php:389 host.php:1501
@@ -516,22 +516,22 @@ msgstr "검색"
 #: aggregate_graphs.php:1447 color_templates.php:561 graph_view.php:452
 #: graph_view.php:645 graph_view.php:694 graphs.php:1883 graphs.php:1996
 #: host.php:1565 include/global_arrays.php:864 include/global_arrays.php:1057
-#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1568
-#: lib/html.php:1570 lib/html.php:1648 lib/html_graph.php:209
+#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1564
+#: lib/html.php:1566 lib/html.php:1644 lib/html_graph.php:209
 #: lib/html_tree.php:1005 lib/html_tree.php:1316 tree.php:787 tree.php:1985
 #: user_admin.php:1004 user_admin.php:1270 user_admin.php:2621
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
 #, fuzzy
 msgid "Graphs"
-msgstr "그래프"
+msgstr "그래프 "
 
 #: aggregate_graphs.php:1101 aggregate_graphs.php:1451
 #: aggregate_templates.php:557 automation_devices.php:540
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:828 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:813
 #: data_queries.php:1287 data_source_profiles.php:844
 #: data_source_profiles.php:965 data_sources.php:1405 data_templates.php:871
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:649
@@ -562,13 +562,13 @@ msgstr "집계의 일부"
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:747 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:825
 #: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1345
 #: data_templates.php:889 gprint_presets.php:291 graph_templates.php:685
 #: graph_view.php:594 graphs.php:1868 graphs_new.php:378 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
-#: lib/clog_webapi.php:509 lib/html.php:1390 lib/html_filter.php:81
+#: lib/clog_webapi.php:509 lib/html.php:1386 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1540 lib/html_tree.php:992
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:756 sites.php:447 tree.php:1921
@@ -580,7 +580,7 @@ msgstr "가기"
 
 #: aggregate_graphs.php:1119 aggregate_graphs.php:1463
 #: automation_devices.php:476 automation_snmp.php:682
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:747
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
 #: data_input.php:825 data_queries.php:1299 data_source_profiles.php:862
 #: data_sources.php:1345 data_templates.php:889 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:594 graphs.php:1868
@@ -603,7 +603,7 @@ msgstr "필터 설정 / 새로 고침"
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:748 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:826
 #: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1346
 #: data_templates.php:890 gprint_presets.php:292 graph_templates.php:686
 #: graph_view.php:595 graphs.php:1869 graphs_new.php:379 host.php:1492
@@ -620,7 +620,7 @@ msgid "Clear"
 msgstr "지우기"
 
 #: aggregate_graphs.php:1120 aggregate_graphs.php:1464 automation_snmp.php:683
-#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:748
+#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
 #: data_input.php:826 data_queries.php:1300 data_source_profiles.php:863
 #: data_sources.php:1346 data_templates.php:890 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:595 graphs.php:1869
@@ -648,7 +648,7 @@ msgstr "그래프 제목"
 
 #: aggregate_graphs.php:1200 aggregate_graphs.php:1528
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:273 data_queries.php:1383 data_sources.php:1529
+#: data_debug.php:346 data_queries.php:1383 data_sources.php:1529
 #: data_templates.php:1000 graph_templates.php:793 graphs.php:2018
 #: host.php:1559 host_templates.php:838 lib/api_automation.php:280
 #: pollers.php:830 sites.php:521 tree.php:1975 user_admin.php:1012
@@ -683,16 +683,17 @@ msgstr "아니오"
 
 #: aggregate_graphs.php:1218 aggregate_templates.php:660
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_debug.php:554 data_input.php:925
-#: data_queries.php:1403 data_source_profiles.php:1004
-#: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1598 data_sources.php:1599 data_templates.php:1025
-#: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
-#: include/global_settings.php:752 include/global_settings.php:1469
-#: lib/api_automation.php:1433 lib/installer.php:1694 lib/installer.php:1722
-#: lib/installer.php:3179 links.php:403 tree.php:2013 tree.php:2014
-#: user_admin.php:2344 user_domains.php:762 user_domains.php:766
-#: user_group_admin.php:1929 vdef.php:906
+#: color_templates.php:578 data_debug.php:629 data_debug.php:634
+#: data_debug.php:639 data_input.php:925 data_queries.php:1403
+#: data_source_profiles.php:1004 data_source_profiles.php:1005
+#: data_source_profiles.php:1006 data_sources.php:1598 data_sources.php:1599
+#: data_templates.php:1025 gprint_presets.php:414 graph_templates.php:814
+#: host_templates.php:857 include/global_settings.php:752
+#: include/global_settings.php:1469 lib/api_automation.php:1433
+#: lib/installer.php:1694 lib/installer.php:1722 lib/installer.php:3179
+#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2344
+#: user_domains.php:762 user_domains.php:766 user_group_admin.php:1929
+#: vdef.php:906
 msgid "Yes"
 msgstr "예"
 
@@ -707,7 +708,7 @@ msgstr "그래프가 없습니다"
 msgid "Aggregate Graphs"
 msgstr "집계 그래프"
 
-#: aggregate_graphs.php:1425 data_debug.php:721 data_sources.php:1319
+#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1319
 #: graph_view.php:607 graphs.php:1833 graphs.php:2007 host.php:1472
 #: include/global_settings.php:502 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
@@ -720,12 +721,12 @@ msgstr "템플릿"
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
-#: data_debug.php:725 data_sources.php:1323 graphs.php:1837
+#: data_debug.php:953 data_sources.php:1323 graphs.php:1837
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
 #: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2240
-#: lib/html.php:1932 lib/html.php:1955 lib/html.php:1993
+#: lib/html.php:1928 lib/html.php:1951 lib/html.php:1989
 #: lib/html_reports.php:1519 managers.php:483 managers.php:736
 #: user_admin.php:2603 user_admin.php:2796 user_group_admin.php:2176
 #: user_group_admin.php:2284 utilities.php:692 utilities.php:1399
@@ -737,7 +738,7 @@ msgstr "일부"
 #: aggregate_graphs.php:1430 aggregate_graphs.php:1542
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
-#: automation_tree_rules.php:949 data_debug.php:726 data_sources.php:899
+#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:899
 #: data_sources.php:1324 data_sources.php:1584 data_templates.php:1027
 #: graphs.php:1467 graphs.php:1476 graphs.php:1838 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
@@ -756,7 +757,7 @@ msgstr "일부"
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
 #: lib/api_automation.php:1075 lib/auth.php:2243 lib/html.php:192
-#: lib/html.php:1933 lib/html.php:1953 lib/html.php:1994 lib/html_form.php:329
+#: lib/html.php:1929 lib/html.php:1949 lib/html.php:1990 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
 #: settings.php:439 settings.php:465 user_admin.php:2604 user_admin.php:2797
@@ -953,7 +954,7 @@ msgid "Please enter your new Cacti password."
 msgstr "현재 비밀번호와 새 비밀번호를 입력하십시오. <br> 선인장 암호."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
-#: include/global_settings.php:1379 lib/functions.php:3820
+#: include/global_settings.php:1379 lib/functions.php:3803
 msgid "Username"
 msgstr "아이디"
 
@@ -1068,7 +1069,7 @@ msgstr "사용자 로그인"
 msgid "Enter your Username and Password below"
 msgstr "아래에 사용자 이름과 암호를 입력하십시오"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3821
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3804
 msgid "Password"
 msgstr "비밀번호"
 
@@ -1117,19 +1118,19 @@ msgid "User Account Details"
 msgstr "사용자 계정 정보"
 
 #: auth_profile.php:291 include/global_arrays.php:736
-#: include/global_settings.php:2117 lib/html.php:1814 lib/html.php:1836
-#: lib/html.php:2305
+#: include/global_settings.php:2117 lib/html.php:1810 lib/html.php:1832
+#: lib/html.php:2301
 #, fuzzy
 msgid "Tree View"
 msgstr "트리보기"
 
-#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1821
-#: lib/html.php:1845 lib/html.php:2306
+#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1817
+#: lib/html.php:1841 lib/html.php:2302
 msgid "List View"
 msgstr "목록형식 보기"
 
-#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1828
-#: lib/html.php:2307
+#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1824
+#: lib/html.php:2303
 #, fuzzy
 msgid "Preview View"
 msgstr "미리보기"
@@ -1259,8 +1260,8 @@ msgstr "선인장에 추가됨"
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:897
 #: graph_view.php:700 graphs.php:1472 include/global_arrays.php:825
 #: include/global_arrays.php:874 include/global_arrays.php:1642
-#: lib/api_automation.php:424 lib/functions.php:3815 lib/html.php:1928
-#: lib/html.php:1960 lib/html_reports.php:658 utilities.php:1532
+#: lib/api_automation.php:424 lib/functions.php:3798 lib/html.php:1924
+#: lib/html.php:1956 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
 msgstr "장치"
 
@@ -1354,7 +1355,7 @@ msgstr "SNMP"
 
 #: automation_devices.php:272 automation_devices.php:491
 #: automation_graph_rules.php:776 automation_networks.php:1079
-#: automation_tree_rules.php:817 data_debug.php:279 data_debug.php:773
+#: automation_tree_rules.php:817 data_debug.php:352 data_debug.php:1001
 #: data_sources.php:1370 data_templates.php:1005 host.php:684 host.php:783
 #: host.php:1507 host.php:1577 lib/api_automation.php:165
 #: lib/api_automation.php:278 lib/api_automation.php:571
@@ -1404,7 +1405,7 @@ msgstr "내보내기"
 msgid "Export to a file"
 msgstr "파일로 내보내기"
 
-#: automation_devices.php:483 data_debug.php:749 lib/clog_webapi.php:210
+#: automation_devices.php:483 data_debug.php:977 lib/clog_webapi.php:210
 #: lib/clog_webapi.php:511 managers.php:748
 #, fuzzy
 msgid "Purge"
@@ -1418,8 +1419,8 @@ msgstr "검색된 장치 제거"
 #: automation_devices.php:650 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: data_debug.php:485 host.php:1639 lib/functions.php:4191
-#: lib/functions.php:4195 lib/html.php:1133 pollers.php:885 user_admin.php:2339
+#: data_debug.php:558 host.php:1639 lib/functions.php:4174
+#: lib/functions.php:4178 lib/html.php:1133 pollers.php:885 user_admin.php:2339
 #: utilities.php:445 utilities.php:825 utilities.php:2149 utilities.php:2246
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
@@ -1563,7 +1564,7 @@ msgstr "데이터 쿼리"
 #: automation_graph_rules.php:781 automation_graph_rules.php:904
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
-#: automation_tree_rules.php:960 data_debug.php:779 data_sources.php:1375
+#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1375
 #: host.php:1512 include/global_arrays.php:788 include/global_form.php:1467
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1520
@@ -1578,14 +1579,14 @@ msgstr "활성화"
 
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
-#: automation_tree_rules.php:960 data_debug.php:780 data_sources.php:1376
+#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1376
 #: data_templates.php:1029 host.php:1513 include/global_arrays.php:787
 #: include/global_arrays.php:1362 include/global_arrays.php:1650
 #: include/global_settings.php:378 include/global_settings.php:1209
 #: include/global_settings.php:1223 include/global_settings.php:1235
 #: include/global_settings.php:1260 include/global_settings.php:1274
 #: include/global_settings.php:1334 include/global_settings.php:1962
-#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2369
+#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2365
 #: lib/html_reports.php:1521 lib/html_reports.php:1659 lib/html_utility.php:879
 #: links.php:499 managers.php:243 managers.php:598 pollers.php:47
 #: user_admin.php:1137 user_domains.php:411 user_group_admin.php:691
@@ -2410,7 +2411,7 @@ msgid "Idle"
 msgstr "게으른"
 
 #: automation_networks.php:1146 include/global_arrays.php:1038
-#: lib/html_reports.php:1654
+#: lib/html_reports.php:1654 plugins/thold_functions.php:74
 msgid "Never"
 msgstr "안함"
 
@@ -2419,7 +2420,7 @@ msgstr "안함"
 msgid "No Networks Found"
 msgstr "네트워크를 찾을 수 없음"
 
-#: automation_networks.php:1197 data_debug.php:794 graph.php:362
+#: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:541 lib/html_graph.php:306
 #: lib/html_tree.php:1102 lib/html_tree.php:1123 utilities.php:1128
 #: utilities.php:2036
@@ -2559,7 +2560,7 @@ msgstr "버전"
 msgid "Community"
 msgstr "커뮤니티"
 
-#: automation_snmp.php:507 lib/functions.php:3816
+#: automation_snmp.php:507 lib/functions.php:3799
 msgid "Port"
 msgstr "포트"
 
@@ -3390,126 +3391,158 @@ msgstr "색상 템플릿 항목 [보고서 항목 편집 :  %s]"
 msgid "Color Template Items [new Report Item: %s]"
 msgstr "색상 템플릿 항목 [새 보고서 항목 :  %s]"
 
-#: data_debug.php:29
+#: data_debug.php:31
 #, fuzzy
 msgid "Run Check"
 msgstr "확인 실행"
 
-#: data_debug.php:30
+#: data_debug.php:32
 #, fuzzy
 msgid "Delete Check"
 msgstr "확인 삭제"
 
-#: data_debug.php:257 data_queries.php:729 data_sources.php:960
-#: data_templates.php:574 graphs_items.php:440 include/global_arrays.php:876
-#: include/global_form.php:926 lib/api_aggregate.php:1592 lib/html.php:1052
+#: data_debug.php:51
+#, fuzzy
+msgid "Data Source debug started."
+msgstr "데이터 소스 디버그"
+
+#: data_debug.php:54
+#, fuzzy
+msgid "Data Source debug received an invalid Data Source ID."
+msgstr "데이터 소스 디버그가 잘못된 데이터 소스 ID를 받았습니다."
+
+#: data_debug.php:63
+#, fuzzy
+msgid "All RRDfile repairs succeeded."
+msgstr "모든 RRDfile 복구가 성공했습니다."
+
+#: data_debug.php:65
+#, fuzzy
+msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
+msgstr ""
+"하나 이상의 RRDfile 복구가 실패했습니다. Cacti 로그에서 오류를 확인하십시오."
+
+#: data_debug.php:73
+#, fuzzy
+msgid "Automatic Data Source debug being rerun after repair."
+msgstr "복구 후 자동 데이터 소스 디버그가 다시 실행됩니다."
+
+#: data_debug.php:77
+#, fuzzy
+msgid "Data Source repair received an invalid Data Source ID."
+msgstr "데이터 소스 복구에 잘못된 데이터 소스 ID가 수신되었습니다."
+
+#: data_debug.php:330 data_debug.php:807 data_queries.php:729
+#: data_sources.php:960 data_templates.php:574 graphs_items.php:440
+#: include/global_arrays.php:876 include/global_form.php:926
+#: lib/api_aggregate.php:1592 lib/html.php:1052
 msgid "Data Source"
 msgstr "데이터 원본"
 
-#: data_debug.php:259
+#: data_debug.php:332
 #, fuzzy
 msgid "The Data Source to Debug"
 msgstr "디버깅 할 데이터 소스"
 
-#: data_debug.php:262 utilities.php:670 utilities.php:795
+#: data_debug.php:335 utilities.php:670 utilities.php:795
 msgid "User"
 msgstr "사용자"
 
-#: data_debug.php:264
+#: data_debug.php:337
 #, fuzzy
 msgid "The User who requested the Debug."
 msgstr "디버그를 요청한 사용자."
 
-#: data_debug.php:267
+#: data_debug.php:340
 msgid "Started"
 msgstr "시작됨"
 
-#: data_debug.php:270
+#: data_debug.php:343
 #, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "디버그가 시작된 날짜입니다."
 
-#: data_debug.php:276
+#: data_debug.php:349
 #, fuzzy
 msgid "The Data Source internal ID."
 msgstr "데이터 소스 내부 ID."
 
-#: data_debug.php:282
+#: data_debug.php:355
 #, fuzzy
 msgid "The Status of the Data Source Debug Check."
 msgstr "데이터 소스 디버그 검사의 상태."
 
-#: data_debug.php:285 lib/installer.php:2059 lib/installer.php:2090
+#: data_debug.php:358 lib/installer.php:2059 lib/installer.php:2090
 #, fuzzy
 msgid "Writable"
 msgstr "쓰기 가능"
 
-#: data_debug.php:288
+#: data_debug.php:361
 #, fuzzy
 msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr "데이터 수집기 또는 웹 사이트에 쓰기 액세스 권한이 있는지 확인합니다."
 
-#: data_debug.php:291
+#: data_debug.php:364
 #, fuzzy
 msgid "Exists"
 msgstr "존재한다."
 
-#: data_debug.php:294
+#: data_debug.php:367
 #, fuzzy
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "데이터 소스가 폴러 캐시에 있는지 확인합니다."
 
-#: data_debug.php:297 data_sources.php:1547 data_templates.php:1029
+#: data_debug.php:370 data_sources.php:1547 data_templates.php:1029
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "활성화"
 
-#: data_debug.php:300
+#: data_debug.php:373
 #, fuzzy
 msgid "Determines if the Data Source is Enabled."
 msgstr "데이터 원본이 사용되는지 여부를 결정합니다."
 
-#: data_debug.php:303
+#: data_debug.php:376
 #, fuzzy
 msgid "RRD Match"
 msgstr "RRD 경기"
 
-#: data_debug.php:306
+#: data_debug.php:379
 #, fuzzy
 msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr "RRDfile이 데이터 소스 템플릿과 일치하는지 확인합니다."
 
-#: data_debug.php:309
+#: data_debug.php:382
 #, fuzzy
 msgid "Valid Data"
 msgstr "유효한 데이터"
 
-#: data_debug.php:312
+#: data_debug.php:385
 #, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "RRDfile이 최근의 양호한 데이터를 가져 오는지 여부를 결정합니다."
 
-#: data_debug.php:315
+#: data_debug.php:388
 #, fuzzy
 msgid "RRD Updated"
 msgstr "RRD 업데이트 됨"
 
-#: data_debug.php:318
+#: data_debug.php:391
 #, fuzzy
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "RRD 파일이 제대로 기록되었는지 확인합니다."
 
-#: data_debug.php:321 data_debug.php:627
+#: data_debug.php:394 data_debug.php:558 data_debug.php:737
 #, fuzzy
-msgid "Issue"
-msgstr "발행물"
+msgid "Issues"
+msgstr "문제점"
 
-#: data_debug.php:324
+#: data_debug.php:397
 #, fuzzy
-msgid "Any summary issues found for the Data Source."
+msgid "Summary of issues found for the Data Source."
 msgstr "데이터 소스에 대해 발견 된 모든 요약 문제."
 
-#: data_debug.php:437 data_debug.php:824 data_sources.php:1401
+#: data_debug.php:510 data_debug.php:1052 data_sources.php:1401
 #: data_sources.php:1513 host.php:1571 include/global_arrays.php:865
 #: include/global_arrays.php:910 include/global_arrays.php:2071
 #: lib/api_automation.php:282 user_admin.php:1270 user_group_admin.php:970
@@ -3518,129 +3551,209 @@ msgstr "데이터 소스에 대해 발견 된 모든 요약 문제."
 msgid "Data Sources"
 msgstr "데이터 소스"
 
-#: data_debug.php:485
-#, fuzzy
-msgid "Issues"
-msgstr "문제점"
-
-#: data_debug.php:488 data_debug.php:790
+#: data_debug.php:561 data_debug.php:1018
 #, fuzzy
 msgid "Not Debugging"
 msgstr "디버깅"
 
-#: data_debug.php:504
+#: data_debug.php:577
 #, fuzzy
 msgid "No Checks"
 msgstr "수표 없음"
 
-#: data_debug.php:565
+#: data_debug.php:634 data_debug.php:639
+#, fuzzy
+msgid "Not Checked Yet"
+msgstr "수표 없음"
+
+#: data_debug.php:657
+#, fuzzy
+msgid "Issues found!  Waiting on RRDfile update"
+msgstr "발견 된 문제! RRDfile 업데이트 대기 중"
+
+#: data_debug.php:660
+#, fuzzy
+msgid "No Initial found!  Waiting on RRDfile update"
+msgstr "이니셜을 찾지 못했습니다! RRDfile 업데이트 대기 중"
+
+#: data_debug.php:664
+#, fuzzy
+msgid "Waiting on analysis and RRDfile update"
+msgstr "RRD 파일이 업데이트 되었습니까?"
+
+#: data_debug.php:671
 #, fuzzy
 msgid "RRDfile Owner"
 msgstr "RRDfile 소유자"
 
-#: data_debug.php:570
+#: data_debug.php:676
 #, fuzzy
 msgid "Website runs as"
 msgstr "웹 사이트는"
 
-#: data_debug.php:574
+#: data_debug.php:681
 #, fuzzy
 msgid "Poller runs as"
 msgstr "폴러는 다음과 같이 실행됩니다."
 
-#: data_debug.php:578
+#: data_debug.php:686
 #, fuzzy
 msgid "Is RRA Folder writeable by poller?"
 msgstr "폴러로 RRA Folder를 쓸 수 있습니까?"
 
-#: data_debug.php:583
+#: data_debug.php:691
 #, fuzzy
 msgid "Is RRDfile writeable by poller?"
 msgstr "폴러가 RRDfile을 쓸 수 있습니까?"
 
-#: data_debug.php:588
+#: data_debug.php:696
 #, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "RRDfile이 있습니까?"
 
-#: data_debug.php:592
+#: data_debug.php:701
 #, fuzzy
 msgid "Is the Data Source set as Active?"
 msgstr "데이터 원본이 활성으로 설정되어 있습니까?"
 
-#: data_debug.php:596
+#: data_debug.php:706
 #, fuzzy
 msgid "Did the poller receive valid data?"
 msgstr "폴러가 유효한 데이터를 받았습니까?"
 
-#: data_debug.php:601
+#: data_debug.php:711
 #, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "RRD 파일이 업데이트 되었습니까?"
 
-#: data_debug.php:607
+#: data_debug.php:717
 #, fuzzy
 msgid "First Check TimeStamp"
 msgstr "First Check TimeStamp"
 
-#: data_debug.php:612
+#: data_debug.php:722
 #, fuzzy
 msgid "Second Check TimeStamp"
 msgstr "두 번째 체크 타임 스탬프"
 
-#: data_debug.php:617
+#: data_debug.php:727
 #, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "제목을 변환 할 수 있었습니까?"
 
-#: data_debug.php:622
+#: data_debug.php:732
 #, fuzzy
-msgid "Does the RRA Profile match the RRDfile structure?"
-msgstr "RRA 프로파일이 RRD 파일 구조와 일치합니까?"
+msgid "Data Source matches the RRDfile?"
+msgstr "데이터 소스가 폴링되지 않았습니다."
 
-#: data_debug.php:633
+#: data_debug.php:746
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
+msgstr "데이터 소스 문제 해결사 [ %s]"
+
+#: data_debug.php:746 data_debug.php:748
 #, fuzzy
-msgid "Data Source Troubleshooter"
-msgstr "데이터 소스 문제 해결사"
+msgid "Refresh Now"
+msgstr "새로고침"
 
-#: data_debug.php:637
+#: data_debug.php:748
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
+msgstr "데이터 소스 문제 해결사 [ %s]"
+
+#: data_debug.php:750
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
+msgstr "데이터 소스 문제 해결사 [ %s]"
+
+#: data_debug.php:750
+#, fuzzy
+msgid "Rerun Analysis"
+msgstr "재방송 분석"
+
+#: data_debug.php:755
 msgid "Check"
 msgstr "체크"
 
-#: data_debug.php:638 include/global_form.php:984 lib/rrd.php:2796
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2804
 #: utilities.php:2475
 msgid "Value"
 msgstr "값"
 
-#: data_debug.php:639
+#: data_debug.php:757
 msgid "Results"
 msgstr "결과"
 
-#: data_debug.php:650
+#: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
 msgstr "<not set>"
 
-#: data_debug.php:710
+#: data_debug.php:803 data_debug.php:854
+#, fuzzy
+msgid "Data Source Repair Recommendations"
+msgstr "데이터 소스 필드"
+
+#: data_debug.php:808
+#, fuzzy
+msgid "Issue"
+msgstr "발행물"
+
+#: data_debug.php:820
 #, fuzzy, php-format
-msgid "Data Source Troubleshooter [%s]"
+msgid "For attrbitute '%s', issue found '%s'"
+msgstr "attrbitute ' %s'에 대해 ' %s'문제가 발견되었습니다."
+
+#: data_debug.php:835
+#, fuzzy
+msgid "Apply Suggested Fixes"
+msgstr "제안 된 이름 재 적용"
+
+#: data_debug.php:835
+#, fuzzy, php-format
+msgid "Repair Steps [ %s ]"
+msgstr "복구 단계 [ %s]"
+
+#: data_debug.php:837
+#, fuzzy
+msgid "Repair Steps [ Run Fix from Command Line ]"
+msgstr "복구 단계 [명령 줄에서 수정 프로그램 실행]"
+
+#: data_debug.php:840
+#, fuzzy
+msgid "Command"
+msgstr "명령어"
+
+#: data_debug.php:856
+#, fuzzy
+msgid "Waiting on Data Source Check to Complete"
+msgstr "완료하기 위해 데이터 소스 검사 대기"
+
+#: data_debug.php:938
+#, fuzzy
+msgid "All Devices"
+msgstr "사용 가능한 장치"
+
+#: data_debug.php:938
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ %s ]"
 msgstr "데이터 소스 문제 해결사 [ %s]"
 
-#: data_debug.php:710 data_sources.php:1308
+#: data_debug.php:938 data_sources.php:1308
 #, fuzzy
 msgid "No Device"
 msgstr "장치"
 
-#: data_debug.php:749
+#: data_debug.php:977
 #, fuzzy
 msgid "Delete All Checks"
 msgstr "확인 삭제"
 
-#: data_debug.php:757 data_sources.php:1354 data_templates.php:851
+#: data_debug.php:985 data_sources.php:1354 data_templates.php:851
 msgid "Profile"
 msgstr "프로필"
 
-#: data_debug.php:761 data_debug.php:777 data_debug.php:788
+#: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1358 data_sources.php:1374 data_sources.php:1385
 #: data_templates.php:855 graphs_new.php:355 lib/clog_webapi.php:523
 #: lib/html.php:191 lib/html_reports.php:625 plugins.php:376 settings.php:419
@@ -3649,11 +3762,11 @@ msgstr "프로필"
 msgid "All"
 msgstr "모두"
 
-#: data_debug.php:778 utilities.php:696 utilities.php:833
+#: data_debug.php:1006 utilities.php:696 utilities.php:833
 msgid "Failed"
 msgstr "실패"
 
-#: data_debug.php:784 data_debug.php:789
+#: data_debug.php:1012 data_debug.php:1017
 msgid "Debugging"
 msgstr "디버깅"
 
@@ -3942,11 +4055,14 @@ msgid "Data Template - %s"
 msgstr "데이터 템플릿 -  %s"
 
 #: data_queries.php:750
+#, fuzzy
 msgid ""
 "If this Graph Template requires the Data Template Data Source to the left, "
 "select the correct XML output column and then to enable the mapping either "
 "check or toggle here."
 msgstr ""
+"이 그래프 템플릿에 데이터 템플릿 데이터 소스가 왼쪽에 있어야하는 경우 올바른 "
+"XML 출력 열을 선택한 다음 매핑을 사용하려면 여기에서 확인하거나 전환하십시오."
 
 #: data_queries.php:764
 #, fuzzy
@@ -4202,7 +4318,7 @@ msgstr "단계"
 
 #: data_source_profiles.php:568 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2330
-#: lib/rrd.php:2846 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2858 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "행"
 
@@ -4967,7 +5083,7 @@ msgstr "CSV 내보내기"
 msgid "Click to view just this Graph in Real-time"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: graph.php:230 lib/html.php:2302
+#: graph.php:230 lib/html.php:2298
 #, fuzzy
 msgid "Utility View"
 msgstr "유틸리티보기"
@@ -5359,12 +5475,12 @@ msgstr "RTL Mode"
 msgid "Add Selected Graphs to Report"
 msgstr "선택한 그래프를 보고서에 추가"
 
-#: graph_view.php:894 lib/html.php:2341
+#: graph_view.php:894 lib/html.php:2337
 msgid "Ok"
 msgstr "확인"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1725
-#: include/global_form.php:1972 lib/html.php:1711 links.php:380
+#: include/global_form.php:1972 lib/html.php:1707 links.php:380
 msgid "Title"
 msgstr "제목"
 
@@ -5801,7 +5917,7 @@ msgstr "[모든 장치]의 새로운 그래프"
 msgid "New Graphs for None Host Type"
 msgstr "없음 호스트 유형에 대한 새 그래프"
 
-#: graphs_new.php:316 lib/html.php:2300
+#: graphs_new.php:316 lib/html.php:2296
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "저장된 필터 설정"
@@ -6072,12 +6188,12 @@ msgstr "장치 접촉"
 msgid "Data Query Debug Information"
 msgstr "데이터 쿼리 디버그 정보"
 
-#: host.php:662 lib/functions.php:2889 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2872 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "복사"
 
-#: host.php:663 templates_import.php:154
+#: host.php:663 templates_import.php:160
 msgid "Hide"
 msgstr "숨기기"
 
@@ -6148,7 +6264,7 @@ msgstr "[% d 개 항목, % d 개 행]"
 msgid "Fail"
 msgstr "실패"
 
-#: host.php:845 lib/functions.php:3830 lib/functions.php:3835
+#: host.php:845 lib/functions.php:3813 lib/functions.php:3818
 msgid "Success"
 msgstr "성공"
 
@@ -6212,7 +6328,7 @@ msgstr "SNMP 설명"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1437 include/global_settings.php:510 lib/html.php:1989
+#: host.php:1437 include/global_settings.php:510 lib/html.php:1985
 msgid "Site"
 msgstr "사이트"
 
@@ -6233,7 +6349,7 @@ msgid "Recovering"
 msgstr "복구 중"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/rrd.php:2819 lib/rrd.php:2829 plugins.php:180
+#: lib/html_utility.php:895 lib/rrd.php:2829 lib/rrd.php:2841 plugins.php:180
 #: plugins.php:184 plugins.php:203 user_admin.php:796 utilities.php:2145
 msgid "Unknown"
 msgstr "알 수 없음"
@@ -6539,6 +6655,7 @@ msgid "Login Again"
 msgstr "다시 로그인"
 
 #: include/auth.php:263 permission_denied.php:43 permission_denied.php:50
+#: plugins/thold_functions.php:4015
 msgid "Permission Denied"
 msgstr "사용 권한이 거부되었습니다."
 
@@ -7181,7 +7298,7 @@ msgstr "오른쪽"
 msgid "Justified"
 msgstr "양쪽 맞춤"
 
-#: include/global_arrays.php:500 lib/html.php:2367
+#: include/global_arrays.php:500 lib/html.php:2363
 msgid "Center"
 msgstr "중앙"
 
@@ -7468,13 +7585,13 @@ msgstr "자연 주문"
 msgid "Numeric Ordering"
 msgstr "숫자 순서 지정"
 
-#: include/global_arrays.php:823 lib/rrd.php:2762
+#: include/global_arrays.php:823 lib/rrd.php:2770
 msgid "Header"
 msgstr "헤더"
 
 #: include/global_arrays.php:824 include/global_arrays.php:875
 #: include/global_arrays.php:1474 include/global_arrays.php:1641
-#: lib/html.php:2356
+#: lib/html.php:2352
 msgid "Graph"
 msgstr "그래프"
 
@@ -7655,12 +7772,12 @@ msgid "Export Templates"
 msgstr "템플릿 내보내기"
 
 #: include/global_arrays.php:899 include/global_arrays.php:921
-#: include/global_arrays.php:939 lib/plugins.php:949
+#: include/global_arrays.php:939 lib/plugins.php:951
 msgid "Configuration"
 msgstr "구성"
 
 #: include/global_arrays.php:900 include/global_arrays.php:922
-#: lib/html.php:2123 lib/html.php:2371
+#: lib/html.php:2119 lib/html.php:2367
 msgid "Settings"
 msgstr "설정"
 
@@ -8640,7 +8757,7 @@ msgid "List Mode"
 msgstr "목록 모드"
 
 #: include/global_arrays.php:1849 include/global_arrays.php:1855
-#: lib/functions.php:2522 lib/html.php:1559 lib/html.php:1636 links.php:345
+#: lib/functions.php:2522 lib/html.php:1555 lib/html.php:1632 links.php:345
 #: user_admin.php:1691 user_group_admin.php:1394
 #, fuzzy
 msgid "Console"
@@ -8798,10 +8915,10 @@ msgid "Export Results"
 msgstr "내보내기 결과"
 
 #: include/global_arrays.php:2407 include/global_arrays.php:2437
-#: lib/html.php:1580 lib/html.php:1582 lib/html.php:1661
+#: lib/html.php:1576 lib/html.php:1578 lib/html.php:1657
 #, fuzzy
 msgid "Reporting"
-msgstr "보고"
+msgstr "Reporting"
 
 #: include/global_arrays.php:2413 include/global_arrays.php:2443
 #, fuzzy
@@ -8851,15 +8968,17 @@ msgstr "일"
 #: include/global_arrays.php:2619
 #, fuzzy
 msgid "hrs"
-msgstr "시간"
+msgstr "시"
 
 #: include/global_arrays.php:2620
+#, fuzzy
 msgid "mins"
-msgstr ""
+msgstr "분"
 
 #: include/global_arrays.php:2621
+#, fuzzy
 msgid "secs"
-msgstr ""
+msgstr "초"
 
 #: include/global_arrays.php:2635 lib/api_device.php:1067
 msgid "hours"
@@ -9059,7 +9178,7 @@ msgstr ""
 "를 전달하려는 경우이 값을 늘리십시오. 이 값에 X-Files Factor를 곱하여 실제 시"
 "간을 판별하십시오."
 
-#: include/global_form.php:196 lib/rrd.php:2849
+#: include/global_form.php:196 lib/rrd.php:2861
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X 파일 요소"
@@ -9925,7 +10044,7 @@ msgstr "불투명 / 알파 채널"
 msgid "The opacity/alpha channel of the color."
 msgstr "색상의 불투명도 / 알파 채널입니다."
 
-#: include/global_form.php:955 lib/rrd.php:2845
+#: include/global_form.php:955 lib/rrd.php:2857
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "통합 기능"
@@ -10872,7 +10991,7 @@ msgstr "데이터"
 msgid "Visual"
 msgstr "시각적"
 
-#: include/global_settings.php:44 lib/functions.php:3819 lib/functions.php:3824
+#: include/global_settings.php:44 lib/functions.php:3802 lib/functions.php:3807
 msgid "Authentication"
 msgstr "인증"
 
@@ -10915,12 +11034,12 @@ msgstr "그래프 글꼴"
 msgid "PHP Mail() Function"
 msgstr "PHP 메일 () 함수"
 
-#: include/global_settings.php:91 lib/functions.php:3802
+#: include/global_settings.php:91 lib/functions.php:3785
 #, fuzzy
 msgid "Sendmail"
 msgstr "메일을 보내다"
 
-#: include/global_settings.php:92 lib/functions.php:3807
+#: include/global_settings.php:92 lib/functions.php:3790
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11188,10 +11307,11 @@ msgid "Data Source Tracing"
 msgstr "사용하는 데이터 소스"
 
 #: include/global_settings.php:278
+#, fuzzy
 msgid ""
 "A developer only option to trace the creation of Data Sources mainly around "
 "checks for uniqueness"
-msgstr ""
+msgstr "독창성 검사를 중심으로 데이터 소스 생성을 추적하는 개발자 전용 옵션"
 
 #: include/global_settings.php:283
 #, fuzzy
@@ -11429,7 +11549,7 @@ msgstr ""
 msgid "Simple"
 msgstr "단순"
 
-#: include/global_settings.php:423 lib/html.php:2358
+#: include/global_settings.php:423 lib/html.php:2354
 msgid "Advanced"
 msgstr "고급"
 
@@ -11634,39 +11754,49 @@ msgid "Default Interface Speed"
 msgstr "기본 그래프 유형"
 
 #: include/global_settings.php:541
+#, fuzzy
 msgid ""
 "If Cacti can not determine the interface speed due to either ifSpeed or "
 "ifHighSpeed not being set or being zero, what maximum value do you wish on "
 "the resulting RRDfiles."
 msgstr ""
+"Cacti가 ifSpeed 또는 ifHighSpeed가 설정되지 않았거나 0으로 인해 인터페이스 속"
+"도를 결정할 수없는 경우 결과 RRD 파일에서 최대 값을 원하는대로 설정하십시오."
 
 #: include/global_settings.php:545
+#, fuzzy
 msgid "100 Mbps Ethernet"
-msgstr ""
+msgstr "100Mbps 이더넷"
 
 #: include/global_settings.php:546
+#, fuzzy
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 Gbps 이더넷"
 
 #: include/global_settings.php:547
+#, fuzzy
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10Gbps 이더넷"
 
 #: include/global_settings.php:548
+#, fuzzy
 msgid "25 Gbps Ethernet"
-msgstr ""
+msgstr "25Gbps 이더넷"
 
 #: include/global_settings.php:549
+#, fuzzy
 msgid "40 Gbps Ethernet"
-msgstr ""
+msgstr "40Gbps 이더넷"
 
 #: include/global_settings.php:550
+#, fuzzy
 msgid "56 Gbps Ethernet"
-msgstr ""
+msgstr "56Gbps 이더넷"
 
 #: include/global_settings.php:551
+#, fuzzy
 msgid "100 Gbps Ethernet"
-msgstr ""
+msgstr "100 Gbps 이더넷"
 
 #: include/global_settings.php:554
 #, fuzzy
@@ -13127,7 +13257,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "센드 메일 옵션"
 
-#: include/global_settings.php:1498 lib/functions.php:3802
+#: include/global_settings.php:1498 lib/functions.php:3785
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "센드 메일 경로"
@@ -13719,7 +13849,7 @@ msgstr "표준 편차"
 msgid "Variance Based w/Outliers Removed"
 msgstr "차이가 제거 된 Outliers가 제거 된 분산"
 
-#: include/global_settings.php:1864 lib/html.php:2083
+#: include/global_settings.php:1864 lib/html.php:2079
 #, fuzzy
 msgid "Replacement Method"
 msgstr "교체 방법"
@@ -13736,16 +13866,16 @@ msgstr ""
 "균으로 바꿉니다. 두 번째 방법은 스파이크를 &#39;NaN&#39;으로 바꿉니다. 마지막"
 "으로 스파이크를 마지막으로 발견 된 양호한 값으로 대체합니다."
 
-#: include/global_settings.php:1869 lib/html.php:2079
+#: include/global_settings.php:1869 lib/html.php:2075
 msgid "Average"
 msgstr "평균"
 
-#: include/global_settings.php:1870 lib/html.php:2080
+#: include/global_settings.php:1870 lib/html.php:2076
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN"
 
-#: include/global_settings.php:1871 lib/html.php:2081
+#: include/global_settings.php:1871 lib/html.php:2077
 #, fuzzy
 msgid "Last Known Good"
 msgstr "마지막으로 성공한 좋은 점"
@@ -13774,7 +13904,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "% d 표준 편차"
 
-#: include/global_settings.php:1892 lib/html.php:2095
+#: include/global_settings.php:1892 lib/html.php:2091
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "분산 비율"
@@ -14339,16 +14469,22 @@ msgstr ""
 "사용하려면 JavaScript를 활성화해야합니다."
 
 #: install/install.php:83
+#, fuzzy
 msgid ""
 "FATAL: We are unable to continue with this installation. In order to install "
 "Cacti, PHP must be at version 5.4 or later."
 msgstr ""
+"치명적 :이 설치를 계속할 수 없습니다. Cacti를 설치하려면 PHP가 버전 5.4 이상"
+"이어야합니다."
 
 #: install/install.php:86
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php"
 "\">JavaScript Object Notation</a>."
 msgstr ""
+"PHP Manual : <a href=\"http://php.net/manual/en/book.json.php\">JavaScript "
+"Object Notation을</a> 참고하십시오."
 
 #: install/install.php:86
 #, fuzzy
@@ -14356,14 +14492,18 @@ msgid "The php-json module must also be installed."
 msgstr "설치 한 RRDtool의 버전입니다."
 
 #: install/install.php:90
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini."
 "disable-functions\">Disable Functions</a>."
 msgstr ""
+"PHP Manual : <a href=\"http://php.net/manual/en/ini.core.php#ini.disable-"
+"functions\">Disable Functions를</a> 보라."
 
 #: install/install.php:90
+#, fuzzy
 msgid "The shell_exec() and/or exec() functions are currently blocked."
-msgstr ""
+msgstr "shell_exec () 및 / 또는 exec () 함수는 현재 차단되어 있습니다."
 
 #: lib/aggregate.php:51
 #, fuzzy
@@ -14436,7 +14576,7 @@ msgstr "매칭 장치"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070
 #: lib/clog_webapi.php:519 lib/html_reports.php:603 lib/html_reports.php:1344
-#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2791
+#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2799
 #: utilities.php:339 utilities.php:1106 utilities.php:2475
 msgid "Type"
 msgstr "유형"
@@ -14470,7 +14610,7 @@ msgstr ""
 msgid "Matching Objects [ %s ]"
 msgstr "개체 일치 [ %s]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:884 plugins/thold_functions.php:128
 #, fuzzy
 msgid "Device Status"
 msgstr "장치 상태"
@@ -14626,7 +14766,7 @@ msgstr "세션"
 msgid "Host"
 msgstr "호스트"
 
-#: lib/api_device.php:1060
+#: lib/api_device.php:1060 plugins/thold_functions.php:253
 #, fuzzy
 msgid "System:"
 msgstr "시스템"
@@ -14648,8 +14788,8 @@ msgstr "위치:"
 msgid "Contact:"
 msgstr "연락처:"
 
-#: lib/api_device.php:1101 lib/functions.php:3833 lib/functions.php:3835
-#: lib/functions.php:3839
+#: lib/api_device.php:1101 lib/functions.php:3816 lib/functions.php:3818
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping 결과"
@@ -15202,17 +15342,22 @@ msgid "Unknown Index"
 msgstr "알 수없는 색인"
 
 #: lib/data_query.php:2108
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
 "checkbox to its right"
 msgstr ""
+"데이터 소스 ' %s'에 대한 XML 출력 열을 선택하고 오른쪽으로 확인란을 전환해야"
+"합니다."
 
 #: lib/data_query.php:2114
+#, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
 "Graph Template"
 msgstr ""
+"그래프 템플릿에 데이터 템플릿이 사용되지 않았습니다. 그래프 템플릿을 수정하십"
+"시오."
 
 #: lib/database.php:1482
 #, fuzzy
@@ -15267,7 +15412,7 @@ msgstr "RRD 파일에 폴러가 쓸 수 없습니다. RRD 소유자 :"
 
 #: lib/dsdebug.php:279
 #, fuzzy
-msgid "RRDfile does not match Data Profile"
+msgid "RRDfile does not match Data Source"
 msgstr "RRD 파일이 데이터 프로필과 일치하지 않습니다."
 
 #: lib/dsdebug.php:284
@@ -15314,12 +15459,12 @@ msgstr "일반 사용자로 로그인"
 msgid "guest"
 msgstr "명"
 
-#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2310
+#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2306
 #, fuzzy
 msgid "User Community"
 msgstr "사용자 커뮤니티"
 
-#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2311
+#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
 #: lib/utility.php:1012
 msgid "Documentation"
 msgstr "문서"
@@ -15348,7 +15493,7 @@ msgstr "비 쿼리 기반"
 msgid "Link %s"
 msgstr "%s 링크"
 
-#: lib/functions.php:3324
+#: lib/functions.php:3307
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15357,27 +15502,27 @@ msgstr ""
 "메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메일 테스트</i> 링크를 "
 "사용하는 경우 <b>경고 전자 메일</b> 설정을 지정하십시오."
 
-#: lib/functions.php:3766
+#: lib/functions.php:3749
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "인증 실패 :  %s"
 
-#: lib/functions.php:3770
+#: lib/functions.php:3753
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO 실패 :  %s"
 
-#: lib/functions.php:3773
+#: lib/functions.php:3756
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "연결 실패 :  %s"
 
-#: lib/functions.php:3776
+#: lib/functions.php:3759
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP 오류 :"
 
-#: lib/functions.php:3789
+#: lib/functions.php:3772
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15386,80 +15531,80 @@ msgstr ""
 "Cacti에서 생성 된 테스트 메시지입니다. 이 메시지는 메일 설정의 구성을 테스트"
 "하기 위해 전송되었습니다."
 
-#: lib/functions.php:3790
+#: lib/functions.php:3773
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "이메일 설정은 현재 다음과 같이 설정되어 있습니다."
 
-#: lib/functions.php:3791
+#: lib/functions.php:3774
 msgid "Method"
 msgstr "방법"
 
-#: lib/functions.php:3793
+#: lib/functions.php:3776
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "구성 확인 중 ... <br>"
 
-#: lib/functions.php:3800
+#: lib/functions.php:3783
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP 메일러 클래스"
 
-#: lib/functions.php:3806
+#: lib/functions.php:3789
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "방법 : SMTP"
 
-#: lib/functions.php:3821
+#: lib/functions.php:3804
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "보안상의 이유로 표시되지 않음"
 
-#: lib/functions.php:3822
+#: lib/functions.php:3805
 msgid "Security"
 msgstr "보안"
 
-#: lib/functions.php:3830
+#: lib/functions.php:3813
 #, fuzzy
 msgid "Ping Results:"
 msgstr "핑 결과 :"
 
-#: lib/functions.php:3839
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Bypassed"
 msgstr "우회"
 
-#: lib/functions.php:3847
+#: lib/functions.php:3830
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "메시지 텍스트 작성 중 ..."
 
-#: lib/functions.php:3850
+#: lib/functions.php:3833
 #, fuzzy
 msgid "Sending Message..."
 msgstr "메시지를 보내는 중 ..."
 
-#: lib/functions.php:3854
+#: lib/functions.php:3837
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "선인장 테스트 메시지"
 
-#: lib/functions.php:3856
+#: lib/functions.php:3839
 msgid "Success!"
 msgstr "성공!"
 
-#: lib/functions.php:3859
+#: lib/functions.php:3842
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "핑 실패로 인해 메시지가 전송되지 않았습니다."
 
-#: lib/functions.php:4453 lib/functions.php:4514 poller.php:343 poller.php:456
-#: poller.php:518 poller.php:541 poller.php:682
+#: lib/functions.php:4436 lib/functions.php:4497 poller.php:323 poller.php:436
+#: poller.php:498 poller.php:521 poller.php:662
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "선인장 시스템 경고"
 
-#: lib/functions.php:4453 lib/functions.php:4514
+#: lib/functions.php:4436 lib/functions.php:4497
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15468,17 +15613,17 @@ msgstr ""
 "Cacti 플러그인  %s이 (가) 다음 오류 때문에 비활성화되었습니다 :  %s! 자세한 "
 "내용은 Cacti 로그 파일을 참조하십시오."
 
-#: lib/functions.php:4890 lib/functions.php:4892
+#: lib/functions.php:4873 lib/functions.php:4875
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- 베타  %s"
 
-#: lib/functions.php:4890
+#: lib/functions.php:4873
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "버전  %s  %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4875
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15503,7 +15648,7 @@ msgstr "데이터 쿼리 :"
 msgid "CSV Export of Graph Data"
 msgstr "그래프 데이터의 CSV 내보내기"
 
-#: lib/html.php:443 lib/html.php:2299
+#: lib/html.php:443 lib/html.php:2295
 #, fuzzy
 msgid "Time Graph View"
 msgstr "시간 그래프보기"
@@ -15551,356 +15696,356 @@ msgstr "알파 %"
 msgid "No Task"
 msgstr "묻지 않는다"
 
-#: lib/html.php:1380
+#: lib/html.php:1376
 #, fuzzy
 msgid "Choose an action"
 msgstr "액션 선택"
 
-#: lib/html.php:1390
+#: lib/html.php:1386
 #, fuzzy
 msgid "Execute Action"
 msgstr "액션 실행"
 
-#: lib/html.php:1589 lib/html.php:1591 lib/html.php:1671 managers.php:41
+#: lib/html.php:1585 lib/html.php:1587 lib/html.php:1667 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "로그"
 
-#: lib/html.php:2087
+#: lib/html.php:2083
 #, fuzzy, php-format
 msgid "%s Standard Deviations"
 msgstr "%s 표준 편차"
 
-#: lib/html.php:2089
+#: lib/html.php:2085
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "표준 편차"
 
-#: lib/html.php:2099
+#: lib/html.php:2095
 #, fuzzy, php-format
 msgid "%d Outliers"
 msgstr "% d 이상 치"
 
-#: lib/html.php:2101
+#: lib/html.php:2097
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "분산 이상 치"
 
-#: lib/html.php:2105
+#: lib/html.php:2101
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d 개의 스파이크"
 
-#: lib/html.php:2107
+#: lib/html.php:2103
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "RRA 당 Kills"
 
-#: lib/html.php:2113
+#: lib/html.php:2109
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "StdDev 제거"
 
-#: lib/html.php:2114
+#: lib/html.php:2110
 #, fuzzy
 msgid "Remove Variance"
 msgstr "차이 제거"
 
-#: lib/html.php:2115
+#: lib/html.php:2111
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "갭 필 범위"
 
-#: lib/html.php:2116
+#: lib/html.php:2112
 #, fuzzy
 msgid "Float Range"
 msgstr "플로트 범위"
 
-#: lib/html.php:2118
+#: lib/html.php:2114
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "드라이 런 StdDev"
 
-#: lib/html.php:2119
+#: lib/html.php:2115
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "드라이 런 차이"
 
-#: lib/html.php:2120
+#: lib/html.php:2116
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "드라이 런 갭 충진 범위"
 
-#: lib/html.php:2121
+#: lib/html.php:2117
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "드라이 런 플로트 범위"
 
-#: lib/html.php:2296 lib/html_filter.php:66
+#: lib/html.php:2292 lib/html_filter.php:66
 #, fuzzy
 msgid "Enter a search term"
 msgstr "검색어 입력"
 
-#: lib/html.php:2297
+#: lib/html.php:2293
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "정규 표현식 입력"
 
-#: lib/html.php:2298
+#: lib/html.php:2294
 msgid "No file selected"
 msgstr "선택된 파일이 없음"
 
-#: lib/html.php:2301 lib/html.php:2314
+#: lib/html.php:2297 lib/html.php:2310
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "스파이크 킬 결과"
 
-#: lib/html.php:2303
+#: lib/html.php:2299
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "실시간으로이 그래프 만 보려면 클릭하십시오."
 
-#: lib/html.php:2304
+#: lib/html.php:2300
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "이 그래프를 실시간으로 가져 오려면 다시 클릭하십시오."
 
-#: lib/html.php:2308
+#: lib/html.php:2304
 #, fuzzy
 msgid "Cacti Home"
 msgstr "선인장 홈"
 
-#: lib/html.php:2309
+#: lib/html.php:2305
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "선인장 프로젝트 페이지"
 
-#: lib/html.php:2312
+#: lib/html.php:2308
 msgid "Report a bug"
 msgstr "버그 보고하기"
 
-#: lib/html.php:2315
+#: lib/html.php:2311
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "클릭하여 필터 표시 / 숨기기"
 
-#: lib/html.php:2316
+#: lib/html.php:2312
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "현재 필터 지우기"
 
-#: lib/html.php:2317
+#: lib/html.php:2313
 #, fuzzy
 msgid "Clipboard"
 msgstr "클립 보드"
 
-#: lib/html.php:2318
+#: lib/html.php:2314
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "클립 보드 ID"
 
-#: lib/html.php:2319
+#: lib/html.php:2315
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "현재 복사 작업을 사용할 수 없습니다."
 
-#: lib/html.php:2320
+#: lib/html.php:2316
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "복사 할 데이터를 찾지 못했습니다!"
 
-#: lib/html.php:2321
+#: lib/html.php:2317
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "클립 보드가 업데이트되었습니다."
 
-#: lib/html.php:2322
+#: lib/html.php:2318
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "죄송합니다. 현재 클립 보드를 업데이트 할 수 없습니다."
 
-#: lib/html.php:2326
+#: lib/html.php:2322
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "암호 길이가 최소 8자를 충족시킵니다."
 
-#: lib/html.php:2327
+#: lib/html.php:2323
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "암호가 너무 짧다."
 
-#: lib/html.php:2328
+#: lib/html.php:2324
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "암호는 일치하지만 너무 짧습니다."
 
-#: lib/html.php:2329
+#: lib/html.php:2325
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "암호가 너무 짧고 일치하지 않습니다."
 
-#: lib/html.php:2330
+#: lib/html.php:2326
 #, fuzzy
 msgid "Passphrases match"
 msgstr "암호가 일치 함"
 
-#: lib/html.php:2331
+#: lib/html.php:2327
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "암호가 일치하지 않습니다."
 
-#: lib/html.php:2332
+#: lib/html.php:2328
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "죄송합니다. 마지막 작업을 처리 할 수 없습니다."
 
-#: lib/html.php:2333
+#: lib/html.php:2329
 msgid "Error:"
 msgstr "오류:"
 
-#: lib/html.php:2334
+#: lib/html.php:2330
 #, fuzzy
 msgid "Reason:"
 msgstr "이유:"
 
-#: lib/html.php:2335
+#: lib/html.php:2331
 #, fuzzy
 msgid "Action failed"
 msgstr "작업이 실패했습니다."
 
-#: lib/html.php:2336
+#: lib/html.php:2332
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "마지막 행동에 대한 반응은 예상치 못했습니다."
 
-#: lib/html.php:2337
+#: lib/html.php:2333
 msgid "Some Actions failed"
 msgstr "일부 조치가 실패했습니다."
 
-#: lib/html.php:2338
+#: lib/html.php:2334
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "모든 행동을 처리 할 수는 없습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2339
+#: lib/html.php:2335
 #, fuzzy
 msgid "Operation successful"
 msgstr "작업 성공"
 
-#: lib/html.php:2340
+#: lib/html.php:2336
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "작업이 성공적으로 완료되었습니다. 세부 사항은 아래와 같습니다."
 
-#: lib/html.php:2342
+#: lib/html.php:2338
 msgid "Pause"
 msgstr "일시 정지"
 
-#: lib/html.php:2345
+#: lib/html.php:2341
 msgid "Zoom In"
 msgstr "확대"
 
-#: lib/html.php:2346
+#: lib/html.php:2342
 msgid "Zoom Out"
 msgstr "축소"
 
-#: lib/html.php:2347
+#: lib/html.php:2343
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "축소 계수"
 
-#: lib/html.php:2348
+#: lib/html.php:2344
 #, fuzzy
 msgid "Timestamps"
 msgstr "타임 스탬프"
 
-#: lib/html.php:2349
+#: lib/html.php:2345
 #, fuzzy
 msgid "2x"
 msgstr "2 배"
 
-#: lib/html.php:2350
+#: lib/html.php:2346
 #, fuzzy
 msgid "4x"
 msgstr "4 배"
 
-#: lib/html.php:2351
+#: lib/html.php:2347
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2352
+#: lib/html.php:2348
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2353
+#: lib/html.php:2349
 #, fuzzy
 msgid "32x"
 msgstr "32 배"
 
-#: lib/html.php:2354
+#: lib/html.php:2350
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "위치 조정 축소"
 
-#: lib/html.php:2355
+#: lib/html.php:2351
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "줌 모드"
 
-#: lib/html.php:2357
+#: lib/html.php:2353
 msgid "Quick"
 msgstr "빨리"
 
-#: lib/html.php:2359
+#: lib/html.php:2355
 #, fuzzy
 msgid "Open in new tab"
 msgstr "새 탭에서 열기"
 
-#: lib/html.php:2360
+#: lib/html.php:2356
 #, fuzzy
 msgid "Save graph"
 msgstr "그래프 저장"
 
-#: lib/html.php:2361
+#: lib/html.php:2357
 #, fuzzy
 msgid "Copy graph"
 msgstr "그래프 복사"
 
-#: lib/html.php:2362
+#: lib/html.php:2358
 #, fuzzy
 msgid "Copy graph link"
 msgstr "그래프 링크 복사"
 
-#: lib/html.php:2363
+#: lib/html.php:2359
 #, fuzzy
 msgid "Always On"
 msgstr "항상 켜기"
 
-#: lib/html.php:2364
+#: lib/html.php:2360
 msgid "Auto"
 msgstr "자동"
 
-#: lib/html.php:2365
+#: lib/html.php:2361
 #, fuzzy
 msgid "Always Off"
 msgstr "항상 꺼짐"
 
-#: lib/html.php:2366
+#: lib/html.php:2362
 #, fuzzy
 msgid "Begin with"
 msgstr "시작하다"
 
-#: lib/html.php:2368
+#: lib/html.php:2364
 #, fuzzy
 msgid "End with"
 msgstr "종료일"
 
-#: lib/html.php:2370 lib/html_form.php:1279
+#: lib/html.php:2366 lib/html_form.php:1279
 msgid "Close"
 msgstr "닫기"
 
-#: lib/html.php:2372
+#: lib/html.php:2368
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "세 번째 마우스 버튼"
@@ -17054,13 +17199,16 @@ msgid "License Agreement"
 msgstr "라이센스 계약"
 
 #: lib/installer.php:1515
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "This version of Cacti (%s) does not appear to have a valid version code, "
 "please contact the Cacti Development Team to ensure this is corected.  If "
 "you are seeing this error in a release, please raise a report immediately on "
 "GitHub"
 msgstr ""
+"이 버전의 Cacti ( %s)는 유효한 버전 코드가없는 것으로 보입니다. Cacti "
+"Development Team에 연락하여이 코드가 적용되었는지 확인하십시오. 릴리스에서이 "
+"오류가 표시되는 경우 GitHub에서 즉시 보고서를 제출하십시오."
 
 #: lib/installer.php:1518
 #, fuzzy
@@ -18045,23 +18193,24 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "설치가  %s에서 시작되어  %s에서 완료되었습니다."
 
 #: lib/installer.php:3181
+#, fuzzy
 msgid "Both"
-msgstr ""
+msgstr "모두"
 
 #: lib/installer.php:3181
-#, php-format
+#, fuzzy, php-format
 msgid "No - %s"
-msgstr ""
+msgstr "분"
 
 #: lib/installer.php:3183 lib/installer.php:3185
-#, php-format
+#, fuzzy, php-format
 msgid "%s - No"
-msgstr ""
+msgstr "분"
 
 #: lib/installer.php:3183
 #, fuzzy
 msgid "Web"
-msgstr "2월"
+msgstr "웹"
 
 #: lib/installer.php:3185
 #, fuzzy
@@ -18227,31 +18376,31 @@ msgstr "TCP 핑이 시간 초과되었습니다."
 msgid "Ping not performed due to setting."
 msgstr "설정으로 인해 핑이 수행되지 않았습니다."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:564
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s 버전  %s 이상이 필요합니다."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:568
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s에는  %s이 (가) 필요하며 설치되지 않았습니다."
 
-#: lib/plugins.php:581
+#: lib/plugins.php:583
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "플러그인을 설치할 수 없습니다."
 
-#: lib/plugins.php:949 lib/plugins.php:956 plugins.php:386 plugins.php:463
+#: lib/plugins.php:951 lib/plugins.php:958 plugins.php:386 plugins.php:463
 msgid "Plugins"
 msgstr "플러그인"
 
-#: lib/plugins.php:967 lib/plugins.php:973
+#: lib/plugins.php:969 lib/plugins.php:975
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "요구 사항 : Cacti&gt; =  %s"
 
-#: lib/plugins.php:970
+#: lib/plugins.php:972
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "레거시 플러그인"
@@ -18320,198 +18469,198 @@ msgstr ""
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "건너 뛴 보고서 그래프 항목 &#39; <i> %s</i> &#39;이 (가) 이미 있음"
 
-#: lib/rrd.php:2564
+#: lib/rrd.php:2572
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "필수 RRD 단계 크기는 &#39; %s&#39;입니다."
 
-#: lib/rrd.php:2593
+#: lib/rrd.php:2601
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "데이터 원본 &#39; %s&#39;의 형식이 &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2598
+#: lib/rrd.php:2606
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "데이터 원본 &#39; %s&#39;의 하트 비트가 &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2610
+#: lib/rrd.php:2618
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "데이터 원본 &#39; %s&#39;의 RRD 최소값은 &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2627
+#: lib/rrd.php:2635
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "데이터 원본 &#39; %s&#39;의 RRD 최대 값은 &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2637
+#: lib/rrd.php:2645
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRDfile에서 DS &#39; %s&#39;이 누락되었습니다."
 
-#: lib/rrd.php:2646
+#: lib/rrd.php:2654
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "Cacti 정의에서 DS &#39; %s&#39;이 누락되었습니다."
 
-#: lib/rrd.php:2663 lib/rrd.php:2664
+#: lib/rrd.php:2671 lib/rrd.php:2672
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "선인장 RRA &#39; %s&#39;의 CF / 스텝 수 ( %s,  %s)가 &#39; %s&#39;"
 
-#: lib/rrd.php:2678 lib/rrd.php:2679
+#: lib/rrd.php:2686 lib/rrd.php:2687
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "파일 RRA &#39; %s&#39;은 (는) &#39; %s&#39;(으)로 동일한 CF / 단계 ( %s,  %s)"
 
-#: lib/rrd.php:2710
+#: lib/rrd.php:2718
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr ""
 "선인장에 대한 XFF RRA id &#39; %s&#39;은 (는) &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2714
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Cacti RRA id &#39; %s&#39;의 행 수는 &#39; %s&#39;이어야합니다."
 
-#: lib/rrd.php:2730
+#: lib/rrd.php:2738
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39; %s&#39;은 (는) RRDfile에 없습니다."
 
-#: lib/rrd.php:2739
+#: lib/rrd.php:2747
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Cacti 정의에서 RRA &#39; %s&#39;이 누락되었습니다."
 
-#: lib/rrd.php:2758
+#: lib/rrd.php:2766
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RRD 파일 정보"
 
-#: lib/rrd.php:2790
+#: lib/rrd.php:2798
 #, fuzzy
 msgid "Data Source Items"
 msgstr "데이터 소스 항목"
 
-#: lib/rrd.php:2792
+#: lib/rrd.php:2800
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "최소 하트 비트"
 
-#: lib/rrd.php:2793
+#: lib/rrd.php:2801
 msgid "Min"
 msgstr "최소"
 
-#: lib/rrd.php:2794
+#: lib/rrd.php:2802
 msgid "Max"
 msgstr "최대"
 
-#: lib/rrd.php:2795
+#: lib/rrd.php:2803
 #, fuzzy
 msgid "Last DS"
 msgstr "마지막 DS"
 
-#: lib/rrd.php:2797
+#: lib/rrd.php:2805
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "알 수없는 초"
 
-#: lib/rrd.php:2844
+#: lib/rrd.php:2856
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "라운드 로빈 아카이브"
 
-#: lib/rrd.php:2847
+#: lib/rrd.php:2859
 #, fuzzy
 msgid "Cur Row"
 msgstr "커 로우"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2860
 #, fuzzy
 msgid "PDP per Row"
 msgstr "행당 PDP"
 
-#: lib/rrd.php:2850
+#: lib/rrd.php:2862
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP 준비 값 (0)"
 
-#: lib/rrd.php:2851
+#: lib/rrd.php:2863
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP 알 수없는 데이터 요소 (0)"
 
-#: lib/rrd.php:2928
+#: lib/rrd.php:2940
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "%s에서  %s (으)로 이름 바꾸기"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "rrdtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다."
 
-#: lib/rrd.php:3010 lib/rrd.php:3065 lib/rrd.php:3121
+#: lib/rrd.php:3022 lib/rrd.php:3077 lib/rrd.php:3133
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XML 파일을 쓰는 동안 오류가 발생했습니다 :  %s"
 
-#: lib/rrd.php:3021 lib/rrd.php:3076 lib/rrd.php:3132
+#: lib/rrd.php:3033 lib/rrd.php:3088 lib/rrd.php:3144
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "오류 : RRD 파일  %s을 (를) 쓸 수 없습니다."
 
-#: lib/rrd.php:3048 lib/rrd.php:3104
+#: lib/rrd.php:3060 lib/rrd.php:3116
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtool 덤프의 XML을 구문 분석하는 동안 오류가 발생했습니다."
 
-#: lib/rrd.php:3337
+#: lib/rrd.php:3349
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
 "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f)가 RRD 파일에서 제"
 "거되었습니다."
 
-#: lib/rrd.php:3371
+#: lib/rrd.php:3383
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 "RRA (CF =  %s, ROWS = % d, PDP_PER_ROW = % d, XFF = % 1.2f) RRD 파일에 추가"
 
-#: lib/rrd.php:3401 lib/rrd.php:3415
+#: lib/rrd.php:3413 lib/rrd.php:3427
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr ""
 "웹 사이트에  %s에 대한 쓰기 권한이 없으며 RRD를 만들거나 업데이트 할 수 없음"
 
-#: lib/rrd.php:3411
+#: lib/rrd.php:3423
 #, fuzzy
 msgid "(Custom)"
 msgstr "사용자 정의"
 
-#: lib/rrd.php:3417
+#: lib/rrd.php:3429
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr ""
 "데이터 파일을 열지 못했습니다. 폴러가 아직 실행되지 않았을 수 있습니다."
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRA 폴더"
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "Root"
 msgstr "뿌리"
 
-#: lib/rrd.php:3523
+#: lib/rrd.php:3535
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "알 수없는 RRDtool 오류"
@@ -18687,11 +18836,15 @@ msgstr ""
 "있습니다."
 
 #: lib/utility.php:943
+#, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
 "innodb_file_format to Barracuda.  This setting will allow longer indexes "
 "important for certain Cacti tables."
 msgstr ""
+"innodb_file_per_table을 사용할 때, innodb_file_format을 바라쿠다로 설정하는 "
+"것이 중요합니다. 이 설정을 사용하면 특정 Cacti 테이블에서 더 긴 인덱스를 사용"
+"할 수 있습니다."
 
 #: lib/utility.php:949
 #, fuzzy, php-format
@@ -18837,8 +18990,9 @@ msgid "A minimum of %s m execution time"
 msgstr "최소  %sm 실행 시간"
 
 #: lib/utility.php:1393
+#, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
-msgstr ""
+msgstr "MySQL 및 시스템과 일치하는 유효한 시간대"
 
 #: lib/vdef.php:75
 #, fuzzy
@@ -18926,7 +19080,7 @@ msgstr "주문 정렬"
 #: links.php:429
 #, fuzzy
 msgid "No Pages Found"
-msgstr "페이지를 찾을 수 없음"
+msgstr "페이지르 찾을 수 없습니다"
 
 #: links.php:513
 #, fuzzy
@@ -19438,7 +19592,182 @@ msgstr "플러그인이 Cacti 코어에 통합되었습니다."
 msgid "Plugin is not compatible"
 msgstr "플러그인이 호환되지 않습니다."
 
-#: poller.php:343
+#: plugins/thold_functions.php:126
+#, fuzzy
+msgid "Thresholds"
+msgstr "참여글"
+
+#: plugins/thold_functions.php:127
+#, fuzzy
+msgid "Log"
+msgstr "로그"
+
+#: plugins/thold_functions.php:251
+#, fuzzy
+msgid "Time:"
+msgstr "시간"
+
+#: plugins/thold_functions.php:252 utilities.php:1854
+msgid "User:"
+msgstr "회원:"
+
+#: plugins/thold_functions.php:254
+#, fuzzy
+msgid "Swaps:"
+msgstr "스왑 :"
+
+#: plugins/thold_functions.php:255
+#, fuzzy
+msgid "Pages:"
+msgstr "페이지:"
+
+#: plugins/thold_functions.php:3193
+#, fuzzy
+msgid "Link to Graph in Cacti"
+msgstr "Cacti에 로그인"
+
+#: plugins/thold_functions.php:3214
+#, fuzzy
+msgid ""
+"<html><body>An alert has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> 주의가 필요한 경고가 발행되었습니다. <br><br> <b>기기</b> : "
+"<DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>메시지</b> : "
+"<SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3240
+#, fuzzy
+msgid ""
+"<html><body>A warning has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> 주의가 필요한 경고가 발행되었습니다. <br><br> <b>기기</b> : "
+"<DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>메시지</b> : "
+"<SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3909
+#, fuzzy
+msgid "The Device ID was not set while trying to create Graph and Threshold"
+msgstr ""
+"그래프 및 임계 값을 만들려고 시도하는 동안 장치 ID가 설정되지 않았습니다."
+
+#: plugins/thold_functions.php:3923
+#, fuzzy
+msgid ""
+"The Threshold Template ID was not set while trying to create Graph and "
+"Threshold"
+msgstr ""
+"그래프 및 임계 값을 생성하는 동안 임계 값 템플릿 ID가 설정되지 않았습니다."
+
+#: plugins/thold_functions.php:3961
+#, fuzzy
+msgid "The Graph Creation failed for Threshold Template"
+msgstr "이 보고서 항목에 사용할 그래프입니다."
+
+#: plugins/thold_functions.php:3991
+#, fuzzy
+msgid "Threshold was Autocreated due to Device Template mapping"
+msgstr "장치 템플릿에 데이터 쿼리 추가"
+
+#: plugins/thold_functions.php:4029 plugins/thold_functions.php:4377
+#, fuzzy
+msgid "Record Updated"
+msgstr "RRD 업데이트 됨"
+
+#: plugins/thold_functions.php:4079
+#, fuzzy
+msgid ""
+"You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or "
+"both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"'높은 경고 임계 값'또는 '낮은 경고 임계 값'또는 둘 모두를 지정해야합니다! "
+"<br> 기록이 업데이트되지 않았습니다!"
+
+#: plugins/thold_functions.php:4091
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Threshold' smaller than or equal to 'Low "
+"Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"불가능한 문턱 값 : '높은 문턱 값'이 '낮은 문턱 값'보다 작거나 같음 <br> 기록"
+"이 업데이트되지 않았습니다!"
+
+#: plugins/thold_functions.php:4103
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Warning Threshold' smaller than or equal to "
+"'Low Warning Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"가능한 한계 값 : '높은 경고 한계 값'보다 작거나 같은 '높은 경고 한계 값' "
+"<br> 기록이 업데이트되지 않았습니다!"
+
+#: plugins/thold_functions.php:4111
+#, fuzzy
+msgid "With baseline thresholds enabled."
+msgstr "기본 임계 값을 사용합니다."
+
+#: plugins/thold_functions.php:4120
+#, fuzzy
+msgid ""
+"You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' "
+"or both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"'Baseline Deviation UP'또는 'Baseline Deviation DOWN'또는 둘 다를 지정해야합"
+"니다! <br> 기록이 업데이트되지 않았습니다!"
+
+#: plugins/thold_functions.php:4321
+#, fuzzy, php-format
+msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
+msgstr ""
+"임계 값 '% d'에서 연결된 그래프 템플릿 항목 '% d'을 (를) 찾지 못했습니다."
+
+#: plugins/thold_functions.php:4331
+#, fuzzy
+msgid " What? Permission Denied"
+msgstr "사용 권한이 거부되었습니다."
+
+#: plugins/thold_functions.php:4375
+#, fuzzy, php-format
+msgid "Created threshold: %s"
+msgstr "그래프 생성 :  %s"
+
+#: plugins/thold_functions.php:4444
+#, fuzzy, php-format
+msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
+msgstr ""
+"' %s'은 (는) 양의 정수 값으로 설정되어야합니다! <br> 기록이 업데이트되지 않았"
+"습니다!"
+
+#: plugins/thold_functions.php:4591
+#, fuzzy
+msgid "No Thresholds Templates associated with the Device's Template."
+msgstr "이 사이트와 관련된 주."
+
+#: plugins/thold_functions.php:4666
+#, fuzzy
+msgid ""
+"No Threshold(s) Created.  They either already exist, or there were not "
+"matching combinations found."
+msgstr "생성 된 임계 값 없음. 이미 존재하거나 일치하는 조합을 찾지 못했습니다."
+
+#: plugins/thold_functions.php:4736
+#, fuzzy, php-format
+msgid "Created Threshold: %s<br>"
+msgstr "그래프 생성 :  %s"
+
+#: plugins/thold_functions.php:4771
+#, fuzzy
+msgid ""
+"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
+"link, please set the <b>Alert Email</b> setting."
+msgstr ""
+"메일러 오류 : <b>TO</b> 주소 세트가 없습니다! <br> <i>메일 테스트</i> 링크를 "
+"사용하는 경우 <b>경고 전자 메일</b> 설정을 지정하십시오."
+
+#: poller.php:323
 #, fuzzy, php-format
 msgid ""
 "WARNING: %s is out of sync with the Poller Interval!  The Poller Interval is "
@@ -19448,7 +19777,7 @@ msgstr ""
 "경고 :  %s이 (가) 폴러 간격과 일치하지 않습니다! 폴러 간격은 &#39;% d&#39;초"
 "이며 &#39;% d&#39;초가 최대이지만 마지막 폴링 이후 % d 초가 지났습니다."
 
-#: poller.php:456
+#: poller.php:436
 #, fuzzy, php-format
 msgid ""
 "WARNING: There are '%d' detected as overrunning a polling cycle, please "
@@ -19456,18 +19785,18 @@ msgid ""
 msgstr ""
 "경고 : 폴링주기 초과로 &#39;% d&#39;이 (가) 발견되었습니다. 조사하십시오."
 
-#: poller.php:518
+#: poller.php:498
 #, fuzzy, php-format
 msgid "WARNING: Poller Output Table not Empty.  Issues: %d, %s."
 msgstr "경고 : 폴러 출력 테이블이 비어 있지 않습니다. 문제 : % d,  %s."
 
-#: poller.php:541
+#: poller.php:521
 #, fuzzy, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
 msgstr ""
 "오류 : 척추 경로 :  %s이 (가) 잘못되었습니다. 폴러는 계속할 수 없습니다!"
 
-#: poller.php:682
+#: poller.php:662
 #, fuzzy, php-format
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
 msgstr "% d 초의 최대 실행 시간을 초과했습니다. 나가기."
@@ -19971,7 +20300,7 @@ msgstr "지우기"
 #: rrdcleaner.php:515
 #, fuzzy
 msgid "Rescan"
-msgstr "재검색"
+msgstr "새로 고침"
 
 #: rrdcleaner.php:520
 msgid "Delete All"
@@ -20375,15 +20704,15 @@ msgstr "로컬 파일 저장"
 msgid "Available Templates [%s]"
 msgstr "사용 가능한 템플릿 [ %s]"
 
-#: templates_import.php:106 templates_import.php:128
+#: templates_import.php:108 templates_import.php:130
 msgid "Import Template"
 msgstr "템플릿 가져오기"
 
-#: templates_import.php:108
+#: templates_import.php:110
 msgid "ERROR"
 msgstr "오류"
 
-#: templates_import.php:108
+#: templates_import.php:110
 #, fuzzy
 msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr ""
@@ -20804,18 +21133,19 @@ msgid "Restricted By: "
 msgstr "제한적"
 
 #: user_admin.php:780
+#, fuzzy
 msgid "Granted By: "
-msgstr ""
+msgstr "부여 :"
 
 #: user_admin.php:787
 #, fuzzy
 msgid "Granted"
-msgstr "승인 된 액세스"
+msgstr "허락된"
 
 #: user_admin.php:789 user_admin.php:794
 #, fuzzy
 msgid "Restricted"
-msgstr "제한적"
+msgstr "제한됨"
 
 #: user_admin.php:813 user_group_admin.php:729
 msgid "Allow"
@@ -21634,7 +21964,7 @@ msgstr "구성된"
 #: utilities.php:280
 #, fuzzy
 msgid "Found"
-msgstr "녹이다"
+msgstr "찾다"
 
 #: utilities.php:316 utilities.php:352
 #, php-format
@@ -21935,10 +22265,6 @@ msgstr "커뮤니티"
 #, fuzzy
 msgid "OID:"
 msgstr "OID :"
-
-#: utilities.php:1854
-msgid "User:"
-msgstr "회원:"
 
 #: utilities.php:1857
 #, fuzzy
@@ -22528,6 +22854,14 @@ msgstr "이 VDEF를 사용하는 그래프 템플릿 수입니다."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEF 없음"
+
+#, fuzzy
+#~ msgid "Does the RRA Profile match the RRDfile structure?"
+#~ msgstr "RRA 프로파일이 RRD 파일 구조와 일치합니까?"
+
+#, fuzzy
+#~ msgid "Data Source Troubleshooter"
+#~ msgstr "데이터 소스 문제 해결사"
 
 #, fuzzy
 #~ msgid " Poller RunAs: "

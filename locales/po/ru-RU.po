@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Russian Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-09 16:31+0100\n"
-"PO-Revision-Date: 2018-12-30 16:08-0500\n"
+"POT-Creation-Date: 2019-03-10 09:38-0400\n"
+"PO-Revision-Date: 2019-03-10 10:14-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: KPbIC <Cacti>\n"
 "Language: ru\n"
@@ -12,9 +12,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2383 lib/html.php:2313
+#: about.php:29 include/global_arrays.php:2383 lib/html.php:2309
 msgid "About Cacti"
 msgstr "О Cacti"
 
@@ -181,7 +181,7 @@ msgstr ""
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:267 host_templates.php:281 host_templates.php:292
 #: host_templates.php:341 host_templates.php:404 lib/clog_webapi.php:219
-#: lib/html.php:2344 lib/html_form.php:1248 lib/html_form.php:1260
+#: lib/html.php:2340 lib/html_form.php:1248 lib/html_form.php:1260
 #: lib/html_form.php:1271 lib/html_utility.php:224 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:445 pollers.php:454 pollers.php:463 pollers.php:472
@@ -215,7 +215,7 @@ msgstr "Отмена"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:267 host_templates.php:281
 #: host_templates.php:292 host_templates.php:342 host_templates.php:405
-#: lib/clog_webapi.php:220 lib/html.php:2343 lib/html_reports.php:304
+#: lib/clog_webapi.php:220 lib/html.php:2339 lib/html_reports.php:304
 #: lib/html_utility.php:224 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:445 pollers.php:454
 #: pollers.php:463 pollers.php:472 sites.php:317 tree.php:647 tree.php:656
@@ -415,7 +415,7 @@ msgstr "Детали"
 msgid "Items"
 msgstr "Элементы"
 
-#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1854
+#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1850
 #: lib/html_reports.php:1174
 msgid "Preview"
 msgstr "Предпросмотр"
@@ -484,7 +484,7 @@ msgstr "Сопоставление графиков"
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:818 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
 #: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1395
 #: data_templates.php:845 gprint_presets.php:263 graph_templates.php:657
 #: graph_view.php:586 graphs.php:1877 graphs_new.php:389 host.php:1501
@@ -510,8 +510,8 @@ msgstr "Найти"
 #: aggregate_graphs.php:1447 color_templates.php:561 graph_view.php:452
 #: graph_view.php:645 graph_view.php:694 graphs.php:1883 graphs.php:1996
 #: host.php:1565 include/global_arrays.php:864 include/global_arrays.php:1057
-#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1568
-#: lib/html.php:1570 lib/html.php:1648 lib/html_graph.php:209
+#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1564
+#: lib/html.php:1566 lib/html.php:1644 lib/html_graph.php:209
 #: lib/html_tree.php:1005 lib/html_tree.php:1316 tree.php:787 tree.php:1985
 #: user_admin.php:1004 user_admin.php:1270 user_admin.php:2621
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
@@ -524,7 +524,7 @@ msgstr "Графики"
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:828 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:813
 #: data_queries.php:1287 data_source_profiles.php:844
 #: data_source_profiles.php:965 data_sources.php:1405 data_templates.php:871
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:649
@@ -554,13 +554,13 @@ msgstr "Часть совокупности"
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:747 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:825
 #: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1345
 #: data_templates.php:889 gprint_presets.php:291 graph_templates.php:685
 #: graph_view.php:594 graphs.php:1868 graphs_new.php:378 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
-#: lib/clog_webapi.php:509 lib/html.php:1390 lib/html_filter.php:81
+#: lib/clog_webapi.php:509 lib/html.php:1386 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1540 lib/html_tree.php:992
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:756 sites.php:447 tree.php:1921
@@ -572,7 +572,7 @@ msgstr "Выполнить"
 
 #: aggregate_graphs.php:1119 aggregate_graphs.php:1463
 #: automation_devices.php:476 automation_snmp.php:682
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:747
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
 #: data_input.php:825 data_queries.php:1299 data_source_profiles.php:862
 #: data_sources.php:1345 data_templates.php:889 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:594 graphs.php:1868
@@ -594,7 +594,7 @@ msgstr "Установить/Обновить фильтры"
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:748 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:826
 #: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1346
 #: data_templates.php:890 gprint_presets.php:292 graph_templates.php:686
 #: graph_view.php:595 graphs.php:1869 graphs_new.php:379 host.php:1492
@@ -611,7 +611,7 @@ msgid "Clear"
 msgstr "Очистить"
 
 #: aggregate_graphs.php:1120 aggregate_graphs.php:1464 automation_snmp.php:683
-#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:748
+#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
 #: data_input.php:826 data_queries.php:1300 data_source_profiles.php:863
 #: data_sources.php:1346 data_templates.php:890 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:595 graphs.php:1869
@@ -637,7 +637,7 @@ msgstr "Название Графика"
 
 #: aggregate_graphs.php:1200 aggregate_graphs.php:1528
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:273 data_queries.php:1383 data_sources.php:1529
+#: data_debug.php:346 data_queries.php:1383 data_sources.php:1529
 #: data_templates.php:1000 graph_templates.php:793 graphs.php:2018
 #: host.php:1559 host_templates.php:838 lib/api_automation.php:280
 #: pollers.php:830 sites.php:521 tree.php:1975 user_admin.php:1012
@@ -672,16 +672,17 @@ msgstr "Нет"
 
 #: aggregate_graphs.php:1218 aggregate_templates.php:660
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_debug.php:554 data_input.php:925
-#: data_queries.php:1403 data_source_profiles.php:1004
-#: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1598 data_sources.php:1599 data_templates.php:1025
-#: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
-#: include/global_settings.php:752 include/global_settings.php:1469
-#: lib/api_automation.php:1433 lib/installer.php:1694 lib/installer.php:1722
-#: lib/installer.php:3179 links.php:403 tree.php:2013 tree.php:2014
-#: user_admin.php:2344 user_domains.php:762 user_domains.php:766
-#: user_group_admin.php:1929 vdef.php:906
+#: color_templates.php:578 data_debug.php:629 data_debug.php:634
+#: data_debug.php:639 data_input.php:925 data_queries.php:1403
+#: data_source_profiles.php:1004 data_source_profiles.php:1005
+#: data_source_profiles.php:1006 data_sources.php:1598 data_sources.php:1599
+#: data_templates.php:1025 gprint_presets.php:414 graph_templates.php:814
+#: host_templates.php:857 include/global_settings.php:752
+#: include/global_settings.php:1469 lib/api_automation.php:1433
+#: lib/installer.php:1694 lib/installer.php:1722 lib/installer.php:3179
+#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2344
+#: user_domains.php:762 user_domains.php:766 user_group_admin.php:1929
+#: vdef.php:906
 msgid "Yes"
 msgstr "Да"
 
@@ -695,7 +696,7 @@ msgstr "Графики не найдены"
 msgid "Aggregate Graphs"
 msgstr "Агрегированные графики"
 
-#: aggregate_graphs.php:1425 data_debug.php:721 data_sources.php:1319
+#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1319
 #: graph_view.php:607 graphs.php:1833 graphs.php:2007 host.php:1472
 #: include/global_settings.php:502 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
@@ -708,12 +709,12 @@ msgstr "Шаблон"
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
-#: data_debug.php:725 data_sources.php:1323 graphs.php:1837
+#: data_debug.php:953 data_sources.php:1323 graphs.php:1837
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
 #: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2240
-#: lib/html.php:1932 lib/html.php:1955 lib/html.php:1993
+#: lib/html.php:1928 lib/html.php:1951 lib/html.php:1989
 #: lib/html_reports.php:1519 managers.php:483 managers.php:736
 #: user_admin.php:2603 user_admin.php:2796 user_group_admin.php:2176
 #: user_group_admin.php:2284 utilities.php:692 utilities.php:1399
@@ -725,7 +726,7 @@ msgstr "Любой"
 #: aggregate_graphs.php:1430 aggregate_graphs.php:1542
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
-#: automation_tree_rules.php:949 data_debug.php:726 data_sources.php:899
+#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:899
 #: data_sources.php:1324 data_sources.php:1584 data_templates.php:1027
 #: graphs.php:1467 graphs.php:1476 graphs.php:1838 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
@@ -744,7 +745,7 @@ msgstr "Любой"
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
 #: lib/api_automation.php:1075 lib/auth.php:2243 lib/html.php:192
-#: lib/html.php:1933 lib/html.php:1953 lib/html.php:1994 lib/html_form.php:329
+#: lib/html.php:1929 lib/html.php:1949 lib/html.php:1990 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
 #: settings.php:439 settings.php:465 user_admin.php:2604 user_admin.php:2797
@@ -944,7 +945,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Пожайлуста введите Ваши логин и пароль:"
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
-#: include/global_settings.php:1379 lib/functions.php:3820
+#: include/global_settings.php:1379 lib/functions.php:3803
 msgid "Username"
 msgstr "Имя Пользователя"
 
@@ -1059,7 +1060,7 @@ msgstr "Аутентификация"
 msgid "Enter your Username and Password below"
 msgstr "Введите имя пользователя и пароль ниже"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3821
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3804
 msgid "Password"
 msgstr "Пароль"
 
@@ -1107,18 +1108,18 @@ msgid "User Account Details"
 msgstr "Данные учетной записи пользователя"
 
 #: auth_profile.php:291 include/global_arrays.php:736
-#: include/global_settings.php:2117 lib/html.php:1814 lib/html.php:1836
-#: lib/html.php:2305
+#: include/global_settings.php:2117 lib/html.php:1810 lib/html.php:1832
+#: lib/html.php:2301
 msgid "Tree View"
 msgstr "В виде дерева"
 
-#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1821
-#: lib/html.php:1845 lib/html.php:2306
+#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1817
+#: lib/html.php:1841 lib/html.php:2302
 msgid "List View"
 msgstr "Список"
 
-#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1828
-#: lib/html.php:2307
+#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1824
+#: lib/html.php:2303
 #, fuzzy
 msgid "Preview View"
 msgstr "Предварительный просмотр"
@@ -1248,8 +1249,8 @@ msgstr "Добавлено в Кактусы"
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:897
 #: graph_view.php:700 graphs.php:1472 include/global_arrays.php:825
 #: include/global_arrays.php:874 include/global_arrays.php:1642
-#: lib/api_automation.php:424 lib/functions.php:3815 lib/html.php:1928
-#: lib/html.php:1960 lib/html_reports.php:658 utilities.php:1532
+#: lib/api_automation.php:424 lib/functions.php:3798 lib/html.php:1924
+#: lib/html.php:1956 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
 msgstr "Устройство"
 
@@ -1340,7 +1341,7 @@ msgstr "SNMP"
 
 #: automation_devices.php:272 automation_devices.php:491
 #: automation_graph_rules.php:776 automation_networks.php:1079
-#: automation_tree_rules.php:817 data_debug.php:279 data_debug.php:773
+#: automation_tree_rules.php:817 data_debug.php:352 data_debug.php:1001
 #: data_sources.php:1370 data_templates.php:1005 host.php:684 host.php:783
 #: host.php:1507 host.php:1577 lib/api_automation.php:165
 #: lib/api_automation.php:278 lib/api_automation.php:571
@@ -1386,7 +1387,7 @@ msgstr "Экспорт"
 msgid "Export to a file"
 msgstr "Экспорт в файл"
 
-#: automation_devices.php:483 data_debug.php:749 lib/clog_webapi.php:210
+#: automation_devices.php:483 data_debug.php:977 lib/clog_webapi.php:210
 #: lib/clog_webapi.php:511 managers.php:748
 msgid "Purge"
 msgstr "Удалить"
@@ -1399,8 +1400,8 @@ msgstr "Очистка Открытые устройства"
 #: automation_devices.php:650 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: data_debug.php:485 host.php:1639 lib/functions.php:4191
-#: lib/functions.php:4195 lib/html.php:1133 pollers.php:885 user_admin.php:2339
+#: data_debug.php:558 host.php:1639 lib/functions.php:4174
+#: lib/functions.php:4178 lib/html.php:1133 pollers.php:885 user_admin.php:2339
 #: utilities.php:445 utilities.php:825 utilities.php:2149 utilities.php:2246
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
@@ -1546,7 +1547,7 @@ msgstr "Запрос данных"
 #: automation_graph_rules.php:781 automation_graph_rules.php:904
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
-#: automation_tree_rules.php:960 data_debug.php:779 data_sources.php:1375
+#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1375
 #: host.php:1512 include/global_arrays.php:788 include/global_form.php:1467
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1520
@@ -1561,14 +1562,14 @@ msgstr "Включено"
 
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
-#: automation_tree_rules.php:960 data_debug.php:780 data_sources.php:1376
+#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1376
 #: data_templates.php:1029 host.php:1513 include/global_arrays.php:787
 #: include/global_arrays.php:1362 include/global_arrays.php:1650
 #: include/global_settings.php:378 include/global_settings.php:1209
 #: include/global_settings.php:1223 include/global_settings.php:1235
 #: include/global_settings.php:1260 include/global_settings.php:1274
 #: include/global_settings.php:1334 include/global_settings.php:1962
-#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2369
+#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2365
 #: lib/html_reports.php:1521 lib/html_reports.php:1659 lib/html_utility.php:879
 #: links.php:499 managers.php:243 managers.php:598 pollers.php:47
 #: user_admin.php:1137 user_domains.php:411 user_group_admin.php:691
@@ -2409,7 +2410,7 @@ msgid "Idle"
 msgstr "Неактивно"
 
 #: automation_networks.php:1146 include/global_arrays.php:1038
-#: lib/html_reports.php:1654
+#: lib/html_reports.php:1654 plugins/thold_functions.php:74
 msgid "Never"
 msgstr "Никогда"
 
@@ -2418,7 +2419,7 @@ msgstr "Никогда"
 msgid "No Networks Found"
 msgstr "Нет сетей найдено"
 
-#: automation_networks.php:1197 data_debug.php:794 graph.php:362
+#: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:541 lib/html_graph.php:306
 #: lib/html_tree.php:1102 lib/html_tree.php:1123 utilities.php:1128
 #: utilities.php:2036
@@ -2558,7 +2559,7 @@ msgstr "Версия"
 msgid "Community"
 msgstr "Сообщество"
 
-#: automation_snmp.php:507 lib/functions.php:3816
+#: automation_snmp.php:507 lib/functions.php:3799
 msgid "Port"
 msgstr "Порт"
 
@@ -3227,7 +3228,7 @@ msgstr "Цвета экспорта"
 #: color.php:699 color_templates.php:74
 #, fuzzy
 msgid "Hex"
-msgstr "Гекс"
+msgstr "Шестнадцатеричный"
 
 #: color.php:699
 #, fuzzy
@@ -3418,123 +3419,157 @@ msgstr "Элементы цветового шаблона [Изменить п�
 msgid "Color Template Items [new Report Item: %s]"
 msgstr "Элементы цветового шаблона [новый элемент отчета: %s]"
 
-#: data_debug.php:29
+#: data_debug.php:31
 #, fuzzy
 msgid "Run Check"
 msgstr "Проверить"
 
-#: data_debug.php:30
+#: data_debug.php:32
 msgid "Delete Check"
 msgstr "Убрать проверку"
 
-#: data_debug.php:257 data_queries.php:729 data_sources.php:960
-#: data_templates.php:574 graphs_items.php:440 include/global_arrays.php:876
-#: include/global_form.php:926 lib/api_aggregate.php:1592 lib/html.php:1052
+#: data_debug.php:51
+#, fuzzy
+msgid "Data Source debug started."
+msgstr "Отладка источника данных"
+
+#: data_debug.php:54
+#, fuzzy
+msgid "Data Source debug received an invalid Data Source ID."
+msgstr "При отладке источника данных был получен неверный ID источника данных."
+
+#: data_debug.php:63
+#, fuzzy
+msgid "All RRDfile repairs succeeded."
+msgstr "Все работы по ремонту RRD-файла увенчались успехом."
+
+#: data_debug.php:65
+#, fuzzy
+msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
+msgstr ""
+"Неудачно отремонтирован один или несколько RRD-файлов.  Ошибки см. в журнале "
+"кактусов."
+
+#: data_debug.php:73
+#, fuzzy
+msgid "Automatic Data Source debug being rerun after repair."
+msgstr ""
+"Автоматическая отладка источника данных при повторном запуске после ремонта."
+
+#: data_debug.php:77
+#, fuzzy
+msgid "Data Source repair received an invalid Data Source ID."
+msgstr "Восстановление источника данных получило неверный ID источника данных."
+
+#: data_debug.php:330 data_debug.php:807 data_queries.php:729
+#: data_sources.php:960 data_templates.php:574 graphs_items.php:440
+#: include/global_arrays.php:876 include/global_form.php:926
+#: lib/api_aggregate.php:1592 lib/html.php:1052
 msgid "Data Source"
 msgstr "Источник Данных"
 
-#: data_debug.php:259
+#: data_debug.php:332
 #, fuzzy
 msgid "The Data Source to Debug"
 msgstr "Источник данных для отладки"
 
-#: data_debug.php:262 utilities.php:670 utilities.php:795
+#: data_debug.php:335 utilities.php:670 utilities.php:795
 msgid "User"
 msgstr "Пользователь"
 
-#: data_debug.php:264
+#: data_debug.php:337
 #, fuzzy
 msgid "The User who requested the Debug."
 msgstr "Пользователь, запросивший отладку."
 
-#: data_debug.php:267
+#: data_debug.php:340
 msgid "Started"
 msgstr "Запущено"
 
-#: data_debug.php:270
+#: data_debug.php:343
 #, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "Дата начала отладки."
 
-#: data_debug.php:276
+#: data_debug.php:349
 #, fuzzy
 msgid "The Data Source internal ID."
 msgstr "Внутренний идентификатор источника данных."
 
-#: data_debug.php:282
+#: data_debug.php:355
 #, fuzzy
 msgid "The Status of the Data Source Debug Check."
 msgstr "Проверка состояния отладки источника данных."
 
-#: data_debug.php:285 lib/installer.php:2059 lib/installer.php:2090
+#: data_debug.php:358 lib/installer.php:2059 lib/installer.php:2090
 msgid "Writable"
 msgstr "Записи"
 
-#: data_debug.php:288
+#: data_debug.php:361
 #, fuzzy
 msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr "Определяет, имеет ли Сборщик данных или Веб-сайт доступ на запись."
 
-#: data_debug.php:291
+#: data_debug.php:364
 #, fuzzy
 msgid "Exists"
 msgstr "Существует"
 
-#: data_debug.php:294
+#: data_debug.php:367
 #, fuzzy
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Определяет, находится ли Источник данных в кэше Poller Cache."
 
-#: data_debug.php:297 data_sources.php:1547 data_templates.php:1029
+#: data_debug.php:370 data_sources.php:1547 data_templates.php:1029
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "Активный"
 
-#: data_debug.php:300
+#: data_debug.php:373
 #, fuzzy
 msgid "Determines if the Data Source is Enabled."
 msgstr "Определяет, включен ли источник данных."
 
-#: data_debug.php:303
+#: data_debug.php:376
 #, fuzzy
 msgid "RRD Match"
 msgstr "RRD Match"
 
-#: data_debug.php:306
+#: data_debug.php:379
 #, fuzzy
 msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr "Определяет, соответствует ли RRD-файл Шаблону источника данных."
 
-#: data_debug.php:309
+#: data_debug.php:382
 #, fuzzy
 msgid "Valid Data"
 msgstr "Действительные данные"
 
-#: data_debug.php:312
+#: data_debug.php:385
 #, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "Определяет, получал ли RRD-файл хорошие последние данные."
 
-#: data_debug.php:315
+#: data_debug.php:388
 #, fuzzy
 msgid "RRD Updated"
 msgstr "RRD Обновлено"
 
-#: data_debug.php:318
+#: data_debug.php:391
 #, fuzzy
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "Определяет, правильно ли был записан RRD-файл."
 
-#: data_debug.php:321 data_debug.php:627
-msgid "Issue"
-msgstr "Вопрос"
+#: data_debug.php:394 data_debug.php:558 data_debug.php:737
+msgid "Issues"
+msgstr "Вопросы"
 
-#: data_debug.php:324
+#: data_debug.php:397
 #, fuzzy
-msgid "Any summary issues found for the Data Source."
+msgid "Summary of issues found for the Data Source."
 msgstr "Любые краткие вопросы, выявленные в отношении Источника данных."
 
-#: data_debug.php:437 data_debug.php:824 data_sources.php:1401
+#: data_debug.php:510 data_debug.php:1052 data_sources.php:1401
 #: data_sources.php:1513 host.php:1571 include/global_arrays.php:865
 #: include/global_arrays.php:910 include/global_arrays.php:2071
 #: lib/api_automation.php:282 user_admin.php:1270 user_group_admin.php:970
@@ -3542,128 +3577,208 @@ msgstr "Любые краткие вопросы, выявленные в отн
 msgid "Data Sources"
 msgstr "Источники Данных"
 
-#: data_debug.php:485
-msgid "Issues"
-msgstr "Вопросы"
-
-#: data_debug.php:488 data_debug.php:790
+#: data_debug.php:561 data_debug.php:1018
 #, fuzzy
 msgid "Not Debugging"
 msgstr "Отладка"
 
-#: data_debug.php:504
+#: data_debug.php:577
 #, fuzzy
 msgid "No Checks"
 msgstr "Нет Чеков"
 
-#: data_debug.php:565
+#: data_debug.php:634 data_debug.php:639
+#, fuzzy
+msgid "Not Checked Yet"
+msgstr "Нет Чеков"
+
+#: data_debug.php:657
+#, fuzzy
+msgid "Issues found!  Waiting on RRDfile update"
+msgstr "Проблемы найдены!  Ожидание обновления RRD-файла"
+
+#: data_debug.php:660
+#, fuzzy
+msgid "No Initial found!  Waiting on RRDfile update"
+msgstr "Инициалы не найдены!  Ожидание обновления RRD-файла"
+
+#: data_debug.php:664
+#, fuzzy
+msgid "Waiting on analysis and RRDfile update"
+msgstr "Обновился ли RRD-файл?"
+
+#: data_debug.php:671
 #, fuzzy
 msgid "RRDfile Owner"
 msgstr "Владелец файла RRD"
 
-#: data_debug.php:570
+#: data_debug.php:676
 #, fuzzy
 msgid "Website runs as"
 msgstr "Веб-сайт работает как"
 
-#: data_debug.php:574
+#: data_debug.php:681
 #, fuzzy
 msgid "Poller runs as"
 msgstr "Поллер работает как"
 
-#: data_debug.php:578
+#: data_debug.php:686
 #, fuzzy
 msgid "Is RRA Folder writeable by poller?"
 msgstr "Можно ли записать папку RRA с помощью опроса?"
 
-#: data_debug.php:583
+#: data_debug.php:691
 #, fuzzy
 msgid "Is RRDfile writeable by poller?"
 msgstr "Можно ли записать RRD-файл с помощью опроса?"
 
-#: data_debug.php:588
+#: data_debug.php:696
 #, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "Существует ли файл RRD?"
 
-#: data_debug.php:592
+#: data_debug.php:701
 #, fuzzy
 msgid "Is the Data Source set as Active?"
 msgstr "Активен ли источник данных?"
 
-#: data_debug.php:596
+#: data_debug.php:706
 #, fuzzy
 msgid "Did the poller receive valid data?"
 msgstr "Получил ли избиратель достоверные данные?"
 
-#: data_debug.php:601
+#: data_debug.php:711
 #, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "Обновился ли RRD-файл?"
 
-#: data_debug.php:607
+#: data_debug.php:717
 #, fuzzy
 msgid "First Check TimeStamp"
 msgstr "Метка времени первой проверкиШтампа времени"
 
-#: data_debug.php:612
+#: data_debug.php:722
 #, fuzzy
 msgid "Second Check TimeStamp"
 msgstr "Метка времени второй проверкиОтметка времени второй проверки"
 
-#: data_debug.php:617
+#: data_debug.php:727
 #, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "Смогли ли мы преобразовать название?"
 
-#: data_debug.php:622
+#: data_debug.php:732
 #, fuzzy
-msgid "Does the RRA Profile match the RRDfile structure?"
-msgstr "Соответствует ли RRA-профиль структуре RRD-файла?"
+msgid "Data Source matches the RRDfile?"
+msgstr "Источник данных не был опрошен"
 
-#: data_debug.php:633
+#: data_debug.php:746
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
+msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+
+#: data_debug.php:746 data_debug.php:748
 #, fuzzy
-msgid "Data Source Troubleshooter"
-msgstr "Поиск и устранение неисправностей в источнике данных"
+msgid "Refresh Now"
+msgstr "Обновить"
 
-#: data_debug.php:637
+#: data_debug.php:748
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
+msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+
+#: data_debug.php:750
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
+msgstr "Поиск и устранение неисправностей [%s] Источник данных"
+
+#: data_debug.php:750
+#, fuzzy
+msgid "Rerun Analysis"
+msgstr "Повторный анализ"
+
+#: data_debug.php:755
 msgid "Check"
 msgstr "Проверить"
 
-#: data_debug.php:638 include/global_form.php:984 lib/rrd.php:2796
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2804
 #: utilities.php:2475
 msgid "Value"
 msgstr "Значение"
 
-#: data_debug.php:639
+#: data_debug.php:757
 msgid "Results"
 msgstr "Результаты"
 
-#: data_debug.php:650
+#: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
 msgstr "Установить по умолчанию"
 
-#: data_debug.php:710
+#: data_debug.php:803 data_debug.php:854
+#, fuzzy
+msgid "Data Source Repair Recommendations"
+msgstr "Поля источников данных"
+
+#: data_debug.php:808
+msgid "Issue"
+msgstr "Вопрос"
+
+#: data_debug.php:820
 #, fuzzy, php-format
-msgid "Data Source Troubleshooter [%s]"
+msgid "For attrbitute '%s', issue found '%s'"
+msgstr "Для атрибутов '%s', выдача найдена '%s'."
+
+#: data_debug.php:835
+#, fuzzy
+msgid "Apply Suggested Fixes"
+msgstr "Применить Предлагаемые Имена"
+
+#: data_debug.php:835
+#, fuzzy, php-format
+msgid "Repair Steps [ %s ]"
+msgstr "Шаги по ремонту [ %s ]"
+
+#: data_debug.php:837
+#, fuzzy
+msgid "Repair Steps [ Run Fix from Command Line ]"
+msgstr "Шаги по ремонту [ Исправление из командной строки ]"
+
+#: data_debug.php:840
+#, fuzzy
+msgid "Command"
+msgstr "Команда"
+
+#: data_debug.php:856
+#, fuzzy
+msgid "Waiting on Data Source Check to Complete"
+msgstr "Ожидание завершения проверки источника данных для завершения проверки"
+
+#: data_debug.php:938
+#, fuzzy
+msgid "All Devices"
+msgstr "Все устройства"
+
+#: data_debug.php:938
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ %s ]"
 msgstr "Поиск и устранение неисправностей [%s] Источник данных"
 
-#: data_debug.php:710 data_sources.php:1308
+#: data_debug.php:938 data_sources.php:1308
 #, fuzzy
 msgid "No Device"
 msgstr "Устройство:"
 
-#: data_debug.php:749
+#: data_debug.php:977
 #, fuzzy
 msgid "Delete All Checks"
 msgstr "Убрать проверку"
 
-#: data_debug.php:757 data_sources.php:1354 data_templates.php:851
+#: data_debug.php:985 data_sources.php:1354 data_templates.php:851
 msgid "Profile"
 msgstr "Профиль"
 
-#: data_debug.php:761 data_debug.php:777 data_debug.php:788
+#: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1358 data_sources.php:1374 data_sources.php:1385
 #: data_templates.php:855 graphs_new.php:355 lib/clog_webapi.php:523
 #: lib/html.php:191 lib/html_reports.php:625 plugins.php:376 settings.php:419
@@ -3672,11 +3787,11 @@ msgstr "Профиль"
 msgid "All"
 msgstr "Все"
 
-#: data_debug.php:778 utilities.php:696 utilities.php:833
+#: data_debug.php:1006 utilities.php:696 utilities.php:833
 msgid "Failed"
 msgstr "Ошибка"
 
-#: data_debug.php:784 data_debug.php:789
+#: data_debug.php:1012 data_debug.php:1017
 msgid "Debugging"
 msgstr "Отладка"
 
@@ -3978,11 +4093,15 @@ msgid "Data Template - %s"
 msgstr "Шаблон данных - %s"
 
 #: data_queries.php:750
+#, fuzzy
 msgid ""
 "If this Graph Template requires the Data Template Data Source to the left, "
 "select the correct XML output column and then to enable the mapping either "
 "check or toggle here."
 msgstr ""
+"Если для этого шаблона требуется источник данных шаблона данных слева, "
+"выберите правильную колонку вывода XML, а затем включите отображение или "
+"отметьте галочкой или переключателем здесь."
 
 #: data_queries.php:764
 #, fuzzy
@@ -4251,7 +4370,7 @@ msgstr "Шаги"
 
 #: data_source_profiles.php:568 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2330
-#: lib/rrd.php:2846 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2858 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "Строк"
 
@@ -5051,7 +5170,7 @@ msgstr "CSV экспорт"
 msgid "Click to view just this Graph in Real-time"
 msgstr "Нажмите, чтобы просмотреть только этот график в реальном времени"
 
-#: graph.php:230 lib/html.php:2302
+#: graph.php:230 lib/html.php:2298
 #, fuzzy
 msgid "Utility View"
 msgstr "Вид утилиты"
@@ -5440,12 +5559,12 @@ msgstr "Режим предварительного просмотра"
 msgid "Add Selected Graphs to Report"
 msgstr "Добавить выбранные графики в отчет"
 
-#: graph_view.php:894 lib/html.php:2341
+#: graph_view.php:894 lib/html.php:2337
 msgid "Ok"
 msgstr "Ок"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1725
-#: include/global_form.php:1972 lib/html.php:1711 links.php:380
+#: include/global_form.php:1972 lib/html.php:1707 links.php:380
 msgid "Title"
 msgstr "Название"
 
@@ -5893,7 +6012,7 @@ msgstr "Новые графики для [ Все устройства ]"
 msgid "New Graphs for None Host Type"
 msgstr "Новые графики для None Host Type (Нет типа хоста)"
 
-#: graphs_new.php:316 lib/html.php:2300
+#: graphs_new.php:316 lib/html.php:2296
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "Настройки фильтра Сохранены"
@@ -6168,12 +6287,12 @@ msgstr "Контактное устройство"
 msgid "Data Query Debug Information"
 msgstr "Отладка запроса данных Информация об отладке"
 
-#: host.php:662 lib/functions.php:2889 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2872 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Копировать"
 
-#: host.php:663 templates_import.php:154
+#: host.php:663 templates_import.php:160
 msgid "Hide"
 msgstr "Скрыть"
 
@@ -6242,7 +6361,7 @@ msgstr " [%d Предметы, %d Строки]"
 msgid "Fail"
 msgstr "Неудача"
 
-#: host.php:845 lib/functions.php:3830 lib/functions.php:3835
+#: host.php:845 lib/functions.php:3813 lib/functions.php:3818
 msgid "Success"
 msgstr "Выполненно"
 
@@ -6305,7 +6424,7 @@ msgstr "SNMP Desc"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1437 include/global_settings.php:510 lib/html.php:1989
+#: host.php:1437 include/global_settings.php:510 lib/html.php:1985
 msgid "Site"
 msgstr "Узел"
 
@@ -6326,7 +6445,7 @@ msgid "Recovering"
 msgstr "Восстановление"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/rrd.php:2819 lib/rrd.php:2829 plugins.php:180
+#: lib/html_utility.php:895 lib/rrd.php:2829 lib/rrd.php:2841 plugins.php:180
 #: plugins.php:184 plugins.php:203 user_admin.php:796 utilities.php:2145
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -6639,6 +6758,7 @@ msgid "Login Again"
 msgstr "Войти снова"
 
 #: include/auth.php:263 permission_denied.php:43 permission_denied.php:50
+#: plugins/thold_functions.php:4015
 msgid "Permission Denied"
 msgstr "Доступ запрещён"
 
@@ -7305,7 +7425,7 @@ msgstr "Право"
 msgid "Justified"
 msgstr "Оправдано"
 
-#: include/global_arrays.php:500 lib/html.php:2367
+#: include/global_arrays.php:500 lib/html.php:2363
 msgid "Center"
 msgstr "Центр"
 
@@ -7586,13 +7706,13 @@ msgstr "Естественный заказ"
 msgid "Numeric Ordering"
 msgstr "Цифровой заказ"
 
-#: include/global_arrays.php:823 lib/rrd.php:2762
+#: include/global_arrays.php:823 lib/rrd.php:2770
 msgid "Header"
 msgstr "Заголовок"
 
 #: include/global_arrays.php:824 include/global_arrays.php:875
 #: include/global_arrays.php:1474 include/global_arrays.php:1641
-#: lib/html.php:2356
+#: lib/html.php:2352
 msgid "Graph"
 msgstr "График"
 
@@ -7768,12 +7888,12 @@ msgid "Export Templates"
 msgstr "Экспорт Шаблонов"
 
 #: include/global_arrays.php:899 include/global_arrays.php:921
-#: include/global_arrays.php:939 lib/plugins.php:949
+#: include/global_arrays.php:939 lib/plugins.php:951
 msgid "Configuration"
 msgstr "Конфигурация"
 
 #: include/global_arrays.php:900 include/global_arrays.php:922
-#: lib/html.php:2123 lib/html.php:2371
+#: lib/html.php:2119 lib/html.php:2367
 msgid "Settings"
 msgstr "Настройки"
 
@@ -8607,7 +8727,7 @@ msgstr "Китайский (Китай)"
 #: include/global_arrays.php:1729
 #, fuzzy
 msgid "Chinese (Taiwan)"
-msgstr "Китайцы (Тайвань)"
+msgstr "Китайский (Тайвань)"
 
 #: include/global_arrays.php:1730
 msgid "Dutch"
@@ -8744,7 +8864,7 @@ msgid "List Mode"
 msgstr "Режим списка"
 
 #: include/global_arrays.php:1849 include/global_arrays.php:1855
-#: lib/functions.php:2522 lib/html.php:1559 lib/html.php:1636 links.php:345
+#: lib/functions.php:2522 lib/html.php:1555 lib/html.php:1632 links.php:345
 #: user_admin.php:1691 user_group_admin.php:1394
 msgid "Console"
 msgstr "Консоль"
@@ -8902,7 +9022,7 @@ msgid "Export Results"
 msgstr "Экспортировать результаты"
 
 #: include/global_arrays.php:2407 include/global_arrays.php:2437
-#: lib/html.php:1580 lib/html.php:1582 lib/html.php:1661
+#: lib/html.php:1576 lib/html.php:1578 lib/html.php:1657
 msgid "Reporting"
 msgstr "Отчёты"
 
@@ -8954,12 +9074,14 @@ msgid "hrs"
 msgstr "часов"
 
 #: include/global_arrays.php:2620
+#, fuzzy
 msgid "mins"
-msgstr ""
+msgstr "мин"
 
 #: include/global_arrays.php:2621
+#, fuzzy
 msgid "secs"
-msgstr ""
+msgstr "сек"
 
 #: include/global_arrays.php:2635 lib/api_device.php:1067
 msgid "hours"
@@ -8972,7 +9094,7 @@ msgstr "минут"
 #: include/global_arrays.php:2637
 #, fuzzy
 msgid "seconds"
-msgstr "%d секунд"
+msgstr "секунд"
 
 #: include/global_form.php:35
 msgid "SNMP Version"
@@ -9163,7 +9285,7 @@ msgstr ""
 "графиках.  Это значение умножается на X-Files Factor для определения "
 "фактического времени."
 
-#: include/global_form.php:196 lib/rrd.php:2849
+#: include/global_form.php:196 lib/rrd.php:2861
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "Фактор Секретных Материалов"
@@ -10064,7 +10186,7 @@ msgstr "Непрозрачность/ Альфа-канал"
 msgid "The opacity/alpha channel of the color."
 msgstr "Прозрачность/альфа-канал цвета."
 
-#: include/global_form.php:955 lib/rrd.php:2845
+#: include/global_form.php:955 lib/rrd.php:2857
 msgid "Consolidation Function"
 msgstr "Функция Консолидации"
 
@@ -11034,7 +11156,7 @@ msgstr "Данные"
 msgid "Visual"
 msgstr "Визуально"
 
-#: include/global_settings.php:44 lib/functions.php:3819 lib/functions.php:3824
+#: include/global_settings.php:44 lib/functions.php:3802 lib/functions.php:3807
 msgid "Authentication"
 msgstr "Аутентификация"
 
@@ -11075,11 +11197,11 @@ msgstr "Графические шрифты"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail() Функция"
 
-#: include/global_settings.php:91 lib/functions.php:3802
+#: include/global_settings.php:91 lib/functions.php:3785
 msgid "Sendmail"
 msgstr "Sendmail"
 
-#: include/global_settings.php:92 lib/functions.php:3807
+#: include/global_settings.php:92 lib/functions.php:3790
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11351,10 +11473,13 @@ msgid "Data Source Tracing"
 msgstr "Источники данных Использование"
 
 #: include/global_settings.php:278
+#, fuzzy
 msgid ""
 "A developer only option to trace the creation of Data Sources mainly around "
 "checks for uniqueness"
 msgstr ""
+"Возможность проследить создание Источников данных только для разработчиков, "
+"главным образом, вокруг проверки уникальности"
 
 #: include/global_settings.php:283
 #, fuzzy
@@ -11604,7 +11729,7 @@ msgstr ""
 msgid "Simple"
 msgstr "Простой"
 
-#: include/global_settings.php:423 lib/html.php:2358
+#: include/global_settings.php:423 lib/html.php:2354
 msgid "Advanced"
 msgstr "Дополнительно"
 
@@ -11820,39 +11945,50 @@ msgid "Default Interface Speed"
 msgstr "Тип графика по умолчанию"
 
 #: include/global_settings.php:541
+#, fuzzy
 msgid ""
 "If Cacti can not determine the interface speed due to either ifSpeed or "
 "ifHighSpeed not being set or being zero, what maximum value do you wish on "
 "the resulting RRDfiles."
 msgstr ""
+"Если Cacti не может определить скорость интерфейса из-за того, что ifSpeed "
+"или ifHighSpeed не установлен или равен нулю, то какое максимальное значение "
+"вы хотите получить для результирующих RRD-файлов."
 
 #: include/global_settings.php:545
+#, fuzzy
 msgid "100 Mbps Ethernet"
-msgstr ""
+msgstr "100 Мбит/с Ethernet"
 
 #: include/global_settings.php:546
+#, fuzzy
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 Гбит/с Ethernet"
 
 #: include/global_settings.php:547
+#, fuzzy
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10 Gbps Ethernet Ethernet"
 
 #: include/global_settings.php:548
+#, fuzzy
 msgid "25 Gbps Ethernet"
-msgstr ""
+msgstr "25 Gbps Ethernet Ethernet"
 
 #: include/global_settings.php:549
+#, fuzzy
 msgid "40 Gbps Ethernet"
-msgstr ""
+msgstr "40 Gbps Ethernet"
 
 #: include/global_settings.php:550
+#, fuzzy
 msgid "56 Gbps Ethernet"
-msgstr ""
+msgstr "56 Gbps Ethernet Ethernet"
 
 #: include/global_settings.php:551
+#, fuzzy
 msgid "100 Gbps Ethernet"
-msgstr ""
+msgstr "100 Гбит/с Ethernet"
 
 #: include/global_settings.php:554
 #, fuzzy
@@ -12220,7 +12356,7 @@ msgstr "RRDtool Graph Watermark Водяной знак"
 #: include/global_settings.php:830
 #, fuzzy
 msgid "Watermark Text"
-msgstr "Текст водяного знака"
+msgstr "Водяной знак"
 
 #: include/global_settings.php:831
 #, fuzzy
@@ -13375,7 +13511,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Sendmail Опции"
 
-#: include/global_settings.php:1498 lib/functions.php:3802
+#: include/global_settings.php:1498 lib/functions.php:3785
 msgid "Sendmail Path"
 msgstr "Sendmail Путь"
 
@@ -13989,7 +14125,7 @@ msgstr "Стандартное отклонение"
 msgid "Variance Based w/Outliers Removed"
 msgstr "Клещи на основе отклонений w/Outliers Удалены"
 
-#: include/global_settings.php:1864 lib/html.php:2083
+#: include/global_settings.php:1864 lib/html.php:2079
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Метод замены"
@@ -14006,16 +14142,16 @@ msgstr ""
 "значением по данному источнику данных.  Второй метод заменяет шип на \"NaN"
 "\".  Последний заменяет всплеск последним известным хорошим значением."
 
-#: include/global_settings.php:1869 lib/html.php:2079
+#: include/global_settings.php:1869 lib/html.php:2075
 msgid "Average"
 msgstr "Средне"
 
-#: include/global_settings.php:1870 lib/html.php:2080
+#: include/global_settings.php:1870 lib/html.php:2076
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN's"
 
-#: include/global_settings.php:1871 lib/html.php:2081
+#: include/global_settings.php:1871 lib/html.php:2077
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Последнее известное добро"
@@ -14045,7 +14181,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "d Стандартные отклонения"
 
-#: include/global_settings.php:1892 lib/html.php:2095
+#: include/global_settings.php:1892 lib/html.php:2091
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Разница Процентная доля"
@@ -14631,16 +14767,22 @@ msgstr ""
 "%s.  Для того чтобы JavaScript работал, он должен быть включен."
 
 #: install/install.php:83
+#, fuzzy
 msgid ""
 "FATAL: We are unable to continue with this installation. In order to install "
 "Cacti, PHP must be at version 5.4 or later."
 msgstr ""
+"FATAL: Мы не можем продолжить установку. Для того чтобы установить Cacti, "
+"PHP должен быть версии 5.4 или более поздней."
 
 #: install/install.php:86
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php"
 "\">JavaScript Object Notation</a>."
 msgstr ""
+"См. руководство по PHP: <a href=\"http://php.net/manual/en/book.json.php"
+"\">JavaScript Object Notation</a>."
 
 #: install/install.php:86
 #, fuzzy
@@ -14648,14 +14790,18 @@ msgid "The php-json module must also be installed."
 msgstr "Версия RRDtool, которую вы установили."
 
 #: install/install.php:90
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini."
 "disable-functions\">Disable Functions</a>."
 msgstr ""
+"См. руководство по PHP: <a href=\"http://php.net/manual/en/ini.core.php#ini."
+"disable-functions\">Disable Functions</a>."
 
 #: install/install.php:90
+#, fuzzy
 msgid "The shell_exec() and/or exec() functions are currently blocked."
-msgstr ""
+msgstr "Функции shell_exec() и/или exec() в настоящее время заблокированы."
 
 #: lib/aggregate.php:51
 #, fuzzy
@@ -14730,7 +14876,7 @@ msgstr "Соответствующие устройства"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070
 #: lib/clog_webapi.php:519 lib/html_reports.php:603 lib/html_reports.php:1344
-#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2791
+#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2799
 #: utilities.php:339 utilities.php:1106 utilities.php:2475
 msgid "Type"
 msgstr "Тип"
@@ -14764,7 +14910,7 @@ msgstr ""
 msgid "Matching Objects [ %s ]"
 msgstr "Соответствие объектов [ %s ]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:884 plugins/thold_functions.php:128
 msgid "Device Status"
 msgstr "Статус устройства"
 
@@ -14917,7 +15063,7 @@ msgstr "Сессия"
 msgid "Host"
 msgstr "Хост"
 
-#: lib/api_device.php:1060
+#: lib/api_device.php:1060 plugins/thold_functions.php:253
 #, fuzzy
 msgid "System:"
 msgstr "Система"
@@ -14939,8 +15085,8 @@ msgstr "Местоположение:"
 msgid "Contact:"
 msgstr "Контактная информация:"
 
-#: lib/api_device.php:1101 lib/functions.php:3833 lib/functions.php:3835
-#: lib/functions.php:3839
+#: lib/api_device.php:1101 lib/functions.php:3816 lib/functions.php:3818
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Ping Results"
 msgstr "Результаты тестирования"
@@ -15494,17 +15640,22 @@ msgid "Unknown Index"
 msgstr "Неизвестный индекс"
 
 #: lib/data_query.php:2108
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
 "checkbox to its right"
 msgstr ""
+"Вы должны выбрать колонку вывода XML для '%s' источника данных и установить "
+"флажок справа от нее."
 
 #: lib/data_query.php:2114
+#, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
 "Graph Template"
 msgstr ""
+"Ваш шаблон графика не использует шаблоны данных.  Пожалуйста, исправьте ваш "
+"шаблон графика."
 
 #: lib/database.php:1482
 #, fuzzy
@@ -15559,7 +15710,7 @@ msgstr "Поллер не разрешает запись файла RRD.  Вл�
 
 #: lib/dsdebug.php:279
 #, fuzzy
-msgid "RRDfile does not match Data Profile"
+msgid "RRDfile does not match Data Source"
 msgstr "RRD Файл не соответствует Профилю данных"
 
 #: lib/dsdebug.php:284
@@ -15604,11 +15755,11 @@ msgstr "Вход в систему как постоянный пользова�
 msgid "guest"
 msgstr "гость"
 
-#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2310
+#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2306
 msgid "User Community"
 msgstr "Сообщество пользователей"
 
-#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2311
+#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
 #: lib/utility.php:1012
 msgid "Documentation"
 msgstr "Документация"
@@ -15636,7 +15787,7 @@ msgstr "Не основанный на запросах"
 msgid "Link %s"
 msgstr "Связь %s"
 
-#: lib/functions.php:3324
+#: lib/functions.php:3307
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15645,27 +15796,27 @@ msgstr ""
 "Почтовая ошибка: Нет <b>TO</b> Адрес установлен!!<br>Если используется "
 "ссылка <i>Test Mail</i>, пожалуйста, установите параметр <b>Alert e-mail</b>."
 
-#: lib/functions.php:3766
+#: lib/functions.php:3749
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Неудачная аутентификация: %s"
 
-#: lib/functions.php:3770
+#: lib/functions.php:3753
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO не удалось: %s"
 
-#: lib/functions.php:3773
+#: lib/functions.php:3756
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Неудачное подключение: %s"
 
-#: lib/functions.php:3776
+#: lib/functions.php:3759
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP ошибка:"
 
-#: lib/functions.php:3789
+#: lib/functions.php:3772
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15674,79 +15825,79 @@ msgstr ""
 "Это тестовое сообщение, сгенерированное кактусами.  Это сообщение было "
 "отправлено для проверки конфигурации параметров вашей почты."
 
-#: lib/functions.php:3790
+#: lib/functions.php:3773
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr ""
 "Настройки вашей электронной почты в настоящее время заданы следующим образом"
 
-#: lib/functions.php:3791
+#: lib/functions.php:3774
 msgid "Method"
 msgstr "Метод"
 
-#: lib/functions.php:3793
+#: lib/functions.php:3776
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Проверка конфигурации... <br>"
 
-#: lib/functions.php:3800
+#: lib/functions.php:3783
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP's Mailer Class"
 
-#: lib/functions.php:3806
+#: lib/functions.php:3789
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Метод: SMTP"
 
-#: lib/functions.php:3821
+#: lib/functions.php:3804
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Не показано по причинам безопасности"
 
-#: lib/functions.php:3822
+#: lib/functions.php:3805
 msgid "Security"
 msgstr "Безопасность"
 
-#: lib/functions.php:3830
+#: lib/functions.php:3813
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Результаты пинга:"
 
-#: lib/functions.php:3839
+#: lib/functions.php:3822
 msgid "Bypassed"
 msgstr "Без обработки"
 
-#: lib/functions.php:3847
+#: lib/functions.php:3830
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Создание текста сообщения...."
 
-#: lib/functions.php:3850
+#: lib/functions.php:3833
 msgid "Sending Message..."
 msgstr "Отправка сообщения..."
 
-#: lib/functions.php:3854
+#: lib/functions.php:3837
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Сообщение о тестировании кактусов"
 
-#: lib/functions.php:3856
+#: lib/functions.php:3839
 msgid "Success!"
 msgstr "Успешно!"
 
-#: lib/functions.php:3859
+#: lib/functions.php:3842
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Сообщение не отправлено в связи с ошибкой пинга."
 
-#: lib/functions.php:4453 lib/functions.php:4514 poller.php:343 poller.php:456
-#: poller.php:518 poller.php:541 poller.php:682
+#: lib/functions.php:4436 lib/functions.php:4497 poller.php:323 poller.php:436
+#: poller.php:498 poller.php:521 poller.php:662
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Система предупреждения кактусов"
 
-#: lib/functions.php:4453 lib/functions.php:4514
+#: lib/functions.php:4436 lib/functions.php:4497
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15755,17 +15906,17 @@ msgstr ""
 "Какти отключил плагин %s из-за ошибки: %s!  Для получения более подробной "
 "информации см. файл журнала Cacti."
 
-#: lib/functions.php:4890 lib/functions.php:4892
+#: lib/functions.php:4873 lib/functions.php:4875
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Бета-версия"
 
-#: lib/functions.php:4890
+#: lib/functions.php:4873
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Версия %s %s %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4875
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15789,7 +15940,7 @@ msgstr "Запрос данных:"
 msgid "CSV Export of Graph Data"
 msgstr "CSV Экспорт графических данных"
 
-#: lib/html.php:443 lib/html.php:2299
+#: lib/html.php:443 lib/html.php:2295
 #, fuzzy
 msgid "Time Graph View"
 msgstr "Вид графика времени"
@@ -15836,348 +15987,348 @@ msgstr "Альфа %"
 msgid "No Task"
 msgstr "Нет задачи"
 
-#: lib/html.php:1380
+#: lib/html.php:1376
 msgid "Choose an action"
 msgstr "Выберите действие"
 
-#: lib/html.php:1390
+#: lib/html.php:1386
 #, fuzzy
 msgid "Execute Action"
 msgstr "Выполнить действие"
 
-#: lib/html.php:1589 lib/html.php:1591 lib/html.php:1671 managers.php:41
+#: lib/html.php:1585 lib/html.php:1587 lib/html.php:1667 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Журналы"
 
-#: lib/html.php:2087
+#: lib/html.php:2083
 #, fuzzy, php-format
 msgid "%s Standard Deviations"
 msgstr "%s Стандартные отклонения"
 
-#: lib/html.php:2089
+#: lib/html.php:2085
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "Стандартные отклонения"
 
-#: lib/html.php:2099
+#: lib/html.php:2095
 #, fuzzy, php-format
 msgid "%d Outliers"
 msgstr "d Промахи"
 
-#: lib/html.php:2101
+#: lib/html.php:2097
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "Разница Выбросы"
 
-#: lib/html.php:2105
+#: lib/html.php:2101
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "d шипы"
 
-#: lib/html.php:2107
+#: lib/html.php:2103
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "Убивает одного человека за РРА."
 
-#: lib/html.php:2113
+#: lib/html.php:2109
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "Удалить StdDev"
 
-#: lib/html.php:2114
+#: lib/html.php:2110
 #, fuzzy
 msgid "Remove Variance"
 msgstr "Удалить разницу"
 
-#: lib/html.php:2115
+#: lib/html.php:2111
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "Диапазон заполнения зазоров"
 
-#: lib/html.php:2116
+#: lib/html.php:2112
 #, fuzzy
 msgid "Float Range"
 msgstr "Диапазон поплавка"
 
-#: lib/html.php:2118
+#: lib/html.php:2114
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Сухой запуск StdDev"
 
-#: lib/html.php:2119
+#: lib/html.php:2115
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "Разница в сухом режиме работы"
 
-#: lib/html.php:2120
+#: lib/html.php:2116
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Диапазон заполнения зазоров сухого хода"
 
-#: lib/html.php:2121
+#: lib/html.php:2117
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Диапазон поплавков сухого хода"
 
-#: lib/html.php:2296 lib/html_filter.php:66
+#: lib/html.php:2292 lib/html_filter.php:66
 #, fuzzy
 msgid "Enter a search term"
 msgstr "Введите поисковый запрос"
 
-#: lib/html.php:2297
+#: lib/html.php:2293
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "Введите регулярное выражение"
 
-#: lib/html.php:2298
+#: lib/html.php:2294
 msgid "No file selected"
 msgstr "Файл не выбран"
 
-#: lib/html.php:2301 lib/html.php:2314
+#: lib/html.php:2297 lib/html.php:2310
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "Результаты СпайкКилла"
 
-#: lib/html.php:2303
+#: lib/html.php:2299
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "Нажмите, чтобы просмотреть только этот график в реальном времени"
 
-#: lib/html.php:2304
+#: lib/html.php:2300
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr ""
 "Нажмите еще раз, чтобы вывести этот график из режима реального времени."
 
-#: lib/html.php:2308
+#: lib/html.php:2304
 #, fuzzy
 msgid "Cacti Home"
 msgstr "Кактусы дома"
 
-#: lib/html.php:2309
+#: lib/html.php:2305
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "Страница проекта Какти"
 
-#: lib/html.php:2312
+#: lib/html.php:2308
 msgid "Report a bug"
 msgstr "Сообщить об ошибке"
 
-#: lib/html.php:2315
+#: lib/html.php:2311
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "Нажмите, чтобы показать/скрыть фильтр"
 
-#: lib/html.php:2316
+#: lib/html.php:2312
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "Очистить фильтр тока"
 
-#: lib/html.php:2317
+#: lib/html.php:2313
 msgid "Clipboard"
 msgstr "Буфер обмена"
 
-#: lib/html.php:2318
+#: lib/html.php:2314
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "ID буфера обмена"
 
-#: lib/html.php:2319
+#: lib/html.php:2315
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "Операция копирования в данный момент недоступна."
 
-#: lib/html.php:2320
+#: lib/html.php:2316
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "Не удалось найти данные для копирования!"
 
-#: lib/html.php:2321
+#: lib/html.php:2317
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "Буфер обмена был обновлен"
 
-#: lib/html.php:2322
+#: lib/html.php:2318
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "Извините, ваш буфер обмена не может быть обновлен в это время."
 
-#: lib/html.php:2326
+#: lib/html.php:2322
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "Длина парольной фразы соответствует минимальной длине 8 символов."
 
-#: lib/html.php:2327
+#: lib/html.php:2323
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "Парольная фраза слишком коротка."
 
-#: lib/html.php:2328
+#: lib/html.php:2324
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "Парольная фраза совпадает, но слишком коротка."
 
-#: lib/html.php:2329
+#: lib/html.php:2325
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "Парольная фраза слишком коротка и не соответствует действительности."
 
-#: lib/html.php:2330
+#: lib/html.php:2326
 #, fuzzy
 msgid "Passphrases match"
 msgstr "Парольные фразы совпадают"
 
-#: lib/html.php:2331
+#: lib/html.php:2327
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "Парольные фразы не совпадают."
 
-#: lib/html.php:2332
+#: lib/html.php:2328
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "Извините, мы не смогли обработать ваше последнее действие."
 
-#: lib/html.php:2333
+#: lib/html.php:2329
 msgid "Error:"
 msgstr "Ошибка:"
 
-#: lib/html.php:2334
+#: lib/html.php:2330
 msgid "Reason:"
 msgstr "Причина:"
 
-#: lib/html.php:2335
+#: lib/html.php:2331
 #, fuzzy
 msgid "Action failed"
 msgstr "Действие провалилось"
 
-#: lib/html.php:2336
+#: lib/html.php:2332
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "Реакция на последнее действие была неожиданной."
 
-#: lib/html.php:2337
+#: lib/html.php:2333
 msgid "Some Actions failed"
 msgstr "Не удалось выполнить некоторые действия"
 
-#: lib/html.php:2338
+#: lib/html.php:2334
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr ""
 "Обратите внимание: мы не смогли обработать все ваши действия. Подробности "
 "ниже."
 
-#: lib/html.php:2339
+#: lib/html.php:2335
 msgid "Operation successful"
 msgstr "Операция выполнена успешно"
 
-#: lib/html.php:2340
+#: lib/html.php:2336
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "Операция прошла успешно.  Подробности ниже."
 
-#: lib/html.php:2342
+#: lib/html.php:2338
 msgid "Pause"
 msgstr "Пауза"
 
-#: lib/html.php:2345
+#: lib/html.php:2341
 msgid "Zoom In"
 msgstr "Приблизить"
 
-#: lib/html.php:2346
+#: lib/html.php:2342
 msgid "Zoom Out"
 msgstr "Уменьшить"
 
-#: lib/html.php:2347
+#: lib/html.php:2343
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Коэффициент уменьшения"
 
-#: lib/html.php:2348
+#: lib/html.php:2344
 #, fuzzy
 msgid "Timestamps"
 msgstr "Временные метки"
 
-#: lib/html.php:2349
+#: lib/html.php:2345
 msgid "2x"
 msgstr "2x"
 
-#: lib/html.php:2350
+#: lib/html.php:2346
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2351
+#: lib/html.php:2347
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2352
+#: lib/html.php:2348
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2353
+#: lib/html.php:2349
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2354
+#: lib/html.php:2350
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Уменьшение масштаба Позиционирование"
 
-#: lib/html.php:2355
+#: lib/html.php:2351
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "Режим масштабирования"
 
-#: lib/html.php:2357
+#: lib/html.php:2353
 msgid "Quick"
 msgstr "Quick(Быстро)"
 
-#: lib/html.php:2359
+#: lib/html.php:2355
 msgid "Open in new tab"
 msgstr "Открыть в новой вкладке"
 
-#: lib/html.php:2360
+#: lib/html.php:2356
 #, fuzzy
 msgid "Save graph"
 msgstr "Сохранить график"
 
-#: lib/html.php:2361
+#: lib/html.php:2357
 #, fuzzy
 msgid "Copy graph"
 msgstr "Копировать график"
 
-#: lib/html.php:2362
+#: lib/html.php:2358
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Скопировать ссылку на график"
 
-#: lib/html.php:2363
+#: lib/html.php:2359
 msgid "Always On"
 msgstr "Всегда Вкл"
 
-#: lib/html.php:2364
+#: lib/html.php:2360
 msgid "Auto"
 msgstr "Авто"
 
-#: lib/html.php:2365
+#: lib/html.php:2361
 msgid "Always Off"
 msgstr "Всегда Выкл"
 
-#: lib/html.php:2366
+#: lib/html.php:2362
 #, fuzzy
 msgid "Begin with"
 msgstr "Начните с"
 
-#: lib/html.php:2368
+#: lib/html.php:2364
 #, fuzzy
 msgid "End with"
 msgstr "Дата окончания"
 
-#: lib/html.php:2370 lib/html_form.php:1279
+#: lib/html.php:2366 lib/html_form.php:1279
 msgid "Close"
 msgstr "Закрыть"
 
-#: lib/html.php:2372
+#: lib/html.php:2368
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3-я кнопка мыши"
@@ -17336,13 +17487,17 @@ msgid "License Agreement"
 msgstr "Лицензионное соглашение"
 
 #: lib/installer.php:1515
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "This version of Cacti (%s) does not appear to have a valid version code, "
 "please contact the Cacti Development Team to ensure this is corected.  If "
 "you are seeing this error in a release, please raise a report immediately on "
 "GitHub"
 msgstr ""
+"Эта версия Cacti (%s) не имеет действительного кода версии, пожалуйста, "
+"свяжитесь с командой разработчиков Cacti, чтобы убедиться, что код версии "
+"является коректным.  Если вы видите эту ошибку в релизе, немедленно "
+"поднимите отчет о GitHub."
 
 #: lib/installer.php:1518
 #, fuzzy
@@ -18364,25 +18519,26 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "Монтаж начат в %s, монтаж завершен в %s, монтаж завершен в %s"
 
 #: lib/installer.php:3181
+#, fuzzy
 msgid "Both"
-msgstr ""
+msgstr "Оба"
 
 #: lib/installer.php:3181
-#, php-format
+#, fuzzy, php-format
 msgid "No - %s"
-msgstr ""
+msgstr "переименовать %s в %s"
 
 #: lib/installer.php:3183 lib/installer.php:3185
-#, php-format
+#, fuzzy, php-format
 msgid "%s - No"
-msgstr ""
+msgstr "переименовать %s в %s"
 
 # Translation for this string generated by http://littlesvr.ca/ostd/
 # based on translation from "cairo-dock-plug-ins"
 #: lib/installer.php:3183
 #, fuzzy
 msgid "Web"
-msgstr "Фев"
+msgstr "Сайт"
 
 #: lib/installer.php:3185
 #, fuzzy
@@ -18548,31 +18704,31 @@ msgstr "TCP ping истек по времени"
 msgid "Ping not performed due to setting."
 msgstr "Пинг не выполняется из-за настройки."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:564
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s Для %s требуется версия %s или выше."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:568
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s требуется для %s и не устанавливается."
 
-#: lib/plugins.php:581
+#: lib/plugins.php:583
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "Плагин не может быть установлен."
 
-#: lib/plugins.php:949 lib/plugins.php:956 plugins.php:386 plugins.php:463
+#: lib/plugins.php:951 lib/plugins.php:958 plugins.php:386 plugins.php:463
 msgid "Plugins"
 msgstr "Плагины"
 
-#: lib/plugins.php:967 lib/plugins.php:973
+#: lib/plugins.php:969 lib/plugins.php:975
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Требуется: Кактусы >=%s"
 
-#: lib/plugins.php:970
+#: lib/plugins.php:972
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Наследие Плагин"
@@ -18640,167 +18796,167 @@ msgstr ""
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Пропущенный элемент графика отчета '<i>%s</i>' уже существует"
 
-#: lib/rrd.php:2564
+#: lib/rrd.php:2572
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Требуемый размер шага RRD - \"%s\"."
 
-#: lib/rrd.php:2593
+#: lib/rrd.php:2601
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Тип источника данных \"%s\" должен быть \"%s\"."
 
-#: lib/rrd.php:2598
+#: lib/rrd.php:2606
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "Сердцебиение для источника данных \"%s\" должно быть \"%s\"."
 
-#: lib/rrd.php:2610
+#: lib/rrd.php:2618
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "RRD минимум для источника данных \"%s\" должен быть \"%s\"."
 
-#: lib/rrd.php:2627
+#: lib/rrd.php:2635
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr ""
 "Максимальное значение RRD для источника данных \"%s\" должно быть \"%s\"."
 
-#: lib/rrd.php:2637
+#: lib/rrd.php:2645
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "DS '%s' отсутствует в RRD-файле."
 
-#: lib/rrd.php:2646
+#: lib/rrd.php:2654
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS '%s' отсутствует в определении Cacti"
 
-#: lib/rrd.php:2663 lib/rrd.php:2664
+#: lib/rrd.php:2671 lib/rrd.php:2672
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Cacti RRA '%s' имеет те же CF/шаги (%s, %s), что и '%s'."
 
-#: lib/rrd.php:2678 lib/rrd.php:2679
+#: lib/rrd.php:2686 lib/rrd.php:2687
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr "Файл RRA '%s' имеет тот же CF/шаг (%s, %s), что и '%s'."
 
-#: lib/rrd.php:2710
+#: lib/rrd.php:2718
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XFFF для кактусов RRA id '%s' должен быть '%s'."
 
-#: lib/rrd.php:2714
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "Количество строк для Cacti RRA id '%s' должно быть '%s'."
 
-#: lib/rrd.php:2730
+#: lib/rrd.php:2738
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA '%s' отсутствует в файле RRD"
 
-#: lib/rrd.php:2739
+#: lib/rrd.php:2747
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA '%s' отсутствует в определении кактусов"
 
-#: lib/rrd.php:2758
+#: lib/rrd.php:2766
 #, fuzzy
 msgid "RRD File Information"
 msgstr "Информация о файле RRD"
 
-#: lib/rrd.php:2790
+#: lib/rrd.php:2798
 #, fuzzy
 msgid "Data Source Items"
 msgstr "50,000 Элементов источников данных"
 
-#: lib/rrd.php:2792
+#: lib/rrd.php:2800
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Минимальное сердцебиение"
 
-#: lib/rrd.php:2793
+#: lib/rrd.php:2801
 msgid "Min"
 msgstr "Мин"
 
-#: lib/rrd.php:2794
+#: lib/rrd.php:2802
 msgid "Max"
 msgstr "Макс"
 
-#: lib/rrd.php:2795
+#: lib/rrd.php:2803
 #, fuzzy
 msgid "Last DS"
 msgstr "Последний DS"
 
-#: lib/rrd.php:2797
+#: lib/rrd.php:2805
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Неизвестный Секция"
 
-#: lib/rrd.php:2844
+#: lib/rrd.php:2856
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Круглый архив Робин"
 
-#: lib/rrd.php:2847
+#: lib/rrd.php:2859
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2860
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP в ряду"
 
-#: lib/rrd.php:2850
+#: lib/rrd.php:2862
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "Значение подготовки CDP (0)"
 
-#: lib/rrd.php:2851
+#: lib/rrd.php:2863
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Неизвестные точки данных (0)"
 
-#: lib/rrd.php:2928
+#: lib/rrd.php:2940
 #, php-format
 msgid "rename %s to %s"
 msgstr "переименовать %s в %s"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Ошибка при разборе XML дампа rrdtool"
 
-#: lib/rrd.php:3010 lib/rrd.php:3065 lib/rrd.php:3121
+#: lib/rrd.php:3022 lib/rrd.php:3077 lib/rrd.php:3133
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "ERRROR при записи XML файла: %s"
 
-#: lib/rrd.php:3021 lib/rrd.php:3076 lib/rrd.php:3132
+#: lib/rrd.php:3033 lib/rrd.php:3088 lib/rrd.php:3144
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "СКОРАЯ ПОМОЩЬ: RRDfile %s не подлежит записи"
 
-#: lib/rrd.php:3048 lib/rrd.php:3104
+#: lib/rrd.php:3060 lib/rrd.php:3116
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "Ошибка при разборе XML дампа RRDtool в формате XML"
 
-#: lib/rrd.php:3337
+#: lib/rrd.php:3349
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) удалены из файла RRD\n"
 
-#: lib/rrd.php:3371
+#: lib/rrd.php:3383
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) добавление в файл RRD\n"
 
-#: lib/rrd.php:3401 lib/rrd.php:3415
+#: lib/rrd.php:3413 lib/rrd.php:3427
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
@@ -18808,26 +18964,26 @@ msgstr ""
 "Веб-сайт не имеет доступа на запись в %s, может не иметь возможности "
 "создавать/обновлять RRDs."
 
-#: lib/rrd.php:3411
+#: lib/rrd.php:3423
 msgid "(Custom)"
 msgstr "(Özel)"
 
-#: lib/rrd.php:3417
+#: lib/rrd.php:3429
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Если файл данных не был открыт, опросник мог еще не запуститься."
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "RRA Folder"
 msgstr "Папка RRA"
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "Root"
-msgstr "корнеплод"
+msgstr "Корень"
 
-#: lib/rrd.php:3523
+#: lib/rrd.php:3535
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Неизвестная ошибка RRDtool Ошибка"
@@ -19013,11 +19169,15 @@ msgstr ""
 "а затем запустив оператор change на всех таблицах InnoDB."
 
 #: lib/utility.php:943
+#, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
 "innodb_file_format to Barracuda.  This setting will allow longer indexes "
 "important for certain Cacti tables."
 msgstr ""
+"При использовании innodb_file_per_table важно установить формат "
+"innodb_file_format на Barracuda.  Эта настройка позволит использовать более "
+"длинные индексы, важные для определенных таблиц кактусов."
 
 #: lib/utility.php:949
 #, fuzzy, php-format
@@ -19169,8 +19329,9 @@ msgid "A minimum of %s m execution time"
 msgstr "Минимальное время выполнения %s m"
 
 #: lib/utility.php:1393
+#, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
-msgstr ""
+msgstr "Действительный часовой пояс, который соответствует MySQL и системе."
 
 #: lib/vdef.php:75
 #, fuzzy
@@ -19782,7 +19943,188 @@ msgstr "Плагин интегрирован в ядро Cacti"
 msgid "Plugin is not compatible"
 msgstr "Плагин несовместим"
 
-#: poller.php:343
+#: plugins/thold_functions.php:126
+#, fuzzy
+msgid "Thresholds"
+msgstr "порог"
+
+#: plugins/thold_functions.php:127
+#, fuzzy
+msgid "Log"
+msgstr "Лог"
+
+#: plugins/thold_functions.php:251
+#, fuzzy
+msgid "Time:"
+msgstr "Время"
+
+#: plugins/thold_functions.php:252 utilities.php:1854
+msgid "User:"
+msgstr "Пользователь:"
+
+#: plugins/thold_functions.php:254
+#, fuzzy
+msgid "Swaps:"
+msgstr "Обмен:"
+
+#: plugins/thold_functions.php:255
+#, fuzzy
+msgid "Pages:"
+msgstr "Страницы:"
+
+#: plugins/thold_functions.php:3193
+#, fuzzy
+msgid "Link to Graph in Cacti"
+msgstr "Вход на сайт Cacti"
+
+#: plugins/thold_functions.php:3214
+#, fuzzy
+msgid ""
+"<html><body>An alert has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body><html><body>Вышло предупреждение, которое требует вашего "
+"внимания.<br><br><br><b>Устройство</b>: <ОПИСАНИЕ> (<HOSTNAME>)<br><b>URL</"
+"b>: <URL><br><b>Мессендж</b>: <SUBJECT><br><br><br><GRAPH></body></html></"
+"html>"
+
+#: plugins/thold_functions.php:3240
+#, fuzzy
+msgid ""
+"<html><body>A warning has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body><html><body>Вышло предупреждение, требующее вашего внимания."
+"<br><br><br><b>Устройство</b>: <ОПИСАНИЕ> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Мессендж</b>: <SUBJECT><br><br><br><GRAPH></body></html></html>"
+
+#: plugins/thold_functions.php:3909
+#, fuzzy
+msgid "The Device ID was not set while trying to create Graph and Threshold"
+msgstr ""
+"ID устройства не был установлен при попытке создания графика и порогового "
+"значения."
+
+#: plugins/thold_functions.php:3923
+#, fuzzy
+msgid ""
+"The Threshold Template ID was not set while trying to create Graph and "
+"Threshold"
+msgstr ""
+"Идентификатор шаблона не был установлен при попытке создания графика и "
+"порогового значения."
+
+#: plugins/thold_functions.php:3961
+#, fuzzy
+msgid "The Graph Creation failed for Threshold Template"
+msgstr "График, который будет использоваться для данного пункта отчета."
+
+#: plugins/thold_functions.php:3991
+#, fuzzy
+msgid "Threshold was Autocreated due to Device Template mapping"
+msgstr "Добавить запрос данных в шаблон устройства"
+
+#: plugins/thold_functions.php:4029 plugins/thold_functions.php:4377
+#, fuzzy
+msgid "Record Updated"
+msgstr "RRD Обновлено"
+
+#: plugins/thold_functions.php:4079
+#, fuzzy
+msgid ""
+"You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or "
+"both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"Вы должны указать либо 'Порог высокой тревоги', либо 'Порог низкой тревоги', "
+"либо оба!<br> Записывать НЕ ПОСЛЕДУЕТСЯ!"
+
+#: plugins/thold_functions.php:4091
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Threshold' smaller than or equal to 'Low "
+"Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"Невозможные пороги: \"Высокий порог\" меньше или равен \"Низкий порог\" <br> "
+"Записывать НЕ УДАЛИТЬСЯ!"
+
+#: plugins/thold_functions.php:4103
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Warning Threshold' smaller than or equal to "
+"'Low Warning Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"Невозможные пороги: 'Высокий порог предупреждения' меньше или равен 'Низкий "
+"порог предупреждения' <br> Записывать НЕ УДАЛИТЬСЯ!"
+
+#: plugins/thold_functions.php:4111
+#, fuzzy
+msgid "With baseline thresholds enabled."
+msgstr "С включенными исходными пороговыми значениями."
+
+#: plugins/thold_functions.php:4120
+#, fuzzy
+msgid ""
+"You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' "
+"or both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"Вы должны указать либо 'Baseline Deviation UP', либо 'Baseline Deviation "
+"DOWN', либо 'Baseline DeOWN', либо оба!<br>RECORD NOT UPDATED!"
+
+#: plugins/thold_functions.php:4321
+#, fuzzy, php-format
+msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
+msgstr ""
+"Не удалось найти связанный элемент шаблона графика '%d' на Пороговом уровне "
+"'%d'."
+
+#: plugins/thold_functions.php:4331
+#, fuzzy
+msgid " What? Permission Denied"
+msgstr "Доступ запрещён"
+
+#: plugins/thold_functions.php:4375
+#, fuzzy, php-format
+msgid "Created threshold: %s"
+msgstr "Созданный график: %s"
+
+#: plugins/thold_functions.php:4444
+#, fuzzy, php-format
+msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
+msgstr ""
+"\"%s\" должно быть установлено в положительное целое значение!<br>ЗНАЗНАЧИТЬ "
+"НЕ ВЫБОРУЕТСЯ!"
+
+#: plugins/thold_functions.php:4591
+#, fuzzy
+msgid "No Thresholds Templates associated with the Device's Template."
+msgstr "Государство, связанное с этим сайтом."
+
+#: plugins/thold_functions.php:4666
+#, fuzzy
+msgid ""
+"No Threshold(s) Created.  They either already exist, or there were not "
+"matching combinations found."
+msgstr ""
+"Порог не установлен.  Они либо уже существуют, либо не были найдены "
+"совпадающие комбинации."
+
+#: plugins/thold_functions.php:4736
+#, fuzzy, php-format
+msgid "Created Threshold: %s<br>"
+msgstr "Созданный график: %s"
+
+#: plugins/thold_functions.php:4771
+#, fuzzy
+msgid ""
+"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
+"link, please set the <b>Alert Email</b> setting."
+msgstr ""
+"Почтовая ошибка: Нет <b>TO</b> Адрес установлен!!<br>Если используется "
+"ссылка <i>Test Mail</i>, пожалуйста, установите параметр <b>Alert e-mail</b>."
+
+#: poller.php:323
 #, fuzzy, php-format
 msgid ""
 "WARNING: %s is out of sync with the Poller Interval!  The Poller Interval is "
@@ -19793,7 +20135,7 @@ msgstr ""
 "опроса составляет \"%d\" секунд, с максимальным значением \"%d\" секунд, но "
 "%d секунд прошло с момента последнего опроса!"
 
-#: poller.php:456
+#: poller.php:436
 #, fuzzy, php-format
 msgid ""
 "WARNING: There are '%d' detected as overrunning a polling cycle, please "
@@ -19802,17 +20144,17 @@ msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ: Есть \"%d\", которые указывают на превышение цикла "
 "голосования, пожалуйста, проведите расследование."
 
-#: poller.php:518
+#: poller.php:498
 #, fuzzy, php-format
 msgid "WARNING: Poller Output Table not Empty.  Issues: %d, %s."
 msgstr "ПРЕДУПРЕЖДЕНИЕ: Таблица выходов полюса не пуста.  Вопросы: %d, %s."
 
-#: poller.php:541
+#: poller.php:521
 #, fuzzy, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
 msgstr "Путь позвоночника: %s недействителен.  Поллер не может продолжать!"
 
-#: poller.php:682
+#: poller.php:662
 #, fuzzy, php-format
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
 msgstr "Превышено максимальное время работы в %d секунд. Выход."
@@ -20624,6 +20966,7 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: sites.php:317
+#, fuzzy
 msgid "Delete Site"
 msgid_plural "Delete Sites"
 msgstr[0] "Удалить сайт"
@@ -20751,15 +21094,15 @@ msgstr "Сохранить файл локально"
 msgid "Available Templates [%s]"
 msgstr "Доступные шаблоны [%s]"
 
-#: templates_import.php:106 templates_import.php:128
+#: templates_import.php:108 templates_import.php:130
 msgid "Import Template"
 msgstr "Импорт шаблона"
 
-#: templates_import.php:108
+#: templates_import.php:110
 msgid "ERROR"
 msgstr "ОШИБКА"
 
-#: templates_import.php:108
+#: templates_import.php:110
 #, fuzzy
 msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr ""
@@ -21213,18 +21556,19 @@ msgid "Restricted By: "
 msgstr "Ограничительный"
 
 #: user_admin.php:780
+#, fuzzy
 msgid "Granted By: "
-msgstr ""
+msgstr "Разрешаю:"
 
 #: user_admin.php:787
 #, fuzzy
 msgid "Granted"
-msgstr "Доступ разрешен"
+msgstr "Награжденые"
 
 #: user_admin.php:789 user_admin.php:794
 #, fuzzy
 msgid "Restricted"
-msgstr "Ограничительный"
+msgstr "Ограниченный"
 
 #: user_admin.php:813 user_group_admin.php:729
 msgid "Allow"
@@ -21449,7 +21793,7 @@ msgstr "Разрешения"
 #: user_admin.php:1983
 #, fuzzy
 msgid "Group Membership"
-msgstr "Членство в группе"
+msgstr "Членство в группах"
 
 #: user_admin.php:1984 user_group_admin.php:1665
 #, fuzzy
@@ -22380,10 +22724,6 @@ msgstr "Сообщество:"
 msgid "OID:"
 msgstr "OID:"
 
-#: utilities.php:1854
-msgid "User:"
-msgstr "Пользователь:"
-
 #: utilities.php:1857
 msgid "Script:"
 msgstr "Скрипт:"
@@ -22988,6 +23328,14 @@ msgid "No VDEFs"
 msgstr "Нет VDEFs"
 
 #, fuzzy
+#~ msgid "Does the RRA Profile match the RRDfile structure?"
+#~ msgstr "Соответствует ли RRA-профиль структуре RRD-файла?"
+
+#, fuzzy
+#~ msgid "Data Source Troubleshooter"
+#~ msgstr "Поиск и устранение неисправностей в источнике данных"
+
+#, fuzzy
 #~ msgid " Poller RunAs: "
 #~ msgstr " Poller RunAs:"
 
@@ -23455,9 +23803,6 @@ msgstr "Нет VDEFs"
 
 #~ msgid "string"
 #~ msgstr "строка"
-
-#~ msgid "threshold"
-#~ msgstr "порог"
 
 #~ msgid "to"
 #~ msgstr "по"

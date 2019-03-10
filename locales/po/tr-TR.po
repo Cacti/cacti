@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-09 16:31+0100\n"
-"PO-Revision-Date: 2018-12-30 16:11-0500\n"
+"POT-Creation-Date: 2019-03-10 09:38-0400\n"
+"PO-Revision-Date: 2019-03-10 10:18-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: tr_TR\n"
@@ -16,9 +16,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2\n"
+"X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2383 lib/html.php:2313
+#: about.php:29 include/global_arrays.php:2383 lib/html.php:2309
 #, fuzzy
 msgid "About Cacti"
 msgstr "Cacti hakkında"
@@ -193,7 +193,7 @@ msgstr ""
 #: host.php:410 host.php:424 host.php:438 host.php:447 host.php:455
 #: host_templates.php:267 host_templates.php:281 host_templates.php:292
 #: host_templates.php:341 host_templates.php:404 lib/clog_webapi.php:219
-#: lib/html.php:2344 lib/html_form.php:1248 lib/html_form.php:1260
+#: lib/html.php:2340 lib/html_form.php:1248 lib/html_form.php:1260
 #: lib/html_form.php:1271 lib/html_utility.php:224 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:533
 #: pollers.php:445 pollers.php:454 pollers.php:463 pollers.php:472
@@ -227,7 +227,7 @@ msgstr "İptal"
 #: host.php:392 host.php:401 host.php:410 host.php:424 host.php:438
 #: host.php:447 host.php:455 host_templates.php:267 host_templates.php:281
 #: host_templates.php:292 host_templates.php:342 host_templates.php:405
-#: lib/clog_webapi.php:220 lib/html.php:2343 lib/html_reports.php:304
+#: lib/clog_webapi.php:220 lib/html.php:2339 lib/html_reports.php:304
 #: lib/html_utility.php:224 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:445 pollers.php:454
 #: pollers.php:463 pollers.php:472 sites.php:317 tree.php:647 tree.php:656
@@ -428,7 +428,7 @@ msgstr "Detaylar"
 msgid "Items"
 msgstr "Öğeler"
 
-#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1854
+#: aggregate_graphs.php:625 aggregate_graphs.php:631 lib/html.php:1850
 #: lib/html_reports.php:1174
 msgid "Preview"
 msgstr "Önizleme"
@@ -503,7 +503,7 @@ msgstr "Grafik Eşleştirme"
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:818 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
 #: data_queries.php:1277 data_source_profiles.php:834 data_sources.php:1395
 #: data_templates.php:845 gprint_presets.php:263 graph_templates.php:657
 #: graph_view.php:586 graphs.php:1877 graphs_new.php:389 host.php:1501
@@ -529,8 +529,8 @@ msgstr "Arama"
 #: aggregate_graphs.php:1447 color_templates.php:561 graph_view.php:452
 #: graph_view.php:645 graph_view.php:694 graphs.php:1883 graphs.php:1996
 #: host.php:1565 include/global_arrays.php:864 include/global_arrays.php:1057
-#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1568
-#: lib/html.php:1570 lib/html.php:1648 lib/html_graph.php:209
+#: include/global_arrays.php:1799 lib/api_automation.php:281 lib/html.php:1564
+#: lib/html.php:1566 lib/html.php:1644 lib/html_graph.php:209
 #: lib/html_tree.php:1005 lib/html_tree.php:1316 tree.php:787 tree.php:1985
 #: user_admin.php:1004 user_admin.php:1270 user_admin.php:2621
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
@@ -543,7 +543,7 @@ msgstr "Grafikler"
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:828 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:813
 #: data_queries.php:1287 data_source_profiles.php:844
 #: data_source_profiles.php:965 data_sources.php:1405 data_templates.php:871
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:649
@@ -574,13 +574,13 @@ msgstr "Toplamın Bir Parçası"
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:747 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:825
 #: data_queries.php:1299 data_source_profiles.php:862 data_sources.php:1345
 #: data_templates.php:889 gprint_presets.php:291 graph_templates.php:685
 #: graph_view.php:594 graphs.php:1868 graphs_new.php:378 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
-#: lib/clog_webapi.php:509 lib/html.php:1390 lib/html_filter.php:81
+#: lib/clog_webapi.php:509 lib/html.php:1386 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1540 lib/html_tree.php:992
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:402 pollers.php:756 sites.php:447 tree.php:1921
@@ -592,7 +592,7 @@ msgstr "Git"
 
 #: aggregate_graphs.php:1119 aggregate_graphs.php:1463
 #: automation_devices.php:476 automation_snmp.php:682
-#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:747
+#: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
 #: data_input.php:825 data_queries.php:1299 data_source_profiles.php:862
 #: data_sources.php:1345 data_templates.php:889 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:594 graphs.php:1868
@@ -615,7 +615,7 @@ msgstr "Filtreleri Ayarla / Yenile"
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:748 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:826
 #: data_queries.php:1300 data_source_profiles.php:863 data_sources.php:1346
 #: data_templates.php:890 gprint_presets.php:292 graph_templates.php:686
 #: graph_view.php:595 graphs.php:1869 graphs_new.php:379 host.php:1492
@@ -632,7 +632,7 @@ msgid "Clear"
 msgstr "Temizle"
 
 #: aggregate_graphs.php:1120 aggregate_graphs.php:1464 automation_snmp.php:683
-#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:748
+#: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
 #: data_input.php:826 data_queries.php:1300 data_source_profiles.php:863
 #: data_sources.php:1346 data_templates.php:890 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:595 graphs.php:1869
@@ -659,7 +659,7 @@ msgstr "Grafik Başlığı"
 
 #: aggregate_graphs.php:1200 aggregate_graphs.php:1528
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
-#: data_debug.php:273 data_queries.php:1383 data_sources.php:1529
+#: data_debug.php:346 data_queries.php:1383 data_sources.php:1529
 #: data_templates.php:1000 graph_templates.php:793 graphs.php:2018
 #: host.php:1559 host_templates.php:838 lib/api_automation.php:280
 #: pollers.php:830 sites.php:521 tree.php:1975 user_admin.php:1012
@@ -694,16 +694,17 @@ msgstr "Hayır"
 
 #: aggregate_graphs.php:1218 aggregate_templates.php:660
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_debug.php:554 data_input.php:925
-#: data_queries.php:1403 data_source_profiles.php:1004
-#: data_source_profiles.php:1005 data_source_profiles.php:1006
-#: data_sources.php:1598 data_sources.php:1599 data_templates.php:1025
-#: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
-#: include/global_settings.php:752 include/global_settings.php:1469
-#: lib/api_automation.php:1433 lib/installer.php:1694 lib/installer.php:1722
-#: lib/installer.php:3179 links.php:403 tree.php:2013 tree.php:2014
-#: user_admin.php:2344 user_domains.php:762 user_domains.php:766
-#: user_group_admin.php:1929 vdef.php:906
+#: color_templates.php:578 data_debug.php:629 data_debug.php:634
+#: data_debug.php:639 data_input.php:925 data_queries.php:1403
+#: data_source_profiles.php:1004 data_source_profiles.php:1005
+#: data_source_profiles.php:1006 data_sources.php:1598 data_sources.php:1599
+#: data_templates.php:1025 gprint_presets.php:414 graph_templates.php:814
+#: host_templates.php:857 include/global_settings.php:752
+#: include/global_settings.php:1469 lib/api_automation.php:1433
+#: lib/installer.php:1694 lib/installer.php:1722 lib/installer.php:3179
+#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2344
+#: user_domains.php:762 user_domains.php:766 user_group_admin.php:1929
+#: vdef.php:906
 msgid "Yes"
 msgstr "Evet"
 
@@ -718,7 +719,7 @@ msgstr "Grafik Bulunamadı"
 msgid "Aggregate Graphs"
 msgstr "Toplam Grafikler"
 
-#: aggregate_graphs.php:1425 data_debug.php:721 data_sources.php:1319
+#: aggregate_graphs.php:1425 data_debug.php:949 data_sources.php:1319
 #: graph_view.php:607 graphs.php:1833 graphs.php:2007 host.php:1472
 #: include/global_settings.php:502 lib/api_automation.php:441
 #: lib/html_graph.php:153 lib/html_tree.php:955 rrdcleaner.php:351
@@ -731,12 +732,12 @@ msgstr "Şablon"
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
-#: data_debug.php:725 data_sources.php:1323 graphs.php:1837
+#: data_debug.php:953 data_sources.php:1323 graphs.php:1837
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
 #: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2240
-#: lib/html.php:1932 lib/html.php:1955 lib/html.php:1993
+#: lib/html.php:1928 lib/html.php:1951 lib/html.php:1989
 #: lib/html_reports.php:1519 managers.php:483 managers.php:736
 #: user_admin.php:2603 user_admin.php:2796 user_group_admin.php:2176
 #: user_group_admin.php:2284 utilities.php:692 utilities.php:1399
@@ -748,7 +749,7 @@ msgstr "Herhangi"
 #: aggregate_graphs.php:1430 aggregate_graphs.php:1542
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
-#: automation_tree_rules.php:949 data_debug.php:726 data_sources.php:899
+#: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:899
 #: data_sources.php:1324 data_sources.php:1584 data_templates.php:1027
 #: graphs.php:1467 graphs.php:1476 graphs.php:1838 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
@@ -767,7 +768,7 @@ msgstr "Herhangi"
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
 #: lib/api_automation.php:1075 lib/auth.php:2243 lib/html.php:192
-#: lib/html.php:1933 lib/html.php:1953 lib/html.php:1994 lib/html_form.php:329
+#: lib/html.php:1929 lib/html.php:1949 lib/html.php:1990 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
 #: settings.php:439 settings.php:465 user_admin.php:2604 user_admin.php:2797
@@ -965,7 +966,7 @@ msgid "Please enter your new Cacti password."
 msgstr "Lütfen mevcut şifrenizi ve yeni şifrenizi girin <br> Kaktüsler şifre."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
-#: include/global_settings.php:1379 lib/functions.php:3820
+#: include/global_settings.php:1379 lib/functions.php:3803
 msgid "Username"
 msgstr "Kullanıcı Adı"
 
@@ -1080,7 +1081,7 @@ msgstr "Kullanıcı Girişi"
 msgid "Enter your Username and Password below"
 msgstr "Kullanıcı adınızı ve şifrenizi aşağıya girin"
 
-#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3821
+#: auth_login.php:696 include/global_form.php:1459 lib/functions.php:3804
 msgid "Password"
 msgstr "Şifre"
 
@@ -1129,18 +1130,18 @@ msgid "User Account Details"
 msgstr "Kullanıcı Hesap Detayları"
 
 #: auth_profile.php:291 include/global_arrays.php:736
-#: include/global_settings.php:2117 lib/html.php:1814 lib/html.php:1836
-#: lib/html.php:2305
+#: include/global_settings.php:2117 lib/html.php:1810 lib/html.php:1832
+#: lib/html.php:2301
 msgid "Tree View"
 msgstr "Ağaç görünümü"
 
-#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1821
-#: lib/html.php:1845 lib/html.php:2306
+#: auth_profile.php:295 include/global_arrays.php:737 lib/html.php:1817
+#: lib/html.php:1841 lib/html.php:2302
 msgid "List View"
 msgstr "Liste Görünümü"
 
-#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1828
-#: lib/html.php:2307
+#: auth_profile.php:299 include/global_arrays.php:738 lib/html.php:1824
+#: lib/html.php:2303
 #, fuzzy
 msgid "Preview View"
 msgstr "Önizleme Görünümü"
@@ -1270,8 +1271,8 @@ msgstr "Cacti&#39;ye eklendi"
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:897
 #: graph_view.php:700 graphs.php:1472 include/global_arrays.php:825
 #: include/global_arrays.php:874 include/global_arrays.php:1642
-#: lib/api_automation.php:424 lib/functions.php:3815 lib/html.php:1928
-#: lib/html.php:1960 lib/html_reports.php:658 utilities.php:1532
+#: lib/api_automation.php:424 lib/functions.php:3798 lib/html.php:1924
+#: lib/html.php:1956 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
 msgstr "Cihaz"
 
@@ -1364,7 +1365,7 @@ msgstr "SNMP"
 
 #: automation_devices.php:272 automation_devices.php:491
 #: automation_graph_rules.php:776 automation_networks.php:1079
-#: automation_tree_rules.php:817 data_debug.php:279 data_debug.php:773
+#: automation_tree_rules.php:817 data_debug.php:352 data_debug.php:1001
 #: data_sources.php:1370 data_templates.php:1005 host.php:684 host.php:783
 #: host.php:1507 host.php:1577 lib/api_automation.php:165
 #: lib/api_automation.php:278 lib/api_automation.php:571
@@ -1414,7 +1415,7 @@ msgstr "Dışa Aktar"
 msgid "Export to a file"
 msgstr "Bir dosyaya ver"
 
-#: automation_devices.php:483 data_debug.php:749 lib/clog_webapi.php:210
+#: automation_devices.php:483 data_debug.php:977 lib/clog_webapi.php:210
 #: lib/clog_webapi.php:511 managers.php:748
 msgid "Purge"
 msgstr "Temizle"
@@ -1427,8 +1428,8 @@ msgstr "Keşfedilen Cihazları Temizle"
 #: automation_devices.php:650 automation_networks.php:1145
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
-#: data_debug.php:485 host.php:1639 lib/functions.php:4191
-#: lib/functions.php:4195 lib/html.php:1133 pollers.php:885 user_admin.php:2339
+#: data_debug.php:558 host.php:1639 lib/functions.php:4174
+#: lib/functions.php:4178 lib/html.php:1133 pollers.php:885 user_admin.php:2339
 #: utilities.php:445 utilities.php:825 utilities.php:2149 utilities.php:2246
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
@@ -1577,7 +1578,7 @@ msgstr "Veri Sorgusu"
 #: automation_graph_rules.php:781 automation_graph_rules.php:904
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
-#: automation_tree_rules.php:960 data_debug.php:779 data_sources.php:1375
+#: automation_tree_rules.php:960 data_debug.php:1007 data_sources.php:1375
 #: host.php:1512 include/global_arrays.php:788 include/global_form.php:1467
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1520
@@ -1592,14 +1593,14 @@ msgstr "Etkin"
 
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
-#: automation_tree_rules.php:960 data_debug.php:780 data_sources.php:1376
+#: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1376
 #: data_templates.php:1029 host.php:1513 include/global_arrays.php:787
 #: include/global_arrays.php:1362 include/global_arrays.php:1650
 #: include/global_settings.php:378 include/global_settings.php:1209
 #: include/global_settings.php:1223 include/global_settings.php:1235
 #: include/global_settings.php:1260 include/global_settings.php:1274
 #: include/global_settings.php:1334 include/global_settings.php:1962
-#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2369
+#: lib/api_automation.php:171 lib/api_automation.php:1094 lib/html.php:2365
 #: lib/html_reports.php:1521 lib/html_reports.php:1659 lib/html_utility.php:879
 #: links.php:499 managers.php:243 managers.php:598 pollers.php:47
 #: user_admin.php:1137 user_domains.php:411 user_group_admin.php:691
@@ -2438,7 +2439,7 @@ msgid "Idle"
 msgstr "Boşta"
 
 #: automation_networks.php:1146 include/global_arrays.php:1038
-#: lib/html_reports.php:1654
+#: lib/html_reports.php:1654 plugins/thold_functions.php:74
 msgid "Never"
 msgstr "Asla"
 
@@ -2447,7 +2448,7 @@ msgstr "Asla"
 msgid "No Networks Found"
 msgstr "Ağ Bulunamadı"
 
-#: automation_networks.php:1197 data_debug.php:794 graph.php:362
+#: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:541 lib/html_graph.php:306
 #: lib/html_tree.php:1102 lib/html_tree.php:1123 utilities.php:1128
 #: utilities.php:2036
@@ -2588,7 +2589,7 @@ msgstr "Versiyon"
 msgid "Community"
 msgstr "Topluluk"
 
-#: automation_snmp.php:507 lib/functions.php:3816
+#: automation_snmp.php:507 lib/functions.php:3799
 msgid "Port"
 msgstr "Port"
 
@@ -3440,128 +3441,161 @@ msgstr "Renk Şablonu Öğeleri [Rapor Öğesini Düzenle: %s]"
 msgid "Color Template Items [new Report Item: %s]"
 msgstr "Renk Şablonu Öğeleri [yeni Rapor Öğesi: %s]"
 
-#: data_debug.php:29
+#: data_debug.php:31
 #, fuzzy
 msgid "Run Check"
 msgstr "Denetimi Çalıştır"
 
-#: data_debug.php:30
+#: data_debug.php:32
 msgid "Delete Check"
 msgstr "Kontrolü Sil"
 
-#: data_debug.php:257 data_queries.php:729 data_sources.php:960
-#: data_templates.php:574 graphs_items.php:440 include/global_arrays.php:876
-#: include/global_form.php:926 lib/api_aggregate.php:1592 lib/html.php:1052
+#: data_debug.php:51
+#, fuzzy
+msgid "Data Source debug started."
+msgstr "Veri Kaynağı Hata Ayıklama"
+
+#: data_debug.php:54
+#, fuzzy
+msgid "Data Source debug received an invalid Data Source ID."
+msgstr "Veri Kaynağı hata ayıklaması geçersiz bir Veri Kaynağı Kimliği aldı."
+
+#: data_debug.php:63
+#, fuzzy
+msgid "All RRDfile repairs succeeded."
+msgstr "Tüm RRDfile onarımları başarılı oldu."
+
+#: data_debug.php:65
+#, fuzzy
+msgid "One or more RRDfile repairs failed.  See Cacti log for errors."
+msgstr ""
+"Bir veya daha fazla RRD dosyası onarımı başarısız oldu. Hatalar için Cacti "
+"günlüğüne bakın."
+
+#: data_debug.php:73
+#, fuzzy
+msgid "Automatic Data Source debug being rerun after repair."
+msgstr ""
+"Otomatik Veri Kaynağı hata ayıklama onarımdan sonra yeniden çalıştırılıyor."
+
+#: data_debug.php:77
+#, fuzzy
+msgid "Data Source repair received an invalid Data Source ID."
+msgstr "Veri Kaynağı onarımı geçersiz bir Veri Kaynağı Kimliği aldı."
+
+#: data_debug.php:330 data_debug.php:807 data_queries.php:729
+#: data_sources.php:960 data_templates.php:574 graphs_items.php:440
+#: include/global_arrays.php:876 include/global_form.php:926
+#: lib/api_aggregate.php:1592 lib/html.php:1052
 #, fuzzy
 msgid "Data Source"
 msgstr "Veri kaynağı"
 
-#: data_debug.php:259
+#: data_debug.php:332
 #, fuzzy
 msgid "The Data Source to Debug"
 msgstr "Hata ayıklamak için veri kaynağı"
 
-#: data_debug.php:262 utilities.php:670 utilities.php:795
+#: data_debug.php:335 utilities.php:670 utilities.php:795
 msgid "User"
 msgstr "Kullanıcı"
 
-#: data_debug.php:264
+#: data_debug.php:337
 #, fuzzy
 msgid "The User who requested the Debug."
 msgstr "Hata ayıklama isteyen kullanıcı."
 
-#: data_debug.php:267
+#: data_debug.php:340
 msgid "Started"
 msgstr "Başlangıç"
 
-#: data_debug.php:270
+#: data_debug.php:343
 #, fuzzy
 msgid "The Date that the Debug was Started."
 msgstr "Hata ayıklamanın başladığı tarih."
 
-#: data_debug.php:276
+#: data_debug.php:349
 #, fuzzy
 msgid "The Data Source internal ID."
 msgstr "Veri Kaynağı dahili kimliği."
 
-#: data_debug.php:282
+#: data_debug.php:355
 #, fuzzy
 msgid "The Status of the Data Source Debug Check."
 msgstr "Veri Kaynağı Hata Ayıklama Kontrolü Durumu."
 
-#: data_debug.php:285 lib/installer.php:2059 lib/installer.php:2090
+#: data_debug.php:358 lib/installer.php:2059 lib/installer.php:2090
 msgid "Writable"
 msgstr "Yazılabilir"
 
-#: data_debug.php:288
+#: data_debug.php:361
 #, fuzzy
 msgid "Determines if the Data Collector or the Web Site have Write access."
 msgstr ""
 "Veri Toplayıcı&#39;nın veya Web Sitesinin Yazma erişiminin olup olmadığını "
 "belirler."
 
-#: data_debug.php:291
+#: data_debug.php:364
 #, fuzzy
 msgid "Exists"
 msgstr "var"
 
-#: data_debug.php:294
+#: data_debug.php:367
 #, fuzzy
 msgid "Determines if the Data Source is located in the Poller Cache."
 msgstr "Veri Kaynağının Yoklama Önbelleğinde bulunup bulunmadığını belirler."
 
-#: data_debug.php:297 data_sources.php:1547 data_templates.php:1029
+#: data_debug.php:370 data_sources.php:1547 data_templates.php:1029
 #: plugins.php:37 plugins.php:378
 msgid "Active"
 msgstr "Aktif"
 
-#: data_debug.php:300
+#: data_debug.php:373
 #, fuzzy
 msgid "Determines if the Data Source is Enabled."
 msgstr "Veri Kaynağının Etkin olup olmadığını belirler."
 
-#: data_debug.php:303
+#: data_debug.php:376
 #, fuzzy
 msgid "RRD Match"
 msgstr "RRD Eşleşmesi"
 
-#: data_debug.php:306
+#: data_debug.php:379
 #, fuzzy
 msgid "Determines if the RRDfile matches the Data Source Template."
 msgstr ""
 "RRD dosyasının Veri Kaynağı Şablonu ile eşleşip eşleşmediğini belirler."
 
-#: data_debug.php:309
+#: data_debug.php:382
 #, fuzzy
 msgid "Valid Data"
 msgstr "Geçerli veri"
 
-#: data_debug.php:312
+#: data_debug.php:385
 #, fuzzy
 msgid "Determines if the RRDfile has been getting good recent Data."
 msgstr "RRD dosyasının son zamanlarda iyi veri alıp almadığını belirler."
 
-#: data_debug.php:315
+#: data_debug.php:388
 #, fuzzy
 msgid "RRD Updated"
 msgstr "RRD Güncelleme"
 
-#: data_debug.php:318
+#: data_debug.php:391
 #, fuzzy
 msgid "Determines if the RRDfile has been writted to properly."
 msgstr "RRD dosyasının düzgün şekilde yazılıp yazılmadığını belirler."
 
-#: data_debug.php:321 data_debug.php:627
-#, fuzzy
-msgid "Issue"
-msgstr "Konu"
+#: data_debug.php:394 data_debug.php:558 data_debug.php:737
+msgid "Issues"
+msgstr "Sorunlar"
 
-#: data_debug.php:324
+#: data_debug.php:397
 #, fuzzy
-msgid "Any summary issues found for the Data Source."
+msgid "Summary of issues found for the Data Source."
 msgstr "Veri Kaynağı için bulunan tüm özet konular."
 
-#: data_debug.php:437 data_debug.php:824 data_sources.php:1401
+#: data_debug.php:510 data_debug.php:1052 data_sources.php:1401
 #: data_sources.php:1513 host.php:1571 include/global_arrays.php:865
 #: include/global_arrays.php:910 include/global_arrays.php:2071
 #: lib/api_automation.php:282 user_admin.php:1270 user_group_admin.php:970
@@ -3570,128 +3604,209 @@ msgstr "Veri Kaynağı için bulunan tüm özet konular."
 msgid "Data Sources"
 msgstr "Veri kaynakları"
 
-#: data_debug.php:485
-msgid "Issues"
-msgstr "Sorunlar"
-
-#: data_debug.php:488 data_debug.php:790
+#: data_debug.php:561 data_debug.php:1018
 #, fuzzy
 msgid "Not Debugging"
 msgstr "Hata Ayıklama"
 
-#: data_debug.php:504
+#: data_debug.php:577
 #, fuzzy
 msgid "No Checks"
 msgstr "Çek yok"
 
-#: data_debug.php:565
+#: data_debug.php:634 data_debug.php:639
+#, fuzzy
+msgid "Not Checked Yet"
+msgstr "Çek yok"
+
+#: data_debug.php:657
+#, fuzzy
+msgid "Issues found!  Waiting on RRDfile update"
+msgstr "Hatalar bulundu! RRD dosyası güncellemesi bekleniyor"
+
+#: data_debug.php:660
+#, fuzzy
+msgid "No Initial found!  Waiting on RRDfile update"
+msgstr "Başlangıç bulunamadı! RRD dosyası güncellemesi bekleniyor"
+
+#: data_debug.php:664
+#, fuzzy
+msgid "Waiting on analysis and RRDfile update"
+msgstr "RRD dosyası güncellendi mi?"
+
+#: data_debug.php:671
 #, fuzzy
 msgid "RRDfile Owner"
 msgstr "RRDDosya Sahibi"
 
-#: data_debug.php:570
+#: data_debug.php:676
 #, fuzzy
 msgid "Website runs as"
 msgstr "Web sitesi olarak çalışır"
 
-#: data_debug.php:574
+#: data_debug.php:681
 #, fuzzy
 msgid "Poller runs as"
 msgstr "Poller olarak çalışır"
 
-#: data_debug.php:578
+#: data_debug.php:686
 #, fuzzy
 msgid "Is RRA Folder writeable by poller?"
 msgstr "RRA Klasörü yoklama tarafından yazılabilir mi?"
 
-#: data_debug.php:583
+#: data_debug.php:691
 #, fuzzy
 msgid "Is RRDfile writeable by poller?"
 msgstr "RRDfile, poller tarafından yazılabilir mi?"
 
-#: data_debug.php:588
+#: data_debug.php:696
 #, fuzzy
 msgid "Does the RRDfile Exist?"
 msgstr "RRD dosyası var mı?"
 
-#: data_debug.php:592
+#: data_debug.php:701
 #, fuzzy
 msgid "Is the Data Source set as Active?"
 msgstr "Veri Kaynağı Etkin olarak ayarlandı mı?"
 
-#: data_debug.php:596
+#: data_debug.php:706
 #, fuzzy
 msgid "Did the poller receive valid data?"
 msgstr "Yoklayıcı geçerli veri aldı mı?"
 
-#: data_debug.php:601
+#: data_debug.php:711
 #, fuzzy
 msgid "Was the RRDfile updated?"
 msgstr "RRD dosyası güncellendi mi?"
 
-#: data_debug.php:607
+#: data_debug.php:717
 #, fuzzy
 msgid "First Check TimeStamp"
 msgstr "İlk Kontrol TimeStamp"
 
-#: data_debug.php:612
+#: data_debug.php:722
 #, fuzzy
 msgid "Second Check TimeStamp"
 msgstr "İkinci Kontrol TimeStamp"
 
-#: data_debug.php:617
+#: data_debug.php:727
 #, fuzzy
 msgid "Were we able to convert the title?"
 msgstr "Başlığı dönüştürebildik mi?"
 
-#: data_debug.php:622
+#: data_debug.php:732
 #, fuzzy
-msgid "Does the RRA Profile match the RRDfile structure?"
-msgstr "RRA Profili RRD dosya yapısıyla eşleşiyor mu?"
+msgid "Data Source matches the RRDfile?"
+msgstr "Veri Kaynağı yoklamadı"
 
-#: data_debug.php:633
+#: data_debug.php:746
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till Complete ] %s"
+msgstr "Veri Kaynağı Sorun Giderici [ %s]"
+
+#: data_debug.php:746 data_debug.php:748
 #, fuzzy
-msgid "Data Source Troubleshooter"
-msgstr "Veri Kaynağı Sorun Giderici"
+msgid "Refresh Now"
+msgstr "Yenile"
 
-#: data_debug.php:637
+#: data_debug.php:748
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Auto Refreshing till RRDfile Update ] %s"
+msgstr "Veri Kaynağı Sorun Giderici [ %s]"
+
+#: data_debug.php:750
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ Analysis Complete! %s ]"
+msgstr "Veri Kaynağı Sorun Giderici [ %s]"
+
+#: data_debug.php:750
+#, fuzzy
+msgid "Rerun Analysis"
+msgstr "Tekrar Çalıştırma Analizi"
+
+#: data_debug.php:755
 msgid "Check"
 msgstr "Kontrol"
 
-#: data_debug.php:638 include/global_form.php:984 lib/rrd.php:2796
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2804
 #: utilities.php:2475
 msgid "Value"
 msgstr "Değer"
 
-#: data_debug.php:639
+#: data_debug.php:757
 msgid "Results"
 msgstr "Sonuçlar"
 
-#: data_debug.php:650
+#: data_debug.php:768
 #, fuzzy
 msgid "<not set>"
 msgstr "Varsayılana ayarla"
 
-#: data_debug.php:710
+#: data_debug.php:803 data_debug.php:854
+#, fuzzy
+msgid "Data Source Repair Recommendations"
+msgstr "Veri Kaynağı Alanları"
+
+#: data_debug.php:808
+#, fuzzy
+msgid "Issue"
+msgstr "Konu"
+
+#: data_debug.php:820
 #, fuzzy, php-format
-msgid "Data Source Troubleshooter [%s]"
+msgid "For attrbitute '%s', issue found '%s'"
+msgstr "' %s' attrbitute için, ' %s' sorunu bulundu"
+
+#: data_debug.php:835
+#, fuzzy
+msgid "Apply Suggested Fixes"
+msgstr "Önerilen İsimleri Yeniden Uygula"
+
+#: data_debug.php:835
+#, fuzzy, php-format
+msgid "Repair Steps [ %s ]"
+msgstr "Onarım Adımları [ %s]"
+
+#: data_debug.php:837
+#, fuzzy
+msgid "Repair Steps [ Run Fix from Command Line ]"
+msgstr "Onarım Adımları [Komut Satırından Düzeltmeyi Çalıştır]"
+
+#: data_debug.php:840
+#, fuzzy
+msgid "Command"
+msgstr "Komut"
+
+#: data_debug.php:856
+#, fuzzy
+msgid "Waiting on Data Source Check to Complete"
+msgstr "Veri Kaynağı Kontrolünün Tamamlanmasını Bekliyor"
+
+#: data_debug.php:938
+#, fuzzy
+msgid "All Devices"
+msgstr "Tüm Cihazlar"
+
+#: data_debug.php:938
+#, fuzzy, php-format
+msgid "Data Source Troubleshooter [ %s ]"
 msgstr "Veri Kaynağı Sorun Giderici [ %s]"
 
-#: data_debug.php:710 data_sources.php:1308
+#: data_debug.php:938 data_sources.php:1308
 #, fuzzy
 msgid "No Device"
 msgstr "Cihaz"
 
-#: data_debug.php:749
+#: data_debug.php:977
 #, fuzzy
 msgid "Delete All Checks"
 msgstr "Kontrolü Sil"
 
-#: data_debug.php:757 data_sources.php:1354 data_templates.php:851
+#: data_debug.php:985 data_sources.php:1354 data_templates.php:851
 msgid "Profile"
 msgstr "Profil"
 
-#: data_debug.php:761 data_debug.php:777 data_debug.php:788
+#: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1358 data_sources.php:1374 data_sources.php:1385
 #: data_templates.php:855 graphs_new.php:355 lib/clog_webapi.php:523
 #: lib/html.php:191 lib/html_reports.php:625 plugins.php:376 settings.php:419
@@ -3700,11 +3815,11 @@ msgstr "Profil"
 msgid "All"
 msgstr "Tümü"
 
-#: data_debug.php:778 utilities.php:696 utilities.php:833
+#: data_debug.php:1006 utilities.php:696 utilities.php:833
 msgid "Failed"
 msgstr "Başarısız"
 
-#: data_debug.php:784 data_debug.php:789
+#: data_debug.php:1012 data_debug.php:1017
 msgid "Debugging"
 msgstr "Hata Ayıklama"
 
@@ -4002,11 +4117,15 @@ msgid "Data Template - %s"
 msgstr "Veri Şablonu - %s"
 
 #: data_queries.php:750
+#, fuzzy
 msgid ""
 "If this Graph Template requires the Data Template Data Source to the left, "
 "select the correct XML output column and then to enable the mapping either "
 "check or toggle here."
 msgstr ""
+"Bu Grafik Şablonu, Veri Şablonu Veri Kaynağını sola gerektiriyorsa, doğru "
+"XML çıktı sütununu seçin ve ardından eşlemeyi burada kontrol etmek veya "
+"değiştirmek için etkinleştirin."
 
 #: data_queries.php:764
 #, fuzzy
@@ -4275,7 +4394,7 @@ msgstr "Adımlar"
 
 #: data_source_profiles.php:568 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:491 lib/html_filter.php:73 lib/installer.php:2330
-#: lib/rrd.php:2846 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2858 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "Satırlar"
 
@@ -4411,7 +4530,7 @@ msgstr ""
 #: data_source_profiles.php:967 include/global_form.php:330
 #, fuzzy
 msgid "Read Only"
-msgstr "Sadece oku"
+msgstr "Sadece Okuma (Okuma Yetkisi)"
 
 #: data_source_profiles.php:968 data_sources.php:1535
 #: include/global_settings.php:1000
@@ -5070,7 +5189,7 @@ msgstr "CSV Dışa Aktar"
 msgid "Click to view just this Graph in Real-time"
 msgstr "Sadece bu Grafiği Gerçek Zamanlı olarak görüntülemek için tıklayın"
 
-#: graph.php:230 lib/html.php:2302
+#: graph.php:230 lib/html.php:2298
 #, fuzzy
 msgid "Utility View"
 msgstr "Yardımcı Program Görünümü"
@@ -5465,12 +5584,12 @@ msgstr "Önizleme modu"
 msgid "Add Selected Graphs to Report"
 msgstr "Rapora Seçili Grafikler Ekleme"
 
-#: graph_view.php:894 lib/html.php:2341
+#: graph_view.php:894 lib/html.php:2337
 msgid "Ok"
 msgstr "Tamam"
 
 #: graph_xport.php:120 graph_xport.php:153 include/global_form.php:1725
-#: include/global_form.php:1972 lib/html.php:1711 links.php:380
+#: include/global_form.php:1972 lib/html.php:1707 links.php:380
 msgid "Title"
 msgstr "Başlık"
 
@@ -5918,7 +6037,7 @@ msgstr "[Tüm Cihazlar] için Yeni Grafikler"
 msgid "New Graphs for None Host Type"
 msgstr "Hiçbiri Ana Bilgisayar Türü için Yeni Grafikler"
 
-#: graphs_new.php:316 lib/html.php:2300
+#: graphs_new.php:316 lib/html.php:2296
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "Kayıtlı Filtre Ayarları"
@@ -6195,12 +6314,12 @@ msgstr "İletişim Cihazı"
 msgid "Data Query Debug Information"
 msgstr "Veri Sorgu Hata Ayıklama Bilgisi"
 
-#: host.php:662 lib/functions.php:2889 tree.php:1508 tree.php:1582
+#: host.php:662 lib/functions.php:2872 tree.php:1508 tree.php:1582
 #: tree.php:1690 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "Kopya"
 
-#: host.php:663 templates_import.php:154
+#: host.php:663 templates_import.php:160
 msgid "Hide"
 msgstr "Gizle"
 
@@ -6271,7 +6390,7 @@ msgstr "[% d Öğeler,% d Satırlar]"
 msgid "Fail"
 msgstr "Başarısız"
 
-#: host.php:845 lib/functions.php:3830 lib/functions.php:3835
+#: host.php:845 lib/functions.php:3813 lib/functions.php:3818
 msgid "Success"
 msgstr "Başarılı"
 
@@ -6335,7 +6454,7 @@ msgstr "SNMP Desc"
 msgid "SNMP GetNext"
 msgstr "SNMP GetNext"
 
-#: host.php:1437 include/global_settings.php:510 lib/html.php:1989
+#: host.php:1437 include/global_settings.php:510 lib/html.php:1985
 msgid "Site"
 msgstr "Site"
 
@@ -6356,7 +6475,7 @@ msgid "Recovering"
 msgstr "kurtarma"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/rrd.php:2819 lib/rrd.php:2829 plugins.php:180
+#: lib/html_utility.php:895 lib/rrd.php:2829 lib/rrd.php:2841 plugins.php:180
 #: plugins.php:184 plugins.php:203 user_admin.php:796 utilities.php:2145
 msgid "Unknown"
 msgstr "Bilinmeyen"
@@ -6662,6 +6781,7 @@ msgid "Login Again"
 msgstr "Tekrar giriş yap"
 
 #: include/auth.php:263 permission_denied.php:43 permission_denied.php:50
+#: plugins/thold_functions.php:4015
 #, fuzzy
 msgid "Permission Denied"
 msgstr "İzin reddedildi"
@@ -7320,7 +7440,7 @@ msgstr "Sağ"
 msgid "Justified"
 msgstr "Doğrula"
 
-#: include/global_arrays.php:500 lib/html.php:2367
+#: include/global_arrays.php:500 lib/html.php:2363
 msgid "Center"
 msgstr "Merkez"
 
@@ -7605,13 +7725,13 @@ msgstr "Doğal Sipariş"
 msgid "Numeric Ordering"
 msgstr "Sayısal Sipariş"
 
-#: include/global_arrays.php:823 lib/rrd.php:2762
+#: include/global_arrays.php:823 lib/rrd.php:2770
 msgid "Header"
 msgstr "Başlık"
 
 #: include/global_arrays.php:824 include/global_arrays.php:875
 #: include/global_arrays.php:1474 include/global_arrays.php:1641
-#: lib/html.php:2356
+#: lib/html.php:2352
 msgid "Graph"
 msgstr "Grafik"
 
@@ -7793,12 +7913,12 @@ msgid "Export Templates"
 msgstr "Şablonları Dışa Aktar"
 
 #: include/global_arrays.php:899 include/global_arrays.php:921
-#: include/global_arrays.php:939 lib/plugins.php:949
+#: include/global_arrays.php:939 lib/plugins.php:951
 msgid "Configuration"
 msgstr "Yapılandırma"
 
 #: include/global_arrays.php:900 include/global_arrays.php:922
-#: lib/html.php:2123 lib/html.php:2371
+#: lib/html.php:2119 lib/html.php:2367
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -8765,7 +8885,7 @@ msgid "List Mode"
 msgstr "Liste Modu"
 
 #: include/global_arrays.php:1849 include/global_arrays.php:1855
-#: lib/functions.php:2522 lib/html.php:1559 lib/html.php:1636 links.php:345
+#: lib/functions.php:2522 lib/html.php:1555 lib/html.php:1632 links.php:345
 #: user_admin.php:1691 user_group_admin.php:1394
 #, fuzzy
 msgid "Console"
@@ -8923,7 +9043,7 @@ msgid "Export Results"
 msgstr "Dışa aktarma sonuçları"
 
 #: include/global_arrays.php:2407 include/global_arrays.php:2437
-#: lib/html.php:1580 lib/html.php:1582 lib/html.php:1661
+#: lib/html.php:1576 lib/html.php:1578 lib/html.php:1657
 msgid "Reporting"
 msgstr "Raporlama"
 
@@ -8978,12 +9098,14 @@ msgid "hrs"
 msgstr "saat"
 
 #: include/global_arrays.php:2620
+#, fuzzy
 msgid "mins"
-msgstr ""
+msgstr "dakika"
 
 #: include/global_arrays.php:2621
+#, fuzzy
 msgid "secs"
-msgstr ""
+msgstr "sn"
 
 #: include/global_arrays.php:2635 lib/api_device.php:1067
 msgid "hours"
@@ -9186,7 +9308,7 @@ msgstr ""
 "artırın. Bu değer, gerçek zaman miktarını belirlemek için X Dosyaları "
 "Faktörü ile çarpılır."
 
-#: include/global_form.php:196 lib/rrd.php:2849
+#: include/global_form.php:196 lib/rrd.php:2861
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X Dosyaları Faktörü"
@@ -10085,7 +10207,7 @@ msgstr "Opaklık / Alfa Kanalı"
 msgid "The opacity/alpha channel of the color."
 msgstr "Rengin opaklık / alfa kanalı."
 
-#: include/global_form.php:955 lib/rrd.php:2845
+#: include/global_form.php:955 lib/rrd.php:2857
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "Birleştirme İşlevi"
@@ -11052,7 +11174,7 @@ msgstr "Veri"
 msgid "Visual"
 msgstr "Görsel"
 
-#: include/global_settings.php:44 lib/functions.php:3819 lib/functions.php:3824
+#: include/global_settings.php:44 lib/functions.php:3802 lib/functions.php:3807
 msgid "Authentication"
 msgstr "Doğrulama"
 
@@ -11095,12 +11217,12 @@ msgstr "Grafik Yazı Tipleri"
 msgid "PHP Mail() Function"
 msgstr "PHP Mail () İşlevi"
 
-#: include/global_settings.php:91 lib/functions.php:3802
+#: include/global_settings.php:91 lib/functions.php:3785
 #, fuzzy
 msgid "Sendmail"
 msgstr "Sendmail Yolu"
 
-#: include/global_settings.php:92 lib/functions.php:3807
+#: include/global_settings.php:92 lib/functions.php:3790
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -11371,10 +11493,13 @@ msgid "Data Source Tracing"
 msgstr "Veri Kaynakları Kullanımı"
 
 #: include/global_settings.php:278
+#, fuzzy
 msgid ""
 "A developer only option to trace the creation of Data Sources mainly around "
 "checks for uniqueness"
 msgstr ""
+"Bir geliştirici yalnızca, özellikle benzersiz olma durumundaki kontroller "
+"etrafında Veri Kaynaklarının oluşturulmasını izlemek için bir seçenek"
 
 #: include/global_settings.php:283
 #, fuzzy
@@ -11619,7 +11744,7 @@ msgstr ""
 msgid "Simple"
 msgstr "Basit"
 
-#: include/global_settings.php:423 lib/html.php:2358
+#: include/global_settings.php:423 lib/html.php:2354
 msgid "Advanced"
 msgstr "Gelişmiş"
 
@@ -11827,39 +11952,50 @@ msgid "Default Interface Speed"
 msgstr "Varsayılan Grafik Türü"
 
 #: include/global_settings.php:541
+#, fuzzy
 msgid ""
 "If Cacti can not determine the interface speed due to either ifSpeed or "
 "ifHighSpeed not being set or being zero, what maximum value do you wish on "
 "the resulting RRDfiles."
 msgstr ""
+"Eğer Cacti, eğer ifSpeed veya ifHighSpeed ayarlanmamış veya sıfır "
+"olmadığından dolayı arayüz hızını belirleyemiyorsa, ortaya çıkan RRD "
+"dosyalarında ne kadar değer olmasını istiyorsunuz?"
 
 #: include/global_settings.php:545
+#, fuzzy
 msgid "100 Mbps Ethernet"
-msgstr ""
+msgstr "100 Mbps Ethernet"
 
 #: include/global_settings.php:546
+#, fuzzy
 msgid "1 Gbps Ethernet"
-msgstr ""
+msgstr "1 Gb / sn Ethernet"
 
 #: include/global_settings.php:547
+#, fuzzy
 msgid "10 Gbps Ethernet"
-msgstr ""
+msgstr "10 Gb / sn Ethernet"
 
 #: include/global_settings.php:548
+#, fuzzy
 msgid "25 Gbps Ethernet"
-msgstr ""
+msgstr "25 Gb / sn Ethernet"
 
 #: include/global_settings.php:549
+#, fuzzy
 msgid "40 Gbps Ethernet"
-msgstr ""
+msgstr "40 Gbps Ethernet"
 
 #: include/global_settings.php:550
+#, fuzzy
 msgid "56 Gbps Ethernet"
-msgstr ""
+msgstr "56 Gb / sn Ethernet"
 
 #: include/global_settings.php:551
+#, fuzzy
 msgid "100 Gbps Ethernet"
-msgstr ""
+msgstr "100 Gb / sn Ethernet"
 
 #: include/global_settings.php:554
 #, fuzzy
@@ -13361,7 +13497,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "Sendmail Seçenekleri"
 
-#: include/global_settings.php:1498 lib/functions.php:3802
+#: include/global_settings.php:1498 lib/functions.php:3785
 msgid "Sendmail Path"
 msgstr "Sendmail Yolu"
 
@@ -13967,7 +14103,7 @@ msgstr "Standart sapma"
 msgid "Variance Based w/Outliers Removed"
 msgstr "Varyansa Dayalı Harcamalar Kaldırıldı"
 
-#: include/global_settings.php:1864 lib/html.php:2083
+#: include/global_settings.php:1864 lib/html.php:2079
 #, fuzzy
 msgid "Replacement Method"
 msgstr "Değiştirme yöntemi"
@@ -13985,16 +14121,16 @@ msgstr ""
 "NaN&#39; ile değiştirir. Sonuncusu, en son bilinen iyi değer ile başak "
 "değiştirir."
 
-#: include/global_settings.php:1869 lib/html.php:2079
+#: include/global_settings.php:1869 lib/html.php:2075
 msgid "Average"
 msgstr "Ortalama"
 
-#: include/global_settings.php:1870 lib/html.php:2080
+#: include/global_settings.php:1870 lib/html.php:2076
 #, fuzzy
 msgid "NaN's"
 msgstr "NaN en"
 
-#: include/global_settings.php:1871 lib/html.php:2081
+#: include/global_settings.php:1871 lib/html.php:2077
 #, fuzzy
 msgid "Last Known Good"
 msgstr "Bilinen en son iyi"
@@ -14024,7 +14160,7 @@ msgstr ""
 msgid "%d Standard Deviations"
 msgstr "% d Standart Sapmalar"
 
-#: include/global_settings.php:1892 lib/html.php:2095
+#: include/global_settings.php:1892 lib/html.php:2091
 #, fuzzy
 msgid "Variance Percentage"
 msgstr "Varyans Yüzdesi"
@@ -14608,16 +14744,22 @@ msgstr ""
 "için JavaScript’i etkinleştirmiş olmanız gerekir."
 
 #: install/install.php:83
+#, fuzzy
 msgid ""
 "FATAL: We are unable to continue with this installation. In order to install "
 "Cacti, PHP must be at version 5.4 or later."
 msgstr ""
+"FATAL: Bu kuruluma devam edemiyoruz. Cacti'yi kurabilmek için PHP'nin 5.4 "
+"veya daha sonraki sürümlerde olması gerekir."
 
 #: install/install.php:86
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/book.json.php"
 "\">JavaScript Object Notation</a>."
 msgstr ""
+"PHP Kılavuzuna bakınız: <a href=\"http://php.net/manual/en/book.json.php"
+"\">JavaScript Nesne Notasyonu</a> ."
 
 #: install/install.php:86
 #, fuzzy
@@ -14625,14 +14767,18 @@ msgid "The php-json module must also be installed."
 msgstr "Yüklemiş olduğunuz RRDtool sürümü."
 
 #: install/install.php:90
+#, fuzzy
 msgid ""
 "See the PHP Manual: <a href=\"http://php.net/manual/en/ini.core.php#ini."
 "disable-functions\">Disable Functions</a>."
 msgstr ""
+"PHP Kılavuzuna bakın: <a href=\"http://php.net/manual/en/ini.core.php#ini."
+"disable-functions\">İşlevleri Devre Dışı Bırak</a> ."
 
 #: install/install.php:90
+#, fuzzy
 msgid "The shell_exec() and/or exec() functions are currently blocked."
-msgstr ""
+msgstr "Shell_exec () ve / veya exec () işlevleri şu anda engellenmiştir."
 
 #: lib/aggregate.php:51
 #, fuzzy
@@ -14705,7 +14851,7 @@ msgstr "Eşleşen Cihazlar"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070
 #: lib/clog_webapi.php:519 lib/html_reports.php:603 lib/html_reports.php:1344
-#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2791
+#: lib/html_reports.php:1611 lib/html_reports.php:1622 lib/rrd.php:2799
 #: utilities.php:339 utilities.php:1106 utilities.php:2475
 msgid "Type"
 msgstr "Tip"
@@ -14740,7 +14886,7 @@ msgstr ""
 msgid "Matching Objects [ %s ]"
 msgstr "Eşleşen Nesneler [ %s]"
 
-#: lib/api_automation.php:884
+#: lib/api_automation.php:884 plugins/thold_functions.php:128
 #, fuzzy
 msgid "Device Status"
 msgstr "Cihaz durumu"
@@ -14895,7 +15041,7 @@ msgstr "Oturum"
 msgid "Host"
 msgstr "Host"
 
-#: lib/api_device.php:1060
+#: lib/api_device.php:1060 plugins/thold_functions.php:253
 #, fuzzy
 msgid "System:"
 msgstr "Sistem"
@@ -14918,8 +15064,8 @@ msgstr "Konum:"
 msgid "Contact:"
 msgstr "İletişim:"
 
-#: lib/api_device.php:1101 lib/functions.php:3833 lib/functions.php:3835
-#: lib/functions.php:3839
+#: lib/api_device.php:1101 lib/functions.php:3816 lib/functions.php:3818
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Ping Results"
 msgstr "Ping Sonuçları"
@@ -15485,17 +15631,22 @@ msgid "Unknown Index"
 msgstr "Bilinmeyen Dizin"
 
 #: lib/data_query.php:2108
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
 "checkbox to its right"
 msgstr ""
+"' %s' Veri Kaynağı için bir XML çıktı sütunu seçmeli ve onay kutusunu sağa "
+"kaydırmalısınız"
 
 #: lib/data_query.php:2114
+#, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
 "Graph Template"
 msgstr ""
+"Grafik Şablonunuz kullanımda Veri Şablonları içermiyor. Lütfen Grafik "
+"Şablonunuzu düzeltin"
 
 #: lib/database.php:1482
 #, fuzzy
@@ -15548,7 +15699,7 @@ msgstr "RDR Dosyası Poller tarafından yazılabilir değil. RRD Sahibi:"
 
 #: lib/dsdebug.php:279
 #, fuzzy
-msgid "RRDfile does not match Data Profile"
+msgid "RRDfile does not match Data Source"
 msgstr "RDR Dosyası Veri Profili ile Eşleşmiyor"
 
 #: lib/dsdebug.php:284
@@ -15594,12 +15745,12 @@ msgstr "Düzenli Kullanıcı Olarak Giriş Yapın"
 msgid "guest"
 msgstr "misafir"
 
-#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2310
+#: lib/functions.php:2311 lib/functions.php:2324 lib/html.php:2306
 #, fuzzy
 msgid "User Community"
 msgstr "Kullanıcı Topluluğu"
 
-#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2311
+#: lib/functions.php:2312 lib/functions.php:2325 lib/html.php:2307
 #: lib/utility.php:1012
 msgid "Documentation"
 msgstr "Belgeler"
@@ -15627,7 +15778,7 @@ msgstr "Sorgu Tabanlı Olmayan"
 msgid "Link %s"
 msgstr "%s bağlantısı"
 
-#: lib/functions.php:3324
+#: lib/functions.php:3307
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15636,27 +15787,27 @@ msgstr ""
 "Mailer Hata: set adrese <b>İÇİN</b> !! <br> <i>Posta Testi</i> bağlantısını "
 "kullanıyorsanız, lütfen <b>Uyarı e-posta</b> ayarını ayarlayın."
 
-#: lib/functions.php:3766
+#: lib/functions.php:3749
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "Kimlik doğrulama başarısız oldu: %s"
 
-#: lib/functions.php:3770
+#: lib/functions.php:3753
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO başarısız oldu: %s"
 
-#: lib/functions.php:3773
+#: lib/functions.php:3756
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "Bağlantı kurulamadı: %s"
 
-#: lib/functions.php:3776
+#: lib/functions.php:3759
 #, fuzzy
 msgid "SMTP error: "
 msgstr "SMTP hatası:"
 
-#: lib/functions.php:3789
+#: lib/functions.php:3772
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15665,80 +15816,80 @@ msgstr ""
 "Bu Cacti&#39;den üretilen bir test mesajıdır. Bu mesaj, Posta Ayarlarınızın "
 "yapılandırmasını test etmek için gönderildi."
 
-#: lib/functions.php:3790
+#: lib/functions.php:3773
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "E-posta ayarlarınız şu anda aşağıdaki gibi ayarlanmış"
 
-#: lib/functions.php:3791
+#: lib/functions.php:3774
 msgid "Method"
 msgstr "Yöntem"
 
-#: lib/functions.php:3793
+#: lib/functions.php:3776
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "Yapılandırma Denetleniyor ... <br>"
 
-#: lib/functions.php:3800
+#: lib/functions.php:3783
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "PHP&#39;nin Mailer Sınıfı"
 
-#: lib/functions.php:3806
+#: lib/functions.php:3789
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "Yöntem: SMTP"
 
-#: lib/functions.php:3821
+#: lib/functions.php:3804
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "Güvenlik Sebepleri Gösterilmemiştir"
 
-#: lib/functions.php:3822
+#: lib/functions.php:3805
 msgid "Security"
 msgstr "Güvenlik"
 
-#: lib/functions.php:3830
+#: lib/functions.php:3813
 #, fuzzy
 msgid "Ping Results:"
 msgstr "Ping Sonuçları:"
 
-#: lib/functions.php:3839
+#: lib/functions.php:3822
 #, fuzzy
 msgid "Bypassed"
 msgstr "baypas"
 
-#: lib/functions.php:3847
+#: lib/functions.php:3830
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "Mesaj Metni Oluşturuluyor ..."
 
-#: lib/functions.php:3850
+#: lib/functions.php:3833
 #, fuzzy
 msgid "Sending Message..."
 msgstr "Mesaj göndermek..."
 
-#: lib/functions.php:3854
+#: lib/functions.php:3837
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "Kaktüsler Test Mesajı"
 
-#: lib/functions.php:3856
+#: lib/functions.php:3839
 msgid "Success!"
 msgstr "Başarılı!"
 
-#: lib/functions.php:3859
+#: lib/functions.php:3842
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "Ping hatası nedeniyle gönderilemedi."
 
-#: lib/functions.php:4453 lib/functions.php:4514 poller.php:343 poller.php:456
-#: poller.php:518 poller.php:541 poller.php:682
+#: lib/functions.php:4436 lib/functions.php:4497 poller.php:323 poller.php:436
+#: poller.php:498 poller.php:521 poller.php:662
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "Kaktüsler Sistemi Uyarısı"
 
-#: lib/functions.php:4453 lib/functions.php:4514
+#: lib/functions.php:4436 lib/functions.php:4497
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15747,17 +15898,17 @@ msgstr ""
 "Cacti, şu hata nedeniyle %s eklentisini devre dışı bıraktı: %s! Daha fazla "
 "ayrıntı için Cacti günlük dosyasına bakın."
 
-#: lib/functions.php:4890 lib/functions.php:4892
+#: lib/functions.php:4873 lib/functions.php:4875
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- Beta %s"
 
-#: lib/functions.php:4890
+#: lib/functions.php:4873
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "Sürüm %s %s"
 
-#: lib/functions.php:4892
+#: lib/functions.php:4875
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -15781,7 +15932,7 @@ msgstr "Veri Sorgu:"
 msgid "CSV Export of Graph Data"
 msgstr "Grafik Verilerinin CSV Dışa Aktarılması"
 
-#: lib/html.php:443 lib/html.php:2299
+#: lib/html.php:443 lib/html.php:2295
 #, fuzzy
 msgid "Time Graph View"
 msgstr "Zaman Grafiği Görünümü"
@@ -15829,357 +15980,357 @@ msgstr "Alfa%"
 msgid "No Task"
 msgstr "Sorma"
 
-#: lib/html.php:1380
+#: lib/html.php:1376
 #, fuzzy
 msgid "Choose an action"
 msgstr "Bir eylem seçin"
 
-#: lib/html.php:1390
+#: lib/html.php:1386
 #, fuzzy
 msgid "Execute Action"
 msgstr "Eylemi Yürüt"
 
-#: lib/html.php:1589 lib/html.php:1591 lib/html.php:1671 managers.php:41
+#: lib/html.php:1585 lib/html.php:1587 lib/html.php:1667 managers.php:41
 #: managers.php:221
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: lib/html.php:2087
+#: lib/html.php:2083
 #, fuzzy, php-format
 msgid "%s Standard Deviations"
 msgstr "%s Standart Sapmalar"
 
-#: lib/html.php:2089
+#: lib/html.php:2085
 #, fuzzy
 msgid "Standard Deviations"
 msgstr "Standart sapma"
 
-#: lib/html.php:2099
+#: lib/html.php:2095
 #, fuzzy, php-format
 msgid "%d Outliers"
 msgstr "% d Aykırı Değerler"
 
-#: lib/html.php:2101
+#: lib/html.php:2097
 #, fuzzy
 msgid "Variance Outliers"
 msgstr "Varyans Aykırı Değerleri"
 
-#: lib/html.php:2105
+#: lib/html.php:2101
 #, fuzzy, php-format
 msgid "%d Spikes"
 msgstr "% d Spike"
 
-#: lib/html.php:2107
+#: lib/html.php:2103
 #, fuzzy
 msgid "Kills Per RRA"
 msgstr "RRA Başına Öldürülenler"
 
-#: lib/html.php:2113
+#: lib/html.php:2109
 #, fuzzy
 msgid "Remove StdDev"
 msgstr "StdDev Kaldır"
 
-#: lib/html.php:2114
+#: lib/html.php:2110
 #, fuzzy
 msgid "Remove Variance"
 msgstr "Varyansı Kaldır"
 
-#: lib/html.php:2115
+#: lib/html.php:2111
 #, fuzzy
 msgid "Gap Fill Range"
 msgstr "Aralık Dolgu Aralığı"
 
-#: lib/html.php:2116
+#: lib/html.php:2112
 #, fuzzy
 msgid "Float Range"
 msgstr "Şamandıra aralığı"
 
-#: lib/html.php:2118
+#: lib/html.php:2114
 #, fuzzy
 msgid "Dry Run StdDev"
 msgstr "Kuru Çalıştırma StdDev"
 
-#: lib/html.php:2119
+#: lib/html.php:2115
 #, fuzzy
 msgid "Dry Run Variance"
 msgstr "Kuru Çalışma Varyansı"
 
-#: lib/html.php:2120
+#: lib/html.php:2116
 #, fuzzy
 msgid "Dry Run Gap Fill Range"
 msgstr "Kuru Çalıştırma Boşluğu Doldurma Aralığı"
 
-#: lib/html.php:2121
+#: lib/html.php:2117
 #, fuzzy
 msgid "Dry Run Float Range"
 msgstr "Kuru Çalışma Şamandıra Aralığı"
 
-#: lib/html.php:2296 lib/html_filter.php:66
+#: lib/html.php:2292 lib/html_filter.php:66
 #, fuzzy
 msgid "Enter a search term"
 msgstr "Bir arama terimi girin"
 
-#: lib/html.php:2297
+#: lib/html.php:2293
 #, fuzzy
 msgid "Enter a regular expression"
 msgstr "Düzenli bir ifade girin"
 
-#: lib/html.php:2298
+#: lib/html.php:2294
 msgid "No file selected"
 msgstr "Herhangi bir dosya seçilmemiş"
 
-#: lib/html.php:2301 lib/html.php:2314
+#: lib/html.php:2297 lib/html.php:2310
 #, fuzzy
 msgid "SpikeKill Results"
 msgstr "SpikeKill Sonuçları"
 
-#: lib/html.php:2303
+#: lib/html.php:2299
 #, fuzzy
 msgid "Click to view just this Graph in Realtime"
 msgstr "Sadece bu Grafiği Gerçek Zamanlı olarak görüntülemek için tıklayın"
 
-#: lib/html.php:2304
+#: lib/html.php:2300
 #, fuzzy
 msgid "Click again to take this Graph out of Realtime"
 msgstr "Bu Grafiği Gerçek Zamanlı Durumdan çıkarmak için tekrar tıklayın"
 
-#: lib/html.php:2308
+#: lib/html.php:2304
 #, fuzzy
 msgid "Cacti Home"
 msgstr "Kaktüsler Ana Sayfa"
 
-#: lib/html.php:2309
+#: lib/html.php:2305
 #, fuzzy
 msgid "Cacti Project Page"
 msgstr "Kaktüsler Proje Sayfası"
 
-#: lib/html.php:2312
+#: lib/html.php:2308
 msgid "Report a bug"
 msgstr "Hata bildir"
 
-#: lib/html.php:2315
+#: lib/html.php:2311
 #, fuzzy
 msgid "Click to Show/Hide Filter"
 msgstr "Filtreyi Göster / Gizle&#39;yi tıkla"
 
-#: lib/html.php:2316
+#: lib/html.php:2312
 #, fuzzy
 msgid "Clear Current Filter"
 msgstr "Geçerli Filtreyi Temizle"
 
-#: lib/html.php:2317
+#: lib/html.php:2313
 #, fuzzy
 msgid "Clipboard"
-msgstr "Pano"
+msgstr "Panoya Kopyala"
 
-#: lib/html.php:2318
+#: lib/html.php:2314
 #, fuzzy
 msgid "Clipboard ID"
 msgstr "Pano Kimliği"
 
-#: lib/html.php:2319
+#: lib/html.php:2315
 #, fuzzy
 msgid "Copy operation is unavailable at this time"
 msgstr "Kopyalama işlemi şu anda kullanılamıyor"
 
-#: lib/html.php:2320
+#: lib/html.php:2316
 #, fuzzy
 msgid "Failed to find data to copy!"
 msgstr "Kopyalanacak veri bulunamadı!"
 
-#: lib/html.php:2321
+#: lib/html.php:2317
 #, fuzzy
 msgid "Clipboard has been updated"
 msgstr "Pano güncellendi"
 
-#: lib/html.php:2322
+#: lib/html.php:2318
 #, fuzzy
 msgid "Sorry, your clipboard could not be updated at this time"
 msgstr "Maalesef, panonuz şu anda güncellenemedi"
 
-#: lib/html.php:2326
+#: lib/html.php:2322
 #, fuzzy
 msgid "Passphrase length meets 8 character minimum"
 msgstr "Şifre uzunluğu minimum 8 karakter"
 
-#: lib/html.php:2327
+#: lib/html.php:2323
 #, fuzzy
 msgid "Passphrase too short"
 msgstr "Şifre çok kısa"
 
-#: lib/html.php:2328
+#: lib/html.php:2324
 #, fuzzy
 msgid "Passphrase matches but too short"
 msgstr "Parola eşleşiyor ancak çok kısa"
 
-#: lib/html.php:2329
+#: lib/html.php:2325
 #, fuzzy
 msgid "Passphrase too short and not matching"
 msgstr "Parola çok kısa ve eşleşmiyor"
 
-#: lib/html.php:2330
+#: lib/html.php:2326
 #, fuzzy
 msgid "Passphrases match"
 msgstr "Parola eşleşmesi"
 
-#: lib/html.php:2331
+#: lib/html.php:2327
 #, fuzzy
 msgid "Passphrases do not match"
 msgstr "Parolalar eşleşmiyor"
 
-#: lib/html.php:2332
+#: lib/html.php:2328
 #, fuzzy
 msgid "Sorry, we could not process your last action."
 msgstr "Maalesef, son işleminizi gerçekleştiremedik."
 
-#: lib/html.php:2333
+#: lib/html.php:2329
 msgid "Error:"
 msgstr "Hata:"
 
-#: lib/html.php:2334
+#: lib/html.php:2330
 #, fuzzy
 msgid "Reason:"
-msgstr "Sebep:"
+msgstr "Nedeni:"
 
-#: lib/html.php:2335
+#: lib/html.php:2331
 #, fuzzy
 msgid "Action failed"
 msgstr "Eylem başarısız"
 
-#: lib/html.php:2336
+#: lib/html.php:2332
 #, fuzzy
 msgid "The response to the last action was unexpected."
 msgstr "Son eyleme verilen yanıt beklenmiyordu."
 
-#: lib/html.php:2337
+#: lib/html.php:2333
 #, fuzzy
 msgid "Some Actions failed"
 msgstr "Bazı İşlemler başarısız oldu"
 
-#: lib/html.php:2338
+#: lib/html.php:2334
 #, fuzzy
 msgid "Note, we could not process all your actions.  Details are below."
 msgstr "Not, tüm işlemlerinizi işleme koyamadık. Detaylar aşağıda."
 
-#: lib/html.php:2339
+#: lib/html.php:2335
 msgid "Operation successful"
 msgstr "Operasyon Başarılı"
 
-#: lib/html.php:2340
+#: lib/html.php:2336
 #, fuzzy
 msgid "The Operation was successful.  Details are below."
 msgstr "Operasyon başarılı oldu. Detaylar aşağıda."
 
-#: lib/html.php:2342
+#: lib/html.php:2338
 msgid "Pause"
 msgstr "Duraklat"
 
-#: lib/html.php:2345
+#: lib/html.php:2341
 msgid "Zoom In"
 msgstr "Yakınlaştır"
 
-#: lib/html.php:2346
+#: lib/html.php:2342
 msgid "Zoom Out"
 msgstr "Uzaklaştır"
 
-#: lib/html.php:2347
+#: lib/html.php:2343
 #, fuzzy
 msgid "Zoom Out Factor"
 msgstr "Uzaklaştırma Faktörü"
 
-#: lib/html.php:2348
+#: lib/html.php:2344
 #, fuzzy
 msgid "Timestamps"
 msgstr "Zaman damgaları"
 
-#: lib/html.php:2349
+#: lib/html.php:2345
 #, fuzzy
 msgid "2x"
 msgstr "2 kere"
 
-#: lib/html.php:2350
+#: lib/html.php:2346
 #, fuzzy
 msgid "4x"
 msgstr "4x"
 
-#: lib/html.php:2351
+#: lib/html.php:2347
 #, fuzzy
 msgid "8x"
 msgstr "8x"
 
-#: lib/html.php:2352
+#: lib/html.php:2348
 #, fuzzy
 msgid "16x"
 msgstr "16x"
 
-#: lib/html.php:2353
+#: lib/html.php:2349
 #, fuzzy
 msgid "32x"
 msgstr "32x"
 
-#: lib/html.php:2354
+#: lib/html.php:2350
 #, fuzzy
 msgid "Zoom Out Positioning"
 msgstr "Uzaklaştır Konumlandırma"
 
-#: lib/html.php:2355
+#: lib/html.php:2351
 #, fuzzy
 msgid "Zoom Mode"
 msgstr "Yakınlaştırma Modu"
 
-#: lib/html.php:2357
+#: lib/html.php:2353
 #, fuzzy
 msgid "Quick"
 msgstr "Hızlı"
 
-#: lib/html.php:2359
+#: lib/html.php:2355
 msgid "Open in new tab"
 msgstr "Yeni sekmede aç"
 
-#: lib/html.php:2360
+#: lib/html.php:2356
 #, fuzzy
 msgid "Save graph"
 msgstr "Grafiği kaydet"
 
-#: lib/html.php:2361
+#: lib/html.php:2357
 #, fuzzy
 msgid "Copy graph"
 msgstr "Grafiği kopyala"
 
-#: lib/html.php:2362
+#: lib/html.php:2358
 #, fuzzy
 msgid "Copy graph link"
 msgstr "Grafik bağlantısını kopyala"
 
-#: lib/html.php:2363
+#: lib/html.php:2359
 #, fuzzy
 msgid "Always On"
 msgstr "Her zaman"
 
-#: lib/html.php:2364
+#: lib/html.php:2360
 msgid "Auto"
 msgstr "Otomatik"
 
-#: lib/html.php:2365
+#: lib/html.php:2361
 #, fuzzy
 msgid "Always Off"
 msgstr "Herzaman kapalı"
 
-#: lib/html.php:2366
+#: lib/html.php:2362
 #, fuzzy
 msgid "Begin with"
 msgstr "İle başlar"
 
-#: lib/html.php:2368
+#: lib/html.php:2364
 #, fuzzy
 msgid "End with"
 msgstr "Bitiş Tarihi"
 
-#: lib/html.php:2370 lib/html_form.php:1279
+#: lib/html.php:2366 lib/html_form.php:1279
 msgid "Close"
 msgstr "Kapat"
 
-#: lib/html.php:2372
+#: lib/html.php:2368
 #, fuzzy
 msgid "3rd Mouse Button"
 msgstr "3. Fare Düğmesi"
@@ -17332,13 +17483,17 @@ msgid "License Agreement"
 msgstr "Lisans anlaşması"
 
 #: lib/installer.php:1515
-#, php-format
+#, fuzzy, php-format
 msgid ""
 "This version of Cacti (%s) does not appear to have a valid version code, "
 "please contact the Cacti Development Team to ensure this is corected.  If "
 "you are seeing this error in a release, please raise a report immediately on "
 "GitHub"
 msgstr ""
+"Cacti'nin bu sürümü ( %s) geçerli bir sürüm koduna sahip görünmüyor, bunun "
+"doğrulandığından emin olmak için lütfen Cacti Geliştirme Ekibi ile iletişime "
+"geçin. Bu hatayı bir sürümde görüyorsanız, lütfen hemen GitHub’a bir rapor "
+"verin."
 
 #: lib/installer.php:1518
 #, fuzzy
@@ -18353,23 +18508,24 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "Kuruluma %s ile başlandı, %s ile tamamlandı."
 
 #: lib/installer.php:3181
+#, fuzzy
 msgid "Both"
-msgstr ""
+msgstr "Her ikisi de"
 
 #: lib/installer.php:3181
-#, php-format
+#, fuzzy, php-format
 msgid "No - %s"
-msgstr ""
+msgstr "Dakika(lar)"
 
 #: lib/installer.php:3183 lib/installer.php:3185
-#, php-format
+#, fuzzy, php-format
 msgid "%s - No"
-msgstr ""
+msgstr "Dakika(lar)"
 
 #: lib/installer.php:3183
 #, fuzzy
 msgid "Web"
-msgstr "Şubat"
+msgstr "Web"
 
 #: lib/installer.php:3185
 #, fuzzy
@@ -18535,31 +18691,31 @@ msgstr "TCP ping zaman aşımına uğradı"
 msgid "Ping not performed due to setting."
 msgstr "Ayar nedeniyle ping işlemi gerçekleştirilmedi."
 
-#: lib/plugins.php:562
+#: lib/plugins.php:564
 #, fuzzy, php-format
 msgid "%s Version %s or above is required for %s. "
 msgstr "%s %s veya %s sürümü %s için gerekli."
 
-#: lib/plugins.php:566
+#: lib/plugins.php:568
 #, fuzzy, php-format
 msgid "%s is required for %s, and it is not installed. "
 msgstr "%s %s için gerekli ve yüklenmemiş."
 
-#: lib/plugins.php:581
+#: lib/plugins.php:583
 #, fuzzy
 msgid "Plugin cannot be installed."
 msgstr "Eklenti yüklenemiyor."
 
-#: lib/plugins.php:949 lib/plugins.php:956 plugins.php:386 plugins.php:463
+#: lib/plugins.php:951 lib/plugins.php:958 plugins.php:386 plugins.php:463
 msgid "Plugins"
 msgstr "Eklentiler"
 
-#: lib/plugins.php:967 lib/plugins.php:973
+#: lib/plugins.php:969 lib/plugins.php:975
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Gerektirir: Kaktüsler&gt; = %s"
 
-#: lib/plugins.php:970
+#: lib/plugins.php:972
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Eski Eklenti"
@@ -18628,171 +18784,171 @@ msgstr "Rapor Grafiği Öğesi Eklenemedi &#39; <i> %s</i> &#39; Zaten Var"
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "Atlanan Rapor Grafiği Öğesi &#39; <i> %s</i> &#39; Zaten Var"
 
-#: lib/rrd.php:2564
+#: lib/rrd.php:2572
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "Gerekli RRD adım boyutu &#39; %s&#39;"
 
-#: lib/rrd.php:2593
+#: lib/rrd.php:2601
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "Veri Kaynağı Türü &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2598
+#: lib/rrd.php:2606
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı İçin Kalp Atışı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2610
+#: lib/rrd.php:2618
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı için minimum RRD &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2627
+#: lib/rrd.php:2635
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "&#39; %s&#39; Veri Kaynağı için maksimum RRD &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2637
+#: lib/rrd.php:2645
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "RRD dosyasında DS &#39; %s&#39; eksik"
 
-#: lib/rrd.php:2646
+#: lib/rrd.php:2654
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "DS &#39; %s&#39; Cacti tanımında eksik"
 
-#: lib/rrd.php:2663 lib/rrd.php:2664
+#: lib/rrd.php:2671 lib/rrd.php:2672
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "Cacti RRA &#39; %s&#39;, &#39; %s&#39; ile aynı CF / adımlara ( %s, %s) sahip"
 
-#: lib/rrd.php:2678 lib/rrd.php:2679
+#: lib/rrd.php:2686 lib/rrd.php:2687
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "RRA &#39; %s&#39; dosyasında CF / adımları ( %s, %s) &#39; %s&#39; ile aynı"
 
-#: lib/rrd.php:2710
+#: lib/rrd.php:2718
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "Kaktüsler için XFF RRA kimliği &#39; %s&#39; &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2714
+#: lib/rrd.php:2722
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr ""
 "Cacti RRA kimliği &#39; %s&#39; için satır sayısı &#39; %s&#39; olmalıdır"
 
-#: lib/rrd.php:2730
+#: lib/rrd.php:2738
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39; %s&#39;, RRD dosyasında eksik"
 
-#: lib/rrd.php:2739
+#: lib/rrd.php:2747
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "Cacti tanımında RRA &#39; %s&#39; eksik"
 
-#: lib/rrd.php:2758
+#: lib/rrd.php:2766
 #, fuzzy
 msgid "RRD File Information"
 msgstr "RDR Dosya Bilgileri"
 
-#: lib/rrd.php:2790
+#: lib/rrd.php:2798
 #, fuzzy
 msgid "Data Source Items"
 msgstr "Veri Kaynağı Öğeleri"
 
-#: lib/rrd.php:2792
+#: lib/rrd.php:2800
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "Minimal Kalp Atışı"
 
-#: lib/rrd.php:2793
+#: lib/rrd.php:2801
 msgid "Min"
 msgstr "Min"
 
-#: lib/rrd.php:2794
+#: lib/rrd.php:2802
 msgid "Max"
 msgstr "Maksimum"
 
-#: lib/rrd.php:2795
+#: lib/rrd.php:2803
 #, fuzzy
 msgid "Last DS"
 msgstr "Son DS"
 
-#: lib/rrd.php:2797
+#: lib/rrd.php:2805
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Bilinmeyen Sn"
 
-#: lib/rrd.php:2844
+#: lib/rrd.php:2856
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "Round Robin Arşivi"
 
-#: lib/rrd.php:2847
+#: lib/rrd.php:2859
 #, fuzzy
 msgid "Cur Row"
 msgstr "Cur Row"
 
-#: lib/rrd.php:2848
+#: lib/rrd.php:2860
 #, fuzzy
 msgid "PDP per Row"
 msgstr "Satır başına PDP"
 
-#: lib/rrd.php:2850
+#: lib/rrd.php:2862
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP Hazırlık Değeri (0)"
 
-#: lib/rrd.php:2851
+#: lib/rrd.php:2863
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP Bilinmeyen Veri noktaları (0)"
 
-#: lib/rrd.php:2928
+#: lib/rrd.php:2940
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "%s adını %s olarak değiştir"
 
-#: lib/rrd.php:2978
+#: lib/rrd.php:2990
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "Rrdtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3010 lib/rrd.php:3065 lib/rrd.php:3121
+#: lib/rrd.php:3022 lib/rrd.php:3077 lib/rrd.php:3133
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "XML dosyası yazarken HATA: %s"
 
-#: lib/rrd.php:3021 lib/rrd.php:3076 lib/rrd.php:3132
+#: lib/rrd.php:3033 lib/rrd.php:3088 lib/rrd.php:3144
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "HATA:% RRDdosyası yazılabilir değil"
 
-#: lib/rrd.php:3048 lib/rrd.php:3104
+#: lib/rrd.php:3060 lib/rrd.php:3116
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "RRDtool dökümü XML&#39;sini ayrıştırırken hata oluştu"
 
-#: lib/rrd.php:3337
+#: lib/rrd.php:3349
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr ""
 "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasından "
 "kaldırıldı"
 
-#: lib/rrd.php:3371
+#: lib/rrd.php:3383
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr ""
 "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF =% 1.2f) RRD dosyasına eklendi"
 
-#: lib/rrd.php:3401 lib/rrd.php:3415
+#: lib/rrd.php:3413 lib/rrd.php:3427
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
@@ -18800,26 +18956,26 @@ msgstr ""
 "Web sitesi %s dosyasına yazma erişimine sahip değil, RRD oluşturamıyor / "
 "güncelleyemiyor olabilir"
 
-#: lib/rrd.php:3411
+#: lib/rrd.php:3423
 #, fuzzy
 msgid "(Custom)"
 msgstr "Özel"
 
-#: lib/rrd.php:3417
+#: lib/rrd.php:3429
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "Veri dosyası açılamadı, anket henüz çalıştırılmamış olabilir."
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 #, fuzzy
 msgid "RRA Folder"
 msgstr "RRA Klasörü"
 
-#: lib/rrd.php:3420
+#: lib/rrd.php:3432
 msgid "Root"
 msgstr "Kök"
 
-#: lib/rrd.php:3523
+#: lib/rrd.php:3535
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "Bilinmeyen RRDtool Hatası"
@@ -19008,11 +19164,15 @@ msgstr ""
 "geçebilirsiniz."
 
 #: lib/utility.php:943
+#, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
 "innodb_file_format to Barracuda.  This setting will allow longer indexes "
 "important for certain Cacti tables."
 msgstr ""
+"İnnodb_file_per_table kullanırken, innodb_file_format'ı Barracuda olarak "
+"ayarlamak önemlidir. Bu ayar, belirli Cacti tabloları için önemli olan daha "
+"uzun dizinlere izin verir."
 
 #: lib/utility.php:949
 #, fuzzy, php-format
@@ -19164,8 +19324,9 @@ msgid "A minimum of %s m execution time"
 msgstr "Minimum %sm yürütme süresi"
 
 #: lib/utility.php:1393
+#, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
-msgstr ""
+msgstr "MySQL ve sistemle eşleşen geçerli bir saat dilimi"
 
 #: lib/vdef.php:75
 #, fuzzy
@@ -19779,7 +19940,180 @@ msgstr "Eklenti Cacti çekirdeğine entegre edildi"
 msgid "Plugin is not compatible"
 msgstr "Eklenti uyumlu değil"
 
-#: poller.php:343
+#: plugins/thold_functions.php:126
+#, fuzzy
+msgid "Thresholds"
+msgstr "Konular"
+
+#: plugins/thold_functions.php:127
+#, fuzzy
+msgid "Log"
+msgstr "Günlük"
+
+#: plugins/thold_functions.php:251
+#, fuzzy
+msgid "Time:"
+msgstr "Zaman"
+
+#: plugins/thold_functions.php:252 utilities.php:1854
+msgid "User:"
+msgstr "Kullanıcı:"
+
+#: plugins/thold_functions.php:254
+#, fuzzy
+msgid "Swaps:"
+msgstr "Swap:"
+
+#: plugins/thold_functions.php:255
+#, fuzzy
+msgid "Pages:"
+msgstr "Sayfalar:"
+
+#: plugins/thold_functions.php:3193
+#, fuzzy
+msgid "Link to Graph in Cacti"
+msgstr "Cacti&#39;ye giriş yapın"
+
+#: plugins/thold_functions.php:3214
+#, fuzzy
+msgid ""
+"<html><body>An alert has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> Dikkatinizi gerektiren bir uyarı verildi. <br><br> <b>Cihaz</"
+"b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>Mesaj</b> : "
+"<SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3240
+#, fuzzy
+msgid ""
+"<html><body>A warning has been issued that requires your attention."
+"<br><br><b>Device</b>: <DESCRIPTION> (<HOSTNAME>)<br><b>URL</b>: "
+"<URL><br><b>Message</b>: <SUBJECT><br><br><GRAPH></body></html>"
+msgstr ""
+"<html><body> Dikkatinizi gerektiren bir uyarı verildi. <br><br> <b>Cihaz</"
+"b> : <DESCRIPTION> ( <HOSTNAME> ) <br> <b>URL</b> : <URL><br> <b>Mesaj</b> : "
+"<SUBJECT><br><br><GRAPH></body></html>"
+
+#: plugins/thold_functions.php:3909
+#, fuzzy
+msgid "The Device ID was not set while trying to create Graph and Threshold"
+msgstr "Grafik ve Eşik oluşturmaya çalışırken Cihaz Kimliği ayarlanmadı"
+
+#: plugins/thold_functions.php:3923
+#, fuzzy
+msgid ""
+"The Threshold Template ID was not set while trying to create Graph and "
+"Threshold"
+msgstr ""
+"Graph ve Threshold oluşturmaya çalışırken Eşik Şablonu Kimliği ayarlanmadı"
+
+#: plugins/thold_functions.php:3961
+#, fuzzy
+msgid "The Graph Creation failed for Threshold Template"
+msgstr "Bu rapor öğesi için kullanılacak Grafik."
+
+#: plugins/thold_functions.php:3991
+#, fuzzy
+msgid "Threshold was Autocreated due to Device Template mapping"
+msgstr "Aygıt Şablonuna Veri Sorgusu Ekleme"
+
+#: plugins/thold_functions.php:4029 plugins/thold_functions.php:4377
+#, fuzzy
+msgid "Record Updated"
+msgstr "Kayıt güncellendi"
+
+#: plugins/thold_functions.php:4079
+#, fuzzy
+msgid ""
+"You must specify either 'High Alert Threshold' or 'Low Alert Threshold' or "
+"both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"'Yüksek Uyarı Eşiği' veya 'Düşük Uyarı Eşiği' veya her ikisini de "
+"belirtmelisiniz! <br> KAYIT GÜNCELLEME!"
+
+#: plugins/thold_functions.php:4091
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Threshold' smaller than or equal to 'Low "
+"Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"İmkansız eşikler: 'Düşük Eşik' e eşit veya daha küçük 'Yüksek Eşik' <br> "
+"KAYIT GÜNCELLEME!"
+
+#: plugins/thold_functions.php:4103
+#, fuzzy
+msgid ""
+"Impossible thresholds: 'High Warning Threshold' smaller than or equal to "
+"'Low Warning Threshold'<br>RECORD NOT UPDATED!"
+msgstr ""
+"İmkansız eşikler: 'Düşük Uyarı Eşiğine' eşit veya daha küçük 'Yüksek Uyarı "
+"Eşiği' <br> KAYIT GÜNCELLEME!"
+
+#: plugins/thold_functions.php:4111
+#, fuzzy
+msgid "With baseline thresholds enabled."
+msgstr "Temel eşikler etkinken."
+
+#: plugins/thold_functions.php:4120
+#, fuzzy
+msgid ""
+"You must specify either 'Baseline Deviation UP' or 'Baseline Deviation DOWN' "
+"or both!<br>RECORD NOT UPDATED!"
+msgstr ""
+"'Temel Sapma YUKARI' veya 'Temel Sapma AŞAĞI' veya her ikisini de "
+"belirtmelisiniz! <br> KAYIT GÜNCELLEME!"
+
+#: plugins/thold_functions.php:4321
+#, fuzzy, php-format
+msgid "Failed to find linked Graph Template Item '%d' on Threshold '%d'"
+msgstr "'% D' Eşiğindeki '% d' Bağlantılı Grafik Şablonu Öğesi bulunamadı"
+
+#: plugins/thold_functions.php:4331
+#, fuzzy
+msgid " What? Permission Denied"
+msgstr "İzin reddedildi"
+
+#: plugins/thold_functions.php:4375
+#, fuzzy, php-format
+msgid "Created threshold: %s"
+msgstr "Oluşturulan grafik: %s"
+
+#: plugins/thold_functions.php:4444
+#, fuzzy, php-format
+msgid "'%s' must be set to positive integer value!<br>RECORD NOT UPDATED!"
+msgstr ""
+"' %s' pozitif tamsayı değerine ayarlanmış olmalı! <br> KAYIT GÜNCELLEME!"
+
+#: plugins/thold_functions.php:4591
+#, fuzzy
+msgid "No Thresholds Templates associated with the Device's Template."
+msgstr "Bu Siteyle İlişkili Devlet."
+
+#: plugins/thold_functions.php:4666
+#, fuzzy
+msgid ""
+"No Threshold(s) Created.  They either already exist, or there were not "
+"matching combinations found."
+msgstr ""
+"Eşik Oluşturulmadı. Ya zaten varlar ya da eşleşen bir kombinasyon bulunamadı."
+
+#: plugins/thold_functions.php:4736
+#, fuzzy, php-format
+msgid "Created Threshold: %s<br>"
+msgstr "Oluşturulan grafik: %s"
+
+#: plugins/thold_functions.php:4771
+#, fuzzy
+msgid ""
+"Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
+"link, please set the <b>Alert Email</b> setting."
+msgstr ""
+"Mailer Hata: set adrese <b>İÇİN</b> !! <br> <i>Posta Testi</i> bağlantısını "
+"kullanıyorsanız, lütfen <b>Uyarı e-posta</b> ayarını ayarlayın."
+
+#: poller.php:323
 #, fuzzy, php-format
 msgid ""
 "WARNING: %s is out of sync with the Poller Interval!  The Poller Interval is "
@@ -19790,7 +20124,7 @@ msgstr ""
 "% d&#39; saniye, maksimum &#39;% d&#39; saniye, ancak% d saniye son anketten "
 "bu yana geçti!"
 
-#: poller.php:456
+#: poller.php:436
 #, fuzzy, php-format
 msgid ""
 "WARNING: There are '%d' detected as overrunning a polling cycle, please "
@@ -19799,17 +20133,17 @@ msgstr ""
 "UYARI: Bir yoklama döngüsünü geçersiz kılma olarak tespit edilen &#39;"
 "% d&#39; var, lütfen araştırın."
 
-#: poller.php:518
+#: poller.php:498
 #, fuzzy, php-format
 msgid "WARNING: Poller Output Table not Empty.  Issues: %d, %s."
 msgstr "UYARI: Poller Çıkış Tablosu Boş Değil. Sorunlar:% d, %s."
 
-#: poller.php:541
+#: poller.php:521
 #, fuzzy, php-format
 msgid "ERROR: The spine path: %s is invalid.  Poller can not continue!"
 msgstr "HATA: Omurga yolu: %s geçersiz. Poller devam edemez!"
 
-#: poller.php:682
+#: poller.php:662
 #, fuzzy, php-format
 msgid "Maximum runtime of %d seconds exceeded. Exiting."
 msgstr "% D saniyelik maksimum çalışma süresi aşıldı. Çıkılması."
@@ -20278,7 +20612,7 @@ msgstr "DS kimliği"
 #: rrdcleaner.php:350
 #, fuzzy
 msgid "Template ID"
-msgstr "Şablon kimliği"
+msgstr "Şablon KIMLIĞI"
 
 #: rrdcleaner.php:352
 msgid "Last Modified"
@@ -20747,15 +21081,15 @@ msgstr "Dosyayı Yerel Olarak Kaydet"
 msgid "Available Templates [%s]"
 msgstr "Mevcut Şablonlar [ %s]"
 
-#: templates_import.php:106 templates_import.php:128
+#: templates_import.php:108 templates_import.php:130
 msgid "Import Template"
 msgstr "Şablon içe aktar"
 
-#: templates_import.php:108
+#: templates_import.php:110
 msgid "ERROR"
 msgstr "HATA"
 
-#: templates_import.php:108
+#: templates_import.php:110
 #, fuzzy
 msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr "Geçici klasöre erişilemedi, içe aktarma işlevi devre dışı bırakıldı"
@@ -21186,8 +21520,9 @@ msgid "Restricted By: "
 msgstr "kısıtlayıcı"
 
 #: user_admin.php:780
+#, fuzzy
 msgid "Granted By: "
-msgstr ""
+msgstr "Tarafından verilen:"
 
 #: user_admin.php:787
 #, fuzzy
@@ -21197,7 +21532,7 @@ msgstr "Erişim izni"
 #: user_admin.php:789 user_admin.php:794
 #, fuzzy
 msgid "Restricted"
-msgstr "kısıtlayıcı"
+msgstr "Kısıtlı"
 
 #: user_admin.php:813 user_group_admin.php:729
 msgid "Allow"
@@ -22234,7 +22569,7 @@ msgstr "Başarı - Pswd"
 #: utilities.php:700
 #, fuzzy
 msgid "Attempts"
-msgstr "Denemeler"
+msgstr "Girişim Sayısı"
 
 #: utilities.php:716 utilities.php:1096 utilities.php:1429 utilities.php:1707
 #: utilities.php:2432 utilities.php:2694 vdef.php:727
@@ -22353,10 +22688,6 @@ msgstr "Topluluk"
 #, fuzzy
 msgid "OID:"
 msgstr "OID:"
-
-#: utilities.php:1854
-msgid "User:"
-msgstr "Kullanıcı:"
 
 #: utilities.php:1857
 #, fuzzy
@@ -22959,6 +23290,14 @@ msgstr "Bu VDEF&#39;i kullanan Grafik Şablonları sayısı."
 #, fuzzy
 msgid "No VDEFs"
 msgstr "VDEF yok"
+
+#, fuzzy
+#~ msgid "Does the RRA Profile match the RRDfile structure?"
+#~ msgstr "RRA Profili RRD dosya yapısıyla eşleşiyor mu?"
+
+#, fuzzy
+#~ msgid "Data Source Troubleshooter"
+#~ msgstr "Veri Kaynağı Sorun Giderici"
 
 #, fuzzy
 #~ msgid " Poller RunAs: "
