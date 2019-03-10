@@ -220,6 +220,15 @@ function setMenuVisibility() {
 				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
 			}
 		}
+
+		$('li.menuitem').not('#'+id).each(function() {
+			text = $(this).attr('id');
+			id   = $(this).attr('id');
+
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
+			$(this).find('ul').slideUp( { duration: 200, easing: 'swing' } );
+			storage.set($(this).attr('id'), 'collapsed');
+		});
 	});
 }
 
