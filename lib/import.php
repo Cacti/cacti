@@ -843,7 +843,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 
 				if ($legacy_template) {
 					// Correct max values in templates and data sources: GAUGE/ABSOLUTE (1,4)
-					db_install_execute("UPDATE data_template_rrd
+					db_execute("UPDATE data_template_rrd
 						SET rrd_maximum='U'
 						WHERE rrd_maximum = '0'
 						AND rrd_minimum = '0'
@@ -851,7 +851,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 						AND data_source_type_id IN(1,4)");
 
 					// Correct min/max values in templates and data sources: DERIVE/DDERIVE (3,7)
-					db_install_execute("UPDATE data_template_rrd
+					db_execute("UPDATE data_template_rrd
 						SET rrd_maximum='U', rrd_minimum='U'
 						WHERE (rrd_maximum = '0' OR rrd_minimum = '0')
 						AND data_template_id = $data_template_id
@@ -1937,7 +1937,7 @@ function parse_xml_hash($hash) {
 		return false;
 	}
 
-	if ($parsed_hash['version'] < '0101') {
+	if (cacti_version_compare($parsed_hash['version'], '1.2.3', '<')) {
 		$legacy_template = true;
 	}
 
