@@ -1128,6 +1128,9 @@ class Installer implements JsonSerializable {
 				log_install_high('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
 				$set = false;
+				if (!array_key_exist($key, $param_tables)) {
+					$param_tables[$key] = null;
+				}
 				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
 				$use = ($set || $param_all);
 				$value = $use ? $name : '';
