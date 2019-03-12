@@ -119,7 +119,7 @@ if (strtolower($host_id) == 'all') {
 	exit;
 }
 
-$data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active,
+$data_source_list_sql = "SELECT data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active,
 	data_input.name as data_input_name, data_template.name as data_template_name, data_local.host_id
 	FROM (data_local,data_template_data)
 	LEFT JOIN data_input
@@ -127,21 +127,35 @@ $data_source_list = db_fetch_assoc("SELECT data_template_data.local_data_id, dat
 	LEFT JOIN data_template
 	ON (data_local.data_template_id=data_template.id)
 	WHERE data_local.id=data_template_data.local_data_id
-	$sql_where");
+	$sql_where";
+
+$data_source_list = db_fetch_assoc($data_source_list_sql);
 
 /* issue warnings and start message if applicable */
-print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
-debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
+if (cacti_sizeof($data_source_list) > 0) {
+	print "WARNING: Do not interrupt this script.  Interrupting during rename can cause issues\n";
+	debug("There are '" . cacti_sizeof($data_source_list) . "' Data Sources to rename");
 
-$i = 1;
-foreach ($data_source_list as $data_source) {
-	if (!$debug)
-		print ".";
-	debug("Data Source Name '" . $data_source['name_cache'] . "' starting");
-	api_reapply_suggested_data_source_data($data_source['local_data_id']);
-	update_data_source_title_cache($data_source['local_data_id']);
-	debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
-	$i++;
+	$i = 1;
+	foreach ($data_source_list as $data_source) {
+		if (!$debug)
+			print ".";
+		debug("Data Source Name '" . $data_source['name_cache'] . "' starting");
+		api_reapply_suggested_data_source_data($data_source['local_data_id']);
+		update_data_source_title_cache($data_source['local_data_id']);
+		debug("Data Source Rename Done for Data Source '" . addslashes(get_data_source_title($data_source['local_data_id'])) . "'");
+		$i++;
+	}
+} else {
+	if ($debug) {
+		print "
+--------------------------
+Data Source Selection SQL:
+--------------------------
+$data_source_list_sql
+--------------------------\n\n";
+	}
+	print "WARNING: No Data Sources where found matching the selected criteria.";
 }
 
 /*  display_version - displays version information */
