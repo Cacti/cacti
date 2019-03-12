@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#2493: Data Source Info is not separated properly
 -issue#2494: Some missing i18n in User Login History
 -issue#2497: Graph URL's missing either graph_start or graph_end but not both result in both taking defaults
+-issue#2499: Data Source reapply names does not update name from data query or template
 -issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti

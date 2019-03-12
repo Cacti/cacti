@@ -552,6 +552,8 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 		ORDER BY sequence",
 		array($snmp_query_graph_id, $data_local['data_template_id']));
 
+	$matches = array();
+
 	if (cacti_sizeof($svs)) {
 		foreach ($svs as $sv) {
 			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
@@ -564,13 +566,19 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 			}
 
 			/* if there are no '|query' characters, all of the substitutions were successful */
-			if (!substr_count($subs_string, '|query')) {
+			if (strpos($subs_string, '|query') === false) {
+				if (in_array($sv['field_name'], $matches)) {
+					continue;
+				}
+
 				if (db_column_exists('data_template_data', $sv['field_name'])) {
+					$matches[] = $sv['field_name'];
 					db_execute_prepared('UPDATE data_template_data
 						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
 						array($sv['text'], $local_data_id));
 				} elseif (db_column_exists('data_template_rrd', $sv['field_name'])) {
+					$matches[] = $sv['field_name'];
 					db_execute_prepared('UPDATE data_template_rrd
 						SET ' . $sv['field_name'] . ' = ?
 						WHERE local_data_id = ?',
@@ -578,9 +586,6 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 				} else {
 					cacti_log('ERROR: Suggested value column error.  Column ' . $sv['field_name'] . ' for Data Template ID ' . $data_local['data_template_id'] . ' is not a compatible field name for tables data_template_data and data_template_rrd.  Please correct this suggested value mapping', false);
 				}
-
-				/* once we find a working value for that very field, stop */
-				break;
 			}
 		}
 	}

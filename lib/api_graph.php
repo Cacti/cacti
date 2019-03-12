@@ -234,6 +234,8 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 		ORDER BY sequence",
 		array($graph_local['snmp_query_graph_id']));
 
+	$matches = array();
+
 	$suggested_values_graph = array();
 	if (cacti_sizeof($suggested_values)) {
 		foreach ($suggested_values as $suggested_value) {
@@ -243,6 +245,12 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 				/* if there are no '|' characters, all of the substitutions were successful */
 				if (!substr_count($subs_string, '|query')) {
+					if (in_array($suggested_value['field_name'], $matches)) {
+						continue;
+					}
+
+					$matches[] = $suggested_value['field_name'];
+
 					db_execute_prepared('UPDATE graph_templates_graph
 						SET ' . $suggested_value['field_name'] . ' = ?
 						WHERE local_graph_id = ?',
@@ -250,12 +258,16 @@ function api_reapply_suggested_graph_title($local_graph_id) {
 
 					/* once we find a working value for this very field, stop */
 					$suggested_values_graph[$suggested_value['field_name']] = true;
-
-					return true;
 				}
 			}
 		}
+
+		if (sizeof($matches)) {
+			return true;
+		}
 	}
+
+	return false;
 }
 
 /* api_get_graphs_from_datasource - get's all graphs related to a data source
