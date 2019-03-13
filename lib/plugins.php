@@ -977,8 +977,25 @@ function plugin_load_info_file($file) {
 	if (file_exists($file)) {
 		if (is_readable($file)) {
 			$info = parse_ini_file($file, true);
-			if (cacti_sizeof($info)) {
-				return $info['info'];
+			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
+				$info = $info['info'];
+				$dir  = @basename(@dirname($file));
+
+				$info_fields = array(
+					'name'      => $dir,
+					'requires'  => '',
+					'longname'  => ucfirst($dir),
+					'status'    => 0,
+					'version'   => '0.0',
+					'author'    => 'Unknown',
+					'homepage'  => isset($info['webpage']) ? $info['webpage'] : 'Not Stated',
+					'directory' => $dir,
+				);
+				foreach ($info_fields as $name => $value) {
+					if (!array_key_exists($name, $info)) {
+						$info[$name] = $value;
+					}
+				}
 			} else {
 				cacti_log('WARNING: Loading plugin INFO file failed.  Parsing INI file failed.', false, 'WEBUI');
 			}
