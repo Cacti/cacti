@@ -343,7 +343,7 @@ if (cacti_sizeof($parms)) {
 		if ($phost['snmp_version'] < '3' && $snmp_ver < '3') {
 			if ($snmp_ver == 0 && $proxy) {
 				// proxy but for no snmp
-			} elseif ($phost['snmp_community'] != $community) {
+			} elseif ($phost['snmp_community'] != $community || $phost['snmp_port'] != $snmp_port) {
 				if ($proxy) {
 					// assuming an snmp-proxy
 				} else {

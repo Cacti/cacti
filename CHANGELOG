@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
 -issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
 -feature: Update phpseclib to version 2.0.15
+-feature#2515: Support multiple SNMP ports when adding devices via CLI
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
