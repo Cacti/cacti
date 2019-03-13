@@ -665,15 +665,17 @@ function data_query_item_edit() {
 
 	?>
 	<script type='text/javascript'>
-	function assignDataQueryGraphName() {
-		$('#name').val($('#graph_template_id').children(':selected').text());
+	function assignDataQueryGraphName(init) {
+		if (init == false || $('#name').val() == '') {
+			$('#name').val($('#graph_template_id').children(':selected').text());
+		}
 	}
 
 	$(function() {
 		$('form#data_queries').find('#graph_template_id').change(function() {
-			assignDataQueryGraphName();
+			assignDataQueryGraphName(false);
 		});
-		assignDataQueryGraphName();
+		assignDataQueryGraphName(true);
 	});
 
 	</script>
