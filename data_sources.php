@@ -1549,13 +1549,19 @@ function ds() {
 			'sort'    => 'ASC',
 			'tip'     => __('The internal database ID for this Data Source. Useful when performing automation or debugging.')
 		),
-		'nosort' => array(
+		'nosort0' => array(
+			'display' => __('Graphs'),
+			'align'   => 'center',
+			'sort'    => '',
+			'tip'     => __('The number of Graphs and Aggregate Graphs that are using the Data Source.')
+		),
+		'nosort1' => array(
 			'display' => __('Poller Interval'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The frequency that data is collected for this Data Source.')
 		),
-		'nosort1' => array(
+		'nosort2' => array(
 			'display' => __('Deletable'),
 			'align'   => 'left',
 			'sort'    => 'ASC',
@@ -1609,9 +1615,15 @@ function ds() {
 				$data_template_name = html_escape($data_source['data_template_name']);
 			}
 
+			$graphs_aggregates_url = get_graphs_aggregates_url($data_source['local_data_id']);
+
 			form_alternate_row('line' . $data_source['local_data_id'], true, $disabled);
 			form_selectable_cell(filter_value(title_trim($data_source['name_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'data_sources.php?action=ds_edit&id=' . $data_source['local_data_id']), $data_source['local_data_id']);
 			form_selectable_cell($data_source['local_data_id'], $data_source['local_data_id'], '', 'right');
+
+			// Show link to Graphs and Aggregates
+			form_selectable_cell($graphs_aggregates_url, $data_source['local_data_id'], '', 'center');
+
 			form_selectable_cell(get_poller_interval($data_source['rrd_step'], $data_source['data_source_profile_id']), $data_source['local_data_id']);
 			form_selectable_cell(api_data_source_deletable($data_source['local_data_id']) ? __('Yes') : __('No'), $data_source['local_data_id']);
 			form_selectable_cell(($data_source['active'] == 'on' ? __('Yes'):__('No')), $data_source['local_data_id']);
@@ -1633,5 +1645,50 @@ function ds() {
 	draw_actions_dropdown($ds_actions);
 
 	form_end();
+}
+
+function get_graphs_aggregates_url($local_data_id) {
+	$graphs = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
+		FROM data_local AS dl
+		INNER JOIN data_template_rrd AS dtr
+		ON dl.id = dtr.local_data_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		INNER JOIN graph_local AS gl
+		ON gl.id = gti.local_graph_id
+		LEFT JOIN aggregate_graphs AS ag
+		ON ag.local_graph_id = gl.id
+		WHERE dl.id = ?
+		AND ag.local_graph_id IS NULL',
+		array($local_data_id));
+
+	$aggregates = db_fetch_row_prepared('SELECT GROUP_CONCAT(DISTINCT gl.id) AS graphs, COUNT(DISTINCT gl.id) AS total
+		FROM data_local AS dl
+		INNER JOIN data_template_rrd AS dtr
+		ON dl.id = dtr.local_data_id
+		INNER JOIN graph_templates_item AS gti
+		ON gti.task_item_id = dtr.id
+		INNER JOIN graph_local AS gl
+		ON gl.id = gti.local_graph_id
+		INNER JOIN aggregate_graphs AS ag
+		ON ag.local_graph_id = gl.id
+		WHERE dl.id = ?',
+		array($local_data_id));
+
+	$url = '';
+
+	if (cacti_sizeof($graphs) && $graphs['total'] > 0) {
+		$url .= '<a class="linkEditMain" title="' . __('Graphs') . '" href="graphs.php?reset=1&custom=true&local_graph_ids=' . $graphs['graphs'] . '">' . $graphs['total'] . '</a>';
+	} else {
+		$url .= '<span title="' . __('No Graphs') . '">0</span>';
+	}
+
+	if (cacti_sizeof($aggregates) && $aggregates['total'] > 0) {
+		$url .= ' / <a class="linkEditMain" title="' . __('Aggregates') . '" href="aggregate_graphs.php?reset=1&custom=true&local_graph_ids=' . $aggregates['graphs'] . '">' . $aggregates['total'] . '</a>';
+	} else {
+		$url .= ' / <span title="' . __('No Aggregates') . '">0</span>';
+	}
+
+	return $url;
 }
 

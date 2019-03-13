@@ -1753,6 +1753,17 @@ function validate_graph_request_vars() {
 			'options' => array('options' => array('regexp' => '(cg_[0-9]|dq_[0-9]|[\-0-9])')),
 			'pageset' => true,
 			'default' => '-1'
+			),
+		'custom' => array(
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => ''
+			),
+		'local_graph_ids' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'pageset' => true,
+			'default' => ''
 			)
 	);
 
@@ -1813,7 +1824,7 @@ function graph_management() {
 		$add_url = '';
 	}
 
-	html_start_box(__('Graph Management'), '100%', '', '3', 'center', $add_url);
+	html_start_box(__('Graph Management') . (get_request_var('local_graph_ids') != '' ? __(' [ Custom Graphs List Applied - Clear to Reset ]'): ''), '100%', '', '3', 'center', $add_url);
 
 	if (get_request_var('site_id') > 0) {
 		$host_where = 'site_id = ' . get_request_var('site_id');
@@ -1937,6 +1948,10 @@ function graph_management() {
 		} else {
 			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
 		}
+	}
+
+	if (get_request_var('local_graph_ids') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
 	if (get_request_var('orphans') == 'true') {

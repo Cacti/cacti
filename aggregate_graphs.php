@@ -1029,6 +1029,17 @@ function aggregate_items() {
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
+		'custom' => array(
+			'filter' => FILTER_VALIDATE_REGEXP,
+			'options' => array('options' => array('regexp' => '(true|false)')),
+			'pageset' => true,
+			'default' => ''
+			),
+		'local_graph_ids' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'pageset' => true,
+			'default' => ''
+			)
 	);
 
 	validate_store_request_vars($filters, 'sess_agraph_item');
@@ -1159,6 +1170,10 @@ function aggregate_items() {
 
 	if (!empty($graph_template)) {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " (gtg.graph_template_id=$graph_template)";
+	}
+
+	if (get_request_var('local_graph_ids') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . get_request_var('local_graph_ids') . ')';
 	}
 
 	/* print checkbox form for validation */
@@ -1407,7 +1422,7 @@ function aggregate_graph() {
 	</script>
 	<?php
 
-	html_start_box(__('Aggregate Graphs'), '100%', '', '3', 'center', '');
+	html_start_box(__('Aggregate Graphs') . (get_request_var('local_graph_ids') != '' ? __(' [ Custom Graphs List Applied - Clear to Reset ]'): ''), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
