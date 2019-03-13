@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
 -feature: Update phpseclib to version 2.0.15
+-feature: Support multiple SNMP ports when adding devices via CLI
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
