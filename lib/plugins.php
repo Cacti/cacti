@@ -973,29 +973,55 @@ function plugin_is_compatible($plugin) {
 	return array('compat' => true, 'requires' => __('Requires: Cacti >= %s', $info['compat']));
 }
 
+function plugin_load_info_defaults($file, $info, $defaults = array()) {
+	$result = $info;
+	$dir    = @basename(@dirname($file));
+
+	if (!is_array($defaults)) {
+		$defaults = array();
+	}
+
+	if (!is_array($result)) {
+		$result = array();
+	}
+
+	$info_fields = array(
+		'name'         => $dir,
+		'requires'     => '',
+		'longname'     => ucfirst($dir),
+		'status'       => file_exists($file) ? 0 : -4,
+		'version'      => __('Unknown'),
+		'author'       => __('Unknown'),
+		'homepage'     => isset($info['webpage']) ? $info['webpage'] : __('Not Stated'),
+		'capabilities' => '',
+		'directory'    => $dir,
+	);
+
+	$info_fields = $info_fields + $defaults;
+	foreach ($info_fields as $name => $value) {
+		if (!array_key_exists($name, $result)) {
+			$result[$name] = $value;
+		}
+	}
+
+	if (strstr($dir, ' ') !== false) {
+		$result['status'] = -3;
+	} elseif ($dir != $result['name']) {
+		$result['status'] = -2;
+	} elseif (!isset($result['compat']) || cacti_version_compare(CACTI_VERSION, $result['compat'], '<')) {
+		$result['status'] = -1;
+	}
+
+	return $result;
+}
+
 function plugin_load_info_file($file) {
+	$info = false;
 	if (file_exists($file)) {
 		if (is_readable($file)) {
 			$info = parse_ini_file($file, true);
 			if (cacti_sizeof($info) && array_key_exists('info', $info)) {
-				$info = $info['info'];
-				$dir  = @basename(@dirname($file));
-
-				$info_fields = array(
-					'name'      => $dir,
-					'requires'  => '',
-					'longname'  => ucfirst($dir),
-					'status'    => 0,
-					'version'   => '0.0',
-					'author'    => 'Unknown',
-					'homepage'  => isset($info['webpage']) ? $info['webpage'] : 'Not Stated',
-					'directory' => $dir,
-				);
-				foreach ($info_fields as $name => $value) {
-					if (!array_key_exists($name, $info)) {
-						$info[$name] = $value;
-					}
-				}
+				$info = plugin_load_info_defaults($file, $info['info']);
 			} else {
 				cacti_log('WARNING: Loading plugin INFO file failed.  Parsing INI file failed.', false, 'WEBUI');
 			}
@@ -1006,5 +1032,5 @@ function plugin_load_info_file($file) {
 		cacti_log('WARNING: Loading plugin INFO file failed.  INFO file does not exist.', false, 'WEBUI');
 	}
 
-	return false;
+	return $info;
 }

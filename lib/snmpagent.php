@@ -570,10 +570,10 @@ function snmpagent_get_pluginslist(){
 	$dh   = opendir($path);
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
-			if ((is_dir("$path/$file")) && !in_array($file, $plugins_integrated) &&
-				(file_exists("$path/$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
-				if (file_exists("$path/$file/INFO")) {
-					$cinfo = plugin_load_info_file("$path/$file/INFO");
+			if ((is_dir("$path$file")) && !in_array($file, $plugins_integrated) &&
+				(file_exists("$path$file/setup.php")) && (!array_key_exists($file, $pluginslist))) {
+				if (file_exists("$path$file/INFO")) {
+					$cinfo = plugin_load_info_file("$path$file/INFO");
 					$pluginslist[$file] = $cinfo;
 				}
 			}
