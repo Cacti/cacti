@@ -1352,23 +1352,22 @@ $fields_data_query_item_edit = array(
 		'description' => __('Choose the Graph Template to use for this Data Query Graph Template item.'),
 		'value' => '|arg1:graph_template_id|',
 		'sql' => 'SELECT DISTINCT gt.id, gt.name
-			  FROM graph_templates AS gt,
-    			       graph_templates_item AS gti
-			  WHERE gt.id = gti.graph_template_id
-			  AND gti.id in (
-        		  	SELECT DISTINCT gti.id
-        			FROM graph_templates_item AS gti,
-             			     data_template_rrd AS dtr,
-             			     data_template_data AS dtd,
-             			     data_input AS di
-        			WHERE gti.local_graph_id=0
-        			AND gti.task_item_id = dtr.id
-        			AND dtr.local_data_id=0
-        			AND dtr.data_template_id = dtd.data_template_id
-        			AND dtd.local_data_id = 0
-        			AND dtd.data_input_id = di.id
-        			AND di.id IN (2, 11, 12))
-    			 ORDER BY gt.name'
+			  FROM graph_templates AS gt
+			  INNER JOIN graph_templates_item AS gti
+			  ON gt.id=gti.graph_template_id
+			  WHERE gti.id IN (
+  				SELECT DISTINCT gti.id
+				FROM graph_templates_item AS gti
+				INNER JOIN data_template_rrd AS dtr
+				ON gti.task_item_id=dtr.id
+				AND dtr.local_data_id = 0
+				INNER JOIN data_template_data AS dtd
+				ON dtd.data_template_id=dtr.data_template_id
+				AND dtd.local_data_id = 0
+				AND dtd.data_input_id in (2,11,12)
+				WHERE gti.local_graph_id = 0
+			  )
+			  ORDER BY gt.name'
 		),
 	'name' => array(
 		'method' => 'textbox',
