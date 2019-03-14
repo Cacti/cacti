@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
+-issue#2519: Optimize the Graph Template picker query when editing a Data Query
 -feature: Update phpseclib to version 2.0.15
 
 1.2.2
