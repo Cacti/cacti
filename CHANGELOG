@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
 -issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
+-issue#2519: Performance of graph template picker when editing a data query
 -feature: Update phpseclib to version 2.0.15
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
 
