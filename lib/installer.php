@@ -954,9 +954,9 @@ class Installer implements JsonSerializable {
 		if (isset($this->extensions) || empty($this->extensions)) {
 			$extensions = utility_php_extensions();
 
-			foreach ($extensions as $e) {
+			foreach ($extensions as $name => $e) {
 				if (!$e['installed']) {
-					$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $e['name'] . ' is missing');
+					$this->addError(Installer::STEP_CHECK_DEPENDENCIES, 'Modules', $name . ' is missing');
 				}
 			}
 
@@ -1128,7 +1128,7 @@ class Installer implements JsonSerializable {
 				log_install_high('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
 				$set = false;
-				if (!array_key_exist($key, $param_tables)) {
+				if (!array_key_exists($key, $param_tables)) {
 					$param_tables[$key] = null;
 				}
 				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
