@@ -1309,7 +1309,6 @@ function utility_php_verify_extensions(&$extensions, $source) {
 			'ctype'     => array('cli' => false, 'web' => false),
 			'date'      => array('cli' => false, 'web' => false),
 			'filter'    => array('cli' => false, 'web' => false),
-			'gettext'   => array('cli' => false, 'web' => false),
 			'gd'        => array('cli' => false, 'web' => false),
 			'gmp'       => array('cli' => false, 'web' => false),
 			'hash'      => array('cli' => false, 'web' => false),
@@ -1437,6 +1436,7 @@ function utility_php_verify_optionals(&$optionals, $source) {
 	if (empty($optionals)) {
 		$optionals = array(
 			'snmp'          => array('web' => false, 'cli' => false),
+			'gettext'       => array('web' => false, 'cli' => false),
 			'TrueType Box'  => array('web' => false, 'cli' => false),
 			'TrueType Text' => array('web' => false, 'cli' => false),
 		);
