@@ -1243,7 +1243,7 @@ function upgrade_to_1_0_0() {
 							array($keephex, $hex['id']));
 					}
 
-					db_install_execute('DELECT FROM colors WHERE id = ?', array($hex['id']));
+					db_install_execute('SELECT FROM colors WHERE id = ?', array($hex['id']));
 				}
 			}
 		}
