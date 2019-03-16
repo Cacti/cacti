@@ -323,12 +323,12 @@ function install_setup_get_templates() {
 	@ini_set('zlib.output_compression', '0');
 
 	$templates = array(
-		'Cacti_Stats.xml.gz',
 		'Cisco_Router.xml.gz',
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'NetSNMP_Device.xml.gz',
-		'Windows_Device.xml.gz'
+		'Windows_Device.xml.gz',
+		'Cacti_Stats.xml.gz'
 	);
 
 	$path = $config['base_path'] . '/install/templates';
