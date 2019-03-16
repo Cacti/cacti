@@ -676,11 +676,16 @@ label {
 
 .cactiTreeNavigationArea {
 	background: #f0f0f0;
-	overflow-y: auto !important;
-	width: 167px;
-	height:100%;
+	overflow-y: auto;
+	margin-left: 0px;
+	margin-right: 0px;
+	height: 100%;
 	float: left;
 	display: none;
+}
+
+.cactiTreeNavigationArea a {
+	padding-right: 18px !important;
 }
 
 .cactiTreeNavigationArea div:first-child {

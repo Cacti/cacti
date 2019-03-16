@@ -317,7 +317,8 @@ label.ui-state-hover > span {
 	z-index: 4;
 	padding: 3px;
 	height: 100%;
-	width: 20px;
+	width: 22px;
+	min-width: 22px;
 }
 
 .iconWrapper {
@@ -792,12 +793,18 @@ label.ui-state-hover > span {
 }
 
 .cactiTreeNavigationArea {
-	overflow-y: auto !important;
-	width: 167px;
-	height:100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-left: 0px;
+	margin-right: 0px;
+	height: 100%;
 	float: left;
 	display: none;
 	color: lightgrey;
+}
+
+.cactiTreeNavigationArea a {
+	padding-right: 18px !important;
 }
 
 .cactiTreeNavigationArea div:first-child {
@@ -988,6 +995,10 @@ legend {
 
 .treeTable {
 	width: 100%;
+}
+
+.treeTable td {
+	color: #e5e1e1;
 }
 
 .treeArea {

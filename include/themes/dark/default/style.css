@@ -433,10 +433,10 @@
   background: transparent;
 }
 .jstree-default > .jstree-no-dots .jstree-open > .jstree-ocl {
-  background-position: -36px -4px;
+  background-position: -36px -5px;
 }
 .jstree-default > .jstree-no-dots .jstree-closed > .jstree-ocl {
-  background-position: -4px -4px;
+  background-position: -4px -5px;
 }
 .jstree-default .jstree-disabled {
   background: transparent;

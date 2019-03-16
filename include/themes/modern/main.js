@@ -153,30 +153,7 @@ function themeReady() {
 		}
 	});
 
-	// Hid the scroll bar when not hovering
-	var hoverTimer;
-	$('.cactiConsoleNavigationArea').unbind().mouseenter(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
-		}, 500);
-	}).mouseleave(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiConsoleNavigationArea').css('overflow-y', 'hidden');
-		}, 500);
-	});
-	$('.cactiTreeNavigationArea').unbind().mouseenter(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiTreeNavigationArea').css('overflow-y', 'auto');
-		}, 500);
-	}).mouseleave(function() {
-		clearTimeout(hoverTimer);
-		hoverTimer = setTimeout(function() {
-			$('.cactiTreeNavigationArea').css('overflow-y', 'hidden');
-		}, 500);
-	});
+	setNavigationScroll();
 }
 
 function setMenuVisibility() {
