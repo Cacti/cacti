@@ -833,20 +833,21 @@ function utilities_get_mysql_recommendations() {
 	$recommendations = array(
 		'version' => array(
 			'value' => '5.6',
+			'class' => 'warning',
 			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 			)
 	);
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
-		if (version_compare($link_ver, '5.2', '>=')) {
+		if (version_compare($link_ver, '5.5', '>=')) {
 			if (!isset($variables['innodb_version'])) {
 				$recommendations += array(
 					'innodb' => array(
 						'value' => 'ON',
 						'class' => 'warning',
 						'measure' => 'equal',
-						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
+						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
 					)
 				);
 
@@ -856,13 +857,13 @@ function utilities_get_mysql_recommendations() {
 
 		$recommendations += array(
 			'collation_server' => array(
-				'value' => 'utf8_general_ci',
+				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
 				),
 			'character_set_client' => array(
-				'value' => 'utf8',
+				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')

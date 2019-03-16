@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
+-issue#2509: Installer is not consistent between MySQL Settings checking and final step Warning
 -issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
 -issue#2519: Performance of graph template picker when editing a data query
 -issue#2518: Data Source Profile RRAs - Type letters instead of numbers in the "Rows" line 

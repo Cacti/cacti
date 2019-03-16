@@ -988,13 +988,16 @@ legend {
 
 .textError {
 	font-size: 12px;
-	font-weight: bold;
 	color: red;
+}
+
+.textWarning {
+	font-size: 12px;
+	color: #ee7600 !important;
 }
 
 .textInfo {
 	font-size: 12px;
-	font-weight: bold;
 	color: black;
 }
 
