@@ -1054,7 +1054,6 @@ function graph_perms_edit($tab, $header_label) {
 			$(document).tooltip({
 				items: '[data-tooltip]',
 				content: function() {
-					console.log('this');
 					return $(this).attr('data-tooltip');
 				}
 			});
