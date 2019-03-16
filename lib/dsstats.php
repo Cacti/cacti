@@ -27,7 +27,12 @@
      average and peak calculations.
    @returns - (mixed) The RRDfile names */
 function get_rrdfile_names() {
-	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path FROM data_template_data LEFT JOIN poller_item ON poller_item.local_data_id = data_template_data.local_data_id WHERE poller_item.local_data_id IS NOT NULL AND data_template_data.local_data_id != 0');
+	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path 
+		FROM data_template_data 
+		LEFT JOIN poller_item 
+		ON poller_item.local_data_id = data_template_data.local_data_id 
+		WHERE poller_item.local_data_id IS NOT NULL 
+		AND data_template_data.local_data_id != 0');
 }
 
 /* dsstats_debug - this simple routine print's a standard message to the console
@@ -48,9 +53,15 @@ function dsstats_debug($message) {
    @returns - NULL */
 function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	global $config;
+	global $user_time, $system_time, $real_time;
+	global $total_user_time, $total_system_time, $total_real_time;
 
 	$rrdfiles = get_rrdfile_names();
 	$stats    = array();
+
+	$user_time   = 0;
+	$system_time = 0;
+	$real_time   = 0;
 
 	$use_proxy = (read_config_option('storage_location') ? true:false);
 
@@ -62,6 +73,10 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 		$process       = $process_pipes[0];
 		$rrdtool_pipe  = $process_pipes[1];
 	}
+
+	$system_time = 0;
+	$user_time   = 0;
+	$real_time   = 0;
 
 	if (cacti_sizeof($rrdfiles)) {
 		foreach ($rrdfiles as $file) {
@@ -85,6 +100,10 @@ function dsstats_get_and_store_ds_avgpeak_values($interval) {
 	} else {
 		dsstats_rrdtool_close($process);
 	}
+
+	$total_system_time += $system_time;
+	$total_user_time   += $user_time;
+	$total_real_time   += $real_time;
 
 	dsstats_write_buffer($stats, $interval);
 }
@@ -154,7 +173,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
      function for storage into the respective database table.
    @returns - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name */
 function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool_pipe) {
-	global $config;
+	global $config, $user_time, $system_time, $real_time;
 
 	$use_proxy = (read_config_option('storage_location') ? true:false);
 
@@ -211,27 +230,26 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 			$i        = 0;
 			$j        = 0;
 			$def      = '';
-			$xport    = '';
+			$command  = '';
 			$dsvalues = array();
-
 
 			/* escape the file name if on Windows */
 			if ($config['cacti_server_os'] != 'unix') {
 				$rrdfile = str_replace(':', "\\:", $rrdfile);
 			}
 
-			/* setup the export command by parsing throught the internal data source names */
+			/* setup the graph command by parsing throught the internal data source names */
 			if (cacti_sizeof($dsnames)) {
 				foreach ($dsnames as $dsname => $present) {
 					if ($average) {
 						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':AVERAGE ';
-						$xport .= ' XPORT:' . $defs[$j] . $defs[$i];
+						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',AVERAGE PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
 
 					if ($max) {
 						$def .= 'DEF:' . $defs[$j] . $defs[$i] . "=\"" . $rrdfile . "\":" . $dsname . ':MAX ';
-						$xport .= ' XPORT:' . $defs[$j] . $defs[$i];
+						$command .= ' VDEF:' . $defs[$j] . $defs[$i] . '_out=' . $defs[$j] . $defs[$i] . ',MAXIMUM PRINT:' . $defs[$j] . $defs[$i] . '_out:%lf';
 						$i++;
 					}
 
@@ -258,73 +276,71 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 					break;
 			}
 
-			/* now execute the xport command */
-			$xport_cmd = 'xport --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($xport) . ' --maxrows 10000';
+			/* now execute the graph command */
+			$stats_cmd = 'graph x --start now-1' . $interval . ' --end now ' . trim($def) . ' ' . trim($command);
+
+			//print $stats_cmd . PHP_EOL;
 
 			if ($use_proxy) {
-				$xport_data = rrdtool_execute($xport_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
+				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
 			} else {
-				$xport_data = dsstats_rrdtool_execute($xport_cmd, $rrdtool_pipe);
+				$xport_data = dsstats_rrdtool_execute($stats_cmd, $rrdtool_pipe);
 			}
+
+			$position = array();
+			$position[] = array('RETURN' => 'RETURN');
 
 			/* initialize the array of return values */
 			foreach($dsnames as $dsname => $present) {
 				$dsvalues[$dsname]['AVG']    = 0;
-				$dsvalues[$dsname]['AVGCNT'] = 0;
 				$dsvalues[$dsname]['MAX']    = 0;
+
+				if ($average) {
+					$position[] = array($dsname => 'AVG');
+				}
+
+				if ($max) {
+					$position[] = array($dsname => 'MAX');
+				}
 			}
 
 			/* process the xport array and return average and peak values */
 			if ($xport_data != '') {
 				$xport_array = explode("\n", $xport_data);
+				//print_r($xport_array);
 
 				if (cacti_sizeof($xport_array)) {
-					foreach($xport_array as $line) {
-						/* we've found an output value, let's cut it to pieces */
-						if (substr_count($line, '<v>')) {
-							$line = str_replace('<row><t>', '', $line);
-							$line = str_replace('</t>',     '', $line);
-							$line = str_replace('</v>',     '', $line);
-							$line = str_replace('</row>',   '', $line);
+					foreach($xport_array as $index => $line) {
+						if ($line == '') continue;
 
-							$values = explode('<v>', $line);
-							array_shift($values);
+						if ($index > 0) {
+							// Catch the last line
+							if (substr($line, 0, 2) == 'OK') {
+								$line  = trim($line, ' OK');
+								$parts = explode(' ', $line);
+								//print $line . PHP_EOL;
 
-							$i = 0;
-							/* sum and/or store values for later processing */
-							foreach($dsnames as $dsname => $present) {
-								if ($average) {
-									/* ignore 'NaN' values */
-									if (strtolower($values[$i]) != 'nan') {
-										$dsvalues[$dsname]['AVG'] += $values[$i];
-										$dsvalues[$dsname]['AVGCNT'] += 1;
-
-										if (!$max) {
-											if ($values[$i] > $dsvalues[$dsname]['MAX']) {
-												$dsvalues[$dsname]['MAX'] = $values[$i];
-											}
-										}
-										$i++;
+								foreach($parts as $line) {
+									$sparts = explode(':', $line);
+									switch($sparts[0]) {
+										case 'u':
+											$user_time = $sparts[1];
+											break;
+										case 's':
+											$system_time = $sparts[1];
+											break;
+										case 'r':
+											$real_time = $sparts[1];
+											break;
 									}
 								}
 
-								if ($max) {
-									/* ignore 'NaN' values */
-									if (strtolower($values[$i]) != 'nan') {
-										if ($values[$i] > $dsvalues[$dsname]['MAX']) {
-											$dsvalues[$dsname]['MAX'] = $values[$i];
-										}
-										$i++;
-									}
+								break;
+							} else {
+								foreach($position[$index] as $dsname => $stat) {
+									$dsvalues[$dsname][$stat] = trim($line);
 								}
 							}
-						}
-					}
-
-					/* calculate the average */
-					foreach($dsnames as $dsname => $present) {
-						if ($dsvalues[$dsname]['AVGCNT'] > 0) {
-							$dsvalues[$dsname]['AVG'] = $dsvalues[$dsname]['AVG'] / $dsvalues[$dsname]['AVGCNT'];
 						}
 					}
 
@@ -345,12 +361,16 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
    @arg $type - (string) the type of statistics to log, either 'HOURLY', 'DAILY' or 'MAJOR'.
    @returns - null */
 function log_dsstats_statistics($type) {
-	global $start;
+	global $start, $total_user_time, $total_system_time, $total_real_time;;
 
 	/* take time and log performance data */
 	$end = microtime(true);
 
-	$cacti_stats = sprintf('Time:%01.4f ', round($end-$start,4));
+	$cacti_stats = sprintf('Time:%01.4f RRDUser:%01.4f RRDSystem:%01.4f RRDReal:%01.4f', round($end-$start,4), $total_user_time, $total_system_time, $total_real_time);
+
+	$total_user_time   = 0;
+	$total_system_time = 0;
+	$total_real_time   = 0;
 
 	/* take time and log performance data */
 	$start = microtime(true);

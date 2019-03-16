@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#2522: Upgrade for v1.0.0 has invalid keyword 'DELECT'
 -issue#2527: Package installation can fail if the Cacti hash version code is ahead of installed Cacti
 -feature: Update phpseclib to version 2.0.15
+-feature@2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
 
 1.2.2

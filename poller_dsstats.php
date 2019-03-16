@@ -78,6 +78,12 @@ $debug          = false;
 $forcerun       = false;
 $forcerun_maint = false;
 
+global $total_system_time, $total_user_time, $total_real_time;
+
+$total_system_time = 0;
+$total_user_time   = 0;
+$total_real_time   = 0;
+
 if (cacti_sizeof($parms)) {
 	foreach($parms as $parameter) {
 		if (strpos($parameter, '=')) {
