@@ -620,8 +620,35 @@ function is_tree_branch_empty($tree_id, $parent = 0) {
 		), 'host_id', 'host_id'
 	);
 
-	if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'), 'description', '', -1) > 0) {
-		return false;
+	$sites = array_rekey(
+		db_fetch_assoc_prepared('SELECT site_id
+			FROM graph_tree_items
+			WHERE graph_tree_id = ?
+			AND site_id > 0
+			AND parent = ?',
+			array($tree_id, $parent)
+		), 'site_id', 'site_id'
+	);
+
+	if (!cacti_sizeof($sites)) {
+		if (cacti_sizeof($hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $hosts) . ')'), 'description', '', -1) > 0) {
+			return false;
+		}
+	} else {
+		$site_hosts = array();
+		foreach($sites as $site) {
+			$site_hosts += array_rekey(
+				db_fetch_assoc_prepared('SELECT id
+					FROM host
+					WHERE site_id = ?',
+					array($site)
+				), 'id', 'id'
+			);
+		}
+
+		if (cacti_sizeof($site_hosts) && cacti_sizeof(get_allowed_devices('h.id IN(' . implode(',', $site_hosts) . ')'), 'description', '', -1) > 0) {
+			return false;
+		}
 	}
 
 	$branches = db_fetch_assoc_prepared('SELECT id, graph_tree_id

@@ -95,34 +95,32 @@ function grow_dhtml_trees() {
 	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
-		if (read_config_option('auth_method') != 0) {
-			$user = db_fetch_row_prepared('SELECT policy_trees
-				FROM user_auth
-				WHERE id = ?',
-				array($_SESSION['sess_user_id']));
+		$user = db_fetch_row_prepared('SELECT policy_trees
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
 
-			if ($user['policy_trees'] == 1) {
-				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
-					FROM graph_tree
-					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-					AND user_auth_perms.type = 2
-					AND user_auth_perms.user_id = ?
-					WHERE user_auth_perms.item_id IS NULL
-					AND graph_tree.enabled = "on"
-					ORDER BY graph_tree.id
-					LIMIT 1',
-					array($_SESSION['sess_user_id']));
-			} else {
-				$default_tree_id = db_fetch_cell('SELECT graph_tree.id
-					FROM graph_tree
-					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-					AND user_auth_perms.type = 2
-					AND user_auth_perms.user_id = ?
-					WHERE graph_tree.enabled = "on"
-					ORDER BY graph_tree.id
-					LIMIT 1',
-					array($_SESSION['sess_user_id']));
-			}
+		if ($user['policy_trees'] == 1) {
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
+				FROM graph_tree
+				LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE user_auth_perms.item_id IS NULL
+				AND graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
+		} else {
+			$default_tree_id = db_fetch_cell('SELECT graph_tree.id
+				FROM graph_tree
+				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
 		}
 	} else {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');

@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -issue#2519: Performance of graph template picker when editing a data query
 -issue#2518: Data Source Profile RRAs - Type letters instead of numbers in the "Rows" line 
 -issue#2522: Upgrade for v1.0.0 has invalid keyword 'DELECT'
+-issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
 -issue#2527: Package installation can fail if the Cacti hash version code is ahead of installed Cacti
 -feature: Update phpseclib to version 2.0.15
 -feature@2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
