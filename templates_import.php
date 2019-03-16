@@ -94,8 +94,10 @@ function form_save() {
 
 		/* obtain debug information if it's set */
 		$debug_data = import_xml_data($xml_data, $import_as_new, $profile_id, $remove_orphans);
-		if(cacti_sizeof($debug_data) > 0) {
+		if ($debug_data !== false && cacti_sizeof($debug_data)) {
 			$_SESSION['import_debug_info'] = $debug_data;
+		} else {
+			raise_message(15);
 		}
 
 		header('Location: templates_import.php?preview=' . $preview_only);

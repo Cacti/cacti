@@ -962,6 +962,7 @@ class Installer implements JsonSerializable {
 
 			$this->extensions = $extensions;
 		}
+
 		return $this->extensions;
 	}
 
@@ -969,9 +970,15 @@ class Installer implements JsonSerializable {
 	 *                  they have been selected for installation */
 	private function getTemplates() {
 		$known_templates = install_setup_get_templates();
+
+		if ($known_templates === false) {
+			return false;
+		}
+
 		$db_templates = array_rekey(
-			db_fetch_assoc('SELECT name, value FROM settings where name like \'install_template_%\''),
-			'name', 'value');
+			db_fetch_assoc('SELECT name, value FROM settings WHERE name LIKE \'install_template_%\''),
+			'name', 'value'
+		);
 
 		$hasTemplates = read_config_option('install_has_templates', true);
 		$selected = array();
@@ -981,7 +988,7 @@ class Installer implements JsonSerializable {
 
 		foreach ($known_templates as $known) {
 			$filename    = $known['filename'];
-			$key_base    = str_replace(".", "_", $filename);
+			$key_base    = str_replace('.', '_', $filename);
 			$key_install = 'install_template_' . $key_base;
 			$key_check   = 'chk_template_' . $key_base;
 
@@ -1002,9 +1009,11 @@ class Installer implements JsonSerializable {
 				$select_count++;
 			}
 		}
+
 		$selected['all'] = ($select_count == cacti_count($selected) || empty($hasTemplates));
 
 		log_install_high('templates', 'getTemplates(): Returning with ' . clean_up_lines(var_export($selected, true)));
+
 		return $selected;
 	}
 
@@ -2726,14 +2735,27 @@ class Installer implements JsonSerializable {
 
 			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
 			$i = 0;
+
 			foreach ($templates as $template) {
 				$i++;
+				$result  = false;
 				$package = $template['value'];
+
+				log_install_always('', sprintf('About to import Package #%s \'%s\'.', $i, $package));
+
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
-					log_install_always('', sprintf('Importing Package #%s \'%s\' under Profile \'%s\'', $i, $package, $this->profile));
-					import_package($path . $package, $this->profile, false, false, false);
-					$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+					$result = import_package($path . $package, $this->profile, false, false, false);
+
+					if ($result !== false) {
+						log_install_always('', sprintf('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
+						$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
+					}
+				}
+
+				if ($result === false) {
+					log_install_always('',sprintf('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
+					$this->addError(Installer::STEP_ERROR, 'Package:'.$package, 'FAIL: XML version code error');
 				}
 			}
 

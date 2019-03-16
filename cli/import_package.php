@@ -98,7 +98,7 @@ if (cacti_sizeof($parms)) {
 		if ($filename != '' && is_readable($filename)) {
 			$result = import_package($filename, $profile_id, $remove_orphans, $preview_only, $info_only);
 
-			if (sizeof($result)) {
+			if ($result !== false && sizeof($result)) {
 				print json_encode($result);
 				exit(0);
 			} else {
@@ -138,7 +138,8 @@ if (cacti_sizeof($parms)) {
 
 				import_display_results($debug_data, $filestatus, false, $preview_only);
 			} else {
-				print "ERROR: file $filename import process failed\n\n";
+				print "ERROR: file $filename import process failed due to missing XML version\n\n";
+				exit(1);
 			}
 		} else {
 			print "ERROR: file $filename is not readable, or does not exist\n\n";

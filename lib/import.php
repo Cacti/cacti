@@ -161,6 +161,10 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 			for ($i=0; $i<cacti_count($dep_hash_cache[$type]); $i++) {
 				$import_debug_info = false;
 
+				if (!isset($cacti_version_codes[$dep_hash_cache[$type][$i]['version']])) {
+					return false;
+				}
+
 				cacti_log('$dep_hash_cache[$type][$i][\'type\']: ' . $dep_hash_cache[$type][$i]['type'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				cacti_log('$dep_hash_cache[$type][$i][\'version\']: ' . $dep_hash_cache[$type][$i]['version'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
 				cacti_log('$cacti_version_codes[$dep_hash_cache[$type][$i][\'version\']]: ' . $cacti_version_codes[$dep_hash_cache[$type][$i]['version']], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
@@ -371,6 +375,10 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 			$debug_data = import_xml_data($fdata, false, $profile_id, $remove_orphans, $preview_only);
+
+			if ($debug_data === false) {
+				return false;
+			}
 		}
 	}
 
