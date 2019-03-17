@@ -942,7 +942,14 @@ function utilities_get_mysql_recommendations() {
 		'innodb_file_format' => array(
 			'value'   => 'Barracuda',
 			'measure' => 'equal',
+			'class'   => 'error',
 			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
+			),
+		'innodb_large_prefix' => array(
+			'value'   => '1',
+			'measure' => 'equal',
+			'class'   => 'error',
+			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
@@ -1059,13 +1066,13 @@ function utilities_get_mysql_recommendations() {
 
 			$compare = '';
 			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
-			$value_current = isset($variables[$name]) ? $variables[$name] : '<unset>';
-			$value_display = $value_current;
+			$value_current   = isset($variables[$name]) ? $variables[$name] : '<unset>';
+			$value_display   = $value_current;
 
 			switch($r['measure']) {
 			case 'gem':
 				$compare = '>=';
-				$value_display = ($variables[$name]/1024/1024).'M';
+				$value_display = ($variables[$name]/1024/1024) . 'M';
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
 					$passed = false;
@@ -1077,7 +1084,13 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'equal':
 				$compare = '=';
-				$passed = (isset($variables[$name]) || $value_current != $value_recommend);
+				if (isset($variables[$name]) && $variables[$name] != $value_recommend) {
+					$passed = false;
+				} elseif (!isset($variables[$name])) {
+					$passed = false;
+				} else {
+					$passed = true;
+				}
 				break;
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
@@ -1094,8 +1107,8 @@ function utilities_get_mysql_recommendations() {
 
 				$compare = '>=';
 				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
-				$value_display = round($variables[$name]/1024/1024,0) . "M";
-				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . "M";
+				$value_display = round($variables[$name]/1024/1024,0) . 'M';
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . 'M';
 				break;
 			case 'pinst':
 				$compare = '>=';
