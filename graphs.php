@@ -29,6 +29,7 @@ include_once('./lib/api_data_source.php');
 include_once('./lib/api_graph.php');
 include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
+include_once('./lib/graphs.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/html_form_template.php');
 include_once('./lib/html_tree.php');
@@ -416,44 +417,6 @@ function form_save() {
 /* ------------------------
     The "actions" function
    ------------------------ */
-
-function get_current_graph_template_details($local_graph_id) {
-	$graph_local = db_fetch_row_prepared('SELECT *
-		FROM graph_local
-		WHERE id = ?',
-		array($local_graph_id));
-
-	if (!cacti_sizeof($graph_local) || $graph_local['graph_template_id'] == 0) {
-		return array('id' => 0, 'name' => __('Not Templated'), 'source' => 0);
-	} elseif ($graph_local['snmp_query_id'] > 0) {
-		$detail = db_fetch_row_prepared('SELECT sqg.id, sqg.name
-			FROM snmp_query_graph AS sqg
-			INNER JOIN graph_local AS gl
-			ON gl.snmp_query_graph_id=sqg.id
-			AND gl.snmp_query_id=sqg.snmp_query_id
-			WHERE gl.id = ?',
-			array($local_graph_id));
-
-		if (cacti_sizeof($detail)) {
-			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 1);
-		} else {
-			return array('id' => 0, 'name' => __('Not Found'), 'source' => 1);
-		}
-	} else {
-		$detail = db_fetch_row_prepared('SELECT gt.id, gt.name
-			FROM graph_templates AS gt
-			INNER JOIN graph_local AS gl
-			ON gl.graph_template_id=gt.id
-			WHERE gl.id = ?',
-			array($local_graph_id));
-
-		if (cacti_sizeof($detail)) {
-			return array('id' => $detail['id'], 'name' => $detail['name'], 'source' => 2);
-		} else {
-			return array('id' => 0, 'name' => __('Not Found'), 'source' => 2);
-		}
-	}
-}
 
 function get_current_graph_template($local_graph_id) {
 	$graph_local = db_fetch_row_prepared('SELECT *
@@ -1772,7 +1735,7 @@ function validate_graph_request_vars() {
 }
 
 function graph_management() {
-	global $graph_actions, $item_rows, $config;
+	global $graph_actions, $graph_sources, $item_rows, $config;
 
 	if (get_request_var('rows') == -1) {
 		$rows = read_config_option('num_rows_table');
@@ -1992,7 +1955,7 @@ function graph_management() {
 
 	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
 		gtg.title_cache, gt.name, gl.host_id,
-		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS source
+		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
 		INNER JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
@@ -2016,12 +1979,6 @@ function graph_management() {
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	$sources = array(
-		0 => __('Not Templated'),
-		1 => __('Data Query'),
-		2 => __('Template')
-	);
-
 	$display_text = array(
 		'title_cache' => array(
 			'display' => __('Graph Name'),
@@ -2035,15 +1992,15 @@ function graph_management() {
 			'sort'    => 'ASC',
 			'tip'     => __('The internal database ID for this Graph.  Useful when performing automation or debugging.')
 		),
-		'source' => array(
+		'nosort_source' => array(
 			'display' => __('Source Type'),
 			'align'   => 'right',
 			'sort'    => 'ASC',
 			'tip'     => __('The underlying source that this Graph was based upon.')
 		),
-		'name' => array(
+		'nosort_name' => array(
 			'display' => __('Source Name'),
-			'align'   => 'right',
+			'align'   => 'left',
 			'sort'    => 'ASC',
 			'tip'     => __('The Graph Template or Data Query that this Graph was based upon.')
 		),
@@ -2061,23 +2018,21 @@ function graph_management() {
 	if (cacti_sizeof($graph_list)) {
 		foreach ($graph_list as $graph) {
 			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
-			$template_details = get_current_graph_template_details($graph['local_graph_id']);
+			$template_details = get_graph_template_details($graph['local_graph_id']);
 
-			if ($template_details['id'] > 0) {
-				if ($template_details['source'] == 1) { // Data Query
-					$url = $config['url_path'] . 'data_queries.php?action=item_edit&id=' . $template_details['id'];
-				} else { // Graph Template
-					$url = $config['url_path'] . 'graph_templates.php?action=template_edit&id=' . $template_details['id'];
-				}
-			} else {
-				$url = '';
+			if (isset($template_details['graph_name'])) {
+				$graph['name'] = $template_details['graph_name'];
+			}
+
+			if (isset($template_details['graph_description'])) {
+				$graph['description'] = $template_details['graph_description'];
 			}
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
-			form_selectable_cell(filter_value($sources[$graph['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
-			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $url), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($graph_sources[$graph['graph_source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
