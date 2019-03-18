@@ -536,7 +536,7 @@ function poller_edit() {
 			unset($fields_poller_edit['dbsslca']);
 		}
 
-		if ($poller['timezone'] == '' || $poller['id'] == 1) {
+		if ($poller['timezone'] == '') {
 			$poller['timezone'] = ini_get('date.timezone');
 		}
 	}
@@ -623,8 +623,6 @@ function poller_edit() {
 			pt = <?php print $pt;?>;
 
 			$(function() {
-				$('#row_timezone').hide();
-
 				if (pt == 1) {
 					$('#row_threads').hide();
 				}

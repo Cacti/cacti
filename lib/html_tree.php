@@ -95,34 +95,32 @@ function grow_dhtml_trees() {
 	$default_tree_id = read_user_setting('default_tree_id');
 
 	if (empty($default_tree_id)) {
-		if (read_config_option('auth_method') != 0) {
-			$user = db_fetch_row_prepared('SELECT policy_trees
-				FROM user_auth
-				WHERE id = ?',
-				array($_SESSION['sess_user_id']));
+		$user = db_fetch_row_prepared('SELECT policy_trees
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id']));
 
-			if ($user['policy_trees'] == 1) {
-				$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
-					FROM graph_tree
-					LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-					AND user_auth_perms.type = 2
-					AND user_auth_perms.user_id = ?
-					WHERE user_auth_perms.item_id IS NULL
-					AND graph_tree.enabled = "on"
-					ORDER BY graph_tree.id
-					LIMIT 1',
-					array($_SESSION['sess_user_id']));
-			} else {
-				$default_tree_id = db_fetch_cell('SELECT graph_tree.id
-					FROM graph_tree
-					INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
-					AND user_auth_perms.type = 2
-					AND user_auth_perms.user_id = ?
-					WHERE graph_tree.enabled = "on"
-					ORDER BY graph_tree.id
-					LIMIT 1',
-					array($_SESSION['sess_user_id']));
-			}
+		if ($user['policy_trees'] == 1) {
+			$default_tree_id = db_fetch_cell_prepared('SELECT graph_tree.id
+				FROM graph_tree
+				LEFT JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE user_auth_perms.item_id IS NULL
+				AND graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
+		} else {
+			$default_tree_id = db_fetch_cell('SELECT graph_tree.id
+				FROM graph_tree
+				INNER JOIN user_auth_perms ON user_auth_perms.item_id = graph_tree.id
+				AND user_auth_perms.type = 2
+				AND user_auth_perms.user_id = ?
+				WHERE graph_tree.enabled = "on"
+				ORDER BY graph_tree.id
+				LIMIT 1',
+				array($_SESSION['sess_user_id']));
 		}
 	} else {
 		$default_tree_id = db_fetch_cell('SELECT id FROM graph_tree ORDER BY sequence LIMIT 1');
@@ -148,13 +146,24 @@ function grow_dhtml_trees() {
 
 	var search_to = false;
 
-	function resizeGraphContent() {
-		docHeight  = parseInt($('body').height());
-		navigation = $('.cactiTreeNavigationArea').offset();
-		navHeight  = docHeight - navigation.top + 15;
-		visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() { return $(this).width(); }).get());
-		$('.cactiTreeNavigationArea').height(navHeight).width(visWidth);
-		$('.cactiGraphContentArea').css('margin-left', visWidth+10);
+	function resizeTreePanel() {
+		if (theme != 'classic') {
+			docHeight  = parseInt($('body').height());
+			navigation = $('.cactiTreeNavigationArea').offset();
+			navWidth   = $('.cactiTreeNavigationArea').outerWidth();
+			navHeight  = docHeight - navigation.top + 15;
+			visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() { 
+				return $(this).width(); 
+			}).get());
+
+			if (visWidth > navWidth) {
+				$('.cactiTreeNavigationArea').height(navHeight).width(visWidth);
+				$('.cactiGraphContentArea').css('margin-left', visWidth+5);
+			} else {
+				$('.cactiTreeNavigationArea').height(navHeight).width(navWidth);
+				$('.cactiGraphContentArea').css('margin-left', navWidth+5);
+			}
+		}
 	}
 
 	function checkTreeForLogout() {
@@ -176,15 +185,13 @@ function grow_dhtml_trees() {
 						return $.Deferred(function(def) {
 							id = $('a[id^='+name+']').first().attr('id');
 
-							//console.log('lastNode:'+lastNode+', Node:'+name);
 							if (lastNode == name) {
-								//console.log('lastNode:'+lastNode+', Node:'+name+', Id:'+id+', Select Node');
 								$('#jstree').jstree('select_node', id, function() {
 									def.resolve();
 								});
 							} else {
-								//console.log('lastNode:'+lastNode+', Node:'+name+', Id:'+id+', Open Node');
 								$('#jstree').jstree('open_node', id, function() {
+									$('.cactiConsoleNavigationArea').css('overflow-y', 'auto');
 									def.resolve();
 								});
 							}
@@ -207,29 +214,32 @@ function grow_dhtml_trees() {
 			})
 			.on('loaded.jstree', function() {
 				openNodes();
+				resizeTreePanel();
 			})
 			.on('ready.jstree', function() {
-				resizeGraphContent();
+				resizeTreePanel();
 			})
 			.on('changed.jstree', function() {
-				resizeGraphContent();
+				resizeTreePanel();
 			})
 			.on('before_open.jstree', function() {
 				checkTreeForLogout();
 			})
 			.on('open_node.jstree', function() {
-				resizeGraphContent();
+				$(window).trigger('resize');
+				resizeTreePanel();
+				responsiveResizeGraphs();
 			})
 			.on('close_node.jstree', function() {
-				resizeGraphContent();
+				$(window).trigger('resize');
+				resizeTreePanel();
+				responsiveResizeGraphs();
 			})
 			.on('select_node.jstree', function(e, data) {
 				if (data.node.id) {
 					if (data.node.id.search('tree_anchor') >= 0) {
 						href=$('#'+data.node.id).find('a:first').attr('href');
-						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node=0";
 					} else {
-						//href=$('#'+data.node.id).find('a:first').attr('href')+"&node="+data.node.id.replace('tbranch-','');
 						href=$('#'+data.node.id).find('a:first').attr('href');
 					}
 
@@ -246,14 +256,14 @@ function grow_dhtml_trees() {
 
 								$('.cactiGraphContentArea').show();
 
-								var mytitle = 'Tree Mode - '+$('#nav_title').text();
+								var mytitle = '<?php print __('Tree Mode - ');?>'+$('#nav_title').text();
 								document.getElementsByTagName('title')[0].innerHTML = mytitle;
 								if (typeof window.history.pushState !== 'undefined') {
 									window.history.pushState({ page: origHref+'&hyper=true' }, mytitle, origHref+'&hyper=true');
 								}
 
 								window.scrollTo(0, 0);
-								resizeGraphContent();
+								resizeTreePanel();
 							})
 							.fail(function(data) {
 								getPresentHTTPError(data);
@@ -263,7 +273,7 @@ function grow_dhtml_trees() {
 					node = data.node.id;
 				}
 
-				resizeGraphContent();
+				resizeTreePanel();
 			})
 			.jstree({
 				'types' : {
@@ -335,7 +345,7 @@ function grow_dhtml_trees() {
 		});
 
 		$(document).resize(function() {
-			resizeGraphContent();
+			resizeTreePanel();
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>

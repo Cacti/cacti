@@ -58,6 +58,8 @@ var resizeTime = 0;
 var resizeTimeout = false;
 var formArray;
 var pageWidth = null;
+var isHover = false;
+var hoverTimer = false;
 
 var isMobile = {
 	Android: function() {
@@ -1814,6 +1816,49 @@ function loadPage(href, force) {
 	return false;
 }
 
+function setNavigationScroll() {
+	var object = '';
+
+	$(document).unbind('mousemove').on('mousemove', function(pos) {
+		if ($('.cactiConsoleNavigationArea').length) {
+			object = '.cactiConsoleNavigationArea';
+		} else if ($('.cactiTreeNavigationArea').length) {
+			object = '.cactiTreeNavigationArea';
+		} else {
+			object = '';
+		}
+
+		if (object != '') {
+			var mpos   = $(object).position();
+			var width  = $(object).outerWidth();
+			var height = $(object).outerHeight();
+			if (pos.pageX < mpos.left ||
+				pos.pageY < mpos.top ||
+				pos.pageX > mpos.left + width - 1 ||
+				pos.pageY > mpos.top + height - 1) {
+
+				if (isHover) {
+					clearTimeout(hoverTimer);
+					hoverTimer = setTimeout(function() {
+						$(object).css('overflow-y', 'hidden');
+					}, 500);
+				}
+
+				isHover = false;
+			} else {
+				if (!isHover) {
+					clearTimeout(hoverTimer);
+					hoverTimer = setTimeout(function() {
+						$(object).css('overflow-y', 'auto');
+					}, 500);
+				}
+	
+				isHover = true;
+			}
+		}
+	});
+}
+
 function loadPageNoHeader(href, scroll, force) {
 	statePushed = false;
 	cont = false;
@@ -2685,12 +2730,10 @@ function tabsWrapping() {
 		var utabsWidth  = 0;
 	}
 
-	//console.log('mtabsWidth: ' +mtabsWidth+', utabsWidth: '+utabsWidth+', gtabsWidth: '+gtabsWidth+', otherWidth: '+otherWidth+', ellipsisWidth: '+ellipsisWidth);
 	if (gtabsWidth + mtabsWidth + utabsWidth + otherWidth + ellipsisWidth > bodyWidth - 20) {
 		return true;
 	}
 
-	//console.log('mtp:'+mainTabPos.top+', utp:'+userTabPos.top+', mth:'+mainTabHeight+', th:'+tabHeight);
 	if (mainTabPos.top != userTabPos.top || mainTabHeight > tabHeight) {
 		return true;
 	} else {

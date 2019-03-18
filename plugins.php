@@ -174,37 +174,12 @@ function plugins_load_temp_table() {
 	if ($dh !== false) {
 		while (($file = readdir($dh)) !== false) {
 			if (is_dir("$path$file") && file_exists("$path$file/setup.php") && !in_array($file, $plugins_integrated)) {
-				if (file_exists("$path$file/INFO")) {
-					$cinfo[$file] = plugin_load_info_file("$path/$file/INFO");
-
-					if (!isset($cinfo[$file]['author']))   $cinfo[$file]['author']   = __('Unknown');
-					if (!isset($cinfo[$file]['homepage'])) $cinfo[$file]['homepage'] = __('Not Stated');
-					if (isset($cinfo[$file]['webpage']))   $cinfo[$file]['homepage'] = $cinfo[$file]['webpage'];
-					if (!isset($cinfo[$file]['longname'])) $cinfo[$file]['longname'] = ucfirst($file);
-					if (!isset($cinfo[$file]['version']))  $cinfo[$file]['version']  = __('Unknown');
-					if (!isset($cinfo[$file]['requires'])) $cinfo[$file]['requires'] = '';
-
-					$cinfo[$file]['status'] = 0;
+				$info_file = "$path$file/INFO";
+				if (file_exists($info_file)) {
+					$cinfo[$file] = plugin_load_info_file($info_file);
 					$pluginslist[] = $file;
-
-					if (strstr($file, ' ') !== false) {
-						$cinfo[$file]['status'] = -3;
-					} elseif ($file != $cinfo[$file]['name']) {
-						$cinfo[$file]['status'] = -2;
-					} elseif (!isset($cinfo[$file]['compat']) || cacti_version_compare(CACTI_VERSION, $cinfo[$file]['compat'], '<')) {
-						$cinfo[$file]['status'] = -1;
-					}
 				} else {
-					$cinfo[$file] = array(
-						'name'     => ucfirst($file),
-						'longname' => ucfirst($file),
-						'author'   => '',
-						'homepage' => '',
-						'version'  => __('Unknown'),
-						'compat'   => '0.8',
-						'requires' => '',
-						'status'   => -4
-					);
+					$cinfo[$file] = plugin_load_info_defaults($info_file, false);
 				}
 
 				$exists = db_fetch_cell_prepared("SELECT COUNT(*)

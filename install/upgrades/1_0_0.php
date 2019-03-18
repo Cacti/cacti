@@ -1237,13 +1237,13 @@ function upgrade_to_1_0_0() {
 						array($keephex, $hex['id']));
 
 					if (db_table_exists('color_template_items')) {
-						db_install_execute('UPDATE color_template_item
+						db_install_execute('UPDATE color_template_items
 							SET color_id = ?
 							WHERE color_id = ?',
 							array($keephex, $hex['id']));
 					}
 
-					db_install_execute('DELECT FROM colors WHERE id = ?', array($hex['id']));
+					db_install_execute('DELETE FROM colors WHERE id = ?', array($hex['id']));
 				}
 			}
 		}
@@ -1746,4 +1746,3 @@ function upgrade_to_1_0_0() {
 		}
 	}
 }
-

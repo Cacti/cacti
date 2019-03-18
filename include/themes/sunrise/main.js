@@ -235,6 +235,8 @@ function themeReady() {
 			$(this).find('.spikekillMenu').menu('enable');
 		});
 	}
+
+	setNavigationScroll();
 }
 
 function setMenuVisibility() {

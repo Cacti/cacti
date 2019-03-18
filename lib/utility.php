@@ -833,20 +833,21 @@ function utilities_get_mysql_recommendations() {
 	$recommendations = array(
 		'version' => array(
 			'value' => '5.6',
+			'class' => 'warning',
 			'measure' => 'ge',
 			'comment' => __('MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions to choose. Make sure you run the very latest release though which fixes a long standing low level networking issue that was causing spine many issues with reliability.')
 			)
 	);
 
 	if (isset($variables['innodb_version']) && version_compare($variables['innodb_version'], '5.6', '<')) {
-		if (version_compare($link_ver, '5.2', '>=')) {
+		if (version_compare($link_ver, '5.5', '>=')) {
 			if (!isset($variables['innodb_version'])) {
 				$recommendations += array(
 					'innodb' => array(
 						'value' => 'ON',
 						'class' => 'warning',
 						'measure' => 'equal',
-						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
+						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
 					)
 				);
 
@@ -856,13 +857,13 @@ function utilities_get_mysql_recommendations() {
 
 		$recommendations += array(
 			'collation_server' => array(
-				'value' => 'utf8_general_ci',
+				'value' => 'utf8mb4_unicode_ci',
 				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8_general_ci collation type as some characters take more than a single byte.  If you are first just now installing Cacti, stop, make the changes and start over again.  If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
 				),
 			'character_set_client' => array(
-				'value' => 'utf8',
+				'value' => 'utf8mb4',
 				'class' => 'warning',
 				'measure' => 'equal',
 				'comment' => __('When using Cacti with languages other than English, it is important to use the utf8 character set as some characters take more than a single byte. If you are first just now installing Cacti, stop, make the changes and start over again. If your Cacti has been running and is in production, see the internet for instructions on converting your databases and tables if you plan on supporting other languages.')
@@ -941,7 +942,14 @@ function utilities_get_mysql_recommendations() {
 		'innodb_file_format' => array(
 			'value'   => 'Barracuda',
 			'measure' => 'equal',
+			'class'   => 'error',
 			'comment' => __('When using innodb_file_per_table, it is important to set the innodb_file_format to Barracuda.  This setting will allow longer indexes important for certain Cacti tables.')
+			),
+		'innodb_large_prefix' => array(
+			'value'   => '1',
+			'measure' => 'equal',
+			'class'   => 'error',
+			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
 			),
 		'innodb_buffer_pool_size' => array(
 			'value'   => '25',
@@ -1058,13 +1066,13 @@ function utilities_get_mysql_recommendations() {
 
 			$compare = '';
 			$value_recommend = isset($r['value']) ? $r['value'] : '<unset>';
-			$value_current = isset($variables[$name]) ? $variables[$name] : '<unset>';
-			$value_display = $value_current;
+			$value_current   = isset($variables[$name]) ? $variables[$name] : '<unset>';
+			$value_display   = $value_current;
 
 			switch($r['measure']) {
 			case 'gem':
 				$compare = '>=';
-				$value_display = ($variables[$name]/1024/1024).'M';
+				$value_display = ($variables[$name]/1024/1024) . 'M';
 				$value = trim($r['value'], 'M') * 1024 * 1024;
 				if ($variables[$name] < $value) {
 					$passed = false;
@@ -1076,7 +1084,13 @@ function utilities_get_mysql_recommendations() {
 				break;
 			case 'equal':
 				$compare = '=';
-				$passed = (isset($variables[$name]) || $value_current != $value_recommend);
+				if (isset($variables[$name]) && $variables[$name] != $value_recommend) {
+					$passed = false;
+				} elseif (!isset($variables[$name])) {
+					$passed = false;
+				} else {
+					$passed = true;
+				}
 				break;
 			case 'pmem':
 				if (isset($memInfo['MemTotal'])) {
@@ -1093,8 +1107,8 @@ function utilities_get_mysql_recommendations() {
 
 				$compare = '>=';
 				$passed = ($variables[$name] >= ($r['value']*$totalMem/100));
-				$value_display = round($variables[$name]/1024/1024,0) . "M";
-				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . "M";
+				$value_display = round($variables[$name]/1024/1024,0) . 'M';
+				$value_recommend = round($r['value']*$totalMem/100/1024/1024,0) . 'M';
 				break;
 			case 'pinst':
 				$compare = '>=';
@@ -1309,7 +1323,6 @@ function utility_php_verify_extensions(&$extensions, $source) {
 			'ctype'     => array('cli' => false, 'web' => false),
 			'date'      => array('cli' => false, 'web' => false),
 			'filter'    => array('cli' => false, 'web' => false),
-			'gettext'   => array('cli' => false, 'web' => false),
 			'gd'        => array('cli' => false, 'web' => false),
 			'gmp'       => array('cli' => false, 'web' => false),
 			'hash'      => array('cli' => false, 'web' => false),
@@ -1437,6 +1450,7 @@ function utility_php_verify_optionals(&$optionals, $source) {
 	if (empty($optionals)) {
 		$optionals = array(
 			'snmp'          => array('web' => false, 'cli' => false),
+			'gettext'       => array('web' => false, 'cli' => false),
 			'TrueType Box'  => array('web' => false, 'cli' => false),
 			'TrueType Text' => array('web' => false, 'cli' => false),
 		);

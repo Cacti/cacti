@@ -327,7 +327,8 @@ function install_setup_get_templates() {
 		'Generic_SNMP_Device.xml.gz',
 		'Local_Linux_Machine.xml.gz',
 		'NetSNMP_Device.xml.gz',
-		'Windows_Device.xml.gz'
+		'Windows_Device.xml.gz',
+		'Cacti_Stats.xml.gz'
 	);
 
 	$path = $config['base_path'] . '/install/templates';

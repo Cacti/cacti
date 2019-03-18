@@ -54,24 +54,33 @@ switch (get_request_var('action')) {
 	case 'ajax_span':
 		get_filter_request_var('profile_id');
 		get_filter_request_var('span');
-		get_filter_request_var('rows');
 
-		$sampling_interval = db_fetch_cell_prepared('SELECT step
-			FROM data_source_profiles
-			WHERE id = ?',
-			array(get_request_var('profile_id')));
+		if (is_numeric(get_nfilter_request_var('rows'))) {
+			get_filter_request_var('rows');
 
-		if (get_request_var('span') == 1) {
-			print get_span(get_request_var('rows') * $sampling_interval);
+			$sampling_interval = db_fetch_cell_prepared('SELECT step
+				FROM data_source_profiles
+				WHERE id = ?',
+				array(get_request_var('profile_id')));
+
+			if (get_request_var('span') == 1) {
+				print get_span(get_request_var('rows') * $sampling_interval);
+			} else {
+				print get_span(get_request_var('rows') * get_request_var('span'));
+			}
 		} else {
-			print get_span(get_request_var('rows') * get_request_var('span'));
+			print __('N/A');
 		}
 
 		break;
 	case 'ajax_size':
-		get_filter_request_var('id');
-		get_filter_request_var('cfs');
-		print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
+		if (is_numeric(get_nfilter_request_var('rows'))) {
+			get_filter_request_var('id');
+			get_filter_request_var('cfs');
+			print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
+		} else {
+			print __('N/A');
+		}
 
 		break;
 	case 'item_edit':

@@ -1353,20 +1353,27 @@ $fields_data_query_item_edit = array(
 		'value' => '|arg1:graph_template_id|',
 		'sql' => 'SELECT DISTINCT gt.id, gt.name
 			FROM graph_templates AS gt
-			INNER JOIN graph_templates_graph AS gtg
-			ON gt.id = gtg.graph_template_id
-			INNER JOIN graph_templates_item AS gti
-			ON gtg.graph_template_id=gti.graph_template_id
-			INNER JOIN data_template_rrd AS dtr
-			ON gti.task_item_id=dtr.id
-			INNER JOIN data_template_data AS dtd
-			ON dtd.data_template_id=dtr.data_template_id
-			AND dtd.local_data_id = 0
-			WHERE gtg.local_graph_id=0
-			AND dtr.local_data_id = 0
-			AND dtd.local_data_id = 0
-			AND dtd.data_input_id in (2,11,12)
-			ORDER BY gt.name'
+			WHERE gt.id IN(
+				SELECT DISTINCT gti.graph_template_id
+				FROM (
+					SELECT DISTINCT graph_template_id, task_item_id
+					FROM graph_templates_item
+					WHERE local_graph_id=0
+				) AS gti
+				INNER JOIN (
+					SELECT id, data_template_id
+					FROM data_template_rrd AS dtr
+					WHERE dtr.local_data_id = 0
+				) AS dtr
+				ON gti.task_item_id=dtr.id
+				INNER JOIN (
+					SELECT DISTINCT data_template_id
+					FROM data_template_data AS dtd
+					WHERE local_data_id = 0
+					AND dtd.data_input_id IN (2,11,12)
+				) AS dtd
+				ON dtd.data_template_id=dtr.data_template_id
+			) ORDER BY gt.name',
 		),
 	'name' => array(
 		'method' => 'textbox',

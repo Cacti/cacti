@@ -1,8 +1,10 @@
 Cacti CHANGELOG
 
 1.2.3
+-issue#1063: Issue encountered in modern theme "last device" is not visible in tree view in graphs
 -issue#2282: Install Wizard does not Detect RRDtool Version on Windows
 -issue#2430: "New Device" menu item showing as selected incorrect when "Devices" clicked
+-issue#2435: Tree column is narrower and narrower on each click
 -issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when <source> OID/REGEXP: or OIDVALUE/REGEXP:
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
 -issue#2453: Cannot retrieve list of snmp values via CLI
@@ -34,7 +36,17 @@ Cacti CHANGELOG
 -issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
 -issue#2503: The Cacti Statistics Device Template is not in the default Cacti
+-issue#2509: Installer is not consistent between MySQL Settings checking and final step Warning
+-issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
+-issue#2519: Performance of graph template picker when editing a data query
+-issue#2518: Data Source Profile RRAs - Type letters instead of numbers in the "Rows" line 
+-issue#2522: Upgrade for v1.0.0 has invalid keyword 'DELECT'
+-issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
+-issue#2527: Package installation can fail if the Cacti hash version code is ahead of installed Cacti
 -feature: Update phpseclib to version 2.0.15
+-feature@2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
+-feature#2515: Support multiple SNMP ports when adding devices via CLI
+-issue#2531: When updating color template items, the table name used is incorrect
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function

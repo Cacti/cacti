@@ -237,18 +237,23 @@ function cacti_stats_calc($array, $ptile = 95) {
 	$average  = $sum/$elements;
 	$var      = 'p' . $ptile . 'n';
 
+	if ($var == 'p95n') {
+		$var = '';
+	}
+
 	foreach ($array as $number) {
 		$variance += pow(abs($number - $average), 2);
 	}
 
 	$ptile_index = floor($elements * (1 - ($ptile/100)));
+	$p95n_index  = floor($elements * 0.05);
 	$p90n_index  = floor($elements * 0.1);
 	$p75n_index  = floor($elements * 0.25);
 	$p50n_index  = floor($elements * 0.50);
 	$p25n_index  = floor($elements * 0.75);
 
-	return array(
-		$var       => $array[$ptile_index],
+	$results = array(
+		'p95n'     => $array[$p95n_index],
 		'p90n'     => $array[$p90n_index],
 		'p75n'     => $array[$p75n_index],
 		'p50n'     => $array[$p50n_index],
@@ -259,6 +264,12 @@ function cacti_stats_calc($array, $ptile = 95) {
 		'variance' => $variance,
 		'stddev'   => sqrt($variance/$elements)
 	);
+
+	if ($var != '') {
+		$results[$var] = $array[$ptile_index];
+	}
+
+	return $results;
 }
 
 /* bandwidth_summation - given a data source, sums all data in the rrd for a given
