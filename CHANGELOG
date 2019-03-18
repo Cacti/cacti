@@ -44,7 +44,7 @@ Cacti CHANGELOG
 -issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
 -issue#2527: Package installation can fail if the Cacti hash version code is ahead of installed Cacti
 -feature: Update phpseclib to version 2.0.15
--feature@2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
+-feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
 -issue#2531: When updating color template items, the table name used is incorrect
 
