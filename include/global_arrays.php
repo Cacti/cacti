@@ -22,7 +22,7 @@
  +-------------------------------------------------------------------------+
 */
 
-global $menu, $menu_glyphs;
+global $menu, $menu_glyphs, $graph_sources;
 
 /* Array of Cacti versions and template hash codes
    Remember to add every version here. */
@@ -2651,6 +2651,13 @@ $days_from_time_settings = array(
 			'prefix' => ' ',
 		),
 	),
+);
+
+$graph_sources = array(
+	0 => __('Not Templated'),
+	1 => __('Data Query'),
+	2 => __('Template'),
+	3 => __('Aggregate'),
 );
 
 api_plugin_hook('config_arrays');
