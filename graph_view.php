@@ -28,6 +28,7 @@ include('./include/auth.php');
 include_once('./lib/html_tree.php');
 include_once('./lib/html_graph.php');
 include_once('./lib/api_tree.php');
+include_once('./lib/graphs.php');
 include_once('./lib/reports.php');
 include_once('./lib/timespan_settings.php');
 
@@ -473,6 +474,8 @@ case 'preview':
 
 	break;
 case 'list':
+	global $graph_timespans, $alignment, $graph_sources;
+
 	top_graph_header();
 
 	if (!is_view_allowed('show_list')) {
@@ -697,32 +700,55 @@ case 'list':
 
 	html_start_box('', '100%', '', '3', 'center', '');
 
-	html_header_checkbox(array(__('Graph Title'), __('Device'), __('Graph Template'), __('Graph Size')), false);
+	$display_text = array(
+		'title_cache' => array(
+			'display' => __('Graph Name'),
+			'align'   => 'left',
+			'tip'     => __('The Title of this Graph.  Generally programatically generated from the Graph Template definition or Suggested Naming rules.  The max length of the Title is controlled under Settings->Visual.')
+		),
+		'local_graph_id' => array(
+			'display' => __('Device'),
+			'align'   => 'left',
+			'tip'     => __('The device for this Graph.')
+		),
+		'source' => array(
+			'display' => __('Source Type'),
+			'align'   => 'right',
+			'tip'     => __('The underlying source that this Graph was based upon.')
+		),
+		'name' => array(
+			'display' => __('Source Name'),
+			'align'   => 'left',
+			'tip'     => __('The Graph Template or Data Query that this Graph was based upon.')
+		),
+		'height' => array(
+			'display' => __('Size'),
+			'align'   => 'left',
+			'tip'     => __('The size of this Graph when not in Preview mode.')
+		)
+	);
+
+	html_header_checkbox($display_text, false);
 
 	$i = 0;
 	if (cacti_sizeof($graphs)) {
 		foreach ($graphs as $graph) {
-			if ($graph['description'] == '' && $graph['template_name'] == '') {
-				$aggregate = db_fetch_cell_prepared('SELECT agt.name
-					FROM aggregate_graphs AS ag
-					INNER JOIN aggregate_graph_templates AS agt
-					ON ag.aggregate_template_id=agt.id
-					WHERE local_graph_id = ?',
-					array($graph['local_graph_id']));
+			/* we're escaping strings here, so no need to escape them on form_selectable_cell */
+			$template_details = get_graph_template_details($graph['local_graph_id']);
 
-				if (!empty($aggregate)) {
-					$graph['description']   = __('Aggregated Device');
-					$graph['template_name'] = $aggregate;
-				} else {
-					$graph['description']   = __('Non-Device');
-					$graph['template_name'] = __('Not Applicable');
-				}
+			if (isset($template_details['graph_name'])) {
+				$graph['name'] = $template_details['graph_name'];
+			}
+
+			if (isset($template_details['graph_description'])) {
+				$graph['description'] = $template_details['graph_description'];
 			}
 
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value($graph['title_cache'], get_request_var('rfilter'), 'graph.php?local_graph_id=' . $graph['local_graph_id'] . '&rra_id=0'), $graph['local_graph_id']);
 			form_selectable_ecell($graph['description'], $graph['local_graph_id']);
-			form_selectable_ecell($graph['template_name'], $graph['local_graph_id']);
+			form_selectable_cell(filter_value($graph_sources[$template_details['source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id']);
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);
 			form_end_row();
@@ -736,8 +762,6 @@ case 'list':
 	}
 
 	form_end();
-
-	global $graph_timespans, $alignment;
 
 	$report_text = '';
 
