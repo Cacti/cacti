@@ -23,7 +23,7 @@
 */
 
 function upgrade_to_0_8_6i() {
-	/* once again, larger fields for OID's and the like */
+	/* once again, larger fields for OIDs and the like */
 	db_install_execute("ALTER TABLE `poller_item` MODIFY COLUMN `arg1` TEXT;");
 	db_install_execute("ALTER TABLE `poller_reindex` MODIFY COLUMN `arg1` VARCHAR(255) NOT NULL;");
 	db_install_execute("ALTER TABLE `host_snmp_cache` MODIFY COLUMN `oid` TEXT NOT NULL;");
