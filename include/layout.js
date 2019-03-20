@@ -1268,6 +1268,9 @@ function setGraphTabs() {
 
 function setupResponsiveMenuAndTabs() {
 	$('.maintabs a.lefttab, .dropdownMenu a, .menuoptions a, #gtabs a.righttab').not('[href^="http"], [href^="https"], [href^="#"], [target="_blank"]').off('click').on('click', function(event) {
+		if (!shouldCaptureClick(event))
+			return;
+
 		page = basename($(this).attr('href'));
 
 		if (page == 'logout.php' || page == 'auth_changepassword.php') {
@@ -2497,6 +2500,9 @@ function getPresentHTTPErrorOrRedirect(data, url) {
 
 function ajaxAnchors() {
 	$('a.pic, a.linkOverDark, a.linkEditMain, a.console, a.hyperLink, a.tab').not('[href^="http"], [href^="https"], [href^="#"], [href^="mailto"], [target="_blank"]').off('click').on('click', function(event) {
+		if (!shouldCaptureClick(event))
+			return;
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -2726,8 +2732,16 @@ function setupSortable() {
 	});
 }
 
+function shouldCaptureClick(event) {
+	var evt = event ? event:window.event;
+	return !(evt.shiftKey || evt.altKey || evt.ctrlKey || evt.metaKey);
+}
+
 function setupBreadcrumbs() {
 	$('#breadcrumbs > li > a').click(function(event) {
+		if (!shouldCaptureClick(event))
+			return
+
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -3861,6 +3875,9 @@ function initializeGraphs(disable_cache) {
 		$(this).attr('href', urlPath + 'graph.php?local_graph_id=' + graph_id);
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id=$(this).attr('id').replace('graph_','').replace('_mrtg','');
 
 			event.preventDefault();
@@ -3912,6 +3929,9 @@ function initializeGraphs(disable_cache) {
 		$(this).attr('href', url);
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_csv','');
 			event.preventDefault();
 			event.stopPropagation();
@@ -4057,6 +4077,9 @@ function initializeGraphs(disable_cache) {
 			'&graph_end='      + timestampDate2);
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
 
 			event.preventDefault();
@@ -4098,6 +4121,9 @@ function initializeGraphs(disable_cache) {
 		});
 
 		$(this).off('click').on('click', function(event) {
+			if (!shouldCaptureClick(event))
+				return;
+
 			var graph_id = $(this).attr('id').replace('graph_','').replace('_realtime','');
 
 			event.preventDefault();
