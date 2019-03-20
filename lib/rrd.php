@@ -253,8 +253,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* WIN32: before sending this command off to rrdtool, get rid
 	of all of the '\' characters. Unix does not care; win32 does.
-	Also make sure to replace all of the fancy \'s at the end of the line,
-	but make sure not to get rid of the "\n"'s that are supposed to be
+	Also make sure to replace all of the fancy "\"s at the end of the line,
+	but make sure not to get rid of the "\n"s that are supposed to be
 	in there (text format) */
 	$command_line = str_replace("\\\n", ' ', $command_line);
 
@@ -385,8 +385,8 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 
 	/* WIN32: before sending this command off to rrdtool, get rid
 	of all of the '\' characters. Unix does not care; win32 does.
-	Also make sure to replace all of the fancy \'s at the end of the line,
-	but make sure not to get rid of the "\n"'s that are supposed to be
+	Also make sure to replace all of the fancy "\"s at the end of the line,
+	but make sure not to get rid of the "\n"s that are supposed to be
 	in there (text format) */
 	$command_line = str_replace(array($config['rra_path'], "\\\n"), array('.', ' '), $command_line);
 
@@ -1450,7 +1450,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				if (!empty($data_source_path)) {
 					/* NOTE: (Update) Data source DEF names are created using the graph_item_id; then passed
 					to a function that matches the digits with letters. rrdtool likes letters instead
-					of numbers in DEF names; especially with CDEF's. cdef's are created
+					of numbers in DEF names; especially with CDEFs. CDEFs are created
 					the same way, except a 'cdef' is put on the beginning of the hash */
 					$graph_defs .= 'DEF:' . generate_graph_def_name(strval($i)) . '=' . cacti_escapeshellarg($data_source_path) . ':' . cacti_escapeshellarg($graph_item['data_source_name'], true) . ':' . $consolidation_functions[$graph_cf] . RRD_NL;
 
@@ -1482,7 +1482,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$graph_items[$j]['vdef_cache'] = $vdef;
 			}
 
-			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSTITUTION (<>'s) +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ LEGEND: TEXT SUBSTITUTION ("<>"s) +++++++++++++++++++++++ */
 
 			/* note the current item_id for easy access */
 			$graph_item_id = $graph_item['graph_templates_item_id'];
@@ -1551,7 +1551,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		}
 	}
 
-	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING ("<>"s) +++++++++++++++++++++++ */
 	if (cacti_sizeof($graph_items)) {
 		/* we need to add a new column 'cf_reference', so unless PHP 5 is used, this foreach
 		 * syntax is required
@@ -1582,9 +1582,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			}
 		}
 	}
-	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING (<>'s) +++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ LEGEND: AUTO PADDING ("<>"s) +++++++++++++++++++++++ */
 
-	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's +++++++++++++++++++++++ */
+	/* +++++++++++++++++++++++ GRAPH ITEMS: CDEFs +++++++++++++++++++++++ */
 
 	$i = 0;
 
@@ -1618,9 +1618,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* now remember the correct CF reference */
 			$cf_id = $graph_item['cf_reference'];
 
-			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's START +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEFs START +++++++++++++++++++++++ */
 
-			/* make cdef string here; a note about CDEF's in cacti. A CDEF is neither unique to a
+			/* make cdef string here; a note about CDEFs in cacti. A CDEF is neither unique to a
 			data source of global cdef, but is unique when those two variables combine. */
 			$cdef_graph_defs = '';
 
@@ -1880,9 +1880,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* add the cdef string to the end of the def string */
 			$graph_defs .= $cdef_graph_defs;
 
-			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEF's END   +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ GRAPH ITEMS: CDEFs END   +++++++++++++++++++++++ */
 
-			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEF's START +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEFs START +++++++++++++++++++++++ */
 
 			/* make vdef string here, copied from cdef stuff */
 			$vdef_graph_defs = '';
@@ -1909,7 +1909,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				$vdef_graph_defs .= cacti_escapeshellarg(sanitize_cdef($vdef_string));
 				$vdef_graph_defs .= " \\\n";
 
-				/* the VDEF cache is so we do not create duplicate VDEF's on a graph,
+				/* the VDEF cache is so we do not create duplicate VDEFs on a graph,
 				* but take info account, that same VDEF may use different CDEFs
 				* so index over VDEF_ID, CDEF_ID per DATA_TEMPLATE_RRD_ID, lvm */
 				$vdef_cache[$graph_item['vdef_id']][$graph_item['cdef_id']][$graph_item['data_template_rrd_id']][$cf_id] = $i;
@@ -1918,7 +1918,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 			/* add the cdef string to the end of the def string */
 			$graph_defs .= $vdef_graph_defs;
 
-			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEF's END +++++++++++++++++++++++ */
+			/* +++++++++++++++++++++++ GRAPH ITEMS: VDEFs END +++++++++++++++++++++++ */
 
 			/* note the current item_id for easy access */
 			$graph_item_id = $graph_item['graph_templates_item_id'];
