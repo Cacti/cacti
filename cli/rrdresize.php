@@ -940,7 +940,7 @@ function f_log($msg) {
 
 function display_version() {
 	$version = get_cacti_cli_version();
-	echo PHP_EOL . "RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
+	echo "RRDfile Reassign Data Template, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 
 function display_help() {
