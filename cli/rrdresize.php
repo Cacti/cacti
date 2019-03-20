@@ -121,6 +121,9 @@ if (sizeof($parms)) {
 	exit(0);
 }
 
+display_version();
+echo "THIS SCRIPT IS CURRENTLY RELYING ON TABLES THAT DO NOT EXIST" . PHP_EOL . PHP_EOL;
+
 /* presets */
 $logging             = 1;
 $total_files         = 0;
