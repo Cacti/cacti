@@ -846,7 +846,7 @@ function utilities_get_mysql_recommendations() {
 					'innodb' => array(
 						'value' => 'ON',
 						'class' => 'warning',
-						'measure' => 'equal',
+						'measure' => 'equalint',
 						'comment' => __('It is STRONGLY recommended that you enable InnoDB in any %s version greater than 5.5.3.', $database)
 					)
 				);
@@ -876,7 +876,7 @@ function utilities_get_mysql_recommendations() {
 					'innodb' => array(
 						'value' => 'ON',
 						'class' => 'warning',
-						'measure' => 'equal',
+						'measure' => 'equalint',
 						'comment' => __('It is recommended that you enable InnoDB in any %s version greater than 5.1.', $database)
 					)
 				);
@@ -936,7 +936,7 @@ function utilities_get_mysql_recommendations() {
 			),
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
-			'measure' => 'equal',
+			'measure' => 'equalint',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
 		'innodb_file_format' => array(
@@ -947,7 +947,7 @@ function utilities_get_mysql_recommendations() {
 			),
 		'innodb_large_prefix' => array(
 			'value'   => '1',
-			'measure' => 'equal',
+			'measure' => 'equalint',
 			'class'   => 'error',
 			'comment' => __('If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables.')
 			),
@@ -959,7 +959,7 @@ function utilities_get_mysql_recommendations() {
 			),
 		'innodb_doublewrite' => array(
 			'value'   => 'OFF',
-			'measure' => 'equal',
+			'measure' => 'equalint',
 			'class' => 'warning',
 			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations.')
 			),
@@ -1082,14 +1082,19 @@ function utilities_get_mysql_recommendations() {
 				$compare = '>=';
 				$passed = (version_compare($value_current, $value_recommend, '>='));
 				break;
+			case 'equalint':
 			case 'equal':
 				$compare = '=';
-				if (isset($variables[$name]) && $variables[$name] != $value_recommend) {
-					$passed = false;
-				} elseif (!isset($variables[$name])) {
+				if (!isset($variables[$name])) {
 					$passed = false;
 				} else {
-					$passed = true;
+					$e_var = $variables[$name];
+					$e_rec = $value_recommend;
+					if ($r['measure'] == 'equalint') {
+						$e_var = (!strcasecmp('on', $e_var) ? 1 : (!strcasecmp('off', $e_var) ? 0 : $e_var));
+						$e_rec = (!strcasecmp('on', $e_rec) ? 1 : (!strcasecmp('off', $e_rec) ? 0 : $e_rec));
+					}
+					$passed = $e_var == $e_rec;
 				}
 				break;
 			case 'pmem':

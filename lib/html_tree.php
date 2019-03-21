@@ -1408,31 +1408,31 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 		);
 
 		if (cacti_sizeof($final_templates)) {
+			$sql_where = '';
+			if (get_request_var('rfilter') != '') {
+				$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
+			}
+
+			if ($host_id > 0) {
+				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $host_id;
+			}
+
+			$graph_template_ids = [];
 			foreach ($final_templates as $graph_template) {
-				$sql_where = '';
+				array_push($graph_template_ids, $graph_template['id']);
+			}
+			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
+			$graphs = get_allowed_graphs($sql_where);
+			$agg    = get_allowed_aggregate_graphs($sql_where);
+			$graphs = array_merge($graphs, $agg);
 
-				if (get_request_var('rfilter') != '') {
-					$sql_where = " (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "')";
-				}
+			/* let's sort the graphs naturally */
+			usort($graphs, 'naturally_sort_graphs');
 
-				if ($host_id > 0) {
-					$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.host_id=' . $host_id;
-				}
-
-				$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id=' . $graph_template['id'];
-
-				$graphs = get_allowed_graphs($sql_where);
-				$agg    = get_allowed_aggregate_graphs($sql_where);
-				$graphs = array_merge($graphs, $agg);
-
-				/* let's sort the graphs naturally */
-				usort($graphs, 'naturally_sort_graphs');
-
-				if (cacti_sizeof($graphs)) {
-					foreach ($graphs as $graph) {
-						$graph['graph_template_name'] = $graph_template['name'];
-						array_push($graph_list, $graph);
-					}
+			if (cacti_sizeof($graphs)) {
+				foreach ($graphs as $graph) {
+					$graph['graph_template_name'] = $graph_template['name'];
+					array_push($graph_list, $graph);
 				}
 			}
 		}
