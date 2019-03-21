@@ -960,7 +960,19 @@ $settings = array(
 			'method' => 'font',
 			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
-			)
+			),
+                'ds_preselected_delete' => array(
+                        'friendly_name' => __('Data Source preselected delete'),
+                        'description' => __('When enabled, Cacti will set radio button to delete related datasources of a graph when deleting it. Disabling it may avoid loss of data'),
+                        'method' => 'checkbox',
+                        'default' => 'on'
+                        ),
+                'graphs_auto_unlock' => array(
+                        'friendly_name' => __('Graphs auto unlock'),
+                        'description' => __('When enabled, Cacti will never lock graphs, this allow a faster manual change of datasources related to a graph.'),
+                        'method' => 'checkbox',
+                        'default' => 'off'
+                        )
 		),
 	'poller' => array(
 		'poller_header' => array(
@@ -2182,7 +2194,13 @@ $settings_user = array(
 			'description' => __('Choose whether to expand the Graph Templates and Data Queries used by a Device on Tree.'),
 			'method' => 'checkbox',
 			'default' => ''
-			)
+			),
+                'tree_history' => array(
+                        'friendly_name' => __('Tree history'),
+                        'description' => __('When disabled, Cacti will wont bring back user where he was in the graph tree when he comes back after closing a tab'),
+                        'method' => 'checkbox',
+                        'default' => 'on'
+                     )
 		),
 	'fonts' => array(
 		'custom_fonts' => array(

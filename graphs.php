@@ -872,9 +872,18 @@ function form_actions() {
 				print '</ul></div><br>';
 
 				print '<span class="nowrap">';
-				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
+				$ds_preselected_delete = read_config_option('ds_preselected_delete');
+				if ($ds_preselected_delete == 'on')
+				{
+	                                $delete_radio_button_1_state = '2';
+                                	$delete_radio_button_2_state = '1';
+				} else { 
+					$delete_radio_button_1_state = '1';
+					$delete_radio_button_2_state = '2';			
+				}                                 
+				form_radio_button('delete_type', '2', $delete_radio_button_1_state , __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
 				print '<br>';
-				form_radio_button('delete_type', '2', '1', __('Leave the Data Source(s) untouched.'), '1');
+				form_radio_button('delete_type', '2', $delete_radio_button_2_state , __('Leave the Data Source(s) untouched.'), '1');
 				print '<br>';
 				print '</span>';
 				print '</td></tr>';
@@ -1307,9 +1316,14 @@ function graph_edit() {
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
+	        $auto_unlock = read_config_option('graphs_auto_unlock');
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
-			$locked = true;
+			if($auto_unlock == 'on') {
+                        	$locked = false;
+                        } else {
+	                        $locked = true;
+                        }                        
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
 			$locked = false;
@@ -1317,7 +1331,11 @@ function graph_edit() {
 		} elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];
 		} else {
-			$locked = true;
+			if($auto_unlock == 'on') {
+				$locked = false;
+			} else {
+				$locked = true;
+			}
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
