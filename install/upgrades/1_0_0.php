@@ -1500,7 +1500,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
 
-	// Update Aggregate CDEF's to become system level
+	// Update Aggregate CDEFs to become system level
 	db_install_add_column('cdef', array('name' => 'system', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0', 'after' => 'hash'));
 	db_install_execute("UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
 

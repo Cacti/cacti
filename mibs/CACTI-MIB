@@ -384,7 +384,7 @@ cactiApplSpineMaxOids OBJECT-TYPE
     MAX-ACCESS      read-only
     STATUS          current
     DESCRIPTION
-        "The maximum number of snmp get OID's to issue per snmpbulkwalk
+        "The maximum number of snmp get OIDs to issue per snmpbulkwalk
          request."
     ::= { cactiAppl 13 }
 
