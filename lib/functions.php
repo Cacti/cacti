@@ -635,7 +635,7 @@ function get_format_message_instance($current_message) {
 	return $message;
 }
 
-/* get_message_max_type - finds the message and returns it's type
+/* get_message_max_type - finds the message and returns its type
    @returns - (string) the message type 'info', 'warn', 'error' or 'csrf' */
 function get_message_max_type() {
 	global $messages;

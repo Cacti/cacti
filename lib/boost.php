@@ -244,7 +244,7 @@ function boost_fetch_cache_check($local_data_id) {
 		/* include poller processing routinges */
 		include_once($config['library_path'] . '/poller.php');
 
-		/* check to see if boost can do it's job */
+		/* check to see if boost can do its job */
 		if (!boost_poller_id_check()) {
 			return false;
 		}
@@ -305,7 +305,7 @@ function boost_graph_cache_check($local_graph_id, $rra_id, $rrdtool_pipe, &$grap
 	/* install the boost error handler */
 	set_error_handler('boost_error_handler');
 
-	/* check to see if boost can do it's job */
+	/* check to see if boost can do its job */
 	if (!boost_poller_id_check()) {
 		return false;
 	}
@@ -1060,7 +1060,7 @@ function boost_determine_caching_state() {
 
 /* boost_get_rrd_filename_and_template - pulls
    1) the rrd_update template from the database in form of
-      update decisions for multi-output RRD's
+      update decisions for multi-output RRDs
    2) rrd filename
    @arg $local_data_id - the data source to obtain information from */
 function boost_get_rrd_filename_and_template($local_data_id) {
