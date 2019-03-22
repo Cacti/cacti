@@ -29,31 +29,31 @@
    @arg $cell_padding - the amount of cell padding to use inside of the box
    @arg $align - the HTML alignment to use for the box (center, left, or right)
    @arg $add_text - the url to use when the user clicks 'Add' in the upper-right
-     corner of the box ("" for no 'Add' link)
-     This function has two method.  This first is for legacy behavior where you
-     you pass in a href to the function, and an optional label as $add_label
-     The new format accepts an array of hrefs to add to the start box.  The format
-     of the array is as follows:
+        corner of the box ("" for no 'Add' link)
+        This function has two method.  This first is for legacy behavior where you
+        you pass in a href to the function, and an optional label as $add_label
+        The new format accepts an array of hrefs to add to the start box.  The format
+        of the array is as follows:
 
-     $add_text = array(
-        array(
-          'id' => 'uniqueid',
-          'href' => 'value',
-          'title' => 'title',
-          'callback' => true|false,
-          'class' => 'fa fa-icon'
-        ),
-        ...
-     );
+        $add_text = array(
+            array(
+                'id' => 'uniqueid',
+                'href' => 'value',
+                'title' => 'title',
+                'callback' => true|false,
+                'class' => 'fa fa-icon'
+            ),
+            ...
+        );
 
-     If the callback is true, the Cacti attribute will be added to the href
-     to present only the contents and not to include both the headers.  If
-     the link must go off page, simply make sure $callback is false.  There
-     is a requirement to use fontawesome icon sets for this class, but it
-     can include other classes.  In addition, the href can be a hash '#' if
-     your page has a ready function that has it's own javascript.
+        If the callback is true, the Cacti attribute will be added to the href
+        to present only the contents and not to include both the headers.  If
+        the link must go off page, simply make sure $callback is false.  There
+        is a requirement to use fontawesome icon sets for this class, but it
+        can include other classes.  In addition, the href can be a hash '#' if
+        your page has a ready function that has it's own javascript.
    @arg $add_label - used with legacy behavior to add specific text to the link.
-     This parameter is only used in the legacy behavior.
+        This parameter is only used in the legacy behavior.
  */
 function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, $add_label = false) {
 	static $table_suffix = 1;
@@ -140,8 +140,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 
 /* html_end_box - draws the end of an HTML box
    @arg $trailing_br (bool) - whether to draw a trailing <br> tag after ending
-   @arg $div (bool) - div type table
-     the box */
+   @arg $div (bool) - whether type of box is div or table */
 function html_end_box($trailing_br = true, $div = false) {
 	if ($div) {
 		print "</div></div>\n";
@@ -238,9 +237,9 @@ function html_graph_template_multiselect() {
 
 /* html_graph_area - draws an area the contains full sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
-     array, the following two keys must exist
-     $arr[0]["local_graph_id"] // graph id
-     $arr[0]["title_cache"] // graph title
+        array, the following two keys must exist
+        $arr[0]["local_graph_id"] // graph id
+        $arr[0]["title_cache"] // graph title
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
@@ -314,9 +313,9 @@ function html_graph_area(&$graph_array, $no_graphs_message = '', $extra_url_args
 
 /* html_graph_thumbnail_area - draws an area the contains thumbnail sized graphs
    @arg $graph_array - the array to contains graph information. for each graph in the
-     array, the following two keys must exist
-     $arr[0]["local_graph_id"] // graph id
-     $arr[0]["title_cache"] // graph title
+        array, the following two keys must exist
+        $arr[0]["local_graph_id"] // graph id
+        $arr[0]["title_cache"] // graph title
    @arg $no_graphs_message - display this message if no graphs are found in $graph_array
    @arg $extra_url_args - extra arguments to append to the url
    @arg $header - html to use as a header
@@ -478,7 +477,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 }
 
 /* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
-     page information
+	page information
    @arg $base_url - the base URL will all filter options except page#
    @arg $max_pages - the maximum number of pages to display
    @arg $current_page - the current page in the navigation system
@@ -528,12 +527,12 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 }
 
 /* html_header_sort - draws a header row suitable for display inside of a box element.  When
-     a user selects a column header, the collback function "filename" will be called to handle
-     the sort the column and display the altered results.
+        a user selects a column header, the collback function "filename" will be called to handle
+        the sort the column and display the altered results.
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
-		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -685,13 +684,13 @@ function html_header_sort($header_items, $sort_column, $sort_direction, $last_it
 }
 
 /* html_header_sort_checkbox - draws a header row with a 'select all' checkbox in the last cell
-     suitable for display inside of a box element.  When a user selects a column header,
-     the collback function "filename" will be called to handle the sort the column and display
-     the altered results.
+        suitable for display inside of a box element.  When a user selects a column header,
+        the collback function "filename" will be called to handle the sort the column and display
+        the altered results.
    @arg $header_items - an array containing a list of column items to display.  The
         format is similar to the html_header, with the exception that it has three
         dimensions associated with each element (db_column => display_text, default_sort_order)
-		alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
+        alternatively (db_column => array('display' = 'blah', 'align' = 'blah', 'sort' = 'blah'))
    @arg $sort_column - the value of current sort column.
    @arg $sort_direction - the value the current sort direction.  The actual sort direction
         will be opposite this direction if the user selects the same named column.
@@ -849,7 +848,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 
 /* html_header - draws a header row suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
-		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_header($header_items, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
@@ -881,9 +880,9 @@ function html_header($header_items, $last_item_colspan = 1) {
 }
 
 /* html_section_header - draws a header row suitable for display inside of a box element
-     but for display as a secton title and not as a series of table header columns
+         but for display as a secton title and not as a series of table header columns
    @arg $header_name - an array of the display name of the header for the section and
-     optional alignment.
+        optional alignment.
    @arg $last_item_colspan - the TD 'colspan' to apply to the last cell in the row */
 function html_section_header($header_item, $last_item_colspan = 1) {
 	print "<tr class='tableHeader " . (!$last_item_colspan > 1 ? 'tableFixed':'') . "'>\n";
@@ -898,9 +897,9 @@ function html_section_header($header_item, $last_item_colspan = 1) {
 }
 
 /* html_header_checkbox - draws a header row with a 'select all' checkbox in the last cell
-     suitable for display inside of a box element
+        suitable for display inside of a box element
    @arg $header_items - an array containing a list of items to be included in the header
-		alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
+        alternatively and array of header names and alignment array('display' = 'blah', 'align' = 'blah')
    @arg $form_action - the url to post the 'select all' form to */
 function html_header_checkbox($header_items, $include_form = true, $form_action = "", $resizable = true) {
 	/* default to the 'current' file */
@@ -934,15 +933,15 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 
 /* html_create_list - draws the items for an html dropdown given an array of data
    @arg $form_data - an array containing data for this dropdown. it can be formatted
-     in one of two ways:
-     $array["id"] = "value";
-     -- or --
-     $array[0]["id"] = 43;
-     $array[0]["name"] = "Red";
+        in one of two ways:
+        $array["id"] = "value";
+        -- or --
+        $array[0]["id"] = 43;
+        $array[0]["name"] = "Red";
    @arg $column_display - used to indentify the key to be used for display data. this
-     is only applicable if the array is formatted using the second method above
+        is only applicable if the array is formatted using the second method above
    @arg $column_id - used to indentify the key to be used for id data. this
-     is only applicable if the array is formatted using the second method above
+        is only applicable if the array is formatted using the second method above
    @arg $form_previous_value - the current value of this form element */
 function html_create_list($form_data, $column_display, $column_id, $form_previous_value) {
 	if (empty($column_display)) {
@@ -1004,7 +1003,7 @@ function html_escape($string) {
    @arg $string - string to be modified and returned
    @arg $length - the maximal string length to split to
    @arg $forgiveness - the maximum number of characters to walk back from to determine
-         the correct break location.
+        the correct break location.
    @returns $new_string - the modified string to be returned. */
 function html_split_string($string, $length = 70, $forgiveness = 10) {
 	$new_string = '';
@@ -1035,12 +1034,12 @@ function html_split_string($string, $length = 70, $forgiveness = 10) {
 }
 
 /* draw_graph_items_list - draws a nicely formatted list of graph items for display
-     on an edit form
+        on an edit form
    @arg $item_list - an array representing the list of graph items. this array should
-     come directly from the output of db_fetch_assoc()
+        come directly from the output of db_fetch_assoc()
    @arg $filename - the filename to use when referencing any external url
    @arg $url_data - any extra GET url information to pass on when referencing any
-     external url
+        external url
    @arg $disable_controls - whether to hide all edit/delete functionality on this form */
 function draw_graph_items_list($item_list, $filename, $url_data, $disable_controls) {
 	global $config;
@@ -1175,6 +1174,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 	}
 }
 
+/* is_menu_pick_active - determines if current selection is active
+   @arg $menu_url - url of current page
+   @returns true if active, false if not
+*/
 function is_menu_pick_active($menu_url) {
 	static $url_array, $url_parts;
 
@@ -1364,11 +1367,11 @@ function draw_menu($user_menu = "") {
 }
 
 /* draw_actions_dropdown - draws a table the allows the user to select an action to perform
-     on one or more data elements
+        on one or more data elements
    @arg $actions_array - an array that contains a list of possible actions. this array should
-     be compatible with the form_dropdown() function
+        be compatible with the form_dropdown() function
    @arg $delete_action - if there is a delete action that should surpress removal of rows
-     specify it here.  If you don't want any delete actions, set to 0.*/
+        specify it here.  If you don't want any delete actions, set to 0.*/
 function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	global $config;
 
@@ -1505,6 +1508,11 @@ function form_area($text) { ?>
 	</tr>
 <?php }
 
+/* is_console_page - determinese if current passed url is considered to be
+          a console page
+   @arg url - url to be checked
+   @returns true if console page, false if not
+*/
 function is_console_page($url) {
 	global $menu;
 
@@ -2276,6 +2284,10 @@ function html_spikekill_js() {
 	<?php
 }
 
+/* html_common_header - prints a common set of header, css and javascript links
+   @arg title - the title of the page to place in the browser
+   @arg selectedTheme - optionally sets a specific theme over the current one
+*/
 function html_common_header($title, $selectedTheme = '') {
 	global $config, $path2calendar, $path2timepicker, $path2colorpicker;
 
@@ -2425,6 +2437,8 @@ function html_common_header($title, $selectedTheme = '') {
 		print get_md5_include_js($path2colorpicker);
 	}
 
+	if (file_exists('include/themes/custom.css')) {
+		print get_md5_include_css('include/themes/custom.css');
+	}
 	api_plugin_hook('page_head');
 }
-
