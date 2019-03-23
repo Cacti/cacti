@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -issue#2535: Ensure Graph ListView table is displayed in line with Management -> Graphs
 -issue#2543: Improve performance on graph_view's tree_content action by reducing the number of SQL queries executed 
 -issue#2551: When checking MySQL configuration values, consider ON/OFF to be equal to 1/0
+-issue#2555: Missing configuration defaults prevent installations/upgrades without showing reason
 -feature: Update phpseclib to version 2.0.15
 -feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
