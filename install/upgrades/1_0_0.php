@@ -572,7 +572,7 @@ function upgrade_to_1_0_0() {
 	} else {
 		db_install_rename_table('plugin_nectar', 'reports');
 		db_install_rename_table('plugin_nectar_items', 'reports_items');
-		db_install_execute("UPDATE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
+		db_install_execute("UPDATE IGNORE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
 
 		db_install_add_column('reports', array('name' => 'bcc',           'type' => 'TEXT', 'after' => 'email'));
 		db_install_add_column('reports', array('name' => 'from_name',     'type' => 'VARCHAR(40)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
