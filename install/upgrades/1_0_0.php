@@ -1027,7 +1027,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='autom8'");
 	db_install_execute("DELETE FROM plugin_hooks WHERE name='autom8'");
 
-	db_install_execute("UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
+	db_install_execute("UPDATE IGNORE settings SET name = REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 
 	// migrate discovery to Core if exists
 	if (db_table_exists('plugin_discover_hosts', false)) {
