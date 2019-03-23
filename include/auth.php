@@ -105,7 +105,7 @@ if (read_config_option('auth_method') == 0) {
 	exit;
 }
 
-if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
+if (cacti_version_compare($version,CACTI_VERSION_FULL,'!=') && !defined('IN_CACTI_INSTALL')) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
