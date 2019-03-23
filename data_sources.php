@@ -1323,7 +1323,16 @@ function ds() {
 		$host_where = '';
 	}
 
-	html_start_box( __('Data Sources [%s]', (empty($host['hostname']) ? __('No Device') : html_escape($host['hostname']))), '100%', '', '3', 'center', $add_url);
+	if (get_request_var('host_id') == -1) {
+		$header = __('Data Sources [ All Devices ]');
+	} elseif (get_request_var('host_id') == 0) {
+		$header = __('Data Sources [ Non Device Based ]');
+	} else {
+		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
+		$header = __('Data Sources [ %s ]', $description);
+	}
+
+	html_start_box($header, '100%', '', '3', 'center', $add_url);
 
 	?>
 	<tr class='even noprint'>
