@@ -109,7 +109,7 @@ class Installer implements JsonSerializable {
 	public function __construct($install_params = array()) {
 		log_install_high('step', 'Install Parameters: ' . clean_up_lines(var_export($install_params, true)));
 
-		$this->old_cacti_version = get_cacti_version();
+		$this->old_cacti_version = get_cacti_db_version_raw();
 		$this->setRuntime(isset($install_params['Runtime']) ? $install_params['Runtime'] : 'unknown');
 
 		$step = read_config_option('install_step', true);
@@ -131,15 +131,15 @@ class Installer implements JsonSerializable {
 			$install_error = read_config_option('install_error', true);
 			if (!empty($install_error)) {
 				$step = Installer::STEP_ERROR;
-			} elseif (cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
+			} elseif (cacti_version_compare(CACTI_VERSION_FULL, $install_version, '==')) {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
-			if (!cacti_version_compare(CACTI_VERSION, $install_version, '==')) {
-				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION, true)));
+			if (!cacti_version_compare(CACTI_VERSION_FULL, $install_version, '==')) {
+				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION_FULL, true)));
 				$this->stepError = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
 			} else {
@@ -1385,7 +1385,7 @@ class Installer implements JsonSerializable {
 	/* Some utility functions */
 
 	public function shouldRedirectToHome() {
-		return ($this->old_cacti_version == CACTI_VERSION);
+		return (cacti_version_compare($this->old_cacti_version,CACTI_VERSION,'='));
 	}
 
 	public function shouldExitWithReason() {
@@ -1634,7 +1634,7 @@ class Installer implements JsonSerializable {
 	public function processStepWelcome() {
 		global $config, $cacti_version_codes;
 
-		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION . ' - ' . __('License Agreement'));
+		$output  = Installer::sectionTitle(__('Cacti Version') . ' ' . CACTI_VERSION_BRIEF . ' - ' . __('License Agreement'));
 
 		if (!array_key_exists(CACTI_VERSION, $cacti_version_codes)) {
 			$output .= Installer::sectionError(__('This version of Cacti (%s) does not appear to have a valid version code, please contact the Cacti Development Team to ensure this is corrected.  If you are seeing this error in a release, please raise a report immediately on GitHub', CACTI_VERSION));
@@ -1950,7 +1950,7 @@ class Installer implements JsonSerializable {
 			case Installer::MODE_UPGRADE:
 				// upgrade detected
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
-				$output .= Installer::sectionNormal(__('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
+				$output .= Installer::sectionNormal(__('Upgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION_FULL));
 
 				$output .= Installer::sectionWarning(__('In the event of issues, It is highly recommended that you clear your browser cache, closing then reopening your browser (not just the tab Cacti is on) and retrying, before raising an issue with The Cacti Group'));
 				$output .= Installer::sectionNormal(__('On rare occasions, we have had reports from users who experience some minor issues due to changes in the code.  These issues are caused by the browser retaining pre-upgrade code and whilst we have taken steps to minimise the chances of this, it may still occur.  If you need instructions on how to clear your browser cache, <a href=\'https://www.refreshyourcache.com\' target=\'_blank\'>https://www.refreshyourcache.com/</a> is a good starting point.'));
@@ -1960,7 +1960,7 @@ class Installer implements JsonSerializable {
 				break;
 			case Installer::MODE_DOWNGRADE:
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
-				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
+				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION_FULL));
 				$output .= Installer::sectionWarning(__('You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.'));
 				$output .= Installer::sectionSubTitleEnd();
 				break;
@@ -2621,7 +2621,7 @@ class Installer implements JsonSerializable {
 		global $config;
 		$time = read_config_option('install_updated', true);
 
-		$output  = Installer::sectionTitle(__('Installing Cacti Server v%s', CACTI_VERSION));
+		$output  = Installer::sectionTitle(__('Installing Cacti Server v%s', CACTI_VERSION_FULL));
 		$output .= Installer::sectionNormal(__('Your Cacti Server is now installing'));
 		$output .= Installer::sectionNormal(
 			'<table width="100%"><tr>' .
@@ -2730,11 +2730,11 @@ class Installer implements JsonSerializable {
 
 		if ($this->stepCurrent == Installer::STEP_COMPLETE) {
 			$output = Installer::sectionTitle(__('Complete'));
-			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION));
+			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated.  You may now start using the software.', CACTI_VERSION_FULL));
 			db_execute('DELETE FROM settings WHERE name LIKE "install_%"');
 		} elseif ($this->stepCurrent == Installer::STEP_ERROR) {
 			$output = Installer::sectionTitleError();
-			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION));
+			$output .= Installer::sectionNormal(__('Your Cacti Server v%s has been installed/updated with errors', CACTI_VERSION_BRIEF_FULL));
 		}
 
 		// Remove integrated plugin references
@@ -2882,7 +2882,7 @@ class Installer implements JsonSerializable {
 				break;
 		}
 
-		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION));
+		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION_FULL));
 
 		$this->setProgress(Installer::PROGRESS_START);
 
@@ -2907,7 +2907,7 @@ class Installer implements JsonSerializable {
 			Installer::disableInvalidPlugins();
 		}
 
-		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
+		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION_FULL));
 
 		set_config_option('install_error', $failure);
 
@@ -2915,7 +2915,7 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 			db_execute('TRUNCATE TABLE version');
 			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
-			set_config_option('install_version', CACTI_VERSION);
+			set_config_option('install_version', CACTI_VERSION_FULL);
 			$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 			// Sync the remote data collectors
@@ -3022,7 +3022,7 @@ class Installer implements JsonSerializable {
 
 			/* change cacti version */
 			db_execute('DELETE FROM version', true, $local_db_cnn_id);
-			db_execute("INSERT INTO version (cacti) VALUES ('" . CACTI_VERSION . "')", true, $local_db_cnn_id);
+			db_execute("INSERT INTO version (cacti) VALUES ('" . CACTI_VERSION_FULL . "')", true, $local_db_cnn_id);
 
 			/* make the poller and poller_output_boost InnoDB */
 			db_execute('ALTER TABLE poller_output ENGINE=InnoDB');
@@ -3275,8 +3275,8 @@ class Installer implements JsonSerializable {
 		$database_upgrade_status = array('file' => $cacheFile);
 		log_install_always('', __('NOTE: Using temporary file for db cache: %s',$cacheFile));
 
-		$prev_cacti_version = $this->old_cacti_version;
-		$orig_cacti_version = get_cacti_cli_version();
+		$prev_cacti_version = format_cacti_version($this->old_cacti_version,CACTI_FORMAT_VERSION_SHORT);
+		$orig_cacti_version = format_cacti_version(get_cacti_db_version(),CACTI_FORMAT_VERSION_SHORT);
 
 		// loop through versions from old version to the current, performing updates for each version in the chain
 		foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
@@ -3331,8 +3331,8 @@ class Installer implements JsonSerializable {
 			return 'WARNING: One or more upgrades failed to install correctly';
 		}
 
-		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
-			db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
+		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=')) {
+			db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
 		}
 		return false;
 	}

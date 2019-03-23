@@ -6289,13 +6289,90 @@ function date_time_format() {
 	}
 }
 
+function get_source_timestamp() {
+	global $config;
+	$timestamp = 0;
+	if (file_exists($config['base_path'] . '/.git/')) {
+		$shell = @shell_exec('git log -1 --pretty=format:%ct.%h');
+		$parts = explode('.', $shell);
+	} else {
+		$parts =  array(0 => -1, 1 => 'UNKNOWN');
+	}
+	return $parts;
+}
+
+function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
+	if ($version == 'new_install') {
+		$version = ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
+	}
+
+	$parts = explode('.', $version);
+
+	if (count($parts) > 3) {
+		if ($parts[3] == '-1') {
+			$source = get_source_timestamp();
+			$parts[3] = 99;
+			$parts[4] = $source[0];
+			$parts[5] = $source[1];
+		}
+	}
+
+	if ($format != CACTI_VERSION_FORMAT_FULL) {
+		$parts = array_slice($parts, 0, 3);
+	}
+
+	return implode('.', $parts);
+}
+
+function format_cacti_version_text($version) {
+	$version = format_cacti_version($version);
+
+	$parts = explode('.', $version);
+	while (count($parts) < 6) {
+		$parts[] = '0';
+	}
+
+	$mode = '';
+	if ($parts[3] == '99') {
+		$stamp = '';
+		if ($parts[4] > 0) {
+			$dateTime = new DateTime();
+			$dateTime->setTimestamp($parts[4]);
+			$dateTime = $dateTime->format('Y-m-d H:i');
+
+			if ($parts[5]) {
+				$stamp = $parts[5] . ' @ ';
+			}
+			$stamp .= $dateTime;
+		}
+		$mode = __('- Dev %s', $stamp);
+	} else if ($parts[3] > '0') {
+		$mode = __('- Beta %s', $parts[3]);
+	}
+
+	return trim(sprintf('%s.%s.%s %s', $parts[0], $parts[1], $parts[2], $mode));
+}
+
 /**
- * get_cacti_version    Generic function to get the cacti version
+ * get_cacti_db_version    Generic function to get the cacti version from the db
  */
-function get_cacti_version() {
+function get_cacti_db_version($force = false) {
 	static $version = '';
 
-	if ($version == '') {
+	if ($version == '' || $force) {
+		$version = trim(format_cacti_version(get_cacti_db_version_raw($force)));
+	}
+
+	return $version;
+}
+
+/**
+ * get_cacti_db_version_raw    Generic function to get the cacti version from the db
+ */
+function get_cacti_db_version_raw($force = false) {
+	static $version = '';
+
+	if ($version == '' || $force) {
 		$version = trim(db_fetch_cell('SELECT cacti FROM version LIMIT 1'));
 	}
 
@@ -6305,21 +6382,27 @@ function get_cacti_version() {
 /**
  * get_cacti_version_text    Return the cacti version text including beta moniker
  */
-function get_cacti_version_text($include_version = true) {
+function get_cacti_version_text($include_version = true, $version = CACTI_VERSION_FULL) {
+	$version_text = format_cacti_version_text($version);
 	if ($include_version) {
-		return trim(__('Version %s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return trim(__('Version %s %s', $version_text, ''));
 	} else {
-		return trim(__('%s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return $version_text;
 	}
 }
 
 /**
  * get_cacti_cli_version() {
  */
-function get_cacti_cli_version() {
-	$dbversion = get_cacti_version();
-	$version = get_cacti_version_text(false);
-	return $version . ' (DB: ' . $dbversion . ')';
+function get_cacti_cli_version($include_db = true, $version = CACTI_VERSION_FULL) {
+	$version = get_cacti_version_text(false, $version);
+
+	$dbversion = '';
+	if ($include_db) {
+		$dbversion = ' (DB: v' . get_cacti_db_version() . ')';
+	}
+
+	return $version . $dbversion;
 }
 
 /**
@@ -6330,9 +6413,8 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 		$version1 = CACTI_VERSION;
 	}
 
-	$length   = max(cacti_sizeof(explode('.', $version1)), cacti_sizeof(explode('.', $version2)));
-	$version1 = version_to_decimal($version1, $length);
-	$version2 = version_to_decimal($version2, $length);
+	$version1 = version_to_decimal($version1);
+	$version2 = version_to_decimal($version2);
 
 	switch ($operator) {
 		case '<':
@@ -6360,38 +6442,120 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 				return true;
 			}
 			break;
+		case '<>':
+		case '!=':
+			if ($version1 != $version2) {
+				return true;
+			}
+			break;
 		default:
 			return version_compare($version1, $version2, $operator);
 	}
 	return false;
 }
 
+function is_cacti_develop($version = null)
+{
+	static $isStaticRelease = null;
+
+	if ($isStaticRelease === null || $version !== null) {
+		if ($version === null) {
+			$version = CACTI_VERSION_FULL;
+		} else {
+			$version = format_cacti_version($version);
+		}
+
+		$parts     = explode('.', $version);
+		$isRelease = (count($parts) > 3 && $parts[3] == '99');
+
+		if ($version === null) {
+			$isStaticRelease = $isRelease;
+		}
+	} else {
+		$isRelease = $isStaticRelease;
+	}
+
+	return $isRelease;
+}
+
+function is_cacti_release($version = null)
+{
+	static $isStaticRelease = null;
+
+	if ($isStaticRelease === null || $version !== null) {
+		if ($version === null) {
+			$version = CACTI_VERSION_FULL;
+		} else {
+			$version = format_cacti_version($version);
+		}
+
+		$parts     = explode('.', $version);
+		$isRelease = ((count($parts) < 4) || ($parts[3] == '0'));
+
+		if ($version === null) {
+			$isStaticRelease = $isRelease;
+		}
+	} else {
+		$isRelease = $isStaticRelease;
+	}
+
+	return $isRelease;
+}
+
 /**
  * version_to_decimal - convert version string to decimal
  */
-function version_to_decimal($version, $length = 1) {
+function version_to_decimal($version, $length = 8, $hex = true) {
 	$newver = '';
 	$minor  = '';
 
 	$parts = explode('.', $version);
-	foreach($parts as $part) {
-		if (is_numeric($part)) {
-			$part = substr('00' . $part, -2);
-			$newver .= $part;
-		} else {
-			$minor = substr($part, -1);
-			$major = substr($part, 0, strlen($part)-1);
-			$major = substr('00' . $major, -2);
-			$newver .= $major;
+	$section = 0;
+	while($section < $length) {
+		$prefix  = '00';
+		if ($section >= cacti_sizeof($parts)) {
+			if ($section >= 3 && $section < 5) {
+				$prefix = '99';
+			}
+			$parts[$section] = $prefix;
 		}
-	}
 
-	if (cacti_sizeof($parts) < $length) {
-		$i = cacti_sizeof($parts);
-		while($i < $length) {
-			$newver .= '00';
-			$i++;
+		$part = $parts[$section];
+		$extras = false;
+
+		if ($part == 'x') {
+			$part = '0';
+		} elseif (is_numeric($part)) {
+			if ($part > 100000) {
+				$extras = array();
+				while ($part > '') {
+					$sub = substr('00' . $part, -2);
+					array_unshift($extras, $sub);
+					$part = (strlen($part) >= 2) ? substr($part,0, strlen($part)-2) : '';
+				}
+			}
+		} elseif ($part != 'x') {
+			//printf ("sub: %s, ", $part);
+			$minor  = ord(strtoupper(substr($part, -1))) - ord('0') + 1;
+			$major  = substr($part, 0, strlen($part)-1);
+			$extras = array($major,99,99,$minor);
 		}
+
+		if (is_array($extras)) {
+			$sub = 0;
+			foreach ($extras as $extra) {
+				//printf ("extra: %s, ", $extra);
+				$parts[$section+$sub] = $extra;
+				$sub++;
+			}
+
+			$part = $parts[$section];
+		}
+
+		$part    = substr($prefix . $part, -2);
+		$newver .= $part;
+
+		$section++;
 	}
 
 	if ($minor != '') {
@@ -6400,7 +6564,7 @@ function version_to_decimal($version, $length = 1) {
 		$int = 0;
 	}
 
-	return @hexdec($newver) * 1000 + $int;
+	return $hex ? hexdec($newver) : $newver;
 }
 
 /**

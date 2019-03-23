@@ -794,52 +794,138 @@ function db_add_column($table, $column, $log = true, $db_conn = false) {
 		$columns[] = $arr['Field'];
 	}
 
-	if (isset($column['name']) && !in_array($column['name'], $columns)) {
-		$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
-		if (isset($column['type'])) {
-			$sql .= ' ' . $column['type'];
-		}
-
-		if (isset($column['unsigned'])) {
-			$sql .= ' unsigned';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] === false) {
-			$sql .= ' NOT NULL';
-		}
-
-		if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
-			$sql .= ' default NULL';
-		}
-
-		if (isset($column['default'])) {
-			if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
-				$sql .= ' default CURRENT_TIMESTAMP';
-			} else {
-				$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+	if (isset($column['name'])) {
+		if (!in_array($column['name'], $columns)) {
+			$sql = 'ALTER TABLE `' . $table . '` ADD `' . $column['name'] . '`';
+			if (isset($column['type'])) {
+				$sql .= ' ' . $column['type'];
 			}
+
+			if (isset($column['unsigned'])) {
+				$sql .= ' unsigned';
+			}
+
+			if (isset($column['NULL']) && $column['NULL'] === false) {
+				$sql .= ' NOT NULL';
+			}
+
+			if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+				$sql .= ' default NULL';
+			}
+
+			if (isset($column['default'])) {
+				if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+					$sql .= ' default CURRENT_TIMESTAMP';
+				} else {
+					$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+				}
+			}
+
+			if (isset($column['on_update'])) {
+				$sql .= ' ON UPDATE ' . $column['on_update'];
+			}
+
+			if (isset($column['auto_increment'])) {
+				$sql .= ' auto_increment';
+			}
+
+			if (isset($column['comment'])) {
+				$sql .= " COMMENT '" . $column['comment'] . "'";
+			}
+
+			if (isset($column['after'])) {
+				$sql .= ' AFTER ' . $column['after'];
+			}
+
+			return db_execute($sql, $log, $db_conn);
 		}
 
-		if (isset($column['on_update'])) {
-			$sql .= ' ON UPDATE ' . $column['on_update'];
-		}
+		return true;
+	}
+	return false;
+}
 
-		if (isset($column['auto_increment'])) {
-			$sql .= ' auto_increment';
-		}
+/* db_change_column - update a column to table
+   @param $table - the name of the table
+   @param $column - array of column data ex: array('old_name' => 'test', 'name' => 'newtest' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false)
+   @param $log - whether to log error messages, defaults to true
+   @returns - '1' for success, '0' for error */
+function db_change_column($table, $column, $log = true, $db_conn = false) {
+	global $database_sessions, $database_default, $database_hostname, $database_port;
 
-		if (isset($column['comment'])) {
-			$sql .= " COMMENT '" . $column['comment'] . "'";
-		}
+	/* check for a connection being passed, if not use legacy behavior */
+	if (!is_object($db_conn)) {
+		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
 
-		if (isset($column['after'])) {
-			$sql .= ' AFTER ' . $column['after'];
+		if (!is_object($db_conn)) {
+			return false;
 		}
-
-		return db_execute($sql, $log, $db_conn);
 	}
 
-	return true;
+	$result = db_fetch_assoc('SHOW columns FROM `' . $table . '`', $log, $db_conn);
+	if ($result === false) {
+		return false;
+	}
+
+	$columns = array();
+	foreach($result as $arr) {
+		$columns[] = $arr['Field'];
+	}
+
+	if (isset($column['name'])) {
+		if (!isset($column['old_name'])) {
+			$column['old_name'] = $column['name'];
+		}
+
+		if (in_array($column['old_name'], $columns)) {
+			if ($column['old_name'] == $column['name'] || !in_array('name', $columns)) {
+				$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['old_name'] . '` `' . $column['name'] . '`';
+				if (isset($column['type'])) {
+					$sql .= ' ' . $column['type'];
+				}
+
+				if (isset($column['unsigned'])) {
+					$sql .= ' unsigned';
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] === false) {
+					$sql .= ' NOT NULL';
+				}
+
+				if (isset($column['NULL']) && $column['NULL'] === true && !isset($column['default'])) {
+					$sql .= ' default NULL';
+				}
+
+				if (isset($column['default'])) {
+					if (strtolower($column['type']) == 'timestamp' && $column['default'] === 'CURRENT_TIMESTAMP') {
+						$sql .= ' default CURRENT_TIMESTAMP';
+					} else {
+						$sql .= ' default ' . (is_numeric($column['default']) ? $column['default'] : "'" . $column['default'] . "'");
+					}
+				}
+
+				if (isset($column['on_update'])) {
+					$sql .= ' ON UPDATE ' . $column['on_update'];
+				}
+
+				if (isset($column['auto_increment'])) {
+					$sql .= ' auto_increment';
+				}
+
+				if (isset($column['comment'])) {
+					$sql .= " COMMENT '" . $column['comment'] . "'";
+				}
+
+				if (isset($column['after'])) {
+					$sql .= ' AFTER ' . $column['after'];
+				}
+
+				return db_execute($sql, $log, $db_conn);
+			}
+		}
+	}
+
+	return false;
 }
 
 /**

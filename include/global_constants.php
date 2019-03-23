@@ -474,3 +474,6 @@ if (!defined('LDAP_OPT_X_TLS_NEVER')) {
 	define('LDAP_OPT_X_TLS_TRY', 4);
 }
 
+
+define('CACTI_VERSION_FORMAT_SHORT', 0);
+define('CACTI_VERSION_FORMAT_FULL', 1);

@@ -46,7 +46,7 @@ check_reset_no_authentication($auth_method);
  * from the installed Cacti version and start the install
  * process if found to be different.
  */
-if ($version != CACTI_VERSION && !defined('IN_CACTI_INSTALL')) {
+if (cacti_version_compare($version,CACTI_VERSION_FULL,'!=') && !defined('IN_CACTI_INSTALL')) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }

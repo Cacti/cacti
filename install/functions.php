@@ -223,6 +223,33 @@ function db_install_add_column($table, $column, $ignore = true) {
 	return $status;
 }
 
+function db_install_change_column($table, $column, $ignore = true) {
+	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
+	global $database_last_error;
+	$status = DB_STATUS_SKIPPED;
+
+	if (!isset($column['old_name'])) {
+		$column['old_name'] = $column['name'];
+	}
+
+	$sql = 'ALTER TABLE `' . $table . '` CHANGE `' . $column['old_name'] . '` `' . $column['name'] . '`';
+	if (!db_table_exists($table)) {
+		$database_last_error = 'Table \'' . $table . '\' missing, cannot change column \'' . $column['name'] . '\'';
+		$status = DB_STATUS_WARNING;
+	} elseif ($column['old_name'] == $column['name'] || !db_column_exists($table, $column['name'], false)) {
+		$status = db_change_column($table, $column, false) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR;
+	} elseif (db_column_exists($table, $column['old_name'], false)) {
+		$status = DB_STATUS_WARNING;
+	} elseif (!$ignore) {
+		$status = DB_STATUS_SKIPPED;
+	} else {
+		$status = DB_STATUS_SUCCESS;
+	}
+
+	db_install_add_cache($status, $sql);
+	return $status;
+}
+
 function db_install_add_key($table, $type, $key, $columns, $using = '') {
 	if (!is_array($columns)) {
 		$columns = array($columns);

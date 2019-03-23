@@ -94,33 +94,30 @@ if (!$local && $config['poller_id'] > 1) {
 
 /* we need to rerun the upgrade, force the current version */
 if ($forcever == '') {
-	$old_cacti_version = get_cacti_version();
+	$old_cacti_version = format_cacti_version(get_cacti_db_version(),3);
 } else {
-	$old_cacti_version = $forcever;
+	$old_cacti_version = format_cacti_version($forcever, 3);
 }
 
 /* try to find current (old) version in the array */
 $old_version_index = (array_key_exists($old_cacti_version, $cacti_version_codes) ? $old_cacti_version : '');
 
 /* do a version check */
-if ($old_cacti_version == CACTI_VERSION) {
-	print 'Your Cacti is already up to date (v' . CACTI_VERSION . ' vs v' . $old_cacti_version . ')' . PHP_EOL;
-	exit;
-} elseif ($old_cacti_version < 0.7) {
-	print 'You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database." . PHP_EOL;
-	exit;
+if (cacti_version_compare($old_cacti_version,CACTI_VERSION,'=')) {
+	exit_version_error($old_cacti_version, 'Your Cacti is already up to date');
+} elseif (cacti_version_compare($old_cacti_version,'0.7','<')) {
+	exit_error('You are attempting to install cacti ' . CACTI_VERSION . ' onto a 0.6.x database.' . PHP_EOL . "To continue, you must create a new database, import 'cacti.sql' into it," . PHP_EOL . "and\tupdate 'include/config.php' to point to the new database.");
 } elseif (empty($old_cacti_version)) {
-	print "You have created a new database, but have not yet imported the 'cacti.sql' file." . PHP_EOL;
+	exit_error('You have created a new database, but have not yet imported the \'cacti.sql\' file.');
 	exit;
 } elseif ($old_version_index == '') {
-	print "Invalid Cacti version $old_cacti_version, cannot upgrade to " . CACTI_VERSION . PHP_EOL;
-	exit;
+	exit_version_error($old_cacti_version, 'Unable to identify version, cannot upgrade.');
 }
 
-print 'Upgrading from v' . $old_cacti_version . PHP_EOL;
+print 'Upgrading from v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL;
 
 $prev_cacti_version = $old_cacti_version;
-$orig_cacti_version = get_cacti_version();
+$orig_cacti_version = get_cacti_db_version();
 
 // loop through versions from old version to the current, performing updates for each version in the chain
 foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
@@ -135,7 +132,9 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 	// check for upgrade version file, then include, check for function and execute
 	if (file_exists($upgrade_file)) {
-		print 'Upgrading from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ') to v' . $cacti_upgrade_version . PHP_EOL;
+		print 'Performing Database Upgrade' . PHP_EOL;
+		print '  - from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ')' . PHP_EOL;
+		print '      to v' . $cacti_upgrade_version . PHP_EOL;
 		include($upgrade_file);
 		if (function_exists($upgrade_function)) {
 			call_user_func($upgrade_function);
@@ -158,9 +157,19 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 
 	db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 
-	if (CACTI_VERSION == $cacti_upgrade_version) {
+	if (cacti_version_compare(CACTI_VERSION, $cacti_upgrade_version, '=')) {
+		db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
 		break;
 	}
+}
+
+function exit_error($text) {
+	print "ERROR: $text" . PHP_EOL;
+	exit;
+}
+
+function exit_version_error($old_cacti_version, $text) {
+	exit_error($text . PHP_EOL . '  - from: v' . get_cacti_version_text(false, $old_cacti_version) . PHP_EOL . '      to: v' . CACTI_VERSION_BRIEF_FULL);
 }
 
 function db_install_errors($cacti_version) {

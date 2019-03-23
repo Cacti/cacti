@@ -2353,7 +2353,7 @@ function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config, $import_messages;
 
 	foreach ($cacti_version_codes as $version => $code) {
-		if ($version == CACTI_VERSION) {
+		if (cacti_version_compare($version,CACTI_VERSION,'=')) {
 			$current_version_code = $code;
 		}
 
@@ -2387,7 +2387,7 @@ function get_version_index($string_version) {
 	$i = 0;
 
 	foreach ($cacti_version_codes as $version => $code) {
-		if ($string_version == $version) {
+		if (cacti_version_compare($string_version,$version,'=')) {
 			return $i;
 		}
 

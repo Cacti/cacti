@@ -30,6 +30,36 @@
 
 */
 
+$config = array();
+
+/* this should be auto-detected, set it manually if needed */
+$config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
+
+/* define cacti version */
+/* used for includes */
+if ($config['cacti_server_os'] == 'win32') {
+	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
+	$config['library_path'] = $config['base_path'] . '/lib';
+} else {
+	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
+	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
+}
+$config['include_path'] = dirname(__FILE__);
+$config['rra_path'] = $config['base_path'] . '/rra';
+
+/* for multiple pollers, we need to know this location */
+if (!isset($scripts_path)) {
+	$config['scripts_path'] = $config['base_path'] . '/scripts';
+} else {
+	$config['scripts_path'] = $scripts_path;
+}
+
+if (!isset($resource_path)) {
+	$config['resource_path'] = $config['base_path'] . '/resource';
+} else {
+	$config['resource_path'] = $resource_path;
+}
+
 /* load cacti version from file */
 $cacti_version_file = dirname(__FILE__) . '/cacti_version';
 
@@ -43,9 +73,10 @@ if ($cacti_version === false) {
 }
 $cacti_version = trim($cacti_version);
 
-/* define cacti version */
-define('CACTI_VERSION', $cacti_version);
-#define('CACTI_VERSION_BETA', 1);
+include_once($config['include_path'] . '/global_constants.php');
+include_once($config['library_path'] . '/functions.php');
+define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
+define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
 
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
@@ -225,30 +256,6 @@ if (!isset($url_path)) {
 }
 $config['url_path'] = $url_path;
 define('URL_PATH', $url_path);
-
-/* used for includes */
-if ($config['cacti_server_os'] == 'win32') {
-	$config['base_path']    = str_replace("\\", "/", substr(dirname(__FILE__),0,-8));
-	$config['library_path'] = $config['base_path'] . '/lib';
-} else {
-	$config['base_path']    = preg_replace("/(.*)[\/]include/", "\\1", dirname(__FILE__));
-	$config['library_path'] = preg_replace("/(.*[\/])include/", "\\1lib", dirname(__FILE__));
-}
-$config['include_path'] = dirname(__FILE__);
-$config['rra_path'] = $config['base_path'] . '/rra';
-
-/* for multiple pollers, we need to know this location */
-if (!isset($scripts_path)) {
-	$config['scripts_path'] = $config['base_path'] . '/scripts';
-} else {
-	$config['scripts_path'] = $scripts_path;
-}
-
-if (!isset($resource_path)) {
-	$config['resource_path'] = $config['base_path'] . '/resource';
-} else {
-	$config['resource_path'] = $resource_path;
-}
 
 if (isset($input_whitelist)) {
 	$config['input_whitelist'] = $input_whitelist;
@@ -516,6 +523,14 @@ if ((bool)ini_get('register_globals')) {
 define('CACTI_DATE_TIME_FORMAT', date_time_format());
 
 include_once($config['include_path'] . '/global_languages.php');
+
+define('CACTI_VERSION_BRIEF', get_cacti_version_text(false,CACTI_VERSION));
+define('CACTI_VERSION_BRIEF_FULL', get_cacti_version_text(false,CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT', get_cacti_version_text(true,CACTI_VERSION));
+define('CACTI_VERSION_TEXT_FULL', get_cacti_version_text(true,CACTI_VERSION_FULL));
+define('CACTI_VERSION_TEXT_CLI', get_cacti_cli_version(true,CACTI_VERSION_FULL));
+
+
 include_once($config['library_path'] . '/auth.php');
 include_once($config['library_path'] . '/plugins.php');
 include_once($config['include_path'] . '/plugins.php');
