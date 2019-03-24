@@ -1410,7 +1410,6 @@ function ds() {
 					<td>
 						<select id='orphans' name='rows' onChange='applyFilter()'>
 							<option value='-1'<?php print (get_request_var('orphans') == '-1' ? ' selected>':'>') . __('All');?></option>
-							<option value='0'<?php print (get_request_var('orphans') == '0' ? ' selected>':'>') . __('Has Graphs');?></option>
 							<option value='1'<?php print (get_request_var('orphans') == '1' ? ' selected>':'>') . __('Orphaned');?></option>
 						</select>
 					</td>
@@ -1497,45 +1496,90 @@ function ds() {
 		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' (dl.snmp_index = "" AND dl.snmp_query_id > 0)';
 	}
 
-	$orphan_where = ' AND graph_type_id IN (' .
-		GRAPH_ITEM_TYPE_LINE1     . ', ' .
-		GRAPH_ITEM_TYPE_LINE2     . ', '.
-		GRAPH_ITEM_TYPE_LINE3     . ', ' .
-		GRAPH_ITEM_TYPE_LINESTACK . ', ' .
-		GRAPH_ITEM_TYPE_AREA      . ', ' .
-		GRAPH_ITEM_TYPE_STACK     . ')';
+	if (get_request_var('orphans') >= '0') {
+		$orphan_where = 'WHERE graph_type_id IN (' .
+			GRAPH_ITEM_TYPE_LINE1     . ', ' .
+			GRAPH_ITEM_TYPE_LINE2     . ', '.
+			GRAPH_ITEM_TYPE_LINE3     . ', ' .
+			GRAPH_ITEM_TYPE_LINESTACK . ', ' .
+			GRAPH_ITEM_TYPE_AREA      . ', ' .
+			GRAPH_ITEM_TYPE_STACK     . ')';
 
-	if (get_request_var('orphans') == '0') {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NOT NULL' . $orphan_where . ')';
-	} elseif (get_request_var('orphans') == 1) {
-		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . ' dl.id IN (SELECT DISTINCT dl.id FROM data_local AS dl INNER JOIN data_template_rrd AS dtr ON dl.id=dtr.local_data_id LEFT JOIN graph_templates_item AS gti ON gti.task_item_id=dtr.id WHERE gti.id IS NULL)';
+		$sql_where1 .= ($sql_where1 != '' ? ' AND':'WHERE') . " dtr.local_graph_id IS NULL";
+	} else {
+		$orphan_where = '';
 	}
-
-	$total_rows = db_fetch_cell("SELECT COUNT(*)
-		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd
-		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_template AS dt
-		ON dt.id=dl.data_template_id
-		LEFT JOIN host AS h
-		ON h.id = dl.host_id
-		$sql_where1");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$data_sources = db_fetch_assoc("SELECT dtd.local_data_id, dtd.name_cache, dtd.active,
-		dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id
-		FROM data_local AS dl
-		INNER JOIN data_template_data AS dtd
-		ON dl.id=dtd.local_data_id
-		LEFT JOIN data_template AS dt
-		ON dt.id=dl.data_template_id
-		LEFT JOIN host AS h
-		ON h.id = dl.host_id
-		$sql_where1
-		$sql_order
-		$sql_limit");
+	if ($orphan_where != '') {
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM data_local AS dl
+			INNER JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN (
+				SELECT DISTINCT dtr.local_data_id, gl.id AS local_graph_id
+				FROM data_template_rrd AS dtr
+				LEFT JOIN graph_templates_item AS gti
+				ON gti.task_item_id = dtr.id
+				LEFT JOIN graph_local AS gl
+				ON gti.local_graph_id = gl.id
+				$orphan_where
+			) AS dtr
+			ON dtr.local_data_id=dl.id
+			LEFT JOIN data_template AS dt
+			ON dt.id=dl.data_template_id
+			LEFT JOIN host AS h
+			ON h.id = dl.host_id
+			$sql_where1");
+
+		$data_sources = db_fetch_assoc("SELECT dtr.local_graph_id, dtd.local_data_id, dtd.name_cache, dtd.active,
+			dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id
+			FROM data_local AS dl
+			INNER JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN (
+				SELECT DISTINCT dtr.local_data_id, gl.id AS local_graph_id
+				FROM data_template_rrd AS dtr
+				LEFT JOIN graph_templates_item AS gti
+				ON gti.task_item_id = dtr.id
+				LEFT JOIN graph_local AS gl
+				ON gti.local_graph_id = gl.id
+				$orphan_where
+			) AS dtr
+			ON dtr.local_data_id=dl.id
+			LEFT JOIN data_template AS dt
+			ON dt.id=dl.data_template_id
+			LEFT JOIN host AS h
+			ON h.id = dl.host_id
+			$sql_where1
+			$sql_order
+			$sql_limit");
+	} else {
+		$total_rows = db_fetch_cell("SELECT COUNT(*)
+			FROM data_local AS dl
+			INNER JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN data_template AS dt
+			ON dt.id=dl.data_template_id
+			LEFT JOIN host AS h
+			ON h.id = dl.host_id
+			$sql_where1");
+
+		$data_sources = db_fetch_assoc("SELECT dtd.local_data_id, dtd.name_cache, dtd.active,
+			dtd.rrd_step, dt.name AS data_template_name, dl.host_id, dtd.data_source_profile_id
+			FROM data_local AS dl
+			INNER JOIN data_template_data AS dtd
+			ON dl.id=dtd.local_data_id
+			LEFT JOIN data_template AS dt
+			ON dt.id=dl.data_template_id
+			LEFT JOIN host AS h
+			ON h.id = dl.host_id
+			$sql_where1
+			$sql_order
+			$sql_limit");
+	}
 
 	$nav = html_nav_bar('data_sources.php', MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Sources'), 'page', 'main');
 
