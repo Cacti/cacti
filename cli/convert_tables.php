@@ -35,6 +35,7 @@ $innodb      = false;
 $utf8        = false;
 $debug       = false;
 $size        = 1000000;
+$force       = false;
 $rebuild     = false;
 $table_name  = '';
 $skip_tables = array();
@@ -72,6 +73,10 @@ if (cacti_sizeof($parms)) {
 			case '-n':
 			case '--skip-innodb':
 				$skip_tables = explode(' ', $value);
+				break;
+			case '-f':
+			case '--force':
+				$force = true;
 				break;
 			case '-u':
 			case '--utf8':
@@ -166,7 +171,7 @@ if (cacti_sizeof($tables)) {
 		}
 
 		if ($canConvert) {
-			if ($table['Rows'] < $size) {
+			if ($table['Rows'] < $size || $force) {
 				print "Converting Table -> '" . $table['Name'] . "'";
 
 				$sql = '';
@@ -179,12 +184,19 @@ if (cacti_sizeof($tables)) {
 				}
 
 				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . $sql);
-				print ($status == 0 ? ' Failed' : ' Successful') . "\n";
+
+				if ($status === false) {
+					print ' Failed' . PHP_EOL;
+
+					cacti_log("FATAL: Conversion of Table '" . $table['Name'] . "' Failed.  Command: 'ALTER TABLE `" . $table['Name'] . "` $sql'", false, 'CONVERT');
+				} else {
+					print ' Successful' . PHP_EOL;
+				}
 			} else {
-				print "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'\n";
+				print "Skipping Table -> '" . $table['Name'] . " too many rows '" . $table['Rows'] . "'" . PHP_EOL;
 			}
 		} else {
-			print "Skipping Table -> '" . $table['Name'] . "'\n";
+			print "Skipping Table -> '" . $table['Name'] . "'" . PHP_EOL;
 		}
 	}
 }
@@ -210,5 +222,6 @@ function display_help () {
 	print "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
 	print "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
 	print "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
+	print "-f | --force   - Proceed with conversion regardless of table size\n\n";
 	print "-d | --debug   - Display verbose output during execution\n\n";
 }
