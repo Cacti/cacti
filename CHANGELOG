@@ -54,6 +54,7 @@ Cacti CHANGELOG
 -issue#2564: Filtering for Orphan Data Sources is Unreliable
 -issue#2565: Table checkbox and row selection performance poor on large pages
 -feature: Update phpseclib to version 2.0.15
+-feature: Adjust the max table rows based upon value of 'max_input_vars'
 -feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
 
