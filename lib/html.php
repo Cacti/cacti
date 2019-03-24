@@ -840,7 +840,7 @@ function html_header_sort_checkbox($header_items, $sort_column, $sort_direction,
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":'');
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All Rows') . "' for='selectall'></label></th>" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":'');
 	print '</tr>';
 
 	$page++;
@@ -927,7 +927,7 @@ function html_header_checkbox($header_items, $include_form = true, $form_action 
 		}
 	}
 
-	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='SelectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
+	print "<th class='tableSubHeaderCheckbox'><input id='selectall' class='checkbox' type='checkbox' title='" . __esc('Select All Rows'). "' onClick='selectAll(\"chk\",this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='selectall'></label></th>\n" . ($include_form ? "<th style='display:none;'><form id='chk' name='chk' method='post' action='$form_action'></th>\n":"");
 	print "</tr>\n";
 }
 
@@ -1395,14 +1395,15 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	</div>
 	<input type='hidden' id='action' name='action' value='actions'>
 	<script type='text/javascript'>
+
 	function setDisabled() {
-		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').find('td').unbind().find(':checkbox.disabled').unbind().prop('disabled', false);
+		$('tr[id^="line"]').addClass('selectable').prop('disabled', false).removeClass('disabled_row').unbind('click').prop('disabled', false);
 
 		if ($('#drp_action').val() == <?php print $delete_action;?>) {
 			$(':checkbox.disabled').each(function(data) {
 				$(this).closest('tr').addClass('disabled_row');
 				if ($(this).is(':checked')) {
-					$(this).prop('checked', false);
+					$(this).prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 					$(this).closest('tr').removeClass('selected');
 				}
 				$(this).prop('disabled', true).closest('tr').removeClass('selected');
@@ -1415,7 +1416,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 					$(this).prop('disabled', false);
 				}
 			});
-		}else if ($('#drp_action').val() == 0) {
+		} else if ($('#drp_action').val() == 0) {
 			$(':checkbox.disabled').each(function(data) {
 				$(this).prop('disabled', false);
 			});
@@ -1427,7 +1428,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 					$(this).prop('disabled', true);
 				}
 			});
-		}else if (<?php print $delete_action;?> != 0) {
+		} else if (<?php print $delete_action;?> != 0) {
 			$('#submit').each(function() {
 				if ($(this).button === 'function') {
 					$(this).button('enable');
@@ -1437,50 +1438,27 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 			});
 		}
 
-		var lines = $('tr[id^="line"]');
-		var checkboxes = lines.find('input.checkbox');
-
-		lines.filter(':not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-			$(this).unbind().click(function(e) {
-				if (e.shiftKey) {
-					updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
-				} else {
-					var checked = $(this).closest('tr').find(':checkbox').is(':checked');
-					$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-					$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
-						.attr('data-prev-check', !checked);
-				}
-			});
-		});
-
-		lines.find('input.checkbox').each(function(data) {
-			$(this).unbind().click(function(e) {
-				if (!$(this).closest('tr').hasClass('disabled_row')) {
-					if (e.shiftKey) {
-						updateCheckboxes(checkboxes, this);
-					} else {
-						$(this).closest('tr').toggleClass('selected');
-						$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-						$(this).attr('data-prev-check', $(this).prop('checked'));
-					}
-				}
-			});
+		$('tr[id^="line"]').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+			selectUpdateRow(event, $(this));
 		});
 	}
 
 	$(function() {
 		setDisabled();
+
 		$('#drp_action').change(function() {
 			setDisabled();
 		});
 
-		$('.tableSubHeaderCheckbox').find(':checkbox').unbind().click(function(data) {
+		$('.tableSubHeaderCheckbox').find(':checkbox').off('click').on('click', function(data) {
 			if ($(this).is(':checked')) {
-				$('input[id^="chk_"]').not(':disabled').prop('checked',true);
+				$('input[id^="chk_"]').not(':disabled').prop('checked', true).attr('data-prev-check', 'true').attr('aria-checked', 'true');
 				$('tr.selectable').addClass('selected');
+				disableSelection();
 			} else {
-				$('input[id^="chk_"]').not(':disabled').prop('checked',false);
+				$('input[id^="chk_"]').not(':disabled').prop('checked', false).removeAttr('data-prev-check').removeAttr('aria-checked');
 				$('tr.selectable').removeClass('selected');
+				enableSelection();
 			}
 		});
 	});

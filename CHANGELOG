@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -issue#2555: Missing configuration defaults prevent installations/upgrades without showing reason
 -issue#2563: Sorting by name_cache slow on Data Sources page
 -issue#2564: Filtering for Orphan Data Sources is Unreliable
+-issue#2565: Table checkbox and row selection performance poor on large pages
 -feature: Update phpseclib to version 2.0.15
 -feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
 -feature#2515: Support multiple SNMP ports when adding devices via CLI
