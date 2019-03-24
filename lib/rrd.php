@@ -595,6 +595,9 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 			/* use the cacti ds name by default or the user defined one, if entered */
 			$data_source_name = get_data_source_item_name($data_source['id']);
 
+			// Trim the data source maximum
+			$data_source['rrd_maximum'] = trim($data_source['rrd_maximum']);
+
 			if ($data_source['rrd_maximum'] == 'U') {
 				/* in case no maximum is given, use "Undef" value */
 				$data_source['rrd_maximum'] = 'U';
@@ -2622,6 +2625,9 @@ function rrdtool_cacti_compare($data_source_id, &$info) {
 					$diff['ds'][$ds_name]['min'] = __("RRD minimum for Data Source '%s' should be '%s'", $ds_name, $data_source['rrd_minimum']);
 					$diff['tune'][] = $info['filename'] . ' ' . '--minimum ' . $ds_name . ':' . $data_source['rrd_minimum'];
 				}
+
+				// Trim the max value
+				$data_source['rrd_maximum'] = trim($data_source['rrd_maximum']);
 
 				if ($data_source['rrd_maximum'] != $info['ds'][$ds_name]['max']) {
 					if ($data_source['rrd_maximum'] == '|query_ifSpeed|' ||

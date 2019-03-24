@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -issue#2531: When updating color template items, the table name used is incorrect
 -issue#2535: Ensure Graph ListView table is displayed in line with Management -> Graphs
 -issue#2543: Improve performance on graph_view's tree_content action by reducing the number of SQL queries executed 
+-issue#2547: Trailing spaces: Complaining about Max values in RRD without reason
 -issue#2551: When checking MySQL configuration values, consider ON/OFF to be equal to 1/0
 -issue#2553: Database Upgrade - Version 1.0.0 - keeps failing 
 -issue#2555: Missing configuration defaults prevent installations/upgrades without showing reason

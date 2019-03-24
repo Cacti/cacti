@@ -556,6 +556,8 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 
 	if (cacti_sizeof($svs)) {
 		foreach ($svs as $sv) {
+			$sv['text'] = trim($sv['text']);
+
 			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
 				$subs_string = api_data_source_get_interface_speed($data_local);
 				$sv['text']  = $subs_string;
