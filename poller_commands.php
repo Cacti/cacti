@@ -184,7 +184,7 @@ db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_BRIEF_TEXT;
 	print "Cacti Poller Commands Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 
