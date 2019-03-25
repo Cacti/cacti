@@ -24,6 +24,8 @@
 
 define('CACTI_PHP_VERSION_MINIMUM', '5.4.0');
 
+define('CACTI_DEV_VERSION','1.3.0.99.1553532424');
+
 define('CACTI_ESCAPE_CHARACTER', '"');
 define('COPYRIGHT_YEARS', 'Copyright (C) 2004-' . date('Y') . ' The Cacti Group');
 define('COPYRIGHT_YEARS_SHORT', '(c) 2004-' . date('Y') . ' - The Cacti Group');

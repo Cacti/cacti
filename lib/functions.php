@@ -6454,6 +6454,22 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 	return false;
 }
 
+function is_install_needed($version = NULL)
+{
+	$mode = '==';
+	$db = get_cacti_db_version();
+	if ($version === NULL) {
+		if (is_cacti_develop(CACTI_VERSION_FULL)) {
+			$version = CACTI_DEV_VERSION;
+			$mode = '<';
+		} else {
+			$version = CACTI_VERSION_FULL;
+		}
+	}
+
+	return (cacti_version_compare($db, $version, '=='));
+}
+
 function is_cacti_develop($version = null)
 {
 	static $isStaticRelease = null;

@@ -131,14 +131,14 @@ class Installer implements JsonSerializable {
 			$install_error = read_config_option('install_error', true);
 			if (!empty($install_error)) {
 				$step = Installer::STEP_ERROR;
-			} elseif (cacti_version_compare(CACTI_VERSION_FULL, $install_version, '==')) {
+			} elseif (!is_install_needed($install_version))) {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 			}
 		} elseif ($step >= Installer::STEP_COMPLETE) {
 			$install_version = read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 
-			if (!cacti_version_compare(CACTI_VERSION_FULL, $install_version, '==')) {
+			if (is_install_needed($install_version)) {
 				log_install_debug('step', 'Does not match: ' . clean_up_lines(var_export(CACTI_VERSION_FULL, true)));
 				$this->stepError = Installer::STEP_WELCOME;
 				db_execute('DELETE FROM settings WHERE name LIKE \'install_%\'');
