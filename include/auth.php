@@ -31,7 +31,9 @@ require_once('global.php');
 if (!isset($config['cacti_db_version'])) {
 	$version = get_cacti_db_version();
 	$config['cacti_db_version'] = $version;
-	define('CACTI_DB_VERSION', $version);
+	if (!defined('CACTI_DB_VERSION')) {
+		define('CACTI_DB_VERSION', $version);
+	}
 } else {
 	$version = $config['cacti_db_version'];
 }
@@ -106,7 +108,7 @@ if (read_config_option('auth_method') == 0) {
 	exit;
 }
 
-if (cacti_version_compare($version,CACTI_VERSION_FULL,'!=') && !defined('IN_CACTI_INSTALL')) {
+if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
 	header ('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
