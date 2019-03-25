@@ -60,7 +60,6 @@ if (read_config_option('auth_method') == '2') {
 }
 
 $username = sanitize_search_string($username);
-$version  = get_cacti_version();
 
 /* process login */
 $user         = array();
@@ -772,7 +771,7 @@ $selectedTheme = get_selected_theme();
 				?>
 			</div>
 		</div>
-		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
+		<div class='versionInfo'><?php print __('Version %1$s | %2$s', CACTI_VERSION_BRIEF_TEXT, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
