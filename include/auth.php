@@ -27,8 +27,9 @@ global $current_user;
 require_once('global.php');
 
 if (!isset($config['cacti_db_version'])) {
-	$version = get_cacti_version();
+	$version = get_cacti_db_version();
 	$config['cacti_db_version'] = $version;
+	define('CACTI_DB_VERSION', $version);
 } else {
 	$version = $config['cacti_db_version'];
 }

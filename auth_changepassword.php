@@ -59,7 +59,7 @@ $user = db_fetch_row_prepared('SELECT *
 	WHERE id = ?',
 	array($_SESSION['sess_user_id']));
 
-$version = get_cacti_version();
+$version = CACTI_VERSION;
 
 if (!cacti_sizeof($user) || $user['realm'] != 0) {
 	if (!cacti_sizeof($user)) {

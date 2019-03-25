@@ -35,7 +35,6 @@ set_default_action();
  * and if not valid generate a fatal error.
  */
 $username = auth_get_username(); // Get the username from either basic auth or the login form
-$version  = get_cacti_version(); // Get the current Cacti version
 
 /* initialize some variables */
 $user          = array();                             // An array that will include all user details
@@ -383,7 +382,7 @@ $selectedTheme = get_selected_theme();
 				?>
 			</div>
 		</div>
-		<div class='versionInfo'><?php print __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT);?></div>
+		<div class='versionInfo'><?php print __('Version %1$s | %2$s', CACTI_VERSION_TEXT, COPYRIGHT_YEARS_SHORT);?></div>
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>

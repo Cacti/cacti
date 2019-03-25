@@ -845,7 +845,7 @@ function discoverDevices($network_id, $thread) {
 
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_TEXT;
     print "Cacti Network Discovery Scanner, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
@@ -1055,7 +1055,7 @@ function reportNetworkStatus($network_id, $old_devices) {
 				$table_new .= '<tr><td colspan="5"</td>&nbsp;</td></tr>';
 			}
 
-			$v = get_cacti_version();
+			$v = CACTI_VERSION;
 			$headers['User-Agent'] = 'Cacti-Automation-v' . $v;
 
 			$status = ($count_new + $count_exist) . ' devices discovered';

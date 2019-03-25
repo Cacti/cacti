@@ -964,7 +964,7 @@ function sig_handler($signo) {
 }
 
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_TEXT;
 	print "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

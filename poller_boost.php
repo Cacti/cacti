@@ -1151,7 +1151,7 @@ function boost_purge_cached_png_files($forcerun) {
 /* do NOT run this script through a web browser */
 /*  display_version - displays version information */
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_TEXT;
 	print "Cacti Boost RRD Update Poller, Version $version " . COPYRIGHT_YEARS . "\n";
 }
 

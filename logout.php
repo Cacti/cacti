@@ -35,7 +35,7 @@ api_plugin_hook('logout_pre_session_destroy');
 cacti_cookie_logout();
 cacti_session_destroy();
 
-$version = get_cacti_version();
+$version = CACTI_VERSION_TEXT;;
 
 api_plugin_hook('logout_post_session_destroy');
 

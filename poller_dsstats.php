@@ -303,7 +303,7 @@ function dsstats_master_handler($forcerun) {
  * display_version - displays version information
  */
 function display_version() {
-	$version = get_cacti_version();
+	$version = CACTI_VERSION_TEXT;
 	print "Cacti Data Source Statistics Poller, Version $version " . COPYRIGHT_YEARS . PHP_EOL;
 }
 

@@ -575,7 +575,7 @@ function generate_report($report, $force = false) {
 		$report['bcc'] = '';
 	}
 
-	$v = get_cacti_version();
+	$v = CACTI_VERSION;
 	$headers['User-Agent'] = 'Cacti-Reports-v' . $v;
 
 	$error = mailer(
