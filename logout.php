@@ -33,6 +33,7 @@ api_plugin_hook('logout_pre_session_destroy');
 
 /* Clear session */
 setcookie(session_name(), '', time() - 3600, $config['url_path']);
+setcookie(session_name() . '_otp', '', time() - 3600, '');
 session_destroy();
 
 $version = CACTI_VERSION_TEXT;;
