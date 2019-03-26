@@ -243,9 +243,6 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 
 if ($first == NULL && $last == NULL) {
 	// This is valid
-} elseif ($first == NULL || $last == NULL) {
-	cacti_log('FATAL: You must either a host range, or no range at all using --first=N --last=N syntax!', true, 'POLLER');
-	exit(-1);
 } elseif (!is_numeric($first) || $first < 0) {
 	cacti_log('FATAL: The first host in the host range is invalid!', true, 'POLLER');
 	exit(-1);
