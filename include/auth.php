@@ -179,7 +179,7 @@ if (empty($_SESSION['sess_user_2fa'])) {
 		array($_SESSION['sess_user_id']));
 
 	if (!empty($user_2fa)) {
-		header($config['url_path'] . '/auth_2fa.php');
+		header('Location: ' . $config['url_path'] . 'auth_2fa.php');
 		exit;
 	} else {
 		$_SESSION['sess_user_2fa'] = true;
