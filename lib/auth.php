@@ -22,11 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
-include('./include/vendor/GoogleAuthenticator/FixedBitNotation.php');
-include('./include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
-include('./include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
-include('./include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
-include('./include/vendor/GoogleAuthenticator/RuntimeException.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/FixedBitNotation.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
 /* clear_auth_cookie - clears a users security token
  * @return - NULL */
