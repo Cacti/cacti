@@ -2646,7 +2646,7 @@ class Installer implements JsonSerializable {
 			$this->stepData = array('Sections' => $sections);
 		}
 
-		iF ($this->stepCurrent == Installer::STEP_ERROR) {
+		if ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text = __('Get Help');
 			$this->buttonPrevious->Step = Installer::STEP_GO_FORUMS;
 			$this->buttonPrevious->Visible = true;
