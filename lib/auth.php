@@ -2785,6 +2785,8 @@ function auth_login($user) {
 }
 
 function auth_post_login_redirect($user) {
+	global $config;
+
 	/* handle 'force change password' */
 	if (($user['must_change_password'] == 'on') &&
 		(read_config_option('auth_method') == 1) &&

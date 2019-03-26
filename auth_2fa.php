@@ -23,11 +23,6 @@
 */
 
 include(__DIR__ . '/include/global.php');
-include(__DIR__ . '/include/vendor/GoogleAuthenticator/FixedBitNotation.php');
-include(__DIR__ . '/include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
-include(__DIR__ . '/include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
-include(__DIR__ . '/include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
-include(__DIR__ . '/include/vendor/GoogleAuthenticator/RuntimeException.php');
 
 /* set default action */
 set_default_action();
@@ -37,7 +32,7 @@ if (!isset($_SESSION['sess_user_id'])) {
 	exit;
 }
 
-$user = db_fetch_row_prepared('SELECT id, username, tfa_enabled, tfa_secret, login_opts
+$user = db_fetch_row_prepared('SELECT *
 	FROM user_auth
 	WHERE id = ?',
 	array($_SESSION['sess_user_id']));
@@ -102,7 +97,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	}
 }
 
-if ($_SESSION['sess_user_2fa']) {
+if (isset($_SESSION['sess_user_2fa']) && $_SESSION['sess_user_2fa']) {
 	auth_post_login_redirect($user);
 	exit;
 }
