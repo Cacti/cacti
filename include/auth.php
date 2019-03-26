@@ -50,7 +50,7 @@ check_reset_no_authentication($auth_method);
  * process if found to be different.
  */
 if (is_install_needed() && !defined('IN_CACTI_INSTALL')) {
-	header ('Location: ' . $config['url_path'] . 'install/');
+	header('Location: ' . $config['url_path'] . 'install/');
 	exit;
 }
 
@@ -71,7 +71,7 @@ if ($auth_method != 0) {
 	 */
 	if ($auth_method != 2) {
 		if (isset($_SESSION['sess_change_password'])) {
-			header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+			header('Location: ' . $config['url_path'] . 'auth_changepassword.php?ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 			exit;
 		}
 
@@ -163,6 +163,23 @@ if ($auth_method != 0) {
 
 		exit;
 	} else {
+
+		if (empty($_SESSION['sess_user_2fa'])) {
+			$user_2fa = db_fetch_cell_prepared(
+				'SELECT tfa_enabled
+					FROM user_auth
+					WHERE id = ?',
+				array($_SESSION['sess_user_id'])
+			);
+
+			if (!empty($user_2fa)) {
+				header('Location: ' . $config['url_path'] . '/auth_2fa.php');
+				exit;
+			} else {
+				$_SESSION['sess_user_2fa'] = true;
+			}
+		}
+
 		$realm_id = 0;
 
 		if (isset($user_auth_realm_filenames[get_current_page()])) {

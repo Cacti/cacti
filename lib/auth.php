@@ -22,6 +22,11 @@
  +-------------------------------------------------------------------------+
 */
 
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/FixedBitNotation.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticatorInterface.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleAuthenticator.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/GoogleQrUrl.php');
+include(__DIR__ . '/../include/vendor/GoogleAuthenticator/RuntimeException.php');
 
 /**
  * clear_auth_cookie - clears a users security token
@@ -4558,7 +4563,7 @@ function auth_login_create_user_from_template($username, $realm) {
 			if ($cn_full_name != '' || $cn_email != '') {
 				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
 
-  					if (isset($ldap_cn_search_response['cn'])) {
+				if (isset($ldap_cn_search_response['cn'])) {
 					$data_override = array();
 
 					if (array_key_exists($cn_full_name, $ldap_cn_search_response['cn'])) {
@@ -4618,7 +4623,7 @@ function auth_login_create_user_from_template($username, $realm) {
  * @return (bool) Returns false on failure to set user account, otherwise redirects
  */
 function check_reset_no_authentication($auth_method) {
-	global $error, $error_msg;
+	global $error, $error_msg, $config;
 
 	if ($auth_method == 0) {
 		$admin_id = db_execute_prepared('SELECT id
@@ -4691,8 +4696,119 @@ function check_reset_no_authentication($auth_method) {
 
 		$_SESSION['sess_user_id'] = $admin_id;
 		$_SESSION['sess_change_password'] = true;
-		header ('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
+		header('Location: ' . $config['url_path'] . 'auth_changepassword.php?action=force&ref=' . (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'index.php'));
 		exit;
 	}
 }
 
+function disable_2fa($user_id) {
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id)
+	);
+
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		db_execute_prepared('UPDATE user_auth SET tfa_enabled = \'\', tfa_secret = \'\' WHERE id = ?', array($user_id));
+
+		$current_user = db_fetch_row_prepared(
+			'SELECT *
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id'])
+		);
+
+		if ($current_user['tfa_enabled'] != '') {
+			$result['status'] = '501';
+			$result['text'] = __('2FA failed to be disabled');
+		} else {
+			$result['status'] = 200;
+			$result['text'] = __('2FA is now disabled');
+		}
+	}
+
+	return json_encode($result);
+}
+
+function enable_2fa($user_id) {
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id)
+	);
+
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$secret = $g->generateSecret();
+		db_execute_prepared('UPDATE user_auth SET tfa_secret = ? WHERE id = ?', array($secret, $user_id));
+
+		$current_user = db_fetch_row_prepared(
+			'SELECT *
+			FROM user_auth
+			WHERE id = ?',
+			array($_SESSION['sess_user_id'])
+		);
+
+		if ($current_user['tfa_secret'] != $secret) {
+			$result['status'] = '501';
+			$result['text'] = __('2FA secret failed to be generated/updated');
+		} else {
+			$result['status'] = 200;
+			$result['text'] = __('2FA secret has needs verification');
+			$result['link'] = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($current_user['username'] . '@' . $_SERVER['HTTP_HOST'], $current_user['tfa_secret'], 'Cacti');
+		}
+	}
+
+	return json_encode($result);
+}
+
+function verify_2fa($user_id, $code) {
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id)
+	);
+
+	$result = array('status' => 500, 'text' => __('Unknown error'));
+	if (!cacti_sizeof($current_user)) {
+		$result['status'] = 404;
+		$result['text'] = __('ERROR: Unable to find user');
+	} else {
+		$result['secret'] = $current_user['tfa_secret'];
+		$g = new \Sonata\GoogleAuthenticator\GoogleAuthenticator();
+		$isValid = $g->checkCode($current_user['tfa_secret'], $code);
+
+		if (!$isValid) {
+			$result['status'] = 301;
+			$result['text'] = __('ERROR: Code was not verified, please try again');
+		} else {
+			db_execute_prepared('UPDATE user_auth SET tfa_enabled = ? WHERE id = ?', array('on', $user_id));
+
+			$result['status'] = 200;
+			$result['text'] = __('2FA has been enabled and verified');
+		}
+	}
+	return json_encode($result);
+}
+
+function is_2fa_enabled($user_id) {
+	$current_user = db_fetch_row_prepared(
+		'SELECT *
+		FROM user_auth
+		WHERE id = ?',
+		array($user_id)
+	);
+
+	return isset($current_user['2fa_enabled']) && ($current_user['2fa_enabled'] != '');
+}

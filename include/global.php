@@ -73,11 +73,6 @@ if ($cacti_version === false) {
 }
 $cacti_version = trim($cacti_version);
 
-include_once($config['include_path'] . '/global_constants.php');
-include_once($config['library_path'] . '/functions.php');
-define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
-define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
-
 /* define if cacti is in CLI mode */
 define('CACTI_CLI', (php_sapi_name() == 'cli'));
 if (defined('CACTI_CLI_ONLY') && !CACTI_CLI) {
@@ -110,8 +105,6 @@ $url_path = '/cacti/';
 
 /* disable log rotation setting */
 $disable_log_rotation = false;
-
-$config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
@@ -265,6 +258,9 @@ if (isset($input_whitelist)) {
 include_once($config['library_path'] . '/database.php');
 include_once($config['library_path'] . '/functions.php');
 include_once($config['include_path'] . '/global_constants.php');
+define('CACTI_VERSION', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_SHORT));
+define('CACTI_VERSION_FULL', format_cacti_version($cacti_version, CACTI_VERSION_FORMAT_FULL));
+
 include_once($config['library_path'] . '/html.php');
 include_once($config['library_path'] . '/html_utility.php');
 include_once($config['library_path'] . '/html_validate.php');
@@ -452,7 +448,7 @@ if ($config['is_web']) {
 	}
 	$alternates = html_escape(read_config_option('content_security_alternate_sources'));
 
-	header("Content-Security-Policy: default-src *; img-src 'self' $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;");
+	header("Content-Security-Policy: default-src *; img-src 'self' https://api.qrserver.com $alternates data: blob:; style-src 'self' 'unsafe-inline' $alternates; script-src 'self' $script_policy 'unsafe-inline' $alternates; frame-ancestors 'self'; worker-src 'self' $alternates;");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
@@ -460,25 +456,6 @@ if ($config['is_web']) {
 	header('Cache-Control: max-age=31536000');
 
 	cacti_session_start();
-
-	/* we never run with magic quotes on */
-	if (version_compare(PHP_VERSION, '5.4', '<=')) {
-		if (get_magic_quotes_gpc()) {
-			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-			foreach ($process as $key => $val) {
-				foreach ($val as $k => $v) {
-					unset($process[$key][$k]);
-					if (is_array($v)) {
-						$process[$key][stripslashes($k)] = $v;
-						$process[] = &$process[$key][stripslashes($k)];
-					} else {
-						$process[$key][stripslashes($k)] = stripslashes($v);
-					}
-				}
-			}
-			unset($process);
-		}
-	}
 
 	/* make sure to start only Cacti session at a time */
 	if (!isset($_SESSION['cacti_cwd'])) {

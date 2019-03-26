@@ -55,3 +55,5 @@ include/themes/custom.css
 locales/po/*.mo
 # Ignore CSRF secret file
 include/vendor/csrf/csrf-secret.php
+.vscode/launch.json
+.rnd
