@@ -126,7 +126,7 @@ class Installer implements JsonSerializable {
 			$install_error = read_config_option('install_error', true);
 			if (!empty($install_error)) {
 				$step = Installer::STEP_ERROR;
-			} elseif (!is_install_needed($install_version))) {
+			} elseif (!is_install_needed($install_version)) {
 				log_install_debug('step', 'Does match: ' . clean_up_lines(var_export($this->old_cacti_version, true)));
 				$step = Installer::STEP_COMPLETE;
 			}
