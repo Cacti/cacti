@@ -2319,6 +2319,7 @@ function draw_login_status($using_guest_account = false) {
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>";
 		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"");
+		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit&tab=2fa'>" . __('Edit 2FA Settings') . "</a></li>":"");
 		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
