@@ -241,19 +241,16 @@ if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	$poller_db_cnn_id = false;
 }
 
-if ($first == NULL && $last == NULL ) {
+if ($first == NULL && $last == NULL) {
 	// This is valid
-} elseif (!is_numeric($first) || $first <0) {
+} elseif (!is_numeric($first) || $first < 0) {
 	cacti_log('FATAL: The first host in the host range is invalid!', true, 'POLLER');
 	exit(-1);
-} elseif (!is_numeric($last) || $last <0) {
+} elseif (!is_numeric($last) || $last < 0) {
 	cacti_log('FATAL: The last host in the host range is invalid!', true, 'POLLER');
 	exit(-1);
 } elseif ($last < $first) {
 	cacti_log('FATAL: The first host must always be less or equal to the last host!', true, 'POLLER');
-	exit(-1);
-} else {
-	cacti_log('FATAL: You must either a host range, or no range at all using --first=N --last=N syntax!', true, 'POLLER');
 	exit(-1);
 }
 
@@ -503,7 +500,7 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 		$host_id = $item['host_id'];
 
-		if (($new_host) && (!empty($host_id))) {
+		if ($new_host && !empty($host_id) && isset($hosts[$host_id])) {
 			$ping->host = $item;
 			$ping->port = $hosts[$host_id]['ping_port'];
 

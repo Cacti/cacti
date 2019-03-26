@@ -1120,6 +1120,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			AND name NOT LIKE "stats%"
 			AND name != "rrdtool_version"
 			AND name NOT LIKE "poller_replicate%"
+			AND name NOT LIKE "install%"
 			AND name != "poller_enabled"
 			AND name NOT LIKE "md5dirsum%"
 			UNION
