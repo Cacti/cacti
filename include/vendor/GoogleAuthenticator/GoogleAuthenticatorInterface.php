@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the Sonata Project package.
  *
@@ -19,7 +17,7 @@ interface GoogleAuthenticatorInterface
      * @param string $secret
      * @param string $code
      */
-    public function checkCode($secret, $code): bool;
+    public function checkCode($secret, $code);
 
     /**
      * NEXT_MAJOR: add the interface typehint to $time and remove deprecation.
@@ -27,7 +25,7 @@ interface GoogleAuthenticatorInterface
      * @param string                                   $secret
      * @param float|string|int|\DateTimeInterface|null $time
      */
-    public function getCode($secret, /* \DateTimeInterface */$time = null): string;
+    public function getCode($secret, /* \DateTimeInterface */$time = null);
 
     /**
      * NEXT_MAJOR: Remove this method.
@@ -38,7 +36,7 @@ interface GoogleAuthenticatorInterface
      *
      * @deprecated deprecated as of 2.1 and will be removed in 3.0. Use Sonata\GoogleAuthenticator\GoogleQrUrl::generate() instead.
      */
-    public function getUrl($user, $hostname, $secret): string;
+    public function getUrl($user, $hostname, $secret);
 
-    public function generateSecret(): string;
+    public function generateSecret();
 }
