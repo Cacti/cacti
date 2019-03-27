@@ -37,7 +37,7 @@ function render_external_links($style = 'FRONT') {
 
 	if (cacti_sizeof($consoles)) {
 		foreach($consoles as $page) {
-			if (is_realm_allowed($page['id']+10000)) {
+			if (is_realm_allowed($page['id'] + 10000)) {
 				if (preg_match('/^((((ht|f)tp(s?))\:\/\/){1}\S+)/i', $page['contentfile'])) {
 					print '<iframe class="content" src="' . $page['contentfile'] . '" frameborder="0"></iframe>';
 				} else {
@@ -79,7 +79,7 @@ if (read_config_option('hide_console') != 'on') {
 	</tr>
 	<?php if ($config['poller_id'] > 1) {?>
 	<tr class='tableRow'><td colspan='2'><hr></td></tr>
-	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online'):($config['connection'] == 'recovery' ? __('Recovery'):__('Offline'))) . '</i>';?></td></tr>
+	<tr class='tableRow'><td colspan='2'><strong><?php print __('Remote Data Collector Status:');?></strong>  <?php print '<i>' . ($config['connection'] == 'online' ? __('Online') : ($config['connection'] == 'recovery' ? __('Recovery') : __('Offline'))) . '</i>';?></td></tr>
 	<?php if ($config['connection'] != 'online') {?>
 	<tr class='tableRow'><td colspan='2'><strong><?php print __('Number of Offline Records:');?></strong>  <?php print '<i>' . number_format_i18n(db_fetch_cell('SELECT COUNT(*) FROM poller_output_boost', '', true, $local_db_cnn_id)) . '</i>';?></td></tr>
 	<?php }?>
