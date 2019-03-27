@@ -1031,7 +1031,7 @@ function toggleFilterAndIcon(id, child, initial) {
 function setGraphTabs() {
 	url = window.location.href;
 
-	if (refreshPage.indexOf('graph_view.php') >= 0) {
+	if (refreshPage !== undefined && refreshPage.indexOf('graph_view.php') >= 0) {
 		$('.lefttab').removeClass('selected');
 		$('#tab-graphs').addClass('selected');
 
