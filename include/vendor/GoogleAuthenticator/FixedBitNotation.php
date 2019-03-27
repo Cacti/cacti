@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the Sonata Project package.
  *
@@ -66,8 +64,12 @@ final class FixedBitNotation
      * @param bool   $padFinalGroup     Add padding to end of encoded output
      * @param string $padCharacter      Character to use for padding
      */
-    public function __construct(int $bitsPerCharacter, string $chars = null, bool $rightPadFinalBits = false, bool $padFinalGroup = false, string $padCharacter = '=')
+    public function __construct($bitsPerCharacter, $chars = null, $rightPadFinalBits = false, $padFinalGroup = false, $padCharacter = null)
     {
+        if ($padCharacter === NULL) {
+	    $padCharacter = '=';
+        }
+
         // Ensure validity of $chars
         if (!\is_string($chars) || ($charLength = \strlen($chars)) < 2) {
             $chars =
@@ -114,7 +116,7 @@ final class FixedBitNotation
      *
      * @return string
      */
-    public function encode($rawString): string
+    public function encode($rawString)
     {
         // Unpack string into an array of bytes
         $bytes = unpack('C*', $rawString);
@@ -197,7 +199,7 @@ final class FixedBitNotation
      *
      * @return string
      */
-    public function decode($encodedString, $caseSensitive = true, $strict = false): string
+    public function decode($encodedString, $caseSensitive = true, $strict = false)
     {
         if (!$encodedString || !\is_string($encodedString)) {
             // Empty string, nothing to decode
