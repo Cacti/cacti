@@ -1012,8 +1012,10 @@ function md5sum_path($path, $recursive = true) {
 				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
 			} elseif (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				// Ignore directories who are not recursive
-			} else {
+			} elseif (is_readable($path . DIRECTORY_SEPARATOR . $entry)) {
 				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+			} else {
+				cacti_log('WARNING: Unable to read file \'' . $path . DIRECTORY_SEPARATOR . $entry . '\' into Cacti resource cache.', false, 'POLLER');
 			}
          }
     }
