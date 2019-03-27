@@ -41,6 +41,10 @@ require_once($config['base_path'] . '/lib/utility.php');
 $debug = false;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	if (get_request_var('action') == 'runquery') {
+		db_force_remote_cnn();
+	}
+
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -454,3 +458,23 @@ function run_remote_discovery() {
 
 	return;
 }
+
+function db_force_remote_cnn() {
+	global $database_default, $database_hostname, $database_username, $database_password;
+	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca; 
+
+	global $rdatabase_default, $rdatabase_hostname, $rdatabase_username, $rdatabase_password;
+	global $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca; 
+
+	// Connection worked, so now override the default settings so that it will always utilize the remote connection
+	$database_default   = $rdatabase_default;
+	$database_hostname  = $rdatabase_hostname;
+	$database_username  = $rdatabase_username;
+	$database_password  = $rdatabase_password;
+	$database_port      = $rdatabase_port;
+	$database_ssl       = $rdatabase_ssl;
+	$database_ssl_key   = $rdatabase_ssl_key;
+	$database_ssl_cert  = $rdatabase_ssl_cert;
+	$database_ssl_ca    = $rdatabase_ssl_ca;
+}
+
