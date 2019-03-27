@@ -49,8 +49,8 @@ if (isset($_COOKIE[session_name() . '_otp'])) {
 	}
 }
 
-/* Get the username */
-if (get_nfilter_request_var('action') == 'login') {
+/* Get the user 2fa token */
+if (get_nfilter_request_var('action') == 'login_2fa') {
 	/* Auth token from Form */
 	$token = get_nfilter_request_var('token');
 
@@ -112,65 +112,38 @@ if (api_plugin_hook_function('custom_2fa_login', OPER_MODE_NATIVE) == OPER_MODE_
 
 $selectedTheme = get_selected_theme();
 
+html_auth_header('login_2fa', __('2nd Factor Authentication'), __('2FA Verification'), __('Enter your token'),
+	array(
+		'username' => $user['username'],
+		'action' => get_nfilter_request_var('action')
+	)
+);
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<?php html_common_header(api_plugin_hook_function('login_2fa_title', __('2nd Factor Authentication')));?>
-</head>
-<body class='loginBody'>
-	<div class='loginLeft'></div>
-	<div class='loginCenter'>
-	<div class='loginArea'>
-		<div class='cactiLoginLogo'></div>
-			<legend><?php print __('2FA Verification');?></legend>
-			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<input type='hidden' name='action' value='login'>
-				<?php api_plugin_hook_function('login_2fa_before',
-					array(
-						'username' => $user['username'],
-						'action' => get_nfilter_request_var('action')));
-				?>
-				<div class='loginTitle'>
-					<p><?php print __('Enter your token');?></p>
-				</div>
-				<div class='cactiLogin'>
-					<table class='cactiLoginTable'>
-						<tr>
-							<td>
-								<label for='login_token'><?php print __('Token');?></label>
-							</td>
-							<td>
-								<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __('Token');?>'>
-							</td>
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td>
-								<span class='textError'><?php print $message; ?></span>
-							</td>
-						</tr>
-						<tr>
-							<td cospan='2'>
-								<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Verify');?>'>
-							</td>
-						</tr>
-					</table>
-				</div>
-			<?php api_plugin_hook('login_2fa_after'); ?>
-			</form>
-		</div>
-		<div class='versionInfo'><?php print __('Version %1$s | %2$s', CACTI_VERSION_FULL, COPYRIGHT_YEARS_SHORT);?></div>
-	</div>
-	<div class='loginRight'></div>
-	<script type='text/javascript'>
-	$(function() {
-		$('body').css('height', $(window).height());
-		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
-		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
-		$('#login_token').focus();
-	});
-	</script>
-	<?php include_once(dirname(__FILE__) . '/include/global_session.php');?>
-</body>
-</html>
+<tr>
+	<td>
+		<label for='login_token'><?php print __('Token');?></label>
+	</td>
+	<td>
+		<input type='textbox' class='ui-state-default ui-corner-all' id='login_token' name='token' placeholder='<?php print __('Token');?>'>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<span class='textError'><?php print $message; ?></span>
+	</td>
+</tr>
+<tr>
+	<td>&nbsp;</td>
+	<td>
+		<input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Verify');?>'>
+	</td>
+</tr>
+<?php
+	html_auth_footer('login_2fa', $message, "
+		<script>
+			$(function() {
+				$('#login_token').focus();
+			});
+		</script>
+	");

@@ -763,16 +763,16 @@ label {
 	margin-right: 2px;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	width: 33%;
 	float: left;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
-	padding: 30px 0px 5px 20px;
+	padding: 30px;
 	background-color: white;
 	top: 30%;
 	max-width: 360px;
@@ -789,7 +789,11 @@ label {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthLogo {
 	position: relative;
 	z-index: 2;
 	margin-bottom: 0px;
@@ -802,19 +806,19 @@ label {
 	margin-right: 10px;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
 	min-height: 200px;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 15px;
 }
@@ -824,12 +828,12 @@ legend {
 	font-weight: bold;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 	background: #2d4ca8;
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	background: -moz-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
@@ -915,7 +919,7 @@ legend {
 	display: inline-block;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 

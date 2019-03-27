@@ -921,11 +921,11 @@ label.ui-state-hover > span {
 	float: left;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	display: none;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	position: absolute;
 	background-color: transparent;
 	width: 300px;
@@ -936,20 +936,24 @@ label.ui-state-hover > span {
 	margin: -100px 0 0 -150px;
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthLogo {
 	display: none;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	color: #9d9d9d;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 15px;
 }
@@ -960,18 +964,18 @@ legend {
 	font-weight: bold;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	display: none;
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 	height: 100% !important;
 	width: 100% !important;
 }
 
-.loginBody input, .logoutBody input {
+.cactiAuthBody input {
 	background-color: transparent;
 	color: #969BA3;
 	border: 1px solid rgba(255,255,255,0.2);
@@ -1063,7 +1067,7 @@ legend {
 	display: inline-block;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 

@@ -905,16 +905,16 @@ ul#breadcrumbs {
 	margin-right: 2px;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	width: 33%;
 	float: left;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
-	padding: 30px 0px 5px 20px;
+	padding: 15px;
 	background-color: snow;
 	top: 30%;
 	max-width: 360px;
@@ -931,7 +931,15 @@ ul#breadcrumbs {
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthCenter legend div {
+
+}
+
+.cactiAuthLogo {
 	position: relative;
 	float: right;
 	background: transparent url('./images/cacti_logo.svg') no-repeat center;
@@ -939,23 +947,23 @@ ul#breadcrumbs {
 	height: 148px;
 	z-index: 2;
 	margin-top: -95px;
-	margin-left: 240px;
+	margin-left: 24px;
 	margin-bottom: -20px;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
 	min-height: 200px;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 15px;
 }
@@ -964,12 +972,12 @@ legend {
 	font-size: 22px;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 	background: rgba(12,31,16,1);
 	background: -moz-linear-gradient(top, rgba(12,31,16,1) 0%, rgba(13,61,28,1) 56%, rgba(9,59,6,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(12,31,16,1)), color-stop(56%, rgba(13,61,28,1)), color-stop(100%, rgba(9,59,6,1)));
@@ -1051,7 +1059,7 @@ legend {
 	display: inline-block;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 

@@ -308,24 +308,6 @@ $secpass_tooltip .= $secpass_body;
 
 $selectedTheme = get_selected_theme();
 
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-	<?php html_common_header(api_plugin_hook_function('change_password_title', __('Change Password')));?>
-</head>
-<body class='loginBody'>
-	<div class='loginLeft'></div>
-	<div class='loginCenter'>
-		<div class='loginArea'>
-			<div class='cactiLogoutLogo'></div>
-			<legend><?php print __('Change Password');?></legend>
-			<form name='login' method='post' action='<?php print get_current_page();?>'>
-				<input type='hidden' name='action' value='changepassword'>
-				<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
-				<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
-				<div class='loginTitle'>
-<?php
 $skip_current = (empty($user['password']));
 
 if ($skip_current) {
@@ -333,43 +315,46 @@ if ($skip_current) {
 } else {
 	$title_message = __('Please enter your new Cacti password.');
 }
-?>					<p><?php print $title_message;?></p>
-				</div>
-				<div class='cactiLogin'>
-					<table class='cactiLoginTable'>
-						<tr>
-<?php if ($skip_current) { ?>
-							<td><?php print __('Username');?></td>
-							<td class='nowrap'><input type='hidden' id='current' name='current_password' autocomplete='current-password' value=''><?php print $user['username'];?></td>
-<?php } else { ?>
-							<td><?php print __('Current password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='current-password' size='20' placeholder='********'></td>
-<?php } ?>
-						</tr>
-						<tr>
-							<td><?php print __('New password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='new-password' size='20' placeholder='********'><?php print display_tooltip($secpass_tooltip);?></td>
-						</tr>
-						<tr>
-							<td><?php print __('Confirm new password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='new-password' size='20' placeholder='********'></td>
-						</tr>
-						<tr>
-							<td class='nowrap' colspan='2'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
-								<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</form>
-			<div class='loginErrors'><?php print $errorMessage ?></div>
-		</div>
-		<div class='versionInfo'><?php __('Version %1$s | %2$s', $version, COPYRIGHT_YEARS_SHORT); ?></div>
-	</div>
-	<div class='loginRight'></div>
-	<script type='text/javascript'>
 
-	var minChars=<?php print read_config_option('secpass_minlen');?>;
+html_auth_header('change_password', __('Change Password'), __('Change Password'), $title_message);
+?>
+	<tr style='display:none'>
+		<td>
+			<input type='hidden' name='ref' value='<?php print html_escape(get_request_var('ref')); ?>'>
+			<input type='hidden' name='name' value='<?php print isset($user['username']) ? html_escape($user['username']) : '';?>'>
+			<input type='text'><input type='password'></td>
+		</td>
+	</tr>
+	<tr>
+<?php if ($skip_current) { ?>
+		<td><?php print __('Username');?></td>
+		<td class='nowrap'><input type='hidden' id='current' name='current_password' value=''><?php print $user['username'];?></td>
+<?php } else { ?>
+		<td><?php print __('Current password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='current' name='current_password' autocomplete='off' size='20' placeholder='********'></td>
+<?php } ?>
+	</tr>
+	<tr>
+		<td><?php print __('New password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+	</tr>
+	<tr>
+		<td><?php print __('Confirm new password');?></td>
+		<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password_confirm' name='password_confirm' autocomplete='off' size='20' placeholder='********'></td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td class='nowrap'><input type='submit' class='ui-button ui-corner-all ui-widget' value='<?php print __esc('Save'); ?>'>
+			<?php print $user['must_change_password'] != 'on' ? "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='window.history.go(-1)' value='".  __esc('Return') . "'>":"";?>
+		</td>
+	</tr>
+<?php
+$secpass_minlen = read_config_option('secpass_minlen');
+
+html_auth_footer('change_password', $errorMessage, "
+	<script>
+
+	var minChars=$secpass_minlen;
 
 	function checkPassword() {
 		if ($('#password').val().length == 0) {
@@ -377,18 +362,18 @@ if ($skip_current) {
 			$('#passconfirm').remove();
 		} else if ($('#password').val().length < minChars) {
 			$('#pass').remove();
-			$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="<?php print __esc('Password Too Short');?>"></div>');
+			$('#password').after('<div id=\"pass\" class=\"password badpassword fa fa-times\" title=\"" . __esc('Password Too Short') . "\"></div>');
 			$('.password').tooltip();
 		} else {
 			$.post('auth_changepassword.php?action=checkpass', { password: $('#password').val(), password_confirm: $('#password_confirm').val(), __csrf_magic: csrfMagicToken } ).done(function(data) {
 				if (data == 'ok') {
 					$('#pass').remove();
-					$('#password').after('<div id="pass" class="password goodpassword fa fa-check" title="<?php print __esc('Password Validation Passes');?>"></div>');
+					$('#password').after('<div id=\"pass\" class=\"password goodpassword fa fa-check\" title=\"" . __esc('Password Validation Passes') . "\"></div>');
 					$('.password').tooltip();
 					checkPasswordConfirm();
 				} else {
 					$('#pass').remove();
-					$('#password').after('<div id="pass" class="password badpassword fa fa-times" title="'+data+'"></div>');
+					$('#password').after('<div id=\"pass\" class=\"password badpassword fa fa-times\" title=\"'+data+'\"></div>');
 					$('.password').tooltip();
 				}
 			});
@@ -399,11 +384,11 @@ if ($skip_current) {
 		if ($('#password_confirm').val().length > 0) {
 			if ($('#password').val() != $('#password_confirm').val()) {
 				$('#passconfirm').remove();
-				$('#password_confirm').after('<div id="passconfirm" class="passconfirm badpassword fa fa-times" title="<?php print __esc('Passwords do Not Match');?>"></div>');
+				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm badpassword fa fa-times\" title=\"". __esc('Passwords do Not Match') . "\"></div>');
 				$('.passconfirm').tooltip();
 			} else {
 				$('#passconfirm').remove();
-				$('#password_confirm').after('<div id="passconfirm" class="passconfirm goodpassword fa fa-check" title="<?php print __esc('Passwords Match');?>"></div>');
+				$('#password_confirm').after('<div id=\"passconfirm\" class=\"passconfirm goodpassword fa fa-check\" title=\"" . __esc('Passwords Match') . "\"></div>');
 				$('.passconfirm').tooltip();
 			}
 		} else {
@@ -428,10 +413,4 @@ if ($skip_current) {
 			checkPasswordConfirm();
 		});
 	});
-	</script>
-<?php
-
-include_once('./include/global_session.php');
-
-print "</body>
-	</html>\n";
+	</script>");

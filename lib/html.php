@@ -2695,3 +2695,59 @@ function html_help_page($page) {
 
 	return false;
 }
+
+function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
+		?>
+		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+		<html>
+
+		<head>
+			<!-- <?php print "${section}_title"; ?> -->
+			<?php html_common_header(api_plugin_hook_function("${section}_title", $browser_title)); ?>
+		</head>
+
+		<body class='cactiAuthBody'>
+			<div class='cactiAuthLeft'></div>
+			<div class='cactiAuthCenter'>
+				<div class='cactiAuthArea'>
+					<div class='cactiAuthLogo'></div>
+					<legend><?php print $legend; ?></legend>
+					<hr />
+					<form name='auth' method='post' action='<?php print get_current_page(); ?>'>
+						<input type='hidden' name='action' value='<?php print $section; ?>'>
+						<?php api_plugin_hook_function("${section}_before", $hook_args);	?>
+						<div class='cactiAuthTitle'>
+							<p>&nbsp;</p>
+							<table class='cactiAuthTable'>
+								<tr>
+									<td><?php print $title; ?></td>
+								</tr>
+							</table>
+						</div>
+						<div class='cactiAuth'>
+							<table class='cactiAuthTable'>
+	<?php
+}
+
+function html_auth_footer($section, $error = '', $html = '') {
+	?>
+							</table>
+						</div>
+						<?php api_plugin_hook("${section}_after"); ?>
+					</form>
+					<div class='cactiAuthErrors'>
+						<?php print $error; ?>
+					</div>
+				</div>
+				<div class='versionInfo'><?php print __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT); ?></div>
+			</div>
+			<div class='cactiAuthRight'></div>
+	<?php
+	print $html;
+	include_once(dirname(__FILE__) . '/../include/global_session.php');
+	?>
+		</body>
+
+		</html>
+	<?php
+}

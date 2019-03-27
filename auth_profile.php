@@ -594,7 +594,7 @@ function settings_2fa() {
 						$('#tfa_enabled').prop('disabled',false);
 
 						if (data.status == 200) {
-							var link = '<a href="'  + data.link + '"><img src="' + data.link + '"/></a>';
+							var link = '<a target="_new" href="'  + data.link + '"><img src="' + data.link + '"/></a>';
 
 							set2FAText(link);
 							$('#row_tfa_token,#row_tfa_verify').show();
