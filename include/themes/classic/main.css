@@ -27,7 +27,8 @@ body {
 }
 
 table {
-	border-collapse: collapse; border-spacing: 0;
+	border-collapse: collapse;
+	border-spacing: 0;
 	border: none;
 	text-align: left;
 }
@@ -69,7 +70,7 @@ hr.menu {
 }
 
 .checkboxLabel {
-	display:none;
+	display: none;
 }
 
 .realms .checkboxLabel {
@@ -216,7 +217,7 @@ label {
 	font-weight: bold;
 }
 
-.newObject{
+.newObject {
 	color: blue;
 }
 
@@ -495,7 +496,7 @@ label {
 	position: absolute;
 	right: 12px;
 	top: 58px;
-  	list-style: none;
+	list-style: none;
 	text-align: right;
 	margin: 0px;
 	padding: 0px;
@@ -523,14 +524,14 @@ label {
 }
 
 .import_text {
-	display:none;
+	display: none;
 }
 
 .emailtest {
-	cursor:pointer;
-	display:block;
-	float:right;
-	text-align:right;
+	cursor: pointer;
+	display: block;
+	float: right;
+	text-align: right;
 	padding: 0px 5px 0px 0px;
 }
 
@@ -558,14 +559,14 @@ label {
 	text-decoration: none;
 	color: red !important;
 	font-weight: bold;
-	font-size: 14px
+	font-size: 14px;
 }
 
 .deletequery:hover {
 	color: red !important;
 	text-decoration: none;
 	padding: 2px;
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 .odd {
@@ -769,8 +770,6 @@ ul#breadcrumbs {
 	float: left;
 	width: 162px;
 	height: 100%;
-//	overflow-y:auto !important;
-//	overflow-x:auto;
 }
 
 .cactiConsoleNavigationArea table {
@@ -885,7 +884,7 @@ legend {
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
-	float:left !important;
+	float: left !important;
 	padding: 3px;
 }
 
@@ -899,7 +898,7 @@ legend {
 	padding-top: 10px;
 	padding-right: 5px;
 	padding-left: 5px;
-	vertical-align:top;
+	vertical-align: top;
 	height: 100vh;
 }
 
@@ -930,7 +929,7 @@ legend {
 	display: inline-block;
 }
 
-.spikekillMenu i:empty{
+.spikekillMenu i:empty {
 	width: 2.0em;
 	display: inline-block;
 }
@@ -953,7 +952,7 @@ legend {
 	color: blue !important;
 	font-size: 1.1em;
 	padding: 3px;
-	cursor:pointer;
+	cursor: pointer;
 	text-decoration: none;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
 }
@@ -979,7 +978,7 @@ legend {
 	text-decoration: none;
 	font-weight: normal;
 	white-space: nowrap;
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .linkEditMain:hover {
@@ -1110,13 +1109,13 @@ legend {
 	border-width: 0px;
 	border-color: #00438C;
 	border-style: solid;
-	margin-left:auto;
-	margin-right:auto;
+	margin-left: auto;
+	margin-right: auto;
 	display: table;
 }
 
 .cactiInstallLoaderSpinnerTheme {
-	border-top-color:  #00438c !important;
+	border-top-color: #00438c !important;
 }
 
 .cactiTableTitleRow {
@@ -1151,7 +1150,7 @@ legend {
 	float: right;
 	display: table-column;
 	text-align: right;
-	height:22px;
+	height: 22px;
 	width: 30%;
 	background-color: #00438C;
 	white-space: nowrap;
@@ -1181,6 +1180,7 @@ legend {
 .cactiTableButton span:last-child, .cactiTableTitle span:last-child {
 	padding: 0px 5px;
 }
+
 .cactiTableButton .fa, .cactiTableTitle .fa {
 	display: inline;
 }
@@ -1394,7 +1394,6 @@ legend {
 	background-color: #00438C;
 }
 
-
 .tableHeader {
 	display: table-row;
 	background-color: #6D88AD !important;
@@ -1493,7 +1492,6 @@ legend {
 	font-size: 12px;
 }
 
-
 .navBarNavigationPrevious {
 	text-align: left;
 	cursor: pointer;
@@ -1509,7 +1507,7 @@ legend {
 	text-align: center;
 	display: table-cell;
 	white-space: nowrap;
-	width:80%;
+	width: 80%;
 	padding: 2px 0px;
 	margin-top: auto;
 }
@@ -1563,7 +1561,7 @@ legend {
 	overflow: auto;
 	color: #FFFFFF;
 	background-color: #E5E5E5;
-	border:1px solid #E5E5E5;
+	border: 1px solid #E5E5E5;
 }
 
 .installArea {
@@ -1711,8 +1709,9 @@ div#gtabs {
 
 .tabs li.current a:hover {
 	background: #FFFFFF;
-	border-bottom:1px solid #FFFFFF;
+	border-bottom: 1px solid #FFFFFF;
 }
+
 .tabs nav {
 	padding: 0px 4px 0px 0px;
 	background-repeat: repeat-x;
@@ -1753,7 +1752,7 @@ div#gtabs {
 	color: snow !important;
 	background-color: #9c9c9c;
 	border-bottom: 1px solid #666;
-  	font-weight: bold;
+	font-weight: bold;
 }
 
 #nav li a.pic:hover, #nav li ul li a.selected {
@@ -1811,7 +1810,9 @@ ul#nav {
 }
 
 @media print {
-	.noprint { display:none }
+	.noprint {
+		display: none;
+	}
 }
 
 .ui-tooltip {
@@ -1825,7 +1826,7 @@ ul#nav {
 .ui-tooltip-content {
 	min-width: 100px !important;
 	max-width: 500px !important;
-	overflow:auto !important;
+	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
 	border: transparent;
