@@ -800,14 +800,14 @@ ul#breadcrumbs {
 	margin-right: 2px;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	width: 33%;
 	float: left;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	position: relative;
-	padding: 30px 0px 5px 20px;
+	padding: 15px;
 	top: 15%;
 	max-width: 350px;
 	max-height: 350px;
@@ -815,7 +815,11 @@ ul#breadcrumbs {
 	margin-right: auto;
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthLogo {
 	position: relative;
 	float: right;
 	top: 15%;
@@ -828,16 +832,16 @@ ul#breadcrumbs {
 	margin-bottom: -20px;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	position: relative;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 0px;
 }
@@ -848,12 +852,12 @@ legend {
 	text-align: right;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 }
 
 .versionInfo {
@@ -892,7 +896,7 @@ legend {
 	padding: 3px;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 
