@@ -112,7 +112,6 @@ $disable_log_rotation = false;
 
 /* allow upto 5000 items to be selected */
 ini_set('max_input_vars', '5000');
-$config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
