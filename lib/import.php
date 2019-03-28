@@ -281,7 +281,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 
-				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			}
 			$xml .= "$x";
 		}
@@ -303,7 +303,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		return false;
 	}
 
-	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	$xmlget     = simplexml_load_string($xml);
 	$data       = xml_to_array($xmlget);
@@ -316,7 +316,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		exit;
 	}
 
-	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	if (isset($data['files']['file']['data'])) {
 		$data['files']['file'] = array($data['files']['file']);
@@ -327,14 +327,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		$fdata = base64_decode($f['data']);
 		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 		if ($ok == 1) {
-			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		} else {
 			cacti_log('FATAL: Could not Verify Signature for file: ' . $f['name'], true, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
 		}
 	}
 
-	cacti_log('Writing Files', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Writing Files', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	foreach ($data['files']['file'] as $f) {
 		$fdata = base64_decode($f['data']);
@@ -342,13 +342,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = $config['base_path'] . "/$name";
-			cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+			cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+
 			if (!$preview) {
-				if (is_writable($filename)) {
-					$file = fopen($filename,'wb');
+				if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
+					$file = fopen($filename, 'wb');
 
 					if (is_resource($file)) {
-						fwrite($file ,$fdata, strlen($fdata));
+						fwrite($file , $fdata, strlen($fdata));
 						fclose($file);
 						clearstatcache();
 						$filestatus[$filename] = __('written');
@@ -364,6 +365,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 				} else {
 					$filestatus[$filename] = __('not writable');
 				}
+
+				cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			} else {
 				if (!is_writable($filename)) {
 					$filestatus[$filename] = __('not writable');
@@ -371,6 +374,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 					$filestatus[$filename] = __('writable');
 				}
 			}
+
 		} else {
 			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
@@ -382,7 +386,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		}
 	}
 
-	cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	return array($debug_data, $filestatus);
 }
