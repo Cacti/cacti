@@ -2197,7 +2197,7 @@ $settings_user = array(
 			),
                 'tree_history' => array(
                         'friendly_name' => __('Tree history'),
-                        'description' => __('When disabled, Cacti will wont bring back user where he was in the graph tree when he comes back after closing a tab'),
+                        'description' => __('Choose whether to forget or not tree history when closing a graph tree tab'),
                         'method' => 'checkbox',
                         'default' => 'on'
                      )
