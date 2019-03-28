@@ -59,6 +59,7 @@ Cacti CHANGELOG
 -issue#2575: Poller errors occur if a file exists that the website cannot read
 -issue#2576: Spikekill does not work well when called from plugins
 -issue#2578: Import package will not write a file if it's new
+-issue#2581: Stored XSS in "SNMP community string" field
 -feature: Update phpseclib to version 2.0.15
 -feature: Adjust the max table rows based upon value of 'max_input_vars'
 -feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
