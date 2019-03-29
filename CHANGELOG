@@ -61,6 +61,7 @@ Cacti CHANGELOG
 -issue#2578: Import package will not write a file if it's new
 -issue#2581: Stored XSS in "SNMP community string" field
 -issue#2583: When JSON module is not installed, Installer does not correctly show missing message
+-issue#2584: When user/group permissions are reset, this is not reflected immediately to the end user
 -feature: Update phpseclib to version 2.0.15
 -feature: Adjust the max table rows based upon value of 'max_input_vars'
 -feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
