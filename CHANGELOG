@@ -1,71 +1,71 @@
 Cacti CHANGELOG
 
 1.2.3
--issue#1063: Issue encountered in modern theme "last device" is not visible in tree view in graphs
+-issue#1063: Tree View does not display the last item correctly under 'Modern' theme
 -issue#2282: Install Wizard does not Detect RRDtool Version on Windows
 -issue#2430: "New Device" menu item showing as selected incorrect when "Devices" clicked
--issue#2435: Tree column is narrower and narrower on each click
--issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when <source> OID/REGEXP: or OIDVALUE/REGEXP:
+-issue#2435: Tree View becomes narrower and narrower when expanding/collapsing nodes with long names
+-issue#2449: Index incorrectly changed to 1 if the index is alphanumeric when  OID/REGEXP: or OIDVALUE/REGEXP:
 -issue#2452: Missing 'getSNMPQueries()' function when calling add_data_query.php
--issue#2453: Cannot retrieve list of snmp values via CLI
--issue#2460: CLI script sqltable_to_php.php does not set proper default in its output
+-issue#2453: When running add_graphs.php, cannot retrieve list of valid snmp values
+-issue#2460: sqltable_to_php.php does not export 'default' value of columns correctly
 -issue#2456: When attempting to display actions that can be taken, having no actions caused error
--issue#2457: Not seeing confirmation when creating a new graph
+-issue#2457: When creating a graph, undefined function prevents confirmation from appearing
 -issue#2459: ss_host_disk.php attempts to return an empty array instead of a string
--issue#2463: Zombie data sources without graphs
--issue#2464: User Admin - Effective Permissions - Disable Devices should show denied 
--issue#2465: User Admin - Effective Permissions - Too many groups hide effective permission column
+-issue#2463: Partial Fix: Display zombie data sources without graphs
+-issue#2464: When viewing a User's effective permissions, disabled devices should show denied
+-issue#2465: Too many groups hide effective permission column when viewing User's effective permissions
 -issue#2466: Manual data source creation is broken
--issue#2469: Automation - Graph rules - matching object filter - unexpected redirect
+-issue#2469: When using Matching Objects filter within Automation Graph Rules, unexpected redirect occurs
 -issue#2471: When Creating a new Graph Template, clear the Graph Template permissions cache
 -issue#2472: Bad navigation items cause Array to string conversion errors
 -issue#2474: REGEXP_SNMP_TRIM does not handle Gauge fields properly
--issue#2475: Multiple sort does not always reset properly
+-issue#2475: When resetting filters, multiple sort session variables do not always reset properly
 -issue#2476: When using CMD.PHP for polling, device polling time is not updated
--issue#2477: When Saving a Data Input Method Output Field Data Input Name Changes
--issue#2478: When Saving a LINEX Type Graph Item the Line Width Value is too Restrictive
--issue#2479: CDEF and VDEF RPN Functions not Sorted
--issue#2480: RRDtool Versions in Cacti not Granular Enough
+-issue#2477: When saving a Data Input Method, Output Field name changes to incorrect value
+-issue#2478: When saving a LINEX type Graph Item, the Line Width value is too restrictive
+-issue#2479: RPN function select list should be sorted when editing CDEF and VDEF's
+-issue#2480: RRDtool versions in Cacti not granular enough
 -issue#2482: When upgrading past 1.1.34, upgrade attempts to drop a non-existing primary key
 -issue#2491: Data Source Info suggests commands RRDTool can't honor
 -issue#2492: When data templates are filtered by profile, data source list does not get same filter applied
 -issue#2493: Data Source Info is not separated properly
--issue#2494: Some missing i18n in User Login History
--issue#2497: Graph URL's missing either graph_start or graph_end but not both result in both taking defaults
--issue#2499: Data Source reapply names does not update name from data query or template
+-issue#2494: User Login History is not fully enabled for translations
+-issue#2497: When linking to Graphs, unless both start and end are specified, only defaults are used
+-issue#2499: Data Source reapply names does not update name from data query or template.
 -issue#2500: Allow Data Source repairs from the Data Source Debug and Data Source Info pages
 -issue#2502: Unable to have a min or max value for RRDfile at zero '0'
--issue#2503: The Cacti Statistics Device Template is not in the default Cacti
--issue#2509: Installer is not consistent between MySQL Settings checking and final step Warning
+-issue#2503: The Cacti Statistics Device Template is not include in release
+-issue#2509: When checking for correct Unicode, minimum MySQL version is incorrect
 -issue#2513: When a plugin INFO file is malformed or missing elements, plugin_load_info_file() should fill missing elements with defaults
--issue#2519: Performance of graph template picker when editing a data query
--issue#2518: Data Source Profile RRAs - Type letters instead of numbers in the "Rows" line 
--issue#2522: Upgrade for v1.0.0 has invalid keyword 'DELECT'
+-issue#2519: When editing a data query, graph template picker shows poor performance
+-issue#2518: Unexpected errors when filtering Data Sources with invalid 'rows' value
+-issue#2522: When upgrading from pre-1.0.0, colors were not upgraded properly by Givo29
 -issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
--issue#2527: Package installation can fail if the Cacti hash version code is ahead of installed Cacti
--issue#2531: When updating color template items, the table name used is incorrect
--issue#2535: Ensure Graph ListView table is displayed in line with Management -> Graphs
--issue#2537: Tree Mode: Site Title lags 1 refresh behind
--issue#2543: Improve performance on graph_view's tree_content action by reducing the number of SQL queries executed 
--issue#2547: Trailing spaces: Complaining about Max values in RRD without reason
+-issue#2527: When importing a package, if Cacti version is below the version which that exported, a clear message should be shown
+-issue#2531: When updating color template items, the table name used is incorrect by Givo29
+-issue#2535: Ensure Graph ListView uses same UI logic as Graph Management
+-issue#2537: Incorrect title showing when changes are made to Tree
+-issue#2543: Poor performance showing a device's graphs on a tree
+-issue#2547: RRD values are not being properly trimmed
 -issue#2551: When checking MySQL configuration values, consider ON/OFF to be equal to 1/0
--issue#2553: Database Upgrade - Version 1.0.0 - keeps failing 
+-issue#2553: When upgrading from 1.0.0 or below, renaming automation columns can cause issues
 -issue#2555: Missing configuration defaults prevent installations/upgrades without showing reason
--issue#2563: Sorting by name_cache slow on Data Sources page
--issue#2564: Filtering for Orphan Data Sources is Unreliable
--issue#2565: Table checkbox and row selection performance poor on large pages
--issue#2568: Multi Poller: execute refresh or debug query works only on remote poller
--issue#2571: view page for external link without permission has error
+-issue#2563: When sorting Data Sources, missing index causes unnecessary delays
+-issue#2564: Filtering for Orphan Data Sources is unreliable
+-issue#2565: Pages with 500+ selectable items in a single able can suffer from poor performance
+-issue#2568: When querying for diagnostic data, devices on remote pollers should proxy the request
+-issue#2571: External Links do not properly validate user permissions
 -issue#2575: Poller errors occur if a file exists that the website cannot read
--issue#2576: Spikekill does not work well when called from plugins
--issue#2578: Import package will not write a file if it's new
--issue#2581: Stored XSS in "SNMP community string" field
+-issue#2576: Spikekill API does not work when called from plugins
+-issue#2578: When importing packages, missing/new resources are not created
+-issue#2581: When viewing poller cache, Device SNMP community is not properly escaped
 -issue#2583: When JSON module is not installed, Installer does not correctly show missing message
 -issue#2584: When user/group permissions are reset, this is not reflected immediately to the end user
+-feature#2505: Improve performance of Data Source Statistics
+-feature#2515: Allow more than one SNMP port to be specified when adding devices via CLI
 -feature: Update phpseclib to version 2.0.15
 -feature: Adjust the max table rows based upon value of 'max_input_vars'
--feature#2505: Improve Data Source Statistics performance by using RRDtool functions to calculate average and peak values
--feature#2515: Support multiple SNMP ports when adding devices via CLI
 
 1.2.2
 -issue#599: Aggregate graph templates assume AVG consolidation function
@@ -78,7 +78,7 @@ Cacti CHANGELOG
 -issue#2343: Export hooks no longer work due to missing default keyword
 -issue#2346: When listing plugin permissions, "Legacy 1.x Plugins" can appear in the wrong cell
 -issue#2347: Allow sort output to inject returned data into a specific object
--issue#2350: Unable to Select Data Source for HRULES and COMMENTS that include nth Percentile and Bandwidth 
+-issue#2350: Unable to Select Data Source for HRULES and COMMENTS that include nth Percentile and Bandwidth
 -issue#2352: SNMP description field can sometimes contain mangled data
 -issue#2354: When reindexing in Automation, titles are not updated for Graph and Data Source
 -issue#2355: Data Sources are sometimes duplicated when Custom Data is specified
@@ -89,10 +89,10 @@ Cacti CHANGELOG
 -issue#2365: When editing Aggregate Graphs, orphaned items were not always removed
 -issue#2372: Data Query reindexing leads gaps in Graphs
 -issue#2376: Manually adding a device discovered by Automation causes errors to be logged
--issue#2380: Devices may experience constant reindexing 
+-issue#2380: Devices may experience constant reindexing
 -issue#2384: When authentication method is set to None, change to Builtin as None has been removed
 -issue#2393: When reindexing a device, Graph Automation creates duplicate graphs every time
--issue#2416: SELinux wants APPEND not WRITE permission for Fedora/EPEL (RHEL, Centos) 
+-issue#2416: SELinux wants APPEND not WRITE permission for Fedora/EPEL (RHEL, Centos)
 -issue#2419: Host state time was not correctly calculated
 -issue#2426: Reinstate missing plugin hooks for 'custom_logout_message' and 'custom_denied'
 -issue#2431: Default value for 'Mail Method' (settings_how) is incorrect resulting in errors
@@ -109,7 +109,7 @@ Cacti CHANGELOG
 -issue#2270: Realtime Graphs consuming too much memory
 -issue#2272: Site Tree Branches not showing Graphs
 -issue#2273: Error when saving changes to Data Collectors
--issue#2279: SQL Errors in add_graphs.php 
+-issue#2279: SQL Errors in add_graphs.php
 -issue#2280: SQL Errors in snmpagent cache table inserts
 -issue#2281: Database audit cli giving incorrect results
 -issue#2285: Allow HRULEs for bandwith and ptile
