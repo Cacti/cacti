@@ -1,4 +1,4 @@
-# Cacti (™) - The Cacti Group
+# Cacti ™ - The Cacti Group
 
 [![Build Status -
 Develop](https://travis-ci.org/Cacti/cacti.svg?branch=develop)](https://travis-ci.org/Cacti/cacti)
