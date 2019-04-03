@@ -716,34 +716,26 @@ label {
 	float: left;
 }
 
-.cactiLogo {
-	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
+.cactiAuthLogo {
+	position: relative;
+	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
 	display: block;
 	cursor: pointer;
-	padding-bottom: 140px;
-	margin-bottom: 60px;
-	width: 156px;
-	margin-top: -6px;
-	margin-left: 2px;
-	margin-right: 2px;
+	width: 120px;
+	height: 148px;
+	margin-top: -195px;
+	margin-left: -80px;
+	margin-bottom: -20px;
 }
 
-.cactiAuthLeft {
-	width: 33%;
-	float: left;
-}
-
-.cactiAuthCenter {
+.cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	position: relative;
-	padding: 30px;
+	padding: 15px;
 	background-color: white;
 	top: 30%;
 	max-width: 360px;
 	max-height: 300px;
-	margin-left: auto;
-	margin-right: auto;
 	background: rgba(255,255,255,1);
 	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
@@ -754,25 +746,9 @@ label {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
 }
 
-.cactiAuthCenter legend {
-
-}
-
-.cactiAuthLogo {
-	position: relative;
-	height: 0px;
-	z-index: 2;
-	margin-left: 305px;
-	margin-bottom: 0px;
-	color: #223a80;
-	font-size: 48px;
-}
-
-.cactiAuthArea {
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	position: relative;
-	min-height: 200px;
+.cactiAuthTitle {
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 .cactiAuthTable td {
@@ -796,6 +772,11 @@ legend {
 }
 
 .cactiAuthBody {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
 	background: #2d4ca8;
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	background: -moz-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
@@ -810,7 +791,7 @@ legend {
 .versionInfo {
 	padding-top: 5px;
 	float: right;
-	margin-top: 10px;
+	margin-top: 15px;
 	color: white;
 }
 

@@ -306,4 +306,3 @@ function setMenuVisibility() {
 		});
 	});
 }
-

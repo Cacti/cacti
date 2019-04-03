@@ -461,59 +461,69 @@ function read_config_option($config_name, $force = false) {
  *
  * @return - the theme name
  */
-function get_selected_theme() {
+function get_selected_theme($theme = 'cacti') {
 	global $config, $themes;
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
-			return $_SESSION['selected_theme'];
+		$theme = $_SESSION['selected_theme'];
+	} else {
+		// default to system selected theme
+		$theme = read_config_option('selected_theme');
+
+		// check for a pre-1.x cacti being upgraded
+		if ($theme == '') {
+			$theme = 'cacti';
+		}
+
+		// figure out user defined theme
+		if (isset($_SESSION['sess_user_id']) && db_table_exists('settings_user')) {
+			// fetch user defined theme
+			$user_theme = db_fetch_cell_prepared("SELECT value
+				FROM settings_user
+				WHERE name='selected_theme'
+				AND user_id = ?",
+				array($_SESSION['sess_user_id']));
+
+			// user has a theme
+			if (! empty($user_theme)) {
+				$theme = $user_theme;
+			}
 		}
 	}
 
-	// default to system selected theme
-	$theme = read_config_option('selected_theme');
-
-	// check for a pre-1.x cacti being upgraded
-	if ($theme == '' && !db_table_exists('settings_user')) {
-		return 'modern';
+	if (is_valid_theme($theme, true)) {
+		$_SESSION['selected_theme'] = $theme;
 	}
 
-	// figure out user defined theme
-	if (isset($_SESSION['sess_user_id'])) {
-		// fetch user defined theme
-		$user_theme = db_fetch_cell_prepared("SELECT value
-			FROM settings_user
-			WHERE name='selected_theme'
-			AND user_id = ?",
-			array($_SESSION['sess_user_id']));
+	return $theme;
+}
 
-		// user has a theme
-		if (! empty($user_theme)) {
-			$theme = $user_theme;;
-		}
-	}
-
+function is_valid_theme(&$theme, $set_user = false) {
+	global $themes, $config;
+	$valid = true;
 	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+		$valid = false;
+		$user_table = db_table_exists('settings_user');
 		foreach($themes as $t => $name) {
 			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
 				$theme = $t;
+				$valid = true;
 
-				db_execute_prepared('UPDATE settings_user
-					SET value = ?
-					WHERE user_id = ?
-					AND name="selected_theme"',
-					array($theme, $_SESSION['sess_user_id']));
-
+				if ($user_table && $set_user && isset($_SESSION['sess_user_id'])) {
+					db_execute_prepared('UPDATE settings_user
+						SET value = ?
+						WHERE user_id = ?
+						AND name="selected_theme"',
+						array($theme, $_SESSION['sess_user_id']));
+				}
 				break;
 			}
 		}
 	}
 
 	// update session
-	$_SESSION['selected_theme'] = $theme;
-
-	return $theme;
+	return $valid;
 }
 
 /* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
