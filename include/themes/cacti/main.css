@@ -644,7 +644,7 @@ label {
 }
 
 .cactiPageBottom {
-	background-color: rgba(0,0,0,0.7);
+	background-color: rgba(0,119,0,0.7);
 	height: 15px;
 	width: 100%;
 	position: fixed;
@@ -1755,8 +1755,8 @@ div.submenu span {
 
 .tabs nav a.selected {
 	color: white;
-	boder-bottom: 1px solid rgba(63,162,117,0.8);
-	background: rgba(63,117,162,0.8);
+	border-bottom: 1px solid rgba(162,117,63,0.8);
+	background: rgba(117,162,63,0.8);
 }
 
 .tabs li {
@@ -1772,7 +1772,7 @@ div.submenu span {
 }
 
 .tabs li.current a:hover, .maintabs li.current a:hover {
-	background: #fff;
+	background: rgba(0,119,0,0.3);
 	border-bottom: 1px solid #fff;
 }
 
