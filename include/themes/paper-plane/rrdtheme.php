@@ -24,5 +24,3 @@ $rrdfonts['watermark']['size'] = '6';
 
 # Only supported in RRDtool 1.4+
 $rrdborder = 0;
-
-

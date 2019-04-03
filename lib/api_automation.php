@@ -3023,18 +3023,9 @@ function automation_add_device($device, $web = false) {
 
 	if ($host_id) {
 		automation_debug(" - Success\n");
-		/* Use the thold plugin if it exists */
-		if (api_plugin_is_enabled('thold')) {
-			automation_debug("     Creating Thresholds\n");
 
-			if (file_exists($config['base_path'] . '/plugins/thold/thold-functions.php')) {
-				include_once($config['base_path'] . '/plugins/thold/thold-functions.php');
-				autocreate($host_id);
-			} else if (file_exists($config['base_path'] . '/plugins/thold/thold_functions.php')) {
-				include_once($config['base_path'] . '/plugins/thold/thold_functions.php');
-				autocreate($host_id);
-			}
-		}
+		/* Use the thold plugin if it exists */
+		api_plugin_hook_function('device_threshold_autocreate', $host_id);
 
 		db_execute_prepared('DELETE FROM automation_devices WHERE ip = ? LIMIT 1', array($ip));
 	} else {

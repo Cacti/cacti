@@ -903,22 +903,26 @@ ul#breadcrumbs {
 	margin-right: 2px;
 }
 
-.cactiAuthLeft {
-	width: 33%;
-	float: left;
+.cactiAuthLogo {
+	position: relative;
+	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	width: 120px;
+        height: 148px;
+	z-index: 2;
+	margin-top: -195px;
+	margin-left: -80px;
+	margin-bottom: -20px;
 }
 
-.cactiAuthCenter {
+.cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	position: relative;
 	padding: 15px;
-	background-color: snow;
+	background-color: white;
 	top: 30%;
 	max-width: 360px;
 	max-height: 300px;
-	margin-left: auto;
-	margin-right: auto;
+	background: rgba(255,255,255,1);
 	background: -ms-linear-gradient(top, #363636 0%, #071204 100%);
 	background: -moz-linear-gradient(top, #363636 0%, #071204 100%);
 	background: -o-linear-gradient(top, #363636 0%, #071204 100%);
@@ -928,27 +932,9 @@ ul#breadcrumbs {
 	text-shadow: 1px 1px 1px rgba(9, 61, 16, 0.66);
 }
 
-.cactiAuthCenter legend {
-
-}
-
-.cactiAuthLogo {
-	position: relative;
-	float: right;
-	background: transparent url('./images/cacti_logo.svg') no-repeat center;
-	width: 120px;
-	height: 148px;
-	z-index: 2;
-	margin-top: -95px;
-	margin-left: 24px;
-	margin-bottom: -20px;
-}
-
-.cactiAuthArea {
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	position: relative;
-	min-height: 200px;
+.cactiAuthTitle {
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .cactiAuthTable td {
@@ -963,15 +949,15 @@ ul#breadcrumbs {
 
 legend {
 	font-size: 22px;
-	color: #bbbfc2;
-}
-
-.cactiAuthRight {
-	width: 33%;
-	float: right;
+	font-weight: bold;
 }
 
 .cactiAuthBody {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
 	background: #161616;
 	background-image: -ms-linear-gradient(top, #161616 0%, #000000 100%);
 	background-image: -moz-linear-gradient(top, #161616 0%, #000000 100%);
@@ -981,11 +967,15 @@ legend {
 	background-image: linear-gradient(to bottom, #161616 0%, #000000 100%);
 }
 
+.cactiAuthPanel {
+	padding: 4px 0px;
+}
+
 .versionInfo {
 	padding-top: 5px;
 	float: right;
-	margin-top: 10px;
-	color: snow;
+	margin-top: 15px;
+	color: white;
 }
 
 .actionsDropdown {

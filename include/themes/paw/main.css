@@ -308,7 +308,7 @@ label {
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:;
+	width: 100%;
 }
 
 .deviceUp {
@@ -572,10 +572,10 @@ label {
 }
 
 .even-alternate {
-	#background: none repeat scroll 0 0 #E7E9F2;
-	#background-color: #E7E9F2;
+	/* #background: none repeat scroll 0 0 #E7E9F2;
+	#background-color: #E7E9F2; */
 	border: none;
-	#box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
+	/* #box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); */
 }
 
 .saveRow {
@@ -655,7 +655,7 @@ label {
 	padding: 0px;
 }
 
-.cactiPageHead  div {
+.cactiPageHead div {
 	left: 0;
 	top: 0;
 }
@@ -751,66 +751,39 @@ label {
 	float: left;
 }
 
-.cactiLogo {
-	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
-	display: none;
-	cursor: pointer;
-	padding-bottom: 140px;
-	margin-bottom: 60px;
-	width: 156px;
-	margin-top: -6px;
-	margin-left: 2px;
-	margin-right: 2px;
-}
-
-.cactiAuthLeft {
-	width: 33%;
-	float: left;
-}
-
-.cactiAuthCenter {
-	-moz-border-radius: 10px;
-	border-radius: 10px;
-	position: relative;
-	padding: 30px;
-	background-color: white;
-	top: 30%;
-	max-width: 360px;
-	max-height: 300px;
-	margin-left: auto;
-	margin-right: auto;
-	background: rgba(255,255,255,1);
-	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
-	background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
-}
-
-.cactiAuthCenter legend {
-
-}
-
 .cactiAuthLogo {
 	position: relative;
-	z-index: 2;
-	margin-bottom: 0px;
-	color: #223a80;
-	font-size: 48px;
-	float: right;
+	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	display: block;
+	cursor: pointer;
+	width: 120px;
+	height: 148px;
+	margin-top: -195px;
+	margin-left: -80px;
+	margin-bottom: -20px;
 }
 
-.cactiLoginLogo i, .cactiLogoutLogo i {
-	margin-right: 10px;
+.cactiAuthTitle {
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 .cactiAuthArea {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	position: relative;
-	min-height: 200px;
+	padding: 15px;
+	background-color: white;
+	top: 30%;
+	max-width: 360px;
+	max-height: 300px;
+	background: rgba(255, 255, 255, 1);
+	background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(47%, rgba(246, 246, 246, 1)), color-stop(100%, rgba(237, 237, 237, 1)));
+	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+	background: -o-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+	background: -ms-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+	background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%);
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0);
 }
 
 .cactiAuthTable td {
@@ -834,15 +807,20 @@ legend {
 }
 
 .cactiAuthBody {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
 	background: #2d4ca8;
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
 	background: -moz-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2d4ca8), color-stop(100%,#1a195e));
-	background: -webkit-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
-	background: -o-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
-	background: -ms-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
-	background: linear-gradient(to right, #2d4ca8 0%,#1a195e 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d4ca8', endColorstr='#1a195e',GradientType=1 );
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%, #2d4ca8), color-stop(100%, #1a195e));
+	background: -webkit-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
+	background: -o-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
+	background: -ms-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
+	background: linear-gradient(to right, #2d4ca8 0%, #1a195e 100%);
+	filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#2d4ca8', endColorstr='#1a195e', GradientType=1);
 }
 
 .versionInfo {
@@ -1241,7 +1219,7 @@ legend {
 }
 
 .formData {
-	display: inline-block;
+	/* display: inline-block; */
 	float: left;
 	text-align: left;
 }
@@ -1269,7 +1247,7 @@ legend {
 }
 
 .formFieldName {
-	display: inline-block;
+	/* display: inline-block; */
 	color: #000000;
 	float: left;
 	text-align: left;
@@ -1457,7 +1435,7 @@ th.sortable {
 }
 
 .graphSubHeaderColumn {
-	color: #white;
+	/* color: #white; */
 	font-size: 12px;
 	vertical-align: middle;
 	text-align: left;
@@ -1569,7 +1547,7 @@ th.sortable {
 }
 
 .popupBox {
-	#z-index: 2;
+	/* #z-index: 2; */
 	position: absolute;
 	padding: 0px;
 	display: none;
@@ -1786,7 +1764,7 @@ div#gtabs {
 	float: left !important;
 	text-decoration: none;
 	font-size: 18px;
-	vertical-align: bottom;
+	/* vertical-align: bottom; */
 	display: block;
 }
 
@@ -1838,7 +1816,7 @@ div.submenu span {
 
 .tabs nav a.selected {
 	color: white;
-	boder-bottom: 1px solid rgba(63,117,162,0.8);
+	border-bottom: 1px solid rgba(63,117,162,0.8);
 	background: rgba(63,117,162,0.8);
 }
 
@@ -2392,9 +2370,9 @@ td.center > table {
 }
 
 [id*='_edit'] .tableRowGraph:hover {
-     background-color: rgba(0, 0, 255, .3) !important;
-     border-left: 2px solid yellow !important;
-     border-right: 2px solid yellow !important;
+	background-color: rgba(0, 0, 255, .3) !important;
+	border-left: 2px solid yellow !important;
+	border-right: 2px solid yellow !important;
 }
 
 .tableRowGraph {

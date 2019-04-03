@@ -948,6 +948,10 @@ label.ui-state-hover > span {
 	color: #9d9d9d;
 }
 
+.cactiAuthTitle {
+	color: white;
+}
+
 .cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
@@ -985,7 +989,7 @@ legend {
 	position: fixed;
 	left: 5px;
 	bottom: 5px;
-	color: rgba(255,255,255,0.2);
+	color: rgba(255,255,255,0.5);
 }
 
 .actionsDropdown {

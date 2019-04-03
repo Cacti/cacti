@@ -788,7 +788,7 @@ function get_selected_theme() {
 
 		// user has a theme
 		if (! empty($user_theme)) {
-			$theme = $user_theme;;
+			$theme = $user_theme;
 		}
 	}
 
