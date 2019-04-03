@@ -818,7 +818,7 @@ ul#breadcrumbs {
 }
 
 .cactiAuthTitle {
-	padding-top: 5px;
+	padding-top: 15px;
 	padding-bottom: 5px;
 }
 
@@ -832,6 +832,7 @@ ul#breadcrumbs {
 .cactiAuthErrors {
 	color: red;
 	min-height: 15px;
+	text-shadow: none;
 }
 
 legend {
