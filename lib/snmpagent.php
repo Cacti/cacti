@@ -429,7 +429,7 @@ function snmpagent_poller_bottom() {
 
 	if (cacti_sizeof($devices)) {
 		foreach($devices as $device) {
-			$device_in_maintenance = plugin_hook_function('is_device_in_maintenance', $device['id']);
+			$device_in_maintenance = api_plugin_hook_function('is_device_in_maintenance', $device['id']);
 
 			if (!$device_in_maintenance) {
 				$varbinds = array(
