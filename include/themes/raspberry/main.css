@@ -732,7 +732,7 @@ label {
 .cactiAuthLogo {
 	position: relative;
 	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
-	width: 120px;
+	width: 130px;
         height: 148px;
 	z-index: 2;
 	margin-top: -195px;
@@ -1853,11 +1853,11 @@ tr:not(.selectable) a.linkEditMain:hover {
 }
 
 tr.selectable a.linkEditMain:hover {
-	color: yellow;
+	color: blue;
 }
 
 tr.selectable:hover:not(.selected) {
-	background: rgba(119,119,0,119.3);
+	background: rgba(119,0,119,0.3);
 }
 
 tr.selectable td {
@@ -1868,7 +1868,7 @@ tr.selected a {
 	color: yellow;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
 	background: rgba(224,224,224,1);
 }
 

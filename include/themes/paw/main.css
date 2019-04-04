@@ -756,9 +756,9 @@ label {
 	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
 	display: block;
 	cursor: pointer;
-	width: 120px;
+	width: 130px;
 	height: 148px;
-	margin-top: -195px;
+	margin-top: -205px;
 	margin-left: -80px;
 	margin-bottom: -20px;
 }
@@ -1917,7 +1917,7 @@ tr.selected a {
 	color: yellow;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
 	background: rgba(224,224,224,1);
 }
 

@@ -2124,7 +2124,7 @@ tr.selected a {
 	color: #0000CD;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
 
 }
 

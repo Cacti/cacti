@@ -906,10 +906,10 @@ ul#breadcrumbs {
 .cactiAuthLogo {
 	position: relative;
 	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
-	width: 120px;
+	width: 130px;
         height: 148px;
 	z-index: 2;
-	margin-top: -195px;
+	margin-top: -175px;
 	margin-left: -80px;
 	margin-bottom: -20px;
 }
@@ -2079,7 +2079,7 @@ tr.selected a {
 	color: black !important;
 }
 
-#nav li a.pic:hover, #nav li a.selected {
+#nav li a.pic:hover, #nav li a.selected, #nav li a.active:hover {
 	background: -moz-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(167,217,134,0.4)), color-stop(100%, rgba(148,179,107,0.2)));
 	background: -webkit-linear-gradient(top, rgba(167,217,134,0.4) 0%, rgba(148,179,107,0.4) 100%);
