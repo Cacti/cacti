@@ -93,6 +93,7 @@ if ($debug) {
 		'CACTI_VERSION' => CACTI_VERSION,
 		'CACTI_VERSION_FULL' => CACTI_VERSION_FULL,
 		'get_cacti_db_version()' => get_cacti_db_version(),
+		'is_install_needed()' => is_install_needed(),
 	);
 
 	foreach ($tests as $name => $value) {
