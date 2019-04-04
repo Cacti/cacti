@@ -911,7 +911,6 @@ ul#breadcrumbs {
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	position: relative;
-	min-height: 200px;
 }
 
 .cactiAuthTable td {

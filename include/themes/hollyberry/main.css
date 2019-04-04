@@ -1741,7 +1741,11 @@ div#gtabs {
 }
 
 .maintabs a.selected {
-	background-color: rgba(230, 89, 58,0.8);
+	color: white;
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.1) 0%, rgba(3,159,11,0.1) 99%, rgba(0,161,11,0.1) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.1) 0%,rgba(3,159,11,0.3) 99%,rgba(0,161,11,0.1) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.1) 0%,rgba(3,159,11,0.1) 99%,rgba(0,161,11,0.1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 .maintabs a:active {
@@ -1928,13 +1932,20 @@ tr.selected a {
 	color: yellow;
 }
 
-#nav li a.pic:hover:not(.selected) {
-	background: rgba(224,224,224,1);
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
+	color: rgba(79, 0, 79, 1);
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.3) 0%, rgba(3,159,11,0.3) 99%, rgba(0,161,11,0.3) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.3) 0%,rgba(3,159,11,0.3) 99%,rgba(0,161,11,0.3) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.3) 0%,rgba(3,159,11,0.3) 99%,rgba(0,161,11,0.3) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 #nav li a.selected {
 	color: white;
-	background: rgba(246,166,134,1);
+	background: -moz-linear-gradient(top, rgba(255,4,0,0.7) 0%, rgba(3,159,11,0.7) 99%, rgba(0,161,11,0.7) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(255,4,0,0.7) 0%,rgba(3,159,11,0.7) 99%,rgba(0,161,11,0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6ff0400', endColorstr='#e600a10b',GradientType=0 ); /* IE6-9 */
 }
 
 #nav li ul {

@@ -1868,13 +1868,19 @@ tr.selected a {
 	color: yellow;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
+	color: rgba(255,57,13,0.7);
 	background: rgba(224,224,224,1);
 }
 
 #nav li a.selected {
 	color: white;
 	background: rgba(246,166,134,1);
+}
+
+#nav li a.active {
+	color: white;
+	background: rgba(255,57,13,0.7)
 }
 
 #nav li ul {

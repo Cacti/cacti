@@ -107,13 +107,19 @@ label {
 	white-space: nowrap;
 }
 
-.glyph_tab-console:before {
-	content: '';
+#tab-console {
 	display: inline-block;
 	background-image: url('images/cacti-logo-white.svg');
 	background-size: 30px 30px;
-	width: 30px;
-	height: 30px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	min-width: 30px;
+	overflow: hidden;
+	margin: 0;
+}
+
+.glyph_tab-console:before {
+	content: '';
 }
 
 .text_tab-console {
@@ -436,7 +442,7 @@ label {
 
 .submenuoptions li a:hover {
 	display: block;
-	background: rgba(0,0,0,0.1);
+	background: rgba(0,119,0,0.3);;
 }
 
 .menuoptions {
@@ -466,7 +472,7 @@ label {
 
 .menuoptions li a:hover {
 	display: block;
-	background: rgba(0,0,0,0.1);
+	background: rgba(0,119,0,0.3);;
 }
 
 .import_label {
@@ -790,7 +796,7 @@ label {
 .cactiAuthLogo {
 	position: relative;
 	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
-	width: 120px;
+	width: 130px;
         height: 148px;
 	z-index: 2;
 	margin-top: -195px;
@@ -1856,11 +1862,11 @@ tr.selected a {
 	color: yellow;
 }
 
-#nav li a.pic:hover:not(.selected) {
-	background: rgba(224,224,224,1);
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
+	background: rgba(0,119,0,0.3);
 }
 
-#nav li a.selected {
+#nav li a.selected, #nav li a.active {
 	color: white;
 	background: #3FA275;
 }
