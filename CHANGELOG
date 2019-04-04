@@ -1,5 +1,11 @@
 Cacti CHANGELOG
 
+1.2.4
+-issue#2590: Language selection is not working as expected
+-issue#2605: When checking for tables to upgrade, undefined variable $config error occurs
+-issue#2608: db_update_table() function should not require an engine type or comment
+-issue#2610: Data Sources troubleshooter generates warning that each() function is deprecated
+
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
 -issue#2282: Install Wizard does not Detect RRDtool Version on Windows

@@ -894,13 +894,13 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		WHERE TABLE_SCHEMA = SCHEMA()
 		AND TABLE_NAME = '$table'", $log, $db_conn);
 
-	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
+	if (isset($info['TABLE_COMMENT']) && isset($data['comment']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
 		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
 			return false;
 		}
 	}
 
-	if (isset($info['ENGINE']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
 		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
 			return false;
 		}

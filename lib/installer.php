@@ -1546,7 +1546,7 @@ class Installer implements JsonSerializable {
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
-		$langOutput = '<select id=\'language\' name=\'theme\'>';
+		$langOutput = '<select id=\'language\' name=\'language\'>';
 		foreach ($this->locales as $key => $value) {
 			$selected = '';
 			$langOutput .= PHP_EOL . $this->language . " == $key [$value]" . PHP_EOL;
@@ -2295,6 +2295,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckTables() {
+		global $config;
 		$output = Installer::sectionTitle(__('Server Collation'));
 
 		$collation_vars = array_rekey(db_fetch_assoc('SHOW VARIABLES LIKE "collation_%";'), 'Variable_name', 'Value');

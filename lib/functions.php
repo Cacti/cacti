@@ -334,6 +334,26 @@ function set_config_option($config_name, $value) {
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
+
+	$config_array = array();
+	if (isset($_SESSION['sess_config_array'])) {
+		$config_array = $_SESSION['sess_config_array'];
+	} elseif (isset($config['config_options_array'])) {
+		$config_array = $config['config_options_array'];
+	}
+
+	$config_array[$config_name] = $value;
+
+	// Store the array back for later retrieval
+	if (isset($_SESSION)) {
+		$_SESSION['sess_config_array']  = $config_array;
+	} else {
+		$config['config_options_array'] = $config_array;
+	}
+
+	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+	}
 }
 
 /* config_value_exists - determines if a value exists for the current user/setting specified
