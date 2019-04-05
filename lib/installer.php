@@ -511,13 +511,17 @@ class Installer implements JsonSerializable {
 
 	private function getLanguage() {
 		$language = read_config_option('install_language');
+		$section = 'install';
+
 		if (empty($language)) {
 			$language = read_config_option('i18n_default_language');
+			$section = 'i18n';
 			if (empty($language) && isset($_SESSION['sess_user_id'])) {
 				$language = read_user_setting('user_language', get_new_user_default_language(), true);
+				$section = 'user';
 			}
 		}
-		log_install_medium('language', 'getLanguage(): ' . $language);
+		log_install_medium('language', 'getLanguage(): ' . $language . ' [' . $section . ']');
 		return $language;
 	}
 
@@ -540,6 +544,10 @@ class Installer implements JsonSerializable {
 					$_SESSION['sess_user_language'] = $param_language;
 					set_user_setting('user_language', $param_language);
 				}
+
+				$test_i18n = read_config_option('i18n_default_language');
+				$test_install = read_config_option('install_language');
+				log_install_debug('language','setLanguage(): ' . $test_i18n . ' / ' . $test_install);
 			}
 		}
 	}
@@ -2710,18 +2718,24 @@ class Installer implements JsonSerializable {
 
 		set_config_option('install_error',$failure);
 		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
-		set_config_option('install_version', CACTI_VERSION_FULL);
+
+		$version = is_cacti_develop($cacti_upgrade_version) ? CACTI_DEV_VERSION : CACTI_VERSION_FULL;
+		set_config_option('install_version', $version);
+
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
 
 		if (empty($failure)) {
+			log_install_debug('', 'Set database version to ' . $version);
+
 			db_execute('TRUNCATE TABLE version');
-			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION_FULL . '\');');
+			db_execute_prepared('INSERT INTO version (cacti) VALUES (?)', array($version));
 
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_COMPLETE);
 		} else {
 			log_install_always('', $failure);
+
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
 			$this->setStep(Installer::STEP_ERROR);
 		}
@@ -3108,7 +3122,8 @@ class Installer implements JsonSerializable {
 		}
 
 		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<=')) {
-			db_execute("UPDATE version SET cacti = '" . CACTI_VERSION_FULL . "'");
+			db_execute_prepared('UPDATE version SET cacti = ?', array($cacti_upgrade_version));
+			set_config_option('install_version', $cacti_upgrade_version);
 		}
 		return false;
 	}
