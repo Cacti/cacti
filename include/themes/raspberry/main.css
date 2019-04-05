@@ -107,9 +107,19 @@ label {
 	white-space: nowrap;
 }
 
+#tab-console {
+	display: inline-block;
+	background-image: url('images/berry.svg');
+	background-size: 32px;
+	background-position: 45% 45%;
+	background-repeat: no-repeat;
+	min-width: 32px;
+	overflow: hidden;
+	margin: 0;
+}
+
 .glyph_tab-console:before {
-	content: '\f7bb';
-	font-family: "Font Awesome 5 Brands";
+	content: '';
 }
 
 .text_tab-console {
