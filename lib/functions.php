@@ -6487,10 +6487,13 @@ function is_install_needed($version = NULL)
 			$mode = '<';
 		} else {
 			$version = CACTI_VERSION_FULL;
-		}
 	}
 
-	return (cacti_version_compare($db, $version, $mode));
+	$result = (cacti_version_compare($db, $version, $mode));
+	if (function_exists('log_install_medium')) {
+		log_install_medium('step', "$result = (cacti_version_compare($db, $version, $mode)");
+	}
+	return $result;
 }
 
 function is_cacti_develop($version = null)
