@@ -124,10 +124,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
 
-			$timezone = db_fetch_cell_prepared('SELECT timezone
-				FROM poller
-				WHERE id = ?',
-				array($config['poller_id']), false);
+			if (db_column_exists('poller', 'timezone')) {
+				$timezone = db_fetch_cell_prepared('SELECT timezone
+					FROM poller
+					WHERE id = ?',
+					array($config['poller_id']), false);
+			} else {
+				$timezone = '';
+			}
 
 			if ($timezone != '') {
 				db_execute_prepared('SET SESSION time_zone = ?', array($timezone), false);
