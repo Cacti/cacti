@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.4
 -issue#2590: Language selection is not working as expected
+-issue#2604: SQL error when add a dataquery
 -issue#2605: When checking for tables to upgrade, undefined variable $config error occurs
 -issue#2608: db_update_table() function should not require an engine type or comment
 -issue#2609: SQL error if upgrade cacti from pre-1.2.0
