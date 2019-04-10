@@ -642,7 +642,8 @@ function db_add_index($table, $type, $key, $columns) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_index_exists($table, $index, $log = true, $db_conn = false) {
-	global $database_log;
+	global $database_log, $config;
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -670,7 +671,8 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
-	global $database_log;
+	global $database_log, $config;
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -924,7 +926,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 					$del = array_diff($index, $k['columns']);
 					if (!empty($add) || !empty($del)) {
 						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($key['columns']) . ')', $log, $db_conn)) {
+						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 							return false;
 						}
 					}
@@ -944,7 +946,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($key['columns']) . ')', $log, $db_conn)) {
+				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -1476,6 +1478,7 @@ function db_get_column_length($table, $column) {
 
 function db_check_password_length() {
 	$len = db_get_column_length('user_auth', 'password');
+
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
 	} else if ($len < 80) {
