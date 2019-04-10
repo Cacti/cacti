@@ -2284,7 +2284,7 @@ tr#realtime td:first-child {
 }
 
 .logEmergency {
-	background-color: rgba(250, 116, 32, 0.8);
+	background-color: rgba(255, 6, 6, 0.8);
 	text-align: center;
 	width: 12.5%;
 	color: #0A0A0A;
