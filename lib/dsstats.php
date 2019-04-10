@@ -187,7 +187,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 	/* don't attempt to get information if the file does not exist */
 	if ($file_exists) {
 		/* high speed or snail speed */
-		if ($use_proxy) {
+		if ($use_proxy || !is_resource($rrdtool_pipe)) {
 			$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
 		} else {
 			$info = dsstats_rrdtool_execute("info $rrdfile", $rrdtool_pipe);
@@ -281,7 +281,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 
 			//print $stats_cmd . PHP_EOL;
 
-			if ($use_proxy) {
+			if ($use_proxy || !is_resource($rrdtool_pipe)) {
 				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
 			} else {
 				$xport_data = dsstats_rrdtool_execute($stats_cmd, $rrdtool_pipe);
