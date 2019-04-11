@@ -844,6 +844,8 @@ function graph_edit() {
 					}
 
 					changeTotals();
+
+					updateSaveButton();
 				});
 
 				$('#total').change(function() {
@@ -865,7 +867,25 @@ function graph_edit() {
 						}
 					}
 				});
+
+				updateSaveButton();
 			});
+
+			function updateSaveButton() {
+				if ($('input[id^="agg_total"]').is(':checked')) {
+					$('#submit').prop('disabled', false);
+
+					if ($('#submit').button('instance')) {
+						$('#submit').button('enable');
+					}
+				} else {
+					$('#submit').prop('disabled', true);
+
+					if ($('#submit').button('instance')) {
+						$('#submit').button('disable');
+					}
+				}
+			}
 
 			function changeTotals() {
 				switch ($('#total').val()) {

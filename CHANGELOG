@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#2590: Language selection is not working as expected
 -issue#2592: Display graphs from this aggregate can not work
 -issue#2593: Can not migrate aggregate to use a template
+-issue#2598: Create aggregate without aggregate graph tempate, rrdtools error 
 -issue#2599: SQL error when create aggregate graph
 -issue#2604: SQL error when add a dataquery
 -issue#2605: When checking for tables to upgrade, undefined variable $config error occurs
