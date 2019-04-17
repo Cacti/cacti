@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#2622: Various PHP undefined variable in database.php
 -issue#2623: Invalid HTML when draw textarea: form_text_area
 -issue#2627: Lost partial log files name in Logs(tab)->File(filter selector)
+-issue#2629: Authentication bug on Cacti upgrade
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
