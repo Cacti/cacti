@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.4
+-issue#2523: Test email failure on PHP 7.3
 -issue#2589: DSStats throws errors when RRDfile has not been created
 -issue#2590: Language selection is not working as expected
 -issue#2592: Display graphs from this aggregate can not work
