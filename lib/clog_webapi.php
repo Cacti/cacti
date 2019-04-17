@@ -426,9 +426,14 @@ function filter($clogAdmin, $selectedFile) {
 									continue;
 								}
 
-								$stdLogFileArray[] = $logFile;
+								if (strpos($logFile, $stderrLogBase) === 0){
+									$stdErrFileArray[] = $logFile;
+								} else {
+									$stdLogFileArray[] = $logFile;
+								}
 							}
 
+							$stdErrFileArray = array_unique($stdErrFileArray);
 							$stdLogFileArray = array_unique($stdLogFileArray);
 						}
 
@@ -467,7 +472,7 @@ function filter($clogAdmin, $selectedFile) {
 						arsort($stdLogFileArray, SORT_NATURAL);
 						arsort($stdErrFileArray, SORT_NATURAL);
 
-						$logFileArray = $stdFileArray + $stdLogFileArray + $stdErrFileArray;
+						$logFileArray = array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray));
 
 						if (cacti_sizeof($logFileArray)) {
 							foreach ($logFileArray as $logFile) {
