@@ -1509,8 +1509,8 @@ function db_error() {
 	return $database_last_error;
 }
 
-// db_get_default_database - Get the database name of the current database or return the default database name
-// @returns - string - either current db name or configuration default if no connection/name
+/* db_get_default_database - Get the database name of the current database or return the default database name
+   @returns - string - either current db name or configuration default if no connection/name */
 function db_get_default_database($db_conn = false) {
 	global $database_default;
 
@@ -1519,3 +1519,25 @@ function db_get_default_database($db_conn = false) {
 		$database = $database_default;
 	}
 }
+
+/* db_force_remote_cnn - force the remote collector to use main data collector connection
+   @returns - null */
+function db_force_remote_cnn() {
+	global $database_default, $database_hostname, $database_username, $database_password;
+	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca; 
+
+	global $rdatabase_default, $rdatabase_hostname, $rdatabase_username, $rdatabase_password;
+	global $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca; 
+
+	// Connection worked, so now override the default settings so that it will always utilize the remote connection
+	$database_default   = $rdatabase_default;
+	$database_hostname  = $rdatabase_hostname;
+	$database_username  = $rdatabase_username;
+	$database_password  = $rdatabase_password;
+	$database_port      = $rdatabase_port;
+	$database_ssl       = $rdatabase_ssl;
+	$database_ssl_key   = $rdatabase_ssl_key;
+	$database_ssl_cert  = $rdatabase_ssl_cert;
+	$database_ssl_ca    = $rdatabase_ssl_ca;
+}
+

@@ -1138,9 +1138,6 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 		$data = db_fetch_assoc('SELECT * FROM data_input');
 		replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
 
-		$data = db_fetch_assoc('SELECT * FROM automation_networks');
-		replicate_out_table($rcnn_id, $data, 'automation_networks', $remote_poller_id);
-
 		$data = db_fetch_assoc('SELECT * FROM host_template');
 		replicate_out_table($rcnn_id, $data, 'host_template', $remote_poller_id);
 

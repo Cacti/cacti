@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#2627: Lost partial log files name in Logs(tab)->File(filter selector)
 -issue#2629: Authentication bug on Cacti upgrade
 -issue#2632: Automated Network Scans are Not Working
+-issue#2635: Multiple Database Sync Issues in v1.2.x
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
