@@ -147,13 +147,11 @@ function grow_dhtml_trees() {
 	var search_to = false;
 
         <?php
-if(read_user_setting('tree_history')!='on'){
-echo 'window.onunload = function() {
-               localStorage.removeItem(\'graph_tree_history\');
-      }
-';
-}
+	if (read_user_setting('tree_history') != 'on') {
+		print 'window.onunload = function() { localStorage.removeItem(\'graph_tree_history\'); }';
+	}
         ?>
+
 	function resizeTreePanel() {
 		if (theme != 'classic') {
 			docHeight  = parseInt($('body').height());
