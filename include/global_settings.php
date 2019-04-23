@@ -2196,8 +2196,8 @@ $settings_user = array(
 			'default' => ''
 			),
                 'tree_history' => array(
-                        'friendly_name' => __('Tree history'),
-                        'description' => __('Choose whether to forget or not tree history when closing a graph tree tab'),
+                        'friendly_name' => __('Tree History'),
+                        'description' => __('If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page.'),
                         'method' => 'checkbox',
                         'default' => 'on'
                      )
