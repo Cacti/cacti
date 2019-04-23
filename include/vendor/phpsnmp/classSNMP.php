@@ -16,22 +16,15 @@
  +-------------------------------------------------------------------------+
 */
 
-define('SNMP_OID_OUTPUT_SUFFIX', 1);
-define('SNMP_OID_OUTPUT_MODULE', 2);
-define('SNMP_OID_OUTPUT_UCD', 5);
-define('SNMP_OID_OUTPUT_NONE', 6);
+namespace phpsnmp;
 
-if (!defined('SNMP_STRING_OUTPUT_GUESS')) {
-	define('SNMP_STRING_OUTPUT_GUESS', 1);
-}
-
-if (!defined('SNMP_STRING_OUTPUT_ASCII')) {
-	define('SNMP_STRING_OUTPUT_ASCII', 2);
-}
-
-if (!defined('SNMP_STRING_OUTPUT_HEX')) {
-	define('SNMP_STRING_OUTPUT_HEX', 3);
-}
+const SNMP_OID_OUTPUT_SUFFIX = 1;
+const SNMP_OID_OUTPUT_MODULE = 2;
+const SNMP_OID_OUTPUT_UCD = 5;
+const SNMP_OID_OUTPUT_NONE = 6;
+const SNMP_STRING_OUTPUT_GUESS = 1;
+const SNMP_STRING_OUTPUT_ASCII = 2;
+const SNMP_STRING_OUTPUT_HEX = 3;
 
 class SNMP {
 	const ERRNO_NOERROR = 0;

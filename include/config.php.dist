@@ -107,6 +107,13 @@ $disable_log_rotation = false;
 //$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
 
 /*
+ * Optional parameter to disable the PHP SNMP extension. If not set, defaults
+ * to class_exists('SNMP').
+ */
+
+//$php_snmp_support = false;
+
+/*
  * The following are optional variables for debugging low level system
  * functions that are generally only used by Cacti Developers to help
  * identify potential issues in commonly used functions
