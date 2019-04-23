@@ -634,9 +634,9 @@ if (cacti_sizeof($parms)) {
 				$req  .= ' AND snmp_index IN (
 					SELECT DISTINCT snmp_index FROM host_snmp_cache WHERE host_id=' . $host_id . ' AND field_name = ' . db_qstr($snmpField);
 
-				if (cacti_sizeof($dsGraph['snmpValue'])) {
+				if (isset($dsGraph['snmpValue'][$index_snmp_filter])) {
 					$req .= ' AND field_value = ' . db_qstr($dsGraph['snmpValue'][$index_snmp_filter]). ')';
-				} else {
+				} elseif (isset($dsGraph['snmpValueRegex'][$index_snmp_filter])) {
 					$req .= ' AND field_value REGEXP "' . addslashes($dsGraph['snmpValueRegex'][$index_snmp_filter]) . '")';
 				}
 
