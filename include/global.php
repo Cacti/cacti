@@ -187,7 +187,11 @@ $colors = array();
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 
 /* built-in snmp support */
-$config['php_snmp_support'] = function_exists('snmpget');
+if (isset($php_snmp_support)) {
+	$config['php_snmp_support'] = $php_snmp_support;
+} else {
+	$config['php_snmp_support'] = class_exists('SNMP');
+}
 
 /* Set various debug fields */
 $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
