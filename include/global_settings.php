@@ -434,6 +434,18 @@ $settings = array(
 			'default' => 'on',
 			'method' => 'checkbox',
 			),
+                'ds_preselected_delete' => array(
+                        'friendly_name' => __('Data Source Preservation Preset'),
+                        'description' => __('When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs.'),
+                        'method' => 'checkbox',
+                        'default' => 'on'
+                        ),
+                'graphs_auto_unlock' => array(
+                        'friendly_name' => __('Graphs auto unlock'),
+                        'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
+                        'method' => 'checkbox',
+                        'default' => ''
+                        ),
 		'hide_console' => array(
 			'friendly_name' => __('Hide Cacti Dashboard'),
 			'description' => __('For use with Cacti\'s External Link Support.  Using this setting, you can hide the Cacti Dashboard, so you can display just your own page.'),
@@ -960,19 +972,7 @@ $settings = array(
 			'method' => 'font',
 			'placeholder' => __('Enter Valid Font Config Value'),
 			'max_length' => '100'
-			),
-                'ds_preselected_delete' => array(
-                        'friendly_name' => __('Data Source preselected delete'),
-                        'description' => __('When enabled, Cacti will set radio button to delete related datasources of a graph when deleting it. Disabling it may avoid loss of data'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                        ),
-                'graphs_auto_unlock' => array(
-                        'friendly_name' => __('Graphs auto unlock'),
-                        'description' => __('When enabled, Cacti will never lock graphs, this allow a faster manual change of datasources related to a graph.'),
-                        'method' => 'checkbox',
-                        'default' => 'off'
-                        )
+			)
 		),
 	'poller' => array(
 		'poller_header' => array(
