@@ -66,7 +66,8 @@ Cacti CHANGELOG
 -issue#2525: Tree branches that includes sites which have valid devices do not appear on Graph Tree
 -issue#2527: When importing a package, if Cacti version is below the version which that exported, a clear message should be shown
 -issue#2531: When updating color template items, the table name used is incorrect by Givo29
--issue#2535: Ensure Graph ListView uses same UI logic as Graph Management
+-issue#2532: Ensure Graph ListView table is displayed in line with Management -> Graphs
+-issue#2535: Ensure Graph ListView uses same UI logic as Graph Management -> Graphs
 -issue#2537: Incorrect title showing when changes are made to Tree
 -issue#2543: Poor performance showing a device's graphs on a tree
 -issue#2547: RRD values are not being properly trimmed
@@ -86,6 +87,9 @@ Cacti CHANGELOG
 -issue#2584: When user/group permissions are reset, this is not reflected immediately to the end user
 -feature#2505: Improve performance of Data Source Statistics
 -feature#2515: Allow more than one SNMP port to be specified when adding devices via CLI
+-feature#2538: New global setting to change datasource behaviour when deleting graph 
+-feature#2539: New global setting to add permanent unlock of graphs
+-feature#2540: New user setting to forget graph tree history on tab close
 -feature: Update phpseclib to version 2.0.15
 -feature: Adjust the max table rows based upon value of 'max_input_vars'
 
