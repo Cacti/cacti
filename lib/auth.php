@@ -679,7 +679,7 @@ function is_realm_allowed($realm) {
 			return false;
 		}
 
-		if (!user_perms_valid($_SESSION['sess_user_id'])) {
+		if (!is_user_perms_valid($_SESSION['sess_user_id'])) {
 			kill_session_var('sess_user_realms');
 			kill_session_var('sess_user_config_array');
 			kill_session_var('sess_config_array');
@@ -2569,37 +2569,32 @@ function reset_user_perms($user_id) {
 		array($user_id));
 }
 
-/* user_perms_valid - checks to see if the admin has changed users permissions
+/* is_user_perms_valid - checks to see if the admin has changed users permissions
    @arg $user_id - (int) the id of the current user
    @returns - true if still valid, false otherwise */
-function user_perms_valid($user_id) {
+function is_user_perms_valid($user_id) {
 	global $config;
 
-	static $valid = 'null';
+	static $valid = NULL;
+	static $key = NULL;
 
-	if ($valid === 'null') {
-		$valid = true;
+	if (isset($_SESSION['sess_user_perms_key'])) {
+		$key = $_SESSION['sess_user_perms_key'];
+	} else {
+		$_SESSION['sess_user_perms_key'] = false;
+	}
 
+	if ($valid === NULL) {
 		if (cacti_version_compare($config['cacti_db_version'], '1.0.0', '>=')) {
 			$key = db_fetch_cell_prepared('SELECT reset_perms
 				FROM user_auth
 				WHERE id = ?',
 				array($user_id));
-
-			if (isset($_SESSION['sess_user_perms_key'])) {
-				if ($key != $_SESSION['sess_user_perms_key']) {
-					$valid = false;
-				}
-			}
-
-			$_SESSION['sess_user_perms_key'] = $key;
-		} else {
-			$_SESSION['sess_user_perms_key'] = $valid;
 		}
-	} else {
-		$valid = true;
-		$_SESSION['sess_user_perms_key'] = $valid;
 	}
+
+	$valid = ($_SESSION['sess_user_perms_key'] === $key);
+	$_SESSION['sess_user_perms_key'] = $key;
 
 	return $valid;
 }

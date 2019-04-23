@@ -116,6 +116,7 @@ $cacti_version_codes = array(
 	'1.2.1'  => '0101',
 	'1.2.2'  => '0101',
 	'1.2.3'  => '0102',
+	'1.2.4'  => '0102',
 );
 
 $messages = array(
@@ -353,6 +354,12 @@ $messages = array(
 	'resource_cache_rebuild' => array(
 		'message' => __('Poller Resource Cache cleared.  Main Data Collector will rebuild at the next poller start, and Remote Data Collectors will sync afterwards.'),
 		'level' => MESSAGE_LEVEL_INFO),
+	'permission_denied' => array(
+		'message' => __('Permission Denied.  You do not have permission to the requested action.'),
+		'level' => MESSAGE_LEVEL_ERROR),
+	'page_not_defined' => array(
+		'message' => __('Page is not defined.  Therefore, it can not be displayed.'),
+		'level' => MESSAGE_LEVEL_ERROR),
 	'custom_error' => array(
 		'message' => __('Unexpected error occurred'),
 		'level' => MESSAGE_LEVEL_ERROR)
@@ -983,29 +990,43 @@ $log_tail_lines = array(
 );
 
 $item_rows = array(
-	10   => '10',
-	15   => '15',
-	16   => '16',
-	17   => '17',
-	18   => '18',
-	19   => '19',
-	20   => '20',
-	21   => '21',
-	22   => '22',
-	23   => '23',
-	24   => '24',
-	25   => '25',
-	26   => '26',
-	27   => '27',
-	30   => '30',
-	40   => '40',
-	44   => '44',
-	45   => '45',
-	50   => '50',
-	100  => '100',
-	250  => '250',
-	500  => '500'
+	10    => '10',
+	15    => '15',
+	16    => '16',
+	17    => '17',
+	18    => '18',
+	19    => '19',
+	20    => '20',
+	21    => '21',
+	22    => '22',
+	23    => '23',
+	24    => '24',
+	25    => '25',
+	26    => '26',
+	27    => '27',
+	30    => '30',
+	40    => '40',
+	44    => '44',
+	45    => '45',
+	50    => '50',
+	100   => '100',
+	250   => '250',
+	500   => '500',
+	750   => '750',
+	1000  => '1000',
+	2000  => '2000',
+	3000  => '3000',
+	4000  => '4000',
+	5000  => '5000',
 );
+
+// Adjust the number of items rows based upon max_input_vars
+$max_size = ini_get('max_input_vars') - 20;
+foreach($item_rows as $index => $row) {
+	if ($index > $max_size) {
+		unset($item_rows[$index]);
+	}
+}
 
 $graphs_per_page = array(
 	4   => '4',

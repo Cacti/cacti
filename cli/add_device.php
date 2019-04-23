@@ -498,7 +498,7 @@ function display_help() {
 	print "    --privproto    '', snmp privacy protocol for snmpv3\n";
 	print "    --context      '', snmp context for snmpv3\n";
 	print "    --engineid     '', snmp engineid for snmpv3\n";
-	print "    --max_oids     10, 1-60, the number of OID's that can be obtained in a single SNMP Get request\n\n";
+	print "    --max_oids     10, 1-60, the number of OIDs that can be obtained in a single SNMP Get request\n\n";
 	print "List Options:\n";
 	print "    --list-host-templates\n";
 	print "    --list-communities\n";

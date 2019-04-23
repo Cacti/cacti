@@ -37,6 +37,8 @@ plugins/**
 scripts/**
 # Ignore Custom Cacti theme folders
 include/themes/*
+# Ignore custom stylesheet (applied on all themes)
+include/themes/custom.css
 # Do not ignore standard Cacti theme folders
 !include/themes/classic
 !include/themes/dark

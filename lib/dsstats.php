@@ -35,7 +35,7 @@ function get_rrdfile_names() {
 		AND data_template_data.local_data_id != 0');
 }
 
-/* dsstats_debug - this simple routine print's a standard message to the console
+/* dsstats_debug - this simple routine prints a standard message to the console
      when running in debug mode.
    @returns - NULL */
 function dsstats_debug($message) {
@@ -168,7 +168,7 @@ function dsstats_write_buffer(&$stats_array, $interval) {
         gather data from the RRDfile for the time period in question.  It allows RRDtool to select the RRA to
         use by simply limiting the number of rows to be returned to the default.
 
-     Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to it's
+     Once it has all of the information from the RRDfile.  It then decomposes the resulting XML file to its
      components and then calculates the AVERAGE and MAX values from that data and returns an array to the calling
      function for storage into the respective database table.
    @returns - (mixed) An array of AVERAGE, and MAX values in an RRDfile by Data Source name */
@@ -187,7 +187,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 	/* don't attempt to get information if the file does not exist */
 	if ($file_exists) {
 		/* high speed or snail speed */
-		if ($use_proxy) {
+		if ($use_proxy || !is_resource($rrdtool_pipe)) {
 			$info = rrdtool_execute("info $rrdfile", false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
 		} else {
 			$info = dsstats_rrdtool_execute("info $rrdfile", $rrdtool_pipe);
@@ -281,7 +281,7 @@ function dsstats_obtain_data_source_avgpeak_values($rrdfile, $interval, $rrdtool
 
 			//print $stats_cmd . PHP_EOL;
 
-			if ($use_proxy) {
+			if ($use_proxy || !is_resource($rrdtool_pipe)) {
 				$xport_data = rrdtool_execute($stats_cmd, false, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'DSSTATS');
 			} else {
 				$xport_data = dsstats_rrdtool_execute($stats_cmd, $rrdtool_pipe);
@@ -483,7 +483,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 			$overhead         = strlen($sql_cache_prefix) + strlen($sql_suffix);
 			$overhead_last    = strlen($sql_last_prefix) + strlen($sql_last_suffix);
 
-			/* determine the keyvalue pair's to decide on how to store data */
+			/* determine the keyvalue pairs to decide on how to store data */
 			$ds_types = array_rekey(
 				db_fetch_assoc('SELECT DISTINCT data_source_name, data_source_type_id, rrd_step
 					FROM data_template_rrd

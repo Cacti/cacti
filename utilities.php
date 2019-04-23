@@ -1543,7 +1543,7 @@ function utilities_view_snmp_cache() {
 			<?php print filter_value($item['name'], get_request_var('filter'));?>
 		</td>
 		<td>
-			<?php print $item['snmp_index'];?>
+			<?php print html_escape($item['snmp_index']);?>
 		</td>
 		<td>
 			<?php print filter_value($item['field_name'], get_request_var('filter'));?>
@@ -1837,7 +1837,7 @@ function utilities_view_poller_cache() {
 				</td>
 
 				<td>
-					<?php print $item['description'];?>
+					<?php print html_escape($item['description']);?>
 				</td>
 
 				<td>
@@ -1846,12 +1846,12 @@ function utilities_view_poller_cache() {
 					if ($item['snmp_version'] != 3) {
 						$details =
 							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-							__('Community:') . ' ' . $item['snmp_community'] . ', ' .
+							__('Community:') . ' ' . html_escape($item['snmp_community']) . ', ' .
 							__('OID:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
 					} else {
 						$details =
 							__('SNMP Version:') . ' ' . $item['snmp_version'] . ', ' .
-							__('User:') . ' ' . $item['snmp_username'] . ', ' . __('OID:') . ' ' . $item['arg1'];
+							__('User:') . ' ' . html_escape($item['snmp_username']) . ', ' . __('OID:') . ' ' . html_escape($item['arg1']);
 					}
 				} elseif ($item['action'] == 1) {
 						$details = __('Script:') . ' ' . filter_value($item['arg1'], get_request_var('filter'));
@@ -1860,6 +1860,7 @@ function utilities_view_poller_cache() {
 				}
 
 				print $details;
+
 				?>
 				</td>
 			</tr>
@@ -1869,7 +1870,7 @@ function utilities_view_poller_cache() {
 				<td colspan='2'>
 				</td>
 				<td>
-					<?php print __('RRD:');?> <?php print $item['rrd_path'];?>
+					<?php print __('RRD:');?> <?php print html_escape($item['rrd_path']);?>
 				</td>
 			</tr>
 			<?php

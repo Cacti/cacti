@@ -144,13 +144,15 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 	$asum_array = array();
 
 	foreach ($local_data_ids as $ldi => $data_source_name) {
-		if (isset($fetch_array[$ldi]['data_source_names'])) {
+		if (cacti_sizeof($fetch_array[$ldi]['data_source_names'])) {
 			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $ds_name) {
-				foreach ($fetch_array[$ldi]['values'][$index] as $timestamp => $data) {
-					if (isset($asum_array[$ds_name][$timestamp])) {
-						$asum_array[$ds_name][$timestamp] += $data;
-					} else {
-						$asum_array[$ds_name][$timestamp]  = $data;
+				if (cacti_sizeof($fetch_array[$ldi]['values'][$index])) {
+					foreach ($fetch_array[$ldi]['values'][$index] as $timestamp => $data) {
+						if (isset($asum_array[$ds_name][$timestamp])) {
+							$asum_array[$ds_name][$timestamp] += $data;
+						} else {
+							$asum_array[$ds_name][$timestamp]  = $data;
+						}
 					}
 				}
 			}

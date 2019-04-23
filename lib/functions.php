@@ -334,6 +334,26 @@ function set_config_option($config_name, $value) {
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
+
+	$config_array = array();
+	if (isset($_SESSION['sess_config_array'])) {
+		$config_array = $_SESSION['sess_config_array'];
+	} elseif (isset($config['config_options_array'])) {
+		$config_array = $config['config_options_array'];
+	}
+
+	$config_array[$config_name] = $value;
+
+	// Store the array back for later retrieval
+	if (isset($_SESSION)) {
+		$_SESSION['sess_config_array']  = $config_array;
+	} else {
+		$config['config_options_array'] = $config_array;
+	}
+
+	if (!empty($config['DEBUG_SET_CONFIG_OPTION'])) {
+		file_put_contents(sys_get_temp_dir() . '/cacti-option.log', get_debug_prefix() . cacti_debug_backtrace($config_name, false, false, 0, 1) . "\n", FILE_APPEND);
+	}
 }
 
 /* config_value_exists - determines if a value exists for the current user/setting specified
@@ -635,7 +655,7 @@ function get_format_message_instance($current_message) {
 	return $message;
 }
 
-/* get_message_max_type - finds the message and returns it's type
+/* get_message_max_type - finds the message and returns its type
    @returns - (string) the message type 'info', 'warn', 'error' or 'csrf' */
 function get_message_max_type() {
 	global $messages;
@@ -2507,7 +2527,7 @@ function draw_navigation_text($type = 'url') {
 			}
 		}
 
-		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . $leaf_name:'') . ($leaf_sub != '' ? ':' . $leaf_sub . ')':($leaf_name != '' ? ')':''));
+		$tree_title = $tree_name . ($leaf_name != '' ? ' (' . trim($leaf_name):'') . ($leaf_sub != '' ? ':' . trim($leaf_sub) . ')':($leaf_name != '' ? ')':''));
 
 		if ($tree_title != '') {
 			$current_nav .= "<li><a id='nav_title' href=#>" . html_escape($tree_title) . '</a></li>';
@@ -3696,7 +3716,7 @@ function split_emaildetail($email) {
 	if (!is_array($email)) {
 		$email = trim($email);
 
-		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w-\.\+]+)@((?:[\w\-]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w\-.\+]+)@((?:[\w\-]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
 		preg_match($sPattern, $email, $aMatch);
 
 		if (isset($aMatch[1])) {

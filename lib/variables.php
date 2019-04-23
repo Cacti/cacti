@@ -169,13 +169,27 @@ function null_out_substitutions($string) {
 function expand_title($host_id, $snmp_query_id, $snmp_index, $title) {
 	if ((strstr($title, '|')) && (!empty($host_id))) {
 		if (($snmp_query_id != '0') && ($snmp_index != '')) {
-			return substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
+			$title = substitute_snmp_query_data(null_out_substitutions(substitute_host_data($title, '|', '|', $host_id)), $host_id, $snmp_query_id, $snmp_index, read_config_option('max_data_query_field_length'));
 		} else {
-			return null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
+			$title = null_out_substitutions(substitute_host_data($title, '|', '|', $host_id));
 		}
 	} else {
-		return null_out_substitutions($title);
+		$title = null_out_substitutions($title);
 	}
+
+	$data = array(
+		'host_id'       => $host_id,
+		'snmp_query_id' => $snmp_query_id,
+		'snmp_index'    => $snmp_index,
+		'title'         => $title
+	);
+
+	$data = api_plugin_hook_function('expand_title', $data);
+	if (isset($data['title'])) {
+		$title = $data['title'];
+	}
+
+	return $title;
 }
 
 /* substitute_script_query_path - takes a string and substitutes all path variables contained in it

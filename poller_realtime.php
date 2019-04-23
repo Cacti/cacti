@@ -118,7 +118,7 @@ if ($cron_interval != 60) {
 /* assume a scheduled task of either 60 or 300 seconds */
 define('MAX_POLLER_RUNTIME', 298);
 
-/* let PHP only run 1 second longer than the max runtime, plus the poller needs lot's of memory */
+/* let PHP only run 1 second longer than the max runtime, plus the poller needs lots of memory */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
 
 /* initialize file creation flags */
@@ -213,8 +213,8 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 
 				/* WIN32: before sending this command off to rrdtool, get rid
 				of all of the '\' characters. Unix does not care; win32 does.
-				Also make sure to replace all of the fancy \'s at the end of the line,
-				but make sure not to get rid of the "\n"'s that are supposed to be
+				Also make sure to replace all of the fancy "\"s at the end of the line,
+				but make sure not to get rid of the "\n"s that are supposed to be
 				in there (text format) */
 				$command = str_replace("\\\n", " ", $command);
 
@@ -228,7 +228,7 @@ function process_poller_output_rt($rrdtool_pipe, $poller_id, $interval) {
 				@chmod($rt_graph_path, 0644);
 			}
 
-			/* now, let's update the path to keep the RRD's updated */
+			/* now, let's update the path to keep the RRDs updated */
 			$item['rrd_path'] = $rt_graph_path;
 
 			/* cleanup the value */

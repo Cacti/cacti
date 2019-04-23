@@ -1012,8 +1012,10 @@ function md5sum_path($path, $recursive = true) {
 				$filemd5s[] = md5sum_path($path . DIRECTORY_SEPARATOR. $entry, $recursive);
 			} elseif (is_dir($path . DIRECTORY_SEPARATOR . $entry)) {
 				// Ignore directories who are not recursive
-			} else {
+			} elseif (is_readable($path . DIRECTORY_SEPARATOR . $entry)) {
 				$filemd5s[] = md5_file($path . DIRECTORY_SEPARATOR . $entry);
+			} else {
+				cacti_log('WARNING: Unable to read file \'' . $path . DIRECTORY_SEPARATOR . $entry . '\' into Cacti resource cache.', false, 'POLLER');
 			}
          }
     }
@@ -1120,6 +1122,7 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 			AND name NOT LIKE "stats%"
 			AND name != "rrdtool_version"
 			AND name NOT LIKE "poller_replicate%"
+			AND name NOT LIKE "install%"
 			AND name != "poller_enabled"
 			AND name NOT LIKE "md5dirsum%"
 			UNION

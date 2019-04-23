@@ -292,14 +292,14 @@ function display_help() {
 	print "Options:" . PHP_EOL;
 	print "    --graph-template-id=ID  Mandatory list of Graph Templates." . PHP_EOL;
 	print "    --host-template-id=ID   Optional list of Device Templates." . PHP_EOL;
-	print "    --host-id=ID            Optional list of Device ID's." . PHP_EOL;
+	print "    --host-id=ID            Optional list of Device IDs." . PHP_EOL;
 	print "    --graph-regex=R         Optional Graph name regular expression." . PHP_EOL;
 	print "    --force                 Actually remove the Graphs, dont just list." . PHP_EOL;
 	print "    --preserve              Preserve the Data Sources.  Default is to remove." . PHP_EOL . PHP_EOL;
 
-	print "By default, you must provide from one to many graph-template-id.  Device Template id's" . PHP_EOL;
-	print "Device id's and the regular expression are optional.  If you wish to specify multiple" . PHP_EOL;
-	print "ID's, just repeat the parameter ex: --host-template-id=X --host-template-id=Y" . PHP_EOL . PHP_EOL;
+	print "By default, you must provide from one to many graph-template-id.  Device Template IDs" . PHP_EOL;
+	print "Device IDs and the regular expression are optional.  If you wish to specify multiple" . PHP_EOL;
+	print "IDs, just repeat the parameter ex: --host-template-id=X --host-template-id=Y" . PHP_EOL . PHP_EOL;
 
 	print "By default, this utility will only report on the number of Graphs that will be removed.  If you" . PHP_EOL;
 	print "provide the --force option, the Graphs will actually be removed.  If you use the --list option" . PHP_EOL;

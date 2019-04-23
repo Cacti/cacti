@@ -119,7 +119,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP Auth */
  		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
 			/* include LDAP lib */
-			include_once('./lib/ldap.php');
+			include_once(dirname(__FILE__) . '/lib/ldap.php');
 
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);

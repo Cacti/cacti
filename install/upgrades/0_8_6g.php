@@ -23,7 +23,7 @@
 */
 
 function upgrade_to_0_8_6g() {
-	/* changes for even longer OID's */
+	/* changes for even longer OIDs */
 	db_install_execute("ALTER TABLE `host_snmp_cache` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
 	db_install_execute("ALTER TABLE `data_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");
 	db_install_execute("ALTER TABLE `graph_local` CHANGE `snmp_index` `snmp_index` VARCHAR( 255 ) NOT NULL;");

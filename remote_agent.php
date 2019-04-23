@@ -41,6 +41,10 @@ require_once($config['base_path'] . '/lib/utility.php');
 $debug = false;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
+	if (get_request_var('action') == 'runquery') {
+		db_force_remote_cnn();
+	}
+
 	$poller_db_cnn_id = $remote_db_cnn_id;
 } else {
 	$poller_db_cnn_id = false;
@@ -454,3 +458,4 @@ function run_remote_discovery() {
 
 	return;
 }
+

@@ -140,7 +140,9 @@ function form_save() {
 			if ($snmp_query_id) {
 				raise_message(1);
 
-				data_query_update_input_method($snmp_query_id, $previous_input_id, $save['data_input_id']);
+				if (isset($previous_input_id) && $previous_input_id > 0) {
+					data_query_update_input_method($snmp_query_id, $previous_input_id, $save['data_input_id']);
+				}
 
 				update_replication_crc(0, 'poller_replicate_snmp_query_crc');
 			} else {

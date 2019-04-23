@@ -437,10 +437,30 @@ function aggregate_template_edit() {
 			} else {
 				$('#'+altId).prop('checked', true);
 			}
+
+			updateSaveButton();
 		});
 
 		changeTotals();
+
+		updateSaveButton();
 	});
+
+	function updateSaveButton() {
+		if ($('input[id^="agg_total"]').is(':checked')) {
+			$('#submit').prop('disabled', false);
+
+			if ($('#submit').button('instance')) {
+				$('#submit').button('enable');
+			}
+		} else {
+			$('#submit').prop('disabled', true);
+
+			if ($('#submit').button('instance')) {
+				$('#submit').button('disable');
+			}
+		}
+	}
 
 	function changeTotals() {
 		switch ($('#total').val()) {

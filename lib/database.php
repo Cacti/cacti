@@ -100,7 +100,7 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			$ver = db_get_global_variable('version', $cnn_id);
 
-	        if (strpos($ver, 'MariaDB') !== false) {
+			if (strpos($ver, 'MariaDB') !== false) {
 				$srv = 'MariaDB';
 				$ver  = str_replace('-MariaDB', '', $ver);
 			} else {
@@ -124,10 +124,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 
 			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
 
-			$timezone = db_fetch_cell_prepared('SELECT timezone
-				FROM poller
-				WHERE id = ?',
-				array($config['poller_id']), false);
+			if (db_column_exists('poller', 'timezone')) {
+				$timezone = db_fetch_cell_prepared('SELECT timezone
+					FROM poller
+					WHERE id = ?',
+					array($config['poller_id']), false);
+			} else {
+				$timezone = '';
+			}
 
 			if ($timezone != '') {
 				db_execute_prepared('SET SESSION time_zone = ?', array($timezone), false);
@@ -642,7 +646,8 @@ function db_add_index($table, $type, $key, $columns) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_index_exists($table, $index, $log = true, $db_conn = false) {
-	global $database_log;
+	global $database_log, $config;
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -670,7 +675,8 @@ function db_index_exists($table, $index, $log = true, $db_conn = false) {
    @param $log - whether to log error messages, defaults to true
    @returns - (bool) the output of the sql query as a single variable */
 function db_index_matches($table, $index, $columns, $log = true, $db_conn = false) {
-	global $database_log;
+	global $database_log, $config;
+
 	if (!isset($database_log)) {
 		$database_log = false;
 	}
@@ -894,13 +900,13 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		WHERE TABLE_SCHEMA = SCHEMA()
 		AND TABLE_NAME = '$table'", $log, $db_conn);
 
-	if (isset($info['TABLE_COMMENT']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
+	if (isset($info['TABLE_COMMENT']) && isset($data['comment']) && str_replace("'", '', $info['TABLE_COMMENT']) != str_replace("'", '', $data['comment'])) {
 		if (!db_execute("ALTER TABLE `$table` COMMENT '" . str_replace("'", '', $data['comment']) . "'", $log, $db_conn)) {
 			return false;
 		}
 	}
 
-	if (isset($info['ENGINE']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
+	if (isset($info['ENGINE']) && isset($data['type']) && strtolower($info['ENGINE']) != strtolower($data['type'])) {
 		if (!db_execute("ALTER TABLE `$table` ENGINE = " . $data['type'], $log, $db_conn)) {
 			return false;
 		}
@@ -924,7 +930,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 					$del = array_diff($index, $k['columns']);
 					if (!empty($add) || !empty($del)) {
 						if (!db_execute("ALTER TABLE `$table` DROP INDEX `$n`", $log, $db_conn) ||
-						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($key['columns']) . ')', $log, $db_conn)) {
+						    !db_execute("ALTER TABLE `$table` ADD INDEX `$n` (" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 							return false;
 						}
 					}
@@ -944,7 +950,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 	if (isset($data['keys'])) {
 		foreach ($data['keys'] as $k) {
 			if (!isset($allindexes[$k['name']])) {
-				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($key['columns']) . ')', $log, $db_conn)) {
+				if (!db_execute("ALTER TABLE `$table` ADD INDEX `" . $k['name'] . '` (' . db_format_index_create($k['columns']) . ')', $log, $db_conn)) {
 					return false;
 				}
 			}
@@ -1476,6 +1482,7 @@ function db_get_column_length($table, $column) {
 
 function db_check_password_length() {
 	$len = db_get_column_length('user_auth', 'password');
+
 	if ($len === false) {
 		die(__('Failed to determine password field length, can not continue as may corrupt password'));
 	} else if ($len < 80) {
@@ -1502,8 +1509,8 @@ function db_error() {
 	return $database_last_error;
 }
 
-// db_get_default_database - Get the database name of the current database or return the default database name
-// @returns - string - either current db name or configuration default if no connection/name
+/* db_get_default_database - Get the database name of the current database or return the default database name
+   @returns - string - either current db name or configuration default if no connection/name */
 function db_get_default_database($db_conn = false) {
 	global $database_default;
 
@@ -1512,3 +1519,25 @@ function db_get_default_database($db_conn = false) {
 		$database = $database_default;
 	}
 }
+
+/* db_force_remote_cnn - force the remote collector to use main data collector connection
+   @returns - null */
+function db_force_remote_cnn() {
+	global $database_default, $database_hostname, $database_username, $database_password;
+	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca; 
+
+	global $rdatabase_default, $rdatabase_hostname, $rdatabase_username, $rdatabase_password;
+	global $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca; 
+
+	// Connection worked, so now override the default settings so that it will always utilize the remote connection
+	$database_default   = $rdatabase_default;
+	$database_hostname  = $rdatabase_hostname;
+	$database_username  = $rdatabase_username;
+	$database_password  = $rdatabase_password;
+	$database_port      = $rdatabase_port;
+	$database_ssl       = $rdatabase_ssl;
+	$database_ssl_key   = $rdatabase_ssl_key;
+	$database_ssl_cert  = $rdatabase_ssl_cert;
+	$database_ssl_ca    = $rdatabase_ssl_ca;
+}
+

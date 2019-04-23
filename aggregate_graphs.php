@@ -361,11 +361,15 @@ function form_actions() {
 				FROM graph_templates_item
 				WHERE local_graph_id IN($lgid)"), 'task_item_id', 'task_item_id');
 
-			$task_items = implode(',', $task_items);
+			if (cacti_sizeof($task_items)) {
+				$task_items = implode(',', $task_items);
 
-			$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
-				FROM graph_templates_item
-				WHERE task_item_id IN ($task_items) AND graph_template_id>0");
+				$graph_templates = db_fetch_assoc("SELECT DISTINCT graph_template_id
+					FROM graph_templates_item
+					WHERE task_item_id IN ($task_items) AND graph_template_id>0");
+			} else {
+				$graph_templates = array();
+			}
 
 			if (cacti_sizeof($graph_templates) > 1) {
 				print "<tr>
@@ -377,8 +381,16 @@ function form_actions() {
 				</tr>\n";
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
+			} elseif (cacti_sizeof($graph_templates) == 0) {
+				print "<tr>
+					<td class='textArea'>
+						<p>" . __('The selected Aggregate Graphs does not appear to have any matching Aggregate Templates.') . "</p>
+						<p>" . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press \'Return\' and then first create your Aggergate Template before retrying.') . "</p>
+						<div class='itemlist'><ul>$graph_list</ul></div>
+					</td>
+				</tr>\n";
 			} else {
-				$graph_template      = $graph_templates[0]['graph_template_id'];
+				$graph_template = $graph_templates[0]['graph_template_id'];
 
 				$aggregate_templates = db_fetch_assoc_prepared('SELECT id, name
 					FROM aggregate_graph_templates
@@ -832,6 +844,8 @@ function graph_edit() {
 					}
 
 					changeTotals();
+
+					updateSaveButton();
 				});
 
 				$('#total').change(function() {
@@ -853,7 +867,25 @@ function graph_edit() {
 						}
 					}
 				});
+
+				updateSaveButton();
 			});
+
+			function updateSaveButton() {
+				if ($('input[id^="agg_total"]').is(':checked')) {
+					$('#submit').prop('disabled', false);
+
+					if ($('#submit').button('instance')) {
+						$('#submit').button('enable');
+					}
+				} else {
+					$('#submit').prop('disabled', true);
+
+					if ($('#submit').button('instance')) {
+						$('#submit').button('disable');
+					}
+				}
+			}
 
 			function changeTotals() {
 				switch ($('#total').val()) {
