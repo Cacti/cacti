@@ -1321,7 +1321,7 @@ function graph_edit() {
 	        $auto_unlock = read_config_option('graphs_auto_unlock');
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
-			if($auto_unlock == 'on') {
+			if ($auto_unlock == 'on') {
                         	$locked = false;
                         } else {
 	                        $locked = true;
@@ -1333,7 +1333,7 @@ function graph_edit() {
 		} elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];
 		} else {
-			if($auto_unlock == 'on') {
+			if ($auto_unlock == 'on') {
 				$locked = false;
 			} else {
 				$locked = true;
