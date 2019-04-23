@@ -1318,6 +1318,7 @@ function graph_edit() {
 			FROM graph_templates_graph
 			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
+
 	        $auto_unlock = read_config_option('graphs_auto_unlock');
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
