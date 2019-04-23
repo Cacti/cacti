@@ -1753,10 +1753,10 @@ function loadPage(href, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='"+href+"']").addClass('selected');
-					} else {
+						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
@@ -2642,9 +2642,7 @@ function keepWindowSize() {
 				$('.ellipsis').show();
 			}
 		}, 50, 'resize-content');
-	});
-
-	$(window).trigger('resize');
+	}).trigger('resize')
 }
 
 function hideCurrentTab(id, shrinking) {

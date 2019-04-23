@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#2523: Test email failure on PHP 7.3
 -issue#2589: DSStats throws errors when RRDfile has not been created
 -issue#2590: Language selection is not working as expected
+-issue#2591: Drill down to some pages may be incorrect due to logic issues
 -issue#2592: Display graphs from this aggregate can not work
 -issue#2593: Can not migrate aggregate to use a template
 -issue#2598: Create aggregate without aggregate graph tempate, rrdtools error 
