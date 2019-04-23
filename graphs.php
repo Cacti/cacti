@@ -709,6 +709,7 @@ function form_actions() {
 				$attribs['total_items']     = array();
 				$attribs['graph_item_types']= array();
 				$attribs['cdefs']           = array();
+
 				foreach ($aggregate_graph_items as $item) {
 					if (isset($item['color_template']) && $item['color_template'] > 0)
 						$attribs['color_templates'][ $item['sequence'] ] = $item['color_template'];
@@ -872,15 +873,16 @@ function form_actions() {
 				print '</ul></div><br>';
 
 				print '<span class="nowrap">';
+
 				$ds_preselected_delete = read_config_option('ds_preselected_delete');
-				if ($ds_preselected_delete == 'on')
-				{
+				if ($ds_preselected_delete == 'on') {
 	                                $delete_radio_button_1_state = '2';
                                 	$delete_radio_button_2_state = '1';
 				} else { 
 					$delete_radio_button_1_state = '1';
 					$delete_radio_button_2_state = '2';			
 				}                                 
+
 				form_radio_button('delete_type', '2', $delete_radio_button_1_state , __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
 				print '<br>';
 				form_radio_button('delete_type', '2', $delete_radio_button_2_state , __('Leave the Data Source(s) untouched.'), '1');
