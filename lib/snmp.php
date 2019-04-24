@@ -49,7 +49,6 @@ if ($config['php_snmp_support']) {
 } else {
 	include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 }
-use phpsnmp\SNMP;
 
 use phpsnmp\SNMP;
 
@@ -872,9 +871,9 @@ function snmp_escape_string($string) {
 }
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
-	global $config;
+    $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
-	$value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+	global $config;
 
 	if (!$config['php_snmp_support']) {
 		return SNMP_METHOD_BINARY;
