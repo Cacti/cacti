@@ -9259,19 +9259,19 @@ msgstr ""
 
 #: include/global_settings.php:181
 msgid "Rotate the Cacti Log"
-msgstr "轮询Cacti 日志"
+msgstr "Cacti日志转储"
 
 #: include/global_settings.php:182
 msgid "This option will rotate the Cacti Log periodically."
-msgstr "此选项将定期轮询Cacti日志."
+msgstr "此选项将定期转储Cacti日志."
 
 #: include/global_settings.php:187
 msgid "Rotation Frequency"
-msgstr "轮询频率"
+msgstr "转储频率"
 
 #: include/global_settings.php:188
 msgid "At what frequency would you like to rotate your logs?"
-msgstr "您想以什么频率轮询日志?"
+msgstr "您想以什么频率转储日志?"
 
 #: include/global_settings.php:194
 msgid "Log Retention"
