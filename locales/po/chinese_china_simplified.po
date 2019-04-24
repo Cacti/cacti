@@ -6644,55 +6644,55 @@ msgstr "VDEF项目"
 
 #: include/global_arrays.php:1220
 msgid "Last Half Hour"
-msgstr "过去的半小时"
+msgstr "最近半小时"
 
 #: include/global_arrays.php:1221
 msgid "Last Hour"
-msgstr "最后一小时"
+msgstr "最近一小时"
 
 #: include/global_arrays.php:1222 include/global_arrays.php:1223
 #: include/global_arrays.php:1224 include/global_arrays.php:1225
 #, php-format
 msgid "Last %d Hours"
-msgstr "最后 %d 小时"
+msgstr "最近 %d 小时"
 
 #: include/global_arrays.php:1226
 msgid "Last Day"
-msgstr "最后一天"
+msgstr "最近一天"
 
 #: include/global_arrays.php:1227 include/global_arrays.php:1228
 #: include/global_arrays.php:1229
 #, php-format
 msgid "Last %d Days"
-msgstr "最后 %d 天"
+msgstr "最近 %d 天"
 
 #: include/global_arrays.php:1230
 msgid "Last Week"
-msgstr "最后一周"
+msgstr "最近一周"
 
 #: include/global_arrays.php:1231
 #, php-format
 msgid "Last %d Weeks"
-msgstr "最后 %d 周"
+msgstr "最近 %d 周"
 
 #: include/global_arrays.php:1232
 msgid "Last Month"
-msgstr "最后一月"
+msgstr "最近一月"
 
 #: include/global_arrays.php:1233 include/global_arrays.php:1234
 #: include/global_arrays.php:1235 include/global_arrays.php:1236
 #, php-format
 msgid "Last %d Months"
-msgstr "最后 %d 月"
+msgstr "最近 %d 月"
 
 #: include/global_arrays.php:1237
 msgid "Last Year"
-msgstr "最后一年"
+msgstr "最近一年"
 
 #: include/global_arrays.php:1238
 #, php-format
 msgid "Last %d Years"
-msgstr "最后 %d 年"
+msgstr "最近 %d 年"
 
 #: include/global_arrays.php:1239
 msgid "Day Shift"
@@ -6716,19 +6716,19 @@ msgstr "今年"
 
 #: include/global_arrays.php:1244
 msgid "Previous Day"
-msgstr "上一天"
+msgstr "昨天"
 
 #: include/global_arrays.php:1245
 msgid "Previous Week"
-msgstr "上一周"
+msgstr "上周"
 
 #: include/global_arrays.php:1246
 msgid "Previous Month"
-msgstr "上一月"
+msgstr "上月"
 
 #: include/global_arrays.php:1247
 msgid "Previous Year"
-msgstr "上一年"
+msgstr "去年"
 
 #: include/global_arrays.php:1251
 #, php-format
