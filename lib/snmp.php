@@ -51,6 +51,8 @@ if ($config['php_snmp_support']) {
 }
 use phpsnmp\SNMP;
 
+use phpsnmp\SNMP;
+
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
 	$port = 161, $timeout = 500, $retries = 0, $max_oids = 10) {
@@ -870,11 +872,13 @@ function snmp_escape_string($string) {
 }
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
+	global $config;
+
 	$value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
-	if (!read_config_option('php_snmp_support')) {
+	if (!$config['php_snmp_support']) {
 		return SNMP_METHOD_BINARY;
-        } elseif ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
+	} elseif ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
 		return SNMP_METHOD_BINARY;
 	} elseif ($version == 3 && $context != '') {
 		return SNMP_METHOD_BINARY;
