@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#2609: SQL error if upgrade cacti from pre-1.2.0
 -issue#2610: Data Sources troubleshooter generates warning that each() function is deprecated
 -issue#2612: DSStats issuing warnings when RRDtool fails to initialize
+-issue#2618: ifAdminStatus in snmp_queries/interfaces.xml
 -issue#2622: Various PHP undefined variable in database.php
 -issue#2623: Invalid HTML when draw textarea: form_text_area
 -issue#2627: Lost partial log files name in Logs(tab)->File(filter selector)
