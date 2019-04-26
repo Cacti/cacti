@@ -45,13 +45,13 @@ require_once($config['base_path'] . '/lib/utility.php');
 #}
 
 # getopt
-$passed_options = getopt("hyv", ['help','ids::','hostname::','desc::']);
+$passed_options = getopt("hyv", ['help','ids::','hostname::','description::']);
 if ((array_key_exists('h', $passed_options) or
      array_key_exists('help', $passed_options)
    ) or !(
-      array_key_exists('ids',      $passed_options) xor
-      array_key_exists('hostname', $passed_options) xor
-      array_key_exists('desc',     $passed_options)
+      array_key_exists('ids',         $passed_options) xor
+      array_key_exists('hostname',    $passed_options) xor
+      array_key_exists('description', $passed_options)
     )
   ) {
   _aar_usage(); exit(0);
@@ -63,7 +63,7 @@ if (isset($passed_options['ids'])) {
   $ids=explode(' ', $passed_options['ids']);
 } elseif (isset($passed_options['hostname'])) {
   $ids=_aar_likefetch('hostname');
-} elseif (isset($passed_options['desc'])) {
+} elseif (isset($passed_options['description'])) {
   $ids=_aar_likefetch('description');
 }
 
@@ -108,7 +108,7 @@ function _aar_usage() {
   Where SELECTION_CRITERIA is one (not more) of:
     --ids="deviceid [deviceid...]"
     --hostname='LIKE-compatible hostname string'
-    --desc='LIKE-compatible host description string'
+    --description='LIKE-compatible host description string'
 
   Optional:
     -h|--help: Show this help
