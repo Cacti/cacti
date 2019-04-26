@@ -16,10 +16,9 @@
  +-------------------------------------------------------------------------+
 */
 /*
-  TODO:
-  0. clean up, document
-  1. allow device selection through regex instead of passing opts
-  2. improve logging
+  FUTURE:
+    1. Allow device selection through regex as well
+    2. (maybe) Don't query host table directly
 */
 
 # run from CLI only.
@@ -46,24 +45,75 @@ require_once($config['base_path'] . '/lib/utility.php');
 #}
 
 # getopt
-$passed_options = getopt("h", ['help','ids:']);
-if (array_key_exists('h', $passed_options) ||
-    array_key_exists('help', $passed_options) ||
-    !array_key_exists('ids',$passed_options)) {
-  usage(); exit(0);
+$passed_options = getopt("hyv", ['help','ids::','hostname::','desc::']);
+if ((array_key_exists('h', $passed_options) or
+     array_key_exists('help', $passed_options)
+   ) or !(
+      array_key_exists('ids',      $passed_options) xor
+      array_key_exists('hostname', $passed_options) xor
+      array_key_exists('desc',     $passed_options)
+    )
+  ) {
+  _aar_usage(); exit(0);
 }
 
-foreach (explode(' ', $passed_options['ids']) as $device) {
-  cacti_log("CLI requesting to apply automation rules for Device id $device",
+# determine hosts
+if (isset($passed_options['ids'])) {
+  # FUTURE: Could/Should verify ids beforehand
+  $ids=explode(' ', $passed_options['ids']);
+} elseif (isset($passed_options['hostname'])) {
+  $ids=_aar_likefetch('hostname');
+} elseif (isset($passed_options['desc'])) {
+  $ids=_aar_likefetch('description');
+}
+
+# confirm if necessary
+if (!isset($passed_options['y'])) {
+  print "Got " . count($ids) . " hosts, continue?" . ' [y/n] ';
+  $response = fgetc(STDIN);
+  if (strcasecmp($response,'Y') != 0) {
+    echo "Aborted.\n";
+    exit(0);
+  }
+}
+
+# run for all ids.
+foreach($ids as $device_id) {
+  cacti_log("CLI requesting to apply automation rules for Device id $device_id",
     true,'CLI TRACE');
-  automation_update_device($device);
-  cacti_log("automation_update_device() has finished for $device",
+  automation_update_device($device_id);
+  cacti_log("automation_update_device() has finished for $device_id",
     true,'CLI TRACE');
 }
 
-function usage() {
+# gets hosts by a like query from the DB, either by description or hostname
+function _aar_likefetch($what) {
+  global $passed_options;
+  echo("Querying DB for devices by $what...\n");
+  $hosts=db_fetch_assoc_prepared(
+    "SELECT id,hostname,description FROM host WHERE $what LIKE ?",
+    [$passed_options["$what"]]);
+  if(isset($passed_options['v'])) {
+    echo("Matched Hosts:\n");
+    foreach ($hosts as $entry) { echo(implode(' / ',$entry) . "\n"); }
+  }
+  return array_map(function ($x) { return $x['id']; }, $hosts);
+};
+
+function _aar_usage() {
   print <<<EOM
-  Usage: apply_automation_rules.php [-h] --ids="deviceid [deviceid...]"
+  Usage:
+    apply_automation_rules.php [-h] [-y] SELECTION_CRITERIA
+
+  Where SELECTION_CRITERIA is one (not more) of:
+    --ids="deviceid [deviceid...]"
+    --hostname='LIKE-compatible hostname string'
+    --desc='LIKE-compatible host description string'
+
+  Optional:
+    -h|--help: Show this help
+    -y:        Don't require to confirm matched hosts
+    -v:        Verbose mode; list matched hosts
 
 EOM;
 }
