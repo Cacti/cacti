@@ -2184,7 +2184,7 @@ function setupSortable() {
 
 					$('#'+returnto).empty().hide();
 					$('div[class^="ui-"]').remove();
-					$('#'+returnto).html(data);
+					$('#'+returnto).html(data).show();
 
 					applySkin();
 				})
