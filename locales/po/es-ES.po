@@ -3,15 +3,16 @@ msgstr ""
 "Project-Id-Version: Cacti 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-10 13:25-0400\n"
-"PO-Revision-Date: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: es\n"
+"PO-Revision-Date: 2019-03-31 22:39+0000\n"
+"Last-Translator: Javier Pobeda <javier.pobeda@pm.me>\n"
+"Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core/es-ES/"
+">\n"
+"Language: es-ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: about.php:29 include/global_arrays.php:2387 lib/html.php:2309
 msgid "About Cacti"
@@ -887,10 +888,8 @@ msgstr ""
 "Por favor, ingresa tu contraseña actual y tu nueva<br>contraseña de Cacti."
 
 #: auth_changepassword.php:303
-#, fuzzy
 msgid "Please enter your new Cacti password."
-msgstr ""
-"Por favor, ingresa tu contraseña actual y tu nueva<br>contraseña de Cacti."
+msgstr "Por favor, ingrese su nueva contraseña de Cacti."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
 #: include/global_settings.php:1379 lib/functions.php:3803
@@ -1318,7 +1317,7 @@ msgstr "Purgar dispositivos descubiertos"
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
 msgid "N/A"
-msgstr "N/A"
+msgstr "N/D"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -1513,9 +1512,9 @@ msgstr ""
 "'%s"
 
 #: automation_networks.php:152
-#, fuzzy, php-format
+#, php-format
 msgid "Can Not Perform Discovery for Disabled Network '%s'"
-msgstr "No se puede realizar la detección para la red desactivada '%s"
+msgstr "No se puede realizar la detección para la red desactivada '%s'"
 
 #: automation_networks.php:219
 #, php-format
@@ -3101,29 +3100,24 @@ msgid "Color Template Items [new Report Item: %s]"
 msgstr "Item de Plantilla de Colores [nuevo item de Reporte: %s]"
 
 #: data_debug.php:31
-#, fuzzy
 msgid "Run Check"
-msgstr "Ejecutar Comprobar"
+msgstr "Ejecutar comprobación"
 
 #: data_debug.php:32
-#, fuzzy
 msgid "Delete Check"
-msgstr "Borrar cheque"
+msgstr "Eliminar comprobación"
 
 #: data_debug.php:51
-#, fuzzy
 msgid "Data Source debug started."
-msgstr "Depurar de Data Source"
+msgstr "Depuraración de Data Source iniciada."
 
 #: data_debug.php:54
-#, fuzzy
 msgid "Data Source debug received an invalid Data Source ID."
-msgstr "El depurador de Data Source recibió un ID de Data Source no válido."
+msgstr "La depuradorión del Data Source recibió un ID de Data Source inválido."
 
 #: data_debug.php:63
-#, fuzzy
 msgid "All RRDfile repairs succeeded."
-msgstr "Todas las reparaciones de RRDfile tuvieron éxito."
+msgstr "Todas las reparaciones de archivos RRD tuvieron éxito."
 
 #: data_debug.php:65
 #, fuzzy
@@ -3140,9 +3134,8 @@ msgstr ""
 "de la reparación."
 
 #: data_debug.php:77
-#, fuzzy
 msgid "Data Source repair received an invalid Data Source ID."
-msgstr "La reparación de Data Source recibió un ID de Data Source no válido."
+msgstr "La reparación de Data Source recibió un ID de Data Source inválido."
 
 #: data_debug.php:330 data_debug.php:807 data_queries.php:729
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
@@ -3152,30 +3145,26 @@ msgid "Data Source"
 msgstr "Data Source"
 
 #: data_debug.php:332
-#, fuzzy
 msgid "The Data Source to Debug"
-msgstr "La fuente de datos para depurar"
+msgstr "La fuente de datos a depurar"
 
 #: data_debug.php:335 utilities.php:670 utilities.php:795
 msgid "User"
 msgstr "Usuario"
 
 #: data_debug.php:337
-#, fuzzy
 msgid "The User who requested the Debug."
-msgstr "El Usuario que solicitó el Debug."
+msgstr "El Usuario que solicitó la depuración."
 
 #: data_debug.php:340
 msgid "Started"
 msgstr "Iniciado"
 
 #: data_debug.php:343
-#, fuzzy
 msgid "The Date that the Debug was Started."
-msgstr "La fecha en que se inició la depuración."
+msgstr "Fecha que se inició la depuración."
 
 #: data_debug.php:349
-#, fuzzy
 msgid "The Data Source internal ID."
 msgstr "El ID interno de la fuente de datos."
 
@@ -4384,7 +4373,7 @@ msgstr "1 Minuto"
 #: data_sources.php:1326 graphs_items.php:312
 #, php-format
 msgid "Data Sources [%s]"
-msgstr "Data Sources [%s]"
+msgstr "Fuentes de Datos [%s]"
 
 #: data_sources.php:1395
 #, fuzzy
@@ -9883,6 +9872,7 @@ msgid "Data"
 msgstr "Datos"
 
 #: include/global_settings.php:43
+#, fuzzy
 msgid "Visual"
 msgstr "Visual"
 
@@ -10112,7 +10102,7 @@ msgid ""
 "This is the directory where RRDfiles are <strong>moved</strong> for archiving"
 msgstr ""
 "Este es el directorio donde los archivos RRD son<strong>movidos</strong> "
-"para <strong>archivar</strong>"
+"para archivar"
 
 #: include/global_settings.php:252
 msgid "Log Settings"
