@@ -853,7 +853,17 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	if ($report['graph_linked'] == 'on' ) {
-		$out = "<a href='" . html_escape(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		if (substr(read_config_option('base_url'), 0, 4) != 'http') {
+			if (read_config_option('force_https') == 'on') {
+				$prefix = 'https://';
+			} else {
+				$prefix = 'http://';
+			}
+
+			set_config_option('base_url', $prefix . read_config_option('base_url'));
+		}
+
+		$out = "<a href='" . $prefix . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;

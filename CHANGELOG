@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#2632: Automated Network Scans are Not Working
 -issue#2635: Multiple Database Sync Issues in v1.2.x
 -issue#2638: Support disabling PHP SNMP extension
+-issue#2645: The cacti setting 'base_url' may be incorrect for some systems.  Correct it.
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
