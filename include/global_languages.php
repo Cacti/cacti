@@ -458,7 +458,7 @@ function load_i18n_fallback_wrappers() {
 			return __uf($args[0]);
 
 		/* convert pure text strings by using a different textdomain */
-		} elseif ($num == 2 && isset(l10n[$args[1]]) && $args[1] != 'cacti') {
+		} elseif ($num == 2 && isset($l10n[$args[1]]) && $args[1] != 'cacti') {
 			return __uf($args[0]);
 
 		/* convert stings including one or more placeholders */
