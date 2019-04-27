@@ -506,7 +506,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			 * any AREA/STACKed graph needs a base AREA entry
 			 * but e.g. a graph that prints on both negative and positive y-axis may hold two AREAs
 			 * so it's a good idea to keep all AREA entries of the first aggregated elementary graph (index 0)*/
-			if ($graph_index == 0 && $item_index == 1 &&
+			if (($graph_index == 0 || $graph_index == 1) &&
 				($old_graph_type == GRAPH_ITEM_TYPE_STACK ||
 				$old_graph_type == GRAPH_ITEM_TYPE_LINESTACK ||
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE1 ||
@@ -514,7 +514,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE3)) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_AREA;
-			} elseif ($item_index > 1 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
+			} elseif ($graph_index > 1 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_STACK;
 			} elseif ($graph_index == 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {

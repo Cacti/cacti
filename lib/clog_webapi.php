@@ -52,6 +52,8 @@ function clog_get_graphs_from_datasource($local_data_id) {
 }
 
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
+	global $config;
+
 	$logfile = read_config_option('path_cactilog');
 	$logbase = basename($logfile);
 

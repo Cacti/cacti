@@ -789,12 +789,12 @@ function reports_item_edit() {
 
 	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
 
-	if (isset($item['item_type']) && $item['item_type'] == REPORTS_ITEM_GRAPH) {
+	if (isset($reports_item['item_type']) && $reports_item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$timespan = array();
 		# get config option for first-day-of-the-week
 		$first_weekdayid = read_user_setting('first_weekdayid');
 		# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
-		get_timespan($timespan, time(), $item['timespan'], $first_weekdayid);
+		get_timespan($timespan, time(), $reports_item['timespan'], $first_weekdayid);
 	}
 
 	/* don't cache previews */

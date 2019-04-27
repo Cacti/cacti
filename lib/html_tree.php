@@ -23,6 +23,8 @@
 */
 
 function process_tree_settings() {
+	global $current_user;
+
 	if (isset_request_var('hide')) {
 		if ((get_request_var('hide') == '0') || (get_request_var('hide') == '1')) {
 			/* only update expand/contract info is this user has rights to keep their own settings */

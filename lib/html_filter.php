@@ -252,7 +252,7 @@ class CactiTableFilter {
 		<script type='text/javascript'>
 
 		function applyFilter() {
-			strURL = <?php print $strURL;?>
+			strURL = <?php print $applyFilter;?>
 			loadPageNoHeader(strURL);
 		}
 
