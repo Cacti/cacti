@@ -44,9 +44,6 @@ require_once($config['base_path'] . '/lib/utility.php');
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
 	db_force_remote_cnn();
-} else {
-	print "WARNING: Remote Data Collector requires 'online' status to run.\n";
-	exit(1);
 }
 
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
