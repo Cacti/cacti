@@ -951,7 +951,7 @@ function graph_edit() {
 						$form_array[$field_name]['value']   = (isset($graphs) ? $graphs[$field_name] : '');
 						$form_array[$field_name]['form_id'] = (isset($graphs) ? $graphs['id'] : '0');
 
-						if (!(($use_graph_template == false) || ($graphs_template['t_' . $field_name] == 'on'))) {
+						if (!(($use_graph_template == false) || ($graphs['t_' . $field_name] == 'on'))) {
 							$form_array[$field_name]['method']      = 'template_' . $form_array[$field_name]['method'];
 							$form_array[$field_name]['description'] = '';
 						}

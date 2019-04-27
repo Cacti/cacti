@@ -678,7 +678,7 @@ class Ldap {
 				$ldap_error = ldap_errno($ldap_conn);
 				if ($ldap_error == 0x03) {
 					/* protocol error */
-					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral,null,$ldapError);
+					$output = LdapError::GetErrorDetails(LdapError::ProtocolErrorGeneral,null,$ldap_error);
 				} elseif ($ldap_error == 0x31) {
 					/* invalid credentials */
 					$output = LdapError::GetErrorDetails(LdapError::Failure);

@@ -1356,7 +1356,7 @@ function png2jpeg ($png_data) {
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $imgname", $tc);
+			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
 		}
 
         ob_start(); // start a new output buffer to capture jpeg image stream
@@ -1397,7 +1397,7 @@ function png2gif ($png_data) {
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $imgname", $tc);
+			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
 		}
 
         ob_start(); // start a new output buffer to capture gif image stream

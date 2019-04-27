@@ -1361,6 +1361,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function exitDbTooOld() {
+		global $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
 		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
@@ -2254,7 +2255,7 @@ class Installer implements JsonSerializable {
 			ob_end_clean();
 		} else {
 			$output  = Installer::sectionTitleError(__('Error Locating Profiles'));
-			$ouptut .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
+			$output .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
 			$output .= Installer::sectionNote(__('This may occur if you have a blank database and have not yet imported the cacti.sql file'));
 			$output .= Installer::sectionCode('mysql> source cacti.sql');
 		}

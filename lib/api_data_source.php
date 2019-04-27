@@ -384,7 +384,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			if (!($i % 1000)) {
 				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
 					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_delete . ')'), 'poller_id', 'poller_id');
+					WHERE local_data_id IN(' . $ids_to_disable . ')'), 'poller_id', 'poller_id');
 
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
@@ -407,7 +407,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			$poller_ids = array_rekey(
 				db_fetch_assoc('SELECT poller_id
 					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_delete .')'),
+					WHERE local_data_id IN(' . $ids_to_disable .')'),
 				'poller_id', 'poller_id'
 			);
 
