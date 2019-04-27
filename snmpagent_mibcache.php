@@ -43,9 +43,10 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
 /* start background caching process if not running */
 $php = read_config_option("path_php_binary");
-$extra_args     = " \"./snmpagent_mibcachechild.php\"";
-$ini_file = php_ini_loaded_file();
-if($ini_file) {
+$extra_args = " \"./snmpagent_mibcachechild.php\"";
+$ini_file   = php_ini_loaded_file();
+
+if ($ini_file) {
 	$extra_args = '-c ' . $ini_file . ' ' . $extra_args;
 }
 

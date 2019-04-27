@@ -697,11 +697,13 @@ class Installer implements JsonSerializable {
 
 					if ($should_set && $name == 'path_php_binary') {
 						$input = mt_rand(2,64);
-						$args = ' -q';
+						$args = ' -q ';
 						$ini_file = php_ini_loaded_file();
-						if($ini_file) {
+
+						if ($ini_file) {
 							$args = ' -c ' . $ini_file . ' ' . $args;
 						}
+
 						$output = shell_exec(
 							$path . $args . $config['base_path'] .
 							'/install/cli_test.php ' . $input);
@@ -2933,9 +2935,10 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', 'Device Template for First Cacti Device is ' . $host_template_id);
 			$command = read_config_option('path_php_binary');
-			$args = ' -q';
+			$args = ' -q ';
 			$ini_file = php_ini_loaded_file();
-			if($ini_file) {
+
+			if ($ini_file) {
 				$args = ' -c ' . $ini_file . ' ' . $args;
 			}
 
@@ -3026,11 +3029,13 @@ class Installer implements JsonSerializable {
 				if (!empty($name)) {
 					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
 					$command = read_config_option('path_php_binary');
-					$args = ' -q';
+					$args = ' -q ';
 					$ini_file = php_ini_loaded_file();
-					if($ini_file) {
+
+					if ($ini_file) {
 						$args = ' -c ' . $ini_file . ' ' . $args;
 					}
+
 					$results = shell_exec($command . $args . $config['base_path'] . '/cli/convert_tables.php' .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb');
