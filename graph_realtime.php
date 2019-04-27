@@ -169,7 +169,7 @@ case 'countdown':
 	$command   = read_config_option('path_php_binary');
 	$ini_file = php_ini_loaded_file();
 	if($ini_file) {
-		$command = $command . '-c ' . $ini_file;
+		$command = $command . ' -c ' . $ini_file;
 	}
 	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . session_id(), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
 
