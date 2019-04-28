@@ -875,7 +875,7 @@ function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid 
 
 	global $config;
 
-	if (!$config['php_snmp_support']) {
+	if (isset($config['php_snmp_support']) && !$config['php_snmp_support']) {
 		return SNMP_METHOD_BINARY;
 	} elseif ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
 		return SNMP_METHOD_BINARY;
