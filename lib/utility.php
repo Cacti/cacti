@@ -1311,11 +1311,7 @@ function utility_php_extensions() {
 
 	$php = read_config_option('path_php_binary', true);
 	$args = ' -q ';
-	$ini_file = php_ini_loaded_file();
-
-	if ($ini_file) {
-		$args = ' -c ' . $ini_file . ' ' . $args;
-	}
+	assemble_php_args($args);
 
 	$php_file = $config['base_path'] . '/install/cli_check.php extensions';
 	$json = shell_exec($php . $args . $php_file);
@@ -1375,11 +1371,7 @@ function utility_php_recommends() {
 
 	$php = read_config_option('path_php_binary', true);
 	$args = ' -q ';
-	$ini_file = php_ini_loaded_file();
-
-	if ($ini_file) {
-		$args = ' -c ' . $ini_file . ' ' . $args;
-	}
+	assemble_php_args($args);
 
 	$php_file = $config['base_path'] . '/install/cli_check.php recommends';
 	$json = shell_exec($php . $args . $php_file);
@@ -1457,11 +1449,7 @@ function utility_php_optionals() {
 
 	$php = read_config_option('path_php_binary', true);
 	$args = ' -q ';
-	$ini_file = php_ini_loaded_file();
-
-	if ($ini_file) {
-		$args = ' -c ' . $ini_file . ' ' . $args;
-	}
+	assemble_php_args($args);
 
 	$php_file = $config['base_path'] . '/install/cli_check.php optionals';
 	$json = shell_exec($php . $args . $php_file);

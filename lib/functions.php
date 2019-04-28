@@ -5349,3 +5349,16 @@ function is_function_enabled($name) {
 		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions')))) &&
 		strtolower(ini_get('safe_mode')) != 1;
 }
+
+function assemble_php_args(&$args) {
+	$ini_file = php_ini_loaded_file();
+	if ($ini_file) {
+		$args = ' -c ' . $ini_file . ' ' . $args;
+	}
+	foreach (get_loaded_extensions() as $current_extension) {
+		$args = $args . ' -d extension='.$current_extension.' ';
+	}
+	$args = $args . ' -d memory_limit='. ini_get('memory_limit') . ' ';
+	$args = $args . ' -d max_execution_time='. ini_get('max_execution_time') . ' ';
+	$args = $args . ' -d date.timezone='. ini_get('date.timezone') . ' ';
+}
