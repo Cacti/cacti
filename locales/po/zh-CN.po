@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-10 13:25-0400\n"
-"PO-Revision-Date: 2019-04-26 01:41+0000\n"
+"PO-Revision-Date: 2019-04-28 13:01+0000\n"
 "Last-Translator: whsir <wh@whsir.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh-CN/>\n"
@@ -6849,8 +6849,9 @@ msgid "Last %d Weeks"
 msgstr "过去 %d 周"
 
 #: include/global_arrays.php:1257
+#, fuzzy
 msgid "Last Month"
-msgstr "过去 1 个月"
+msgstr "最近 1 个月"
 
 #: include/global_arrays.php:1258 include/global_arrays.php:1259
 #: include/global_arrays.php:1260 include/global_arrays.php:1261
@@ -6859,8 +6860,9 @@ msgid "Last %d Months"
 msgstr "过去 %d 个月"
 
 #: include/global_arrays.php:1262
+#, fuzzy
 msgid "Last Year"
-msgstr "过去 1 年"
+msgstr "去年"
 
 #: include/global_arrays.php:1263
 #, php-format
