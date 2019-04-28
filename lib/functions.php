@@ -5352,13 +5352,15 @@ function is_function_enabled($name) {
 
 function assemble_php_args(&$args) {
 	$ini_file = php_ini_loaded_file();
+	$prepend_args = '';
 	if ($ini_file) {
-		$args = ' -c ' . $ini_file . ' ' . $args;
+		$prepend_args = ' -c ' . $ini_file . ' ' . $args;
 	}
 	foreach (get_loaded_extensions() as $current_extension) {
-		$args = $args . ' -d extension='.$current_extension.' ';
+		$prepend_args = $prepend_args . ' -d extension='.$current_extension.' ';
 	}
-	$args = $args . ' -d memory_limit='. ini_get('memory_limit') . ' ';
-	$args = $args . ' -d max_execution_time='. ini_get('max_execution_time') . ' ';
-	$args = $args . ' -d date.timezone='. ini_get('date.timezone') . ' ';
+	$prepend_args = $prepend_args . ' -d memory_limit='. ini_get('memory_limit') . ' ';
+	$prepend_args = $prepend_args . ' -d max_execution_time='. ini_get('max_execution_time') . ' ';
+	$prepend_args = $prepend_args . ' -d date.timezone='. ini_get('date.timezone') . ' ';
+	$args = $prepend_args . $args;
 }
