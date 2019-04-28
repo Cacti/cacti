@@ -5354,7 +5354,7 @@ function assemble_php_args(&$args) {
 	$ini_file = php_ini_loaded_file();
 	$prepend_args = '';
 	if ($ini_file) {
-		$prepend_args = ' -c ' . $ini_file . ' ' . $args;
+		$prepend_args = ' -c ' . $ini_file . ' ';
 	}
 	foreach (get_loaded_extensions() as $current_extension) {
 		$prepend_args = $prepend_args . ' -d extension='.$current_extension.' ';
