@@ -863,7 +863,7 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 			set_config_option('base_url', $prefix . read_config_option('base_url'));
 		}
 
-		$out = "<a href='" . $prefix . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		$out = "<a href='" . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;

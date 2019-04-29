@@ -478,7 +478,7 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
 
 /* html_nav_bar - draws a navigation bar which includes previous/next links as well as current
 	page information
-   @arg $base_url - the base URL will all filter options except page#
+   @arg $base_url - the base URL will all filter options except page (should include url_path)
    @arg $max_pages - the maximum number of pages to display
    @arg $current_page - the current page in the navigation system
    @arg $rows_per_page - the number of rows that are displayed on a single page

@@ -1443,11 +1443,11 @@ $settings = array(
 			),
 		'base_url' => array(
 			'friendly_name' => __('Server Base URL'),
-			'description' => __('This is a the server location that will be used for links to the Cacti site.'),
+			'description' => __('This is a the server location that will be used for links to the Cacti site. This should include the subdirectory if Cacti does not run from root folder.'),
 			'method' => 'textbox',
 			'max_length' => 255,
 			'size' => '60',
-			'default' => 'http://' . gethostname()
+			'default' => 'http://' . gethostname() . $config['url_path']
 			),
 		'settings_email_header' => array(
 			'friendly_name' => __('Emailing Options'),
