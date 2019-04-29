@@ -27,6 +27,9 @@ Cacti CHANGELOG
 -issue#2649: Automation not creating graphs when there are custom items
 -issue#2650: Some PHP Notice like "undefined variables"
 -issue#2652: Honor php.ini when php is used in exec() and shell_exec() calls
+-feature#2538: New global setting to change datasource behaviour when deleting graph 
+-feature#2539: New global setting to add permanent unlock of graphs
+-feature#2540: New user setting to forget graph tree history on tab close
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
@@ -93,9 +96,6 @@ Cacti CHANGELOG
 -issue#2584: When user/group permissions are reset, this is not reflected immediately to the end user
 -feature#2505: Improve performance of Data Source Statistics
 -feature#2515: Allow more than one SNMP port to be specified when adding devices via CLI
--feature#2538: New global setting to change datasource behaviour when deleting graph 
--feature#2539: New global setting to add permanent unlock of graphs
--feature#2540: New user setting to forget graph tree history on tab close
 -feature: Update phpseclib to version 2.0.15
 -feature: Adjust the max table rows based upon value of 'max_input_vars'
 
