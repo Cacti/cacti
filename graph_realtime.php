@@ -167,13 +167,11 @@ case 'countdown':
 	/* call poller */
 	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
 	$command   = read_config_option('path_php_binary');
-	$ini_file  = php_ini_loaded_file();
-
-	if ($ini_file) {
+	$ini_file = php_ini_loaded_file();
+	if($ini_file) {
 		$command = $command . ' -c ' . $ini_file;
 	}
-
-	$args = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . session_id(), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
+	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . session_id(), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
 
 	shell_exec("$command $args");
 

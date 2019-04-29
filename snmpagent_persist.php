@@ -75,10 +75,9 @@ $cache_last_refresh = false;
 
 /* start background caching process if not running */
 $php = read_config_option('path_php_binary');
-$extra_args = '-q "./snmpagent_mibcache.php"';
-$ini_file   = php_ini_loaded_file();
-
-if ($ini_file) {
+$extra_args     = '-q "./snmpagent_mibcache.php"';
+$ini_file = php_ini_loaded_file();
+if($ini_file) {
 	$extra_args = '-c ' . $ini_file . ' ' . $extra_args;
 }
 
@@ -87,8 +86,7 @@ if(strstr(PHP_OS, 'WIN')) {
 	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
-
-	if (!cacti_sizeof($output)) {
+	if(!cacti_sizeof($output)) {
 		exec($php . " " . $extra_args . " > /dev/null &");
 	}
 }
