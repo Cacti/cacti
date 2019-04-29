@@ -125,11 +125,7 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 	if (file_exists($filename)) {
 		// when executing php, make sure to prepend the php.ini in use to the arguments
 		if (strpos($filename, 'php') !== false) {
-			$ini_file = php_ini_loaded_file();
-
-			if ($ini_file) {
-				$args = '-c ' . $ini_file . ' ' . $args;
-			}
+			assemble_php_args($args);
 		}
 
 		if ($config['cacti_server_os'] == 'win32') {
