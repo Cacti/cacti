@@ -188,13 +188,7 @@ function kill_spikes($templates, &$found) {
 	if (cacti_sizeof($rrdfiles)) {
 	foreach($rrdfiles as $f) {
 		debug("Removing Spikes from '$f'");
-		$ini_file = php_ini_loaded_file();
-		if($ini_file) {
-			$ini_file = '-c ' . $ini_file . ' ';
-		}else{
-			$ini_file = '';
-		}
-		$response = exec(read_config_option('path_php_binary') . $ini_file . ' -q ' .
+		$response = exec(read_config_option('path_php_binary') . ' -q ' .
 			$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
 		if (substr_count($response, 'Spikes Found and Remediated')) {
 			$found++;

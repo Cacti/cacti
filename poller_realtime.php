@@ -130,10 +130,6 @@ $max_threads = read_config_option('max_threads');
 /* Determine Command Name */
 $command_string = read_config_option('path_php_binary');
 $extra_args     = '-q ' . $config['base_path'] . "/cmd_realtime.php $poller_id $graph_id $interval";
-$ini_file = php_ini_loaded_file();
-if($ini_file) {
-	$extra_args = ' -c ' . $ini_file . ' ' . $extra_args;
-}
 
 /* Determine if Realtime will work or not */
 $cache_dir = read_config_option('realtime_cache_path');
