@@ -51,7 +51,12 @@ switch (get_request_var('action')) {
 		$name  = get_nfilter_request_var('name');
 		$value = get_nfilter_request_var('value');
 
-		api_auth_update_user_setting($name, $value);
+		$current_tab = get_nfilter_request_var('tab');
+		if ($current_tab == 'general') {
+			api_auth_update_user_setting($name, $value);
+		} else {
+			api_plugin_hook_function('auth_profile_update_data', $current_tab);
+		}
 
 		break;
 	default:
