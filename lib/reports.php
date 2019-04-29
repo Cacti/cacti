@@ -853,7 +853,17 @@ function expand_branch(&$report, &$item, $branch_id, $output, $format_ok, $theme
 	}
 
 	if ($report['graph_linked'] == 'on' ) {
-		$out = "<a href='" . html_escape(read_config_option('base_url') . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
+		if (substr(read_config_option('base_url'), 0, 4) != 'http') {
+			if (read_config_option('force_https') == 'on') {
+				$prefix = 'https://';
+			} else {
+				$prefix = 'http://';
+			}
+
+			set_config_option('base_url', $prefix . read_config_option('base_url'));
+		}
+
+		$out = "<a href='" . $prefix . html_escape(read_config_option('base_url', true) . '/graph.php?action=view&local_graph_id='.$item['local_graph_id']."&rra_id=0") . "'>" . $out . '</a>';
 	}
 
 	return $out . PHP_EOL;
@@ -1346,7 +1356,7 @@ function png2jpeg ($png_data) {
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $imgname", $tc);
+			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
 		}
 
         ob_start(); // start a new output buffer to capture jpeg image stream
@@ -1387,7 +1397,7 @@ function png2gif ($png_data) {
 			$tc  = ImageColorAllocate ($im, 0, 0, 0);
 			ImageFilledRectangle ($im, 0, 0, 150, 30, $bgc);
 			/* print error message */
-			ImageString($im, 1, 5, 5, "Error while opening: $imgname", $tc);
+			ImageString($im, 1, 5, 5, "Error while opening: $fn", $tc);
 		}
 
         ob_start(); // start a new output buffer to capture gif image stream

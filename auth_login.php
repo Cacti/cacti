@@ -119,7 +119,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP Auth */
  		if ($frv_realm == '2' && get_nfilter_request_var('login_password') != '') {
 			/* include LDAP lib */
-			include_once('./lib/ldap.php');
+			include_once(__DIR__ . '/lib/ldap.php');
 
 			/* get user DN */
 			$ldap_dn_search_response = cacti_ldap_search_dn($username);
@@ -444,7 +444,7 @@ function domains_login_process() {
 
 	if (is_numeric(get_nfilter_request_var('realm')) && get_nfilter_request_var('login_password') != '') {
 		/* include LDAP lib */
-		include_once('./lib/ldap.php');
+		include_once(__DIR__ . '/lib/ldap.php');
 
 		/* get user DN */
 		$ldap_dn_search_response = domains_ldap_search_dn($username, get_nfilter_request_var('realm'));
@@ -787,6 +787,6 @@ $selectedTheme = get_selected_theme();
 <?php } ?>
 	});
 	</script>
-	<?php include_once(dirname(__FILE__) . '/include/global_session.php');?>
+	<?php include_once(__DIR__ . '/include/global_session.php');?>
 </body>
 </html>

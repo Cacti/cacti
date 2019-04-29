@@ -199,7 +199,7 @@ function preg_array_key_match($needle, $haystack) {
 
 	if (isset($haystack)) {
 		if (!is_array($haystack)) {
-			$haystack = array($hackstack);
+			$haystack = array($haystack);
 		}
 	} else {
 		$haystack = array();

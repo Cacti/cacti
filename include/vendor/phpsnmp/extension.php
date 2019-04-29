@@ -22,40 +22,11 @@
    +-------------------------------------------------------------------------+
 */
 
-/* let's report all errors */
-error_reporting(E_ALL);
+/*
+ * Alias the PHP SNMP extension to the phpsnmp namespace so it can be
+ * referenced as such in lib/snmp.php.
+ */
 
-require(__DIR__ . '/include/cli_check.php');
+namespace phpsnmp;
 
-/* allow the script to hang around. */
-set_time_limit(0);
-
-chdir(dirname(__FILE__));
-
-$path_mibcache = $config['base_path'] . '/cache/mibcache/mibcache.tmp';
-$path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
-
-/* remove temporary cache */
-@unlink($path_mibcache);
-
-/* remove lock file */
-@unlink($path_mibcache_lock);
-
-/* start background caching process if not running */
-$php = read_config_option("path_php_binary");
-$extra_args = " \"./snmpagent_mibcachechild.php\"";
-$ini_file   = php_ini_loaded_file();
-
-if ($ini_file) {
-	$extra_args = '-c ' . $ini_file . ' ' . $extra_args;
-}
-
-while(1) {
-	if(strstr(PHP_OS, "WIN")) {
-		popen("start \"CactiSNMPCacheChild\" /I \"" . $php . "\" " . $extra_args, "r");
-	} else {
-		exec($php . " " . $extra_args . " > /dev/null &");
-	}
-	sleep(30 - time() % 30);
-}
-?>
+class SNMP extends \SNMP {}

@@ -32,6 +32,7 @@ $database_hostname = 'localhost';
 $database_username = 'cactiuser';
 $database_password = 'cactiuser';
 $database_port     = '3306';
+$database_retries  = 5;
 $database_ssl      = false;
 $database_ssl_key  = '';
 $database_ssl_cert = '';
@@ -49,6 +50,7 @@ $database_ssl_ca   = '';
 #$rdatabase_username = 'cactiuser';
 #$rdatabase_password = 'cactiuser';
 #$rdatabase_port     = '3306';
+#$rdatabase_retries  = 5;
 #$rdatabase_ssl      = false;
 #$rdatabase_ssl_key  = '';
 #$rdatabase_ssl_cert = '';
@@ -103,6 +105,13 @@ $disable_log_rotation = false;
  */
 
 //$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
+
+/*
+ * Optional parameter to disable the PHP SNMP extension. If not set, defaults
+ * to class_exists('SNMP').
+ */
+
+//$php_snmp_support = false;
 
 /*
  * The following are optional variables for debugging low level system

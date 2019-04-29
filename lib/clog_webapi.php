@@ -52,6 +52,8 @@ function clog_get_graphs_from_datasource($local_data_id) {
 }
 
 function clog_validate_filename(&$file, &$filepath, &$filename, $filecheck = false) {
+	global $config;
+
 	$logfile = read_config_option('path_cactilog');
 	$logbase = basename($logfile);
 
@@ -426,9 +428,14 @@ function filter($clogAdmin, $selectedFile) {
 									continue;
 								}
 
-								$stdLogFileArray[] = $logFile;
+								if (strpos($logFile, $stderrLogBase) === 0){
+									$stdErrFileArray[] = $logFile;
+								} else {
+									$stdLogFileArray[] = $logFile;
+								}
 							}
 
+							$stdErrFileArray = array_unique($stdErrFileArray);
 							$stdLogFileArray = array_unique($stdLogFileArray);
 						}
 
@@ -467,7 +474,7 @@ function filter($clogAdmin, $selectedFile) {
 						arsort($stdLogFileArray, SORT_NATURAL);
 						arsort($stdErrFileArray, SORT_NATURAL);
 
-						$logFileArray = $stdFileArray + $stdLogFileArray + $stdErrFileArray;
+						$logFileArray = array_unique(array_merge($stdFileArray, $stdLogFileArray, $stdErrFileArray));
 
 						if (cacti_sizeof($logFileArray)) {
 							foreach ($logFileArray as $logFile) {

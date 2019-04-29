@@ -3,8 +3,7 @@
 body, table, tr, td, textarea {
 	font-family: 'Segoe UI', 'Segoe UI Web Regular', 'Segoe UI Symbol', 'Helvetica Neue', 'BBAlpha Sans', 'S60 Sans', Arial, sans-serif;
 	font-size: 12px;
-	/* fix those ever present IE issues */
-	-ms-overflow-style:scrollbar;
+	-ms-overflow-style: scrollbar;
 }
 
 body {
@@ -26,9 +25,10 @@ textarea {
 }
 
 table {
-	border-collapse: collapse; border-spacing: 0;
+	border-collapse: collapse;
+	border-spacing: 0;
 	border: none;
-	text-align:left;
+	text-align: left;
 }
 
 td, th {
@@ -43,8 +43,8 @@ th {
 }
 
 img {
-	border:none;
-	vertical-align:middle;
+	border: none;
+	vertical-align: middle;
 }
 
 fieldset {
@@ -93,7 +93,7 @@ th .fa {
 }
 
 #main {
-	display:none;
+	display: none;
 	width: 100%;
 	position: relative;
 	z-index: 0;
@@ -120,19 +120,19 @@ label {
 }
 
 .top {
-	vertical-align:top;
+	vertical-align: top;
 }
 
 .right {
-	text-align:right !important;
+	text-align: right !important;
 }
 
 .left {
-	text-align:left;
+	text-align: left;
 }
 
 .center {
-	text-align:center !important;
+	text-align: center !important;
 }
 
 .usermenudown {
@@ -144,117 +144,117 @@ label {
 }
 
 .user {
-	padding-right:16px;
-	font-weight:bold;
-	cursor:pointer;
+	padding-right: 16px;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .filter {
-	position:relative;
+	position: relative;
 	left: -20px;
 	margin-right: -10px;
 	font-size: 13px !important;
 }
 
 .badpassword {
-	padding:4px;
-	color:red;
-	font-size:1.5em !important;
-	vertical-align:bottom;
+	padding: 4px;
+	color: red;
+	font-size: 1.5em !important;
+	vertical-align: bottom;
 }
 
 .goodpassword {
-	padding:4px;
-	color:green;
-	font-size:1.5em !important;
-	vertical-align:bottom;
+	padding: 4px;
+	color: green;
+	font-size: 1.5em !important;
+	vertical-align: bottom;
 }
 
 .associated {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .notAssociated {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .disabled_row span, .disabled_row td, .disabled_row a {
-	color:grey;
+	color: grey;
 }
 
 .disabled {
-	color:grey;
-	font-weight:bold;
+	color: grey;
+	font-weight: bold;
 }
 
 .idle {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .running {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
-.newObject{
-	color:blue;
+.newObject {
+	color: blue;
 }
 
 .updateObject {
-	color:grey;
+	color: grey;
 }
 
 .unmetDependency {
-	color:red;
+	color: red;
 }
 
 .foundDependency {
-	color:navy;
+	color: navy;
 }
 
 .success {
-	color:green;
+	color: green;
 }
 
 .failed {
-	color:red;
+	color: red;
 }
 
 .accessGranted {
-	color:green;
-	font-weight:bold;
+	color: green;
+	font-weight: bold;
 }
 
 .accessGrantedItem {
-	color:green;
+	color: green;
 }
 
 .accessRestricted {
-	color:red;
-	font-weight:bold;
+	color: red;
+	font-weight: bold;
 }
 
 .accessRestrictedItem {
-	color:red;
+	color: red;
 }
 
 .deleteIcon {
-	width:10px;
-	height:10px;
-	cursor:pointer;
-	padding:2px;
-	border:none;
+	width: 10px;
+	height: 10px;
+	cursor: pointer;
+	padding: 2px;
+	border: none;
 }
 
 .drillDown {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .monoSpace {
-	font-size:9px;
+	font-size: 9px;
 	font-family: monospace;
 }
 
@@ -263,19 +263,19 @@ label {
 }
 
 .itemlist {
-	max-height:200px;
-	overflow-y:auto;
+	max-height: 200px;
+	overflow-y: auto;
 }
 
 .realms {
-	width:20%;
-	vertical-align:top;
-	white-space:nowrap;
+	width: 20%;
+	vertical-align: top;
+	white-space: nowrap;
 }
 
 .spikeKillMenuItem {
 	display: block;
-	width: 100%:
+	width: 100%:;
 }
 
 .deviceUp {
@@ -412,16 +412,16 @@ label {
 	border-width: 0px 3px 3px 3px;
 	border-color: rgba(0,0,0,0.7);
 	border-style: solid;
-	position:absolute;
-	top:45px;
-  	list-style: none;
-	text-align:left;
-	margin:0px;
+	position: absolute;
+	top: 45px;
+	list-style: none;
+	text-align: left;
+	margin: 0px;
 	padding: 10px 0px 10px 0px;
 }
 
 .submenuoptions li a {
-	display:block;
+	display: block;
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
 	font-weight: light;
@@ -430,7 +430,7 @@ label {
 }
 
 .submenuoptions li a:hover {
-	display:block;
+	display: block;
 	background: rgba(0,0,0,0.1);
 }
 
@@ -439,20 +439,19 @@ label {
 	border-width: 0px 3px 3px 3px;
 	border-color: rgba(0,0,0,0.7);
 	border-style: solid;
-	display:block;
-	float:right;
-	position:absolute;
-	right:0px;
-	top:45px;
-  	list-style: none;
-	text-align:right;
-	margin:0px;
+	display: block;
+	float: right;
+	position: absolute;
+	right: 0px;
+	top: 45px;
+	list-style: none;
+	text-align: right;
+	margin: 0px;
 	padding: 10px 0px 10px 0px;
-
 }
 
 .menuoptions li a {
-	display:block;
+	display: block;
 	padding: 2px 15px 2px 15px;
 	font-size: 14px;
 	font-weight: light;
@@ -461,7 +460,7 @@ label {
 }
 
 .menuoptions li a:hover {
-	display:block;
+	display: block;
 	background: rgba(0,0,0,0.1);
 }
 
@@ -480,32 +479,32 @@ label {
 }
 
 .color-icon {
-	background-image:none !important;
+	background-image: none !important;
 }
 
 .emailtest {
-	cursor:pointer;
-	display:block;
-	float:right;
-	text-align:right;
+	cursor: pointer;
+	display: block;
+	float: right;
+	text-align: right;
 	padding: 0px 5px 0px 0px;
 }
 
 .reloadquery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
-	color:lime;
-	font-weight:bold;
-	font-size:14px;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
+	color: lime;
+	font-weight: bold;
+	font-size: 14px;
 }
 
 .verbosequery {
-	cursor:pointer;
-	padding:2px;
-	vertical-align:middle;
+	cursor: pointer;
+	padding: 2px;
+	vertical-align: middle;
 	color: rgba(255, 204, 0, 0.8);
-	font-size:14px;
+	font-size: 14px;
 }
 
 .deletequery {
@@ -514,7 +513,7 @@ label {
 	vertical-align: middle;
 	color: red !important;
 	font-weight: bold;
-	font-size: 14px
+	font-size: 14px;
 }
 
 .deletequery:hover {
@@ -541,15 +540,15 @@ label {
 
 .even-alternate {
 	#background: none repeat scroll 0 0 #E7E9F2;
-	#background-color:#E7E9F2;
+	#background-color: #E7E9F2;
 	border: none;
 	#box-shadow: 0 0 1px rgba(0, 0, 0, 0.1);
 }
 
 .saveRow {
-	background-color:#EAEAEA;
-	text-align:right;
-	padding:4px;
+	background-color: #EAEAEA;
+	text-align: right;
+	padding: 4px;
 }
 
 .treeArea, .treeItemsArea {
@@ -563,7 +562,7 @@ label {
 }
 
 .filteredValue {
-	background-color:#F8D93D;
+	background-color: #F8D93D;
 }
 
 .graphItemGr1Alt1 {
@@ -618,9 +617,9 @@ label {
 
 .cactiPageHead {
 	background-color: rgba(0,0,0,0.7);
-	height:45px;
-	width:100%;
-	padding:0px;
+	height: 45px;
+	width: 100%;
+	padding: 0px;
 }
 
 .cactiPageHead  div {
@@ -629,15 +628,14 @@ label {
 }
 
 .cactiPageHead #tabs {
-	overflow-x:auto;
-	overflow-y:hidden;
+	overflow-x: auto;
+	overflow-y: hidden;
 }
 
-
 .cactiGraphPageHeadBackdrop {
-	padding-bottom:0px;
-	float:right;
-	position:fixed;
+	padding-bottom: 0px;
+	float: right;
+	position: fixed;
 }
 
 .cactiPageBottom {
@@ -650,9 +648,9 @@ label {
 }
 
 .cactiConsolePageHeadBackdrop {
-	padding-bottom:0px;
-	float:right;
-	position:fixed;
+	padding-bottom: 0px;
+	float: right;
+	position: fixed;
 }
 
 .navigation {
@@ -660,8 +658,8 @@ label {
 }
 
 .debug td {
-	padding:3px;
-	margin:0px;
+	padding: 3px;
+	margin: 0px;
 }
 
 .breadCrumbBar {
@@ -697,16 +695,16 @@ label {
 }
 
 .jstree {
-	position:relative;
-	display:block;
+	position: relative;
+	display: block;
 }
 
 .cactiContentNavigationArea {
 	overflow: hidden;
-	padding-left:0px;
-	padding-right:0px;
-	padding-top:0px;
-	vertical-align:top;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	vertical-align: top;
 	left: 0px;
 }
 
@@ -714,38 +712,38 @@ label {
 	background: #f0f0f0;
 	overflow-y: auto !important;
 	width: 167px;
-	height:100%;
+	height: 100%;
 	float: left;
 }
 
 .cactiLogo {
 	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
-	display:block;
-	cursor:pointer;
-	padding-bottom:140px;
-	margin-bottom:60px;
-	width:156px;
-	margin-top:-6px;
-	margin-left:2px;
-	margin-right:2px;
+	display: block;
+	cursor: pointer;
+	padding-bottom: 140px;
+	margin-bottom: 60px;
+	width: 156px;
+	margin-top: -6px;
+	margin-left: 2px;
+	margin-right: 2px;
 }
 
 .loginLeft, .logoutLeft {
-	width:33%;
-	float:left;
+	width: 33%;
+	float: left;
 }
 
 .loginCenter, .logoutCenter {
-	-moz-border-radius:10px;
-	border-radius:10px;
-	position:relative;
-	padding:30px 0px 5px 20px;
-	background-color:white;
-	top:30%;
-	max-width:360px;
-	max-height:300px;
-	margin-left:auto;
-	margin-right:auto;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	position: relative;
+	padding: 30px 0px 5px 20px;
+	background-color: white;
+	top: 30%;
+	max-width: 360px;
+	max-height: 300px;
+	margin-left: auto;
+	margin-right: auto;
 	background: rgba(255,255,255,1);
 	background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
 	background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(47%, rgba(246,246,246,1)), color-stop(100%, rgba(237,237,237,1)));
@@ -757,9 +755,9 @@ label {
 }
 
 .cactiLoginLogo, .cactiLogoutLogo {
-	position:relative;
-	height:0px;
-	z-index:2;
+	position: relative;
+	height: 0px;
+	z-index: 2;
 	margin-left: 305px;
 	margin-bottom: 0px;
 	color: #223a80;
@@ -767,56 +765,55 @@ label {
 }
 
 .loginArea, .logoutArea {
-	-moz-border-radius:10px;
-	border-radius:10px;
-	position:relative;
-	min-height:200px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	position: relative;
+	min-height: 200px;
 }
 
 .cactiLoginTable td {
-	padding-bottom:6px;
-	padding-right:6px;
+	padding-bottom: 6px;
+	padding-right: 6px;
 }
 
 .loginErrors, .logoutErrors {
-	color:red;
-	min-height:15px;
+	color: red;
+	min-height: 15px;
 }
 
 legend {
-	font-size:22px;
-	font-weight:bold;
+	font-size: 22px;
+	font-weight: bold;
 }
 
 .loginRight, .logoutRight {
-	width:33%;
-	float:right;
+	width: 33%;
+	float: right;
 }
 
 .loginBody, .logoutBody {
-	background: #2d4ca8; /* Old browsers */
-	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+	background: #2d4ca8;
 	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzJkNGNhOCIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMxYTE5NWUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(left, #2d4ca8 0%, #1a195e 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2d4ca8), color-stop(100%,#1a195e)); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left, #2d4ca8 0%,#1a195e 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left, #2d4ca8 0%,#1a195e 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left, #2d4ca8 0%,#1a195e 100%); /* IE10+ */
-	background: linear-gradient(to right, #2d4ca8 0%,#1a195e 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d4ca8', endColorstr='#1a195e',GradientType=1 ); /* IE6-8 */
+	background: -moz-linear-gradient(left, #2d4ca8 0%, #1a195e 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#2d4ca8), color-stop(100%,#1a195e));
+	background: -webkit-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
+	background: -o-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
+	background: -ms-linear-gradient(left, #2d4ca8 0%,#1a195e 100%);
+	background: linear-gradient(to right, #2d4ca8 0%,#1a195e 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2d4ca8', endColorstr='#1a195e',GradientType=1 );
 }
 
 .versionInfo {
-	padding-top:5px;
-	float:right;
-	margin-top:10px;
-	color:white;
+	padding-top: 5px;
+	float: right;
+	margin-top: 10px;
+	color: white;
 }
 
 .actionsDropdown {
-	vertical-align:middle;
+	vertical-align: middle;
 	padding: 3px;
-	width:100%;
+	width: 100%;
 	text-align: right;
 	display: table;
 }
@@ -837,14 +834,14 @@ legend {
 .actionsDropdownArrow {
 	margin-top: auto;
 	margin-bottom: auto;
-	float:left !important;
+	float: left !important;
 	padding: 3px;
 }
 
 .cactiTooltipHint {
 	cursor: pointer;
-	padding:5px;
-	font-size:14px !important;
+	padding: 5px;
+	font-size: 14px !important;
 }
 
 .spikekillData, .spikekillData td {
@@ -865,33 +862,33 @@ legend {
 }
 
 .spikekillMenu li {
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 .spikekillMenu i {
-	text-align:center;
+	text-align: center;
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
-.spikekillMenu i:empty{
+.spikekillMenu i:empty {
 	width: 2.0em;
-	display:inline-block;
+	display: inline-block;
 }
 
 .loginPanel {
-	padding:4px 0px;
+	padding: 4px 0px;
 }
 
 .treeTable {
-	width:100%;
+	width: 100%;
 }
 
 .treeArea {
 	vertical-align: top;
 }
 
-.graphWrapper{
+.graphWrapper {
 	position: relative;
 }
 
@@ -930,12 +927,11 @@ legend {
 	margin-top: 20px;
 }
 
-
 .hyperLink {
 	color: #2d4ca8;
 	font-size: 12px;
 	padding: 3px;
-	cursor:pointer;
+	cursor: pointer;
 	text-decoration: none;
 }
 
@@ -943,7 +939,7 @@ legend {
 }
 
 .iconLink img {
-	padding-bottom:2px;
+	padding-bottom: 2px;
 }
 
 .linkEditMain, .linkEditMain:visited, .linkEditMain:active {
@@ -951,7 +947,7 @@ legend {
 	text-decoration: none;
 	font-size: 12px;
 	white-space: nowrap;
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .linkEditMain:hover {
@@ -1019,7 +1015,7 @@ legend {
 }
 
 .remover {
-	cursor:pointer;
+	cursor: pointer;
 }
 
 .messageContainer {
@@ -1038,7 +1034,7 @@ legend {
 	margin-top: 2px;
 	border-radius: 3px;
 	background-color: white;
-	border:1px solid #BBBBBB;
+	border: 1px solid #BBBBBB;
 	position: relative;
 	z-index: 4;
 }
@@ -1054,7 +1050,7 @@ legend {
 }
 
 .templateHeader td {
-	padding:3px;
+	padding: 3px;
 }
 
 .textSubHeaderDark, .textSubHeaderDark:visited {
@@ -1074,8 +1070,8 @@ legend {
 .cactiTable {
 	display: table;
 	width: 100%;
-	margin-left:auto;
-	margin-right:auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .cactiInstallLoaderSpinnerTheme {
@@ -1120,7 +1116,7 @@ legend {
 	background: transparent;
 	float: right;
 	padding: 0px;
-	padding-bottom:3px;
+	padding-bottom: 3px;
 	margin-right: -5px;
 }
 
@@ -1144,17 +1140,17 @@ legend {
 }
 
 .filterTable {
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .filterTable td:first-child {
-	width:55px;
-	min-width:55px;
+	width: 55px;
+	min-width: 55px;
 }
 
 .filterTable td {
 	padding: 2px;
-	white-space:nowrap;
+	white-space: nowrap;
 }
 
 .filterTable label {
@@ -1251,8 +1247,8 @@ legend {
 }
 
 .formHeaderAnchor {
-	float:right;
-	padding-right:4px;
+	float: right;
+	padding-right: 4px;
 }
 
 .hostInfoHeader {
@@ -1326,17 +1322,17 @@ legend {
 }
 
 .break {
-	height:4px;
+	height: 4px;
 }
 
 .next {
-	padding-right:6px;
-	padding-left:6px;
+	padding-right: 6px;
+	padding-left: 6px;
 }
 
 .previous {
-	padding-right:6px;
-	padding-left:6px;
+	padding-right: 6px;
+	padding-left: 6px;
 }
 
 .cactiNavBarTop {
@@ -1354,25 +1350,24 @@ legend {
 }
 
 th.sortable {
-	cursor:pointer;
-	line-height:10px;
+	cursor: pointer;
+	line-height: 10px;
 }
 
 .tableHeader th {
 	color: white;
-
 	cursor: pointer;
-	vertical-align:middle;
-	text-align:left;
+	vertical-align: middle;
+	text-align: left;
 	font-size: 11px;
-	font-weight:bold;
+	font-weight: bold;
 	padding: 2px;
 }
 
 .tableHeader th div {
-	display:block;
-	padding-right:8px;
-	font-size:11px;
+	display: block;
+	padding-right: 8px;
+	font-size: 11px;
 }
 
 .tableHeaderColumnSelected {
@@ -1384,27 +1379,27 @@ th.sortable {
 }
 
 .tableSubHeaderColumn, .tableSubHeaderColumnCenter, .tableSubHeaderColumnRight {
-	font-weight:bold;
-	vertical-align:middle;
-	text-align:left;
-	cursor:pointer;
+	font-weight: bold;
+	vertical-align: middle;
+	text-align: left;
+	cursor: pointer;
 	padding: 3px;
 }
 
 .tableSubHeaderColumnCenter {
-	text-align:center;
+	text-align: center;
 }
 
 .tableSubHeaderColumnRight {
-	text-align:right;
+	text-align: right;
 }
 
 .graphSubHeaderColumn {
 	color: #white;
-	font-size:12px;
-	vertical-align:middle;
-	text-align:left;
-	padding:3px;
+	font-size: 12px;
+	vertical-align: middle;
+	text-align: left;
+	padding: 3px;
 }
 
 .tableSubHeaderCheckbox {
@@ -1423,29 +1418,29 @@ th.sortable {
 }
 
 .image_table {
-	width:100%;
+	width: 100%;
 }
 
 .tableConfirmation {
-	width:100%;
-	text-align:center;
+	width: 100%;
+	text-align: center;
 	background-color: #f5f5f5;
 	border: 1px solid #aaaaaa;
 }
 
 .navBar {
-	min-width:30%;
-	white-space:nowrap;
+	min-width: 30%;
+	white-space: nowrap;
 }
 
 .navBarNavigation {
 	display: table;
 	color: rgba(0,0,0,0.9);
 	width: 100%;
-	text-align:center;
+	text-align: center;
 	height: 20px;
-	margin-left:auto;
-	margin-right:auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .navBarNavigationPrevious {
@@ -1485,7 +1480,7 @@ th.sortable {
 	text-align: center;
 	display: table-cell;
 	white-space: nowrap;
-	width:100%;
+	width: 100%;
 	height: 20px;
 	margin-top: auto;
 }
@@ -1493,18 +1488,18 @@ th.sortable {
 .navBarNavigationNext i.ui-icon {
 	margin-top: -16px;
 	margin-right: -16px;
-	top:50%;
+	top: 50%;
 }
 
 .navBarNavigationPrevious i.ui-icon {
 	margin-bottom: -16px;
 	margin-left: -16px;
-	top:50%;
+	top: 50%;
 }
 
 .textArea {
 	font-size: 12px;
-	background-color:#f5f5f5;
+	background-color: #f5f5f5;
 }
 
 .textArea a {
@@ -1518,8 +1513,8 @@ th.sortable {
 	display: none;
 	overflow: auto;
 	color: white;
-	background-color:#e5e5e5;
-	border:1px solid #e5e5e5;
+	background-color: #e5e5e5;
+	border: 1px solid #e5e5e5;
 }
 
 .installArea {
@@ -1574,25 +1569,25 @@ th.sortable {
 
 /* tabs */
 .tabSpacer {
-	width:0px;
-	padding-right:2px;
-	padding-left:0px;
+	width: 0px;
+	padding-right: 2px;
+	padding-left: 0px;
 }
 
 .tabsMarginLeft {
-	padding-left:2px;
+	padding-left: 2px;
 }
 
 .tabSelected {
-	background-color:silver;
-	white-space:nowrap;
-	width:1%;
+	background-color: silver;
+	white-space: nowrap;
+	width: 1%;
 }
 
 .tabNotSelected {
-	background-color:#dfdfdf;
-	white-space:nowrap;
-	width:1%;
+	background-color: #dfdfdf;
+	white-space: nowrap;
+	width: 1%;
 }
 
 .subTab a {
@@ -1633,21 +1628,21 @@ th.sortable {
 }
 
 .moveArrowNone {
-	padding-left:14px;
+	padding-left: 14px;
 }
 
 .action, .shiftArrow, .calendar {
 	cursor: pointer;
-	padding:2px;
+	padding: 2px;
 }
 
 td.tab {
 	border-top: 1px solid #999;
 	border-right: 1px solid #666;
 	border-left: 1px solid #999;
-	padding-left:3px;
-	padding-right:3px;
-	min-width:0%;
+	padding-left: 3px;
+	padding-right: 3px;
+	min-width: 0%;
 	border-bottom: none;
 	border-top-left-radius: 4px;
 	border-top-right-radius: 4px;
@@ -1663,15 +1658,15 @@ div#gtabs {
 	padding-bottom: 0px;
 	vertical-align: bottom;
 	display: none !important;
-	position:fixed;
+	position: fixed;
 	right: 5px;
 	top: 5px;
 	height: 30px;
 }
 
 .ellipsis {
-	width:25px !important;
-	display:none;
+	width: 25px !important;
+	display: none;
 }
 
 .usertabs {
@@ -1749,29 +1744,29 @@ div.submenu span {
 }
 
 .tabs a {
-	background-color:#ddd;
-	background-image:-moz-linear-gradient(#f0f0f0,#ddd);
-	background-image:-ms-linear-gradient(#f0f0f0,#ddd);
-	background-image:-webkit-linear-gradient(#f0f0f0,#ddd);
-	background-image:linear-gradient(#f0f0f0,#ddd);
-	background-repeat:repeat-x;
-	border:1px solid #555;
-	border-color:#eee #ccc #ccc #eee;
-	color:#333;
-	float:left !important;
-	padding:5px 8px;
-	text-decoration:none;
+	background-color: #ddd;
+	background-image: -moz-linear-gradient(#f0f0f0,#ddd);
+	background-image: -ms-linear-gradient(#f0f0f0,#ddd);
+	background-image: -webkit-linear-gradient(#f0f0f0,#ddd);
+	background-image: linear-gradient(#f0f0f0,#ddd);
+	background-repeat: repeat-x;
+	border: 1px solid #555;
+	border-color: #eee #ccc #ccc #eee;
+	color: #333;
+	float: left !important;
+	padding: 5px 8px;
+	text-decoration: none;
 	font-size: 11px;
-	vertical-align:bottom;
+	vertical-align: bottom;
 }
 
 .tabs a:hover {
-	background-color:#ddd;
-	background-image:-moz-linear-gradient(#e0e0e0,#ccc);
-	background-image:-ms-linear-gradient(#e0e0e0,#ccc);
-	background-image:-webkit-linear-gradient(#e0e0e0,#ccc);
-	background-image:linear-gradient(#e0e0e0,#ccc);
-	background-repeat:repeat-x;
+	background-color: #ddd;
+	background-image: -moz-linear-gradient(#e0e0e0,#ccc);
+	background-image: -ms-linear-gradient(#e0e0e0,#ccc);
+	background-image: -webkit-linear-gradient(#e0e0e0,#ccc);
+	background-image: linear-gradient(#e0e0e0,#ccc);
+	background-repeat: repeat-x;
 }
 
 .tabs nav a.selected {
@@ -1781,28 +1776,28 @@ div.submenu span {
 }
 
 .tabs li {
-	bottom:-1px;
-	float:left;
-	margin:0 3px 0 0;
-	position:relative;
+	bottom: -1px;
+	float: left;
+	margin: 0 3px 0 0;
+	position: relative;
 }
 
 .tabs li.current a, .maintabs li.current a {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
 
 .tabs li.current a:hover, .maintabs li.current a:hover {
-	background:#fff;
-	border-bottom:1px solid #fff;
+	background: #fff;
+	border-bottom: 1px solid #fff;
 }
 
 .tabs nav {
-	border-bottom:1px solid #ccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .tabs nav:after, .maintabs nav:after {
-	clear:both;
+	clear: both;
 	content: ".";
 	display: block;
 	height: 0;
@@ -1821,7 +1816,7 @@ div.submenu span {
 	border-top: 0px solid #999;
 	border-right: 0px solid #999;
 	border-left: 0px solid #999;
-	font-size:12px;
+	font-size: 12px;
 	margin: 0px 0;
 }
 
@@ -1865,7 +1860,7 @@ tr.selectable a.linkEditMain:hover {
 	color: yellow;
 }
 
-tr.selectable:hover:not(.selected){
+tr.selectable:hover:not(.selected) {
 	background: rgba(0,0,0,0.3);
 }
 
@@ -1888,7 +1883,7 @@ tr.selected a {
 
 #nav li ul {
 	display: none;
-	padding:0;
+	padding: 0;
 }
 
 #nav li ul li a {
@@ -1897,14 +1892,14 @@ tr.selected a {
 }
 
 #nav li ul li {
-	list-style:none;
-	padding:0;
+	list-style: none;
+	padding: 0;
 }
 
 ul#nav {
 	list-style: none;
-	padding:0;
-	width:100%;
+	padding: 0;
+	width: 100%;
 }
 
 .clogError {
@@ -1936,7 +1931,9 @@ ul#nav {
 }
 
 @media print {
-	.noprint { display:none }
+	.noprint {
+		display: none;
+	}
 }
 
 .ui-tooltip {
@@ -1954,7 +1951,7 @@ ul#nav {
 
 .ui-tooltip-content {
 	max-width: 500px !important;
-	overflow:auto !important;
+	overflow: auto !important;
 	opacity: 0.95;
 	border-radius: 5px !important;
 	border: transparent;
@@ -1969,7 +1966,7 @@ ul.pagination {
 	display: inline-block;
 	padding: 0;
 	margin: 0;
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 ul.pagination li {
@@ -2001,11 +1998,11 @@ ul.pagination li a:hover:not(.active) {
 }
 
 tr#realtime td:first-child {
-	height:68px;
+	height: 68px;
 }
 
 .logEmergency {
-	background-color: rgba(250, 116, 32, 0.2);
+	background-color: rgba(255, 6, 6, 0.4);
 	text-align: center;
 	width: 12.5%;
 	color: black;
@@ -2060,9 +2057,8 @@ tr#realtime td:first-child {
 	color: black;
 }
 
-.darkblue{
-	background: #2d4ca8; /* Old browsers */
-
+.darkblue {
+	background: #2d4ca8;
 }
 
 .ui-corner-all {
@@ -2139,7 +2135,7 @@ tr#realtime td:first-child {
 }
 
 .checkboxSwitch input {
-	display:none;
+	display: none;
 }
 
 .checkboxSlider {
@@ -2165,7 +2161,7 @@ tr#realtime td:first-child {
 	background-image: url('./images/cacti_logo.svg');
 	background-repeat: no-repeat;
 	background-size: 7px;
-	background-position: center; /*left 5px;*/
+	background-position: center;
 	-webkit-transition: .4s;
 	transition: .4s;
 }
@@ -2218,7 +2214,7 @@ input:checked + .checkboxSlider:before {
 }
 
 .radioSwitch input {
-	display:none;
+	display: none;
 }
 
 .radioSlider {
@@ -2236,7 +2232,7 @@ input:checked + .checkboxSlider:before {
 }
 
 .radioSlider:before {
-	display:none;
+	display: none;
 	position: absolute;
 	content: "";
 	height: 16px;
@@ -2247,7 +2243,7 @@ input:checked + .checkboxSlider:before {
 	background-image: url('./images/cacti_logo.svg');
 	background-repeat: no-repeat;
 	background-size: 7px;
-	background-position: center; /*left 5px;*/
+	background-position: center;
 	-webkit-transition: .4s;
 	transition: .4s;
 }

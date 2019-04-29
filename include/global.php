@@ -81,6 +81,7 @@ $disable_log_rotation = false;
 
 /* allow upto 5000 items to be selected */
 ini_set('max_input_vars', '5000');
+$config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
@@ -90,6 +91,50 @@ if (file_exists(dirname(__FILE__) . '/config.php')) {
 if (isset($config['cacti_version'])) {
 	die('Invalid include/config.php file detected.' . PHP_EOL);
 	exit;
+}
+
+/* Set the poller_id */
+if (isset($poller_id)) {
+	$config['poller_id'] = $poller_id;
+} else {
+	$config['poller_id'] = 1;
+}
+
+$db_var_defaults = array(
+	'database_type'     => 'mysql',
+	'database_default'  => NULL,
+	'database_hostname' => NULL,
+	'database_username' => NULL,
+	'database_password' => NULL,
+	'database_port'     => '3306',
+	'database_retries'  => 5,
+	'database_ssl'      => false,
+	'database_ssl_key'  => '',
+	'database_ssl_cert' => '',
+	'database_ssl_ca'   => '',
+);
+
+$db_var_prefixes = array('');
+if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
+	$db_var_prefixes[] = 'r';
+}
+
+$db_missing_vars = '';
+foreach ($db_var_prefixes as $db_var_prefix) {
+	foreach ($db_var_defaults as $db_var_name => $db_var_default) {
+		$db_var_full = $db_var_prefix . $db_var_name;
+		if (!isset($$db_var_full)) {
+			if ($db_var_default !== NULL) {
+				$$db_var_full = $db_var_default;
+			} else {
+				$db_missing_vars .= (($db_missing_vars == '') ? 'missing ' : ', ') . $db_var_full;
+			}
+		}
+	}
+}
+
+if (!empty($db_missing_vars)) {
+	die("config.php is $db_missing_vars" . PHP_EOL);
 }
 
 /* set the local for international users */
@@ -136,27 +181,23 @@ $no_http_header_files = array(
 	'structure_rra_paths.php',
 );
 
-$config = array();
 $colors = array();
 
 /* this should be auto-detected, set it manually if needed */
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 
 /* built-in snmp support */
-$config['php_snmp_support'] = function_exists('snmpget');
+if (isset($php_snmp_support) && !$php_snmp_support) {
+	$config['php_snmp_support'] = false;
+} else {
+	$config['php_snmp_support'] = class_exists('SNMP');
+}
 
 /* Set various debug fields */
 $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
 $config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');
 $config['DEBUG_SQL_CMD']                    = defined('DEBUG_SQL_CMD');
 $config['DEBUG_SQL_FLOW']                   = defined('DEBUG_SQL_FLOW');
-
-/* Set the poller_id */
-if (isset($poller_id)) {
-	$config['poller_id'] = $poller_id;
-} else {
-	$config['poller_id'] = 1;
-}
 
 /* check for an empty database port */
 if (empty($database_port)) {

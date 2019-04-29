@@ -219,7 +219,7 @@ function plugins_load_temp_table() {
 
 	if ($plugins !== false && sizeof($plugins)) {
 		foreach ($plugins as $plugin) {
-			if (!array_key_exists($plugin['directory'], $cinfo)) {
+			if (!in_array($plugin['directory'], $found_plugins)) {
 				$plugin['status'] = '-5';
 
 				$exists = db_fetch_cell_prepared("SELECT COUNT(*)
@@ -232,7 +232,7 @@ function plugins_load_temp_table() {
 						(directory, name, status, author, webpage, version, requires, infoname)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 						array(
-							$directory,
+							$plugin['directory'],
 							$plugin['longname'],
 							$plugin['status'],
 							$plugin['author'],

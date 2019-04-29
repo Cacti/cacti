@@ -1511,7 +1511,8 @@ CREATE TABLE data_template_data (
   PRIMARY KEY (id),
   KEY local_data_id (local_data_id),
   KEY data_template_id (data_template_id),
-  KEY data_input_id (data_input_id)
+  KEY data_input_id (data_input_id),
+  KEY name_cache (name_cache(191))
 ) ENGINE=InnoDB;
 
 --

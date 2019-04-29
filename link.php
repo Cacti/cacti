@@ -30,8 +30,26 @@ $page = db_fetch_row_prepared('SELECT
 	WHERE id = ?',
 	array(get_filter_request_var('id')));
 
+// Prevent redirect loops
+if (isset($_SERVER['HTTP_REFERER'])) {
+	if (strpos($_SERVER['HTTP_REFERER'], 'link.php') === false) {
+		$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+		$_SESSION['link_referer'] = $referer;
+	} elseif (isset($_SESSION['link_referer'])) {
+		$referer = sanitize_uri($_SESSION['link_referer']);
+	} else {
+		$referer = 'index.php';
+	}
+} elseif (isset($_SESSION['link_referer'])) {
+	$referer = sanitize_uri($_SESSION['link_referer']);
+} else {
+	$referer = 'index.php';
+}
+
 if (!cacti_sizeof($page)) {
-	print 'FATAL: Page is not defined.';
+	raise_message('page_not_defined');
+	header('Location: ' . $referer);
+	exit;
 } else {
 	global $link_nav;
 
@@ -68,10 +86,12 @@ if (!cacti_sizeof($page)) {
 
 			print '</div>';
 		}
-	} else {
-		print 'ERROR: Page is not authorized.';
-	}
 
-	bottom_footer();
+		bottom_footer();
+	} else {
+		raise_message('permission_denied');
+		header('Location: ' . $referer);
+		exit;
+	}
 }
 

@@ -42,6 +42,15 @@ require_once($config['base_path'] . '/lib/sort.php');
 require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
 
+if ($config['poller_id'] > 1) {
+	if ($config['connection'] == 'online') {
+		db_force_remote_cnn();
+	} else {
+		cacti_log('WARNING: Main Cacti database offline.  Can not run automation', false, 'AUTOM8');
+		exit(1);
+	}
+}
+
 /** sig_handler - provides a generic means to catch exceptions to the Cacti log.
  * @arg $signo  - (int) the signal that was thrown by the interface.
  * @return      - null */

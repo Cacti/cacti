@@ -401,7 +401,7 @@ $.tablesorter.addParser({
 
 // helper function which selects row range when shift key is pressed during click
 function updateCheckboxes(checkboxes, clicked_element) {
-	var prev_checkbox = $(clicked_element).closest('tr').siblings().find('[data-prev-check]:checkbox');
+	var prev_checkbox = clicked_element.closest('table').find('[data-prev-check]:checkbox');
 	if (!prev_checkbox.length) {
 		return;
 	}
@@ -425,7 +425,7 @@ function updateCheckboxes(checkboxes, clicked_element) {
  *  taking action as required to enable or disable rows. */
 function applySelectorVisibilityAndActions() {
 	// Change for accessibility
-	$('input[type="checkbox"], input[type="radio"]').off('click').on('click', function() {
+	$('input[type="radio"]').off('click').on('click', function() {
 		if ($(this).is(':checked')) {
 			$(this).attr('aria-checked', 'true');
 		} else {
@@ -444,61 +444,61 @@ function applySelectorVisibilityAndActions() {
 	});
 
 	// Create Actions for Rows
-	$('tr[id^="gt_line"].selectable:not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).off('click').on('click', function(data) {
-			$(this).closest('tr').toggleClass('selected');
-			var checkbox = $(this).parent().find(':checkbox');
-			checkbox.prop('checked', !checkbox.is(':checked'));
-		});
+	$('tr[id^="gt_line"].selectable:not(.disabled_row)').off('click').on('click', function(event) {
+		selectUpdateRow(event, $(this));
 	});
-
-	// Create Actions for Checkboxes
-	$('tr[id^="gt_line"].selectable').find('input.checkbox').off('click').on('click', function(data) {
-		if (!$(this).is(':disabled')) {
-			if ($(this).is(':checked')) {
-				$('#all_cg').prop('checked', false);
-			}
-
-			$(this).closest('tr').toggleClass('selected');
-		}
-	});
-
-	var lines = $('tr[id^="line"].selectable');
-	var checkboxes = lines.find(':checkbox');
 
 	// Create Actions for Rows
-	lines.filter(':not(.disabled_row)').find('td').not('.checkbox').each(function(data) {
-		$(this).off('click').on('click', function(e) {
-			if (e.shiftKey) {
-				updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
-			} else {
-				var checked = $(this).closest('tr').find(':checkbox').is(':checked');
-				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-				$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
-					.attr('data-prev-check', !checked);
-			}
-		});
+	$('tr[id^="line"].selectable').filter(':not(.disabled_row)').off('click').on('click', function(event) {
+		selectUpdateRow(event, $(this));
 	});
+}
 
-	// Create Actions for Checkboxes
-	lines.find('input.checkbox').off('click').on('click', function(e) {
-		if (!$(this).is(':disabled')) {
-			if (e.shiftKey) {
-				updateCheckboxes(checkboxes, this);
-			} else {
-				$(this).closest('tr').toggleClass('selected');
-				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-				$(this).attr('data-prev-check', $(this).prop('checked'));
-			}
+function disableSelection() {
+	$('tr.selectable').css('-webkit-user-select','none');
+	$('tr.selectable').css('-moz-user-select','none');
+	$('tr.selectable').css('-ms-user-select','none');
+	$('tr.selectable').css('-o-user-select','none');
+	$('tr.selectable').css('user-select','none');
+}
+
+function enableSelection() {
+	$('tr.selectable').css('-webkit-user-select','');
+	$('tr.selectable').css('-moz-user-select','');
+	$('tr.selectable').css('-ms-user-select','');
+	$('tr.selectable').css('-o-user-select','');
+	$('tr.selectable').css('user-select','');
+}
+
+/** selectUpdateRow - Highlight a selectable row combined with checkbox
+ *  @arg event - The click event to support multiple selections
+ *  @arg element - The jQuery selected object */
+function selectUpdateRow(event, element) {
+	var checkboxes = element.closest('table').find('input[type=checkbox]:not(:disabled)');
+
+	if (event.shiftKey) {
+		updateCheckboxes(checkboxes, element.find(':checkbox'));
+	} else {
+		element.toggleClass('selected');
+		if (element.hasClass('selected')) {
+			element.find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
+		} else {
+			element.find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 		}
-	});
+	}
+
+	if (element.closest('table').find(':checked').length) {
+		disableSelection();
+	} else {
+		enableSelection();
+	}
 }
 
 /** dqUpdateDeps - When a user changes the Graph dropdown for a data query
  *  we have to check to see if those graphs are already created.
  *  @arg snmp_query_id - The snmp query id the is current */
 function dqUpdateDeps(snmp_query_id) {
-	dqResetDeps(snmp_query_id);
+	$('tr[id^="dqline'+snmp_query_id+'_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
 
 	var snmp_query_graph_id = $('#sgg_'+snmp_query_id).val();
 	var removeSelectAll = false;
@@ -518,9 +518,7 @@ function dqUpdateDeps(snmp_query_id) {
 				removeSelectAll = true;
 			}
 
-			$(this).addClass('disabled_row');
-			$(this).removeClass('selected');
-			$(this).removeClass('selectable');
+			$(this).addClass('disabled_row').removeClass('selected').removeClass('selectable');
 			$(this).find(':checkbox').prop('disabled', true).prop('checked', false);
 		} else {
 			removeSelectAll = true;
@@ -531,66 +529,38 @@ function dqUpdateDeps(snmp_query_id) {
 		$('#all_'+snmp_query_id).prop('checked', false);
 	}
 
-	var dqlines = $('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row');
-	var checkboxes = dqlines.find(':checkbox');
-	dqlines.each(function() {
-		$(this).find(':checkbox').off('click').on('click', function(e) {
-			if (e.shiftKey) {
-				updateCheckboxes(checkboxes, this);
-			} else {
-				$(this).closest('tr').toggleClass('selected');
-				$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-				$(this).attr('data-prev-check', $(this).prop('checked'));
-			}
-		});
-
-		$(this).find('td').not('.checkbox').each(function() {
-			$(this).off('click').on('click', function(e) {
-				if (e.shiftKey) {
-					updateCheckboxes(checkboxes, $(this).closest('tr').find(':checkbox'));
-				} else {
-					var checked = $(this).closest('tr').find(':checkbox').is(':checked');
-					$(this).closest('tr').siblings().find(':checkbox').removeAttr('data-prev-check');
-					$(this).closest('tr').toggleClass('selected').find(':checkbox').prop('checked', !checked)
-						.attr('data-prev-check', !checked);
-				}
-			});
-		});
+	$('tr[id^="dqline'+snmp_query_id+'_"]').not('.disabled_row').off('click').on('click', function(event) {
+		selectUpdateRow(event, $(this));
 	});
 }
 
-/** dqResetDeps - This function will make all rows selectable.
- *  It is done just before a new data query is checked.
- *  @arg snmp_query_id - The snmp query id the is current */
-function dqResetDeps(snmp_query_id) {
-	$('tr[id^="dqline'+snmp_query_id+'_"]').addClass('selectable').removeClass('disabled_row').find(':checkbox').prop('disabled', false);
-}
-
-/** SelectAll - This function will select all non-disabled rows
+/** selectAll - This function will select all non-disabled rows
  *  @arg attrib - The Graph Type either graph template, or data query */
-function SelectAll(attrib, checked) {
+function selectAll(attrib, checked) {
 	if (attrib == 'chk') {
 		if (checked == true) {
 			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
-				$(this).find(':checkbox').prop('checked', true);
+				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
+			disableSelection();
 		} else {
 			$('tr[id^="line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
-				$(this).find(':checkbox').prop('checked', false);
+				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
 	} else if (attrib == 'sg') {
 		if (checked == true) {
 			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
-				$(this).find(':checkbox').prop('checked', true);
+				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
+			disableSelection();
 		} else {
 			$('tr[id^="gt_line"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
-				$(this).find(':checkbox').prop('checked', false);
+				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
 	} else {
@@ -600,12 +570,13 @@ function SelectAll(attrib, checked) {
 		if (checked == true) {
 			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).addClass('selected');
-				$(this).find(':checkbox').prop('checked', true);
+				$(this).find(':checkbox').prop('checked', true).attr('aria-checked', 'true').attr('data-prev-check', 'true');
 			});
+			disableSelection();
 		} else {
 			$('tr[id^="dqline'+dq+'\_"]:not(.disabled_row)').each(function(data) {
 				$(this).removeClass('selected');
-				$(this).find(':checkbox').prop('checked', false);
+				$(this).find(':checkbox').prop('checked', false).removeAttr('aria-checked').removeAttr('data-prev-check');
 			});
 		}
 	}
@@ -1691,10 +1662,10 @@ function loadTopTab(href, id, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='"+href+"']").addClass('selected');
-					} else {
+						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
@@ -1782,10 +1753,10 @@ function loadPage(href, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href*='"+href+"']").length > 0) {
+					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='"+href+"']").addClass('selected');
-					} else {
+						$('#menu').find("a[href^='"+href+"']").addClass('selected');
+					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
 					}
@@ -2213,7 +2184,7 @@ function setupSortable() {
 
 					$('#'+returnto).empty().hide();
 					$('div[class^="ui-"]').remove();
-					$('#'+returnto).html(data);
+					$('#'+returnto).html(data).show();
 
 					applySkin();
 				})
@@ -2671,9 +2642,7 @@ function keepWindowSize() {
 				$('.ellipsis').show();
 			}
 		}, 50, 'resize-content');
-	});
-
-	$(window).trigger('resize');
+	}).trigger('resize')
 }
 
 function hideCurrentTab(id, shrinking) {
@@ -2989,7 +2958,7 @@ function clearGraphTimespanFilter() {
 }
 
 function removeSpikesStdDev(local_graph_id) {
-	var strURL = 'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
+	var strURL = urlPath+'spikekill.php?method=stddev&local_graph_id='+local_graph_id;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3005,7 +2974,7 @@ function removeSpikesStdDev(local_graph_id) {
 }
 
 function removeSpikesVariance(local_graph_id) {
-	var strURL = 'spikekill.php?method=variance&local_graph_id='+local_graph_id;
+	var strURL = urlPath+'spikekill.php?method=variance&local_graph_id='+local_graph_id;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3021,7 +2990,7 @@ function removeSpikesVariance(local_graph_id) {
 }
 
 function removeSpikesInRange(local_graph_id) {
-	var strURL = 'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3037,7 +3006,7 @@ function removeSpikesInRange(local_graph_id) {
 }
 
 function removeRangeFill(local_graph_id) {
-	var strURL = 'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3053,7 +3022,7 @@ function removeRangeFill(local_graph_id) {
 }
 
 function dryRunStdDev(local_graph_id) {
-	var strURL = 'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
+	var strURL = urlPath+'spikekill.php?method=stddev&dryrun=true&local_graph_id='+local_graph_id;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3071,7 +3040,7 @@ function dryRunStdDev(local_graph_id) {
 }
 
 function dryRunVariance(local_graph_id) {
-	var strURL = 'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
+	var strURL = urlPath+'spikekill.php?method=variance&dryrun=true&local_graph_id='+local_graph_id;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3089,7 +3058,7 @@ function dryRunVariance(local_graph_id) {
 }
 
 function dryRunSpikesInRange(local_graph_id) {
-	var strURL = 'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=fill&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	$.getJSON(strURL)
 		.done(function(data) {
@@ -3108,7 +3077,7 @@ function dryRunSpikesInRange(local_graph_id) {
 }
 
 function dryRunRangeFill(local_graph_id) {
-	var strURL = 'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
+	var strURL = urlPath+'spikekill.php?method=float&avgnan=last&dryrun=true&local_graph_id='+local_graph_id+'&outlier-start='+graph_start+'&outlier-end='+graph_end;
 
 	$.getJSON(strURL)
 		.done(function(data) {

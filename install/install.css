@@ -117,7 +117,7 @@ label {
 
 .cactiInstallProgressRight {
 	width: 80%;
-	align: right;
+	text-align: right;
 }
 
 #cactiInstallProgressBar {

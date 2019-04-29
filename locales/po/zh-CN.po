@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-10 13:25-0400\n"
-"PO-Revision-Date: 2019-03-10 13:54-0400\n"
-"Last-Translator: SFQAS\n"
-"Language-Team: sfqas <sfqas@163.com>\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2019-04-28 13:01+0000\n"
+"Last-Translator: whsir <wh@whsir.com>\n"
+"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
+"cacti/core/zh-CN/>\n"
+"Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: about.php:29 include/global_arrays.php:2387 lib/html.php:2309
 msgid "About Cacti"
@@ -115,13 +116,14 @@ msgstr ""
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1392 tree.php:1545
 #: tree.php:1605 tree.php:1626 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
+#, fuzzy
 msgid "Delete"
 msgstr "删除"
 
 #: aggregate_graphs.php:43 graphs.php:59
 #, fuzzy
 msgid "Place Graphs on Report"
-msgstr "将图形放在报告上"
+msgstr "在报告上放置图表"
 
 #: aggregate_graphs.php:44
 msgid "Migrate Aggregate to use a Template"
@@ -180,6 +182,7 @@ msgstr "点击 '继续' 删除以下聚合图形."
 #: user_domains.php:262 user_group_admin.php:446 user_group_admin.php:465
 #: user_group_admin.php:476 user_group_admin.php:487 vdef.php:270 vdef.php:280
 #: vdef.php:336
+#, fuzzy
 msgid "Cancel"
 msgstr "取消"
 
@@ -455,6 +458,7 @@ msgstr "匹配图形"
 #: user_group_admin.php:2462 user_group_admin.php:2547 utilities.php:726
 #: utilities.php:1144 utilities.php:1438 utilities.php:1716 utilities.php:2395
 #: utilities.php:2646 vdef.php:699
+#, fuzzy
 msgid "Search"
 msgstr "搜索"
 
@@ -519,6 +523,7 @@ msgstr "部分聚合"
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
 #: user_admin.php:3087
+#, fuzzy
 msgid "Go"
 msgstr "Go"
 
@@ -538,6 +543,7 @@ msgstr "Go"
 #: user_group_admin.php:2405 user_group_admin.php:2490
 #: user_group_admin.php:2575 utilities.php:716 utilities.php:1096
 #: utilities.php:1429 utilities.php:1707 utilities.php:2432 utilities.php:2694
+#, fuzzy
 msgid "Set/Refresh Filters"
 msgstr "设置/刷新过滤器"
 
@@ -559,6 +565,7 @@ msgstr "设置/刷新过滤器"
 #: user_admin.php:2278 user_admin.php:2644 user_admin.php:2729
 #: user_admin.php:2833 user_admin.php:2918 user_admin.php:3003
 #: user_admin.php:3088 user_domains.php:677
+#, fuzzy
 msgid "Clear"
 msgstr "清除"
 
@@ -578,8 +585,9 @@ msgstr "清除"
 #: user_group_admin.php:2491 user_group_admin.php:2576 utilities.php:717
 #: utilities.php:1097 utilities.php:1430 utilities.php:1708 utilities.php:2433
 #: utilities.php:2695
+#, fuzzy
 msgid "Clear Filters"
-msgstr "清除过滤器"
+msgstr "清除过滤"
 
 #: aggregate_graphs.php:1199 aggregate_graphs.php:1527 graph_view.php:700
 #: graphs.php:1153 lib/api_automation.php:572 user_admin.php:1012
@@ -700,6 +708,7 @@ msgstr "任何"
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
 #: settings.php:439 settings.php:465 user_admin.php:2604 user_admin.php:2797
 #: user_group_admin.php:2177 user_group_admin.php:2285 utilities.php:1682
+#, fuzzy
 msgid "None"
 msgstr "无"
 
@@ -859,7 +868,7 @@ msgstr "请输入您当前的密码和新的<br>Cacti 密码."
 #: auth_changepassword.php:303
 #, fuzzy
 msgid "Please enter your new Cacti password."
-msgstr "请输入您当前的密码和新的<br>Cacti 密码."
+msgstr "请输入您的Cacti新密码."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
 #: include/global_settings.php:1379 lib/functions.php:3803
@@ -926,9 +935,9 @@ msgid "LDAP Search Error: %s"
 msgstr "LDAP 搜索错误: %s"
 
 #: auth_login.php:158 auth_login.php:562
-#, php-format
+#, fuzzy, php-format
 msgid "LDAP Error: %s"
-msgstr "LDAP Error: %s"
+msgstr "LDAP 错误: %s"
 
 #: auth_login.php:270 auth_login.php:552
 #, fuzzy, php-format
@@ -1277,6 +1286,7 @@ msgstr "清空已发现的设备"
 #: utilities.php:445 utilities.php:825 utilities.php:2149 utilities.php:2246
 #: utilities.php:2254 utilities.php:2257 utilities.php:2260 utilities.php:2266
 #: utilities.php:2495
+#, fuzzy
 msgid "N/A"
 msgstr "N/A"
 
@@ -4121,8 +4131,9 @@ msgid "Data Source Item %s"
 msgstr "数据源的项目%s"
 
 #: data_sources.php:1071 data_templates.php:675
+#, fuzzy
 msgid "New"
-msgstr "新建"
+msgstr "新的"
 
 #: data_sources.php:1130
 msgid "Data Source Debug"
@@ -4687,6 +4698,7 @@ msgid "View"
 msgstr "查看图形"
 
 #: graph_view.php:596 graph_view.php:777 include/global_arrays.php:1047
+#, fuzzy
 msgid "View Graphs"
 msgstr "查看图形"
 
@@ -5105,8 +5117,9 @@ msgid "New Graphs for None Host Type"
 msgstr "无主机类型的新图形"
 
 #: graphs_new.php:316 lib/html.php:2296
+#, fuzzy
 msgid "Filter Settings Saved"
-msgstr "过滤器设置保存"
+msgstr "过滤器设置已保存"
 
 #: graphs_new.php:351
 msgid "Graph Types"
@@ -5264,6 +5277,7 @@ msgid "Delete all associated Graph(s) and Data Source(s)."
 msgstr "删除所有关联的图形和数据源."
 
 #: host.php:424
+#, fuzzy
 msgid "Delete Device(s)"
 msgstr "删除设备"
 
@@ -5286,11 +5300,12 @@ msgid "Run Automation on Device(s)"
 msgstr "在设备上运行自动化"
 
 #: host.php:585
+#, fuzzy
 msgid "Device [new]"
 msgstr "设备 [新建]"
 
 #: host.php:596
-#, php-format
+#, fuzzy, php-format
 msgid "Device [edit: %s]"
 msgstr "设备 [编辑: %s]"
 
@@ -6834,8 +6849,9 @@ msgid "Last %d Weeks"
 msgstr "过去 %d 周"
 
 #: include/global_arrays.php:1257
+#, fuzzy
 msgid "Last Month"
-msgstr "过去 1 个月"
+msgstr "最近 1 个月"
 
 #: include/global_arrays.php:1258 include/global_arrays.php:1259
 #: include/global_arrays.php:1260 include/global_arrays.php:1261
@@ -6844,8 +6860,9 @@ msgid "Last %d Months"
 msgstr "过去 %d 个月"
 
 #: include/global_arrays.php:1262
+#, fuzzy
 msgid "Last Year"
-msgstr "过去 1 年"
+msgstr "去年"
 
 #: include/global_arrays.php:1263
 #, php-format
@@ -9430,8 +9447,9 @@ msgid ""
 msgstr "您的PHP 执行文件的路径(可能需要重新编译PHP 来得到这个文件)."
 
 #: include/global_settings.php:157
+#, fuzzy
 msgid "Logging"
-msgstr "记录"
+msgstr "日志"
 
 #: include/global_settings.php:162
 msgid "Cacti Log Path"
@@ -12591,7 +12609,7 @@ msgstr "记录[总行数: %d %s - 未过滤]"
 #: lib/clog_webapi.php:283 utilities.php:1182 utilities.php:1526
 #: utilities.php:1733 utilities.php:1812 utilities.php:2469 utilities.php:2678
 msgid "Entries"
-msgstr "项"
+msgstr "条目"
 
 #: lib/clog_webapi.php:386 utilities.php:1039
 msgid "File"
@@ -13261,6 +13279,7 @@ msgid "Time Graph View"
 msgstr "时间图形视图"
 
 #: lib/html.php:452
+#, fuzzy
 msgid "Edit Device"
 msgstr "编辑设备"
 
@@ -16673,8 +16692,9 @@ msgid "Time:"
 msgstr "时间"
 
 #: plugins/thold_functions.php:252 utilities.php:1854
+#, fuzzy
 msgid "User:"
-msgstr "用户名:"
+msgstr "用户:"
 
 #: plugins/thold_functions.php:254
 #, fuzzy
@@ -17746,8 +17766,9 @@ msgid "New Node"
 msgstr "新节点"
 
 #: tree.php:1380
+#, fuzzy
 msgid "Rename"
-msgstr "改名"
+msgstr "重命名"
 
 #: tree.php:1407
 msgid "Branch Sorting"

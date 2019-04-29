@@ -149,7 +149,7 @@ function get_ajax_graph_items() {
 		FROM (SELECT data_template_rrd.id AS id,
 			CONCAT_WS('',
 			CASE
-			WHEN host.description IS NULL THEN 'No Device - '
+			WHEN host.description IS NULL THEN '" . __esc('No Device - ') . "'
 			WHEN host.description IS NOT NULL THEN ''
 			END,
 			data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
@@ -164,7 +164,7 @@ function get_ajax_graph_items() {
 		FROM (SELECT data_template_rrd.id AS id,
 			CONCAT_WS('',
 			CASE
-			WHEN host.description IS NULL THEN 'No Device - '
+			WHEN host.description IS NULL THEN '" . __esc('No Device - ') . "'
 			WHEN host.description IS NOT NULL THEN ''
 			END,
 			data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
@@ -709,21 +709,27 @@ function form_actions() {
 				$attribs['total_items']     = array();
 				$attribs['graph_item_types']= array();
 				$attribs['cdefs']           = array();
+
 				foreach ($aggregate_graph_items as $item) {
-					if (isset($item['color_template']) && $item['color_template'] > 0)
+					if (isset($item['color_template']) && $item['color_template'] > 0) {
 						$attribs['color_templates'][ $item['sequence'] ] = $item['color_template'];
+					}
 
-					if (isset($item['item_skip']) && $item['item_skip'] == 'on')
+					if (isset($item['item_skip']) && $item['item_skip'] == 'on') {
 						$attribs['skipped_items'][ $item['sequence'] ] = $item['sequence'];
+					}
 
-					if (isset($item['item_total']) && $item['item_total'] == 'on')
+					if (isset($item['item_total']) && $item['item_total'] == 'on') {
 						$attribs['total_items'][ $item['sequence'] ] = $item['sequence'];
+					}
 
-					if (isset($item['cdef_id']) && isset($item['t_cdef_id']) && $item['t_cdef_id'] == 'on')
+					if (isset($item['cdef_id']) && isset($item['t_cdef_id']) && $item['t_cdef_id'] == 'on') {
 						$attribs['cdefs'][ $item['sequence'] ] = $item['cdef_id'];
+					}
 
-					if (isset($item['graph_type_id']) && isset($item['t_graph_type_id']) && $item['t_graph_type_id'] == 'on')
+					if (isset($item['graph_type_id']) && isset($item['t_graph_type_id']) && $item['t_graph_type_id'] == 'on') {
 						$attribs['graph_item_types'][ $item['sequence'] ] = $item['graph_type_id'];
+					}
 				}
 
 				/* create actual graph items */
@@ -872,9 +878,19 @@ function form_actions() {
 				print '</ul></div><br>';
 
 				print '<span class="nowrap">';
-				form_radio_button('delete_type', '2', '2', __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
+
+				$ds_preselected_delete = read_config_option('ds_preselected_delete');
+				if ($ds_preselected_delete == 'on') {
+	                                $delete_radio_button_1_state = '2';
+                                	$delete_radio_button_2_state = '1';
+				} else { 
+					$delete_radio_button_1_state = '1';
+					$delete_radio_button_2_state = '2';			
+				}                                 
+
+				form_radio_button('delete_type', '2', $delete_radio_button_1_state , __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
 				print '<br>';
-				form_radio_button('delete_type', '2', '1', __('Leave the Data Source(s) untouched.'), '1');
+				form_radio_button('delete_type', '2', $delete_radio_button_2_state , __('Leave the Data Source(s) untouched.'), '1');
 				print '<br>';
 				print '</span>';
 				print '</td></tr>';
@@ -1308,8 +1324,14 @@ function graph_edit() {
 			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
 
+	        $auto_unlock = read_config_option('graphs_auto_unlock');
+
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
-			$locked = true;
+			if ($auto_unlock == 'on') {
+                        	$locked = false;
+                        } else {
+	                        $locked = true;
+                        }                        
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
 			$locked = false;
@@ -1317,7 +1339,11 @@ function graph_edit() {
 		} elseif (isset($_SESSION['sess_graph_locked'])) {
 			$locked = $_SESSION['sess_graph_locked'];
 		} else {
-			$locked = true;
+			if ($auto_unlock == 'on') {
+				$locked = false;
+			} else {
+				$locked = true;
+			}
 			$_SESSION['sess_graph_locked'] = $locked;
 		}
 
@@ -1787,7 +1813,18 @@ function graph_management() {
 		$add_url = '';
 	}
 
-	html_start_box(__('Graph Management') . (get_request_var('local_graph_ids') != '' ? __(' [ Custom Graphs List Applied - Clear to Reset ]'): ''), '100%', '', '3', 'center', $add_url);
+	if (get_request_var('local_graph_ids') != '') {
+		$header = __('Graph Management [ Custom Graphs List Applied - Clear to Reset ]');
+	} elseif (get_request_var('host_id') == -1) {
+		$header = __('Graph Management [ All Devices ]');
+	} elseif (get_request_var('host_id') == 0) {
+		$header = __('Graph Management [ Non Device Based ]');
+	} else {
+		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
+		$header = __('Graph Management [ %s ]', $description);
+	}
+
+	html_start_box($header, '100%', '', '3', 'center', $add_url);
 
 	if (get_request_var('site_id') > 0) {
 		$host_where = 'site_id = ' . get_request_var('site_id');
@@ -1938,7 +1975,7 @@ function graph_management() {
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(gtg.id)
 		FROM graph_local AS gl
-		INNER JOIN graph_templates_graph AS gtg
+		LEFT JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
@@ -1957,7 +1994,7 @@ function graph_management() {
 		gtg.title_cache, gt.name, gl.host_id,
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
-		INNER JOIN graph_templates_graph AS gtg
+		LEFT JOIN graph_templates_graph AS gtg
 		ON gl.id=gtg.local_graph_id
 		LEFT JOIN graph_templates AS gt
 		ON gl.graph_template_id=gt.id
@@ -1994,7 +2031,7 @@ function graph_management() {
 		),
 		'nosort_source' => array(
 			'display' => __('Source Type'),
-			'align'   => 'right',
+			'align'   => 'center',
 			'sort'    => 'ASC',
 			'tip'     => __('The underlying source that this Graph was based upon.')
 		),
@@ -2028,10 +2065,14 @@ function graph_management() {
 				$graph['description'] = $template_details['graph_description'];
 			}
 
+			if (empty($graph['title_cache'])) {
+				$graph['title_cache'] = __('Empty Graph');
+			}
+
 			form_alternate_row('line' . $graph['local_graph_id'], true);
 			form_selectable_cell(filter_value(title_trim($graph['title_cache'], read_config_option('max_title_length')), get_request_var('rfilter'), 'graphs.php?action=graph_edit&id=' . $graph['local_graph_id']), $graph['local_graph_id']);
 			form_selectable_cell($graph['local_graph_id'], $graph['local_graph_id'], '', 'right');
-			form_selectable_cell(filter_value($graph_sources[$graph['graph_source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'right');
+			form_selectable_cell(filter_value($graph_sources[$graph['graph_source']], get_request_var('rfilter')), $graph['local_graph_id'], '', 'center');
 			form_selectable_cell(filter_value($template_details['name'], get_request_var('rfilter'), $template_details['url']), $graph['local_graph_id'], '', 'left');
 			form_selectable_ecell($graph['height'] . 'x' . $graph['width'], $graph['local_graph_id'], '', 'right');
 			form_checkbox_cell($graph['title_cache'], $graph['local_graph_id']);

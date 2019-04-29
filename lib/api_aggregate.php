@@ -1392,7 +1392,7 @@ function aggregate_handle_stacked_lines($local_graph_id, $_orig_graph_type, $_to
 	if ($special_line) {
 		if ($_total == AGGREGATE_TOTAL_NONE) {
 			db_execute_prepared('UPDATE graph_templates_item
-				SET line_width = ?,
+				SET line_width = ?
 				WHERE local_graph_id = ?
 				AND graph_type_id IN (?)',
 				array($width, $local_graph_id, GRAPH_ITEM_TYPE_LINESTACK));

@@ -2209,19 +2209,22 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 	include_once($config['base_path'] . '/lib/api_automation_tools.php');
 	include_once($config['base_path'] . '/lib/utility.php');
 
-	$dataSourceId = '';
-
-	$returnArray  = array();
+	$dataSourceId     = '';
+	$returnArray      = array();
+	$suggested_values = array();
 
 	$function  = automation_function_with_pid(__FUNCTION__);
 	cacti_log($function . ' called: Device[' . $host_id . '] - GT[' . $graph_template_id . ']', false, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
-	# are there any input fields?
+	# are there any input fields? if so use the default values
 	if ($graph_template_id > 0) {
 		$input_fields = getInputFields($graph_template_id);
+
 		if (cacti_sizeof($input_fields)) {
-			# do nothing for such graph templates
-			return;
+			$suggested_vals[$graph_template_id]['custom_data'] = array();
+			foreach($input_fields as $field) {
+				$suggested_vals[$graph_template_id]['custom_data'][$field['data_template_id']][$field['data_input_field_id']] = $field['default'];
+			}
 		}
 	}
 
@@ -2243,11 +2246,10 @@ function automation_execute_graph_template($host_id, $graph_template_id) {
 		cacti_log('NOTE: ' . $function . ' Device[' . $host_id . "] Graph Creation Skipped - Already Exists - Graph[$existsAlready] - DS[$dataSourceId]", false, 'AUTOM8', POLLER_VERBOSITY_MEDIUM);
 		return;
 	} else {
-		# input fields are not supported
-		$suggested_values = array();
-		$returnArray = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
+		$returnArray  = create_complete_graph_from_template($graph_template_id, $host_id, array(), $suggested_values);
 
 		$dataSourceId = '';
+
 		if ($returnArray !== false) {
 			if (cacti_sizeof($returnArray)) {
 				if (isset($returnArray['local_data_id'])) {
@@ -3861,7 +3863,7 @@ function automation_update_device($host_id) {
 	/* create all graph template graphs */
 	if (cacti_sizeof($graph_templates)) {
 		foreach ($graph_templates as $graph_template) {
-			cacti_log($function . ' Found GT[' . $graph_template['id'] . '] for Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+			cacti_log($function . ' Found GT[' . $graph_template['id'] . '] for Device[' . $host_id . ']', true, 'AUTOM8 TRACE', POLLER_VERBOSITY_HIGH);
 
 			automation_execute_graph_template($host_id, $graph_template['id']);
 		}

@@ -384,7 +384,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			if (!($i % 1000)) {
 				$poller_ids = array_rekey(db_fetch_assoc('SELECT poller_id
 					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_delete . ')'), 'poller_id', 'poller_id');
+					WHERE local_data_id IN(' . $ids_to_disable . ')'), 'poller_id', 'poller_id');
 
 				db_execute("DELETE FROM poller_item WHERE local_data_id IN ($ids_to_disable)");
 				db_execute("UPDATE data_template_data SET active='' WHERE local_data_id IN ($ids_to_disable)");
@@ -407,7 +407,7 @@ function api_data_source_disable_multi($local_data_ids) {
 			$poller_ids = array_rekey(
 				db_fetch_assoc('SELECT poller_id
 					FROM poller_item
-					WHERE local_data_id IN(' . $ids_to_delete .')'),
+					WHERE local_data_id IN(' . $ids_to_disable .')'),
 				'poller_id', 'poller_id'
 			);
 
@@ -556,6 +556,8 @@ function api_reapply_suggested_data_source_data($local_data_id) {
 
 	if (cacti_sizeof($svs)) {
 		foreach ($svs as $sv) {
+			$sv['text'] = trim($sv['text']);
+
 			if (($sv['text'] == '|query_ifSpeed|' || $sv['text'] == '|query_ifHighSpeed|') && $sv['field_name'] == 'rrd_maximum') {
 				$subs_string = api_data_source_get_interface_speed($data_local);
 				$sv['text']  = $subs_string;

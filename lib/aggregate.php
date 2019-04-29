@@ -48,7 +48,7 @@ function aggregate_build_children_url($local_graph_id, $graph_start = -1, $graph
 				$graph_select .= $graph . '%2C';
 			}
 
-			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
+			return "<a class='hyperLink aggregates' href='" . html_escape($config['url_path'] . 'graph_view.php?reset=1&page=1&graph_template_id=-1&host_id=-1&filter=&style=selective&action=preview' . ($graph_start >= 0 ? '&graph_start=' . $graph_start:'') . ($graph_end >= 0 ? '&graph_end=' . $graph_end:'') . ($rra_id >= 0 ? '&rra_id=' . $rra_id:'') . '&' . $graph_select) . "'><img src='" . $config['url_path'] . "images/view_aggregate_children.png' alt='' title='" . __esc('Display Graphs from this Aggregate') . "'></a><br/>" . PHP_EOL;
 		}
 	}
 }
@@ -506,7 +506,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 			 * any AREA/STACKed graph needs a base AREA entry
 			 * but e.g. a graph that prints on both negative and positive y-axis may hold two AREAs
 			 * so it's a good idea to keep all AREA entries of the first aggregated elementary graph (index 0)*/
-			if ($graph_index == 0 && $item_index == 1 &&
+			if (($graph_index == 0 || $graph_index == 1) &&
 				($old_graph_type == GRAPH_ITEM_TYPE_STACK ||
 				$old_graph_type == GRAPH_ITEM_TYPE_LINESTACK ||
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE1 ||
@@ -514,7 +514,7 @@ function aggregate_change_graph_type($graph_index, $old_graph_type, $new_graph_t
 				$old_graph_type == GRAPH_ITEM_TYPE_LINE3)) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_AREA;
-			} elseif ($item_index > 1 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
+			} elseif ($graph_index > 1 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {
 				/* if the graph type is a stack and the item is 1, it must be converted to area */
 				return GRAPH_ITEM_TYPE_STACK;
 			} elseif ($graph_index == 0 && $old_graph_type == GRAPH_ITEM_TYPE_AREA) {

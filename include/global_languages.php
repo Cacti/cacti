@@ -444,6 +444,8 @@ function load_i18n_fallback_wrappers() {
 	}
 
 	function __() {
+		global $l10n;
+	
 		$args = func_get_args();
 		$num  = func_num_args();
 
@@ -652,7 +654,7 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 
 			return numfmt_format($fmt, $number);
 		}
-		cacti_log('DEBUG: Number format \'' . $fmy_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
+		cacti_log('DEBUG: Number format \'' . $fmt_key .'\' was unavailable, using older methods',false,'i18n',POLLER_VERBOSITY_HIGH);
 	}
 
 	$origlocales = explode(';', setlocale(LC_ALL, 0));

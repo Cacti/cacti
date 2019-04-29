@@ -572,7 +572,7 @@ function upgrade_to_1_0_0() {
 	} else {
 		db_install_rename_table('plugin_nectar', 'reports');
 		db_install_rename_table('plugin_nectar_items', 'reports_items');
-		db_install_execute("UPDATE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
+		db_install_execute("UPDATE IGNORE settings SET name=REPLACE(name, 'nectar','reports') WHERE name LIKE '%nectar%'");
 
 		db_install_add_column('reports', array('name' => 'bcc',           'type' => 'TEXT', 'after' => 'email'));
 		db_install_add_column('reports', array('name' => 'from_name',     'type' => 'VARCHAR(40)',  'NULL' => false, 'default' => '', 'after' => 'mailtime'));
@@ -1027,7 +1027,7 @@ function upgrade_to_1_0_0() {
 	db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='autom8'");
 	db_install_execute("DELETE FROM plugin_hooks WHERE name='autom8'");
 
-	db_install_execute("UPDATE settings SET name=REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
+	db_install_execute("UPDATE IGNORE settings SET name = REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 
 	// migrate discovery to Core if exists
 	if (db_table_exists('plugin_discover_hosts', false)) {
@@ -1500,7 +1500,7 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 't_legend_direction', 'type' => 'char(2)',  'default' => '0', 'after' => 'legend_position'));
 	db_install_add_column('aggregate_graph_templates_graph', array('name' => 'legend_direction', 'type' => 'varchar(10)', 'NULL' => true, 'after' => 't_legend_direction'));
 
-	// Update Aggregate CDEF's to become system level
+	// Update Aggregate CDEFs to become system level
 	db_install_add_column('cdef', array('name' => 'system', 'type' => 'mediumint(8) unsigned', 'NULL' => false, 'default' => '0', 'after' => 'hash'));
 	db_install_execute("UPDATE cdef SET system=1 WHERE name LIKE '\_%'");
 

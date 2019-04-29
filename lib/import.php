@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
-	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info, $legacy_templates;
+	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
@@ -281,7 +281,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 				$binary_signature =  base64_decode(trim(str_replace(array('<signature>', '</signature>'), array('', ''), $x)));
 				$x = "   <signature></signature>\n";
 
-				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+				cacti_log('NOTE: Got Package Signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			}
 			$xml .= "$x";
 		}
@@ -303,7 +303,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		return false;
 	}
 
-	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Loading Plugin Information from package', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	$xmlget     = simplexml_load_string($xml);
 	$data       = xml_to_array($xmlget);
@@ -316,7 +316,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		exit;
 	}
 
-	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Verifying each files signature', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	if (isset($data['files']['file']['data'])) {
 		$data['files']['file'] = array($data['files']['file']);
@@ -327,14 +327,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		$fdata = base64_decode($f['data']);
 		$ok = openssl_verify($fdata, $binary_signature, $public_key, OPENSSL_ALGO_SHA1);
 		if ($ok == 1) {
-			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+			cacti_log('NOTE: File OK: ' . $f['name'], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 		} else {
 			cacti_log('FATAL: Could not Verify Signature for file: ' . $f['name'], true, 'IMPORT', POLLER_VERBOSITY_LOW);
 			return false;
 		}
 	}
 
-	cacti_log('Writing Files', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('Writing Files', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	foreach ($data['files']['file'] as $f) {
 		$fdata = base64_decode($f['data']);
@@ -342,13 +342,14 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 
 		if (strpos($name, 'scripts/') !== false || strpos($name, 'resource/') !== false) {
 			$filename = $config['base_path'] . "/$name";
-			cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+			cacti_log('Writing file: ' . $filename, false, 'IMPORT', POLLER_VERBOSITY_LOW);
+
 			if (!$preview) {
-				if (is_writable($filename)) {
-					$file = fopen($filename,'wb');
+				if ((is_writeable(dirname($filename)) && !file_exists($filename)) || is_writable($filename)) {
+					$file = fopen($filename, 'wb');
 
 					if (is_resource($file)) {
-						fwrite($file ,$fdata, strlen($fdata));
+						fwrite($file , $fdata, strlen($fdata));
 						fclose($file);
 						clearstatcache();
 						$filestatus[$filename] = __('written');
@@ -364,6 +365,8 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 				} else {
 					$filestatus[$filename] = __('not writable');
 				}
+
+				cacti_log('Write Status file: ' . $filename . ', with Status ' . $filestatus[$filename], false, 'IMPORT', POLLER_VERBOSITY_LOW);
 			} else {
 				if (!is_writable($filename)) {
 					$filestatus[$filename] = __('not writable');
@@ -371,6 +374,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 					$filestatus[$filename] = __('writable');
 				}
 			}
+
 		} else {
 			cacti_log('Importing XML Data for ' . $name, false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
@@ -382,7 +386,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 		}
 	}
 
-	cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	cacti_log('File creation complete', false, 'IMPORT', POLLER_VERBOSITY_LOW);
 
 	return array($debug_data, $filestatus);
 }
@@ -402,9 +406,11 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	if (!empty($_graph_template_id)) {
 		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM graph_templates
-			WHERE id = ?', array($_graph_template_id));
+			WHERE id = ?', 
+			array($_graph_template_id));
 	} else {
 		$previous_data = array();
+		clear_cached_allowed_types();
 	}
 
 	$save['id']   = (empty($_graph_template_id) ? '0' : $_graph_template_id);
@@ -431,8 +437,10 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	$save['id'] = (empty($_graph_template_id) ? '0' : db_fetch_cell_prepared('SELECT gtg.id
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
-		ON gt.id=gtg.graph_template_id
-		WHERE gt.id = ? AND gtg.local_graph_id=0', array($graph_template_id)));
+		ON gt.id = gtg.graph_template_id
+		WHERE gt.id = ? 
+		AND gtg.local_graph_id = 0', 
+		array($graph_template_id)));
 
 	if (!empty($_graph_template_id)) {
 		$previous_data = db_fetch_row_prepared('SELECT *
@@ -509,7 +517,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 				FROM graph_templates_item
 				WHERE hash = ?
 				AND graph_template_id = ?
-				AND local_graph_id=0',
+				AND local_graph_id = 0',
 				array($parsed_hash['hash'], $graph_template_id));
 
 			if (!empty($_graph_template_item_id)) {
@@ -628,7 +636,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 
 						if (isset($hash_cache['graph_template_item'][$parsed_hash['hash']])) {
 							db_execute_prepared('REPLACE INTO graph_template_input_defs
-								(graph_template_input_id,graph_template_item_id)
+								(graph_template_input_id, graph_template_item_id)
 								VALUES (?, ?)',
 								array($graph_template_input_id, $hash_cache['graph_template_item'][$parsed_hash['hash']]));
 						}
@@ -723,7 +731,8 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		INNER JOIN data_template_data AS dtd
 		ON dt.id=dtd.data_template_id
 		WHERE dt.id = ?
-		AND dtd.local_data_id=0', array($data_template_id)));
+		AND dtd.local_data_id = 0', 
+		array($data_template_id)));
 
 	if (!empty($save['id'])) {
 		$previous_data = db_fetch_row_prepared('SELECT *
@@ -797,7 +806,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 				FROM data_template_rrd
 				WHERE hash = ?
 				AND data_template_id = ?
-				AND local_data_id=0',
+				AND local_data_id = 0',
 				array($parsed_hash['hash'], $data_template_id));
 
 			if (!empty($_data_template_rrd_id)) {
@@ -841,6 +850,19 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 			/* Fix for importing during installation - use the polling interval as the step if we are to use the default rra settings */
 			if (is_array($profile_id) == true) {
 				$save['rrd_heartbeat'] = read_config_option('poller_interval') * 2;
+			}
+
+			if ($legacy_template) {
+				if ($save['data_source_type_id'] == 1 || $save['data_source_type_id'] == 4) {
+					if ($save['rrd_maximum'] == '0' && $save['rrd_minimum'] == '0') {
+						$save['rrd_maximum'] = 'U';
+					}
+				} elseif ($save['data_source_type_id'] == 3 || $save['data_source_type_id'] == 7) {
+					if ($save['rrd_maximum'] == '0' && $save['rrd_minimum'] == '0') {
+						$save['rrd_maximum'] = 'U';
+						$save['rrd_minimum'] = 'U';
+					}
+				}
 			}
 
 			/* check for status changes */
@@ -1225,7 +1247,7 @@ function xml_to_data_source_profile($hash, &$xml_array, &$hash_cache, $import_as
 			if (!empty($hash_items[0])) {
 				for ($i=0; $i<cacti_count($hash_items); $i++) {
 					db_execute_prepared('REPLACE INTO data_source_profiles_cf
-						(data_source_profile_id,consolidation_function_id)
+						(data_source_profile_id, consolidation_function_id)
 						VALUES (?, ?)',
 						array($dsp_id, $hash_items[$i]));
 				}
@@ -1317,7 +1339,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 
 				if (isset($hash_cache['graph_template'][$parsed_hash['hash']])) {
 					db_execute_prepared('REPLACE INTO host_template_graph
-						(host_template_id,graph_template_id)
+						(host_template_id, graph_template_id)
 						VALUES (?, ?)',
 						array($host_template_id, $hash_cache['graph_template'][$parsed_hash['hash']]));
 				}
@@ -1337,7 +1359,7 @@ function xml_to_host_template($hash, &$xml_array, &$hash_cache) {
 
 				if (isset($hash_cache['data_query'][$parsed_hash['hash']])) {
 					db_execute_prepared('REPLACE INTO host_template_snmp_query
-						(host_template_id,snmp_query_id)
+						(host_template_id, snmp_query_id)
 						VALUES (?, ?)',
 						array($host_template_id, $hash_cache['data_query'][$parsed_hash['hash']]));
 				}

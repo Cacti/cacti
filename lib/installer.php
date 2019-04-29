@@ -697,8 +697,15 @@ class Installer implements JsonSerializable {
 
 					if ($should_set && $name == 'path_php_binary') {
 						$input = mt_rand(2,64);
+						$args = ' -q ';
+						$ini_file = php_ini_loaded_file();
+
+						if ($ini_file) {
+							$args = ' -c ' . $ini_file . ' ' . $args;
+						}
+
 						$output = shell_exec(
-							$path . ' -q ' . $config['base_path'] .
+							$path . $args . $config['base_path'] .
 							'/install/cli_test.php ' . $input);
 
 						if ($output != $input * $input) {
@@ -1361,6 +1368,7 @@ class Installer implements JsonSerializable {
 	}
 
 	private function exitDbTooOld() {
+		global $database_username, $database_default;
 		$output  = Installer::sectionTitleError();
 		$output .= Installer::sectionNormal(__('You are attempting to install Cacti %s onto a 0.6.x database. Unfortunately, this can not be performed.', CACTI_VERSION));
 		$output .= Installer::sectionNormal(__('To be able continue, you <b>MUST</b> create a new database, import "cacti.sql" into it:', CACTI_VERSION));
@@ -1546,7 +1554,7 @@ class Installer implements JsonSerializable {
 			__('This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.')
 		);
 
-		$langOutput = '<select id=\'language\' name=\'theme\'>';
+		$langOutput = '<select id=\'language\' name=\'language\'>';
 		foreach ($this->locales as $key => $value) {
 			$selected = '';
 			$langOutput .= PHP_EOL . $this->language . " == $key [$value]" . PHP_EOL;
@@ -2254,7 +2262,7 @@ class Installer implements JsonSerializable {
 			ob_end_clean();
 		} else {
 			$output  = Installer::sectionTitleError(__('Error Locating Profiles'));
-			$ouptut .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
+			$output .= Installer::sectionNormal(__('The installation cannot continue because no profiles could be found.'));
 			$output .= Installer::sectionNote(__('This may occur if you have a blank database and have not yet imported the cacti.sql file'));
 			$output .= Installer::sectionCode('mysql> source cacti.sql');
 		}
@@ -2295,6 +2303,7 @@ class Installer implements JsonSerializable {
 	}
 
 	public function processStepCheckTables() {
+		global $config;
 		$output = Installer::sectionTitle(__('Server Collation'));
 
 		$collation_vars = array_rekey(db_fetch_assoc('SHOW VARIABLES LIKE "collation_%";'), 'Variable_name', 'Value');
@@ -2925,8 +2934,15 @@ class Installer implements JsonSerializable {
 		if (!empty($host_template_id)) {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', 'Device Template for First Cacti Device is ' . $host_template_id);
+			$command = read_config_option('path_php_binary');
+			$args = ' -q ';
+			$ini_file = php_ini_loaded_file();
 
-			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_device.php' .
+			if ($ini_file) {
+				$args = ' -c ' . $ini_file . ' ' . $args;
+			}
+
+			$results = shell_exec( $command . $args . $config['base_path'] . '/cli/add_device.php' .
 				' --description=' . cacti_escapeshellarg($description) .
 				' --ip=' . cacti_escapeshellarg($ip) .
 				' --template=' . $host_template_id .
@@ -2957,7 +2973,7 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', 'Adding Device to Default Tree');
-					shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_tree.php' .
+					shell_exec($command . $args . $config['base_path'] . '/cli/add_tree.php' .
 						' --type=node' .
 						' --node-type=host' .
 						' --tree-id=1' .
@@ -3012,7 +3028,15 @@ class Installer implements JsonSerializable {
 				$name = $table['value'];
 				if (!empty($name)) {
 					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
-					$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
+					$command = read_config_option('path_php_binary');
+					$args = ' -q ';
+					$ini_file = php_ini_loaded_file();
+
+					if ($ini_file) {
+						$args = ' -c ' . $ini_file . ' ' . $args;
+					}
+
+					$results = shell_exec($command . $args . $config['base_path'] . '/cli/convert_tables.php' .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb');
 

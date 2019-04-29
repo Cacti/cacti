@@ -277,6 +277,8 @@ case 'get_node':
 case 'tree_content':
 	html_validate_tree_vars();
 
+	top_graph_header();
+
 	if (!is_view_allowed('show_tree')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR TREE VIEW') . '</font>';
 		exit;

@@ -44,9 +44,13 @@ if (!defined('SNMP_STRING_OUTPUT_HEX')) {
 global $banned_snmp_strings;
 $banned_snmp_strings = array('End of MIB', 'No Such', 'No more');
 
-if (!class_exists('SNMP')) {
+if ($config['php_snmp_support']) {
+	include_once($config['include_path'] . '/vendor/phpsnmp/extension.php');
+} else {
 	include_once($config['include_path'] . '/vendor/phpsnmp/classSNMP.php');
 }
+
+use phpsnmp\SNMP;
 
 function cacti_snmp_session($hostname, $community, $version, $auth_user = '', $auth_pass = '',
 	$auth_proto = '', $priv_pass = '', $priv_proto = '', $context = '', $engineid = '',
@@ -867,9 +871,13 @@ function snmp_escape_string($string) {
 }
 
 function snmp_get_method($type = 'walk', $version = 1, $context = '', $engineid = '',
-	$value_output_format = SNMP_STRING_OUTPUT_GUESS) {
+    $value_output_format = SNMP_STRING_OUTPUT_GUESS) {
 
-	if ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
+	global $config;
+
+	if (isset($config['php_snmp_support']) && !$config['php_snmp_support']) {
+		return SNMP_METHOD_BINARY;
+	} elseif ($value_output_format == SNMP_STRING_OUTPUT_HEX) {
 		return SNMP_METHOD_BINARY;
 	} elseif ($version == 3 && $context != '') {
 		return SNMP_METHOD_BINARY;
