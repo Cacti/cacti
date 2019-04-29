@@ -43,15 +43,18 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 
 /* start background caching process if not running */
 $php = read_config_option("path_php_binary");
-$args = ' ';
-assemble_php_args($args);
-$php_file = " \"./snmpagent_mibcachechild.php\"";
+$extra_args = " \"./snmpagent_mibcachechild.php\"";
+$ini_file   = php_ini_loaded_file();
+
+if ($ini_file) {
+	$extra_args = '-c ' . $ini_file . ' ' . $extra_args;
+}
 
 while(1) {
 	if(strstr(PHP_OS, "WIN")) {
-		popen("start \"CactiSNMPCacheChild\" /I \"" . $php . "\" " . $args . $php_file , "r");
+		popen("start \"CactiSNMPCacheChild\" /I \"" . $php . "\" " . $extra_args, "r");
 	} else {
-		exec($php . $args . $php_file . " > /dev/null &");
+		exec($php . " " . $extra_args . " > /dev/null &");
 	}
 	sleep(30 - time() % 30);
 }
