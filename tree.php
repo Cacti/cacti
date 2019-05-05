@@ -177,8 +177,10 @@ function tree_get_max_sequence() {
 	$max_seq = db_fetch_cell('SELECT MAX(sequence) FROM graph_tree');
 
 	if ($max_seq == NULL) {
-		$max_seq = 0;
+		return 0;
 	}
+
+	return $max_seq;
 }
 
 function tree_check_sequences() {
