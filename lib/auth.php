@@ -1270,7 +1270,7 @@ function get_allowed_aggregate_graphs($sql_where = '', $order_by = 'gtg.title_ca
 		$sql_having = "HAVING $sql_having";
 
 		$graphs_sql = "SELECT DISTINCT gtg.local_graph_id, '' AS description, gt.name AS template_name,
-			gtg.title_cache, gtg.width, gtg.height, gl.snmp_index, gl.snmp_query_id,
+			gtg.title_cache, gtg.width, gtg.height, '' AS snmp_index, gl.snmp_query_id,
 			$sql_select
 			FROM graph_templates_graph AS gtg
 			INNER JOIN (
