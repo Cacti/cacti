@@ -1005,22 +1005,22 @@ function html_escape($string) {
    @arg $forgiveness - the maximum number of characters to walk back from to determine
         the correct break location.
    @returns $new_string - the modified string to be returned. */
-function html_split_string($string, $length = 70, $forgiveness = 10) {
+function html_split_string($string, $length = 90, $forgiveness = 10) {
 	$new_string = '';
 	$j    = 0;
 	$done = false;
 
 	while (!$done) {
-		if (strlen($string) > $length) {
+		if (mb_strlen($string, 'UTF-8') > $length) {
 			for($i = 0; $i < $forgiveness; $i++) {
 				if (substr($string, $length-$i, 1) == ' ') {
-					$new_string .= substr($string, 0, $length-$i) . '<br>';
+					$new_string .= mb_substr($string, 0, $length-$i, 'UTF-8') . '<br>';
 
 					break;
 				}
 			}
 
-			$string = substr($string, $length-$i);
+			$string = mb_substr($string, $length-$i, NULL, 'UTF-8');
 		} else {
 			$new_string .= $string;
 			$done        = true;

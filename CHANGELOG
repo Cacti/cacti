@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
 -feature#2654: New hook to notify plugins of user profile changes ('auth_profile_update_data')
+-feature: Make html_split_string UTF-8 compatible
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
