@@ -626,7 +626,7 @@ class spikekill {
 
 		/* finally update the file XML file and Reprocess the RRDfile */
 		if (!$this->dryrun) {
-			if ($this->total_kills) {
+			if (($this->method == 1 && $this->var_kills) || ($this->method == 2 && $this->std_kills) || ($this->method > 2 && $this->total_kills > 0)) {
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
 					if ($this->backupRRDFile($this->rrdfile)) {
 						$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
@@ -813,10 +813,12 @@ class spikekill {
 										}
 									} elseif (($sample > $rra[$rra_num][$ds_num]['max_cutoff']) ||
 										($sample < $rra[$rra_num][$ds_num]['min_cutoff'])) {
-										$this->debug(sprintf("Std Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
+										if ($this->method == 2) {
+											$this->debug(sprintf("Std Kill: Value '%.4e', StandardDev '%.4e', StdDevLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['standard_deviation'], ($rra[$rra_num][$ds_num]['max_cutoff'] * (1+$this->percent))));
 
-										$rra[$rra_num][$ds_num]['stddev_killed']++;
-										$this->std_kills = true;
+											$rra[$rra_num][$ds_num]['stddev_killed']++;
+											$this->std_kills = true;
+										}
 									} elseif (is_numeric($sample)) {
 										$rra[$rra_num][$ds_num]['numnksamples']++;
 										$rra[$rra_num][$ds_num]['sumnksamples'] += $sample;
@@ -827,11 +829,13 @@ class spikekill {
 									} elseif ($rra[$rra_num][$ds_num]['variance_avg'] == 'NAN') {
 										/* not enought samples to calculate */
 									} elseif ($sample > ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))) {
-										/* kill based upon variance */
-										$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))));
+										if ($this->method == 1) {
+											/* kill based upon variance */
+											$this->debug(sprintf("Var Kill: Value '%.4e', VarianceDev '%.4e', VarianceLimit '%.4e'", $sample, $rra[$rra_num][$ds_num]['variance_avg'], ($rra[$rra_num][$ds_num]['variance_avg'] * (1+$this->percent))));
 
-										$rra[$rra_num][$ds_num]['variance_killed']++;
-										$this->var_kills = true;
+											$rra[$rra_num][$ds_num]['variance_killed']++;
+											$this->var_kills = true;
+										}
 									}
 								}
 							}
@@ -991,22 +995,24 @@ class spikekill {
 							if ($this->method == 3) {
 								if ($this->avgnan == 'avg') {
 									$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+									$kills++;
+									$this->total_kills++;
 								} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 									$dsvalue = $last_num[$ds_num];
+									$kills++;
+									$this->total_kills++;
 								}
-
-								$kills++;
-								$this->total_kills++;
 							} elseif ($this->method == 4) {
 								if ($dsvalue > (1+$this->percent)*$rra[$rra_num][$ds_num]['variance_avg'] || strtolower($dsvalue) == 'nan') {
 									if ($this->avgnan == 'avg') {
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+										$kills++;
+										$this->total_kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 										$dsvalue = $last_num[$ds_num];
+										$kills++;
+										$this->total_kills++;
 									}
-
-									$kills++;
-									$this->total_kills++;
 								}
 							}
 						} elseif(strtolower($dsvalue) == 'nan' && isset($last_num[$ds_num])) {
@@ -1014,28 +1020,32 @@ class spikekill {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+										$this->total_kills++;
+										$kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 										$dsvalue = $last_num[$ds_num];
+										$this->total_kills++;
+										$kills++;
 									} else {
 										$dsvalue = 'NaN';
 									}
-
-									$this->total_kills++;
-									$kills++;
 								}
-							} else {
+							} elseif ($last_num[$ds_num] != 0) {
 								if ($kills < $this->numspike) {
 									if ($this->avgnan == 'avg') {
 										$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+										$this->total_kills++;
+										$kills++;
 									} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 										$dsvalue = $last_num[$ds_num];
+										$this->total_kills++;
+										$kills++;
 									} else {
 										$dsvalue = 'NaN';
 									}
-
-									$this->total_kills++;
-									$kills++;
 								}
+							} else {
+								$dsvalue = 'NaN';
 							}
 						} else {
 							if ($this->method == 2) {
@@ -1043,14 +1053,15 @@ class spikekill {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
 											$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['variance_avg']);
+											$kills++;
+											$this->total_kills++;
 										} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 											$dsvalue = $last_num[$ds_num];
+											$kills++;
+											$this->total_kills++;
 										} else {
 											$dsvalue = 'NaN';
 										}
-
-										$kills++;
-										$this->total_kills++;
 									}
 								} else {
 									$last_num[$ds_num] = $dsvalue;
@@ -1061,14 +1072,15 @@ class spikekill {
 									if ($kills < $this->numspike) {
 										if ($this->avgnan == 'avg') {
 											$dsvalue = sprintf('%1.10e', $rra[$rra_num][$ds_num]['average']);
+											$kills++;
+											$this->total_kills++;
 										} elseif ($this->avgnan == 'last' && isset($last_num[$ds_num])) {
 											$dsvalue = $last_num[$ds_num];
+											$kills++;
+											$this->total_kills++;
 										} else {
 											$dsvalue = 'NaN';
 										}
-
-										$kills++;
-										$this->total_kills++;
 									}
 								} else {
 									$last_num[$ds_num] = $dsvalue;

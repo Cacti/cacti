@@ -81,7 +81,9 @@ echo "NOTE: SpikeKill Running\n";
 
 if (!$templates) {
 	$templates = db_fetch_cell("SELECT value FROM settings WHERE name='spikekill_templates'");
-	$templates = explode(',', $templates);
+	if ($templates != '') {
+		$templates = explode(',', $templates);
+	}
 } else {
 	$templates = explode(',', $templates);
 }
@@ -106,15 +108,22 @@ if (timeToRun()) {
 
 	$graphs = kill_spikes($templates, $kills);
 
+	$purges = 0;
+	if (read_config_option('spikekill_purge') > 0) {
+		$purges = purge_spike_backups();
+	}
+
 	list($micro,$seconds) = explode(' ', microtime());
 	$end  = $seconds + $micro;
 
     $cacti_stats = sprintf(
         'Time:%01.4f ' .
         'Graphs:%s ' .
+        'Purges:%s ' .
 		'Kills:%s',
         round($end-$start,2),
         $graphs,
+        $purges,
 		$kills);
 
     /* log to the database */
@@ -173,6 +182,45 @@ function debug($message) {
 	}
 }
 
+
+function purge_spike_backups() {
+	$directory = read_config_option('spikekill_backupdir');
+	$retention = read_config_option('spikekil_backup');
+
+	$purges = 0;
+
+	if (empty($retention)) {
+		return false;
+	}
+
+	$earlytime = time() - $retention;
+
+	if ($directory != '' && s_dir($directory) && is_writable($directory)) {
+		$files = array_diff(scandir($directory), array('.', '..')); 
+
+		if (cacti_sizeof($files)) {
+			foreach($files as $file) {
+				$filepath = $directory . '/' . $file;
+
+				if (is_file($filepath) && strpos($filepath, 'rrd') !== false) {
+					$mtime = filemtime($filepath);
+
+					if ($mtime < $earlytime) {
+						if (is_writable($filepath)) {
+							unlink($filepath);
+							$purges++;
+						} else {
+							cacti_log('Unable to remove ' . $filepath . ' due to write permissions', 'SPIKES');
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return $purges;
+}
+
 function kill_spikes($templates, &$found) {
 	global $debug, $config;
 
@@ -186,16 +234,18 @@ function kill_spikes($templates, &$found) {
 		WHERE gt.id IN (' . implode(',', $templates) . ')'), 'rrd_path', 'rrd_path');
 
 	if (cacti_sizeof($rrdfiles)) {
-	foreach($rrdfiles as $f) {
-		debug("Removing Spikes from '$f'");
-		$response = exec(read_config_option('path_php_binary') . ' -q ' .
-			$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
-		if (substr_count($response, 'Spikes Found and Remediated')) {
-			$found++;
-		}
+		foreach($rrdfiles as $f) {
+			debug("Removing Spikes from '$f'");
 
-		debug(str_replace('NOTE: ', '', $response));
-	}
+			$response = exec(read_config_option('path_php_binary') . ' -q ' .
+				$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
+
+			if (substr_count($response, 'Spikes Found and Remediated')) {
+				$found++;
+			}
+
+			debug(str_replace('NOTE: ', '', $response));
+		}
 	}
 
 	return cacti_sizeof($rrdfiles);

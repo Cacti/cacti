@@ -1990,7 +1990,15 @@ $settings = array(
 			'method' => 'drop_multi',
 			'description' => __('When performing batch spike removal, only the templates selected below will be acted on.'),
 			'array' => $spikekill_templates,
-            )
+            ),
+		'spikekill_purge' => array(
+			'friendly_name' => __('Backup Retention'),
+			'description' => __('When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?'),
+			'method' => 'drop_array',
+			'default' => '7856352',
+			'none_value' => __('Never'),
+			'array' => $timespans
+			)
 		)
 	);
 

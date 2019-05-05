@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
 -feature#2654: New hook to notify plugins of user profile changes ('auth_profile_update_data')
+-feature#2664: Cacti spikekill should have a rrd backup cleanup process
 -feature: Make html_split_string UTF-8 compatible
 
 1.2.3
