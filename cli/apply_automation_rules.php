@@ -45,7 +45,13 @@ require_once($config['base_path'] . '/lib/utility.php');
 #}
 
 # getopt
-$passed_options = getopt("hyv", ['help','ids::','hostname::','description::']);
+$passed_options = getopt("hyv", ['help','ids::','hostname::','description::','version']);
+
+# display version
+if (array_key_exists('version', $passed_options)) {
+  _aar_display_version(); exit(0);
+}
+# selection criteria may not be combined
 if ((array_key_exists('h', $passed_options) or
      array_key_exists('help', $passed_options)
    ) or !(
@@ -116,5 +122,13 @@ function _aar_usage() {
     -v:        Verbose mode; list matched hosts
 
 EOM;
+}
+function _aar_display_version() {
+  if (function_exists('get_cacti_cli_version')) {
+    $version = get_cacti_cli_version(); # >= 1.2.x
+  } else {
+    $version = get_cacti_version(); # just for funsies on 1.1.x
+  }
+  print "Cacti Apply Automation Rules Utility, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 ?>
