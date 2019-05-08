@@ -698,8 +698,9 @@ class Installer implements JsonSerializable {
 					if ($should_set && $name == 'path_php_binary') {
 						$input = mt_rand(2,64);
 						$output = shell_exec(
-							$path . ' -q ' . $config['base_path'] .
-							'/install/cli_test.php ' . $input);
+							cacti_escapeshellcmd($path) . ' -q ' . 
+							cacti_escapeshellarg($config['base_path'] .  '/install/cli_test.php') . 
+							' ' . $input);
 
 						if ($output != $input * $input) {
 							$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('PHP did not return expected result'));
@@ -2498,8 +2499,8 @@ class Installer implements JsonSerializable {
 		}
 
 		if ($backgroundNeeded) {
-			$php = read_config_option('path_php_binary', true);
-			$php_file = $config['base_path'] . '/install/background.php ' . $backgroundTime;
+			$php = cacti_escapseshellcmd(read_config_option('path_php_binary', true));
+			$php_file = cacti_escapeshellarg($config['base_path'] . '/install/background.php') . ' ' . $backgroundTime;
 
 			log_install_always('', 'Spawning background process: ' . $php . ' ' . $php_file);
 			exec_background($php, $php_file);
@@ -2928,7 +2929,8 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', 'Device Template for First Cacti Device is ' . $host_template_id);
 
-			$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_device.php' .
+			$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+				cacti_escapeshellarg($config['base_path'] . '/cli/add_device.php') .
 				' --description=' . cacti_escapeshellarg($description) .
 				' --ip=' . cacti_escapeshellarg($ip) .
 				' --template=' . $host_template_id .
@@ -2959,7 +2961,8 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', 'Adding Device to Default Tree');
-					shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/add_tree.php' .
+					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+						cacti_escapeshellarg($config['base_path'] . '/cli/add_tree.php') .
 						' --type=node' .
 						' --node-type=host' .
 						' --tree-id=1' .
@@ -3014,7 +3017,8 @@ class Installer implements JsonSerializable {
 				$name = $table['value'];
 				if (!empty($name)) {
 					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
-					$results = shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/convert_tables.php' .
+					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb');
 

@@ -74,16 +74,16 @@ $cache_last_refresh = false;
 
 
 /* start background caching process if not running */
-$php = read_config_option('path_php_binary');
-$extra_args     = '-q "./snmpagent_mibcache.php"';
+$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$extra_args     = '-q ' . cacti_escapeshellarg('./snmpagent_mibcache.php');
 
 if(strstr(PHP_OS, 'WIN')) {
 	/* windows part missing */
-	pclose(popen("start \"CactiSNMPCache\" /I /B \"" . $php . "\" " . $extra_args, "r"));
+	pclose(popen('start "CactiSNMPCache" /I /B ' . $php . ' ' . $extra_args, 'r'));
 } else {
 	exec('ps -ef | grep -v grep | grep -v "sh -c" | grep snmpagent_mibcache.php', $output);
 	if(!cacti_sizeof($output)) {
-		exec($php . " " . $extra_args . " > /dev/null &");
+		exec($php . ' ' . $extra_args . ' > /dev/null &');
 	}
 }
 

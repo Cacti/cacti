@@ -375,7 +375,7 @@ class spikekill {
 			cacti_log($mes, false, 'SPIKEKILL');
 		}
 
-		shell_exec(read_config_option('path_rrdtool') . " dump $this->rrdfile > $xmlfile");
+		shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' dump ' . cacti_escapeshellarg($this->rrdfile) . ' > ' . cacti_escapeshellarg($xmlfile));
 
 		/* read the xml file into an array*/
 		if (file_exists($xmlfile)) {
@@ -674,7 +674,7 @@ class spikekill {
 		$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
 			"NOTE: Re-Importing '$xmlfile' to '$rrdfile'" . ($this->html ? "</p>\n":"\n");
 
-		$response = shell_exec(read_config_option("path_rrdtool") . " restore -f -r $xmlfile $rrdfile");
+		$response = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' restore -f -r ' . cacti_escapeshellarg($xmlfile) . ' ' . cacti_escapeshellarg($rrdfile));
 
 		if ($response != '') {
 			$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') . $response . ($this->html ? "</p>\n":"\n");

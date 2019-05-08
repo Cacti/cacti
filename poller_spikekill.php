@@ -237,8 +237,8 @@ function kill_spikes($templates, &$found) {
 		foreach($rrdfiles as $f) {
 			debug("Removing Spikes from '$f'");
 
-			$response = exec(read_config_option('path_php_binary') . ' -q ' .
-				$config['base_path'] . '/cli/removespikes.php --rrdfile=' . $f . ($debug ? ' --debug':''));
+			$response = exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
+				cacti_escapeshellarg($config['base_path'] . '/cli/removespikes.php') . ' --rrdfile=' . $f . ($debug ? ' --debug':''));
 
 			if (substr_count($response, 'Spikes Found and Remediated')) {
 				$found++;

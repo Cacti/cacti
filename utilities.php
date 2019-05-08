@@ -195,7 +195,7 @@ function utilities_view_tech($php_info = '') {
 	$spine_version = 'Unknown';
 	if ((file_exists(read_config_option('path_spine'))) && ((function_exists('is_executable')) && (is_executable(read_config_option('path_spine'))))) {
 		$out_array = array();
-		exec(read_config_option('path_spine') . ' --version', $out_array);
+		exec(cacti_escapeshellcmd(read_config_option('path_spine')) . ' --version', $out_array);
 		if (cacti_sizeof($out_array) > 0) {
 			$spine_version = $out_array[0];
 		}

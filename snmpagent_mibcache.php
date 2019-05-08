@@ -42,15 +42,16 @@ $path_mibcache_lock = $config['base_path'] . '/cache/mibcache/mibcache.lock';
 @unlink($path_mibcache_lock);
 
 /* start background caching process if not running */
-$php = read_config_option("path_php_binary");
-$extra_args     = " \"./snmpagent_mibcachechild.php\"";
+$php = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$extra_args     = ' ' . cacti_escapeshellarg('./snmpagent_mibcachechild.php');
 
 while(1) {
-	if(strstr(PHP_OS, "WIN")) {
-		popen("start \"CactiSNMPCacheChild\" /I \"" . $php . "\" " . $extra_args, "r");
+	if(strstr(PHP_OS, 'WIN')) {
+		popen('start "CactiSNMPCacheChild" /I ' . $php . ' ' . $extra_args, 'r');
 	} else {
-		exec($php . " " . $extra_args . " > /dev/null &");
+		exec($php . ' ' . $extra_args . ' > /dev/null &');
 	}
+
 	sleep(30 - time() % 30);
 }
-?>
+

@@ -1309,8 +1309,8 @@ function utility_php_sort_extensions($a, $b) {
 function utility_php_extensions() {
 	global $config;
 
-	$php = read_config_option('path_php_binary', true);
-	$php_file = $config['base_path'] . '/install/cli_check.php extensions';
+	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' extensions';
 	$json = shell_exec($php . ' -q ' . $php_file);
 	$ext = @json_decode($json, true);
 
@@ -1366,14 +1366,15 @@ function utility_php_verify_extensions(&$extensions, $source) {
 function utility_php_recommends() {
 	global $config;
 
-	$php = read_config_option('path_php_binary', true);
-	$php_file = $config['base_path'] . '/install/cli_check.php recommends';
+	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
 	$json = shell_exec($php . ' -q ' . $php_file);
-	$ext = array('web'=>'','cli'=>'');
+	$ext = array('web' => '', 'cli' => '');
 	$ext['cli'] = @json_decode($json, true);
 
 	utility_php_verify_recommends($ext['web'], 'web');
 	utility_php_set_recommends_text($ext);
+
 	return $ext;
 }
 
@@ -1423,16 +1424,18 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	foreach ($recs as $name=>$recommends) {
-		foreach ($recommends as $index=>$recommend) {
-			if ($recommend['name'] == 'version') {
-				$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
-			} elseif ($recommend['name'] == 'memory_limit') {
-				$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
-			} elseif ($recommend['name'] == 'max_execution_time') {
-				$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
-			} elseif ($recommend['name'] == 'date.timezone') {
-				$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+	foreach ($recs as $name => $recommends) {
+		if (sizeof($recommends)) {
+			foreach ($recommends as $index => $recommend) {
+				if ($recommend['name'] == 'version') {
+					$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+				} elseif ($recommend['name'] == 'memory_limit') {
+					$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
+				} elseif ($recommend['name'] == 'max_execution_time') {
+					$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
+				} elseif ($recommend['name'] == 'date.timezone') {
+					$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+				}
 			}
 		}
 	}
@@ -1441,13 +1444,14 @@ function utility_php_set_recommends_text(&$recs) {
 function utility_php_optionals() {
 	global $config;
 
-	$php = read_config_option('path_php_binary', true);
-	$php_file = $config['base_path'] . '/install/cli_check.php optionals';
+	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
+	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' optionals';
 	$json = shell_exec($php . ' -q ' . $php_file);
 	$opt = @json_decode($json, true);
 
 	utility_php_verify_optionals($opt, 'web');
 	utility_php_set_installed($opt);
+
 	return $opt;
 }
 

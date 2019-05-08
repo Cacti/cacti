@@ -128,8 +128,8 @@ $change_files = false;
 $max_threads = read_config_option('max_threads');
 
 /* Determine Command Name */
-$command_string = read_config_option('path_php_binary');
-$extra_args     = '-q ' . $config['base_path'] . "/cmd_realtime.php $poller_id $graph_id $interval";
+$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+$extra_args     = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cmd_realtime.php') . " $poller_id $graph_id $interval";
 
 /* Determine if Realtime will work or not */
 $cache_dir = read_config_option('realtime_cache_path');

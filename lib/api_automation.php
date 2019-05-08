@@ -2829,14 +2829,14 @@ function create_graph_node($graph_id, $parent, $rule) {
 function automation_poller_bottom() {
 	global $config;
 
-	$command_string = trim(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
 	if (trim($command_string) == '') {
 		$command_string = 'php';
 	}
 
-	$extra_args = ' -q ' . $config['base_path'] . '/poller_automation.php -M';
+	$extra_args = ' -q ' . cacti_escapeshellarg($config['base_path'] . '/poller_automation.php') . ' -M';
 
 	exec_background($command_string, $extra_args);
 }

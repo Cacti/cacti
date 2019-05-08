@@ -124,10 +124,14 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 
 	if (file_exists($filename)) {
 		if ($config['cacti_server_os'] == 'win32') {
+			if (!file_escaped($filename)) {
+				$filename = cacti_escapeshellcmd($filename);
+			}
+
 			if ($redirect_args == '') {
-				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args, 'r'));
+				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args, 'r'));
 			} else {
-				pclose(popen("start \"Cactiplus\" /I \"" . $filename . "\" " . $args . ' ' . $redirect_args, 'r'));
+				pclose(popen('start "Cactiplus" /I ' . $filename . ' ' . $args . ' ' . $redirect_args, 'r'));
 			}
 		} elseif ($redirect_args == '') {
 			exec($filename . ' ' . $args . ' > /dev/null 2>&1 &');
@@ -141,6 +145,14 @@ function exec_background($filename, $args = '', $redirect_args = '') {
 			exec($filename . ' ' . $args . ' ' . $redirect_args . ' &');
 		}
 	}
+}
+
+function file_escaped($file) {
+	if (substr($file, 0, 1) == '"' && substr($file, -1, 1) == '"') {
+		return true;
+	}
+
+	return false;
 }
 
 /* file_exists_2gb - fail safe version of the file exists function to correct
@@ -1549,8 +1561,8 @@ function poller_recovery_flush_boost($poller_id) {
 
 	if ($poller_id > 1) {
 		if ($config['connection'] == 'recovery') {
-			$command_string = read_config_option('path_php_binary');
-			$extra_args = '-q ' . $config['base_path'] . '/poller_recovery.php';
+			$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+			$extra_args = '-q ' . cacti_escapeshellarg($config['base_path'] . '/poller_recovery.php');
 			exec_background($command_string, $extra_args);
 		}
 	}

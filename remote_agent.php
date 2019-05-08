@@ -444,8 +444,8 @@ function run_remote_discovery() {
 
 	$poller_id = $config['poller_id'];
 	$network   = get_filter_request_var('network');
-	$php       = read_config_option('path_php_binary');
-	$path      = read_config_option('path_webroot') . '/poller_automation.php';
+	$php       = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$path      = cacti_escapeshellarg(read_config_option('path_webroot') . '/poller_automation.php');
 
 	$options   = ' --poller=' . $poller_id . ' --network=' . $network . ' --force';
 	if (isset_request_var('debug')) {

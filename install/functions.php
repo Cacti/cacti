@@ -350,7 +350,7 @@ function install_setup_get_templates() {
 			$info[] = $data['info'];
 		} else {
 			// Loading Template Information from package
-			$myinfo = @json_decode(shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . "/cli/import_package.php --filename=/$path/$xmlfile --info-only"), true);
+			$myinfo = @json_decode(shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . cacti_escapeshellarg($config['base_path'] . '/cli/import_package.php') . ' --filename=' . cacti_escapeshellarg("/$path/$xmlfile") . ' --info-only'), true);
 			$myinfo['filename'] = $xmlfile;
 			$info[] = $myinfo;
 			$info[] = array('filename' => $xmlfile, 'name' => $xmlfile);

@@ -25,7 +25,7 @@
 function upgrade_to_0_8_7h() {
 	global $config;
 
-	require_once($config["base_path"] . "/lib/poller.php");
+	require_once($config['base_path'] . '/lib/poller.php');
 
 	/* speed up the reindexing */
 	db_install_add_column('host_snmp_cache', array('name' => 'present', 'type' => 'tinyint', 'NULL' => false, 'default' => '1', 'after' => 'oid'));
@@ -41,9 +41,9 @@ function upgrade_to_0_8_7h() {
 
 	db_install_add_key('data_template_rrd', 'unique index',  'duplicate_dsname_contraint', array('local_data_id', 'data_source_name', 'data_template_id'));
 
-	/* update the reindex cache, as we now introduced more options for "index count changed" */
-	$command_string = read_config_option("path_php_binary");
-	$extra_args = "-q \"" . $config["base_path"] . "/cli/poller_reindex_hosts.php\" --id=all";
-	exec_background($command_string, "$extra_args");
-	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, "UPGRADE");
+	/* update the reindex cache, as we now introduced more options for 'index count changed' */
+	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
+	$extra_args = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --id=all';
+	exec_background($command_string, $extra_args);
+	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, 'UPGRADE');
 }
