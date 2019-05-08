@@ -41,7 +41,7 @@ require_once($config['base_path'] . '/lib/utility.php');
 $debug = false;
 
 if ($config['poller_id'] > 1 && $config['connection'] == 'online') {
-	if (get_request_var('action') == 'runquery') {
+	if (get_nfilter_request_var('action') == 'runquery') {
 		db_force_remote_cnn();
 	}
 
