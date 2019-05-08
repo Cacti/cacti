@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#2652: Honor php.ini when php is used in exec() and shell_exec() calls
 -issue#2668: RFC1213 sysDescr trailing parentheses lost
 -issue#2672: Cacti Install on Windows Fails
+-issue#2678: Call to undefined function _() in data_queries.php
 -feature#2538: New global setting to change datasource behaviour when deleting graph 
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
