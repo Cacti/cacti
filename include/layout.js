@@ -2183,7 +2183,11 @@ function setupSortable() {
 					checkForLogout(data);
 
 					$('#'+returnto).empty().hide();
-					$('div[class^="ui-"]').remove();
+
+					if (returnto == 'main') {
+						$('div[class^="ui-"]').remove();
+					}
+
 					$('#'+returnto).html(data).show();
 
 					applySkin();
