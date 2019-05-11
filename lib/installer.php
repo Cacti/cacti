@@ -2499,7 +2499,7 @@ class Installer implements JsonSerializable {
 		}
 
 		if ($backgroundNeeded) {
-			$php = cacti_escapseshellcmd(read_config_option('path_php_binary', true));
+			$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 			$php_file = cacti_escapeshellarg($config['base_path'] . '/install/background.php') . ' ' . $backgroundTime;
 
 			log_install_always('', 'Spawning background process: ' . $php . ' ' . $php_file);
