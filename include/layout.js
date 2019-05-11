@@ -1030,17 +1030,20 @@ function toggleFilterAndIcon(id, child, initial) {
 
 function setGraphTabs() {
 	url = window.location.href;
+	page = basename(url);
 
-	if (refreshPage.indexOf('graph_view.php') >= 0) {
+	if (page.indexOf('graph_view.php') >= 0) {
 		$('.lefttab').removeClass('selected');
 		$('#tab-graphs').addClass('selected');
 
-		$('.righttab').removeClass('selected');
-		if (refreshPage.indexOf('action=tree') > 0) {
+		if (page.indexOf('action=tree') > 0) {
+			$('.righttab').removeClass('selected');
 			$('#treeview').addClass('selected');
-		} else if (refreshPage.indexOf('action=list') > 0) {
+		} else if (page.indexOf('action=list') > 0) {
+			$('.righttab').removeClass('selected');
 			$('#listview').addClass('selected');
-		} else if (refreshPage.indexOf('action=preview') > 0) {
+		} else if (page.indexOf('action=preview') > 0) {
+			$('.righttab').removeClass('selected');
 			$('#preview').addClass('selected');
 		}
 
