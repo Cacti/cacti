@@ -812,8 +812,6 @@ function get_order_string_page() {
 }
 
 function validate_is_regex($regex) {
-	global $php_errormsg;
-
 	if ($regex == '') {
 		return true;
 	}
@@ -828,7 +826,9 @@ function validate_is_regex($regex) {
 		return true;
 	}
 
-	$php_error = trim(str_replace('preg_match():', '', $php_errormsg));
+	$last_error = error_get_last();
+
+	$php_error = trim(str_replace('preg_match():', '', $last_error['message']));
 
 	ini_set('track_errors', $track_errors);
 
