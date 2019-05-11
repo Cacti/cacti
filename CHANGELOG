@@ -29,6 +29,7 @@ Cacti CHANGELOG
 -issue#2652: Honor php.ini when php is used in exec() and shell_exec() calls
 -issue#2668: RFC1213 sysDescr trailing parentheses lost
 -issue#2672: Cacti Install on Windows Fails
+-issue#2676: Skin paper plane not working on iPhone XR
 -issue#2678: Call to undefined function _() in data_queries.php
 -issue#2680: PHP 7.2 supporting to remove deprecated $php_errormsg
 -feature#2538: New global setting to change datasource behaviour when deleting graph 

@@ -1560,6 +1560,10 @@ function menuHide(store) {
 
 	$('#navigation').hide();
 
+	if (myClass == '.cactiTreeNavigationArea' || page == 'graph_view') {
+		responsiveResizeGraphs();
+	}
+
 	if (store) {
 		storage.set('menuState_' + page, 'hidden');
 	}
