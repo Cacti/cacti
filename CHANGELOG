@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#2672: Cacti Install on Windows Fails
 -issue#2676: Skin paper plane not working on iPhone XR
 -issue#2678: Call to undefined function _() in data_queries.php
+-issue#2679: Force Complexity Upon Old Passwords issue
 -issue#2680: PHP 7.2 supporting to remove deprecated $php_errormsg
 -feature#2538: New global setting to change datasource behaviour when deleting graph 
 -feature#2539: New global setting to add permanent unlock of graphs

@@ -668,7 +668,7 @@ $selectedTheme = get_selected_theme();
 	<div class='loginArea'>
 		<div class='cactiLoginLogo'></div>
 			<legend><?php print __('User Login');?></legend>
-			<form name='login' method='post' action='<?php print get_current_page();?>'>
+			<form id='login' name='login' method='post' action='<?php print get_current_page();?>'>
 				<input type='hidden' name='action' value='login'>
 				<?php api_plugin_hook_function('login_before',
 					array(

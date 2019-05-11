@@ -2439,9 +2439,9 @@ function secpass_login_process($username) {
 				AND enabled = 'on'",
 				array($username));
 
+			$message = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
+			
 			display_custom_error_message($message);
-			header('Location: index.php?header=false');
-			exit;
 		}
 	}
 
