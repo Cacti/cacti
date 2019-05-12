@@ -285,10 +285,10 @@ case 'tree_content':
 	}
 
 	if (!isempty_request_var('node')) {
-		$_SESSION['sess_graph_node'] = get_request_var('node');
+		$_SESSION['sess_graph_node'] = sanitize_search_string(get_nfilter_request_var('node'));
 
 		if (!isempty_request_var('hgd')) {
-			$_SESSION['sess_graph_hgd'] = get_request_var('hgd');
+			$_SESSION['sess_graph_hgd'] = sanitize_search_string(get_nfilter_request_var('hgd'));
 		} else {
 			$_SESSION['sess_graph_hgd'] = '';
 		}
@@ -326,13 +326,13 @@ case 'tree_content':
 	$hgdata  = 0;
 
 	if (isset_request_var('node')) {
-		$parts = explode('-', get_request_var('node'));
+		$parts = explode('-', sanitize_search_string(get_request_var('node')));
 
 		// Check for tree anchoe
-		if (strpos(get_request_var('node'), 'tree_anchor') !== false) {
+		if (strpos(get_nfilter_request_var('node'), 'tree_anchor') !== false) {
 			$tree_id = $parts[1];
 			$node_id = 0;
-		} elseif (strpos(get_request_var('node'), 'tbranch') !== false) {
+		} elseif (strpos(get_nfilter_request_var('node'), 'tbranch') !== false) {
 			// Check for branch
 			$node_id = $parts[1];
 			$tree_id = db_fetch_cell_prepared('SELECT graph_tree_id
