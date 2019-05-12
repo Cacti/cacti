@@ -3321,6 +3321,8 @@ function initializeGraphs() {
 				});
 
 				realtimeArray[data.local_graph_id] = false;
+
+				responsiveResizeGraphs();
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);
