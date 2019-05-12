@@ -2124,12 +2124,15 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_HRULE:
 					/* perform variable substitution; if this does not return a number, rrdtool will FAIL! */
-					$substitute = rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item);
+					$substitute = strip_alpha(rrd_substitute_host_query_data($graph_variables['value'][$graph_item_id], $graph, $graph_item));
 
 					$text_format = rrdtool_escape_string(html_escape(rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item)));
 
-					if (is_numeric($substitute)) {
+					/* don't break rrdtool if the strip_alpha() returns false */
+					if ($substitute !== false) {
 						$graph_variables['value'][$graph_item_id] = $substitute;
+					} else {
+						$graph_variables['value'][$graph_item_id] = '0';
 					}
 
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $graph_variables['value'][$graph_item_id] . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . '' . $dash;

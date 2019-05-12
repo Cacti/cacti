@@ -1473,26 +1473,39 @@ function prepare_validate_result(&$result) {
 			return ($space_cnt+1 == $delim_cnt);
 		}
 	} else {
-		/* strip all non numeric data */
-		$result = preg_replace('/[^0-9,.+-]/', '', $result);
+		$result = strip_alpha($result);
 
-		/* check the easy cases first */
-		/* it has no delimiters, and no space, therefore, must be numeric */
-		if (is_numeric($result)) {
-			return true;
-		} elseif (is_float($result)) {
-			return true;
-		} else {
+		if ($result === false) {
 			$result = 'U';
 			return false;
+		} else {
+			return true;
 		}
 	}
 }
 
-/* get_full_script_path - gets the full path to the script to execute to obtain data for a
-     given data source. this function does not work on SNMP actions, only script-based actions
-   @arg $local_data_id - (int) the ID of the data source
-   @returns - the full script path or (bool) false for an error */
+/** strip_alpha - remove non-numeric data from a string and return the numeric part
+ *  @arg $string - (char) the string to be evaluated
+ *  @returns - either the numeric value or false if not numeric
+*/
+function strip_alpha($string) {
+	/* strip all non numeric data */
+	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
+
+	/* check the easy cases first */
+	/* it has no delimiters, and no space, therefore, must be numeric */
+	if (is_numeric($string) || is_float($string)) {
+		return $string;
+	} else {
+		return false;
+	}
+}
+
+/** get_full_script_path - gets the full path to the script to execute to obtain data for a
+ *    given data source. this function does not work on SNMP actions, only script-based actions
+ *  @arg $local_data_id - (int) the ID of the data source
+ *  @returns - the full script path or (bool) false for an error 
+*/
 function get_full_script_path($local_data_id) {
 	global $config;
 
@@ -3989,14 +4002,14 @@ function get_dns_from_ip ($ip, $dns, $timeout = 1000) {
 function poller_maintenance () {
 	global $config;
 
-	$command_string = trim(read_config_option('path_php_binary'));
+	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
 
 	// If its not set, just assume its in the path
 	if (trim($command_string) == '') {
 		$command_string = 'php';
 	}
 
-	$extra_args = ' -q ' . $config['base_path'] . '/poller_maintenance.php';
+	$extra_args = ' -q ' . cacti_escapeshellarg($config['base_path'] . '/poller_maintenance.php');
 
 	exec_background($command_string, $extra_args);
 }
