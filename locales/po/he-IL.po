@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-11 13:51-0400\n"
+"POT-Creation-Date: 2019-05-18 16:00-0400\n"
 "PO-Revision-Date: 2019-03-10 13:35-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "2 : 3);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2408 lib/html.php:2303
+#: about.php:29 include/global_arrays.php:2410 lib/html.php:2303
 #, fuzzy
 msgid "About Cacti"
 msgstr "על קקט"
@@ -121,12 +121,12 @@ msgstr ""
 #: data_sources.php:1053 data_templates.php:34 data_templates.php:661
 #: gprint_presets.php:28 graph_templates.php:34 graph_templates.php:468
 #: graphs.php:48 host.php:40 host_templates.php:32 host_templates.php:502
-#: host_templates.php:559 include/global_arrays.php:1464
+#: host_templates.php:559 include/global_arrays.php:1466
 #: include/global_settings.php:238 lib/api_automation.php:1322
 #: lib/api_automation.php:1384 lib/api_automation.php:1452 lib/html.php:1165
 #: lib/html_form.php:1249 lib/html_reports.php:1423 links.php:28
-#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1392 tree.php:1545
-#: tree.php:1605 tree.php:1626 user_admin.php:28 user_domains.php:30
+#: managers.php:28 pollers.php:33 sites.php:28 tree.php:1394 tree.php:1547
+#: tree.php:1607 tree.php:1628 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
 msgid "Delete"
 msgstr "מחק"
@@ -192,7 +192,7 @@ msgstr "לחץ על &#39;המשך&#39; כדי למחוק את הגרפים המ�
 #: lib/html_form.php:1271 lib/html_utility.php:224 links.php:197 links.php:206
 #: links.php:215 managers.php:1005 managers.php:1063 plugins.php:508
 #: pollers.php:445 pollers.php:454 pollers.php:463 pollers.php:472
-#: sites.php:317 tree.php:647 tree.php:656 tree.php:665 user_admin.php:340
+#: sites.php:317 tree.php:649 tree.php:658 tree.php:667 user_admin.php:340
 #: user_admin.php:380 user_admin.php:391 user_admin.php:402 user_admin.php:425
 #: user_domains.php:235 user_domains.php:244 user_domains.php:253
 #: user_domains.php:262 user_group_admin.php:446 user_group_admin.php:465
@@ -225,8 +225,8 @@ msgstr "ביטול"
 #: lib/clog_webapi.php:222 lib/html.php:2333 lib/html_reports.php:304
 #: lib/html_utility.php:224 links.php:197 links.php:206 links.php:215
 #: managers.php:1005 managers.php:1063 pollers.php:445 pollers.php:454
-#: pollers.php:463 pollers.php:472 sites.php:317 tree.php:647 tree.php:656
-#: tree.php:665 user_admin.php:340 user_admin.php:380 user_admin.php:391
+#: pollers.php:463 pollers.php:472 sites.php:317 tree.php:649 tree.php:658
+#: tree.php:667 user_admin.php:340 user_admin.php:380 user_admin.php:391
 #: user_admin.php:402 user_admin.php:425 user_domains.php:235
 #: user_domains.php:244 user_domains.php:253 user_domains.php:262
 #: user_group_admin.php:446 user_group_admin.php:465 user_group_admin.php:476
@@ -262,8 +262,8 @@ msgstr ""
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
 #: auth_changepassword.php:331 auth_profile.php:443 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1105 graphs.php:1155 graphs.php:1158
-#: graphs.php:1200 include/auth.php:264 lib/api_aggregate.php:1472
-#: lib/api_aggregate.php:1487 lib/html_form.php:1269 lib/html_utility.php:222
+#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1476
+#: lib/api_aggregate.php:1491 lib/html_form.php:1269 lib/html_utility.php:222
 #: managers.php:1066 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "חזרה אל עריכת פוסט"
@@ -470,7 +470,7 @@ msgid "Aggregate Graph %s"
 msgstr "גרף מצטבר %s"
 
 #: aggregate_graphs.php:915 aggregate_templates.php:490 graphs.php:1063
-#: lib/api_aggregate.php:1598
+#: lib/api_aggregate.php:1602
 msgid "Total"
 msgstr "סה\"כ"
 
@@ -478,7 +478,7 @@ msgstr "סה\"כ"
 msgid "All Items"
 msgstr "כל הפריטים"
 
-#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1754
+#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1758
 #, fuzzy
 msgid "Graph Configuration"
 msgstr "תצורת גרף"
@@ -515,7 +515,7 @@ msgstr "גרפים תואמים"
 #: lib/html_tree.php:948 links.php:311 managers.php:150 managers.php:494
 #: managers.php:726 plugins.php:341 pollers.php:732 rrdcleaner.php:475
 #: settings.php:427 settings.php:446 settings.php:495 sites.php:425
-#: tree.php:808 tree.php:843 tree.php:878 tree.php:1899 user_admin.php:2254
+#: tree.php:810 tree.php:845 tree.php:880 tree.php:1901 user_admin.php:2254
 #: user_admin.php:2592 user_admin.php:2699 user_admin.php:2785
 #: user_admin.php:2888 user_admin.php:2973 user_admin.php:3058
 #: user_domains.php:654 user_group_admin.php:1841 user_group_admin.php:2166
@@ -531,9 +531,9 @@ msgstr "חיפוש"
 #: data_sources.php:1734 graph_view.php:455 graph_view.php:650
 #: graph_view.php:699 graphs.php:1894 graphs.php:2011 host.php:1565
 #: include/global_arrays.php:875 include/global_arrays.php:1082
-#: include/global_arrays.php:1824 lib/api_automation.php:281 lib/html.php:1554
+#: include/global_arrays.php:1826 lib/api_automation.php:281 lib/html.php:1554
 #: lib/html.php:1556 lib/html.php:1634 lib/html_graph.php:209
-#: lib/html_tree.php:1004 lib/html_tree.php:1315 tree.php:787 tree.php:1985
+#: lib/html_tree.php:1004 lib/html_tree.php:1315 tree.php:789 tree.php:1987
 #: user_admin.php:1004 user_admin.php:1269 user_admin.php:2620
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
@@ -554,7 +554,7 @@ msgstr "גרפים"
 #: lib/api_automation.php:482 lib/api_automation.php:716
 #: lib/api_automation.php:1107 lib/html_reports.php:1528 links.php:321
 #: managers.php:160 managers.php:504 plugins.php:365 pollers.php:742
-#: rrdcleaner.php:501 sites.php:435 tree.php:1909 user_admin.php:2264
+#: rrdcleaner.php:501 sites.php:435 tree.php:1911 user_admin.php:2264
 #: user_admin.php:2624 user_admin.php:2709 user_admin.php:2813
 #: user_admin.php:2898 user_admin.php:2983 user_admin.php:3068
 #: user_domains.php:33 user_domains.php:664 user_domains.php:747
@@ -585,7 +585,7 @@ msgstr "חלק מצטבר"
 #: lib/clog_webapi.php:516 lib/html.php:1393 lib/html_filter.php:81
 #: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:991
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
-#: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1921
+#: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
 #: user_admin.php:2831 user_admin.php:2916 user_admin.php:3001
 #: user_admin.php:3086
@@ -600,7 +600,7 @@ msgstr "עבור"
 #: graph_templates.php:685 graph_view.php:599 graphs.php:1879
 #: graphs_new.php:378 host.php:1491 host_templates.php:749
 #: lib/html_graph.php:190 managers.php:172 managers.php:516 managers.php:746
-#: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1921
+#: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
 #: user_admin.php:2831 user_admin.php:2916 user_admin.php:3001
 #: user_admin.php:3086 user_domains.php:676 user_group_admin.php:1863
@@ -626,7 +626,7 @@ msgstr "הגדר / רענן מסננים"
 #: lib/clog_webapi.php:517 lib/html_filter.php:86 lib/html_graph.php:191
 #: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:992
 #: lib/html_tree.php:1102 links.php:332 managers.php:173 managers.php:517
-#: managers.php:747 plugins.php:378 pollers.php:755 sites.php:448 tree.php:1922
+#: managers.php:747 plugins.php:378 pollers.php:755 sites.php:448 tree.php:1924
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
 #: user_admin.php:3087 user_domains.php:677
@@ -641,7 +641,7 @@ msgstr "נקה"
 #: graphs_new.php:379 host.php:1492 host_templates.php:750
 #: lib/html_graph.php:191 lib/html_tree.php:992 managers.php:173
 #: managers.php:517 managers.php:747 plugins.php:378 pollers.php:755
-#: sites.php:448 tree.php:1922 user_admin.php:2277 user_admin.php:2643
+#: sites.php:448 tree.php:1924 user_admin.php:2277 user_admin.php:2643
 #: user_admin.php:2728 user_admin.php:2832 user_admin.php:2917
 #: user_admin.php:3002 user_admin.php:3087 user_domains.php:677
 #: user_group_admin.php:1864 user_group_admin.php:2217
@@ -663,7 +663,7 @@ msgstr "כותרת גרף"
 #: data_debug.php:346 data_queries.php:1387 data_sources.php:1600
 #: data_templates.php:1019 graph_templates.php:793 graphs.php:2027
 #: host.php:1559 host_templates.php:838 lib/api_automation.php:280
-#: pollers.php:828 sites.php:521 tree.php:1975 user_admin.php:1012
+#: pollers.php:828 sites.php:521 tree.php:1977 user_admin.php:1012
 #: user_admin.php:1124 user_admin.php:1269 user_admin.php:1417
 #: user_admin.php:1558 user_group_admin.php:676 user_group_admin.php:825
 #: user_group_admin.php:970 user_group_admin.php:1113 user_group_admin.php:1247
@@ -687,7 +687,7 @@ msgstr "גודל"
 #: data_sources.php:1681 data_sources.php:1682 data_templates.php:1044
 #: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
 #: include/global_settings.php:765 include/global_settings.php:1482
-#: lib/api_automation.php:1433 links.php:403 tree.php:2013 tree.php:2014
+#: lib/api_automation.php:1433 links.php:403 tree.php:2015 tree.php:2016
 #: user_admin.php:2345 user_domains.php:766 user_group_admin.php:1931
 #: vdef.php:906
 msgid "No"
@@ -703,7 +703,7 @@ msgstr "לא"
 #: host_templates.php:857 include/global_settings.php:764
 #: include/global_settings.php:1481 lib/api_automation.php:1433
 #: lib/installer.php:1708 lib/installer.php:1736 lib/installer.php:3210
-#: links.php:403 tree.php:2013 tree.php:2014 user_admin.php:2343
+#: links.php:403 tree.php:2015 tree.php:2016 user_admin.php:2343
 #: user_domains.php:762 user_domains.php:766 user_group_admin.php:1929
 #: vdef.php:906
 msgid "Yes"
@@ -720,14 +720,14 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[רשימת גרפים מותאמים אישית - מסנן מתוך רשימה]"
 
 #: aggregate_graphs.php:1457 aggregate_graphs.php:1565
-#: include/global_arrays.php:2534
+#: include/global_arrays.php:2536
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "גרפים מצטברים"
 
 #: aggregate_graphs.php:1472 data_debug.php:949 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
-#: include/global_arrays.php:2680 include/global_settings.php:514
+#: include/global_arrays.php:2682 include/global_settings.php:514
 #: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:954
 #: rrdcleaner.php:351 user_admin.php:2598 user_admin.php:2791
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1677
@@ -761,7 +761,7 @@ msgstr "הכל"
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
 #: include/global_arrays.php:449 include/global_arrays.php:507
 #: include/global_arrays.php:590 include/global_arrays.php:775
-#: include/global_arrays.php:1551 include/global_form.php:544
+#: include/global_arrays.php:1553 include/global_form.php:544
 #: include/global_form.php:850 include/global_form.php:858
 #: include/global_form.php:866 include/global_form.php:904
 #: include/global_form.php:911 include/global_form.php:937
@@ -812,7 +812,7 @@ msgstr "לא נמצאו גרפים מצטברים"
 msgid "Override Values for Graph Item"
 msgstr "עקוף ערכים עבור פריט תרשים"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1786
+#: aggregate_items.php:358 lib/api_aggregate.php:1790
 #, fuzzy
 msgid "Override this Value"
 msgstr "עקוף את הערך הזה"
@@ -838,7 +838,7 @@ msgid "Aggregate Template [new]"
 msgstr "תבנית מצטברת [חדש]"
 
 #: aggregate_templates.php:554 aggregate_templates.php:653
-#: include/global_arrays.php:2516
+#: include/global_arrays.php:2518
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "תבניות מצטברות"
@@ -888,7 +888,7 @@ msgstr "גרפים באמצעות"
 
 #: aggregate_templates.php:665 include/global_arrays.php:840
 #: include/global_arrays.php:1209 include/global_form.php:1351
-#: include/global_form.php:1582 lib/html_reports.php:668 tree.php:1648
+#: include/global_form.php:1582 lib/html_reports.php:668 tree.php:1650
 #, fuzzy
 msgid "Graph Template"
 msgstr "תבנית גרף"
@@ -955,7 +955,7 @@ msgid "Cannot be reused for %d password changes"
 msgstr "לא ניתן לעשות בו שימוש חוזר לשינויים ב-% d"
 
 #: auth_changepassword.php:284 auth_changepassword.php:291
-#: include/global_form.php:1499 lib/functions.php:2342
+#: include/global_form.php:1499 lib/functions.php:2355
 msgid "Change Password"
 msgstr "שנה סיסמה"
 
@@ -970,7 +970,7 @@ msgid "Please enter your new Cacti password."
 msgstr "הזן את הסיסמה הנוכחית ואת החדש <br> סיסמת קקט."
 
 #: auth_changepassword.php:314 auth_login.php:688 auth_login.php:691
-#: include/global_settings.php:1391 lib/functions.php:3840
+#: include/global_settings.php:1391 lib/functions.php:3853
 msgid "Username"
 msgstr "שם משתמש"
 
@@ -1085,7 +1085,7 @@ msgstr "פרטי הכניסה של המשתמש"
 msgid "Enter your Username and Password below"
 msgstr "הזן את שם המשתמש והסיסמה שלך למטה"
 
-#: auth_login.php:696 include/global_form.php:1466 lib/functions.php:3841
+#: auth_login.php:696 include/global_form.php:1466 lib/functions.php:3854
 msgid "Password"
 msgstr "סיסמה"
 
@@ -1271,8 +1271,8 @@ msgstr "נוסף ל- Cacti"
 
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:915
 #: graph_view.php:712 graphs.php:1461 include/global_arrays.php:836
-#: include/global_arrays.php:885 include/global_arrays.php:1667
-#: lib/api_automation.php:424 lib/functions.php:3835 lib/html.php:1914
+#: include/global_arrays.php:885 include/global_arrays.php:1669
+#: lib/api_automation.php:424 lib/functions.php:3848 lib/html.php:1914
 #: lib/html.php:1946 lib/html_reports.php:658 utilities.php:1532
 msgid "Device"
 msgstr "התקן"
@@ -1309,11 +1309,11 @@ msgstr "הוסף מכשירים (ים)"
 
 #: automation_devices.php:254 automation_devices.php:536 host.php:1428
 #: host.php:1522 host.php:1622 include/global_arrays.php:872
-#: include/global_arrays.php:927 include/global_arrays.php:2114
+#: include/global_arrays.php:927 include/global_arrays.php:2116
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:478 lib/api_automation.php:561
-#: lib/api_automation.php:1206 pollers.php:834 sites.php:522 tree.php:786
-#: tree.php:1984 user_admin.php:1261 user_admin.php:2809
+#: lib/api_automation.php:1206 pollers.php:834 sites.php:522 tree.php:788
+#: tree.php:1986 user_admin.php:1261 user_admin.php:2809
 #: user_group_admin.php:962 user_group_admin.php:2298 utilities.php:298
 msgid "Devices"
 msgstr ""
@@ -1433,7 +1433,7 @@ msgstr "טיהור התגלה התקנים"
 #: automation_snmp.php:534 automation_snmp.php:535 automation_snmp.php:536
 #: automation_snmp.php:537 automation_snmp.php:538 automation_snmp.php:539
 #: data_debug.php:558 data_source_profiles.php:72 data_source_profiles.php:82
-#: host.php:1639 lib/functions.php:4211 lib/functions.php:4215
+#: host.php:1639 lib/functions.php:4224 lib/functions.php:4228
 #: lib/html.php:1132 pollers.php:883 user_admin.php:2338 utilities.php:445
 #: utilities.php:825 utilities.php:2150 utilities.php:2247 utilities.php:2255
 #: utilities.php:2258 utilities.php:2261 utilities.php:2267 utilities.php:2496
@@ -1443,13 +1443,13 @@ msgstr "לא זמין"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:68
-#: host_templates.php:33 include/global_arrays.php:1461 vdef.php:30
+#: host_templates.php:33 include/global_arrays.php:1463 vdef.php:30
 msgid "Duplicate"
 msgstr "שכפל"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1462 include/global_settings.php:1347 links.php:29
+#: include/global_arrays.php:1464 include/global_settings.php:1347 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1458,7 +1458,7 @@ msgstr "אפשר"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1463 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1465 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1563,13 +1563,13 @@ msgstr "קריטריונים ליצירת גרף"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
 #: automation_graph_rules.php:891 include/global_arrays.php:895
-#: include/global_arrays.php:2570
+#: include/global_arrays.php:2572
 #, fuzzy
 msgid "Graph Rules"
 msgstr "חוקי גרף"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902
-#: include/global_arrays.php:1212 include/global_arrays.php:2679
+#: include/global_arrays.php:1212 include/global_arrays.php:2681
 #: include/global_form.php:1592 include/global_form.php:2109
 #, fuzzy
 msgid "Data Query"
@@ -1595,7 +1595,7 @@ msgstr "מאופשר"
 #: automation_networks.php:1094 automation_tree_rules.php:823
 #: automation_tree_rules.php:960 data_debug.php:1008 data_sources.php:1403
 #: data_templates.php:1048 host.php:1513 include/global_arrays.php:798
-#: include/global_arrays.php:1387 include/global_arrays.php:1675
+#: include/global_arrays.php:1387 include/global_arrays.php:1677
 #: include/global_settings.php:378 include/global_settings.php:1221
 #: include/global_settings.php:1235 include/global_settings.php:1247
 #: include/global_settings.php:1272 include/global_settings.php:1286
@@ -1710,22 +1710,22 @@ msgstr "הפעל גלה במצב Debug"
 msgid "Click 'Continue' to cancel on going Network Discovery(s)."
 msgstr "לחץ על &#39;המשך&#39; כדי לבטל את האפשרות &#39;גילוי רשת&#39; (s)."
 
-#: automation_networks.php:419 automation_networks.php:1067 tree.php:1428
+#: automation_networks.php:419 automation_networks.php:1067 tree.php:1430
 msgid "Manual"
 msgstr "ידני"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:1689
+#: include/global_arrays.php:1691
 msgid "Daily"
 msgstr "יומי"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1690
+#: include/global_arrays.php:1692
 msgid "Weekly"
 msgstr "שבועי"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1693
 msgid "Monthly"
 msgstr "באופן חודשי"
 
@@ -1911,10 +1911,10 @@ msgstr "% d דקות"
 #: include/global_arrays.php:669 include/global_arrays.php:1061
 #: include/global_arrays.php:1062 include/global_arrays.php:1394
 #: include/global_arrays.php:1398 include/global_arrays.php:1406
-#: include/global_arrays.php:1407 include/global_arrays.php:1429
-#: include/global_arrays.php:1430 include/global_arrays.php:1431
+#: include/global_arrays.php:1407 include/global_arrays.php:1431
 #: include/global_arrays.php:1432 include/global_arrays.php:1433
-#: include/global_arrays.php:1446 include/global_settings.php:1288
+#: include/global_arrays.php:1434 include/global_arrays.php:1435
+#: include/global_arrays.php:1448 include/global_settings.php:1288
 #: include/global_settings.php:1289 include/global_settings.php:1290
 #: include/global_settings.php:1291 include/global_settings.php:1292
 #: include/global_settings.php:2064
@@ -2097,37 +2097,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "באיזה יום (ים) בשבוע יתגלה טווח הרשת הזה."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1731
+#: include/global_arrays.php:1733
 msgid "Sunday"
 msgstr "יום ראשון"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1732
+#: include/global_arrays.php:1734
 msgid "Monday"
 msgstr "יום שני"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1733
+#: include/global_arrays.php:1735
 msgid "Tuesday"
 msgstr "יום שלישי"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1734
+#: include/global_arrays.php:1736
 msgid "Wednesday"
 msgstr "יום רביעי"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1735
+#: include/global_arrays.php:1737
 msgid "Thursday"
 msgstr "יום חמישי"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1736
+#: include/global_arrays.php:1738
 msgid "Friday"
 msgstr "יום שישי"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1737
+#: include/global_arrays.php:1739
 msgid "Saturday"
 msgstr "שבת"
 
@@ -2141,51 +2141,51 @@ msgstr "חודשים של שנה"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "מה חודשים של השנה יהיה זה טווח הרשת להתגלות."
 
-#: automation_networks.php:654 include/global_arrays.php:1701
+#: automation_networks.php:654 include/global_arrays.php:1703
 msgid "January"
 msgstr "ינואר"
 
-#: automation_networks.php:655 include/global_arrays.php:1702
+#: automation_networks.php:655 include/global_arrays.php:1704
 msgid "February"
 msgstr "פברואר"
 
-#: automation_networks.php:656 include/global_arrays.php:1703
+#: automation_networks.php:656 include/global_arrays.php:1705
 msgid "March"
 msgstr "מרץ"
 
-#: automation_networks.php:657 include/global_arrays.php:1704
+#: automation_networks.php:657 include/global_arrays.php:1706
 msgid "April"
 msgstr "אפריל"
 
-#: automation_networks.php:658 include/global_arrays.php:1705
+#: automation_networks.php:658 include/global_arrays.php:1707
 msgid "May"
 msgstr "מאי"
 
-#: automation_networks.php:659 include/global_arrays.php:1706
+#: automation_networks.php:659 include/global_arrays.php:1708
 msgid "June"
 msgstr "יוני"
 
-#: automation_networks.php:660 include/global_arrays.php:1707
+#: automation_networks.php:660 include/global_arrays.php:1709
 msgid "July"
 msgstr "יולי"
 
-#: automation_networks.php:661 include/global_arrays.php:1708
+#: automation_networks.php:661 include/global_arrays.php:1710
 msgid "August"
 msgstr "אוגוסט"
 
-#: automation_networks.php:662 include/global_arrays.php:1709
+#: automation_networks.php:662 include/global_arrays.php:1711
 msgid "September"
 msgstr "ספטמבר"
 
-#: automation_networks.php:663 include/global_arrays.php:1710
+#: automation_networks.php:663 include/global_arrays.php:1712
 msgid "October"
 msgstr "אוקטובר"
 
-#: automation_networks.php:664 include/global_arrays.php:1711
+#: automation_networks.php:664 include/global_arrays.php:1713
 msgid "November"
 msgstr "נובמבר"
 
-#: automation_networks.php:665 include/global_arrays.php:1712
+#: automation_networks.php:665 include/global_arrays.php:1714
 msgid "December"
 msgstr "דצמבר"
 
@@ -2441,11 +2441,11 @@ msgstr "רענן"
 #: include/global_arrays.php:1059 include/global_arrays.php:1388
 #: include/global_arrays.php:1389 include/global_arrays.php:1390
 #: include/global_arrays.php:1391 include/global_arrays.php:1392
-#: include/global_arrays.php:1425 include/global_arrays.php:1426
-#: include/global_arrays.php:1438 include/global_arrays.php:1439
+#: include/global_arrays.php:1427 include/global_arrays.php:1428
 #: include/global_arrays.php:1440 include/global_arrays.php:1441
 #: include/global_arrays.php:1442 include/global_arrays.php:1443
-#: include/global_arrays.php:1444 include/global_settings.php:1057
+#: include/global_arrays.php:1444 include/global_arrays.php:1445
+#: include/global_arrays.php:1446 include/global_settings.php:1057
 #: include/global_settings.php:1058 include/global_settings.php:1059
 #: include/global_settings.php:1060 include/global_settings.php:2060
 #: include/global_settings.php:2061 include/global_settings.php:2062
@@ -2556,7 +2556,7 @@ msgstr "אוטומציה של אפשרויות SNMP"
 msgid "Item"
 msgstr "פריט"
 
-#: automation_snmp.php:505 include/auth.php:294 include/global_settings.php:571
+#: automation_snmp.php:505 include/auth.php:288 include/global_settings.php:571
 #: permission_denied.php:57 plugins.php:453
 msgid "Version"
 msgstr "גרסה"
@@ -2565,7 +2565,7 @@ msgstr "גרסה"
 msgid "Community"
 msgstr "קהילה"
 
-#: automation_snmp.php:507 lib/functions.php:3836
+#: automation_snmp.php:507 lib/functions.php:3849
 msgid "Port"
 msgstr "פורט"
 
@@ -2630,7 +2630,7 @@ msgstr "ללא"
 #: color_templates.php:110 data_queries.php:810 data_queries.php:910
 #: lib/api_automation.php:1309 lib/api_automation.php:1371
 #: lib/api_automation.php:1439 lib/html.php:1154 lib/html_reports.php:1416
-#: lib/html_reports.php:1418 tree.php:1998 tree.php:2005 vdef.php:624
+#: lib/html_reports.php:1418 tree.php:2000 tree.php:2007 vdef.php:624
 msgid "Move Down"
 msgstr "עבור מטה"
 
@@ -2638,7 +2638,7 @@ msgstr "עבור מטה"
 #: color_templates.php:116 data_queries.php:815 data_queries.php:915
 #: lib/api_automation.php:1315 lib/api_automation.php:1377
 #: lib/api_automation.php:1445 lib/html.php:1159 lib/html_reports.php:1418
-#: lib/html_reports.php:1420 tree.php:2002 tree.php:2006 vdef.php:630
+#: lib/html_reports.php:1420 tree.php:2004 tree.php:2008 vdef.php:630
 msgid "Move Up"
 msgstr "עבור מעלה"
 
@@ -2800,7 +2800,7 @@ msgid "System ObjectId Match"
 msgstr "התאמה של אובייקט מערכת"
 
 #: automation_templates.php:500 data_queries.php:779 data_queries.php:877
-#: links.php:383 tree.php:1979
+#: links.php:383 tree.php:1981
 msgid "Order"
 msgstr "הזמנה"
 
@@ -2898,7 +2898,7 @@ msgstr "האם אתה בטוח שברצונך להמשיך?"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
 #: automation_tree_rules.php:927 include/global_arrays.php:896
-#: include/global_arrays.php:2594
+#: include/global_arrays.php:2596
 #, fuzzy
 msgid "Tree Rules"
 msgstr "חוקי עץ"
@@ -3037,7 +3037,7 @@ msgstr "CDEF [עריכה: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [חדש]"
 
-#: cdef.php:609 include/global_arrays.php:1964
+#: cdef.php:609 include/global_arrays.php:1966
 #, fuzzy
 msgid "CDEF Items"
 msgstr "פריטים CDEF"
@@ -3058,7 +3058,7 @@ msgid "Delete CDEF Item"
 msgstr "מחק פריט CDEF"
 
 #: cdef.php:748 cdef.php:763 cdef.php:879 include/global_arrays.php:901
-#: include/global_arrays.php:1946
+#: include/global_arrays.php:1948
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3208,7 +3208,7 @@ msgid "Colors [new]"
 msgstr "צבעים [חדש]"
 
 #: color.php:521 color.php:536 color.php:690 include/global_arrays.php:903
-#: include/global_arrays.php:2012
+#: include/global_arrays.php:2014
 msgid "Colors"
 msgstr "צבעים"
 
@@ -3295,14 +3295,14 @@ msgstr "לא נמצאו צבעים"
 msgid "Color Item"
 msgstr "פריט צבע"
 
-#: color_templates.php:93 lib/api_aggregate.php:1676 lib/api_aggregate.php:1679
-#: lib/api_aggregate.php:1684 lib/html.php:1091 lib/html_reports.php:1407
+#: color_templates.php:93 lib/api_aggregate.php:1680 lib/api_aggregate.php:1683
+#: lib/api_aggregate.php:1688 lib/html.php:1091 lib/html_reports.php:1407
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "פריט #% d"
 
 #: color_templates.php:132 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1736 lib/html.php:1173
+#: lib/api_aggregate.php:1740 lib/html.php:1173
 msgid "No Items"
 msgstr "אין פריטים"
 
@@ -3374,7 +3374,7 @@ msgid "Color Template [new]"
 msgstr "תבנית צבע [חדש]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2492
+#: include/global_arrays.php:2494
 #, fuzzy
 msgid "Color Templates"
 msgstr "תבניות צבע"
@@ -3466,7 +3466,7 @@ msgstr "תיקון מקור הנתונים קיבל מזהה מקור נתוני
 #: data_debug.php:330 data_debug.php:807 data_queries.php:733
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
 #: include/global_arrays.php:887 include/global_form.php:926
-#: lib/api_aggregate.php:1592 lib/html.php:1051
+#: lib/api_aggregate.php:1596 lib/html.php:1051
 #, fuzzy
 msgid "Data Source"
 msgstr "מקור מידע"
@@ -3575,7 +3575,7 @@ msgstr "כל סוגיות סיכום עבור מקור הנתונים."
 
 #: data_debug.php:510 data_debug.php:1052 data_sources.php:1427
 #: data_sources.php:1584 host.php:1571 include/global_arrays.php:876
-#: include/global_arrays.php:921 include/global_arrays.php:2096
+#: include/global_arrays.php:921 include/global_arrays.php:2098
 #: lib/api_automation.php:282 user_admin.php:1269 user_group_admin.php:970
 #: utilities.php:308
 #, fuzzy
@@ -3706,7 +3706,7 @@ msgstr "Rerun ניתוח"
 msgid "Check"
 msgstr "בדוק"
 
-#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2814
+#: data_debug.php:756 include/global_form.php:984 lib/rrd.php:2817
 #: utilities.php:2476
 msgid "Value"
 msgstr "ערך"
@@ -3787,7 +3787,7 @@ msgstr "פרופיל"
 #: data_sources.php:1385 data_sources.php:1401 data_sources.php:1412
 #: data_templates.php:874 graphs_new.php:355 lib/clog_webapi.php:530
 #: lib/html.php:190 lib/html_reports.php:625 plugins.php:351 settings.php:419
-#: settings.php:438 settings.php:464 tree.php:784 utilities.php:674
+#: settings.php:438 settings.php:464 tree.php:786 utilities.php:674
 #: utilities.php:1110
 msgid "All"
 msgstr "הכל"
@@ -3981,7 +3981,7 @@ msgid "Delete Data Input Field"
 msgstr "מחק שדה קלט נתונים"
 
 #: data_input.php:794 include/global_arrays.php:882
-#: include/global_arrays.php:1078 include/global_arrays.php:2150
+#: include/global_arrays.php:1078 include/global_arrays.php:2152
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "שיטות קלט נתונים"
@@ -4171,7 +4171,7 @@ msgid "Could not locate XML file."
 msgstr "לא ניתן לאתר קובץ XML."
 
 #: data_queries.php:1135 host.php:679 host_templates.php:483
-#: include/global_arrays.php:2204
+#: include/global_arrays.php:2206
 #, fuzzy
 msgid "Associated Graph Templates"
 msgstr "תבניות גרף משויכות"
@@ -4204,7 +4204,7 @@ msgstr "מחק גרף משויך"
 
 #: data_queries.php:1272 data_queries.php:1287 data_queries.php:1377
 #: include/global_arrays.php:881 include/global_arrays.php:1079
-#: include/global_arrays.php:2186 lib/api_automation.php:1103
+#: include/global_arrays.php:2188 lib/api_automation.php:1103
 #, fuzzy
 msgid "Data Queries"
 msgstr "שאילתות נתונים"
@@ -4368,7 +4368,7 @@ msgstr "שלבי הבישול/אפיה"
 
 #: data_source_profiles.php:577 graphs_new.php:395 include/global_form.php:254
 #: lib/html.php:490 lib/html_filter.php:73 lib/installer.php:2345
-#: lib/rrd.php:2868 utilities.php:507 utilities.php:1444
+#: lib/rrd.php:2871 utilities.php:507 utilities.php:1444
 msgid "Rows"
 msgstr "שורות"
 
@@ -4458,7 +4458,7 @@ msgstr "%d ימים"
 #: data_source_profiles.php:780 include/global_arrays.php:631
 #: include/global_arrays.php:1345 include/global_arrays.php:1366
 #: include/global_arrays.php:1399 include/global_arrays.php:1408
-#: include/global_arrays.php:1434 include/global_settings.php:1293
+#: include/global_arrays.php:1436 include/global_settings.php:1293
 #, fuzzy
 msgid "1 Hour"
 msgstr "1 שעה"
@@ -4818,7 +4818,7 @@ msgstr "חיצוני"
 
 #: data_sources.php:1182 include/global_arrays.php:626
 #: include/global_arrays.php:1060 include/global_arrays.php:1393
-#: include/global_arrays.php:1427 include/global_arrays.php:1445
+#: include/global_arrays.php:1429 include/global_arrays.php:1447
 #: include/global_settings.php:1287 include/global_settings.php:2063
 msgid "1 Minute"
 msgstr "1 דקה"
@@ -5031,7 +5031,7 @@ msgid "Value will be derived from the device if this field is left empty."
 msgstr "הערך ייגזר מהמכשיר אם שדה זה יישאר ריק."
 
 #: data_templates.php:855 data_templates.php:886 data_templates.php:1009
-#: include/global_arrays.php:1090 include/global_arrays.php:2078
+#: include/global_arrays.php:1090 include/global_arrays.php:2080
 #, fuzzy
 msgid "Data Templates"
 msgstr "תבניות נתונים"
@@ -5119,7 +5119,7 @@ msgstr "GPRINT Presets [עריכה: %s]"
 msgid "GPRINT Presets [new]"
 msgstr "GPRINT Presets [חדש]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1928
+#: gprint_presets.php:254 include/global_arrays.php:1930
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "GPRINT presets"
@@ -5352,7 +5352,7 @@ msgstr "סנכרון גרפים לתבניות גרף (ים)"
 msgid "Graph Template Items [edit: %s]"
 msgstr "פריטי תבנית גרף [עריכה: %s]"
 
-#: graph_templates.php:448 include/global_arrays.php:2048
+#: graph_templates.php:448 include/global_arrays.php:2050
 #, fuzzy
 msgid "Graph Item Inputs"
 msgstr "קלט פריט גרף"
@@ -5387,7 +5387,7 @@ msgstr ""
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
 #: graphs_new.php:451 include/global_arrays.php:1089
-#: include/global_arrays.php:2024 lib/html_tree.php:547 user_admin.php:1409
+#: include/global_arrays.php:2026 lib/html_tree.php:547 user_admin.php:1409
 #: user_group_admin.php:1105
 #, fuzzy
 msgid "Graph Templates"
@@ -5540,7 +5540,7 @@ msgstr "דו\"ח"
 msgid "All Graphs & Templates"
 msgstr "כל הגרפים והתבניות"
 
-#: graph_view.php:617 include/global_arrays.php:2678 lib/graphs.php:45
+#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
 #: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
 #: lib/html_tree.php:959
 #, fuzzy
@@ -5548,7 +5548,7 @@ msgid "Not Templated"
 msgstr "לא בתבנית"
 
 #: graph_view.php:707 graphs.php:2021 include/global_form.php:1800
-#: lib/html_reports.php:678 tree.php:891
+#: lib/html_reports.php:678 tree.php:893
 #, fuzzy
 msgid "Graph Name"
 msgstr "שם תרשים"
@@ -5598,7 +5598,7 @@ msgstr "הגודל של תרשים זה כאשר לא במצב תצוגה מקד
 msgid "Select the Report to add the selected Graphs to."
 msgstr "בחר את הדוח כדי להוסיף את הגרפים שנבחרו."
 
-#: graph_view.php:867 include/global_arrays.php:1848
+#: graph_view.php:867 include/global_arrays.php:1850
 #: include/global_settings.php:2133
 #, fuzzy
 msgid "Preview Mode"
@@ -5667,7 +5667,7 @@ msgstr "הורדה"
 msgid "Summary Details"
 msgstr "פרטי התקציר"
 
-#: graphs.php:53 graphs.php:917 include/global_arrays.php:1898
+#: graphs.php:53 graphs.php:917 include/global_arrays.php:1900
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "שינוי תבנית גרף"
@@ -6074,7 +6074,7 @@ msgstr "בחר את כל השורות"
 
 #: graphs_new.php:544 include/global_arrays.php:867
 #: include/global_arrays.php:943 lib/html_form.php:1264 lib/html_form.php:1277
-#: tree.php:1366
+#: tree.php:1368
 msgid "Create"
 msgstr "צור"
 
@@ -6299,8 +6299,8 @@ msgstr "מכשיר קשר"
 msgid "Data Query Debug Information"
 msgstr "מידע על ניקוי באגים של שאילתת נתונים"
 
-#: host.php:662 lib/functions.php:2909 tree.php:1508 tree.php:1582
-#: tree.php:1690 user_admin.php:29 user_group_admin.php:31
+#: host.php:662 lib/functions.php:2922 tree.php:1510 tree.php:1584
+#: tree.php:1692 user_admin.php:29 user_group_admin.php:31
 msgid "Copy"
 msgstr "העתק"
 
@@ -6308,7 +6308,7 @@ msgstr "העתק"
 msgid "Hide"
 msgstr "הסתר"
 
-#: host.php:742 tree.php:1486 tree.php:1560 tree.php:1668
+#: host.php:742 tree.php:1488 tree.php:1562 tree.php:1670
 msgid "Edit"
 msgstr "ערוך"
 
@@ -6352,15 +6352,15 @@ msgstr "שאילתות נתונים משויכות"
 msgid "Re-Index Method"
 msgstr "שיטת אינדקס מחדש"
 
-#: host.php:784 include/global_arrays.php:1904 include/global_arrays.php:1970
-#: include/global_arrays.php:2036 include/global_arrays.php:2072
-#: include/global_arrays.php:2090 include/global_arrays.php:2108
-#: include/global_arrays.php:2126 include/global_arrays.php:2156
-#: include/global_arrays.php:2192 include/global_arrays.php:2222
-#: include/global_arrays.php:2312 include/global_arrays.php:2504
-#: include/global_arrays.php:2528 include/global_arrays.php:2546
-#: include/global_arrays.php:2564 include/global_arrays.php:2582
-#: include/global_arrays.php:2606 lib/api_automation.php:1288
+#: host.php:784 include/global_arrays.php:1906 include/global_arrays.php:1972
+#: include/global_arrays.php:2038 include/global_arrays.php:2074
+#: include/global_arrays.php:2092 include/global_arrays.php:2110
+#: include/global_arrays.php:2128 include/global_arrays.php:2158
+#: include/global_arrays.php:2194 include/global_arrays.php:2224
+#: include/global_arrays.php:2314 include/global_arrays.php:2506
+#: include/global_arrays.php:2530 include/global_arrays.php:2548
+#: include/global_arrays.php:2566 include/global_arrays.php:2584
+#: include/global_arrays.php:2608 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1417
 #: lib/html_reports.php:1348 links.php:378 plugins.php:447
 msgid "Actions"
@@ -6375,7 +6375,7 @@ msgstr "[% d פריטים,% d שורות]"
 msgid "Fail"
 msgstr "נכשל"
 
-#: host.php:845 lib/functions.php:3850 lib/functions.php:3855
+#: host.php:845 lib/functions.php:3863 lib/functions.php:3868
 msgid "Success"
 msgstr "הצלחה"
 
@@ -6461,11 +6461,11 @@ msgstr "שחזור"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
 #: lib/html_utility.php:895 lib/plugins.php:993 lib/plugins.php:994
-#: lib/rrd.php:2839 lib/rrd.php:2851 user_admin.php:796 utilities.php:2146
+#: lib/rrd.php:2842 lib/rrd.php:2854 user_admin.php:796 utilities.php:2146
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: host.php:1547 lib/api_automation.php:568 tree.php:857 utilities.php:1820
+#: host.php:1547 lib/api_automation.php:568 tree.php:859 utilities.php:1820
 #, fuzzy
 msgid "Device Description"
 msgstr "תיאור המכשיר"
@@ -6686,7 +6686,7 @@ msgid "Add Data Query to Device Template"
 msgstr "הוסף שאילתת נתונים לתבנית מכשיר"
 
 #: host_templates.php:712 host_templates.php:727 host_templates.php:828
-#: include/global_arrays.php:1091 include/global_arrays.php:2060
+#: include/global_arrays.php:1091 include/global_arrays.php:2062
 #, fuzzy
 msgid "Device Templates"
 msgstr "תבניות מכשיר"
@@ -6753,41 +6753,41 @@ msgstr "עליך להיות מחובר כדי להיכנס לאזור זה של 
 msgid "FATAL: You must be logged in to access this area of Cacti."
 msgstr "פתאל: עליך להיות מחובר כדי לגשת לאזור זה של Cacti."
 
-#: include/auth.php:264 include/auth.php:266 permission_denied.php:30
+#: include/auth.php:258 include/auth.php:260 permission_denied.php:30
 #: permission_denied.php:32
 #, fuzzy
 msgid "Login Again"
 msgstr "היכנס שוב"
 
-#: include/auth.php:269 permission_denied.php:43 permission_denied.php:50
+#: include/auth.php:263 permission_denied.php:43 permission_denied.php:50
 #, fuzzy
 msgid "Permission Denied"
 msgstr "ההרשאה נדחתה"
 
-#: include/auth.php:270 permission_denied.php:52
+#: include/auth.php:264 permission_denied.php:52
 #, fuzzy
 msgid ""
 "If you feel that this is an error. Please contact your Cacti Administrator."
 msgstr "אם אתה מרגיש שזאת טעות. אנא צור קשר עם מנהל Cacti שלך."
 
-#: include/auth.php:270 permission_denied.php:52
+#: include/auth.php:264 permission_denied.php:52
 #, fuzzy
 msgid "You are not permitted to access this section of Cacti."
 msgstr "אינך מורשה לגשת לקטע זה של Cacti."
 
-#: include/auth.php:273
+#: include/auth.php:267
 #, fuzzy
 msgid "Installation In Progress"
 msgstr "ההתקנה מתבצעת"
 
-#: include/auth.php:274
+#: include/auth.php:268
 #, fuzzy
 msgid ""
 "Only Cacti Administrators with Install/Upgrade privilege may login at this "
 "time"
 msgstr "רק מנהלי מערכת של Cacti בעלי הרשאת התקנה / שדרוג עשויים להיכנס בשלב זה"
 
-#: include/auth.php:274
+#: include/auth.php:268
 #, fuzzy
 msgid "There is an Installation or Upgrade in progress."
 msgstr "יש התקנה או שדרוג בתהליך."
@@ -7412,7 +7412,7 @@ msgstr "למעלה -&gt; למטה"
 msgid "Bottom -> Up"
 msgstr "למטה -&gt; למעלה"
 
-#: include/global_arrays.php:520 tree.php:1470
+#: include/global_arrays.php:520 tree.php:1472
 msgid "Numeric"
 msgstr "מספריים"
 
@@ -7561,9 +7561,9 @@ msgstr "כל שעה"
 #: include/global_arrays.php:654 include/global_arrays.php:655
 #: include/global_arrays.php:721 include/global_arrays.php:722
 #: include/global_arrays.php:723 include/global_arrays.php:724
-#: include/global_arrays.php:1677 include/global_arrays.php:1678
 #: include/global_arrays.php:1679 include/global_arrays.php:1680
-#: include/global_arrays.php:1681 include/global_settings.php:1975
+#: include/global_arrays.php:1681 include/global_arrays.php:1682
+#: include/global_arrays.php:1683 include/global_settings.php:1975
 #: include/global_settings.php:1976
 #, fuzzy, php-format
 msgid "Every %d Hours"
@@ -7686,18 +7686,18 @@ msgstr "הזמנה טבעית"
 msgid "Numeric Ordering"
 msgstr "הזמנה מספרית"
 
-#: include/global_arrays.php:834 lib/rrd.php:2780
+#: include/global_arrays.php:834 lib/rrd.php:2783
 msgid "Header"
 msgstr "כותרת"
 
 #: include/global_arrays.php:835 include/global_arrays.php:886
-#: include/global_arrays.php:1499 include/global_arrays.php:1666
+#: include/global_arrays.php:1501 include/global_arrays.php:1668
 #: lib/html.php:2346
 #, fuzzy
 msgid "Graph"
 msgstr "גרף"
 
-#: include/global_arrays.php:841 tree.php:1657
+#: include/global_arrays.php:841 tree.php:1659
 #, fuzzy
 msgid "Data Query Index"
 msgstr "אינדקס שאילתת הנתונים"
@@ -7794,13 +7794,13 @@ msgid "Management"
 msgstr "ניהול"
 
 #: include/global_arrays.php:873 sites.php:416 sites.php:431 sites.php:511
-#: tree.php:785 tree.php:1982
+#: tree.php:787 tree.php:1984
 #, fuzzy
 msgid "Sites"
 msgstr "אתרים"
 
-#: include/global_arrays.php:874 include/global_arrays.php:1083 tree.php:1890
-#: tree.php:1905 tree.php:1965 user_admin.php:1550 user_admin.php:2979
+#: include/global_arrays.php:874 include/global_arrays.php:1083 tree.php:1892
+#: tree.php:1907 tree.php:1967 user_admin.php:1550 user_admin.php:2979
 #: user_admin.php:3064 user_group_admin.php:1239 user_group_admin.php:2468
 #, fuzzy
 msgid "Trees"
@@ -7817,7 +7817,7 @@ msgstr "איסוף נתונים"
 msgid "Data Collectors"
 msgstr "אספני נתונים"
 
-#: include/global_arrays.php:888 include/global_arrays.php:2681
+#: include/global_arrays.php:888 include/global_arrays.php:2683
 #, fuzzy
 msgid "Aggregate"
 msgstr "מצטבר"
@@ -7848,7 +7848,7 @@ msgstr "קבועים מראש"
 msgid "Data Profiles"
 msgstr "פרופילי נתונים"
 
-#: include/global_arrays.php:902 include/global_arrays.php:2306 vdef.php:691
+#: include/global_arrays.php:902 include/global_arrays.php:2308 vdef.php:691
 #: vdef.php:705 vdef.php:878
 #, fuzzy
 msgid "VDEFs"
@@ -7859,13 +7859,13 @@ msgid "Import/Export"
 msgstr "ייבוא/ייצוא"
 
 #: include/global_arrays.php:907 include/global_arrays.php:1094
-#: include/global_arrays.php:2426
+#: include/global_arrays.php:2428
 #, fuzzy
 msgid "Import Templates"
 msgstr "ייבוא תבניות"
 
 #: include/global_arrays.php:908 include/global_arrays.php:1093
-#: include/global_arrays.php:2414 templates_export.php:159
+#: include/global_arrays.php:2416 templates_export.php:159
 msgid "Export Templates"
 msgstr "תבניות ייצוא"
 
@@ -7879,24 +7879,24 @@ msgstr "הגדרות תצורה"
 msgid "Settings"
 msgstr "הגדרות"
 
-#: include/global_arrays.php:912 include/global_arrays.php:2360
+#: include/global_arrays.php:912 include/global_arrays.php:2362
 #: user_admin.php:2260 user_admin.php:2314 user_group_admin.php:668
 #: user_group_admin.php:2553
 msgid "Users"
 msgstr "משתמשים"
 
-#: include/global_arrays.php:913 include/global_arrays.php:2390
+#: include/global_arrays.php:913 include/global_arrays.php:2392
 msgid "User Groups"
 msgstr "קבוצות המשתמש"
 
-#: include/global_arrays.php:914 include/global_arrays.php:2378
+#: include/global_arrays.php:914 include/global_arrays.php:2380
 #: user_domains.php:645 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "דומיינים של משתמשים"
 
 #: include/global_arrays.php:916 include/global_arrays.php:935
-#: include/global_arrays.php:951 include/global_arrays.php:2234
+#: include/global_arrays.php:951 include/global_arrays.php:2236
 #, fuzzy
 msgid "Utilities"
 msgstr "כלי עזר"
@@ -8203,25 +8203,26 @@ msgstr "לאחר Boost"
 #: include/global_arrays.php:1354 include/global_arrays.php:1355
 #: include/global_arrays.php:1356 include/global_arrays.php:1357
 #: include/global_arrays.php:1358 include/global_arrays.php:1413
-#: include/global_arrays.php:1414 include/global_arrays.php:1415
-#: include/global_arrays.php:1416 include/global_arrays.php:1417
+#: include/global_arrays.php:1414
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d MBtes"
 
-#: include/global_arrays.php:1359 include/global_arrays.php:1418
+#: include/global_arrays.php:1359
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1360 include/global_arrays.php:1419
+#: include/global_arrays.php:1360 include/global_arrays.php:1416
 #: lib/boost.php:34
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GBytes"
 
 #: include/global_arrays.php:1361 include/global_arrays.php:1362
-#: include/global_arrays.php:1420 include/global_arrays.php:1421
+#: include/global_arrays.php:1417 include/global_arrays.php:1418
+#: include/global_arrays.php:1419 include/global_arrays.php:1420
+#: include/global_arrays.php:1421 include/global_arrays.php:1422
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GBytes"
@@ -8291,808 +8292,817 @@ msgstr "6 שעות"
 msgid "%s Hours"
 msgstr "%s שעות"
 
-#: include/global_arrays.php:1428
+#: include/global_arrays.php:1415
+#, fuzzy, php-format
+msgid "%d GByte"
+msgstr "% d GBytes"
+
+#: include/global_arrays.php:1423
+msgid "Infinity"
+msgstr ""
+
+#: include/global_arrays.php:1430
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "%s דקות"
 
-#: include/global_arrays.php:1450
+#: include/global_arrays.php:1452
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 מגה בייט"
 
-#: include/global_arrays.php:1451 include/global_arrays.php:1452
 #: include/global_arrays.php:1453 include/global_arrays.php:1454
 #: include/global_arrays.php:1455 include/global_arrays.php:1456
+#: include/global_arrays.php:1457 include/global_arrays.php:1458
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d מגה בייט"
 
-#: include/global_arrays.php:1460
+#: include/global_arrays.php:1462
 #, fuzzy
 msgid "Send Now"
 msgstr "שלח עכשיו"
 
-#: include/global_arrays.php:1468
+#: include/global_arrays.php:1470
 #, fuzzy
 msgid "Take Ownership"
 msgstr "לקחת בעלות"
 
-#: include/global_arrays.php:1472
+#: include/global_arrays.php:1474
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "תמונה PNG מוטבעת"
 
-#: include/global_arrays.php:1477
+#: include/global_arrays.php:1479
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "תמונת JPEG מוטבעת"
 
-#: include/global_arrays.php:1478
+#: include/global_arrays.php:1480
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "תמונה GIF מוטבעת"
 
-#: include/global_arrays.php:1481
+#: include/global_arrays.php:1483
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "תמונה מצורפת של PNG"
 
-#: include/global_arrays.php:1484
+#: include/global_arrays.php:1486
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "תמונת JPEG מצורפת"
 
-#: include/global_arrays.php:1485
+#: include/global_arrays.php:1487
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "תמונת GIF מצורפת"
 
-#: include/global_arrays.php:1489
+#: include/global_arrays.php:1491
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "תמונה PNG מוטבעת, סגנון LN"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1493
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "תמונת JPEG מוטבעת, סגנון LN"
 
-#: include/global_arrays.php:1492
+#: include/global_arrays.php:1494
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "תמונה GIF Inline, סגנון LN"
 
-#: include/global_arrays.php:1497
+#: include/global_arrays.php:1499
 msgid "Text"
 msgstr "טקסט"
 
-#: include/global_arrays.php:1498 include/global_form.php:2154
+#: include/global_arrays.php:1500 include/global_form.php:2154
 msgid "Tree"
 msgstr "עץ"
 
-#: include/global_arrays.php:1500
+#: include/global_arrays.php:1502
 #, fuzzy
 msgid "Horizontal Rule"
 msgstr "כלל אופקי"
 
-#: include/global_arrays.php:1504
+#: include/global_arrays.php:1506
 msgid "left"
 msgstr "שמאל"
 
-#: include/global_arrays.php:1505
+#: include/global_arrays.php:1507
 msgid "center"
 msgstr "מרכז"
 
-#: include/global_arrays.php:1506
+#: include/global_arrays.php:1508
 msgid "right"
 msgstr "ימין"
 
-#: include/global_arrays.php:1510
+#: include/global_arrays.php:1512
 #, fuzzy
 msgid "Minute(s)"
 msgstr "דקות)"
 
-#: include/global_arrays.php:1511
+#: include/global_arrays.php:1513
 msgid "Hour(s)"
 msgstr "שעה/ות"
 
-#: include/global_arrays.php:1512
+#: include/global_arrays.php:1514
 msgid "Day(s)"
 msgstr "יום/ימים"
 
-#: include/global_arrays.php:1513
+#: include/global_arrays.php:1515
 msgid "Week(s)"
 msgstr "שבוע/ות"
 
-#: include/global_arrays.php:1514
+#: include/global_arrays.php:1516
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "חודש (ים), יום בחודש"
 
-#: include/global_arrays.php:1515
+#: include/global_arrays.php:1517
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "חודש (ים), יום בשבוע"
 
-#: include/global_arrays.php:1516
+#: include/global_arrays.php:1518
 msgid "Year(s)"
 msgstr "שנה"
 
-#: include/global_arrays.php:1520
+#: include/global_arrays.php:1522
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "שמור על סוגי גרפים"
 
-#: include/global_arrays.php:1521
+#: include/global_arrays.php:1523
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "שמור על סוג ועל סטאק"
 
-#: include/global_arrays.php:1522
+#: include/global_arrays.php:1524
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "המר ל - AREA / STACK גרף"
 
-#: include/global_arrays.php:1523
+#: include/global_arrays.php:1525
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "המר לתרשים LINE1"
 
-#: include/global_arrays.php:1524
+#: include/global_arrays.php:1526
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "המר לתרשים LINE2"
 
-#: include/global_arrays.php:1525
+#: include/global_arrays.php:1527
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "המר לתרשים LINE3"
 
-#: include/global_arrays.php:1526
+#: include/global_arrays.php:1528
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "המר לתרשים LINE1"
 
-#: include/global_arrays.php:1527
+#: include/global_arrays.php:1529
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "המר לתרשים LINE2"
 
-#: include/global_arrays.php:1528
+#: include/global_arrays.php:1530
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "המר לתרשים LINE3"
 
-#: include/global_arrays.php:1532
+#: include/global_arrays.php:1534
 #, fuzzy
 msgid "No Totals"
 msgstr "אין סכומים"
 
-#: include/global_arrays.php:1533
+#: include/global_arrays.php:1535
 #, fuzzy
-msgid "Print all Legend Items"
+msgid "Print All Legend Items"
 msgstr "הדפס את כל הפריטים המקראיים"
 
-#: include/global_arrays.php:1534
+#: include/global_arrays.php:1536
 #, fuzzy
-msgid "Print totaling Legend Items Only"
+msgid "Print Totaling Legend Items Only"
 msgstr "הדפסה סה&quot;כ פריטים מקרא בלבד"
 
-#: include/global_arrays.php:1538
+#: include/global_arrays.php:1540
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "סך הכל מקורות נתונים דומים"
 
-#: include/global_arrays.php:1539
+#: include/global_arrays.php:1541
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "סך הכל"
 
-#: include/global_arrays.php:1543
+#: include/global_arrays.php:1545
 #, fuzzy
 msgid "No Reordering"
 msgstr "אין סידור מחדש"
 
-#: include/global_arrays.php:1544
+#: include/global_arrays.php:1546
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "מקור נתונים, גרף"
 
-#: include/global_arrays.php:1545
+#: include/global_arrays.php:1547
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "תרשים, מקור נתונים"
 
-#: include/global_arrays.php:1552
+#: include/global_arrays.php:1554
 msgid "contains"
 msgstr "מכיל"
 
-#: include/global_arrays.php:1553
+#: include/global_arrays.php:1555
 msgid "does not contain"
 msgstr "אינו מכיל"
 
-#: include/global_arrays.php:1554
+#: include/global_arrays.php:1556
 #, fuzzy
 msgid "begins with"
 msgstr "מתחיל עם"
 
-#: include/global_arrays.php:1555
+#: include/global_arrays.php:1557
 #, fuzzy
 msgid "does not begin with"
 msgstr "לא מתחיל"
 
-#: include/global_arrays.php:1556
+#: include/global_arrays.php:1558
 msgid "ends with"
 msgstr "מסתיים ב"
 
-#: include/global_arrays.php:1557
+#: include/global_arrays.php:1559
 #, fuzzy
 msgid "does not end with"
 msgstr "אינו מסתיים"
 
-#: include/global_arrays.php:1558
+#: include/global_arrays.php:1560
 msgid "matches"
 msgstr "התאמות"
 
-#: include/global_arrays.php:1559
+#: include/global_arrays.php:1561
 msgid "is not equal to"
 msgstr "לא שווה ל"
 
-#: include/global_arrays.php:1560
+#: include/global_arrays.php:1562
 msgid "is less than"
 msgstr "בתוך פחות מ"
 
-#: include/global_arrays.php:1561
+#: include/global_arrays.php:1563
 #, fuzzy
 msgid "is less than or equal"
 msgstr "הוא פחות או שווה"
 
-#: include/global_arrays.php:1562
+#: include/global_arrays.php:1564
 msgid "is greater than"
 msgstr "גדול מ"
 
-#: include/global_arrays.php:1563
+#: include/global_arrays.php:1565
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "גדול או שווה"
 
-#: include/global_arrays.php:1564
+#: include/global_arrays.php:1566
 msgid "is unknown"
 msgstr "פעולות URL"
 
-#: include/global_arrays.php:1565
+#: include/global_arrays.php:1567
 #, fuzzy
 msgid "is not unknown"
 msgstr "פעולות URL"
 
-#: include/global_arrays.php:1566
+#: include/global_arrays.php:1568
 msgid "is empty"
 msgstr "הוא ריק"
 
-#: include/global_arrays.php:1567
+#: include/global_arrays.php:1569
 msgid "is not empty"
 msgstr "הוא לא ריק"
 
-#: include/global_arrays.php:1568
+#: include/global_arrays.php:1570
 #, fuzzy
 msgid "matches regular expression"
 msgstr "תואם ביטוי רגיל"
 
-#: include/global_arrays.php:1569
+#: include/global_arrays.php:1571
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "אינו תואם לביטוי רגולרי"
 
-#: include/global_arrays.php:1671
+#: include/global_arrays.php:1673
 #, fuzzy
 msgid "Fixed String"
 msgstr "מחרוזת קבועה"
 
-#: include/global_arrays.php:1676
+#: include/global_arrays.php:1678
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "כל שעה"
 
-#: include/global_arrays.php:1682
+#: include/global_arrays.php:1684
 msgid "Every Day"
 msgstr "כל יום"
 
-#: include/global_arrays.php:1683
+#: include/global_arrays.php:1685
 msgid "Every Week"
 msgstr "כל שבוע"
 
-#: include/global_arrays.php:1684 include/global_arrays.php:1685
+#: include/global_arrays.php:1686 include/global_arrays.php:1687
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "כל% d שבועות"
 
-#: include/global_arrays.php:1716
+#: include/global_arrays.php:1718
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "ינואר"
 
-#: include/global_arrays.php:1717
+#: include/global_arrays.php:1719
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "פבררואר"
 
-#: include/global_arrays.php:1718
+#: include/global_arrays.php:1720
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "מרץ"
 
-#: include/global_arrays.php:1719
+#: include/global_arrays.php:1721
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "אפריל"
 
-#: include/global_arrays.php:1720
+#: include/global_arrays.php:1722
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "מאי"
 
-#: include/global_arrays.php:1721
+#: include/global_arrays.php:1723
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "יוני"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1724
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "יולי"
 
-#: include/global_arrays.php:1723
+#: include/global_arrays.php:1725
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "אוגוסט"
 
-#: include/global_arrays.php:1724
+#: include/global_arrays.php:1726
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "ספטמבר"
 
-#: include/global_arrays.php:1725
+#: include/global_arrays.php:1727
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "אוקטובר"
 
-#: include/global_arrays.php:1726
+#: include/global_arrays.php:1728
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "נובמבר"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1729
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "דצמבר"
 
-#: include/global_arrays.php:1741
+#: include/global_arrays.php:1743
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "ראשון"
 
-#: include/global_arrays.php:1742
+#: include/global_arrays.php:1744
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "שני"
 
-#: include/global_arrays.php:1743
+#: include/global_arrays.php:1745
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "שלישי"
 
-#: include/global_arrays.php:1744
+#: include/global_arrays.php:1746
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "רביעי"
 
-#: include/global_arrays.php:1745
+#: include/global_arrays.php:1747
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "חמישי"
 
-#: include/global_arrays.php:1746
+#: include/global_arrays.php:1748
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "שישי"
 
-#: include/global_arrays.php:1747
+#: include/global_arrays.php:1749
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "שבת"
 
-#: include/global_arrays.php:1751
+#: include/global_arrays.php:1753
 msgid "Arabic"
 msgstr "ערבית"
 
-#: include/global_arrays.php:1752
+#: include/global_arrays.php:1754
 msgid "Bulgarian"
 msgstr "בולגרית"
 
-#: include/global_arrays.php:1753
+#: include/global_arrays.php:1755
 #, fuzzy
 msgid "Chinese (China)"
 msgstr "סינית (סין)"
 
-#: include/global_arrays.php:1754
+#: include/global_arrays.php:1756
 #, fuzzy
 msgid "Chinese (Taiwan)"
 msgstr "סינית (טייוואן)"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1757
 msgid "Dutch"
 msgstr "הולנדית"
 
-#: include/global_arrays.php:1756
+#: include/global_arrays.php:1758
 msgid "English"
 msgstr "אנגלית"
 
-#: include/global_arrays.php:1757
+#: include/global_arrays.php:1759
 msgid "French"
 msgstr "צרפתית"
 
-#: include/global_arrays.php:1758
+#: include/global_arrays.php:1760
 msgid "German"
 msgstr "גרמנית"
 
-#: include/global_arrays.php:1759
+#: include/global_arrays.php:1761
 msgid "Greek"
 msgstr "יוונית"
 
-#: include/global_arrays.php:1760
+#: include/global_arrays.php:1762
 msgid "Hebrew"
 msgstr "עברית"
 
-#: include/global_arrays.php:1761
+#: include/global_arrays.php:1763
 msgid "Hindi"
 msgstr "הינדו"
 
-#: include/global_arrays.php:1762
+#: include/global_arrays.php:1764
 msgid "Italian"
 msgstr "איטלקית"
 
-#: include/global_arrays.php:1763
+#: include/global_arrays.php:1765
 msgid "Japanese"
 msgstr "יפני"
 
-#: include/global_arrays.php:1764
+#: include/global_arrays.php:1766
 msgid "Korean"
 msgstr "קוראנית"
 
-#: include/global_arrays.php:1765
+#: include/global_arrays.php:1767
 msgid "Polish"
 msgstr "פולנית"
 
-#: include/global_arrays.php:1766
+#: include/global_arrays.php:1768
 msgid "Portuguese"
 msgstr "פורטוגזית"
 
-#: include/global_arrays.php:1767
+#: include/global_arrays.php:1769
 msgid "Portuguese (Brazil)"
 msgstr "פורטוגזית (ברזיל)"
 
-#: include/global_arrays.php:1768
+#: include/global_arrays.php:1770
 msgid "Russian"
 msgstr "רוסית"
 
-#: include/global_arrays.php:1769
+#: include/global_arrays.php:1771
 msgid "Spanish"
 msgstr "ספרדית"
 
-#: include/global_arrays.php:1770
+#: include/global_arrays.php:1772
 msgid "Swedish"
 msgstr "שבדית"
 
-#: include/global_arrays.php:1771
+#: include/global_arrays.php:1773
 msgid "Turkish"
 msgstr "טורקית"
 
-#: include/global_arrays.php:1772
+#: include/global_arrays.php:1774
 msgid "Vietnamese"
 msgstr "ויאטנמית"
 
-#: include/global_arrays.php:1776
+#: include/global_arrays.php:1778
 msgid "Classic"
 msgstr "קלאסי"
 
-#: include/global_arrays.php:1777
+#: include/global_arrays.php:1779
 msgid "Modern"
 msgstr "מודרני"
 
-#: include/global_arrays.php:1778
+#: include/global_arrays.php:1780
 msgid "Dark"
 msgstr "כהה"
 
-#: include/global_arrays.php:1779
+#: include/global_arrays.php:1781
 #, fuzzy
 msgid "Paper-plane"
 msgstr "מטוס מנייר"
 
-#: include/global_arrays.php:1780
+#: include/global_arrays.php:1782
 #, fuzzy
 msgid "Paw"
 msgstr "Paw"
 
-#: include/global_arrays.php:1781
+#: include/global_arrays.php:1783
 #, fuzzy
 msgid "Sunrise"
 msgstr "זריחה"
 
-#: include/global_arrays.php:1785
+#: include/global_arrays.php:1787
 #, fuzzy
 msgid "[Fail]"
 msgstr "נכשל"
 
-#: include/global_arrays.php:1786
+#: include/global_arrays.php:1788
 #, fuzzy
 msgid "[Warning]"
 msgstr "<strong>אזהרה:</strong>"
 
-#: include/global_arrays.php:1787
+#: include/global_arrays.php:1789
 #, fuzzy
 msgid "[Success]"
 msgstr "הצלחה!"
 
-#: include/global_arrays.php:1788
+#: include/global_arrays.php:1790
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[דילוג]"
 
-#: include/global_arrays.php:1812 include/global_arrays.php:1818
+#: include/global_arrays.php:1814 include/global_arrays.php:1820
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "פרופיל משתמש (עריכה)"
 
-#: include/global_arrays.php:1830 include/global_arrays.php:1836
+#: include/global_arrays.php:1832 include/global_arrays.php:1838
 #, fuzzy
 msgid "Tree Mode"
 msgstr "מצב עץ"
 
-#: include/global_arrays.php:1842
+#: include/global_arrays.php:1844
 #, fuzzy
 msgid "List Mode"
 msgstr "מצב רשימה"
 
-#: include/global_arrays.php:1874 include/global_arrays.php:1880
-#: lib/functions.php:2542 lib/html.php:1545 lib/html.php:1622 links.php:345
+#: include/global_arrays.php:1876 include/global_arrays.php:1882
+#: lib/functions.php:2555 lib/html.php:1545 lib/html.php:1622 links.php:345
 #: user_admin.php:1690 user_group_admin.php:1394
 #, fuzzy
 msgid "Console"
 msgstr "מסוף"
 
-#: include/global_arrays.php:1886
+#: include/global_arrays.php:1888
 #, fuzzy
 msgid "Graph Management"
 msgstr "ניהול גרפים"
 
-#: include/global_arrays.php:1892 include/global_arrays.php:1934
-#: include/global_arrays.php:1952 include/global_arrays.php:2006
-#: include/global_arrays.php:2018 include/global_arrays.php:2030
-#: include/global_arrays.php:2066 include/global_arrays.php:2084
-#: include/global_arrays.php:2102 include/global_arrays.php:2120
-#: include/global_arrays.php:2138 include/global_arrays.php:2162
-#: include/global_arrays.php:2198 include/global_arrays.php:2318
-#: include/global_arrays.php:2342 include/global_arrays.php:2366
-#: include/global_arrays.php:2384 include/global_arrays.php:2396
-#: include/global_arrays.php:2498 include/global_arrays.php:2522
-#: include/global_arrays.php:2540 include/global_arrays.php:2558
-#: include/global_arrays.php:2576 include/global_arrays.php:2600
+#: include/global_arrays.php:1894 include/global_arrays.php:1936
+#: include/global_arrays.php:1954 include/global_arrays.php:2008
+#: include/global_arrays.php:2020 include/global_arrays.php:2032
+#: include/global_arrays.php:2068 include/global_arrays.php:2086
+#: include/global_arrays.php:2104 include/global_arrays.php:2122
+#: include/global_arrays.php:2140 include/global_arrays.php:2164
+#: include/global_arrays.php:2200 include/global_arrays.php:2320
+#: include/global_arrays.php:2344 include/global_arrays.php:2368
+#: include/global_arrays.php:2386 include/global_arrays.php:2398
+#: include/global_arrays.php:2500 include/global_arrays.php:2524
+#: include/global_arrays.php:2542 include/global_arrays.php:2560
+#: include/global_arrays.php:2578 include/global_arrays.php:2602
 msgid "(Edit)"
 msgstr "(עריכה)"
 
-#: include/global_arrays.php:1910 lib/api_aggregate.php:1587
+#: include/global_arrays.php:1912 lib/api_aggregate.php:1591
 #, fuzzy
 msgid "Graph Items"
 msgstr "גרף פריטים"
 
-#: include/global_arrays.php:1916
+#: include/global_arrays.php:1918
 #, fuzzy
 msgid "Create New Graphs"
 msgstr "צור גרפים חדשים"
 
-#: include/global_arrays.php:1922
+#: include/global_arrays.php:1924
 #, fuzzy
 msgid "Create Graphs from Data Query"
 msgstr "צור גרפים משאילת הנתונים"
 
-#: include/global_arrays.php:1940 include/global_arrays.php:1958
-#: include/global_arrays.php:2054 include/global_arrays.php:2144
-#: include/global_arrays.php:2168 include/global_arrays.php:2324
+#: include/global_arrays.php:1942 include/global_arrays.php:1960
+#: include/global_arrays.php:2056 include/global_arrays.php:2146
+#: include/global_arrays.php:2170 include/global_arrays.php:2326
 #, fuzzy
 msgid "(Remove)"
 msgstr "(הסר)"
 
-#: include/global_arrays.php:1976 include/global_arrays.php:1982
-#: include/global_arrays.php:1988 include/global_arrays.php:1994
-#: include/global_arrays.php:2258
+#: include/global_arrays.php:1978 include/global_arrays.php:1984
+#: include/global_arrays.php:1990 include/global_arrays.php:1996
+#: include/global_arrays.php:2260
 msgid "View Log"
 msgstr "לצפות ביומן"
 
-#: include/global_arrays.php:2000
+#: include/global_arrays.php:2002
 #, fuzzy
 msgid "Graph Trees"
 msgstr "גרף עצים"
 
-#: include/global_arrays.php:2042 lib/api_aggregate.php:1587
+#: include/global_arrays.php:2044 lib/api_aggregate.php:1591
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "פריטים תבנית גרף"
 
-#: include/global_arrays.php:2132
+#: include/global_arrays.php:2134
 #, fuzzy
 msgid "Round Robin Archives"
 msgstr "ארכיון רובין"
 
-#: include/global_arrays.php:2174
+#: include/global_arrays.php:2176
 #, fuzzy
 msgid "Data Input Fields"
 msgstr "שדות קלט נתונים"
 
-#: include/global_arrays.php:2180 include/global_arrays.php:2210
+#: include/global_arrays.php:2182 include/global_arrays.php:2212
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(הסר פריט)"
 
-#: include/global_arrays.php:2216 include/global_settings.php:223
+#: include/global_arrays.php:2218 include/global_settings.php:223
 #: rrdcleaner.php:296
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "RRD מנקה"
 
-#: include/global_arrays.php:2228
+#: include/global_arrays.php:2230
 #, fuzzy
 msgid "List unused Files"
 msgstr "רשימת קבצים שאינם בשימוש"
 
-#: include/global_arrays.php:2240 include/global_arrays.php:2252
+#: include/global_arrays.php:2242 include/global_arrays.php:2254
 #: utilities.php:1907
 #, fuzzy
 msgid "View Poller Cache"
 msgstr "הצג מטמון פולר"
 
-#: include/global_arrays.php:2246 utilities.php:1911
+#: include/global_arrays.php:2248 utilities.php:1911
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "הצג מטמון שאילתת נתונים"
 
-#: include/global_arrays.php:2264
+#: include/global_arrays.php:2266
 #, fuzzy
 msgid "Clear Log"
 msgstr "נקה יומן"
 
-#: include/global_arrays.php:2270 utilities.php:1900
+#: include/global_arrays.php:2272 utilities.php:1900
 #, fuzzy
 msgid "View User Log"
 msgstr "הצג יומן משתמש"
 
-#: include/global_arrays.php:2276
+#: include/global_arrays.php:2278
 #, fuzzy
 msgid "Clear User Log"
 msgstr "נקה יומן משתמש"
 
-#: include/global_arrays.php:2282 utilities.php:1891 utilities.php:1892
+#: include/global_arrays.php:2284 utilities.php:1891 utilities.php:1892
 msgid "Technical Support"
 msgstr "תמיכה טכנית"
 
-#: include/global_arrays.php:2288 utilities.php:2010
+#: include/global_arrays.php:2290 utilities.php:2010
 #, fuzzy
 msgid "Boost Status"
 msgstr "מצב Boost"
 
-#: include/global_arrays.php:2294
+#: include/global_arrays.php:2296
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "הצג מטמון סוכן SNMP"
 
-#: include/global_arrays.php:2300
+#: include/global_arrays.php:2302
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "הצג יומן הודעות של סוכן SNMP"
 
-#: include/global_arrays.php:2330 vdef.php:592
+#: include/global_arrays.php:2332 vdef.php:592
 #, fuzzy
 msgid "VDEF Items"
 msgstr "פריטים VDEF"
 
-#: include/global_arrays.php:2336
+#: include/global_arrays.php:2338
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "הצג מקלטי הודעות SNMP"
 
-#: include/global_arrays.php:2348
+#: include/global_arrays.php:2350
 #, fuzzy
 msgid "Cacti Settings"
 msgstr "הגדרות Cacti"
 
-#: include/global_arrays.php:2354
+#: include/global_arrays.php:2356
 msgid "External Link"
 msgstr "קישור חיצוני"
 
-#: include/global_arrays.php:2372 include/global_arrays.php:2402
+#: include/global_arrays.php:2374 include/global_arrays.php:2404
 #, fuzzy
 msgid "(Action)"
 msgstr "פעולה"
 
-#: include/global_arrays.php:2420
+#: include/global_arrays.php:2422
 msgid "Export Results"
 msgstr "ייצוא התוצאות"
 
-#: include/global_arrays.php:2432 include/global_arrays.php:2462
+#: include/global_arrays.php:2434 include/global_arrays.php:2464
 #: lib/html.php:1566 lib/html.php:1568 lib/html.php:1647
 #, fuzzy
 msgid "Reporting"
 msgstr "דיווח"
 
-#: include/global_arrays.php:2438 include/global_arrays.php:2468
+#: include/global_arrays.php:2440 include/global_arrays.php:2470
 #, fuzzy
 msgid "Report Add"
 msgstr "הוסף דוח"
 
-#: include/global_arrays.php:2444 include/global_arrays.php:2474
+#: include/global_arrays.php:2446 include/global_arrays.php:2476
 #, fuzzy
 msgid "Report Delete"
 msgstr "דווח על מחק"
 
-#: include/global_arrays.php:2450 include/global_arrays.php:2480
+#: include/global_arrays.php:2452 include/global_arrays.php:2482
 #, fuzzy
 msgid "Report Edit"
 msgstr "דווח על עריכה"
 
-#: include/global_arrays.php:2456 include/global_arrays.php:2486
+#: include/global_arrays.php:2458 include/global_arrays.php:2488
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "דווח על עריכת פריט"
 
-#: include/global_arrays.php:2510
+#: include/global_arrays.php:2512
 #, fuzzy
 msgid "Color Template Items"
 msgstr "פריטים תבנית צבע"
 
-#: include/global_arrays.php:2552
+#: include/global_arrays.php:2554
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "פריטים מצטברים"
 
-#: include/global_arrays.php:2588
+#: include/global_arrays.php:2590
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "תרשים פריטים כלל"
 
-#: include/global_arrays.php:2612
+#: include/global_arrays.php:2614
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "עץ כלל פריטים"
 
-#: include/global_arrays.php:2643 include/global_arrays.php:2659
+#: include/global_arrays.php:2645 include/global_arrays.php:2661
 #: lib/api_device.php:1067
 msgid "days"
 msgstr "ימים"
 
-#: include/global_arrays.php:2644
+#: include/global_arrays.php:2646
 #, fuzzy
 msgid "hrs"
 msgstr "שעות"
 
-#: include/global_arrays.php:2645
+#: include/global_arrays.php:2647
 #, fuzzy
 msgid "mins"
 msgstr "דקות"
 
-#: include/global_arrays.php:2646
+#: include/global_arrays.php:2648
 #, fuzzy
 msgid "secs"
 msgstr "שניות"
 
-#: include/global_arrays.php:2660 lib/api_device.php:1067
+#: include/global_arrays.php:2662 lib/api_device.php:1067
 msgid "hours"
 msgstr "שעות"
 
-#: include/global_arrays.php:2661 lib/api_device.php:1067
+#: include/global_arrays.php:2663 lib/api_device.php:1067
 msgid "minutes"
 msgstr "דקות"
 
-#: include/global_arrays.php:2662
+#: include/global_arrays.php:2664
 #, fuzzy
 msgid "seconds"
 msgstr "שניות"
@@ -9281,7 +9291,7 @@ msgstr ""
 "הערך אם מקור הנתונים שלך אינו יציב וברצונך להעביר נתונים ישנים במקום להציג "
 "פערים בגרפים שלך. ערך זה מוכפל בפקטור X-Files כדי לקבוע את משך הזמן בפועל."
 
-#: include/global_form.php:196 lib/rrd.php:2871
+#: include/global_form.php:196 lib/rrd.php:2874
 #, fuzzy
 msgid "X-Files Factor"
 msgstr "X- קבצים פקטור"
@@ -10115,7 +10125,7 @@ msgstr "מקרא כיוון (- ליגת כיוון = &lt;כיוון&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "הצב את פריטי האגדה בסדר האנכי הנתון."
 
-#: include/global_form.php:919 lib/api_aggregate.php:1593 lib/html.php:1052
+#: include/global_form.php:919 lib/api_aggregate.php:1597 lib/html.php:1052
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "סוג פריט גרף"
@@ -10145,7 +10155,7 @@ msgstr "אטימות / ערוץ אלפא"
 msgid "The opacity/alpha channel of the color."
 msgstr "ערוץ אטימות / אלפא של הצבע."
 
-#: include/global_form.php:955 lib/rrd.php:2867
+#: include/global_form.php:955 lib/rrd.php:2870
 #, fuzzy
 msgid "Consolidation Function"
 msgstr "פונקציית איחוד"
@@ -10502,7 +10512,7 @@ msgid "A useful name for this graph tree."
 msgstr "שם שימושי לעץ התרשים הזה."
 
 #: include/global_form.php:1416 include/global_form.php:2211
-#: lib/api_automation.php:1413 tree.php:1641
+#: lib/api_automation.php:1413 tree.php:1643
 #, fuzzy
 msgid "Sorting Type"
 msgstr "סוג מיון"
@@ -10538,7 +10548,7 @@ msgstr "הזן את הסיסמה עבור משתמש זה פעמיים. זכור
 msgid "Determines if user is able to login."
 msgstr "קובע אם המשתמש יכול להתחבר."
 
-#: include/global_form.php:1481 tree.php:1977
+#: include/global_form.php:1481 tree.php:1979
 msgid "Locked"
 msgstr "נעול"
 
@@ -11081,7 +11091,7 @@ msgstr "נתונים"
 msgid "Visual"
 msgstr "חזותי"
 
-#: include/global_settings.php:44 lib/functions.php:3839 lib/functions.php:3844
+#: include/global_settings.php:44 lib/functions.php:3852 lib/functions.php:3857
 msgid "Authentication"
 msgstr "שיטת האימות לא חוקי"
 
@@ -11125,12 +11135,12 @@ msgstr "גופני תרשים"
 msgid "PHP Mail() Function"
 msgstr "PHP PHP () פונקציה"
 
-#: include/global_settings.php:91 lib/functions.php:3822
+#: include/global_settings.php:91 lib/functions.php:3835
 #, fuzzy
 msgid "Sendmail"
 msgstr "שלח מייל"
 
-#: include/global_settings.php:92 lib/functions.php:3827
+#: include/global_settings.php:92 lib/functions.php:3840
 msgid "SMTP"
 msgstr "SMTP"
 
@@ -13361,7 +13371,7 @@ msgstr ""
 msgid "Sendmail Options"
 msgstr "אפשרויות Sendmail"
 
-#: include/global_settings.php:1510 lib/functions.php:3822
+#: include/global_settings.php:1510 lib/functions.php:3835
 #, fuzzy
 msgid "Sendmail Path"
 msgstr "נתיב Sendmail"
@@ -14629,7 +14639,7 @@ msgstr "הפונקציות shell_exec () ו / או exec () חסומות כרגע
 msgid "Display Graphs from this Aggregate"
 msgstr "הצג גרפים מתוך זה מצטבר"
 
-#: lib/api_aggregate.php:1460
+#: lib/api_aggregate.php:1464
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph below represent Graphs from "
@@ -14639,12 +14649,12 @@ msgstr ""
 "הגרפים שנבחרו עבור הגרף המצטבר מייצגים גרפים מתבניות גרפיות מרובות. צבירה "
 "אינה תומכת ביצירת גרפים מצטברים מתבניות גרפיות מרובות."
 
-#: lib/api_aggregate.php:1461 lib/api_aggregate.php:1480
+#: lib/api_aggregate.php:1465 lib/api_aggregate.php:1484
 #, fuzzy
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "לחץ על &#39;Return&#39; כדי לחזור ולבחור גרפים שונים"
 
-#: lib/api_aggregate.php:1479
+#: lib/api_aggregate.php:1483
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
@@ -14654,36 +14664,36 @@ msgstr ""
 "הגרפים שנבחרו עבור הגרף המצטבר אינם משתמשים בתבניות גרף. צבירה אינה תומכת "
 "ביצירת גרפים מצטברים מתרשימים שאינם בתבנית."
 
-#: lib/api_aggregate.php:1591 lib/html.php:1050
+#: lib/api_aggregate.php:1595 lib/html.php:1050
 #, fuzzy
 msgid "Graph Item"
 msgstr "גרף פריט"
 
-#: lib/api_aggregate.php:1594 lib/html.php:1053
+#: lib/api_aggregate.php:1598 lib/html.php:1053
 #, fuzzy
 msgid "CF Type"
 msgstr "סוג CF"
 
-#: lib/api_aggregate.php:1595 lib/html.php:1055
+#: lib/api_aggregate.php:1599 lib/html.php:1055
 #, fuzzy
 msgid "Item Color"
 msgstr "צבע פריט"
 
-#: lib/api_aggregate.php:1596
+#: lib/api_aggregate.php:1600
 #, fuzzy
 msgid "Color Template"
 msgstr "תבנית צבע"
 
-#: lib/api_aggregate.php:1597
+#: lib/api_aggregate.php:1601
 msgid "Skip"
 msgstr "דלג"
 
-#: lib/api_aggregate.php:1673
+#: lib/api_aggregate.php:1677
 #, fuzzy
 msgid "Aggregate Items are not modifyable"
 msgstr "פריטים מצטברים אינם ניתנים לשינוי"
 
-#: lib/api_aggregate.php:1684
+#: lib/api_aggregate.php:1688
 #, fuzzy
 msgid "Aggregate Items are not editable"
 msgstr "הפריטים המצטברים אינם ניתנים לעריכה"
@@ -14695,7 +14705,7 @@ msgstr "התקנים תואמים"
 
 #: lib/api_automation.php:147 lib/api_automation.php:1070
 #: lib/clog_webapi.php:526 lib/html_reports.php:603 lib/html_reports.php:1343
-#: lib/html_reports.php:1610 lib/html_reports.php:1621 lib/rrd.php:2809
+#: lib/html_reports.php:1610 lib/html_reports.php:1621 lib/rrd.php:2812
 #: utilities.php:339 utilities.php:1106 utilities.php:2476
 msgid "Type"
 msgstr "סוג"
@@ -14913,8 +14923,8 @@ msgstr "מיקום:"
 msgid "Contact:"
 msgstr "צור קשר"
 
-#: lib/api_device.php:1101 lib/functions.php:3853 lib/functions.php:3855
-#: lib/functions.php:3859
+#: lib/api_device.php:1101 lib/functions.php:3866 lib/functions.php:3868
+#: lib/functions.php:3872
 #, fuzzy
 msgid "Ping Results"
 msgstr "תוצאות פינג"
@@ -15563,55 +15573,55 @@ msgstr "ההודעה לא נמצאה."
 msgid "Error %s is not readable"
 msgstr "שגיאה %s אינה ניתנת לקריאה"
 
-#: lib/functions.php:2329 lib/functions.php:2339
+#: lib/functions.php:2342 lib/functions.php:2352
 msgid "Logged in as"
 msgstr "התחבר כ"
 
-#: lib/functions.php:2329
+#: lib/functions.php:2342
 #, fuzzy
 msgid "Login as Regular User"
 msgstr "התחבר כמשתמש רגיל"
 
-#: lib/functions.php:2329
+#: lib/functions.php:2342
 #, fuzzy
 msgid "guest"
 msgstr "אורח"
 
-#: lib/functions.php:2331 lib/functions.php:2344 lib/html.php:2300
+#: lib/functions.php:2344 lib/functions.php:2357 lib/html.php:2300
 #, fuzzy
 msgid "User Community"
 msgstr "קהילת המשתמשים"
 
-#: lib/functions.php:2332 lib/functions.php:2345 lib/html.php:2301
+#: lib/functions.php:2345 lib/functions.php:2358 lib/html.php:2301
 #: lib/utility.php:1044
 msgid "Documentation"
 msgstr "תיעוד"
 
-#: lib/functions.php:2341
+#: lib/functions.php:2354
 msgid "Edit Profile"
 msgstr "ערוך פרופיל"
 
-#: lib/functions.php:2347
+#: lib/functions.php:2360
 msgid "Logout"
 msgstr "התנתק"
 
-#: lib/functions.php:2490
+#: lib/functions.php:2503
 #, fuzzy
 msgid "Leaf"
 msgstr "עלה"
 
-#: lib/functions.php:2510 lib/html_tree.php:646 lib/html_tree.php:674
+#: lib/functions.php:2523 lib/html_tree.php:646 lib/html_tree.php:674
 #: lib/html_tree.php:894 lib/html_tree.php:902 lib/html_tree.php:1451
 #, fuzzy
 msgid "Non Query Based"
 msgstr "מבוסס על שאילתה"
 
-#: lib/functions.php:2543
+#: lib/functions.php:2556
 #, fuzzy, php-format
 msgid "Link %s"
 msgstr "קשר %s"
 
-#: lib/functions.php:3344
+#: lib/functions.php:3357
 #, fuzzy
 msgid ""
 "Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> "
@@ -15620,27 +15630,27 @@ msgstr ""
 "שגיאת מיילר: לא כתובת <b>TO</b> מוגדר! <br> אם אתה משתמש בקישור <i>Test Mail "
 "(דואר בדיקה)</i> , הגדר את הגדרת <b>הדואר האלקטרוני של ההתראה</b> ."
 
-#: lib/functions.php:3786
+#: lib/functions.php:3799
 #, fuzzy, php-format
 msgid "Authentication failed: %s"
 msgstr "האימות נכשל: %s"
 
-#: lib/functions.php:3790
+#: lib/functions.php:3803
 #, fuzzy, php-format
 msgid "HELO failed: %s"
 msgstr "HELO נכשל: %s"
 
-#: lib/functions.php:3793
+#: lib/functions.php:3806
 #, fuzzy, php-format
 msgid "Connect failed: %s"
 msgstr "החיבור נכשל: %s"
 
-#: lib/functions.php:3796
+#: lib/functions.php:3809
 #, fuzzy
 msgid "SMTP error: "
 msgstr "שגיאת SMTP:"
 
-#: lib/functions.php:3809
+#: lib/functions.php:3822
 #, fuzzy
 msgid ""
 "This is a test message generated from Cacti.  This message was sent to test "
@@ -15649,80 +15659,80 @@ msgstr ""
 "זוהי הודעת בדיקה שנוצרה על ידי Cacti. הודעה זו נשלחה לבדיקת התצורה של הגדרות "
 "הדואר שלך."
 
-#: lib/functions.php:3810
+#: lib/functions.php:3823
 #, fuzzy
 msgid "Your email settings are currently set as follows"
 msgstr "הגדרות הדוא&quot;ל שלך מוגדרות באופן הבא"
 
-#: lib/functions.php:3811
+#: lib/functions.php:3824
 msgid "Method"
 msgstr "שיטה"
 
-#: lib/functions.php:3813
+#: lib/functions.php:3826
 #, fuzzy
 msgid "Checking Configuration...<br>"
 msgstr "בודק את התצורה ... <br>"
 
-#: lib/functions.php:3820
+#: lib/functions.php:3833
 #, fuzzy
 msgid "PHP's Mailer Class"
 msgstr "בכיתה מיילר של PHP"
 
-#: lib/functions.php:3826
+#: lib/functions.php:3839
 #, fuzzy
 msgid "Method: SMTP"
 msgstr "שיטה: SMTP"
 
-#: lib/functions.php:3841
+#: lib/functions.php:3854
 #, fuzzy
 msgid "Not Shown for Security Reasons"
 msgstr "לא מוצג מסיבות אבטחה"
 
-#: lib/functions.php:3842
+#: lib/functions.php:3855
 msgid "Security"
 msgstr "אבטחה"
 
-#: lib/functions.php:3850
+#: lib/functions.php:3863
 #, fuzzy
 msgid "Ping Results:"
 msgstr "פינג תוצאות:"
 
-#: lib/functions.php:3859
+#: lib/functions.php:3872
 #, fuzzy
 msgid "Bypassed"
 msgstr "עקף"
 
-#: lib/functions.php:3867
+#: lib/functions.php:3880
 #, fuzzy
 msgid "Creating Message Text..."
 msgstr "יוצר טקסט הודעה ..."
 
-#: lib/functions.php:3870
+#: lib/functions.php:3883
 #, fuzzy
 msgid "Sending Message..."
 msgstr "לשלוח הודעה..."
 
-#: lib/functions.php:3874
+#: lib/functions.php:3887
 #, fuzzy
 msgid "Cacti Test Message"
 msgstr "הודעה מבחן קקטוסים"
 
-#: lib/functions.php:3876
+#: lib/functions.php:3889
 msgid "Success!"
 msgstr "הצלחה!"
 
-#: lib/functions.php:3879
+#: lib/functions.php:3892
 #, fuzzy
 msgid "Message Not Sent due to ping failure."
 msgstr "ההודעה לא נשלחה עקב כשל ב- ping."
 
-#: lib/functions.php:4473 lib/functions.php:4534 poller.php:343 poller.php:456
+#: lib/functions.php:4486 lib/functions.php:4547 poller.php:343 poller.php:456
 #: poller.php:518 poller.php:541 poller.php:682
 #, fuzzy
 msgid "Cacti System Warning"
 msgstr "אזהרת מערכת Cacti"
 
-#: lib/functions.php:4473 lib/functions.php:4534
+#: lib/functions.php:4486 lib/functions.php:4547
 #, fuzzy, php-format
 msgid ""
 "Cacti disabled plugin %s due to the following error: %s!  See the Cacti "
@@ -15731,17 +15741,17 @@ msgstr ""
 "Cacti מושבת plugin %s עקב השגיאה הבאה: %s! לקבלת מידע נוסף, עיין בקובץ ה- "
 "Cacti logfile."
 
-#: lib/functions.php:4910 lib/functions.php:4912
+#: lib/functions.php:4923 lib/functions.php:4925
 #, fuzzy, php-format
 msgid "- Beta %s"
 msgstr "- ביטא %s"
 
-#: lib/functions.php:4910
+#: lib/functions.php:4923
 #, fuzzy, php-format
 msgid "Version %s %s"
 msgstr "%s %s %s"
 
-#: lib/functions.php:4912
+#: lib/functions.php:4925
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
@@ -16858,7 +16868,7 @@ msgstr "משתמש"
 msgid "Reports"
 msgstr "דו\"חות"
 
-#: lib/html_reports.php:1604 tree.php:1978
+#: lib/html_reports.php:1604 tree.php:1980
 msgid "Owner"
 msgstr "בעלים"
 
@@ -18527,12 +18537,12 @@ msgstr "(ללא תבנית גרף)"
 msgid "(Non Query Based)"
 msgstr "(לא מבוסס שאילתה)"
 
-#: lib/reports.php:1537
+#: lib/reports.php:1536
 #, fuzzy
 msgid "Add to Report"
 msgstr "הוסף לדוח"
 
-#: lib/reports.php:1555
+#: lib/reports.php:1554
 #, fuzzy
 msgid ""
 "Choose the Report to associate these graphs with.  The defaults for "
@@ -18541,224 +18551,224 @@ msgstr ""
 "בחר את הדוח כדי לקשר בין גרפים אלה. ברירות המחדל עבור יישור ישמשו עבור כל "
 "גרף ברשימה שלהלן."
 
-#: lib/reports.php:1557
+#: lib/reports.php:1556
 #, fuzzy
 msgid "Report:"
 msgstr "דו\"ח"
 
-#: lib/reports.php:1565
+#: lib/reports.php:1564
 #, fuzzy
 msgid "Graph Timespan:"
 msgstr "תרשים Timespan:"
 
-#: lib/reports.php:1568
+#: lib/reports.php:1567
 #, fuzzy
 msgid "Graph Alignment:"
 msgstr "תרשים יישור:"
 
-#: lib/reports.php:1657
+#: lib/reports.php:1656
 #, fuzzy, php-format
 msgid "Created Report Graph Item '<i>%s</i>'"
 msgstr "דוח נוצר דוח גרף &#39; <i> %s</i> &#39;"
 
-#: lib/reports.php:1659
+#: lib/reports.php:1658
 #, fuzzy, php-format
 msgid "Failed Adding Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "נכשל הוספת פריט גרף דוח &#39; <i> %s</i> &#39; כבר קיים"
 
-#: lib/reports.php:1662
+#: lib/reports.php:1661
 #, fuzzy, php-format
 msgid "Skipped Report Graph Item '<i>%s</i>' Already Exists"
 msgstr "דלג על דוח גרף פריט &#39; <i> %s</i> &#39; כבר קיים"
 
-#: lib/rrd.php:2579
+#: lib/rrd.php:2582
 #, fuzzy, php-format
 msgid "Required RRD step size is '%s'"
 msgstr "הגודל הנדרש של RRD הוא &#39; %s&#39;"
 
-#: lib/rrd.php:2608
+#: lib/rrd.php:2611
 #, fuzzy, php-format
 msgid "Type for Data Source '%s' should be '%s'"
 msgstr "סוג עבור מקור הנתונים &#39; %s&#39; צריך להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2613
+#: lib/rrd.php:2616
 #, fuzzy, php-format
 msgid "Heartbeat for Data Source '%s' should be '%s'"
 msgstr "פעימת הלב עבור מקור הנתונים &#39; %s&#39; צריכה להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2625
+#: lib/rrd.php:2628
 #, fuzzy, php-format
 msgid "RRD minimum for Data Source '%s' should be '%s'"
 msgstr ""
 "המינימום של RRD עבור מקור הנתונים &#39; %s&#39; צריך להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2645
+#: lib/rrd.php:2648
 #, fuzzy, php-format
 msgid "RRD maximum for Data Source '%s' should be '%s'"
 msgstr "מקסימום RRD עבור מקור הנתונים &#39; %s&#39; צריך להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2655
+#: lib/rrd.php:2658
 #, fuzzy, php-format
 msgid "DS '%s' missing in RRDfile"
 msgstr "% DS &#39;חסר ב- RRDfile"
 
-#: lib/rrd.php:2664
+#: lib/rrd.php:2667
 #, fuzzy, php-format
 msgid "DS '%s' missing in Cacti definition"
 msgstr "&#39; %s&#39; חסר בהגדרת Cacti"
 
-#: lib/rrd.php:2681 lib/rrd.php:2682
+#: lib/rrd.php:2684 lib/rrd.php:2685
 #, fuzzy, php-format
 msgid "Cacti RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "ל- Cacti RRA &#39; %s&#39; יש אותו CF / שלבים ( %s, %s) כ- &#39; %s&#39;"
 
-#: lib/rrd.php:2696 lib/rrd.php:2697
+#: lib/rrd.php:2699 lib/rrd.php:2700
 #, fuzzy, php-format
 msgid "File RRA '%s' has same CF/steps (%s, %s) as '%s'"
 msgstr ""
 "קובץ ה- RRA &#39; %s&#39; כולל אותו CF / שלבים ( %s, %s) כ- &#39; %s&#39;"
 
-#: lib/rrd.php:2728
+#: lib/rrd.php:2731
 #, fuzzy, php-format
 msgid "XFF for cacti RRA id '%s' should be '%s'"
 msgstr "XFF עבור cacti RRA id &#39; %s&#39; צריך להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2732
+#: lib/rrd.php:2735
 #, fuzzy, php-format
 msgid "Number of rows for Cacti RRA id '%s' should be '%s'"
 msgstr "מספר השורות עבור Cacti RRA id &#39; %s&#39; צריך להיות &#39; %s&#39;"
 
-#: lib/rrd.php:2748
+#: lib/rrd.php:2751
 #, fuzzy, php-format
 msgid "RRA '%s' missing in RRDfile"
 msgstr "RRA &#39;%&#39; חסר ב- RRDfile"
 
-#: lib/rrd.php:2757
+#: lib/rrd.php:2760
 #, fuzzy, php-format
 msgid "RRA '%s' missing in Cacti definition"
 msgstr "RRA &#39; %s&#39; חסר בהגדרת Cacti"
 
-#: lib/rrd.php:2776
+#: lib/rrd.php:2779
 #, fuzzy
 msgid "RRD File Information"
 msgstr "מידע על קובץ RRD"
 
-#: lib/rrd.php:2808
+#: lib/rrd.php:2811
 #, fuzzy
 msgid "Data Source Items"
 msgstr "פריטי מקור נתונים"
 
-#: lib/rrd.php:2810
+#: lib/rrd.php:2813
 #, fuzzy
 msgid "Minimal Heartbeat"
 msgstr "פעימות לב מינימליות"
 
-#: lib/rrd.php:2811
+#: lib/rrd.php:2814
 msgid "Min"
 msgstr "מינימום"
 
-#: lib/rrd.php:2812
+#: lib/rrd.php:2815
 msgid "Max"
 msgstr "מקסימום"
 
-#: lib/rrd.php:2813
+#: lib/rrd.php:2816
 #, fuzzy
 msgid "Last DS"
 msgstr "DS האחרון"
 
-#: lib/rrd.php:2815
+#: lib/rrd.php:2818
 #, fuzzy
 msgid "Unknown Sec"
 msgstr "Sec לא ידוע"
 
-#: lib/rrd.php:2866
+#: lib/rrd.php:2869
 #, fuzzy
 msgid "Round Robin Archive"
 msgstr "סיבוב רובין ארכיון"
 
-#: lib/rrd.php:2869
+#: lib/rrd.php:2872
 #, fuzzy
 msgid "Cur Row"
 msgstr "שורה"
 
-#: lib/rrd.php:2870
+#: lib/rrd.php:2873
 #, fuzzy
 msgid "PDP per Row"
 msgstr "PDP לכל שורה"
 
-#: lib/rrd.php:2872
+#: lib/rrd.php:2875
 #, fuzzy
 msgid "CDP Prep Value (0)"
 msgstr "CDP Prep Value (0)"
 
-#: lib/rrd.php:2873
+#: lib/rrd.php:2876
 #, fuzzy
 msgid "CDP Unknown Data points (0)"
 msgstr "CDP לא ידוע נקודות נתונים (0)"
 
-#: lib/rrd.php:2950
+#: lib/rrd.php:2953
 #, fuzzy, php-format
 msgid "rename %s to %s"
 msgstr "שינוי שם %s ל - %s"
 
-#: lib/rrd.php:3000
+#: lib/rrd.php:3003
 #, fuzzy
 msgid "Error while parsing the XML of rrdtool dump"
 msgstr "שגיאה בעת ניתוח XML של drd rdtool"
 
-#: lib/rrd.php:3032 lib/rrd.php:3087 lib/rrd.php:3143
+#: lib/rrd.php:3035 lib/rrd.php:3090 lib/rrd.php:3146
 #, fuzzy, php-format
 msgid "ERROR while writing XML file: %s"
 msgstr "ERROR בעת כתיבת קובץ XML: %s"
 
-#: lib/rrd.php:3043 lib/rrd.php:3098 lib/rrd.php:3154
+#: lib/rrd.php:3046 lib/rrd.php:3101 lib/rrd.php:3157
 #, fuzzy, php-format
 msgid "ERROR: RRDfile %s not writeable"
 msgstr "שגיאה: RRDfile %s לא ניתן לכתוב"
 
-#: lib/rrd.php:3070 lib/rrd.php:3126
+#: lib/rrd.php:3073 lib/rrd.php:3129
 #, fuzzy
 msgid "Error while parsing the XML of RRDtool dump"
 msgstr "שגיאה בעת ניתוח XML של DDR"
 
-#: lib/rrd.php:3359
+#: lib/rrd.php:3362
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) removed from RRD file\n"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF = 1.2f) הוסר מקובץ RRD"
 
-#: lib/rrd.php:3393
+#: lib/rrd.php:3396
 #, fuzzy, php-format
 msgid "RRA (CF=%s, ROWS=%d, PDP_PER_ROW=%d, XFF=%1.2f) adding to RRD file\n"
 msgstr "RRA (CF = %s, ROWS =% d, PDP_PER_ROW =% d, XFF = 1.2f) הוספת לקובץ RRD"
 
-#: lib/rrd.php:3423 lib/rrd.php:3437
+#: lib/rrd.php:3426 lib/rrd.php:3440
 #, fuzzy, php-format
 msgid ""
 "Website does not have write access to %s, may be unable to create/update RRDs"
 msgstr "לאתר אין גישה לכתיבה ל- %s, ייתכן שלא תוכל ליצור / לעדכן את RRD"
 
-#: lib/rrd.php:3433
+#: lib/rrd.php:3436
 #, fuzzy
 msgid "(Custom)"
 msgstr "מותאם אישית"
 
-#: lib/rrd.php:3439
+#: lib/rrd.php:3442
 #, fuzzy
 msgid "Failed to open data file, poller may not have run yet"
 msgstr "פתיחת קובץ הנתונים נכשלה, ייתכן שהפוסטר עדיין לא פועל"
 
-#: lib/rrd.php:3442
+#: lib/rrd.php:3445
 #, fuzzy
 msgid "RRA Folder"
 msgstr "תיקיית RRA"
 
-#: lib/rrd.php:3442
+#: lib/rrd.php:3445
 #, fuzzy
 msgid "Root"
 msgstr "שורש"
 
-#: lib/rrd.php:3545
+#: lib/rrd.php:3548
 #, fuzzy
 msgid "Unknown RRDtool Error"
 msgstr "שגיאת RRDtool לא ידועה"
@@ -20577,7 +20587,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: sites.php:520 tree.php:822
+#: sites.php:520 tree.php:824
 msgid "Site Name"
 msgstr "שם אתר"
 
@@ -20720,36 +20730,36 @@ msgctxt "dropdown action"
 msgid "Un Publish"
 msgstr "פרסום לא"
 
-#: tree.php:388
+#: tree.php:390
 msgctxt "ordering of tree items"
 msgid "inherit"
 msgstr "יורש"
 
-#: tree.php:391
+#: tree.php:393
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "manual"
 msgstr "ידני"
 
-#: tree.php:394
+#: tree.php:396
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "alpha"
 msgstr "אלפא"
 
-#: tree.php:397
+#: tree.php:399
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "natural"
 msgstr "טבעי"
 
-#: tree.php:400
+#: tree.php:402
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "numeric"
 msgstr "מספריים"
 
-#: tree.php:642
+#: tree.php:644
 #, fuzzy
 msgid "Click 'Continue' to delete the following Tree."
 msgid_plural "Click 'Continue' to delete following Trees."
@@ -20758,7 +20768,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:647
+#: tree.php:649
 #, fuzzy
 msgid "Delete Tree"
 msgid_plural "Delete Trees"
@@ -20767,7 +20777,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:651
+#: tree.php:653
 #, fuzzy
 msgid "Click 'Continue' to publish the following Tree."
 msgid_plural "Click 'Continue' to publish following Trees."
@@ -20776,7 +20786,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:656
+#: tree.php:658
 #, fuzzy
 msgid "Publish Tree"
 msgid_plural "Publish Trees"
@@ -20785,7 +20795,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:660
+#: tree.php:662
 #, fuzzy
 msgid "Click 'Continue' to un-publish the following Tree."
 msgid_plural "Click 'Continue' to un-publish following Trees."
@@ -20794,7 +20804,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:665
+#: tree.php:667
 #, fuzzy
 msgid "Un-publish Tree"
 msgid_plural "Un-publish Trees"
@@ -20803,132 +20813,132 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: tree.php:715
+#: tree.php:717
 #, fuzzy, php-format
 msgid "Trees [edit: %s]"
 msgstr "עצים [עריכה: %s]"
 
-#: tree.php:728
+#: tree.php:730
 #, fuzzy
 msgid "Trees [new]"
 msgstr "עצים [חדש]"
 
-#: tree.php:754
+#: tree.php:756
 #, fuzzy
 msgid "Edit Tree"
 msgstr "עריכת עץ"
 
-#: tree.php:754
+#: tree.php:756
 #, fuzzy
 msgid ""
 "To Edit this tree, you must first lock it by pressing the Edit Tree button."
 msgstr "כדי לערוך עץ זה, עליך לנעול אותו תחילה על-ידי לחיצה על הלחצן ערוך עץ."
 
-#: tree.php:757
+#: tree.php:759
 #, fuzzy
 msgid "Add Root Branch"
 msgstr "הוסף ענף שורש"
 
-#: tree.php:757
+#: tree.php:759
 #, fuzzy
 msgid "Finish Editing Tree"
 msgstr "סיים עץ עריכה"
 
-#: tree.php:757
+#: tree.php:759
 #, fuzzy, php-format
 msgid "This tree has been locked for Editing on %1$s by %2$s."
 msgstr "עץ זה נעול עבור עריכה ב-%1$s ב-%2$s."
 
-#: tree.php:763
+#: tree.php:765
 #, fuzzy
 msgid "To edit the tree, you must first unlock it and then lock it as yourself"
 msgstr "כדי לערוך את העץ, עליך לפתוח אותו תחילה ולאחר מכן לנעול אותו בעצמך"
 
-#: tree.php:781
+#: tree.php:783
 msgid "Display"
 msgstr "הצג"
 
-#: tree.php:792
+#: tree.php:794
 #, fuzzy
 msgid "Tree Items"
 msgstr "פריטי עץ"
 
-#: tree.php:800
+#: tree.php:802
 #, fuzzy
 msgid "Available Sites"
 msgstr "אתרים זמינים"
 
-#: tree.php:835
+#: tree.php:837
 #, fuzzy
 msgid "Available Devices"
 msgstr "התקנים זמינים"
 
-#: tree.php:870
+#: tree.php:872
 #, fuzzy
 msgid "Available Graphs"
 msgstr "גרפים זמינים"
 
-#: tree.php:922 tree.php:1224
+#: tree.php:924 tree.php:1226
 #, fuzzy
 msgid "New Node"
 msgstr "צומת חדש"
 
-#: tree.php:1380
+#: tree.php:1382
 msgid "Rename"
 msgstr "שינוי שם"
 
-#: tree.php:1407
+#: tree.php:1409
 #, fuzzy
 msgid "Branch Sorting"
 msgstr "מיון סניף"
 
-#: tree.php:1414
+#: tree.php:1416
 msgid "Inherit"
 msgstr "בירושה"
 
-#: tree.php:1442
+#: tree.php:1444
 msgid "Alphabetic"
 msgstr "סדר לפי א'-ב'"
 
-#: tree.php:1456
+#: tree.php:1458
 #, fuzzy
 msgid "Natural"
 msgstr "טבעי"
 
-#: tree.php:1493 tree.php:1567 tree.php:1675
+#: tree.php:1495 tree.php:1569 tree.php:1677
 msgid "Cut"
 msgstr "גזור"
 
-#: tree.php:1526
+#: tree.php:1528
 msgid "Paste"
 msgstr "הדבק"
 
-#: tree.php:1873
+#: tree.php:1875
 #, fuzzy
 msgid "Add Tree"
 msgstr "הוסף עץ"
 
-#: tree.php:1879 tree.php:1923
+#: tree.php:1881 tree.php:1925
 #, fuzzy
 msgid "Sort Trees Ascending"
 msgstr "מיין עצים עולה"
 
-#: tree.php:1885 tree.php:1924
+#: tree.php:1887 tree.php:1926
 #, fuzzy
 msgid "Sort Trees Descending"
 msgstr "מיין עצים יורד"
 
-#: tree.php:1974
+#: tree.php:1976
 #, fuzzy
 msgid "The name by which this Tree will be referred to as."
 msgstr "השם שבו ייקרא העץ הזה."
 
-#: tree.php:1974 user_admin.php:1558 user_group_admin.php:1247
+#: tree.php:1976 user_admin.php:1558 user_group_admin.php:1247
 #, fuzzy
 msgid "Tree Name"
 msgstr "שם עץ"
 
-#: tree.php:1975
+#: tree.php:1977
 #, fuzzy
 msgid ""
 "The internal database ID for this Tree.  Useful when performing automation "
@@ -20936,26 +20946,26 @@ msgid ""
 msgstr ""
 "מזהה מסד הנתונים הפנימי לעץ זה. שימושי בעת ביצוע אוטומציה או איתור באגים."
 
-#: tree.php:1976
+#: tree.php:1978
 msgid "Published"
 msgstr "פורסם"
 
-#: tree.php:1976
+#: tree.php:1978
 #, fuzzy
 msgid "Unpublished Trees cannot be viewed from the Graph tab"
 msgstr "לא ניתן להציג עצים שלא פורסמו מתוך הכרטיסייה תרשים"
 
-#: tree.php:1977
+#: tree.php:1979
 #, fuzzy
 msgid "A Tree must be locked in order to be edited."
 msgstr "עץ חייב להיות נעול כדי להיות נערך."
 
-#: tree.php:1978
+#: tree.php:1980
 #, fuzzy
 msgid "The original author of this Tree."
 msgstr "המחבר המקורי של העץ הזה."
 
-#: tree.php:1979
+#: tree.php:1981
 #, fuzzy
 msgid ""
 "To change the order of the trees, first sort by this column, press the up or "
@@ -20964,50 +20974,50 @@ msgstr ""
 "כדי לשנות את סדר העצים, מיין תחילה לפי עמודה זו, לחץ על החצים למעלה או למטה "
 "ברגע שהם מופיעים."
 
-#: tree.php:1980
+#: tree.php:1982
 msgid "Last Edited"
 msgstr "נערך לאחרונה"
 
-#: tree.php:1980
+#: tree.php:1982
 #, fuzzy
 msgid "The date that this Tree was last edited."
 msgstr "התאריך שבו נערך העץ האחרון."
 
-#: tree.php:1981
+#: tree.php:1983
 #, fuzzy
 msgid "Edited By"
 msgstr "נערך לאחרונה"
 
-#: tree.php:1981
+#: tree.php:1983
 #, fuzzy
 msgid "The last user to have modified this Tree."
 msgstr "המשתמש האחרון שינה את העץ הזה."
 
-#: tree.php:1982
+#: tree.php:1984
 #, fuzzy
 msgid "The total number of Site Branches in this Tree."
 msgstr "המספר הכולל של סניפי האתר בעץ זה."
 
-#: tree.php:1983
+#: tree.php:1985
 msgid "Branches"
 msgstr "סניפים"
 
-#: tree.php:1983
+#: tree.php:1985
 #, fuzzy
 msgid "The total number of Branches in this Tree."
 msgstr "המספר הכולל של סניפים בעץ זה."
 
-#: tree.php:1984
+#: tree.php:1986
 #, fuzzy
 msgid "The total number of individual Devices in this Tree."
 msgstr "המספר הכולל של התקנים בודדים בעץ זה."
 
-#: tree.php:1985
+#: tree.php:1987
 #, fuzzy
 msgid "The total number of individual Graphs in this Tree."
 msgstr "המספר הכולל של גרפים בודדים בעץ זה."
 
-#: tree.php:2029
+#: tree.php:2031
 #, fuzzy
 msgid "No Trees Found"
 msgstr "לא נמצאו עצים"
