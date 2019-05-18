@@ -1410,15 +1410,17 @@ $boost_max_runtime = array(
 );
 
 $boost_max_memory = array(
-	'32'   => __('%d MBytes', 32),
-	'64'   => __('%d MBytes', 64),
-	'128'  => __('%d MBytes', 128),
 	'256'  => __('%d MBytes', 256),
 	'512'  => __('%d MBytes', 512),
-	'1024' => __('1 GByte'),
+	'1024' => __('%d GByte', 1),
 	'1536' => __('%s GBytes', '1.5'),
 	'2048' => __('%d GBytes', 2),
-	'3072' => __('%d GBytes', 3)
+	'3072' => __('%d GBytes', 3),
+	'4096' => __('%d GBytes', 4),
+	'5120' => __('%d GBytes', 5),
+	'6144' => __('%d GBytes', 6),
+	'8192' => __('%d GBytes', 8),
+	'-1' => __('Infinity')
 );
 
 $realtime_window = array(
