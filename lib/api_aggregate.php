@@ -159,6 +159,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 		$graph_data['title_cache'] = $graph_title;
 	}
 
+	$graph_data['auto_padding']                  = 'on';
 	$graph_data['local_graph_id']                = $local_graph_id;
 	$graph_data['local_graph_template_graph_id'] = 0; # no templating
 	$graph_data['graph_template_id']             = 0; # no templating
@@ -319,6 +320,12 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						(cacti_sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
 						LIMIT 1');
 				}
+			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || 
+				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE1 ||
+				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE2 ||
+				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE3 ||
+				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_STACK) {
+				$graph_item['text_format'] = $_gprint_prefix;
 			}
 
 			# use all data from 'old' graph ...
@@ -399,20 +406,17 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						$save['text_format'] = str_replace(':max:', ':max:', $save['text_format']);
 					}
 				}
-			} else {
-				if ($prepend && $save['text_format'] != '' && $_gprint_prefix != '') {
-					$save['text_format'] = substitute_host_data($_gprint_prefix . ' ' . $save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
-					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			}
 
-					/* if this is a data query graph type, try to substitute */
-					if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
-						$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
+			if ($save['text_format'] != '') {
+				$save['text_format'] = substitute_host_data($save['text_format'], '|', '|', (isset($graph_local['host_id']) ? $graph_local['host_id']:0));
+				cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'], true, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-						cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
-					}
+				/* if this is a data query graph type, try to substitute */
+				if (isset($graph_local['snmp_query_id']) && $graph_local['snmp_query_id'] > 0 && $graph_local['snmp_index'] != '') {
+					$save['text_format'] = substitute_snmp_query_data($save['text_format'], $graph_local['host_id'], $graph_local['snmp_query_id'], $graph_local['snmp_index'], read_config_option('max_data_query_field_length'));
 
-					# no more prepending until next line break is encountered
-					$prepend = false;
+					cacti_log(__FUNCTION__ . ' substituted:' . $save['text_format'] . ' for ' . $graph_local['host_id'] . ',' . $graph_local['snmp_query_id'] . ',' . $graph_local['snmp_index'], true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 				}
 			}
 

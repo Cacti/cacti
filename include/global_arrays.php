@@ -1532,8 +1532,8 @@ $agg_graph_types = array(
 
 $agg_totals = array(
 	AGGREGATE_TOTAL_NONE => __('No Totals'),
-	AGGREGATE_TOTAL_ALL  => __('Print all Legend Items'),
-	AGGREGATE_TOTAL_ONLY => __('Print totaling Legend Items Only'),
+	AGGREGATE_TOTAL_ALL  => __('Print All Legend Items'),
+	AGGREGATE_TOTAL_ONLY => __('Print Totaling Legend Items Only'),
 );
 
 $agg_totals_type = array(
