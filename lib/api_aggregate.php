@@ -311,13 +311,14 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					$graph_item['cdef_id'] = $make0_cdef;
 
 					# try to pick the best totaling cf id
-					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT DISTINCT consolidation_function_id
+					$graph_item['consolidation_function_id'] = db_fetch_cell('SELECT consolidation_function_id
 						FROM graph_templates_item
-						WHERE color_id>0
+						WHERE color_id > 0
 						AND sequence = ' . $graph_item['sequence'] .
 						(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
 						(cacti_sizeof($_skip) ? ' AND sequence NOT IN (' . implode(',', $_skip) . ')':'') .
 						(cacti_sizeof($_totali) ? ' AND sequence IN (' . implode(',', $_totali) . ')':'') . '
+						ORDER BY sequence ASC
 						LIMIT 1');
 				}
 			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || 
@@ -1112,6 +1113,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					WHERE color_id > 0' .
 					(cacti_sizeof($member_graphs) ? ' AND ' . array_to_sql_or($member_graphs, 'local_graph_id'):'') .
 					(cacti_sizeof($skipped_items) ? ' AND local_graph_id NOT IN(' . implode(',', $skipped_items) . ')':'') . '
+					ORDER BY sequence ASC
 					LIMIT 1');
 
 				// add an empty line before total items
@@ -1226,6 +1228,7 @@ function aggregate_handle_ptile_type($member_graphs, $skipped_items, $local_grap
 							$comment_found = true;
 
 							$parts = explode('|', $item['text_format']);
+
 							if (isset($parts[1])) {
 								$pparts = explode(':', $parts[1]);
 
