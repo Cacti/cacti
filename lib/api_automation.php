@@ -2493,22 +2493,7 @@ function create_dq_graphs($host_id, $snmp_query_id, $rule) {
 
 			$existsAlready = db_fetch_cell_prepared('SELECT DISTINCT gl.id
 				FROM graph_local AS gl
-				INNER JOIN graph_templates_item AS gti
-				ON gl.id = gti.local_graph_id
-				INNER JOIN data_template_rrd AS dtr
-				ON gti.task_item_id = dtr.id
-				INNER JOIN data_local AS dl
-				ON dtr.local_data_id = dl.id
-				LEFT JOIN data_template_data AS dtd
-				ON dl.id=dtd.local_data_id
-				LEFT JOIN data_input_data AS did
-				ON dtd.id=did.data_template_data_id
-				LEFT JOIN data_input_fields AS dif
-				ON did.data_input_field_id=dif.id
-				LEFT JOIN snmp_query_graph AS sqg
-				ON did.value=sqg.id
-				WHERE dif.type_code="output_type"
-				AND gl.snmp_query_graph_id = ?
+				WHERE gl.snmp_query_graph_id = ?
 				AND gl.host_id = ?
 				AND gl.snmp_query_id = ?
 				AND gl.snmp_index = ?',
