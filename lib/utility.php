@@ -722,10 +722,12 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
-			$poller_ids[$host['poller_id']] = $host['poller_id'];
+			if (isset($host['poller_id'])) {
+				$poller_ids[$host['poller_id']] = $host['poller_id'];
+			}
 		}
 
-		if (cacti_sizeof($poller_ids > 1)) {
+		if (cacti_sizeof($poller_ids) > 1) {
 			cacti_log('WARNING: function push_out_host() discovered more than a single host', false, 'POLLER');
 		}
 	}

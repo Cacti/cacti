@@ -279,6 +279,7 @@ function graphs() {
 		} else {
 			$header =  __('New Graphs for [ All Devices ]');
 			$host['id'] = -1;
+			$host['host_template_id'] = 0;
 		}
 	} else {
 		$host['id'] = 0;
