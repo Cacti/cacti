@@ -7,7 +7,7 @@ Cacti CHANGELOG
 -issue#2591: Drill down to some pages may be incorrect due to logic issues
 -issue#2592: Display graphs from this aggregate can not work
 -issue#2593: Can not migrate aggregate to use a template
--issue#2598: Create aggregate without aggregate graph tempate, rrdtools error 
+-issue#2598: Create aggregate without aggregate graph tempate, rrdtools error
 -issue#2599: SQL error when create aggregate graph
 -issue#2604: SQL error when add a dataquery
 -issue#2605: When checking for tables to upgrade, undefined variable $config error occurs
@@ -35,7 +35,8 @@ Cacti CHANGELOG
 -issue#2679: Force Complexity Upon Old Passwords issue
 -issue#2680: PHP 7.2 supporting to remove deprecated $php_errormsg
 -issue#2689: Increase boost maximum memory limits
--feature#2538: New global setting to change datasource behaviour when deleting graph 
+-issue#2693: Graph links do not contain proper URL path causing links to fail
+-feature#2538: New global setting to change datasource behaviour when deleting graph
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
 -feature#2646: Allow application of automation rules on CLI
