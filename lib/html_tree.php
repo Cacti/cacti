@@ -255,6 +255,7 @@ function grow_dhtml_trees() {
 
 					if (typeof href !== 'undefined') {
 						href = href.replace('action=tree', 'action=tree_content');
+						href = href + '&hyper=true';
 						$('.cactiGraphContentArea').hide();
 						loadPage(href);
 					}
