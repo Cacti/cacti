@@ -160,8 +160,8 @@ function grow_dhtml_trees() {
 			navigation = $('.cactiTreeNavigationArea').offset();
 			navWidth   = $('.cactiTreeNavigationArea').outerWidth();
 			navHeight  = docHeight - navigation.top + 15;
-			visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() { 
-				return $(this).width(); 
+			visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() {
+				return $(this).width();
 			}).get());
 
 			if (visWidth > navWidth) {
@@ -320,7 +320,7 @@ function grow_dhtml_trees() {
 					'dots' : false
 				},
 				'state' : { 'key' : 'graph_tree_history' },
-				'search' : { 'case_sensitive' : false, 'show_only_matches' : true, 'ajax' : { 'url' : 'graph_view.php?action=ajax_search'} },
+				'search' : { 'case_sensitive' : false, 'show_only_matches' : true, 'ajax' : { 'url' : urlPath+'graph_view.php?action=ajax_search'} },
 				'plugins' : [ 'types', 'state', 'wholerow', 'search' ]
 			});
 		});
@@ -490,7 +490,7 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 			$dhtml_tree[] = "<ul>\n";
 
 			foreach($heirarchy as $h) {
-				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . html_escape('graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . html_escape($h['title']) . "</a></li>\n";
+				$dhtml_tree[] = "<li id='tree_anchor-" . $h['tree_id'] . "' data-jstree='{ \"type\" : \"tree\" }' class='jstree-closed'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tree_anchor-' . $h['tree_id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . html_escape($h['title']) . "</a></li>\n";
 			}
 
 			$dhtml_tree[] = "</ul>\n";
@@ -501,13 +501,13 @@ function draw_dhtml_tree_level_graphing($tree_id, $parent = 0) {
 }
 
 function create_site_branch($leaf) {
-	global $unique_id;
+	global $config, $unique_id;
 
 	$unique_id++;
 
 	$dhtml_tree   = array();
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-site-" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['sitename']) . "</a>\n";
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "-site-" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['sitename']) . "</a>\n";
 
 	$devices = get_allowed_site_devices($leaf['site_id'], '', 'ht.name ASC, h1.description ASC');
 	$ht_name = '';
@@ -521,7 +521,7 @@ function create_site_branch($leaf) {
 					$dhtml_tree[] = "</ul></li>\n";
 				}
 
-				$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-ht-' . $d['host_template_id'] . "' data-jstree='{ \"type\" : \"host_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&host_template_id=' . $d['host_template_id'] . '&host_id=-1&hgd=') . "'>" . html_escape($d['host_template_name']) . "</a><ul>\n";
+				$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-ht-' . $d['host_template_id'] . "' data-jstree='{ \"type\" : \"host_template\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&host_template_id=' . $d['host_template_id'] . '&host_id=-1&hgd=') . "'>" . html_escape($d['host_template_name']) . "</a><ul>\n";
 			}
 
 			$hleaf = $leaf;
@@ -544,11 +544,11 @@ function create_site_branch($leaf) {
 
 	if (cacti_sizeof($graph_templates)) {
 		$dhtml_tree[] = "\t\t\t\t\t\t<ul>\n";
-		$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . __('Graph Templates') . "</a>\n";
+		$dhtml_tree[] = "\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts' . "' data-jstree='{ \"type\" : \"graph_templates\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=-1&host_id=-1&host_template_id=-1&hgd=') . "'>" . __('Graph Templates') . "</a>\n";
 		$dhtml_tree[] = "\t\t\t\t\t\t\t<ul>\n";
 
 		foreach ($graph_templates as $graph_template) {
-			$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts-gt-' . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=' . $graph_template['id'] . '&host_id=' . $leaf['host_id'] . '&host_template_id=-1&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
+			$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . '-site-' . $leaf['site_id'] . '-gts-gt-' . $graph_template['id'] . "' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=' . $leaf['site_id'] . '&gti=' . $graph_template['id'] . '&host_id=' . $leaf['host_id'] . '&host_template_id=-1&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
 		}
 
 		$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
@@ -562,6 +562,8 @@ function create_site_branch($leaf) {
 }
 
 function create_branch($leaf) {
+	global $config;
+
 	$dhtml_tree = array();
 
 	$children = db_fetch_cell_prepared('SELECT COUNT(*)
@@ -570,17 +572,17 @@ function create_branch($leaf) {
 		AND local_graph_id=0',
 		array($leaf['id']));
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . "' " . ($children > 0 ? "class='jstree-closed'":"") . "><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&site_id=-1&host_id=-1&host_template_id=-1&hgd=') . '">' . html_escape($leaf['title']) . "</a></li>\n";
 
 	return $dhtml_tree;
 }
 
 function create_host_branch($leaf, $site_id = -1, $ht = -1) {
-	global $unique_id;
+	global $config, $unique_id;
 
 	$unique_id++;
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
 
 	if (read_user_setting('expand_hosts') == 'on') {
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -607,7 +609,7 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 }
 
 function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
-	global $unique_id;
+	global $config, $unique_id;
 
 	$dhtml_tree = array();
 
@@ -620,7 +622,7 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 		foreach ($graph_templates as $graph_template) {
 			$unique_id++;
 
-			$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-gt-' . $graph_template['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
+			$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-gt-' . $graph_template['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph_template\" }'><a href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=gt:' . $graph_template['id']) . "'>" . html_escape($graph_template['name']) . "</a></li>\n";
 		}
 	}
 
@@ -628,7 +630,7 @@ function create_graph_template_branch($leaf, $site_id = -1, $ht = -1) {
 }
 
 function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
-	global $unique_id;
+	global $config, $unique_id;
 
 	$dhtml_tree = array();
 
@@ -672,9 +674,9 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 				$unique_id++;
 
 				if ($data_query['name'] != __('Non Query Based')) {
-					$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dq:' . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dq:' . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
 				} else {
-					$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dq:' . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
+					$dhtml_tree[] = "\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . "-uid-$unique_id' data-jstree='{ \"type\" : \"data_query\" }'><a class='treepick' href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dq:' . $data_query['id']) . '">' . html_escape($data_query['name']) . "</a>\n";
 				}
 
 				if ($data_query['id'] > 0) {
@@ -682,7 +684,7 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 					foreach ($sfd as $snmp_index => $sort_field_value) {
 						$unique_id++;
 
-						$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . html_escape('graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . html_escape($sort_field_value) . "</a></li>\n";
+						$dhtml_tree[] = "\t\t\t\t\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id']:'') . '-dq-' . $data_query['id'] . '-' . urlencode($snmp_index) . "-uid-$unique_id' data-jstree='{ \"type\" : \"graph\" }'><a class='treepick' href='" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht . '&hgd=dqi:' . $data_query['id'] . ':' . $snmp_index) . "'>" . html_escape($sort_field_value) . "</a></li>\n";
 					}
 
 					$dhtml_tree[] = "\t\t\t\t\t\t\t</ul>\n";
@@ -1040,7 +1042,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	</tr>
 	<tr class='even noprint'>
 		<td class='noprint'>
-		<form name='form_timespan_selector' method='post' action='graph_view.php'>
+		<form name='form_timespan_selector' method='post' action='<?php print $config['url_path'];?>graph_view.php'>
 			<table class='filterTable'>
 				<tr id='timespan'>
 					<td>
@@ -1153,7 +1155,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	var graph_end   = <?php print get_current_graph_end();?>;
 	var timeOffset  = <?php print date('Z');?>;
 	var pageAction  = 'tree';
-	var graphPage   = 'graph_view.php';
+	var graphPage   = '<?php print $config['url_path'];?>graph_view.php';
 	var hgd         = '<?php print $host_group_data;?>';
 	var date1Open   = false;
 	var date2Open   = false;
@@ -1312,7 +1314,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	$total_rows = cacti_sizeof($graph_list);
 
 	/* generate page list */
-	$nav = html_nav_bar("graph_view.php?action=tree_content&tree_id=$tree_id&leaf_id=$leaf_id&node=" . get_request_var('node') . '&hgd=' . $host_group_data, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), __('Graphs'), 'page', 'main');
+	$nav = html_nav_bar($config['url_path'] . 'graph_view.php?action=tree_content&tree_id=' . $tree_id . '&leaf_id=' . $leaf_id . '&node=' . get_request_var('node') . '&hgd=' . $host_group_data, MAX_DISPLAY_PAGES, get_request_var('page'), get_request_var('graphs'), $total_rows, get_request_var('columns'), __('Graphs'), 'page', 'main');
 
 	print $nav;
 

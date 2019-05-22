@@ -422,6 +422,8 @@ function field_edit() {
 	get_filter_request_var('type', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^(in|out)$/')));
 	/* ==================================================== */
 
+	$array_field_names = array();
+
 	if (!isempty_request_var('id')) {
 		$field = db_fetch_row_prepared('SELECT *
 			FROM data_input_fields

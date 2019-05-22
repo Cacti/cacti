@@ -1550,7 +1550,7 @@ function html_show_tabs_left() {
 				// Don't show graphs tab when offline
 			} else {
 				$file = get_current_page();
-				if ($file == "graph_view.php" || $file == "graph.php") {
+				if ($file == 'graph_view.php' || $file == 'graph.php') {
 					print "<a id='tab-graphs' class='selected' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs_down.gif' alt='" . __('Graphs') . "'></a>";
 				} else {
 					print "<a id='tab-graphs' href='" . html_escape($config['url_path'] . 'graph_view.php') . "'><img src='" . $config['url_path'] . "images/tab_graphs.gif' alt='" . __('Graphs') . "'></a>";
@@ -1562,7 +1562,7 @@ function html_show_tabs_left() {
 			if ($config['poller_id'] > 1) {
 				// Don't show reports tabe if not poller 1
 			} else {
-				if (substr_count($_SERVER["REQUEST_URI"], "reports_")) {
+				if (substr_count($_SERVER['REQUEST_URI'], 'reports_')) {
 					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar_down.gif" alt="' . __('Reporting') . '"></a>';
 				} else {
 					print '<a id="tab-reports" href="' . $config['url_path'] . ($realm_allowed[22] ? 'reports_admin.php':'reports_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_nectar.gif" alt="' . __('Reporting') . '"></a>';
@@ -1571,7 +1571,7 @@ function html_show_tabs_left() {
 		}
 
 		if ($realm_allowed[18] || $realm_allowed[19]) {
-			if (substr_count($_SERVER["REQUEST_URI"], "clog")) {
+			if (substr_count($_SERVER['REQUEST_URI'], 'clog')) {
 				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog_down.png" alt="' . __('Logs'). '"></a>';
 			} else {
 				print '<a id="tab-logs" href="' . $config['url_path'] . ($realm_allowed[18] ? 'clog.php':'clog_user.php') . '"><img src="' . $config['url_path'] . 'images/tab_clog.png" alt="' . __('Logs') . '"></a>';

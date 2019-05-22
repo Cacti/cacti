@@ -66,7 +66,7 @@ if (read_config_option('hide_console') != 'on') {
 			<ul>
 				<li><?php print __('<a href="%s">Create devices</a> for network', 'host.php');?></li>
 				<li><?php print __('<a href="%s">Create graphs</a> for your new devices', 'graphs_new.php');?></li>
-				<li><?php print __('<a href="%s">View</a> your new graphs', 'graph_view.php');?></li>
+				<li><?php print __('<a href="%s">View</a> your new graphs', $config['url_path'] . 'graph_view.php');?></li>
 			</ul>
 		</td>
 		<td class='textAreaNotes top right'>

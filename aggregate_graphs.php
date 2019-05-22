@@ -1404,6 +1404,11 @@ function aggregate_graph() {
 			'default' => 'ASC',
 			'options' => array('options' => 'sanitize_search_string')
 			),
+		'local_graph_ids' => array(
+			'filter' => FILTER_VALIDATE_IS_NUMERIC_LIST,
+			'pageset' => true,
+			'default' => ''
+			)
 	);
 
 	validate_store_request_vars($filters, 'sess_agraph');
