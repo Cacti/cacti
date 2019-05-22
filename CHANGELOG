@@ -42,6 +42,7 @@ Cacti CHANGELOG
 -feature#2646: Allow application of automation rules on CLI
 -feature#2654: New hook to notify plugins of user profile changes ('auth_profile_update_data')
 -feature#2664: Cacti spikekill should have a rrd backup cleanup process
+-feature#2701: Provide option to continue graphing objects that loose their index
 -feature: Make html_split_string UTF-8 compatible
 
 1.2.3

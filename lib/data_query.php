@@ -86,6 +86,9 @@ function run_data_query($host_id, $snmp_query_id) {
 	include_once($config['library_path'] . '/api_data_source.php');
 	include_once($config['library_path'] . '/utility.php');
 
+	// Load the XML structure for custom settings detection
+	$query_array = get_data_query_array($snmp_query_id);
+
 	query_debug_timer_offset('data_query', __('Running Data Query [%s].', $snmp_query_id));
 
 	$type_id = db_fetch_cell_prepared('SELECT data_input.type_id
@@ -278,21 +281,26 @@ function run_data_query($host_id, $snmp_query_id) {
 					$changed_ids[] = $data_source['local_data_id'];
 				}
 			} elseif ($data_source['snmp_index'] != '' && !$forced_type) {
-				// Found a deleted index, masking off to prevent issues
-				query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
+				if (isset($query_array['index_transient']) && $query_array['index_transient'] == 'true') {
+					// Found removed index, but this is expected, so no action taken
+					query_debug_timer_offset('data_query', __('Transient Index Removal Detected! PreviousIndex: %s.  No action taken.', $data_source['query_index']));
+				} else {
+					// Found a deleted index, masking off to prevent issues
+					query_debug_timer_offset('data_query', __('Index Removal Detected! PreviousIndex: %s', $data_source['query_index']));
 
-				// Set the index to Null, note that the Data Source still has the value
-				db_execute_prepared('UPDATE data_local
-					SET snmp_index = ""
-					WHERE id = ?',
-					array($data_source['local_data_id']));
+					// Set the index to Null, note that the Data Source still has the value
+					db_execute_prepared('UPDATE data_local
+						SET snmp_index = ""
+						WHERE id = ?',
+						array($data_source['local_data_id']));
 
-				// Remove this item from the poller cache as it will cause wranings
-				db_execute_prepared('DELETE FROM poller_item
-					WHERE local_data_id = ?',
-					array($data_source['local_data_id']));
+					// Remove this item from the poller cache as it will cause wranings
+					db_execute_prepared('DELETE FROM poller_item
+						WHERE local_data_id = ?',
+						array($data_source['local_data_id']));
 
-				$removed_ids[] = $data_source['local_data_id'];
+					$removed_ids[] = $data_source['local_data_id'];
+				}
 			}
 
 			if ($remap && trim($new_field_value) != '' && $new_sort_field != '') {
