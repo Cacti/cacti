@@ -131,10 +131,21 @@ function run_data_query($host_id, $snmp_query_id) {
 		return false;
 	}
 
+	// SNMP Queries can specify the index as a 'source' column
+	if (!isset($query_array['index_order'])) {
+		$index_is_source = true;
+	} else {
+		$index_is_source = false;
+	}
+
 	$old_sort_field = get_best_data_query_index_type($host_id, $snmp_query_id);
 
-	/* update the sort cache */
-	$new_sort_field = update_data_query_sort_cache($host_id, $snmp_query_id);
+	/* update the sort cache if there is a sort field */
+	if ($index_is_source == false) {
+		$new_sort_field = update_data_query_sort_cache($host_id, $snmp_query_id);
+	} else {
+		$new_sort_field = $old_sort_field;
+	}
 
 	if ($new_sort_field === false) {
 		cacti_log('ERROR: Re-Indexing failed due to a NULL sort field for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Can not continue with Re-Index.', false, 'REINDEX');
@@ -142,18 +153,20 @@ function run_data_query($host_id, $snmp_query_id) {
 	}
 
 	$remap = false;
-	if (query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id)) {
-		if ($old_sort_field != $new_sort_field) {
-			if ($old_sort_field != '') {
-				query_debug_timer_offset('data_query', __('WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!'));
+	if ($index_is_source == false) {
+		if (query_check_suitable($new_sort_field, $old_sort_field, $host_id, $snmp_query_id)) {
+			if ($old_sort_field != $new_sort_field) {
+				if ($old_sort_field != '') {
+					query_debug_timer_offset('data_query', __('WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!'));
 
-				cacti_log('WARNING: Sort Field has Changed for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Old Sort:' . $old_sort_field . ', New Sort:' . $new_sort_field . '.  Re-mapping issues may occur!', false, 'REINDEX');
+					cacti_log('WARNING: Sort Field has Changed for Device[' . $host_id . '] and DQ[' . $snmp_query_id . '].  Old Sort:' . $old_sort_field . ', New Sort:' . $new_sort_field . '.  Re-mapping issues may occur!', false, 'REINDEX');
+				}
+
+				$remap = true;
 			}
-
-			$remap = true;
+		} else {
+			$new_sort_field = $old_sort_field;
 		}
-	} else {
-		$new_sort_field = $old_sort_field;
 	}
 
 	query_debug_timer_offset('data_query', __('Update Data Query Sort Cache complete'));
