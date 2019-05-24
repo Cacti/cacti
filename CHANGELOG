@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue#2693: Graph links do not contain proper URL path causing links to fail
 -issue#2698: Avoid duplicated icon in the main.js of all themes
 -issue#2699: Login Options: "Show the page that user pointed their browser to" Not Working
+-issue#2702: sqltable_to_php.php should ignore '--plugin' when '--update'
 -feature#2538: New global setting to change datasource behaviour when deleting graph
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
