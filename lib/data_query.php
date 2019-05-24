@@ -1063,7 +1063,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 
 						$snmp_index = preg_replace($index_regex,"\\1", $oid);
 						$oid = $field_array['oid'] . ".$snmp_index" . (isset($field_array['oid_suffix']) ? ('.' . $field_array['oid_suffix']) : '');
-						if ($field_name == 'ifOperStatus') {
+						if ($field_name == 'ifOperStatus' || $field_name == 'ifAdminStatus') {
 							switch(true) {
 								case preg_match('/^(down|2)/i',$value):
 									$value = 'Down';
