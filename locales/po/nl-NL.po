@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-18 16:00-0400\n"
+"POT-Creation-Date: 2019-05-26 11:35-0400\n"
 "PO-Revision-Date: 2019-03-10 13:42-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Patrick Rademaker\n"
@@ -111,7 +111,7 @@ msgstr ""
 #: automation_snmp.php:29 automation_snmp.php:556 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:651 color.php:28
 #: color_templates.php:28 color_templates.php:122 data_input.php:32
-#: data_input.php:664 data_input.php:706 data_queries.php:31
+#: data_input.php:666 data_input.php:708 data_queries.php:31
 #: data_queries.php:824 data_queries.php:924 data_queries.php:1179
 #: data_source_profiles.php:30 data_source_profiles.php:608 data_sources.php:36
 #: data_sources.php:1053 data_templates.php:34 data_templates.php:661
@@ -254,8 +254,8 @@ msgstr ""
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
 #: auth_changepassword.php:331 auth_profile.php:443 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1105 graphs.php:1155 graphs.php:1158
-#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1476
-#: lib/api_aggregate.php:1491 lib/html_form.php:1269 lib/html_utility.php:222
+#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1479
+#: lib/api_aggregate.php:1494 lib/html_form.php:1269 lib/html_utility.php:222
 #: managers.php:1066 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "Terug"
@@ -414,7 +414,7 @@ msgstr "Grafiek items [wijzig: %s]"
 msgid "Details"
 msgstr "Details"
 
-#: aggregate_graphs.php:636 graphs_new.php:729 lib/html_reports.php:1173
+#: aggregate_graphs.php:636 graphs_new.php:730 lib/html_reports.php:1173
 #: lib/html_reports.php:1264 utilities.php:344
 msgid "Items"
 msgstr "Items"
@@ -455,7 +455,7 @@ msgid "Aggregate Graph %s"
 msgstr "Aggregeer grafiek %s"
 
 #: aggregate_graphs.php:915 aggregate_templates.php:490 graphs.php:1063
-#: lib/api_aggregate.php:1602
+#: lib/api_aggregate.php:1605
 msgid "Total"
 msgstr "Totaal"
 
@@ -463,7 +463,7 @@ msgstr "Totaal"
 msgid "All Items"
 msgstr "Alle items"
 
-#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1758
+#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1761
 msgid "Graph Configuration"
 msgstr "Grafiekconfiguratie"
 
@@ -481,20 +481,20 @@ msgstr "Verberg item details"
 msgid "Matching Graphs"
 msgstr "Overeenkomende grafieken"
 
-#: aggregate_graphs.php:1134 aggregate_graphs.php:1466
+#: aggregate_graphs.php:1134 aggregate_graphs.php:1471
 #: aggregate_templates.php:561 automation_devices.php:455
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:805
 #: data_queries.php:1281 data_source_profiles.php:843 data_sources.php:1421
 #: data_templates.php:864 gprint_presets.php:263 graph_templates.php:657
-#: graph_view.php:591 graphs.php:1888 graphs_new.php:389 host.php:1501
+#: graph_view.php:591 graphs.php:1888 graphs_new.php:390 host.php:1501
 #: host_templates.php:721 lib/api_automation.php:141 lib/api_automation.php:472
 #: lib/api_automation.php:706 lib/api_automation.php:1064
 #: lib/clog_webapi.php:568 lib/html.php:231 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1508 lib/html_tree.php:131
-#: lib/html_tree.php:948 links.php:311 managers.php:150 managers.php:494
+#: lib/html_tree.php:951 links.php:311 managers.php:150 managers.php:494
 #: managers.php:726 plugins.php:341 pollers.php:732 rrdcleaner.php:475
 #: settings.php:427 settings.php:446 settings.php:495 sites.php:425
 #: tree.php:810 tree.php:845 tree.php:880 tree.php:1901 user_admin.php:2254
@@ -509,29 +509,29 @@ msgid "Search"
 msgstr "Zoeken"
 
 #: aggregate_graphs.php:1140 aggregate_graphs.php:1241
-#: aggregate_graphs.php:1494 color_templates.php:561 data_sources.php:1606
+#: aggregate_graphs.php:1499 color_templates.php:561 data_sources.php:1606
 #: data_sources.php:1734 graph_view.php:455 graph_view.php:650
 #: graph_view.php:699 graphs.php:1894 graphs.php:2011 host.php:1565
 #: include/global_arrays.php:875 include/global_arrays.php:1082
 #: include/global_arrays.php:1826 lib/api_automation.php:281 lib/html.php:1554
 #: lib/html.php:1556 lib/html.php:1634 lib/html_graph.php:209
-#: lib/html_tree.php:1004 lib/html_tree.php:1315 tree.php:789 tree.php:1987
+#: lib/html_tree.php:1007 lib/html_tree.php:1318 tree.php:789 tree.php:1987
 #: user_admin.php:1004 user_admin.php:1269 user_admin.php:2620
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
 msgid "Graphs"
 msgstr "Grafieken"
 
-#: aggregate_graphs.php:1144 aggregate_graphs.php:1498
+#: aggregate_graphs.php:1144 aggregate_graphs.php:1503
 #: aggregate_templates.php:577 automation_devices.php:540
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:1056 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:815
 #: data_queries.php:1291 data_source_profiles.php:853
 #: data_source_profiles.php:974 data_sources.php:1431 data_templates.php:890
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:654
-#: graphs.php:1898 graphs_new.php:399 host.php:1526 host_templates.php:731
+#: graphs.php:1898 graphs_new.php:400 host.php:1526 host_templates.php:731
 #: include/global_form.php:212 lib/api_automation.php:184
 #: lib/api_automation.php:482 lib/api_automation.php:716
 #: lib/api_automation.php:1107 lib/html_reports.php:1528 links.php:321
@@ -552,19 +552,19 @@ msgstr "Standaard"
 msgid "Part of Aggregate"
 msgstr "Onderdeel van aggregatie"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: aggregate_templates.php:598 automation_devices.php:476
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:975 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:827
 #: data_queries.php:1303 data_source_profiles.php:871 data_sources.php:1372
 #: data_templates.php:908 gprint_presets.php:291 graph_templates.php:685
-#: graph_view.php:599 graphs.php:1879 graphs_new.php:378 host.php:1491
+#: graph_view.php:599 graphs.php:1879 graphs_new.php:379 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
 #: lib/clog_webapi.php:516 lib/html.php:1393 lib/html_filter.php:81
-#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:991
+#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:994
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -573,13 +573,13 @@ msgstr "Onderdeel van aggregatie"
 msgid "Go"
 msgstr "Ga"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: automation_devices.php:476 automation_snmp.php:682
 #: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
-#: data_input.php:825 data_queries.php:1303 data_source_profiles.php:871
+#: data_input.php:827 data_queries.php:1303 data_source_profiles.php:871
 #: data_sources.php:1372 data_templates.php:908 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:599 graphs.php:1879
-#: graphs_new.php:378 host.php:1491 host_templates.php:749
+#: graphs_new.php:379 host.php:1491 host_templates.php:749
 #: lib/html_graph.php:190 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -592,20 +592,20 @@ msgstr "Ga"
 msgid "Set/Refresh Filters"
 msgstr "Stel in/vernieuw filters"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516
 #: aggregate_templates.php:599 automation_devices.php:477
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:976 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:828
 #: data_queries.php:1304 data_source_profiles.php:872 data_sources.php:1373
 #: data_templates.php:909 gprint_presets.php:292 graph_templates.php:686
-#: graph_view.php:600 graphs.php:1880 graphs_new.php:379 host.php:1492
+#: graph_view.php:600 graphs.php:1880 graphs_new.php:380 host.php:1492
 #: host_templates.php:750 lib/api_automation.php:197 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1120
 #: lib/clog_webapi.php:517 lib/html_filter.php:86 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:992
-#: lib/html_tree.php:1102 links.php:332 managers.php:173 managers.php:517
+#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:995
+#: lib/html_tree.php:1105 links.php:332 managers.php:173 managers.php:517
 #: managers.php:747 plugins.php:378 pollers.php:755 sites.php:448 tree.php:1924
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
@@ -613,13 +613,13 @@ msgstr "Stel in/vernieuw filters"
 msgid "Clear"
 msgstr "Herstel"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511 automation_snmp.php:683
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516 automation_snmp.php:683
 #: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
-#: data_input.php:826 data_queries.php:1304 data_source_profiles.php:872
+#: data_input.php:828 data_queries.php:1304 data_source_profiles.php:872
 #: data_sources.php:1373 data_templates.php:909 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:600 graphs.php:1880
-#: graphs_new.php:379 host.php:1492 host_templates.php:750
-#: lib/html_graph.php:191 lib/html_tree.php:992 managers.php:173
+#: graphs_new.php:380 host.php:1492 host_templates.php:750
+#: lib/html_graph.php:191 lib/html_tree.php:995 managers.php:173
 #: managers.php:517 managers.php:747 plugins.php:378 pollers.php:755
 #: sites.php:448 tree.php:1924 user_admin.php:2277 user_admin.php:2643
 #: user_admin.php:2728 user_admin.php:2832 user_admin.php:2917
@@ -632,12 +632,12 @@ msgstr "Herstel"
 msgid "Clear Filters"
 msgstr "Stel filters opnieuw in"
 
-#: aggregate_graphs.php:1246 aggregate_graphs.php:1574 graphs.php:1132
+#: aggregate_graphs.php:1246 aggregate_graphs.php:1579 graphs.php:1132
 #: lib/api_automation.php:572 user_admin.php:1012 user_group_admin.php:825
 msgid "Graph Title"
 msgstr "Grafiektitel"
 
-#: aggregate_graphs.php:1247 aggregate_graphs.php:1575
+#: aggregate_graphs.php:1247 aggregate_graphs.php:1580
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
 #: data_debug.php:346 data_queries.php:1387 data_sources.php:1600
 #: data_templates.php:1019 graph_templates.php:793 graphs.php:2027
@@ -653,14 +653,14 @@ msgstr "ID"
 msgid "Included in Aggregate"
 msgstr "Opgenomen in aggregatie"
 
-#: aggregate_graphs.php:1249 aggregate_graphs.php:1577 graph_realtime.php:311
+#: aggregate_graphs.php:1249 aggregate_graphs.php:1582 graph_realtime.php:311
 #: graph_templates.php:796 graph_view.php:727 graphs.php:2045
 msgid "Size"
 msgstr "Grootte"
 
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:689 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_input.php:925 data_queries.php:1407
+#: color_templates.php:578 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1014 data_source_profiles.php:1015
 #: data_sources.php:1681 data_sources.php:1682 data_templates.php:1044
 #: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
@@ -674,7 +674,7 @@ msgstr "Nee"
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
 #: color_templates.php:578 data_debug.php:629 data_debug.php:634
-#: data_debug.php:639 data_input.php:925 data_queries.php:1407
+#: data_debug.php:639 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1013 data_source_profiles.php:1014
 #: data_source_profiles.php:1015 data_sources.php:1681 data_sources.php:1682
 #: data_templates.php:1044 gprint_presets.php:414 graph_templates.php:814
@@ -691,26 +691,26 @@ msgstr "Ja"
 msgid "No Graphs Found"
 msgstr "Geen grafieken gevonden"
 
-#: aggregate_graphs.php:1457
+#: aggregate_graphs.php:1462
 #, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[ Aangepaste grafieklijst toegepast - Filter VAN lijst ]"
 
-#: aggregate_graphs.php:1457 aggregate_graphs.php:1565
+#: aggregate_graphs.php:1462 aggregate_graphs.php:1570
 #: include/global_arrays.php:2536
 msgid "Aggregate Graphs"
 msgstr "Geaggregeerde grafieken"
 
-#: aggregate_graphs.php:1472 data_debug.php:949 data_sources.php:1346
+#: aggregate_graphs.php:1477 data_debug.php:949 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
 #: include/global_arrays.php:2682 include/global_settings.php:514
-#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:954
+#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:957
 #: rrdcleaner.php:351 user_admin.php:2598 user_admin.php:2791
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1677
 msgid "Template"
 msgstr "Template"
 
-#: aggregate_graphs.php:1476 automation_devices.php:465
+#: aggregate_graphs.php:1481 automation_devices.php:465
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
@@ -718,7 +718,7 @@ msgstr "Template"
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
-#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2269
+#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2288
 #: lib/html.php:1918 lib/html.php:1941 lib/html.php:1979
 #: lib/html_reports.php:1518 managers.php:483 managers.php:736
 #: user_admin.php:2602 user_admin.php:2795 user_group_admin.php:2176
@@ -728,7 +728,7 @@ msgstr "Template"
 msgid "Any"
 msgstr "Alle"
 
-#: aggregate_graphs.php:1477 aggregate_graphs.php:1589
+#: aggregate_graphs.php:1482 aggregate_graphs.php:1594
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
 #: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:917
@@ -749,7 +749,7 @@ msgstr "Alle"
 #: include/global_settings.php:1093 include/global_settings.php:1555
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
-#: lib/api_automation.php:1075 lib/auth.php:2272 lib/html.php:191
+#: lib/api_automation.php:1075 lib/auth.php:2291 lib/html.php:191
 #: lib/html.php:1919 lib/html.php:1939 lib/html.php:1980 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
@@ -758,24 +758,24 @@ msgstr "Alle"
 msgid "None"
 msgstr "Geen"
 
-#: aggregate_graphs.php:1574
+#: aggregate_graphs.php:1579
 msgid "The title for the Aggregate Graphs"
 msgstr "De titel van de geaggregeerde grafieken"
 
-#: aggregate_graphs.php:1575
+#: aggregate_graphs.php:1580
 msgid "The internal database identifier for this object"
 msgstr "De interne database identifier voor dit object"
 
-#: aggregate_graphs.php:1576 graphs.php:1136
+#: aggregate_graphs.php:1581 graphs.php:1136
 msgid "Aggregate Template"
 msgstr "Geaggregeerde template"
 
-#: aggregate_graphs.php:1576
+#: aggregate_graphs.php:1581
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr ""
 "Het geaggregeerde template waarop dit geaggregeerde template is gebaseerd"
 
-#: aggregate_graphs.php:1595
+#: aggregate_graphs.php:1600
 msgid "No Aggregate Graphs Found"
 msgstr "Geen geaggregeerde grafieken gevonden"
 
@@ -783,7 +783,7 @@ msgstr "Geen geaggregeerde grafieken gevonden"
 msgid "Override Values for Graph Item"
 msgstr "Overrule de waarden voor dit grafiek item"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1790
+#: aggregate_items.php:358 lib/api_aggregate.php:1793
 msgid "Override this Value"
 msgstr "Overrule deze waarde"
 
@@ -837,7 +837,7 @@ msgstr ""
 "In gebruik betekent dat ze zijn gekoppeld aan een aggregaat."
 
 #: aggregate_templates.php:663 cdef.php:889 color.php:703
-#: color_templates.php:560 data_input.php:907 data_queries.php:1388
+#: color_templates.php:560 data_input.php:909 data_queries.php:1388
 #: data_source_profiles.php:975 data_sources.php:1618 data_templates.php:1020
 #: gprint_presets.php:395 graph_templates.php:794 host_templates.php:839
 #: vdef.php:888
@@ -940,9 +940,9 @@ msgstr "Nieuw wachtwoord"
 msgid "Confirm new password"
 msgstr "Bevestig nieuw wachtwoord"
 
-#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:380
+#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:381
 #: lib/html_form.php:1266 lib/html_form.php:1275 lib/html_graph.php:193
-#: lib/html_tree.php:994 settings.php:389
+#: lib/html_tree.php:997 settings.php:389
 msgid "Save"
 msgstr "Opslaan"
 
@@ -1640,8 +1640,8 @@ msgstr "Zoek netwerk binnen bereik [nieuw]"
 msgid "General Settings"
 msgstr "Algemene instellingen"
 
-#: automation_networks.php:441 automation_snmp.php:475 data_input.php:615
-#: data_input.php:676 data_queries.php:778 data_queries.php:876
+#: automation_networks.php:441 automation_snmp.php:475 data_input.php:617
+#: data_input.php:678 data_queries.php:778 data_queries.php:876
 #: data_queries.php:1138 data_source_profiles.php:573 graph_templates.php:451
 #: include/global_form.php:171 include/global_form.php:237
 #: include/global_form.php:294 include/global_form.php:314
@@ -2263,7 +2263,7 @@ msgstr "Geen netwerken gevonden"
 
 #: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:548 lib/html_graph.php:306
-#: lib/html_tree.php:1101 lib/html_tree.php:1122 utilities.php:1128
+#: lib/html_tree.php:1104 lib/html_tree.php:1125 utilities.php:1128
 #: utilities.php:2037
 msgid "Refresh"
 msgstr "Vernieuwen"
@@ -2838,7 +2838,7 @@ msgstr ""
 msgid "The number of Graphs using this CDEF."
 msgstr "Het aantal grafieken die deze CDEF gebruiken."
 
-#: cdef.php:891 color.php:705 data_input.php:909 data_queries.php:1390
+#: cdef.php:891 color.php:705 data_input.php:911 data_queries.php:1390
 #: data_source_profiles.php:980 gprint_presets.php:397 vdef.php:890
 msgid "Templates Using"
 msgstr "Gebruikte templates"
@@ -3010,14 +3010,14 @@ msgstr "Geen kleuren gevonden"
 msgid "Color Item"
 msgstr "Kleur item"
 
-#: color_templates.php:93 lib/api_aggregate.php:1680 lib/api_aggregate.php:1683
-#: lib/api_aggregate.php:1688 lib/html.php:1091 lib/html_reports.php:1407
+#: color_templates.php:93 lib/api_aggregate.php:1683 lib/api_aggregate.php:1686
+#: lib/api_aggregate.php:1691 lib/html.php:1091 lib/html_reports.php:1407
 #, php-format
 msgid "Item # %d"
 msgstr "Item # %d"
 
 #: color_templates.php:132 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1740 lib/html.php:1173
+#: lib/api_aggregate.php:1743 lib/html.php:1173
 msgid "No Items"
 msgstr "Geen items"
 
@@ -3167,7 +3167,7 @@ msgstr "Data Source Repair heeft een ongeldige Data Source ID ontvangen."
 #: data_debug.php:330 data_debug.php:807 data_queries.php:733
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
 #: include/global_arrays.php:887 include/global_form.php:926
-#: lib/api_aggregate.php:1596 lib/html.php:1051
+#: lib/api_aggregate.php:1599 lib/html.php:1051
 msgid "Data Source"
 msgstr "Data bron"
 
@@ -3481,7 +3481,7 @@ msgstr "Profiel"
 
 #: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1385 data_sources.php:1401 data_sources.php:1412
-#: data_templates.php:874 graphs_new.php:355 lib/clog_webapi.php:530
+#: data_templates.php:874 graphs_new.php:356 lib/clog_webapi.php:530
 #: lib/html.php:190 lib/html_reports.php:625 plugins.php:351 settings.php:419
 #: settings.php:438 settings.php:464 tree.php:786 utilities.php:674
 #: utilities.php:1110
@@ -3543,7 +3543,7 @@ msgstr "Leesbare naam: %s"
 msgid "Remove Data Input Field"
 msgstr "Verwijder data invoer veld"
 
-#: data_input.php:466
+#: data_input.php:468
 #, fuzzy
 msgid ""
 "This script appears to have no input values, therefore there is nothing to "
@@ -3552,55 +3552,55 @@ msgstr ""
 "Dit script lijkt geen invoerwaarden te hebben, daarom is er niets toe te "
 "voegen."
 
-#: data_input.php:472
+#: data_input.php:474
 #, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "Uitvoer veld [wijzig: %s]"
 
-#: data_input.php:473 include/global_form.php:616
+#: data_input.php:475 include/global_form.php:616
 msgid "Output Field"
 msgstr "Uitvoer veld"
 
-#: data_input.php:475
+#: data_input.php:477
 #, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "Invoer veld [wijzig: %s]"
 
-#: data_input.php:476
+#: data_input.php:478
 msgid "Input Field"
 msgstr "Invoer veld"
 
-#: data_input.php:558
+#: data_input.php:560
 #, php-format
 msgid "Data Input Methods [edit: %s]"
 msgstr "Data invoer methode [wijzig: %s]"
 
-#: data_input.php:562
+#: data_input.php:564
 msgid "Data Input Methods [new]"
 msgstr "Data invoer methode [nieuw]"
 
-#: data_input.php:576 include/global_arrays.php:435
+#: data_input.php:578 include/global_arrays.php:435
 msgid "SNMP Get"
 msgstr "SNMP get"
 
-#: data_input.php:579 include/global_arrays.php:436
+#: data_input.php:581 include/global_arrays.php:436
 msgid "SNMP Query"
 msgstr "SNMP query"
 
-#: data_input.php:582 include/global_arrays.php:438
+#: data_input.php:584 include/global_arrays.php:438
 msgid "Script Query"
 msgstr "Script query"
 
-#: data_input.php:585 include/global_arrays.php:440
+#: data_input.php:587 include/global_arrays.php:440
 msgid "Script Query - Script Server"
 msgstr "Script query - Script server"
 
-#: data_input.php:593
+#: data_input.php:595
 #, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "Verificatie van de witte lijst Geslaagd."
 
-#: data_input.php:595
+#: data_input.php:597
 #, fuzzy
 msgid ""
 "White List Verification Failed.  Run CLI script input_whitelist.php to "
@@ -3609,7 +3609,7 @@ msgstr ""
 "Verificatie van de witte lijst is mislukt.  Start CLI script input_whitelist."
 "php om te corrigeren."
 
-#: data_input.php:597
+#: data_input.php:599
 #, fuzzy
 msgid ""
 "Input String does not exist in White List.  Run CLI script input_whitelist."
@@ -3618,67 +3618,67 @@ msgstr ""
 "Input String bestaat niet in de witte lijst.  Start CLI script "
 "input_whitelist.php om te corrigeren."
 
-#: data_input.php:612
+#: data_input.php:614
 msgid "Input Fields"
 msgstr "Invoer veld"
 
-#: data_input.php:616 data_input.php:677 include/global_form.php:421
+#: data_input.php:618 data_input.php:679 include/global_form.php:421
 msgid "Friendly Name"
 msgstr "Leesbare naam"
 
-#: data_input.php:617
+#: data_input.php:619
 msgid "Field Order"
 msgstr "Veldvolgorde"
 
-#: data_input.php:661
+#: data_input.php:663
 msgid "(Not In Use)"
 msgstr "(Niet in gebruik)"
 
-#: data_input.php:670
+#: data_input.php:672
 msgid "No Input Fields"
 msgstr "Geen invoer velden"
 
-#: data_input.php:674
+#: data_input.php:676
 msgid "Output Fields"
 msgstr "Uitvoer velden"
 
-#: data_input.php:678
+#: data_input.php:680
 msgid "Update RRA"
 msgstr "RRA bijwerken"
 
-#: data_input.php:704
+#: data_input.php:706
 #, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr ""
 "Uitvoervelden kunnen niet worden verwijderd als er gegevensbronnen aanwezig "
 "zijn"
 
-#: data_input.php:713
+#: data_input.php:715
 msgid "No Output Fields"
 msgstr "Geen uitvoer velden"
 
-#: data_input.php:736 host_templates.php:618
+#: data_input.php:738 host_templates.php:618
 msgid "Delete Data Input Field"
 msgstr "Verwijder data invoer veld"
 
-#: data_input.php:794 include/global_arrays.php:882
+#: data_input.php:796 include/global_arrays.php:882
 #: include/global_arrays.php:1078 include/global_arrays.php:2152
 msgid "Data Input Methods"
 msgstr "Data invoer methoden"
 
-#: data_input.php:809 data_input.php:897
+#: data_input.php:811 data_input.php:899
 msgid "Input Methods"
 msgstr "Invoer methoden"
 
-#: data_input.php:906
+#: data_input.php:908
 msgid "Data Input Name"
 msgstr "Data invoer naam"
 
-#: data_input.php:906
+#: data_input.php:908
 msgid "The name of this Data Input Method."
 msgstr "De naam van deze data invoer methode."
 
-#: data_input.php:907
+#: data_input.php:909
 msgid ""
 "Data Inputs that are in use cannot be Deleted. In use is defined as being "
 "referenced either by a Data Source or a Data Template."
@@ -3687,30 +3687,30 @@ msgstr ""
 "data invoer veld is in gebruik als deze is gekoppeld aan een data source of "
 "data template."
 
-#: data_input.php:908 data_source_profiles.php:979 data_templates.php:1021
+#: data_input.php:910 data_source_profiles.php:979 data_templates.php:1021
 msgid "Data Sources Using"
 msgstr "Databron gebruikt"
 
-#: data_input.php:908
+#: data_input.php:910
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "Het aantal data bronnen dat deze data invoer methode gebruiken."
 
-#: data_input.php:909
+#: data_input.php:911
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "Het aantal data templates dat deze data invoer methode gebruiken."
 
-#: data_input.php:910 data_queries.php:1391 include/global_arrays.php:1205
+#: data_input.php:912 data_queries.php:1391 include/global_arrays.php:1205
 #: include/global_form.php:540 include/global_form.php:1332
 msgid "Data Input Method"
 msgstr "Data invoer methode"
 
-#: data_input.php:910
+#: data_input.php:912
 msgid "The method used to gather information for this Data Input Method."
 msgstr ""
 "De methode die moet worden gebruikt om informatie te verzamelen over deze "
 "data invoer methode."
 
-#: data_input.php:933
+#: data_input.php:935
 msgid "No Data Input Methods Found"
 msgstr "Geen data invoer methoden gevonden"
 
@@ -3832,7 +3832,7 @@ msgstr "XML bestand niet gevonden."
 msgid "Associated Graph Templates"
 msgstr "Gekoppelde grafiektemplates"
 
-#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:456
+#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:457
 #: host.php:683 lib/api_automation.php:574
 msgid "Graph Template Name"
 msgstr "Naam grafiektemplate"
@@ -3997,7 +3997,7 @@ msgstr "Grafiek tijdspanne"
 msgid "Steps"
 msgstr "Stappen"
 
-#: data_source_profiles.php:577 graphs_new.php:395 include/global_form.php:254
+#: data_source_profiles.php:577 graphs_new.php:396 include/global_form.php:254
 #: lib/html.php:490 lib/html_filter.php:73 lib/installer.php:2345
 #: lib/rrd.php:2871 utilities.php:507 utilities.php:1444
 msgid "Rows"
@@ -4776,12 +4776,12 @@ msgstr ""
 msgid "Cacti Real-time Graphing"
 msgstr "Cacti real-time grafieken"
 
-#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1110
+#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1113
 msgid "Window"
 msgstr "Venster"
 
 #: graph_realtime.php:325 lib/html_graph.php:238 lib/html_reports.php:1028
-#: lib/html_tree.php:1033
+#: lib/html_tree.php:1036
 msgid "Thumbnails"
 msgstr "Thumbnails"
 
@@ -4901,8 +4901,8 @@ msgstr ""
 "rechterkant te overschrijven tijdens het maken van grafieken."
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
-#: graphs_new.php:451 include/global_arrays.php:1089
-#: include/global_arrays.php:2026 lib/html_tree.php:547 user_admin.php:1409
+#: graphs_new.php:452 include/global_arrays.php:1089
+#: include/global_arrays.php:2026 lib/html_tree.php:548 user_admin.php:1409
 #: user_group_admin.php:1105
 msgid "Graph Templates"
 msgstr "Grafiektemplates"
@@ -5031,13 +5031,13 @@ msgid "Report"
 msgstr "Rapport"
 
 #: graph_view.php:616 lib/html.php:176 lib/html.php:181 lib/html_graph.php:157
-#: lib/html_tree.php:958
+#: lib/html_tree.php:961
 msgid "All Graphs & Templates"
 msgstr "Alle grafiektemplates"
 
 #: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
 #: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
-#: lib/html_tree.php:959
+#: lib/html_tree.php:962
 #, fuzzy
 msgid "Not Templated"
 msgstr "Niet getempereerd"
@@ -5477,63 +5477,63 @@ msgstr "Nieuwe grafieken voor [ %s ]"
 msgid "New Graphs for [ All Devices ]"
 msgstr "Nieuwe grafieken voor [ Alle apparaten ]"
 
-#: graphs_new.php:286
+#: graphs_new.php:287
 msgid "New Graphs for None Host Type"
 msgstr "Nieuwe grafiek voor type geen-host"
 
-#: graphs_new.php:316 lib/html.php:2290
+#: graphs_new.php:317 lib/html.php:2290
 msgid "Filter Settings Saved"
 msgstr "Filter instellingen opgeslagen"
 
-#: graphs_new.php:351
+#: graphs_new.php:352
 msgid "Graph Types"
 msgstr "Grafiektype"
 
-#: graphs_new.php:356
+#: graphs_new.php:357
 msgid "Graph Template Based"
 msgstr "Grafiektemplate gebaseerd"
 
-#: graphs_new.php:380
+#: graphs_new.php:381
 msgid "Save Filters"
 msgstr "Filters opslaan"
 
-#: graphs_new.php:413
+#: graphs_new.php:414
 msgid "Edit this Device"
 msgstr "Wijzig dit apparaat"
 
-#: graphs_new.php:414 host.php:615
+#: graphs_new.php:415 host.php:615
 msgid "Create New Device"
 msgstr "Maak nieuw apparaat"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:930 user_admin.php:1630
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:930 user_admin.php:1630
 #: user_group_admin.php:1320
 msgid "Select All"
 msgstr "Selecteer alles"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:843 lib/html.php:930
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:843 lib/html.php:930
 msgid "Select All Rows"
 msgstr "Selecteer alle rijen"
 
-#: graphs_new.php:544 include/global_arrays.php:867
+#: graphs_new.php:545 include/global_arrays.php:867
 #: include/global_arrays.php:943 lib/html_form.php:1264 lib/html_form.php:1277
 #: tree.php:1368
 msgid "Create"
 msgstr "Maken"
 
-#: graphs_new.php:546
+#: graphs_new.php:547
 msgid "(Select a graph type to create)"
 msgstr "(Selecteer een type grafiek om te maken)"
 
-#: graphs_new.php:630
+#: graphs_new.php:631
 #, php-format
 msgid "Data Query [%s]"
 msgstr "Data query [%s]"
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 msgid "From there you can get more information."
 msgstr "Daar kunt u meer informatie krijgen."
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 msgid ""
 "This Data Query returned 0 rows, perhaps there was a problem executing this "
 "Data Query."
@@ -5541,27 +5541,27 @@ msgstr ""
 "Deze data query retourneerde geen rijen, misschien is er een probleem bij "
 "het uitvoeren van de data query."
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 msgid "You can run this Data Query in debug mode"
 msgstr "U kunt deze data query in debug modus uitvoeren"
 
-#: graphs_new.php:790
+#: graphs_new.php:791
 msgid "Search Returned no Rows."
 msgstr "Geen zoekresultaten."
 
-#: graphs_new.php:795
+#: graphs_new.php:796
 msgid "Error in data query."
 msgstr "Fout in data query."
 
-#: graphs_new.php:819
+#: graphs_new.php:820
 msgid "Select a Graph Type to Create"
 msgstr "Selecteer een grafiektype om te creëeren"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 msgid "Make selection default"
 msgstr "Maak standaardselectie"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 msgid "Set Default"
 msgstr "Stel in als standaard"
 
@@ -7123,7 +7123,7 @@ msgstr "Apparaatregels"
 
 #: include/global_arrays.php:899 include/global_arrays.php:948
 #: include/global_arrays.php:1087 lib/html_filter.php:178
-#: lib/html_graph.php:252 lib/html_tree.php:1047
+#: lib/html_graph.php:252 lib/html_tree.php:1050
 msgid "Presets"
 msgstr "Voorinstellingen"
 
@@ -8078,7 +8078,7 @@ msgstr "Beheer grafiek"
 msgid "(Edit)"
 msgstr "(Wijzig)"
 
-#: include/global_arrays.php:1912 lib/api_aggregate.php:1591
+#: include/global_arrays.php:1912 lib/api_aggregate.php:1594
 msgid "Graph Items"
 msgstr "Grafiekitems"
 
@@ -8107,7 +8107,7 @@ msgstr "Logboek Bekijken"
 msgid "Graph Trees"
 msgstr "Grafiek Bomen"
 
-#: include/global_arrays.php:2044 lib/api_aggregate.php:1591
+#: include/global_arrays.php:2044 lib/api_aggregate.php:1594
 msgid "Graph Template Items"
 msgstr "Grafiektemplate items"
 
@@ -9240,7 +9240,7 @@ msgstr "Legenda richting (—legend-direction=&lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "Plaats de legenda-items in de opgegeven verticale volgorde."
 
-#: include/global_form.php:919 lib/api_aggregate.php:1597 lib/html.php:1052
+#: include/global_form.php:919 lib/api_aggregate.php:1600 lib/html.php:1052
 msgid "Graph Item Type"
 msgstr "Grafiek item type"
 
@@ -10726,7 +10726,7 @@ msgstr ""
 
 #: include/global_settings.php:444
 #, fuzzy
-msgid "Graphs auto unlock"
+msgid "Graphs Auto Unlock"
 msgstr "Grafiek koppelregels"
 
 #: include/global_settings.php:445
@@ -13347,9 +13347,9 @@ msgstr "1 Kolom"
 #: include/global_settings.php:2163 include/global_settings.php:2164
 #: include/global_settings.php:2165 include/global_settings.php:2166
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1023
-#: lib/html_tree.php:1024 lib/html_tree.php:1025 lib/html_tree.php:1026
-#: lib/html_tree.php:1027
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1026
+#: lib/html_tree.php:1027 lib/html_tree.php:1028 lib/html_tree.php:1029
+#: lib/html_tree.php:1030
 #, php-format
 msgid "%d Columns"
 msgstr "%d Kolommen"
@@ -13653,7 +13653,7 @@ msgstr "De shell_exec() en/of exec() functies zijn momenteel geblokkeerd."
 msgid "Display Graphs from this Aggregate"
 msgstr "Grafieken van dit aggregaat weergeven"
 
-#: lib/api_aggregate.php:1464
+#: lib/api_aggregate.php:1467
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph below represent Graphs from "
@@ -13665,12 +13665,12 @@ msgstr ""
 "geen ondersteuning voor het maken van Aggregate Graphs uit meerdere Graph "
 "Templates."
 
-#: lib/api_aggregate.php:1465 lib/api_aggregate.php:1484
+#: lib/api_aggregate.php:1468 lib/api_aggregate.php:1487
 #, fuzzy
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "Druk op 'enter' om terug te gaan en een andere grafiek te selecteren."
 
-#: lib/api_aggregate.php:1483
+#: lib/api_aggregate.php:1486
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
@@ -13681,31 +13681,31 @@ msgstr ""
 "grafieksjablonen.  Aggregate ondersteunt geen ondersteuning voor het maken "
 "van Aggregate Graphs van niet-gememplateerde grafieken."
 
-#: lib/api_aggregate.php:1595 lib/html.php:1050
+#: lib/api_aggregate.php:1598 lib/html.php:1050
 msgid "Graph Item"
 msgstr "Grafiekitem"
 
-#: lib/api_aggregate.php:1598 lib/html.php:1053
+#: lib/api_aggregate.php:1601 lib/html.php:1053
 msgid "CF Type"
 msgstr "CF Type"
 
-#: lib/api_aggregate.php:1599 lib/html.php:1055
+#: lib/api_aggregate.php:1602 lib/html.php:1055
 msgid "Item Color"
 msgstr "Kleur item"
 
-#: lib/api_aggregate.php:1600
+#: lib/api_aggregate.php:1603
 msgid "Color Template"
 msgstr "Kleur template"
 
-#: lib/api_aggregate.php:1601
+#: lib/api_aggregate.php:1604
 msgid "Skip"
 msgstr "Overslaan"
 
-#: lib/api_aggregate.php:1677
+#: lib/api_aggregate.php:1680
 msgid "Aggregate Items are not modifyable"
 msgstr "Geaggregeerde items zijn niet te wijzigen"
 
-#: lib/api_aggregate.php:1688
+#: lib/api_aggregate.php:1691
 msgid "Aggregate Items are not editable"
 msgstr "Geaggregeerde items zijn niet te wijzigen"
 
@@ -13845,7 +13845,7 @@ msgstr "Regelitem [wijzig regelitem voor %s: %s]"
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "Regelpost [nieuw regelitem voor %s: %s]."
 
-#: lib/api_automation.php:2865
+#: lib/api_automation.php:2850
 msgid "Added by Cacti Automation"
 msgstr "Toegevoegd door Cacti automation"
 
@@ -13929,42 +13929,42 @@ msgstr "Nieuwe vestiging"
 msgid "Web Basic"
 msgstr "Web Basis"
 
-#: lib/auth.php:1714 lib/auth.php:1746
+#: lib/auth.php:1733 lib/auth.php:1765
 #, fuzzy
 msgid "Branch:"
 msgstr "Nieuwe vestiging"
 
-#: lib/auth.php:1723 lib/auth.php:1754 lib/html_tree.php:930
+#: lib/auth.php:1742 lib/auth.php:1773 lib/html_tree.php:933
 msgid "Device:"
 msgstr "Apparaat:"
 
-#: lib/auth.php:2412 lib/auth.php:2421
+#: lib/auth.php:2431 lib/auth.php:2440
 msgid "This account has been locked."
 msgstr "Dit account is geblokkeerd."
 
-#: lib/auth.php:2442
+#: lib/auth.php:2461
 msgid ""
 "Your Cacti administrator has forced complex passwords for logins and your "
 "current Cacti password does not match the new requirements.  Therefore, you "
 "must change your password now."
 msgstr ""
 
-#: lib/auth.php:2464
+#: lib/auth.php:2483
 #, php-format
 msgid "Password must be at least %d characters!"
 msgstr "Moet op zijn minst %d karakters lang zijn!"
 
-#: lib/auth.php:2470
+#: lib/auth.php:2489
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "Het wachtwoord moet minstens 1 numeriek karakter bevatten!"
 
-#: lib/auth.php:2474
+#: lib/auth.php:2493
 msgid ""
 "Your password must contain a mix of lower case and upper case characters!"
 msgstr ""
 "Het wachtwoord moet een combinatie van kleine en hoofdletters bevatten!"
 
-#: lib/auth.php:2480
+#: lib/auth.php:2499
 msgid "Your password must contain at least 1 special character!"
 msgstr "Het wachtwoord moet tenminste 1 vreemd teken bevatten!"
 
@@ -14067,32 +14067,32 @@ msgstr "Nieuwste eerst"
 msgid "Oldest First"
 msgstr "Oudste eerst"
 
-#: lib/data_query.php:71 lib/data_query.php:368
+#: lib/data_query.php:71 lib/data_query.php:389
 #, fuzzy
 msgid "Automation Execution for Data Query complete"
 msgstr "Automatiseringsuitvoering voor datavraag compleet"
 
-#: lib/data_query.php:74 lib/data_query.php:371
+#: lib/data_query.php:74 lib/data_query.php:392
 #, fuzzy
 msgid "Plugin Hooks complete"
 msgstr "Plugin Haken compleet"
 
-#: lib/data_query.php:89
+#: lib/data_query.php:92
 #, fuzzy, php-format
 msgid "Running Data Query [%s]."
 msgstr "Lopende gegevensvraag [%s]."
 
-#: lib/data_query.php:99
+#: lib/data_query.php:102
 #, fuzzy, php-format
 msgid "Found Type = '%s' [%s]."
 msgstr "Gevonden Type = '%s' [%s]."
 
-#: lib/data_query.php:121
+#: lib/data_query.php:124
 #, fuzzy, php-format
 msgid "Unknown Type = '%s'."
 msgstr "Onbekend Type = '%s'."
 
-#: lib/data_query.php:145
+#: lib/data_query.php:160
 #, fuzzy
 msgid ""
 "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -14100,42 +14100,47 @@ msgstr ""
 "WAARSCHUWING: Sorteer veldassociatie is veranderd.  Er kunnen zich problemen "
 "voordoen bij het opnieuw in kaart brengen!"
 
-#: lib/data_query.php:156
+#: lib/data_query.php:172
 #, fuzzy
 msgid "Update Data Query Sort Cache complete"
 msgstr "Update Data Query Sorteer Cache compleet"
 
-#: lib/data_query.php:271
+#: lib/data_query.php:287
 #, fuzzy, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
 msgstr "Indexwijziging gedetecteerd! CurrentIndex: %s, PreviousIndex: %s"
 
-#: lib/data_query.php:282
+#: lib/data_query.php:299
+#, fuzzy, php-format
+msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
+msgstr "Indexverwijdering gedetecteerd! VorigeIndex: %s"
+
+#: lib/data_query.php:302
 #, fuzzy, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "Indexverwijdering gedetecteerd! VorigeIndex: %s"
 
-#: lib/data_query.php:314
+#: lib/data_query.php:335
 #, fuzzy
 msgid "Remapping Graphs to their new Indexes"
 msgstr "Grafieken opnieuw toewijzen aan hun nieuwe indexen"
 
-#: lib/data_query.php:324
+#: lib/data_query.php:345
 #, fuzzy
 msgid "Index Association with Local Data complete"
 msgstr "Index Associatie met lokale gegevens compleet"
 
-#: lib/data_query.php:330
+#: lib/data_query.php:351
 #, fuzzy
 msgid "Update Re-Index Cache complete. There were "
 msgstr "Update Re-Index Cache compleet. Er waren"
 
-#: lib/data_query.php:334
+#: lib/data_query.php:355
 #, fuzzy
 msgid "Update Poller Cache for Query complete"
 msgstr "Update Poller Cache voor query compleet"
 
-#: lib/data_query.php:336
+#: lib/data_query.php:357
 #, fuzzy
 msgid ""
 "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
@@ -14143,63 +14148,63 @@ msgstr ""
 "Geen indexwijzigingen gedetecteerd, overslaan van Re-Index en Poller Cache "
 "Re-populatie"
 
-#: lib/data_query.php:360
+#: lib/data_query.php:381
 #, fuzzy
 msgid "Automation Executing for Data Query complete"
 msgstr "Automatiseringsuitvoering voor datavraag compleet"
 
-#: lib/data_query.php:363
+#: lib/data_query.php:384
 #, fuzzy
 msgid "Plugin hooks complete"
 msgstr "Plugin haken compleet"
 
-#: lib/data_query.php:389
+#: lib/data_query.php:410
 #, fuzzy
 msgid "Checking for Sort Field change.  No changes detected."
 msgstr ""
 "Controleren of er sprake is van een wijziging in het veld sorteren.  Geen "
 "veranderingen gedetecteerd."
 
-#: lib/data_query.php:394
+#: lib/data_query.php:415
 #, fuzzy, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr "Gedetecteerd nieuw sorteerveld: \"%s\" Oud sorteerveld \"%s\"."
 
-#: lib/data_query.php:411
+#: lib/data_query.php:432
 #, fuzzy
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
 msgstr "ERROR: Nieuw sorteerveld niet geschikt.  Veld sorteren verandert niet."
 
-#: lib/data_query.php:423
+#: lib/data_query.php:444
 #, fuzzy
 msgid "New Sort Field validated.  Sort Field be updated."
 msgstr "Nieuw sorteerveld gevalideerd.  Sorteerveld worden bijgewerkt."
 
-#: lib/data_query.php:511
+#: lib/data_query.php:532
 #, php-format
 msgid "Could not find data query XML file at '%s'"
 msgstr "Het data query XML bestand kon niet worden gevonden in '%s'"
 
-#: lib/data_query.php:515
+#: lib/data_query.php:536
 #, fuzzy, php-format
 msgid "Found data query XML file at '%s'"
 msgstr "Gevonden gegevens opvragen XML-bestand bij '%s'"
 
-#: lib/data_query.php:533 lib/data_query.php:711 lib/data_query.php:1998
+#: lib/data_query.php:554 lib/data_query.php:732 lib/data_query.php:2019
 #, fuzzy
 msgid "Error parsing XML file into an array."
 msgstr "Fout bij het parseren van een XML-bestand in een array."
 
-#: lib/data_query.php:537 lib/data_query.php:715
+#: lib/data_query.php:558 lib/data_query.php:736
 msgid "XML file parsed ok."
 msgstr "XML bestand succesvol geparsed."
 
-#: lib/data_query.php:545 lib/data_query.php:718
+#: lib/data_query.php:566 lib/data_query.php:739
 #, fuzzy, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgstr "Ongeldig veld &lt;index_order&gt;%s&lt;/index_order&gt;"
 
-#: lib/data_query.php:546 lib/data_query.php:719
+#: lib/data_query.php:567 lib/data_query.php:740
 #, fuzzy
 msgid ""
 "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;"
@@ -14208,22 +14213,22 @@ msgstr ""
 "Moet &lt;richting&gt;input&lt;/richting&gt; of &lt;richting&gt;input-"
 "output&lt;/richting&gt; velden alleen bevatten"
 
-#: lib/data_query.php:563 lib/data_query.php:587
+#: lib/data_query.php:584 lib/data_query.php:608
 #, fuzzy
 msgid "ERROR: Data Query returned no indexes."
 msgstr "ERROR: Data Query leverde geen indexen op."
 
-#: lib/data_query.php:567
+#: lib/data_query.php:588
 #, fuzzy, php-format
 msgid "Executing script for num of indexes '%s'"
 msgstr "Het uitvoeren van een script voor het aantal indexen '%s'."
 
-#: lib/data_query.php:570
+#: lib/data_query.php:591
 #, php-format
 msgid "Found number of indexes: %s"
 msgstr "Aantal gevonden indexes: %s"
 
-#: lib/data_query.php:574
+#: lib/data_query.php:595
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not "
@@ -14232,7 +14237,7 @@ msgstr ""
 "&lt;arg_num_num_indexes&gt; ontbreekt in XML-bestand, 'Index Count Changed' "
 "niet ondersteund"
 
-#: lib/data_query.php:576
+#: lib/data_query.php:597
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -14241,64 +14246,64 @@ msgstr ""
 "&lt;arg_num_indexes&gt; ontbreekt in XML-bestand, 'Index Count Changed' "
 "geëmuleerd door het tellen van arg_index entries"
 
-#: lib/data_query.php:591
+#: lib/data_query.php:612
 #, fuzzy, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
 msgstr ""
 "Het uitvoeren van een script voor de lijst van indexen '%s', Index Count: %s"
 
-#: lib/data_query.php:593
+#: lib/data_query.php:614
 #, fuzzy
 msgid "Click to show Data Query output for 'index'"
 msgstr "Klik om de uitvoer van de gegevensvraag voor 'index' weer te geven"
 
-#: lib/data_query.php:596
+#: lib/data_query.php:617
 #, php-format
 msgid "Found index: %s"
 msgstr "Gevonden index: %s"
 
-#: lib/data_query.php:609 lib/data_query.php:991
+#: lib/data_query.php:630 lib/data_query.php:1012
 #, fuzzy, php-format
 msgid "Click to show Data Query output for field '%s'"
 msgstr "Klik om de uitvoer van de gegevensvraag voor het veld '%s' te tonen"
 
-#: lib/data_query.php:614 lib/data_query.php:922
+#: lib/data_query.php:635 lib/data_query.php:943
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index."
 msgstr "Sorteerveld retourneerde geen gegevens.  Kan niet doorgaan Re-Index."
 
-#: lib/data_query.php:618
+#: lib/data_query.php:639
 #, fuzzy, php-format
 msgid "Executing script query '%s'"
 msgstr "Het uitvoeren van een script query '%s'"
 
-#: lib/data_query.php:628
+#: lib/data_query.php:649
 #, php-format
 msgid "Found item [%s='%s'] index: %s"
 msgstr "Gevonden item [%s='%s'] index: %s"
 
-#: lib/data_query.php:665 lib/data_query.php:680
+#: lib/data_query.php:686 lib/data_query.php:701
 #, fuzzy, php-format
 msgid "Total: %f, Delta: %f, %s"
 msgstr "Totaal: %f, Delta: %f, %f, %s"
 
-#: lib/data_query.php:705
+#: lib/data_query.php:726
 #, fuzzy, php-format
 msgid "Invalid host_id: %s"
 msgstr "Ongeldige host_id: %s"
 
-#: lib/data_query.php:730
+#: lib/data_query.php:751
 #, fuzzy
 msgid "Failed to load SNMP session."
 msgstr "SNMP-sessie niet geladen."
 
-#: lib/data_query.php:739
+#: lib/data_query.php:760
 #, fuzzy, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr ""
 "Het uitvoeren van SNMP krijgt voor het aantal indexen @ '%s' Index Count: %s"
 
-#: lib/data_query.php:741
+#: lib/data_query.php:762
 #, fuzzy
 msgid ""
 "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -14307,31 +14312,31 @@ msgstr ""
 "&lt;oid_num_num_indexes&gt; ontbreekt in XML-bestand, 'Index Count Changed' "
 "geëmuleerd door het tellen van oid_indexvermeldingen"
 
-#: lib/data_query.php:747
+#: lib/data_query.php:768
 #, fuzzy, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr "SNMP-wandeling uitvoeren voor lijst van indexen @ '%s' Index Count: %s"
 
-#: lib/data_query.php:751
+#: lib/data_query.php:772
 msgid "No SNMP data returned"
 msgstr "Geen SNMP data verkregen"
 
-#: lib/data_query.php:756
+#: lib/data_query.php:777
 #, fuzzy, php-format
 msgid "Index found at OID: '%s' value: '%s'"
 msgstr "Index gevonden bij OID: '%s' waarde: '%s' waarde: '%s'."
 
-#: lib/data_query.php:775
+#: lib/data_query.php:796
 #, fuzzy, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
 msgstr "Filteringslijst van indexen @ '%s' Index Telling: %s"
 
-#: lib/data_query.php:779
+#: lib/data_query.php:800
 #, fuzzy, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
 msgstr "Gefilterde index gevonden bij OID: '%s' waarde: '%s' waarde: '%s'."
 
-#: lib/data_query.php:797
+#: lib/data_query.php:818
 #, fuzzy, php-format
 msgid ""
 "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' "
@@ -14340,122 +14345,122 @@ msgstr ""
 "Fixeren van een verkeerd \"methode\"-veld voor \"%s\" omdat \"rewrite_index"
 "\" of \"oid_suffix\" is gedefinieerd"
 
-#: lib/data_query.php:804
+#: lib/data_query.php:825
 #, fuzzy, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
 msgstr "Invoegen van indexgegevens voor het veld \"%s\" [waarde=\"%s\"]"
 
-#: lib/data_query.php:809
+#: lib/data_query.php:830
 #, fuzzy, php-format
 msgid "Located input field '%s' [get]"
 msgstr "Gelegen invoerveld '%s' [get]"
 
-#: lib/data_query.php:818
+#: lib/data_query.php:839
 #, fuzzy, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
 msgstr "Gevonden OID-herschrijfregel: 's/%s/%s/%s/'."
 
-#: lib/data_query.php:829
+#: lib/data_query.php:850
 #, fuzzy, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
 msgstr "oid_rewrite at OID: \"%s\" nieuwe OID: \"%s\" nieuwe OID: \"%s\"."
 
-#: lib/data_query.php:850
+#: lib/data_query.php:871
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
 msgstr "Uitvoeren van SNMP krijgen voor gegevens @ '%s' [waarde='%s']"
 
-#: lib/data_query.php:861
+#: lib/data_query.php:882
 #, php-format
 msgid "Field '%s' %s"
 msgstr "Veld '%s' %s"
 
-#: lib/data_query.php:896
+#: lib/data_query.php:917
 #, fuzzy, php-format
 msgid "Executing SNMP get for %s oids (%s)"
 msgstr "Het uitvoeren van SNMP krijgt voor %s oids (%s)"
 
-#: lib/data_query.php:929
+#: lib/data_query.php:950
 #, fuzzy, php-format
 msgid "Found result for data @ '%s' [value='%s']"
 msgstr "Gevonden resultaat voor gegevens @ '%s' [waarde='%s']"
 
-#: lib/data_query.php:937
+#: lib/data_query.php:958
 #, fuzzy, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
 msgstr "Instelling resultaat voor gegevens @ '%s' [toets='%s', waarde='%s']"
 
-#: lib/data_query.php:941
+#: lib/data_query.php:962
 #, fuzzy, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 "Overgeslagen resultaat voor gegevens @ '%s' [sleutel='%s', waarde='%s']"
 
-#: lib/data_query.php:955
+#: lib/data_query.php:976
 #, fuzzy, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr "Kreeg SNMP resultaat voor gegevens @ '%s' [waarde='%s'] (index: %s)"
 
-#: lib/data_query.php:985
+#: lib/data_query.php:1006
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
 msgstr "Uitvoeren van SNMP krijgen voor gegevens @ '%s' [waarde='$value']"
 
-#: lib/data_query.php:993
+#: lib/data_query.php:1014
 #, fuzzy, php-format
 msgid "Located input field '%s' [walk]"
 msgstr "Gelegen invoerveld '%s' [lopen]"
 
-#: lib/data_query.php:1016
+#: lib/data_query.php:1037
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
 msgstr ""
 "Sorteerveld retourneerde geen gegevens.  Kan niet doorgaan met Re-Index voor "
 "GET-gegevens....."
 
-#: lib/data_query.php:1023
+#: lib/data_query.php:1044
 #, fuzzy, php-format
 msgid "Sort field returned not data.  Can not continue Re-Index for OID[%s]"
 msgstr ""
 "Teruggezonden veld sorteren, geen gegevens.  Kan niet doorgaan Re-Index voor "
 "OID[%s]"
 
-#: lib/data_query.php:1028
+#: lib/data_query.php:1049
 #, fuzzy, php-format
 msgid "Executing SNMP walk for data @ '%s'"
 msgstr "SNMP-wandeling voor gegevens uitvoeren @ '%s'"
 
-#: lib/data_query.php:1079
+#: lib/data_query.php:1100
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
 msgstr "Gevonden item [%s='%s'] index: %s [van %s]"
 
-#: lib/data_query.php:1113
+#: lib/data_query.php:1134
 #, fuzzy, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
 msgstr "Gevonden OCTET STRING \"%s\" gedecodeerde waarde: \"%s\"."
 
-#: lib/data_query.php:1119
+#: lib/data_query.php:1140
 #, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid parse]"
 
-#: lib/data_query.php:1139
+#: lib/data_query.php:1160
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr "Gevonden item [%s='%s'] index: %s [van regexp oid waarde parse]"
 
-#: lib/data_query.php:1504
+#: lib/data_query.php:1525
 #, fuzzy
 msgid "Re-Indexing Data Query complete"
 msgstr "Re-Indexing Data Query compleet"
 
-#: lib/data_query.php:1634
+#: lib/data_query.php:1655
 #, fuzzy
 msgid "Unknown Index"
 msgstr "Onbekende index"
 
-#: lib/data_query.php:2108
+#: lib/data_query.php:2129
 #, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
@@ -14464,7 +14469,7 @@ msgstr ""
 "U moet een XML-uitvoerkolom selecteren voor Data Source '%s' en het "
 "selectievakje aan de rechterkant aankruisen."
 
-#: lib/data_query.php:2114
+#: lib/data_query.php:2135
 #, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
@@ -14577,7 +14582,7 @@ msgid "User Community"
 msgstr "Gebruikersgemeenschap"
 
 #: lib/functions.php:2345 lib/functions.php:2358 lib/html.php:2301
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 msgid "Documentation"
 msgstr "Documentatie"
 
@@ -14594,8 +14599,8 @@ msgstr "Uitloggen"
 msgid "Leaf"
 msgstr "Bladeren"
 
-#: lib/functions.php:2523 lib/html_tree.php:646 lib/html_tree.php:674
-#: lib/html_tree.php:894 lib/html_tree.php:902 lib/html_tree.php:1451
+#: lib/functions.php:2523 lib/html_tree.php:649 lib/html_tree.php:677
+#: lib/html_tree.php:897 lib/html_tree.php:905 lib/html_tree.php:1454
 msgid "Non Query Based"
 msgstr "Niet query gebaseerd"
 
@@ -15205,7 +15210,7 @@ msgstr ""
 msgid "Data Query Data Sources must be created through %s"
 msgstr "Data Query Gegevensbronnen moeten worden gecreëerd door middel van %s"
 
-#: lib/html_graph.php:193 lib/html_tree.php:994
+#: lib/html_graph.php:193 lib/html_tree.php:997
 #, fuzzy
 msgid ""
 "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
@@ -15214,54 +15219,54 @@ msgstr ""
 "Sla de huidige grafieken, kolommen, miniaturen, miniaturen, presets en "
 "timeshift-voorkeuren op in uw profiel."
 
-#: lib/html_graph.php:223 lib/html_tree.php:1018
+#: lib/html_graph.php:223 lib/html_tree.php:1021
 msgid "Columns"
 msgstr "Kolommen"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1022
+#: lib/html_graph.php:227 lib/html_tree.php:1025
 #, php-format
 msgid "%d Column"
 msgstr "%d Kolom"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1052
+#: lib/html_graph.php:257 lib/html_tree.php:1055
 msgid "Custom"
 msgstr "Aangepast"
 
 #: lib/html_graph.php:270 lib/html_reports.php:1608 lib/html_reports.php:1619
-#: lib/html_tree.php:1065
+#: lib/html_tree.php:1068
 msgid "From"
 msgstr "Van"
 
-#: lib/html_graph.php:275 lib/html_tree.php:1070
+#: lib/html_graph.php:275 lib/html_tree.php:1073
 msgid "Start Date Selector"
 msgstr "Startdatum selector"
 
 #: lib/html_graph.php:279 lib/html_reports.php:1609 lib/html_reports.php:1620
-#: lib/html_tree.php:1074
+#: lib/html_tree.php:1077
 msgid "To"
 msgstr "Aan"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1079
+#: lib/html_graph.php:284 lib/html_tree.php:1082
 msgid "End Date Selector"
 msgstr "Einddatum selector"
 
-#: lib/html_graph.php:289 lib/html_tree.php:1084
+#: lib/html_graph.php:289 lib/html_tree.php:1087
 msgid "Shift Time Backward"
 msgstr "Verschuif tijd achteruit"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1085
+#: lib/html_graph.php:290 lib/html_tree.php:1088
 msgid "Define Shifting Interval"
 msgstr "Definieer verschuivingsinterval"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1096
+#: lib/html_graph.php:301 lib/html_tree.php:1099
 msgid "Shift Time Forward"
 msgstr "Verschuif tijd vooruit"
 
-#: lib/html_graph.php:306 lib/html_tree.php:1101
+#: lib/html_graph.php:306 lib/html_tree.php:1104
 msgid "Refresh selected time span"
 msgstr "Vernieuw geselecteerde periode"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1102
+#: lib/html_graph.php:307 lib/html_tree.php:1105
 msgid "Return to the default time span"
 msgstr "Stel de standaard tijdperiode in"
 
@@ -15269,7 +15274,7 @@ msgstr "Stel de standaard tijdperiode in"
 msgid "Interval"
 msgstr "Interval"
 
-#: lib/html_graph.php:339 lib/html_tree.php:1134
+#: lib/html_graph.php:339 lib/html_tree.php:1137
 msgid "Stop"
 msgstr "Stop"
 
@@ -15802,50 +15807,50 @@ msgstr "Ongeldig"
 msgid "No Reports Found"
 msgstr "Geen rapportages gevonden"
 
-#: lib/html_tree.php:886 lib/html_tree.php:894 lib/html_tree.php:902
+#: lib/html_tree.php:889 lib/html_tree.php:897 lib/html_tree.php:905
 msgid "Graph Template:"
 msgstr "Grafiektemplate:"
 
-#: lib/html_tree.php:902
+#: lib/html_tree.php:905
 #, fuzzy
 msgid "Template Based"
 msgstr "Grafiektemplate gebaseerd"
 
-#: lib/html_tree.php:908 lib/reports.php:990
+#: lib/html_tree.php:911 lib/reports.php:990
 msgid "Tree:"
 msgstr "Menu:"
 
-#: lib/html_tree.php:913
+#: lib/html_tree.php:916
 msgid "Site:"
 msgstr "Website:"
 
-#: lib/html_tree.php:919 lib/reports.php:995
+#: lib/html_tree.php:922 lib/reports.php:995
 #, fuzzy
 msgid "Leaf:"
 msgstr "Bladeren:"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:928
 #, fuzzy
 msgid "Device Template:"
 msgstr "Apparaattemplate"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Applied"
 msgstr "Toegepast"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Filter"
 msgstr "Filter"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Graph Filters"
 msgstr "Grafiek filters"
 
-#: lib/html_tree.php:991
+#: lib/html_tree.php:994
 msgid "Set/Refresh Filter"
 msgstr "Stel in/vernieuw filter"
 
-#: lib/html_tree.php:1395
+#: lib/html_tree.php:1398
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(Niet Grafieksjabloon)"
@@ -17650,7 +17655,7 @@ msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr ""
 "ERROR: Whitelist Validatie mislukt. Controleer de gegevensinvoermethode"
 
-#: lib/utility.php:838
+#: lib/utility.php:840
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
 "to choose. Make sure you run the very latest release though which fixes a "
@@ -17662,7 +17667,7 @@ msgstr ""
 "levende fout opgelost met betrekking tot low level networking, dat voor veel "
 "betrouwbaarheidsproblemen zorgde met Spine."
 
-#: lib/utility.php:850
+#: lib/utility.php:852
 #, fuzzy, php-format
 msgid ""
 "It is STRONGLY recommended that you enable InnoDB in any %s version greater "
@@ -17671,7 +17676,7 @@ msgstr ""
 "Het wordt aanbevolen InnoDB te activeren voor iedere %s versie groter dan "
 "5.1."
 
-#: lib/utility.php:863
+#: lib/utility.php:865
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8_general_ci collation type as some characters take more than a "
@@ -17688,7 +17693,7 @@ msgstr ""
 "converteren van uw database en tabellen voor de ondersteuning van andere "
 "talen."
 
-#: lib/utility.php:869
+#: lib/utility.php:871
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8 character set as some characters take more than a single byte. If "
@@ -17704,7 +17709,7 @@ msgstr ""
 "kijk op het internet voor instructies over het converteren van uw database "
 "en tabellen voor de ondersteuning van andere talen."
 
-#: lib/utility.php:880
+#: lib/utility.php:882
 #, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
@@ -17712,7 +17717,7 @@ msgstr ""
 "Het wordt aanbevolen InnoDB te activeren voor iedere %s versie groter dan "
 "5.1."
 
-#: lib/utility.php:892
+#: lib/utility.php:894
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
 "the utf8mb4_unicode_ci collation type as some characters take more than a "
@@ -17722,7 +17727,7 @@ msgstr ""
 "aanbevolen om utf8mb4_unicode_ci collatie te gebruiken omdat sommige "
 "karakters meer dan een enkele byte innemen."
 
-#: lib/utility.php:898
+#: lib/utility.php:900
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -17732,7 +17737,7 @@ msgstr ""
 "om de utf8mb4 karakterset te gebruiken, omdat sommige karakters meer dan één "
 "byte in beslag nemen."
 
-#: lib/utility.php:907
+#: lib/utility.php:909
 #, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -17748,7 +17753,7 @@ msgstr ""
 "nodig voor gebruikersverbindingen, deze zullen variëren door het aantal "
 "gelijktijdige verbindingen van gebruikeraccounts."
 
-#: lib/utility.php:912
+#: lib/utility.php:914
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -17757,7 +17762,7 @@ msgstr ""
 "Het groter houden van de tabel cache betekent minder open/dicht-bewerkingen "
 "bij gebruik van innodb_file_per_table."
 
-#: lib/utility.php:917
+#: lib/utility.php:919
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
 "the main server to the remote pollers.  Therefore, keep this value at or "
@@ -17767,7 +17772,7 @@ msgstr ""
 "gesynchroniseerd van de hoofd poller naar de remote pollers. Hou daarom deze "
 "waarde op of boven de 16M."
 
-#: lib/utility.php:923
+#: lib/utility.php:925
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -17795,7 +17800,7 @@ msgstr ""
 "de Performance Booster tabellen zien onder Console -> System Utilities -> "
 "View Boost Status."
 
-#: lib/utility.php:929
+#: lib/utility.php:931
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
 "temporary tables in memory."
@@ -17803,7 +17808,7 @@ msgstr ""
 "Wanneer subqueries worden uitgevoerd, is een grote tijdelijk tabel grootte "
 "handig zodat deze tijdelijke tabellen in-memory blijven."
 
-#: lib/utility.php:935
+#: lib/utility.php:937
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
 "memory and never written to a temporary file."
@@ -17812,7 +17817,7 @@ msgstr ""
 "zal het resultaat in-memory blijven en niet naar een tijdelijk bestand "
 "worden geschreven."
 
-#: lib/utility.php:940
+#: lib/utility.php:942
 #, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -17827,7 +17832,7 @@ msgstr ""
 "actief is, kunt u migreren naar de per-bestand opslag door deze optie te "
 "activeren en een ALTER statement uit te voeren op iedere InnoDB tabel."
 
-#: lib/utility.php:946
+#: lib/utility.php:948
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -17838,14 +17843,14 @@ msgstr ""
 "innodb_file_format in te stellen op Barracuda.  Deze instelling maakt "
 "langere indexen mogelijk die belangrijk zijn voor bepaalde Cactustabellen."
 
-#: lib/utility.php:952
+#: lib/utility.php:954
 msgid ""
 "If your tables have very large indexes, you must operate with the Barracuda "
 "innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do "
 "this may result in plugins that can not properly create tables."
 msgstr ""
 
-#: lib/utility.php:958
+#: lib/utility.php:960
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -17863,7 +17868,7 @@ msgstr ""
 "systemen aan, maar uw behoeften zullen variëren afhankelijk van de grootte "
 "van uw systemen."
 
-#: lib/utility.php:964
+#: lib/utility.php:966
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -17872,7 +17877,7 @@ msgstr ""
 "Met moderne SSD opslag verslechtert deze optie de schijf sneller en zorgt "
 "tevens voor 50% overhead op alle schrijfacties."
 
-#: lib/utility.php:969
+#: lib/utility.php:971
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
 "useful to increase this."
@@ -17880,7 +17885,7 @@ msgstr ""
 "Dit is waar metadata is opgeslagen. Als u een grote hoeveelheid tabellen "
 "heeft is het handig om deze waarde te verhogen."
 
-#: lib/utility.php:974
+#: lib/utility.php:976
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
 "these queries before they kill your system."
@@ -17888,7 +17893,7 @@ msgstr ""
 "Rogue-queries zouden niet moeten omdat deze de server omlaag halen. Kill "
 "deze queries voordat ze uw systeem killen."
 
-#: lib/utility.php:979
+#: lib/utility.php:981
 #, fuzzy
 msgid ""
 "Maximum I/O performance happens when you use the O_DIRECT method to flush "
@@ -17897,7 +17902,7 @@ msgstr ""
 "Maximale I/O-prestaties worden bereikt wanneer u de O_DIRECT-methode "
 "gebruikt om pagina's door te spoelen."
 
-#: lib/utility.php:989
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -17907,7 +17912,7 @@ msgstr ""
 "seconde spoelt in plaats van bij het vastleggen.  Hierdoor kan %s minder "
 "vaak schrijven."
 
-#: lib/utility.php:994
+#: lib/utility.php:996
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
 "applications with high io characteristics."
@@ -17915,7 +17920,7 @@ msgstr ""
 "Met moderne SSD opslag is het hebben van meerdere IO threads voordelig voor "
 "applicaties met een hoog IO gebruik."
 
-#: lib/utility.php:1002
+#: lib/utility.php:1004
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -17927,7 +17932,7 @@ msgstr ""
 "instellen op een waarde groter dan 1 de I/O van de schijf meer sequentieel "
 "maken."
 
-#: lib/utility.php:1007
+#: lib/utility.php:1009
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
 "advantageous for applications with high io characteristics."
@@ -17935,7 +17940,7 @@ msgstr ""
 "Met moderne SSD opslag is het hebben van meerdere lees IO threads voordelig "
 "voor applicaties met een hoog IO gebruik."
 
-#: lib/utility.php:1012
+#: lib/utility.php:1014
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
 "advantageous for applications with high io characteristics."
@@ -17943,7 +17948,7 @@ msgstr ""
 "Met moderne SSD opslag is het hebben van meerdere schrijf IO threads "
 "voordelig voor applicaties met een hoog IO gebruik."
 
-#: lib/utility.php:1018
+#: lib/utility.php:1020
 #, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -17956,7 +17961,7 @@ msgstr ""
 "minder is dan 1GB, moet u de pool grootte delen door 128MB. Ga hiermee door "
 "tot de maximale waarde van 64."
 
-#: lib/utility.php:1024
+#: lib/utility.php:1026
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -17968,7 +17973,7 @@ msgstr ""
 "Bij gebruik van NVMe of PCIe Flash kunnen veel grotere aantallen tot 100000 "
 "worden gebruikt."
 
-#: lib/utility.php:1030
+#: lib/utility.php:1032
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -17980,7 +17985,7 @@ msgstr ""
 "Bij gebruik van NVMe of PCIe Flash kunnen veel grotere aantallen tot 200000 "
 "worden gebruikt."
 
-#: lib/utility.php:1036
+#: lib/utility.php:1038
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion. Otherwise, do not set this "
@@ -17989,49 +17994,49 @@ msgstr ""
 "Als u SSD-schijven hebt, gebruik dan deze suggestie. Stel deze instelling "
 "anders niet in."
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 #, php-format
 msgid "%s Tuning"
 msgstr "%s Tuning"
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 msgid "Note: Many changes below require a database restart"
 msgstr ""
 "Let op: veel wijzigingen die hieronder worden vermeld vereisen een herstart "
 "van de database server"
 
-#: lib/utility.php:1051
+#: lib/utility.php:1053
 msgid "Variable"
 msgstr "Variabel"
 
-#: lib/utility.php:1052
+#: lib/utility.php:1054
 msgid "Current Value"
 msgstr "Huidige waarde"
 
-#: lib/utility.php:1054
+#: lib/utility.php:1056
 msgid "Recommended Value"
 msgstr "Aanbevolen waarde"
 
-#: lib/utility.php:1055
+#: lib/utility.php:1057
 msgid "Comments"
 msgstr "Opmerkingen"
 
-#: lib/utility.php:1431
+#: lib/utility.php:1433
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP %s is de minimale versie"
 
-#: lib/utility.php:1433
+#: lib/utility.php:1435
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "Een minimum van %s MB geheugenlimiet"
 
-#: lib/utility.php:1435
+#: lib/utility.php:1437
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "Minimaal %s m uitvoeringstijd"
 
-#: lib/utility.php:1437
+#: lib/utility.php:1439
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "Een geldige tijdzone die overeenkomt met MySQL en het systeem"
