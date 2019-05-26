@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-18 16:00-0400\n"
+"POT-Creation-Date: 2019-05-26 11:35-0400\n"
 "PO-Revision-Date: 2019-03-10 13:39-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -110,7 +110,7 @@ msgstr ""
 #: automation_snmp.php:29 automation_snmp.php:556 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:651 color.php:28
 #: color_templates.php:28 color_templates.php:122 data_input.php:32
-#: data_input.php:664 data_input.php:706 data_queries.php:31
+#: data_input.php:666 data_input.php:708 data_queries.php:31
 #: data_queries.php:824 data_queries.php:924 data_queries.php:1179
 #: data_source_profiles.php:30 data_source_profiles.php:608 data_sources.php:36
 #: data_sources.php:1053 data_templates.php:34 data_templates.php:661
@@ -257,8 +257,8 @@ msgstr ""
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
 #: auth_changepassword.php:331 auth_profile.php:443 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1105 graphs.php:1155 graphs.php:1158
-#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1476
-#: lib/api_aggregate.php:1491 lib/html_form.php:1269 lib/html_utility.php:222
+#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1479
+#: lib/api_aggregate.php:1494 lib/html_form.php:1269 lib/html_utility.php:222
 #: managers.php:1066 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "帰還"
@@ -420,7 +420,7 @@ msgstr "グラフ項目[編集：％s]"
 msgid "Details"
 msgstr "詳細"
 
-#: aggregate_graphs.php:636 graphs_new.php:729 lib/html_reports.php:1173
+#: aggregate_graphs.php:636 graphs_new.php:730 lib/html_reports.php:1173
 #: lib/html_reports.php:1264 utilities.php:344
 msgid "Items"
 msgstr "アイテム"
@@ -466,7 +466,7 @@ msgid "Aggregate Graph %s"
 msgstr "集約グラフ％s"
 
 #: aggregate_graphs.php:915 aggregate_templates.php:490 graphs.php:1063
-#: lib/api_aggregate.php:1602
+#: lib/api_aggregate.php:1605
 msgid "Total"
 msgstr "合計"
 
@@ -474,7 +474,7 @@ msgstr "合計"
 msgid "All Items"
 msgstr "すべてのアイテム"
 
-#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1758
+#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1761
 #, fuzzy
 msgid "Graph Configuration"
 msgstr "グラフ構成"
@@ -495,20 +495,20 @@ msgstr "アイテム詳細を隠す"
 msgid "Matching Graphs"
 msgstr "マッチンググラフ"
 
-#: aggregate_graphs.php:1134 aggregate_graphs.php:1466
+#: aggregate_graphs.php:1134 aggregate_graphs.php:1471
 #: aggregate_templates.php:561 automation_devices.php:455
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:805
 #: data_queries.php:1281 data_source_profiles.php:843 data_sources.php:1421
 #: data_templates.php:864 gprint_presets.php:263 graph_templates.php:657
-#: graph_view.php:591 graphs.php:1888 graphs_new.php:389 host.php:1501
+#: graph_view.php:591 graphs.php:1888 graphs_new.php:390 host.php:1501
 #: host_templates.php:721 lib/api_automation.php:141 lib/api_automation.php:472
 #: lib/api_automation.php:706 lib/api_automation.php:1064
 #: lib/clog_webapi.php:568 lib/html.php:231 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1508 lib/html_tree.php:131
-#: lib/html_tree.php:948 links.php:311 managers.php:150 managers.php:494
+#: lib/html_tree.php:951 links.php:311 managers.php:150 managers.php:494
 #: managers.php:726 plugins.php:341 pollers.php:732 rrdcleaner.php:475
 #: settings.php:427 settings.php:446 settings.php:495 sites.php:425
 #: tree.php:810 tree.php:845 tree.php:880 tree.php:1901 user_admin.php:2254
@@ -523,29 +523,29 @@ msgid "Search"
 msgstr "検索"
 
 #: aggregate_graphs.php:1140 aggregate_graphs.php:1241
-#: aggregate_graphs.php:1494 color_templates.php:561 data_sources.php:1606
+#: aggregate_graphs.php:1499 color_templates.php:561 data_sources.php:1606
 #: data_sources.php:1734 graph_view.php:455 graph_view.php:650
 #: graph_view.php:699 graphs.php:1894 graphs.php:2011 host.php:1565
 #: include/global_arrays.php:875 include/global_arrays.php:1082
 #: include/global_arrays.php:1826 lib/api_automation.php:281 lib/html.php:1554
 #: lib/html.php:1556 lib/html.php:1634 lib/html_graph.php:209
-#: lib/html_tree.php:1004 lib/html_tree.php:1315 tree.php:789 tree.php:1987
+#: lib/html_tree.php:1007 lib/html_tree.php:1318 tree.php:789 tree.php:1987
 #: user_admin.php:1004 user_admin.php:1269 user_admin.php:2620
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
 msgid "Graphs"
 msgstr "グラフ"
 
-#: aggregate_graphs.php:1144 aggregate_graphs.php:1498
+#: aggregate_graphs.php:1144 aggregate_graphs.php:1503
 #: aggregate_templates.php:577 automation_devices.php:540
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:1056 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:815
 #: data_queries.php:1291 data_source_profiles.php:853
 #: data_source_profiles.php:974 data_sources.php:1431 data_templates.php:890
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:654
-#: graphs.php:1898 graphs_new.php:399 host.php:1526 host_templates.php:731
+#: graphs.php:1898 graphs_new.php:400 host.php:1526 host_templates.php:731
 #: include/global_form.php:212 lib/api_automation.php:184
 #: lib/api_automation.php:482 lib/api_automation.php:716
 #: lib/api_automation.php:1107 lib/html_reports.php:1528 links.php:321
@@ -567,19 +567,19 @@ msgstr "デフォルト"
 msgid "Part of Aggregate"
 msgstr "集計の一部"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: aggregate_templates.php:598 automation_devices.php:476
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:975 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:827
 #: data_queries.php:1303 data_source_profiles.php:871 data_sources.php:1372
 #: data_templates.php:908 gprint_presets.php:291 graph_templates.php:685
-#: graph_view.php:599 graphs.php:1879 graphs_new.php:378 host.php:1491
+#: graph_view.php:599 graphs.php:1879 graphs_new.php:379 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
 #: lib/clog_webapi.php:516 lib/html.php:1393 lib/html_filter.php:81
-#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:991
+#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:994
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -588,13 +588,13 @@ msgstr "集計の一部"
 msgid "Go"
 msgstr "Go"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: automation_devices.php:476 automation_snmp.php:682
 #: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
-#: data_input.php:825 data_queries.php:1303 data_source_profiles.php:871
+#: data_input.php:827 data_queries.php:1303 data_source_profiles.php:871
 #: data_sources.php:1372 data_templates.php:908 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:599 graphs.php:1879
-#: graphs_new.php:378 host.php:1491 host_templates.php:749
+#: graphs_new.php:379 host.php:1491 host_templates.php:749
 #: lib/html_graph.php:190 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -608,20 +608,20 @@ msgstr "Go"
 msgid "Set/Refresh Filters"
 msgstr "フィルタの設定/更新"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516
 #: aggregate_templates.php:599 automation_devices.php:477
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:976 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:828
 #: data_queries.php:1304 data_source_profiles.php:872 data_sources.php:1373
 #: data_templates.php:909 gprint_presets.php:292 graph_templates.php:686
-#: graph_view.php:600 graphs.php:1880 graphs_new.php:379 host.php:1492
+#: graph_view.php:600 graphs.php:1880 graphs_new.php:380 host.php:1492
 #: host_templates.php:750 lib/api_automation.php:197 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1120
 #: lib/clog_webapi.php:517 lib/html_filter.php:86 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:992
-#: lib/html_tree.php:1102 links.php:332 managers.php:173 managers.php:517
+#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:995
+#: lib/html_tree.php:1105 links.php:332 managers.php:173 managers.php:517
 #: managers.php:747 plugins.php:378 pollers.php:755 sites.php:448 tree.php:1924
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
@@ -629,13 +629,13 @@ msgstr "フィルタの設定/更新"
 msgid "Clear"
 msgstr "クリア"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511 automation_snmp.php:683
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516 automation_snmp.php:683
 #: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
-#: data_input.php:826 data_queries.php:1304 data_source_profiles.php:872
+#: data_input.php:828 data_queries.php:1304 data_source_profiles.php:872
 #: data_sources.php:1373 data_templates.php:909 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:600 graphs.php:1880
-#: graphs_new.php:379 host.php:1492 host_templates.php:750
-#: lib/html_graph.php:191 lib/html_tree.php:992 managers.php:173
+#: graphs_new.php:380 host.php:1492 host_templates.php:750
+#: lib/html_graph.php:191 lib/html_tree.php:995 managers.php:173
 #: managers.php:517 managers.php:747 plugins.php:378 pollers.php:755
 #: sites.php:448 tree.php:1924 user_admin.php:2277 user_admin.php:2643
 #: user_admin.php:2728 user_admin.php:2832 user_admin.php:2917
@@ -648,12 +648,12 @@ msgstr "クリア"
 msgid "Clear Filters"
 msgstr "絞り込み条件を解除する"
 
-#: aggregate_graphs.php:1246 aggregate_graphs.php:1574 graphs.php:1132
+#: aggregate_graphs.php:1246 aggregate_graphs.php:1579 graphs.php:1132
 #: lib/api_automation.php:572 user_admin.php:1012 user_group_admin.php:825
 msgid "Graph Title"
 msgstr "グラフの題名"
 
-#: aggregate_graphs.php:1247 aggregate_graphs.php:1575
+#: aggregate_graphs.php:1247 aggregate_graphs.php:1580
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
 #: data_debug.php:346 data_queries.php:1387 data_sources.php:1600
 #: data_templates.php:1019 graph_templates.php:793 graphs.php:2027
@@ -670,14 +670,14 @@ msgstr "ID"
 msgid "Included in Aggregate"
 msgstr "集合体に含まれる"
 
-#: aggregate_graphs.php:1249 aggregate_graphs.php:1577 graph_realtime.php:311
+#: aggregate_graphs.php:1249 aggregate_graphs.php:1582 graph_realtime.php:311
 #: graph_templates.php:796 graph_view.php:727 graphs.php:2045
 msgid "Size"
 msgstr "サイズ"
 
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:689 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_input.php:925 data_queries.php:1407
+#: color_templates.php:578 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1014 data_source_profiles.php:1015
 #: data_sources.php:1681 data_sources.php:1682 data_templates.php:1044
 #: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
@@ -691,7 +691,7 @@ msgstr "いいえ"
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
 #: color_templates.php:578 data_debug.php:629 data_debug.php:634
-#: data_debug.php:639 data_input.php:925 data_queries.php:1407
+#: data_debug.php:639 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1013 data_source_profiles.php:1014
 #: data_source_profiles.php:1015 data_sources.php:1681 data_sources.php:1682
 #: data_templates.php:1044 gprint_presets.php:414 graph_templates.php:814
@@ -708,27 +708,27 @@ msgstr "はい"
 msgid "No Graphs Found"
 msgstr "グラフが見つかりません"
 
-#: aggregate_graphs.php:1457
+#: aggregate_graphs.php:1462
 #, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[カスタムグラフリストの適用 - リストからのフィルタ]"
 
-#: aggregate_graphs.php:1457 aggregate_graphs.php:1565
+#: aggregate_graphs.php:1462 aggregate_graphs.php:1570
 #: include/global_arrays.php:2536
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "集計グラフ"
 
-#: aggregate_graphs.php:1472 data_debug.php:949 data_sources.php:1346
+#: aggregate_graphs.php:1477 data_debug.php:949 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
 #: include/global_arrays.php:2682 include/global_settings.php:514
-#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:954
+#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:957
 #: rrdcleaner.php:351 user_admin.php:2598 user_admin.php:2791
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1677
 msgid "Template"
 msgstr "テンプレート"
 
-#: aggregate_graphs.php:1476 automation_devices.php:465
+#: aggregate_graphs.php:1481 automation_devices.php:465
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
@@ -736,7 +736,7 @@ msgstr "テンプレート"
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
-#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2269
+#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2288
 #: lib/html.php:1918 lib/html.php:1941 lib/html.php:1979
 #: lib/html_reports.php:1518 managers.php:483 managers.php:736
 #: user_admin.php:2602 user_admin.php:2795 user_group_admin.php:2176
@@ -746,7 +746,7 @@ msgstr "テンプレート"
 msgid "Any"
 msgstr "任意"
 
-#: aggregate_graphs.php:1477 aggregate_graphs.php:1589
+#: aggregate_graphs.php:1482 aggregate_graphs.php:1594
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
 #: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:917
@@ -767,7 +767,7 @@ msgstr "任意"
 #: include/global_settings.php:1093 include/global_settings.php:1555
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
-#: lib/api_automation.php:1075 lib/auth.php:2272 lib/html.php:191
+#: lib/api_automation.php:1075 lib/auth.php:2291 lib/html.php:191
 #: lib/html.php:1919 lib/html.php:1939 lib/html.php:1980 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
@@ -776,27 +776,27 @@ msgstr "任意"
 msgid "None"
 msgstr "なし"
 
-#: aggregate_graphs.php:1574
+#: aggregate_graphs.php:1579
 #, fuzzy
 msgid "The title for the Aggregate Graphs"
 msgstr "集計グラフのタイトル"
 
-#: aggregate_graphs.php:1575
+#: aggregate_graphs.php:1580
 #, fuzzy
 msgid "The internal database identifier for this object"
 msgstr "このオブジェクトの内部データベース識別子"
 
-#: aggregate_graphs.php:1576 graphs.php:1136
+#: aggregate_graphs.php:1581 graphs.php:1136
 #, fuzzy
 msgid "Aggregate Template"
 msgstr "集約テンプレート"
 
-#: aggregate_graphs.php:1576
+#: aggregate_graphs.php:1581
 #, fuzzy
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr "この集計グラフの基になる集計テンプレート"
 
-#: aggregate_graphs.php:1595
+#: aggregate_graphs.php:1600
 #, fuzzy
 msgid "No Aggregate Graphs Found"
 msgstr "集約グラフが見つかりません"
@@ -806,7 +806,7 @@ msgstr "集約グラフが見つかりません"
 msgid "Override Values for Graph Item"
 msgstr "グラフ項目の値を上書き"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1790
+#: aggregate_items.php:358 lib/api_aggregate.php:1793
 #, fuzzy
 msgid "Override this Value"
 msgstr "この値を上書き"
@@ -865,7 +865,7 @@ msgstr ""
 "いると定義されます。"
 
 #: aggregate_templates.php:663 cdef.php:889 color.php:703
-#: color_templates.php:560 data_input.php:907 data_queries.php:1388
+#: color_templates.php:560 data_input.php:909 data_queries.php:1388
 #: data_source_profiles.php:975 data_sources.php:1618 data_templates.php:1020
 #: gprint_presets.php:395 graph_templates.php:794 host_templates.php:839
 #: vdef.php:888
@@ -987,9 +987,9 @@ msgstr "新しいパスワード"
 msgid "Confirm new password"
 msgstr "新しいパスワードを確認"
 
-#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:380
+#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:381
 #: lib/html_form.php:1266 lib/html_form.php:1275 lib/html_graph.php:193
-#: lib/html_tree.php:994 settings.php:389
+#: lib/html_tree.php:997 settings.php:389
 msgid "Save"
 msgstr "保存"
 
@@ -1745,8 +1745,8 @@ msgstr "ネットワーク探索範囲[新規]"
 msgid "General Settings"
 msgstr "一般設定"
 
-#: automation_networks.php:441 automation_snmp.php:475 data_input.php:615
-#: data_input.php:676 data_queries.php:778 data_queries.php:876
+#: automation_networks.php:441 automation_snmp.php:475 data_input.php:617
+#: data_input.php:678 data_queries.php:778 data_queries.php:876
 #: data_queries.php:1138 data_source_profiles.php:573 graph_templates.php:451
 #: include/global_form.php:171 include/global_form.php:237
 #: include/global_form.php:294 include/global_form.php:314
@@ -2425,7 +2425,7 @@ msgstr "ネットワークが見つかりません"
 
 #: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:548 lib/html_graph.php:306
-#: lib/html_tree.php:1101 lib/html_tree.php:1122 utilities.php:1128
+#: lib/html_tree.php:1104 lib/html_tree.php:1125 utilities.php:1128
 #: utilities.php:2037
 msgid "Refresh"
 msgstr "更新"
@@ -3073,7 +3073,7 @@ msgstr ""
 msgid "The number of Graphs using this CDEF."
 msgstr "このCDEFを使用しているグラフの数。"
 
-#: cdef.php:891 color.php:705 data_input.php:909 data_queries.php:1390
+#: cdef.php:891 color.php:705 data_input.php:911 data_queries.php:1390
 #: data_source_profiles.php:980 gprint_presets.php:397 vdef.php:890
 #, fuzzy
 msgid "Templates Using"
@@ -3276,14 +3276,14 @@ msgstr "色が見つかりません"
 msgid "Color Item"
 msgstr "カラーアイテム"
 
-#: color_templates.php:93 lib/api_aggregate.php:1680 lib/api_aggregate.php:1683
-#: lib/api_aggregate.php:1688 lib/html.php:1091 lib/html_reports.php:1407
+#: color_templates.php:93 lib/api_aggregate.php:1683 lib/api_aggregate.php:1686
+#: lib/api_aggregate.php:1691 lib/html.php:1091 lib/html_reports.php:1407
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "商品番号％d"
 
 #: color_templates.php:132 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1740 lib/html.php:1173
+#: lib/api_aggregate.php:1743 lib/html.php:1173
 #, fuzzy
 msgid "No Items"
 msgstr "アイテム"
@@ -3439,7 +3439,7 @@ msgstr "データソース修復は無効なデータソースIDを受け取り�
 #: data_debug.php:330 data_debug.php:807 data_queries.php:733
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
 #: include/global_arrays.php:887 include/global_form.php:926
-#: lib/api_aggregate.php:1596 lib/html.php:1051
+#: lib/api_aggregate.php:1599 lib/html.php:1051
 msgid "Data Source"
 msgstr "データソース"
 
@@ -3758,7 +3758,7 @@ msgstr "プロフィール"
 
 #: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1385 data_sources.php:1401 data_sources.php:1412
-#: data_templates.php:874 graphs_new.php:355 lib/clog_webapi.php:530
+#: data_templates.php:874 graphs_new.php:356 lib/clog_webapi.php:530
 #: lib/html.php:190 lib/html_reports.php:625 plugins.php:351 settings.php:419
 #: settings.php:438 settings.php:464 tree.php:786 utilities.php:674
 #: utilities.php:1110
@@ -3819,7 +3819,7 @@ msgstr "フレンドリ名：％s"
 msgid "Remove Data Input Field"
 msgstr "データ入力フィールドを削除"
 
-#: data_input.php:466
+#: data_input.php:468
 #, fuzzy
 msgid ""
 "This script appears to have no input values, therefore there is nothing to "
@@ -3827,62 +3827,62 @@ msgid ""
 msgstr ""
 "このスクリプトには入力値がないように見えるため、追加するものはありません。"
 
-#: data_input.php:472
+#: data_input.php:474
 #, fuzzy, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "出力フィールド[編集：％s]"
 
-#: data_input.php:473 include/global_form.php:616
+#: data_input.php:475 include/global_form.php:616
 #, fuzzy
 msgid "Output Field"
 msgstr "出力フィールド"
 
-#: data_input.php:475
+#: data_input.php:477
 #, fuzzy, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "入力フィールド[編集：％s]"
 
-#: data_input.php:476
+#: data_input.php:478
 #, fuzzy
 msgid "Input Field"
 msgstr "入力フィールド"
 
-#: data_input.php:558
+#: data_input.php:560
 #, fuzzy, php-format
 msgid "Data Input Methods [edit: %s]"
 msgstr "データ入力方法[編集：％s]"
 
-#: data_input.php:562
+#: data_input.php:564
 #, fuzzy
 msgid "Data Input Methods [new]"
 msgstr "データ入力方法[new]"
 
-#: data_input.php:576 include/global_arrays.php:435
+#: data_input.php:578 include/global_arrays.php:435
 #, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP Get"
 
-#: data_input.php:579 include/global_arrays.php:436
+#: data_input.php:581 include/global_arrays.php:436
 #, fuzzy
 msgid "SNMP Query"
 msgstr "SNMPクエリ"
 
-#: data_input.php:582 include/global_arrays.php:438
+#: data_input.php:584 include/global_arrays.php:438
 #, fuzzy
 msgid "Script Query"
 msgstr "スクリプトクエリ"
 
-#: data_input.php:585 include/global_arrays.php:440
+#: data_input.php:587 include/global_arrays.php:440
 #, fuzzy
 msgid "Script Query - Script Server"
 msgstr "スクリプトクエリ - スクリプトサーバー"
 
-#: data_input.php:593
+#: data_input.php:595
 #, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "ホワイトリストの検証に成功しました。"
 
-#: data_input.php:595
+#: data_input.php:597
 #, fuzzy
 msgid ""
 "White List Verification Failed.  Run CLI script input_whitelist.php to "
@@ -3891,7 +3891,7 @@ msgstr ""
 "ホワイトリストの検証に失敗しました。修正するためにCLIスクリプト"
 "input_whitelist.phpを実行してください。"
 
-#: data_input.php:597
+#: data_input.php:599
 #, fuzzy
 msgid ""
 "Input String does not exist in White List.  Run CLI script input_whitelist."
@@ -3900,74 +3900,74 @@ msgstr ""
 "入力文字列がホワイトリストに存在しません。修正するためにCLIスクリプト"
 "input_whitelist.phpを実行してください。"
 
-#: data_input.php:612
+#: data_input.php:614
 msgid "Input Fields"
 msgstr "入力項目"
 
-#: data_input.php:616 data_input.php:677 include/global_form.php:421
+#: data_input.php:618 data_input.php:679 include/global_form.php:421
 #, fuzzy
 msgid "Friendly Name"
 msgstr "分かりやすい名前"
 
-#: data_input.php:617
+#: data_input.php:619
 msgid "Field Order"
 msgstr "項目の並び順"
 
-#: data_input.php:661
+#: data_input.php:663
 #, fuzzy
 msgid "(Not In Use)"
 msgstr "（使用されていません）"
 
-#: data_input.php:670
+#: data_input.php:672
 #, fuzzy
 msgid "No Input Fields"
 msgstr "入力項目"
 
-#: data_input.php:674
+#: data_input.php:676
 msgid "Output Fields"
 msgstr "出力項目"
 
-#: data_input.php:678
+#: data_input.php:680
 #, fuzzy
 msgid "Update RRA"
 msgstr "RRAを更新する"
 
-#: data_input.php:704
+#: data_input.php:706
 #, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "データソースが存在する場合、出力フィールドは削除できません"
 
-#: data_input.php:713
+#: data_input.php:715
 #, fuzzy
 msgid "No Output Fields"
 msgstr "出力項目"
 
-#: data_input.php:736 host_templates.php:618
+#: data_input.php:738 host_templates.php:618
 #, fuzzy
 msgid "Delete Data Input Field"
 msgstr "データ入力フィールドの削除"
 
-#: data_input.php:794 include/global_arrays.php:882
+#: data_input.php:796 include/global_arrays.php:882
 #: include/global_arrays.php:1078 include/global_arrays.php:2152
 msgid "Data Input Methods"
 msgstr "データの入力方法"
 
-#: data_input.php:809 data_input.php:897
+#: data_input.php:811 data_input.php:899
 #, fuzzy
 msgid "Input Methods"
 msgstr "データの入力方法"
 
-#: data_input.php:906
+#: data_input.php:908
 #, fuzzy
 msgid "Data Input Name"
 msgstr "データ入力名"
 
-#: data_input.php:906
+#: data_input.php:908
 #, fuzzy
 msgid "The name of this Data Input Method."
 msgstr "このデータ入力方式の名前。"
 
-#: data_input.php:907
+#: data_input.php:909
 #, fuzzy
 msgid ""
 "Data Inputs that are in use cannot be Deleted. In use is defined as being "
@@ -3976,32 +3976,32 @@ msgstr ""
 "使用中のデータ入力は削除できません。使用中は、データソースまたはデータテンプ"
 "レートのいずれかによって参照されていると定義されています。"
 
-#: data_input.php:908 data_source_profiles.php:979 data_templates.php:1021
+#: data_input.php:910 data_source_profiles.php:979 data_templates.php:1021
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "使用しているデータソース"
 
-#: data_input.php:908
+#: data_input.php:910
 #, fuzzy
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "このデータ入力方式を使用するデータソースの数。"
 
-#: data_input.php:909
+#: data_input.php:911
 #, fuzzy
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "このデータ入力方法を使用するデータテンプレートの数。"
 
-#: data_input.php:910 data_queries.php:1391 include/global_arrays.php:1205
+#: data_input.php:912 data_queries.php:1391 include/global_arrays.php:1205
 #: include/global_form.php:540 include/global_form.php:1332
 msgid "Data Input Method"
 msgstr "データの入力方法"
 
-#: data_input.php:910
+#: data_input.php:912
 #, fuzzy
 msgid "The method used to gather information for this Data Input Method."
 msgstr "このデータ入力方式に関する情報を収集するために使用される方式。"
 
-#: data_input.php:933
+#: data_input.php:935
 #, fuzzy
 msgid "No Data Input Methods Found"
 msgstr "データ入力方法が見つかりません"
@@ -4135,7 +4135,7 @@ msgstr "XMLファイルが見つかりませんでした。"
 msgid "Associated Graph Templates"
 msgstr "関連グラフテンプレート"
 
-#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:456
+#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:457
 #: host.php:683 lib/api_automation.php:574
 msgid "Graph Template Name"
 msgstr "グラフテンプレート名"
@@ -4313,7 +4313,7 @@ msgstr "グラフタイムスパン"
 msgid "Steps"
 msgstr "ステップ"
 
-#: data_source_profiles.php:577 graphs_new.php:395 include/global_form.php:254
+#: data_source_profiles.php:577 graphs_new.php:396 include/global_form.php:254
 #: lib/html.php:490 lib/html_filter.php:73 lib/installer.php:2345
 #: lib/rrd.php:2871 utilities.php:507 utilities.php:1444
 msgid "Rows"
@@ -5171,12 +5171,12 @@ msgstr ""
 msgid "Cacti Real-time Graphing"
 msgstr "サボテンリアルタイムグラフ"
 
-#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1110
+#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1113
 msgid "Window"
 msgstr "ウィンドウ"
 
 #: graph_realtime.php:325 lib/html_graph.php:238 lib/html_reports.php:1028
-#: lib/html_tree.php:1033
+#: lib/html_tree.php:1036
 msgid "Thumbnails"
 msgstr "サムネイル"
 
@@ -5308,8 +5308,8 @@ msgstr ""
 "ボックスをオンにします。"
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
-#: graphs_new.php:451 include/global_arrays.php:1089
-#: include/global_arrays.php:2026 lib/html_tree.php:547 user_admin.php:1409
+#: graphs_new.php:452 include/global_arrays.php:1089
+#: include/global_arrays.php:2026 lib/html_tree.php:548 user_admin.php:1409
 #: user_group_admin.php:1105
 msgid "Graph Templates"
 msgstr "グラフテンプレート"
@@ -5455,14 +5455,14 @@ msgid "Report"
 msgstr "レポート"
 
 #: graph_view.php:616 lib/html.php:176 lib/html.php:181 lib/html_graph.php:157
-#: lib/html_tree.php:958
+#: lib/html_tree.php:961
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "すべてのグラフとテンプレート"
 
 #: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
 #: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
-#: lib/html_tree.php:959
+#: lib/html_tree.php:962
 #, fuzzy
 msgid "Not Templated"
 msgstr "テンプレートなし"
@@ -5945,73 +5945,73 @@ msgstr "[％s]の新しいグラフ"
 msgid "New Graphs for [ All Devices ]"
 msgstr "[すべてのデバイス]の新しいグラフ"
 
-#: graphs_new.php:286
+#: graphs_new.php:287
 #, fuzzy
 msgid "New Graphs for None Host Type"
 msgstr "なしホストタイプの新しいグラフ"
 
-#: graphs_new.php:316 lib/html.php:2290
+#: graphs_new.php:317 lib/html.php:2290
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "保存したフィルタ設定"
 
-#: graphs_new.php:351
+#: graphs_new.php:352
 #, fuzzy
 msgid "Graph Types"
 msgstr "グラフの種類"
 
-#: graphs_new.php:356
+#: graphs_new.php:357
 #, fuzzy
 msgid "Graph Template Based"
 msgstr "グラフテンプレートベース"
 
-#: graphs_new.php:380
+#: graphs_new.php:381
 #, fuzzy
 msgid "Save Filters"
 msgstr "フィルタを保存"
 
-#: graphs_new.php:413
+#: graphs_new.php:414
 #, fuzzy
 msgid "Edit this Device"
 msgstr "このデバイスを編集"
 
-#: graphs_new.php:414 host.php:615
+#: graphs_new.php:415 host.php:615
 #, fuzzy
 msgid "Create New Device"
 msgstr "新しいデバイスを作成する"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:930 user_admin.php:1630
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:930 user_admin.php:1630
 #: user_group_admin.php:1320
 msgid "Select All"
 msgstr "すべて選択"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:843 lib/html.php:930
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:843 lib/html.php:930
 #, fuzzy
 msgid "Select All Rows"
 msgstr "すべての行を選択"
 
-#: graphs_new.php:544 include/global_arrays.php:867
+#: graphs_new.php:545 include/global_arrays.php:867
 #: include/global_arrays.php:943 lib/html_form.php:1264 lib/html_form.php:1277
 #: tree.php:1368
 msgid "Create"
 msgstr "作成"
 
-#: graphs_new.php:546
+#: graphs_new.php:547
 #, fuzzy
 msgid "(Select a graph type to create)"
 msgstr "（作成するグラフの種類を選択してください）"
 
-#: graphs_new.php:630
+#: graphs_new.php:631
 #, fuzzy, php-format
 msgid "Data Query [%s]"
 msgstr "データクエリ[％s]"
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid "From there you can get more information."
 msgstr "そこからあなたはより多くの情報を得ることができます。"
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid ""
 "This Data Query returned 0 rows, perhaps there was a problem executing this "
@@ -6020,32 +6020,32 @@ msgstr ""
 "このデータクエリは0行を返しました。おそらくこのデータクエリの実行に問題があり"
 "ました。"
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid "You can run this Data Query in debug mode"
 msgstr "このデータクエリはデバッグモードで実行できます。"
 
-#: graphs_new.php:790
+#: graphs_new.php:791
 #, fuzzy
 msgid "Search Returned no Rows."
 msgstr "検索で行が返されませんでした。"
 
-#: graphs_new.php:795
+#: graphs_new.php:796
 #, fuzzy
 msgid "Error in data query."
 msgstr "データクエリでエラーが発生しました。"
 
-#: graphs_new.php:819
+#: graphs_new.php:820
 #, fuzzy
 msgid "Select a Graph Type to Create"
 msgstr "作成するグラフの種類を選択"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 #, fuzzy
 msgid "Make selection default"
 msgstr "選択をデフォルトにする"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 msgid "Set Default"
 msgstr "デフォルト設定"
 
@@ -7769,7 +7769,7 @@ msgstr "デバイスルール"
 
 #: include/global_arrays.php:899 include/global_arrays.php:948
 #: include/global_arrays.php:1087 lib/html_filter.php:178
-#: lib/html_graph.php:252 lib/html_tree.php:1047
+#: lib/html_graph.php:252 lib/html_tree.php:1050
 msgid "Presets"
 msgstr "プリセット"
 
@@ -8807,7 +8807,7 @@ msgstr "グラフ管理"
 msgid "(Edit)"
 msgstr "(編集)"
 
-#: include/global_arrays.php:1912 lib/api_aggregate.php:1591
+#: include/global_arrays.php:1912 lib/api_aggregate.php:1594
 msgid "Graph Items"
 msgstr "グラフ項目"
 
@@ -8836,7 +8836,7 @@ msgstr "ビュー・ログ"
 msgid "Graph Trees"
 msgstr "グラフツリー"
 
-#: include/global_arrays.php:2044 lib/api_aggregate.php:1591
+#: include/global_arrays.php:2044 lib/api_aggregate.php:1594
 msgid "Graph Template Items"
 msgstr "グラフテンプレートの項目"
 
@@ -10042,7 +10042,7 @@ msgstr "凡例の方向（--legend-direction = &lt;方向&gt;）"
 msgid "Place the legend items in the given vertical order."
 msgstr "凡例項目を指定された垂直方向に配置します。"
 
-#: include/global_form.php:919 lib/api_aggregate.php:1597 lib/html.php:1052
+#: include/global_form.php:919 lib/api_aggregate.php:1600 lib/html.php:1052
 msgid "Graph Item Type"
 msgstr "グラフ項目の種類"
 
@@ -11612,7 +11612,7 @@ msgstr ""
 
 #: include/global_settings.php:444
 #, fuzzy
-msgid "Graphs auto unlock"
+msgid "Graphs Auto Unlock"
 msgstr "グラフ一致ルール"
 
 #: include/global_settings.php:445
@@ -14281,9 +14281,9 @@ msgstr "1カラム"
 #: include/global_settings.php:2163 include/global_settings.php:2164
 #: include/global_settings.php:2165 include/global_settings.php:2166
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1023
-#: lib/html_tree.php:1024 lib/html_tree.php:1025 lib/html_tree.php:1026
-#: lib/html_tree.php:1027
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1026
+#: lib/html_tree.php:1027 lib/html_tree.php:1028 lib/html_tree.php:1029
+#: lib/html_tree.php:1030
 #, fuzzy, php-format
 msgid "%d Columns"
 msgstr "％d列"
@@ -14589,7 +14589,7 @@ msgstr "shell_exec（）および/またはexec（）関数は現在ブロック
 msgid "Display Graphs from this Aggregate"
 msgstr "この集約からグラフを表示する"
 
-#: lib/api_aggregate.php:1464
+#: lib/api_aggregate.php:1467
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph below represent Graphs from "
@@ -14600,12 +14600,12 @@ msgstr ""
 "を表します。集約は、複数のグラフテンプレートからの集約グラフの作成をサポート"
 "しません。"
 
-#: lib/api_aggregate.php:1465 lib/api_aggregate.php:1484
+#: lib/api_aggregate.php:1468 lib/api_aggregate.php:1487
 #, fuzzy
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "別のグラフに戻って選択するには、Returnキーを押します。"
 
-#: lib/api_aggregate.php:1483
+#: lib/api_aggregate.php:1486
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
@@ -14615,35 +14615,35 @@ msgstr ""
 "集約グラフ用に選択されたグラフは、グラフテンプレートを使用しません。集約は、"
 "テンプレート化されていないグラフからの集約グラフの作成をサポートしません。"
 
-#: lib/api_aggregate.php:1595 lib/html.php:1050
+#: lib/api_aggregate.php:1598 lib/html.php:1050
 #, fuzzy
 msgid "Graph Item"
 msgstr "現在のグラフ項目のデータソース"
 
-#: lib/api_aggregate.php:1598 lib/html.php:1053
+#: lib/api_aggregate.php:1601 lib/html.php:1053
 #, fuzzy
 msgid "CF Type"
 msgstr "CFタイプ"
 
-#: lib/api_aggregate.php:1599 lib/html.php:1055
+#: lib/api_aggregate.php:1602 lib/html.php:1055
 msgid "Item Color"
 msgstr "アイテムの色"
 
-#: lib/api_aggregate.php:1600
+#: lib/api_aggregate.php:1603
 #, fuzzy
 msgid "Color Template"
 msgstr "カラーテンプレート"
 
-#: lib/api_aggregate.php:1601
+#: lib/api_aggregate.php:1604
 msgid "Skip"
 msgstr "スキップ"
 
-#: lib/api_aggregate.php:1677
+#: lib/api_aggregate.php:1680
 #, fuzzy
 msgid "Aggregate Items are not modifyable"
 msgstr "集計アイテムは変更できません"
 
-#: lib/api_aggregate.php:1688
+#: lib/api_aggregate.php:1691
 #, fuzzy
 msgid "Aggregate Items are not editable"
 msgstr "集計アイテムは編集できません"
@@ -14795,7 +14795,7 @@ msgstr "ルールアイテム[％sのルールアイテムを編集：％s]"
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "ルール項目[％sの新しいルール項目：％s]"
 
-#: lib/api_automation.php:2865
+#: lib/api_automation.php:2850
 #, fuzzy
 msgid "Added by Cacti Automation"
 msgstr "Cacti Automationが追加しました"
@@ -14892,45 +14892,45 @@ msgstr "新しい支店"
 msgid "Web Basic"
 msgstr "ウェブベーシック"
 
-#: lib/auth.php:1714 lib/auth.php:1746
+#: lib/auth.php:1733 lib/auth.php:1765
 #, fuzzy
 msgid "Branch:"
 msgstr "ブランチ："
 
-#: lib/auth.php:1723 lib/auth.php:1754 lib/html_tree.php:930
+#: lib/auth.php:1742 lib/auth.php:1773 lib/html_tree.php:933
 #, fuzzy
 msgid "Device:"
 msgstr "デバイス"
 
-#: lib/auth.php:2412 lib/auth.php:2421
+#: lib/auth.php:2431 lib/auth.php:2440
 #, fuzzy
 msgid "This account has been locked."
 msgstr "このアカウントはロックされています。"
 
-#: lib/auth.php:2442
+#: lib/auth.php:2461
 msgid ""
 "Your Cacti administrator has forced complex passwords for logins and your "
 "current Cacti password does not match the new requirements.  Therefore, you "
 "must change your password now."
 msgstr ""
 
-#: lib/auth.php:2464
+#: lib/auth.php:2483
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "パスワードは最低％d文字でなければなりません。"
 
-#: lib/auth.php:2470
+#: lib/auth.php:2489
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "あなたのパスワードは少なくとも1つの数字を含まなければなりません！"
 
-#: lib/auth.php:2474
+#: lib/auth.php:2493
 #, fuzzy
 msgid ""
 "Your password must contain a mix of lower case and upper case characters!"
 msgstr "パスワードには、小文字と大文字が混在している必要があります。"
 
-#: lib/auth.php:2480
+#: lib/auth.php:2499
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "パスワードには少なくとも1つの特殊文字を含める必要があります。"
@@ -15039,32 +15039,32 @@ msgstr "新しい順"
 msgid "Oldest First"
 msgstr "古い順"
 
-#: lib/data_query.php:71 lib/data_query.php:368
+#: lib/data_query.php:71 lib/data_query.php:389
 #, fuzzy
 msgid "Automation Execution for Data Query complete"
 msgstr "データ照会の自動実行完了"
 
-#: lib/data_query.php:74 lib/data_query.php:371
+#: lib/data_query.php:74 lib/data_query.php:392
 #, fuzzy
 msgid "Plugin Hooks complete"
 msgstr "プラグインフック完了"
 
-#: lib/data_query.php:89
+#: lib/data_query.php:92
 #, fuzzy, php-format
 msgid "Running Data Query [%s]."
 msgstr "データクエリ[％s]を実行しています。"
 
-#: lib/data_query.php:99
+#: lib/data_query.php:102
 #, fuzzy, php-format
 msgid "Found Type = '%s' [%s]."
 msgstr "Found Type = &#39;％s&#39; [％s]。"
 
-#: lib/data_query.php:121
+#: lib/data_query.php:124
 #, fuzzy, php-format
 msgid "Unknown Type = '%s'."
 msgstr "不明な種類= &#39;％s&#39;。"
 
-#: lib/data_query.php:145
+#: lib/data_query.php:160
 #, fuzzy
 msgid ""
 "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
@@ -15072,43 +15072,48 @@ msgstr ""
 "警告：ソートフィールドの関連付けが変更されました。再マッピングの問題が発生す"
 "る可能性があります。"
 
-#: lib/data_query.php:156
+#: lib/data_query.php:172
 #, fuzzy
 msgid "Update Data Query Sort Cache complete"
 msgstr "データクエリソートキャッシュの更新が完了しました"
 
-#: lib/data_query.php:271
+#: lib/data_query.php:287
 #, fuzzy, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
 msgstr ""
 "インデックスの変更が検出されました。 CurrentIndex：％s、PreviousIndex：％s"
 
-#: lib/data_query.php:282
+#: lib/data_query.php:299
+#, fuzzy, php-format
+msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
+msgstr "インデックスの削除が検出されました。 PreviousIndex：％s"
+
+#: lib/data_query.php:302
 #, fuzzy, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "インデックスの削除が検出されました。 PreviousIndex：％s"
 
-#: lib/data_query.php:314
+#: lib/data_query.php:335
 #, fuzzy
 msgid "Remapping Graphs to their new Indexes"
 msgstr "グラフを新しいインデックスに再マッピングする"
 
-#: lib/data_query.php:324
+#: lib/data_query.php:345
 #, fuzzy
 msgid "Index Association with Local Data complete"
 msgstr "ローカルデータとのインデックスの関連付けが完了しました"
 
-#: lib/data_query.php:330
+#: lib/data_query.php:351
 #, fuzzy
 msgid "Update Re-Index Cache complete. There were "
 msgstr "再インデックスキャッシュの更新が完了しました。あった"
 
-#: lib/data_query.php:334
+#: lib/data_query.php:355
 #, fuzzy
 msgid "Update Poller Cache for Query complete"
 msgstr "クエリ完了のためのポーラーキャッシュの更新"
 
-#: lib/data_query.php:336
+#: lib/data_query.php:357
 #, fuzzy
 msgid ""
 "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
@@ -15116,66 +15121,66 @@ msgstr ""
 "インデックスの変更は検出されず、インデックスの再作成とポーラーキャッシュの再"
 "作成はスキップされます。"
 
-#: lib/data_query.php:360
+#: lib/data_query.php:381
 #, fuzzy
 msgid "Automation Executing for Data Query complete"
 msgstr "データ照会の自動実行が完了しました"
 
-#: lib/data_query.php:363
+#: lib/data_query.php:384
 #, fuzzy
 msgid "Plugin hooks complete"
 msgstr "プラグインフック完了"
 
-#: lib/data_query.php:389
+#: lib/data_query.php:410
 #, fuzzy
 msgid "Checking for Sort Field change.  No changes detected."
 msgstr "ソートフィールドの変更を確認しています。変更は検出されませんでした。"
 
-#: lib/data_query.php:394
+#: lib/data_query.php:415
 #, fuzzy, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr ""
 "新しいソートフィールドが検出されました： &#39;％s&#39;古いソートフィールド "
 "&#39;％s&#39;"
 
-#: lib/data_query.php:411
+#: lib/data_query.php:432
 #, fuzzy
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
 msgstr ""
 "エラー：新しいソートフィールドは適切ではありません。ソートフィールドは変更さ"
 "れません。"
 
-#: lib/data_query.php:423
+#: lib/data_query.php:444
 #, fuzzy
 msgid "New Sort Field validated.  Sort Field be updated."
 msgstr "新しいソートフィールドが検証されました。ソートフィールドを更新します。"
 
-#: lib/data_query.php:511
+#: lib/data_query.php:532
 #, fuzzy, php-format
 msgid "Could not find data query XML file at '%s'"
 msgstr "&#39;％s&#39;にデータクエリXMLファイルが見つかりませんでした"
 
-#: lib/data_query.php:515
+#: lib/data_query.php:536
 #, fuzzy, php-format
 msgid "Found data query XML file at '%s'"
 msgstr "&#39;％s&#39;にデータクエリXMLファイルが見つかりました"
 
-#: lib/data_query.php:533 lib/data_query.php:711 lib/data_query.php:1998
+#: lib/data_query.php:554 lib/data_query.php:732 lib/data_query.php:2019
 #, fuzzy
 msgid "Error parsing XML file into an array."
 msgstr "XMLファイルを配列に解析中にエラーが発生しました。"
 
-#: lib/data_query.php:537 lib/data_query.php:715
+#: lib/data_query.php:558 lib/data_query.php:736
 #, fuzzy
 msgid "XML file parsed ok."
 msgstr "XMLファイルは正常に解析されました。"
 
-#: lib/data_query.php:545 lib/data_query.php:718
+#: lib/data_query.php:566 lib/data_query.php:739
 #, fuzzy, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgstr "無効なフィールド&lt;index_order&gt;％s &lt;/index_order&gt;"
 
-#: lib/data_query.php:546 lib/data_query.php:719
+#: lib/data_query.php:567 lib/data_query.php:740
 #, fuzzy
 msgid ""
 "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;"
@@ -15184,22 +15189,22 @@ msgstr ""
 "&lt;direction&gt; input &lt;/direction&gt;または&lt;direction&gt;入出力&lt;/"
 "direction&gt;フィールドのみを含める必要があります"
 
-#: lib/data_query.php:563 lib/data_query.php:587
+#: lib/data_query.php:584 lib/data_query.php:608
 #, fuzzy
 msgid "ERROR: Data Query returned no indexes."
 msgstr "エラー：データクエリはインデックスを返しませんでした。"
 
-#: lib/data_query.php:567
+#: lib/data_query.php:588
 #, fuzzy, php-format
 msgid "Executing script for num of indexes '%s'"
 msgstr "索引数 &#39;％s&#39;のスクリプトを実行しています"
 
-#: lib/data_query.php:570
+#: lib/data_query.php:591
 #, fuzzy, php-format
 msgid "Found number of indexes: %s"
 msgstr "見つかったインデックスの数：％s"
 
-#: lib/data_query.php:574
+#: lib/data_query.php:595
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not "
@@ -15208,7 +15213,7 @@ msgstr ""
 "XMLファイルに&lt;arg_num_indexes&gt;がありません、 &#39;Index Count "
 "Changed&#39;はサポートされていません"
 
-#: lib/data_query.php:576
+#: lib/data_query.php:597
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -15217,66 +15222,66 @@ msgstr ""
 "XMLファイルに&lt;arg_num_indexes&gt;がありません、 &#39;Index Count "
 "Changed&#39;はarg_indexエントリーをカウントすることによってエミュレート"
 
-#: lib/data_query.php:591
+#: lib/data_query.php:612
 #, fuzzy, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
 msgstr ""
 "インデックスリスト &#39;％s&#39;のスクリプトを実行中、インデックス数：％s"
 
-#: lib/data_query.php:593
+#: lib/data_query.php:614
 #, fuzzy
 msgid "Click to show Data Query output for 'index'"
 msgstr "クリックして &#39;index&#39;のデータクエリ出力を表示する"
 
-#: lib/data_query.php:596
+#: lib/data_query.php:617
 #, fuzzy, php-format
 msgid "Found index: %s"
 msgstr "見つかったインデックス：％s"
 
-#: lib/data_query.php:609 lib/data_query.php:991
+#: lib/data_query.php:630 lib/data_query.php:1012
 #, fuzzy, php-format
 msgid "Click to show Data Query output for field '%s'"
 msgstr "クリックして、フィールド &#39;％s&#39;のデータクエリ出力を表示します"
 
-#: lib/data_query.php:614 lib/data_query.php:922
+#: lib/data_query.php:635 lib/data_query.php:943
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index."
 msgstr ""
 "ソートフィールドからデータが返されませんでした。再索引付けを続行できません。"
 
-#: lib/data_query.php:618
+#: lib/data_query.php:639
 #, fuzzy, php-format
 msgid "Executing script query '%s'"
 msgstr "スクリプトクエリ &#39;％s&#39;を実行しています"
 
-#: lib/data_query.php:628
+#: lib/data_query.php:649
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s"
 msgstr "見つかったアイテム[％s = &#39;％s&#39;]インデックス：％s"
 
-#: lib/data_query.php:665 lib/data_query.php:680
+#: lib/data_query.php:686 lib/data_query.php:701
 #, fuzzy, php-format
 msgid "Total: %f, Delta: %f, %s"
 msgstr "合計：％f、デルタ：％f、％s"
 
-#: lib/data_query.php:705
+#: lib/data_query.php:726
 #, fuzzy, php-format
 msgid "Invalid host_id: %s"
 msgstr "無効なhost_id：％s"
 
-#: lib/data_query.php:730
+#: lib/data_query.php:751
 #, fuzzy
 msgid "Failed to load SNMP session."
 msgstr "SNMPセッションを読み込めませんでした。"
 
-#: lib/data_query.php:739
+#: lib/data_query.php:760
 #, fuzzy, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr ""
 "SNMPを実行すると、インデックス数@ &#39;％s&#39;のインデックス数を取得します。"
 "インデックス数：％s"
 
-#: lib/data_query.php:741
+#: lib/data_query.php:762
 #, fuzzy
 msgid ""
 "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -15286,36 +15291,36 @@ msgstr ""
 "Changed&#39;はoid_indexエントリをカウントすることによってエミュレートされまし"
 "た"
 
-#: lib/data_query.php:747
+#: lib/data_query.php:768
 #, fuzzy, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
 "インデックスリストのSNMPウォークを実行しています@ &#39;％s&#39;インデックス"
 "数：％s"
 
-#: lib/data_query.php:751
+#: lib/data_query.php:772
 #, fuzzy
 msgid "No SNMP data returned"
 msgstr "SNMPデータが返されない"
 
-#: lib/data_query.php:756
+#: lib/data_query.php:777
 #, fuzzy, php-format
 msgid "Index found at OID: '%s' value: '%s'"
 msgstr "OIDにインデックスが見つかりました： &#39;％s&#39;値： &#39;％s&#39;"
 
-#: lib/data_query.php:775
+#: lib/data_query.php:796
 #, fuzzy, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
 msgstr "インデックスのフィルタリングリスト@ &#39;％s&#39;インデックス数：％s"
 
-#: lib/data_query.php:779
+#: lib/data_query.php:800
 #, fuzzy, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
 msgstr ""
 "フィルタされたインデックスがOIDで見つかりました： &#39;％s&#39;値： &#39;"
 "％s&#39;"
 
-#: lib/data_query.php:797
+#: lib/data_query.php:818
 #, fuzzy, php-format
 msgid ""
 "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' "
@@ -15324,131 +15329,131 @@ msgstr ""
 "&#39;rewrite_index&#39;または &#39;oid_suffix&#39;が定義されているため、 "
 "&#39;％s&#39;の誤った &#39;method&#39;フィールドを修正しました"
 
-#: lib/data_query.php:804
+#: lib/data_query.php:825
 #, fuzzy, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
 msgstr ""
 "フィールド &#39;％s&#39;のインデックスデータを挿入しています[値= &#39;"
 "％s&#39;]"
 
-#: lib/data_query.php:809
+#: lib/data_query.php:830
 #, fuzzy, php-format
 msgid "Located input field '%s' [get]"
 msgstr "入力フィールド &#39;％s&#39;に配置[取得]"
 
-#: lib/data_query.php:818
+#: lib/data_query.php:839
 #, fuzzy, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
 msgstr "OID書き換えルールが見つかりました： &#39;s /％s /％s /&#39;"
 
-#: lib/data_query.php:829
+#: lib/data_query.php:850
 #, fuzzy, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
 msgstr "OIDのoid_rewrite： &#39;％s&#39;新しいOID： &#39;％s&#39;"
 
-#: lib/data_query.php:850
+#: lib/data_query.php:871
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
 msgstr "SNMPを実行してデータを取得します"
 
-#: lib/data_query.php:861
+#: lib/data_query.php:882
 #, fuzzy, php-format
 msgid "Field '%s' %s"
 msgstr "フィールド &#39;％s&#39;％s"
 
-#: lib/data_query.php:896
+#: lib/data_query.php:917
 #, fuzzy, php-format
 msgid "Executing SNMP get for %s oids (%s)"
 msgstr "SNMPを実行すると％s oids（％s）が取得されます"
 
-#: lib/data_query.php:929
+#: lib/data_query.php:950
 #, fuzzy, php-format
 msgid "Found result for data @ '%s' [value='%s']"
 msgstr "データ@ &#39;％s&#39;の検索結果[値= &#39;％s&#39;]"
 
-#: lib/data_query.php:937
+#: lib/data_query.php:958
 #, fuzzy, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 "データ@ &#39;％s&#39;の設定結果[キー= &#39;％s&#39;、値= &#39;％s&#39;]"
 
-#: lib/data_query.php:941
+#: lib/data_query.php:962
 #, fuzzy, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 "データ@ &#39;％s&#39;の結果をスキップしました[キー= &#39;％s&#39;、値= &#39;"
 "％s&#39;]"
 
-#: lib/data_query.php:955
+#: lib/data_query.php:976
 #, fuzzy, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
 "SNMPがデータ@ &#39;％s&#39;の結果を取得しました[value = &#39;％s&#39;]（イン"
 "デックス：％s）"
 
-#: lib/data_query.php:985
+#: lib/data_query.php:1006
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
 msgstr ""
 "SNMPを実行してデータを取得します@ &#39;％s&#39; [value = &#39;$ value&#39;]"
 
-#: lib/data_query.php:993
+#: lib/data_query.php:1014
 #, fuzzy, php-format
 msgid "Located input field '%s' [walk]"
 msgstr "入力フィールド &#39;％s&#39;に配置されています[walk]"
 
-#: lib/data_query.php:1016
+#: lib/data_query.php:1037
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
 msgstr ""
 "ソートフィールドからデータが返されませんでした。 GETデータの再インデックスを"
 "続行できません。"
 
-#: lib/data_query.php:1023
+#: lib/data_query.php:1044
 #, fuzzy, php-format
 msgid "Sort field returned not data.  Can not continue Re-Index for OID[%s]"
 msgstr ""
 "ソートフィールドがデータではありません。 OIDのインデックスの再作成を続行でき"
 "ません[％s]"
 
-#: lib/data_query.php:1028
+#: lib/data_query.php:1049
 #, fuzzy, php-format
 msgid "Executing SNMP walk for data @ '%s'"
 msgstr "データ@ &#39;％s&#39;のSNMPウォークを実行しています"
 
-#: lib/data_query.php:1079
+#: lib/data_query.php:1100
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
 msgstr "見つかったアイテム[％s = &#39;％s&#39;]インデックス：％s [from％s]"
 
-#: lib/data_query.php:1113
+#: lib/data_query.php:1134
 #, fuzzy, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
 msgstr "OCTET STRING &#39;％s&#39;のデコード値が見つかりました： &#39;％s&#39;"
 
-#: lib/data_query.php:1119
+#: lib/data_query.php:1140
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr ""
 "見つかったアイテム[％s = &#39;％s&#39;]インデックス：％s [正規表現oidパースか"
 "ら]"
 
-#: lib/data_query.php:1139
+#: lib/data_query.php:1160
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr "見つかったアイテム[％s = &#39;％s&#39;]のインデックス：％s"
 
-#: lib/data_query.php:1504
+#: lib/data_query.php:1525
 #, fuzzy
 msgid "Re-Indexing Data Query complete"
 msgstr "データの再索引付けが完了しました"
 
-#: lib/data_query.php:1634
+#: lib/data_query.php:1655
 #, fuzzy
 msgid "Unknown Index"
 msgstr "未知のインデックス"
 
-#: lib/data_query.php:2108
+#: lib/data_query.php:2129
 #, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
@@ -15457,7 +15462,7 @@ msgstr ""
 "データソース '％1！'のXML出力列を選択し、チェックボックスをその右側に切り替え"
 "る必要があります"
 
-#: lib/data_query.php:2114
+#: lib/data_query.php:2135
 #, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
@@ -15571,7 +15576,7 @@ msgid "User Community"
 msgstr "ユーザーコミュニティ"
 
 #: lib/functions.php:2345 lib/functions.php:2358 lib/html.php:2301
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 msgid "Documentation"
 msgstr "ドキュメント"
 
@@ -15587,8 +15592,8 @@ msgstr "ログアウト"
 msgid "Leaf"
 msgstr "葉っぱ"
 
-#: lib/functions.php:2523 lib/html_tree.php:646 lib/html_tree.php:674
-#: lib/html_tree.php:894 lib/html_tree.php:902 lib/html_tree.php:1451
+#: lib/functions.php:2523 lib/html_tree.php:649 lib/html_tree.php:677
+#: lib/html_tree.php:897 lib/html_tree.php:905 lib/html_tree.php:1454
 #, fuzzy
 msgid "Non Query Based"
 msgstr "非クエリベース"
@@ -16246,7 +16251,7 @@ msgstr ""
 msgid "Data Query Data Sources must be created through %s"
 msgstr "データクエリデータソースは％sを介して作成する必要があります"
 
-#: lib/html_graph.php:193 lib/html_tree.php:994
+#: lib/html_graph.php:193 lib/html_tree.php:997
 #, fuzzy
 msgid ""
 "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
@@ -16255,60 +16260,60 @@ msgstr ""
 "現在のグラフ、列、サムネイル、プリセット、およびタイムシフトの設定をプロファ"
 "イルに保存します"
 
-#: lib/html_graph.php:223 lib/html_tree.php:1018
+#: lib/html_graph.php:223 lib/html_tree.php:1021
 msgid "Columns"
 msgstr "カラム"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1022
+#: lib/html_graph.php:227 lib/html_tree.php:1025
 #, fuzzy, php-format
 msgid "%d Column"
 msgstr "％d列"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1052
+#: lib/html_graph.php:257 lib/html_tree.php:1055
 msgid "Custom"
 msgstr "カスタム"
 
 #: lib/html_graph.php:270 lib/html_reports.php:1608 lib/html_reports.php:1619
-#: lib/html_tree.php:1065
+#: lib/html_tree.php:1068
 msgid "From"
 msgstr "から"
 
-#: lib/html_graph.php:275 lib/html_tree.php:1070
+#: lib/html_graph.php:275 lib/html_tree.php:1073
 #, fuzzy
 msgid "Start Date Selector"
 msgstr "開始日セレクタ"
 
 #: lib/html_graph.php:279 lib/html_reports.php:1609 lib/html_reports.php:1620
-#: lib/html_tree.php:1074
+#: lib/html_tree.php:1077
 msgid "To"
 msgstr "まで"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1079
+#: lib/html_graph.php:284 lib/html_tree.php:1082
 #, fuzzy
 msgid "End Date Selector"
 msgstr "終了日セレクタ"
 
-#: lib/html_graph.php:289 lib/html_tree.php:1084
+#: lib/html_graph.php:289 lib/html_tree.php:1087
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "時間を後方にシフト"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1085
+#: lib/html_graph.php:290 lib/html_tree.php:1088
 #, fuzzy
 msgid "Define Shifting Interval"
 msgstr "シフト間隔の定義"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1096
+#: lib/html_graph.php:301 lib/html_tree.php:1099
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "前にシフト"
 
-#: lib/html_graph.php:306 lib/html_tree.php:1101
+#: lib/html_graph.php:306 lib/html_tree.php:1104
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "選択した期間を更新"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1102
+#: lib/html_graph.php:307 lib/html_tree.php:1105
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "デフォルトの期間に戻る"
@@ -16317,7 +16322,7 @@ msgstr "デフォルトの期間に戻る"
 msgid "Interval"
 msgstr "間隔"
 
-#: lib/html_graph.php:339 lib/html_tree.php:1134
+#: lib/html_graph.php:339 lib/html_tree.php:1137
 msgid "Stop"
 msgstr "停止"
 
@@ -16896,54 +16901,54 @@ msgstr "無効"
 msgid "No Reports Found"
 msgstr "レポートが見つかりません"
 
-#: lib/html_tree.php:886 lib/html_tree.php:894 lib/html_tree.php:902
+#: lib/html_tree.php:889 lib/html_tree.php:897 lib/html_tree.php:905
 #, fuzzy
 msgid "Graph Template:"
 msgstr "グラフのテンプレート"
 
-#: lib/html_tree.php:902
+#: lib/html_tree.php:905
 #, fuzzy
 msgid "Template Based"
 msgstr "テンプレートベース"
 
-#: lib/html_tree.php:908 lib/reports.php:990
+#: lib/html_tree.php:911 lib/reports.php:990
 #, fuzzy
 msgid "Tree:"
 msgstr "このグラフツリーの名前です。"
 
-#: lib/html_tree.php:913
+#: lib/html_tree.php:916
 msgid "Site:"
 msgstr "サイト:"
 
-#: lib/html_tree.php:919 lib/reports.php:995
+#: lib/html_tree.php:922 lib/reports.php:995
 #, fuzzy
 msgid "Leaf:"
 msgstr "葉っぱ"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:928
 #, fuzzy
 msgid "Device Template:"
 msgstr "デバイステンプレート："
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Applied"
 msgstr "適用"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Filter"
 msgstr "フィルター"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 #, fuzzy
 msgid "Graph Filters"
 msgstr "グラフフィルタ"
 
-#: lib/html_tree.php:991
+#: lib/html_tree.php:994
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "フィルタの設定/更新"
 
-#: lib/html_tree.php:1395
+#: lib/html_tree.php:1398
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "（非グラフテンプレート）"
@@ -18809,7 +18814,7 @@ msgstr "作成：％s"
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "エラー：ホワイトリストの検証に失敗しました。データ入力方法の確認"
 
-#: lib/utility.php:838
+#: lib/utility.php:840
 #, fuzzy
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
@@ -18822,14 +18827,14 @@ msgstr ""
 "い。ただし、信頼性に関して多くの問題を引き起こしていた長年の低レベルのネット"
 "ワーク問題を修正します。"
 
-#: lib/utility.php:850
+#: lib/utility.php:852
 #, fuzzy, php-format
 msgid ""
 "It is STRONGLY recommended that you enable InnoDB in any %s version greater "
 "than 5.5.3."
 msgstr "5.1以上の％sバージョンでInnoDBを有効にすることをお勧めします。"
 
-#: lib/utility.php:863
+#: lib/utility.php:865
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18846,7 +18851,7 @@ msgstr ""
 "しているなら、あなたのデータベースとテーブルを変換するための指示についてはイ"
 "ンターネットを見てください。"
 
-#: lib/utility.php:869
+#: lib/utility.php:871
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18863,13 +18868,13 @@ msgstr ""
 "しているなら、あなたのデータベースとテーブルを変換するための指示についてはイ"
 "ンターネットを見てください。"
 
-#: lib/utility.php:880
+#: lib/utility.php:882
 #, fuzzy, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "5.1以上の％sバージョンでInnoDBを有効にすることをお勧めします。"
 
-#: lib/utility.php:892
+#: lib/utility.php:894
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18879,7 +18884,7 @@ msgstr ""
 "英語以外の言語でCactiを使用する場合は、一部の文字が1バイトを超えるため、"
 "utf8mb4_unicode_ci照合タイプを使用することが重要です。"
 
-#: lib/utility.php:898
+#: lib/utility.php:900
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -18888,7 +18893,7 @@ msgstr ""
 "英語以外の言語でCactiを使用する場合は、一部の文字が1バイトを超えるため、"
 "utf8mb4文字セットを使用することが重要です。"
 
-#: lib/utility.php:907
+#: lib/utility.php:909
 #, fuzzy, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -18903,7 +18908,7 @@ msgstr ""
 "ヘッドルームを残す必要があります。これは、同時ログインアカウントの数によって"
 "変わります。"
 
-#: lib/utility.php:912
+#: lib/utility.php:914
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -18912,7 +18917,7 @@ msgstr ""
 "テーブルキャッシュを大きくしておくと、innodb_file_per_tableを使用するときの"
 "ファイルの開閉操作が少なくなります。"
 
-#: lib/utility.php:917
+#: lib/utility.php:919
 #, fuzzy
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
@@ -18922,7 +18927,7 @@ msgstr ""
 "リモートポーリング機能を使用すると、大量のデータがメインサーバーからリモート"
 "ポーラーに同期されます。したがって、この値を16M以上にしてください。"
 
-#: lib/utility.php:923
+#: lib/utility.php:925
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -18949,7 +18954,7 @@ msgstr ""
 "ンソール]  - &gt; [システムユーティリティ]  - &gt; [ブーストステータスの表示]"
 "で確認できます。"
 
-#: lib/utility.php:929
+#: lib/utility.php:931
 #, fuzzy
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
@@ -18958,7 +18963,7 @@ msgstr ""
 "より大きなテンポラリテーブルサイズを持つサブクエリを実行するときは、それらの"
 "テンポラリテーブルをメモリに保存してください。"
 
-#: lib/utility.php:935
+#: lib/utility.php:937
 #, fuzzy
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
@@ -18967,7 +18972,7 @@ msgstr ""
 "結合を実行するとき、それらがこのサイズより小さい場合、それらはメモリ内に保持"
 "され、一時ファイルに書き込まれることはありません。"
 
-#: lib/utility.php:940
+#: lib/utility.php:942
 #, fuzzy, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -18982,7 +18987,7 @@ msgstr ""
 "ブルに対してalterステートメントを実行することで、ファイルごとのストレージに移"
 "行できます。"
 
-#: lib/utility.php:946
+#: lib/utility.php:948
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -18993,14 +18998,14 @@ msgstr ""
 "ることが重要です。この設定は、特定のCactiテーブルにとって重要な、より長いイン"
 "デックスを許可します。"
 
-#: lib/utility.php:952
+#: lib/utility.php:954
 msgid ""
 "If your tables have very large indexes, you must operate with the Barracuda "
 "innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do "
 "this may result in plugins that can not properly create tables."
 msgstr ""
 
-#: lib/utility.php:958
+#: lib/utility.php:960
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -19016,7 +19021,7 @@ msgstr ""
 "レクトリのサイズを確認すると、この値を決定するのに役立ちます。システム全体の"
 "メモリの25％を推奨していますが、要件はシステムのサイズによって異なります。"
 
-#: lib/utility.php:964
+#: lib/utility.php:966
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -19025,7 +19030,7 @@ msgstr ""
 "最近のSSDタイプのストレージでは、この操作は実際にはより急速にディスクを劣化さ"
 "せ、すべての書き込み操作に50％のオーバーヘッドを追加します。"
 
-#: lib/utility.php:969
+#: lib/utility.php:971
 #, fuzzy
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
@@ -19034,7 +19039,7 @@ msgstr ""
 "これはメタデータが格納される場所です。テーブルがたくさんある場合は、これを増"
 "やすと便利です。"
 
-#: lib/utility.php:974
+#: lib/utility.php:976
 #, fuzzy
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
@@ -19043,7 +19048,7 @@ msgstr ""
 "不正な照会では、データベースが他のユーザーにオフラインになることは避けてくだ"
 "さい。あなたのシステムを殺す前にこれらの質問を殺してください。"
 
-#: lib/utility.php:979
+#: lib/utility.php:981
 #, fuzzy
 msgid ""
 "Maximum I/O performance happens when you use the O_DIRECT method to flush "
@@ -19052,7 +19057,7 @@ msgstr ""
 "最大のI / Oパフォーマンスは、O_DIRECTメソッドを使ってページをフラッシュしたと"
 "きに発生します。"
 
-#: lib/utility.php:989
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -19061,7 +19066,7 @@ msgstr ""
 "この値を2に設定すると、コミット時ではなく、毎秒すべてのトランザクションをフ"
 "ラッシュします。これにより、％sは書き込みの頻度を減らすことができます。"
 
-#: lib/utility.php:994
+#: lib/utility.php:996
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
@@ -19070,7 +19075,7 @@ msgstr ""
 "最新のSSDタイプのストレージでは、複数のスレッドを持つことは、高いI / O特性を"
 "持つアプリケーションにとって有利です。"
 
-#: lib/utility.php:1002
+#: lib/utility.php:1004
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -19081,7 +19086,7 @@ msgstr ""
 "す。デフォルトは1秒ですが、I / Oが多いシステムでは、1より大きい値に設定する"
 "と、ディスクI / Oをより順次にすることができます"
 
-#: lib/utility.php:1007
+#: lib/utility.php:1009
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
@@ -19090,7 +19095,7 @@ msgstr ""
 "最新のSSDタイプのストレージでは、複数の読み取りスレッドを持つことは、高いI / "
 "O特性を持つアプリケーションにとって有利です。"
 
-#: lib/utility.php:1012
+#: lib/utility.php:1014
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
@@ -19099,7 +19104,7 @@ msgstr ""
 "最新のSSDタイプのストレージでは、複数の書き込みスレッドを持つことは、高いI / "
 "O特性を持つアプリケーションにとって有利です。"
 
-#: lib/utility.php:1018
+#: lib/utility.php:1020
 #, fuzzy, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -19111,7 +19116,7 @@ msgstr ""
 "大値は64です。innodb_buffer_poolが1GB未満の場合は、プールサイズを128MBで割っ"
 "た値を使用してください。最大64までこの方程式を使い続けてください。"
 
-#: lib/utility.php:1024
+#: lib/utility.php:1026
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -19123,7 +19128,7 @@ msgstr ""
 "PCIeフラッシュを使用している場合は、100000というはるかに大きい数を使用できま"
 "す。"
 
-#: lib/utility.php:1030
+#: lib/utility.php:1032
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -19135,7 +19140,7 @@ msgstr ""
 "PCIeフラッシュを使用している場合は、200000というはるかに大きい数を使用できま"
 "す。"
 
-#: lib/utility.php:1036
+#: lib/utility.php:1038
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion. Otherwise, do not set this "
@@ -19144,49 +19149,49 @@ msgstr ""
 "SSDディスクがある場合は、この提案を使用してください。それ以外の場合は設定しな"
 "いでください。"
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "％sの調整"
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "注：以下の多くの変更はデータベースの再起動を必要とします"
 
-#: lib/utility.php:1051
+#: lib/utility.php:1053
 msgid "Variable"
 msgstr "変数"
 
-#: lib/utility.php:1052
+#: lib/utility.php:1054
 msgid "Current Value"
 msgstr "現在の値"
 
-#: lib/utility.php:1054
+#: lib/utility.php:1056
 #, fuzzy
 msgid "Recommended Value"
 msgstr "推奨値"
 
-#: lib/utility.php:1055
+#: lib/utility.php:1057
 msgid "Comments"
 msgstr "コメント"
 
-#: lib/utility.php:1431
+#: lib/utility.php:1433
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP％sが最小バージョンです"
 
-#: lib/utility.php:1433
+#: lib/utility.php:1435
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "最低％s MBのメモリ制限"
 
-#: lib/utility.php:1435
+#: lib/utility.php:1437
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "最小％sm実行時間"
 
-#: lib/utility.php:1437
+#: lib/utility.php:1439
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "MySQLとシステムに一致する有効なタイムゾーン"
