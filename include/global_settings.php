@@ -441,7 +441,7 @@ $settings = array(
                         'default' => 'on'
                         ),
                 'graphs_auto_unlock' => array(
-                        'friendly_name' => __('Graphs auto unlock'),
+                        'friendly_name' => __('Graphs Auto Unlock'),
                         'description' => __('When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph.'),
                         'method' => 'checkbox',
                         'default' => ''

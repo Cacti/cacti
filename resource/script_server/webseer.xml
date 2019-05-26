@@ -1,0 +1,62 @@
+<webseer>
+	<name>Web Service Checks Data Query</name>
+	<script_path>|path_cacti|/scripts/ss_webseer.php</script_path>
+	<script_function>ss_webseer</script_function>
+	<script_server>php</script_server>
+	<arg_prepend></arg_prepend>
+	<arg_index>index</arg_index>
+	<arg_query>query</arg_query>
+	<arg_get>get</arg_get>
+	<output_delimeter>!</output_delimeter>
+	<index_order>webseerId</index_order>
+	<index_order_type>numeric</index_order_type>
+	<index_title_format>Check#|chosen_order_field|</index_title_format>
+
+	<fields>
+		<webseerId>
+			<name>Service Check Id</name>
+			<direction>input</direction>
+			<query_name>webseerId</query_name>
+		</webseerId>
+		<webseerName>
+			<name>Service Check Name</name>
+			<direction>input</direction>
+			<query_name>webseerName</query_name>
+		</webseerName>
+		<lookupTime>
+			<name>Lookup Time</name>
+			<direction>output</direction>
+			<query_name>lookupTime</query_name>
+		</lookupTime>
+		<connectTime>
+			<name>Connect Time</name>
+			<direction>output</direction>
+			<query_name>connectTime</query_name>
+		</connectTime>
+		<redirectTime>
+			<name>Redirect Time</name>
+			<direction>output</direction>
+			<query_name>redirectTime</query_name>
+		</redirectTime>
+		<totalTime>
+			<name>Total Time</name>
+			<direction>output</direction>
+			<query_name>totalTime</query_name>
+		</totalTime>
+		<downloadSpeed>
+			<name>Download Speed</name>
+			<direction>output</direction>
+			<query_name>downloadSpeed</query_name>
+		</downloadSpeed>
+		<downloadSize>
+			<name>Download Size</name>
+			<direction>output</direction>
+			<query_name>downloadSize</query_name>
+		</downloadSize>
+		<checkStatus>
+			<name>Check Status</name>
+			<direction>output</direction>
+			<query_name>checkStatus</query_name>
+		</checkStatus>
+	</fields>
+</webseer>
