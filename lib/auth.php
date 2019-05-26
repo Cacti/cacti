@@ -1355,7 +1355,9 @@ function get_allowed_type_hash($type, $init_where, $init_order, $limit, $item, $
 
 function prime_devices_type_cache($hash, $user) {
 	$init_rows = -1;
+
 	if (!isset($_SESSION['sess_allowed_templates'][$hash])) {
+		cacti_log('Priming \'Device\' cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 		$devices = get_allowed_devices('', 'description', -1, $init_rows, 0, $user);
 		set_cached_allowed_type('devices', $devices, $hash, $init_rows);
 	}
@@ -1363,7 +1365,20 @@ function prime_devices_type_cache($hash, $user) {
 
 function get_cached_allowed_type($hash, $init_rows) {
 	if ($hash !== false) {
-		cacti_log('Fetch InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+		// verify if the user needs to reset cache
+		$last_change = read_config_option('sess_allowed_templates_lastchange', true);
+		$user_change = read_user_setting('sess_allowed_templates_lastchange', 0, true);
+
+		if ($user_change < $last_change || empty($user_change)) {
+			cacti_log('Detected need for forced template cache refresh:', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+			clear_cached_allowed_types();
+			set_user_setting('sess_allowed_templates_lastchange', time());
+
+			return array();
+		}
+
+		cacti_log('Fetch InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_HIGH);
+
 		if (isset($_SESSION['sess_allowed_templates'][$hash]) && $init_rows == -1) {
 			return $_SESSION['sess_allowed_templates'][$hash];
 		}
@@ -1374,7 +1389,7 @@ function get_cached_allowed_type($hash, $init_rows) {
 
 function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 	if ($hash !== false && $init_rows == -1) {
-		cacti_log('Store InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_DEBUG);
+		cacti_log('Store InitRows:' . $init_rows . ', Hash:' . $hash, false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 
 		if ($type == 'devices') {
 			$_SESSION['sess_allowed_templates'][$hash] = array_rekey($items, 'id', 'id');
@@ -1388,7 +1403,9 @@ function set_cached_allowed_type($type, &$items, $hash, $init_rows) {
 }
 
 function clear_cached_allowed_types() {
+	cacti_log('Killing Session Cache due to device or template change', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 	kill_session_var('sess_allowed_templates');
+	set_config_option('sess_allowed_templates_lastchange', time());
 }
 
 function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $limit = '', &$total_rows = 0, $user = 0, $graph_template_id = 0) {
@@ -1396,9 +1413,11 @@ function get_allowed_graph_templates($sql_where = '', $order_by = 'gt.name', $li
 	$init_rows = $total_rows;
 
 	if ($hash !== false) {
+		cacti_log('Obtaining \'Graph Template\' cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 		$cached = get_cached_allowed_type($hash, $init_rows);
 
 		if (is_array($cached) && sizeof($cached)) {
+			cacti_log('Found Valid \'Graph Template\' priming cache', false, 'WEBUI', POLLER_VERBOSITY_HIGH);
 			return $cached;
 		}
 	}
@@ -2386,7 +2405,7 @@ function secpass_login_process($username) {
 
 				if (!$valid_pass) {
 					$failed = intval($user['failed_attempts']) + 1;
-					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')',false,'AUTH', POLLER_VERBOSITY_LOW);
+					cacti_log('LOGIN: WARNING: User \'' . $username . '\' failed authentication, incrementing lockout (' . $failed . ' of ' . $max . ')', false, 'AUTH', POLLER_VERBOSITY_LOW);
 
 					if ($failed >= $max) {
 						db_execute_prepared("UPDATE user_auth
@@ -2440,7 +2459,7 @@ function secpass_login_process($username) {
 				array($username));
 
 			$message = __('Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now.');
-			
+
 			display_custom_error_message($message);
 		}
 	}
