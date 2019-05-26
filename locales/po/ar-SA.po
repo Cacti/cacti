@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-18 16:00-0400\n"
+"POT-Creation-Date: 2019-05-26 11:35-0400\n"
 "PO-Revision-Date: 2019-03-10 13:28-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -117,7 +117,7 @@ msgstr ""
 #: automation_snmp.php:29 automation_snmp.php:556 automation_templates.php:30
 #: automation_tree_rules.php:32 cdef.php:29 cdef.php:651 color.php:28
 #: color_templates.php:28 color_templates.php:122 data_input.php:32
-#: data_input.php:664 data_input.php:706 data_queries.php:31
+#: data_input.php:666 data_input.php:708 data_queries.php:31
 #: data_queries.php:824 data_queries.php:924 data_queries.php:1179
 #: data_source_profiles.php:30 data_source_profiles.php:608 data_sources.php:36
 #: data_sources.php:1053 data_templates.php:34 data_templates.php:661
@@ -266,8 +266,8 @@ msgstr ""
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
 #: auth_changepassword.php:331 auth_profile.php:443 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1105 graphs.php:1155 graphs.php:1158
-#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1476
-#: lib/api_aggregate.php:1491 lib/html_form.php:1269 lib/html_utility.php:222
+#: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1479
+#: lib/api_aggregate.php:1494 lib/html_form.php:1269 lib/html_utility.php:222
 #: managers.php:1066 permission_denied.php:30 permission_denied.php:32
 msgid "Return"
 msgstr "عودة"
@@ -437,7 +437,7 @@ msgstr "عناصر الرسم البياني [تحرير:٪ s]"
 msgid "Details"
 msgstr "التفاصيل"
 
-#: aggregate_graphs.php:636 graphs_new.php:729 lib/html_reports.php:1173
+#: aggregate_graphs.php:636 graphs_new.php:730 lib/html_reports.php:1173
 #: lib/html_reports.php:1264 utilities.php:344
 msgid "Items"
 msgstr "الاعلانات"
@@ -483,7 +483,7 @@ msgid "Aggregate Graph %s"
 msgstr "إجمالي الرسم البياني٪ s"
 
 #: aggregate_graphs.php:915 aggregate_templates.php:490 graphs.php:1063
-#: lib/api_aggregate.php:1602
+#: lib/api_aggregate.php:1605
 msgid "Total"
 msgstr "الإجمالي"
 
@@ -492,7 +492,7 @@ msgstr "الإجمالي"
 msgid "All Items"
 msgstr "كل الاشياء"
 
-#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1758
+#: aggregate_graphs.php:942 graphs.php:1549 lib/api_aggregate.php:1761
 #, fuzzy
 msgid "Graph Configuration"
 msgstr "تكوين الرسم البياني"
@@ -513,20 +513,20 @@ msgstr "إخفاء تفاصيل البند"
 msgid "Matching Graphs"
 msgstr "مطابقة الرسوم البيانية"
 
-#: aggregate_graphs.php:1134 aggregate_graphs.php:1466
+#: aggregate_graphs.php:1134 aggregate_graphs.php:1471
 #: aggregate_templates.php:561 automation_devices.php:455
 #: automation_graph_rules.php:748 automation_networks.php:1176
 #: automation_networks.php:1220 automation_snmp.php:660
 #: automation_templates.php:394 automation_tree_rules.php:811 cdef.php:757
-#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:803
+#: color.php:530 color_templates.php:449 data_debug.php:1046 data_input.php:805
 #: data_queries.php:1281 data_source_profiles.php:843 data_sources.php:1421
 #: data_templates.php:864 gprint_presets.php:263 graph_templates.php:657
-#: graph_view.php:591 graphs.php:1888 graphs_new.php:389 host.php:1501
+#: graph_view.php:591 graphs.php:1888 graphs_new.php:390 host.php:1501
 #: host_templates.php:721 lib/api_automation.php:141 lib/api_automation.php:472
 #: lib/api_automation.php:706 lib/api_automation.php:1064
 #: lib/clog_webapi.php:568 lib/html.php:231 lib/html_filter.php:63
 #: lib/html_graph.php:203 lib/html_reports.php:1508 lib/html_tree.php:131
-#: lib/html_tree.php:948 links.php:311 managers.php:150 managers.php:494
+#: lib/html_tree.php:951 links.php:311 managers.php:150 managers.php:494
 #: managers.php:726 plugins.php:341 pollers.php:732 rrdcleaner.php:475
 #: settings.php:427 settings.php:446 settings.php:495 sites.php:425
 #: tree.php:810 tree.php:845 tree.php:880 tree.php:1901 user_admin.php:2254
@@ -541,13 +541,13 @@ msgid "Search"
 msgstr "بحث"
 
 #: aggregate_graphs.php:1140 aggregate_graphs.php:1241
-#: aggregate_graphs.php:1494 color_templates.php:561 data_sources.php:1606
+#: aggregate_graphs.php:1499 color_templates.php:561 data_sources.php:1606
 #: data_sources.php:1734 graph_view.php:455 graph_view.php:650
 #: graph_view.php:699 graphs.php:1894 graphs.php:2011 host.php:1565
 #: include/global_arrays.php:875 include/global_arrays.php:1082
 #: include/global_arrays.php:1826 lib/api_automation.php:281 lib/html.php:1554
 #: lib/html.php:1556 lib/html.php:1634 lib/html_graph.php:209
-#: lib/html_tree.php:1004 lib/html_tree.php:1315 tree.php:789 tree.php:1987
+#: lib/html_tree.php:1007 lib/html_tree.php:1318 tree.php:789 tree.php:1987
 #: user_admin.php:1004 user_admin.php:1269 user_admin.php:2620
 #: user_group_admin.php:817 user_group_admin.php:970 user_group_admin.php:2194
 #: utilities.php:303
@@ -555,16 +555,16 @@ msgstr "بحث"
 msgid "Graphs"
 msgstr "الرسوم البيانية"
 
-#: aggregate_graphs.php:1144 aggregate_graphs.php:1498
+#: aggregate_graphs.php:1144 aggregate_graphs.php:1503
 #: aggregate_templates.php:577 automation_devices.php:540
 #: automation_graph_rules.php:790 automation_networks.php:1186
 #: automation_snmp.php:670 automation_templates.php:404
 #: automation_tree_rules.php:831 cdef.php:767 color.php:540
-#: color_templates.php:464 data_debug.php:1056 data_input.php:813
+#: color_templates.php:464 data_debug.php:1056 data_input.php:815
 #: data_queries.php:1291 data_source_profiles.php:853
 #: data_source_profiles.php:974 data_sources.php:1431 data_templates.php:890
 #: gprint_presets.php:273 graph_templates.php:667 graph_view.php:654
-#: graphs.php:1898 graphs_new.php:399 host.php:1526 host_templates.php:731
+#: graphs.php:1898 graphs_new.php:400 host.php:1526 host_templates.php:731
 #: include/global_form.php:212 lib/api_automation.php:184
 #: lib/api_automation.php:482 lib/api_automation.php:716
 #: lib/api_automation.php:1107 lib/html_reports.php:1528 links.php:321
@@ -586,19 +586,19 @@ msgstr "الافتراضي"
 msgid "Part of Aggregate"
 msgstr "جزء من التجميع"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: aggregate_templates.php:598 automation_devices.php:476
 #: automation_graph_rules.php:802 automation_networks.php:1220
 #: automation_snmp.php:682 automation_templates.php:416
 #: automation_tree_rules.php:843 cdef.php:785 color.php:564
-#: color_templates.php:486 data_debug.php:975 data_input.php:825
+#: color_templates.php:486 data_debug.php:975 data_input.php:827
 #: data_queries.php:1303 data_source_profiles.php:871 data_sources.php:1372
 #: data_templates.php:908 gprint_presets.php:291 graph_templates.php:685
-#: graph_view.php:599 graphs.php:1879 graphs_new.php:378 host.php:1491
+#: graph_view.php:599 graphs.php:1879 graphs_new.php:379 host.php:1491
 #: host_templates.php:749 lib/api_automation.php:196 lib/api_automation.php:463
 #: lib/api_automation.php:728 lib/api_automation.php:1119
 #: lib/clog_webapi.php:516 lib/html.php:1393 lib/html_filter.php:81
-#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:991
+#: lib/html_graph.php:190 lib/html_reports.php:1539 lib/html_tree.php:994
 #: links.php:331 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -607,13 +607,13 @@ msgstr "جزء من التجميع"
 msgid "Go"
 msgstr "أذهب"
 
-#: aggregate_graphs.php:1162 aggregate_graphs.php:1510
+#: aggregate_graphs.php:1162 aggregate_graphs.php:1515
 #: automation_devices.php:476 automation_snmp.php:682
 #: automation_templates.php:416 cdef.php:785 color.php:564 data_debug.php:975
-#: data_input.php:825 data_queries.php:1303 data_source_profiles.php:871
+#: data_input.php:827 data_queries.php:1303 data_source_profiles.php:871
 #: data_sources.php:1372 data_templates.php:908 gprint_presets.php:291
 #: graph_templates.php:685 graph_view.php:599 graphs.php:1879
-#: graphs_new.php:378 host.php:1491 host_templates.php:749
+#: graphs_new.php:379 host.php:1491 host_templates.php:749
 #: lib/html_graph.php:190 managers.php:172 managers.php:516 managers.php:746
 #: plugins.php:377 pollers.php:754 sites.php:447 tree.php:1923
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
@@ -627,20 +627,20 @@ msgstr "أذهب"
 msgid "Set/Refresh Filters"
 msgstr "مجموعة / تحديث الفلاتر"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516
 #: aggregate_templates.php:599 automation_devices.php:477
 #: automation_graph_rules.php:803 automation_networks.php:1221
 #: automation_snmp.php:683 automation_templates.php:417
 #: automation_tree_rules.php:844 cdef.php:786 color.php:565
-#: color_templates.php:487 data_debug.php:976 data_input.php:826
+#: color_templates.php:487 data_debug.php:976 data_input.php:828
 #: data_queries.php:1304 data_source_profiles.php:872 data_sources.php:1373
 #: data_templates.php:909 gprint_presets.php:292 graph_templates.php:686
-#: graph_view.php:600 graphs.php:1880 graphs_new.php:379 host.php:1492
+#: graph_view.php:600 graphs.php:1880 graphs_new.php:380 host.php:1492
 #: host_templates.php:750 lib/api_automation.php:197 lib/api_automation.php:464
 #: lib/api_automation.php:729 lib/api_automation.php:1120
 #: lib/clog_webapi.php:517 lib/html_filter.php:86 lib/html_graph.php:191
-#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:992
-#: lib/html_tree.php:1102 links.php:332 managers.php:173 managers.php:517
+#: lib/html_graph.php:307 lib/html_reports.php:1540 lib/html_tree.php:995
+#: lib/html_tree.php:1105 links.php:332 managers.php:173 managers.php:517
 #: managers.php:747 plugins.php:378 pollers.php:755 sites.php:448 tree.php:1924
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
@@ -648,13 +648,13 @@ msgstr "مجموعة / تحديث الفلاتر"
 msgid "Clear"
 msgstr "واضح"
 
-#: aggregate_graphs.php:1163 aggregate_graphs.php:1511 automation_snmp.php:683
+#: aggregate_graphs.php:1163 aggregate_graphs.php:1516 automation_snmp.php:683
 #: automation_templates.php:417 cdef.php:786 color.php:565 data_debug.php:976
-#: data_input.php:826 data_queries.php:1304 data_source_profiles.php:872
+#: data_input.php:828 data_queries.php:1304 data_source_profiles.php:872
 #: data_sources.php:1373 data_templates.php:909 gprint_presets.php:292
 #: graph_templates.php:686 graph_view.php:600 graphs.php:1880
-#: graphs_new.php:379 host.php:1492 host_templates.php:750
-#: lib/html_graph.php:191 lib/html_tree.php:992 managers.php:173
+#: graphs_new.php:380 host.php:1492 host_templates.php:750
+#: lib/html_graph.php:191 lib/html_tree.php:995 managers.php:173
 #: managers.php:517 managers.php:747 plugins.php:378 pollers.php:755
 #: sites.php:448 tree.php:1924 user_admin.php:2277 user_admin.php:2643
 #: user_admin.php:2728 user_admin.php:2832 user_admin.php:2917
@@ -668,13 +668,13 @@ msgstr "واضح"
 msgid "Clear Filters"
 msgstr "مسح مرشحات"
 
-#: aggregate_graphs.php:1246 aggregate_graphs.php:1574 graphs.php:1132
+#: aggregate_graphs.php:1246 aggregate_graphs.php:1579 graphs.php:1132
 #: lib/api_automation.php:572 user_admin.php:1012 user_group_admin.php:825
 #, fuzzy
 msgid "Graph Title"
 msgstr "عنوان الرسم البياني"
 
-#: aggregate_graphs.php:1247 aggregate_graphs.php:1575
+#: aggregate_graphs.php:1247 aggregate_graphs.php:1580
 #: automation_graph_rules.php:901 automation_tree_rules.php:937
 #: data_debug.php:346 data_queries.php:1387 data_sources.php:1600
 #: data_templates.php:1019 graph_templates.php:793 graphs.php:2027
@@ -691,14 +691,14 @@ msgstr "المعرف"
 msgid "Included in Aggregate"
 msgstr "المدرجة في التجميع"
 
-#: aggregate_graphs.php:1249 aggregate_graphs.php:1577 graph_realtime.php:311
+#: aggregate_graphs.php:1249 aggregate_graphs.php:1582 graph_realtime.php:311
 #: graph_templates.php:796 graph_view.php:727 graphs.php:2045
 msgid "Size"
 msgstr "مداخل خلفية الحجم"
 
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:689 cdef.php:906 color.php:726 color.php:728
-#: color_templates.php:578 data_input.php:925 data_queries.php:1407
+#: color_templates.php:578 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1014 data_source_profiles.php:1015
 #: data_sources.php:1681 data_sources.php:1682 data_templates.php:1044
 #: gprint_presets.php:414 graph_templates.php:814 host_templates.php:857
@@ -712,7 +712,7 @@ msgstr "لا"
 #: aggregate_graphs.php:1265 aggregate_templates.php:680
 #: automation_tree_rules.php:682 cdef.php:906 color.php:726 color.php:728
 #: color_templates.php:578 data_debug.php:629 data_debug.php:634
-#: data_debug.php:639 data_input.php:925 data_queries.php:1407
+#: data_debug.php:639 data_input.php:927 data_queries.php:1407
 #: data_source_profiles.php:1013 data_source_profiles.php:1014
 #: data_source_profiles.php:1015 data_sources.php:1681 data_sources.php:1682
 #: data_templates.php:1044 gprint_presets.php:414 graph_templates.php:814
@@ -730,27 +730,27 @@ msgstr "نعم"
 msgid "No Graphs Found"
 msgstr "لا توجد الرسوم البيانية"
 
-#: aggregate_graphs.php:1457
+#: aggregate_graphs.php:1462
 #, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[تطبيق قائمة الرسم البياني المخصص - تصفية قائمة FROM]"
 
-#: aggregate_graphs.php:1457 aggregate_graphs.php:1565
+#: aggregate_graphs.php:1462 aggregate_graphs.php:1570
 #: include/global_arrays.php:2536
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "الرسوم البيانية الإجمالية"
 
-#: aggregate_graphs.php:1472 data_debug.php:949 data_sources.php:1346
+#: aggregate_graphs.php:1477 data_debug.php:949 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
 #: include/global_arrays.php:2682 include/global_settings.php:514
-#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:954
+#: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:957
 #: rrdcleaner.php:351 user_admin.php:2598 user_admin.php:2791
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1677
 msgid "Template"
 msgstr "قالب"
 
-#: aggregate_graphs.php:1476 automation_devices.php:465
+#: aggregate_graphs.php:1481 automation_devices.php:465
 #: automation_devices.php:495 automation_devices.php:510
 #: automation_devices.php:525 automation_graph_rules.php:758
 #: automation_graph_rules.php:780 automation_tree_rules.php:821
@@ -758,7 +758,7 @@ msgstr "قالب"
 #: graphs_items.php:331 host.php:1441 host.php:1459 host.php:1476 host.php:1511
 #: lib/api_automation.php:151 lib/api_automation.php:169
 #: lib/api_automation.php:428 lib/api_automation.php:445
-#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2269
+#: lib/api_automation.php:1074 lib/api_automation.php:1092 lib/auth.php:2288
 #: lib/html.php:1918 lib/html.php:1941 lib/html.php:1979
 #: lib/html_reports.php:1518 managers.php:483 managers.php:736
 #: user_admin.php:2602 user_admin.php:2795 user_group_admin.php:2176
@@ -768,7 +768,7 @@ msgstr "قالب"
 msgid "Any"
 msgstr "الجميع"
 
-#: aggregate_graphs.php:1477 aggregate_graphs.php:1589
+#: aggregate_graphs.php:1482 aggregate_graphs.php:1594
 #: automation_graph_rules.php:911 automation_graph_rules.php:912
 #: automation_networks.php:462 automation_networks.php:717
 #: automation_tree_rules.php:949 data_debug.php:954 data_sources.php:917
@@ -789,7 +789,7 @@ msgstr "الجميع"
 #: include/global_settings.php:1093 include/global_settings.php:1555
 #: lib/api_automation.php:152 lib/api_automation.php:429
 #: lib/api_automation.php:446 lib/api_automation.php:587
-#: lib/api_automation.php:1075 lib/auth.php:2272 lib/html.php:191
+#: lib/api_automation.php:1075 lib/auth.php:2291 lib/html.php:191
 #: lib/html.php:1919 lib/html.php:1939 lib/html.php:1980 lib/html_form.php:329
 #: lib/html_reports.php:615 lib/html_reports.php:651 lib/html_reports.php:663
 #: lib/html_reports.php:672 lib/html_reports.php:682 settings.php:420
@@ -798,27 +798,27 @@ msgstr "الجميع"
 msgid "None"
 msgstr "لا شيء"
 
-#: aggregate_graphs.php:1574
+#: aggregate_graphs.php:1579
 #, fuzzy
 msgid "The title for the Aggregate Graphs"
 msgstr "عنوان الرسوم البيانية الإجمالية"
 
-#: aggregate_graphs.php:1575
+#: aggregate_graphs.php:1580
 #, fuzzy
 msgid "The internal database identifier for this object"
 msgstr "معرف قاعدة البيانات الداخلية لهذا الكائن"
 
-#: aggregate_graphs.php:1576 graphs.php:1136
+#: aggregate_graphs.php:1581 graphs.php:1136
 #, fuzzy
 msgid "Aggregate Template"
 msgstr "قالب التجميع"
 
-#: aggregate_graphs.php:1576
+#: aggregate_graphs.php:1581
 #, fuzzy
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
 msgstr "The Aggregate Template that that Aggregate Graphs based on"
 
-#: aggregate_graphs.php:1595
+#: aggregate_graphs.php:1600
 #, fuzzy
 msgid "No Aggregate Graphs Found"
 msgstr "لا توجد رسوم بيانية مجمعة"
@@ -828,7 +828,7 @@ msgstr "لا توجد رسوم بيانية مجمعة"
 msgid "Override Values for Graph Item"
 msgstr "تجاوز قيم عنصر الرسم البياني"
 
-#: aggregate_items.php:358 lib/api_aggregate.php:1790
+#: aggregate_items.php:358 lib/api_aggregate.php:1793
 #, fuzzy
 msgid "Override this Value"
 msgstr "تجاوز هذه القيمة"
@@ -890,7 +890,7 @@ msgstr ""
 "مرجع من قبل Aggregate."
 
 #: aggregate_templates.php:663 cdef.php:889 color.php:703
-#: color_templates.php:560 data_input.php:907 data_queries.php:1388
+#: color_templates.php:560 data_input.php:909 data_queries.php:1388
 #: data_source_profiles.php:975 data_sources.php:1618 data_templates.php:1020
 #: gprint_presets.php:395 graph_templates.php:794 host_templates.php:839
 #: vdef.php:888
@@ -1009,9 +1009,9 @@ msgstr "كلمة مرور جديدة"
 msgid "Confirm new password"
 msgstr "تأكيد كلمة المرور الجديدة"
 
-#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:380
+#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:381
 #: lib/html_form.php:1266 lib/html_form.php:1275 lib/html_graph.php:193
-#: lib/html_tree.php:994 settings.php:389
+#: lib/html_tree.php:997 settings.php:389
 msgid "Save"
 msgstr "حفظ"
 
@@ -1784,8 +1784,8 @@ msgstr "نطاق اكتشاف الشبكة [جديد]"
 msgid "General Settings"
 msgstr "الاعدادات العامة"
 
-#: automation_networks.php:441 automation_snmp.php:475 data_input.php:615
-#: data_input.php:676 data_queries.php:778 data_queries.php:876
+#: automation_networks.php:441 automation_snmp.php:475 data_input.php:617
+#: data_input.php:678 data_queries.php:778 data_queries.php:876
 #: data_queries.php:1138 data_source_profiles.php:573 graph_templates.php:451
 #: include/global_form.php:171 include/global_form.php:237
 #: include/global_form.php:294 include/global_form.php:314
@@ -2478,7 +2478,7 @@ msgstr "لم يتم العثور على شبكات"
 
 #: automation_networks.php:1197 data_debug.php:1022 graph.php:362
 #: graph_realtime.php:293 lib/clog_webapi.php:548 lib/html_graph.php:306
-#: lib/html_tree.php:1101 lib/html_tree.php:1122 utilities.php:1128
+#: lib/html_tree.php:1104 lib/html_tree.php:1125 utilities.php:1128
 #: utilities.php:2037
 msgid "Refresh"
 msgstr "تحديث"
@@ -3156,7 +3156,7 @@ msgstr ""
 msgid "The number of Graphs using this CDEF."
 msgstr "عدد الرسوم البيانية باستخدام هذا CDEF."
 
-#: cdef.php:891 color.php:705 data_input.php:909 data_queries.php:1390
+#: cdef.php:891 color.php:705 data_input.php:911 data_queries.php:1390
 #: data_source_profiles.php:980 gprint_presets.php:397 vdef.php:890
 #, fuzzy
 msgid "Templates Using"
@@ -3368,14 +3368,14 @@ msgstr "لا توجد ألوان"
 msgid "Color Item"
 msgstr "البند اللون"
 
-#: color_templates.php:93 lib/api_aggregate.php:1680 lib/api_aggregate.php:1683
-#: lib/api_aggregate.php:1688 lib/html.php:1091 lib/html_reports.php:1407
+#: color_templates.php:93 lib/api_aggregate.php:1683 lib/api_aggregate.php:1686
+#: lib/api_aggregate.php:1691 lib/html.php:1091 lib/html_reports.php:1407
 #, fuzzy, php-format
 msgid "Item # %d"
 msgstr "البند #٪ د"
 
 #: color_templates.php:132 graph_templates_inputs.php:232
-#: lib/api_aggregate.php:1740 lib/html.php:1173
+#: lib/api_aggregate.php:1743 lib/html.php:1173
 #, fuzzy
 msgid "No Items"
 msgstr "الاعلانات"
@@ -3548,7 +3548,7 @@ msgstr "تلقى إصلاح مصدر البيانات معرف مصدر بيان
 #: data_debug.php:330 data_debug.php:807 data_queries.php:733
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
 #: include/global_arrays.php:887 include/global_form.php:926
-#: lib/api_aggregate.php:1596 lib/html.php:1051
+#: lib/api_aggregate.php:1599 lib/html.php:1051
 #, fuzzy
 msgid "Data Source"
 msgstr "مصدر البيانات"
@@ -3871,7 +3871,7 @@ msgstr "الملف الشخصي"
 
 #: data_debug.php:989 data_debug.php:1005 data_debug.php:1016
 #: data_sources.php:1385 data_sources.php:1401 data_sources.php:1412
-#: data_templates.php:874 graphs_new.php:355 lib/clog_webapi.php:530
+#: data_templates.php:874 graphs_new.php:356 lib/clog_webapi.php:530
 #: lib/html.php:190 lib/html_reports.php:625 plugins.php:351 settings.php:419
 #: settings.php:438 settings.php:464 tree.php:786 utilities.php:674
 #: utilities.php:1110
@@ -3944,7 +3944,7 @@ msgstr "اسم مألوف:٪ s"
 msgid "Remove Data Input Field"
 msgstr "إزالة حقل إدخال البيانات"
 
-#: data_input.php:466
+#: data_input.php:468
 #, fuzzy
 msgid ""
 "This script appears to have no input values, therefore there is nothing to "
@@ -3953,62 +3953,62 @@ msgstr ""
 "يبدو أن هذا البرنامج النصي لا يحتوي على قيم إدخال ، وبالتالي لا يوجد شيء "
 "يمكن إضافته."
 
-#: data_input.php:472
+#: data_input.php:474
 #, fuzzy, php-format
 msgid "Output Fields [edit: %s]"
 msgstr "حقول الإخراج [تحرير:٪ s]"
 
-#: data_input.php:473 include/global_form.php:616
+#: data_input.php:475 include/global_form.php:616
 #, fuzzy
 msgid "Output Field"
 msgstr "حقل الإخراج"
 
-#: data_input.php:475
+#: data_input.php:477
 #, fuzzy, php-format
 msgid "Input Fields [edit: %s]"
 msgstr "حقول الإدخال [تحرير:٪ s]"
 
-#: data_input.php:476
+#: data_input.php:478
 #, fuzzy
 msgid "Input Field"
 msgstr "حقل الادخال"
 
-#: data_input.php:558
+#: data_input.php:560
 #, fuzzy, php-format
 msgid "Data Input Methods [edit: %s]"
 msgstr "طرق إدخال البيانات [تحرير:٪ s]"
 
-#: data_input.php:562
+#: data_input.php:564
 #, fuzzy
 msgid "Data Input Methods [new]"
 msgstr "طرق إدخال البيانات [جديد]"
 
-#: data_input.php:576 include/global_arrays.php:435
+#: data_input.php:578 include/global_arrays.php:435
 #, fuzzy
 msgid "SNMP Get"
 msgstr "SNMP"
 
-#: data_input.php:579 include/global_arrays.php:436
+#: data_input.php:581 include/global_arrays.php:436
 #, fuzzy
 msgid "SNMP Query"
 msgstr "استعلام SNMP"
 
-#: data_input.php:582 include/global_arrays.php:438
+#: data_input.php:584 include/global_arrays.php:438
 #, fuzzy
 msgid "Script Query"
 msgstr "استعلام البرنامج النصي"
 
-#: data_input.php:585 include/global_arrays.php:440
+#: data_input.php:587 include/global_arrays.php:440
 #, fuzzy
 msgid "Script Query - Script Server"
 msgstr "استعلام Script - خادم Script"
 
-#: data_input.php:593
+#: data_input.php:595
 #, fuzzy
 msgid "White List Verification Succeeded."
 msgstr "التحقق من القائمة البيضاء نجحت."
 
-#: data_input.php:595
+#: data_input.php:597
 #, fuzzy
 msgid ""
 "White List Verification Failed.  Run CLI script input_whitelist.php to "
@@ -4017,7 +4017,7 @@ msgstr ""
 "فشل التحقق من القائمة البيضاء. قم بتشغيل البرنامج النصي CLI input_whitelist."
 "php لتصحيح."
 
-#: data_input.php:597
+#: data_input.php:599
 #, fuzzy
 msgid ""
 "Input String does not exist in White List.  Run CLI script input_whitelist."
@@ -4026,78 +4026,78 @@ msgstr ""
 "سلسلة الإدخال غير موجودة في القائمة البيضاء. قم بتشغيل البرنامج النصي CLI "
 "input_whitelist.php لتصحيح."
 
-#: data_input.php:612
+#: data_input.php:614
 #, fuzzy
 msgid "Input Fields"
 msgstr "حقول المدخلات"
 
-#: data_input.php:616 data_input.php:677 include/global_form.php:421
+#: data_input.php:618 data_input.php:679 include/global_form.php:421
 #, fuzzy
 msgid "Friendly Name"
 msgstr "اسم مألوف"
 
-#: data_input.php:617
+#: data_input.php:619
 #, fuzzy
 msgid "Field Order"
 msgstr "مجال الطلب"
 
-#: data_input.php:661
+#: data_input.php:663
 #, fuzzy
 msgid "(Not In Use)"
 msgstr "(غير مستخدم)"
 
-#: data_input.php:670
+#: data_input.php:672
 #, fuzzy
 msgid "No Input Fields"
 msgstr "لا حقول الإدخال"
 
-#: data_input.php:674
+#: data_input.php:676
 #, fuzzy
 msgid "Output Fields"
 msgstr "حقول الإخراج"
 
-#: data_input.php:678
+#: data_input.php:680
 #, fuzzy
 msgid "Update RRA"
 msgstr "تحديث RRA"
 
-#: data_input.php:704
+#: data_input.php:706
 #, fuzzy
 msgid "Output Fields can not be removed when Data Sources are present"
 msgstr "لا يمكن إزالة حقول المخرجات عندما تكون مصادر البيانات موجودة"
 
-#: data_input.php:713
+#: data_input.php:715
 #, fuzzy
 msgid "No Output Fields"
 msgstr "لا حقول الإخراج"
 
-#: data_input.php:736 host_templates.php:618
+#: data_input.php:738 host_templates.php:618
 #, fuzzy
 msgid "Delete Data Input Field"
 msgstr "حذف حقل إدخال البيانات"
 
-#: data_input.php:794 include/global_arrays.php:882
+#: data_input.php:796 include/global_arrays.php:882
 #: include/global_arrays.php:1078 include/global_arrays.php:2152
 #, fuzzy
 msgid "Data Input Methods"
 msgstr "طرق إدخال البيانات"
 
-#: data_input.php:809 data_input.php:897
+#: data_input.php:811 data_input.php:899
 #, fuzzy
 msgid "Input Methods"
 msgstr "طرق الإدخال"
 
-#: data_input.php:906
+#: data_input.php:908
 #, fuzzy
 msgid "Data Input Name"
 msgstr "اسم إدخال البيانات"
 
-#: data_input.php:906
+#: data_input.php:908
 #, fuzzy
 msgid "The name of this Data Input Method."
 msgstr "اسم طريقة إدخال البيانات هذه."
 
-#: data_input.php:907
+#: data_input.php:909
 #, fuzzy
 msgid ""
 "Data Inputs that are in use cannot be Deleted. In use is defined as being "
@@ -4106,33 +4106,33 @@ msgstr ""
 "لا يمكن حذف مدخلات البيانات المستخدمة. يتم تعريف الاستخدام على أنه مرجع إما "
 "بواسطة مصدر بيانات أو قالب بيانات."
 
-#: data_input.php:908 data_source_profiles.php:979 data_templates.php:1021
+#: data_input.php:910 data_source_profiles.php:979 data_templates.php:1021
 #, fuzzy
 msgid "Data Sources Using"
 msgstr "مصادر البيانات باستخدام"
 
-#: data_input.php:908
+#: data_input.php:910
 #, fuzzy
 msgid "The number of Data Sources that use this Data Input Method."
 msgstr "عدد مصادر البيانات التي تستخدم طريقة إدخال البيانات هذه."
 
-#: data_input.php:909
+#: data_input.php:911
 #, fuzzy
 msgid "The number of Data Templates that use this Data Input Method."
 msgstr "عدد قوالب البيانات التي تستخدم طريقة إدخال البيانات هذه."
 
-#: data_input.php:910 data_queries.php:1391 include/global_arrays.php:1205
+#: data_input.php:912 data_queries.php:1391 include/global_arrays.php:1205
 #: include/global_form.php:540 include/global_form.php:1332
 #, fuzzy
 msgid "Data Input Method"
 msgstr "طريقة إدخال البيانات"
 
-#: data_input.php:910
+#: data_input.php:912
 #, fuzzy
 msgid "The method used to gather information for this Data Input Method."
 msgstr "الطريقة المستخدمة لجمع المعلومات من أجل طريقة إدخال البيانات هذه."
 
-#: data_input.php:933
+#: data_input.php:935
 #, fuzzy
 msgid "No Data Input Methods Found"
 msgstr "لا توجد طرق إدخال البيانات"
@@ -4280,7 +4280,7 @@ msgstr "لا يمكن تحديد موقع ملف XML."
 msgid "Associated Graph Templates"
 msgstr "قوالب الرسم البياني المرتبطة"
 
-#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:456
+#: data_queries.php:1139 graph_templates.php:792 graphs_new.php:457
 #: host.php:683 lib/api_automation.php:574
 #, fuzzy
 msgid "Graph Template Name"
@@ -4481,7 +4481,7 @@ msgstr "الرسم البياني Timespan"
 msgid "Steps"
 msgstr "خطوات"
 
-#: data_source_profiles.php:577 graphs_new.php:395 include/global_form.php:254
+#: data_source_profiles.php:577 graphs_new.php:396 include/global_form.php:254
 #: lib/html.php:490 lib/html_filter.php:73 lib/installer.php:2345
 #: lib/rrd.php:2871 utilities.php:507 utilities.php:1444
 #, fuzzy
@@ -5409,13 +5409,13 @@ msgstr ""
 msgid "Cacti Real-time Graphing"
 msgstr "الصبار في الوقت الحقيقي الرسوم البيانية"
 
-#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1110
+#: graph_realtime.php:279 lib/html_graph.php:315 lib/html_tree.php:1113
 #, fuzzy
 msgid "Window"
 msgstr "نافذة او شباك"
 
 #: graph_realtime.php:325 lib/html_graph.php:238 lib/html_reports.php:1028
-#: lib/html_tree.php:1033
+#: lib/html_tree.php:1036
 msgid "Thumbnails"
 msgstr "الصورة المصغرة"
 
@@ -5550,8 +5550,8 @@ msgstr ""
 "على اليمين أثناء إنشاء الرسم البياني."
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
-#: graphs_new.php:451 include/global_arrays.php:1089
-#: include/global_arrays.php:2026 lib/html_tree.php:547 user_admin.php:1409
+#: graphs_new.php:452 include/global_arrays.php:1089
+#: include/global_arrays.php:2026 lib/html_tree.php:548 user_admin.php:1409
 #: user_group_admin.php:1105
 #, fuzzy
 msgid "Graph Templates"
@@ -5703,14 +5703,14 @@ msgid "Report"
 msgstr "تقرير"
 
 #: graph_view.php:616 lib/html.php:176 lib/html.php:181 lib/html_graph.php:157
-#: lib/html_tree.php:958
+#: lib/html_tree.php:961
 #, fuzzy
 msgid "All Graphs & Templates"
 msgstr "جميع الرسوم البيانية والقوالب"
 
 #: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
 #: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
-#: lib/html_tree.php:959
+#: lib/html_tree.php:962
 #, fuzzy
 msgid "Not Templated"
 msgstr "غير معبد"
@@ -6208,74 +6208,74 @@ msgstr "رسومات بيانية جديدة لـ [٪ s]"
 msgid "New Graphs for [ All Devices ]"
 msgstr "رسومات بيانية جديدة لـ [جميع الأجهزة]"
 
-#: graphs_new.php:286
+#: graphs_new.php:287
 #, fuzzy
 msgid "New Graphs for None Host Type"
 msgstr "رسومات بيانية جديدة لـ None Host Type"
 
-#: graphs_new.php:316 lib/html.php:2290
+#: graphs_new.php:317 lib/html.php:2290
 #, fuzzy
 msgid "Filter Settings Saved"
 msgstr "تصفية الإعدادات المحفوظة"
 
-#: graphs_new.php:351
+#: graphs_new.php:352
 #, fuzzy
 msgid "Graph Types"
 msgstr "أنواع الرسم البياني"
 
-#: graphs_new.php:356
+#: graphs_new.php:357
 #, fuzzy
 msgid "Graph Template Based"
 msgstr "قالب الرسم البياني على أساس"
 
-#: graphs_new.php:380
+#: graphs_new.php:381
 #, fuzzy
 msgid "Save Filters"
 msgstr "احفظ المرشحات"
 
-#: graphs_new.php:413
+#: graphs_new.php:414
 #, fuzzy
 msgid "Edit this Device"
 msgstr "تحرير هذا الجهاز"
 
-#: graphs_new.php:414 host.php:615
+#: graphs_new.php:415 host.php:615
 #, fuzzy
 msgid "Create New Device"
 msgstr "إنشاء جهاز جديد"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:930 user_admin.php:1630
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:930 user_admin.php:1630
 #: user_group_admin.php:1320
 #, fuzzy
 msgid "Select All"
 msgstr "حدد الكل"
 
-#: graphs_new.php:457 graphs_new.php:751 lib/html.php:843 lib/html.php:930
+#: graphs_new.php:458 graphs_new.php:752 lib/html.php:843 lib/html.php:930
 #, fuzzy
 msgid "Select All Rows"
 msgstr "حدد كل الصفوف"
 
-#: graphs_new.php:544 include/global_arrays.php:867
+#: graphs_new.php:545 include/global_arrays.php:867
 #: include/global_arrays.php:943 lib/html_form.php:1264 lib/html_form.php:1277
 #: tree.php:1368
 msgid "Create"
 msgstr "أنشأ"
 
-#: graphs_new.php:546
+#: graphs_new.php:547
 #, fuzzy
 msgid "(Select a graph type to create)"
 msgstr "(حدد نوع الرسم البياني لإنشاء)"
 
-#: graphs_new.php:630
+#: graphs_new.php:631
 #, fuzzy, php-format
 msgid "Data Query [%s]"
 msgstr "استعلام البيانات [٪ s]"
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid "From there you can get more information."
 msgstr "من هناك يمكنك الحصول على مزيد من المعلومات."
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid ""
 "This Data Query returned 0 rows, perhaps there was a problem executing this "
@@ -6284,32 +6284,32 @@ msgstr ""
 "عرض استعلام البيانات هذا 0 صفوف ، ربما كانت هناك مشكلة في تنفيذ هذا "
 "الاستعلام عن البيانات."
 
-#: graphs_new.php:747
+#: graphs_new.php:748
 #, fuzzy
 msgid "You can run this Data Query in debug mode"
 msgstr "يمكنك تشغيل هذا الاستعلام البيانات في وضع التصحيح"
 
-#: graphs_new.php:790
+#: graphs_new.php:791
 #, fuzzy
 msgid "Search Returned no Rows."
 msgstr "البحث لم يتم إرجاع أي صفوف."
 
-#: graphs_new.php:795
+#: graphs_new.php:796
 #, fuzzy
 msgid "Error in data query."
 msgstr "خطأ في استعلام البيانات."
 
-#: graphs_new.php:819
+#: graphs_new.php:820
 #, fuzzy
 msgid "Select a Graph Type to Create"
 msgstr "حدد نوع الرسم البياني لإنشاء"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 #, fuzzy
 msgid "Make selection default"
 msgstr "جعل الاختيار الافتراضي"
 
-#: graphs_new.php:822
+#: graphs_new.php:823
 #, fuzzy
 msgid "Set Default"
 msgstr "الوضع الإفتراضي"
@@ -8061,7 +8061,7 @@ msgstr "قواعد الجهاز"
 
 #: include/global_arrays.php:899 include/global_arrays.php:948
 #: include/global_arrays.php:1087 lib/html_filter.php:178
-#: lib/html_graph.php:252 lib/html_tree.php:1047
+#: lib/html_graph.php:252 lib/html_tree.php:1050
 #, fuzzy
 msgid "Presets"
 msgstr "المسبقة"
@@ -9152,7 +9152,7 @@ msgstr "إدارة الرسم البياني"
 msgid "(Edit)"
 msgstr "(تعديل)"
 
-#: include/global_arrays.php:1912 lib/api_aggregate.php:1591
+#: include/global_arrays.php:1912 lib/api_aggregate.php:1594
 #, fuzzy
 msgid "Graph Items"
 msgstr "عناصر الرسم البياني"
@@ -9186,7 +9186,7 @@ msgstr "سجل عرض"
 msgid "Graph Trees"
 msgstr "أشجار الرسم البياني"
 
-#: include/global_arrays.php:2044 lib/api_aggregate.php:1591
+#: include/global_arrays.php:2044 lib/api_aggregate.php:1594
 #, fuzzy
 msgid "Graph Template Items"
 msgstr "عناصر قالب الرسم البياني"
@@ -10403,7 +10403,7 @@ msgstr "اتجاه الأسطورة (- -legend-direction = &lt;direction&gt;)"
 msgid "Place the legend items in the given vertical order."
 msgstr "ضع عناصر وسيلة الإيضاح في الترتيب الرأسي المحدد."
 
-#: include/global_form.php:919 lib/api_aggregate.php:1597 lib/html.php:1052
+#: include/global_form.php:919 lib/api_aggregate.php:1600 lib/html.php:1052
 #, fuzzy
 msgid "Graph Item Type"
 msgstr "نوع البند البياني"
@@ -12002,7 +12002,7 @@ msgstr ""
 
 #: include/global_settings.php:444
 #, fuzzy
-msgid "Graphs auto unlock"
+msgid "Graphs Auto Unlock"
 msgstr "قاعدة مطابقة الرسم البياني"
 
 #: include/global_settings.php:445
@@ -14696,9 +14696,9 @@ msgstr "عمود 1"
 #: include/global_settings.php:2163 include/global_settings.php:2164
 #: include/global_settings.php:2165 include/global_settings.php:2166
 #: lib/html_graph.php:228 lib/html_graph.php:229 lib/html_graph.php:230
-#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1023
-#: lib/html_tree.php:1024 lib/html_tree.php:1025 lib/html_tree.php:1026
-#: lib/html_tree.php:1027
+#: lib/html_graph.php:231 lib/html_graph.php:232 lib/html_tree.php:1026
+#: lib/html_tree.php:1027 lib/html_tree.php:1028 lib/html_tree.php:1029
+#: lib/html_tree.php:1030
 #, fuzzy, php-format
 msgid "%d Columns"
 msgstr "٪ d أعمدة"
@@ -15015,7 +15015,7 @@ msgstr "الدالتان shell_exec () و / أو exec () محظورة حاليً
 msgid "Display Graphs from this Aggregate"
 msgstr "عرض الرسوم البيانية من هذا التجميع"
 
-#: lib/api_aggregate.php:1464
+#: lib/api_aggregate.php:1467
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph below represent Graphs from "
@@ -15026,12 +15026,12 @@ msgstr ""
 "من قوالب الرسم البياني المتعددة. لا يدعم التجميع إنشاء الرسومات البيانية "
 "التجميعية من عدة قوالب Graph."
 
-#: lib/api_aggregate.php:1465 lib/api_aggregate.php:1484
+#: lib/api_aggregate.php:1468 lib/api_aggregate.php:1487
 #, fuzzy
 msgid "Press 'Return' to return and select different Graphs"
 msgstr "اضغط على &quot;العودة&quot; للعودة واختيار الرسوم البيانية المختلفة"
 
-#: lib/api_aggregate.php:1483
+#: lib/api_aggregate.php:1486
 #, fuzzy
 msgid ""
 "The Graphs chosen for the Aggregate Graph do not use Graph Templates.  "
@@ -15041,36 +15041,36 @@ msgstr ""
 "الرسوم البيانية المختارة لـ Aggregate Graph لا تستخدم قوالب Graph. لا يدعم "
 "التجميع إنشاء الرسومات البيانية للتراكيب من الرسوم البيانية غير المجدولة."
 
-#: lib/api_aggregate.php:1595 lib/html.php:1050
+#: lib/api_aggregate.php:1598 lib/html.php:1050
 #, fuzzy
 msgid "Graph Item"
 msgstr "البند البياني"
 
-#: lib/api_aggregate.php:1598 lib/html.php:1053
+#: lib/api_aggregate.php:1601 lib/html.php:1053
 #, fuzzy
 msgid "CF Type"
 msgstr "نوع CF"
 
-#: lib/api_aggregate.php:1599 lib/html.php:1055
+#: lib/api_aggregate.php:1602 lib/html.php:1055
 #, fuzzy
 msgid "Item Color"
 msgstr "لون البند"
 
-#: lib/api_aggregate.php:1600
+#: lib/api_aggregate.php:1603
 #, fuzzy
 msgid "Color Template"
 msgstr "قالب اللون"
 
-#: lib/api_aggregate.php:1601
+#: lib/api_aggregate.php:1604
 msgid "Skip"
 msgstr "تخطي"
 
-#: lib/api_aggregate.php:1677
+#: lib/api_aggregate.php:1680
 #, fuzzy
 msgid "Aggregate Items are not modifyable"
 msgstr "عناصر التجميع غير قابلة للتعديل"
 
-#: lib/api_aggregate.php:1688
+#: lib/api_aggregate.php:1691
 #, fuzzy
 msgid "Aggregate Items are not editable"
 msgstr "عناصر التجميع غير قابلة للتحرير"
@@ -15226,7 +15226,7 @@ msgstr "عنصر القاعدة [تحرير عنصر القاعدة لـ٪ s:٪ 
 msgid "Rule Item [new rule item for %s: %s]"
 msgstr "عنصر القاعدة [عنصر قاعدة جديد لـ٪ s:٪ s]"
 
-#: lib/api_automation.php:2865
+#: lib/api_automation.php:2850
 #, fuzzy
 msgid "Added by Cacti Automation"
 msgstr "أضيفت بواسطة Cacti الأتمتة"
@@ -15325,39 +15325,39 @@ msgstr "فرع جديد"
 msgid "Web Basic"
 msgstr "أساسيات الويب"
 
-#: lib/auth.php:1714 lib/auth.php:1746
+#: lib/auth.php:1733 lib/auth.php:1765
 #, fuzzy
 msgid "Branch:"
 msgstr "فرع شجرة:"
 
-#: lib/auth.php:1723 lib/auth.php:1754 lib/html_tree.php:930
+#: lib/auth.php:1742 lib/auth.php:1773 lib/html_tree.php:933
 #, fuzzy
 msgid "Device:"
 msgstr "جهاز"
 
-#: lib/auth.php:2412 lib/auth.php:2421
+#: lib/auth.php:2431 lib/auth.php:2440
 #, fuzzy
 msgid "This account has been locked."
 msgstr "تم قفل هذا الحساب."
 
-#: lib/auth.php:2442
+#: lib/auth.php:2461
 msgid ""
 "Your Cacti administrator has forced complex passwords for logins and your "
 "current Cacti password does not match the new requirements.  Therefore, you "
 "must change your password now."
 msgstr ""
 
-#: lib/auth.php:2464
+#: lib/auth.php:2483
 #, fuzzy, php-format
 msgid "Password must be at least %d characters!"
 msgstr "يجب أن تكون كلمة المرور على الأقل٪ d حرف!"
 
-#: lib/auth.php:2470
+#: lib/auth.php:2489
 #, fuzzy
 msgid "Your password must contain at least 1 numerical character!"
 msgstr "يجب أن تحتوي كلمة المرور الخاصة بك على حرف عددي واحد على الأقل!"
 
-#: lib/auth.php:2474
+#: lib/auth.php:2493
 #, fuzzy
 msgid ""
 "Your password must contain a mix of lower case and upper case characters!"
@@ -15365,7 +15365,7 @@ msgstr ""
 "يجب أن تحتوي كلمة المرور الخاصة بك على مزيج من الأحرف الصغيرة والأحرف "
 "الصغيرة!"
 
-#: lib/auth.php:2480
+#: lib/auth.php:2499
 #, fuzzy
 msgid "Your password must contain at least 1 special character!"
 msgstr "يجب أن تحتوي كلمة المرور الخاصة بك على حرف خاص واحد على الأقل!"
@@ -15477,74 +15477,79 @@ msgstr "الأحدث أولا"
 msgid "Oldest First"
 msgstr "الأقدم أولا"
 
-#: lib/data_query.php:71 lib/data_query.php:368
+#: lib/data_query.php:71 lib/data_query.php:389
 #, fuzzy
 msgid "Automation Execution for Data Query complete"
 msgstr "اكتمال التنفيذ التلقائي لاستعلام البيانات"
 
-#: lib/data_query.php:74 lib/data_query.php:371
+#: lib/data_query.php:74 lib/data_query.php:392
 #, fuzzy
 msgid "Plugin Hooks complete"
 msgstr "البرنامج المساعد هوكس كاملة"
 
-#: lib/data_query.php:89
+#: lib/data_query.php:92
 #, fuzzy, php-format
 msgid "Running Data Query [%s]."
 msgstr "تشغيل استعلام البيانات [٪ s]."
 
-#: lib/data_query.php:99
+#: lib/data_query.php:102
 #, fuzzy, php-format
 msgid "Found Type = '%s' [%s]."
 msgstr "تم العثور على Type = &#39;٪ s&#39; [٪ s]."
 
-#: lib/data_query.php:121
+#: lib/data_query.php:124
 #, fuzzy, php-format
 msgid "Unknown Type = '%s'."
 msgstr "نوع غير معروف = &#39;٪ s&#39;."
 
-#: lib/data_query.php:145
+#: lib/data_query.php:160
 #, fuzzy
 msgid ""
 "WARNING: Sort Field Association has Changed.  Re-mapping issues may occur!"
 msgstr ""
 "تحذير: تم تغيير &quot;اقتران مجال&quot; الفرز. قد تحدث مشكلات إعادة التخطيط!"
 
-#: lib/data_query.php:156
+#: lib/data_query.php:172
 #, fuzzy
 msgid "Update Data Query Sort Cache complete"
 msgstr "اكتمال تحديث البيانات فرز ذاكرة التخزين المؤقت"
 
-#: lib/data_query.php:271
+#: lib/data_query.php:287
 #, fuzzy, php-format
 msgid "Index Change Detected! CurrentIndex: %s, PreviousIndex: %s"
 msgstr "تغيير مؤشر الكشف! CurrentIndex:٪ s، FormerIndex:٪ s"
 
-#: lib/data_query.php:282
+#: lib/data_query.php:299
+#, fuzzy, php-format
+msgid "Transient Index Removal Detected! PreviousIndex: %s.  No action taken."
+msgstr "إزالة الفهرس الكشف عن! PreviousIndex:٪ s"
+
+#: lib/data_query.php:302
 #, fuzzy, php-format
 msgid "Index Removal Detected! PreviousIndex: %s"
 msgstr "إزالة الفهرس الكشف عن! PreviousIndex:٪ s"
 
-#: lib/data_query.php:314
+#: lib/data_query.php:335
 #, fuzzy
 msgid "Remapping Graphs to their new Indexes"
 msgstr "إعادة رسم الرسوم البيانية إلى فهارسها الجديدة"
 
-#: lib/data_query.php:324
+#: lib/data_query.php:345
 #, fuzzy
 msgid "Index Association with Local Data complete"
 msgstr "اكتمال اقتران مؤشر مع البيانات المحلية"
 
-#: lib/data_query.php:330
+#: lib/data_query.php:351
 #, fuzzy
 msgid "Update Re-Index Cache complete. There were "
 msgstr "اكتمل تحديث Re-Index Cache. كانت هناك"
 
-#: lib/data_query.php:334
+#: lib/data_query.php:355
 #, fuzzy
 msgid "Update Poller Cache for Query complete"
 msgstr "اكتمل تحديث Poller Cache for Query"
 
-#: lib/data_query.php:336
+#: lib/data_query.php:357
 #, fuzzy
 msgid ""
 "No Index Changes Detected, Skipping Re-Index and Poller Cache Re-population"
@@ -15552,63 +15557,63 @@ msgstr ""
 "لم يتم اكتشاف أي تغييرات في الفهرس ، وإعادة تخطي إعادة الفهرسة وإعادة مخبأ "
 "Poller"
 
-#: lib/data_query.php:360
+#: lib/data_query.php:381
 #, fuzzy
 msgid "Automation Executing for Data Query complete"
 msgstr "اكتمال التنفيذ التلقائي لاستعلام البيانات"
 
-#: lib/data_query.php:363
+#: lib/data_query.php:384
 #, fuzzy
 msgid "Plugin hooks complete"
 msgstr "السنانير المساعد كاملة"
 
-#: lib/data_query.php:389
+#: lib/data_query.php:410
 #, fuzzy
 msgid "Checking for Sort Field change.  No changes detected."
 msgstr "التحقق من تغيير حقل الفرز. لم يتم اكتشاف أي تغييرات."
 
-#: lib/data_query.php:394
+#: lib/data_query.php:415
 #, fuzzy, php-format
 msgid "Detected New Sort Field: '%s' Old Sort Field '%s'"
 msgstr ""
 "حقل الكشف الجديد الذي تم اكتشافه: حقل &quot;٪ s&quot; القديم &quot;٪ s&quot;"
 
-#: lib/data_query.php:411
+#: lib/data_query.php:432
 #, fuzzy
 msgid "ERROR: New Sort Field not suitable.  Sort Field will not change."
 msgstr "خطأ: حقل فرز جديد غير مناسب. حقل الفرز لن يتغير."
 
-#: lib/data_query.php:423
+#: lib/data_query.php:444
 #, fuzzy
 msgid "New Sort Field validated.  Sort Field be updated."
 msgstr "حقل فرز جديد تم التحقق منه. يتم تحديث حقل الفرز."
 
-#: lib/data_query.php:511
+#: lib/data_query.php:532
 #, fuzzy, php-format
 msgid "Could not find data query XML file at '%s'"
 msgstr "تعذر العثور على ملف XML لاستعلامات البيانات في &#39;٪ s&#39;"
 
-#: lib/data_query.php:515
+#: lib/data_query.php:536
 #, fuzzy, php-format
 msgid "Found data query XML file at '%s'"
 msgstr "تم العثور على ملف XML لاستعلامات البيانات في &#39;٪ s&#39;"
 
-#: lib/data_query.php:533 lib/data_query.php:711 lib/data_query.php:1998
+#: lib/data_query.php:554 lib/data_query.php:732 lib/data_query.php:2019
 #, fuzzy
 msgid "Error parsing XML file into an array."
 msgstr "خطأ في تحليل ملف XML في صفيف."
 
-#: lib/data_query.php:537 lib/data_query.php:715
+#: lib/data_query.php:558 lib/data_query.php:736
 #, fuzzy
 msgid "XML file parsed ok."
 msgstr "تحليل ملف XML موافق."
 
-#: lib/data_query.php:545 lib/data_query.php:718
+#: lib/data_query.php:566 lib/data_query.php:739
 #, fuzzy, php-format
 msgid "Invalid field &lt;index_order&gt;%s&lt;/index_order&gt;"
 msgstr "حقل غير صالح &lt;index_order&gt;٪ s &lt;/ index_order&gt;"
 
-#: lib/data_query.php:546 lib/data_query.php:719
+#: lib/data_query.php:567 lib/data_query.php:740
 #, fuzzy
 msgid ""
 "Must contain &lt;direction&gt;input&lt;/direction&gt; or &lt;direction&gt;"
@@ -15617,22 +15622,22 @@ msgstr ""
 "يجب أن تحتوي على حقول &lt;input&gt; input &lt;/ direction&gt; أو &lt;"
 "direction&gt; input-output &lt;/ direction&gt; فقط"
 
-#: lib/data_query.php:563 lib/data_query.php:587
+#: lib/data_query.php:584 lib/data_query.php:608
 #, fuzzy
 msgid "ERROR: Data Query returned no indexes."
 msgstr "خطأ: لم يُرجع استعلام البيانات أي فهارس."
 
-#: lib/data_query.php:567
+#: lib/data_query.php:588
 #, fuzzy, php-format
 msgid "Executing script for num of indexes '%s'"
 msgstr "تنفيذ نص برمجي لعدد الأسهر &#39;٪ s&#39;"
 
-#: lib/data_query.php:570
+#: lib/data_query.php:591
 #, fuzzy, php-format
 msgid "Found number of indexes: %s"
 msgstr "تم العثور على عدد من الفهارس:٪ s"
 
-#: lib/data_query.php:574
+#: lib/data_query.php:595
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' not "
@@ -15641,7 +15646,7 @@ msgstr ""
 "&lt;arg_num_indexes&gt; مفقودة في ملف XML ، &quot;عدد الفهرس غيرت&quot; غير "
 "مدعوم"
 
-#: lib/data_query.php:576
+#: lib/data_query.php:597
 #, fuzzy
 msgid ""
 "&lt;arg_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -15650,62 +15655,62 @@ msgstr ""
 "&lt;arg_num_indexes&gt; في عداد المفقودين في ملف XML ، &#39;عدد الفهرس تم "
 "تغييره&#39; تمت محاكاته بواسطة عد إدخالات arg_index"
 
-#: lib/data_query.php:591
+#: lib/data_query.php:612
 #, fuzzy, php-format
 msgid "Executing script for list of indexes '%s', Index Count: %s"
 msgstr "تنفيذ البرنامج النصي لقائمة الفهارس &quot;٪ s&quot; ، عدد الفهرس:٪ s"
 
-#: lib/data_query.php:593
+#: lib/data_query.php:614
 #, fuzzy
 msgid "Click to show Data Query output for 'index'"
 msgstr "انقر لعرض إخراج بيانات الاستعلام لـ &quot;الفهرس&quot;"
 
-#: lib/data_query.php:596
+#: lib/data_query.php:617
 #, fuzzy, php-format
 msgid "Found index: %s"
 msgstr "فهرس تم العثور عليه:٪ s"
 
-#: lib/data_query.php:609 lib/data_query.php:991
+#: lib/data_query.php:630 lib/data_query.php:1012
 #, fuzzy, php-format
 msgid "Click to show Data Query output for field '%s'"
 msgstr "انقر لعرض إخراج استعلام البيانات للحقل &quot;٪ s&quot;"
 
-#: lib/data_query.php:614 lib/data_query.php:922
+#: lib/data_query.php:635 lib/data_query.php:943
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index."
 msgstr "حقل فرز لم يعط أي بيانات. لا يمكن متابعة إعادة الفهرس."
 
-#: lib/data_query.php:618
+#: lib/data_query.php:639
 #, fuzzy, php-format
 msgid "Executing script query '%s'"
 msgstr "تنفيذ استعلام البرنامج النصي &#39;٪ s&#39;"
 
-#: lib/data_query.php:628
+#: lib/data_query.php:649
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s"
 msgstr "تم العثور على عنصر [٪ s = &#39;٪ s&#39;] index:٪ s"
 
-#: lib/data_query.php:665 lib/data_query.php:680
+#: lib/data_query.php:686 lib/data_query.php:701
 #, fuzzy, php-format
 msgid "Total: %f, Delta: %f, %s"
 msgstr "الإجمالي:٪ f، Delta:٪ f،٪ s"
 
-#: lib/data_query.php:705
+#: lib/data_query.php:726
 #, fuzzy, php-format
 msgid "Invalid host_id: %s"
 msgstr "غير صالح host_id:٪ s"
 
-#: lib/data_query.php:730
+#: lib/data_query.php:751
 #, fuzzy
 msgid "Failed to load SNMP session."
 msgstr "فشل تحميل جلسة SNMP."
 
-#: lib/data_query.php:739
+#: lib/data_query.php:760
 #, fuzzy, php-format
 msgid "Executing SNMP get for num of indexes @ '%s' Index Count: %s"
 msgstr "تنفيذ SNMP الحصول على num من الفهارس @ &#39;٪ s&#39; عدد الفهرس:٪ s"
 
-#: lib/data_query.php:741
+#: lib/data_query.php:762
 #, fuzzy
 msgid ""
 "&lt;oid_num_indexes&gt; missing in XML file, 'Index Count Changed' emulated "
@@ -15714,33 +15719,33 @@ msgstr ""
 "&lt;oid_num_indexes&gt; مفقودة في ملف XML ، &#39;عدد الفهرس المتغير&#39; "
 "الذي تمت محاكاته بواسطة إدخالات oid_index"
 
-#: lib/data_query.php:747
+#: lib/data_query.php:768
 #, fuzzy, php-format
 msgid "Executing SNMP walk for list of indexes @ '%s' Index Count: %s"
 msgstr ""
 "تنفيذ المشي SNMP للحصول على قائمة الفهارس @ &#39;٪ s&#39; عدد الفهرس:٪ s"
 
-#: lib/data_query.php:751
+#: lib/data_query.php:772
 #, fuzzy
 msgid "No SNMP data returned"
 msgstr "لم يتم إرجاع أي بيانات SNMP"
 
-#: lib/data_query.php:756
+#: lib/data_query.php:777
 #, fuzzy, php-format
 msgid "Index found at OID: '%s' value: '%s'"
 msgstr "تم العثور على فهرس في OID: قيمة &#39;٪ s&#39;: &#39;٪ s&#39;"
 
-#: lib/data_query.php:775
+#: lib/data_query.php:796
 #, fuzzy, php-format
 msgid "Filtering list of indexes @ '%s' Index Count: %s"
 msgstr "تصفية قائمة الفهارس @ &#39;٪ s&#39; عدد الفهرس:٪ s"
 
-#: lib/data_query.php:779
+#: lib/data_query.php:800
 #, fuzzy, php-format
 msgid "Filtered Index found at OID: '%s' value: '%s'"
 msgstr "تم العثور على فهرس تم تصنيفه في OID: قيمة &#39;٪ s&#39;: &#39;٪ s&#39;"
 
-#: lib/data_query.php:797
+#: lib/data_query.php:818
 #, fuzzy, php-format
 msgid ""
 "Fixing wrong 'method' field for '%s' since 'rewrite_index' or 'oid_suffix' "
@@ -15749,128 +15754,128 @@ msgstr ""
 "يتم تحديد إصلاح حقل &quot;method&quot; خاطئ لـ &quot;٪ s&quot; نظرًا لأن "
 "&quot;rewrite_index&quot; أو &quot;oid_suffix&quot;"
 
-#: lib/data_query.php:804
+#: lib/data_query.php:825
 #, fuzzy, php-format
 msgid "Inserting index data for field '%s' [value='%s']"
 msgstr "إدراج بيانات الفهرس للحقل &#39;٪ s&#39; [value = &#39;٪ s&#39;]"
 
-#: lib/data_query.php:809
+#: lib/data_query.php:830
 #, fuzzy, php-format
 msgid "Located input field '%s' [get]"
 msgstr "يقع حقل الإدخال &#39;٪ s&#39; [get]"
 
-#: lib/data_query.php:818
+#: lib/data_query.php:839
 #, fuzzy, php-format
 msgid "Found OID rewrite rule: 's/%s/%s/'"
 msgstr "تم العثور على قاعدة إعادة كتابة OID: &#39;s /٪ s /٪ s /&#39;"
 
-#: lib/data_query.php:829
+#: lib/data_query.php:850
 #, fuzzy, php-format
 msgid "oid_rewrite at OID: '%s' new OID: '%s'"
 msgstr "oid_rewrite عند OID: &#39;٪ s&#39; OID جديد: &#39;٪ s&#39;"
 
-#: lib/data_query.php:850
+#: lib/data_query.php:871
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='%s']"
 msgstr "تنفيذ SNMP get for data @ &#39;٪ s&#39; [value = &#39;٪ s&#39;]"
 
-#: lib/data_query.php:861
+#: lib/data_query.php:882
 #, fuzzy, php-format
 msgid "Field '%s' %s"
 msgstr "الحقل &#39;٪ s&#39;٪ s"
 
-#: lib/data_query.php:896
+#: lib/data_query.php:917
 #, fuzzy, php-format
 msgid "Executing SNMP get for %s oids (%s)"
 msgstr "تنفيذ SNMP تحصل على٪ s من سوادات (٪ s)"
 
-#: lib/data_query.php:929
+#: lib/data_query.php:950
 #, fuzzy, php-format
 msgid "Found result for data @ '%s' [value='%s']"
 msgstr "تم العثور على نتيجة للبيانات @ &quot;٪ s&quot; [value = &#39;٪ s&#39;]"
 
-#: lib/data_query.php:937
+#: lib/data_query.php:958
 #, fuzzy, php-format
 msgid "Setting result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 "تعيين النتيجة للبيانات @ &quot;٪ s&quot; [key = &#39;٪ s&#39;، value = &#39;"
 "٪ s&#39;]"
 
-#: lib/data_query.php:941
+#: lib/data_query.php:962
 #, fuzzy, php-format
 msgid "Skipped result for data @ '%s' [key='%s', value='%s']"
 msgstr ""
 "تم تخطي النتيجة للبيانات @ &quot;٪ s&quot; [key = &#39;٪ s&#39;، value = "
 "&#39;٪ s&#39;]"
 
-#: lib/data_query.php:955
+#: lib/data_query.php:976
 #, fuzzy, php-format
 msgid "Got SNMP get result for data @ '%s' [value='%s'] (index: %s)"
 msgstr ""
 "حصلت على SNMP الحصول على نتيجة للبيانات @ &#39;٪ s&#39; [value = &#39;٪ "
 "s&#39;] (index:٪ s)"
 
-#: lib/data_query.php:985
+#: lib/data_query.php:1006
 #, fuzzy, php-format
 msgid "Executing SNMP get for data @ '%s' [value='$value']"
 msgstr ""
 "تنفيذ SNMP الحصول على البيانات @ &quot;٪ s&quot; [value = &#39;$ value&#39;]"
 
-#: lib/data_query.php:993
+#: lib/data_query.php:1014
 #, fuzzy, php-format
 msgid "Located input field '%s' [walk]"
 msgstr "يقع حقل الإدخال &quot;٪ s&quot; [walk]"
 
-#: lib/data_query.php:1016
+#: lib/data_query.php:1037
 #, fuzzy
 msgid "Sort field returned no data.  Can not continue Re-Index for GET data.."
 msgstr "حقل فرز لم يعط أي بيانات. لا يمكن متابعة Re-Index لبيانات GET .."
 
-#: lib/data_query.php:1023
+#: lib/data_query.php:1044
 #, fuzzy, php-format
 msgid "Sort field returned not data.  Can not continue Re-Index for OID[%s]"
 msgstr "حقل فرز لم يتم إرجاع البيانات. لا يمكن متابعة Re-Index لـ OID [٪ s]"
 
-#: lib/data_query.php:1028
+#: lib/data_query.php:1049
 #, fuzzy, php-format
 msgid "Executing SNMP walk for data @ '%s'"
 msgstr "تنفيذ المشي SNMP للبيانات @ &quot;٪ s&quot;"
 
-#: lib/data_query.php:1079
+#: lib/data_query.php:1100
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from %s]"
 msgstr "تم العثور على عنصر [٪ s = &#39;٪ s&#39;] index:٪ s [from٪ s]"
 
-#: lib/data_query.php:1113
+#: lib/data_query.php:1134
 #, fuzzy, php-format
 msgid "Found OCTET STRING '%s' decoded value: '%s'"
 msgstr ""
 "تم العثور على قيمة تم فك تشفيرها بواسطة٪ OCTET &#39;٪ s&#39;: &#39;٪ s&#39;"
 
-#: lib/data_query.php:1119
+#: lib/data_query.php:1140
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid parse]"
 msgstr ""
 "تم العثور على عنصر [٪ s = &#39;٪ s&#39;] index:٪ s [from regexp oid parse]"
 
-#: lib/data_query.php:1139
+#: lib/data_query.php:1160
 #, fuzzy, php-format
 msgid "Found item [%s='%s'] index: %s [from regexp oid value parse]"
 msgstr ""
 "تم العثور على عنصر [٪ s = &#39;٪ s&#39;] index:٪ s [from regexp oid value "
 "parse]"
 
-#: lib/data_query.php:1504
+#: lib/data_query.php:1525
 #, fuzzy
 msgid "Re-Indexing Data Query complete"
 msgstr "اكتمل إعادة فهرسة بيانات الاستعلام"
 
-#: lib/data_query.php:1634
+#: lib/data_query.php:1655
 #, fuzzy
 msgid "Unknown Index"
 msgstr "فهرس غير معروف"
 
-#: lib/data_query.php:2108
+#: lib/data_query.php:2129
 #, fuzzy, php-format
 msgid ""
 "You must select an XML output column for Data Source '%s' and toggle the "
@@ -15878,7 +15883,7 @@ msgid ""
 msgstr ""
 "يجب تحديد عمود إخراج XML لمصدر البيانات '٪ s' وتبديل مربع الاختيار إلى اليمين"
 
-#: lib/data_query.php:2114
+#: lib/data_query.php:2135
 #, fuzzy
 msgid ""
 "Your Graph Template has not Data Templates in use.  Please correct your "
@@ -15992,7 +15997,7 @@ msgid "User Community"
 msgstr "مجتمع المستخدم"
 
 #: lib/functions.php:2345 lib/functions.php:2358 lib/html.php:2301
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 msgid "Documentation"
 msgstr "الوثائق"
 
@@ -16009,8 +16014,8 @@ msgstr "تسجيل خروج"
 msgid "Leaf"
 msgstr "ورقة الشجر"
 
-#: lib/functions.php:2523 lib/html_tree.php:646 lib/html_tree.php:674
-#: lib/html_tree.php:894 lib/html_tree.php:902 lib/html_tree.php:1451
+#: lib/functions.php:2523 lib/html_tree.php:649 lib/html_tree.php:677
+#: lib/html_tree.php:897 lib/html_tree.php:905 lib/html_tree.php:1454
 #, fuzzy
 msgid "Non Query Based"
 msgstr "غير الاستفسار القائمة"
@@ -16677,7 +16682,7 @@ msgstr ""
 msgid "Data Query Data Sources must be created through %s"
 msgstr "يجب إنشاء مصادر بيانات طلبات البحث عبر٪ s"
 
-#: lib/html_graph.php:193 lib/html_tree.php:994
+#: lib/html_graph.php:193 lib/html_tree.php:997
 #, fuzzy
 msgid ""
 "Save the current Graphs, Columns, Thumbnail, Preset, and Timeshift "
@@ -16686,60 +16691,60 @@ msgstr ""
 "احفظ تفضيلات الرسوم البيانية والأعمدة والصور المصغرة والإعداد المسبق وتوقيت "
 "Timeshift الحالية في ملفك الشخصي"
 
-#: lib/html_graph.php:223 lib/html_tree.php:1018
+#: lib/html_graph.php:223 lib/html_tree.php:1021
 msgid "Columns"
 msgstr "اعمدة"
 
-#: lib/html_graph.php:227 lib/html_tree.php:1022
+#: lib/html_graph.php:227 lib/html_tree.php:1025
 #, fuzzy, php-format
 msgid "%d Column"
 msgstr "٪ d العمود"
 
-#: lib/html_graph.php:257 lib/html_tree.php:1052
+#: lib/html_graph.php:257 lib/html_tree.php:1055
 msgid "Custom"
 msgstr "مخصص"
 
 #: lib/html_graph.php:270 lib/html_reports.php:1608 lib/html_reports.php:1619
-#: lib/html_tree.php:1065
+#: lib/html_tree.php:1068
 msgid "From"
 msgstr "من"
 
-#: lib/html_graph.php:275 lib/html_tree.php:1070
+#: lib/html_graph.php:275 lib/html_tree.php:1073
 #, fuzzy
 msgid "Start Date Selector"
 msgstr "محدد تاريخ البدء"
 
 #: lib/html_graph.php:279 lib/html_reports.php:1609 lib/html_reports.php:1620
-#: lib/html_tree.php:1074
+#: lib/html_tree.php:1077
 msgid "To"
 msgstr "إلى"
 
-#: lib/html_graph.php:284 lib/html_tree.php:1079
+#: lib/html_graph.php:284 lib/html_tree.php:1082
 #, fuzzy
 msgid "End Date Selector"
 msgstr "محدد تاريخ النهاية"
 
-#: lib/html_graph.php:289 lib/html_tree.php:1084
+#: lib/html_graph.php:289 lib/html_tree.php:1087
 #, fuzzy
 msgid "Shift Time Backward"
 msgstr "التحول مرة الى الوراء"
 
-#: lib/html_graph.php:290 lib/html_tree.php:1085
+#: lib/html_graph.php:290 lib/html_tree.php:1088
 #, fuzzy
 msgid "Define Shifting Interval"
 msgstr "تحديد الفاصل الزمني للتحويل"
 
-#: lib/html_graph.php:301 lib/html_tree.php:1096
+#: lib/html_graph.php:301 lib/html_tree.php:1099
 #, fuzzy
 msgid "Shift Time Forward"
 msgstr "التحول إلى الأمام"
 
-#: lib/html_graph.php:306 lib/html_tree.php:1101
+#: lib/html_graph.php:306 lib/html_tree.php:1104
 #, fuzzy
 msgid "Refresh selected time span"
 msgstr "تحديث الفترة الزمنية المحددة"
 
-#: lib/html_graph.php:307 lib/html_tree.php:1102
+#: lib/html_graph.php:307 lib/html_tree.php:1105
 #, fuzzy
 msgid "Return to the default time span"
 msgstr "العودة إلى الفترة الزمنية الافتراضية"
@@ -16748,7 +16753,7 @@ msgstr "العودة إلى الفترة الزمنية الافتراضية"
 msgid "Interval"
 msgstr "الفترة"
 
-#: lib/html_graph.php:339 lib/html_tree.php:1134
+#: lib/html_graph.php:339 lib/html_tree.php:1137
 msgid "Stop"
 msgstr "توقف"
 
@@ -17336,56 +17341,56 @@ msgstr "غير صالحة"
 msgid "No Reports Found"
 msgstr "لم يتم العثور على تقارير"
 
-#: lib/html_tree.php:886 lib/html_tree.php:894 lib/html_tree.php:902
+#: lib/html_tree.php:889 lib/html_tree.php:897 lib/html_tree.php:905
 #, fuzzy
 msgid "Graph Template:"
 msgstr "قالب الرسم البياني:"
 
-#: lib/html_tree.php:902
+#: lib/html_tree.php:905
 #, fuzzy
 msgid "Template Based"
 msgstr "على أساس قالب"
 
-#: lib/html_tree.php:908 lib/reports.php:990
+#: lib/html_tree.php:911 lib/reports.php:990
 #, fuzzy
 msgid "Tree:"
 msgstr "شجرة:"
 
-#: lib/html_tree.php:913
+#: lib/html_tree.php:916
 #, fuzzy
 msgid "Site:"
 msgstr "موقع:"
 
-#: lib/html_tree.php:919 lib/reports.php:995
+#: lib/html_tree.php:922 lib/reports.php:995
 #, fuzzy
 msgid "Leaf:"
 msgstr "ورقة الشجر:"
 
-#: lib/html_tree.php:925
+#: lib/html_tree.php:928
 #, fuzzy
 msgid "Device Template:"
 msgstr "قالب الجهاز:"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 #, fuzzy
 msgid "Applied"
 msgstr "مستعمل"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 msgid "Filter"
 msgstr "فلتر"
 
-#: lib/html_tree.php:939
+#: lib/html_tree.php:942
 #, fuzzy
 msgid "Graph Filters"
 msgstr "مرشحات الرسم البياني"
 
-#: lib/html_tree.php:991
+#: lib/html_tree.php:994
 #, fuzzy
 msgid "Set/Refresh Filter"
 msgstr "تعيين / تحديث فلتر"
 
-#: lib/html_tree.php:1395
+#: lib/html_tree.php:1398
 #, fuzzy
 msgid "(Non Graph Template)"
 msgstr "(قالب غير الرسم البياني)"
@@ -19242,7 +19247,7 @@ msgstr "تم الإنشاء:٪ s"
 msgid "ERROR: Whitelist Validation Failed. Check Data Input Method"
 msgstr "خطأ: فشل التحقق من الصحة البيضاء. تحقق من طريقة إدخال البيانات"
 
-#: lib/utility.php:838
+#: lib/utility.php:840
 #, fuzzy
 msgid ""
 "MySQL 5.6+ and MariaDB 10.0+ are great releases, and are very good versions "
@@ -19255,14 +19260,14 @@ msgstr ""
 "منخفضة المستوى طويلة الأمد والتي تسببت في العديد من المشكلات المتعلقة "
 "بالموثوقية."
 
-#: lib/utility.php:850
+#: lib/utility.php:852
 #, fuzzy, php-format
 msgid ""
 "It is STRONGLY recommended that you enable InnoDB in any %s version greater "
 "than 5.5.3."
 msgstr "من المستحسن تمكين InnoDB في أي إصدار٪ s أكبر من 5.1."
 
-#: lib/utility.php:863
+#: lib/utility.php:865
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19278,7 +19283,7 @@ msgstr ""
 "Cacti الخاص بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل "
 "قواعد البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
 
-#: lib/utility.php:869
+#: lib/utility.php:871
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19294,13 +19299,13 @@ msgstr ""
 "بك يعمل قيد التشغيل ، راجع الإنترنت للحصول على إرشادات حول تحويل قواعد "
 "البيانات والجداول الخاصة بك إذا كنت تخطط لدعم لغات أخرى."
 
-#: lib/utility.php:880
+#: lib/utility.php:882
 #, fuzzy, php-format
 msgid ""
 "It is recommended that you enable InnoDB in any %s version greater than 5.1."
 msgstr "من المستحسن تمكين InnoDB في أي إصدار٪ s أكبر من 5.1."
 
-#: lib/utility.php:892
+#: lib/utility.php:894
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19310,7 +19315,7 @@ msgstr ""
 "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام نوع "
 "ترتيب utf8mb4_unicode_ci حيث أن بعض الأحرف تأخذ أكثر من بايت واحد."
 
-#: lib/utility.php:898
+#: lib/utility.php:900
 #, fuzzy
 msgid ""
 "When using Cacti with languages other than English, it is important to use "
@@ -19319,7 +19324,7 @@ msgstr ""
 "عند استخدام Cacti بلغات أخرى غير اللغة الإنجليزية ، من المهم استخدام مجموعة "
 "الأحرف utf8mb4 لأن بعض الأحرف تأخذ أكثر من بايت واحد."
 
-#: lib/utility.php:907
+#: lib/utility.php:909
 #, fuzzy, php-format
 msgid ""
 "Depending on the number of logins and use of spine data collector, %s will "
@@ -19334,7 +19339,7 @@ msgstr ""
 "ثم يجب عليك ترك مساحة خالية لاتصالات المستخدم ، والتي ستتغير اعتمادًا على عدد "
 "حسابات تسجيل الدخول المتزامنة."
 
-#: lib/utility.php:912
+#: lib/utility.php:914
 #, fuzzy
 msgid ""
 "Keeping the table cache larger means less file open/close operations when "
@@ -19343,7 +19348,7 @@ msgstr ""
 "حفظ التخزين المؤقت للجدول أكبر يعني أقل عمليات فتح / إغلاق الملف عند استخدام "
 "innodb_file_per_table."
 
-#: lib/utility.php:917
+#: lib/utility.php:919
 #, fuzzy
 msgid ""
 "With Remote polling capabilities, large amounts of data will be synced from "
@@ -19354,7 +19359,7 @@ msgstr ""
 "الرئيسي إلى القائمون بالاستطلاع عن بعد. لذلك ، احتفظ بهذه القيمة عند أو فوق "
 "16M."
 
-#: lib/utility.php:923
+#: lib/utility.php:925
 #, fuzzy, php-format
 msgid ""
 "If using the Cacti Performance Booster and choosing a memory storage engine, "
@@ -19380,7 +19385,7 @@ msgstr ""
 "المتوقع لجداول Booster Performance ضمن Console -&gt; System Utilities -&gt; "
 "View Boost Status."
 
-#: lib/utility.php:929
+#: lib/utility.php:931
 #, fuzzy
 msgid ""
 "When executing subqueries, having a larger temporary table size, keep those "
@@ -19389,7 +19394,7 @@ msgstr ""
 "عند تنفيذ الاستعلامات الفرعية ، مع وجود حجم جدول مؤقت أكبر ، احتفظ بهذه "
 "الجداول المؤقتة في الذاكرة."
 
-#: lib/utility.php:935
+#: lib/utility.php:937
 #, fuzzy
 msgid ""
 "When performing joins, if they are below this size, they will be kept in "
@@ -19398,7 +19403,7 @@ msgstr ""
 "عند إجراء الصلات ، إذا كانت أقل من هذا الحجم ، فسيتم الاحتفاظ بها في الذاكرة "
 "ولن تتم كتابتها أبدًا إلى ملف مؤقت."
 
-#: lib/utility.php:940
+#: lib/utility.php:942
 #, fuzzy, php-format
 msgid ""
 "When using InnoDB storage it is important to keep your table spaces "
@@ -19412,7 +19417,7 @@ msgstr ""
 "حاليًا ، فبإمكانك الترحيل إلى التخزين لكل ملف من خلال تمكين الميزة ، ثم تشغيل "
 "عبارة توضيحية على جميع جداول InnoDB."
 
-#: lib/utility.php:946
+#: lib/utility.php:948
 #, fuzzy
 msgid ""
 "When using innodb_file_per_table, it is important to set the "
@@ -19422,14 +19427,14 @@ msgstr ""
 "عند استخدام innodb_file_per_table ، من المهم تعيين innodb_file_format إلى "
 "Barracuda. سيسمح هذا الإعداد بفهارس أطول مهمة لجداول Cacti معينة."
 
-#: lib/utility.php:952
+#: lib/utility.php:954
 msgid ""
 "If your tables have very large indexes, you must operate with the Barracuda "
 "innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do "
 "this may result in plugins that can not properly create tables."
 msgstr ""
 
-#: lib/utility.php:958
+#: lib/utility.php:960
 #, fuzzy, php-format
 msgid ""
 "InnoDB will hold as much tables and indexes in system memory as is "
@@ -19445,7 +19450,7 @@ msgstr ""
 "تحديد هذه القيمة. نوصي بـ 25 ٪٪ من الذاكرة الإجمالية لنظامك ، ولكن ستختلف "
 "متطلباتك حسب حجم الأنظمة لديك."
 
-#: lib/utility.php:964
+#: lib/utility.php:966
 #, fuzzy, php-format
 msgid ""
 "With modern SSD type storage, this operation actually degrades the disk more "
@@ -19454,7 +19459,7 @@ msgstr ""
 "مع التخزين الحديث لنوع SSD ، تقوم هذه العملية بالفعل بتخفيض القرص بسرعة أكبر "
 "وتضيف 50 ٪٪ من الحمل فوق كل عمليات الكتابة."
 
-#: lib/utility.php:969
+#: lib/utility.php:971
 #, fuzzy
 msgid ""
 "This is where metadata is stored. If you had a lot of tables, it would be "
@@ -19463,7 +19468,7 @@ msgstr ""
 "هذا هو المكان الذي يتم تخزين البيانات الوصفية. إذا كان لديك الكثير من "
 "الجداول ، سيكون من المفيد زيادة هذا."
 
-#: lib/utility.php:974
+#: lib/utility.php:976
 #, fuzzy
 msgid ""
 "Rogue queries should not for the database to go offline to others.  Kill "
@@ -19472,7 +19477,7 @@ msgstr ""
 "يجب أن لا تقوم طلبات البحث المارقة بقاعدة البيانات بالاتصال بالآخرين. اقتل "
 "هذه الاستعلامات قبل أن تقتل نظامك."
 
-#: lib/utility.php:979
+#: lib/utility.php:981
 #, fuzzy
 msgid ""
 "Maximum I/O performance happens when you use the O_DIRECT method to flush "
@@ -19481,7 +19486,7 @@ msgstr ""
 "الحد الأقصى لأداء الإدخال / الإخراج يحدث عند استخدام الأسلوب O_DIRECT لمسح "
 "الصفحات."
 
-#: lib/utility.php:989
+#: lib/utility.php:991
 #, fuzzy, php-format
 msgid ""
 "Setting this value to 2 means that you will flush all transactions every "
@@ -19490,7 +19495,7 @@ msgstr ""
 "يعني تعيين هذه القيمة إلى 2 أنه سيتم مسح كافة المعاملات كل ثانية بدلاً من "
 "الالتزام. يسمح هذا لـ٪ s بأداء الكتابة بشكل أقل."
 
-#: lib/utility.php:994
+#: lib/utility.php:996
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple io threads is advantageous for "
@@ -19499,7 +19504,7 @@ msgstr ""
 "مع التخزين الحديث لنوع SSD ، فإن وجود عدة مؤشرات ترابط io أمر مفيد لتطبيقات "
 "ذات خصائص io عالية."
 
-#: lib/utility.php:1002
+#: lib/utility.php:1004
 #, fuzzy, php-format
 msgid ""
 "As of %s %s, the you can control how often %s flushes transactions to disk.  "
@@ -19510,7 +19515,7 @@ msgstr ""
 "إلى القرص. الافتراضي هو 1 ثانية ، ولكن في إعداد أنظمة I / O عالية لقيمة أكبر "
 "من 1 يمكن أن تسمح I / O القرص أن يكون أكثر تسلسلي"
 
-#: lib/utility.php:1007
+#: lib/utility.php:1009
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple read io threads is "
@@ -19519,7 +19524,7 @@ msgstr ""
 "مع التخزين الحديث من نوع SSD ، فإن وجود عدة سلاسل io للقراءة يكون مفيدًا "
 "للتطبيقات ذات الخصائص io العالية."
 
-#: lib/utility.php:1012
+#: lib/utility.php:1014
 #, fuzzy
 msgid ""
 "With modern SSD type storage, having multiple write io threads is "
@@ -19528,7 +19533,7 @@ msgstr ""
 "مع تخزين نوع SSD الحديث ، وجود عدة سلاسل io الكتابة هو مفيد للتطبيقات مع "
 "خصائص io عالية."
 
-#: lib/utility.php:1018
+#: lib/utility.php:1020
 #, fuzzy, php-format
 msgid ""
 "%s will divide the innodb_buffer_pool into memory regions to improve "
@@ -19541,7 +19546,7 @@ msgstr ""
 "استخدام حجم التجمع مقسومًا على 128 ميجابايت. استمر في استخدام هذه المعادلة "
 "حتى 64 كحد أقصى."
 
-#: lib/utility.php:1024
+#: lib/utility.php:1026
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -19552,7 +19557,7 @@ msgstr ""
 "ثابتة فعلية ، فاستخدم 200 * عدد محركات الأقراص النشطة في الصفيف. في حالة "
 "استخدام NVMe أو PCIe Flash ، يمكن استخدام أرقام أكبر بكثير تصل إلى 100000."
 
-#: lib/utility.php:1030
+#: lib/utility.php:1032
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion.  If you have physical hard "
@@ -19563,7 +19568,7 @@ msgstr ""
 "ثابتة فعلية ، استخدم 2000 * عدد محركات الأقراص النشطة في الصفيف. في حالة "
 "استخدام NVMe أو PCIe Flash ، يمكن استخدام أرقام أكبر بكثير تصل إلى 200000."
 
-#: lib/utility.php:1036
+#: lib/utility.php:1038
 #, fuzzy
 msgid ""
 "If you have SSD disks, use this suggestion. Otherwise, do not set this "
@@ -19572,50 +19577,50 @@ msgstr ""
 "إذا كان لديك أقراص SSD ، استخدم هذا الاقتراح. خلاف ذلك ، لا تقم بتعيين هذا "
 "الإعداد."
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 #, fuzzy, php-format
 msgid "%s Tuning"
 msgstr "ضبط٪ s"
 
-#: lib/utility.php:1044
+#: lib/utility.php:1046
 #, fuzzy
 msgid "Note: Many changes below require a database restart"
 msgstr "ملاحظة: تتطلب العديد من التغييرات أدناه إعادة تشغيل قاعدة البيانات"
 
-#: lib/utility.php:1051
+#: lib/utility.php:1053
 msgid "Variable"
 msgstr "متغير"
 
-#: lib/utility.php:1052
+#: lib/utility.php:1054
 #, fuzzy
 msgid "Current Value"
 msgstr "القيمة الحالية"
 
-#: lib/utility.php:1054
+#: lib/utility.php:1056
 #, fuzzy
 msgid "Recommended Value"
 msgstr "القيمة الموصى بها"
 
-#: lib/utility.php:1055
+#: lib/utility.php:1057
 msgid "Comments"
 msgstr "التعليقات"
 
-#: lib/utility.php:1431
+#: lib/utility.php:1433
 #, fuzzy, php-format
 msgid "PHP %s is the mimimum version"
 msgstr "PHP٪ s هو إصدار mimimum"
 
-#: lib/utility.php:1433
+#: lib/utility.php:1435
 #, fuzzy, php-format
 msgid "A minimum of %s MB memory limit"
 msgstr "حد لا يقل عن٪ s من ذاكرة MB"
 
-#: lib/utility.php:1435
+#: lib/utility.php:1437
 #, fuzzy, php-format
 msgid "A minimum of %s m execution time"
 msgstr "حد أدنى من٪ sm وقت التنفيذ"
 
-#: lib/utility.php:1437
+#: lib/utility.php:1439
 #, fuzzy
 msgid "A valid timezone that matches MySQL and the system"
 msgstr "منطقة زمنية صالحة تطابق MySQL والنظام"
