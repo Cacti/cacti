@@ -9,7 +9,7 @@ html, body {
 
 body, table, tr, td, textarea {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 11px;
 }
 
 textarea {
@@ -96,6 +96,10 @@ th .fa {
 	top: 50%;
 }
 
+tr.selectable td {
+	padding: 3px;
+}
+
 #main {
 	display: none;
 	position: relative;
@@ -110,7 +114,7 @@ input {
 }
 
 select {
-	padding: 0.5em 0.5em 0.5em 0.5em;
+	padding: 2px;
 	font-size: 12px;
 }
 
@@ -1166,7 +1170,6 @@ legend {
 	padding: 0px;
 	line-height: 22px;
 	height: 22px;
-	font-weight: bold;
 	white-space: nowrap;
 	overflow: hidden;
 	vertical-align: middle;
@@ -1186,7 +1189,7 @@ legend {
 }
 
 .cactiTable td {
-	padding: 2px;
+	padding: 3px;
 }
 
 .cactiDebugTable {
@@ -1397,7 +1400,7 @@ legend {
 .tableHeader {
 	display: table-row;
 	background-color: #6D88AD !important;
-	line-height: 20px;
+	line-height: 18px;
 }
 
 .tableHeader td {
@@ -1413,6 +1416,7 @@ legend {
 	text-align: left;
 	border-right: 1px groove #EFEFEF;
 	font-size: 11px;
+	line-height: 18px;
 	background-color: #6D88AD !important;
 	padding: 2px;
 }
@@ -1480,7 +1484,7 @@ legend {
 	display: table;
 	margin-left: auto;
 	margin-right: auto;
-	line-height: 20px;
+	line-height: 18px;
 	background-color: #00438D;
 	font-size: 12px;
 }
@@ -1571,7 +1575,6 @@ legend {
 
 .textAreaNotes {
 	font-size: 12px;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 }
 
 .textEditTitle {
@@ -1582,26 +1585,22 @@ legend {
 .textMenuHeader {
 	color: #FFFFFF;
 	background-color: #9C9C9C;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 	font-weight: bold;
 }
 
 .textMenuItem {
 	background-color: #F5F5F5;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
 .textMenuSubItem {
 	background-color: #FFFFFF;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
 .textMenuItemSelected {
 	background-color: #E1E1E1;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 10px;
 }
 
@@ -1739,7 +1738,7 @@ div#gtabs {
 
 #nav li a {
 	display: block;
-	font-size: 10px;
+	font-size: 11px;
 	padding: 2px 4px;
 	background: #ccc;
 	border-bottom: 1px solid #666;
@@ -1887,48 +1886,56 @@ tr#realtime td:first-child {
 .logEmergency {
 	background-color: #FF0606;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logCritical {
 	background-color: #F21721;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logWarning {
 	background-color: #FF7A30;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logAlert {
 	background-color: #F21924;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logError {
 	background-color: #FB4A14;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logNotice {
 	background-color: #FAFD9E;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logInfo {
 	background-color: #CCFFCC;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 
 .logDebug {
 	background-color: #CDCFC4;
 	text-align: center;
+	padding: 3px;
 	width: 12.5%;
 }
 

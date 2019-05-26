@@ -552,7 +552,7 @@ label {
 }
 
 .odd td, .even td, .even-alternate td, .selectable td {
-	padding: 2px;
+	padding: 3px;
 }
 
 .even {
@@ -2169,6 +2169,7 @@ tr#realtime td:first-child {
 	background-color: rgba(255, 6, 6, 0.4);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2176,6 +2177,7 @@ tr#realtime td:first-child {
 	background-color: rgba(242, 23, 33, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2183,6 +2185,7 @@ tr#realtime td:first-child {
 	background-color: rgba(242, 25, 36, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2190,6 +2193,7 @@ tr#realtime td:first-child {
 	background-color: rgba(255, 122, 48, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2197,6 +2201,7 @@ tr#realtime td:first-child {
 	background-color: rgba(251, 74, 20, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2204,6 +2209,7 @@ tr#realtime td:first-child {
 	background-color: rgba(250, 253, 158, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2211,6 +2217,7 @@ tr#realtime td:first-child {
 	background-color: rgba(204, 255, 204, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 
@@ -2218,6 +2225,7 @@ tr#realtime td:first-child {
 	background-color: rgba(205, 207, 196, 0.2);
 	text-align: center;
 	width: 12.5%;
+	padding: 3px;
 	color: #eeeeee;
 }
 

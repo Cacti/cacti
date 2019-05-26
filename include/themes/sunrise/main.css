@@ -2052,6 +2052,10 @@ tr.selectable:hover:not(.selected) {
 	background: rgba(0,0,0,0.2);
 }
 
+tr.selectable td {
+	padding: 3px;
+}
+
 tr.selected a {
 	color: #FFFFFF;
 }
