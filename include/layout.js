@@ -1830,7 +1830,7 @@ function setNavigationScroll() {
 						$(object).css('overflow-y', 'auto');
 					}, 500);
 				}
-	
+
 				isHover = true;
 			}
 		}
@@ -1927,6 +1927,7 @@ function getPresentHTTPError(data) {
 		var errorStr  = data.status;
 		var errorSub  = data.statusText;
 		var errorText = errorReasonUnexpected;
+		var found     = false;
 
 		if (typeof data.responseText != 'undefined') {
 			var dataText = data.responseText;
@@ -1937,14 +1938,21 @@ function getPresentHTTPError(data) {
 
 			if (title_match != null) {
 				var errorSub = title_match[1];
+				found = true;
 			}
 
 			if (head_match != null) {
 				var errorSub = head_match[1];
+				found = true;
 			}
 
 			if (para_match != null) {
 				var errorText = para_match[1];
+				found = true;
+			}
+
+			if (!found && dataText != '') {
+				var errorText = dataText;
 			}
 
 			var returnStr = '<div id="httperror" style="display:none">' +

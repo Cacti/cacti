@@ -1504,7 +1504,7 @@ function strip_alpha(&$string) {
 /** get_full_script_path - gets the full path to the script to execute to obtain data for a
  *    given data source. this function does not work on SNMP actions, only script-based actions
  *  @arg $local_data_id - (int) the ID of the data source
- *  @returns - the full script path or (bool) false for an error 
+ *  @returns - the full script path or (bool) false for an error
 */
 function get_full_script_path($local_data_id) {
 	global $config;
@@ -5362,3 +5362,20 @@ function is_function_enabled($name) {
 		!in_array($name, array_map('trim', explode(', ', ini_get('disable_functions')))) &&
 		strtolower(ini_get('safe_mode')) != 1;
 }
+
+function is_page_ajax() {
+	if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ) {
+		return true;
+	}
+
+	return false;
+}
+
+function raise_ajax_permission_denied() {
+	if (is_page_ajax()) {
+		header('HTTP/1.1 401 ' . __('Permission Denied'));
+		print __('You are not permitted to access this section of Cacti.') . '  ' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
+		exit;
+	}
+}
+

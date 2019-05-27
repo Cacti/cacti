@@ -37,6 +37,8 @@ if (api_plugin_hook_function('custom_denied', OPER_MODE_NATIVE) === OPER_MODE_RE
 	exit;
 }
 
+raise_ajax_permission_denied();
+
 print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
 print "<html>\n";
 print "<head>\n";

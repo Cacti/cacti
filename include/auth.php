@@ -260,6 +260,8 @@ if (read_config_option('auth_method') != 0) {
 				$goBack = "<td colspan='2' class='center'>[<a href='" . $config['url_path'] . "logout.php'>" . __('Login Again') . "</a>]</td>";
 			}
 
+			raise_ajax_permission_denied();
+
 			$title_header = __('Permission Denied');
 			$title_body = '<p>' . __('You are not permitted to access this section of Cacti.') . '</p><p>' . __('If you feel that this is an error. Please contact your Cacti Administrator.');
 
