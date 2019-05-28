@@ -1282,7 +1282,8 @@ function draw_menu($user_menu = "") {
 
 			/* pass 2: loop through each top level item and render it */
 			foreach ($header_array as $item_url => $item_title) {
-				$basename = basename($item_url);
+				$basename = explode('?', basename($item_url));
+				$basename = $basename[0];
 				$current_realm_id = (isset($user_auth_realm_filenames[$basename]) ? $user_auth_realm_filenames[$basename] : 0);
 
 				/* if this item is an array, then it contains sub-items. if not, is just
