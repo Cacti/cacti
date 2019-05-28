@@ -155,7 +155,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			}
 
 			if (!empty($pri)) {
-				if ($plugin != '' || !$create) {
+				if ($plugin != '' || $create) {
 					$text .= "\$data['primary'] = '" . implode("`,`", $pri) . "';\n";
 				} else {
 					$text .= "\$data['primary'] = array('" . implode("','", $pri) . "');\n";
