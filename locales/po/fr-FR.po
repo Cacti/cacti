@@ -1,12 +1,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-05-26 11:35-0400\n"
-"PO-Revision-Date: 2019-03-31 22:39+0000\n"
-"Last-Translator: The Cacti Group <weblate@cacti.net>\n"
-"Language-Team: French <http://translate.cacti.net/projects/cacti/core/fr-FR/"
-">\n"
+"PO-Revision-Date: 2019-05-29 15:13+0000\n"
+"Last-Translator: Olivier VOGEL <olivier.vogel@st.com>\n"
+"Language-Team: French <http://translate.cacti.net/projects/cacti/core/fr-FR/>"
+"\n"
 "Language: fr-FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -32,13 +32,13 @@ msgstr ""
 "graphiques significatifs."
 
 #: about.php:44
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
 msgstr ""
-"Veuillez consulter le site Web officiel de %sCacti pour obtenir de "
-"l'information, du soutien et des mises à jour."
+"Veuillez consulter le %ssite Web de Cacti%s officiel pour obtenir de "
+"l'information, de l'aide et les mises à jour."
 
 #: about.php:46
 #, fuzzy
@@ -64,14 +64,13 @@ msgid "The users of Cacti"
 msgstr "Les utilisateurs de Cacti"
 
 #: about.php:66
-#, fuzzy
 msgid ""
 "Especially anyone who has taken the time to create an issue report, or "
 "otherwise help fix a Cacti related problems. Also to anyone who has "
 "contributed to supporting Cacti."
 msgstr ""
-"Surtout toute personne qui a pris le temps de créer un rapport de problème, "
-"ou d'aider à résoudre un problème lié à Cacti. Aussi à tous ceux qui ont "
+"Surtout a toute personne qui a pris le temps de créer un rapport d'incident, "
+"ou a aider à résoudre un problème lié à Cacti. Aussi à tous ceux qui ont "
 "contribué à soutenir Cacti."
 
 #: about.php:71
@@ -150,9 +149,8 @@ msgid "Associate with Aggregate"
 msgstr "Associé avec Aggregate"
 
 #: aggregate_graphs.php:50
-#, fuzzy
 msgid "Disassociate with Aggregate"
-msgstr "Se dissocier de l'agrégat"
+msgstr "Le dissocier avec Aggregate"
 
 #: aggregate_graphs.php:83 graphs.php:198
 #, fuzzy, php-format
@@ -160,10 +158,9 @@ msgid "Place on a Tree (%s)"
 msgstr "Placer sur un arbre (%s)"
 
 #: aggregate_graphs.php:342
-#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
 msgstr ""
-"Cliquez sur'Continuer' pour supprimer le(s) graphique(s) agrégé(s) "
+"Cliquez sur 'Continuer' pour supprimer le(s) graphique(s) agrégé(s) "
 "suivant(s)."
 
 #: aggregate_graphs.php:347 aggregate_graphs.php:420 aggregate_graphs.php:445
@@ -250,7 +247,6 @@ msgstr ""
 "modèle de graphique."
 
 #: aggregate_graphs.php:378
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, they must only be using one Graph Template.  Please press "
@@ -259,7 +255,7 @@ msgid ""
 msgstr ""
 "Pour migrer les graphiques d'agrégat ci-dessous vers un agrégat basé sur un "
 "modèle, ils ne doivent utiliser qu'un seul modèle de graphique.  Veuillez "
-"appuyer sur'Retour' et ne sélectionner que les graphiques agrégés qui "
+"appuyer sur 'Retour' et ne sélectionner que les graphiques agrégés qui "
 "utilisent le même modèle de graphique."
 
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
@@ -272,16 +268,14 @@ msgid "Return"
 msgstr "Retour"
 
 #: aggregate_graphs.php:387
-#, fuzzy
 msgid ""
 "The selected Aggregate Graphs does not appear to have any matching Aggregate "
 "Templates."
 msgstr ""
-"Les graphiques agrégés sélectionnés représentent les éléments de plus d'un "
-"modèle de graphique."
+"Les graphiques agrégés sélectionnés ne semblent pas avoir de modèles agrégés "
+"correspondants."
 
 #: aggregate_graphs.php:388
-#, fuzzy
 msgid ""
 "In order to migrate the Aggregate Graphs below use an Aggregate Template, "
 "one must already exist.  Please press 'Return' and then first create your "
@@ -289,23 +283,20 @@ msgid ""
 msgstr ""
 "Pour migrer les graphiques d'agrégat ci-dessous vers un agrégat basé sur un "
 "modèle, ils ne doivent utiliser qu'un seul modèle de graphique.  Veuillez "
-"appuyer sur'Retour' et ne sélectionner que les graphiques agrégés qui "
-"utilisent le même modèle de graphique."
+"appuyer sur 'Retour' puis créer vos modèles d’agrégat avant de ressayer."
 
 #: aggregate_graphs.php:404
-#, fuzzy
 msgid ""
 "Click 'Continue' and the following Aggregate Graph(s) will be migrated to "
 "use the Aggregate Template that you choose below."
 msgstr ""
-"Cliquez sur'Continuer' et le(s) graphique(s) agrégé(s) suivant(s) sera "
+"Cliquez sur 'Continuer' et le(s) graphique(s) agrégé(s) suivant(s) sera "
 "(seront) migré(s) pour utiliser le modèle d'agrégat que vous choisissez ci-"
 "dessous."
 
 #: aggregate_graphs.php:410
-#, fuzzy
 msgid "Aggregate Template:"
-msgstr "Modèle d'agrégat :"
+msgstr "Modèle d'agrégat:"
 
 #: aggregate_graphs.php:424
 #, fuzzy
@@ -317,32 +308,29 @@ msgstr ""
 "hérités sélectionnés."
 
 #: aggregate_graphs.php:425
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "In order to migrate the Aggregate Graphs below to a Template based "
 "Aggregate, first create an Aggregate Template for the Graph Template '%s'."
 msgstr ""
 "Pour migrer les graphiques d'agrégat ci-dessous vers un agrégat basé sur un "
-"modèle, créez d'abord un modèle d'agrégat pour le modèle de graphique'%s'."
+"modèle, créez d'abord un modèle d'agrégat pour le modèle de graphique '%s'."
 
 #: aggregate_graphs.php:426
-#, fuzzy
 msgid "Please press 'Return' to continue."
-msgstr "Veuillez appuyer sur'Retour' pour continuer."
+msgstr "Veuillez appuyer sur 'Retour' pour continuer."
 
 #: aggregate_graphs.php:437
-#, fuzzy
 msgid ""
 "Click 'Continue' to combine the following Aggregate Graph(s) into a single "
 "Aggregate Graph."
 msgstr ""
-"Cliquez sur'Continuer' pour combiner le(s) graphique(s) agrégé(s) suivant(s) "
-"en un seul graphique agrégé."
+"Cliquez sur 'Continuer' pour combiner le(s) graphique(s) agrégé(s) suivant(s)"
+" en un unique graphique agrégé."
 
 #: aggregate_graphs.php:442
-#, fuzzy
 msgid "Aggregate Name:"
-msgstr "Nom de l'agrégat :"
+msgstr "Nom de l'agrégat:"
 
 #: aggregate_graphs.php:443
 #, fuzzy
@@ -350,10 +338,9 @@ msgid "New Aggregate"
 msgstr "Nouvel agrégat"
 
 #: aggregate_graphs.php:458 graphs.php:1181
-#, fuzzy
 msgid "Click 'Continue' to add the selected Graphs to the Report below."
 msgstr ""
-"Cliquez sur'Continuer' pour ajouter les graphiques sélectionnés au rapport "
+"Cliquez sur 'Continuer' pour ajouter les graphiques sélectionnés au rapport "
 "ci-dessous."
 
 #: aggregate_graphs.php:462 graph_view.php:775 graphs.php:1185
@@ -378,17 +365,15 @@ msgid "Add Graphs to Report"
 msgstr "Ajouter des graphiques au rapport"
 
 #: aggregate_graphs.php:476 graphs.php:1199
-#, fuzzy
 msgid "You currently have no reports defined."
-msgstr "Vous n'avez actuellement aucun état défini."
+msgstr "Vous n'avez actuellement aucun états défini."
 
 #: aggregate_graphs.php:482
-#, fuzzy
 msgid ""
 "Click 'Continue' to associate the following Graph(s) with the Aggregate "
 "Graph."
 msgstr ""
-"Cliquez sur'Continuer' pour associer le(s) graphique(s) suivant(s) au "
+"Cliquez sur 'Continuer' pour associer le(s) graphique(s) suivant(s) au "
 "graphique agrégé."
 
 #: aggregate_graphs.php:487
@@ -397,11 +382,10 @@ msgid "Associate Graph(s)"
 msgstr "Graphique(s) associé(s)"
 
 #: aggregate_graphs.php:491
-#, fuzzy
 msgid ""
 "Click 'Continue' to disassociate the following Graph(s) from the Aggregate."
 msgstr ""
-"Cliquez sur'Continuer' pour dissocier le(s) graphique(s) suivant(s) de "
+"Cliquez sur 'Continuer' pour dissocier le(s) graphique(s) suivant(s) de "
 "l'agrégat."
 
 #: aggregate_graphs.php:496
@@ -410,17 +394,16 @@ msgid "Dis-Associate Graph(s)"
 msgstr "Graphique(s) dissocié(s)"
 
 #: aggregate_graphs.php:500
-#, fuzzy
 msgid ""
 "Click 'Continue' to place the following Aggregate Graph(s) under the Tree "
 "Branch."
 msgstr ""
-"Cliquez sur'Continuer' pour placer le(s) graphique(s) agrégé(s) suivant(s) "
-"sous l'arborescence."
+"Cliquez sur 'Continuer' pour placer le(s) graphique(s) agrégé(s) suivant(s) "
+"dans l'arborescence."
 
 #: aggregate_graphs.php:502 host.php:430
 msgid "Destination Branch:"
-msgstr "Branche de destintation :"
+msgstr "Branche de destination :"
 
 #: aggregate_graphs.php:507 graphs.php:954
 #, fuzzy
@@ -428,14 +411,13 @@ msgid "Place Graph(s) on Tree"
 msgstr "Placer le(s) graphique(s) sur l'arbre"
 
 #: aggregate_graphs.php:546 graphs.php:1247
-#, fuzzy
 msgid "Graph Items [new]"
-msgstr "Graphique Eléments[nouveau]"
+msgstr "Eléments Graphique [nouveau]"
 
 #: aggregate_graphs.php:562 graphs.php:1280
-#, fuzzy, php-format
+#, php-format
 msgid "Graph Items [edit: %s]"
-msgstr "Éléments du graphique[modifier : %s]."
+msgstr "Éléments graphique [modifier : %s]."
 
 #: aggregate_graphs.php:635 aggregate_graphs.php:642 lib/html_reports.php:1173
 #: lib/html_reports.php:1178 lib/html_reports.php:1217 utilities.php:1821
@@ -445,7 +427,7 @@ msgstr "Détails"
 #: aggregate_graphs.php:636 graphs_new.php:730 lib/html_reports.php:1173
 #: lib/html_reports.php:1264 utilities.php:344
 msgid "Items"
-msgstr "Articles"
+msgstr "Eléments"
 
 #: aggregate_graphs.php:637 aggregate_graphs.php:643 lib/html.php:1840
 #: lib/html_reports.php:1173
@@ -463,24 +445,21 @@ msgid "Turn On Graph Debug Mode"
 msgstr "Activer le mode de débogage des graphiques"
 
 #: aggregate_graphs.php:709 aggregate_graphs.php:997
-#, fuzzy
 msgid "Show Item Details"
-msgstr "Afficher les détails de l'article"
+msgstr "Afficher les détails de l'éléments"
 
 #: aggregate_graphs.php:715
-#, fuzzy, php-format
+#, php-format
 msgid "Aggregate Preview [%s]"
-msgstr "Aperçu de l'agrégat[%s]."
+msgstr "Aperçu de l'agrégat [%s]."
 
 #: aggregate_graphs.php:727 graph.php:534 graphs.php:1534
-#, fuzzy
 msgid "RRDtool Command:"
-msgstr "RRDtool Command :"
+msgstr "Commande RRDtool:"
 
 #: aggregate_graphs.php:729 graph.php:537 graphs.php:1536
-#, fuzzy
 msgid "RRDtool Says:"
-msgstr "RRDtool Says :"
+msgstr "RRDtool dit:"
 
 #: aggregate_graphs.php:758
 #, fuzzy, php-format
@@ -513,9 +492,8 @@ msgid "Hide Item Details"
 msgstr "Masquer les détails de l'élément"
 
 #: aggregate_graphs.php:1125
-#, fuzzy
 msgid "Matching Graphs"
-msgstr "Graphiques de correspondance"
+msgstr "Graphiques correspondants"
 
 #: aggregate_graphs.php:1134 aggregate_graphs.php:1471
 #: aggregate_templates.php:561 automation_devices.php:455
@@ -731,15 +709,15 @@ msgid "No Graphs Found"
 msgstr "Pas de graphique trouvé"
 
 #: aggregate_graphs.php:1462
-#, fuzzy
 msgid " [ Custom Graphs List Applied - Clear to Reset ]"
-msgstr "Liste graphique personnalisée appliquée - Filtre de la liste ]"
+msgstr ""
+" [ Liste des graphiques personnalisée appliquée - Effacer pour réinitialiser "
+"]"
 
 #: aggregate_graphs.php:1462 aggregate_graphs.php:1570
 #: include/global_arrays.php:2536
-#, fuzzy
 msgid "Aggregate Graphs"
-msgstr "Graphiques globaux"
+msgstr "Graphiques agrégés"
 
 #: aggregate_graphs.php:1477 data_debug.php:949 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
@@ -799,14 +777,12 @@ msgid "None"
 msgstr "Aucun"
 
 #: aggregate_graphs.php:1579
-#, fuzzy
 msgid "The title for the Aggregate Graphs"
-msgstr "Le titre des graphiques globaux"
+msgstr "Le titre du graphique agrégé"
 
 #: aggregate_graphs.php:1580
-#, fuzzy
 msgid "The internal database identifier for this object"
-msgstr "l'identificateur de base de données interne pour cet objet"
+msgstr "l'identificateur interne a la base de données pour cet objet"
 
 #: aggregate_graphs.php:1581 graphs.php:1136
 #, fuzzy
@@ -814,14 +790,12 @@ msgid "Aggregate Template"
 msgstr "Modèle d'agrégat"
 
 #: aggregate_graphs.php:1581
-#, fuzzy
 msgid "The Aggregate Template that this Aggregate Graphs is based upon"
-msgstr "Le modèle d'agrégat sur lequel ce graphique d'agrégat est basé"
+msgstr "Le modèle d'agrégat sur lequel ce graphique agrégé est basé"
 
 #: aggregate_graphs.php:1600
-#, fuzzy
 msgid "No Aggregate Graphs Found"
-msgstr "Aucun graphique global trouvé"
+msgstr "Aucun graphique agrégé trouvé"
 
 #: aggregate_items.php:347
 #, fuzzy
@@ -846,14 +820,13 @@ msgid "Delete Color Template(s)"
 msgstr "Supprimer le(s) modèle(s) de couleur"
 
 #: aggregate_templates.php:351
-#, fuzzy, php-format
+#, php-format
 msgid "Aggregate Template [edit: %s]"
-msgstr "Modèle d'agrégat[modifier : %s][modifier : %s"
+msgstr "Modèle d'agrégat [éditer: %s]"
 
 #: aggregate_templates.php:353
-#, fuzzy
 msgid "Aggregate Template [new]"
-msgstr "Modèle d'agrégat[nouveau][nouveau"
+msgstr "Modèle d'agrégat [nouveau]"
 
 #: aggregate_templates.php:554 aggregate_templates.php:653
 #: include/global_arrays.php:2518
@@ -880,13 +853,12 @@ msgid "Template Title"
 msgstr "Titre du modèle"
 
 #: aggregate_templates.php:663
-#, fuzzy
 msgid ""
 "Aggregate Templates that are in use can not be Deleted.  In use is defined "
 "as being referenced by an Aggregate."
 msgstr ""
 "Les modèles d'agrégat en cours d'utilisation ne peuvent pas être supprimés.  "
-"En usage est défini comme étant référencé par un Agrégat."
+"En cours d'utilisation est défini comme étant référencé par un Agrégat."
 
 #: aggregate_templates.php:663 cdef.php:889 color.php:703
 #: color_templates.php:560 data_input.php:909 data_queries.php:1388
@@ -900,9 +872,8 @@ msgstr "Effaçable"
 #: aggregate_templates.php:664 cdef.php:890 color.php:704 data_queries.php:1140
 #: data_queries.php:1389 gprint_presets.php:396 graph_templates.php:795
 #: vdef.php:889
-#, fuzzy
 msgid "Graphs Using"
-msgstr "Graphiques à l'aide de"
+msgstr "Graphiques utilisant"
 
 #: aggregate_templates.php:665 include/global_arrays.php:840
 #: include/global_arrays.php:1209 include/global_form.php:1351
@@ -911,9 +882,8 @@ msgid "Graph Template"
 msgstr "Modèle de graphique"
 
 #: aggregate_templates.php:687
-#, fuzzy
 msgid "No Aggregate Templates Found"
-msgstr "Aucun gabarit d'agrégat trouvé"
+msgstr "Aucun modèle d'agrégat trouvé"
 
 #: auth_changepassword.php:125
 #, fuzzy
@@ -949,9 +919,9 @@ msgid "Password requirements include:"
 msgstr "Les exigences relatives au mot de passe sont les suivantes :"
 
 #: auth_changepassword.php:257
-#, fuzzy, php-format
+#, php-format
 msgid "Must be at least %d characters in length"
-msgstr "Doit contenir au moins %d de caractères"
+msgstr "Doit contenir au moins %d caractères"
 
 #: auth_changepassword.php:261
 #, fuzzy
@@ -969,9 +939,9 @@ msgid "Must include at least 1 special character"
 msgstr "Doit comprendre au moins 1 caractère spécial"
 
 #: auth_changepassword.php:273
-#, fuzzy, php-format
+#, php-format
 msgid "Cannot be reused for %d password changes"
-msgstr "Ne peut pas être réutilisé pour les changements de mot de passe %d"
+msgstr "Ne peut pas être réutilisé pour %d changements de mot de passe"
 
 #: auth_changepassword.php:284 auth_changepassword.php:291
 #: include/global_form.php:1499 lib/functions.php:2355
@@ -979,11 +949,10 @@ msgid "Change Password"
 msgstr "Modifier le mot de passe"
 
 #: auth_changepassword.php:301
-#, fuzzy
 msgid "Please enter your current password and your new<br>Cacti password."
 msgstr ""
-"Veuillez entrer votre mot de passe actuel et votre nouveau mot de passe "
-"<br>Cacti."
+"Veuillez entrer votre mot de passe courant et votre nouveau<br>mot de passe "
+"Cacti."
 
 #: auth_changepassword.php:303
 #, fuzzy
