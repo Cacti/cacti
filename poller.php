@@ -349,7 +349,7 @@ set_config_option('poller_lastrun_' . $poller_id, (int)$poller_start);
  * plus the poller needs lot's of memory
  */
 ini_set('max_execution_time', MAX_POLLER_RUNTIME + 1);
-ini_set('memory_limit', '512M');
+ini_set('memory_limit', '-1');
 
 $poller_runs_completed = 0;
 $poller_items_total    = 0;

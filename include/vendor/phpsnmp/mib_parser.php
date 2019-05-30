@@ -58,7 +58,7 @@ class MibParser extends MibCache {
 	 */
 	function __construct(){
 		set_time_limit(0);
-		ini_set('memory_limit', '256M');
+		ini_set('memory_limit', '-1');
 		error_reporting(E_ALL);
 	}
 
@@ -192,7 +192,7 @@ class MibParser extends MibCache {
 	function parse_simple_token($tokens, &$index, $allowed=NULL)
 	{
 		$index++;
-	
+
 		if(is_array($allowed))
 		{
 			if(in_array(strtolower($tokens[$index]), $allowed))

@@ -27,7 +27,7 @@
 define('MAX_RECACHE_RUNTIME', 1800);
 
 ini_set('max_runtime', '-1');
-ini_set('memory_limit', '800M');
+ini_set('memory_limit', '-1');
 
 require(__DIR__ . '/include/cli_check.php');
 require_once($config['base_path'] . '/lib/api_device.php');

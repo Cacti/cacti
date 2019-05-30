@@ -162,7 +162,7 @@ function debug($message) {
 global $poller_id, $sessions, $downhosts, $remote_db_cnn_id;
 
 ini_set('max_execution_time', '0');
-ini_set('memory_limit', '512M');
+ini_set('memory_limit', '-1');
 
 $no_http_headers = true;
 

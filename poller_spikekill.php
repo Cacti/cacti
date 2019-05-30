@@ -25,7 +25,7 @@
 
 require(__DIR__ . '/include/cli_check.php');
 
-ini_set('memory_limit', '512M');
+ini_set('memory_limit', '-1');
 
 /* process calling arguments */
 $parms = $_SERVER['argv'];
@@ -196,7 +196,7 @@ function purge_spike_backups() {
 	$earlytime = time() - $retention;
 
 	if ($directory != '' && s_dir($directory) && is_writable($directory)) {
-		$files = array_diff(scandir($directory), array('.', '..')); 
+		$files = array_diff(scandir($directory), array('.', '..'));
 
 		if (cacti_sizeof($files)) {
 			foreach($files as $file) {

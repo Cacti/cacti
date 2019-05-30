@@ -262,7 +262,7 @@ function import_package($xmlfile, $profile_id = 1, $remove_orphans = false, $pre
 	/* set new timeout and memory settings */
 	if ($limitex) {
 		ini_set('max_execution_time', '50');
-		ini_set('memory_limit', '384M');
+		ini_set('memory_limit', '-1');
 	}
 
 	$public_key = get_public_key();
@@ -406,7 +406,7 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 	if (!empty($_graph_template_id)) {
 		$previous_data = db_fetch_row_prepared('SELECT *
 			FROM graph_templates
-			WHERE id = ?', 
+			WHERE id = ?',
 			array($_graph_template_id));
 	} else {
 		$previous_data = array();
@@ -438,8 +438,8 @@ function xml_to_graph_template($hash, &$xml_array, &$hash_cache, $hash_version, 
 		FROM graph_templates AS gt
 		INNER JOIN graph_templates_graph AS gtg
 		ON gt.id = gtg.graph_template_id
-		WHERE gt.id = ? 
-		AND gtg.local_graph_id = 0', 
+		WHERE gt.id = ?
+		AND gtg.local_graph_id = 0',
 		array($graph_template_id)));
 
 	if (!empty($_graph_template_id)) {
@@ -731,7 +731,7 @@ function xml_to_data_template($hash, &$xml_array, &$hash_cache, $import_as_new, 
 		INNER JOIN data_template_data AS dtd
 		ON dt.id=dtd.data_template_id
 		WHERE dt.id = ?
-		AND dtd.local_data_id = 0', 
+		AND dtd.local_data_id = 0',
 		array($data_template_id)));
 
 	if (!empty($save['id'])) {
