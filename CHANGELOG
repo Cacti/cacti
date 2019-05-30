@@ -41,6 +41,7 @@ Cacti CHANGELOG
 -issue#2702: sqltable_to_php.php should ignore '--plugin' when '--update'
 -issue#2707: Some pages that have permission errors dont raise proper messages
 -issue#2712: The hard code of set memory_limit need to be removed
+-issue#2713: Function html_split_string() cant handle UTF8 strings properly
 -feature#2538: New global setting to change datasource behaviour when deleting graph
 -feature#2539: New global setting to add permanent unlock of graphs
 -feature#2540: New user setting to forget graph tree history on tab close
@@ -49,7 +50,6 @@ Cacti CHANGELOG
 -feature#2664: Cacti spikekill should have a rrd backup cleanup process
 -feature#2701: Provide option to continue graphing objects that loose their index
 -feature#2704: Make device and template cache global
--feature: Make html_split_string UTF-8 compatible
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
