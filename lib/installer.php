@@ -677,10 +677,13 @@ class Installer implements JsonSerializable {
 				$key_exists = array_key_exists($name, $this->paths);
 				$check = isset($this->paths[$name]['install_check']) ? $this->paths[$name]['install_check'] : 'file_exists';
 				$optional = isset($this->paths[$name]['install_optional']) ? $this->paths[$name]['install_optional'] : false;
+				$blank = isset($this->paths[$name]['install_blank']) ? $this->paths[$name]['install_blank'] : false;
 				log_install_high('paths', sprintf('setPaths(): name: %-25s, key_exists: %-5s, optional: %-5s, check: %s, path: %s', $name, $key_exists, $optional, $check, $path));
 				if ($key_exists) {
 					$should_set = true;
-					if ($check == 'writable') {
+					if ($blank && empty($path)) {
+						// allow this
+					} elseif ($check == 'writable') {
 						$should_set = is_resource_writable(dirname($path) . '/') || $optional;
 						if ($should_set) {
 							$should_set = is_resource_writable($path) || $optional;

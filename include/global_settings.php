@@ -165,7 +165,8 @@ $settings = array(
 			'file_type' => 'ascii',
 			'default' => $config['base_path'] . '/log/cacti.log',
 			'max_length' => '255',
-			'install_check' => 'writable'
+			'install_check' => 'writable',
+			'install_blank' => true
 			),
 		'path_stderrlog' => array(
 			'friendly_name' => __('Poller Standard Error Log Path'),
