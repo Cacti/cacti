@@ -2454,7 +2454,7 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 				INNER JOIN data_template_data AS dtd
 				ON dtd.data_source_profile_id=dsp.id
 				WHERE dtd.local_data_id = ?
-				ORDER BY step ASC',
+				ORDER BY step, steps ASC',
 				array($local_data_id));
 
 			if (cacti_sizeof($data_source_info)) {
