@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-05-26 11:35-0400\n"
-"PO-Revision-Date: 2019-03-31 22:39+0000\n"
-"Last-Translator: Javier Pobeda <javier.pobeda@pm.me>\n"
+"PO-Revision-Date: 2019-06-07 01:33+0000\n"
+"Last-Translator: netniV <netniv@hotmail.com>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core/es-ES/"
 ">\n"
 "Language: es-ES\n"
@@ -6589,11 +6589,11 @@ msgstr ""
 
 #: include/global_arrays.php:358
 msgid "Permission Denied.  You do not have permission to the requested action."
-msgstr ""
+msgstr "Permiso denegado.  No tienes permiso para la acción solicitada."
 
 #: include/global_arrays.php:361
 msgid "Page is not defined.  Therefore, it can not be displayed."
-msgstr ""
+msgstr "La página no está definida. Por lo tanto, no se puede mostrar."
 
 #: include/global_arrays.php:364
 msgid "Unexpected error occurred"
@@ -10499,6 +10499,10 @@ msgid ""
 "a Graph when removing Graphs.  Note: Cacti will not allow the removal of "
 "Data Sources if they are used in other Graphs."
 msgstr ""
+"Cuando esté habilitado, Cacti configurará el botón de opción para eliminar "
+"las fuentes de datos relacionadas de un gráfico al eliminar gráficos. Nota: "
+"Cacti no permitirá la eliminación de fuentes de datos si se utilizan en "
+"otros gráficos."
 
 #: include/global_settings.php:444
 #, fuzzy
@@ -12765,6 +12769,9 @@ msgid ""
 "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  "
 "How long should these backup files be retained?"
 msgstr ""
+"Cuando SpikeKill mata los picos en los gráficos, hace una copia de seguridad "
+"del archivo RRD. ¿Cuánto tiempo se deben conservar estos archivos de copia "
+"de seguridad?"
 
 #: include/global_settings.php:2015
 msgid "Default View Mode"
@@ -12997,6 +13004,8 @@ msgid ""
 "If enabled, Cacti will remember your Tree History between logins and when "
 "you return to the Graphs page."
 msgstr ""
+"Si está habilitado, Cacti recordará su historial de árbol entre los inicios "
+"de sesión y cuando regrese a la página de Gráficos."
 
 #: include/global_settings.php:2215
 msgid "Use Custom Fonts"
@@ -13493,6 +13502,9 @@ msgid ""
 "current Cacti password does not match the new requirements.  Therefore, you "
 "must change your password now."
 msgstr ""
+"Su administrador de Cacti ha forzado contraseñas complejas para los inicios "
+"de sesión y su contraseña actual de Cacti no coincide con los nuevos "
+"requisitos. Por lo tanto, debe cambiar su contraseña ahora."
 
 #: lib/auth.php:2483
 #, php-format
