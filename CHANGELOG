@@ -1,56 +1,55 @@
 Cacti CHANGELOG
 
 1.2.4
--issue#2523: Test email failure on PHP 7.3
--issue#2589: DSStats throws errors when RRDfile has not been created
--issue#2590: Language selection is not working as expected
--issue#2591: Drill down to some pages may be incorrect due to logic issues
--issue#2592: Display graphs from this aggregate can not work
--issue#2593: Can not migrate aggregate to use a template
--issue#2598: Create aggregate without aggregate graph tempate, rrdtools error
--issue#2599: SQL error when create aggregate graph
--issue#2604: SQL error when add a dataquery
--issue#2605: When checking for tables to upgrade, undefined variable $config error occurs
+-issue#2523: Send A Test Email stops working under PHP 7.3
+-issue#2589: Missing RRD file can cause DSSTATS to throw errors
+-issue#2590: When installing, chosen language is sometimes lost
+-issue#2591: Menu selection does not always match selected page/section
+-issue#2592: When viewing an aggregate graph, 'Display graphs from this aggregate' option does always not work
+-issue#2593: Unable to migrate aggregate graphs to matching aggregate template
+-issue#2598: Creating an aggregate graph without associated template causes RRDtool error
+-issue#2599: Creating/Updating an Aggregate Graph to use LINE/STACK's generates invalid SQL statements
+-issue#2604: When adding a dataquery, SQL errors can be generated
+-issue#2605: When installing, checking database tables can cause errors
 -issue#2608: db_update_table() function should not require an engine type or comment
--issue#2609: SQL error if upgrade cacti from pre-1.2.0
+-issue#2609: When updating from earlier than 1.2, timezone column might not exist
 -issue#2610: Data Sources troubleshooter generates warning that each() function is deprecated
--issue#2612: DSStats issuing warnings when RRDtool fails to initialize
+-issue#2612: When RRDtool fails to initialize, DSStats generates lots of warnings
 -issue#2618: ifAdminStatus in snmp_queries/interfaces.xml
 -issue#2621: File paths that accept blanks are not allowing blanks
--issue#2622: Various PHP undefined variable in database.php
--issue#2623: Invalid HTML when draw textarea: form_text_area
--issue#2627: Lost partial log files name in Logs(tab)->File(filter selector)
--issue#2629: Authentication bug on Cacti upgrade
--issue#2632: Automated Network Scans are Not Working
--issue#2635: Multiple Database Sync Issues in v1.2.x
--issue#2638: Support disabling PHP SNMP extension
--issue#2645: The cacti setting 'base_url' may be incorrect for some systems.  Correct it.
+-issue#2622: Various undefined variables generate errors within database.php
+-issue#2623: When using form_text_area(), invalid HTML can be generated
+-issue#2627: Some filenames can be lost in log file selection list
+-issue#2629: When upgrading, ldap library is not loaded properly due to incorrect paths
+-issue#2632: Automated Networks are not being properly replicated to additional pollers
+-issue#2635: When running automation scans, database connection should be forced to central database
+-issue#2638: Support disabling PHP SNMP extension by mhoran
+-issue#2645: Some URLs are incorrectly calculated
 -issue#2649: Automation not creating graphs when there are custom items
--issue#2650: Some PHP Notice like "undefined variables"
--issue#2652: Honor php.ini when php is used in exec() and shell_exec() calls
+-issue#2650: Several undefined variables are generating warnings
 -issue#2662: HRULE objects broken in some cases
--issue#2668: RFC1213 sysDescr trailing parentheses lost
+-issue#2668: Trailing parentheses are removed from the SNMP system description
 -issue#2672: Cacti Install on Windows Fails
 -issue#2676: Skin paper plane not working on iPhone XR
 -issue#2678: Call to undefined function _() in data_queries.php
--issue#2679: Force Complexity Upon Old Passwords issue
--issue#2680: PHP 7.2 supporting to remove deprecated $php_errormsg
+-issue#2679: Users with passwords that do not meet complexity requirements are not redirected to the Change Password page
+-issue#2680: Remove deprecated $php_errormsg usage
 -issue#2689: Increase boost maximum memory limits
--issue#2693: Graph links do not contain proper URL path causing links to fail
+-issue#2693: Graph links do not contain URL path causing links to fail
 -issue#2698: Avoid duplicated icon in the main.js of all themes
--issue#2699: Login Options: "Show the page that user pointed their browser to" Not Working
--issue#2702: sqltable_to_php.php should ignore '--plugin' when '--update'
+-issue#2699: Login option "Show the page that user pointed their browser to" does not work properly
+-issue#2702: sqltable_to_php.php does not always generate valid table data arrays
 -issue#2707: Some pages that have permission errors dont raise proper messages
--issue#2712: The hard code of set memory_limit need to be removed
--issue#2713: Function html_split_string() cant handle UTF8 strings properly
--feature#2538: New global setting to change datasource behaviour when deleting graph
--feature#2539: New global setting to add permanent unlock of graphs
--feature#2540: New user setting to forget graph tree history on tab close
--feature#2646: Allow application of automation rules on CLI
+-issue#2712: PHP memory should be unlimited in scripts that need more memory than the default
+-issue#2713: SNMP System Description with UTF8 strings properly are not properly parsed
+-feature#2538: Allow users to change default method of removing data sources when deleting graphs
+-feature#2539: Allow users to set the default graph lock status
+-feature#2540: Allow users to enable/disable graph tree history
+-feature#2646: Allow application of automation rules on CLI by rb83
 -feature#2654: New hook to notify plugins of user profile changes ('auth_profile_update_data')
--feature#2664: Cacti spikekill should have a rrd backup cleanup process
+-feature#2664: Add option to purge spikekill backups
 -feature#2701: Provide option to continue graphing objects that loose their index
--feature#2704: Make device and template cache global
+-feature#2704: Device and template cache do not refresh properly
 
 1.2.3
 -issue#1063: Tree View does not display the last item correctly under 'Modern' theme
