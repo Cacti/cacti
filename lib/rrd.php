@@ -2423,7 +2423,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	}
 
 	/* replace query variables in graph elements */
-	if (strpos($txt_graph_item, '|input_') !== false) {
+	if (strpos($txt_graph_item, '|input_') !== false && isset($graph_item['local_data_id'])) {
 		return substitute_data_input_data($txt_graph_item, $graph, $graph_item['local_data_id']);
 	} else {
 		return $txt_graph_item;

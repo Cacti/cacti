@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+develop
+-issue#2721: Undefined index 'local_data_id' in lib/rrd.php when replacing '|input_xxxx|' strings
+
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
 -issue#2589: Missing RRD file can cause DSSTATS to throw errors
