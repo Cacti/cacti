@@ -627,10 +627,11 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
 	/* setup the poller items array */
-	$poller_items   = array();
-	$local_data_ids = array();
-	$hosts          = array();
-	$sql_where      = '';
+	$poller_items    = array();
+	$local_data_ids  = array();
+	$hosts           = array();
+	$template_fields = array();
+	$sql_where       = '';
 
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
