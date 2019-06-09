@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.5
 -issue#2721: When replacing '|input_xxxx|' strings, undefined index can occur
+-issue#2722: Calls to _db_replace() are not consistent resulting in warnings
 -issue#2723: Undefined variable message raised by push_out_host() in lib/utility.php
 -issue#2724: In PHP strict standards mode, rrdtool_function_graph() generates ByRef message for HRULE items
 -issue#2726: Record rule used during automation and provide link when viewed via clog
