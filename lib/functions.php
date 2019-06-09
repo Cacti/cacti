@@ -1488,7 +1488,7 @@ function prepare_validate_result(&$result) {
  *  @arg $string - (char) the string to be evaluated
  *  @returns - either the numeric value or false if not numeric
 */
-function strip_alpha(&$string) {
+function strip_alpha($string) {
 	/* strip all non numeric data */
 	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
 
