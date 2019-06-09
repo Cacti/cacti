@@ -657,6 +657,7 @@ function clog_get_regex_array() {
 			8  => array('name' => 'Graphs', 'regex' => '( Graphs\[)([, \d]+)(\])',   'func' => 'clog_regex_graphs'),
 			9  => array('name' => 'User',   'regex' => '( User\[)([, \d]+)(\])',     'func' => 'clog_regex_users'),
 			10 => array('name' => 'User',   'regex' => '( Users\[)([, \d]+)(\])',    'func' => 'clog_regex_users'),
+			11 => array('name' => 'Rule',   'regex' => '( Rule\[)([, \d]+)(\])',   	 'func' => 'clog_regex_rule'),
 		);
 
 		$regex_array = api_plugin_hook_function('clog_regex_array',$regex_array);
@@ -960,5 +961,32 @@ function clog_regex_users($matches) {
 			$result .= $matches[3];
 		}
 	}
+	return $result;
+}
+
+function clog_regex_rule($matches) {
+	global $config;
+
+	$result = $matches[0];
+
+	$dev_ids = explode(',',str_replace(" ","",$matches[2]));
+	if (cacti_sizeof($dev_ids)) {
+		$result = '';
+		$rules = db_fetch_assoc('SELECT id, name
+			FROM automation_graph_rules
+			WHERE id in (' . implode(',',$dev_ids) . ')');
+
+		$ruleNames = array();
+		if (cacti_sizeof($rules)) {
+			foreach ($rules as $rule) {
+				$ruleNames[$rule['id']] = html_escape($rule['name']);
+			}
+		}
+
+		foreach ($dev_ids as $rule_id) {
+			$result .= $matches[1].'<a href=\'' . html_escape($config['url_path'] . 'automation_graph_rules.php?action=edit&id=' . $rule_id) . '\'>' . (isset($ruleNames[$rule_id]) ? $ruleNames[$rule_id]:$rule_id) . '</a>' . $matches[3];
+		}
+	}
+
 	return $result;
 }
