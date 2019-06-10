@@ -1039,24 +1039,41 @@ function utilities_view_logfile() {
 						<?php print __('File');?>
 					</td>
 					<td>
-						<select id='filename' onChange='applyFilter()'>
+						<select id='filename'>
 							<?php
-							$logFileArray = clog_get_logfiles();
+							$configLogPath = read_config_option('path_cactilog');
+							$configLogBase = basename($configLogPath);
+							$selectedFile  = basename(get_nfilter_request_var('filename'));
 
-							if (cacti_sizeof($logFileArray)) {
-								foreach ($logFileArray as $logFile) {
+							if ($configLogPath == '') {
+								$logPath = $config['base_path'] . '/log/';
+							} else {
+								$logPath = dirname($configLogPath);
+							}
+
+							if (is_readable($logPath)) {
+								$files = scandir($logPath);
+							} else {
+								$files = array('cacti.log');
+							}
+
+							if (cacti_sizeof($files)) {
+								foreach($files as $logFile) {
+									if (in_array($logFile, array('.', '..', '.htaccess'))) {
+										continue;
+									}
+
+									if (strpos($logFile, $configLogBase) === false) {
+										continue;
+									}
+
 									print "<option value='" . $logFile . "'";
 
-									if (get_nfilter_request_var('filename') == $logFile) {
+									if ($selectedFile == $logFile) {
 										print ' selected';
 									}
 
-									$logParts = explode('-', $logFile);
-
-									$logDate = count($logParts) < 2 ? '' : $logParts[1] . (isset($logParts[2]) ? '-' . $logParts[2]:'');
-									$logName = $logParts[0];
-
-									print '>' . $logName . ($logDate != '' ? ' [' . substr($logDate,4) . ']':'') . "</option>\n";
+									print '>' . $logFile . "</option>\n";
 								}
 							}
 							?>
