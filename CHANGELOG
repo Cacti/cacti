@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#2722: Calls to _db_replace() are not consistent resulting in warnings
 -issue#2723: Undefined variable message raised by push_out_host() in lib/utility.php
 -issue#2724: In PHP strict standards mode, rrdtool_function_graph() generates ByRef message for HRULE items
+-issue#2725: When viewing logs in utilities, filenames should be limited the same as clog
 -issue#2726: Record rule used during automation and provide link when viewed via clog
 -issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
 
