@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.3-dev
+-feature#1523: Value above RRD maximum value
+
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
 -issue#2589: Missing RRD file can cause DSSTATS to throw errors
