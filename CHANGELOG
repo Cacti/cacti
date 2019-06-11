@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
 -feature#2728: Update phpseclib to version 2.0.17
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
+-feature#2730: Update JavaScript library jstree.js to version 3.3.8
 
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
