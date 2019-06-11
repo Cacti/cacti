@@ -8,6 +8,7 @@ Cacti CHANGELOG
 --issue#2725: When viewing logs in utilities, filenames should be limited the same as clog
 -issue#2726: Record rule used during automation and provide link when viewed via clog
 -issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
+-feature: Update JavaScript library jstree.js to version 3.3.8
 
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
