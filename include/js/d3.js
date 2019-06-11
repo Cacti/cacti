@@ -1,11 +1,11 @@
-// https://d3js.org v5.9.1 Copyright 2019 Mike Bostock
+// https://d3js.org v5.9.2 Copyright 2019 Mike Bostock
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 typeof define === 'function' && define.amd ? define(['exports'], factory) :
 (factory((global.d3 = global.d3 || {})));
 }(this, (function (exports) { 'use strict';
 
-var version = "5.9.1";
+var version = "5.9.2";
 
 function ascending(a, b) {
   return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
@@ -6755,8 +6755,8 @@ function simulation(nodes) {
   function initializeNodes() {
     for (var i = 0, n = nodes.length, node; i < n; ++i) {
       node = nodes[i], node.index = i;
-      if (!isNaN(node.fx)) node.x = node.fx;
-      if (!isNaN(node.fy)) node.y = node.fy;
+      if (node.fx != null) node.x = node.fx;
+      if (node.fy != null) node.y = node.fy;
       if (isNaN(node.x) || isNaN(node.y)) {
         var radius = initialRadius * Math.sqrt(i), angle = i * initialAngle;
         node.x = radius * Math.cos(angle);
