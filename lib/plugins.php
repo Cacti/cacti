@@ -731,7 +731,7 @@ function api_plugin_register_hook($plugin, $hook, $function, $file, $enable = fa
 		}
 
 		db_execute_prepared('INSERT INTO plugin_hooks
-			(name, hook, function, file, status)
+			(name, hook, `function`, file, status)
 			VALUES (?, ?, ?, ?, ?)',
 			array($plugin, $hook, $function, $file, $status));
 	} else {
