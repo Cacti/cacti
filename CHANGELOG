@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#2721: When replacing '|input_xxxx|' strings, undefined index can occur
 -issue#2723: Undefined variable message raised by push_out_host() in lib/utility.php
 -issue#2724: In PHP strict standards mode, rrdtool_function_graph() generates ByRef message for HRULE items
+-issue#2736: Correct Cacti to handle new MySQL 8.0.1 reserved word `function`
 
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
