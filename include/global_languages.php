@@ -116,7 +116,6 @@ if ($cacti_locale != '') {
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue)) {
-	$cacti_textdomains['cacti']['path2locales']   = $config['base_path'] . '/locales';
 	$cacti_textdomains['cacti']['path2catalogue'] = $path2catalogue;
 } else {
 	load_fallback_procedure();
@@ -128,7 +127,7 @@ $plugins = db_fetch_assoc('SELECT `directory`
 	FROM `plugin_config`
 	ORDER BY id');
 
-if ($plugins && cacti_sizeof($plugins) > 0) {
+if ($plugins && cacti_sizeof($plugins)) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 
@@ -139,7 +138,6 @@ if ($plugins && cacti_sizeof($plugins) > 0) {
 		}
 
 		if (file_exists($path2catalogue)) {
-			$cacti_textdomains[$plugin]['path2locales'] = $config['base_path'] . '/plugins/' . $plugin . '/locales';
 			$cacti_textdomains[$plugin]['path2catalogue'] = $path2catalogue;
 		}
 	}
@@ -445,7 +443,7 @@ function load_i18n_fallback_wrappers() {
 
 	function __() {
 		global $l10n;
-	
+
 		$args = func_get_args();
 		$num  = func_num_args();
 
