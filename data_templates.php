@@ -150,7 +150,7 @@ function form_save() {
 
 				$_SESSION['sess_error_fields']['rrd_maximum'] = 'rrd_maximum';
 
-				header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : $data_template_rrd_id)));
+				header('Location: data_templates.php?header=false&action=template_edit&id=' . (empty($data_template_id) ? get_request_var('data_template_id') : $data_template_id) . (isempty_request_var('current_rrd') ? '' : '&view_rrd=' . (get_nfilter_request_var('current_rrd') ? get_nfilter_request_var('current_rrd') : get_request_var('data_template_rrd_id'))));
 				exit;
 			}
 		}

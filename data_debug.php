@@ -182,7 +182,7 @@ function form_actions() {
 		if (isset_request_var('save_list')) {
 			if (get_request_var('drp_action') == '2') { /* delete */
 				debug_delete($selected_items);
-				header('Location: data_debug.php?header=false');
+				header('Location: data_debug.php?header=false&debug=-1');
 			} elseif (get_request_var('drp_action') == '1') { /* Rerun */
 				debug_rerun($selected_items);
 				header('Location: data_debug.php?header=false&debug=1');
@@ -313,7 +313,7 @@ function validate_request_vars() {
 			),
 		'debug' => array(
 			'filter' => FILTER_VALIDATE_INT,
-			'default' => '1',
+			'default' => '-1',
 			'pageset' => true,
 			)
 	);
@@ -935,7 +935,13 @@ function data_debug_filter() {
 		$host_where = '';
 	}
 
-	html_start_box(__('Data Source Troubleshooter [ %s ]', (empty($host['hostname']) ? (get_request_var('host_id') == -1 ? __('All Devices') :__('No Device')) : html_escape($host['hostname']))), '100%', '', '3', 'center', '');
+	if (get_request_var('host_id') > 0) {
+		$hostname = db_fetch_cell_prepared('SELECT CONCAT(description, " ( ", hostname, " )") FROM host WHERE id = ?', array(get_request_var('host_id')));
+	} else {
+		$hostname = '';
+	}
+
+	html_start_box(__('Data Source Troubleshooter [ %s ]', (empty($hostname) ? (get_request_var('host_id') == -1 ? __('All Devices') :__('No Device')) : html_escape($hostname))), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even noprint'>

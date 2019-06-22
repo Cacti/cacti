@@ -1351,7 +1351,7 @@ function replicate_in() {
 		)
 	);
 
-	api_plugin_hook_function('replicate_in', $remote_poller_id);
+	api_plugin_hook_function('replicate_in');
 }
 
 function replicate_out_table($conn, &$data, $table, $remote_poller_id) {

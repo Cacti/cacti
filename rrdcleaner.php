@@ -341,7 +341,7 @@ function list_rrd() {
 
 	print $nav;
 
-	html_start_box('', $width, '', '3', 'center', '');
+	html_start_box('', '100%', '', '3', 'center', '');
 
 	$display_text = array(
 		'name'               => array( __('RRD File Name'), 'ASC'),

@@ -738,7 +738,7 @@ function form_actions() {
 				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
 				exit;
 			} elseif (get_request_var('drp_action') == '8') { // automation
-				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -883,10 +883,10 @@ function form_actions() {
 				if ($ds_preselected_delete == 'on') {
 	                                $delete_radio_button_1_state = '2';
                                 	$delete_radio_button_2_state = '1';
-				} else { 
+				} else {
 					$delete_radio_button_1_state = '1';
-					$delete_radio_button_2_state = '2';			
-				}                                 
+					$delete_radio_button_2_state = '2';
+				}
 
 				form_radio_button('delete_type', '2', $delete_radio_button_1_state , __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
 				print '<br>';
@@ -1331,7 +1331,7 @@ function graph_edit() {
                         	$locked = false;
                         } else {
 	                        $locked = true;
-                        }                        
+                        }
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
 			$locked = false;
