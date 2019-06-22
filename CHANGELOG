@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#2724: In PHP strict standards mode, rrdtool_function_graph() generates ByRef message for HRULE items
 -issue#2725: When viewing logs in utilities, filenames should be limited the same as clog
 -issue#2726: Record rule used during automation and provide link when viewed via clog
+-issue#2732: Strip domain name from basic authentication when its present
 -issue#2734: Suggestion Cacti-1.2.4: Displaying non-English label names on graphs
 -issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
 -issue#2735: Mouse cursor should be default if column is not sortable

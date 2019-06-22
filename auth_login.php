@@ -50,6 +50,11 @@ if (read_config_option('auth_method') == '2') {
 		auth_display_custom_error_message(__('Web Basic Authentication configured, but no username was passed from the web server. Please make sure you have authentication enabled on the web server.'));
 		exit;
 	}
+
+	if (strpos($username, '@') !== false) {
+		$upart = explode('@', $username);
+		$username = $upart[0];
+	}
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
