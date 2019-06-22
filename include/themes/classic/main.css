@@ -1415,7 +1415,6 @@ legend {
 .tableHeader th {
 	color: #FFFFFF;
 	font-weight: bold;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	border-right: 1px groove #EFEFEF;
@@ -1423,6 +1422,10 @@ legend {
 	line-height: 18px;
 	background-color: #6D88AD !important;
 	padding: 2px;
+}
+
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
 .tableHeader th:last-child {

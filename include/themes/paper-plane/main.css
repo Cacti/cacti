@@ -1482,15 +1482,14 @@ tr>td.textInfo.right {
 	border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-th.sortable {
-	cursor: pointer;
+.tableHeader th.sortable {
+	cursor: pointer !important;
 	line-height: 10px;
 }
 
 .tableHeader th, .tableHeader td {
 	color: #9d9d9d;
 	font-weight: 600;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	text-transform: none;

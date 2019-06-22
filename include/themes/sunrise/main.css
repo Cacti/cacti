@@ -1505,8 +1505,8 @@ table.cactiTable {
 	font-weight: 700;
 }
 
-th.sortable {
-	cursor: pointer;
+.tableHeader th.sortable {
+	cursor: pointer !important;
 	line-height: 10px;
 }
 
@@ -1514,7 +1514,6 @@ th.sortable {
 	border-color: #333;
 	color: #9d9d9d;
 	font-weight: 600;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 11px;

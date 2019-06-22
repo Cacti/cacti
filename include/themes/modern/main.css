@@ -1586,23 +1586,22 @@ legend {
 	height: 24px;
 }
 
-th.sortable {
-	cursor: pointer;
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
-th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
+.tableHeader th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 	background: rgba(138,155,107,1);
 	background: linear-gradient(to bottom, rgba(138,155,107,1) 0%, rgba(51,79,28,1) 100%);
 }
 
-th.secondarySort {
+.tableHeader th.secondarySort {
 	background: rgba(158,175,127,1);
 	background: linear-gradient(to bottom, rgba(158,175,127,1) 0%, rgba(71,99,48,1) 100%);
 }
 
 .tableHeader th, .tableHeader td {
 	color: snow;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 11px;

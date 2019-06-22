@@ -1360,12 +1360,15 @@ th.sortable {
 
 .tableHeader th {
 	color: white;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 11px;
 	font-weight: bold;
 	padding: 2px;
+}
+
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
 .tableHeader th div {
