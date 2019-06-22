@@ -40,6 +40,10 @@ th {
 	white-space: nowrap;
 	height: 20px;
 	line-height: 20px;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 img {
