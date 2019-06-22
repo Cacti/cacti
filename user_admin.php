@@ -2162,7 +2162,7 @@ function user_edit() {
 		break;
 	default:
 		if (api_plugin_hook_function('user_admin_run_action', get_request_var('tab'))) {
-			user_realms_edit();
+			user_realms_edit($header_label);
 		}
 		break;
 	}

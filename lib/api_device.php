@@ -46,7 +46,7 @@ function api_device_remove($device_id) {
 	api_plugin_hook_function('device_remove', array($device_id));
 
 	if ($poller_id == 1) {
-		db_execute_prepared('DELETE FROM host         WHERE      id = ?', array($device_id));
+		db_execute_prepared('DELETE FROM host WHERE id = ?', array($device_id));
 	} else {
 		db_execute_prepared('UPDATE host SET deleted = "on" WHERE id = ?', array($device_id));
 	}
@@ -73,7 +73,7 @@ function api_device_remove($device_id) {
 	);
 
 	if (sizeof($graphs)) {
-		api_delete_graphs($graphs);
+		api_delete_graphs($graphs, 2);
 	}
 
 	clear_cached_allowed_types();

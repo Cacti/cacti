@@ -111,7 +111,7 @@ class CactiTableFilter {
 	public function get_filter_row($index) {
 		if ($index === false ) {
 			return false;
-		} elseif (array_key_exists($this->filter_array['rows'][$index])) {
+		} elseif (array_key_exists($index, $this->filter_array['rows'])) {
 			return $this->filter_array['rows'][$index];
 		} else {
 			return false;

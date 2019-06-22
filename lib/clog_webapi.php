@@ -377,6 +377,8 @@ function filter_sort($a, $b) {
 }
 
 function clog_get_logfiles() {
+	global $config;
+
 	$stdFileArray = $stdLogFileArray = $stdErrFileArray = array();
 	$configLogPath = read_config_option('path_cactilog');
 	$configLogBase = basename($configLogPath);
