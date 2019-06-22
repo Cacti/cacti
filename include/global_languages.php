@@ -63,6 +63,9 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 	$user_locale = apply_locale(read_user_i18n_setting('user_language'));
 }
 
+/* allow RRDtool to display i18n */
+setlocale(LC_CTYPE, str_replace('-', '_', $user_locale) . '.UTF-8');
+
 if ($user_locale !== false && $user_locale !== '') {
 	$_SESSION['sess_user_language'] = $user_locale;
 }
