@@ -678,13 +678,17 @@ function applySkin() {
 
 	$('i, th, img, input, label, select, button, .drillDown, .checkboxSlider')
 	.tooltip({
-		closed: true
+		close: true
 	})
 	.on('focus', function() {
-		$(this).tooltip('close');
+		if ($(this).tooltip('instance')) {
+			$(this).tooltip('close');
+		}
 	})
 	.on('click', function() {
-		$(this).tooltip('close');
+		if ($(this).tooltip('instance')) {
+			$(this).tooltip('close');
+		}
 	});
 
 	$(document).tooltip({
