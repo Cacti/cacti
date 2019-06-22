@@ -62,6 +62,10 @@ td, th {
 
 th {
 	white-space: nowrap;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 img {
