@@ -1007,7 +1007,21 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
+		return false;
+	}
 
+	/* don't create a graph for a bad template */
+	if (empty($graph_template_id)) {
+		raise_message('bad_template', __('Attempting to Create Graph from Non-Template'), MESSAGE_LEVEL_ERROR);
+		cacti_log('Attempting to Create Graph from Non-Template', false, 'AUTOM8');
+		return false;
+	}
+
+	/* don't create a graph from a remove template */
+	$gt = db_fetch_cell_prepared('SELECT id FROM graph_template WHERE id = ?', array($graph_template_id));
+	if (empty($gt)) {
+		raise_message('bad_template', __('Attempting to Create Graph from Removed Graph Template'), MESSAGE_LEVEL_ERROR);
+		cacti_log('Attempting to Create Graph from Removed Graph Template ' . $graph_template_id, false, 'AUTOM8');
 		return false;
 	}
 
