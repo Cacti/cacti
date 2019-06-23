@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -feature#2728: Update phpseclib to version 2.0.17
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8
+-feature#2754: Allow Devices, Graphs and Data Sources to be searched by ID
 
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3

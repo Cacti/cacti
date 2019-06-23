@@ -1918,7 +1918,8 @@ function graph_management() {
 	$sql_where = '';
 	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gt.name RLIKE '" . get_request_var('rfilter') . "')";
+			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR gl.id = '" . get_request_var('rfilter') . "')";
 	}
 
 	if (get_request_var('host_id') == '-1') {
