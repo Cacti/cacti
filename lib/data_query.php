@@ -1989,11 +1989,31 @@ function update_data_query_sort_cache_by_host($host_id) {
    @returns - a string containing containing best data query index type. this will be one of the
 	valid input field names as specified in the data query xml file */
 function get_best_data_query_index_type($host_id, $data_query_id) {
-	return db_fetch_cell_prepared('SELECT sort_field
+	$index_type = db_fetch_cell_prepared('SELECT sort_field
 		FROM host_snmp_query
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($host_id, $data_query_id));
+
+	if ($index_type == '') {
+		$raw_xml = get_data_query_array($data_query_id);
+
+		if (isset($raw_xml['index_order'])) {
+			$order = explode(':', $raw_xml['index_order']);
+
+			return $order[0];
+		} elseif (sizeof($raw_xml['fields'])) {
+			foreach($raw_xml['fields'] as $key => $attribs) {
+				break;
+			}
+
+			return $key;
+		} else {
+			return false;
+		}
+	}
+
+	return $index_type;
 }
 
 /* get_script_query_path - builds the complete script query executable path
