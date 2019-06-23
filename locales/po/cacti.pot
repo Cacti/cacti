@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-22 14:20-0400\n"
+"POT-Creation-Date: 2019-06-23 10:10-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4670,8 +4670,8 @@ msgstr ""
 msgid "All Graphs & Templates"
 msgstr ""
 
-#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
-#: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
+#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:58
+#: lib/graphs.php:67 lib/html.php:184 lib/html_graph.php:158
 #: lib/html_tree.php:962
 msgid "Not Templated"
 msgstr ""
@@ -11995,7 +11995,7 @@ msgstr ""
 msgid "Objects"
 msgstr ""
 
-#: lib/api_automation.php:760 lib/graphs.php:71 lib/graphs.php:88
+#: lib/api_automation.php:760 lib/graphs.php:79 lib/graphs.php:103
 msgid "Not Found"
 msgstr ""
 
@@ -12892,12 +12892,16 @@ msgstr ""
 msgid "%s %s"
 msgstr ""
 
-#: lib/graphs.php:46
+#: lib/graphs.php:51
 msgid "Aggregated Device"
 msgstr ""
 
-#: lib/graphs.php:46
+#: lib/graphs.php:59
 msgid "Not Applicable"
+msgstr ""
+
+#: lib/graphs.php:86
+msgid "Damaged Graph"
 msgstr ""
 
 #: lib/html.php:178 settings.php:455

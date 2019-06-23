@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.5
+-issue#2573: Associated graph template for Data Query Disappears
 -issue#2719: Empty graphs being created automatically but we can't delete them
 -issue#2721: When replacing '|input_xxxx|' strings, undefined index can occur
 -issue#2722: Calls to _db_replace() are not consistent resulting in warnings
