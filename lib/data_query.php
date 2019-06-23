@@ -539,6 +539,11 @@ function get_data_query_array($snmp_query_id) {
 
 		$xml_data = xml2array($data);
 
+		/* snmp queries doe not require index_order
+		 * get it from the fields if not set
+		 */
+		calculate_or_set_index_order($raw_data);
+
 		/* store the array value to the global array for future reference */
 		$data_query_xml_arrays[$snmp_query_id] = $xml_data;
 	}
@@ -1673,6 +1678,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	/* in case no unique index is available, fallback to first field in XML */
 	if ($sort_cache['sort_field'] == '') {
 		$snmp_queries = get_data_query_array($data_query_id);
+
 		if (cacti_sizeof($snmp_queries) && isset($snmp_queries['index_order'])) {
 			$i = explode(':', $snmp_queries['index_order']);
 			if (cacti_sizeof($i) > 0) {
@@ -1735,6 +1741,17 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 		array($host_id, $data_query_id));
 
 	return substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $data_query_index);
+}
+
+function calculate_or_set_index_order(&$raw_xml) {
+	if (!isset($raw_xml['index_order']) && isset($raw_xml['fields']) && is_array($raw_xml['fields'])) {
+		foreach($raw_xml['fields'] as $name => $attribs) {
+			if (isset($attribs['source']) && $attribs['source'] == 'index') {
+				$raw_xml['index_order'] = $name;
+				break;
+			}
+		}
+	}
 }
 
 /* get_ordered_index_type_list - builds an ordered list of data query index types that are
