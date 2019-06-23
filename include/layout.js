@@ -661,11 +661,11 @@ function applySkin() {
 	setupButtonStyle();
 
 	// Debug message actions
-	$('table.debug').off('click').on('click', function() {
-		if ($(this).find('table').is(':visible')) {
-			$(this).find('table').slideUp('fast');
+	$('table.debug tr:nth-child(1)').off('click').on('click', function() {
+		if ($(this).parent().find('table').is(':visible')) {
+			$(this).parent().find('table').slideUp('fast');
 		} else {
-			$(this).find('table').slideDown('fast');
+			$(this).parent().find('table').slideDown('fast');
 		}
 	});
 
