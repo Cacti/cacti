@@ -663,14 +663,14 @@ function host_edit() {
 						<a id='dbghide' class='fa fa-times' href='#'><?php print __('Hide');?></a>
 					</span>
 				</div>
+				<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
+					<tr class='tableRow'>
+						<td class='debug'>
+							<span><?php print debug_log_return('data_query');?></span>
+						</td>
+					</tr>
+				</table>
 			</div>
-			<table class='cactiTable' id='clipboardData<?php print $dbg_copy_uid;?>'>
-				<tr class='tableRow'>
-					<td class='debug'>
-						<span><?php print debug_log_return('data_query');?></span>
-					</td>
-				</tr>
-			</table>
 		</div>
 		<?php
 	}
