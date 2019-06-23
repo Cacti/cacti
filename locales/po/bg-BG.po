@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-23 10:10-0400\n"
+"POT-Creation-Date: 2019-06-23 11:13-0400\n"
 "PO-Revision-Date: 2019-03-10 13:29-0400\n"
 "Last-Translator: Patrick Rademaker\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 2.2.1\n"
 
-#: about.php:29 include/global_arrays.php:2410 lib/html.php:2304
+#: about.php:29 include/global_arrays.php:2413 lib/html.php:2304
 msgid "About Cacti"
 msgstr "За cacti"
 
@@ -120,7 +120,7 @@ msgstr ""
 #: data_sources.php:1053 data_templates.php:34 data_templates.php:661
 #: gprint_presets.php:28 graph_templates.php:34 graph_templates.php:468
 #: graphs.php:48 host.php:40 host_templates.php:32 host_templates.php:502
-#: host_templates.php:559 include/global_arrays.php:1466
+#: host_templates.php:559 include/global_arrays.php:1469
 #: include/global_settings.php:238 lib/api_automation.php:1322
 #: lib/api_automation.php:1384 lib/api_automation.php:1452 lib/html.php:1165
 #: lib/html_form.php:1249 lib/html_reports.php:1423 links.php:28
@@ -262,7 +262,7 @@ msgstr ""
 "един и същ шаблон на графиката."
 
 #: aggregate_graphs.php:383 aggregate_graphs.php:431 aggregate_graphs.php:477
-#: auth_changepassword.php:331 auth_profile.php:443 automation_networks.php:400
+#: auth_changepassword.php:337 auth_profile.php:443 automation_networks.php:400
 #: automation_snmp.php:255 graphs.php:1105 graphs.php:1155 graphs.php:1158
 #: graphs.php:1200 include/auth.php:258 lib/api_aggregate.php:1479
 #: lib/api_aggregate.php:1494 lib/html_form.php:1269 lib/html_utility.php:222
@@ -545,8 +545,8 @@ msgstr "Търсене"
 #: aggregate_graphs.php:1499 color_templates.php:561 data_sources.php:1606
 #: data_sources.php:1734 graph_view.php:455 graph_view.php:650
 #: graph_view.php:699 graphs.php:1894 graphs.php:2011 host.php:1565
-#: include/global_arrays.php:875 include/global_arrays.php:1082
-#: include/global_arrays.php:1826 lib/api_automation.php:281 lib/html.php:1555
+#: include/global_arrays.php:878 include/global_arrays.php:1085
+#: include/global_arrays.php:1829 lib/api_automation.php:281 lib/html.php:1555
 #: lib/html.php:1557 lib/html.php:1635 lib/html_graph.php:209
 #: lib/html_tree.php:1007 lib/html_tree.php:1318 tree.php:789 tree.php:1988
 #: user_admin.php:1004 user_admin.php:1269 user_admin.php:2620
@@ -736,14 +736,14 @@ msgid " [ Custom Graphs List Applied - Clear to Reset ]"
 msgstr "[Приложен графичен списък на графиките - Филтър FROM списък]"
 
 #: aggregate_graphs.php:1462 aggregate_graphs.php:1570
-#: include/global_arrays.php:2536
+#: include/global_arrays.php:2539
 #, fuzzy
 msgid "Aggregate Graphs"
 msgstr "Обобщени графики"
 
 #: aggregate_graphs.php:1477 data_debug.php:955 data_sources.php:1346
 #: graph_view.php:612 graphs.php:1844 host.php:1472
-#: include/global_arrays.php:2682 include/global_settings.php:514
+#: include/global_arrays.php:2685 include/global_settings.php:514
 #: lib/api_automation.php:441 lib/html_graph.php:153 lib/html_tree.php:957
 #: rrdcleaner.php:351 user_admin.php:2598 user_admin.php:2791
 #: user_group_admin.php:2172 user_group_admin.php:2280 utilities.php:1660
@@ -775,9 +775,9 @@ msgstr "Всички"
 #: data_sources.php:1351 data_sources.php:1661 data_templates.php:1046
 #: graphs.php:1456 graphs.php:1465 graphs.php:1849 graphs_items.php:332
 #: graphs_items.php:444 host.php:1049 host.php:1060 host.php:1442 host.php:1477
-#: include/global_arrays.php:449 include/global_arrays.php:507
-#: include/global_arrays.php:590 include/global_arrays.php:775
-#: include/global_arrays.php:1553 include/global_form.php:544
+#: include/global_arrays.php:452 include/global_arrays.php:510
+#: include/global_arrays.php:593 include/global_arrays.php:778
+#: include/global_arrays.php:1556 include/global_form.php:544
 #: include/global_form.php:850 include/global_form.php:858
 #: include/global_form.php:866 include/global_form.php:904
 #: include/global_form.php:911 include/global_form.php:937
@@ -856,14 +856,14 @@ msgid "Aggregate Template [new]"
 msgstr "Агрегиран шаблон [нов]"
 
 #: aggregate_templates.php:554 aggregate_templates.php:653
-#: include/global_arrays.php:2518
+#: include/global_arrays.php:2521
 #, fuzzy
 msgid "Aggregate Templates"
 msgstr "Агрегирани шаблони"
 
 #: aggregate_templates.php:567 automation_templates.php:400
 #: automation_templates.php:483 color_templates.php:562
-#: include/global_arrays.php:884 include/global_arrays.php:946
+#: include/global_arrays.php:887 include/global_arrays.php:949
 #: lib/installer.php:2274 user_admin.php:2894 user_group_admin.php:2383
 msgid "Templates"
 msgstr "Шаблони"
@@ -905,8 +905,8 @@ msgstr "Deletable"
 msgid "Graphs Using"
 msgstr "Използване на графики"
 
-#: aggregate_templates.php:665 include/global_arrays.php:840
-#: include/global_arrays.php:1209 include/global_form.php:1351
+#: aggregate_templates.php:665 include/global_arrays.php:843
+#: include/global_arrays.php:1212 include/global_form.php:1351
 #: include/global_form.php:1582 lib/html_reports.php:668 tree.php:1651
 #, fuzzy
 msgid "Graph Template"
@@ -917,22 +917,22 @@ msgstr "Шаблони за елементи на графиката"
 msgid "No Aggregate Templates Found"
 msgstr "Не са намерени общи шаблони"
 
-#: auth_changepassword.php:125
+#: auth_changepassword.php:131
 #, fuzzy
 msgid "You cannot use a previously entered password!"
 msgstr "Не можете да използвате вече въведена парола!"
 
-#: auth_changepassword.php:132
+#: auth_changepassword.php:138
 #, fuzzy
 msgid "Your new passwords do not match, please retype."
 msgstr "Новите ви пароли не съвпадат, моля, въведете отново."
 
-#: auth_changepassword.php:139
+#: auth_changepassword.php:145
 #, fuzzy
 msgid "Your current password is not correct. Please try again."
 msgstr "Текущата ви парола не е правилна. Моля, опитайте отново."
 
-#: auth_changepassword.php:146
+#: auth_changepassword.php:152
 #, fuzzy
 msgid ""
 "Your new password cannot be the same as the old password. Please try again."
@@ -940,100 +940,100 @@ msgstr ""
 "Новата ви парола не може да бъде същата като старата парола. Моля, опитайте "
 "отново."
 
-#: auth_changepassword.php:249
+#: auth_changepassword.php:255
 #, fuzzy
 msgid "Forced password change"
 msgstr "Смяна на принудителната парола"
 
-#: auth_changepassword.php:253
+#: auth_changepassword.php:259
 #, fuzzy
 msgid "Password requirements include:"
 msgstr "Изискванията за пароли включват:"
 
-#: auth_changepassword.php:257
+#: auth_changepassword.php:263
 #, fuzzy, php-format
 msgid "Must be at least %d characters in length"
 msgstr "Трябва да има дължина поне% d знака"
 
-#: auth_changepassword.php:261
+#: auth_changepassword.php:267
 #, fuzzy
 msgid "Must include mixed case"
 msgstr "Трябва да включва смесен случай"
 
-#: auth_changepassword.php:265
+#: auth_changepassword.php:271
 #, fuzzy
 msgid "Must include at least 1 number"
 msgstr "Трябва да включва поне 1 номер"
 
-#: auth_changepassword.php:269
+#: auth_changepassword.php:275
 #, fuzzy
 msgid "Must include at least 1 special character"
 msgstr "Трябва да включва поне 1 специален знак"
 
-#: auth_changepassword.php:273
+#: auth_changepassword.php:279
 #, fuzzy, php-format
 msgid "Cannot be reused for %d password changes"
 msgstr "Не може да се използва повторно за% d промени в паролата"
 
-#: auth_changepassword.php:284 auth_changepassword.php:291
+#: auth_changepassword.php:290 auth_changepassword.php:297
 #: include/global_form.php:1499 lib/functions.php:2357
 msgid "Change Password"
 msgstr "Промяна на паролата"
 
-#: auth_changepassword.php:301
+#: auth_changepassword.php:307
 #, fuzzy
 msgid "Please enter your current password and your new<br>Cacti password."
 msgstr "Моля, въведете текущата си парола и новата си <br> Cacti парола."
 
-#: auth_changepassword.php:303
+#: auth_changepassword.php:309
 #, fuzzy
 msgid "Please enter your new Cacti password."
 msgstr "Моля, въведете текущата си парола и новата си <br> Cacti парола."
 
-#: auth_changepassword.php:314 auth_login.php:693 auth_login.php:696
+#: auth_changepassword.php:320 auth_login.php:693 auth_login.php:696
 #: include/global_settings.php:1391 lib/functions.php:3855
 msgid "Username"
 msgstr "Потребител"
 
-#: auth_changepassword.php:317
+#: auth_changepassword.php:323
 msgid "Current password"
 msgstr "Настояща парола"
 
-#: auth_changepassword.php:322
+#: auth_changepassword.php:328
 msgid "New password"
 msgstr "Нова парола"
 
-#: auth_changepassword.php:326
+#: auth_changepassword.php:332
 msgid "Confirm new password"
 msgstr "Потвърди новата парола"
 
-#: auth_changepassword.php:330 auth_profile.php:556 graphs_new.php:381
+#: auth_changepassword.php:336 auth_profile.php:556 graphs_new.php:381
 #: lib/html_form.php:1266 lib/html_form.php:1275 lib/html_graph.php:193
 #: lib/html_tree.php:997 settings.php:389
 msgid "Save"
 msgstr "Запази"
 
-#: auth_changepassword.php:339 auth_login.php:780
+#: auth_changepassword.php:345 auth_login.php:780
 #, fuzzy, php-format
 msgid "Version %1$s | %2$s"
 msgstr "Версия%1$s | %2$s"
 
-#: auth_changepassword.php:352 user_admin.php:2060
+#: auth_changepassword.php:358 user_admin.php:2060
 #, fuzzy
 msgid "Password Too Short"
 msgstr "Парола твърде къса"
 
-#: auth_changepassword.php:358 user_admin.php:2065
+#: auth_changepassword.php:364 user_admin.php:2065
 #, fuzzy
 msgid "Password Validation Passes"
 msgstr "Пропуска валидиране на парола"
 
-#: auth_changepassword.php:374 user_admin.php:2079
+#: auth_changepassword.php:380 user_admin.php:2079
 #, fuzzy
 msgid "Passwords do Not Match"
 msgstr "Паролите не съвпадат"
 
-#: auth_changepassword.php:378 user_admin.php:2082
+#: auth_changepassword.php:384 user_admin.php:2082
 #, fuzzy
 msgid "Passwords Match"
 msgstr "Паролите съвпадат"
@@ -1116,7 +1116,7 @@ msgstr "Парола"
 msgid "Local"
 msgstr "Местен"
 
-#: auth_login.php:717 include/global_arrays.php:763 lib/auth.php:380
+#: auth_login.php:717 include/global_arrays.php:766 lib/auth.php:380
 #, fuzzy
 msgid "LDAP"
 msgstr "LDAP"
@@ -1155,18 +1155,18 @@ msgstr "Основни"
 msgid "User Account Details"
 msgstr "Данни за потребителския акаунт"
 
-#: auth_profile.php:296 include/global_arrays.php:747
+#: auth_profile.php:296 include/global_arrays.php:750
 #: include/global_settings.php:2137 lib/html.php:1801 lib/html.php:1823
 #: lib/html.php:2296
 msgid "Tree View"
 msgstr "Дървовиден изглед"
 
-#: auth_profile.php:300 include/global_arrays.php:748 lib/html.php:1808
+#: auth_profile.php:300 include/global_arrays.php:751 lib/html.php:1808
 #: lib/html.php:1832 lib/html.php:2297
 msgid "List View"
 msgstr "Списък"
 
-#: auth_profile.php:304 include/global_arrays.php:749 lib/html.php:1815
+#: auth_profile.php:304 include/global_arrays.php:752 lib/html.php:1815
 #: lib/html.php:2298
 #, fuzzy
 msgid "Preview View"
@@ -1296,8 +1296,8 @@ msgid "Added to Cacti"
 msgstr "Добавено към Cacti"
 
 #: automation_devices.php:120 automation_devices.php:122 data_sources.php:915
-#: graph_view.php:712 graphs.php:1461 include/global_arrays.php:836
-#: include/global_arrays.php:885 include/global_arrays.php:1669
+#: graph_view.php:712 graphs.php:1461 include/global_arrays.php:839
+#: include/global_arrays.php:888 include/global_arrays.php:1672
 #: lib/api_automation.php:424 lib/functions.php:3850 lib/html.php:1915
 #: lib/html.php:1947 lib/html_reports.php:658 utilities.php:1515
 #, fuzzy
@@ -1336,8 +1336,8 @@ msgid "Add Device(s)"
 msgstr "Добавете устройства"
 
 #: automation_devices.php:254 automation_devices.php:536 host.php:1428
-#: host.php:1522 host.php:1622 include/global_arrays.php:872
-#: include/global_arrays.php:927 include/global_arrays.php:2116
+#: host.php:1522 host.php:1622 include/global_arrays.php:875
+#: include/global_arrays.php:930 include/global_arrays.php:2119
 #: lib/api_automation.php:180 lib/api_automation.php:269
 #: lib/api_automation.php:478 lib/api_automation.php:561
 #: lib/api_automation.php:1206 pollers.php:834 sites.php:522 tree.php:788
@@ -1382,7 +1382,7 @@ msgstr "Описание"
 msgid "OS"
 msgstr "Операционна система"
 
-#: automation_devices.php:270 host.php:1589 include/global_arrays.php:450
+#: automation_devices.php:270 host.php:1589 include/global_arrays.php:453
 msgid "Uptime"
 msgstr "Време на работа"
 
@@ -1468,13 +1468,13 @@ msgstr "Няма"
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:68
-#: host_templates.php:33 include/global_arrays.php:1463 vdef.php:30
+#: host_templates.php:33 include/global_arrays.php:1466 vdef.php:30
 msgid "Duplicate"
 msgstr "Дублирай"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:39 host.php:41
-#: include/global_arrays.php:1464 include/global_settings.php:1347 links.php:29
+#: include/global_arrays.php:1467 include/global_settings.php:1347 links.php:29
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
@@ -1483,7 +1483,7 @@ msgstr "Включи"
 
 #: automation_graph_rules.php:31 automation_networks.php:32
 #: automation_tree_rules.php:31 data_sources.php:40 host.php:42
-#: include/global_arrays.php:1465 links.php:30 managers.php:30 managers.php:34
+#: include/global_arrays.php:1468 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
 msgid "Disable"
@@ -1588,14 +1588,14 @@ msgid "Graph Creation Criteria"
 msgstr "Критерии за създаване на графики"
 
 #: automation_graph_rules.php:739 automation_graph_rules.php:786
-#: automation_graph_rules.php:891 include/global_arrays.php:895
-#: include/global_arrays.php:2572
+#: automation_graph_rules.php:891 include/global_arrays.php:898
+#: include/global_arrays.php:2575
 #, fuzzy
 msgid "Graph Rules"
 msgstr "Графични правила"
 
 #: automation_graph_rules.php:754 automation_graph_rules.php:902
-#: include/global_arrays.php:1212 include/global_arrays.php:2681
+#: include/global_arrays.php:1215 include/global_arrays.php:2684
 #: include/global_form.php:1592 include/global_form.php:2109
 msgid "Data Query"
 msgstr "Вземане на данни"
@@ -1604,7 +1604,7 @@ msgstr "Вземане на данни"
 #: automation_graph_rules.php:920 automation_networks.php:537
 #: automation_tree_rules.php:822 automation_tree_rules.php:942
 #: automation_tree_rules.php:960 data_debug.php:1013 data_sources.php:1402
-#: host.php:1512 include/global_arrays.php:799 include/global_form.php:1474
+#: host.php:1512 include/global_arrays.php:802 include/global_form.php:1474
 #: include/global_settings.php:379 lib/api_automation.php:170
 #: lib/api_automation.php:1093 lib/html_reports.php:1519
 #: lib/html_reports.php:1611 lib/html_reports.php:1622
@@ -1619,8 +1619,8 @@ msgstr "Разрешен"
 #: automation_graph_rules.php:782 automation_graph_rules.php:920
 #: automation_networks.php:1094 automation_tree_rules.php:823
 #: automation_tree_rules.php:960 data_debug.php:1014 data_sources.php:1403
-#: data_templates.php:1048 host.php:1513 include/global_arrays.php:798
-#: include/global_arrays.php:1387 include/global_arrays.php:1677
+#: data_templates.php:1048 host.php:1513 include/global_arrays.php:801
+#: include/global_arrays.php:1390 include/global_arrays.php:1680
 #: include/global_settings.php:378 include/global_settings.php:1221
 #: include/global_settings.php:1235 include/global_settings.php:1247
 #: include/global_settings.php:1272 include/global_settings.php:1286
@@ -1751,17 +1751,17 @@ msgid "Manual"
 msgstr "Ръчна"
 
 #: automation_networks.php:420 automation_networks.php:1068
-#: include/global_arrays.php:1691
+#: include/global_arrays.php:1694
 msgid "Daily"
 msgstr "Ежедневно"
 
 #: automation_networks.php:421 automation_networks.php:1069
-#: include/global_arrays.php:1692
+#: include/global_arrays.php:1695
 msgid "Weekly"
 msgstr "Седмично"
 
 #: automation_networks.php:422 automation_networks.php:1070
-#: include/global_arrays.php:1693
+#: include/global_arrays.php:1696
 msgid "Monthly"
 msgstr "Месечно"
 
@@ -1919,9 +1919,9 @@ msgstr "% d Тема"
 #: automation_networks.php:507 automation_networks.php:508
 #: automation_networks.php:509 automation_networks.php:510
 #: automation_networks.php:511 automation_networks.php:512
-#: automation_networks.php:513 include/global_arrays.php:730
-#: include/global_arrays.php:731 include/global_arrays.php:732
-#: include/global_arrays.php:733 include/global_arrays.php:734
+#: automation_networks.php:513 include/global_arrays.php:733
+#: include/global_arrays.php:734 include/global_arrays.php:735
+#: include/global_arrays.php:736 include/global_arrays.php:737
 #, fuzzy, php-format
 msgid "%d Threads"
 msgstr "% d Теми"
@@ -1938,7 +1938,7 @@ msgstr ""
 "След избрания лимит на изпълнение, процесът на откриване ще бъде прекратен."
 
 #: automation_networks.php:523 automation_networks.php:1207
-#: include/global_arrays.php:663
+#: include/global_arrays.php:666
 #, fuzzy, php-format
 msgid "%d Minute"
 msgstr "% d Минута"
@@ -1946,18 +1946,18 @@ msgstr "% d Минута"
 #: automation_networks.php:524 automation_networks.php:525
 #: automation_networks.php:526 automation_networks.php:527
 #: automation_networks.php:1208 automation_networks.php:1209
-#: data_sources.php:1184 include/global_arrays.php:627
-#: include/global_arrays.php:628 include/global_arrays.php:629
-#: include/global_arrays.php:630 include/global_arrays.php:664
-#: include/global_arrays.php:665 include/global_arrays.php:666
-#: include/global_arrays.php:667 include/global_arrays.php:668
-#: include/global_arrays.php:669 include/global_arrays.php:1061
-#: include/global_arrays.php:1062 include/global_arrays.php:1394
-#: include/global_arrays.php:1398 include/global_arrays.php:1406
-#: include/global_arrays.php:1407 include/global_arrays.php:1431
-#: include/global_arrays.php:1432 include/global_arrays.php:1433
-#: include/global_arrays.php:1434 include/global_arrays.php:1435
-#: include/global_arrays.php:1448 include/global_settings.php:1288
+#: data_sources.php:1184 include/global_arrays.php:630
+#: include/global_arrays.php:631 include/global_arrays.php:632
+#: include/global_arrays.php:633 include/global_arrays.php:667
+#: include/global_arrays.php:668 include/global_arrays.php:669
+#: include/global_arrays.php:670 include/global_arrays.php:671
+#: include/global_arrays.php:672 include/global_arrays.php:1064
+#: include/global_arrays.php:1065 include/global_arrays.php:1397
+#: include/global_arrays.php:1401 include/global_arrays.php:1409
+#: include/global_arrays.php:1410 include/global_arrays.php:1434
+#: include/global_arrays.php:1435 include/global_arrays.php:1436
+#: include/global_arrays.php:1437 include/global_arrays.php:1438
+#: include/global_arrays.php:1451 include/global_settings.php:1288
 #: include/global_settings.php:1289 include/global_settings.php:1290
 #: include/global_settings.php:1291 include/global_settings.php:1292
 #: include/global_settings.php:2064
@@ -1965,28 +1965,28 @@ msgstr "% d Минута"
 msgid "%d Minutes"
 msgstr "% d Минути"
 
-#: automation_networks.php:528 include/global_arrays.php:670
-#: include/global_arrays.php:680 include/global_arrays.php:1298
+#: automation_networks.php:528 include/global_arrays.php:673
+#: include/global_arrays.php:683 include/global_arrays.php:1301
 #, fuzzy, php-format
 msgid "%d Hour"
 msgstr "% d Час"
 
 #: automation_networks.php:529 automation_networks.php:530
 #: automation_networks.php:531 data_source_profiles.php:780
-#: include/global_arrays.php:632 include/global_arrays.php:633
-#: include/global_arrays.php:634 include/global_arrays.php:635
-#: include/global_arrays.php:636 include/global_arrays.php:671
-#: include/global_arrays.php:672 include/global_arrays.php:673
-#: include/global_arrays.php:674 include/global_arrays.php:681
-#: include/global_arrays.php:682 include/global_arrays.php:683
-#: include/global_arrays.php:684 include/global_arrays.php:1299
-#: include/global_arrays.php:1300 include/global_arrays.php:1301
-#: include/global_arrays.php:1302 include/global_arrays.php:1346
-#: include/global_arrays.php:1347 include/global_arrays.php:1348
-#: include/global_arrays.php:1349 include/global_arrays.php:1350
-#: include/global_arrays.php:1367 include/global_arrays.php:1368
-#: include/global_arrays.php:1369 include/global_arrays.php:1370
-#: include/global_arrays.php:1371 include/global_settings.php:1294
+#: include/global_arrays.php:635 include/global_arrays.php:636
+#: include/global_arrays.php:637 include/global_arrays.php:638
+#: include/global_arrays.php:639 include/global_arrays.php:674
+#: include/global_arrays.php:675 include/global_arrays.php:676
+#: include/global_arrays.php:677 include/global_arrays.php:684
+#: include/global_arrays.php:685 include/global_arrays.php:686
+#: include/global_arrays.php:687 include/global_arrays.php:1302
+#: include/global_arrays.php:1303 include/global_arrays.php:1304
+#: include/global_arrays.php:1305 include/global_arrays.php:1349
+#: include/global_arrays.php:1350 include/global_arrays.php:1351
+#: include/global_arrays.php:1352 include/global_arrays.php:1353
+#: include/global_arrays.php:1370 include/global_arrays.php:1371
+#: include/global_arrays.php:1372 include/global_arrays.php:1373
+#: include/global_arrays.php:1374 include/global_settings.php:1294
 #: include/global_settings.php:1295 include/global_settings.php:1296
 #: include/global_settings.php:1297
 #, fuzzy, php-format
@@ -2150,37 +2150,37 @@ msgid "What Day(s) of the week will this Network Range be discovered."
 msgstr "Какъв ден (дни) на седмицата ще бъде открит този диапазон на мрежата."
 
 #: automation_networks.php:638 automation_networks.php:696
-#: include/global_arrays.php:1733
+#: include/global_arrays.php:1736
 msgid "Sunday"
 msgstr "Неделя"
 
 #: automation_networks.php:639 automation_networks.php:697
-#: include/global_arrays.php:1734
+#: include/global_arrays.php:1737
 msgid "Monday"
 msgstr "Понеделник"
 
 #: automation_networks.php:640 automation_networks.php:698
-#: include/global_arrays.php:1735
+#: include/global_arrays.php:1738
 msgid "Tuesday"
 msgstr "Вторник"
 
 #: automation_networks.php:641 automation_networks.php:699
-#: include/global_arrays.php:1736
+#: include/global_arrays.php:1739
 msgid "Wednesday"
 msgstr "Сряда"
 
 #: automation_networks.php:642 automation_networks.php:700
-#: include/global_arrays.php:1737
+#: include/global_arrays.php:1740
 msgid "Thursday"
 msgstr "Четвъртък"
 
 #: automation_networks.php:643 automation_networks.php:701
-#: include/global_arrays.php:1738
+#: include/global_arrays.php:1741
 msgid "Friday"
 msgstr "Петък"
 
 #: automation_networks.php:644 automation_networks.php:702
-#: include/global_arrays.php:1739
+#: include/global_arrays.php:1742
 msgid "Saturday"
 msgstr "Събота"
 
@@ -2194,51 +2194,51 @@ msgstr "Месеци на годината"
 msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "Колко месеца (и) на годината ще бъде открит този обхват на мрежата."
 
-#: automation_networks.php:654 include/global_arrays.php:1703
+#: automation_networks.php:654 include/global_arrays.php:1706
 msgid "January"
 msgstr "Януари"
 
-#: automation_networks.php:655 include/global_arrays.php:1704
+#: automation_networks.php:655 include/global_arrays.php:1707
 msgid "February"
 msgstr "Февруари"
 
-#: automation_networks.php:656 include/global_arrays.php:1705
+#: automation_networks.php:656 include/global_arrays.php:1708
 msgid "March"
 msgstr "Март"
 
-#: automation_networks.php:657 include/global_arrays.php:1706
+#: automation_networks.php:657 include/global_arrays.php:1709
 msgid "April"
 msgstr "Април"
 
-#: automation_networks.php:658 include/global_arrays.php:1707
+#: automation_networks.php:658 include/global_arrays.php:1710
 msgid "May"
 msgstr "Май"
 
-#: automation_networks.php:659 include/global_arrays.php:1708
+#: automation_networks.php:659 include/global_arrays.php:1711
 msgid "June"
 msgstr "Юни"
 
-#: automation_networks.php:660 include/global_arrays.php:1709
+#: automation_networks.php:660 include/global_arrays.php:1712
 msgid "July"
 msgstr "Юли"
 
-#: automation_networks.php:661 include/global_arrays.php:1710
+#: automation_networks.php:661 include/global_arrays.php:1713
 msgid "August"
 msgstr "Август"
 
-#: automation_networks.php:662 include/global_arrays.php:1711
+#: automation_networks.php:662 include/global_arrays.php:1714
 msgid "September"
 msgstr "Септември"
 
-#: automation_networks.php:663 include/global_arrays.php:1712
+#: automation_networks.php:663 include/global_arrays.php:1715
 msgid "October"
 msgstr "Октомври"
 
-#: automation_networks.php:664 include/global_arrays.php:1713
+#: automation_networks.php:664 include/global_arrays.php:1716
 msgid "November"
 msgstr "Ноември"
 
-#: automation_networks.php:665 include/global_arrays.php:1714
+#: automation_networks.php:665 include/global_arrays.php:1717
 msgid "December"
 msgstr "Декември"
 
@@ -2289,7 +2289,7 @@ msgstr "Дни от седмицата"
 msgid "Reachability Settings"
 msgstr "Настройки за достигане"
 
-#: automation_networks.php:714 include/global_arrays.php:897
+#: automation_networks.php:714 include/global_arrays.php:900
 #: include/global_form.php:1197 include/global_form.php:1694
 #, fuzzy
 msgid "SNMP Options"
@@ -2409,7 +2409,7 @@ msgid "Network Filters"
 msgstr "Мрежови филтри"
 
 #: automation_networks.php:1058 automation_networks.php:1182
-#: include/global_arrays.php:892
+#: include/global_arrays.php:895
 #, fuzzy
 msgid "Networks"
 msgstr "мрежи"
@@ -2475,7 +2475,7 @@ msgstr "실행 중"
 msgid "Idle"
 msgstr "Празен"
 
-#: automation_networks.php:1146 include/global_arrays.php:1063
+#: automation_networks.php:1146 include/global_arrays.php:1066
 #: include/global_settings.php:1999 lib/html_reports.php:1653
 msgid "Never"
 msgstr "Никога"
@@ -2494,18 +2494,18 @@ msgstr "Обновяване"
 
 #: automation_networks.php:1203 automation_networks.php:1204
 #: automation_networks.php:1205 automation_networks.php:1206
-#: data_sources.php:1180 include/global_arrays.php:625
-#: include/global_arrays.php:660 include/global_arrays.php:661
-#: include/global_arrays.php:662 include/global_arrays.php:1056
-#: include/global_arrays.php:1057 include/global_arrays.php:1058
-#: include/global_arrays.php:1059 include/global_arrays.php:1388
-#: include/global_arrays.php:1389 include/global_arrays.php:1390
-#: include/global_arrays.php:1391 include/global_arrays.php:1392
-#: include/global_arrays.php:1427 include/global_arrays.php:1428
-#: include/global_arrays.php:1440 include/global_arrays.php:1441
-#: include/global_arrays.php:1442 include/global_arrays.php:1443
-#: include/global_arrays.php:1444 include/global_arrays.php:1445
-#: include/global_arrays.php:1446 include/global_settings.php:1057
+#: data_sources.php:1180 include/global_arrays.php:628
+#: include/global_arrays.php:663 include/global_arrays.php:664
+#: include/global_arrays.php:665 include/global_arrays.php:1059
+#: include/global_arrays.php:1060 include/global_arrays.php:1061
+#: include/global_arrays.php:1062 include/global_arrays.php:1391
+#: include/global_arrays.php:1392 include/global_arrays.php:1393
+#: include/global_arrays.php:1394 include/global_arrays.php:1395
+#: include/global_arrays.php:1430 include/global_arrays.php:1431
+#: include/global_arrays.php:1443 include/global_arrays.php:1444
+#: include/global_arrays.php:1445 include/global_arrays.php:1446
+#: include/global_arrays.php:1447 include/global_arrays.php:1448
+#: include/global_arrays.php:1449 include/global_settings.php:1057
 #: include/global_settings.php:1058 include/global_settings.php:1059
 #: include/global_settings.php:1060 include/global_settings.php:2060
 #: include/global_settings.php:2061 include/global_settings.php:2062
@@ -2771,7 +2771,7 @@ msgstr ""
 msgid "Delete Automation Template(s)"
 msgstr "Изтриване на шаблон (и) за автоматизация"
 
-#: automation_templates.php:274 include/global_arrays.php:1213
+#: automation_templates.php:274 include/global_arrays.php:1216
 #: include/global_form.php:1172 include/global_form.php:1577
 #: lib/html_reports.php:648
 #, fuzzy
@@ -2966,8 +2966,8 @@ msgid "Are you sure you wish to continue?"
 msgstr "Наистина ли искате да продължите?"
 
 #: automation_tree_rules.php:802 automation_tree_rules.php:827
-#: automation_tree_rules.php:927 include/global_arrays.php:896
-#: include/global_arrays.php:2596
+#: automation_tree_rules.php:927 include/global_arrays.php:899
+#: include/global_arrays.php:2599
 #, fuzzy
 msgid "Tree Rules"
 msgstr "Правила на дървото"
@@ -3100,7 +3100,7 @@ msgstr "CDEF [редактиране: %s]"
 msgid "CDEF [new]"
 msgstr "CDEF [нов]"
 
-#: cdef.php:609 include/global_arrays.php:1966
+#: cdef.php:609 include/global_arrays.php:1969
 #, fuzzy
 msgid "CDEF Items"
 msgstr "CDEF елементи"
@@ -3120,8 +3120,8 @@ msgstr "Елемент #% d"
 msgid "Delete CDEF Item"
 msgstr "Изтриване на CDEF елемент"
 
-#: cdef.php:748 cdef.php:763 cdef.php:879 include/global_arrays.php:901
-#: include/global_arrays.php:1948
+#: cdef.php:748 cdef.php:763 cdef.php:879 include/global_arrays.php:904
+#: include/global_arrays.php:1951
 #, fuzzy
 msgid "CDEFs"
 msgstr "CDEFs"
@@ -3268,8 +3268,8 @@ msgstr "Цветове [редактиране: %s]"
 msgid "Colors [new]"
 msgstr "Цветове [нови]"
 
-#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:903
-#: include/global_arrays.php:2014
+#: color.php:521 color.php:536 color.php:690 include/global_arrays.php:906
+#: include/global_arrays.php:2017
 msgid "Colors"
 msgstr "Цветове"
 
@@ -3317,7 +3317,7 @@ msgstr "Дали този цвят е име на цвят, който се че
 msgid "Named Color"
 msgstr "Име на цвят"
 
-#: color.php:702 color_templates.php:73 include/global_arrays.php:889
+#: color.php:702 color_templates.php:73 include/global_arrays.php:892
 #: include/global_form.php:941 include/global_form.php:1991
 msgid "Color"
 msgstr "Цвят"
@@ -3430,7 +3430,7 @@ msgid "Color Template [new]"
 msgstr "Шаблон за цвят [нов]"
 
 #: color_templates.php:442 color_templates.php:455 color_templates.php:550
-#: include/global_arrays.php:2494
+#: include/global_arrays.php:2497
 #, fuzzy
 msgid "Color Templates"
 msgstr "Шаблони за цвят"
@@ -3528,7 +3528,7 @@ msgstr ""
 
 #: data_debug.php:330 data_debug.php:807 data_queries.php:733
 #: data_sources.php:978 data_templates.php:593 graphs_items.php:440
-#: include/global_arrays.php:887 include/global_form.php:926
+#: include/global_arrays.php:890 include/global_form.php:926
 #: lib/api_aggregate.php:1599 lib/html.php:1051
 msgid "Data Source"
 msgstr "Източник на данни"
@@ -3637,8 +3637,8 @@ msgid "Summary of issues found for the Data Source."
 msgstr "Всички обобщени проблеми, намерени за източника на данни."
 
 #: data_debug.php:510 data_debug.php:1058 data_sources.php:1427
-#: data_sources.php:1584 host.php:1571 include/global_arrays.php:876
-#: include/global_arrays.php:921 include/global_arrays.php:2098
+#: data_sources.php:1584 host.php:1571 include/global_arrays.php:879
+#: include/global_arrays.php:924 include/global_arrays.php:2101
 #: lib/api_automation.php:282 user_admin.php:1269 user_group_admin.php:970
 #: utilities.php:308
 msgid "Data Sources"
@@ -3955,22 +3955,22 @@ msgstr "Методи за въвеждане на данни [редактира
 msgid "Data Input Methods [new]"
 msgstr "Методи за въвеждане на данни [ново]"
 
-#: data_input.php:578 include/global_arrays.php:435
+#: data_input.php:578 include/global_arrays.php:438
 #, fuzzy
 msgid "SNMP Get"
 msgstr "Получете SNMP"
 
-#: data_input.php:581 include/global_arrays.php:436
+#: data_input.php:581 include/global_arrays.php:439
 #, fuzzy
 msgid "SNMP Query"
 msgstr "SNMP заявка"
 
-#: data_input.php:584 include/global_arrays.php:438
+#: data_input.php:584 include/global_arrays.php:441
 #, fuzzy
 msgid "Script Query"
 msgstr "Заявка за скрипт"
 
-#: data_input.php:587 include/global_arrays.php:440
+#: data_input.php:587 include/global_arrays.php:443
 #, fuzzy
 msgid "Script Query - Script Server"
 msgstr "Заявка за скрипт - Скрипт сървър"
@@ -4049,8 +4049,8 @@ msgstr "Няма изходни полета"
 msgid "Delete Data Input Field"
 msgstr "Изтриване на полето за въвеждане на данни"
 
-#: data_input.php:796 include/global_arrays.php:882
-#: include/global_arrays.php:1078 include/global_arrays.php:2152
+#: data_input.php:796 include/global_arrays.php:885
+#: include/global_arrays.php:1081 include/global_arrays.php:2155
 msgid "Data Input Methods"
 msgstr "Методи за въвеждане на данни"
 
@@ -4097,7 +4097,7 @@ msgstr ""
 "Броят на шаблоните за данни, които използват този метод за въвеждане на "
 "данни."
 
-#: data_input.php:912 data_queries.php:1391 include/global_arrays.php:1205
+#: data_input.php:912 data_queries.php:1391 include/global_arrays.php:1208
 #: include/global_form.php:540 include/global_form.php:1332
 #, fuzzy
 msgid "Data Input Method"
@@ -4244,7 +4244,7 @@ msgid "Could not locate XML file."
 msgstr "XML файлът не можа да бъде намерен."
 
 #: data_queries.php:1135 host.php:679 host_templates.php:483
-#: include/global_arrays.php:2206
+#: include/global_arrays.php:2209
 msgid "Associated Graph Templates"
 msgstr "Асоциирани шаблони за графики"
 
@@ -4275,8 +4275,8 @@ msgid "Delete Associated Graph"
 msgstr "Изтриване на асоциирана графика"
 
 #: data_queries.php:1272 data_queries.php:1287 data_queries.php:1377
-#: include/global_arrays.php:881 include/global_arrays.php:1079
-#: include/global_arrays.php:2188 lib/api_automation.php:1103
+#: include/global_arrays.php:884 include/global_arrays.php:1082
+#: include/global_arrays.php:2191 lib/api_automation.php:1103
 msgid "Data Queries"
 msgstr "Автоматизирани данни"
 
@@ -4468,12 +4468,12 @@ msgstr "%s KBytes за източници на данни и %s байтове �
 msgid "%s KBytes per Data Source"
 msgstr "%s KBytes за източник на данни"
 
-#: data_source_profiles.php:745 include/global_arrays.php:697
-#: include/global_arrays.php:698 include/global_arrays.php:699
-#: include/global_arrays.php:700 include/global_arrays.php:701
-#: include/global_arrays.php:702 include/global_arrays.php:703
-#: include/global_arrays.php:704 include/global_arrays.php:705
-#: include/global_arrays.php:1315 include/global_settings.php:1227
+#: data_source_profiles.php:745 include/global_arrays.php:700
+#: include/global_arrays.php:701 include/global_arrays.php:702
+#: include/global_arrays.php:703 include/global_arrays.php:704
+#: include/global_arrays.php:705 include/global_arrays.php:706
+#: include/global_arrays.php:707 include/global_arrays.php:708
+#: include/global_arrays.php:1318 include/global_settings.php:1227
 #, fuzzy, php-format
 msgid "%d Years"
 msgstr "% d години"
@@ -4482,47 +4482,47 @@ msgstr "% d години"
 msgid "1 Year"
 msgstr "1 Година"
 
-#: data_source_profiles.php:754 include/global_arrays.php:691
-#: include/global_arrays.php:1309 rrdcleaner.php:489
+#: data_source_profiles.php:754 include/global_arrays.php:694
+#: include/global_arrays.php:1312 rrdcleaner.php:489
 #, fuzzy, php-format
 msgid "%d Month"
 msgstr "% d Месец"
 
-#: data_source_profiles.php:754 include/global_arrays.php:692
-#: include/global_arrays.php:693 include/global_arrays.php:694
-#: include/global_arrays.php:695 include/global_arrays.php:1310
-#: include/global_arrays.php:1311 include/global_arrays.php:1312
-#: include/global_arrays.php:1313 rrdcleaner.php:490 rrdcleaner.php:491
+#: data_source_profiles.php:754 include/global_arrays.php:695
+#: include/global_arrays.php:696 include/global_arrays.php:697
+#: include/global_arrays.php:698 include/global_arrays.php:1313
+#: include/global_arrays.php:1314 include/global_arrays.php:1315
+#: include/global_arrays.php:1316 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
 #, fuzzy, php-format
 msgid "%d Months"
 msgstr "% d Месеци"
 
-#: data_source_profiles.php:763 include/global_arrays.php:638
-#: include/global_arrays.php:688 include/global_arrays.php:1307
+#: data_source_profiles.php:763 include/global_arrays.php:641
+#: include/global_arrays.php:691 include/global_arrays.php:1310
 #: rrdcleaner.php:485 rrdcleaner.php:486
 #, fuzzy, php-format
 msgid "%d Week"
 msgstr "% d Седмица"
 
-#: data_source_profiles.php:763 include/global_arrays.php:689
-#: include/global_arrays.php:690 include/global_arrays.php:1308
+#: data_source_profiles.php:763 include/global_arrays.php:692
+#: include/global_arrays.php:693 include/global_arrays.php:1311
 #: rrdcleaner.php:487 rrdcleaner.php:488
 #, fuzzy, php-format
 msgid "%d Weeks"
 msgstr "% d седмици"
 
-#: data_source_profiles.php:772 include/global_arrays.php:637
-#: include/global_arrays.php:675 include/global_arrays.php:685
-#: include/global_arrays.php:1303
+#: data_source_profiles.php:772 include/global_arrays.php:640
+#: include/global_arrays.php:678 include/global_arrays.php:688
+#: include/global_arrays.php:1306
 #, fuzzy, php-format
 msgid "%d Day"
 msgstr "% d ден"
 
-#: data_source_profiles.php:772 include/global_arrays.php:676
-#: include/global_arrays.php:686 include/global_arrays.php:687
-#: include/global_arrays.php:1304 include/global_arrays.php:1305
-#: include/global_arrays.php:1306 include/global_settings.php:1222
+#: data_source_profiles.php:772 include/global_arrays.php:679
+#: include/global_arrays.php:689 include/global_arrays.php:690
+#: include/global_arrays.php:1307 include/global_arrays.php:1308
+#: include/global_arrays.php:1309 include/global_settings.php:1222
 #: include/global_settings.php:1223 include/global_settings.php:1224
 #: include/global_settings.php:1225 include/global_settings.php:1236
 #: include/global_settings.php:1237 include/global_settings.php:1238
@@ -4531,15 +4531,15 @@ msgstr "% d ден"
 msgid "%d Days"
 msgstr "% d дни"
 
-#: data_source_profiles.php:780 include/global_arrays.php:631
-#: include/global_arrays.php:1345 include/global_arrays.php:1366
-#: include/global_arrays.php:1399 include/global_arrays.php:1408
-#: include/global_arrays.php:1436 include/global_settings.php:1293
+#: data_source_profiles.php:780 include/global_arrays.php:634
+#: include/global_arrays.php:1348 include/global_arrays.php:1369
+#: include/global_arrays.php:1402 include/global_arrays.php:1411
+#: include/global_arrays.php:1439 include/global_settings.php:1293
 #, fuzzy
 msgid "1 Hour"
 msgstr "Един час"
 
-#: data_source_profiles.php:834 include/global_arrays.php:1086
+#: data_source_profiles.php:834 include/global_arrays.php:1089
 #, fuzzy
 msgid "Data Source Profiles"
 msgstr "Профили на източника на данни"
@@ -4890,9 +4890,9 @@ msgstr "RRDtool Tune Info"
 msgid "External"
 msgstr "Външна връзка"
 
-#: data_sources.php:1182 include/global_arrays.php:626
-#: include/global_arrays.php:1060 include/global_arrays.php:1393
-#: include/global_arrays.php:1429 include/global_arrays.php:1447
+#: data_sources.php:1182 include/global_arrays.php:629
+#: include/global_arrays.php:1063 include/global_arrays.php:1396
+#: include/global_arrays.php:1432 include/global_arrays.php:1450
 #: include/global_settings.php:1287 include/global_settings.php:2063
 #, fuzzy
 msgid "1 Minute"
@@ -4988,7 +4988,7 @@ msgstr "Няма намерени източници на данни"
 msgid "No Graphs"
 msgstr "Нови графики"
 
-#: data_sources.php:1740 include/global_arrays.php:877
+#: data_sources.php:1740 include/global_arrays.php:880
 #, fuzzy
 msgid "Aggregates"
 msgstr "агрегати"
@@ -5112,7 +5112,7 @@ msgstr ""
 "Стойността ще бъде получена от устройството, ако това поле е оставено празно."
 
 #: data_templates.php:855 data_templates.php:886 data_templates.php:1009
-#: include/global_arrays.php:1090 include/global_arrays.php:2080
+#: include/global_arrays.php:1093 include/global_arrays.php:2083
 #, fuzzy
 msgid "Data Templates"
 msgstr "Шаблони за данни"
@@ -5209,12 +5209,12 @@ msgstr "Предварителни настройки на GPRINT [редакт�
 msgid "GPRINT Presets [new]"
 msgstr "Предварителни настройки на GPRINT [ново]"
 
-#: gprint_presets.php:254 include/global_arrays.php:1930
+#: gprint_presets.php:254 include/global_arrays.php:1933
 #, fuzzy
 msgid "GPRINT Presets"
 msgstr "Предварителни настройки на GPRINT"
 
-#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:904
+#: gprint_presets.php:269 gprint_presets.php:384 include/global_arrays.php:907
 #, fuzzy
 msgid "GPRINTs"
 msgstr "GPRINTs"
@@ -5449,7 +5449,7 @@ msgstr "Синхронизиране на графиките с графични
 msgid "Graph Template Items [edit: %s]"
 msgstr "Елементи на шаблона на графиката [редактиране: %s]"
 
-#: graph_templates.php:448 include/global_arrays.php:2050
+#: graph_templates.php:448 include/global_arrays.php:2053
 msgid "Graph Item Inputs"
 msgstr "Въвеждане на елементи на графика"
 
@@ -5483,8 +5483,8 @@ msgstr ""
 "да замени стойността отдясно по време на създаването на графика."
 
 #: graph_templates.php:648 graph_templates.php:663 graph_templates.php:783
-#: graphs_new.php:452 include/global_arrays.php:1089
-#: include/global_arrays.php:2026 lib/html_tree.php:548 user_admin.php:1409
+#: graphs_new.php:452 include/global_arrays.php:1092
+#: include/global_arrays.php:2029 lib/html_tree.php:548 user_admin.php:1409
 #: user_group_admin.php:1105
 msgid "Graph Templates"
 msgstr "Шаблони за графики"
@@ -5619,7 +5619,7 @@ msgstr "[Приложен графичен списък на графиките 
 msgid "View"
 msgstr "Преглед"
 
-#: graph_view.php:601 graph_view.php:803 include/global_arrays.php:1068
+#: graph_view.php:601 graph_view.php:803 include/global_arrays.php:1071
 #, fuzzy
 msgid "View Graphs"
 msgstr "Преглед на графиките"
@@ -5639,7 +5639,7 @@ msgstr "Отчет"
 msgid "All Graphs & Templates"
 msgstr "Всички графики и шаблони"
 
-#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:58
+#: graph_view.php:617 include/global_arrays.php:2683 lib/graphs.php:58
 #: lib/graphs.php:67 lib/html.php:184 lib/html_graph.php:158
 #: lib/html_tree.php:962
 #, fuzzy
@@ -5700,7 +5700,7 @@ msgstr "Размерът на тази графика, когато не е в �
 msgid "Select the Report to add the selected Graphs to."
 msgstr "Изберете Отчет, за да добавите избраните графики към."
 
-#: graph_view.php:867 include/global_arrays.php:1850
+#: graph_view.php:867 include/global_arrays.php:1853
 #: include/global_settings.php:2133
 msgid "Preview Mode"
 msgstr "Общ изглед"
@@ -5769,7 +5769,7 @@ msgstr "Изтегли"
 msgid "Summary Details"
 msgstr "Обобщени данни"
 
-#: graphs.php:53 graphs.php:917 include/global_arrays.php:1900
+#: graphs.php:53 graphs.php:917 include/global_arrays.php:1903
 #, fuzzy
 msgid "Change Graph Template"
 msgstr "Промяна на шаблона на графиката"
@@ -5910,7 +5910,7 @@ msgstr "Клон на дестинацията"
 msgid "Choose a new Device for these Graph(s) and click 'Continue'."
 msgstr "Изберете ново устройство за тези графики и кликнете върху „Напред“."
 
-#: graphs.php:960 include/global_arrays.php:869
+#: graphs.php:960 include/global_arrays.php:872
 #, fuzzy
 msgid "New Device"
 msgstr "Ново устройство"
@@ -6111,7 +6111,7 @@ msgstr "Източници на данни [без устройство]"
 msgid "Data Sources [%s]"
 msgstr "Източници на данни [ %s]"
 
-#: graphs_items.php:327 include/global_arrays.php:1204
+#: graphs_items.php:327 include/global_arrays.php:1207
 #: include/global_form.php:1587
 #, fuzzy
 msgid "Data Template"
@@ -6188,8 +6188,8 @@ msgstr "Избери всички"
 msgid "Select All Rows"
 msgstr "Изберете Всички редове"
 
-#: graphs_new.php:545 include/global_arrays.php:867
-#: include/global_arrays.php:943 lib/html_form.php:1264 lib/html_form.php:1277
+#: graphs_new.php:545 include/global_arrays.php:870
+#: include/global_arrays.php:946 lib/html_form.php:1264 lib/html_form.php:1277
 #: tree.php:1369
 msgid "Create"
 msgstr "Създай"
@@ -6478,15 +6478,15 @@ msgstr "Свързани заявки за данни"
 msgid "Re-Index Method"
 msgstr "Метод на повторния индекс"
 
-#: host.php:784 include/global_arrays.php:1906 include/global_arrays.php:1972
-#: include/global_arrays.php:2038 include/global_arrays.php:2074
-#: include/global_arrays.php:2092 include/global_arrays.php:2110
-#: include/global_arrays.php:2128 include/global_arrays.php:2158
-#: include/global_arrays.php:2194 include/global_arrays.php:2224
-#: include/global_arrays.php:2314 include/global_arrays.php:2506
-#: include/global_arrays.php:2530 include/global_arrays.php:2548
-#: include/global_arrays.php:2566 include/global_arrays.php:2584
-#: include/global_arrays.php:2608 lib/api_automation.php:1288
+#: host.php:784 include/global_arrays.php:1909 include/global_arrays.php:1975
+#: include/global_arrays.php:2041 include/global_arrays.php:2077
+#: include/global_arrays.php:2095 include/global_arrays.php:2113
+#: include/global_arrays.php:2131 include/global_arrays.php:2161
+#: include/global_arrays.php:2197 include/global_arrays.php:2227
+#: include/global_arrays.php:2317 include/global_arrays.php:2509
+#: include/global_arrays.php:2533 include/global_arrays.php:2551
+#: include/global_arrays.php:2569 include/global_arrays.php:2587
+#: include/global_arrays.php:2611 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1417
 #: lib/html_reports.php:1348 links.php:378 plugins.php:447
 msgid "Actions"
@@ -6536,26 +6536,26 @@ msgstr "Добавяне на заявка за данни"
 msgid "Add Data Query to Device"
 msgstr "Добавете заявка за данни към устройството"
 
-#: host.php:1050 host.php:1063 include/global_arrays.php:596
+#: host.php:1050 host.php:1063 include/global_arrays.php:599
 msgid "Ping"
 msgstr "Ping"
 
-#: host.php:1061 include/global_arrays.php:591
+#: host.php:1061 include/global_arrays.php:594
 #, fuzzy
 msgid "Ping and SNMP Uptime"
 msgstr "Ping и SNMP Uptime"
 
-#: host.php:1062 include/global_arrays.php:593
+#: host.php:1062 include/global_arrays.php:596
 #, fuzzy
 msgid "SNMP Uptime"
 msgstr "SNMP Uptime"
 
-#: host.php:1064 include/global_arrays.php:592
+#: host.php:1064 include/global_arrays.php:595
 #, fuzzy
 msgid "Ping or SNMP Uptime"
 msgstr "Ping или SNMP Uptime"
 
-#: host.php:1065 include/global_arrays.php:594
+#: host.php:1065 include/global_arrays.php:597
 #, fuzzy
 msgid "SNMP Desc"
 msgstr "SNMP Desc"
@@ -6586,7 +6586,7 @@ msgid "Recovering"
 msgstr "Възстановяване"
 
 #: host.php:1518 lib/api_automation.php:176 lib/api_automation.php:1099
-#: lib/html_utility.php:895 lib/plugins.php:993 lib/plugins.php:994
+#: lib/html_utility.php:895 lib/plugins.php:999 lib/plugins.php:1000
 #: lib/rrd.php:2842 lib/rrd.php:2854 user_admin.php:796 utilities.php:2129
 msgid "Unknown"
 msgstr "알려지지 않음"
@@ -6822,7 +6822,7 @@ msgid "Add Data Query to Device Template"
 msgstr "Добавете заявка за данни към шаблона на устройството"
 
 #: host_templates.php:712 host_templates.php:727 host_templates.php:828
-#: include/global_arrays.php:1091 include/global_arrays.php:2062
+#: include/global_arrays.php:1094 include/global_arrays.php:2065
 #, fuzzy
 msgid "Device Templates"
 msgstr "Шаблони за устройства"
@@ -7223,6 +7223,10 @@ msgstr ""
 "максималната стойност."
 
 #: include/global_arrays.php:253
+msgid "Unable to change password.  User account not found."
+msgstr ""
+
+#: include/global_arrays.php:256
 #, fuzzy
 msgid ""
 "Data Input Saved.  You must update the Data Templates referencing this Data "
@@ -7232,7 +7236,7 @@ msgstr ""
 "позовават на този метод за въвеждане на данни, преди да създадете графики "
 "или източници на данни."
 
-#: include/global_arrays.php:256
+#: include/global_arrays.php:259
 #, fuzzy
 msgid ""
 "Data Input Saved.  You must update the Data Templates referencing this Data "
@@ -7243,7 +7247,7 @@ msgstr ""
 "позовават на този метод за въвеждане на данни, преди колекторите от данни да "
 "започнат да използват нови или модифицирани полета за въвеждане на данни."
 
-#: include/global_arrays.php:259
+#: include/global_arrays.php:262
 #, fuzzy
 msgid ""
 "Data Input Field Saved.  You must update the Data Templates referencing this "
@@ -7253,7 +7257,7 @@ msgstr ""
 "данни, които се позовават на този метод за въвеждане на данни, преди да "
 "създадете графики или източници на данни."
 
-#: include/global_arrays.php:262
+#: include/global_arrays.php:265
 #, fuzzy
 msgid ""
 "Data Input Field Saved.  You must update the Data Templates referencing this "
@@ -7265,22 +7269,22 @@ msgstr ""
 "колекторите от данни да започнат да използват нови или модифицирани полета "
 "за въвеждане на данни."
 
-#: include/global_arrays.php:265
+#: include/global_arrays.php:268
 #, fuzzy
 msgid "Log file specified is not a Cacti log or archive file."
 msgstr "Посоченият регистрационен файл не е Cacti log или архивен файл."
 
-#: include/global_arrays.php:268
+#: include/global_arrays.php:271
 #, fuzzy
 msgid "Log file specified was Cacti archive file and was removed."
 msgstr "Лог файлът е указан като Cacti архивен файл и е премахнат."
 
-#: include/global_arrays.php:271
+#: include/global_arrays.php:274
 #, fuzzy
 msgid "Cacti log purged successfully"
 msgstr "Кактусният дневник успешно се прочисти"
 
-#: include/global_arrays.php:274
+#: include/global_arrays.php:277
 #, fuzzy
 msgid ""
 "If you force a password change, you must also allow the user to change their "
@@ -7289,12 +7293,12 @@ msgstr ""
 "Ако принудите да промените паролата, трябва също да позволите на потребителя "
 "да промени паролата си."
 
-#: include/global_arrays.php:277
+#: include/global_arrays.php:280
 #, fuzzy
 msgid "You are not allowed to change your password."
 msgstr "Нямате право да променяте паролата си."
 
-#: include/global_arrays.php:280
+#: include/global_arrays.php:283
 #, fuzzy
 msgid ""
 "Unable to determine size of password field, please check permissions of db "
@@ -7303,7 +7307,7 @@ msgstr ""
 "Не може да се определи полето за размера на паролата, моля, проверете "
 "разрешенията на потребителя"
 
-#: include/global_arrays.php:283
+#: include/global_arrays.php:286
 #, fuzzy
 msgid ""
 "Unable to increase size of password field, pleas check permission of db user"
@@ -7311,57 +7315,57 @@ msgstr ""
 "Невъзможно е да се увеличи полето за размера на паролата, да се провери "
 "разрешението на db потребител"
 
-#: include/global_arrays.php:286
+#: include/global_arrays.php:289
 #, fuzzy
 msgid "LDAP/AD based password change not supported."
 msgstr "Промяната на LDAP / AD парола не се поддържа."
 
-#: include/global_arrays.php:289
+#: include/global_arrays.php:292
 #, fuzzy
 msgid "Password successfully changed."
 msgstr "Паролата е променена успешно."
 
-#: include/global_arrays.php:292
+#: include/global_arrays.php:295
 #, fuzzy
 msgid "Unable to clear log, no write permissions"
 msgstr "Не може да се изчисти регистрационния файл, няма разрешения за запис"
 
-#: include/global_arrays.php:295
+#: include/global_arrays.php:298
 #, fuzzy
 msgid "Unable to clear log, file does not exist"
 msgstr "Не можете да изчистите регистрационния файл, файлът не съществува"
 
-#: include/global_arrays.php:298
+#: include/global_arrays.php:301
 #, fuzzy
 msgid "CSRF Timeout, refreshing page."
 msgstr "CSRF Време за изчакване, опресняване на страницата."
 
-#: include/global_arrays.php:301
+#: include/global_arrays.php:304
 #, fuzzy
 msgid "CSRF Timeout occurred due to inactivity, page refreshed."
 msgstr "CSRF изчакване възникна поради неактивност, опресняване на страницата."
 
-#: include/global_arrays.php:304
+#: include/global_arrays.php:307
 #, fuzzy
 msgid "Invalid timestamp. Select timestamp in the future."
 msgstr "Невалиден времеви отпечатък. В бъдеще изберете клеймо."
 
-#: include/global_arrays.php:307
+#: include/global_arrays.php:310
 #, fuzzy
 msgid "Data Collector(s) synchronized for offline operation"
 msgstr "Данните колектори са синхронизирани за офлайн операция"
 
-#: include/global_arrays.php:310
+#: include/global_arrays.php:313
 #, fuzzy
 msgid "Data Collector(s) not found when attempting synchronization"
 msgstr "Колектор (и) за данни не са намерени при опит за синхронизация"
 
-#: include/global_arrays.php:313
+#: include/global_arrays.php:316
 #, fuzzy
 msgid "Unable to establish MySQL connection with Remote Data Collector."
 msgstr "Не може да се установи връзка с MySQL с Remote Data Collector."
 
-#: include/global_arrays.php:316
+#: include/global_arrays.php:319
 #, fuzzy
 msgid ""
 "Data Collector synchronization must be initiated from the main Cacti server."
@@ -7369,12 +7373,12 @@ msgstr ""
 "Синхронизацията на колектор данни трябва да се инициира от главния Cacti "
 "сървър."
 
-#: include/global_arrays.php:319
+#: include/global_arrays.php:322
 #, fuzzy
 msgid "Synchronization does not include the Central Cacti Database server."
 msgstr "Синхронизацията не включва централния сървър на Cacti Database."
 
-#: include/global_arrays.php:322
+#: include/global_arrays.php:325
 #, fuzzy
 msgid ""
 "When saving a Remote Data Collector, the Database Hostname must be unique "
@@ -7383,7 +7387,7 @@ msgstr ""
 "Когато запазвате отдалечен колектор данни, името на хоста на базата данни "
 "трябва да бъде уникално за всички останали."
 
-#: include/global_arrays.php:325
+#: include/global_arrays.php:328
 #, fuzzy
 msgid ""
 "Your Remote Database Hostname must be something other than 'localhost' for "
@@ -7392,49 +7396,49 @@ msgstr ""
 "Името на хоста на отдалечената база данни трябва да е нещо различно от &quot;"
 "localhost&quot; за всеки отдалечен колектор данни."
 
-#: include/global_arrays.php:328
+#: include/global_arrays.php:331
 #, fuzzy
 msgid "Report Saved"
 msgstr "Докладът е запазен"
 
-#: include/global_arrays.php:331
+#: include/global_arrays.php:334
 #, fuzzy
 msgid "Report Save Failed"
 msgstr "Запазването на отчета не бе успешно"
 
-#: include/global_arrays.php:334
+#: include/global_arrays.php:337
 #, fuzzy
 msgid "Report Item Saved"
 msgstr "Отчетният елемент е запазен"
 
-#: include/global_arrays.php:337
+#: include/global_arrays.php:340
 #, fuzzy
 msgid "Report Item Save Failed"
 msgstr "Запазване на елемента за отчета е неуспешно"
 
-#: include/global_arrays.php:340
+#: include/global_arrays.php:343
 #, fuzzy
 msgid "Graph was not found attempting to Add to Report"
 msgstr "Графиката не бе намерена в опит да се добави към отчета"
 
-#: include/global_arrays.php:343
+#: include/global_arrays.php:346
 #, fuzzy
 msgid "Unable to Add Graphs.  Current user is not owner"
 msgstr "Графиките не могат да се добавят. Текущият потребител не е собственик"
 
-#: include/global_arrays.php:346
+#: include/global_arrays.php:349
 #, fuzzy
 msgid "Unable to Add all Graphs.  See error message for details."
 msgstr ""
 "Не може да се добавят всички графи. Вижте съобщението за грешка за "
 "подробности."
 
-#: include/global_arrays.php:349
+#: include/global_arrays.php:352
 #, fuzzy
 msgid "You must select at least one Graph to add to a Report."
 msgstr "Трябва да изберете поне една графика, която да добавите към отчет."
 
-#: include/global_arrays.php:352
+#: include/global_arrays.php:355
 #, fuzzy
 msgid ""
 "All Graphs have been added to the Report.  Duplicate Graphs with the same "
@@ -7443,7 +7447,7 @@ msgstr ""
 "Всички графики са добавени към отчета. Дублирани графики със същия период "
 "бяха пропуснати."
 
-#: include/global_arrays.php:355
+#: include/global_arrays.php:358
 #, fuzzy
 msgid ""
 "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next "
@@ -7453,61 +7457,61 @@ msgstr ""
 "следващото стартиране на полера, а Remote Data Collectors ще се "
 "синхронизират след това."
 
-#: include/global_arrays.php:358
+#: include/global_arrays.php:361
 msgid "Permission Denied.  You do not have permission to the requested action."
 msgstr ""
 
-#: include/global_arrays.php:361
+#: include/global_arrays.php:364
 msgid "Page is not defined.  Therefore, it can not be displayed."
 msgstr ""
 
-#: include/global_arrays.php:364
+#: include/global_arrays.php:367
 #, fuzzy
 msgid "Unexpected error occurred"
 msgstr "Възникна неочаквана грешка"
 
-#: include/global_arrays.php:425 include/global_arrays.php:804
+#: include/global_arrays.php:428 include/global_arrays.php:807
 #, fuzzy
 msgid "Function"
 msgstr "функция"
 
-#: include/global_arrays.php:426 include/global_arrays.php:806
+#: include/global_arrays.php:429 include/global_arrays.php:809
 #, fuzzy
 msgid "Special Data Source"
 msgstr "Специален източник на данни"
 
-#: include/global_arrays.php:427 include/global_arrays.php:808
+#: include/global_arrays.php:430 include/global_arrays.php:811
 #, fuzzy
 msgid "Custom String"
 msgstr "Персонализиран низ"
 
-#: include/global_arrays.php:431 include/global_arrays.php:845
+#: include/global_arrays.php:434 include/global_arrays.php:848
 #, fuzzy
 msgid "Current Graph Item Data Source"
 msgstr "Текущ източник на данни за графичния елемент"
 
-#: include/global_arrays.php:437 include/global_arrays.php:444
+#: include/global_arrays.php:440 include/global_arrays.php:447
 #, fuzzy
 msgid "Script/Command"
 msgstr "Script / Command"
 
-#: include/global_arrays.php:439 include/global_arrays.php:445
+#: include/global_arrays.php:442 include/global_arrays.php:448
 #: utilities.php:1712
 #, fuzzy
 msgid "Script Server"
 msgstr "Сървър за скриптове"
 
-#: include/global_arrays.php:451
+#: include/global_arrays.php:454
 #, fuzzy
 msgid "Index Count"
 msgstr "Брой индекси"
 
-#: include/global_arrays.php:452
+#: include/global_arrays.php:455
 #, fuzzy
 msgid "Verify All"
 msgstr "Потвърдете всичко"
 
-#: include/global_arrays.php:456
+#: include/global_arrays.php:459
 #, fuzzy
 msgid ""
 "All Re-Indexing will be manual or managed through scripts or Device "
@@ -7516,1792 +7520,1792 @@ msgstr ""
 "Цялото повторно индексиране ще бъде ръчно или управлявано чрез скриптове или "
 "устройство за автоматизация."
 
-#: include/global_arrays.php:457
+#: include/global_arrays.php:460
 #, fuzzy
 msgid ""
 "When the Devices SNMP uptime goes backward, a Re-Index will be performed."
 msgstr ""
 "Когато ъптаймът на устройството SNMP се върне назад, ще се извърши Re-Index."
 
-#: include/global_arrays.php:458
+#: include/global_arrays.php:461
 #, fuzzy
 msgid "When the Data Query index count changes, a Re-Index will be performed."
 msgstr ""
 "Когато индексът на запитване за данни се промени, ще се извърши повторно "
 "въвеждане."
 
-#: include/global_arrays.php:459
+#: include/global_arrays.php:462
 #, fuzzy
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
 msgstr ""
 "При всеки цикъл на проучване ще се извърши повторно индексиране. Много скъп."
 
-#: include/global_arrays.php:463
+#: include/global_arrays.php:466
 #, fuzzy
 msgid "SNMP Field Name (Dropdown)"
 msgstr "Име на полето SNMP (падащо меню)"
 
-#: include/global_arrays.php:464
+#: include/global_arrays.php:467
 #, fuzzy
 msgid "SNMP Field Value (From User)"
 msgstr "Стойност на полето SNMP (от потребител)"
 
-#: include/global_arrays.php:465
+#: include/global_arrays.php:468
 #, fuzzy
 msgid "SNMP Output Type (Dropdown)"
 msgstr "Тип изход SNMP (падащо меню)"
 
-#: include/global_arrays.php:489 include/global_arrays.php:495
+#: include/global_arrays.php:492 include/global_arrays.php:498
 msgid "Normal"
 msgstr "Нормално"
 
-#: include/global_arrays.php:490
+#: include/global_arrays.php:493
 msgid "Light"
 msgstr "Светла"
 
-#: include/global_arrays.php:491 include/global_arrays.php:496
+#: include/global_arrays.php:494 include/global_arrays.php:499
 #, fuzzy
 msgid "Mono"
 msgstr "Mono"
 
-#: include/global_arrays.php:500
+#: include/global_arrays.php:503
 msgid "North"
 msgstr "Север"
 
-#: include/global_arrays.php:501
+#: include/global_arrays.php:504
 msgid "South"
 msgstr "Юг"
 
-#: include/global_arrays.php:502
+#: include/global_arrays.php:505
 msgid "West"
 msgstr "Запад"
 
-#: include/global_arrays.php:503
+#: include/global_arrays.php:506
 msgid "East"
 msgstr "Изток"
 
-#: include/global_arrays.php:508
+#: include/global_arrays.php:511
 msgid "Left"
 msgstr "Ляво"
 
-#: include/global_arrays.php:509
+#: include/global_arrays.php:512
 msgid "Right"
 msgstr "Дясно"
 
-#: include/global_arrays.php:510
+#: include/global_arrays.php:513
 msgid "Justified"
 msgstr "Justified"
 
-#: include/global_arrays.php:511 lib/html.php:2358
+#: include/global_arrays.php:514 lib/html.php:2358
 msgid "Center"
 msgstr "Център"
 
-#: include/global_arrays.php:515
+#: include/global_arrays.php:518
 #, fuzzy
 msgid "Top -> Down"
 msgstr "Горе -&gt; надолу"
 
-#: include/global_arrays.php:516
+#: include/global_arrays.php:519
 #, fuzzy
 msgid "Bottom -> Up"
 msgstr "Отдолу -&gt; нагоре"
 
-#: include/global_arrays.php:520 tree.php:1473
+#: include/global_arrays.php:523 tree.php:1473
 #, fuzzy
 msgid "Numeric"
 msgstr "Цифрова"
 
-#: include/global_arrays.php:521
+#: include/global_arrays.php:524
 msgid "Timestamp"
 msgstr "времеви отпечатъци"
 
-#: include/global_arrays.php:522
+#: include/global_arrays.php:525
 msgid "Duration"
 msgstr "Продължителност"
 
-#: include/global_arrays.php:560
+#: include/global_arrays.php:563
 #, fuzzy
 msgid "Not In Use"
 msgstr "Не се използва"
 
-#: include/global_arrays.php:561 include/global_arrays.php:562
-#: include/global_arrays.php:563 include/global_arrays.php:770
-#: include/global_arrays.php:771
+#: include/global_arrays.php:564 include/global_arrays.php:565
+#: include/global_arrays.php:566 include/global_arrays.php:773
+#: include/global_arrays.php:774
 #, fuzzy, php-format
 msgid "Version %d"
 msgstr "Версия% d"
 
-#: include/global_arrays.php:567 include/global_arrays.php:573
+#: include/global_arrays.php:570 include/global_arrays.php:576
 msgid "[None]"
 msgstr "[Нищо]"
 
-#: include/global_arrays.php:568
+#: include/global_arrays.php:571
 #, fuzzy
 msgid "MD5"
 msgstr "MD5"
 
-#: include/global_arrays.php:569
+#: include/global_arrays.php:572
 #, fuzzy
 msgid "SHA"
 msgstr "SHA"
 
-#: include/global_arrays.php:574
+#: include/global_arrays.php:577
 #, fuzzy
 msgid "DES"
 msgstr "DES"
 
-#: include/global_arrays.php:575
+#: include/global_arrays.php:578
 #, fuzzy
 msgid "AES"
 msgstr "AES"
 
-#: include/global_arrays.php:584
+#: include/global_arrays.php:587
 #, fuzzy
 msgid "Logfile Only"
 msgstr "Само лог"
 
-#: include/global_arrays.php:585
+#: include/global_arrays.php:588
 #, fuzzy
 msgid "Logfile and Syslog/Eventlog"
 msgstr "Logfile и Syslog / Eventlog"
 
-#: include/global_arrays.php:586
+#: include/global_arrays.php:589
 #, fuzzy
 msgid "Syslog/Eventlog Only"
 msgstr "Само Syslog / Eventlog"
 
-#: include/global_arrays.php:595
+#: include/global_arrays.php:598
 #, fuzzy
 msgid "SNMP getNext"
 msgstr "SNMP getNext"
 
-#: include/global_arrays.php:600
+#: include/global_arrays.php:603
 #, fuzzy
 msgid "ICMP Ping"
 msgstr "Пинг от ICMP"
 
-#: include/global_arrays.php:601
+#: include/global_arrays.php:604
 #, fuzzy
 msgid "TCP Ping"
 msgstr "TCP Ping"
 
-#: include/global_arrays.php:602
+#: include/global_arrays.php:605
 #, fuzzy
 msgid "UDP Ping"
 msgstr "UDP пинг"
 
-#: include/global_arrays.php:606
+#: include/global_arrays.php:609
 #, fuzzy
 msgid "NONE - Syslog Only if Selected"
 msgstr "NONE - Само Syslog, ако е избрано"
 
-#: include/global_arrays.php:607
+#: include/global_arrays.php:610
 #, fuzzy
 msgid "LOW - Statistics and Errors"
 msgstr "LOW - статистика и грешки"
 
-#: include/global_arrays.php:608
+#: include/global_arrays.php:611
 #, fuzzy
 msgid "MEDIUM - Statistics, Errors and Results"
 msgstr "СРЕДНО - статистика, грешки и резултати"
 
-#: include/global_arrays.php:609
+#: include/global_arrays.php:612
 #, fuzzy
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
 msgstr "HIGH - статистика, грешки, резултати и основни I / O събития"
 
-#: include/global_arrays.php:610
+#: include/global_arrays.php:613
 #, fuzzy
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
 msgstr ""
 "DEBUG - Статистика, грешки, резултати, входно / изходен и програмен поток"
 
-#: include/global_arrays.php:611
+#: include/global_arrays.php:614
 #, fuzzy
 msgid "DEVEL - Developer DEBUG Level"
 msgstr "DEVEL - ниво за разработване на DEBUG"
 
-#: include/global_arrays.php:624
+#: include/global_arrays.php:627
 #, fuzzy
 msgid "Selected Poller Interval"
 msgstr "Избрани интервали за полъри"
 
-#: include/global_arrays.php:642 include/global_arrays.php:643
-#: include/global_arrays.php:644 include/global_arrays.php:645
-#: include/global_arrays.php:709 include/global_arrays.php:710
-#: include/global_arrays.php:711 include/global_arrays.php:712
+#: include/global_arrays.php:645 include/global_arrays.php:646
+#: include/global_arrays.php:647 include/global_arrays.php:648
+#: include/global_arrays.php:712 include/global_arrays.php:713
+#: include/global_arrays.php:714 include/global_arrays.php:715
 #, fuzzy, php-format
 msgid "Every %d Seconds"
 msgstr "Всеки% d секунди"
 
-#: include/global_arrays.php:646 include/global_arrays.php:713
-#: include/global_arrays.php:738
+#: include/global_arrays.php:649 include/global_arrays.php:716
+#: include/global_arrays.php:741
 #, fuzzy
 msgid "Every Minute"
 msgstr "Всяка минута"
 
-#: include/global_arrays.php:647 include/global_arrays.php:648
-#: include/global_arrays.php:649 include/global_arrays.php:650
-#: include/global_arrays.php:714 include/global_arrays.php:719
-#: include/global_arrays.php:739
+#: include/global_arrays.php:650 include/global_arrays.php:651
+#: include/global_arrays.php:652 include/global_arrays.php:653
+#: include/global_arrays.php:717 include/global_arrays.php:722
+#: include/global_arrays.php:742
 #, fuzzy, php-format
 msgid "Every %d Minutes"
 msgstr "Всеки% d минути"
 
-#: include/global_arrays.php:651 include/global_arrays.php:720
+#: include/global_arrays.php:654 include/global_arrays.php:723
 #, fuzzy
 msgid "Every Hour"
 msgstr "Всеки час"
 
-#: include/global_arrays.php:652 include/global_arrays.php:653
-#: include/global_arrays.php:654 include/global_arrays.php:655
-#: include/global_arrays.php:721 include/global_arrays.php:722
-#: include/global_arrays.php:723 include/global_arrays.php:724
-#: include/global_arrays.php:1679 include/global_arrays.php:1680
-#: include/global_arrays.php:1681 include/global_arrays.php:1682
-#: include/global_arrays.php:1683 include/global_settings.php:1975
+#: include/global_arrays.php:655 include/global_arrays.php:656
+#: include/global_arrays.php:657 include/global_arrays.php:658
+#: include/global_arrays.php:724 include/global_arrays.php:725
+#: include/global_arrays.php:726 include/global_arrays.php:727
+#: include/global_arrays.php:1682 include/global_arrays.php:1683
+#: include/global_arrays.php:1684 include/global_arrays.php:1685
+#: include/global_arrays.php:1686 include/global_settings.php:1975
 #: include/global_settings.php:1976
 #, fuzzy, php-format
 msgid "Every %d Hours"
 msgstr "Всеки% d часа"
 
-#: include/global_arrays.php:656
+#: include/global_arrays.php:659
 #, fuzzy
 msgid "Every %1 Day"
 msgstr "Всеки% 1 ден"
 
-#: include/global_arrays.php:696 include/global_arrays.php:1314
+#: include/global_arrays.php:699 include/global_arrays.php:1317
 #: include/global_settings.php:1226 rrdcleaner.php:493
 #, fuzzy, php-format
 msgid "%d Year"
 msgstr "% d Година"
 
-#: include/global_arrays.php:718
+#: include/global_arrays.php:721
 #, fuzzy
 msgid "Disabled/Manual"
 msgstr "За хора с увреждания / Manual"
 
-#: include/global_arrays.php:725
+#: include/global_arrays.php:728
 #, fuzzy
 msgid "Every day"
 msgstr "Всеки ден"
 
-#: include/global_arrays.php:729
+#: include/global_arrays.php:732
 #, fuzzy
 msgid "1 Thread (default)"
 msgstr "1 Тема (по подразбиране)"
 
-#: include/global_arrays.php:753
+#: include/global_arrays.php:756
 #, fuzzy
 msgid "Builtin Authentication"
 msgstr "Вградена удостоверяване"
 
-#: include/global_arrays.php:754
+#: include/global_arrays.php:757
 #, fuzzy
 msgid "Web Basic Authentication"
 msgstr "Уеб основно удостоверяване"
 
-#: include/global_arrays.php:758
+#: include/global_arrays.php:761
 #, fuzzy
 msgid "LDAP Authentication"
 msgstr "LDAP удостоверяване"
 
-#: include/global_arrays.php:759
+#: include/global_arrays.php:762
 #, fuzzy
 msgid "Multiple LDAP/AD Domains"
 msgstr "Множество LDAP / AD домейни"
 
-#: include/global_arrays.php:764
+#: include/global_arrays.php:767
 #, fuzzy
 msgid "Active Directory"
 msgstr "Active Directory"
 
-#: include/global_arrays.php:776 include/global_settings.php:1556
+#: include/global_arrays.php:779 include/global_settings.php:1556
 msgid "SSL"
 msgstr "SSL"
 
-#: include/global_arrays.php:777 include/global_settings.php:1557
+#: include/global_arrays.php:780 include/global_settings.php:1557
 #, fuzzy
 msgid "TLS"
 msgstr "TLS"
 
-#: include/global_arrays.php:781
+#: include/global_arrays.php:784
 #, fuzzy
 msgid "No Searching"
 msgstr "Няма търсене"
 
-#: include/global_arrays.php:782
+#: include/global_arrays.php:785
 #, fuzzy
 msgid "Anonymous Searching"
 msgstr "Анонимно търсене"
 
-#: include/global_arrays.php:783
+#: include/global_arrays.php:786
 #, fuzzy
 msgid "Specific Searching"
 msgstr "Специфично търсене"
 
-#: include/global_arrays.php:800
+#: include/global_arrays.php:803
 #, fuzzy
 msgid "Enabled (strict mode)"
 msgstr "Активирано (строг режим)"
 
-#: include/global_arrays.php:805 include/global_form.php:2034
+#: include/global_arrays.php:808 include/global_form.php:2034
 #: include/global_form.php:2076 lib/api_automation.php:1286
 #: lib/api_automation.php:1348
 #, fuzzy
 msgid "Operator"
 msgstr "Оператор"
 
-#: include/global_arrays.php:807
+#: include/global_arrays.php:810
 #, fuzzy
 msgid "Another CDEF"
 msgstr "Друг CDEF"
 
-#: include/global_arrays.php:826
+#: include/global_arrays.php:829
 #, fuzzy
 msgid "Inherit Parent Sorting"
 msgstr "Наследи сортирането на родители"
 
-#: include/global_arrays.php:827
+#: include/global_arrays.php:830
 #, fuzzy
 msgid "Manual Ordering (No Sorting)"
 msgstr "Ръчна поръчка (без сортиране)"
 
-#: include/global_arrays.php:828
+#: include/global_arrays.php:831
 #, fuzzy
 msgid "Alphabetic Ordering"
 msgstr "Азбучен ред"
 
-#: include/global_arrays.php:829
+#: include/global_arrays.php:832
 #, fuzzy
 msgid "Natural Ordering"
 msgstr "Естествен ред"
 
-#: include/global_arrays.php:830
+#: include/global_arrays.php:833
 #, fuzzy
 msgid "Numeric Ordering"
 msgstr "Цифрова поръчка"
 
-#: include/global_arrays.php:834 lib/rrd.php:2783
+#: include/global_arrays.php:837 lib/rrd.php:2783
 msgid "Header"
 msgstr "Хедър"
 
-#: include/global_arrays.php:835 include/global_arrays.php:886
-#: include/global_arrays.php:1501 include/global_arrays.php:1668
+#: include/global_arrays.php:838 include/global_arrays.php:889
+#: include/global_arrays.php:1504 include/global_arrays.php:1671
 #: lib/html.php:2347
 msgid "Graph"
 msgstr "Графика"
 
-#: include/global_arrays.php:841 tree.php:1660
+#: include/global_arrays.php:844 tree.php:1660
 #, fuzzy
 msgid "Data Query Index"
 msgstr "Индекс на заявките за данни"
 
-#: include/global_arrays.php:846
+#: include/global_arrays.php:849
 #, fuzzy
 msgid "Current Graph Item Polling Interval"
 msgstr "Интервал на избиране на текущата позиция на графиката"
 
-#: include/global_arrays.php:847
+#: include/global_arrays.php:850
 #, fuzzy
 msgid "All Data Sources (Do not Include Duplicates)"
 msgstr "Всички източници на данни (не се включват дубликати)"
 
-#: include/global_arrays.php:848
+#: include/global_arrays.php:851
 #, fuzzy
 msgid "All Data Sources (Include Duplicates)"
 msgstr "Всички източници на данни (включва дубликати)"
 
-#: include/global_arrays.php:849
+#: include/global_arrays.php:852
 #, fuzzy
 msgid "All Similar Data Sources (Do not Include Duplicates)"
 msgstr "Всички подобни източници на данни (не включва дубликати)"
 
-#: include/global_arrays.php:850
+#: include/global_arrays.php:853
 #, fuzzy
 msgid "All Similar Data Sources (Do not Include Duplicates) Polling Interval"
 msgstr ""
 "Всички подобни източници на данни (Не включвайте дубликати) Интервал на "
 "запитване"
 
-#: include/global_arrays.php:851
+#: include/global_arrays.php:854
 #, fuzzy
 msgid "All Similar Data Sources (Include Duplicates)"
 msgstr "Всички подобни източници на данни (включва дубликати)"
 
-#: include/global_arrays.php:852
+#: include/global_arrays.php:855
 #, fuzzy
 msgid "Current Data Source Item: Minimum Value"
 msgstr "Текущ източник на данни: Минимална стойност"
 
-#: include/global_arrays.php:853
+#: include/global_arrays.php:856
 #, fuzzy
 msgid "Current Data Source Item: Maximum Value"
 msgstr "Текущ източник на данни: Максимална стойност"
 
-#: include/global_arrays.php:854
+#: include/global_arrays.php:857
 #, fuzzy
 msgid "Graph: Lower Limit"
 msgstr "Графика: Долен лимит"
 
-#: include/global_arrays.php:855
+#: include/global_arrays.php:858
 #, fuzzy
 msgid "Graph: Upper Limit"
 msgstr "Графика: горна граница"
 
-#: include/global_arrays.php:856
+#: include/global_arrays.php:859
 #, fuzzy
 msgid "Count of All Data Sources (Do not Include Duplicates)"
 msgstr "Брой на всички източници на данни (не включва дубликати)"
 
-#: include/global_arrays.php:857
+#: include/global_arrays.php:860
 #, fuzzy
 msgid "Count of All Data Sources (Include Duplicates)"
 msgstr "Брой на всички източници на данни (включете дубликати)"
 
-#: include/global_arrays.php:858
+#: include/global_arrays.php:861
 #, fuzzy
 msgid "Count of All Similar Data Sources (Do not Include Duplicates)"
 msgstr "Брой на всички сходни източници на данни (не включва дубликати)"
 
-#: include/global_arrays.php:859
+#: include/global_arrays.php:862
 #, fuzzy
 msgid "Count of All Similar Data Sources (Include Duplicates)"
 msgstr "Брой на всички сходни източници на данни (включително дубликати)"
 
-#: include/global_arrays.php:864 include/global_arrays.php:942
+#: include/global_arrays.php:867 include/global_arrays.php:945
 #, fuzzy
 msgid "Main Console"
 msgstr "Административна конзола"
 
-#: include/global_arrays.php:865
+#: include/global_arrays.php:868
 #, fuzzy
 msgid "Console Page"
 msgstr "Най-горе на страницата на конзолата"
 
-#: include/global_arrays.php:868 lib/html_form_template.php:606
+#: include/global_arrays.php:871 lib/html_form_template.php:606
 #: lib/html_form_template.php:618
 #, fuzzy
 msgid "New Graphs"
 msgstr "Нови графики"
 
-#: include/global_arrays.php:871 include/global_arrays.php:926
-#: include/global_arrays.php:944
+#: include/global_arrays.php:874 include/global_arrays.php:929
+#: include/global_arrays.php:947
 msgid "Management"
 msgstr "управление"
 
-#: include/global_arrays.php:873 sites.php:416 sites.php:431 sites.php:511
+#: include/global_arrays.php:876 sites.php:416 sites.php:431 sites.php:511
 #: tree.php:787 tree.php:1985
 #, fuzzy
 msgid "Sites"
 msgstr "сайтове"
 
-#: include/global_arrays.php:874 include/global_arrays.php:1083 tree.php:1893
+#: include/global_arrays.php:877 include/global_arrays.php:1086 tree.php:1893
 #: tree.php:1908 tree.php:1968 user_admin.php:1550 user_admin.php:2979
 #: user_admin.php:3064 user_group_admin.php:1239 user_group_admin.php:2468
 #, fuzzy
 msgid "Trees"
 msgstr "Дървета"
 
-#: include/global_arrays.php:879 include/global_arrays.php:929
-#: include/global_arrays.php:945
+#: include/global_arrays.php:882 include/global_arrays.php:932
+#: include/global_arrays.php:948
 #, fuzzy
 msgid "Data Collection"
 msgstr "Събиране на данни"
 
-#: include/global_arrays.php:880 include/global_arrays.php:930 pollers.php:723
+#: include/global_arrays.php:883 include/global_arrays.php:933 pollers.php:723
 #, fuzzy
 msgid "Data Collectors"
 msgstr "Събирачи на данни"
 
-#: include/global_arrays.php:888 include/global_arrays.php:2683
+#: include/global_arrays.php:891 include/global_arrays.php:2686
 #, fuzzy
 msgid "Aggregate"
 msgstr "агрегат"
 
-#: include/global_arrays.php:891 include/global_arrays.php:947
-#: include/global_arrays.php:1075 include/global_settings.php:468
+#: include/global_arrays.php:894 include/global_arrays.php:950
+#: include/global_arrays.php:1078 include/global_settings.php:468
 #, fuzzy
 msgid "Automation"
 msgstr "Автоматизация"
 
-#: include/global_arrays.php:893
+#: include/global_arrays.php:896
 #, fuzzy
 msgid "Discovered Devices"
 msgstr "Открити устройства"
 
-#: include/global_arrays.php:894
+#: include/global_arrays.php:897
 #, fuzzy
 msgid "Device Rules"
 msgstr "Правила на устройството"
 
-#: include/global_arrays.php:899 include/global_arrays.php:948
-#: include/global_arrays.php:1087 lib/html_filter.php:178
+#: include/global_arrays.php:902 include/global_arrays.php:951
+#: include/global_arrays.php:1090 lib/html_filter.php:178
 #: lib/html_graph.php:252 lib/html_tree.php:1050
 #, fuzzy
 msgid "Presets"
 msgstr "пресети"
 
-#: include/global_arrays.php:900
+#: include/global_arrays.php:903
 #, fuzzy
 msgid "Data Profiles"
 msgstr "Профили за данни"
 
-#: include/global_arrays.php:902 include/global_arrays.php:2308 vdef.php:691
+#: include/global_arrays.php:905 include/global_arrays.php:2311 vdef.php:691
 #: vdef.php:705 vdef.php:878
 #, fuzzy
 msgid "VDEFs"
 msgstr "VDEFs"
 
-#: include/global_arrays.php:906 include/global_arrays.php:949
+#: include/global_arrays.php:909 include/global_arrays.php:952
 msgid "Import/Export"
 msgstr "Импорт/Експорт"
 
-#: include/global_arrays.php:907 include/global_arrays.php:1094
-#: include/global_arrays.php:2428
+#: include/global_arrays.php:910 include/global_arrays.php:1097
+#: include/global_arrays.php:2431
 msgid "Import Templates"
 msgstr "Импортиране на шаблони"
 
-#: include/global_arrays.php:908 include/global_arrays.php:1093
-#: include/global_arrays.php:2416 templates_export.php:159
+#: include/global_arrays.php:911 include/global_arrays.php:1096
+#: include/global_arrays.php:2419 templates_export.php:159
 msgid "Export Templates"
 msgstr "Експортиране на шаблони"
 
-#: include/global_arrays.php:910 include/global_arrays.php:932
-#: include/global_arrays.php:950 lib/plugins.php:949
+#: include/global_arrays.php:913 include/global_arrays.php:935
+#: include/global_arrays.php:953 lib/plugins.php:955
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: include/global_arrays.php:911 include/global_arrays.php:933
+#: include/global_arrays.php:914 include/global_arrays.php:936
 #: lib/html.php:2110 lib/html.php:2362
 msgid "Settings"
 msgstr "Настойки"
 
-#: include/global_arrays.php:912 include/global_arrays.php:2362
+#: include/global_arrays.php:915 include/global_arrays.php:2365
 #: user_admin.php:2260 user_admin.php:2314 user_group_admin.php:668
 #: user_group_admin.php:2553
 msgid "Users"
 msgstr "Потребители"
 
-#: include/global_arrays.php:913 include/global_arrays.php:2392
+#: include/global_arrays.php:916 include/global_arrays.php:2395
 #, fuzzy
 msgid "User Groups"
 msgstr "Потребителски групи"
 
-#: include/global_arrays.php:914 include/global_arrays.php:2380
+#: include/global_arrays.php:917 include/global_arrays.php:2383
 #: user_domains.php:645 user_domains.php:736
 #, fuzzy
 msgid "User Domains"
 msgstr "Потребителски домейни"
 
-#: include/global_arrays.php:916 include/global_arrays.php:935
-#: include/global_arrays.php:951 include/global_arrays.php:2236
+#: include/global_arrays.php:919 include/global_arrays.php:938
+#: include/global_arrays.php:954 include/global_arrays.php:2239
 msgid "Utilities"
 msgstr "Приложения"
 
-#: include/global_arrays.php:917 include/global_arrays.php:936
+#: include/global_arrays.php:920 include/global_arrays.php:939
 #, fuzzy
 msgid "System Utilities"
 msgstr "Утилити"
 
-#: include/global_arrays.php:918 include/global_arrays.php:952
-#: include/global_arrays.php:968 include/global_arrays.php:1071 links.php:91
+#: include/global_arrays.php:921 include/global_arrays.php:955
+#: include/global_arrays.php:971 include/global_arrays.php:1074 links.php:91
 #: links.php:303 links.php:371 links.php:402 links.php:484
 #, fuzzy
 msgid "External Links"
 msgstr "Външни връзки"
 
-#: include/global_arrays.php:920 include/global_arrays.php:954
+#: include/global_arrays.php:923 include/global_arrays.php:957
 #, fuzzy
 msgid "Troubleshooting"
 msgstr "Отстраняване на проблеми"
 
-#: include/global_arrays.php:953
+#: include/global_arrays.php:956
 msgid "Support"
 msgstr "Поддръжка"
 
-#: include/global_arrays.php:977
+#: include/global_arrays.php:980
 #, fuzzy
 msgid "All Lines"
 msgstr "Всички линии"
 
-#: include/global_arrays.php:978 include/global_arrays.php:979
-#: include/global_arrays.php:980 include/global_arrays.php:981
-#: include/global_arrays.php:982 include/global_arrays.php:983
-#: include/global_arrays.php:984 include/global_arrays.php:985
-#: include/global_arrays.php:986 include/global_arrays.php:987
-#: include/global_arrays.php:988 include/global_arrays.php:989
+#: include/global_arrays.php:981 include/global_arrays.php:982
+#: include/global_arrays.php:983 include/global_arrays.php:984
+#: include/global_arrays.php:985 include/global_arrays.php:986
+#: include/global_arrays.php:987 include/global_arrays.php:988
+#: include/global_arrays.php:989 include/global_arrays.php:990
+#: include/global_arrays.php:991 include/global_arrays.php:992
 #, fuzzy, php-format
 msgid "%d Lines"
 msgstr "% d линии"
 
-#: include/global_arrays.php:1067
+#: include/global_arrays.php:1070
 #, fuzzy
 msgid "Console Access"
 msgstr "Конзолен достъп"
 
-#: include/global_arrays.php:1069
+#: include/global_arrays.php:1072
 #, fuzzy
 msgid "Realtime Graphs"
 msgstr "Графики в реално време"
 
-#: include/global_arrays.php:1070
+#: include/global_arrays.php:1073
 msgid "Update Profile"
 msgstr "Обнови профила си"
 
-#: include/global_arrays.php:1073 user_admin.php:2239
+#: include/global_arrays.php:1076 user_admin.php:2239
 msgid "User Management"
 msgstr "Права на потребители"
 
-#: include/global_arrays.php:1074
+#: include/global_arrays.php:1077
 #, fuzzy
 msgid "Settings/Utilities"
 msgstr "Настройки / Utilities"
 
-#: include/global_arrays.php:1076
+#: include/global_arrays.php:1079
 #, fuzzy
 msgid "Installation/Upgrades"
 msgstr "Инсталация / надстройки"
 
-#: include/global_arrays.php:1081
+#: include/global_arrays.php:1084
 #, fuzzy
 msgid "Sites/Devices/Data"
 msgstr "Сайтове / Устройства / данни"
 
-#: include/global_arrays.php:1084
+#: include/global_arrays.php:1087
 #, fuzzy
 msgid "Spike Management"
 msgstr "Управление на Спайк"
 
-#: include/global_arrays.php:1096 include/global_settings.php:810
+#: include/global_arrays.php:1099 include/global_settings.php:810
 #, fuzzy
 msgid "Log Management"
 msgstr "Управление на дневници"
 
-#: include/global_arrays.php:1097
+#: include/global_arrays.php:1100
 #, fuzzy
 msgid "Log Viewing"
 msgstr "Преглед на дневник"
 
-#: include/global_arrays.php:1099
+#: include/global_arrays.php:1102
 #, fuzzy
 msgid "Reports Management"
 msgstr "Управление на отчети"
 
-#: include/global_arrays.php:1100
+#: include/global_arrays.php:1103
 #, fuzzy
 msgid "Reports Creation"
 msgstr "Създаване на отчети"
 
-#: include/global_arrays.php:1104
+#: include/global_arrays.php:1107
 #, fuzzy
 msgid "Normal User"
 msgstr "Нормален потребител"
 
-#: include/global_arrays.php:1105
+#: include/global_arrays.php:1108
 #, fuzzy
 msgid "Template Editor"
 msgstr "Редактор на шаблони"
 
-#: include/global_arrays.php:1106
+#: include/global_arrays.php:1109
 #, fuzzy
 msgid "General Administration"
 msgstr "Обща администрация"
 
-#: include/global_arrays.php:1107
+#: include/global_arrays.php:1110
 #, fuzzy
 msgid "System Administration"
 msgstr "Администрация на системата"
 
-#: include/global_arrays.php:1201
+#: include/global_arrays.php:1204
 #, fuzzy
 msgid "CDEF"
 msgstr "CDEF"
 
-#: include/global_arrays.php:1202
+#: include/global_arrays.php:1205
 #, fuzzy
 msgid "CDEF Item"
 msgstr "CDEF Поз"
 
-#: include/global_arrays.php:1203
+#: include/global_arrays.php:1206
 #, fuzzy
 msgid "GPRINT Preset"
 msgstr "Предварително зададени GPRINT"
 
-#: include/global_arrays.php:1206
+#: include/global_arrays.php:1209
 #, fuzzy
 msgid "Data Input Field"
 msgstr "Поле за въвеждане на данни"
 
-#: include/global_arrays.php:1207 include/global_form.php:549
+#: include/global_arrays.php:1210 include/global_form.php:549
 #: include/global_form.php:1644
 #, fuzzy
 msgid "Data Source Profile"
 msgstr "Профил на източника на данни"
 
-#: include/global_arrays.php:1208
+#: include/global_arrays.php:1211
 #, fuzzy
 msgid "Data Template Item"
 msgstr "Шаблон за данни"
 
-#: include/global_arrays.php:1210
+#: include/global_arrays.php:1213
 #, fuzzy
 msgid "Graph Template Item"
 msgstr "Шаблон на графиката"
 
-#: include/global_arrays.php:1211
+#: include/global_arrays.php:1214
 #, fuzzy
 msgid "Graph Template Input"
 msgstr "Входен шаблон на графиката"
 
-#: include/global_arrays.php:1214
+#: include/global_arrays.php:1217
 #, fuzzy
 msgid "VDEF"
 msgstr "VDEF"
 
-#: include/global_arrays.php:1215
+#: include/global_arrays.php:1218
 #, fuzzy
 msgid "VDEF Item"
 msgstr "VDEF позиция"
 
-#: include/global_arrays.php:1266
+#: include/global_arrays.php:1269
 #, fuzzy
 msgid "Last Half Hour"
 msgstr "Последно полувреме"
 
-#: include/global_arrays.php:1267
+#: include/global_arrays.php:1270
 #, fuzzy
 msgid "Last Hour"
 msgstr "Последен час"
 
-#: include/global_arrays.php:1268 include/global_arrays.php:1269
-#: include/global_arrays.php:1270 include/global_arrays.php:1271
+#: include/global_arrays.php:1271 include/global_arrays.php:1272
+#: include/global_arrays.php:1273 include/global_arrays.php:1274
 #, fuzzy, php-format
 msgid "Last %d Hours"
 msgstr "Последно% d часа"
 
-#: include/global_arrays.php:1272
+#: include/global_arrays.php:1275
 #, fuzzy
 msgid "Last Day"
 msgstr "Последен ден"
 
-#: include/global_arrays.php:1273 include/global_arrays.php:1274
-#: include/global_arrays.php:1275
+#: include/global_arrays.php:1276 include/global_arrays.php:1277
+#: include/global_arrays.php:1278
 #, fuzzy, php-format
 msgid "Last %d Days"
 msgstr "Последни% d дни"
 
-#: include/global_arrays.php:1276
+#: include/global_arrays.php:1279
 #, fuzzy
 msgid "Last Week"
 msgstr "Миналата седмица"
 
-#: include/global_arrays.php:1277
+#: include/global_arrays.php:1280
 #, fuzzy, php-format
 msgid "Last %d Weeks"
 msgstr "Последно% d седмици"
 
-#: include/global_arrays.php:1278
+#: include/global_arrays.php:1281
 msgid "Last Month"
 msgstr "Последен Месец"
 
-#: include/global_arrays.php:1279 include/global_arrays.php:1280
-#: include/global_arrays.php:1281 include/global_arrays.php:1282
+#: include/global_arrays.php:1282 include/global_arrays.php:1283
+#: include/global_arrays.php:1284 include/global_arrays.php:1285
 #, fuzzy, php-format
 msgid "Last %d Months"
 msgstr "Последни% d месеца"
 
-#: include/global_arrays.php:1283
+#: include/global_arrays.php:1286
 #, fuzzy
 msgid "Last Year"
 msgstr "Миналата година"
 
-#: include/global_arrays.php:1284
+#: include/global_arrays.php:1287
 #, fuzzy, php-format
 msgid "Last %d Years"
 msgstr "Последни% d години"
 
-#: include/global_arrays.php:1285
+#: include/global_arrays.php:1288
 #, fuzzy
 msgid "Day Shift"
 msgstr "Дневна смяна"
 
-#: include/global_arrays.php:1286
+#: include/global_arrays.php:1289
 #, fuzzy
 msgid "This Day"
 msgstr "Ден(и)"
 
-#: include/global_arrays.php:1287
+#: include/global_arrays.php:1290
 #, fuzzy
 msgid "This Week"
 msgstr "Седмица (и)"
 
-#: include/global_arrays.php:1288
+#: include/global_arrays.php:1291
 msgid "This Month"
 msgstr "Този месец"
 
-#: include/global_arrays.php:1289
+#: include/global_arrays.php:1292
 msgid "This Year"
 msgstr "Тази година"
 
-#: include/global_arrays.php:1290
+#: include/global_arrays.php:1293
 #, fuzzy
 msgid "Previous Day"
 msgstr "Предишен ден"
 
-#: include/global_arrays.php:1291
+#: include/global_arrays.php:1294
 #, fuzzy
 msgid "Previous Week"
 msgstr "Предишната седмица"
 
-#: include/global_arrays.php:1292
+#: include/global_arrays.php:1295
 #, fuzzy
 msgid "Previous Month"
 msgstr "Предишен месец"
 
-#: include/global_arrays.php:1293
+#: include/global_arrays.php:1296
 #, fuzzy
 msgid "Previous Year"
 msgstr "Предходната година"
 
-#: include/global_arrays.php:1297
+#: include/global_arrays.php:1300
 #, fuzzy, php-format
 msgid "%d Min"
 msgstr "% d Мин"
 
-#: include/global_arrays.php:1329
+#: include/global_arrays.php:1332
 #, fuzzy
 msgid "Month Number, Day, Year"
 msgstr "Номер на месеца, ден, година"
 
-#: include/global_arrays.php:1330
+#: include/global_arrays.php:1333
 #, fuzzy
 msgid "Month Name, Day, Year"
 msgstr "Име на месеца, ден, година"
 
-#: include/global_arrays.php:1331
+#: include/global_arrays.php:1334
 #, fuzzy
 msgid "Day, Month Number, Year"
 msgstr "Ден, брой на месеца, година"
 
-#: include/global_arrays.php:1332
+#: include/global_arrays.php:1335
 #, fuzzy
 msgid "Day, Month Name, Year"
 msgstr "Ден, месец, година"
 
-#: include/global_arrays.php:1333
+#: include/global_arrays.php:1336
 #, fuzzy
 msgid "Year, Month Number, Day"
 msgstr "Година, месец, ден"
 
-#: include/global_arrays.php:1334
+#: include/global_arrays.php:1337
 #, fuzzy
 msgid "Year, Month Name, Day"
 msgstr "Година, Име на Месеца, Ден"
 
-#: include/global_arrays.php:1344
+#: include/global_arrays.php:1347
 #, fuzzy
 msgid "After Boost"
 msgstr "След повишаване"
 
-#: include/global_arrays.php:1354 include/global_arrays.php:1355
-#: include/global_arrays.php:1356 include/global_arrays.php:1357
-#: include/global_arrays.php:1358 include/global_arrays.php:1413
-#: include/global_arrays.php:1414
+#: include/global_arrays.php:1357 include/global_arrays.php:1358
+#: include/global_arrays.php:1359 include/global_arrays.php:1360
+#: include/global_arrays.php:1361 include/global_arrays.php:1416
+#: include/global_arrays.php:1417
 #, fuzzy, php-format
 msgid "%d MBytes"
 msgstr "% d МБ"
 
-#: include/global_arrays.php:1359
+#: include/global_arrays.php:1362
 #, fuzzy
 msgid "1 GByte"
 msgstr "1 GByte"
 
-#: include/global_arrays.php:1360 include/global_arrays.php:1416
+#: include/global_arrays.php:1363 include/global_arrays.php:1419
 #: lib/boost.php:34
 #, fuzzy, php-format
 msgid "%s GBytes"
 msgstr "%s GB"
 
-#: include/global_arrays.php:1361 include/global_arrays.php:1362
-#: include/global_arrays.php:1417 include/global_arrays.php:1418
-#: include/global_arrays.php:1419 include/global_arrays.php:1420
-#: include/global_arrays.php:1421 include/global_arrays.php:1422
+#: include/global_arrays.php:1364 include/global_arrays.php:1365
+#: include/global_arrays.php:1420 include/global_arrays.php:1421
+#: include/global_arrays.php:1422 include/global_arrays.php:1423
+#: include/global_arrays.php:1424 include/global_arrays.php:1425
 #, fuzzy, php-format
 msgid "%d GBytes"
 msgstr "% d GB"
 
-#: include/global_arrays.php:1375
+#: include/global_arrays.php:1378
 #, fuzzy
 msgid "2,000 Data Source Items"
 msgstr "2000 елемента на източника на данни"
 
-#: include/global_arrays.php:1376
+#: include/global_arrays.php:1379
 #, fuzzy
 msgid "5,000 Data Source Items"
 msgstr "5000 Елементи на източника на данни"
 
-#: include/global_arrays.php:1377
+#: include/global_arrays.php:1380
 #, fuzzy
 msgid "10,000 Data Source Items"
 msgstr "10 000 Елементи на Източника на Данни"
 
-#: include/global_arrays.php:1378
+#: include/global_arrays.php:1381
 #, fuzzy
 msgid "15,000 Data Source Items"
 msgstr "15 000 Елементи на източника на данни"
 
-#: include/global_arrays.php:1379
+#: include/global_arrays.php:1382
 #, fuzzy
 msgid "25,000 Data Source Items"
 msgstr "25 000 Елементи на източника на данни"
 
-#: include/global_arrays.php:1380
+#: include/global_arrays.php:1383
 #, fuzzy
 msgid "50,000 Data Source Items (Default)"
 msgstr "50 000 елемента на източника на данни (по подразбиране)"
 
-#: include/global_arrays.php:1381
+#: include/global_arrays.php:1384
 #, fuzzy
 msgid "100,000 Data Source Items"
 msgstr "100 000 Елементи на източника на данни"
 
-#: include/global_arrays.php:1382
+#: include/global_arrays.php:1385
 #, fuzzy
 msgid "200,000 Data Source Items"
 msgstr "200 000 Елементи на източника на данни"
 
-#: include/global_arrays.php:1383
+#: include/global_arrays.php:1386
 #, fuzzy
 msgid "400,000 Data Source Items"
 msgstr "400 000 Елементи на Източника на Данни"
 
-#: include/global_arrays.php:1400
+#: include/global_arrays.php:1403
 #, fuzzy
 msgid "2 Hours"
 msgstr "2 часа"
 
-#: include/global_arrays.php:1401
+#: include/global_arrays.php:1404
 #, fuzzy
 msgid "4 Hours"
 msgstr "4 часа"
 
-#: include/global_arrays.php:1402
+#: include/global_arrays.php:1405
 #, fuzzy
 msgid "6 Hours"
 msgstr "6 часа"
 
-#: include/global_arrays.php:1409
+#: include/global_arrays.php:1412
 #, fuzzy, php-format
 msgid "%s Hours"
 msgstr "%s часа"
 
-#: include/global_arrays.php:1415
+#: include/global_arrays.php:1418
 #, fuzzy, php-format
 msgid "%d GByte"
 msgstr "% d GB"
 
-#: include/global_arrays.php:1423
+#: include/global_arrays.php:1426
 msgid "Infinity"
 msgstr ""
 
-#: include/global_arrays.php:1430
+#: include/global_arrays.php:1433
 #, fuzzy, php-format
 msgid "%s Minutes"
 msgstr "%s Минути"
 
-#: include/global_arrays.php:1452
+#: include/global_arrays.php:1455
 #, fuzzy
 msgid "1 Megabyte"
 msgstr "1 мегабайт"
 
-#: include/global_arrays.php:1453 include/global_arrays.php:1454
-#: include/global_arrays.php:1455 include/global_arrays.php:1456
-#: include/global_arrays.php:1457 include/global_arrays.php:1458
+#: include/global_arrays.php:1456 include/global_arrays.php:1457
+#: include/global_arrays.php:1458 include/global_arrays.php:1459
+#: include/global_arrays.php:1460 include/global_arrays.php:1461
 #, fuzzy, php-format
 msgid "%d Megabytes"
 msgstr "% d мегабайта"
 
-#: include/global_arrays.php:1462
+#: include/global_arrays.php:1465
 msgid "Send Now"
 msgstr "Изпрати"
 
-#: include/global_arrays.php:1470
+#: include/global_arrays.php:1473
 #, fuzzy
 msgid "Take Ownership"
 msgstr "Вземете собственост"
 
-#: include/global_arrays.php:1474
+#: include/global_arrays.php:1477
 #, fuzzy
 msgid "Inline PNG Image"
 msgstr "Вградено PNG изображение"
 
-#: include/global_arrays.php:1479
+#: include/global_arrays.php:1482
 #, fuzzy
 msgid "Inline JPEG Image"
 msgstr "Вградено JPEG изображение"
 
-#: include/global_arrays.php:1480
+#: include/global_arrays.php:1483
 #, fuzzy
 msgid "Inline GIF Image"
 msgstr "Вградено GIF изображение"
 
-#: include/global_arrays.php:1483
+#: include/global_arrays.php:1486
 #, fuzzy
 msgid "Attached PNG Image"
 msgstr "Прикрепено PNG изображение"
 
-#: include/global_arrays.php:1486
+#: include/global_arrays.php:1489
 #, fuzzy
 msgid "Attached JPEG Image"
 msgstr "Прикрепено JPEG изображение"
 
-#: include/global_arrays.php:1487
+#: include/global_arrays.php:1490
 #, fuzzy
 msgid "Attached GIF Image"
 msgstr "Прикачено изображение в GIF"
 
-#: include/global_arrays.php:1491
+#: include/global_arrays.php:1494
 #, fuzzy
 msgid "Inline PNG Image, LN Style"
 msgstr "Вградено изображение PNG, стил LN"
 
-#: include/global_arrays.php:1493
+#: include/global_arrays.php:1496
 #, fuzzy
 msgid "Inline JPEG Image, LN Style"
 msgstr "Вградено JPEG изображение, LN стил"
 
-#: include/global_arrays.php:1494
+#: include/global_arrays.php:1497
 #, fuzzy
 msgid "Inline GIF Image, LN Style"
 msgstr "Вградено изображение на GIF, стил LN"
 
-#: include/global_arrays.php:1499
+#: include/global_arrays.php:1502
 msgid "Text"
 msgstr "Текст"
 
-#: include/global_arrays.php:1500 include/global_form.php:2154
+#: include/global_arrays.php:1503 include/global_form.php:2154
 msgid "Tree"
 msgstr "‎درخت"
 
-#: include/global_arrays.php:1502
+#: include/global_arrays.php:1505
 #, fuzzy
 msgid "Horizontal Rule"
 msgstr "Хоризонтално правило"
 
-#: include/global_arrays.php:1506
+#: include/global_arrays.php:1509
 msgid "left"
 msgstr "ляво"
 
-#: include/global_arrays.php:1507
+#: include/global_arrays.php:1510
 msgid "center"
 msgstr "център"
 
-#: include/global_arrays.php:1508
+#: include/global_arrays.php:1511
 msgid "right"
 msgstr "дясно"
 
-#: include/global_arrays.php:1512
+#: include/global_arrays.php:1515
 msgid "Minute(s)"
 msgstr "минута(и)"
 
-#: include/global_arrays.php:1513
+#: include/global_arrays.php:1516
 msgid "Hour(s)"
 msgstr "Час/ове"
 
-#: include/global_arrays.php:1514
+#: include/global_arrays.php:1517
 msgid "Day(s)"
 msgstr "Ден(и)"
 
-#: include/global_arrays.php:1515
+#: include/global_arrays.php:1518
 msgid "Week(s)"
 msgstr "Седмица (и)"
 
-#: include/global_arrays.php:1516
+#: include/global_arrays.php:1519
 #, fuzzy
 msgid "Month(s), Day of Month"
 msgstr "Месец, ден от месец"
 
-#: include/global_arrays.php:1517
+#: include/global_arrays.php:1520
 #, fuzzy
 msgid "Month(s), Day of Week"
 msgstr "Месец, ден от седмицата"
 
-#: include/global_arrays.php:1518
+#: include/global_arrays.php:1521
 msgid "Year(s)"
 msgstr "Година(и)"
 
-#: include/global_arrays.php:1522
+#: include/global_arrays.php:1525
 #, fuzzy
 msgid "Keep Graph Types"
 msgstr "Запазете типовете графики"
 
-#: include/global_arrays.php:1523
+#: include/global_arrays.php:1526
 #, fuzzy
 msgid "Keep Type and STACK"
 msgstr "Запази типа и стека"
 
-#: include/global_arrays.php:1524
+#: include/global_arrays.php:1527
 #, fuzzy
 msgid "Convert to AREA/STACK Graph"
 msgstr "Конвертиране в ОБЛАСТ / СТЪПКА Графика"
 
-#: include/global_arrays.php:1525
+#: include/global_arrays.php:1528
 #, fuzzy
 msgid "Convert to LINE1 Graph"
 msgstr "Конвертиране в LINE1 графика"
 
-#: include/global_arrays.php:1526
+#: include/global_arrays.php:1529
 #, fuzzy
 msgid "Convert to LINE2 Graph"
 msgstr "Конвертиране в LINE2 графика"
 
-#: include/global_arrays.php:1527
+#: include/global_arrays.php:1530
 #, fuzzy
 msgid "Convert to LINE3 Graph"
 msgstr "Конвертиране в LINE3 Графика"
 
-#: include/global_arrays.php:1528
+#: include/global_arrays.php:1531
 #, fuzzy
 msgid "Convert to LINE1/STACK Graph"
 msgstr "Конвертиране в LINE1 графика"
 
-#: include/global_arrays.php:1529
+#: include/global_arrays.php:1532
 #, fuzzy
 msgid "Convert to LINE2/STACK Graph"
 msgstr "Конвертиране в LINE2 графика"
 
-#: include/global_arrays.php:1530
+#: include/global_arrays.php:1533
 #, fuzzy
 msgid "Convert to LINE3/STACK Graph"
 msgstr "Конвертиране в LINE3 Графика"
 
-#: include/global_arrays.php:1534
+#: include/global_arrays.php:1537
 #, fuzzy
 msgid "No Totals"
 msgstr "Няма общи суми"
 
-#: include/global_arrays.php:1535
+#: include/global_arrays.php:1538
 #, fuzzy
 msgid "Print All Legend Items"
 msgstr "Отпечатайте всички елементи на Legend"
 
-#: include/global_arrays.php:1536
+#: include/global_arrays.php:1539
 #, fuzzy
 msgid "Print Totaling Legend Items Only"
 msgstr "Печат само на обектите на легендата"
 
-#: include/global_arrays.php:1540
+#: include/global_arrays.php:1543
 #, fuzzy
 msgid "Total Similar Data Sources"
 msgstr "Общо подобни източници на данни"
 
-#: include/global_arrays.php:1541
+#: include/global_arrays.php:1544
 #, fuzzy
 msgid "Total All Data Sources"
 msgstr "Общо всички източници на данни"
 
-#: include/global_arrays.php:1545
+#: include/global_arrays.php:1548
 #, fuzzy
 msgid "No Reordering"
 msgstr "Няма пренареждане"
 
-#: include/global_arrays.php:1546
+#: include/global_arrays.php:1549
 #, fuzzy
 msgid "Data Source, Graph"
 msgstr "Източник на данни, графика"
 
-#: include/global_arrays.php:1547
+#: include/global_arrays.php:1550
 #, fuzzy
 msgid "Graph, Data Source"
 msgstr "Графика, Източник на данни"
 
-#: include/global_arrays.php:1554
+#: include/global_arrays.php:1557
 msgid "contains"
 msgstr "съдържа"
 
-#: include/global_arrays.php:1555
+#: include/global_arrays.php:1558
 #, fuzzy
 msgid "does not contain"
 msgstr "не съдържа"
 
-#: include/global_arrays.php:1556
+#: include/global_arrays.php:1559
 #, fuzzy
 msgid "begins with"
 msgstr "започва с"
 
-#: include/global_arrays.php:1557
+#: include/global_arrays.php:1560
 #, fuzzy
 msgid "does not begin with"
 msgstr "не започва с"
 
-#: include/global_arrays.php:1558
+#: include/global_arrays.php:1561
 #, fuzzy
 msgid "ends with"
 msgstr "завършва със"
 
-#: include/global_arrays.php:1559
+#: include/global_arrays.php:1562
 #, fuzzy
 msgid "does not end with"
 msgstr "не завършва с"
 
-#: include/global_arrays.php:1560
+#: include/global_arrays.php:1563
 #, fuzzy
 msgid "matches"
 msgstr "кибрит"
 
-#: include/global_arrays.php:1561
+#: include/global_arrays.php:1564
 #, fuzzy
 msgid "is not equal to"
 msgstr "не е равно на"
 
-#: include/global_arrays.php:1562
+#: include/global_arrays.php:1565
 #, fuzzy
 msgid "is less than"
 msgstr "е по-малко от"
 
-#: include/global_arrays.php:1563
+#: include/global_arrays.php:1566
 #, fuzzy
 msgid "is less than or equal"
 msgstr "е по-малко или равно"
 
-#: include/global_arrays.php:1564
+#: include/global_arrays.php:1567
 #, fuzzy
 msgid "is greater than"
 msgstr "е по-голяма от"
 
-#: include/global_arrays.php:1565
+#: include/global_arrays.php:1568
 #, fuzzy
 msgid "is greater than or equal"
 msgstr "е по-голямо или равно"
 
-#: include/global_arrays.php:1566
+#: include/global_arrays.php:1569
 #, fuzzy
 msgid "is unknown"
 msgstr "알려지지 않음"
 
-#: include/global_arrays.php:1567
+#: include/global_arrays.php:1570
 #, fuzzy
 msgid "is not unknown"
 msgstr "не е неизвестно"
 
-#: include/global_arrays.php:1568
+#: include/global_arrays.php:1571
 #, fuzzy
 msgid "is empty"
 msgstr "празно е"
 
-#: include/global_arrays.php:1569
+#: include/global_arrays.php:1572
 #, fuzzy
 msgid "is not empty"
 msgstr "не е празно"
 
-#: include/global_arrays.php:1570
+#: include/global_arrays.php:1573
 #, fuzzy
 msgid "matches regular expression"
 msgstr "съответства на регулярния израз"
 
-#: include/global_arrays.php:1571
+#: include/global_arrays.php:1574
 #, fuzzy
 msgid "does not match regular expression"
 msgstr "не съответства на регулярния израз"
 
-#: include/global_arrays.php:1673
+#: include/global_arrays.php:1676
 #, fuzzy
 msgid "Fixed String"
 msgstr "Фиксирана низ"
 
-#: include/global_arrays.php:1678
+#: include/global_arrays.php:1681
 #, fuzzy
 msgid "Every 1 Hour"
 msgstr "На всеки 1 час"
 
-#: include/global_arrays.php:1684
+#: include/global_arrays.php:1687
 #, fuzzy
 msgid "Every Day"
 msgstr "Всеки ден"
 
-#: include/global_arrays.php:1685
+#: include/global_arrays.php:1688
 #, fuzzy
 msgid "Every Week"
 msgstr "Всяка седмица"
 
-#: include/global_arrays.php:1686 include/global_arrays.php:1687
+#: include/global_arrays.php:1689 include/global_arrays.php:1690
 #, fuzzy, php-format
 msgid "Every %d Weeks"
 msgstr "Всеки% d седмици"
 
-#: include/global_arrays.php:1718
+#: include/global_arrays.php:1721
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jan"
 msgstr "Ян"
 
-#: include/global_arrays.php:1719
+#: include/global_arrays.php:1722
 msgctxt "A short textual representation of a month, three letters"
 msgid "Feb"
 msgstr "Февр"
 
-#: include/global_arrays.php:1720
+#: include/global_arrays.php:1723
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "Март"
 
-#: include/global_arrays.php:1721
+#: include/global_arrays.php:1724
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "Апр"
 
-#: include/global_arrays.php:1722
+#: include/global_arrays.php:1725
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "Май"
 
-#: include/global_arrays.php:1723
+#: include/global_arrays.php:1726
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "Юни"
 
-#: include/global_arrays.php:1724
+#: include/global_arrays.php:1727
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "Юли"
 
-#: include/global_arrays.php:1725
+#: include/global_arrays.php:1728
 msgctxt "A short textual representation of a month, three letters"
 msgid "Aug"
 msgstr "Авг"
 
-#: include/global_arrays.php:1726
+#: include/global_arrays.php:1729
 msgctxt "A short textual representation of a month, three letters"
 msgid "Sep"
 msgstr "Септ"
 
-#: include/global_arrays.php:1727
+#: include/global_arrays.php:1730
 msgctxt "A short textual representation of a month, three letters"
 msgid "Oct"
 msgstr "Окт"
 
-#: include/global_arrays.php:1728
+#: include/global_arrays.php:1731
 msgctxt "A short textual representation of a month, three letters"
 msgid "Nov"
 msgstr "Ноем"
 
-#: include/global_arrays.php:1729
+#: include/global_arrays.php:1732
 msgctxt "A short textual representation of a month, three letters"
 msgid "Dec"
 msgstr "Дек"
 
-#: include/global_arrays.php:1743
+#: include/global_arrays.php:1746
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "Нед"
 
-#: include/global_arrays.php:1744
+#: include/global_arrays.php:1747
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "Пон"
 
-#: include/global_arrays.php:1745
+#: include/global_arrays.php:1748
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "Вт"
 
-#: include/global_arrays.php:1746
+#: include/global_arrays.php:1749
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
 msgstr "Ср"
 
-#: include/global_arrays.php:1747
+#: include/global_arrays.php:1750
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "Четв"
 
-#: include/global_arrays.php:1748
+#: include/global_arrays.php:1751
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "Пет"
 
-#: include/global_arrays.php:1749
+#: include/global_arrays.php:1752
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
 msgstr "Съб"
 
-#: include/global_arrays.php:1753
+#: include/global_arrays.php:1756
 msgid "Arabic"
 msgstr "Арабски"
 
-#: include/global_arrays.php:1754
+#: include/global_arrays.php:1757
 msgid "Bulgarian"
 msgstr "Български"
 
-#: include/global_arrays.php:1755
+#: include/global_arrays.php:1758
 #, fuzzy
 msgid "Chinese (China)"
 msgstr "Китайски (Китай)"
 
-#: include/global_arrays.php:1756
+#: include/global_arrays.php:1759
 #, fuzzy
 msgid "Chinese (Taiwan)"
 msgstr "Китайски (Тайван)"
 
-#: include/global_arrays.php:1757
+#: include/global_arrays.php:1760
 msgid "Dutch"
 msgstr "Нидерландски"
 
-#: include/global_arrays.php:1758
+#: include/global_arrays.php:1761
 msgid "English"
 msgstr "Английски"
 
-#: include/global_arrays.php:1759
+#: include/global_arrays.php:1762
 msgid "French"
 msgstr "Френски"
 
-#: include/global_arrays.php:1760
+#: include/global_arrays.php:1763
 msgid "German"
 msgstr "Немски"
 
-#: include/global_arrays.php:1761
+#: include/global_arrays.php:1764
 msgid "Greek"
 msgstr "Гръцки"
 
-#: include/global_arrays.php:1762
+#: include/global_arrays.php:1765
 msgid "Hebrew"
 msgstr "Иврит"
 
-#: include/global_arrays.php:1763
+#: include/global_arrays.php:1766
 msgid "Hindi"
 msgstr "Хинди"
 
-#: include/global_arrays.php:1764
+#: include/global_arrays.php:1767
 msgid "Italian"
 msgstr "Италиански"
 
-#: include/global_arrays.php:1765
+#: include/global_arrays.php:1768
 msgid "Japanese"
 msgstr "Японски"
 
-#: include/global_arrays.php:1766
+#: include/global_arrays.php:1769
 msgid "Korean"
 msgstr "Корейски"
 
-#: include/global_arrays.php:1767
+#: include/global_arrays.php:1770
 msgid "Polish"
 msgstr "Полски"
 
-#: include/global_arrays.php:1768
+#: include/global_arrays.php:1771
 msgid "Portuguese"
 msgstr "Португалски"
 
-#: include/global_arrays.php:1769
+#: include/global_arrays.php:1772
 msgid "Portuguese (Brazil)"
 msgstr "Португалия (Бразилия)"
 
-#: include/global_arrays.php:1770
+#: include/global_arrays.php:1773
 msgid "Russian"
 msgstr "Руски"
 
-#: include/global_arrays.php:1771
+#: include/global_arrays.php:1774
 msgid "Spanish"
 msgstr "Испански"
 
-#: include/global_arrays.php:1772
+#: include/global_arrays.php:1775
 msgid "Swedish"
 msgstr "Шведски"
 
-#: include/global_arrays.php:1773
+#: include/global_arrays.php:1776
 msgid "Turkish"
 msgstr "Турски"
 
-#: include/global_arrays.php:1774
+#: include/global_arrays.php:1777
 msgid "Vietnamese"
 msgstr "Виетнамски"
 
-#: include/global_arrays.php:1778
+#: include/global_arrays.php:1781
 msgid "Classic"
 msgstr "Класически"
 
-#: include/global_arrays.php:1779
+#: include/global_arrays.php:1782
 msgid "Modern"
 msgstr "Модерно"
 
-#: include/global_arrays.php:1780
+#: include/global_arrays.php:1783
 msgid "Dark"
 msgstr "Тъмно"
 
-#: include/global_arrays.php:1781
+#: include/global_arrays.php:1784
 #, fuzzy
 msgid "Paper-plane"
 msgstr "Хартиено самолетче"
 
-#: include/global_arrays.php:1782
+#: include/global_arrays.php:1785
 #, fuzzy
 msgid "Paw"
 msgstr "лапа"
 
-#: include/global_arrays.php:1783
+#: include/global_arrays.php:1786
 #, fuzzy
 msgid "Sunrise"
 msgstr "изгрев"
 
-#: include/global_arrays.php:1787
+#: include/global_arrays.php:1790
 #, fuzzy
 msgid "[Fail]"
 msgstr "[Fail]"
 
-#: include/global_arrays.php:1788
+#: include/global_arrays.php:1791
 #, fuzzy
 msgid "[Warning]"
 msgstr "Внимание"
 
-#: include/global_arrays.php:1789
+#: include/global_arrays.php:1792
 #, fuzzy
 msgid "[Success]"
 msgstr "Успешно!"
 
-#: include/global_arrays.php:1790
+#: include/global_arrays.php:1793
 #, fuzzy
 msgid "[Skipped]"
 msgstr "[Пропусната]"
 
-#: include/global_arrays.php:1814 include/global_arrays.php:1820
+#: include/global_arrays.php:1817 include/global_arrays.php:1823
 #, fuzzy
 msgid "User Profile (Edit)"
 msgstr "Потребителски профил (редактиране)"
 
-#: include/global_arrays.php:1832 include/global_arrays.php:1838
+#: include/global_arrays.php:1835 include/global_arrays.php:1841
 msgid "Tree Mode"
 msgstr "Дървовиден изглед"
 
-#: include/global_arrays.php:1844
+#: include/global_arrays.php:1847
 msgid "List Mode"
 msgstr "Списъчен изглед"
 
-#: include/global_arrays.php:1876 include/global_arrays.php:1882
+#: include/global_arrays.php:1879 include/global_arrays.php:1885
 #: lib/functions.php:2557 lib/html.php:1546 lib/html.php:1623 links.php:345
 #: user_admin.php:1690 user_group_admin.php:1394
 msgid "Console"
 msgstr "Административна конзола"
 
-#: include/global_arrays.php:1888
+#: include/global_arrays.php:1891
 msgid "Graph Management"
 msgstr "Управление на графики"
 
-#: include/global_arrays.php:1894 include/global_arrays.php:1936
-#: include/global_arrays.php:1954 include/global_arrays.php:2008
-#: include/global_arrays.php:2020 include/global_arrays.php:2032
-#: include/global_arrays.php:2068 include/global_arrays.php:2086
-#: include/global_arrays.php:2104 include/global_arrays.php:2122
-#: include/global_arrays.php:2140 include/global_arrays.php:2164
-#: include/global_arrays.php:2200 include/global_arrays.php:2320
-#: include/global_arrays.php:2344 include/global_arrays.php:2368
-#: include/global_arrays.php:2386 include/global_arrays.php:2398
-#: include/global_arrays.php:2500 include/global_arrays.php:2524
-#: include/global_arrays.php:2542 include/global_arrays.php:2560
-#: include/global_arrays.php:2578 include/global_arrays.php:2602
+#: include/global_arrays.php:1897 include/global_arrays.php:1939
+#: include/global_arrays.php:1957 include/global_arrays.php:2011
+#: include/global_arrays.php:2023 include/global_arrays.php:2035
+#: include/global_arrays.php:2071 include/global_arrays.php:2089
+#: include/global_arrays.php:2107 include/global_arrays.php:2125
+#: include/global_arrays.php:2143 include/global_arrays.php:2167
+#: include/global_arrays.php:2203 include/global_arrays.php:2323
+#: include/global_arrays.php:2347 include/global_arrays.php:2371
+#: include/global_arrays.php:2389 include/global_arrays.php:2401
+#: include/global_arrays.php:2503 include/global_arrays.php:2527
+#: include/global_arrays.php:2545 include/global_arrays.php:2563
+#: include/global_arrays.php:2581 include/global_arrays.php:2605
 msgid "(Edit)"
 msgstr "(Редактирай)"
 
-#: include/global_arrays.php:1912 lib/api_aggregate.php:1594
+#: include/global_arrays.php:1915 lib/api_aggregate.php:1594
 msgid "Graph Items"
 msgstr "Графични елементи"
 
-#: include/global_arrays.php:1918
+#: include/global_arrays.php:1921
 msgid "Create New Graphs"
 msgstr "Създаване на нови графики"
 
-#: include/global_arrays.php:1924
+#: include/global_arrays.php:1927
 msgid "Create Graphs from Data Query"
 msgstr "Създаване на графики от автоматизирано събиране на данни"
 
-#: include/global_arrays.php:1942 include/global_arrays.php:1960
-#: include/global_arrays.php:2056 include/global_arrays.php:2146
-#: include/global_arrays.php:2170 include/global_arrays.php:2326
+#: include/global_arrays.php:1945 include/global_arrays.php:1963
+#: include/global_arrays.php:2059 include/global_arrays.php:2149
+#: include/global_arrays.php:2173 include/global_arrays.php:2329
 msgid "(Remove)"
 msgstr "(Изтрий)"
 
-#: include/global_arrays.php:1978 include/global_arrays.php:1984
-#: include/global_arrays.php:1990 include/global_arrays.php:1996
-#: include/global_arrays.php:2260
+#: include/global_arrays.php:1981 include/global_arrays.php:1987
+#: include/global_arrays.php:1993 include/global_arrays.php:1999
+#: include/global_arrays.php:2263
 msgid "View Log"
 msgstr "Преглед на регистрационния файл"
 
-#: include/global_arrays.php:2002
+#: include/global_arrays.php:2005
 msgid "Graph Trees"
 msgstr "Дърво на графики"
 
-#: include/global_arrays.php:2044 lib/api_aggregate.php:1594
+#: include/global_arrays.php:2047 lib/api_aggregate.php:1594
 msgid "Graph Template Items"
 msgstr "Шаблони за елементи на графиката"
 
-#: include/global_arrays.php:2134
+#: include/global_arrays.php:2137
 msgid "Round Robin Archives"
 msgstr "Round Robin Archives"
 
-#: include/global_arrays.php:2176
+#: include/global_arrays.php:2179
 msgid "Data Input Fields"
 msgstr "Полета за въвеждане на данни"
 
-#: include/global_arrays.php:2182 include/global_arrays.php:2212
+#: include/global_arrays.php:2185 include/global_arrays.php:2215
 #, fuzzy
 msgid "(Remove Item)"
 msgstr "(Премахни артикул)"
 
-#: include/global_arrays.php:2218 include/global_settings.php:223
+#: include/global_arrays.php:2221 include/global_settings.php:223
 #: rrdcleaner.php:296
 #, fuzzy
 msgid "RRD Cleaner"
 msgstr "RRD Cleaner"
 
-#: include/global_arrays.php:2230
+#: include/global_arrays.php:2233
 #, fuzzy
 msgid "List unused Files"
 msgstr "Списък на неизползваните файлове"
 
-#: include/global_arrays.php:2242 include/global_arrays.php:2254
+#: include/global_arrays.php:2245 include/global_arrays.php:2257
 #: utilities.php:1890
 msgid "View Poller Cache"
 msgstr "Виж кеш на събиращия скрипт"
 
-#: include/global_arrays.php:2248 utilities.php:1894
+#: include/global_arrays.php:2251 utilities.php:1894
 #, fuzzy
 msgid "View Data Query Cache"
 msgstr "Преглед на кеш за данни"
 
-#: include/global_arrays.php:2266
+#: include/global_arrays.php:2269
 #, fuzzy
 msgid "Clear Log"
 msgstr "Изчистване на дневника"
 
-#: include/global_arrays.php:2272 utilities.php:1883
+#: include/global_arrays.php:2275 utilities.php:1883
 #, fuzzy
 msgid "View User Log"
 msgstr "Преглед на потребителския регистър"
 
-#: include/global_arrays.php:2278
+#: include/global_arrays.php:2281
 #, fuzzy
 msgid "Clear User Log"
 msgstr "Изчисти регистъра на потребителя"
 
-#: include/global_arrays.php:2284 utilities.php:1874 utilities.php:1875
+#: include/global_arrays.php:2287 utilities.php:1874 utilities.php:1875
 #, fuzzy
 msgid "Technical Support"
 msgstr "Техническа поддръжка"
 
-#: include/global_arrays.php:2290 utilities.php:1993
+#: include/global_arrays.php:2293 utilities.php:1993
 #, fuzzy
 msgid "Boost Status"
 msgstr "Статус на Boost"
 
-#: include/global_arrays.php:2296
+#: include/global_arrays.php:2299
 #, fuzzy
 msgid "View SNMP Agent Cache"
 msgstr "Вижте SNMP Agent Cache"
 
-#: include/global_arrays.php:2302
+#: include/global_arrays.php:2305
 #, fuzzy
 msgid "View SNMP Agent Notification Log"
 msgstr "Преглед на протокола за уведомяване на SNMP агент"
 
-#: include/global_arrays.php:2332 vdef.php:592
+#: include/global_arrays.php:2335 vdef.php:592
 #, fuzzy
 msgid "VDEF Items"
 msgstr "VDEF елементи"
 
-#: include/global_arrays.php:2338
+#: include/global_arrays.php:2341
 #, fuzzy
 msgid "View SNMP Notification Receivers"
 msgstr "Преглед на SNMP уведомяващи приемници"
 
-#: include/global_arrays.php:2350
+#: include/global_arrays.php:2353
 msgid "Cacti Settings"
 msgstr "Настройки на cacti"
 
-#: include/global_arrays.php:2356
+#: include/global_arrays.php:2359
 msgid "External Link"
 msgstr "Външна връзка"
 
-#: include/global_arrays.php:2374 include/global_arrays.php:2404
+#: include/global_arrays.php:2377 include/global_arrays.php:2407
 #, fuzzy
 msgid "(Action)"
 msgstr "Действие"
 
-#: include/global_arrays.php:2422
+#: include/global_arrays.php:2425
 msgid "Export Results"
 msgstr "Експортиране на резултати"
 
-#: include/global_arrays.php:2434 include/global_arrays.php:2464
+#: include/global_arrays.php:2437 include/global_arrays.php:2467
 #: lib/html.php:1567 lib/html.php:1569 lib/html.php:1648
 msgid "Reporting"
 msgstr "Репортаж"
 
-#: include/global_arrays.php:2440 include/global_arrays.php:2470
+#: include/global_arrays.php:2443 include/global_arrays.php:2473
 #, fuzzy
 msgid "Report Add"
 msgstr "Докладвай Добавяне"
 
-#: include/global_arrays.php:2446 include/global_arrays.php:2476
+#: include/global_arrays.php:2449 include/global_arrays.php:2479
 #, fuzzy
 msgid "Report Delete"
 msgstr "Подайте сигнал за изтриване"
 
-#: include/global_arrays.php:2452 include/global_arrays.php:2482
+#: include/global_arrays.php:2455 include/global_arrays.php:2485
 #, fuzzy
 msgid "Report Edit"
 msgstr "Редактиране на отчета"
 
-#: include/global_arrays.php:2458 include/global_arrays.php:2488
+#: include/global_arrays.php:2461 include/global_arrays.php:2491
 #, fuzzy
 msgid "Report Edit Item"
 msgstr "Докладване за редактиране на елемент"
 
-#: include/global_arrays.php:2512
+#: include/global_arrays.php:2515
 #, fuzzy
 msgid "Color Template Items"
 msgstr "Елементи на цветни шаблони"
 
-#: include/global_arrays.php:2554
+#: include/global_arrays.php:2557
 #, fuzzy
 msgid "Aggregate Items"
 msgstr "Агрегирани елементи"
 
-#: include/global_arrays.php:2590
+#: include/global_arrays.php:2593
 #, fuzzy
 msgid "Graph Rule Items"
 msgstr "Елементи на правилото за графика"
 
-#: include/global_arrays.php:2614
+#: include/global_arrays.php:2617
 #, fuzzy
 msgid "Tree Rule Items"
 msgstr "Елементи от дърво правило"
 
-#: include/global_arrays.php:2645 include/global_arrays.php:2661
+#: include/global_arrays.php:2648 include/global_arrays.php:2664
 #: lib/api_device.php:1067
 msgid "days"
 msgstr "дни"
 
-#: include/global_arrays.php:2646
+#: include/global_arrays.php:2649
 #, fuzzy
 msgid "hrs"
 msgstr "часа"
 
-#: include/global_arrays.php:2647
+#: include/global_arrays.php:2650
 #, fuzzy
 msgid "mins"
 msgstr "минути"
 
-#: include/global_arrays.php:2648
+#: include/global_arrays.php:2651
 #, fuzzy
 msgid "secs"
 msgstr "секунди"
 
-#: include/global_arrays.php:2662 lib/api_device.php:1067
+#: include/global_arrays.php:2665 lib/api_device.php:1067
 msgid "hours"
 msgstr "часове"
 
-#: include/global_arrays.php:2663 lib/api_device.php:1067
+#: include/global_arrays.php:2666 lib/api_device.php:1067
 msgid "minutes"
 msgstr "минути"
 
-#: include/global_arrays.php:2664
+#: include/global_arrays.php:2667
 #, fuzzy
 msgid "seconds"
 msgstr "секунди"
@@ -19096,21 +19100,21 @@ msgstr "%s е необходим за %s и не е инсталиран."
 msgid "Plugin cannot be installed."
 msgstr "Приставката не може да бъде инсталирана."
 
-#: lib/plugins.php:949 lib/plugins.php:956 plugins.php:361 plugins.php:438
+#: lib/plugins.php:955 lib/plugins.php:962 plugins.php:361 plugins.php:438
 msgid "Plugins"
 msgstr "Плъгини"
 
-#: lib/plugins.php:967 lib/plugins.php:973
+#: lib/plugins.php:973 lib/plugins.php:979
 #, fuzzy, php-format
 msgid "Requires: Cacti >= %s"
 msgstr "Изисква: Cacti&gt; = %s"
 
-#: lib/plugins.php:970
+#: lib/plugins.php:976
 #, fuzzy
 msgid "Legacy Plugin"
 msgstr "Наследство на приставката"
 
-#: lib/plugins.php:995
+#: lib/plugins.php:1001
 #, fuzzy
 msgid "Not Stated"
 msgstr "Не е посочено"
