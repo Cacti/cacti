@@ -917,13 +917,19 @@ function api_plugin_remove_realms($plugin) {
 
 function api_plugin_load_realms() {
 	global $user_auth_realms, $user_auth_realm_filenames;
-	$plugin_realms = db_fetch_assoc('SELECT * FROM plugin_realms ORDER BY plugin, display', false);
-	if (cacti_count($plugin_realms)) {
+
+	$plugin_realms = db_fetch_assoc('SELECT *
+		FROM plugin_realms
+		ORDER BY plugin, display');
+
+	if (cacti_sizeof($plugin_realms)) {
 		foreach ($plugin_realms as $plugin_realm) {
 			$plugin_files = explode(',', $plugin_realm['file']);
+
 			foreach($plugin_files as $plugin_file) {
 				$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
 			}
+
 			$user_auth_realms[$plugin_realm['id'] + 100] = $plugin_realm['display'];
 		}
 	}
