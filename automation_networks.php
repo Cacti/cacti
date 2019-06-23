@@ -238,10 +238,9 @@ function api_networks_save($post) {
 		$total_ips = 0;
 		$networks  = explode(',', $save['subnet_range']);
 
-		$i = 0;
 		if (cacti_sizeof($networks)) {
 			foreach($networks as $net) {
-				$ips = automation_calculate_total_ips($networks, $i);
+				$ips = automation_calculate_total_ips($net);
 				if ($ips !== false) {
 					$total_ips += $ips;
 				} else {
@@ -250,7 +249,6 @@ function api_networks_save($post) {
 					raise_message('automation_message');
 					break;
 				}
-				$i++;
 			}
 		}
 

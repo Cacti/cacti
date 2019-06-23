@@ -2951,179 +2951,114 @@ function automation_debug($text) {
 	}
 }
 
-function automation_calculate_start($networks, $position) {
-	if (!isset($networks[$position])) return false;
-	$h = trim($networks[$position]);
+function automation_masktocidr($mask) {
+	$long = ip2long($mask);
+	$base = ip2long('255.255.255.255');
 
-	// 10.1.0.1
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h)) {
-		return $h;
+	$cidr = 32 - log(($long ^ $base) + 1, 2);
+
+	return $cidr;
+}
+
+function automation_calculate_start($range) {
+	if (strpos($range, '/') !== false) {
+		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
+		$range_parts = explode('/', $range);
+		$network = $range_parts[0];
+		$cidr    = $range_parts[1];
+
+		if (!is_numeric($cidr)) {
+			$cidr = automation_masktocidr($cidr);
+		}
+
+		$start = ip2long($network);
+
+		if ($cidr > 0) {
+			$start++;
+		}
+
+		return long2ip($start);
+	} elseif (strpos($range, '*') !== false) {
+		// 10.1.0.*
+		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/', $range)) {
+			return substr($range, 0, -1) . '1';
+		}
+
+		// 10.1.*.1
+		if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
+			return $matches[1] . '1' . $matches[2];
+		}
+	} elseif (strpos($range, '-') !== false) {
+		// 10.1.0.19-10.1.0.27
+		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/', $range)) {
+			preg_match_all('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/', $range, $matches);
+			return substr($matches[0][0], 0, -1);
+		}
+	} else {
+		return $range;
 	}
 
-	// 10.1.0.*
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/", $h)) {
-		return substr($h,0,-1) . "1";
-	}
-	// 10.1.*.1
-	if (preg_match("/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/", $h, $matches)) {
-		return $matches[1] . "1" . $matches[2];
-	}
+	automation_debug('  Could not calculate starting IP!');
 
-	// 10.1.0.0/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
-		return $matches[0][0] . "1";
-	}
-
-	// 10.1.0./24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
-		return $matches[0][0] . "1";
-	}
-
-	// 10.1.0/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
-		return $matches[0][0] . ".1";
-	}
-
-	// 10.1.0.172/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
-		return $matches[0][0];
-	}
-
-	// 10.1.0.0/255.255.255.0
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/255\.255\.[0-9]{1,3}\.0$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\./", $h, $matches);
-		return $matches[0][0] . "1";
-	}
-
-	// 10.1.0.19/255.255.255.240
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/255\.255\.255\.[0-9]{1,3}\$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/", $h, $matches);
-		return $matches[0][0];
-	}
-
-	// 10.1.0.19-10.1.0.27
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/", $h, $matches);
-		return substr($matches[0][0], 0, -1);
-	}
-
-	automation_debug("  Could not calculate starting address!\n");
 	return false;
 }
 
-function automation_calculate_total_ips($networks, $position) {
-	if (!isset($networks[$position])) return false;
-	$h = trim($networks[$position]);
+function automation_calculate_total_ips($range) {
+	if (strpos($range, '/') !== false) {
+		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
+		$range_parts = explode('/', $range);
+		$network = $range_parts[0];
+		$cidr    = $range_parts[1];
 
-	// 10.1.0.1
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h)) {
+		if (!is_numeric($cidr)) {
+			$cidr = automation_masktocidr($cidr);
+		}
+
+		return pow(2, 32 - intval($cidr)) - 2;
+	} elseif (strpos($range, '*') !== false) {
+		// 10.1.0.*
+		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/', $range)) {
+			return 254;
+		}
+
+		// 10.1.*.1
+		if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
+			return 254;
+		}
+	} elseif (strpos($range, '-') !== false) {
+		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/', $range)) {
+			preg_match_all('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/', $range, $matches);
+			preg_match_all('/-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $range, $matches2);
+			$start  = substr($matches[0][0], 0, -1);
+			$end    = substr($matches2[0][0], 1);
+			$starta = explode('.', $start);
+			$enda   = explode('.', $end);
+			$start  = ($starta[0] * 16777216) + ($starta[1] * 65536) + ($starta[2] * 256) + $starta[3];
+			$end    = ($enda[0] * 16777216) + ($enda[1] * 65536) + ($enda[2] * 256) + $enda[3];
+			return $end - $start + 1;
+		}
+	} else {
 		return 1;
 	}
 
-	// 10.1.0.*
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/", $h)) {
-		return "254";
-	}
-
-	// 10.1.*.1
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.\*\.[0-9]{1,3}$/", $h)) {
-		return "254";
-	}
-
-	// 10.1.0.0/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
-		$subnet = substr($matches[0][0], 1);
-		$total = 1;
-		for ($x = 0; $x < (32-$subnet); $x++) {
-			$total = $total * 2;
-		}
-		return $total-2;
-	}
-
-	// 10.1.0./24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
-		$subnet = substr($matches[0][0], 1);
-		$total = 1;
-		for ($x = 0; $x < (32-$subnet); $x++) {
-			$total = $total * 2;
-		}
-		return $total-2;
-	}
-
-	// 10.1.0/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
-		$subnet = substr($matches[0][0], 1);
-		$total = 1;
-		for ($x = 0; $x < (32-$subnet); $x++) {
-			$total = $total * 2;
-		}
-		return $total-2;
-	}
-
-	// 10.1.0.172/24
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/[0-9]{1,2}$/", $h)) {
-		preg_match_all("/\/[0-9]{1,2}$/", $h, $matches);
-		$subnet = substr($matches[0][0], 1);
-		$total = 1;
-		for ($x = 0; $x < (32-$subnet); $x++) {
-			$total = $total * 2;
-		}
-		return $total-2;
-	}
-
-	// 10.1.0.0/255.255.255.0
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.0\/255\.255\.[0-9]{1,3}\.0$/", $h)) {
-		preg_match_all("/[0-9]{1,3}.0$/", $h, $matches);
-		$subnet = substr($matches[0][0], 0, -2);
-		return ((256 - $subnet)*256) - 2;
-	}
-
-	// 10.1.0.19/255.255.255.240
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\/255\.255\.255\.[0-9]{1,3}\$/", $h)) {
-		preg_match_all("/\.[0-9]{1,3}$/", $h, $matches);
-		$subnet = substr($matches[0][0], 1);
-		return (256 - $subnet)-1;
-	}
-
-	// 10.1.0.19-10.1.0.27
-	if (preg_match("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/", $h)) {
-		preg_match_all("/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/", $h, $matches);
-		preg_match_all("/-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/", $h, $matches2);
-		$start = substr($matches[0][0], 0, -1);
-		$end = substr($matches2[0][0], 1);
-		$starta = explode('.', $start);
-		$enda = explode('.', $end);
-		$start = ($starta[0] * 16777216) + ($starta[1] * 65536) + ($starta[2] * 256) + $starta[3];
-		$end = ($enda[0] * 16777216) + ($enda[1] * 65536) + ($enda[2] * 256) + $enda[3];
-		return $end - $start + 1;
-	}
-
-	automation_debug("  Could not calculate total IPs!\n");
+	automation_debug('  Could not calculate total IPs!');
 
 	return false;
 }
 
-function automation_get_next_host ($start, $total, $count, $networks, $position) {
-	if (!isset($networks[$position])) return false;
-	$h = trim($networks[$position]);
-
-	if ($count == $total || $total < 1)
+function automation_get_next_host($start, $total, $count, $range) {
+	if ($count == $total || $total < 1) {
 		return false;
+	}
 
-	if (preg_match("/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/", $h, $matches)) {
+	if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
 		// 10.1.*.1
 		return $matches[1] . ++$count . $matches[2];
 	} else {
 		// other cases
 		$ip = explode('.', $start);
-		$y = 16777216;
+		$y  = 16777216;
+
 		for ($x = 0; $x < 4; $x++) {
 			$ip[$x] += intval($count/$y);
 			$count -= ((intval($count/$y))*256);
@@ -3133,12 +3068,13 @@ function automation_get_next_host ($start, $total, $count, $networks, $position)
 				$ip[$x-1] += 1;
 			}
 		}
-		return implode('.',$ip);
+
+		return implode('.', $ip);
 	}
 }
 
 function automation_primeIPAddressTable($network_id) {
-	$subNets    = db_fetch_cell_prepared('SELECT subnet_range
+	$subNets = db_fetch_cell_prepared('SELECT subnet_range
 		FROM automation_networks
 		WHERE id = ?',
 		array($network_id));
@@ -3150,17 +3086,17 @@ function automation_primeIPAddressTable($network_id) {
 		foreach($subNets as $position => $subNet) {
 			$count = 1;
 			$sql   = array();
-			$subNetTotal = automation_calculate_total_ips($subNets, $position);
+			$subNetTotal = automation_calculate_total_ips($subNet);
 			$total += $subNetTotal;
 
-			$start = automation_calculate_start($subNets, $position);
+			$start = automation_calculate_start($subNet);
 
 			if ($start != '') {
 				$sql[] = "('$start', '', $network_id, '0', '0', '0')";
 			}
 
 			while ($count < $subNetTotal) {
-				$ip = automation_get_next_host($start, $subNetTotal, $count, $subNets, $position);
+				$ip = automation_get_next_host($start, $subNetTotal, $count, $subNet);
 
 				$count++;
 
