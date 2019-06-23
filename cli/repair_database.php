@@ -97,7 +97,42 @@ if (cacti_sizeof($tables)) {
 	}
 }
 
-print "\nNOTE: Checking for Invalid Cacti Templates\n";
+print "\nNOTE: Running some Data Query repair scripts\n";
+
+db_execute("UPDATE graph_local AS gl
+	INNER JOIN graph_templates_item AS gti
+	ON gti.local_graph_id = gl.id
+	INNER JOIN data_template_rrd AS dtr
+	ON gti.task_item_id = dtr.id
+	INNER JOIN data_local AS dl
+	ON dl.id = dtr.local_data_id
+	SET gl.snmp_query_id = dl.snmp_query_id, gl.snmp_index = dl.snmp_index
+	WHERE gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)
+	AND gl.snmp_query_id = 0");
+
+db_execute("UPDATE graph_local AS gl
+	INNER JOIN (
+		SELECT DISTINCT local_graph_id, task_item_id
+		FROM graph_templates_item
+	) AS gti
+	ON gl.id = gti.local_graph_id
+	INNER JOIN data_template_rrd AS dtr
+	ON gti.task_item_id = dtr.id
+	INNER JOIN data_template_data AS dtd
+	ON dtr.local_data_id = dtd.local_data_id
+	INNER JOIN data_input_fields AS dif
+	ON dif.data_input_id = dtd.data_input_id
+	INNER JOIN data_input_data AS did
+	ON did.data_template_data_id = dtd.id
+	AND did.data_input_field_id = dif.id
+	INNER JOIN snmp_query_graph_rrd AS sqgr
+	ON sqgr.snmp_query_graph_id = did.value
+	SET gl.snmp_query_graph_id = did.value
+	WHERE input_output = 'in'
+	AND type_code = 'output_type'
+	AND gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)");
+
+print "NOTE: Checking for Invalid Cacti Templates\n";
 
 /* keep track of total rows */
 $total_rows = 0;
@@ -106,16 +141,18 @@ $total_rows = 0;
 $rows = db_fetch_cell('SELECT count(*)
 	FROM graph_templates_item
 	LEFT JOIN graph_templates_gprint
-	ON graph_templates_item.gprint_id=graph_templates_gprint.id
+	ON graph_templates_item.gprint_id = graph_templates_gprint.id
 	WHERE graph_templates_gprint.id IS NULL
-	AND graph_templates_item.gprint_id>0');
+	AND graph_templates_item.gprint_id > 0');
 
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
 		db_execute('DELETE FROM graph_templates_item
-			WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint) AND gprint_id>0');
+			WHERE gprint_id NOT IN (SELECT id FROM graph_templates_gprint)
+			AND gprint_id>0');
 	}
+
 	print "NOTE: $rows Invalid GPrint Preset Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
 }
 
@@ -129,8 +166,10 @@ $rows = db_fetch_cell("SELECT count(*)
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM cdef_items WHERE cdef_id NOT IN (SELECT id FROM cdef)');
+		db_execute('DELETE FROM cdef_items
+			WHERE cdef_id NOT IN (SELECT id FROM cdef)');
 	}
+
 	print "NOTE: $rows Invalid CDEF Item Rows " . ($force ? 'removed from':'found in') . " Graph Templates\n";
 }
 
@@ -144,8 +183,10 @@ $rows = db_fetch_cell('SELECT count(*)
 $total_rows += $rows;
 if ($rows > 0) {
 	if ($force) {
-		db_execute('DELETE FROM data_template_data WHERE data_input_id NOT IN (SELECT id FROM data_input)');
+		db_execute('DELETE FROM data_template_data
+			WHERE data_input_id NOT IN (SELECT id FROM data_input)');
 	}
+
 	print "NOTE: $rows Invalid Data Input Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
@@ -164,6 +205,7 @@ if ($rows > 0) {
 
 		update_replication_crc(0, 'poller_replicate_data_input_fields_crc');
 	}
+
 	print "NOTE: $rows Invalid Data Input Field Rows " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
@@ -182,6 +224,7 @@ if ($rows > 0) {
 		db_execute('DELETE FROM data_input_data
 			WHERE data_input_data.data_template_data_id NOT IN (SELECT id FROM data_template_data)');
 	}
+
 	print "NOTE: $rows Invalid Data Input Data Rows based upon template mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
@@ -197,6 +240,7 @@ if ($rows > 0) {
 		db_execute('DELETE FROM data_input_data
 			WHERE data_input_data.data_input_field_id NOT IN (SELECT id FROM data_input_fields)');
 	}
+
 	print "NOTE: $rows Invalid Data Input Data rows based upon field mappings " . ($force ? 'removed from':'found in') . " Data Templates\n";
 }
 
