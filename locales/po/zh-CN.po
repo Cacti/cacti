@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-22 14:20-0400\n"
+"POT-Creation-Date: 2019-06-23 10:10-0400\n"
 "PO-Revision-Date: 2019-04-28 13:01+0000\n"
 "Last-Translator: whsir <wh@whsir.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
@@ -4767,8 +4767,8 @@ msgstr "报告"
 msgid "All Graphs & Templates"
 msgstr "所有图形和模板"
 
-#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
-#: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
+#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:58
+#: lib/graphs.php:67 lib/html.php:184 lib/html_graph.php:158
 #: lib/html_tree.php:962
 msgid "Not Templated"
 msgstr "没有模板化"
@@ -12475,7 +12475,7 @@ msgstr "匹配对象"
 msgid "Objects"
 msgstr "对象"
 
-#: lib/api_automation.php:760 lib/graphs.php:71 lib/graphs.php:88
+#: lib/api_automation.php:760 lib/graphs.php:79 lib/graphs.php:103
 msgid "Not Found"
 msgstr "未找到"
 
@@ -13411,13 +13411,18 @@ msgstr "版本 %s %s"
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/graphs.php:46
+#: lib/graphs.php:51
 msgid "Aggregated Device"
 msgstr "已聚合的设备"
 
-#: lib/graphs.php:46
+#: lib/graphs.php:59
 msgid "Not Applicable"
 msgstr "不适用"
+
+#: lib/graphs.php:86
+#, fuzzy
+msgid "Damaged Graph"
+msgstr "数据源,图"
 
 #: lib/html.php:178 settings.php:455
 msgid "Templates Selected"
