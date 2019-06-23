@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-06-22 14:20-0400\n"
+"POT-Creation-Date: 2019-06-23 10:10-0400\n"
 "PO-Revision-Date: 2019-03-10 13:53-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -5510,8 +5510,8 @@ msgstr "Báo cáo"
 msgid "All Graphs & Templates"
 msgstr "Tất cả đồ thị và mẫu"
 
-#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:45
-#: lib/graphs.php:53 lib/html.php:184 lib/html_graph.php:158
+#: graph_view.php:617 include/global_arrays.php:2680 lib/graphs.php:58
+#: lib/graphs.php:67 lib/html.php:184 lib/html_graph.php:158
 #: lib/html_tree.php:962
 #, fuzzy
 msgid "Not Templated"
@@ -14894,7 +14894,7 @@ msgstr "Đối tượng phù hợp"
 msgid "Objects"
 msgstr "Đối tượng"
 
-#: lib/api_automation.php:760 lib/graphs.php:71 lib/graphs.php:88
+#: lib/api_automation.php:760 lib/graphs.php:79 lib/graphs.php:103
 msgid "Not Found"
 msgstr "Không tìm thấy"
 
@@ -15951,15 +15951,20 @@ msgstr "Phiên bản %s %s"
 msgid "%s %s"
 msgstr "%s %s"
 
-#: lib/graphs.php:46
+#: lib/graphs.php:51
 #, fuzzy
 msgid "Aggregated Device"
 msgstr "Thiết bị tổng hợp"
 
-#: lib/graphs.php:46
+#: lib/graphs.php:59
 #, fuzzy
 msgid "Not Applicable"
 msgstr "Không áp dụng"
+
+#: lib/graphs.php:86
+#, fuzzy
+msgid "Damaged Graph"
+msgstr "Nguồn dữ liệu, đồ thị"
 
 #: lib/html.php:178 settings.php:455
 #, fuzzy
