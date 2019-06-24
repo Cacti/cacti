@@ -2428,7 +2428,7 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 
 	/* replace query variables in graph elements */
 	if (strpos($txt_graph_item, '|query_') !== false) {
-		$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
+		$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $host_id, $graph['snmp_query_id'], $graph['snmp_index']);
 	}
 
 	/* replace query variables in graph elements */
