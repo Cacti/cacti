@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#2732: Strip domain name from basic authentication when its present
 -issue#2734: Suggestion Cacti-1.2.4: Displaying non-English label names on graphs
 -issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
+-issue#2733: Error processing hex-lines for space delimited hex strings into mac addresses
 -issue#2735: Mouse cursor should be default if column is not sortable
 -issue#2736: Correct Cacti to handle new MySQL 8.0.1 reserved word `function`
 -issue#2741: Resolve a number of QA issues in various files

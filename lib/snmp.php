@@ -790,27 +790,46 @@ function format_snmp_string($string, $snmp_oid_included, $value_output_format = 
 
 		if (sizeof($parts) == 4) {
 			$possible_ip = true;
-		} else {
-			$possible_ip = false;
-		}
 
-		$ip_address = '';
+			$ip_address = '';
 
-		/* convert the hex string into an ascii string */
-		foreach($parts as $part) {
-			if ($possible_ip && hexdec($part) >= 0 && hexdec($part) <= 255) {
-				$ip_address .= ($ip_address != '' ? '.':'') . hexdec($part);
-			} else {
-				$possible_ip = false;
+			/* convert the hex string into an ascii string */
+			foreach($parts as $part) {
+				if ($possible_ip && hexdec($part) >= 0 && hexdec($part) <= 255) {
+					$ip_address .= ($ip_address != '' ? '.':'') . hexdec($part);
+				} else {
+					$possible_ip = false;
+				}
+
+				$output .= chr(hexdec($part));
 			}
 
-			$output .= chr(hexdec($part));
-		}
+			if ($possible_ip && is_ipaddress($ip_address)) {
+				$string = $ip_address;
+			} else {
+				$string = $output;
+			}
+		/* hex string is mac-address */
+		} elseif (sizeof($parts) == 6) {
+			$possible_ip = false;
 
-		if ($possible_ip && is_ipaddress($ip_address)) {
-			$string = $ip_address;
+			/* convert the hex string into an ascii string */
+			foreach($parts as $part) {
+				$output .= ($output != '' ? ':' : '');
+				if ($part == '00') {
+					$output .= '00';
+				} else  {
+					$output .= str_pad($part, 2, '0', STR_PAD_LEFT);
+				}
+			}
+
+			if (is_numeric($output)) {
+				$string = number_format($output, 0, '', '');
+			} else {
+				$string = $output;
+			}
 		} else {
-			$string = $output;
+			$possible_ip = false;
 		}
 	} elseif (substr(strtolower($string), 0, 4) == 'hex:') {
 		$output = '';
