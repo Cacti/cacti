@@ -2017,6 +2017,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT:
+					$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
 
 					if ($graph_item['vdef_id'] == '0') {
@@ -2028,6 +2029,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_AVERAGE:
 					if (!isset($graph_data_array['graph_nolegend'])) {
+						$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
 
 						if ($graph_item['vdef_id'] == '0') {
@@ -2040,6 +2042,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_LAST:
 					if (!isset($graph_data_array['graph_nolegend'])) {
+						$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
 
 						if ($graph_item['vdef_id'] == '0') {
@@ -2052,6 +2055,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MAX:
 					if (!isset($graph_data_array['graph_nolegend'])) {
+						$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
 
 						if ($graph_item['vdef_id'] == '0') {
@@ -2064,6 +2068,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT_MIN:
 					if (!isset($graph_data_array['graph_nolegend'])) {
+						$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 						$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
 
 						if ($graph_item['vdef_id'] == '0') {
@@ -2075,6 +2080,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_AREA:
+					$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
@@ -2085,6 +2091,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_STACK:
+					$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id],$pad_number):''));
 
 					$txt_graph_items .= 'AREA:' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK';
@@ -2097,6 +2104,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_LINE1:
 				case GRAPH_ITEM_TYPE_LINE2:
 				case GRAPH_ITEM_TYPE_LINE3:
+					$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
 					$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ' ';
@@ -2107,6 +2115,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_LINESTACK:
+					$text_format = rrd_substitute_host_query_data($graph_variables['text_format'][$graph_item_id], $graph, $graph_item);
 					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id] != '' ? str_pad($graph_variables['text_format'][$graph_item_id], $pad_number):''));
 
 					$txt_graph_items .= 'LINE' . $graph_item['line_width'] . ':' . $data_source_name . $graph_item_color_code . ':' . cacti_escapeshellarg($text_format . $hardreturn[$graph_item_id]) . ':STACK' . $dash;
