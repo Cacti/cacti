@@ -1102,14 +1102,13 @@ function tree_edit() {
 
 			function switchDisplay() {
 				var selected = $('#element').prop('selectedIndex');
-				var mainWidth = parseInt($('#main').outerWidth());
-				var treeWidth = parseInt($('.treeTable').outerWidth());
-				var widthDiff = mainWidth - treeWidth
+				var windowWidth = parseInt($(window).outerWidth());
+				var clientWidth = parseInt($(document).width());
 
 				if (selected == 0) {
-					if (Math.abs(widthDiff) > 10) {
+					if (clientWidth > windowWidth) {
 						$('#element').prop('selectedIndex', 1);
-						if (typeof $('#element').selectmenu('instance')) {
+						if ($('#element').selectmenu('instance')) {
 							$('#element').selectmenu('refresh');
 						}
 						selected = $('#element').prop('selectedIndex');
