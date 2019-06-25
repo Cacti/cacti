@@ -335,6 +335,8 @@ function form_actions() {
 
 	html_start_box($graph_actions{get_request_var('drp_action')}, '60%', '', '3', 'center', '');
 
+	$save_html = '';
+
 	if (isset($graph_array) && cacti_sizeof($graph_array)) {
 		if (get_request_var('drp_action') == '1') { // delete
 			print "<tr>
@@ -342,7 +344,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to delete the following Aggregate Graph(s).') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // migrate to aggregate
@@ -378,7 +380,7 @@ function form_actions() {
 						<p>" . __('In order to migrate the Aggregate Graphs below to a Template based Aggregate, they must only be using one Graph Template.  Please press \'Return\' and then select only Aggregate Graph that utilize the same Graph Template.') . "</p>
 						<div class='itemlist'><ul>$graph_list</ul></div>
 					</td>
-				</tr>\n";
+				</tr>";
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			} elseif (cacti_sizeof($graph_templates) == 0) {
@@ -388,7 +390,7 @@ function form_actions() {
 						<p>" . __('In order to migrate the Aggregate Graphs below use an Aggregate Template, one must already exist.  Please press \'Return\' and then first create your Aggergate Template before retrying.') . "</p>
 						<div class='itemlist'><ul>$graph_list</ul></div>
 					</td>
-				</tr>\n";
+				</tr>";
 			} else {
 				$graph_template = $graph_templates[0]['graph_template_id'];
 
@@ -404,18 +406,18 @@ function form_actions() {
 							<p>" . __('Click \'Continue\' and the following Aggregate Graph(s) will be migrated to use the Aggregate Template that you choose below.') . "</p>
 							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
-					</tr>\n";
+					</tr>";
 
 					print "<tr>
 						<td class='textArea' width='170'>" . __('Aggregate Template:') . "</td>
 						<td>
-							<select name='aggregate_template_id'>\n";
+							<select name='aggregate_template_id'>";
 
 					html_create_list($aggregate_templates, 'name', 'id', $aggregate_templates[0]['id']);
 
 					print "</select>
 						</td>
-					</tr>\n";
+					</tr>";
 
 					$save_html = "<tr><td colspan='2' class='right'><input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'></td></tr>";
 				} else {
@@ -426,7 +428,7 @@ function form_actions() {
 							<p>" . __('Please press \'Return\' to continue.') . "</p>
 							<div class='itemlist'><ul>$graph_list</ul></div>
 						</td>
-					</tr>\n";
+					</tr>";
 
 					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 				}
@@ -437,10 +439,10 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to combine the following Aggregate Graph(s) into a single Aggregate Graph.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
-			print "	<tr><td class='textArea' width='170'>" . __('Aggregate Name:') . "</td></tr>\n";
-			print "	<tr><td class='textArea'><input type='text' class='ui-state-default ui-corner-all' name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>\n";
+			print "	<tr><td class='textArea' width='170'>" . __('Aggregate Name:') . "</td></tr>";
+			print "	<tr><td class='textArea'><input type='text' class='ui-state-default ui-corner-all' name='aggregate_name' size='40' value='" . __esc('New Aggregate') . "'></td></tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '4') {
@@ -469,11 +471,11 @@ function form_actions() {
 
 				print '<tr><td>' . __('Align') . '<br>';
 				form_dropdown('align',$alignment, '', '', '', '', REPORTS_ALIGN_CENTER);
-				print "</td></tr>\n";
+				print "</td></tr>";
 
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Graphs to Report') . "'>";
 			} else {
-				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>\n";
+				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>";
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
 		} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
@@ -482,7 +484,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to associate the following Graph(s) with the Aggregate Graph.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Associate Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '11') { // dis-associate with aggregate
@@ -491,7 +493,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to disassociate the following Graph(s) from the Aggregate.') . "</p>
 					<div class='itemlist'><ul>$graph_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Dis-Associate Graph(s)') . "'>";
 		} elseif (preg_match("/^tr_([0-9]+)$/", get_request_var('drp_action'), $matches)) { // place on tree
@@ -501,8 +503,8 @@ function form_actions() {
 					<div class='itemlist'><ul>$graph_list</ul></div>
 					<p>" . __('Destination Branch:') . "<br>"; grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0'); print "</p>
 				</td>
-			</tr>\n
-			<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>\n";
+			</tr>
+			<input type='hidden' name='tree_id' value='" . html_escape($matches[1]) . "'>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Graph(s) on Tree') . "'>";
 		}
@@ -520,7 +522,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box(false);
 
@@ -704,11 +706,11 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		print "<ul style='float:right;'><li><a class='pic' href='" . html_escape('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></li></ul></nav>\n</div></div>\n";
+		print "<ul style='float:right;'><li><a class='pic' href='" . html_escape('aggregate_graphs.php?action=edit&id=' . get_request_var('id') . '&tab=' . get_request_var('tab') .  '&debug=' . (isset($_SESSION['graph_debug_mode']) ? '0' : '1')) . "'>" . $message . "</a></li></ul></nav></div></div>";
 	} elseif (!isempty_request_var('id') && $current_tab == 'details' && (!cacti_sizeof($template))) {
-		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . "</a></li></ul></nav>\n</div></div>\n";
+		print "<ul style='float:right;'><li><a id='toggle_items' class='pic' href='#'>" . __('Show Item Details') . "</a></li></ul></nav></div></div>";
 	} else {
-		print "</nav></div></div>\n";
+		print "</nav></div></div>";
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
@@ -1153,7 +1155,7 @@ function aggregate_items() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
@@ -1497,7 +1499,7 @@ function aggregate_graph() {
 
 							if (cacti_sizeof($templates) > 0) {
 								foreach ($templates as $template) {
-									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>\n";
+									print "<option value='" . $template['id'] . "'"; if (get_request_var('template_id') == $template['id']) { print ' selected'; } print '>' . html_escape($template['name']) . "</option>";
 								}
 							}
 							?>
@@ -1512,7 +1514,7 @@ function aggregate_graph() {
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
