@@ -672,21 +672,21 @@ function graph_edit() {
 	$current_tab = get_nfilter_request_var('tab');
 
 	/* draw the categories tabs on the top of the page */
-	print "<div class='tabs'>\n";
-	print "<div class='aggtabs'><nav><ul role='tablist'>\n";
+	print "<div class='tabs'>";
+	print "<div class='aggtabs'><nav><ul role='tablist'>";
 
 	$i = 0;
 	if (cacti_sizeof($aggregate_tabs)) {
 		foreach (array_keys($aggregate_tabs) as $tab_short_name) {
 			if ($tab_short_name == 'details' || (!isempty_request_var('id'))) {
-				print "<li class='subTab'><a class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") .
-					" href='" . html_escape($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>\n";
+				print "<li class='subTab'><a id='agg_" . $tab_short_name . "' class='tab " . ($tab_short_name == $current_tab ? "selected'" : "'") . ($tab_short_name == 'preview' ? ' style="display:none"':'') .
+					" href='" . html_escape($config['url_path'] . 'aggregate_graphs.php?action=edit&id=' . get_request_var('id') . "&tab=$tab_short_name") . "'>" . $aggregate_tabs[$tab_short_name] . "</a></li>";
 			}
 
 			$i++;
 		}
 	}
-	print "</ul>\n";
+	print "</ul>";
 
 	/* handle debug mode */
 	if (isset_request_var('debug')) {
@@ -819,6 +819,10 @@ function graph_edit() {
 			];
 
 			$(function() {
+				if ($('input[id^="agg_total"]').is(':checked')) {
+					$('#agg_preview').show();
+				}
+
 				if ($('#template_propogation').is(':checked')) {
 					for (var i = 0; i < templated_selectors.length; i++) {
 						$(templated_selectors[i] ).prop('disabled', true);
@@ -1102,6 +1106,10 @@ function aggregate_items() {
 	}
 
 	$(function() {
+		if ($('input[id^="agg_total"]').is(':checked')) {
+			$('#agg_preview').show();
+		}
+
 		$('#refresh').click(function() {
 			applyFilter();
 		});
