@@ -785,7 +785,7 @@ function reports_item_edit() {
 	form_hidden_box('report_id', (isset($reports_item['report_id']) ? $reports_item['report_id'] : '0'), '');
 	form_hidden_box('save_component_report_item', '1', '');
 
-	echo "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td class='center' id='graph'></td></tr></table>";
+	print "<table id='graphdiv' style='text-align:center;width:100%;display:none;'><tr><td class='center' id='graph'></td></tr></table>";
 
 	form_save_button(get_reports_page() . '?action=edit&tab=items&id=' . get_request_var('id'), 'return');
 
@@ -794,7 +794,13 @@ function reports_item_edit() {
 		# get config option for first-day-of-the-week
 		$first_weekdayid = read_user_setting('first_weekdayid');
 		# get start/end time-since-epoch for actual time (now()) and given current-session-timespan
-		get_timespan($timespan, time(), $reports_item['timespan'], $first_weekdayid);
+		if (isset($reports_item['timespan'])) {
+			$current_ts = $reports_item['timespan'];
+		} else {
+			$current_ts = 7;
+		}
+
+		get_timespan($timespan, time(), $current_ts, $first_weekdayid);
 	}
 
 	/* don't cache previews */
