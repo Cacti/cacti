@@ -53,7 +53,7 @@ if (!function_exists('get_cacti_cli_version')) {
 	}
 }
 
-if (!function_exists('is_resource_writeable')) {
+if (!function_exists('is_resource_writable')) {
 	function is_resource_writable($path) {
 		if ($path{strlen($path)-1}=='/') {
 			return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
