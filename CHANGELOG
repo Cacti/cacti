@@ -35,6 +35,7 @@ Cacti CHANGELOG
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8
 -feature#2754: Allow Devices, Graphs and Data Sources to be searched by ID
+-feature#2765: Cascading selection of available graphics
 -feature: Enhance the splice_rrd.php to be able to merge RRDfiles of differing step
 
 1.2.4
