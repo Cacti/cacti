@@ -1342,6 +1342,16 @@ function tree_edit() {
 						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
+				.on('hover_node.jstree', function(e, data) {
+					var myset = {};
+					myset.selected = [ data.node.id ];
+
+					if (data.node.id.includes('thost')) {
+						hostsDropSet = myset;
+					} else if (data.node.id.includes('tgraph')) {
+						graphsDropSet = myset;
+					}
+				})
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
