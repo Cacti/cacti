@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#2758: Lack of index.php in Cacti's log directory enable remote browse of the directory
 -issue#2760: Unable to add items into a report
 -issue#2762: Can not create aggregate graph with unknown RRD tools error
+-issue#2770: ItemType is not updated when saving Report Items
 -feature#2728: Update phpseclib to version 2.0.17
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8

@@ -467,6 +467,13 @@ function reports_item_edit() {
 			array(get_filter_request_var('item_id')));
 	}
 
+	// if a different item_type was selected, use it
+	if (isset_request_var('item_type')) {
+		if (get_filter_request_var('item_type') > 0) {
+			$report_item['item_type'] = get_request_var('item_type');
+		}
+	}
+
 	if (cacti_sizeof($report_item) || $report_item['item_type'] == REPORTS_ITEM_GRAPH) {
 		$trees           = array();
 		$branches        = array();
