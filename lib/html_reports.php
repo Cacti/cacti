@@ -1179,6 +1179,9 @@ function reports_edit() {
 	$report = array();
 	if (get_filter_request_var('id') > 0) {
 		$report = db_fetch_row_prepared('SELECT * FROM reports WHERE id = ?', array(get_request_var('id')));
+	}
+
+	if ($report !== false && isset($report['id'])) {
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
