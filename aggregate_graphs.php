@@ -827,7 +827,10 @@ function graph_edit() {
 
 				if ($('#template_propogation').is(':checked')) {
 					for (var i = 0; i < templated_selectors.length; i++) {
-						$(templated_selectors[i] ).prop('disabled', true);
+						$(templated_selectors[i]).prop('disabled', true).addClass('ui-state-disabled');
+						if ($(templated_selectors[i]).selectmenu('instance')) {
+							$(templated_selectors[i]).selectmenu('disable');
+						}
 					}
 				} else {
 					$('#row_template_propogation').hide();
