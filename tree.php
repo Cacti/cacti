@@ -918,7 +918,7 @@ function tree_edit() {
 		var siteMeTimer;
 		var hostSortInfo   = {};
 		var branchSortInfo = {};
-		var selectedItem = {};
+		var selectedItem   = {};
 
 		function createNode() {
 			var ref = $('#ctree').jstree(true);
@@ -938,12 +938,12 @@ function tree_edit() {
 
 		function getGraphData() {
 			$.get('tree.php?action=graphs&filter='+$('#grfilter').val()
-					+"&site_id="+(selectedItem.site_id?selectedItem.site_id:"")
-					+"&host_id="+(selectedItem.host_id?selectedItem.host_id:""))
+				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:'')
+				+ '&host_id=' + (selectedItem.host_id ? selectedItem.host_id:''))
 				.done(function(data) {
 					$('#graphs').jstree('destroy');
 					$('#graphs').html(data);
-					dragable('#graphs',"graphs");
+					dragable('#graphs');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -952,11 +952,11 @@ function tree_edit() {
 
 		function getHostData() {
 			$.get('tree.php?action=hosts&filter='+$('#hfilter').val()
-					+"&site_id="+(selectedItem.site_id?selectedItem.site_id:""))
+				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:''))
 				.done(function(data) {
 					$('#hosts').jstree('destroy');
 					$('#hosts').html(data);
-					dragable('#hosts',"hosts");
+					dragable('#hosts');
 				})
 				.fail(function(data) {
 					getPresentHTTPError(data);
@@ -967,7 +967,7 @@ function tree_edit() {
 			$.get('tree.php?action=sites&filter='+$('#sfilter').val(), function(data) {
 				$('#sites').jstree('destroy');
 				$('#sites').html(data);
-				dragable('#sites',"sites");
+				dragable('#sites');
 			});
 		}
 
@@ -1106,13 +1106,13 @@ function tree_edit() {
 
 			function switchDisplay() {
 				var selected = $('#element').prop('selectedIndex');
-				var mainWidth = parseInt($('#main').outerWidth());
-				var treeWidth = parseInt($('.treeTable').outerWidth());
+				var windowWidth = parseInt($(window).outerWidth());
+				var clientWidth = parseInt($(document).width());
 
 				if (selected == 0) {
-					if (mainWidth != treeWidth && treeWidth > 0) {
+					if (clientWidth > windowWidth) {
 						$('#element').prop('selectedIndex', 1);
-						if (typeof $('#element').selectmenu() === 'object') {
+						if ($('#element').selectmenu('instance')) {
 							$('#element').selectmenu('refresh');
 						}
 						selected = $('#element').prop('selectedIndex');
@@ -1342,6 +1342,16 @@ function tree_edit() {
 						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
+				.on('hover_node.jstree', function(e, data) {
+					var myset = {};
+					myset.selected = [ data.node.id ];
+
+					if (data.node.id.includes('thost')) {
+						hostsDropSet = myset;
+					} else if (data.node.id.includes('tgraph')) {
+						graphsDropSet = myset;
+					}
+				})
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
@@ -1350,15 +1360,13 @@ function tree_edit() {
 					}
 				})
 				.on('activate_node.jstree', function(e, data) {
-					//console.info(type);
-					//console.info(data);
-					if(type == "sites"){
-						selectedItem.site_id = (data.node.id).split(":")[1];
-						selectedItem.host_id = "";
+					if (type == 'sites') {
+						selectedItem.site_id = (data.node.id).split(':')[1];
+						selectedItem.host_id = '';
 						getHostData();
 						getGraphData();
-					}else if(type == "hosts"){
-						selectedItem.host_id = (data.node.id).split(":")[1];
+					}else if(type == 'hosts'){
+						selectedItem.host_id = (data.node.id).split(':')[1];
 						getGraphData();
 					}
 				})
@@ -1761,12 +1769,14 @@ function display_sites() {
 }
 
 function display_hosts() {
-    $sql_where = ' 1 = 1 ';
+	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
-		$sql_where .= " and (h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= 'h.hostname LIKE ' . db_escape('%' . get_request_var('filter') . '%') . ' OR h.description LIKE ' . db_escape('%' . get_request_var('filter') . '%');
 	}
-	if(get_request_var("site_id") != ""){
-	    $sql_where .= " and (h.site_id = ". get_request_var('site_id') .")";
+
+	if (get_filter_request_var('site_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_filter_request_var('site_id');
 	}
 
 	$hosts = get_allowed_devices($sql_where, 'description', '20');
@@ -1779,32 +1789,35 @@ function display_hosts() {
 }
 
 function display_graphs() {
-    $sql_where = 'WHERE 1 = 1 ';
+	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
-		$sql_where .= " and (title_cache LIKE '%" . get_request_var('filter') . "%' OR gt.name LIKE '%" . get_request_var('filter') . "%') AND local_graph_id>0";
+		$sql_where .= 'WHERE (title_cache LIKE ' . db_escape('%' . get_request_var('filter') . '%') . ' OR gt.name LIKE ' . db_escape('%' . get_request_var('filter') . '%') . ') AND local_graph_id > 0';
 	} else {
-		$sql_where .= ' and local_graph_id>0';
+		$sql_where .= 'WHERE local_graph_id > 0';
 	}
-	if(get_request_var("site_id") != ""){
-	    $sql_where .= " and (ht.site_id = ". get_request_var('site_id') .")";
+
+	if (get_filter_request_var('site_id') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ': 'WHERE ') . 'h.site_id = ' . get_request_var('site_id');
 	}
-	if(get_request_var("host_id") != ""){
-	    $sql_where .= " and (gl.host_id = ". get_request_var('host_id') .")";
+
+	if (get_request_var('host_id') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id = ' . get_request_var('host_id');
 	}
-	
+
 	$graphs = db_fetch_assoc("SELECT
 		gtg.local_graph_id AS id,
 		gtg.title_cache AS title,
-		gt.name AS template_name 
-		FROM graph_templates_graph AS gtg 
-		LEFT JOIN graph_templates AS gt 
-		ON gt.id=gtg.graph_template_id 
-        left join graph_local as gl 
-        on gtg.local_graph_id = gl.id  
-        left join `host` as ht 
-        on gl.host_id = ht.id  
-		$sql_where 
-		ORDER BY title_cache 
+		gt.name AS template_name
+		FROM graph_templates_graph AS gtg
+		LEFT JOIN graph_templates AS gt
+		ON gt.id=gtg.graph_template_id
+		LEFT JOIN graph_local AS gl
+		ON gtg.local_graph_id = gl.id
+		LEFT JOIN host as h
+		ON gl.host_id = h.id
+		$sql_where
+		ORDER BY title_cache
 		LIMIT 20");
 
 	if (cacti_sizeof($graphs)) {
