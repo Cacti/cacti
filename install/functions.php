@@ -856,7 +856,7 @@ function repair_automation() {
 			$exists_snmp_query_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query
 				WHERE hash = ?',
-				array($item['snmp_query_id']));
+				array($item['snmp_query_hash']));
 
 			$exists_snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
 				FROM snmp_query_graph
