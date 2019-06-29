@@ -45,10 +45,10 @@ $debug = false;
 
 $initialData = array();
 /* ================= input validation ================= */
-get_request_var('data', array());
-if (isset_request_var('data') && get_request_var('data')) {
+get_nfilter_request_var('data', array());
+if (isset_request_var('data') && get_nfilter_request_var('data')) {
 	log_install_debug('json','Using supplied data');
-	$initialData = get_request_var('data');
+	$initialData = get_nfilter_request_var('data');
 	if (!is_array($initialData)) {
 		$initialData = array($initialData);
 	}
