@@ -55,4 +55,6 @@ function upgrade_to_1_2_5() {
 		WHERE input_output = 'in'
 		AND type_code = 'output_type'
 		AND gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)");
+
+	repair_automation();
 }

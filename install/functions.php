@@ -357,6 +357,8 @@ function install_setup_get_templates() {
 		}
 	}
 
+	repair_automation();
+
 	return $info;
 }
 
@@ -804,5 +806,72 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 		$logfile = 'install' . '-' . $section;
 		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+	}
+}
+
+/** repair_automation() - Repairs mangled automation graph rules based
+ *  upon the change in the way that Cacti imports the Graph Templates after
+ *  Cacti 1.2.4.
+ **/
+function repair_automation() {
+	$hash_array = array(
+		array(
+			'name' => 'Traffic 64 bit Server',
+			'automation_id' => 1,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
+		),
+		array(
+			'name' => 'Traffic 64 bit Server Linux',
+			'automation_id' => 2,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
+		),
+		array(
+			'name' => 'Disk Space',
+			'automation_id' => 3,
+			'snmp_query_graph_id' => 18,
+			'snmp_query_id' => 8,
+			'snmp_query_hash' => '9343eab1f4d88b0e61ffc9d020f35414',
+			'snmp_query_graph_hash'=> '46c4ee688932cf6370459527eceb8ef3',
+		)
+	);
+
+	foreach($hash_array as $item) {
+		$exists = db_fetch_row_prepared('SELECT *
+			FROM automation_graph_rules
+			WHERE id = ?
+			AND name = ?',
+			array(
+				$item['automation_id'],
+				$item['name']
+			)
+		);
+
+		if (cacti_sizeof($exists)) {
+			$exists_snmp_query_id = db_fetch_cell_prepared('SELECT id
+				FROM snmp_query
+				WHERE hash = ?',
+				array($item['snmp_query_id']));
+
+			$exists_snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
+				FROM snmp_query_graph
+				WHERE hash = ?',
+				array($item['snmp_query_graph_hash']));
+
+			db_execute_prepared('UPDATE automation_graph_rules
+				SET snmp_query_id = ?, graph_type_id = ?
+				WHERE id = ?',
+				array(
+					$exists_snmp_query_id,
+					$exists_snmp_query_graph_id,
+					$item['automation_id']
+				)
+			);
+		}
 	}
 }
