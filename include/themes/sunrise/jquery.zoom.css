@@ -164,15 +164,15 @@
 
 
 .zoom-menu {
-	border:1px solid #222;
+	border: 1px solid #93CEFF;
 	position:absolute;
-	background:#F7F7F7;
+	background: #070707;
 	display:none;
 	font-family: Verdana,Arial,sans-serif;
 	font-size: 12px;
 	font-weight: light;
 	z-index:auto;
-	color: #000000;
+	color: #93CEFF;
 }
 
 .zoom-menu .first_li span {
@@ -190,11 +190,11 @@
 	border:1px solid #aaa;
 	border-left:1px solid #ccc;
 	margin-top:-28px;
-	background:#F7F7F7;
+	background:#070707;
 }
 
 .zoom-menu .sep_li {
-	border-top: 1px solid #c5c5c5;
+	border-top: 1px solid #04335B;
 }
 
 .zoom-menu .fill_title {
@@ -225,11 +225,11 @@
 }
 
 .zoom-menu-hover {
-	background: #5CB85C;
+	background: #04335B;
 	cursor: pointer;
 }
 
-.zoom-menu-hover>span {
+.zoom-menu-hover > span {
 	color: #FFFFFF;
 }
 
@@ -238,7 +238,8 @@
 }
 
 .zoom-menu-highlight {
-	#background: #E0EDFE;
+	background: #04335B;
+	color: #FFFFFF;
 }
 
 .zoom-hidden {
@@ -248,3 +249,4 @@
 	left: 0;
 	opacity: 0;
 }
+
