@@ -109,7 +109,6 @@ $orig_cacti_version = get_cacti_version();
 
 // loop through versions from old version to the current, performing updates for each version in the chain
 foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
-
 	// skip versions old than the database version
 	if (cacti_version_compare($old_cacti_version, $cacti_upgrade_version, '>=')) {
 		continue;
@@ -135,12 +134,13 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 			break;
 		}
 
-		print "\n";
 		if (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '<')) {
 			db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 			$orig_cacti_version = $cacti_upgrade_version;
 		}
 		$prev_cacti_version = $cacti_upgrade_version;
+	} elseif (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '>=')) {
+		db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 	}
 
 	if (CACTI_VERSION == $cacti_upgrade_version) {
