@@ -58,7 +58,7 @@ function dsstats_find_log_bad_maxvalues() {
 		ON dshc.local_data_id = dtr.local_data_id
 		AND dshc.rrd_name = dtr.data_source_name
 		WHERE `time` > ?
-		WHERE CONVERT(value, CHAR) != "U"
+		AND CONVERT(value, CHAR) != "U"
 		GROUP BY dtr.local_data_id
 		HAVING (rrd_maximum != "U" AND max_value > rrd_maximum)
 		OR (rrd_minimum != "U" AND min_value < rrd_minimum)',
