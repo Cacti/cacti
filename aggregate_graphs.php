@@ -821,7 +821,7 @@ function graph_edit() {
 			];
 
 			$(function() {
-				if ($('input[id^="agg_total"]').is(':checked')) {
+				if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
 					$('#agg_preview').show();
 				}
 
@@ -1111,7 +1111,7 @@ function aggregate_items() {
 	}
 
 	$(function() {
-		if ($('input[id^="agg_total"]').is(':checked')) {
+		if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
 			$('#agg_preview').show();
 		}
 
@@ -1230,9 +1230,14 @@ function aggregate_items() {
 		FROM graph_templates_graph AS gtg
 		INNER JOIN graph_local AS gl
 		ON gtg.local_graph_id=gl.id
-		LEFT JOIN (SELECT DISTINCT local_graph_id FROM aggregate_graphs_items) AS agi
+		LEFT JOIN (
+			SELECT DISTINCT local_graph_id
+			FROM aggregate_graphs_items
+			WHERE aggregate_graph_id=$aggregate_id) AS agi
 		ON gtg.local_graph_id=agi.local_graph_id
 		$sql_where");
+
+	cacti_log("SELECT COUNT(DISTINCT gl.id) AS total FROM graph_templates_graph AS gtg INNER JOIN graph_local AS gl ON gtg.local_graph_id=gl.id LEFT JOIN (SELECT DISTINCT local_graph_id FROM aggregate_graphs_items) AS agi ON gtg.local_graph_id=agi.local_graph_id $sql_where");
 
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
