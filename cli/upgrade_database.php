@@ -139,9 +139,9 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 			$orig_cacti_version = $cacti_upgrade_version;
 		}
 		$prev_cacti_version = $cacti_upgrade_version;
-	} elseif (cacti_version_compare($orig_cacti_version, $cacti_upgrade_version, '>=')) {
-		db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 	}
+
+	db_execute("UPDATE version SET cacti = '" . $cacti_upgrade_version . "'");
 
 	if (CACTI_VERSION == $cacti_upgrade_version) {
 		break;
