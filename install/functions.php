@@ -357,8 +357,6 @@ function install_setup_get_templates() {
 		}
 	}
 
-	repair_automation();
-
 	return $info;
 }
 
@@ -534,12 +532,13 @@ function install_file_paths() {
 	/* log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
-		if (empty($input['path_cactilog']['default'])) {
-			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
-		}
 	} else {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
 		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
+	}
+
+	if (empty($input['path_cactilog']['default'])) {
+		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* stderr log file path */
@@ -814,6 +813,8 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
  *  Cacti 1.2.4.
  **/
 function repair_automation() {
+	log_install_always('', 'Repairing Automation Rules');
+
 	$hash_array = array(
 		array(
 			'name' => 'Traffic 64 bit Server',
