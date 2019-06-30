@@ -31,7 +31,7 @@
      the original string */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
-		return substr($text, 0, $max_length) . '...';
+		return mb_substr($text, 0, $max_length) . '...';
 	} else {
 		return $text;
 	}
