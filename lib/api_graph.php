@@ -44,45 +44,47 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 			'local_data_id', 'local_data_id'
 		);
 
-		$data_sources = array_rekey(
-			db_fetch_assoc('SELECT dtd.local_data_id,
-				COUNT(DISTINCT gti.local_graph_id) AS graphs
-				FROM data_template_data AS dtd
-				INNER JOIN data_template_rrd AS dtr
-				ON dtd.local_data_id=dtr.local_data_id
-				INNER JOIN graph_templates_item AS gti
-				ON dtr.id=gti.task_item_id
-				WHERE dtd.local_data_id > 0
-				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
-				GROUP BY dtd.local_data_id
-				HAVING graphs = 1
-				AND ' . array_to_sql_or($all_data_sources, 'local_data_id')),
-			'local_data_id', 'local_data_id'
-		);
+		if (cacti_sizeof($all_data_sourceS)) {
+			$data_sources = array_rekey(
+				db_fetch_assoc('SELECT dtd.local_data_id,
+					COUNT(DISTINCT gti.local_graph_id) AS graphs
+					FROM data_template_data AS dtd
+					INNER JOIN data_template_rrd AS dtr
+					ON dtd.local_data_id=dtr.local_data_id
+					INNER JOIN graph_templates_item AS gti
+					ON dtr.id=gti.task_item_id
+					WHERE dtd.local_data_id > 0
+					AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
+					GROUP BY dtd.local_data_id
+					HAVING graphs = 1
+					AND ' . array_to_sql_or($all_data_sources, 'local_data_id')),
+				'local_data_id', 'local_data_id'
+			);
 
-		if (cacti_sizeof($data_sources)) {
-			api_data_source_remove_multi($data_sources);
-		}
+			if (cacti_sizeof($data_sources)) {
+				api_data_source_remove_multi($data_sources);
+			}
 
-		api_graph_remove_multi($local_graph_ids);
+			api_graph_remove_multi($local_graph_ids);
 
-		/* Remove orphaned data sources */
-		$data_sources = array_rekey(
-			db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
-				FROM data_template_data AS dtd
-				INNER JOIN data_template_rrd AS dtr
-				ON dtd.local_data_id=dtr.local_data_id
-				LEFT JOIN graph_templates_item AS gti
-				ON dtr.id=gti.task_item_id
-				WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
-				AND gti.local_graph_id IS NULL
-				AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
-				AND dtd.local_data_id > 0'),
-			'local_data_id', 'local_data_id'
-		);
+			/* Remove orphaned data sources */
+			$data_sources = array_rekey(
+				db_fetch_assoc('SELECT DISTINCT dtd.local_data_id
+					FROM data_template_data AS dtd
+					INNER JOIN data_template_rrd AS dtr
+					ON dtd.local_data_id=dtr.local_data_id
+					LEFT JOIN graph_templates_item AS gti
+					ON dtr.id=gti.task_item_id
+					WHERE ' . array_to_sql_or($all_data_sources, 'dtd.local_data_id') . '
+					AND gti.local_graph_id IS NULL
+					AND gti.local_graph_id NOT IN(SELECT local_graph_id FROM aggregate_graphs)
+					AND dtd.local_data_id > 0'),
+				'local_data_id', 'local_data_id'
+			);
 
-		if (cacti_sizeof($data_sources)) {
-			api_data_source_remove_multi($data_sources);
+			if (cacti_sizeof($data_sources)) {
+				api_data_source_remove_multi($data_sources);
+			}
 		}
 
 		break;
