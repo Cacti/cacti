@@ -293,7 +293,7 @@ function form_save() {
 
 		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
-		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
+		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['hostname'])) {
 			raise_message('poller_nodupe');
 		} elseif (!is_error_message()) {
 			$poller_id = sql_save($save, 'poller');
@@ -314,12 +314,14 @@ function form_save() {
    ------------------------ */
 
 function poller_host_duplicate($poller_id, $host) {
-	if ($host == 'localhost') {
+	if ($poller_id == 1) {
 		return true;
+	} elseif ($host == 'localhost') {
+		return false;
 	} else {
 		return db_fetch_cell_prepared('SELECT COUNT(*)
 			FROM poller
-			WHERE dbhost LIKE "' . $host . '%"
+			WHERE hostname LIKE "' . $host . '%"
 			AND id != ?',
 			array($poller_id));
 	}
