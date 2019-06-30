@@ -1449,30 +1449,43 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	}
 }
 
-function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0) {
+function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $force = false) {
 	global $remote_db_cnn_id;
 
 	$sql_where   = '';
 	$sql_where1  = '';
 	$sql_where  .= $device_id > 0 ? 'WHERE host_id = ' . $device_id:'';
 	$sql_where1 .= $device_id > 0 ? ' AND host_id = ' . $device_id:'';
+
 	if ($data_query_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE ') . ' snmp_query_id = ' . $data_query_id;
 		$sql_where1 .= ' AND snmp_query_id = ' . $data_query_id;
 	}
 
-	$min_reindex_cache = db_fetch_cell("SELECT MIN(last_updated)
-		FROM host_snmp_cache
-		$sql_where");
-
-	$recache_hosts = array_rekey(
-		db_fetch_assoc_prepared("SELECT DISTINCT host_id
+	if (!$force) {
+		// Give the snmp query upto an hour to run
+		$min_reindex_cache = db_fetch_cell("SELECT MIN(UNIX_TIMESTAMP(last_updated)-3600)
 			FROM host_snmp_cache
-			WHERE last_updated > ?
-			$sql_where1",
-			array($min_reindex_cache)),
-		'host_id', 'host_id'
-	);
+			$sql_where");
+
+		$recache_hosts = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT host_id
+				FROM host_snmp_cache
+				WHERE UNIX_TIMESTAMP(last_updated) > ?
+				$sql_where1",
+				array($min_reindex_cache)),
+			'host_id', 'host_id'
+		);
+	} else {
+		$recache_hosts = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT host_id
+				FROM host_snmp_cache
+				WHERE UNIX_TIMESTAMP(last_updated) > 0
+				$sql_where1",
+				array($min_reindex_cache)),
+			'host_id', 'host_id'
+		);
+	}
 
 	if (sizeof($recache_hosts)) {
 		$local_data_ids = db_fetch_assoc("SELECT *
