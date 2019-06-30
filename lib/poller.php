@@ -751,7 +751,7 @@ function cache_in_path($path, $type, $recursive = true) {
 	} else {
 		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-		$excluded_dirs_files = array('.git', '.travis.yml', 'config.php', '.gitattributes');
+		$excluded_dirs_files = array('.git', '.travis.yml', '.gitattributes');
 		$pathinfo = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
@@ -766,12 +766,17 @@ function cache_in_path($path, $type, $recursive = true) {
 			$exclude = true;
 		}
 
-		if (array_search(basename($path), $excluded_dirs_files, true) !== false) {
+		if (basename($path) == 'config.php' && strpos($path, 'plugins') !== false) {
+			// Allow replication of plugin based config.php files
+			$exclude = false;
+		} elseif (basename($path) == 'config.php') {
+			$exclude = true;
+		} elseif (array_search(basename($path), $excluded_dirs_files, true) !== false) {
 			$exclude = true;
 		}
 
 		/* exclude spurious extensions */
-		if (!$exclude && basename($path) != 'config.php') {
+		if (!$exclude) {
 			$curr_md5 = md5_file($path);
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
@@ -812,7 +817,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 					if ($recursive) {
 						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 					}
-				} elseif (basename($path) == 'config.php') {
+				} elseif (basename($path) == 'config.php' && strpos($path, 'plugins') === false) {
 					continue;
 				} elseif (basename($path) == '.travis.yml') {
 					continue;
@@ -923,7 +928,7 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (is_dir(dirname($mypath))) {
-					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
+					if ($md5sum != $e['md5sum'] && $e['path'] != 'include/config.php') {
 						$attributes = empty($e['attributes']) ? 0 : $e['attributes'];
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
@@ -1662,7 +1667,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 
 function should_ignore_from_replication($path) {
 	$entry = basename($path);
-	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '' || $entry == 'config.php');
+	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
 }
 
 function get_remote_poller_ids_from_graphs(&$graphs) {
