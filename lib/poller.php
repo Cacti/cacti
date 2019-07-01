@@ -581,7 +581,7 @@ function update_resource_cache($poller_id = 1) {
 	$rpath = $config['resource_path'];
 
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-	$excluded_dirs       = array('.git', 'log');
+	$excluded_dirs       = array('.git', 'log', '.gitattributes', '.github');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -635,7 +635,7 @@ function update_resource_cache($poller_id = 1) {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
 						$info = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = array('..', '.', '.git');
+						$dir_exclusions  = array('..', '.', '.git', '.github', '.gitattributes');
 						$file_exclusions = $excluded_extensions;
 
 						if (isset($info['info']['nosync'])) {
@@ -751,7 +751,7 @@ function cache_in_path($path, $type, $recursive = true) {
 	} else {
 		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-		$excluded_dirs_files = array('.git', '.travis.yml', '.gitattributes');
+		$excluded_dirs_files = array('.git', '.travis.yml', '.gitattributes', '.github');
 		$pathinfo = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
