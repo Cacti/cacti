@@ -926,11 +926,13 @@ function api_plugin_load_realms() {
 		foreach ($plugin_realms as $plugin_realm) {
 			$plugin_files = explode(',', $plugin_realm['file']);
 
-			foreach($plugin_files as $plugin_file) {
-				$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
-			}
+			if (is_numeric($plugin_realm['id'])) {
+				foreach($plugin_files as $plugin_file) {
+					$user_auth_realm_filenames[$plugin_file] = $plugin_realm['id'] + 100;
+				}
 
-			$user_auth_realms[$plugin_realm['id'] + 100] = $plugin_realm['display'];
+				$user_auth_realms[$plugin_realm['id'] + 100] = $plugin_realm['display'];
+			}
 		}
 	}
 }
