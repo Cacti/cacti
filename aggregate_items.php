@@ -357,7 +357,7 @@ function item_edit() {
 				'name' => 't_' . $field_name,
 				'friendly_name' => __esc('Override this Value') . '<br>',
 				'value' => ($item_overrides['t_'.$field_name] == 'on' ? 'on' : ''),
-				'on_change' => 'toggleFieldEnabled(this);'
+				'on_change' => 'toggleFieldEnabled(this.id);'
 			);
 		}
 
@@ -412,25 +412,39 @@ function item_edit() {
 		}
 	}
 
-	// disable all items except those explicitly overriden
+	// disable all items with sub-checkboxes except
+	// where sub-checkbox checked
 	function setFieldsDisabled() {
-		$('tr[id*="row_"]').each(function() {
-			fieldName = this.id.substr(4);
-			cbName = 't_'+fieldName;
-			if ($('#'+cbName).size() > 0) {
-				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
-			} else {
-				$('#'+fieldName).prop('disabled', true);
+		$('input[id^="t_"]').each(function() {
+			if (!$(this).is(':checked')) {
+				var fieldId = $(this).attr('id').substr(2);
+
+				$('#'+fieldId).prop('disabled', true);
+				$('#'+fieldId).addClass('ui-state-disabled');
+
+				if ($('#'+fieldId).selectmenu('instance')) {
+					$('#'+fieldId).selectmenu('disable');
+				}
 			}
 		});
 	}
 
 	// enable or disable form field based on state of corresponding checkbox
-	function toggleFieldEnabled(cb) {
-		prefix = 't_';
-		if (cb.name.substr(0,prefix.length) == prefix) {
-			fieldName = cb.name.substr(prefix.length);
-			$('#'+fieldName).prop('disabled', !cb.checked);
+	function toggleFieldEnabled(toggleFieldId) {
+		fieldId  = toggleFieldId.substr(2);
+
+		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
+			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('enable');
+			}
+		} else {
+			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('disable');
+			}
 		}
 	}
 

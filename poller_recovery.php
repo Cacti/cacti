@@ -178,7 +178,7 @@ if ($run) {
 		SET status="5"
 		WHERE id= ?', array($poller_id), true, $remote_db_cnn_id);
 
-	poller_push_reindex_data_to_main();
+	poller_push_reindex_data_to_main(0, 0, true);
 
 	while (true) {
 		$time_records  = db_fetch_assoc('SELECT time, count(*) AS entries
