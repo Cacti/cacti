@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#2742: Resolve a number of QA issues in various files
 -issue#2743: Call tooltip('Close') without checking the existence of tooltip.
 -issue#2744: Undefined index: password_change in auth_changepassword.php
+-issue#2748: When the path_php_binary location is invalid, this should be notified during installation when checking modules
 -issue#2750: When performing multiple sort, highlighting of content occurs
 -issue#2751: Tree editing does not allow for 'All' Display
 -issue#2752: When running verbose query on device you are unable to copy text from items

@@ -1657,6 +1657,25 @@ class Installer implements JsonSerializable {
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
+			if ($recommends === false) {
+				$recommends = array(
+					array(
+						'status' => DB_STATUS_ERROR,
+						'name' => __('PHP Binary'),
+						'current' => read_config_option('path_php_binary'),
+						'value' => '',
+						'description' => __('The PHP binary location is not valid and must be updated.'),
+					),
+					array(
+						'status' => DB_STATUS_WARNING,
+						'name' => '',
+						'current' => '',
+						'value' => '',
+						'description' => __('Update the path_php_binary value in the settings table.'),
+					)
+				);
+			}
+
 			foreach ($recommends as $recommend) {
 				if ($recommend['status'] == DB_STATUS_SUCCESS) {
 					$status_font = 'green';

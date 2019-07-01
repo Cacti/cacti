@@ -1372,8 +1372,10 @@ function utility_php_recommends() {
 	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
 	$json = shell_exec($php . ' -q ' . $php_file);
-	$ext = array('web' => '', 'cli' => '');
-	$ext['cli'] = @json_decode($json, true);
+	$ext = array('web' => false, 'cli' => false);
+	if (!empty($json)) {
+		$ext['cli'] = @json_decode($json, true);
+	}
 
 	utility_php_verify_recommends($ext['web'], 'web');
 	utility_php_set_recommends_text($ext);
@@ -1428,7 +1430,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 
 function utility_php_set_recommends_text(&$recs) {
 	foreach ($recs as $name => $recommends) {
-		if (sizeof($recommends)) {
+		if (cacti_sizeof($recommends)) {
 			foreach ($recommends as $index => $recommend) {
 				if ($recommend['name'] == 'version') {
 					$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
