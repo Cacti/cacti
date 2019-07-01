@@ -44,7 +44,7 @@ function api_delete_graphs(&$local_graph_ids, $delete_type) {
 			'local_data_id', 'local_data_id'
 		);
 
-		if (cacti_sizeof($all_data_sourceS)) {
+		if (cacti_sizeof($all_data_sources)) {
 			$data_sources = array_rekey(
 				db_fetch_assoc('SELECT dtd.local_data_id,
 					COUNT(DISTINCT gti.local_graph_id) AS graphs
