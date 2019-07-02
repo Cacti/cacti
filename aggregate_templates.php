@@ -175,7 +175,7 @@ function aggregate_form_save() {
 
 
 	/* save only if all posted form fields passed validation */
-	if (!is_error_message()) {
+	if ($params_changed && !is_error_message()) {
 		sql_save($params_new, 'aggregate_graph_templates_graph', 'aggregate_template_id', false);
 	}
 

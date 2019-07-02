@@ -1991,8 +1991,8 @@ function graph_management() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
-		gtg.title_cache, gt.name, gl.host_id,
+	$graph_list = db_fetch_assoc("SELECT gtg.id, gl.id AS local_graph_id,
+		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
 		LEFT JOIN graph_templates_graph AS gtg

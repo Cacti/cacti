@@ -3258,10 +3258,11 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
 	var myWidth   = (mainWidth-(30*myColumns))/myColumns;
+	var numGraphs = $('.graphWrapper').length;
 
 	$('.graphWrapper').each(function() {
 		var graph_id = $(this).attr('graph_id');
@@ -3334,7 +3335,9 @@ function initializeGraphs() {
 
 				realtimeArray[data.local_graph_id] = false;
 
-				responsiveResizeGraphs();
+				if (!--numGraphs) {
+					responsiveResizeGraphs();
+				}
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);

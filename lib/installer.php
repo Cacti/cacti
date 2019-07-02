@@ -701,8 +701,8 @@ class Installer implements JsonSerializable {
 					if ($should_set && $name == 'path_php_binary') {
 						$input = mt_rand(2,64);
 						$output = shell_exec(
-							cacti_escapeshellcmd($path) . ' -q ' . 
-							cacti_escapeshellarg($config['base_path'] .  '/install/cli_test.php') . 
+							cacti_escapeshellcmd($path) . ' -q ' .
+							cacti_escapeshellarg($config['base_path'] .  '/install/cli_test.php') .
 							' ' . $input);
 
 						if ($output != $input * $input) {
@@ -1657,6 +1657,25 @@ class Installer implements JsonSerializable {
 			html_header(array(__('Name'), __('Current'), __('Recommended'), __('Status'), __('Description')));
 
 			$status = DB_STATUS_SUCCESS;
+			if ($recommends === false) {
+				$recommends = array(
+					array(
+						'status' => DB_STATUS_ERROR,
+						'name' => __('PHP Binary'),
+						'current' => read_config_option('path_php_binary'),
+						'value' => '',
+						'description' => __('The PHP binary location is not valid and must be updated.'),
+					),
+					array(
+						'status' => DB_STATUS_WARNING,
+						'name' => '',
+						'current' => '',
+						'value' => '',
+						'description' => __('Update the path_php_binary value in the settings table.'),
+					)
+				);
+			}
+
 			foreach ($recommends as $recommend) {
 				if ($recommend['status'] == DB_STATUS_SUCCESS) {
 					$status_font = 'green';
@@ -2765,6 +2784,8 @@ class Installer implements JsonSerializable {
 				}
 			}
 
+			repair_automation();
+
 			db_execute('TRUNCATE TABLE automation_templates');
 
 			foreach($this->defaultAutomation as $item) {
@@ -2932,7 +2953,7 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
 			log_install_always('', 'Device Template for First Cacti Device is ' . $host_template_id);
 
-			$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+			$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 				cacti_escapeshellarg($config['base_path'] . '/cli/add_device.php') .
 				' --description=' . cacti_escapeshellarg($description) .
 				' --ip=' . cacti_escapeshellarg($ip) .
@@ -2964,7 +2985,7 @@ class Installer implements JsonSerializable {
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
 					log_install_always('', 'Adding Device to Default Tree');
-					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/add_tree.php') .
 						' --type=node' .
 						' --node-type=host' .
@@ -3020,7 +3041,7 @@ class Installer implements JsonSerializable {
 				$name = $table['value'];
 				if (!empty($name)) {
 					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
-					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' . 
+					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
 						' --utf8 --innodb');

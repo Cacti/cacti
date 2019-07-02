@@ -714,10 +714,15 @@ function graph_edit() {
 	}
 
 	if (!isempty_request_var('id') && $current_tab == 'preview') {
-		html_start_box(__('Aggregate Preview [%s]', $header_label), '100%', '', '3', 'center', '');
+		html_start_box(__('Aggregate Preview %s', $header_label), '100%', '', '3', 'center', '');
 		?>
 		<tr><td id='imagewindow' class='center'>
 			<img src='<?php print html_escape($config['url_path'] . 'graph_image.php?action=edit&disable_cache=1&local_graph_id=' . get_request_var('id') . '&rra_id=' . read_user_setting('default_rra_id') . '&random=' . mt_rand());?>' alt=''>
+			<script type='text/javascript'>
+			$(function() {
+				$('#agg_preview').show();
+			});
+			</script>
 		</td></tr>
 		<?php
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
@@ -733,6 +738,7 @@ function graph_edit() {
 				<script type='text/javascript'>
 				$(function() {
 					var width = $(window).width() - $('.cactiConsoleNavigationArea').width();
+					$('#agg_preview').show();
 					$('#rrdtoolinfo, #imagewindow').css('max-width', width);
 				});
 				</script>
@@ -821,13 +827,16 @@ function graph_edit() {
 			];
 
 			$(function() {
-				if ($('input[id^="agg_total"]').is(':checked')) {
+				if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
 					$('#agg_preview').show();
 				}
 
 				if ($('#template_propogation').is(':checked')) {
 					for (var i = 0; i < templated_selectors.length; i++) {
-						$(templated_selectors[i] ).prop('disabled', true);
+						$(templated_selectors[i]).prop('disabled', true).addClass('ui-state-disabled');
+						if ($(templated_selectors[i]).selectmenu('instance')) {
+							$(templated_selectors[i]).selectmenu('disable');
+						}
 					}
 				} else {
 					$('#row_template_propogation').hide();
@@ -987,7 +996,7 @@ function graph_edit() {
 		?>
 		<script type='text/javascript'>
 
-		$().ready(function() {
+		$(function() {
 			dynamic();
 			if (!$('#templated')) {
 				$('#local_graph_template_graph_id').next('table').css('display', 'none');
@@ -1089,8 +1098,76 @@ function aggregate_items() {
 		$rows = get_request_var('rows');
 	}
 
+	/* form the 'where' clause for our main sql query */
+	if (get_request_var('rfilter') == '') {
+		$sql_where = '';
+	} elseif (validate_is_regex(get_request_var('rfilter'))) {
+		$sql_where = 'WHERE gtg.title_cache RLIKE "' . get_request_var('rfilter') . '"';
+	} else {
+		$filters = explode(' ', get_request_var('rfilter'));
+		$sql_where = '';
+		$sql_where = aggregate_make_sql_where($sql_where, $filters, 'gtg.title_cache');
+	}
+
+	if (get_request_var('matching') != 'false') {
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
+	}
+
+	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
+		FROM aggregate_graphs AS ag
+		WHERE ag.local_graph_id = ?',
+		array(get_request_var('id')));
+
+	$aggregate_id = db_fetch_cell_prepared('SELECT id
+		FROM aggregate_graphs
+		WHERE local_graph_id = ?',
+		array(get_request_var('id')));
+
+	$total_items = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM aggregate_graphs_items
+		WHERE aggregate_graph_id = ?',
+		array($aggregate_id));
+
+	if (!empty($graph_template)) {
+		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " (gtg.graph_template_id=$graph_template)";
+	}
+
+	if (get_request_var('local_graph_ids') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . get_request_var('local_graph_ids') . ')';
+	}
+
+	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
+		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_local AS gl
+		ON gtg.local_graph_id=gl.id
+		LEFT JOIN (
+			SELECT DISTINCT local_graph_id
+			FROM aggregate_graphs_items
+			WHERE aggregate_graph_id=$aggregate_id) AS agi
+		ON gtg.local_graph_id=agi.local_graph_id
+		$sql_where");
+
+	$sql_order = get_order_string();
+	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
+
+	$graph_list = db_fetch_assoc("SELECT
+		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
+		FROM graph_templates_graph AS gtg
+		INNER JOIN graph_local AS gl
+		ON gtg.local_graph_id=gl.id
+		LEFT JOIN (
+			SELECT DISTINCT local_graph_id
+			FROM aggregate_graphs_items
+			WHERE aggregate_graph_id=$aggregate_id) AS agi
+		ON gtg.local_graph_id=agi.local_graph_id
+		$sql_where
+		$sql_order
+		$sql_limit");
+
+
 	?>
 	<script type='text/javascript'>
+	var totalItems=<?php print $total_items;?>;
 
 	function applyFilter() {
 		strURL = 'aggregate_graphs.php' +
@@ -1108,7 +1185,7 @@ function aggregate_items() {
 	}
 
 	$(function() {
-		if ($('input[id^="agg_total"]').is(':checked')) {
+		if (totalItems > 0) {
 			$('#agg_preview').show();
 		}
 
@@ -1185,68 +1262,10 @@ function aggregate_items() {
 
 	html_end_box(false);
 
-	/* form the 'where' clause for our main sql query */
-	if (get_request_var('rfilter') == '') {
-		$sql_where = '';
-	} elseif (validate_is_regex(get_request_var('rfilter'))) {
-		$sql_where = 'WHERE gtg.title_cache RLIKE "' . get_request_var('rfilter') . '"';
-	} else {
-		$filters = explode(' ', get_request_var('rfilter'));
-		$sql_where = '';
-		$sql_where = aggregate_make_sql_where($sql_where, $filters, 'gtg.title_cache');
-	}
-
-	if (get_request_var('matching') != 'false') {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . ' (agi.local_graph_id IS NOT NULL)';
-	}
-
-	$graph_template = db_fetch_cell_prepared('SELECT graph_template_id
-		FROM aggregate_graphs AS ag
-		WHERE ag.local_graph_id = ?',
-		array(get_request_var('id')));
-
-	$aggregate_id = db_fetch_cell_prepared('SELECT id
-		FROM aggregate_graphs
-		WHERE local_graph_id = ?',
-		array(get_request_var('id')));
-
-	if (!empty($graph_template)) {
-		$sql_where .= ($sql_where != '' ? ' AND':'WHERE') . " (gtg.graph_template_id=$graph_template)";
-	}
-
-	if (get_request_var('local_graph_ids') != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' agi.local_graph_id IN(' . get_request_var('local_graph_ids') . ')';
-	}
-
 	/* print checkbox form for validation */
 	form_start('aggregate_graphs.php', 'chk');
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$total_rows = db_fetch_cell("SELECT COUNT(DISTINCT gl.id) AS total
-		FROM graph_templates_graph AS gtg
-		INNER JOIN graph_local AS gl
-		ON gtg.local_graph_id=gl.id
-		LEFT JOIN (SELECT DISTINCT local_graph_id FROM aggregate_graphs_items) AS agi
-		ON gtg.local_graph_id=agi.local_graph_id
-		$sql_where");
-
-	$sql_order = get_order_string();
-	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
-
-	$graph_list = db_fetch_assoc("SELECT
-		gtg.id, gtg.local_graph_id, gtg.height, gtg.width, gtg.title_cache, agi.local_graph_id AS agg_graph_id
-		FROM graph_templates_graph AS gtg
-		INNER JOIN graph_local AS gl
-		ON gtg.local_graph_id=gl.id
-		LEFT JOIN (
-			SELECT DISTINCT local_graph_id
-			FROM aggregate_graphs_items
-			WHERE aggregate_graph_id=$aggregate_id) AS agi
-		ON gtg.local_graph_id=agi.local_graph_id
-		$sql_where
-		$sql_order
-		$sql_limit");
 
 	$nav = html_nav_bar('aggregate_graphs.php?action=edit&tab=items&id=' . get_request_var('id'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Graphs'), 'page', 'main');
 
@@ -1448,6 +1467,10 @@ function aggregate_graph() {
 	}
 
 	$(function() {
+		if ($('input[id^="agg_total"]').is(':checked') || $('#template_propogation').is(':checked')) {
+			$('#agg_preview').show();
+		}
+
 		$('#refresh').click(function() {
 			applyFilter();
 		});

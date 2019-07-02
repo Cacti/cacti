@@ -581,7 +581,7 @@ function update_resource_cache($poller_id = 1) {
 	$rpath = $config['resource_path'];
 
 	$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-	$excluded_dirs       = array('.git', 'log');
+	$excluded_dirs       = array('.git', 'log', '.gitattributes', '.github');
 
 	$paths = array(
 		'base'     => array('recursive' => false, 'path' => $mpath),
@@ -635,7 +635,7 @@ function update_resource_cache($poller_id = 1) {
 				if (is_dir($mpath . '/plugins/' . $path)) {
 					if (file_exists($mpath . '/plugins/' . $path . '/INFO')) {
 						$info = parse_ini_file($mpath . '/plugins/' . $path . '/INFO', true);
-						$dir_exclusions  = array('..', '.', '.git');
+						$dir_exclusions  = array('..', '.', '.git', '.github', '.gitattributes');
 						$file_exclusions = $excluded_extensions;
 
 						if (isset($info['info']['nosync'])) {
@@ -751,7 +751,7 @@ function cache_in_path($path, $type, $recursive = true) {
 	} else {
 		$spath = ltrim(trim(str_replace($config['base_path'], '', $path), '/ \\'), '/ \\');
 		$excluded_extensions = array('tar', 'gz', 'zip', 'tgz', 'ttf', 'z', 'exe', 'pack', 'swp', 'swo');
-		$excluded_dirs_files = array('.git', '.travis.yml', 'config.php', '.gitattributes');
+		$excluded_dirs_files = array('.git', '.travis.yml', '.gitattributes', '.github');
 		$pathinfo = pathinfo($path);
 
 		if (isset($pathinfo['extension'])) {
@@ -766,12 +766,17 @@ function cache_in_path($path, $type, $recursive = true) {
 			$exclude = true;
 		}
 
-		if (array_search(basename($path), $excluded_dirs_files, true) !== false) {
+		if (basename($path) == 'config.php' && strpos($path, 'plugins') !== false) {
+			// Allow replication of plugin based config.php files
+			$exclude = false;
+		} elseif (basename($path) == 'config.php') {
+			$exclude = true;
+		} elseif (array_search(basename($path), $excluded_dirs_files, true) !== false) {
 			$exclude = true;
 		}
 
 		/* exclude spurious extensions */
-		if (!$exclude && basename($path) != 'config.php') {
+		if (!$exclude) {
 			$curr_md5 = md5_file($path);
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
@@ -812,7 +817,7 @@ function update_db_from_path($path, $type, $recursive = true) {
 					if ($recursive) {
 						update_db_from_path($path . DIRECTORY_SEPARATOR . $entry, $type, $recursive);
 					}
-				} elseif (basename($path) == 'config.php') {
+				} elseif (basename($path) == 'config.php' && strpos($path, 'plugins') === false) {
 					continue;
 				} elseif (basename($path) == '.travis.yml') {
 					continue;
@@ -923,7 +928,7 @@ function resource_cache_out($type, $path) {
 				}
 
 				if (is_dir(dirname($mypath))) {
-					if ($md5sum != $e['md5sum'] && basename($e['path']) != 'config.php') {
+					if ($md5sum != $e['md5sum'] && $e['path'] != 'include/config.php') {
 						$attributes = empty($e['attributes']) ? 0 : $e['attributes'];
 						$extension = substr(strrchr($e['path'], "."), 1);
 						$exit = -1;
@@ -1444,30 +1449,43 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	}
 }
 
-function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0) {
+function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $force = false) {
 	global $remote_db_cnn_id;
 
 	$sql_where   = '';
 	$sql_where1  = '';
 	$sql_where  .= $device_id > 0 ? 'WHERE host_id = ' . $device_id:'';
 	$sql_where1 .= $device_id > 0 ? ' AND host_id = ' . $device_id:'';
+
 	if ($data_query_id > 0) {
 		$sql_where .= ($sql_where != '' ? ' AND':'WHERE ') . ' snmp_query_id = ' . $data_query_id;
 		$sql_where1 .= ' AND snmp_query_id = ' . $data_query_id;
 	}
 
-	$min_reindex_cache = db_fetch_cell("SELECT MIN(last_updated)
-		FROM host_snmp_cache
-		$sql_where");
-
-	$recache_hosts = array_rekey(
-		db_fetch_assoc_prepared("SELECT DISTINCT host_id
+	if (!$force) {
+		// Give the snmp query upto an hour to run
+		$min_reindex_cache = db_fetch_cell("SELECT MIN(UNIX_TIMESTAMP(last_updated)-3600)
 			FROM host_snmp_cache
-			WHERE last_updated > ?
-			$sql_where1",
-			array($min_reindex_cache)),
-		'host_id', 'host_id'
-	);
+			$sql_where");
+
+		$recache_hosts = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT host_id
+				FROM host_snmp_cache
+				WHERE UNIX_TIMESTAMP(last_updated) > ?
+				$sql_where1",
+				array($min_reindex_cache)),
+			'host_id', 'host_id'
+		);
+	} else {
+		$recache_hosts = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT host_id
+				FROM host_snmp_cache
+				WHERE UNIX_TIMESTAMP(last_updated) > 0
+				$sql_where1",
+				array($min_reindex_cache)),
+			'host_id', 'host_id'
+		);
+	}
 
 	if (sizeof($recache_hosts)) {
 		$local_data_ids = db_fetch_assoc("SELECT *
@@ -1662,7 +1680,7 @@ function poller_push_table($db_cnn, $records, $table, $ignore = false, $dupes = 
 
 function should_ignore_from_replication($path) {
 	$entry = basename($path);
-	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '' || $entry == 'config.php');
+	return ($entry == '.' || $entry == '..' || $entry == '.git' || $entry == '');
 }
 
 function get_remote_poller_ids_from_graphs(&$graphs) {

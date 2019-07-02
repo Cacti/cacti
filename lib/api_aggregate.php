@@ -321,7 +321,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						ORDER BY sequence ASC
 						LIMIT 1');
 				}
-			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || 
+			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -529,7 +529,6 @@ function aggregate_graph_items_save($items, $table) {
 	}
 }
 
-
 /**
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
@@ -539,38 +538,52 @@ function aggregate_graph_items_save($items, $table) {
  */
 function aggregate_validate_graph_params($posted, $has_override = false) {
 	$check_post_params = array(
-		'image_format_id'     => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
-		'height'              => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
-		'width'               => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
-		'upper_limit'         => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
-		'lower_limit'         => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
-		'vertical_label'      => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'slope_mode'          => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale'          => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale_opts'     => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
-		'auto_scale_log'      => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'scale_log_units'     => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale_rigid'    => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_padding'        => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'base_value'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'),
-		'unit_value'          => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'unit_exponent_value' => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^-?[0-9]+$')
+		'alt_y_grid'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_padding'         => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale'           => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale_log'       => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale_opts'      => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
+		'auto_scale_rigid'     => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'base_value'           => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'),
+		'dynamic_labels'       => array('type' => 'str',  'allow_empty' => true,  'default' => 0,  'regex' => ''),
+		'force_rules_legend'   => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'grouping'             => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'height'               => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
+		'image_format_id'      => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
+		'left_axis_formatter'  => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'legend_direction'     => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'legend_position'      => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'lower_limit'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
+		'no_gridfit'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis_format'    => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'),
+		'right_axis_formatter' => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis_label'     => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'scale_log_units'      => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'slope_mode'           => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'tab_width'            => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'),
+		'unit_exponent_value'  => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'unit_length'          => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'unit_value'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'upper_limit'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
+		'vertical_label'       => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'width'                => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$')
 	);
 
 	$params_new = array();
 
 	/* validate posted form fields */
 	foreach ($check_post_params as $field => $defs) {
-		if ($has_override && !isset($posted['t_'.$field])) {
+		if ($has_override && !isset($posted['t_' . $field])) {
 			/* override checkbox off - use default value */
-			$params_new['t_'.$field] = '';
+			$params_new['t_' . $field] = '';
 			$params_new[$field] = $defs['default'];
 			continue;
 		}
 
 		if ($has_override) {
-			/* override checkbox was on */
-			$params_new['t_'.$field] = 'on';
+			/* overwride checkbox was on */
+			$params_new['t_' . $field] = 'on';
 		}
 
 		/* validate value */
@@ -1792,7 +1805,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Override this Value'). '<br>',
 				'value' => (cacti_sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
-				'on_change' => 'toggleFieldEnabled(this);'
+				'on_change' => 'toggleFieldEnabled(this.id);'
 			);
 		} else {
 			$form_array += array($field_name => $struct_graph[$field_name]);
@@ -1819,21 +1832,36 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	// disable all items with sub-checkboxes except
 	// where sub-checkbox checked
 	function setFieldsDisabled() {
-		$('tr[id*="row_"]').each(function() {
-			fieldName = this.id.substr(4);
-			cbName = 't_'+fieldName;
-			if ($('#'+cbName).size() > 0) {
-				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
+		$('input[id^="t_"]').each(function() {
+			if (!$(this).is(':checked')) {
+				var fieldId = $(this).attr('id').substr(2);
+
+				$('#'+fieldId).prop('disabled', true);
+				$('#'+fieldId).addClass('ui-state-disabled');
+
+				if ($('#'+fieldId).selectmenu('instance')) {
+					$('#'+fieldId).selectmenu('disable');
+				}
 			}
 		});
 	}
 
 	// enable or disable form field based on state of corresponding checkbox
-	function toggleFieldEnabled(cb) {
-		prefix = 't_';
-		if (cb.name.substr(0,prefix.length) == prefix) {
-			fieldName = cb.name.substr(prefix.length);
-			$('#'+fieldName).prop('disabled', !cb.checked);
+	function toggleFieldEnabled(toggleFieldId) {
+		fieldId  = toggleFieldId.substr(2);
+
+		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
+			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('enable');
+			}
+		} else {
+			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('disable');
+			}
 		}
 	}
 
