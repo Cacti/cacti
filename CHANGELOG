@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -issue#2783: Cacti title_trim() function does not work with UTF-8 or Multi Byte strings
 -issue#2784: When removing a device with graphs but no data sources , errors are generated
 -issue#2785: Cacti Graph Automation prompts when changing dropdowns on Graph Templates and Types
+-issue#2792: Add escaping for checkbox friendly name
 -feature#2728: Update phpseclib to version 2.0.17
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8
