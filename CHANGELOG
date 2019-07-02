@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.5
+-issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
 -issue#2524: Dragging and Droping Devices not working as expected
 -issue#2573: Associated graph template for Data Query Disappears
 -issue#2656: GPRINT text_format does not replace Data Query and Host Fields 

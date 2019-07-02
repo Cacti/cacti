@@ -2146,6 +2146,13 @@ function html_spikekill_js() {
 					.done(function(data) {
 						$('#sk'+local_graph_id).after(data);
 
+						menuAnchor = $('#sk'+local_graph_id).offset().left;
+						pageWidth  = $(document).width();
+
+						if (pageWidth - menuAnchor < 180) {
+							$('.spikekillMenu').css({ position: 'absolute', top: 0, left: -180 });
+						}
+
 						$('.spikekillMenu').menu({
 							select: function(event, ui) {
 								$(this).menu('focus', event, ui.item);
