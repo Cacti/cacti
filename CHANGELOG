@@ -34,7 +34,7 @@ Cacti CHANGELOG
 -issue#2770: ItemType is not updated when saving Report Items
 -issue#2772: Add tip support to html_header() and html_header_checkbox()
 -issue#2777: Attempting to edit a non-existing report generates an error
--feature#2728: Update phpseclib to version 2.0.17
+-feature#2728: Update phpseclib to version 2.0.20
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8
 -feature#2754: Allow Devices, Graphs and Data Sources to be searched by ID
