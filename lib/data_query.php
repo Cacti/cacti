@@ -1046,7 +1046,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
 
 				if (!cacti_sizeof($snmp_data) && $field_name == $sort_field) {
-					query_debug_timer_offset('data_query', __('Sort field returned not data.  Can not continue Re-Index for OID[%s]', $field_array['oid']));
+					query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index for OID[%s]', $field_array['oid']));
 					return false;
 				}
 			}
