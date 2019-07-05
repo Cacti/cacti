@@ -1550,9 +1550,15 @@ function upgrade_to_1_0_0() {
 			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
 			MODIFY COLUMN style VARCHAR(10) NOT NULL default ""');
 
-
+		// Remove auth details for non existing pages
 		db_install_execute('DELETE FROM superlinks_auth WHERE pageid NOT IN(SELECT id FROM external_links)');
+
+		// Create authorization records for existing pages
 		db_install_execute('INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
+
+		// Create authorization records for viewing the External Links tab
+		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id) SELECT user_id, 24 AS realm_id FROM superlinks_auth');
+
 		db_install_drop_table('superlinks_auth');
 	} else {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `external_links` (
