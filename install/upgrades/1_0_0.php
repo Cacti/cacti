@@ -279,7 +279,7 @@ function upgrade_to_1_0_0() {
 		`snmp_auth_protocol` varchar(255) NOT NULL,
 		`snmp_priv_password` varchar(255) NOT NULL,
 		`snmp_priv_protocol` varchar(255) NOT NULL,
-		`snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
+		`snmp_engine_id` varchar(64) NOT NULL DEFAULT '',
 		`snmp_port` varchar(255) NOT NULL,
 		`snmp_message_type` tinyint(1) NOT NULL,
 		`notes` text,
@@ -290,7 +290,7 @@ function upgrade_to_1_0_0() {
 
 	if (!db_column_exists('snmpagent_managers', 'snmp_engine_id', false)) {
 		db_install_execute('ALTER TABLE snmpagent_managers
-			ADD COLUMN `snmp_engine_id` varchar(64) NOT NULL DEFAULT "80005d750302FFFFFFFFFF" AFTER snmp_priv_protocol');
+			ADD COLUMN `snmp_engine_id` varchar(64) NOT NULL DEFAULT "" AFTER snmp_priv_protocol');
 	}
 
 	if (db_table_exists('plugin_snmpagent_managers_notifications', false)) {
