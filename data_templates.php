@@ -671,7 +671,16 @@ function template_edit() {
 		}
 	}
 
-	if (!$isSNMPget) {
+	if (get_request_var('id') > 0) {
+		$readOnly = db_fetch_cell_prepared('SELECT *
+			FROM data_local
+			WHERE data_template_id = ?',
+			array(get_request_var('id')));
+	} else {
+		$readOnly = false;
+	}
+
+	if (!$isSNMPget && !$readOnly) {
 		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', (!isempty_request_var('id') ? 'data_templates.php?action=rrd_add&id=' . get_request_var('id'):''), __('New'));
 	} else {
 		html_start_box(__('Data Source Item [%s]', (isset($template_rrd) ? html_escape($template_rrd['data_source_name']) : '')), '100%', true, '0', 'center', '', '');
@@ -798,6 +807,44 @@ function template_edit() {
 	}
 
 	form_save_button('data_templates.php', 'return');
+
+	?>
+	<script type='text/javascript'>
+
+	var readOnly = <?php print $readOnly ? 'true':'false';?>;
+
+	$(function() {
+		if (readOnly) {
+			// Data Source
+			$('#data_input_id').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_data_input_id').prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#data_input_id').selectmenu('instance')) {
+				$('#data_input_id').selectmenu('disable');
+			}
+
+			// Data source attributes
+			$('#data_source_name').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_data_source_name').prop('disabled', true).addClass('ui-state-disabled');
+			$('#data_source_type_id').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_data_source_type_id').prop('disabled', true).addClass('ui-state-disabled');
+
+			// Custom Data
+			$('#value_index_type').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_value_index_type').prop('disabled', true).addClass('ui-state-disabled');
+			$('#value_index_value').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_value_index_value').prop('disabled', true).addClass('ui-state-disabled');
+			$('#value_output_type').prop('disabled', true).addClass('ui-state-disabled');
+			$('#t_value_output_type').prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#data_source_type_id').selectmenu('instance')) {
+				$('#data_source_type_id').selectmenu('disable');
+			}
+		}
+	});
+
+	</script>
+	<?php
 }
 
 function template() {
