@@ -288,6 +288,11 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine
 		COMMENT='snmp notification receivers';");
 
+	if (!db_column_exists('snmpagent_managers', 'snmp_engine_id', false)) {
+		db_install_execute('ALTER TABLE snmpagent_managers
+			ADD COLUMN `snmp_engine_id` varchar(64) NOT NULL DEFAULT "80005d750302FFFFFFFFFF" AFTER snmp_priv_protocol');
+	}
+
 	if (db_table_exists('plugin_snmpagent_managers_notifications', false)) {
 		db_install_rename_table('plugin_snmpagent_managers_notifications', 'snmpagent_managers_notifications');
 	}
