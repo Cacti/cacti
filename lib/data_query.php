@@ -1830,6 +1830,12 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 		}
 	}
 
+	$num_indexes = db_fetch_cell_prepared('SELECT COUNT(DISTINCT snmp_index)
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
+
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1863,12 +1869,27 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 				) AS totals',
 				array($host_id, $data_query_id, $field_name));
 
+			$total_unique = db_fetch_cell_prepared('SELECT COUNT(DISTINCT field_value)
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				AND snmp_query_id = ?
+				AND field_name = ?',
+				array($host_id, $data_query_id, $field_name));
+
 			/* If the entries are not unique and non-unique is
 			 * not specified, skip this sort field
 			 */
 			if ($unique > 0 && !$nonunique) {
 				if (read_config_option('data_source_trace') == 'on') {
 					cacti_log("Field Name '$field_name' found not suitable.  Non-unique and nonunique not specified during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+				}
+
+				continue;
+			}
+
+			if ($total_unique != $num_indexes) {
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log("Field Name '$field_name' found not suitable.  The Sort field does not have sufficient values for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 				}
 
 				continue;
