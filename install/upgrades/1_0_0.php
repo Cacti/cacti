@@ -1554,10 +1554,20 @@ function upgrade_to_1_0_0() {
 		db_install_execute('DELETE FROM superlinks_auth WHERE pageid NOT IN(SELECT id FROM external_links)');
 
 		// Create authorization records for existing pages
-		db_install_execute('INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
+		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
 
 		// Create authorization records for viewing the External Links tab
-		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id) SELECT user_id, 24 AS realm_id FROM superlinks_auth');
+		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id) SELECT userid, "24" AS realm_id FROM superlinks_auth');
+
+		// Handle special userid=0 case in Superlinks
+		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id)
+			SELECT user_id, pageid
+			FROM (
+				SELECT ua.id AS user_id, sa.pageid+10000 AS pageid
+				FROM user_auth AS ua
+				JOIN superlinks_auth AS sa
+				WHERE sa.userid=0
+			) AS rs');
 
 		db_install_drop_table('superlinks_auth');
 	} else {
