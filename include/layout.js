@@ -1541,7 +1541,7 @@ function menuHide(store) {
 	var page = basename(location.pathname).replace('.php', '');
 
 	var myClass = '';
-    var curMargin = $('#navigation').outerWidth();
+    var curMargin = parseInt($('#navigation_right').css('margin-left'));
 
 	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';

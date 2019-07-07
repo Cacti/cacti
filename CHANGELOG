@@ -52,6 +52,7 @@ Cacti CHANGELOG
 -issue#2800: Tree Edit - Search Graph with comma
 -issue#2802: If a Device lacks any good values for ifName Cacti is unable to find a better sort field 
 -issue#2807: Data Templates in Read Only Mode should not be modifiable in many cases
+-issue#2808: Tree margin changing during Tree navigation
 -feature#2728: Update phpseclib to version 2.0.17
 -feature#2729: Update JavaScript library d3.js to version 5.9.2
 -feature#2730: Update JavaScript library jstree.js to version 3.3.8
