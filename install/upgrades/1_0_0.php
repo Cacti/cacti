@@ -1794,7 +1794,7 @@ function upgrade_realms() {
 	if (db_table_exists('superlinks_auth', false)) {
 		/* drop no longer present superlink pages */
 		db_install_execute('DELETE FROM superlinks_auth
-			WHERE pageid NOT IN (SELECT id FROM external_links)');
+			WHERE pageid NOT IN (SELECT id FROM superlinks_pages)');
 
 		/* create authorization records for existing pages */
 		db_install_execute('REPLACE INTO user_auth_realm

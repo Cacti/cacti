@@ -508,7 +508,7 @@ function get_selected_theme() {
 			FROM settings_user
 			WHERE name='selected_theme'
 			AND user_id = ?",
-			array($_SESSION['sess_user_id']));
+			array($_SESSION['sess_user_id']), '', false);
 
 		// user has a theme
 		if (! empty($user_theme)) {
