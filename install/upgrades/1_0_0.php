@@ -1772,7 +1772,7 @@ function upgrade_realms() {
 		if ($exists) {
 			$old_realm = $exists['id'] + 100;
 
-			db_execute_prepared('DELETE FROM user_auth_realm WHERE real_id = ?', array($old_realm));
+			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
 		}
 	}
 
