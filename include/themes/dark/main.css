@@ -1144,19 +1144,19 @@ legend {
 /* text styles */
 
 .textError {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: red !important;
 }
 
 .textWarning {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: yellow !important;
 }
 
 .textInfo {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: snow;
 }

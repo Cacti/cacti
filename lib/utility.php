@@ -1044,20 +1044,28 @@ function utilities_get_mysql_recommendations() {
 		}
 	}
 
-	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
+	if (file_exists('/etc/my.cnf.d/server.cnf')) {
+		$location = '/etc/my.cnf.d/server.cnf';
+	} else {
+		$location = '/etc/my.cnf';
+	}
+
+	print '<tr class="tableHeader tableFixed">';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" href="' . html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html') . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '</tr>';
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
-	print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
-	print "<thead>\n";
-	print "<tr class='tableHeader'>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>\n";
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>\n";
-	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>\n";
-	print "</tr>\n";
-	print "</thead>\n";
+	print "<table id='mysql' class='cactiTable' style='width:100%'>";
+	print "<thead>";
+	print "<tr class='tableHeader'>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>";
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>";
+	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>";
+	print "</tr>";
+	print "</thead>";
 
 	$innodb_pool_size = 0;
 	foreach ($recommendations as $name => $r) {
@@ -1155,19 +1163,19 @@ function utilities_get_mysql_recommendations() {
 
 				form_alternate_row();
 
-				print "<td>" . $name . "</td>\n";
-				print "<td class='right $class'>$value_display</td>\n";
-				print "<td class='center'>$compare</td>\n";
-				print "<td>$value_recommend</td>\n";
-				print "<td class='$class'>" . $r['comment'] . "</td>\n";
+				print "<td>" . $name . "</td>";
+				print "<td class='right $class'>$value_display</td>";
+				print "<td class='center'>$compare</td>";
+				print "<td>$value_recommend</td>";
+				print "<td class='$class'>" . $r['comment'] . "</td>";
 
 				form_end_row();
 			}
 
 		}
 	}
-	print "</table>\n";
-	print "</td>\n";
+	print "</table>";
+	print "</td>";
 	form_end_row();
 	return $result;
 }
@@ -1372,10 +1380,8 @@ function utility_php_recommends() {
 	$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 	$php_file = cacti_escapeshellarg($config['base_path'] . '/install/cli_check.php') . ' recommends';
 	$json = shell_exec($php . ' -q ' . $php_file);
-	$ext = array('web' => false, 'cli' => false);
-	if (!empty($json)) {
-		$ext['cli'] = @json_decode($json, true);
-	}
+	$ext = array('web' => '', 'cli' => '');
+	$ext['cli'] = @json_decode($json, true);
 
 	utility_php_verify_recommends($ext['web'], 'web');
 	utility_php_set_recommends_text($ext);
@@ -1430,7 +1436,7 @@ function utility_php_verify_recommends(&$recommends, $source) {
 
 function utility_php_set_recommends_text(&$recs) {
 	foreach ($recs as $name => $recommends) {
-		if (cacti_sizeof($recommends)) {
+		if (sizeof($recommends)) {
 			foreach ($recommends as $index => $recommend) {
 				if ($recommend['name'] == 'version') {
 					$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);

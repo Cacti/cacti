@@ -53,6 +53,7 @@ Cacti CHANGELOG
 -issue#2802: If a Device lacks any good values for ifName Cacti is unable to find a better sort field 
 -issue#2807: Data Templates in Read Only Mode should not be modifiable in many cases
 -issue#2808: Tree margin changing during Tree navigation
+-issue#2814: Anchor Tags Escaped on Utilities Page
 -feature#2728: Update phpseclib to version 2.0.20
 -feature#2809: Update JavaScript library d3.js to version 5.9.7
 -feature#2809: Update JavaScript library c3.js to version 0.6.14
