@@ -567,12 +567,12 @@ class Installer implements JsonSerializable {
 	private function getRRDVersion() {
 		$rrdver = read_config_option('install_rrdtool_vrsion');
 		if (empty($rrdver)) {
-			log_install_high('rrdversion', 'getRRDVersion(): Getting tool version');
-			$rrdver = get_rrdtool_version();
-			if (empty($rrdver)) {
+//			log_install_high('rrdversion', 'getRRDVersion(): Getting tool version');
+//			$rrdver = get_rrdtool_version();
+//			if (empty($rrdver)) {
 				log_install_high('rrdversion', 'getRRDVersion(): Getting installed tool version');
 				$rrdver = get_installed_rrdtool_version();
-			}
+//			}
 		}
 		log_install_medium('rrdversion', 'getRRDVersion(): ' . $rrdver);
 		return $rrdver;

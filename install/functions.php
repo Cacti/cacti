@@ -556,19 +556,10 @@ function install_file_paths() {
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
 
-		$out_array = array();
+		$temp_ver = get_installed_rrdtool_version();
 
-		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
-
-		if (cacti_sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool ([0-9.]+) /', $out_array[0], $m)) {
-				global $rrdtool_versions;
-				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
-					if (cacti_version_compare($rrdtool_version, $m[1], '<=')) {
-						$input['rrdtool_version']['default'] = $rrdtool_version;
-					}
-				}
-			}
+		if (!empty($temp_ver)) {
+			$input['rrdtool_version']['default'] = $temp_ver;
 		}
 	}
 

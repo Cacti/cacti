@@ -5078,11 +5078,18 @@ function get_installed_rrdtool_version() {
 		$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 	}
 
-	if (preg_match('/^RRDtool ([0-9.]+)$/', $shell, $matches)) {
-		return $matches[1];
+	$version = false;
+	if (preg_match('/^RRDtool ([0-9.]+) /', $shell, $matches)) {
+
+		global $rrdtool_versions;
+		foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
+			if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
+				$version = $rrdtool_version;
+			}
+		}
 	}
 
-	return false;
+	return $version;
 }
 
 function get_md5_hash($path) {

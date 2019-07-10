@@ -2,9 +2,10 @@ Cacti CHANGELOG
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
+-issue#2282: Installation wizard does not detect RRDtool version correctly
 -issue#2524: Dragging and Droping Devices not working as expected
 -issue#2573: Associated graph template for Data Query Disappears
--issue#2656: GPRINT text_format does not replace Data Query and Host Fields 
+-issue#2656: GPRINT text_format does not replace Data Query and Host Fields
 -issue#2661: Automation - Wrong network/netmask calculation
 -issue#2663: Some legacy Data Queries can not determine their index order causing broken graphs
 -issue#2719: Empty graphs being created automatically but we can't delete them
@@ -29,7 +30,7 @@ Cacti CHANGELOG
 -issue#2751: Tree editing does not allow for 'All' Display
 -issue#2752: When running verbose query on device you are unable to copy text from items
 -issue#2753: Unable to copy entire verbose query using clipboard command
--issue#2757: Cacti Navigation is subject to XSS injection 
+-issue#2757: Cacti Navigation is subject to XSS injection
 -issue#2758: Lack of index.php in Cacti's log directory enable remote browse of the directory
 -issue#2760: Unable to add items into a report
 -issue#2762: Can not create aggregate graph with unknown RRD tools error
@@ -50,7 +51,7 @@ Cacti CHANGELOG
 -issue#2797: When upgrading from before 1.x, SuperLinks view permissions may not be correct
 -issue#2799: Under heavy use realtime can generate SQL errors
 -issue#2800: Tree Edit - Search Graph with comma
--issue#2802: If a Device lacks any good values for ifName Cacti is unable to find a better sort field 
+-issue#2802: If a Device lacks any good values for ifName Cacti is unable to find a better sort field
 -issue#2807: Data Templates in Read Only Mode should not be modifiable in many cases
 -issue#2808: Tree margin changing during Tree navigation
 -issue#2814: Anchor Tags Escaped on Utilities Page
