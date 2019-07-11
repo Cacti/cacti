@@ -637,21 +637,20 @@ function query_script_host($host_id, $snmp_query_id) {
 			$script_data_array = exec_into_array($script_path);
 
 			if (!cacti_sizeof($script_data_array) && $field_name == $sort_field) {
-				query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
-				return false;
-			}
+				query_debug_timer_offset('data_query', __('Sort field returned no data for field name %s, skipping', $field_name));
+			} else {
+				debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
 
-			debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
+				if (cacti_sizeof($script_data_array)) {
+					foreach ($script_data_array as $element) {
+						if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
+							$script_index = $matches[1];
+							$field_value  = $matches[2];
 
-			if (cacti_sizeof($script_data_array)) {
-				foreach ($script_data_array as $element) {
-					if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
-						$script_index = $matches[1];
-						$field_value  = $matches[2];
+							$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
 
-						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
-
-						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+							debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+						}
 					}
 				}
 			}
@@ -890,6 +889,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 
 				$values = array();
+
 				foreach ($snmp_indexes as $index_oid => $index) {
 					$oid = $field_array['oid'];
 					if (isset($field_array['rewrite_index'])) {
@@ -945,11 +945,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					}
 
 					if (!cacti_sizeof($results) && $field_name == $sort_field) {
-						query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
-						return false;
-					}
-
-					if (cacti_sizeof($results)) {
+						query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $oid));
+					} elseif (cacti_sizeof($results)) {
 						foreach ($results as $key => $value) {
 							debug_log_insert('data_query',
 								__('Found result for data @ \'%s\' [value=\'%s\']',
@@ -968,11 +965,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 									$values[$key]['oid'], $key, $values[$key]['value']));
 							}
 						}
-					}
 
-					foreach ($values as $key => $value) {
-						if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
-							$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $values[$key]['value']);
+						foreach ($values as $key => $value) {
+							if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+								$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $values[$key]['value']);
+							}
 						}
 					}
 				}
@@ -1039,15 +1036,15 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$snmp_data[$d['oid']] = $d['value'];
 					}
 				} elseif ($field_name == $sort_field) {
-					query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index for GET data..'));
-					return false;
+					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
+					continue;
 				}
 			} else {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
 
 				if (!cacti_sizeof($snmp_data) && $field_name == $sort_field) {
-					query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index for OID[%s]', $field_array['oid']));
-					return false;
+					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
+					continue;
 				}
 			}
 
