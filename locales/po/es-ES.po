@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Cacti 1\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-06-23 11:13-0400\n"
-"PO-Revision-Date: 2019-06-07 01:33+0000\n"
-"Last-Translator: netniV <netniv@hotmail.com>\n"
+"PO-Revision-Date: 2019-07-11 17:10+0000\n"
+"Last-Translator: The Cacti Group <weblate@cacti.net>\n"
 "Language-Team: Spanish <http://translate.cacti.net/projects/cacti/core/es-ES/"
 ">\n"
 "Language: es-ES\n"
@@ -1535,7 +1535,7 @@ msgstr "Cancelar descubrimiento"
 msgid "Can Not Restart Discovery for Discovery in Progress for Network '%s'"
 msgstr ""
 "No se puede reiniciar la detección para la detección en progreso para la red "
-"'%s"
+"'%s'"
 
 #: automation_networks.php:152
 #, php-format
