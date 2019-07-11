@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-06-23 11:13-0400\n"
 "PO-Revision-Date: 2019-07-11 21:18+0000\n"
-"Last-Translator: Tomasz Chiliński <chilek@chilan.com>\n"
+"Last-Translator: Jaroslaw Kłopotek <jkl@interduo.pl>\n"
 "Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>"
 "\n"
 "Language: pl-PL\n"
@@ -42,8 +42,8 @@ msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
 msgstr ""
-"Informacje, wsparcie i aktualizacje można znaleźć na oficjalnej stronie %s "
-"Cacti."
+"Zobacz oficjalną stronę %s Cacti %s by uzyskać informacje, wsparcie i "
+"aktualizacje."
 
 #: about.php:46
 msgid "Cacti Developers"
@@ -159,10 +159,8 @@ msgid "Place on a Tree (%s)"
 msgstr "Umieść w drzewie (%s)"
 
 #: aggregate_graphs.php:342
-#, fuzzy
 msgid "Click 'Continue' to delete the following Aggregate Graph(s)."
-msgstr ""
-"Kliknij \"Kontynuuj\", aby usunąć następujące zagregowany wykres (wykresy)."
+msgstr "Kliknij \"Kontynuuj\", aby usunąć następujący(e) zagregowany wykres(y)."
 
 #: aggregate_graphs.php:347 aggregate_graphs.php:420 aggregate_graphs.php:445
 #: aggregate_graphs.php:474 aggregate_graphs.php:487 aggregate_graphs.php:496
@@ -234,18 +232,16 @@ msgstr "Kontynuuj"
 
 #: aggregate_graphs.php:347 aggregate_graphs.php:420 aggregate_graphs.php:445
 #: graphs.php:901
-#, fuzzy
 msgid "Delete Graph(s)"
 msgstr "Usuń wykres(y)"
 
 #: aggregate_graphs.php:377
-#, fuzzy
 msgid ""
 "The selected Aggregate Graphs represent elements from more than one Graph "
 "Template."
 msgstr ""
-"Wybrane wykresy zbiorcze reprezentują elementy z więcej niż jednego szablonu "
-"wykresu."
+"Wybrane zagregowane wykresy reprezentują elementy z więcej niż jednego "
+"szablonu wykresu."
 
 #: aggregate_graphs.php:378
 #, fuzzy
@@ -7282,83 +7278,70 @@ msgstr ""
 "użytkownika db"
 
 #: include/global_arrays.php:286
-#, fuzzy
 msgid ""
 "Unable to increase size of password field, pleas check permission of db user"
 msgstr ""
 "Nie można zwiększyć rozmiaru pola hasła, należy sprawdzić uprawnienia "
-"użytkownika db"
+"użytkownika bazy danych"
 
 #: include/global_arrays.php:289
-#, fuzzy
 msgid "LDAP/AD based password change not supported."
 msgstr "Zmiana hasła w oparciu o LDAP/AD nie jest obsługiwana."
 
 #: include/global_arrays.php:292
-#, fuzzy
 msgid "Password successfully changed."
-msgstr "Hasło zostało pomyślnie zmienione."
+msgstr "Hasło pomyślnie zmienione."
 
 #: include/global_arrays.php:295
-#, fuzzy
 msgid "Unable to clear log, no write permissions"
-msgstr "Nie można wyczyścić dziennika, brak uprawnień do zapisu"
+msgstr "Nie można wyczyścić dziennika, brak uprawnień zapisu"
 
 #: include/global_arrays.php:298
-#, fuzzy
 msgid "Unable to clear log, file does not exist"
 msgstr "Nie można wyczyścić dziennika, plik nie istnieje"
 
 #: include/global_arrays.php:301
-#, fuzzy
 msgid "CSRF Timeout, refreshing page."
-msgstr "CSRF Timeout, odświeżająca strona."
+msgstr "CSRF Timeout, odświeżam stronę."
 
 #: include/global_arrays.php:304
-#, fuzzy
 msgid "CSRF Timeout occurred due to inactivity, page refreshed."
 msgstr "CSRF Timeout wystąpił z powodu nieaktywności, strona odświeżona."
 
 #: include/global_arrays.php:307
-#, fuzzy
 msgid "Invalid timestamp. Select timestamp in the future."
 msgstr "Nieprawidłowy znacznik czasu. Wybierz znacznik czasu w przyszłości."
 
 #: include/global_arrays.php:310
-#, fuzzy
 msgid "Data Collector(s) synchronized for offline operation"
 msgstr "Zbieracz(y) danych zsynchronizowany(e) do pracy w trybie offline"
 
 #: include/global_arrays.php:313
-#, fuzzy
 msgid "Data Collector(s) not found when attempting synchronization"
-msgstr "Nie znaleziono kolektora(-ów) danych podczas próby synchronizacji"
+msgstr "Nie znaleziono kolektora(-ów) danych podczas synchronizacji"
 
 #: include/global_arrays.php:316
-#, fuzzy
 msgid "Unable to establish MySQL connection with Remote Data Collector."
-msgstr "Nie można nawiązać połączenia MySQL ze zdalnym kolekcjonerem danych."
+msgstr "Nie można nawiązać połączenia MySQL ze zdalnym kolektorem danych."
 
 #: include/global_arrays.php:319
-#, fuzzy
 msgid ""
 "Data Collector synchronization must be initiated from the main Cacti server."
 msgstr ""
-"Synchronizacja Data Collector musi być zainicjowana z głównego serwera Cacti."
+"Kolektor synchronizacji danych musi być zainicjowany z głównego serwera "
+"Cacti."
 
 #: include/global_arrays.php:322
-#, fuzzy
 msgid "Synchronization does not include the Central Cacti Database server."
 msgstr "Synchronizacja nie obejmuje serwera centralnej bazy danych Cacti."
 
 #: include/global_arrays.php:325
-#, fuzzy
 msgid ""
 "When saving a Remote Data Collector, the Database Hostname must be unique "
 "from all others."
 msgstr ""
-"Podczas zapisywania zdalnego gromadzenia danych nazwa hosta bazy danych musi "
-"być unikalna spośród wszystkich innych."
+"Podczas zapisywania zdalnego kolektora danych, nazwa hosta bazy danych musi "
+"być unikalna."
 
 #: include/global_arrays.php:328
 #, fuzzy
@@ -7370,24 +7353,20 @@ msgstr ""
 "zdalnego gromadzenia danych."
 
 #: include/global_arrays.php:331
-#, fuzzy
 msgid "Report Saved"
-msgstr "Raport Oszczędności"
+msgstr "Raport Zapisany"
 
 #: include/global_arrays.php:334
-#, fuzzy
 msgid "Report Save Failed"
-msgstr "Zapisanie raportu nie powiodło się"
+msgstr "Zapis raportu nie powiódł się"
 
 #: include/global_arrays.php:337
-#, fuzzy
 msgid "Report Item Saved"
-msgstr "Pozycja raportu Oszczędności"
+msgstr "Pozycja raportu zapisana"
 
 #: include/global_arrays.php:340
-#, fuzzy
 msgid "Report Item Save Failed"
-msgstr "Pozycja raportu Zapisana pozycja nie powiodła się"
+msgstr "Zapis pozycji raportu nie powiodł się"
 
 #: include/global_arrays.php:343
 #, fuzzy
@@ -7400,35 +7379,31 @@ msgid "Unable to Add Graphs.  Current user is not owner"
 msgstr "Nie można dodać wykresów.  Obecny użytkownik nie jest właścicielem"
 
 #: include/global_arrays.php:349
-#, fuzzy
 msgid "Unable to Add all Graphs.  See error message for details."
 msgstr ""
-"Nie można dodać wszystkich wykresów.  Szczegółowe informacje znajdują się w "
-"komunikacie o błędzie."
+"Nie można dodać wszystkich wykresów.  Szczegóły znajdują się w komunikacie o "
+"błędzie."
 
 #: include/global_arrays.php:352
-#, fuzzy
 msgid "You must select at least one Graph to add to a Report."
 msgstr "Musisz wybrać co najmniej jeden wykres, aby dodać go do raportu."
 
 #: include/global_arrays.php:355
-#, fuzzy
 msgid ""
 "All Graphs have been added to the Report.  Duplicate Graphs with the same "
 "Timespan were skipped."
 msgstr ""
-"Wszystkie wykresy zostały dodane do Raportu.  Duplikaty wykresów o tym samym "
-"czasie zostały pominięte."
+"Wszystkie wykresy zostały dodane do Raportu.  Duplikaty wykresów z tym samym "
+"czasem zostały pominięte."
 
 #: include/global_arrays.php:358
-#, fuzzy
 msgid ""
 "Poller Resource Cache cleared.  Main Data Collector will rebuild at the next "
 "poller start, and Remote Data Collectors will sync afterwards."
 msgstr ""
-"Poller Resource Cache oczyszczony.  Główny Zbieracz Danych zostanie "
-"odbudowany przy następnym starcie ankiety, a następnie zdalne zbieranie "
-"danych zostanie zsynchronizowane."
+"Pamięć podręczna zasobów Pollera wyczyszczona. Główny kolektor danych "
+"zostanie odbudowany przy następnym starcie, a potem nastąpi zdalne zbieranie "
+"danych."
 
 #: include/global_arrays.php:361
 msgid "Permission Denied.  You do not have permission to the requested action."
@@ -7439,7 +7414,6 @@ msgid "Page is not defined.  Therefore, it can not be displayed."
 msgstr "Strona nie ustawiona. W związku z tym nie może zostać wyświetlona."
 
 #: include/global_arrays.php:367
-#, fuzzy
 msgid "Unexpected error occurred"
 msgstr "Wystąpił nieoczekiwany błąd"
 
@@ -7450,12 +7424,11 @@ msgstr "Funkcja"
 #: include/global_arrays.php:429 include/global_arrays.php:809
 #, fuzzy
 msgid "Special Data Source"
-msgstr "Źródło danych specjalnych"
+msgstr "Specjalne źródło danych"
 
 #: include/global_arrays.php:430 include/global_arrays.php:811
-#, fuzzy
 msgid "Custom String"
-msgstr "String niestandardowy"
+msgstr "Niestandardowy ciąg"
 
 #: include/global_arrays.php:434 include/global_arrays.php:848
 #, fuzzy
@@ -7463,23 +7436,19 @@ msgid "Current Graph Item Data Source"
 msgstr "Źródło danych bieżących pozycji wykresu"
 
 #: include/global_arrays.php:440 include/global_arrays.php:447
-#, fuzzy
 msgid "Script/Command"
-msgstr "Skrypt/polecenie"
+msgstr "Skrypt/Polecenie"
 
 #: include/global_arrays.php:442 include/global_arrays.php:448
 #: utilities.php:1712
-#, fuzzy
 msgid "Script Server"
 msgstr "Serwer skryptów"
 
 #: include/global_arrays.php:454
-#, fuzzy
 msgid "Index Count"
-msgstr "Liczenie indeksów"
+msgstr "Liczba indeksów"
 
 #: include/global_arrays.php:455
-#, fuzzy
 msgid "Verify All"
 msgstr "Weryfikuj wszystko"
 
@@ -7507,24 +7476,20 @@ msgstr ""
 "Gdy zmieni się liczba indeksów zapytań o dane, zostanie wykonany Re-Index."
 
 #: include/global_arrays.php:462
-#, fuzzy
 msgid "Every polling cycle, a Re-Index will be performed.  Very expensive."
 msgstr ""
-"W każdym cyklu wyborczym zostanie przeprowadzony cykl Re-Index.  Bardzo "
-"drogie."
+"W każdym cyklu kolektora zostanie przeprowadzony cykl Re-Index.  Bardzo "
+"niewydajne."
 
 #: include/global_arrays.php:466
-#, fuzzy
 msgid "SNMP Field Name (Dropdown)"
 msgstr "Nazwa pola SNMP (Dropdown)"
 
 #: include/global_arrays.php:467
-#, fuzzy
 msgid "SNMP Field Value (From User)"
 msgstr "Wartość pola SNMP (od użytkownika)"
 
 #: include/global_arrays.php:468
-#, fuzzy
 msgid "SNMP Output Type (Dropdown)"
 msgstr "Typ wyjścia SNMP (Dropdown)"
 
@@ -7574,14 +7539,12 @@ msgid "Center"
 msgstr "Środek"
 
 #: include/global_arrays.php:518
-#, fuzzy
 msgid "Top -> Down"
 msgstr "Góra -> dół"
 
 #: include/global_arrays.php:519
-#, fuzzy
 msgid "Bottom -> Up"
-msgstr "Dół -> W górę"
+msgstr "Dół -> Góra"
 
 #: include/global_arrays.php:523 tree.php:1473
 msgid "Numeric"
@@ -7602,7 +7565,7 @@ msgstr "nieuzywane"
 #: include/global_arrays.php:564 include/global_arrays.php:565
 #: include/global_arrays.php:566 include/global_arrays.php:773
 #: include/global_arrays.php:774
-#, fuzzy, php-format
+#, php-format
 msgid "Version %d"
 msgstr "Wersja %d"
 
@@ -7611,93 +7574,74 @@ msgid "[None]"
 msgstr "[Brak]"
 
 #: include/global_arrays.php:571
-#, fuzzy
 msgid "MD5"
 msgstr "MD5"
 
 #: include/global_arrays.php:572
-#, fuzzy
 msgid "SHA"
 msgstr "SHA"
 
 #: include/global_arrays.php:577
-#, fuzzy
 msgid "DES"
 msgstr "DES"
 
 #: include/global_arrays.php:578
-#, fuzzy
 msgid "AES"
 msgstr "AES"
 
 #: include/global_arrays.php:587
-#, fuzzy
 msgid "Logfile Only"
 msgstr "Tylko plik dziennika"
 
 #: include/global_arrays.php:588
-#, fuzzy
 msgid "Logfile and Syslog/Eventlog"
-msgstr "Pliki dziennika i logi/ventlog"
+msgstr "Pliki dziennika i Syslog/Eventlog"
 
 #: include/global_arrays.php:589
-#, fuzzy
 msgid "Syslog/Eventlog Only"
-msgstr "Tylkoyslog/Eventlog"
+msgstr "Tylko Syslog/Eventlog"
 
 #: include/global_arrays.php:598
-#, fuzzy
 msgid "SNMP getNext"
 msgstr "SNMP getNext"
 
 #: include/global_arrays.php:603
-#, fuzzy
 msgid "ICMP Ping"
 msgstr "ICMP Ping"
 
 #: include/global_arrays.php:604
-#, fuzzy
 msgid "TCP Ping"
 msgstr "TCP Ping"
 
 #: include/global_arrays.php:605
-#, fuzzy
 msgid "UDP Ping"
 msgstr "UDP Ping"
 
 #: include/global_arrays.php:609
-#, fuzzy
 msgid "NONE - Syslog Only if Selected"
-msgstr "Brak - Syslog Tylko w przypadku wyboru"
+msgstr "BRAK - Syslog tylko jeśli wybrany"
 
 #: include/global_arrays.php:610
-#, fuzzy
 msgid "LOW - Statistics and Errors"
-msgstr "Niskie - statystyki i błędy"
+msgstr "NISKI - statystyki i błędy"
 
 #: include/global_arrays.php:611
-#, fuzzy
 msgid "MEDIUM - Statistics, Errors and Results"
-msgstr "MEDIUM - statystyki, błędy i wyniki"
+msgstr "ŚREDNI - statystyki, błędy i wyniki"
 
 #: include/global_arrays.php:612
-#, fuzzy
 msgid "HIGH - Statistics, Errors, Results and Major I/O Events"
-msgstr "HIGH - statystyki, błędy, wyniki i główne zdarzenia we/wy"
+msgstr "WYSOKI - statystyki, błędy, wyniki i główne zdarzenia we/wy"
 
 #: include/global_arrays.php:613
-#, fuzzy
 msgid "DEBUG - Statistics, Errors, Results, I/O and Program Flow"
-msgstr ""
-"DEBUG - Statystyki, błędy, wyniki, wejścia/wyjścia i przepływ programów"
+msgstr "DEBUG - Statystyki, błędy, wyniki, wejścia/wyjścia i przepływ programów"
 
 #: include/global_arrays.php:614
-#, fuzzy
 msgid "DEVEL - Developer DEBUG Level"
 msgstr "DEVEL - poziom DEBUG dla deweloperów"
 
 #: include/global_arrays.php:627
-#, fuzzy
 msgid "Selected Poller Interval"
 msgstr "Wybrany okres pomiędzy kolejnymi pomiarami"
 
@@ -7705,13 +7649,12 @@ msgstr "Wybrany okres pomiędzy kolejnymi pomiarami"
 #: include/global_arrays.php:647 include/global_arrays.php:648
 #: include/global_arrays.php:712 include/global_arrays.php:713
 #: include/global_arrays.php:714 include/global_arrays.php:715
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Seconds"
-msgstr "Co sekundy"
+msgstr "Co %d sekund"
 
 #: include/global_arrays.php:649 include/global_arrays.php:716
 #: include/global_arrays.php:741
-#, fuzzy
 msgid "Every Minute"
 msgstr "Każda minuta"
 
@@ -7735,12 +7678,11 @@ msgstr "Co godzine"
 #: include/global_arrays.php:1684 include/global_arrays.php:1685
 #: include/global_arrays.php:1686 include/global_settings.php:1975
 #: include/global_settings.php:1976
-#, fuzzy, php-format
+#, php-format
 msgid "Every %d Hours"
 msgstr "Co %d godzin"
 
 #: include/global_arrays.php:659
-#, fuzzy
 msgid "Every %1 Day"
 msgstr "Każdy %1 Dzień"
 
@@ -7751,43 +7693,36 @@ msgid "%d Year"
 msgstr "%d rok"
 
 #: include/global_arrays.php:721
-#, fuzzy
 msgid "Disabled/Manual"
-msgstr "Niepełnosprawny/ręczny"
+msgstr "Wyłączony/Ręczny"
 
 #: include/global_arrays.php:728
 msgid "Every day"
 msgstr "Codziennie"
 
 #: include/global_arrays.php:732
-#, fuzzy
 msgid "1 Thread (default)"
-msgstr "1 Gwint (domyślnie)"
+msgstr "1 Wątek (domyślnie)"
 
 #: include/global_arrays.php:756
-#, fuzzy
 msgid "Builtin Authentication"
 msgstr "Wbudowane uwierzytelnianie"
 
 #: include/global_arrays.php:757
-#, fuzzy
 msgid "Web Basic Authentication"
-msgstr "Podstawowa autoryzacja sieci Web"
+msgstr "Podstawowa autoryzacja serwera Web"
 
 #: include/global_arrays.php:761
-#, fuzzy
 msgid "LDAP Authentication"
 msgstr "Autoryzacja LDAP"
 
 #: include/global_arrays.php:762
-#, fuzzy
 msgid "Multiple LDAP/AD Domains"
 msgstr "Wiele domen LDAP/AD"
 
 #: include/global_arrays.php:767
-#, fuzzy
 msgid "Active Directory"
-msgstr "Katalog aktywny"
+msgstr "Aktywny katalog"
 
 #: include/global_arrays.php:779 include/global_settings.php:1556
 msgid "SSL"
@@ -7798,22 +7733,18 @@ msgid "TLS"
 msgstr "TLS"
 
 #: include/global_arrays.php:784
-#, fuzzy
 msgid "No Searching"
 msgstr "Brak wyszukiwania"
 
 #: include/global_arrays.php:785
-#, fuzzy
 msgid "Anonymous Searching"
 msgstr "Anonimowe wyszukiwanie"
 
 #: include/global_arrays.php:786
-#, fuzzy
 msgid "Specific Searching"
 msgstr "Wyszukiwanie szczególne"
 
 #: include/global_arrays.php:803
-#, fuzzy
 msgid "Enabled (strict mode)"
 msgstr "Włączony (tryb ścisły)"
 
@@ -7824,9 +7755,8 @@ msgid "Operator"
 msgstr "Operator"
 
 #: include/global_arrays.php:810
-#, fuzzy
 msgid "Another CDEF"
-msgstr "Kolejny CDEF"
+msgstr "Inny CDEF"
 
 #: include/global_arrays.php:829
 #, fuzzy
@@ -7834,24 +7764,20 @@ msgid "Inherit Parent Sorting"
 msgstr "Sortowanie odziedziczonej jednostki dominującej"
 
 #: include/global_arrays.php:830
-#, fuzzy
 msgid "Manual Ordering (No Sorting)"
-msgstr "Ręczne zamawianie (bez sortowania)"
+msgstr "Ręczna kolejność (bez sortowania)"
 
 #: include/global_arrays.php:831
-#, fuzzy
 msgid "Alphabetic Ordering"
-msgstr "Zamówienia alfabetyczne"
+msgstr "Kolejność alfabetyczna"
 
 #: include/global_arrays.php:832
-#, fuzzy
 msgid "Natural Ordering"
-msgstr "Zamówienia w trybie naturalnym"
+msgstr "Kolejność naturalna"
 
 #: include/global_arrays.php:833
-#, fuzzy
 msgid "Numeric Ordering"
-msgstr "Zamówienia numeryczne"
+msgstr "Kolejność numeryczna"
 
 #: include/global_arrays.php:837 lib/rrd.php:2783
 msgid "Header"
@@ -8109,7 +8035,6 @@ msgid "Console Access"
 msgstr "Dostęp do konsoli"
 
 #: include/global_arrays.php:1072
-#, fuzzy
 msgid "Realtime Graphs"
 msgstr "Wykresy czasu rzeczywistego"
 
@@ -9381,7 +9306,6 @@ msgid "SNMP Port"
 msgstr "Port SNMP"
 
 #: include/global_form.php:127
-#, fuzzy
 msgid "Enter the UDP port number to use for SNMP (default is 161)."
 msgstr ""
 "Wprowadź numer portu UDP, który ma być używany dla SNMP (domyślnie 161)."
