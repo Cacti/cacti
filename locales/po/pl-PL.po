@@ -6,57 +6,55 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-06-23 11:13-0400\n"
-"PO-Revision-Date: 2019-03-10 13:43-0400\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: pl_PL\n"
+"PO-Revision-Date: 2019-07-11 17:10+0000\n"
+"Last-Translator: Jaroslaw Kłopotek <jkl@interduo.pl>\n"
+"Language-Team: Polish <http://translate.cacti.net/projects/cacti/core/pl-PL/>"
+"\n"
+"Language: pl-PL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
-"|| n%100>14) ? 1 : 2);\n"
-"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.4-dev\n"
 
 #: about.php:29 include/global_arrays.php:2413 lib/html.php:2304
-#, fuzzy
 msgid "About Cacti"
 msgstr "Informacje o Cacti"
 
 #: about.php:42
-#, fuzzy
 msgid ""
 "Cacti is designed to be a complete graphing solution based on the RRDtool's "
 "framework. Its goal is to make a network administrator's job easier by "
 "taking care of all the necessary details necessary to create meaningful "
 "graphs."
 msgstr ""
-"Cacti jest zaprojektowany by być kompletnym monitorującym rozwiązaniem "
-"opartym na frameworku RRDtool. Głównym celem jest ułatwienie pracy "
-"administratora sieci poprzez dbałość o wszystkie niezbędne szczegóły "
+"Cacti jest zaprojektowany by być kompletnym generatorem wykresów "
+"rozwiązaniem opartym na frameworku RRDtool. Głównym celem jest ułatwienie "
+"pracy administratora sieci poprzez dbałość o wszystkie niezbędne szczegóły "
 "niezbędne do tworzenia znaczących wykresów."
 
 #: about.php:44
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "Please see the official %sCacti website%s for information, support, and "
 "updates."
 msgstr ""
-"Informacje, wsparcie i aktualizacje można znaleźć na oficjalnej stronie "
-"%sCacti%sCacti."
+"Informacje, wsparcie i aktualizacje można znaleźć na oficjalnej stronie %s "
+"Cacti."
 
 #: about.php:46
-#, fuzzy
 msgid "Cacti Developers"
-msgstr "Cacti Deweloperzy"
+msgstr "Deweloperzy Cacti"
 
 #: about.php:59
 msgid "Thanks"
 msgstr "Dziękujemy"
 
 #: about.php:62
-#, fuzzy, php-format
+#, php-format
 msgid ""
 "A very special thanks to %sTobi Oetiker%s, the creator of %sRRDtool%s and "
 "the very popular %sMRTG%s."
@@ -65,12 +63,10 @@ msgstr ""
 "popularnego %sMRTG%s."
 
 #: about.php:65
-#, fuzzy
 msgid "The users of Cacti"
 msgstr "Użytkownicy Cacti"
 
 #: about.php:66
-#, fuzzy
 msgid ""
 "Especially anyone who has taken the time to create an issue report, or "
 "otherwise help fix a Cacti related problems. Also to anyone who has "
@@ -85,12 +81,10 @@ msgid "License"
 msgstr "Licencja"
 
 #: about.php:73
-#, fuzzy
 msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti jest na licencji GNU GPL:"
 
 #: about.php:75 lib/installer.php:1547
-#, fuzzy
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -99,11 +93,10 @@ msgid ""
 msgstr ""
 "Ten program jest darmowym oprogramowaniem; można go rozpowszechniać i/lub "
 "modyfikować na warunkach Powszechnej Licencji Publicznej GNU opublikowanej "
-"przez Fundację Wolnego Oprogramowania; albo w wersji 2 Licencji, albo "
-"(według własnego uznania) w dowolnej późniejszej wersji."
+"przez Free Software Foundation; albo w wersji 2 Licencji, albo (według "
+"własnego uznania) w dowolnej późniejszej wersji."
 
 #: about.php:77
-#, fuzzy
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
 "ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
@@ -137,7 +130,6 @@ msgid "Delete"
 msgstr "Usuń"
 
 #: aggregate_graphs.php:43 graphs.php:60
-#, fuzzy
 msgid "Place Graphs on Report"
 msgstr "Umieść wykresy na raporcie"
 
@@ -1278,6 +1270,7 @@ msgstr "Dodaj urządzenie"
 #: automation_devices.php:628 automation_devices.php:629 host.php:1516
 #: lib/api_automation.php:174 lib/api_automation.php:1097
 #: lib/html_utility.php:883 pollers.php:46
+#, fuzzy
 msgid "Down"
 msgstr "W dół"
 
@@ -1286,6 +1279,7 @@ msgstr "W dół"
 #: automation_devices.php:628 automation_devices.php:629 host.php:1515
 #: lib/api_automation.php:173 lib/api_automation.php:1096
 #: lib/html_utility.php:889
+#, fuzzy
 msgid "Up"
 msgstr "Do góry"
 
@@ -1465,7 +1459,7 @@ msgstr "Wyczyść odkryte urządzenia"
 #: utilities.php:825 utilities.php:2133 utilities.php:2230 utilities.php:2238
 #: utilities.php:2241 utilities.php:2244 utilities.php:2250 utilities.php:2479
 msgid "N/A"
-msgstr "Nie dotyczy"
+msgstr "N/D"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
@@ -2763,7 +2757,6 @@ msgstr "Usuń szablon(y) automatyki"
 #: automation_templates.php:274 include/global_arrays.php:1216
 #: include/global_form.php:1172 include/global_form.php:1577
 #: lib/html_reports.php:648
-#, fuzzy
 msgid "Device Template"
 msgstr "Szablon urządzenia"
 
@@ -4478,9 +4471,9 @@ msgstr "1 Rok"
 
 #: data_source_profiles.php:754 include/global_arrays.php:694
 #: include/global_arrays.php:1312 rrdcleaner.php:489
-#, fuzzy, php-format
+#, php-format
 msgid "%d Month"
-msgstr "%d Miesiąc"
+msgstr "%d miesiąc"
 
 #: data_source_profiles.php:754 include/global_arrays.php:695
 #: include/global_arrays.php:696 include/global_arrays.php:697
@@ -4488,9 +4481,9 @@ msgstr "%d Miesiąc"
 #: include/global_arrays.php:1314 include/global_arrays.php:1315
 #: include/global_arrays.php:1316 rrdcleaner.php:490 rrdcleaner.php:491
 #: rrdcleaner.php:492
-#, fuzzy, php-format
+#, php-format
 msgid "%d Months"
-msgstr "%d Miesiące"
+msgstr "%d miesiące"
 
 #: data_source_profiles.php:763 include/global_arrays.php:641
 #: include/global_arrays.php:691 include/global_arrays.php:1310
@@ -5605,7 +5598,7 @@ msgstr "Stosowana lista wykresów niestandardowych - filtr z listy ]"
 
 #: graph_view.php:601 graph_view.php:803
 msgid "View"
-msgstr "Zobacz"
+msgstr "Podgląd"
 
 #: graph_view.php:601 graph_view.php:803 include/global_arrays.php:1071
 #, fuzzy
@@ -6280,7 +6273,6 @@ msgstr ""
 "a następnie wypełnić nową wartość."
 
 #: host.php:374
-#, fuzzy
 msgid "Update this Field"
 msgstr "Zaktualizuj to pole"
 
@@ -6553,7 +6545,7 @@ msgstr "SNMP GetNext"
 
 #: host.php:1437 include/global_settings.php:522 lib/html.php:1976
 msgid "Site"
-msgstr "Strona"
+msgstr "Lokalizacja"
 
 #: host.php:1493
 #, fuzzy
@@ -6592,7 +6584,7 @@ msgstr "Nazwa, pod jaką to urządzenie będzie się odnosić."
 #: lib/api_automation.php:883 lib/api_automation.php:1214 managers.php:219
 #: pollers.php:129 pollers.php:829 user_admin.php:1269 user_group_admin.php:970
 msgid "Hostname"
-msgstr "Serwer"
+msgstr "Nazwa hosta"
 
 #: host.php:1556
 #, fuzzy
@@ -7202,7 +7194,7 @@ msgstr ""
 
 #: include/global_arrays.php:253
 msgid "Unable to change password.  User account not found."
-msgstr ""
+msgstr "Nie można zmienić hasła. Konto użytkownika nie znalezione."
 
 #: include/global_arrays.php:256
 #, fuzzy
@@ -7440,11 +7432,11 @@ msgstr ""
 
 #: include/global_arrays.php:361
 msgid "Permission Denied.  You do not have permission to the requested action."
-msgstr ""
+msgstr "Brak dostępu. Nie masz uprawnień do żądanej akcji."
 
 #: include/global_arrays.php:364
 msgid "Page is not defined.  Therefore, it can not be displayed."
-msgstr ""
+msgstr "Strona nie ustawiona. W związku z tym nie może zostać wyświetlona."
 
 #: include/global_arrays.php:367
 #, fuzzy
@@ -7754,9 +7746,9 @@ msgstr "Każdy %1 Dzień"
 
 #: include/global_arrays.php:699 include/global_arrays.php:1317
 #: include/global_settings.php:1226 rrdcleaner.php:493
-#, fuzzy, php-format
+#, php-format
 msgid "%d Year"
-msgstr "%d Rok"
+msgstr "%d rok"
 
 #: include/global_arrays.php:721
 #, fuzzy
@@ -7974,7 +7966,7 @@ msgstr "Zarządzanie"
 #: include/global_arrays.php:876 sites.php:416 sites.php:431 sites.php:511
 #: tree.php:787 tree.php:1985
 msgid "Sites"
-msgstr "Strony"
+msgstr "Lokalizacje"
 
 #: include/global_arrays.php:877 include/global_arrays.php:1086 tree.php:1893
 #: tree.php:1908 tree.php:1968 user_admin.php:1550 user_admin.php:2979
@@ -8471,7 +8463,7 @@ msgstr "%d GBytes"
 
 #: include/global_arrays.php:1426
 msgid "Infinity"
-msgstr ""
+msgstr "Nieskończoność"
 
 #: include/global_arrays.php:1433
 #, fuzzy, php-format
@@ -8549,7 +8541,7 @@ msgstr "Tekst"
 
 #: include/global_arrays.php:1503 include/global_form.php:2154
 msgid "Tree"
-msgstr "drzewo"
+msgstr "Drzewo"
 
 #: include/global_arrays.php:1505
 msgid "Horizontal Rule"
@@ -11750,9 +11742,8 @@ msgid "Errors"
 msgstr "Błędy"
 
 #: include/global_settings.php:325
-#, fuzzy
 msgid "Other Defaults"
-msgstr "Inne przypadki niewykonania zobowiązań"
+msgstr "Inne domyślne"
 
 #: include/global_settings.php:330
 #, fuzzy
@@ -11962,6 +11953,9 @@ msgid ""
 "a Graph when removing Graphs.  Note: Cacti will not allow the removal of "
 "Data Sources if they are used in other Graphs."
 msgstr ""
+"Gdy włączona opcja, Cacti zaznaczy domyślnie opcję Usuń powiązane źródła "
+"danych Wykresów gdy usuwasz Wykresy. Uwaga: Cacti nie pozwoli usunąć Źródeł "
+"Danych jeśli są używane w innych Wykresach."
 
 #: include/global_settings.php:444
 #, fuzzy
@@ -11973,6 +11967,8 @@ msgid ""
 "When enabled, Cacti will not lock Graphs.  This allow a faster manual "
 "modification of Data Sources related to a Graph."
 msgstr ""
+"Gdy włączony, Cacti nie zablokuje Wykresów. To pozwoli na szybszą ręczną "
+"modyfikację źródeł danych powiązanych z Wykresem."
 
 #: include/global_settings.php:450
 #, fuzzy
@@ -14536,6 +14532,8 @@ msgid ""
 "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  "
 "How long should these backup files be retained?"
 msgstr ""
+"Gdy SpikeKill usuwa kolce z wykresów, tworzy kopię pliku RRD. Jak długo "
+"powinny być trzymane te pliki?"
 
 #: include/global_settings.php:2015
 #, fuzzy
@@ -14805,6 +14803,8 @@ msgid ""
 "If enabled, Cacti will remember your Tree History between logins and when "
 "you return to the Graphs page."
 msgstr ""
+"Jeśli włączone, Cacti będzie pamiętać Twoją Historię drzewa pomiędzy "
+"logowaniami gdy wrócisz na stronę wykresów."
 
 #: include/global_settings.php:2215
 #, fuzzy
@@ -15320,12 +15320,13 @@ msgid "Hostname:"
 msgstr "Nazwa hosta:"
 
 #: lib/api_device.php:1069
+#, fuzzy
 msgid "Location:"
 msgstr "Lokalizacja:"
 
 #: lib/api_device.php:1070
 msgid "Contact:"
-msgstr "Skontaktuj się z:"
+msgstr "Kontakt:"
 
 #: lib/api_device.php:1101 lib/functions.php:3868 lib/functions.php:3870
 #: lib/functions.php:3874
@@ -15368,6 +15369,8 @@ msgid ""
 "current Cacti password does not match the new requirements.  Therefore, you "
 "must change your password now."
 msgstr ""
+"Twój Administrator Cacti wymusił silne hasła do logowania i Twoje obecne "
+"hasło nie spełnia nowych wymagań. W związku z tym musisz teraz zmienić hasło."
 
 #: lib/auth.php:2483
 #, fuzzy, php-format
@@ -19283,7 +19286,7 @@ msgstr "Tworzenie agregatu z szablonu"
 
 #: lib/template.php:1023
 msgid "Attempting to Create Graph from Removed Graph Template"
-msgstr ""
+msgstr "Próba stworzenia Wykresu z usuniętego szablonu Wykresu"
 
 #: lib/template.php:1616 lib/template.php:1636
 #, fuzzy, php-format
@@ -19490,6 +19493,9 @@ msgid ""
 "innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do "
 "this may result in plugins that can not properly create tables."
 msgstr ""
+"Jeśli Twoje tabele mają bardzo duże indeksy, musisz ustawić wartość "
+"Barracuda innodb_file_format oraz innodb_large_prefix jako 1. Nieustawienie "
+"tego może skutkować niepoprawnym utworzeniem tabel przez wtyczki."
 
 #: lib/utility.php:960
 #, fuzzy, php-format
@@ -21453,7 +21459,7 @@ msgstr "Nowy węzeł"
 
 #: tree.php:1383
 msgid "Rename"
-msgstr "Zmień nazwę"
+msgstr "Przezwij"
 
 #: tree.php:1410
 #, fuzzy
