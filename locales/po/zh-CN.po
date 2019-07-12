@@ -8,9 +8,10 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-07-11 21:14+0000\n"
-"PO-Revision-Date: 2019-04-28 13:01+0000\n"
-"Last-Translator: whsir <wh@whsir.com>\n"
-"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/cacti/core/zh-CN/>\n"
+"PO-Revision-Date: 2019-07-12 12:05+0000\n"
+"Last-Translator: tomcat <luis_126@126.com>\n"
+"Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
+"cacti/core/zh-CN/>\n"
 "Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -416,7 +417,6 @@ msgstr "匹配图形"
 #: user_group_admin.php:2462 user_group_admin.php:2547 utilities.php:726
 #: utilities.php:1127 utilities.php:1421 utilities.php:1699 utilities.php:2379
 #: utilities.php:2630 vdef.php:699
-#, fuzzy
 msgid "Search"
 msgstr "搜索"
 
@@ -482,7 +482,6 @@ msgstr "部分聚合"
 #: user_admin.php:2276 user_admin.php:2642 user_admin.php:2727
 #: user_admin.php:2831 user_admin.php:2916 user_admin.php:3001
 #: user_admin.php:3086
-#, fuzzy
 msgid "Go"
 msgstr "Go"
 
@@ -524,7 +523,6 @@ msgstr "设置/刷新过滤器"
 #: user_admin.php:2277 user_admin.php:2643 user_admin.php:2728
 #: user_admin.php:2832 user_admin.php:2917 user_admin.php:3002
 #: user_admin.php:3087 user_domains.php:677
-#, fuzzy
 msgid "Clear"
 msgstr "清除"
 
@@ -1095,7 +1093,7 @@ msgstr "添加到Cacti"
 #: lib/api_automation.php:424 lib/functions.php:3850 lib/html.php:1927
 #: lib/html.php:1959 lib/html_reports.php:665 utilities.php:1515
 msgid "Device"
-msgstr "设备模板"
+msgstr "设备"
 
 #: automation_devices.php:122
 msgid "Not Added to Cacti"
