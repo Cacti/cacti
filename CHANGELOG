@@ -56,6 +56,7 @@ Cacti CHANGELOG
 -issue#2807: Data Templates in Read Only Mode should not be modifiable in many cases
 -issue#2808: Tree margin changing during Tree navigation
 -issue#2814: Anchor Tags Escaped on Utilities Page
+-issue#2816: Two issues about page navigation under "Logs" tab 
 -issue#2818: Automation adds duplicate sysnames even though it should not
 -feature#2728: Update phpseclib to version 2.0.20
 -feature#2809: Update JavaScript library d3.js to version 5.9.7

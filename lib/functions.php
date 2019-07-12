@@ -1013,7 +1013,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', $page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1034,6 +1034,12 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		if (determine_display_log_entry($message_type, $line, $filter)) {
 			++$total_rows;
 		}
+	}
+
+	// Reset the page count to 1 if the number of lines is exceeded
+	if (($page_nr - 1) * $number_of_lines > $total_rows) {
+		set_request_var('page', 1);
+		$page_nr = 1;
 	}
 
 	/* rewind file pointer, to start all over */
