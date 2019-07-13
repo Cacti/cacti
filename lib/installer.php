@@ -3214,7 +3214,9 @@ class Installer implements JsonSerializable {
 
 	public static function getInstallLog() {
 		global $config;
-		$logcontents = tail_file($config['base_path'] . '/log/cacti.log', 100, -1, ' INSTALL:' , 1, $total_rows);
+
+		$page_nr = 1;
+		$logcontents = tail_file($config['base_path'] . '/log/cacti.log', 100, -1, ' INSTALL:' , $page_no, $total_rows);
 
 		$output_log = '';
 		foreach ($logcontents as $logline) {
