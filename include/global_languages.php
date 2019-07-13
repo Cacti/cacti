@@ -650,7 +650,7 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_'. $country;
 		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
-		if ($fmt !== FALSE) {
+		if ($fmt !== false && $fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
 			return numfmt_format($fmt, $number);
