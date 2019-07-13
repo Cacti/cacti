@@ -5138,6 +5138,10 @@ function get_md5_include_css($path) {
 }
 
 function is_resource_writable($path) {
+	if (empty($path)) {
+		return false;
+	}
+
 	if ($path{strlen($path)-1}=='/') {
 		return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
 	}
