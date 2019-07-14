@@ -417,7 +417,7 @@ function clog_get_logfiles() {
 				continue;
 			}
 
-			if (strpos($logFile, $stderrLogBase) === 0){
+			if (!empty($stderrlogbase) && strpos($logFile, $stderrLogBase) === 0){
 				$stdErrFileArray[] = $logFile;
 			} else {
 				$stdLogFileArray[] = $logFile;

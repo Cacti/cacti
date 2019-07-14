@@ -113,6 +113,7 @@ Cacti CHANGELOG
 -issue#2713: SNMP System Description with UTF8 strings properly are not properly parsed
 -issue#2718: When links are converted to ajax calls, mailto links should not be included
 -issue#2720: When calculating percentiles, the value is incorrect as the steps are not placed in correct order
+-issue#2822: When stderr log file is not populated, clog generates 'empty needle' error
 -feature#2538: Allow users to change default method of removing data sources when deleting graphs
 -feature#2539: Allow users to set the default graph lock status
 -feature#2540: Allow users to enable/disable graph tree history
