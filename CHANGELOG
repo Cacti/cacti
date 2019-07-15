@@ -3,71 +3,70 @@ Cacti CHANGELOG
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
 -issue#2282: Installation wizard does not detect RRDtool version correctly
--issue#2524: Dragging and Droping Devices not working as expected
--issue#2573: Associated graph template for Data Query Disappears
+-issue#2524: When editing a tree, Drag and Drop of Devices does not always work as expected
+-issue#2573: Associated Graph Template for Data Query can sometime disappear
 -issue#2656: GPRINT text_format does not replace Data Query and Host Fields
--issue#2661: Automation - Wrong network/netmask calculation
+-issue#2661: Automation does not always calculate network range/subnet correctly
 -issue#2663: Some legacy Data Queries can not determine their index order causing broken graphs
--issue#2674: When a string is above 80 characters, language translation can fail due to wrapped MSGID's
--issue#2719: Empty graphs being created automatically but we can't delete them
+-issue#2674: Large strings can sometimes cause language translation can fail
+-issue#2719: Automation may sometimes create empty graphs
 -issue#2721: When replacing '|input_xxxx|' strings, undefined index can occur
 -issue#2722: Calls to _db_replace() are not consistent resulting in warnings
--issue#2723: Undefined variable message raised by push_out_host() in lib/utility.php
--issue#2724: In PHP strict standards mode, rrdtool_function_graph() generates ByRef message for HRULE items
+-issue#2723: When replicating to remote pollers, Undefined Variable errors may be seen
+-issue#2724: When graphing HRULE items, 'Only Variables should be passed by reference' error may be seen
 -issue#2725: When viewing logs in utilities, filenames should be limited the same as clog
--issue#2726: Record rule used during automation and provide link when viewed via clog
--issue#2732: Strip domain name from basic authentication when its present
--issue#2734: Suggestion Cacti-1.2.4: Displaying non-English label names on graphs
--issue#2727: Warning issued when poller is set to cmd.php and DSStats is enabled
--issue#2733: Error processing hex-lines for space delimited hex strings into mac addresses
--issue#2735: Mouse cursor should be default if column is not sortable
--issue#2736: Correct Cacti to handle new MySQL 8.0.1 reserved word `function`
--issue#2741: Resolve a number of QA issues in various files
--issue#2742: Resolve a number of QA issues in various files
--issue#2743: Call tooltip('Close') without checking the existence of tooltip.
--issue#2744: Undefined index: password_change in auth_changepassword.php
--issue#2748: When the path_php_binary location is invalid, this should be notified during installation when checking modules
+-issue#2726: During Automation logging, include the Rule ID that triggers the creation of an item by xmacan
+-issue#2732: When using basic authentication, automatically strip any @domain information
+-issue#2734: Allow non-english labels to be used on Graph Templates
+-issue#2727: When using Polling Hosts Template, warnings can be issued when CMD.PHP is the poller
+-issue#2733: When processing SNMP data, space delimited hex strings do not always convert into MAC addresses
+-issue#2735: Mouse cursor should show as default pointer if column is not sortable
+-issue#2736: When using MySQL 8 or above, 'function' is considered a reserved word unless quoted by xmacan
+-issue#2741: Various errors can occur due to undefined or incorrect variable names
+-issue#2742: Various errors can occur due to undefined or incorrect variable names
+-issue#2743: Attempts to close a tooltip when no tooltip has been set may cause errors
+-issue#2744: When changing password, undefined index error can occur if user is not logged in
+-issue#2748: If PHP location setting is invalid during install/upgrade, this should be notified on modules page
 -issue#2750: When performing multiple sort, highlighting of content occurs
--issue#2751: Tree editing does not allow for 'All' Display
--issue#2752: When running verbose query on device you are unable to copy text from items
+-issue#2751: When editing a Tree, display filter may not allow 'All' option to work
+-issue#2752: When running verbose query on device, you are unable to copy text from items
 -issue#2753: Unable to copy entire verbose query using clipboard command
--issue#2757: Cacti Navigation is subject to XSS injection
--issue#2758: Lack of index.php in Cacti's log directory enable remote browse of the directory
+-issue#2757: Page Navigation can be subject to XSS injection
+-issue#2758: Various sensitive directories are browsable if web server directory browsing is enabled
 -issue#2760: Unable to add items into a report
--issue#2762: Can not create aggregate graph with unknown RRD tools error
--issue#2766: Modifying Aggregate Templates not cascading to Graph
--issue#2768: Aggregate Graphs showing wrong row count
+-issue#2762: Creating an aggregate graph can sometimes fail due to unknown RRD tools error
+-issue#2766: When modifying Aggregate Templates, changes are not always cascaded to Graph
+-issue#2768: Aggregate Graphs may sometimes show the wrong row count
 -issue#2770: ItemType is not updated when saving Report Items
--issue#2772: Add tip support to html_header() and html_header_checkbox()
--issue#2775: Data Queries for remotely managed devices fail to push updated data to main data collector
--issue#2777: Attempting to edit a non-existing report generates an error
--issue#2778: Graphs resizing during rendering is annoying
--issue#2779: On new Cacti installs, automation rules for Interface Graphs broken
+-issue#2772: Add tooltip support to html_header() and html_header_checkbox()
+-issue#2775: Remote pollers may sometimes fail to replicate data back to main system
+-issue#2777: Attempting to edit a non-existent report generates an error
+-issue#2778: When rendering graphs, resizing can sometimes occur repeatedly
+-issue#2779: On new installations, automation rules for Interface Graphs are broken
 -issue#2780: Upgrade database script not actually upgrading Cacti
--issue#2782: When replicating the syslog plugin its config.php is missed causing issues
--issue#2783: Cacti title_trim() function does not work with UTF-8 or Multi Byte strings
+-issue#2782: When replicating the syslog plugin, the configuration file is ignored causing errors
+-issue#2783: When limiting the number of displayed characters, international characters may sometimes display incorrectly
 -issue#2784: When removing a device with graphs but no data sources , errors are generated
--issue#2785: Cacti Graph Automation prompts when changing dropdowns on Graph Templates and Types
--issue#2792: Add escaping for checkbox friendly name
+-issue#2785: When editing a graph rule, warnings incorrectly appear about unsaved changes
+-issue#2792: When a checkbox 'friendly name' has a comma, checkbox functionality stops working
 -issue#2797: When upgrading from before 1.x, SuperLinks view permissions may not be correct
--issue#2799: Under heavy use realtime can generate SQL errors
--issue#2800: Tree Edit - Search Graph with comma
--issue#2802: If a Device lacks any good values for ifName Cacti is unable to find a better sort field
--issue#2807: Data Templates in Read Only Mode should not be modifiable in many cases
--issue#2808: Tree margin changing during Tree navigation
--issue#2814: Anchor Tags Escaped on Utilities Page
--issue#2816: Two issues about page navigation under "Logs" tab 
--issue#2818: Automation adds duplicate sysnames even though it should not
+-issue#2799: Under heavy use of Real Time Graphs, SQL errors may start appearing
+-issue#2800: When editing a tree, using a comma in the search field stops search from working
+-issue#2802: If a Device lacks ifName, an alternative field is not always found even if available
+-issue#2807: When editing a Data Template that has dependant graphs, some attributes should not be modifiable
+-issue#2808: When navigating a tree, the layout may unexpectedly move
+-issue#2814: When viewing the utilities page, HTML tags may be seen rather than rendered
+-issue#2816: When viewing logs, paging does not always working correctly
+-issue#2818: Automation can sometimes incorrectly add duplicate devices with the same sysname
 -issue#2820: When path is blank, is_resource_writable() will generate 'Uninitialized string offset: -1'
--issue#2821: Cacti generates number format issue when the locale can not be located
--feature#2728: Update phpseclib to version 2.0.20
--feature#2809: Update JavaScript library d3.js to version 5.9.7
--feature#2809: Update JavaScript library c3.js to version 0.6.14
--feature#2730: Update JavaScript library jstree.js to version 3.3.8
+-issue#2821: When the desired locale can not be located, a number format issue may occur
+-feature#2728: Update phpseclib to 2.0.17 by DavidLiedke
+-feature#2809: Update c3.js & d3.js by DavidLiedke
+-feature#2730: Update jstree.js to 3.3.8 by DavidLiedke
 -feature#2754: Allow Devices, Graphs and Data Sources to be searched by ID
--feature#2765: Cascading selection of available graphics
--feature#2805: Be more methodical when merging old plugins into Cacti core
--feature: Enhance the splice_rrd.php to be able to merge RRDfiles of differing step
+-feature#2765: When editing a tree, allow cascading selection of available graphics
+-feature#2805: Merged plugins are not always upgraded correctly
+-feature#2823: Enhance the splice_rrd.php to be able to merge RRDfiles of differing step
 
 1.2.4
 -issue#2523: Send A Test Email stops working under PHP 7.3
