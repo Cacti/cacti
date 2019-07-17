@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 1.3.0.-1
+=======
+1.2.5
+>>>>>>> 42a8c6cf1 (Revert "PHP recommendations always see memory limit as unlimited")
