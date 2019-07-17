@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.6
+-issue#2829: PHP recommendations always see memory limit as unlimited
+
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
 -issue#2282: Installation wizard does not detect RRDtool version correctly
