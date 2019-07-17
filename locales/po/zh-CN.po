@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-07-11 21:14+0000\n"
-"PO-Revision-Date: 2019-07-12 12:05+0000\n"
+"PO-Revision-Date: 2019-07-15 19:17+0000\n"
 "Last-Translator: tomcat <luis_126@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh-CN/>\n"
@@ -11231,7 +11231,7 @@ msgstr "匹配设备"
 #: lib/html_reports.php:1626 lib/html_reports.php:1637 lib/rrd.php:2814
 #: utilities.php:339 utilities.php:1089 utilities.php:2459
 msgid "Type"
-msgstr "Type"
+msgstr "类型"
 
 #: lib/api_automation.php:306
 msgid "No Matching Devices"
@@ -12162,7 +12162,6 @@ msgid "Time Graph View"
 msgstr "时间图形视图"
 
 #: lib/html.php:451
-#, fuzzy
 msgid "Edit Device"
 msgstr "编辑设备"
 
