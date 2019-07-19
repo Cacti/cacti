@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.6
 -issue#2829: PHP recommendations always see memory limit as unlimited
 -issue#2830: Disabled Top/Bottom external links should not be displayed
+-issue#2833: Undefined index in lib/rrd.php under certain circumstances
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
