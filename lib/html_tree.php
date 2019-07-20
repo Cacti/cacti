@@ -158,7 +158,7 @@ function grow_dhtml_trees() {
 		if (theme != 'classic') {
 			docHeight  = parseInt($('body').height());
 			navigation = $('.cactiTreeNavigationArea').offset();
-			navWidth   = $('.cactiTreeNavigationArea').outerWidth();
+			navWidth   = $('.cactiTreeNavigationArea').width();
 			navHeight  = docHeight - navigation.top + 15;
 			visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() {
 				return $(this).width();

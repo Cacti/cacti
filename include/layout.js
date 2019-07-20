@@ -661,11 +661,11 @@ function applySkin() {
 	setupButtonStyle();
 
 	// Debug message actions
-	$('table.debug').off('click').on('click', function() {
-		if ($(this).find('table').is(':visible')) {
-			$(this).find('table').slideUp('fast');
+	$('table.debug tr:nth-child(1)').off('click').on('click', function() {
+		if ($(this).parent().find('table').is(':visible')) {
+			$(this).parent().find('table').slideUp('fast');
 		} else {
-			$(this).find('table').slideDown('fast');
+			$(this).parent().find('table').slideDown('fast');
 		}
 	});
 
@@ -678,13 +678,17 @@ function applySkin() {
 
 	$('i, th, img, input, label, select, button, .drillDown, .checkboxSlider')
 	.tooltip({
-		closed: true
+		close: true
 	})
 	.on('focus', function() {
-		$(this).tooltip('close');
+		if ($(this).tooltip('instance')) {
+			$(this).tooltip('close');
+		}
 	})
 	.on('click', function() {
-		$(this).tooltip('close');
+		if ($(this).tooltip('instance')) {
+			$(this).tooltip('close');
+		}
 	});
 
 	$(document).tooltip({
@@ -1540,7 +1544,7 @@ function menuHide(store) {
 	var page = basename(location.pathname).replace('.php', '');
 
 	var myClass = '';
-    var curMargin = $('#navigation').outerWidth();
+    var curMargin = parseInt($('#navigation_right').css('margin-left'));
 
 	if ($('.cactiTreeNavigationArea').length) {
 		myClass = '.cactiTreeNavigationArea';
@@ -3274,10 +3278,11 @@ function initializeGraphs() {
 		applyFilter();
 	});
 
-	var mainWidth = getMainWidth();
+	var mainWidth = getMainWidth() - 30;
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
 	var myWidth   = (mainWidth-(30*myColumns))/myColumns;
+	var numGraphs = $('.graphWrapper').length;
 
 	$('.graphWrapper').each(function() {
 		var graph_id = $(this).attr('graph_id');
@@ -3350,7 +3355,9 @@ function initializeGraphs() {
 
 				realtimeArray[data.local_graph_id] = false;
 
-				responsiveResizeGraphs();
+				if (!--numGraphs) {
+					responsiveResizeGraphs();
+				}
 			})
 			.fail(function(data) {
 				getPresentHTTPError(data);

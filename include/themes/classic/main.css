@@ -41,6 +41,10 @@ td, th, select {
 th {
 	border-right: 1px groove white;
 	white-space: nowrap;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 img {
@@ -1410,7 +1414,6 @@ legend {
 .tableHeader th {
 	color: #FFFFFF;
 	font-weight: bold;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	border-right: 1px groove #EFEFEF;
@@ -1418,6 +1421,10 @@ legend {
 	line-height: 18px;
 	background-color: #6D88AD !important;
 	padding: 2px;
+}
+
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
 .tableHeader th:last-child {
@@ -1969,6 +1976,13 @@ tr#realtime td:first-child {
 	padding: 2px;
 }
 
+.ui-select-text input {
+	width: 180px;
+	margin: 0;
+	padding: 0;
+	background: transparent;
+}
+
 .ui-multiselect-checkboxes span {
 	font-size: 12px;
 	color: black;
@@ -1978,25 +1992,27 @@ tr#realtime td:first-child {
 	background-color: #E5E5E5;
 }
 
-.ui-multiselect-filter {
-	width: 100%;
-}
-
-.ui-select-text input {
-	width: 180px;
-	margin: 0;
-	padding: 0;
-	background: transparent;
-}
-
-.ui-multiselect {
-	padding: 0.4em 1em;
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
 	text-align: left;
 	line-height: initial;
 }
 
-.ui-multiselect .ui-icon {
-	margin-top: 0px;
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+	width: 100%;
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-widget {

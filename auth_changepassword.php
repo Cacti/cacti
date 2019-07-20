@@ -54,20 +54,26 @@ switch ($action) {
 		}
 }
 
-$user    = db_fetch_row_prepared('SELECT *
+$user = db_fetch_row_prepared('SELECT *
 	FROM user_auth
 	WHERE id = ?',
 	array($_SESSION['sess_user_id']));
 
 $version = CACTI_VERSION;
 
-if ($user['realm'] != 0) {
-	raise_message('nodomainpassword');
+if (!cacti_sizeof($user) || $user['realm'] != 0) {
+	if (!cacti_sizeof($user)) {
+		raise_message(44);
+	} else {
+		raise_message('nodomainpassword');
+	}
+
 	if (isset($_SERVER['HTTP_REFERER'])) {
 		header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
 	} else {
 		header('Location: index.php');
 	}
+
 	exit;
 }
 

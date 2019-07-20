@@ -58,6 +58,10 @@ td, th {
 
 th {
 	white-space: nowrap;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 p {
@@ -1153,19 +1157,19 @@ legend {
 /* text styles */
 
 .textError {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: red !important;
 }
 
 .textWarning {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
-	color: #D886DB !important;
+	color: #FF4500 !important;
 }
 
 .textInfo {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: black;
 }
@@ -1585,23 +1589,22 @@ legend {
 	height: 24px;
 }
 
-th.sortable {
-	cursor: pointer;
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
-th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
+.tableHeader th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 	background: rgba(138,155,107,1);
 	background: linear-gradient(to bottom, rgba(138,155,107,1) 0%, rgba(51,79,28,1) 100%);
 }
 
-th.secondarySort {
+.tableHeader th.secondarySort {
 	background: rgba(158,175,127,1);
 	background: linear-gradient(to bottom, rgba(158,175,127,1) 0%, rgba(71,99,48,1) 100%);
 }
 
 .tableHeader th, .tableHeader td {
 	color: snow;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 11px;
@@ -2211,6 +2214,31 @@ ul#nav {
 	.noprint {
 		display: none;
 	}
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-tooltip {

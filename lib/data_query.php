@@ -539,6 +539,11 @@ function get_data_query_array($snmp_query_id) {
 
 		$xml_data = xml2array($data);
 
+		/* snmp queries doe not require index_order
+		 * get it from the fields if not set
+		 */
+		calculate_or_set_index_order($raw_data);
+
 		/* store the array value to the global array for future reference */
 		$data_query_xml_arrays[$snmp_query_id] = $xml_data;
 	}
@@ -632,21 +637,20 @@ function query_script_host($host_id, $snmp_query_id) {
 			$script_data_array = exec_into_array($script_path);
 
 			if (!cacti_sizeof($script_data_array) && $field_name == $sort_field) {
-				query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
-				return false;
-			}
+				query_debug_timer_offset('data_query', __('Sort field returned no data for field name %s, skipping', $field_name));
+			} else {
+				debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
 
-			debug_log_insert('data_query', __('Executing script query \'%s\'', $script_path));
+				if (cacti_sizeof($script_data_array)) {
+					foreach ($script_data_array as $element) {
+						if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
+							$script_index = $matches[1];
+							$field_value  = $matches[2];
 
-			if (cacti_sizeof($script_data_array)) {
-				foreach ($script_data_array as $element) {
-					if (preg_match("/(.*?)" . preg_quote($script_queries['output_delimeter']) . "(.*)/", $element, $matches)) {
-						$script_index = $matches[1];
-						$field_value  = $matches[2];
+							$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
 
-						$output_array[] = data_query_format_record($host_id, $snmp_query_id, $field_name, $rewrite_value, $field_value, $script_index, '');
-
-						debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+							debug_log_insert('data_query', __('Found item [%s=\'%s\'] index: %s', $field_name, $field_value, $script_index));
+						}
 					}
 				}
 			}
@@ -885,6 +889,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 				}
 
 				$values = array();
+
 				foreach ($snmp_indexes as $index_oid => $index) {
 					$oid = $field_array['oid'];
 					if (isset($field_array['rewrite_index'])) {
@@ -940,11 +945,8 @@ function query_snmp_host($host_id, $snmp_query_id) {
 					}
 
 					if (!cacti_sizeof($results) && $field_name == $sort_field) {
-						query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index.'));
-						return false;
-					}
-
-					if (cacti_sizeof($results)) {
+						query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $oid));
+					} elseif (cacti_sizeof($results)) {
 						foreach ($results as $key => $value) {
 							debug_log_insert('data_query',
 								__('Found result for data @ \'%s\' [value=\'%s\']',
@@ -963,11 +965,11 @@ function query_snmp_host($host_id, $snmp_query_id) {
 									$values[$key]['oid'], $key, $values[$key]['value']));
 							}
 						}
-					}
 
-					foreach ($values as $key => $value) {
-						if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
-							$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $values[$key]['value']);
+						foreach ($values as $key => $value) {
+							if (substr($field_array['source'], 0, 13) == 'VALUE/REGEXP:') {
+								$values[$key]['value'] = preg_replace('/' . str_replace('VALUE/REGEXP:', '', $field_array['source']) . '/', "\\1", $values[$key]['value']);
+							}
 						}
 					}
 				}
@@ -1034,15 +1036,15 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$snmp_data[$d['oid']] = $d['value'];
 					}
 				} elseif ($field_name == $sort_field) {
-					query_debug_timer_offset('data_query', __('Sort field returned no data.  Can not continue Re-Index for GET data..'));
-					return false;
+					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
+					continue;
 				}
 			} else {
 				$snmp_data = cacti_snmp_session_walk($session, $field_array['oid']);
 
 				if (!cacti_sizeof($snmp_data) && $field_name == $sort_field) {
-					query_debug_timer_offset('data_query', __('Sort field returned not data.  Can not continue Re-Index for OID[%s]', $field_array['oid']));
-					return false;
+					query_debug_timer_offset('data_query', __('Sort field returned no data for OID[%s], skipping.', $field_array['oid']));
+					continue;
 				}
 			}
 
@@ -1673,6 +1675,7 @@ function get_formatted_data_query_indexes($host_id, $data_query_id) {
 	/* in case no unique index is available, fallback to first field in XML */
 	if ($sort_cache['sort_field'] == '') {
 		$snmp_queries = get_data_query_array($data_query_id);
+
 		if (cacti_sizeof($snmp_queries) && isset($snmp_queries['index_order'])) {
 			$i = explode(':', $snmp_queries['index_order']);
 			if (cacti_sizeof($i) > 0) {
@@ -1735,6 +1738,17 @@ function get_formatted_data_query_index($host_id, $data_query_id, $data_query_in
 		array($host_id, $data_query_id));
 
 	return substitute_snmp_query_data($sort_cache['title_format'], $host_id, $data_query_id, $data_query_index);
+}
+
+function calculate_or_set_index_order(&$raw_xml) {
+	if (!isset($raw_xml['index_order']) && isset($raw_xml['fields']) && is_array($raw_xml['fields'])) {
+		foreach($raw_xml['fields'] as $name => $attribs) {
+			if (isset($attribs['source']) && $attribs['source'] == 'index') {
+				$raw_xml['index_order'] = $name;
+				break;
+			}
+		}
+	}
 }
 
 /* get_ordered_index_type_list - builds an ordered list of data query index types that are
@@ -1813,6 +1827,12 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 		}
 	}
 
+	$num_indexes = db_fetch_cell_prepared('SELECT COUNT(DISTINCT snmp_index)
+		FROM host_snmp_cache
+		WHERE host_id = ?
+		AND snmp_query_id = ?',
+		array($host_id, $data_query_id));
+
 	/* list each of the input fields for this snmp query */
 	foreach ($raw_xml['fields'] as $field_name => $field_array) {
 		if ($field_array['direction'] == 'input' || $field_array['direction'] == 'input-output') {
@@ -1846,12 +1866,27 @@ function get_ordered_index_type_list($host_id, $data_query_id) {
 				) AS totals',
 				array($host_id, $data_query_id, $field_name));
 
+			$total_unique = db_fetch_cell_prepared('SELECT COUNT(DISTINCT field_value)
+				FROM host_snmp_cache
+				WHERE host_id = ?
+				AND snmp_query_id = ?
+				AND field_name = ?',
+				array($host_id, $data_query_id, $field_name));
+
 			/* If the entries are not unique and non-unique is
 			 * not specified, skip this sort field
 			 */
 			if ($unique > 0 && !$nonunique) {
 				if (read_config_option('data_source_trace') == 'on') {
 					cacti_log("Field Name '$field_name' found not suitable.  Non-unique and nonunique not specified during Re-Index for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
+				}
+
+				continue;
+			}
+
+			if ($total_unique != $num_indexes) {
+				if (read_config_option('data_source_trace') == 'on') {
+					cacti_log("Field Name '$field_name' found not suitable.  The Sort field does not have sufficient values for Device[$host_id], DQ[$data_query_id]", false, 'DSTRACE');
 				}
 
 				continue;
@@ -1972,11 +2007,43 @@ function update_data_query_sort_cache_by_host($host_id) {
    @returns - a string containing containing best data query index type. this will be one of the
 	valid input field names as specified in the data query xml file */
 function get_best_data_query_index_type($host_id, $data_query_id) {
-	return db_fetch_cell_prepared('SELECT sort_field
+	$index_type = db_fetch_cell_prepared('SELECT sort_field
 		FROM host_snmp_query
 		WHERE host_id = ?
 		AND snmp_query_id = ?',
 		array($host_id, $data_query_id));
+
+	if ($index_type == '') {
+		$raw_xml = get_data_query_array($data_query_id);
+
+		if (isset($raw_xml['index_order']) && $raw_xml['index_order'] != '') {
+			$order = explode(':', $raw_xml['index_order']);
+
+			db_execute_prepared('UPDATE host_snmp_query
+				SET sort_field = ?
+				WHERE host_id = ?
+				AND snmp_query_id = ?',
+				array($order[0], $host_id, $data_query_id));
+
+			return $order[0];
+		} elseif (sizeof($raw_xml['fields'])) {
+			foreach($raw_xml['fields'] as $key => $attribs) {
+				break;
+			}
+
+			db_execute_prepared('UPDATE host_snmp_query
+				SET sort_field = ?
+				WHERE host_id = ?
+				AND snmp_query_id = ?',
+				array($key, $host_id, $data_query_id));
+
+			return $key;
+		} else {
+			return false;
+		}
+	}
+
+	return $index_type;
 }
 
 /* get_script_query_path - builds the complete script query executable path

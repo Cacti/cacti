@@ -51,14 +51,15 @@ fi
 # Update main gettext POT file with application strings
 echo "Updating Cacti language gettext language file..."
 cd ${BASE_PATH}
-${XGETTEXT_BIN} -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot `find . -maxdepth 2 -name \*.php`
+
+${XGETTEXT_BIN} --no-wrap --copyright-holder="The Cacti Group" --package-name="Cacti" --package-version=`cat include/cacti_version` --msgid-bugs-address="developers@cacti.net" -F -k__gettext -k__ -k__n:1,2 -k__x:1c,2 -k__xn:1c,2,3 -k__esc -k__esc_n:1,2 -k__esc_x:1c,2 -k__esc_xn:1c,2,3 -k__date -o locales/po/cacti.pot `find . -maxdepth 2 -name \*.php`
 
 # Merge any changes to POT file into language files
 echo "Merging updates to language files..."
 
 for file in `ls -1 locales/po/*.po`;do
 	echo "Updating $file from cacti.pot"
-	msgmerge --backup off --update $file locales/po/cacti.pot
+	msgmerge --backup off --update --no-wrap -F $file locales/po/cacti.pot
 done
 
 for file in `ls -1 locales/po/*.po`;do

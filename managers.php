@@ -857,7 +857,7 @@ function form_save() {
 
 	switch(get_nfilter_request_var('tab')){
 		case 'notifications':
-			header('Location: managers.php?action=edit&tab=notifications&id=' . (empty($manager_id) ? get_request_var('id') : $manager_id) );
+			header('Location: managers.php?action=edit&tab=notifications&id=' . get_request_var('id'));
 			break;
 		default:
 			$save['id']                       = get_request_var('id');

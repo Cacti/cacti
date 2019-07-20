@@ -62,6 +62,10 @@ td, th {
 
 th {
 	white-space: nowrap;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 img {
@@ -1134,19 +1138,19 @@ legend {
 /* text styles */
 
 .textError {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: red !important;
 }
 
 .textWarning {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: yellow !important;
 }
 
 .textInfo {
-	font-size: 11px;
+	font-size: 12px;
 	font-weight: normal;
 	color: snow;
 }
@@ -1550,22 +1554,21 @@ legend {
 	background: #155413 url("images/ui-bg_highlight-soft_33_155413_1x100.png") 50% 50% repeat-x;
 }
 
-th.sortable {
-	cursor: pointer;
+.tableHeader th.sortable {
+	cursor: pointer !important;
 	line-height: 10px;
 }
 
-th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
+.tableHeader th.primarySort, th.tablesorter-headerDesc, th.tablesorter-headerAsc {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(167, 217, 134, 0.4) 0%, rgba(148, 179, 107, 0.4) 100%) repeat scroll 0 0;
 }
 
-th.secondarySort {
+.tableHeader th.secondarySort {
 	background: rgba(0, 0, 0, 0) linear-gradient(to bottom, rgba(187, 227, 154, 0.2) 0%, rgba(168, 199, 127, 0.2) 100%) repeat scroll 0 0;
 }
 
 .tableHeader th, .tableHeader td {
 	color: snow;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 12px;
@@ -2271,6 +2274,21 @@ tr#realtime td:first-child {
 
 .ui-multiselect-filter, .ui-widget-header {
 	font-weight: normal !important;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-tooltip {

@@ -66,7 +66,7 @@ function prime_default_settings() {
 }
 
 function install_test_local_database_connection() {
-	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
+	global $database_type, $database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	if (!isset($database_ssl)) $rdatabase_ssl = false;
 	if (!isset($database_ssl_key)) $rdatabase_ssl_key = false;
@@ -84,7 +84,7 @@ function install_test_local_database_connection() {
 }
 
 function install_test_remote_database_connection() {
-	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
+	global $rdatabase_type, $rdatabase_hostname, $rdatabase_username, $rdatabase_password, $rdatabase_default, $rdatabase_type, $rdatabase_port, $rdatabase_retries, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
 	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
@@ -559,12 +559,13 @@ function install_file_paths() {
 	/* log file path */
 	if (!config_value_exists('path_cactilog')) {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
-		if (empty($input['path_cactilog']['default'])) {
-			$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
-		}
 	} else {
 		$input['path_cactilog'] = $settings['path']['path_cactilog'];
 		$input['path_cactilog']['default'] = read_config_option('path_cactilog');
+	}
+
+	if (empty($input['path_cactilog']['default'])) {
+		$input['path_cactilog']['default'] = $config['base_path'] . '/log/cacti.log';
 	}
 
 	/* stderr log file path */
@@ -582,19 +583,10 @@ function install_file_paths() {
 	if ((@file_exists($input['path_rrdtool']['default'])) && (($config['cacti_server_os'] == 'win32') || (is_executable($input['path_rrdtool']['default']))) ) {
 		$input['rrdtool_version'] = $settings['general']['rrdtool_version'];
 
-		$out_array = array();
+		$temp_ver = get_installed_rrdtool_version();
 
-		exec("\"" . $input['path_rrdtool']['default'] . "\"", $out_array);
-
-		if (cacti_sizeof($out_array) > 0) {
-			if (preg_match('/^RRDtool ([0-9.]+) /', $out_array[0], $m)) {
-				global $rrdtool_versions;
-				foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
-					if (cacti_version_compare($rrdtool_version, $m[1], '<=')) {
-						$input['rrdtool_version']['default'] = $rrdtool_version;
-					}
-				}
-			}
+		if (!empty($temp_ver)) {
+			$input['rrdtool_version']['default'] = $temp_ver;
 		}
 	}
 
@@ -831,5 +823,74 @@ function log_install_to_file($section, $data, $flags = FILE_APPEND, $level = POL
 		$logfile = 'install' . '-' . $section;
 		file_put_contents($config['base_path'] . '/log/' . $logfile . '.log', sprintf($format_log1, $day, $time, $levelname, $data, PHP_EOL), $flags);
 		file_put_contents($config['base_path'] . '/log/install-complete.log', sprintf($format_log2, $day, $time, $sectionname, $levelname, $data, PHP_EOL), $flags);
+	}
+}
+
+/** repair_automation() - Repairs mangled automation graph rules based
+ *  upon the change in the way that Cacti imports the Graph Templates after
+ *  Cacti 1.2.4.
+ **/
+function repair_automation() {
+	log_install_always('', 'Repairing Automation Rules');
+
+	$hash_array = array(
+		array(
+			'name' => 'Traffic 64 bit Server',
+			'automation_id' => 1,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
+		),
+		array(
+			'name' => 'Traffic 64 bit Server Linux',
+			'automation_id' => 2,
+			'snmp_query_graph_id' => 9,
+			'snmp_query_id' => 1,
+			'snmp_query_hash' => 'd75e406fdeca4fcef45b8be3a9a63cbc',
+			'snmp_query_graph_hash'=> 'ab93b588c29731ab15db601ca0bc9dec',
+		),
+		array(
+			'name' => 'Disk Space',
+			'automation_id' => 3,
+			'snmp_query_graph_id' => 18,
+			'snmp_query_id' => 8,
+			'snmp_query_hash' => '9343eab1f4d88b0e61ffc9d020f35414',
+			'snmp_query_graph_hash'=> '46c4ee688932cf6370459527eceb8ef3',
+		)
+	);
+
+	foreach($hash_array as $item) {
+		$exists = db_fetch_row_prepared('SELECT *
+			FROM automation_graph_rules
+			WHERE id = ?
+			AND name = ?',
+			array(
+				$item['automation_id'],
+				$item['name']
+			)
+		);
+
+		if (cacti_sizeof($exists)) {
+			$exists_snmp_query_id = db_fetch_cell_prepared('SELECT id
+				FROM snmp_query
+				WHERE hash = ?',
+				array($item['snmp_query_hash']));
+
+			$exists_snmp_query_graph_id = db_fetch_cell_prepared('SELECT id
+				FROM snmp_query_graph
+				WHERE hash = ?',
+				array($item['snmp_query_graph_hash']));
+
+			db_execute_prepared('UPDATE automation_graph_rules
+				SET snmp_query_id = ?, graph_type_id = ?
+				WHERE id = ?',
+				array(
+					$exists_snmp_query_id,
+					$exists_snmp_query_graph_id,
+					$item['automation_id']
+				)
+			);
+		}
 	}
 }

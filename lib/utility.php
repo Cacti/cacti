@@ -627,10 +627,11 @@ function push_out_host($host_id, $local_data_id = 0, $data_template_id = 0) {
 	then we go through each of those data sources, finding each one using a data input method
 	with "special fields". if we find one, fill it will the data here FROM this host */
 	/* setup the poller items array */
-	$poller_items   = array();
-	$local_data_ids = array();
-	$hosts          = array();
-	$sql_where      = '';
+	$poller_items    = array();
+	$local_data_ids  = array();
+	$hosts           = array();
+	$template_fields = array();
+	$sql_where       = '';
 
 	/* setup the sql where, and if using a host, get it's host information */
 	if ($host_id != 0) {
@@ -960,10 +961,10 @@ function utilities_get_mysql_recommendations() {
 			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
-			'value'   => 'OFF',
+			'value'   => 'ON',
 			'measure' => 'equalint',
-			'class' => 'warning',
-			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations.')
+			'class' => 'error',
+			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',
@@ -1043,20 +1044,28 @@ function utilities_get_mysql_recommendations() {
 		}
 	}
 
-	html_header(array(__('%s Tuning', $database) . ' (/etc/my.cnf) - [ <a class="linkOverDark" href="https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html">' . __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart')), 2);
+	if (file_exists('/etc/my.cnf.d/server.cnf')) {
+		$location = '/etc/my.cnf.d/server.cnf';
+	} else {
+		$location = '/etc/my.cnf';
+	}
+
+	print '<tr class="tableHeader tableFixed">';
+	print '<th colspan="2">' . __('%s Tuning', $database) . ' (' . $location . ') - [ <a class="linkOverDark" href="' . html_escape('https://dev.mysql.com/doc/refman/' . $link_ver . '/en/server-system-variables.html') . '">' .  __('Documentation') . '</a> ] ' . __('Note: Many changes below require a database restart') . '</th>';
+	print '</tr>';
 
 	form_alternate_row();
 	print "<td colspan='2' style='text-align:left;padding:0px'>";
-	print "<table id='mysql' class='cactiTable' style='width:100%'>\n";
-	print "<thead>\n";
-	print "<tr class='tableHeader'>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>\n";
-	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>\n";
-	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>\n";
-	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>\n";
-	print "</tr>\n";
-	print "</thead>\n";
+	print "<table id='mysql' class='cactiTable' style='width:100%'>";
+	print "<thead>";
+	print "<tr class='tableHeader'>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Variable')          . "</th>";
+	print "  <th class='tableSubHeaderColumn right'>" . __('Current Value'). "</th>";
+	print "  <th class='tableSubHeaderColumn center'>&nbsp;</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Recommended Value') . "</th>";
+	print "  <th class='tableSubHeaderColumn'>" . __('Comments')          . "</th>";
+	print "</tr>";
+	print "</thead>";
 
 	$innodb_pool_size = 0;
 	foreach ($recommendations as $name => $r) {
@@ -1154,19 +1163,19 @@ function utilities_get_mysql_recommendations() {
 
 				form_alternate_row();
 
-				print "<td>" . $name . "</td>\n";
-				print "<td class='right $class'>$value_display</td>\n";
-				print "<td class='center'>$compare</td>\n";
-				print "<td>$value_recommend</td>\n";
-				print "<td class='$class'>" . $r['comment'] . "</td>\n";
+				print "<td>" . $name . "</td>";
+				print "<td class='right $class'>$value_display</td>";
+				print "<td class='center'>$compare</td>";
+				print "<td>$value_recommend</td>";
+				print "<td class='$class'>" . $r['comment'] . "</td>";
 
 				form_end_row();
 			}
 
 		}
 	}
-	print "</table>\n";
-	print "</td>\n";
+	print "</table>";
+	print "</td>";
 	form_end_row();
 	return $result;
 }

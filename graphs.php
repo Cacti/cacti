@@ -738,7 +738,7 @@ function form_actions() {
 				header("Location: aggregate_graphs.php?header=false&action=edit&tab=details&id=$local_graph_id");
 				exit;
 			} elseif (get_request_var('drp_action') == '8') { // automation
-				cacti_log('automation_graph_action_execute called: ' . $action, true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
+				cacti_log('automation_graph_action_execute called: ' . get_request_var('drp_action'), true, 'AUTM8 TRACE', POLLER_VERBOSITY_MEDIUM);
 
 				/* work on all selected graphs */
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
@@ -883,10 +883,10 @@ function form_actions() {
 				if ($ds_preselected_delete == 'on') {
 	                                $delete_radio_button_1_state = '2';
                                 	$delete_radio_button_2_state = '1';
-				} else { 
+				} else {
 					$delete_radio_button_1_state = '1';
-					$delete_radio_button_2_state = '2';			
-				}                                 
+					$delete_radio_button_2_state = '2';
+				}
 
 				form_radio_button('delete_type', '2', $delete_radio_button_1_state , __('Delete all Data Source(s) referenced by these Graph(s) that are not in use elsewhere.'), '1');
 				print '<br>';
@@ -1331,7 +1331,7 @@ function graph_edit() {
                         	$locked = false;
                         } else {
 	                        $locked = true;
-                        }                        
+                        }
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
 			$locked = false;
@@ -1918,7 +1918,8 @@ function graph_management() {
 	$sql_where = '';
 	if (get_request_var('rfilter') != '') {
 		$sql_where = " WHERE (gtg.title_cache RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR gt.name RLIKE '" . get_request_var('rfilter') . "')";
+			" OR gt.name RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR gl.id = '" . get_request_var('rfilter') . "')";
 	}
 
 	if (get_request_var('host_id') == '-1') {
@@ -1990,8 +1991,8 @@ function graph_management() {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
-	$graph_list = db_fetch_assoc("SELECT gtg.id, gtg.local_graph_id, gtg.height, gtg.width,
-		gtg.title_cache, gt.name, gl.host_id,
+	$graph_list = db_fetch_assoc("SELECT gtg.id, gl.id AS local_graph_id,
+		gtg.height, gtg.width, gtg.title_cache, gt.name, gl.host_id,
 		IF(gl.graph_template_id=0, 0, IF(gl.snmp_query_id=0, 2, 1)) AS graph_source
 		FROM graph_local AS gl
 		LEFT JOIN graph_templates_graph AS gtg

@@ -629,10 +629,10 @@ function profile_edit() {
             selectedList: 1,
             noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
             header: false,
-            multipleRow: true,
-            multipleRowWidth: 90,
+            groupColumns: true,
+            groupColumnsWidth: 90,
             height: 28,
-            minWidth: 400,
+            menuWidth: 400,
 			click: function(event, ui){
 				get_size();
 			}

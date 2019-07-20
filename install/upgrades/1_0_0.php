@@ -279,7 +279,7 @@ function upgrade_to_1_0_0() {
 		`snmp_auth_protocol` varchar(255) NOT NULL,
 		`snmp_priv_password` varchar(255) NOT NULL,
 		`snmp_priv_protocol` varchar(255) NOT NULL,
-		`snmp_engine_id` varchar(64) NOT NULL DEFAULT '80005d750302FFFFFFFFFF',
+		`snmp_engine_id` varchar(64) NOT NULL DEFAULT '',
 		`snmp_port` varchar(255) NOT NULL,
 		`snmp_message_type` tinyint(1) NOT NULL,
 		`notes` text,
@@ -287,6 +287,11 @@ function upgrade_to_1_0_0() {
 		KEY `hostname` (`hostname`))
 		ENGINE=$engine
 		COMMENT='snmp notification receivers';");
+
+	if (!db_column_exists('snmpagent_managers', 'snmp_engine_id', false)) {
+		db_install_execute('ALTER TABLE snmpagent_managers
+			ADD COLUMN `snmp_engine_id` varchar(64) NOT NULL DEFAULT "" AFTER snmp_priv_protocol');
+	}
 
 	if (db_table_exists('plugin_snmpagent_managers_notifications', false)) {
 		db_install_rename_table('plugin_snmpagent_managers_notifications', 'snmpagent_managers_notifications');
@@ -475,23 +480,8 @@ function upgrade_to_1_0_0() {
 		db_install_drop_column('graph_tree_items', 'order_key');
 	}
 
-	/* merge of clog */
-	/* clog user = 19 */
-	/* dlog admin = 18 */
-	$realms = db_fetch_assoc("SELECT * FROM plugin_realms WHERE plugin = 'clog'");
-	if (cacti_sizeof($realms)) {
-		foreach($realms as $r) {
-			if ($r['file'] == 'clog.php') {
-				db_install_execute("UPDATE user_auth_realm SET realm_id=18 WHERE realm_id=" . ($r['id']+100));
-			} elseif ($r['file'] == 'clog_user.php') {
-				db_install_execute("UPDATE user_auth_realm SET realm_id=19 WHERE realm_id=" . ($r['id']+100));
-			}
-		}
-	}
-
-	db_install_execute("DELETE FROM plugin_realms WHERE file LIKE 'clog%'");
-	db_install_execute("DELETE FROM plugin_config WHERE directory='clog'");
-	db_install_execute("DELETE FROM plugin_hooks WHERE name='clog'");
+	/* handle all merged realms, drop plugin contents separately */
+	upgrade_realms();
 
 	snmpagent_cache_install();
 
@@ -511,10 +501,6 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine");
 
 	db_install_drop_table('poller_output_rt');
-
-	db_install_execute("DELETE FROM plugin_realms WHERE file LIKE '%graph_image_rt%'");
-	db_install_execute("DELETE FROM plugin_config WHERE directory='realtime'");
-	db_install_execute("DELETE FROM plugin_hooks WHERE name='realtime'");
 
 	// If we have never install Nectar before, we can simply install
 	if (!cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
@@ -629,13 +615,6 @@ function upgrade_to_1_0_0() {
 	db_install_add_column('host', array('name' => 'snmp_sysName',           'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysContact'));
 	db_install_add_column('host', array('name' => 'snmp_sysLocation',       'type' => 'varchar(300)', 'NULL' => false, 'default' => '',  'after' => 'snmp_sysName'));
 	db_install_add_column('host', array('name' => 'polling_time',           'type' => 'DOUBLE',                        'default' => '0', 'after' => 'avg_time'));
-
-	// Add realms to the admin user if it exists
-	if (cacti_sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
-		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
-		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
-		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
-	}
 
 	if (!db_table_exists('aggregate_graph_templates')) {
 		/* Aggregate Merge Changes */
@@ -840,17 +819,6 @@ function upgrade_to_1_0_0() {
 		db_install_rename_table('plugin_aggregate_graphs', 'aggregate_graphs');
 		db_install_rename_table('plugin_aggregate_graphs_graph_item', 'aggregate_graphs_graph_item');
 		db_install_rename_table('plugin_aggregate_graphs_items', 'aggregate_graphs_items');
-
-		$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='aggregate'");
-		if (!empty($id)) {
-			db_install_execute('UPDATE IGNORE user_auth_realm SET realm_id=5 WHERE realm_id=' . (100 + $id));
-			db_install_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
-		}
-
-		db_install_execute("DELETE FROM plugin_config WHERE directory='aggregate'");
-		db_install_execute("DELETE FROM plugin_realms WHERE plugin='aggregate'");
-		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='aggregate'");
-		db_install_execute("DELETE FROM plugin_hooks WHERE name='aggregate'");
 	}
 
 	/* automation rules */
@@ -1015,17 +983,6 @@ function upgrade_to_1_0_0() {
 			db_install_rename_table($table, str_replace('plugin_autom8', 'automation', $table));
 		}
 	}
-
-	$id = db_fetch_cell("SELECT * FROM plugin_realms WHERE plugin='autom8'");
-	if (!empty($id)) {
-		db_install_execute('UPDATE IGNORE user_auth_realm SET realm_id=23 WHERE realm_id=' . (100 + $id));
-		db_install_execute('DELETE FROM user_auth_realm WHERE realm_id=' . (100 + $id));
-	}
-
-	db_install_execute("DELETE FROM plugin_config WHERE directory='autom8'");
-	db_install_execute("DELETE FROM plugin_realms WHERE plugin='autom8'");
-	db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='autom8'");
-	db_install_execute("DELETE FROM plugin_hooks WHERE name='autom8'");
 
 	db_install_execute("UPDATE IGNORE settings SET name = REPLACE(name, 'autom8', 'automation') WHERE name LIKE 'autom8%'");
 
@@ -1196,19 +1153,10 @@ function upgrade_to_1_0_0() {
 		ENGINE=$engine
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
-	db_install_execute("DELETE FROM plugin_config WHERE directory='discovery'");
-	db_install_execute("DELETE FROM plugin_realms WHERE plugin='discovery'");
-	db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='discovery'");
-	db_install_execute("DELETE FROM plugin_hooks WHERE name='discovery'");
-
 	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')");
 	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host.', 'h.')");
 	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')");
 	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')");
-
-	if (db_fetch_cell('SELECT id FROM user_auth WHERE id=1') == 1) {
-		db_install_execute('INSERT IGNORE INTO user_auth_realm (user_id, realm_id) VALUES (1, 23)');
-	}
 
 	/* stamp out duplicate colors */
 	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals
@@ -1336,14 +1284,6 @@ function upgrade_to_1_0_0() {
 	$data['comment']   = 'vdef items';
 	$data['type'] = $engine;
 	db_table_create('vdef_items', $data);
-
-
-	/* add admin permissions */
-	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
-	if (!empty($userid)) {
-		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
-		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
-	}
 
 	/* fill table VDEF */
 	db_install_execute("REPLACE INTO `vdef` VALUES (1, 'e06ed529238448773038601afb3cf278', 'Maximum');");
@@ -1543,6 +1483,7 @@ function upgrade_to_1_0_0() {
 			db_install_execute('UPDATE external_links SET enabled="" WHERE disabled="on"');
 			db_install_drop_column('external_links', 'disabled');
 		}
+
 		db_install_execute('DELETE FROM external_links WHERE style NOT IN ("TAB", "CONSOLE", "FRONT", "FRONTTOP")');
 
 		db_install_execute('ALTER TABLE external_links
@@ -1550,9 +1491,6 @@ function upgrade_to_1_0_0() {
 			MODIFY COLUMN title VARCHAR(20) NOT NULL default "",
 			MODIFY COLUMN style VARCHAR(10) NOT NULL default ""');
 
-
-		db_install_execute('DELETE FROM superlinks_auth WHERE pageid NOT IN(SELECT id FROM external_links)');
-		db_install_execute('INSERT INTO user_auth_realm (user_id, realm_id) SELECT userid, pageid+10000 FROM superlinks_auth');
 		db_install_drop_table('superlinks_auth');
 	} else {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `external_links` (
@@ -1746,3 +1684,147 @@ function upgrade_to_1_0_0() {
 		}
 	}
 }
+
+function upgrade_realms() {
+	$upgrade_realms = array(
+		array('new_realm' => 101, 'file_pattern' => 'plugins.php'),
+		array('new_realm' => 23,  'file_pattern' => 'discovery.php'),
+		array('new_realm' => 25,  'file_pattern' => 'graph_image_rt.php'),
+		array('new_realm' => 21,  'file_pattern' => 'nectar.php'),
+		array('new_realm' => 22,  'file_pattern' => 'nectar_user.php'),
+		array('new_realm' => 24,  'file_pattern' => 'superlinks.php'),
+		array('new_realm' => 18,  'file_pattern' => 'clog.php'),
+		array('new_realm' => 19,  'file_pattern' => 'clog_user.php')
+	);
+
+	$set_drop_realms = array(
+		array('new_realm' => 5,   'file_pattern' => 'aggregate'),
+		array('new_realm' => 15,  'file_pattern' => 'managers.php'),
+		array('new_realm' => 15,  'file_pattern' => 'rrdcleaner.php'),
+		array('new_realm' => 15,  'file_pattern' => 'settings.php'),
+		array('new_realm' => 15,  'file_pattern' => 'superlinks-mgmt.php'),
+		array('new_realm' => 1,   'file_pattern' => 'domains.php'),
+		array('new_realm' => 1,   'file_pattern' => 'ugroup.php'),
+	);
+
+	$drop_realms = array('settings.php');
+
+	$remove_plugins = array(
+		'aggregate',
+		'autom8',
+		'clog',
+		'discovery',
+		'domains',
+		'dsstats',
+		'nectar',
+		'realtime',
+		'rrdclean',
+		'settings',
+		'snmpagent',
+		'spikekill',
+		'superlinks',
+		'ugroup'
+	);
+
+	// There can be only one of these, so just update if exist
+	foreach($upgrade_realms as $r) {
+		$exists = db_fetch_row('SELECT *
+			FROM plugin_realms
+			WHERE file LIKE "%' . $r['file_pattern'] . '%"');
+
+		if (cacti_sizeof($exists)) {
+			$old_realm = $exists['id'] + 100;
+
+			db_execute_prepared('UPDATE user_auth_realm
+				SET realm_id = ?
+				WHERE realm_id = ?',
+				array($r['new_realm'], $old_realm));
+		}
+	}
+
+	// There are more than one of these so update and drop
+	foreach($set_drop_realms as $r) {
+		$exists = db_fetch_row('SELECT *
+			FROM plugin_realms
+			WHERE file LIKE "%' . $r['file_pattern'] . '%"');
+
+		if (cacti_sizeof($exists)) {
+			$old_realm = $exists['id'] + 100;
+
+			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id)
+				SELECT user_id, "' . $r['new_realm'] . '" AS realm_id
+				FROM user_auth_realm
+				WHERE realm_id = ?',
+				array($old_realm));
+
+			db_execute_prepared('DELETE FROM user_auth_realm
+				WHERE realm_id = ?',
+				array($old_realm));
+		}
+	}
+
+	// Drop realms that have been deprecated
+	foreach($drop_realms as $r) {
+		$exists = db_fetch_row('SELECT *
+			FROM plugin_realms
+			WHERE file LIKE "%' . $r . '%"');
+
+		if ($exists) {
+			$old_realm = $exists['id'] + 100;
+
+			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
+		}
+	}
+
+	// Add realms to the admin user if it exists
+	if (cacti_sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
+		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
+		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
+		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
+		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (23,1)');
+	}
+
+	/* add admin permissions */
+	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
+	if (!empty($userid)) {
+		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
+		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
+	}
+
+	if (db_table_exists('superlinks_auth', false)) {
+		/* drop no longer present superlink pages */
+		db_install_execute('DELETE FROM superlinks_auth
+			WHERE pageid NOT IN (SELECT id FROM superlinks_pages)');
+
+		/* create authorization records for existing pages */
+		db_install_execute('REPLACE INTO user_auth_realm
+			(user_id, realm_id)
+			SELECT userid, pageid+10000
+			FROM superlinks_auth');
+
+		/* create authorization records for viewing the external links tab */
+		db_install_execute('REPLACE INTO user_auth_realm
+			(user_id, realm_id)
+			SELECT userid, "24" AS realm_id
+			FROM superlinks_auth');
+
+		/* Handle special userid=0 case in Superlinks */
+		db_install_execute('REPLACE INTO user_auth_realm (user_id, realm_id)
+			SELECT user_id, pageid
+			FROM (
+				SELECT ua.id AS user_id, sa.pageid+10000 AS pageid
+				FROM user_auth AS ua
+				JOIN superlinks_auth AS sa
+				WHERE sa.userid=0
+			) AS rs');
+	}
+
+	foreach($remove_plugins as $p) {
+		/* remove plugin */
+		db_install_execute("DELETE FROM plugin_config WHERE directory='$p'");
+		db_install_execute("DELETE FROM plugin_realms WHERE plugin='$p'");
+		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='$p'");
+		db_install_execute("DELETE FROM plugin_hooks WHERE name='$p'");
+	}
+}
+

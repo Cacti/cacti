@@ -13,7 +13,7 @@
 }(function ($, undefined) {
 	"use strict";
 /*!
- * jsTree 3.3.7
+ * jsTree 3.3.8
  * http://jstree.com/
  *
  * Copyright (c) 2014 Ivan Bozhanov (http://vakata.com)
@@ -54,7 +54,7 @@
 		 * specifies the jstree version in use
 		 * @name $.jstree.version
 		 */
-		version : '3.3.7',
+		version : '3.3.8',
 		/**
 		 * holds all the default options used when creating new instances
 		 * @name $.jstree.defaults
@@ -654,7 +654,7 @@
 		},
 		_kbevent_to_func : function (e) {
 			var keys = {
-				8: "Backspace", 9: "Tab", 13: "Return", 19: "Pause", 27: "Esc",
+				8: "Backspace", 9: "Tab", 13: "Enter", 19: "Pause", 27: "Esc",
 				32: "Space", 33: "PageUp", 34: "PageDown", 35: "End", 36: "Home",
 				37: "Left", 38: "Up", 39: "Right", 40: "Down", 44: "Print", 45: "Insert",
 				46: "Delete", 96: "Numpad0", 97: "Numpad1", 98: "Numpad2", 99 : "Numpad3",
@@ -889,7 +889,7 @@
 					}, this))
 				.on('blur.jstree', '.jstree-anchor', $.proxy(function (e) {
 						this._data.core.focused = null;
-						$(e.currentTarget).filter('.jstree-hovered').mouseleave();
+						$(e.currentTarget).filter('.jstree-hovered').trigger('mouseleave');
 						this.element.attr('tabindex', '0');
 					}, this))
 				.on('focus.jstree', '.jstree-anchor', $.proxy(function (e) {
@@ -897,8 +897,8 @@
 						if(tmp && tmp.id) {
 							this._data.core.focused = tmp.id;
 						}
-						this.element.find('.jstree-hovered').not(e.currentTarget).mouseleave();
-						$(e.currentTarget).mouseenter();
+						this.element.find('.jstree-hovered').not(e.currentTarget).trigger('mouseleave');
+						$(e.currentTarget).trigger('mouseenter');
 						this.element.attr('tabindex', '-1');
 					}, this))
 				.on('focus.jstree', $.proxy(function () {
@@ -1023,7 +1023,7 @@
 			if(obj && obj.id) {
 				obj = obj.id;
 			}
-			if (obj instanceof jQuery && obj.length && obj[0].id) {
+			if (obj instanceof $ && obj.length && obj[0].id) {
 				obj = obj[0].id;
 			}
 			var dom;
@@ -1605,6 +1605,7 @@
 					't_cnt'	: this._cnt,
 					'sel'	: this._data.core.selected
 				},
+				inst = this,
 				func = function (data, undefined) {
 					if(data.data) { data = data.data; }
 					var dat = data.dat,
@@ -1823,8 +1824,10 @@
 						// 2) populate children (foreach)
 						for(i = 0, j = dat.length; i < j; i++) {
 							if (!m[dat[i].parent.toString()]) {
-								this._data.core.last_error = { 'error' : 'parse', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Node with invalid parent', 'data' : JSON.stringify({ 'id' : dat[i].id.toString(), 'parent' : dat[i].parent.toString() }) };
-								this.settings.core.error.call(this, this._data.core.last_error);
+								if (typeof inst !== "undefined") {
+									inst._data.core.last_error = { 'error' : 'parse', 'plugin' : 'core', 'id' : 'core_07', 'reason' : 'Node with invalid parent', 'data' : JSON.stringify({ 'id' : dat[i].id.toString(), 'parent' : dat[i].parent.toString() }) };
+									inst.settings.core.error.call(inst, inst._data.core.last_error);
+								}
 								continue;
 							}
 
@@ -2291,7 +2294,7 @@
 						tmp.children_d = tmp.children_d.concat(e.children_d);
 					}
 				}
-				tmp.children_d = tmp.children_d.concat(tmp.children);
+				tmp.children_d = tmp.children.concat(tmp.children_d);
 			}
 			if(d && d.children && d.children === true) {
 				tmp.state.loaded = false;
@@ -4022,6 +4025,10 @@
 			var tmp = chk.match(/^move_node|copy_node|create_node$/i) ? par : obj,
 				chc = this.settings.core.check_callback;
 			if(chk === "move_node" || chk === "copy_node") {
+				if((!more || !more.is_multi) && (chk === "move_node" && $.inArray(obj.id, par.children) === pos)) {
+					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_08', 'reason' : 'Moving node to its current position', 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
+					return false;
+				}
 				if((!more || !more.is_multi) && (obj.id === par.id || (chk === "move_node" && $.inArray(obj.id, par.children) === pos) || $.inArray(par.id, obj.children_d) !== -1)) {
 					this._data.core.last_error = { 'error' : 'check', 'plugin' : 'core', 'id' : 'core_01', 'reason' : 'Moving parent inside child', 'data' : JSON.stringify({ 'chk' : chk, 'pos' : pos, 'obj' : obj && obj.id ? obj.id : false, 'par' : par && par.id ? par.id : false }) };
 					return false;
@@ -5234,7 +5241,7 @@
 							if(s.indexOf('down') !== -1) {
 								var selectedIds = this._cascade_new_checked_state(obj.id, false);
 
-								cur = cur.filter(function(id) {
+								cur = $.vakata.array_filter(cur, function(id) {
 									return allIds.indexOf(id) === -1 || selectedIds.indexOf(id) > -1;
 								});
 							}
@@ -5254,7 +5261,7 @@
 									}
 								}
 
-								cur = cur.filter(function(id) {
+								cur = $.vakata.array_filter(cur, function(id) {
 									return obj.parents.indexOf(id) === -1;
 								});
 							}
@@ -5540,7 +5547,7 @@
 		};
 		/**
 		 * enable a node's checkbox
-		 * @name disable_checkbox(obj)
+		 * @name enable_checkbox(obj)
 		 * @param {mixed} obj an array can be used too
 		 * @trigger enable_checkbox.jstree
 		 * @plugin checkbox
@@ -5680,7 +5687,7 @@
 			var t = self.settings.checkbox.tie_selection;
 			var node = self._model.data[id];
 
-			return node.children_d.filter(function(_id) {
+			return $.vakata.array_filter(node.children_d, function(_id) {
 				return self._model.data[_id].state[ t ? 'selected' : 'checked' ];
 			});
 		};
@@ -5839,7 +5846,7 @@
 		 */
 		this.get_checked = function (full) {
 			if(this.settings.checkbox.tie_selection) { return this.get_selected(full); }
-			return full ? $.map(this._data.checkbox.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.checkbox.selected;
+			return full ? $.map(this._data.checkbox.selected, $.proxy(function (i) { return this.get_node(i); }, this)) : this._data.checkbox.selected.slice();
 		};
 		/**
 		 * get an array of all top level checked nodes (ignoring children of checked nodes) (if tie_selection is on in the settings this function will return the same as get_top_selected)

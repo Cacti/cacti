@@ -638,7 +638,7 @@ while ($poller_runs_completed < $poller_runs) {
 		}
 
 		if ($poller_type == '1') {
-			$max_threads = 'N/A';
+			$max_threads = '0';
 		}
 
 		$rrds_processed = 0;

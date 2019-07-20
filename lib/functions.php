@@ -31,7 +31,7 @@
      the original string */
 function title_trim($text, $max_length) {
 	if (strlen($text) > $max_length) {
-		return substr($text, 0, $max_length) . '...';
+		return mb_substr($text, 0, $max_length) . '...';
 	} else {
 		return $text;
 	}
@@ -331,6 +331,8 @@ function read_user_setting($config_name, $default = false, $force = false, $user
    @arg $value       - the values to be saved
    @returns          - void */
 function set_config_option($config_name, $value) {
+	global $config;
+
 	db_execute_prepared('REPLACE INTO settings
 		SET name = ?, value = ?',
 		array($config_name, $value));
@@ -1021,7 +1023,7 @@ function cacti_log($string, $output = false, $environ = 'CMDPHP', $level = '') {
 		 $filter       - (char) the filtering expression to search for
 		 $page_nr      - (int) the page we want to show rows for
 		 $total_rows   - (int) the total number of rows in the logfile */
-function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', $page_nr = 1, &$total_rows) {
+function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '', &$page_nr = 1, &$total_rows) {
 	if (!file_exists($file_name)) {
 		touch($file_name);
 		return array();
@@ -1042,6 +1044,12 @@ function tail_file($file_name, $number_of_lines, $message_type = -1, $filter = '
 		if (determine_display_log_entry($message_type, $line, $filter)) {
 			++$total_rows;
 		}
+	}
+
+	// Reset the page count to 1 if the number of lines is exceeded
+	if (($page_nr - 1) * $number_of_lines > $total_rows) {
+		set_request_var('page', 1);
+		$page_nr = 1;
 	}
 
 	/* rewind file pointer, to start all over */
@@ -1498,7 +1506,7 @@ function prepare_validate_result(&$result) {
  *  @arg $string - (char) the string to be evaluated
  *  @returns - either the numeric value or false if not numeric
 */
-function strip_alpha(&$string) {
+function strip_alpha($string) {
 	/* strip all non numeric data */
 	$string = trim(preg_replace('/[^0-9,.+-]/', '', $string));
 
@@ -5271,11 +5279,18 @@ function get_installed_rrdtool_version() {
 		$shell = shell_exec(cacti_escapeshellcmd(read_config_option('path_rrdtool')) . ' -v 2>&1');
 	}
 
-	if (preg_match('/^RRDtool ([0-9.]+)$/', $shell, $matches)) {
-		return $matches[1];
+	$version = false;
+	if (preg_match('/^RRDtool ([0-9.]+) /', $shell, $matches)) {
+
+		global $rrdtool_versions;
+		foreach ($rrdtool_versions as $rrdtool_version => $rrdtool_version_text) {
+			if (cacti_version_compare($rrdtool_version, $matches[1], '<=')) {
+				$version = $rrdtool_version;
+			}
+		}
 	}
 
-	return false;
+	return $version;
 }
 
 function get_md5_hash($path) {
@@ -5318,6 +5333,10 @@ function get_md5_include_css($path) {
 }
 
 function is_resource_writable($path) {
+	if (empty($path)) {
+		return false;
+	}
+
 	if ($path{strlen($path)-1}=='/') {
 		return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
 	}

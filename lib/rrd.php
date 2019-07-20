@@ -1307,12 +1307,14 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 		gti.cdef_id, gti.vdef_id, gti.text_format, gti.value, gti.hard_return,
 		gti.consolidation_function_id, gti.graph_type_id, gtgp.gprint_text,
 		colors.hex, gti.alpha, gti.line_width, gti.dashes, gti.shift,
-		gti.dash_offset, gti.textalign,
+		gti.dash_offset, gti.textalign, dl.snmp_query_id, dl.snmp_index,
 		dtr.id AS data_template_rrd_id, dtr.local_data_id,
 		dtr.rrd_minimum, dtr.rrd_maximum, dtr.data_source_name, dtr.local_data_template_rrd_id
 		FROM graph_templates_item AS gti
 		LEFT JOIN data_template_rrd AS dtr
 		ON gti.task_item_id=dtr.id
+		LEFT JOIN data_local AS dl
+		ON dl.id = dtr.local_data_id
 		LEFT JOIN colors
 		ON gti.color_id=colors.id
 		LEFT JOIN graph_templates_gprint AS gtgp
@@ -2418,12 +2420,12 @@ function rrd_substitute_host_query_data($txt_graph_item, $graph, $graph_item) {
 	$txt_graph_item = substitute_host_data($txt_graph_item, '|', '|', $host_id);
 
 	/* replace query variables in graph elements */
-	if (strpos($txt_graph_item, '|query_') !== false) {
-		$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $graph['host_id'], $graph['snmp_query_id'], $graph['snmp_index']);
+	if (strpos($txt_graph_item, '|query_') !== false && isset($graph_item['snmp_query_id'])) {
+		$txt_graph_item = substitute_snmp_query_data($txt_graph_item, $host_id, $graph_item['snmp_query_id'], $graph_item['snmp_index']);
 	}
 
 	/* replace query variables in graph elements */
-	if (strpos($txt_graph_item, '|input_') !== false) {
+	if (strpos($txt_graph_item, '|input_') !== false && isset($graph_item['local_data_id'])) {
 		return substitute_data_input_data($txt_graph_item, $graph, $graph_item['local_data_id']);
 	} else {
 		return $txt_graph_item;

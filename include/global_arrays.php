@@ -117,6 +117,8 @@ $cacti_version_codes = array(
 	'1.2.2'  => '0101',
 	'1.2.3'  => '0102',
 	'1.2.4'  => '0102',
+	'1.2.5'  => '0102',
+	'1.2.6'  => '0102',
 	'1.3.0'  => '0102',
 );
 
@@ -249,6 +251,9 @@ $messages = array(
 		'level' => MESSAGE_LEVEL_INFO),
 	43 => array(
 		'message' => __('Save Failed.  Minimum Values must be less than Maximum Value.'),
+		'level' => MESSAGE_LEVEL_ERROR),
+	44 => array(
+		'message' => __('Unable to change password.  User account not found.'),
 		'level' => MESSAGE_LEVEL_ERROR),
 	'input_save_wo_ds' => array(
 		'message' => __('Data Input Saved.  You must update the Data Templates referencing this Data Input Method before creating Graphs or Data Sources.'),

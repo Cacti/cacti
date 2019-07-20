@@ -263,9 +263,9 @@ function api_tree_branch_exists($tree_id, $parent, $title) {
 /* api_tree_site_exists - given a tree, parent branch, and a host_id, will check host on that branch
  * @arg $tree_id - The tree_id to search
  * @arg $parent - The parent leaf_id to search
- * @arg $sist_id - The host_id to search for
+ * @arg $site_id - The host_id to search for
  * @returns - the id of the leaf if it exists */
-function api_tree_site_exists($tree_id, $parent, $host_id) {
+function api_tree_site_exists($tree_id, $parent, $site_id) {
 	$id = db_fetch_cell_prepared('SELECT id
 		FROM graph_tree_items
 		WHERE graph_tree_id = ?

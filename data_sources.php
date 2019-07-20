@@ -1451,7 +1451,8 @@ function ds() {
 	if (get_request_var('rfilter') != '') {
 		$sql_where1 = "WHERE (dtd.name_cache RLIKE '" . get_request_var('rfilter') . "'" .
 			" OR dtd.local_data_id RLIKE '" . get_request_var('rfilter') . "'" .
-			" OR dt.name RLIKE '" . get_request_var('rfilter') . "')";
+			" OR dt.name RLIKE '" . get_request_var('rfilter') . "'" .
+			" OR dl.id = '" . get_request_var('rfilter') . "')";
 	} else {
 		$sql_where1 = '';
 	}

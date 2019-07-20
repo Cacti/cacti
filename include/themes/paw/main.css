@@ -40,6 +40,10 @@ th {
 	white-space: nowrap;
 	height: 20px;
 	line-height: 20px;
+	user-select: none;
+	-ms-user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
 }
 
 img {
@@ -1341,12 +1345,15 @@ th.sortable {
 
 .tableHeader th {
 	color: white;
-	cursor: pointer;
 	vertical-align: middle;
 	text-align: left;
 	font-size: 11px;
 	font-weight: bold;
 	padding: 2px;
+}
+
+.tableHeader th.sortable {
+	cursor: pointer !important;
 }
 
 .tableHeader th div {
@@ -2093,14 +2100,38 @@ tr#realtime td:first-child {
 	background: transparent;
 }
 
-.ui-multiselect {
-	padding: 0.4em 1em;
+.ui-multiselect-checkboxes span {
+	font-size: 12px;
+	color: black;
+}
+
+.ui-multiselect-header {
+	background-color: #E5E5E5;
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
 	text-align: left;
 	line-height: initial;
 }
 
-.ui-multiselect .ui-icon {
-	margin-top: 0px;
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-widget {

@@ -339,6 +339,10 @@ function substitute_snmp_query_data($string, $host_id, $snmp_query_id, $snmp_ind
 				}
 
 				$string = stri_replace('|query_' . $data['field_name'] . '|', $data['field_value'], $string);
+
+				if (strpos($string, 'query_') === false) {
+					break;
+				}
 			}
 		}
 	}

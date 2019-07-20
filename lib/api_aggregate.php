@@ -321,7 +321,7 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 						ORDER BY sequence ASC
 						LIMIT 1');
 				}
-			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA || 
+			} elseif ($graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_AREA ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE1 ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE2 ||
 				$graph_item['graph_type_id'] == GRAPH_ITEM_TYPE_LINE3 ||
@@ -529,7 +529,6 @@ function aggregate_graph_items_save($items, $table) {
 	}
 }
 
-
 /**
  * Validate extra graph parameters posted from graph edit form.
  * You can check for validation errors with cacti function is_error_message
@@ -539,38 +538,52 @@ function aggregate_graph_items_save($items, $table) {
  */
 function aggregate_validate_graph_params($posted, $has_override = false) {
 	$check_post_params = array(
-		'image_format_id'     => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
-		'height'              => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
-		'width'               => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
-		'upper_limit'         => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
-		'lower_limit'         => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
-		'vertical_label'      => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'slope_mode'          => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale'          => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale_opts'     => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
-		'auto_scale_log'      => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'scale_log_units'     => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_scale_rigid'    => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'auto_padding'        => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'base_value'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'),
-		'unit_value'          => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
-		'unit_exponent_value' => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^-?[0-9]+$')
+		'alt_y_grid'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_padding'         => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale'           => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale_log'       => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'auto_scale_opts'      => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
+		'auto_scale_rigid'     => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'base_value'           => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^[0-9]+$'),
+		'dynamic_labels'       => array('type' => 'str',  'allow_empty' => true,  'default' => 0,  'regex' => ''),
+		'force_rules_legend'   => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'grouping'             => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'height'               => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$'),
+		'image_format_id'      => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => ''),
+		'left_axis_formatter'  => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'legend_direction'     => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'legend_position'      => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'lower_limit'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
+		'no_gridfit'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis_format'    => array('type' => 'int',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'),
+		'right_axis_formatter' => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'right_axis_label'     => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'scale_log_units'      => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'slope_mode'           => array('type' => 'bool', 'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'tab_width'            => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => '^[0-9]+$'),
+		'unit_exponent_value'  => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'unit_length'          => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'unit_value'           => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'upper_limit'          => array('type' => 'int',  'allow_empty' => true,  'default' => 0,  'regex' => '^(-?([0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+)([eE][+\-]?[0-9]+)?)|U$'),
+		'vertical_label'       => array('type' => 'str',  'allow_empty' => true,  'default' => '', 'regex' => ''),
+		'width'                => array('type' => 'int',  'allow_empty' => false, 'default' => 0,  'regex' => '^[0-9]+$')
 	);
 
 	$params_new = array();
 
 	/* validate posted form fields */
 	foreach ($check_post_params as $field => $defs) {
-		if ($has_override && !isset($posted['t_'.$field])) {
+		if ($has_override && !isset($posted['t_' . $field])) {
 			/* override checkbox off - use default value */
-			$params_new['t_'.$field] = '';
+			$params_new['t_' . $field] = '';
 			$params_new[$field] = $defs['default'];
 			continue;
 		}
 
 		if ($has_override) {
-			/* override checkbox was on */
-			$params_new['t_'.$field] = 'on';
+			/* overwride checkbox was on */
+			$params_new['t_' . $field] = 'on';
 		}
 
 		/* validate value */
@@ -1465,10 +1478,10 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			# this is invalid! STOP
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . "</p>";
-			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . html_escape($graph_template['name']) . "</li>\n";
+				print '<li>' . html_escape($graph_template['name']) . "</li>";
 			}
 			print '</ul></td></tr>';
 
@@ -1484,7 +1497,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			/* selected graphs do not use templates */
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
-			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>";
 			print '</td></tr>';
 
 			?>
@@ -1594,7 +1607,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', '', '3', 'center', '');
 
 	# print column header
-	print "<tr class='tableHeader'>\n";
+	print "<tr class='tableHeader'>";
 	DrawMatrixHeaderItem(__('Graph Item'), '', 1);
 	DrawMatrixHeaderItem(__('Data Source'), '',1);
 	DrawMatrixHeaderItem(__('Graph Item Type'), '', 1);
@@ -1690,49 +1703,49 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				//print '<a class="pic" href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
 				print '<a title="' . __esc('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i+1)) . '</a>';
 			}
-			print "</td>\n";
+			print "</td>";
 
 			if ($item['hard_return'] == 'on') {
 				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
-			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>";
 
 			/* column 'Graph Item Type' */
-			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>\n";
+			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>";
 
 			/* column 'CF Type' */
-			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>\n";
+			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>";
 
 			/* column 'Item Color' */
-			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>\n";
-			print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
+			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>";
+			print "<td style='$this_row_style'>" . $item['hex'] . "</td>";
 
 			/* column 'Color Template' */
 			print '<td>';
 			if (!empty($item['hex'])) {
 				print "<select id='agg_color_" . $item['id'] ."' name='agg_color_" . $item['id'] ."'>";
-				print "<option value='0' selected>None</option>\n";
+				print "<option value='0' selected>None</option>";
 				html_create_list($color_templates, "name", "color_template_id", ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template']:''));
-				print "</select>\n";
+				print "</select>";
 			}
 			print '</td>';
 
 			/* column "Skip" */
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
 				print '</td>';
 
 				/* column 'Total' */
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_total_" . $item['id'] . "'>";
 				print '</td>';
 			} else {
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked':'') . '></td>';
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '>';
-				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'></td>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'><label class='formCheckboxLabel' for='agg_total_" . ($item['id']) . "'></label></td>";
 			}
 
 			print '</tr>';
@@ -1792,7 +1805,7 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 				'name' => 't_' . $field_name,
 				'friendly_name' => __('Override this Value'). '<br>',
 				'value' => (cacti_sizeof($aggregate_templates_graph) ? $aggregate_templates_graph['t_' . $field_name] : ''),
-				'on_change' => 'toggleFieldEnabled(this);'
+				'on_change' => 'toggleFieldEnabled(this.id);'
 			);
 		} else {
 			$form_array += array($field_name => $struct_graph[$field_name]);
@@ -1819,21 +1832,36 @@ function draw_aggregate_template_graph_config($aggregate_template_id, $graph_tem
 	// disable all items with sub-checkboxes except
 	// where sub-checkbox checked
 	function setFieldsDisabled() {
-		$('tr[id*="row_"]').each(function() {
-			fieldName = this.id.substr(4);
-			cbName = 't_'+fieldName;
-			if ($('#'+cbName).size() > 0) {
-				$('#'+fieldName).prop('disabled', !$('#'+cbName).is(':checked'));
+		$('input[id^="t_"]').each(function() {
+			if (!$(this).is(':checked')) {
+				var fieldId = $(this).attr('id').substr(2);
+
+				$('#'+fieldId).prop('disabled', true);
+				$('#'+fieldId).addClass('ui-state-disabled');
+
+				if ($('#'+fieldId).selectmenu('instance')) {
+					$('#'+fieldId).selectmenu('disable');
+				}
 			}
 		});
 	}
 
 	// enable or disable form field based on state of corresponding checkbox
-	function toggleFieldEnabled(cb) {
-		prefix = 't_';
-		if (cb.name.substr(0,prefix.length) == prefix) {
-			fieldName = cb.name.substr(prefix.length);
-			$('#'+fieldName).prop('disabled', !cb.checked);
+	function toggleFieldEnabled(toggleFieldId) {
+		fieldId  = toggleFieldId.substr(2);
+
+		if ($('#'+fieldId).hasClass('ui-state-disabled')) {
+			$('#'+fieldId).prop('disabled', false).removeClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('enable');
+			}
+		} else {
+			$('#'+fieldId).prop('disabled', true).addClass('ui-state-disabled');
+
+			if ($('#'+fieldId).selectmenu('instance')) {
+				$('#'+fieldId).selectmenu('disable');
+			}
 		}
 	}
 

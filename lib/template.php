@@ -1007,7 +1007,25 @@ function create_complete_graph_from_template($graph_template_id, $host_id, $snmp
 
 	if (!graph_template_whitelist_check($graph_template_id)) {
 		raise_message(10);
+		return false;
+	}
 
+	/* don't create a graph for a bad template */
+	if (empty($graph_template_id)) {
+		raise_message('bad_template', __('Attempting to Create Graph from Non-Template'), MESSAGE_LEVEL_ERROR);
+		cacti_log('Attempting to Create Graph from Non-Template', false, 'AUTOM8');
+		return false;
+	}
+
+	/* don't create a graph from a remove template */
+	$gt = db_fetch_cell_prepared('SELECT id
+		FROM graph_templates
+		WHERE id = ?',
+		array($graph_template_id));
+
+	if (empty($gt)) {
+		raise_message('bad_template', __('Attempting to Create Graph from Removed Graph Template'), MESSAGE_LEVEL_ERROR);
+		cacti_log('Attempting to Create Graph from Removed Graph Template ' . $graph_template_id, false, 'AUTOM8');
 		return false;
 	}
 
@@ -1648,7 +1666,7 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_template_rrd AS dtr
 			INNER JOIN snmp_query_graph_rrd AS sqgr
-			ON sqgr.data_template_id=dtr.data_template_id
+			ON sqgr.data_template_id = dtr.data_template_id
 			WHERE dtr.data_template_id = ?
 			AND dtr.local_data_id = 0',
 			array($data_template['id']));
@@ -1690,15 +1708,15 @@ function data_source_exists($graph_template_id, $host_id, &$data_template, &$snm
 			GROUP_CONCAT(DISTINCT data_source_name ORDER BY data_source_name) AS data_source_names
 			FROM data_local AS dl
 			INNER JOIN data_template_data AS dtd
-			ON dl.id=dtd.local_data_id
+			ON dl.id = dtd.local_data_id
 			INNER JOIN data_template_rrd AS dtr
-			ON dtd.local_data_id=dtr.local_data_id
+			ON dtd.local_data_id = dtr.local_data_id
 			INNER JOIN data_input_fields AS dif
-			ON dif.data_input_id=dtd.data_input_id
+			ON dif.data_input_id = dtd.data_input_id
 			INNER JOIN snmp_query_graph_rrd AS sqgr
-			ON sqgr.data_template_id=dtd.data_template_id
+			ON sqgr.data_template_id = dtd.data_template_id
 			WHERE input_output = 'in'
-			AND type_code='output_type'
+			AND type_code = 'output_type'
 			AND dl.host_id = ?
 			AND dl.data_template_id = ?
 			AND dl.snmp_query_id = ?

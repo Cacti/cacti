@@ -63,6 +63,9 @@ if (isset($_REQUEST['language']) && isset($lang2locale[$_REQUEST['language']])) 
 	$user_locale = apply_locale(read_user_i18n_setting('user_language'));
 }
 
+/* allow RRDtool to display i18n */
+setlocale(LC_CTYPE, str_replace('-', '_', $user_locale) . '.UTF-8');
+
 if ($user_locale !== false && $user_locale !== '') {
 	$_SESSION['sess_user_language'] = $user_locale;
 }
@@ -116,7 +119,6 @@ if ($cacti_locale != '') {
 
 /* use fallback procedure if requested language is not available */
 if (file_exists($path2catalogue)) {
-	$cacti_textdomains['cacti']['path2locales']   = $config['base_path'] . '/locales';
 	$cacti_textdomains['cacti']['path2catalogue'] = $path2catalogue;
 } else {
 	load_fallback_procedure();
@@ -128,7 +130,7 @@ $plugins = db_fetch_assoc('SELECT `directory`
 	FROM `plugin_config`
 	ORDER BY id');
 
-if ($plugins && cacti_sizeof($plugins) > 0) {
+if ($plugins && cacti_sizeof($plugins)) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 
@@ -139,7 +141,6 @@ if ($plugins && cacti_sizeof($plugins) > 0) {
 		}
 
 		if (file_exists($path2catalogue)) {
-			$cacti_textdomains[$plugin]['path2locales'] = $config['base_path'] . '/plugins/' . $plugin . '/locales';
 			$cacti_textdomains[$plugin]['path2catalogue'] = $path2catalogue;
 		}
 	}
@@ -445,7 +446,7 @@ function load_i18n_fallback_wrappers() {
 
 	function __() {
 		global $l10n;
-	
+
 		$args = func_get_args();
 		$num  = func_num_args();
 
@@ -649,7 +650,7 @@ function number_format_i18n($number, $decimals = 0, $baseu = 1024) {
 	if (function_exists('numfmt_create')) {
 		$fmt_key = $cacti_locale . '_'. $country;
 		$fmt = numfmt_create($fmt_key, NumberFormatter::DECIMAL);
-		if ($fmt !== FALSE) {
+		if ($fmt !== false && $fmt !== null) {
 			numfmt_set_attribute($fmt, NumberFormatter::MAX_FRACTION_DIGITS, $decimals);
 
 			return numfmt_format($fmt, $number);

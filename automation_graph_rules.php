@@ -460,8 +460,6 @@ function automation_change_query_type() {
 			SET graph_type_id = ?
 			WHERE id = ?',
 			array($graph_type, $id));
-
-		raise_message(1);
 	} elseif (isset_request_var('graph_type_id') && $id > 0) {
 		$snmp_query_id = get_filter_request_var('graph_type_id');
 		$name = get_nfilter_request_var('name');
@@ -470,8 +468,6 @@ function automation_change_query_type() {
 			SET graph_type_id = ?, name = ?
 			WHERE id = ?',
 			array($snmp_query_id, $name, $id));
-
-		raise_message(1);
 	}
 }
 
@@ -591,7 +587,7 @@ function automation_graph_rules_edit() {
 	}
 
 	if ($_SESSION['automation_graph_rules_show_rule']) {
-		form_start('automation_graph_rules.php', 'automation_graph_rules');
+		form_start('automation_graph_rules.php', 'chk');
 
 		html_start_box($header_label, '100%', true, '3', 'center', '');
 

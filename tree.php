@@ -76,11 +76,6 @@ if (get_request_var('action') != '') {
 			'options' => array('options' => array('regexp' => '/([_\-a-z:0-9#]+)/')),
 			'pageset' => true,
 			'default' => ''
-			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
 			)
 	);
 
@@ -700,12 +695,6 @@ function tree_edit() {
 	get_filter_request_var('type');
 	/* ==================================================== */
 
-	/* clean up search string */
-	if (isset_request_var('filter')) {
-		set_request_var('filter', sanitize_search_string(get_request_var('filter')));
-	}
-
-	load_current_session_value('filter', 'sess_tree_edit_filter', '');
 	load_current_session_value('type', 'sess_tree_edit_type', '0');
 
 	if (!isempty_request_var('id')) {
@@ -918,6 +907,7 @@ function tree_edit() {
 		var siteMeTimer;
 		var hostSortInfo   = {};
 		var branchSortInfo = {};
+		var selectedItem   = {};
 
 		function createNode() {
 			var ref = $('#ctree').jstree(true);
@@ -936,7 +926,9 @@ function tree_edit() {
 		}
 
 		function getGraphData() {
-			$.get('tree.php?action=graphs&filter='+$('#grfilter').val())
+			$.get('tree.php?action=graphs&filter='+$('#grfilter').val()
+				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:'')
+				+ '&host_id=' + (selectedItem.host_id ? selectedItem.host_id:''))
 				.done(function(data) {
 					$('#graphs').jstree('destroy');
 					$('#graphs').html(data);
@@ -948,7 +940,8 @@ function tree_edit() {
 		}
 
 		function getHostData() {
-			$.get('tree.php?action=hosts&filter='+$('#hfilter').val())
+			$.get('tree.php?action=hosts&filter='+$('#hfilter').val()
+				+ '&site_id=' + (selectedItem.site_id ? selectedItem.site_id:''))
 				.done(function(data) {
 					$('#hosts').jstree('destroy');
 					$('#hosts').html(data);
@@ -1102,13 +1095,13 @@ function tree_edit() {
 
 			function switchDisplay() {
 				var selected = $('#element').prop('selectedIndex');
-				var mainWidth = parseInt($('#main').outerWidth());
-				var treeWidth = parseInt($('.treeTable').outerWidth());
+				var windowWidth = parseInt($(window).outerWidth());
+				var clientWidth = parseInt($(document).width());
 
 				if (selected == 0) {
-					if (mainWidth != treeWidth && treeWidth > 0) {
+					if (clientWidth > windowWidth) {
 						$('#element').prop('selectedIndex', 1);
-						if (typeof $('#element').selectmenu() === 'object') {
+						if ($('#element').selectmenu('instance')) {
 							$('#element').selectmenu('refresh');
 						}
 						selected = $('#element').prop('selectedIndex');
@@ -1338,11 +1331,32 @@ function tree_edit() {
 						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
+				.on('hover_node.jstree', function(e, data) {
+					var myset = {};
+					myset.selected = [ data.node.id ];
+
+					if (data.node.id.includes('thost')) {
+						hostsDropSet = myset;
+					} else if (data.node.id.includes('tgraph')) {
+						graphsDropSet = myset;
+					}
+				})
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
 					} else {
 						hostsDropSet  = data;
+					}
+				})
+				.on('activate_node.jstree', function(e, data) {
+					if (type == 'sites') {
+						selectedItem.site_id = (data.node.id).split(':')[1];
+						selectedItem.host_id = '';
+						getHostData();
+						getGraphData();
+					}else if(type == 'hosts'){
+						selectedItem.host_id = (data.node.id).split(':')[1];
+						getGraphData();
 					}
 				})
 				.on('deselect_node.jstree', function(e,data) {
@@ -1726,10 +1740,10 @@ function tree_edit() {
 
 function display_sites() {
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE name LIKE '%" . get_request_var('filter') . "%'
-			OR city LIKE '%" . get_request_var('filter') . "%'
-			OR state LIKE '%" . get_request_var('filter') . "%'
-			OR country LIKE '%" . get_request_var('filter') . "%'";
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR city LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR state LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR country LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -1744,10 +1758,14 @@ function display_sites() {
 }
 
 function display_hosts() {
+	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
-		$sql_where = "h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%'";
-	} else {
-		$sql_where = '';
+		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+	}
+
+	if (get_filter_request_var('site_id') > 0) {
+		$sql_where .= ($sql_where != '' ? ' AND ':'') . 'h.site_id = ' . get_filter_request_var('site_id');
 	}
 
 	$hosts = get_allowed_devices($sql_where, 'description', '20');
@@ -1760,10 +1778,20 @@ function display_hosts() {
 }
 
 function display_graphs() {
+	$sql_where = '';
+
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (title_cache LIKE '%" . get_request_var('filter') . "%' OR gt.name LIKE '%" . get_request_var('filter') . "%') AND local_graph_id>0";
+		$sql_where .= 'WHERE (title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ') AND local_graph_id > 0';
 	} else {
-		$sql_where = 'WHERE local_graph_id>0';
+		$sql_where .= 'WHERE local_graph_id > 0';
+	}
+
+	if (get_filter_request_var('site_id') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ': 'WHERE ') . 'h.site_id = ' . get_request_var('site_id');
+	}
+
+	if (get_request_var('host_id') != '') {
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . 'gl.host_id = ' . get_request_var('host_id');
 	}
 
 	$graphs = db_fetch_assoc("SELECT
@@ -1773,6 +1801,10 @@ function display_graphs() {
 		FROM graph_templates_graph AS gtg
 		LEFT JOIN graph_templates AS gt
 		ON gt.id=gtg.graph_template_id
+		LEFT JOIN graph_local AS gl
+		ON gtg.local_graph_id = gl.id
+		LEFT JOIN host as h
+		ON gl.host_id = h.id
 		$sql_where
 		ORDER BY title_cache
 		LIMIT 20");
@@ -1799,12 +1831,6 @@ function tree() {
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
-			),
-		'filter' => array(
-			'filter' => FILTER_CALLBACK,
-			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1937,7 +1963,7 @@ function tree() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (t.name LIKE '%" . get_request_var('filter') . "%' OR ti.title LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (t.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ti.title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}

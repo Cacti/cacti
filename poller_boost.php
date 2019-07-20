@@ -100,9 +100,7 @@ boost_memory_limit();
 if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 	/* turn on the system level updates as that is what dictates "on/off" */
 	if ((!$forcerun) && (read_config_option('boost_rrd_update_system_enable') != 'on')) {
-		db_execute("REPLACE INTO settings
-			(name,value) VALUES
-			('boost_rrd_update_system_enable','on')");
+		set_config_option('boost_rrd_update_system_enable','on');
 	}
 
 	$seconds_offset = read_config_option('boost_rrd_update_interval') * 60;
@@ -117,9 +115,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		/* since the poller has never run before, let's fake it out */
 		$next_run_time = $current_time + $seconds_offset;
 
-		db_execute("REPLACE INTO settings
-			(name, value) VALUES
-			('boost_last_run_time', '" . date('Y-m-d G:i:s', $current_time) . "')");
+		set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $current_time));
 
 		$last_run_time = $current_time;
 	} else {
@@ -135,9 +131,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 		($forcerun) ||
 		($current_records >= $max_records) ||
 		($next_run_time <= $current_time)) {
-		db_execute("REPLACE INTO settings
-			(name, value) VALUES
-			('boost_last_run_time', '" . date('Y-m-d G:i:s', $current_time) . "')");
+		set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $current_time));
 
 		/* output all the rrd data to the rrd files */
 		$rrd_updates = output_rrd_data($current_time, $forcerun);
@@ -146,9 +140,7 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 			log_boost_statistics($rrd_updates);
 			$next_run_time = $current_time + $seconds_offset;
 		} else { /* rollback last run time */
-			db_execute("REPLACE INTO settings
-				(name, value) VALUES
-				('boost_last_run_time', '" . date('Y-m-d G:i:s', $last_run_time) . "')");
+			set_config_option('boost_last_run_time', date('Y-m-d G:i:s', $last_run_time));
 		}
 
 		dsstats_boost_bottom();
@@ -158,16 +150,12 @@ if ((read_config_option('boost_rrd_update_enable') == 'on') || $forcerun) {
 
 	/* store the next run time so that people understand */
 	if ($rrd_updates > 0) {
-		db_execute("REPLACE INTO settings
-			(name, value) VALUES
-			('boost_next_run_time', '" . date('Y-m-d G:i:s', $next_run_time) . "')");
+		set_config_option('boost_next_run_time', date('Y-m-d G:i:s', $next_run_time));
 	}
 } else {
 	/* turn off the system level updates */
 	if (read_config_option('boost_rrd_update_system_enable') == 'on') {
-		db_execute("REPLACE INTO settings
-			(name,value) VALUES
-			('boost_rrd_update_system_enable','')");
+		set_config_option('boost_rrd_update_system_enable','');
 	}
 
 	$rows =  boost_get_total_rows();
@@ -196,9 +184,7 @@ function sig_handler($signo) {
 			cacti_log('WARNING: Boost Poller terminated by user', false, 'BOOST');
 
 			/* tell the main poller that we are done */
-			db_execute("REPLACE INTO settings
-				(name, value) VALUES
-				('boost_poller_status', 'terminated - end time:" . date('Y-m-d G:i:s') ."')");
+			set_config_option('boost_poller_status', 'terminated - end time:' . date('Y-m-d G:i:s'));
 
 			exit;
 			break;
@@ -239,9 +225,7 @@ function output_rrd_data($start_time, $force = false) {
 
 	/* if the poller is not running, or has never run, start */
 	/* mark the boost server as running */
-	db_execute("REPLACE INTO settings
-		(name, value) VALUES
-		('boost_poller_status', 'running - start time:" . date('Y-m-d G:i:s') ."')");
+	set_config_option('boost_poller_status', 'running - start time:' . date('Y-m-d G:i:s'));
 
 	$current_time      = date('Y-m-d G:i:s', $start_time);
 	$rrdtool_pipe      = rrd_init();
@@ -275,12 +259,13 @@ function output_rrd_data($start_time, $force = false) {
 		FROM information_schema.tables
 		WHERE table_schema = SCHEMA()
 		AND table_name LIKE 'poller_output_boost_arch_%'
-		AND table_name != ?", array($archive_table));
+		AND table_name != ?
+		AND table_rows > 0", array($archive_table));
 
 	if (cacti_count($more_arch_tables)) {
 		foreach($more_arch_tables as $table) {
 			$table_name = $table['name'];
-			$rows = db_fetch_cell("SELECT count(*) FROM $table_name");
+			$rows = db_fetch_cell("SELECT count(local_data_id) FROM $table_name");
 			if (is_numeric($rows) && intval($rows) > 0) {
 				db_execute("INSERT INTO $archive_table SELECT * FROM $table_name");
 				db_execute("TRUNCATE TABLE $table_name");
@@ -293,21 +278,39 @@ function output_rrd_data($start_time, $force = false) {
 		return -1;
 	}
 
-	while (true) {
-		$rows = db_fetch_cell("SELECT count(*) FROM $archive_table");
+	$max_per_select = read_config_option('boost_rrd_update_max_records_per_select');
 
-		if ($rows > 0) {
-			$rrd_updates += boost_process_poller_output('', $rrdtool_pipe, $current_time);
+	db_execute('CREATE TEMPORARY TABLE boost_local_data_ids (
+		local_data_id int unsigned default "0",
+		PRIMARY KEY (local_data_id))
+		ENGINE=MEMORY');
 
-			if ($get_memory) {
-				$cur_memory    = memory_get_usage();
-				if ($cur_memory > $memory_used) {
-					$memory_used = $cur_memory;
-				}
-			}
-		} else {
+	db_execute("INSERT INTO boost_local_data_ids
+		SELECT DISTINCT local_data_id
+		FROM $archive_table");
+
+	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id) FROM $archive_table");
+	$data_ids   = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
+
+	$passes  = ceil($total_rows / $max_per_select);
+	$ids_per_pass = ceil($data_ids / $passes);
+	$curpass = 0;
+	while ($curpass <= $passes) {
+		$last_id = db_fetch_cell("SELECT MAX(local_data_id)
+			FROM (
+				SELECT local_data_id
+				FROM boost_local_data_ids
+				ORDER BY local_data_id
+				LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
+			) AS result");
+
+		if (empty($last_id)) {
 			break;
 		}
+
+		boost_process_local_data_ids($last_id);
+
+		$curpass++;
 
 		if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
 			cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!');
@@ -315,20 +318,17 @@ function output_rrd_data($start_time, $force = false) {
 		}
 	}
 
+	/* remove temporary count table */
+	db_execute('DROP TEMPORARY TABLE boost_local_data_ids');
+
 	/* tell the main poller that we are done */
-	db_execute("REPLACE INTO settings
-		(name, value) VALUES
-		('boost_poller_status', 'complete - end time:" . date('Y-m-d G:i:s') ."')");
+	set_config_option('boost_poller_status', 'complete - end time:' . date('Y-m-d G:i:s'));
 
 	/* log memory usage */
 	if (function_exists('memory_get_peak_usage')) {
-		db_execute("REPLACE INTO settings
-			(name, value) VALUES
-			('boost_peak_memory', '" . memory_get_peak_usage() . "')");
+		set_config_option('boost_peak_memory', memory_get_peak_usage());
 	} else {
-		db_execute("REPLACE INTO settings
-			(name, value) VALUES
-			('boost_peak_memory', '" . $memory_used . "')");
+		set_config_option('boost_peak_memory', $memory_used);
 	}
 
 	rrd_close($rrdtool_pipe);
@@ -341,7 +341,7 @@ function output_rrd_data($start_time, $force = false) {
 
 	if (cacti_count($tables)) {
 		foreach($tables as $table) {
-			$rows = db_fetch_cell('SELECT count(*) FROM ' . $table['name']);
+			$rows = db_fetch_cell('SELECT count(local_data_id) FROM ' . $table['name']);
 			if (is_numeric($rows) && intval($rows) == 0) {
 				db_execute('DROP TABLE IF EXISTS ' . $table['name']);
 			}
@@ -350,7 +350,239 @@ function output_rrd_data($start_time, $force = false) {
 
 	db_execute("SELECT RELEASE_LOCK('poller_boost');");
 
-	return $rrd_updates;
+	return $total_rows;
+}
+
+/* boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
+     results to RRDTool for processing
+   @arg $use_server - determines wether or not the server should be used if enabled
+   @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
+function boost_process_local_data_ids($last_id) {
+	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
+	global $rrdtool_pipe, $rrdtool_read_pipe;
+
+	include_once($config['library_path'] . '/rrd.php');
+
+	/* suppress warnings */
+	if (defined('E_DEPRECATED')) {
+		error_reporting(E_ALL ^ E_DEPRECATED);
+	}else{
+		error_reporting(E_ALL);
+	}
+
+	/* install the boost error handler */
+	set_error_handler('boost_error_handler');
+
+	/* load system variables needed */
+	$log_verbosity		= read_config_option('log_verbosity');
+	$upd_string_len		= read_config_option('boost_rrd_update_string_length');
+
+	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
+	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
+
+	$archive_table = boost_get_arch_table_name();
+
+	if ($archive_table === FALSE) {
+		cacti_log('Failed to determine archive table', FALSE, 'BOOST');
+		return 0;
+	}
+
+	$query_string = "SELECT local_data_id, UNIX_TIMESTAMP(time) AS timestamp,
+		rrd_name, output
+		FROM $archive_table
+		WHERE local_data_id <= $last_id
+		ORDER BY local_data_id ASC, time ASC, rrd_name ASC";
+
+	boost_timer('get_records', BOOST_TIMER_START);
+	$results = db_fetch_assoc($query_string);
+	boost_timer('get_records', BOOST_TIMER_END);
+
+	/* log memory */
+	if ($get_memory) {
+		$cur_memory = memory_get_usage();
+		if ($cur_memory > $memory_used) {
+			$memory_used = $cur_memory;
+		}
+	}
+
+	if (sizeof($results)) {
+		/* create an array keyed off of each .rrd file */
+		$local_data_id  = -1;
+		$time           = -1;
+		$outbuf         = '';
+		$last_update    = -1;
+		$last_item	= array('local_data_id' => -1, 'timestamp' => -1, 'rrd_name' => '');
+
+		/* we are going to blow away all record if ok */
+		$vals_in_buffer = 0;
+
+		boost_timer('results_cycle', BOOST_TIMER_START);
+
+		/* go through each poller_output_boost entries and process */
+		foreach ($results as $item) {
+			$item['timestamp'] = trim($item['timestamp']);
+
+			/* if the local_data_id changes, we need to flush the buffer */
+			if ($local_data_id != $item['local_data_id']) {
+				/* update the rrd for the previous local_data_id */
+				if ($vals_in_buffer) {
+					if ($debug || $log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
+						cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, FALSE, 'BOOST');
+					}
+
+					boost_timer('rrdupdate', BOOST_TIMER_START);
+					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+					boost_timer('rrdupdate', BOOST_TIMER_END);
+
+					$outbuf = '';
+					$vals_in_buffer = 0;
+
+					/* check return status for delete operation */
+					if (trim($return_value) != 'OK') {
+						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+					}
+				}
+
+				/* reset the rrd file path and templates, assume non multi output */
+				boost_timer('rrd_filename_and_template', BOOST_TIMER_START);
+				$rrd_data    = boost_get_rrd_filename_and_template($item['local_data_id']);
+				$rrd_tmpl    = $rrd_data['rrd_template'];
+				$rrd_path    = $rrd_data['rrd_path'];
+				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
+
+				$pipe	= is_resource($rrdtool_read_pipe) || is_array($rrdtool_read_pipe) ? $rrdtool_read_pipe:$rrdtool_pipe;
+				boost_timer('rrd_lastupdate', BOOST_TIMER_START);
+				$last_update = boost_rrdtool_get_last_update_time($rrd_path, $pipe);
+				boost_timer('rrd_lastupdate', BOOST_TIMER_END);
+
+				$local_data_id  = $item['local_data_id'];
+				$time           = $item['timestamp'];
+				$initial_time   = $time;
+				$outbuf         = ' ' . $time;
+				$multi_vals_set = FALSE;
+			}
+
+			/* don't generate error messages if the RRD has already been updated */
+			if ($time <= $last_update){
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", FALSE, 'BOOST');
+				$value = 'DNP';
+			}else{
+				$value = trim($item['output']);
+			}
+
+			if ($time != $item['timestamp']) {
+				if (strlen($outbuf) > $upd_string_len) {
+					if ($log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
+						cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ", Output:" . $outbuf, FALSE, 'BOOST');
+					}
+
+					boost_timer('rrdupdate', BOOST_TIMER_START);
+					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+					boost_timer('rrdupdate', BOOST_TIMER_END);
+
+					$outbuf         = '';
+					$vals_in_buffer = 0;
+
+					/* check return status for delete operation */
+					if (trim($return_value) != 'OK') {
+						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+					}
+				}
+				$outbuf .= ' ' . $item['timestamp'];
+				$time    = $item['timestamp'];
+			}
+
+			/* single one value output */
+			if (strcmp($value, 'DNP') == 0) {
+				/* continue, bad time */
+			}elseif ((is_numeric($value)) || (strcmp($value, 'U') == 0)) {
+				$outbuf .= ':' . $value;
+				$vals_in_buffer++;
+			}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
+				$outbuf .= ':' . hexdec($value);
+				$vals_in_buffer++;
+			}elseif (strlen($value)) {
+				/* break out multiple value output to an array */
+				$values = explode(' ', $value);
+
+				if (!$multi_vals_set) {
+					$rrd_field_names = array_rekey(db_fetch_assoc('SELECT
+						data_template_rrd.data_source_name,
+						data_input_fields.data_name
+						FROM (data_template_rrd,data_input_fields)
+						WHERE data_template_rrd.data_input_field_id=data_input_fields.id
+						AND data_template_rrd.local_data_id=' . $item['local_data_id']), 'data_name', 'data_source_name');
+
+					$rrd_tmpl = '';
+				}
+
+				$first_tmpl = 1;
+				$multi_ok   = FALSE;
+				for ($i=0; $i<count($values); $i++) {
+					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
+						if (isset($rrd_field_names{$matches[1]})) {
+							$multi_ok = TRUE;
+
+							if ($log_verbosity == POLLER_VERBOSITY_DEBUG) {
+								cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' , FALSE, 'BOOST');
+							}
+
+							if (!$multi_vals_set) {
+								if (!$first_tmpl) $rrd_tmpl .= ':';
+								$rrd_tmpl .= $rrd_field_names{$matches[1]};
+								$first_tmpl=0;
+							}
+
+							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {
+								$outbuf .= ':' . $matches[2];
+							}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
+								$outbuf .= ':' . hexdec($matches[2]);
+							}else{
+								$outbuf .= ':U';
+							}
+						}
+					}
+				}
+
+				/* we only want to process the template and gather the fields once */
+				$multi_vals_set = TRUE;
+
+				if ($multi_ok) {
+					$vals_in_buffer++;
+				}
+			}else{
+				cacti_log('WARNING: Local Data Id [' . $item['local_data_id'] . '] Contains an empty value', FALSE, 'BOOST');
+			}
+		}
+
+		/* process the last rrdupdate if applicable */
+		if ($vals_in_buffer) {
+			if ($log_verbosity >= POLLER_VERBOSITY_MEDIUM) {
+				cacti_log("NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf, FALSE, 'BOOST');
+			}
+
+			boost_timer('rrdupdate', BOOST_TIMER_START);
+			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+			boost_timer('rrdupdate', BOOST_TIMER_END);
+
+			/* check return status for delete operation */
+			if (trim($return_value) != 'OK') {
+				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+			}
+		}
+		boost_timer('results_cycle', BOOST_TIMER_END);
+
+		/* remove the entries from the table */
+		boost_timer('delete', BOOST_TIMER_START);
+		db_execute("DELETE FROM $archive_table
+			WHERE local_data_id <= $last_id");
+		boost_timer('delete', BOOST_TIMER_END);
+	}
+
+	/* restore original error handler */
+	restore_error_handler();
+
+	return sizeof($results);
 }
 
 function log_boost_statistics($rrd_updates) {
@@ -366,9 +598,7 @@ function log_boost_statistics($rrd_updates) {
 		$rrd_updates);
 
 	/* log to the database */
-	db_execute_prepared("REPLACE INTO settings
-		(name,value) VALUES
-		('stats_boost', ?)", array($cacti_stats));
+	set_config_option('stats_boost', $cacti_stats);
 
 	/* log to the logfile */
 	cacti_log('BOOST STATS: ' . $cacti_stats , true, 'SYSTEM');
@@ -392,9 +622,7 @@ function log_boost_statistics($rrd_updates) {
 			}
 
 			/* log to the database */
-			db_execute_prepared("REPLACE INTO settings
-				(name,value) VALUES
-				('stats_detail_boost', ?)", array(str_replace(',', '', $outstr)));
+			set_config_option('stats_detail_boost', str_replace(',', '', $outstr));
 
 			/* log to the logfile */
 			if ($verbose) {

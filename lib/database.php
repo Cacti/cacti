@@ -1363,7 +1363,7 @@ function db_replace($table_name, $array_items, $keyCols, $db_conn = false) {
 
 // FIXME:  Need to Rename and cleanup a bit
 
-function _db_replace($db_conn, $table, $fieldArray, $keyCols, $has_autoinc) {
+function _db_replace($db_conn, $table, $fieldArray, $keyCols) {
 	global $database_sessions, $database_default, $database_hostname, $database_port;
 
 	/* check for a connection being passed, if not use legacy behavior */
@@ -1477,7 +1477,7 @@ function sql_save($array_items, $table_name, $key_cols = 'id', $autoinc = true, 
 		}
 	}
 
-	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols, $autoinc);
+	$replace_result = _db_replace($db_conn, $table_name, $array_items, $key_cols);
 
 	/* get the last AUTO_ID and return it */
 	if (!$replace_result || db_fetch_insert_id($db_conn) == '0') {

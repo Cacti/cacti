@@ -8,3 +8,18 @@
     Order Allow,Deny
     Deny from all
 </IfModule>
+
+#Prevent Access to the .htaccess file
+
+# Deny access to .htaccess
+<Files .htaccess>
+Order allow,deny
+Deny from all
+</Files>
+
+# Prevent Access to browser reading .log files 
+<FilesMatch "\.(log)$">           
+Order allow,deny
+Deny from all
+
+</FilesMatch>
