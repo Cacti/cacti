@@ -130,8 +130,6 @@ input, select {
 	background: transparent;
 }
 
-input[type="checkbox"]:not([name^="multiselect"]),
-
 label {
 	cursor: pointer;
 	white-space: nowrap;
@@ -145,7 +143,7 @@ label {
 	display: none;
 }
 
-input[type="checkbox"] {
+input[type="checkbox"]:not([name^="multiselect"]), input[type="radio"]:not([name^="reindex"]) {
 	display: none;
 }
 
@@ -167,14 +165,41 @@ input[type="checkbox"]:checked + label:before {
 	text-align: center;
 }
 
-input[type="checkbox"]:checked + label,
+input[type="checkbox"]:checked + label, input[type="radio"]:not([name^="reindex"]):checked + label {
+	color: #FFFFFF;
+}
+
+input[type="radio"]:not([name^="reindex"]) + label:before {
+	border: 1px solid #7f83a2;
+	border-radius: 10px;
+	content: "\00a0";
+	display: inline-block;
+	font: 10px/1em sans-serif;
+	height: 12px;
+	margin: .25em .25em 0 0;
+	vertical-align: text-bottom;
+	width: 12px;
+	background: transparent;
+}
+
+input[type="radio"]:not([name^="reindex"]):checked + label:before {
+	background: #FFFFFF;
+	box-shadow: 0 0 0 3px #3C8A3C inset;
+	border: 1px solid #7f83a2;
+	text-align: center;
+	font-weight: bold;
+}
+
+input[type="radio"]:not([name^="reindex"]) + label.ui-state-hover:before {
+	border: 1px solid #FFFFFF;
+}
 
 label {
 	white-space: nowrap;
 }
 
 label > span {
-	color: #7f83a2;
+	color: #969BA3;
 }
 
 label.ui-state-active > span {
@@ -2315,12 +2340,10 @@ tr#realtime td:first-child {
 }
 
 .ui-multiselect-filter {
-	font-size: 11px;
 	font-weight: normal;
 }
 
 .ui-multiselect-all, .ui-multiselect-none {
-	font-size: 11px;
 	font-weight: normal;
 }
 
@@ -2344,11 +2367,32 @@ tr#realtime td:first-child {
 
 .ui-multiselect-checkboxes label {
 	color: #93CEFF;
-	padding: 1px 1px;
 }
 
 .ui-multiselect-checkboxes .ui-state-hover {
 	background: #3C8A3C;
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
+	text-align: left;
+	line-height: initial;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
+	color: #969BA3;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {

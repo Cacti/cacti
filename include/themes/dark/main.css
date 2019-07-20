@@ -2282,6 +2282,21 @@ tr#realtime td:first-child {
 	font-weight: normal !important;
 }
 
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
+}
+
 .ui-tooltip {
 	max-width: none !important;
 }

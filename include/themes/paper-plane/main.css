@@ -2319,14 +2319,38 @@ tr#realtime td:first-child {
 	background: transparent;
 }
 
-.ui-multiselect {
-	padding: 0.4em 1em;
+.ui-multiselect-checkboxes span {
+	font-size: 12px;
+	color: black;
+}
+
+.ui-multiselect-header {
+	background-color: #E5E5E5;
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
 	text-align: left;
 	line-height: initial;
 }
 
-.ui-multiselect .ui-icon {
-	margin-top: 0px;
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-widget {

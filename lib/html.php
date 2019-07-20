@@ -165,14 +165,12 @@ function html_graph_template_multiselect() {
 				msWidth = maxWidth;
 			}
 		}
-
-		$('#graph_template_id').css('width', msWidth+120+'px');
 	});
 
 	$('#graph_template_id').hide().multiselect({
 		height: 300,
-		menuWidth: 420,
-		buttonWidth: 420,
+		menuWidth: 'auto',
+		buttonWidth: 'auto',
 		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 		selectedText: function(numChecked, numTotal, checkedItems) {
 			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
@@ -2388,6 +2386,7 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');

@@ -1478,10 +1478,10 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			# this is invalid! STOP
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph below represent Graphs from multiple Graph Templates.  Aggregate does not support creating Aggregate Graphs from multiple Graph Templates.') . "</p>";
-			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>";
 			print "<ul>";
 			foreach ($used_graph_templates as $graph_template) {
-				print '<li>' . html_escape($graph_template['name']) . "</li>\n";
+				print '<li>' . html_escape($graph_template['name']) . "</li>";
 			}
 			print '</ul></td></tr>';
 
@@ -1497,7 +1497,7 @@ function aggregate_get_data_sources(&$graph_array, &$data_sources, &$graph_templ
 			/* selected graphs do not use templates */
 			print "<tr><td colspan='2' class='textArea'>
 			<p>" . __('The Graphs chosen for the Aggregate Graph do not use Graph Templates.  Aggregate does not support creating Aggregate Graphs from non-templated graphs.') . "</p>";
-			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>\n";
+			print "<p>" . __('Press \'Return\' to return and select different Graphs') . "</p>";
 			print '</td></tr>';
 
 			?>
@@ -1607,7 +1607,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 	html_start_box(($is_templated ? __('Graph Template Items'):__('Graph Items')), '100%', '', '3', 'center', '');
 
 	# print column header
-	print "<tr class='tableHeader'>\n";
+	print "<tr class='tableHeader'>";
 	DrawMatrixHeaderItem(__('Graph Item'), '', 1);
 	DrawMatrixHeaderItem(__('Data Source'), '',1);
 	DrawMatrixHeaderItem(__('Graph Item Type'), '', 1);
@@ -1703,49 +1703,49 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 				//print '<a class="pic" href="aggregate_items.php?action=item_edit&'.$item_editor_link_param.'&id='.$item['id'].'">' . __('Item # %d', ($i+1)) . '</a>';
 				print '<a title="' . __esc('Aggregate Items are not editable') . '" class="pic" href="#">' . __('Item # %d', ($i+1)) . '</a>';
 			}
-			print "</td>\n";
+			print "</td>";
 
 			if ($item['hard_return'] == 'on') {
 				$hard_return = '<strong><span style="color:#FF0000;">&lt;HR&gt;</span></strong>';
 			}
 
-			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>\n";
+			print "<td style='$this_row_style'>" . html_escape($matrix_title) . $hard_return . "</td>";
 
 			/* column 'Graph Item Type' */
-			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>\n";
+			print "<td style='$this_row_style'>" . $graph_item_types[$item['graph_type_id']] . "</td>";
 
 			/* column 'CF Type' */
-			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>\n";
+			print "<td style='$this_row_style'>" . $consolidation_functions[$item['consolidation_function_id']] . "</td>";
 
 			/* column 'Item Color' */
-			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>\n";
-			print "<td style='$this_row_style'>" . $item['hex'] . "</td>\n";
+			print "<td style='width:1%;" . ((!empty($item['hex'])) ? 'background-color:#' . $item['hex'] . ";'" : "'") . ">&nbsp;</td>";
+			print "<td style='$this_row_style'>" . $item['hex'] . "</td>";
 
 			/* column 'Color Template' */
 			print '<td>';
 			if (!empty($item['hex'])) {
 				print "<select id='agg_color_" . $item['id'] ."' name='agg_color_" . $item['id'] ."'>";
-				print "<option value='0' selected>None</option>\n";
+				print "<option value='0' selected>None</option>";
 				html_create_list($color_templates, "name", "color_template_id", ($is_edit && isset($current_vals[$item['id']]['color_template']) ? $current_vals[$item['id']]['color_template']:''));
-				print "</select>\n";
+				print "</select>";
 			}
 			print '</td>';
 
 			/* column "Skip" */
 			if (!$force_skip) {
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && (!isset($current_vals[$item['id']]['item_total']) || (isset($current_vals[$item['id']]['item_skip']) && $current_vals[$item['id']]['item_skip'] == 'on')) ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
 				print '</td>';
 
 				/* column 'Total' */
 				print "<td style='width:1%;text-align:center;'>";
-				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . '>';
+				print "<input class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit && isset($current_vals[$item['id']]['item_total']) && $current_vals[$item['id']]['item_total'] == 'on' ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_total_" . $item['id'] . "'>";
 				print '</td>';
 			} else {
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy_" . $item['id'] . "'" . ($is_edit ? 'checked':'') . '></td>';
 				print "<td style='width:1%;text-align:center;'><input class='checkbox' id='dummy1_" . $item['id'] . "' disabled='disabled' type='checkbox' name='dummy1_" . $item['id'] . "'>";
-				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . '>';
-				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'></td>";
+				print "<input style='display:none;' class='checkbox' id='agg_skip_" . $item['id'] . "' type='checkbox' name='agg_skip_" . $item['id'] . "' title='" . html_escape($item['text_format']) . "' " . ($is_edit ? 'checked':'') . "><label class='formCheckboxLabel' for='agg_skip_" . $item['id'] . "'>";
+				print "<input style='display:none;' class='checkbox' id='agg_total_" . ($item['id']) . "' type='checkbox' name='agg_total_" . ($item['id']) . "' title='" . html_escape($item['text_format']) . "'><label class='formCheckboxLabel' for='agg_total_" . ($item['id']) . "'></label></td>";
 			}
 
 			print '</tr>';
