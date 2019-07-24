@@ -701,7 +701,7 @@ $selectedTheme = get_selected_theme();
 								<label for='login_password'><?php print __('Password');?></label>
 							</td>
 							<td>
-								<input type='password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
+								<input type='password' autocomplete='new-password' class='ui-state-default ui-corner-all' id='login_password' name='login_password' placeholder='********'>
 							</td>
 						</tr>
 						<?php
