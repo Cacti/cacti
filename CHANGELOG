@@ -11,6 +11,7 @@ Cacti CHANGELOG
 -issue#2838: jQueryMultiselect Used in Cacti does not match upstream
 -issue#2839: Non regular expression search filters don't support international characters
 -issue#2841: Total count is wrong after searching for External Link pages
+-issue#2843: DSStats reruns Daily Aggregation every minute
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails

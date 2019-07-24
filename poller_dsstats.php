@@ -156,7 +156,7 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 	db_execute("INSERT INTO data_source_stats_hourly
 		(local_data_id, rrd_name, average, peak)
 		(SELECT local_data_id, rrd_name, AVG(`value`), MAX(`value`)
-		 FROM data_source_stats_hourly_cache 
+		 FROM data_source_stats_hourly_cache
 		 WHERE `value` IS NOT NULL
 		 GROUP BY local_data_id, rrd_name
 		)
@@ -187,9 +187,9 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 		/* if it's time to update daily statistics, do so now */
 		if (($last_run_daily != '' && ((strtotime($last_run_daily) + ($daily_interval * 60)) < $current_time)) || $forcerun) {
 			/* run the daily stats */
+			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 			dsstats_get_and_store_ds_avgpeak_values('daily');
 			log_dsstats_statistics('DAILY');
-			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 		}
 	}
 
@@ -214,3 +214,4 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 }
 
 dsstats_debug('Polling Ending');
+
