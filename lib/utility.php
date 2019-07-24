@@ -940,6 +940,7 @@ function utilities_get_mysql_recommendations() {
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
+			'class'   => 'error',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
 		'innodb_file_format' => array(
