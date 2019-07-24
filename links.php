@@ -304,7 +304,7 @@ function pages() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='link_filter' action='links.php' method='post'>
+			<form id='links' action='links.php' method='post'>
 			<table class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<td>
@@ -364,7 +364,9 @@ function pages() {
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM external_links');
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM external_links
+		$sql_where");
 
 	form_start('links.php', 'chk');
 
