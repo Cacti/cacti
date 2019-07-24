@@ -80,10 +80,9 @@ function manager(){
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -182,8 +181,9 @@ function manager(){
 	html_end_box();
 
 	/* form the 'where' clause for our main sql query */
-	$sql_where = "WHERE (sm.hostname LIKE '%" . get_request_var('filter') . "%'
-		OR sm.description LIKE '%" . get_request_var('filter') . "%')";
+	$sql_where = 'WHERE (
+		sm.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+		OR sm.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 
 	$total_rows = db_fetch_cell("SELECT
 		COUNT(sm.id)
@@ -402,10 +402,9 @@ function manager_notifications($id, $header_label) {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'mib' => array(
 			'filter' => FILTER_CALLBACK,
@@ -536,9 +535,10 @@ function manager_notifications($id, $header_label) {
 	}
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`oid` LIKE '%" . get_request_var('filter') . "%'
-			OR `name` LIKE '%" . get_request_var('filter') . "%'
-			OR `mib` LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			`oid` LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `name` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `mib` LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 	$sql_where .= ' ORDER by `oid`';
 
@@ -661,10 +661,9 @@ function manager_logs($id, $header_label) {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'severity' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -771,7 +770,7 @@ function manager_logs($id, $header_label) {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`varbinds` LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (`varbinds` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$sql_where .= ' ORDER by `id` DESC';

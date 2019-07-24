@@ -238,10 +238,9 @@ function graphs() {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -459,7 +458,7 @@ function graphs() {
 			</tr>\n";
 
 		if (get_request_var('filter') != '') {
-			$sql_where = 'AND gt.name LIKE "%' . get_request_var('filter') . '%"';
+			$sql_where = 'AND gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}

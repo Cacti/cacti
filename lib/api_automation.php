@@ -51,10 +51,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 			'default' => '-1'
 			),
 		'filterd' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -208,7 +207,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
-		$sql_where = "WHERE h.deleted = '' AND (h.hostname LIKE '%" . get_request_var('filterd') . "%' OR h.description LIKE '%" . get_request_var('filterd') . "%' OR ht.name LIKE '%" . get_request_var('filterd') . "%')";
+		$sql_where = 'WHERE h.deleted = ""
+			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filterd') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . '
+			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filterd') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -340,10 +342,9 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -500,10 +501,11 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
-			" OR gt.name LIKE '%" . get_request_var('filter') . "%'" .
-			" OR h.description LIKE '%" . get_request_var('filter') . "%'" .
-			" OR h.hostname LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (
+			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.hostname LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -627,10 +629,9 @@ function display_new_graphs($rule, $url) {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -984,10 +985,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1153,7 +1153,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%' OR ht.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			h.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (get_request_var('host_status') == '-1') {

@@ -637,7 +637,9 @@ function user_group_members_edit($header_label) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (username LIKE '%" . get_request_var('filter') . "%' OR full_name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (
+			username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -778,7 +780,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' AND gtg.local_graph_id>0)";
+			$sql_where = 'WHERE (
+				gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+				AND gtg.local_graph_id > 0)';
 		} else {
 			$sql_where = 'WHERE (gtg.local_graph_id>0)';
 		}
@@ -920,7 +924,9 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE host.deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE host.deleted = "" AND (
+				host.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 		} else {
 			$sql_where = "WHERE host.deleted = ''";
 		}
@@ -1068,7 +1074,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -1208,7 +1214,7 @@ function user_group_graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -1771,10 +1777,9 @@ function user_group() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1882,7 +1887,9 @@ function user_group() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR description LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (
+			name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -1970,10 +1977,9 @@ function process_graph_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
@@ -2005,10 +2011,9 @@ function process_device_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
@@ -2040,10 +2045,9 @@ function process_template_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
@@ -2075,10 +2079,9 @@ function process_tree_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
@@ -2105,10 +2108,9 @@ function process_member_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,

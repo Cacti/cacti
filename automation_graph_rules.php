@@ -690,10 +690,9 @@ function automation_graph_rules() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -840,9 +839,9 @@ function automation_graph_rules() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (agr.name LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sqg.name LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sq.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (agr.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sqg.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sq.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 
 	} else {
 		$sql_where = '';

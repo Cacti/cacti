@@ -862,10 +862,9 @@ function template() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1002,7 +1001,7 @@ function template() {
 	/* form the 'where' clause for our main sql query */
 	$rows_where = '';
 	if (get_request_var('filter') != '') {
-		$sql_where = " WHERE (dt.name like '%" . get_request_var('filter') . "%')";
+		$sql_where = ' WHERE (dt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -1053,23 +1052,57 @@ function template() {
 		$sql_limit";
 	$template_list = db_fetch_assoc($template_list_sql);
 
-	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 7, __('Data Templates'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('Data Template Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this Data Template.')
+		),
+		'id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The internal database ID for this Data Template.  Useful when performing automation or debugging.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source.')
+		),
+		'data_sources' => array(
+			'display' => __('Data Sources Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Data Sources using this Data Template.')
+		),
+		'data_input_method' => array(
+			'display' => __('Input Method'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The method that is used to place Data into the Data Source RRDfile.')
+		),
+		'profile_name' => array(
+			'display' => __('Profile Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The default Data Source Profile for this Data Template.')
+		),
+		'active' => array(
+			'display' => __('Status'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('Data Sources based on Inactive Data Templates will not be updated when the poller runs.')
+		)
+	);
+
+	$nav = html_nav_bar('data_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Data Templates'), 'page', 'main');
 
 	form_start('data_templates.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'name'              => array('display' => __('Data Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Data Template.')),
-		'id'                => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Data Template.  Useful when performing automation or debugging.')),
-		'nosort'            => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Data Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Data Source.')),
-		'data_sources'      => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Data Template.')),
-		'data_input_method' => array('display' => __('Input Method'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The method that is used to place Data into the Data Source RRDfile.')),
-		'profile_name' => array('display' => __('Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The default Data Source Profile for this Data Template.')),
-		'active'            => array('display' => __('Status'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('Data Sources based on Inactive Data Templates will not be updated when the poller runs.'))
-	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

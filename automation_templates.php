@@ -366,10 +366,9 @@ function template() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			)
 	);
 
@@ -458,10 +457,10 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sysName LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sysDescr LIKE '%" . get_request_var('filter') . "%' OR " .
-			"sysOID LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysName LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysDescr LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ' .
+			'sysOID LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}

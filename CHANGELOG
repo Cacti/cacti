@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#2835: When creating graphs and inneficient query is causing long creation times
 -issue#2837: Sunrise theme does not render checkboxes 100% correctly
 -issue#2838: jQueryMultiselect Used in Cacti does not match upstream
+-issue#2839: Non regular expression search filters don't support international characters
 -issue#2841: Total count is wrong after searching for External Link pages
 
 1.2.5

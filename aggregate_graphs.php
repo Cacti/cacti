@@ -1414,10 +1414,9 @@ function aggregate_graph() {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
 			),
 		'page' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -1504,7 +1503,7 @@ function aggregate_graph() {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Template');?>
@@ -1561,8 +1560,8 @@ function aggregate_graph() {
 	$sql_where = 'WHERE (gtg.graph_template_id=0 AND gl.host_id=0)';
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
-			" OR ag.title_format LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= " AND (gtg.title_cache LIKE " . db_qstr('%' . get_request_var('filter') . '%') .
+			" OR ag.title_format LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ")";
 	}
 
 	if (get_request_var('template_id') == '-1') {

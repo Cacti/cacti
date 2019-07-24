@@ -677,10 +677,9 @@ function template() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -790,7 +789,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (host_template.name LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where = 'WHERE (host_template.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -825,20 +824,40 @@ function template() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 5, __('Device Templates'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('Device Template Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this Device Template.')
+		),
+		'host_template.id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'sort' => '',
+			'tip' => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')
+		),
+		'hosts' => array(
+			'display' => __('Devices Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Devices using this Device Template.')
+		)
+	);
+
+	$nav = html_nav_bar('host_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Device Templates'), 'page', 'main');
 
 	form_start('host_templates.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'name' => array('display' => __('Device Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Device Template.')),
-		'host_template.id' => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal database ID for this Device Template.  Useful when performing automation or debugging.')),
-		"nosort" => array('display' => __('Deletable'), 'align' => 'right', 'sort' => '', 'tip' => __('Device Templates in use cannot be Deleted.  In use is defined as being referenced by a Device.')),
-		'hosts' => array('display' => __('Devices Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Devices using this Device Template.'))
-	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

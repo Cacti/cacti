@@ -219,10 +219,9 @@ function gprint_presets() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -338,7 +337,7 @@ function gprint_presets() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -381,21 +380,45 @@ function gprint_presets() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 6, __('GPRINTs'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('GPRINT Preset Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this GPRINT Preset.')
+		),
+		'gprint_text' => array(
+			'display' => __('Format'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The GPRINT format string.')
+		),
+		'nosort' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs using this GPRINT.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs Templates using this GPRINT.')
+		)
+	);
+
+	$nav = html_nav_bar('gprint_presets.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('GPRINTs'), 'page', 'main');
 
 	form_start('gprint_presets.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'name'      => array('display' => __('GPRINT Preset Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this GPRINT Preset.')),
-		'gprint_text'      => array('display' => __('Format'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The GPRINT format string.')),
-		'nosort'    => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('GPRINTs that are in use cannot be Deleted.  In use is defined as being referenced by either a Graph or a Graph Template.')),
-		'graphs'    => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this GPRINT.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs Templates using this GPRINT.'))
-	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

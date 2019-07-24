@@ -270,10 +270,9 @@ function update_show_current () {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -341,7 +340,7 @@ function update_show_current () {
 						<?php print __('Search');?>
 					</td>
 					<td>
-						<input type='text' class='ui-state-default ui-corner-all' id='filter' name='filter' size='25' value='<?php print get_request_var('filter');?>'>
+						<input type='text' class='ui-state-default ui-corner-all' id='filter' size='25' value='<?php print html_escape_request_var('filter');?>'>
 					</td>
 					<td>
 						<?php print __('Status');?>
@@ -391,7 +390,7 @@ function update_show_current () {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE ($table.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = "WHERE ($table.name LIKE " . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (!isset_request_var('state')) {
