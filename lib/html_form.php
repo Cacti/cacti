@@ -1416,6 +1416,9 @@ function form_end($ajax = true) {
 			$('#<?php print $form_id;?>').submit(function(event) {
 				event.preventDefault();
 
+				// Enable the form if it's disabled
+				$(this).find('input, textarea, select').prop('disabled', false);
+
 				strURL  = '<?php print $form_action;?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';
 
