@@ -14,6 +14,7 @@ Cacti CHANGELOG
 -issue#2841: Total count is wrong after searching for External Link pages
 -issue#2843: DSStats reruns Daily Aggregation every minute
 -issue#2844: Cacti not setting proper autocomplete settings for passwords
+-issue#2846: Support form tooltip for section header(type=spacer) with 'question' icon
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
