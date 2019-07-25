@@ -1324,14 +1324,14 @@ function graph_edit() {
 			WHERE local_graph_id = ?',
 			array(get_request_var('id')));
 
-	        $auto_unlock = read_config_option('graphs_auto_unlock');
+		$auto_unlock = read_config_option('graphs_auto_unlock');
 
 		if (get_request_var('id') != $_SESSION['sess_graph_lock_id'] && !empty($local_graph_template_graph_id)) {
 			if ($auto_unlock == 'on') {
-                        	$locked = false;
-                        } else {
-	                        $locked = true;
-                        }
+				$locked = false;
+			} else {
+				$locked = true;
+			}
 			$_SESSION['sess_graph_locked'] = $locked;
 		} elseif (empty($local_graph_template_graph_id)) {
 			$locked = false;
@@ -1487,6 +1487,17 @@ function graph_edit() {
 			'value' => (isset($host_id) ? $host_id : '0')
 			)
 		);
+
+	if (cacti_sizeof($graph)) {
+		if ($graph['graph_template_id'] == 0) {
+			$form_array['graph_template_id']['method'] = 'hidden';
+		}
+
+		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
+			$form_array['graph_template_id']['method'] = 'hidden';
+			$form_array['host_id']['method'] = 'hidden';
+		}
+	}
 
 	draw_edit_form(
 		array(
