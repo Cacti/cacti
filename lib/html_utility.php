@@ -55,9 +55,9 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					while (true) {
 						/* an empty field name in the variable means don't treat this as an array */
 						if ($matches[2] == '') {
-							if (is_array($[$matches[1]])) {
+							if (is_array(${$matches[1]})) {
 								/* the existing value is already an array, leave it alone */
-								$form_array[$field_name][$field_to_check] = $[$matches[1]];
+								$form_array[$field_name][$field_to_check] = ${$matches[1]};
 								break;
 							} else {
 								/* the existing value is probably a single variable */
@@ -66,7 +66,7 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 							}
 						} else {
 							/* copy the value down from the array/key specified in the variable */
-							$string = str_replace($matches[0], (isset($[$matches[1]][$matches[2]]) ? $[$matches[1]][$matches[2]] : ''), $string);
+							$string = str_replace($matches[0], (isset(${$matches[1]}{$matches[2]}) ? ${$matches[1]}{$matches[2]} : ''), $string);
 
 							$matches = array();
 
@@ -113,9 +113,9 @@ function form_alternate_row_color($row_color1, $row_color2, $row_value, $row_id 
 	}
 
 	if ($row_id != '') {
-		print "<tr class='$class selectable tableRow' id='$row_id'>";
+		print "<tr class='$class selectable tableRow' id='$row_id'>\n";
 	} else {
-		print "<tr class='$class tableRow'>";
+		print "<tr class='$class tableRow'>\n";
 	}
 
 	return $current_color;
@@ -139,13 +139,13 @@ function form_alternate_row($row_id = '', $light = false, $disabled = false) {
 	$i++;
 
 	if ($row_id != '' && !$disabled && substr($row_id, 0, 4) != 'row_') {
-		print "<tr class='$class selectable tableRow' id='$row_id'>";
+		print "<tr class='$class selectable tableRow' id='$row_id'>\n";
 	} elseif (substr($row_id, 0, 4) == 'row_') {
-		print "<tr class='$class tableRow' id='$row_id'>";
+		print "<tr class='$class tableRow' id='$row_id'>\n";
 	} elseif ($row_id != '') {
-		print "<tr class='$class tableRow' id='$row_id'>";
+		print "<tr class='$class tableRow' id='$row_id'>\n";
 	} else {
-		print "<tr class='$class tableRow'>";
+		print "<tr class='$class tableRow'>\n";
 	}
 }
 
