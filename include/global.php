@@ -259,6 +259,7 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
+	if (!isset($rdatabase_retries)) $rdatabase_retries = 5;
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
 	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;

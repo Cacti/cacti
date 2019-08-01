@@ -1,7 +1,7 @@
 Cacti CHANGELOG
 
 1.2.6
--issue#2794: Graph template not saved on graph edit 
+-issue#2794: Graph template not saved on graph edit
 -issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
 -issue#2829: PHP recommendations always see memory limit as unlimited
 -issue#2830: Disabled Top/Bottom external links should not be displayed
@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#2844: Cacti not setting proper autocomplete settings for passwords
 -issue#2845: Data Template can't be edited when it is in use
 -issue#2846: Support form tooltip for section header(type=spacer) with 'question' icon
+-issue#2860: When testing remote poller connections during install, undefined variable warning can occur
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
