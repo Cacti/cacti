@@ -2026,7 +2026,7 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 				array($order[0], $host_id, $data_query_id));
 
 			return $order[0];
-		} elseif (sizeof($raw_xml['fields'])) {
+		} elseif (cacti_sizeof($raw_xml['fields'])) {
 			foreach($raw_xml['fields'] as $key => $attribs) {
 				break;
 			}
