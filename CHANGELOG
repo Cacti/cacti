@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
 -issue#2829: PHP recommendations always see memory limit as unlimited
 -issue#2830: Disabled Top/Bottom external links should not be displayed
+-issue#2832: Install/Upgrade log does not show anything
 -issue#2833: Undefined index in lib/rrd.php under certain circumstances
 -issue#2834: Boost performance drops on very large systems
 -issue#2835: When creating graphs and inneficient query is causing long creation times
