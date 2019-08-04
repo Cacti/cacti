@@ -81,6 +81,10 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 						if (!cacti_sizeof($matches)) {
 							$form_array[$field_name][$field_to_check] = $string;
 							break;
+						} elseif (isset($form_array[$field_name]['default'])) {
+							$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
+						} else {
+							$form_array[$field_name][$field_to_check] = '';
 						}
 					}
 				}
