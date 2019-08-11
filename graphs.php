@@ -999,7 +999,7 @@ function form_actions() {
 
 				if (cacti_sizeof($data_sources)) {
 					print "<td class='textArea'>" .
-					'<p>' . __('The following data sources are in use by these graphs:') . '</p>
+					'<p>' . __('The following Data Sources are in use by these Graphs:') . '</p>
 					<div class="itemlist"><ul>';
 					foreach ($data_sources as $data_source) {
 						print '<li>' . html_escape($data_source['name_cache']) . '</li>';
@@ -1040,19 +1040,56 @@ function form_actions() {
 					switch ($('#aggregate_total').val()) {
 						case '<?php print AGGREGATE_TOTAL_NONE;?>':
 							$('#aggregate_total_type').prop('disabled', true);
+							if ($('#aggregate_total_type').selectmenu('instance')) {
+								$('#aggregate_total_type').selectmenu('disable');
+							}
+
 							$('#aggregate_total_prefix').prop('disabled', true);
+							if ($('#aggregate_total_prefix').selectmenu('instance')) {
+								$('#aggregate_total_prefix').selectmenu('disable');
+							}
+
 							$('#aggregate_order_type').prop('disabled', false);
+							if ($('#aggregate_order_type').selectmenu('instance')) {
+								$('#aggregate_order_type').selectmenu('enable');
+							}
+
 							break;
 						case '<?php print AGGREGATE_TOTAL_ALL;?>':
 							$('#aggregate_total_type').prop('disabled', false);
+							if ($('#aggregate_total_type').selectmenu('instance')) {
+								$('#aggregate_total_type').selectmenu('enable');
+							}
+
 							$('#aggregate_total_prefix').prop('disabled', false);
+							if ($('#aggregate_total_prefix').selectmenu('instance')) {
+								$('#aggregate_total_prefix').selectmenu('enable');
+							}
+
+
 							$('#aggregate_order_type').prop('disabled', false);
+							if ($('#aggregate_order_type').selectmenu('instance')) {
+								$('#aggregate_order_type').selectmenu('enable');
+							}
+
+
 							changeTotalsType();
 							break;
 						case '<?php print AGGREGATE_TOTAL_ONLY;?>':
 							$('#aggregate_total_type').prop('disabled', false);
+							if ($('#aggregate_total_type').selectmenu('instance')) {
+								$('#aggregate_total_type').selectmenu('enable');
+							}
 							$('#aggregate_total_prefix').prop('disabled', false);
+							if ($('#aggregate_total_prefix').selectmenu('instance')) {
+								$('#aggregate_total_prefix').selectmenu('enable');
+							}
+
 							$('#aggregate_order_type').prop('disabled', true);
+							if ($('#aggregate_order_type').selectmenu('instance')) {
+								$('#aggregate_order_type').selectmenu('disable');
+							}
+
 							changeTotalsType();
 							break;
 					}
@@ -1063,6 +1100,14 @@ function form_actions() {
 						$('#aggregate_total_prefix').attr('value', '<?php print __('Total');?>');
 					} else if (($('#aggregate_total_type').val() == <?php print AGGREGATE_TOTAL_TYPE_ALL;?>)) {
 						$('#aggregate_total_prefix').attr('value', '<?php print __('All Items');?>');
+					}
+				}
+
+				function checkSubmit() {
+					if ($('input[id^="agg_total"]:checked').length == 0) {
+						$('input[type="submit"]').prop('disable', true).addClass('ui-state-disabled');;
+					} else {
+						$('input[type="submit"]').prop('disable', true).removeClass('ui-state-disabled');;
 					}
 				}
 
@@ -1089,6 +1134,8 @@ function form_actions() {
 						} else {
 							$('#'+altId).prop('checked', true);
 						}
+
+						checkSubmit();
 					});
 
 					$('input[id^="agg_skip"]').each(function() {
@@ -1096,11 +1143,12 @@ function form_actions() {
 					});
 
 					changeTotals();
+					checkSubmit();
 				});
 				</script>
 				<?php
 
-				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Resize Selected Graph(s)') . "'>";
+				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate Graph') . "'>";
 			} else {
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
@@ -1143,7 +1191,7 @@ function form_actions() {
 						</td>
 					</tr></table></td></tr>\n";
 
-					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate') . "'>";
+					$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Create Aggregate from Template') . "'>";
 				} else {
 					print "<tr>
 						<td class='textArea'>
