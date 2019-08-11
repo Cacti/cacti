@@ -2016,29 +2016,34 @@ function get_best_data_query_index_type($host_id, $data_query_id) {
 	if ($index_type == '') {
 		$raw_xml = get_data_query_array($data_query_id);
 
-		if (isset($raw_xml['index_order']) && $raw_xml['index_order'] != '') {
-			$order = explode(':', $raw_xml['index_order']);
+		if (sizeof($raw_xml)) {
+			if (isset($raw_xml['index_order']) && $raw_xml['index_order'] != '') {
+				$order = explode(':', $raw_xml['index_order']);
 
-			db_execute_prepared('UPDATE host_snmp_query
-				SET sort_field = ?
-				WHERE host_id = ?
-				AND snmp_query_id = ?',
-				array($order[0], $host_id, $data_query_id));
+				db_execute_prepared('UPDATE host_snmp_query
+					SET sort_field = ?
+					WHERE host_id = ?
+					AND snmp_query_id = ?',
+					array($order[0], $host_id, $data_query_id));
 
-			return $order[0];
-		} elseif (cacti_sizeof($raw_xml['fields'])) {
-			foreach($raw_xml['fields'] as $key => $attribs) {
-				break;
+				return $order[0];
+			} elseif (isset($raw_xml['fields']) && sizeof($raw_xml['fields'])) {
+				foreach($raw_xml['fields'] as $key => $attribs) {
+					break;
+				}
+
+				db_execute_prepared('UPDATE host_snmp_query
+					SET sort_field = ?
+					WHERE host_id = ?
+					AND snmp_query_id = ?',
+					array($key, $host_id, $data_query_id));
+
+				return $key;
+			} else {
+				return false;
 			}
-
-			db_execute_prepared('UPDATE host_snmp_query
-				SET sort_field = ?
-				WHERE host_id = ?
-				AND snmp_query_id = ?',
-				array($key, $host_id, $data_query_id));
-
-			return $key;
 		} else {
+			cacti_log('ERROR: Cacti Data Query DQ[' . $data_query_id . '] XML file may be missing or not readable.');
 			return false;
 		}
 	}
