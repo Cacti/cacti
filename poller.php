@@ -842,8 +842,9 @@ function poller_replicate_check() {
 		FROM poller
 		WHERE id > 1
 		AND dbhost NOT IN ('localhost', '127.0.0.1', '')
-		AND disabled=''
-		AND (last_sync='0000-00-00 00:00:00' OR requires_sync='on'
+		AND disabled = ''
+		AND sync_interval != 0
+		AND (last_sync = '0000-00-00 00:00:00' OR requires_sync = 'on'
 		OR (UNIX_TIMESTAMP()-UNIX_TIMESTAMP(last_sync) >= IFNULL(sync_interval, $sync_interval)))");
 
 	foreach($pollers as $poller) {
