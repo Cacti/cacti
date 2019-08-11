@@ -3923,6 +3923,7 @@ function setSNMP() {
 				if (snmp_priv_protocol != '' && $('#snmp_priv_protocol').val() == '[None]') {
 					$('#snmp_priv_protocol').val(snmp_priv_protocol);
 					$('#snmp_priv_passphrase').val(snmp_priv_passphrase);
+					$('#snmp_priv_passphrase_confirm').val(snmp_priv_passphrase);
 				} else if ($('#snmp_priv_protocol').val() == '[None]' || $('#snmp_priv_protocol').val() == '') {
 					if (defaultSNMPPrivProtocol == '' || defaultSNMPPrivProtocol == '[None]') {
 						$('#snmp_priv_protocol').val('DES');
@@ -3946,6 +3947,7 @@ function setSNMP() {
 			if ($('#snmp_priv_protocol').val() == '[None]') {
 				$('#row_snmp_priv_passphrase').hide();
 				$('#snmp_priv_passphrase').val('');
+				$('#snmp_priv_passphrase_confirm').val('');
 			}
 
 			selectmenu = ($('#snmp_security_level').selectmenu('instance') !== undefined);
