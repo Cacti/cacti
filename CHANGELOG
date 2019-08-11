@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#2846: Support form tooltip for section header(type=spacer) with 'question' icon
 -issue#2857: When trying to find the best index to use, a 'must implement Countable' warning appears
 -issue#2860: When testing remote poller connections during install, undefined variable warning can occur
+-issue#2875: Undefined variable when removing spikes in some cases
 -issue#2878: PHP 7.4 Function get_magic_quotes_gpc() is deprecated
 -issue#2879: Switching from authPriv to authNoPriv produces error when saving
 -issue#2884: Disable replication not working

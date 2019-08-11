@@ -592,6 +592,7 @@ class spikekill {
 		}
 
 		/* create an output array */
+		$output = false;
 		if ($this->method == 1) {
 			/* standard deviation subroutine */
 			if ($this->std_kills || $this->out_kills) {
@@ -599,6 +600,7 @@ class spikekill {
 
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
+					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -614,6 +616,7 @@ class spikekill {
 
 				if (!$this->dryrun) {
 					$new_output = $this->updateXML($output, $rra);
+					$output     = true;
 				}
 			} elseif (!empty($this->out_start)) {
 				$this->strout .= ($this->html ? "<p class='spikekillNote'>":'') .
@@ -626,7 +629,7 @@ class spikekill {
 
 		/* finally update the file XML file and Reprocess the RRDfile */
 		if (!$this->dryrun) {
-			if (($this->method == 1 && $this->var_kills) || ($this->method == 2 && $this->std_kills) || ($this->method > 2 && $this->total_kills > 0)) {
+			if ($output) {
 				if ($this->writeXMLFile($new_output, $xmlfile)) {
 					if ($this->backupRRDFile($this->rrdfile)) {
 						$this->createRRDFileFromXML($xmlfile, $this->rrdfile);
