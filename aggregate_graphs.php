@@ -40,6 +40,7 @@ aggregate_prune_graphs();
 
 $graph_actions = array(
 	1 => __('Delete'),
+	5 => __('Convert to Normal Graph'),
 	4 => __('Place Graphs on Report'),
 	2 => __('Migrate Aggregate to use a Template'),
 	3 => __('Create New Aggregate from Aggregates')
@@ -284,6 +285,11 @@ function form_actions() {
                 if ($good) {
                     raise_message('reports_graphs_added');
                 }
+			} elseif (get_request_var('drp_action') == '5') { // Convert to a normal graph
+				api_aggregate_convert_to_graph($selected_items);
+
+				header('Location: aggregate_graphs.php?header=false');
+				exit;
 			} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 				$local_graph_id = get_filter_request_var('local_graph_id');
 				api_aggregate_associate($local_graph_id, $selected_items);
@@ -478,6 +484,15 @@ function form_actions() {
 				print "<tr><td class='even'><span class='textError'>" . __('You currently have no reports defined.') . "</span></td></tr>";
 				$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Return') . "' onClick='cactiReturnTo()'>";
 			}
+		} elseif (get_request_var('drp_action') == '5') { // conver to a normal graph
+			print "<tr>
+				<td colspan='2' class='textArea'>
+					<p>" . __('Click \'Continue\' to convert the following Aggregate Graph(s) into a normal Graph.') . "</p>
+					<div class='itemlist'><ul>$graph_list</ul></div>
+				</td>
+			</tr>";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Convert to normal Graph(s)') . "'>";
 		} elseif (get_request_var('drp_action') == '10') { // associate with aggregate
 			print "<tr>
 				<td class='textArea'>

@@ -967,3 +967,48 @@ function aggregate_prune_graphs($local_graph_id = 0) {
 	}
 }
 
+function api_aggregate_convert_to_graph($graphs) {
+	if (cacti_sizeof($graphs)) {
+		foreach($graphs as $graph) {
+			$ag = db_fetch_cell_prepared('SELECT id
+				FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($graph));
+
+			db_execute_prepared('DELETE FROM aggregate_graphs
+				WHERE local_graph_id = ?',
+				array($graph));
+
+			db_execute_prepared('DELETE FROM aggregate_graphs_items
+				WHERE aggregate_graph_id = ?',
+				array($ag));
+
+			db_execute_prepared('DELETE FROM aggregate_graphs_graph_item
+				WHERE aggregate_graph_id = ?',
+				array($ag));
+
+			$graph_template = db_fetch_cell_prepared('SELECT MAX(gl.graph_template_id)
+				FROM graph_local AS gl
+				INNER JOIN graph_templates_item AS gti
+				ON gl.id = gti.local_graph_id
+				INNER JOIN data_template_rrd AS dtr
+				ON dtr.id = gti.task_item_id
+				WHERE dtr.id IN (
+					SELECT DISTINCT dtr.id FROM graph_local AS gl
+					INNER JOIN graph_templates_item AS gti
+					ON gti.local_graph_id = gl.id
+					INNER JOIN data_template_rrd AS dtr
+					ON dtr.id = gti.task_item_id
+					WHERE gl.id = ?
+				)',
+				array($graph));
+
+			if ($graph_template > 0) {
+				db_execute_prepared('UPDATE graph_local
+					SET graph_template_id = ?
+					WHERE id = ?',
+					array($graph_template, $graph));
+			}
+		}
+	}
+}
