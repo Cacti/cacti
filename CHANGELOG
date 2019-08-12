@@ -28,6 +28,7 @@ Cacti CHANGELOG
 -issue#2878: PHP 7.4 Function get_magic_quotes_gpc() is deprecated
 -issue#2879: Switching from authPriv to authNoPriv produces error when saving
 -issue#2884: Disable replication not working
+-issue#2891: Script server script ss_fping.php generates error when not called by script server
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
