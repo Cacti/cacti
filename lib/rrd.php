@@ -2462,7 +2462,7 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 			if (cacti_sizeof($data_source_info)) {
 				foreach($data_source_info as $resolution) {
 					if ($graph_start > ($time - ($resolution['step'] * $resolution['steps'] * $resolution['rows']))) {
-						if ($type = 'res') {
+						if ($type == 'res') {
 							return $resolution['step'] * $resolution['steps'];
 						} else {
 							return $resolution['step'];
