@@ -261,10 +261,11 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	/* output information to the log file if appropriate */
 	cacti_log('CACTI2RRD: ' . read_config_option('path_rrdtool') . " $command_line", $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 
+	$debug = '';
 	/* if we want to see the error output from rrdtool; make sure to specify this */
 	if ($config['cacti_server_os'] != 'win32') {
 		if (($output_flag == RRDTOOL_OUTPUT_STDERR || $output_flag == RRDTOOL_OUTPUT_RETURN_STDERR) && !is_resource($rrdtool_pipe)) {
-			$command_line .= ' 2>&1';
+			$debug .= ' 2>&1';
 		}
 	}
 
@@ -285,9 +286,19 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 		session_write_close();
 		if (is_file(read_config_option('path_rrdtool')) && is_executable(read_config_option('path_rrdtool'))) {
-			$fp = popen(read_config_option('path_rrdtool') . escape_command(" $command_line"), $pipe_mode);
-			if (!is_resource($fp)) {
-				unset($fp);
+			$descriptorspec = array(
+				0 => array('pipe', 'r'),
+				1 => array('pipe', 'w')
+			);
+			
+			$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
+
+			if (!is_resource($process)) {
+				unset($process);
+			} else {
+				fwrite($pipes[0], escape_command($command_line));
+				fclose($pipes[0]);
+				$fp = $pipes[1];
 			}
 		} else {
 			cacti_log("ERROR: RRDtool executable not found, not executable or error in path '" . read_config_option('path_rrdtool') . "'.  No output written to RRDfile.");
@@ -338,7 +349,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				$output .= fgets($fp, 4096);
 			}
 
-			pclose($fp);
+			fclose($fp);
+			proc_close($process);
 
 			return $output;
 			break;
@@ -346,7 +358,8 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 		case RRDTOOL_OUTPUT_RETURN_STDERR:
 			$output = fgets($fp, 1000000);
 
-			pclose($fp);
+			fclose($fp);
+			proc_close($process);
 
 			if (substr($output, 1, 3) == 'PNG') {
 				return 'OK';
