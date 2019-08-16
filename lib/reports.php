@@ -482,14 +482,14 @@ function generate_report($report, $force = false) {
 
 	if ($error != '') {
 		if (isset_request_var('id')) {
-			$_SESSION['reports_error'] = "Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'";
+			raise_message(__('Problems sending Report \'%s\' Problem with e-mail Subsystem Error is \'%s\'', $report['name'], $error), MESSAGE_LEVEL_ERROR);
 		} else {
 			reports_log(__FUNCTION__ . ", Problems sending Report '" . $report['name'] . "'.  Problem with e-mail Subsystem Error is '$error'", false, 'REPORTS', POLLER_VERBOSITY_LOW);
 		}
 
 		return false;
 	} elseif (isset($_REQUEST)) {
-		$_SESSION['reports_info'] = "Report '" . $report['name'] . "' Sent Successfully";
+		raise_message(__('Report \'%s\' Sent Successfully', $report['name']), MESSAGE_LEVEL_INFO);
 
 		$int = read_config_option('poller_interval');
 
@@ -1469,66 +1469,6 @@ function reports_poller_bottom () {
 }
 
 /**
- * PHP error handler
- * @arg $errno
- * @arg $errmsg
- * @arg $filename
- * @arg $linenum
- * @arg $vars
- */
-function reports_error_handler($errno, $errmsg, $filename, $linenum, $vars) {
-	$errno = $errno & error_reporting();
-
-	# return if error handling disabled by @
-	if ($errno == 0) return;
-
-	# define constants not available with PHP 4
-	if(!defined('E_STRICT'))            define('E_STRICT', 2048);
-	if(!defined('E_RECOVERABLE_ERROR')) define('E_RECOVERABLE_ERROR', 4096);
-
-	if (read_config_option('log_verbosity') >= POLLER_VERBOSITY_HIGH) {
-		/* define all error types */
-		$errortype = array(
-			E_ERROR             => 'Error',
-			E_WARNING           => 'Warning',
-			E_PARSE             => 'Parsing Error',
-			E_NOTICE            => 'Notice',
-			E_CORE_ERROR        => 'Core Error',
-			E_CORE_WARNING      => 'Core Warning',
-			E_COMPILE_ERROR     => 'Compile Error',
-			E_COMPILE_WARNING   => 'Compile Warning',
-			E_USER_ERROR        => 'User Error',
-			E_USER_WARNING      => 'User Warning',
-			E_USER_NOTICE       => 'User Notice',
-			E_STRICT            => 'Runtime Notice',
-			E_RECOVERABLE_ERROR => 'Catchable Fatal Error'
-		);
-
-		/* create an error string for the log */
-		$err = "ERRNO:'"  . $errno   . "' TYPE:'"    . $errortype[$errno] .
-			"' MESSAGE:'" . $errmsg  . "' IN FILE:'" . $filename .
-			"' LINE NO:'" . $linenum . "'";
-
-		/* let's ignore some lesser issues */
-		if (substr_count($errmsg, 'date_default_timezone')) return;
-		if (substr_count($errmsg, 'Only variables')) return;
-
-		/* log the error to the Cacti log */
-		print('PROGERR: ' . $err . '<br><pre>');
-
-		# backtrace, if available
-		cacti_debug_backtrace('REPORTS', true);
-
-		if (isset($GLOBALS['error_fatal'])) {
-			if($GLOBALS['error_fatal'] & $errno) die("Fatal error $errno" . PHP_EOL);
-		}
-	}
-
-	return;
-}
-
-
-/**
  * Setup the new dropdown action for Graph Management
  * @arg $action		actions to be performed from dropdown
  */
@@ -1536,7 +1476,6 @@ function reports_graphs_action_array($action) {
 	$action['reports'] = __('Add to Report');
 	return $action;
 }
-
 
 /**
  * reports_graphs_action_prepare - perform reports_graph prepare action
@@ -1574,7 +1513,6 @@ function reports_graphs_action_prepare($save) {
 		return $save;
 	}
 }
-
 
 /**
  * reports_graphs_action_execute - perform reports_graph execute action
@@ -1665,9 +1603,8 @@ function reports_graphs_action_execute($action) {
 		}
 
 		if ($message != '') {
-			$_SESSION['reports_info'] = $message;
+			raise_message($message, MESSAGE_LEVEL_INFO);
 		}
-		raise_message('reports_info');
 	} else {
 		return $action;
 	}
