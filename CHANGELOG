@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#2856: Aggregate issues with very long RRDtool command lines
 -issue#2857: When trying to find the best index to use, a 'must implement Countable' warning appears
 -issue#2860: When testing remote poller connections during install, undefined variable warning can occur
+-issue#2862: Automation does not calculate network information correctly for single hosts
 -issue#2866: Add poller ID to subject for admin notifications
 -issue#2869: Creating Aggregates from Graphs pages not fully functional due to JavaScript issues
 -issue#2872: Cacti support for MySQL 8 and use of grouping table column
