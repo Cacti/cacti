@@ -19,7 +19,7 @@ Cacti CHANGELOG
 -issue#2846: Support form tooltip for section header(type=spacer) with 'question' icon
 -issue#2847: Permanently convert an Aggregate to a regular graph
 -issue#2848: Aggregate graphs get clipped due to incorrect date range
--issue#2856: Aggregate issues
+-issue#2856: Aggregate issues with very long RRDtool command lines
 -issue#2857: When trying to find the best index to use, a 'must implement Countable' warning appears
 -issue#2860: When testing remote poller connections during install, undefined variable warning can occur
 -issue#2866: Add poller ID to subject for admin notifications
