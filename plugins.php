@@ -425,14 +425,17 @@ function update_show_current () {
 	$sql_order = get_order_string();
 	$sql_limit = ' LIMIT ' . ($rows*(get_request_var('page')-1)) . ',' . $rows;
 
+	$sql_order = str_replace('`version` ', 'INET_ATON(`version`) ', $sql_order);
 	$sql_order = str_replace('version ', 'version+0 ', $sql_order);
 	$sql_order = str_replace('id DESC', 'id ASC', $sql_order);
 
-	$plugins = db_fetch_assoc("SELECT *
+	$sql = "SELECT *
 		FROM $table
 		$sql_where
 		$sql_order
-		$sql_limit");
+		$sql_limit";
+	cacti_log('PLUGINS-SQL: ' . $sql);
+	$plugins = db_fetch_assoc($sql);
 
 	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
 

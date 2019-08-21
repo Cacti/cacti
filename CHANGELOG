@@ -35,7 +35,7 @@ Cacti CHANGELOG
 -issue#2901: Poller overrun warning message is badly worded
 -issue#2902: Mailer incorrectly reports it is sending to noone
 -issue#2903: PHP recommendations can generate a warning causing json issues
-
+-issue#2905: Sorting plugins by version can lead to unexpected ordering
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
 -issue#2282: Installation wizard does not detect RRDtool version correctly
