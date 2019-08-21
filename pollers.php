@@ -645,9 +645,9 @@ function test_database_connection($poller = array()) {
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
 				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
-					$poller['dbssl'] = true;
+					$poller['dbssl'] = 'on';
 				} else {
-					$poller['dbssl'] = false;
+					$poller['dbssl'] = '';
 				}
 			} elseif (isset_request_var($field)) {
 				$poller[$field] = get_nfilter_request_var($field);
