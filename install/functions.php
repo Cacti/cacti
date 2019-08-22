@@ -606,7 +606,7 @@ function remote_update_config_file() {
 			$save['dbuser']    = $database_username;
 			$save['dbpass']    = $database_password;
 			$save['dbport']    = $database_port;
-			$save['dbssl']     = $database_ssl;
+			$save['dbssl']     = $database_ssl ? 'on' : '';
 
 			$poller_id = sql_save($save, 'poller', 'id', true, $connection);
 		}
