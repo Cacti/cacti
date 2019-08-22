@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -issue#2903: PHP recommendations can generate a warning causing json issues
 -issue#2905: Sorting plugins by version can lead to unexpected ordering
 -issue#2907: SSL column for multiple pollers can be incorrectly set causing SQL errors
+-issue#2908: When URL_PATH is blank, it should assume that it is '/'
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails

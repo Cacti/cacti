@@ -137,6 +137,11 @@ if (!empty($db_missing_vars)) {
 	die("config.php is $db_missing_vars" . PHP_EOL);
 }
 
+if (empty($url_path)) {
+	/* define default url path */
+	$url_path = '/';
+}
+
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
