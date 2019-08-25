@@ -434,7 +434,7 @@ function update_show_current () {
 		$sql_where
 		$sql_order
 		$sql_limit";
-	cacti_log('PLUGINS-SQL: ' . $sql);
+
 	$plugins = db_fetch_assoc($sql);
 
 	$nav = html_nav_bar('plugins.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Plugins'), 'page', 'main');
