@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#2907: SSL column for multiple pollers can be incorrectly set causing SQL errors
 -issue#2908: When URL_PATH is blank, it should assume that it is '/'
 -issue#2909: Correct usage of affect vs effect in strings
+-issue#2911: No rrd file created after executed poller
 -issue#2912: Resolve navigation caching array to string conversion issues
 -issue#2913: Selection "Graph type" not saved and restored after going to page two
 

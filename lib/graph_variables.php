@@ -49,7 +49,7 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 	include_once($config['library_path'] . '/rrd.php');
 
 	if (!is_array($local_data_ids)) {
-		return array();
+		return json_encode(array());
 	}
 
 	/* initialize some variables */
@@ -77,24 +77,24 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 
 		// See if the RRDfile contains the AVERAGE consolidation function, if so prime the array with the fetch data
 		if (rrdtool_function_contains_cf($ldi, 'AVERAGE')) {
-			$fetch_array[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
+			$fetch_array_avg[$ldi] = @rrdtool_function_fetch($ldi, $start_seconds, $end_seconds, $resolution);
 		}
 
 		/* clean up unwanted data source items from the AVERAGE cf data */
-		if (cacti_sizeof($fetch_array[$ldi])) {
-			if (isset($fetch_array[$ldi]['data_source_names'])) {
+		if (cacti_sizeof($fetch_array_avg[$ldi])) {
+			if (isset($fetch_array_avg[$ldi]['data_source_names'])) {
 				$good_data = true;
 			} else {
-				unset($fetch_array[$ldi]);
+				unset($fetch_array_avg[$ldi]);
 
 				continue;
 			}
 
 			/* discard the unused data sources, we will figure it out ourselves */
-			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $name) {
+			foreach ($fetch_array_avg[$ldi]['data_source_names'] as $index => $name) {
 				/* clean up DS items that aren't defined on the graph */
 				if (!in_array($name, $local_data_ids[$ldi])) {
-					unset($fetch_array[$ldi]['data_source_names'][$index], $fetch_array[$ldi]['values'][$index]);
+					unset($fetch_array_avg[$ldi]['data_source_names'][$index], $fetch_array_avg[$ldi]['values'][$index]);
 				}
 			}
 		}
@@ -123,13 +123,13 @@ function rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $
 	 * good data.  Else prepare a new array with summary data.
 	 */
 	if (!$good_data) {
-		return array();
+		return json_encode(array());
 	}
 
 	$stats = $stats_max = array();
 
-	if (cacti_sizeof($fetch_array)) {
-		$stats['avg'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array, 'AVERAGE');
+	if (cacti_sizeof($fetch_array_avg)) {
+		$stats['avg'] = nth_percentile_fetch_statistics($percentile, $local_data_ids, $fetch_array_avg, 'AVERAGE');
 	}
 
 	if (cacti_sizeof($fetch_array_max)) {
@@ -148,7 +148,7 @@ function nth_percentile_fetch_statistics($percentile, &$local_data_ids, &$fetch_
 			foreach ($fetch_array[$ldi]['data_source_names'] as $index => $ds_name) {
 				if (cacti_sizeof($fetch_array[$ldi]['values'][$index])) {
 					foreach ($fetch_array[$ldi]['values'][$index] as $timestamp => $data) {
-						if (isset($asum_array[$ds_name][$timestamp])) {
+						if (isset($asum_array[$ds_name]) && isset($asum_array[$ds_name][$timestamp])) {
 							$asum_array[$ds_name][$timestamp] += $data;
 						} else {
 							$asum_array[$ds_name][$timestamp]  = $data;
