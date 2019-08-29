@@ -2385,6 +2385,11 @@ function draw_navigation_text($type = 'url') {
 	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
 
+	// Do an error check here for bad plugins manipulating the cache
+	if (!is_array($nav_level_cache)) {
+		$nav_level_cache = array();
+	}
+
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
 	}
