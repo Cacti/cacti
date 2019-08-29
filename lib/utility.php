@@ -1436,17 +1436,19 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	foreach ($recs as $name => $recommends) {
-		if (cacti_sizeof($recommends)) {
-			foreach ($recommends as $index => $recommend) {
-				if ($recommend['name'] == 'version') {
-					$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
-				} elseif ($recommend['name'] == 'memory_limit') {
-					$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
-				} elseif ($recommend['name'] == 'max_execution_time') {
-					$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
-				} elseif ($recommend['name'] == 'date.timezone') {
-					$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+	if (is_array($recs) && sizeof($recs)) {
+		foreach ($recs as $name => $recommends) {
+			if (cacti_sizeof($recommends)) {
+				foreach ($recommends as $index => $recommend) {
+					if ($recommend['name'] == 'version') {
+						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+					} elseif ($recommend['name'] == 'memory_limit') {
+						$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
+					} elseif ($recommend['name'] == 'max_execution_time') {
+						$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
+					} elseif ($recommend['name'] == 'date.timezone') {
+						$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+					}
 				}
 			}
 		}
