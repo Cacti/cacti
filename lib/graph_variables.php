@@ -420,14 +420,48 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		switch ($type) {
 			case 'current':
 				// Query data for the individual case
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				if (!sizeof($local_data_array)) {
+					$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				} elseif (!sizeof($local_data_array[$graph_item['local_data_id']])) {
+					$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				} else {
+					$append = true;
+
+					foreach($local_data_array[$graph_item['local_data_id']] as $data_source_name) {
+						if ($graph_item['data_source_name'] == $data_source_name) {
+							$append = false;
+							break;
+						}
+					}
+
+					if ($append) {
+						$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+					}
+				}
 
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 
 				break;
 			case 'max':
 				// Query data for the individual case
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				if (!sizeof($local_data_array)) {
+					$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				} elseif (!sizeof($local_data_array[$graph_item['local_data_id']])) {
+					$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+				} else {
+					$append = true;
+
+					foreach($local_data_array[$graph_item['local_data_id']] as $data_source_name) {
+						if ($graph_item['data_source_name'] == $data_source_name) {
+							$append = false;
+							break;
+						}
+					}
+
+					if ($append) {
+						$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
+					}
+				}
 
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 

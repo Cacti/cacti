@@ -32,6 +32,7 @@ Cacti CHANGELOG
 -issue#2879: Switching from authPriv to authNoPriv produces error when saving
 -issue#2884: Disable replication not working
 -issue#2891: Script server script ss_fping.php generates error when not called by script server
+-issue#2895: 'current' Percentile Calculation Incorrect on Graphs with Muliple Data Sources from Different RRDs
 -issue#2901: Poller overrun warning message is badly worded
 -issue#2902: Mailer incorrectly reports it is sending to noone
 -issue#2903: PHP recommendations can generate a warning causing json issues
