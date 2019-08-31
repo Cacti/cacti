@@ -44,6 +44,7 @@ Cacti CHANGELOG
 -issue#2912: Resolve navigation caching array to string conversion issues
 -issue#2913: Selection "Graph type" not saved and restored after going to page two
 -issue#2917: Cacti zoom box can overlap action icons making them unselectable due to size issues
+-issue#2919: Skin paper plane and skin paw not work well with jquery widget tabs
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails

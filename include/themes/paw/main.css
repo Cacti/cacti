@@ -1678,6 +1678,8 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
+	width: 74px;
+	white-space: nowrap;
 }
 
 .maintabs {
@@ -2327,3 +2329,9 @@ td.center > table {
 .ui-menu-item-wrapper {
 	white-space: nowrap;
 }
+
+.ui-tabs-active .ui-tabs-anchor {
+	color: #FFFFFF !important;
+}
+
+
