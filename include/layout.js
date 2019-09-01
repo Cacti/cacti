@@ -2670,15 +2670,18 @@ function keepWindowSize() {
 
 function hideCurrentTab(id, shrinking) {
 	if ($('#'+id+'-ellipsis').length == 0) {
-		var myid = id+'-ellipsis';
-		var href = $('#'+id).attr('href');
-		var text = $('#'+id).text();
+		var myid     = id+'-ellipsis';
+		var href     = $('#'+id).attr('href');
+		var selected = $('#'+id).hasClass('selected');
+		var text     = $('#'+id).text();
 
 		if (shrinking) {
-			$('#submenu-ellipsis').prepend('<li><a id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').prepend('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
 		} else {
-			$('#submenu-ellipsis').append('<li><a id="'+myid+'" href="'+href+'">' + text + '</a></li>');
+			$('#submenu-ellipsis').append('<li><a class="lefttab' + (selected ? ' selected':'') + '" id="'+myid+'" href="'+href+'">' + text + '</a></li>');
 		}
+
+		setupResponsiveMenuAndTabs();
 
 		$('#'+id).parent().hide();
 	}
