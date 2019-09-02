@@ -233,4 +233,3 @@ function setMenuVisibility() {
 		});
 	});
 }
-

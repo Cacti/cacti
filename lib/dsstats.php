@@ -27,11 +27,11 @@
      average and peak calculations.
    @returns - (mixed) The RRDfile names */
 function get_rrdfile_names() {
-	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path 
-		FROM data_template_data 
-		LEFT JOIN poller_item 
-		ON poller_item.local_data_id = data_template_data.local_data_id 
-		WHERE poller_item.local_data_id IS NOT NULL 
+	return db_fetch_assoc('SELECT data_template_data.local_data_id, data_source_path
+		FROM data_template_data
+		LEFT JOIN poller_item
+		ON poller_item.local_data_id = data_template_data.local_data_id
+		WHERE poller_item.local_data_id IS NOT NULL
 		AND data_template_data.local_data_id != 0');
 }
 
@@ -43,6 +43,35 @@ function dsstats_debug($message) {
 
 	if ($debug) {
 		print 'DSSTATS: ' . $message . "\n";
+	}
+}
+
+function dsstats_find_log_bad_maxvalues() {
+	$last_date = read_config_option('dsstats_last_daily_run_time');
+
+	$bad_values = db_fetch_assoc_prepared('SELECT dtr.local_data_id, dtr.data_source_name,
+		MAX(IF(CONVERT(dshc.value, CHAR) = "U", NULL, dshc.value)) AS max_value,
+		MIN(IF(CONVERT(dshc.value, CHAR) = "U", NULL, dshc.value)) AS min_value,
+		rrd_maximum, rrd_minimum
+		FROM data_template_rrd AS dtr
+		INNER JOIN data_source_stats_hourly_cache AS dshc
+		ON dshc.local_data_id = dtr.local_data_id
+		AND dshc.rrd_name = dtr.data_source_name
+		WHERE `time` > ?
+		AND CONVERT(value, CHAR) != "U"
+		GROUP BY dtr.local_data_id
+		HAVING (rrd_maximum != "U" AND max_value > rrd_maximum)
+		OR (rrd_minimum != "U" AND min_value < rrd_minimum)',
+		array($last_date));
+
+	if (cacti_sizeof($bad_values)) {
+		foreach($bad_values as $v) {
+			if ($v['max_value'] > $v['rrd_maximum']) {
+				cacti_log('WARNING: Max Range Error for DS[' . $local_data_id . '] Observed: ' . $v['max_value'] . ' RRDMax: ' . $v['rrd_maximum'] . '.', false, 'DSSTATS');
+			} else {
+				cacti_log('WARNING: Min Range Error for DS[' . $local_data_id . '] Observed: ' . $v['min_value'] . ' RRDMin: ' . $v['rrd_minimum'] . '.', false, 'DSSTATS');
+			}
+		}
 	}
 }
 
@@ -522,7 +551,7 @@ function dsstats_poller_output(&$rrd_update_array) {
 
 							if (is_numeric($value)) {
 								$result['output'] = $value;
-							} elseif ($value == 'U' || strtolower($value) == 'nan') {
+							} elseif ($value == 'U' || strtolower($value) == 'nan' || strtolower($value) === 'n/a') {
 								$result['output'] = 'NULL';
 							} else {
 								$result['output'] = 'NULL';
@@ -740,6 +769,9 @@ function dsstats_boost_bottom() {
 
 	if (read_config_option('dsstats_enable') == 'on') {
 		include_once($config['base_path'] . '/lib/rrd.php');
+
+		/* search for range errors */
+		dsstats_find_log_bad_maxvalues();
 
 		/* run the daily stats. log to database to prevent secondary runs */
 		set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', time()));

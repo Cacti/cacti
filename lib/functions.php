@@ -483,59 +483,69 @@ function read_config_option($config_name, $force = false) {
  *
  * @return - the theme name
  */
-function get_selected_theme() {
+function get_selected_theme($theme = 'cacti') {
 	global $config, $themes;
 
 	// shortcut if theme is set in session
 	if (isset($_SESSION['selected_theme'])) {
-		if (file_exists($config['base_path'] . '/include/themes/' . $_SESSION['selected_theme'] . '/main.css')) {
-			return $_SESSION['selected_theme'];
+		$theme = $_SESSION['selected_theme'];
+	} else {
+		// default to system selected theme
+		$theme = read_config_option('selected_theme');
+
+		// check for a pre-1.x cacti being upgraded
+		if ($theme == '') {
+			$theme = 'cacti';
+		}
+
+		// figure out user defined theme
+		if (isset($_SESSION['sess_user_id']) && db_table_exists('settings_user')) {
+			// fetch user defined theme
+			$user_theme = db_fetch_cell_prepared("SELECT value
+				FROM settings_user
+				WHERE name='selected_theme'
+				AND user_id = ?",
+				array($_SESSION['sess_user_id']));
+
+			// user has a theme
+			if (! empty($user_theme)) {
+				$theme = $user_theme;
+			}
 		}
 	}
 
-	// default to system selected theme
-	$theme = read_config_option('selected_theme');
-
-	// check for a pre-1.x cacti being upgraded
-	if ($theme == '' && !db_table_exists('settings_user')) {
-		return 'modern';
+	if (is_valid_theme($theme, true)) {
+		$_SESSION['selected_theme'] = $theme;
 	}
 
-	// figure out user defined theme
-	if (isset($_SESSION['sess_user_id'])) {
-		// fetch user defined theme
-		$user_theme = db_fetch_cell_prepared("SELECT value
-			FROM settings_user
-			WHERE name='selected_theme'
-			AND user_id = ?",
-			array($_SESSION['sess_user_id']), '', false);
+	return $theme;
+}
 
-		// user has a theme
-		if (! empty($user_theme)) {
-			$theme = $user_theme;;
-		}
-	}
-
+function is_valid_theme(&$theme, $set_user = false) {
+	global $themes, $config;
+	$valid = true;
 	if (!file_exists($config['base_path'] . '/include/themes/' . $theme . '/main.css')) {
+		$valid = false;
+		$user_table = db_table_exists('settings_user');
 		foreach($themes as $t => $name) {
 			if (file_exists($config['base_path'] . '/include/themes/' . $t . '/main.css')) {
 				$theme = $t;
+				$valid = true;
 
-				db_execute_prepared('UPDATE settings_user
-					SET value = ?
-					WHERE user_id = ?
-					AND name="selected_theme"',
-					array($theme, $_SESSION['sess_user_id']));
-
+				if ($user_table && $set_user && isset($_SESSION['sess_user_id'])) {
+					db_execute_prepared('UPDATE settings_user
+						SET value = ?
+						WHERE user_id = ?
+						AND name="selected_theme"',
+						array($theme, $_SESSION['sess_user_id']));
+				}
 				break;
 			}
 		}
 	}
 
 	// update session
-	$_SESSION['selected_theme'] = $theme;
-
-	return $theme;
+	return $valid;
 }
 
 /* form_input_validate - validates the value of a form field and Takes the appropriate action if the input
@@ -2360,6 +2370,7 @@ function draw_login_status($using_guest_account = false) {
 		print __('Logged in as') . " <span id='user' class='user usermenuup'>" . html_escape($user['username']) .
 			"</span></div><div><ul class='menuoptions' style='display:none;'>";
 		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit'>" . __('Edit Profile') . "</a></li>":"");
+		print (is_realm_allowed(20) ? "<li><a href='" . $config['url_path'] . "auth_profile.php?action=edit&tab=2fa'>" . __('Edit 2FA Settings') . "</a></li>":"");
 		print ($user['password_change'] == 'on' && $user['realm'] == 0 ? "<li><a href='" . $config['url_path'] . "auth_changepassword.php'>" . __('Change Password') . "</a></li>":'');
 		print "<li class='menuHr'><hr class='menu'></li>";
 		print "<li id='userCommunity'><a href='https://forums.cacti.net' target='_blank'>" . __('User Community') . "</a></li>";
@@ -4910,13 +4921,90 @@ function date_time_format() {
 	}
 }
 
+function get_source_timestamp() {
+	global $config;
+	$timestamp = 0;
+	if (file_exists($config['base_path'] . '/.git/')) {
+		$shell = @shell_exec('git log -1 --pretty=format:%ct.%h');
+		$parts = explode('.', $shell);
+	} else {
+		$parts =  array(0 => -1, 1 => 'UNKNOWN');
+	}
+	return $parts;
+}
+
+function format_cacti_version($version, $format = CACTI_VERSION_FORMAT_FULL) {
+	if ($version == 'new_install') {
+		$version = ($format == CACTI_VERSION_FORMAT_FULL) ? CACTI_VERSION_FULL : CACTI_VERSION;
+	}
+
+	$parts = explode('.', $version);
+
+	if (count($parts) > 3) {
+		if ($parts[3] == '-1') {
+			$source = get_source_timestamp();
+			$parts[3] = 99;
+			$parts[4] = $source[0];
+			$parts[5] = $source[1];
+		}
+	}
+
+	if ($format != CACTI_VERSION_FORMAT_FULL) {
+		$parts = array_slice($parts, 0, 3);
+	}
+
+	return implode('.', $parts);
+}
+
+function format_cacti_version_text($version) {
+	$version = format_cacti_version($version);
+
+	$parts = explode('.', $version);
+	while (count($parts) < 6) {
+		$parts[] = '0';
+	}
+
+	$mode = '';
+	if ($parts[3] == '99') {
+		$stamp = '';
+		if ($parts[4] > 0) {
+			$dateTime = new DateTime();
+			$dateTime->setTimestamp($parts[4]);
+			$dateTime = $dateTime->format('Y-m-d H:i');
+
+			if ($parts[5]) {
+				$stamp = $parts[5] . ' @ ';
+			}
+			$stamp .= $dateTime;
+		}
+		$mode = __('- Dev %s', $stamp);
+	} else if ($parts[3] > '0') {
+		$mode = __('- Beta %s', $parts[3]);
+	}
+
+	return trim(sprintf('%s.%s.%s %s', $parts[0], $parts[1], $parts[2], $mode));
+}
+
 /**
- * get_cacti_version    Generic function to get the cacti version
+ * get_cacti_db_version    Generic function to get the cacti version from the db
  */
-function get_cacti_version() {
+function get_cacti_db_version($force = false) {
 	static $version = '';
 
-	if ($version == '') {
+	if ($version == '' || $force) {
+		$version = trim(format_cacti_version(get_cacti_db_version_raw($force)));
+	}
+
+	return $version;
+}
+
+/**
+ * get_cacti_db_version_raw    Generic function to get the cacti version from the db
+ */
+function get_cacti_db_version_raw($force = false) {
+	static $version = '';
+
+	if ($version == '' || $force) {
 		$version = trim(db_fetch_cell('SELECT cacti FROM version LIMIT 1'));
 	}
 
@@ -4926,30 +5014,35 @@ function get_cacti_version() {
 /**
  * get_cacti_version_text    Return the cacti version text including beta moniker
  */
-function get_cacti_version_text($include_version = true) {
+function get_cacti_version_text($include_version = true, $version = CACTI_VERSION_FULL) {
+	$version_text = format_cacti_version_text($version);
 	if ($include_version) {
-		return trim(__('Version %s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return trim(__('Version %s %s', $version_text, ''));
 	} else {
-		return trim(__('%s %s', CACTI_VERSION, (defined('CACTI_VERSION_BETA') ? __('- Beta %s', CACTI_VERSION_BETA):'')));
+		return $version_text;
 	}
 }
 
 /**
  * get_cacti_cli_version() {
  */
-function get_cacti_cli_version() {
-	$dbversion = get_cacti_version();
-	$version = get_cacti_version_text(false);
-	return $version . ' (DB: ' . $dbversion . ')';
+function get_cacti_cli_version($include_db = true, $version = CACTI_VERSION_FULL) {
+	$version = get_cacti_version_text(false, $version);
+
+	$dbversion = '';
+	if ($include_db) {
+		$dbversion = ' (DB: v' . get_cacti_db_version() . ')';
+	}
+
+	return $version . $dbversion;
 }
 
 /**
  * cacti_version_compare - Compare Cacti version numbers
  */
 function cacti_version_compare($version1, $version2, $operator = '>') {
-	$length   = max(cacti_sizeof(explode('.', $version1)), cacti_sizeof(explode('.', $version2)));
-	$version1 = version_to_decimal($version1, $length);
-	$version2 = version_to_decimal($version2, $length);
+	$version1 = version_to_decimal($version1);
+	$version2 = version_to_decimal($version2);
 
 	switch ($operator) {
 		case '<':
@@ -4977,38 +5070,140 @@ function cacti_version_compare($version1, $version2, $operator = '>') {
 				return true;
 			}
 			break;
+		case '<>':
+		case '!=':
+			if ($version1 != $version2) {
+				return true;
+			}
+			break;
 		default:
 			return version_compare($version1, $version2, $operator);
 	}
 	return false;
 }
 
+function is_install_needed($version = NULL)
+{
+	$mode = '==';
+	$db = get_cacti_db_version();
+	if ($version === NULL) {
+		$version = CACTI_VERSION_FULL;
+	}
+
+	if (is_cacti_develop($version)) {
+		$version = CACTI_DEV_VERSION;
+		$mode = '<';
+	}
+
+	$result = (cacti_version_compare($db, $version, $mode));
+	if (function_exists('log_install_medium')) {
+		log_install_medium('step', "$result = (cacti_version_compare($db, $version, $mode)");
+	}
+	return $result;
+}
+
+function is_cacti_develop($version = null)
+{
+	static $isStaticRelease = null;
+
+	if ($isStaticRelease === null || $version !== null) {
+		if ($version === null) {
+			$version = CACTI_VERSION_FULL;
+		} else {
+			$version = format_cacti_version($version);
+		}
+
+		$parts     = explode('.', $version);
+		$isRelease = (count($parts) > 3 && $parts[3] == '99');
+
+		if ($version === null) {
+			$isStaticRelease = $isRelease;
+		}
+	} else {
+		$isRelease = $isStaticRelease;
+	}
+
+	return $isRelease;
+}
+
+function is_cacti_release($version = null)
+{
+	static $isStaticRelease = null;
+
+	if ($isStaticRelease === null || $version !== null) {
+		if ($version === null) {
+			$version = CACTI_VERSION_FULL;
+		} else {
+			$version = format_cacti_version($version);
+		}
+
+		$parts     = explode('.', $version);
+		$isRelease = ((count($parts) < 4) || ($parts[3] == '0'));
+
+		if ($version === null) {
+			$isStaticRelease = $isRelease;
+		}
+	} else {
+		$isRelease = $isStaticRelease;
+	}
+
+	return $isRelease;
+}
+
 /**
  * version_to_decimal - convert version string to decimal
  */
-function version_to_decimal($version, $length = 1) {
+function version_to_decimal($version, $length = 8, $hex = true) {
 	$newver = '';
 	$minor  = '';
 
 	$parts = explode('.', $version);
-	foreach($parts as $part) {
-		if (is_numeric($part)) {
-			$part = substr('00' . $part, -2);
-			$newver .= $part;
-		} else {
-			$minor = substr($part, -1);
-			$major = substr($part, 0, strlen($part)-1);
-			$major = substr('00' . $major, -2);
-			$newver .= $major;
+	$section = 0;
+	while($section < $length) {
+		$prefix  = '00';
+		if ($section >= cacti_sizeof($parts)) {
+			if ($section >= 3 && $section < 5) {
+				$prefix = '99';
+			}
+			$parts[$section] = $prefix;
 		}
-	}
 
-	if (cacti_sizeof($parts) < $length) {
-		$i = cacti_sizeof($parts);
-		while($i < $length) {
-			$newver .= '00';
-			$i++;
+		$part = $parts[$section];
+		$extras = false;
+
+		if ($part == 'x') {
+			$part = '0';
+		} elseif (is_numeric($part)) {
+			if ($part > 100000) {
+				$extras = array();
+				while ($part > '') {
+					$sub = substr('00' . $part, -2);
+					array_unshift($extras, $sub);
+					$part = (strlen($part) >= 2) ? substr($part,0, strlen($part)-2) : '';
+				}
+			}
+		} elseif ($part != 'x') {
+			//printf ("sub: %s, ", $part);
+			$minor  = ord(strtoupper(substr($part, -1))) - ord('0') + 1;
+			$major  = substr($part, 0, strlen($part)-1);
+			$extras = array($major,99,99,$minor);
 		}
+
+		if (is_array($extras)) {
+			$sub = 0;
+			foreach ($extras as $extra) {
+				//printf ("extra: %s, ", $extra);
+				$parts[$section+$sub] = $extra;
+				$sub++;
+			}
+
+			$part = $parts[$section];
+		}
+
+		$part    = substr($prefix . $part, -2);
+		$newver .= $part;
+
+		$section++;
 	}
 
 	if ($minor != '') {
@@ -5017,7 +5212,7 @@ function version_to_decimal($version, $length = 1) {
 		$int = 0;
 	}
 
-	return hexdec($newver) * 1000 + $int;
+	return $hex ? hexdec($newver) : $newver;
 }
 
 /**

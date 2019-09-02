@@ -128,7 +128,7 @@ function get_max_column_width() {
 }
 
 function display_version() {
-	$version = get_cacti_version();
+	$version = get_cacti_cli_version();
 	echo "Cacti Legacy Host Data Collector, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 

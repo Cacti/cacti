@@ -786,9 +786,9 @@ function network_edit() {
 			noneSelectedText: '<?php print __('Select the days(s) of the week');?>',
 			header: false,
 			height: 54,
-			multipleRow: true,
-			multipleRowWidth: 90,
-			minWidth: 450
+			groupColumns: true,
+			groupColumnsWidth: 90,
+			menuWidth: 385
 		});
 
 		$('#month').multiselect({
@@ -796,9 +796,9 @@ function network_edit() {
 			noneSelectedText: '<?php print __('Select the month(s) of the year');?>',
 			header: false,
 			height: 82,
-			multipleRow: true,
-			multipleRowWidth: 90,
-			minWidth: 400
+			groupColumns: true,
+			groupColumnsWidth: 90,
+			menuWidth: 380
 		});
 
 		$('#day_of_month').multiselect({
@@ -806,9 +806,9 @@ function network_edit() {
 			noneSelectedText: '<?php print __('Select the day(s) of the month');?>',
 			header: false,
 			height: 162,
-			multipleRow: true,
-			multipleRowWidth: 55,
-			minWidth: 400
+			groupColumns: true,
+			groupColumnsWidth: 50,
+			menuWidth: 275
 		});
 
 		$('#monthly_week').multiselect({
@@ -816,9 +816,9 @@ function network_edit() {
 			noneSelectedText: '<?php print __('Select the week(s) of the month');?>',
 			header: false,
 			height: 28,
-			multipleRow: true,
-			multipleRowWidth: 70,
-			minWidth: 300
+			groupColumns: true,
+			groupColumnsWidth: 70,
+			menuWidth: 300
 		});
 
 		$('#monthly_day').multiselect({
@@ -826,9 +826,9 @@ function network_edit() {
 			noneSelectedText: '<?php print __('Select the day(s) of the week');?>',
 			header: false,
 			height: 54,
-			multipleRow: true,
-			multipleRowWidth: 90,
-			minWidth: 450
+			groupColumns: true,
+			groupColumnsWidth: 90,
+			menuWidth: 385
 		});
 
 		$('#start_at').datetimepicker({

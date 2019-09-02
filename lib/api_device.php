@@ -890,7 +890,7 @@ function api_device_update_host_template($host_id, $host_template_id) {
 	}
 
 	/* remove unused graph templates not assigned to the device template */
-	$unused_graph_templates = db_fetch_assoc_prepared('SELECT
+	$unused_graph_templates = db_fetch_assoc_prepared('SELECT DISTINCT
 		hg.graph_template_id AS id, gt.name, result.gtid
 		FROM host_graph AS hg
 		LEFT JOIN graph_templates AS gt

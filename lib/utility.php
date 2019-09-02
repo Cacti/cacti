@@ -961,10 +961,10 @@ function utilities_get_mysql_recommendations() {
 			'comment' => __('InnoDB will hold as much tables and indexes in system memory as is possible.  Therefore, you should make the innodb_buffer_pool large enough to hold as much of the tables and index in memory.  Checking the size of the /var/lib/mysql/cacti directory will help in determining this value.  We are recommending 25%% of your systems total memory, but your requirements will vary depending on your systems size.')
 			),
 		'innodb_doublewrite' => array(
-			'value'   => 'OFF',
+			'value'   => 'ON',
 			'measure' => 'equalint',
-			'class' => 'warning',
-			'comment' => __('With modern SSD type storage, this operation actually degrades the disk more rapidly and adds a 50%% overhead on all write operations.')
+			'class' => 'error',
+			'comment' => __('This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance.')
 			),
 		'innodb_additional_mem_pool_size' => array(
 			'value'   => '80M',

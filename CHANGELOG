@@ -1,5 +1,18 @@
 Cacti CHANGELOG
 
+1.3.0-dev
+-feature#1523: Value above RRD maximum value
+
+1.2.6
+-issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
+-issue#2829: PHP recommendations always see memory limit as unlimited
+-issue#2830: Disabled Top/Bottom external links should not be displayed
+-issue#2833: Undefined index in lib/rrd.php under certain circumstances
+-issue#2834: Boost performance drops on very large systems
+-issue#2835: When creating graphs and inneficient query is causing long creation times
+-issue#2837: Sunrise theme does not render checkboxes 100% correctly
+-issue#2838: jQueryMultiselect Used in Cacti does not match upstream
+
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails
 -issue#2282: Installation wizard does not detect RRDtool version correctly

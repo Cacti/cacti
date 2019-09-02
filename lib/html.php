@@ -62,8 +62,8 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 		$add_label = __('Add');
 	}
 
-	if (defined('CACTI_VERSION_BETA') && $title != '') {
-		$title .= ' [ ' . get_cacti_version_text(false) . ' ]';
+	if (!is_cacti_release() && $title != '') {
+		$title .= ' [ ' . CACTI_VERSION_BRIEF_FULL . ' ]';
 	}
 
 	$table_prefix = basename(get_current_page(), '.php');;
@@ -165,14 +165,12 @@ function html_graph_template_multiselect() {
 				msWidth = maxWidth;
 			}
 		}
-
-		$('#graph_template_id').css('width', msWidth+120+'px');
 	});
 
 	$('#graph_template_id').hide().multiselect({
 		height: 300,
-		menuWidth: 420,
-		buttonWidth: 420,
+		menuWidth: 'auto',
+		buttonWidth: 'auto',
 		noneSelectedText: '<?php print __('All Graphs & Templates');?>',
 		selectedText: function(numChecked, numTotal, checkedItems) {
 			myReturn = numChecked + ' <?php print __('Templates Selected');?>';
@@ -2282,7 +2280,7 @@ function html_spikekill_js() {
 	<?php
 }
 
-/* html_common_header - prints a common set of header, css and javascript links
+/* dhtml_common_header - prints a common set of header, css and javascript links
    @arg title - the title of the page to place in the browser
    @arg selectedTheme - optionally sets a specific theme over the current one
 */
@@ -2388,10 +2386,12 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/default/style.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.css');
+	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.multiselect.filter.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.timepicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.colorpicker.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/c3.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/pace.css');
+	print get_md5_include_css('include/fa/css/all.css');
 	print get_md5_include_css('include/fa/css/fontawesome.css');
 	print get_md5_include_css('include/vendor/flag-icon-css/css/flag-icon.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/main.css');
@@ -2439,4 +2439,57 @@ function html_common_header($title, $selectedTheme = '') {
 		print get_md5_include_css('include/themes/custom.css');
 	}
 	api_plugin_hook('page_head');
+}
+
+function html_auth_header($section, $browser_title, $legend, $title, $hook_args = array()) {
+	global $themes;
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<!-- <?php print "${section}_title"; ?> -->
+	<?php html_common_header(api_plugin_hook_function("${section}_title", $browser_title));?>
+</head>
+<body>
+<div class='cactiAuthBody'>
+	<div class='cactiAuthCenter'>
+		<div class='cactiAuthArea'>
+			<legend><?php print $legend;?></legend><hr />
+			<form name='auth' method='post' action='<?php print get_current_page();?>'>
+				<input type='hidden' name='action' value='<?php print $section; ?>'>
+				<?php api_plugin_hook_function("${section}_before", $hook_args);	?>
+				<div class='cactiAuthTitle'>
+					<table class='cactiAuthTable'>
+						<tr><td><?php print $title; ?></td></tr>
+					</table>
+				</div>
+				<div class='cactiAuth'>
+					<table class='cactiAuthTable'>
+<?php
+}
+
+function html_auth_footer($section, $error = '', $html = '') {
+?>
+					</table>
+				</div>
+				<?php api_plugin_hook("${section}_after"); ?>
+			</form>
+			<hr />
+			<div class='cactiAuthErrors'>
+				<?php print $error; ?>
+			</div>
+			<div class='versionInfo'>
+				<?php print __('Version %1$s | %2$s', CACTI_VERSION_BRIEF, COPYRIGHT_YEARS_SHORT);?>
+			</div>
+		</div>
+	</div>
+	<div class='cactiAuthLogo'></div>
+<?php
+	print $html;
+	include_once(dirname(__FILE__) . '/../include/global_session.php');
+?>
+</div>
+</body>
+</html>
+<?php
 }

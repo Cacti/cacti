@@ -821,11 +821,11 @@ label {
 	margin-right: 2px;
 }
 
-.loginLeft, .logoutLeft {
+.cactiAuthLeft {
 	display: none;
 }
 
-.loginCenter, .logoutCenter {
+.cactiAuthCenter {
 	position: absolute;
 	background-color: transparent;
 	width: 300px;
@@ -836,33 +836,37 @@ label {
 	margin: -100px 0 0 -150px;
 }
 
-.cactiLoginLogo, .cactiLogoutLogo {
+.cactiAuthCenter legend {
+
+}
+
+.cactiAuthLogo {
 	display: none;
 }
 
-.loginArea, .logoutArea {
+.cactiAuthArea {
 	color: #9d9d9d;
 }
 
-.cactiLoginTable td {
+.cactiAuthTable td {
 	padding-bottom: 6px;
 	padding-right: 6px;
 }
 
-.cactiLoginTable input.ui-button {
+.cactiAuthTable input.ui-button {
 	border: 1px solid #93CEFF;
 	color: #93CEFF;
 	background: transparent;
 	outline-style: none;
 }
 
-.cactiLoginTable input.ui-button:hover {
+.cactiAuthTable input.ui-button:hover {
 	color: #FFFFFF;
 	border: 1px solid #FFFFFF;
 	background: #5CB85C;
 }
 
-.loginErrors, .logoutErrors {
+.cactiAuthErrors {
 	color: red;
 	min-height: 15px;
 }
@@ -873,13 +877,13 @@ legend {
 	font-weight: bold;
 }
 
-.loginRight, .logoutRight {
+.cactiAuthRight {
 	display: none;
 	width: 33%;
 	float: right;
 }
 
-.loginBody, .logoutBody {
+.cactiAuthBody {
 	height: 100% !important;
 	width: 100% !important;
 	background: #1D1F21;
@@ -988,7 +992,7 @@ legend {
 	display: inline-block;
 }
 
-.loginPanel {
+.cactiAuthPanel {
 	padding: 4px 0px;
 }
 
@@ -2073,7 +2077,7 @@ tr.selected a {
 	color: #0000CD;
 }
 
-#nav li a.pic:hover:not(.selected) {
+#nav li a.pic:hover:not(.selected), #nav li a.menu_parent:hover:not(.selected) {
 
 }
 
@@ -2319,14 +2323,38 @@ tr#realtime td:first-child {
 	background: transparent;
 }
 
-.ui-multiselect {
-	padding: 0.4em 1em;
+.ui-multiselect-checkboxes span {
+	font-size: 12px;
+	color: black;
+}
+
+.ui-multiselect-header {
+	background-color: #E5E5E5;
+}
+
+.ui-multiselect, .ui-multiselect-button, .ui-selectmenu-button {
+	padding: 0.3em 0.5em !important;
 	text-align: left;
 	line-height: initial;
 }
 
-.ui-multiselect .ui-icon {
-	margin-top: 0px;
+.ui-multiselect-filter, .ui-widget-header {
+	font-weight: normal !important;
+}
+
+.ui-multiselect-header ul {
+	margin-top: 4px;
+	height: 15px;
+	float: left;
+}
+
+.ui-multiselect-filter {
+	margin-bottom: 4px;
+}
+
+.ui-multiselect-filter-label > input {
+	padding: 2px;
+	margin-left: 4px;
 }
 
 .ui-widget {
