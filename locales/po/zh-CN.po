@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Cacti Chinese Language File\n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2019-07-11 21:14+0000\n"
-"PO-Revision-Date: 2019-07-15 19:17+0000\n"
+"PO-Revision-Date: 2019-07-26 13:15+0000\n"
 "Last-Translator: tomcat <luis_126@126.com>\n"
 "Language-Team: Chinese (Simplified) <http://translate.cacti.net/projects/"
 "cacti/core/zh-CN/>\n"
@@ -87,7 +87,6 @@ msgstr "本程序是基于帮助别人的想法而发布的,但它没有任何�
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1408 tree.php:1561
 #: tree.php:1621 tree.php:1642 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
-#, fuzzy
 msgid "Delete"
 msgstr "删除"
 
@@ -4502,7 +4501,6 @@ msgid "View"
 msgstr "查看图形"
 
 #: graph_view.php:601 graph_view.php:803 include/global_arrays.php:1072
-#, fuzzy
 msgid "View Graphs"
 msgstr "查看图形"
 
