@@ -420,17 +420,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		switch ($type) {
 			case 'current':
 				// Query data for the individual case
-				$local_data_array = array();
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
-
+				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 
 				break;
 			case 'max':
 				// Query data for the individual case
-				$local_data_array = array();
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
-
+				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 
 				break;
