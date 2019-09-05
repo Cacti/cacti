@@ -122,7 +122,6 @@ function run_data_query($host_id, $snmp_query_id) {
 			$result = $arguments['result'];
 		} else {
 			query_debug_timer_offset('data_query', __('Unknown Type = \'%s\'.', $type_id));
-			unset($result);
 		}
 	}
 
