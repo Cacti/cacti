@@ -1838,10 +1838,15 @@ function generate_graph_best_cf($local_data_id, $requested_cf, $ds_step = 60) {
 	static $best_cf;
 
 	if ($local_data_id > 0) {
+		$first_step = db_fetch_cell_prepared('SELECT rrd_step
+			FROM data_template_data
+			WHERE local_data_id = ?',
+			array($local_data_id));
+
 		$avail_cf_functions = get_rrd_cfs($local_data_id);
 
 		/* hack for odd RRDtool behavior in first RRA */
-		if ($ds_step < 300 && isset($avail_cf_functions[1])) {
+		if ($ds_step == $first_step && isset($avail_cf_functions[1])) {
 			$best_cf = '3';
 		} elseif (cacti_sizeof($avail_cf_functions)) {
 			/* workaround until we have RRA presets in 0.8.8 */

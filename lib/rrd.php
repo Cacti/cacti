@@ -349,8 +349,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				$output .= fgets($fp, 4096);
 			}
 
-			fclose($fp);
-			proc_close($process);
+			pclose($fp);
 
 			return $output;
 			break;
@@ -2478,7 +2477,7 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 						if ($type == 'res') {
 							return $resolution['step'] * $resolution['steps'];
 						} else {
-							return $resolution['step'];
+							return $resolution['step'] * $resolution['steps'];;
 						}
 					}
 				}
