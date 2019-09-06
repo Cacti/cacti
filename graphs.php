@@ -42,8 +42,6 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-validate_graph_request_vars();
-
 $graph_actions = array(
 	1  => __('Delete'),
 );
@@ -121,6 +119,7 @@ switch (get_request_var('action')) {
 		break;
 	default:
 		top_header();
+		validate_graph_request_vars();
 		graph_management();
 		bottom_footer();
 
@@ -225,11 +224,18 @@ function parse_validate_graph_template_id($variable) {
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
-	get_filter_request_var('host_id');
 	get_filter_request_var('host_id_prev');
 	get_filter_request_var('graph_template_graph_id');
 	get_filter_request_var('local_graph_template_graph_id');
 	/* ==================================================== */
+
+	/* handle special case of callback on host_id */
+	if (!is_numeric(get_nfilter_request_var('host_id'))) {
+cacti_log('here');
+		set_request_var('host_id', get_request_var('host_id_prev'));
+	} else {
+		get_filter_request_var('host_id');
+	}
 
 	$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
 	$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
