@@ -34,7 +34,7 @@ elif [ -f /etc/debian_version ]; then
 	RRA_ARCHIVE="/usr/share/cacti/site/rra/archive/"
 	RRA_SHELL="/var/lib/cacti/rra/shell.php"
 	POLLER="/usr/share/cacti/site/poller.php"
-	WEBUSER="apache"
+	WEBUSER="www-data"
 else
 	echo "FATAL: Unsupported Platform"
 	exit 127
@@ -86,21 +86,8 @@ save_log_files() {
 # ------------------------------------------------------------------------------
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
-restore_cacti_log() {
-	echo "UPDATE cacti.settings SET value='$CACTI_LOG' WHERE name='path_cactilog' ;" | mysql -u"$database_user" -p"$database_pw" cacti
-}
-
-save_cacti_settings() {
-	mysqldump -u"$database_user" -p"$database_pw" cacti settings user_auth > /tmp/check-all-pages/settings.sql
-}
-
 set_cacti_admin_password() {
 	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti
-}
-
-restore_cacti_settings() {
-	mysql -u"$database_user" -p"$database_pw" cacti < /tmp/check-all-pages/settings.sql
-	rm -f /tmp/check-all-pages/settings.sql
 }
 
 enable_log_validation() {
@@ -126,14 +113,6 @@ catch_error() {
 	# Get rid of any jobs
 	kill -SIGINT $(jobs -p)
 
-	if [ -f /tmp/check-all-pages/cacti.cron ]; then
-		mv /tmp/check-all-pages/cacti.cron /etc/cron.d/cacti
-	fi
-
-	if [ -f /tmp/check-all-pages/settings.sql ]; then
-		restore_cacti_settings
-	fi
-
 	if [ -f $tmpFile1 ]; then
 		rm -f $tmpFile1
 	fi
@@ -152,36 +131,15 @@ catch_error() {
 }
 
 # ------------------------------------------------------------------------------
-# Make Cacti work again after the test is complete
-# ------------------------------------------------------------------------------
-restore_operating_environment() {
-	# ------------------------------------------------------------------------------
-	# Move the crontab file back 
-	# ------------------------------------------------------------------------------
-	/bin/mv -f /tmp/check-all-pages/cacti.cron /etc/cron.d/cacti
-
-	# ------------------------------------------------------------------------------
-	# Cleanup temp files
-	# ------------------------------------------------------------------------------
-	/bin/rm -f $tmpFile1
-	/bin/rm -f $tmpFile2
-	/bin/rm -f $logFile1
-	/bin/rm -f $cookieFile
-}
-
-# ------------------------------------------------------------------------------
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
 trap 'catch_error' 1 2 3 6 9 14 15
 
-# ------------------------------------------------------------------------------
-# Move the crontab line to prevent the cron from interfering
-# ------------------------------------------------------------------------------
-mv -f /etc/cron.d/cacti /tmp/check-all-pages/cacti.cron
-
-SECONDS=15
+SECONDS=1
 echo "NOTE: Waiting for Cacti for $SECONDS seconds ..."
 sleep $SECONDS 
+
+echo "My current directory is `pwd`"
 
 # ------------------------------------------------------------------------------
 # Zero out the log files
@@ -204,22 +162,9 @@ login_pw="admin"
 # ------------------------------------------------------------------------------
 # Make a backup copy of the Cacti settings table and enable log validation
 # ------------------------------------------------------------------------------
-save_cacti_settings
 set_cacti_admin_password
 enable_log_validation
 set_stderr_logging
-
-# ------------------------------------------------------------------------------
-# Lighttpd is not the default httpd for cacti. If we are testing for it, we
-# need to enable the conf first.
-# ------------------------------------------------------------------------------
-if [ -n "$(which lighttpd-enable-mod 2>/dev/null)" ] ; then
-	echo "NOTE: Lighttpd Module Found"
-    lighttpd-enable-mod cacti
-    /etc/init.d/lighttpd force-reload
-else
-	echo "NOTE: Lighttpd Module Not Found"
-fi
 
 tmpFile1=$(mktemp)
 tmpFile2=$(mktemp)
@@ -259,11 +204,6 @@ checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
 
 # ------------------------------------------------------------------------------
-# Make a backup copy of the Cacti settings table
-# ------------------------------------------------------------------------------
-restore_cacti_settings
-
-# ------------------------------------------------------------------------------
 # Finally check the cacti log for unexpected items
 # ------------------------------------------------------------------------------
 echo "NOTE: Checking Cacti Log for Errors"
@@ -286,11 +226,9 @@ error=0
 if [ -n "${FILTERED_LOG}" ] ; then
     echo "ERROR: Fail - Unexpected output in $CACTI_LOG:"
     echo "${FILTERED_LOG}"
-	restore_operating_environment
 	exit 179
 else
     echo "NOTE: Success - No unexpected output in $CACTI_LOG"
-	restore_operating_environment
 	exit 0
 fi
 
