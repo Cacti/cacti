@@ -15,30 +15,13 @@ started=0
 # ------------------------------------------------------------------------------
 # OS Specific Paths
 # ------------------------------------------------------------------------------
-if [ -f /etc/redhat-release ]; then
-	CACTI_LOG="/var/www/html/cacti/log/cacti.log"
-	CACTI_ERRLOG="/var/www/html/cacti/log/cacti.stderr.log"
-	APACHE_ERROR="/var/log/httpd/error_log"
-	APACHE_ACCESS="/var/log/httpd/access_log"
-	LIGHT_ERROR="/var/log/lighttpd/error_log"
-	RRA_ARCHIVE="/var/www/html/cacti/rra/archive/"
-	RRA_SHELL="/var/www/html/cacti/rra/shell.php"
-	POLLER="/var/www/html/cacti/poller.php"
-	WEBUSER="apache"
-elif [ -f /etc/debian_version ]; then
-	CACTI_LOG="/var/log/cacti/cacti.log"
-	CACTI_ERRLOG="/var/log/cacti/cacti.stderr.log"
-	APACHE_ERROR="/var/log/apache2/error.log"
-	APACHE_ACCESS="/var/log/apache2/access.log"
-	LIGHT_ERROR="/var/log/lighttpd/error.log"
-	RRA_ARCHIVE="/usr/share/cacti/site/rra/archive/"
-	RRA_SHELL="/var/lib/cacti/rra/shell.php"
-	POLLER="/usr/share/cacti/site/poller.php"
-	WEBUSER="www-data"
-else
-	echo "FATAL: Unsupported Platform"
-	exit 127
-fi
+BASE_PATH="/home/travis/build/Cacti/cacti"
+CACTI_LOG="$BASE_PATH/log/cacti.log"
+CACTI_ERRLOG="$BASE_PATH/log/cacti.stderr.log"
+APACHE_ERROR="/var/log/apache2/error.log"
+APACHE_ACCESS="/var/log/apache2/access.log"
+POLLER="$BASE_PATH/poller.php"
+WEBUSER="www-data"
 
 # ------------------------------------------------------------------------------
 # Ensure that the artifact directory is created.  No need for a mess
@@ -67,11 +50,6 @@ save_log_files() {
 		if [ -f $APACHE_ERROR ] ; then
 			echo "NOTE: Copying $APACHE_ERROR to artifacts"
 			cp -f $APACHE_ERROR ${logBase}/apache_error.log
-		fi
-
-		if [ -f $LIGHT_ERROR ] ; then
-			echo "NOTE: Copying $LIGHT_ERROR to artifacts"
-			cp -f $LIGHT_ERROR ${logBase}/lighty_error.log
 		fi
 
 		if [ -f $logFile1 ]; then
