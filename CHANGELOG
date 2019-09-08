@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.7
 -issue#2895: Percentile calculation is incorrect on Graphs with multiple Data Sources from different RRDs
+-issue#2899: Callback type forms to not render the form display value correctly in 1.2.6
 -issue#2922: Undefined variable 'result' in lib/data_query.php
 -issue#2925: Problem with consolidation function after upgade to 1.2.6 
 -issue#2926: Cacti 1.2.6 failed to update graph

@@ -59,11 +59,9 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 						if (is_array($$matches1)) {
 							/* the existing value is already an array, leave it alone */
 							$form_array[$field_name][$field_to_check] = $$matches1;
-							break;
 						} else {
 							/* the existing value is probably a single variable */
 							$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
-							break;
 						}
 					} else {
 						/* copy the value down from the array/key specified in the variable */
@@ -80,7 +78,6 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 
 						if (!cacti_sizeof($matches)) {
 							$form_array[$field_name][$field_to_check] = $string;
-							break;
 						} elseif (isset($form_array[$field_name]['default'])) {
 							$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
 						} else {
