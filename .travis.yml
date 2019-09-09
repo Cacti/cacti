@@ -22,7 +22,7 @@ before_script:
 script:
 - php tests/tools/check_install_code.php
 - bash tests/tools/check_cli_version.sh
-- bash tests/tools/check_all_pages.sh
+- sudo bash tests/tools/check_all_pages.sh
 
 before_install:
 - mysql -e 'CREATE DATABASE cacti;'
