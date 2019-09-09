@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-set -xv
+# set -xv
 
 #exec 2> /dev/null
 
@@ -172,10 +172,11 @@ error=$?
 if [ $error -eq 8 ]; then
 	errors=`grep "awaiting response... 404" $logFile1 | wc -l`
 	echo "WARNING: $errors pages not found.  This is not necessarily a bug"
-	cat $logFile1
-	cat $tmpFile1
-	cat $tmpFile2
 fi
+
+cat $logFile1
+cat $APACHE_ERROR
+cat $APACHE_ACCESS
 
 checks=`grep "HTTP" $logFile1 | wc -l`
 echo "NOTE: There were $checks pages checked through recursion"
