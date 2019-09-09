@@ -30,6 +30,7 @@ before_install:
 - mysql -e "GRANT ALL PRIVILEGES ON cacti.* TO 'cactiuser'@'localhost';"
 - mysql -e "FLUSH PRIVILEGES;"
 - mysql cacti < cacti.sql
+- mysql -e "INSERT INTO settings (name, value) VALUES ('path_php_binary', '/usr/bin/php')" cacti
 
 install:
 - mv include/config.php.dist include/config.php
