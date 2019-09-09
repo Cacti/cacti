@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 # Debugging
 # ------------------------------------------------------------------------------
-# set -xv
+set -xv
 
 #exec 2> /dev/null
 
@@ -65,23 +65,23 @@ save_log_files() {
 # Some functions to handle settings consitently
 # ------------------------------------------------------------------------------
 set_cacti_admin_password() {
-	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti
+	mysql -u"$database_user" -p"$database_pw" -e "UPDATE user_auth SET password=MD5('$login_pw') WHERE id = 1" cacti 2>/dev/null
 }
 
 enable_log_validation() {
-	echo "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" | mysql -u"$database_user" -p"$database_pw" cacti
+	echo "UPDATE cacti.settings SET value='on' WHERE name='log_validation' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
 }
 
 set_log_level_none() {
-	echo "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti
+	echo "UPDATE cacti.settings SET value='1' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
 }
 
 set_log_level_normal() {
-	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti
+	echo "UPDATE cacti.settings SET value='2' WHERE name='log_verbosity' ;" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
 }
 
 set_stderr_logging() {
-	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql -u"$database_user" -p"$database_pw" cacti
+	echo "REPLACE INTO cacti.settings (name, value) VALUES ('path_stderrlog', '$CACTI_ERRLOG');" | mysql -u"$database_user" -p"$database_pw" cacti 2>/dev/null
 }
 
 catch_error() {
@@ -112,10 +112,6 @@ catch_error() {
 # To make sure that the autopkgtest/CI sites store the information
 # ------------------------------------------------------------------------------
 trap 'catch_error' 1 2 3 6 9 14 15
-
-SECONDS=1
-echo "NOTE: Waiting for Cacti for $SECONDS seconds ..."
-sleep $SECONDS 
 
 echo "My current directory is `pwd`"
 
