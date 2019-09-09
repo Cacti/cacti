@@ -10,7 +10,7 @@ php:
 - '7.2'
 
 before_script:
-- sudo apt-get install apache2 php5-mysql php5-gd rrdtool
+- sudo apt-get install apache2 php5-mysql php5-gd rrdtool snmp
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
