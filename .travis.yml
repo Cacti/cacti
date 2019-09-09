@@ -10,7 +10,7 @@ php:
 - '7.2'
 
 before_script:
-- sudo apt-get install apache2
+- sudo apt-get install apache2 php5-mysql php5-gd
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo ln -s /home/travis/build/Cacti/cacti /var/www
