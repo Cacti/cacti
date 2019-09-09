@@ -10,14 +10,14 @@ php:
 - '7.2'
 
 before_script:
-- sudo apt-get install apache2 php5-mysql php5-gd
+- sudo apt-get install apache2 php5-mysql php5-gd rrdtool
 - sudo a2enmod actions
 - sudo a2enmod rewrite
 - sudo /bin/cp -rpf /home/travis/build/Cacti/cacti /var/www/html/
 - sudo service apache2 restart
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-- php -m
+- php /var/www/html/cacti/cli/install_cacti.php --accept-ula --force
 
 script:
 - php tests/tools/check_install_code.php
