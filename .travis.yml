@@ -13,7 +13,7 @@ before_script:
 - sudo apt-get install apache2 php5-mysql php5-gd
 - sudo a2enmod actions
 - sudo a2enmod rewrite
-- sudo ln -s /home/travis/build/Cacti/cacti /var/www/cacti
+- sudo ln -s /home/travis/build/Cacti/cacti /var/www/html/cacti
 - sudo service apache2 restart
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
