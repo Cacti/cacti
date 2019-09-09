@@ -17,11 +17,11 @@ before_script:
 - sudo service apache2 restart
 - if find . -name "*.php" -exec php -l {} 2>&1 \; | grep -iv "no syntax errors detected"; then exit 1; fi
 - echo 'date.timezone = "America/New_York"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-- php /var/www/html/cacti/cli/install_cacti.php --accept-eula --install --force
 
 script:
 - php tests/tools/check_install_code.php
 - bash tests/tools/check_cli_version.sh
+- php /var/www/html/cacti/cli/install_cacti.php --accept-eula --install --force
 - sudo bash tests/tools/check_all_pages.sh
 
 before_install:
