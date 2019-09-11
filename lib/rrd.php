@@ -290,7 +290,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				0 => array('pipe', 'r'),
 				1 => array('pipe', 'w')
 			);
-
+			
 			$process = proc_open(read_config_option('path_rrdtool') . ' - ' . $debug, $descriptorspec, $pipes);
 
 			if (!is_resource($process)) {
@@ -349,14 +349,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				$output .= fgets($fp, 4096);
 			}
 
-			if (isset($process)) {
-				fclose($fp);
-				proc_close($process);
-			} else {
-				pclose($fp);
-			}
-
-			$output = rrdtool_trim_output($output);
+			pclose($fp);
 
 			return $output;
 			break;
@@ -364,16 +357,14 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 		case RRDTOOL_OUTPUT_RETURN_STDERR:
 			$output = fgets($fp, 1000000);
 
-			if (isset($process)) {
-				fclose($fp);
-				proc_close($process);
-			} else {
-				pclose($fp);
-			}
-
-			$output = rrdtool_trim_output($output);
+			fclose($fp);
+			proc_close($process);
 
 			if (substr($output, 1, 3) == 'PNG') {
+				return 'OK';
+			}
+
+			if (substr($output, 0, 5) == 'GIF87') {
 				return 'OK';
 			}
 
@@ -388,27 +379,11 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			}
 
 			break;
-		case RRDTOOL_OUTPUT_NULL:
 		default:
+		case RRDTOOL_OUTPUT_NULL:
 			return;
 			break;
 	}
-}
-
-function rrdtool_trim_output($output) {
-	/* When using RRDtool with proc_open for long strings
-	 * and using the '-' to handle standard in from inside
-	 * the process, RRDtool automatically appends stderr
-	 * to stdout for batch programs to parse the output
-	 * string.  So, therefore, we have to prune that
-	 * output.
-	 */
-	 $okpos = strpos($output, 'OK u:');
-	 if ($okpos !== false) {
-		 $output = substr($output, 0, $okpos);
-	 }
-
-	return $output;
 }
 
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
