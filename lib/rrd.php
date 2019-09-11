@@ -403,7 +403,7 @@ function rrdtool_trim_output($output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	 $okpos = strpos($output, 'OK u:');
+	 $okpos = strpos($output, 'OK u:', -20);
 	 if ($okpos !== false) {
 		 $output = substr($output, 0, $okpos);
 	 }
