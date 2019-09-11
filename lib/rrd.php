@@ -902,7 +902,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array, $ds_step) {
+function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
 	global $config, $image_types;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -1287,9 +1287,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (!isset($graph_data_array['export_realtime']) && isset($rra['steps'])) {
-		$seconds_between_graph_updates = ($ds_step * $rra['steps']);
+		$rra_seconds = ($ds_step * $rra['steps']);
 	} else {
-		$seconds_between_graph_updates = 5;
+		$rra_seconds = 5;
 	}
 
 	$graph = db_fetch_row_prepared('SELECT gl.id AS local_graph_id, gl.host_id,
@@ -1350,7 +1350,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* override: graph end time */
 	if (!isset($graph_data_array['graph_end']) || $graph_data_array['graph_end'] == '0') {
-		$graph_end = -($seconds_between_graph_updates);
+		$graph_end = -($rra_seconds);
 	} else {
 		$graph_end = $graph_data_array['graph_end'];
 	}
@@ -1358,7 +1358,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
 	if (!isset($graph_data_array['export_csv'])) {
-		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array, $ds_step);
+		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		/* basic export options */
 		$graph_opts =
@@ -1403,7 +1403,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_TIC:
 				case GRAPH_ITEM_TYPE_AREA:
 				case GRAPH_ITEM_TYPE_STACK:
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
@@ -1424,7 +1424,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
-						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					}
@@ -1447,7 +1447,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				default:
 					/* all other types are based on the best matching CF */
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 					break;
@@ -1611,7 +1611,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
 			/* hack around RRDtool behavior in first RRA */
-			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 
 			/* first we need to check if there is a DEF for the current data source/cf combination. if so,
 			we will use that */
@@ -1702,12 +1702,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 								/* do we need ALL_DATA_SOURCES_DUPS? */
 								if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
-									$magic_item['ALL_DATA_SOURCES_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+									$magic_item['ALL_DATA_SOURCES_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 								}
 
 								/* do we need COUNT_ALL_DS_DUPS? */
 								if (isset($magic_item['COUNT_ALL_DS_DUPS'])) {
-									$magic_item['COUNT_ALL_DS_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+									$magic_item['COUNT_ALL_DS_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 								}
 
 								$count_all_ds_dups++;
@@ -1715,11 +1715,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 								/* check if this item also qualifies for NODUPS  */
 								if (!isset($already_seen[$def_name])) {
 									if (isset($magic_item['ALL_DATA_SOURCES_NODUPS'])) {
-										$magic_item['ALL_DATA_SOURCES_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['ALL_DATA_SOURCES_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									if (isset($magic_item['COUNT_ALL_DS_NODUPS'])) {
-										$magic_item['COUNT_ALL_DS_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['COUNT_ALL_DS_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									$count_all_ds_nodups++;
@@ -1730,12 +1730,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 								if ($graph_item['data_source_name'] == $gi_check['data_source_name']) {
 									/* do we need SIMILAR_DATA_SOURCES_DUPS? */
 									if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-										$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									/* do we need COUNT_SIMILAR_DS_DUPS? */
 									if (isset($magic_item['COUNT_SIMILAR_DS_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-										$magic_item['COUNT_SIMILAR_DS_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['COUNT_SIMILAR_DS_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									$count_similar_ds_dups++;
@@ -1743,11 +1743,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 									/* check if this item also qualifies for NODUPS  */
 									if (!isset($sources_seen[$gi_check['data_template_rrd_id']])) {
 										if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
-											$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+											$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 										}
 
 										if (isset($magic_item['COUNT_SIMILAR_DS_NODUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-											$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+											$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 										}
 
 										$count_similar_ds_nodups++;
@@ -2477,7 +2477,7 @@ function rrdtool_function_get_resstep($local_data_ids, $graph_start, $graph_end,
 						if ($type == 'res') {
 							return $resolution['step'] * $resolution['steps'];
 						} else {
-							return $resolution['step'] * $resolution['steps'];;
+							return $resolution['step'];
 						}
 					}
 				}
