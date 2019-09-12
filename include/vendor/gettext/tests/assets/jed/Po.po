@@ -1,0 +1,61 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: bs\n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"X-Domain: testingdomain\n"
+
+msgid "Ensure this value has at least %(limit_value)d character (it has %sd)."
+msgstr ""
+
+msgid "Ensure this value has at most %(limit_value)d character (it has %sd)."
+msgstr ""
+
+msgid "%ss must be unique for %ss %ss."
+msgstr "%ss mora da bude jedinstven za %ss %ss."
+
+msgid "and"
+msgstr "i"
+
+msgid "Value %sr is not a valid choice."
+msgstr ""
+
+msgid "This field cannot be null."
+msgstr "Ovo polje ne može ostati prazno."
+
+msgid "This field cannot be blank."
+msgstr "Ovo polje ne može biti prazno."
+
+msgid "Field of type: %ss"
+msgstr "Polje tipa: %ss"
+
+msgid "Integer"
+msgstr "Cijeo broj"
+
+msgid "{test1}"
+msgstr ""
+"test1\n"
+"<div>\n"
+" test2\n"
+"</div>\n"
+"test3"
+
+msgid "{test2}"
+msgstr ""
+"test1\n"
+"<div>\n"
+" test2\n"
+"</div>\n"
+"test3"
+
+msgid "Multibyte test"
+msgstr "日本人は日本で話される言語です！"
+
+msgid "Tabulation test"
+msgstr "FIELD\tFIELD"

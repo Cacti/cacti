@@ -1,0 +1,21 @@
+{
+    "messages": {
+        "": {
+            "domain": "messages",
+            "lang": "en",
+            "plural-forms": "nplurals=2; plural=(n != 1);"
+        },
+        "some message": [
+            ""
+        ],
+        "some context\\u0004some \"message\" in \na context": [
+            ""
+        ],
+        "%s message": [
+            ""
+        ],
+        "my translate 3": [
+            ""
+        ]
+    }
+}

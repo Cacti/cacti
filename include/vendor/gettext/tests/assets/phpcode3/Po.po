@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#. allowed1 Comment 1
+#. allowed2 Comment 2
+#: ./tests/assets/phpcode3/input.php:3
+msgid "Translation with comments"
+msgstr ""
+
+#. allowed2: only this should get extracted.
+#: ./tests/assets/phpcode3/input.php:11
+msgid "Foo"
+msgstr ""
