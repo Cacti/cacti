@@ -2359,40 +2359,50 @@ class Installer implements JsonSerializable {
 		$tables = install_setup_get_tables();
 
 		if (cacti_sizeof($tables)) {
-			$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
+			$max_vars = ini_get('max_input_vars');
+			if (empty($max_vars)) {
+				$max_vars = 1000;
+			}
 
-			$show_warning=false;
-			ob_start();
-			html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
-			html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
-			foreach ($tables as $id => $p) {
-				$enabled = ($p['Rows'] < 1000000 ? true : false);
-				$style = ($enabled ? '' : 'text-decoration: line-through;');
-				form_alternate_row('line' . $id, true, $enabled);
-				form_selectable_cell($p['Name'], $id, '', $style);
-				form_selectable_cell($p['Collation'], $id, '', $style);
-				form_selectable_cell($p['Engine'], $id, '', $style);
-				form_selectable_cell($p['Rows'], $id, '', $style);
+			if (count($max_vars) < count($tables) + 10) {
+				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', count($tables) + 100));
+				$this->buttonNext->Enabled = false;
+			} else {
+				$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
+				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . count($tables));
+				$show_warning=false;
+				ob_start();
+				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
+				html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
+				foreach ($tables as $id => $p) {
+					$enabled = ($p['Rows'] < 1000000 ? true : false);
+					$style = ($enabled ? '' : 'text-decoration: line-through;');
+					form_alternate_row('line' . $id, true, $enabled);
+					form_selectable_cell($p['Name'], $id, '', $style);
+					form_selectable_cell($p['Collation'], $id, '', $style);
+					form_selectable_cell($p['Engine'], $id, '', $style);
+					form_selectable_cell($p['Rows'], $id, '', $style);
 
-				if ($enabled) {
-					form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
-				} else {
-					$show_warning=true;
-					form_selectable_cell('', $id, '', $style);
+					if ($enabled) {
+						form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
+					} else {
+						$show_warning=true;
+						form_selectable_cell('', $id, '', $style);
+					}
+					form_end_row();
 				}
-				form_end_row();
+				html_end_box(false);
+
+				if ($show_warning) {
+					$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
+					$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
+				}
+
+				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
+				$output .= Installer::sectionNormal(ob_get_contents());
+
+				ob_end_clean();
 			}
-			html_end_box(false);
-
-			if ($show_warning) {
-				$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
-				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
-			}
-
-			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
-			$output .= Installer::sectionNormal(ob_get_contents());
-
-			ob_end_clean();
 		} else {
 			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 compliant'));
 		}
