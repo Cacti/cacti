@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#2930: When working in pipe mode RRDtool appends stderr to stdout causing SVG graphing to break
 -issue#2932: Some cases where RRDtool can not generate an image are not captured by Cactis image error logic
 -issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit
+-issue#2938: Under CentOS packages, upgrade_database.php script uses incorrect location for DB upgrade scripts
 -issue#2940: In some cases SVG images don't size properly until page is resized 
 
 1.2.6
