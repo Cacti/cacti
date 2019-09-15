@@ -1260,6 +1260,7 @@ function responsiveResizeGraphs() {
 		}
 
 		var rra_id = $(this).attr('rra_id');
+		var type   = $(this).attr('graph_type');
 
 		var original_cwidth  = $('#wrapper_'+graph_id).attr('graph_width');
 		var original_cheight = $('#wrapper_'+graph_id).attr('graph_height');
@@ -1293,7 +1294,7 @@ function responsiveResizeGraphs() {
 		$(this).attr('graph_top', new_canvas_graph_top);
 		$(this).attr('graph_left', new_canvas_graph_left);
 
-		if (!remove_whcss) {
+		if (!remove_whcss || type == 'svg+xml') {
 			$(this).css('width', new_image_width);
 			$(this).css('height', new_image_height);
 		} else {
@@ -3162,6 +3163,7 @@ function redrawGraph(graph_id) {
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
+					" graph_type='"+data.type+"'"+
 					" graph_id='"+data.local_graph_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
@@ -3298,6 +3300,7 @@ function initializeGraphs() {
 					data.graph_top    = parseInt(data.graph_top  * ratio);
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
+
 				var wrapper_id = '#wrapper_'+data.local_graph_id;
 				if (rra_id > 0) {
 					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
@@ -3307,6 +3310,8 @@ function initializeGraphs() {
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
+					" graph_type='"+data.type+"'"+
+					" graph_id='"+data.local_graph_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
 					" graph_left='"+data.graph_left+"'"+
