@@ -356,7 +356,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				pclose($fp);
 			}
 
-			$output = rrdtool_trim_output($output);
+			rrdtool_trim_output($output);
 
 			return $output;
 			break;
@@ -371,7 +371,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				pclose($fp);
 			}
 
-			$output = rrdtool_trim_output($output);
+			rrdtool_trim_output($output);
 
 			if (substr($output, 1, 3) == 'PNG') {
 				return 'OK';
@@ -395,7 +395,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 	}
 }
 
-function rrdtool_trim_output($output) {
+function rrdtool_trim_output(&$output) {
 	/* When using RRDtool with proc_open for long strings
 	 * and using the '-' to handle standard in from inside
 	 * the process, RRDtool automatically appends stderr
@@ -403,12 +403,10 @@ function rrdtool_trim_output($output) {
 	 * string.  So, therefore, we have to prune that
 	 * output.
 	 */
-	 $okpos = strpos($output, 'OK u:', -20);
-	 if ($okpos !== false) {
-		 $output = substr($output, 0, $okpos);
-	 }
-
-	return $output;
+	$okpos = strrpos($output, 'OK u:');
+	if ($okpos !== false) {
+		$output = substr($output, 0, $okpos);
+	}
 }
 
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
