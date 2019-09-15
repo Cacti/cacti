@@ -810,11 +810,17 @@ function data_input_whitelist_check($data_input_id) {
 }
 
 function utilities_get_mysql_recommendations() {
+	global $config, $local_db_cnn_id;
+
 	// MySQL/MariaDB Important Variables
 	// Assume we are successfully, until we aren't!
 	$result = DB_STATUS_SUCCESS;
 
-	$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
+	if ($config['poller_id'] == 1) {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES'), 'Variable_name', 'Value');
+	} else {
+		$variables = array_rekey(db_fetch_assoc('SHOW GLOBAL VARIABLES', false, $local_db_cnn_id), 'Variable_name', 'Value');
+	}
 
 	$memInfo = utilities_get_system_memory();
 

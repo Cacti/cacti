@@ -137,12 +137,18 @@ function rebuild_resource_cache() {
 }
 
 function utilities_view_tech($php_info = '') {
-	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
+	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* Get table status */
-	$tables = db_fetch_assoc_prepared('SELECT *
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()');
+	if ($config['poller_id'] == 1) {
+		$tables = db_fetch_assoc('SELECT *
+			FROM information_schema.tables
+			WHERE table_schema = SCHEMA()');
+	} else {
+		$tables = db_fetch_assoc('SELECT *
+			FROM information_schema.tables
+			WHERE table_schema = SCHEMA()', false, $local_db_cnn_id);
+	}
 
 	/* Get poller stats */
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
@@ -474,10 +480,12 @@ function utilities_view_tech($php_info = '') {
 		if ($memory_suggestion < 16777216) {
 			$memory_suggestion = 16777216;
 		}
+
 		/* Set maximum - 512M */
 		if ($memory_suggestion > 536870912) {
 			$memory_suggestion = 536870912;
 		}
+
 		/* Suggest values in 8M increments */
 		$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
 		if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
