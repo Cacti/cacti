@@ -7,14 +7,51 @@ Cacti CHANGELOG
 -feature#2607: Allow adding sites from command line
 
 1.2.6
+-issue#2794: Graph template not saved on graph edit
 -issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
 -issue#2829: PHP recommendations always see memory limit as unlimited
 -issue#2830: Disabled Top/Bottom external links should not be displayed
--issue#2833: Undefined index in lib/rrd.php under certain circumstances
+-issue#2832: Install/Upgrade log does not show anything
+-issue#2833: Undefined index can occur when data source does not have an snmp_index
 -issue#2834: Boost performance drops on very large systems
 -issue#2835: When creating graphs and inneficient query is causing long creation times
 -issue#2837: Sunrise theme does not render checkboxes 100% correctly
--issue#2838: jQueryMultiselect Used in Cacti does not match upstream
+-issue#2838: jQueryMultiselect does not match upstream due to forking
+-issue#2839: Non regular expression search filters don't support international characters
+-issue#2841: Total count is wrong after searching for External Link pages
+-issue#2843: DSStats reruns Daily Aggregation every minute
+-issue#2844: Autocomplete settings for passwords are not properly defined
+-issue#2845: Data Template can't be edited when it is in use
+-issue#2846: Allow tooltips for section headers with 'question' icon
+-issue#2847: Permanently convert an Aggregate to a regular graph
+-issue#2848: Aggregate graphs get clipped due to incorrect date range
+-issue#2856: Aggregate issues with very long RRDtool command lines
+-issue#2857: When trying to find the best index to use, a 'must implement Countable' warning appears
+-issue#2860: When testing remote poller connections during install, undefined variable warning can occur
+-issue#2862: Automation does not calculate network information correctly for single hosts
+-issue#2866: Add poller ID to subject for admin notifications
+-issue#2869: When creating aggregates from Graphs, JavaScript issues can occur
+-issue#2872: Add support for MySQL 8 and use of grouping as name for a column
+-issue#2875: Undefined variable when removing spikes in some cases
+-issue#2877: When attempting to send report, undefined function 'get_tinespan' messages appear
+-issue#2878: Function get_magic_quotes_gpc() is now deprecated in PHP 7.4
+-issue#2879: Switching from authPriv to authNoPriv produces error when saving
+-issue#2884: Replication continues to occur when poller has been disabled by sysres-dev
+-issue#2891: Script server script ss_fping.php generates error when not called by script server
+-issue#2895: Percentile calculation is incorrect on Graphs with multiple Data Sources from different RRDs
+-issue#2901: Poller overrun warning message is badly worded
+-issue#2902: Mailer incorrectly reports it is sending to noone
+-issue#2903: PHP recommendations can generate a warning causing JSON issues
+-issue#2905: Sorting plugins by version can lead to unexpected ordering
+-issue#2907: SSL column for multiple pollers can be incorrectly set causing SQL errors
+-issue#2908: When URL_PATH is blank, it should assume that it is '/'
+-issue#2909: Correct usage of affect vs effect in strings
+-issue#2910: Can not show user menu when in portrait mode on mobile devices
+-issue#2911: Graph variables are not always encoded to JSON properly resulting in warnings
+-issue#2912: Navigation cache can sometimes be corrupted resulting in a non-array value
+-issue#2913: When adding new graphs, the type of graph is not remembered
+-issue#2917: Action icons next to graphs can sometimes become unselectable due to zoom
+-issue#2919: When refreshing menu, selected items are sometimes lost and submenu items can become hidden
 
 1.2.5
 -issue#1978: Popup Menus can appear off screen when using Graph Thumbnails

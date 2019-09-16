@@ -251,10 +251,9 @@ function pages() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -304,7 +303,7 @@ function pages() {
 	?>
 	<tr class='even noprint'>
 		<td>
-			<form id='link_filter' action='links.php' method='post'>
+			<form id='links' action='links.php' method='post'>
 			<table class='filterTable' cellpadding='2' cellspacing='0'>
 				<tr>
 					<td>
@@ -349,7 +348,7 @@ function pages() {
 	);
 
 	if (get_request_var('filter') != '') {
-		$sql_where = " WHERE title LIKE '%" . get_request_var('filter') . "%' OR contentfile LIKE '%" . get_request_var('filter') . "%'";
+		$sql_where = ' WHERE title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR contentfile LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -364,7 +363,9 @@ function pages() {
 		$sql_order
 		$sql_limit");
 
-	$total_rows = db_fetch_cell('SELECT COUNT(*) FROM external_links');
+	$total_rows = db_fetch_cell("SELECT COUNT(*)
+		FROM external_links
+		$sql_where");
 
 	form_start('links.php', 'chk');
 

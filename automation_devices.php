@@ -194,21 +194,21 @@ function form_actions() {
 			</tr>
 			<tr>
 				<td class='textArea odd'>
-					<table><tr><td>" . __('Pollers') . "</td><td>\n";
+					<table><tr><td>" . __('Pollers') . "</td><td>";
 
 			form_dropdown('poller_id', $pollers, 'name', 'id', '', '', '');
 
-			print "</td></tr><tr><td>" . __('Select Template') . "</td><td>\n";
+			print "</td></tr><tr><td>" . __('Select Template') . "</td><td>";
 
 			form_dropdown('host_template', $available_host_templates, 'name', 'id', '', '', $host_template);
 
-			print "</td></tr>\n";
+			print "</td></tr>";
 
-			print "<tr><td>" . __('Availability Method') . "</td><td>\n";
+			print "<tr><td>" . __('Availability Method') . "</td><td>";
 
 			form_dropdown('availability_method', $availability_options, '', '', '', '', $availability_method);
 
-			print "</td></tr></table></td></tr>\n";
+			print "</td></tr></table></td></tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Add Device(s)') . "'>";
 		}
@@ -225,7 +225,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . get_request_var('drp_action') . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -338,10 +338,9 @@ function process_request_vars() {
 
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -414,7 +413,7 @@ function get_discovery_results(&$total_rows = 0, $rows = 0, $export = false) {
 	}
 
 	if ($filter != '') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . "(hostname LIKE '%$filter%' OR ip LIKE '%$filter%')";
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . '(hostname LIKE ' . db_qstr('%' . $filter . '%') . ' OR ip LIKE ' . db_qstr('%' . $filter . '%') . ')';
 	}
 
 	if ($export) {
@@ -465,9 +464,9 @@ function draw_filter() {
 							<option value='-1' <?php if (get_request_var('network') == -1) {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($networks)) {
-							foreach ($networks as $key => $name) {
-								print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>\n";
-							}
+								foreach ($networks as $key => $name) {
+									print "<option value='" . $key . "'"; if (get_request_var('network') == $key) { print ' selected'; } print '>' . $name . "</option>";
+								}
 							}
 							?>
 						</select>
@@ -495,9 +494,9 @@ function draw_filter() {
 							<option value='-1' <?php if (get_request_var('status') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($status_arr)) {
-							foreach ($status_arr as $st) {
-								print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
-							}
+								foreach ($status_arr as $st) {
+									print "<option value='" . $st . "'"; if (get_request_var('status') == $st) { print ' selected'; } print '>' . $st . "</option>";
+								}
 							}
 							?>
 						</select>
@@ -510,9 +509,9 @@ function draw_filter() {
 							<option value='-1' <?php if (get_request_var('os') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($os_arr)) {
-							foreach ($os_arr as $st) {
-								print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
-							}
+								foreach ($os_arr as $st) {
+									print "<option value='" . $st . "'"; if (get_request_var('os') == $st) { print ' selected'; } print '>' . $st . "</option>";
+								}
 							}
 							?>
 						</select>
@@ -525,9 +524,9 @@ function draw_filter() {
 							<option value='-1' <?php if (get_request_var('snmp') == '') {?> selected<?php }?>><?php print __('Any');?></option>
 							<?php
 							if (cacti_sizeof($status_arr)) {
-							foreach ($status_arr as $st) {
-								print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>\n";
-							}
+								foreach ($status_arr as $st) {
+									print "<option value='" . $st . "'"; if (get_request_var('snmp') == $st) { print ' selected'; } print '>' . $st . "</option>";
+								}
 							}
 							?>
 						</select>
@@ -540,9 +539,9 @@ function draw_filter() {
 							<option value='-1'<?php print (get_request_var('rows') == '-1' ? ' selected>':'>') . __('Default');?></option>
 							<?php
 							if (cacti_sizeof($item_rows) > 0) {
-							foreach ($item_rows as $key => $value) {
-								print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
-							}
+								foreach ($item_rows as $key => $value) {
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>";
+								}
 							}
 							?>
 						</select>

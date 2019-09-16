@@ -579,10 +579,9 @@ function utilities_view_user_log() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -754,17 +753,11 @@ function utilities_view_user_log() {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		if ($sql_where != '') {
-			$sql_where .= " AND (ul.username LIKE '%" . get_request_var('filter') . "%'
-				OR ul.time LIKE '%" . get_request_var('filter') . "%'
-				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
-				OR ul.ip LIKE '%" . get_request_var('filter') . "%')";
-		} else {
-			$sql_where = "WHERE (ul.username LIKE '%" . get_request_var('filter') . "%'
-				OR ul.time LIKE '%" . get_request_var('filter') . "%'
-				OR ua.full_name LIKE '%" . get_request_var('filter') . "%'
-				OR ul.ip LIKE '%" . get_request_var('filter') . "%')";
-		}
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' (
+			ul.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ul.time LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ua.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ul.ip LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT
@@ -1284,10 +1277,9 @@ function utilities_view_snmp_cache() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'with_index' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -1472,15 +1464,18 @@ function utilities_view_snmp_cache() {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (h.description LIKE '%" . get_request_var('filter') . "%'
-			OR sq.name LIKE '%" . get_request_var('filter') . "%'
-			OR hsc.field_name LIKE '%" . get_request_var('filter') . "%'
-			OR hsc.field_value LIKE '%" . get_request_var('filter') . "%'
-			OR hsc.oid LIKE '%" . get_request_var('filter') . "%'";
+		$sql_where .= ' AND (
+			h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR sq.name LIKE '         . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR hsc.field_name LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR hsc.field_value LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR hsc.oid LIKE '         . db_qstr('%' . get_request_var('filter') . '%');
+
 		if (get_request_var('with_index') == 1) {
-			$sql_where .= " OR hsc.snmp_index LIKE '%" . get_request_var('filter') . "%'";
+			$sql_where .= ' OR hsc.snmp_index LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		}
-		$sql_where .= ")";
+
+		$sql_where .= ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -1564,7 +1559,7 @@ function utilities_view_poller_cache() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
 			'default' => '',
 			'options' => array('options' => 'sanitize_search_string')
@@ -1761,11 +1756,12 @@ function utilities_view_poller_cache() {
 	}
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (dtd.name_cache LIKE '%" . get_request_var('filter') . "%'
-			OR h.description LIKE '%" . get_request_var('filter') . "%'
-			OR pi.arg1 LIKE '%" . get_request_var('filter') . "%'
-			OR pi.hostname LIKE '%" . get_request_var('filter') . "%'
-			OR pi.rrd_path  LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			dtd.name_cache LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR pi.arg1 LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR pi.hostname LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR pi.rrd_path  LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*)
@@ -2313,10 +2309,9 @@ function snmpagent_utilities_run_cache() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'mib' => array(
 			'filter' => FILTER_CALLBACK,
@@ -2437,11 +2432,13 @@ function snmpagent_utilities_run_cache() {
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`oid` LIKE '%" . get_request_var('filter') . "%'
-			OR `name` LIKE '%" . get_request_var('filter') . "%'
-			OR `mib` LIKE '%" . get_request_var('filter') . "%'
-			OR `max-access` LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			`oid` LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `name` LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `mib` LIKE '        . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR `max-access` LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
+
 	$sql_where .= ' ORDER by `oid`';
 
 	$total_rows = db_fetch_cell("SELECT COUNT(*) FROM snmpagent_cache WHERE 1 $sql_where");
@@ -2549,10 +2546,9 @@ function snmpagent_utilities_run_eventlog(){
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'severity' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -2705,9 +2701,11 @@ function snmpagent_utilities_run_eventlog(){
 
 	/* filter by search string */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (`varbinds` LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (`varbinds` LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	}
+
 	$sql_where .= ' ORDER by `time` DESC';
+
 	$sql_query  = "SELECT snl.*, sm.hostname, sc.description
 		FROM snmpagent_notifications_log AS snl
 		INNER JOIN snmpagent_managers AS sm

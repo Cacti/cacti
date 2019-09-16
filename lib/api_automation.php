@@ -51,10 +51,9 @@ function display_matching_hosts($rule, $rule_type, $url) {
 			'default' => '-1'
 			),
 		'filterd' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -208,7 +207,10 @@ function display_matching_hosts($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filterd') != '') {
-		$sql_where = "WHERE h.deleted = '' AND (h.hostname LIKE '%" . get_request_var('filterd') . "%' OR h.description LIKE '%" . get_request_var('filterd') . "%' OR ht.name LIKE '%" . get_request_var('filterd') . "%')";
+		$sql_where = 'WHERE h.deleted = ""
+			AND (h.hostname LIKE '  . db_qstr('%' . get_request_var('filterd') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filterd') . '%') . '
+			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filterd') . '%') . ')';
 	} else {
 		$sql_where = "WHERE h.deleted = ''";
 	}
@@ -340,10 +342,9 @@ function display_matching_graphs($rule, $rule_type, $url) {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -500,10 +501,11 @@ function display_matching_graphs($rule, $rule_type, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%'" .
-			" OR gt.name LIKE '%" . get_request_var('filter') . "%'" .
-			" OR h.description LIKE '%" . get_request_var('filter') . "%'" .
-			" OR h.hostname LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (
+			gtg.title_cache LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.hostname LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -627,10 +629,9 @@ function display_new_graphs($rule, $url) {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -984,10 +985,9 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1153,7 +1153,10 @@ function display_matching_trees ($rule_id, $rule_type, $item, $url) {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (h.hostname LIKE '%" . get_request_var('filter') . "%' OR h.description LIKE '%" . get_request_var('filter') . "%' OR ht.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			h.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ht.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	if (get_request_var('host_status') == '-1') {
@@ -2943,50 +2946,164 @@ function automation_debug($text) {
 }
 
 function automation_masktocidr($mask) {
+	$cidr = false;
 	$long = ip2long($mask);
-	$base = ip2long('255.255.255.255');
-
-	$cidr = 32 - log(($long ^ $base) + 1, 2);
+	if ($long !== false) {
+		$base = ip2long('255.255.255.255');
+		$cidr = 32 - log(($long ^ $base) + 1, 2);
+	}
 
 	return $cidr;
 }
 
-function automation_calculate_start($range) {
+function automation_get_valid_ip($range) {
+	$long = ip2long($range);
+	return $long === false ? false : long2ip($long);
+}
+
+function automation_get_valid_subnet_cidr($range) {
+	$long = ip2long($range);
+	if ($long !== false) {
+		$bin = decbin($long);
+		if (strlen($bin) == 32) {
+			$zero = false;
+			$cidr = 0;
+			foreach (str_split($bin) as $char) {
+				if ($char === '0') {
+					$zero = true;
+				} else if ($zero) {
+					$long = false;
+					break;
+				} else {
+					$cidr++;
+				}
+			}
+		} else {
+			$long = false;
+		}
+	}
+	return $long === false ? false : array('cidr' => $cidr, 'subnet' => long2ip($long));
+}
+
+function automation_get_valid_mask($range) {
+	$cidr = false;
+	if (is_numeric($range)) {
+		if ($range > 0 && $range < 33) {
+			$cidr = $range;
+			$mask = array(
+				'cidr' => $cidr,
+				'subnet' => long2ip(bindec(str_repeat('1',$range) . str_repeat('0',32-$range))));
+		} else {
+			$mask = false;
+		}
+	} else {
+		$mask = automation_get_valid_subnet_cidr($range);
+	}
+
+	if ($mask !== false) {
+		$mask['count'] = bindec(str_repeat('0',$mask['cidr']) . str_repeat('1',32-$mask['cidr']));
+		if ($mask['count'] == 0) {
+			$mask['count'] = 1;
+		}
+	}
+	return $mask;
+}
+
+function automation_get_network_info($range) {
+//	echo "function automation_get_network_info($range)" .PHP_EOL;
+	$network   = false;
+	$broadcast = false;
+	$mask      = false;
+	$detail    = false;
 	if (strpos($range, '/') !== false) {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
-		$network = $range_parts[0];
-		$cidr    = $range_parts[1];
-
-		if (!is_numeric($cidr)) {
-			$cidr = automation_masktocidr($cidr);
+		$mask        = automation_get_valid_mask($range_parts[1]);
+		if ($mask !== false) {
+			$network = automation_get_valid_ip($range_parts[0]);
+			if ($mask['cidr'] != 0) {
+				$dec = ip2long($network) & ip2long($mask['subnet']);
+				$count     = $mask['cidr'] == 32 ? 0 : $mask['count'];
+				$network   = long2ip($dec);
+				$broadcast = long2ip($dec + $count);
+			}
 		}
-
-		$start = ip2long($network);
-
-		if ($cidr > 0) {
-			$start++;
-		}
-
-		return long2ip($start);
 	} elseif (strpos($range, '*') !== false) {
-		// 10.1.0.*
-		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/', $range)) {
-			return substr($range, 0, -1) . '1';
+		$range_parts = explode('.', $range);
+		$network     = '';
+		$broadcast   = '';
+		$part_count  = 0;
+		foreach ($range_parts as $part) {
+			//echo $part . ".";;
+			if ($part != '*') {
+				$part_count++;
+				if (is_numeric($part)) {
+					if ($part >= 0 && $part <= 255) {
+						$network .= $part . '.';
+						$broadcast .= '255.';
+					} else {
+						$network = false;
+						break;
+					}
+				} else {
+					$network = false;
+					break;
+				}
+			} else {
+				break;
+			}
 		}
 
-		// 10.1.*.1
-		if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
-			return $matches[1] . '1' . $matches[2];
+		if ($part_count == 0 || $part_count > 3) {
+			$network = false;
+			$broadcast = false;
+		} else {
+			while ($part_count < 4) {
+				$part_count += 1;
+				$broadcast .= '0.';
+				$network   .= '0.';
+			}
+
+			return automation_get_network_info(rtrim($network,'.').'/'.rtrim($broadcast,'.'));
 		}
 	} elseif (strpos($range, '-') !== false) {
-		// 10.1.0.19-10.1.0.27
-		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/', $range)) {
-			preg_match_all('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/', $range, $matches);
-			return substr($matches[0][0], 0, -1);
-		}
+		$range_parts = explode('-', $range);
+
+		$network   = automation_get_valid_ip($range_parts[0]);
+		$broadcast = automation_get_valid_ip($range_parts[1]);
 	} else {
-		return $range;
+		$network   = automation_get_valid_ip($range);
+		$broadcast = automation_get_valid_ip($range);
+	}
+
+	if ($network !== false && $broadcast !== false) {
+		if (ip2long($network) <= ip2long($broadcast)) {
+			$detail['network']   = $network;
+			$detail['broadcast'] = $broadcast;
+			$detail['cidr']      = isset($mask['cidr']) ? $mask['cidr'] : false;
+
+			if ($network == $broadcast) {
+				$detail['type']  = 'single';
+				$detail['count'] = 1;
+				$detail['cidr']  = 32;
+				$detail['start'] = $network;
+				$detail['end']   = $network;
+			} else {
+				$detail['type']  = isset($mask['cidr']) ? 'subnet' : 'range';
+				$detail['count'] = ip2long($broadcast) - ip2long($network) - 1;
+				$detail['start'] = long2ip(ip2long($network) + 1);
+				$detail['end']   = long2ip(ip2long($broadcast) - 1);
+			}
+		}
+	}
+	return $detail;
+}
+
+function automation_calculate_start($range) {
+	$detail = automation_get_network_info($range);
+
+	if ($detail) {
+		return $detail['start'];
 	}
 
 	automation_debug('  Could not calculate starting IP!');
@@ -2995,41 +3112,10 @@ function automation_calculate_start($range) {
 }
 
 function automation_calculate_total_ips($range) {
-	if (strpos($range, '/') !== false) {
-		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
-		$range_parts = explode('/', $range);
-		$network = $range_parts[0];
-		$cidr    = $range_parts[1];
+	$detail = automation_get_network_info($range);
 
-		if (!is_numeric($cidr)) {
-			$cidr = automation_masktocidr($cidr);
-		}
-
-		return pow(2, 32 - intval($cidr)) - 2;
-	} elseif (strpos($range, '*') !== false) {
-		// 10.1.0.*
-		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.\*$/', $range)) {
-			return 254;
-		}
-
-		// 10.1.*.1
-		if (preg_match('/^([0-9]{1,3}\.[0-9]{1,3}\.)\*(\.[0-9]{1,3})$/', $range, $matches)) {
-			return 254;
-		}
-	} elseif (strpos($range, '-') !== false) {
-		if (preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\$/', $range)) {
-			preg_match_all('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}-/', $range, $matches);
-			preg_match_all('/-[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/', $range, $matches2);
-			$start  = substr($matches[0][0], 0, -1);
-			$end    = substr($matches2[0][0], 1);
-			$starta = explode('.', $start);
-			$enda   = explode('.', $end);
-			$start  = ($starta[0] * 16777216) + ($starta[1] * 65536) + ($starta[2] * 256) + $starta[3];
-			$end    = ($enda[0] * 16777216) + ($enda[1] * 65536) + ($enda[2] * 256) + $enda[3];
-			return $end - $start + 1;
-		}
-	} else {
-		return 1;
+	if ($detail) {
+		return $detail['count'];
 	}
 
 	automation_debug('  Could not calculate total IPs!');

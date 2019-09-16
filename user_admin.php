@@ -907,7 +907,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gtg.title_cache LIKE '%" . get_request_var('filter') . "%' AND gtg.local_graph_id > 0)";
+			$sql_where = 'WHERE (
+				gtg.title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+				AND gtg.local_graph_id > 0)';
 		} else {
 			$sql_where = 'WHERE (gtg.local_graph_id > 0)';
 		}
@@ -1085,7 +1087,9 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (uag.name LIKE '%" . get_request_var('filter') . "%' OR uag.description LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE (
+				uag.name LIKE '           . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR uag.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 		} else {
 			$sql_where = '';
 		}
@@ -1206,7 +1210,9 @@ function graph_perms_edit($tab, $header_label) {
 		/* form the 'where' clause for our main sql query */
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE host.deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%' OR host.description LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE host.deleted = "" AND (
+				host.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+				OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 		} else {
 			$sql_where = "WHERE host.deleted = ''";
 		}
@@ -1370,7 +1376,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE (gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -1515,7 +1521,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
+			$sql_where = 'WHERE (gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -2183,10 +2189,9 @@ function user() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -2288,7 +2293,9 @@ function user() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (user_auth.username LIKE '%" . get_request_var('filter') . "%' OR user_auth.full_name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (
+			user_auth.username LIKE '     . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR user_auth.full_name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -2391,10 +2398,9 @@ function process_graph_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -2426,10 +2432,9 @@ function process_group_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'associated' => array(
 			'filter' => FILTER_VALIDATE_REGEXP,
@@ -2456,10 +2461,9 @@ function process_device_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'host_template_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -2491,10 +2495,9 @@ function process_template_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -2526,10 +2529,9 @@ function process_tree_request_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'graph_template_id' => array(
 			'filter' => FILTER_VALIDATE_INT,

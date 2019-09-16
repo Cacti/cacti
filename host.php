@@ -1234,10 +1234,9 @@ function host_validate_vars() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1280,9 +1279,10 @@ function host_validate_vars() {
 function get_device_records(&$total_rows, $rows) {
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (deleted = '' AND (host.hostname LIKE '%" . get_request_var('filter') . "%'" .
-			" OR host.description LIKE '%" . get_request_var('filter') . "%'" .
-			" OR host.id = '" . get_request_var('filter') . "'))";
+		$sql_where = 'WHERE (deleted = "" AND (
+			host.hostname LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR host.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR host.id = '             . db_qstr(get_request_var('filter')) . '))';
 	} else {
 		$sql_where = "WHERE deleted = ''";
 	}

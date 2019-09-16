@@ -2396,6 +2396,11 @@ function draw_navigation_text($type = 'url') {
 	$navigation      = api_plugin_hook_function('draw_navigation_text', $navigation);
 	$current_page    = get_current_page();
 
+	// Do an error check here for bad plugins manipulating the cache
+	if (!is_array($nav_level_cache)) {
+		$nav_level_cache = array();
+	}
+
 	if (!isempty_request_var('action')) {
 		get_filter_request_var('action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([-a-zA-Z0-9_\s]+)$/')));
 	}
@@ -3328,7 +3333,6 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 	}
 
 	$from = array(0 => $from, 1 => $fromname);
-
 	return mailer($from, $to, '', '', '', $subject, $body, '', $attachments, $headers, $html);
 }
 
@@ -3371,14 +3375,9 @@ function send_mail($to, $from, $subject, $body, $attachments = '', $headers = ''
 function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '', $attachments = '', $headers = '', $html = true) {
 	global $config, $cacti_locale, $mail_methods;
 
-	// Set the to information
-	if (empty($to)) {
-		return __('Mailer Error: No <b>TO</b> address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
-	}
-
-    require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
-    require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
-    require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
+	require_once($config['include_path'] . '/vendor/phpmailer/src/Exception.php');
+	require_once($config['include_path'] . '/vendor/phpmailer/src/PHPMailer.php');
+	require_once($config['include_path'] . '/vendor/phpmailer/src/SMTP.php');
 
 	// Create the PHPMailer instance
 	$mail = new PHPMailer\PHPMailer\PHPMailer;
@@ -3479,42 +3478,44 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$fromText  = add_email_details(array($from), $result, array($mail, 'setFrom'));
 
 	if ($result == false) {
-		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-		return $mail->ErrorInfo;
+		return record_mailer_error($fromText, $mail->ErrorInfo);
 	}
 
 	// Convert $to variable to proper array structure
 	$to        = parse_email_details($to);
-
 	$toText    = add_email_details($to, $result, array($mail, 'addAddress'));
 
 	if ($result == false) {
-		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-		return $mail->ErrorInfo;
+		return record_mailer_error($toText, $mail->ErrorInfo);
 	}
 
 	$cc        = parse_email_details($cc);
 	$ccText    = add_email_details($cc, $result, array($mail, 'addCC'));
 
 	if ($result == false) {
-		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-		return $mail->ErrorInfo;
+		return record_mailer_error($ccText, $mail->ErrorInfo);
 	}
 
 	$bcc       = parse_email_details($bcc);
 	$bccText   = add_email_details($bcc, $result, array($mail, 'addBCC'));
 
 	if ($result == false) {
-		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-		return $mail->ErrorInfo;
+		return record_mailer_error($bccText, $mail->ErrorInfo);
+	}
+
+	// This is a failsafe, should never happen now
+	if (!(cacti_sizeof($to) || cacti_sizeof($cc) || cacti_sizeof($bcc))) {
+		cacti_log('ERROR: No recipient address set!!', false, 'MAILER');
+		cacti_debug_backtrace('MAILER ERROR');
+
+		return __('Mailer Error: No recipient address set!!<br>If using the <i>Test Mail</i> link, please set the <b>Alert e-mail</b> setting.');
 	}
 
 	$replyto   = parse_email_details($replyto);
 	$replyText = add_email_details($replyto, $result, array($mail, 'addReplyTo'));
 
 	if ($result == false) {
-		cacti_log('ERROR: ' . $mail->ErrorInfo, false, 'MAILER');
-		return $mail->ErrorInfo;
+		return record_mailer_error($replyText, $mail->ErrorInfo);
 	}
 
 	$body = str_replace('<SUBJECT>', $subject,   $body);
@@ -3654,25 +3655,37 @@ function mailer($from, $to, $cc, $bcc, $replyto, $subject, $body, $body_text = '
 	$result  = $mail->send();
 	$error   = $mail->ErrorInfo; //$result ? '' : $mail->ErrorInfo;
 	$method  = $mail_methods[intval(read_config_option('settings_how'))];
+	$rtype   = $result ? 'INFO' : 'WARNING';
+	$rmsg    = $result ? 'successfully sent' : 'failed';
 
 	if ($error != '') {
 		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'%s",
-			$result ? 'INFO' : 'WARNING',
-			$result ? 'successfully sent' : 'failed',
+			$rtype,
+			$rmsg,
 			$method,
 			$fromText, $toText, $ccText, $subject,
 			", Error: $error");
 	} else {
 		$message = sprintf("%s: Mail %s via %s from '%s', to '%s', cc '%s', Subject '%s'",
-			$result ? 'INFO' : 'WARNING',
-			$result ? 'successfully sent' : 'failed',
+			$rtype,
+			$rmsg,
 			$method,
 			$fromText, $toText, $ccText, $subject);
 	}
 
 	cacti_log($message, false, 'MAILER');
+	if ($result == false) {
+		cacti_log(cacti_debug_backtrace($rtype), false, 'MAILER');
+	}
 
 	return $error;
+}
+
+function record_mailer_error($retError, $mailError) {
+	$errorInfo = empty($retError) ? $mailError : $retError;
+	cacti_log('ERROR: ' . $errorInfo, false, 'CMDPHP MAILER');
+	cacti_debug_backtrace('MAILER ERROR');
+	return $errorInfo;
 }
 
 function add_email_details($emails, &$result, callable $addFunc) {
@@ -3682,8 +3695,14 @@ function add_email_details($emails, &$result, callable $addFunc) {
 			//if (is_callable($addFunc)) {
 			if (!empty($addFunc)) {
 				$result = $addFunc($e['email'], $e['name']);
+				if (!$result) {
+					return '';
+				}
 			}
 			$arrText[] = create_emailtext($e);
+		} else if (!empty($e['name'])) {
+			$result = false;
+			return 'Bad email format, name but no address: ' . $e['name'];
 		}
 	}
 	$text = implode(',', $arrText);
@@ -3748,15 +3767,15 @@ function split_emaildetail($email) {
 	if (!is_array($email)) {
 		$email = trim($email);
 
-		$sPattern = '/([\w\s\'\"\+]+[\s]+)?(<)?(([\w\-.\+]+)@((?:[\w\-]+\.)+)([a-zA-Z]{2,4}))?(>)?/';
+		$sPattern = '/(?:"?([^"]*)"?\s)?(?:<?(.+@[^>]+)>?)/i';
 		preg_match($sPattern, $email, $aMatch);
 
 		if (isset($aMatch[1])) {
 			$rname = trim($aMatch[1]);
 		}
 
-		if (isset($aMatch[3])) {
-			$rmail = trim($aMatch[3]);
+		if (isset($aMatch[2])) {
+			$rmail = trim($aMatch[2]);
 		}
 	} else {
 		$rmail = $email[0];

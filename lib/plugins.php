@@ -574,14 +574,13 @@ function api_plugin_can_install($plugin, &$message) {
 
 function api_plugin_install($plugin) {
 	global $config;
+
 	$dependencies = api_plugin_get_dependencies($plugin);
 
 	$proceed = api_plugin_can_install($plugin, $message);
 	if (!$proceed) {
 		$message .= '<br><br>' . __('Plugin cannot be installed.');
-		$_SESSION['reports_error'] = $message;
-
-		raise_message('reports_error');
+		raise_message($message, MESSAGE_LEVEL_ERROR);
 
 		header('Location: plugins.php?header=false');
 		exit;

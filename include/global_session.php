@@ -48,14 +48,6 @@ if (isset($_SESSION['clog_error']) && $_SESSION['clog_error'] != '') {
 	kill_session_var('clog_error');
 }
 
-if (isset($_SESSION['reports_message']) && $_SESSION['reports_message'] != '') {
-	$messages['reports_message'] = array(
-		'message' => $_SESSION['reports_message'],
-		'type' => 'info'
-	);
-	kill_session_var('reports_message');
-}
-
 $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {

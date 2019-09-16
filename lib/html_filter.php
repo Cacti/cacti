@@ -61,8 +61,7 @@ class CactiTableFilter {
 				'row1' => array(
 					'filter' => array(
 						'friendly_name'  => __('Search'),
-						'filter'         => FILTER_CALLBACK,
-						'filter_options' => array('options' => 'sanitize_search_string'),
+						'filter'         => FILTER_DEFAULT,
 						'placeholder'    => __('Enter a search term'),
 						'size'           => '30',
 						'default'        => '',

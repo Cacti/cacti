@@ -940,6 +940,7 @@ function utilities_get_mysql_recommendations() {
 		'innodb_file_per_table' => array(
 			'value'   => 'ON',
 			'measure' => 'equalint',
+			'class'   => 'error',
 			'comment' => __('When using InnoDB storage it is important to keep your table spaces separate.  This makes managing the tables simpler for long time users of %s.  If you are running with this currently off, you can migrate to the per file storage by enabling the feature, and then running an alter statement on all InnoDB tables.', $database)
 			),
 		'innodb_file_format' => array(
@@ -1435,17 +1436,19 @@ function utility_php_verify_recommends(&$recommends, $source) {
 }
 
 function utility_php_set_recommends_text(&$recs) {
-	foreach ($recs as $name => $recommends) {
-		if (sizeof($recommends)) {
-			foreach ($recommends as $index => $recommend) {
-				if ($recommend['name'] == 'version') {
-					$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
-				} elseif ($recommend['name'] == 'memory_limit') {
-					$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
-				} elseif ($recommend['name'] == 'max_execution_time') {
-					$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
-				} elseif ($recommend['name'] == 'date.timezone') {
-					$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+	if (is_array($recs) && sizeof($recs)) {
+		foreach ($recs as $name => $recommends) {
+			if (cacti_sizeof($recommends)) {
+				foreach ($recommends as $index => $recommend) {
+					if ($recommend['name'] == 'version') {
+						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
+					} elseif ($recommend['name'] == 'memory_limit') {
+						$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
+					} elseif ($recommend['name'] == 'max_execution_time') {
+						$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
+					} elseif ($recommend['name'] == 'date.timezone') {
+						$recs[$name][$index]['description'] = __('A valid timezone that matches MySQL and the system');
+					}
 				}
 			}
 		}

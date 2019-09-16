@@ -613,10 +613,9 @@ function template() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -732,7 +731,7 @@ function template() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (gt.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
@@ -780,23 +779,57 @@ function template() {
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 8, __('Graph Templates'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('Graph Template Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this Graph Template.')
+		),
+		'gt.id' => array(
+			'display' => __('ID'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')
+		),
+		'nosort3' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph.')
+		),
+		'graphs' => array(
+			'display' => __('Graphs Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Graphs using this Graph Template.')
+		),
+		'size' => array(
+			'display' => __('Size'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The default size of the resulting Graphs.')
+		),
+		'image_format_id' => array(
+			'display' => __('Image Format'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The default image format for the resulting Graphs.')
+		),
+		'vertical_label' => array(
+			'display' => __('Vertical Label'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The vertical label for the resulting Graphs.')
+		)
+	);
+
+	$nav = html_nav_bar('graph_templates.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Graph Templates'), 'page', 'main');
 
 	form_start('graph_templates.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'name'            => array('display' => __('Graph Template Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this Graph Template.')),
-		'gt.id'           => array('display' => __('ID'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The internal ID for this Graph Template.  Useful when performing automation or debugging.')),
-		'nosort3'         => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Graph Templates that are in use cannot be Deleted.  In use is defined as being referenced by a Graph.')),
-		'graphs'          => array('display' => __('Graphs Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Graphs using this Graph Template.')),
-		'size'            => array('display' => __('Size'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The default size of the resulting Graphs.')),
-		'image_format_id' => array('display' => __('Image Format'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The default image format for the resulting Graphs.')),
-		'vertical_label'  => array('display' => __('Vertical Label'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The vertical label for the resulting Graphs.'))
-	);
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

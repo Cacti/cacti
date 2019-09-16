@@ -190,9 +190,9 @@ if (read_config_option('dsstats_enable') == 'on' || $forcerun) {
 			dsstats_find_log_bad_maxvalues();
 
 			/* run the daily stats */
+			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 			dsstats_get_and_store_ds_avgpeak_values('daily');
 			log_dsstats_statistics('DAILY');
-			set_config_option('dsstats_last_daily_run_time', date('Y-m-d G:i:s', $current_time));
 		}
 	}
 

@@ -167,6 +167,11 @@ if (!empty($db_missing_vars)) {
 	die("config.php is $db_missing_vars" . PHP_EOL);
 }
 
+if (empty($url_path)) {
+	/* define default url path */
+	$url_path = '/';
+}
+
 /* set the local for international users */
 setlocale(LC_CTYPE, 'en_US.UTF-8');
 
@@ -260,6 +265,7 @@ $config['connection'] = 'online';
 if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 	$local_db_cnn_id = db_connect_real($database_hostname, $database_username, $database_password, $database_default, $database_type, $database_port, $database_retries, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca);
 
+	if (!isset($rdatabase_retries)) $rdatabase_retries = 5;
 	if (!isset($rdatabase_ssl)) $rdatabase_ssl = false;
 	if (!isset($rdatabase_ssl_key)) $rdatabase_ssl_key = false;
 	if (!isset($rdatabase_ssl_cert)) $rdatabase_ssl_cert = false;
@@ -381,20 +387,22 @@ if ($config['is_web']) {
 	if (!session_id()) session_start();
 
 	/* we never run with magic quotes on */
-	if (get_magic_quotes_gpc()) {
-		$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-		foreach ($process as $key => $val) {
-			foreach ($val as $k => $v) {
-				unset($process[$key][$k]);
-				if (is_array($v)) {
-					$process[$key][stripslashes($k)] = $v;
-					$process[] = &$process[$key][stripslashes($k)];
-				} else {
-					$process[$key][stripslashes($k)] = stripslashes($v);
+	if (version_compare(PHP_VERSION, '5.4', '<=')) {
+		if (get_magic_quotes_gpc()) {
+			$process = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+			foreach ($process as $key => $val) {
+				foreach ($val as $k => $v) {
+					unset($process[$key][$k]);
+					if (is_array($v)) {
+						$process[$key][stripslashes($k)] = $v;
+						$process[] = &$process[$key][stripslashes($k)];
+					} else {
+						$process[$key][stripslashes($k)] = stripslashes($v);
+					}
 				}
 			}
+			unset($process);
 		}
-		unset($process);
 	}
 
 	/* make sure to start only only Cacti session at a time */

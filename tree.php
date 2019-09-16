@@ -1740,9 +1740,10 @@ function tree_edit() {
 
 function display_sites() {
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR city LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
-			OR state LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+		$sql_where = 'WHERE
+			name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR city LIKE '    . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR state LIKE '   . db_qstr('%' . get_request_var('filter') . '%') . '
 			OR country LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
@@ -1761,7 +1762,8 @@ function display_hosts() {
 	$sql_where = '';
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR h.description LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+		$sql_where .= 'h.hostname LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR h.description LIKE '      . db_qstr('%' . get_request_var('filter') . '%');
 	}
 
 	if (get_filter_request_var('site_id') > 0) {
@@ -1781,7 +1783,10 @@ function display_graphs() {
 	$sql_where = '';
 
 	if (get_request_var('filter') != '') {
-		$sql_where .= 'WHERE (title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ') AND local_graph_id > 0';
+		$sql_where .= 'WHERE (
+			title_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR gt.name LIKE '  . db_qstr('%' . get_request_var('filter') . '%') . ')
+			AND local_graph_id > 0';
 	} else {
 		$sql_where .= 'WHERE local_graph_id > 0';
 	}
@@ -1963,7 +1968,9 @@ function tree() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = 'WHERE (t.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ' OR ti.title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
+		$sql_where = 'WHERE (
+			t.name LIKE '      . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR ti.title LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}

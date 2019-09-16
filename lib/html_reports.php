@@ -101,9 +101,7 @@ function reports_form_save() {
 				$timestamp = strtotime('12:00am') + 86400 + date('H', $timestamp) * 3600 + date('i', $timestamp) * 60 + date('s', $timestamp);
 			}
 
-			$_SESSION['reports_message'] = __('Date/Time moved to the same time Tomorrow');
-
-			raise_message('reports_message');
+			raise_message(__('Date/Time moved to the same time Tomorrow'), MESSAGE_LEVEL_INFO);
 		}
 
 		$save['mailtime']     = form_input_validate($timestamp, 'mailtime', '^[0-9]+$', false, 3);
@@ -243,26 +241,8 @@ function reports_form_actions() {
 			} elseif (get_nfilter_request_var('drp_action') == REPORTS_SEND_NOW) { // send now
 				$message = '';
 
-				kill_session_var('reports_message');
-
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					reports_send($selected_items[$i]);
-
-					if (isset($_SESSION['reports_info']) && $_SESSION['reports_info'] != '') {
-						$message .= ($message != '' ? '<br>':'') . $_SESSION['reports_info'];
-					}
-
-					if (isset($_SESSION['reports_error']) && $_SESSION['reports_error'] != '') {
-						$message .= ($message != '' ? '<br>':'') . "<span style='color:red;'>" . $_SESSION['reports_error'] . '</span>';
-					}
-
-					kill_session_var('reports_info');
-					kill_session_var('reports_error');
-				}
-
-				if ($message != '') {
-					$_SESSION['reports_message'] = $message;
-					raise_message('reports_message');
 				}
 			}
 		}
@@ -397,25 +377,13 @@ function reports_send($id) {
 		}
 
 		if ($report['email'] == '') {
-			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']);
-			if (!isset_request_var('selected_items')) {
-				raise_message('reports_error');
-			}
+			raise_message(__('Unable to send Report \'%s\'.  Please set destination e-mail addresses',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['subject'] == '') {
-			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']);
-			if (!isset_request_var('selected_items')) {
-				raise_message('reports_error');
-			}
+			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail subject',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_name'] == '') {
-			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']);
-			if (!isset_request_var('selected_items')) {
-				raise_message('reports_error');
-			}
+			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail From Name',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} elseif ($report['from_email'] == '') {
-			$_SESSION['reports_error'] = __('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']);
-			if (!isset_request_var('selected_items')) {
-				raise_message('reports_error');
-			}
+			raise_message(__('Unable to send Report \'%s\'.  Please set an e-mail from address',  $report['name']), MESSAGE_LEVEL_ERROR);
 		} else {
 			generate_report($report, true);
 		}
@@ -1149,10 +1117,9 @@ function reports_edit() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'name' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1474,10 +1441,9 @@ function reports() {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1567,7 +1533,7 @@ function reports() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (reports.name LIKE '%%" . get_request_var('filter') . "%%')";
+		$sql_where = 'WHERE (reports.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}

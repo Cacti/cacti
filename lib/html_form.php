@@ -61,7 +61,9 @@ function draw_edit_form($array) {
 			} elseif ($field_array['method'] == 'spacer') {
 				$collapsible = (isset($field_array['collapsible']) && $field_array['collapsible'] == 'true');
 
-				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']) . ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
+				print "<div class='spacer formHeader" . ($collapsible ? ' collapsible':'') . "' id='row_$field_name'><div class='formHeaderText'>" . html_escape($field_array['friendly_name']);
+				print '<div class="formTooltip">' . (isset($field_array['description']) ? display_tooltip($field_array['description']):'') . '</div>';
+				print ($collapsible ? "<div class='formHeaderAnchor'><i class='fa fa-angle-double-up'></i></div>":'') . '</div></div>';
 			} else {
 				// Make a row using a div
 				if (isset($config_array['force_row_color'])) {
@@ -634,10 +636,10 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 	}
 
 	if ($type == 'password') {
-		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' value=''>";
+		print "<input type='text' style='display:none' value=''><input type='password' style='display:none' autocomplete='new-password' value=''>";
 	}
 
-	print "<input type='$type'" . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="new-password"':'') . ($title != '' ? ' title="' . $title . '"':'');
+	print "<input type='$type' " . ($type == 'password' || $type == 'password_confirm' ? 'autocomplete="new-password"':'off') . ($title != '' ? ' title="' . $title . '"':'');
 
 	if (isset($_SESSION['sess_error_fields'])) {
 		if (!empty($_SESSION['sess_error_fields'][$form_name])) {
@@ -654,7 +656,7 @@ function form_text_box($form_name, $form_previous_value, $form_default_value, $f
 		}
 	}
 
-	print " id='$form_name' autocomplete='off' " . ($placeholder != '' ? "placeholder='$placeholder'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>\n";
+	print " id='$form_name' " . ($placeholder != '' ? "placeholder='$placeholder'":'') . " name='$form_name' size='$form_size'" . (!empty($form_max_length) ? " maxlength='$form_max_length'" : '') . " value='" . html_escape($form_previous_value) . "'>\n";
 }
 
 /* form_hidden_box - draws a standard html hidden element
@@ -1413,6 +1415,9 @@ function form_end($ajax = true) {
 
 			$('#<?php print $form_id;?>').submit(function(event) {
 				event.preventDefault();
+
+				// Enable the form if it's disabled
+				$(this).find('input, textarea, select').prop('disabled', false);
 
 				strURL  = '<?php print $form_action;?>';
 				strURL += (strURL.indexOf('?') >= 0 ? '&':'?') + 'header=false';

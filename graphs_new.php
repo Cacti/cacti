@@ -96,6 +96,23 @@ function save_user_filter() {
 	set_user_setting('graph_type', $graph_type);
 }
 
+function store_get_selected_dq_index($snmp_query_id) {
+	// Always restore the last used filter, otherwise, use the default
+	if (!is_numeric($snmp_query_id)) {
+		return false;
+	} elseif (isset_request_var('sgg_' . $snmp_query_id)) {
+		$selected = get_filter_request_var('sgg_' . $snmp_query_id);
+	} elseif (isset($_SESSION['sess_sgg_' . $snmp_query_id])) {
+		$selected = $_SESSION['sess_sgg_' . $snmp_query_id];
+	} else {
+		$selected = read_user_setting('default_sgg_' . $snmp_query_id);
+	}
+
+	$_SESSION['sess_sgg_' . $snmp_query_id] = $selected;
+
+	return $selected;
+}
+
 function form_save() {
 	if (isset_request_var('save_component_graph')) {
 		/* summarize the 'create graph from host template/snmp index' stuff into an array */
@@ -108,6 +125,11 @@ function form_save() {
 				}
 			} elseif (preg_match('/^sg_(\d+)_([a-f0-9]{32})$/', $var, $matches)) {
 				$selected_graphs['sg'][$matches[1]][get_nfilter_request_var('sgg_' . $matches[1])][$matches[2]] = true;
+			}
+
+			if (strpos($var, 'sgg_') !== false) {
+				$snmp_query_id = str_replace('sgg_', '', $var);
+				store_get_selected_dq_index($snmp_query_id);
 			}
 		}
 
@@ -238,10 +260,9 @@ function graphs() {
 			'default' => '-1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'host_id' => array(
 			'filter' => FILTER_VALIDATE_INT,
@@ -459,7 +480,7 @@ function graphs() {
 			</tr>\n";
 
 		if (get_request_var('filter') != '') {
-			$sql_where = 'AND gt.name LIKE "%' . get_request_var('filter') . '%"';
+			$sql_where = 'AND gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -812,6 +833,8 @@ function graphs() {
 
 					html_start_box('', '100%', '', '3', 'center', '');
 
+					$selected = store_get_selected_dq_index($snmp_query['id']);
+
 					print "<tr>
 						<td>
 							<img src='" . $config['url_path'] . "images/arrow.gif' alt=''>
@@ -824,7 +847,7 @@ function graphs() {
 						</td>
 						<td class='right'>
 							<select class='dqselect' name='sgg_" . $snmp_query['id'] . "' id='sgg_" . $snmp_query['id'] . "' onChange='dqUpdateDeps(" . $snmp_query['id'] . ',' . (isset($column_counter) ? $column_counter:'') . ");'>
-								"; html_create_list($data_query_graphs,'name','id', read_user_setting('default_sgg_' . $snmp_query['id'])); print "
+								"; html_create_list($data_query_graphs, 'name', 'id', $selected); print "
 							</select>
 						</td>
 					</tr>\n";

@@ -115,7 +115,7 @@ $fields_poller_edit = array(
 	'sync_interval' => array(
 		'method' => 'drop_array',
 		'friendly_name' => __('Sync Interval'),
-		'description' => __('The polling sync interval in use.  This setting will effect how often this poller is checked and updated.'),
+		'description' => __('The polling sync interval in use.  This setting will affect how often this poller is checked and updated.'),
 		'value' => '|arg1:sync_interval|',
 		'default' => read_config_option('poller_sync_interval'),
 		'array' => $poller_sync_intervals,
@@ -645,9 +645,9 @@ function test_database_connection($poller = array()) {
 		foreach ($fields as $field) {
 			if ($field == 'dbssl') {
 				if (isset_request_var('dbssl') && get_nfilter_request_var('dbssl') == 'on') {
-					$poller['dbssl'] = true;
+					$poller['dbssl'] = 'on';
 				} else {
-					$poller['dbssl'] = false;
+					$poller['dbssl'] = '';
 				}
 			} elseif (isset_request_var($field)) {
 				$poller[$field] = get_nfilter_request_var($field);
@@ -694,10 +694,9 @@ function pollers() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -796,7 +795,7 @@ function pollers() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
 	}

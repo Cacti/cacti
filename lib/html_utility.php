@@ -49,39 +49,42 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					/* if the field/sub-field combination is an array, resolve it recursively */
 					$form_array[$field_name][$field_to_check] = inject_form_variables($form_array[$field_name][$field_to_check], $arg1);
 				} elseif (isset($field_array[$field_to_check]) && !is_array($field_array[$field_to_check]) && preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $field_array[$field_to_check], $matches)) {
-					$string = $field_array[$field_to_check];
+					$string   = $field_array[$field_to_check];
+					$matches0 = $matches[0];
+					$matches1 = $matches[1];
+					$matches2 = $matches[2];
 
-					$count = 0;
-					while (true) {
-						/* an empty field name in the variable means don't treat this as an array */
-						if ($matches[2] == '') {
-							if (is_array(${$matches[1]})) {
-								/* the existing value is already an array, leave it alone */
-								$form_array[$field_name][$field_to_check] = ${$matches[1]};
-								break;
-							} else {
-								/* the existing value is probably a single variable */
-								$form_array[$field_name][$field_to_check] = str_replace($matches[0], ${$matches[1]}, $field_array[$field_to_check]);
-								break;
-							}
+					/* an empty field name in the variable means don't treat this as an array */
+					if (empty($matches2)) {
+						if (is_array($$matches1)) {
+							/* the existing value is already an array, leave it alone */
+							$form_array[$field_name][$field_to_check] = $$matches1;
+							break;
 						} else {
-							/* copy the value down from the array/key specified in the variable */
-							$string = str_replace($matches[0], (isset(${$matches[1]}{$matches[2]}) ? ${$matches[1]}{$matches[2]} : ''), $string);
-
-							$matches = array();
-
-							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
-
-							if (!cacti_sizeof($matches)) {
-								$form_array[$field_name][$field_to_check] = $string;
-								break;
+							/* the existing value is probably a single variable */
+							$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
+							break;
+						}
+					} else {
+						/* copy the value down from the array/key specified in the variable */
+						if (isset($$matches1) && is_array($$matches1)) {
+							$array = $$matches1;
+							if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
+								$string = str_replace($matches0, $array[$matches2], $string);
 							}
 						}
 
-						$count++;
+						// Double check to see if the replacement went as planned
+						$matches = array();
+						preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
 
-						if ($count > 3) {
+						if (!cacti_sizeof($matches)) {
+							$form_array[$field_name][$field_to_check] = $string;
 							break;
+						} elseif (isset($form_array[$field_name]['default'])) {
+							$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
+						} else {
+							$form_array[$field_name][$field_to_check] = '';
 						}
 					}
 				}

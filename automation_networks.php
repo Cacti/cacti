@@ -348,21 +348,21 @@ function form_actions() {
 				<p>" . __('Click \'Continue\' to delete the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
-		</tr>\n";
+		</tr>";
 	} elseif (get_nfilter_request_var('drp_action') == '3') { /* enable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to enable the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
-		</tr>\n";
+		</tr>";
 	} elseif (get_nfilter_request_var('drp_action') == '2') { /* disable */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to disable the following Network(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
-		</tr>\n";
+		</tr>";
 	} elseif (get_nfilter_request_var('drp_action') == '4') { /* discover now */
 		print "<tr>
 			<td class='textArea'>
@@ -371,14 +371,14 @@ function form_actions() {
 				<p><input type='checkbox' id='discover_debug' name='discover_debug' value='1'>
 				<label id='discover_debug_label' for='discover_debug'>" . __('Run discover in debug mode') . "</label></p>
 			</td>
-		</tr>\n";
+		</tr>";
 	} elseif (get_nfilter_request_var('drp_action') == '5') { /* cancel discovery now */
 		print "<tr>
 			<td class='textArea'>
 				<p>" . __('Click \'Continue\' to cancel on going Network Discovery(s).') . "</p>
 				<div class='itemlist'><ul>$networks_list</ul></div>
 			</td>
-		</tr>\n";
+		</tr>";
 	}
 
 	if (!isset($networks_array)) {
@@ -397,7 +397,7 @@ function form_actions() {
 			<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Cancel') . "'>
 			$save_html" : "<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -968,7 +968,7 @@ function network_edit() {
 
 function get_networks(&$sql_where, $rows, $apply_limits = true) {
 	if (get_request_var('filter') != '') {
-		$sql_where = " WHERE (automation_networks.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = ' WHERE (automation_networks.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$sql_order = get_order_string();
@@ -1009,10 +1009,9 @@ function networks() {
 			'default' => '20'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -1185,7 +1184,7 @@ function networks_filter() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . $value . "</option>";
 								}
 							}
 							?>

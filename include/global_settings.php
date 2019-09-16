@@ -996,7 +996,7 @@ $settings = array(
 			),
 		'poller_type' => array(
 			'friendly_name' => __('Poller Type'),
-			'description' => __('The poller type to use.  This setting will take effect at next polling interval.'),
+			'description' => __('The poller type to use.  This setting will take affect at next polling interval.'),
 			'method' => 'drop_array',
 			'default' => 1,
 			'array' => $poller_options,
@@ -1004,14 +1004,14 @@ $settings = array(
 
 		'poller_sync_interval' => array(
 			'friendly_name' => __('Poller Sync Interval'),
-			'description' => __('The default polling sync interval to use when creating a poller.  This setting will effect how often remote pollers are checked and updated.'),
+			'description' => __('The default polling sync interval to use when creating a poller.  This setting will affect how often remote pollers are checked and updated.'),
 			'method' => 'drop_array',
 			'default' => 7200,
 			'array' => $poller_sync_intervals,
 			),
 		'poller_interval' => array(
 			'friendly_name' => __('Poller Interval'),
-			'description' => __('The polling interval in use.  This setting will effect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
+			'description' => __('The polling interval in use.  This setting will affect how often RRDfiles are checked and updated.  <strong><u>NOTE: If you change this value, you must re-populate the poller cache.  Failure to do so, may result in lost data.</u></strong>'),
 			'method' => 'drop_array',
 			'default' => 300,
 			'array' => $poller_intervals,
@@ -1634,7 +1634,7 @@ $settings = array(
 			),
 		'boost_rrd_update_enable' => array(
 			'friendly_name' => __('Enable On-demand RRD Updating'),
-			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take effect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on.'),
+			'description' => __('Should Boost enable on demand RRD updating in Cacti?  If you disable, this change will not take affect until after the next polling cycle.  When you have Remote Data Collectors, this settings is required to be on.'),
 			'method' => 'checkbox',
 			'default' => ''
 			),

@@ -799,10 +799,9 @@ function profile() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -918,13 +917,13 @@ function profile() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE (name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where = 'WHERE (dsp.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	} else {
 		$sql_where = '';
 	}
 
 	if (get_request_var('has_data') == 'true') {
-		$sql_having = 'HAVING data_sources>0';
+		$sql_having = 'HAVING data_sources > 0';
 	} else {
 		$sql_having = '';
 	}
@@ -953,31 +952,69 @@ function profile() {
 			FROM data_source_profiles AS dsp
 			LEFT JOIN data_template_data AS dtd
 			ON dsp.id=dtd.data_source_profile_id
+			$sql_where
 			GROUP BY dsp.id, dtd.data_template_id, dtd.local_data_id
 		) AS rs
-		$sql_where
 		GROUP BY rs.id
 		$sql_having
 		$sql_order
 		$sql_limit");
 
-	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, 9, __('Profiles'), 'page', 'main');
+	$display_text = array(
+		'name' => array(
+			'display' => __('Data Source Profile Name'),
+			'align' => 'left',
+			'sort' => 'ASC',
+			'tip' => __('The name of this CDEF.')
+		),
+		'nosort00' => array(
+			'display' => __('Default'),
+			'align' => 'right',
+			'tip' => __('Is this the default Profile for all new Data Templates?')
+		),
+		'nosort01' => array(
+			'display' => __('Deletable'),
+			'align' => 'right',
+			'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')
+		),
+		'nosort02' => array(
+			'display' => __('Read Only'),
+			'align' => 'right',
+			'tip' => __('Profiles that are in use by Data Sources become read only for now.')
+		),
+		'step' => array(
+			'display' => __('Poller Interval'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The Polling Frequency for the Profile')
+		),
+		'heartbeat' => array(
+			'display' => __('Heartbeat'),
+			'align' => 'right',
+			'sort' => 'ASC',
+			'tip' => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')
+		),
+		'data_sources' => array(
+			'display' => __('Data Sources Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Data Sources using this Profile.')
+		),
+		'templates' => array(
+			'display' => __('Templates Using'),
+			'align' => 'right',
+			'sort' => 'DESC',
+			'tip' => __('The number of Data Templates using this Profile.')
+		)
+	);
+
+	$nav = html_nav_bar('data_source_profiles.php?filter=' . get_request_var('filter'), MAX_DISPLAY_PAGES, get_request_var('page'), $rows, $total_rows, sizeof($display_text) + 1, __('Profiles'), 'page', 'main');
 
 	form_start('data_source_profiles.php', 'chk');
 
 	print $nav;
 
 	html_start_box('', '100%', '', '3', 'center', '');
-
-	$display_text = array(
-		'name' => array('display' => __('Data Source Profile Name'), 'align' => 'left', 'sort' => 'ASC', 'tip' => __('The name of this CDEF.')),
-		'nosort00' => array('display' => __('Default'), 'align' => 'right', 'tip' => __('Is this the default Profile for all new Data Templates?')),
-		'nosort01' => array('display' => __('Deletable'), 'align' => 'right', 'tip' => __('Profiles that are in use cannot be Deleted. In use is defined as being referenced by a Data Source or a Data Template.')),
-		'nosort02' => array('display' => __('Read Only'), 'align' => 'right', 'tip' => __('Profiles that are in use by Data Sources become read only for now.')),
-		'step' => array('display' => __('Poller Interval'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Polling Frequency for the Profile')),
-		'heartbeat' => array('display' => __('Heartbeat'), 'align' => 'right', 'sort' => 'ASC', 'tip' => __('The Amount of Time, in seconds, without good data before Data is stored as Unknown')),
-		'data_sources' => array('display' => __('Data Sources Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Sources using this Profile.')),
-		'templates' => array('display' => __('Templates Using'), 'align' => 'right', 'sort' => 'DESC', 'tip' => __('The number of Data Templates using this Profile.')));
 
 	html_header_sort_checkbox($display_text, get_request_var('sort_column'), get_request_var('sort_direction'), false);
 

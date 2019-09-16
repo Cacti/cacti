@@ -235,7 +235,7 @@ function form_automation_snmp_actions() {
 					<p>" . __('Click \'Continue\' to delete the following SNMP Option(s).') . "</p>
 					<div class='itemlist'><ul>$snmp_groups</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 		} elseif (get_nfilter_request_var('drp_action') == '2') { /* duplicate */
 			print "<tr>
 				<td class='textArea'>
@@ -243,7 +243,7 @@ function form_automation_snmp_actions() {
 					<div class='itemlist'><ul>$snmp_groups</ul></div>
 					<p>" . __('Name Format') . '<br>'; form_text_box('name_format', '<' . __('name') . '> (1)', '', '255', '30', 'text'); print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 		}
 	}
 
@@ -255,7 +255,7 @@ function form_automation_snmp_actions() {
 			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' value='" . ($save_html == '' ? __esc('Return'):__esc('Cancel')) . "' name='cancel'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -561,7 +561,7 @@ function automation_snmp_edit() {
 				$i++;
 			}
 		} else {
-			print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>\n";
+			print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Items') . "</em></td></tr>";
 		}
 
 		html_end_box();
@@ -623,10 +623,9 @@ function automation_snmp() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -671,7 +670,7 @@ function automation_snmp() {
                             <?php
                             if (cacti_sizeof($item_rows)) {
                                 foreach ($item_rows as $key => $value) {
-                                    print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+                                    print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
                                 }
                             }
                             ?>
@@ -722,7 +721,7 @@ function automation_snmp() {
 
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where = "WHERE asnmp.name LIKE '%" . get_request_var('filter') . "%'";
+		$sql_where = 'WHERE asnmp.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 	} else {
 		$sql_where = '';
 	}
@@ -789,7 +788,7 @@ function automation_snmp() {
 			form_end_row();
 		}
 	} else {
-		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>\n";
+		print "<tr class='tableRow'><td colspan='" . (cacti_sizeof($display_text)+1) . "'><em>" . __('No SNMP Option Sets Found') . "</em></td></tr>";
 	}
 
 	html_end_box(false);

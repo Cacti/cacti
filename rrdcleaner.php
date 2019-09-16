@@ -261,10 +261,9 @@ function list_rrd() {
 			'default' => '1'
 			),
 		'filter' => array(
-			'filter' => FILTER_CALLBACK,
+			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
-			'default' => '',
-			'options' => array('options' => 'sanitize_search_string')
+			'default' => ''
 			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
@@ -300,7 +299,10 @@ function list_rrd() {
 	$sql_where = 'WHERE in_cacti=0';
 	/* form the 'where' clause for our main sql query */
 	if (get_request_var('filter') != '') {
-		$sql_where .= " AND (rc.name LIKE '%" . get_request_var('filter') . "%' OR rc.name_cache LIKE '%" . get_request_var('filter') . "%' OR dt.name LIKE '%" . get_request_var('filter') . "%')";
+		$sql_where .= ' AND (
+			rc.name LIKE '          . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR rc.name_cache LIKE ' . db_qstr('%' . get_request_var('filter') . '%') . '
+			OR dt.name LIKE '       . db_qstr('%' . get_request_var('filter') . '%') . ')';
 	}
 
 	$secsback = get_request_var('age');

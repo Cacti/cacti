@@ -289,6 +289,27 @@ function item_remove() {
 	db_execute_prepared('DELETE FROM graph_templates_item WHERE id = ?', array(get_request_var('id')));
 }
 
+function validate_item_vars() {
+	/* ================= input validation and session storage ================= */
+	$filters = array(
+		'host_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '0'
+		),
+		'local_graph_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '0'
+		),
+		'data_template_id' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '0'
+		)
+	);
+
+	validate_store_request_vars($filters, 'sess_gitems');
+	/* ================= input validation ================= */
+}
+
 function item_edit() {
 	global $struct_graph_item, $graph_item_types, $consolidation_functions;
 
@@ -298,6 +319,8 @@ function item_edit() {
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('data_template_id');
 	/* ==================================================== */
+
+	validate_item_vars();
 
 	$id = (!isempty_request_var('id') ? '&id=' . get_request_var('id') : '');
 
