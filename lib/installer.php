@@ -2364,7 +2364,7 @@ class Installer implements JsonSerializable {
 				$max_vars = 1000;
 			}
 
-			if (count($max_vars) < count($tables) + 10) {
+			if ($max_vars < count($tables) + 10) {
 				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', count($tables) + 100));
 				$this->buttonNext->Enabled = false;
 			} else {
