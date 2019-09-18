@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit
 -issue#2938: Under CentOS packages, upgrade_database.php script uses incorrect location for DB upgrade scripts
 -issue#2940: In some cases SVG images don't size properly until page is resized 
+-issue#2949: MoveArrow icon not align in some pages
 -feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
 
 1.2.6
