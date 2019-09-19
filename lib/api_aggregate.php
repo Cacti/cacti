@@ -56,7 +56,6 @@ function aggregate_graph_save($_local_graph_id, $_graph_template_id, $_graph_tit
 	return $local_graph_id;
 }
 
-
 /**
  * Creates or updates basic aggregate graph data in graph_local.
  *
@@ -76,7 +75,6 @@ function aggregate_graph_local_save($id = 0) {
 
 	return sql_save($local_graph, 'graph_local');
 }
-
 
 /**
  * Create or update aggregate graphs data in graph_templates_graph.
@@ -173,7 +171,6 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
 
 	return $graph_templates_graph_id;
 }
-
 
 /** aggregate_graphs_insert_graph_items	- inserts all graph items of an existing graph
  * @param int $_new_graph_id			- id of the new graph
@@ -596,7 +593,6 @@ function aggregate_validate_graph_params($posted, $has_override = false) {
 
 	return $params_new;
 }
-
 
 /**
  * Populate grraph items array with posted values.
@@ -1671,6 +1667,8 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 					$matrix_title = 'COMMENT: ' . $item['text_format'];
 					if (preg_match('/(:bits:|:bytes:|\|sum:)/', $item['text_format'])) {
 						$force_skip = false;
+					} elseif ($item['text_format'] != '') {
+						$force_skip = false;
 					} else {
 						$force_skip = true;
 					}
@@ -1760,7 +1758,6 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 
 	form_hidden_box('item_no', cacti_sizeof($item_list), cacti_sizeof($item_list));
 }
-
 
 /**
  * draw graph configuration form so user can override some graph template parametes
