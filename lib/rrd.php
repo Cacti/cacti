@@ -34,6 +34,9 @@ if (read_config_option('storage_location')) {
 	include_once('Crypt/Random.php');
 	include_once('Crypt/RSA.php');
 	include_once('Crypt/Rijndael.php');
+
+	global $encryption;
+	$encryption = true;
 }
 
 function escape_command($command) {
@@ -98,6 +101,9 @@ function __rrd_init($output_to_term = true) {
 }
 
 function __rrd_proxy_init($logopt = 'WEBLOG') {
+	global $encryption;
+	$terminator = "_EOT_\r\n";
+	$encryption = true;
 	$rsa = new \phpseclib\Crypt\RSA();
 
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -130,7 +136,7 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 
 	$rrdp_fingerprint = ($rrdp_id == 1 ) ? read_config_option('rrdp_fingerprint') : read_config_option('rrdp_fingerprint_backup');
 
-	socket_write($rrdp_socket, read_config_option('rsa_public_key') . "\r\n");
+	socket_write($rrdp_socket, read_config_option('rsa_public_key') . $terminator);
 
 	/* read public key being returned by the proxy server */
 	$rrdp_public_key = '';
@@ -147,8 +153,8 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 			break;
 		} else {
 			$rrdp_public_key .= $recv;
-			if (substr($rrdp_public_key, -1) == "\n") {
-				$rrdp_public_key = trim($rrdp_public_key);
+			if (strpos($rrdp_public_key, $terminator) !== false) {
+				$rrdp_public_key = trim(trim($rrdp_public_key, $terminator));
 				break;
 			}
 		}
@@ -167,6 +173,8 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 			rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
 		}
 
+		/* disable encryption */
+		$encryption = rrdtool_execute('setcnn encryption off', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdproxy, $logopt = 'WEBLOG') ? false : true;
 		return $rrdproxy;
 	}
 }
@@ -190,8 +198,9 @@ function __rrd_close($rrdtool_pipe) {
 
 function __rrd_proxy_close($rrdp) {
 	/* close the rrdtool proxy server connection */
+	$terminator = "_EOT_\r\n";
 	if ($rrdp) {
-		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . "\r\n");
+		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . $terminator);
 		@socket_shutdown($rrdp[0], 2);
 		@socket_close($rrdp[0]);
 		return;
@@ -199,37 +208,47 @@ function __rrd_proxy_close($rrdp) {
 }
 
 function encrypt($output, $rsa_key) {
+	global $encryption;
 
-	$rsa = new \phpseclib\Crypt\RSA();
-	$aes = new \phpseclib\Crypt\Rijndael();
-	$aes_key = \phpseclib\Crypt\Random::string(192);
+	if($encryption) {
+		$rsa = new \phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\Crypt\Rijndael();
+		$aes_key = \phpseclib\Crypt\Random::string(192);
 
-	$aes->setKey($aes_key);
-	$ciphertext = base64_encode($aes->encrypt($output));
-	$rsa->loadKey($rsa_key);
-	$aes_key = base64_encode($rsa->encrypt($aes_key));
-	$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
+		$aes->setKey($aes_key);
+		$ciphertext = base64_encode($aes->encrypt($output));
+		$rsa->loadKey($rsa_key);
+		$aes_key = base64_encode($rsa->encrypt($aes_key));
+		$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
 
-	return $aes_key_length . $aes_key . $ciphertext;
+		return $aes_key_length . $aes_key . $ciphertext;
+	}else {
+		return $output;
+	}
 }
 
 function decrypt($input){
+	global $encryption;
 
-	$rsa = new \phpseclib\Crypt\RSA();
-	$aes = new \phpseclib\Crypt\Rijndael();
+	if($encryption) {
+		$rsa = new \phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\Crypt\Rijndael();
 
-	$rsa_private_key = read_config_option('rsa_private_key');
+		$rsa_private_key = read_config_option('rsa_private_key');
 
-	$aes_key_length = hexdec(substr($input,0,3));
-	$aes_key = base64_decode(substr($input,3,$aes_key_length));
-	$ciphertext = base64_decode(substr($input,3+$aes_key_length));
+		$aes_key_length = hexdec(substr($input,0,3));
+		$aes_key = base64_decode(substr($input,3,$aes_key_length));
+		$ciphertext = base64_decode(substr($input,3+$aes_key_length));
 
-	$rsa->loadKey( $rsa_private_key );
-	$aes_key = $rsa->decrypt($aes_key);
-	$aes->setKey($aes_key);
-	$plaintext = $aes->decrypt($ciphertext);
+		$rsa->loadKey( $rsa_private_key );
+		$aes_key = $rsa->decrypt($aes_key);
+		$aes->setKey($aes_key);
+		$plaintext = $aes->decrypt($ciphertext);
 
-	return $plaintext;
+		return $plaintext;
+	}else {
+		return $input;
+	}
 }
 
 function rrdtool_execute() {
@@ -410,9 +429,11 @@ function rrdtool_trim_output(&$output) {
 }
 
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
-	global $config;
+	global $config, $encryption;
 
 	static $last_command;
+	$end_of_packet = "_EOP_\r\n";
+	$end_of_sequence = "_EOT_\r\n";
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -450,7 +471,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	if (strlen($command_line) >= 8192) {
 		$command_line = gzencode($command_line, 1);
 	}
-	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . "\r\n");
+	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . $end_of_sequence);
 
 	$input = '';
 	$output = '';
@@ -468,17 +489,21 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			break;
 		} else {
 			$input .= $recv;
-			if (strpos($input, "\n") !== false) {
-				$chunks = explode("\n", $input);
-				$input = array_pop($chunks);
-
-				foreach($chunks as $chunk) {
-					$output .= decrypt(trim($chunk));
-					if (strpos($output, "\x1f\x8b") === 0) {
-						$output = gzdecode($output);
+			if (strpos($input, $end_of_sequence) !== false) {
+				$input = str_replace($end_of_sequence, '', $input);
+				$transactions = explode($end_of_packet, $input);
+				foreach ($transactions as $transaction) {
+					$packet = $transaction;
+					$transaction = decrypt($transaction);
+					if($transaction === false){
+						cacti_log("CACTI2RRDP ERROR: Proxy message decryption failed: ###". $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+						break 2;
 					}
-
-					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
+					if(strpos($transaction, "\x1f\x8b") === 0) {
+						$transaction = gzdecode($transaction);
+					}
+					$output .= $transaction;
+					if (substr_count($output, "OK u") || substr_count($output, "ERROR:")) {
 						cacti_log("RRDP: " . $output, $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 						break 2;
 					}
@@ -496,7 +521,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			return;
 		case RRDTOOL_OUTPUT_STDOUT:
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			return $output;
+			return rtrim(substr($output, 0, strpos($output, 'OK u')));
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
 			if (substr($output, 1, 3) == "PNG") {
@@ -505,6 +530,9 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			if (substr($output, 0, 5) == "GIF87") {
 				return "OK";
 			}
+			if (substr($output, 0, 5) == '<?xml') {
+			    return 'SVG/XML Output OK';
+            }
 			print $output;
 			break;
 		case RRDTOOL_OUTPUT_BOOLEAN :
@@ -550,7 +578,7 @@ function rrdtool_function_interface_speed($data_local) {
 }
 
 function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
-	global $config, $data_source_types, $consolidation_functions;
+	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include ($config['include_path'] . '/global_arrays.php');
 
@@ -1199,7 +1227,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 }
 
 function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = '', &$xport_meta = array(), $user = 0) {
-	global $config, $consolidation_functions, $graph_item_types;
+	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once($config['library_path'] . '/cdef.php');
 	include_once($config['library_path'] . '/vdef.php');
