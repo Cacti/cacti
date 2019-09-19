@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#2922: Undefined variable 'result' in lib/data_query.php
 -issue#2925: Problem with consolidation function after upgade to 1.2.6 
 -issue#2926: Cacti 1.2.6 failed to update graph
+-issue#2929: Boost performance decreased after updating to Cacti 1.2.6
 -issue#2930: When working in pipe mode RRDtool appends stderr to stdout causing SVG graphing to break
 -issue#2932: Some cases where RRDtool can not generate an image are not captured by Cactis image error logic
 -issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit

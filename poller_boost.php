@@ -361,6 +361,9 @@ function boost_process_local_data_ids($last_id) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 	global $rrdtool_pipe, $rrdtool_read_pipe;
 
+	/* cache this call as it takes time */
+	static $archive_table = false;
+
 	include_once($config['library_path'] . '/rrd.php');
 
 	/* suppress warnings */
@@ -380,7 +383,9 @@ function boost_process_local_data_ids($last_id) {
 	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
 	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
 
-	$archive_table = boost_get_arch_table_name();
+	if ($archive_table === false) {
+		$archive_table = boost_get_arch_table_name();
+	}
 
 	if ($archive_table === FALSE) {
 		cacti_log('Failed to determine archive table', FALSE, 'BOOST');

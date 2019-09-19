@@ -585,7 +585,7 @@ function boost_get_arch_table_name() {
 		AND table_name LIKE 'poller_output_boost_arch_%'");
 
 	foreach($tables as $table) {
-		$rows = db_fetch_cell('SELECT count(*) FROM '.$table['name']);
+		$rows = db_fetch_cell('SELECT COUNT(local_data_id) FROM ' . $table['name']);
 		if (is_numeric($rows) && intval($rows) > 0) {
 			return $table['name'];
 		}
@@ -600,6 +600,7 @@ function boost_get_arch_table_name() {
 function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	global $config, $database_default, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
+	static $archive_table = false;
 	static $warning_issued;
 
 	include_once($config['library_path'] . '/rrd.php');
@@ -627,7 +628,10 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 	} else {
 		$single_local_data_id = false;
 
-		$archive_table = boost_get_arch_table_name();
+		if ($archive_table === false) {
+			$archive_table = boost_get_arch_table_name();
+		}
+
 		if ($archive_table === false) {
 			if ($warning_issued != true) {
 				cacti_log('NOTE: Failed to determine archive table', false, 'BOOST', POLLER_VERBOSITY_MEDIUM);
