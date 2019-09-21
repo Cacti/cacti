@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#2951: Add/modified legends in Aggregate Graphs in Cacti 1.2.6
 -issue#2958: autocomplete drop-down list sometimes needs double click to open
 -feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
+-feature#2952: In tree view if device is marked down or threshold triggered mark as red
 
 1.2.6
 -issue#2794: Graph template not saved on graph edit

@@ -438,6 +438,31 @@ function get_tree_path() {
 	}
 }
 
+function get_device_leaf_class($host_id) {
+	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
+	switch($status) {
+		case HOST_DOWN:
+			$class = 'deviceDown';
+			break;
+		case HOST_RECOVERING:
+			$class = 'deviceRecovering';
+			break;
+		case HOST_UP:
+			$class = 'deviceUp';
+			break;
+		case HOST_UNKNOWN:
+			$class = 'deviceUnknown';
+			break;
+		case HOST_ERROR:
+			$class = 'deviceError';
+			break;
+		default:
+			$class = '';
+	}
+
+	return $class;
+}
+
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
@@ -583,7 +608,13 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 
 	$unique_id++;
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
+	if (isset($leaf['host_id']) && $leaf['host_id'] > 0) {
+		$class = get_device_leaf_class($leaf['host_id']);
+	} else {
+		$class = '';
+	}
+
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a class='$class' href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
 
 	if (read_user_setting('expand_hosts') == 'on') {
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
