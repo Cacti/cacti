@@ -85,23 +85,6 @@ function themeReady() {
 		}
 	});
 
-	$('#host').unbind().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
-				eval(callBack);
-			}else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			}else{
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
 	$('#drp_action').change(function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
@@ -120,6 +103,23 @@ function themeReady() {
 			$('#alpha').selectmenu('enable');
 		}
 	});
+
+	$('#host').unbind().autocomplete({
+		source: pageName+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			callBack = $('#call_back').val();
+			if (callBack != 'undefined') {
+				eval(callBack);
+			}else if (typeof applyGraphFilter === 'function') {
+				applyGraphFilter();
+			}else{
+				applyFilter();
+			}
+		}
+	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
 	$('#host_click').css('z-index', '4');
 	$('#host_wrapper').unbind().dblclick(function() {

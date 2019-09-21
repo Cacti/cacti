@@ -175,28 +175,55 @@ function themeReady() {
 			callBack = $('#call_back').val();
 			if (callBack != 'undefined') {
 				eval(callBack);
-			} else if (typeof applyGraphFilter === 'function') {
+			}else if (typeof applyGraphFilter === 'function') {
 				applyGraphFilter();
-			} else {
+			}else{
 				applyFilter();
 			}
 		}
 	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
-	$('#host, #host_click').click(function() {
-		if (!hostOpen) {
-			$('#host').autocomplete('option', 'minLength', 0).autocomplete('search', '');
-			hostOpen = true;
-		} else {
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').unbind().dblclick(function() {
+		hostOpen = false;
+		clearTimeout(hostTimer);
+		clearTimeout(clickTimeout);
+		$('#host').autocomplete('close');
+	}).click(function() {
+		if (hostOpen) {
 			$('#host').autocomplete('close');
+			clearTimeout(hostTimer);
 			hostOpen = false;
+		}else{
+			clickTimeout = setTimeout(function() {
+				$('#host').autocomplete('search', '');
+				clearTimeout(hostTimer);
+				hostOpen = true;
+			}, 200);
 		}
+	}).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$('input#host').addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
 	});
 
-	/* Notification Handler */
-	if ($("#message").length) {
-	//	alert($('#message_container').html());
-	}
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
+
+		if (hostPrefix != '') {
+			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
+				clearTimeout(hostTimer);
+			}).on('mouseleave', function() {
+				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+				$(this).removeClass('ui-state-hover');
+				$('input#host').removeClass('ui-state-hover');
+			});
+		}
+	});
 
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
