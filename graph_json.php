@@ -194,6 +194,17 @@ if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
 $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
+// Capture permission errors
+if (!is_graph_allowed(get_request_var('local_graph_id'))) {
+	$image = rrdtool_create_error_image(__('Permission Denied.  Either this Graph does not exist or you do not have permission to access it.'));
+	$oarray['image'] = base64_encode($image);
+	header('Content-Type: application/json');
+	$json = json_encode($oarray);
+	header('Content-Length: ' . strlen($json));
+	print $json;
+	exit;
+}
+
 // Check if we received back something populated from rrdtool
 if ($output !== false && $output != '' && strpos($output, 'image = ') !== false) {
 	// Find the beginning of the image definition row

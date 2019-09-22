@@ -129,6 +129,13 @@ if (isset_request_var('rra_id')) {
 	$rra_id = null;
 }
 
+// Capture permission errors
+if (!is_graph_allowed(get_request_var('local_graph_id'))) {
+	header('Content-type: image/'. $gtype);
+	print rrdtool_create_error_image(__('Permission Denied.  Either this Graph does not exist or you do not have permission to access it.'));
+	exit;
+}
+
 $output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
 
 if ($output !== false && $output != '') {
