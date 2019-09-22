@@ -472,7 +472,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
-			if ($time <= $last_update){
+			if ($time < $last_update){
 				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", FALSE, 'BOOST');
 				$value = 'DNP';
 			}else{
