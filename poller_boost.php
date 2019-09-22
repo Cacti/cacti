@@ -308,7 +308,7 @@ function output_rrd_data($start_time, $force = false) {
 			break;
 		}
 
-		boost_process_local_data_ids($last_id);
+		boost_process_local_data_ids($last_id, $rrdtool_pipe);
 
 		$curpass++;
 
@@ -355,11 +355,10 @@ function output_rrd_data($start_time, $force = false) {
 
 /* boost_process_local_data_ids - grabs data from the 'poller_output' table and feeds the *completed*
      results to RRDTool for processing
-   @arg $use_server - determines wether or not the server should be used if enabled
-   @arg $local_data_id - if you are using boost, you need to update only an rra id at a time */
-function boost_process_local_data_ids($last_id) {
+   @arg $last_id - the last id to process
+   @arg $rrdtool_pipe - the socket that has been opened for the RRDtool operation */
+function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
-	global $rrdtool_pipe, $rrdtool_read_pipe;
 
 	/* cache this call as it takes time */
 	static $archive_table = false;
@@ -455,10 +454,15 @@ function boost_process_local_data_ids($last_id) {
 				$rrd_path    = $rrd_data['rrd_path'];
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
 
-				$pipe	= is_resource($rrdtool_read_pipe) || is_array($rrdtool_read_pipe) ? $rrdtool_read_pipe:$rrdtool_pipe;
-				boost_timer('rrd_lastupdate', BOOST_TIMER_START);
-				$last_update = boost_rrdtool_get_last_update_time($rrd_path, $pipe);
-				boost_timer('rrd_lastupdate', BOOST_TIMER_END);
+				if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+					boost_timer('rrd_lastupdate', BOOST_TIMER_START);
+					$last_update = boost_rrdtool_get_last_update_time($rrd_path);
+					boost_timer('rrd_lastupdate', BOOST_TIMER_END);
+				} else {
+					boost_timer('rrd_lastupdate', BOOST_TIMER_START);
+					$last_update = 0;
+					boost_timer('rrd_lastupdate', BOOST_TIMER_END);
+				}
 
 				$local_data_id  = $item['local_data_id'];
 				$time           = $item['timestamp'];

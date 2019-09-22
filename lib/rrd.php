@@ -261,7 +261,7 @@ function rrdtool_execute() {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = '', $logopt = 'WEBLOG') {
+function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
 	static $last_command;
@@ -371,8 +371,6 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (isset($process)) {
 				fclose($fp);
 				proc_close($process);
-			} else {
-				pclose($fp);
 			}
 
 			rrdtool_trim_output($output);
@@ -386,8 +384,6 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			if (isset($process)) {
 				fclose($fp);
 				proc_close($process);
-			} else {
-				pclose($fp);
 			}
 
 			rrdtool_trim_output($output);
@@ -577,7 +573,7 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
-function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
+function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = false) {
 	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include ($config['include_path'] . '/global_arrays.php');
@@ -735,7 +731,7 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 	}
 }
 
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -872,7 +868,7 @@ function rrdtool_function_tune($rrd_tune_array) {
      each member element in the array will have the maximum of traffic_in and traffic_out
      in it.
  */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = '') {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = false) {
 	global $config;
 
 	include_once($config['library_path'] . '/boost.php');
@@ -900,7 +896,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 
 	/* update the rrdfile if performing a fetch */
-	boost_fetch_cache_check($local_data_id);
+	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
@@ -1226,7 +1222,7 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = '', &$xport_meta = array(), $user = 0) {
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
 	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once($config['library_path'] . '/cdef.php');
@@ -3127,7 +3123,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_delete($file_array, $rra_array, $debug) {
-	$rrdtool_pipe = '';
+	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
 	foreach ($file_array as $file) {
@@ -3183,7 +3179,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
-	$rrdtool_pipe = '';
+	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
 	foreach ($file_array as $file) {

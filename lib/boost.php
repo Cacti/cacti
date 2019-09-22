@@ -237,8 +237,8 @@ function boost_poller_id_check() {
 	return true;
 }
 
-function boost_fetch_cache_check($local_data_id) {
-	global $config, $rrdtool_pipe;
+function boost_fetch_cache_check($local_data_id, $rrdtool_pipe = false) {
+	global $config;
 
 	if (read_config_option('boost_rrd_update_enable') == 'on') {
 		/* include poller processing routinges */
@@ -260,18 +260,25 @@ function boost_fetch_cache_check($local_data_id) {
 		set_error_handler('boost_error_handler');
 
 		/* process input parameters */
-		$rrdtool_pipe = rrd_init();
+		if (!is_resource($rrdtool_pipe)) {
+			$rrdtool_pipe = rrd_init();
+			$close_pipe = true;
+		} else {
+			$close_pipe = false;
+		}
 
 		/* get the information to populate into the rrd files */
 		if (boost_check_correct_enabled()) {
-			boost_process_poller_output($local_data_id);
+			boost_process_poller_output($local_data_id, $rrdtool_pipe);
 		}
 
 		/* restore original error handler */
 		restore_error_handler();
 
 		/* close rrdtool */
-		rrd_close($rrdtool_pipe);
+		if ($close_pipe) {
+			rrd_close($rrdtool_pipe);
+		}
 	}
 }
 
@@ -1018,12 +1025,18 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 
 	if (read_config_option('storage_location')) {
 		$file_exists = rrdtool_execute("file_exists $rrd_path" , true, RRDTOOL_OUTPUT_BOOLEAN, $rrdtool_pipe, 'BOOST');
-	}else {
+	} else {
 		$file_exists = file_exists($rrd_path);
 	}
 
 	if ($file_exists == true) {
-		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		$fmtime = filemtime($rrd_path);
+
+		if ($fmtime === false) {
+			$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		} else {
+			$return_value = $fmtime;
+		}
 	}
 
 	return trim($return_value);
@@ -1283,7 +1296,7 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 		$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);
 	}
 
-	if (cacti_version_compare(get_rrdtool_version(),'1.5','>=')) {
+	if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
 		$update_options='--skip-past-updates';
 	} else {
 		$update_options='';
