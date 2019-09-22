@@ -1,0 +1,12 @@
+<phpunit bootstrap="./tests/bootstrap.php">
+	<testsuites>
+		<testsuite name="All tests">
+			<directory>./tests/</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+        </whitelist>
+    </filter>
+</phpunit>

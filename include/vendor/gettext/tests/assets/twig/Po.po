@@ -1,0 +1,52 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#: ./tests/assets/twig/input.php:40
+msgid "text 1"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:47
+msgid "text 2"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:51
+msgid "text 3 (with parenthesis)"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:55
+msgid "text 4 \"with double quotes\""
+msgstr ""
+
+#: ./tests/assets/twig/input.php:59
+msgid "text 5 'with escaped single quotes'"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:66
+msgid "text 6"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:70
+msgid "text 7 (with parenthesis)"
+msgstr ""
+
+#: ./tests/assets/twig/input.php:74
+msgid "text 8 \"with escaped double quotes\""
+msgstr ""
+
+#: ./tests/assets/twig/input.php:78
+msgid "text 9 'with single quotes'"
+msgstr ""
+
+#. notes: This is an actual note for translators.
+#: ./tests/assets/twig/input.php:84
+msgid "text 10 with plural"
+msgid_plural "The plural form"
+msgstr[0] ""
