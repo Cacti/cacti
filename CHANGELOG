@@ -17,6 +17,7 @@ Cacti CHANGELOG
 -issue#2949: MoveArrow icon not align in some pages
 -issue#2951: Add/modified legends in Aggregate Graphs in Cacti 1.2.6
 -issue#2958: autocomplete drop-down list sometimes needs double click to open
+-issue#2961: Cacti 1.2.6 Sync Device Template fails
 -issue#2963: When running ss_cpoller script, avgTime incorrect returns maxTime
 -issue#2966: Realtime does not always track size and other settings well
 -feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
