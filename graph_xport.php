@@ -77,6 +77,13 @@ if (!isempty_request_var('show_source')) {
 	$graph_data_array['print_source'] = get_request_var('show_source');
 }
 
+// Capture permission errors
+if (!is_graph_allowed(get_request_var('local_graph_id'))) {
+	raise_message('permission_denied', __('Permission Denied.  Either this Graph does not exist or you do not have permission to access it.'), MESSAGE_LEVEL_ERROR);
+	header('Location: ' . sanitize_uri($_SERVER['HTTP_REFERER']));
+	exit;
+}
+
 $graph_info = db_fetch_row_prepared('SELECT *
 	FROM graph_templates_graph
 	WHERE local_graph_id = ?',
