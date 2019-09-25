@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#2963: When running ss_cpoller script, avgTime incorrect returns maxTime
 -issue#2966: Realtime does not always track size and other settings well
 -issue#2967: Spikekill not operating as expected
+-issue#2974: Data Query Issue with Script Server when 'arg_num_indexes' set but not found
 -feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
 -feature#2952: In tree view if device is marked down or threshold triggered mark as red
 
