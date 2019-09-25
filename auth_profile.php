@@ -637,6 +637,9 @@ function settings_javascript() {
 		$('#return').click(function() {
 			document.location = '<?php print $_SESSION['profile_referer'];?>';
 		});
+
+		// set the buttons active
+		$('#clear_settings, #private_data, #logout_everywhere').addClass('ui-state-active');
 	});
 
 	</script>
