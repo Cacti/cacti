@@ -136,6 +136,7 @@ function themeReady() {
 		$(this).removeClass('ui-state-hover');
 		$('#host').removeClass('ui-state-hover');
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
 	});
 
 	var hostPrefix = '';
