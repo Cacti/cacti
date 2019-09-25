@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
+-issue#1181: Scheduler drop downs off screen when near bottom of window
 -issue#2894: Database Information and Recommendations Incorrect when viewed from Remote Data Collectors
 -issue#2895: Percentile calculation is incorrect on Graphs with multiple Data Sources from different RRDs
 -issue#2899: Callback type forms to not render the form display value correctly in 1.2.6
