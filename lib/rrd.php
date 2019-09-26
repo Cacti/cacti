@@ -2550,6 +2550,11 @@ function rrdtool_function_info($local_data_id) {
 		return false;
 	}
 
+	/* Hack for i18n */
+	if (strpos($output, ',') !== false) {
+		$output = str_replace(',', '.', $output);
+	}
+
 	/* Parse the output */
 	$matches  = array();
 	$rrd_info = array('rra' => array(), 'ds' => array());
