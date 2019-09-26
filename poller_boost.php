@@ -496,7 +496,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 					}
 				}
 
-				if ($value != 'DNP') {
+				if (strpos($value, 'DNP') === false) {
 					$outbuf .= ' ' . $item['timestamp'];
 				}
 

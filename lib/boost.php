@@ -879,7 +879,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 					}
 				}
 
-				if ($value != 'DNP') {
+				if (strpos($value, 'DNP') === false) {
 					$output  = ' ' . $item['timestamp'];
 					$outbuf .= $output;
 					$outlen += strlen($output);
