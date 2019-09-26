@@ -25,6 +25,7 @@ Cacti CHANGELOG
 -issue#2970: [Usibility] Three buttons in Edit Profile page looks like text box. User may not realize they need to click them to take effect.
 -issue#2974: Data Query Issue with Script Server when 'arg_num_indexes' set but not found
 -issue#2975: RRD items erroneously marked as false in Data Source Info and Troubleshooter
+-issue#2976: Relocate Boost debug messages to boost debug log
 -feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
 -feature#2952: In tree view if device is marked down or threshold triggered mark as red
 
