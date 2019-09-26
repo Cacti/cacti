@@ -879,16 +879,19 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 					}
 				}
 
-				$output  = ' ' . $item['timestamp'];
-				$outbuf .= $output;
-				$outlen += strlen($output);
+				if ($value != 'DNP') {
+					$output  = ' ' . $item['timestamp'];
+					$outbuf .= $output;
+					$outlen += strlen($output);
+				}
+
 				$time    = $item['timestamp'];
 			}
 
 			/* single one value output */
-			if (strcmp($value, 'DNP') == 0) {
+			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
-			} elseif ((is_numeric($value)) || (strcmp($value, 'U') == 0)) {
+			} elseif ((is_numeric($value)) || (strpos($value, 'U') !== false)) {
 				$output  = ':' . $value;
 				$outbuf .= $output;
 				$outlen += strlen($output);
@@ -1295,7 +1298,14 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 
 	if ($file_exists == false) {
-		$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);
+		$ds_exists = db_fetch_cell_prepared('SELECT id FROM data_local WHERE id = ?', array($local_data_id));
+
+		// Check for a Data Source that has been removed
+		if ($ds_exists) {
+			$valid_entry = boost_rrdtool_function_create($local_data_id, $initial_time, false, $rrdtool_pipe);
+		} else {
+			return 'OK';
+		}
 	}
 
 	if (cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {

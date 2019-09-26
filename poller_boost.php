@@ -202,7 +202,7 @@ function output_rrd_data($start_time, $force = false) {
 
 	/* implement process lock control for boost */
 	if (!db_fetch_cell("SELECT GET_LOCK('poller_boost', 1)")) {
-		if ($debug){
+		if ($debug) {
 			cacti_log('DEBUG: Found lock, so another boost process is running');
 		}
 
@@ -240,7 +240,7 @@ function output_rrd_data($start_time, $force = false) {
 	}
 
 	$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
-	while($delayed_inserts['Value']){
+	while($delayed_inserts['Value']) {
 		cacti_log('BOOST WAIT: Waiting 1s for delayed inserts are made' , true, 'SYSTEM');
 		usleep(1000000);
 		$delayed_inserts = db_fetch_row("SHOW STATUS LIKE 'Not_flushed_delayed_rows'");
@@ -368,7 +368,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	/* suppress warnings */
 	if (defined('E_DEPRECATED')) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
-	}else{
+	} else {
 		error_reporting(E_ALL);
 	}
 
@@ -376,8 +376,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	set_error_handler('boost_error_handler');
 
 	/* load system variables needed */
-	$upd_string_len		= read_config_option('boost_rrd_update_string_length');
-
+	$upd_string_len		 = read_config_option('boost_rrd_update_string_length');
 	$rrd_update_interval = read_config_option('boost_rrd_update_interval');
 	$data_ids_to_get     = read_config_option('boost_rrd_update_max_records_per_select');
 
@@ -385,8 +384,8 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		$archive_table = boost_get_arch_table_name();
 	}
 
-	if ($archive_table === FALSE) {
-		cacti_log('Failed to determine archive table', FALSE, 'BOOST');
+	if ($archive_table === false) {
+		cacti_log('Failed to determine archive table', false, 'BOOST');
 		return 0;
 	}
 
@@ -408,7 +407,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		}
 	}
 
-	if (sizeof($results)) {
+	if (cacti_sizeof($results)) {
 		/* create an array keyed off of each .rrd file */
 		$local_data_id  = -1;
 		$time           = -1;
@@ -442,7 +441,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 					/* check return status for delete operation */
 					if (trim($return_value) != 'OK') {
-						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
 
@@ -467,14 +466,14 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				$time           = $item['timestamp'];
 				$initial_time   = $time;
 				$outbuf         = ' ' . $time;
-				$multi_vals_set = FALSE;
+				$multi_vals_set = false;
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
 			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", FALSE, 'BOOST');
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST');
 				$value = 'DNP';
-			}else{
+			} else {
 				$value = trim($item['output']);
 			}
 
@@ -493,23 +492,27 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 					/* check return status for delete operation */
 					if (trim($return_value) != 'OK') {
-						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 					}
 				}
-				$outbuf .= ' ' . $item['timestamp'];
+
+				if ($value != 'DNP') {
+					$outbuf .= ' ' . $item['timestamp'];
+				}
+
 				$time    = $item['timestamp'];
 			}
 
 			/* single one value output */
-			if (strcmp($value, 'DNP') == 0) {
+			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
-			}elseif ((is_numeric($value)) || (strcmp($value, 'U') == 0)) {
+			} elseif ((is_numeric($value)) || (strpos($value, 'U') !== false)) {
 				$outbuf .= ':' . $value;
 				$vals_in_buffer++;
-			}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
+			} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
 				$outbuf .= ':' . hexdec($value);
 				$vals_in_buffer++;
-			}elseif (strlen($value)) {
+			} elseif (strlen($value)) {
 				/* break out multiple value output to an array */
 				$values = explode(' ', $value);
 
@@ -525,11 +528,11 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				}
 
 				$first_tmpl = 1;
-				$multi_ok   = FALSE;
+				$multi_ok   = false;
 				for ($i=0; $i<count($values); $i++) {
 					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
 						if (isset($rrd_field_names{$matches[1]})) {
-							$multi_ok = TRUE;
+							$multi_ok = true;
 
 							if (trim(read_config_option('path_boost_log')) != '') {
 								print "DEBUG: Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names{$matches[1]} . ']' . PHP_EOL;
@@ -543,9 +546,9 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {
 								$outbuf .= ':' . $matches[2];
-							}elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
+							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
 								$outbuf .= ':' . hexdec($matches[2]);
-							}else{
+							} else {
 								$outbuf .= ':U';
 							}
 						}
@@ -553,13 +556,13 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				}
 
 				/* we only want to process the template and gather the fields once */
-				$multi_vals_set = TRUE;
+				$multi_vals_set = true;
 
 				if ($multi_ok) {
 					$vals_in_buffer++;
 				}
-			}else{
-				cacti_log('WARNING: Local Data Id [' . $item['local_data_id'] . '] Contains an empty value', FALSE, 'BOOST');
+			} else {
+				cacti_log('WARNING: Local Data Id [' . $item['local_data_id'] . '] Contains an empty value', false, 'BOOST');
 			}
 		}
 
@@ -575,7 +578,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 			/* check return status for delete operation */
 			if (trim($return_value) != 'OK') {
-				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", FALSE, 'BOOST');
+				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
 			}
 		}
 		boost_timer('results_cycle', BOOST_TIMER_END);
