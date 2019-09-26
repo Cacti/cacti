@@ -845,7 +845,13 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				$local_data_id  = $item['local_data_id'];
 				$time           = $item['timestamp'];
 				$initial_time   = $time;
-				$output         = ' ' . $time;
+
+				if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+					$output = '';
+				} else {
+					$output = ' ' . $time;
+				}
+
 				$outbuf         = $output;
 				$outlen         = strlen($output);
 				$multi_vals_set = false;

@@ -462,10 +462,16 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 					boost_timer('rrd_lastupdate', BOOST_TIMER_END);
 				}
 
-				$local_data_id  = $item['local_data_id'];
-				$time           = $item['timestamp'];
-				$initial_time   = $time;
-				$outbuf         = ' ' . $time;
+				$local_data_id = $item['local_data_id'];
+				$time          = $item['timestamp'];
+				$initial_time  = $time;
+
+				if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+					$outbut = '';
+				} else {
+					$outbuf = ' ' . $time;
+				}
+
 				$multi_vals_set = false;
 			}
 
@@ -500,7 +506,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 					$outbuf .= ' ' . $item['timestamp'];
 				}
 
-				$time    = $item['timestamp'];
+				$time = $item['timestamp'];
 			}
 
 			/* single one value output */
