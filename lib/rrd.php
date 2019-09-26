@@ -297,7 +297,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* an empty $rrdtool_pipe array means no fp is available */
 	if (!is_resource($rrdtool_pipe)) {
-		if (substr($command_line, 0, 5) == 'fetch') {
+		if (substr($command_line, 0, 5) == 'fetch' || substr($command_line, 0, 4) == 'info') {
 			rrdtool_set_language('en');
 		} else {
 			rrdtool_set_language();
