@@ -924,7 +924,9 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
 
-							cacti_log("Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' , false, 'BOOST', POLLER_VERBOSITY_DEBUG);
+							if (trim(read_config_option('path_boost_log')) != '') {
+								print "Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' . PHP_EOL;
+							}
 
 							if (!$multi_vals_set) {
 								if (!$first_tmpl) {
