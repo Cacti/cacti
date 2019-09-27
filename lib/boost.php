@@ -859,7 +859,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 			/* don't generate error messages if the RRD has already been updated */
 			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST');
+				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
 				$value = trim($item['output']);
@@ -1043,13 +1043,7 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	}
 
 	if ($file_exists == true) {
-		$fmtime = filemtime($rrd_path);
-
-		if ($fmtime === false) {
-			$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
-		} else {
-			$return_value = $fmtime;
-		}
+		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
 	}
 
 	return trim($return_value);
