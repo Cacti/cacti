@@ -80,6 +80,8 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 							$form_array[$field_name][$field_to_check] = $string;
 						} elseif (isset($form_array[$field_name]['default'])) {
 							$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
+						} elseif ($field_to_check == 'sql') {
+							$form_array[$field_name][$field_to_check] = $string;
 						} else {
 							$form_array[$field_name][$field_to_check] = '';
 						}
