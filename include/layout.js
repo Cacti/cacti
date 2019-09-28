@@ -1647,6 +1647,8 @@ function loadTopTab(href, id, force) {
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
+				$('#main').hide();
+
 				if (matches != null) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
@@ -1696,6 +1698,8 @@ function loadTopTab(href, id, force) {
 				}
 
 				handleConsole(pageName);
+
+				$('#main').show();
 
 				return false;
 			})
