@@ -870,6 +870,8 @@ label.ui-state-hover > span {
 }
 
 .cactiLogo {
+	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	display:none;
 	cursor: pointer;
 	padding-bottom: 140px;
 	margin-bottom: 60px;
