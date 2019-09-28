@@ -215,7 +215,6 @@ function setMenuVisibility() {
 	storage=Storages.localStorage;
 
 	// Initialize the navigation settings
-	$('#navigation').hide();
 	$('li.menuitem').each(function() {
 		active = storage.get($(this).attr('id'));
 		if (active != null && active == 'active') {
@@ -226,8 +225,6 @@ function setMenuVisibility() {
 			$(this).next('a').hide();
 		}
 	});
-
-	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {

@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#2966: Realtime popup windows do not always honor settings
 -issue#2967: When using Spikekill, gap and range fill are not operating as expected
 -issue#2970: When a user edits their profile, buttons may appear as unusable whilst still being enabled
+-issue#2973: Can not show user menu well on mobile devices
 -issue#2974: Script Server can raise unexpected warnings when 'arg_num_indexes' set but not found in data source
 -issue#2975: Datasource Debug does not properly handle European numbers in certain circumstances
 -issue#2976: Boost messages should be stored in their own log file

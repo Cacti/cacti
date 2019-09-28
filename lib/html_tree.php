@@ -234,12 +234,10 @@ function grow_dhtml_trees() {
 				checkTreeForLogout();
 			})
 			.on('open_node.jstree', function() {
-				$(window).trigger('resize');
 				resizeTreePanel();
 				responsiveResizeGraphs();
 			})
 			.on('close_node.jstree', function() {
-				$(window).trigger('resize');
 				resizeTreePanel();
 				responsiveResizeGraphs();
 			})

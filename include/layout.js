@@ -1141,6 +1141,7 @@ function menuOpen(page) {
 function responsiveUI(event) {
 	var page = basename(location.pathname);
 	var tree = false;
+	var windowWidth = $(window).width();
 
 	if (event != 'force') {
 	    if (new Date() - resizeTime < resizeDelta) {
@@ -1164,7 +1165,7 @@ function responsiveUI(event) {
 	if ($('#navigation').length) {
 		if (theme != 'classic') {
 			if (loadMenuStateOpen(page)) {
-				if ($(window).width() < 640) {
+				if (windowWidth < 640) {
 					menuHide(false);
 					menuHideResponsive = true;
 				} else {
@@ -1173,6 +1174,9 @@ function responsiveUI(event) {
 			} else {
 				menuHide(false);
 			}
+		} else if (windowWidth < 640) {
+			menuHide(true);
+			menuHideResponsive = true;
 		} else {
 			menuShow();
 		}
@@ -2618,43 +2622,39 @@ function keepWindowSize() {
 				userTabPos = mainTabPos;
 			}
 
-			var shrinking = true;
-			if (pageWidth === null) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else if (bodyWidth > pageWidth) {
-				shrinking = false;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get());
-			} else if (mainTabPos != false && (mainTabPos.top != userTabPos.top || mainTabHeight > tabHeight)) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else if (pageWidth != null && bodyWidth < pageWidth) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else {
-				shrinking = false;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get());
-			}
-
 			pageWidth  = bodyWidth;
 
+			// Hide top menus if you have to
+			var items = $($('.maintabs nav ul li a.lefttab').get().reverse());
 			var done = false;
-
 			items.each(function() {
 				var id = $(this).attr('id');
 
 				if (!done) {
-					if (shrinking) {
-						if (tabsWrapping()) {
-							hideCurrentTab(id, true);
-						} else {
-							done = true;
-						}
-					} else if (!shrinking) {
+					if (tabsWrapping()) {
+						hideCurrentTab(id, true);
+					} else {
 						showCurrentTab(id);
-
 						if (tabsWrapping()) {
 							hideCurrentTab(id, false);
+							done = true;
+						}
+					}
+				}
+			});
+
+			// Attempt to unhide ellipsis if there are any
+			items = $($('.maintabs nav ul li a.lefttab').get());
+			done = false;
+			items.each(function() {
+				var id = $(this).attr('id');
+
+				if (!done) {
+					if (!$(this).is(':visible')) {
+						showCurrentTab(id);
+						if (tabsWrapping()) {
+							hideCurrentTab(id, false);
+							done = true;
 						}
 					}
 				}

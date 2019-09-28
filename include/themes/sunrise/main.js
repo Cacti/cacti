@@ -272,7 +272,6 @@ function setMenuVisibility() {
 
 	// Initialize the navigation settings
 	// This will setup the initial visibility of the menu
-	$('#navigation').hide();
 	$('li.menuitem').each(function() {
 		active = storage.get($(this).attr('id'));
 		if (active !== null && active == 'active') {
@@ -299,8 +298,6 @@ function setMenuVisibility() {
 			}
 		}
 	});
-
-	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
