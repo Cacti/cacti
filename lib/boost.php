@@ -729,12 +729,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		}
 	}
 
-	if ($single_local_data_id) {
-		if (trim(read_config_option('path_boost_log')) != '') {
-			print "DEBUG: Updating Local Data ID:'$local_data_id', Total of '" . cacti_sizeof($results) . "' Updates to Process" . PHP_EOL;
-		}
-	}
-
 	if (cacti_sizeof($results)) {
 		$rrdp_auto_close = false;
 
@@ -815,10 +809,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			if ($local_data_id != $item['local_data_id']) {
 				/* update the rrd for the previous local_data_id */
 				if ($vals_in_buffer) {
-					if (trim(read_config_option('path_boost_log')) != '') {
-						print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-					}
-
 					boost_timer('rrdupdate', BOOST_TIMER_START);
 					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
 					boost_timer('rrdupdate', BOOST_TIMER_END);
@@ -867,10 +857,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 			if ($time != $item['timestamp']) {
 				if ($outlen > $upd_string_len) {
-					if (trim(read_config_option('path_boost_log')) != '') {
-						print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-					}
-
 					boost_timer('rrdupdate', BOOST_TIMER_START);
 					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
 					boost_timer('rrdupdate', BOOST_TIMER_END);
@@ -930,10 +916,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
 
-							if (trim(read_config_option('path_boost_log')) != '') {
-								print "Parsed MULTI output field '" . $matches[0] . "' [map " . $matches[1] . '->' . $rrd_field_names[$matches[1]] . ']' . PHP_EOL;
-							}
-
 							if (!$multi_vals_set) {
 								if (!$first_tmpl) {
 									$rrd_tmpl .= ':';
@@ -975,10 +957,6 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 
 		/* process the last rrdupdate if applicable */
 		if ($vals_in_buffer) {
-			if (trim(read_config_option('path_boost_log')) != '') {
-				print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-			}
-
 			boost_timer('rrdupdate', BOOST_TIMER_START);
 			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
 			boost_timer('rrdupdate', BOOST_TIMER_END);

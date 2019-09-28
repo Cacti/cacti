@@ -58,7 +58,7 @@ case 'countdown':
 		load_current_session_value('ds_step',        'sess_realtime_ds_step',     read_user_setting('realtime_interval', 10));
 		load_current_session_value('graph_start',    'sess_realtime_graph_start', read_user_setting('realtime_gwindow', 60));
 		load_current_session_value('size',           'sess_realtime_size',        read_user_setting('realtime_size', 100));
-		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegnd', 'false'));
+		load_current_session_value('graph_nolegend', 'sess_realtime_nolegend',    read_user_setting('realtime_nolegend', 'false'));
 
 		break;
 	case 'timespan':
