@@ -1769,7 +1769,16 @@ function loadPage(href, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					// Workaround for Create Device
+					if (pageName == 'host.php') {
+						if (href.indexOf('create') >= 0) {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href='"+href+"']").addClass('selected');
+						} else {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href$='host.php']").addClass('selected');
+						}
+					} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href^='"+href+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {

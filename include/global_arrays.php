@@ -871,7 +871,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Create') => array(
 			'graphs_new.php' => __('New Graphs'),
-			'host.php?action=edit' => __('New Device')
+			'host.php?action=edit&create=true' => __('New Device')
 			),
 		__('Management') => array(
 			'host.php'             => __('Devices'),

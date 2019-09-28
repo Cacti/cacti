@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#2978: Moving hosts between data collectors is slow
 -issue#2979: Multi Output Fields are not parsed correctly
 -issue#2984: When checking SQL fields, value was not always primed
+-issue#2986: Selecting 'Devices' menu pick closes 'Management' menu
 -feature#2943: Allow all Data Queries of a device to be re-indexed at once
 -feature#2952: If device is down or threshold breached, highlight in tree view
 -feature#2985: Update phpseclib to 2.0.23
