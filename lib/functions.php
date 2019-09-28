@@ -6376,6 +6376,15 @@ function format_cacti_version_text($version) {
 }
 
 /**
+ * get_cacti_version       Generic function to get the cacti version
+ * (depreciated)
+ */
+function get_cacti_version($force = false) {
+	cacti_log('WARNING: get_cacti_version() called, consider replacing with CACTI_VERSION', false, 'DEPRECIATED');
+	return CACTI_VERSION;
+}
+
+/**
  * get_cacti_db_version    Generic function to get the cacti version from the db
  */
 function get_cacti_db_version($force = false) {
