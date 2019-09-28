@@ -870,8 +870,6 @@ label.ui-state-hover > span {
 }
 
 .cactiLogo {
-	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
-	display: block;
 	cursor: pointer;
 	padding-bottom: 140px;
 	margin-bottom: 60px;
@@ -1829,7 +1827,7 @@ table.cactiTable {
 }
 
 .moveArrowNone {
-	padding-left: 8.75px;
+	padding-left: 8.75;
 }
 
 .action, .shiftArrow, .calendar {
