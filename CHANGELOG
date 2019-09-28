@@ -2,37 +2,37 @@ Cacti CHANGELOG
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
--issue#1181: Scheduler drop downs off screen when near bottom of window
--issue#2894: Database Information and Recommendations Incorrect when viewed from Remote Data Collectors
--issue#2895: Percentile calculation is incorrect on Graphs with multiple Data Sources from different RRDs
--issue#2899: Callback type forms to not render the form display value correctly in 1.2.6
--issue#2922: Undefined variable 'result' in lib/data_query.php
--issue#2925: Problem with consolidation function after upgade to 1.2.6 
--issue#2926: Cacti 1.2.6 failed to update graph
--issue#2929: Boost performance decreased after updating to Cacti 1.2.6
--issue#2930: When working in pipe mode RRDtool appends stderr to stdout causing SVG graphing to break
--issue#2932: Some cases where RRDtool can not generate an image are not captured by Cactis image error logic
+-issue#1181: When opening the Scheduler, it may appear off screen when opened near the bottom of a window
+-issue#2894: When using Remote Data Collectors, database information and recommendations may show Incorrect values
+-issue#2895: When using data sources from different RRDs, Percentile calculation may be incorrect
+-issue#2899: When displaying a form, variable substitution may not always work as expected
+-issue#2922: When running a data query, the result may come back as undefined
+-issue#2925: When using consolidation functions, retrieving the first step can cause errors
+-issue#2926: When editing a graph, variable validation errors may prevent changes from being saved
+-issue#2929: Boost performance may become poor even in single server mode
+-issue#2930: RRDtool can generate errors to standard output which can corrupt images
+-issue#2932: When RRDTool generates an error creating an image, it is not always reportedly properly
 -issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit
 -issue#2938: Under CentOS packages, upgrade_database.php script uses incorrect location for DB upgrade scripts
--issue#2940: In some cases SVG images don't size properly until page is resized 
--issue#2949: MoveArrow icon not align in some pages
--issue#2951: Add/modified legends in Aggregate Graphs in Cacti 1.2.6
--issue#2958: autocomplete drop-down list sometimes needs double click to open
--issue#2961: Cacti 1.2.6 Sync Device Template fails
+-issue#2940: Images are not always properly sized until the page size changes
+-issue#2949: Order icons may not be properly aligned
+-issue#2951: Allow legends to be modified for Aggregate Graphs
+-issue#2958: Drop down autocomplete lists do not always open as expected
+-issue#2961: When syncing device templates, undefined function may be raised
 -issue#2963: When running ss_cpoller script, avgTime incorrect returns maxTime
--issue#2966: Realtime does not always track size and other settings well
--issue#2967: Spikekill not operating as expected
--issue#2970: [Usibility] Three buttons in Edit Profile page looks like text box. User may not realize they need to click them to take effect.
--issue#2974: Data Query Issue with Script Server when 'arg_num_indexes' set but not found
--issue#2975: RRD items erroneously marked as false in Data Source Info and Troubleshooter
--issue#2976: Relocate Boost debug messages to boost debug log
--issue#2977: Updates to boost fail with various error messages when timespamp is in the past
--issue#2978: Moving Hosts between Data Collectors is slow
--issue#2979: Multi Output Field Parsing on Main Data Collector
--issue#2984: Unexpected error message in Debian CI script
--feature#2943: Allow All Device Data Queries to be Re-Indexed in a Single Click 
--feature#2952: In tree view if device is marked down or threshold triggered mark as red
--feature: Update phpseclib to 2.0.23
+-issue#2966: Realtime popup windows do not always honor settings
+-issue#2967: When using Spikekill, gap and range fill are not operating as expected
+-issue#2970: When a user edits their profile, buttons may appear as unusable whilst still being enabled
+-issue#2974: Script Server can raise unexpected warnings when 'arg_num_indexes' set but not found in data source
+-issue#2975: Datasource Debug does not properly handle European numbers in certain circumstances
+-issue#2976: Boost messages should be stored in their own log file
+-issue#2977: Data updates with past timestamps can cause boost errors
+-issue#2978: Moving hosts between data collectors is slow
+-issue#2979: Multi Output Fields are not parsed correctly
+-issue#2984: When checking SQL fields, value was not always primed
+-feature#2943: Allow all Data Queries of a device to be re-indexed at once
+-feature#2952: If device is down or threshold breached, highlight in tree view
+-feature#2985: Update phpseclib to 2.0.23
 
 1.2.6
 -issue#2794: Graph template not saved on graph edit
