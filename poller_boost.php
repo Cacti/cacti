@@ -512,7 +512,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 			/* single one value output */
 			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
-			} elseif ((is_numeric($value)) || (strpos($value, 'U') !== false)) {
+			} elseif ((is_numeric($value)) || ($value == 'U')) {
 				$outbuf .= ':' . $value;
 				$vals_in_buffer++;
 			} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
@@ -533,10 +533,10 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 					$rrd_tmpl = '';
 				}
 
-				$first_tmpl = 1;
+				$first_tmpl = true;
 				$multi_ok   = false;
 				for ($i=0; $i<count($values); $i++) {
-					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/', $values[$i], $matches)) {
+					if (preg_match('/^([a-zA-Z0-9_\.-]+):([eE0-9Uu\+\.-]+)$/', $values[$i], $matches)) {
 						if (isset($rrd_field_names{$matches[1]})) {
 							$multi_ok = true;
 
@@ -545,9 +545,12 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 							}
 
 							if (!$multi_vals_set) {
-								if (!$first_tmpl) $rrd_tmpl .= ':';
-								$rrd_tmpl .= $rrd_field_names{$matches[1]};
-								$first_tmpl=0;
+								if (!$first_tmpl) {
+									$rrd_tmpl .= ':';
+								}
+
+								$rrd_tmpl  .= $rrd_field_names{$matches[1]};
+								$first_tmpl = false;
 							}
 
 							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {

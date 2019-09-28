@@ -897,7 +897,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 			/* single one value output */
 			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
-			} elseif ((is_numeric($value)) || (strpos($value, 'U') !== false)) {
+			} elseif ((is_numeric($value)) || ($value == 'U')) {
 				$output  = ':' . $value;
 				$outbuf .= $output;
 				$outlen += strlen($output);
@@ -926,7 +926,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 				$multi_ok   = false;
 
 				for ($i=0; $i<cacti_count($values); $i++) {
-					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9\+\.-]+)$/", $values[$i], $matches)) {
+					if (preg_match("/^([a-zA-Z0-9_\.-]+):([eE0-9Uu\+\.-]+)$/", $values[$i], $matches)) {
 						if (isset($rrd_field_names[$matches[1]])) {
 							$multi_ok = true;
 
@@ -939,7 +939,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 									$rrd_tmpl .= ':';
 								}
 
-								$rrd_tmpl .= $rrd_field_names[$matches[1]];
+								$rrd_tmpl  .= $rrd_field_names[$matches[1]];
 								$first_tmpl = false;
 							}
 
