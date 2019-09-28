@@ -2624,6 +2624,14 @@ function keepWindowSize() {
 
 			pageWidth  = bodyWidth;
 
+			var items = $($('.maintabs nav ul li a.lefttab').get());
+			var done = false;
+			items.each(function() {
+				var id = $(this).attr('id');
+
+				showCurrentTab(id);
+			});
+
 			// Hide top menus if you have to
 			var items = $($('.maintabs nav ul li a.lefttab').get().reverse());
 			var done = false;
@@ -2634,28 +2642,7 @@ function keepWindowSize() {
 					if (tabsWrapping()) {
 						hideCurrentTab(id, true);
 					} else {
-						showCurrentTab(id);
-						if (tabsWrapping()) {
-							hideCurrentTab(id, false);
-							done = true;
-						}
-					}
-				}
-			});
-
-			// Attempt to unhide ellipsis if there are any
-			items = $($('.maintabs nav ul li a.lefttab').get());
-			done = false;
-			items.each(function() {
-				var id = $(this).attr('id');
-
-				if (!done) {
-					if (!$(this).is(':visible')) {
-						showCurrentTab(id);
-						if (tabsWrapping()) {
-							hideCurrentTab(id, false);
-							done = true;
-						}
+						done = true;
 					}
 				}
 			});
