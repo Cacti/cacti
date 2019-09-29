@@ -1194,7 +1194,7 @@ function is_menu_pick_active($menu_url) {
 	$menu_parts = array();
 
 	/* special case for host.php?action=edit&create=true */
-	if (strpos($_SERVER['REQUEST_URL'], 'host.php?action=edit&create=true') !== false) {
+	if (strpos($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true') !== false) {
 		if (strpos($menu_url, 'host.php?action=edit&create=true') !== false) {
 			return true;
 		} else {
