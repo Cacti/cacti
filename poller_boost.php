@@ -361,7 +361,8 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	global $config, $boost_sock, $boost_timeout, $debug, $get_memory, $memory_used;
 
 	/* cache this call as it takes time */
-	static $archive_table = false;
+	static $archive_table   = false;
+	static $rrdtool_version = '';
 
 	include_once($config['library_path'] . '/rrd.php');
 
@@ -370,6 +371,17 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		error_reporting(E_ALL ^ E_DEPRECATED);
 	} else {
 		error_reporting(E_ALL);
+	}
+
+	/* gather, repair if required and cache the rrdtool version */
+	if ($rrdtool_version == '') {
+		$rrdtool_ins_version = get_installed_rrdtool_version();
+		$rrdtool_version = get_rrdtool_version();
+		if ($rrdtool_ins_version != $rrdtool_version) {
+			cacti_log('NOTE: Updating Stored RRDtool version to installed version ' . $rrdtool_ins_version, false, 'BOOST');
+			set_config_option('rrdtool_version', $rrdtool_ins_version);
+			$rrdtool_version = $rrdtool_ins_version;
+		}
 	}
 
 	/* install the boost error handler */
@@ -459,7 +471,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				$rrd_path    = $rrd_data['rrd_path'];
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
 
-				if (cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+				if (cacti_version_compare($rrdtool_version, '1.5', '<')) {
 					boost_timer('rrd_lastupdate', BOOST_TIMER_START);
 					$last_update = boost_rrdtool_get_last_update_time($rrd_path, $rrdtool_pipe);
 					boost_timer('rrd_lastupdate', BOOST_TIMER_END);
@@ -473,7 +485,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				$time          = $item['timestamp'];
 				$initial_time  = $time;
 
-				if ($time > $last_update || cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
+				if ($time > $last_update || cacti_version_compare($rrdtool_version, '1.5', '>=')) {
 					$buflen += strlen(' ' . $time);
 				}
 
@@ -482,7 +494,7 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
-			if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
+			if ($time < $last_update && cacti_version_compare($rrdtool_version, '1.5', '<')) {
 				cacti_log("WARNING: Stale Poller Data Found! Item Time:'" . $time . "', RRD Time:'" . $last_update . "' Ignoring Value!", false, 'BOOST', POLLER_VERBOSITY_HIGH);
 				$value = 'DNP';
 			} else {
