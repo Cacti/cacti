@@ -1021,7 +1021,7 @@ function boost_rrdtool_get_last_update_time($rrd_path, &$rrdtool_pipe) {
 	}
 
 	if ($file_exists == true) {
-		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, $rrdtool_pipe, 'BOOST');
+		$return_value = rrdtool_execute("last $rrd_path", true, RRDTOOL_OUTPUT_STDOUT, false, 'BOOST');
 	}
 
 	return trim($return_value);
