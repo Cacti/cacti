@@ -411,7 +411,8 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		/* create an array keyed off of each .rrd file */
 		$local_data_id  = -1;
 		$time           = -1;
-		$outbuf         = '';
+		$buflen         = 0;
+		$outarray       = array();
 		$last_update    = -1;
 		$last_item	= array('local_data_id' => -1, 'timestamp' => -1, 'rrd_name' => '');
 
@@ -424,31 +425,37 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 		foreach ($results as $item) {
 			$item['timestamp'] = trim($item['timestamp']);
 
-			/* if the local_data_id changes, we need to flush the buffer */
+			/* if the local_data_id changes, we need to flush the buffer
+			 * and discover the template for the next RRDfile.
+			 */
 			if ($local_data_id != $item['local_data_id']) {
 				/* update the rrd for the previous local_data_id */
 				if ($vals_in_buffer) {
-					if (trim(read_config_option('path_boost_log')) != '') {
-						print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-					}
+					/* place the latest update at the end of the output array */
+					$outarray[] = $tv_tmpl;
 
-					boost_timer('rrdupdate', BOOST_TIMER_START);
-					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
-					boost_timer('rrdupdate', BOOST_TIMER_END);
+					/* new process output function */
+					boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
 
-					$outbuf = '';
+					$buflen = 0;
 					$vals_in_buffer = 0;
-
-					/* check return status for delete operation */
-					if (trim($return_value) != 'OK') {
-						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
-					}
+					$outarray = array();
 				}
 
 				/* reset the rrd file path and templates, assume non multi output */
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_START);
-				$rrd_data    = boost_get_rrd_filename_and_template($item['local_data_id']);
-				$rrd_tmpl    = $rrd_data['rrd_template'];
+				$rrd_data     = boost_get_rrd_filename_and_template($item['local_data_id']);
+				$rrd_tmpl     = $rrd_data['rrd_template'];
+				$template_len = strlen($rrd_tmpl);
+
+				/* take the template and turn into an associative array of
+				 * data source names with a default of 'U' for each value
+				 * and creating the first value to include the timestamp.
+				 * We will use this for missing data detection.
+				 */
+				$rrd_tmplp   = array_fill_keys(array_values(explode(':', $rrd_tmpl)), 'U');
+				$rrd_tmplpts = array('timestamp' => '') + $rrd_tmplp;
+
 				$rrd_path    = $rrd_data['rrd_path'];
 				boost_timer('rrd_filename_and_template', BOOST_TIMER_END);
 
@@ -466,13 +473,12 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 				$time          = $item['timestamp'];
 				$initial_time  = $time;
 
-				if ($time < $last_update && cacti_version_compare(get_rrdtool_version(), '1.5', '<')) {
-					$outbut = '';
-				} else {
-					$outbuf = ' ' . $time;
+				if ($time > $last_update || cacti_version_compare(get_rrdtool_version(), '1.5', '>=')) {
+					$buflen += strlen(' ' . $time);
 				}
 
 				$multi_vals_set = false;
+				$tv_tmpl = $rrd_tmplpts;
 			}
 
 			/* don't generate error messages if the RRD has already been updated */
@@ -484,39 +490,40 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 			}
 
 			if ($time != $item['timestamp']) {
-				if (strlen($outbuf) > $upd_string_len) {
-					if (trim(read_config_option('path_boost_log')) != '') {
-						print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ", Output:" . $outbuf . PHP_EOL;
-					}
-
-					boost_timer('rrdupdate', BOOST_TIMER_START);
-					$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
-					boost_timer('rrdupdate', BOOST_TIMER_END);
-
-					$outbuf         = '';
-					$vals_in_buffer = 0;
-
-					/* check return status for delete operation */
-					if (trim($return_value) != 'OK') {
-						cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
-					}
+				if ($vals_in_buffer > 0) {
+					/* place the latest update at the end of the output array */
+					$outarray[] = $tv_tmpl;
 				}
 
-				if (strpos($value, 'DNP') === false) {
-					$outbuf .= ' ' . $item['timestamp'];
+				if ($buflen > $upd_string_len) {
+					/* new process output function */
+					boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
+
+					$buflen         = 0;
+					$vals_in_buffer = 0;
+					$outarray       = array();
 				}
 
 				$time = $item['timestamp'];
+				$tv_tmpl = $rrd_tmplpts;
+			}
+
+			if (empty($tv_tmpl['timestamp']) && $value != 'DNP') {
+				$tv_tmpl['timestamp'] = $item['timestamp'];
+				$buflen += strlen($item['timestamp']) + 1;
 			}
 
 			/* single one value output */
 			if (strpos($value, 'DNP') !== false) {
 				/* continue, bad time */
 			} elseif ((is_numeric($value)) || ($value == 'U')) {
-				$outbuf .= ':' . $value;
+				$tv_tmpl[$item['rrd_name']] = $value;
+				$buflen += strlen(':' . $value);
 				$vals_in_buffer++;
 			} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($value))) {
-				$outbuf .= ':' . hexdec($value);
+				$tval = hexdec($value);
+				$tv_tmpl[$item['rrd_name']] = $tval;
+				$buflen += strlen(':' . $tval);
 				$vals_in_buffer++;
 			} elseif (strlen($value)) {
 				/* break out multiple value output to an array */
@@ -554,11 +561,15 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 							}
 
 							if (is_numeric($matches[2]) || ($matches[2] == 'U')) {
-								$outbuf .= ':' . $matches[2];
+								$tv_tmpl[$rrd_field_names[$matches[1]]] = $matches[2];
+								$buflen += strlen(':' . $matches[2]);
 							} elseif ((function_exists('is_hexadecimal')) && (is_hexadecimal($matches[2]))) {
-								$outbuf .= ':' . hexdec($matches[2]);
+								$tval = hexdec($matches[2]);
+								$tv_tmpl[$rrd_field_names[$matches[1]]] = $tval;
+								$buflen += strlen(':' . $tval);
 							} else {
-								$outbuf .= ':U';
+								$tv_tmpl[$rrd_field_names[$matches[1]]] = 'U';
+								$buflen += 2;
 							}
 						}
 					}
@@ -577,18 +588,10 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 
 		/* process the last rrdupdate if applicable */
 		if ($vals_in_buffer) {
-			if (trim(read_config_option('path_boost_log')) != '') {
-				print "NOTE: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
-			}
+			/* place the latest update at the end of the output array */
+			$outarray[] = $tv_tmpl;
 
-			boost_timer('rrdupdate', BOOST_TIMER_START);
-			$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
-			boost_timer('rrdupdate', BOOST_TIMER_END);
-
-			/* check return status for delete operation */
-			if (trim($return_value) != 'OK') {
-				cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
-			}
+			boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe);
 		}
 		boost_timer('results_cycle', BOOST_TIMER_END);
 
@@ -603,6 +606,30 @@ function boost_process_local_data_ids($last_id, $rrdtool_pipe) {
 	restore_error_handler();
 
 	return sizeof($results);
+}
+
+function boost_process_output($local_data_id, $outarray, $rrd_path, $rrd_tmplp, $rrdtool_pipe) {
+	$outbut = '';
+	if (sizeof($outarray)) {
+		foreach($outarray as $tsdata) {
+			$outbuf .= ($outbuf != '' ? ' ':'') . implode(':', $tsdata);
+		}
+	}
+
+	$rrd_tmpl = implode(':', array_keys($rrd_tmplp));
+
+	if (trim(read_config_option('path_boost_log')) != '') {
+		print "DEBUG: Updating Local Data Id:'$local_data_id', Template:" . $rrd_tmpl . ', Output:' . $outbuf . PHP_EOL;
+	}
+
+	boost_timer('rrdupdate', BOOST_TIMER_START);
+	$return_value = boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_tmpl, $initial_time, $outbuf, $rrdtool_pipe);
+	boost_timer('rrdupdate', BOOST_TIMER_END);
+
+	/* check return status for delete operation */
+	if (trim($return_value) != 'OK') {
+		cacti_log("WARNING: RRD Update Warning '" . $return_value . "' for Local Data ID '$local_data_id'", false, 'BOOST');
+	}
 }
 
 function log_boost_statistics($rrd_updates) {
