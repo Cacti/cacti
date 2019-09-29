@@ -297,35 +297,37 @@ $sizes = array(
 <body style='font-size:12px;'>
 	<form method='post' action='graph_realtime.php' id='gform'>
 		<div id='rtfilter' class='cactiTable center'>
-			<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
-				<?php
-				foreach ($realtime_window as $interval => $text) {
-					printf('<option value="%d"%s>%s</option>',
-						$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
-					);
-				}
+			<div class='filterTable even'>
+				<select id='graph_start' onChange='imageOptionsChanged("timespan")'>
+					<?php
+					foreach ($realtime_window as $interval => $text) {
+						printf('<option value="%d"%s>%s</option>',
+							$interval, $interval == abs(get_request_var('graph_start')) ? ' selected="selected"' : '', $text
+						);
+					}
+					?>
+				</select>
+				<select id='ds_step' onChange='imageOptionsChanged("interval")'>
+					<?php
+					foreach ($realtime_refresh as $interval => $text) {
+						printf('<option value="%d"%s>%s</option>',
+							$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
+						);
+					}
 				?>
-			</select>
-			<select id='ds_step' onChange='imageOptionsChanged("interval")'>
-				<?php
-				foreach ($realtime_refresh as $interval => $text) {
-					printf('<option value="%d"%s>%s</option>',
-						$interval, $interval == get_request_var('ds_step') ? ' selected="selected"' : '', $text
-					);
-				}
-				?>
-			</select>
-			<select id='size' onChange='imageOptionsChanged("interval")'>
-				<?php
-				foreach ($sizes as $key => $value) {
-					printf('<option value="%d"%s>%s</option>',
-						$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
-					);
-				}
-				?>
-			</select>
-			<label for='thumbnails'><?php print __('Thumbnails');?></label>
-			<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
+				</select>
+				<select id='size' onChange='imageOptionsChanged("interval")'>
+					<?php
+					foreach ($sizes as $key => $value) {
+						printf('<option value="%d"%s>%s</option>',
+							$key, $key == get_request_var('size') ? ' selected="selected"' : '', $value
+						);
+					}
+					?>
+				</select>
+				<label for='thumbnails'><?php print __('Thumbnails');?></label>
+				<input type='checkbox' id='thumbnails' onChange='imageOptionsChanged("interval")' <?php print get_request_var('graph_nolegend') == 'true' ? 'checked':'';?>>
+			</div>
 		</div>
 		<div class='cactiTable center'>
 			<span id='countdown'><?php print __('%d seconds left.',  get_request_var('ds_step')); ?></span>
