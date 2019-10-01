@@ -26,7 +26,8 @@ include_once('./include/auth.php');
 
 $aggregate_actions = array(
 	1 => __('Delete'),
-	2 => __('Duplicate')
+	2 => __('Duplicate'),
+	3 => __('Sync Aggregates')
 );
 
 /* set default action */
@@ -193,6 +194,10 @@ function aggregate_color_form_actions() {
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_color_template($selected_items[$i], get_nfilter_request_var('title_format'));
 				}
+			} elseif (get_nfilter_request_var('drp_action') == '3') { // sync templates
+				for ($i=0;($i<cacti_count($selected_items));$i++) {
+					sync_color_templates($selected_items[$i]);
+				}
 			}
 		}
 
@@ -227,7 +232,7 @@ function aggregate_color_form_actions() {
 					<p>" . __n('Click \'Continue\' to delete the following Color Template', 'Click \'Continue\' to delete following Color Templates', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Delete Color Template', 'Delete Color Templates', cacti_sizeof($color_array)) . "'>";
 		} elseif (get_request_var('drp_action') == '2') { // duplicate
@@ -235,11 +240,22 @@ function aggregate_color_form_actions() {
 				<td class='textArea'>
 					<p>" . __n('Click \'Continue\' to duplicate the following Color Template. You can optionally change the title format for the new color template.', 'Click \'Continue\' to duplicate following Color Templates. You can optionally change the title format for the new color templates.', cacti_sizeof($color_array)) . "</p>
 					<div class='itemlist'><ul>$color_list</ul></div>
-					<p>" . __('Title Format:') . "<br>"; form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text'); print "</p>
+					<p>" . __('Title Format:') . '<br>';
+					form_text_box('title_format', '<template_title> (1)', '', '255', '30', 'text');
+					print "</p>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Duplicate Color Template', 'Duplicate Color Templates', cacti_sizeof($color_array)) . "'>";
+		} elseif (get_request_var('drp_action') == '3') { // sync
+			print "<tr>
+				<td class='textArea'>
+					<p>" . __n('Click \'Continue\' to Synchronize all Aggregate Graphs with the selected Color Template.', 'Click \'Continue\' to Syncrhonize all Aggregate Graphs with the selected Color Templates.', cacti_sizeof($color_array)) . "</p>
+					<div class='itemlist'><ul>$color_list</ul></div></p>
+				</td>
+			</tr>";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Synchronize Color Template', 'Synchronize Color Templates', cacti_sizeof($color_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
@@ -385,6 +401,60 @@ function aggregate_color_template_edit() {
 	form_save_button('color_templates.php', 'return', 'color_template_id');
 }
 
+
+function sync_color_templates($color_template) {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/api_aggregate.php');
+
+	$name = db_fetch_cell_prepared('SELECT name
+		FROM color_templates
+		WHERE color_template_id = ?',
+		array($color_template));
+
+	$aggregate_templates = array_rekey(
+		db_fetch_assoc_prepared('SELECT DISTINCT aggregate_template_id
+			FROM aggregate_graph_templates_item
+			WHERE color_template = ?',
+			array($color_template)),
+		'aggregate_template_id', 'aggregate_template_id'
+	);
+
+	$found     = false;
+	$templates = 0;
+	$graphs    = 0;
+
+	if (cacti_sizeof($aggregate_templates)) {
+		$found = true;
+		$templates = cacti_sizeof($aggregate_templates);
+		foreach($aggregate_templates as $id) {
+			push_out_aggregates($id);
+		}
+	}
+
+	$aggregate_graphs = db_fetch_assoc_prepared('SELECT DISTINCT ag.aggregate_template_id, ag.local_graph_id
+		FROM aggregate_graphs_graph_item AS agi
+		LEFT JOIN aggregate_graphs AS ag
+		ON ag.id=agi.aggregate_graph_id
+		WHERE (ag.aggregate_template_id > 0 AND ag.template_propogation = "")
+		OR ag.aggregate_template_id = 0
+		AND agi.color_template = ?',
+		array($color_template));
+
+	if (cacti_sizeof($aggregate_graphs)) {
+		$found = true;
+		$graphs = cacti_sizeof($aggregate_graphs);
+		foreach($aggregate_templates as $id) {
+			push_out_aggregates($id['aggregate_template_id'], $id['local_graph_id']);
+		}
+	}
+
+	if ($found) {
+		raise_message('color_template_sync', __('Color Template \'%s\' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+	} else {
+		raise_message('color_template_sync', __('Color Template \'%s\' had no Aggregate Templates or Graphs using this Color Template.', $name, $templates, $graphs), MESSAGE_LEVEL_INFO);
+	}
+}
 
 /**
  * aggregate_color_template		maintain color templates

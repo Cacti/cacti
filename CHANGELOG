@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.8
+-issue#2987: Changing Color Template does not update Aggregate
+
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
 -issue#1181: When opening the Scheduler, it may appear off screen when opened near the bottom of a window
