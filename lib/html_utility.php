@@ -54,36 +54,59 @@ function inject_form_variables(&$form_array, $arg1 = array(), $arg2 = array(), $
 					$matches1 = $matches[1];
 					$matches2 = $matches[2];
 
-					/* an empty field name in the variable means don't treat this as an array */
-					if (empty($matches2)) {
-						if (is_array($$matches1)) {
-							/* the existing value is already an array, leave it alone */
-							$form_array[$field_name][$field_to_check] = $$matches1;
+					$count = 0;
+					/* loop through the $field_to_check and replace upto three times
+					 * for arg1:arg2:arg3 variables.
+					 */
+					while (true) {
+						/* an empty field name in the variable means don't treat this as an array */
+						if ($matches2 == '') {
+							if (is_array($$matches1)) {
+								/* the existing value is already an array, leave it alone */
+								$form_array[$field_name][$field_to_check] = $$matches1;
+							} else {
+								/* the existing value is probably a single variable */
+								$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
+							}
 						} else {
-							/* the existing value is probably a single variable */
-							$form_array[$field_name][$field_to_check] = str_replace($matches0, $$matches1, $field_array[$field_to_check]);
-						}
-					} else {
-						/* copy the value down from the array/key specified in the variable */
-						if (isset($$matches1) && is_array($$matches1)) {
-							$array = $$matches1;
-							if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
-								$string = str_replace($matches0, $array[$matches2], $string);
+							/* copy the value down from the array/key specified in the variable
+							 * replace upto three times for arg1:arg2:arg3 variables
+							 */
+							if (isset($$matches1) && is_array($$matches1)) {
+								$array = $$matches1;
+								if (is_array($array) && isset($array[$matches2]) && $array[$matches2] != '') {
+									$string = str_replace($matches0, $array[$matches2], $string);
+								} else {
+									$string = str_replace($matches0, '', $string);
+								}
+							}
+
+							// Double check to see if the replacement went as planned
+							$matches = array();
+							preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
+
+							if (!cacti_sizeof($matches)) {
+								$form_array[$field_name][$field_to_check] = $string;
+							} elseif (isset($form_array[$field_name]['default'])) {
+								$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
+							} elseif ($field_to_check == 'sql') {
+								$form_array[$field_name][$field_to_check] = $string;
+							} else {
+								$form_array[$field_name][$field_to_check] = '';
 							}
 						}
 
-						// Double check to see if the replacement went as planned
-						$matches = array();
-						preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string, $matches);
-
-						if (!cacti_sizeof($matches)) {
-							$form_array[$field_name][$field_to_check] = $string;
-						} elseif (isset($form_array[$field_name]['default'])) {
-							$form_array[$field_name][$field_to_check] = $form_array[$field_name]['default'];
-						} elseif ($field_to_check == 'sql') {
-							$form_array[$field_name][$field_to_check] = $string;
+						/* if there are no more arg's, break.  Since some arg's
+						 * might not ever be replaced, continue counting till 3 as
+						 * in the special case of 'sql' for example.
+						 */
+						$additional = preg_match('/\|(arg[123]):([a-zA-Z0-9_]*)\|/', $string);
+						if (empty($additional)) {
+							break;
+						} elseif ($count >= 3) {
+							break;
 						} else {
-							$form_array[$field_name][$field_to_check] = '';
+							$count++;
 						}
 					}
 				}
