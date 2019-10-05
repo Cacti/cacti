@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.8
 -issue#2987: Changing Color Template does not update Aggregate
 -issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
+-issue#2995: Tree Branch Report only displays single column - not multi column
 -issue#2996: User Graph Options - Rights value not shown correctly
 -issue#2998: Session performance issues due to excessive use for database storage
 -issue#3006: Boost generates undefined variables warning during poller run
