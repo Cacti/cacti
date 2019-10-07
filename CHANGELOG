@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -issue#2996: User Graph Options - Rights value not shown correctly
 -issue#2998: Session performance issues due to excessive use for database storage
 -issue#3006: Boost generates undefined variables warning during poller run
+-issue#3012: Some graph routines are not properly validating incoming variables
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs

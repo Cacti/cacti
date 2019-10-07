@@ -40,6 +40,7 @@ get_filter_request_var('ds_step');
 get_filter_request_var('count');
 get_filter_request_var('top');
 get_filter_request_var('left');
+get_filter_request_var('graph_nolegend');
 /* ==================================================== */
 
 set_default_action();
