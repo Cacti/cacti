@@ -3024,6 +3024,8 @@ function automation_get_network_info($range) {
 	$broadcast = false;
 	$mask      = false;
 	$detail    = false;
+
+	$range = trim($range);
 	if (strpos($range, '/') !== false) {
 		// 10.1.0.0/24 or 10.1.0.0/255.255.255.0
 		$range_parts = explode('/', $range);
