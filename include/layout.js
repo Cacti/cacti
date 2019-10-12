@@ -1712,6 +1712,8 @@ function loadTopTab(href, id, force) {
 		if ($('#'+id).hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
 			$('#'+id).addClass('selected');
+			hideTabId = id.substring(0, id.length-9);
+			$('#'+hideTabId).addClass('selected');
 		}
 
 		return true;
