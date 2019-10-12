@@ -3100,15 +3100,22 @@ function sanitize_cdef($cdef) {
  */
 function sanitize_unserialize_selected_items($items) {
 	if ($items != '') {
-		$items = unserialize(stripslashes($items));
+		$unstripped = stripslashes($items);
 
-		if (is_array($items)) {
-			foreach ($items as $item) {
-				if (is_array($item)) {
-					return false;
-				} elseif (!is_numeric($item) && ($item != '')) {
-					return false;
+		// validate that sanitized string is correctly formatted
+		if (preg_match('/^a:[0-9]+:{/', $unstripped) && !preg_match('/(^|;|{|})O:\+?[0-9]+:"/', $unstripped)) {
+			$items = unserialize($unstripped);
+
+			if (is_array($items)) {
+				foreach ($items as $item) {
+					if (is_array($item)) {
+						return false;
+					} elseif (!is_numeric($item) && ($item != '')) {
+						return false;
+					}
 				}
+			} else {
+				return false;
 			}
 		} else {
 			return false;
