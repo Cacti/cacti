@@ -2006,13 +2006,15 @@ function graph_management() {
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
 		if ($parts[0] == 'cg') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id=' . $parts[1];
+			input_validate_input_number($parts[1]);
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
 		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
+			input_validate_input_number($parts[1]);
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
 		}
 	}
 
