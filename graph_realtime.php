@@ -34,13 +34,13 @@ get_filter_request_var('graph_start');
 get_filter_request_var('graph_end');
 get_filter_request_var('graph_height');
 get_filter_request_var('graph_width');
+get_filter_request_var('graph_nolegend', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '(true|false)')));
 get_filter_request_var('local_graph_id');
 get_filter_request_var('size');
 get_filter_request_var('ds_step');
 get_filter_request_var('count');
 get_filter_request_var('top');
 get_filter_request_var('left');
-get_filter_request_var('graph_nolegend');
 /* ==================================================== */
 
 set_default_action();
