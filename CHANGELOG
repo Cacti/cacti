@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.8
 -security#3025: SQL Injection in graphs.php
+-security#3026: Unsafe deserialization in of selected objects in Cacti
 -issue#2987: Changing Color Template does not update Aggregate
 -issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
 -issue#2995: Tree Branch Report only displays single column - not multi column
