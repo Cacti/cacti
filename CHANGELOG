@@ -11,6 +11,8 @@ Cacti CHANGELOG
 -issue#3006: Boost generates undefined variables warning during poller run
 -issue#3012: Some graph routines are not properly validating incoming variables
 -issue#3017: Automation network range with spaces fails validation
+-issue#3019: user_language will not take effect if user_language is different with browser locale
+-issue#3023: Non-Console-Tab continuously reload page instead of show/hide menu
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
