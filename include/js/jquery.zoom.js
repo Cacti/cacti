@@ -436,7 +436,6 @@
 		* registers all the different mouse click event handler
 		*/
 		function zoomAction_init(image) {
-
 			if (zoom.custom.zoomMode == 'quick') {
 				$('#zoom-area').resizable({ containment: '#zoom-box', handles: 'e, w' });
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
@@ -481,9 +480,9 @@
 				} );
 
 				/* capture mouse up/down events for zoom */
-				$(document).mousedown(function() {
+				$(document).off('mousedown').on('mousedown', function() {
 					mouseDown = true;
-				}).mouseup(function() {
+				}).off('mouseup').on('mouseup', function() {
 					if (mouseDown) {
 						if (zoom.attr.start != 'none') {
 							zoomAction_zoom_in();
