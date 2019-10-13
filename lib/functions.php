@@ -3249,8 +3249,6 @@ function top_header() {
 
 function top_graph_header() {
 	global $config;
-
-	html_validate_tree_vars();
 	if (!isset_request_var('header') || get_nfilter_request_var('header') == 'true') {
 		include_once($config['base_path'] . '/include/top_graph_header.php');
 	}
