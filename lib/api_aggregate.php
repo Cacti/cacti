@@ -1684,7 +1684,7 @@ function draw_aggregate_graph_items_list($_graph_id = 0, $_graph_template_id = 0
 			if ($use_custom_class == false) {
 				form_alternate_row();
 			} else {
-				print "<tr class='$customClass'>";
+				print "<tr class='tableRowGraph $customClass'>";
 			}
 
 			/* column 'Graph Item' */
