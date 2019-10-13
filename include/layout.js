@@ -61,6 +61,23 @@ var pageWidth = null;
 var isHover = false;
 var hoverTimer = false;
 
+window.paceOptions = {
+	ajax: true,
+	document: true,
+	elements: false,
+	minTime: 400,
+	startOnPageLoad: false,
+	restartOnPushState: false,
+	restartOnRequestAfter: 120,
+	eventLag: false,
+};
+
+window.onbeforeunload = renderLoading;
+function renderLoading () {
+	Pace.stop();
+	Pace.bar.render();
+}
+
 var isMobile = {
 	Android: function() {
 		return navigator.userAgent.match(/Android/i);
@@ -1701,6 +1718,8 @@ function loadTopTab(href, id, force) {
 
 				$('#main').show();
 
+				Pace.stop();
+
 				return false;
 			})
 			.fail(function(data) {
@@ -1806,6 +1825,8 @@ function loadPage(href, force) {
 				}
 
 				handleConsole(pageName);
+
+				Pace.stop();
 
 				return false;
 			})
@@ -1934,6 +1955,8 @@ function loadPageNoHeader(href, scroll, force) {
 				}
 
 				handleConsole(pageName);
+
+				Pace.stop();
 
 				return false;
 			})
