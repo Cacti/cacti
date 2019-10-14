@@ -1733,6 +1733,9 @@ function loadTopTab(href, id, force) {
 			$('#'+id).addClass('selected');
 			hideTabId = id.substring(0, id.length-9);
 			$('#'+hideTabId).addClass('selected');
+		} else if ($('#'+id).parent() && $('#'+id).parent().parent() && $('#'+id).parent().parent().hasClass('submenuoptions')) {
+			$('#'+id).parent().parent().find('.selected').removeClass('selected');
+			$('#'+id).addClass('selected');
 		}
 
 		return true;
