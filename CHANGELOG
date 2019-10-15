@@ -12,7 +12,7 @@ Cacti CHANGELOG
 -issue#3012: Some graph routines are not properly validating incoming variables
 -issue#3017: Automation network range with spaces fails validation
 -issue#3019: user_language will not take effect if user_language is different with browser locale
--issue#3023: Non-Console-Ellipsis-Tab and Graphs-->SubMenu continuously reload page instead of show/hide menu
+-issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
 -issue#3028: Graph Zooming to edge of timespan 
 -issue#3030: Pace continues to run even after a page is finished rendering
 
