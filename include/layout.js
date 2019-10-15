@@ -1730,11 +1730,14 @@ function loadTopTab(href, id, force) {
 		/* update menu selection */
 		if ($('#'+id).hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
+			$('.submenuoptions').find('.selected').removeClass('selected');
 			$('#'+id).addClass('selected');
 			hideTabId = id.substring(0, id.length-9);
-			$('#'+hideTabId).addClass('selected');
-		} else if ($('#'+id).parent() && $('#'+id).parent().parent() && $('#'+id).parent().parent().hasClass('submenuoptions')) {
-			$('#'+id).parent().parent().find('.selected').removeClass('selected');
+			if (hideTabId) {
+				$('#'+hideTabId).addClass('selected');
+			}
+		} else if ($('#'+id).parents('.submenuoptions').length > 0) {
+			$('#'+id).parents('.submenuoptions').find('.selected').removeClass('selected');
 			$('#'+id).addClass('selected');
 		}
 
@@ -2564,13 +2567,21 @@ function setupEllipsis() {
 		return false;
 	});
 
-	$('.submenuoptions').mouseenter(function(data) {
+	$('.submenuoptions').mouseenter(function(event) {
 		clearTimeout(userMenuTimer);
-	}).mouseleave(function(data) {
+	}).mouseleave(function(event) {
 		if ($('.submenuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function() {$('.submenuoptions').stop().slideUp(120);}, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
+		}
+	});
+	$(window).on('click', function(event) {
+		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
+			$('.submenuoptions').slideUp(120);
+		}
+		if($(event.target).parents('.menuoptions').length == 0 && $('.menuoptions').is(':visible')) {
+			$('.menuoptions').slideUp(120);
 		}
 	});
 }
