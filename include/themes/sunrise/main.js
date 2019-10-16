@@ -54,9 +54,9 @@ function themeReady() {
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-tab-graphs" class="submenuoptions" style="display:none;">'
-					+'<li><a href="'+urlPath+'graph_view.php?action=tree"><span>'+treeView+'</span></a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=list"><span>'+listView+'</span></a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=preview"><span>'+previewView+'</span></a></li>'
+					+'<li><a id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree"><span>'+treeView+'</span></a></li>'
+					+'<li><a id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list"><span>'+listView+'</span></a></li>'
+					+'<li><a id="tab-graphs-pre-view" href="'+urlPath+'graph_view.php?action=preview"><span>'+previewView+'</span></a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
 		}
