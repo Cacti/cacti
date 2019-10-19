@@ -2317,8 +2317,8 @@ function rrdtool_escape_string($text) {
 	return str_replace(array('"', ":", '%'), array('\"', "\:", ''), $text);
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
-	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, '', $xport_meta);
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $user = 0) {
+	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
 function rrdtool_function_format_graph_date(&$graph_data_array) {

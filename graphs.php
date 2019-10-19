@@ -1597,10 +1597,10 @@ function graph_edit() {
 		<div class='cactiTable'>
 			<div style='float:left'>
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $_SESSION['sess_user_id']);?></pre>
 			</div>
 		<?php
 		}
