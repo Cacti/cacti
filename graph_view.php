@@ -212,6 +212,8 @@ case 'save':
 
 	break;
 case 'tree':
+	html_validate_tree_vars();
+
 	if (isset_request_var('tree_id')) {
 		$_SESSION['sess_tree_id'] = get_filter_request_var('tree_id');
 	}
