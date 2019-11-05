@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
+-issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 
 1.2.6
 -issue#2794: Graph template not saved on graph edit
