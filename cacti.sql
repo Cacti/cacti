@@ -1447,11 +1447,11 @@ CREATE TABLE `data_source_purge_temp` (
   ROW_FORMAT=Dynamic
   COMMENT='RRD Cleaner File Repository';
 
-	
+
 --
 -- Table structure for table `data_source_stats_daily`
 --
-	
+
 CREATE TABLE `data_source_stats_daily` (
   `local_data_id` int(10) unsigned NOT NULL,
   `rrd_name` varchar(19) NOT NULL,
@@ -2401,8 +2401,8 @@ CREATE TABLE `reports` (
   `lastsent` bigint(20) unsigned NOT NULL DEFAULT '0',
   `enabled` char(2) DEFAULT '',
   PRIMARY KEY (`id`),
-  KEY `mailtime` (`mailtime`)) 
-  ENGINE=InnoDB 
+  KEY `mailtime` (`mailtime`))
+  ENGINE=InnoDB
   ROW_FORMAT=Dynamic
   COMMENT='Cacti Reporting Reports';
 
@@ -2429,8 +2429,8 @@ CREATE TABLE `reports_items` (
   `font_size` smallint(2) unsigned NOT NULL DEFAULT '10',
   `sequence` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `report_id` (`report_id`)) 
-  ENGINE=InnoDB 
+  KEY `report_id` (`report_id`))
+  ENGINE=InnoDB
   ROW_FORMAT=Dynamic
   COMMENT='Cacti Reporting Items';
 
@@ -2620,6 +2620,8 @@ CREATE TABLE user_auth (
   `failed_attempts` int(5) NOT NULL DEFAULT '0',
   `lastfail` int(10) unsigned NOT NULL DEFAULT '0',
   `reset_perms` int(10) unsigned NOT NULL DEFAULT '0',
+  `tfa_enabled` char(3) NOT NULL DEFAULT '',
+  `tfa_secret` char(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `username` (`username`),
   KEY `realm` (`realm`),
@@ -3139,7 +3141,7 @@ CREATE TABLE rrdcheck (
 --
 
 CREATE TABLE version (
-  cacti char(20) default '',
+  cacti char(30) default '',
   PRIMARY KEY (cacti)
 ) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
