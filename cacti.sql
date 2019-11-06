@@ -2580,6 +2580,8 @@ CREATE TABLE user_auth (
   `failed_attempts` int(5) NOT NULL DEFAULT '0',
   `lastfail` int(12) NOT NULL DEFAULT '0',
   `reset_perms` int(12) UNSIGNED NOT NULL DEFAULT '0',
+  `tfa_enabled` char(3) NOT NULL DEFAULT '',
+  `tfa_secret` char(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `username` (`username`),
   KEY `realm` (`realm`),
@@ -3069,7 +3071,7 @@ INSERT INTO vdef_items VALUES(15, 'e7ae90275bc1efada07c19ca3472d9db', 7, 3, 1, '
 --
 
 CREATE TABLE version (
-  cacti char(20) default '',
+  cacti char(30) default '',
   PRIMARY KEY (cacti)
 ) ENGINE=InnoDB;
 
