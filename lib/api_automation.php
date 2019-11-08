@@ -3080,8 +3080,8 @@ function automation_get_network_info($range) {
 	} elseif (strpos($range, '-') !== false) {
 		$range_parts = explode('-', $range);
 
-		$network   = automation_get_valid_ip($range_parts[0]);
-		$broadcast = automation_get_valid_ip($range_parts[1]);
+		$network   = automation_get_valid_ip(long2ip(ip2long($range_parts[0]) - 1));
+		$broadcast = automation_get_valid_ip(long2ip(ip2long($range_parts[1]) + 1));
 	} else {
 		$network   = automation_get_valid_ip($range);
 		$broadcast = automation_get_valid_ip($range);
