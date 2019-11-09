@@ -616,7 +616,7 @@ function graph_edit() {
 		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
 
-	$referer = isset($_SESSION['aggregate_referer']) ? $_SESION['aggregate_referer'] : 'aggregate_graphs.php';
+	$referer = isset($_SESSION['aggregate_referer']) ? $_SESSION['aggregate_referer'] : 'aggregate_graphs.php';
 
 	$use_graph_template = false;
 	$aginfo = array();
