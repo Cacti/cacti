@@ -1338,7 +1338,7 @@ function item() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
 
-	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) ? false : true));
+	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) || empty($host_id) ? false : true));
 
 	?>
 	<script type='text/javascript'>
