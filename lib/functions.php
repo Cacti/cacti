@@ -1547,7 +1547,13 @@ function get_full_script_path($local_data_id) {
 
 	if (cacti_sizeof($data)) {
 		foreach ($data as $item) {
-			$full_path = str_replace('<' . $item['data_name'] . '>', cacti_escapeshellarg($item['value']), $full_path);
+			$value = cacti_escapeshellarg($item['value']);
+
+			if ($value == '') {
+				$value = "''";
+			}
+
+			$full_path = str_replace('<' . $item['data_name'] . '>', $value, $full_path);
 		}
 	}
 

@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#2995: Tree Branch Report only displays single column - not multi column
 -issue#2996: User Graph Options - Rights value not shown correctly
 -issue#2998: Session performance issues due to excessive use for database storage
+-issue#2999: Blank arguments can lead to extra spaces in script arguments
 -issue#3006: Boost generates undefined variables warning during poller run
 -issue#3011: i18n logging does not check write permission exists causing runtime warnings
 -issue#3012: Some graph routines are not properly validating incoming variables
