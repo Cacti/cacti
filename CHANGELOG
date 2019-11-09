@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#3032: Graph always shows 'MAX' CF for LINE graph instead of AVERAGE/MIN/LAST
 -issue#3035: Cannot Delete Tree Entries
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
+-issue#3039: Allow packagers to be able to specify an alternate location of csrf-secret.php file
 -issue#3040: AUTOM8 discovery starts even if you click cancel 
 -issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
 -issue#3042: AUTOM8 Scan hangs when selecting remote poller
