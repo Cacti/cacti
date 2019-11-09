@@ -292,29 +292,31 @@ function output_rrd_data($start_time, $force = false) {
 	$total_rows = db_fetch_cell("SELECT COUNT(local_data_id) FROM $archive_table");
 	$data_ids   = db_fetch_cell("SELECT COUNT(DISTINCT local_data_id) FROM $archive_table");
 
-	$passes  = ceil($total_rows / $max_per_select);
-	$ids_per_pass = ceil($data_ids / $passes);
-	$curpass = 0;
-	while ($curpass <= $passes) {
-		$last_id = db_fetch_cell("SELECT MAX(local_data_id)
-			FROM (
-				SELECT local_data_id
-				FROM boost_local_data_ids
-				ORDER BY local_data_id
-				LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
-			) AS result");
+	if (!empty($total_rows)) {
+		$passes  = ceil($total_rows / $max_per_select);
+		$ids_per_pass = ceil($data_ids / $passes);
+		$curpass = 0;
+		while ($curpass <= $passes) {
+			$last_id = db_fetch_cell("SELECT MAX(local_data_id)
+				FROM (
+					SELECT local_data_id
+					FROM boost_local_data_ids
+					ORDER BY local_data_id
+					LIMIT " . (($curpass * $ids_per_pass) + 1) . ", $ids_per_pass
+				) AS result");
 
-		if (empty($last_id)) {
-			break;
-		}
+			if (empty($last_id)) {
+				break;
+			}
 
 		boost_process_local_data_ids($last_id, $rrdtool_pipe);
 
-		$curpass++;
+			$curpass++;
 
-		if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
-			cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!');
-			$runtime_exceeded = true;
+			if (((time()-$start) > $max_run_duration) && (!$runtime_exceeded)) {
+				cacti_log('WARNING: RRD On Demand Updater Exceeded Runtime Limits. Continuing to Process!!!');
+				$runtime_exceeded = true;
+			}
 		}
 	}
 
