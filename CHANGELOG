@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#3030: Pace continues to run even after a page is finished rendering
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
 -issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
+-issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
 -issue#3070: Improve database logging when a crashed table is encountered
 -issue#3073: autom8 network range treats start and end as network and broadcast
 
