@@ -805,7 +805,7 @@ function html_validate_tree_vars() {
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => read_user_setting('thumbnail_section_tree_2')
+			'default' => read_user_setting('thumbnail_section_tree_2') == 'on' ? 'true':'false'
 			)
 	);
 
@@ -1369,7 +1369,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if (!empty($leaf_id)) {
-		api_plugin_hook_function('tree_after',$host_name.','.get_request_var('leaf_id'));
+		api_plugin_hook_function('tree_after', $host_name . ',' . get_nfilter_request_var('leaf_id'));
 	}
 
 	api_plugin_hook_function('tree_view_page_end');
