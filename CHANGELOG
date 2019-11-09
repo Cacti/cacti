@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
 -issue#3042: AUTOM8 Scan hangs when selecting remote poller
 -issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
+-issue#3047: When saving settings, ignore remote pollers who have not checked in recently
 -issue#3050: Improper validation call prior to plugin call
 -issue#3052: Slow Response Loading CDEFs
 -issue#3053: CMDPHP Validation Error - thumbnails in Graph View

@@ -203,11 +203,15 @@ case 'save':
 
 	api_plugin_hook_function('global_settings_update');
 
+	$gone_time = read_config_option('poller_interval') * 2;
+
 	$pollers = array_rekey(
-		db_fetch_assoc('SELECT id
+		db_fetch_assoc_prepared('SELECT id
 			FROM poller
 			WHERE id > 1
-			AND disabled=""'),
+			AND disabled=""
+			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) <= ?',
+			array($gone_time)),
 		'id', 'id'
 	);
 
