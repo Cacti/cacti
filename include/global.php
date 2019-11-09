@@ -363,6 +363,13 @@ if (!defined('IN_CACTI_INSTALL')) {
 db_cacti_initialized($config['is_web']);
 
 if ($config['is_web']) {
+	if (read_config_option('force_https') == 'on') {
+		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
+			header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . PHP_EOL);
+			exit;
+		}
+	}
+
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
 	ini_set('max_input_vars', '5000');
@@ -486,13 +493,6 @@ if ($config['is_web']) {
 
 	if (isset_request_var('csrf_timeout')) {
 		raise_message('csrf_ptimeout');
-	}
-
-	if (read_config_option('force_https') == 'on') {
-		if (!isset($_SERVER['HTTPS']) && isset($_SERVER['HTTP_HOST']) && isset($_SERVER['REQUEST_URI'])) {
-			Header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . PHP_EOL . PHP_EOL);
-			exit;
-		}
 	}
 }
 
