@@ -71,7 +71,11 @@ function set_auth_cookie($user) {
 			(?, ?, NOW(), ?);',
 			array($user['id'], get_client_addr(''), $secret));
 
-		setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
+		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
+			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path'], NULL, true, true);
+		} else {
+			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
+		}
 	}
 }
 
