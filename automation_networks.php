@@ -409,6 +409,8 @@ function form_actions() {
 function network_edit() {
 	global $config, $ping_methods;;
 
+	$ping_methods[PING_SNMP] = __('SNMP Get');
+
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
 	/* ==================================================== */

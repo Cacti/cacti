@@ -527,18 +527,27 @@ function discoverDevices($network_id, $thread) {
 					$ping->port    = $network['ping_port'];;
 
 					/* perform the appropriate ping check of the host */
-					$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
-
-					if (!$result) {
-						automation_debug(" No response");
-						updateDownDevice($network_id, $device['ip_address']);
-					} else {
-						automation_debug(" Responded");
-						$stats['ping']++;
-						addUpDevice($network_id, getmypid());
+					$bypass_ping = false;
+					$result      = false;
+					if ($network['ping_method'] == PING_SNMP) {
+						$bypass_ping = true;
 					}
 
-					if ($result && automation_valid_snmp_device($device)) {
+					if ($bypass_ping == false) {
+						$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
+
+						if (!$result) {
+							automation_debug(" No response");
+							updateDownDevice($network_id, $device['ip_address']);
+						} else {
+							automation_debug(" Responded");
+							$stats['ping']++;
+							addUpDevice($network_id, getmypid());
+						}
+					}
+
+
+					if (($result || $bypass_ping) && automation_valid_snmp_device($device)) {
 						$snmp_sysName       = trim($device['snmp_sysName']);
 						$snmp_sysName_short = '';
 						if (!is_ipaddress($snmp_sysName)) {
@@ -720,7 +729,7 @@ function discoverDevices($network_id, $thread) {
 
 							markIPDone($device['ip_address'], $network_id);
 						}
-					}else if ($result) {
+					} elseif ($result) {
 						db_execute('REPLACE INTO automation_devices
 							(network_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
 							. $network_id                              . ', '
