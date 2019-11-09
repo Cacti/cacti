@@ -176,7 +176,7 @@ case 'countdown':
 	$graph_data_array['export_realtime'] = $graph_rrd;
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 
-	rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array);
+	rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, null, $_SESSION['sess_user_id']);
 
 	if (file_exists($graph_rrd)) {
 		$data = base64_encode(file_get_contents($graph_rrd));
