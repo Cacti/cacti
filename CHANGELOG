@@ -17,6 +17,9 @@ Cacti CHANGELOG
 -issue#3028: Graph Zooming to edge of timespan
 -issue#3030: Pace continues to run even after a page is finished rendering
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
+-issue#3040: AUTOM8 discovery starts even if you click cancel 
+-issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
+-issue#3042: AUTOM8 Scan hangs when selecting remote poller
 -issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
 -issue#3050: Improper validation call prior to plugin call
 -issue#3052: Slow Response Loading CDEFs
