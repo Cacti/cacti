@@ -309,7 +309,7 @@ function output_rrd_data($start_time, $force = false) {
 				break;
 			}
 
-		boost_process_local_data_ids($last_id, $rrdtool_pipe);
+			boost_process_local_data_ids($last_id, $rrdtool_pipe);
 
 			$curpass++;
 
