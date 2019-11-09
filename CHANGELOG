@@ -7,6 +7,61 @@ Cacti CHANGELOG
 -feature#2607: Allow adding sites from command line
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 
+1.2.8
+-security#3025: SQL Injection in graphs.php
+-security#3026: Unsafe deserialization in of selected objects in Cacti
+-issue#2987: Changing Color Template does not update Aggregate
+-issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
+-issue#2995: Tree Branch Report only displays single column - not multi column
+-issue#2996: User Graph Options - Rights value not shown correctly
+-issue#2998: Session performance issues due to excessive use for database storage
+-issue#3006: Boost generates undefined variables warning during poller run
+-issue#3012: Some graph routines are not properly validating incoming variables
+-issue#3017: Automation network range with spaces fails validation
+-issue#3019: user_language will not take effect if user_language is different with browser locale
+-issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
+-issue#3028: Graph Zooming to edge of timespan
+-issue#3030: Pace continues to run even after a page is finished rendering
+-issue#3037: When emptying poller output using cli, debug functions are not properly included
+-issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
+-issue#3073: autom8 network range treats start and end as network and broadcast
+
+1.2.7
+-security#2964: CVE-2019-16723 Security issue allows to view all graphs
+-issue#1181: When opening the Scheduler, it may appear off screen when opened near the bottom of a window
+-issue#2894: When using Remote Data Collectors, database information and recommendations may show Incorrect values
+-issue#2895: When using data sources from different RRDs, Percentile calculation may be incorrect
+-issue#2899: When displaying a form, variable substitution may not always work as expected
+-issue#2922: When running a data query, the result may come back as undefined
+-issue#2925: When using consolidation functions, retrieving the first step can cause errors
+-issue#2926: When editing a graph, variable validation errors may prevent changes from being saved
+-issue#2929: Boost performance may become poor even in single server mode
+-issue#2930: RRDtool can generate errors to standard output which can corrupt images
+-issue#2932: When RRDTool generates an error creating an image, it is not always reportedly properly
+-issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit
+-issue#2938: Under CentOS packages, upgrade_database.php script uses incorrect location for DB upgrade scripts
+-issue#2940: Images are not always properly sized until the page size changes
+-issue#2949: Order icons may not be properly aligned
+-issue#2951: Allow legends to be modified for Aggregate Graphs
+-issue#2958: Drop down autocomplete lists do not always open as expected
+-issue#2961: When syncing device templates, undefined function may be raised
+-issue#2963: When running ss_cpoller script, avgTime incorrect returns maxTime
+-issue#2966: Realtime popup windows do not always honor settings
+-issue#2967: When using Spikekill, gap and range fill are not operating as expected
+-issue#2970: When a user edits their profile, buttons may appear as unusable whilst still being enabled
+-issue#2973: User menu does not always display properly on mobile devices
+-issue#2974: Script Server can raise unexpected warnings when 'arg_num_indexes' set but not found in data source
+-issue#2975: Datasource Debug does not properly handle European numbers in certain circumstances
+-issue#2976: Boost messages should be stored in their own log file
+-issue#2977: Data updates with past timestamps can cause boost errors
+-issue#2978: Moving hosts between data collectors is slow
+-issue#2979: Multi Output Fields are not parsed correctly
+-issue#2984: When checking SQL fields, value was not always primed
+-issue#2986: Selecting 'Devices' menu pick closes 'Management' menu
+-feature#2943: Allow all Data Queries of a device to be re-indexed at once
+-feature#2952: If device is down or threshold breached, highlight in tree view
+-feature#2985: Update phpseclib to 2.0.23
+
 1.2.6
 -issue#2794: Graph template not saved on graph edit
 -issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
