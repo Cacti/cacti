@@ -752,9 +752,9 @@ function get_new_user_default_language() {
 }
 
 function l10n_debug($text, $mode = FILE_APPEND, $eol = PHP_EOL) {
-	if (is_dir('/share/')) {
+	if (is_dir('/share/') && is_writeable('/share/i18n.log')) {
 		file_put_contents('/share/i18n.log', $text . $eol, $mode);
-	} elseif (file_exists('/tmp/i18n.log')) {
+	} elseif (file_exists('/tmp/i18n.log') && is_writeable('/tmp/i18n.log')) {
 		file_put_contents('/tmp/i18n.log', $text . $eol, $mode);
 	}
 }

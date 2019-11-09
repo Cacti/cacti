@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#2996: User Graph Options - Rights value not shown correctly
 -issue#2998: Session performance issues due to excessive use for database storage
 -issue#3006: Boost generates undefined variables warning during poller run
+-issue#3011: i18n logging does not check write permission exists causing runtime warnings
 -issue#3012: Some graph routines are not properly validating incoming variables
 -issue#3013: Allow legends to be modified for Aggregate Graphs
 -issue#3017: Automation network range with spaces fails validation
