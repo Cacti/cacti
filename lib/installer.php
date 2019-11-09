@@ -1537,7 +1537,7 @@ class Installer implements JsonSerializable {
 
 		if ($this->mode == Installer::MODE_UPGRADE) {
 			$output .= Installer::sectionNote(__('This process will guide you through the steps for upgrading from version \'%s\'. ',$this->old_cacti_version));
-			$output .= Installer::sectionNormal(__('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
+			$output .= Installer::sectionNormal(__('Also, if this is an upgrade, be sure to read the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
 		}
 
 		if ($this->mode == Installer::MODE_DOWNGRADE) {
@@ -1839,7 +1839,7 @@ class Installer implements JsonSerializable {
 			case Installer::MODE_DOWNGRADE:
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
 				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
-				$output .= Installer::sectionWarning(__('You appears to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.'));
+				$output .= Installer::sectionWarning(__('You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.'));
 				$output .= Installer::sectionSubTitleEnd();
 				break;
 			default:
