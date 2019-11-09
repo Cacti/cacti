@@ -16,6 +16,7 @@ Cacti CHANGELOG
 -issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
 -issue#3028: Graph Zooming to edge of timespan
 -issue#3030: Pace continues to run even after a page is finished rendering
+-issue#3032: Graph always shows 'MAX' CF for LINE graph instead of AVERAGE/MIN/LAST
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
 -issue#3040: AUTOM8 discovery starts even if you click cancel 
 -issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
