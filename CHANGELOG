@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -security#3026: CVE-2109-17358 Unsafe deserialization in of selected objects in Cacti
 -security#3067: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#2987: Changing Color Template does not update Aggregate
+-issue#2989: Allow Remote Data Collectors to maintain their own path variables
 -issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
 -issue#2995: Tree Branch Report only displays single column - not multi column
 -issue#2996: User Graph Options - Rights value not shown correctly
