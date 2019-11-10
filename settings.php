@@ -244,7 +244,7 @@ case 'save':
 				$rcnn_id = poller_connect_to_remote($p);
 
 				if ($rcnn_id) {
-					if (db_execute($sql, false, $rcnn_id)) {
+					if (db_execute($sql, false, $rcnn_id) === false) {
 						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 					}
 				}
