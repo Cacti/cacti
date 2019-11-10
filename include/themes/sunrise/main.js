@@ -284,7 +284,7 @@ function setMenuVisibility() {
 		}
 
 		if ($(this).find('a.selected').length == 0) {
-			console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
+			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
 			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
