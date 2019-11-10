@@ -237,7 +237,7 @@ case 'save':
 		if (cacti_sizeof($pollers) && $config['poller_id'] == 1) {
 			$sql = 'INSERT INTO settings
 				(name, value)
-				VALUES . ' . implode(', ', $inserts) . '
+				VALUES ' . implode(', ', $inserts) . '
 				ON DUPLICATE KEY UPDATE value=VALUES(value)';
 
 			foreach($pollers as $p) {
