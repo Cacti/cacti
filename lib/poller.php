@@ -699,6 +699,11 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 	} elseif ($poller_id > 1) {
+		if (read_config_option('disable_cache_replication') == 'on') {
+			cacti_log('NOTE: Resource Cache Replication is currently Disabled!  Skipping Replication.', true, 'POLLER');
+			return false;
+		}
+
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
 		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
 			FROM poller_resource_cache

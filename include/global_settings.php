@@ -1080,6 +1080,12 @@ $settings = array(
 				'150' => '150',
 				'200' => '200')
 			),
+		'disable_cache_replication' => array(
+			'friendly_name' => __('Disable Resource Cache Replication'),
+			'description' => __('With this option checked, Remote Data Collectors will not be updated from the latest version of Cactis Resource Cache.  This setting can be important when performing upgrades when you want to confirm from the main Data Collector that now new signifcant bugs have been introduced.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
 			'collapsible' => 'true',
