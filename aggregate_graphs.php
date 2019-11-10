@@ -749,7 +749,7 @@ function graph_edit() {
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
 					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array):__esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript'>
 				$(function() {

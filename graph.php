@@ -535,7 +535,11 @@ case 'properties':
 	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $_SESSION['sess_user_id']);
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
-	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $_SESSION['sess_user_id']);
+	if ($config['poller_id'] == 1) {
+		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $_SESSION['sess_user_id']);
+	} else {
+		print __esc('Not Checked');
+	}
 	print "</pre></td></tr>\n";
 	print "</table></td></tr></table>\n";
 	exit;

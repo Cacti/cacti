@@ -37,6 +37,7 @@ Cacti CHANGELOG
 -issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
 -issue#3070: Improve database logging when a crashed table is encountered
 -issue#3073: autom8 network range treats start and end as network and broadcast
+-issue#3078: File not found warnings when viewing graph debug from remote data collector
 -issue#3079: Allow for domain names to be stripped from long device descriptions
 -issue#3080: Remote Agent throws warnings that graph_nolegend has not been sanitized
 -issue#3081: External Links are not showing a glyph when they appear on the Console menu

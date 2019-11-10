@@ -1600,7 +1600,7 @@ function graph_edit() {
 				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $_SESSION['sess_user_id']);?></pre>
+				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, null, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}
