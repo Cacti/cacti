@@ -772,6 +772,17 @@ $settings = array(
 			'default' => '30',
 			'array' => $item_rows
 			),
+		'filter_header' => array(
+			'friendly_name' => __('Filter Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'strip_domain' => array(
+			'friendly_name' => __('Strip Domains from Device Dropdowns'),
+			'description' => __('When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'object_creation_header' => array(
 			'friendly_name' => __('Graph/Data Source/Data Query Settings'),
 			'collapsible' => 'true',
