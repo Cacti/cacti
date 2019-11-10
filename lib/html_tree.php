@@ -177,7 +177,7 @@ function grow_dhtml_trees() {
 			//console.log('jsTreeHeight:' + jsTreeHeight);
 			//console.log('treeAreaHeight:' + treeAreaHeight);
 
-			$('#jstree').height(jsTreeHeight + 10);
+			$('#jstree').height(jsTreeHeight + 30);
 			$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
 
 			var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
