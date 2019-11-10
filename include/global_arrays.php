@@ -958,7 +958,7 @@ $menu_glyphs = array(
 	__('Import/Export') => 'fa fa-exchange-alt',
 	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
-	__('External Links') => 'fa fa-external-link',
+	__('External Links') => 'fa fa-external-link-alt',
 	__('Support') => 'fa fa-question-circle',
 	__('Troubleshooting') => 'fa fa-bug'
 );
