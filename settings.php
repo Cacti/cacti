@@ -357,7 +357,7 @@ default:
 
 	// RRDtool is not required for remote data collectors
 	if ($config['poller_id'] > 1) {
-		unset($settings['path']['path_rrdtool']);
+		$settings['path']['path_rrdtool']['method'] = 'other';
 	}
 
 	if (isset($settings[$current_tab])) {
