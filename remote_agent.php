@@ -176,6 +176,7 @@ function get_graph_data() {
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('rra_id');
 	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('graph_nolegend', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	get_filter_request_var('effective_user');
 
 	$local_graph_id   = get_filter_request_var('local_graph_id');
