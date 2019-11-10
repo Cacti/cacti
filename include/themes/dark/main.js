@@ -7,8 +7,6 @@ function themeReady() {
 	var hostOpen = false;
 
 	$('body').css('height', $(window).height());
-	$('#navigation').css('height', ($(window).height()-80)+'px');
-	$('#navigation_right').css('height', ($(window).height()-80)+'px');
 	$('.formItemDescription').hide();
 
 	keepWindowSize();

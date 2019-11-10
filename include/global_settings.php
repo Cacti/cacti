@@ -772,6 +772,27 @@ $settings = array(
 			'default' => '30',
 			'array' => $item_rows
 			),
+		'tree_header' => array(
+			'friendly_name' => __('Tree Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'min_tree_width' => array(
+			'friendly_name' => __('Minimum Tree Width'),
+			'description' => __('The Minimum width of the Tree to contract to.'),
+			'method' => 'textbox',
+			'default' => '170',
+			'max_length' => '5',
+			'size' => '7'
+			),
+		'max_tree_width' => array(
+			'friendly_name' => __('Maximum Tree Width'),
+			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.'),
+			'method' => 'textbox',
+			'default' => '300',
+			'max_length' => '5',
+			'size' => '7'
+			),
 		'filter_header' => array(
 			'friendly_name' => __('Filter Settings'),
 			'collapsible' => 'true',
@@ -2221,12 +2242,28 @@ $settings_user = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
-                'tree_history' => array(
-                        'friendly_name' => __('Tree History'),
-                        'description' => __('If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page.'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                     )
+		'tree_history' => array(
+			'friendly_name' => __('Tree History'),
+			'description' => __('If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'min_tree_width' => array(
+			'friendly_name' => __('Minimum Tree Width'),
+			'description' => __('The Minimum width of the Tree to contract to.'),
+			'method' => 'textbox',
+			'default' => read_config_option('min_tree_width'),
+			'max_length' => '5',
+			'size' => '7'
+			),
+		'max_tree_width' => array(
+			'friendly_name' => __('Maximum Tree Width'),
+			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.'),
+			'method' => 'textbox',
+			'default' => read_config_option('max_tree_width'),
+			'max_length' => '5',
+			'size' => '7'
+			)
 		),
 	'fonts' => array(
 		'custom_fonts' => array(

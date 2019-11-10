@@ -1332,6 +1332,10 @@ function responsiveResizeGraphs() {
 			serverTimeOffset : timeOffset
 		});
 	});
+
+	if ($('.cactiTreeNavigationArea').length) {
+		resizeTreePanel();
+	}
 }
 
 function countHiddenCols(object) {
@@ -2528,7 +2532,7 @@ var waitForFinalEvent = (function () {
     }
 
     if (timers[uniqueId]) {
-      clearTimeout (timers[uniqueId]);
+      clearTimeout(timers[uniqueId]);
     }
 
     timers[uniqueId] = setTimeout(callback, ms);

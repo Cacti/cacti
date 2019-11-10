@@ -156,16 +156,7 @@ function html_end_box($trailing_br = true, $div = false) {
 /* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
 function html_graph_template_multiselect() {
 	?>
-	var msWidth = 100;
-	var maxWidth = 200;
-	$('#graph_template_id option').each(function() {
-		if ($(this).textWidth() > msWidth) {
-			msWidth = $(this).textWidth();
-			if (msWidth > maxWidth) {
-				msWidth = maxWidth;
-			}
-		}
-	});
+	var msWidth = 200;
 
 	$('#graph_template_id').hide().multiselect({
 		height: 300,

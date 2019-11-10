@@ -5,6 +5,8 @@ Cacti CHANGELOG
 -security#3026: CVE-2109-17358 Unsafe deserialization in of selected objects in Cacti
 -security#3067: Enable the secure flag on cookies when HTTPS is enabled.
 -feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
+-issue#1228: Any tree or branch with a long name force main content off screen
+-issue#2888: Long hostnames cause template filter to go off page
 -issue#2987: Changing Color Template does not update Aggregate
 -issue#2989: Allow Remote Data Collectors to maintain their own path variables
 -issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
@@ -18,6 +20,7 @@ Cacti CHANGELOG
 -issue#3013: Allow legends to be modified for Aggregate Graphs
 -issue#3017: Automation network range with spaces fails validation
 -issue#3019: user_language will not take effect if user_language is different with browser locale
+-issue#3021: Tree view cuts off at the bottom of page on modern theme
 -issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
 -issue#3028: Graph Zooming to edge of timespan
 -issue#3030: Pace continues to run even after a page is finished rendering
