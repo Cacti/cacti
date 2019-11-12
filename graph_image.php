@@ -142,7 +142,7 @@ if ($output !== false && $output != '') {
 
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', null, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
 

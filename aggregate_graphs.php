@@ -748,8 +748,8 @@ function graph_edit() {
 			<tr><td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array):__esc('Not Checked'));?></pre>
+					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', null, $_SESSION['sess_user_id']);?>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', null, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript'>
 				$(function() {
