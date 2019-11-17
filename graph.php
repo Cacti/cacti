@@ -532,11 +532,11 @@ case 'properties':
 	print "<tr class='tableHeader'><td colspan='3' class='linkOverDark' style='font-weight:bold;'>" . __('RRDtool Graph Syntax') . "</td></tr>\n";
 	print "<tr><td><pre>\n";
 	print "<span class='textInfo'>" . __('RRDtool Command:') . "</span><br>";
-	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $_SESSION['sess_user_id']);
+	print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', null, $_SESSION['sess_user_id']);
 	unset($graph_data_array['print_source']);
 	print "<span class='textInfo'>" . __('RRDtool Says:') . "</span><br>";
 	if ($config['poller_id'] == 1) {
-		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, null, $_SESSION['sess_user_id']);
+		print @rrdtool_function_graph(get_request_var('local_graph_id'), get_request_var('rra_id'), $graph_data_array, '', null, $_SESSION['sess_user_id']);
 	} else {
 		print __esc('Not Checked');
 	}
