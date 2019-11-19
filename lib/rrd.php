@@ -2078,7 +2078,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT:
-					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
+					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]), false);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . ':' . $consolidation_functions[$graph_item['consolidation_function_id']] . ':' . cacti_escapeshellarg($text_format . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
@@ -2313,8 +2313,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
-function rrdtool_escape_string($text) {
-	return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
+function rrdtool_escape_string($text, $ignore_percent = true) {
+	if($ignore_percent){
+		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
+	} else {
+		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
+	}
 }
 
 function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $user = 0) {
