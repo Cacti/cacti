@@ -2314,7 +2314,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 }
 
 function rrdtool_escape_string($text, $ignore_percent = true) {
-	if($ignore_percent){
+	if ($ignore_percent) {
 		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
 	} else {
 		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
