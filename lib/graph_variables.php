@@ -231,7 +231,22 @@ function cacti_stats_calc($array, $ptile = 95) {
 	$elements = cacti_sizeof($array);
 
 	if ($elements == 0) {
-		return array();
+		$results = array(
+			'p95n'     => 0,
+			'p90n'     => 0,
+			'p75n'     => 0,
+			'p50n'     => 0,
+			'p25n'     => 0,
+			'average'  => 0,
+			'sum'      => 0,
+			'elements' => 0,
+			'variance' => 0,
+			'stddev'   => 0
+		);
+
+		$results['p' . $ptile . 'n'] = 0;
+
+		return $results;
 	}
 
 	$variance = 0;
