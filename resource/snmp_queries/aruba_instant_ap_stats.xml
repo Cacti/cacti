@@ -1,0 +1,60 @@
+<aiAPStats>
+        <name>Aruba Instant AP information</name>
+        <description>Aruba Instant AP information</description>
+        <oid_index>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.4</oid_index>
+        <oid_index_parse>OID/REGEXP:^.*\.14823\.2\.3\.3\.1\.2\.1\.1\.[0-9]{1,3}\.(.*)$</oid_index_parse>
+        <index_order>aiAPSerial</index_order>
+        <index_order_type>alphabetic</index_order_type>
+ 	<index_title_format>|chosen_order_field|</index_title_format>
+        <fields>
+                <aiAPSerial>
+                        <name>AP serial</name>
+                        <method>walk</method>
+                        <source>index</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.4</oid>
+                </aiAPSerial>
+                <aiAPMAC>
+                        <name>AP MAC</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.2</oid>
+                </aiAPMAC>
+                <aiAPSerialNum>
+                        <name>AP serial number</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.4</oid>
+                </aiAPSerialNum>
+                <aiAPCPUUtil>
+                        <name>AP CPU util</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.7</oid>
+		</aiAPCPUUtil>
+                <aiAPMemoryTotal>
+                        <name>AP Mem Total</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.10</oid>
+		</aiAPMemoryTotal>
+                <aiAPMemoryFree>
+                        <name>AP Mem free</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.8</oid>
+		</aiAPMemoryFree>
+                <aiAPStatus>
+                        <name>AP Status</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.1.1.11</oid>
+		</aiAPStatus>
+        </fields>
+</aiAPStats>

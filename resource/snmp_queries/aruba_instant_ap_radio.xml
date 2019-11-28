@@ -1,0 +1,74 @@
+<aiAPRadInfo>
+        <name>Aruba Instant radio information</name>
+        <description>Aruba Instant radio information</description>
+        <oid_index>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.1</oid_index>
+	<oid_index_parse>OID/REGEXP:^.*\.14823\.2\.3\.3\.1\.2\.2\.1\.[0-9]{1,3}\.(.*)$</oid_index_parse>
+        <index_order>vsIndex</index_order>
+        <index_order_type>alphabetic</index_order_type>
+ 	<index_title_format>|chosen_order_field|</index_title_format>
+        <fields>
+                <vsIndex>
+                        <name>Index</name>
+                        <source>index</source>
+                        <direction>input</direction>
+                </vsIndex>
+                <aiAPDevMAC>
+                        <name>AP MAC</name>
+                        <method>walk</method>
+                        <output_format>hex</output_format>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.1</oid>
+		</aiAPDevMAC>
+                <aiAPRadAnt>
+                        <name>Antena Index</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.2</oid>
+                </aiAPRadAnt>
+                <aiAPRadUtil64>
+                        <name>Radio Util</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.8</oid>
+		</aiAPRadUtil64>
+                <aiAPRadChannel>
+                        <name>Radio Channel</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.4</oid>
+		</aiAPRadChannel>
+                <aiAPRadTxDrops>
+                        <name>Radio TX Drops</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.13</oid>
+		</aiAPRadTxDrops>
+                <aiAPRadRxBad>
+                        <name>Radio RX Bad</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.18</oid>
+		</aiAPRadRxBad>
+                <aiAPRadStatus>
+                        <name>Radio Status</name>
+                        <method>walk</method>
+                        <source>value</source>
+                        <direction>output</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.20</oid>
+		</aiAPRadStatus>
+                <aiAPRadMAC>
+                        <name>Radio MAC</name>
+                        <method>walk</method>
+                        <output_format>hex</output_format>
+                        <source>value</source>
+                        <direction>input</direction>
+                        <oid>.1.3.6.1.4.1.14823.2.3.3.1.2.2.1.3</oid>
+		</aiAPRadMAC>
+        </fields>
+</aiAPRadInfo>
