@@ -46,6 +46,7 @@ Cacti CHANGELOG
 -issue#3085: It is possible to have the same IP address for the remote and main pollers causing synchronization issues
 -issue#3081: External Links are not showing a glyph when they appear on the Console menu
 -issue#3089: Errors after sync to 1.2.x
+-issue#3099: The vertical_label unit kilobytes is wrong on graph template 'Linux - Memory Usage' 
 -issue#3101: Poller.php polling... too fast?!
 -issue#3104: PHP Fatal error: Uncaught Error: Cannot pass parameter 5 by reference in graph_json.php:158
 -issue#3105: Request variable delete_type not validated in host.php resulting in warnings
