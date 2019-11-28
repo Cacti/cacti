@@ -825,6 +825,7 @@ ul#breadcrumbs {
 	margin-left: 5px;
 	margin-right: 5px;
 	padding-top: 10px;
+	padding-bottom: 20px;
 	display: none;
 	vertical-align: top;
 	position: fixed;
