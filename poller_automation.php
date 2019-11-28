@@ -388,8 +388,8 @@ function discoverDevices($network_id, $thread) {
 			array($network_id));
 
 		if ($command == 'cancel' || empty($command)) {
-			killProcess(getmypid());
 			removeMyProcess(getmypid(), $network_id);
+			killProcess(getmypid());
 			exit;
 		}
 
@@ -411,7 +411,9 @@ function discoverDevices($network_id, $thread) {
 
 		if (cacti_sizeof($device) && isset($device['ip_address'])) {
 			$count++;
+
 			cacti_log(automation_get_pid() . ' NOTE: Found device IP address \'' . $device['ip_address'] .'\' to check',false,'AUTOM8',POLLER_VERBOSITY_MEDIUM);
+
 			if ($dns != '') {
 				$dnsname = automation_get_dns_from_ip($device['ip_address'], $dns, 300);
 				if ($dnsname != $device['ip_address'] && $dnsname != 'timed_out') {
