@@ -291,7 +291,7 @@ function form_actions() {
 					set_request_var('delete_type', 2);
 				}
 
-				api_device_remove_multi($selected_items, get_request_var('delete_type'));
+				api_device_remove_multi($selected_items, get_filter_request_var('delete_type'));
 			} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
 				get_filter_request_var('tree_id');
 				get_filter_request_var('tree_item_id');
