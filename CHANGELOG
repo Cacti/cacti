@@ -49,6 +49,7 @@ Cacti CHANGELOG
 -issue#3104: PHP Fatal error: Uncaught Error: Cannot pass parameter 5 by reference in graph_json.php:158
 -issue#3105: Request variable delete_type not validated in host.php resulting in warnings
 -issue#3111: When updating an old Cacti version, the add_device.php will fail due to a bad snmp-version column
+-issue#3112: Zooming results in 2x the number of image requests
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs

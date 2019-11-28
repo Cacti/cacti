@@ -671,7 +671,6 @@
 			}
 		}
 
-
 		/*
 		* executes a dynamic zoom in
 		*/
@@ -719,6 +718,8 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
+					zoom.attr.start = 'none';
+
 					if (pageAction != 'graph') {
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
@@ -728,7 +729,7 @@
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraph();
+						initializeGraphs();
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
@@ -827,6 +828,8 @@
 				$('#' + zoom.options.inputfieldEndTime).val(unixTime2Date(newGraphEndTime));
 
 				if (graph_start !== null && graph_end !== null) {
+					zoom.attr.start = 'none';
+
 					if (pageAction != 'graph') {
 						graph_start = newGraphStartTime;
 						graph_end = newGraphEndTime;
@@ -836,7 +839,7 @@
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraph();
+						initializeGraphs();
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
@@ -867,7 +870,6 @@
 		* updates the css parameters of the zoom area to reflect user's interaction
 		*/
 		function zoomAction_draw(event) {
-
 			if (zoom.attr.start == 'none') { return; }
 
 			/* mouse has been moved from right to left */
