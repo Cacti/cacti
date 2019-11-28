@@ -273,8 +273,8 @@ function form_save() {
 		$save['notes']    = form_input_validate(get_nfilter_request_var('notes'), 'notes', '', true, 3);
 
 		// Process settings
-		$save['processes']     = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
-		$save['threads']       = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
+		$save['processes'] = form_input_validate(get_nfilter_request_var('processes'), 'processes', '^[0-9]+$', false, 3);
+		$save['threads']   = form_input_validate(get_nfilter_request_var('threads'), 'threads', '^[0-9]+$', false, 3);
 
 		if ($save['id'] != 1) {
 			$save['sync_interval'] = form_input_validate(get_nfilter_request_var('sync_interval'), 'sync_interval', '^[0-9]+$', false, 3);
@@ -291,11 +291,25 @@ function form_save() {
 			$save['dbsslca']       = form_input_validate(get_nfilter_request_var('dbsslca'),   'dbsslca',   '', true, 3);
 		}
 
+		// Check for duplicate hostname
+		$error = false;
+		if (poller_check_duplicate_poller_id($save['id'], $save['hostname'], 'hostname')) {
+			raise_message('dupe_hostname', __('You have already used this hostname \'%s\'.  Please enter a non-duplicate hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+			$error = true;
+		}
+
+		if (isset($save['dbhost'])) {
+			if (poller_check_duplicate_poller_id($save['id'], $save['dbhost'], 'dbhost')) {
+				raise_message('dupe_dbhost', __('You have already used this database hostname \'%s\'.  Please enter a non-duplicate database hostname.', $save['hostname']), MESSAGE_LEVEL_ERROR);
+				$error = true;
+			}
+		}
+
 		if (isset($save['dbhost']) && $save['dbhost'] == 'localhost' && $save['id'] > 1) {
 			raise_message('poller_dbhost');
 		} elseif ($save['id'] > 1 && poller_host_duplicate($save['id'], $save['dbhost'])) {
 			raise_message('poller_nodupe');
-		} elseif (!is_error_message()) {
+		} elseif (!is_error_message() && $error == false) {
 			$poller_id = sql_save($save, 'poller');
 
 			if ($poller_id) {
@@ -309,9 +323,73 @@ function form_save() {
 	}
 }
 
-/* ------------------------
-    The 'actions' function
-   ------------------------ */
+function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
+	$ip_addresses  = array();
+	$ip_hostnames  = array();
+
+	if (is_ipaddress($hostname)) {
+		$address = gethostbyaddr($hostname);
+
+		if ($address != $hostname) {
+			$ip_hostnames[$address] = $address;
+		} else {
+			$ip_addresses[$address] = $address;
+		}
+
+		$ip_addresses[$hostname] = $hostname;
+	} else {
+		$addresses = dns_get_record($hostname);
+		$ip        = gethostbyname($hostname);
+
+		if ($ip != $hostname) {
+			$ip_addresses[$ip] = $ip;
+		}
+
+		$ip_hostnames[$hostname] = $hostname;
+
+		if (sizeof($addresses)) {
+			foreach($addresses as $address) {
+				if (isset($address['target'])) {
+					$ip_hostnames[$address['host']] = $address['host'];
+				}
+
+				if (isset($address['host'])) {
+					$ip_hostnames[$address['host']] = $address['host'];
+				}
+
+				if (isset($address['ip'])) {
+					$ip_addresses[$address['ip']] = $address['ip'];
+				}
+			}
+		}
+	}
+
+	$sql_where1 = '';
+	if (sizeof($ip_addresses)) {
+		$sql_where1 = "$column IN ('" . implode("','", $ip_addresses) . "')";
+	}
+
+	$sql_where2 = '';
+	if (sizeof($ip_hostnames)) {
+		foreach($ip_hostnames as $host) {
+			$parts = explode('.', $host);
+			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' OR (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
+		}
+		$sql_where2 .= ')';
+	}
+
+	$duplicate = db_fetch_cell_prepared("SELECT id
+		FROM poller
+		WHERE id != ?
+		AND ($sql_where1 $sql_where2)",
+		array($poller_id));
+
+	if (empty($duplicate)) {
+		return false;
+	} else {
+		return true;
+	}
+}
 
 function poller_host_duplicate($poller_id, $host) {
 	if ($host == 'localhost') {

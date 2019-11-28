@@ -43,6 +43,7 @@ Cacti CHANGELOG
 -issue#3078: File not found warnings when viewing graph debug from remote data collector
 -issue#3079: Allow for domain names to be stripped from long device descriptions
 -issue#3080: Remote Agent throws warnings that graph_nolegend has not been sanitized
+-issue#3085: It is possible to have the same IP address for the remote and main pollers causing synchronization issues
 -issue#3081: External Links are not showing a glyph when they appear on the Console menu
 -issue#3089: Errors after sync to 1.2.x
 -issue#3101: Poller.php polling... too fast?!
