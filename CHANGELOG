@@ -47,6 +47,7 @@ Cacti CHANGELOG
 -issue#3089: Errors after sync to 1.2.x
 -issue#3101: Poller.php polling... too fast?!
 -issue#3104: PHP Fatal error: Uncaught Error: Cannot pass parameter 5 by reference in graph_json.php:158
+-issue#3111: When updating an old Cacti version, the add_device.php will fail due to a bad snmp-version column
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
