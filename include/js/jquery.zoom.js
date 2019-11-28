@@ -38,14 +38,15 @@
 		var clientTimeOffset = clientTime.getTimezoneOffset()*60*(-1);			//requires -1, because PHP return the opposite
 		var timeOffset = 0;
 		var activeElement = '';
+		var mouseDown = false;
 
 		// default values of the different options being offered
 		var defaults = {
-			inputfieldStartTime	: '',                                           // ID of the input field that contains the start date
-			inputfieldEndTime	: '',                                           // ID of the input field that contains the end date
-			submitButton		: 'button_refresh_x',                           // ID of the submit button
-			cookieName			: 'cacti_zoom',                                 // default name required for session cookie
-			serverTimeOffset	: 0												// JS calculates in relation to the localization of the browser :/ - only required for 0.8.8
+			inputfieldStartTime	: '',                  // ID of the input field that contains the start date
+			inputfieldEndTime	: '',                  // ID of the input field that contains the end date
+			submitButton		: 'button_refresh_x',  // ID of the submit button
+			cookieName			: 'cacti_zoom',        // default name required for session cookie
+			serverTimeOffset	: 0					   // JS calculates in relation to the localization of the browser :/ - only required for 0.8.8
 		};
 
 		// define global variables / objects here
@@ -69,8 +70,9 @@
 		};
 
 		// support jQuery's concatenation
-		return this.each(function() { zoom_init( $(this) ); });
-
+		return this.each(function() {
+			zoom_init( $(this) );
+		});
 
 		/* ++++++++++++++++++++ Universal Functions +++++++++++++++++++++++++ */
 
@@ -85,7 +87,7 @@
 			urlParameters = urlBaseAndParameters[1].split('&');
 			parameters['urlBase'] = urlBase;
 
-			for(var i=0; i<urlParameters.length; i++) {
+			for (var i=0; i<urlParameters.length; i++) {
 				parameter = urlParameters[i].split('=');
 				parameters[parameter[0].replace(/^graph_/, '')] = $.isNumeric(parameter[1]) ? +parameter[1] : parameter[1];
 			}
@@ -97,7 +99,7 @@
 		 **/
 		function serialize(object){
 			var str = '';
-			for(var key in object) { str += (key + '=' + object[key] + ','); }
+			for (var key in object) { str += (key + '=' + object[key] + ','); }
 			return str.slice(0, -1);
 		}
 
@@ -110,7 +112,7 @@
 
 			if (string != null) {
 				pairs = string.split(',');
-				for(var i=0; i<pairs.length; i++) {
+				for (var i=0; i<pairs.length; i++) {
 					pair = pairs[i].split('=');
 					if (pair[1] == 'true') {
 						pair[1] = true;
@@ -129,7 +131,6 @@
 		 * converts a Unix time stamp to a formatted date string
 		 **/
 		function unixTime2Date(unixTime){
-
 			var date	= new Date(unixTime*1000+timeOffset);
 			var year	= date.getFullYear();
 			var month	= ((date.getMonth()+1) < 9 ) ? '0' + (date.getMonth()+1) : date.getMonth()+1;
@@ -149,7 +150,7 @@
 		function zoom_init(image) {
 			var $this = image;
 
-			if($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
+			if ($('#zoom-container').hasClass('zoom_active_' + zoomGetImageId($this))) {
 				zoomElements_remove();
 				zoomFunction_init($this);
 			}
@@ -157,8 +158,10 @@
 			$this.parent().disableSelection();
 			$this.off().mouseover(
 				function(){
-					zoomElements_remove();
-					zoomFunction_init($this);
+					if (!mouseDown) {
+						zoomElements_remove();
+						zoomFunction_init($this);
+					}
 				}
 			);
 		}
@@ -384,6 +387,7 @@
 					+	'<span class="zoomContextMenuAction__close">' + zoom_i18n_close + '</span>'
 					+ '</div>').appendTo('body');
 			}
+
 			zoomElements_reposition();
 			zoomElements_reset();
 			zoomContextMenu_init();
@@ -432,7 +436,6 @@
 		* registers all the different mouse click event handler
 		*/
 		function zoomAction_init(image) {
-
 			if (zoom.custom.zoomMode == 'quick') {
 				$('#zoom-area').resizable({ containment: '#zoom-box', handles: 'e, w' });
 				$('#zoom-box').off('mousedown').on('mousedown', function(e) {
@@ -475,6 +478,18 @@
 				$('#zoom-box, #zoom-area').mousemove( function(e) {
 					zoomAction_draw(e);
 				} );
+
+				/* capture mouse up/down events for zoom */
+				$(document).off('mousedown').on('mousedown', function() {
+					mouseDown = true;
+				}).off('mouseup').on('mouseup', function() {
+					if (mouseDown) {
+						if (zoom.attr.start != 'none') {
+							zoomAction_zoom_in();
+						}
+					}
+					mouseDown = false;
+				});
 
 				/* moving the mouse pointer quickly will avoid that the mousemove event has enough time to actualize the zoom area */
 				$('#zoom-box').mouseout( function(e) {
@@ -581,7 +596,6 @@
 									},
 								drag:
 									function(event, ui) {
-
 										if (ui.position['left'] < zoom.box.left) {
 											zoom.marker[marker].left = zoom.box.left;
 										} else if (ui.position['left'] > zoom.box.right) {
@@ -728,6 +742,7 @@
 				open(zoom.attr.location[0] + '?action=' + zoom.graph.action + '&local_graph_id=' + zoom.graph.local_graph_id + '&rra_id=' + zoom.graph.rra_id + '&view_type=' + zoom.graph.view_type + '&graph_start=' + newGraphStartTime + '&graph_end=' + newGraphEndTime + '&graph_height=' + zoom.graph.height + '&graph_width=' + zoom.graph.width + '&title_font_size=' + zoom.graph.title_font_size, '_self');
 			}
 
+			zoom.attr.start = 'none';
 		}
 
 		/*
@@ -945,6 +960,7 @@
 				case 'mode':
 					if ( zoom.custom.zoomMode != value) {
 						zoom.custom.zoomMode = value;
+
 						$('[class*=zoomContextMenuAction__set_zoomMode__]').toggleClass('zoom-menu-highlight');
 
 						if (value == 'quick') {
@@ -960,6 +976,7 @@
 							zoom.custom.zoomMode			= 'advanced';
 							storage.set(zoom.options.cookieName, serialize(zoom.custom));
 						}
+
 						zoomElements_reset();
 						zoomAction_init(zoom.initiator);
 
@@ -1012,15 +1029,18 @@
 			switch(action) {
 				case 'close':
 					zoomContextMenu_hide();
+
 					break;
 				case 'zoom_out':
 					if (value == undefined) {
 						value = zoom.custom.zoomOutFactor;
 					}
 					zoomAction_zoom_out(value);
+
 					break;
 				case 'zoom_in':
 					zoomAction_zoom_in();
+
 					break;
 				case 'copy':
 					$('#zoom-textarea').html('<img src="data:image/png;base64,'+btoa(unescape(encodeURIComponent(zoom.image.data)))+'" width="'+zoom.image.width+'" height="'+zoom.image.height+'">').select();
@@ -1031,6 +1051,7 @@
 						alert('Unsupported Browser');
 					}
 					return false;
+
 					break;
 				case 'save':
 					var arraybuffer = new ArrayBuffer(zoom.image.data.length);
@@ -1053,6 +1074,7 @@
 						var objectUrl = URL.createObjectURL(blob);
 						$('#zoom-image').removeAttr('target').attr({'download':zoom.image.name, 'href':objectUrl }).get(0).click();
 					}
+
 					break;
 				case 'newTab':
 					var url = zoom.attr.urlPath + 'graph_image.php?local_graph_id=' + zoom.image.id;
@@ -1061,6 +1083,7 @@
 					}
 					url += '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
 					$('#zoom-image').removeAttr('download').attr({ 'href':url, 'target': '_bank' }).get(0).click();
+
 					break;
 				case 'link':
 					var url = zoom.attr.origin + ((zoom.attr.urlPath == '') ? '/' : zoom.attr.urlPath) + 'graph_image.php?local_graph_id=' + zoom.image.id + '&graph_start=' + zoom.graph.start + '&graph_end=' + zoom.graph.end + '&graph_width=' + zoom.graph.width + '&graph_height=' + zoom.graph.height + ( (zoom.image.legend === true) ? '' : '&graph_nolegend=true' );
@@ -1071,12 +1094,12 @@
 						alert('Unsupported Browser');
 					}
 					return false;
+
 					break;
 			}
 		}
 
 		function zoomContextMenu_show(e){
-
 			var menu_y_pos			= e.pageY;
 			var menu_y_offset		= 5;
 			var menu_x_pos			= e.pageX;

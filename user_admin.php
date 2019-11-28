@@ -590,6 +590,10 @@ function form_save() {
 			}
 		}
 	} elseif (isset_request_var('save_component_realm_perms')) {
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		/* ==================================================== */
+
 		db_execute_prepared('DELETE FROM user_auth_realm
 			WHERE user_id = ?',
 			array(get_nfilter_request_var('id')));
@@ -609,6 +613,10 @@ function form_save() {
 
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_settings')) {
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		/* ==================================================== */
+
 		save_user_settings(get_request_var('id'));
 
 		/* reset local settings cache so the user sees the new settings */
@@ -618,6 +626,14 @@ function form_save() {
 
 		raise_message(1);
 	} elseif (isset_request_var('save_component_graph_perms')) {
+		/* ================= input validation ================= */
+		get_filter_request_var('id');
+		get_filter_request_var('policy_hosts');
+		get_filter_request_var('policy_graphs');
+		get_filter_request_var('policy_trees');
+		get_filter_request_var('policy_graph_templates');
+		/* ==================================================== */
+
 		db_execute_prepared('UPDATE user_auth
 			SET policy_graphs = ?,
 			policy_trees = ?,
@@ -1376,7 +1392,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = 'WHERE (gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+			$sql_where = 'WHERE gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}
@@ -1521,7 +1537,7 @@ function graph_perms_edit($tab, $header_label) {
 
 		/* form the 'where' clause for our main sql query */
 		if (get_request_var('filter') != '') {
-			$sql_where = 'WHERE (gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
+			$sql_where = 'WHERE gt.name LIKE ' . db_qstr('%' . get_request_var('filter') . '%');
 		} else {
 			$sql_where = '';
 		}

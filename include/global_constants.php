@@ -141,6 +141,7 @@ define('AVAIL_SNMP_GET_NEXT', 6);
 define('PING_ICMP', 1);
 define('PING_UDP', 2);
 define('PING_TCP', 3);
+define('PING_SNMP', 4);
 
 define('HOST_UNKNOWN', 0);
 define('HOST_DOWN', 1);
@@ -450,5 +451,12 @@ define('GRAPH_SOURCE_DATA_QUERY', 1);
 define('GRAPH_SOURCE_TEMPLATE', 2);
 define('GRAPH_SOURCE_AGGREGATE', 3);
 
+<<<<<<< HEAD
 define('CACTI_VERSION_FORMAT_SHORT', 0);
 define('CACTI_VERSION_FORMAT_FULL', 1);
+=======
+define('CACTI_LANGUAGE_HANDLER_NONE', 0);
+define('CACTI_LANGUAGE_HANDLER_PHPGETTEXT', 1);
+define('CACTI_LANGUAGE_HANDLER_OSCAROTERO', 2);
+define('CACTI_LANGUAGE_HANDLER_MOTRANSLATOR', 3);
+>>>>>>> 4cecb19f6be8b84fa1c7b6450b66176007cb53df

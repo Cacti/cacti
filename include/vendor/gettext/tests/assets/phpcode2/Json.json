@@ -1,0 +1,55 @@
+{
+    "domain": null,
+    "plural-forms": null,
+    "messages": {
+        "": {
+            "": [
+                "Content-Transfer-Encoding: 8bit\nContent-Type: text\/plain; charset=UTF-8\nLanguage: \nLanguage-Team: \nLast-Translator: \nMIME-Version: 1.0\nProject-Id-Version: \nReport-Msgid-Bugs-To: \n"
+            ],
+            "plain": [
+                ""
+            ],
+            "DATE \\a\\t TIME": [
+                ""
+            ],
+            "FIELD\tFIELD": [
+                ""
+            ],
+            "text concatenated with 'comments'": [
+                ""
+            ],
+            "Stop at the variable": [
+                ""
+            ],
+            "No comments": [
+                ""
+            ],
+            "i18n Tagged comment": [
+                ""
+            ],
+            "i18n Tagged comment inside": [
+                ""
+            ],
+            "One comment": [
+                ""
+            ],
+            "i18n tagged %s": [
+                ""
+            ],
+            "foo": [
+                ""
+            ],
+            "bar": [
+                ""
+            ],
+            "foo bar": [
+                ""
+            ]
+        },
+        "my-context": {
+            "All comments": [
+                ""
+            ]
+        }
+    }
+}

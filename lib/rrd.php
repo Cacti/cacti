@@ -34,6 +34,9 @@ if (read_config_option('storage_location')) {
 	include_once('Crypt/Random.php');
 	include_once('Crypt/RSA.php');
 	include_once('Crypt/Rijndael.php');
+
+	global $encryption;
+	$encryption = true;
 }
 
 function escape_command($command) {
@@ -98,6 +101,9 @@ function __rrd_init($output_to_term = true) {
 }
 
 function __rrd_proxy_init($logopt = 'WEBLOG') {
+	global $encryption;
+	$terminator = "_EOT_\r\n";
+	$encryption = true;
 	$rsa = new \phpseclib\Crypt\RSA();
 
 	$rrdp_socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
@@ -130,7 +136,7 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 
 	$rrdp_fingerprint = ($rrdp_id == 1 ) ? read_config_option('rrdp_fingerprint') : read_config_option('rrdp_fingerprint_backup');
 
-	socket_write($rrdp_socket, read_config_option('rsa_public_key') . "\r\n");
+	socket_write($rrdp_socket, read_config_option('rsa_public_key') . $terminator);
 
 	/* read public key being returned by the proxy server */
 	$rrdp_public_key = '';
@@ -147,8 +153,8 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 			break;
 		} else {
 			$rrdp_public_key .= $recv;
-			if (substr($rrdp_public_key, -1) == "\n") {
-				$rrdp_public_key = trim($rrdp_public_key);
+			if (strpos($rrdp_public_key, $terminator) !== false) {
+				$rrdp_public_key = trim(trim($rrdp_public_key, $terminator));
 				break;
 			}
 		}
@@ -167,6 +173,8 @@ function __rrd_proxy_init($logopt = 'WEBLOG') {
 			rrdtool_execute("setenv RRD_DEFAULT_FONT '" . read_config_option('path_rrdtool_default_font') . "'", false, RRDTOOL_OUTPUT_NULL, $rrdproxy, $logopt = 'WEBLOG');
 		}
 
+		/* disable encryption */
+		$encryption = rrdtool_execute('setcnn encryption off', false, RRDTOOL_OUTPUT_BOOLEAN, $rrdproxy, $logopt = 'WEBLOG') ? false : true;
 		return $rrdproxy;
 	}
 }
@@ -190,8 +198,9 @@ function __rrd_close($rrdtool_pipe) {
 
 function __rrd_proxy_close($rrdp) {
 	/* close the rrdtool proxy server connection */
+	$terminator = "_EOT_\r\n";
 	if ($rrdp) {
-		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . "\r\n");
+		socket_write($rrdp[0], encrypt('quit', $rrdp[1]) . $terminator);
 		@socket_shutdown($rrdp[0], 2);
 		@socket_close($rrdp[0]);
 		return;
@@ -199,37 +208,47 @@ function __rrd_proxy_close($rrdp) {
 }
 
 function encrypt($output, $rsa_key) {
+	global $encryption;
 
-	$rsa = new \phpseclib\Crypt\RSA();
-	$aes = new \phpseclib\Crypt\Rijndael();
-	$aes_key = \phpseclib\Crypt\Random::string(192);
+	if($encryption) {
+		$rsa = new \phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\Crypt\Rijndael();
+		$aes_key = \phpseclib\Crypt\Random::string(192);
 
-	$aes->setKey($aes_key);
-	$ciphertext = base64_encode($aes->encrypt($output));
-	$rsa->loadKey($rsa_key);
-	$aes_key = base64_encode($rsa->encrypt($aes_key));
-	$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
+		$aes->setKey($aes_key);
+		$ciphertext = base64_encode($aes->encrypt($output));
+		$rsa->loadKey($rsa_key);
+		$aes_key = base64_encode($rsa->encrypt($aes_key));
+		$aes_key_length = str_pad(dechex(strlen($aes_key)),3,'0',STR_PAD_LEFT);
 
-	return $aes_key_length . $aes_key . $ciphertext;
+		return $aes_key_length . $aes_key . $ciphertext;
+	}else {
+		return $output;
+	}
 }
 
 function decrypt($input){
+	global $encryption;
 
-	$rsa = new \phpseclib\Crypt\RSA();
-	$aes = new \phpseclib\Crypt\Rijndael();
+	if($encryption) {
+		$rsa = new \phpseclib\Crypt\RSA();
+		$aes = new \phpseclib\Crypt\Rijndael();
 
-	$rsa_private_key = read_config_option('rsa_private_key');
+		$rsa_private_key = read_config_option('rsa_private_key');
 
-	$aes_key_length = hexdec(substr($input,0,3));
-	$aes_key = base64_decode(substr($input,3,$aes_key_length));
-	$ciphertext = base64_decode(substr($input,3+$aes_key_length));
+		$aes_key_length = hexdec(substr($input,0,3));
+		$aes_key = base64_decode(substr($input,3,$aes_key_length));
+		$ciphertext = base64_decode(substr($input,3+$aes_key_length));
 
-	$rsa->loadKey( $rsa_private_key );
-	$aes_key = $rsa->decrypt($aes_key);
-	$aes->setKey($aes_key);
-	$plaintext = $aes->decrypt($ciphertext);
+		$rsa->loadKey( $rsa_private_key );
+		$aes_key = $rsa->decrypt($aes_key);
+		$aes->setKey($aes_key);
+		$plaintext = $aes->decrypt($ciphertext);
 
-	return $plaintext;
+		return $plaintext;
+	}else {
+		return $input;
+	}
 }
 
 function rrdtool_execute() {
@@ -242,7 +261,7 @@ function rrdtool_execute() {
 	return call_user_func_array($function, $args);
 }
 
-function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = '', $logopt = 'WEBLOG') {
+function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pipe = false, $logopt = 'WEBLOG') {
 	global $config;
 
 	static $last_command;
@@ -278,7 +297,7 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 
 	/* an empty $rrdtool_pipe array means no fp is available */
 	if (!is_resource($rrdtool_pipe)) {
-		if (substr($command_line, 0, 5) == 'fetch') {
+		if (substr($command_line, 0, 5) == 'fetch' || substr($command_line, 0, 4) == 'info') {
 			rrdtool_set_language('en');
 		} else {
 			rrdtool_set_language();
@@ -349,8 +368,12 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 				$output .= fgets($fp, 4096);
 			}
 
-			fclose($fp);
-			proc_close($process);
+			if (isset($process)) {
+				fclose($fp);
+				proc_close($process);
+			}
+
+			rrdtool_trim_output($output);
 
 			return $output;
 			break;
@@ -358,14 +381,14 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 		case RRDTOOL_OUTPUT_RETURN_STDERR:
 			$output = fgets($fp, 1000000);
 
-			fclose($fp);
-			proc_close($process);
-
-			if (substr($output, 1, 3) == 'PNG') {
-				return 'OK';
+			if (isset($process)) {
+				fclose($fp);
+				proc_close($process);
 			}
 
-			if (substr($output, 0, 5) == 'GIF87') {
+			rrdtool_trim_output($output);
+
+			if (substr($output, 1, 3) == 'PNG') {
 				return 'OK';
 			}
 
@@ -380,17 +403,33 @@ function __rrd_execute($command_line, $log_to_stdout, $output_flag, $rrdtool_pip
 			}
 
 			break;
-		default:
 		case RRDTOOL_OUTPUT_NULL:
+		default:
 			return;
 			break;
 	}
 }
 
+function rrdtool_trim_output(&$output) {
+	/* When using RRDtool with proc_open for long strings
+	 * and using the '-' to handle standard in from inside
+	 * the process, RRDtool automatically appends stderr
+	 * to stdout for batch programs to parse the output
+	 * string.  So, therefore, we have to prune that
+	 * output.
+	 */
+	$okpos = strrpos($output, 'OK u:');
+	if ($okpos !== false) {
+		$output = substr($output, 0, $okpos);
+	}
+}
+
 function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp='', $logopt = 'WEBLOG') {
-	global $config;
+	global $config, $encryption;
 
 	static $last_command;
+	$end_of_packet = "_EOP_\r\n";
+	$end_of_sequence = "_EOT_\r\n";
 
 	if (!is_numeric($output_flag)) {
 		$output_flag = RRDTOOL_OUTPUT_STDOUT;
@@ -428,7 +467,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 	if (strlen($command_line) >= 8192) {
 		$command_line = gzencode($command_line, 1);
 	}
-	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . "\r\n");
+	socket_write($rrdp_socket, encrypt($command_line, $rrdp_public_key) . $end_of_sequence);
 
 	$input = '';
 	$output = '';
@@ -446,17 +485,21 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			break;
 		} else {
 			$input .= $recv;
-			if (strpos($input, "\n") !== false) {
-				$chunks = explode("\n", $input);
-				$input = array_pop($chunks);
-
-				foreach($chunks as $chunk) {
-					$output .= decrypt(trim($chunk));
-					if (strpos($output, "\x1f\x8b") === 0) {
-						$output = gzdecode($output);
+			if (strpos($input, $end_of_sequence) !== false) {
+				$input = str_replace($end_of_sequence, '', $input);
+				$transactions = explode($end_of_packet, $input);
+				foreach ($transactions as $transaction) {
+					$packet = $transaction;
+					$transaction = decrypt($transaction);
+					if($transaction === false){
+						cacti_log("CACTI2RRDP ERROR: Proxy message decryption failed: ###". $packet . '###', $log_to_stdout, $logopt, POLLER_VERBOSITY_LOW);
+						break 2;
 					}
-
-					if ( substr_count($output, "OK u") || substr_count($output, "ERROR:") ) {
+					if(strpos($transaction, "\x1f\x8b") === 0) {
+						$transaction = gzdecode($transaction);
+					}
+					$output .= $transaction;
+					if (substr_count($output, "OK u") || substr_count($output, "ERROR:")) {
 						cacti_log("RRDP: " . $output, $log_to_stdout, $logopt, POLLER_VERBOSITY_DEBUG);
 						break 2;
 					}
@@ -474,7 +517,7 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			return;
 		case RRDTOOL_OUTPUT_STDOUT:
 		case RRDTOOL_OUTPUT_GRAPH_DATA:
-			return $output;
+			return rtrim(substr($output, 0, strpos($output, 'OK u')));
 			break;
 		case RRDTOOL_OUTPUT_STDERR:
 			if (substr($output, 1, 3) == "PNG") {
@@ -483,6 +526,9 @@ function __rrd_proxy_execute($command_line, $log_to_stdout, $output_flag, $rrdp=
 			if (substr($output, 0, 5) == "GIF87") {
 				return "OK";
 			}
+			if (substr($output, 0, 5) == '<?xml') {
+			    return 'SVG/XML Output OK';
+            }
 			print $output;
 			break;
 		case RRDTOOL_OUTPUT_BOOLEAN :
@@ -527,8 +573,8 @@ function rrdtool_function_interface_speed($data_local) {
 	return $speed;
 }
 
-function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = '') {
-	global $config, $data_source_types, $consolidation_functions;
+function rrdtool_function_create($local_data_id, $initial_time, $show_source, $rrdtool_pipe = false) {
+	global $config, $data_source_types, $consolidation_functions, $encryption;
 
 	include ($config['include_path'] . '/global_arrays.php');
 
@@ -685,7 +731,7 @@ function rrdtool_function_create($local_data_id, $initial_time, $show_source, $r
 	}
 }
 
-function rrdtool_function_update($update_cache_array, $rrdtool_pipe = '') {
+function rrdtool_function_update($update_cache_array, $rrdtool_pipe = false) {
 	/* lets count the number of rrd files processed */
 	$rrds_processed = 0;
 
@@ -822,7 +868,7 @@ function rrdtool_function_tune($rrd_tune_array) {
      each member element in the array will have the maximum of traffic_in and traffic_out
      in it.
  */
-function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = '') {
+function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolution = 0, $show_unknown = false, $rrdtool_file = null, $cf = 'AVERAGE', $rrdtool_pipe = false) {
 	global $config;
 
 	include_once($config['library_path'] . '/boost.php');
@@ -850,7 +896,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	}
 
 	/* update the rrdfile if performing a fetch */
-	boost_fetch_cache_check($local_data_id);
+	boost_fetch_cache_check($local_data_id, $rrdtool_pipe);
 
 	/* build and run the rrdtool fetch command with all of our data */
 	$cmd_line = "fetch $data_source_path $cf -s $start_time -e $end_time";
@@ -903,7 +949,7 @@ function rrdtool_function_fetch($local_data_id, $start_time, $end_time, $resolut
 	return $fetch_array;
 }
 
-function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array, $ds_step) {
+function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &$graph_data_array) {
 	global $config, $image_types;
 
 	include($config['include_path'] . '/global_arrays.php');
@@ -1176,8 +1222,8 @@ function rrd_function_process_graph_options($graph_start, $graph_end, &$graph, &
 	return $graph_opts;
 }
 
-function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = '', &$xport_meta = array(), $user = 0) {
-	global $config, $consolidation_functions, $graph_item_types;
+function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rrdtool_pipe = false, &$xport_meta = array(), $user = 0) {
+	global $config, $consolidation_functions, $graph_item_types, $encryption;
 
 	include_once($config['library_path'] . '/cdef.php');
 	include_once($config['library_path'] . '/vdef.php');
@@ -1288,9 +1334,9 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 
 	if (!isset($graph_data_array['export_realtime']) && isset($rra['steps'])) {
-		$seconds_between_graph_updates = ($ds_step * $rra['steps']);
+		$rra_seconds = ($ds_step * $rra['steps']);
 	} else {
-		$seconds_between_graph_updates = 5;
+		$rra_seconds = 5;
 	}
 
 	$graph = db_fetch_row_prepared('SELECT gl.id AS local_graph_id, gl.host_id,
@@ -1351,7 +1397,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 	/* override: graph end time */
 	if (!isset($graph_data_array['graph_end']) || $graph_data_array['graph_end'] == '0') {
-		$graph_end = -($seconds_between_graph_updates);
+		$graph_end = -($rra_seconds);
 	} else {
 		$graph_end = $graph_data_array['graph_end'];
 	}
@@ -1359,7 +1405,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	/* +++++++++++++++++++++++ GRAPH OPTIONS +++++++++++++++++++++++ */
 
 	if (!isset($graph_data_array['export_csv'])) {
-		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array, $ds_step);
+		$graph_opts = rrd_function_process_graph_options($graph_start, $graph_end, $graph, $graph_data_array);
 	} else {
 		/* basic export options */
 		$graph_opts =
@@ -1404,7 +1450,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 				case GRAPH_ITEM_TYPE_TIC:
 				case GRAPH_ITEM_TYPE_AREA:
 				case GRAPH_ITEM_TYPE_STACK:
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 					/* remember the last CF for this data source for use with GPRINT
 					 * if e.g. an AREA/AVERAGE and a LINE/MAX is used
 					 * we will have AVERAGE first and then MAX, depending on GPRINT sequence */
@@ -1425,7 +1471,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					} else {
-						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+						$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 						/* remember this for second foreach loop */
 						$graph_items[$key]['cf_reference'] = $graph_cf;
 					}
@@ -1448,7 +1494,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 					break;
 				default:
 					/* all other types are based on the best matching CF */
-					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+					$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 					/* remember this for second foreach loop */
 					$graph_items[$key]['cf_reference'] = $graph_cf;
 					break;
@@ -1612,7 +1658,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	if (cacti_sizeof($graph_items)) {
 		foreach ($graph_items as $graph_item) {
 			/* hack around RRDtool behavior in first RRA */
-			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $ds_step);
+			$graph_cf = generate_graph_best_cf($graph_item['local_data_id'], $graph_item['consolidation_function_id'], $rra_seconds);
 
 			/* first we need to check if there is a DEF for the current data source/cf combination. if so,
 			we will use that */
@@ -1703,12 +1749,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 								/* do we need ALL_DATA_SOURCES_DUPS? */
 								if (isset($magic_item['ALL_DATA_SOURCES_DUPS'])) {
-									$magic_item['ALL_DATA_SOURCES_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+									$magic_item['ALL_DATA_SOURCES_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 								}
 
 								/* do we need COUNT_ALL_DS_DUPS? */
 								if (isset($magic_item['COUNT_ALL_DS_DUPS'])) {
-									$magic_item['COUNT_ALL_DS_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+									$magic_item['COUNT_ALL_DS_DUPS'] .= ($count_all_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 								}
 
 								$count_all_ds_dups++;
@@ -1716,11 +1762,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 								/* check if this item also qualifies for NODUPS  */
 								if (!isset($already_seen[$def_name])) {
 									if (isset($magic_item['ALL_DATA_SOURCES_NODUPS'])) {
-										$magic_item['ALL_DATA_SOURCES_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['ALL_DATA_SOURCES_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									if (isset($magic_item['COUNT_ALL_DS_NODUPS'])) {
-										$magic_item['COUNT_ALL_DS_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['COUNT_ALL_DS_NODUPS'] .= ($count_all_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									$count_all_ds_nodups++;
@@ -1731,12 +1777,12 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 								if ($graph_item['data_source_name'] == $gi_check['data_source_name']) {
 									/* do we need SIMILAR_DATA_SOURCES_DUPS? */
 									if (isset($magic_item['SIMILAR_DATA_SOURCES_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-										$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['SIMILAR_DATA_SOURCES_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									/* do we need COUNT_SIMILAR_DS_DUPS? */
 									if (isset($magic_item['COUNT_SIMILAR_DS_DUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-										$magic_item['COUNT_SIMILAR_DS_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+										$magic_item['COUNT_SIMILAR_DS_DUPS'] .= ($count_similar_ds_dups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 									}
 
 									$count_similar_ds_dups++;
@@ -1744,11 +1790,11 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 									/* check if this item also qualifies for NODUPS  */
 									if (!isset($sources_seen[$gi_check['data_template_rrd_id']])) {
 										if (isset($magic_item['SIMILAR_DATA_SOURCES_NODUPS'])) {
-											$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
+											$magic_item['SIMILAR_DATA_SOURCES_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,$def_name,$def_name,UN,0,$def_name,IF,IF"; /* convert unknowns to '0' first */
 										}
 
 										if (isset($magic_item['COUNT_SIMILAR_DS_NODUPS']) && ($graph_item['data_source_name'] == $gi_check['data_source_name'])) {
-											$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $seconds_between_graph_updates) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
+											$magic_item['COUNT_SIMILAR_DS_NODUPS'] .= ($count_similar_ds_nodups == 0 ? '' : ',') . 'TIME,' . (time() - $rra_seconds) . ",GT,1,$def_name,UN,0,1,IF,IF"; /* convert unknowns to '0' first */
 										}
 
 										$count_similar_ds_nodups++;
@@ -2032,7 +2078,7 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 
 					break;
 				case GRAPH_ITEM_TYPE_GPRINT:
-					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]));
+					$text_format = rrdtool_escape_string(html_escape($graph_variables['text_format'][$graph_item_id]), false);
 
 					if ($graph_item['vdef_id'] == '0') {
 						$txt_graph_items .= $graph_item_types[$graph_item['graph_type_id']] . ':' . $data_source_name . ':' . $consolidation_functions[$graph_item['consolidation_function_id']] . ':' . cacti_escapeshellarg($text_format . $graph_item['gprint_text'] . $hardreturn[$graph_item_id]) . ' ';
@@ -2267,12 +2313,16 @@ function rrdtool_function_graph($local_graph_id, $rra_id, $graph_data_array, $rr
 	}
 }
 
-function rrdtool_escape_string($text) {
-	return str_replace(array('"', ":", '%'), array('\"', "\:", ''), $text);
+function rrdtool_escape_string($text, $ignore_percent = true) {
+	if ($ignore_percent) {
+		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
+	} else {
+		return str_replace(array('"', ":", '%'), array('\"', "\:", '%%'), $text);
+	}
 }
 
-function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta) {
-	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, '', $xport_meta);
+function rrdtool_function_xport($local_graph_id, $rra_id, $xport_data_array, &$xport_meta, $user = 0) {
+	return rrdtool_function_graph($local_graph_id, $rra_id, $xport_data_array, null, $xport_meta, $user);
 }
 
 function rrdtool_function_format_graph_date(&$graph_data_array) {
@@ -2502,6 +2552,11 @@ function rrdtool_function_info($local_data_id) {
 	$output = rrdtool_execute($cmd_line, RRDTOOL_OUTPUT_NULL, RRDTOOL_OUTPUT_STDOUT);
 	if ($output == '') {
 		return false;
+	}
+
+	/* Hack for i18n */
+	if (strpos($output, ',') !== false) {
+		$output = str_replace(',', '.', $output);
 	}
 
 	/* Parse the output */
@@ -3077,7 +3132,7 @@ function rrd_datasource_add($file_array, $ds_array, $debug) {
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_delete($file_array, $rra_array, $debug) {
-	$rrdtool_pipe = '';
+	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
 	foreach ($file_array as $file) {
@@ -3133,7 +3188,7 @@ function rrd_rra_delete($file_array, $rra_array, $debug) {
  * @return mixed			- success (bool) or error message (array)
  */
 function rrd_rra_clone($file_array, $cf, $rra_array, $debug) {
-	$rrdtool_pipe = '';
+	$rrdtool_pipe = rrd_init();
 
 	/* iterate all given rrd files */
 	foreach ($file_array as $file) {

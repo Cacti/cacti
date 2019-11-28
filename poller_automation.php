@@ -320,7 +320,7 @@ if (!$master && $thread == 0) {
 
 		// Are there no more running tasks? Wait up to 15 seconds to
 		// allow processes to start before checking for failures
-		if ($running == 0 && $failcount > 3) {
+		if (($running == 0 && $failcount > 3) || $command == 'cancel') {
 			db_execute_prepared('DELETE FROM automation_ips
 				WHERE network_id = ?',
 				array($network_id));
@@ -380,12 +380,25 @@ function discoverDevices($network_id, $thread) {
 	$count            = 0;
 
 	while(true) {
+		// Check for cancel
+		$command = db_fetch_cell_prepared('SELECT command
+			FROM automation_processes
+			WHERE network_id = ?
+			AND task = "tmaster"',
+			array($network_id));
+
+		if ($command == 'cancel' || empty($command)) {
+			killProcess(getmypid());
+			removeMyProcess(getmypid(), $network_id);
+			exit;
+		}
+
 		// set and ip to be scanned
 		db_execute_prepared('UPDATE automation_ips
 			SET pid = ?, thread = ?
 			WHERE network_id = ?
-			AND status=0
-			AND pid=0
+			AND status = 0
+			AND pid = 0
 			LIMIT 1',
 			array(getmypid(), $thread, $network_id));
 
@@ -527,18 +540,27 @@ function discoverDevices($network_id, $thread) {
 					$ping->port    = $network['ping_port'];;
 
 					/* perform the appropriate ping check of the host */
-					$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
-
-					if (!$result) {
-						automation_debug(" No response");
-						updateDownDevice($network_id, $device['ip_address']);
-					} else {
-						automation_debug(" Responded");
-						$stats['ping']++;
-						addUpDevice($network_id, getmypid());
+					$bypass_ping = false;
+					$result      = false;
+					if ($network['ping_method'] == PING_SNMP) {
+						$bypass_ping = true;
 					}
 
-					if ($result && automation_valid_snmp_device($device)) {
+					if ($bypass_ping == false) {
+						$result = $ping->ping(AVAIL_PING, $network['ping_method'], $network['ping_timeout'], 1);
+
+						if (!$result) {
+							automation_debug(" No response");
+							updateDownDevice($network_id, $device['ip_address']);
+						} else {
+							automation_debug(" Responded");
+							$stats['ping']++;
+							addUpDevice($network_id, getmypid());
+						}
+					}
+
+
+					if (($result || $bypass_ping) && automation_valid_snmp_device($device)) {
 						$snmp_sysName       = trim($device['snmp_sysName']);
 						$snmp_sysName_short = '';
 						if (!is_ipaddress($snmp_sysName)) {
@@ -720,7 +742,7 @@ function discoverDevices($network_id, $thread) {
 
 							markIPDone($device['ip_address'], $network_id);
 						}
-					}else if ($result) {
+					} elseif ($result) {
 						db_execute('REPLACE INTO automation_devices
 							(network_id, hostname, ip, snmp_community, snmp_version, snmp_port, snmp_username, snmp_password, snmp_auth_protocol, snmp_priv_passphrase, snmp_priv_protocol, snmp_context, sysName, sysLocation, sysContact, sysDescr, sysUptime, os, snmp, up, time) VALUES ('
 							. $network_id                              . ', '
@@ -815,6 +837,18 @@ function killProcess($pid) {
 	return posix_kill($pid, SIGTERM);
 }
 
+function removeMyProcess($pid, $network_id) {
+	db_execute_prepared('DELETE FROM automation_processes
+		WHERE pid = ?
+		AND network_id = ?',
+		array($pid, $network_id));
+
+	db_execute_prepared('DELETE FROM automation_ips
+		WHERE pid = ?
+		AND network_id = ?',
+		array($pid, $network_id));
+}
+
 function rerunDataQueries($host_id, &$network) {
 	if ($network['rerun_data_queries'] == 'on') {
 		$snmp_queries = db_fetch_assoc_prepared('SELECT snmp_query_id
@@ -832,8 +866,8 @@ function rerunDataQueries($host_id, &$network) {
 
 function registerTask($network_id, $pid, $poller_id, $task = 'collector') {
 	db_execute_prepared("REPLACE INTO automation_processes
-		(pid, poller_id, network_id, task, status, heartbeat)
-		VALUES (?, ?, ?, ?, 'running', NOW())",
+		(pid, poller_id, network_id, task, status, heartbeat, command)
+		VALUES (?, ?, ?, ?, 'running', NOW(), 'start')",
 		array($pid, $poller_id, $network_id, $task));
 }
 

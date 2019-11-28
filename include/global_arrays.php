@@ -119,7 +119,7 @@ $cacti_version_codes = array(
 	'1.2.4'  => '0102',
 	'1.2.5'  => '0102',
 	'1.2.6'  => '0102',
-	'1.3.0'  => '0102',
+	'1.2.7'  => '0102',
 );
 
 $messages = array(
@@ -330,6 +330,9 @@ $messages = array(
 	'poller_dbhost' => array(
 		'message' => __('Your Remote Database Hostname must be something other than \'localhost\' for each Remote Data Collector.'),
 		'level' => MESSAGE_LEVEL_ERROR),
+	'poller_paths' => array(
+		'message' => __('Path variables on this page were only saved locally.'),
+		'level' => MESSAGE_LEVEL_INFO),
 	'reports_save' => array(
 		'message' => __('Report Saved'),
 		'level' => MESSAGE_LEVEL_INFO),
@@ -872,7 +875,7 @@ if ($config['poller_id'] == 1 || $config['connection'] == 'online') {
 			),
 		__('Create') => array(
 			'graphs_new.php' => __('New Graphs'),
-			'host.php?action=edit' => __('New Device')
+			'host.php?action=edit&create=true' => __('New Device')
 			),
 		__('Management') => array(
 			'host.php'             => __('Devices'),
@@ -955,7 +958,7 @@ $menu_glyphs = array(
 	__('Import/Export') => 'fa fa-exchange-alt',
 	__('Configuration')  => 'fa fa-sliders-h',
 	__('Utilities') => 'fa fa-cogs',
-	__('External Links') => 'fa fa-external-link',
+	__('External Links') => 'fa fa-external-link-alt',
 	__('Support') => 'fa fa-question-circle',
 	__('Troubleshooting') => 'fa fa-bug'
 );

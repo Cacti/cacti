@@ -429,10 +429,10 @@ function reports_item_edit() {
 	$report_item['graph_template_id'] = 0;
 	$report_item['host_id'] = 0;
 
-	if (isset_request_var('item_id') && get_request_var('item_id') > 0) {
+	if (isset_request_var('item_id') && get_filter_request_var('item_id') > 0) {
 		$report_item = db_fetch_row_prepared('SELECT *
 			FROM reports_items WHERE id = ?',
-			array(get_filter_request_var('item_id')));
+			array(get_request_var('item_id')));
 	}
 
 	// if a different item_type was selected, use it
@@ -443,8 +443,8 @@ function reports_item_edit() {
 	}
 
 	if (cacti_sizeof($report_item) || $report_item['item_type'] == REPORTS_ITEM_GRAPH) {
-		$trees           = array();
-		$branches        = array();
+		$trees    = array();
+		$branches = array();
 
 		/* get the hosts sql first */
 		$hosts = null;

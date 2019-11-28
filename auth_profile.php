@@ -647,6 +647,7 @@ function settings_javascript() {
 	function clearUserSettings() {
 		$.get('auth_profile.php?action=clear_user_settings', function() {
 			document.location = 'auth_profile.php?newtheme=1';
+			$('#clear_settings').blur();
 		});
 	}
 
@@ -656,6 +657,7 @@ function settings_javascript() {
 
 		$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('Private Data Cleared');?>"><p><?php print __('Your Private Data has been cleared.');?></p></div>');
 
+		$('#private_data').blur();
 		$('#cleared').dialog({
 			modal: true,
 			resizable: false,
@@ -673,6 +675,7 @@ function settings_javascript() {
 	}
 
 	function logoutEverywhere() {
+		$('#logout_everywhere').blur();
 		$.get('auth_profile.php?action=logout_everywhere', function(data) {
 			$('body').append('<div style="display:none;" id="cleared" title="<?php print __esc('User Sessions Cleared');?>"><p><?php print __('All your login sessions have been cleared.');?></p></div>');
 
@@ -825,6 +828,9 @@ function settings_javascript() {
 		$('#return').click(function() {
 			document.location = '<?php print $_SESSION['profile_referer'];?>';
 		});
+
+		// set the buttons active
+		$('#clear_settings, #private_data, #logout_everywhere').addClass('ui-state-active');
 	});
 
 	</script>

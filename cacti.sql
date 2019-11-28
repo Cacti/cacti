@@ -1147,6 +1147,7 @@ CREATE TABLE data_input_data (
   t_value char(2) default NULL,
   value text,
   PRIMARY KEY (data_input_field_id,data_template_data_id),
+  KEY data_template_data_id (data_template_data_id),
   KEY t_value (t_value)
 ) ENGINE=InnoDB;
 

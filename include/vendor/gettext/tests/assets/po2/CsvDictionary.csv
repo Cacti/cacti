@@ -1,0 +1,21 @@
+"Ensure this value has at least %(limit_value)d character (it has %sd).",
+"Ensure this value has at most %(limit_value)d character (it has %sd).",
+"%ss must be unique for %ss %ss.","%ss mora da bude jedinstven za %ss %ss."
+and,i
+"Value %sr is not a valid choice.",
+"This field cannot be null.","Ovo polje ne može ostati prazno."
+"This field cannot be blank.","Ovo polje ne može biti prazno."
+"Field of type: %ss","Polje tipa: %ss"
+Integer,"Cijeo broj"
+{test1},"test1
+<div>
+ test2
+</div>
+test3"
+{test2},"test1
+<div>
+ test2
+</div>
+test3"
+"Multibyte test",日本人は日本で話される言語です！
+"Tabulation test","FIELD	FIELD"

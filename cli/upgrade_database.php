@@ -112,7 +112,7 @@ foreach ($cacti_version_codes as $cacti_upgrade_version => $hash_code)  {
 	}
 
 	// construct version upgrade include path
-	$upgrade_file = dirname(__FILE__) . '/../install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
+	$upgrade_file = $config['base_path'] . '/install/upgrades/' . str_replace('.', '_', $cacti_upgrade_version) . '.php';
 	$upgrade_function = 'upgrade_to_' . str_replace('.', '_', $cacti_upgrade_version);
 
 	// check for upgrade version file, then include, check for function and execute

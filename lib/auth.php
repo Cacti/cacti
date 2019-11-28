@@ -77,7 +77,7 @@ function set_auth_cookie($user) {
 			array($user['id'], get_client_addr(''), $secret));
 
 		if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path'], NULL, TRUE, TRUE);
+			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path'], NULL, true, true);
 		} else {
 			setcookie('cacti_remembers', $user['username'] . ',' . $nssecret, time()+(86400*30), $config['url_path']);
 		}
@@ -2278,7 +2278,7 @@ function get_host_array() {
 	$hosts = get_allowed_devices('', 'description', '', $total_rows);
 
 	foreach($hosts as $host) {
-		$return_devices[] = $host['description'] . ' (' . $host['hostname'] . ')';
+		$return_devices[] = strip_domain($host['description']) . ' (' . strip_domain($host['hostname']) . ')';
 	}
 
 	return $return_devices;
@@ -2306,7 +2306,7 @@ function get_allowed_ajax_hosts($include_any = true, $include_none = true, $sql_
 	$hosts = get_allowed_devices($sql_where, 'description', read_config_option('autocomplete_rows'), $total_rows);
 	if (cacti_sizeof($hosts)) {
 		foreach($hosts as $host) {
-			$return[] = array('label' => $host['description'], 'value' => $host['description'], 'id' => $host['id']);
+			$return[] = array('label' => strip_domain($host['description']), 'value' => $host['description'], 'id' => $host['id']);
 		}
 	}
 

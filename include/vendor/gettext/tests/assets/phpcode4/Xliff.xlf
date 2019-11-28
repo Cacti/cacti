@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:2.0" version="2.0" srcLang="" trgLang="">
+  <file id="domain1.">
+    <notes>
+      <note id="Content-Transfer-Encoding">8bit</note>
+      <note id="Content-Type">text/plain; charset=UTF-8</note>
+      <note id="Language"></note>
+      <note id="Language-Team"></note>
+      <note id="Last-Translator"></note>
+      <note id="MIME-Version">1.0</note>
+      <note id="Project-Id-Version"></note>
+      <note id="Report-Msgid-Bugs-To"></note>
+      <note id="X-Domain">domain1</note>
+    </notes>
+    <unit id="3f820600689237ffcc06b9820a91b60a">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode4/input.php:3</note>
+      </notes>
+      <segment>
+        <source>matching 1</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="ec974f7b77c328fad3305d0b2eceedf8">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode4/input.php:4</note>
+      </notes>
+      <segment>
+        <source>matching 2 singular</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="41d4abbe88644733123639c68f4b588e">
+      <notes>
+        <note category="context">context</note>
+        <note category="reference">./tests/assets/phpcode4/input.php:5</note>
+      </notes>
+      <segment>
+        <source>matching 3 context singular</source>
+        <target></target>
+      </segment>
+    </unit>
+    <unit id="0d20b65a03033cf4cddc8be04189d2ec">
+      <notes>
+        <note category="context"></note>
+        <note category="reference">./tests/assets/phpcode4/input.php:6</note>
+      </notes>
+      <segment>
+        <source>matching 4</source>
+        <target></target>
+      </segment>
+    </unit>
+  </file>
+</xliff>

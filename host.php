@@ -60,6 +60,12 @@ switch (get_request_var('action')) {
 		form_save();
 
 		break;
+	case 'reindex':
+		host_reindex();
+
+		header('Location: host.php?header=false&action=edit&id=' . get_request_var('host_id'));
+
+		break;
 	case 'actions':
 		form_actions();
 
@@ -158,6 +164,25 @@ switch (get_request_var('action')) {
 /* --------------------------
     Global Form Functions
    -------------------------- */
+
+function host_reindex() {
+	global $config;
+
+	$start = microtime(true);
+
+	shell_exec(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . '/cli/poller_reindex_hosts.php --qid=all --id=' . get_filter_request_var('host_id'));
+
+	$end = microtime(true);
+
+	$total_time = $end - $start;
+
+	$items = db_fetch_cell_prepared('SELECT COUNT(*)
+		FROM host_snmp_cache
+		WHERE host_id = ?',
+		array(get_filter_request_var('host_id')));
+
+	raise_message('host_reindex', __('Device Reindex Completed in %0.2f seconds.  There were %d items updated.', $total_time, $items), MESSAGE_LEVEL_INFO);
+}
 
 function add_tree_names_to_actions_array() {
 	global $device_actions;
@@ -614,6 +639,7 @@ function host_edit() {
 				<td rowspan='2' class='textInfo right' style='vertical-align:top'>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=edit');?>'><?php print __('Create New Device');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs_new.php?reset=true&host_id=' . $host['id']);?>'><?php print __('Create Graphs for this Device');?></a><br>
+					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('host.php?action=reindex&host_id=' . $host['id']);?>'><?php print __('Re-Index Device');?></a><br>
 					<?php print $debug_link;?>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('data_sources.php?reset=true&host_id=' . $host['id'] . '&ds_rows=30&filter=&template_id=-1&method_id=-1&page=1');?>'><?php print __('Data Source List');?></a><br>
 					<span class='linkMarker'>*</span><a class='hyperLink' href='<?php print html_escape('graphs.php?reset=true&host_id=' . $host['id'] . '&graph_rows=30&filter=&template_id=-1&page=1');?>'><?php print __('Graph List');?></a>
@@ -970,7 +996,7 @@ function device_change_javascript() {
 
 function device_javascript() {
 	?>
-	<script type="text/javascript">
+	<script type='text/javascript'>
 
 	// default snmp information
 	var snmp_community       = $('#snmp_community').val();
@@ -1125,8 +1151,14 @@ function device_javascript() {
 			if ($('#snmp_auth_protocol').val() == '[None]') {
 				if ($('#snmp_priv_protocol').val() == '[None]') {
 					$('#snmp_security_level').val('noAuthNoPriv');
+					$('#snmp_priv_passphrase').val('');
+					$('#snmp_priv_passphrase_confirm').val('');
+					$('#snmp_password').val('');
+					$('#snmp_password_confirm').val('');
 				} else {
 					$('#snmp_security_level').val('authNoPriv');
+					$('#snmp_priv_passphrase').val('');
+					$('#snmp_priv_passphrase_confirm').val('');
 				}
 			} else {
 				$('#snmp_security_level').val('authPriv');

@@ -474,7 +474,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 							}
 
 							foreach($fields as $field) {
-								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
+								cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $field . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 								$rrd_update_array[$rrd_path]['times'][$unix_time][$field] = $matches[1];
 							}
 						} else {
@@ -490,7 +490,7 @@ function process_poller_output(&$rrdtool_pipe, $remainder = false) {
 
 							if (cacti_sizeof($nt_rrd_field_names)) {
 								if (isset($nt_rrd_field_names[$matches[0]])) {
-									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names[$matches[0]] . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_MEDIUM));
+									cacti_log("Parsed MULTI output field '" . $matches[0] . ':' . $matches[1] . "' [map " . $matches[0] . '->' . $nt_rrd_field_names[$matches[0]] . ']' , true, 'POLLER', ($debug ? POLLER_VERBOSITY_NONE:POLLER_VERBOSITY_HIGH));
 
 									$rrd_update_array[$item['rrd_path']]['times'][$unix_time][$nt_rrd_field_names[$matches[0]]] = $matches[1];
 								}
@@ -699,6 +699,11 @@ function update_resource_cache($poller_id = 1) {
 			}
 		}
 	} elseif ($poller_id > 1) {
+		if (read_config_option('disable_cache_replication') == 'on') {
+			cacti_log('NOTE: Resource Cache Replication is currently Disabled!  Skipping Replication.', true, 'POLLER');
+			return false;
+		}
+
 		$paths['plugins'] = array('recursive' => true, 'path' => $mpath . '/plugins');
 		$plugin_paths = db_fetch_assoc('SELECT resource_type, `path`
 			FROM poller_resource_cache

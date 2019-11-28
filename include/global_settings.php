@@ -772,6 +772,38 @@ $settings = array(
 			'default' => '30',
 			'array' => $item_rows
 			),
+		'tree_header' => array(
+			'friendly_name' => __('Tree Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'min_tree_width' => array(
+			'friendly_name' => __('Minimum Tree Width'),
+			'description' => __('The Minimum width of the Tree to contract to.'),
+			'method' => 'textbox',
+			'default' => '170',
+			'max_length' => '5',
+			'size' => '7'
+			),
+		'max_tree_width' => array(
+			'friendly_name' => __('Maximum Tree Width'),
+			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.'),
+			'method' => 'textbox',
+			'default' => '300',
+			'max_length' => '5',
+			'size' => '7'
+			),
+		'filter_header' => array(
+			'friendly_name' => __('Filter Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'strip_domain' => array(
+			'friendly_name' => __('Strip Domains from Device Dropdowns'),
+			'description' => __('When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname.'),
+			'method' => 'checkbox',
+			'default' => ''
+			),
 		'object_creation_header' => array(
 			'friendly_name' => __('Graph/Data Source/Data Query Settings'),
 			'collapsible' => 'true',
@@ -1079,6 +1111,12 @@ $settings = array(
 				'100' => '100',
 				'150' => '150',
 				'200' => '200')
+			),
+		'disable_cache_replication' => array(
+			'friendly_name' => __('Disable Resource Cache Replication'),
+			'description' => __('With this option checked, Remote Data Collectors will not be updated from the latest version of Cactis Resource Cache.  This setting can be important when performing upgrades when you want to confirm from the main Data Collector that now new signifcant bugs have been introduced.'),
+			'method' => 'checkbox',
+			'default' => ''
 			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
@@ -2204,12 +2242,28 @@ $settings_user = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
-                'tree_history' => array(
-                        'friendly_name' => __('Tree History'),
-                        'description' => __('If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page.'),
-                        'method' => 'checkbox',
-                        'default' => 'on'
-                     )
+		'tree_history' => array(
+			'friendly_name' => __('Tree History'),
+			'description' => __('If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'min_tree_width' => array(
+			'friendly_name' => __('Minimum Tree Width'),
+			'description' => __('The Minimum width of the Tree to contract to.'),
+			'method' => 'textbox',
+			'default' => read_config_option('min_tree_width'),
+			'max_length' => '5',
+			'size' => '7'
+			),
+		'max_tree_width' => array(
+			'friendly_name' => __('Maximum Tree Width'),
+			'description' => __('The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page.'),
+			'method' => 'textbox',
+			'default' => read_config_option('max_tree_width'),
+			'max_length' => '5',
+			'size' => '7'
+			)
 		),
 	'fonts' => array(
 		'custom_fonts' => array(

@@ -848,7 +848,10 @@ function cdef() {
 			SELECT cd.id AS `rows`,
 			SUM(CASE WHEN local_graph_id>0 THEN 1 ELSE 0 END) AS graphs
 			FROM cdef AS cd
-			LEFT JOIN graph_templates_item AS gti
+			LEFT JOIN (
+				SELECT DISTINCT cdef_id, local_graph_id, graph_template_id
+				FROM graph_templates_item
+			) AS gti
 			ON gti.cdef_id=cd.id
 			$sql_where
 			GROUP BY cd.id
@@ -864,7 +867,10 @@ function cdef() {
 		FROM (
 			SELECT cd.*, gti.local_graph_id
 			FROM cdef AS cd
-			LEFT JOIN graph_templates_item AS gti
+			LEFT JOIN (
+				SELECT DISTINCT cdef_id, local_graph_id, graph_template_id
+				FROM graph_templates_item
+			) AS gti
 			ON gti.cdef_id=cd.id
 			WHERE `system`=0
 			GROUP BY cd.id, gti.graph_template_id, gti.local_graph_id

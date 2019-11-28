@@ -1,0 +1,158 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#: ./tests/assets/vuejs/input.vue:55
+msgid "js-expr1"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:55
+msgid "js-expr2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:57
+msgid "js-alert"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:60
+msgid "js-single"
+msgid_plural "js-plural"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:64
+msgid "js-obj-single"
+msgid_plural "js-obj-plural"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:67
+msgctxt "some-context"
+msgid "js-action"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:69
+msgid "<span>js-return</span><br>"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:4
+msgid "t-cond-attribute"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:5
+msgid "t-attribute"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:5
+msgid "t-same-line-s"
+msgid_plural "t-same-line-p"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:9
+#: ./tests/assets/vuejs/input.vue:10
+#: ./tests/assets/vuejs/input.vue:11
+msgid "multi-occurrence"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:16
+msgid "t-singular2"
+msgid_plural "t-plural2"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:31
+msgid "t-v-bind"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:33
+msgctxt "context"
+msgid "t-action"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:37
+msgid "back-tick-in-tag"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:47
+msgid "t-v-text"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:3
+msgid "t-text"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:14
+msgid "t-singular"
+msgid_plural "t-plural"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:18
+msgid "t-tag"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:18
+msgid "t-tag-sibling"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:20
+msgid "t-expr1"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:20
+msgid "t-expr2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:22
+msgid "t-\"quotes\""
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:22
+msgid "t-\"quotes\"-2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:23
+msgid "t-'quotes'"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:23
+msgid "t-'quotes'-2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:25
+msgid "t-spaces-expr"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:25
+msgid "t-spaces-expr2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:28
+msgid "t-p1(parentheses)"
+msgid_plural "t-p2(parentheses)"
+msgstr[0] ""
+
+#: ./tests/assets/vuejs/input.vue:35
+msgctxt "context2"
+msgid "t-action2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:38
+msgid "back-tick-in-mustache"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:41
+msgid "t-tag-2"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:43
+msgid "v-translate-attribute"
+msgstr ""
+
+#: ./tests/assets/vuejs/input.vue:45
+msgid "v-translate-attribute-single"
+msgid_plural "v-translate-attribute-plural"
+msgstr[0] ""

@@ -252,12 +252,12 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 		if ($code == 0) {
 			$code = $query->errorCode();
-			if ($code > 0) {
+			if ($code != '00000' && $code != '01000') {
 				$errorinfo = $query->errorInfo();
 				$en = $errorinfo[1];
 			}  else {
 				$code = $db_conn->errorCode();
-				if ($code > 0) {
+				if ($code != '00000' && $code != '01000') {
 					$errorinfo = $db_conn->errorInfo();
 					$en = $errorinfo[1];
 				}
@@ -1610,10 +1610,10 @@ function db_get_default_database($db_conn = false) {
    @returns - null */
 function db_force_remote_cnn() {
 	global $database_default, $database_hostname, $database_username, $database_password;
-	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca; 
+	global $database_port, $database_ssl, $database_ssl_key, $database_ssl_cert, $database_ssl_ca;
 
 	global $rdatabase_default, $rdatabase_hostname, $rdatabase_username, $rdatabase_password;
-	global $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca; 
+	global $rdatabase_port, $rdatabase_ssl, $rdatabase_ssl_key, $rdatabase_ssl_cert, $rdatabase_ssl_ca;
 
 	// Connection worked, so now override the default settings so that it will always utilize the remote connection
 	$database_default   = $rdatabase_default;

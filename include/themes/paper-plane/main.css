@@ -810,8 +810,8 @@ label {
 }
 
 .cactiLogo {
-	background: #efefef url('./images/cacti_logo.svg') no-repeat 30px;
-	display: block;
+	background: transparent url('./images/cacti_logo.svg') no-repeat 30px;
+	display: none;
 	cursor: pointer;
 	padding-bottom: 140px;
 	margin-bottom: 60px;
@@ -1801,7 +1801,7 @@ tr>td.textInfo.right {
 }
 
 .moveArrowNone {
-	padding-left: 14px;
+	padding-left: 8.75px;
 }
 
 .action, .shiftArrow, .calendar {
