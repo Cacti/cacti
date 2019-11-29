@@ -38,6 +38,8 @@ Cacti CHANGELOG
 -issue#3053: CMDPHP Validation Error - thumbnails in Graph View
 -issue#3055: Installer database connection checks for remote pollers
 -issue#3059: function nth_percentile does not return right value when datasource use cf = MAX
+-issue#3060: New tables on some MariaDB versions are created by default using
+Compact format instead of Dynamic
 -issue#3061: AUTOM8 should allow SNMP as a ping method for networks that have devices that dont respond to a ping
 -issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
 -issue#3070: Improve database logging when a crashed table is encountered

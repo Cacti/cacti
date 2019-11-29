@@ -985,7 +985,7 @@ function db_update_table($table, $data, $removecolumns = false, $log = true, $db
 		}
 	}
 
-	if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
+	if (isset($data['row_format']) && db_get_global_variable('innodb_file_format', $db_conn) == 'Barracuda') {
 		db_execute("ALTER TABLE `$table` ROW_FORMAT=" . $data['row_format'], $log, $db_conn);
 	}
 
@@ -1121,7 +1121,7 @@ function db_table_create($table, $data, $log = true, $db_conn = false) {
 			$sql .= ' DEFAULT CHARSET=' . $data['charset'];
 		}
 
-		if (isset($data['row_format']) && db_get_global_variable('innodb_row_format', $db_conn) == 'Barracuda') {
+		if (isset($data['row_format']) && db_get_global_variable('innodb_file_format', $db_conn) == 'Barracuda') {
 			$sql .= ' ROW_FORMAT=' . $data['row_format'];
 		}
 
