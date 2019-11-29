@@ -174,6 +174,10 @@ if (cacti_sizeof($tables)) {
 			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
 		}
 
+		if ($dynamic && $table['Row_format'] == 'Compact') {
+			$canConvert = true;
+		}
+
 		if ($canConvert) {
 			if ($table['Rows'] < $size || $force) {
 				print "Converting Table -> '" . $table['Name'] . "'";
@@ -187,7 +191,7 @@ if (cacti_sizeof($tables)) {
 					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
 				}
 
-				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . ($dynamic ? ' ROW_FORMAT=Dynamic ':'') . $sql);
+				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
 
 				if ($status === false) {
 					print ' Failed' . PHP_EOL;
