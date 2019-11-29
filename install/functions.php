@@ -375,6 +375,7 @@ function install_setup_get_tables() {
 			$collation = '';
 			$engine = '';
 			$rows = 0;
+			$row_format = '';
 
 			if ($table_status !== false) {
 				if (isset($table_status['Collation']) && $table_status['Collation'] != 'utf8mb4_unicode_ci') {
@@ -388,13 +389,18 @@ function install_setup_get_tables() {
 				if (isset($table_status['Rows'])) {
 					$rows = $table_status['Rows'];
 				}
+
+				if (isset($table_status['Row_format']) && $table_status['Row_format'] == 'Compact' && $table_status['Engine'] == 'InnoDB') {
+					$row_format = 'Dynamic';
+				}
 			}
 
-			if ($table_status === false || $collation != '' || $engine != '') {
+			if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
 				$t[$table]['Name'] = $table;
 				$t[$table]['Collation'] = $collation;
 				$t[$table]['Engine'] = $engine;
 				$t[$table]['Rows'] = $rows;
+				$t[$table]['Row_format'] = $row_format;
 			}
 		}
 	}
