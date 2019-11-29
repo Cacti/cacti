@@ -55,6 +55,7 @@ Cacti CHANGELOG
 -issue#3111: When updating an old Cacti version, the add_device.php will fail due to a bad snmp-version column
 -issue#3112: Zooming results in 2x the number of image requests
 -issue#3114: storage graphs for usb devices no longer change devices on reboot.
+-issue#3118: When upgrading Cacti the convert_tables.php script should use dyanmic row format
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs

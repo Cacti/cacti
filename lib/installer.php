@@ -3054,7 +3054,7 @@ class Installer implements JsonSerializable {
 					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
-						' --utf8 --innodb');
+						' --utf8 --innodb --dynamic');
 
 					set_config_option('install_updated', microtime(true));
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
