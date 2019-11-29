@@ -786,7 +786,7 @@ function cache_in_path($path, $type, $recursive = true) {
 			$last_md5 = db_fetch_cell_prepared('SELECT md5sum FROM poller_resource_cache WHERE path = ?', array($spath));
 
 			if (substr($spath, 0, 8) == 'plugins/') {
-				$ppath = $config['base_path'] . $spath;
+				$ppath = $config['base_path'] . '/'. $spath;
 			} else {
 				$ppath = $spath;
 			}
