@@ -36,6 +36,7 @@ Cacti CHANGELOG
 -issue#3050: Improper validation call prior to plugin call
 -issue#3052: Slow Response Loading CDEFs
 -issue#3053: CMDPHP Validation Error - thumbnails in Graph View
+-issue#3059: function nth_percentile does not return right value when datasource use cf = MAX
 -issue#3061: AUTOM8 should allow SNMP as a ping method for networks that have devices that dont respond to a ping
 -issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
 -issue#3070: Improve database logging when a crashed table is encountered

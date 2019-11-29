@@ -32,7 +32,11 @@
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
-	return $stats['avg'];
+	if ($peak) {
+		return $stats['peak'];
+	} else {
+		return $stats['avg'];
+	}
 }
 
 /* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
