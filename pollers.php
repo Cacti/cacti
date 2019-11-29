@@ -736,7 +736,7 @@ function test_database_connection($poller = array()) {
 		}
 	}
 
-    $connection = db_connect_real(
+	$connection = db_connect_real(
 		$poller['dbhost'],
 		$poller['dbuser'],
 		$poller['dbpass'],
@@ -751,9 +751,9 @@ function test_database_connection($poller = array()) {
 
     if (is_object($connection)) {
         db_close($connection);
-        print 'Connection Successful';
+        print __('Connection Successful');
     } else {
-        print 'Connection Failed';
+        print __('Connection Failed');
     }
 }
 

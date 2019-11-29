@@ -739,7 +739,7 @@ function performTestConnection() {
 
 			var isSuccessful = false, statusText = testFailed;
 			if (typeof data.status != 'undefined') {
-				if (data.status == true) {
+				if (data.status == 'true') {
 					isSuccessful = true;
 					statusText = testSuccessful;
 				}
