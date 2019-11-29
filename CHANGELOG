@@ -7,6 +7,7 @@ Cacti CHANGELOG
 -feature#2607: Allow adding sites from command line
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
+-issue#3114: storage graphs for usb devices no longer change devices on reboot.
 
 1.2.8
 -security#3025: SQL Injection in graphs.php
