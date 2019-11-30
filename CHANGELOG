@@ -22,6 +22,7 @@ Cacti CHANGELOG
 -issue#3019: user_language will not take effect if user_language is different with browser locale
 -issue#3021: Tree view cuts off at the bottom of page on modern theme
 -issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
+-issue#3027: Aggregate Graph re-ordering does not work
 -issue#3028: Graph Zooming to edge of timespan
 -issue#3030: Pace continues to run even after a page is finished rendering
 -issue#3032: Graph always shows 'MAX' CF for LINE graph instead of AVERAGE/MIN/LAST

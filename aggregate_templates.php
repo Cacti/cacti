@@ -119,6 +119,7 @@ function aggregate_form_save() {
 		$save_me += ($old['gprint_prefix'] != $save1['gprint_prefix']);
 		$save_me += ($old['graph_type']    != $save1['graph_type']);
 		$save_me += ($old['total']         != $save1['total']);
+		$save_me += ($old['total_type']    != $save1['total_type']);
 		$save_me += ($old['total_prefix']  != $save1['total_prefix']);
 		$save_me += ($old['order_type']    != $save1['order_type']);
 	} else {
