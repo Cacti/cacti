@@ -1292,7 +1292,7 @@ CREATE TABLE data_local (
   PRIMARY KEY (id),
   KEY data_template_id (data_template_id),
   KEY snmp_query_id (snmp_query_id),
-  KEY snmp_index (snmp_index(191)),
+  KEY snmp_index (snmp_index),
   KEY host_id_snmp_query_id (host_id, snmp_query_id)
 ) ENGINE=InnoDB;
 
@@ -1636,7 +1636,7 @@ CREATE TABLE graph_local (
   KEY graph_template_id (graph_template_id),
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
-  KEY snmp_index (snmp_index(191))
+  KEY snmp_index (snmp_index)
 ) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
@@ -1982,7 +1982,7 @@ CREATE TABLE host_snmp_cache (
   snmp_query_id mediumint(8) unsigned NOT NULL default '0',
   field_name varchar(50) NOT NULL default '',
   field_value varchar(512) default NULL,
-  snmp_index varchar(191) NOT NULL default '',
+  snmp_index varchar(255) NOT NULL default '',
   oid TEXT NOT NULL,
   present tinyint NOT NULL DEFAULT '1',
   last_updated timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1990,7 +1990,7 @@ CREATE TABLE host_snmp_cache (
   KEY host_id (host_id, field_name),
   KEY snmp_index (snmp_index),
   KEY field_name (field_name),
-  KEY field_value (field_value(191)),
+  KEY field_value (field_value),
   KEY snmp_query_id (snmp_query_id),
   KEY last_updated (last_updated),
   KEY present (present)

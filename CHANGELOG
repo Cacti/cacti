@@ -6,6 +6,7 @@ Cacti CHANGELOG
 -security#3067: Enable the secure flag on cookies when HTTPS is enabled.
 -feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
 -issue#1228: Any tree or branch with a long name force main content off screen
+-issue#2133: Long snmp_indexes are being cut off
 -issue#2888: Long hostnames cause template filter to go off page
 -issue#2987: Changing Color Template does not update Aggregate
 -issue#2989: Allow Remote Data Collectors to maintain their own path variables
