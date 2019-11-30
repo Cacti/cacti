@@ -1294,7 +1294,7 @@ CREATE TABLE data_local (
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_index (snmp_index),
   KEY host_id_snmp_query_id (host_id, snmp_query_id)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `data_local`
@@ -1637,7 +1637,7 @@ CREATE TABLE graph_local (
   KEY snmp_query_id (snmp_query_id),
   KEY snmp_query_graph_id (snmp_query_graph_id),
   KEY snmp_index (snmp_index)
-) ENGINE=InnoDB COMMENT='Creates a relationship for each item in a custom graph.';
+) ENGINE=InnoDB ROW_FORMAT=Dynamic COMMENT='Creates a relationship for each item in a custom graph.';
 
 --
 -- Dumping data for table `graph_local`
@@ -1994,7 +1994,7 @@ CREATE TABLE host_snmp_cache (
   KEY snmp_query_id (snmp_query_id),
   KEY last_updated (last_updated),
   KEY present (present)
-) ENGINE=InnoDB;
+) ENGINE=InnoDB ROW_FORMAT=Dynamic;
 
 --
 -- Dumping data for table `host_snmp_cache`
