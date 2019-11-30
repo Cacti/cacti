@@ -58,6 +58,7 @@ Compact format instead of Dynamic
 -issue#3112: Zooming results in 2x the number of image requests
 -issue#3114: storage graphs for usb devices no longer change devices on reboot.
 -issue#3118: When upgrading Cacti the convert_tables.php script should use dyanmic row format
+-issue#3120: PHP 7.4 Compatibility Issues
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs

@@ -4572,37 +4572,41 @@ function CactiErrorHandler($level, $message, $file, $line, $context) {
 	return false;
 }
 
-function CactiShutdownHandler () {
+function CactiShutdownHandler() {
 	global $phperrors;
 	$error = error_get_last();
 
-	if (IgnoreErrorHandler($error['message'])) {
-		return true;
-	}
+	if (is_array($error)) {
+		if (isset($error['message']) && IgnoreErrorHandler($error['message'])) {
+			return true;
+		}
 
-	switch ($error['type']) {
-		case E_ERROR:
-		case E_CORE_ERROR:
-		case E_COMPILE_ERROR:
-		case E_CORE_WARNING:
-		case E_COMPILE_WARNING:
-		case E_PARSE:
-			preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
+		if (isset($error['type'])) {
+			switch ($error['type']) {
+				case E_ERROR:
+				case E_CORE_ERROR:
+				case E_COMPILE_ERROR:
+				case E_CORE_WARNING:
+				case E_COMPILE_WARNING:
+				case E_PARSE:
+					preg_match('/.*\/plugins\/([\w-]*)\/.*/', $error['file'], $output_array);
 
-			$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
+					$plugin = (isset($output_array[1]) ? $output_array[1] : '' );
 
-			$message = 'PHP ' . $phperrors[$error['type']] .
-				($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
-				' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
+					$message = 'PHP ' . $phperrors[$error['type']] .
+						($plugin != '' ? " in  Plugin '$plugin'" : '') . ': ' . $error['message'] .
+						' in file: ' .  $error['file'] . ' on line: ' . $error['line'];
 
-			cacti_log($message, false, 'ERROR');
-			cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
+					cacti_log($message, false, 'ERROR');
+					cacti_debug_backtrace('PHP ERROR', false, true, 0, 1);
 
-			if ($plugin != '') {
-				api_plugin_disable_all($plugin);
-				cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
-				admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
+					if ($plugin != '') {
+						api_plugin_disable_all($plugin);
+						cacti_log("ERRORS DETECTED - DISABLING PLUGIN '$plugin'");
+						admin_email(__('Cacti System Warning'), __('Cacti disabled plugin %s due to the following error: %s!  See the Cacti logfile for more details.', $plugin, $message));
+					}
 			}
+		}
 	}
 }
 
