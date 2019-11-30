@@ -2373,14 +2373,25 @@ class Installer implements JsonSerializable {
 				$show_warning=false;
 				ob_start();
 				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
-				html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
+				html_header_checkbox(array(__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')));
 				foreach ($tables as $id => $p) {
 					$enabled = ($p['Rows'] < 1000000 ? true : false);
+
 					$style = ($enabled ? '' : 'text-decoration: line-through;');
+
+					if ($enabled) {
+						$cstyle = ($p['Collation'] != 'utf8mb4_unicode_ci' ? 'deviceDown':$style);
+						$estyle = ($p['Engine'] != 'InnoDB' ? 'deviceDown':$style);
+						$rstyle = ($p['Row_format'] != 'Dynamic' ? 'deviceDown':$style);
+					} else {
+						$cstyle = $estyle = $rstyle = $style;
+					}
+
 					form_alternate_row('line' . $id, true, $enabled);
 					form_selectable_cell($p['Name'], $id, '', $style);
-					form_selectable_cell($p['Collation'], $id, '', $style);
-					form_selectable_cell($p['Engine'], $id, '', $style);
+					form_selectable_cell($p['Collation'], $id, '', $cstyle);
+					form_selectable_cell($p['Row_format'], $id, '', $rstyle);
+					form_selectable_cell($p['Engine'], $id, '', $estyle);
 					form_selectable_cell($p['Rows'], $id, '', $style);
 
 					if ($enabled) {
@@ -2398,13 +2409,13 @@ class Installer implements JsonSerializable {
 					$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
 				}
 
-				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
+				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process.'));
 				$output .= Installer::sectionNormal(ob_get_contents());
 
 				ob_end_clean();
 			}
 		} else {
-			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 compliant'));
+			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 and Dynamic row format compliant'));
 		}
 
 		$this->stepData = array('Tables' => $this->tables);

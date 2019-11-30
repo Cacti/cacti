@@ -397,10 +397,10 @@ function install_setup_get_tables() {
 
 			if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
 				$t[$table]['Name'] = $table;
-				$t[$table]['Collation'] = $collation;
-				$t[$table]['Engine'] = $engine;
+				$t[$table]['Collation'] = $table_status['Collation'];
+				$t[$table]['Engine'] = $table_status['Engine'];
 				$t[$table]['Rows'] = $rows;
-				$t[$table]['Row_format'] = $row_format;
+				$t[$table]['Row_format'] = $table_status['Row_format'];
 			}
 		}
 	}

@@ -517,6 +517,7 @@ function utilities_view_tech($php_info = '') {
 			print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Row Format') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . "</th>\n";
 			print "</tr>\n";
 			print "</thead>\n";
@@ -529,6 +530,7 @@ function utilities_view_tech($php_info = '') {
 				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . "</td>\n";
 				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . "</td>\n";
 				print '<td>' . $table['TABLE_COLLATION'] . "</td>\n";
+				print '<td>' . $table['ROW_FORMAT'] . "</td>\n";
 				print '<td>' . $table['TABLE_COMMENT'] . "</td>\n";
 				form_end_row();
 			}
