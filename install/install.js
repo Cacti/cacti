@@ -737,11 +737,11 @@ function performTestConnection() {
 			$('#installLoader').hide();
 			$('#installContent').removeClass('cactiInstallLoaderBlur');
 
-			var isSuccessful = false, statusText = 'Failed';
+			var isSuccessful = false, statusText = testFailed;
 			if (typeof data.status != 'undefined') {
-				if (data.status) {
+				if (data.status == 'true') {
 					isSuccessful = true;
-					statusText = 'Successful';
+					statusText = testSuccessful;
 				}
 			}
 			$('#labelTest').text(statusText);

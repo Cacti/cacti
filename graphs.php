@@ -42,8 +42,6 @@ include_once('./lib/utility.php');
 /* set default action */
 set_default_action();
 
-validate_graph_request_vars();
-
 $graph_actions = array(
 	1  => __('Delete'),
 );
@@ -121,6 +119,7 @@ switch (get_request_var('action')) {
 		break;
 	default:
 		top_header();
+		validate_graph_request_vars();
 		graph_management();
 		bottom_footer();
 
@@ -225,11 +224,18 @@ function parse_validate_graph_template_id($variable) {
 function form_save() {
 	/* ================= input validation ================= */
 	get_filter_request_var('local_graph_id');
-	get_filter_request_var('host_id');
 	get_filter_request_var('host_id_prev');
 	get_filter_request_var('graph_template_graph_id');
 	get_filter_request_var('local_graph_template_graph_id');
 	/* ==================================================== */
+
+	/* handle special case of callback on host_id */
+	if (!is_numeric(get_nfilter_request_var('host_id'))) {
+cacti_log('here');
+		set_request_var('host_id', get_request_var('host_id_prev'));
+	} else {
+		get_filter_request_var('host_id');
+	}
 
 	$gt_id_unparsed      = get_nfilter_request_var('graph_template_id');
 	$gt_id_prev_unparsed = get_nfilter_request_var('graph_template_id_prev');
@@ -1332,7 +1338,7 @@ function item() {
 
 	html_start_box($header_label, '100%', '', '3', 'center', $add_text);
 
-	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) ? false : true));
+	draw_graph_items_list($template_item_list, 'graphs_items.php', $anchor_link, (empty($graph_template_id) || empty($host_id) ? false : true));
 
 	?>
 	<script type='text/javascript'>
@@ -1586,15 +1592,17 @@ function graph_edit() {
 			$graph_data_array['print_source'] = 1;
 			$graph_data_array['graph_end']    = $graph_end;
 			$graph_data_array['graph_start']  = $graph_start;
+
+			$null_param = array();
 		?>
 		</div>
 		<div class='cactiTable'>
 			<div style='float:left'>
 				<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?></pre>
 				<span class='textInfo'><?php print __('RRDtool Says:');?></span><br>
 				<?php unset($graph_data_array['print_source']);?>
-				<pre><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+				<pre><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 			</div>
 		<?php
 		}
@@ -2000,13 +2008,15 @@ function graph_management() {
 	if (get_request_var('template_id') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('template_id') == '0') {
-		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id=0';
+		$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gtg.graph_template_id = 0';
 	} elseif (!isempty_request_var('template_id')) {
 		$parts = explode('_', get_request_var('template_id'));
 		if ($parts[0] == 'cg') {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id=' . $parts[1];
+			input_validate_input_number($parts[1]);
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.graph_template_id = ' . $parts[1];
 		} else {
-			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id=' . $parts[1];
+			input_validate_input_number($parts[1]);
+			$sql_where .= ($sql_where != '' ? ' AND ':'WHERE ') . ' gl.snmp_query_graph_id = ' . $parts[1];
 		}
 	}
 

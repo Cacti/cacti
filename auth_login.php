@@ -309,6 +309,97 @@ if (get_nfilter_request_var('action') == 'login') {
 		} else {
 			auth_post_login_redirect($user);
 		}
+
+		/* remember this user */
+		if (isset_request_var('remember_me') && read_config_option('auth_cache_enabled') == 'on') {
+			set_auth_cookie($user);
+		}
+
+		/* set the php session */
+		$_SESSION['sess_user_id'] = $user['id'];
+
+		/* handle 'force change password' */
+		if (($user['must_change_password'] == 'on') &&
+			(read_config_option('auth_method') == 1) &&
+			($user['password_change'] == 'on')) {
+
+			$_SESSION['sess_change_password'] = true;
+		}
+
+		if (db_table_exists('user_auth_group')) {
+			$group_options = db_fetch_cell_prepared('SELECT MAX(login_opts)
+				FROM user_auth_group AS uag
+				INNER JOIN user_auth_group_members AS uagm
+				ON uag.id=uagm.group_id
+				WHERE user_id=?', array($_SESSION['sess_user_id']));
+
+			if ($group_options > 0) {
+				$user['login_opts'] = $group_options;
+			}
+		}
+
+		$newtheme = false;
+		if (user_setting_exists('selected_theme', $_SESSION['sess_user_id']) && read_config_option('selected_theme') != read_user_setting('selected_theme')) {
+			unset($_SESSION['selected_theme']);
+			$newtheme = true;
+		}
+
+		if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
+			$_SESSION['sess_user_language'] = read_user_setting('user_language');
+		}
+
+		/* ok, at the point the user has been sucessfully authenticated; so we must
+		decide what to do next */
+		switch ($user['login_opts']) {
+			case '1': /* referer */
+				/* because we use plugins, we can't redirect back to graph_view.php if they don't
+				 * have console access
+				 */
+				if (isset($_SERVER['REDIRECT_URL'])) {
+					$referer = sanitize_uri($_SERVER['REDIRECT_URL']);
+					if (isset($_SERVER['REDIRECT_QUERY_STRING'])) {
+						$referer .= '?' . $_SERVER['REDIRECT_QUERY_STRING'] . ($newtheme ? '&newtheme=1':'');
+					}
+				} elseif (isset($_SERVER['HTTP_REFERER'])) {
+					$referer = sanitize_uri($_SERVER['HTTP_REFERER']);
+					if (basename($referer) == 'logout.php') {
+						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
+					}
+				} elseif (isset($_SERVER['REQUEST_URI'])) {
+					$referer = sanitize_uri($_SERVER['REQUEST_URI']);
+					if (basename($referer) == 'logout.php') {
+						$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
+					}
+				} else {
+					$referer = $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':'');
+				}
+
+				if (substr_count($referer, 'plugins')) {
+					header('Location: ' . $referer);
+				} elseif (!is_realm_allowed(8)) {
+					header('Location: graph_view.php' . ($newtheme ? '?newtheme=1':''));
+				} else {
+					$param_char = '?';
+					if (substr_count($referer, '?')) {
+						$param_char = '&';
+					}
+					header('Location: ' . $referer . ($newtheme ? $param_char . 'newtheme=1':''));
+				}
+
+				break;
+			case '2': /* default console page */
+				header('Location: ' . $config['url_path'] . 'index.php' . ($newtheme ? '?newtheme=1':''));
+
+				break;
+			case '3': /* default graph page */
+				header('Location: ' . $config['url_path'] . 'graph_view.php' . ($newtheme ? '?newtheme=1':''));
+
+				break;
+			default:
+				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
+		}
+
+		exit;
 	} else {
 		if ((!$guest_user) && ($user_auth)) {
 			/* No guest account defined */

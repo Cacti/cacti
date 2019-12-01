@@ -1,0 +1,46 @@
+{
+	"name" : "gettext/languages",
+	"description" : "gettext languages with plural rules",
+	"keywords" : [
+		"localization",
+		"l10n",
+		"internationalization",
+		"i18n",
+		"translations",
+		"translate",
+		"php",
+		"unicode",
+		"cldr",
+		"language",
+		"languages",
+		"plural",
+		"plurals",
+		"plural rules"
+	],
+	"homepage" : "https://github.com/mlocati/cldr-to-gettext-plural-rules",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Michele Locati",
+			"email" : "mlocati@gmail.com",
+			"role" : "Developer"
+		}
+	],
+	"autoload" : {
+		"psr-4" : {
+			"Gettext\\Languages\\" : "src/"
+		}
+	},
+	"require" : {
+		"php" : ">=5.3"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^4"
+	},
+	"scripts": {
+		"test": "phpunit"
+	},
+	"bin" : [
+		"bin/export-plural-rules",
+		"bin/export-plural-rules.php"
+	]
+}

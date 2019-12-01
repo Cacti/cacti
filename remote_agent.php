@@ -120,7 +120,7 @@ function debug($message) {
 	}
 }
 
-function strip_domain($host) {
+function remote_agent_strip_domain($host) {
 	if (strpos($host, '.') !== false) {
 		$parts = explode('.', $host);
 		return $parts[0];
@@ -148,14 +148,14 @@ function remote_client_authorized() {
 	if ($client_name == $client_addr) {
 		cacti_log('NOTE: Unable to resolve hostname from address ' . $client_addr, false, 'WEBUI', POLLER_VERBOSITY_MEDIUM);
 	} else {
-		$client_name = strip_domain($client_name);
+		$client_name = remote_agent_strip_domain($client_name);
 	}
 
 	$pollers = db_fetch_assoc('SELECT * FROM poller', true, $poller_db_cnn_id);
 
 	if (cacti_sizeof($pollers)) {
 		foreach($pollers as $poller) {
-			if (strip_domain($poller['hostname']) == $client_name) {
+			if (remote_agent_strip_domain($poller['hostname']) == $client_name) {
 				return true;
 			} elseif ($poller['hostname'] == $client_addr) {
 				return true;
@@ -176,6 +176,7 @@ function get_graph_data() {
 	get_filter_request_var('local_graph_id');
 	get_filter_request_var('rra_id');
 	get_filter_request_var('graph_theme', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
+	get_filter_request_var('graph_nolegend', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 	get_filter_request_var('effective_user');
 
 	$local_graph_id   = get_filter_request_var('local_graph_id');

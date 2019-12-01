@@ -75,23 +75,6 @@ function themeReady() {
 		}
 	});
 
-	$('#host').unbind().autocomplete({
-		source: pageName+'?action=ajax_hosts',
-		autoFocus: true,
-		minLength: 0,
-		select: function(event,ui) {
-			$('#host_id').val(ui.item.id);
-			callBack = $('#call_back').val();
-			if (callBack != 'undefined') {
-				eval(callBack);
-			}else if (typeof applyGraphFilter === 'function') {
-				applyGraphFilter();
-			}else{
-				applyFilter();
-			}
-		}
-	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
-
 	$('#drp_action').change(function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
@@ -110,6 +93,23 @@ function themeReady() {
 			$('#alpha').selectmenu('enable');
 		}
 	});
+
+	$('#host').unbind().autocomplete({
+		source: pageName+'?action=ajax_hosts',
+		autoFocus: true,
+		minLength: 0,
+		select: function(event,ui) {
+			$('#host_id').val(ui.item.id);
+			callBack = $('#call_back').val();
+			if (callBack != 'undefined') {
+				eval(callBack);
+			}else if (typeof applyGraphFilter === 'function') {
+				applyGraphFilter();
+			}else{
+				applyFilter();
+			}
+		}
+	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
 	$('#host_click').css('z-index', '4');
 	$('#host_wrapper').unbind().dblclick(function() {
@@ -136,6 +136,7 @@ function themeReady() {
 		$(this).removeClass('ui-state-hover');
 		$('#host').removeClass('ui-state-hover');
 		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
 	});
 
 	var hostPrefix = '';
@@ -160,9 +161,10 @@ function setMenuVisibility() {
 	storage=Storages.localStorage;
 
 	// Initialize the navigation settings
-	$('#navigation').hide();
+	// This will setup the initial visibility of the menu
 	$('li.menuitem').each(function() {
-		active = storage.get($(this).attr('id'));
+		var id = $(this).attr('id');
+		var active = storage.get(id);
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
@@ -171,21 +173,17 @@ function setMenuVisibility() {
 			$(this).next('a').hide();
 		}
 
-		if ($(this).find('a.selected').length) {
-			$('li.menuitem').not('#'+$(this).attr('id')).each(function() {
-				$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
-				$(this).next('a').hide();
-				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
-			});
-
-			if ($(this).is(':hidden')) {
-				$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
-				$(this).next('a').show();
-				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-			}
+		if ($(this).find('a.selected').length == 0) {
+			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+		} else {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+			storage.set($(this).closest('.menuitem').attr('id'), 'active');
 		}
 	});
-	$('#navigation').show();
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
@@ -196,14 +194,14 @@ function setMenuVisibility() {
 		if ($(this).next().is(':visible')){
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			storage.set(id, 'collapsed');
 		} else {
 			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
 				storage.set($(this).closest('.menuitem').attr('id'), 'active');
 			}else{
-				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+				storage.set(id, 'collapsed');
 			}
 		}
 
@@ -217,3 +215,4 @@ function setMenuVisibility() {
 		});
 	});
 }
+

@@ -114,6 +114,14 @@ $disable_log_rotation = false;
 //$php_snmp_support = false;
 
 /*
+ * Optional parameter to define the path of the csrf_secret.php path.  This
+ * variable is for packagers who wish to specify an alternate location of 
+ * the CRSF secret file.
+ */
+
+//$path_csrf_secret = '/etc/cacti/csrf-secret.php';
+
+/*
  * The following are optional variables for debugging low level system
  * functions that are generally only used by Cacti Developers to help
  * identify potential issues in commonly used functions

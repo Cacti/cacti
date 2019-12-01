@@ -137,12 +137,18 @@ function rebuild_resource_cache() {
 }
 
 function utilities_view_tech($php_info = '') {
-	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types;
+	global $database_default, $config, $rrdtool_versions, $poller_options, $input_types, $local_db_cnn_id;
 
 	/* Get table status */
-	$tables = db_fetch_assoc_prepared('SELECT *
-		FROM information_schema.tables
-		WHERE table_schema = SCHEMA()');
+	if ($config['poller_id'] == 1) {
+		$tables = db_fetch_assoc('SELECT *
+			FROM information_schema.tables
+			WHERE table_schema = SCHEMA()');
+	} else {
+		$tables = db_fetch_assoc('SELECT *
+			FROM information_schema.tables
+			WHERE table_schema = SCHEMA()', false, $local_db_cnn_id);
+	}
 
 	/* Get poller stats */
 	$poller_item = db_fetch_assoc('SELECT action, count(action) AS total
@@ -474,10 +480,12 @@ function utilities_view_tech($php_info = '') {
 		if ($memory_suggestion < 16777216) {
 			$memory_suggestion = 16777216;
 		}
+
 		/* Set maximum - 512M */
 		if ($memory_suggestion > 536870912) {
 			$memory_suggestion = 536870912;
 		}
+
 		/* Suggest values in 8M increments */
 		$memory_suggestion = round($memory_suggestion / 8388608) * 8388608;
 		if (memory_bytes(ini_get('memory_limit')) < $memory_suggestion) {
@@ -509,6 +517,7 @@ function utilities_view_tech($php_info = '') {
 			print "  <th class='tableSubHeaderColumn right'>" . __('Data Length') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn right'>" . __('Index Length') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Collation') . "</th>\n";
+			print "  <th class='tableSubHeaderColumn'>" . __('Row Format') . "</th>\n";
 			print "  <th class='tableSubHeaderColumn'>" . __('Comment') . "</th>\n";
 			print "</tr>\n";
 			print "</thead>\n";
@@ -521,6 +530,7 @@ function utilities_view_tech($php_info = '') {
 				print '<td class="right">' . number_format_i18n($table['DATA_LENGTH'], -1) . "</td>\n";
 				print '<td class="right">' . number_format_i18n($table['INDEX_LENGTH'], -1) . "</td>\n";
 				print '<td>' . $table['TABLE_COLLATION'] . "</td>\n";
+				print '<td>' . $table['ROW_FORMAT'] . "</td>\n";
 				print '<td>' . $table['TABLE_COMMENT'] . "</td>\n";
 				form_end_row();
 			}

@@ -27,6 +27,7 @@ require(__DIR__ . '/../include/cli_check.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/dsstats.php');
+require_once($config['base_path'] . '/lib/dsdebug.php');
 require_once($config['base_path'] . '/lib/boost.php');
 require_once($config['base_path'] . '/lib/rrd.php');
 
@@ -74,7 +75,7 @@ while (db_fetch_cell('SELECT count(*) FROM poller_output') > 0) {
 	$rrds_processed = $rrds_processed + process_poller_output($rrdtool_pipe, false);
 }
 
-print "There were $rrds_processed, RRD updates made this pass\n";
+print "There were $rrds_processed RRD updates made this pass\n";
 
 rrd_close($rrdtool_pipe);
 

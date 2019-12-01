@@ -402,6 +402,7 @@ function install_setup_get_tables() {
 			$collation = '';
 			$engine = '';
 			$rows = 0;
+			$row_format = '';
 
 			if ($table_status !== false) {
 				if (isset($table_status['Collation']) && $table_status['Collation'] != 'utf8mb4_unicode_ci') {
@@ -415,13 +416,18 @@ function install_setup_get_tables() {
 				if (isset($table_status['Rows'])) {
 					$rows = $table_status['Rows'];
 				}
+
+				if (isset($table_status['Row_format']) && $table_status['Row_format'] == 'Compact' && $table_status['Engine'] == 'InnoDB') {
+					$row_format = 'Dynamic';
+				}
 			}
 
-			if ($table_status === false || $collation != '' || $engine != '') {
+			if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
 				$t[$table]['Name'] = $table;
-				$t[$table]['Collation'] = $collation;
-				$t[$table]['Engine'] = $engine;
+				$t[$table]['Collation'] = $table_status['Collation'];
+				$t[$table]['Engine'] = $table_status['Engine'];
 				$t[$table]['Rows'] = $rows;
+				$t[$table]['Row_format'] = $table_status['Row_format'];
 			}
 		}
 	}
@@ -692,18 +698,10 @@ function import_colors() {
 			$name    = $parts[2];
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
-			if ($id === false) {
-				return false;
-			}
-
 			if (!empty($id)) {
-				if (!db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'")) {
-					return false;
-				}
+				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
 			} else {
-				if (!db_execute("INSERT INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')")) {
-					return false;
-				}
+				db_execute("INSERT IGNORE INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')");
 			}
 		}
 	}
@@ -894,3 +892,44 @@ function repair_automation() {
 		}
 	}
 }
+
+function install_full_sync() {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
+
+	$pinterval = read_config_option('poller_interval');
+	$gap_time  = $pinterval * 2;
+	$failed    = array();
+	$success   = array();
+
+	$poller_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT id
+			FROM poller
+			WHERE status NOT IN (0,3,4)
+			AND id > 1
+			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) < ?
+			AND disabled = ""',
+			array($gap_time)),
+		'id', 'id'
+	);
+
+	if (cacti_sizeof($poller_ids)) {
+		foreach($poller_ids as $id) {
+			if (replicate_out($id)) {
+				$success[] = $id;
+
+				db_execute_prepared('UPDATE poller
+					SET last_sync = NOW()
+					WHERE id = ?',
+					array($id));
+			} else {
+				$failed[] = $item;
+			}
+		}
+
+	}
+
+	return array('success' => $success, 'failed' => $failed);
+}
+

@@ -66,7 +66,6 @@ function imageOptionsChanged(action) {
 				setRealtimeWindowSize();
 
 				if ($('#ds_step').val() != data.ds_step) {
-					$('#ds_step').selectmenu('destroy').selectmenu();
 					$('#ds_step').val(data.ds_step);
 					if ($('#ds_step').selectmenu('instance') !== undefined) {
 						$('#ds_step').selectmenu('refresh');
@@ -76,7 +75,6 @@ function imageOptionsChanged(action) {
 				var curStart = Math.abs(data.graph_start);
 
 				if ($('#graph_start').val() != curStart) {
-					$('#graph_start').selectmenu('destroy').selectmenu();
 					$('#graph_start').val(Math.abs(data.graph_start));
 					if ($('#graph_start').selectmenu('instance') !== undefined) {
 						$('#graph_start').selectmenu('refresh');
@@ -84,7 +82,6 @@ function imageOptionsChanged(action) {
 				}
 
 				if ($('#size').val() != data.size) {
-					$('#size').selectmenu('destroy').selectmenu();
 					$('#size').val(data.size);
 					if ($('#size').selectmenu('instance') !== undefined) {
 						$('#size').selectmenu('refresh');

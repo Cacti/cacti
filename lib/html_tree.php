@@ -148,28 +148,65 @@ function grow_dhtml_trees() {
 
 	var search_to = false;
 
-        <?php
+	<?php
 	if (read_user_setting('tree_history') != 'on') {
 		print 'window.onunload = function() { localStorage.removeItem(\'graph_tree_history\'); }';
 	}
-        ?>
+	?>
 
 	function resizeTreePanel() {
 		if (theme != 'classic') {
-			docHeight  = parseInt($('body').height());
-			navigation = $('.cactiTreeNavigationArea').offset();
-			navWidth   = $('.cactiTreeNavigationArea').width();
-			navHeight  = docHeight - navigation.top + 15;
-			visWidth   = Math.max.apply(Math, $('.jstree').children(':visible').map(function() {
+			var docHeight      = $(window).outerHeight();
+			var navWidth       = $('.cactiTreeNavigationArea').width();
+			var searchHeight   = $('.cactiTreeSearch').outerHeight();
+			var pageHeadHeight = $('.cactiPageHead').outerHeight();
+			var breadCrHeight  = $('.breadCrumbBar').outerHeight();
+			var pageBottomHeight = $('.cactiPageBottom').outerHeight();
+			//console.log('----------------------');
+
+			var jsTreeHeight  = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
+				return $(this).outerHeight();
+			}).get());
+
+			var treeAreaHeight = docHeight - pageHeadHeight - breadCrHeight - searchHeight - pageBottomHeight;
+			//console.log('docHeight:' + docHeight);
+			//console.log('searchHeight:' + searchHeight);
+			//console.log('pageHeadHeight:' + pageHeadHeight);
+			//console.log('pageBottomHeight:' + pageBottomHeight);
+			//console.log('breadCrHeight:' + breadCrHeight);
+			//console.log('jsTreeHeight:' + jsTreeHeight);
+			//console.log('treeAreaHeight:' + treeAreaHeight);
+
+			$('#jstree').height(jsTreeHeight + 30);
+			$('.cactiTreeNavigationArea').height(treeAreaHeight+searchHeight);
+
+			var visWidth = Math.max.apply(Math, $('#jstree').children(':visible').map(function() {
 				return $(this).width();
 			}).get());
 
-			if (visWidth > navWidth) {
-				$('.cactiTreeNavigationArea').height(navHeight).width(visWidth);
+			var minWidth = <?php print read_user_setting('min_tree_width');?>;
+			var maxWidth = <?php print read_user_setting('max_tree_width');?>;
+
+			if (visWidth < 0) {
+				$('.cactiTreeNavigationArea').width(0);
+				$('.cactiGraphContentArea').css('margin-left', 0);
+				$('.cactiTreeNavigationArea').css('overflow-x', '');
+			} else if (visWidth < minWidth) {
+				$('.cactiTreeNavigationArea').width(minWidth);
+				$('.cactiGraphContentArea').css('margin-left', minWidth+5);
+				$('.cactiTreeNavigationArea').css('overflow-x', '');
+			} else if (visWidth > maxWidth) {
+				$('.cactiTreeNavigationArea').width(maxWidth);
+				$('.cactiGraphContentArea').css('margin-left', maxWidth+5);
+				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
+			} else if (visWidth > navWidth) {
+				$('.cactiTreeNavigationArea').width(visWidth);
 				$('.cactiGraphContentArea').css('margin-left', visWidth+5);
+				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
 			} else {
-				$('.cactiTreeNavigationArea').height(navHeight).width(navWidth);
+				$('.cactiTreeNavigationArea').width(navWidth);
 				$('.cactiGraphContentArea').css('margin-left', navWidth+5);
+				$('.cactiTreeNavigationArea').css('overflow-x', '');
 			}
 		}
 	}
@@ -222,7 +259,6 @@ function grow_dhtml_trees() {
 			})
 			.on('loaded.jstree', function() {
 				openNodes();
-				resizeTreePanel();
 			})
 			.on('ready.jstree', function() {
 				resizeTreePanel();
@@ -233,13 +269,11 @@ function grow_dhtml_trees() {
 			.on('before_open.jstree', function() {
 				checkTreeForLogout();
 			})
-			.on('open_node.jstree', function() {
-				$(window).trigger('resize');
+			.on('after_open.jstree', function() {
 				resizeTreePanel();
 				responsiveResizeGraphs();
 			})
-			.on('close_node.jstree', function() {
-				$(window).trigger('resize');
+			.on('after_close.jstree', function() {
 				resizeTreePanel();
 				responsiveResizeGraphs();
 			})
@@ -262,7 +296,6 @@ function grow_dhtml_trees() {
 
 					node = data.node.id;
 				}
-
 				resizeTreePanel();
 			})
 			.jstree({
@@ -328,14 +361,10 @@ function grow_dhtml_trees() {
 
 		$('#searcher').keyup(function() {
 			if(search_to) { clearTimeout(search_to); }
-			search_to = setTimeout(function () {
+			search_to = setTimeout(function() {
 				var v = $('#searcher').val();
 				$('#jstree').jstree('search', v, false);
 			}, 250);
-		});
-
-		$(document).resize(function() {
-			resizeTreePanel();
 		});
 
 		<?php print api_plugin_hook_function('top_graph_jquery_function');?>
@@ -438,6 +467,31 @@ function get_tree_path() {
 	}
 }
 
+function get_device_leaf_class($host_id) {
+	$status = db_fetch_cell_prepared('SELECT status FROM host WHERE id = ?', array($host_id));
+	switch($status) {
+		case HOST_DOWN:
+			$class = 'deviceDown';
+			break;
+		case HOST_RECOVERING:
+			$class = 'deviceRecovering';
+			break;
+		case HOST_UP:
+			$class = 'deviceUp';
+			break;
+		case HOST_UNKNOWN:
+			$class = 'deviceUnknown';
+			break;
+		case HOST_ERROR:
+			$class = 'deviceError';
+			break;
+		default:
+			$class = '';
+	}
+
+	return $class;
+}
+
 function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 	$dhtml_tree = array();
 
@@ -447,7 +501,7 @@ function draw_dhtml_tree_level($tree_id, $parent = 0, $editing = false) {
 		$dhtml_tree[] = "\t\t\t<ul>\n";
 		foreach ($heirarchy as $leaf) {
 			if ($leaf['host_id'] > 0) {
-				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . html_escape($leaf['hostname']) . "</li>\n";
+				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_thost:" . $leaf['host_id'] . "' data-jstree='{ \"type\" : \"device\" }'>" . html_escape(strip_domain($leaf['hostname'])) . "</li>\n";
 			} elseif ($leaf['site_id'] > 0) {
 				$dhtml_tree[] = "\t\t\t\t<li id='tbranch:" . $leaf['id'] . "_tsite:" . $leaf['site_id'] . "' data-jstree='{ \"type\" : \"site\" }'>" . html_escape($leaf['sitename']) . "</a></li>\n";
 			} elseif ($leaf['local_graph_id'] > 0) {
@@ -526,7 +580,7 @@ function create_site_branch($leaf) {
 			}
 
 			$hleaf = $leaf;
-			$hleaf['hostname'] = $d['description'];
+			$hleaf['hostname'] = strip_domain($d['description']);
 			$hleaf['host_id']  = $d['id'];
 
 			$dhtml_tree = array_merge($dhtml_tree, create_host_branch($hleaf, $leaf['site_id'], $d['host_template_id']));
@@ -583,7 +637,13 @@ function create_host_branch($leaf, $site_id = -1, $ht = -1) {
 
 	$unique_id++;
 
-	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape($leaf['hostname']) . "</a>\n";
+	if (isset($leaf['host_id']) && $leaf['host_id'] > 0) {
+		$class = get_device_leaf_class($leaf['host_id']);
+	} else {
+		$class = '';
+	}
+
+	$dhtml_tree[] = "\t\t\t\t<li id='tbranch-" . $leaf['id'] . ($site_id > 0 ? '-site-' . $site_id:'') . ($ht > 0 ? '-ht-' . $ht:'') . '-host-' . $leaf['host_id'] . '-uid-' . $unique_id . "' data-jstree='{ \"type\" : \"device\" }'><a class='$class' href=\"" . html_escape($config['url_path'] . 'graph_view.php?action=tree&node=tbranch-' . $leaf['id'] . '&host_id=' . $leaf['host_id'] . '&site_id=' . $site_id . '&host_template_id=' . $ht .'&hgd=') . '">' . html_escape(strip_domain($leaf['hostname'])) . "</a>\n";
 
 	if (read_user_setting('expand_hosts') == 'on') {
 		if ($leaf['host_grouping_type'] == HOST_GROUPING_DATA_QUERY_INDEX) {
@@ -776,7 +836,7 @@ function html_validate_tree_vars() {
 			'filter' => FILTER_VALIDATE_REGEXP,
 			'options' => array('options' => array('regexp' => '(true|false)')),
 			'pageset' => true,
-			'default' => read_user_setting('thumbnail_section_tree_2')
+			'default' => read_user_setting('thumbnail_section_tree_2') == 'on' ? 'true':'false'
 			)
 	);
 
@@ -1340,7 +1400,7 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 	}
 
 	if (!empty($leaf_id)) {
-		api_plugin_hook_function('tree_after',$host_name.','.get_request_var('leaf_id'));
+		api_plugin_hook_function('tree_after', $host_name . ',' . get_nfilter_request_var('leaf_id'));
 	}
 
 	api_plugin_hook_function('tree_view_page_end');

@@ -91,6 +91,7 @@ function aggregate_form_save() {
 	$save1['name']              = form_input_validate(get_nfilter_request_var('name'), 'name', '', false, 3);
 	$save1['graph_template_id'] = get_filter_request_var('graph_template_id_prev');
 	$save1['gprint_prefix']     = form_input_validate(get_nfilter_request_var('gprint_prefix'), 'gprint_prefix', '', true, 3);
+	$save1['gprint_format']     = isset_request_var('gprint_format') ? 'on':'';
 	$save1['graph_type']        = form_input_validate(get_nfilter_request_var('graph_type'), 'graph_type', '', false, 3);
 	$save1['total']             = form_input_validate(get_nfilter_request_var('total'), 'total', '', false, 3);
 	$save1['total_type']        = form_input_validate(get_nfilter_request_var('total_type'), 'total_type', '', false, 3);
@@ -117,8 +118,10 @@ function aggregate_form_save() {
 
 		$save_me += ($old['name']          != $save1['name']);
 		$save_me += ($old['gprint_prefix'] != $save1['gprint_prefix']);
+		$save_me += ($old['gprint_format'] != $save1['gprint_format']);
 		$save_me += ($old['graph_type']    != $save1['graph_type']);
 		$save_me += ($old['total']         != $save1['total']);
+		$save_me += ($old['total_type']    != $save1['total_type']);
 		$save_me += ($old['total_prefix']  != $save1['total_prefix']);
 		$save_me += ($old['order_type']    != $save1['order_type']);
 	} else {
@@ -130,10 +133,10 @@ function aggregate_form_save() {
 
 		/* update children of the template */
 		db_execute_prepared("UPDATE aggregate_graphs
-			SET gprint_prefix = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
+			SET gprint_prefix = ?, gprint_format = ?, graph_type = ?, total = ?, total_prefix = ?, order_type = ?
 			WHERE aggregate_template_id = ?
 			AND template_propogation='on'",
-			array($save1['gprint_prefix'], $save1['graph_type'],
+			array($save1['gprint_prefix'], $save1['gprint_format'], $save1['graph_type'],
 				$save1['total'], $save1['total_prefix'],  $save1['order_type'], $id));
 
 		cacti_log('AGGREGATE GRAPH TEMPLATE Saved ID: ' . $id, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
@@ -397,6 +400,7 @@ function aggregate_template_edit() {
 			$('#row_name').hide();
 			$('#row_spacer1').hide();
 			$('#row_gprint_prefix').hide();
+			$('#row_gprint_format').hide();
 			$('#row_graph_type').hide();
 			$('#row_total').hide();
 			$('#row_total_type').hide();

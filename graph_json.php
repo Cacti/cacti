@@ -155,7 +155,8 @@ if (!isset_request_var('image_format')) {
 $graph_data_array['image_format'] = $gtype;
 
 if ($config['poller_id'] == 1 || read_config_option('storage_location')) {
-	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+	$xport_meta = array();
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $xport_meta, $_SESSION['sess_user_id']);
 
 	ob_end_clean();
 } else {
@@ -195,18 +196,18 @@ $output = trim($output);
 $oarray = array('type' => $gtype, 'local_graph_id' => get_request_var('local_graph_id'), 'rra_id' => $rra_id);
 
 // Check if we received back something populated from rrdtool
-if ($output !== false && $output != '') {
+if ($output !== false && $output != '' && strpos($output, 'image = ') !== false) {
 	// Find the beginning of the image definition row
-	$image_begin_pos  = strpos($output, "image = ");
+	$image_begin_pos  = strpos($output, 'image = ');
 	// Find the end of the line of the image definition row, after this the raw image data will come
 	$image_data_pos   = strpos($output, "\n" , $image_begin_pos) + 1;
 	// Insert the raw image data to the array
 	$oarray['image']  = base64_encode(substr($output, $image_data_pos));
 
 	// Parse and populate everything before the image definition row
-	$header_lines     = explode("\n", substr($output, 0, $image_begin_pos - 1));
+	$header_lines = explode("\n", substr($output, 0, $image_begin_pos - 1));
 	foreach ($header_lines as $line) {
-		$parts = explode(" = ", $line);
+		$parts = explode(' = ', $line);
 		$oarray[$parts[0]] = trim($parts[1]);
 	}
 } else {
@@ -217,7 +218,8 @@ if ($output !== false && $output != '') {
 
 	$graph_data_array['get_error'] = true;
 
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+	$null_param = array();
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
 

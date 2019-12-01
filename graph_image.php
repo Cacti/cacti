@@ -129,7 +129,8 @@ if (isset_request_var('rra_id')) {
 	$rra_id = null;
 }
 
-$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+$null_param = array();
+$output = rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 if ($output !== false && $output != '') {
 	/* flush the headers now */
@@ -142,7 +143,8 @@ if ($output !== false && $output != '') {
 
 	/* get the error string */
 	$graph_data_array['get_error'] = true;
-	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array);
+	$null_param = array();
+	rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
 	$error = ob_get_contents();
 

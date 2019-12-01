@@ -52,6 +52,7 @@ function upgrade_to_1_0_0() {
 		`enabled` char(2) NOT NULL DEFAULT 'on',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table that Contains User Groups';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_perms` (
@@ -61,6 +62,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`group_id`,`item_id`,`type`),
 		KEY `group_id` (`group_id`,`type`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table that Contains User Group Permissions';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_realm` (
@@ -70,6 +72,7 @@ function upgrade_to_1_0_0() {
 		KEY `group_id` (`group_id`),
 		KEY `realm_id` (`realm_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table that Contains User Group Realm Permissions';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `user_auth_group_members` (
@@ -79,6 +82,7 @@ function upgrade_to_1_0_0() {
 		KEY `group_id` (`group_id`),
 		KEY `realm_id` (`user_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table that Contains User Group Members';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `settings_user_group` (
@@ -87,6 +91,7 @@ function upgrade_to_1_0_0() {
 		`value` varchar(2048) NOT NULL DEFAULT '',
 		PRIMARY KEY (`group_id`,`name`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Stores the Default User Group Graph Settings';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_daily` (
@@ -95,7 +100,8 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -103,7 +109,8 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_hourly_cache` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -130,7 +137,8 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_weekly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -138,7 +146,8 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_stats_yearly` (
 		`local_data_id` mediumint(8) unsigned NOT NULL,
@@ -146,7 +155,8 @@ function upgrade_to_1_0_0() {
 		`average` DOUBLE DEFAULT NULL,
 		`peak` DOUBLE DEFAULT NULL,
 		PRIMARY KEY  (`local_data_id`,`rrd_name`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost` (
 		`local_data_id` mediumint(8) unsigned NOT NULL default '0',
@@ -154,7 +164,8 @@ function upgrade_to_1_0_0() {
 		`time` timestamp NOT NULL default '0000-00-00 00:00:00',
 		`output` varchar(512) NOT NULL,
 		PRIMARY KEY USING BTREE (`local_data_id`,`rrd_name`,`time`)
-		) ENGINE=$engine;");
+		) ENGINE=$engine
+		ROW_FORMAT=Dynamic;");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `poller_output_boost_processes` (
 		`sock_int_value` bigint(20) unsigned NOT NULL auto_increment,
@@ -175,6 +186,7 @@ function upgrade_to_1_0_0() {
 		`user_id` int(10) unsigned NOT NULL default '0',
 		PRIMARY KEY  (`domain_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table to Hold Login Domains';");
 
 	if (db_table_exists('plugin_domains_ldap', false)) {
@@ -201,6 +213,7 @@ function upgrade_to_1_0_0() {
 		`specific_password` varchar(128) NOT NULL,
 		PRIMARY KEY  (`domain_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table to Hold Login Domains for LDAP';");
 
 	if (db_table_exists('plugin_snmpagent_cache', false)) {
@@ -221,6 +234,7 @@ function upgrade_to_1_0_0() {
 		KEY `name` (`name`),
 		KEY `mib` (`mib`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='SNMP MIB CACHE';");
 
 	if (db_table_exists('plugin_snmpagent_mibs', false)) {
@@ -233,6 +247,7 @@ function upgrade_to_1_0_0() {
 		`file` varchar(255) NOT NULL DEFAULT '',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Registered MIB files';");
 
 	if (db_table_exists('plugin_snmpagent_cache_notifications', false)) {
@@ -246,6 +261,7 @@ function upgrade_to_1_0_0() {
 		`sequence_id` smallint(6) NOT NULL,
 		KEY `name` (`name`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Notifcations and related attributes';");
 
 	if (db_table_exists('plugin_snmpagent_cache_textual_conventions', false)) {
@@ -260,6 +276,7 @@ function upgrade_to_1_0_0() {
 		KEY `name` (`name`),
 		KEY `mib` (`mib`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Textual conventions';");
 
 	if (db_table_exists('plugin_snmpagent_managers', false)) {
@@ -286,6 +303,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		KEY `hostname` (`hostname`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='snmp notification receivers';");
 
 	if (!db_column_exists('snmpagent_managers', 'snmp_engine_id', false)) {
@@ -305,6 +323,7 @@ function upgrade_to_1_0_0() {
 		KEY `manager_id` (`manager_id`),
 		KEY `manager_id2` (`manager_id`,`notification`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='snmp notifications to receivers';");
 
 	if (db_table_exists('plugin_snmpagent_notifications_log', false)) {
@@ -325,6 +344,7 @@ function upgrade_to_1_0_0() {
 		KEY `manager_id` (`manager_id`),
 		KEY `manager_id2` (`manager_id`,`notification`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='logs snmp notifications to receivers';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_temp` (
@@ -342,6 +362,7 @@ function upgrade_to_1_0_0() {
 		KEY in_cacti (`in_cacti`),
 		KEY data_template_id (`data_template_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='RRD Cleaner File Repository';");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_purge_action` (
@@ -352,6 +373,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		UNIQUE KEY name (`name`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='RRD Cleaner File Actions';");
 
 	db_install_add_column('graph_tree', array('name' => 'enabled', 'type' => 'char(2)', 'default' => 'on', 'after' => 'id'));
@@ -380,6 +402,7 @@ function upgrade_to_1_0_0() {
 		KEY `hostname` (`hostname`),
 		KEY `user_id` (`user_id`))
 		ENGINE=InnoDB
+		ROW_FORMAT=Dynamic
 		COMMENT='Caches Remember Me Details'");
 
 	db_install_execute("ALTER TABLE host
@@ -498,7 +521,8 @@ function upgrade_to_1_0_0() {
 		poller_id varchar(256) NOT NULL default '',
 		PRIMARY KEY  (local_data_id,rrd_name,`time`),
 		KEY poller_id(poller_id(191)))
-		ENGINE=$engine");
+		ENGINE=$engine
+		ROW_FORMAT=Dynamic");
 
 	db_install_drop_table('poller_output_rt');
 
@@ -532,6 +556,7 @@ function upgrade_to_1_0_0() {
 			PRIMARY KEY (`id`),
 			KEY `mailtime` (`mailtime`))
 			ENGINE=$engine
+			ROW_FORMAT=Dynamic
 			COMMENT='Cacri Reporting Reports'");
 
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports_items` (
@@ -554,6 +579,7 @@ function upgrade_to_1_0_0() {
 			PRIMARY KEY (`id`),
 			KEY `report_id` (`report_id`))
 			ENGINE=$engine
+			ROW_FORMAT=Dynamic
 			COMMENT='Cacti Reporting Items'");
 	} else {
 		db_install_rename_table('plugin_nectar', 'reports');
@@ -634,6 +660,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'color_template_id';
 		$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Color Templates';
 		db_table_create('plugin_aggregate_color_templates', $data);
 
@@ -653,6 +680,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'color_template_item_id';
 		$data['keys'][]    = ''; # lib/plugins.php _requires_ keys!
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Color Items for Color Templates';
 		db_table_create ('plugin_aggregate_color_template_items', $data);
 
@@ -690,6 +718,7 @@ function upgrade_to_1_0_0() {
 		$data['keys'][]    = array('name' => 'graph_template_id' , 'columns' => 'graph_template_id');
 		$data['keys'][]    = array('name' => 'user_id' , 'columns' => 'user_id');
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Template Definitions for Aggregate Graphs';
 		db_table_create ('plugin_aggregate_graph_templates', $data);
 
@@ -703,6 +732,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'aggregate_template_id`,`graph_templates_item_id';
 		$data['keys'][]    = '';
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Aggregate Template Graph Items';
 		db_table_create ('plugin_aggregate_graph_templates_item', $data);
 
@@ -727,6 +757,7 @@ function upgrade_to_1_0_0() {
 		$data['keys'][]    = array('name' => 'title_format', 'columns' => 'title_format');
 		$data['keys'][]    = array('name' => 'user_id', 'columns' => 'user_id');
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Aggregate Graph Definitions';
 		db_table_create ('plugin_aggregate_graphs', $data);
 
@@ -737,6 +768,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'aggregate_graph_id`,`local_graph_id';
 		$data['keys'][]    = '';
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Aggregate Graph Items';
 		db_table_create ('plugin_aggregate_graphs_items', $data);
 
@@ -750,6 +782,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'aggregate_graph_id`,`graph_templates_item_id';
 		$data['keys'][]    = '';
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Aggregate Graph Graph Items';
 		db_table_create ('plugin_aggregate_graphs_graph_item', $data);
 
@@ -794,6 +827,7 @@ function upgrade_to_1_0_0() {
 		$data['primary']   = 'aggregate_template_id';
 		$data['keys'][]    = '';
 		$data['type']      = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment']   = 'Aggregate Template Graph Data';
 		db_table_create ('plugin_aggregate_graph_templates_graph', $data);
 
@@ -835,6 +869,7 @@ function upgrade_to_1_0_0() {
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
 		$data['type'] = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment'] = 'Automation Match Rule Items';
 		db_table_create ('plugin_autom8_match_rule_items', $data);
 
@@ -867,6 +902,7 @@ function upgrade_to_1_0_0() {
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
 		$data['type'] = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment'] = 'Automation Graph Rules';
 		db_table_create ('plugin_autom8_graph_rules', $data);
 
@@ -890,6 +926,7 @@ function upgrade_to_1_0_0() {
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
 		$data['type'] = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment'] = 'Automation Graph Rule Items';
 		db_table_create ('plugin_autom8_graph_rule_items', $data);
 
@@ -917,6 +954,7 @@ function upgrade_to_1_0_0() {
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
 		$data['type'] = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment'] = 'Automation Tree Rules';
 		db_table_create ('plugin_autom8_tree_rules', $data);
 
@@ -941,6 +979,7 @@ function upgrade_to_1_0_0() {
 		$data['primary'] = 'id';
 		$data['keys'][] = '';
 		$data['type'] = $engine;
+		$data['row_format'] = 'Dynamic';
 		$data['comment'] = 'Automation Tree Rule Items';
 		db_table_create ('plugin_autom8_tree_rule_items', $data);
 
@@ -1049,6 +1088,7 @@ function upgrade_to_1_0_0() {
 		UNIQUE KEY `ip` (`ip`),
 		KEY `hostname` (`hostname`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Table of Discovered Devices'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_ips` (
@@ -1098,6 +1138,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		KEY `poller_id` (`poller_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Stores scanning subnet definitions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_processes` (
@@ -1119,6 +1160,7 @@ function upgrade_to_1_0_0() {
 		`name` varchar(100) NOT NULL DEFAULT '',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Group of SNMP Option Sets'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_snmp_items` (
@@ -1139,6 +1181,7 @@ function upgrade_to_1_0_0() {
 		`snmp_context` varchar(64) DEFAULT '',
 		PRIMARY KEY (`id`,`snmp_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Set of SNMP Options'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
@@ -1151,6 +1194,7 @@ function upgrade_to_1_0_0() {
 		`sequence` int(10) unsigned DEFAULT '0',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
 	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')");
@@ -1259,6 +1303,7 @@ function upgrade_to_1_0_0() {
 	$data['primary']   = 'id';
 	$data['comment']   = 'Used for Database based Session Storage';
 	$data['type'] = $engine;
+	$data['row_format'] = 'Dynamic';
 	db_table_create('sessions', $data);
 
 	/* create new table VDEF */
@@ -1269,6 +1314,7 @@ function upgrade_to_1_0_0() {
 	$data['primary']   = 'id';
 	$data['comment']   = 'vdef';
 	$data['type'] = $engine;
+	$data['row_format'] = 'Dynamic';
 	db_table_create('vdef', $data);
 
 	/* create new table VDEF_ITEMS */
@@ -1283,6 +1329,7 @@ function upgrade_to_1_0_0() {
 	$data['keys'][] = array('name' => 'vdef_id', 'columns' => 'vdef_id');
 	$data['comment']   = 'vdef items';
 	$data['type'] = $engine;
+	$data['row_format'] = 'Dynamic';
 	db_table_create('vdef_items', $data);
 
 	/* fill table VDEF */
@@ -1324,6 +1371,7 @@ function upgrade_to_1_0_0() {
 		`default` char(2) DEFAULT '',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Stores Data Source Profiles'");
 
 
@@ -1333,6 +1381,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`data_source_profile_id`,`consolidation_function_id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Maps the Data Source Profile Consolidation Functions'");
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `data_source_profiles_rra` (
@@ -1344,6 +1393,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (`id`),
 		KEY `data_source_profile_id` (`data_source_profile_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Stores RRA Definitions for Data Source Profiles'");
 
 	/* get the current data source profiles */
@@ -1461,6 +1511,7 @@ function upgrade_to_1_0_0() {
 		PRIMARY KEY (id),
 		UNIQUE KEY path (path))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Caches all scripts, resources files, and plugins'");
 
 	db_install_add_column('host', array('name' => 'poller_id', 'type' => 'INT UNSIGNED', 'default' => '0', 'after' => 'id'));
@@ -1503,6 +1554,7 @@ function upgrade_to_1_0_0() {
 			`extendedstyle` varchar(50) NOT NULL DEFAULT '',
 			PRIMARY KEY (`id`))
 			ENGINE=$engine
+			ROW_FORMAT=Dynamic
 			COMMENT='Stores External Link Information'");
 	}
 
@@ -1528,6 +1580,7 @@ function upgrade_to_1_0_0() {
 		KEY `country` (`country`),
 		KEY `alternate_id` (`alternate_id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Contains information about customer sites';");
 
 	db_install_add_column('host', array('name' => 'site_id', 'type' => 'INT UNSIGNED', 'NULL' => false, 'default' => '0', 'after' => 'poller_id'));
@@ -1556,6 +1609,7 @@ function upgrade_to_1_0_0() {
 		`last_status` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 		PRIMARY KEY (`id`))
 		ENGINE=$engine
+		ROW_FORMAT=Dynamic
 		COMMENT='Pollers for Cacti'");
 
 	db_install_execute('INSERT INTO poller (id, name, hostname) VALUES (1, "Main Poller", "' . php_uname('n') . '")');
@@ -1648,6 +1702,7 @@ function upgrade_to_1_0_0() {
 		`last_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 		PRIMARY KEY (`data_template_id`,`data_name`,`data_source_names`))
 		ENGINE=InnoDB
+		ROW_FORMAT=Dynamic
 		COMMENT='Tracks mapping of Data Templates to their Data Source Names'");
 
 	db_install_execute("INSERT IGNORE INTO poller_data_template_field_mappings

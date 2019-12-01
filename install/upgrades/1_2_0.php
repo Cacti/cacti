@@ -103,6 +103,8 @@ function upgrade_to_1_2_0() {
 			KEY `done` (`done`),
 			KEY `datasource` (`datasource`),
 			KEY `started` (`started`))
+			ROW_FORMAT=Dynamic
+			ENGINE=InnoDB
 			COMMENT = 'Datasource Debugger Information';");
 	}
 
