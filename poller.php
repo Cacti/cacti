@@ -784,6 +784,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 /* start post data processing */
 if ($poller_id == 1) {
+	multiple_poller_boost_check();
 	poller_replicate_check();
 	snmpagent_poller_bottom();
 	boost_poller_bottom();
@@ -946,6 +947,15 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	snmpagent_cacti_stats_update($perf_data);
 
 	api_plugin_hook_function('cacti_stats_update', $perf_data);
+}
+
+function multiple_poller_boost_check() {
+	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
+
+	if ($pollers > 0) {
+		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_rrd_update_system_enable', 'on');
+	}
 }
 
 /**
