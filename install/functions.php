@@ -865,3 +865,44 @@ function repair_automation() {
 		}
 	}
 }
+
+function install_full_sync() {
+	global $config;
+
+	include_once($config['base_path'] . '/lib/poller.php');
+
+	$pinterval = read_config_option('poller_interval');
+	$gap_time  = $pinterval * 2;
+	$failed    = array();
+	$success   = array();
+
+	$poller_ids = array_rekey(
+		db_fetch_assoc_prepared('SELECT id
+			FROM poller
+			WHERE status NOT IN (0,3,4)
+			AND id > 1
+			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) < ?
+			AND disabled = ""',
+			array($gap_time)),
+		'id', 'id'
+	);
+
+	if (cacti_sizeof($poller_ids)) {
+		foreach($poller_ids as $id) {
+			if (replicate_out($id)) {
+				$success[] = $id;
+
+				db_execute_prepared('UPDATE poller
+					SET last_sync = NOW()
+					WHERE id = ?',
+					array($id));
+			} else {
+				$failed[] = $item;
+			}
+		}
+
+	}
+
+	return array('success' => $success, 'failed' => $failed);
+}
+
