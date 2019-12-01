@@ -671,18 +671,10 @@ function import_colors() {
 			$name    = $parts[2];
 
 			$id = db_fetch_cell("SELECT hex FROM colors WHERE hex='$hex'");
-			if ($id === false) {
-				return false;
-			}
-
 			if (!empty($id)) {
-				if (!db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'")) {
-					return false;
-				}
+				db_execute("UPDATE colors SET name='$name', read_only='on' WHERE hex='$hex'");
 			} else {
-				if (!db_execute("INSERT INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')")) {
-					return false;
-				}
+				db_execute("INSERT IGNORE INTO colors (name, hex, read_only) VALUES ('$name', '$hex', 'on')");
 			}
 		}
 	}

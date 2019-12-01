@@ -62,6 +62,7 @@ Compact format instead of Dynamic
 -issue#3118: When upgrading Cacti the convert_tables.php script should use dyanmic row format
 -issue#3120: PHP 7.4 Compatibility Issues
 -issue#3121: When converting tables during install, show what will be changed
+-issue#3123: Names colors not importing on upgrades from 0.8.x
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
