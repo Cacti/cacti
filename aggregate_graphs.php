@@ -148,6 +148,7 @@ function form_save() {
 		$save['aggregate_template_id'] = $aggregate_template_id;
 		$save['template_propogation']  = '';
 		$save['gprint_prefix']         = get_nfilter_request_var('gprint_prefix');
+		$save['gprint_format']         = isset_request_var('gprint_format') ? 'on':'';
 		$save['total_prefix']          = get_nfilter_request_var('total_prefix');
 
 		$save['total']                 = get_filter_request_var('total');
@@ -167,6 +168,7 @@ function form_save() {
 			$save_me += ($old['aggregate_template_id'] != $save['aggregate_template_id']);
 			$save_me += ($old['template_propogation']  != $save['template_propogation']);
 			$save_me += ($old['gprint_prefix']         != $save['gprint_prefix']);
+			$save_me += ($old['gprint_format']         != $save['gprint_format']);
 			$save_me += ($old['graph_type']            != $save['graph_type']);
 			$save_me += ($old['total']                 != $save['total']);
 			$save_me += ($old['total_type']            != $save['total_type']);
@@ -803,6 +805,7 @@ function graph_edit() {
 
 			var templated_selectors = [
 				'#gprint_prefix',
+				'#gprint_format',
 				'#graph_type',
 				'#total',
 				'#total_type',

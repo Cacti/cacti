@@ -28,4 +28,8 @@ function upgrade_to_1_2_8() {
 	db_install_execute('ALTER TABLE host_snmp_cache ADD INDEX snmp_index(snmp_index), ADD INDEX field_value(field_value)');
 	db_install_execute('ALTER TABLE data_local DROP INDEX snmp_index, ADD INDEX snmp_index(snmp_index)');
 	db_install_execute('ALTER TABLE graph_local DROP INDEX snmp_index, ADD INDEX snmp_index(snmp_index)');
+
+	// Needed to fix aggregate bug
+	db_install_execute('ALTER TABLE aggregate_graph ADD COLUMN gprint_format CHAR(2) default "" AFTER gprint_prefix');
+	db_install_execute('ALTER TABLE aggregate_graph_templates ADD COLUMN gprint_format CHAR(2) default "" AFTER gprint_prefix');
 }

@@ -185,6 +185,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  * @param array $_cdefs					- cdef_ids to override cdef from original graph item
  * @param int $_graph_type				- conversion to AREA/STACK or LINE required?
  * @param int $_gprint_prefix			- prefix for the legend line
+ * @param int $_gprint_format			- flag to determine if the source graphs GPRINT title should be included
  * @param int $_total					- Totalling: graph items AND/OR legend
  * @param int $_total_type				- Totalling: SIMILAR/ALL data sources
  * @param array $member_graph			- Totalling: Used for determining the consolidation function id
@@ -192,7 +193,7 @@ function aggregate_graph_templates_graph_save($local_graph_id, $graph_template_i
  *  */
 function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_graph_template_id,
 	$_skip, $_totali, $_graph_item_sequence, $_selected_graph_index, $_color_templates, $_graph_item_types, $_cdefs,
-	$_graph_type, $_gprint_prefix, $_total, $_total_type = '', $member_graphs = array()) {
+	$_graph_type, $_gprint_prefix, $_gprint_format, $_total, $_total_type = '', $member_graphs = array()) {
 
 	global $struct_graph_item, $graph_item_types, $config;
 
@@ -297,7 +298,6 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					# we need this entry as a DEF
 					# and as long as cacti does not provide for a 'pure DEF' graph item type
 					# we need this workaround
-					//$temp_text_format = $graph_item['text_format'];
 					$graph_item['text_format'] = '';
 
 					# make sure, that this entry does not have a HR,
@@ -327,8 +327,10 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 
 				if ($_total_type == AGGREGATE_TOTAL_TYPE_ALL) {
 					$graph_item['text_format'] = $_gprint_prefix;
-				} else {
+				} elseif ($_gprint_format != '') {
 					$graph_item['text_format'] = $_gprint_prefix . ' ' . $graph_item['text_format'];
+				} else {
+					$graph_item['text_format'] = $_gprint_prefix;
 				}
 			}
 
@@ -388,7 +390,11 @@ function aggregate_graphs_insert_graph_items($_new_graph_id, $_old_graph_id, $_g
 					}
 
 					# pointless to add any data source item name here, cause ALL are totaled
-					$save['text_format'] = $graph_item['text_format'];
+					if ($_gprint_format != '') {
+						$save['text_format'] = $graph_item['text_format'];
+					} else {
+						$save['text_format'] = '';
+					}
 
 					# no more prepending until next line break is encountered
 					$prepend = false;
@@ -859,6 +865,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$template_data                   = db_fetch_row_prepared('SELECT * FROM aggregate_graphs WHERE id = ?', array($id));
 		$attribs['graph_template_id']    = $template_data['graph_template_id'];
 		$attribs['gprint_prefix']        = $template_data['gprint_prefix'];
+		$attribs['gprint_format']        = $template_data['gprint_format'];
 		$attribs['graph_type']           = $template_data['graph_type'];
 		$attribs['total']                = $template_data['total'];
 		$attribs['total_type']           = $template_data['total_type'];
@@ -928,6 +935,7 @@ function push_out_aggregates($aggregate_template_id, $local_graph_id = 0) {
 		$attribs['template_propogation'] = 'on';
 		$attribs['graph_template_id']    = $template_data['graph_template_id'];
 		$attribs['gprint_prefix']        = $template_data['gprint_prefix'];
+		$attribs['gprint_format']        = $template_data['gprint_format'];
 		$attribs['graph_type']           = $template_data['graph_type'];
 		$attribs['total']                = $template_data['total'];
 		$attribs['total_type']           = $template_data['total_type'];
@@ -1010,6 +1018,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		$aggregate_graph      = (isset($attribs['aggregate_graph_id']) ? $attribs['aggregate_graph_id']:0);
 		$template_propogation = (isset($attribs['template_propogation']) ? $attribs['template_propogation']:'on');
 		$gprint_prefix        = (isset($attribs['gprint_prefix']) ? $attribs['gprint_prefix']:'');
+		$gprint_format        = (isset($attribs['gprint_format']) ? $attribs['gprint_format']:'');
 		$_graph_type          = (isset($attribs['graph_type']) ? $attribs['graph_type']:0);
 		$_total               = (isset($attribs['total']) ? $attribs['total']:0);
 		$_total_type          = (isset($attribs['total_type']) ? $attribs['total_type']:0);
@@ -1052,6 +1061,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 		$save1['local_graph_id']    = $local_graph_id;
 		$save1['graph_template_id'] = $graph_template_id;
 		$save1['gprint_prefix']     = $gprint_prefix;
+		$save1['gprint_format']     = $gprint_format;
 		$save1['graph_type']        = $_graph_type;
 		$save1['total']             = $_total;
 		$save1['total_type']        = $_total_type;
@@ -1093,6 +1103,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 				$cdefs,
 				$_graph_type,
 				$gprint_prefix,
+				$gprint_format,
 				$_total,
 				'',
 				$member_graphs);
@@ -1189,6 +1200,7 @@ function aggregate_create_update(&$local_graph_id, $member_graphs, $attribs) {
 					$cdefs,
 					$_graph_type, #TODO: user may choose LINEx instead of assuming LINE1
 					$gprint_prefix,
+					$gprint_format,
 					AGGREGATE_TOTAL_ALL, # now add the totalling line(s)
 					$_total_type,
 					$member_graphs);
