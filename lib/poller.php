@@ -1467,12 +1467,12 @@ function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $f
 		$sql_where1 .= ' AND snmp_query_id = ' . $data_query_id;
 	}
 
-	if (!$force) {
-		// Give the snmp query upto an hour to run
-		$min_reindex_cache = db_fetch_cell("SELECT MIN(UNIX_TIMESTAMP(last_updated)-3600)
-			FROM host_snmp_cache
-			$sql_where");
+	// Give the snmp query upto an hour to run
+	$min_reindex_cache = db_fetch_cell("SELECT MIN(UNIX_TIMESTAMP(last_updated)-3600)
+		FROM host_snmp_cache
+		$sql_where");
 
+	if (!$force) {
 		$recache_hosts = array_rekey(
 			db_fetch_assoc_prepared("SELECT DISTINCT host_id
 				FROM host_snmp_cache
