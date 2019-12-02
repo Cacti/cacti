@@ -35,7 +35,7 @@ function upgrade_to_1_2_8() {
 	}
 
 	if (!db_column_exists('aggregate_graph_templates', 'gprint_format')) {
-		db_install_execute('ALTER IGNORE TABLE aggregate_graph_templates ADD COLUMN gprint_format CHAR(2) default "" AFTER gprint_prefix');
+		db_install_execute('ALTER TABLE aggregate_graph_templates ADD COLUMN gprint_format CHAR(2) default "" AFTER gprint_prefix');
 	}
 
 	// Reimport colors
