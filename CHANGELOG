@@ -66,6 +66,7 @@ Compact format instead of Dynamic
 -issue#3123: Names colors not importing on upgrades from 0.8.x
 -issue#3124: When a second data collector is added to Cacti, boost is not enabled automatically
 -issue#3128: Performance: i18n handler use 100% cpu and huge memory for non-en locale
+-issue#3129: After automatic logout, logout repeats periodically
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
