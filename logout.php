@@ -53,4 +53,3 @@ html_auth_header('logout',__('Logout of Cacti'), __('Automatic Logout'), __('You
 			</tr>
 <?php
 html_auth_footer('logout', __('Cookies have been cleared'), '');
-

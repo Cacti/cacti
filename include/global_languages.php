@@ -139,7 +139,7 @@ if ($plugins && cacti_sizeof($plugins)) {
 	foreach ($plugins as $plugin) {
 		$plugin = $plugin['directory'];
 
-		if (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
+		if (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo')) {
 			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $cacti_locale . '.mo';
 		} elseif (file_exists($config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo')) {
 			$path2catalogue = $config['base_path'] . '/plugins/' . $plugin . '/locales/LC_MESSAGES/' . $lang2locale[$cacti_locale]['filename'] . '.mo';
