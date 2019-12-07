@@ -30,7 +30,7 @@ Cacti CHANGELOG
 -issue#3035: Cannot Delete Tree Entries
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
 -issue#3039: Allow packagers to be able to specify an alternate location of csrf-secret.php file
--issue#3040: AUTOM8 discovery starts even if you click cancel 
+-issue#3040: AUTOM8 discovery starts even if you click cancel
 -issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
 -issue#3042: AUTOM8 Scan hangs when selecting remote poller
 -issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
@@ -40,8 +40,7 @@ Cacti CHANGELOG
 -issue#3053: CMDPHP Validation Error - thumbnails in Graph View
 -issue#3055: Installer database connection checks for remote pollers
 -issue#3059: function nth_percentile does not return right value when datasource use cf = MAX
--issue#3060: New tables on some MariaDB versions are created by default using
-Compact format instead of Dynamic
+-issue#3060: New tables on some MariaDB versions are created by default using Compact format instead of Dynamic
 -issue#3061: AUTOM8 should allow SNMP as a ping method for networks that have devices that dont respond to a ping
 -issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
 -issue#3070: Improve database logging when a crashed table is encountered
@@ -52,7 +51,7 @@ Compact format instead of Dynamic
 -issue#3085: It is possible to have the same IP address for the remote and main pollers causing synchronization issues
 -issue#3081: External Links are not showing a glyph when they appear on the Console menu
 -issue#3089: Errors after sync to 1.2.x
--issue#3099: The vertical_label unit kilobytes is wrong on graph template 'Linux - Memory Usage' 
+-issue#3099: The vertical_label unit kilobytes is wrong on graph template 'Linux - Memory Usage'
 -issue#3101: Poller.php polling... too fast?!
 -issue#3104: PHP Fatal error: Uncaught Error: Cannot pass parameter 5 by reference in graph_json.php:158
 -issue#3105: Request variable delete_type not validated in host.php resulting in warnings
@@ -67,6 +66,7 @@ Compact format instead of Dynamic
 -issue#3124: When a second data collector is added to Cacti, boost is not enabled automatically
 -issue#3128: Performance: i18n handler use 100% cpu and huge memory for non-en locale
 -issue#3129: After automatic logout, logout repeats periodically
+-issue#3132: Installer fails to continue if automation range is array of networks
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs
