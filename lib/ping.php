@@ -169,7 +169,7 @@ class Net_Ping
 				if (strpos($this->host['hostname'], ':') !== false) {
 					$result = shell_exec('ping6 -X ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				}
-				else    {
+				else {
 					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				}
 			} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
