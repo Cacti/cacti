@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -feature#2474: Enable better version reporting for GitHub/Source/Package editions
 -feature#2550: Enable use of authenticator codes for Two-Factor Authentication
 -feature#2607: Allow adding sites from command line
+-feature#3139: Added option in CLI tool remove_graphs for deletion of single graph
 -issue#3066: Enable the secure flag on cookies when HTTPS is enabled.
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
 
