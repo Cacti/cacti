@@ -167,10 +167,10 @@ class Net_Ping
 			} elseif (substr_count(strtolower(PHP_OS), 'mac')) {
 				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 			} elseif (substr_count(strtolower(PHP_OS), 'freebsd')) {
-				if (strpos($host_ip, ':') !== false) {
-					$result = shell_exec('ping6 -x ' . $this->timeout . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+				if (strpos($this->host['hostname'], ':') !== false) {
+					$result = shell_exec('ping6 -X ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				} else {
-					$result = shell_exec('ping -W ' . $this->timeout . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
+					$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
 				}
 			} elseif (substr_count(strtolower(PHP_OS), 'darwin')) {
 				$result = shell_exec('ping -t ' . ceil($this->timeout/1000) . ' -c ' . $this->retries . ' ' . $this->host['hostname']);
