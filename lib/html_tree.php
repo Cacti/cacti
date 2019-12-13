@@ -187,11 +187,7 @@ function grow_dhtml_trees() {
 			var minWidth = <?php print read_user_setting('min_tree_width');?>;
 			var maxWidth = <?php print read_user_setting('max_tree_width');?>;
 
-			if (visWidth < 0) {
-				$('.cactiTreeNavigationArea').width(0);
-				$('.cactiGraphContentArea').css('margin-left', 0);
-				$('.cactiTreeNavigationArea').css('overflow-x', '');
-			} else if (visWidth < minWidth) {
+			if (visWidth < minWidth) {
 				$('.cactiTreeNavigationArea').width(minWidth);
 				$('.cactiGraphContentArea').css('margin-left', minWidth+5);
 				$('.cactiTreeNavigationArea').css('overflow-x', '');
