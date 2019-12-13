@@ -43,7 +43,7 @@ if (cacti_sizeof($parms)) {
 	$host_ids            = array();
 	$graph_template_ids  = array();
 	$regex               = array();
-        $graph_ids           = array();
+	$graph_ids           = array();
 	
 	$graphTemplates      = getGraphTemplates();
 	$hostTemplates       = getHostTemplates();
@@ -64,7 +64,7 @@ if (cacti_sizeof($parms)) {
 		'graph-type::',
 		'graph-template-id::',
 		'host-template-id::',
-                'graph-id::',
+		'graph-id::',
 		'graph-regex::',
 		'preserve',
 		'quiet',
@@ -114,13 +114,13 @@ if (cacti_sizeof($parms)) {
 
 			break;
 		case 'graph-id':
-                        if (!is_array($value)) {
-                                $value = array($value);
-                        }
+			if (!is_array($value)) {
+				$value = array($value);
+			}
 
-                        $graph_ids = $value;
+			$graph_ids = $value;
 
-                        break;
+			break;
 		case 'host-id':
 			if (!is_array($value)) {
 				$value = array($value);
