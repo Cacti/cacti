@@ -11,72 +11,72 @@ Cacti CHANGELOG
 -issue#3141: Fix FreeBSD IPv6 ping
 
 1.2.8
--security#3025: CVE-2019-17357 SQL Injection in graphs.php
--security#3026: CVE-2109-17358 Unsafe deserialization in of selected objects in Cacti
--security#3067: Enable the secure flag on cookies when HTTPS is enabled.
--feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
+-security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
+-security#3026: CVE-2019-17358 When deserializating data, ensure basic sanitization has been performed
+-security#3066: When using HTTPS, secure cookie to prevent potential weakness
 -issue#1228: Any tree or branch with a long name force main content off screen
 -issue#2133: Long snmp_indexes are being cut off
 -issue#2888: Long hostnames cause template filter to go off page
 -issue#2987: Changing Color Template does not update Aggregate
 -issue#2989: Allow Remote Data Collectors to maintain their own path variables
--issue#2991: Cacti Statistics Device Template Generates Errors for Graph Export Graph
--issue#2995: Tree Branch Report only displays single column - not multi column
--issue#2996: User Graph Options - Rights value not shown correctly
+-issue#2991: Cacti Statistics device template can generate unexpected errors
+-issue#2995: When editing a report, column setting may be ignored incorrectly
+-issue#2996: When editing a user, graph options do not properly reflect previously saved settings
 -issue#2998: Session performance issues due to excessive use for database storage
 -issue#2999: Blank arguments can lead to extra spaces in script arguments
 -issue#3006: Boost generates undefined variables warning during poller run
--issue#3011: i18n logging does not check write permission exists causing runtime warnings
--issue#3012: Some graph routines are not properly validating incoming variables
+-issue#3011: i18n logging does not check write permission exists
+-issue#3012: When viewing realtime graphs, some input variables are not properly checked
 -issue#3013: Allow legends to be modified for Aggregate Graphs
 -issue#3017: Automation network range with spaces fails validation
--issue#3019: user_language will not take effect if user_language is different with browser locale
+-issue#3019: User selected language is not always adhered to
 -issue#3021: Tree view cuts off at the bottom of page on modern theme
--issue#3023: Ellipsis-TopTab and Graphs-->SubMenu continuously reload page instead of show/hide menu. Automatically close Graphs-->SubMenu, Ellipsis-TopTab, and Help/User menu.
+-issue#3023: When clicking highlighted tab, side panel is not always shown/hidden correctly
 -issue#3027: Aggregate Graph re-ordering does not work
--issue#3028: Graph Zooming to edge of timespan
+-issue#3028: When zooming a graph, unable to reach edge of graph without losing focus
 -issue#3030: Pace continues to run even after a page is finished rendering
--issue#3032: Graph always shows 'MAX' CF for LINE graph instead of AVERAGE/MIN/LAST
--issue#3035: Cannot Delete Tree Entries
+-issue#3032: Graphs may select MAX instead of AVERAGE as consolidation function even if there is no item with MAX present.
+-issue#3035: When editing a tree, can not remove entries due to CSS bug
 -issue#3037: When emptying poller output using cli, debug functions are not properly included
 -issue#3039: Allow packagers to be able to specify an alternate location of csrf-secret.php file
--issue#3040: AUTOM8 discovery starts even if you click cancel 
--issue#3041: AUTOM8 network scan continues to run infinetly even when cancelled
--issue#3042: AUTOM8 Scan hangs when selecting remote poller
+-issue#3040: When running automation, discovery can still run even if cancelled
+-issue#3041: When running automation, scans do not always respond to being cancelled
+-issue#3042: When running automation, scan can fail when selecting remote pollers
 -issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
 -issue#3047: When saving settings, ignore remote pollers who have not checked in recently
--issue#3050: Improper validation call prior to plugin call
--issue#3052: Slow Response Loading CDEFs
--issue#3053: CMDPHP Validation Error - thumbnails in Graph View
--issue#3055: Installer database connection checks for remote pollers
--issue#3059: function nth_percentile does not return right value when datasource use cf = MAX
--issue#3060: New tables on some MariaDB versions are created by default using
-Compact format instead of Dynamic
--issue#3061: AUTOM8 should allow SNMP as a ping method for networks that have devices that dont respond to a ping
--issue#3068: Input Validation Not Performed for id Backtrace: user_admin.php
+-issue#3050: When viewing graph trees, some input variables are not properly checked
+-issue#3052: When editing CDEF's, slow database performance can occur
+-issue#3053: When viewing graph thumbnails, some input variables are not properly checked
+-issue#3055: During install/upgrade, database tests are not performed correctly
+-issue#3059: When using nth_percentile, correct value is not always returned if using MAX consolidation
+-issue#3060: When upgrading from older MySQL databases, format is not changed from compact to dynamic
+-issue#3061: When running automation, allow SNMP to be used as a ping method
+-issue#3068: When administrating users, some input variables are not properly checked
 -issue#3070: Improve database logging when a crashed table is encountered
--issue#3073: autom8 network range treats start and end as network and broadcast
--issue#3078: File not found warnings when viewing graph debug from remote data collector
--issue#3079: Allow for domain names to be stripped from long device descriptions
+-issue#3073: Automation network range does not always produce the correct start/end values
+-issue#3078: When viewing graph debug from remote data collector, File Not Found warnings can appear incorrectly
+-issue#3079: Allow domain names to be stripped from a device's long description
 -issue#3080: Remote Agent throws warnings that graph_nolegend has not been sanitized
--issue#3085: It is possible to have the same IP address for the remote and main pollers causing synchronization issues
+-issue#3085: When editing a poller, ensure each listening IP is unique
 -issue#3081: External Links are not showing a glyph when they appear on the Console menu
--issue#3089: Errors after sync to 1.2.x
--issue#3099: The vertical_label unit kilobytes is wrong on graph template 'Linux - Memory Usage' 
--issue#3101: Poller.php polling... too fast?!
--issue#3104: PHP Fatal error: Uncaught Error: Cannot pass parameter 5 by reference in graph_json.php:158
--issue#3105: Request variable delete_type not validated in host.php resulting in warnings
--issue#3111: When updating an old Cacti version, the add_device.php will fail due to a bad snmp-version column
--issue#3112: Zooming results in 2x the number of image requests
--issue#3114: storage graphs for usb devices no longer change devices on reboot.
--issue#3118: When upgrading Cacti the convert_tables.php script should use dyanmic row format
--issue#3119: After Installing Cacti on Main Data Collector, Full Sync should be performed
--issue#3120: PHP 7.4 Compatibility Issues
+-issue#3089: When viewing graphs in realtime, undefined variable can be logged for 95th Percentile graphs
+-issue#3099: Graph template 'Linux - Memory Usage' has the wrong unit on its vertical_label
+-issue#3101: Polling times can be slightly inconsistent due
+-issue#3104: When viewing graphs, a byref error can be seen in the error logs
+-issue#3105: When viewing hosts, some input variables are not properly checked
+-issue#3111: When adding devices via command line, bad SNMP versions are not reported
+-issue#3112: When zooming on Graphs, too many requests are being made causing slowness
+-issue#3114: Support for USB devices that change name due to their hosts restarting
+-issue#3118: When converting tables, the dynamic row format should be selected
+-issue#3119: Main Data Collector should perform a Full Sync whenever it is installed/upgraded
+-issue#3120: Correct issues causing incompatibility with PHP 7.4
 -issue#3121: When converting tables during install, show what will be changed
--issue#3123: Names colors not importing on upgrades from 0.8.x
--issue#3124: When a second data collector is added to Cacti, boost is not enabled automatically
--issue#3128: Performance: i18n handler use 100% cpu and huge memory for non-en locale
--issue#3129: After automatic logout, logout repeats periodically
+-issue#3123: Named colors table is not properly imported/upgraded
+-issue#3124: When a second data collector is added, boost is not enabled automatically
+-issue#3128: i18n handler checks for existence of wrong mo file
+-issue#3129: Logout repeated occurs even when already logged out
+-issue#3132: Installer fails to continue if automation range is array of networks
+-feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
 
 1.2.7
 -security#2964: CVE-2019-16723 Security issue allows to view all graphs

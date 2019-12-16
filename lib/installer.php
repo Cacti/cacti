@@ -881,14 +881,23 @@ class Installer implements JsonSerializable {
 	 *         invalid value is passed */
 	private function setAutomationRange($param_range = null) {
 		if (!empty($param_range)) {
-			$ip_details = cacti_pton($param_range);
-			if ($ip_details === false) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply specified Automation Range'));
-			} else {
+			$param_array = explode(",", $param_range);
+
+			if (cacti_sizeof($param_array)) {
+				foreach ($param_array as $param_network) {
+					$ip_details = automation_get_network_info($param_network);
+					if ($ip_details === false) {
+						$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply \'%s\' as Automation Range', $param_network));
+					}
+				}
 				$this->automationRange = $param_range;
 				set_config_option('install_automation_range', $param_range);
 			}
+		} else {
+			$param_range = '';
+			$this->automationRange = $param_range;
 		}
+
 		log_install_medium('automation',"setAutomationRange($param_range) returns with $this->automationRange");
 	}
 

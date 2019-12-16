@@ -102,12 +102,12 @@ if ($poller_id < 0) {
 
 if (sizeof($pollers)) {
 	foreach ($pollers as $poller) {
-		replicate_out($poller['id'], $class);
-
 		db_execute_prepared('UPDATE poller
 			SET last_sync = NOW(), requires_sync=""
 			WHERE id = ?',
 			array($poller['id']));
+
+		replicate_out($poller['id'], $class);
 
 		cacti_log('STATS: Poller ID ' . $poller['id'] . ' fully Replicated', false, 'POLLER');
 	}
