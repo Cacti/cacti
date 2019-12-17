@@ -552,7 +552,7 @@ function load_audit_database() {
 	if (is_dir($config['base_path'] . '/docs')) {
 		print PHP_EOL . 'Exporting Table Audit Table Creation Logic to ' . $config['base_path'] . '/docs/audit_schema.sql' . PHP_EOL;
 
-		exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' cacti table_columns table_indexes > ' . $config['base_path'] . '/docs/audit_schema.sql');
+		exec('mysqldump -u' . $database_username . ' -p' . $database_password . ' ' . $database_default . ' table_columns table_indexes --extended-insert=FALSE > ' . $config['base_path'] . '/docs/audit_schema.sql');
 
 		print 'Finished Creating Audit Schema' . PHP_EOL . PHP_EOL;
 	} else {
