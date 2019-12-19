@@ -709,7 +709,7 @@ function applySkin() {
 	});
 
 	$(document).tooltip({
-		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span, .checkboxSlider',
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, .checkboxSlider',
 		content: function() {
 			var element = $(this);
 
