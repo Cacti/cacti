@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.9
 -issue#3146: Unable to create aggregate graphs on new installations
+-issue#3151: Passing glue string after array is depreciated (PHP 7.4)
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
