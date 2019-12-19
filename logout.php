@@ -46,11 +46,11 @@ if (api_plugin_hook_function('custom_logout_message', OPER_MODE_NATIVE) === OPER
 
 /* Check to see if we are using Web Basic Auth */
 if (get_request_var('action') == 'timeout') {
-	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-	print "<html>\n";
-	print "<head>\n";
+	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
+	print "<html>";
+	print "<head>";
 	html_common_header(__('Logout of Cacti'));
-	print "</head>\n";
+	print "</head>";
 	print "<body class='logoutBody'>
 	<div class='logoutLeft'></div>
 	<div class='logoutCenter'>
@@ -68,21 +68,25 @@ if (get_request_var('action') == 'timeout') {
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
 	$(function() {
+		if (typeof myRefresh != 'undefined') {
+			clearTimeout(myRefresh);
+		}
+
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
 	</script>";
 	include('./include/global_session.php');
 	print "</body>
-	</html>\n";
+	</html>";
 } elseif (read_config_option('auth_method') == '2') {
 	clear_auth_cookie();
 
-	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>\n";
-	print "<html>\n";
-	print "<head>\n";
+	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
+	print "<html>";
+	print "<head>";
 	html_common_header(__('Logout of Cacti'));
-	print "</head>\n";
+	print "</head>";
 	print "<body class='logoutBody'>
 	<div class='logoutLeft'></div>
 	<div class='logoutCenter'>
@@ -99,13 +103,17 @@ if (get_request_var('action') == 'timeout') {
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>
 	$(function() {
+		if (typeof myRefresh != 'undefined') {
+			clearTimeout(myRefresh);
+		}
+
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
 	});
 	</script>";
 	include('./include/global_session.php');
 	print "</body>
-	</html>\n";
+	</html>";
 } else {
 	/* Default action */
 	clear_auth_cookie();

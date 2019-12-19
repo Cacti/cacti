@@ -122,7 +122,6 @@ function run_data_query($host_id, $snmp_query_id) {
 			$result = $arguments['result'];
 		} else {
 			query_debug_timer_offset('data_query', __('Unknown Type = \'%s\'.', $type_id));
-			unset($result);
 		}
 	}
 
@@ -584,10 +583,10 @@ function query_script_host($host_id, $snmp_query_id) {
 		/* fetch specified index at specified OID */
 		$script_num_index_array = exec_into_array($script_path);
 
-		// don't continue if there are no indexes
+		// if the number of indexes does not exist use emulation
 		if (!sizeof($script_num_index_array)) {
-			query_debug_timer_offset('data_query', __('ERROR: Data Query returned no indexes.'));
-			return false;
+			query_debug_timer_offset('data_query', __('Data Query returned no indexes.'));
+			query_debug_timer_offset('data_query', __('&lt;arg_num_indexes&gt; exists in XML file but no data returned., \'Index Count Changed\' not supported'));
 		}
 
 		query_debug_timer_offset('data_query', __('Executing script for num of indexes \'%s\'', $script_path));

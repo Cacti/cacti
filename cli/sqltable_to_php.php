@@ -115,7 +115,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 					$text .= ", 'unsigned' => true";
 				}
 
-				$text .= ", 'type' => \"" . $r['Type'] . "\"";
+				$text .= ", 'type' => " . db_qstr($r['Type']);
 				$text .= ", 'NULL' => " . (strtolower($r['Null']) == 'no' ? 'false' : 'true');
 
 				if (trim($r['Default']) != '') {

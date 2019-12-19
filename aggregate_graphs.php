@@ -148,6 +148,7 @@ function form_save() {
 		$save['aggregate_template_id'] = $aggregate_template_id;
 		$save['template_propogation']  = '';
 		$save['gprint_prefix']         = get_nfilter_request_var('gprint_prefix');
+		$save['gprint_format']         = isset_request_var('gprint_format') ? 'on':'';
 		$save['total_prefix']          = get_nfilter_request_var('total_prefix');
 
 		$save['total']                 = get_filter_request_var('total');
@@ -167,6 +168,7 @@ function form_save() {
 			$save_me += ($old['aggregate_template_id'] != $save['aggregate_template_id']);
 			$save_me += ($old['template_propogation']  != $save['template_propogation']);
 			$save_me += ($old['gprint_prefix']         != $save['gprint_prefix']);
+			$save_me += ($old['gprint_format']         != $save['gprint_format']);
 			$save_me += ($old['graph_type']            != $save['graph_type']);
 			$save_me += ($old['total']                 != $save['total']);
 			$save_me += ($old['total_type']            != $save['total_type']);
@@ -615,7 +617,8 @@ function graph_edit() {
 	} elseif (isset($_SERVER['HTTP_REFERER']) && !isset($_SESSION['aggregate_referer'])) {
 		$_SESSION['aggregate_referer'] = sanitize_uri($_SERVER['HTTP_REFERER']);
 	}
-	$referer = $_SESSION['aggregate_referer'];
+
+	$referer = isset($_SESSION['aggregate_referer']) ? $_SESSION['aggregate_referer'] : 'aggregate_graphs.php';
 
 	$use_graph_template = false;
 	$aginfo = array();
@@ -743,12 +746,13 @@ function graph_edit() {
 		if (isset($_SESSION['graph_debug_mode']) && isset_request_var('id')) {
 			$graph_data_array['output_flag'] = RRDTOOL_OUTPUT_STDERR;
 			$graph_data_array['print_source'] = 1;
+			$null_param = array();
 			?>
 			<tr><td id='rrdtoolinfo' class='left' style='padding-left:15px;max-width:900px;overflow:scroll'>
 				<div style='overflow:auto;'>
 					<span class='textInfo'><?php print __('RRDtool Command:');?></span><br>
-					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?>
-					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array);?></pre>
+					<?php print @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);?>
+					<span class='textInfo'><?php print __('RRDtool Says:');?></span><br><?php unset($graph_data_array['print_source']);?><pre class='monoSpace tableRow left'><?php print ($config['poller_id'] == 1 ? @rrdtool_function_graph(get_request_var('id'), 1, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']):__esc('Not Checked'));?></pre>
 				</div>
 				<script type='text/javascript'>
 				$(function() {
@@ -801,6 +805,7 @@ function graph_edit() {
 
 			var templated_selectors = [
 				'#gprint_prefix',
+				'#gprint_format',
 				'#graph_type',
 				'#total',
 				'#total_type',

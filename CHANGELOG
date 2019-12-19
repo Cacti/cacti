@@ -1,5 +1,112 @@
 Cacti CHANGELOG
 
+1.2.9
+-issue#3146: Unable to create aggregate graphs on new installations
+
+1.2.8
+-security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
+-security#3026: CVE-2019-17358 When deserializating data, ensure basic sanitization has been performed
+-security#3066: When using HTTPS, secure cookie to prevent potential weakness
+-issue#1228: Any tree or branch with a long name force main content off screen
+-issue#2133: Long snmp_indexes are being cut off
+-issue#2888: Long hostnames cause template filter to go off page
+-issue#2987: Changing Color Template does not update Aggregate
+-issue#2989: Allow Remote Data Collectors to maintain their own path variables
+-issue#2991: Cacti Statistics device template can generate unexpected errors
+-issue#2995: When editing a report, column setting may be ignored incorrectly
+-issue#2996: When editing a user, graph options do not properly reflect previously saved settings
+-issue#2998: Session performance issues due to excessive use for database storage
+-issue#2999: Blank arguments can lead to extra spaces in script arguments
+-issue#3006: Boost generates undefined variables warning during poller run
+-issue#3011: i18n logging does not check write permission exists
+-issue#3012: When viewing realtime graphs, some input variables are not properly checked
+-issue#3013: Allow legends to be modified for Aggregate Graphs
+-issue#3017: Automation network range with spaces fails validation
+-issue#3019: User selected language is not always adhered to
+-issue#3021: Tree view cuts off at the bottom of page on modern theme
+-issue#3023: When clicking highlighted tab, side panel is not always shown/hidden correctly
+-issue#3027: Aggregate Graph re-ordering does not work
+-issue#3028: When zooming a graph, unable to reach edge of graph without losing focus
+-issue#3030: Pace continues to run even after a page is finished rendering
+-issue#3032: Graphs may select MAX instead of AVERAGE as consolidation function even if there is no item with MAX present.
+-issue#3035: When editing a tree, can not remove entries due to CSS bug
+-issue#3037: When emptying poller output using cli, debug functions are not properly included
+-issue#3039: Allow packagers to be able to specify an alternate location of csrf-secret.php file
+-issue#3040: When running automation, discovery can still run even if cancelled
+-issue#3041: When running automation, scans do not always respond to being cancelled
+-issue#3042: When running automation, scan can fail when selecting remote pollers
+-issue#3045: When viewing Aggregate Graphs, an error due to undefined referrer may occur
+-issue#3047: When saving settings, ignore remote pollers who have not checked in recently
+-issue#3050: When viewing graph trees, some input variables are not properly checked
+-issue#3052: When editing CDEF's, slow database performance can occur
+-issue#3053: When viewing graph thumbnails, some input variables are not properly checked
+-issue#3055: During install/upgrade, database tests are not performed correctly
+-issue#3059: When using nth_percentile, correct value is not always returned if using MAX consolidation
+-issue#3060: When upgrading from older MySQL databases, format is not changed from compact to dynamic
+-issue#3061: When running automation, allow SNMP to be used as a ping method
+-issue#3068: When administrating users, some input variables are not properly checked
+-issue#3070: Improve database logging when a crashed table is encountered
+-issue#3073: Automation network range does not always produce the correct start/end values
+-issue#3078: When viewing graph debug from remote data collector, File Not Found warnings can appear incorrectly
+-issue#3079: Allow domain names to be stripped from a device's long description
+-issue#3080: Remote Agent throws warnings that graph_nolegend has not been sanitized
+-issue#3085: When editing a poller, ensure each listening IP is unique
+-issue#3081: External Links are not showing a glyph when they appear on the Console menu
+-issue#3089: When viewing graphs in realtime, undefined variable can be logged for 95th Percentile graphs
+-issue#3099: Graph template 'Linux - Memory Usage' has the wrong unit on its vertical_label
+-issue#3101: Polling times can be slightly inconsistent due
+-issue#3104: When viewing graphs, a byref error can be seen in the error logs
+-issue#3105: When viewing hosts, some input variables are not properly checked
+-issue#3111: When adding devices via command line, bad SNMP versions are not reported
+-issue#3112: When zooming on Graphs, too many requests are being made causing slowness
+-issue#3114: Support for USB devices that change name due to their hosts restarting
+-issue#3118: When converting tables, the dynamic row format should be selected
+-issue#3119: Main Data Collector should perform a Full Sync whenever it is installed/upgraded
+-issue#3120: Correct issues causing incompatibility with PHP 7.4
+-issue#3121: When converting tables during install, show what will be changed
+-issue#3123: Named colors table is not properly imported/upgraded
+-issue#3124: When a second data collector is added, boost is not enabled automatically
+-issue#3128: i18n handler checks for existence of wrong mo file
+-issue#3129: Logout repeated occurs even when already logged out
+-issue#3132: Installer fails to continue if automation range is array of networks
+-feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
+
+1.2.7
+-security#2964: CVE-2019-16723 Security issue allows to view all graphs
+-issue#1181: When opening the Scheduler, it may appear off screen when opened near the bottom of a window
+-issue#2894: When using Remote Data Collectors, database information and recommendations may show Incorrect values
+-issue#2895: When using data sources from different RRDs, Percentile calculation may be incorrect
+-issue#2899: When displaying a form, variable substitution may not always work as expected
+-issue#2922: When running a data query, the result may come back as undefined
+-issue#2925: When using consolidation functions, retrieving the first step can cause errors
+-issue#2926: When editing a graph, variable validation errors may prevent changes from being saved
+-issue#2929: Boost performance may become poor even in single server mode
+-issue#2930: RRDtool can generate errors to standard output which can corrupt images
+-issue#2932: When RRDTool generates an error creating an image, it is not always reportedly properly
+-issue#2936: Installer will loop when number of tables exceeds PHP's max_input_vars limit
+-issue#2938: Under CentOS packages, upgrade_database.php script uses incorrect location for DB upgrade scripts
+-issue#2940: Images are not always properly sized until the page size changes
+-issue#2949: Order icons may not be properly aligned
+-issue#2951: Allow legends to be modified for Aggregate Graphs
+-issue#2958: Drop down autocomplete lists do not always open as expected
+-issue#2961: When syncing device templates, undefined function may be raised
+-issue#2963: When running ss_cpoller script, avgTime incorrect returns maxTime
+-issue#2966: Realtime popup windows do not always honor settings
+-issue#2967: When using Spikekill, gap and range fill are not operating as expected
+-issue#2970: When a user edits their profile, buttons may appear as unusable whilst still being enabled
+-issue#2973: User menu does not always display properly on mobile devices
+-issue#2974: Script Server can raise unexpected warnings when 'arg_num_indexes' set but not found in data source
+-issue#2975: Datasource Debug does not properly handle European numbers in certain circumstances
+-issue#2976: Boost messages should be stored in their own log file
+-issue#2977: Data updates with past timestamps can cause boost errors
+-issue#2978: Moving hosts between data collectors is slow
+-issue#2979: Multi Output Fields are not parsed correctly
+-issue#2984: When checking SQL fields, value was not always primed
+-issue#2986: Selecting 'Devices' menu pick closes 'Management' menu
+-feature#2943: Allow all Data Queries of a device to be re-indexed at once
+-feature#2952: If device is down or threshold breached, highlight in tree view
+-feature#2985: Update phpseclib to 2.0.23
+
 1.2.6
 -issue#2794: Graph template not saved on graph edit
 -issue#2825: "innodb_doublewrite = off" possibly dangerous recommendation
@@ -32,7 +139,6 @@ Cacti CHANGELOG
 -issue#2879: Switching from authPriv to authNoPriv produces error when saving
 -issue#2884: Replication continues to occur when poller has been disabled by sysres-dev
 -issue#2891: Script server script ss_fping.php generates error when not called by script server
--issue#2895: Percentile calculation is incorrect on Graphs with multiple Data Sources from different RRDs
 -issue#2901: Poller overrun warning message is badly worded
 -issue#2902: Mailer incorrectly reports it is sending to noone
 -issue#2903: PHP recommendations can generate a warning causing JSON issues

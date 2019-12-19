@@ -768,8 +768,8 @@ while ($poller_runs_completed < $poller_runs) {
  			}
 
 			$plugin_end = microtime(true);
-			if (($sleep_time - ($plugin_end - $plugin_start)) > 0) {
-				usleep(($sleep_time - ($plugin_end - $plugin_start)) * 1000000);
+			if ($sleep_time > 0) {
+				usleep($sleep_time * 1000000);
 			}
 
 			api_plugin_hook('poller_top');
@@ -784,6 +784,7 @@ while ($poller_runs_completed < $poller_runs) {
 
 /* start post data processing */
 if ($poller_id == 1) {
+	multiple_poller_boost_check();
 	poller_replicate_check();
 	snmpagent_poller_bottom();
 	boost_poller_bottom();
@@ -946,6 +947,18 @@ function log_cacti_stats($loop_start, $method, $concurrent_processes, $max_threa
 	snmpagent_cacti_stats_update($perf_data);
 
 	api_plugin_hook_function('cacti_stats_update', $perf_data);
+}
+
+function multiple_poller_boost_check() {
+	$pollers = db_fetch_cell('SELECT COUNT(*) FROM poller WHERE disabled="" AND id > 1');
+
+	if ($pollers > 0 && read_config_option('boost_rrd_update_enable') == '') {
+		cacti_log('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!', false, 'POLLER');
+		admin_email(__('Cacti System Notification'), __('NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!'));
+
+		set_config_option('boost_rrd_update_enable', 'on');
+		set_config_option('boost_rrd_update_system_enable', 'on');
+	}
 }
 
 /**

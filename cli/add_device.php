@@ -207,7 +207,7 @@ if (cacti_sizeof($parms)) {
 				break;
 			case 'pingorsnmp':
 				$avail = AVAIL_SNMP_OR_PING;
-				
+
 				break;
 			default:
 				print "ERROR: Invalid Availability Parameter: ($value)\n\n";
@@ -324,13 +324,18 @@ if (cacti_sizeof($parms)) {
 		exit(1);
 	}
 
-	if ($description == "") {
+	if ($description == '') {
 		print "ERROR: You must supply a description for all hosts!\n";
 		exit(1);
 	}
 
-	if ($ip == "") {
+	if ($ip == '') {
 		print "ERROR: You must supply an IP address for all hosts!\n";
+		exit(1);
+	}
+
+	if ($snmp_ver > 3 || $snmp_ver < 0 || !is_numeric($snmp_ver)) {
+		print "ERROR: The snmp version must be between 0 and 3.  If you did not specify one, goto Configuration > Settings > Device Defaults and resave your defaults.\n";
 		exit(1);
 	}
 

@@ -61,6 +61,23 @@ var pageWidth = null;
 var isHover = false;
 var hoverTimer = false;
 
+window.paceOptions = {
+	ajax: true,
+	document: true,
+	elements: false,
+	minTime: 400,
+	startOnPageLoad: false,
+	restartOnPushState: false,
+	restartOnRequestAfter: 120,
+	eventLag: false,
+};
+
+window.onbeforeunload = renderLoading;
+function renderLoading () {
+	Pace.stop();
+	Pace.bar.render();
+}
+
 var isMobile = {
 	Android: function() {
 		return navigator.userAgent.match(/Android/i);
@@ -1141,6 +1158,7 @@ function menuOpen(page) {
 function responsiveUI(event) {
 	var page = basename(location.pathname);
 	var tree = false;
+	var windowWidth = $(window).width();
 
 	if (event != 'force') {
 	    if (new Date() - resizeTime < resizeDelta) {
@@ -1164,7 +1182,7 @@ function responsiveUI(event) {
 	if ($('#navigation').length) {
 		if (theme != 'classic') {
 			if (loadMenuStateOpen(page)) {
-				if ($(window).width() < 640) {
+				if (windowWidth < 640) {
 					menuHide(false);
 					menuHideResponsive = true;
 				} else {
@@ -1173,6 +1191,9 @@ function responsiveUI(event) {
 			} else {
 				menuHide(false);
 			}
+		} else if (windowWidth < 640) {
+			menuHide(true);
+			menuHideResponsive = true;
 		} else {
 			menuShow();
 		}
@@ -1260,6 +1281,7 @@ function responsiveResizeGraphs() {
 		}
 
 		var rra_id = $(this).attr('rra_id');
+		var type   = $(this).attr('graph_type');
 
 		var original_cwidth  = $('#wrapper_'+graph_id).attr('graph_width');
 		var original_cheight = $('#wrapper_'+graph_id).attr('graph_height');
@@ -1293,7 +1315,7 @@ function responsiveResizeGraphs() {
 		$(this).attr('graph_top', new_canvas_graph_top);
 		$(this).attr('graph_left', new_canvas_graph_left);
 
-		if (!remove_whcss) {
+		if (!remove_whcss || type == 'svg+xml') {
 			$(this).css('width', new_image_width);
 			$(this).css('height', new_image_height);
 		} else {
@@ -1310,6 +1332,10 @@ function responsiveResizeGraphs() {
 			serverTimeOffset : timeOffset
 		});
 	});
+
+	if ($('.cactiTreeNavigationArea').length) {
+		resizeTreePanel();
+	}
 }
 
 function countHiddenCols(object) {
@@ -1642,6 +1668,8 @@ function loadTopTab(href, id, force) {
 				var htmlObject  = $(html);
 				var matches     = html.match(/<title>(.*?)<\/title>/);
 
+				$('#main').hide();
+
 				if (matches != null) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
@@ -1692,6 +1720,10 @@ function loadTopTab(href, id, force) {
 
 				handleConsole(pageName);
 
+				$('#main').show();
+
+				Pace.stop();
+
 				return false;
 			})
 			.fail(function(data) {
@@ -1702,6 +1734,14 @@ function loadTopTab(href, id, force) {
 		/* update menu selection */
 		if ($('#'+id).hasClass('lefttab')) {
 			$('.lefttab').removeClass('selected');
+			$('.submenuoptions').find('.selected').removeClass('selected');
+			$('#'+id).addClass('selected');
+			hideTabId = id.substring(0, id.length-9);
+			if (hideTabId) {
+				$('#'+hideTabId).addClass('selected');
+			}
+		} else if ($('#'+id).parents('.submenuoptions').length > 0) {
+			$('#'+id).parents('.submenuoptions').find('.selected').removeClass('selected');
 			$('#'+id).addClass('selected');
 		}
 
@@ -1764,7 +1804,16 @@ function loadPage(href, force) {
 				pageName = basename(hrefParts[0]);
 
 				if (pageName != '') {
-					if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+					// Workaround for Create Device
+					if (pageName == 'host.php') {
+						if (href.indexOf('create') >= 0) {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href='"+href+"']").addClass('selected');
+						} else {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href$='host.php']").addClass('selected');
+						}
+					} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
 						$('#menu').find('.pic').removeClass('selected');
 						$('#menu').find("a[href^='"+href+"']").addClass('selected');
 					} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
@@ -1786,6 +1835,8 @@ function loadPage(href, force) {
 				}
 
 				handleConsole(pageName);
+
+				Pace.stop();
 
 				return false;
 			})
@@ -1914,6 +1965,8 @@ function loadPageNoHeader(href, scroll, force) {
 				}
 
 				handleConsole(pageName);
+
+				Pace.stop();
 
 				return false;
 			})
@@ -2479,7 +2532,7 @@ var waitForFinalEvent = (function () {
     }
 
     if (timers[uniqueId]) {
-      clearTimeout (timers[uniqueId]);
+      clearTimeout(timers[uniqueId]);
     }
 
     timers[uniqueId] = setTimeout(callback, ms);
@@ -2518,13 +2571,21 @@ function setupEllipsis() {
 		return false;
 	});
 
-	$('.submenuoptions').mouseenter(function(data) {
+	$('.submenuoptions').mouseenter(function(event) {
 		clearTimeout(userMenuTimer);
-	}).mouseleave(function(data) {
+	}).mouseleave(function(event) {
 		if ($('.submenuoptions').is(':visible')) {
 			userMenuTimer = setTimeout(function() {$('.submenuoptions').stop().slideUp(120);}, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
+		}
+	});
+	$(window).on('click', function(event) {
+		if($(event.target).parents('.submenuoptions').length == 0 && $('.submenuoptions').is(':visible')) {
+			$('.submenuoptions').slideUp(120);
+		}
+		if($(event.target).parents('.menuoptions').length == 0 && $('.menuoptions').is(':visible')) {
+			$('.menuoptions').slideUp(120);
 		}
 	});
 }
@@ -2617,44 +2678,27 @@ function keepWindowSize() {
 				userTabPos = mainTabPos;
 			}
 
-			var shrinking = true;
-			if (pageWidth === null) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else if (bodyWidth > pageWidth) {
-				shrinking = false;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get());
-			} else if (mainTabPos != false && (mainTabPos.top != userTabPos.top || mainTabHeight > tabHeight)) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else if (pageWidth != null && bodyWidth < pageWidth) {
-				shrinking = true;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get().reverse());
-			} else {
-				shrinking = false;
-				items = $($('.maintabs nav ul li a.lefttab:not(.ellipsis)').get());
-			}
-
 			pageWidth  = bodyWidth;
 
+			var items = $($('.maintabs nav ul li a.lefttab').get());
 			var done = false;
+			items.each(function() {
+				var id = $(this).attr('id');
 
+				showCurrentTab(id);
+			});
+
+			// Hide top menus if you have to
+			var items = $($('.maintabs nav ul li a.lefttab').get().reverse());
+			var done = false;
 			items.each(function() {
 				var id = $(this).attr('id');
 
 				if (!done) {
-					if (shrinking) {
-						if (tabsWrapping()) {
-							hideCurrentTab(id, true);
-						} else {
-							done = true;
-						}
-					} else if (!shrinking) {
-						showCurrentTab(id);
-
-						if (tabsWrapping()) {
-							hideCurrentTab(id, false);
-						}
+					if (tabsWrapping()) {
+						hideCurrentTab(id, true);
+					} else {
+						done = true;
 					}
 				}
 			});
@@ -3162,6 +3206,7 @@ function redrawGraph(graph_id) {
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
+					" graph_type='"+data.type+"'"+
 					" graph_id='"+data.local_graph_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
@@ -3298,6 +3343,7 @@ function initializeGraphs() {
 					data.graph_top    = parseInt(data.graph_top  * ratio);
 					data.graph_left   = parseInt(data.graph_left * ratio);
 				}
+
 				var wrapper_id = '#wrapper_'+data.local_graph_id;
 				if (rra_id > 0) {
 					wrapper_id += '[rra_id=\'' + data.rra_id + '\']';
@@ -3307,6 +3353,8 @@ function initializeGraphs() {
 					"<img class='graphimage' id='graph_"+data.local_graph_id+"'"+
 					" src='data:image/"+data.type+";base64,"+data.image+"'"+
 					" rra_id='"+data.rra_id+"'"+
+					" graph_type='"+data.type+"'"+
+					" graph_id='"+data.local_graph_id+"'"+
 					" graph_start='"+data.graph_start+"'"+
 					" graph_end='"+data.graph_end+"'"+
 					" graph_left='"+data.graph_left+"'"+

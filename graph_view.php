@@ -212,6 +212,8 @@ case 'save':
 
 	break;
 case 'tree':
+	html_validate_tree_vars();
+
 	if (isset_request_var('tree_id')) {
 		$_SESSION['sess_tree_id'] = get_filter_request_var('tree_id');
 	}
@@ -359,8 +361,6 @@ case 'tree_content':
 
 	break;
 case 'preview':
-	top_graph_header();
-
 	if (!is_view_allowed('show_preview')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR PREVIEW VIEW') . "</font>";
 		bottom_footer();
@@ -376,6 +376,8 @@ case 'preview':
 	}
 
 	html_graph_validate_preview_request_vars();
+
+	top_graph_header();
 
 	/* include graph view filter selector */
 	html_start_box(__('Graph Preview Filters') . (isset_request_var('style') && get_request_var('style') != '' ? ' ' . __('[ Custom Graph List Applied - Filtering from List ]'):''), '100%', '', '3', 'center', '');
@@ -478,8 +480,6 @@ case 'preview':
 case 'list':
 	global $graph_timespans, $alignment, $graph_sources;
 
-	top_graph_header();
-
 	if (!is_view_allowed('show_list')) {
 		print "<font class='txtErrorTextBox'>" . __('YOU DO NOT HAVE RIGHTS FOR LIST VIEW') . '</font>';
 		bottom_footer();
@@ -576,6 +576,8 @@ case 'list':
 		FROM reports
 		WHERE user_id = ?',
 		array($_SESSION['sess_user_id']));
+
+	top_graph_header();
 
 	form_start('graph_view.php', 'chk');
 

@@ -394,8 +394,8 @@ function form_actions() {
 			<input type='hidden' name='action' value='actions'>
 			<input type='hidden' name='selected_items' value='" . (isset($networks_array) ? serialize($networks_array) : '') . "'>
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>" . ($save_html != '' ? "
-			<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Cancel') . "'>
-			$save_html" : "<input type='submit' class='ui-button ui-corner-all ui-widget' name='cancel' value='" . __esc('Return') . "'>") . "
+			<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Cancel') . "'>
+			$save_html" : "<input type='button' class='ui-button ui-corner-all ui-widget' onClick='cactiReturnTo()' name='cancel' value='" . __esc('Return') . "'>") . "
 		</td>
 	</tr>";
 
@@ -408,6 +408,8 @@ function form_actions() {
 
 function network_edit() {
 	global $config, $ping_methods;;
+
+	$ping_methods[PING_SNMP] = __('SNMP Get');
 
 	/* ================= input validation ================= */
 	get_filter_request_var('id');
@@ -1093,7 +1095,11 @@ function networks() {
 				$status   = array();
 				$updown['up'] = $updown['snmp'] = '0';
 			} else {
-				$running = db_fetch_cell_prepared('SELECT COUNT(*) FROM automation_processes WHERE network_id = ?', array($network['id']));
+				$running = db_fetch_cell_prepared('SELECT COUNT(*)
+					FROM automation_processes
+					WHERE network_id = ?
+					AND status != "done"',
+					array($network['id']));
 
 				if ($running > 0) {
 					$status = db_fetch_row_prepared('SELECT
@@ -1121,6 +1127,10 @@ function networks() {
 						$updown['snmp'] = 0;
 					}
 				} else {
+					db_execute_prepared('DELETE FROM automation_processes
+						WHERE network_id = ?',
+						array($network['id']));
+
 					$updown['up']   = $network['up_hosts'];
 					$updown['snmp'] = $network['snmp_hosts'];
 

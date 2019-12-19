@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: \n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+
+#: ./tests/assets/jscode/input.js:2
+msgid "Value with simple quotes"
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:3
+msgid "Value with double quotes"
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:4
+msgid "Other value with double quotes"
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:6
+msgid "function inside function"
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:11
+msgid "I can't get response."
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:12
+msgid "Please, try with other interface type."
+msgstr ""
+
+#: ./tests/assets/jscode/input.js:15
+msgid "I can't get response. Please, try with other interface type."
+msgstr ""

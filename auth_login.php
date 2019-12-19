@@ -355,6 +355,10 @@ if (get_nfilter_request_var('action') == 'login') {
 			$newtheme = true;
 		}
 
+		if (user_setting_exists('user_language', $_SESSION['sess_user_id'])) {
+			$_SESSION['sess_user_language'] = read_user_setting('user_language');
+		}
+
 		/* ok, at the point the user has been sucessfully authenticated; so we must
 		decide what to do next */
 		switch ($user['login_opts']) {

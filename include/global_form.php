@@ -1744,6 +1744,13 @@ $struct_aggregate = array(
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
 	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
+	),
 	'aggregate_graph_type' => array(
 		'friendly_name' => __('Graph Type'),
 		'description' => __('Use this Option to create e.g. STACKed graphs.<br>AREA/STACK: 1st graph keeps AREA/STACK items, others convert to STACK<br>LINE1: all items convert to LINE1 items<br>LINE2: all items convert to LINE2 items<br>LINE3: all items convert to LINE3 items'),
@@ -1822,6 +1829,13 @@ $struct_aggregate_graph = array(
 		'max_length' => '255',
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
+	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
 	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),
@@ -1920,6 +1934,13 @@ $struct_aggregate_template = array(
 		'max_length' => '255',
 		'value' => '|arg1:gprint_prefix|',
 		'size' => '40'
+	),
+	'gprint_format' => array(
+		'friendly_name' => __('Include Prefix Text'),
+		'description' => __('Include the source Graphs GPRINT Title Text with the Aggregate Graph(s).'),
+		'method' => 'checkbox',
+		'value' => '|arg1:gprint_format|',
+		'default' => ''
 	),
 	'graph_type' => array(
 		'friendly_name' => __('Graph Type'),

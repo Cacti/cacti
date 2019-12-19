@@ -93,7 +93,7 @@ function ss_cpoller($cmd, $arg1 = '', $arg2 = '') {
 
 				break;
 			case 'avgTime':
-				$value = db_fetch_cell_prepared('SELECT max_time
+				$value = db_fetch_cell_prepared('SELECT avg_time
 					FROM poller
 					WHERE id = ?',
 					array($index));

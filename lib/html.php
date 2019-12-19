@@ -156,16 +156,7 @@ function html_end_box($trailing_br = true, $div = false) {
 /* html_graph_template_multiselect - consistent multiselect javascript library for cacti. */
 function html_graph_template_multiselect() {
 	?>
-	var msWidth = 100;
-	var maxWidth = 200;
-	$('#graph_template_id option').each(function() {
-		if ($(this).textWidth() > msWidth) {
-			msWidth = $(this).textWidth();
-			if (msWidth > maxWidth) {
-				msWidth = maxWidth;
-			}
-		}
-	});
+	var msWidth = 200;
 
 	$('#graph_template_id').hide().multiselect({
 		height: 300,
@@ -1193,6 +1184,15 @@ function is_menu_pick_active($menu_url) {
 
 	$menu_parts = array();
 
+	/* special case for host.php?action=edit&create=true */
+	if (strpos($_SERVER['REQUEST_URI'], 'host.php?action=edit&create=true') !== false) {
+		if (strpos($menu_url, 'host.php?action=edit&create=true') !== false) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/* break out the URL and variables */
 	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
@@ -1934,7 +1934,7 @@ function html_host_filter($host_id = '-1', $call_back = 'applyFilter', $sql_wher
 
 				if (cacti_sizeof($devices)) {
 					foreach ($devices as $device) {
-						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape($device['description'] . ' (' . $device['hostname'] . ')'), 40) . '</option>';
+						print "<option value='" . $device['id'] . "'"; if ($host_id == $device['id']) { print ' selected'; } print '>' . title_trim(html_escape(strip_domain($device['description'])), 40) . '</option>';
 					}
 				}
 				?>
@@ -2341,6 +2341,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var errorNumberPrefix='<?php print __esc('Error:');?>';
 		var errorReasonPrefix='<?php print __esc('Reason:');?>';
 		var errorReasonTitle='<?php print __esc('Action failed');?>';
+		var testSuccessful='<?php print __esc('Connection Successful');?>';
+		var testFailed='<?php print __esc('Connection Failed');?>';
 		var errorReasonUnexpected='<?php print __esc('The response to the last action was unexpected.');?>';
 		var mixedReasonTitle='<?php print __esc('Some Actions failed');?>';
 		var mixedOnPage='<?php print __esc('Note, we could not process all your actions.  Details are below.');?>';
@@ -2417,9 +2419,9 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/dygraph-combined.js');
 	print get_md5_include_js('include/js/d3.js');
 	print get_md5_include_js('include/js/c3.js');
+	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/js/pace.js');
 	print get_md5_include_js('include/realtime.js');
-	print get_md5_include_js('include/layout.js');
 	print get_md5_include_js('include/themes/' . $selectedTheme .'/main.js');
 
 	if (isset($path2calendar) && file_exists($path2calendar)) {

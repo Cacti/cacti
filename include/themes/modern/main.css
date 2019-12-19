@@ -336,7 +336,7 @@ label {
 }
 
 .deviceUp {
-	color: rgba(148, 179, 107, 0.8) !important;
+	color: rgba(40, 180, 40, 1.0) !important;
 }
 
 .deviceDown {
@@ -825,6 +825,7 @@ ul#breadcrumbs {
 	margin-left: 5px;
 	margin-right: 5px;
 	padding-top: 10px;
+	padding-bottom: 20px;
 	display: none;
 	vertical-align: top;
 	position: fixed;
@@ -1874,7 +1875,7 @@ legend {
 }
 
 .moveArrowNone {
-	padding-left: 14px;
+	padding-left: 8.75px;
 }
 
 .action, .shiftArrow, .calendar {
@@ -2624,3 +2625,16 @@ td.center > table {
 .ui-menu-item-wrapper {
 	white-space: nowrap;
 }
+
+.vakata-context, .vakata-context ul {
+	margin: 0;
+	padding: 2px;
+	position: absolute;
+	background: #f5f5f5;
+	border: 1px solid #979797;
+	-moz-box-shadow: 5px 5px 4px -4px #666666;
+	-webkit-box-shadow: 2px 2px 2px #999999;
+	box-shadow: 2px 2px 2px #999999;
+	z-index: 99;
+}
+

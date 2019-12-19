@@ -60,10 +60,11 @@ class Installer implements JsonSerializable {
 	const PROGRESS_DEVICE_GRAPH = 73;
 	const PROGRESS_DEVICE_TREE = 74;
 	const PROGRESS_DEVICE_END = 75;
+	const PROGRESS_COLLECTOR_SYNC_START = 77;
+	const PROGRESS_COLLECTOR_SYNC_END = 78;
 	const PROGRESS_VERSION_BEGIN = 80;
 	const PROGRESS_VERSION_END = 85;
 	const PROGRESS_COMPLETE = 100;
-
 
 	private $old_cacti_version;
 
@@ -872,14 +873,23 @@ class Installer implements JsonSerializable {
 	 *         invalid value is passed */
 	private function setAutomationRange($param_range = null) {
 		if (!empty($param_range)) {
-			$ip_details = cacti_pton($param_range);
-			if ($ip_details === false) {
-				$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply specified Automation Range'));
-			} else {
+			$param_array = explode(",", $param_range);
+
+			if (cacti_sizeof($param_array)) {
+				foreach ($param_array as $param_network) {
+					$ip_details = automation_get_network_info($param_network);
+					if ($ip_details === false) {
+						$this->addError(Installer::STEP_PROFILE_AND_AUTOMATION, 'Automation', 'Range', __('Failed to apply \'%s\' as Automation Range', $param_network));
+					}
+				}
 				$this->automationRange = $param_range;
 				set_config_option('install_automation_range', $param_range);
 			}
+		} else {
+			$param_range = '';
+			$this->automationRange = $param_range;
 		}
+
 		log_install_medium('automation',"setAutomationRange($param_range) returns with $this->automationRange");
 	}
 
@@ -1537,7 +1547,7 @@ class Installer implements JsonSerializable {
 
 		if ($this->mode == Installer::MODE_UPGRADE) {
 			$output .= Installer::sectionNote(__('This process will guide you through the steps for upgrading from version \'%s\'. ',$this->old_cacti_version));
-			$output .= Installer::sectionNormal(__('Also, if this is an upgrade, be sure to reading the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
+			$output .= Installer::sectionNormal(__('Also, if this is an upgrade, be sure to read the <a href="%s">Upgrade</a> information file.', '../docs/html/upgrade.html'));
 		}
 
 		if ($this->mode == Installer::MODE_DOWNGRADE) {
@@ -1839,7 +1849,7 @@ class Installer implements JsonSerializable {
 			case Installer::MODE_DOWNGRADE:
 				$output .= Installer::sectionSubTitle(__('Upgrade'));
 				$output .= Installer::sectionNormal(__('Downgrade from <strong>%s</strong> to <strong>%s</strong>', $this->old_cacti_version, CACTI_VERSION));
-				$output .= Installer::sectionWarning(__('You appears to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.'));
+				$output .= Installer::sectionWarning(__('You appear to be downgrading to a previous version.  Database changes made for the newer version will not be reversed and <i>could</i> cause issues.'));
 				$output .= Installer::sectionSubTitleEnd();
 				break;
 			default:
@@ -2359,42 +2369,63 @@ class Installer implements JsonSerializable {
 		$tables = install_setup_get_tables();
 
 		if (cacti_sizeof($tables)) {
-			$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
+			$max_vars = ini_get('max_input_vars');
+			if (empty($max_vars)) {
+				$max_vars = 1000;
+			}
 
-			$show_warning=false;
-			ob_start();
-			html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
-			html_header_checkbox(array(__('Name'), __('Collation'), __('Engine'), __('Rows')));
-			foreach ($tables as $id => $p) {
-				$enabled = ($p['Rows'] < 1000000 ? true : false);
-				$style = ($enabled ? '' : 'text-decoration: line-through;');
-				form_alternate_row('line' . $id, true, $enabled);
-				form_selectable_cell($p['Name'], $id, '', $style);
-				form_selectable_cell($p['Collation'], $id, '', $style);
-				form_selectable_cell($p['Engine'], $id, '', $style);
-				form_selectable_cell($p['Rows'], $id, '', $style);
+			if ($max_vars < count($tables) + 10) {
+				$output .= Installer::sectionError(__('You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s', count($tables) + 100));
+				$this->buttonNext->Enabled = false;
+			} else {
+				$output .= Installer::sectionWarning(__('Conversion of tables may take some time especially on larger tables.  The conversion of these tables will occur in the background but will not prevent the installer from completing.  This may slow down some servers if there are not enough resources for MySQL to handle the conversion.'));
+				$output .= Installer::sectionNote('max_input_vars: ' . $max_vars . ', tables: ' . count($tables));
+				$show_warning=false;
+				ob_start();
+				html_start_box(__('Tables'), '100%', false, '3', 'center', '', '');
+				html_header_checkbox(array(__('Name'), __('Collation'), __('Row Format'), __('Engine'), __('Rows')));
+				foreach ($tables as $id => $p) {
+					$enabled = ($p['Rows'] < 1000000 ? true : false);
 
-				if ($enabled) {
-					form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
-				} else {
-					$show_warning=true;
-					form_selectable_cell('', $id, '', $style);
+					$style = ($enabled ? '' : 'text-decoration: line-through;');
+
+					if ($enabled) {
+						$cstyle = ($p['Collation'] != 'utf8mb4_unicode_ci' ? 'deviceDown':$style);
+						$estyle = ($p['Engine'] != 'InnoDB' ? 'deviceDown':$style);
+						$rstyle = ($p['Row_format'] != 'Dynamic' ? 'deviceDown':$style);
+					} else {
+						$cstyle = $estyle = $rstyle = $style;
+					}
+
+					form_alternate_row('line' . $id, true, $enabled);
+					form_selectable_cell($p['Name'], $id, '', $style);
+					form_selectable_cell($p['Collation'], $id, '', $cstyle);
+					form_selectable_cell($p['Row_format'], $id, '', $rstyle);
+					form_selectable_cell($p['Engine'], $id, '', $estyle);
+					form_selectable_cell($p['Rows'], $id, '', $style);
+
+					if ($enabled) {
+						form_checkbox_cell($p['Name'], 'table_'  . $p['Name']);
+					} else {
+						$show_warning=true;
+						form_selectable_cell('', $id, '', $style);
+					}
+					form_end_row();
 				}
-				form_end_row();
+				html_end_box(false);
+
+				if ($show_warning) {
+					$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
+					$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
+				}
+
+				$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB with a Dynamic row format.  Please select the tables that you wish to convert during the installation process.'));
+				$output .= Installer::sectionNormal(ob_get_contents());
+
+				ob_end_clean();
 			}
-			html_end_box(false);
-
-			if ($show_warning) {
-				$output .= Installer::sectionWarning(__('One or more tables are too large to convert during the installation.  You should use the cli/convert_tables.php script to perform the conversion, then refresh this page. For example: '));
-				$output .= Installer::sectionCode(read_config_option('path_php_binary') . ' -q ' . $config['base_path'] . 'cli/convert_tables.php -u -i');
-			}
-
-			$output .= Installer::sectionNormal(__('The following tables should be converted to UTF8 and InnoDB.  Please select the tables that you wish to convert during the installation process.'));
-			$output .= Installer::sectionNormal(ob_get_contents());
-
-			ob_end_clean();
 		} else {
-			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 compliant'));
+			$output .= Installer::sectionNormal(__('All your tables appear to be UTF8 and Dynamic row format compliant'));
 		}
 
 		$this->stepData = array('Tables' => $this->tables);
@@ -2524,7 +2555,7 @@ class Installer implements JsonSerializable {
 			$php = cacti_escapeshellcmd(read_config_option('path_php_binary', true));
 			$php_file = cacti_escapeshellarg($config['base_path'] . '/install/background.php') . ' ' . $backgroundTime;
 
-			log_install_always('', 'Spawning background process: ' . $php . ' ' . $php_file);
+			log_install_always('', __('Spawning background process: %s %s', $php, $php_file));
 			exec_background($php, $php_file);
 		}
 
@@ -2538,7 +2569,7 @@ class Installer implements JsonSerializable {
 			$progressCurrent = Installer::PROGRESS_NONE;
 		}
 
-		$stepData = array( 'Current' => $progressCurrent, 'Total' => Installer::PROGRESS_COMPLETE );
+		$stepData = array('Current' => $progressCurrent, 'Total' => Installer::PROGRESS_COMPLETE);
 		$this->stepData = $stepData;
 
 		return $output;
@@ -2665,7 +2696,7 @@ class Installer implements JsonSerializable {
 			$this->stepData = array('Sections' => $sections);
 		}
 
-		iF ($this->stepCurrent == Installer::STEP_ERROR) {
+		if ($this->stepCurrent == Installer::STEP_ERROR) {
 			$this->buttonPrevious->Text = __('Get Help');
 			$this->buttonPrevious->Step = Installer::STEP_GO_FORUMS;
 			$this->buttonPrevious->Visible = true;
@@ -2703,7 +2734,7 @@ class Installer implements JsonSerializable {
 				break;
 		}
 
-		log_install_always('', sprintf('Starting %s Process for v%s', $which, CACTI_VERSION));
+		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION));
 
 		$this->setProgress(Installer::PROGRESS_START);
 
@@ -2725,9 +2756,9 @@ class Installer implements JsonSerializable {
 			$this->disableInvalidPlugins();
 		}
 
-		log_install_always('', sprintf('Finished %s Process for v%s', $which, CACTI_VERSION));
+		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
 
-		set_config_option('install_error',$failure);
+		set_config_option('install_error', $failure);
 		$this->setProgress(Installer::PROGRESS_VERSION_BEGIN);
 		set_config_option('install_version', CACTI_VERSION);
 		$this->setProgress(Installer::PROGRESS_VERSION_END);
@@ -2735,6 +2766,11 @@ class Installer implements JsonSerializable {
 		if (empty($failure)) {
 			db_execute('TRUNCATE TABLE version');
 			db_execute('INSERT INTO version (cacti) VALUES (\'' . CACTI_VERSION . '\');');
+
+			// Sync the remote data collectors
+			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
+			$this->fullSyncDataCollectors();
+			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
 
 			// No failures so lets update the version
 			$this->setProgress(Installer::PROGRESS_COMPLETE);
@@ -2755,7 +2791,7 @@ class Installer implements JsonSerializable {
 			AND value <> ''");
 
 		if (cacti_sizeof($templates)) {
-			log_install_always('', sprintf('Found %s templates to install', cacti_sizeof($templates)));
+			log_install_always('', __('Found %s templates to install', cacti_sizeof($templates)));
 			$path = $config['base_path'] . '/install/templates/';
 
 			$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN);
@@ -2766,20 +2802,20 @@ class Installer implements JsonSerializable {
 				$result  = false;
 				$package = $template['value'];
 
-				log_install_always('', sprintf('About to import Package #%s \'%s\'.', $i, $package));
+				log_install_always('', __('About to import Package #%s \'%s\'.', $i, $package));
 
 				if (!empty($package)) {
 					set_config_option('install_updated', microtime(true));
 					$result = import_package($path . $package, $this->profile, false, false, false);
 
 					if ($result !== false) {
-						log_install_always('', sprintf('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
+						log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' succeeded', $i, $package, $this->profile));
 						$this->setProgress(Installer::PROGRESS_TEMPLATES_BEGIN + $i);
 					}
 				}
 
 				if ($result === false) {
-					log_install_always('',sprintf('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
+					log_install_always('', __('Import of Package #%s \'%s\' under Profile \'%s\' failed', $i, $package, $this->profile));
 					$this->addError(Installer::STEP_ERROR, 'Package:'.$package, 'FAIL: XML version code error');
 				}
 			}
@@ -2795,7 +2831,7 @@ class Installer implements JsonSerializable {
 					array($item['hash']));
 
 				if (!empty($host_template_id)) {
-					log_install_always('', sprintf('Mapping Automation Template for Device Template \'%s\'', $item['name']));
+					log_install_always('', __('Mapping Automation Template for Device Template \'%s\'', $item['name']));
 
 
 					db_execute_prepared('INSERT INTO automation_templates
@@ -2806,12 +2842,12 @@ class Installer implements JsonSerializable {
 				}
 			}
 		} else {
-			log_install_always('', sprintf('No templates were selected for import'));
+			log_install_always('', __('No templates were selected for import'));
 		}
 	}
 
 	private function installPoller() {
-		log_install_always('', 'Updating remote configuration file');
+		log_install_always('', __('Updating remote configuration file'));
 		global $local_db_cnn_id;
 
 		$failure = remote_update_config_file();
@@ -2843,7 +2879,7 @@ class Installer implements JsonSerializable {
 		log_install_high('automation', "Profile ID: $profile_id (" . $this->profile . ") returned " . clean_up_lines(var_export($profile, true)));
 
 		if ($profile['id'] == $this->profile) {
-			log_install_always('automation', sprintf('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
+			log_install_always('automation', __('Setting default data source profile to %s (%s)', $profile['name'], $profile['id']));
 			$this->setProgress(Installer::PROGRESS_PROFILE_DEFAULT);
 
 			db_execute('UPDATE data_source_profiles
@@ -2865,7 +2901,7 @@ class Installer implements JsonSerializable {
 			$this->setProgress(Installer::PROGRESS_PROFILE_POLLER);
 			set_config_option('poller_interval', $profile['step']);
 		} else {
-			log_install_always('', sprintf('Failed to find selected profile (%s), no changes were made', $profile_id));
+			log_install_always('', __('Failed to find selected profile (%s), no changes were made', $profile_id));
 		}
 
 		$this->setProgress(Installer::PROGRESS_PROFILE_END);
@@ -2874,7 +2910,7 @@ class Installer implements JsonSerializable {
 		$automation_row = db_fetch_row('SELECT id, enabled, subnet_range FROM automation_networks ORDER BY id LIMIT 1');
 		log_install_debug('automation','Automation Row:' . clean_up_lines(var_export($automation_row, true)));
 		if (!empty($automation_row)) {
-			log_install_always('', sprintf('Updating automation network (%s), mode "%s" => "%s", subnet "%s" => %s"'
+			log_install_always('', __('Updating automation network (%s), mode "%s" => "%s", subnet "%s" => %s"'
 				, $automation_row['id'], $automation_row['enabled'], $this->automationMode ? 'on' : ''
 				, $automation_row['subnet_range'], $this->automationRange));
 
@@ -2884,17 +2920,17 @@ class Installer implements JsonSerializable {
 				WHERE id = ?',
 				array($this->automationRange, ($this->automationMode ? 'on' : ''), $automation_row['id']));
 		} else {
-			log_install_always('', 'Failed to find automation network, no changes were made');
+			log_install_always('', __('Failed to find automation network, no changes were made'));
 		}
 
 		if ($this->automationOverride) {
-			log_install_always('', 'Adding extra snmp settings for automation');
+			log_install_always('', __('Adding extra snmp settings for automation'));
 
 			$snmp_options = db_fetch_assoc('select name, value from settings where name like \'install_snmp_option_%\'');
 			$snmp_id = db_fetch_cell('select id from automation_snmp_items limit 1');
 
 			if ($snmp_id) {
-				log_install_always('', 'Selecting Automation Option Set ' . $snmp_id);
+				log_install_always('', __('Selecting Automation Option Set %s', $snmp_id));
 
 				$save = array('id' => '', 'snmp_id' => $snmp_id);
 				foreach($snmp_options as $snmp_option) {
@@ -2907,21 +2943,21 @@ class Installer implements JsonSerializable {
 					}
 				}
 
-				log_install_always('', 'Updating Automation Option Set ' . $snmp_id);
+				log_install_always('', __('Updating Automation Option Set %s', $snmp_id));
 				$item_id = sql_save($save, 'automation_snmp_items');
 				if ($item_id) {
-					log_install_always('', 'Successfully updated Automation Option Set ' . $snmp_id);
+					log_install_always('', __('Successfully updated Automation Option Set %s', $snmp_id));
 
-					log_install_always('', 'Resequencing Automation Option Set ' . $snmp_id);
+					log_install_always('', __('Resequencing Automation Option Set %s', $snmp_id));
 					db_execute_prepared('UPDATE automation_snmp_items
 							     SET sequence = sequence + 1
 							     WHERE snmp_id = ?',
 							     array($snmp_id));
 				} else {
-					log_install_always('', 'Failed to updated Automation Option Set ' . $snmp_id);
+					log_install_always('', __('Failed to updated Automation Option Set %s', $snmp_id));
 				}
 			} else {
-				log_install_always('', 'Failed to find any automation option set');
+				log_install_always('', __('Failed to find any automation option set'));
 			}
 		}
 
@@ -2951,7 +2987,7 @@ class Installer implements JsonSerializable {
 		// Add the host
 		if (!empty($host_template_id)) {
 			$this->setProgress(Installer::PROGRESS_DEVICE_TEMPLATE);
-			log_install_always('', 'Device Template for First Cacti Device is ' . $host_template_id);
+			log_install_always('', __('Device Template for First Cacti Device is %s', $host_template_id));
 
 			$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 				cacti_escapeshellarg($config['base_path'] . '/cli/add_device.php') .
@@ -2977,14 +3013,14 @@ class Installer implements JsonSerializable {
 					array($host_id));
 
 				if (cacti_sizeof($templates)) {
-					log_install_always('', 'Creating Graphs for Default Device');
+					log_install_always('', __('Creating Graphs for Default Device'));
 					foreach($templates as $template) {
 						set_config_option('install_updated', microtime(true));
 						automation_execute_graph_template($host_id, $template['graph_template_id']);
 					}
 
 					$this->setProgress(Installer::PROGRESS_DEVICE_TREE);
-					log_install_always('', 'Adding Device to Default Tree');
+					log_install_always('', __('Adding Device to Default Tree'));
 					shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/add_tree.php') .
 						' --type=node' .
@@ -2992,18 +3028,18 @@ class Installer implements JsonSerializable {
 						' --tree-id=1' .
 						' --host-id=' . $host_id);
 				} else {
-					log_install_always('', 'No templated graphs for Default Device were found');
+					log_install_always('', __('No templated graphs for Default Device were found'));
 				}
 			}
 		} else {
-			log_install_always('', 'WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.', 'INSTALL:');
+			log_install_always('', __('WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server.'));
 		}
 
 		/* just in case we have hard drive graphs to deal with */
 		$host_id = db_fetch_cell("SELECT id FROM host WHERE hostname='127.0.0.1'");
 
 		if (!empty($host_id)) {
-			log_install_always('', 'Running first-time data query for local host');
+			log_install_always('', __('Running first-time data query for local host'));
 		        run_data_query($host_id, 6);
 		}
 
@@ -3011,17 +3047,17 @@ class Installer implements JsonSerializable {
 		 * the poller cache to make sure everything
 		 * is refreshed and up-to-date */
 		set_config_option('install_updated', microtime(true));
-		log_install_always('', 'Repopulating poller cache');
+		log_install_always('', __('Repopulating poller cache'));
 		repopulate_poller_cache();
 
 		/* fill up the snmpcache */
 		set_config_option('install_updated', microtime(true));
-		log_install_always('', 'Repopulating SNMP Agent cache');
+		log_install_always('', __('Repopulating SNMP Agent cache'));
 		snmpagent_cache_rebuilt();
 
 		/* generate RSA key pair */
 		set_config_option('install_updated', microtime(true));
-		log_install_always('', 'Generating RSA Key Pair');
+		log_install_always('', __('Generating RSA Key Pair'));
 		rsa_check_keypair();
 
 		$this->setProgress(Installer::PROGRESS_DEVICE_END);
@@ -3033,18 +3069,18 @@ class Installer implements JsonSerializable {
 
 		$tables = db_fetch_assoc("SELECT value FROM settings WHERE name like 'install_table_%'");
 		if (cacti_sizeof($tables)) {
-			log_install_always('', sprintf('Found %s tables to convert', cacti_sizeof($tables)));
+			log_install_always('', __('Found %s tables to convert', cacti_sizeof($tables)));
 			$this->setProgress(Installer::PROGRESS_TABLES_BEGIN);
 			$i = 0;
 			foreach ($tables as $key => $table) {
 				$i++;
 				$name = $table['value'];
 				if (!empty($name)) {
-					log_install_always('', sprintf('Converting Table #%s \'%s\'', $i, $name));
+					log_install_always('', __('Converting Table #%s \'%s\'', $i, $name));
 					$results = shell_exec(cacti_escapeshellcmd(read_config_option('path_php_binary')) . ' -q ' .
 						cacti_escapeshellarg($config['base_path'] . '/cli/convert_tables.php') .
 						' --table=' . cacti_escapeshellarg($name) .
-						' --utf8 --innodb');
+						' --utf8 --innodb --dynamic');
 
 					set_config_option('install_updated', microtime(true));
 					log_install_debug('convert', sprintf('Convert table #%s \'%s\' results: %s', $i, $name, $results));
@@ -3055,7 +3091,7 @@ class Installer implements JsonSerializable {
 				}
 			}
 		} else {
-			log_install_always('', sprintf('No tables where found or selected for conversion'));
+			log_install_always('', __('No tables where found or selected for conversion'));
 		}
 	}
 
@@ -3066,11 +3102,11 @@ class Installer implements JsonSerializable {
 		$cachePrev = read_config_option('install_cache_db', true);
 		$cacheFile = tempnam(sys_get_temp_dir(), 'cdu');
 
-		log_install_always('', 'Switched from ' . $cachePrev . ' to ' . $cacheFile);
+		log_install_always('', __('Switched from %s to %s', $cachePrev, $cacheFile));
 		set_config_option('install_cache_db', $cacheFile);
 
 		$database_upgrade_status = array('file' => $cacheFile);
-		log_install_always('', 'NOTE: Using temporary file for db cache: ' . $cacheFile);
+		log_install_always('', __('NOTE: Using temporary file for db cache: %s',$cacheFile));
 
 		$prev_cacti_version = $this->old_cacti_version;
 		$orig_cacti_version = get_cacti_cli_version();
@@ -3092,7 +3128,7 @@ class Installer implements JsonSerializable {
 			// check for upgrade version file, then include, check for function and execute
 			$ver_status = DB_STATUS_SKIPPED;
 			if (file_exists($upgrade_file)) {
-				log_install_always('', 'Upgrading from v' . $prev_cacti_version .' (DB ' . $orig_cacti_version . ') to v' . $cacti_upgrade_version);
+				log_install_always('', __('Upgrading from v%s (DB %s) to v%s', $prev_cacti_version, $orig_cacti_version, $cacti_upgrade_version));
 
 				include_once($upgrade_file);
 				if (function_exists($upgrade_function)) {
@@ -3100,7 +3136,7 @@ class Installer implements JsonSerializable {
 					echo PHP_EOL;
 					$ver_status = $this->checkDatabaseUpgrade($cacti_upgrade_version);
 				} else {
-					log_install_always('', 'WARNING: Failed to find upgrade function for v' . $cacti_upgrade_version);
+					log_install_always('', __('WARNING: Failed to find upgrade function for v%s', $cacti_upgrade_version));
 					$ver_status = DB_STATUS_WARNING;
 				}
 
@@ -3159,7 +3195,7 @@ class Installer implements JsonSerializable {
 	public static function beginInstall($backgroundArg, $installer = null) {
 		$eula = read_config_option('install_eula', true);
 		if (empty($eula)) {
-			log_install_always('', 'Install aborted due to no EULA acceptance');
+			log_install_always('', __('Install aborted due to no EULA acceptance'));
 			return false;
 		}
 
@@ -3179,7 +3215,7 @@ class Installer implements JsonSerializable {
 			if ($dateArg === false) {
 				$dateArg = new DateTime();
 			}
-			$background_error = sprintf('Background was already started at %s, this attempt at %s was skipped',
+			$background_error = __('Background was already started at %s, this attempt at %s was skipped',
 				$dateTime->format('Y-m-d H:i:s.u'),
 				$dateArg->format('Y-m-d H:i:s.u'));
 			log_install_always('', $background_error);
@@ -3199,7 +3235,7 @@ class Installer implements JsonSerializable {
 			$installer->setDefaults();
 			$installer->install();
 		} catch (Exception $e) {
-			log_install_always('', __('Exception occurred during installation:  #' . $e->getErrorCode() . ' - ' . $e->getErrorText()), false, 'INSTALL:');
+			log_install_always('', __('Exception occurred during installation: #%s - %s', $e->getErrorCode(), $e->getErrorText()));
 		}
 
 		$backgroundDone = microtime(true);
@@ -3208,7 +3244,7 @@ class Installer implements JsonSerializable {
 		$dateBack = DateTime::createFromFormat('U.u', $backgroundTime);
 		$dateTime = DateTime::createFromFormat('U.u', $backgroundDone);
 
-		log_install_always('', __('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')), false, 'INSTALL:');
+		log_install_always('', __('Installation was started at %s, completed at %s', $dateBack->format('Y-m-d H:i:s'), $dateTime->format('Y-m-d H:i:s')));
 		return true;
 	}
 
@@ -3244,13 +3280,38 @@ class Installer implements JsonSerializable {
 	}
 
 	public static function setPhpOption($option_name, $option_value) {
-		log_install_always('', 'Setting PHP Option ' . $option_name . ' = ' . $option_value);
+		log_install_always('', __('Setting PHP Option %s = %s', $option_name, $option_value));
 		$value = ini_get($option_name);
 		if ($value != $option_value) {
 			ini_set($option_name, $option_value);
 			$value = ini_get($option_name);
 			if ($value != $option_value) {
-				log_install_always('', 'Failed to set PHP option ' . $option_name . ', is ' . $value . ' (should be ' . $option_value . ')');
+				log_install_always('', __('Failed to set PHP option %s, is %s (should be %s)', $option_name, $value, $option_value));
+			}
+		}
+	}
+
+	private static function fullSyncDataCollectors() {
+		// Perform full sync to complete upgrade
+		$status = install_full_sync();
+
+		if (sizeof($status['success']) == 0 && sizeof($status['failed'] == 0)) {
+			log_install_always('', __('No Remote Data Collectors found for full syncronization'));
+		} else {
+			if (sizeof($status['failed']) > 0) {
+				foreach($status['failed'] as $id) {
+					$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
+
+					log_install_always('', __('Remote Data Collector with name \'%s\' and id %d failed Full Sync.  Please manually Sync when once online to complete upgrade.', $poller, $id));
+				}
+			}
+
+			if (sizeof($status['success']) > 0) {
+				foreach($status['success'] as $id) {
+					$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
+	
+					log_install_always('', __('Remote Data Collector with name \'%s\' and id %d completed Full Sync.', $poller, $id));
+				}
 			}
 		}
 	}

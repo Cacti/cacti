@@ -50,17 +50,15 @@ if (!isset_request_var('headercontent')) {?>
 	<title><?php print $page_title;?></title>
 	<?php } ?>
 	<div id='cactiContent' class='cactiContent'>
-		<div class='cactiConsoleNavigationArea' style='overflow:hidden'>
-			<div style='display:none;' id='navigation'>
-				<table style='width:100%;'>
-					<?php draw_menu();?>
-					<tr>
-						<td style='text-align:center;'>
-							<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
-						</td>
-					</tr>
-				</table>
-			</div>
+		<div class='cactiConsoleNavigationArea' style='display:none;' id='navigation'>
+			<table style='width:100%;'>
+				<?php draw_menu();?>
+				<tr>
+					<td style='text-align:center;'>
+						<div class='cactiLogo' onclick='loadPage("<?php print $config['url_path'];?>about.php")'></div>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<div id='navigation_right' class='cactiConsoleContentArea'>
 			<div style='position:relative;display:none;' id='main'>

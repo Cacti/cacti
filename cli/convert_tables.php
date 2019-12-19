@@ -37,6 +37,7 @@ $debug       = false;
 $size        = 1000000;
 $force       = false;
 $rebuild     = false;
+$dynamic     = false;
 $table_name  = '';
 $skip_tables = array();
 
@@ -57,6 +58,9 @@ if (cacti_sizeof($parms)) {
 			case '-r':
 			case '--rebuild':
 				$rebuild = true;
+				break;
+			case '--dynamic':
+				$dynamic = true;
 				break;
 			case '-s':
 			case '--size':
@@ -170,6 +174,10 @@ if (cacti_sizeof($tables)) {
 			$canConvert = $table['Collation'] != 'utf8mb4_unicode_ci';
 		}
 
+		if ($dynamic && $table['Row_format'] == 'Compact') {
+			$canConvert = true;
+		}
+
 		if ($canConvert) {
 			if ($table['Rows'] < $size || $force) {
 				print "Converting Table -> '" . $table['Name'] . "'";
@@ -183,7 +191,7 @@ if (cacti_sizeof($tables)) {
 					$sql .= (strlen($sql) ? ',' : '') . ' ENGINE=Innodb';
 				}
 
-				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . $sql);
+				$status = db_execute('ALTER TABLE `' . $table['Name'] . '`' . ($dynamic ? ' ROW_FORMAT=Dynamic, ':'') . $sql);
 
 				if ($status === false) {
 					print ' Failed' . PHP_EOL;
@@ -211,7 +219,7 @@ function display_version() {
 function display_help () {
 	display_version();
 
-	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild]\n\n";
+	print "\nusage: convert_tables.php [--debug] [--innodb] [--utf8] [--table=N] [--size=N] [--rebuild] [--dynamic]\n\n";
 	print "A utility to convert a Cacti Database from MyISAM to the InnoDB table format.\n";
 	print "MEMORY tables are not converted to InnoDB in this process.\n\n";
 	print "Required (one or more):\n";
@@ -222,6 +230,7 @@ function display_help () {
 	print "-n | --skip-innodb=\"table1 table2 ...\" - Skip converting tables to InnoDB\n";
 	print "-s | --size=N  - The largest table size in records to convert.  Default is 1,000,000 rows.\n";
 	print "-r | --rebuild - Will compress/optimize existing InnoDB tables if found\n";
+	print "     --dynamic - Convert a table to Dynamic row format if available\n";
 	print "-f | --force   - Proceed with conversion regardless of table size\n\n";
 	print "-d | --debug   - Display verbose output during execution\n\n";
 }

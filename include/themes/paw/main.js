@@ -47,9 +47,9 @@ function themeReady() {
 			$(this).parent().addClass('maintabs-has-submenu');
 			$('<div class="dropdownMenu">'
 				+'<ul id="submenu-tab-graphs" class="submenuoptions" style="display:none;">'
-					+'<li><a href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
-					+'<li><a href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
+					+'<li><a id="tab-graphs-tree-view" href="'+urlPath+'graph_view.php?action=tree">'+treeView+'</a></li>'
+					+'<li><a id="tab-graphs-list-view" href="'+urlPath+'graph_view.php?action=list">'+listView+'</a></li>'
+					+'<li><a id="tab-graphs-pre_view" href="'+urlPath+'graph_view.php?action=preview">'+previewView+'</a></li>'
 				+'</ul>'
 			+'</div>').appendTo('body');
 		}
@@ -152,30 +152,56 @@ function themeReady() {
 			callBack = $('#call_back').val();
 			if (callBack != 'undefined') {
 				eval(callBack);
-			} else if (typeof applyGraphFilter === 'function') {
+			}else if (typeof applyGraphFilter === 'function') {
 				applyGraphFilter();
-			} else {
+			}else{
 				applyFilter();
 			}
 		}
 	}).addClass('ui-state-default ui-selectmenu-text').css('border', 'none').css('background-color', 'transparent');
 
-	$('#host, #host_click').click(function() {
-		if (!hostOpen) {
-			$('#host').autocomplete('option', 'minLength', 0).autocomplete('search', '');
-			hostOpen = true;
-		} else {
+	$('#host_click').css('z-index', '4');
+	$('#host_wrapper').unbind().dblclick(function() {
+		hostOpen = false;
+		clearTimeout(hostTimer);
+		clearTimeout(clickTimeout);
+		$('#host').autocomplete('close');
+	}).click(function() {
+		if (hostOpen) {
 			$('#host').autocomplete('close');
+			clearTimeout(hostTimer);
 			hostOpen = false;
+		}else{
+			clickTimeout = setTimeout(function() {
+				$('#host').autocomplete('search', '');
+				clearTimeout(hostTimer);
+				hostOpen = true;
+			}, 200);
 		}
+	}).on('mouseenter', function() {
+		$(this).addClass('ui-state-hover');
+		$('input#host').addClass('ui-state-hover');
+	}).on('mouseleave', function() {
+		$(this).removeClass('ui-state-hover');
+		$('#host').removeClass('ui-state-hover');
+		hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+		hostOpen = false;
 	});
 
-	/* End clean up */
+	var hostPrefix = '';
+	$('#host').autocomplete('widget').each(function() {
+		hostPrefix=$(this).attr('id');
 
-	/* Notification Handler */
-	if ($('#message').length) {
-	//	alert($('#message_container').html());
-	}
+		if (hostPrefix != '') {
+			$('ul[id="'+hostPrefix+'"]').on('mouseenter', function() {
+				clearTimeout(hostTimer);
+			}).on('mouseleave', function() {
+				hostTimer = setTimeout(function() { $('#host').autocomplete('close'); }, 800);
+				$(this).removeClass('ui-state-hover');
+				$('input#host').removeClass('ui-state-hover');
+			});
+		}
+	});
 
 	/* Replace icons */
 	$('.fa-arrow-down').addClass('fa-chevron-down').removeClass('fa-arrow-down');
@@ -189,19 +215,29 @@ function setMenuVisibility() {
 	storage=Storages.localStorage;
 
 	// Initialize the navigation settings
-	$('#navigation').hide();
+	// This will setup the initial visibility of the menu
 	$('li.menuitem').each(function() {
-		active = storage.get($(this).attr('id'));
+		var id = $(this).attr('id');
+		var active = storage.get(id);
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
-		} else {
+		}else{
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
 		}
-	});
 
-	$('#navigation').show();
+		if ($(this).find('a.selected').length == 0) {
+			//console.log('hiding1:'+$(this).closest('.menuitem').attr('id'));
+			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
+			$(this).next('a').hide();
+			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+		} else {
+			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
+			$(this).next('a').show();
+			storage.set($(this).closest('.menuitem').attr('id'), 'active');
+		}
+	});
 
 	// Functon to give life to the Navigation pane
 	$('#nav li:has(ul) a.active').unbind().click(function(event) {
@@ -212,14 +248,14 @@ function setMenuVisibility() {
 		if ($(this).next().is(':visible')){
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
-			storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			storage.set(id, 'collapsed');
 		} else {
 			$(this).next('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true');
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
 				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-			} else {
-				storage.set($(this).closest('.menuitem').attr('id'), 'collapsed');
+			}else{
+				storage.set(id, 'collapsed');
 			}
 		}
 

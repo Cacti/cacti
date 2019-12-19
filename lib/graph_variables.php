@@ -32,7 +32,11 @@
 function nth_percentile($local_data_ids, $start_seconds, $end_seconds, $percentile = 95, $resolution = 0, $peak = false) {
 	$stats = json_decode(rrdtool_function_stats($local_data_ids, $start_seconds, $end_seconds, $percentile, $resolution, $peak), true);
 
-	return $stats['avg'];
+	if ($peak) {
+		return $stats['peak'];
+	} else {
+		return $stats['avg'];
+	}
 }
 
 /* rrdtool_function_stats - given a data source, calculate a number of statistics for an RRDfile or files
@@ -231,7 +235,22 @@ function cacti_stats_calc($array, $ptile = 95) {
 	$elements = cacti_sizeof($array);
 
 	if ($elements == 0) {
-		return array();
+		$results = array(
+			'p95n'     => 0,
+			'p90n'     => 0,
+			'p75n'     => 0,
+			'p50n'     => 0,
+			'p25n'     => 0,
+			'average'  => 0,
+			'sum'      => 0,
+			'elements' => 0,
+			'variance' => 0,
+			'stddev'   => 0
+		);
+
+		$results['p' . $ptile . 'n'] = 0;
+
+		return $results;
 	}
 
 	$variance = 0;
@@ -420,17 +439,13 @@ function variable_nth_percentile(&$regexp_match_array, &$graph, &$graph_item, &$
 		switch ($type) {
 			case 'current':
 				// Query data for the individual case
-				$local_data_array = array();
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
-
+				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile);
 
 				break;
 			case 'max':
 				// Query data for the individual case
-				$local_data_array = array();
-				$local_data_array[$graph_item['local_data_id']][] = $graph_item['data_source_name'];
-
+				$local_data_array = array_intersect_key($local_data_array, array_flip(array($graph_item['local_data_id'])));
 				$nth_cache = nth_percentile($local_data_array, $graph_start, $graph_end, $percentile, 0, true);
 
 				break;

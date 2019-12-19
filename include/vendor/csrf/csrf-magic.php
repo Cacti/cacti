@@ -373,21 +373,36 @@ function csrf_start() {
  * Retrieves the secret, and generates one if necessary.
  */
 function csrf_get_secret() {
+	global $config;
+
     if ($GLOBALS['csrf']['secret']) return $GLOBALS['csrf']['secret'];
-    $dir = dirname(__FILE__);
-    $file = $dir . '/csrf-secret.php';
-    $secret = '';
-    if (file_exists($file)) {
-        include $file;
-        return $secret;
-    }
-    if (is_writable($dir)) {
-        $secret = csrf_generate_secret();
-        $fh = fopen($file, 'w');
-        fwrite($fh, '<?php $secret = "'.$secret.'";' . PHP_EOL);
-        fclose($fh);
-        return $secret;
-    }
+
+	if (isset($config['path_csrf_secret'])) {
+		$dir  = dirname($config['path_csrf_secret']);
+		$file = $config['path_csrf_secret'];
+
+		if (file_exists($file)) {
+			include($file);
+			return $secret;
+		}
+	} else {
+	    $dir    = dirname(__FILE__);
+		$file   = $dir . '/csrf-secret.php';
+		$secret = '';
+		if (file_exists($file)) {
+			include($file);
+			return $secret;
+		}
+	}
+
+	if (is_writable($dir)) {
+		$secret = csrf_generate_secret();
+		$fh = fopen($file, 'w');
+		fwrite($fh, '<?php $secret = "'.$secret.'";' . PHP_EOL);
+		fclose($fh);
+		return $secret;
+	}
+
     return '';
 }
 

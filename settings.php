@@ -30,14 +30,14 @@ set_default_action();
 
 get_filter_request_var('tab', FILTER_CALLBACK, array('options' => 'sanitize_search_string'));
 
-global $disable_log_rotation;
+global $disable_log_rotation, $local_db_cnn_id;
 
 switch (get_request_var('action')) {
 case 'save':
 	$errors = array();
 	$inserts = array();
 
-	foreach ($settings{get_request_var('tab')} as $field_name => $field_array) {
+	foreach ($settings[get_request_var('tab')] as $field_name => $field_array) {
 		if (($field_array['method'] == 'header') || ($field_array['method'] == 'spacer' )){
 			/* do nothing */
 		} elseif ($field_array['method'] == 'checkbox') {
@@ -76,11 +76,18 @@ case 'save':
 				$_SESSION['sess_field_values'][$field_name] = get_nfilter_request_var($field_name);
 				$errors[8] = 8;
 			} else {
-				$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
-				db_execute_prepared('REPLACE INTO settings
-					(name, value)
-					VALUES (?, ?)',
-					array($field_name, get_nfilter_request_var($field_name)));
+				if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
+					db_execute_prepared('REPLACE INTO settings
+						(name, value)
+						VALUES (?, ?)',
+						array($field_name, get_nfilter_request_var($field_name)), true, $local_db_cnn_id);
+				} else {
+					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+					db_execute_prepared('REPLACE INTO settings
+						(name, value)
+						VALUES (?, ?)',
+						array($field_name, get_nfilter_request_var($field_name)));
+				}
 			}
 		} elseif ($field_array['method'] == 'filepath') {
 			if (isset($field_array['file_type']) &&
@@ -105,11 +112,18 @@ case 'save':
 				}
 
 				if ($continue) {
-					$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
-					db_execute_prepared('REPLACE INTO settings
-						(name, value)
-						VALUES (?, ?)',
-						array($field_name, get_nfilter_request_var($field_name)));
+					if (get_request_var('tab') == 'path' && is_remote_path_setting($field_name)) {
+						db_execute_prepared('REPLACE INTO settings
+							(name, value)
+							VALUES (?, ?)',
+							array($field_name, get_nfilter_request_var($field_name)), true, $local_db_cnn_id);
+					} else {
+						$inserts[] = '(' . db_qstr($field_name) . ', ' . db_qstr(get_nfilter_request_var($field_name)) . ')';
+						db_execute_prepared('REPLACE INTO settings
+							(name, value)
+							VALUES (?, ?)',
+							array($field_name, get_nfilter_request_var($field_name)));
+					}
 				}
 			}
 		} elseif ($field_array['method'] == 'textbox_password') {
@@ -203,26 +217,34 @@ case 'save':
 
 	api_plugin_hook_function('global_settings_update');
 
+	$gone_time = read_config_option('poller_interval') * 2;
+
 	$pollers = array_rekey(
-		db_fetch_assoc('SELECT id
+		db_fetch_assoc_prepared('SELECT id
 			FROM poller
 			WHERE id > 1
-			AND disabled=""'),
+			AND disabled=""
+			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_status) <= ?',
+			array($gone_time)),
 		'id', 'id'
 	);
 
+	if (get_request_var('tab') == 'path' && $config['poller_id'] > 1) {
+		raise_message('poller_paths');
+	}
+
 	if (cacti_sizeof($errors) == 0) {
-		if (cacti_sizeof($pollers)) {
+		if (cacti_sizeof($pollers) && $config['poller_id'] == 1) {
 			$sql = 'INSERT INTO settings
 				(name, value)
-				VALUES . ' . implode(', ', $inserts) . '
+				VALUES ' . implode(', ', $inserts) . '
 				ON DUPLICATE KEY UPDATE value=VALUES(value)';
 
 			foreach($pollers as $p) {
 				$rcnn_id = poller_connect_to_remote($p);
 
 				if ($rcnn_id) {
-					if (db_execute($sql, false, $rcnn_id)) {
+					if (db_execute($sql, false, $rcnn_id) === false) {
 						raise_message('poller_' . $p, __('Settings save to Data Collector %d Failed.', $p), MESSAGE_LEVEL_ERROR);
 					}
 				}
@@ -316,7 +338,13 @@ default:
 
 	form_start('settings.php', 'form_settings');
 
-	html_start_box( __('Cacti Settings (%s)', $tabs[$current_tab]), '100%', true, '3', 'center', '');
+	if ($config['poller_id'] > 1 && $current_tab == 'path') {
+		$suffix = ' [<span class="deviceDown">' . __('NOTE: Path Settings on this Tab are only saved locally!') . '</span>]';
+	} else {
+		$suffix = '';
+	}
+
+	html_start_box( __('Cacti Settings (%s)%s', $tabs[$current_tab], $suffix), '100%', true, '3', 'center', '');
 
 	$form_array = array();
 
@@ -325,6 +353,11 @@ default:
 		unset($settings['path']['logrotate_enabled']);
 		unset($settings['path']['logrotate_frequency']);
 		unset($settings['path']['logrotate_retain']);
+	}
+
+	// RRDtool is not required for remote data collectors
+	if ($config['poller_id'] > 1) {
+		$settings['path']['path_rrdtool']['method'] = 'other';
 	}
 
 	if (isset($settings[$current_tab])) {
@@ -337,20 +370,34 @@ default:
 						$form_array[$field_name]['items'][$sub_field_name]['form_id'] = 1;
 					}
 
-					$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
-						FROM settings
-						WHERE name = ?',
-						array($sub_field_name));
+					if ($current_tab == 'path' && is_remote_path_setting($field_name)) {
+						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
+							FROM settings
+							WHERE name = ?',
+							array($sub_field_name), '', true, $local_db_cnn_id);
+					} else {
+						$form_array[$field_name]['items'][$sub_field_name]['value'] = db_fetch_cell_prepared('SELECT value
+							FROM settings
+							WHERE name = ?',
+							array($sub_field_name));
+					}
 				}
 			} else {
 				if (config_value_exists($field_name)) {
 					$form_array[$field_name]['form_id'] = 1;
 				}
 
-				$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
-					FROM settings
-					WHERE name = ?',
-					array($field_name));
+				if ($current_tab == 'path' && is_remote_path_setting($field_name)) {
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
+						FROM settings
+						WHERE name = ?',
+						array($field_name), '', true, $local_db_cnn_id);
+				} else {
+					$form_array[$field_name]['value'] = db_fetch_cell_prepared('SELECT value
+						FROM settings
+						WHERE name = ?',
+						array($field_name));
+				}
 			}
 		}
 	}
@@ -1145,5 +1192,15 @@ default:
 	bottom_footer();
 
 	break;
+}
+
+function is_remote_path_setting($field_name) {
+	global $config;
+
+	if ($config['poller_id'] > 1 && (strpos($field_name, 'path_') !== false || strpos($field_name, '_path') !== false)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
