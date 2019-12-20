@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.9
 -issue#3146: Unable to create aggregate graphs on new installations
+-issue#3149, Show device status with tooltips do not work after refresh
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
