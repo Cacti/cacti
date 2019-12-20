@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
 -issue#3146: Unable to create aggregate graphs on new installations
 -issue#3149: Show device status with tooltips do not work after refresh
+-issue#3150: When using Time Graph View, Zooming can cause errors
 -issue#3151: Passing glue string after array is depreciated (PHP 7.4)
 
 1.2.8
