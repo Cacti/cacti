@@ -527,7 +527,7 @@ function debug_wizard() {
 				$issue_line = $issues[0];
 			}
 
-			$issue_title = implode($issues, '<br/>');
+			$issue_title = implode('<br/>',$issues);
 
 			$user = db_fetch_cell_prepared('SELECT username
 				FROM user_auth
