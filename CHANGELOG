@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.9
+-issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
 -issue#3146: Unable to create aggregate graphs on new installations
 -issue#3149: Show device status with tooltips do not work after refresh
 -issue#3151: Passing glue string after array is depreciated (PHP 7.4)
@@ -71,6 +72,7 @@ Cacti CHANGELOG
 -issue#3128: i18n handler checks for existence of wrong mo file
 -issue#3129: Logout repeated occurs even when already logged out
 -issue#3132: Installer fails to continue if automation range is array of networks
+-issue#3098: Support percent sign(%) in graph gprint item like legend area.
 -feature#3077: Allow disabling remote poller resource cache replication to support upgrade testing
 
 1.2.7
