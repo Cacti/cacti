@@ -740,13 +740,17 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		AND dtr.local_data_id IN (" . implode(', ', $list) . ")
 		ORDER BY $sql_order";
 
-	$color_ids = db_fetch_assoc("SELECT color_id
-		FROM graph_templates_item AS gti
-		LEFT JOIN data_template_rrd AS dtr
-		ON gti.task_item_id = dtr.id
-		WHERE gti.local_graph_id = $aggregate
-		AND dtr.local_data_id IN (" . implode(', ', $list) . ")
-		ORDER BY gti.sequence");
+	if ($reorder != AGGREGATE_ORDER_NONE && $reorder != AGGREGATE_ORDER_DS_GRAPH) {
+		$color_ids = db_fetch_assoc("SELECT color_id
+			FROM graph_templates_item AS gti
+			LEFT JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE gti.local_graph_id = $aggregate
+			AND dtr.local_data_id IN (" . implode(', ', $list) . ")
+			ORDER BY gti.sequence");
+	} else {
+		$color_ids = array();
+	}
 
 	cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
