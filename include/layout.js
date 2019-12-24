@@ -2485,9 +2485,10 @@ $(function() {
 	popFired    = false;
 	var tapped  = false;
 
-	$(window).on('popstate', function(event) {
+	// Use traditional popstate handler
+	window.onpopstate = function(event) {
 		handlePopState();
-	});
+	}
 
 	$('#filter, #rfilter').keydown(function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
