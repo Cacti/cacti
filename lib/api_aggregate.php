@@ -681,9 +681,9 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
 
 /**
  * reorder graph items
- * @param int $base			- base graph id
- * @param int $aggregate	- graph id of aggregate
- * @param int $reorder		- type of reordering
+ * @param int $base              - base graph id
+ * @param int $aggregate         - graph id of aggregate
+ * @param int $reorder           - type of reordering
  */
 function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reorder, $graph_type) {
 	global $config;
@@ -740,6 +740,18 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 		AND dtr.local_data_id IN (" . implode(', ', $list) . ")
 		ORDER BY $sql_order";
 
+	if ($reorder != AGGREGATE_ORDER_NONE && $reorder != AGGREGATE_ORDER_DS_GRAPH) {
+		$color_ids = db_fetch_assoc("SELECT color_id
+			FROM graph_templates_item AS gti
+			LEFT JOIN data_template_rrd AS dtr
+			ON gti.task_item_id = dtr.id
+			WHERE gti.local_graph_id = $aggregate
+			AND dtr.local_data_id IN (" . implode(', ', $list) . ")
+			ORDER BY gti.sequence");
+	} else {
+		$color_ids = array();
+	}
+
 	cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
 	$items = db_fetch_assoc($sql);
@@ -748,10 +760,21 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 	foreach($items as $item) {
 		$new_graph_type = aggregate_change_graph_type($i, $item['graph_type_id'], $graph_type);
 
+		if (isset($color_ids[$i])) {
+			$color_id = $color_ids[$i]['color_id'];
+		} else {
+			$color_id = '';
+		}
+
 		# accumulate the updates to avoid interfering the next loops
-		$updates[] = 'UPDATE graph_templates_item SET sequence = ' . $new_seq++ . ", graph_type_id = $new_graph_type WHERE id = " . $item['id'];
+		$updates[] = 'UPDATE graph_templates_item
+			SET sequence = ' . $new_seq . ",
+			graph_type_id = $new_graph_type " .
+			($color_id != '' ? ', color_id = ' . $color_id:'') . "
+			WHERE id = " . $item['id'];
 
 		$i++;
+		$new_seq++;
 	}
 
 	# now get all 'empty' local_data_template_rrd_id's

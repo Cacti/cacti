@@ -245,7 +245,7 @@ function dsdebug_poller_bottom() {
 				if ($c['started'] < time() - ($dtd['rrd_step'] * 5)) {
 					$c['done'] = 1;
 					$c['issue'][] = __('Debug not completed after 5 pollings');
-					$c['issue'][] = __('Failed fields: ') . implode($f, ', ');
+					$c['issue'][] = __('Failed fields: ') . implode(', ', $f);
 
 					$total_issues++;
 				}

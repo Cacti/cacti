@@ -729,7 +729,7 @@
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraphs();
+						initializeGraph();
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');
@@ -839,7 +839,7 @@
 						$('#graph_start').val(newGraphStartTime);
 						$('#graph_end').val(newGraphEndTime);
 
-						initializeGraphs();
+						initializeGraph();
 					}
 				} else {
 					$("input[name='" + zoom.options.submitButton + "']").trigger('click');

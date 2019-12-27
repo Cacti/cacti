@@ -10,6 +10,9 @@ php:
 - '7.2'
 - '7.3'
 
+# disable PHP 7.4 for now
+# - '7.4'
+
 before_script:
 - sudo apt-get install apache2 php5-mysql php5-gd php5-ldap php5-gmp rrdtool snmp
 - sudo a2enmod actions

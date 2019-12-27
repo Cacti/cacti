@@ -56,7 +56,7 @@ function upgrade_to_1_2_5() {
 		AND type_code = 'output_type'
 		AND gl.graph_template_id IN (SELECT graph_template_id FROM snmp_query_graph)");
 
-	db_install_execute("ALTER TABLE poller_output_realtime DROP PRIMARY KEY, ADD PRIMARY KEY (local_data_id, rrd_name, time, poller_id)");
+	db_install_execute("ALTER TABLE poller_output_realtime ROW_FORMAT=Dynamic, DROP PRIMARY KEY, ADD PRIMARY KEY (local_data_id, rrd_name, time, poller_id)");
 
 	repair_automation();
 }

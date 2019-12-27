@@ -148,13 +148,16 @@ function basename(path, suffix) {
 /** getTimestampFromDate - Simple function to convert a MySQL Date
  * to a timestamp */
 function getTimestampFromDate(dateStamp) {
-	var dateParts = dateStamp.split(' ');
-	var timeParts = dateParts[1].split(':');
+	if (typeof(dateStamp) != 'undefined') {
+		var dateParts = dateStamp.split(' ');
+		var timeParts = dateParts[1].split(':');
 
-	dateParts = dateParts[0].split('-');
-	var date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+		dateParts = dateParts[0].split('-');
+		var date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
 
-	return date.getTime() / 1000;
+		return date.getTime() / 1000;
+	}
+	return '';
 }
 
 /** base64_encode - Simple function to base64 encode a utf-8 string */
@@ -709,7 +712,7 @@ function applySkin() {
 	});
 
 	$(document).tooltip({
-		items: 'div.cactiTooltipHint, span.cactiTooltipHint, a, span, .checkboxSlider',
+		items: 'div.cactiTooltipHint, span.cactiTooltipHint, .checkboxSlider',
 		content: function() {
 			var element = $(this);
 
@@ -2496,9 +2499,10 @@ $(function() {
 	popFired    = false;
 	var tapped  = false;
 
-	$(window).on('popstate', function(event) {
+	// Use traditional popstate handler
+	window.onpopstate = function(event) {
 		handlePopState();
-	});
+	}
 
 	$('#filter, #rfilter').keydown(function(event) {
 		if (event.keyCode == 8 && $(this).val() == '') {
@@ -3293,18 +3297,22 @@ function initializeGraphs() {
 		});
 	});
 
+	// Get these outside of the each to reduce calls
+	var timestampDate1 = getTimestampFromDate($('#date1').val());
+	var timestampDate2 = getTimestampFromDate($('#date2').val());
+
 	$('a[id$="_csv"]').each(function() {
 		var graph_id=$(this).attr('id').replace('graph_','').replace('_csv','');
 
 		// Disable context menu
 		$(this).children().contextmenu(function() {
-			return false;
+				return false;
 		});
 
 		$(this).attr('href',urlPath+
 			'graph_xport.php?local_graph_id='+graph_id+
-			'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
-			'&graph_end='+getTimestampFromDate($('#date2').val())).addClass('linkEditMain');
+			'&rra_id=0&view_type=tree&graph_start='+timestampDate1+
+			'&graph_end='+timestampDate2).addClass('linkEditMain');
 
 		$(this).off('click').on('click', function(event) {
 			if (!shouldCaptureClick(event))
@@ -3315,8 +3323,8 @@ function initializeGraphs() {
 			event.stopPropagation();
 			document.location = urlPath+
 				'graph_xport.php?local_graph_id='+graph_id+
-				'&rra_id=0&view_type=tree&graph_start='+getTimestampFromDate($('#date1').val())+
-				'&graph_end='+getTimestampFromDate($('#date2').val());
+				'&rra_id=0&view_type=tree&graph_start='+timestampDate1+
+				'&graph_end='+timestampDate2;
 		});
 	});
 
@@ -3428,8 +3436,8 @@ function initializeGraphs() {
 		var graph_id = $(this).attr('id').replace('graph_','').replace('_util','');
 		$(this).attr('href',urlPath+
 			'graph.php?action=zoom&local_graph_id='+graph_id+
-			'&rra_id=0&graph_start='+getTimestampFromDate($('#date1').val())+
-			'&graph_end='+getTimestampFromDate($('#date2').val())).addClass('linkEditMain');
+			'&rra_id=0&graph_start='+timestampDate1+
+			'&graph_end='+timestampDate2).addClass('linkEditMain');
 
 		$(this).off('click').on('click', function(event) {
 			if (!shouldCaptureClick(event))
