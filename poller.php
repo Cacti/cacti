@@ -181,6 +181,12 @@ if (function_exists('pcntl_signal')) {
 $poller_start    = microtime(true);
 $overhead_time   = 0;
 
+// catch the unlikely event that the poller_output_boost is missing
+if (!db_table_exists('poller_output_boost')) {
+	db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
+	db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
+}
+
 api_plugin_hook('poller_top');
 
 // prime the poller_resource_cache for multiple pollers
