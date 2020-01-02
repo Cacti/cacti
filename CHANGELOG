@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#3155: Aggregate Reorder Type & color template
 -issue#3156: SQL Save on table 'aggregate_graphs': Column 'gprint_format' does not exist, unable to save!
 -issue#3157: Back button not working in all cases in 1.2.8
+-issue#3158: Classic theme show only 3 tabs on mobile device. Don't show Console menu
 -issue#3161: If for some reason the poller_output_boost table is missing, recreate it before a poller run
 
 1.2.8

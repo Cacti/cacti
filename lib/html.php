@@ -2291,9 +2291,14 @@ function html_common_header($title, $selectedTheme = '') {
 		$selectedTheme = get_selected_theme();
 	}
 
+	if ($selectedTheme == 'classic') {
+		print "<meta content='width=device-width, initial-scale=0.5, minimum-scale=0.2, maximum-scale=2.0' name='viewport'>" . PHP_EOL;
+	} else {
+		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>" . PHP_EOL;
+	}
+
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
-	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta name='robots' content='noindex,nofollow'>
