@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.9
+-issue#3038: Minor UI issue for aggregate when 'main' div width is less than 1230px
 -issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
 -issue#3146: Unable to create aggregate graphs on new installations
 -issue#3149: Show device status with tooltips do not work after refresh
