@@ -1327,13 +1327,6 @@ function responsiveResizeGraphs() {
 			$(this).removeAttr('width');
 			$(this).removeAttr('height');
 		}
-
-		$('#zoom-container').remove();
-		$(this).zoom({
-			inputfieldStartTime : 'date1',
-			inputfieldEndTime : 'date2',
-			serverTimeOffset : timeOffset
-		});
 	});
 
 	if ($('.cactiTreeNavigationArea').length) {
@@ -3230,7 +3223,6 @@ function redrawGraph(graph_id) {
 					" value_max='"+data.value_max+"'>"
 				);
 
-				$('#zoom-container').remove();
 				$('#graph_'+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
@@ -3267,7 +3259,6 @@ function initializeGraphs() {
 
 					$('#main').empty().hide();
 					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
-					$('#zoom-container').remove();
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();
