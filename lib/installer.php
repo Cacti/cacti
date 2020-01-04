@@ -735,7 +735,7 @@ class Installer implements JsonSerializable {
 
 		if (!file_exists($path_csrf_secret)) {
 			if (is_resource_writable(dirname($path_csrf_secret))) {
-				csrf_get_secret();
+				csrf_generate_secret();
 			} else {
 				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
 			}
