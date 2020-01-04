@@ -669,7 +669,8 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error to STEP_BINARY_LOCATIONS if a problem is
 	 *         found with the value. */
 	private function setPaths($param_paths = array()) {
-		global $config;
+		global $config, $path_csrf_secret;
+
 		if (is_array($param_paths)) {
 			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . cacti_count($param_paths) . ')');
 
@@ -723,6 +724,20 @@ class Installer implements JsonSerializable {
 				} else {
 					$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Unexpected path parameter'));
 				}
+			}
+		}
+
+		// Prime the CSRF Secret file
+		include_once($config['base_path'] . '/include/vendor/csrf/csrf-magic.php');
+		if (!isset($path_csrf_secret)) {
+			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		}
+
+		if (!file_exists($path_csrf_secret)) {
+			if (is_resource_writable(dirname($path_csrf_secret))) {
+				csrf_get_secret();
+			} else {
+				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
 			}
 		}
 	}
@@ -3309,7 +3324,7 @@ class Installer implements JsonSerializable {
 			if (sizeof($status['success']) > 0) {
 				foreach($status['success'] as $id) {
 					$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
-	
+
 					log_install_always('', __('Remote Data Collector with name \'%s\' and id %d completed Full Sync.', $poller, $id));
 				}
 			}

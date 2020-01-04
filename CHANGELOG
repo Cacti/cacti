@@ -15,6 +15,7 @@ Cacti CHANGELOG
 -issue#3163: RPMlint Notes "incorrect-fsf-address"
 -issue#3165: Zoom Looses its focus after all graphs on page rendered
 -issue#3166: Every time you change zooms, at the end, all graphs are resized inapropriately
+-issue#3167: Installer should initialize the csrf-secret.php file automatically
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
