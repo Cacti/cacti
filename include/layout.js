@@ -1283,6 +1283,7 @@ function responsiveResizeGraphs() {
 
 	// Dont resize if nothing changed
 	if (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns)) {
+		previousMainWidth = mainWidth;
 		return true;
 	}
 
