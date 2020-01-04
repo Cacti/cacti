@@ -60,6 +60,8 @@ var formArray;
 var pageWidth = null;
 var isHover = false;
 var hoverTimer = false;
+var previousMainWidth = null;
+var previousColumns   = null;
 
 window.paceOptions = {
 	ajax: true,
@@ -1279,6 +1281,11 @@ function responsiveResizeGraphs() {
 		graphRow = mainWidth;
 	}
 
+	// Dont resize if nothing changed
+	if (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns)) {
+		return true;
+	}
+
 	var myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
 
 	$('.graphimage').each(function() {
@@ -1334,6 +1341,9 @@ function responsiveResizeGraphs() {
 			$(this).removeAttr('height');
 		}
 	});
+
+	previousMainWidth = mainWidth;
+	previousColumns   = myColumns;
 
 	if ($('.cactiTreeNavigationArea').length) {
 		resizeTreePanel();
