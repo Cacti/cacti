@@ -343,6 +343,7 @@ class Installer implements JsonSerializable {
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
 		$this->setMode($this->getMode());
+		$this->setCSRFSecret();
 
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
@@ -454,7 +455,8 @@ class Installer implements JsonSerializable {
 	 *                    to be available for writing during install or
 	 *                    always (after install) */
 	private function getPermissions() {
-		global $config;
+		global $config, $path_csrf_secret;
+
 		$permissions = array('install' => array(), 'always' => array());
 
 		$install_paths = array(
@@ -463,6 +465,12 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/resource/script_queries',
 			$config['base_path'] . '/scripts',
 		);
+
+		if (!isset($path_csrf_secret)) {
+			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		}
+
+		$install_paths += $path_csrf_secret;
 
 		$always_paths = array(
 			sys_get_temp_dir(),
@@ -579,6 +587,25 @@ class Installer implements JsonSerializable {
 		return $rrdver;
 	}
 
+	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
+	private function setCSRFSecret() {
+		global $config, $path_csrf_secret;
+
+		include_once($config['base_path'] . '/include/vendor/csrf/csrf-magic.php');
+
+		if (!isset($path_csrf_secret)) {
+			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+		}
+
+		if (!file_exists($path_csrf_secret)) {
+			if (is_resource_writable(dirname($path_csrf_secret))) {
+				csrf_generate_secret();
+			} else {
+				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
+			}
+		}
+	}
+
 	/* setRRDVersion() - sets the RRDVersion installer option, overrides
 	 *                 - system default.
 	 * @param_rrdver - a valid version number.
@@ -669,7 +696,7 @@ class Installer implements JsonSerializable {
 	 * Errors: will add an error to STEP_BINARY_LOCATIONS if a problem is
 	 *         found with the value. */
 	private function setPaths($param_paths = array()) {
-		global $config, $path_csrf_secret;
+		global $config;
 
 		if (is_array($param_paths)) {
 			log_install_debug('paths', 'setPaths(' . $this->stepCurrent . ', ' . cacti_count($param_paths) . ')');
@@ -724,20 +751,6 @@ class Installer implements JsonSerializable {
 				} else {
 					$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $name, __('Unexpected path parameter'));
 				}
-			}
-		}
-
-		// Prime the CSRF Secret file
-		include_once($config['base_path'] . '/include/vendor/csrf/csrf-magic.php');
-		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
-		}
-
-		if (!file_exists($path_csrf_secret)) {
-			if (is_resource_writable(dirname($path_csrf_secret))) {
-				csrf_generate_secret();
-			} else {
-				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
 			}
 		}
 	}
