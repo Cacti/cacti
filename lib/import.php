@@ -228,7 +228,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				}
 
 				if (!empty($import_debug_info)) {
-					$info_array[$type]{isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0} = $import_debug_info;
+					$info_array[$type][isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0] = $import_debug_info;
 				}
 			}
 		}

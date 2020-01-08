@@ -1961,7 +1961,7 @@ function generate_graph_def_name($graph_item_id) {
 	$result = '';
 	$strValGII = strval($graph_item_id);
 	for ($i=0; $i<strlen($strValGII); $i++) {
-		$result .= $lookup_table{substr($strValGII, $i, 1)};
+		$result .= $lookup_table[substr($strValGII, $i, 1)];
 	}
 
 	if (preg_match('/^(cf|cdef|def)$/', $result)) {
@@ -2449,7 +2449,7 @@ function draw_navigation_text($type = 'url') {
 
 		if  ($i == 0) {
 			// always use the default for level == 0
-			$url = $navigation{basename($current_mappings[$i])}['url'];
+			$url = $navigation[basename($current_mappings[$i])]['url'];
 
 			if (basename($url) == 'graph_view.php') continue;
 		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
@@ -2474,9 +2474,9 @@ function draw_navigation_text($type = 'url') {
 		} else {
 			// there is no '?' - pull from the above array
 			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>");
-			$current_nav .= html_escape(resolve_navigation_variables($navigation{basename($current_mappings[$i])}['title']));
+			$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title']));
 			$current_nav .= (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-			$title .= html_escape(resolve_navigation_variables($navigation{basename($current_mappings[$i])}['title'])) . ' -> ';
+			$title .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title'])) . ' -> ';
 		}
 
 		$nav_count++;
@@ -5195,21 +5195,24 @@ function is_resource_writable($path) {
 		return false;
 	}
 
-	if ($path{strlen($path)-1}=='/') {
-		return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
+	if ($path[strlen($path)-1] == '/') {
+		return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
 	}
 
 	if (file_exists($path)) {
 		if (($f = @fopen($path, 'a'))) {
 			fclose($f);
+
 			return true;
 		}
+
 		return false;
 	}
 
 	if (($f = @fopen($path, 'w'))) {
 		fclose($f);
 		unlink($path);
+
 		return true;
 	}
 
