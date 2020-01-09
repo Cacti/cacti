@@ -470,7 +470,7 @@ class Installer implements JsonSerializable {
 			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
 		}
 
-		$install_paths += $path_csrf_secret;
+		$install_paths[] = $path_csrf_secret;
 
 		$always_paths = array(
 			sys_get_temp_dir(),
