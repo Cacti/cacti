@@ -467,10 +467,12 @@ class Installer implements JsonSerializable {
 		);
 
 		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
+			$csrf_path = dirname($config['base_path'] . '/include/vendor/csrf/csrf-secret.php');
+		} else {
+			$csrf_path = dirname($path_csrf_secret);
 		}
 
-		$install_paths[] = $path_csrf_secret;
+		$install_paths[] = $csrf_path;
 
 		$always_paths = array(
 			sys_get_temp_dir(),
@@ -2204,7 +2206,8 @@ class Installer implements JsonSerializable {
 				}
 			}
 			$output .= Installer::sectionNormal($text);
-			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions'));
+			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions.'));
+			$output .= Installer::sectionNormal(__('In the case of a CSRF path problem, once you correct this problem, you will have to close all open browser sessions and login again to continue.'));
 			$output .= Installer::sectionNote('<span class="cactiInstallSectionCode" style="width: 95%; display: inline-flex;">' . $code . '</span>', '', '', __('EXAMPLE:'));
 		}else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
