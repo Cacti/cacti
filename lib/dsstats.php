@@ -750,12 +750,6 @@ function dsstats_boost_bottom() {
 	}
 }
 
-/* dsstats_poller_command_args - this routine allows DSStats to increase the memory of the
-     running script.  This is important for very large sites. */
-function dsstats_poller_command_args () {
-	dsstats_memory_limit();
-}
-
 /* dsstats_memory_limit - this routine increases/decreases the memory available for the script
      It is divided into two functions as the main dsstats poller calls this function directly
      as opposed to the call during the processing of poller output in the main cacti poller.

@@ -1300,12 +1300,6 @@ function boost_rrdtool_function_update($local_data_id, $rrd_path, $rrd_update_te
 	}
 }
 
-function boost_poller_command_args($args) {
-	boost_memory_limit();
-
-	return $args;
-}
-
 function boost_memory_limit() {
 	ini_set('memory_limit', read_config_option('boost_poller_mem_limit') . 'M');
 }
