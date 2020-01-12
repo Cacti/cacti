@@ -31,10 +31,12 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug;
+
 $debug = false;
 $options = array('Runtime' => 'Cli');
+
 $should_install = false;
-$force_install = false;
+$force_install  = false;
 
 display_version();
 
@@ -171,7 +173,7 @@ include_once($config['base_path'] . '/lib/utility.php');
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
 $results = array('Step' => $options['Step']);
-$update_char = "o";
+$update_char = 'o';
 
 debug_install_array('Options', $options);
 $installer = new Installer($options);
