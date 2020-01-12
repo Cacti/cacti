@@ -326,7 +326,7 @@ if ($skip_current) {
 						</tr>
 						<tr>
 							<td><?php print __('New password');?></td>
-							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php display_tooltip($secpass_tooltip);?></td>
+							<td class='nowrap'><input type='password' class='ui-state-default ui-corner-all' id='password' name='password' autocomplete='off' size='20' placeholder='********'><?php print display_tooltip($secpass_tooltip);?></td>
 						</tr>
 						<tr>
 							<td><?php print __('Confirm new password');?></td>

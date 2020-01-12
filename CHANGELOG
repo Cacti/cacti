@@ -18,6 +18,7 @@ Cacti CHANGELOG
 -issue#3167: Installer should initialize the csrf-secret.php file automatically
 -issue#3168: sqltable_to_php.php script does not pick up row_format
 -issue#3177: Remove legacy plugin hook that presents potential 3rd party security issues
+-issue#3178: The change password page is missing rules
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
