@@ -147,6 +147,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 			return $cnn_id;
 		} catch (PDOException $e) {
+			if (!isset($config['DATABASE_ERROR'])) {
+				$config['DATABASE_ERROR'] = array();
+			}
+
+			$config['DATABASE_ERROR'][] = array(
+				'Code' => $e->getCode(),
+				'Error' => $e->getMessage(),
+			);
 			// Must catch this exception or else PDO will display an error with our username/password
 			//print $e->getMessage();
 			//exit;

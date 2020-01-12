@@ -85,6 +85,9 @@ $config = array();
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
+	if (!is_readable(dirname(__FILE__) . '/config.php')) {
+		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
+	}
 	include(dirname(__FILE__) . '/config.php');
 }
 
@@ -315,6 +318,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		print $li . 'the database is running.' . $il;
 		print $li . 'the credentials in config.php are valid.' . $il;
 		print $lu . $sp;
+		if (isset($_REQUEST['display_db_errors']) & !empty($config['DATABASE_ERROR'])) {
+			print $ps . 'The following database errors occurred: ' . $ul;
+			foreach ($config['DATABASE_ERROR'] as $e) {
+				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
+			}
+			print $lu . $sp;
+		}
 		exit;
 	} else {
 		/* gather the existing cactidb version */

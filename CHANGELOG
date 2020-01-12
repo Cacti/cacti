@@ -20,6 +20,8 @@ Cacti CHANGELOG
 -issue#3177: Remove legacy plugin hook that presents potential 3rd party security issues
 -issue#3178: The change password page is missing rules
 -issue#3180: Receiving undefined index errors when working with some Data Queries
+-issue#3181: When configuration file is unreadable, Cacti shows database connection errors if non defaults are needed
+-issue#3182: When a database connection error occurs, there is no way to report actual error
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
