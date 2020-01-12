@@ -19,6 +19,7 @@ Cacti CHANGELOG
 -issue#3168: sqltable_to_php.php script does not pick up row_format
 -issue#3177: Remove legacy plugin hook that presents potential 3rd party security issues
 -issue#3178: The change password page is missing rules
+-issue#3180: Receiving undefined index errors when working with some Data Queries
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
