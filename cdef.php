@@ -583,7 +583,7 @@ function cdef_edit() {
 
 	if (!isempty_request_var('id')) {
 		$cdef = db_fetch_row_prepared('SELECT * FROM cdef WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('CDEF [edit: %s]', html_escape($cdef['name']));
+		$header_label = __esc('CDEF [edit: %s]', $cdef['name']);
 	} else {
 		$header_label = __('CDEF [new]');
 	}

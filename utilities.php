@@ -222,7 +222,7 @@ function utilities_view_tech($php_info = '') {
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
-	$header_label = __('Technical Support [%s]', $tabs[get_request_var('tab')]);
+	$header_label = __esc('Technical Support [%s]', $tabs[get_request_var('tab')]);
 
 	if (cacti_sizeof($tabs)) {
 		$i = 0;

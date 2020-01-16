@@ -647,7 +647,7 @@ function data_query_item_edit() {
 		array(get_request_var('snmp_query_id')));
 
 	if (cacti_sizeof($snmp_query)) {
-		$header_label = __('Associated Graph/Data Templates [edit: %s]', html_escape($snmp_query['name']));
+		$header_label = __esc('Associated Graph/Data Templates [edit: %s]', $snmp_query['name']);
 	} else {
 		$header_label = __('Associated Graph/Data Templates [new]');
 	}
@@ -1097,7 +1097,7 @@ function data_query_edit() {
 
 	if (!isempty_request_var('id')) {
 		$snmp_query = db_fetch_row_prepared('SELECT * FROM snmp_query WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Data Queries [edit: %s]', html_escape($snmp_query['name']));
+		$header_label = __esc('Data Queries [edit: %s]', $snmp_query['name']);
 	} else {
 		$header_label = __('Data Queries [new]');
 	}

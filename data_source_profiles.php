@@ -544,7 +544,7 @@ function profile_edit() {
 			AND local_data_id > 0',
 			array(get_request_var('id')));
 
-		$header_label = __('Data Source Profile [edit: %s]', html_escape($profile['name']) . ($readonly ? ' (Read Only)':''));
+		$header_label = __esc('Data Source Profile [edit: %s]', $profile['name'] . ($readonly ? ' (Read Only)':''));
 	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;

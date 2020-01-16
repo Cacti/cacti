@@ -183,7 +183,7 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('GPRINT Presets [edit: %s]', html_escape($gprint_preset['name']));
+		$header_label = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
 	} else {
 		$header_label = __('GPRINT Presets [new]');
 	}

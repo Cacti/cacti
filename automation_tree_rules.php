@@ -554,7 +554,7 @@ function automation_tree_rules_edit() {
 	$rule = array();
 	if (!isempty_request_var('id')) {
 		$rule = db_fetch_row_prepared('SELECT * FROM automation_tree_rules WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Tree Rule Selection [edit: %s]', html_escape($rule['name']));
+		$header_label = __esc('Tree Rule Selection [edit: %s]', $rule['name']);
 	} else {
 		$header_label = __('Tree Rules Selection [new]');
 	}

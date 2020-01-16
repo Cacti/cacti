@@ -887,8 +887,8 @@ function form_actions() {
 
 				$ds_preselected_delete = read_config_option('ds_preselected_delete');
 				if ($ds_preselected_delete == 'on') {
-	                                $delete_radio_button_1_state = '2';
-                                	$delete_radio_button_2_state = '1';
+					$delete_radio_button_1_state = '2';
+					$delete_radio_button_2_state = '1';
 				} else {
 					$delete_radio_button_1_state = '1';
 					$delete_radio_button_2_state = '2';
@@ -1331,7 +1331,7 @@ function item() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Items [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
+		$header_label = __esc('Graph Items [edit: %s]', get_graph_title(get_request_var('id')));
 		$add_text     = 'graphs_items.php?action=item_edit' . (!empty($host_id) ? '&host_id=' . $host_id:'') . '&local_graph_id=' . get_request_var('id');
 		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . get_request_var('id');
 	}
@@ -1423,7 +1423,7 @@ function graph_edit() {
 			exit;
 		}
 
-		$header_label = __('Graph [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
+		$header_label = __esc('Graph [edit: %s]', get_graph_title(get_request_var('id')));
 
 		if ($graph['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
@@ -1888,7 +1888,7 @@ function graph_management() {
 		$header = __('Graph Management [ Non Device Based ]');
 	} else {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
-		$header = __('Graph Management [ %s ]', $description);
+		$header = __esc('Graph Management [ %s ]', $description);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', $add_url);

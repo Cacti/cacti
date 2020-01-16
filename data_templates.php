@@ -547,7 +547,7 @@ function template_edit() {
 			}
 		}
 
-		$header_label = __('Data Templates [edit: %s]', html_escape($template['name']));
+		$header_label = __esc('Data Templates [edit: %s]', $template['name']);
 
 		?>
 		<table style='width:100%'>

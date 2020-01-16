@@ -438,7 +438,7 @@ function item() {
 			ORDER BY gti.sequence",
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
+		$header_label = __esc('Graph Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id'))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -516,7 +516,7 @@ function template_edit() {
 			AND local_graph_id=0',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template [edit: %s]', html_escape($template['name']));
+		$header_label = __esc('Graph Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Graph Template [new]');
 	}

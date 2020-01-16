@@ -457,7 +457,7 @@ function template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Device Templates [edit: %s]', html_escape($host_template['name']));
+		$header_label = __esc('Device Templates [edit: %s]', $host_template['name']);
 	} else {
 		$header_label = __('Device Templates [new]');
 		set_request_var('id', 0);

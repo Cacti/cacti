@@ -588,7 +588,7 @@ function poller_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Site [edit: %s]', html_escape($poller['name']));
+		$header_label = __esc('Site [edit: %s]', $poller['name']);
 	} else {
 		$poller = array();
 

@@ -326,7 +326,7 @@ function template_edit() {
 			array(get_request_var('id')));
 
 		if (isset($template_names[$host_template['host_template']])) {
-			$header_label = __('Automation Templates [edit: %s]', html_escape($template_names[$host_template['host_template']]));
+			$header_label = __esc('Automation Templates [edit: %s]', $template_names[$host_template['host_template']]);
 		} else {
 			$header_label = __('Automation Templates for [Deleted Template]');
 		}

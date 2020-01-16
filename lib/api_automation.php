@@ -2080,9 +2080,9 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 					$_fields_rule_item_edit['field']['array']);
 			}
 		}
-		$header_label = __('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
+		$header_label = __esc('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
 	} else {
-		$header_label = __('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
+		$header_label = __esc('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
 		$automation_item = array();
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}

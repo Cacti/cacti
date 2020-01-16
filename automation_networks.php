@@ -424,7 +424,7 @@ function network_edit() {
 
 	if (!isempty_request_var('id')) {
 		$network = db_fetch_row_prepared('SELECT * FROM automation_networks WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Network Discovery Range [edit: %s]', html_escape($network['name']));
+		$header_label = __esc('Network Discovery Range [edit: %s]', $network['name']);
 	} else {
 		$header_label = __('Network Discovery Range [new]');
 	}

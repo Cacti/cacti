@@ -332,7 +332,7 @@ function item_edit() {
 	if (empty($host['hostname'])) {
 		$header = __('Data Sources [No Device]');
 	} else {
-		$header = __('Data Sources [%s]', $host['hostname']);
+		$header = __esc('Data Sources [%s]', $host['hostname']);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', '');
@@ -420,7 +420,7 @@ function item_edit() {
 		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
-	$header_label = __('Graph Items [graph: %s]', html_escape($title));
+	$header_label = __esc('Graph Items [graph: %s]', $title);
 
 	form_start('graphs_items.php', 'greph_edit');
 

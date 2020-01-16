@@ -351,7 +351,7 @@ function aggregate_template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Aggregate Template [edit: %s]', html_escape($template['name']));
+		$header_label = __esc('Aggregate Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Aggregate Template [new]');
 	}
