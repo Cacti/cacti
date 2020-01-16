@@ -1,8 +1,7 @@
 Cacti CHANGELOG
 
 1.2.9
--SECURITY#3191: Vulnerability report: Lack of escaping on some pages can lead
-to XSS exposure
+-SECURITY#3191: Vulnerability report: Lack of escaping on some pages can lead to XSS exposure
 -issue#3038: Minor UI issue for aggregate when 'main' div width is less than 1230px
 -issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
 -issue#3146: Unable to create aggregate graphs on new installations
@@ -25,6 +24,7 @@ to XSS exposure
 -issue#3181: When configuration file is unreadable, Cacti shows database connection errors if non defaults are needed
 -issue#3182: When a database connection error occurs, there is no way to report actual error
 -issue#3193: Starting with MySQL 5.7 some sql_mode variables are required for some plugins
+-issue#3196: Minimuze use of eval() in JavaScript due to emerging Content-Security-Contexts guidelines
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)

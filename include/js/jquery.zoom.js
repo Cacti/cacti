@@ -759,7 +759,23 @@
 		}
 
 		function getZoomOutFactorText(zoomOutFactor) {
-			return eval('zoom_i18n_zoom_out + \' (\' + zoom_i18n_zoom_' + zoomOutFactor + ' + \')\'');
+			switch(zoomOutFactor) {
+				case 2:
+					return zoom_i18n_zoom_out + ' (' + zoom_i18n_zoom_2 + ')';
+					break;
+				case 4:
+					return zoom_i18n_zoom_out + ' (' + zoom_i18n_zoom_4 + ')';
+					break;
+				case 8:
+					return zoom_i18n_zoom_out + ' (' + zoom_i18n_zoom_8 + ')';
+					break;
+				case 16:
+					return zoom_i18n_zoom_out + ' (' + zoom_i18n_zoom_16 + ')';
+					break;
+				case 32:
+					return zoom_i18n_zoom_out + ' (' + zoom_i18n_zoom_32 + ')';
+					break;
+			}
 		}
 
 		/*

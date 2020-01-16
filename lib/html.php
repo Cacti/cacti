@@ -2301,7 +2301,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'self';">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php echo $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2419,7 +2419,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
-	print get_md5_include_js('include/js/jquery.metadata.js');
 	print get_md5_include_js('include/js/jquery.sparkline.js');
 	print get_md5_include_js('include/js/Chart.js');
 	print get_md5_include_js('include/js/dygraph-combined.js');
