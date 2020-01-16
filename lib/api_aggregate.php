@@ -704,9 +704,9 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 	if ($reorder == AGGREGATE_ORDER_NONE) {
 		$sql_order = 'gti.sequence';
 	} elseif ($reorder == AGGREGATE_ORDER_DS_GRAPH) {
-		$sql_order = 'dtr.data_source_name, gtg.title_cache, gti.sequence';
+		$sql_order = 'dtr.data_source_name, gti.sequence';
 	} else {
-		$sql_order = 'gtg.title_cache, dtr.data_source_name, gti.sequence';
+		$sql_order = 'gtg.title_cache, gti.sequence';
 	}
 
 	$aggregate_graph_id = db_fetch_cell_prepared('SELECT id
