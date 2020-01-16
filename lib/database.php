@@ -120,6 +120,17 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 					$new_modes[] = $mode;
 				}
 			}
+
+			// Add Required modes
+			$required_modes[] = 'ALLOW_INVALID_DATES';
+			$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
+
+			foreach($required_modes as $mode) {
+				if (array_search($mode, $new_modes) === false) {
+					$new_modes[] = $mode;
+				}
+			}
+
 			$sql_mode = implode(',', $new_modes);
 
 			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
