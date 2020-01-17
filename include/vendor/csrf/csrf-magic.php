@@ -433,7 +433,7 @@ function csrf_hash($value, $time = null) {
 }
 
 // Load user configuration
-if (!isset($cli_install) || $cli_install == false) {
+if (!defined('CACTI_CLI_ONLY')) {
 	if (function_exists('csrf_startup')) csrf_startup();
 
 	if (!$GLOBALS['csrf']['disable']) {

@@ -591,12 +591,7 @@ class Installer implements JsonSerializable {
 
 	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
 	private function setCSRFSecret() {
-		global $config, $path_csrf_secret, $cli_install;
-
-		if ($this->runtime == 'Cli') {
-			$cli_install = true;
-		}
-
+		global $config, $path_csrf_secret;
 		include_once($config['base_path'] . '/include/vendor/csrf/csrf-magic.php');
 
 		if (!isset($path_csrf_secret)) {
