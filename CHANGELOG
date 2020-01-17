@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#3156: SQL Save on table 'aggregate_graphs': Column 'gprint_format' does not exist, unable to save!
 -issue#3157: Back button not working in all cases in 1.2.8
 -issue#3158: Classic theme show only 3 tabs on mobile device. Don't show Console menu
+-issue#3159: PHP Memory is not correctly identified when value is not in megabytes
 -issue#3161: If for some reason the poller_output_boost table is missing, recreate it before a poller run
 -issue#3163: RPMlint Notes "incorrect-fsf-address"
 -issue#3165: Zoom Looses its focus after all graphs on page rendered
