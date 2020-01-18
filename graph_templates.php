@@ -33,7 +33,7 @@ include_once('./lib/utility.php');
 $graph_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
-	3 => __('Resize'),
+	3 => __('Change Settings'),
 	4 => __('Sync Graphs')
 );
 
@@ -206,7 +206,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $graph_actions, $config;
+	global $graph_actions, $config, $image_types;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -289,13 +289,15 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '3') { // resize
 				get_filter_request_var('graph_width');
 				get_filter_request_var('graph_height');
+				get_filter_request_var('image_format_id');
 
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared('UPDATE graph_templates_graph
-						SET width = ?, height = ?
+						SET width = ?, height = ?, image_format_id = ?
 						WHERE graph_template_id = ?',
 						array(get_request_var('graph_width'),
 						get_request_var('graph_height'),
+						get_request_var('image_format_id'),
 						$selected_items[$i]));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // retemplate
@@ -360,14 +362,16 @@ function form_actions() {
 				</td>
 			</tr>
 			</table>
-			<table>
+			<table class='filterTable'>
 			<tr>
 				<td>";
 
 			print __('Graph Height') . '</td><td>';
 			form_text_box('graph_height', read_config_option('default_graph_height'), '', '5', '5', 'text');
-			print __('Graph Width') . '</td><td>';
+			print '</td></tr><tr><td>' . __('Graph Width') . '</td><td>';
 			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
+			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
+			form_dropdown('image_format_id', $image_types, '', '', 2, '', '');
 
 			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
 
