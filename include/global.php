@@ -395,6 +395,8 @@ if ($config['is_web']) {
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
+	header('Content-Security-Policy: frame-ancestors \'self\';');
+
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 

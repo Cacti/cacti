@@ -49,6 +49,8 @@ var hostInfoHeight = 0;
 var menuHideResponsive = null;
 var marginLeftTree = null;
 var marginLeftConsole = null;
+var minTreeWidth = null;
+var maxTreeWidth = null;
 var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = {};
@@ -1587,6 +1589,7 @@ function menuHide(store) {
 
 		if (curMargin > 0) {
 			marginLeftTree = curMargin;
+			$('.cactiTreeNavigationArea').css('width', curMargin);
 		}
 	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
@@ -1622,10 +1625,17 @@ function menuShow() {
 	var myClass = '';
 
 	if ($('.cactiTreeNavigationArea').length) {
+		if (marginLeftTree == null) {
+			marginLeftTree = minTreeWidth;
+		}
+
+		var treeWidth = $('.cactiTreeNavigationArea').width();
+
 		myClass = '.cactiTreeNavigationArea';
 
-		if (marginLeftTree > 0) {
+		if (marginLeftTree > treeWidth) {
 			$('#navigation_right').animate({'margin-left': marginLeftTree}, 20);
+			$('.cactiTreeNavigationArea').css('width', marginLeftTree);
 		}
 	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
@@ -2209,17 +2219,17 @@ function setupUserMenu() {
 		clearTimeout(userMenuTimer);
 	}).mouseleave(function() {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout('closeUserMenu()', 1000);
+			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
 		}
 	});
 
 	$('.user').mouseenter(function(data) {
 		clearTimeout(userMenuTimer);
-		userMenuOpenTimer = setTimeout('openUserMenu()', 400);
-		//openUserMenu();
+		userMenuOpenTimer = setTimeout(function() { openUserMenu(); }, 400);
+		openUserMenu();
 	}).mouseleave(function(data) {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout('closeUserMenu()', 1000);
+			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
 		}

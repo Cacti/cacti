@@ -220,6 +220,13 @@ case 'tree':
 
 	top_graph_header();
 
+	?>
+	<script type='text/javascript'>
+	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
+	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
+	</script>
+	<?php
+
 	bottom_footer();
 
 	break;
