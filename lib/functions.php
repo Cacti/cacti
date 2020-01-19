@@ -1530,6 +1530,18 @@ function strip_alpha($string) {
 	}
 }
 
+/** is_valid_pathname - takes a pathname are verifies it matches file name rules
+ *  @arg $path - (char) the pathname to be tested
+ *  @returns - either true or false
+*/
+function is_valid_pathname($path) {
+	if (preg_match('/^([a-zA-Z0-9.-\\\:\/]+)$/', trim($path))) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 /** get_full_script_path - gets the full path to the script to execute to obtain data for a
  *    given data source. this function does not work on SNMP actions, only script-based actions
  *  @arg $local_data_id - (int) the ID of the data source
