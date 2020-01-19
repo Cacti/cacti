@@ -395,7 +395,9 @@ if ($config['is_web']) {
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
-	header('Content-Security-Policy: frame-ancestors \'self\';');
+
+	/* increased web hardening */
+	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
