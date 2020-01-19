@@ -1553,9 +1553,10 @@ $agg_totals_type = array(
 );
 
 $agg_order_types = array(
-	AGGREGATE_ORDER_NONE      => __('No Reordering'),
-	AGGREGATE_ORDER_DS_GRAPH  => __('Data Source, Graph'),
-	AGGREGATE_ORDER_GRAPH_DS  => __('Graph, Data Source'),
+	AGGREGATE_ORDER_NONE       => __('No Reordering'),
+	AGGREGATE_ORDER_DS_GRAPH   => __('Data Source, Graph'),
+	AGGREGATE_ORDER_GRAPH_DS   => __('Graph, Data Source'),
+	AGGREGATE_ORDER_BASE_GRAPH => __('Base Graph Order')
 );
 
 # operators for use with SQL/pattern matching
