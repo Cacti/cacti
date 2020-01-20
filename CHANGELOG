@@ -26,6 +26,7 @@ Cacti CHANGELOG
 -issue#3180: Receiving undefined index errors when working with some Data Queries
 -issue#3181: When configuration file is unreadable, Cacti shows database connection errors if non defaults are needed
 -issue#3182: When a database connection error occurs, there is no way to report actual error
+-issue#3184: Improve program path detection by using system path and PHP_BINDIR
 -issue#3193: Starting with MySQL 5.7 some sql_mode variables are required for some plugins
 -issue#3196: Minimuze use of eval() in JavaScript due to emerging Content-Security-Contexts guidelines
 -issue#3200: Unable to mass change Graph Template image format in mass

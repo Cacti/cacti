@@ -201,6 +201,11 @@ if (isset($php_snmp_support) && !$php_snmp_support) {
 	$config['php_snmp_support'] = class_exists('SNMP');
 }
 
+/* PHP binary location */
+if (isset($php_path)) {
+	$config['php_path'] = $php_path;
+}
+
 /* Set various debug fields */
 $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
 $config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');

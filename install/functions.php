@@ -271,9 +271,11 @@ function db_install_add_cache($status, $sql) {
 	}
 }
 
-function find_best_path($binary_name) {
+function find_search_paths($os = 'unix') {
 	global $config;
-	if ($config['cacti_server_os'] == 'win32') {
+
+	if ($os == 'win32') {
+		$search_suffix = ';';
 		$search_paths = array(
 			'c:/usr/bin',
 			'c:/cacti',
@@ -297,6 +299,7 @@ function find_best_path($binary_name) {
 			'd:/progra~1/spine/bin'
 		);
 	} else {
+		$search_suffix = ':';
 		$search_paths = array(
 			'/bin',
 			'/sbin',
@@ -308,6 +311,29 @@ function find_best_path($binary_name) {
 			'/usr/spine/bin'
 		);
 	}
+
+	$env_path = getenv('PATH');
+	if ($env_path) {
+		$search_paths = array_merge(explode($search_suffix,$env_path), $search_paths);
+	}
+
+	$env_php = getenv('PHP_BINDIR');
+	if ($env_php) {
+		$search_paths = array_merge(explode($search_suffix,$env_php), $search_paths);
+	}
+
+	if (!empty($config['php_path'])) {
+		$search_paths = array_merge(explode($search_suffix,$config['php_path']), $search_paths);
+	}
+
+	$search_paths = array_unique($search_paths);
+	return $search_paths;
+}
+
+function find_best_path($binary_name) {
+	global $config;
+
+	$search_paths = find_search_paths($config['cacti_server_os']);
 
 	for ($i=0; $i<cacti_count($search_paths); $i++) {
 		if ((file_exists($search_paths[$i] . '/' . $binary_name)) && (is_readable($search_paths[$i] . '/' . $binary_name))) {

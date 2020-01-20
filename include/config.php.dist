@@ -107,6 +107,11 @@ $disable_log_rotation = false;
 //$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
 
 /*
+ * Optional parameter to give explicit path to PHP
+ */
+//$php_path = '/bin/php';
+
+/*
  * Optional parameter to disable the PHP SNMP extension. If not set, defaults
  * to class_exists('SNMP').
  */
