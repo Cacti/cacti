@@ -336,8 +336,9 @@ function find_best_path($binary_name) {
 	$search_paths = find_search_paths($config['cacti_server_os']);
 
 	for ($i=0; $i<cacti_count($search_paths); $i++) {
-		if ((file_exists($search_paths[$i] . '/' . $binary_name)) && (is_readable($search_paths[$i] . '/' . $binary_name))) {
-			return $search_paths[$i] . '/' . $binary_name;
+		$desired_path = $search_paths[$i] . '/' . $binary_name;
+		if ((@file_exists($desired_path)) && (@is_readable($desired_path))) {
+			return $desired_path;
 		}
 	}
 	return '';
