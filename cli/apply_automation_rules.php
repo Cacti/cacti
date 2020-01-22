@@ -32,6 +32,7 @@ require_once($config['base_path'] . '/lib/api_device.php');
 require_once($config['base_path'] . '/lib/api_tree.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/functions.php');
+require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/reports.php');
 require_once($config['base_path'] . '/lib/template.php');
 require_once($config['base_path'] . '/lib/utility.php');
@@ -132,10 +133,10 @@ if ($description != '') {
 	if (validate_is_regex($description)) {
 		$regex = true;
 		$sql_where .= 'h.description RLIKE ' . db_qstr($description);
-	} 
+	}
 
 	$description = '%' . $description . '%';
-	$sql_where .= ($regex == true ? ' OR ':'') . 'h.description LIKE ' . db_qstr($description) . ')'; 
+	$sql_where .= ($regex == true ? ' OR ':'') . 'h.description LIKE ' . db_qstr($description) . ')';
 }
 
 $devices = array_rekey(

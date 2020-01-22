@@ -27,6 +27,7 @@ include_once('./lib/api_data_source.php');
 include_once('./lib/api_device.php');
 include_once('./lib/api_graph.php');
 include_once('./lib/data_query.php');
+include_once('./lib/poller.php');
 include_once('./lib/template.php');
 
 $host_actions = array(
