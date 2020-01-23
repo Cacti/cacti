@@ -231,7 +231,6 @@ function form_save() {
 
 	/* handle special case of callback on host_id */
 	if (!is_numeric(get_nfilter_request_var('host_id'))) {
-cacti_log('here');
 		set_request_var('host_id', get_request_var('host_id_prev'));
 	} else {
 		get_filter_request_var('host_id');
@@ -415,9 +414,13 @@ cacti_log('here');
 		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('host_id_prev'))) {
 		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
+	} elseif (!empty($local_graph_id)) {
+		header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 	} else {
 		header('Location: graphs.php?header=false');
 	}
+
+	exit;
 }
 
 /* ------------------------
@@ -1545,6 +1548,7 @@ function graph_edit() {
 	if (cacti_sizeof($graph)) {
 		if ($graph['graph_template_id'] == 0) {
 			$form_array['graph_template_id']['method'] = 'hidden';
+			$form_array['graph_template_id']['value']  = '0';
 		}
 
 		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
@@ -1650,7 +1654,7 @@ function graph_edit() {
 
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
-	form_save_button('graphs.php');
+	form_save_button('graphs.php', 'return');
 
 	//Now we need some javascript to make it dynamic
 	?>

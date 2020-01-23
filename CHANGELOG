@@ -31,6 +31,7 @@ Cacti CHANGELOG
 -issue#3193: Starting with MySQL 5.7 some sql_mode variables are required for some plugins
 -issue#3196: Minimuze use of eval() in JavaScript due to emerging Content-Security-Contexts guidelines
 -issue#3200: Unable to mass change Graph Template image format in mass
+-issue#3206: Converted aggregate graph cannot be edited
 -issue#3209: PHP Error when Creating New Graphs through Automatically Added Devices using Sync Device Template
 
 1.2.8
