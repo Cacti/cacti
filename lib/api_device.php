@@ -108,7 +108,7 @@ function api_device_purge_deleted_devices() {
 	$devices = db_fetch_assoc_prepared('SELECT id, poller_id
 		FROM host
 		WHERE deleted = "on"
-		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-86400');
+		AND UNIX_TIMESTAMP(last_updated) < UNIX_TIMESTAMP()-500');
 
 	if (cacti_sizeof($devices)) {
 		foreach($devices as $d) {
@@ -729,7 +729,11 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if ($host_id) {
 			api_device_purge_from_remote($host_id, $previous_poller);
 
-			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
+			$rcnn_id = poller_push_to_remote_db_connect($host_id);
+
+			if ($rcnn_id === false) {
+				cacti_log('Unable to determine remote connection');
+			} else {
 				$save['id'] = $host_id;
 				sql_save($save, 'host', 'id', true, $rcnn_id);
 			}

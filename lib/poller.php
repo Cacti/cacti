@@ -1063,6 +1063,9 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 
 		if (!empty($poller_id)) {
 			$device_poller_ids[$device_or_poller] = $poller_id;
+		} elseif ($config['poller_id'] > 1) {
+			$poller_id = $config['poller_id'];
+			$device_poller_ids[$device_or_poller] = $poller_id;
 		}
 	} else {
 		$poller_id = $device_poller_ids[$device_or_poller];
@@ -1077,10 +1080,14 @@ function poller_push_to_remote_db_connect($device_or_poller, $is_poller = false)
 
 
 function poller_connect_to_remote($poller_id) {
-	global $config;
+	global $config, $local_db_cnn_id;
 
 	if ($poller_id == 1) {
 		return false;
+	}
+
+	if ($config['poller_id'] > 1 && $config['poller_id'] == $poller_id) {
+		return $local_db_cnn_id;
 	}
 
 	if ($config['poller_id'] == 1) {
