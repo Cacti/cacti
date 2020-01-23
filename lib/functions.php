@@ -1354,7 +1354,8 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		total_polls = ?,
 		failed_polls = ?,
 		availability = ?
-		WHERE hostname = ?',
+		WHERE hostname = ?
+		AND deleted = ""',
 		array(
 			$hosts[$host_id]['status'],
 			$hosts[$host_id]['status_event_count'],
@@ -4143,7 +4144,7 @@ function update_system_mibs($host_id) {
 				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']], $oid);
 
 				if (!empty($value)) {
-					db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
+					db_execute_prepared("UPDATE host SET $name = ? WHERE deleted = '' AND id = ?",
 						array($value, $host_id));
 				}
 			}

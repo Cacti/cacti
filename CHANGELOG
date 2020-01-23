@@ -3,6 +3,7 @@ Cacti CHANGELOG
 1.2.9
 -security#3191: CVE-2020-7106 Vulnerability report: Lack of escaping on some pages can lead to XSS exposure
 -security#3201: CVE-2020-7237 Vulnerability Report: Remote Code Execution due to input validation in Performance Boost Debug Log
+-issue#2937: Devices still show in cacti despite being deleted 
 -issue#3038: Minor UI issue for aggregate when 'main' div width is less than 1230px
 -issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
 -issue#3142: Chrome sets graphs tree navigation view to width 0px
@@ -30,6 +31,7 @@ Cacti CHANGELOG
 -issue#3193: Starting with MySQL 5.7 some sql_mode variables are required for some plugins
 -issue#3196: Minimuze use of eval() in JavaScript due to emerging Content-Security-Contexts guidelines
 -issue#3200: Unable to mass change Graph Template image format in mass
+-issue#3209: PHP Error when Creating New Graphs through Automatically Added Devices using Sync Device Template
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)

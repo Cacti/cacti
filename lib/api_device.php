@@ -213,7 +213,8 @@ function api_device_disable_devices($device_ids) {
 	foreach ($device_ids as $device_id) {
 		db_execute_prepared("UPDATE host
 			SET disabled = 'on', status = 0
-			WHERE id = ?",
+			WHERE id = ?
+			AND (deleted = '' OR (deleted = 'on' AND disabled = ''))",
 			array($device_id));
 
 		/* update poller cache */
@@ -233,7 +234,8 @@ function api_device_disable_devices($device_ids) {
 		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
 			db_execute_prepared("UPDATE host
 				SET disabled='on'
-				WHERE id = ?",
+				WHERE id = ?
+				AND (deleted = '' OR (deleted = 'on' AND disabled = ''))",
 				array($device_id), true, $rcnn_id);
 
 			/* update poller cache */
@@ -259,7 +261,8 @@ function api_device_enable_devices($device_ids) {
 
 		db_execute_prepared("UPDATE host
 			SET disabled = ''
-			WHERE id = ?",
+			WHERE id = ?
+			AND deleted = ''",
 			array($device_id));
 
 		/* update poller cache */
@@ -318,13 +321,15 @@ function api_device_change_options($device_ids, $post) {
 
 				db_execute_prepared("UPDATE host
 					SET $field_name = ?
-					WHERE id = ?",
+					WHERE id = ?
+					AND deleted = ''",
 					array(get_nfilter_request_var($field_name), $device_id));
 
 				if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
 					db_execute_prepared("UPDATE host
 						SET $field_name = ?
-						WHERE id = ?",
+						WHERE id = ?
+						AND deleted = ''",
 						array(get_nfilter_request_var($field_name), $device_id), true, $rcnn_id);
 				}
 
@@ -342,15 +347,19 @@ function api_device_clear_statistics($device_ids) {
 	global $config;
 
 	foreach ($device_ids as $device_id) {
-		db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
+		db_execute_prepared("UPDATE host
+			SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
 			total_polls = '0', failed_polls = '0',  availability = '100.00'
-			WHERE id = ?",
+			WHERE id = ?
+			AND deleted = ''",
 			array($device_id));
 
 		if (($rcnn_id = poller_push_to_remote_db_connect($device_id)) !== false) {
-			db_execute_prepared("UPDATE host SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
+			db_execute_prepared("UPDATE host
+				SET min_time = '9.99999', max_time = '0', cur_time = '0', avg_time = '0',
 				total_polls = '0', failed_polls = '0',  availability = '100.00'
-				WHERE id = ?",
+				WHERE id = ?
+				AND deleted = ''",
 				array($device_id), true, $rcnn_id);
 		}
 	}
@@ -497,7 +506,8 @@ function api_device_replicate_out($device_id, $poller_id = 1) {
 	// Update poller id where applicable
 	db_execute_prepared('UPDATE host
 		SET poller_id = ?
-		WHERE id = ?',
+		WHERE id = ?
+		AND deleted = ""',
 		array($poller_id, $device_id));
 
 	db_execute_prepared('UPDATE poller_item
@@ -825,13 +835,15 @@ function api_device_update_host_template($host_id, $host_template_id) {
 
 	db_execute_prepared('UPDATE host
 		SET host_template_id = ?
-		WHERE id = ?',
+		WHERE id = ?
+		AND deleted = ""',
 		array($host_template_id, $host_id));
 
 	if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
 		db_execute_prepared('UPDATE host
 			SET host_template_id = ?
-			WHERE id = ?',
+			WHERE id = ?
+			AND deleted = ""',
 			array($host_template_id, $host_id), true, $rcnn_id);
 	}
 

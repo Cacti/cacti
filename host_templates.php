@@ -26,6 +26,7 @@ include('./include/auth.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/api_device.php');
 include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
 include_once('./lib/poller.php');
 include_once('./lib/template.php');
@@ -218,7 +219,7 @@ function form_actions() {
 				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 
 				/* "undo" any device that is currently using this template */
-				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
+				db_execute('UPDATE host SET host_template_id = 0 WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'host_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));

@@ -274,7 +274,7 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('UPDATE host SET site_id=0 WHERE ' . array_to_sql_or($selected_items, 'site_id'));
+				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
 			}
 		}
 
