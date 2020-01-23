@@ -224,7 +224,9 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			$database_last_error = 'DB ' . $execute_name . ' -- No connection found';
