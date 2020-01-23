@@ -240,7 +240,9 @@ function realtimeGrapher() {
 	} else {
 		count--;
 		destroy(realtimeTimer);
-		realtimeTimer = setTimeout('realtimeGrapher()', $('#ds_step').val()*1000);
+		realtimeTimer = setTimeout(function() {
+			realtimeGrapher();
+		}, $('#ds_step').val()*1000);
 	}
 }
 

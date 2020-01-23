@@ -369,12 +369,16 @@ $sizes = array(
 
 			destroy(myCountdown);
 
-			myCountdown = setTimeout('countdown_update()', 1000);
+			myCountdown = setTimeout(function() {
+				countdown_update();
+			}, 1000);
 		}
 
 		$(function() {
 			imageOptionsChanged('init');
-			myCountdown = setTimeout('countdown_update()', 1000);
+			myCountdown = setTimeout(function() {
+				countdown_update();
+			}, 1000);
 		});
 
 		</script>
