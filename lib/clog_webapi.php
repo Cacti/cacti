@@ -783,7 +783,7 @@ function clog_regex_datasource($matches) {
 			if (array_key_exists($ds_id, $ds_titles)) {
 				$ds_title = $ds_titles[$ds_id];
 			}
-			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . $ds_title . '</a>';
+			$result .= ($i == 0 ? '':', ') . "<a href='" . html_escape($config['url_path'] . 'data_sources.php?action=ds_edit&id=' . $ds_id) . "'>" . html_escape($ds_title) . '</a>';
 
 			$i++;
 		}
