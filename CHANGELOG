@@ -33,6 +33,7 @@ Cacti CHANGELOG
 -issue#3200: Unable to mass change Graph Template image format in mass
 -issue#3206: Converted aggregate graph cannot be edited
 -issue#3209: PHP Error when Creating New Graphs through Automatically Added Devices using Sync Device Template
+-issue#3216: When editing a Data Source Profile size is shown as 'N/A'
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)

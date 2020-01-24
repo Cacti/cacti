@@ -74,13 +74,9 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_size':
-		if (is_numeric(get_nfilter_request_var('rows'))) {
-			get_filter_request_var('id');
-			get_filter_request_var('cfs');
-			print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
-		} else {
-			print __('N/A');
-		}
+		get_filter_request_var('id');
+		get_filter_request_var('cfs');
+		print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
 
 		break;
 	case 'item_edit':
