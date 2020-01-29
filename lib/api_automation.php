@@ -789,8 +789,6 @@ function display_new_graphs($rule, $url) {
 		$total_rows = 0;
 	}
 
-	html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
-
 	if (cacti_sizeof($xml_array)) {
 		$html_dq_header     = '';
 		$sql_filter         = '';
@@ -875,6 +873,8 @@ function display_new_graphs($rule, $url) {
 
 		print $nav;
 
+		html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
+
 		/*
 		 * print the Data Query table's header
 		 * number of fields has to be dynamically determined
@@ -944,6 +944,8 @@ function display_new_graphs($rule, $url) {
 				$row_counter++;
 			}
 		}
+
+		html_end_box();
 
 		if ($total_rows > $rows) {
 			print $nav;
