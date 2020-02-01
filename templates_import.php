@@ -97,7 +97,8 @@ function form_save() {
 		if ($debug_data !== false && cacti_sizeof($debug_data)) {
 			$_SESSION['import_debug_info'] = $debug_data;
 		} else {
-			raise_message(15);
+			cacti_log("ERROR: Import or Preview failed!", false, 'IMPORT');
+			raise_message('import_error', __('The Template Import Failed.  See the cacti.log for more details.', MESSAGE_LEVEL_ERROR));
 		}
 
 		header('Location: templates_import.php?preview=' . $preview_only);

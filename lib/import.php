@@ -2013,15 +2013,15 @@ function check_hash_version($hash_version) {
 	}
 
 	if (!isset($current_version_index)) {
-		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT');
 		raise_message(15); /* error: current cacti version does not exist! */
 		return false;
 	} elseif (!isset($hash_version_index)) {
-		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT');
 		raise_message(16); /* error: hash version does not exist! */
 		return false;
 	} elseif ($hash_version_index > $current_version_index) {
-		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT');
 		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
 	}
