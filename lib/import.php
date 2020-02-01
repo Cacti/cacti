@@ -149,7 +149,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		}
 	}
 
-	$repair     = 0;
+	$repair = 0;
 
 	/* the order of the $hash_type_codes array is ordered such that the items
 	with the most dependencies are last and the items with no dependencies are first.
@@ -1914,6 +1914,8 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 		} elseif ($parsed_hash['hash'] == 'd94caa7cc3733bd95ee00a3917fdcbb5') {
 			return 0;
 		} elseif ($parsed_hash['hash'] == 'cbbe5c1ddfb264a6e5d509ce1c78c95f') {
+			return 0;
+		} elseif ($parsed_hash['hash'] == '51bde3d899e12bde28ad979166985584') {
 			return 0;
 		}
 
