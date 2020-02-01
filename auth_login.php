@@ -739,7 +739,7 @@ $selectedTheme = get_selected_theme();
 								<label for='realm'><?php print __('Realm');?></label>
 							</td>
 							<td>
-								<select id='realm' name='realm'><?php
+								<select id='realm' name='realm' class='ui-state-default ui-corner-all'><?php
 									if (cacti_sizeof($realms)) {
 										foreach($realms as $index => $realm) {
 											print "\t\t\t\t\t<option value='" . $index . "'" . ($realm['selected'] ? ' selected="selected"':'') . '>' . html_escape($realm['name']) . "</option>\n";
@@ -785,7 +785,30 @@ $selectedTheme = get_selected_theme();
 	</div>
 	<div class='loginRight'></div>
 	<script type='text/javascript'>
+	var storage = Storages.localStorage;
+
 	$(function() {
+		preferredRealm = storage.get('user_realm');
+
+		// Restore the preferred realm
+		if ($('#realm').length) {
+			if (preferredRealm !== undefined) {
+				$('#realm').val(preferredRealm);
+				if ($('#realm').selectmenu('instance') !== undefined) {
+					$('#realm').selectmenu('refresh');
+				}
+			}
+		}
+
+		// Control submit in order to store preferred realm
+		$('#login').submit(function(event) {
+			event.preventDefault();
+			if ($('#realm').length) {
+				storage.set('user_realm', $('#realm').val());
+			}
+			$('#login').off('submit').trigger('submit');
+		});
+
 		$('body').css('height', $(window).height());
 		$('.loginLeft').css('width',parseInt($(window).width()*0.33)+'px');
 		$('.loginRight').css('width',parseInt($(window).width()*0.33)+'px');
