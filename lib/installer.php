@@ -21,10 +21,11 @@ class Installer implements JsonSerializable {
 	const STEP_INSTALL_TYPE = 3;
 	const STEP_PERMISSION_CHECK = 4;
 	const STEP_BINARY_LOCATIONS = 5;
-	const STEP_PROFILE_AND_AUTOMATION = 6;
-	const STEP_TEMPLATE_INSTALL = 7;
-	const STEP_CHECK_TABLES = 8;
-	const STEP_INSTALL_CONFIRM = 9;
+	const STEP_INPUT_VALIDATION = 6;
+	const STEP_PROFILE_AND_AUTOMATION = 7;
+	const STEP_TEMPLATE_INSTALL = 8;
+	const STEP_CHECK_TABLES = 9;
+	const STEP_INSTALL_CONFIRM = 10;
 	const STEP_INSTALL_OLDVERSION = 11;
 	const STEP_INSTALL = 97;
 	const STEP_COMPLETE = 98;
@@ -117,7 +118,7 @@ class Installer implements JsonSerializable {
 		$this->stepError = false;
 
 		if ($step == Installer::STEP_INSTALL) {
-			$install_version = read_config_option('install_version',true);
+			$install_version = read_config_option('install_version', true);
 			log_install_high('step', 'Previously complete: ' . clean_up_lines(var_export($install_version, true)));
 			if ($install_version === false || $install_version === null) {
 				$install_version = $this->old_cacti_version;
@@ -143,6 +144,7 @@ class Installer implements JsonSerializable {
 				$install_params = array();
 			}
 		}
+
 		log_install_high('step', 'After: ' . clean_up_lines(var_export($step, true)));
 		$this->setStep($step);
 
@@ -330,7 +332,11 @@ class Installer implements JsonSerializable {
 		);
 
 		$this->tables             = $this->getTables();
+
+		// You have to set the paths before you start executing commands
 		$this->paths              = install_file_paths();
+		$this->setPaths($this->getPaths());
+
 		$this->permissions        = $this->getPermissions();
 		$this->modules            = $this->getModules();
 
@@ -339,7 +345,6 @@ class Installer implements JsonSerializable {
 		$this->setAutomationMode($this->getAutomationMode());
 		$this->setAutomationOverride($this->getAutomationOverride());
 		$this->setAutomationRange($this->getAutomationRange());
-		$this->setPaths($this->getPaths());
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
 		$this->setMode($this->getMode());
@@ -467,12 +472,10 @@ class Installer implements JsonSerializable {
 		);
 
 		if (!isset($path_csrf_secret)) {
-			$csrf_path = dirname($config['base_path'] . '/include/vendor/csrf/csrf-secret.php');
-		} else {
-			$csrf_path = dirname($path_csrf_secret);
+			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
 		}
 
-		$install_paths[] = $csrf_path;
+		$install_paths[] = $path_csrf_secret;
 
 		$always_paths = array(
 			sys_get_temp_dir(),
@@ -489,8 +492,13 @@ class Installer implements JsonSerializable {
 		}
 
 		foreach ($install_paths as $path) {
-			$valid = (is_resource_writable($path . '/'));
-			$permissions[$install_key][$path . '/'] = $valid;
+			if (is_dir($path)) {
+				$valid = (is_resource_writable($path . '/'));
+				$permissions[$install_key][$path . '/'] = $valid;
+			} else {
+				$valid = (is_resource_writable($path));
+				$permissions[$install_key][$path] = $valid;
+			}
 			log_install_debug('permission',"$path = $valid ($install_key)");
 			if (!$valid) {
 				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path was not writable'));
@@ -592,7 +600,6 @@ class Installer implements JsonSerializable {
 	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
 	private function setCSRFSecret() {
 		global $config, $path_csrf_secret;
-		include_once($config['base_path'] . '/include/vendor/csrf/csrf-magic.php');
 
 		if (!isset($path_csrf_secret)) {
 			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
@@ -600,7 +607,7 @@ class Installer implements JsonSerializable {
 
 		if (!file_exists($path_csrf_secret)) {
 			if (is_resource_writable(dirname($path_csrf_secret))) {
-				csrf_generate_secret();
+				install_create_csrf_secret();
 			} else {
 				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
 			}
@@ -1544,6 +1551,8 @@ class Installer implements JsonSerializable {
 				return $this->processStepBinaryLocations();
 			case Installer::STEP_PERMISSION_CHECK:
 				return $this->processStepPermissionCheck();
+			case Installer::STEP_INPUT_VALIDATION:
+				return $this->processStepInputValidation();
 			case Installer::STEP_PROFILE_AND_AUTOMATION:
 				return $this->processStepProfileAndAutomation();
 			case Installer::STEP_TEMPLATE_INSTALL:
@@ -1649,7 +1658,12 @@ class Installer implements JsonSerializable {
 		$output .= Installer::sectionSubTitle(__('Location checks'), 'location');
 
 		// Get request URI and break into parts
-		$test_request_uri = $_SERVER['REQUEST_URI'];
+		if ($this->runtime == 'Cli' || $this->runtime == 'Json') {
+			$test_request_uri = 'index.php';
+		} else {
+			$test_request_uri = $_SERVER['REQUEST_URI'];
+		}
+
 		$test_request_parts = parse_url($test_request_uri);
 		$test_request_path = $test_request_parts['path'];
 		$test_request_len = strlen($test_request_parts['path']);
@@ -1673,7 +1687,7 @@ class Installer implements JsonSerializable {
 		// Add the install subfolder to defined path location
 		// and check if it matches, if not there will likely be problems
 		$test_config_path = $config['url_path'] . 'install/';
-		$test_compare_result = strcmp($test_config_path,$test_final_path);
+		$test_compare_result = strcmp($test_config_path, $test_final_path);
 
 		// The path was not what we expected so print an error
 		if ($test_compare_result !== 0) {
@@ -1701,7 +1715,7 @@ class Installer implements JsonSerializable {
 					array(
 						'status' => DB_STATUS_ERROR,
 						'name' => __('PHP Binary'),
-						'current' => read_config_option('path_php_binary'),
+						'current' => read_config_option('path_php_binary', true),
 						'value' => '',
 						'description' => __('The PHP binary location is not valid and must be updated.'),
 					),
@@ -2217,6 +2231,33 @@ class Installer implements JsonSerializable {
 
 		$this->buttonNext->Enabled = !isset($writable);
 		$this->stepData = array('Sections' => $sections);
+		return $output;
+	}
+
+	public function processStepInputValidation() {
+		$output  = Installer::sectionTitle(__('Input Validation Whitelist Protection'));
+		$output .= Installer::sectionNormal(__('Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure.'));
+		$output .= Installer::sectionNormal(__('Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thouroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages.'));
+		$output .= Installer::sectionNormal(__('The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or aguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid.'));
+		$output .= Installer::sectionNormal(__('To make identifying Data Input Methods in this state, we have provided a validation script in Cacti\'s CLI directory that can be run with the following options:'));
+
+		$output .= Installer::sectionNormal(
+			'<ul>'.
+			'<li><b><i>php -q input_whitelist.php --audit</i></b> - ' . __('This script option will search for any Data Input Methods that are currently banned and provide details as to why.') . '</li>' .
+			'<li><b><i>php -q input_whitelist.php --update</i></b> - ' . __('This script option un-ban the Data Input Methods that are currently banned.') . '</li>' .
+			'<li><b><i>php -q input_whitelist.php --push</i></b> - ' . __('This script option will re-enable any disabled Data Sources.') . '</li>' .
+			'</ul>'
+		);
+
+		$output .= Installer::sectionNormal(__('It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed.'));
+
+		$output .= Installer::sectionNormal(__('Check the Checkbox below to acknowledge that you have read and understand this security concern'));
+
+		$output .= Installer::sectionNormal('<input type="checkbox" id="confirm" name="confirm"><label for="confirm">' . __('I have read this statement') . '</lable>');
+
+		$this->buttonNext->Enabled = false;
+		$this->buttonNext->Step = Installer::STEP_PROFILE_AND_AUTOMATION;
+
 		return $output;
 	}
 

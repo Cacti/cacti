@@ -14,10 +14,11 @@ const STEP_CHECK_DEPENDENCIES = 2;
 const STEP_INSTALL_TYPE = 3;
 const STEP_PERMISSION_CHECK = 4;
 const STEP_BINARY_LOCATIONS = 5;
-const STEP_PROFILE_AND_AUTOMATION = 6;
-const STEP_TEMPLATE_INSTALL = 7;
-const STEP_CHECK_TABLES = 8;
-const STEP_INSTALL_CONFIRM = 9;
+const STEP_INPUT_VALIDATION = 6;
+const STEP_PROFILE_AND_AUTOMATION = 7;
+const STEP_TEMPLATE_INSTALL = 8;
+const STEP_CHECK_TABLES = 9;
+const STEP_INSTALL_CONFIRM = 10;
 const STEP_INSTALL_OLDVERSION = 11;
 const STEP_INSTALL = 97;
 const STEP_COMPLETE = 98;
@@ -464,6 +465,24 @@ function processStepCheckTables(StepData) {
 
 }
 
+function processStepInputValidation(StepData) {
+	if ($('#confirm').length) {
+		$('#confirm').click(function() {
+			if ($(this).is(':checked')) {
+				$('#buttonNext').button('enable');
+			} else {
+				$('#buttonNext').button('disable');
+			}
+		});
+
+		if ($('#confirm').is(':checked')) {
+			$('#buttonNext').button('enable');
+		} else {
+			$('#buttonNext').button('disable');
+		}
+	}
+}
+
 function processStepInstallConfirm(StepData) {
 	if ($('#confirm').length) {
 		$('#confirm').click(function() {
@@ -658,6 +677,8 @@ function performStep(installStep, suppressRefresh, forceReload) {
 				processStepPermissionCheck(data.StepData);
 			} else if (data.Step == STEP_BINARY_LOCATIONS) {
 				processStepBinaryLocations(data.StepData);
+			} else if (data.Step == STEP_INPUT_VALIDATION) {
+				processStepInputValidation(data.StepData);
 			} else if (data.Step == STEP_PROFILE_AND_AUTOMATION) {
 				processStepProfileAndAutomation(data.StepData);
 			} else if (data.Step == STEP_TEMPLATE_INSTALL) {
