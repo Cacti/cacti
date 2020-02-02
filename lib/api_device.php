@@ -729,11 +729,7 @@ function api_device_save($id, $host_template_id, $description, $hostname, $snmp_
 		if ($host_id) {
 			api_device_purge_from_remote($host_id, $previous_poller);
 
-			$rcnn_id = poller_push_to_remote_db_connect($host_id);
-
-			if ($rcnn_id === false) {
-				cacti_log('Unable to determine remote connection');
-			} else {
+			if (($rcnn_id = poller_push_to_remote_db_connect($host_id)) !== false) {
 				$save['id'] = $host_id;
 				sql_save($save, 'host', 'id', true, $rcnn_id);
 			}
