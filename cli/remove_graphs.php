@@ -46,6 +46,7 @@ if (cacti_sizeof($parms)) {
 
 	$graphTemplates      = getGraphTemplates();
 	$hostTemplates       = getHostTemplates();
+	$all                 = false;
 	$force               = false;
 	$list                = false;
 	$preserve            = false;
@@ -64,6 +65,7 @@ if (cacti_sizeof($parms)) {
 		'graph-template-id::',
 		'host-template-id::',
 		'graph-regex::',
+		'all',
 		'preserve',
 		'quiet',
 
@@ -117,6 +119,10 @@ if (cacti_sizeof($parms)) {
 			}
 
 			$host_ids = $value;
+
+			break;
+		case 'all':
+			$all = true;
 
 			break;
 		case 'list':
@@ -209,21 +215,25 @@ if ($listHosts) {
 
 	exit(0);
 } else {
-	$sql_where = 'WHERE gl.id > 0';
+	$sql_where  = 'WHERE gl.id > 0';
+	$all_option = true;
 
-	if (cacti_sizeof($host_ids)) {
+	if (cacti_sizeof($host_ids) && $all === false) {
 		$sql_where .= ' AND gl.host_id IN (' . implode(',', $host_ids). ')';
+		$all_option = false;
 	}
 
-	if (cacti_sizeof($host_template_ids)) {
+	if (cacti_sizeof($host_template_ids) && $all === false) {
 		$sql_where .= ' AND h.host_template_id IN (' . implode(',', $host_template_ids). ')';
+		$all_option = false;
 	}
 
-	if (cacti_sizeof($graph_template_ids)) {
+	if (cacti_sizeof($graph_template_ids) && $all === false) {
 		$sql_where .= ' AND gl.graph_template_id IN (' . implode(',', $graph_template_ids). ')';
+		$all_option = false;
 	}
 
-	if (cacti_sizeof($regex)) {
+	if (cacti_sizeof($regex) && $all === false) {
 		$sql_where .= ' AND (';
 		$sql_cwhere = '';
 
@@ -232,6 +242,12 @@ if ($listHosts) {
 		}
 
 		$sql_where .= $sql_cwhere . ')';
+		$all_option = false;
+	}
+
+	if ($all_option && $all === false && $list === false) {
+		print 'ERROR: The options specified will remove all graphs.  To do this you must use the --all option.  Exiting' . PHP_EOL;
+		exit(1);
 	}
 
 	$graphs = db_fetch_assoc("SELECT gl.id, gtg.title_cache
@@ -245,24 +261,26 @@ if ($listHosts) {
 	if ($graphs != false && cacti_sizeof($graphs)) {
 		print 'There are ' . cacti_sizeof($graphs) . ' Graphs to Remove.' . (!$force ? '  Use the --force option to remove these Graphs.':'');
 
-		if ($force) {
+		if ($list) {
+			print PHP_EOL . "ID\tGraphName" . PHP_EOL;
+
+			foreach($graphs as $graph) {
+				print $graph['id'] . "\t" . $graph['title_cache'] . PHP_EOL;
+			}
+		} elseif ($force) {
 			$local_graph_ids = array_rekey($graphs, 'id', 'id');
 
 			if ($preserve) {
 				print '  Data Sources will be preserved.' . PHP_EOL;
 				$delete_type = 1;
 			} else {
-				print '  Data Sources will be removed is possible.' . PHP_EOL;
+				print '  Data Sources will be removed if possible.' . PHP_EOL;
 				$delete_type = 2;
 			}
 
 			api_delete_graphs($local_graph_ids, $delete_type);
-		} elseif ($list) {
-			print PHP_EOL . "ID\tGraphName" . PHP_EOL;
 
-			foreach($graphs as $graph) {
-				print $graph['id'] . "\t" . $graph['title_cache'] . PHP_EOL;
-			}
+			print 'Delete Operation Completed' . PHP_EOL;
 		} else {
 			print PHP_EOL . '  Use the --list option to view the list of Graphs' . PHP_EOL;;
 		}
@@ -294,6 +312,7 @@ function display_help() {
 	print "    --host-template-id=ID   Optional list of Device Templates." . PHP_EOL;
 	print "    --host-id=ID            Optional list of Device IDs." . PHP_EOL;
 	print "    --graph-regex=R         Optional Graph name regular expression." . PHP_EOL;
+	print "    --all                   Remove all Graphs.  Ignore other settings." . PHP_EOL;
 	print "    --force                 Actually remove the Graphs, dont just list." . PHP_EOL;
 	print "    --preserve              Preserve the Data Sources.  Default is to remove." . PHP_EOL . PHP_EOL;
 

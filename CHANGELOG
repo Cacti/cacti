@@ -34,6 +34,7 @@ Cacti CHANGELOG
 -issue#3206: Converted aggregate graph cannot be edited
 -issue#3209: PHP Error when Creating New Graphs through Automatically Added Devices using Sync Device Template
 -issue#3216: When editing a Data Source Profile size is shown as 'N/A'
+-issue#3224: Add '--all' option to remove_graphs.php and issue an error if command would result in all graphs being removed and --all not specified
 -issue#3225: Unable to import templates in Cacti 1.2.9+
 -issue#3228: Login page does not remember the last realm used by user
 
