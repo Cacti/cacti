@@ -2431,6 +2431,12 @@ function secpass_login_process($username) {
 						AND enabled = 'on'",
 						array($user['lastfail'], $failed, $username));
 
+					// Log the invalid password attempt
+					db_execute_prepared('INSERT IGNORE INTO user_log
+						(username, user_id, result, ip, time)
+						VALUES (?, 0, 0, ?, NOW())',
+						array($username, get_client_addr('')));
+
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));
 						header('Location: index.php?header=false');

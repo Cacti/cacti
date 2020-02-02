@@ -47,7 +47,7 @@ if (read_config_option('auth_method') == 0) {
 		$admin_sql_query = 'SELECT TOP 1 id FROM (
 			SELECT ua.id
 			FROM user_auth AS ua
-                        INNER JOIN user_auth_realm AS uar
+			INNER JOIN user_auth_realm AS uar
 			ON uar.user_id = ua.id
 			WHERE uar.realm_id = ?';
 
@@ -60,17 +60,18 @@ if (read_config_option('auth_method') == 0) {
 			FROM user_auth AS ua
 			INNER JOIN user_auth_group_members AS uagm
 			ON uagm.user_id = ua.id
-                        INNER JOIN user_auth_group AS uag
-                        ON uag.id = uagm.group_id
+			INNER JOIN user_auth_group AS uag
+			ON uag.id = uagm.group_id
 			INNER JOIN user_auth_group_realm AS uagr
-                        ON uagr.group_id=uag.group_id
-                        WHERE uag.enabled="on" AND ua.enabled="on"
-                        AND uagr.realm_id = ?';
+			ON uagr.group_id=uag.group_id
+			WHERE uag.enabled="on" AND ua.enabled="on"
+			AND uagr.realm_id = ?';
+
 			$admin_sql_params[] = 15;
 		}
 
 		$admin_sql_query .= '
-	                ) AS id';
+			) AS id';
 
 		cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
@@ -179,29 +180,33 @@ if (read_config_option('auth_method') != 0) {
 		if ($realm_id == 26) {
 			/* See if we can find any users that are allowed to upgrade */
 			$install_sql_query = '
-					SELECT COUNT(*)
-					FROM (
-						SELECT realm_id
-						FROM user_auth_realm AS uar
-						WHERE uar.realm_id = ?';
+				SELECT COUNT(*)
+				FROM (
+					SELECT realm_id
+					FROM user_auth_realm AS uar
+					WHERE uar.realm_id = ?';
+
 			$install_sql_params = array($realm_id);
 
 			/* See if the group realms exist and if so, check if permission exists there too */
 			if (db_table_exists('user_auth_group_realm')) {
 				$install_sql_query .= '
-						UNION
-						SELECT realm_id
-						FROM user_auth_group_realm AS uagr
-						INNER JOIN user_auth_group_members AS uagm
-						ON uagr.group_id=uagm.group_id
-						INNER JOIN user_auth_group AS uag
-						ON uag.id=uagr.group_id
-						WHERE uag.enabled="on"
-						AND uagr.realm_id = ?';
+					UNION
+					SELECT realm_id
+					FROM user_auth_group_realm AS uagr
+					INNER JOIN user_auth_group_members AS uagm
+					ON uagr.group_id=uagm.group_id
+					INNER JOIN user_auth_group AS uag
+					ON uag.id=uagr.group_id
+					WHERE uag.enabled="on"
+					AND uagr.realm_id = ?';
+
 				$install_sql_params = array_merge($install_sql_params, array($realm_id));
 			}
+
 			$install_sql_query .= '
-					) AS authorized';
+				) AS authorized';
+
 			$has_install_user = db_fetch_cell_prepared($install_sql_query, $install_sql_params);
 
 			if (!$has_install_user) {
@@ -222,32 +227,36 @@ if (read_config_option('auth_method') != 0) {
 
 		if ($realm_id > 0) {
 			$auth_sql_query = '
-					SELECT COUNT(*)
-					FROM (
-						SELECT realm_id
-						FROM user_auth_realm AS uar
-						WHERE uar.user_id = ?
-						AND uar.realm_id = ?';
+				SELECT COUNT(*)
+				FROM (
+					SELECT realm_id
+					FROM user_auth_realm AS uar
+					WHERE uar.user_id = ?
+					AND uar.realm_id = ?';
+
 			$auth_sql_params = array($_SESSION['sess_user_id'], $realm_id);
 
 			/* Because we now expect installation to be done by authorized users, check the group_realm *
 			 * exists before using it as this may not be present if upgrading from pre-1.x              */
 			if (db_table_exists('user_auth_group_realm')) {
 				$auth_sql_query .= '
-						UNION
-						SELECT realm_id
-						FROM user_auth_group_realm AS uagr
-						INNER JOIN user_auth_group_members AS uagm
-						ON uagr.group_id=uagm.group_id
-						INNER JOIN user_auth_group AS uag
-						ON uag.id=uagr.group_id
-						WHERE uag.enabled="on"
-						AND uagm.user_id = ?
-						AND uagr.realm_id = ?';
+					UNION
+					SELECT realm_id
+					FROM user_auth_group_realm AS uagr
+					INNER JOIN user_auth_group_members AS uagm
+					ON uagr.group_id=uagm.group_id
+					INNER JOIN user_auth_group AS uag
+					ON uag.id=uagr.group_id
+					WHERE uag.enabled="on"
+					AND uagm.user_id = ?
+					AND uagr.realm_id = ?';
+
 				$auth_sql_params = array_merge($auth_sql_params, array($_SESSION['sess_user_id'], $realm_id));
 			}
+
 			$auth_sql_query .= '
-					) AS authorized';
+				) AS authorized';
+
 			$authorized = db_fetch_cell_prepared($auth_sql_query, $auth_sql_params);
 		} else {
 			$authorized = false;
@@ -305,3 +314,4 @@ if (read_config_option('auth_method') != 0) {
 		$current_user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array($_SESSION['sess_user_id']));
 	}
 }
+

@@ -281,7 +281,7 @@ if (get_nfilter_request_var('action') == 'login') {
 
 	/* Guest account checking - Not for builtin */
 	$guest_user = false;
-	if ((!cacti_sizeof($user)) && ($user_auth) && (get_guest_account() != '0')) {
+	if (!cacti_sizeof($user) && $user_auth && get_guest_account() != '0') {
 		/* Locate guest user record */
 		$user = db_fetch_row_prepared('SELECT id, username, enabled
 			FROM user_auth
@@ -330,10 +330,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		$_SESSION['sess_user_id'] = $user['id'];
 
 		/* handle 'force change password' */
-		if (($user['must_change_password'] == 'on') &&
-			(read_config_option('auth_method') == 1) &&
-			($user['password_change'] == 'on')) {
-
+		if ($user['must_change_password'] == 'on' && read_config_option('auth_method') == 1 && $user['password_change'] == 'on') {
 			$_SESSION['sess_change_password'] = true;
 		}
 
@@ -411,7 +408,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		}
 		exit;
 	} else {
-		if ((!$guest_user) && ($user_auth)) {
+		if (!$guest_user && $user_auth) {
 			/* No guest account defined */
 			display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
 			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
