@@ -1999,30 +1999,27 @@ function check_hash_type($hash_type) {
 function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config;
 
-	$i = 0;
-
 	foreach ($cacti_version_codes as $version => $code) {
 		if ($version == CACTI_VERSION) {
-			$current_version_index = $i;
+			$current_version_code = $code;
 		}
 
 		if ($code == $hash_version) {
-			$hash_version_index = $i;
+			$hash_version_code = $code;
 			$current_version = $version;
 		}
-
-		$i++;
 	}
 
-	if (!isset($current_version_index)) {
+	if (!isset($current_version_code)) {
 		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT');
 		raise_message(15); /* error: current cacti version does not exist! */
 		return false;
-	} elseif (!isset($hash_version_index)) {
+	} elseif (!isset($hash_version_code)) {
 		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT');
 		raise_message(16); /* error: hash version does not exist! */
 		return false;
-	} elseif ($hash_version_index > $current_version_index) {
+	} elseif ($hash_version_code > $current_version_code) {
+		cacti_log("ERROR: $hash_version_code > $current_version_code", false, 'IMPORT');
 		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT');
 		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
