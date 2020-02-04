@@ -2437,7 +2437,7 @@ function secpass_login_process($username) {
 						VALUES (?, ?, 0, ?, NOW())',
 						array($username, isset($user['id']) ? $user['id']:0, get_client_addr('')));
 
-					cacti_log("LOGIN: Local Login Failed for user '" . $username . "'", false, 'AUTH');
+					cacti_log("LOGIN: Local Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
 
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));

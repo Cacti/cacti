@@ -440,7 +440,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			VALUES (?, ?, 0, ?, NOW())',
 			array($username, !empty($id) ? $id:0, get_client_addr('')));
 
-		cacti_log('LOGIN: ' . ($realm == 0 ? 'Local':'LDAP') . " Login Failed for user '" . $username . "'", false, 'AUTH');
+		cacti_log('LOGIN: ' . ($realm == 0 ? 'Local':'LDAP') . " Login Failed for user '" . $username . "' from IP Address '" . get_client_addr('') . "'.", false, 'AUTH');
 	}
 }
 
