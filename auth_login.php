@@ -162,9 +162,14 @@ if (get_nfilter_request_var('action') == 'login') {
 					$ldap_error = true;
 					$ldap_error_message = __('LDAP Error: %s', $ldap_auth_response['error_text']);
 					$user_auth = false;
+
+					$id = db_fetch_cell_prepared('SELECT id
+						FROM user_auth
+						WHERE username = ?
+						AND realm = 3',
+						array($username));
 				}
 			}
-
 		}
 
 		break;
@@ -191,18 +196,20 @@ if (get_nfilter_request_var('action') == 'login') {
 			if ((!$user_auth)) {
 				$stored_pass = db_fetch_cell_prepared('SELECT password
 					FROM user_auth
-					WHERE username = ? AND realm = 0',
+					WHERE username = ?
+					AND realm = 0',
 					array($username));
 
 				if ($stored_pass != '') {
 					$p = get_nfilter_request_var('login_password');
 					$valid = compat_password_verify($p, $stored_pass);
 
-					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . "valid", false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					cacti_log("DEBUG: User '" . $username . "' password is " . ($valid?'':'in') . 'valid', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
 					if ($valid) {
 						$user = db_fetch_row_prepared('SELECT *
 							FROM user_auth
-							WHERE username = ? AND realm = 0',
+							WHERE username = ?
+							AND realm = 0',
 							array($username));
 
 						if (compat_password_needs_rehash($stored_pass, PASSWORD_DEFAULT)) {
@@ -218,7 +225,6 @@ if (get_nfilter_request_var('action') == 'login') {
 			}
 		}
 	}
-	/* end of switch */
 
 	/* Create user from template if requested */
 	if (!cacti_sizeof($user) && $copy_user && get_template_account() != '0' && $username != '') {
@@ -236,7 +242,7 @@ if (get_nfilter_request_var('action') == 'login') {
 			$cn_email     = read_config_option('cn_email');
 
 			if ($cn_full_name != '' || $cn_email != '') {
-				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name,$cn_email));
+				$ldap_cn_search_response = cacti_ldap_search_cn($username, array($cn_full_name, $cn_email));
 
    				if (isset($ldap_cn_search_response['cn'])) {
 					$data_override = array();
@@ -339,7 +345,8 @@ if (get_nfilter_request_var('action') == 'login') {
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id=uagm.group_id
-				WHERE user_id=?', array($_SESSION['sess_user_id']));
+				WHERE user_id=?',
+				array($_SESSION['sess_user_id']));
 
 			if ($group_options > 0) {
 				$user['login_opts'] = $group_options;
@@ -406,21 +413,34 @@ if (get_nfilter_request_var('action') == 'login') {
 			default:
 				api_plugin_hook_function('login_options_navigate', $user['login_opts']);
 		}
+
+		exit;
+	} elseif (!$guest_user && $user_auth) {
+		/* No guest account defined */
+		display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
+		cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
+		header('Location: index.php');
 		exit;
 	} else {
-		if (!$guest_user && $user_auth) {
-			/* No guest account defined */
-			display_custom_error_message(__('Access Denied, please contact you Cacti Administrator.'));
-			cacti_log('LOGIN: Access Denied, No guest enabled or template user to copy', false, 'AUTH');
-			header('Location: index.php');
-			exit;
+		if ($auth_method == 1) {
+			$realm = 0;
 		} else {
-			/* BAD username/password builtin and LDAP */
-			db_execute_prepared('INSERT IGNORE INTO user_log
-				(username, user_id, result, ip, time)
-				VALUES (?, 0, 0, ?, NOW())',
-				array($username, get_client_addr('')));
+			$realm = 3;
 		}
+
+		$id = db_fetch_cell_prepared('SELECT id
+			FROM user_auth
+			WHERE username = ?
+			AND realm = ?',
+			array($username, $realm));
+
+		/* BAD username/password builtin and LDAP */
+		db_execute_prepared('INSERT IGNORE INTO user_log
+			(username, user_id, result, ip, time)
+			VALUES (?, ?, 0, ?, NOW())',
+			array($username, !empty($id) ? $id:0, get_client_addr('')));
+
+		cacti_log('LOGIN: ' . ($realm == 0 ? 'Local':'LDAP') . " Login Failed for user '" . $username . "'", false, 'AUTH');
 	}
 }
 

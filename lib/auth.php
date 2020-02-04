@@ -2374,7 +2374,7 @@ function secpass_login_process($username) {
 		$max = intval($secPassLockFailed);
 		if ($max > 0) {
 			$p = get_nfilter_request_var('login_password');
-			$user = db_fetch_row_prepared("SELECT username, lastfail, failed_attempts, `locked`, password
+			$user = db_fetch_row_prepared("SELECT id, username, lastfail, failed_attempts, `locked`, password
 				FROM user_auth
 				WHERE username = ?
 				AND realm = 0
@@ -2434,8 +2434,10 @@ function secpass_login_process($username) {
 					// Log the invalid password attempt
 					db_execute_prepared('INSERT IGNORE INTO user_log
 						(username, user_id, result, ip, time)
-						VALUES (?, 0, 0, ?, NOW())',
-						array($username, get_client_addr('')));
+						VALUES (?, ?, 0, ?, NOW())',
+						array($username, isset($user['id']) ? $user['id']:0, get_client_addr('')));
+
+					cacti_log("LOGIN: Local Login Failed for user '" . $username . "'", false, 'AUTH');
 
 					if ($user['locked'] != '') {
 						display_custom_error_message(__('This account has been locked.'));
