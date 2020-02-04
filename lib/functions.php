@@ -5336,12 +5336,20 @@ function get_client_addr($client_addr = false) {
 		$client_addr = $_SERVER['X-Forwarded-For'];
 	} elseif (isset($_SERVER['X-Client-IP'])) {
 		$client_addr = $_SERVER['X-Client-IP'];
+	} elseif (isset($_SERVER['X-Real-IP'])) {
+		$client_addr = $_SERVER['X-Real-IP'];
+	} elseif (isset($_SERVER['X-ProxyUser-Ip'])) {
+		$client_addr = $_SERVER['X-ProxyUser-Ip'];
 	} elseif (isset($_SERVER['CF-Connecting-IP'])) {
 		$client_addr = $_SERVER['CF-Connecting-IP'];
 	} elseif (isset($_SERVER['True-Client-IP'])) {
 		$client_addr = $_SERVER['True-Client-IP'];
+	} elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
+		$client_addr = $_SERVER['HTTP_X_FORWARDED'];
 	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} elseif (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
+		$client_addr = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
 	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
 		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
 	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
