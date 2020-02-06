@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue#3225: Unable to import templates in Cacti 1.2.9+
 -issue#3226: When processing secpass login, failed logins are not recorded
 -issue#3228: Login page does not remember the last realm used by user
+-issue#3235: ERROR: A DB Cell Failed!, Error: Table 'cacti.poller_output_boost_arch
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
