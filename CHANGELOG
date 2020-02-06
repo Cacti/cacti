@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -issue#3225: Unable to import templates in Cacti 1.2.9+
 -issue#3226: When processing secpass login, failed logins are not recorded
 -issue#3228: Login page does not remember the last realm used by user
+-issue#3232: HRULE and VRULE shoud have color option selector when one edit item of graph
 -issue#3235: ERROR: A DB Cell Failed!, Error: Table 'cacti.poller_output_boost_arch
 
 1.2.8

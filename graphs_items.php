@@ -598,7 +598,7 @@ function item_edit() {
 			break;
 		case '2': // HRULE
 			$('#row_task_item_id').show();
-			$('#row_color_id').hide();
+			$('#row_color_id').show();
 			$('#row_line_width').hide();
 			$('#row_dashes').show();
 			$('#row_dash_offset').show();
@@ -610,12 +610,12 @@ function item_edit() {
 			$('#row_vdef_id').hide();
 			$('#row_value').show();
 			$('#row_gprint_id').hide();
-			$('#row_text_format').hide();
+			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
 		case '3': // VRULE
 			$('#row_task_item_id').hide();
-			$('#row_color_id').hide();
+			$('#row_color_id').show();
 			$('#row_line_width').hide();
 			$('#row_dashes').show();
 			$('#row_dash_offset').show();
@@ -627,7 +627,7 @@ function item_edit() {
 			$('#row_vdef_id').hide();
 			$('#row_value').show();
 			$('#row_gprint_id').hide();
-			$('#row_text_format').hide();
+			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
 		case '4': // LINE1
