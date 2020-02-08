@@ -1100,10 +1100,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
 				break;
 			case preg_match('/(TICK)/', $_graph_type_name):
-				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 				break;
 			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
-				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 				break;
 			case preg_match('/(HRULE)/', $_graph_type_name):
 				$matrix_title = 'HRULE: ' . $item['value'];

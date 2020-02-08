@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#3226: When processing secpass login, failed logins are not recorded
 -issue#3228: Login page does not remember the last realm used by user
 -issue#3232: HRULE and VRULE shoud have color option selector when one edit item of graph
+-issue#3233: Its difficult to determine what Graph Items represent when working with a non-templated Graph
 -issue#3235: ERROR: A DB Cell Failed!, Error: Table 'cacti.poller_output_boost_arch
 
 1.2.8
