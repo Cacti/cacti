@@ -5352,7 +5352,7 @@ function get_client_addr($client_addr = false) {
 	$client_addr = false;
 	foreach ($http_addr_headers as $header) {
 		if (!empty($_SERVER[$header])) {
-			$header_ips = explode(',', $header_ips);
+			$header_ips = explode(',', $_SERVER[$header]);
 			foreach ($header_ips as $header_ip) {
 				if (!empty($header_ip)) {
 					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
