@@ -5332,32 +5332,39 @@ function get_debug_prefix() {
 }
 
 function get_client_addr($client_addr = false) {
-	if (isset($_SERVER['X-Forwarded-For'])) {
-		$client_addr = $_SERVER['X-Forwarded-For'];
-	} elseif (isset($_SERVER['X-Client-IP'])) {
-		$client_addr = $_SERVER['X-Client-IP'];
-	} elseif (isset($_SERVER['X-Real-IP'])) {
-		$client_addr = $_SERVER['X-Real-IP'];
-	} elseif (isset($_SERVER['X-ProxyUser-Ip'])) {
-		$client_addr = $_SERVER['X-ProxyUser-Ip'];
-	} elseif (isset($_SERVER['CF-Connecting-IP'])) {
-		$client_addr = $_SERVER['CF-Connecting-IP'];
-	} elseif (isset($_SERVER['True-Client-IP'])) {
-		$client_addr = $_SERVER['True-Client-IP'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED'];
-	} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_CLIENT_IP'];
-	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
-		$client_addr = $_SERVER['REMOTE_ADDR'];
+
+	$http_addr_headers = array(
+		'X-Forwarded-For',
+		'X-Client-IP',
+		'X-Real-IP',
+		'X-ProxyUser-Ip',
+		'CF-Connecting-IP',
+		'True-Client-IP',
+		'HTTP_X_FORWARDED',
+		'HTTP_X_FORWARDED_FOR',
+		'HTTP_X_CLUSTER_CLIENT_IP',
+		'HTTP_FORWARDED_FOR',
+		'HTTP_FORWARDED',
+		'HTTP_CLIENT_IP',
+		'REMOTE_ADDR',
+	);
+
+	$client_addr = false;
+	foreach ($http_addr_headers as $header) {
+		if (!empty($_SERVER[$header])) {
+			$header_ips = explode(',', $header_ips);
+			foreach ($header_ips as $header_ip) {
+				if (!empty($header_ip)) {
+					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
+						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					} else {
+						$client_addr = $header_ip;
+						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $header_ips . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	return $client_addr;
