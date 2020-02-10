@@ -1,46 +1,46 @@
 Cacti CHANGELOG
 
 1.2.9
--security#3191: CVE-2020-7106 Vulnerability report: Lack of escaping on some pages can lead to XSS exposure
--security#3201: CVE-2020-7237 Vulnerability Report: Remote Code Execution due to input validation in Performance Boost Debug Log
--issue#2937: Devices still show in cacti despite being deleted 
--issue#3038: Minor UI issue for aggregate when 'main' div width is less than 1230px
--issue#3136: As a extra fixing for #3060, resolve 1.2.1+ upgrade wizard failure.
+-security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
+-security#3201: Remote Code Execution due to input validation failure in Performance Boost Debug Log (CVE-2020-7237)
+-issue#2937: Devices still show in lists despite being deleted
+-issue#3038: When editing an aggregate on smaller screens, layout may not be correct
+-issue#3136: Upgrade may fail between 1.2.7 and 1.2.8 if incompatible database format used
 -issue#3142: Chrome sets graphs tree navigation view to width 0px
 -issue#3146: Unable to create aggregate graphs on new installations
--issue#3149: Show device status with tooltips do not work after refresh
+-issue#3149: After refresh of page, tooltips stop working
 -issue#3150: When using Time Graph View, Zooming can cause errors
--issue#3151: Passing glue string after array is depreciated (PHP 7.4)
--issue#3155: Aggregate Reorder Type & color template
--issue#3156: SQL Save on table 'aggregate_graphs': Column 'gprint_format' does not exist, unable to save!
--issue#3157: Back button not working in all cases in 1.2.8
+-issue#3151: Passing glue string after array is deprecated in PHP 7.4
+-issue#3155: Aggregate does not correctly follow color template when reordered
+-issue#3156: On new installs, gprint_format was missing from table aggregate_graphs
+-issue#3157: Back button not working properly with Classic theme
 -issue#3158: Classic theme show only 3 tabs on mobile device. Don't show Console menu
 -issue#3159: PHP Memory is not correctly identified when value is not in megabytes
--issue#3161: If for some reason the poller_output_boost table is missing, recreate it before a poller run
--issue#3163: RPMlint Notes "incorrect-fsf-address"
--issue#3165: Zoom Looses its focus after all graphs on page rendered
--issue#3166: Every time you change zooms, at the end, all graphs are resized inapropriately
+-issue#3161: When the poller_output_boost table is missing, recreate it before a poller run
+-issue#3163: When using RPMlint, Free Software Foundation address is shown to be incorrect
+-issue#3165: Zoom looses its focus after all graphs on page rendered
+-issue#3166: When changing zoom level, graphs are resized inappropriately at the end
 -issue#3167: Installer should initialize the csrf-secret.php file automatically
 -issue#3168: sqltable_to_php.php script does not pick up row_format
 -issue#3177: Remove legacy plugin hook that presents potential 3rd party security issues
--issue#3178: The change password page is missing rules
+-issue#3178: The change password page is not displaying the rules
 -issue#3180: Receiving undefined index errors when working with some Data Queries
 -issue#3181: When configuration file is unreadable, Cacti shows database connection errors if non defaults are needed
 -issue#3182: When a database connection error occurs, there is no way to report actual error
 -issue#3184: Improve program path detection by using system path and PHP_BINDIR
 -issue#3193: Starting with MySQL 5.7 some sql_mode variables are required for some plugins
--issue#3196: Minimuze use of eval() in JavaScript due to emerging Content-Security-Contexts guidelines
+-issue#3196: Minimize use of eval() in JavaScript due to emerging Content-Security-Context guidelines
 -issue#3200: Unable to mass change Graph Template image format in mass
 -issue#3206: Converted aggregate graph cannot be edited
--issue#3209: PHP Error when Creating New Graphs through Automatically Added Devices using Sync Device Template
+-issue#3209: Error occurs when Creating New Graphs through Automatically Added Devices using Sync Device Template
 -issue#3216: When editing a Data Source Profile size is shown as 'N/A'
--issue#3224: Add '--all' option to remove_graphs.php and issue an error if command would result in all graphs being removed and --all not specified
--issue#3225: Unable to import templates in Cacti 1.2.9+
+-issue#3224: When removing graphs by command line, regex is not properly validated when empty
+-issue#3225: Unable to Import Templates due to invalid dependency hash
 -issue#3226: When processing secpass login, failed logins are not recorded
 -issue#3228: Login page does not remember the last realm used by user
--issue#3232: HRULE and VRULE shoud have color option selector when one edit item of graph
--issue#3233: Its difficult to determine what Graph Items represent when working with a non-templated Graph
--issue#3235: ERROR: A DB Cell Failed!, Error: Table 'cacti.poller_output_boost_arch
+-issue#3232: When editing HRULE and VRULE items, color selector was not presented
+-issue#3233: When working with non-templated graphs, it can be difficult to determine what items represent
+-issue#3235: Transient errors may occur with table poller_output_boost_arch
 
 1.2.8
 -security#3025: CVE-2019-17357 When viewing graphs, some input variables are not properly checked (SQL injection possible)
