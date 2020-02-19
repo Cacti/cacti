@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -29,6 +29,7 @@ require_once($config['base_path'] . '/lib/api_automation.php');
 require_once($config['base_path'] . '/lib/api_data_source.php');
 require_once($config['base_path'] . '/lib/api_graph.php');
 require_once($config['base_path'] . '/lib/api_device.php');
+require_once($config['base_path'] . '/lib/api_tree.php');
 require_once($config['base_path'] . '/lib/data_query.php');
 require_once($config['base_path'] . '/lib/poller.php');
 require_once($config['base_path'] . '/lib/snmp.php');

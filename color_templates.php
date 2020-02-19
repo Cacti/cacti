@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -308,7 +308,7 @@ function aggregate_color_item() {
 			WHERE color_template_id = ?',
 			array(get_request_var('color_template_id')));
 
-		$header_label = __('Color Template Items [edit: %s]', html_escape($name));
+		$header_label = __esc('Color Template Items [edit: %s]', $name);
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'color_templates_items.php?action=item_edit&color_template_id=' . html_escape_request_var('color_template_id'));
@@ -372,7 +372,7 @@ function aggregate_color_template_edit() {
 
 	if (!isempty_request_var('color_template_id')) {
 		$template = db_fetch_row_prepared('SELECT * FROM color_templates WHERE color_template_id = ?', array(get_request_var('color_template_id')));
-		$header_label = __('Color Template [edit: %s]', html_escape($template['name']));
+		$header_label = __esc('Color Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Color Template [new]');
 	}

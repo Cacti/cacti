@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -24,6 +24,7 @@
 
 include ('./include/auth.php');
 include_once('./lib/api_data_source.php');
+include_once('./lib/api_device.php');
 include_once('./lib/api_graph.php');
 include_once('./lib/data_query.php');
 include_once('./lib/html_form_template.php');
@@ -791,7 +792,7 @@ function ds_edit() {
 			exit;
 		}
 
-		$header_label = __('Data Template Selection [edit: %s]', html_escape(get_data_source_title(get_request_var('id'))));
+		$header_label = __esc('Data Template Selection [edit: %s]', get_data_source_title(get_request_var('id')));
 
 		if (empty($data_local['data_template_id'])) {
 			$use_data_template = false;
@@ -1036,7 +1037,7 @@ function ds_edit() {
 				WHERE id = ?',
 				array($local_data_template_rrd_id));
 
-			$header_label = __('[edit: %s]', html_escape($rrd['data_source_name']));
+			$header_label = __('[edit: %s]', $rrd['data_source_name']);
 		} else {
 			$header_label = '';
 		}
@@ -1065,7 +1066,7 @@ function ds_edit() {
 
 		print "<div class='tableHeader'>
 			<div class='tableSubHeaderColumn left'>
-				" . __('Data Source Item %s', $header_label) . "
+				" . __esc('Data Source Item %s', $header_label) . "
 			</div>
 			<div class='tableSubHeaderColumn right'>
 				" . ((!isempty_request_var('id') && (empty($data_template['id']))) ? "<a class='linkOverDark' href='" . html_escape('data_sources.php?action=rrd_add&id=' . get_request_var('id')) . "'>" . __('New') . "</a>&nbsp;" : '') . "
@@ -1329,7 +1330,7 @@ function ds() {
 		$header = __('Data Sources [ Non Device Based ]');
 	} else {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
-		$header = __('Data Sources [ %s ]', $description);
+		$header = __esc('Data Sources [ %s ]', $description);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', $add_url);

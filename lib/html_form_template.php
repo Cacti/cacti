@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -191,12 +191,12 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 			}
 
 			if ($locked == 'true') {
-				if (substr_count($form_field_name, 'task_item_id') > 0) {
+				if (strpos($form_field_name, 'task_item_id') !== false) {
 					$form_array[$form_field_name]['method'] = 'value';
 
 					if (isset($current_def_value[$item['column_name']])) {
 						$value = db_fetch_cell_prepared("SELECT
-							CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
+							CONCAT_WS('', CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END, data_template_data.name_cache, ' (', data_template_rrd.data_source_name, ')') AS name
 							FROM (data_template_data,data_template_rrd,data_local)
 							LEFT JOIN host ON (data_local.host_id=host.id)
 							WHERE data_template_rrd.local_data_id=data_local.id
@@ -208,17 +208,19 @@ function draw_nontemplated_fields_graph_item($graph_template_id, $local_graph_id
 					}
 				}
 			} elseif (get_selected_theme() != 'classic') {
-				if (substr_count($form_field_name, 'task_item_id') > 0) {
-					$value = db_fetch_cell_prepared("SELECT
-						CONCAT_WS('',CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END,data_template_data.name_cache,' (',data_template_rrd.data_source_name,')') AS name
-						FROM (data_template_data,data_template_rrd,data_local)
-						LEFT JOIN host ON (data_local.host_id=host.id)
-						WHERE data_template_rrd.local_data_id=data_local.id
-						AND data_template_data.local_data_id=data_local.id
-						AND data_template_rrd.id = ?",
-						array($current_def_value[$item['column_name']]));
+				if (strpos($form_field_name, 'task_item_id') !== false) {
+					if (isset($current_def_value[$item['column_name']])) {
+						$value = db_fetch_cell_prepared("SELECT
+							CONCAT_WS('', CASE WHEN host.description IS NULL THEN 'No Device - ' ELSE '' END, data_template_data.name_cache, ' (', data_template_rrd.data_source_name, ')') AS name
+							FROM (data_template_data,data_template_rrd,data_local)
+							LEFT JOIN host ON (data_local.host_id=host.id)
+							WHERE data_template_rrd.local_data_id=data_local.id
+							AND data_template_data.local_data_id=data_local.id
+							AND data_template_rrd.id = ?",
+							array($current_def_value[$item['column_name']]));
 
-					$form_array[$form_field_name]['value'] = $value;
+						$form_array[$form_field_name]['value'] = $value;
+					}
 				}
 			}
 

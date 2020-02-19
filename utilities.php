@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -222,7 +222,7 @@ function utilities_view_tech($php_info = '') {
 	load_current_session_value('tab', 'sess_ts_tabs', 'summary');
 	$current_tab = get_nfilter_request_var('tab');
 
-	$header_label = __('Technical Support [%s]', $tabs[get_request_var('tab')]);
+	$header_label = __esc('Technical Support [%s]', $tabs[get_request_var('tab')]);
 
 	if (cacti_sizeof($tabs)) {
 		$i = 0;

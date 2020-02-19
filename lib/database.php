@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -120,6 +120,17 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 					$new_modes[] = $mode;
 				}
 			}
+
+			// Add Required modes
+			$required_modes[] = 'ALLOW_INVALID_DATES';
+			$required_modes[] = 'NO_ENGINE_SUBSTITUTION';
+
+			foreach($required_modes as $mode) {
+				if (array_search($mode, $new_modes) === false) {
+					$new_modes[] = $mode;
+				}
+			}
+
 			$sql_mode = implode(',', $new_modes);
 
 			db_execute_prepared('SET SESSION sql_mode = ?', array($sql_mode), false);
@@ -147,6 +158,14 @@ function db_connect_real($device, $user, $pass, $db_name, $db_type = 'mysql', $p
 			}
 			return $cnn_id;
 		} catch (PDOException $e) {
+			if (!isset($config['DATABASE_ERROR'])) {
+				$config['DATABASE_ERROR'] = array();
+			}
+
+			$config['DATABASE_ERROR'][] = array(
+				'Code' => $e->getCode(),
+				'Error' => $e->getMessage(),
+			);
 			// Must catch this exception or else PDO will display an error with our username/password
 			//print $e->getMessage();
 			//exit;
@@ -205,7 +224,9 @@ function db_execute_prepared($sql, $params = array(), $log = true, $db_conn = fa
 
 	/* check for a connection being passed, if not use legacy behavior */
 	if (!is_object($db_conn)) {
-		$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		if (isset($database_sessions["$database_hostname:$database_port:$database_default"])) {
+			$db_conn = $database_sessions["$database_hostname:$database_port:$database_default"];
+		}
 
 		if (!is_object($db_conn)) {
 			$database_last_error = 'DB ' . $execute_name . ' -- No connection found';

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -105,6 +105,11 @@ $disable_log_rotation = false;
  */
 
 //$input_whitelist = '/usr/local/etc/cacti/input_whitelist.json';
+
+/*
+ * Optional parameter to give explicit path to PHP
+ */
+//$php_path = '/bin/php';
 
 /*
  * Optional parameter to disable the PHP SNMP extension. If not set, defaults

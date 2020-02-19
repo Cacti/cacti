@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -492,7 +492,7 @@ function discoverDevices($network_id, $thread) {
 				}
 			}
 
-			$exists = db_fetch_row_prepared('SELECT id, snmp_version, status
+			$exists = db_fetch_row_prepared('SELECT id, snmp_version, status, deleted
 				FROM host
 				WHERE hostname IN (?,?)',
 				array($device['ip_address'], $device['hostname']));
@@ -581,24 +581,28 @@ function discoverDevices($network_id, $thread) {
 							$snmp_sysName_short = $snmp_sysName;
 						}
 
-						$exists = db_fetch_row_prepared('SELECT id, status, snmp_version
+						$exists = db_fetch_row_prepared('SELECT id, status, snmp_version, deleted
 							FROM host
 							WHERE hostname IN (?,?)',
 							array($snmp_sysName_short, $snmp_sysName));
 
 						if (cacti_sizeof($exists)) {
-							if ($exists['status'] == 3 || $exists['status'] == 2) {
-								addUpDevice($network_id, getmypid());
+							if ($exists['deleted'] != 'on') {
+								if ($exists['status'] == 3 || $exists['status'] == 2) {
+									addUpDevice($network_id, getmypid());
 
-								if ($exists['snmp_version'] > 0) {
-									addSNMPDevice($network_id, getmypid());
+									if ($exists['snmp_version'] > 0) {
+										addSNMPDevice($network_id, getmypid());
+									}
+
+									// Rerun data queries if specified
+									rerunDataQueries($exists['id'], $network);
 								}
 
-								// Rerun data queries if specified
-								rerunDataQueries($exists['id'], $network);
+								automation_debug(' Device is in Cacti!');
+							} else {
+								automation_debug(' Device is in Cacti but marked as deleted!');
 							}
-
-							automation_debug(' Device is in Cacti!');
 
 							markIPDone($device['ip_address'], $network_id);
 						} else {
@@ -779,18 +783,23 @@ function discoverDevices($network_id, $thread) {
 					markIPDone($device['ip_address'], $network_id);
 				}
 			} else {
-				if ($exists['status'] == 3 || $exists['status'] == 2) {
-					addUpDevice($network_id, getmypid());
+				if ($exists['deleted'] != 'on') {
+					if ($exists['status'] == 3 || $exists['status'] == 2) {
+						addUpDevice($network_id, getmypid());
 
-					if ($exists['snmp_version'] > 0) {
-						addSNMPDevice($network_id, getmypid());
+						if ($exists['snmp_version'] > 0) {
+							addSNMPDevice($network_id, getmypid());
+						}
+
+						// Rerun data queries if specified
+						rerunDataQueries($exists['id'], $network);
 					}
 
-					// Rerun data queries if specified
-					rerunDataQueries($exists['id'], $network);
+					automation_debug(", Status: Already in Cacti\n");
+				} else {
+					automation_debug(", Status: Already in Cacti but marked as deleted\n");
 				}
 
-				automation_debug(", Status: Already in Cacti\n");
 				markIPDone($device['ip_address'], $network_id);
 			}
 		} else {

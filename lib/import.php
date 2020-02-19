@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -149,7 +149,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 		}
 	}
 
-	$repair     = 0;
+	$repair = 0;
 
 	/* the order of the $hash_type_codes array is ordered such that the items
 	with the most dependencies are last and the items with no dependencies are first.
@@ -228,7 +228,7 @@ function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphan
 				}
 
 				if (!empty($import_debug_info)) {
-					$info_array[$type]{isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0} = $import_debug_info;
+					$info_array[$type][isset($info_array[$type]) ? cacti_count($info_array[$type]) : 0] = $import_debug_info;
 				}
 			}
 		}
@@ -1915,6 +1915,8 @@ function resolve_hash_to_id($hash, &$hash_cache_array) {
 			return 0;
 		} elseif ($parsed_hash['hash'] == 'cbbe5c1ddfb264a6e5d509ce1c78c95f') {
 			return 0;
+		} elseif ($parsed_hash['hash'] == '51bde3d899e12bde28ad979166985584') {
+			return 0;
 		}
 
 		cacti_log("Import Error: Import found an invalid dependency hash of :" . $parsed_hash['hash'] . ".  Please open bug on GitHub.");
@@ -1997,31 +1999,28 @@ function check_hash_type($hash_type) {
 function check_hash_version($hash_version) {
 	global $cacti_version_codes, $config;
 
-	$i = 0;
-
 	foreach ($cacti_version_codes as $version => $code) {
 		if (cacti_version_compare($version,CACTI_VERSION,'=')) {
-			$current_version_index = $i;
+			$current_version_code = $code;
 		}
 
 		if ($code == $hash_version) {
-			$hash_version_index = $i;
+			$hash_version_code = $code;
 			$current_version = $version;
 		}
-
-		$i++;
 	}
 
-	if (!isset($current_version_index)) {
-		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	if (!isset($current_version_code)) {
+		cacti_log("ERROR: $hash_version Current Cacti Version does not exist!", false, 'IMPORT');
 		raise_message(15); /* error: current cacti version does not exist! */
 		return false;
-	} elseif (!isset($hash_version_index)) {
-		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	} elseif (!isset($hash_version_code)) {
+		cacti_log("ERROR: $hash_version hash version does not exist!", false, 'IMPORT');
 		raise_message(16); /* error: hash version does not exist! */
 		return false;
-	} elseif ($hash_version_index > $current_version_index) {
-		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT', POLLER_VERBOSITY_HIGH);
+	} elseif ($hash_version_code > $current_version_code) {
+		cacti_log("ERROR: $hash_version_code > $current_version_code", false, 'IMPORT');
+		cacti_log("ERROR: $hash_version hash version is for a newer Cacti!", false, 'IMPORT');
 		raise_message(17); /* error: hash made with a newer version of cacti */
 		return false;
 	}

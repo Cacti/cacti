@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -405,7 +405,7 @@ function vdef_item_edit() {
 			WHERE id = ?',
 			array(get_request_var('vdef_id')));
 
-		$header_label = __('VDEF Items [edit: %s]', html_escape($name));
+		$header_label = __esc('VDEF Items [edit: %s]', $name);
 	}else {
 		$header_label = __('VDEF Items [new]');
 	}
@@ -562,7 +562,7 @@ function vdef_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('VDEFs [edit: %s]', html_escape($vdef['name']));
+		$header_label = __esc('VDEFs [edit: %s]', $vdef['name']);
 	} else {
 		$header_label = __('VDEFs [new]');
 	}

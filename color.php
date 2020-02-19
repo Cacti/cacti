@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -414,7 +414,7 @@ function color_edit() {
 
 	if (!isempty_request_var('id')) {
 		$color = db_fetch_row_prepared('SELECT * FROM colors WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Colors [edit: %s]', html_escape($color['hex']));
+		$header_label = __esc('Colors [edit: %s]', $color['hex']);
 	} else {
 		$header_label = __('Colors [new]');
 	}

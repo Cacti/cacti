@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1396,19 +1396,49 @@ function utility_php_recommends() {
 	return $ext;
 }
 
+function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
+	$default_type = strtoupper($default_type);
+	$multiplier = array(
+		'B' => 1,
+		'K' => 1024,
+		'M' => 1024*1024,
+		'G' => 1024*1024*1024,
+	);
+
+	if (preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
+		$input_value = $matches[1];
+		if (isset($matches[2])) {
+			$default_type = $matches[2];
+		}
+
+		if (isset($multiplier[$default_type])) {
+			$input_value = $input_value * $multiplier[$default_type];
+		}
+	}
+
+	if (isset($multiplier[$wanted_type])) {
+		$output_value = ($input_value / $multiplier[$wanted_type]) . $wanted_type;
+	} elseif (isset($multiplier[$default_type])) {
+		$output_value = ($input_value * $multiplier[$default_type]) . $default_type;
+	} else {
+		$output_value = $input_value . 'B';
+	}
+	return $input_value;
+}
+
 function utility_php_verify_recommends(&$recommends, $source) {
 	global $original_memory_limit;
 
-	// _mb = megabytes, _m = minutes (used in displays)
 	$rec_version    = '5.4.0';
 	$rec_memory_mb  = (version_compare(PHP_VERSION, '7.0.0', '<') ? 800 : 400);
 	$rec_execute_m  = 1;
+	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
 
 	// adjust above appropriately (used in configs)
-	$rec_memory	= $rec_memory_mb * 1024 * 1024;
 	$rec_execute    = $rec_execute_m * 60;
-	$memory_ini     = (isset($original_memory_limit) ? $original_memory_limit : ini_get('memory_limit'));
-	$memory_limit   = str_replace('M', '', $memory_ini);
+	$rec_memory     = utility_get_formatted_bytes($rec_memory_mb, 'M', $rec_memory_mb, 'M');
+	$memory_limit   = utility_get_formatted_bytes($memory_ini, 'M', $memory_ini, 'B');
+
 	$execute_time   = ini_get('max_execution_time');
 
 	$timezone       = ini_get('date.timezone');
@@ -1422,9 +1452,9 @@ function utility_php_verify_recommends(&$recommends, $source) {
 		),
 		array(
 			'name'        => 'memory_limit',
-			'value'       => $rec_memory_mb . 'M',
-			'current'     => $memory_limit . 'M',
-			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory_mb) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
+			'value'       => $rec_memory_mb,
+			'current'     => $memory_ini,
+			'status'      => ($memory_limit <= 0 || $memory_limit >= $rec_memory) ? DB_STATUS_SUCCESS : DB_STATUS_WARNING,
 		),
 		array(
 			'name'        => 'max_execution_time',
@@ -1449,7 +1479,7 @@ function utility_php_set_recommends_text(&$recs) {
 					if ($recommend['name'] == 'version') {
 						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
 					} elseif ($recommend['name'] == 'memory_limit') {
-						$recs[$name][$index]['description'] = __('A minimum of %s MB memory limit', $recommend['value']);
+						$recs[$name][$index]['description'] = __('A minimum of %s memory limit', $recommend['value']);
 					} elseif ($recommend['name'] == 'max_execution_time') {
 						$recs[$name][$index]['description'] = __('A minimum of %s m execution time', $recommend['value']);
 					} elseif ($recommend['name'] == 'date.timezone') {

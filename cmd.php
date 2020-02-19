@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -485,7 +485,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 				db_execute_prepared('UPDATE host
 					SET polling_time = ?
-					WHERE id = ?',
+					WHERE id = ?
+					AND deleted = ""',
 					array(($host_end - $host_start), $last_host));
 
 				if (cacti_sizeof($error_ds)) {
@@ -809,7 +810,8 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 
 	db_execute_prepared('UPDATE host
 		SET polling_time = ?
-		WHERE id = ?',
+		WHERE id = ?
+		AND deleted = ""',
 		array(($host_end - $host_start), $last_host));
 
 	if (cacti_sizeof($error_ds)) {

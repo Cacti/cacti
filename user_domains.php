@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -314,7 +314,7 @@ function domain_edit() {
 
 	if (!isempty_request_var('domain_id')) {
 		$domain = db_fetch_row_prepared('SELECT * FROM user_domains WHERE domain_id = ?', array(get_request_var('domain_id')));
-		$header_label = __('User Domain [edit: %s]', html_escape($domain['domain_name']));
+		$header_label = __esc('User Domain [edit: %s]', $domain['domain_name']);
 	} else {
 		$header_label = __('User Domain [new]');
 	}

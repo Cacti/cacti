@@ -70,7 +70,7 @@ function themeReady() {
 
 				$('#'+id+'-menu').css('max-height', '250px');
 			});
-		}else{
+		} else {
 			$(this).addClass('ui-state-default ui-corner-all');
 		}
 	});
@@ -78,7 +78,7 @@ function themeReady() {
 	$('#drp_action').change(function() {
 		if ($(this).val() != '0') {
 			$('#submit').button('enable');
-		}else{
+		} else {
 			$('#submit').button('disable');
 		}
 	});
@@ -102,10 +102,14 @@ function themeReady() {
 			$('#host_id').val(ui.item.id);
 			callBack = $('#call_back').val();
 			if (callBack != 'undefined') {
-				eval(callBack);
-			}else if (typeof applyGraphFilter === 'function') {
+				if (callBack.indexOf('applyFilter') >= 0) {
+					applyFilter();
+				} else if (callBack.indexOf('applyGraphFilter') >= 0) {
+					applyGraphFilter();
+				}
+			} else if (typeof applyGraphFilter === 'function') {
 				applyGraphFilter();
-			}else{
+			} else {
 				applyFilter();
 			}
 		}
@@ -122,7 +126,7 @@ function themeReady() {
 			$('#host').autocomplete('close');
 			clearTimeout(hostTimer);
 			hostOpen = false;
-		}else{
+		} else {
 			clickTimeout = setTimeout(function() {
 				$('#host').autocomplete('search', '');
 				clearTimeout(hostTimer);
@@ -168,7 +172,7 @@ function setMenuVisibility() {
 		if (active != null && active == 'active') {
 			$(this).find('ul').attr('aria-hidden', 'false').attr('aria-expanded', 'true').show();
 			$(this).next('a').show();
-		}else{
+		} else {
 			$(this).find('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false').hide();
 			$(this).next('a').hide();
 		}
@@ -191,7 +195,7 @@ function setMenuVisibility() {
 
 		id = $(this).closest('.menuitem').attr('id');
 
-		if ($(this).next().is(':visible')){
+		if ($(this).next().is(':visible')) {
 			$(this).next('ul').attr('aria-hidden', 'true').attr('aria-expanded', 'false');
 			$(this).next().slideUp( { duration: 200, easing: 'swing' } );
 			storage.set(id, 'collapsed');
@@ -200,7 +204,7 @@ function setMenuVisibility() {
 			$(this).next().slideToggle( { duration: 200, easing: 'swing' } );
 			if ($(this).next().is(':visible')) {
 				storage.set($(this).closest('.menuitem').attr('id'), 'active');
-			}else{
+			} else {
 				storage.set(id, 'collapsed');
 			}
 		}

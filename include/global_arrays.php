@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -121,6 +121,27 @@ $cacti_version_codes = array(
 	'1.2.6'  => '0102',
 	'1.2.7'  => '0102',
 	'1.2.8'  => '0102',
+	'1.2.9'  => '0102',
+	'1.2.10' => '0102',
+	'1.2.11' => '0102',
+	'1.2.12' => '0102',
+	'1.2.13' => '0102',
+	'1.2.14' => '0102',
+	'1.2.15' => '0102',
+	'1.2.16' => '0102',
+	'1.2.17' => '0102',
+	'1.2.18' => '0102',
+	'1.2.19' => '0102',
+	'1.2.20' => '0102',
+	'1.2.21' => '0102',
+	'1.2.22' => '0102',
+	'1.2.23' => '0102',
+	'1.2.24' => '0102',
+	'1.2.25' => '0102',
+	'1.2.26' => '0102',
+	'1.2.27' => '0102',
+	'1.2.28' => '0102',
+	'1.2.29' => '0102',
 	'1.3.0'  => '0102',
 );
 
@@ -1553,9 +1574,10 @@ $agg_totals_type = array(
 );
 
 $agg_order_types = array(
-	AGGREGATE_ORDER_NONE      => __('No Reordering'),
-	AGGREGATE_ORDER_DS_GRAPH  => __('Data Source, Graph'),
-	AGGREGATE_ORDER_GRAPH_DS  => __('Graph, Data Source'),
+	AGGREGATE_ORDER_NONE       => __('No Reordering'),
+	AGGREGATE_ORDER_DS_GRAPH   => __('Data Source, Graph'),
+	AGGREGATE_ORDER_GRAPH_DS   => __('Graph, Data Source'),
+	AGGREGATE_ORDER_BASE_GRAPH => __('Base Graph Order')
 );
 
 # operators for use with SQL/pattern matching

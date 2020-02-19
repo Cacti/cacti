@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1648,7 +1648,7 @@ function user_realms_edit($header_label) {
 
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
-			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " $header_label</span></div>
+			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " " . html_escape($header_label) . "</span></div>
 			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'></a><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></span></div>
 		</div>
 	</div>\n";
@@ -1885,7 +1885,7 @@ function settings_edit($header_label) {
 
 	form_start('user_admin.php');
 
-	html_start_box(__('User Settings %s', $header_label), '100%', true, '3', 'center', '');
+	html_start_box(__esc('User Settings %s', $header_label), '100%', true, '3', 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
@@ -2015,7 +2015,7 @@ function user_edit() {
 
 	if (!isempty_request_var('id')) {
 		$user = db_fetch_row_prepared('SELECT * FROM user_auth WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('[edit: %s]', html_escape($user['username']));
+		$header_label = __('[edit: %s]', $user['username']);
 	} else {
 		$header_label = __('[new]');
 	}
@@ -2047,7 +2047,7 @@ function user_edit() {
 
 		form_start('user_admin.php');
 
-		html_start_box(__('User Management %s', $header_label), '100%', '', '3', 'center', '');
+		html_start_box(__esc('User Management %s', $header_label), '100%', '', '3', 'center', '');
 
 		draw_edit_form(
 			array(
@@ -2598,7 +2598,7 @@ function graph_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Graph Permissions %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Graph Permissions %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2705,7 +2705,7 @@ function group_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Group Membership %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Group Membership %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2791,7 +2791,7 @@ function device_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Devices Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Devices Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2894,7 +2894,7 @@ function template_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Template Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Template Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2979,7 +2979,7 @@ function tree_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Tree Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Tree Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -3064,7 +3064,7 @@ function member_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box(__('Tree Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__esc('Tree Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>

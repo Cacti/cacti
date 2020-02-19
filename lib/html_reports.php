@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -706,9 +706,9 @@ function reports_item_edit() {
 	if (isset_request_var('item_id') && (get_filter_request_var('item_id') > 0)) {
 		$reports_item = db_fetch_row_prepared('SELECT * FROM reports_items WHERE id = ?', array(get_request_var('item_id')));
 
-		$header_label = __('Report Item [edit Report: %s]', $report['name']);
+		$header_label = __esc('Report Item [edit Report: %s]', $report['name']);
 	} else {
-		$header_label = __('Report Item [new Report: %s]', $report['name']);
+		$header_label = __esc('Report Item [new Report: %s]', $report['name']);
 		$reports_item = array();
 		$reports_item['report_id'] = get_request_var('id');
 		$reports_item['sequence']  = get_sequence('', 'sequence', 'reports_items', 'report_id=' . get_request_var('id'));
@@ -1152,7 +1152,7 @@ function reports_edit() {
 		# reformat mailtime to human readable format
 		$report['mailtime'] = date(reports_date_time_format(), $report['mailtime']);
 		# setup header
-		$header_label = __('[edit: %s]', html_escape($report['name']));
+		$header_label = __('[edit: %s]', $report['name']);
 		$tabs = array('details' => __('Details'), 'items' => __('Items'), 'preview' => __('Preview'), 'events' => __('Events'));
 	} else {
 		$header_label = __('[new]');
@@ -1197,7 +1197,7 @@ function reports_edit() {
 	case 'details':
 		form_start(get_reports_page());
 
-		html_start_box(__('Details') . " $header_label", '100%', true, '3', 'center', '');
+		html_start_box(__esc('Details %s', $header_label), '100%', true, '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array('no_form_tag' => true),
@@ -1244,7 +1244,7 @@ function reports_edit() {
 
 		break;
 	case 'items':
-		html_start_box(__('Items') . " $header_label", '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
+		html_start_box(__esc('Items %s', $header_label), '100%', '', '3', 'center', get_reports_page() . '?action=item_edit&id=' . get_request_var('id'));
 
 		/* display the items */
 		if (!empty($report['id'])) {
@@ -1284,7 +1284,7 @@ function reports_edit() {
 		$next        = reports_interval_start($report['intrvl'], $report['count'], $report['offset'], $timestamp);
 		$date_format = reports_date_time_format() . ' - l';
 
-		html_start_box(__('Scheduled Events') . " $header_label", '100%', '', '3', 'center', '');
+		html_start_box(__esc('Scheduled Events %s', $header_label), '100%', '', '3', 'center', '');
 		for ($i=0; $i<14; $i++) {
 			form_alternate_row('line' . $i, true);
 			form_selectable_cell(date($date_format, $next), $i);
@@ -1295,7 +1295,7 @@ function reports_edit() {
 
 		break;
 	case 'preview':
-		html_start_box(__('Report Preview') . " $header_label", '100%', '', '0', 'center', '');
+		html_start_box(__esc('Report Preview %s', $header_label), '100%', '', '0', 'center', '');
 		print "\t\t\t\t\t<tr><td>\n";
 		print reports_generate_html($report['id'], REPORTS_OUTPUT_STDOUT);
 		print "\t\t\t\t\t</td></tr>\n";

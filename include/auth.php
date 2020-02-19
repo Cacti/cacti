@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -50,7 +50,7 @@ if (read_config_option('auth_method') == 0) {
 		$admin_sql_query = 'SELECT TOP 1 id FROM (
 			SELECT ua.id
 			FROM user_auth AS ua
-                        INNER JOIN user_auth_realm AS uar
+			INNER JOIN user_auth_realm AS uar
 			ON uar.user_id = ua.id
 			WHERE uar.realm_id = ?';
 
@@ -63,17 +63,18 @@ if (read_config_option('auth_method') == 0) {
 			FROM user_auth AS ua
 			INNER JOIN user_auth_group_members AS uagm
 			ON uagm.user_id = ua.id
-                        INNER JOIN user_auth_group AS uag
-                        ON uag.id = uagm.group_id
+			INNER JOIN user_auth_group AS uag
+			ON uag.id = uagm.group_id
 			INNER JOIN user_auth_group_realm AS uagr
-                        ON uagr.group_id=uag.group_id
-                        WHERE uag.enabled="on" AND ua.enabled="on"
-                        AND uagr.realm_id = ?';
+			ON uagr.group_id=uag.group_id
+			WHERE uag.enabled="on" AND ua.enabled="on"
+			AND uagr.realm_id = ?';
+
 			$admin_sql_params[] = 15;
 		}
 
 		$admin_sql_query .= '
-	                ) AS id';
+			) AS id';
 
 		cacti_log('SQL query ' . $admin_sql_query, true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);
 		cacti_log('SQL param ' . implode(',', $admin_sql_params), true, 'AUTH_NONE', POLLER_VERBOSITY_DEVDBG);

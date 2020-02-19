@@ -1,6 +1,6 @@
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -49,6 +49,8 @@ var hostInfoHeight = 0;
 var menuHideResponsive = null;
 var marginLeftTree = null;
 var marginLeftConsole = null;
+var minTreeWidth = null;
+var maxTreeWidth = null;
 var pageName;
 var columnsHidden = 0;
 var lastColumnsHidden = {};
@@ -60,6 +62,8 @@ var formArray;
 var pageWidth = null;
 var isHover = false;
 var hoverTimer = false;
+var previousMainWidth = null;
+var previousColumns   = null;
 
 window.paceOptions = {
 	ajax: true,
@@ -1229,6 +1233,12 @@ function responsiveUI(event) {
 			if ($(this).width() > mainWidth) {
 				$(this).css('max-width', (mainWidth - offset)+'px');
 			}
+
+			if ($(this).width() > $(this).parents('.formColumnRight').prop('clientWidth')) {
+				$(this).css('max-width', ($(this).parents('.formColumnRight').prop('clientWidth'))+'px');
+			} else {
+				$(this).css('max-width', '');
+			}
 		}
 	});
 
@@ -1274,6 +1284,12 @@ function responsiveResizeGraphs() {
 		graphRow = mainWidth - drillDown;
 	} else if (graphRow == 0) {
 		graphRow = mainWidth;
+	}
+
+	// Dont resize if nothing changed
+	if (previousMainWidth == null || (previousMainWidth == mainWidth && previousColumns == myColumns)) {
+		previousMainWidth = mainWidth;
+		return true;
 	}
 
 	var myWidth = parseInt((graphRow - (drillDown * myColumns)) / myColumns);
@@ -1330,14 +1346,10 @@ function responsiveResizeGraphs() {
 			$(this).removeAttr('width');
 			$(this).removeAttr('height');
 		}
-
-		$('#zoom-container').remove();
-		$(this).zoom({
-			inputfieldStartTime : 'date1',
-			inputfieldEndTime : 'date2',
-			serverTimeOffset : timeOffset
-		});
 	});
+
+	previousMainWidth = mainWidth;
+	previousColumns   = myColumns;
 
 	if ($('.cactiTreeNavigationArea').length) {
 		resizeTreePanel();
@@ -1580,6 +1592,7 @@ function menuHide(store) {
 
 		if (curMargin > 0) {
 			marginLeftTree = curMargin;
+			$('.cactiTreeNavigationArea').css('width', curMargin);
 		}
 	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
@@ -1615,10 +1628,17 @@ function menuShow() {
 	var myClass = '';
 
 	if ($('.cactiTreeNavigationArea').length) {
+		if (marginLeftTree == null) {
+			marginLeftTree = minTreeWidth;
+		}
+
+		var treeWidth = $('.cactiTreeNavigationArea').width();
+
 		myClass = '.cactiTreeNavigationArea';
 
-		if (marginLeftTree > 0) {
+		if (marginLeftTree > treeWidth) {
 			$('#navigation_right').animate({'margin-left': marginLeftTree}, 20);
+			$('.cactiTreeNavigationArea').css('width', marginLeftTree);
 		}
 	} else if ($('.cactiConsoleNavigationArea').length) {
 		myClass = '.cactiConsoleNavigationArea';
@@ -2205,17 +2225,17 @@ function setupUserMenu() {
 		clearTimeout(userMenuTimer);
 	}).mouseleave(function() {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout('closeUserMenu()', 1000);
+			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
 		}
 	});
 
 	$('.user').mouseenter(function(data) {
 		clearTimeout(userMenuTimer);
-		userMenuOpenTimer = setTimeout('openUserMenu()', 400);
-		//openUserMenu();
+		userMenuOpenTimer = setTimeout(function() { openUserMenu(); }, 400);
+		openUserMenu();
 	}).mouseleave(function(data) {
 		if ($('.menuoptions').is(':visible')) {
-			userMenuTimer = setTimeout('closeUserMenu()', 1000);
+			userMenuTimer = setTimeout(function() { closeUserMenu(); }, 1000);
 		} else {
 			clearTimeout(userMenuOpenTimer);
 		}
@@ -3244,7 +3264,6 @@ function redrawGraph(graph_id) {
 					" value_max='"+data.value_max+"'>"
 				);
 
-				$('#zoom-container').remove();
 				$('#graph_'+data.local_graph_id).zoom({
 					inputfieldStartTime : 'date1',
 					inputfieldEndTime : 'date2',
@@ -3284,7 +3303,6 @@ function initializeGraphs() {
 
 					$('#main').empty().hide();
 					$('#breadcrumbs').append('<li><a id="nav_mrgt" href="#">'+timeGraphView+'</a></li>');
-					$('#zoom-container').remove();
 					$('div[class^="ui-"]').remove();
 					$('#main').html(data);
 					applySkin();

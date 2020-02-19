@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -532,7 +532,7 @@ function automation_graph_rules_edit() {
 		}
 
 		# setup header
-		$header_label = __('Rule Selection [edit: %s]', html_escape($rule['name']));
+		$header_label = __esc('Rule Selection [edit: %s]', $rule['name']);
 	} else {
 		$rule = array (
 				'name' => get_request_var('name'),

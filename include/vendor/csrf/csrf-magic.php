@@ -365,7 +365,7 @@ function csrf_conf($key, $val) {
  */
 function csrf_start() {
     if ($GLOBALS['csrf']['auto-session'] && !session_id()) {
-        session_start();
+		session_start();
     }
 }
 
@@ -433,11 +433,14 @@ function csrf_hash($value, $time = null) {
 }
 
 // Load user configuration
-if (function_exists('csrf_startup')) csrf_startup();
-if (!$GLOBALS['csrf']['disable']) {
-    // Initialize our handler
-    if ($GLOBALS['csrf']['rewrite'])     ob_start('csrf_ob_handler');
-    // Perform check
-    if (!$GLOBALS['csrf']['defer'])      csrf_check();
+if (!defined('CACTI_CLI_ONLY')) {
+	if (function_exists('csrf_startup')) csrf_startup();
+
+	if (!$GLOBALS['csrf']['disable']) {
+		// Initialize our handler
+		if ($GLOBALS['csrf']['rewrite'])     ob_start('csrf_ob_handler');
+		// Perform check
+		if (!$GLOBALS['csrf']['defer'])      csrf_check();
+	}
 }
 

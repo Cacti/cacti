@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -402,7 +402,7 @@ function item_edit() {
 
 	form_start('graph_templates_items.php', 'graph_items');
 
-	$header_label = __('Graph Template Items [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __esc('Graph Template Items [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))));
 
 	html_start_box($header_label, '100%', true, '3', 'center', '');
 

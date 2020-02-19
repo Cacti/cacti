@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -180,6 +180,12 @@ if (function_exists('pcntl_signal')) {
 // record the start time
 $poller_start    = microtime(true);
 $overhead_time   = 0;
+
+// catch the unlikely event that the poller_output_boost is missing
+if (!db_table_exists('poller_output_boost')) {
+	db_execute('CREATE TABLE poller_output_boost LIKE poller_output');
+	db_execute('ALTER TABLE poller_output_boost ENGINE=InnoDB');
+}
 
 api_plugin_hook('poller_top');
 
@@ -571,8 +577,6 @@ while ($poller_runs_completed < $poller_runs) {
 		} else {
 			$extra_parms = '';
 		}
-
-		$extra_args = api_plugin_hook_function('poller_command_args', $extra_args);
 
 		if ($poller_id > 1) {
 			$extra_args .= ' --mode=' . $config['connection'];

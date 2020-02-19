@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -329,6 +329,7 @@ define('AGGREGATE_TOTAL_TYPE_ALL', 2);
 define('AGGREGATE_ORDER_NONE', 1);
 define('AGGREGATE_ORDER_DS_GRAPH', 2);
 define('AGGREGATE_ORDER_GRAPH_DS', 3);
+define('AGGREGATE_ORDER_BASE_GRAPH', 4);
 
 define('AUTOMATION_OP_NONE', 0);
 define('AUTOMATION_OP_CONTAINS', 1);

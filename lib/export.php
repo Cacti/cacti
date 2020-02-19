@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -782,9 +782,9 @@ function data_query_to_xml($data_query_id) {
 				foreach ($snmp_query_graph_rrd as $item2) {
 					$xml_text .= "\t\t\t\t<item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
-					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2{'snmp_field_name'} . "</snmp_field_name>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2{'data_template_id'}) . "</data_template_id>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item2{'data_template_rrd_id'}, 'data_template_item') . "</data_template_rrd_id>\n";
+					$xml_text .= "\t\t\t\t\t<snmp_field_name>" . $item2['snmp_field_name'] . "</snmp_field_name>\n";
+					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2['data_template_id']) . "</data_template_id>\n";
+					$xml_text .= "\t\t\t\t\t<data_template_rrd_id>hash_" . get_hash_version('data_template_item') . get_hash_data_template($item2['data_template_rrd_id'], 'data_template_item') . "</data_template_rrd_id>\n";
 
 					$xml_text .= "\t\t\t\t</item_" . str_pad(strval($i), 3, '0', STR_PAD_LEFT) . ">\n";
 
@@ -805,9 +805,9 @@ function data_query_to_xml($data_query_id) {
 
 					$xml_text .= "\t\t\t\t<hash_" . $hash['data_query_sv_graph'] . ">\n";
 
-					$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{'field_name'}) . "</field_name>\n";
-					$xml_text .= "\t\t\t\t\t<sequence>" . $item2{'sequence'} . "</sequence>\n";
-					$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{'text'}) . "</text>\n";
+					$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2['field_name']) . "</field_name>\n";
+					$xml_text .= "\t\t\t\t\t<sequence>" . $item2['sequence'] . "</sequence>\n";
+					$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2['text']) . "</text>\n";
 
 					$xml_text .= "\t\t\t\t</hash_" . $hash['data_query_sv_graph'] . ">\n";
 
@@ -828,10 +828,10 @@ function data_query_to_xml($data_query_id) {
 
 					$xml_text .= "\t\t\t\t<hash_" . $hash['data_query_sv_data_source'] . ">\n";
 
-					$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2{'field_name'}) . "</field_name>\n";
-					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2{'data_template_id'}) . "</data_template_id>\n";
-					$xml_text .= "\t\t\t\t\t<sequence>" . $item2{'sequence'} . "</sequence>\n";
-					$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2{'text'}) . "</text>\n";
+					$xml_text .= "\t\t\t\t\t<field_name>" . xml_character_encode($item2['field_name']) . "</field_name>\n";
+					$xml_text .= "\t\t\t\t\t<data_template_id>hash_" . get_hash_version('data_template') . get_hash_data_template($item2['data_template_id']) . "</data_template_id>\n";
+					$xml_text .= "\t\t\t\t\t<sequence>" . $item2['sequence'] . "</sequence>\n";
+					$xml_text .= "\t\t\t\t\t<text>" . xml_character_encode($item2['text']) . "</text>\n";
 
 					$xml_text .= "\t\t\t\t</hash_" . $hash['data_query_sv_data_source'] . ">\n";
 

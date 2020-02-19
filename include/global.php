@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -115,6 +115,9 @@ ini_set('max_input_vars', '5000');
 
 /* Include configuration, or use the defaults */
 if (file_exists(dirname(__FILE__) . '/config.php')) {
+	if (!is_readable(dirname(__FILE__) . '/config.php')) {
+		die('Configuration file include/config.php is present, but unreadable.' . PHP_EOL);
+	}
 	include(dirname(__FILE__) . '/config.php');
 }
 
@@ -225,6 +228,11 @@ if (isset($php_snmp_support) && !$php_snmp_support) {
 	$config['php_snmp_support'] = class_exists('SNMP');
 }
 
+/* PHP binary location */
+if (isset($php_path)) {
+	$config['php_path'] = $php_path;
+}
+
 /* Set various debug fields */
 $config['DEBUG_READ_CONFIG_OPTION']         = defined('DEBUG_READ_CONFIG_OPTION');
 $config['DEBUG_READ_CONFIG_OPTION_DB_OPEN'] = defined('DEBUG_READ_CONFIG_OPTION_DB_OPEN');
@@ -316,6 +324,13 @@ if ($config['poller_id'] > 1 || isset($rdatabase_hostname)) {
 		print $li . 'the database is running.' . $il;
 		print $li . 'the credentials in config.php are valid.' . $il;
 		print $lu . $sp;
+		if (isset($_REQUEST['display_db_errors']) & !empty($config['DATABASE_ERROR'])) {
+			print $ps . 'The following database errors occurred: ' . $ul;
+			foreach ($config['DATABASE_ERROR'] as $e) {
+				print $li . $e['Code'] . ': ' . $e['Error'] . $il;
+			}
+			print $lu . $sp;
+		}
 		exit;
 	} else {
 		/* gather the existing cactidb version */
@@ -386,6 +401,10 @@ if ($config['is_web']) {
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
+
+	/* increased web hardening */
+	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';");
+
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
 

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -780,12 +780,6 @@ function dsstats_boost_bottom() {
 
 		log_dsstats_statistics('DAILY');
 	}
-}
-
-/* dsstats_poller_command_args - this routine allows DSStats to increase the memory of the
-     running script.  This is important for very large sites. */
-function dsstats_poller_command_args () {
-	dsstats_memory_limit();
 }
 
 /* dsstats_memory_limit - this routine increases/decreases the memory available for the script

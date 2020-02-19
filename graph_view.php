@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -219,6 +219,13 @@ case 'tree':
 	}
 
 	top_graph_header();
+
+	?>
+	<script type='text/javascript'>
+	minTreeWidth = <?php print read_user_setting('min_tree_width');?>;
+	maxTreeWidth = <?php print read_user_setting('max_tree_width');?>;
+	</script>
+	<?php
 
 	bottom_footer();
 

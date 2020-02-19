@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -296,7 +296,7 @@ function graphs() {
 				WHERE id = ?',
 				array($host['host_template_id']));
 
-			$header =  __('New Graphs for [ %s ] (%s %s)', html_escape($host['description']), html_escape($host['hostname']), (!empty($host['host_template_id']) ? html_escape($name):''));
+			$header =  __esc('New Graphs for [ %s ] (%s %s)', $host['description'], $host['hostname'], (!empty($host['host_template_id']) ? $name:''));
 		} else {
 			$header =  __('New Graphs for [ All Devices ]');
 			$host['id'] = -1;

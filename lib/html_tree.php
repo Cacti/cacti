@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -184,23 +184,24 @@ function grow_dhtml_trees() {
 				return $(this).width();
 			}).get());
 
-			var minWidth = <?php print read_user_setting('min_tree_width');?>;
-			var maxWidth = <?php print read_user_setting('max_tree_width');?>;
-
-			if (visWidth < minWidth) {
-				$('.cactiTreeNavigationArea').width(minWidth);
-				$('.cactiGraphContentArea').css('margin-left', minWidth+5);
+			if (visWidth < 0) {
+				$('.cactiTreeNavigationArea').css('width', 0);
+				$('.cactiGraphContentArea').css('margin-left', 0);
 				$('.cactiTreeNavigationArea').css('overflow-x', '');
-			} else if (visWidth > maxWidth) {
-				$('.cactiTreeNavigationArea').width(maxWidth);
-				$('.cactiGraphContentArea').css('margin-left', maxWidth+5);
+			} else if (visWidth < minTreeWidth) {
+				$('.cactiTreeNavigationArea').css('width', minTreeWidth);
+				$('.cactiGraphContentArea').css('margin-left', minTreeWidth+5);
+				$('.cactiTreeNavigationArea').css('overflow-x', '');
+			} else if (visWidth > maxTreeWidth) {
+				$('.cactiTreeNavigationArea').css('width', maxTreeWidth);
+				$('.cactiGraphContentArea').css('margin-left', maxTreeWidth+5);
 				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
 			} else if (visWidth > navWidth) {
-				$('.cactiTreeNavigationArea').width(visWidth);
+				$('.cactiTreeNavigationArea').css('width', visWidth);
 				$('.cactiGraphContentArea').css('margin-left', visWidth+5);
 				$('.cactiTreeNavigationArea').css('overflow-x', 'auto');
 			} else {
-				$('.cactiTreeNavigationArea').width(navWidth);
+				$('.cactiTreeNavigationArea').css('width', navWidth);
 				$('.cactiGraphContentArea').css('margin-left', navWidth+5);
 				$('.cactiTreeNavigationArea').css('overflow-x', '');
 			}
@@ -252,9 +253,11 @@ function grow_dhtml_trees() {
 				if (nodes.length > 0) {
 					$('#jstree').jstree().clear_state();
 				}
+				resizeTreePanel();
 			})
 			.on('loaded.jstree', function() {
 				openNodes();
+				resizeTreePanel();
 			})
 			.on('ready.jstree', function() {
 				resizeTreePanel();

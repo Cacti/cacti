@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -26,7 +26,9 @@ include('./include/auth.php');
 include_once('./lib/api_data_source.php');
 include_once('./lib/api_device.php');
 include_once('./lib/api_graph.php');
+include_once('./lib/api_tree.php');
 include_once('./lib/data_query.php');
+include_once('./lib/poller.php');
 include_once('./lib/template.php');
 
 $host_actions = array(
@@ -217,7 +219,7 @@ function form_actions() {
 				db_execute('DELETE FROM host_template_graph WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
 
 				/* "undo" any device that is currently using this template */
-				db_execute('UPDATE host SET host_template_id=0 WHERE ' . array_to_sql_or($selected_items, 'host_template_id'));
+				db_execute('UPDATE host SET host_template_id = 0 WHERE deleted = "" AND ' . array_to_sql_or($selected_items, 'host_template_id'));
 			} elseif (get_nfilter_request_var('drp_action') == '2') { // duplicate
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					duplicate_host_template($selected_items[$i], get_nfilter_request_var('title_format'));
@@ -457,7 +459,7 @@ function template_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Device Templates [edit: %s]', html_escape($host_template['name']));
+		$header_label = __esc('Device Templates [edit: %s]', $host_template['name']);
 	} else {
 		$header_label = __('Device Templates [new]');
 		set_request_var('id', 0);

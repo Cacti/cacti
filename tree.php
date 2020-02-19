@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -703,7 +703,7 @@ function tree_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Trees [edit: %s]', html_escape($tree['name']) );
+		$header_label = __esc('Trees [edit: %s]', $tree['name']);
 
 		// Reset the cookie state if tree id has changed
 		if (isset($_SESSION['sess_tree_id']) && $_SESSION['sess_tree_id'] != get_request_var('id')) {

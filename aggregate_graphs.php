@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -578,7 +578,7 @@ function item() {
 			ORDER BY gti.sequence',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Items [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
+		$header_label = __esc('Graph Items [edit: %s]', get_graph_title(get_request_var('id')));
 	}
 
 	$graph_template_id = db_fetch_cell_prepared('SELECT graph_template_id
@@ -638,7 +638,7 @@ function graph_edit() {
 			$aginfo['title_format'] = get_graph_title($graphs['local_graph_id']);
 		}
 
-		$header_label = '[edit: ' . html_escape(get_graph_title(get_request_var('id'))) . ']';
+		$header_label = __esc('[edit: %s]', get_graph_title(get_request_var('id')));
 	}
 
 	if (cacti_sizeof($aginfo)) {

@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1100,10 +1100,10 @@ function draw_graph_items_list($item_list, $filename, $url_data, $disable_contro
 				$matrix_title = 'TEXTALIGN: ' . ucfirst($item['textalign']);
 				break;
 			case preg_match('/(TICK)/', $_graph_type_name):
-				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 				break;
 			case preg_match('/(AREA|STACK|GPRINT|LINE[123])/', $_graph_type_name):
-				$matrix_title = '(' . $item['data_source_name'] . '): ' . $item['text_format'];
+				$matrix_title = $item['data_source_name'] . ': ' . $item['text_format'];
 				break;
 			case preg_match('/(HRULE)/', $_graph_type_name):
 				$matrix_title = 'HRULE: ' . $item['value'];
@@ -2291,11 +2291,17 @@ function html_common_header($title, $selectedTheme = '') {
 		$selectedTheme = get_selected_theme();
 	}
 
+	if ($selectedTheme == 'classic') {
+		print "<meta content='width=device-width, initial-scale=0.5, minimum-scale=0.2, maximum-scale=2.0' name='viewport'>" . PHP_EOL;
+	} else {
+		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>" . PHP_EOL;
+	}
+
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
-	<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='mobile-web-app-capable' content='yes'>
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php echo $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
@@ -2414,7 +2420,6 @@ function html_common_header($title, $selectedTheme = '') {
 	print get_md5_include_js('include/js/jquery.tablesorter.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.widgets.js');
 	print get_md5_include_js('include/js/jquery.tablesorter.pager.js');
-	print get_md5_include_js('include/js/jquery.metadata.js');
 	print get_md5_include_js('include/js/jquery.sparkline.js');
 	print get_md5_include_js('include/js/Chart.js');
 	print get_md5_include_js('include/js/dygraph-combined.js');

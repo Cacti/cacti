@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -33,7 +33,7 @@ include_once('./lib/utility.php');
 $graph_actions = array(
 	1 => __('Delete'),
 	2 => __('Duplicate'),
-	3 => __('Resize'),
+	3 => __('Change Settings'),
 	4 => __('Sync Graphs')
 );
 
@@ -206,7 +206,7 @@ function form_save() {
    ------------------------ */
 
 function form_actions() {
-	global $graph_actions, $config;
+	global $graph_actions, $config, $image_types;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -289,13 +289,15 @@ function form_actions() {
 			} elseif (get_request_var('drp_action') == '3') { // resize
 				get_filter_request_var('graph_width');
 				get_filter_request_var('graph_height');
+				get_filter_request_var('image_format_id');
 
 				for ($i=0;($i<cacti_count($selected_items));$i++) {
 					db_execute_prepared('UPDATE graph_templates_graph
-						SET width = ?, height = ?
+						SET width = ?, height = ?, image_format_id = ?
 						WHERE graph_template_id = ?',
 						array(get_request_var('graph_width'),
 						get_request_var('graph_height'),
+						get_request_var('image_format_id'),
 						$selected_items[$i]));
 				}
 			} elseif (get_request_var('drp_action') == '4') { // retemplate
@@ -360,14 +362,16 @@ function form_actions() {
 				</td>
 			</tr>
 			</table>
-			<table>
+			<table class='filterTable'>
 			<tr>
 				<td>";
 
 			print __('Graph Height') . '</td><td>';
 			form_text_box('graph_height', read_config_option('default_graph_height'), '', '5', '5', 'text');
-			print __('Graph Width') . '</td><td>';
+			print '</td></tr><tr><td>' . __('Graph Width') . '</td><td>';
 			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
+			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
+			form_dropdown('image_format_id', $image_types, '', '', 2, '', '');
 
 			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
 
@@ -418,7 +422,7 @@ function item() {
 	} else {
 		$template_item_list = db_fetch_assoc_prepared("SELECT gti.id, gti.text_format, gti.alpha,
 			gti.value, gti.hard_return, gti.graph_type_id, gti.consolidation_function_id, gti.textalign,
-			CONCAT_WS(' - ', dtd.name, dtr.data_source_name) AS data_source_name,
+			CONCAT(IFNULL(dtd.name, ''), ' (', dtr.data_source_name, ')') AS data_source_name,
 			cdef.name AS cdef_name, colors.hex
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
@@ -438,7 +442,7 @@ function item() {
 			ORDER BY gti.sequence",
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template Items [edit: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id')))));
+		$header_label = __esc('Graph Template Items [edit: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('id'))));
 	}
 
 	html_start_box($header_label, '100%', '', '3', 'center', 'graph_templates_items.php?action=item_edit&graph_template_id=' . get_request_var('id'));
@@ -516,7 +520,7 @@ function template_edit() {
 			AND local_graph_id=0',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Template [edit: %s]', html_escape($template['name']));
+		$header_label = __esc('Graph Template [edit: %s]', $template['name']);
 	} else {
 		$header_label = __('Graph Template [new]');
 	}

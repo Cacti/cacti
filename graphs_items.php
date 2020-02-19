@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -332,7 +332,7 @@ function item_edit() {
 	if (empty($host['hostname'])) {
 		$header = __('Data Sources [No Device]');
 	} else {
-		$header = __('Data Sources [%s]', $host['hostname']);
+		$header = __esc('Data Sources [%s]', $host['hostname']);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', '');
@@ -420,7 +420,7 @@ function item_edit() {
 		WHERE local_graph_id = ?',
 		array(get_request_var('local_graph_id')));
 
-	$header_label = __('Graph Items [graph: %s]', html_escape($title));
+	$header_label = __esc('Graph Items [graph: %s]', $title);
 
 	form_start('graphs_items.php', 'greph_edit');
 
@@ -598,7 +598,7 @@ function item_edit() {
 			break;
 		case '2': // HRULE
 			$('#row_task_item_id').show();
-			$('#row_color_id').hide();
+			$('#row_color_id').show();
 			$('#row_line_width').hide();
 			$('#row_dashes').show();
 			$('#row_dash_offset').show();
@@ -610,12 +610,12 @@ function item_edit() {
 			$('#row_vdef_id').hide();
 			$('#row_value').show();
 			$('#row_gprint_id').hide();
-			$('#row_text_format').hide();
+			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
 		case '3': // VRULE
 			$('#row_task_item_id').hide();
-			$('#row_color_id').hide();
+			$('#row_color_id').show();
 			$('#row_line_width').hide();
 			$('#row_dashes').show();
 			$('#row_dash_offset').show();
@@ -627,7 +627,7 @@ function item_edit() {
 			$('#row_vdef_id').hide();
 			$('#row_value').show();
 			$('#row_gprint_id').hide();
-			$('#row_text_format').hide();
+			$('#row_text_format').show();
 			$('#row_hard_return').show();
 			break;
 		case '4': // LINE1

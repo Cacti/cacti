@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -133,6 +133,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 						$text .= ", 'auto_increment' => true";
 					}
 				}
+
 				if (trim($r['Comment']) != '') {
 					$text .= ", 'comment' => '" . $r['Comment'] . "'";
 				}
@@ -176,7 +177,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 			//exit;
 		}
 
-		$result = db_fetch_row_prepared('select ENGINE, TABLE_COMMENT
+		$result = db_fetch_row_prepared('select ENGINE, TABLE_COMMENT, ROW_FORMAT
 			FROM information_schema.TABLES
 			WHERE TABLE_SCHEMA = SCHEMA()
 			AND TABLE_NAME = ?',
@@ -185,6 +186,7 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
+			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
 			if ($create) {
 				if ($plugin != '') {
 					$text .= "api_plugin_db_table_create ('$plugin', '$table', \$data);\n";

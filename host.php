@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -618,7 +618,7 @@ function host_edit() {
 			array(get_request_var('id')));
 
 		if (cacti_sizeof($host)) {
-			$header_label = __('Device [edit: %s]', html_escape($host['description']));
+			$header_label = __esc('Device [edit: %s]', $host['description']);
 			if (is_device_debug_enabled($host['id'])) {
 				$debug_link = "<span class='linkMarker'>*</span><a class='hyperLink' href='" . html_escape('host.php?action=disable_debug&host_id=' . $host['id']) . "'>" . __('Disable Device Debug') . "</a><br>";
 			} else {

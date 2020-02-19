@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -74,13 +74,9 @@ switch (get_request_var('action')) {
 
 		break;
 	case 'ajax_size':
-		if (is_numeric(get_nfilter_request_var('rows'))) {
-			get_filter_request_var('id');
-			get_filter_request_var('cfs');
-			print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
-		} else {
-			print __('N/A');
-		}
+		get_filter_request_var('id');
+		get_filter_request_var('cfs');
+		print get_size(get_request_var('id'), get_nfilter_request_var('type'), get_request_var('cfs'));
 
 		break;
 	case 'item_edit':
@@ -544,7 +540,7 @@ function profile_edit() {
 			AND local_data_id > 0',
 			array(get_request_var('id')));
 
-		$header_label = __('Data Source Profile [edit: %s]', html_escape($profile['name']) . ($readonly ? ' (Read Only)':''));
+		$header_label = __esc('Data Source Profile [edit: %s]', $profile['name'] . ($readonly ? ' (Read Only)':''));
 	} else {
 		$header_label = __('Data Source Profile [new]');
 		$readonly     = false;

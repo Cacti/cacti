@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1322,7 +1322,7 @@ function user_group_realms_edit($header_label) {
 
 	print "<div class='cactiTable' style='width:100%;text-align:left;'>
 		<div>
-			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " $header_label</span></div>
+			<div class='cactiTableTitle'><span style='padding:3px;'>" . __('User Permissions') . " " . html_escape($header_label) . "</span></div>
 			<div class='cactiTableButton'><span style='padding:3px;'><input class='checkbox' type='checkbox' id='all' name='all' title='" . __esc('Select All') . "' onClick='selectAllRealms(this.checked)'><label class='formCheckboxLabel' title='" . __esc('Select All') . "' for='all'></label></a><?php }?></span></div>
 		</div>
 	</div>\n";
@@ -1551,7 +1551,7 @@ function user_group_settings_edit($header_label) {
 
 	form_start('user_group_admin.php', 'chk');
 
-	html_start_box( __('User Settings %s', $header_label), '100%', true, '3', 'center', '');
+	html_start_box(__esc('User Settings %s', $header_label), '100%', true, '3', 'center', '');
 
 	foreach ($settings_user as $tab_short_name => $tab_fields) {
 		$collapsible = true;
@@ -1678,7 +1678,7 @@ function group_edit() {
 	$tabs = api_plugin_hook_function('ugroup_tabs', $tabs);
 	if (!isempty_request_var('id')) {
 		$group = db_fetch_row_prepared('SELECT * FROM user_auth_group WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('User Group Management [edit: %s]', html_escape($group['name']));
+		$header_label = __esc('User Group Management [edit: %s]', $group['name']);
 	} else {
 		$header_label = __('User Group Management [new]');
 	}
@@ -1712,7 +1712,7 @@ function group_edit() {
 
 		form_start('user_group_admin.php');
 
-		html_start_box( $header_label, '100%', true, '3', 'center', '');
+		html_start_box($header_label, '100%', true, '3', 'center', '');
 
 		draw_edit_form(array(
 			'config' => array('no_form_tag' => true),
@@ -2156,7 +2156,7 @@ function graph_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box( __('Graph Permissions %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Graph Permissions %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2264,7 +2264,7 @@ function device_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box( __('Devices Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Devices Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2367,7 +2367,7 @@ function template_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box( __('Template Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Template Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2452,7 +2452,7 @@ function tree_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box( __('Tree Permission %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('Tree Permission %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>
@@ -2537,7 +2537,7 @@ function member_filter($header_label) {
 	</script>
 	<?php
 
-	html_start_box( __('User Membership %s', html_escape($header_label)), '100%', '', '3', 'center', '');
+	html_start_box(__('User Membership %s', $header_label), '100%', '', '3', 'center', '');
 
 	?>
 	<tr class='even'>

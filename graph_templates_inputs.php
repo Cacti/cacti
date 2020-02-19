@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -142,7 +142,7 @@ function input_edit() {
 	get_filter_request_var('graph_template_id');
 	/* ==================================================== */
 
-	$header_label = __('Graph Item Inputs [edit graph: %s]', html_escape(db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id')))));
+	$header_label = __esc('Graph Item Inputs [edit graph: %s]', db_fetch_cell_prepared('SELECT name FROM graph_templates WHERE id = ?', array(get_request_var('graph_template_id'))));
 
 	/* get a list of all graph item field names and populate an array for user display */
 	foreach ($struct_graph_item as $field_name => $field_array) {

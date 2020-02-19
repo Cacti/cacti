@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -183,7 +183,7 @@ function gprint_presets_edit() {
 
 	if (!isempty_request_var('id')) {
 		$gprint_preset = db_fetch_row_prepared('SELECT * FROM graph_templates_gprint WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('GPRINT Presets [edit: %s]', html_escape($gprint_preset['name']));
+		$header_label = __esc('GPRINT Presets [edit: %s]', $gprint_preset['name']);
 	} else {
 		$header_label = __('GPRINT Presets [new]');
 	}

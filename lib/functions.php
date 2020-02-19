@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -1364,7 +1364,8 @@ function update_host_status($status, $host_id, &$hosts, &$ping, $ping_availabili
 		total_polls = ?,
 		failed_polls = ?,
 		availability = ?
-		WHERE hostname = ?',
+		WHERE hostname = ?
+		AND deleted = ""',
 		array(
 			$hosts[$host_id]['status'],
 			$hosts[$host_id]['status_event_count'],
@@ -1535,6 +1536,18 @@ function strip_alpha($string) {
 	/* it has no delimiters, and no space, therefore, must be numeric */
 	if (is_numeric($string) || is_float($string)) {
 		return $string;
+	} else {
+		return false;
+	}
+}
+
+/** is_valid_pathname - takes a pathname are verifies it matches file name rules
+ *  @arg $path - (char) the pathname to be tested
+ *  @returns - either true or false
+*/
+function is_valid_pathname($path) {
+	if (preg_match('/^([a-zA-Z0-9.-\\\:\/]+)$/', trim($path))) {
+		return true;
 	} else {
 		return false;
 	}
@@ -1971,7 +1984,7 @@ function generate_graph_def_name($graph_item_id) {
 	$result = '';
 	$strValGII = strval($graph_item_id);
 	for ($i=0; $i<strlen($strValGII); $i++) {
-		$result .= $lookup_table{substr($strValGII, $i, 1)};
+		$result .= $lookup_table[substr($strValGII, $i, 1)];
 	}
 
 	if (preg_match('/^(cf|cdef|def)$/', $result)) {
@@ -2460,7 +2473,7 @@ function draw_navigation_text($type = 'url') {
 
 		if  ($i == 0) {
 			// always use the default for level == 0
-			$url = $navigation{basename($current_mappings[$i])}['url'];
+			$url = $navigation[basename($current_mappings[$i])]['url'];
 
 			if (basename($url) == 'graph_view.php') continue;
 		} elseif (isset($nav_level_cache[$i]) && !empty($nav_level_cache[$i]['url'])) {
@@ -2485,9 +2498,9 @@ function draw_navigation_text($type = 'url') {
 		} else {
 			// there is no '?' - pull from the above array
 			$current_nav .= (empty($url) ? '' : "<li><a id='nav_$i' href='" . html_escape($url) . "'>");
-			$current_nav .= html_escape(resolve_navigation_variables($navigation{basename($current_mappings[$i])}['title']));
+			$current_nav .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title']));
 			$current_nav .= (empty($url) ? '' : '</a>' . (get_selected_theme() == 'classic' ? ' -> ':'') . '</li>');
-			$title .= html_escape(resolve_navigation_variables($navigation{basename($current_mappings[$i])}['title'])) . ' -> ';
+			$title .= html_escape(resolve_navigation_variables($navigation[basename($current_mappings[$i])]['title'])) . ' -> ';
 		}
 
 		$nav_count++;
@@ -4142,7 +4155,7 @@ function update_system_mibs($host_id) {
 				$value = cacti_snmp_session_get($sessions[$host_id . '_' . $h['snmp_version'] . '_' . $h['snmp_port']], $oid);
 
 				if (!empty($value)) {
-					db_execute_prepared("UPDATE host SET $name = ? WHERE id = ?",
+					db_execute_prepared("UPDATE host SET $name = ? WHERE deleted = '' AND id = ?",
 						array($value, $host_id));
 				}
 			}
@@ -5399,21 +5412,24 @@ function is_resource_writable($path) {
 		return false;
 	}
 
-	if ($path{strlen($path)-1}=='/') {
-		return is_resource_writable($path.uniqid(mt_rand()).'.tmp');
+	if ($path[strlen($path)-1] == '/') {
+		return is_resource_writable($path . uniqid(mt_rand()) . '.tmp');
 	}
 
 	if (file_exists($path)) {
 		if (($f = @fopen($path, 'a'))) {
 			fclose($f);
+
 			return true;
 		}
+
 		return false;
 	}
 
 	if (($f = @fopen($path, 'w'))) {
 		fclose($f);
 		unlink($path);
+
 		return true;
 	}
 
@@ -5520,18 +5536,39 @@ function get_debug_prefix() {
 }
 
 function get_client_addr($client_addr = false) {
-	if (isset($_SERVER['X-Forwarded-For'])) {
-		$client_addr = $_SERVER['X-Forwarded-For'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED'];
-	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
-		$client_addr = $_SERVER['REMOTE_ADDR'];
-	} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_CLIENT_IP'];
+
+	$http_addr_headers = array(
+		'X-Forwarded-For',
+		'X-Client-IP',
+		'X-Real-IP',
+		'X-ProxyUser-Ip',
+		'CF-Connecting-IP',
+		'True-Client-IP',
+		'HTTP_X_FORWARDED',
+		'HTTP_X_FORWARDED_FOR',
+		'HTTP_X_CLUSTER_CLIENT_IP',
+		'HTTP_FORWARDED_FOR',
+		'HTTP_FORWARDED',
+		'HTTP_CLIENT_IP',
+		'REMOTE_ADDR',
+	);
+
+	$client_addr = false;
+	foreach ($http_addr_headers as $header) {
+		if (!empty($_SERVER[$header])) {
+			$header_ips = explode(',', $_SERVER[$header]);
+			foreach ($header_ips as $header_ip) {
+				if (!empty($header_ip)) {
+					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
+						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					} else {
+						$client_addr = $header_ip;
+						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	return $client_addr;

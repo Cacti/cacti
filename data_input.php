@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -471,10 +471,10 @@ function field_edit() {
 	}
 
 	if ($current_field_type == 'out') {
-		$header_name = __('Output Fields [edit: %s]', html_escape($data_input['name']));
+		$header_name = __esc('Output Fields [edit: %s]', $data_input['name']);
 		$dfield      = __('Output Field');
 	} elseif ($current_field_type == 'in') {
-		$header_name = __('Input Fields [edit: %s]', html_escape($data_input['name']));
+		$header_name = __esc('Input Fields [edit: %s]', $data_input['name']);
 		$dfield      = __('Input Field');
 	}
 
@@ -557,7 +557,7 @@ function data_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Data Input Methods [edit: %s]', html_escape($data_input['name']));
+		$header_label = __esc('Data Input Methods [edit: %s]', $data_input['name']);
 	} else {
 		$data_input = array();
 

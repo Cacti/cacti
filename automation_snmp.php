@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -395,7 +395,7 @@ function automation_snmp_item_edit() {
 			FROM automation_snmp_items
 			WHERE id = ?', array(get_request_var('item_id')));
 
-		$header_label = __('SNMP Options [edit: %s]', html_escape($snmp_option['name']));
+		$header_label = __esc('SNMP Options [edit: %s]', $snmp_option['name']);
 	} else {
 		$header_label = __('SNMP Options [new]');
 		$automation_snmp_item = array();
@@ -459,7 +459,7 @@ function automation_snmp_edit() {
 	if (!isempty_request_var('id')) {
 		$snmp_group = db_fetch_row_prepared('SELECT * FROM automation_snmp where id = ?', array(get_request_var('id')));
 		# setup header
-		$header_label = __('SNMP Option Set [edit: %s]', html_escape($snmp_group['name']));
+		$header_label = __esc('SNMP Option Set [edit: %s]', $snmp_group['name']);
 	} else {
 		$header_label = __('SNMP Option Set [new]');
 	}

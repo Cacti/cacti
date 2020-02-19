@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -417,7 +417,7 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { // delete
 				db_execute('DELETE FROM poller WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('UPDATE host SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
+				db_execute('UPDATE host SET poller_id=1 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE automation_networks SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE automation_processes SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
 				db_execute('UPDATE poller_command SET poller_id=1 WHERE ' . array_to_sql_or($selected_items, 'poller_id'));
@@ -588,7 +588,7 @@ function poller_edit() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Site [edit: %s]', html_escape($poller['name']));
+		$header_label = __esc('Site [edit: %s]', $poller['name']);
 	} else {
 		$poller = array();
 

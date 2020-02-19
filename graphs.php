@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -231,7 +231,6 @@ function form_save() {
 
 	/* handle special case of callback on host_id */
 	if (!is_numeric(get_nfilter_request_var('host_id'))) {
-cacti_log('here');
 		set_request_var('host_id', get_request_var('host_id_prev'));
 	} else {
 		get_filter_request_var('host_id');
@@ -415,9 +414,13 @@ cacti_log('here');
 		header('Location: graphs.php?action=graph_edit&header=false&host_id=' . get_nfilter_request_var('host_id') . '&new=1');
 	} elseif ((is_error_message()) || (isempty_request_var('local_graph_id')) || (get_nfilter_request_var('graph_template_id') != get_nfilter_request_var('graph_template_id_prev')) || (get_nfilter_request_var('host_id') != get_nfilter_request_var('host_id_prev'))) {
 		header('Location: graphs.php?action=graph_edit&header=false&id=' . (empty($local_graph_id) ? get_nfilter_request_var('local_graph_id') : $local_graph_id) . (isset_request_var('host_id') ? '&host_id=' . get_nfilter_request_var('host_id') : ''));
+	} elseif (!empty($local_graph_id)) {
+		header('Location: graphs.php?action=graph_edit&header=false&id=' . $local_graph_id);
 	} else {
 		header('Location: graphs.php?header=false');
 	}
+
+	exit;
 }
 
 /* ------------------------
@@ -887,8 +890,8 @@ function form_actions() {
 
 				$ds_preselected_delete = read_config_option('ds_preselected_delete');
 				if ($ds_preselected_delete == 'on') {
-	                                $delete_radio_button_1_state = '2';
-                                	$delete_radio_button_2_state = '1';
+					$delete_radio_button_1_state = '2';
+					$delete_radio_button_2_state = '1';
 				} else {
 					$delete_radio_button_1_state = '1';
 					$delete_radio_button_2_state = '2';
@@ -1302,9 +1305,11 @@ function item() {
 		$add_text     = '';
 		$anchor_link  = '';
 	} else {
-		$template_item_list = db_fetch_assoc_prepared('SELECT
+		$template_item_list = db_fetch_assoc_prepared("SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
-			gti.consolidation_function_id, dtr.data_source_name, cd.name AS cdef_name, c.hex
+			gti.consolidation_function_id,
+			CONCAT(dtd.name_cache, ' (',  dtr.data_source_name, ')') AS data_source_name,
+			cd.name AS cdef_name, c.hex
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON (gti.task_item_id = dtr.id)
@@ -1317,7 +1322,7 @@ function item() {
 			LEFT JOIN colors AS c
 			ON (color_id = c.id)
 			WHERE gti.local_graph_id = ?
-			ORDER BY gti.sequence', array(get_request_var('id')));
+			ORDER BY gti.sequence", array(get_request_var('id')));
 
 		$template_item_list = api_plugin_hook_function('graphs_item_array', $template_item_list);
 
@@ -1331,7 +1336,7 @@ function item() {
 			WHERE id = ?',
 			array(get_request_var('id')));
 
-		$header_label = __('Graph Items [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
+		$header_label = __esc('Graph Items [edit: %s]', get_graph_title(get_request_var('id')));
 		$add_text     = 'graphs_items.php?action=item_edit' . (!empty($host_id) ? '&host_id=' . $host_id:'') . '&local_graph_id=' . get_request_var('id');
 		$anchor_link  = 'host_id=' . $host_id . '&local_graph_id=' . get_request_var('id');
 	}
@@ -1423,7 +1428,7 @@ function graph_edit() {
 			exit;
 		}
 
-		$header_label = __('Graph [edit: %s]', html_escape(get_graph_title(get_request_var('id'))));
+		$header_label = __esc('Graph [edit: %s]', get_graph_title(get_request_var('id')));
 
 		if ($graph['graph_template_id'] == '0') {
 			$use_graph_template = 'false';
@@ -1545,6 +1550,7 @@ function graph_edit() {
 	if (cacti_sizeof($graph)) {
 		if ($graph['graph_template_id'] == 0) {
 			$form_array['graph_template_id']['method'] = 'hidden';
+			$form_array['graph_template_id']['value']  = '0';
 		}
 
 		if ($graph['graph_template_id'] > 0 && $host_id > 0) {
@@ -1650,7 +1656,7 @@ function graph_edit() {
 
 	form_hidden_box('rrdtool_version', get_rrdtool_version(), '');
 
-	form_save_button('graphs.php');
+	form_save_button('graphs.php', 'return');
 
 	//Now we need some javascript to make it dynamic
 	?>
@@ -1888,7 +1894,7 @@ function graph_management() {
 		$header = __('Graph Management [ Non Device Based ]');
 	} else {
 		$description = db_fetch_cell_prepared('SELECT description FROM host WHERE id = ?', array(get_request_var('host_id')));
-		$header = __('Graph Management [ %s ]', $description);
+		$header = __esc('Graph Management [ %s ]', $description);
 	}
 
 	html_start_box($header, '100%', '', '3', 'center', $add_url);

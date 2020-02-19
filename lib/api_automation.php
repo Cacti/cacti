@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -789,8 +789,6 @@ function display_new_graphs($rule, $url) {
 		$total_rows = 0;
 	}
 
-	html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
-
 	if (cacti_sizeof($xml_array)) {
 		$html_dq_header     = '';
 		$sql_filter         = '';
@@ -875,6 +873,8 @@ function display_new_graphs($rule, $url) {
 
 		print $nav;
 
+		html_start_box(__('Matching Objects [ %s ]', html_escape($name)) . display_tooltip(__('A blue font color indicates that the rule will be applied to the objects in question.  Other objects will not be subject to the rule.')), '100%', '', '3', 'center', '');
+
 		/*
 		 * print the Data Query table's header
 		 * number of fields has to be dynamically determined
@@ -944,6 +944,8 @@ function display_new_graphs($rule, $url) {
 				$row_counter++;
 			}
 		}
+
+		html_end_box();
 
 		if ($total_rows > $rows) {
 			print $nav;
@@ -2080,9 +2082,9 @@ function global_item_edit($rule_id, $rule_item_id, $rule_type) {
 					$_fields_rule_item_edit['field']['array']);
 			}
 		}
-		$header_label = __('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
+		$header_label = __esc('Rule Item [edit rule item for %s: %s]', $title, $automation_rule['name']);
 	} else {
-		$header_label = __('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
+		$header_label = __esc('Rule Item [new rule item for %s: %s]', $title, $automation_rule['name']);
 		$automation_item = array();
 		$automation_item['sequence'] = get_sequence('', 'sequence', $item_table, 'rule_id=' . $rule_id . $sql_and);
 	}

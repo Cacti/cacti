@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -274,7 +274,7 @@ function form_actions() {
 		if ($selected_items != false) {
 			if (get_nfilter_request_var('drp_action') == '1') { /* delete */
 				db_execute('DELETE FROM sites WHERE ' . array_to_sql_or($selected_items, 'id'));
-				db_execute('UPDATE host SET site_id=0 WHERE ' . array_to_sql_or($selected_items, 'site_id'));
+				db_execute('UPDATE host SET site_id=0 WHERE deleted="" AND ' . array_to_sql_or($selected_items, 'site_id'));
 			}
 		}
 
@@ -351,7 +351,7 @@ function site_edit() {
 
 	if (!isempty_request_var('id')) {
 		$site = db_fetch_row_prepared('SELECT * FROM sites WHERE id = ?', array(get_request_var('id')));
-		$header_label = __('Site [edit: %s]', html_escape($site['name']));
+		$header_label = __esc('Site [edit: %s]', $site['name']);
 	} else {
 		$header_label = __('Site [new]');
 	}

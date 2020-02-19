@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -704,7 +704,7 @@ function reports_generate_html($reports_id, $output = REPORTS_OUTPUT_STDOUT, &$t
 			$outstr .= "\t\t\t<td class='title' style='text-align:" . $alignment[$report['alignment']] . ";font-size:" . $report['font_size'] . "pt;'>" . PHP_EOL;
 		}
 
-		$outstr .= "\t\t\t\t" . $report['name'] . PHP_EOL;
+		$outstr .= "\t\t\t\t" . html_escape($report['name']) . PHP_EOL;
 		$outstr .= "\t\t\t</td>" . PHP_EOL;
 		$outstr .= "\t\t</tr>" . PHP_EOL;
 		# this function should be called only at the appropriate targeted time when in batch mode

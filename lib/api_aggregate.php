@@ -1,7 +1,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -684,11 +684,10 @@ function aggregate_graphs_cleanup($base, $aggregate, $reorder) {
  * @param int $base              - base graph id
  * @param int $aggregate         - graph id of aggregate
  * @param int $reorder           - type of reordering
+ * @param int $graph_type        - type of graph
  */
 function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reorder, $graph_type) {
 	global $config;
-
-	include_once($config['base_path'] . '/lib/api_aggregate.php');
 
 	cacti_log(__FUNCTION__ . ' called. Base Graph ' . $base . ' Graph Template ' . $graph_template_id . ' Aggregate Graph ' . $aggregate . ' Reorder: ' . $reorder, true, 'AGGREGATE', POLLER_VERBOSITY_DEVDBG);
 
@@ -699,82 +698,126 @@ function aggregate_reorder_ds_graph($base, $graph_template_id, $aggregate, $reor
 	set_error_handler('aggregate_error_handler');
 
 	$new_seq = 1;
+	$base_handlers = false;
 
 	// Get the order of items to re-arrange on the graph
 	if ($reorder == AGGREGATE_ORDER_NONE) {
-		$sql_order = 'gti.sequence';
+		restore_error_handler();
+		return true;
 	} elseif ($reorder == AGGREGATE_ORDER_DS_GRAPH) {
-		$sql_order = 'dtr.data_source_name, gtg.title_cache, gti.sequence';
+		$sql_order = 'dtr.data_source_name, gti.sequence';
+	} elseif ($reorder == AGGREGATE_ORDER_BASE_GRAPH) {
+		$base_handler = true;
 	} else {
-		$sql_order = 'gtg.title_cache, dtr.data_source_name, gti.sequence';
+		$sql_order = 'gtg.title_cache, gti.sequence';
 	}
 
-	$aggregate_graph_id = db_fetch_cell_prepared('SELECT id
-		FROM aggregate_graphs
-		WHERE local_graph_id = ?',
-		array($aggregate));
-
-	$list = array_rekey(
-		db_fetch_assoc_prepared("SELECT DISTINCT dtr.local_data_id
+	if ($base_handler) {
+		/* get all different local_data_template_rrd_id's
+		 * respecting the order that the aggregated graph has
+		 */
+		$sql_where     = "WHERE gti.local_graph_id = $base" . ($base == 0 ? " AND gti.graph_template_id = $graph_template_id":'');
+		$sql_id_column = ($base == 0 ? 'id': 'local_data_template_rrd_id');
+		$sql = "SELECT DISTINCT dtr.$sql_id_column AS local_data_template_rrd_id
 			FROM data_template_rrd AS dtr
-			INNER JOIN graph_templates_item AS gti
+			LEFT JOIN graph_templates_item AS gti
 			ON gti.task_item_id = dtr.id
-			INNER JOIN aggregate_graphs_items AS agi
-			ON gti.local_graph_id = agi.local_graph_id
-			INNER JOIN graph_templates_graph AS gtg
-			ON gtg.local_graph_id = gti.local_graph_id
-			WHERE agi.aggregate_graph_id = ?
-			ORDER BY $sql_order", array($aggregate_graph_id)),
-		'local_data_id', 'local_data_id'
-	);
+			$sql_where
+			ORDER BY gti.sequence";
 
-	if (sizeof($list)) {
-		$sql_order = 'FIELD(dtr.local_data_id, ' . implode(', ', $list) . '), gti.sequence';
-	}
+		$ds_ids = db_fetch_assoc($sql);
 
-	$sql = "SELECT gti.id, gti.task_item_id, graph_type_id
-		FROM graph_templates_item AS gti
-		LEFT JOIN data_template_rrd AS dtr
-		ON gti.task_item_id = dtr.id
-		WHERE gti.local_graph_id = $aggregate
-		AND dtr.local_data_id IN (" . implode(', ', $list) . ")
-		ORDER BY $sql_order";
+		foreach($ds_ids as $ds_id) {
+			cacti_log('local_data_template_rrd_id: ' . $ds_id['local_data_template_rrd_id'], false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+			/* get all different task_item_id's
+			 * respecting the order that the aggregated graph has
+			 */
+			$sql = "SELECT gti.id, gti.task_item_id
+				FROM graph_templates_item AS gti
+				LEFT JOIN data_template_rrd AS dtr
+				ON gti.task_item_id = dtr.id
+				WHERE gti.local_graph_id = $aggregate
+				AND dtr.local_data_template_rrd_id = " . $ds_id['local_data_template_rrd_id'] . "
+				ORDER BY sequence";
 
-	if ($reorder != AGGREGATE_ORDER_NONE && $reorder != AGGREGATE_ORDER_DS_GRAPH) {
-		$color_ids = db_fetch_assoc("SELECT color_id
+			cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
+
+			$items = db_fetch_assoc($sql);
+
+			foreach($items as $item) {
+				# accumulate the updates to avoid interfering the next loops
+				$updates[] = 'UPDATE graph_templates_item SET sequence = ' . $new_seq++ . ' WHERE id = ' . $item['id'];
+			}
+		}
+	} else {
+		$aggregate_graph_id = db_fetch_cell_prepared('SELECT id
+			FROM aggregate_graphs
+			WHERE local_graph_id = ?',
+			array($aggregate));
+
+		$list = array_rekey(
+			db_fetch_assoc_prepared("SELECT DISTINCT dtr.local_data_id
+				FROM data_template_rrd AS dtr
+				INNER JOIN graph_templates_item AS gti
+				ON gti.task_item_id = dtr.id
+				INNER JOIN aggregate_graphs_items AS agi
+				ON gti.local_graph_id = agi.local_graph_id
+				INNER JOIN graph_templates_graph AS gtg
+				ON gtg.local_graph_id = gti.local_graph_id
+				WHERE agi.aggregate_graph_id = ?
+				ORDER BY $sql_order",
+				array($aggregate_graph_id)),
+			'local_data_id', 'local_data_id'
+		);
+
+		if (cacti_sizeof($list)) {
+			$sql_order = 'FIELD(dtr.local_data_id, ' . implode(', ', $list) . '), gti.sequence';
+		}
+
+		$sql = "SELECT gti.id, gti.task_item_id, graph_type_id
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON gti.task_item_id = dtr.id
 			WHERE gti.local_graph_id = $aggregate
 			AND dtr.local_data_id IN (" . implode(', ', $list) . ")
-			ORDER BY gti.sequence");
-	} else {
-		$color_ids = array();
-	}
+			ORDER BY $sql_order";
 
-	cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
-
-	$items = db_fetch_assoc($sql);
-	$i = 0;
-
-	foreach($items as $item) {
-		$new_graph_type = aggregate_change_graph_type($i, $item['graph_type_id'], $graph_type);
-
-		if (isset($color_ids[$i])) {
-			$color_id = $color_ids[$i]['color_id'];
+		if ($reorder != AGGREGATE_ORDER_NONE && $reorder != AGGREGATE_ORDER_DS_GRAPH) {
+			$color_ids = db_fetch_assoc("SELECT color_id
+				FROM graph_templates_item AS gti
+				LEFT JOIN data_template_rrd AS dtr
+				ON gti.task_item_id = dtr.id
+				WHERE gti.local_graph_id = $aggregate
+				AND dtr.local_data_id IN (" . implode(', ', $list) . ")
+				ORDER BY gti.sequence");
 		} else {
-			$color_id = '';
+			$color_ids = array();
 		}
 
-		# accumulate the updates to avoid interfering the next loops
-		$updates[] = 'UPDATE graph_templates_item
-			SET sequence = ' . $new_seq . ",
-			graph_type_id = $new_graph_type " .
-			($color_id != '' ? ', color_id = ' . $color_id:'') . "
-			WHERE id = " . $item['id'];
+		cacti_log(__FUNCTION__ .  ' sql: ' . $sql, false, 'AGGREGATE', POLLER_VERBOSITY_DEBUG);
 
-		$i++;
-		$new_seq++;
+		$items = db_fetch_assoc($sql);
+		$i = 0;
+
+		foreach($items as $item) {
+			$new_graph_type = aggregate_change_graph_type($i, $item['graph_type_id'], $graph_type);
+
+			if (isset($color_ids[$i])) {
+				$color_id = $color_ids[$i]['color_id'];
+			} else {
+				$color_id = '';
+			}
+
+			# accumulate the updates to avoid interfering the next loops
+			$updates[] = 'UPDATE graph_templates_item
+				SET sequence = ' . $new_seq . ",
+				graph_type_id = $new_graph_type " .
+				($color_id != '' ? ', color_id = ' . $color_id:'') . "
+				WHERE id = " . $item['id'];
+
+			$i++;
+			$new_seq++;
+		}
 	}
 
 	# now get all 'empty' local_data_template_rrd_id's

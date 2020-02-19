@@ -2,7 +2,7 @@
 <?php
 /*
  +-------------------------------------------------------------------------+
- | Copyright (C) 2004-2019 The Cacti Group                                 |
+ | Copyright (C) 2004-2020 The Cacti Group                                 |
  |                                                                         |
  | This program is free software; you can redistribute it and/or           |
  | modify it under the terms of the GNU General Public License             |
@@ -31,10 +31,12 @@ $parms = $_SERVER['argv'];
 array_shift($parms);
 
 global $debug;
+
 $debug = false;
 $options = array('Runtime' => 'Cli');
+
 $should_install = false;
-$force_install = false;
+$force_install  = false;
 
 display_version();
 
@@ -171,7 +173,7 @@ include_once($config['base_path'] . '/lib/utility.php');
 $options['Step'] = Installer::STEP_INSTALL_CONFIRM;
 
 $results = array('Step' => $options['Step']);
-$update_char = "o";
+$update_char = 'o';
 
 debug_install_array('Options', $options);
 $installer = new Installer($options);
