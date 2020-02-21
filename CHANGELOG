@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 develop
+-issue#3250: When PHP memory limit is set to -1, recommendation value fails
 -issue#3254: Installer shows script owner rather than running user for suggested chown command
 -issue#3276: When spine aborts, script server can be left wanting or generating unnecessary logs
 -issue#3277: When boost does not find an initial time, numeric errors can be raised
