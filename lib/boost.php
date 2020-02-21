@@ -709,7 +709,7 @@ function boost_process_poller_output($local_data_id = '', $rrdtool_pipe = '') {
 		/* initialize some variables */
 		$rrd_tmpl     = '';
 		$rrd_path     = '';
-		$initial_time = '';
+		$initial_time = 0;
 		$outlen       = 0;
 
 		boost_timer('results_cycle', BOOST_TIMER_START);
