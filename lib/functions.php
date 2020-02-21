@@ -5459,24 +5459,16 @@ function get_validated_language($language, $defaultLanguage) {
 function get_running_user() {
 	global $config;
 
-	// Easy way first
-	$user = get_current_user();
-	if ($user != '') {
-		return $user;
+	static $tmp_user = '';
+
+	if (empty($tmp_user)) {
+		if (function_exists('posix_geteuid')) {
+			$tmp_user = posix_getpwuid(posix_geteuid())['name'];
+		}
 	}
 
-	$user = getenv('USERNAME') ?: getenv('USER');
-	if ($user != '') {
-		return $user;
-	}
-
-	// Falback method
-	if ($config['cacti_server_os'] == 'win32') {
-		return getenv('username');
-	} else {
-		$tmp_user = '';
-		$tmp_file = tempnam(sys_get_temp_dir(), 'uid');
-		$f_owner = '';
+	if (empty($tmp_user)) {
+		$tmp_file = tempnam(sys_get_temp_dir(), 'uid'); $f_owner = '';
 
 		if (is_resource_writable($tmp_file)) {
 			if (file_exists($tmp_file)) {
@@ -5507,7 +5499,6 @@ function get_running_user() {
 
 		if (empty($tmp_user)) {
 			exec('id -nu', $o, $r);
-
 			if ($r == 0) {
 				$tmp_user = trim($o['0']);
 			}
@@ -5524,8 +5515,31 @@ function get_running_user() {
 		}
 		 */
 
-		return (empty($tmp_user) ? 'apache' : $tmp_user);
+		// Easy way first
+		if (empty($tmp_user)) {
+			$user = get_current_user();
+			if ($user != '') {
+				$tmp_user = $user;
+			}
+		}
+
+		// Falback method
+		if (empty($tmp_user)) {
+			$user = getenv('USERNAME');
+			if ($user != '') {
+				$tmp_user = $user;
+			}
+
+			if (empty($tmp_user)) {
+				$user = getenv('USER');
+				if ($user != '') {
+					$tmp_user = $user;
+				}
+			}
+		}
 	}
+
+	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
 
 function get_debug_prefix() {
