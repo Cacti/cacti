@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 develop
+-issue#3240: When using User Domains, global template user is used instead of the configured domain template user
 -issue#3245: Unix timestamps after Sep 13 2020 are rejected as graph start/end arguments
 -issue#3250: When PHP memory limit is set to -1, recommendation value fails
 -issue#3254: Installer shows script owner rather than running user for suggested chown command

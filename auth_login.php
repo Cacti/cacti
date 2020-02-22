@@ -526,7 +526,7 @@ function domains_login_process() {
 					$user_template = db_fetch_row_prepared('SELECT *
 						FROM user_auth
 						WHERE id = ?',
-						array(get_template_account()));
+						array($template_user));
 
 					if (!empty($user_template['id']) && $user_template['id'] > 0) {
 						/* template user found */
