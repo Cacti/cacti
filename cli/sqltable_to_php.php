@@ -186,8 +186,9 @@ function sqltable_to_php($table, $create, $plugin = '') {
 		if (cacti_sizeof($result)) {
 			$text .= "\$data['type'] = '" . $result['ENGINE'] . "';\n";
 			$text .= "\$data['charset'] = '" . $result['CHARACTER_SET_NAME'] . "';\n";
-			if(!empty($result['TABLE_COMMENT']))
+			if (!empty($result['TABLE_COMMENT'])) {
 				$text .= "\$data['comment'] = '" . $result['TABLE_COMMENT'] . "';\n";
+			}
 			$text .= "\$data['row_format'] = '" . $result['ROW_FORMAT'] . "';\n";
 			if ($create) {
 				if ($plugin != '') {
