@@ -1,4 +1,4 @@
-<?php
+a<?php
 include_once(dirname(__FILE__) . '/../lib/poller.php');
 
 class Installer implements JsonSerializable {
@@ -2824,7 +2824,7 @@ class Installer implements JsonSerializable {
 			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
 			}
-			$this->disableInvalidPlugins();
+			Installer::disableInvalidPlugins();
 		}
 
 		log_install_always('', __('Finished %s Process for v%s', $which, CACTI_VERSION));
@@ -2840,7 +2840,7 @@ class Installer implements JsonSerializable {
 
 			// Sync the remote data collectors
 			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_START);
-			$this->fullSyncDataCollectors();
+			Installer::fullSyncDataCollectors();
 			$this->setProgress(Installer::PROGRESS_COLLECTOR_SYNC_END);
 
 			// No failures so lets update the version
@@ -3362,28 +3362,26 @@ class Installer implements JsonSerializable {
 		}
 	}
 
+	private static function fullSyncDataCollectorLog($poller_ids, $format) {
+		if (cacti_sizeof($poller_ids) > 0) {
+			foreach($poller_ids as $id) {
+				$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
+
+				log_install_always('sync', __($format, $poller, $id));
+			}
+		}
+	}
 	private static function fullSyncDataCollectors() {
 		// Perform full sync to complete upgrade
 		$status = install_full_sync();
 
-		if (sizeof($status['success']) == 0 && sizeof($status['failed'] == 0)) {
-			log_install_always('', __('No Remote Data Collectors found for full syncronization'));
+		if (cacti_sizeof($status['total']) == 0) {
+			log_install_always('sync', __('No Remote Data Collectors found for full syncronization'));
 		} else {
-			if (sizeof($status['failed']) > 0) {
-				foreach($status['failed'] as $id) {
-					$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
-
-					log_install_always('', __('Remote Data Collector with name \'%s\' and id %d failed Full Sync.  Please manually Sync when once online to complete upgrade.', $poller, $id));
-				}
-			}
-
-			if (sizeof($status['success']) > 0) {
-				foreach($status['success'] as $id) {
-					$poller = db_fetch_cell_prepared('SELECT name FROM poller WHERE id = ?', array($id));
-
-					log_install_always('', __('Remote Data Collector with name \'%s\' and id %d completed Full Sync.', $poller, $id));
-				}
-			}
+			Installer::fullSyncDataCollectorLog($status['timeout'], 'Remote Data Collector with name \'%s\' and id %d previous timed out.  Please manually Sync when once online to complete upgrade.');
+			Installer::fullSyncDataCollectorLog($status['skipped'], 'Remote Data Collector with name \'%s\' and id %d is not available to sync.  Please manually Sync when once online to complete upgrade.');
+			Installer::fullSyncDataCollectorLog($status['failed'], 'Remote Data Collector with name \'%s\' and id %d failed Full Sync.  Please manually Sync when once online to complete upgrade.');
+			Installer::fullSyncDataCollectorLog($status['success'], 'Remote Data Collector with name \'%s\' and id %d completed Full Sync.');
 		}
 	}
 
