@@ -1263,10 +1263,6 @@ function getMainWidth() {
 }
 
 function responsiveResizeGraphs() {
-	if ($('.graphimage').length == 0) {
-		return false;
-	}
-
 	var mainWidth = getMainWidth();
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');

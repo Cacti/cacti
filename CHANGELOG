@@ -11,6 +11,7 @@ develop
 -issue#3276: When spine aborts, script server can be left wanting or generating unnecessary logs
 -issue#3277: When boost does not find an initial time, numeric errors can be raised
 -issue#3281: When changing a Graph Template options, image format does not take the settings default
+-issue#3282: When first going to Graph > Utility View graph is sized incorrectly if image is SVG
 
 1.2.9
 -security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
