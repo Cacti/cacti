@@ -371,7 +371,7 @@ function form_actions() {
 			print '</td></tr><tr><td>' . __('Graph Width') . '</td><td>';
 			form_text_box('graph_width', read_config_option('default_graph_width'), '', '5', '5', 'text');
 			print '</td></tr><tr><td>' . __('Image Format') . '</td><td>';
-			form_dropdown('image_format_id', $image_types, '', '', 2, '', '');
+			form_dropdown('image_format_id', $image_types, '', '', read_config_option('default_image_format'), '', '');
 
 			print "</td></tr></table><div class='break'></div><table style='width:100%'>\n";
 
