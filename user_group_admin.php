@@ -35,7 +35,7 @@ $group_actions = array(
 
 $href_options = array(
 	3 => array(
-		'radio_value' => '4',
+		'radio_value' => '-1',
 		'radio_caption' => __('Defer to the Users Setting')
 		),
 	0 => array(
