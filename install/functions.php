@@ -956,36 +956,46 @@ function install_full_sync() {
 
 	$pinterval = read_config_option('poller_interval');
 	$gap_time  = $pinterval * 2;
+
+	/* counter arrays */
 	$failed    = array();
 	$success   = array();
+	$skipped   = array();
+	$timeout   = array();
 
-	$poller_ids = array_rekey(
-		db_fetch_assoc_prepared('SELECT id
+	$pollers = db_fetch_assoc('SELECT id, status, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) as gap
 			FROM poller
-			WHERE status NOT IN (0,3,4)
-			AND id > 1
-			AND UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) < ?
-			AND disabled = ""',
-			array($gap_time)),
-		'id', 'id'
-	);
+			WHERE id > 1
+			AND disabled = ""');
 
 	if (cacti_sizeof($poller_ids)) {
-		foreach($poller_ids as $id) {
-			if (replicate_out($id)) {
-				$success[] = $id;
+		foreach($poller_ids as $poller) {
+			if (($poller['stataus'] == POLLER_STATUS_NEW) ||
+				($poller['status'] == POLLER_STATUS_DOWN) ||
+				($poller['status'] == POLLER_STATUS_DISABLED)) {
+				$skipped[] = $poller['id'];
+			} elseif ($gap < $gap_time) {
+				if (replicate_out($id)) {
+					$success[] = $poller['id'];
 
-				db_execute_prepared('UPDATE poller
-					SET last_sync = NOW()
+					db_execute_prepared('UPDATE poller
+						SET last_sync = NOW()
 					WHERE id = ?',
 					array($id));
+				} else {
+					$failed[] = $poller['id'];
+				}
 			} else {
-				$failed[] = $item;
+				$timeout[] = $poller['id'];
 			}
 		}
-
 	}
 
-	return array('success' => $success, 'failed' => $failed);
+	return array(
+		'success' => $success,
+		'failed' => $failed,
+		'skipped' => $skipped,
+		'timeout' => $timeout,
+		'total' => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout));
 }
 

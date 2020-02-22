@@ -10,6 +10,15 @@ Cacti CHANGELOG
 -issue#3074: ss_net_snmp_disk_bytes.php and ss_net_snmp_disk_io.php do now report mmcblk data.
 -issue#3141: Fix FreeBSD IPv6 ping
 
+1.2.10
+-issue#3240: When using User Domains, global template user is used instead of the configured domain template user
+-issue#3245: Unix timestamps after Sep 13 2020 are rejected as graph start/end arguments
+-issue#3246: When upgrading with remote collectors, sync status does not always return properly
+-issue#3250: When PHP memory limit is set to -1, recommendation value fails
+-issue#3254: Installer shows script owner rather than running user for suggested chown command
+-issue#3276: When spine aborts, script server can be left wanting or generating unnecessary logs
+-issue#3277: When boost does not find an initial time, numeric errors can be raised
+
 1.2.9
 -security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
 -security#3201: Remote Code Execution due to input validation failure in Performance Boost Debug Log (CVE-2020-7237)
