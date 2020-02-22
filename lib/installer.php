@@ -1,4 +1,4 @@
-a<?php
+<?php
 include_once(dirname(__FILE__) . '/../lib/poller.php');
 
 class Installer implements JsonSerializable {

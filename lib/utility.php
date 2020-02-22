@@ -1476,7 +1476,8 @@ function utility_php_verify_recommends(&$recommends, $source) {
 
 function utility_php_set_recommends_text(&$recs) {
 	if (is_array($recs) && sizeof($recs)) {
-		foreach ($recs as $name => $recommends) {			if (cacti_sizeof($recommends)) {
+		foreach ($recs as $name => $recommends) {
+			if (cacti_sizeof($recommends)) {
 				foreach ($recommends as $index => $recommend) {
 					if ($recommend['name'] == 'version') {
 						$recs[$name][$index]['description'] = __('PHP %s is the mimimum version', $recommend['value']);
