@@ -1536,7 +1536,7 @@ function strip_alpha($string) {
  *  @returns - either true or false
 */
 function is_valid_pathname($path) {
-	if (preg_match('/^([a-zA-Z0-9.-\\\:\/]+)$/', trim($path))) {
+	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
 		return false;
