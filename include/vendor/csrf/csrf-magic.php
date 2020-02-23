@@ -328,7 +328,7 @@ function csrf_get_secret() {
 
 	if (empty($secret)) {
 		if (isset($GLOBALS['csrf']['path_secret'])) {
-			$files[] = $GLOBAL['csrf']['path_secret'];
+			$files[] = $GLOBALS['csrf']['path_secret'];
 		}
 		$files[] = __DIR__ . '/csrf-secret.php';
 	}
