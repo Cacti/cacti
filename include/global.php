@@ -489,6 +489,7 @@ include_once($config['library_path'] . '/html_form.php');
 include_once($config['library_path'] . '/html_filter.php');
 include_once($config['library_path'] . '/variables.php');
 include_once($config['library_path'] . '/mib_cache.php');
+include_once($config['library_path'] . '/poller.php');
 include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
