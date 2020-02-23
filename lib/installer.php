@@ -624,7 +624,7 @@ class Installer implements JsonSerializable {
 	private function setCSRFSecret() {
 		global $config;
 
-		$this->setProgress(Installer::PROGRESS_CSRF_END);
+		$this->setProgress(Installer::PROGRESS_CSRF_BEGIN);
 
 		if (!empty($config['path_csrf_secret'])) {
 			$path_csrf_secret = $config['path_csrf_secret'];
