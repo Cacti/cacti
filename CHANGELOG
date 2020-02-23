@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 develop
+-security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
 -issue#3240: When using User Domains, global template user is used instead of the configured domain template user
 -issue#3245: Unix timestamps after Sep 13 2020 are rejected as graph start/end arguments
 -issue#3246: When upgrading with remote collectors, sync status does not always return properly

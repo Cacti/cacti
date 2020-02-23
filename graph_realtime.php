@@ -166,9 +166,9 @@ case 'countdown':
 	}
 
 	/* call poller */
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
 	$command   = read_config_option('path_php_binary');
-	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . session_id(), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
+	$args      = sprintf('poller_realtime.php --graph=%s --interval=%d --poller_id=' . hash('sha256',session_id()), get_request_var('local_graph_id'), $graph_data_array['ds_step']);
 
 	shell_exec("$command $args");
 
@@ -177,11 +177,45 @@ case 'countdown':
 	$graph_data_array['output_flag']     = RRDTOOL_OUTPUT_GRAPH_DATA;
 	$null_param = array();
 
-	rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+	$output = rrdtool_function_graph(get_request_var('local_graph_id'), '', $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
 
+	$error = '';
 	if (file_exists($graph_rrd)) {
-		$data = base64_encode(file_get_contents($graph_rrd));
+		$graph_contents = file_get_contents($graph_rrd);
+		if (preg_match('/^ERROR/',$graph_contents)) {
+			$error = $graph_contents;
+			$output = '';
+		}
 	}
+
+	if (empty($output) && empty($error)) {
+		$graph_data_array['get_error'] = true;
+		$null_param = array();
+		rrdtool_function_graph(get_request_var('local_graph_id'), $rra_id, $graph_data_array, '', $null_param, $_SESSION['sess_user_id']);
+
+		$error = ob_get_contents();
+
+		if (read_config_option('stats_poller') == '') {
+			$error = __('The Cacti Poller has not run yet.');
+		}
+	}
+
+	if (!empty($error)) {
+		$graph_data_array['get_error'] = true;
+		if (isset($graph_data_array['graph_width']) && isset($graph_data_array['graph_height'])) {
+			$graph_contents = rrdtool_create_error_image($error, $graph_data_array['graph_width'], $graph_data_array['graph_height']);
+		} else {
+			$graph_contents = rrdtool_create_error_image($error);
+		}
+
+		ob_end_clean();
+
+		if ($graph_contents === false) {
+			$graph_contents = file_get_contents(__DIR__ . '/images/cacti_error_image.png');
+		}
+	}
+
+	$data = base64_encode($graph_contents);
 
 	/* save user preferences */
 	set_user_setting('realtime_interval', get_request_var('ds_step'));
@@ -211,7 +245,7 @@ case 'countdown':
 	exit;
 	break;
 case 'view':
-	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . session_id() . '_lgi_' . get_request_var('local_graph_id') . '.png';
+	$graph_rrd = read_config_option('realtime_cache_path') . '/user_' . hash('sha256',session_id()) . '_lgi_' . get_request_var('local_graph_id') . '.png';
 
 	if (file_exists($graph_rrd)) {
 		print base64_encode(file_get_contents($graph_rrd));
