@@ -67,20 +67,10 @@ function prime_default_settings() {
 
 function install_create_csrf_secret($file) {
 	if (!file_exists($file)) {
-		if (is_writable(dirname($file))) {
-			$r = '';
-
-			for ($i = 0; $i < 32; $i++) {
-				$r .= chr(mt_rand(0, 255));
-			}
-
-			$r .= time() . microtime();
-
-			$secret = sha1($r);
-
+		if (is_resource_writable($file)) {
 			// Write the file
 			$fh = fopen($file, 'w');
-			fwrite($fh, '<?php $secret = "'.$secret.'";' . PHP_EOL);
+			fwrite($fh, csrf_get_secret());
 			fclose($fh);
 
 			return true;

@@ -194,6 +194,10 @@ $colors = array();
 /* this should be auto-detected, set it manually if needed */
 $config['cacti_server_os'] = (strstr(PHP_OS, 'WIN')) ? 'win32' : 'unix';
 
+if (!empty($path_csrf_secret)) {
+	$config['path_csrf_secret'] = $path_csrf_secret;
+}
+
 /* built-in snmp support */
 if (isset($php_snmp_support) && !$php_snmp_support) {
 	$config['php_snmp_support'] = false;
@@ -259,7 +263,7 @@ include_once($config['include_path'] . '/global_constants.php');
 
 $filename = get_current_page();
 
-$config['is_web'] = true;
+$config['is_web'] = !defined('CACTI_CLI_ONLY');
 if ((isset($no_http_headers) && $no_http_headers == true) || in_array($filename, $no_http_header_files, true)) {
 	$config['is_web'] = false;
 }
@@ -488,24 +492,9 @@ include_once($config['library_path'] . '/mib_cache.php');
 include_once($config['library_path'] . '/snmpagent.php');
 include_once($config['library_path'] . '/aggregate.php');
 include_once($config['library_path'] . '/api_automation.php');
+include_once($config['include_path'] . '/csrf.php');
 
-/* cross site request forgery library */
 if ($config['is_web']) {
-	function csrf_startup() {
-		global $config;
-		csrf_conf('rewrite-js', $config['url_path'] . 'include/vendor/csrf/csrf-magic.js');
-		csrf_conf('callback', 'csrf_error_callback');
-		csrf_conf('expires', 7200);
-	}
-
-	function csrf_error_callback() {
-		raise_message('csrf_timeout');
-		header('Location: ' . sanitize_uri($_SERVER['REQUEST_URI']));
-		exit;
-	}
-
-	include_once($config['include_path'] . '/vendor/csrf/csrf-magic.php');
-
 	if (isset_request_var('newtheme')) {
 		unset($_SESSION['selected_theme']);
 	}

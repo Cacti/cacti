@@ -45,7 +45,9 @@ class Installer implements JsonSerializable {
 	/* Progress through the STEP_INSTALL section */
 	const PROGRESS_NONE = 0;
 	const PROGRESS_START = 1;
-	const PROGRESS_UPGRADES_BEGIN = 2;
+	const PROGRESS_CSRF_BEGIN = 2;
+	const PROGRESS_CSRF_END = 3;
+	const PROGRESS_UPGRADES_BEGIN = 5;
 	const PROGRESS_UPGRADES_END = 30;
 	const PROGRESS_TABLES_BEGIN = 35;
 	const PROGRESS_TEMPLATES_BEGIN = 41;
@@ -348,7 +350,6 @@ class Installer implements JsonSerializable {
 		$this->setRRDVersion($this->getRRDVersion(), 'default ');
 		$this->snmpOptions = $this->getSnmpOptions();
 		$this->setMode($this->getMode());
-		$this->setCSRFSecret();
 
 		log_install_high('','Installer::processParameters(' . clean_up_lines(json_encode($install_params)) . ')');
 		if (!empty($install_params)) {
@@ -460,7 +461,7 @@ class Installer implements JsonSerializable {
 	 *                    to be available for writing during install or
 	 *                    always (after install) */
 	private function getPermissions() {
-		global $config, $path_csrf_secret;
+		global $config;
 
 		$permissions = array('install' => array(), 'always' => array());
 
@@ -471,12 +472,6 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/scripts',
 		);
 
-		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
-		}
-
-		$install_paths[] = $path_csrf_secret;
-
 		$always_paths = array(
 			sys_get_temp_dir(),
 			$config['base_path'] . '/log',
@@ -486,9 +481,15 @@ class Installer implements JsonSerializable {
 			$config['base_path'] . '/cache/spikekill'
 		);
 
+		$csrf_paths = array();
+
 		$install_key = 'always';
 		if ($this->mode != Installer::MODE_POLLER) {
 			$install_key = 'install';
+
+			if (!empty($config['path_csrf_secret'])) {
+				$csrf_paths[] = $config['path_csrf_secret'];
+			}
 		}
 
 		foreach ($install_paths as $path) {
@@ -508,9 +509,30 @@ class Installer implements JsonSerializable {
 		foreach ($always_paths as $path) {
 			$valid = (is_resource_writable($path . '/'));
 			$permissions['always'][$path . '/'] = $valid;
-			log_install_debug('permission',"$path = $valid");
+			log_install_debug('permission',"$path = $valid (always)");
 			if (!$valid) {
 				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path is not writable'));
+			}
+		}
+
+		foreach ($csrf_paths as $path) {
+			if (is_dir($path)) {
+				$path .= '/csrf-secret.php';
+			}
+
+			$valid = file_exists($path);
+			if ($valid) {
+				$valid = !empty(file_get_contents($path));
+			}
+
+			if (!$valid) {
+				$valid = (is_resource_writable($path));
+			}
+			$permissions['install'][$path] = $valid;
+
+			log_install_debug('permission',"$path = $valid (csrf)");
+			if (!$valid) {
+				$this->addError(Installer::STEP_PERMISSION_CHECK, 'Permission', $path, __('Path was not writable'));
 			}
 		}
 
@@ -599,19 +621,30 @@ class Installer implements JsonSerializable {
 
 	/* setCSRFSecret() - Initializes the csrf secret file for csrf protection */
 	private function setCSRFSecret() {
-		global $config, $path_csrf_secret;
+		global $config;
 
-		if (!isset($path_csrf_secret)) {
-			$path_csrf_secret = $config['base_path'] . '/include/vendor/csrf/csrf-secret.php';
-		}
+		$this->setProgress(Installer::PROGRESS_CSRF_END);
 
-		if (!file_exists($path_csrf_secret)) {
-			if (is_resource_writable(dirname($path_csrf_secret))) {
-				install_create_csrf_secret();
+		if (!empty($config['path_csrf_secret'])) {
+			$path_csrf_secret = $config['path_csrf_secret'];
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . $path_csrf_secret);
+
+			$secret = @file_exists($path_csrf_secret) ? file_get_contents($path_csrf_secret) : '';
+			log_install_debug('csrf', 'setCSRFSecret(): secret ' . (empty($secret)?'not ': '') . 'empty');
+
+			if (empty($secret)) {
+				if (is_resource_writable($path_csrf_secret)) {
+					log_install_medium('csrf', 'setCSRFSecret(): Updated CSRF secret - "' . $path_csrf_secret . '"');
+					install_create_csrf_secret();
+				} else {
+					log_install_high('csrf', 'setCSRFSecret(): Unable to create file - "' . $path_csrf_secret . '"');
+				}
 			} else {
-				$this->addError(Installer::STEP_BINARY_LOCATIONS, 'Paths', $path_csrf_secret, __('Unable to write the CSRF Secret file.  directory is not writable!'));
+				log_install_debug('csrf', 'setCSRFSecret(): Secret already exists - "' . $path_csrf_secret . '"');
 			}
 		}
+
+		$this->setProgress(Installer::PROGRESS_CSRF_END);
 	}
 
 	/* setRRDVersion() - sets the RRDVersion installer option, overrides
@@ -2162,6 +2195,7 @@ class Installer implements JsonSerializable {
 		$permissions .= Installer::sectionSubTitleEnd();
 
 		$permissions .= Installer::sectionSubTitle(__('Required Writable after Install Complete'),'writable_always');
+
 		$sections['writable_always'] = DB_STATUS_SUCCESS;
 
 		$class = 'even';
@@ -2187,6 +2221,8 @@ class Installer implements JsonSerializable {
 
 			$permissions .= '</div></div></div>';
 		}
+
+		$permissions .= Installer::sectionSubTitleEnd();
 
 		$output .= Installer::sectionSubTitleEnd();
 		$output .= Installer::sectionSubTitle(__('Potential permission issues'),'host_access');
@@ -2220,8 +2256,8 @@ class Installer implements JsonSerializable {
 			}
 			$output .= Installer::sectionNormal($text);
 			$output .= Installer::sectionNormal(__('An example of how to set folder permissions is shown here, though you may need to adjust this depending on your operating system, user accounts and desired permissions.'));
-			$output .= Installer::sectionNormal(__('In the case of a CSRF path problem, once you correct this problem, you will have to close all open browser sessions and login again to continue.'));
 			$output .= Installer::sectionNote('<span class="cactiInstallSectionCode" style="width: 95%; display: inline-flex;">' . $code . '</span>', '', '', __('EXAMPLE:'));
+			$output .= Installer::sectionNote(__('Once installation has completed the CSRF path, should be set to read-only.'));
 		}else {
 			$output .= Installer::sectionNormal('<font color="#008000">' . __('All folders are writable') . '</font>');
 		}
@@ -2808,6 +2844,8 @@ class Installer implements JsonSerializable {
 		log_install_always('', __('Starting %s Process for v%s', $which, CACTI_VERSION));
 
 		$this->setProgress(Installer::PROGRESS_START);
+
+		$this->setCSRFSecret();
 
 		$this->convertDatabase();
 
