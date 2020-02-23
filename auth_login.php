@@ -349,7 +349,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				AND login_opts != 4',
 				array($_SESSION['sess_user_id']));
 
-			if ($group_options > 0) {
+			if (!empty($group_options)) {
 				$user['login_opts'] = $group_options;
 			}
 		}
