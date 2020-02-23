@@ -17,6 +17,7 @@ develop
 -issue#3282: When first going to Graph > Utility View graph is sized incorrectly if image is SVG
 -issue#3283: Errors on Console > Configuration > Settings > Paths when a path includes valid characters '_', '-', and '.'
 -issue#3287: Cacti Stats - User Logins - Incorrect count of invalid users
+-issue#3288: When on Device page, pressing 'Go' on the filter caused Device New menu pick to appear
 
 1.2.9
 -security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
