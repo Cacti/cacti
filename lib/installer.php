@@ -522,7 +522,8 @@ class Installer implements JsonSerializable {
 
 			$valid = file_exists($path);
 			if ($valid) {
-				$valid = !empty(file_get_contents($path));
+				$csrf_secret = file_get_contents($path);
+				$valid = !empty($csrf_secret);
 			}
 
 			if (!$valid) {
