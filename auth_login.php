@@ -348,7 +348,7 @@ if (get_nfilter_request_var('action') == 'login') {
 				WHERE user_id=?',
 				array($_SESSION['sess_user_id']));
 
-			if ($group_options > 0) {
+			if (!empty($group_options) && $group_options > 0 && $group_options != 4) {
 				$user['login_opts'] = $group_options;
 			}
 		}
