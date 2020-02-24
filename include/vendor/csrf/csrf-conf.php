@@ -110,6 +110,13 @@ $GLOBALS['csrf']['input-name'] = '__csrf_magic';
 $GLOBALS['csrf']['frame-breaker'] = true;
 
 /**
+ * Whether or not CSRF Magic should prefer using the session id as the
+ * primary method of generating a secured token for validating the post
+ * data
+ */
+$GLOBALS['csrf']['session'] = true;
+
+/**
  * Whether or not CSRF Magic should be allowed to start a new session in order
  * to determine the key.
  */
