@@ -345,11 +345,10 @@ if (get_nfilter_request_var('action') == 'login') {
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id=uagm.group_id
-				WHERE user_id = ?
-				AND login_opts != 4',
+				WHERE user_id = ?',
 				array($_SESSION['sess_user_id']));
 
-			if (!empty($group_options)) {
+			if (!empty($group_options) && $group_options > 0 && $group_options != 4) {
 				$user['login_opts'] = $group_options;
 			}
 		}
