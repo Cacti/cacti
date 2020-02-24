@@ -129,7 +129,7 @@ function csrf_get_tokens() {
 	csrf_start();
 
 	// These are "strong" algorithms that don't require per se a secret
-	if (session_id()) {
+	if ($GLOBALS['csrf']['session'] && session_id()) {
 		$token = 'sid:' . csrf_hash(session_id()) . $ip;
 	} elseif ($GLOBALS['csrf']['cookie']) {
 		$val = csrf_generate_secret();
@@ -430,10 +430,10 @@ function csrf_get_client_addr() {
 			foreach ($header_ips as $header_ip) {
 				if (!empty($header_ip)) {
 					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						csrf_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').');
+						csrf_log(__FUNCTIOJN__,'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
 					} else {
 						$client_addr = $header_ip;
-						csrf_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
+						csrf_log(__FUNCTION__,'DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
 						break;
 					}
 				}
