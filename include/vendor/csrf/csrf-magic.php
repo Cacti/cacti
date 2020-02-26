@@ -430,7 +430,7 @@ function csrf_get_client_addr() {
 			foreach ($header_ips as $header_ip) {
 				if (!empty($header_ip)) {
 					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						csrf_log(__FUNCTIOJN__,'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
+						csrf_log(__FUNCTION__,'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
 					} else {
 						$client_addr = $header_ip;
 						csrf_log(__FUNCTION__,'DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
