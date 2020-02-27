@@ -1263,10 +1263,6 @@ function getMainWidth() {
 }
 
 function responsiveResizeGraphs() {
-	if ($('.graphimage').length == 0) {
-		return false;
-	}
-
 	var mainWidth = getMainWidth();
 	var myColumns = $('#columns').val();
 	var isThumb   = $('#thumbnails').is(':checked');
@@ -1968,8 +1964,22 @@ function loadPageNoHeader(href, scroll, force) {
 					pageName = basename(hrefParts[0]);
 
 					if (pageName != '') {
-						$('#menu').find('.pic').removeClass('selected');
-						$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+						// Workaround for Create Device
+						if (pageName == 'host.php') {
+							if (href.indexOf('create') >= 0) {
+								$('#menu').find('.pic').removeClass('selected');
+								$('#menu').find("a[href='"+href+"']").addClass('selected');
+							} else {
+								$('#menu').find('.pic').removeClass('selected');
+								$('#menu').find("a[href$='host.php']").addClass('selected');
+							}
+						} else if ($('#menu').find("a[href^='"+href+"']").length > 0) {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href^='"+href+"']").addClass('selected');
+						} else if ($('#menu').find("a[href*='/"+pageName+"']").length > 0) {
+							$('#menu').find('.pic').removeClass('selected');
+							$('#menu').find("a[href*='/"+pageName+"']").addClass('selected');
+						}
 
 						if (pageName == 'graph_templates_items.php' || pageName == 'graph_templates_inputs.php') {
 							$('#menu').find('a[href*="graph_templates.php"]').addClass('selected');

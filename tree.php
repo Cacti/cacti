@@ -1251,37 +1251,18 @@ function tree_edit() {
 				oid = data.original.id;
 
 				if (oid.search('thost') >= 0) {
-					set = hostsDropSet;
-				}else if (oid.search('tsite') >= 0) {
-					set = sitesDropSet;
+					$('#hosts').jstree().deselect_all();
+				} else if (oid.search('tsite') >= 0) {
+					$('#sites').jstree().deselect_all();
 				} else {
-					set = graphsDropSet;
+					$('#graphs').jstree().deselect_all();
 				}
 
-				if (set != '' && set.selected.length > 0) {
-					entries = set.selected;
-					$.each(entries, function(i, id) {
-						$.get('?action=copy_node', { 'id' : id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-							.always(function () {
-								var st = data.instance.get_state();
-								data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
-							})
-					});
-
-					if (oid.search('thost') >= 0) {
-						$('#hosts').jstree().deselect_all();
-					} else if (oid.search('tsite') >= 0) {
-						$('#sites').jstree().deselect_all();
-					} else {
-						$('#graphs').jstree().deselect_all();
-					}
-				} else {
-					$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
-						.always(function () {
-							var st = data.instance.get_state();
-							data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
-						});
-				}
+				$.get('?action=copy_node', { 'id' : data.original.id, 'tree_id' : $('#id').val(), 'parent' : data.parent, 'position' : data.position })
+				.always(function () {
+					var st = data.instance.get_state();
+					data.instance.load_node(data.instance.get_parent(data.node.id), function () { this.set_state(st); });
+				});
 			})<?php } else {?>.children().bind('contextmenu', function(event) {
 				return false;
 			})<?php }?>;
@@ -1331,16 +1312,6 @@ function tree_edit() {
 						$('#ctree').jstree('clear_state');
 					}
 				})<?php if ($editable) {?>
-				.on('hover_node.jstree', function(e, data) {
-					var myset = {};
-					myset.selected = [ data.node.id ];
-
-					if (data.node.id.includes('thost')) {
-						hostsDropSet = myset;
-					} else if (data.node.id.includes('tgraph')) {
-						graphsDropSet = myset;
-					}
-				})
 				.on('select_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
@@ -1359,7 +1330,7 @@ function tree_edit() {
 						getGraphData();
 					}
 				})
-				.on('deselect_node.jstree', function(e,data) {
+				.on('deselect_node.jstree', function(e, data) {
 					if (type == 'graphs') {
 						graphsDropSet = data;
 					} else {

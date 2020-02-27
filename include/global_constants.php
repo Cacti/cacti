@@ -128,6 +128,14 @@ define('POLLER_VERBOSITY_HIGH', 4);
 define('POLLER_VERBOSITY_DEBUG', 5);
 define('POLLER_VERBOSITY_DEVDBG', 6);
 
+define('POLLER_STATUS_NEW', 0);
+define('POLLER_STATUS_RUNNING', 1);
+define('POLLER_STATUS_IDLE', 2);
+define('POLLER_STATUS_DOWN', 3);
+define('POLLER_STATUS_DISABLED', 4);
+define('POLLER_STATUS_RECOVERING', 5);
+define('POLLER_STATUS_HEARTBEAT', 6);
+
 define('AVAIL_NONE', 0);
 define('AVAIL_SNMP_AND_PING', 1);
 define('AVAIL_SNMP', 2);
@@ -383,9 +391,10 @@ if (isset($database_type) && $database_type == 'mysql') {
 define('MAX_DISPLAY_PAGES', 5);
 define('CHECKED', 'on');
 
-define('FILTER_VALIDATE_IS_REGEX',          99999);
-define('FILTER_VALIDATE_IS_NUMERIC_ARRAY', 100000);
-define('FILTER_VALIDATE_IS_NUMERIC_LIST',  100001);
+define('FILTER_VALIDATE_MAX_DATE_AS_INT', 2088385563);
+define('FILTER_VALIDATE_IS_REGEX',             99999);
+define('FILTER_VALIDATE_IS_NUMERIC_ARRAY',    100000);
+define('FILTER_VALIDATE_IS_NUMERIC_LIST',     100001);
 
 /* socket errors */
 define('ENOTSOCK',        88);

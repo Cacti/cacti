@@ -44,19 +44,15 @@ function sig_handler($signo) {
 
 // function to assist in logging
 function debug_level($host_id, $level) {
-	static $debug_levels = array();
+	static $debug_enabled = array();
 
-	if (!isset($debug_levels[$host_id])) {
-		if (is_device_debug_enabled($host_id)) {
-			$debug_levels[$host_id] = POLLER_VERBOSITY_NONE;
-			return POLLER_VERBOSITY_NONE;
-		} else {
-			$debug_levels[$host_id] = $level;
-			return $level;
-		}
-	} else {
-		return $debug_levels[$host_id];
+	if (!isset($debug_enabled[$host_id])) {
+		$debug_enabled[$host_id] = is_device_debug_enabled($host_id);
 	}
+
+	$level = $debug_enabled[$host_id] ? POLLER_VERBOSITY_NONE : $level;
+
+	return $level;
 }
 
 require_once(__DIR__ . '/include/cli_check.php');
@@ -201,6 +197,7 @@ if (cacti_sizeof($parms)) {
 			exit;
 		case '--poller':
 		case '-p':
+			cacti_log('Forcing poller to ' . $value, true, 'POLLER', POLLER_VERBOSITY_HIGH);
 			$poller_id = $value;
 			break;
 		case '--first':
@@ -848,9 +845,9 @@ if ((cacti_sizeof($polling_items) > 0) && (read_config_option('poller_enabled') 
 	$end = microtime(true);
 
 	cacti_log(sprintf('Time: %01.4f s, ' .
-		'Poller: %i, ' .
-		'Theads: N/A, ' .
-		'Devices: %s',
+		'Poller: %s, ' .
+		'Threads: N/A, ' .
+		'Devices: %d',
 		round($end-$start,4),
 		$poller_id,
 		$host_count), $print_data_to_stdout, 'POLLER', POLLER_VERBOSITY_MEDIUM);

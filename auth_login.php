@@ -345,10 +345,11 @@ if (get_nfilter_request_var('action') == 'login') {
 				FROM user_auth_group AS uag
 				INNER JOIN user_auth_group_members AS uagm
 				ON uag.id=uagm.group_id
-				WHERE user_id=?',
+				WHERE user_id = ?
+				AND login_opts != 4',
 				array($_SESSION['sess_user_id']));
 
-			if ($group_options > 0) {
+			if (!empty($group_options)) {
 				$user['login_opts'] = $group_options;
 			}
 		}
@@ -526,7 +527,7 @@ function domains_login_process() {
 					$user_template = db_fetch_row_prepared('SELECT *
 						FROM user_auth
 						WHERE id = ?',
-						array(get_template_account()));
+						array($template_user));
 
 					if (!empty($user_template['id']) && $user_template['id'] > 0) {
 						/* template user found */

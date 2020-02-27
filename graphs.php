@@ -1305,9 +1305,11 @@ function item() {
 		$add_text     = '';
 		$anchor_link  = '';
 	} else {
-		$template_item_list = db_fetch_assoc_prepared('SELECT
+		$template_item_list = db_fetch_assoc_prepared("SELECT
 			gti.id, gti.text_format, gti.value, gti.hard_return, gti.graph_type_id, gti.alpha, gti.textalign,
-			gti.consolidation_function_id, dtr.data_source_name, cd.name AS cdef_name, c.hex
+			gti.consolidation_function_id,
+			CONCAT(dtd.name_cache, ' (',  dtr.data_source_name, ')') AS data_source_name,
+			cd.name AS cdef_name, c.hex
 			FROM graph_templates_item AS gti
 			LEFT JOIN data_template_rrd AS dtr
 			ON (gti.task_item_id = dtr.id)
@@ -1320,7 +1322,7 @@ function item() {
 			LEFT JOIN colors AS c
 			ON (color_id = c.id)
 			WHERE gti.local_graph_id = ?
-			ORDER BY gti.sequence', array(get_request_var('id')));
+			ORDER BY gti.sequence", array(get_request_var('id')));
 
 		$template_item_list = api_plugin_hook_function('graphs_item_array', $template_item_list);
 

@@ -1536,7 +1536,7 @@ function strip_alpha($string) {
  *  @returns - either true or false
 */
 function is_valid_pathname($path) {
-	if (preg_match('/^([a-zA-Z0-9.-\\\:\/]+)$/', trim($path))) {
+	if (preg_match('/^([a-zA-Z0-9\_\.\-\\\:\/]+)$/', trim($path))) {
 		return true;
 	} else {
 		return false;
@@ -5255,24 +5255,16 @@ function get_validated_language($language, $defaultLanguage) {
 function get_running_user() {
 	global $config;
 
-	// Easy way first
-	$user = get_current_user();
-	if ($user != '') {
-		return $user;
+	static $tmp_user = '';
+
+	if (empty($tmp_user)) {
+		if (function_exists('posix_geteuid')) {
+			$tmp_user = posix_getpwuid(posix_geteuid())['name'];
+		}
 	}
 
-	$user = getenv('USERNAME') ?: getenv('USER');
-	if ($user != '') {
-		return $user;
-	}
-
-	// Falback method
-	if ($config['cacti_server_os'] == 'win32') {
-		return getenv('username');
-	} else {
-		$tmp_user = '';
-		$tmp_file = tempnam(sys_get_temp_dir(), 'uid');
-		$f_owner = '';
+	if (empty($tmp_user)) {
+		$tmp_file = tempnam(sys_get_temp_dir(), 'uid'); $f_owner = '';
 
 		if (is_resource_writable($tmp_file)) {
 			if (file_exists($tmp_file)) {
@@ -5303,7 +5295,6 @@ function get_running_user() {
 
 		if (empty($tmp_user)) {
 			exec('id -nu', $o, $r);
-
 			if ($r == 0) {
 				$tmp_user = trim($o['0']);
 			}
@@ -5320,8 +5311,31 @@ function get_running_user() {
 		}
 		 */
 
-		return (empty($tmp_user) ? 'apache' : $tmp_user);
+		// Easy way first
+		if (empty($tmp_user)) {
+			$user = get_current_user();
+			if ($user != '') {
+				$tmp_user = $user;
+			}
+		}
+
+		// Falback method
+		if (empty($tmp_user)) {
+			$user = getenv('USERNAME');
+			if ($user != '') {
+				$tmp_user = $user;
+			}
+
+			if (empty($tmp_user)) {
+				$user = getenv('USER');
+				if ($user != '') {
+					$tmp_user = $user;
+				}
+			}
+		}
 	}
+
+	return (empty($tmp_user) ? 'apache' : $tmp_user);
 }
 
 function get_debug_prefix() {
@@ -5332,32 +5346,39 @@ function get_debug_prefix() {
 }
 
 function get_client_addr($client_addr = false) {
-	if (isset($_SERVER['X-Forwarded-For'])) {
-		$client_addr = $_SERVER['X-Forwarded-For'];
-	} elseif (isset($_SERVER['X-Client-IP'])) {
-		$client_addr = $_SERVER['X-Client-IP'];
-	} elseif (isset($_SERVER['X-Real-IP'])) {
-		$client_addr = $_SERVER['X-Real-IP'];
-	} elseif (isset($_SERVER['X-ProxyUser-Ip'])) {
-		$client_addr = $_SERVER['X-ProxyUser-Ip'];
-	} elseif (isset($_SERVER['CF-Connecting-IP'])) {
-		$client_addr = $_SERVER['CF-Connecting-IP'];
-	} elseif (isset($_SERVER['True-Client-IP'])) {
-		$client_addr = $_SERVER['True-Client-IP'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED'];
-	} elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_X_CLUSTER_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_X_CLUSTER_CLIENT_IP'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED_FOR'];
-	} elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-		$client_addr = $_SERVER['HTTP_FORWARDED'];
-	} elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-		$client_addr = $_SERVER['HTTP_CLIENT_IP'];
-	} elseif (isset($_SERVER['REMOTE_ADDR'])) {
-		$client_addr = $_SERVER['REMOTE_ADDR'];
+
+	$http_addr_headers = array(
+		'X-Forwarded-For',
+		'X-Client-IP',
+		'X-Real-IP',
+		'X-ProxyUser-Ip',
+		'CF-Connecting-IP',
+		'True-Client-IP',
+		'HTTP_X_FORWARDED',
+		'HTTP_X_FORWARDED_FOR',
+		'HTTP_X_CLUSTER_CLIENT_IP',
+		'HTTP_FORWARDED_FOR',
+		'HTTP_FORWARDED',
+		'HTTP_CLIENT_IP',
+		'REMOTE_ADDR',
+	);
+
+	$client_addr = false;
+	foreach ($http_addr_headers as $header) {
+		if (!empty($_SERVER[$header])) {
+			$header_ips = explode(',', $_SERVER[$header]);
+			foreach ($header_ips as $header_ip) {
+				if (!empty($header_ip)) {
+					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
+						cacti_log('ERROR: Invalid remote client IP Address found in header (' . $header . ').', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+					} else {
+						$client_addr = $header_ip;
+						cacti_log('DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')', false, 'AUTH', POLLER_VERBOSITY_DEBUG);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	return $client_addr;

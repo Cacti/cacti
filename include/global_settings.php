@@ -1114,7 +1114,7 @@ $settings = array(
 			),
 		'disable_cache_replication' => array(
 			'friendly_name' => __('Disable Resource Cache Replication'),
-			'description' => __('With this option checked, Remote Data Collectors will not be updated from the latest version of Cactis Resource Cache.  This setting can be important when performing upgrades when you want to confirm from the main Data Collector that now new signifcant bugs have been introduced.'),
+			'description' => __('By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting.'),
 			'method' => 'checkbox',
 			'default' => ''
 			),

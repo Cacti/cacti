@@ -1397,6 +1397,7 @@ function utility_php_recommends() {
 }
 
 function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value, $default_type = 'B') {
+
 	$default_type = strtoupper($default_type);
 	$multiplier = array(
 		'B' => 1,
@@ -1405,7 +1406,7 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 		'G' => 1024*1024*1024,
 	);
 
-	if (preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
+	if ($input_value > 0 && preg_match('/([0-9.]+)([BKMG]){0,1}/i',$input_value,$matches)) {
 		$input_value = $matches[1];
 		if (isset($matches[2])) {
 			$default_type = $matches[2];
@@ -1416,7 +1417,9 @@ function utility_get_formatted_bytes($input_value, $wanted_type, &$output_value,
 		}
 	}
 
-	if (isset($multiplier[$wanted_type])) {
+	if (intval($input_value) < 0) {
+		$output_value = $input_value . $wanted_type;
+	} elseif (isset($multiplier[$wanted_type])) {
 		$output_value = ($input_value / $multiplier[$wanted_type]) . $wanted_type;
 	} elseif (isset($multiplier[$default_type])) {
 		$output_value = ($input_value * $multiplier[$default_type]) . $default_type;

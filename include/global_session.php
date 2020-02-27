@@ -122,5 +122,5 @@ if (isset($_SESSION['refresh'])) {
 	var urlPath='<?php print $config['url_path'];?>';
 	var previousPage='';
 	var sessionMessage=<?php print display_output_messages(false);?>;
-	var csrfMagicToken='<?php print 'sid:' . csrf_hash(session_id());?>';
+	var csrfMagicToken='<?php print csrf_get_tokens();?>';
 </script>
