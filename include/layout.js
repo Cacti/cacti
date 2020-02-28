@@ -1231,7 +1231,7 @@ function responsiveUI(event) {
 				$(this).css('max-width', (mainWidth - offset)+'px');
 			}
 
-			if ($(this).width() > $(this).parents('.formColumnRight').prop('clientWidth')) {
+			if ($(this).parents('.formColumnRight').is(":visible") && $(this).width() > $(this).parents('.formColumnRight').prop('clientWidth')) {
 				$(this).css('max-width', ($(this).parents('.formColumnRight').prop('clientWidth'))+'px');
 			} else {
 				$(this).css('max-width', '');
