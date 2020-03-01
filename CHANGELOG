@@ -1,6 +1,6 @@
 Cacti CHANGELOG
 
-develop
+1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
 -issue#3240: When using User Domains, global template user is used instead of the configured domain template user
 -issue#3245: Unix timestamps after Sep 13 2020 are rejected as graph start/end arguments
@@ -8,20 +8,20 @@ develop
 -issue#3250: When PHP memory limit is set to -1, recommendation value fails
 -issue#3253: Upgrade can stall when checking permissions on csrf-secret.php
 -issue#3254: Installer shows script owner rather than running user for suggested chown command
--issue#3266: 'Defer to the Users Setting' in user group setting leads to user cannot login to his specified page
--issue#3269: Graphic input Chinese search error
+-issue#3266: When setting User Groups to 'Defer to the User', setting can lead to user being told they have no permissions
+-issue#3269: When searching Graphs under a Chinese language, an unexpected error as sometimes shown
 -issue#3274: When editing a tree, multiple device drag/drop does not work
 -issue#3276: When spine aborts, script server can be left wanting or generating unnecessary logs
 -issue#3277: When boost does not find an initial time, numeric errors can be raised
--issue#3281: When changing a Graph Template options, image format does not take the settings default
--issue#3282: When first going to Graph > Utility View graph is sized incorrectly if image is SVG
--issue#3283: Errors on Console > Configuration > Settings > Paths when a path includes valid characters '_', '-', and '.'
--issue#3287: Cacti Stats - User Logins - Incorrect count of invalid users
+-issue#3281: When changing Graph Template options, incorrect image format may be selected
+-issue#3282: Graph's can be sized incorrectly if image is SVG format
+-issue#3283: When setting a file path, valid characters not recognised properly
+-issue#3287: When using graph template 'Cacti Stats - User Logins', an incorrect count of invalid users can be seen
 -issue#3288: When on Device page, pressing 'Go' on the filter caused Device New menu pick to appear
 -issue#3289: When using CMD.PHP, poller id is not always shown properly
 -issue#3290: When using CMD.PHP, inconsistent device logging levels may occur
--issue#3298: When Text/textarea is invissble during page loading, its 'max-width' is set to zero.
--issue#3302: Editing a Graph Template does not show the Data Template name as expected
+-issue#3298: When initialising fields in JavaScript, text/textarea elements have width set to zero if it is hidden by parent by ddb4github
+-issue#3302: Editing a Graph Template does not show the Data Template name
 
 1.2.9
 -security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
