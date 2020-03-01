@@ -21,6 +21,7 @@ develop
 -issue#3289: When using CMD.PHP, poller id is not always shown properly
 -issue#3290: When using CMD.PHP, inconsistent device logging levels may occur
 -issue#3298: When Text/textarea is invissble during page loading, its 'max-width' is set to zero.
+-issue#3302: Editing a Graph Template does not show the Data Template name as expected
 
 1.2.9
 -security#3191: Lack of escaping on some pages can lead to XSS exposure (CVE-2020-7106)
