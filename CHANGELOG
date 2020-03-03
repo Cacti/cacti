@@ -1,5 +1,8 @@
 Cacti CHANGELOG
 
+1.2.11
+-issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
+
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
 -issue#3240: When using User Domains, global template user is used instead of the configured domain template user
