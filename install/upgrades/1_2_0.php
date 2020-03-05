@@ -73,8 +73,12 @@ function upgrade_to_1_2_0() {
 	db_install_execute('UPDATE graph_templates_graph
 		SET t_title="" WHERE t_title IS NULL or t_title="0"');
 
-	$log_validation = db_fetch_cell('SELECT value FROM settings WHERE name=\'log_validation\'');
-	$log_developer  = db_fetch_cell('SELECT value FROM settings WHERE name=\'developer_mode\'');
+	$log_validation_results = db_install_fetch_cell('SELECT value FROM settings WHERE name=\'log_validation\'');
+	$log_validation         = $log_validation_results['data'];
+
+	$log_developer_results  = db_install_fetch_cell('SELECT value FROM settings WHERE name=\'developer_mode\'');
+	$log_developer          = $log_developer_results['data'];
+
 	if ($log_developer !== false && $log_validation === false) {
 		db_install_execute('UPDATE settings
 			SET name="log_validation" WHERE name="developer_mode"');
@@ -109,7 +113,9 @@ function upgrade_to_1_2_0() {
 	}
 
 	// Upgrade debug plugin to core access by removing custom realm
-	$debug_id = db_fetch_cell('SELECT id FROM plugin_config WHERE name = \'Debug\'');
+	$debug_id_reports = db_install_fetch_cell('SELECT id FROM plugin_config WHERE name = \'Debug\'');
+	$debug_id         = $debug_id_reports['data'];
+
 	if ($debug_id !== false && $debug_id > 0) {
 		// Plugin realms are plugin_id + 100
 		$debug_id += 100;
@@ -127,9 +133,10 @@ function upgrade_to_1_2_0() {
 	}
 
 	// Resolve issues with bogus templates issue #1761
-	$snmp_queries = db_fetch_assoc('SELECT id, name
+	$snmp_queries_results = db_install_fetch_assoc('SELECT id, name
 		FROM snmp_query
 		ORDER BY id');
+	$snmp_queries = $snmp_queries_results['data'];
 
 	if (cacti_sizeof($snmp_queries)) {
 		foreach($snmp_queries as $query) {
@@ -149,18 +156,20 @@ function upgrade_to_1_2_0() {
 		}
 	}
 
-	$ids = db_fetch_assoc('SELECT *
+	$ids_results = db_install_fetch_assoc('SELECT *
 		FROM graph_local
 		WHERE snmp_query_id > 0
 		AND snmp_query_graph_id = 0');
+	$ids = $ids_results['data'];
 
 	if (cacti_sizeof($ids)) {
 		foreach($ids as $id) {
-			$query_graph_id = db_fetch_cell_prepared('SELECT id
+			$query_graph_id_results = db_install_fetch_cell('SELECT id
 				FROM snmp_query_graph
 				WHERE snmp_query_id = ?
 				AND graph_template_id = ?',
 				array($id['snmp_query_id'], $id['graph_template_id']));
+			$query_graph_id = $query_graph_id_results['data'];
 
 			if (empty($query_graph_id)) {
 				db_execute_prepared('UPDATE graph_local

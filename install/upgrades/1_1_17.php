@@ -30,14 +30,16 @@ function upgrade_to_1_1_17() {
 		db_install_execute('ALTER TABLE data_source_profiles_rra
 			ADD COLUMN timespan int(10) unsigned NOT NULL DEFAULT "0"');
 
-		$rras = db_fetch_assoc("SELECT * FROM data_source_profiles_rra");
+		$rras_results = db_install_fetch_assoc("SELECT * FROM data_source_profiles_rra");
+		$rras         = $rras_results['data'];
 
 		if (cacti_sizeof($rras)) {
 			foreach($rras as $rra) {
-				$interval = db_fetch_cell_prepared('SELECT step
+				$interval_results = db_install_fetch_cell('SELECT step
 					FROM data_source_profiles
 					WHERE id = ?',
 					array($rra['data_source_profile_id']));
+				$interval = $interval_results['data'];
 
 				$timespan = $rra['steps'] * $interval * $rra['rows'];
 

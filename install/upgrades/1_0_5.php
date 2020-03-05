@@ -30,7 +30,8 @@ function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE snmpagent_notifications_log MODIFY COLUMN notification varchar(180) NOT NULL');
 
 	/* bad data source profile id's */
-	$profile_id = db_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	$profile_id_results = db_install_fetch_cell('SELECT id FROM data_source_profiles ORDER BY `default` DESC LIMIT 1');
+	$profile_id         = $profile_id_results['data'];
 	db_install_execute('UPDATE data_template_data SET data_source_profile_id = ' . $profile_id . ' WHERE data_source_profile_id = 0');
 
 	/* engine id length */
@@ -41,10 +42,13 @@ function upgrade_to_1_0_5() {
 	db_install_execute('ALTER TABLE snmpagent_managers MODIFY COLUMN snmp_engine_id VARCHAR(64) DEFAULT ""');
 
 	/* issue 399 external links ordering */
-	$badlinks = db_fetch_cell('SELECT COUNT(*) FROM external_links WHERE sortorder=0');
+	$badlinks_results = db_install_fetch_cell('SELECT COUNT(*) FROM external_links WHERE sortorder=0');
+	$badlinks         = $badlinks_results['data'];
+
 	if ($badlinks) {
-		$links = db_fetch_assoc('SELECT id FROM external_links ORDER BY id');
-		$order = 1;
+		$links_results = db_install_fetch_assoc('SELECT id FROM external_links ORDER BY id');
+		$links         = $links_results['data'];
+		$order         = 1;
 
 		foreach($links as $link) {
 			db_install_execute('UPDATE external_links SET sortorder = ? WHERE id = ?', array($order, $link['id']));

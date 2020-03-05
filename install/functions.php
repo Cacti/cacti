@@ -142,6 +142,37 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	return $status;
 }
 
+function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
+	global $database_last_error;
+
+	$database_last_error = false;
+	$data = false;
+	if (!is_callable($func) || !function_exists($func)) {
+		$status = DB_STATUS_ERROR;
+	}
+
+	$data   = $func($sql, $params, $log);
+	$status = ($database_last_error ? DB_STATUS_ERROR : DB_STATUS_SUCCESS);
+
+	if ($log || $status == DB_STATUS_ERROR) {
+		db_install_add_cache($status, $sql, $params);
+	}
+
+	return array('status' => $status, 'data' => $data);
+}
+
+function db_install_fetch_assoc($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_assoc', $sql, $params, $log);
+}
+
+function db_install_fetch_cell($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_cell', $sql, $params, $log);
+}
+
+function db_install_fetch_row($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_row', $sql, $params, $log);
+}
+
 function db_install_add_column($table, $column, $ignore = true) {
 	// Example: db_install_add_column ('plugin_config', array('name' => 'test' . rand(1, 200), 'type' => 'varchar (255)', 'NULL' => false));
 	global $database_last_error;
@@ -248,7 +279,7 @@ function db_install_drop_column($table, $column) {
 	return $status;
 }
 
-function db_install_add_cache($status, $sql) {
+function db_install_add_cache($status, $sql, $params = NULL) {
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
 	set_config_option('install_updated', microtime(true));
@@ -273,6 +304,25 @@ function db_install_add_cache($status, $sql) {
 	// add query to upgrade results array by version to the cli global session
 	if (!isset($database_upgrade_status[$cacti_upgrade_version])) {
 		$database_upgrade_status[$cacti_upgrade_version] = array();
+	}
+
+	$query = clean_up_lines($sql);
+	$actual = 0;
+	$expected = substr_count($query, '?');
+
+	if ($params != NULL) {
+		foreach ($params as $arg) {
+			$pos = strpos($query, '?');
+			if ($pos !== false) {
+				$actual++;
+				$query = substr_replace($query, "'$arg'", $pos, 1);
+			}
+		}
+	}
+
+	$sql = clean_up_lines($query);
+	if ($actual !== $expected) {
+		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
 	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
