@@ -3003,7 +3003,7 @@ function automation_get_valid_mask($range) {
 			$cidr = $range;
 			$mask = array(
 				'cidr' => $cidr,
-				'subnet' => long2ip((2**$range-1) << (32-$range)));
+				'subnet' => long2ip((pow(2,$range)-1) << (32-$range)));
 		} else {
 			$mask = false;
 		}
