@@ -2957,6 +2957,8 @@ class Installer implements JsonSerializable {
 		} else {
 			log_install_always('', __('No templates were selected for import'));
 		}
+
+		return '';
 	}
 
 	private function installPoller() {
