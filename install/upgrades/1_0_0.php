@@ -1820,59 +1820,118 @@ function upgrade_realms() {
 		'ugroup'
 	);
 
-	// There can be only one of these, so just update if exist
-	foreach($upgrade_realms as $r) {
-		$exists_results = db_install_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE ?', array('%' . $r['file_pattern'] . '%'), false);
-		$exists = $exists_results['data'];
+	// Check for the installation of the plugin architecture
+	if (db_table_exists('plugin_realms')) {
+		// There can be only one of these, so just update if exist
+		foreach($upgrade_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?', array('%' . $r['file_pattern'] . '%'), false);
 
-		if (cacti_sizeof($exists)) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('UPDATE user_auth_realm
-				SET realm_id = ?
-				WHERE realm_id = ?',
-				array($r['new_realm'], $old_realm));
+			if (cacti_sizeof($exists)) {
+				$old_realm = $exists['id'] + 100;
+
+				db_execute_prepared('UPDATE user_auth_realm
+					SET realm_id = ?
+					WHERE realm_id = ?',
+					array($r['new_realm'], $old_realm));
+			}
 		}
-	}
 
-	// There are more than one of these so update and drop
-	foreach($set_drop_realms as $r) {
-		$exists_results = db_install_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE ?',
-			array('%' . $r['file_pattern'] . '%'), false);
-		$exists = $exists_results['data'];
+		// There are more than one of these so update and drop
+		foreach($set_drop_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $r['file_pattern'] . '%'), false);
 
-		if (cacti_sizeof($exists)) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id)
-				SELECT user_id, "' . $r['new_realm'] . '" AS realm_id
-				FROM user_auth_realm
-				WHERE realm_id = ?',
-				array($old_realm));
+			if (cacti_sizeof($exists)) {
+				$old_realm = $exists['id'] + 100;
 
-			db_execute_prepared('DELETE FROM user_auth_realm
-				WHERE realm_id = ?',
-				array($old_realm));
+				db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id)
+					SELECT user_id, "' . $r['new_realm'] . '" AS realm_id
+					FROM user_auth_realm
+					WHERE realm_id = ?',
+					array($old_realm));
+
+				db_execute_prepared('DELETE FROM user_auth_realm
+					WHERE realm_id = ?',
+					array($old_realm));
+			}
 		}
-	}
 
-	// Drop realms that have been deprecated
-	foreach($drop_realms as $r) {
-		$exists_results = db_install_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE ?',
-			array('%' . $r . '%'), false);
-		$exists = $exists_results['data'];
+		// Drop realms that have been deprecated
+		foreach($drop_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $r . '%'), false);
 
-		if ($exists) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
+			if ($exists) {
+				$old_realm = $exists['id'] + 100;
+
+				db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
+			}
 		}
+	} else {
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_config` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`directory` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`status` tinyint(2) NOT NULL DEFAULT 0,
+			`author` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`webpage` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`version` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `status` (`status`),
+			KEY `directory` (`directory`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_db_changes` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`plugin` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`table` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`column` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+			`method` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `plugin` (`plugin`),
+			KEY `method` (`method`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_hooks` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`hook` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`function` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`status` int(8) NOT NULL DEFAULT 0,
+			PRIMARY KEY (`id`),
+			KEY `hook` (`hook`),
+			KEY `status` (`status`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_realms` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`plugin` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`file` text COLLATE utf8mb4_unicode_ci NOT NULL,
+			`display` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `plugin` (`plugin`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("REPLACE INTO plugin_hooks (name, hook, file, function, status) VALUES
+			('internal', 'config_arrays', '', 'plugin_config_arrays', 1),
+			('internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
 	}
 
 	// Add realms to the admin user if it exists

@@ -151,7 +151,11 @@ function db_install_fetch_function($func, $sql, $params = array(), $log = true) 
 		$status = DB_STATUS_ERROR;
 	}
 
-	$data   = $func($sql, $params, $log);
+	if ($func == 'db_fetch_cell_prepared') {
+		$data = $func($sql, $params, '', $log);
+	} else {
+		$data = $func($sql, $params, $log);
+	}
 	$status = ($database_last_error ? DB_STATUS_ERROR : DB_STATUS_SUCCESS);
 
 	if ($log || $status == DB_STATUS_ERROR) {
@@ -162,15 +166,15 @@ function db_install_fetch_function($func, $sql, $params = array(), $log = true) 
 }
 
 function db_install_fetch_assoc($sql, $params = array(), $log = true) {
-	return db_install_fetch_function('db_fetch_assoc', $sql, $params, $log);
+	return db_install_fetch_function('db_fetch_assoc_prepared', $sql, $params, $log);
 }
 
 function db_install_fetch_cell($sql, $params = array(), $log = true) {
-	return db_install_fetch_function('db_fetch_cell', $sql, $params, $log);
+	return db_install_fetch_function('db_fetch_cell_prepared', $sql, $params, $log);
 }
 
 function db_install_fetch_row($sql, $params = array(), $log = true) {
-	return db_install_fetch_function('db_fetch_row', $sql, $params, $log);
+	return db_install_fetch_function('db_fetch_row_prepared', $sql, $params, $log);
 }
 
 function db_install_add_column($table, $column, $ignore = true) {
@@ -435,14 +439,29 @@ function install_setup_get_templates() {
 		if ($canUnpack) {
 			//Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
-			$xml = file_get_contents($filename);;
+
+			$xml    = file_get_contents($filename);;
 			$xmlget = simplexml_load_string($xml);
-			$data = to_array($xmlget);
-			if (is_array($data['info']['author'])) $data['info']['author'] = '1';
-			if (is_array($data['info']['email'])) $data['info']['email'] = '2';
-			if (is_array($data['info']['description'])) $data['info']['description'] = '3';
-			if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
+			$data   = to_array($xmlget);
+
+			if (is_array($data['info']['author'])) {
+				$data['info']['author'] = '1';
+			}
+
+			if (is_array($data['info']['email'])) {
+				$data['info']['email'] = '2';
+			}
+
+			if (is_array($data['info']['description'])) {
+				$data['info']['description'] = '3';
+			}
+
+			if (is_array($data['info']['homepage'])) {
+				$data['info']['homepage'] = '4';
+			}
+
 			$data['info']['filename'] = $xmlfile;
+			$data['info']['name']     = $xmlfile;
 			$info[] = $data['info'];
 		} else {
 			// Loading Template Information from package
@@ -977,9 +996,9 @@ function install_full_sync() {
 	$timeout   = array();
 
 	$pollers = db_fetch_assoc('SELECT id, status, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) as gap
-			FROM poller
-			WHERE id > 1
-			AND disabled = ""');
+		FROM poller
+		WHERE id > 1
+		AND disabled = ""');
 
 	if (cacti_sizeof($poller_ids)) {
 		foreach($poller_ids as $poller) {
