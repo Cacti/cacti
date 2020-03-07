@@ -1515,7 +1515,7 @@ class Installer implements JsonSerializable {
 				switch ($this->mode) {
 					case Installer::MODE_UPGRADE:
 					case Installer::MODE_DOWNGRADE:
-						$this->stepNext = Installer::STEP_CHECK_TABLES;
+						$this->stepNext = Installer::STEP_TEMPLATE_INSTALL;
 						break;
 				}
 
@@ -2862,6 +2862,9 @@ class Installer implements JsonSerializable {
 				}
 			} elseif ($this->mode == Installer::MODE_UPGRADE) {
 				$failure = $this->upgradeDatabase();
+				if (empty($failure)) {
+					$failure = $this->installTemplate();
+				}
 			}
 			Installer::disableInvalidPlugins();
 		}

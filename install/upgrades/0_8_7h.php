@@ -40,10 +40,4 @@ function upgrade_to_0_8_7h() {
 	db_install_add_column('host', array('name' => 'device_threads', 'type' => 'tinyint(2) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'max_oids'));
 
 	db_install_add_key('data_template_rrd', 'unique index',  'duplicate_dsname_contraint', array('local_data_id', 'data_source_name', 'data_template_id'));
-
-	/* update the reindex cache, as we now introduced more options for 'index count changed' */
-	$command_string = cacti_escapeshellcmd(read_config_option('path_php_binary'));
-	$extra_args = '-q ' . cacti_escapeshellarg($config['base_path'] . '/cli/poller_reindex_hosts.php') . ' --id=all';
-	exec_background($command_string, $extra_args);
-	cacti_log(__FUNCTION__ . " running $command_string $extra_args", false, 'UPGRADE');
 }

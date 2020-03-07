@@ -99,7 +99,9 @@ function upgrade_to_0_8_7() {
 	}
 
 	db_install_execute("UPDATE `settings` SET value = '0' WHERE name = 'guest_user' and value = ''");
-	db_install_execute("UPDATE `settings` SET name = 'user_template' WHERE name = 'ldap_template'");
+
+	db_install_swap_setting('ldap_template', 'user_template');
+
 	db_install_execute("UPDATE `settings` SET value = '0' WHERE name = 'user_template' and value = ''");
 	db_install_execute("DELETE FROM `settings` WHERE name = 'global_auth'");
 	db_install_execute("DELETE FROM `settings` WHERE name = 'ldap_enabled'");
@@ -166,10 +168,11 @@ function upgrade_to_0_8_7() {
 	/* Add 1 min rra */
 	if (db_table_exists('rra')) {
 		db_install_execute("INSERT INTO rra VALUES (DEFAULT,'283ea2bf1634d92ce081ec82a634f513','Hourly (1 Minute Average)',0.5,1,500,14400)");
-		$rrd_id = db_fetch_insert_id();
-		db_install_execute("INSERT INTO `rra_cf` VALUES (?,1), (?,3)", array($rrd_id));
+		$rrd_id = db_fetch_cell("SELECT id FROM rra WHERE hash='283ea2bf1634d92ce081ec82a634f513'");
+		db_install_execute("INSERT INTO `rra_cf` VALUES (?,1), (?,3)", array($rrd_id, $rrd_id));
 	}
 
 	/* rename cactid path to spine path */
-	db_install_execute("UPDATE settings SET name='path_spine' WHERE name='path_cactid'");
+	db_install_swap_setting('path_cactid', 'path_spine');
 }
+

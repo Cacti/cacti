@@ -401,6 +401,17 @@ function find_search_paths($os = 'unix') {
 	return $search_paths;
 }
 
+function db_install_swap_setting($old_setting, $new_setting) {
+	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
+	if (empty($exists)) {
+		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
+	} else {
+		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', array($old_setting));
+		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', array($old_setting, $new_setting));
+		db_install_execute('DELETE FROM `settings` WHERE name = ?', array($old_setting));
+	}
+}
+
 function find_best_path($binary_name) {
 	global $config;
 
