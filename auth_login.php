@@ -289,7 +289,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	$guest_user = false;
 	if (!cacti_sizeof($user) && $user_auth && get_guest_account() != '0') {
 		/* Locate guest user record */
-		$user = db_fetch_row_prepared('SELECT id, username, enabled
+		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			array(get_guest_account()));
@@ -319,7 +319,12 @@ if (get_nfilter_request_var('action') == 'login') {
 			array($username, $user['id'], $client_addr));
 
 		/* is user enabled */
-		$user_enabled = $user['enabled'];
+		if (isset($user['enabled'])) {
+			$user_enabled = $user['enabled'];
+		} else {
+			$user_enabled = 'on'
+		}
+
 		if ($user_enabled != 'on') {
 			/* Display error */
 			display_custom_error_message(__('Access Denied, user account disabled.'));
