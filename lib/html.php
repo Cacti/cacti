@@ -1211,6 +1211,15 @@ function is_menu_pick_active($menu_url) {
 		}
 	}
 
+	/* special case for Color Templates items edit */
+	if (strpos($_SERVER['REQUEST_URI'], 'color_templates_items.php') !== false) {
+		if (strpos($menu_url, 'color_templates.php') !== false) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/* break out the URL and variables */
 	if (!is_array($url_array) || (is_array($url_array) && !cacti_sizeof($url_array))) {
 		$url_array = parse_url($_SERVER['REQUEST_URI']);
