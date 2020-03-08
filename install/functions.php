@@ -407,7 +407,7 @@ function db_install_swap_setting($old_setting, $new_setting) {
 		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
 	} else {
 		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', array($old_setting));
-		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', array($old_setting, $new_setting));
+		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', array($old_value, $new_setting));
 		db_install_execute('DELETE FROM `settings` WHERE name = ?', array($old_setting));
 	}
 }
