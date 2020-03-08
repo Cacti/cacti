@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -issue#3314: Script Server has invalid debug code left in
 -issue#3317: CSRF report PHP Notice: Array to string conversion
 -issue#3319: Errors upgrading 0.8.x to latest Cacti due to incorrectly detected data source profile id
+-issue#3322: Resolve issue encountered if the Preferred Realm has not been preset and add additional group search check
 -issue#3330: Cacti installer is broken on fresh install of 1.2.10
 
 1.2.10
