@@ -466,7 +466,7 @@ class Ldap {
 					/* Process group membership if required */
 					if ($this->group_member_type == 1) {
 						$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
-						if (!$ldap_group_response){
+						if (!$ldap_group_response) {
 							$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
 						}
 					} else if ($this->group_member_type == 2) {
