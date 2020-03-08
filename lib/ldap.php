@@ -467,8 +467,8 @@ class Ldap {
 					if ($this->group_member_type == 1) {
 						$ldap_group_response = ldap_compare($ldap_conn, $this->group_dn, $this->group_attrib, $this->dn);
 						if (!$ldap_group_response){
-                                                        $ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
-                                                }
+							$ldap_group_response = Ldap::isUserInLDAPGroup($ldap_conn, $this->search_base, $this->group_dn, $this->dn);
+						}
 					} else if ($this->group_member_type == 2) {
 						/* Do a lookup to find this user's true DN. */
 						/* ldap_exop_whoami is not yet included in PHP. For reference, the
