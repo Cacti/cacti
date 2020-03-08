@@ -807,6 +807,9 @@ $selectedTheme = get_selected_theme();
 
 	$(function() {
 		preferredRealm = storage.get('user_realm');
+		if (preferredRealm == undefined) {
+                        preferredRealm = $('#realm option:selected').val();
+		}
 
 		// Restore the preferred realm
 		if ($('#realm').length) {
