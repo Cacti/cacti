@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.11
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
+-issue#3212: Minor:Console menu does not auto-expand for graph item editor page
 -issue#3314: Script Server has invalid debug code left in
 -issue#3317: CSRF report PHP Notice: Array to string conversion
 -issue#3319: Errors upgrading 0.8.x to latest Cacti due to incorrectly detected data source profile id
