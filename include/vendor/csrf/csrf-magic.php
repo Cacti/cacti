@@ -85,6 +85,10 @@ function csrf_check($fatal = true) {
 			// schemes are volatile.
 			$tokens = $_POST[$name];
 			$result = csrf_check_tokens($tokens);
+			if (is_array($tokens)) {
+				$tokens = implode(';', $tokens);
+			}
+
 			csrf_log(__FUNCTION__,"check_tokens($name, $tokens) returned $result");
 		}
 
@@ -102,6 +106,7 @@ function csrf_check($fatal = true) {
 	}
 
 	csrf_log(__FUNCTION__,'returns: ' . var_export($result, true));
+
 	return $result;
 }
 
