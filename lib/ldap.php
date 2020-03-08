@@ -880,11 +880,11 @@ class Ldap {
 
 	function isUserInLDAPGroup($ldapConn, $ldapbasedn, $groupDN, $ldapUser) {
 		$query       = "(&(distinguishedName=$ldapUser)(memberOf:1.2.840.113556.1.4.1941:=$groupDN))";
-		$ldapSearch  = ldap_search($ldapConn,$ldapbasedn,$query,array("dn"));
-		$ldapResults = ldap_get_entries($ldapConn, $ldapSearch);
+		$ldapSearch  = @ldap_search($ldapConn,$ldapbasedn,$query,array("dn"));
+		$ldapResults = @ldap_get_entries($ldapConn, $ldapSearch);
 
 		// user should only be returned once IF they're a member of the group
-		return $ldapResults['count'] == 1 ? true:false;
+		return isset($ldapResults['count']) && $ldapResults['count'] == 1 ? true:false;
 	}
 }
 
