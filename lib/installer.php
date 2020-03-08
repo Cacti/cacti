@@ -1172,25 +1172,31 @@ class Installer implements JsonSerializable {
 	 *               mb4_unicode_utf8 */
 	private function getTables() {
 		$known_tables = install_setup_get_tables();
+
 		$db_tables = array_rekey(
 			db_fetch_assoc('SELECT name, value FROM settings where name like \'install_table_%\''),
 			'name', 'value');
-		$hasTables = read_config_option('install_has_tables', true);
-		$selected = array();
+
+		$hasTables    = read_config_option('install_has_tables', true);
+		$selected     = array();
 		$select_count = 0;
+
 		foreach ($known_tables as $known) {
-			$table = $known['Name'];
-			$key = $known['Name'];
+			$table  = $known['Name'];
+			$key    = $known['Name'];
 			$option = '';
+
 			if (array_key_exists('install_table_' . $key, $db_tables)) {
 				$option = $db_tables['install_table_' . $key];
 			}
+
 			$isSelected = !empty($hasTables) && (!empty($option));
 			$selected['chk_table_' . $key] = $isSelected;
 			if ($isSelected) {
 				$select_count++;
 			}
 		}
+
 		$selected['all'] = ($select_count == cacti_count($selected) || empty($hasTables));
 
 		return $selected;
@@ -1205,11 +1211,14 @@ class Installer implements JsonSerializable {
 	private function setTables($param_tables = array()) {
 		if (is_array($param_tables)) {
 			db_execute('DELETE FROM settings WHERE name like \'install_table_%\'');
+
 			$known_tables = install_setup_get_tables();
+
 			log_install_medium('tables',"setTables(): Updating Tables");
 			log_install_debug('tables',"setTables(): Parameter data:" . clean_up_lines(var_export($param_tables, true)));
 
 			$param_all = false;
+
 			if (array_key_exists('all', $param_tables)) {
 				$this->setTrueFalse($param_tables['all'], $param_all, 'allTables', false);
 				unset($param_tables['all']);
@@ -1217,18 +1226,25 @@ class Installer implements JsonSerializable {
 
 			foreach ($known_tables as $known) {
 				$name = $known['Name'];
-				$key = 'chk_table_' . $name;
+				$key  = 'chk_table_' . $name;
+				$set  = false;
+
 				log_install_high('tables',"setTables(): Checking table '$name' against key $key ...");
 				log_install_debug('tables',"setTables(): Table: ". clean_up_lines(var_export($known, true)));
-				$set = false;
+
 				if (!array_key_exists($key, $param_tables)) {
 					$param_tables[$key] = null;
 				}
-				$this->setTrueFalse($param_tables[$key], $set, 'table_'.$name, false);
-				$use = ($set || $param_all);
+
+				$this->setTrueFalse($param_tables[$key], $set, 'table_' . $name, false);
+
+				$use   = ($set || $param_all);
 				$value = $use ? $name : '';
+
 				log_install_high('tables',"setTables(): Use: $use, Set: $set, All: $param_all, key: install_table_$name = " . $value);
+
 				set_config_option("install_table_$name", $value);
+
 				$this->tables[$key] = $use;
 			}
 

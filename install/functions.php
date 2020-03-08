@@ -498,9 +498,9 @@ function install_setup_get_tables() {
 		foreach ($tables as $table) {
 			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
 
-			$collation = '';
-			$engine = '';
-			$rows = 0;
+			$collation  = '';
+			$engine     = '';
+			$rows       = 0;
 			$row_format = '';
 
 			if ($table_status !== false) {
@@ -522,10 +522,10 @@ function install_setup_get_tables() {
 			}
 
 			if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
-				$t[$table]['Name'] = $table;
-				$t[$table]['Collation'] = $table_status['Collation'];
-				$t[$table]['Engine'] = $table_status['Engine'];
-				$t[$table]['Rows'] = $rows;
+				$t[$table]['Name']       = $table;
+				$t[$table]['Collation']  = $table_status['Collation'];
+				$t[$table]['Engine']     = $table_status['Engine'];
+				$t[$table]['Rows']       = $rows;
 				$t[$table]['Row_format'] = $table_status['Row_format'];
 			}
 		}
