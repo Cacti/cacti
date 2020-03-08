@@ -322,7 +322,7 @@ if (get_nfilter_request_var('action') == 'login') {
 		if (isset($user['enabled'])) {
 			$user_enabled = $user['enabled'];
 		} else {
-			$user_enabled = 'on'
+			$user_enabled = 'on';
 		}
 
 		if ($user_enabled != 'on') {
