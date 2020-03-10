@@ -406,7 +406,11 @@ if ($config['is_web']) {
 	header('X-Frame-Options: SAMEORIGIN');
 
 	/* increased web hardening */
-	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';");
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy != '') {
+		$script_policy .= ';';
+	}
+	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');

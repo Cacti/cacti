@@ -2324,11 +2324,16 @@ function html_common_header($title, $selectedTheme = '') {
 		print "<meta content='width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0' name='viewport'>" . PHP_EOL;
 	}
 
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy != '') {
+		$script_policy .= ';';
+	}
+
 	?>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge,chrome=1'>
 	<meta name='apple-mobile-web-app-capable' content='yes'>
 	<meta name='mobile-web-app-capable' content='yes'>
-	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
+	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline';">
 	<meta name='robots' content='noindex,nofollow'>
 	<title><?php echo $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>

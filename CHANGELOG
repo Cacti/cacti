@@ -9,6 +9,7 @@ Cacti CHANGELOG
 -issue#3322: Resolve issue encountered if the Preferred Realm has not been preset and add additional group search check
 -issue#3330: Cacti installer is broken on fresh install of 1.2.10
 -issue#3335: Unable to hide Device based Aggregate Graphs on Tree
+-issue#3336: Plugins such as mapping plugins need to relax content security policies
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
