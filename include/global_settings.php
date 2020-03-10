@@ -2076,6 +2076,12 @@ $settings_user = array(
 			'method' => 'checkbox',
 			'default' => 'on'
 			),
+		'show_aggregates' => array(
+			'friendly_name' => __('Show Device Aggregates'),
+			'description' => __('If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
 		'default_date_format' => array(
 			'friendly_name' => __('Date Display Format'),
 			'description' => __('The date format to use in Cacti.'),
