@@ -10,6 +10,7 @@ Cacti CHANGELOG
 -issue#3330: Cacti installer is broken on fresh install of 1.2.10
 -issue#3335: Unable to hide Device based Aggregate Graphs on Tree
 -issue#3336: Plugins such as mapping plugins need to relax content security policies
+-issue#3345: Calendar can not work in cacti 1.2.10
 -issue#3346: Broken rewrite of octet strings
 
 1.2.10

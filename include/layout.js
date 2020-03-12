@@ -2935,7 +2935,7 @@ function handlePopState() {
 			} else if (basename(href) == lastPage) {
 				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
 			} else {
-				href.replace('header=false').replace('?&', '?').replace('&&', '&');
+				href.replace('header=false','').replace('?&', '?').replace('&&', '&');
 				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
 			}
 		}
@@ -2978,6 +2978,11 @@ function refreshGraphTimespanFilter() {
 	};
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
+	date1Open = false;
+	date2Open = false;
+	$('#date1').datetimepicker('hide');
+	$('#date2').datetimepicker('hide');
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {
