@@ -123,6 +123,10 @@ class Mo extends Extractor implements ExtractorInterface
      */
     private static function readIntArray(StringReader $stream, $byteOrder, $count)
     {
-        return unpack($byteOrder.$count, $stream->read(4 * $count));
+		if (($read = $stream->read(4 * $count)) === false) {
+			return false;
+		}
+
+        return unpack($byteOrder.$count, $read);
     }
 }
