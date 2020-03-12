@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.11
+-SECURITY#3342: CSRF at Admin Email
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
 -issue#3212: Minor:Console menu does not auto-expand for graph item editor page
 -issue#3314: Script Server has invalid debug code left in

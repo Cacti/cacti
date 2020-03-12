@@ -222,7 +222,7 @@ if (empty($database_port)) {
 }
 
 /* set URL path */
-if (! isset($url_path)) {
+if (!isset($url_path)) {
 	$url_path = '';
 }
 $config['url_path'] = $url_path;
@@ -506,6 +506,20 @@ if ($config['is_web']) {
 
 	if (isset_request_var('csrf_timeout')) {
 		raise_message('csrf_ptimeout');
+	}
+
+	/* check for save actions using GET */
+	if (isset_request_var('action')) {
+		$action = get_nfilter_request_var('action');
+
+		$bad_actions = array('save', 'update_data', 'changepassword');
+
+		foreach($bad_actions as $bad) {
+			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+				cacti_log('WARNING: Attempt to use GET method for POST operations from IP ' . get_client_addr(), false, 'WEBUI');
+				exit;
+			}
+		}
 	}
 }
 
