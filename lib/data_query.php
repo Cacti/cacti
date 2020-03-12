@@ -1116,7 +1116,7 @@ function query_snmp_host($host_id, $snmp_query_id) {
 						$oid = $field_array['oid'] .  '.' . $parse_value;
 
 						/* rewrite octet strings */
-						if (preg_match('/^\d{1,3}(\.\d{1,3}) {2,}$/', $parse_value)) {
+						if (preg_match('/^\d{1,3}(\.\d{1,3}){2,}$/', $parse_value)) {
 							$octets = explode('.', $parse_value);
 							$size = array_shift($octets);
 
