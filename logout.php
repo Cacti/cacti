@@ -79,9 +79,7 @@ if (get_request_var('action') == 'timeout') {
 	include('./include/global_session.php');
 	print "</body>
 	</html>";
-} elseif (read_config_option('auth_method') == '2') {
-	clear_auth_cookie();
-
+} elseif (get_request_var('action') == 'disabled') {
 	print "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>";
 	print "<html>";
 	print "<head>";
@@ -91,14 +89,15 @@ if (get_request_var('action') == 'timeout') {
 	<div class='logoutLeft'></div>
 	<div class='logoutCenter'>
 		<div class='logoutArea'>
-			<div class='cactiLogoutLogo'></div>
+			<div class='cactiLogoutLogo cactiLoginSuspend'></div>
 			<legend>" . __('Automatic Logout') . "</legend>
 			<div class='logoutTitle'>
-				<p>" . __('You have been logged out of Cacti due to a session timeout.') . "</p>
+				<p>" . __('You have been logged out of Cacti due to an account suspension.') . "</p>
 				<p>" . __('Please close your browser or %sLogin Again%s', '</p><center>[<a href="index.php">', '</a>]</center>') . "
 			</div>
 			<div class='logoutErrors'></div>
 		</div>
+		<div class='versionInfo'>" . __('Version %s', $version) . " | " . COPYRIGHT_YEARS_SHORT . "</div>
 	</div>
 	<div class='logoutRight'></div>
 	<script type='text/javascript'>

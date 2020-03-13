@@ -183,10 +183,14 @@ if (isset_request_var('update_policy')) {
 
 function user_group_disable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = '' WHERE id = ?", array($id));
+
+	reset_group_perms($id);
 }
 
 function user_group_enable($id) {
 	db_execute_prepared("UPDATE user_auth_group SET enabled = 'on' WHERE id = ?", array($id));
+
+	reset_group_perms($id);
 }
 
 function user_group_remove($id) {
