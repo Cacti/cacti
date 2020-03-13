@@ -130,6 +130,10 @@ class Mo extends Extractor implements ExtractorInterface
 			return false;
 		}
 
+		if (strlen($read) < $count) {
+			return false;
+		}
+
         return unpack($byteOrder.$count, $read);
     }
 }
