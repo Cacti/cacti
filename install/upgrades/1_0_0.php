@@ -1020,10 +1020,10 @@ function upgrade_to_1_0_0() {
 			(3, 2, 1, '0', 0, 2, 'on', 'Traffic', ''),
 			(4, 2, 2, 'gtg.title_cache', 0, 1, '', '^(.*)\\\\s*-\\\\s*Traffic -\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}');";
 	} else {
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host.', 'h.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'host_template.', 'ht.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'host.', 'h.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'graph_templates.', 'gt.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'graph_templates_graph.', 'gtg.')";
 	}
 
 	# now run all SQL commands
@@ -1213,6 +1213,19 @@ function upgrade_to_1_0_0() {
 		ROW_FORMAT=Dynamic
 		COMMENT='Set of SNMP Options'");
 
+	$snmp_count = db_fetch_cell('SELECT COUNT(*) FROM automation_snmp');
+
+	if (empty($snmp_count)) {
+		db_install_execute("INSERT IGNORE INTO `automation_snmp`
+			VALUES (1,'Default Option Set')");
+
+		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
+			VALUES (1,1,1,2,'public',161,1000,3,10,'admin','baseball','MD5','','DES','','')");
+
+		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
+			VALUES (2,1,2,2,'private',161,1000,3,10,'admin','baseball','MD5','','DES','','');");
+	}
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
 		`id` int(8) NOT NULL AUTO_INCREMENT,
 		`host_template` int(8) NOT NULL DEFAULT '0',
@@ -1226,10 +1239,10 @@ function upgrade_to_1_0_0() {
 		ROW_FORMAT=Dynamic
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host.', 'h.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'host_template.', 'ht.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'host.', 'h.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'graph_templates.', 'gt.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'graph_templates_graph.', 'gtg.')");
 
 	/* stamp out duplicate colors */
 	$duplicates_results = db_install_fetch_assoc('SELECT hex, COUNT(*) AS totals

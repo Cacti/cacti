@@ -12,6 +12,7 @@ Cacti CHANGELOG
 -issue#3319: Errors upgrading 0.8.x to latest Cacti due to incorrectly detected data source profile id
 -issue#3322: Resolve issue encountered if the Preferred Realm has not been preset and add additional group search check
 -issue#3330: Cacti installer is broken on fresh install of 1.2.10
+-issue#3334: When upgrading from 0.8.x Automation SNMP Options should be populated
 -issue#3335: Unable to hide Device based Aggregate Graphs on Tree
 -issue#3336: Plugins such as mapping plugins need to relax content security policies
 -issue#3340: PHP Error when loading broken/empty 95th percentile graphs
