@@ -30,7 +30,8 @@ include_once('./lib/data_query.php');
 $tree_actions = array(
 	1 => __x('dropdown action', 'Delete'),
 	2 => __x('dropdown action', 'Publish'),
-	3 => __x('dropdown action', 'Un Publish')
+	3 => __x('dropdown action', 'Un-Publish'),
+	4 => __x('dropdown action', 'Un-Lock')
 );
 
 /* set default action */
@@ -602,6 +603,12 @@ function form_actions() {
 					last_modified=NOW(),
 					modified_by=" . $_SESSION['sess_user_id'] . '
 					WHERE ' . array_to_sql_or($selected_items, 'id'));
+			} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
+				db_execute("UPDATE graph_tree
+					SET locked=0,
+					last_modified=NOW(),
+					modified_by=" . $_SESSION['sess_user_id'] . '
+					WHERE ' . array_to_sql_or($selected_items, 'id'));
 			}
 		}
 
@@ -660,6 +667,15 @@ function form_actions() {
 			</tr>\n";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-publish Tree', 'Un-publish Trees', cacti_sizeof($tree_array)) . "'>";
+		} elseif (get_nfilter_request_var('drp_action') == '4') { // un-lock
+			print "<tr>
+				<td class='textArea' class='odd'>
+					<p>" . __n('Click \'Continue\' to un-lock the following Tree.', 'Click \'Continue\' to un-lock following Trees.', cacti_sizeof($tree_array)) . "</p>
+					<div class='itemlist'><ul>$tree_list</ul></div>
+				</td>
+			</tr>\n";
+
+			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __n('Un-lock Tree', 'Un-lock Trees', cacti_sizeof($tree_array)) . "'>";
 		}
 	} else {
 		raise_message(40);
