@@ -1023,8 +1023,8 @@ function install_full_sync() {
 
 					db_execute_prepared('UPDATE poller
 						SET last_sync = NOW()
-					WHERE id = ?',
-					array($id));
+						WHERE id = ?',
+						array($id));
 				} else {
 					$failed[] = $poller['id'];
 				}
@@ -1036,9 +1036,10 @@ function install_full_sync() {
 
 	return array(
 		'success' => $success,
-		'failed' => $failed,
+		'failed'  => $failed,
 		'skipped' => $skipped,
 		'timeout' => $timeout,
-		'total' => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout));
+		'total'   => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout)
+	);
 }
 
