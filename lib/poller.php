@@ -1465,7 +1465,7 @@ function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, 
 	global $config, $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
 
 	// If the hostnames are the same, replication is from main to remote
-	if ($database_hostname == $rdatabase_hostname) {
+	if (isset($rdatabase_hostname) && $database_hostname == $rdatabase_hostname) {
 		$db_cnn_id = $local_db_cnn_id;
 	} else {
 		$db_cnn_id = $remote_db_cnn_id;
