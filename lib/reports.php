@@ -265,7 +265,7 @@ function utime_add($timestamp, $yr=0, $mon=0, $day=0, $hr=0, $min=0, $sec=0) {
  @param string $string 	- the string to append to the log file
  @param bool $output 	- whether to output the log line to the browser using pring() or not
  @param string $environ - tell's from where the script was called from */
-function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER_VERBOSITY_NONE) {
+function reports_log($string, $output = false, $environ = 'REPORTS', $level = POLLER_VERBOSITY_NONE) {
 	# Define REPORTS_DEBUG if not already set
 	if (!defined('REPORTS_DEBUG')) {
 		if (function_exists('read_config_option')) {
@@ -276,7 +276,7 @@ function reports_log($string, $output = false, $environ='REPORTS', $level=POLLER
 	}
 
 	# if current verbosity >= level of current message, print it
-	if (strstr($string, 'STATS')) {
+	if (strpos($string, 'STATS') !== false) {
 		cacti_log($string, $output, 'SYSTEM');
 	} elseif (REPORTS_DEBUG >= $level) {
 		cacti_log($string, $output, $environ);
@@ -1498,7 +1498,7 @@ function reports_get_format_files() {
 /**
  * define the reports code that will be processed at the end of each polling event
  */
-function reports_poller_bottom () {
+function reports_poller_bottom() {
 	global $config;
 	include_once($config['base_path'] . '/lib/poller.php');
 

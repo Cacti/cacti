@@ -1753,3 +1753,142 @@ function get_remote_poller_ids_from_devices(&$devices) {
 	}
 }
 
+/** register_process_start - public function to register a process
+ *  in Cacti's process table
+ *
+ * @param string $tasktype  - Mandatory task type
+ * @param string $taskname  - Mandatory task name
+ * @param int $taskid       - Optional task id
+ * @param int $timeout      - Optional timeout
+ * @return boolean success  - true if you can start running, else false if
+ *                            another version is running and has not ended.
+ */
+function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 300) {
+	$pid = getmypid();
+
+	$r = db_fetch_row_prepared('SELECT *
+		FROM processes
+		WHERE tasktype = ?
+		AND taskname = ?
+		AND taskid = ?',
+		array($tasktype, $taskname, $taskid));
+
+	if (!cacti_sizeof($r)) {
+		cacti_log(sprintf('NOTE: Registering process! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+	} elseif (strtotime($r['started']) + $r['timeout'] < time()) {
+		if ($r['pid'] > 0) {
+			cacti_log(sprintf('ERROR: Process being killed due to timeout! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+
+			posix_kill($r['pid'], SIGTERM);
+
+			unregister_process($tasktype, $taskname, $taskid);
+			register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+		} else {
+			// Should never be reached
+			cacti_log(sprintf('ERROR: Failed registering process.  Invalid pid found.  Unable to kill! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $r['pid']), false, 'POLLER');
+
+			return false;
+		}
+	} elseif ($r['pid'] > 0 && posix_kill($r['pid'], 0)) {
+		cacti_log(sprintf('NOTE: Failed registering process.  Old process still running and has not timed out! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER', POLLER_VERBOSITY_MEDIUM);
+
+		return false;
+	} else {
+		cacti_log(sprintf('WARNING: Detected process that is exited and did not unregister first! (%s, %s, %s, %s)', $tasktype, $taskname, $taskid, $pid), false, 'POLLER');
+
+		unregister_process($tasktype, $taskname, $taskid);
+		register_process($tasktype, $taskname, $taskid, $pid, $timeout);
+	}
+
+	return true;
+}
+
+/** register_process - register a process in Cacti's process table
+ *
+ * @param string $tasktype  - Mandatory task type
+ * @param string $taskname  - Mandatory task name
+ * @param int $taskid       - Mandatory task id
+ * @param int $pid          - Mandatory pid
+ * @param int $timeout      - Mandatory timeout
+ * @return null             - No data is returned
+ */
+function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
+	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, last_update)
+		VALUES (?, ?, ?, ?, ?, ?)',
+		array($tasktype, $taskname, $taskid, $pid, $timeout, date('Y-m-d H:i:s')));
+}
+
+/** unregister_process - remove a process from Cacti's process table
+ *
+ * @param string $tasktype  - Mandatory task type
+ * @param string $taskname  - Mandatory task name
+ * @param int $taskid       - Optional task id
+ * @return null             - No data is returned
+ */
+function unregister_process($tasktype, $taskname, $taskid = 0) {
+	db_execute_prepared('DELETE FROM processes
+		WHERE tasktype = ?
+		AND taskname = ?
+		AND taskid = ?',
+		array($tasktype, $taskname, $taskid));
+}
+
+/** heartbeat_process - update the process table last_update timestamp
+ *
+ * @param string $tasktype  - Mandatory task type
+ * @param string $taskname  - Mandatory task name
+ * @param int $taskid       - Optional task id
+ * @return null             - No data is returned
+ */
+function heartbeat_process($tasktype, $taskname, $taskid = 0) {
+	db_execute_prepared('UPDATE processes
+		SET last_update = ?
+		WHERE tasktype = ?
+		AND taskname = ?
+		AND taskid = ?',
+		array(date('Y-m-d H:i:s'), $tasktype, $taskname, $taskid));
+}
+
+/** timeout_kill_registered_processes - allow a Cacti plugin or scheduled task to
+ *  be bulk cleaned.
+ *
+ * @param string $tasktype  - Optional task type
+ * @param string $taskname  - Optional task name
+ * @return null             - No data is returned
+ */
+function timeout_kill_registered_processes($tasktype = '', $taskname = '') {
+	if ($tasktype != '') {
+		$processes = db_fetch_assoc('SELECT *
+			FROM processes
+			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout');
+	} elseif ($taskname == '') {
+		$processes = db_fetch_assoc_prepared('SELECT *
+			FROM processes
+			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+			AND tasktype = ?',
+			array($tasktype));
+	} else {
+		$processes = db_fetch_assoc_prepared('SELECT *
+			FROM processes
+			WHERE UNIX_TIMESTAMP() > FROM_UNIXTIME(started) + timeout
+			AND tasktype = ?
+			AND taskname = ?',
+			array($tasktype, $taskname));
+	}
+
+	if (cacti_sizeof($processes)) {
+		foreach($processes as $r) {
+			if ($r['pid'] > 0 && posix_kill($r['pid'])) {
+				cacti_log(sprintf('ERROR: Process killed due to timeout! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
+				posix_kill($running['pid'], SIGTERM);
+			} else {
+				cacti_log(sprintf('ERROR: Detected process that is gone and did not unregister first! (%s, %s, %s, %s)', $r['tasktype'], $r['taskname'], $r['taskid'], $r['pid']), false, 'POLLER');
+			}
+
+			unregister_process($r['tasktype'], $r['taskname'], $r['taskid']);
+		}
+	}
+}
+

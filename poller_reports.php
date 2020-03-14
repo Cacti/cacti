@@ -59,7 +59,7 @@ function sig_handler($signo) {
 		case SIGINT:
 			reports_log('WARNING: Reports Poller terminated by user', false, 'REPORTS TRACE', POLLER_VERBOSITY_LOW);
 
-			exit;
+			exit(1);
 			break;
 		default:
 			/* ignore all other signals */
@@ -97,16 +97,16 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -125,6 +125,13 @@ ini_set('max_execution_time', '0');
 
 $t = time();
 $number_sent = 0;
+
+if (!$force) {
+	/* silently end if the registered process is still running */
+	if (!register_process_start('reports', 'master', 0, read_config_option('reports_timeout'))) {
+		exit(0);
+	}
+}
 
 # fetch all enabled reports that have a stratime in the past
 if (!$force) {
@@ -150,6 +157,13 @@ if (cacti_sizeof($reports)) {
 
 	/* log statistics */
 	$reports_stats = sprintf('Time:%01.4f Reports:%s', $end - $start, $number_sent);
-	reports_log('Reports STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
+	reports_log('REPORTS STATS: ' . $reports_stats, true, 'REPORTS', POLLER_VERBOSITY_LOW);
 	db_execute_prepared('REPLACE INTO settings (name, value) VALUES ("stats_reports", ?)', array($reports_stats));
 }
+
+if (!$force) {
+	unregister_process('reports', 'master', 0);
+}
+
+exit(0);
+

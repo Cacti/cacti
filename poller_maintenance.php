@@ -66,12 +66,12 @@ if (cacti_sizeof($parms)) {
 			case '-V' :
 			case '-v' :
 				display_version();
-				exit;
+				exit(0);
 			case '--help' :
 			case '-H' :
 			case '-h' :
 				display_help();
-				exit;
+				exit(0);
 			case '--force' :
 				$force = true;
 				break;
@@ -81,12 +81,17 @@ if (cacti_sizeof($parms)) {
 			default :
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
 
 maint_debug('Checking for Purge Actions');
+
+/* silently end if the registered process is still running */
+if (!register_process_start('maintenance', 'master', $config['poller_id'], read_config_option('maintenance_timeout'))) {
+	exit(0);
+}
 
 if ($config['poller_id'] == 1) {
 	/* are my tables already present? */
@@ -185,6 +190,8 @@ if (isset($disable_log_rotation) && $disable_log_rotation == true) {
 	}
 }
 
+unregister_process('maintenance', 'master', $config['poller_id']);
+
 exit(0);
 
 /** realtime_purge_cache() - This function will purge files in the realtime directory
@@ -199,11 +206,9 @@ function realtime_purge_cache() {
 				if ($fileInfo->isDot()) {
 					continue;
 				}
+
 				// only remove .png and .rrd files
-				if (
-					(substr($fileInfo->getFilename(), -4, 4) == '.png') ||
-					(substr($fileInfo->getFilename(), -4, 4) == '.rrd')
-				) {
+				if ((substr($fileInfo->getFilename(), -4, 4) == '.png') || (substr($fileInfo->getFilename(), -4, 4) == '.rrd')) {
 					if ((time() - $fileInfo->getMTime()) >= 7200) {
 						unlink($fileInfo->getRealPath());
 					}
@@ -212,7 +217,7 @@ function realtime_purge_cache() {
 		}
 	}
 
-	db_execute("DELETE FROM poller_output_realtime WHERE time<FROM_UNIXTIME(UNIX_TIMESTAMP()-300)");
+	db_execute("DELETE FROM poller_output_realtime WHERE time < FROM_UNIXTIME(UNIX_TIMESTAMP()-300)");
 }
 
 /*

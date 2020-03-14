@@ -1118,6 +1118,64 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'timeouts_header' => array(
+			'friendly_name' => __('Background Timeout Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'reports_timeout' => array(
+			'friendly_name' => __('Report Background Generation Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Reports Generation script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'commands_timeout' => array(
+			'friendly_name' => __('Background Commands Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'maintenance_timeout' => array(
+			'friendly_name' => __('Maintenance Background Generation Timeout'),
+			'description' => __('The maximum amount of time a Cacti\'s Maintenance script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20),
+				'3600' => __('%s Hour', 1))
+			),
+		'spikekill_timeout' => array(
+			'friendly_name' => __('Spikekill Background Generation Timeout'),
+			'description' => __('The maximum amount of time a Cacti\'s Spikekill script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '3600',
+			'array' => array(
+				'60'    => __('%s Minute', 1),
+				'120'   => __('%s Minutes', 2),
+				'300'   => __('%s Minutes', 5),
+				'600'   => __('%s Minutes', 10),
+				'1200'  => __('%s Minutes', 20),
+				'3600'  => __('%s Hour', 1),
+				'7200'  => __('%s Hours', 2),
+				'14400' => __('%s Hours', 4),
+				'28800' => __('%s Hours', 8))
+			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
 			'collapsible' => 'true',
