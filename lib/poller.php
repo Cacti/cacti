@@ -1461,8 +1461,15 @@ function poller_push_reindex_only_data_to_main($device_id, $data_query_id) {
 	}
 }
 
-function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $force = false) {
-	global $remote_db_cnn_id;
+function poller_push_reindex_data_to_poller($device_id = 0, $data_query_id = 0, $force = false) {
+	global $config, $remote_db_cnn_id, $local_db_cnn_id, $database_hostname, $rdatabase_hostname;
+
+	// If the hostnames are the same, replication is from main to remote
+	if ($database_hostname == $rdatabase_hostname) {
+		$db_cnn_id = $local_db_cnn_id;
+	} else {
+		$db_cnn_id = $remote_db_cnn_id;
+	}
 
 	$sql_where   = '';
 	$sql_where1  = '';
@@ -1505,21 +1512,21 @@ function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $f
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
 			$sql_where1");
 
-		replicate_table_to_poller($remote_db_cnn_id, $local_data_ids, 'data_local');
+		replicate_table_to_poller($db_cnn_id, $local_data_ids, 'data_local');
 
 		$local_graph_ids = db_fetch_assoc("SELECT *
 			FROM graph_local
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
 			$sql_where1");
 
-		replicate_table_to_poller($remote_db_cnn_id, $local_graph_ids, 'graph_local');
+		replicate_table_to_poller($db_cnn_id, $local_graph_ids, 'graph_local');
 
 		$host_snmp_cache = db_fetch_assoc("SELECT *
 			FROM host_snmp_cache
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
 			$sql_where1");
 
-		replicate_table_to_poller($remote_db_cnn_id, $host_snmp_cache, 'host_snmp_cache');
+		replicate_table_to_poller($db_cnn_id, $host_snmp_cache, 'host_snmp_cache');
 
 		// TODO: Make schema's equivalent renamed snmp_query_id to data_query_id everywhere
 		$sql_where1 = str_replace('snmp_query_id', 'data_query_id', $sql_where1);
@@ -1529,7 +1536,7 @@ function poller_push_reindex_data_to_main($device_id = 0, $data_query_id = 0, $f
 			WHERE host_id IN (" . implode(', ', $recache_hosts) . ")
 			$sql_where1");
 
-		replicate_table_to_poller($remote_db_cnn_id, $poller_reindex, 'poller_reindex');
+		replicate_table_to_poller($db_cnn_id, $poller_reindex, 'poller_reindex');
 	}
 }
 
