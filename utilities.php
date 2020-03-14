@@ -457,7 +457,7 @@ function utilities_view_tech($php_info = '') {
 		print "<td>" . __('PHP SNMP') . "</td>\n";
 		print '<td>';
 		if (function_exists('snmpget')) {
-			print __('Installed');
+			print __('Installed. <span class="deviceDown">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>');
 		} else {
 			print __('Not Installed');
 		}
