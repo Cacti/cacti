@@ -2103,7 +2103,6 @@ function ajaxAnchors() {
 
 		/* update menu selection */
 		if ($(this).hasClass('pic')) {
-			$('.pic').removeClass('selected');
 			$(this).addClass('selected');
 		}
 
@@ -2675,7 +2674,9 @@ function keepWindowSize() {
 			}
 
 			var navWidth = $('#navigation').width();
-			$('#searcher').css('width', navWidth-70);
+			if (navWidth > 0) {
+				$('#searcher').css('width', navWidth-70);
+			}
 
 			responsiveResizeGraphs();
 
