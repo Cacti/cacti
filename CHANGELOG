@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.11
 -SECURITY#3342: CSRF at Admin Email
+-SECURITY#3343: Improper Access Control on disabling a user.
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
 -issue#3212: Minor:Console menu does not auto-expand for graph item editor page
 -issue#3314: Script Server has invalid debug code left in
@@ -13,9 +14,9 @@ Cacti CHANGELOG
 -issue#3336: Plugins such as mapping plugins need to relax content security policies
 -issue#3340: PHP Error when loading broken/empty 95th percentile graphs
 -issue#3341: PHP Error when loading Cacti login page
--issue#3343: Improper Access Control on disabling a user.
 -issue#3345: Calendar can not work in cacti 1.2.10
 -issue#3346: Broken rewrite of octet strings
+-feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)

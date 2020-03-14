@@ -1214,6 +1214,15 @@ $settings = array(
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
 			'default' => '0'
 			),
+		'path_basic_mapfile' => array(
+			'friendly_name' => __('Basic Auth Mapfile'),
+			'description' => __('When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account.'),
+			'method' => 'filepath',
+			'file_type' => 'ascii',
+			'max_length' => 255,
+			'default' => '',
+			'install_optional' => true
+			),
 		'secpass_header' => array(
 			'friendly_name' => __('Local Account Complexity Requirements'),
 			'method' => 'spacer',

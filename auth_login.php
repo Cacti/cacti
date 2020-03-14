@@ -55,6 +55,31 @@ if (read_config_option('auth_method') == '2') {
 		$upart = explode('@', $username);
 		$username = $upart[0];
 	}
+
+	/* Handle mapping basic accounts to shortform accounts.
+	 * Fromat of map file is CSV: basic,shortform */
+	$mapfile = read_config_option('path_basic_mapfile');
+	if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
+		$records = file($mapfile);
+		$found   = false;
+
+		if (sizeof($records)) {
+			foreach($records as $r) {
+				list($basic, $shortform) = str_getcsv($r);
+
+				if (trim($basic) == $username) {
+					$username = trim($shortform);
+					$found    = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$found) {
+			cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
+		}
+	}
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
