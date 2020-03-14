@@ -206,6 +206,11 @@ function grow_dhtml_trees() {
 				$('.cactiTreeNavigationArea').css('overflow-x', '');
 			}
 		}
+
+		var navWidth = $('#navigation').width();
+		if (navWidth > 0) {
+			$('#searcher').css('width', navWidth-70);
+		}
 	}
 
 	function checkTreeForLogout() {

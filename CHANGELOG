@@ -21,6 +21,7 @@ Cacti CHANGELOG
 -issue#3341: PHP Error when loading Cacti login page
 -issue#3345: Calendar can not work in cacti 1.2.10
 -issue#3346: Broken rewrite of octet strings
+-issue: Tree searcher sizes to 0 bytes width until page resized
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
 
 1.2.10
