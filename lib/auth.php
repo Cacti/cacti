@@ -692,20 +692,22 @@ function is_realm_allowed($realm) {
 			kill_session_var('sess_user_config_array');
 			kill_session_var('sess_config_array');
 
-			$enabled = db_fetch_cell_prepared('SELECT enabled
-				FROM user_auth
-				WHERE id = ?',
-				array($_SESSION['sess_user_id']));
-
-			if ($enabled == '') {
-				db_execute_prepared('DELETE FROM user_auth_cache
-					WHERE user_id = ?',
+			if (db_table_exists('user_auth_cache')) {
+				$enabled = db_fetch_cell_prepared('SELECT enabled
+					FROM user_auth
+					WHERE id = ?',
 					array($_SESSION['sess_user_id']));
 
-				kill_session_var('sess_user_id');
+				if ($enabled == '') {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						array($_SESSION['sess_user_id']));
 
-				print '<span style="display:none;">cactiLoginSuspend</span>';
-				exit;
+					kill_session_var('sess_user_id');
+
+					print '<span style="display:none;">cactiLoginSuspend</span>';
+					exit;
+				}
 			}
 		}
 

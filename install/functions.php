@@ -136,7 +136,7 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
-		db_install_add_cache($status, $sql);
+		db_install_add_cache($status, $sql, $params);
 	}
 
 	return $status;
