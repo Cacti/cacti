@@ -23,7 +23,7 @@
 */
 
 function import_xml_data(&$xml_data, $import_as_new, $profile_id, $remove_orphans = false) {
-	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $remove_orphans, $import_debug_info, $legacy_template;
+	global $config, $hash_type_codes, $cacti_version_codes, $preview_only, $import_debug_info, $legacy_template;
 
 	include_once($config['library_path'] . '/xml.php');
 
