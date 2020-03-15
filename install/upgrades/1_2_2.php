@@ -26,7 +26,7 @@ function upgrade_to_1_2_2() {
 	db_install_execute("ALTER TABLE poller_time MODIFY COLUMN id bigint(20) unsigned auto_increment");
 
 	// Find aggregates with orphaned items
-	$aggregates_results = db_fetch_assoc('SELECT local_graph_id FROM aggregate_graphs');
+	$aggregates_results = db_install_fetch_assoc('SELECT local_graph_id FROM aggregate_graphs');
 	$aggregates = array_rekey($aggregates_results['data'], 'local_graph_id', 'local_graph_id');
 
 	if (cacti_sizeof($aggregates)) {
