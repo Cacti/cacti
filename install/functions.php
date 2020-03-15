@@ -1011,8 +1011,8 @@ function install_full_sync() {
 		WHERE id > 1
 		AND disabled = ""');
 
-	if (cacti_sizeof($poller_ids)) {
-		foreach($poller_ids as $poller) {
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller) {
 			if (($poller['stataus'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
