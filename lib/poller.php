@@ -1773,6 +1773,10 @@ function get_remote_poller_ids_from_devices(&$devices) {
 function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 300) {
 	$pid = getmypid();
 
+	if (!db_table_exists('processes')) {
+		return false;
+	}
+
 	$r = db_fetch_row_prepared('SELECT *
 		FROM processes
 		WHERE tasktype = ?
@@ -1822,6 +1826,10 @@ function register_process_start($tasktype, $taskname, $taskid = 0, $timeout = 30
  * @return null             - No data is returned
  */
 function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
+	if (!db_table_exists('processes')) {
+		return true;
+	}
+
 	db_execute_prepared('INSERT INTO processes (tasktype, taskname, taskid, pid, timeout, last_update)
 		VALUES (?, ?, ?, ?, ?, ?)',
 		array($tasktype, $taskname, $taskid, $pid, $timeout, date('Y-m-d H:i:s')));
@@ -1835,6 +1843,10 @@ function register_process($tasktype, $taskname, $taskid, $pid, $timeout) {
  * @return null             - No data is returned
  */
 function unregister_process($tasktype, $taskname, $taskid = 0) {
+	if (!db_table_exists('processes')) {
+		return true;
+	}
+
 	db_execute_prepared('DELETE FROM processes
 		WHERE tasktype = ?
 		AND taskname = ?
@@ -1850,6 +1862,10 @@ function unregister_process($tasktype, $taskname, $taskid = 0) {
  * @return null             - No data is returned
  */
 function heartbeat_process($tasktype, $taskname, $taskid = 0) {
+	if (!db_table_exists('processes')) {
+		return true;
+	}
+
 	db_execute_prepared('UPDATE processes
 		SET last_update = ?
 		WHERE tasktype = ?
@@ -1866,6 +1882,10 @@ function heartbeat_process($tasktype, $taskname, $taskid = 0) {
  * @return null             - No data is returned
  */
 function timeout_kill_registered_processes($tasktype = '', $taskname = '') {
+	if (!db_table_exists('processes')) {
+		return true;
+	}
+
 	if ($tasktype != '') {
 		$processes = db_fetch_assoc('SELECT *
 			FROM processes

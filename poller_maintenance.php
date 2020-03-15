@@ -88,7 +88,7 @@ if (cacti_sizeof($parms)) {
 
 maint_debug('Checking for Purge Actions');
 
-/* silently end if the registered process is still running */
+/* silently end if the registered process is still running, or process table missing */
 if (!register_process_start('maintenance', 'master', $config['poller_id'], read_config_option('maintenance_timeout'))) {
 	exit(0);
 }

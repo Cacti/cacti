@@ -117,7 +117,7 @@ if ($debug) {
 	$verbosity = POLLER_VERBOSITY_MEDIUM;
 }
 
-/* silently end if the registered process is still running */
+/* silently end if the registered process is still running, or process table missing */
 if (!register_process_start('commands', 'master', $poller_id, read_config_option('commands_timeout'))) {
 	exit(0);
 }

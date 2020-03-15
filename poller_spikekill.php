@@ -77,7 +77,7 @@ if (cacti_sizeof($parms)) {
 	}
 }
 
-/* silently end if the registered process is still running */
+/* silently end if the registered process is still running, or process table missing */
 if (!register_process_start('spikekill', 'master', 0, read_config_option('spikekill_timeout'))) {
 	exit(0);
 }

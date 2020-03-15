@@ -127,13 +127,18 @@ $t = time();
 $number_sent = 0;
 
 if (!$force) {
-	/* silently end if the registered process is still running */
+	/* silently end if the registered process is still running, or process table missing */
 	if (!register_process_start('reports', 'master', 0, read_config_option('reports_timeout'))) {
 		exit(0);
 	}
 }
 
-# fetch all enabled reports that have a stratime in the past
+/* cacti upgrading */
+if (!db_table_exists('reports')) {
+	exit(0);
+}
+
+/* fetch all enabled reports that have a stratime in the past */
 if (!$force) {
 	$reports = db_fetch_assoc_prepared('SELECT * FROM reports WHERE mailtime < ? AND enabled="on"', array($t));
 } else {
@@ -141,7 +146,7 @@ if (!$force) {
 }
 reports_log('Cacti Reports reports found: ' . cacti_sizeof($reports), true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);
 
-# execute each of those reports
+/* execute each of those reports */
 if (cacti_sizeof($reports)) {
 	foreach ($reports as $report) {
 		reports_log('Reports processing report: ' . $report['name'], true, 'REPORTS', POLLER_VERBOSITY_MEDIUM);

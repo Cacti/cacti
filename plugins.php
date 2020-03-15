@@ -74,6 +74,8 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 				api_plugin_install($id);
 			}
 
+			define('IN_PLUGIN_INSTALL', 1);
+
 			if ($_SESSION['sess_plugins_state'] >= 0) {
 				header('Location: plugins.php?state=5' . ($option != '' ? '&' . $option:''));
 			} else {
@@ -83,7 +85,11 @@ if (isset_request_var('mode') && in_array(get_nfilter_request_var('mode'), $mode
 			break;
 		case 'uninstall':
 			if (!in_array($id, $pluginslist)) break;
+
+			define('IN_PLUGIN_INSTALL', 1);
+
 			api_plugin_uninstall($id);
+
 			header('Location: plugins.php' . ($option != '' ? '?' . $option:''));
 			exit;
 			break;
