@@ -1164,6 +1164,30 @@ function replicate_out($remote_poller_id = 1, $class = 'all') {
 
 	// Core tables
 	if ($class == 'all') {
+		$data = db_fetch_assoc('SELECT * FROM automation_graph_rule_items');
+		replicate_out_table($rcnn_id, $data, 'automation_graph_rule_items', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_graph_rules');
+		replicate_out_table($rcnn_id, $data, 'automation_graph_rules', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_match_rule_items');
+		replicate_out_table($rcnn_id, $data, 'automation_match_rule_items', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_snmp');
+		replicate_out_table($rcnn_id, $data, 'automation_snmp', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_snmp_items');
+		replicate_out_table($rcnn_id, $data, 'automation_snmp_items', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_templates');
+		replicate_out_table($rcnn_id, $data, 'automation_templates', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_tree_rule_items');
+		replicate_out_table($rcnn_id, $data, 'automation_tree_rule_items', $remote_poller_id);
+
+		$data = db_fetch_assoc('SELECT * FROM automation_tree_rules');
+		replicate_out_table($rcnn_id, $data, 'automation_tree_rules', $remote_poller_id);
+
 		$data = db_fetch_assoc('SELECT * FROM data_input');
 		replicate_out_table($rcnn_id, $data, 'data_input', $remote_poller_id);
 

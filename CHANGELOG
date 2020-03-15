@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -SECURITY#3343: Improper Access Control on disabling a user.
 -issue#3231: Ability to unlock a tree that has been locked for editing by another account.
 -issue#3237: Report gets resent every poller cycle
+-issue#3261: Automation rules aren't run for new devices on remote data collectors
 -issue#3296: Upgrade from 1.2.5 to 1.2.9 not completing / memory exhaustion
 -issue#3299: Cacti should warn users who use php-snmp and SNMPv3 to uninstall php-snmp
 -issue#3310: Fix automation_get_valid_mask() calculation on 32bit architectures
