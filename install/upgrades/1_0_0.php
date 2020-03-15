@@ -1220,10 +1220,10 @@ function upgrade_to_1_0_0() {
 			VALUES (1,'Default Option Set')");
 
 		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
-			VALUES (1,1,1,2,'public',161,1000,3,10,'admin','baseball','MD5','','DES','','')");
+			VALUES (1,1,1,2,'public',161,1000,3,10,'','','MD5','','DES','')");
 
 		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
-			VALUES (2,1,2,2,'private',161,1000,3,10,'admin','baseball','MD5','','DES','','');");
+			VALUES (2,1,2,2,'private',161,1000,3,10,'','','MD5','','DES','');");
 	}
 
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
