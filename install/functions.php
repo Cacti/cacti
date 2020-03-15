@@ -314,7 +314,7 @@ function db_install_add_cache($status, $sql, $params = NULL) {
 	$actual = 0;
 	$expected = substr_count($query, '?');
 
-	if ($params != NULL) {
+	if (cacti_sizeof($params)) {
 		foreach ($params as $arg) {
 			$pos = strpos($query, '?');
 			if ($pos !== false) {
@@ -402,8 +402,8 @@ function find_search_paths($os = 'unix') {
 }
 
 function db_install_swap_setting($old_setting, $new_setting) {
-	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting['data']));
-	if (empty($exists)) {
+	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
+	if (empty($exists['data'])) {
 		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
 	} else {
 		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', array($old_setting));

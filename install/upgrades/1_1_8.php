@@ -24,10 +24,14 @@
 
 function upgrade_to_1_1_8() {
 	// update graph_watermark if set
-	$current_graph_watermark_results = db_install_fetch_cell("SELECT `value` FROM `settings` WHERE name = 'graph_watermark'");
-	$current_grapj_watermark = $current_graph_watermark_results['data'];
+	$watermark = '';
+	$result    = db_install_fetch_cell("SELECT `value` FROM `settings` WHERE name = 'graph_watermark'");
 
-	if ($current_graph_watermark == 'Copyright (C) 2004-2017 The Cacti Group') {
+	if (isset($result['data'])) {
+		$watermark = $result['data'];
+	}
+
+	if ($watermark == 'Copyright (C) 2004-2017 The Cacti Group') {
 		db_install_execute("DELETE FROM `settings` WHERE name = 'graph_watermark'");
 	}
 }

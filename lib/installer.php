@@ -89,6 +89,7 @@ class Installer implements JsonSerializable {
 	private $tables;
 	private $runtime;
 	private $errors;
+	private $profile;
 
 	private $automationMode = null;
 	private $automationOverride = null;
@@ -832,6 +833,8 @@ class Installer implements JsonSerializable {
 				}
 			}
 			log_install_medium('automation',"setProfile($param_profile) returns with $this->profile");
+		} else {
+			$this->profile = 1;
 		}
 	}
 
