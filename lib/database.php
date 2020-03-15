@@ -755,7 +755,7 @@ function db_index_matches($table, $index, $columns, $log = true, $db_conn = fals
 function db_table_exists($table, $log = true, $db_conn = false) {
 	static $results;
 
-	if (isset($results[$table][$column]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
+	if (isset($results[$table]) && !defined('IN_CACTI_INSTALL') && !defined('IN_PLUGIN_INSTALL')) {
 		return $results[$table];
 	}
 
