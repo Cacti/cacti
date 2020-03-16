@@ -79,8 +79,6 @@ $url_path = '/cacti/';
 /* disable log rotation setting */
 $disable_log_rotation = false;
 
-/* allow upto 5000 items to be selected */
-ini_set('max_input_vars', '5000');
 $config = array();
 
 /* Include configuration, or use the defaults */
@@ -391,7 +389,6 @@ if ($config['is_web']) {
 
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
-	ini_set('max_input_vars', '5000');
 	ini_set('session.cookie_httponly', '1');
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		ini_set('session.cookie_secure', '1');

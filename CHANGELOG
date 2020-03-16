@@ -23,6 +23,7 @@ Cacti CHANGELOG
 -issue#3345: Calendar can not work in cacti 1.2.10
 -issue#3346: Broken rewrite of octet strings
 -issue#3348: Remove Orphans and Sync Graphs not working as expected
+-issue#3349: Variable max_input_vars is read only.  Attempting to change it adds no value
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
