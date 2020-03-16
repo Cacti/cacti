@@ -522,11 +522,15 @@ function template_edit() {
 
 	if (!isempty_request_var('id')) {
 		$template_data = db_fetch_row_prepared('SELECT dtd.*, data_sources
-			FROM (SELECT COUNT(*) AS data_sources FROM data_local AS dl
-			LEFT JOIN data_template_data AS idtd ON dl.id=idtd.local_data_id
-			WHERE idtd.data_template_id = ?) AS ds
-			JOIN (SELECT * FROM data_template_data
-			WHERE data_template_id = ? AND local_data_id=0) AS dtd',
+			FROM (
+				SELECT COUNT(*) AS data_sources FROM data_local AS dl
+				LEFT JOIN data_template_data AS idtd ON dl.id=idtd.local_data_id
+				WHERE idtd.data_template_id = ?
+			) AS ds
+			INNER JOIN (
+				SELECT * FROM data_template_data
+				WHERE data_template_id = ? AND local_data_id = 0
+			) AS dtd',
 			array(get_request_var('id'), get_request_var('id')));
 
 		$template = db_fetch_row_prepared('SELECT *
