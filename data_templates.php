@@ -521,13 +521,16 @@ function template_edit() {
 	$isSNMPget = false;
 
 	if (!isempty_request_var('id')) {
-		$template_data = db_fetch_row_prepared('SELECT dtd.*,
-			SUM(CASE WHEN dl.data_template_id = ? THEN 1 ELSE 0 END) AS data_sources
-			FROM data_template_data AS dtd
-			LEFT JOIN data_local AS dl
-			ON dl.id=dtd.local_data_id
-			WHERE dtd.data_template_id = ?
-			HAVING dtd.local_data_id=0',
+		$template_data = db_fetch_row_prepared('SELECT dtd.*, data_sources
+			FROM (
+				SELECT COUNT(*) AS data_sources FROM data_local AS dl
+				LEFT JOIN data_template_data AS idtd ON dl.id=idtd.local_data_id
+				WHERE idtd.data_template_id = ?
+			) AS ds
+			INNER JOIN (
+				SELECT * FROM data_template_data
+				WHERE data_template_id = ? AND local_data_id = 0
+			) AS dtd',
 			array(get_request_var('id'), get_request_var('id')));
 
 		$template = db_fetch_row_prepared('SELECT *
