@@ -622,7 +622,7 @@ function profile_edit() {
 		$('body').append("<div id='cdialog'></div>");
 
         $('#consolidation_function_id').multiselect({
-            selectedList: 1,
+            selectedList: 4,
             noneSelectedText: '<?php print __('Select Consolidation Function(s)');?>',
             header: false,
             groupColumns: true,
