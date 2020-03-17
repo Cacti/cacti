@@ -1124,8 +1124,20 @@ $settings = array(
 			'method' => 'spacer',
 			),
 		'reports_timeout' => array(
-			'friendly_name' => __('Report Background Generation Timeout'),
+			'friendly_name' => __('Report Generation Timeout'),
 			'description' => __('The maximum amount of time Cacti\'s Reports Generation script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'dsstats_timeout' => array(
+			'friendly_name' => __('Data Source Statistics Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Data Source Statistics script can run without generating a timeout error and being killed.'),
 			'method' => 'drop_array',
 			'default' => '300',
 			'array' => array(
