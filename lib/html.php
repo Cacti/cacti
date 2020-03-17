@@ -144,7 +144,7 @@ function html_start_box($title, $width, $div, $cell_padding, $align, $add_text, 
 function html_end_box($trailing_br = true, $div = false) {
 	if ($div) {
 		print '</div></div>';
-	}else {
+	} else {
 		print '</table></div>';
 	}
 
@@ -474,11 +474,12 @@ function graph_drilldown_icons($local_graph_id, $type = 'graph_buttons') {
    @arg $total_rows - the total number of rows in the navigation system
    @arg $object - the object types that is being displayed
    @arg $page_var - the object types that is being displayed
-   @arg $return_to - paint the resulting page into this dom object */
-function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '') {
+   @arg $return_to - paint the resulting page into this dom object
+   @arg $page_count - provide a page count */
+function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $total_rows, $colspan=30, $object = '', $page_var = 'page', $return_to = '', $page_count = true) {
 	if ($object == '') $object = __('Rows');
 
-	if ($total_rows > $rows_per_page) {
+	if ($total_rows > $rows_per_page && $page_count) {
 		if (substr_count($base_url, '?') == 0) {
 			$base_url = trim($base_url) . '?';
 		} else {
@@ -499,11 +500,41 @@ function html_nav_bar($base_url, $max_pages, $current_page, $rows_per_page, $tot
 			</div>
 		</div>";
 	} elseif ($total_rows > 0) {
-		$nav = "<div class='navBarNavigation'>
-			<div class='navBarNavigationNone'>
-				" . __('All %d %s', $total_rows, $object) . '
-			</div>
-		</div>';
+		if ($page_count || ($total_rows < $rows_per_page && $current_page ==1) ) {
+			$nav = "<div class='navBarNavigation'>
+				<div class='navBarNavigationNone'>
+					" . __('All %d %s', $total_rows, $object) . "
+				</div>
+			</div>\n";
+		} else {
+			if (substr_count($base_url, '?') == 0) {
+				$base_url = trim($base_url) . '?';
+			} else {
+				$base_url = trim($base_url) . '&';
+			}
+
+			$url_page_select = "<ul class='pagination'>"; //for the same height as write in get_page_list()
+			$url_page_select .= "<li>$current_page</a></li>";
+			$url_page_select .= '</ul>';
+
+			$nav = "<div class='navBarNavigation'>
+				<div class='navBarNavigationPrevious'>
+					" . (($current_page > 1) ? "<a href='#' onClick='goto$page_var(" . ($current_page-1) . ");return false;'><i class='fa fa-angle-double-left previous'></i>" . __('Previous'). "</a>":"") . "
+				</div>
+				<div class='navBarNavigationCenter'>
+					" . __('Current Page: %s', $url_page_select) . "
+				</div>
+				<div class='navBarNavigationNext'>
+					" . ($total_rows >= $rows_per_page ? "<a href='#' onClick='goto$page_var(" . ($current_page+1) . ");return false;'>" . __('Next'). "<i class='fa fa-angle-double-right next'></i></a>":"") . "
+				</div>
+			</div>\n";
+
+			if ($return_to != '') {//code as in get_page_list()
+				$nav .= "<script type='text/javascript'>function goto$page_var(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; $.get('" . $base_url . "header=false&" . $page_var . "='+pageNo+url_add).done(function(data) { $('#$return_to').html(data); applySkin(); }); }</script>";
+			} else {
+				$nav .= "<script type='text/javascript'>function goto${page_var}(pageNo) { if (typeof url_graph === 'function') { var url_add=url_graph('') } else { var url_add=''; }; document.location='$base_url$page_var='+pageNo+url_add }</script>";
+			}
+		}
 	} else {
 		$nav = "<div class='navBarNavigation'>
 			<div class='navBarNavigationNone'>
@@ -1426,7 +1457,7 @@ function draw_actions_dropdown($actions_array, $delete_action = 1) {
 	?>
 	<div class='actionsDropdown'>
 		<div>
-			<span class='actionsDropdownArrow'><img src='<?php echo $config['url_path']; ?>images/arrow.gif' alt=''></span>
+			<span class='actionsDropdownArrow'><img src='<?php print $config['url_path']; ?>images/arrow.gif' alt=''></span>
 			<?php form_dropdown('drp_action', $actions_array, '', '', '0', '', '');?>
 			<span class='actionsDropdownButton'><input type='submit' class='ui-button ui-corner-all ui-widget' id='submit' value='<?php print __esc('Go');?>' title='<?php print __esc('Execute Action');?>'></span>
 		</div>
@@ -1580,7 +1611,7 @@ function html_show_tabs_left() {
 
 	if (get_selected_theme() == 'classic') {
 		if ($show_console_tab == true) {
-			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":'');?> href='<?php echo $config['url_path']; ?>index.php'><img src='<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif' alt='<?php print __('Console');?>'></a><?php
+			?><a id='tab-console' <?php print (is_console_page(get_current_page()) ? " class='selected'":'');?> href='<?php print $config['url_path']; ?>index.php'><img src='<?php echo $config['url_path']; ?>images/tab_console<?php print (is_console_page(get_current_page()) ? '_down':'');?>.gif' alt='<?php print __('Console');?>'></a><?php
 		}
 
 		if ($realm_allowed[7]) {
@@ -1832,21 +1863,21 @@ function html_graph_tabs_right() {
 
 	if ($theme == 'classic') {
 		if (is_view_allowed('show_tree')) {
-			?><a class='righttab' id='treeview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_tree<?php
+			?><a class='righttab' id='treeview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=tree');?>'><img src='<?php print $config['url_path']; ?>images/tab_mode_tree<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'tree') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('Tree View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_list')) {
-			?><a class='righttab' id='listview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_list<?php
+			?><a class='righttab' id='listview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=list');?>'><img src='<?php print $config['url_path']; ?>images/tab_mode_list<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'list') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('List View');?>' alt=''></a><?php
 		}?><?php
 
 		if (is_view_allowed('show_preview')) {
-			?><a class='righttab' id='preview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php echo $config['url_path']; ?>images/tab_mode_preview<?php
+			?><a class='righttab' id='preview' href='<?php print html_escape($config['url_path'] . 'graph_view.php?action=preview');?>'><img src='<?php print $config['url_path']; ?>images/tab_mode_preview<?php
 			if (isset_request_var('action') && get_nfilter_request_var('action') == 'preview') {
 				print '_down';
 			}?>.gif' title='<?php print __esc('Preview View');?>' alt=''></a><?php
@@ -2335,7 +2366,7 @@ function html_common_header($title, $selectedTheme = '') {
 	<meta name='mobile-web-app-capable' content='yes'>
 	<meta http-equiv="Content-Security-Policy" content="default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' <?php print $script_policy;?> 'unsafe-inline';">
 	<meta name='robots' content='noindex,nofollow'>
-	<title><?php echo $title; ?></title>
+	<title><?php print $title; ?></title>
 	<meta http-equiv='Content-Type' content='text/html;charset=utf-8'>
 	<script type='text/javascript'>
 		var theme='<?php print $selectedTheme;?>';
@@ -2419,8 +2450,8 @@ function html_common_header($title, $selectedTheme = '') {
 		var zoom_i18n_settings='<?php print __esc('Settings');?>';
 		var zoom_i18n_3rd_button='<?php print __esc('3rd Mouse Button');?>';
 	</script>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
-	<link href='<?php echo $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
+	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/favicon.ico' rel='shortcut icon'>
+	<link href='<?php print $config['url_path']; ?>include/themes/<?php print $selectedTheme;?>/images/cacti_logo.gif' rel='icon' sizes='96x96'>
 	<?php
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery.zoom.css');
 	print get_md5_include_css('include/themes/' . $selectedTheme .'/jquery-ui.css');
