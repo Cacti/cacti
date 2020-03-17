@@ -1118,6 +1118,76 @@ $settings = array(
 			'method' => 'checkbox',
 			'default' => ''
 			),
+		'timeouts_header' => array(
+			'friendly_name' => __('Background Timeout Settings'),
+			'collapsible' => 'true',
+			'method' => 'spacer',
+			),
+		'reports_timeout' => array(
+			'friendly_name' => __('Report Generation Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Reports Generation script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'dsstats_timeout' => array(
+			'friendly_name' => __('Data Source Statistics Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Data Source Statistics script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'commands_timeout' => array(
+			'friendly_name' => __('Background Commands Timeout'),
+			'description' => __('The maximum amount of time Cacti\'s Background Commands script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20))
+			),
+		'maintenance_timeout' => array(
+			'friendly_name' => __('Maintenance Background Generation Timeout'),
+			'description' => __('The maximum amount of time a Cacti\'s Maintenance script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '300',
+			'array' => array(
+				'60'   => __('%s Minute', 1),
+				'120'  => __('%s Minutes', 2),
+				'300'  => __('%s Minutes', 5),
+				'600'  => __('%s Minutes', 10),
+				'1200' => __('%s Minutes', 20),
+				'3600' => __('%s Hour', 1))
+			),
+		'spikekill_timeout' => array(
+			'friendly_name' => __('Spikekill Background Generation Timeout'),
+			'description' => __('The maximum amount of time a Cacti\'s Spikekill script can run without generating a timeout error and being killed.'),
+			'method' => 'drop_array',
+			'default' => '3600',
+			'array' => array(
+				'60'    => __('%s Minute', 1),
+				'120'   => __('%s Minutes', 2),
+				'300'   => __('%s Minutes', 5),
+				'600'   => __('%s Minutes', 10),
+				'1200'  => __('%s Minutes', 20),
+				'3600'  => __('%s Hour', 1),
+				'7200'  => __('%s Hours', 2),
+				'14400' => __('%s Hours', 4),
+				'28800' => __('%s Hours', 8))
+			),
 		'spine_header' => array(
 			'friendly_name' => __('Spine Specific Execution Parameters'),
 			'collapsible' => 'true',
@@ -1213,6 +1283,15 @@ $settings = array(
 			'none_value' => __('No User'),
 			'sql' => 'SELECT id AS id, username AS name FROM user_auth WHERE realm = 0 ORDER BY username',
 			'default' => '0'
+			),
+		'path_basic_mapfile' => array(
+			'friendly_name' => __('Basic Auth Mapfile'),
+			'description' => __('When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account.'),
+			'method' => 'filepath',
+			'file_type' => 'ascii',
+			'max_length' => 255,
+			'default' => '',
+			'install_optional' => true
 			),
 		'secpass_header' => array(
 			'friendly_name' => __('Local Account Complexity Requirements'),
@@ -2073,6 +2152,12 @@ $settings_user = array(
 		'hide_disabled' => array(
 			'friendly_name' => __('Hide Disabled'),
 			'description' => __('Hides Disabled Devices and Graphs when viewing outside of Console tab.'),
+			'method' => 'checkbox',
+			'default' => 'on'
+			),
+		'show_aggregates' => array(
+			'friendly_name' => __('Show Device Aggregates'),
+			'description' => __('If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs'),
 			'method' => 'checkbox',
 			'default' => 'on'
 			),

@@ -36,17 +36,20 @@ function upgrade_to_0_8_6i() {
 
 	/* add some missing information from default/system data input methods */
 	/* first we must see if the user was smart enough to add it themselves */
-	$snmp_get = db_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='1'");
-	$snmp_index = db_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='2'");
+	$snmp_get_results = db_install_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='1'");
+	$snmp_get         = $snmp_get_results['data'];
+
+	$snmp_index_results = db_install_fetch_cell("SELECT id FROM data_input_fields WHERE data_name='snmp_port' AND data_input_id='2'");
+	$snmp_index         = $snmp_index_results['data'];
 
 	if ($snmp_index > 0) {
-		db_install_execute("REPLACE INTO `data_input_fields` VALUES ($snmp_index, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+		db_install_execute("REPLACE INTO `data_input_fields` VALUES (?, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');", array($snmp_index));
 	} else {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES (0, 'c1f36ee60c3dc98945556d57f26e475b',2,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
 	}
 
 	if ($snmp_get > 0) {
-		db_install_execute("REPLACE INTO `data_input_fields` VALUES ($snmp_get, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
+		db_install_execute("REPLACE INTO `data_input_fields` VALUES ('fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');", array($snmp_get));
 	} else {
 		db_install_execute("REPLACE INTO `data_input_fields` VALUES (0, 'fc64b99742ec417cc424dbf8c7692d36',1,'SNMP Port','snmp_port','in','',0,'snmp_port','','');");
 	}

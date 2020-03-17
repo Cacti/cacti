@@ -73,7 +73,7 @@ if (cacti_sizeof($parms)) {
 			case '--version':
 			case '-V':
 				display_version();
-				exit;
+				exit(0);
 			case '-H':
 			case '--help':
 				display_help();
@@ -115,6 +115,11 @@ if ($debug) {
 	$verbosity = POLLER_VERBOSITY_LOW;
 } else {
 	$verbosity = POLLER_VERBOSITY_MEDIUM;
+}
+
+/* silently end if the registered process is still running, or process table missing */
+if (!register_process_start('commands', 'master', $poller_id, read_config_option('commands_timeout'))) {
+	exit(0);
 }
 
 if (cacti_sizeof($poller_commands)) {
@@ -181,6 +186,8 @@ if ($recached_hosts > 0) {
 /* insert poller stats into the settings table */
 db_execute_prepared('REPLACE INTO settings (name, value) VALUES (?, ?)',
 	array('stats_recache_' . $poller_id, $recache_stats), true, $poller_db_cnn_id);
+
+unregister_process('commands', 'master', $poller_id);
 
 /*  display_version - displays version information */
 function display_version() {

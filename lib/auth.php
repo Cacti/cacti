@@ -324,6 +324,8 @@ function user_disable($user_id) {
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = '' WHERE id = ?", array($user_id));
+
+	reset_user_perms($user_id);
 }
 
 /* user_enable - enable a user account
@@ -334,6 +336,8 @@ function user_enable($user_id) {
 	/* ==================================================== */
 
 	db_execute_prepared("UPDATE user_auth SET enabled = 'on' WHERE id = ?", array($user_id));
+
+	reset_user_perms($user_id);
 }
 
 /* get_auth_realms - return a list of system user authentication realms */
@@ -687,6 +691,24 @@ function is_realm_allowed($realm) {
 			kill_session_var('sess_user_realms');
 			kill_session_var('sess_user_config_array');
 			kill_session_var('sess_config_array');
+
+			if (db_table_exists('user_auth_cache')) {
+				$enabled = db_fetch_cell_prepared('SELECT enabled
+					FROM user_auth
+					WHERE id = ?',
+					array($_SESSION['sess_user_id']));
+
+				if ($enabled == '') {
+					db_execute_prepared('DELETE FROM user_auth_cache
+						WHERE user_id = ?',
+						array($_SESSION['sess_user_id']));
+
+					kill_session_var('sess_user_id');
+
+					print '<span style="display:none;">cactiLoginSuspend</span>';
+					exit;
+				}
+			}
 		}
 
 		if (isset($_SESSION['sess_user_realms'][$realm])) {

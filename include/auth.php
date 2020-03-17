@@ -189,7 +189,9 @@ if (read_config_option('auth_method') != 0) {
 			$install_sql_params = array($realm_id);
 
 			/* See if the group realms exist and if so, check if permission exists there too */
-			if (db_table_exists('user_auth_group_realm')) {
+			if (db_table_exists('user_auth_group_realm') &&
+				db_table_exists('user_auth_group') &&
+				db_table_exists('user_auth_group_members')) {
 				$install_sql_query .= '
 					UNION
 					SELECT realm_id
@@ -238,7 +240,9 @@ if (read_config_option('auth_method') != 0) {
 
 			/* Because we now expect installation to be done by authorized users, check the group_realm *
 			 * exists before using it as this may not be present if upgrading from pre-1.x              */
-			if (db_table_exists('user_auth_group_realm')) {
+			if (db_table_exists('user_auth_group_realm') &&
+				db_table_exists('user_auth_group') &&
+				db_table_exists('user_auth_group_members')) {
 				$auth_sql_query .= '
 					UNION
 					SELECT realm_id

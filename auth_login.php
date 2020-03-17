@@ -55,6 +55,31 @@ if (read_config_option('auth_method') == '2') {
 		$upart = explode('@', $username);
 		$username = $upart[0];
 	}
+
+	/* Handle mapping basic accounts to shortform accounts.
+	 * Fromat of map file is CSV: basic,shortform */
+	$mapfile = read_config_option('path_basic_mapfile');
+	if ($mapfile != '' && file_exists($mapfile) && is_readable($mapfile)) {
+		$records = file($mapfile);
+		$found   = false;
+
+		if (sizeof($records)) {
+			foreach($records as $r) {
+				list($basic, $shortform) = str_getcsv($r);
+
+				if (trim($basic) == $username) {
+					$username = trim($shortform);
+					$found    = true;
+
+					break;
+				}
+			}
+		}
+
+		if (!$found) {
+			cacti_log("WARNING: Username $username not found in basic mapfile.", false, 'AUTH');
+		}
+	}
 } else {
 	if (get_nfilter_request_var('action') == 'login') {
 		/* LDAP and Builtin get username from Form */
@@ -289,7 +314,7 @@ if (get_nfilter_request_var('action') == 'login') {
 	$guest_user = false;
 	if (!cacti_sizeof($user) && $user_auth && get_guest_account() != '0') {
 		/* Locate guest user record */
-		$user = db_fetch_row_prepared('SELECT id, username, enabled
+		$user = db_fetch_row_prepared('SELECT *
 			FROM user_auth
 			WHERE id = ?',
 			array(get_guest_account()));
@@ -319,7 +344,12 @@ if (get_nfilter_request_var('action') == 'login') {
 			array($username, $user['id'], $client_addr));
 
 		/* is user enabled */
-		$user_enabled = $user['enabled'];
+		if (isset($user['enabled'])) {
+			$user_enabled = $user['enabled'];
+		} else {
+			$user_enabled = 'on';
+		}
+
 		if ($user_enabled != 'on') {
 			/* Display error */
 			display_custom_error_message(__('Access Denied, user account disabled.'));
@@ -807,6 +837,9 @@ $selectedTheme = get_selected_theme();
 
 	$(function() {
 		preferredRealm = storage.get('user_realm');
+		if (preferredRealm == undefined) {
+			preferredRealm = $('#realm option:selected').val();
+		}
 
 		// Restore the preferred realm
 		if ($('#realm').length) {

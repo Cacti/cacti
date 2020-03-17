@@ -62,7 +62,7 @@ function sig_handler($signo) {
         case SIGINT:
 			if ($thread > 0) {
 				clearTask($network_id, getmypid());
-				exit;
+				exit(0);
 			} elseif($thread == 0 && !$master) {
 				$pids = array_rekey(db_fetch_assoc_prepared("SELECT pid
 					FROM automation_processes
@@ -100,7 +100,7 @@ function sig_handler($signo) {
 				clearTask($network_id, getmypid());
 			}
 
-            exit;
+            exit(0);
 
             break;
         default:
@@ -167,15 +167,15 @@ if (cacti_sizeof($parms)) {
 			case '-v':
 			case '--version':
 				display_version();
-				exit;
+				exit(0);
 			case '-h':
 			case '--help':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
@@ -189,7 +189,7 @@ if (function_exists('pcntl_signal')) {
 // Let's ensure that we were called correctly
 if (!$master && !$network_id) {
 	print "FATAL: You must specify -M to Start the Master Control Process, or the Network ID using --network\n";
-	exit;
+	exit(1);
 }
 
 // Simple check for a disabled network
@@ -202,11 +202,15 @@ if (!$master && $thread == 0) {
 
 	if ($status != 'on' && !$force) {
 		cacti_log(automation_get_pid() . " WARNING: The Network ID: $network_id is disabled.  You must use the 'force' option to force it's execution.", true, 'AUTOM8');
-		exit;
+		exit(1);
 	}
 }
 
 if ($master) {
+	if (!db_table_exists('automation_networks')) {
+		exit(0);
+	}
+
 	$networks = db_fetch_assoc_prepared('SELECT *
 		FROM automation_networks
 		WHERE poller_id = ?',
@@ -225,7 +229,7 @@ if ($master) {
 		}
 	}
 
-	exit;
+	exit(0);
 }
 
 // Check for Network Master
@@ -342,7 +346,7 @@ if (!$master && $thread == 0) {
 			clearAllTasks($network_id);
 			reportNetworkStatus($network_id, $preexisting_devices);
 
-			exit;
+			exit(0);
 		} else {
 			$failcount++;
 		}
@@ -355,7 +359,7 @@ if (!$master && $thread == 0) {
 	endTask($network_id, getmypid());
 }
 
-exit;
+exit(0);
 
 function discoverDevices($network_id, $thread) {
 	$network = db_fetch_row_prepared('SELECT *
@@ -390,7 +394,7 @@ function discoverDevices($network_id, $thread) {
 		if ($command == 'cancel' || empty($command)) {
 			removeMyProcess(getmypid(), $network_id);
 			killProcess(getmypid());
-			exit;
+			exit(0);
 		}
 
 		// set and ip to be scanned

@@ -553,7 +553,7 @@ function domain_edit() {
 
 	function initSearch() {
 		switch($('#mode').val()) {
-		case "0":
+		case '0':
 			$('#row_search_base_header').hide();
 			$('#row_search_base').hide();
 			$('#row_search_filter').hide();
@@ -562,7 +562,7 @@ function domain_edit() {
 			$('#row_cn_full_name').hide();
 			$('#row_cn_email').hide();
 			break;
-		case "1":
+		case '1':
 			$('#row_search_base_header').show();
 			$('#row_search_base').show();
 			$('#row_search_filter').show();
@@ -571,7 +571,7 @@ function domain_edit() {
 			$('#row_cn_full_name').hide();
 			$('#row_cn_email').hide();
 			break;
-		case "2":
+		case '2':
 			$('#row_search_base_header').show();
 			$('#row_search_base').show();
 			$('#row_search_filter').show();

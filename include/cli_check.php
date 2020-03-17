@@ -28,4 +28,18 @@ define('CACTI_CLI_ONLY', true);
 /* We are not talking to the browser */
 $no_http_headers = true;
 
+/* Make sure CLI's are have minimum settings */
+$default_limit  = 524288000;
+$default_time   = 300;
+$memory_limit   = ini_get('memory_limit');
+$execution_time = ini_get('max_execution_time');
+
+if ($memory_limit < $default_limit) {
+	ini_set('memory_limit', $default_limit);
+}
+
+if ($execution_time < $default_time) {
+	ini_set('max_execution_time', $default_time);
+}
+
 include(__DIR__ . '/global.php');

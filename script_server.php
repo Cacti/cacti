@@ -134,9 +134,6 @@ cacti_log('PHP Script Server has Started - Parent is ' . $environ, false, 'PHPSV
 fputs(STDOUT, 'PHP Script Server has Started - Parent is ' . $environ . "\n");
 fflush(STDOUT);
 
-$log_file = '/usr/share/cacti/site/log/script_server_' . getmypid() . '.out';
-$log_keep = false;
-
 /* process waits for input and then calls functions as required */
 while (1) {
 	$result = '';
@@ -169,7 +166,6 @@ while (1) {
 			cacti_log('WARNING: Parent (' . $parent_pid . ') of Script Server (' . getmypid() . ') has been lost, forcing exit', false, 'PHPSVR', POLLER_VERBOSITY_HIGH);
 			$input_string = 'quit';
 		}
-		$log_keep = true;
 	}
 
 	if (!empty($input_string)) {
@@ -179,9 +175,6 @@ while (1) {
 			fputs(STDOUT, 'PHP Script Server Shutdown request received, exiting' . PHP_EOL);
 			fflush(STDOUT);
 			cacti_log('DEBUG: PHP Script Server Shutdown request received, exiting', false, 'PHPSVR', POLLER_VERBOSITY_DEBUG);
-			if (!$log_keep) {
-				unlink($log_file);
-			}
 			db_close();
 			exit(0);
 		}

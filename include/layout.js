@@ -760,7 +760,11 @@ function renderLanguages() {
 				var value = $(this).val();
 				var page  = basename(location.pathname);
 				if (page == 'auth_profile.php') {
-					$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
+					$.post('auth_profile.php?tab='+currentTab+'&action=update_data', {
+						__csrf_magic: csrfMagicToken,
+						name: name,
+						value: value
+						}, function() {
 						if (name == 'selected_theme' || name == 'user_language') {
 							document.location = 'auth_profile.php?action=edit';
 						}
@@ -1683,22 +1687,22 @@ function loadTopTab(href, id, force) {
 
 		$.ajaxQ.abortAll();
 		$.get(url)
-			.done(function(html) {
-				var htmlObject  = $(html);
-				var matches     = html.match(/<title>(.*?)<\/title>/);
+			.done(function(data) {
+				var htmlObject  = $(data);
+				var matches     = data.match(/<title>(.*?)<\/title>/);
 
 				$('#main').hide();
 
 				if (matches != null) {
 					var htmlTitle   = matches[1];
 					var breadCrumbs = htmlObject.find('#breadcrumbs').html();
-					var parts       = html.split('</title>');
+					var parts       = data.split('</title>');
 					var data        = parts[1];
 
 					checkForLogout(data);
 
 					$('title').text(htmlTitle);
-					$('#breadcrumbs').html(breadCrumbs);
+					$('#breadcrumbs').data(breadCrumbs);
 					$('div[class^="ui-"]').remove();
 					$('#cactiContent').replaceWith(data);
 
@@ -1707,9 +1711,9 @@ function loadTopTab(href, id, force) {
 
 					pushState(myTitle, href);
 				} else {
-					checkForLogout(html);
+					checkForLogout(data);
 
-					$('#cactiContent').replaceWith(html);
+					$('#cactiContent').replaceWith(data);
 
 					thref = stripHeaderSuppression(href);
 
@@ -2099,7 +2103,6 @@ function ajaxAnchors() {
 
 		/* update menu selection */
 		if ($(this).hasClass('pic')) {
-			$('.pic').removeClass('selected');
 			$(this).addClass('selected');
 		}
 
@@ -2671,7 +2674,9 @@ function keepWindowSize() {
 			}
 
 			var navWidth = $('#navigation').width();
-			$('#searcher').css('width', navWidth-70);
+			if (navWidth > 0) {
+				$('#searcher').css('width', navWidth-70);
+			}
 
 			responsiveResizeGraphs();
 
@@ -2827,9 +2832,13 @@ function checkForLogout(data) {
 		return true;
 	} else if (typeof data === 'object') {
 		return true;
+	} else if (data.indexOf('cactiLoginSuspend') >= 0) {
+		document.location = urlPath + 'logout.php?action=disabled';
 	} else if (data.indexOf('cactiLoginLogo') >= 0) {
 		document.location = urlPath + 'logout.php?action=timeout';
 	}
+
+	return false;
 }
 
 function clearGraphFilter() {
@@ -2935,7 +2944,7 @@ function handlePopState() {
 			} else if (basename(href) == lastPage) {
 				loadPageNoHeader(href + (href.indexOf('?') > 0 ? '&header=false&nostate=true':'?header=false&nostate=true'));
 			} else {
-				href.replace('header=false').replace('?&', '?').replace('&&', '&');
+				href.replace('header=false','').replace('?&', '?').replace('&&', '&');
 				document.location = href + (href.indexOf('?') > 0 ? '&nostate=true':'?nostate=true');
 			}
 		}
@@ -2978,6 +2987,11 @@ function refreshGraphTimespanFilter() {
 	};
 
 	var href = appendHeaderSuppression(graphPage+'?action='+pageAction);
+
+	date1Open = false;
+	date2Open = false;
+	$('#date1').datetimepicker('hide');
+	$('#date2').datetimepicker('hide');
 
 	$.ajaxQ.abortAll();
 	$.post(href, json).done(function(data) {

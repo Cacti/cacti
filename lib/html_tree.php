@@ -206,6 +206,11 @@ function grow_dhtml_trees() {
 				$('.cactiTreeNavigationArea').css('overflow-x', '');
 			}
 		}
+
+		var navWidth = $('#navigation').width();
+		if (navWidth > 0) {
+			$('#searcher').css('width', navWidth-70);
+		}
 	}
 
 	function checkTreeForLogout() {
@@ -711,10 +716,18 @@ function create_data_query_branch($leaf, $site_id = -1, $ht = -1) {
 	if (cacti_sizeof($data_queries)) {
 		if ($leaf['host_id'] > 0) {
 			$ntg = get_allowed_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
-			$agg = get_allowed_aggregate_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
+			if (read_user_setting('show_aggregates', 'on') == 'on') {
+				$agg = get_allowed_aggregate_graphs('gl.host_id=' . $leaf['host_id'] . ' AND gl.snmp_query_id=0');
+			} else {
+				$agg = array();
+			}
 		} else {
 			$ntg = get_allowed_graphs('gl.snmp_query_id=0');
-			$agg = get_allowed_aggregate_graphs('gl.snmp_query_id=0');
+			if (read_user_setting('show_aggregates', 'on') == 'on') {
+				$agg = get_allowed_aggregate_graphs('gl.snmp_query_id=0');
+			} else {
+				$agg = array();
+			}
 		}
 
 		$ntg = array_merge($ntg, $agg);
@@ -1357,7 +1370,11 @@ function grow_right_pane_tree($tree_id, $leaf_id, $host_group_data) {
 		}
 
 		$graphs = get_allowed_graphs($sql_where);
-		$agg    = get_allowed_aggregate_graphs($sql_where);
+		if (read_user_setting('show_aggregates', 'on') == 'on') {
+			$agg = get_allowed_aggregate_graphs($sql_where);
+		} else {
+			$agg = array();
+		}
 
 		$graphs = array_merge($graphs, $agg);
 
@@ -1469,12 +1486,20 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 			}
 
 			$graph_template_ids = [];
+
 			foreach ($final_templates as $graph_template) {
 				array_push($graph_template_ids, $graph_template['id']);
 			}
+
 			$sql_where .= ($sql_where != '' ? ' AND ':'') . 'gl.graph_template_id IN (' . implode(', ', $graph_template_ids) . ')';
 			$graphs = get_allowed_graphs($sql_where);
-			$agg    = get_allowed_aggregate_graphs($sql_where);
+
+			if (read_user_setting('show_aggregates', 'on') == 'on') {
+				$agg = get_allowed_aggregate_graphs($sql_where);
+			} else {
+				$agg = array();
+			}
+
 			$graphs = array_merge($graphs, $agg);
 
 			/* let's sort the graphs naturally */
@@ -1532,7 +1557,13 @@ function get_host_graph_list($host_id, $graph_template_id, $data_query_id, $host
 					' ' . ($data_query_index != '' ? ' AND gl.snmp_index = ' . db_qstr($data_query_index): '');
 
 				$graphs = get_allowed_graphs($sql_where);
-				$agg    = get_allowed_aggregate_graphs($sql_where);
+
+				if (read_user_setting('show_aggregates', 'on') == 'on') {
+					$agg = get_allowed_aggregate_graphs($sql_where);
+				} else {
+					$agg = array();
+				}
+
 				$graphs = array_merge($graphs, $agg);
 
 				/* re-key the results on data query index */

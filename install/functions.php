@@ -136,10 +136,45 @@ function db_install_execute($sql, $params = array(), $log = true) {
 	$status = (db_execute_prepared($sql, $params, $log) ? DB_STATUS_SUCCESS : DB_STATUS_ERROR);
 
 	if ($log) {
-		db_install_add_cache($status, $sql);
+		db_install_add_cache($status, $sql, $params);
 	}
 
 	return $status;
+}
+
+function db_install_fetch_function($func, $sql, $params = array(), $log = true) {
+	global $database_last_error;
+
+	$database_last_error = false;
+	$data = false;
+	if (!is_callable($func) || !function_exists($func)) {
+		$status = DB_STATUS_ERROR;
+	}
+
+	if ($func == 'db_fetch_cell_prepared') {
+		$data = $func($sql, $params, '', $log);
+	} else {
+		$data = $func($sql, $params, $log);
+	}
+	$status = ($database_last_error ? DB_STATUS_ERROR : DB_STATUS_SUCCESS);
+
+	if ($log || $status == DB_STATUS_ERROR) {
+		db_install_add_cache($status, $sql, $params);
+	}
+
+	return array('status' => $status, 'data' => $data);
+}
+
+function db_install_fetch_assoc($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_assoc_prepared', $sql, $params, $log);
+}
+
+function db_install_fetch_cell($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_cell_prepared', $sql, $params, $log);
+}
+
+function db_install_fetch_row($sql, $params = array(), $log = true) {
+	return db_install_fetch_function('db_fetch_row_prepared', $sql, $params, $log);
 }
 
 function db_install_add_column($table, $column, $ignore = true) {
@@ -248,7 +283,7 @@ function db_install_drop_column($table, $column) {
 	return $status;
 }
 
-function db_install_add_cache($status, $sql) {
+function db_install_add_cache($status, $sql, $params = NULL) {
 	global $cacti_upgrade_version, $database_last_error, $database_upgrade_status;
 
 	set_config_option('install_updated', microtime(true));
@@ -273,6 +308,25 @@ function db_install_add_cache($status, $sql) {
 	// add query to upgrade results array by version to the cli global session
 	if (!isset($database_upgrade_status[$cacti_upgrade_version])) {
 		$database_upgrade_status[$cacti_upgrade_version] = array();
+	}
+
+	$query = clean_up_lines($sql);
+	$actual = 0;
+	$expected = substr_count($query, '?');
+
+	if (cacti_sizeof($params)) {
+		foreach ($params as $arg) {
+			$pos = strpos($query, '?');
+			if ($pos !== false) {
+				$actual++;
+				$query = substr_replace($query, "'$arg'", $pos, 1);
+			}
+		}
+	}
+
+	$sql = clean_up_lines($query);
+	if ($actual !== $expected) {
+		$sql .= "\n [[ WARNING: $expected parameters expected, $actual provided ]]";
 	}
 
 	$database_upgrade_status[$cacti_upgrade_version][] = array('status' => $status, 'sql' => $sql, 'error' => $database_last_error);
@@ -347,6 +401,17 @@ function find_search_paths($os = 'unix') {
 	return $search_paths;
 }
 
+function db_install_swap_setting($old_setting, $new_setting) {
+	$exists = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = ?', array($new_setting));
+	if (empty($exists['data'])) {
+		db_install_execute('UPDATE `settings` SET name = ? WHERE name = ?', array($new_setting, $old_setting));
+	} else {
+		$old_value = db_install_fetch_cell('SELECT value FROM settings WHERE NAME = ?', array($old_setting));
+		db_install_execute('UPDATE `settings` SET value = ? WHERE name = ?', array($old_value['data'], $new_setting));
+		db_install_execute('DELETE FROM `settings` WHERE name = ?', array($old_setting));
+	}
+}
+
 function find_best_path($binary_name) {
 	global $config;
 
@@ -385,14 +450,29 @@ function install_setup_get_templates() {
 		if ($canUnpack) {
 			//Loading Template Information from package
 			$filename = "compress.zlib://$path/$xmlfile";
-			$xml = file_get_contents($filename);;
+
+			$xml    = file_get_contents($filename);;
 			$xmlget = simplexml_load_string($xml);
-			$data = to_array($xmlget);
-			if (is_array($data['info']['author'])) $data['info']['author'] = '1';
-			if (is_array($data['info']['email'])) $data['info']['email'] = '2';
-			if (is_array($data['info']['description'])) $data['info']['description'] = '3';
-			if (is_array($data['info']['homepage'])) $data['info']['homepage'] = '4';
+			$data   = to_array($xmlget);
+
+			if (is_array($data['info']['author'])) {
+				$data['info']['author'] = '1';
+			}
+
+			if (is_array($data['info']['email'])) {
+				$data['info']['email'] = '2';
+			}
+
+			if (is_array($data['info']['description'])) {
+				$data['info']['description'] = '3';
+			}
+
+			if (is_array($data['info']['homepage'])) {
+				$data['info']['homepage'] = '4';
+			}
+
 			$data['info']['filename'] = $xmlfile;
+			$data['info']['name']     = $xmlfile;
 			$info[] = $data['info'];
 		} else {
 			// Loading Template Information from package
@@ -418,9 +498,9 @@ function install_setup_get_tables() {
 		foreach ($tables as $table) {
 			$table_status = db_fetch_row("SHOW TABLE STATUS LIKE '$table'");
 
-			$collation = '';
-			$engine = '';
-			$rows = 0;
+			$collation  = '';
+			$engine     = '';
+			$rows       = 0;
 			$row_format = '';
 
 			if ($table_status !== false) {
@@ -442,10 +522,10 @@ function install_setup_get_tables() {
 			}
 
 			if ($table_status === false || $collation != '' || $engine != '' || $row_format != '') {
-				$t[$table]['Name'] = $table;
-				$t[$table]['Collation'] = $table_status['Collation'];
-				$t[$table]['Engine'] = $table_status['Engine'];
-				$t[$table]['Rows'] = $rows;
+				$t[$table]['Name']       = $table;
+				$t[$table]['Collation']  = $table_status['Collation'];
+				$t[$table]['Engine']     = $table_status['Engine'];
+				$t[$table]['Rows']       = $rows;
 				$t[$table]['Row_format'] = $table_status['Row_format'];
 			}
 		}
@@ -927,12 +1007,12 @@ function install_full_sync() {
 	$timeout   = array();
 
 	$pollers = db_fetch_assoc('SELECT id, status, UNIX_TIMESTAMP() - UNIX_TIMESTAMP(last_update) as gap
-			FROM poller
-			WHERE id > 1
-			AND disabled = ""');
+		FROM poller
+		WHERE id > 1
+		AND disabled = ""');
 
-	if (cacti_sizeof($poller_ids)) {
-		foreach($poller_ids as $poller) {
+	if (cacti_sizeof($pollers)) {
+		foreach($pollers as $poller) {
 			if (($poller['stataus'] == POLLER_STATUS_NEW) ||
 				($poller['status'] == POLLER_STATUS_DOWN) ||
 				($poller['status'] == POLLER_STATUS_DISABLED)) {
@@ -943,8 +1023,8 @@ function install_full_sync() {
 
 					db_execute_prepared('UPDATE poller
 						SET last_sync = NOW()
-					WHERE id = ?',
-					array($id));
+						WHERE id = ?',
+						array($id));
 				} else {
 					$failed[] = $poller['id'];
 				}
@@ -956,9 +1036,10 @@ function install_full_sync() {
 
 	return array(
 		'success' => $success,
-		'failed' => $failed,
+		'failed'  => $failed,
 		'skipped' => $skipped,
 		'timeout' => $timeout,
-		'total' => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout));
+		'total'   => cacti_sizeof($success) + cacti_sizeof($failed) + cacti_sizeof($skipped) + cacti_sizeof($timeout)
+	);
 }
 

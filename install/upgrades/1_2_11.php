@@ -13,7 +13,7 @@
  | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           |
  | GNU General Public License for more details.                            |
  +-------------------------------------------------------------------------+
- | Cacti: The Complete RRDtool-based Graphing Solution                     |
+ | Cacti: The Complete RRDTool-based Graphing Solution                     |
  +-------------------------------------------------------------------------+
  | This code is designed, written, and maintained by the Cacti Group. See  |
  | about.php and/or the AUTHORS file for specific developer information.   |
@@ -22,34 +22,21 @@
  +-------------------------------------------------------------------------+
 */
 
-function upgrade_to_1_1_17() {
-	// Finalize fix to LDAP authentication
-	db_install_execute('UPDATE user_auth SET realm=3 WHERE realm=1');
-
-	if (!db_column_exists('data_source_profiles_rra', 'timespan')) {
-		db_install_execute('ALTER TABLE data_source_profiles_rra
-			ADD COLUMN timespan int(10) unsigned NOT NULL DEFAULT "0"');
-
-		$rras_results = db_install_fetch_assoc("SELECT * FROM data_source_profiles_rra");
-		$rras         = $rras_results['data'];
-
-		if (cacti_sizeof($rras)) {
-			foreach($rras as $rra) {
-				$interval_results = db_install_fetch_cell('SELECT step
-					FROM data_source_profiles
-					WHERE id = ?',
-					array($rra['data_source_profile_id']));
-				$interval = $interval_results['data'];
-
-				$timespan = $rra['steps'] * $interval * $rra['rows'];
-
-				$timespan = get_nearest_timespan($timespan);
-
-				db_install_execute('UPDATE data_source_profiles_rra
-					SET timespan = ?
-					WHERE id = ?',
-					array($timespan, $rra['id']));
-			}
-		}
-	}
+function upgrade_to_1_2_11() {
+	db_install_execute("CREATE TABLE `processes` (
+		`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		`pid` int(10) unsigned NOT NULL DEFAULT 0,
+		`tasktype` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+		`taskname` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+		`taskid` int(10) unsigned NOT NULL DEFAULT 0,
+		`timeout` int(11) DEFAULT 300,
+		`started` timestamp NOT NULL DEFAULT current_timestamp(),
+		`last_update` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+		PRIMARY KEY (`pid`,`tasktype`,`taskname`,`taskid`),
+		KEY `tasktype` (`tasktype`),
+		KEY `pid` (`pid`),
+		KEY `id` (`id`))
+		ENGINE=MEMORY
+		COMMENT='Stores Process Status for Cacti Background Processes'");
 }
+

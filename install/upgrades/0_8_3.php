@@ -49,30 +49,36 @@ function upgrade_to_0_8_3() {
 			KEY `user_id` (`user_id`,`type`)
 			)");
 
-		$auth_graph = db_fetch_assoc("select user_id,local_graph_id from user_auth_graph");
+		$auth_graph_results = db_install_fetch_assoc("SELECT user_id,local_graph_id FROM user_auth_graph");
+		$auth_graph         = $auth_graph_results['data'];
 
 		/* update to new 'user_auth_perms' table */
 		if (cacti_sizeof($auth_graph) > 0) {
 			foreach ($auth_graph as $item) {
-				db_install_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["local_graph_id"] . ",1);");
+				db_install_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,1);",
+					array($item["user_id"],$item["local_graph_id"]),false);
 			}
 		}
 
-		$auth_tree = db_fetch_assoc("select user_id,tree_id from user_auth_tree");
+		$auth_tree_results = db_install_fetch_assoc("SELECT user_id,tree_id FROM user_auth_tree");
+		$auth_tree         = $auth_tree_results['data'];
 
 		/* update to new 'user_auth_perms' table */
 		if (cacti_sizeof($auth_tree) > 0) {
 			foreach ($auth_tree as $item) {
-				db_install_execute("replace into user_auth_perms (user_id,item_id,type) values (" . $item["user_id"] . "," . $item["tree_id"] . ",2);");
+				db_install_execute("REPLACE INTO user_auth_perms (user_id,item_id,type) VALUES (?,?,2);",
+					array($item["user_id"],$item["tree_id"]), false);
 			}
 		}
 
-		$users = db_fetch_assoc("select id from user_auth");
+		$users_results = db_install_fetch_assoc("SELECT id FROM user_auth");
+		$users         = $users_results['data'];
 
 		/* default all current users to tree view mode 1 (single pane) */
 		if (cacti_sizeof($users) > 0) {
 			foreach ($users as $item) {
-				db_install_execute("replace into settings_graphs (user_id,name,value) values (" . $item["id"] . ",'default_tree_view_mode',1);");
+				db_install_execute("REPLACE INTO settings_graphs (user_id,name,value) VALUES (?,'default_tree_view_mode',1);",
+					array($item["id"]), false);
 			}
 		}
 	}

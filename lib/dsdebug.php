@@ -143,6 +143,10 @@ function dsdebug_poller_bottom() {
 	/* take time and log performance data */
 	$start = microtime(true);
 
+	if (!db_table_exists('data_debug')) {
+		return true;
+	}
+
 	$checks = db_fetch_assoc('SELECT *
 		FROM data_debug
 		WHERE `done` = 0');

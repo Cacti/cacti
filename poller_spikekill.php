@@ -63,21 +63,26 @@ if (cacti_sizeof($parms)) {
 			case '-V':
 			case '-v':
 				display_version();
-				exit;
+				exit(0);
 			case '--help':
 			case '-H':
 			case '-h':
 				display_help();
-				exit;
+				exit(0);
 			default:
 				print 'ERROR: Invalid Parameter ' . $parameter . "\n\n";
 				display_help();
-				exit;
+				exit(1);
 		}
 	}
 }
 
-echo "NOTE: SpikeKill Running\n";
+/* silently end if the registered process is still running, or process table missing */
+if (!register_process_start('spikekill', 'master', 0, read_config_option('spikekill_timeout'))) {
+	exit(0);
+}
+
+print "NOTE: SpikeKill Running\n";
 
 if (!$templates) {
 	$templates = db_fetch_cell("SELECT value FROM settings WHERE name='spikekill_templates'");
@@ -90,11 +95,13 @@ if (!$templates) {
 
 if (!cacti_sizeof($templates)) {
 	print "ERROR: No valid Graph Templates selected\n\n";
+	unregister_process('spikekill', 'master', 0);
 	exit(1);
 } else {
 	foreach($templates as $template) {
 		if (!is_numeric($template)) {
 			print "ERROR: Graph Template '" . $template . "' Invalid\n\n";
+			unregister_process('spikekill', 'master', 0);
 			exit(1);
 		}
 	}
@@ -133,7 +140,11 @@ if (timeToRun()) {
     cacti_log('SPIKEKILL STATS: ' . $cacti_stats , true, 'SYSTEM');
 }
 
-echo "NOTE: SpikeKill Finished\n";
+print "NOTE: SpikeKill Finished\n";
+
+unregister_process('spikekill', 'master', 0);
+
+exit(0);
 
 function timeToRun() {
 	global $forcerun;
@@ -178,7 +189,7 @@ function debug($message) {
 	global $debug;
 
 	if ($debug) {
-		echo 'DEBUG: ' . trim($message) . "\n";
+		print 'DEBUG: ' . trim($message) . "\n";
 	}
 }
 
@@ -254,17 +265,17 @@ function kill_spikes($templates, &$found) {
 /*  display_version - displays version information */
 function display_version() {
 	$version = get_cacti_version();
-	echo "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
+	print "Cacti SpikeKiller Batch Poller, Version $version, " . COPYRIGHT_YEARS . "\n";
 }
 
 function display_help() {
 	display_version();
 
-	echo "\nusage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]\n\n";
-	echo "Cacti's SpikeKill batch removal poller.  This poller will remove spikes\n";
-	echo "in Cacti's RRDfiles based upon the settings maintained in Cacti's database.\n\n";
-	echo "Optional:\n";
-	echo "    --templates=N,N,... - Only despike the templates provided.\n";
-	echo "    --force             - Force running the despiking immediately.\n";
-	echo "    --debug             - Display verbose output during execution.\n";
+	print "\nusage: poller_spikekill.php [--templates=N,N,...] [--force] [--debug]\n\n";
+	print "Cacti's SpikeKill batch removal poller.  This poller will remove spikes\n";
+	print "in Cacti's RRDfiles based upon the settings maintained in Cacti's database.\n\n";
+	print "Optional:\n";
+	print "    --templates=N,N,... - Only despike the templates provided.\n";
+	print "    --force             - Force running the despiking immediately.\n";
+	print "    --debug             - Display verbose output during execution.\n";
 }

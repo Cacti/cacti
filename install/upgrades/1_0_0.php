@@ -25,9 +25,12 @@
 function upgrade_to_1_0_0() {
 	global $config, $plugins_integrated;
 
-	$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
+	$default_engine_result = db_install_fetch_row("SHOW GLOBAL VARIABLES LIKE 'default_storage_engine'");
+	$default_engine = $default_engine_result['data'];
+
 	if (!cacti_sizeof($default_engine)) {
-		$default_engine = db_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
+		$default_engine_result = db_intall_fetch_row("SHOW GLOBAL VARIABLES LIKE 'storage_engine'");
+		$default_engine = $default_engine_result['data'];
 	}
 
 	if (cacti_sizeof($default_engine)) {
@@ -435,18 +438,20 @@ function upgrade_to_1_0_0() {
 
 	// Convert all trees to new format, but never run more than once
 	if (db_column_exists('graph_tree_items', 'order_key', false)) {
-		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
+		$trees_result = db_install_fetch_assoc('SELECT id FROM graph_tree ORDER BY id');
+		$trees = $trees_result['data'];
 
 		if (cacti_sizeof($trees)) {
 			foreach($trees as $t) {
-				$tree_items = db_fetch_assoc("SELECT *
+				$tree_items_result = db_install_fetch_assoc("SELECT *
 					FROM graph_tree_items
-					WHERE graph_tree_id=" . $t['id'] . "
+					WHERE graph_tree_id=?
 					AND order_key NOT LIKE '___000%'
-					ORDER BY order_key");
+					ORDER BY order_key", array($t['id']), false);
+				$tree_items = $tree_items_result['data'];
 
 				/* reset the position variable in case we run more than once */
-				db_install_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=" . $t['id']);
+				db_install_execute("UPDATE graph_tree_items SET position=0 WHERE graph_tree_id=?", array($t['id']), false);
 
 				$prev_parent = 0;
 				$prev_id     = 0;
@@ -459,41 +464,58 @@ function upgrade_to_1_0_0() {
 						if ($missing_len > 0) {
 							$translated_key .= substr("000", 0, $missing_len);
 						}
-						$parent_key_len = strlen($translated_key) - CHARS_PER_TIER;
-						$parent_key     = substr($translated_key, 0, $parent_key_len);
-						$parent_id      = db_fetch_cell("SELECT id FROM graph_tree_items WHERE graph_tree_id=" . $item["graph_tree_id"] . " AND order_key LIKE '" . $parent_key . "000%'");
+						$parent_key_len   = strlen($translated_key) - CHARS_PER_TIER;
+						$parent_key       = substr($translated_key, 0, $parent_key_len);
+						$parent_id_result = db_install_fetch_cell('SELECT id
+							FROM graph_tree_items
+							WHERE graph_tree_id = ?
+							AND order_key LIKE ?',
+							array($item["graph_tree_id"],'\'' . $parent_key . '\'000%'), false);
+						$parent_id = $parent_id_result['data'];
 
-						if (!empty($parent_id)) {
-							/* get order */
-							if ($parent_id != $prev_parent) {
-								$position = 0;
-							}
-
-							$position = db_fetch_cell("SELECT MAX(position)
-								FROM graph_tree_items
-								WHERE graph_tree_id=" . $item['graph_tree_id'] . "
-								AND parent=" . $parent_id) + 1;
-
-							db_install_execute("UPDATE graph_tree_items SET parent=$parent_id, position=$position WHERE id=" . $item["id"]);
-						} else {
-							db_install_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item["id"]);
+						if (empty($parent_id)) {
+							$parent_id = 0;
 						}
+
+						/* get order */
+						if ($parent_id != $prev_parent) {
+							$position = 0;
+						}
+
+						$position_result = db_install_fetch_cell('SELECT MAX(position)
+							FROM graph_tree_items
+							WHERE graph_tree_id = ?
+							AND parent =  ?',
+							array($item['graph_tree_id'], $parent_id), false);
+						$postion = $position_result['data'] + 1;
+
+						db_install_execute('UPDATE graph_tree_items
+							SET parent = ?, position=?
+							WHERE id=?',
+							array($parent_id, $position,  $item["id"]), false);
 
 						$prev_parent = $parent_id;
 					}
 				}
 
 				/* get base tree items and set position */
-				$tree_items = db_fetch_assoc("SELECT *
+				$tree_items_result = db_install_fetch_assoc('SELECT *
 					FROM graph_tree_items
-					WHERE graph_tree_id=" . $t['id'] . "
-					AND order_key LIKE '___000%'
-					ORDER BY order_key");
+					WHERE graph_tree_id=?
+					AND order_key LIKE "___000%"
+					ORDER BY order_key',
+					array($t['id']), false);
+				$tree_items = $tree_items_result['data'];
 
-				$position = 0;
+				$position  = 0;
+				$parent_id = 0;
 				if (cacti_sizeof($tree_items)) {
 					foreach($tree_items as $item) {
-						db_install_execute("UPDATE graph_tree_items SET parent=0, position=$position WHERE id=" . $item['id']);
+						db_install_execute('UPDATE graph_tree_items
+							SET parent = ?, position=?
+							WHERE id=?',
+							array($parent_id, $position,  $item["id"]), false);
+
 						$position++;
 					}
 				}
@@ -527,7 +549,9 @@ function upgrade_to_1_0_0() {
 	db_install_drop_table('poller_output_rt');
 
 	// If we have never install Nectar before, we can simply install
-	if (!cacti_sizeof(db_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'"))) {
+	$nectar_tables_result = db_install_fetch_row("SHOW TABLES LIKE '%plugin_nectar%'");
+	$nectar_tables        = $nectar_tables_result['data'];
+	if (!cacti_sizeof($nectar_tables)) {
 		db_install_execute("CREATE TABLE IF NOT EXISTS `reports` (
 			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
 			`user_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -610,25 +634,30 @@ function upgrade_to_1_0_0() {
 
 
 		/* fix host templates and graph template ids */
-		$items = db_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
+		$items_result = db_install_fetch_assoc("SELECT * FROM reports_items WHERE item_type=1");
+		$items        = $items_result['data'];
 		if (cacti_sizeof($items)) {
 			foreach ($items as $row) {
-				$host = db_fetch_row('SELECT host.*
+				$host_results = db_install_fetch_row('SELECT host.*
 					FROM graph_local
 					LEFT JOIN host
 					ON (graph_local.host_id=host.id)
-					WHERE graph_local.id=' . $row['local_graph_id']);
+					WHERE graph_local.id=?',
+					array($row['local_graph_id']), false);
+				$host = $host_results['data'];
 
 				if (cacti_sizeof($host)) {
-					$graph_template = db_fetch_cell('SELECT graph_template_id
+					$graph_template = db_install_fetch_cell('SELECT graph_template_id
 						FROM graph_local
-						WHERE id=' . $row['local_graph_id']);
+						WHERE id=?',
+						array($row['local_graph_id']), false);
 
 					db_install_execute('UPDATE reports_items SET
-						host_id=' . $host['id'] . ',
-						host_template_id=' . $host['host_template_id'] . ',
-						graph_template_id=' . $graph_template . '
-						WHERE id=' . $row['id']);
+						host_id=?,
+						host_template_id=?,
+						graph_template_id=?
+						WHERE id=?',
+						array($host['id'],$host['host_template_id'],$graph_template,$row['id']), false);
 				}
 			}
 		}
@@ -698,7 +727,7 @@ function upgrade_to_1_0_0() {
 			foreach ($sql as $query) {
 				$result = db_install_execute($query);
 			}
-		$sql = array();
+			$sql = array();
 		}
 
 		// Autom8 Upgrade
@@ -991,10 +1020,10 @@ function upgrade_to_1_0_0() {
 			(3, 2, 1, '0', 0, 2, 'on', 'Traffic', ''),
 			(4, 2, 2, 'gtg.title_cache', 0, 1, '', '^(.*)\\\\s*-\\\\s*Traffic -\\\\s*(.*)$', '$\{1\}\\\\n$\{2\}');";
 	} else {
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'host.', 'h.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')";
-		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'host_template.', 'ht.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'host.', 'h.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'graph_templates.', 'gt.')";
+		$sql[] = "UPDATE plugin_autom8_tree_rule_items SET field = REPLACE(field, 'graph_templates_graph.', 'gtg.')";
 	}
 
 	# now run all SQL commands
@@ -1184,6 +1213,19 @@ function upgrade_to_1_0_0() {
 		ROW_FORMAT=Dynamic
 		COMMENT='Set of SNMP Options'");
 
+	$snmp_count = db_fetch_cell('SELECT COUNT(*) FROM automation_snmp');
+
+	if (empty($snmp_count)) {
+		db_install_execute("INSERT IGNORE INTO `automation_snmp`
+			VALUES (1,'Default Option Set')");
+
+		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
+			VALUES (1,1,1,2,'public',161,1000,3,10,'','','MD5','','DES','')");
+
+		db_install_execute("INSERT IGNORE INTO `automation_snmp_items`
+			VALUES (2,1,2,2,'private',161,1000,3,10,'','','MD5','','DES','');");
+	}
+
 	db_install_execute("CREATE TABLE IF NOT EXISTS `automation_templates` (
 		`id` int(8) NOT NULL AUTO_INCREMENT,
 		`host_template` int(8) NOT NULL DEFAULT '0',
@@ -1197,24 +1239,26 @@ function upgrade_to_1_0_0() {
 		ROW_FORMAT=Dynamic
 		COMMENT='Templates of SNMP Sys variables used for automation'");
 
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host_template.', 'ht.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'host.', 'h.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates.', 'gt.')");
-	db_install_execute("UPDATE automation_match_rule_items SET field=REPLACE(field, 'graph_templates_graph.', 'gtg.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'host_template.', 'ht.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'host.', 'h.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'graph_templates.', 'gt.')");
+	db_install_execute("UPDATE automation_match_rule_items SET field = REPLACE(field, 'graph_templates_graph.', 'gtg.')");
 
 	/* stamp out duplicate colors */
-	$duplicates = db_fetch_assoc('SELECT hex, COUNT(*) AS totals
+	$duplicates_results = db_install_fetch_assoc('SELECT hex, COUNT(*) AS totals
 		FROM colors
 		GROUP BY hex
 		HAVING totals > 1');
+	$duplicates = $duplicates_results['data'];
 
 	if (cacti_sizeof($duplicates)) {
 		foreach($duplicates as $duplicate) {
-			$hexes = db_fetch_assoc_prepared('SELECT id, hex
+			$hexes_results = db_install_fetch_assoc('SELECT id, hex
 				FROM colors
 				WHERE hex = ?
 				ORDER BY id ASC',
-				array($duplicate['hex']));
+				array($duplicate['hex']), true);
+			$hexes = $hexes_results['data'];
 
 			$first = true;
 
@@ -1398,7 +1442,7 @@ function upgrade_to_1_0_0() {
 
 	/* get the current data source profiles */
 	if (db_table_exists('data_template_data_rra', false)) {
-		$profiles = db_fetch_assoc("SELECT pattern, rrd_step, rrd_heartbeat, x_files_factor
+		$profiles_results = db_install_fetch_assoc("SELECT pattern, rrd_step, rrd_heartbeat, x_files_factor
 			FROM (
 				SELECT data_template_data_id, GROUP_CONCAT(rra_id) AS pattern
 				FROM data_template_data_rra
@@ -1411,6 +1455,7 @@ function upgrade_to_1_0_0() {
 			INNER JOIN rra AS r
 			ON r.id IN(pattern)
 			GROUP BY pattern, rrd_step, rrd_heartbeat, x_files_factor");
+		$profiles = $profiles_results['data'];
 
 		$i = 1;
 		if (cacti_sizeof($profiles)) {
@@ -1518,8 +1563,9 @@ function upgrade_to_1_0_0() {
 	db_install_add_key('host', 'INDEX', 'poller_id', array('poller_id'));
 
 	if (db_table_exists('plugin_spikekill_templates', false)) {
-		$templates = implode(',', array_rekey(db_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates'), 'graph_template_id', 'graph_template_id'));
-		db_install_execute("REPLACE INTO settings (name, value) VALUES('spikekill_templates','$templates')");
+		$templates_results = db_install_fetch_assoc('SELECT graph_template_id FROM plugin_spikekill_templates',array(), false);
+		$templates = implode(',', array_rekey($templates_results), 'graph_template_id', 'graph_template_id');
+		db_install_execute("REPLACE INTO settings (name, value) VALUES ('spikekill_templates','$templates')");
 	}
 
 	// Migrate superlinks pages to new external links table
@@ -1679,7 +1725,8 @@ function upgrade_to_1_0_0() {
 	if (!db_column_exists('graph_tree', 'sequence', false)) {
 		/* allow sorting of trees */
 		db_install_add_column('graph_tree', array('name' => 'sequence', 'type' => 'int(10) unsigned', 'NULL' => false, 'default' => '1', 'after' => 'name'));
-		$trees = db_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
+		$trees_results = db_install_fetch_assoc('SELECT id FROM graph_tree ORDER BY name');
+		$trees         = $trees_results['data'];
 		if (cacti_sizeof($trees)) {
 			foreach($trees as $sequence => $tree) {
 				db_install_execute('UPDATE graph_tree SET sequence = ? WHERE id = ?', array($sequence+1, $tree['id']));
@@ -1731,8 +1778,13 @@ function upgrade_to_1_0_0() {
 	db_install_add_key('data_local', 'INDEX', 'snmp_index', array('snmp_index(191)'));
 	db_install_add_key('graph_local', 'INDEX', 'snmp_index', array('snmp_index(191)'));
 
-	if (db_fetch_cell('SELECT name FROM settings WHERE name = "graph_wathermark"', 'name') == 'graph_wathermark') {
-		if (db_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"') == 0) {
+	$wathermark_results = db_install_fetch_cell('SELECT name FROM settings WHERE name = "graph_wathermark"', 'name');
+	$wathermark         = $wathermark_results['data'];
+
+	if ($wathermark == 'graph_wathermark') {
+		$wathermark_results = db_install_fetch_cell('SELECT COUNT(*) FROM settings WHERE name = "graph_wathermark"');
+		$wathermark         = $wathermark_results['data'];
+		if ($wathermark == 0) {
 			db_install_execute('UPDATE settings SET name = "graph_watermark" WHERE name = "graph_wathermark"');
 		} else {
 			db_install_execute('DELETE FROM settings WHERE name = "graph_wathermark"');
@@ -1781,58 +1833,123 @@ function upgrade_realms() {
 		'ugroup'
 	);
 
-	// There can be only one of these, so just update if exist
-	foreach($upgrade_realms as $r) {
-		$exists = db_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE "%' . $r['file_pattern'] . '%"');
+	// Check for the installation of the plugin architecture
+	if (db_table_exists('plugin_realms')) {
+		// There can be only one of these, so just update if exist
+		foreach($upgrade_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?', array('%' . $r['file_pattern'] . '%'), false);
 
-		if (cacti_sizeof($exists)) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('UPDATE user_auth_realm
-				SET realm_id = ?
-				WHERE realm_id = ?',
-				array($r['new_realm'], $old_realm));
+			if (cacti_sizeof($exists)) {
+				$old_realm = $exists['id'] + 100;
+
+				db_execute_prepared('UPDATE user_auth_realm
+					SET realm_id = ?
+					WHERE realm_id = ?',
+					array($r['new_realm'], $old_realm));
+			}
 		}
-	}
 
-	// There are more than one of these so update and drop
-	foreach($set_drop_realms as $r) {
-		$exists = db_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE "%' . $r['file_pattern'] . '%"');
+		// There are more than one of these so update and drop
+		foreach($set_drop_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $r['file_pattern'] . '%'), false);
 
-		if (cacti_sizeof($exists)) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id)
-				SELECT user_id, "' . $r['new_realm'] . '" AS realm_id
-				FROM user_auth_realm
-				WHERE realm_id = ?',
-				array($old_realm));
+			if (cacti_sizeof($exists)) {
+				$old_realm = $exists['id'] + 100;
 
-			db_execute_prepared('DELETE FROM user_auth_realm
-				WHERE realm_id = ?',
-				array($old_realm));
+				db_execute_prepared('REPLACE INTO user_auth_realm (user_id, realm_id)
+					SELECT user_id, "' . $r['new_realm'] . '" AS realm_id
+					FROM user_auth_realm
+					WHERE realm_id = ?',
+					array($old_realm));
+
+				db_execute_prepared('DELETE FROM user_auth_realm
+					WHERE realm_id = ?',
+					array($old_realm));
+			}
 		}
-	}
 
-	// Drop realms that have been deprecated
-	foreach($drop_realms as $r) {
-		$exists = db_fetch_row('SELECT *
-			FROM plugin_realms
-			WHERE file LIKE "%' . $r . '%"');
+		// Drop realms that have been deprecated
+		foreach($drop_realms as $r) {
+			$exists_results = db_install_fetch_row('SELECT *
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $r . '%'), false);
 
-		if ($exists) {
-			$old_realm = $exists['id'] + 100;
+			$exists = $exists_results['data'];
 
-			db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
+			if ($exists) {
+				$old_realm = $exists['id'] + 100;
+
+				db_execute_prepared('DELETE FROM user_auth_realm WHERE realm_id = ?', array($old_realm));
+			}
 		}
+	} else {
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_config` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`directory` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`status` tinyint(2) NOT NULL DEFAULT 0,
+			`author` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`webpage` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`version` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `status` (`status`),
+			KEY `directory` (`directory`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_db_changes` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`plugin` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`table` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`column` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+			`method` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `plugin` (`plugin`),
+			KEY `method` (`method`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_hooks` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`hook` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`file` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`function` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`status` int(8) NOT NULL DEFAULT 0,
+			PRIMARY KEY (`id`),
+			KEY `hook` (`hook`),
+			KEY `status` (`status`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("CREATE TABLE IF NOT EXISTS `plugin_realms` (
+			`id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+			`plugin` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			`file` text COLLATE utf8mb4_unicode_ci NOT NULL,
+			`display` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+			PRIMARY KEY (`id`),
+			KEY `plugin` (`plugin`))
+			ENGINE=InnoDB
+			ROW_FORMAT=DYNAMIC");
+
+		db_install_execute("REPLACE INTO plugin_hooks (name, hook, file, function, status) VALUES
+			('internal', 'config_arrays', '', 'plugin_config_arrays', 1),
+			('internal', 'draw_navigation_text', '', 'plugin_draw_navigation_text', 1)");
 	}
 
 	// Add realms to the admin user if it exists
-	if (cacti_sizeof(db_fetch_row('SELECT * FROM user_auth WHERE id=1'))) {
+	$user_auth = db_install_fetch_row('SELECT * FROM user_auth WHERE id=1');
+	if (cacti_sizeof($user_auth['data'])) {
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (18,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (20,1)');
 		db_install_execute('INSERT IGNORE INTO user_auth_realm VALUES (21,1)');
@@ -1840,8 +1957,8 @@ function upgrade_realms() {
 	}
 
 	/* add admin permissions */
-	$userid= db_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
-	if (!empty($userid)) {
+	$userid= db_install_fetch_cell("SELECT * FROM user_auth WHERE id='1' AND username='admin'");
+	if (!empty($userid['data'])) {
 		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (19,1);");
 		db_install_execute("REPLACE INTO `user_auth_realm` VALUES (22,1);");
 	}
@@ -1876,10 +1993,10 @@ function upgrade_realms() {
 
 	foreach($remove_plugins as $p) {
 		/* remove plugin */
-		db_install_execute("DELETE FROM plugin_config WHERE directory='$p'");
-		db_install_execute("DELETE FROM plugin_realms WHERE plugin='$p'");
-		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin='$p'");
-		db_install_execute("DELETE FROM plugin_hooks WHERE name='$p'");
+		db_install_execute("DELETE FROM plugin_config WHERE directory=?", array($p));
+		db_install_execute("DELETE FROM plugin_realms WHERE plugin=?", array($p));
+		db_install_execute("DELETE FROM plugin_db_changes WHERE plugin=?", array($p));
+		db_install_execute("DELETE FROM plugin_hooks WHERE name=?", array($p));
 	}
 }
 

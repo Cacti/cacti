@@ -79,8 +79,6 @@ $url_path = '/cacti/';
 /* disable log rotation setting */
 $disable_log_rotation = false;
 
-/* allow upto 5000 items to be selected */
-ini_set('max_input_vars', '5000');
 $config = array();
 
 /* Include configuration, or use the defaults */
@@ -222,7 +220,7 @@ if (empty($database_port)) {
 }
 
 /* set URL path */
-if (! isset($url_path)) {
+if (!isset($url_path)) {
 	$url_path = '';
 }
 $config['url_path'] = $url_path;
@@ -391,7 +389,6 @@ if ($config['is_web']) {
 
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
-	ini_set('max_input_vars', '5000');
 	ini_set('session.cookie_httponly', '1');
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		ini_set('session.cookie_secure', '1');
@@ -406,7 +403,11 @@ if ($config['is_web']) {
 	header('X-Frame-Options: SAMEORIGIN');
 
 	/* increased web hardening */
-	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; frame-ancestors 'self';");
+	$script_policy = read_config_option('content_security_policy_script');
+	if ($script_policy != '') {
+		$script_policy .= ';';
+	}
+	header("Content-Security-Policy: default-src *; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' $script_policy 'unsafe-inline'; frame-ancestors 'self';");
 
 	/* prevent IE from silently rejects cookies sent from third party sites. */
 	header('P3P: CP="CAO PSA OUR"');
@@ -502,6 +503,20 @@ if ($config['is_web']) {
 
 	if (isset_request_var('csrf_timeout')) {
 		raise_message('csrf_ptimeout');
+	}
+
+	/* check for save actions using GET */
+	if (isset_request_var('action')) {
+		$action = get_nfilter_request_var('action');
+
+		$bad_actions = array('save', 'update_data', 'changepassword');
+
+		foreach($bad_actions as $bad) {
+			if ($action == $bad && !isset($_POST['__csrf_magic'])) {
+				cacti_log('WARNING: Attempt to use GET method for POST operations from IP ' . get_client_addr(), false, 'WEBUI');
+				exit;
+			}
+		}
 	}
 }
 

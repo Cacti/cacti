@@ -616,7 +616,10 @@ function settings_javascript() {
 				value = $(this).val();
 			}
 
-			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
+			$.post('auth_profile.php?tab='+currentTab+'&action=update_data', {
+				__csrf_magic: csrfMagicToken,
+				name: name,
+				value: value
 			});
 		}).change(function() {
 			name  = $(this).attr('id');
@@ -630,7 +633,11 @@ function settings_javascript() {
 				value = $(this).val();
 			}
 
-			$.get('auth_profile.php?tab='+currentTab+'&action=update_data&name='+name+'&value='+value, function() {
+			$.post('auth_profile.php?tab='+currentTab+'&action=update_data', {
+				__csrf_magic: csrfMagicToken,
+				name: name,
+				value: value
+				}, function() {
 				if (name == 'selected_theme' || name == 'user_language') {
 					document.location = 'auth_profile.php?action=edit';
 				}
