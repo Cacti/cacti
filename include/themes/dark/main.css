@@ -175,6 +175,21 @@ label {
 	margin-right: auto;
 }
 
+.flexContainer {
+	display: flex;
+	flex-wrap: wrap;
+	margin-left: auto;
+	margin-right: auto;
+	justify-content: flex-start;
+}
+
+.flexChild {
+	display: inline-block;
+	margin-top: 5px;
+	flex-basis: 20%;
+	min-width: 200px;
+}
+
 .usermenudown {
 	background: transparent url('./../../../images/bullet_arrow_down.png') no-repeat center right;
 }
@@ -2504,3 +2519,4 @@ td.center > table {
 .ui-menu-item-wrapper {
 	white-space: nowrap;
 }
+

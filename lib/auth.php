@@ -472,6 +472,31 @@ function auth_check_perms($objects, $policy) {
 	}
 }
 
+function auth_augment_roles($role_name, $files) {
+	global $user_auth_roles, $user_auth_realm_filenames;
+
+	foreach($files as $file) {
+		if (array_search($file, $user_auth_realm_filenames) !== false) {
+			if (array_search($user_auth_realm_filenames[$file], $user_auth_roles[$role_name]) === false) {
+				$user_auth_roles[$role_name][] = $user_auth_realm_filenames[$file];
+			}
+		} else {
+			$realm_id = db_fetch_cell_prepared('SELECT id+100 AS realm
+				FROM plugin_realms
+				WHERE file LIKE ?',
+				array('%' . $file . '%'));
+
+			if (!empty($realm_id)) {
+				if (!isset($user_auth_roles[$role_name])) {
+					$user_auth_roles[$role_name][] = $realm_id;
+				} elseif (array_search($realm_id, $user_auth_roles[$role_name]) === false) {
+					$user_auth_roles[$role_name][] = $realm_id;
+				}
+			}
+		}
+	}
+}
+
 /* is_tree_allowed - determines whether the current user is allowed to view a certain graph tree
    @arg $tree_id - (int) the ID of the graph tree to check permissions for
    @returns - (bool) whether the current user is allowed the view the specified graph tree or not */

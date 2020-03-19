@@ -30,6 +30,7 @@ Cacti CHANGELOG
 -issue#3360: Timeout and logout issue for guest
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
+-feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2268: Feature Request: Data Profiles
 -feature#2534: Enhance the html_nav_bar() in the lib/html.php to support larger system
 -feature#2688: Increase length of Graph Item 'value' field to support pango-markup better
