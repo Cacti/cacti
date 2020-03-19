@@ -27,6 +27,7 @@ Cacti CHANGELOG
 -issue#3349: Variable max_input_vars is read only.  Attempting to change it adds no value
 -issue#3350: Some SQL queries can break if a database is exported then imported
 -issue#3355: Minor bug about base_value in graph_xport.php and fixed
+-issue#3360: Timeout and logout issue for guest
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -feature#2268: Feature Request: Data Profiles

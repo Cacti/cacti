@@ -52,7 +52,7 @@ $script = basename($_SERVER['SCRIPT_NAME']);
 if ($script == 'graph_view.php' || $script == 'graph.php') {
 	if (isset($_SESSION['custom']) && $_SESSION['custom'] == true) {
 		$refreshIsLogout = 'true';
-	}else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
+	} else if (isset_request_var('action') && get_nfilter_request_var('action') == 'zoom') {
 		$refreshIsLogout = 'true';
 	} else {
 		$refresh = api_plugin_hook_function('top_graph_refresh', read_user_setting('page_refresh'));
@@ -111,7 +111,14 @@ if (isset($_SESSION['refresh'])) {
 	$myrefresh['seconds'] = ini_get('session.gc_maxlifetime');
 	$myrefresh['page']    = $config['url_path'] . 'logout.php?action=timeout';
 	$refreshIsLogout      = 'true';
-} ?>
+}
+
+/* guest account does not auto log off */
+if ($_SESSION['sess_user_id'] == read_config_option('guest_user')) {
+	$refreshIsLogout = 'false';
+}
+
+?>
 <script type='text/javascript'>
 	var cactiVersion='<?php print $config['cacti_version'];?>';
 	var cactiServerOS='<?php print $config['cacti_server_os'];?>';
