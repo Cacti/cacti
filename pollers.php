@@ -373,7 +373,7 @@ function poller_check_duplicate_poller_id($poller_id, $hostname, $column) {
 	if (sizeof($ip_hostnames)) {
 		foreach($ip_hostnames as $host) {
 			$parts = explode('.', $host);
-			$sql_where2 .= ($sql_where2 != '' ? ' OR ':' OR (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
+			$sql_where2 .= ($sql_where2 != '' ? ' OR ' : ($sql_where1 != '' ? ' OR ' : '') . ' (') . "($column = '$parts[0]' OR $column LIKE '$parts[0].%' OR $column = '$host')";
 		}
 		$sql_where2 .= ')';
 	}
