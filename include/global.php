@@ -389,10 +389,26 @@ if ($config['is_web']) {
 
 	/* set the maximum post size */
 	ini_set('post_max_size', '8M');
-	ini_set('session.cookie_httponly', '1');
+
+	/* add additional cookie directives */
+	ini_set('session.cookie_httponly', true);
+	ini_set('session.cookie_path', $config['url_path']);
+	ini_set('session.cookie_samesite', 'Strict');
+	ini_set('session.use_strict_mode', true);
+	$options = array(
+		'cookie_httponly' => true,
+		'cookie_path' => $config['url_path'],
+		'cookie_samesite' => 'Strict',
+		'use_strict_mode' => true
+	);
+
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
-		ini_set('session.cookie_secure', '1');
+		ini_set('session.cookie_secure', true);
+
+		$options['cookie_secure'] = true;
 	}
+
+	define('COOKIE_OPTIONS', $options);
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -401,6 +417,7 @@ if ($config['is_web']) {
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
+	header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
@@ -417,7 +434,7 @@ if ($config['is_web']) {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 	session_name($cacti_session_name);
-	if (!session_id()) session_start();
+	if (!session_id()) session_start(COOKIE_OPTIONS);
 
 	/* we never run with magic quotes on */
 	if (version_compare(PHP_VERSION, '5.4', '<=')) {

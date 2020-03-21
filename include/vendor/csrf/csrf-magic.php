@@ -60,7 +60,8 @@ function csrf_ob_handler($buffer, $flags) {
 		}
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($buffer, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($buffer, true));
+
 	return $buffer;
 }
 
@@ -80,6 +81,7 @@ function csrf_check($fatal = true) {
 		$tokens = '';
 
 		csrf_log(__FUNCTION__, "csrf magic $name was $result");
+
 		if ($result) {
 			// we don't regenerate a token and check it because some token creation
 			// schemes are volatile.
@@ -89,7 +91,7 @@ function csrf_check($fatal = true) {
 				$tokens = implode(';', $tokens);
 			}
 
-			csrf_log(__FUNCTION__,"check_tokens($name, $tokens) returned $result");
+			csrf_log(__FUNCTION__, "check_tokens($name, $tokens) returned $result");
 		}
 
 		if ($fatal && !$result) {
@@ -105,7 +107,7 @@ function csrf_check($fatal = true) {
 		}
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($result, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($result, true));
 
 	return $result;
 }
@@ -152,7 +154,8 @@ function csrf_get_tokens() {
 		$token = 'invalid';
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($token, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($token, true));
+
 	return $token;
 }
 
@@ -161,7 +164,9 @@ function csrf_flattenpost($data) {
 	foreach($data as $n => $v) {
 		$ret = array_merge($ret, csrf_flattenpost2(1, $n, $v));
 	}
-	csrf_log(__FUNCTION__,'returns: ' . var_export($ret, true));
+
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($ret, true));
+
 	return $ret;
 }
 
@@ -175,7 +180,9 @@ function csrf_flattenpost2($level, $key, $data) {
 			$ret = array_merge($ret, csrf_flattenpost2($level+1, $nk, $v));
 		}
 	}
-	csrf_log(__FUNCTION__,'returns: ' . var_export($ret, true));
+
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($ret, true));
+
 	return $ret;
 }
 
@@ -225,7 +232,8 @@ function csrf_check_tokens($tokens) {
 		}
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($valid_token, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($valid_token, true));
+
 	return $valid_token;
 }
 
@@ -245,7 +253,8 @@ function csrf_check_token($token) {
 				$expiry_time = time();
 				$expiry_csrf = $time + $GLOBALS['csrf']['expires'];
 				$check_token = ($expiry_time < $expiry_csrf);
-				csrf_log(__FUNCTION__,"expiry $check_token = $expiry_time < $expiry_csrf");
+
+				csrf_log(__FUNCTION__, "expiry $check_token = $expiry_time < $expiry_csrf");
 			}
 
 			if ($check_token) {
@@ -294,7 +303,8 @@ function csrf_check_token($token) {
 		}
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($valid_token, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($valid_token, true));
+
 	return $valid_token;
 }
 
@@ -317,7 +327,7 @@ function csrf_conf($key, $val) {
  */
 function csrf_start() {
 	if ($GLOBALS['csrf']['auto-session'] && !session_id()) {
-		session_start();
+		session_start(COOKIE_OPTIONS);
 	}
 }
 
@@ -362,7 +372,9 @@ function csrf_get_secret() {
 	}
 
 	$GLOBALS['csrf']['secret'] = $secret;
-	csrf_log(__FUNCTION__,'returns: ' . var_export($secret, true));
+
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($secret, true));
+
 	return $secret;
 }
 
@@ -377,7 +389,9 @@ function csrf_generate_secret($len = 32) {
 	$r .= time() . microtime();
 
 	$secret = csrf_internal_hash('',$r);
-	csrf_log(__FUNCTION__,'returns: ' . var_export($secret, true));
+
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($secret, true));
+
 	return $secret;
 }
 
@@ -407,7 +421,8 @@ function csrf_hash($value, $time = null) {
 	$secret = csrf_get_secret();
 	$result = csrf_internal_hash($secret, csrf_internal_hash($secret, $time . ':' . $value)) . ',' . $time;
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($result, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($result, true));
+
 	return $result;
 }
 
@@ -435,10 +450,10 @@ function csrf_get_client_addr() {
 			foreach ($header_ips as $header_ip) {
 				if (!empty($header_ip)) {
 					if (!filter_var($header_ip, FILTER_VALIDATE_IP)) {
-						csrf_log(__FUNCTION__,'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
+						csrf_log(__FUNCTION__, 'ERROR: Invalid remote client IP Address found in header (' . $header . ').');
 					} else {
 						$client_addr = $header_ip;
-						csrf_log(__FUNCTION__,'DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
+						csrf_log(__FUNCTION__, 'DEBUG: Using remote client IP Address found in header (' . $header . '): ' . $client_addr . ' (' . $_SERVER[$header] . ')');
 						break;
 					}
 				}
@@ -446,7 +461,8 @@ function csrf_get_client_addr() {
 		}
 	}
 
-	csrf_log(__FUNCTION__,'returns: ' . var_export($client_addr, true));
+	csrf_log(__FUNCTION__, 'returns: ' . var_export($client_addr, true));
+
 	return $client_addr;
 }
 
@@ -497,6 +513,7 @@ function csrf_log($name, $text) {
 		}
 	}
 }
+
 function csrf_caller() {
 	static $caller = '';
 
@@ -507,6 +524,7 @@ function csrf_caller() {
 			$caller = $_SERVER['SCRIPT_NAME'];
 		}
 	}
+
 	return $caller;
 }
 
@@ -585,3 +603,4 @@ if (!$GLOBALS['csrf']['disable']) {
 		csrf_check();
 	}
 }
+

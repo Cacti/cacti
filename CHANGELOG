@@ -1,6 +1,7 @@
 Cacti CHANGELOG
 
 1.2.11
+-SECURITY#1566: Add SameSite support for cookies
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
 -issue#2580: DSStats adding more and more processes until server stops

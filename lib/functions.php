@@ -717,7 +717,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	}
 
 	if ($need_session) {
-		session_start();
+		session_start(COOKIE_OPTIONS);
 	}
 
 	if (!isset($_SESSION['sess_messages'])) {
@@ -781,7 +781,7 @@ function clear_messages() {
 	}
 
 	if ($need_session) {
-		session_start();
+		session_start(COOKIE_OPTIONS);
 	}
 
 	kill_session_var('sess_messages');
@@ -813,7 +813,7 @@ function force_session_data() {
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
-		session_start();
+		session_start(COOKIE_OPTIONS);
 
 		$_SESSION = $data;
 
