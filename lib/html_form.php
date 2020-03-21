@@ -349,9 +349,17 @@ function draw_edit_control($field_name, &$field_array) {
 
 		break;
 	case 'checkbox_group':
-		print "<div id='${field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
+		if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+			print "</td></tr><tr><td><div id='${field_name}_group' class='checkboxgroup1 flexContainer'>" . PHP_EOL;
+		} else {
+			print "<div id='${field_name}_group' class='checkboxgroup1'>" . PHP_EOL;
+		}
 
 		foreach ($field_array['items'] as $check_name => $check_array) {
+			if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+				print '<div class="flexChild">';
+			}
+
 			form_checkbox(
 				$check_name,
 				$check_array['value'],
@@ -364,10 +372,18 @@ function draw_edit_control($field_name, &$field_array) {
 				true
 			);
 
-			print '<br>';
+			if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+				print '</div>';
+			} else {
+				print '<br>';
+			}
 		}
 
-		print '</div>' . PHP_EOL;
+		if (isset($field_array['type']) && $field_array['type'] == 'flex') {
+			print '</div>' . PHP_EOL;
+		} else {
+			print '</div>' . PHP_EOL;
+		}
 
 		break;
 	case 'radio':

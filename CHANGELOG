@@ -38,6 +38,7 @@ Cacti CHANGELOG
 -feature#2534: Enhance the html_nav_bar() in the lib/html.php to support larger system
 -feature#2688: Increase length of Graph Item 'value' field to support pango-markup better
 -feature#3304: Allow Basic Auth Accounts to be Mapped by CSV File
+-feature#3366: Allow checkbox_groups flow like the permission page on forms
 
 1.2.10
 -security#3285: When guest users have access to realtime graphs, remote code could be executed (CVE-2020-8813)
