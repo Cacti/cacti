@@ -54,6 +54,7 @@ img {
 i.fa, i.fas, i.fab {
 	padding: 3px;
 	font-size: 1.1em;
+	color: grey;
 }
 
 fieldset {
@@ -1698,7 +1699,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 74px;
+	width: 78px;
 	white-space: nowrap;
 }
 
