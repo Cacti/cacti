@@ -5,6 +5,7 @@ Cacti CHANGELOG
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
 -issue#2580: DSStats adding more and more processes until server stops
+-issue#2853: Discovered Devices filtering do not include snmp description or name
 -issue#3231: Ability to unlock a tree that has been locked for editing by another account.
 -issue#3237: Report gets resent every poller cycle
 -issue#3261: Automation rules aren't run for new devices on remote data collectors
