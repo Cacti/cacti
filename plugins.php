@@ -198,7 +198,7 @@ function plugins_load_temp_table() {
 						(directory, name, status, author, webpage, version, requires, infoname)
 						VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 						array(
-							$file,
+							(strtolower($file) == strtolower($cinfo[$file]['name']) ? $cinfo[$file]['name'] : $file),
 							$cinfo[$file]['longname'],
 							$cinfo[$file]['status'],
 							$cinfo[$file]['author'],
