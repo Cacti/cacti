@@ -74,6 +74,11 @@ img {
 	vertical-align: middle;
 }
 
+i.fa, i.fas, i.fab {
+	padding: 3px;
+	font-size: 1.1em;
+}
+
 div {
 	display: block;
 }
