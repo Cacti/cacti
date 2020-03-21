@@ -686,7 +686,7 @@ function get_message_max_type() {
 /* raise_message - mark a message to be displayed to the user once display_output_messages() is called
    @arg $message_id - the ID of the message to raise as defined in $messages in 'include/global_arrays.php' */
 function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVEL_NONE) {
-	global $messages, $no_http_headers;
+	global $config, $messages, $no_http_headers;
 
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
@@ -717,7 +717,7 @@ function raise_message($message_id, $message = '', $message_level = MESSAGE_LEVE
 	}
 
 	if ($need_session) {
-		session_start(COOKIE_OPTIONS);
+		session_start($config['cookie_options']);
 	}
 
 	if (!isset($_SESSION['sess_messages'])) {
@@ -773,6 +773,8 @@ function display_custom_error_message($message) {
 
 /* clear_messages - clears the message cache */
 function clear_messages() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (function_exists('session_status')) {
 		$need_session = (session_status() == PHP_SESSION_NONE) && (!isset($no_http_headers));
@@ -781,7 +783,7 @@ function clear_messages() {
 	}
 
 	if ($need_session) {
-		session_start(COOKIE_OPTIONS);
+		session_start($config['cookie_options']);
 	}
 
 	kill_session_var('sess_messages');
@@ -807,13 +809,15 @@ function kill_session_var($var_name) {
 
 /* force_session_data - forces session data into the session if the session was closed for some reason */
 function force_session_data() {
+	global $config;
+
 	// This function should always exist, if not its an invalid install
 	if (!function_exists('session_status')) {
 		return false;
 	} elseif (session_status() == PHP_SESSION_NONE) {
 		$data = $_SESSION;
 
-		session_start(COOKIE_OPTIONS);
+		session_start($config['cookie_options']);
 
 		$_SESSION = $data;
 

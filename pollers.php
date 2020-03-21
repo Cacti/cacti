@@ -404,7 +404,7 @@ function poller_host_duplicate($poller_id, $host) {
 }
 
 function form_actions() {
-	global $poller_actions;
+	global $config, $poller_actions;
 
 	/* ================= input validation ================= */
 	get_filter_request_var('drp_action', FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => '/^([a-zA-Z0-9_]+)$/')));
@@ -474,7 +474,7 @@ function form_actions() {
 					}
 				}
 
-				session_start(); // Start the session again
+				session_start($config['cookie_options']); // Start the session again
 
 				if (sizeof($failed)) {
 					cacti_log('WARNING: Some selected Remote Data Collectors in [' . implode(', ', $ids) . '] failed synchronization by user ' . get_username($_SESSION['sess_user_id']) . ', Successful/Failed[' . sizeof($success) . '/' . sizeof($failed) . '].  See log for details.', false, 'WEBUI');

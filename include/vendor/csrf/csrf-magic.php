@@ -326,8 +326,10 @@ function csrf_conf($key, $val) {
  * Starts a session if we're allowed to.
  */
 function csrf_start() {
+	global $config;
+
 	if ($GLOBALS['csrf']['auto-session'] && !session_id()) {
-		session_start(COOKIE_OPTIONS);
+		session_start($config['cookie_options']);
 	}
 }
 

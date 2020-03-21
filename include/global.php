@@ -408,7 +408,7 @@ if ($config['is_web']) {
 		$options['cookie_secure'] = true;
 	}
 
-	define('COOKIE_OPTIONS', $options);
+	$config['cookie_options'] = $options;
 
 	/* we don't want these pages cached */
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
@@ -434,7 +434,7 @@ if ($config['is_web']) {
 		die('PHP Session Management is missing, please install PHP Session module');
 	}
 	session_name($cacti_session_name);
-	if (!session_id()) session_start(COOKIE_OPTIONS);
+	if (!session_id()) session_start($config['cookie_options']);
 
 	/* we never run with magic quotes on */
 	if (version_compare(PHP_VERSION, '5.4', '<=')) {
