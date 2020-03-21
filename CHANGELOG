@@ -4,6 +4,7 @@ Cacti CHANGELOG
 -SECURITY#1566: Add SameSite support for cookies
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
+-issue#2400: Enhancement: Ability to duplicate site settings and/or provide default template settings for sites
 -issue#2428: Plugins --> name column does not match "name field value" in INFO file
 -issue#2580: DSStats adding more and more processes until server stops
 -issue#2853: Discovered Devices filtering do not include snmp description or name
