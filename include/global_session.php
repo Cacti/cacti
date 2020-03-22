@@ -114,7 +114,7 @@ if (isset($_SESSION['refresh'])) {
 }
 
 /* guest account does not auto log off */
-if ($_SESSION['sess_user_id'] == read_config_option('guest_user')) {
+if (isset($_SESSION['sess_user_id']) && $_SESSION['sess_user_id'] == read_config_option('guest_user')) {
 	$refreshIsLogout = 'false';
 }
 
