@@ -79,6 +79,10 @@ i.fa, i.fas, i.fab {
 	color: silver;
 }
 
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: snow;
+}
+
 div {
 	display: block;
 }

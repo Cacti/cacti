@@ -58,6 +58,10 @@ i.fa, i.fas, i.fab {
 	color: grey;
 }
 
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: snow;
+}
+
 div {
 	display: block;
 }

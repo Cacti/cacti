@@ -54,7 +54,11 @@ img {
 i.fa, i.fas, i.fab {
 	padding: 3px;
 	font-size: 1.1em;
-	color: grey;
+	color: silver;
+}
+
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: #3F75A2;
 }
 
 fieldset {
@@ -1699,7 +1703,7 @@ div#gtabs {
 
 .usertabs {
 	float: right !important;
-	width: 78px;
+	width: 80px;
 	white-space: nowrap;
 }
 
@@ -1852,7 +1856,7 @@ div.submenu span {
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 15px;
+	padding: 2px 4px 2px 5px;
 	background: #ccc;
 	color: rgba(0,0,0,0.9);
 	text-decoration: none;

@@ -70,6 +70,10 @@ i.fa, i.fas, i.fab {
 	color: #93CEFF;
 }
 
+.menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
+	color: lightgrey;
+}
+
 fieldset {
 	border: none;
 	padding: 0px;
@@ -143,6 +147,8 @@ label {
 
 .glyph_tab-console:before {
 	content: "\f185";
+	padding: 0px 8px 0px 8px;
+	display: block;
 }
 
 .text_tab-console {
@@ -2053,7 +2059,7 @@ div.submenu span {
 
 #nav li a {
 	display: block;
-	padding: 2px 4px 2px 15px;
+	padding: 2px 4px 2px 9px;
 	color: #93CEFF;
 	text-decoration: none;
 }

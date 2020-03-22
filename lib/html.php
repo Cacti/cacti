@@ -1305,7 +1305,7 @@ function draw_menu($user_menu = '') {
 		$user_menu = $menu;
 	}
 
-	print "<tr><td><table><tr><td><div id='menu'><ul id='nav' role='menu'>";
+	print "<tr><td><table width='100%'><tr><td><div id='menu'><ul id='nav' role='menu'>";
 
 	/* loop through each header */
 	$i = 0;
