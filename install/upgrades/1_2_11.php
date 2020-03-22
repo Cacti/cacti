@@ -23,7 +23,7 @@
 */
 
 function upgrade_to_1_2_11() {
-	db_install_execute("CREATE TABLE `processes` (
+	db_install_execute("CREATE TABLE IF NOT EXISTS `processes` (
 		`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 		`pid` int(10) unsigned NOT NULL DEFAULT 0,
 		`tasktype` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
