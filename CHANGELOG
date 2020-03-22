@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue#3367: When Data Queries timeout, data is removed from the Host SNMP Cache table causing issues
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
+-feature#1551: Allow uptime to be a variable for use with graphs
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
 -feature#2110: Add Refresh Interval to Data Collectors display
 -feature#2156: Add Location List Editing Capabilities

@@ -249,6 +249,8 @@ function substitute_host_data($string, $l_escape_string, $r_escape_string, $host
 		$replace[] = $host['cur_time'];
 		$search[]  = $l_escape_string . 'host_availability' . $r_escape_string;
 		$replace[] = $host['availability'];
+		$search[]  = $l_escape_string . 'host_uptime' . $r_escape_string;
+		$replace[] = get_uptime($host);
 
 		/* snmp connectivity information */
 		$search[]  = $l_escape_string . 'host_snmp_community' . $r_escape_string;
