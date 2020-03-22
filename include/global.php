@@ -393,18 +393,22 @@ if ($config['is_web']) {
 	/* add additional cookie directives */
 	ini_set('session.cookie_httponly', true);
 	ini_set('session.cookie_path', $config['url_path']);
-	ini_set('session.cookie_samesite', 'Strict');
 	ini_set('session.use_strict_mode', true);
+
 	$options = array(
 		'cookie_httponly' => true,
-		'cookie_path' => $config['url_path'],
-		'cookie_samesite' => 'Strict',
+		'cookie_path'     => $config['url_path'],
 		'use_strict_mode' => true
 	);
 
+	// SameSite php7.3+ behavior
+	if (version_compare(PHP_VERSION, '7.3', '>=')) {
+		ini_set('session.cookie_samesite', 'Strict');
+		$options['cookie_samesite'] = 'Strict';
+	}
+
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') {
 		ini_set('session.cookie_secure', true);
-
 		$options['cookie_secure'] = true;
 	}
 
@@ -417,7 +421,11 @@ if ($config['is_web']) {
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
 	header('X-Frame-Options: SAMEORIGIN');
-	header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
+
+	// SameSite legacy behavior
+	if (version_compare(PHP_VERSION, '7.3', '<')) {
+		header('Set-Cookie: cross-site-cookie=bar; SameSite=Strict;' . (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? ' Secure':''));
+	}
 
 	/* increased web hardening */
 	$script_policy = read_config_option('content_security_policy_script');
