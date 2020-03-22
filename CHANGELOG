@@ -2,6 +2,7 @@ Cacti CHANGELOG
 
 1.2.11
 -SECURITY#1566: Add SameSite support for cookies
+-SECURITY#1985: Cookie should be properly verified against password
 -SECURITY#3342: CSRF at Admin Email
 -SECURITY#3343: Improper Access Control on disabling a user.
 -issue#2265: Graph Field Limits Save Failed: Field Input Error - |query_ifSpeed|
