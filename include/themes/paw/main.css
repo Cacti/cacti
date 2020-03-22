@@ -2123,11 +2123,11 @@ tr#realtime td:first-child {
 .menu_glyph {
 	font-size: 12px;
 	width: 20px;
-	vertical-align: 30%;
+	vertical-align: middle;
 }
 
 .menuitem span {
-	vertical-align: 20%;
+	vertical-align: middle;
 }
 
 .ui-autocomplete {
