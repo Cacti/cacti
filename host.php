@@ -201,6 +201,7 @@ function get_site_locations() {
 	$return  = array();
 	$term    = get_request_var('term');
 	$host_id = $_SESSION['cur_device_id'];
+
 	$site_id = db_fetch_cell_prepared('SELECT site_id
 		FROM host
 		WHERE id = ?',
@@ -354,7 +355,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to enable the following Device(s).') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Enable Device(s)') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '3') { // Disable Devices
@@ -363,7 +364,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to disable the following Device(s).') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Disable Device(s)') ."'>";
 		} elseif (get_nfilter_request_var('drp_action') == '4') { // Change Device options
@@ -372,7 +373,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to change the Device options below for multiple Device(s).  Please check the box next to the fields you want to update, and then fill in the new value.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$form_array = array();
 
@@ -384,6 +385,7 @@ function form_actions() {
 					($field_name == 'host_template_id') ||
 					($field_name == 'availability_method') ||
 					($field_name == 'device_threads') ||
+					($field_name == 'location') ||
 					($field_name == 'max_oids')) {
 					$form_array += array($field_name => $fields_host_edit[$field_name]);
 
@@ -400,6 +402,11 @@ function form_actions() {
 						'class' => 'ui-state-disabled',
 						'value' => ''
 					);
+
+					$form_array['location']['method']     = 'textbox';
+					$form_array['location']['default']    = '';
+					$form_array['location']['size']       = '20';
+					$form_array['location']['max_length'] = '40';
 				}
 			}
 
@@ -421,7 +428,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to clear the counters for the following Device(s).') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Clear Statistics on Device(s)') . "'>";
 		} elseif (get_nfilter_request_var('drp_action') == '7') { // sync device template
@@ -430,21 +437,21 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to Synchronize the following Device(s) to their Device Template.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-				</tr>\n";
+				</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Synchronize Device(s)') ."'>";
 		} elseif (get_request_var('drp_action') == '1') { // Delete
 			print "<tr>
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to delete the following Device(s).') . "</p>
-					<div class='itemlist'><ul>$host_list</ul></div>\n";
+					<div class='itemlist'><ul>$host_list</ul></div>";
 
 					form_radio_button('delete_type', '2', '1', __('Leave all Graph(s) and Data Source(s) untouched.  Data Source(s) will be disabled however.'), '1'); print '<br>';
 					form_radio_button('delete_type', '2', '2', __('Delete all associated Graph(s) and Data Source(s).'), '1'); print '<br>';
 
 			print "</td></tr>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Delete Device(s)') . "'>";
 		} elseif (preg_match('/^tr_([0-9]+)$/', get_request_var('drp_action'), $matches)) { // place on tree
@@ -452,13 +459,13 @@ function form_actions() {
 				<td class='textArea'>
 					<p>" . __('Click \'Continue\' to place the following Device(s) under the branch selected below.') . "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
-					<p>" . __('Destination Branch:') . "<br>\n";
+					<p>" . __('Destination Branch:') . "<br>";
 					grow_dropdown_tree($matches[1], '0', 'tree_item_id', '0');
 
 			print "</p>
 				</td>
 			</tr>
-			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>\n";
+			<input type='hidden' name='tree_id' value='" . $matches[1] . "'>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel') . "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Place Device(s) on Tree') . "'>";
 		} elseif (get_request_var('drp_action') == 6) { // automation
@@ -467,7 +474,7 @@ function form_actions() {
 					<p>" . __('Click \'Continue\' to apply Automation Rules to the following Devices(s).'). "</p>
 					<div class='itemlist'><ul>$host_list</ul></div>
 				</td>
-			</tr>\n";
+			</tr>";
 
 			$save_html = "<input type='button' class='ui-button ui-corner-all ui-widget' value='" . __esc('Cancel'). "' onClick='cactiReturnTo()'>&nbsp;<input type='submit' class='ui-button ui-corner-all ui-widget' value='" . __esc('Continue') . "' title='" . __esc('Run Automation on Device(s)') . "'>";
 		} else {
@@ -492,7 +499,7 @@ function form_actions() {
 			<input type='hidden' name='drp_action' value='" . html_escape(get_nfilter_request_var('drp_action')) . "'>
 			$save_html
 		</td>
-	</tr>\n";
+	</tr>";
 
 	html_end_box();
 
@@ -935,10 +942,10 @@ function device_reindex_methods($item, $host) {
 	foreach($reindex_types as $key => $type) {
 		if ($selectedTheme != 'classic') {
 			if ($i == 0) {
-				print "<fieldset class='reindex_methods'>\n";
+				print "<fieldset class='reindex_methods'>";
 			}
-			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />\n";
-			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>\n";
+			print "<input name='reindex_radio_" . $item['id'] . "' type='radio' data-device-id='" . $host['id'] . "' data-query-id='" . $item['id'] . "' data-reindex-method='" . $key . "' id='reindex_" . $item['id'] . "_" . $key . "'" . ($item['reindex_method'] == $key ? ' checked="checked"':'') . " />";
+			print "<label title='" . html_escape($reindex_types_tips[$key]) . "' for='reindex_" . $item['id'] . "_" . $key . "'>" . $type . "</label>";
 		} else {
 			print $reindex_types[$item['reindex_method']];
 			break;
@@ -948,7 +955,7 @@ function device_reindex_methods($item, $host) {
 	}
 
 	if ($selectedTheme != 'classic') {
-		print "</fieldset>\n";
+		print "</fieldset>";
 	}
 }
 
@@ -1270,6 +1277,11 @@ function host_validate_vars() {
 			'pageset' => true,
 			'default' => ''
 			),
+		'location' => array(
+			'filter' => FILTER_CALLBACK,
+			'default' => '',
+			'options' => array('options' => 'sanitize_search_string')
+			),
 		'sort_column' => array(
 			'filter' => FILTER_CALLBACK,
 			'default' => 'description',
@@ -1319,6 +1331,14 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where = "WHERE deleted = ''";
 	}
 
+	if (get_request_var('location') != '-1') {
+		if (get_request_var('location') == __('Undefined')) {
+			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ""';
+		} else {
+			$sql_where .= ($sql_where != '' ? ' AND':' WHERE') . ' host.location = ' . db_qstr(get_request_var('location'));;
+		}
+	}
+
 	if (get_request_var('host_status') == '-1') {
 		/* Show all items */
 	} elseif (get_request_var('host_status') == '-2') {
@@ -1327,7 +1347,7 @@ function get_device_records(&$total_rows, $rows) {
 		$sql_where .= ($sql_where != '' ? " AND host.disabled=''" : " WHERE host.disabled=''");
 	} elseif (get_request_var('host_status') == '-4') {
 		$sql_where .= ($sql_where != '' ? " AND (host.status!='3' OR host.disabled='on')" : " WHERE (host.status!='3' OR host.disabled='on')");
-	}else {
+	} else {
 		$sql_where .= ($sql_where != '' ? ' AND (host.status=' . get_request_var('host_status') . " AND host.disabled = '')" : 'where (host.status=' . get_request_var('host_status') . " AND host.disabled = '')");
 	}
 
@@ -1407,10 +1427,12 @@ function host() {
 	<script type='text/javascript'>
 
 	function applyFilter() {
-		strURL  = 'host.php?host_status=' + $('#host_status').val();
+		strURL  = 'host.php';
+		strURL += '?host_status=' + $('#host_status').val();
 		strURL += '&host_template_id=' + $('#host_template_id').val();
 		strURL += '&site_id=' + $('#site_id').val();
 		strURL += '&poller_id=' + $('#poller_id').val();
+		strURL += '&location=' + $('#location').val();
 		strURL += '&rows=' + $('#rows').val();
 		strURL += '&filter=' + $('#filter').val();
 		strURL += '&header=false';
@@ -1428,7 +1450,7 @@ function host() {
 	}
 
 	$(function() {
-		$('#rows, #site_id, #poller_id, #host_template_id, #host_status').change(function() {
+		$('#rows, #site_id, #poller_id, #location, #host_template_id, #host_status').change(function() {
 			applyFilter();
 		});
 
@@ -1479,7 +1501,7 @@ function host() {
 
 							if (cacti_sizeof($sites)) {
 								foreach ($sites as $site) {
-									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>\n";
+									print "<option value='" . $site['id'] . "'"; if (get_request_var('site_id') == $site['id']) { print ' selected'; } print '>' . html_escape($site['name']) . "</option>";
 								}
 							}
 							?>
@@ -1496,7 +1518,7 @@ function host() {
 
 							if (cacti_sizeof($pollers)) {
 								foreach ($pollers as $poller) {
-									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>\n";
+									print "<option value='" . $poller['id'] . "'"; if (get_request_var('poller_id') == $poller['id']) { print ' selected'; } print '>' . html_escape($poller['name']) . "</option>";
 								}
 							}
 							?>
@@ -1514,7 +1536,33 @@ function host() {
 
 							if (cacti_sizeof($host_templates)) {
 								foreach ($host_templates as $host_template) {
-									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>\n";
+									print "<option value='" . $host_template['id'] . "'"; if (get_request_var('host_template_id') == $host_template['id']) { print ' selected'; } print '>' . html_escape($host_template['name']) . "</option>";
+								}
+							}
+							?>
+						</select>
+					</td>
+					<td>
+						<?php print __('Location');?>
+					</td>
+					<td>
+						<select id='location'>
+							<option value='-1'<?php if (get_request_var('location') == '-1') {?> selected<?php }?>><?php print __('All');?></option>
+							<?php
+
+							if (get_request_var('site_id') >= '0') {
+								$sql_where = 'WHERE site_id = ' . db_qstr(get_request_var('site_id'));
+							} else {
+								$sql_where = '';
+							}
+							$locations = db_fetch_assoc("SELECT DISTINCT IF(location='', '" . __('Undefined') . "', location) AS location
+								FROM host
+								$sql_where
+								ORDER BY location");
+
+							if (cacti_sizeof($locations)) {
+								foreach ($locations as $l) {
+									print "<option value='" . $l['location'] . "'"; if (get_request_var('location') == $l['location']) { print ' selected'; } print '>' . html_escape($l['location']) . "</option>";
 								}
 							}
 							?>
@@ -1561,7 +1609,7 @@ function host() {
 							<?php
 							if (cacti_sizeof($item_rows)) {
 								foreach ($item_rows as $key => $value) {
-									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>\n";
+									print "<option value='" . $key . "'"; if (get_request_var('rows') == $key) { print ' selected'; } print '>' . html_escape($value) . "</option>";
 								}
 							}
 							?>
