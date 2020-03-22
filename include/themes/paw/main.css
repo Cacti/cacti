@@ -52,9 +52,10 @@ img {
 }
 
 i.fa, i.fas, i.fab {
-	padding: 3px;
+	padding: 0px 3px;
 	font-size: 1.1em;
-	color: silver;
+	vertical-align: middle;
+	color: white;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
@@ -1921,7 +1922,7 @@ tr.selected a {
 }
 
 #nav li ul li a {
-	padding: 2px 4px 2px 35px;
+	padding: 2px 4px 2px 32px;
 	background: #f0f0f0;
 }
 

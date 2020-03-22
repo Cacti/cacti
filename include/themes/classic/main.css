@@ -53,13 +53,14 @@ img {
 }
 
 i.fa, i.fas, i.fab {
-	padding: 3px;
+	padding: 0px 3px;
+	vertical-align: middle;
 	font-size: 1.1em;
-	color: grey;
+	color: white;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
-	color: snow;
+	color: white;
 }
 
 div {

@@ -74,9 +74,9 @@ img {
 }
 
 i.fa, i.fas, i.fab {
-	padding: 3px;
-	font-size: 1.1em;
-	color: silver;
+	padding: 0px 3px;
+	color: snow;
+	vertical-align: middle;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
@@ -2262,14 +2262,11 @@ tr#realtime td:first-child {
 }
 
 .menu_glyph {
-	font-size: 18px;
+	font-size: 18px !important;
+	line-height: 18px;
 	padding-right: 5px;
-	vertical-align: 10%;
 	float: middle;
-}
-
-.menuitem span {
-	vertical-align: 20%;
+	vertical-align: middle;
 }
 
 .graphWrapper {

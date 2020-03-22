@@ -54,9 +54,9 @@ img {
 }
 
 i.fa, i.fas, i.fab {
-	padding: 3px;
+	padding: 0px 3px;
 	font-size: 1.1em;
-	color: silver;
+	color: lightgrey;
 }
 
 .menu_parent i.fa, .menu_parent i.fas, .menu_parent i.fab {
