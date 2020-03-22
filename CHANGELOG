@@ -39,6 +39,7 @@ Cacti CHANGELOG
 -issue: Tree searcher sizes to 0 bytes width until page resized
 -issue: Clicking on an anchor that drills to another page inline removes selected menu item
 -feature#1990: Plugin Realm should have a 'role' to help maintain changes between plugins
+-feature#2110: Add Refresh Interval to Data Collectors display
 -feature#2236: Allow for Purging of Data Source Statistics from the GUI
 -feature#2268: Feature Request: Data Profiles
 -feature#2534: Enhance the html_nav_bar() in the lib/html.php to support larger system

@@ -771,6 +771,10 @@ function pollers() {
 			'filter' => FILTER_VALIDATE_INT,
 			'default' => '1'
 			),
+		'refresh' => array(
+			'filter' => FILTER_VALIDATE_INT,
+			'default' => '20'
+			),
 		'filter' => array(
 			'filter' => FILTER_DEFAULT,
 			'pageset' => true,
@@ -790,6 +794,12 @@ function pollers() {
 
 	validate_store_request_vars($filters, 'sess_pollers');
 	/* ================= input validation ================= */
+
+	$refresh['page']    = 'pollers.php?header=false';
+	$refresh['seconds'] = get_request_var('refresh');
+	$refresh['logout']  = 'false';
+
+	set_page_refresh($refresh);
 
 	if (get_request_var('rows') == '-1') {
 		$rows = read_config_option('num_rows_table');
@@ -827,6 +837,29 @@ function pollers() {
 						</select>
 					</td>
 					<td>
+						<?php print __('Refresh');?>
+					</td>
+					<td>
+						<select id='refresh' onChange='applyFilter()'>
+							<?php
+							$frequency = array(
+								5   => __('%d Seconds', 5),
+								10  => __('%d Seconds', 10),
+								20  => __('%d Seconds', 20),
+								30  => __('%d Seconds', 30),
+								45  => __('%d Seconds', 45),
+								60  => __('%d Minute', 1),
+								120 => __('%d Minutes', 2),
+								300 => __('%d Minutes', 5)
+							);
+
+							foreach ($frequency as $r => $row) {
+								echo "<option value='" . $r . "'" . (isset_request_var('refresh') && $r == get_request_var('refresh') ? ' selected' : '') . '>' . $row . '</option>';
+							}
+							?>
+						</select>
+					</td>
+					<td>
 						<span>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='refresh' value='<?php print __esc('Go');?>' title='<?php print __esc('Set/Refresh Filters');?>'>
 							<input type='button' class='ui-button ui-corner-all ui-widget' id='clear' value='<?php print __esc('Clear');?>' title='<?php print __esc('Clear Filters');?>'>
@@ -840,6 +873,7 @@ function pollers() {
 			function applyFilter() {
 				strURL  = 'pollers.php?header=false';
 				strURL += '&filter='+$('#filter').val();
+				strURL += '&refresh='+$('#refresh').val();
 				strURL += '&rows='+$('#rows').val();
 				loadPageNoHeader(strURL);
 			}
