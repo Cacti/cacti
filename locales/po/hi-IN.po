@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: developers@cacti.net\n"
 "POT-Creation-Date: 2020-03-22 12:15-0400\n"
-"PO-Revision-Date: 2019-03-10 13:36-0400\n"
+"PO-Revision-Date: 2020-03-22 21:13-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: hi_IN\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n==0 || n==1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3\n"
 
 #: about.php:29 include/global_arrays.php:2424 lib/html.php:2390
 #, fuzzy
@@ -39,9 +39,8 @@ msgid "Cacti Developers"
 msgstr "कैक्टि डेवलपर्स"
 
 #: about.php:59
-#, fuzzy
 msgid "Thanks"
-msgstr "धन्यवाद"
+msgstr "शुक्रिया"
 
 #: about.php:62
 #, fuzzy, php-format
@@ -59,7 +58,6 @@ msgid "Especially anyone who has taken the time to create an issue report, or ot
 msgstr "विशेष रूप से किसी ने भी जो एक मुद्दा रिपोर्ट बनाने के लिए समय लिया है, या अन्यथा एक कैक्टि संबंधित समस्याओं को ठीक करने में मदद करता है। कैक्टि को समर्थन देने में योगदान करने वाले किसी भी व्यक्ति के लिए।"
 
 #: about.php:71
-#, fuzzy
 msgid "License"
 msgstr "लाइसेंस"
 
@@ -69,14 +67,12 @@ msgid "Cacti is licensed under the GNU GPL:"
 msgstr "Cacti को GNU GPL के तहत लाइसेंस प्राप्त है:"
 
 #: about.php:75 lib/installer.php:1651
-#, fuzzy
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "यह कार्यक्रम मुफ्त सॉफ्टवेयर है; आप इसे फ्री सॉफ्टवेयर फाउंडेशन द्वारा प्रकाशित GNU जनरल पब्लिक लाइसेंस की शर्तों के तहत पुनर्वितरित कर सकते हैं और / या संशोधित कर सकते हैं; या तो लाइसेंस के संस्करण 2, या (आपके विकल्प पर) किसी भी बाद के संस्करण में।"
+msgstr "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
 
 #: about.php:77
-#, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
-msgstr "यह कार्यक्रम इस उम्मीद में वितरित किया जाता है कि यह उपयोगी होगा, लेकिन किसी भी वारंटी के बिना; बिना किसी पक्षपात के लिए योग्यता या योग्यता के निहित वारंटी के बिना। अधिक विवरण के लिए जीएनयू जनरल पब्लिक लाइसेंस देखें।"
+msgstr "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 
 #: aggregate_graphs.php:42 aggregate_templates.php:29
 #: automation_graph_rules.php:32 automation_networks.php:31
@@ -96,9 +92,8 @@ msgstr "यह कार्यक्रम इस उम्मीद में �
 #: managers.php:28 pollers.php:33 sites.php:28 tree.php:1395 tree.php:1548
 #: tree.php:1608 tree.php:1629 user_admin.php:28 user_domains.php:30
 #: user_group_admin.php:30 vdef.php:29
-#, fuzzy
 msgid "Delete"
-msgstr "हटाना"
+msgstr "हटाएं"
 
 #: aggregate_graphs.php:43
 #, fuzzy
@@ -233,7 +228,6 @@ msgstr "टेम्पलेट आधारित एग्रीगेट क
 #: graphs.php:1257 include/auth.php:271 lib/api_aggregate.php:1589
 #: lib/api_aggregate.php:1604 lib/html_form.php:1287 lib/html_utility.php:247
 #: managers.php:1065 permission_denied.php:30 permission_denied.php:32
-#, fuzzy
 msgid "Return"
 msgstr "वापसी"
 
@@ -300,14 +294,12 @@ msgstr "रिपोर्ट का नाम"
 
 #: aggregate_graphs.php:476 graph_view.php:791 graphs.php:1246
 #: lib/html_reports.php:1328
-#, fuzzy
 msgid "Timespan"
-msgstr "समय अवधि"
+msgstr "काल"
 
 #: aggregate_graphs.php:480 graph_view.php:798 graphs.php:1250
-#, fuzzy
 msgid "Align"
-msgstr "संरेखित"
+msgstr "पंक्ति में होना"
 
 #: aggregate_graphs.php:484 graphs.php:1254
 #, fuzzy
@@ -382,19 +374,16 @@ msgstr "[संपादित करें: %s]"
 
 #: aggregate_graphs.php:655 aggregate_graphs.php:662 lib/html_reports.php:1156
 #: lib/html_reports.php:1161 utilities.php:1815
-#, fuzzy
 msgid "Details"
 msgstr "विवरण"
 
 #: aggregate_graphs.php:656 graphs_new.php:751 lib/html_reports.php:1156
 #: utilities.php:355
-#, fuzzy
 msgid "Items"
-msgstr "आइटम"
+msgstr "वस्तुएं"
 
 #: aggregate_graphs.php:657 aggregate_graphs.php:663 lib/html.php:1909
 #: lib/html_reports.php:1156
-#, fuzzy
 msgid "Preview"
 msgstr "पूर्वावलोकन"
 
@@ -493,9 +482,8 @@ msgstr "मिलान रेखांकन"
 #: user_group_admin.php:2451 user_group_admin.php:2536 utilities.php:740
 #: utilities.php:1135 utilities.php:1428 utilities.php:1709 utilities.php:2412
 #: utilities.php:2664 vdef.php:699
-#, fuzzy
 msgid "Search"
-msgstr "खोज"
+msgstr "खोजें"
 
 #: aggregate_graphs.php:1247 aggregate_graphs.php:1290
 #: aggregate_graphs.php:1551 color_templates.php:630 data_sources.php:1608
@@ -535,9 +523,8 @@ msgstr "रेखांकन"
 #: user_group_admin.php:2461 user_group_admin.php:2546 utilities.php:718
 #: utilities.php:1438 utilities.php:1730 utilities.php:2437 utilities.php:2700
 #: vdef.php:709
-#, fuzzy
 msgid "Default"
-msgstr "चूक"
+msgstr "डिफ़ॉल्ट"
 
 #: aggregate_graphs.php:1264
 #, fuzzy
@@ -562,9 +549,8 @@ msgstr "एग्रीगेट का हिस्सा"
 #: user_admin.php:2270 user_admin.php:2633 user_admin.php:2718
 #: user_admin.php:2822 user_admin.php:2907 user_admin.php:2992
 #: user_admin.php:3077
-#, fuzzy
 msgid "Go"
-msgstr "चले जाओ"
+msgstr "जाएं"
 
 #: aggregate_graphs.php:1269 aggregate_graphs.php:1567
 #: automation_devices.php:481 automation_snmp.php:681
@@ -642,9 +628,8 @@ msgstr "ग्राफ शीर्षक"
 #: user_admin.php:1144 user_admin.php:1291 user_admin.php:1439
 #: user_admin.php:1580 user_group_admin.php:682 user_group_admin.php:833
 #: user_group_admin.php:980 user_group_admin.php:1123 user_group_admin.php:1257
-#, fuzzy
 msgid "ID"
-msgstr "आईडी"
+msgstr "ID"
 
 #: aggregate_graphs.php:1297
 #, fuzzy
@@ -666,7 +651,6 @@ msgstr "आकार"
 #: lib/api_automation.php:1438 links.php:404 tree.php:2035 tree.php:2036
 #: user_admin.php:2341 user_domains.php:766 user_group_admin.php:1925
 #: vdef.php:904
-#, fuzzy
 msgid "No"
 msgstr "नहीं"
 
@@ -683,7 +667,6 @@ msgstr "नहीं"
 #: links.php:404 tree.php:2035 tree.php:2036 user_admin.php:2339
 #: user_domains.php:762 user_domains.php:766 user_group_admin.php:1923
 #: vdef.php:904
-#, fuzzy
 msgid "Yes"
 msgstr "हाँ"
 
@@ -727,9 +710,8 @@ msgstr "खाका"
 #: user_group_admin.php:2273 utilities.php:706 utilities.php:1389
 #: utilities.php:1674 utilities.php:1719 utilities.php:2422 utilities.php:2674
 #: utilities.php:2687
-#, fuzzy
 msgid "Any"
-msgstr "कोई भी"
+msgstr "कोई भी@ label"
 
 #: aggregate_graphs.php:1534 aggregate_graphs.php:1646
 #: automation_graph_rules.php:906 automation_graph_rules.php:907
@@ -950,7 +932,6 @@ msgid "Username"
 msgstr "उपयोगकर्ता नाम"
 
 #: auth_changepassword.php:349
-#, fuzzy
 msgid "Current password"
 msgstr "वर्तमान पासवर्ड"
 
@@ -959,7 +940,6 @@ msgid "New password"
 msgstr "नया कूटशब्द"
 
 #: auth_changepassword.php:358
-#, fuzzy
 msgid "Confirm new password"
 msgstr "नए पासवर्ड की पुष्टि करें"
 
@@ -1045,9 +1025,8 @@ msgid "Login to Cacti"
 msgstr "Cacti में लॉगिन करें"
 
 #: auth_login.php:727
-#, fuzzy
 msgid "User Login"
-msgstr "उपयोगकर्ता लॉगिन"
+msgstr "उपयोक्ता लॉगइन"
 
 #: auth_login.php:739
 #, fuzzy
@@ -1060,19 +1039,17 @@ msgstr "पासवर्ड"
 
 #: auth_login.php:765 include/global_settings.php:1910 lib/auth.php:354
 #: lib/auth.php:376 lib/auth.php:387
-#, fuzzy
 msgid "Local"
 msgstr "स्थानीय"
 
 #: auth_login.php:769 include/global_arrays.php:776 lib/auth.php:388
-#, fuzzy
 msgid "LDAP"
 msgstr "एलडीएपी"
 
 #: auth_login.php:787 user_admin.php:2322 user_group_admin.php:682
 #, fuzzy
 msgid "Realm"
-msgstr "क्षेत्र"
+msgstr "फ्रेम"
 
 #: auth_login.php:804
 #, fuzzy
@@ -1107,24 +1084,20 @@ msgstr "उपयोगकर्ता खाता विवरण"
 #: auth_profile.php:296 include/global_arrays.php:760
 #: include/global_settings.php:2261 lib/html.php:1869 lib/html.php:1891
 #: lib/html.php:2382
-#, fuzzy
 msgid "Tree View"
-msgstr "ट्री व्यू"
+msgstr "विस्तृत दृश्य"
 
 #: auth_profile.php:300 include/global_arrays.php:761 lib/html.php:1876
 #: lib/html.php:1900 lib/html.php:2383
-#, fuzzy
 msgid "List View"
 msgstr "सूची दृश्य"
 
 #: auth_profile.php:304 include/global_arrays.php:762 lib/html.php:1883
 #: lib/html.php:2384
-#, fuzzy
 msgid "Preview View"
-msgstr "पूर्वावलोकन देखें"
+msgstr "पूर्वद्रिश्श द्रिश्श"
 
 #: auth_profile.php:317 include/global_form.php:1442 user_admin.php:2319
-#, fuzzy
 msgid "User Name"
 msgstr "उपयोगकर्ता नाम"
 
@@ -1184,9 +1157,8 @@ msgid "Clear all your Login Session Tokens."
 msgstr "अपने सभी लॉगिन सत्र साफ़ करें।"
 
 #: auth_profile.php:381 user_admin.php:1982 user_group_admin.php:1666
-#, fuzzy
 msgid "User Settings"
-msgstr "उपयोगकर्ता सेटिंग"
+msgstr "उपयोक्ता विन्यास"
 
 #: auth_profile.php:470
 #, fuzzy
@@ -1209,9 +1181,8 @@ msgid "User Sessions Cleared"
 msgstr "उपयोगकर्ता सत्र साफ़ किए गए"
 
 #: auth_profile.php:572
-#, fuzzy
 msgid "Reset"
-msgstr "रीसेट"
+msgstr "पुनः सेट करें"
 
 #: automation_devices.php:45
 #, fuzzy
@@ -1223,7 +1194,6 @@ msgstr "डिवाइस जोडे"
 #: automation_devices.php:633 automation_devices.php:634 host.php:1598
 #: lib/api_automation.php:173 lib/api_automation.php:1099
 #: lib/html_utility.php:906 pollers.php:46
-#, fuzzy
 msgid "Down"
 msgstr "नीचे"
 
@@ -1232,7 +1202,6 @@ msgstr "नीचे"
 #: automation_devices.php:633 automation_devices.php:634 host.php:1597
 #: lib/api_automation.php:172 lib/api_automation.php:1098
 #: lib/html_utility.php:912
-#, fuzzy
 msgid "Up"
 msgstr "ऊपर"
 
@@ -1251,9 +1220,8 @@ msgstr "कैक्टि में जोड़ा गया"
 #: include/global_arrays.php:898 include/global_arrays.php:1683
 #: lib/api_automation.php:425 lib/functions.php:3922 lib/html.php:1983
 #: lib/html.php:2015 lib/html_reports.php:633 utilities.php:1525
-#, fuzzy
 msgid "Device"
-msgstr "युक्ति"
+msgstr "डिवाइस"
 
 #: automation_devices.php:122
 #, fuzzy
@@ -1294,19 +1262,16 @@ msgstr "उपकरण जोड़ें"
 #: lib/api_automation.php:1211 pollers.php:945 sites.php:573 tree.php:793
 #: tree.php:2006 user_admin.php:1283 user_admin.php:2800
 #: user_group_admin.php:972 user_group_admin.php:2287 utilities.php:309
-#, fuzzy
 msgid "Devices"
-msgstr "उपकरण"
+msgstr "डिवाइस"
 
 #: automation_devices.php:263
-#, fuzzy
 msgid "Device Name"
-msgstr "यन्त्र का नाम"
+msgstr "उपकरण नामः% 1"
 
 #: automation_devices.php:264
-#, fuzzy
 msgid "IP"
-msgstr "आईपी"
+msgstr "IP"
 
 #: automation_devices.php:265
 #, fuzzy
@@ -1332,14 +1297,12 @@ msgid "Description"
 msgstr "विवरण"
 
 #: automation_devices.php:269 automation_devices.php:511
-#, fuzzy
 msgid "OS"
-msgstr "ओएस"
+msgstr "OS"
 
 #: automation_devices.php:270 host.php:1671 include/global_arrays.php:463
-#, fuzzy
 msgid "Uptime"
-msgstr "अपटाइम"
+msgstr "चालू रहने का समय"
 
 #: automation_devices.php:271 automation_devices.php:526 utilities.php:1720
 #, fuzzy
@@ -1380,9 +1343,8 @@ msgid "Discovery Filters"
 msgstr "डिस्कवरी फिल्टर"
 
 #: automation_devices.php:466
-#, fuzzy
 msgid "Network"
-msgstr "नेटवर्क"
+msgstr "नैट्टवर्क"
 
 #: automation_devices.php:482
 #, fuzzy
@@ -1391,9 +1353,8 @@ msgstr "फ़ील्ड को डिफ़ॉल्ट पर रीसे�
 
 #: automation_devices.php:487 color.php:570 host.php:1575
 #: lib/html_form.php:1301
-#, fuzzy
 msgid "Export"
-msgstr "निर्यात"
+msgstr "एक्सपोर्ट"
 
 #: automation_devices.php:487
 #, fuzzy
@@ -1402,9 +1363,8 @@ msgstr "फ़ाइल में निर्यात करें"
 
 #: automation_devices.php:488 data_debug.php:982 lib/clog_webapi.php:212
 #: lib/clog_webapi.php:524 managers.php:747
-#, fuzzy
 msgid "Purge"
-msgstr "शुद्ध करना"
+msgstr "सफाई"
 
 #: automation_devices.php:488
 #, fuzzy
@@ -1419,18 +1379,16 @@ msgstr "खोजे गए उपकरण"
 #: pollers.php:994 user_admin.php:2334 utilities.php:456 utilities.php:833
 #: utilities.php:2167 utilities.php:2264 utilities.php:2272 utilities.php:2275
 #: utilities.php:2278 utilities.php:2284 utilities.php:2514
-#, fuzzy
 msgid "N/A"
-msgstr "एन / ए"
+msgstr "लागू नहीं"
 
 #: automation_graph_rules.php:29 automation_snmp.php:30
 #: automation_tree_rules.php:29 cdef.php:30 color_templates.php:29
 #: data_input.php:33 data_templates.php:35 graph_templates.php:35 graphs.php:66
 #: host_templates.php:36 include/global_arrays.php:1476 sites.php:29
 #: vdef.php:30
-#, fuzzy
 msgid "Duplicate"
-msgstr "प्रतिलिपि"
+msgstr "डुप्लीकेट"
 
 #: automation_graph_rules.php:30 automation_networks.php:33
 #: automation_tree_rules.php:30 data_sources.php:40 host.php:41
@@ -1438,7 +1396,6 @@ msgstr "प्रतिलिपि"
 #: managers.php:29 managers.php:35 plugins.php:29 pollers.php:35
 #: user_admin.php:30 user_domains.php:32 user_domains.php:411
 #: user_group_admin.php:32
-#, fuzzy
 msgid "Enable"
 msgstr "सक्षम करें"
 
@@ -1447,9 +1404,8 @@ msgstr "सक्षम करें"
 #: include/global_arrays.php:1478 links.php:30 managers.php:30 managers.php:34
 #: plugins.php:30 pollers.php:34 user_admin.php:31 user_domains.php:31
 #: user_group_admin.php:33
-#, fuzzy
 msgid "Disable"
-msgstr "अक्षम"
+msgstr "अक्षम करें"
 
 #: automation_graph_rules.php:256
 #, fuzzy
@@ -1493,9 +1449,8 @@ msgid "Apply requested action"
 msgstr "अनुरोधित कार्रवाई लागू करें"
 
 #: automation_graph_rules.php:420 automation_tree_rules.php:486
-#, fuzzy
 msgid "Are You Sure?"
-msgstr "क्या आपको यकीन है?"
+msgstr "क्या आप सुनिश्चित हैं?"
 
 #: automation_graph_rules.php:420
 #, fuzzy, php-format
@@ -1694,9 +1649,8 @@ msgid "SNMP Get"
 msgstr "SNMP मिलता है"
 
 #: automation_networks.php:419 automation_networks.php:1066 tree.php:1431
-#, fuzzy
 msgid "Manual"
-msgstr "गाइड"
+msgstr "मैन्युअल"
 
 #: automation_networks.php:420 automation_networks.php:1067
 #: include/global_arrays.php:1705
@@ -1705,13 +1659,11 @@ msgstr "प्रतिदिन"
 
 #: automation_networks.php:421 automation_networks.php:1068
 #: include/global_arrays.php:1706
-#, fuzzy
 msgid "Weekly"
 msgstr "साप्ताहिक"
 
 #: automation_networks.php:422 automation_networks.php:1069
 #: include/global_arrays.php:1707
-#, fuzzy
 msgid "Monthly"
 msgstr "मासिक"
 
@@ -2039,7 +1991,6 @@ msgid "Rerun discovery for this Network Range every X."
 msgstr "इस नेटवर्क रेंज के लिए रेरन खोज हर एक्स।"
 
 #: automation_networks.php:635
-#, fuzzy
 msgid "Days of Week"
 msgstr "सप्ताह के दिन"
 
@@ -2050,43 +2001,36 @@ msgstr "सप्ताह का कौन सा दिन (दिन) इस 
 
 #: automation_networks.php:638 automation_networks.php:696
 #: include/global_arrays.php:1747
-#, fuzzy
 msgid "Sunday"
 msgstr "रविवार"
 
 #: automation_networks.php:639 automation_networks.php:697
 #: include/global_arrays.php:1748
-#, fuzzy
 msgid "Monday"
 msgstr "सोमवार"
 
 #: automation_networks.php:640 automation_networks.php:698
 #: include/global_arrays.php:1749
-#, fuzzy
 msgid "Tuesday"
 msgstr "मंगलवार"
 
 #: automation_networks.php:641 automation_networks.php:699
 #: include/global_arrays.php:1750
-#, fuzzy
 msgid "Wednesday"
 msgstr "बुधवार"
 
 #: automation_networks.php:642 automation_networks.php:700
 #: include/global_arrays.php:1751
-#, fuzzy
 msgid "Thursday"
-msgstr "गुरूवार"
+msgstr "वृहस्पतिवार"
 
 #: automation_networks.php:643 automation_networks.php:701
 #: include/global_arrays.php:1752
-#, fuzzy
 msgid "Friday"
 msgstr "शुक्रवार"
 
 #: automation_networks.php:644 automation_networks.php:702
 #: include/global_arrays.php:1753
-#, fuzzy
 msgid "Saturday"
 msgstr "शनिवार"
 
@@ -2101,69 +2045,56 @@ msgid "What Months(s) of the Year will this Network Range be discovered."
 msgstr "इस नेटवर्क रेंज को वर्ष के कितने महीनों के लिए खोजा जाएगा।"
 
 #: automation_networks.php:654 include/global_arrays.php:1717
-#, fuzzy
 msgid "January"
 msgstr "जनवरी"
 
 #: automation_networks.php:655 include/global_arrays.php:1718
-#, fuzzy
 msgid "February"
 msgstr "फरवरी"
 
 #: automation_networks.php:656 include/global_arrays.php:1719
-#, fuzzy
 msgid "March"
 msgstr "मार्च"
 
 #: automation_networks.php:657 include/global_arrays.php:1720
-#, fuzzy
 msgid "April"
 msgstr "अप्रैल"
 
 #: automation_networks.php:658 include/global_arrays.php:1721
-#, fuzzy
 msgid "May"
 msgstr "मई"
 
 #: automation_networks.php:659 include/global_arrays.php:1722
-#, fuzzy
 msgid "June"
 msgstr "जून"
 
 #: automation_networks.php:660 include/global_arrays.php:1723
-#, fuzzy
 msgid "July"
 msgstr "जुलाई"
 
 #: automation_networks.php:661 include/global_arrays.php:1724
-#, fuzzy
 msgid "August"
 msgstr "अगस्त"
 
 #: automation_networks.php:662 include/global_arrays.php:1725
-#, fuzzy
 msgid "September"
-msgstr "सितंबर"
+msgstr "सितम्बर"
 
 #: automation_networks.php:663 include/global_arrays.php:1726
-#, fuzzy
 msgid "October"
 msgstr "अक्टूबर"
 
 #: automation_networks.php:664 include/global_arrays.php:1727
-#, fuzzy
 msgid "November"
-msgstr "नवंबर"
+msgstr "नवम्बर"
 
 #: automation_networks.php:665 include/global_arrays.php:1728
-#, fuzzy
 msgid "December"
 msgstr "दिसंबर"
 
 #: automation_networks.php:672
-#, fuzzy
 msgid "Days of Month"
-msgstr "महीने के दिन"
+msgstr "माह के दिन"
 
 #: automation_networks.php:673
 #, fuzzy
@@ -2171,7 +2102,6 @@ msgid "What Day(s) of the Month will this Network Range be discovered."
 msgstr "इस नेटवर्क रेंज को माह के किस दिन खोजा जाएगा"
 
 #: automation_networks.php:674 automation_networks.php:686
-#, fuzzy
 msgid "Last"
 msgstr "अंतिम"
 
@@ -2186,14 +2116,12 @@ msgid "What Week(s) of the Month will this Network Range be discovered."
 msgstr "इस नेटवर्क रेंज को महीने के किस सप्ताह में खोजा जाएगा।"
 
 #: automation_networks.php:683
-#, fuzzy
 msgid "First"
 msgstr "पहला"
 
 #: automation_networks.php:684
-#, fuzzy
 msgid "Second"
-msgstr "दूसरा"
+msgstr "सेकंड"
 
 #: automation_networks.php:685
 #, fuzzy
@@ -2330,9 +2258,8 @@ msgid "Network Name"
 msgstr "नेटवर्क का नाम"
 
 #: automation_networks.php:1076
-#, fuzzy
 msgid "Schedule"
-msgstr "अनुसूची"
+msgstr "शैड्‌यूल"
 
 #: automation_networks.php:1077
 #, fuzzy
@@ -2350,7 +2277,6 @@ msgid "Pending/Running/Done"
 msgstr "लंबित / चल रहा है / हो गया"
 
 #: automation_networks.php:1079
-#, fuzzy
 msgid "Progress"
 msgstr "प्रगति"
 
@@ -2360,9 +2286,8 @@ msgid "Up/SNMP Hosts"
 msgstr "अप / एसएनएमपी होस्ट"
 
 #: automation_networks.php:1081 pollers.php:108
-#, fuzzy
 msgid "Threads"
-msgstr "धागे"
+msgstr "थ्रैड"
 
 #: automation_networks.php:1082
 #, fuzzy
@@ -2380,20 +2305,17 @@ msgid "Last Started"
 msgstr "अंतिम शुरुआत"
 
 #: automation_networks.php:1113 pollers.php:44 utilities.php:2104
-#, fuzzy
 msgid "Running"
 msgstr "चल रहा है"
 
 #: automation_networks.php:1137 pollers.php:45 utilities.php:2103
-#, fuzzy
 msgid "Idle"
-msgstr "बेकार"
+msgstr "आइडल"
 
 #: automation_networks.php:1153 include/global_arrays.php:1076
 #: include/global_settings.php:2117 lib/html_reports.php:1635
-#, fuzzy
 msgid "Never"
-msgstr "कभी नहीँ"
+msgstr "कभी नहीं"
 
 #: automation_networks.php:1158
 #, fuzzy
@@ -2403,9 +2325,8 @@ msgstr "कोई नेटवर्क नहीं मिला"
 #: automation_networks.php:1204 data_debug.php:1027 graph.php:362
 #: lib/clog_webapi.php:554 lib/html_graph.php:306 lib/html_tree.php:1176
 #: lib/html_tree.php:1197 pollers.php:840 utilities.php:1119 utilities.php:2054
-#, fuzzy
 msgid "Refresh"
-msgstr "ताज़ा करना"
+msgstr "रीफ्रैश करो"
 
 #: automation_networks.php:1210 automation_networks.php:1211
 #: automation_networks.php:1212 automation_networks.php:1213
@@ -2451,9 +2372,8 @@ msgid "Name Format"
 msgstr "नाम स्वरूप"
 
 #: automation_snmp.php:244
-#, fuzzy
 msgid "name"
-msgstr "नाम"
+msgstr "नांऽ"
 
 #: automation_snmp.php:331
 #, fuzzy
@@ -2495,7 +2415,6 @@ msgstr "SNMP विकल्प [नया]"
 #: include/global_form.php:2264 lib/api_automation.php:1288
 #: lib/api_automation.php:1350 lib/api_automation.php:1416
 #: lib/html_reports.php:696 lib/html_reports.php:1325
-#, fuzzy
 msgid "Sequence"
 msgstr "अनुक्रम"
 
@@ -2527,30 +2446,25 @@ msgstr "स्वचालन SNMP विकल्प"
 #: automation_snmp.php:504 cdef.php:612 lib/api_automation.php:1287
 #: lib/api_automation.php:1349 lib/api_automation.php:1415
 #: lib/html_reports.php:1324 vdef.php:595
-#, fuzzy
 msgid "Item"
 msgstr "मद"
 
 #: automation_snmp.php:505 include/auth.php:303 include/global_settings.php:572
 #: permission_denied.php:59 plugins.php:461
-#, fuzzy
 msgid "Version"
-msgstr "संस्करण %s"
+msgstr "सरूप"
 
 #: automation_snmp.php:506 include/global_settings.php:579
-#, fuzzy
 msgid "Community"
-msgstr "समुदाय"
+msgstr "कम्युनिटी"
 
 #: automation_snmp.php:507 lib/functions.php:3923
-#, fuzzy
 msgid "Port"
-msgstr "बंदरगाह"
+msgstr "पोर्ट"
 
 #: automation_snmp.php:508 include/global_settings.php:654
-#, fuzzy
 msgid "Timeout"
-msgstr "समय समाप्त"
+msgstr "टाइमआउट"
 
 #: automation_snmp.php:509 include/global_settings.php:662
 #, fuzzy
@@ -2588,14 +2502,12 @@ msgid "Priv Protocol"
 msgstr "प्रिवि प्रोटोकॉल"
 
 #: automation_snmp.php:516
-#, fuzzy
 msgid "Context"
-msgstr "प्रसंग"
+msgstr "संदर्भ"
 
 #: automation_snmp.php:517 data_queries.php:1142 utilities.php:1715
-#, fuzzy
 msgid "Action"
-msgstr "कार्य"
+msgstr "कार्रवाई"
 
 #: automation_snmp.php:527 lib/api_automation.php:1304
 #: lib/api_automation.php:1366 lib/api_automation.php:1434
@@ -2604,27 +2516,24 @@ msgid "Item#%d"
 msgstr "मद #% d"
 
 #: automation_snmp.php:529
-#, fuzzy
 msgid "none"
-msgstr "कोई नहीं"
+msgstr "कुछ भी नहीं"
 
 #: automation_snmp.php:544 automation_templates.php:524 cdef.php:639
 #: color_templates.php:111 data_queries.php:810 data_queries.php:910
 #: lib/api_automation.php:1314 lib/api_automation.php:1376
 #: lib/api_automation.php:1444 lib/html.php:1186 lib/html_reports.php:1399
 #: lib/html_reports.php:1401 tree.php:2020 tree.php:2027 vdef.php:624
-#, fuzzy
 msgid "Move Down"
-msgstr "नीचे की ओर"
+msgstr "नीचे ले जाएं"
 
 #: automation_snmp.php:550 automation_templates.php:530 cdef.php:645
 #: color_templates.php:117 data_queries.php:815 data_queries.php:915
 #: lib/api_automation.php:1320 lib/api_automation.php:1382
 #: lib/api_automation.php:1450 lib/html.php:1191 lib/html_reports.php:1401
 #: lib/html_reports.php:1403 tree.php:2024 tree.php:2028 vdef.php:630
-#, fuzzy
 msgid "Move Up"
-msgstr "बढ़ाना"
+msgstr "ऊपर ले जाएं"
 
 #: automation_snmp.php:564
 #, fuzzy
@@ -2760,9 +2669,8 @@ msgstr "डिवाइस स्वचालन टेम्पलेट्स"
 
 #: automation_templates.php:491 data_sources.php:1632 user_admin.php:1439
 #: user_group_admin.php:1123
-#, fuzzy
 msgid "Template Name"
-msgstr "टेम्पलेट नाम"
+msgstr "टेम्पलेट का नाम"
 
 #: automation_templates.php:495
 #, fuzzy
@@ -2771,9 +2679,8 @@ msgstr "सिस्टम ऑब्जेक्ट मैच"
 
 #: automation_templates.php:499 data_queries.php:779 data_queries.php:877
 #: links.php:384 tree.php:2001
-#, fuzzy
 msgid "Order"
-msgstr "क्रम"
+msgstr "ऑर्डर"
 
 #: automation_templates.php:509
 #, fuzzy
@@ -2837,7 +2744,6 @@ msgstr "पत्ता प्रकार बदलें"
 
 #: automation_tree_rules.php:706 lib/installer.php:3595 utilities.php:2162
 #: utilities.php:2163 utilities.php:2166 utilities.php:2167
-#, fuzzy
 msgid "WARNING:"
 msgstr "चेतावनी:"
 
@@ -2884,9 +2790,8 @@ msgid "Using Grouping"
 msgstr "ग्रुपिंग का उपयोग करना"
 
 #: automation_tree_rules.php:949
-#, fuzzy
 msgid "ROOT"
-msgstr "जड़"
+msgstr "बूट्सConstellation name (optional)"
 
 #: automation_tree_rules.php:965
 #, fuzzy
@@ -3090,9 +2995,8 @@ msgid "Please specify the location of the CSV file containing your Color informa
 msgstr "कृपया अपनी रंग जानकारी युक्त CSV फ़ाइल का स्थान निर्दिष्ट करें।"
 
 #: color.php:374 lib/html_form.php:502
-#, fuzzy
 msgid "Select a File"
-msgstr "किसी फाइल का चयन करें"
+msgstr "एक फ़ाइल चुनें"
 
 #: color.php:381
 #, fuzzy
@@ -3145,14 +3049,12 @@ msgid "Colors"
 msgstr "रंग"
 
 #: color.php:552
-#, fuzzy
 msgid "Named Colors"
-msgstr "नामित रंग"
+msgstr "नामांकित रंग"
 
 #: color.php:569 lib/html_form.php:1299
-#, fuzzy
 msgid "Import"
-msgstr "आयात"
+msgstr "आयात करें"
 
 #: color.php:570
 #, fuzzy
@@ -3160,9 +3062,8 @@ msgid "Export Colors"
 msgstr "रंग निर्यात करें"
 
 #: color.php:698 color_templates.php:75
-#, fuzzy
 msgid "Hex"
-msgstr "हेक्स"
+msgstr "हेक्स#"
 
 #: color.php:698
 #, fuzzy
@@ -3239,7 +3140,7 @@ msgstr "आइटम #% d"
 #: lib/api_aggregate.php:1855 lib/html.php:1205
 #, fuzzy
 msgid "No Items"
-msgstr "कोई वस्तु नहीं"
+msgstr "वस्तुएं"
 
 #: color_templates.php:232
 #, fuzzy
@@ -3309,14 +3210,14 @@ msgid "Color Template [new]"
 msgstr "रंग टेम्पलेट [नया]"
 
 #: color_templates.php:453
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had %d Aggregate Templates pushed out and %d Non-Templated Aggregates pushed out"
-msgstr ""
+msgstr "कलर टेम्प्लेट '%s' में% d एग्रीगेट टेम्प्लेट बाहर धकेल दिए गए और% d नॉन-टेम्पलेटेड एग्रीगेट्स को बाहर धकेल दिया गया"
 
 #: color_templates.php:455
-#, php-format
+#, fuzzy, php-format
 msgid "Color Template '%s' had no Aggregate Templates or Graphs using this Color Template."
-msgstr ""
+msgstr "कलर टेम्प्लेट '%s' में इस कलर टेम्प्लेट का उपयोग करने के लिए कोई एग्रीगेट टेम्पलेट या ग्राफ़ नहीं थे।"
 
 #: color_templates.php:511 color_templates.php:524 color_templates.php:619
 #: include/global_arrays.php:2508
@@ -3408,9 +3309,8 @@ msgstr "डेटा स्रोत की मरम्मत को एक अ
 #: data_sources.php:979 data_templates.php:596 graphs_items.php:463
 #: include/global_arrays.php:900 include/global_form.php:926
 #: lib/api_aggregate.php:1709 lib/html.php:1083
-#, fuzzy
 msgid "Data Source"
-msgstr "डेटा स्रोत"
+msgstr "डाटा स्रोत"
 
 #: data_debug.php:331
 #, fuzzy
@@ -3427,9 +3327,8 @@ msgid "The User who requested the Debug."
 msgstr "डिबग का अनुरोध करने वाला उपयोगकर्ता।"
 
 #: data_debug.php:339
-#, fuzzy
 msgid "Started"
-msgstr "शुरू कर दिया है"
+msgstr "प्रारंभ"
 
 #: data_debug.php:342
 #, fuzzy
@@ -3447,7 +3346,6 @@ msgid "The Status of the Data Source Debug Check."
 msgstr "डेटा स्रोत डिबग चेक की स्थिति।"
 
 #: data_debug.php:357 lib/installer.php:2201 lib/installer.php:2233
-#, fuzzy
 msgid "Writable"
 msgstr "लिखने योग्य"
 
@@ -3468,7 +3366,6 @@ msgstr "निर्धारित करता है कि डेटा स�
 
 #: data_debug.php:369 data_sources.php:1626 data_templates.php:1131
 #: plugins.php:37 plugins.php:358
-#, fuzzy
 msgid "Active"
 msgstr "सक्रिय"
 
@@ -3646,9 +3543,8 @@ msgid "Rerun Analysis"
 msgstr "रेरन विश्लेषण"
 
 #: data_debug.php:754
-#, fuzzy
 msgid "Check"
-msgstr "चेक"
+msgstr "जाँच करें"
 
 #: data_debug.php:755 include/global_form.php:984 lib/rrd.php:2887
 #: utilities.php:2494
@@ -3656,14 +3552,13 @@ msgid "Value"
 msgstr "मूल्य"
 
 #: data_debug.php:756
-#, fuzzy
 msgid "Results"
 msgstr "परिणाम"
 
 #: data_debug.php:767
 #, fuzzy
 msgid "<not set>"
-msgstr "<not set>"
+msgstr "डिफ़ॉल्ट नियत करें"
 
 #: data_debug.php:802 data_debug.php:853
 #, fuzzy
@@ -3671,9 +3566,8 @@ msgid "Data Source Repair Recommendations"
 msgstr "डेटा स्रोत फ़ील्ड"
 
 #: data_debug.php:807
-#, fuzzy
 msgid "Issue"
-msgstr "मुद्दा"
+msgstr "जारी करो"
 
 #: data_debug.php:819
 #, fuzzy, php-format
@@ -3696,9 +3590,8 @@ msgid "Repair Steps [ Run Fix from Command Line ]"
 msgstr "सुधार चरण [कमांड लाइन से रन फिक्स]"
 
 #: data_debug.php:839
-#, fuzzy
 msgid "Command"
-msgstr "टिपण्णी"
+msgstr "निर्देश"
 
 #: data_debug.php:855
 #, fuzzy
@@ -3718,7 +3611,7 @@ msgstr "डेटा स्रोत समस्या निवारक [ %s]
 #: data_debug.php:943
 #, fuzzy
 msgid "No Device"
-msgstr "उपकरण नहीं"
+msgstr "उपकरणः"
 
 #: data_debug.php:982
 #, fuzzy
@@ -3739,9 +3632,8 @@ msgid "All"
 msgstr "所有"
 
 #: data_debug.php:1011 utilities.php:710 utilities.php:841
-#, fuzzy
 msgid "Failed"
-msgstr "अनुत्तीर्ण होना"
+msgstr "असफल"
 
 #: data_debug.php:1017 data_debug.php:1022
 #, fuzzy
@@ -3914,9 +3806,8 @@ msgid "Data Input Methods"
 msgstr "डेटा इनपुट के तरीके"
 
 #: data_input.php:810 data_input.php:898
-#, fuzzy
 msgid "Input Methods"
-msgstr "इनपुट के तरीके"
+msgstr "इनपुट पद्धति"
 
 #: data_input.php:907
 #, fuzzy
@@ -4024,7 +3915,6 @@ msgid "Suggested Values - Graphs"
 msgstr "सुझाए गए मान - रेखांकन"
 
 #: data_queries.php:780 data_queries.php:878
-#, fuzzy
 msgid "Equation"
 msgstr "समीकरण"
 
@@ -4035,9 +3925,8 @@ msgstr "कोई सुझाव नहीं मिला"
 
 #: data_queries.php:842 data_queries.php:943 include/global_form.php:2047
 #: include/global_form.php:2089 lib/api_automation.php:1417 utilities.php:1525
-#, fuzzy
 msgid "Field Name"
-msgstr "कार्यक्षेत्र नाम"
+msgstr "क्षेत्र नाम"
 
 #: data_queries.php:848 data_queries.php:949
 #, fuzzy
@@ -4047,9 +3936,8 @@ msgstr "सुझाया गया मान"
 #: data_queries.php:854 data_queries.php:955 host.php:800 host.php:917
 #: host_templates.php:535 host_templates.php:589 lib/html.php:62
 #: lib/html_filter.php:55
-#, fuzzy
 msgid "Add"
-msgstr "जोड़ना"
+msgstr "शामिल करें"
 
 #: data_queries.php:854
 #, fuzzy
@@ -4255,14 +4143,12 @@ msgid "Graph Timespan"
 msgstr "ग्राफ टाइमपेन"
 
 #: data_source_profiles.php:572
-#, fuzzy
 msgid "Steps"
-msgstr "कदम"
+msgstr "चरण"
 
 #: data_source_profiles.php:573 graphs_new.php:417 include/global_form.php:254
 #: lib/html.php:480 lib/html_filter.php:72 lib/installer.php:2513
 #: lib/rrd.php:2941 utilities.php:520 utilities.php:1434
-#, fuzzy
 msgid "Rows"
 msgstr "पंक्तियाँ"
 
@@ -4297,9 +4183,8 @@ msgid "%d Years"
 msgstr "% d वष"
 
 #: data_source_profiles.php:741
-#, fuzzy
 msgid "1 Year"
-msgstr "1 साल"
+msgstr "1 वर्ष"
 
 #: data_source_profiles.php:750 include/global_arrays.php:704
 #: include/global_arrays.php:1322 rrdcleaner.php:490
@@ -4354,7 +4239,6 @@ msgstr "% ड डय"
 #: include/global_arrays.php:1358 include/global_arrays.php:1379
 #: include/global_arrays.php:1412 include/global_arrays.php:1421
 #: include/global_arrays.php:1449 include/global_settings.php:1411
-#, fuzzy
 msgid "1 Hour"
 msgstr "1 घंटा"
 
@@ -4364,9 +4248,8 @@ msgid "Data Source Profiles"
 msgstr "डेटा स्रोत प्रोफ़ाइल"
 
 #: data_source_profiles.php:844 data_source_profiles.php:1007
-#, fuzzy
 msgid "Profiles"
-msgstr "प्रोफाइल"
+msgstr "प्रोफाइलें"
 
 #: data_source_profiles.php:861 data_templates.php:952
 #, fuzzy
@@ -4389,9 +4272,8 @@ msgid "Profiles that are in use cannot be Deleted. In use is defined as being re
 msgstr "उपयोग में आने वाले प्रोफ़ाइल हटाए नहीं जा सकते हैं। उपयोग में डेटा स्रोत या डेटा टेम्पलेट द्वारा संदर्भित के रूप में परिभाषित किया गया है।"
 
 #: data_source_profiles.php:977 include/global_form.php:330
-#, fuzzy
 msgid "Read Only"
-msgstr "सिफ़ पढ़िये"
+msgstr "सिर्फ पढ़ने के लिए"
 
 #: data_source_profiles.php:979
 #, fuzzy
@@ -4637,9 +4519,8 @@ msgid "Data Source Item Fields"
 msgstr "डेटा स्रोत आइटम फ़ील्ड्स"
 
 #: data_sources.php:971
-#, fuzzy
 msgid "Custom Data"
-msgstr "कस्टम डेटा"
+msgstr "रंगों को नियत करें"
 
 #: data_sources.php:1069
 #, fuzzy, php-format
@@ -4647,7 +4528,6 @@ msgid "Data Source Item %s"
 msgstr "डेटा स्रोत आइटम %s"
 
 #: data_sources.php:1072 data_templates.php:687
-#, fuzzy
 msgid "New"
 msgstr "नया"
 
@@ -4662,15 +4542,13 @@ msgid "RRDtool Tune Info"
 msgstr "RRDtool ट्यून जानकारी"
 
 #: data_sources.php:1179 data_templates.php:1130 include/global_form.php:552
-#, fuzzy
 msgid "External"
-msgstr "बाहरी"
+msgstr "बाह्‌री"
 
 #: data_sources.php:1183 include/global_arrays.php:639
 #: include/global_arrays.php:1073 include/global_arrays.php:1406
 #: include/global_arrays.php:1442 include/global_arrays.php:1460
 #: include/global_settings.php:1405 include/global_settings.php:2187
-#, fuzzy
 msgid "1 Minute"
 msgstr "1 मिनट"
 
@@ -4760,9 +4638,8 @@ msgid "No Aggregates"
 msgstr "समुच्चय"
 
 #: data_templates.php:36
-#, fuzzy
 msgid "Change Profile"
-msgstr "विवरणिका बदले"
+msgstr "प्रोफ़ाइल बदलें"
 
 #: data_templates.php:378
 #, fuzzy
@@ -4891,9 +4768,8 @@ msgid "The method that is used to place Data into the Data Source RRDfile."
 msgstr "वह विधि जिसका उपयोग डेटा को डेटा स्रोत RRDfile में रखने के लिए किया जाता है।"
 
 #: data_templates.php:1089
-#, fuzzy
 msgid "Profile Name"
-msgstr "प्रोफ़ाइल नाम"
+msgstr "प्रोजेक्ट प्लान"
 
 #: data_templates.php:1092
 #, fuzzy
@@ -4951,9 +4827,8 @@ msgid "The name of this GPRINT Preset."
 msgstr "इस GPRINT प्रीसेट का नाम।"
 
 #: gprint_presets.php:391
-#, fuzzy
 msgid "Format"
-msgstr "स्वरूप"
+msgstr "प्रारूप"
 
 #: gprint_presets.php:394
 #, fuzzy
@@ -5052,9 +4927,8 @@ msgstr "कैक्टि वास्तविक समय रेखांक
 
 #: graph_realtime.php:364 lib/html_graph.php:238 lib/html_reports.php:1009
 #: lib/html_tree.php:1108
-#, fuzzy
 msgid "Thumbnails"
-msgstr "थंबनेल"
+msgstr "थम्बनेल्स"
 
 #: graph_realtime.php:369
 #, fuzzy, php-format
@@ -5067,9 +4941,8 @@ msgid " seconds left."
 msgstr "सेकंड बचे हैं।"
 
 #: graph_templates.php:36
-#, fuzzy
 msgid "Change Settings"
-msgstr "डिवाइस सेटिंग्स बदलें"
+msgstr "सेटिंग बदलें"
 
 #: graph_templates.php:37
 #, fuzzy
@@ -5112,9 +4985,8 @@ msgid "Graph Width"
 msgstr "ग्राफ चौड़ाई"
 
 #: graph_templates.php:373 graph_templates.php:819
-#, fuzzy
 msgid "Image Format"
-msgstr "छवि प्रारूप"
+msgstr "छवि फ़ॉर्मेट"
 
 #: graph_templates.php:378
 #, fuzzy
@@ -5243,14 +5115,12 @@ msgstr "औसत:"
 
 #: graph_templates_items.php:115 graph_templates_items.php:148
 #: graphs_items.php:162
-#, fuzzy
 msgid "Max:"
-msgstr "मैक्स:"
+msgstr "अधि.:"
 
 #: graph_templates_items.php:141 graphs_items.php:155
-#, fuzzy
 msgid "Min:"
-msgstr "न्यूनतम:"
+msgstr "न्यून.:"
 
 #: graph_templates_items.php:407
 #, fuzzy, php-format
@@ -5307,7 +5177,6 @@ msgid "Add to a Report"
 msgstr "एक रिपोर्ट में जोड़ें"
 
 #: graph_view.php:612
-#, fuzzy
 msgid "Report"
 msgstr "रिपोर्ट"
 
@@ -5399,7 +5268,6 @@ msgid "End Date"
 msgstr "अंतिम दिनांक"
 
 #: graph_xport.php:125 graph_xport.php:157 include/global_form.php:557
-#, fuzzy
 msgid "Step"
 msgstr "चरण"
 
@@ -5424,9 +5292,8 @@ msgid "Nth Percentile"
 msgstr "Nth Percentile"
 
 #: graph_xport.php:138 graph_xport.php:180
-#, fuzzy
 msgid "Summation"
-msgstr "योग"
+msgstr "संकलन"
 
 #: graph_xport.php:144 utilities.php:259 utilities.php:806
 msgid "Date"
@@ -5779,9 +5646,8 @@ msgstr "नया डिवाइस बनाएं"
 
 #: graphs_new.php:479 graphs_new.php:773 lib/html.php:962 user_admin.php:1652
 #: user_group_admin.php:1334
-#, fuzzy
 msgid "Select All"
-msgstr "सभी का चयन करे"
+msgstr "सभी का चयन करें"
 
 #: graphs_new.php:479 graphs_new.php:773 lib/html.php:863 lib/html.php:962
 #, fuzzy
@@ -5791,9 +5657,8 @@ msgstr "सभी पंक्तियों का चयन करें"
 #: graphs_new.php:566 include/global_arrays.php:880
 #: include/global_arrays.php:956 lib/html_form.php:1282 lib/html_form.php:1295
 #: tree.php:1369
-#, fuzzy
 msgid "Create"
-msgstr "सर्जन करना"
+msgstr "बनाएं"
 
 #: graphs_new.php:568
 #, fuzzy
@@ -5841,9 +5706,8 @@ msgid "Make selection default"
 msgstr "चयन को डिफ़ॉल्ट बनाएं"
 
 #: graphs_new.php:846
-#, fuzzy
 msgid "Set Default"
-msgstr "डिफॉल्ट सेट करें"
+msgstr "डिफ़ॉल्ट नियत करें"
 
 #: host.php:43
 #, fuzzy
@@ -5861,9 +5725,9 @@ msgid "Sync to Device Template"
 msgstr "डिवाइस टेम्पलेट के लिए सिंक"
 
 #: host.php:184
-#, php-format
+#, fuzzy, php-format
 msgid "Device Reindex Completed in %0.2f seconds.  There were %d items updated."
-msgstr ""
+msgstr "डिवाइस रिइंडेक्स% 0.2f सेकंड में पूरा हुआ। % D आइटम अपडेट किए गए थे।"
 
 #: host.php:355
 #, fuzzy
@@ -6012,9 +5876,8 @@ msgstr "डेटा क्वेरी डिबग जानकारी"
 
 #: host.php:695 lib/functions.php:2976 tree.php:1511 tree.php:1585
 #: tree.php:1693 user_admin.php:29 user_group_admin.php:31
-#, fuzzy
 msgid "Copy"
-msgstr "प्रतिलिपि"
+msgstr "कॉपी करें"
 
 #: host.php:696 templates_import.php:158
 msgid "Hide"
@@ -6084,12 +5947,10 @@ msgid " [%d Items, %d Rows]"
 msgstr "[% d आइटम,% d पंक्तियाँ]"
 
 #: host.php:878
-#, fuzzy
 msgid "Fail"
 msgstr "असफल"
 
 #: host.php:878 lib/functions.php:3937 lib/functions.php:3942
-#, fuzzy
 msgid "Success"
 msgstr "सफलता"
 
@@ -6124,7 +5985,6 @@ msgid "Add Data Query to Device"
 msgstr "डिवाइस में डेटा क्वेरी जोड़ें"
 
 #: host.php:1083 host.php:1096 include/global_arrays.php:609
-#, fuzzy
 msgid "Ping"
 msgstr "पिंग"
 
@@ -6155,7 +6015,7 @@ msgstr "SNMP GetNext"
 
 #: host.php:1335 host.php:1558
 msgid "Undefined"
-msgstr ""
+msgstr "अपरिभाशत"
 
 #: host.php:1493 include/global_settings.php:523 lib/html.php:2044
 msgid "Site"
@@ -6180,9 +6040,8 @@ msgstr "पुन: प्राप्त करना"
 #: host.php:1600 lib/api_automation.php:175 lib/api_automation.php:1101
 #: lib/html_utility.php:918 lib/plugins.php:998 lib/plugins.php:999
 #: lib/rrd.php:2912 lib/rrd.php:2924 user_admin.php:812 utilities.php:2163
-#, fuzzy
 msgid "Unknown"
-msgstr "अनजान"
+msgstr "अज्ञात"
 
 #: host.php:1629 lib/api_automation.php:570 tree.php:864 utilities.php:1814
 #, fuzzy
@@ -6198,9 +6057,8 @@ msgstr "वह नाम जिसके द्वारा इस उपकर�
 #: lib/api_automation.php:279 lib/api_automation.php:571
 #: lib/api_automation.php:884 lib/api_automation.php:1219 managers.php:219
 #: pollers.php:129 pollers.php:940 user_admin.php:1291 user_group_admin.php:980
-#, fuzzy
 msgid "Hostname"
-msgstr "होस्ट का नाम"
+msgstr "होस्टनांऽ"
 
 #: host.php:1638
 #, fuzzy
@@ -6230,7 +6088,7 @@ msgstr "पिंग परिणामों के आधार पर डि�
 #: host.php:1665
 #, fuzzy
 msgid "In State"
-msgstr "राज्य में"
+msgstr "राज्य"
 
 #: host.php:1668
 #, fuzzy
@@ -6273,7 +6131,6 @@ msgid "The average ping time in milliseconds to reach the Device since the count
 msgstr "डिवाइस तक पहुंचने के लिए मिलीसेकंड में औसत पिंग का समय क्योंकि इस डिवाइस के लिए काउंटरों को मंजूरी दी गई थी।"
 
 #: host.php:1695
-#, fuzzy
 msgid "Availability"
 msgstr "उपलब्धता"
 
@@ -6437,9 +6294,8 @@ msgstr "फिर से लॉगिन करें"
 
 #: include/auth.php:278 lib/functions.php:5503 permission_denied.php:45
 #: permission_denied.php:52
-#, fuzzy
 msgid "Permission Denied"
-msgstr "अनुमति नहीं मिली"
+msgstr "अनुमति अस्वीकृत"
 
 #: include/auth.php:279 lib/functions.php:5504 permission_denied.php:54
 #, fuzzy
@@ -6682,8 +6538,9 @@ msgid "Save Failed.  Minimum Values must be less than Maximum Value."
 msgstr "बचाव असफल हुआ। न्यूनतम मान अधिकतम मूल्य से कम होना चाहिए।"
 
 #: include/global_arrays.php:260
+#, fuzzy
 msgid "Unable to change password.  User account not found."
-msgstr ""
+msgstr "पासवर्ड बदलने में असमर्थ। उपयोगकर्ता खाता नहीं मिला।"
 
 #: include/global_arrays.php:263
 #, fuzzy
@@ -6746,9 +6603,8 @@ msgid "LDAP/AD based password change not supported."
 msgstr "LDAP / AD आधारित पासवर्ड परिवर्तन समर्थित नहीं है।"
 
 #: include/global_arrays.php:299
-#, fuzzy
 msgid "Password successfully changed."
-msgstr "पासवर्ड सफलतापूर्वक बदल दिया है।"
+msgstr "कूटशब्द सफलतापूर्वक बदला गया"
 
 #: include/global_arrays.php:302
 #, fuzzy
@@ -6811,8 +6667,9 @@ msgid "Your Remote Database Hostname must be something other than 'localhost' fo
 msgstr "आपका रिमोट डेटाबेस होस्टनाम प्रत्येक दूरस्थ डेटा कलेक्टर के लिए &#39;लोकलहोस्ट&#39; के अलावा कुछ होना चाहिए।"
 
 #: include/global_arrays.php:338
+#, fuzzy
 msgid "Path variables on this page were only saved locally."
-msgstr ""
+msgstr "इस पृष्ठ पर पथ चर केवल स्थानीय रूप से सहेजे गए थे।"
 
 #: include/global_arrays.php:341
 #, fuzzy
@@ -6865,12 +6722,14 @@ msgid "Poller Resource Cache cleared.  Main Data Collector will rebuild at the n
 msgstr "पोलर संसाधन कैश को मंजूरी दी। मुख्य डेटा कलेक्टर अगले मतदाता शुरुआत में पुनर्निर्माण करेगा, और दूरस्थ डेटा कलेक्टर बाद में सिंक करेगा।"
 
 #: include/global_arrays.php:371
+#, fuzzy
 msgid "Permission Denied.  You do not have permission to the requested action."
-msgstr ""
+msgstr "अनुमति नहीं मिली। आपके पास अनुरोधित कार्रवाई की अनुमति नहीं है।"
 
 #: include/global_arrays.php:374
+#, fuzzy
 msgid "Page is not defined.  Therefore, it can not be displayed."
-msgstr ""
+msgstr "पेज परिभाषित नहीं है। इसलिए, इसे प्रदर्शित नहीं किया जा सकता है।"
 
 #: include/global_arrays.php:377
 #, fuzzy
@@ -6878,9 +6737,8 @@ msgid "Unexpected error occurred"
 msgstr "अनपेक्षित त्रुटि हुई"
 
 #: include/global_arrays.php:438 include/global_arrays.php:817
-#, fuzzy
 msgid "Function"
-msgstr "समारोह"
+msgstr "फ़ंक्शन"
 
 #: include/global_arrays.php:439 include/global_arrays.php:819
 #, fuzzy
@@ -6958,32 +6816,26 @@ msgid "Normal"
 msgstr "सामान्य"
 
 #: include/global_arrays.php:503
-#, fuzzy
 msgid "Light"
-msgstr "रोशनी"
+msgstr "हल्का"
 
 #: include/global_arrays.php:504 include/global_arrays.php:509
-#, fuzzy
 msgid "Mono"
 msgstr "मोनो"
 
 #: include/global_arrays.php:513
-#, fuzzy
 msgid "North"
 msgstr "उत्तर"
 
 #: include/global_arrays.php:514
-#, fuzzy
 msgid "South"
 msgstr "दक्षिण"
 
 #: include/global_arrays.php:515
-#, fuzzy
 msgid "West"
 msgstr "पश्चिम"
 
 #: include/global_arrays.php:516
-#, fuzzy
 msgid "East"
 msgstr "पूर्व"
 
@@ -7018,12 +6870,10 @@ msgid "Numeric"
 msgstr "संख्यावाचक"
 
 #: include/global_arrays.php:534
-#, fuzzy
 msgid "Timestamp"
-msgstr "समय-चिह्न"
+msgstr "टाइमस्टैम्प"
 
 #: include/global_arrays.php:535
-#, fuzzy
 msgid "Duration"
 msgstr "अवधि"
 
@@ -7045,14 +6895,12 @@ msgid "[None]"
 msgstr "कोई नहीं"
 
 #: include/global_arrays.php:581
-#, fuzzy
 msgid "MD5"
-msgstr "MD5"
+msgstr "एमडी5"
 
 #: include/global_arrays.php:582
-#, fuzzy
 msgid "SHA"
-msgstr "SHA"
+msgstr "एसएचए"
 
 #: include/global_arrays.php:587
 #, fuzzy
@@ -7144,7 +6992,6 @@ msgstr "हर% d सेकंड"
 
 #: include/global_arrays.php:659 include/global_arrays.php:726
 #: include/global_arrays.php:751
-#, fuzzy
 msgid "Every Minute"
 msgstr "हर मिनट"
 
@@ -7190,9 +7037,8 @@ msgid "Disabled/Manual"
 msgstr "विकलांग / मैनुअल"
 
 #: include/global_arrays.php:738
-#, fuzzy
 msgid "Every day"
-msgstr "रोज रोज"
+msgstr "हर रोज"
 
 #: include/global_arrays.php:742
 #, fuzzy
@@ -7220,17 +7066,14 @@ msgid "Multiple LDAP/AD Domains"
 msgstr "एकाधिक LDAP / AD डोमेन"
 
 #: include/global_arrays.php:777
-#, fuzzy
 msgid "Active Directory"
 msgstr "सक्रिय निर्देशिका"
 
 #: include/global_arrays.php:789 include/global_settings.php:1674
-#, fuzzy
 msgid "SSL"
-msgstr "एसएसएल"
+msgstr "SSL"
 
 #: include/global_arrays.php:790 include/global_settings.php:1675
-#, fuzzy
 msgid "TLS"
 msgstr "टीएलएस"
 
@@ -7257,9 +7100,8 @@ msgstr "सक्षम (सख्त मोड)"
 #: include/global_arrays.php:818 include/global_form.php:2055
 #: include/global_form.php:2097 lib/api_automation.php:1291
 #: lib/api_automation.php:1353
-#, fuzzy
 msgid "Operator"
-msgstr "ऑपरेटर"
+msgstr "à¤µà¥à¤¯à¤à¥à¤¤à¤¿à¤à¤¤"
 
 #: include/global_arrays.php:820
 #, fuzzy
@@ -7292,16 +7134,14 @@ msgid "Numeric Ordering"
 msgstr "न्यूमेरिक ऑर्डरिंग"
 
 #: include/global_arrays.php:847 lib/rrd.php:2853
-#, fuzzy
 msgid "Header"
-msgstr "हैडर"
+msgstr "हेडर"
 
 #: include/global_arrays.php:848 include/global_arrays.php:899
 #: include/global_arrays.php:1514 include/global_arrays.php:1682
 #: lib/html.php:2435
-#, fuzzy
 msgid "Graph"
-msgstr "ग्राफ़"
+msgstr "काल ग्राफ"
 
 #: include/global_arrays.php:854 tree.php:1660
 #, fuzzy
@@ -7396,15 +7236,13 @@ msgstr "नए रेखांकन"
 
 #: include/global_arrays.php:884 include/global_arrays.php:939
 #: include/global_arrays.php:957
-#, fuzzy
 msgid "Management"
-msgstr "उपयोगकर्ता प्रबंधन"
+msgstr "प्रबंधन"
 
 #: include/global_arrays.php:886 sites.php:467 sites.php:482 sites.php:562
 #: tree.php:792 tree.php:2004
-#, fuzzy
 msgid "Sites"
-msgstr "साइटें"
+msgstr "साइटां"
 
 #: include/global_arrays.php:887 include/global_arrays.php:1096 tree.php:1910
 #: tree.php:1925 tree.php:1987 user_admin.php:1572 user_admin.php:2970
@@ -7431,7 +7269,6 @@ msgstr "कुल"
 
 #: include/global_arrays.php:904 include/global_arrays.php:960
 #: include/global_arrays.php:1088 include/global_settings.php:469
-#, fuzzy
 msgid "Automation"
 msgstr "स्वचालन"
 
@@ -7448,7 +7285,6 @@ msgstr "डिवाइस नियम"
 #: include/global_arrays.php:912 include/global_arrays.php:961
 #: include/global_arrays.php:1100 lib/html_filter.php:177
 #: lib/html_graph.php:252 lib/html_tree.php:1122
-#, fuzzy
 msgid "Presets"
 msgstr "प्रीसेट"
 
@@ -7464,9 +7300,8 @@ msgid "VDEFs"
 msgstr "VDEFs"
 
 #: include/global_arrays.php:919 include/global_arrays.php:962
-#, fuzzy
 msgid "Import/Export"
-msgstr "आयात निर्यात"
+msgstr "दरामद करो / बरामद करो"
 
 #: include/global_arrays.php:920 include/global_arrays.php:1107
 #: include/global_arrays.php:2442
@@ -7482,9 +7317,8 @@ msgstr "निर्यात टेम्पलेट्स"
 
 #: include/global_arrays.php:923 include/global_arrays.php:945
 #: include/global_arrays.php:963 lib/plugins.php:954
-#, fuzzy
 msgid "Configuration"
-msgstr "विन्यास"
+msgstr "कॉन्फ़िगरेशन"
 
 #: include/global_arrays.php:924 include/global_arrays.php:946
 #: lib/html.php:2178 lib/html.php:2450
@@ -7494,7 +7328,6 @@ msgstr "सेटिंग्स"
 #: include/global_arrays.php:925 include/global_arrays.php:2376
 #: user_admin.php:2254 user_admin.php:2310 user_group_admin.php:674
 #: user_group_admin.php:2542
-#, fuzzy
 msgid "Users"
 msgstr "उपयोगकर्ता"
 
@@ -7511,9 +7344,8 @@ msgstr "उपयोगकर्ता डोमेन"
 
 #: include/global_arrays.php:929 include/global_arrays.php:948
 #: include/global_arrays.php:964 include/global_arrays.php:2250
-#, fuzzy
 msgid "Utilities"
-msgstr "उपयोगिताएँ"
+msgstr "यूटिलिटीज"
 
 #: include/global_arrays.php:930 include/global_arrays.php:949
 #, fuzzy
@@ -7529,9 +7361,8 @@ msgid "External Links"
 msgstr "बाहरी कड़ियाँ"
 
 #: include/global_arrays.php:933 include/global_arrays.php:967
-#, fuzzy
 msgid "Troubleshooting"
-msgstr "समस्या निवारण"
+msgstr "ट्रबलशूटिङ"
 
 #: include/global_arrays.php:966
 msgid "Support"
@@ -7627,9 +7458,8 @@ msgid "General Administration"
 msgstr "सामान्य प्रशासन"
 
 #: include/global_arrays.php:1120
-#, fuzzy
 msgid "System Administration"
-msgstr "तंत्र अध्यक्ष"
+msgstr "तंत्र प्रशासन"
 
 #: include/global_arrays.php:1214
 #, fuzzy
@@ -7688,9 +7518,8 @@ msgid "Last Half Hour"
 msgstr "पिछले आधे घंटे"
 
 #: include/global_arrays.php:1280
-#, fuzzy
 msgid "Last Hour"
-msgstr "अंतिम घंटा"
+msgstr "पिछला घैंटा"
 
 #: include/global_arrays.php:1281 include/global_arrays.php:1282
 #: include/global_arrays.php:1283 include/global_arrays.php:1284
@@ -7710,9 +7539,8 @@ msgid "Last %d Days"
 msgstr "अंतिम% d दिन"
 
 #: include/global_arrays.php:1289
-#, fuzzy
 msgid "Last Week"
-msgstr "पिछले सप्ताह"
+msgstr "पिछला खोज"
 
 #: include/global_arrays.php:1290
 #, fuzzy, php-format
@@ -7747,22 +7575,19 @@ msgstr "दिन की शिफ़्ट"
 #: include/global_arrays.php:1299
 #, fuzzy
 msgid "This Day"
-msgstr "इस दिन"
+msgstr "हर रोज"
 
 #: include/global_arrays.php:1300
-#, fuzzy
 msgid "This Week"
 msgstr "इस सप्ताह"
 
 #: include/global_arrays.php:1301
-#, fuzzy
 msgid "This Month"
-msgstr "पिछले माह"
+msgstr "इस महीने@ label"
 
 #: include/global_arrays.php:1302
-#, fuzzy
 msgid "This Year"
-msgstr "इस साल"
+msgstr "यह साल@ label"
 
 #: include/global_arrays.php:1303
 #, fuzzy
@@ -7775,9 +7600,8 @@ msgid "Previous Week"
 msgstr "पिछला सप्ताह"
 
 #: include/global_arrays.php:1305
-#, fuzzy
 msgid "Previous Month"
-msgstr "पिछ्ला महिना"
+msgstr "पिछला महीना"
 
 #: include/global_arrays.php:1306
 #, fuzzy
@@ -7897,14 +7721,12 @@ msgid "400,000 Data Source Items"
 msgstr "400,000 डेटा स्रोत आइटम"
 
 #: include/global_arrays.php:1413
-#, fuzzy
 msgid "2 Hours"
 msgstr "2 घंटे"
 
 #: include/global_arrays.php:1414
-#, fuzzy
 msgid "4 Hours"
-msgstr "चार घंटे"
+msgstr "4 घंटे"
 
 #: include/global_arrays.php:1415
 #, fuzzy
@@ -7924,7 +7746,7 @@ msgstr "% d GBytes"
 
 #: include/global_arrays.php:1436
 msgid "Infinity"
-msgstr ""
+msgstr "अनंतता"
 
 #: include/global_arrays.php:1443 include/global_settings.php:1133
 #: include/global_settings.php:1134 include/global_settings.php:1135
@@ -7954,9 +7776,8 @@ msgid "%d Megabytes"
 msgstr "% d मेगाबाइट्स"
 
 #: include/global_arrays.php:1475
-#, fuzzy
 msgid "Send Now"
-msgstr "अभी भेजो"
+msgstr "अभी भेजें"
 
 #: include/global_arrays.php:1483
 #, fuzzy
@@ -8009,34 +7830,28 @@ msgid "Inline GIF Image, LN Style"
 msgstr "इनलाइन जीआईएफ इमेज, एलएन स्टाइल"
 
 #: include/global_arrays.php:1512
-#, fuzzy
 msgid "Text"
 msgstr "टेक्स्ट"
 
 #: include/global_arrays.php:1513 include/global_form.php:2175
-#, fuzzy
 msgid "Tree"
-msgstr "पेड़"
+msgstr "वृक्षugiou"
 
 #: include/global_arrays.php:1515
-#, fuzzy
 msgid "Horizontal Rule"
-msgstr "क्षैतिज कायदा"
+msgstr "आड़ी पंक्ति -\\\\ hline"
 
 #: include/global_arrays.php:1519
-#, fuzzy
 msgid "left"
 msgstr "बाएं"
 
 #: include/global_arrays.php:1520
-#, fuzzy
 msgid "center"
-msgstr "केंद्र"
+msgstr "बीच में@ title: column"
 
 #: include/global_arrays.php:1521
-#, fuzzy
 msgid "right"
-msgstr "सही"
+msgstr "दायें"
 
 #: include/global_arrays.php:1525
 #, fuzzy
@@ -8164,14 +7979,12 @@ msgid "Base Graph Order"
 msgstr "रेखांकन है"
 
 #: include/global_arrays.php:1568
-#, fuzzy
 msgid "contains"
-msgstr "शामिल"
+msgstr "रखता है"
 
 #: include/global_arrays.php:1569
-#, fuzzy
 msgid "does not contain"
-msgstr "शामिल नहीं है"
+msgstr "नहीं रखता है"
 
 #: include/global_arrays.php:1570
 #, fuzzy
@@ -8184,14 +7997,12 @@ msgid "does not begin with"
 msgstr "से शुरू नहीं होता है"
 
 #: include/global_arrays.php:1572
-#, fuzzy
 msgid "ends with"
-msgstr "इसी के साथ समाप्त होता है"
+msgstr "इससे समाप्त होता है"
 
 #: include/global_arrays.php:1573
-#, fuzzy
 msgid "does not end with"
-msgstr "के साथ समाप्त नहीं होता है"
+msgstr "इससे समाप्त नहीं होता है"
 
 #: include/global_arrays.php:1574
 #, fuzzy
@@ -8199,14 +8010,12 @@ msgid "matches"
 msgstr "माचिस"
 
 #: include/global_arrays.php:1575
-#, fuzzy
 msgid "is not equal to"
-msgstr "के बराबर नहीं है"
+msgstr "से समान नहीं है"
 
 #: include/global_arrays.php:1576
-#, fuzzy
 msgid "is less than"
-msgstr "से कम है"
+msgstr "इससे छोटा है"
 
 #: include/global_arrays.php:1577
 #, fuzzy
@@ -8214,9 +8023,8 @@ msgid "is less than or equal"
 msgstr "से कम या बराबर है"
 
 #: include/global_arrays.php:1578
-#, fuzzy
 msgid "is greater than"
-msgstr "से अधिक है"
+msgstr "इससे बड़ा है"
 
 #: include/global_arrays.php:1579
 #, fuzzy
@@ -8226,7 +8034,7 @@ msgstr "से अधिक या बराबर है"
 #: include/global_arrays.php:1580
 #, fuzzy
 msgid "is unknown"
-msgstr "अज्ञात है"
+msgstr "अज्ञात"
 
 #: include/global_arrays.php:1581
 #, fuzzy
@@ -8266,7 +8074,7 @@ msgstr "हर 1 घंटे में"
 #: include/global_arrays.php:1698
 #, fuzzy
 msgid "Every Day"
-msgstr "हर दिन"
+msgstr "हर रोज"
 
 #: include/global_arrays.php:1699
 #, fuzzy
@@ -8289,31 +8097,26 @@ msgid "Feb"
 msgstr "फरवरी"
 
 #: include/global_arrays.php:1734
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Mar"
 msgstr "मार्च"
 
 #: include/global_arrays.php:1735
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Apr"
 msgstr "अप्रैल"
 
 #: include/global_arrays.php:1736
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "May"
 msgstr "मई"
 
 #: include/global_arrays.php:1737
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jun"
 msgstr "जून"
 
 #: include/global_arrays.php:1738
-#, fuzzy
 msgctxt "A short textual representation of a month, three letters"
 msgid "Jul"
 msgstr "जुलाई"
@@ -8344,56 +8147,47 @@ msgid "Dec"
 msgstr "दिसम्बर"
 
 #: include/global_arrays.php:1757
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Sun"
 msgstr "रवि"
 
 #: include/global_arrays.php:1758
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Mon"
 msgstr "सोम"
 
 #: include/global_arrays.php:1759
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Tue"
 msgstr "मंगल"
 
 #: include/global_arrays.php:1760
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Wed"
-msgstr "मेल कराना"
+msgstr "बुध"
 
 #: include/global_arrays.php:1761
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Thu"
 msgstr "गुरु"
 
 #: include/global_arrays.php:1762
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Fri"
 msgstr "शुक्र"
 
 #: include/global_arrays.php:1763
-#, fuzzy
 msgctxt "A textual representation of a day, three letters"
 msgid "Sat"
-msgstr "बैठ गया"
+msgstr "शनि"
 
 #: include/global_arrays.php:1767
-#, fuzzy
 msgid "Arabic"
 msgstr "अरबी"
 
 #: include/global_arrays.php:1768
-#, fuzzy
 msgid "Bulgarian"
-msgstr "बल्गेरियाई"
+msgstr "बल्गेरियन"
 
 #: include/global_arrays.php:1769
 #, fuzzy
@@ -8401,12 +8195,10 @@ msgid "Chinese (China)"
 msgstr "चीनी (चीन)"
 
 #: include/global_arrays.php:1770
-#, fuzzy
 msgid "Chinese (Taiwan)"
-msgstr "चीनी (ताइवान)"
+msgstr "चीनी (ताईवान)"
 
 #: include/global_arrays.php:1771
-#, fuzzy
 msgid "Dutch"
 msgstr "डच"
 
@@ -8415,19 +8207,16 @@ msgid "English"
 msgstr "English"
 
 #: include/global_arrays.php:1773
-#, fuzzy
 msgid "French"
 msgstr "फ्रेंच"
 
 #: include/global_arrays.php:1774
-#, fuzzy
 msgid "German"
 msgstr "जर्मन"
 
 #: include/global_arrays.php:1775
-#, fuzzy
 msgid "Greek"
-msgstr "यूनानी"
+msgstr "ग्रीक"
 
 #: include/global_arrays.php:1776
 msgid "Hebrew"
@@ -8438,12 +8227,10 @@ msgid "Hindi"
 msgstr "हिंदी"
 
 #: include/global_arrays.php:1778
-#, fuzzy
 msgid "Italian"
 msgstr "इतालवी"
 
 #: include/global_arrays.php:1779
-#, fuzzy
 msgid "Japanese"
 msgstr "जापानी"
 
@@ -8452,7 +8239,6 @@ msgid "Korean"
 msgstr "कोरियाई"
 
 #: include/global_arrays.php:1781
-#, fuzzy
 msgid "Polish"
 msgstr "पोलिश"
 
@@ -8465,22 +8251,18 @@ msgid "Portuguese (Brazil)"
 msgstr "पुर्तगाली (ब्राजील)"
 
 #: include/global_arrays.php:1784
-#, fuzzy
 msgid "Russian"
 msgstr "रूसी"
 
 #: include/global_arrays.php:1785
-#, fuzzy
 msgid "Spanish"
-msgstr "स्पेनिश"
+msgstr "स्पैनिश"
 
 #: include/global_arrays.php:1786
-#, fuzzy
 msgid "Swedish"
 msgstr "स्वीडिश"
 
 #: include/global_arrays.php:1787
-#, fuzzy
 msgid "Turkish"
 msgstr "तुर्की"
 
@@ -8493,14 +8275,12 @@ msgid "Classic"
 msgstr "प्रतिष्टित"
 
 #: include/global_arrays.php:1793
-#, fuzzy
 msgid "Modern"
 msgstr "आधुनिक"
 
 #: include/global_arrays.php:1794
-#, fuzzy
 msgid "Dark"
-msgstr "अंधेरा"
+msgstr "गहरा"
 
 #: include/global_arrays.php:1795
 #, fuzzy
@@ -8513,24 +8293,23 @@ msgid "Paw"
 msgstr "पंजा"
 
 #: include/global_arrays.php:1797
-#, fuzzy
 msgid "Sunrise"
-msgstr "सूर्योदय"
+msgstr "सनराइज"
 
 #: include/global_arrays.php:1801
 #, fuzzy
 msgid "[Fail]"
-msgstr "[विफल]"
+msgstr "असफल"
 
 #: include/global_arrays.php:1802
 #, fuzzy
 msgid "[Warning]"
-msgstr "[चेतावनी]"
+msgstr "चेतावनी:"
 
 #: include/global_arrays.php:1803
 #, fuzzy
 msgid "[Success]"
-msgstr "[सफलता]"
+msgstr "सफ़ल!"
 
 #: include/global_arrays.php:1804
 #, fuzzy
@@ -8548,14 +8327,12 @@ msgid "Tree Mode"
 msgstr "ट्री मोड"
 
 #: include/global_arrays.php:1858
-#, fuzzy
 msgid "List Mode"
 msgstr "सूची मोड"
 
 #: include/global_arrays.php:1890 include/global_arrays.php:1896
 #: lib/functions.php:2609 lib/html.php:1614 lib/html.php:1691 links.php:344
 #: user_admin.php:1696 user_group_admin.php:1380
-#, fuzzy
 msgid "Console"
 msgstr "कंसोल"
 
@@ -8605,9 +8382,8 @@ msgstr "(हटाना)"
 #: include/global_arrays.php:1992 include/global_arrays.php:1998
 #: include/global_arrays.php:2004 include/global_arrays.php:2010
 #: include/global_arrays.php:2274
-#, fuzzy
 msgid "View Log"
-msgstr "लॉग देखें"
+msgstr "लॉग देखिए"
 
 #: include/global_arrays.php:2016
 #, fuzzy
@@ -8713,18 +8489,16 @@ msgstr "बाहरी लिंक"
 #: include/global_arrays.php:2388 include/global_arrays.php:2418
 #, fuzzy
 msgid "(Action)"
-msgstr "(लड़ाई)"
+msgstr "कार्रवाई"
 
 #: include/global_arrays.php:2436
-#, fuzzy
 msgid "Export Results"
-msgstr "निर्यात परिणाम"
+msgstr "परिणामों को एचटीएमएल के रूप में निर्यात करें"
 
 #: include/global_arrays.php:2448 include/global_arrays.php:2478
 #: lib/html.php:1635 lib/html.php:1637 lib/html.php:1716
-#, fuzzy
 msgid "Reporting"
-msgstr "रिपोर्ट कर रहा है"
+msgstr "रिपोर्टिंग"
 
 #: include/global_arrays.php:2454 include/global_arrays.php:2484
 #, fuzzy
@@ -8777,29 +8551,24 @@ msgid "hrs"
 msgstr "घंटे"
 
 #: include/global_arrays.php:2661
-#, fuzzy
 msgid "mins"
-msgstr "मिनट"
+msgstr "मिंट"
 
 #: include/global_arrays.php:2662
-#, fuzzy
 msgid "secs"
-msgstr "सेकेंड"
+msgstr "सकिंट"
 
 #: include/global_arrays.php:2676 lib/api_device.php:1077
-#, fuzzy
 msgid "hours"
 msgstr "घंटे"
 
 #: include/global_arrays.php:2677 lib/api_device.php:1077
-#, fuzzy
 msgid "minutes"
 msgstr "मिनट"
 
 #: include/global_arrays.php:2678
-#, fuzzy
 msgid "seconds"
-msgstr "% d सेकंड"
+msgstr "सेकंड"
 
 #: include/global_form.php:35
 #, fuzzy
@@ -8947,9 +8716,8 @@ msgid "A useful name for this Data Storage and Polling Profile."
 msgstr "इस डेटा स्टोरेज और पोलिंग प्रोफाइल का एक उपयोगी नाम।"
 
 #: include/global_form.php:176
-#, fuzzy
 msgid "New Profile"
-msgstr "नई प्रोफ़ाइल"
+msgstr "नया प्रोफ़ाइल"
 
 #: include/global_form.php:180
 #, fuzzy
@@ -9254,7 +9022,7 @@ msgstr "डेटा से पहले गुजरने वाले अध�
 #: include/global_form.php:619 lib/html_utility.php:270
 #, fuzzy
 msgid "Not Selected"
-msgstr "नहीं चुने गए"
+msgstr "चुनिंदा"
 
 #: include/global_form.php:620
 #, fuzzy
@@ -9277,9 +9045,8 @@ msgid "Enter the custom GPRINT string here."
 msgstr "यहां कस्टम GPRINT स्ट्रिंग दर्ज करें।"
 
 #: include/global_form.php:655
-#, fuzzy
 msgid "Common Options"
-msgstr "आम विकल्प"
+msgstr "सामान्य विकल्प"
 
 #: include/global_form.php:660
 #, fuzzy
@@ -9352,14 +9119,12 @@ msgid "Using Slope Mode evens out the shape of the graphs at the expense of some
 msgstr "स्लोप मोड का उपयोग स्क्रीन रिज़ॉल्यूशन पर कुछ की कीमत पर ग्राफ़ के आकार को विकसित करता है।"
 
 #: include/global_form.php:713
-#, fuzzy
 msgid "Scaling Options"
-msgstr "स्केलिंग विकल्प"
+msgstr "à¤à¤¦à¤¾à¤¹à¤°à¤£ à¤®à¤¿à¤²à¤¾à¤¯à¤¾"
 
 #: include/global_form.php:718
-#, fuzzy
 msgid "Auto Scale"
-msgstr "स्वचालित पैमाने"
+msgstr "आटो स्केल"
 
 #: include/global_form.php:721
 #, fuzzy
@@ -9717,9 +9482,8 @@ msgid "All subsequent legend line(s) will be aligned as given here.  You may use
 msgstr "सभी बाद की लीजेंड लाइन (ओं) को यहाँ दिए गए अनुसार संरेखित किया जाएगा। आप एक ही ग्राफ में कई बार इस कमांड का उपयोग कर सकते हैं। यह आदेश सारणीबद्ध लेआउट का उत्पादन नहीं करता है। <br/> <strong>नोट:</strong> आप पूर्ववर्ती ग्राफ़ आइटम पर &lt;HR&gt; सम्मिलित करना चाह सकते हैं। <br/> <strong>नोट:</strong> इस लेजेंड लाइन पर A &lt;HR&gt; इस सेटिंग को अप्रचलित करेगा!"
 
 #: include/global_form.php:1007
-#, fuzzy
 msgid "Text Format"
-msgstr "पाठ प्रारूप"
+msgstr "पाठ फार्मेट"
 
 #: include/global_form.php:1012
 #, fuzzy
@@ -9772,9 +9536,8 @@ msgid "The name given to this graph template."
 msgstr "इस ग्राफ टेम्पलेट को दिया गया नाम।"
 
 #: include/global_form.php:1062
-#, fuzzy
 msgid "Multiple Instances"
-msgstr "कई उदाहरण"
+msgstr "मल्टीपल इंस्टेंसेज़"
 
 #: include/global_form.php:1063
 #, fuzzy
@@ -9792,9 +9555,8 @@ msgid "Enter a description for this graph item input to describe what this input
 msgstr "इस ग्राफ़ आइटम इनपुट के लिए एक विवरण दर्ज करें कि यह इनपुट किस लिए उपयोग किया जाता है"
 
 #: include/global_form.php:1102
-#, fuzzy
 msgid "Field Type"
-msgstr "क्षेत्र के जैसा"
+msgstr "क्षेत्र क़िस्म"
 
 #: include/global_form.php:1103
 #, fuzzy
@@ -9882,15 +9644,13 @@ msgid "The type of ping packet to sent.  <br><i>NOTE: ICMP on Linux/UNIX require
 msgstr "भेजने के लिए पिंग पैकेट का प्रकार। <br> <i>नोट: Linux / UNIX पर ICMP को रूट विशेषाधिकार की आवश्यकता होती है।</i>"
 
 #: include/global_form.php:1253 include/global_form.php:1708
-#, fuzzy
 msgid "Additional Options"
 msgstr "अतिरिक्त विकल्प"
 
 #: include/global_form.php:1257 include/global_form.php:1713 pollers.php:87
 #: sites.php:156
-#, fuzzy
 msgid "Notes"
-msgstr "टिप्पणियाँ"
+msgstr "नोट"
 
 #: include/global_form.php:1258 include/global_form.php:1714
 #, fuzzy
@@ -9964,9 +9724,8 @@ msgid "Choose how items in this tree will be sorted."
 msgstr "चुनें कि इस पेड़ की वस्तुओं को कैसे छाँटा जाएगा"
 
 #: include/global_form.php:1423
-#, fuzzy
 msgid "Publish"
-msgstr "प्रकाशित करना"
+msgstr "प्रकाशित करें"
 
 #: include/global_form.php:1424
 #, fuzzy
@@ -9989,9 +9748,8 @@ msgid "Determines if user is able to login."
 msgstr "निर्धारित करता है कि उपयोगकर्ता लॉगिन करने में सक्षम है या नहीं।"
 
 #: include/global_form.php:1481 tree.php:1999
-#, fuzzy
 msgid "Locked"
-msgstr "बंद"
+msgstr "लॉक है"
 
 #: include/global_form.php:1482
 #, fuzzy
@@ -10170,9 +9928,8 @@ msgstr "एकत्रित ग्राफ का नया शीर्ष�
 
 #: include/global_form.php:1740 include/global_form.php:1826
 #: include/global_form.php:1931
-#, fuzzy
 msgid "Prefix"
-msgstr "उपसर्ग"
+msgstr "पूर्व प्रत्यय"
 
 #: include/global_form.php:1741
 #, fuzzy
@@ -10187,8 +9944,9 @@ msgstr "सूचकांक शामिल करें"
 
 #: include/global_form.php:1749 include/global_form.php:1835
 #: include/global_form.php:1940
+#, fuzzy
 msgid "Include the source Graphs GPRINT Title Text with the Aggregate Graph(s)."
-msgstr ""
+msgstr "एग्रीगेट ग्राफ (ओं) के साथ स्रोत ग्राफ्स जीपीआरक्यूएन शीर्षक पाठ को शामिल करें।"
 
 #: include/global_form.php:1756 include/global_form.php:1842
 #: include/global_form.php:1947
@@ -10311,7 +10069,6 @@ msgstr "इस टेम्प्लेट का एक उपयोगी न�
 
 #: include/global_form.php:2039 include/global_form.php:2081
 #: lib/api_automation.php:1289 lib/api_automation.php:1351
-#, fuzzy
 msgid "Operation"
 msgstr "ऑपरेशन"
 
@@ -10328,7 +10085,7 @@ msgstr "फ़ील्ड नाम जो इस नियम आइटम क
 #: include/global_form.php:2056 include/global_form.php:2098
 #, fuzzy
 msgid "Operator."
-msgstr "ऑपरेटर।"
+msgstr "à¤µà¥à¤¯à¤à¥à¤¤à¤¿à¤à¤¤"
 
 #: include/global_form.php:2063 include/global_form.php:2105
 #: include/global_form.php:2248
@@ -10345,7 +10102,7 @@ msgstr "जिस पैटर्न से मिलान किया जा�
 #: include/global_form.php:2265
 #, fuzzy
 msgid "Sequence."
-msgstr "अनुक्रम।"
+msgstr "अनुक्रम"
 
 #: include/global_form.php:2123 include/global_form.php:2168
 #, fuzzy
@@ -10443,27 +10200,22 @@ msgid "The Replacement String Pattern for use as a Tree Header.<br>Refer to a Ma
 msgstr "ट्री हेडर के रूप में उपयोग के लिए रिप्लेसमेंट स्ट्रिंग पैटर्न। <br> पहले मैच के लिए उदा <strong>$ $ 1 से</strong> मैच का संदर्भ लें!"
 
 #: include/global_languages.php:711
-#, fuzzy
 msgid " T"
-msgstr "टी"
+msgstr "T"
 
 #: include/global_languages.php:713
-#, fuzzy
 msgid " G"
-msgstr "जी"
+msgstr "G"
 
 #: include/global_languages.php:715
-#, fuzzy
 msgid " M"
-msgstr "एम"
+msgstr "M"
 
 #: include/global_languages.php:717
-#, fuzzy
 msgid " K"
-msgstr "कश्मीर"
+msgstr "Kcard symbol"
 
 #: include/global_settings.php:39
-#, fuzzy
 msgid "Paths"
 msgstr "पथ"
 
@@ -10478,28 +10230,24 @@ msgid "Poller"
 msgstr "Poller"
 
 #: include/global_settings.php:42
-#, fuzzy
 msgid "Data"
-msgstr "डेटा"
+msgstr "डाटा"
 
 #: include/global_settings.php:43
 msgid "Visual"
 msgstr "विज़ुअल"
 
 #: include/global_settings.php:44 lib/functions.php:3926 lib/functions.php:3931
-#, fuzzy
 msgid "Authentication"
 msgstr "प्रमाणीकरण"
 
 #: include/global_settings.php:45
-#, fuzzy
 msgid "Performance"
 msgstr "प्रदर्शन"
 
 #: include/global_settings.php:46
-#, fuzzy
 msgid "Spikes"
-msgstr "स्पाइक"
+msgstr "खूंटी या बाली"
 
 #: include/global_settings.php:47
 #, fuzzy
@@ -10532,14 +10280,12 @@ msgid "PHP Mail() Function"
 msgstr "PHP मेल () फ़ंक्शन"
 
 #: include/global_settings.php:91 lib/functions.php:3909
-#, fuzzy
 msgid "Sendmail"
-msgstr "मेल भेजे"
+msgstr "Sendmail"
 
 #: include/global_settings.php:92 lib/functions.php:3914
-#, fuzzy
 msgid "SMTP"
-msgstr "एसएमटीपी"
+msgstr "SMTP"
 
 #: include/global_settings.php:103
 #, fuzzy
@@ -10617,9 +10363,8 @@ msgid "The path to your PHP binary file (may require a php recompile to get this
 msgstr "आपकी PHP बाइनरी फ़ाइल का पथ (इस फ़ाइल को प्राप्त करने के लिए php recompile की आवश्यकता हो सकती है)।"
 
 #: include/global_settings.php:157
-#, fuzzy
 msgid "Logging"
-msgstr "लॉगिंग"
+msgstr "लॉग कीता जा करदा ऐ"
 
 #: include/global_settings.php:162
 #, fuzzy
@@ -10717,9 +10462,8 @@ msgid "The method used to Clean RRDfiles from Cacti after their Data Sources are
 msgstr "डेटा स्रोतों को हटाने के बाद Cacti से RRDfiles को साफ़ करने के लिए उपयोग की जाने वाली विधि"
 
 #: include/global_settings.php:240
-#, fuzzy
 msgid "Archive"
-msgstr "पुरालेख"
+msgstr "विकिपीडिया:अवरोधित सदस्य"
 
 #: include/global_settings.php:244
 #, fuzzy
@@ -10732,9 +10476,8 @@ msgid "This is the directory where RRDfiles are <strong>moved</strong> for archi
 msgstr "यह वह निर्देशिका है जहां RRDfiles को संग्रह के लिए <strong>स्थानांतरित</strong> किया जाता है"
 
 #: include/global_settings.php:253
-#, fuzzy
 msgid "Log Settings"
-msgstr "लॉग सेटिंग्स"
+msgstr "लॉग विन्यास"
 
 #: include/global_settings.php:258
 #, fuzzy
@@ -10817,19 +10560,16 @@ msgid "When using Syslog/Eventlog for logging, the Cacti log messages that will 
 msgstr "लॉगिंग के लिए Syslog / Eventlog का उपयोग करते समय, Cacti लॉग संदेश जो Syslog / Eventlog को अग्रेषित किया जाएगा।"
 
 #: include/global_settings.php:312
-#, fuzzy
 msgid "Statistics"
 msgstr "आंकड़े"
 
 #: include/global_settings.php:316 lib/clog_webapi.php:538 utilities.php:1103
-#, fuzzy
 msgid "Warnings"
-msgstr "चेतावनी"
+msgstr "चेतावनियां"
 
 #: include/global_settings.php:320 lib/clog_webapi.php:539 utilities.php:1104
-#, fuzzy
 msgid "Errors"
-msgstr "त्रुटियाँ"
+msgstr "गल्तियां"
 
 #: include/global_settings.php:326
 #, fuzzy
@@ -10872,9 +10612,8 @@ msgid "Graph Template Width"
 msgstr "ग्राफ टेम्पलेट चौड़ाई"
 
 #: include/global_settings.php:360
-#, fuzzy
 msgid "Language Support"
-msgstr "भाषा समर्थन"
+msgstr "सी/ सी++ भाषा समर्थनName"
 
 #: include/global_settings.php:361
 #, fuzzy
@@ -10921,9 +10660,8 @@ msgid "The System default date separator to be used in Cacti."
 msgstr "सिस्टम डिफ़ॉल्ट दिनांक विभाजक का उपयोग कैक्टि में किया जाता है।"
 
 #: include/global_settings.php:397
-#, fuzzy
 msgid "Other Settings"
-msgstr "अन्य सेटिंग"
+msgstr "अन्य सेटिंग्स"
 
 #: include/global_settings.php:402 utilities.php:286 utilities.php:291
 #, fuzzy
@@ -10966,12 +10704,10 @@ msgid "If set to Simple, Graphs and Data Sources can only be created from New Gr
 msgstr "यदि सरल, रेखांकन और डेटा स्रोत पर सेट किया जाता है तो केवल नए रेखांकन से बनाया जा सकता है। यदि उन्नत, विरासत ग्राफ़ और डेटा स्रोत निर्माण समर्थित है।"
 
 #: include/global_settings.php:423
-#, fuzzy
 msgid "Simple"
 msgstr "सरल"
 
 #: include/global_settings.php:424 lib/html.php:2437
-#, fuzzy
 msgid "Advanced"
 msgstr "उन्नत"
 
@@ -11001,8 +10737,9 @@ msgid "Data Source Preservation Preset"
 msgstr "ग्राफ / डेटा स्रोत निर्माण विधि"
 
 #: include/global_settings.php:440
+#, fuzzy
 msgid "When enabled, Cacti will set Radio Button to Delete related Data Sources of a Graph when removing Graphs.  Note: Cacti will not allow the removal of Data Sources if they are used in other Graphs."
-msgstr ""
+msgstr "सक्षम होने पर, Cacti रेखांकन हटाते समय एक ग्राफ के संबंधित डेटा स्रोतों को हटाने के लिए रेडियो बटन सेट करेगा। नोट: यदि वे अन्य ग्राफ़ में उपयोग किए जाते हैं तो कैक्टि डेटा स्रोतों को हटाने की अनुमति नहीं देगा।"
 
 #: include/global_settings.php:445
 #, fuzzy
@@ -11010,8 +10747,9 @@ msgid "Graphs Auto Unlock"
 msgstr "ग्राफ मैच नियम"
 
 #: include/global_settings.php:446
+#, fuzzy
 msgid "When enabled, Cacti will not lock Graphs.  This allow a faster manual modification of Data Sources related to a Graph."
-msgstr ""
+msgstr "सक्षम होने पर, Cacti रेखांकन को लॉक नहीं करेगा। यह एक ग्राफ से संबंधित डेटा स्रोतों के एक तेज मैनुअल संशोधन की अनुमति देता है।"
 
 #: include/global_settings.php:451
 #, fuzzy
@@ -11194,9 +10932,8 @@ msgid "Default SNMP read community for all new Devices."
 msgstr "डिफ़ॉल्ट SNMP सभी नए उपकरणों के लिए समुदाय को पढ़ता है।"
 
 #: include/global_settings.php:586
-#, fuzzy
 msgid "Security Level"
-msgstr "सुरक्षा स्तर"
+msgstr "सुरक्षा स्तर (y)"
 
 #: include/global_settings.php:587
 #, fuzzy
@@ -11264,9 +11001,8 @@ msgid "Default SNMP v3 Engine Id for all new Devices. Leave this field empty to 
 msgstr "सभी नए उपकरणों के लिए डिफ़ॉल्ट SNMP v3 इंजन आईडी। SNMPv3 अधिसूचना रिसीवर के अनुसार परिभाषित SNMP इंजन आईडी का उपयोग करने के लिए इस क्षेत्र को खाली छोड़ दें"
 
 #: include/global_settings.php:646
-#, fuzzy
 msgid "Port Number"
-msgstr "पोर्ट नंबर"
+msgstr "पोर्ट संख्या"
 
 #: include/global_settings.php:647
 #, fuzzy
@@ -11350,9 +11086,8 @@ msgstr "विषय सेटिंग"
 
 #: include/global_settings.php:741 include/global_settings.php:940
 #: include/global_settings.php:2126
-#, fuzzy
 msgid "Theme"
-msgstr "विषय"
+msgstr "थीम"
 
 #: include/global_settings.php:742 include/global_settings.php:2127
 #, fuzzy
@@ -11400,8 +11135,9 @@ msgid "Minimum Tree Width"
 msgstr "न्यूनतम लंबाई"
 
 #: include/global_settings.php:782 include/global_settings.php:2338
+#, fuzzy
 msgid "The Minimum width of the Tree to contract to."
-msgstr ""
+msgstr "अनुबंध करने के लिए पेड़ की न्यूनतम चौड़ाई।"
 
 #: include/global_settings.php:789 include/global_settings.php:2345
 #, fuzzy
@@ -11409,21 +11145,23 @@ msgid "Maximum Tree Width"
 msgstr "अधिकतम शीर्षक लंबाई"
 
 #: include/global_settings.php:790 include/global_settings.php:2346
+#, fuzzy
 msgid "The Maximum width of the Tree to expand to, after which time, Tree branches will scroll on the page."
-msgstr ""
+msgstr "विस्तार करने के लिए ट्री की अधिकतम चौड़ाई, किस समय के बाद, ट्री शाखाएं पृष्ठ पर स्क्रॉल करेंगी।"
 
 #: include/global_settings.php:797
-#, fuzzy
 msgid "Filter Settings"
-msgstr "फ़िल्टर सेटिंग्स सहेजे गए"
+msgstr "फिल्टर सैट्टिङां"
 
 #: include/global_settings.php:802
+#, fuzzy
 msgid "Strip Domains from Device Dropdowns"
-msgstr ""
+msgstr "डिवाइस ड्रॉपडाउन से डोमेन को स्ट्रिप करें"
 
 #: include/global_settings.php:803
+#, fuzzy
 msgid "When viewing Device name filter dropdowns, checking this option will strip to domain from the hostname."
-msgstr ""
+msgstr "डिवाइस नाम फ़िल्टर ड्रॉपडाउन देखने के दौरान, यह विकल्प होस्टनाम से डोमेन पर आ जाएगा।"
 
 #: include/global_settings.php:808
 #, fuzzy
@@ -11511,9 +11249,8 @@ msgid "RRDtool Graph Watermark"
 msgstr "RRDtool ग्राफ़ वॉटरमार्क"
 
 #: include/global_settings.php:875
-#, fuzzy
 msgid "Watermark Text"
-msgstr "वॉटरमार्क पाठ"
+msgstr "वाटरमार्क पाठ"
 
 #: include/global_settings.php:876
 #, fuzzy
@@ -11556,9 +11293,8 @@ msgid "This timespan you wish to see on the default graph."
 msgstr "यह समयरेखा आप डिफ़ॉल्ट ग्राफ़ पर देखना चाहते हैं।"
 
 #: include/global_settings.php:914 utilities.php:2043
-#, fuzzy
 msgid "Refresh Interval"
-msgstr "ताजा अंतराल"
+msgstr "अंतराल ताज़ा करें"
 
 #: include/global_settings.php:915
 #, fuzzy
@@ -11591,7 +11327,6 @@ msgid "How do you wish fonts to be handled by default?"
 msgstr "आप फोंट को डिफ़ॉल्ट रूप से कैसे नियंत्रित करना चाहते हैं?"
 
 #: include/global_settings.php:939 lib/api_device.php:1044
-#, fuzzy
 msgid "System"
 msgstr "प्रणाली"
 
@@ -11613,9 +11348,8 @@ msgid "Enter Valid Font Config Value"
 msgstr "मान्य फ़ॉन्ट कॉन्फ़िगरेशन मान दर्ज करें"
 
 #: include/global_settings.php:950 include/global_settings.php:2362
-#, fuzzy
 msgid "Title Font Size"
-msgstr "शीर्षक फ़ॉन्ट आकार"
+msgstr "शीर्षक के फॉण्ट का आकार"
 
 #: include/global_settings.php:951 include/global_settings.php:2363
 #, fuzzy
@@ -11813,8 +11547,9 @@ msgid "Disable Resource Cache Replication"
 msgstr "संसाधन कैश का पुनर्निर्माण करें"
 
 #: include/global_settings.php:1117
+#, fuzzy
 msgid "By default, the main Cacti Data Collector will cache the entire web site and plugins into a Resource Cache.  Then, periodically the Remote Data Collectors will update themeselves with any updates from the main Cacti Data Collector.  This Resource Cache essentially allows Remote Data Collectors to self upgrade.  If you do not wish to use this option, you can disable it using this setting."
-msgstr ""
+msgstr "डिफ़ॉल्ट रूप से, मुख्य कैक्टि डेटा कलेक्टर पूरी वेब साइट और प्लगइन्स को एक संसाधन कैश में कैश करेगा। फिर, समय-समय पर दूरस्थ डेटा कलेक्टर मुख्य कैक्टि डेटा कलेक्टर से किसी भी अपडेट के साथ थीम को अपडेट करेंगे। यह संसाधन कैश अनिवार्य रूप से दूरस्थ डेटा संग्राहक को आत्म उन्नयन के लिए अनुमति देता है। यदि आप इस विकल्प का उपयोग नहीं करना चाहते हैं, तो आप इस सेटिंग का उपयोग करके इसे अक्षम कर सकते हैं।"
 
 #: include/global_settings.php:1122
 #, fuzzy
@@ -11827,8 +11562,9 @@ msgid "Report Generation Timeout"
 msgstr "रिमोट एजेंट टाइमआउट"
 
 #: include/global_settings.php:1128
+#, fuzzy
 msgid "The maximum amount of time Cacti's Reports Generation script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cacti की रिपोर्ट जनरेशन स्क्रिप्ट में अधिकतम समय बिना टाइमआउट त्रुटि उत्पन्न किए और चलाया जा सकता है।"
 
 #: include/global_settings.php:1132 include/global_settings.php:1144
 #: include/global_settings.php:1156 include/global_settings.php:1168
@@ -11843,24 +11579,29 @@ msgid "Data Source Statistics Timeout"
 msgstr "डेटा स्रोत सांख्यिकी"
 
 #: include/global_settings.php:1140
+#, fuzzy
 msgid "The maximum amount of time Cacti's Data Source Statistics script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cacti के डेटा स्रोत सांख्यिकी स्क्रिप्ट का अधिकतम समय एक टाइमआउट त्रुटि उत्पन्न करने और मारे जाने के बिना चल सकता है।"
 
 #: include/global_settings.php:1151
+#, fuzzy
 msgid "Background Commands Timeout"
-msgstr ""
+msgstr "बैकग्राउंड कमांड्स टाइमआउट"
 
 #: include/global_settings.php:1152
+#, fuzzy
 msgid "The maximum amount of time Cacti's Background Commands script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cacti का बैकग्राउंड कमांड स्क्रिप्ट अधिकतम समय बिना टाइमआउट एरर बनाए और मारी जा सकती है।"
 
 #: include/global_settings.php:1163
+#, fuzzy
 msgid "Maintenance Background Generation Timeout"
-msgstr ""
+msgstr "रखरखाव पृष्ठभूमि पीढ़ी का समय"
 
 #: include/global_settings.php:1164
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Maintenance script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "समय की त्रुटि उत्पन्न करने और मारे जाने के बिना एक कैक्टि के रखरखाव स्क्रिप्ट की अधिकतम राशि चल सकती है।"
 
 #: include/global_settings.php:1173 include/global_settings.php:1186
 #, fuzzy, php-format
@@ -11868,12 +11609,14 @@ msgid "%s Hour"
 msgstr "%s घंटे"
 
 #: include/global_settings.php:1176
+#, fuzzy
 msgid "Spikekill Background Generation Timeout"
-msgstr ""
+msgstr "स्पाइककिल बैकग्राउंड जनरेशन टाइमआउट"
 
 #: include/global_settings.php:1177
+#, fuzzy
 msgid "The maximum amount of time a Cacti's Spikekill script can run without generating a timeout error and being killed."
-msgstr ""
+msgstr "Cacti की स्पाइककिल स्क्रिप्ट की अधिकतम राशि बिना टाइमआउट त्रुटि उत्पन्न किए और मारे जाने के बिना चल सकती है।"
 
 #: include/global_settings.php:1192
 #, fuzzy
@@ -11891,12 +11634,10 @@ msgid "How would you like Spine output errors logged?  The options are: 'Detaile
 msgstr "आप स्पाइन आउटपुट त्रुटियों को कैसे स्वीकार करेंगे? विकल्प हैं: &#39;विस्तृत&#39; जो cmd.php लॉगिंग के समान है; &#39;सारांश&#39; जो प्रति उपकरण आउटपुट त्रुटियों की संख्या प्रदान करता है; और &#39;कोई नहीं&#39;, जो त्रुटि गणना प्रदान नहीं करता है।"
 
 #: include/global_settings.php:1203 utilities.php:221
-#, fuzzy
 msgid "Summary"
 msgstr "सारांश"
 
 #: include/global_settings.php:1204
-#, fuzzy
 msgid "Detailed"
 msgstr "विस्तृत"
 
@@ -11941,9 +11682,8 @@ msgid "The maximum number of SNMP get OIDs to issue per snmpbulkwalk request.  I
 msgstr "एसएनएमपी की अधिकतम संख्या प्रति स्निपबुलवॉक अनुरोध जारी करने के लिए ओआईडी प्राप्त करती है। इस मूल्य में वृद्धि धीमी गति से अधिक पराग प्रदर्शन को गति देती है। अधिकतम मूल्य 100 ओआईडी है। इस मान को 0 या 1 पर कम करने से snmpbulkwalk अक्षम हो जाएगा"
 
 #: include/global_settings.php:1246
-#, fuzzy
 msgid "Authentication Method"
-msgstr "प्रमाणन विधि"
+msgstr "प्रमाणीकरण विधि"
 
 #: include/global_settings.php:1247
 #, fuzzy
@@ -11979,7 +11719,7 @@ msgstr "प्राथमिक प्रशासनिक खाते का
 #: include/global_settings.php:1283 user_domains.php:344
 #, fuzzy
 msgid "No User"
-msgstr "उपयोगकर्ता प्रबंधन"
+msgstr "बरतूनी:"
 
 #: include/global_settings.php:1272
 #, fuzzy
@@ -12002,12 +11742,14 @@ msgid "The name of the user that Cacti will use as a template for new Web Basic 
 msgstr "उपयोगकर्ता का नाम जिसे कैक्टी नए वेब बेसिक और एलडीएपी उपयोगकर्ताओं के लिए टेम्पलेट के रूप में उपयोग करेगा; डिफ़ॉल्ट रूप से &#39;अतिथि&#39; है। यह उपयोगकर्ता खाता चयनित होने पर लॉगिंग से अक्षम हो जाएगा।"
 
 #: include/global_settings.php:1288
+#, fuzzy
 msgid "Basic Auth Mapfile"
-msgstr ""
+msgstr "मूल प्रामाणिक मेफ़ाइल"
 
 #: include/global_settings.php:1289
+#, fuzzy
 msgid "When using basic authentication, if the basic account needs to be translated to a different login account, you can specify a CSV file here to map the basic account to the desired login account."
-msgstr ""
+msgstr "मूल प्रमाणीकरण का उपयोग करते समय, यदि मूल खाते को एक अलग लॉगिन खाते में अनुवाद करने की आवश्यकता होती है, तो आप मूल खाते को वांछित लॉगिन खाते में मैप करने के लिए यहां एक सीएसवी फ़ाइल निर्दिष्ट कर सकते हैं।"
 
 #: include/global_settings.php:1297
 #, fuzzy
@@ -12147,9 +11889,8 @@ msgid "An account will automatically be unlocked after this many minutes.  Even 
 msgstr "कई मिनटों के बाद एक खाता अपने आप अनलॉक हो जाएगा। यदि सही पासवर्ड दर्ज किया गया है, तो भी यह समय सीमा पूरी नहीं होने तक खाता अनलॉक नहीं होगा। अधिकतम 1440 मिनट (1 दिन)"
 
 #: include/global_settings.php:1416
-#, fuzzy
 msgid "1 Day"
-msgstr "एक दिन"
+msgstr "1 दिन"
 
 #: include/global_settings.php:1419
 #, fuzzy
@@ -12157,7 +11898,6 @@ msgid "LDAP General Settings"
 msgstr "LDAP सामान्य सेटिंग्स"
 
 #: include/global_settings.php:1423 user_domains.php:367
-#, fuzzy
 msgid "Server"
 msgstr "सर्वर"
 
@@ -12197,7 +11937,6 @@ msgid "Protocol Version that the server supports."
 msgstr "प्रोटोकॉल संस्करण जो सर्वर का समर्थन करता है।"
 
 #: include/global_settings.php:1452 user_domains.php:400
-#, fuzzy
 msgid "Encryption"
 msgstr "एन्क्रिप्शन"
 
@@ -12217,7 +11956,6 @@ msgid "Enable or Disable LDAP referrals.  If disabled, it may increase the speed
 msgstr "LDAP रेफरल सक्षम या अक्षम करें। अक्षम होने पर, यह खोजों की गति बढ़ा सकता है।"
 
 #: include/global_settings.php:1468 user_domains.php:414
-#, fuzzy
 msgid "Mode"
 msgstr "मोड"
 
@@ -12302,7 +12040,6 @@ msgid "Search base for searching the LDAP directory, such as <i>'dc=win2kdomain,
 msgstr "LDAP निर्देशिका को खोजने के लिए खोज आधार, जैसे <i>&#39;dc = win2kdomain, dc = local&#39;</i> या <i>&#39;ou = people, dc = domain, dc = local&#39;</i> ।"
 
 #: include/global_settings.php:1522 user_domains.php:470
-#, fuzzy
 msgid "Search Filter"
 msgstr "फ़िल्टर खोजें"
 
@@ -12342,7 +12079,6 @@ msgid "Field that will replace the Full Name when creating a new user, taken fro
 msgstr "वह फ़ील्ड जो LDAP से लिया गया एक नया उपयोगकर्ता बनाते समय पूरा नाम बदल देगा। (खिड़कियों पर: displayname)"
 
 #: include/global_settings.php:1550
-#, fuzzy
 msgid "Email"
 msgstr "ईमेल"
 
@@ -12432,9 +12168,8 @@ msgid "This is the actual name that the Email will appear from."
 msgstr "यह वास्तविक नाम है जिससे ईमेल दिखाई देगा।"
 
 #: include/global_settings.php:1615
-#, fuzzy
 msgid "Word Wrap"
-msgstr "वर्ड रैप"
+msgstr "à¤µà¤°à¥à¤¡ à¤°à¥à¤ª"
 
 #: include/global_settings.php:1616
 #, fuzzy
@@ -12472,7 +12207,6 @@ msgid "This is the hostname/IP of the SMTP Server you will send the Email to. Fo
 msgstr "यह SMTP सर्वर का होस्टनाम / IP है जिसे आप ईमेल भेजेंगे। विफलता के लिए, अर्ध-बृहदान्त्र का उपयोग करके अपने मेजबानों को अलग करें।"
 
 #: include/global_settings.php:1649
-#, fuzzy
 msgid "SMTP Port"
 msgstr "SMTP पोर्ट"
 
@@ -12912,7 +12646,6 @@ msgid "There are two removal methods.  The first, Standard Deviation, will remov
 msgstr "हटाने के दो तरीके हैं। पहला, मानक विचलन, किसी भी नमूने को निकाल देगा जो नमूनों के औसत से दूर एक्स मानक विचलन की संख्या है। दूसरी विधि, वैरिंस, किसी भी नमूने को निकाल देगी जो कि वियरेन्स औसत से X% अधिक है। वेरिएंस विधि एक निश्चित संख्या में &#39;आउटलेर्स&#39; को ध्यान में रखती है। वे असाधारण नमूने हैं, स्पाइक की तरह, जिन्हें वैरियनस औसत गणना से बाहर रखा जाना चाहिए।"
 
 #: include/global_settings.php:1990
-#, fuzzy
 msgid "Standard Deviation"
 msgstr "मानक विचलन"
 
@@ -12932,7 +12665,6 @@ msgid "There are three replacement methods.  The first method replaces the spike
 msgstr "तीन प्रतिस्थापन तरीके हैं। पहली विधि स्पाइक को प्रश्न में डेटा स्रोत के औसत से बदल देती है। दूसरी विधि स्पाइक को &#39;NaN&#39; से बदल देती है। अंतिम स्पाइक को अंतिम ज्ञात अच्छे मान के साथ बदलता है।"
 
 #: include/global_settings.php:1999 lib/html.php:2134
-#, fuzzy
 msgid "Average"
 msgstr "औसत"
 
@@ -13072,8 +12804,9 @@ msgid "Backup Retention"
 msgstr "डेटा प्रतिधारण"
 
 #: include/global_settings.php:2114
+#, fuzzy
 msgid "When SpikeKill kills spikes in graphs, it makes a backup of the RRDfile.  How long should these backup files be retained?"
-msgstr ""
+msgstr "जब SpikeKill ग्राफ़ में स्पाइक्स को मारता है, तो यह RRDfile का बैकअप बनाता है। कब तक इन बैकअप फ़ाइलों को बनाए रखा जाना चाहिए?"
 
 #: include/global_settings.php:2133
 #, fuzzy
@@ -13121,8 +12854,9 @@ msgid "Show Device Aggregates"
 msgstr "समुच्चय"
 
 #: include/global_settings.php:2160
+#, fuzzy
 msgid "If a Device Data Source is included in an Aggregate Graph, show that Graph along with other Device Graphs"
-msgstr ""
+msgstr "यदि कोई डिवाइस डेटा स्रोत एक एग्रीगेट ग्राफ़ में शामिल है, तो उस ग्राफ़ को अन्य डिवाइस ग्राफ़ के साथ दिखाएं"
 
 #: include/global_settings.php:2166
 #, fuzzy
@@ -13317,8 +13051,9 @@ msgid "Tree History"
 msgstr "पासवर्ड इतिहास"
 
 #: include/global_settings.php:2332
+#, fuzzy
 msgid "If enabled, Cacti will remember your Tree History between logins and when you return to the Graphs page."
-msgstr ""
+msgstr "यदि सक्षम किया गया है, तो कैक्टि लॉगिन के बीच अपने ट्री इतिहास को याद रखेगा और जब आप ग्राफ़ पृष्ठ पर वापस लौटेंगे।"
 
 #: include/global_settings.php:2355
 #, fuzzy
@@ -13381,14 +13116,12 @@ msgid "How do you wish to view Realtime Graphs?"
 msgstr "आप रियलटाइम ग्राफ़ कैसे देखना चाहते हैं?"
 
 #: include/global_settings.php:2427
-#, fuzzy
 msgid "Inline"
-msgstr "पंक्ति में"
+msgstr "इनलाइन"
 
 #: include/global_settings.php:2428
-#, fuzzy
 msgid "New Window"
-msgstr "नयी खिड़की"
+msgstr "नया विंडोComment"
 
 #: index.php:68
 #, fuzzy, php-format
@@ -13411,19 +13144,16 @@ msgid "<a href=\"%s\">View</a> your new graphs"
 msgstr "अपने नए रेखांकन <a href=\"%s\">देखें</a>"
 
 #: index.php:82
-#, fuzzy
 msgid "Offline"
 msgstr "ऑफलाइन"
 
 #: index.php:82
-#, fuzzy
 msgid "Online"
 msgstr "ऑनलाइन"
 
 #: index.php:82
-#, fuzzy
 msgid "Recovery"
-msgstr "वसूली"
+msgstr "अनुपयोगी उष्मा उपयोगिता"
 
 #: index.php:82
 #, fuzzy
@@ -13466,9 +13196,8 @@ msgid "Cacti Server v%s - Installation Wizard"
 msgstr "Cacti Server v %s - इंस्टॉलेशन विज़ार्ड"
 
 #: install/install.php:79
-#, fuzzy
 msgid "Initializing"
-msgstr "शुरु कर रहा है"
+msgstr "शुरू हो रहा है"
 
 #: install/install.php:80
 #, fuzzy, php-format
@@ -13541,7 +13270,6 @@ msgid "Color Template"
 msgstr "रंग टेम्पलेट"
 
 #: lib/api_aggregate.php:1714
-#, fuzzy
 msgid "Skip"
 msgstr "छोड़ें"
 
@@ -13564,7 +13292,6 @@ msgstr "मिलान उपकरण"
 #: lib/clog_webapi.php:532 lib/html_reports.php:578 lib/html_reports.php:1326
 #: lib/html_reports.php:1592 lib/html_reports.php:1603 lib/rrd.php:2882
 #: utilities.php:350 utilities.php:1097 utilities.php:2494
-#, fuzzy
 msgid "Type"
 msgstr "प्रकार"
 
@@ -13584,7 +13311,6 @@ msgid "Objects"
 msgstr "ऑब्जेक्ट"
 
 #: lib/api_automation.php:761 lib/graphs.php:79 lib/graphs.php:103
-#, fuzzy
 msgid "Not Found"
 msgstr "नहीं मिला"
 
@@ -13614,9 +13340,8 @@ msgid "Error in data query"
 msgstr "डेटा क्वेरी में त्रुटि"
 
 #: lib/api_automation.php:1058
-#, fuzzy
 msgid "Matching Items"
-msgstr "मिलान आइटम"
+msgstr "जुडनेवाली वस्तुऐं"
 
 #: lib/api_automation.php:1223
 #, fuzzy
@@ -13629,12 +13354,10 @@ msgid "No Items Found"
 msgstr "कुछ नहीं मिला"
 
 #: lib/api_automation.php:1290 lib/api_automation.php:1352
-#, fuzzy
 msgid "Field"
-msgstr "खेत"
+msgstr "क्षेत्र"
 
 #: lib/api_automation.php:1292 lib/api_automation.php:1354
-#, fuzzy
 msgid "Pattern"
 msgstr "पैटर्न"
 
@@ -13749,39 +13472,33 @@ msgid "SNMP error"
 msgstr "SNMP त्रुटि"
 
 #: lib/api_device.php:1036
-#, fuzzy
 msgid "Session"
-msgstr "अधिवेशन"
+msgstr "सैशन"
 
 #: lib/api_device.php:1059
-#, fuzzy
 msgid "Host"
-msgstr "मेज़बान"
+msgstr "होस्ट"
 
 #: lib/api_device.php:1070
-#, fuzzy
 msgid "System:"
-msgstr "सिस्टम:"
+msgstr "तंत्रः"
 
 #: lib/api_device.php:1076
 #, fuzzy
 msgid "Uptime:"
-msgstr "अपटाइम:"
+msgstr "चालू रहने का समय"
 
 #: lib/api_device.php:1078
-#, fuzzy
 msgid "Hostname:"
-msgstr "होस्ट का नाम:"
+msgstr "#-#-#-#-# balsa.HEAD.hi.po (Balsa 2.x) #-#-#-#-# उपयोगकर्ता का नाम #-#-#-#-# eel.HEAD.hi.po (eel VERSION) #-#-#-#-# उपयोगकर्ता का नाम: (_U)"
 
 #: lib/api_device.php:1079
-#, fuzzy
 msgid "Location:"
-msgstr "स्थान"
+msgstr "स्थान:"
 
 #: lib/api_device.php:1080
-#, fuzzy
 msgid "Contact:"
-msgstr "संपर्क करें"
+msgstr "संपर्क:"
 
 #: lib/api_device.php:1111 lib/functions.php:3940 lib/functions.php:3942
 #: lib/functions.php:3946
@@ -13805,14 +13522,12 @@ msgid "Web Basic"
 msgstr "वेब बेसिक"
 
 #: lib/auth.php:1784 lib/auth.php:1816
-#, fuzzy
 msgid "Branch:"
-msgstr "डाली:"
+msgstr "शाखा:"
 
 #: lib/auth.php:1793 lib/auth.php:1824 lib/html_tree.php:1005
-#, fuzzy
 msgid "Device:"
-msgstr "डिवाइस:"
+msgstr "उपकरणः"
 
 #: lib/auth.php:2490 lib/auth.php:2499
 #, fuzzy
@@ -13820,8 +13535,9 @@ msgid "This account has been locked."
 msgstr "यह खाता लॉक कर दिया गया है।"
 
 #: lib/auth.php:2520
+#, fuzzy
 msgid "Your Cacti administrator has forced complex passwords for logins and your current Cacti password does not match the new requirements.  Therefore, you must change your password now."
-msgstr ""
+msgstr "आपके Cacti व्यवस्थापक ने लॉगिन के लिए जटिल पासवर्ड को मजबूर कर दिया है और आपका वर्तमान Cacti पासवर्ड नई आवश्यकताओं से मेल नहीं खाता है। इसलिए, आपको अब अपना पासवर्ड बदलना होगा।"
 
 #: lib/auth.php:2542
 #, fuzzy, php-format
@@ -13905,14 +13621,12 @@ msgstr "लॉग [कुल पंक्तियाँ:% d %s - अनफ़�
 
 #: lib/clog_webapi.php:285 utilities.php:1173 utilities.php:1519
 #: utilities.php:1726 utilities.php:1806 utilities.php:2488 utilities.php:2696
-#, fuzzy
 msgid "Entries"
-msgstr "प्रविष्टियां"
+msgstr "प्रविश्टयां"
 
 #: lib/clog_webapi.php:478 utilities.php:1047
-#, fuzzy
 msgid "File"
-msgstr "फ़ाइल"
+msgstr "फ़ाइल"
 
 #: lib/clog_webapi.php:505 utilities.php:1074
 #, fuzzy
@@ -13920,14 +13634,12 @@ msgid "Tail Lines"
 msgstr "टेल लाइन्स"
 
 #: lib/clog_webapi.php:537 utilities.php:1102
-#, fuzzy
 msgid "Stats"
-msgstr "आँकड़े"
+msgstr "आंकड़े"
 
 #: lib/clog_webapi.php:540 utilities.php:1105
-#, fuzzy
 msgid "Debug"
-msgstr "डिबग"
+msgstr "डीबग करो"
 
 #: lib/clog_webapi.php:541 utilities.php:1106
 #, fuzzy
@@ -14410,7 +14122,6 @@ msgid "Login as Regular User"
 msgstr "नियमित उपयोगकर्ता के रूप में लॉगिन करें"
 
 #: lib/functions.php:2391
-#, fuzzy
 msgid "guest"
 msgstr "अतिथि"
 
@@ -14421,7 +14132,6 @@ msgstr "उपयोगकर्ता समुदाय"
 
 #: lib/functions.php:2394 lib/functions.php:2407 lib/html.php:2388
 #: lib/utility.php:1061
-#, fuzzy
 msgid "Documentation"
 msgstr "प्रलेखन"
 
@@ -14434,7 +14144,6 @@ msgid "Logout"
 msgstr "लॉगआउट"
 
 #: lib/functions.php:2557
-#, fuzzy
 msgid "Leaf"
 msgstr "पत्ती"
 
@@ -14485,7 +14194,6 @@ msgid "Your email settings are currently set as follows"
 msgstr "आपकी ईमेल सेटिंग्स वर्तमान में इस प्रकार सेट की गई हैं"
 
 #: lib/functions.php:3898
-#, fuzzy
 msgid "Method"
 msgstr "तरीका"
 
@@ -14510,7 +14218,6 @@ msgid "Not Shown for Security Reasons"
 msgstr "सुरक्षा कारणों से नहीं दिखाया गया"
 
 #: lib/functions.php:3929
-#, fuzzy
 msgid "Security"
 msgstr "सुरक्षा"
 
@@ -14520,9 +14227,8 @@ msgid "Ping Results:"
 msgstr "पिंग परिणाम:"
 
 #: lib/functions.php:3946
-#, fuzzy
 msgid "Bypassed"
-msgstr "नजरअंदाज"
+msgstr "बाईपास कीता"
 
 #: lib/functions.php:3954
 #, fuzzy
@@ -14540,9 +14246,8 @@ msgid "Cacti Test Message"
 msgstr "कैक्टि टेस्ट संदेश"
 
 #: lib/functions.php:3963
-#, fuzzy
 msgid "Success!"
-msgstr "सफलता!"
+msgstr "सफ़ल!"
 
 #: lib/functions.php:3966
 #, fuzzy
@@ -14571,9 +14276,9 @@ msgid "Version %s %s"
 msgstr "संस्करण %s %s"
 
 #: lib/functions.php:5003
-#, fuzzy, php-format
+#, php-format
 msgid "%s %s"
-msgstr "%s %s"
+msgstr "<ph id=\"mtc_1\" equiv-text=\"base64:JXM=\"/> <ph id=\"mtc_2\" equiv-text=\"base64:JXM=\"/>"
 
 #: lib/graphs.php:51
 #, fuzzy
@@ -14655,7 +14360,7 @@ msgstr "कोई %s मिला"
 #: lib/html.php:1086
 #, fuzzy
 msgid "Alpha %"
-msgstr "अल्फा%"
+msgstr "अल्फा"
 
 #: lib/html.php:1127
 #, fuzzy
@@ -14674,7 +14379,6 @@ msgstr "कार्रवाई निष्पादित करें"
 
 #: lib/html.php:1644 lib/html.php:1646 lib/html.php:1726 managers.php:41
 #: managers.php:221
-#, fuzzy
 msgid "Logs"
 msgstr "लॉग्स"
 
@@ -14759,9 +14463,8 @@ msgid "Enter a regular expression"
 msgstr "एक नियमित अभिव्यक्ति दर्ज करें"
 
 #: lib/html.php:2375
-#, fuzzy
 msgid "No file selected"
-msgstr "किसी भी फाइल का चयन नहीं"
+msgstr "कोई फ़ाइल चयनित नहीं"
 
 #: lib/html.php:2378 lib/html.php:2391
 #, fuzzy
@@ -14789,9 +14492,8 @@ msgid "Cacti Project Page"
 msgstr "कैक्टि प्रोजेक्ट पेज"
 
 #: lib/html.php:2389
-#, fuzzy
 msgid "Report a bug"
-msgstr "गलती सूचित करें"
+msgstr "किसी बग की रिपोर्ट करें"
 
 #: lib/html.php:2392
 #, fuzzy
@@ -14804,9 +14506,8 @@ msgid "Clear Current Filter"
 msgstr "वर्तमान फ़िल्टर साफ़ करें"
 
 #: lib/html.php:2394
-#, fuzzy
 msgid "Clipboard"
-msgstr "क्लिपबोर्ड"
+msgstr "क्लिपबोर्ड से... (C)"
 
 #: lib/html.php:2395
 #, fuzzy
@@ -14869,12 +14570,10 @@ msgid "Sorry, we could not process your last action."
 msgstr "क्षमा करें, हम आपकी अंतिम क्रिया को संसाधित नहीं कर सके।"
 
 #: lib/html.php:2410
-#, fuzzy
 msgid "Error:"
-msgstr "त्रुटि"
+msgstr "त्रुटी:"
 
 #: lib/html.php:2411
-#, fuzzy
 msgid "Reason:"
 msgstr "कारण:"
 
@@ -14889,9 +14588,8 @@ msgid "Connection Successful"
 msgstr "ऑपरेशन सफल रहा"
 
 #: lib/html.php:2414 pollers.php:756
-#, fuzzy
 msgid "Connection Failed"
-msgstr "कनेक्शन का समय समाप्त"
+msgstr "कनेक्शन असफल"
 
 #: lib/html.php:2415
 #, fuzzy
@@ -14917,19 +14615,16 @@ msgid "The Operation was successful.  Details are below."
 msgstr "ऑपरेशन सफल रहा। विवरण नीचे हैं।"
 
 #: lib/html.php:2421
-#, fuzzy
 msgid "Pause"
-msgstr "ठहराव"
+msgstr "पॉज़"
 
 #: lib/html.php:2424
-#, fuzzy
 msgid "Zoom In"
-msgstr "ज़ूम इन"
+msgstr "ज़ूम इन करो"
 
 #: lib/html.php:2425
-#, fuzzy
 msgid "Zoom Out"
-msgstr "ज़ूम आउट"
+msgstr "ज़ूम आउट करो"
 
 #: lib/html.php:2426
 #, fuzzy
@@ -14977,9 +14672,8 @@ msgid "Zoom Mode"
 msgstr "ज़ूम मोड"
 
 #: lib/html.php:2436
-#, fuzzy
 msgid "Quick"
-msgstr "शीघ्र"
+msgstr "तेज"
 
 #: lib/html.php:2438
 #, fuzzy
@@ -15002,16 +14696,14 @@ msgid "Copy graph link"
 msgstr "ग्राफ लिंक कॉपी करें"
 
 #: lib/html.php:2442
-#, fuzzy
 msgid "Always On"
-msgstr "हमेशा बने रहें"
+msgstr "हमेशा चालू"
 
 #: lib/html.php:2443
 msgid "Auto"
 msgstr "आपही"
 
 #: lib/html.php:2444
-#, fuzzy
 msgid "Always Off"
 msgstr "हमेशा बंद"
 
@@ -15144,9 +14836,8 @@ msgstr "प्रारंभ तिथि चयनकर्ता"
 
 #: lib/html_graph.php:279 lib/html_reports.php:1591 lib/html_reports.php:1602
 #: lib/html_tree.php:1149
-#, fuzzy
 msgid "To"
-msgstr "सेवा मेरे"
+msgstr "को"
 
 #: lib/html_graph.php:284 lib/html_tree.php:1154
 #, fuzzy
@@ -15179,19 +14870,16 @@ msgid "Return to the default time span"
 msgstr "डिफ़ॉल्ट समय अवधि पर लौटें"
 
 #: lib/html_graph.php:315 lib/html_tree.php:1185
-#, fuzzy
 msgid "Window"
-msgstr "खिड़की"
+msgstr "विंडो"
 
 #: lib/html_graph.php:327
-#, fuzzy
 msgid "Interval"
-msgstr "मध्यान्तर"
+msgstr "अंतराल"
 
 #: lib/html_graph.php:339 lib/html_tree.php:1209
-#, fuzzy
 msgid "Stop"
-msgstr "रुकें"
+msgstr "रोकें"
 
 #: lib/html_graph.php:485 lib/html_graph.php:511
 #, fuzzy, php-format
@@ -15359,9 +15047,8 @@ msgid "The Graph End time will be set to the scheduled report send time.  So, if
 msgstr "ग्राफ़ अंतिम समय निर्धारित रिपोर्ट भेजने के समय पर सेट किया जाएगा। इसलिए, यदि आप विभिन्न ग्राफ़ पर आधी रात को समाप्त होने की इच्छा रखते हैं, तो सुनिश्चित करें कि आप आधी रात को रिपोर्ट भेजें। ग्राफ प्रारंभ समय ग्राफ टाइमपेन का अंत समय शून्य से कम होगा।"
 
 #: lib/html_reports.php:671 lib/html_reports.php:1329
-#, fuzzy
 msgid "Alignment"
-msgstr "संरेखण"
+msgstr "एलाइनमेंट"
 
 #: lib/html_reports.php:674
 #, fuzzy
@@ -15379,9 +15066,8 @@ msgid "Enter descriptive Text"
 msgstr "वर्णनात्मक पाठ दर्ज करें"
 
 #: lib/html_reports.php:687 lib/html_reports.php:1330
-#, fuzzy
 msgid "Font Size"
-msgstr "फ़ॉन्ट आकार"
+msgstr "फ़ोल्डर आकार"
 
 #: lib/html_reports.php:691
 #, fuzzy
@@ -15608,9 +15294,8 @@ msgid "Select one of the given Types for the Image Attachments"
 msgstr "छवि अनुलग्नकों के लिए दिए गए प्रकारों में से एक का चयन करें"
 
 #: lib/html_reports.php:1156
-#, fuzzy
 msgid "Events"
-msgstr "आयोजन"
+msgstr "घटनाक्रम"
 
 #: lib/html_reports.php:1158 lib/import.php:2108 user_admin.php:1993
 #, fuzzy
@@ -15678,17 +15363,14 @@ msgid "User Level"
 msgstr "उपयोगकर्ता स्तर"
 
 #: lib/html_reports.php:1506 lib/html_reports.php:1577
-#, fuzzy
 msgid "Reports"
-msgstr "रिपोर्ट"
+msgstr "रिपोर्ट्स"
 
 #: lib/html_reports.php:1586 tree.php:2000
-#, fuzzy
 msgid "Owner"
-msgstr "मालिक"
+msgstr "स्वामी"
 
 #: lib/html_reports.php:1587 lib/html_reports.php:1598
-#, fuzzy
 msgid "Frequency"
 msgstr "आवृत्ति"
 
@@ -15713,17 +15395,14 @@ msgid "Report Disabled - No Owner"
 msgstr "रिपोर्ट डिसेबल - नो ओनर"
 
 #: lib/html_reports.php:1632
-#, fuzzy
 msgid "Every"
-msgstr "हर एक"
+msgstr "प्रत्येक"
 
 #: lib/html_reports.php:1638
-#, fuzzy
 msgid "Multiple"
-msgstr "विभिन्न"
+msgstr "कई"
 
 #: lib/html_reports.php:1639
-#, fuzzy
 msgid "Invalid"
 msgstr "अमान्य"
 
@@ -15745,17 +15424,16 @@ msgstr "टेम्पलेट आधारित है"
 #: lib/html_tree.php:983 lib/reports.php:991
 #, fuzzy
 msgid "Tree:"
-msgstr "ट्री:"
+msgstr "वृक्षugiou"
 
 #: lib/html_tree.php:988
-#, fuzzy
 msgid "Site:"
-msgstr "साइट"
+msgstr "साइटः"
 
 #: lib/html_tree.php:994 lib/reports.php:996
 #, fuzzy
 msgid "Leaf:"
-msgstr "पत्ता:"
+msgstr "पत्ती"
 
 #: lib/html_tree.php:1000
 #, fuzzy
@@ -15763,7 +15441,6 @@ msgid "Device Template:"
 msgstr "डिवाइस टेम्पलेट:"
 
 #: lib/html_tree.php:1014
-#, fuzzy
 msgid "Applied"
 msgstr "आवेदन किया है"
 
@@ -15787,9 +15464,8 @@ msgid "(Non Graph Template)"
 msgstr "(गैर ग्राफ़ टेम्पलेट)"
 
 #: lib/html_utility.php:268
-#, fuzzy
 msgid "Selected"
-msgstr "चयनित"
+msgstr "चुनिंदा"
 
 #: lib/html_utility.php:480 lib/html_utility.php:699
 #, fuzzy, php-format
@@ -15853,17 +15529,15 @@ msgstr "मौजूद नहीं"
 #: lib/import.php:370 lib/import.php:376
 #, fuzzy
 msgid "not writable"
-msgstr "लिखा न जाए"
-
-#: lib/import.php:378
-#, fuzzy
-msgid "writable"
 msgstr "लिखने योग्य"
 
+#: lib/import.php:378
+msgid "writable"
+msgstr "लिखनजोग"
+
 #: lib/import.php:1823
-#, fuzzy
 msgid "Unknown Field"
-msgstr "अज्ञात क्षेत्र"
+msgstr "अज्ञात क़िस्म"
 
 #: lib/import.php:2069
 #, fuzzy
@@ -15886,14 +15560,13 @@ msgid "Cacti has imported the following items for the Package:"
 msgstr "Cacti ने पैकेज के लिए निम्नलिखित वस्तुओं का आयात किया है:"
 
 #: lib/import.php:2078
-#, fuzzy
 msgid "Package Files"
 msgstr "पैकेज फ़ाइलें"
 
 #: lib/import.php:2082
 #, fuzzy
 msgid "[preview] "
-msgstr "[पूर्वावलोकन]"
+msgstr "पूर्वावलोकन"
 
 #: lib/import.php:2087
 #, fuzzy
@@ -15908,17 +15581,17 @@ msgstr "Cacti ने खाके के लिए निम्नलिखि�
 #: lib/import.php:2098
 #, fuzzy
 msgid "[success]"
-msgstr "[सफलता]"
+msgstr "सफ़ल!"
 
 #: lib/import.php:2100
 #, fuzzy
 msgid "[fail]"
-msgstr "[असफल]"
+msgstr "असफल"
 
 #: lib/import.php:2102
 #, fuzzy
 msgid "[preview]"
-msgstr "[पूर्वावलोकन]"
+msgstr "पूर्वावलोकन"
 
 #: lib/import.php:2106
 #, fuzzy
@@ -15966,7 +15639,6 @@ msgid "Resource is not writable"
 msgstr "संसाधन लेखन योग्य नहीं है"
 
 #: lib/installer.php:769
-#, fuzzy
 msgid "File not found"
 msgstr "फाइल नहीं मिली"
 
@@ -16081,25 +15753,21 @@ msgid "Then run the following within MySQL as an administrator:"
 msgstr "फिर एक व्यवस्थापक के रूप में MySQL के भीतर निम्नलिखित चलाएँ:"
 
 #: lib/installer.php:1510 pollers.php:637
-#, fuzzy
 msgid "Test Connection"
-msgstr "परीक्षण कनेक्शन"
+msgstr "कनेक्शन जांचें"
 
 #: lib/installer.php:1521
-#, fuzzy
 msgid "Begin"
-msgstr "शुरू"
+msgstr "आरंभ@ action End of document"
 
 #: lib/installer.php:1527 lib/installer.php:1936 lib/installer.php:1946
 #: lib/installer.php:2566
-#, fuzzy
 msgid "Upgrade"
-msgstr "अपग्रेड"
+msgstr "अपग्रेड  करो"
 
 #: lib/installer.php:1529 lib/installer.php:2570
-#, fuzzy
 msgid "Downgrade"
-msgstr "ढाल"
+msgstr "अवनयन"
 
 #: lib/installer.php:1630 utilities.php:266
 #, fuzzy
@@ -16107,9 +15775,8 @@ msgid "Cacti Version"
 msgstr "कैक्टि संस्करण"
 
 #: lib/installer.php:1630
-#, fuzzy
 msgid "License Agreement"
-msgstr "लाइसेंस समझौता"
+msgstr "लाइसेंस अनुबंध"
 
 #: lib/installer.php:1633
 #, fuzzy, php-format
@@ -16149,7 +15816,7 @@ msgstr "कैक्टि को GNU जनरल पब्लिक लाइ�
 #: lib/installer.php:1652
 #, fuzzy
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."
-msgstr "यह कार्यक्रम इस उम्मीद में वितरित किया जाता है कि यह उपयोगी होगा, लेकिन किसी भी वारंटी के बिना; बिना किसी पक्षपात के लिए योग्यता या योग्यता के निहित वारंटी के बिना। अधिक विवरण के लिए जीएनयू जनरल पब्लिक लाइसेंस देखें।"
+msgstr "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details."
 
 #: lib/installer.php:1689
 #, fuzzy
@@ -16173,9 +15840,8 @@ msgstr "स्थान की जाँच"
 
 #: lib/installer.php:1747 lib/installer.php:1885 lib/installer.php:1889
 #: lib/installer.php:2044 lib/installer.php:2049 lib/installer.php:3614
-#, fuzzy
 msgid "ERROR:"
-msgstr "त्रुटि"
+msgstr "त्रुटि:"
 
 #: lib/installer.php:1747
 #, fuzzy
@@ -16198,14 +15864,12 @@ msgid "PHP Recommendations"
 msgstr "PHP अनुशंसाएँ"
 
 #: lib/installer.php:1763
-#, fuzzy
 msgid "Current"
 msgstr "वर्तमान"
 
 #: lib/installer.php:1763
-#, fuzzy
 msgid "Recommended"
-msgstr "सिफारिश की"
+msgstr "सफारशशुदा"
 
 #: lib/installer.php:1770
 #, fuzzy
@@ -16213,20 +15877,20 @@ msgid "PHP Binary"
 msgstr "PHP बाइनरी पथ"
 
 #: lib/installer.php:1773
+#, fuzzy
 msgid "The PHP binary location is not valid and must be updated."
-msgstr ""
+msgstr "PHP बाइनरी स्थान मान्य नहीं है और इसे अपडेट किया जाना चाहिए।"
 
 #: lib/installer.php:1780
+#, fuzzy
 msgid "Update the path_php_binary value in the settings table."
-msgstr ""
+msgstr "सेटिंग तालिका में path_php_binary मान अपडेट करें।"
 
 #: lib/installer.php:1788
-#, fuzzy
 msgid "Passed"
-msgstr "बीतने के"
+msgstr "पास कीता"
 
 #: lib/installer.php:1791
-#, fuzzy
 msgid "Warning"
 msgstr "चेतावनी"
 
@@ -16251,14 +15915,12 @@ msgid "Required PHP Modules"
 msgstr "आवश्यक PHP मॉड्यूल"
 
 #: lib/installer.php:1829 lib/installer.php:1859 plugins.php:40 plugins.php:359
-#, fuzzy
 msgid "Installed"
-msgstr "स्थापित"
+msgstr "इंस्‍टॉल हो गया"
 
 #: lib/installer.php:1829
-#, fuzzy
 msgid "Required"
-msgstr "अपेक्षित"
+msgstr "आवश्यकता"
 
 #: lib/installer.php:1852
 #, fuzzy
@@ -16276,9 +15938,8 @@ msgid "Optional Modules"
 msgstr "वैकल्पिक मॉड्यूल"
 
 #: lib/installer.php:1859
-#, fuzzy
 msgid "Optional"
-msgstr "ऐच्छिक"
+msgstr "वैकल्पिक"
 
 #: lib/installer.php:1880
 #, fuzzy
@@ -16356,9 +16017,8 @@ msgid "Please select the type of installation"
 msgstr "कृपया स्थापना का प्रकार चुनें"
 
 #: lib/installer.php:1954
-#, fuzzy
 msgid "Installation options:"
-msgstr "स्थापना विकल्प:"
+msgstr "संस्थापन विकल्प:"
 
 #: lib/installer.php:1958
 #, fuzzy
@@ -16523,7 +16183,7 @@ msgstr "केवल समय स्थापित करने पर आव�
 #: lib/installer.php:2205 lib/installer.php:2237
 #, fuzzy
 msgid "Not Writable"
-msgstr "लिखा न जाए"
+msgstr "लिखने योग्य"
 
 #: lib/installer.php:2217
 #, fuzzy
@@ -16561,8 +16221,9 @@ msgid "EXAMPLE:"
 msgstr "उदाहरण:"
 
 #: lib/installer.php:2280
+#, fuzzy
 msgid "Once installation has completed the CSRF path, should be set to read-only."
-msgstr ""
+msgstr "एक बार इंस्टॉलेशन CSRF पथ पूरा कर लेने के बाद, केवल पढ़ने के लिए सेट किया जाना चाहिए।"
 
 #: lib/installer.php:2282
 #, fuzzy
@@ -16570,48 +16231,59 @@ msgid "All folders are writable"
 msgstr "सभी फ़ोल्डर लेखन योग्य हैं"
 
 #: lib/installer.php:2294
+#, fuzzy
 msgid "Input Validation Whitelist Protection"
-msgstr ""
+msgstr "इनपुट सत्यापन श्वेतसूची संरक्षण"
 
 #: lib/installer.php:2295
+#, fuzzy
 msgid "Cacti Data Input methods that call a script can be exploited in ways that a non-administrator can perform damage to either files owned by the poller account, and in cases where someone runs the Cacti poller as root, can compromise the operating system allowing attackers to exploit your infrastructure."
-msgstr ""
+msgstr "एक स्क्रिप्ट को कॉल करने वाली कैक्टि डेटा इनपुट विधियों का उन तरीकों से शोषण किया जा सकता है जो एक गैर-प्रशासक या तो मतदाता खाते के स्वामित्व वाली फाइलों को नुकसान पहुंचा सकते हैं, और ऐसे मामलों में जहां कोई कैक्टी पोलर को रूट के रूप में चलाता है, ऑपरेटिंग सिस्टम को अनुमति दे सकता है जो मतदाताओं को अनुमति देता है। अपने बुनियादी ढांचे का शोषण करें।"
 
 #: lib/installer.php:2296
+#, fuzzy
 msgid "Therefore, several versions ago, Cacti was enhanced to provide Whitelist capabilities on the these types of Data Input Methods.  Though this does secure Cacti more thouroughly, it does increase the amount of work required by the Cacti administrator to import and manage Templates and Packages."
-msgstr ""
+msgstr "इसलिए, कई संस्करणों से पहले, इन प्रकार के डेटा इनपुट विधियों पर व्हिटेलिस्ट क्षमताओं को प्रदान करने के लिए कैक्टि को बढ़ाया गया था। हालांकि यह कैक्टि को अधिक सुरक्षित रूप से सुरक्षित करता है, लेकिन यह टेम्प्लेट और पैकेजों को आयात और प्रबंधित करने के लिए कैक्टि व्यवस्थापक द्वारा आवश्यक कार्य की मात्रा को बढ़ाता है।"
 
 #: lib/installer.php:2297
+#, fuzzy
 msgid "The way that the Whitelisting works is that when you first import a Data Input Method, or you re-import a Data Input Method, and the script and or aguments change in any way, the Data Input Method, and all the corresponding Data Sources will be immediatly disabled until the administrator validates that the Data Input Method is valid."
-msgstr ""
+msgstr "जिस तरह से श्वेतसूची में काम करता है वह यह है कि जब आप पहली बार किसी डेटा इनपुट विधि को आयात करते हैं, या आप किसी डेटा इनपुट विधि को फिर से आयात करते हैं, और स्क्रिप्ट और या किसी भी तरह से परिवर्तन होता है, डेटा इनपुट विधि और सभी संबंधित डेटा स्रोत होंगे जब तक कि व्यवस्थापक मान्य नहीं करता कि डेटा इनपुट विधि मान्य नहीं है, तुरंत अक्षम हो जाएं।"
 
 #: lib/installer.php:2298
+#, fuzzy
 msgid "To make identifying Data Input Methods in this state, we have provided a validation script in Cacti's CLI directory that can be run with the following options:"
-msgstr ""
+msgstr "इस स्थिति में डेटा इनपुट विधियों की पहचान करने के लिए, हमने कैक्टि के सीएलआई निर्देशिका में एक सत्यापन स्क्रिप्ट प्रदान की है जिसे निम्नलिखित विकल्पों के साथ चलाया जा सकता है:"
 
 #: lib/installer.php:2302
+#, fuzzy
 msgid "This script option will search for any Data Input Methods that are currently banned and provide details as to why."
-msgstr ""
+msgstr "यह स्क्रिप्ट विकल्प किसी भी डेटा इनपुट विधियों की खोज करेगा जो वर्तमान में प्रतिबंधित हैं और क्यों के रूप में विवरण प्रदान करते हैं।"
 
 #: lib/installer.php:2303
+#, fuzzy
 msgid "This script option un-ban the Data Input Methods that are currently banned."
-msgstr ""
+msgstr "यह स्क्रिप्ट विकल्प उन डेटा इनपुट विधियों पर प्रतिबंध नहीं लगाता है जो वर्तमान में प्रतिबंधित हैं।"
 
 #: lib/installer.php:2304
+#, fuzzy
 msgid "This script option will re-enable any disabled Data Sources."
-msgstr ""
+msgstr "यह स्क्रिप्ट विकल्प किसी भी अक्षम डेटा स्रोत को फिर से सक्षम करेगा।"
 
 #: lib/installer.php:2308
+#, fuzzy
 msgid "It is strongly suggested that you update your config.php to enable this feature by uncommenting the <b>$input_whitelist</b> variable and then running the three CLI script options above after the web based install has completed."
-msgstr ""
+msgstr "यह दृढ़ता से सुझाव दिया जाता है कि आप इस <b>इनपुट</b> को <b>$ input_whitelist</b> वैरिएबल को <b>अनइंस्टॉल करने</b> और फिर वेब आधारित इंस्टॉल पूरा होने के बाद ऊपर दिए तीन CLI स्क्रिप्ट विकल्पों को चलाने के लिए अपने config.php को अपडेट करें।"
 
 #: lib/installer.php:2310
+#, fuzzy
 msgid "Check the Checkbox below to acknowledge that you have read and understand this security concern"
-msgstr ""
+msgstr "इस सुरक्षा चिंता को पढ़ने और समझने के लिए स्वीकार करने के लिए नीचे दिया गया चेकबॉक्स देखें"
 
 #: lib/installer.php:2312
+#, fuzzy
 msgid "I have read this statement"
-msgstr ""
+msgstr "मैंने इस कथन को पढ़ा है"
 
 #: lib/installer.php:2328 lib/installer.php:2334
 #, fuzzy
@@ -16698,9 +16370,8 @@ msgid "Author"
 msgstr "लेखक "
 
 #: lib/installer.php:2434
-#, fuzzy
 msgid "Homepage"
-msgstr "मुखपृष्ठ"
+msgstr "होम पेज"
 
 #: lib/installer.php:2452
 #, fuzzy
@@ -16753,9 +16424,9 @@ msgid "Table Setup"
 msgstr "टेबल सेटअप"
 
 #: lib/installer.php:2505
-#, php-format
+#, fuzzy, php-format
 msgid "You have more tables than your PHP configuration will allow us to display/convert.  Please modify the max_input_vars setting in php.ini to a value above %s"
-msgstr ""
+msgstr "आपके पास अपने PHP कॉन्फ़िगरेशन की तुलना में अधिक टेबल हैं जो हमें प्रदर्शित / परिवर्तित करने की अनुमति देगा। कृपया%s के ऊपर php.ini में max_input_vars सेटिंग को संशोधित करें"
 
 #: lib/installer.php:2508
 #, fuzzy
@@ -16763,17 +16434,14 @@ msgid "Conversion of tables may take some time especially on larger tables.  The
 msgstr "तालिकाओं के रूपांतरण में विशेष रूप से बड़ी तालिकाओं पर कुछ समय लग सकता है। इन तालिकाओं का रूपांतरण पृष्ठभूमि में होगा, लेकिन इंस्टॉलर को पूरा होने से नहीं रोकेगा। यदि रूपांतरण को संभालने के लिए MySQL के लिए पर्याप्त संसाधन नहीं हैं तो यह कुछ सर्वरों को धीमा कर सकता है।"
 
 #: lib/installer.php:2512
-#, fuzzy
 msgid "Tables"
-msgstr "टेबल्स"
+msgstr "टेबल"
 
 #: lib/installer.php:2513 utilities.php:524
-#, fuzzy
 msgid "Collation"
-msgstr "मिलान"
+msgstr "वर्णानुक्रमण"
 
 #: lib/installer.php:2513 utilities.php:519
-#, fuzzy
 msgid "Engine"
 msgstr "इंजन"
 
@@ -16852,12 +16520,11 @@ msgid "Your Cacti Server is now installing"
 msgstr "अब आपका Cacti Server इंस्टॉल हो रहा है"
 
 #: lib/installer.php:2685
-#, php-format
+#, fuzzy, php-format
 msgid "Spawning background process: %s %s"
-msgstr ""
+msgstr "स्पॉनिंग बैकग्राउंड प्रोसेस:%s%s"
 
 #: lib/installer.php:2711
-#, fuzzy
 msgid "Complete"
 msgstr "पूर्ण"
 
@@ -16882,39 +16549,38 @@ msgid "Report Issue"
 msgstr "रिपोर्ट जारी करना"
 
 #: lib/installer.php:2835
-#, fuzzy
 msgid "Get Started"
-msgstr "शुरू हो जाओ"
+msgstr "शुरू होई जाओ"
 
 #: lib/installer.php:2864
-#, php-format
+#, fuzzy, php-format
 msgid "Starting %s Process for v%s"
-msgstr ""
+msgstr "V%s के लिए%s प्रक्रिया शुरू करना"
 
 #: lib/installer.php:2891
-#, php-format
+#, fuzzy, php-format
 msgid "Finished %s Process for v%s"
-msgstr ""
+msgstr "V%s के लिए%s प्रक्रिया समाप्त"
 
 #: lib/installer.php:2926
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s templates to install"
-msgstr ""
+msgstr "%s टेम्प्लेट स्थापित करने के लिए मिला"
 
 #: lib/installer.php:2937
-#, php-format
+#, fuzzy, php-format
 msgid "About to import Package #%s '%s'."
-msgstr ""
+msgstr "पैकेज #%s '%s' आयात करने के बारे में।"
 
 #: lib/installer.php:2944
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' succeeded"
-msgstr ""
+msgstr "प्रोफ़ाइल '%s' के तहत पैकेज #%s '%s' का आयात सफल रहा"
 
 #: lib/installer.php:2950
-#, php-format
+#, fuzzy, php-format
 msgid "Import of Package #%s '%s' under Profile '%s' failed"
-msgstr ""
+msgstr "प्रोफ़ाइल '%s' के तहत पैकेज #%s '%s' का आयात विफल रहा"
 
 #: lib/installer.php:2966
 #, fuzzy, php-format
@@ -16922,8 +16588,9 @@ msgid "Mapping Automation Template for Device Template '%s'"
 msgstr "[हटाए गए टेम्पलेट] के लिए ऑटोमेशन टेम्प्लेट"
 
 #: lib/installer.php:2977
+#, fuzzy
 msgid "No templates were selected for import"
-msgstr ""
+msgstr "आयात के लिए कोई टेम्पलेट नहीं चुना गया था"
 
 #: lib/installer.php:2984
 #, fuzzy
@@ -16941,17 +16608,19 @@ msgid "Failed to find selected profile (%s), no changes were made"
 msgstr "निर्दिष्ट प्रोफ़ाइल %s लागू करने में विफल! = %s"
 
 #: lib/installer.php:3047
-#, php-format
+#, fuzzy, php-format
 msgid "Updating automation network (%s), mode \"%s\" => \"%s\", subnet \"%s\" => %s\""
-msgstr ""
+msgstr "ऑटोमेशन नेटवर्क (%s), मोड \"%s\" => \"%s\", सबनेट \"%s\" = =%s \""
 
 #: lib/installer.php:3057
+#, fuzzy
 msgid "Failed to find automation network, no changes were made"
-msgstr ""
+msgstr "स्वचालन नेटवर्क खोजने में विफल, कोई परिवर्तन नहीं किए गए थे"
 
 #: lib/installer.php:3061
+#, fuzzy
 msgid "Adding extra snmp settings for automation"
-msgstr ""
+msgstr "स्वचालन के लिए अतिरिक्त स्निप सेटिंग्स जोड़ना"
 
 #: lib/installer.php:3067
 #, fuzzy, php-format
@@ -16964,9 +16633,9 @@ msgid "Updating Automation Option Set %s"
 msgstr "स्वचालन SNMP विकल्प"
 
 #: lib/installer.php:3083
-#, php-format
+#, fuzzy, php-format
 msgid "Successfully updated Automation Option Set %s"
-msgstr ""
+msgstr "सफलतापूर्वक अपडेट किया गया स्वचालन विकल्प सेट%s"
 
 #: lib/installer.php:3085
 #, fuzzy, php-format
@@ -16999,16 +16668,19 @@ msgid "Adding Device to Default Tree"
 msgstr "डिवाइस की कमी"
 
 #: lib/installer.php:3165
+#, fuzzy
 msgid "No templated graphs for Default Device were found"
-msgstr ""
+msgstr "डिफ़ॉल्ट डिवाइस के लिए कोई अस्थायी ग्राफ़ नहीं मिले"
 
 #: lib/installer.php:3169
+#, fuzzy
 msgid "WARNING: Device Template for your Operating System Not Found.  You will need to import Device Templates or Cacti Packages to monitor your Cacti server."
-msgstr ""
+msgstr "चेतावनी: आपके ऑपरेटिंग सिस्टम के लिए डिवाइस टेम्पलेट नहीं मिला। आपको अपने Cacti सर्वर की निगरानी के लिए डिवाइस टेम्प्लेट या कैक्टि पैकेज आयात करने की आवश्यकता होगी।"
 
 #: lib/installer.php:3176
+#, fuzzy
 msgid "Running first-time data query for local host"
-msgstr ""
+msgstr "स्थानीय होस्ट के लिए पहली बार डेटा क्वेरी चलाना"
 
 #: lib/installer.php:3184
 #, fuzzy
@@ -17021,51 +16693,54 @@ msgid "Repopulating SNMP Agent cache"
 msgstr "SNMPAgent Cache का पुनर्निर्माण करें"
 
 #: lib/installer.php:3194
+#, fuzzy
 msgid "Generating RSA Key Pair"
-msgstr ""
+msgstr "आरएसए कुंजी जोड़ी उत्पन्न करना"
 
 #: lib/installer.php:3206
-#, php-format
+#, fuzzy, php-format
 msgid "Found %s tables to convert"
-msgstr ""
+msgstr "%s तालिकाओं को परिवर्तित करने के लिए मिला"
 
 #: lib/installer.php:3213
-#, php-format
+#, fuzzy, php-format
 msgid "Converting Table #%s '%s'"
-msgstr ""
+msgstr "परिवर्तित तालिका #%s '%s'"
 
 #: lib/installer.php:3228
+#, fuzzy
 msgid "No tables where found or selected for conversion"
-msgstr ""
+msgstr "कोई तालिका नहीं मिली है या रूपांतरण के लिए चयनित है"
 
 #: lib/installer.php:3239
-#, php-format
+#, fuzzy, php-format
 msgid "Switched from %s to %s"
-msgstr ""
+msgstr "%s से%s पर स्विच किया गया"
 
 #: lib/installer.php:3243
-#, php-format
+#, fuzzy, php-format
 msgid "NOTE: Using temporary file for db cache: %s"
-msgstr ""
+msgstr "नोट: db कैश के लिए अस्थायी फ़ाइल का उपयोग करना:%s"
 
 #: lib/installer.php:3265
-#, php-format
+#, fuzzy, php-format
 msgid "Upgrading from v%s (DB %s) to v%s"
-msgstr ""
+msgstr "V%s (DB%s) से v%s में अपग्रेड करना"
 
 #: lib/installer.php:3273
-#, php-format
+#, fuzzy, php-format
 msgid "WARNING: Failed to find upgrade function for v%s"
-msgstr ""
+msgstr "चेतावनी: v%s के लिए अपग्रेड फंक्शन खोजने में विफल"
 
 #: lib/installer.php:3332
+#, fuzzy
 msgid "Install aborted due to no EULA acceptance"
-msgstr ""
+msgstr "EULA स्वीकृति नहीं होने के कारण गर्भपात कराएं"
 
 #: lib/installer.php:3352
-#, php-format
+#, fuzzy, php-format
 msgid "Background was already started at %s, this attempt at %s was skipped"
-msgstr ""
+msgstr "पृष्ठभूमि को%s पर पहले ही शुरू कर दिया गया था,%s पर यह प्रयास छोड़ दिया गया था"
 
 #: lib/installer.php:3372
 #, fuzzy, php-format
@@ -17078,7 +16753,6 @@ msgid "Installation was started at %s, completed at %s"
 msgstr "%s पर संस्थापन आरंभ किया गया था, %s पर पूरा हुआ"
 
 #: lib/installer.php:3408
-#, fuzzy
 msgid "Both"
 msgstr "दोनों"
 
@@ -17093,9 +16767,8 @@ msgid "%s - No"
 msgstr "संस्करण %s"
 
 #: lib/installer.php:3410
-#, fuzzy
 msgid "Web"
-msgstr "फरवरी"
+msgstr "वेब"
 
 #: lib/installer.php:3412
 #, fuzzy
@@ -17103,14 +16776,14 @@ msgid "Cli"
 msgstr "प्रतिष्टित"
 
 #: lib/installer.php:3417
-#, php-format
+#, fuzzy, php-format
 msgid "Setting PHP Option %s = %s"
-msgstr ""
+msgstr "PHP विकल्प%s =%s को सेट करना"
 
 #: lib/installer.php:3423
-#, php-format
+#, fuzzy, php-format
 msgid "Failed to set PHP option %s, is %s (should be %s)"
-msgstr ""
+msgstr "PHP विकल्प%s सेट करने में विफल,%s है (%s होना चाहिए)"
 
 #: lib/installer.php:3442
 #, fuzzy
@@ -17233,9 +16906,8 @@ msgid "Destination address not specified"
 msgstr "गंतव्य का पता निर्दिष्ट नहीं है"
 
 #: lib/ping.php:329 lib/ping.php:466
-#, fuzzy
 msgid "default"
-msgstr "चूक"
+msgstr "à¤«à¤¼à¤¿à¤²à¥à¤à¤° à¤¨à¤¿à¤¯à¤®à¥à¤ à¤à¥ à¤¦à¥à¤à¥à¤ à¤¯à¤¾ à¤¸à¤à¤ªà¤¾à¤¦à¤¨ à¤à¤°à¥à¤ (R)"
 
 #: lib/ping.php:357 lib/ping.php:366 lib/ping.php:494 lib/ping.php:503
 #, fuzzy
@@ -17293,9 +16965,8 @@ msgid "Plugin cannot be installed."
 msgstr "प्लगइन स्थापित नहीं किया जा सकता है।"
 
 #: lib/plugins.php:954 lib/plugins.php:961 plugins.php:366 plugins.php:446
-#, fuzzy
 msgid "Plugins"
-msgstr "प्लगइन्स"
+msgstr "प्लग-इनां"
 
 #: lib/plugins.php:972 lib/plugins.php:978
 #, fuzzy, php-format
@@ -17313,24 +16984,23 @@ msgid "Not Stated"
 msgstr "नहीं बताया हुआ"
 
 #: lib/reports.php:485
-#, php-format
+#, fuzzy, php-format
 msgid "Problems sending Report '%s' Problem with e-mail Subsystem Error is '%s'"
-msgstr ""
+msgstr "रिपोर्ट भेजने में समस्या '%s' ई-मेल के साथ समस्या सबसिस्टम त्रुटि '%s' है"
 
 #: lib/reports.php:492
-#, php-format
+#, fuzzy, php-format
 msgid "Report '%s' Sent Successfully"
-msgstr ""
+msgstr "रिपोर्ट '%s' सफलतापूर्वक भेजी गई"
 
 #: lib/reports.php:1001
-#, fuzzy
 msgid "Host:"
-msgstr "मेज़बान:"
+msgstr "होस्ट:"
 
 #: lib/reports.php:1006
 #, fuzzy
 msgid "Graph:"
-msgstr "ग्राफ़:"
+msgstr "काल ग्राफ"
 
 #: lib/reports.php:1110
 #, fuzzy
@@ -17355,7 +17025,7 @@ msgstr "इन ग्राफ़ों को संबद्ध करने �
 #: lib/reports.php:1534
 #, fuzzy
 msgid "Report:"
-msgstr "रिपोर्ट:"
+msgstr "रिपोर्ट"
 
 #: lib/reports.php:1542
 #, fuzzy
@@ -17463,14 +17133,12 @@ msgid "Minimal Heartbeat"
 msgstr "मिनिमल हार्टबीट"
 
 #: lib/rrd.php:2884
-#, fuzzy
 msgid "Min"
-msgstr "मिन"
+msgstr "कम से कम"
 
 #: lib/rrd.php:2885
-#, fuzzy
 msgid "Max"
-msgstr "मैक्स"
+msgstr "अधिकतम"
 
 #: lib/rrd.php:2886
 #, fuzzy
@@ -17548,9 +17216,8 @@ msgid "Website does not have write access to %s, may be unable to create/update 
 msgstr "वेबसाइट में %s तक लिखने की सुविधा नहीं है, RRDs बनाने / अपडेट करने में असमर्थ हो सकता है"
 
 #: lib/rrd.php:3506
-#, fuzzy
 msgid "(Custom)"
-msgstr "रुचि अनुसरणीय"
+msgstr "(अनुकूलित)"
 
 #: lib/rrd.php:3512
 #, fuzzy
@@ -17563,9 +17230,8 @@ msgid "RRA Folder"
 msgstr "आरआरए फोल्डर"
 
 #: lib/rrd.php:3515
-#, fuzzy
 msgid "Root"
-msgstr "जड़"
+msgstr "जड़"
 
 #: lib/rrd.php:3618
 #, fuzzy
@@ -17578,8 +17244,9 @@ msgid "Attempting to Create Graph from Non-Template"
 msgstr "टेम्पलेट से अलग बनाएं"
 
 #: lib/template.php:1029
+#, fuzzy
 msgid "Attempting to Create Graph from Removed Graph Template"
-msgstr ""
+msgstr "हटाए गए ग्राफ़ टेम्पलेट से ग्राफ़ बनाने का प्रयास"
 
 #: lib/template.php:1622 lib/template.php:1642
 #, fuzzy, php-format
@@ -17667,8 +17334,9 @@ msgid "When using innodb_file_per_table, it is important to set the innodb_file_
 msgstr "Innodb_file_per_table का उपयोग करते समय, बारकोडुडा में innodb_file_format को सेट करना महत्वपूर्ण है। यह सेटिंग कुछ विशेष कैक्टि तालिकाओं के लिए लंबे समय तक अनुक्रमित करने की अनुमति देगा।"
 
 #: lib/utility.php:962
+#, fuzzy
 msgid "If your tables have very large indexes, you must operate with the Barracuda innodb_file_format and the innodb_large_prefix equal to 1.  Failure to do this may result in plugins that can not properly create tables."
-msgstr ""
+msgstr "यदि आपकी तालिकाओं में बहुत बड़ी अनुक्रमणिकाएँ हैं, तो आपको बाराकुडा innodb_file_format और innodb_large_prefix के साथ 1 के बराबर काम करना होगा। ऐसा करने में विफलता उन प्लगइन्स का परिणाम हो सकती है जो ठीक से तालिकाएँ नहीं बना सकते हैं।"
 
 #: lib/utility.php:968
 #, fuzzy, php-format
@@ -17676,8 +17344,9 @@ msgid "InnoDB will hold as much tables and indexes in system memory as is possib
 msgstr "InnoDB जितना संभव हो उतना सिस्टम मेमोरी में टेबल और इंडेक्स रखेगा। इसलिए, आपको innodb_buffer_pool को पर्याप्त रूप से बड़ा करना चाहिए ताकि स्मृति में तालिकाओं और अनुक्रमणिका को पकड़ सकें। / Var / lib / mysql / cacti निर्देशिका के आकार की जाँच करने से इस मान को निर्धारित करने में मदद मिलेगी। हम आपके सिस्टम की कुल मेमोरी के 25%% की अनुशंसा कर रहे हैं, लेकिन आपकी आवश्यकताओं को आपके सिस्टम के आकार के आधार पर अलग-अलग किया जाएगा।"
 
 #: lib/utility.php:974
+#, fuzzy
 msgid "This settings should remain ON unless your Cacti instances is running on either ZFS or FusionI/O which both have internal journaling to accomodate abrupt system crashes.  However, if you have very good power, and your systems rarely go down and you have backups, turning this setting to OFF can net you almost a 50% increase in database performance."
-msgstr ""
+msgstr "जब तक आपका Cacti इंस्टेंसेस ZFS या FusionI / O पर नहीं चल रहा हो, तब तक यह सेटिंग ऑन रहना चाहिए, जिसमें दोनों के पास अचानक सिस्टम क्रैश होने की आंतरिक जर्नलिंग हो। हालाँकि, यदि आपके पास बहुत अच्छी शक्ति है, और आपके सिस्टम शायद ही कभी चलते हैं और आपके पास बैकअप है, तो इस सेटिंग को बंद करने से आप डेटाबेस प्रदर्शन में लगभग 50% की वृद्धि कर सकते हैं।"
 
 #: lib/utility.php:979
 #, fuzzy
@@ -17750,7 +17419,6 @@ msgid "Note: Many changes below require a database restart"
 msgstr "नोट: नीचे कई बदलावों के लिए डेटाबेस रीस्टार्ट की आवश्यकता होती है"
 
 #: lib/utility.php:1069
-#, fuzzy
 msgid "Variable"
 msgstr "परिवर्तनशील"
 
@@ -17824,19 +17492,16 @@ msgid "Delete Page(s)"
 msgstr "पृष्ठ हटाएं"
 
 #: links.php:316
-#, fuzzy
 msgid "Links"
-msgstr "लिंक"
+msgstr "लिंकस"
 
 #: links.php:330
-#, fuzzy
 msgid "Apply Filter"
-msgstr "फिल्टर लागू करें"
+msgstr "फ़िल्टर्स लागू करें (p) View - >"
 
 #: links.php:331
-#, fuzzy
 msgid "Reset filters"
-msgstr "फ़िल्टर रीसेट करें"
+msgstr "रीसेट फिल्टर"
 
 #: links.php:345 links.php:513 user_admin.php:1697 user_group_admin.php:1381
 #, fuzzy
@@ -18012,9 +17677,8 @@ msgid "You have been logged out of Cacti due to an account suspension."
 msgstr "सत्र समय समाप्त होने के कारण आप कैक्टि से लॉग आउट हो गए हैं।"
 
 #: managers.php:40 managers.php:220 managers.php:571
-#, fuzzy
 msgid "Notifications"
-msgstr "सूचनाएं"
+msgstr "अधिसूचनाएँ"
 
 #: managers.php:140 utilities.php:1954
 #, fuzzy
@@ -18027,9 +17691,8 @@ msgid "Receivers"
 msgstr "रिसीवर"
 
 #: managers.php:217
-#, fuzzy
 msgid "Id"
-msgstr "ईद"
+msgstr "आईडी"
 
 #: managers.php:251
 #, fuzzy
@@ -18057,9 +17720,8 @@ msgid "OID"
 msgstr "OID"
 
 #: managers.php:565
-#, fuzzy
 msgid "Kind"
-msgstr "मेहरबान"
+msgstr "क़िस्मAll other platforms"
 
 #: managers.php:566 utilities.php:2494
 #, fuzzy
@@ -18077,7 +17739,6 @@ msgid "No SNMP Notifications"
 msgstr "कोई SNMP सूचनाएं नहीं"
 
 #: managers.php:731 utilities.php:2670
-#, fuzzy
 msgid "Severity"
 msgstr "तीव्रता"
 
@@ -18087,14 +17748,12 @@ msgid "Purge Notification Log"
 msgstr "पर्ज अधिसूचना लॉग"
 
 #: managers.php:794 utilities.php:2770
-#, fuzzy
 msgid "Time"
 msgstr "समय"
 
 #: managers.php:795 utilities.php:2770
-#, fuzzy
 msgid "Notification"
-msgstr "अधिसूचना"
+msgstr "सूचना"
 
 #: managers.php:796 utilities.php:2770
 #, fuzzy
@@ -18158,9 +17817,8 @@ msgid "You must select at least one notification object."
 msgstr "आपको कम से कम एक अधिसूचना ऑब्जेक्ट का चयन करना होगा।"
 
 #: plugins.php:31 plugins.php:523
-#, fuzzy
 msgid "Uninstall"
-msgstr "स्थापना रद्द करें"
+msgstr "अनइंस्टाल करो"
 
 #: plugins.php:35
 #, fuzzy
@@ -18168,9 +17826,8 @@ msgid "Not Compatible"
 msgstr "अनुरूप नहीं"
 
 #: plugins.php:36 plugins.php:362 utilities.php:467
-#, fuzzy
 msgid "Not Installed"
-msgstr "स्थापित नहीं है"
+msgstr "इंस्टालशुदा नेईं"
 
 #: plugins.php:38
 #, fuzzy
@@ -18393,8 +18050,9 @@ msgid "Cacti System Notification"
 msgstr "कैक्टि सिस्टम यूटिलिटीज"
 
 #: poller.php:971
+#, fuzzy
 msgid "NOTE: A second Cacti data collector has been added.  Therfore, enabling boost automatically!"
-msgstr ""
+msgstr "नोट: एक दूसरा कैक्टि डेटा कलेक्टर जोड़ा गया है। आगे, स्वचालित रूप से बढ़ावा देने में सक्षम!"
 
 #: poller_automation.php:928 poller_automation.php:979
 #, fuzzy
@@ -18462,9 +18120,8 @@ msgid "Collection Settings"
 msgstr "संग्रह सेटिंग्स"
 
 #: pollers.php:99
-#, fuzzy
 msgid "Processes"
-msgstr "प्रक्रियाओं"
+msgstr "प्रक्रम"
 
 #: pollers.php:100
 #, fuzzy
@@ -18577,14 +18234,14 @@ msgid "The file holding the SSL Certificate Authority to use to connect to the r
 msgstr "दूरस्थ सर्टिफिकेट से कनेक्ट करने के लिए एसएसएल सर्टिफिकेट अथॉरिटी को रखने वाली फाइल।"
 
 #: pollers.php:297
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this hostname '%s'.  Please enter a non-duplicate hostname."
-msgstr ""
+msgstr "आपने पहले ही इस होस्टनाम '%s' का उपयोग कर लिया है। कृपया एक गैर-डुप्लिकेट होस्टनाम दर्ज करें।"
 
 #: pollers.php:303
-#, php-format
+#, fuzzy, php-format
 msgid "You have already used this database hostname '%s'.  Please enter a non-duplicate database hostname."
-msgstr ""
+msgstr "आपने पहले ही इस डेटाबेस होस्टनाम '%s' का उपयोग कर लिया है। कृपया एक गैर-डुप्लिकेट डेटाबेस होस्टनाम दर्ज करें।"
 
 #: pollers.php:518
 #, fuzzy
@@ -18731,9 +18388,8 @@ msgid "The number of SNMP gets associated with this Collector."
 msgstr "एसएनएमपी की संख्या इस कलेक्टर के साथ जुड़ी हुई है।"
 
 #: pollers.php:947
-#, fuzzy
 msgid "Scripts"
-msgstr "स्क्रिप्ट"
+msgstr "स्क्रिप्ट- साइज़"
 
 #: pollers.php:947
 #, fuzzy
@@ -18741,7 +18397,6 @@ msgid "The number of script calls associated with this Data Collector."
 msgstr "इस डेटा कलेक्टर से जुड़े स्क्रिप्ट कॉल की संख्या।"
 
 #: pollers.php:948
-#, fuzzy
 msgid "Servers"
 msgstr "सर्वर"
 
@@ -18761,9 +18416,8 @@ msgid "The last time this Data Collector completed."
 msgstr "पिछली बार यह डाटा कलेक्टर ने पूरा किया।"
 
 #: pollers.php:950
-#, fuzzy
 msgid "Last Update"
-msgstr "आखिरी अपडेट"
+msgstr "अंतिम अपडेट"
 
 #: pollers.php:950
 #, fuzzy
@@ -18771,7 +18425,6 @@ msgid "The last time this Data Collector checked in with the main Cacti site."
 msgstr "पिछली बार इस डेटा कलेक्टर ने मुख्य कैक्टि साइट के साथ जाँच की थी।"
 
 #: pollers.php:951
-#, fuzzy
 msgid "Last Sync"
 msgstr "अंतिम सिंक"
 
@@ -18786,16 +18439,14 @@ msgid "No Data Collectors Found"
 msgstr "कोई डेटा संग्राहक नहीं मिला"
 
 #: rrdcleaner.php:29 tree.php:31
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Delete"
-msgstr "हटाना"
+msgstr "हटाएं"
 
 #: rrdcleaner.php:30
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Archive"
-msgstr "पुरालेख"
+msgstr "विकिपीडिया:अवरोधित सदस्य"
 
 #: rrdcleaner.php:339
 #, fuzzy
@@ -18823,9 +18474,8 @@ msgid "Template ID"
 msgstr "टेम्पलेट आईडी"
 
 #: rrdcleaner.php:353
-#, fuzzy
 msgid "Last Modified"
-msgstr "अंतिम बार संशोधित"
+msgstr "पिछली मर्तबा परिवर्धित"
 
 #: rrdcleaner.php:354
 #, fuzzy
@@ -18833,9 +18483,8 @@ msgid "Size [KB]"
 msgstr "आकार [KB]"
 
 #: rrdcleaner.php:365 rrdcleaner.php:366
-#, fuzzy
 msgid "Deleted"
-msgstr "हटाए गए"
+msgstr "म्हेसेआ"
 
 #: rrdcleaner.php:374
 #, fuzzy
@@ -18866,10 +18515,9 @@ msgstr "RRDfiles"
 #: user_group_admin.php:2205 user_group_admin.php:2309
 #: user_group_admin.php:2394 user_group_admin.php:2479
 #: user_group_admin.php:2564
-#, fuzzy
 msgctxt "filter: use"
 msgid "Go"
-msgstr "चले जाओ"
+msgstr "जाएं"
 
 #: rrdcleaner.php:515 user_group_admin.php:1856 user_group_admin.php:2206
 #: user_group_admin.php:2310 user_group_admin.php:2395
@@ -18879,14 +18527,12 @@ msgid "Clear"
 msgstr "明确"
 
 #: rrdcleaner.php:516
-#, fuzzy
 msgid "Rescan"
-msgstr "पुन: स्कैन"
+msgstr "री- स्कैन"
 
 #: rrdcleaner.php:521
-#, fuzzy
 msgid "Delete All"
-msgstr "सभी हटा दो"
+msgstr "सभी को हटाएं"
 
 #: rrdcleaner.php:521
 #, fuzzy
@@ -18909,8 +18555,9 @@ msgid "Settings save to Data Collector %d Failed."
 msgstr "सेटिंग्स डेटा कलेक्टर में सहेजने में% d विफल।"
 
 #: settings.php:346
+#, fuzzy
 msgid "NOTE: Path Settings on this Tab are only saved locally!"
-msgstr ""
+msgstr "नोट: इस टैब पर पथ सेटिंग केवल स्थानीय रूप से सहेजी गई हैं!"
 
 #: settings.php:351
 #, fuzzy, php-format
@@ -19027,7 +18674,6 @@ msgid "Enter the City or Locality"
 msgstr "शहर या इलाके में प्रवेश करें"
 
 #: sites.php:82 sites.php:575
-#, fuzzy
 msgid "State"
 msgstr "राज्य"
 
@@ -19081,9 +18727,8 @@ msgid "Geolocation Information"
 msgstr "जियोलोकेशन की जानकारी"
 
 #: sites.php:123
-#, fuzzy
 msgid "Latitude"
-msgstr "अक्षांश"
+msgstr "अक्षांश रेखाएँ"
 
 #: sites.php:124
 #, fuzzy
@@ -19096,9 +18741,8 @@ msgid "example 38.889488"
 msgstr "उदाहरण 38.889488"
 
 #: sites.php:132
-#, fuzzy
 msgid "Longitude"
-msgstr "देशान्तर"
+msgstr "रेखांश"
 
 #: sites.php:133
 #, fuzzy
@@ -19111,9 +18755,8 @@ msgid "example -77.0374678"
 msgstr "उदाहरण -77.0374678"
 
 #: sites.php:141
-#, fuzzy
 msgid "Zoom"
-msgstr "ज़ूम"
+msgstr "ज़ूम करो"
 
 #: sites.php:142
 #, fuzzy
@@ -19155,8 +18798,9 @@ msgid "If the Site is known by another name enter it here."
 msgstr "यदि साइट को किसी अन्य नाम से जाना जाता है, तो इसे यहां दर्ज करें।"
 
 #: sites.php:294
+#, fuzzy
 msgid "Template Site was not found! Unable to duplicate."
-msgstr ""
+msgstr "टेम्पलेट साइट नहीं मिली! डुप्लिकेट करने में असमर्थ।"
 
 #: sites.php:354
 #, fuzzy
@@ -19182,7 +18826,7 @@ msgstr[1] "निम्नलिखित पेड़ों को हटान
 #: sites.php:365
 #, fuzzy
 msgid "Site Name:"
-msgstr "साइट का नाम"
+msgstr "साइट नाम"
 
 #: sites.php:369
 #, fuzzy
@@ -19192,9 +18836,8 @@ msgstr[0] "प्रतिलिपि"
 msgstr[1] "प्रतिलिपि"
 
 #: sites.php:571 tree.php:829
-#, fuzzy
 msgid "Site Name"
-msgstr "साइट का नाम"
+msgstr "साइट नाम"
 
 #: sites.php:571
 #, fuzzy
@@ -19277,9 +18920,8 @@ msgid "Some templates rely on other items in Cacti to function properly. It is h
 msgstr "कुछ टेम्प्लेट ठीक से काम करने के लिए कैक्टि में अन्य वस्तुओं पर भरोसा करते हैं। यह अत्यधिक अनुशंसित है कि आप इस बॉक्स का चयन करें या परिणामी आयात विफल हो सकता है।"
 
 #: templates_export.php:135
-#, fuzzy
 msgid "Output Format"
-msgstr "आउटपुट स्वरूप"
+msgstr "आउटपुट फॉर्मेट"
 
 #: templates_export.php:136
 #, fuzzy
@@ -19307,8 +18949,9 @@ msgid "Available Templates [%s]"
 msgstr "उपलब्ध टेम्पलेट [ %s]"
 
 #: templates_import.php:102
+#, fuzzy
 msgid "The Template Import Failed.  See the cacti.log for more details."
-msgstr ""
+msgstr "खाका आयात विफल रहा। अधिक जानकारी के लिए cacti.log देखें।"
 
 #: templates_import.php:110 templates_import.php:132
 #, fuzzy
@@ -19316,7 +18959,6 @@ msgid "Import Template"
 msgstr "आयात टेम्पलेट"
 
 #: templates_import.php:112
-#, fuzzy
 msgid "ERROR"
 msgstr "त्रुटि"
 
@@ -19326,10 +18968,9 @@ msgid "Failed to access temporary folder, import functionality is disabled"
 msgstr "अस्थायी फ़ोल्डर तक पहुंचने में विफल, आयात कार्यक्षमता अक्षम है"
 
 #: tree.php:32
-#, fuzzy
 msgctxt "dropdown action"
 msgid "Publish"
-msgstr "प्रकाशित करना"
+msgstr "प्रकाशित करें"
 
 #: tree.php:33
 #, fuzzy
@@ -19347,16 +18988,14 @@ msgstr "बंद"
 #, fuzzy
 msgctxt "ordering of tree items"
 msgid "inherit"
-msgstr "वारिस"
+msgstr "कन्नै हासल करो"
 
 #: tree.php:389
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "manual"
-msgstr "गाइड"
+msgstr "मैन्युल"
 
 #: tree.php:392
-#, fuzzy
 msgctxt "ordering of tree items"
 msgid "alpha"
 msgstr "अल्फा"
@@ -19499,7 +19138,6 @@ msgid "New Node"
 msgstr "नया नोड"
 
 #: tree.php:1383
-#, fuzzy
 msgid "Rename"
 msgstr "नाम बदलें"
 
@@ -19509,29 +19147,24 @@ msgid "Branch Sorting"
 msgstr "शाखा छँटाई"
 
 #: tree.php:1417
-#, fuzzy
 msgid "Inherit"
-msgstr "उत्तराधिकार"
+msgstr "कन्नै हासल करो"
 
 #: tree.php:1445
-#, fuzzy
 msgid "Alphabetic"
 msgstr "वर्णानुक्रमक"
 
 #: tree.php:1459
-#, fuzzy
 msgid "Natural"
 msgstr "प्राकृतिक"
 
 #: tree.php:1496 tree.php:1570 tree.php:1678
-#, fuzzy
 msgid "Cut"
-msgstr "कट गया"
+msgstr "क'd'a"
 
 #: tree.php:1529
-#, fuzzy
 msgid "Paste"
-msgstr "चिपकाएं"
+msgstr "पेस्ट करें"
 
 #: tree.php:1893
 #, fuzzy
@@ -19564,7 +19197,6 @@ msgid "The internal database ID for this Tree.  Useful when performing automatio
 msgstr "इस ट्री के लिए आंतरिक डेटाबेस आईडी। स्वचालन या डिबगिंग करते समय उपयोगी।"
 
 #: tree.php:1998
-#, fuzzy
 msgid "Published"
 msgstr "प्रकाशित"
 
@@ -19614,9 +19246,8 @@ msgid "The total number of Site Branches in this Tree."
 msgstr "इस पेड़ में साइट शाखाओं की कुल संख्या।"
 
 #: tree.php:2005
-#, fuzzy
 msgid "Branches"
-msgstr "शाखाओं"
+msgstr "ब्रांचां"
 
 #: tree.php:2005
 #, fuzzy
@@ -19664,19 +19295,16 @@ msgid "Template Username:"
 msgstr "टेम्प्लेट उपयोगकर्ता नाम:"
 
 #: user_admin.php:360
-#, fuzzy
 msgid "Username:"
-msgstr "उपयोगकर्ता नाम"
+msgstr "बरतूनी-नांऽ::"
 
 #: user_admin.php:367
-#, fuzzy
 msgid "Full Name:"
-msgstr "पूरा नाम"
+msgstr "पूरा नामः"
 
 #: user_admin.php:374
-#, fuzzy
 msgid "Realm:"
-msgstr "क्षेत्र:"
+msgstr "फ्रेम"
 
 #: user_admin.php:380
 #, fuzzy
@@ -19756,7 +19384,7 @@ msgstr "डिवाइस टेम्पलेट:"
 #: user_admin.php:792 user_admin.php:799 user_admin.php:808
 #, fuzzy
 msgid "Restricted By: "
-msgstr "प्रतिबंधक"
+msgstr "प्रतिबंधत"
 
 #: user_admin.php:796
 #, fuzzy
@@ -19769,12 +19397,10 @@ msgid "Granted"
 msgstr "प्रवेश करने की अनुमति है"
 
 #: user_admin.php:805 user_admin.php:810
-#, fuzzy
 msgid "Restricted"
-msgstr "प्रतिबंधक"
+msgstr "प्रतिबंधत"
 
 #: user_admin.php:829 user_group_admin.php:735
-#, fuzzy
 msgid "Allow"
 msgstr "अनुमति दें"
 
@@ -19847,7 +19473,6 @@ msgid "Groups"
 msgstr "समूहों"
 
 #: user_admin.php:1144 user_admin.php:1153
-#, fuzzy
 msgid "Member"
 msgstr "सदस्य"
 
@@ -19864,16 +19489,14 @@ msgstr "गैर - सदस्य"
 #: user_admin.php:1155 user_admin.php:2355 user_admin.php:2356
 #: user_admin.php:2357 user_group_admin.php:1932 user_group_admin.php:1933
 #: user_group_admin.php:1934
-#, fuzzy
 msgid "ALLOW"
-msgstr "अनुमति"
+msgstr "अनुमति दें"
 
 #: user_admin.php:1155 user_admin.php:2355 user_admin.php:2356
 #: user_admin.php:2357 user_group_admin.php:1932 user_group_admin.php:1933
 #: user_group_admin.php:1934
-#, fuzzy
 msgid "DENY"
-msgstr "अस्वीकृत किया"
+msgstr "अस्वीकृत करें"
 
 #: user_admin.php:1161
 #, fuzzy
@@ -19984,7 +19607,6 @@ msgid "User Settings %s"
 msgstr "उपयोगकर्ता सेटिंग %s"
 
 #: user_admin.php:1976 user_group_admin.php:1661
-#, fuzzy
 msgid "Permissions"
 msgstr "अनुमतियां"
 
@@ -20053,9 +19675,8 @@ msgid "Graph Permissions %s"
 msgstr "ग्राफ अनुमतियाँ %s"
 
 #: user_admin.php:2628 user_admin.php:2713
-#, fuzzy
 msgid "Show All"
-msgstr "सब दिखाओ"
+msgstr "सभी दिखाएँ"
 
 #: user_admin.php:2681
 #, fuzzy, php-format
@@ -20215,7 +19836,6 @@ msgid "Domains"
 msgstr "डोमेन"
 
 #: user_domains.php:745
-#, fuzzy
 msgid "Domain Name"
 msgstr "डोमेन नाम"
 
@@ -20240,9 +19860,8 @@ msgid "CN eMail"
 msgstr "CN ई-मेल"
 
 #: user_domains.php:763
-#, fuzzy
 msgid "None Selected"
-msgstr "कोई भी नहीं चुना गया"
+msgstr "कोई वस्तु चुना नहीं गया"
 
 #: user_domains.php:771
 #, fuzzy
@@ -20275,9 +19894,8 @@ msgid "Restrict Access"
 msgstr "प्रवेश निषेध"
 
 #: user_group_admin.php:73 user_group_admin.php:1909
-#, fuzzy
 msgid "Group Name"
-msgstr "समूह का नाम"
+msgstr "समूह नाम"
 
 #: user_group_admin.php:74
 #, fuzzy
@@ -20371,7 +19989,6 @@ msgid "Group Prefix:"
 msgstr "समूह उपसर्ग:"
 
 #: user_group_admin.php:465
-#, fuzzy
 msgid "New Group"
 msgstr "नया समूह"
 
@@ -20416,7 +20033,6 @@ msgid "Login Name"
 msgstr "लॉगिन नाम"
 
 #: user_group_admin.php:682
-#, fuzzy
 msgid "Membership"
 msgstr "सदस्यता"
 
@@ -20431,7 +20047,6 @@ msgid "No Matching Group Members Found"
 msgstr "कोई मिलान समूह सदस्य नहीं मिला"
 
 #: user_group_admin.php:717
-#, fuzzy
 msgid "Add to Group"
 msgstr "समूह में जोड़ें"
 
@@ -20456,9 +20071,8 @@ msgid "Default Tree Policy for this User Group"
 msgstr "इस उपयोगकर्ता समूह के लिए डिफ़ॉल्ट ट्री नीति"
 
 #: user_group_admin.php:1660 user_group_admin.php:1910
-#, fuzzy
 msgid "Members"
-msgstr "सदस्य"
+msgstr "सदस्यगण"
 
 #: user_group_admin.php:1672
 #, fuzzy, php-format
@@ -20521,9 +20135,8 @@ msgid "ERROR: RRDtool 1.2.x+ does not support the GIF images format, but %d\" gr
 msgstr "ERROR: RRDtool 1.2.x + GIF छवियों के प्रारूप का समर्थन नहीं करता है, लेकिन% d &quot;ग्राफ़ (ओं) और / या टेम्पलेट्स में GIF को छवि प्रारूप के रूप में सेट किया गया है।"
 
 #: utilities.php:222
-#, fuzzy
 msgid "Database"
-msgstr "डेटाबेस"
+msgstr "डाटाबेस"
 
 #: utilities.php:223
 #, fuzzy
@@ -20536,7 +20149,6 @@ msgid "Technical Support [%s]"
 msgstr "तकनीकी सहायता [ %s]"
 
 #: utilities.php:257
-#, fuzzy
 msgid "General Information"
 msgstr "सामान्य जानकारी"
 
@@ -20650,8 +20262,9 @@ msgid "PHP SNMP"
 msgstr "PHP SNMP"
 
 #: utilities.php:465
+#, fuzzy
 msgid "Installed. <span class=\"deviceDown\">Note: If you are planning on using SNMPv3, you must remove php-snmp and use the Net-SNMP toolset.</span>"
-msgstr ""
+msgstr "इंस्टॉल किया गया। <span class=\"deviceDown\">नोट: यदि आप SNMPv3 का उपयोग करने की योजना बना रहे हैं, तो आपको php-snmp को हटाना होगा और Net-SNMP टूलसेट का उपयोग करना होगा।</span>"
 
 #: utilities.php:499
 #, fuzzy
@@ -20713,9 +20326,8 @@ msgid "Deleted/Invalid"
 msgstr "हटाया गया / अमान्य"
 
 #: utilities.php:702 utilities.php:807
-#, fuzzy
 msgid "Result"
-msgstr "परिणाम"
+msgstr "नतीजा"
 
 #: utilities.php:707 utilities.php:841
 #, fuzzy
@@ -20733,16 +20345,14 @@ msgid "Success - Password Change"
 msgstr "सफलता - Pswd"
 
 #: utilities.php:714
-#, fuzzy
 msgid "Attempts"
 msgstr "प्रयास"
 
 #: utilities.php:730 utilities.php:1087 utilities.php:1419 utilities.php:1700
 #: utilities.php:2449 utilities.php:2712 vdef.php:727
-#, fuzzy
 msgctxt "Button: use filter settings"
 msgid "Go"
-msgstr "चले जाओ"
+msgstr "जाएं"
 
 #: utilities.php:731 utilities.php:1088 utilities.php:1420 utilities.php:1701
 #: utilities.php:2450 utilities.php:2713 vdef.php:728
@@ -20751,10 +20361,9 @@ msgid "Clear"
 msgstr "明确"
 
 #: utilities.php:732 utilities.php:1089 utilities.php:2714
-#, fuzzy
 msgctxt "Button: delete all table entries"
 msgid "Purge"
-msgstr "शुद्ध करना"
+msgstr "सफाई"
 
 #: utilities.php:732
 #, fuzzy
@@ -20767,9 +20376,8 @@ msgid "User Logins"
 msgstr "उपयोगकर्ता लॉगिन"
 
 #: utilities.php:808
-#, fuzzy
 msgid "IP Address"
-msgstr "आईपी पता"
+msgstr "IP सिरनामा"
 
 #: utilities.php:825
 #, fuzzy
@@ -20827,14 +20435,12 @@ msgid "Include Index"
 msgstr "सूचकांक शामिल करें"
 
 #: utilities.php:1525
-#, fuzzy
 msgid "Field Value"
-msgstr "फ़ील्ड मान"
+msgstr "क्षेत्र नाम"
 
 #: utilities.php:1525
-#, fuzzy
 msgid "Index"
-msgstr "सूची"
+msgstr "इंडैक्स"
 
 #: utilities.php:1660
 #, fuzzy
@@ -20842,9 +20448,8 @@ msgid "Poller Cache Items"
 msgstr "पोलर कैश आइटम"
 
 #: utilities.php:1721
-#, fuzzy
 msgid "Script"
-msgstr "लिपि"
+msgstr "स्क्रिप्ट"
 
 #: utilities.php:1842 utilities.php:1847
 #, fuzzy
@@ -20854,7 +20459,7 @@ msgstr "SNMP संस्करण:"
 #: utilities.php:1843
 #, fuzzy
 msgid "Community:"
-msgstr "समुदाय:"
+msgstr "कम्युनिटी"
 
 #: utilities.php:1844 utilities.php:1848
 #, fuzzy
@@ -20862,14 +20467,13 @@ msgid "OID:"
 msgstr "OID:"
 
 #: utilities.php:1848
-#, fuzzy
 msgid "User:"
-msgstr "उपयोगकर्ता "
+msgstr "बरतूनी:"
 
 #: utilities.php:1851
 #, fuzzy
 msgid "Script:"
-msgstr "स्क्रिप्ट:"
+msgstr "स्क्रिप्ट"
 
 #: utilities.php:1853
 #, fuzzy
@@ -20962,8 +20566,9 @@ msgid "Purge Data Source Statistics"
 msgstr "डेटा स्रोत सांख्यिकी"
 
 #: utilities.php:1929
+#, fuzzy
 msgid "This menu pick will purge all existing Data Source Statistics from the Database.  If Data Source Statistics is enabled, the Data Sources Statistics will start collection again on the next Data Collector pass."
-msgstr ""
+msgstr "यह मेनू पिक डेटाबेस से सभी मौजूदा डेटा स्रोत सांख्यिकी को शुद्ध करेगा। यदि डेटा स्रोत सांख्यिकी सक्षम है, तो डेटा स्रोत आँकड़े अगले डेटा कलेक्टर पास पर फिर से संग्रह शुरू कर देंगे।"
 
 #: utilities.php:1933
 #, fuzzy
@@ -21031,9 +20636,8 @@ msgid "Overrun Warning"
 msgstr "ओवररन वार्निंग"
 
 #: utilities.php:2106
-#, fuzzy
 msgid "Timed Out"
-msgstr "समय समााप्त"
+msgstr "समय समााप्त हो जाना"
 
 #: utilities.php:2107
 msgid "Other"
@@ -21115,9 +20719,8 @@ msgid "Max Record Length:"
 msgstr "अधिकतम रिकॉर्ड लंबाई:"
 
 #: utilities.php:2239 utilities.php:2240
-#, fuzzy
 msgid "Unlimited"
-msgstr "असीमित"
+msgstr "अनसंभ"
 
 #: utilities.php:2245
 #, fuzzy
@@ -21260,9 +20863,8 @@ msgid "SNMPAgent Notification Log"
 msgstr "SNMPAgent अधिसूचना लॉग"
 
 #: utilities.php:2683 utilities.php:2770
-#, fuzzy
 msgid "Receiver"
-msgstr "रिसीवर"
+msgstr "प्राप्तकर्ता"
 
 #: utilities.php:2762
 #, fuzzy
